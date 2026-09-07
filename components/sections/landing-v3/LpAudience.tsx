@@ -13,12 +13,25 @@ const AudienceContext = createContext<{ audience: Audience; setAudience: (value:
 });
 export const useAudience = () => useContext(AudienceContext);
 
-const agentHeadline = "give your human gtm superpowers";
-// Preserve the three typing bursts while revealing each proportional glyph
-// at its actual width, so the cursor stays attached to Aeonik Fono's text.
-const glyphProgress = (index: number) => index < 16 ? (index + 1) * .48 / 16
-  : index < 19 ? .59 + (index - 15) * .12 / 3
-  : index === 19 ? .78 : .78 + (index - 19) * .22 / 11;
+// The agent is the reader, named outright: the line says what IT gets, not
+// what it gives its human (founder 2026-09-07: "on comprend pas que c'est
+// l'agent qui devient meilleur" — the previous "give your human gtm
+// superpowers" made the human the one who improved; "@agent" is his wording).
+const agentHeadline = "@agent get gtm superpowers";
+// Typing bursts: each word types at a steady pace and every space is a short
+// pause, the last glyph landing at the end of --lp-type-duration — derived
+// from the string, so a copy change keeps the terminal rhythm. Each
+// proportional glyph is revealed at its actual width, so the cursor stays
+// attached to Aeonik Fono's text.
+const glyphProgress = (() => {
+  const steps: number[] = [];
+  let t = 0;
+  for (const letter of agentHeadline) {
+    t += letter === " " ? 0.12 : 0.04;
+    steps.push(t);
+  }
+  return steps.map(step => step / t);
+})();
 
 export function AudienceHeadline() {
   const { audience } = useAudience();
@@ -38,7 +51,7 @@ export function AudienceHeadline() {
       <span className="lp-sr-only">{`> ${agentHeadline}`}</span>
       <span className="lp-agent-headline" data-font-ready={fontReady} aria-hidden="true">
         <span className="lp-agent-headline__text"><span className="lp-agent-headline__prompt">{"> "}</span>{Array.from(agentHeadline, (letter, index) =>
-          <span key={index} className="lp-agent-headline__glyph" style={{ "--lp-glyph-progress": glyphProgress(index) } as CSSProperties}>{letter}</span>
+          <span key={index} className="lp-agent-headline__glyph" style={{ "--lp-glyph-progress": glyphProgress[index] } as CSSProperties}>{letter}</span>
         )}</span>
         <span className="lp-agent-headline__cursor" />
       </span>
