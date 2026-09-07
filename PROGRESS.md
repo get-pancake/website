@@ -8,6 +8,21 @@
 - [ ] **Phase 6:** Rebuild `/build-in-public`
 - [ ] **Phase 7:** Final Pass
 
+## Mobile performance — September 7, 2026
+
+- [x] Measure the live homepage with Google Lighthouse on mobile and desktop; inspect local Performance traces and downloaded resources.
+- [x] Confirm the active homepage requests no video media.
+- [x] Bound the mobile Canvas2D fallback and restore the existing SVG on expensive rendering, releasing its buffers.
+- [x] Defer offscreen animation modules/images and remove ten unnecessary font preloads, preserving typography and artwork.
+- [x] Validate with production builds, behavioral regression tests, independent review, and Codex Browser interaction/layout checks.
+- [x] Prepare a preview and draft PR; production promotion remains manual.
+
+Draft PR: https://github.com/get-pancake/website/pull/283
+
+Preview: https://pancake-git-codex-mobile-performance-getpancake.vercel.app
+
+Measurements, caveats, and reproduction commands: [mobile-performance-2026-09-07.md](docs/mobile-performance-2026-09-07.md).
+
 ## Human / agent toggle foundation — September 4, 2026
 
 Scope: original human landing plus a selector above the headline’s right edge. Agent mode keeps the hero layout and uses inverse cream/plum colors, followed by the agent terminal playground requested in the subsequent iteration.

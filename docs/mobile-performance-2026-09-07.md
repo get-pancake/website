@@ -22,7 +22,7 @@ Local Lighthouse runs used a production Next build and fresh Chrome profiles. Mo
 
 ## Findings and changes
 
-- **Unbounded mobile canvas fallback.** WebGL already detects unsuitable rendering environments. On phones, rejecting WebGL starts a Canvas2D fallback that previously drew six transformed bitmaps every animation frame without a performance limit. A local run with graphics acceleration disabled reproduced the failure: score 44, projected TBT 166,680 ms. Performance traces attribute the repeated expensive calls to the fallback's frame function. The fallback now draws at up to approximately 30 fps using the same animation clock. Three consecutive draws over 50 ms, or sustained poor frame delivery, restore the existing static SVG and release bitmap buffers. The stopped state cannot be restarted by resize, visibility, or audience observers during the component's lifetime. The normal WebGL renderer is unchanged.
+- **Unbounded mobile canvas fallback.** WebGL already detects unsuitable rendering environments. On phones, rejecting WebGL starts a Canvas2D fallback that previously drew six transformed bitmaps every animation frame without a performance limit. A local run with graphics acceleration disabled reproduced the failure: score 44, projected TBT 166,680 ms. Performance traces attribute the repeated expensive calls to the fallback's frame function. The fallback now draws at up to approximately 30 fps using the same animation clock. A single draw taking at least 200 ms, three consecutive draws over 50 ms, or sustained poor frame delivery restore the existing static SVG and release bitmap buffers. The stopped state cannot be restarted by resize, visibility, or audience observers during the component's lifetime. The normal WebGL renderer is unchanged.
 - **Font preloads.** Aeonik and Lato no longer preload all their cuts on every route. This removes ten eager preloads; every original font face and weight remains available. The homepage's Fono and Condensed preloads remain.
 - **Walkthrough JavaScript.** The GSAP runtime and step/feature timeline builders load when their cards enter view. Their server-rendered artwork remains present. Delayed imports respect current visibility, reduced-motion preference, and component cleanup.
 - **Offscreen images.** Walkthrough images, testimonial avatars, and the bottleneck poster use native lazy loading and asynchronous decoding. Their source files and geometry are unchanged.
@@ -31,6 +31,31 @@ Local Lighthouse runs used a production Next build and fresh Chrome profiles. Mo
 ## Remaining opportunities
 
 The root layout still includes legacy component CSS that most homepage elements do not use. Moving those imports to the routes that need them is a separate cleanup requiring visual checks on those routes. This change does not reuse the old design system or alter analytics loading.
+
+## Validation
+
+| Local production-build measurement | Before | After |
+| --- | ---: | ---: |
+| Initial transfer | 811,572 B | 516,068 B (36.4% less) |
+| Initial requests | 66 | 36 |
+| Font requests / preloads | 20 | 10 |
+| Homepage first-load JS (Next build) | 192 KB | 140 KB |
+| Normal mobile scores (two runs) | 56, 86 | 80, 81 |
+| Desktop score | 98 | 100 |
+| Mobile score, graphics disabled | 44 | 68 |
+| Mobile LCP, graphics disabled | 5.4 s | 3.0 s |
+| Mobile TBT, graphics disabled | 166,680 ms | 1,500 ms (99.1% less) |
+
+Normal mobile runs overlap: these samples do not establish a reliable score increase on healthy graphics hardware. The reproducible gains are fewer startup bytes/requests and a bounded fallback instead of continuous expensive rendering. The extreme fallback TBT is Lighthouse's simulated value, not a claim that every visitor waits 167 seconds. All reported local runs have CLS 0. An intermediate three-draw-only guard scored 61 with 2,280 ms TBT; the final guard also stops after one catastrophic 200 ms draw.
+
+Draft PR: https://github.com/get-pancake/website/pull/283. Preview alias: https://pancake-git-codex-mobile-performance-getpancake.vercel.app.
+
+- Production Next build, TypeScript and lint pass, with the repository's existing image-element and unrelated report-hook warnings.
+- Independent code review found no actionable regression.
+- Codex Browser confirmed identical 390px mobile hero headline, description, and button rectangles before and after; no horizontal overflow; booking open/Escape/focus return; mobile menu and anchor navigation; step and feature timelines starting on entry; completed timelines holding their final frame. The hosted preview also renders the human and agent views.
+- `node scripts/canvas-fallback-budget.test.cjs` covers healthy 15/30fps, transient load, severe and repeated expensive draws, deferred rendering pressure, and the cap on 60/90/120Hz displays.
+- `node scripts/canvas-fallback-lifecycle.test.cjs` runs the actual component effect with controlled browser primitives: restores SVG, frees every buffer, refuses observer-driven restarts after degradation, retains the stop across breakpoint changes, and resumes healthy animation after a long pause.
+- Google PageSpeed cannot measure the protected preview: its attempt redirected to Vercel login. That report is excluded. Do not disable preview protection or treat the login page's score as a homepage result.
 
 ## Reproduction
 

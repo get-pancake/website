@@ -43,6 +43,7 @@ const POP_MS = 500;
 const MIN_FRAME_MS = 1000 / 30 - 1; // 1ms tolerance for RAF timestamp rounding
 const LONG_DRAW_MS = 50;
 const LONG_DRAW_LIMIT = 3;
+const SEVERE_DRAW_MS = 200; // one draw this costly already visibly blocks interaction
 const BUDGET_WINDOW_MS = 2000;
 const MIN_FPS = 12;
 const SLOW_WINDOW_LIMIT = 2;
@@ -61,8 +62,10 @@ const freshBudget = (): FrameBudget => ({
 });
 
 /** Direct draw cost catches CPU rasterization; output cadence also catches
- * deferred raster/compositor work. One busy frame never disables motion. */
+ * deferred raster/compositor work. Ordinary busy frames need repetition;
+ * a single severely blocking draw is already sufficient evidence. */
 function exceedsBudget(budget: FrameBudget, now: number, drawMs: number): boolean {
+  if (drawMs >= SEVERE_DRAW_MS) return true;
   budget.expensiveDraws = drawMs > LONG_DRAW_MS ? budget.expensiveDraws + 1 : 0;
   if (budget.expensiveDraws >= LONG_DRAW_LIMIT) return true;
   if (!budget.lastDraw) {
