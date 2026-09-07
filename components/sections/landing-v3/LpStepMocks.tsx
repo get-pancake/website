@@ -43,7 +43,7 @@ function S1Stage() {
           <span className="lp-s1-btntxt">Start research</span>
         </div>
         <i className="lp-s1-ring" />
-        <img className="lp-s1-cursor" src="/lp/lp-s1-cursor.svg" alt="" width={51} height={53} />
+        <img className="lp-s1-cursor" src="/lp/lp-s1-cursor.svg" alt="" width={51} height={53} loading="lazy" decoding="async" />
       </div>
 
       <div className="lp-s1-graph">

@@ -16,7 +16,9 @@ import { useEffect, useRef, useState } from "react";
  * bitmap (Path2D — vector-crisp, no per-frame SVG rasterization), then
  * every frame is six GPU blits under the exact DOM transform chain.
  * ~55MB total, zero compositor churn, and the bitmaps are released
- * whenever the hero is off-stage.
+ * whenever the hero is off-stage. Draws are capped near 30fps; measured
+ * expensive draws or a persistently slow loop restore the static SVG.
+ * WebGL rejection must not start an unlimited software-rendered loop.
  *
  * Fidelity: nothing is re-derived. The static geometry — the canvas div's
  * fit/mirror matrix (mobile: scale·rotate15°·flipX conjugate), each arc's
@@ -29,9 +31,8 @@ import { useEffect, useRef, useState } from "react";
  * once the first frame lands — an atomic swap, and the static artboard
  * remains the fallback whenever this bails).
  *
- * Scope: ≤767px, motion-safe, homepage hero only. Desktop keeps the CSS
- * cohort untouched; anim.css's mobile static block keeps the DOM inert
- * here so the canvas is the only moving copy.
+ * Scope: ≤767px, motion-safe, homepage hero only, when WebGL cannot draw.
+ * The DOM rings are static; this canvas is the fallback moving copy.
  */
 
 /** Backing resolution caps — the knobs that keep this OOM-safe. */
@@ -39,6 +40,51 @@ const MAX_DPR = 2; // visible canvas; art bands are soft, 2× reads clean on 3×
 const BITMAP_SCALE = 0.75; // ring bitmaps at 3/4 of drawn resolution (~0.56× memory)
 const POP_START = { w: 2440.574, h: 2381.047 }; // lp-anim-pop 0% keyframe (anim.css)
 const POP_MS = 500;
+const MIN_FRAME_MS = 1000 / 30 - 1; // 1ms tolerance for RAF timestamp rounding
+const LONG_DRAW_MS = 50;
+const LONG_DRAW_LIMIT = 3;
+const SEVERE_DRAW_MS = 200; // one draw this costly already visibly blocks interaction
+const BUDGET_WINDOW_MS = 2000;
+const MIN_FPS = 12;
+const SLOW_WINDOW_LIMIT = 2;
+
+interface FrameBudget {
+  lastDraw: number;
+  windowStart: number;
+  frames: number;
+  slowFrames: number;
+  slowWindows: number;
+  expensiveDraws: number;
+}
+
+const freshBudget = (): FrameBudget => ({
+  lastDraw: 0, windowStart: 0, frames: 0, slowFrames: 0, slowWindows: 0, expensiveDraws: 0,
+});
+
+/** Direct draw cost catches CPU rasterization; output cadence also catches
+ * deferred raster/compositor work. Ordinary busy frames need repetition;
+ * a single severely blocking draw is already sufficient evidence. */
+function exceedsBudget(budget: FrameBudget, now: number, drawMs: number): boolean {
+  if (drawMs >= SEVERE_DRAW_MS) return true;
+  budget.expensiveDraws = drawMs > LONG_DRAW_MS ? budget.expensiveDraws + 1 : 0;
+  if (budget.expensiveDraws >= LONG_DRAW_LIMIT) return true;
+  if (!budget.lastDraw) {
+    budget.windowStart = now;
+  } else {
+    budget.frames++;
+    if (now - budget.lastDraw > 1000 / MIN_FPS) budget.slowFrames++;
+    const elapsed = now - budget.windowStart;
+    if (elapsed >= BUDGET_WINDOW_MS) {
+      const slow = budget.frames * 1000 / elapsed < MIN_FPS && budget.slowFrames / budget.frames > 0.5;
+      budget.slowWindows = slow ? budget.slowWindows + 1 : 0;
+      budget.windowStart = now;
+      budget.frames = 0;
+      budget.slowFrames = 0;
+    }
+  }
+  budget.lastDraw = now;
+  return budget.slowWindows >= SLOW_WINDOW_LIMIT;
+}
 
 interface Ring {
   poseX: number;
@@ -60,6 +106,7 @@ interface Ring {
 
 export function LpArcCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const budgetStoppedRef = useRef(false);
   // flips when the viewport crosses the phone breakpoint → the effect
   // re-runs and boots (or tears down) the renderer
   const [phoneKey, setPhoneKey] = useState(0);
@@ -81,7 +128,7 @@ export function LpArcCanvas() {
     // channel in Gecko), three observers and the 1.5s verdict timer there
     // was pure hydration cost. A viewport that later shrinks to a phone
     // re-runs the effect through the `phoneKey` state below.
-    if (!phone.matches) return;
+    if (!phone.matches || budgetStoppedRef.current) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -93,6 +140,17 @@ export function LpArcCanvas() {
     let raf = 0;
     let onStage = true;
     let disposed = false;
+    let budget = freshBudget();
+
+    const releaseBitmaps = () => {
+      for (const ring of rings) {
+        if (!ring.bitmap) continue;
+        ring.bitmap.width = 0;
+        ring.bitmap.height = 0;
+        ring.bitmap = null;
+      }
+      rings = [];
+    };
 
     /** Read the full static geometry from the live DOM. False = retry later
         (pre-LpFitVars there is no reliable fit scale on iOS — the trig
@@ -173,18 +231,26 @@ export function LpArcCanvas() {
 
     const frame = () => {
       raf = 0;
-      if (disposed || !onStage || document.hidden) return;
+      if (disposed || budgetStoppedRef.current || !onStage || document.hidden || reduced.matches) return;
       if (art.hasAttribute("data-lp-gl")) {
         // LpRainbowGL drew (2026-09-02: it runs on phones too) — yield; the
         // attribute observer below restarts this renderer if it ever bails
         art.removeAttribute("data-lp-arc-canvas");
         return;
       }
-      if (!rings.length && !build()) {
-        raf = requestAnimationFrame(frame); // LpFitVars not there yet — retry
-        return;
+      if (!rings.length) {
+        // Geometry creation is a one-time cost, not steady-state drawing.
+        budget = freshBudget();
+        if (!build()) {
+          raf = requestAnimationFrame(frame); // LpFitVars not there yet — retry
+          return;
+        }
       }
       const now = performance.now();
+      if (budget.lastDraw && now - budget.lastDraw < MIN_FRAME_MS) {
+        raf = requestAnimationFrame(frame);
+        return;
+      }
       // test hook: freeze the clock at a given cycle fraction (gates only)
       const hook = (window as unknown as { __lpArcPhase?: number }).__lpArcPhase;
       const cycle = typeof hook === "number" ? hook : ((now - t0) / 20000) % 1;
@@ -223,6 +289,15 @@ export function LpArcCanvas() {
           h,
         );
       }
+      if (exceedsBudget(budget, now, performance.now() - now)) {
+        budgetStoppedRef.current = true;
+        stopAndRestore();
+        clearTimeout(glWait);
+        releaseBitmaps();
+        canvas.width = 0;
+        canvas.height = 0;
+        return;
+      }
       if (!art.hasAttribute("data-lp-arc-canvas")) {
         art.setAttribute("data-lp-arc-canvas", ""); // first frame drew — swap
       }
@@ -238,6 +313,7 @@ export function LpArcCanvas() {
     let glWait = 0;
     let glTimedOut = false;
     const start = () => {
+      if (disposed || budgetStoppedRef.current) return;
       if (art.hasAttribute("data-lp-gl")) return; // the WebGL renderer owns the hero
       if (!art.hasAttribute("data-lp-gl-off") && !glTimedOut) {
         if (!glWait) {
@@ -249,6 +325,7 @@ export function LpArcCanvas() {
         return;
       }
       if (!raf && phone.matches && !reduced.matches && onStage && !document.hidden) {
+        budget = freshBudget(); // hidden/off-stage time is never a slow frame
         raf = requestAnimationFrame(frame);
       }
     };
@@ -259,11 +336,10 @@ export function LpArcCanvas() {
         if (raf) cancelAnimationFrame(raf);
         raf = 0;
         art.removeAttribute("data-lp-arc-canvas");
-        rings.forEach((r) => (r.bitmap = null)); // free the bitmaps too
+        releaseBitmaps();
         canvas.width = 0; // and the 2D backing store (build() re-sizes it)
         canvas.height = 0;
       } else {
-        if (rings.some((r) => !r.bitmap)) rings = [];
         start();
       }
     });
@@ -280,13 +356,11 @@ export function LpArcCanvas() {
       (entries) => {
         onStage = entries.some((e) => e.isIntersecting);
         if (onStage) {
-          const geometryDropped = rings.length > 0 && rings.some((r) => !r.bitmap);
-          if (geometryDropped) rings = [];
           start();
         } else {
           if (raf) cancelAnimationFrame(raf);
           raf = 0;
-          rings.forEach((r) => (r.bitmap = null));
+          releaseBitmaps();
         }
       },
       { rootMargin: "75% 0%" },
@@ -306,7 +380,7 @@ export function LpArcCanvas() {
     // The bitmap fallback uses the same palette as the static SVG and GL.
     // Rebuilding the fills retains t0, so toggling never resets the rotation.
     const paletteWatch = new MutationObserver(() => {
-      rings = [];
+      releaseBitmaps();
       // An active fallback must also paint the new snapshot immediately.
       // Keep the same clock and replace, rather than duplicate, its RAF.
       if (raf && art.hasAttribute("data-lp-arc-canvas") && phone.matches && !reduced.matches) {
@@ -320,7 +394,7 @@ export function LpArcCanvas() {
 
     // orientation / fold changes: geometry + backing sizes are stale
     const ro = new ResizeObserver(() => {
-      rings = [];
+      releaseBitmaps();
       start();
     });
     ro.observe(art);
@@ -332,6 +406,9 @@ export function LpArcCanvas() {
     return () => {
       disposed = true;
       stopAndRestore();
+      releaseBitmaps();
+      canvas.width = 0;
+      canvas.height = 0;
       clearTimeout(glWait);
       glWatch.disconnect();
       paletteWatch.disconnect();

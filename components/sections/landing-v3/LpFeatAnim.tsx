@@ -2,10 +2,15 @@
 
 import { useEffect, useRef } from "react";
 
-import { gsap } from "@/lib/gsap";
+import type { gsap } from "@/lib/gsap";
 
 import { LpFeatStage } from "./LpFeatMocks";
-import { buildFeatTimeline, type FeatVariant } from "./lp-feat-timelines";
+import type { FeatVariant } from "./lp-feat-timelines";
+
+const loadAnimation = () => Promise.all([
+  import("@/lib/gsap"),
+  import("./lp-feat-timelines"),
+]);
 
 /**
  * A "How Pancake finds customers" media zone that animates its mock UI in
@@ -59,8 +64,12 @@ export function LpFeatAnim({
     ro.observe(host);
 
     const motionMq = matchMedia("(prefers-reduced-motion: reduce)");
+    let disposed = false;
+    let touching = false;
     let inView = false;
     let done = false;
+    let loadRequested = false;
+    let runtime: Awaited<ReturnType<typeof loadAnimation>> | undefined;
     let tl: gsap.core.Timeline | undefined;
     let cleanupDom: (() => void) | undefined;
     let ctx: gsap.Context | undefined;
@@ -83,12 +92,29 @@ export function LpFeatAnim({
       }
     };
 
-    // Built when the card first touches the viewport — laid out, so the f2
-    // builder can measure its glyphs (the section is content-visibility:auto;
-    // a skipped subtree has no geometry), and nothing is spent on cards the
-    // visitor never reaches. Until then the stage stays hidden (= cream).
+    // Fetch the animation code only when the card first touches the viewport.
+    // Build only while intersecting so f2 can measure its glyphs: the section
+    // uses content-visibility:auto, and a skipped subtree has no geometry.
+    // Until then the server-rendered stage stays hidden (= cream).
     const arm = () => {
-      if (ctx) return;
+      if (ctx || disposed) return;
+      if (!runtime) {
+        if (loadRequested) return;
+        loadRequested = true;
+        void loadAnimation().then((loaded) => {
+          if (disposed) return;
+          runtime = loaded;
+          // A slow connection may finish after the visitor has scrolled away.
+          // Keep the code ready and build on their next viewport entry.
+          if (touching) arm();
+        }).catch((err) => {
+          if (disposed) return;
+          host.dataset.lpAnim = "static";
+          if (process.env.NODE_ENV !== "production") console.error(err);
+        });
+        return;
+      }
+      const [{ gsap }, { buildFeatTimeline }] = runtime;
       ctx = gsap.context(() => {
         try {
           const built = buildFeatTimeline(variant, stage);
@@ -110,6 +136,9 @@ export function LpFeatAnim({
           if (process.env.NODE_ENV !== "production") console.error(err);
         }
       }, stage);
+      // Loading is asynchronous: use the current visibility and motion
+      // preference, including changes made while the chunk was downloading.
+      sync();
     };
 
     const onMotion = () => {
@@ -120,9 +149,10 @@ export function LpFeatAnim({
     const io = new IntersectionObserver(
       (entries) => {
         const e = entries[entries.length - 1];
-        if (e.isIntersecting) arm();
+        touching = e.isIntersecting;
         // "focused on it" = 60 % visible (the video's threshold)
-        inView = e.isIntersecting && e.intersectionRatio >= 0.6 - 1e-3;
+        inView = touching && e.intersectionRatio >= 0.6 - 1e-3;
+        if (touching) arm();
         sync();
       },
       { threshold: [0, 0.6] },
@@ -131,6 +161,7 @@ export function LpFeatAnim({
     motionMq.addEventListener("change", onMotion);
 
     return () => {
+      disposed = true;
       io.disconnect();
       ro.disconnect();
       motionMq.removeEventListener("change", onMotion);

@@ -2,10 +2,15 @@
 
 import { useEffect, useRef } from "react";
 
-import { gsap } from "@/lib/gsap";
+import type { gsap } from "@/lib/gsap";
 
 import { LpStepStage } from "./LpStepMocks";
-import { buildStepTimeline, type StepVariant } from "./lp-step-timelines";
+import type { StepVariant } from "./lp-step-timelines";
+
+const loadAnimation = () => Promise.all([
+  import("@/lib/gsap"),
+  import("./lp-step-timelines"),
+]);
 
 /**
  * A "Pancake fills your pipeline" media card that animates its mock UI in
@@ -67,8 +72,12 @@ export function LpStepAnim({
     ro.observe(host);
 
     const motionMq = matchMedia("(prefers-reduced-motion: reduce)");
+    let disposed = false;
+    let touching = false;
     let inView = false;
     let done = false;
+    let loadRequested = false;
+    let runtime: Awaited<ReturnType<typeof loadAnimation>> | undefined;
     let tl: gsap.core.Timeline | undefined;
     let cleanupDom: (() => void) | undefined;
     let ctx: gsap.Context | undefined;
@@ -91,11 +100,28 @@ export function LpStepAnim({
       }
     };
 
-    // Built when the card first touches the viewport — laid out (step 02
-    // measures its check marks), and nothing is spent on cards the visitor
-    // never reaches. Until then the rest markup (frame 0) stands.
+    // Fetch the animation code only when the card first touches the viewport.
+    // Keep the server-rendered first frame while it loads, and only build
+    // while intersecting: step 02 needs the check marks' laid-out geometry.
     const arm = () => {
-      if (ctx) return;
+      if (ctx || disposed) return;
+      if (!runtime) {
+        if (loadRequested) return;
+        loadRequested = true;
+        void loadAnimation().then((loaded) => {
+          if (disposed) return;
+          runtime = loaded;
+          // A slow connection may finish after the visitor has scrolled away.
+          // Keep the code ready and build on their next viewport entry.
+          if (touching) arm();
+        }).catch((err) => {
+          if (disposed) return;
+          host.dataset.lpAnim = "static";
+          if (process.env.NODE_ENV !== "production") console.error(err);
+        });
+        return;
+      }
+      const [{ gsap }, { buildStepTimeline }] = runtime;
       ctx = gsap.context(() => {
         try {
           const built = buildStepTimeline(variant, stage);
@@ -117,6 +143,9 @@ export function LpStepAnim({
           if (process.env.NODE_ENV !== "production") console.error(err);
         }
       }, stage);
+      // Loading is asynchronous: use the current visibility and motion
+      // preference, including changes made while the chunk was downloading.
+      sync();
     };
 
     const onMotion = () => {
@@ -127,9 +156,10 @@ export function LpStepAnim({
     const io = new IntersectionObserver(
       (entries) => {
         const e = entries[entries.length - 1];
-        if (e.isIntersecting) arm();
+        touching = e.isIntersecting;
         // "focused on it" = 60 % visible (the video's threshold)
-        inView = e.isIntersecting && e.intersectionRatio >= 0.6 - 1e-3;
+        inView = touching && e.intersectionRatio >= 0.6 - 1e-3;
+        if (touching) arm();
         sync();
       },
       { threshold: [0, 0.6] },
@@ -138,6 +168,7 @@ export function LpStepAnim({
     motionMq.addEventListener("change", onMotion);
 
     return () => {
+      disposed = true;
       io.disconnect();
       ro.disconnect();
       motionMq.removeEventListener("change", onMotion);

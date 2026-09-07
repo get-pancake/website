@@ -123,12 +123,12 @@ function TestimonialCard({ card }: { card: Card }) {
   return (
     <article className="lp-tst-card">
       <div className="lp-tst-userrow">
-        <img alt="" className="lp-tst-avatar" height={48} src={card.avatar} width={48} />
+        <img alt="" className="lp-tst-avatar" height={48} src={card.avatar} width={48} loading="lazy" decoding="async" />
         <div className="lp-tst-id">
           <p className="lp-tst-name">{card.name}</p>
           <p className="lp-tst-handle">{`${card.handle} · ${card.time}`}</p>
         </div>
-        <img alt="" className="lp-tst-x" height={48} src="/lp/lp-t-x-logo.svg" width={48} />
+        <img alt="" className="lp-tst-x" height={48} src="/lp/lp-t-x-logo.svg" width={48} loading="lazy" decoding="async" />
       </div>
       <p className="lp-tst-body">{card.body}</p>
       <div className="lp-tst-div" />
