@@ -13,7 +13,12 @@
   /* --lp-svh = frozen viewport height (LpViewportVar: mount + settled
      resizes only) so live drags don't reflow the page every frame;
      pre-hydration falls back to live 100svh. */
-  height: clamp(640px, calc(var(--lp-svh, 100svh) - 120px), 758px);
+  /* --lp-hero-h is the ONE hero height (this clamp + the short-window
+     ladder below): the agent mode reads it too (audience.css) to reserve the
+     rest of the first screen under the same hero, so both modes share every
+     pixel of the hero geometry. */
+  --lp-hero-h: clamp(640px, calc(var(--lp-svh, 100svh) - 120px), 758px);
+  height: var(--lp-hero-h);
   isolation: isolate;
   position: relative;
   /* Post-settle glide (founder: "je veux du fluide 100%, comme le snake") —
@@ -134,7 +139,7 @@
    was `top: calc(-120px - (878px - var(--lp-svh, 100svh)) / 2)` here. */
 @media (min-width: 1025px) and (max-height: 759px) {
   .lp-hero {
-    height: max(500px, calc(var(--lp-svh, 100svh) - 120px));
+    --lp-hero-h: max(500px, calc(var(--lp-svh, 100svh) - 120px));
   }
   .lp-hero-inner {
     transform: scale(0.84) translateZ(0);
@@ -143,7 +148,7 @@
 }
 @media (min-width: 1025px) and (max-height: 639px) {
   .lp-hero {
-    height: max(380px, calc(var(--lp-svh, 100svh) - 120px));
+    --lp-hero-h: max(380px, calc(var(--lp-svh, 100svh) - 120px));
   }
   .lp-hero-inner {
     transform: scale(0.66) translateZ(0);

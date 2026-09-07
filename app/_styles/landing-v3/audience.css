@@ -105,15 +105,32 @@ html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation
 /* Keep all original sections mounted so their motion and fit observers survive
    a return to humans. Hidden sections take no space and expose no controls. */
 .lp-audience-page[data-audience="agents"] { background: var(--lp-ink-100); }
-/* Navigation + agent hero fill the first screen, keeping the playground
-   below the fold. Retain the original short-window readability floors. */
+/* The agent hero IS the human hero: same --lp-hero-h (hero.css clamp + its
+   short-window ladder), same bottom-anchored headline / switch / column, so
+   the block lands on the same pixel in both modes at every window height.
+   (Founder's boss, 2026-09-07: on a tall window the agent H1/CTA sat lower —
+   the previous min-height grew the hero past 758 and the bottom-anchored
+   block slid down with it: +22px at 900 tall, +202 at 1080, +562 at 1440.)
+   What the agent side adds is ground UNDER the block, not a taller hero:
+   nav + hero + this margin = the first screen, so the playground still
+   starts below the fold. No transition on the margin — it is off-screen by
+   construction and a slide would drag the playground's top into view. */
 .lp-audience-page[data-audience="agents"] > .lp-hero {
   --lp-agent-nav-height: calc(var(--lp-space-12) * 2 + var(--lp-space-3) * 2);
-  min-height: calc(var(--lp-svh, 100svh) - var(--lp-agent-nav-height));
+  margin-bottom: max(0px, calc(var(--lp-svh, 100svh) - var(--lp-agent-nav-height) - var(--lp-hero-h)));
 }
 @media (max-width: 1024px) {
-  .lp-audience-page[data-audience="agents"] > .lp-hero { display: flex; flex-direction: column; }
-  [data-audience="agents"] .lp-hero-inner { flex: 1; justify-content: flex-end; }
+  /* flow layouts (the human hero is height:auto): keep the human flow — the
+     block at the top of the frame, same padding — and stretch the hero to
+     the first screen so the playground starts below the fold; ≤767 the
+     human rule already bottom-anchors the block for both modes. */
+  .lp-audience-page[data-audience="agents"] > .lp-hero {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0;
+    min-height: calc(var(--lp-svh, 100svh) - var(--lp-agent-nav-height));
+  }
+  [data-audience="agents"] .lp-hero-inner { flex: 1; }
 }
 @media (min-width: 768px) and (max-width: 1024px) {
   [data-audience="agents"] .lp-hero-inner { width: 100%; }
