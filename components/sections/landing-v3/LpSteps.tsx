@@ -1,6 +1,8 @@
 // Steps — "Pancake fills your pipeline." (Figma 4636:3164, 1622×1741 — the 2026-09-02
 // revision: the designer's vector illustrations, each replaced by its storyboard
-// loop as the founder approves it — step 01 first). Heading block + 3 checkerboard rows: 656px text card +
+// loop as the founder approved it; since 2026-09-07 the three loops animate IN PLACE
+// as DOM + CSS + GSAP — LpStepAnim, the same treatment as the feature cards — instead
+// of being served as mp4s). Heading block + 3 checkerboard rows: 656px text card +
 // 464×426 media card. Copy follows the artboard except casing: founder rule
 // (2026-08-28) — no capitals on common nouns mid-sentence ("sells it", "your
 // business", "GTM brain") — and step 03, whose artboard copy the founder
@@ -10,24 +12,20 @@
 // and the step 01 body ("From your website, Pancake learns…") are his words
 // verbatim — not the artboard's.
 
-import { LpLoopVideo } from "./LpLoopVideo";
+import { LpStepAnim } from "./LpStepAnim";
+import type { StepVariant } from "./lp-step-timelines";
 
 type Step = {
   num: string;
   title: string;
   body: string;
-  /** Illustration exported from the Figma media card (464×426, cream canvas,
-      text outlined) — the whole card is the picture. Steps still waiting for
-      their approved loop. */
-  art?: string;
-  /** Storyboard animation (pancake-studio shorts/<name>, 1080×992 30fps) —
+  /** Storyboard animation (pancake-studio shorts/<name>, the composition the
+      mp4 used to be rendered from) — in-page DOM + CSS + GSAP (LpStepAnim):
       plays once when the card comes into view and holds its last frame
-      (the brain / the Agents view / the filled calendar). The poster is its
-      first frame. */
-  video?: string;
-  poster?: string;
-  /** What the illustration shows — its text is outlined in the SVG, so this
-      is the only copy a screen reader gets. */
+      (the brain / the Agents view / the filled calendar); at rest the card
+      is the composition's first frame. */
+  variant: StepVariant;
+  /** What the animation shows — the only copy a screen reader gets. */
   alt: string;
 };
 
@@ -36,24 +34,21 @@ const STEPS: Step[] = [
     num: "01",
     title: "Add your website.\nPancake builds your GTM brain.",
     body: "From your website, Pancake learns who buys from you, what to say, and where to show up. Always up to date.",
-    video: "/how/brain-research-loop.mp4",
-    poster: "/how/brain-research-loop-poster.jpg",
+    variant: "s1",
     alt: "Animation: a website address is typed and researched; from the Studio Pelican node a knowledge graph blooms — purple, green, pink, orange and blue branches — then a market profile fills in: Company, Offering, Ideal clients.",
   },
   {
     num: "02",
     title: "Agents start working.",
     body: "Pancake reaches out to the people ready to buy and gets you found on Google and ChatGPT.",
-    video: "/how/pipeline-checklist-loop.mp4",
-    poster: "/how/pipeline-checklist-loop-poster.jpg",
+    variant: "s2",
     alt: "Animation: the Pipeline agent (24 warm leads) opens its checklist by itself and works through it — monitor buying signals, find people ready to buy, enrich every prospect, score leads for ICP fit, write outreach in your voice, follow-up automatically — each item loading, then ticked.",
   },
   {
     num: "03",
     title: "Pancake gets you the meeting.\nYou close it.",
     body: "Pancake handles the follow-up and keeps every warm conversation moving until a qualified meeting lands on your calendar.",
-    video: "/how/meetings-calendar-loop.mp4",
-    poster: "/how/meetings-calendar-loop-poster.jpg",
+    variant: "s3",
     alt: "Animation: a calendar week in October 2026 fills up day by day with booked meetings — Samantha M., Julien Aubert, Martin Torres and Studio P, Lumen Collective, Fernhollow Studio, a Martin C. follow-up — past meetings marked closed or follow-up as the days go by.",
   },
 ];
@@ -75,26 +70,7 @@ export function LpSteps() {
                 <h3 className="lp-steps__step-title lp-display">{step.title}</h3>
                 <p className="lp-steps__body">{step.body}</p>
               </div>
-              {step.video ? (
-                <LpLoopVideo
-                  className="lp-steps__media"
-                  src={step.video}
-                  poster={step.poster}
-                  alt={step.alt}
-                />
-              ) : (
-                <div className="lp-steps__media">
-                  <img
-                    className="lp-steps__art"
-                    src={step.art}
-                    alt={step.alt}
-                    width={464}
-                    height={426}
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-              )}
+              <LpStepAnim className="lp-steps__media" variant={step.variant} alt={step.alt} />
             </div>
           ))}
         </div>

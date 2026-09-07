@@ -107,8 +107,27 @@ back during a fidelity pass:
   in a card that keeps the 464/426 aspect at every width — nothing cropped on
   phones. Step 03 copy is the founder's override, not the artboard's. The
   old studio loop trio (`/public/how/*-loop.mp4`) is retired from this section;
-  the designer's storyboard loops (`/public/how/brain-research-loop.mp4`, …) take
-  each card over as the founder approves them (all three done 2026-09-02; the SVG illustrations stay as the no-video fallback assets).
+  the designer's storyboard loops took each card over as the founder approved
+  them (all three done 2026-09-02), and since 2026-09-07 they animate IN PLACE
+  as DOM + CSS + GSAP — the same treatment as the feature cards below (founder:
+  "faire de même avec les trois premiers", "réplique parfaitement les
+  animations"). `LpStepAnim.tsx` drives them with the contract the mp4s had
+  (plays once at 60 % in view, pauses off-screen, holds the last frame =
+  the brain / the Agents view / the filled week, reduced motion = that frame);
+  `LpStepMocks.tsx` is the mocks' markup, `steps.css` (bottom) their geometry,
+  `lp-step-timelines.ts` the three timelines ported tween for tween from the
+  pancake-studio compositions (`shorts/brain-research-loop`,
+  `pipeline-checklist-loop`, `meetings-calendar-loop` — the storyboards the
+  mp4s were rendered from; the pipeline cut runs at 4/3 speed inside a paused
+  master exactly like its wrapper), `lp-step-data.ts` their numbers. Unlike the
+  feature cards, the rest markup IS the composition's frame 0 (the poster the
+  video showed), so the server-rendered card is already the right still. The
+  464×426 stage scales AS PIXELS with the card (`--lp-fit`, ResizeObserver +
+  trig fallback) and the card keeps clipping at its radius, as it clipped the
+  video. QA hook: `window.__lpStep[s1..s3]` = the timelines (seek + screenshot,
+  compare with the composition renders; s2's time is the 11.2 s master's).
+  The storyboard mp4s + posters and `LpLoopVideo.tsx` are gone; the SVG
+  illustrations (`/public/how/step-*.svg`) stay as the designer's stills.
 - Logo strip scrolls (seamless 1424px-period tile
   `lp-logo-strip-tile.png`, ~34 px/s leftward, blend moved to the track).
 - Testimonials: two counter-scrolling marquees (~28.75 px/s), 48px between
