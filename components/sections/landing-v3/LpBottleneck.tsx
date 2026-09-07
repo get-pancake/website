@@ -372,7 +372,7 @@ export function LpBottleneck() {
           the card is — the player replaces it only once it has painted */}
       <picture className="lp-banner__poster">
         <source media="(max-width: 767px)" srcSet="/lp/lp-bottleneck-poster-v.png" />
-        <img src="/lp/lp-bottleneck-poster-h.png" alt="" />
+        <img src="/lp/lp-bottleneck-poster-h.png" alt="" loading="lazy" decoding="async" />
       </picture>
       <div ref={hostARef} className="lp-banner__lottie-host" />
       {/* the drop alone, UNDER the still: it emerges from behind the lip,

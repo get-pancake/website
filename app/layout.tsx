@@ -22,6 +22,8 @@ const lato = Lato({
   weight: ["400", "700", "900"],
   variable: "--font-lato",
   display: "swap",
+  // The legacy Slack panels request these faces only when they render.
+  preload: false,
 });
 
 /* Font diet (iPhone OOM round 2, 2026-09-01): only the cuts CSS actually
@@ -43,6 +45,9 @@ const aeonik = localFont({
   ],
   variable: "--font-aeonik",
   display: "swap",
+  // Landing v3's first screen uses Fono + Condensed. Keep every Aeonik
+  // weight available for other routes without competing with those faces.
+  preload: false,
 });
 
 const aeonikFono = localFont({

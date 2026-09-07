@@ -20,7 +20,7 @@ function SignalRow({ label, children }: { label: string; children: React.ReactNo
       <span className="lp-f1-toggle">
         <i className="lp-f1-knob" />
       </span>
-      <img className="lp-f1-chev" src="/lp/lp-f1-chevron.svg" alt="" width={13} height={13} />
+      <img className="lp-f1-chev" src="/lp/lp-f1-chevron.svg" alt="" width={13} height={13} loading="lazy" decoding="async" />
     </div>
   );
 }
@@ -34,6 +34,8 @@ function DocTile({ tone, blue }: { tone: "pink" | "blue" | "cream"; blue?: boole
         alt=""
         width={19}
         height={19}
+        loading="lazy"
+        decoding="async"
       />
     </span>
   );
@@ -46,7 +48,7 @@ function RoleRow({ label, checked }: { label: string; checked: boolean }) {
         /* the empty outline under the check reads "unchecked" until its check lands */
         <span className="lp-f1-checkwrap">
           <span className="lp-f1-checkbox-off" />
-          <img className="lp-f1-checkimg" src="/lp/lp-f1-checkbox.svg" alt="" width={19} height={19} />
+          <img className="lp-f1-checkimg" src="/lp/lp-f1-checkbox.svg" alt="" width={19} height={19} loading="lazy" decoding="async" />
         </span>
       ) : (
         <span className="lp-f1-checkbox-off" />
@@ -74,7 +76,7 @@ function F1Stage() {
           </div>
           <SignalRow label="Keyword mentions">
             <DocTile tone="pink" />
-            <img className="lp-f1-avatar" src="/lp/lp-f1-avatar-purple.svg" alt="" width={38} height={38} />
+            <img className="lp-f1-avatar" src="/lp/lp-f1-avatar-purple.svg" alt="" width={38} height={38} loading="lazy" decoding="async" />
           </SignalRow>
           <SignalRow label="Competitor engagement">
             <span className="lp-f1-tile lp-f1-tile--amber">
@@ -89,7 +91,7 @@ function F1Stage() {
             </span>
           </SignalRow>
           <SignalRow label="Industry expert engagement">
-            <img className="lp-f1-icon32" src="/lp/lp-f1-avatar-green.svg" alt="" width={32} height={32} />
+            <img className="lp-f1-icon32" src="/lp/lp-f1-avatar-green.svg" alt="" width={32} height={32} loading="lazy" decoding="async" />
           </SignalRow>
           <SignalRow label="Companies hiring">
             <DocTile tone="blue" blue />
@@ -120,7 +122,7 @@ function F1Stage() {
         {/* Figma's annotation (asset 75.63×42.85 at left −48, rotated −13.36°: its painted
             box begins 52px left of the instance) — lands after the selections complete */}
         <div className="lp-f1-sticker">
-          <img className="lp-f1-sticker-bg" src="/lp/lp-f1-annotation.svg" alt="" width={76} height={43} />
+          <img className="lp-f1-sticker-bg" src="/lp/lp-f1-annotation.svg" alt="" width={76} height={43} loading="lazy" decoding="async" />
           <p className="lp-f1-sticker-text">clay alternatives</p>
         </div>
       </div>
@@ -152,7 +154,7 @@ function F2Stage() {
             xmlns="http://www.w3.org/2000/svg"
             dangerouslySetInnerHTML={{ __html: F2_POST_ICONS }}
           />
-          <img className="lp-f2-avatar" src="/lp/lp-f2-avatar-sarah.jpg" alt="" width={43} height={43} />
+          <img className="lp-f2-avatar" src="/lp/lp-f2-avatar-sarah.jpg" alt="" width={43} height={43} loading="lazy" decoding="async" />
           <div className="lp-f2-meta">
             <p className="lp-f2-name">
               Sarah Velasquez<span className="lp-f2-degree">• 1st</span>
@@ -229,7 +231,7 @@ function F3Stage() {
   return (
     <div className="lp-feat-stage lp-feat-stage--f3" aria-hidden="true">
       <div className="lp-feat-f3">
-        <img className="lp-f3-chatgpt" src="/lp/lp-f3-logo-chatgpt.svg" alt="" width={141} height={141} />
+        <img className="lp-f3-chatgpt" src="/lp/lp-f3-logo-chatgpt.svg" alt="" width={141} height={141} loading="lazy" decoding="async" />
         <div className="lp-f3-card">
           <div className="lp-f3-bubble">
             <p>best studio for a SaaS launch video in Stockholm</p>
@@ -263,8 +265,8 @@ function F3Stage() {
             <p className="lp-f3-ask">Ask Chat</p>
           </div>
         </div>
-        <img className="lp-f3-gemini" src="/lp/lp-f3-logo-gemini.svg" alt="" width={241} height={241} />
-        <img className="lp-f3-claude" src="/lp/lp-f3-logo-claude.svg" alt="" width={109} height={109} />
+        <img className="lp-f3-gemini" src="/lp/lp-f3-logo-gemini.svg" alt="" width={241} height={241} loading="lazy" decoding="async" />
+        <img className="lp-f3-claude" src="/lp/lp-f3-logo-claude.svg" alt="" width={109} height={109} loading="lazy" decoding="async" />
       </div>
       {/* Gemini sparkles: 4-point stars in the star's own colours (stage coordinates), gone by 8.5 s */}
       <Spark left={479} top={131} size={14} fill="#FABC12" />
@@ -284,7 +286,7 @@ function F4Stage() {
         <div className="lp-f4-card lp-f4-hair lp-f4-graph">
           <div className="lp-f4-stat">
             <span className="lp-f4-pct">+56%</span>
-            <img className="lp-f4-arrow" src="/lp/lp-f4-arrow.svg" alt="" width={17} height={17} />
+            <img className="lp-f4-arrow" src="/lp/lp-f4-arrow.svg" alt="" width={17} height={17} loading="lazy" decoding="async" />
           </div>
           <p className="lp-f4-vs">reply rate vs last period</p>
           <div className="lp-f4-bars">
