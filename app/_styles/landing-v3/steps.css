@@ -264,13 +264,33 @@
      media card to its text card's height (426 exactly on the desktop
      artboard), and the composition's canvas IS the card cream, so the
      extra height reads as margin above and below the picture — like the
-     illustrations' contain-fit did — never as a crop */
-  top: calc(50% - 213px * var(--lp-fit, tan(atan2(100cqw, 464px))));
-  transform: scale(var(--lp-fit, tan(atan2(100cqw, 464px))));
+     illustrations' contain-fit did — never as a crop. Above 1360 the card
+     is the fixed 464 box, so the pre-hydration fallback is exactly 1 and the
+     server-rendered poster shows at once. */
+  top: calc(50% - 213px * var(--lp-fit, 1));
+  transform: scale(var(--lp-fit, 1));
   transform-origin: 0 0;
   user-select: none;
   -webkit-user-select: none;
   width: 464px;
+}
+/* ≤1360 the card is fluid, and iOS WebKit mis-resolves container units inside
+   trig (iPhone 17 Pro / iOS 18.7 simulator, 2026-09-07: tan(atan2(100cqw,
+   464px)) came out 1.196 for a 372px card instead of 0.802 — the LpFitVars
+   diagnosis again), so the poster would paint blown up for the hydration
+   interval. Until LpStepAnim has measured the card (data-lp-fit, set by its
+   ResizeObserver in the same frame it writes --lp-fit) the stage stays
+   hidden = the blank cream the video's poster area was before it loaded; the
+   trig quotient remains the value fallback for engines that get it right. */
+@media (max-width: 1360px) {
+  .lp-step-stage {
+    top: calc(50% - 213px * var(--lp-fit, tan(atan2(100cqw, 464px))));
+    transform: scale(var(--lp-fit, tan(atan2(100cqw, 464px))));
+    visibility: hidden;
+  }
+  .lp-steps__media[data-lp-fit] .lp-step-stage {
+    visibility: visible;
+  }
 }
 /* the kit's `* { font-family }` (style.css) outranks inheritance — every
    mock element states its face; the per-element rules below override */

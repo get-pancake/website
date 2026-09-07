@@ -27,10 +27,13 @@ import { buildStepTimeline, type StepVariant } from "./lp-step-timelines";
  *   stands ("static").
  *
  * Geometry: the stage is the 464×426 media card at design size and scales as
- * pixels with the card (--lp-fit = card width / 464, via ResizeObserver; CSS
- * trig fallback pre-hydration — the LpFitVars recipe, since iOS mis-resolves
- * container units inside trig). Text therefore never rewraps at any width:
- * the mock lays out exactly like the desktop render, always.
+ * pixels with the card (--lp-fit = card width / 464, via ResizeObserver).
+ * Above 1360 the card is the fixed 464 box (fallback 1, the poster shows
+ * from the server render); below, the stage waits for the measurement
+ * (data-lp-fit) because iOS WebKit mis-resolves the CSS trig fallback (the
+ * LpFitVars diagnosis) and would paint the poster blown up until then. Text
+ * never rewraps at any width: the mock lays out exactly like the desktop
+ * render, always.
  */
 export function LpStepAnim({
   variant,
@@ -56,6 +59,9 @@ export function LpStepAnim({
         const width = box ? box.inlineSize : entry.contentRect.width;
         if (!(width > 0)) continue;
         host.style.setProperty("--lp-fit", String(width / 464));
+        // measured: the fluid-width stage may show (steps.css ≤1360 — iOS
+        // mis-resolves the CSS fallback, so the poster waits for this value)
+        host.dataset.lpFit = "";
       }
     });
     ro.observe(host);
@@ -140,6 +146,7 @@ export function LpStepAnim({
       const w = window as unknown as { __lpStep?: Record<string, gsap.core.Timeline> };
       if (w.__lpStep) delete w.__lpStep[variant];
       delete host.dataset.lpAnim;
+      delete host.dataset.lpFit;
       host.style.removeProperty("--lp-fit");
     };
   }, [variant]);
