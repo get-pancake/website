@@ -114,18 +114,20 @@
   height: 100%;
   width: 100%;
 }
-.lp-sheet-note {
+/* `.lp .lp-sheet-note` (0,2,0): outranks foundation's `.lp p { margin: 0 }`
+   (0,1,1), which otherwise zeroes the note's margins. */
+.lp .lp-sheet-note {
   color: var(--lp-ink-tr-70);
   font-size: 13px;
   margin-top: 12px;
   text-align: center;
 }
-.lp-sheet-note a {
+.lp .lp-sheet-note a {
   color: var(--lp-text);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.lp-sheet-note.is-loud {
+.lp .lp-sheet-note.is-loud {
   color: var(--lp-text);
   font-weight: 500;
 }
@@ -148,7 +150,7 @@
     max-width: none;
     padding: var(--spacing-xl) 0 max(var(--spacing-md), env(safe-area-inset-bottom));
   }
-  .lp-sheet-note {
+  .lp .lp-sheet-note {
     margin-inline: var(--spacing-xl);
   }
   .lp-cal-wrap {
