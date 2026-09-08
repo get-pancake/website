@@ -22,6 +22,10 @@
   background: var(--lp-card-cream);
   border-radius: 28px;
   box-shadow: 0 24px 60px color-mix(in srgb, var(--lp-text) 22%, transparent);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 2 * var(--spacing-xxl));
+  height: calc(100dvh - 2 * var(--spacing-xxl));
   max-width: 984px;
   padding: 28px 16px 16px;
   position: relative;
@@ -72,15 +76,13 @@
   padding: 0 12px 14px;
 }
 
-/* Calendly's routing form + booking page lay themselves out responsively
-   inside the frame. The wrap takes the viewport height minus the sheet
-   chrome (title + note + paddings ≈ 200px), capped at Calendly's comfortable
-   desktop height; below that, Calendly scrolls inside the frame. */
+/* Reserve only the actual title, footer and padding; let Calendly use the
+   remaining viewport instead of subtracting a fixed 200px allowance. */
 .lp-cal-wrap {
   background: var(--lp-page-bg);
   border-radius: 18px;
-  height: calc(100vh - 200px); /* svh fallback pair */
-  height: min(700px, calc(100svh - 200px));
+  flex: 1;
+  min-height: 0;
   margin-inline: auto;
   overflow: hidden;
   overflow: clip; /* no scroll container behind the clip */
@@ -120,15 +122,20 @@
     border-radius: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh; /* svh fallback pair */
-    height: 100svh;
+    height: 100vh; /* dvh fallback pair */
+    height: 100dvh;
     max-width: none;
-    padding: 20px 16px 14px;
+    padding: var(--spacing-xl) 0 max(var(--spacing-md), env(safe-area-inset-bottom));
   }
   .lp-call-title {
     padding-right: 48px; /* clear the close button */
+    padding-left: var(--spacing-xl);
+  }
+  .lp-sheet-note {
+    margin-inline: var(--spacing-xl);
   }
   .lp-cal-wrap {
+    border-radius: 0;
     flex: 1;
     height: auto;
     min-height: 0;
