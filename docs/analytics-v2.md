@@ -7,7 +7,7 @@ This is the operational source of truth for tracking on the Pancake v2 landing p
 - Join the waitlist.
 - Book a call.
 
-A new waitlist record is the only primary conversion that can be measured today. A booked meeting will become a primary conversion only after a signed Zcal webhook proves that the booking genuinely exists. Opening the scheduler, loading it, or clicking its fallback link is not a booked conversion.
+A new waitlist record is the only primary conversion that can be measured today. A booked meeting will become a primary conversion only after a signed Calendly webhook proves that the booking genuinely exists. Opening the scheduler, loading it, or clicking its fallback link is not a booked conversion.
 
 As of this document:
 
@@ -16,8 +16,7 @@ As of this document:
 - The code is **not deployed to production** by this runbook.
 - Post-commit preview QA ran against `https://pancake-b4bpstlq1-getpancake.vercel.app`, deployment `dpl_GfK6T5qvwH2AnFT93LDtKAkwjLVJ`. The landing waitlist, fresh-session duplicate behavior, report-gate isolation, and scheduler loading passed; the exact Airtable QA rows were deleted afterward.
 - Final code commit `f01b43e` has a separate ready preview at `https://pancake-br2gcjti5-getpancake.vercel.app`, deployment `dpl_G5X39Sf9P7iqsE3KtHszY8eYN2wP`. Its production build and landing-page smoke load passed; no additional external waitlist row or booking was created from this final preview.
-- Pancake now owns Meta dataset/pixel `1427782115875153`. Its Traffic Permissions allow `getpancake.ai` and `zcal.co`, including their subdomains. Meta Lead tracking nevertheless remains paused because creating a new dataset-scoped CAPI token is blocked on Business Portfolio admin or developer access.
-- In Pancake **TEAM** settings—not personal Account settings—Zcal now shows GA4 `G-6KWBYRZSDX` and Meta Pixel `1427782115875153` connected. The connection state is UI-verified; actual booking-event delivery still requires a controlled booking and GA/Meta realtime validation.
+- Pancake now owns Meta dataset/pixel `1427782115875153`. Its Traffic Permissions allow `getpancake.ai`, including their subdomains. Meta Lead tracking nevertheless remains paused because creating a new dataset-scoped CAPI token is blocked on Business Portfolio admin or developer access.
 - The five Airtable analytics-delivery fields have been created and verified in Airtable. Deployment still requires a stable `ANALYTICS_EVENT_ID_SECRET`; without it, the waitlist API intentionally returns 503 before writing a lead.
 - Production `AIRTABLE_TOKEN` was changed in place from Vercel's **Needs Attention** / non-sensitive state to **Sensitive**, without changing its value. Vercel now shows **Sensitive / Production**; the setting was updated on August 17, 2026, and no redeploy was triggered. Because the unchanged credential was previously readable, later rotation is still recommended.
 - Reddit Business Manager `Pancake` now has website `https://getpancake.ai`, confirmed by the UI success toast. A dedicated Pancake ad account/pixel is still pending; the support session ended at a satisfaction survey without a visible ticket/reference or a newly provisioned account.
@@ -104,14 +103,14 @@ Approved waitlist CTA IDs are:
 
 ### Scheduler events
 
-All scheduler events use `scheduler_id=d3zd-2yc-x2s` — the Calendly qualification/routing form that replaced the Zcal scheduler `ZEHl48rv` on 2026-09-07 (Calendly asks two required questions and routes to the right demo event itself; the site never books a direct event link because that would bypass qualification). Events recorded before 2026-09-07 carry the old `scheduler_id=ZEHl48rv`.
+All scheduler events use `scheduler_id=d3zd-2yc-x2s` — the Calendly qualification/routing form. Two required questions route each visitor to the correct meeting type; direct event links would bypass qualification.
 
 | Event | Tier | Exact firing rule | Event-specific fields |
 | --- | --- | --- | --- |
 | `scheduler_opened` | Micro | The embedded scheduler modal opens | `presentation=embed`, `cta_id` |
 | `scheduler_loaded` | Micro | The Calendly iframe reports that it loaded | `presentation=embed`, `cta_id` |
 | `scheduler_fallback_clicked` | Micro | The visitor clicks the fallback link to the Calendly form | `cta_id` |
-| `meeting_booked` | **Future primary** | A verified and replay-safe signed scheduler webhook proves a completed booking | Contract to be finalized from the real webhook payload; never emitted by the browser alone. The Zcal-webhook plan predates the Calendly migration — rebuild it on Calendly webhooks |
+| `meeting_booked` | **Future primary** | A verified and replay-safe signed scheduler webhook proves a completed booking | Contract to be finalized from the real webhook payload; never emitted by the browser alone. Calendly webhook implementation and activation are tracked in PAN-808 |
 
 Approved scheduler CTA IDs are:
 
@@ -151,12 +150,12 @@ Delivery timestamps are deliberately omitted from every upsert, so a concurrent/
 | GTM server container | GTM / existing server endpoint | Container `255385456`; public ID `GTM-PRNN2DZS`; workspace `7` has 1 unpublished modification; GA transport endpoint `https://gtm.getpancake.ai` |
 | Google Analytics 4 | Two unpublished GTM drafts | Measurement ID `G-6KWBYRZSDX`; the web and server drafts together are configured to forward the explicit page view and all v2 acquisition events after production deployment and coordinated publication; `lead_submitted` key-event designation remains pending GA Editor access |
 | PostHog | Website code | EU Cloud project `Pancake-v1`, project ID `170554`; direct sanitized capture through `e.getpancake.ai` |
-| Meta | Base pixel in website code; browser Lead mapping in GTM; server Lead delivery inside the verified waitlist API; Zcal native booking integration | Pancake-owned website dataset/pixel `1427782115875153`; Traffic Permissions allow `getpancake.ai` and `zcal.co` plus subdomains; Pancake ad account `538746742816593`; direct initial `PageView` remains; browser and CAPI waitlist `Lead` must share the same opaque `event_id` |
+| Meta | Base pixel in website code; browser Lead mapping in GTM; server Lead delivery inside the verified waitlist API | Pancake-owned website dataset/pixel `1427782115875153`; Traffic Permissions allow `getpancake.ai` plus subdomains; Pancake ad account `538746742816593`; direct initial `PageView` remains; browser and CAPI waitlist `Lead` must share the same opaque `event_id` |
 | LinkedIn | GTM only | Ad account `545060035`; company page `104917696`; partner ID `9238938`; event-specific waitlist conversion `29569610` named `v2_waitlist_lead_submitted` |
 | X Ads | GTM only | Ads account `18ce55v07al`; profile `@getpancake_ai`; website source `rehvg`; Lead event `rehvk`, full event ID `tw-rehvg-rehvk` |
 | Reddit | Tracking disabled until Pancake has a dedicated account and pixel | Business Manager `Pancake`, Business ID `53c537e5-7d98-4d2d-b641-1375882f0935`, now has website `https://getpancake.ai`, verified by a UI success toast; it still exposes only `BasaltAI Main Ad Account` and its paused pixel `a2_hvwir7k3hfy1`, which are not approved for Pancake tracking |
 | Google Ads | Existing Pancake account; no v2 GTM conversion tag yet | Authoritative customer ID `606-248-5603`; administrator access verified; historical campaigns and conversion goals exist, and all observed campaigns are paused. Audit and reuse the existing account before adding any v2 measurement. Unused duplicate shell `339-764-4166` is not approved for use |
-| Zcal | Embedded scheduler, completed TEAM-level GA4/Meta native configuration, and preserved existing team webhook | Scheduler `ZEHl48rv`; GA4 `G-6KWBYRZSDX` connected; Meta Pixel `1427782115875153` connected; native booking event is configured as `zcal_invite_schedule_event`; actual delivery remains pending a controlled booking and GA/Meta realtime access |
+| Calendly | Qualification form embed; signed backend booking integration | Routing form `d3zd-2yc-x2s`; conversion delivery requires activation and verification of the backend webhook, tracked in PAN-808. |
 
 Steady-state ownership is deliberate:
 
@@ -304,7 +303,7 @@ Once GA access exists:
 Keep the Meta waitlist tag paused until every item below is true:
 
 1. The canonical Pancake Website dataset/pixel `1427782115875153` is selected everywhere.
-2. Meta dataset Traffic Permissions continue to allow both `getpancake.ai` and `zcal.co`, including their subdomains, so Pancake landing traffic and the authorized Zcal booking integration are accepted while unrelated domains remain blocked.
+2. Meta dataset Traffic Permissions allow `getpancake.ai` and its subdomains. Retire the old scheduler domain permission with its native tracking settings during the backend cutover.
 3. Business Portfolio admin or developer access has been granted, and a **new** CAPI token has been generated specifically for the owned Pancake dataset. Do not reuse a token from an old or unrelated dataset.
 4. Production `META_PIXEL_ID` is explicitly configured to the same ID used by the browser bootstrap, the new token is installed securely, and `META_CAPI_LEAD_MATCHING_ENABLED=true` is intentionally set.
 5. Meta Test Events shows one browser `Lead` and one server `Lead` with the same stable `lead.<64 lowercase hex characters>` event ID.
@@ -331,10 +330,9 @@ Use GTM Preview / Tag Assistant against a non-production deployment first. Produ
 | Honeypot submission | Pretend-success response with `newly_created=false` | No primary `lead_submitted` is intended | No paid conversion is intended |
 | New unique email | One Airtable row, one HMAC-derived opaque `lead.<64 lowercase hex characters>` ID, one submission UUID, delivery timestamps only after success, and one `lead_submitted` | The web and server GA drafts are configured to forward the event after both are published, but GA4 key-event designation is pending Editor access; production PostHog code is configured to capture it | LinkedIn `29569610` and X `tw-rehvg-rehvk` are configured to fire after production deployment and web GTM publication; Meta browser Lead and CAPI remain off until their gates pass; Reddit tracking is disabled; Google Ads is not configured |
 | Open scheduler | One `scheduler_opened` | The web and server GA drafts plus production PostHog code are configured for the micro event | No paid conversion is intended |
-| Zcal loads | One `scheduler_loaded` | The web and server GA drafts plus production PostHog code are configured for the micro event | No paid conversion is intended |
-| Click Zcal fallback | One `scheduler_fallback_clicked` | The web and server GA drafts plus production PostHog code are configured for the micro event | No paid conversion is intended |
-| Controlled booking through the connected Zcal invite | No landing-browser `meeting_booked`; Zcal is separately configured to emit native `zcal_invite_schedule_event` | Validate actual delivery in GA4 Realtime/DebugView | Validate the separate native event in Meta Events Manager/Test Events; no delivery has been verified because no controlled booking was made and realtime access is pending |
-| Complete a booking after canonical webhook launch | One signature-verified, idempotent `meeting_booked` from the confirmed webhook path | Configure and then validate the canonical key event | Configure and validate one deduplicated cross-vendor conversion per explicitly enabled vendor; the native Zcal signal does not replace this canonical contract |
+| Calendly form loads | One `scheduler_loaded` | The web and server GA drafts plus production PostHog code are configured for the micro event | No paid conversion is intended |
+| Click Calendly fallback | One `scheduler_fallback_clicked` | The web and server GA drafts plus production PostHog code are configured for the micro event | No paid conversion is intended |
+| Complete a booking after canonical webhook launch | One signature-verified, idempotent `meeting_booked` from the confirmed webhook path | Configure and then validate the canonical key event | Configure and validate one deduplicated cross-vendor conversion per explicitly enabled vendor |
 | Privacy inspection | No email, free text, secret, arbitrary query, or full external referrer in event payloads | Sanitized URLs only | Only approved fields and attribution identifiers |
 
 A controlled new-lead test writes a real Airtable row and can notify Slack. Agree on the test address and record-handling plan before running it.
@@ -355,8 +353,7 @@ The following behavior was directly verified:
 - Airtable contained exactly one matching `landing-v2` row. Its analytics event ID matched `lead.<64 lowercase hexadecimal characters>` and its submission ID was a valid UUID. `Slack Delivered At` was blank because `SLACK_WAITLIST_WEBHOOK_URL` was not configured in preview, so Slack delivery was **not tested**. `Meta CAPI Delivered At` was blank because Meta server delivery was preview-gated, as intended.
 - The exact waitlist QA row was deleted after verification.
 - The `/ai-gtm-report` email-gate contract passed and remained outside the advertising-delivery ledger. Its exact Airtable QA row was also deleted.
-- The Zcal scheduler iframe and available slots loaded without browser errors.
-- No controlled booking was made, so `zcal_invite_schedule_event`, native GA4/Meta booking delivery, and the preserved webhook's booked-event behavior remain untested.
+- The scheduler iframe and available slots loaded without browser errors.
 - The final code preview completed its Vercel production build and loaded the landing page successfully. The only code change after the full funnel QA was Airtable environment-value normalization, which is covered by the focused 6/6 test suite; no second external submission was created solely to retest that guard.
 
 The web GTM workspace was checked directly in its UI: its 28 draft modifications, tag settings, triggers, 17 mapped variables, vendor IDs, and paused Meta state matched the configuration documented above. The later direct server-container audit found the legacy trigger gap described above and produced the single unpublished server-workspace fix. Neither container's live event flow has yet been certified through Tag Assistant and GA4.
@@ -367,7 +364,7 @@ Tag Assistant's popup could not establish its live preview connection inside Cod
 
 ### Meta
 
-The Pancake Website dataset/pixel `1427782115875153` is owned by Pancake. Its Traffic Permissions now allow `getpancake.ai` and `zcal.co`, including their subdomains; this change was made to support the connected Zcal native Meta integration without opening the dataset to unrelated sites. Browser ownership is no longer the blocker. CAPI remains blocked because generating the required new dataset-scoped token needs Business Portfolio admin or developer access. Keep server delivery disabled and the GTM Meta Lead tag paused until that role exists, a new token has been created, and every activation gate above passes.
+The Pancake Website dataset/pixel `1427782115875153` is owned by Pancake. CAPI token generation still requires the appropriate Business Portfolio role. Keep server delivery disabled and the GTM Meta Lead tag paused until a new token exists and the activation gates pass.
 
 ### Reddit
 
@@ -381,7 +378,7 @@ Google Ads administrator access is verified for the authoritative existing Panca
 
 The separate customer `339-764-4166` is an unused duplicate shell mistakenly started while access to `606-248-5603` was unavailable. It has no approved role in the Pancake setup. No campaign, billing method, budget, conversion action, or spend was introduced there by this migration. Do not use or delete it without an explicit cleanup decision.
 
-This migration has not yet added a Google Ads GTM tag, v2 waitlist conversion, GA4 link, campaign, billing method, budget, or spend. Any future waitlist conversion must target `606-248-5603` and fire only for the confirmed primary `lead_submitted` event. Create a booked-meeting conversion only after the signed Zcal webhook exists; scheduler opens, loads, and clicks are not conversions.
+This migration has not yet added a Google Ads GTM tag, v2 waitlist conversion, GA4 link, campaign, billing method, budget, or spend. Any future waitlist conversion must target `606-248-5603` and fire only for the confirmed primary `lead_submitted` event. Create a booked-meeting conversion only after the signed Calendly webhook exists; scheduler opens, loads, and clicks are not conversions.
 
 ### Google Analytics
 
@@ -389,15 +386,13 @@ The current Google login does not show the property for `G-6KWBYRZSDX`. Editor a
 
 The website and GTM design is intentionally manual for Next.js SPA page views. Per Google's SPA guidance, the GA4 web stream's Enhanced Measurement option for page changes based on browser-history events must be disabled to prevent duplicate virtual page views. This setting cannot be certified until the property is accessible.
 
-### Zcal
+### Calendly
 
-The Zcal team already has an active webhook at `https://hooks.getpancake.ai/integrations/zcal/webhook`; Zcal showed it as last used four days before this review. It remains preserved: do not replace, disable, or repoint it until its owner, signature validation, payload handling, and downstream behavior have been confirmed.
+Every booking CTA opens the published qualification form `https://calendly.com/d/d3zd-2yc-x2s`. Its two required questions route all ten answer combinations to group demo, discovery, enterprise discovery or product feedback. Cancellation feedback has a separate direct link.
 
-The native integration settings are completed and UI-verified in Pancake **TEAM** settings, not Account settings: GA4 `G-6KWBYRZSDX` is connected and Meta Pixel `1427782115875153` is connected. Both are configured around the native booking event `zcal_invite_schedule_event`. This event is separate from the landing scheduler open/load/click micro events, and its actual delivery has not yet been verified.
+The signed webhook implementation lives in `get-pancake/pancake-cmo`, tracked in PAN-808 and PR #793. Only verified booking creation for sales meeting types counts as a conversion. Feedback, rescheduling and cancellation never count as new sales bookings. Production conversion delivery remains unverified until the signing key, subscription and release are activated and checked.
 
-Connection status is complete, but conversion-event delivery is not yet certified. Run one controlled booking, then verify whether exactly one `zcal_invite_schedule_event` appears in GA4 Realtime/DebugView and the corresponding event appears in Meta Events Manager/Test Events. This validation remains blocked until the controlled booking and the required GA/Meta realtime access are available.
-
-The canonical cross-vendor `meeting_booked` contract still requires confirmation that the preserved webhook verifies the official signature, enforces timestamp and replay protection, and stores an idempotency key. Its real payload must also be inspected to design an opaque way to correlate the booking with the originating attribution/session without placing personal data in the browser event layer. The separately configured native `zcal_invite_schedule_event` does not replace or certify this canonical webhook contract.
+Retirement order: verify Calendly ingestion and downstream delivery, disable the retired provider's webhook/native analytics settings, then deploy removal of its old receiver and apply infrastructure teardown. Website clicks and iframe loads remain micro-events.
 
 ### Airtable delivery durability
 

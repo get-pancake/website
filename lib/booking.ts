@@ -4,7 +4,6 @@
  * combination to the right event type inside Calendly. Every "Book a demo"
  * CTA must use THIS form URL: direct event links would bypass qualification
  * (Calendly setup 2026-09-07, all 10 routing combinations preview-tested).
- * The zcal scheduler (ZEHl48rv) it replaces is retired.
  */
 export const DEMO_BOOKING_URL = "https://calendly.com/d/d3zd-2yc-x2s";
 

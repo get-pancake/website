@@ -1918,8 +1918,7 @@ body.menu-open:has(main.lv2) {
 }
 
 /* Calendly's routing form + booking page lay themselves out responsively
-   inside the frame (unlike the fixed zcal card this replaced, which needed a
-   scale-to-fit pass). The wrap takes the viewport height minus the sheet
+   inside the frame. The wrap takes the viewport height minus the sheet
    chrome (title + note + paddings ≈ 200px), capped at Calendly's comfortable
    desktop height; below that, Calendly scrolls inside the frame. */
 .lv2-cal-wrap {
