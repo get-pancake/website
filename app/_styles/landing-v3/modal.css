@@ -1,7 +1,9 @@
 /* ── Landing v3 · Booking dialog (Calendly qualification form) ────────────────
    Port of landing-v2's .lv2-scrim/.lv2-sheet booking dialog onto the lp
    tokens — same geometry and behavior (LpModals.tsx), cream sheet, plum
-   scrim. The frame hosts the Calendly routing form (lib/booking.ts). */
+   scrim. The frame hosts the Calendly routing form (lib/booking.ts), skinned
+   with the sheet's own colors so it reads as part of the sheet, not a widget
+   dropped into it (2026-09-07 review: box-in-a-box-in-a-box, Calendly blue). */
 
 .lp-scrim {
   background: color-mix(in srgb, var(--lp-text) 55%, transparent);
@@ -17,19 +19,24 @@
   display: grid;
   place-items: center;
 }
+/* Wide enough that the frame (sheet minus its side padding) clears
+   Calendly's two-column breakpoint (lib/booking.ts CALENDLY_TWO_COLUMN_MIN,
+   1000px) with room for an in-frame scrollbar: 1056 - 32 = 1024px. */
 .lp-sheet {
   animation: lp-sheet-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
   background: var(--lp-card-cream);
   border-radius: 28px;
   box-shadow: 0 24px 60px color-mix(in srgb, var(--lp-text) 22%, transparent);
-  display: flex;
-  flex-direction: column;
-  height: calc(100vh - 2 * var(--spacing-xxl));
-  height: calc(100dvh - 2 * var(--spacing-xxl));
-  max-width: 984px;
-  padding: 28px 16px 16px;
+  max-width: 1056px;
+  padding: 24px 16px 16px;
   position: relative;
   width: 100%;
+}
+/* The sheet takes focus on open (tabIndex -1) — a container, not a control,
+   so no ring; the Close button keeps its own :focus-visible ring. */
+.lp-sheet:focus,
+.lp-sheet:focus-visible {
+  outline: none;
 }
 @keyframes lp-sheet-in {
   from {
@@ -66,6 +73,8 @@
   outline: 2px solid var(--lp-purple-30);
   outline-offset: 2px;
 }
+/* Centered over Calendly's centered card; the side padding clears the Close
+   button symmetrically. */
 .lp-call-title {
   font-family: var(--lp-font-fono);
   font-size: 28px;
@@ -73,20 +82,30 @@
   letter-spacing: -0.02em;
   line-height: 1.05;
   margin: 0;
-  padding: 0 12px 14px;
+  padding: 0 44px 16px;
+  text-align: center;
 }
 
-/* Reserve only the actual title, footer and padding; let Calendly use the
-   remaining viewport instead of subtracting a fixed 200px allowance. */
+/* The frame wrap is transparent: Calendly's page background is transparent
+   in an Inline embed and its card takes the sheet's cream (LpModals passes
+   the sheet's computed colors + --cal-primary to lib/booking.ts), so the
+   only box inside the sheet is Calendly's own card.
+
+   Height follows Calendly: it posts its page height to the parent
+   (calendly.page_height) and LpModals writes it to --cal-h — short frame for
+   the two-question form, taller for the calendar — capped at the viewport,
+   below which Calendly scrolls inside the frame. Before the first report,
+   about the routing form's height. */
 .lp-cal-wrap {
-  background: var(--lp-page-bg);
-  border-radius: 18px;
-  flex: 1;
-  min-height: 0;
+  --cal-primary: var(--lp-inverted-surface); /* Calendly's buttons + selected dates = the site's plum pill */
+  height: var(--cal-h, min(640px, calc(100vh - 190px)));
   margin-inline: auto;
+  max-height: calc(100vh - 190px);
+  min-height: 320px;
   overflow: hidden;
   overflow: clip; /* no scroll container behind the clip */
   overscroll-behavior: contain;
+  transition: height 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   width: 100%;
 }
 .lp-cal-frame {
@@ -95,25 +114,29 @@
   height: 100%;
   width: 100%;
 }
-.lp-sheet-note {
+/* `.lp .lp-sheet-note` (0,2,0): outranks foundation's `.lp p { margin: 0 }`
+   (0,1,1), which otherwise zeroes the note's margins. */
+.lp .lp-sheet-note {
   color: var(--lp-ink-tr-70);
   font-size: 13px;
   margin-top: 12px;
   text-align: center;
 }
-.lp-sheet-note a {
+.lp .lp-sheet-note a {
   color: var(--lp-text);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.lp-sheet-note.is-loud {
+.lp .lp-sheet-note.is-loud {
   color: var(--lp-text);
   font-weight: 500;
 }
 
 /* Phones: full-height takeover (v2 mobile QA 2026-08-26 — a fixed-height
    frame overflowed an 812px viewport; pinned to the viewport, Calendly's
-   tall layout scrolls inside the frame instead). */
+   tall layout scrolls inside the frame instead). The frame fills the sheet
+   edge to edge regardless of what Calendly reports; the bottom padding
+   clears the home indicator (#287). */
 @media (max-width: 599px) {
   .lp-scrim {
     padding: 0;
@@ -127,19 +150,25 @@
     max-width: none;
     padding: var(--spacing-xl) 0 max(var(--spacing-md), env(safe-area-inset-bottom));
   }
-  .lp-call-title {
-    padding-right: 48px; /* clear the close button */
-    padding-left: var(--spacing-xl);
-  }
-  .lp-sheet-note {
+  .lp .lp-sheet-note {
     margin-inline: var(--spacing-xl);
   }
   .lp-cal-wrap {
-    border-radius: 0;
     flex: 1;
     height: auto;
+    max-height: none;
     min-height: 0;
+    transition: none;
     width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-sheet {
+    animation: none;
+  }
+  .lp-cal-wrap {
+    transition: none;
   }
 }
 

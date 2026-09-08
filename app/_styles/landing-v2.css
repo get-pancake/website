@@ -1858,9 +1858,17 @@ body.menu-open:has(main.lv2) {
   box-shadow: 0 24px 60px color-mix(in srgb, var(--palette-chrome-100) 22%, transparent);
   animation: lv2-sheet-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
+/* Wide enough that the frame (sheet minus side padding) clears Calendly's
+   two-column breakpoint (lib/booking.ts CALENDLY_TWO_COLUMN_MIN, 1000px)
+   with room for an in-frame scrollbar: 66rem - 2rem = 1024px. */
 .lv2-sheet.is-wide {
-  max-width: 61.5rem;
-  padding: 1.75rem 1rem 1rem;
+  max-width: 66rem;
+  padding: 1.5rem 1rem 1rem;
+}
+/* The sheet takes focus on open (tabIndex -1) — a container, not a control. */
+.lv2-sheet:focus,
+.lv2-sheet:focus-visible {
+  outline: none;
 }
 @keyframes lv2-sheet-in {
   from {
@@ -1913,23 +1921,31 @@ body.menu-open:has(main.lv2) {
   letter-spacing: -0.02em;
   margin-bottom: 0.5rem;
 }
+/* Centered over Calendly's centered card; side padding clears the Close button. */
 .lv2-call-title {
-  padding: 0 0.75rem 0.9rem;
+  padding: 0 2.75rem 1rem;
+  text-align: center;
 }
 
-/* Calendly's routing form + booking page lay themselves out responsively
-   inside the frame. The wrap takes the viewport height minus the sheet
-   chrome (title + note + paddings ≈ 200px), capped at Calendly's comfortable
-   desktop height; below that, Calendly scrolls inside the frame. */
+/* The frame wrap is transparent: Calendly's page background is transparent
+   in an Inline embed and its card takes the sheet's own colors (LandingModals
+   passes the sheet's computed colors + --cal-primary to lib/booking.ts), so
+   the only box inside the sheet is Calendly's card.
+
+   Height follows Calendly: it posts its page height to the parent
+   (calendly.page_height) and LandingModals writes it to --cal-h — short for
+   the two-question form, taller for the calendar — capped at the viewport,
+   below which Calendly scrolls inside the frame. */
 .lv2-cal-wrap {
+  --cal-primary: var(--text); /* Calendly's buttons + selected dates = the site's dark pill */
   overflow: hidden;
   overflow: clip; /* no scroll container behind the clip */
-  border-radius: 18px;
-  background: var(--surface);
   margin-inline: auto;
   overscroll-behavior: contain;
-  height: calc(100vh - 200px); /* svh fallback pair */
-  height: min(700px, calc(100svh - 200px));
+  height: var(--cal-h, min(640px, calc(100vh - 190px)));
+  max-height: calc(100vh - 190px);
+  min-height: 320px;
+  transition: height 0.28s cubic-bezier(0.22, 1, 0.36, 1);
   width: 100%;
 }
 .lv2-cal-frame {
@@ -1978,7 +1994,9 @@ body.menu-open:has(main.lv2) {
   .lv2-sheet.is-wide .lv2-cal-wrap {
     flex: 1;
     height: auto;
+    max-height: none;
     min-height: 0;
+    transition: none;
     width: 100%;
   }
 }
@@ -2002,6 +2020,9 @@ body.menu-open:has(main.lv2) {
   }
   .lv2-sheet {
     animation: none;
+  }
+  .lv2-cal-wrap {
+    transition: none;
   }
 }
 
