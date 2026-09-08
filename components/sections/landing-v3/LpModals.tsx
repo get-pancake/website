@@ -9,8 +9,7 @@ import { DEMO_BOOKING_URL, DEMO_SCHEDULER_ID, demoBookingEmbedUrl } from "@/lib/
  * The booking dialog — the Calendly qualification form sheet (lp-skinned,
  * modal.css). The form asks two required questions and routes to the right
  * demo event inside Calendly; Calendly owns the questions and the routing,
- * the site only opens the form (lib/booking.ts). Behavior contract unchanged
- * from the zcal-era dialog: one instance mounts at page level; any element
+ * the site only opens the form (lib/booking.ts). Dialog behavior: one instance mounts at page level; any element
  * anywhere on the page opens it via `data-lv2-open="call"` (document-level
  * click listener, so server components can be triggers; the attribute name is
  * kept as the site-wide trigger contract). Triggers may carry the booking URL
@@ -122,8 +121,7 @@ export function LpModals() {
 
   // If the frame is blocked (third-party storage, extension, strict privacy
   // mode) the fallback link is the way through — surface it after a beat.
-  // Calendly sizes itself inside the frame, so unlike the zcal card there is
-  // no fit/scale pass here; modal.css gives the wrap its responsive height.
+  // Calendly sizes itself inside the frame; modal.css sets the responsive height.
   useEffect(() => {
     if (!open) return;
     const t = setTimeout(() => {

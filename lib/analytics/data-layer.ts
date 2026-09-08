@@ -78,7 +78,7 @@ type LeadFormContext = {
 };
 
 type SchedulerContext = {
-  /** The Calendly routing form (replaced zcal ZEHl48rv on 2026-09-07). */
+  /** The Calendly routing form. */
   scheduler_id: "d3zd-2yc-x2s";
   cta_id: CallCtaId;
 };

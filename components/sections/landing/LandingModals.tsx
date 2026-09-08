@@ -128,9 +128,7 @@ export function LandingModals() {
 
   // If the frame is blocked (third-party storage, extension, strict privacy
   // mode) the fallback link is the way through — surface it after a beat.
-  // Calendly sizes itself inside the frame, so unlike the zcal card this
-  // replaced there is no fit/scale pass; landing-v2.css gives the wrap its
-  // responsive height.
+  // Calendly sizes itself inside the frame; landing-v2.css sets its responsive height.
   useEffect(() => {
     if (!open) return;
     const t = setTimeout(() => {
