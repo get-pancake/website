@@ -16,8 +16,9 @@ export const useAudience = () => useContext(AudienceContext);
 // The agent is the reader, named outright: the line says what IT gets, not
 // what it gives its human (founder 2026-09-07: "on comprend pas que c'est
 // l'agent qui devient meilleur" — the previous "give your human gtm
-// superpowers" made the human the one who improved; "@agent" is his wording).
-const agentHeadline = "@agent get gtm superpowers";
+// superpowers" made the human the one who improved). Plural + comma per
+// François 2026-09-08: "@agents, get gtm superpowers".
+const agentHeadline = "@agents, get gtm superpowers";
 // Typing bursts: each word types at a steady pace and every space is a short
 // pause, the last glyph landing at the end of --lp-type-duration — derived
 // from the string, so a copy change keeps the terminal rhythm. Each

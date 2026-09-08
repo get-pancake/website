@@ -35,7 +35,7 @@ export function LpAgentStart() {
 
   return <div className="lp-agent-start" role="group" aria-label="Set up Pancake">
     <div className="lp-agent-friends">
-      <span>friend with</span>
+      <span>friends with</span>
       <ul aria-label="Agent logos">
         <li title="Claude Code"><SiClaude role="img" aria-label="Claude Code" focusable="false" /></li>
         <li title="Codex"><SiOpenai role="img" aria-label="Codex" focusable="false" /></li>
