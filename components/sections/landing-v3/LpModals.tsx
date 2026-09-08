@@ -3,13 +3,22 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { isCallCtaId, pushAcquisitionEvent } from "@/lib/analytics/data-layer";
-import { DEMO_BOOKING_URL, DEMO_SCHEDULER_ID, demoBookingEmbedUrl } from "@/lib/booking";
+import {
+  CALENDLY_MIN_PAGE_HEIGHT,
+  CALENDLY_ORIGIN,
+  CALENDLY_TWO_COLUMN_MIN,
+  DEMO_BOOKING_URL,
+  DEMO_SCHEDULER_ID,
+  calendlyPageHeight,
+  demoBookingEmbedUrl,
+} from "@/lib/booking";
 
 /**
  * The booking dialog — the Calendly qualification form sheet (lp-skinned,
  * modal.css). The form asks two required questions and routes to the right
  * demo event inside Calendly; Calendly owns the questions and the routing,
- * the site only opens the form (lib/booking.ts). Dialog behavior: one instance mounts at page level; any element
+ * the site only opens the form (lib/booking.ts). Dialog behavior: one instance
+ * mounts at page level; any element
  * anywhere on the page opens it via `data-lv2-open="call"` (document-level
  * click listener, so server components can be triggers; the attribute name is
  * kept as the site-wide trigger contract). Triggers may carry the booking URL
@@ -21,10 +30,14 @@ import { DEMO_BOOKING_URL, DEMO_SCHEDULER_ID, demoBookingEmbedUrl } from "@/lib/
 export function LpModals() {
   const [open, setOpen] = useState(false);
   const [calLoud, setCalLoud] = useState(false);
+  /** The frame URL — built after open, from the sheet's computed colors + width. */
+  const [frameSrc, setFrameSrc] = useState<string | null>(null);
   /** Mirror of open for the stable open() callback (re-entry guard). */
   const openRef = useRef(false);
   const lastFocus = useRef<Element | null>(null);
   const callRef = useRef<HTMLDivElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
+  const calWrapRef = useRef<HTMLDivElement>(null);
   const calFrameRef = useRef<HTMLIFrameElement>(null);
   const activeCtaIdRef = useRef<string | null>(null);
   const frameLoadedRef = useRef(false);
@@ -33,6 +46,7 @@ export function LpModals() {
   const close = useCallback(() => {
     openRef.current = false;
     setOpen(false);
+    setFrameSrc(null);
     setCalLoud(false);
     document.body.classList.remove("modal-open");
     if (lastFocus.current instanceof HTMLElement) lastFocus.current.focus();
@@ -87,8 +101,9 @@ export function LpModals() {
     if (!open) return;
     const scrim = callRef.current;
     if (!scrim) return;
-    const first = scrim.querySelector<HTMLElement>("[data-lv2-close]");
-    requestAnimationFrame(() => first?.focus());
+    // Focus lands on the sheet itself (tabIndex -1), not on Close: a focus
+    // ring on the ✕ the instant the dialog opens reads as a glitch.
+    requestAnimationFrame(() => sheetRef.current?.focus());
 
     const focusables = () =>
       Array.from(
@@ -119,9 +134,53 @@ export function LpModals() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open, close]);
 
+  // The frame's URL is built once the sheet is on screen. The embed takes the
+  // sheet's own colors (computed CSS — the design tokens stay the single
+  // source; lib/booking.ts turns them into Calendly's hex params) and goes
+  // compact (event details hidden, calendar first) when the frame is narrower
+  // than Calendly's two-column booking layout.
+  useEffect(() => {
+    if (!open) return;
+    const sheet = sheetRef.current;
+    const wrap = calWrapRef.current;
+    const sheetStyle = sheet ? getComputedStyle(sheet) : null;
+    setFrameSrc(
+      demoBookingEmbedUrl({
+        compact: (wrap?.clientWidth ?? 0) < CALENDLY_TWO_COLUMN_MIN,
+        colors: {
+          background: sheetStyle?.backgroundColor,
+          text: sheetStyle?.color,
+          primary: wrap ? getComputedStyle(wrap).getPropertyValue("--cal-primary") : null,
+        },
+      }),
+    );
+  }, [open]);
+
+  // Calendly posts its page height to the parent (Inline embed contract); the
+  // wrap follows it (--cal-h), so the two-question form gets a short frame and
+  // the calendar a tall one — no fixed band of empty space, no inner scroll
+  // while the page fits. The stylesheet caps the height at the viewport.
+  useEffect(() => {
+    if (!open) return;
+    const wrap = calWrapRef.current;
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin !== CALENDLY_ORIGIN) return;
+      if (e.source !== calFrameRef.current?.contentWindow) return;
+      const height = calendlyPageHeight(e.data);
+      // Calendly reports its loading spinner too (~26px); only a real page
+      // resizes the frame — the stylesheet's initial height holds until then.
+      if (height === null || height < CALENDLY_MIN_PAGE_HEIGHT || !wrap) return;
+      wrap.style.setProperty("--cal-h", `${height}px`);
+    };
+    window.addEventListener("message", onMessage);
+    return () => {
+      window.removeEventListener("message", onMessage);
+      wrap?.style.removeProperty("--cal-h");
+    };
+  }, [open]);
+
   // If the frame is blocked (third-party storage, extension, strict privacy
   // mode) the fallback link is the way through — surface it after a beat.
-  // Calendly sizes itself inside the frame; modal.css sets the responsive height.
   useEffect(() => {
     if (!open) return;
     const t = setTimeout(() => {
@@ -144,7 +203,14 @@ export function LpModals() {
         if (e.target === e.currentTarget) close();
       }}
     >
-      <div className="lp-sheet" role="dialog" aria-modal="true" aria-labelledby="lp-call-title">
+      <div
+        ref={sheetRef}
+        className="lp-sheet"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="lp-call-title"
+        tabIndex={-1}
+      >
         <button
           type="button"
           className="lp-sheet-close"
@@ -157,16 +223,16 @@ export function LpModals() {
         <h3 id="lp-call-title" className="lp-call-title">
           Book a demo
         </h3>
-        <div className="lp-cal-wrap">
+        <div ref={calWrapRef} className="lp-cal-wrap">
           {/* the Calendly iframe exists only while the dialog is open */}
-          {open && (
+          {open && frameSrc && (
             <iframe
               ref={calFrameRef}
               className="lp-cal-frame"
               title="Book a demo with Pancake"
               allow="clipboard-write; camera; microphone"
               referrerPolicy="no-referrer-when-downgrade"
-              src={demoBookingEmbedUrl()}
+              src={frameSrc}
               onLoad={() => {
                 frameLoadedRef.current = true;
                 if (schedulerLoadedRef.current) return;
@@ -182,8 +248,10 @@ export function LpModals() {
             />
           )}
         </div>
+        {/* No routing explainer here (founder 2026-09-07: the form speaks for
+            itself) — the note is only the blocked-frame escape hatch. */}
         <p className={`lp-sheet-note${calLoud ? " is-loud" : ""}`}>
-          Two quick questions route you to the right demo, then pick your slot. Form not loading?{" "}
+          Form not loading?{" "}
           <a
             href={DEMO_BOOKING_URL}
             target="_blank"
