@@ -1,8 +1,7 @@
-/* ── Landing v3 · Booking dialog (zcal sheet) ─────────────────────────────────
+/* ── Landing v3 · Booking dialog (Calendly qualification form) ────────────────
    Port of landing-v2's .lv2-scrim/.lv2-sheet booking dialog onto the lp
    tokens — same geometry and behavior (LpModals.tsx), cream sheet, plum
-   scrim. The zcal fit/native sizing contract is verbatim from v2 (the
-   component sets --zs and toggles .is-fit/.is-native). */
+   scrim. The frame hosts the Calendly routing form (lib/booking.ts). */
 
 .lp-scrim {
   background: color-mix(in srgb, var(--lp-text) 55%, transparent);
@@ -73,39 +72,26 @@
   padding: 0 12px 14px;
 }
 
-/* zcal renders its widget card at a fixed 950x610 inside the frame, offset
-   37px from the left and 80px from the top. FIT MODE holds the frame at
-   1024px and scales the whole card to the room available; NATIVE MODE hands
-   back to zcal's own tall scrollable layout below the readable floor. */
-.lp-zcal-wrap {
+/* Calendly's routing form + booking page lay themselves out responsively
+   inside the frame (unlike the fixed zcal card this replaced, which needed a
+   scale-to-fit pass). The wrap takes the viewport height minus the sheet
+   chrome (title + note + paddings ≈ 200px), capped at Calendly's comfortable
+   desktop height; below that, Calendly scrolls inside the frame. */
+.lp-cal-wrap {
   background: var(--lp-page-bg);
   border-radius: 18px;
+  height: calc(100vh - 200px); /* svh fallback pair */
+  height: min(700px, calc(100svh - 200px));
   margin-inline: auto;
   overflow: hidden;
   overflow: clip; /* no scroll container behind the clip */
   overscroll-behavior: contain;
-}
-.lp-zcal-frame {
-  border: 0;
-  display: block;
-}
-.lp-zcal-wrap.is-fit {
-  height: calc(610px * var(--zs, 1));
-  width: calc(950px * var(--zs, 1));
-}
-.lp-zcal-wrap.is-fit .lp-zcal-frame {
-  height: 690px;
-  transform: scale(var(--zs, 1)) translate(-37px, -80px);
-  transform-origin: top left;
-  width: 1024px;
-}
-.lp-zcal-wrap.is-native {
-  height: 780px;
   width: 100%;
 }
-.lp-zcal-wrap.is-native .lp-zcal-frame {
+.lp-cal-frame {
+  border: 0;
+  display: block;
   height: 100%;
-  margin-top: 0;
   width: 100%;
 }
 .lp-sheet-note {
@@ -124,9 +110,9 @@
   font-weight: 500;
 }
 
-/* Phones: full-height takeover (v2 mobile QA 2026-08-26 — the fixed 780px
-   native fallback overflowed an 812px viewport; pinned to the viewport,
-   zcal's tall layout scrolls inside the frame instead). */
+/* Phones: full-height takeover (v2 mobile QA 2026-08-26 — a fixed-height
+   frame overflowed an 812px viewport; pinned to the viewport, Calendly's
+   tall layout scrolls inside the frame instead). */
 @media (max-width: 599px) {
   .lp-scrim {
     padding: 0;
@@ -143,16 +129,11 @@
   .lp-call-title {
     padding-right: 48px; /* clear the close button */
   }
-  .lp-zcal-wrap {
+  .lp-cal-wrap {
     flex: 1;
+    height: auto;
     min-height: 0;
     width: 100%;
-  }
-  .lp-zcal-wrap.is-native {
-    height: auto;
-  }
-  .lp-zcal-frame {
-    height: 100%;
   }
 }
 

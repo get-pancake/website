@@ -9,6 +9,8 @@
  * has four links; don't drop it to match Figma.
  */
 
+import { DEMO_BOOKING_URL } from "@/lib/booking";
+
 type FootLink = { label: string; href: string; external?: boolean };
 
 const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
@@ -28,7 +30,7 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       { label: "About", href: "/#why" },
       { label: "Careers", href: "/careers" },
       { label: "Affiliate program", href: "https://partners.dub.co/pancake-ai", external: true },
-      { label: "Book a demo", href: "https://zcal.co/i/ZEHl48rv", external: true },
+      { label: "Book a demo", href: DEMO_BOOKING_URL, external: true },
       { label: "Contact", href: "mailto:hey@pancake.ai" },
     ],
   },

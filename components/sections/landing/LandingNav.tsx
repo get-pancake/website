@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { DEMO_BOOKING_URL } from "@/lib/booking";
+
 import { FxPillLink } from "./FxPill";
 import { LandingNavMenu } from "./LandingNavMenu";
 import { NAV_LINKS } from "./nav-links";
@@ -10,7 +12,7 @@ import { NAV_LINKS } from "./nav-links";
  * 768px, where the bar pins to the top and a menu button opens the plum
  * sheet carrying the same map (mobile QA 2026-08-26 — the footer alone was
  * the only navigation on a ~13-viewport page). "Book a call" is a real link
- * to zcal with a data-lv2-open="call" upgrade: pages that mount LandingModals
+ * to the Calendly form with a data-lv2-open="call" upgrade: pages that mount LandingModals
  * intercept it into the booking dialog, everywhere else it just navigates.
  */
 
@@ -43,7 +45,7 @@ export function LandingNav() {
           </FxPillLink>
           <FxPillLink
             variant="outline"
-            href="https://zcal.co/i/ZEHl48rv"
+            href={DEMO_BOOKING_URL}
             target="_blank"
             rel="noopener noreferrer"
             className="lv2-nav-call"

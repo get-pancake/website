@@ -104,14 +104,14 @@ Approved waitlist CTA IDs are:
 
 ### Scheduler events
 
-All scheduler events use `scheduler_id=ZEHl48rv`.
+All scheduler events use `scheduler_id=d3zd-2yc-x2s` — the Calendly qualification/routing form that replaced the Zcal scheduler `ZEHl48rv` on 2026-09-07 (Calendly asks two required questions and routes to the right demo event itself; the site never books a direct event link because that would bypass qualification). Events recorded before 2026-09-07 carry the old `scheduler_id=ZEHl48rv`.
 
 | Event | Tier | Exact firing rule | Event-specific fields |
 | --- | --- | --- | --- |
 | `scheduler_opened` | Micro | The embedded scheduler modal opens | `presentation=embed`, `cta_id` |
-| `scheduler_loaded` | Micro | The Zcal iframe reports that it loaded | `presentation=embed`, `cta_id` |
-| `scheduler_fallback_clicked` | Micro | The visitor clicks the fallback link to Zcal | `cta_id` |
-| `meeting_booked` | **Future primary** | A verified and replay-safe signed Zcal webhook proves a completed booking | Contract to be finalized from the real webhook payload; never emitted by the browser alone |
+| `scheduler_loaded` | Micro | The Calendly iframe reports that it loaded | `presentation=embed`, `cta_id` |
+| `scheduler_fallback_clicked` | Micro | The visitor clicks the fallback link to the Calendly form | `cta_id` |
+| `meeting_booked` | **Future primary** | A verified and replay-safe signed scheduler webhook proves a completed booking | Contract to be finalized from the real webhook payload; never emitted by the browser alone. The Zcal-webhook plan predates the Calendly migration — rebuild it on Calendly webhooks |
 
 Approved scheduler CTA IDs are:
 

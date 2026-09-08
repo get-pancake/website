@@ -1917,40 +1917,27 @@ body.menu-open:has(main.lv2) {
   padding: 0 0.75rem 0.9rem;
 }
 
-/* zcal renders its widget card at a fixed 950x610 inside the frame, offset
-   37px from the left and 80px from the top. FIT MODE holds the frame at
-   1024px and scales the whole card to the room available; NATIVE MODE hands
-   back to zcal's own tall scrollable layout below the readable floor. */
-.lv2-zcal-wrap {
+/* Calendly's routing form + booking page lay themselves out responsively
+   inside the frame (unlike the fixed zcal card this replaced, which needed a
+   scale-to-fit pass). The wrap takes the viewport height minus the sheet
+   chrome (title + note + paddings ≈ 200px), capped at Calendly's comfortable
+   desktop height; below that, Calendly scrolls inside the frame. */
+.lv2-cal-wrap {
   overflow: hidden;
   overflow: clip; /* no scroll container behind the clip */
   border-radius: 18px;
   background: var(--surface);
   margin-inline: auto;
   overscroll-behavior: contain;
+  height: calc(100vh - 200px); /* svh fallback pair */
+  height: min(700px, calc(100svh - 200px));
+  width: 100%;
 }
-.lv2-zcal-frame {
+.lv2-cal-frame {
   border: 0;
   display: block;
-}
-.lv2-zcal-wrap.is-fit {
-  width: calc(950px * var(--zs, 1));
-  height: calc(610px * var(--zs, 1));
-}
-.lv2-zcal-wrap.is-fit .lv2-zcal-frame {
-  width: 1024px;
-  height: 690px;
-  transform-origin: top left;
-  transform: scale(var(--zs, 1)) translate(-37px, -80px);
-}
-.lv2-zcal-wrap.is-native {
-  width: 100%;
-  height: 780px;
-}
-.lv2-zcal-wrap.is-native .lv2-zcal-frame {
-  width: 100%;
   height: 100%;
-  margin-top: 0;
+  width: 100%;
 }
 .lv2-sheet-note {
   font-size: 0.8125rem;
@@ -1969,10 +1956,10 @@ body.menu-open:has(main.lv2) {
 }
 
 /* Phones: the booking sheet becomes a full-height takeover (mobile QA
-   2026-08-26) — the fixed 780px native fallback overflowed an 812px
-   viewport, pushing the "Calendar not loading?" hatch below the fold and
-   scrolling the Close button away behind a nested-scroll trap. Pinned to
-   the viewport, zcal's tall layout scrolls inside the frame instead. */
+   2026-08-26) — a fixed-height frame overflowed an 812px viewport, pushing
+   the "not loading?" hatch below the fold and scrolling the Close button
+   away behind a nested-scroll trap. Pinned to the viewport, Calendly's tall
+   layout scrolls inside the frame instead. */
 @media (max-width: 599px) {
   .lv2-scrim {
     padding: 0;
@@ -1989,16 +1976,11 @@ body.menu-open:has(main.lv2) {
   .lv2-sheet.is-wide .lv2-call-title {
     padding-right: 3rem; /* clear the close button */
   }
-  .lv2-sheet.is-wide .lv2-zcal-wrap {
+  .lv2-sheet.is-wide .lv2-cal-wrap {
     flex: 1;
+    height: auto;
     min-height: 0;
     width: 100%;
-  }
-  .lv2-sheet.is-wide .lv2-zcal-wrap.is-native {
-    height: auto;
-  }
-  .lv2-sheet.is-wide .lv2-zcal-frame {
-    height: 100%;
   }
 }
 

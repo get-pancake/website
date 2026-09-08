@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
+import { DEMO_BOOKING_URL } from "@/lib/booking";
 
 /**
  * Mobile nav menu — burger + plum sheet behind the ≤767px bar (Figma mobile
@@ -14,8 +15,8 @@ import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
  * body.menu-open (same :has(main.lp) scoping as the modal lock).
  * The bar's "Get started" pill moves in here on mobile and keeps its
  * allow-listed app_nav id; "Book a call" rides the site-wide
- * data-lv2-open="call" trigger with the zcal URL as href fallback — on
- * /careers (no LpModals mounted) it degrades to a plain new-tab link.
+ * data-lv2-open="call" trigger with the Calendly form URL as href fallback —
+ * on /careers (no LpModals mounted) it degrades to a plain new-tab link.
  */
 export function LpNavMenu() {
   const [open, setOpen] = useState(false);
@@ -148,10 +149,10 @@ export function LpNavMenu() {
           </LpFxLink>
           {/* target/rel mirror the site-wide trigger contract: LpModals'
               document listener preventDefaults this into the dialog on pages
-              that mount it; on /careers it opens zcal in a new tab instead of
-              navigating the site away. */}
+              that mount it; on /careers it opens the Calendly form in a new
+              tab instead of navigating the site away. */}
           <LpFxLink
-            href="https://zcal.co/i/ZEHl48rv"
+            href={DEMO_BOOKING_URL}
             className="lp-btn--outline lp-btn--demo lp-nav-menu-call"
             target="_blank"
             rel="noopener noreferrer"

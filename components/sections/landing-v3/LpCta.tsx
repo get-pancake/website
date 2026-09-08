@@ -43,7 +43,7 @@ export function LpCta() {
             <LpFxLink href="https://app.getpancake.ai" data-analytics-id="app_final">
               Start free
             </LpFxLink>
-            {/* opens the zcal booking sheet (LpModals) via the data-lv2-open
+            {/* opens the Calendly booking sheet (LpModals) via the data-lv2-open
                 contract; scheduler analytics fire in the modal off call_final.
                 Tinted skin — same as the hero's Book a demo (founder
                 2026-09-01: "bouton book a call différent que dans hero");
