@@ -21,12 +21,16 @@
    z-index 30: above sections, under the menu sheet (40) / call dialog (50). */
 @media (max-width: 767px) {
   .lp-nav {
+    --lp-nav-expanded-height: 104px;
+    --lp-nav-compact-height: 64px;
     position: sticky;
     top: 0;
+    margin-bottom: 0;
     transition:
       background-color 0.25s ease,
       box-shadow 0.25s ease,
       height 0.25s ease,
+      margin-bottom 0.25s ease,
       padding 0.25s ease;
     z-index: 30;
   }
@@ -35,7 +39,10 @@
     box-shadow:
       0 1px 0 rgba(44, 0, 42, 0.08),
       0 -120px 0 rgba(251, 246, 241, 0.96);
-    height: 64px;
+    height: var(--lp-nav-compact-height);
+    /* Keep the original flow space throughout the height transition, so
+       compacting the sticky bar never pulls the content underneath up. */
+    margin-bottom: calc(var(--lp-nav-expanded-height) - var(--lp-nav-compact-height));
     padding-top: 0;
   }
   .lp-nav-logo {
@@ -111,7 +118,7 @@
     box-sizing: border-box;
     display: flex;
     gap: 12px;
-    height: 104px;
+    height: var(--lp-nav-expanded-height);
     justify-content: flex-start;
     padding: 16px 18.38px 0 32px;
   }
