@@ -13,9 +13,11 @@ export const DEMO_SCHEDULER_ID = "d3zd-2yc-x2s" as const;
 /**
  * The URL the booking dialogs iframe. `embed_domain`/`embed_type` are
  * Calendly's own embed contract (enables its in-frame sizing + postMessage);
- * call only from the browser (the dialogs render the frame after a click).
+ * Hide the event header so the routed calendar is visible without scrolling.
+ * Calendly carries this setting from the routing form to the selected event.
+ * Call only from the browser (the dialogs render the frame after a click).
  */
 export function demoBookingEmbedUrl() {
   const domain = typeof window === "undefined" ? "getpancake.ai" : window.location.hostname;
-  return `${DEMO_BOOKING_URL}?embed_domain=${encodeURIComponent(domain)}&embed_type=Inline&hide_gdpr_banner=1`;
+  return `${DEMO_BOOKING_URL}?embed_domain=${encodeURIComponent(domain)}&embed_type=Inline&hide_gdpr_banner=1&hide_event_type_details=1`;
 }
