@@ -2,6 +2,8 @@ import Link from "next/link";
 import { FaDiscord, FaInstagram, FaLinkedin, FaTiktok } from "react-icons/fa6";
 import { SiX, SiYoutube } from "react-icons/si";
 
+import { DEMO_BOOKING_URL } from "@/lib/booking";
+
 import { PancakeLogo } from "./PancakeLogo";
 
 const socials = [
@@ -42,7 +44,9 @@ const columns: { title: string; links: FooterLink[] }[] = [
     links: [
       { href: "/blog", label: "Blog" },
       { href: "/careers", label: "Careers" },
-      { href: "https://zcal.co/i/4mlnC2bQ", label: "Book a meeting" },
+      // The qualification form, not a direct event link — direct links skip
+      // the routing questions (lib/booking.ts).
+      { href: DEMO_BOOKING_URL, label: "Book a meeting" },
       { href: "https://discord.gg/brJ99Up6ym", label: "Discord" },
     ],
   },

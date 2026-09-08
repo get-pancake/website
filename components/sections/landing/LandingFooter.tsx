@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { DEMO_BOOKING_URL } from "@/lib/booking";
+
 /**
  * Landing footer — rime.ai-style plum band: link columns on the left, the
  * vector wordmark beside them on the right (painted via CSS mask so it stays
@@ -35,7 +37,7 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
       { href: "/careers", label: "Careers" },
       { href: "/blog", label: "Blog" },
       { href: "https://partners.dub.co/pancake-ai", label: "Affiliate program", external: true },
-      { href: "https://zcal.co/i/ZEHl48rv", label: "Book a demo", external: true },
+      { href: DEMO_BOOKING_URL, label: "Book a demo", external: true },
       { href: "mailto:hey@pancake.ai", label: "Contact" },
       { href: "/support", label: "Support" },
     ],

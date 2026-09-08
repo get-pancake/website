@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { DEMO_BOOKING_URL } from "@/lib/booking";
+
 import { NAV_LINKS } from "./nav-links";
 
 /**
@@ -134,7 +136,7 @@ export function LandingNavMenu() {
               navigating the site away; the dialog's preventDefault suppresses
               it everywhere else. */}
           <a
-            href="https://zcal.co/i/ZEHl48rv"
+            href={DEMO_BOOKING_URL}
             target="_blank"
             rel="noopener noreferrer"
             data-lv2-open="call"

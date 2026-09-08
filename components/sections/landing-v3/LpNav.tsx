@@ -1,6 +1,7 @@
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNavMenu } from "@/components/sections/landing-v3/LpNavMenu";
 import { LpNavScroll } from "@/components/sections/landing-v3/LpNavScroll";
+import { DEMO_BOOKING_URL } from "@/lib/booking";
 
 /**
  * Landing v3 — Nav (Figma node 4257:4894, 1654×120).
@@ -32,11 +33,12 @@ export function LpNav() {
           Start free
         </LpFxLink>
         {/* Same trigger contract as the sheet's pill: LpModals' document
-            listener turns the zcal href into the dialog on pages that mount
-            it; elsewhere it opens zcal in a new tab. Hidden ≤767 (nav.css) —
-            the bar has room for one pill, the sheet carries both. */}
+            listener turns the booking href into the dialog on pages that
+            mount it; elsewhere it opens the Calendly form in a new tab.
+            Hidden ≤767 (nav.css) — the bar has room for one pill, the sheet
+            carries both. */}
         <LpFxLink
-          href="https://zcal.co/i/ZEHl48rv"
+          href={DEMO_BOOKING_URL}
           size="sm"
           className="lp-btn--tinted lp-btn--demo"
           target="_blank"

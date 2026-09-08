@@ -78,7 +78,8 @@ type LeadFormContext = {
 };
 
 type SchedulerContext = {
-  scheduler_id: "ZEHl48rv";
+  /** The Calendly routing form (replaced zcal ZEHl48rv on 2026-09-07). */
+  scheduler_id: "d3zd-2yc-x2s";
   cta_id: CallCtaId;
 };
 
@@ -265,7 +266,7 @@ function sanitizePayload(
   if (!isCallCtaId(ctaId)) return null;
 
   const clean: Record<string, string | number> = {
-    scheduler_id: "ZEHl48rv",
+    scheduler_id: "d3zd-2yc-x2s",
     cta_id: ctaId,
   };
   if (eventName === "scheduler_opened" || eventName === "scheduler_loaded") {
