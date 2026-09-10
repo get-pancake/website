@@ -3,10 +3,8 @@
 import { gsap } from "@/lib/gsap";
 
 import {
-  S1_ADV,
   S1_HUBS,
   S1_JIT,
-  S1_TOTAL,
   S2_HEADER_DY,
   S2_ITEMS,
   S2_PROC,
@@ -14,6 +12,30 @@ import {
   S3_DAY_W,
   S3_NUM_DX,
 } from "./lp-step-data";
+
+/** right edge of every glyph of `el`'s text, in the element's own unscaled px
+    (the stage is scaled by --lp-fit) — measured at build, so the typing follows
+    whatever face the mock renders in */
+function measureRightEdges(el: HTMLElement): number[] {
+  const box = el.getBoundingClientRect();
+  const s = el.offsetWidth ? box.width / el.offsetWidth : 1;
+  const edges: number[] = [];
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  let node: Node | null;
+  while ((node = walker.nextNode())) {
+    const text = (node as Text).data;
+    let i = 0;
+    for (const ch of text) {
+      const range = document.createRange();
+      range.setStart(node, i);
+      range.setEnd(node, i + ch.length);
+      const r = range.getBoundingClientRect();
+      i += ch.length;
+      edges.push(r.width === 0 && edges.length ? edges[edges.length - 1] : (r.right - box.left) / s);
+    }
+  }
+  return edges;
+}
 
 /**
  * The three "Pancake fills your pipeline" step animations as GSAP timelines —
@@ -120,7 +142,13 @@ function buildS1(root: HTMLElement): BuiltStep {
   gsap.set(cursor, { x: 130, y: 120, opacity: 0, transformOrigin: "26% 12%" });
   gsap.set(btn, { transformOrigin: "50% 50%" });
 
-  const CLIP0 = "inset(0 " + S1_TOTAL + "px 0 0)";
+  /* the typed URL's glyph edges, measured from the live text (Range rects in
+     the element's own unscaled px, like lp-feat-timelines' measureGlyphs): a
+     Fono advance table used to drive this and desynced the clip and the caret
+     the moment the mocks moved to Geist Sans (review 2026-09-09) */
+  const typedEdges = measureRightEdges(typed);
+  const typedWidth = typedEdges[typedEdges.length - 1] ?? 0;
+  const CLIP0 = "inset(0 100% 0 0)";
 
   const tl = gsap.timeline({ paused: true });
 
@@ -139,11 +167,9 @@ function buildS1(root: HTMLElement): BuiltStep {
 
   /* — 2 · typing "studio-pelican.com" (0.55 – ~1.45 s; 45 ms a key, half the old jitter) — */
   let t = 0.55;
-  let acc = 0;
-  S1_ADV.forEach((w, i) => {
-    t += 0.045 + S1_JIT[i] / 2;
-    acc += w;
-    const right = Math.max(0, S1_TOTAL - acc);
+  typedEdges.forEach((acc, i) => {
+    t += 0.045 + (S1_JIT[i] ?? 0) / 2;
+    const right = Math.max(0, typedWidth - acc);
     tl.set(typed, { clipPath: "inset(0 " + right.toFixed(3) + "px 0 0)" }, t);
     tl.set(caret, { x: +acc.toFixed(3) }, t);
     if (i === 0) tl.set(ph, { opacity: 0 }, t);

@@ -74,9 +74,13 @@
 
 @layer semantic {
   :root {
-    /* Font stacks (Next `localFont` sets --font-aeonik / --font-aeonik-fono on <body>) */
+    /* Font stacks (Next `localFont` sets --font-aeonik / --font-aeonik-fono /
+       --font-geist-sans on <html>). Body = Geist Sans since 2026-09-09 (founder:
+       everything that isn't Aeonik reads in Geist Sans — the Fono mono was hard
+       to read at body sizes). Fono is no longer a kit token: reference
+       --font-aeonik-fono directly for code. */
     --font-display: var(--font-aeonik), system-ui, -apple-system, sans-serif;
-    --font-body: var(--font-aeonik-fono), ui-monospace, monospace;
+    --font-body: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
 
     /* Text Colors */
     --text: var(--palette-chrome-100);

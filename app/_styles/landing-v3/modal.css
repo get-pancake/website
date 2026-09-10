@@ -76,7 +76,7 @@
 /* Centered over Calendly's centered card; the side padding clears the Close
    button symmetrically. */
 .lp-call-title {
-  font-family: var(--lp-font-fono);
+  font-family: var(--lp-font-sans);
   font-size: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;

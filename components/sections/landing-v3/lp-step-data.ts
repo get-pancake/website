@@ -136,11 +136,9 @@ export function s1Graph(): { edges: S1Edge[]; dots: S1Dot[] } {
   return { edges, dots };
 }
 
-/** advance widths of "studio-pelican.com" in Aeonik Fono Regular @18px (read
-    from the OTF hmtx — the same file the site loads), their total, and the
-    per-key jitter of the typing */
-export const S1_ADV = [9.342, 8.442, 10.62, 11.394, 8.478, 11.016, 8.442, 11.394, 10.62, 8.388, 8.478, 10.35, 10.476, 10.71, 5.094, 10.35, 11.016, 14.382];
-export const S1_TOTAL = 178.992;
+/** per-key jitter of the typing of "studio-pelican.com" — its glyph edges are
+    measured from the live text in lp-step-timelines.ts (the Fono advance table
+    that used to live here broke the moment the mocks moved to Geist Sans) */
 export const S1_JIT = [0, 0.02, -0.01, 0.03, 0, -0.02, 0.04, 0, 0.01, -0.01, 0.05, 0, 0.02, -0.02, 0.03, 0, 0.01, 0];
 
 /** the market-profile rows that resolve out of the skeletons */

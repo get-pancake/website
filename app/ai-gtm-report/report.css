@@ -179,9 +179,10 @@
   color: var(--subtle-text);
 }
 
-/* Landing-v2 h1: Aeonik Fono bold, line-height 1.0, -0.02em. */
+/* Landing-v2 h1: was Aeonik Fono bold — now the kit's --font-body (Geist Sans
+   since 2026-09-09, the same move as landing-v2.css), line-height 1.0, -0.02em. */
 .rpt-hero h1 {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: var(--font-bold);
   /* Capped so "Your buyers ask AI first." (the long line) always fits the
      hero column on one line — 3.4rem wrapped it into three lines. */
@@ -229,7 +230,7 @@
 }
 
 .rpt-error-title {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: var(--font-bold);
   font-size: clamp(1.6rem, 4vw, 2.4rem);
   line-height: 1.15;
@@ -1270,7 +1271,7 @@
   inset: 0;
   display: grid;
   place-items: center;
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: var(--font-bold);
   font-size: 2rem;
   letter-spacing: -0.02em;
@@ -1380,7 +1381,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: var(--font-bold);
   font-size: 2.4rem;
   line-height: 1;

@@ -253,7 +253,7 @@
 .lp-step-stage {
   box-sizing: border-box;
   color: var(--lp-ink-100);
-  font-family: var(--lp-font-fono);
+  font-family: var(--lp-font-sans);
   font-size: 16px;
   height: 426px;
   left: 0;
@@ -296,7 +296,7 @@
    mock element states its face; the per-element rules below override */
 .lp-step-stage * {
   box-sizing: border-box;
-  font-family: var(--lp-font-fono);
+  font-family: var(--lp-font-sans);
 }
 .lp-step-stage i {
   display: block;
@@ -343,11 +343,12 @@
 .lp-s1-ph {
   color: var(--lp-ink-80);
 }
-/* the typed URL: its advance widths (lp-step-data.ts) drive the clip inset */
+/* the typed URL: hidden at rest by a full right inset; the timeline measures
+   its glyph edges (lp-step-timelines.ts) and walks the inset back — no fixed
+   width, so the box is the text in whatever face the mock renders */
 .lp-s1-typed {
-  clip-path: inset(0 178.992px 0 0);
+  clip-path: inset(0 100% 0 0);
   color: var(--lp-ink-100);
-  width: 178.992px;
 }
 .lp-s1-caret {
   background: var(--lp-ink-100);

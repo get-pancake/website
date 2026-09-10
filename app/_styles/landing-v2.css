@@ -26,9 +26,12 @@ body.modal-open:has(main.lv2) {
   overflow: hidden;
 }
 
-/* Landing speaks humanist Aeonik; the kit's global rule puts Fono (mono) on
+/* Landing speaks humanist Aeonik; the kit's global rule puts --font-body on
    every element. Blanket-flip inside the page, then hand the reused sections
-   (tweets carousel + UGC wall) their designed Fono voice back. */
+   (tweets carousel + UGC wall) the kit voice back. The accents below that used
+   to be Aeonik Fono (mono) read in the kit's --font-body — Geist Sans since
+   2026-09-09 (founder: everything that isn't Aeonik reads in Geist Sans);
+   only `code` keeps the mono. */
 .lv2,
 .lv2 * {
   font-family: var(--font-aeonik), system-ui, -apple-system, sans-serif;
@@ -362,7 +365,7 @@ body.modal-open:has(main.lv2) {
   margin-top: 1.25rem;
 }
 .lv2 .lv2-nav-menu nav a {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-size: 2rem;
   font-weight: 700;
   letter-spacing: -0.02em;
@@ -495,9 +498,11 @@ body.menu-open:has(main.lv2) {
 
 .lv2-h1 {
   position: relative;
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
-  /* Sized so the long line ("We bring you customers." = 12.2em, measured)
+  /* Sized so the long line ("We bring you customers." = 12.2em, measured in
+     Fono — Geist Sans is narrower, so the bound is conservative and the line
+     still fits)
      always fits its column: font <= available / 12.44 (metric + 2%).
      Two lines, always. Desktop available = (V - 80px gutters) - 38vw right
      column - 4vw gap = 0.58V - 80, and 0.58/12.44 = 4.66vw.
@@ -605,7 +610,7 @@ body.menu-open:has(main.lv2) {
   margin-top: 0.5rem;
 }
 .lv2-section-title {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: clamp(2rem, 3.4vw, 2.75rem);
   line-height: 1.05;
@@ -645,7 +650,7 @@ body.menu-open:has(main.lv2) {
   gap: 0.75rem;
 }
 .lv2-step-num {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: clamp(2.25rem, 3.4vw, 3rem);
   line-height: 1;
@@ -654,7 +659,7 @@ body.menu-open:has(main.lv2) {
   color: var(--palette-pink-40);
 }
 .lv2-step-title {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: clamp(1.5rem, 2.4vw, 2rem);
   line-height: 1.1;
@@ -770,13 +775,13 @@ body.menu-open:has(main.lv2) {
   border-radius: 50%;
   background: var(--elevated-surface);
   box-shadow: inset 0 0 0 2px var(--palette-pink-40);
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 0.9375rem;
   color: var(--palette-pink-40);
 }
 .lv2-dive-title {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: clamp(1.375rem, 2vw, 1.75rem);
   line-height: 1.12;
@@ -817,7 +822,7 @@ body.menu-open:has(main.lv2) {
   background: color-mix(in srgb, var(--palette-chrome-100) 12%, transparent);
 }
 .lv2-dive-panel-label {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.71875rem;
   letter-spacing: 0.08em;
@@ -854,7 +859,7 @@ body.menu-open:has(main.lv2) {
   gap: 1px;
 }
 .lv2-dive-mono {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 500;
   font-size: 0.875rem;
   overflow: hidden;
@@ -879,7 +884,7 @@ body.menu-open:has(main.lv2) {
 }
 .lv2-dive-tag {
   flex: none;
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 600;
   font-size: 0.71875rem;
   letter-spacing: 0.04em;
@@ -897,7 +902,7 @@ body.menu-open:has(main.lv2) {
 }
 .lv2-dive-fit {
   flex: none;
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 0.8125rem;
   color: var(--palette-pink-40);
@@ -931,7 +936,7 @@ body.menu-open:has(main.lv2) {
   display: grid;
   place-items: center;
   border-radius: 50%;
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 0.71875rem;
   color: var(--text);
@@ -961,7 +966,7 @@ body.menu-open:has(main.lv2) {
 }
 .lv2-dive-score {
   flex: none;
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: 0.8125rem;
 }
@@ -1089,7 +1094,7 @@ body.menu-open:has(main.lv2) {
 
 /* The headline spans the top: the claim in ink, the consequence muted. */
 .lv2-manifesto-title {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: clamp(1.75rem, 2.9vw, 2.5rem);
   line-height: 1.12;
@@ -1296,7 +1301,7 @@ body.menu-open:has(main.lv2) {
   border-radius: 999px;
   background: var(--palette-pink-20);
   color: var(--palette-chrome-100);
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 500;
   font-size: 0.9375rem;
   line-height: 1;
@@ -1498,7 +1503,7 @@ body.menu-open:has(main.lv2) {
   gap: 0.625rem;
 }
 .lv2-price-amount {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
   font-size: clamp(3rem, 5vw, 4rem);
   line-height: 1;
@@ -1558,7 +1563,7 @@ body.menu-open:has(main.lv2) {
   color: var(--palette-pink-40);
 }
 .lv2-price-value-figure {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
 }
 /* the line under the CTA (Okara's "Cancel anytime" slot) */
@@ -1637,9 +1642,10 @@ body.menu-open:has(main.lv2) {
 }
 .lv2-cta-title {
   position: relative;
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-weight: 700;
-  /* One line, no floor: "Try Pancake now" = 7.96em measured, so
+  /* One line, no floor: "Try Pancake now" = 7.96em measured in Fono (Geist
+     Sans is narrower — the bound is conservative), so
      font <= (V - gutters) / 7.96 — 12.56vw - 10.05px at the 2.5rem gutters,
      12.56vw - 5.03px at the 1.25rem mobile gutters. A fixed floor would clip
      the line on sub-360px phones (the hero formulas avoid floors too). */
@@ -1724,7 +1730,7 @@ body.menu-open:has(main.lv2) {
   gap: 1.1rem;
 }
 .lv2 .lv2-footer-eyebrow {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.12em;
@@ -1799,7 +1805,7 @@ body.menu-open:has(main.lv2) {
    `.lv2 *` blanket targets elements directly and would beat inheritance. */
 .lv2 .lv2-footer-legal,
 .lv2 .lv2-footer-legal * {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
 }
 .lv2 .lv2-footer-legal {
   display: flex;
@@ -1914,7 +1920,7 @@ body.menu-open:has(main.lv2) {
 }
 
 .lv2-sheet h3 {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-size: 1.75rem;
   font-weight: 700;
   line-height: 1.05;
@@ -2036,7 +2042,7 @@ body.menu-open:has(main.lv2) {
   padding: 0 0 3rem; /* .lv2s already provides the section's vertical rhythm */
 }
 .lv2 .lv2-legal-updated {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-size: 12px;
   font-weight: 500;
   letter-spacing: 0.1em;
@@ -2094,7 +2100,7 @@ body.menu-open:has(main.lv2) {
   text-decoration-thickness: 3px;
 }
 .lv2 .lv2-legal code {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-aeonik-fono), ui-monospace, monospace; /* code stays mono */
   font-size: 0.85em;
   background: var(--surface);
   padding: 0.15em 0.4em;
@@ -2146,7 +2152,7 @@ body.menu-open:has(main.lv2) {
   gap: 0.5rem 0;
   padding: 0;
   margin: 1.5rem 0 0;
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-size: 13px;
   letter-spacing: 0.04em;
   color: var(--subtle-text);
@@ -2285,7 +2291,7 @@ a.lv2-careers-card:hover .lv2-careers-arrow {
   line-height: 1.25;
 }
 .lv2 .lv2-careers-member-role {
-  font-family: var(--font-aeonik-fono), ui-monospace, monospace;
+  font-family: var(--font-body);
   font-size: 11px;
   font-weight: 500;
   letter-spacing: 0.08em;
