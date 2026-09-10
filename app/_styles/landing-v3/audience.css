@@ -59,6 +59,8 @@ html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation
 [data-audience="agents"] .lp-hero-col--human { visibility: hidden; }
 [data-audience="agents"] .lp-hero-col--agent { display: block; position: absolute; top: var(--lp-hero-col-top); left: var(--lp-hero-col-left); right: auto; bottom: auto; width: var(--lp-hero-col-width); height: var(--lp-hero-col-height); transform: none; }
 .lp-agent-start { position: relative; display: flex; flex-direction: column; width: 100%; color: var(--lp-text); }
+/* the kit's `* { font-family }` beats inheritance: "friends with" and the error line follow the terminal's face */
+.lp-agent-start * { font-family: var(--lp-font-fono); }
 .lp-agent-terminal { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--lp-space-3); align-items: center; padding: var(--lp-space-4); border: var(--lp-line) solid color-mix(in srgb, var(--lp-page-bg) 16%, transparent); border-radius: var(--lp-r-m); background: var(--lp-terminal-bg); }
 .lp-agent-terminal__code { display: block; font-family: var(--lp-font-fono); font-size: var(--lp-text-md); line-height: 1.6; color: var(--lp-page-bg); overflow-wrap: anywhere; text-wrap: balance; user-select: text; }
 .lp-agent-terminal__copy { display: grid; place-items: center; width: calc(var(--lp-space-12) - var(--lp-space-1)); height: calc(var(--lp-space-12) - var(--lp-space-1)); padding: 0; border: 0; border-radius: var(--lp-r-xsm); background: color-mix(in srgb, var(--lp-page-bg) 8%, transparent); color: var(--lp-ink-50); cursor: pointer; touch-action: manipulation; transition: background-color .16s ease-out, color .16s ease-out, transform .16s ease-out; }

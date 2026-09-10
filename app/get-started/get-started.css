@@ -101,7 +101,7 @@
 /* ── Isolate from the host app's global cascade ──────────────────────────────
    The artifact reuses generic class names and relies on UA defaults, but the
    app ships a universal `* { font-family: var(--font-body) }` (the site's
-   Aeonik Fono, in @layer semantic) that bleeds onto every element here. This
+   reading face, Geist Sans since 2026-09-09, in @layer semantic) that bleeds onto every element here. This
    page's stylesheet is unlayered, so it outranks any layered rule — but only
    for properties it actually sets. Inheritance alone can't win against a rule
    that directly targets each element, so assert the artifact font on the whole
