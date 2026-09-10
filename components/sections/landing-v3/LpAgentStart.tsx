@@ -4,8 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { SiClaude, SiOpenai } from "react-icons/si";
 import { CursorMark, HermesMark, OpenClawMark } from "./LpAgentMarks";
 
-// Copy the complete instruction for the agent, including its command.
-const instruction = "Run `curl -fsSL https://getpancake.ai/install.md`, then follow the instructions";
+// The instruction names the outcome and the URL, not a tool: an agent with a shell will curl it, one
+// with a fetch tool will fetch it, and a chat assistant will open it. A `curl` one-liner made
+// shell-less assistants stop at "I can't run commands" (2026-09-10). The app's Workspace › AI access
+// page (pancake-cmo, PAN-862) pins this exact sentence — change both together.
+const instruction = "Set up Pancake by reading https://getpancake.ai/install.md and following its instructions.";
 
 export function LpAgentStart() {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
