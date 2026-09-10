@@ -9,6 +9,7 @@ import { MetaPixelEvents } from "@/components/analytics/MetaPixelEvents";
 import { PostHogAttribution } from "@/components/analytics/PostHogAttribution";
 import {
   LEADJOURNEY_TRACKING_SCRIPT_URL,
+  LINKEDIN_INSIGHT_PARTNER_ID,
   META_BROWSER_PIXEL_ID,
   PANCAKE_ANALYTICS_INGEST_ORIGIN,
 } from "@/lib/analytics/vendor-config";
@@ -246,6 +247,15 @@ fbq('track', 'PageView');})();`,
         </a>
         {children}
         <AnalyticsEvents />
+        {/* LinkedIn Insight Tag — retargeting audiences. LinkedIn asks for it right above
+            the closing body tag; it rides the same production-only gate as Meta and GTM. */}
+        {productionVendorTrackingEnabled ? (
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){${productionHostnameGuard}window._linkedin_data_partner_ids=window._linkedin_data_partner_ids||[];window._linkedin_data_partner_ids.push('${LINKEDIN_INSIGHT_PARTNER_ID}');(function(l){if(!l){window.lintrk=function(a,b){window.lintrk.q.push([a,b])};window.lintrk.q=[]}var s=document.getElementsByTagName("script")[0];var b=document.createElement("script");b.type="text/javascript";b.async=true;b.src="https://snap.licdn.com/li.lms-analytics/insight.min.js";s.parentNode.insertBefore(b,s);})(window.lintrk);})();`,
+            }}
+          />
+        ) : null}
       </body>
     </html>
   );
