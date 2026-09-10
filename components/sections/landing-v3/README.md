@@ -22,7 +22,7 @@ The Figma file's variables differ from the old palette on three points, and AGEN
 
 ## Fonts
 
-All display type (hero headline, every section title, "99 USD") is **Aeonik Condensed Pro TRIAL** — upright cuts in `app/fonts/aeonik-condensed/` (CoType trial zip, downloaded 2026-08-28 at Tristan's direction), loaded in `app/layout.tsx` as `--font-aeonik-condensed` and consumed via `--lp-font-cond`. Body/labels stay Aeonik Fono; UI-mock labels use Aeonik Medium.
+All display type (hero headline, every section title, "99 USD") is **Aeonik Condensed Pro TRIAL** — upright cuts in `app/fonts/aeonik-condensed/` (CoType trial zip, downloaded 2026-08-28 at Tristan's direction), loaded in `app/layout.tsx` as `--font-aeonik-condensed` and consumed via `--lp-font-cond`. Body, labels, buttons and the mock UIs read in **Geist Sans** since 2026-09-09 (founder: everything that isn't Aeonik reads in Geist Sans — the Fono mono was hard to read at body sizes): one variable woff2 in `app/fonts/geist/`, loaded as `--font-geist-sans`, consumed via `--lp-font-sans` (and as the kit's `--font-body`). Aeonik Fono stays on code only — the agent terminal/headline/lab (`--lp-font-fono`) and blog `code`. UI-mock labels use Aeonik Medium.
 
 ⚠️ All three families are TRIAL-licensed — settle the CoType license before this ships to production.
 

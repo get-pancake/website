@@ -1,7 +1,7 @@
 /* ── Landing v3 · Blog (/blog, /blog/[slug]) ──────────────────────────────
    Subpage in the Figma design language, no artboard of its own (same footing
    as careers.css): page bg #fbf6f1 via .lp, Aeonik Condensed display
-   headings, Fono body, cream cards on the 1296 content grid, left-justified
+   headings, Geist Sans body (2026-09-09), cream cards on the 1296 content grid, left-justified
    copy (founder rule). NOT in the landing-v3.css manifest — imported by the
    two blog routes only, so the homepage bundle doesn't carry it.
 

@@ -46,7 +46,7 @@ const aeonik = localFont({
   ],
   variable: "--font-aeonik",
   display: "swap",
-  // Landing v3's first screen uses Fono + Condensed. Keep every Aeonik
+  // Landing v3's first screen uses Geist Sans + Condensed. Keep every Aeonik
   // weight available for other routes without competing with those faces.
   preload: false,
 });
@@ -61,6 +61,9 @@ const aeonikFono = localFont({
   ],
   variable: "--font-aeonik-fono",
   display: "swap",
+  // Since 2026-09-09 Fono is a code face only (agent terminal, <code>) — the
+  // reading face is Geist Sans below. No preload: five OTFs off the critical path.
+  preload: false,
 });
 
 // Display face of the landing-v3 Figma design (CoType trial, downloaded
@@ -76,6 +79,19 @@ const aeonikCondensed = localFont({
     { path: "./fonts/aeonik-condensed/AeonikCondensedProTRIAL-Black.otf", weight: "900", style: "normal" },
   ],
   variable: "--font-aeonik-condensed",
+  display: "swap",
+});
+
+// Geist Sans (Vercel, SIL OFL 1.1) — the reading face since 2026-09-09
+// (founder: everything that isn't Aeonik reads in Geist Sans; the Fono mono
+// was hard to read at body sizes). One variable woff2 — Geist 1.401, latin
+// subset, wght 100–900 — consumed as --font-body (kit) and --lp-font-sans
+// (landing v3). Fono stays for code and the agent terminal only.
+const geistSans = localFont({
+  src: "./fonts/geist/Geist-Variable-latin.woff2",
+  weight: "100 900",
+  style: "normal",
+  variable: "--font-geist-sans",
   display: "swap",
 });
 
@@ -172,7 +188,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${aeonik.variable} ${aeonikFono.variable} ${aeonikCondensed.variable} ${lato.variable}`}
+      className={`${aeonik.variable} ${aeonikFono.variable} ${aeonikCondensed.variable} ${geistSans.variable} ${lato.variable}`}
     >
       <head>
         <meta

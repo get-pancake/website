@@ -118,6 +118,10 @@
      downloaded 2026-08-28 at Tristan's direction — license to settle before
      production), loaded in app/layout.tsx as --font-aeonik-condensed. */
   --lp-font-fono: var(--font-aeonik-fono), ui-monospace, "SF Mono", monospace;
+  /* Reading face since 2026-09-09 (founder: everything that isn't Aeonik reads
+     in Geist Sans — Fono was hard to read at body sizes). Fono stays on code
+     and the agent terminal only (audience.css, agent-lab.css, blog code). */
+  --lp-font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   --lp-font-aeonik: var(--font-aeonik), system-ui, -apple-system, sans-serif;
   --lp-font-cond: var(--font-aeonik-condensed), var(--font-aeonik), system-ui, -apple-system, sans-serif;
 }
@@ -216,7 +220,7 @@ body:has(main.lp) {
      chips off-screen (simulator audit 2026-08-31) — pin it. */
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  font-family: var(--lp-font-fono);
+  font-family: var(--lp-font-sans);
   font-size: var(--lp-text-md);
   line-height: 1.5;
   overflow-x: hidden; /* legacy-engine fallback (Safari ≤15) for the clip below */
@@ -246,7 +250,7 @@ body:has(main.lp) {
   color: var(--lp-text-on-inverted);
   cursor: pointer;
   display: inline-flex;
-  font-family: var(--lp-font-fono);
+  font-family: var(--lp-font-sans);
   font-size: 16px;
   font-weight: 600;
   isolation: isolate; /* stacking context for the circle-fill FX */

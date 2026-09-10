@@ -124,7 +124,7 @@
 }
 .lp-feat-stage {
   color: var(--lp-ink-100);
-  font-family: var(--lp-font-fono);
+  font-family: var(--lp-font-sans);
   font-size: 16px;
   height: 621px;
   left: 0;
@@ -148,7 +148,7 @@
 /* the kit's `* { font-family }` (style.css) outranks inheritance — every
    mock element states its face; the per-element rules below override */
 .lp-feat-stage * {
-  font-family: var(--lp-font-fono);
+  font-family: var(--lp-font-sans);
 }
 .lp-feat-stage img,
 .lp-feat-stage svg {

@@ -253,7 +253,7 @@
 .lp-step-stage {
   box-sizing: border-box;
   color: var(--lp-ink-100);
-  font-family: var(--lp-font-fono);
+  font-family: var(--lp-font-sans);
   font-size: 16px;
   height: 426px;
   left: 0;
@@ -296,7 +296,7 @@
    mock element states its face; the per-element rules below override */
 .lp-step-stage * {
   box-sizing: border-box;
-  font-family: var(--lp-font-fono);
+  font-family: var(--lp-font-sans);
 }
 .lp-step-stage i {
   display: block;
