@@ -10,3 +10,6 @@ export const PANCAKE_ANALYTICS_INGEST_ORIGIN = "https://beta-api.getpancake.ai";
 /** Workspace-scoped LeadJourney browser tracker supplied by the vendor (a routing id, not a credential). */
 export const LEADJOURNEY_TRACKING_SCRIPT_URL =
   "https://t.getpancake.ai/package/latest/a27db1a6-9da6-4639-8bd2-a8e33014a16a/";
+
+/** LinkedIn Insight Tag partner id for retargeting audiences (a routing id, not a credential). */
+export const LINKEDIN_INSIGHT_PARTNER_ID = "9710642";
