@@ -1,7 +1,12 @@
 # Brain replacement verification — September 11, 2026
 
-Code revision: `b948d0ad71ace6cd7b22c3314c353bf44d7260a6`.
+Code revision: `8b834b4a8877f1b241840664738892a0f3dff793`.
 Draft review: https://github.com/get-pancake/website/pull/295.
+
+Vercel preview: https://pancake-brain-p5prpgg5z-getpancake.vercel.app/.
+Deployment: `dpl_7mA79mVcnvZ1AH6AFnuHpF92KkyT`, READY, explicit `staging` target.
+Vercel built the reviewed source directly after the new project's Git source
+retrieval failed. The app is not linked for automatic Git deployments.
 
 ## Design and browser checks
 
@@ -12,6 +17,8 @@ Draft review: https://github.com/get-pancake/website/pull/295.
 - Confirmed computed heading/body fonts, no horizontal overflow, intact assets,
   mobile signup anchor and input, corrected pricing currency wrap, and footer.
 - No console errors in the checked production-built local page.
+- Hosted preview also passed: exact fonts, all images loaded, no horizontal
+  overflow, no console errors, `noindex, nofollow`, and auth/vendor gates intact.
 - Kept existing Brain marketing text and destinations. Privacy/Terms hash placeholders
   now link to the main site's actual legal pages.
 

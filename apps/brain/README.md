@@ -25,6 +25,15 @@ the repository root. No asset download is needed.
 
 ## Vercel project settings
 
+Current project: **pancake-brain** in the **getpancake** team,
+`prj_e9TBwJXKfPU2FFqn7nSuaTmBw1MR`.
+Reviewed preview: https://pancake-brain-p5prpgg5z-getpancake.vercel.app/.
+The ready build uses a direct upload of committed source, with explicit target
+`staging`. Git source retrieval failed for the new project, so no automatic Git
+deployment connection was enabled. Avoid relying on an omitted target for a
+new project's first deployment: Vercel classified that attempted build as
+Production; it failed before building or routing any traffic.
+
 Create a **separate** Vercel project using this repository. Set its **Root
 Directory** to `apps/brain` and enable **Include source files outside of the
 Root Directory in the Build Step**. Use Node 24. `vercel.json` supplies the
