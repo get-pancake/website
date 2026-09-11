@@ -15,6 +15,7 @@ button { cursor: pointer; }
 img { max-width: 100%; }
 .brain { font-synthesis: none; }
 .brain :focus-visible { outline: var(--brain-focus-width) solid var(--lp-purple-40); outline-offset: var(--brain-space-xs); }
+.brain .lp-btn:focus-visible { outline-color: var(--lp-purple-30); outline-offset: calc(-1 * var(--brain-space-xs)); }
 .brain-skip { position: absolute; top: var(--brain-space-sm); left: var(--brain-space-md); z-index: 50; background: var(--lp-surface); padding: var(--brain-space-md); transform: translateY(-150%); }
 .brain-skip:focus { transform: none; }
 .brain-hero { position: relative; isolation: isolate; }
@@ -57,6 +58,8 @@ img { max-width: 100%; }
 .brain-form__fields > p { font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
 .brain-form__hint { font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
 .brain .brain-form__submit, .brain .brain-form__retry { justify-self: start; margin-top: var(--brain-space-md); }
+.brain-form__retry { background: transparent; border: 0; padding: 0; color: var(--lp-text); font-size: var(--lp-text-sm); text-align: left; text-decoration: underline; text-underline-offset: 0.2em; }
+.brain-form__google:has(.brain-form__error) { flex-direction: column; gap: var(--brain-space-sm); align-items: flex-start; }
 .brain-form__notice, .brain-form__error, .brain-form__success, .brain-form__terms { margin-top: var(--brain-space-md); font-size: var(--lp-text-sm); }
 .brain-form__notice { color: var(--lp-subtle-text); margin-bottom: var(--brain-space-md) !important; }
 .brain-form__notice a, .brain-form__terms a { text-decoration: underline; text-underline-offset: 0.2em; }
