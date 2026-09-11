@@ -1,10 +1,18 @@
 /* ── /agents · plays ── (section stylesheet; see components/sections/agents/README.md)
    The org chart under the "Super plays" head (draft #org): mascot → plum
-   label → three dotted curves (1136×130) → three tinted columns of plays.
-   Geometry = the draft's inline styles at 1654; colors = tokens only. Every
-   ambient loop (mascot bob, travelling dots, the JS simulation) runs only
-   while the section intersects (`data-inview`, stamped by useInView) and
-   never under prefers-reduced-motion. */
+   label → three dotted curves (1136×130) → three tinted lanes. Founder
+   (2026-09-11, preview): the lanes of names with drifting status dots
+   "don't add value — get inspired by the Grok Bot page". So every play is
+   now a RUN CARD (Grok Bot's device: pick a team, open an example, read the
+   run behind the bot): name + state, what it does, and — on the ONE open
+   card per lane — the three-line run log whose last line is what lands in
+   your lap. Rotation, holds and the shared log height live in AgPlays.tsx;
+   this file owns the geometry, the reveal and the rise-in.
+   Geometry = the draft's at 1654 (lanes 3 × 1fr gap 24, padding 28 24);
+   colors = tokens only. Every ambient loop (mascot bob, travelling dots, the
+   run lines' rise-in) runs only while the section intersects
+   (`data-inview`, stamped by useInView) and never under
+   prefers-reduced-motion. */
 
 .ag-plays__org {
   margin-top: 56px; /* draft: mt 56 under the head */
@@ -61,10 +69,10 @@
 }
 
 /* ── connector (draft org-connector.svg): three dotted cubic curves from the
-   label's foot to each column head, a 5px dot riding each (SMIL, paused
+   label's foot to each lane head, a 5px dot riding each (SMIL, paused
    off-screen by AgPlays). ink-70 = the draft's #9a818f. Scales with the
-   column between 1025 and 1200 (viewBox keeps the curve ends over the column
-   centers); hidden ≤1024 where the columns stack. ── */
+   column between 1025 and 1200 (viewBox keeps the curve ends over the lane
+   centers); hidden ≤1024 where the lanes stack. ── */
 .ag-plays__connector {
   display: block;
   height: auto;
@@ -72,7 +80,7 @@
   overflow: visible;
   width: 100%;
 }
-.ag-plays__line {
+.ag-plays__line-path {
   stroke: var(--lp-ink-70);
 }
 .ag-plays__spark {
@@ -84,120 +92,253 @@
   display: none;
 }
 
-/* ── columns: 3 × 1fr, gap 24, pixel-equal heights (founder rule: stretch) ── */
-.ag-plays__cols {
+/* ── lanes: 3 × 1fr, gap 24, pixel-equal heights (founder rule: stretch).
+   In practice the three are equal by construction — every collapsed card
+   is the same height (see .ag-plays__does) and every open log the same
+   (see .ag-plays__reveal) — stretch is the guard. ── */
+.ag-plays__lanes {
   align-items: stretch;
   display: grid;
   gap: 24px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-.ag-plays__col {
+.ag-plays__lane {
   border-radius: var(--ag-r-card);
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-width: 0;
   padding: 28px 24px;
 }
-.ag-plays__col-title {
-  margin-bottom: 8px; /* draft: title mb 8 on top of the column's gap 12 */
+.ag-plays__lane-title {
+  margin-bottom: 8px; /* draft: title mb 8 on top of the lane's gap 12 */
   text-align: center; /* the draft's centered label — an exception to left-justified card copy */
 }
 .ag-plays__list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 12px;
   list-style: none;
   margin: 0;
   padding: 0;
 }
-/* play row: card-cream r12, 12×16, 13.333/20 Geist, 9px status dot, gap 12.
-   The draft's 14px is off the kit scale (review #27) → --lp-text-sm on the
-   same 20px line box, so the row keeps its 44px (12 + 20 + 12) tap height. */
-.ag-plays__play {
-  align-items: center;
+
+/* ── run card: card-cream r12, 14 × 16, no shadow.
+   [head button: name + state / does] then [reveal: the run log, clipped].
+   The card's 14px bottom = the head's 12 + the card's own 2, so that an
+   open log starts 12px under `does` (the head's bottom padding) and ends
+   14px above the card's edge (the reveal's 12px margin + the 2). ── */
+.ag-plays__card {
+  --ag-plays-land: var(--lp-green-30); /* the last line's marker: what lands in your lap */
   background: var(--lp-card-cream);
   border-radius: var(--lp-r-sm);
-  box-sizing: border-box;
-  color: var(--lp-text);
-  display: flex;
-  font-family: var(--lp-font-sans);
-  font-size: var(--lp-text-sm);
-  gap: 12px;
-  line-height: 20px;
   min-width: 0;
-  padding: 12px 16px;
+  padding-bottom: 2px;
+  transition: background 0.15s ease;
+}
+.ag-plays__card[data-status="red"] {
+  --ag-plays-land: var(--lp-ink-50); /* a retired play lands nothing */
+}
+@media (hover: hover) {
+  .ag-plays__card:not([data-open]):hover {
+    background: var(--lp-ink-0); /* the affordance: cream → white, no dim, no lift */
+  }
+}
+/* the focus ring hugs the whole card (the head is the card minus its 2px
+   foot and the open log); engines without :has() get the head's own ring */
+.ag-plays__card:has(> .ag-plays__head:focus-visible) {
+  outline: 2px solid var(--lp-ink-100);
+  outline-offset: 3px;
+}
+.ag-plays__head:focus-visible {
+  outline: 2px solid var(--lp-ink-100);
+  outline-offset: -4px;
+}
+@supports selector(:has(a)) {
+  .ag-plays__head:focus-visible {
+    outline: none;
+  }
+}
+/* the head: a full-width button (reset.css: font/color inherit, no
+   background, no border, cursor pointer). The open card's head is inert
+   in effect — one card per lane is always open — so its cursor says so. */
+.ag-plays__head {
+  color: var(--lp-text);
+  display: block;
+  padding: 14px 16px 12px;
   text-align: left;
-  transition:
-    opacity 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  width: 100%;
+}
+.ag-plays__card[data-open] .ag-plays__head {
+  cursor: default;
+}
+/* row 1: name left, state right, on one baseline. If the two ever
+   don't fit (a fallback font, a width between the steps below), the
+   state drops under the name instead of the name breaking. */
+.ag-plays__row {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 8px;
+  justify-content: space-between;
 }
 .ag-plays__name {
-  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  line-height: 24px;
   min-width: 0;
+}
+.ag-plays__card[data-status="red"] .ag-plays__name {
+  color: var(--lp-muted-text);
+}
+/* state = 9px dot + the state word, 13.333 subtle. Inline (not flex) so
+   the row's baseline alignment reads the WORD's baseline, and the dot
+   sits at the word's x-height middle (vertical-align: middle). */
+.ag-plays__state {
+  color: var(--lp-subtle-text);
+  display: inline-block;
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+  white-space: nowrap;
 }
 .ag-plays__dot {
   border-radius: 50%;
   /* 1px ink hairline rim (inset, so the dot stays the draft's 9px): the
-     yellow-40 dot is 2.3:1 against the cream row, its darkened rim 3.4:1 —
-     the state reads as a shape, not only a hue (review #31); the row's
-     sr-only status text is the real screen-reader fix */
+     yellow-40 dot is 2.3:1 against the cream card, its darkened rim 3.4:1 —
+     the state reads as a shape, not only a hue; the state WORD next to it
+     is the real fix (review #31) */
   box-shadow: inset 0 0 0 1px var(--lp-ink-tr-20);
   display: inline-block;
-  flex: none;
   height: 9px;
-  transition: background 0.2s ease;
+  margin-right: 6px;
+  vertical-align: middle;
   width: 9px;
 }
-.ag-plays__dot[data-status="green"] {
+.ag-plays__card[data-status="green"] .ag-plays__dot {
   background: var(--lp-green-30);
 }
-.ag-plays__dot[data-status="orange"] {
+.ag-plays__card[data-status="orange"] .ag-plays__dot {
   background: var(--lp-yellow-40);
 }
-.ag-plays__dot[data-status="red"] {
+.ag-plays__card[data-status="red"] .ag-plays__dot {
   background: var(--lp-red-30);
 }
-
-/* ── simulation states (draft .play.out / .in / .hit) — a retiring row stays
-   in flow (opacity + translate only) so the column never changes height ── */
-.ag-plays__play--out {
-  opacity: 0;
-  transform: translateX(24px);
+/* row 2: what the play does, 13.333/20 subtle, 4px under the name row.
+   `pretty` keeps a lone "call." / "rivals." off the second line where an
+   engine supports it (progressive enhancement, like the versus H2). */
+.ag-plays__does {
+  color: var(--lp-subtle-text);
+  display: block;
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+  margin-top: 4px;
+  text-wrap: pretty;
 }
-@keyframes ag-plays-in {
+
+/* ── the run log ──
+   Every card carries its log in a clipped box: 0 tall when closed, ONE
+   shared height when open — `--ag-plays-log-h`, the tallest of the twelve
+   logs laid out at their natural height (AgPlays measures it; `auto`
+   until then = SSR / no JS, where the first cards show their runs). The
+   incoming box opens 0 → H and the outgoing one closes H → 0 over the
+   same 200ms ease, and the 12px foot travels the same way, so the lane's
+   height is constant at every frame of a rotation (sum = H + 12 always). */
+.ag-plays__reveal {
+  height: 0;
+  margin: 0 16px;
+  overflow: hidden;
+  transition:
+    height 0.2s ease,
+    margin-bottom 0.2s ease;
+}
+.ag-plays__card[data-open] .ag-plays__reveal {
+  height: var(--ag-plays-log-h, auto);
+  margin-bottom: 12px;
+}
+/* three lines, 6px apart; hidden from find/selection once closed */
+.ag-plays__log {
+  display: grid;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  transition: visibility 0s linear 0.2s;
+  visibility: hidden;
+}
+.ag-plays__card[data-open] .ag-plays__log {
+  transition: none;
+  visibility: visible;
+}
+/* line = 6px marker on one vertical line + 13.333/20 ink text; the
+   marker is centered on the FIRST line (7px down) even if the text wraps */
+.ag-plays__line {
+  align-items: start;
+  color: var(--lp-text);
+  column-gap: 8px;
+  display: grid;
+  font-size: var(--lp-text-sm);
+  grid-template-columns: 6px minmax(0, 1fr);
+  line-height: 20px;
+}
+.ag-plays__mark {
+  background: var(--lp-ink-50);
+  border-radius: 50%;
+  height: 6px;
+  margin-top: 7px;
+  width: 6px;
+}
+.ag-plays__line:last-child .ag-plays__mark {
+  background: var(--ag-plays-land);
+}
+/* the run "happening": the open card's lines rise in one after another
+   (220ms, 180ms apart, 60ms after the box starts opening so the first
+   line isn't half-clipped). Re-mounted on every opening (React key), so
+   it replays. PAUSED is the stylesheet default: the SSR'd open cards play
+   it when the section intersects; the component's <noscript> style sets
+   the same property so they settle without JS. */
+@keyframes ag-plays-rise {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(6px);
   }
   to {
     opacity: 1;
     transform: none;
   }
 }
-.ag-plays__play--in {
-  animation: ag-plays-in 0.3s cubic-bezier(0.2, 0.9, 0.2, 1.2);
+.ag-plays__card[data-open] .ag-plays__line {
+  animation: ag-plays-rise 0.22s ease-out calc(var(--ag-plays-i) * 180ms + 60ms) both;
+  animation-play-state: var(--ag-plays-play, paused);
 }
-@keyframes ag-plays-hit {
-  0% {
-    transform: scale(1);
-  }
-  35% {
-    transform: scale(1.045);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-.ag-plays__play--hit {
-  animation: ag-plays-hit 0.38s ease;
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--lp-pink-40) 25%, transparent);
+.ag-plays[data-inview] {
+  --ag-plays-play: running;
 }
 
-/* ── ≤1024: connector off, columns stack full width under the mascot (gap 16);
-   a dotted stem keeps the org-chart link; tablets seat the plays 2×2 ── */
+/* ── desktop steps ──
+   ≥1025: `does` is 2 lines for the longest copy at every lane width
+   (224–283px), so every collapsed card gets the 2-line floor: the twelve
+   cards are one height (96 at ≥1201, 118 at 1025–1200), the lanes equal
+   with no slack. Between 1025 and 1200 the lane content is 224–282px and
+   "Funding-round play · waiting for review" needs 280: the state moves
+   under the name for every card in that band (one layout per step, no
+   per-card wrap). ── */
+@media (min-width: 1025px) {
+  .ag-plays__does {
+    min-height: 40px;
+  }
+}
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .ag-plays__row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+/* ── ≤1024: connector off, lanes stack full width under the mascot (gap
+   16); a dotted stem keeps the org-chart link. ONE column of cards per
+   lane (640px wide, `does` on one line): a 2×2 grid would pair the open
+   card with a collapsed one — a stretched empty card or a ragged row —
+   and rotation continues here, one lane in view at a time. ── */
 @media (max-width: 1024px) {
   .ag-plays__connector {
     display: none;
@@ -230,14 +371,10 @@
   .ag-plays:not([data-inview="true"]) .ag-plays__stem::after {
     animation-play-state: paused;
   }
-  .ag-plays__cols {
+  .ag-plays__lanes {
     gap: 16px;
-    grid-auto-rows: 1fr; /* stacked columns stay pixel-equal too */
+    grid-auto-rows: 1fr; /* stacked lanes stay pixel-equal too */
     grid-template-columns: minmax(0, 1fr);
-  }
-  .ag-plays__list {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @keyframes ag-plays-stem {
@@ -249,30 +386,39 @@
   }
 }
 
-/* ── phones: column 20×16, title 23.04 (foundation's .ag-title-sm step),
-   rows single-column again ── */
+/* ── phones: lane 20×16, title 23.04 (foundation's .ag-title-sm step),
+   the state under the name (279px of card at 375 — the widest row needs
+   280), cards hug their copy, lanes hug their cards: rotation is off here
+   (AgPlays), tap to expand — the reserved log height still keeps a tap
+   from moving anything below the lane. ── */
 @media (max-width: 767px) {
   .ag-plays__org {
     margin-top: 40px;
   }
-  .ag-plays__col {
+  .ag-plays__lanes {
+    grid-auto-rows: auto;
+  }
+  .ag-plays__lane {
     padding: 20px 16px;
   }
-  .ag-plays__list {
-    display: flex;
+  .ag-plays__row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 2px;
   }
 }
 
-/* ── reduced motion: the settled state, nothing loops ── */
+/* ── reduced motion: the settled state — first cards open, lines shown,
+   nothing loops, switches are instant ── */
 @media (prefers-reduced-motion: reduce) {
   .ag-plays__bob,
   .ag-plays__stem::after,
-  .ag-plays__play--in,
-  .ag-plays__play--hit {
+  .ag-plays__card[data-open] .ag-plays__line {
     animation: none;
   }
-  .ag-plays__play,
-  .ag-plays__dot {
+  .ag-plays__card,
+  .ag-plays__reveal,
+  .ag-plays__log {
     transition: none;
   }
 }

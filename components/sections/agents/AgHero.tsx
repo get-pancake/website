@@ -33,8 +33,10 @@ export function AgHero() {
       </div>
       <div className="lp-hero-inner">
         <h1 id="ag-hero-title" className="lp-hero-title lp-display">
+          {/* one colour, like the homepage headline (founder 2026-09-11:
+              "pas sûr que AI agent doive être dans une autre couleur") */}
           {HERO.titleBefore}
-          <span className="ag-accent">{HERO.titleAccent}</span>
+          {HERO.titleAccent}
           <br />
           {HERO.titleAfter}
         </h1>

@@ -4,16 +4,24 @@ import { AgKnowledgeGrid } from "./AgKnowledgeGrid";
 /**
  * /agents — Super knowledge. The draft's centered head (kicker / H2 / lede)
  * over its 16 pastel illustration cards: 4×4 on the 1136 column at 1654,
- * recomposed 3-up ≤1024 and 2-up ≤767 (knowledge.css — never shrunk).
- * Every card is one of the 147×160 rasters in /lp/agents/data bobbing on
- * the draft's `bob` keyframes, staggered by the negative per-card delay in
- * KNOWLEDGE.cards so the sixteen never move in step.
+ * recomposed 2-up ≤767 (knowledge.css — never shrunk). Every card is one of
+ * the 147×160 rasters in /lp/agents/data.
  *
- * Server component: the markup is static copy, SSR'd as is. The section's
- * single viewport gate is the <ul> (AgKnowledgeGrid, the only client piece):
- * useInView stamps `data-inview` on it and the CSS runs the 16 loops only
- * while it intersects (never under reduced motion). The cards are passed in
- * as children so they never ship as client code.
+ * Motion (founder, preview review 2026-09-11: "a more juicy way to present
+ * all those pancakes" — Mobbin: Framer's developer tiles, Framer's plugin
+ * grid, Lattice's integrations wall): the cards POP in once when the grid
+ * enters the viewport (staggered spring along the top-left → bottom-right
+ * diagonal), then every ~5s one HOP ripples across the sixteen illustrations
+ * while the grid is on screen; hovering a card lifts it, deepens its tint and
+ * hops its illustration; on touch a tap hops it. The draft's all-at-once
+ * bob loop is retired (KNOWLEDGE.cards[i].delay is no longer read).
+ *
+ * Server component: the markup is static copy, SSR'd as is — the settled
+ * grid is what SSR / no-JS / reduced-motion show. The section's single
+ * client piece is the <ul> (AgKnowledgeGrid): it stamps `data-armed` /
+ * `data-entered` / `data-inview` for the CSS and schedules the wave and the
+ * hops. The cards are passed in as children so they never ship as client
+ * code.
  */
 export function AgKnowledge() {
   return (
@@ -29,13 +37,9 @@ export function AgKnowledge() {
         <AgKnowledgeGrid>
           {KNOWLEDGE.cards.map((card) => (
             <li key={card.slug} className={`ag-card ag-knowledge__card ag-tint--${card.tint}`}>
-              {/* toFixed keeps the SSR/CSR strings identical and short
-                  ("-2.1s", not the float 3×0.7 evaluates to) */}
-              <div
-                className="ag-knowledge__bob"
-                style={{ animationDelay: `${card.delay.toFixed(1)}s` }}
-                aria-hidden="true"
-              >
+              {/* the hop wrapper: the illustration moves, the card frame stays
+                  square to the grid (founder rule: no rotated frames) */}
+              <div className="ag-knowledge__hop" aria-hidden="true">
                 <img
                   className="ag-knowledge__art"
                   src={`/lp/agents/data/${card.slug}.png`}

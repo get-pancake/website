@@ -1,155 +1,148 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type FocusEvent,
+  type PointerEvent as ReactPointerEvent,
+} from "react";
 
-import { PLAYS, type PlayStatus } from "./ag-copy";
+import { PLAYS, PLAY_STATE } from "./ag-copy";
 import { useInView, useReducedMotion } from "./useInView";
 
 /**
- * /agents — Super plays: the org chart. Mascot (bobbing at the draft's 1.1s)
- * over the plum "Pancake / runs the squad" label, three dotted curves with a
- * dot travelling down each (the draft's org-connector.svg, SMIL animateMotion
- * 0.8 / 0.95 / 1.1s), then three tinted columns of plays with a status dot.
+ * /agents — Super plays: the org chart, rebuilt around the RUN behind each
+ * play (founder 2026-09-11 on the preview: the drifting status dots "don't
+ * add value — get inspired by the Grok Bot page"). Grok Bot's device: pick a
+ * team, open an example, read what the bot did overnight and what landed in
+ * your lap. So: the mascot still "runs the squad" over three tinted lanes
+ * (the dotted connector, the ≤1024 stem), but every play is a RUN CARD —
+ * name + state (dot + word), what it does, and, when open, a three-line run
+ * log whose last line is what lands in your lap (green marker).
  *
- * Simulation = the draft's "plays org chart" script, modelled as React state
- * (columns → rows {id, name, status, fx}): every 900ms while the section is in
- * view, a burst of 2–3 rows (a red one favoured 60 % of the time) drifts
- * green→orange or orange→red with a `hit` pulse; a red one retires (`out`:
- * fade + 24px slide, 220ms) and a FRESH pool name takes a random seat in the
- * column, green, rising in (`in`, 300ms). Row count per column never changes,
- * so the columns keep their height while it plays. Math.random only runs in
- * timers started from effects — the initial render is deterministic (hydration
- * safe). Reduced motion → the static initial state (no timer, no SMIL).
- * Each row carries an sr-only status ("healthy" / "fading" / "retiring")
- * that follows its dot — no live region, so the bursts stay silent.
- * Layout in agents/plays.css (.ag-plays*).
+ * ONE card per lane is open at a time (a radio-like disclosure group, not a
+ * toggle: a lane never shows zero runs). Rotation = one 2s clock while the
+ * section intersects and motion is allowed: tick k advances lane k mod 3, so
+ * each lane moves every 6s and the three lanes are 2s apart — only one card
+ * opens at any moment. Holds are refs the tick reads: a pointer resting on
+ * a lane (non-touch), keyboard focus inside it, and a fresh interaction
+ * (click, tap, pointer-leave, blur → the lane rests ≥ REST_MS before its
+ * next slot) all make the lane skip its slot; it rejoins on its own phase,
+ * so the lanes never drift into opening together. Off-screen = no clock;
+ * reduced motion / phones (≤767, tap to expand — a self-moving accordion
+ * on a phone is a bug) = no clock, first card of each lane open.
+ *
+ * Lane height never moves: every card carries its log inside a clipped
+ * box whose open height is ONE shared value — the tallest log across all
+ * twelve (measured after mount and on any resize, `--ag-plays-log-h`) —
+ * and the outgoing box collapses over the same 200ms curve the incoming
+ * one expands with, so the sum is constant at every frame (plays.css).
+ * SSR = first cards open with their log visible (no-JS readers see the
+ * runs); the log lines' rise-in is gated on `data-inview` (a <noscript>
+ * style lets them play without JS). No Math.random, no aria-live.
  */
 
-type Fx = "hit" | "out" | "in" | null;
-type Row = { id: number; name: string; status: PlayStatus; fx: Fx };
+const LANES = PLAYS.lanes;
+const N_LANES = LANES.length;
+const DWELL_MS = 6000; // a lane's period: 6s per open card
+const STAGGER_MS = DWELL_MS / N_LANES; // 2s between lanes → one opening at a time
+const REST_MS = 5500; // a lane rests this long after an interaction before its next slot (≈ one dwell, minus timer jitter)
 
-const COLS = PLAYS.columns;
-const BURST_MS = 900; // draft: setInterval(burst, 900)
-const STAGGER_MS = 120; // draft: picks fire i*120ms apart
-const HIT_MS = 380; // draft: .play.hit removed after 380ms
-const OUT_MS = 220; // draft: retire → replace after 220ms
-const IN_MS = 300; // draft: .play.in removed after 300ms
-
-/* screen-reader status per row — the state was colour-only (review #31).
-   Updates with the row, deliberately with NO aria-live: the 900ms bursts
-   must never be announced. SR text is the README's copy exception. */
-const SR_STATUS: Record<PlayStatus, string> = { green: "healthy", orange: "fading", red: "retiring" };
+type LaneState = { idx: number; epoch: number };
 
 /* The connector geometry, verbatim from draft-assets/org-connector.svg:
-   three cubic curves from the label's foot (568,0) to each column's head. */
+   three cubic curves from the label's foot (568,0) to each lane's head. */
 const CONNECTOR = [
   { d: "M 568 0 C 568 70 190 60 190 130", dur: "0.80s", end: [190, 130] },
   { d: "M 568 0 C 568 70 568 60 568 130", dur: "0.95s", end: [568, 130] },
   { d: "M 568 0 C 568 70 946 60 946 130", dur: "1.10s", end: [946, 130] },
 ] as const;
 
-function initialColumns(): Row[][] {
-  return COLS.map((col, ci) =>
-    col.plays.map(([name, status], i) => ({ id: ci * 10 + i, name, status, fx: null })),
-  );
-}
-
-const pick = <T,>(arr: readonly T[]): T => arr[Math.floor(Math.random() * arr.length)]!;
+const cardId = (li: number, pi: number, part: string) => `ag-plays-${li}-${pi}-${part}`;
 
 export function AgPlays() {
   const [rootRef, inView] = useInView<HTMLElement>();
   const reduced = useReducedMotion();
-  const [cols, setCols] = useState<Row[][]>(initialColumns);
-  const model = useRef<Row[][]>(cols); // mutable source of truth for the timers
-  const nextId = useRef(100);
-  const timers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+  const [phone, setPhone] = useState(false);
+  const [lanes, setLanes] = useState<LaneState[]>(() => LANES.map(() => ({ idx: 0, epoch: 0 })));
+  const [logH, setLogH] = useState<number | null>(null);
+  const lanesRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  /* holds, read by the clock (no re-render needed) */
+  const hover = useRef<boolean[]>(LANES.map(() => false));
+  const focus = useRef<boolean[]>(LANES.map(() => false));
+  const restUntil = useRef<number[]>(LANES.map(() => 0));
 
-  const publish = useCallback(() => {
-    setCols(model.current.map((c) => c.slice()));
+  /* phones: tap to expand, no clock (matchMedia, live) */
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setPhone(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
   }, []);
 
-  const later = useCallback((ms: number, fn: () => void) => {
-    const t = setTimeout(() => {
-      timers.current.delete(t);
-      fn();
-    }, ms);
-    timers.current.add(t);
+  /* the shared open-log height: the tallest of the twelve logs, laid out at
+     their natural height inside the clipped boxes (a wrapped line at a
+     narrow width makes one taller — every box opens to that). Re-measured
+     on any log resize (viewport, font swap). */
+  useEffect(() => {
+    const root = lanesRef.current;
+    if (!root) return;
+    const logs = Array.from(root.querySelectorAll<HTMLElement>(".ag-plays__log"));
+    const measure = () => {
+      let h = 0;
+      for (const log of logs) h = Math.max(h, log.offsetHeight);
+      setLogH(h);
+    };
+    measure();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(measure);
+    logs.forEach((log) => ro.observe(log));
+    return () => ro.disconnect();
   }, []);
 
-  /* one row changes state (the draft's tick) */
-  const tick = useCallback(
-    (id: number, ci: number) => {
-      const col = model.current[ci]!;
-      const row = col.find((r) => r.id === id);
-      if (!row || row.fx === "out") return;
-      if (row.status === "green" || row.status === "orange") {
-        row.status = row.status === "green" ? "orange" : "red";
-        row.fx = "hit";
-        publish();
-        later(HIT_MS, () => {
-          if (row.fx === "hit") row.fx = null;
-          publish();
-        });
-        return;
-      }
-      // red → retire, then a fresh pool name takes a random seat
-      row.fx = "out";
-      publish();
-      later(OUT_MS, () => {
-        const current = model.current[ci]!;
-        const at = current.indexOf(row);
-        if (at < 0) return;
-        const names = current.map((r) => r.name);
-        const pool = COLS[ci]!.pool;
-        const fresh = pool.filter((n) => !names.includes(n));
-        const name = fresh.length ? pick(fresh) : pool[0]!;
-        const seat: Row = { id: nextId.current++, name, status: "green", fx: "in" };
-        current.splice(at, 1);
-        current.splice(Math.floor(Math.random() * (current.length + 1)), 0, seat);
-        publish();
-        later(IN_MS, () => {
-          if (seat.fx === "in") seat.fx = null;
-          publish();
-        });
-      });
+  const rest = useCallback((li: number) => {
+    restUntil.current[li] = Date.now() + REST_MS;
+  }, []);
+
+  /* open card `pi` of lane `li`: bumps the lane's epoch so the run lines
+     re-mount and rise in; a click on the already-open card only rests the
+     lane (it stays open — one card per lane, always) */
+  const openCard = useCallback(
+    (li: number, pi: number) => {
+      rest(li);
+      setLanes((s) => (s[li]!.idx === pi ? s : s.map((v, i) => (i === li ? { idx: pi, epoch: v.epoch + 1 } : v))));
     },
-    [later, publish],
+    [rest],
   );
 
-  /* a burst = 2–3 different plays changing in the same beat (draft) */
-  const burst = useCallback(() => {
-    const n = 2 + (Math.random() < 0.35 ? 1 : 0);
-    const picks: { id: number; ci: number }[] = [];
-    let tries = 0;
-    while (picks.length < n && tries++ < 20) {
-      const ci = Math.floor(Math.random() * model.current.length);
-      const plays = model.current[ci]!.filter((r) => r.fx !== "out");
-      if (!plays.length) continue;
-      const reds = plays.filter((r) => r.status === "red");
-      const p = reds.length && Math.random() < 0.6 ? pick(reds) : pick(plays);
-      if (picks.some((k) => k.id === p.id)) continue;
-      picks.push({ id: p.id, ci });
-    }
-    picks.forEach((k, i) => later(i * STAGGER_MS, () => tick(k.id, k.ci)));
-  }, [later, tick]);
-
-  /* the loop runs only while the section intersects, never under reduced motion */
+  /* the clock: first tick after one dwell (the first cards get their 6s),
+     then every 2s → lane k mod 3. A held or resting lane skips its slot. */
   useEffect(() => {
-    if (!inView || reduced) return;
-    burst();
-    const interval = setInterval(burst, BURST_MS);
-    return () => clearInterval(interval);
-    // in-flight short timers (≤ 620ms) are left to finish their animation
-  }, [inView, reduced, burst]);
-
-  useEffect(() => {
-    const pending = timers.current;
-    return () => {
-      pending.forEach(clearTimeout);
-      pending.clear();
+    if (!inView || reduced || phone) return;
+    let k = 0;
+    let interval: ReturnType<typeof setInterval> | undefined;
+    const tick = () => {
+      const li = k % N_LANES;
+      k += 1;
+      if (hover.current[li] || focus.current[li] || Date.now() < restUntil.current[li]!) return;
+      setLanes((s) =>
+        s.map((v, i) => (i === li ? { idx: (v.idx + 1) % LANES[i]!.plays.length, epoch: v.epoch + 1 } : v)),
+      );
     };
-  }, []);
+    const first = setTimeout(() => {
+      tick();
+      interval = setInterval(tick, STAGGER_MS);
+    }, DWELL_MS);
+    return () => {
+      clearTimeout(first);
+      if (interval) clearInterval(interval);
+    };
+  }, [inView, reduced, phone]);
 
   /* SMIL is outside CSS animation-play-state: pause the travelling dots off-screen */
   useEffect(() => {
@@ -159,8 +152,42 @@ export function AgPlays() {
     else svg.pauseAnimations();
   }, [inView]);
 
+  /* a pointer resting on a lane holds it (WCAG 2.2.2: the run must not
+     switch under a reader's mouse); a touch pointer leaves as soon as the
+     finger lifts, so a tap never parks a lane. Leaving = an interaction:
+     the lane rests before its next slot instead of flipping under a
+     pointer that just left. */
+  const onPointerEnter = (li: number) => (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (e.pointerType !== "touch") hover.current[li] = true;
+  };
+  const onPointerLeave = (li: number) => () => {
+    if (hover.current[li]) rest(li);
+    hover.current[li] = false;
+  };
+  /* keyboard focus inside a lane holds it; a mouse click focuses a card
+     without :focus-visible and is handled by the click's rest instead */
+  const onFocus = (li: number) => (e: FocusEvent<HTMLDivElement>) => {
+    let visible = true;
+    try {
+      visible = (e.target as HTMLElement).matches(":focus-visible");
+    } catch {
+      /* older engines: treat any focus as keyboard focus */
+    }
+    if (visible) focus.current[li] = true;
+  };
+  const onBlur = (li: number) => (e: FocusEvent<HTMLDivElement>) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+    if (focus.current[li]) rest(li);
+    focus.current[li] = false;
+  };
+
   return (
     <section ref={rootRef} id="ag-plays" className="ag-sec ag-plays" aria-labelledby="ag-plays-title">
+      {/* no JS = no data-inview: the run lines' rise-in would sit paused on
+          its first frame (opacity 0) — let them play to their settled state */}
+      <noscript>
+        <style>{`.ag-plays{--ag-plays-play:running}`}</style>
+      </noscript>
       <div className="ag-sec__inner">
         <div className="ag-sec__head">
           <p className="ag-kicker">{PLAYS.kicker}</p>
@@ -170,11 +197,7 @@ export function AgPlays() {
           <p className="ag-lede">{PLAYS.lede}</p>
         </div>
 
-        <div
-          className="ag-plays__org"
-          role="group"
-          aria-label="Org chart: Pancake runs three squads of plays. Each play's status drifts from green to orange to red; a red play retires and a fresh one takes its seat."
-        >
+        <div className="ag-plays__org">
           <div className="ag-plays__root">
             <div className="ag-plays__bob">
               <img
@@ -206,7 +229,7 @@ export function AgPlays() {
             {CONNECTOR.map((c, i) => (
               <path
                 key={`line-${i}`}
-                className="ag-plays__line"
+                className="ag-plays__line-path"
                 d={c.d}
                 strokeWidth="2"
                 strokeDasharray="1 7"
@@ -215,7 +238,7 @@ export function AgPlays() {
             ))}
             {CONNECTOR.map((c, i) =>
               reduced ? (
-                /* static: the dot rests at the column end of its curve */
+                /* static: the dot rests at the lane end of its curve */
                 <circle key={`spark-${i}`} className="ag-plays__spark" r="5" cx={c.end[0]} cy={c.end[1]} />
               ) : (
                 <circle key={`spark-${i}`} className="ag-plays__spark" r="5">
@@ -227,22 +250,76 @@ export function AgPlays() {
           {/* ≤1024 stand-in for the connector: one short dotted stem with its own travelling dot */}
           <div className="ag-plays__stem" aria-hidden="true" />
 
-          <div className="ag-plays__cols">
-            {COLS.map((col, ci) => (
-              <div key={col.title} className={`ag-plays__col ag-tint--${col.tint}`}>
-                <h3 className="ag-title-sm ag-plays__col-title">{col.title}</h3>
+          <div
+            ref={lanesRef}
+            className="ag-plays__lanes"
+            style={logH === null ? undefined : ({ "--ag-plays-log-h": `${logH}px` } as CSSProperties)}
+          >
+            {LANES.map((lane, li) => (
+              <div
+                key={lane.title}
+                className={`ag-plays__lane ag-tint--${lane.tint}`}
+                onPointerEnter={onPointerEnter(li)}
+                onPointerLeave={onPointerLeave(li)}
+                onFocus={onFocus(li)}
+                onBlur={onBlur(li)}
+              >
+                <h3 className="ag-title-sm ag-plays__lane-title">{lane.title}</h3>
                 <ul className="ag-plays__list">
-                  {cols[ci]!.map((row) => (
-                    <li
-                      key={row.id}
-                      className={`ag-plays__play${row.fx ? ` ag-plays__play--${row.fx}` : ""}`}
-                    >
-                      <span className="ag-plays__dot" data-status={row.status} aria-hidden="true" />
-                      <span className="ag-plays__name">{row.name}</span>
-                      {/* leading ", " so readers pause between name and state */}
-                      <span className="lp-sr-only">{`, ${SR_STATUS[row.status]}`}</span>
-                    </li>
-                  ))}
+                  {lane.plays.map((play, pi) => {
+                    const open = lanes[li]!.idx === pi;
+                    const epoch = lanes[li]!.epoch;
+                    return (
+                      <li
+                        key={play.name}
+                        className="ag-plays__card"
+                        data-status={play.status}
+                        data-open={open ? "" : undefined}
+                      >
+                        <button
+                          type="button"
+                          className="ag-plays__head"
+                          aria-expanded={open}
+                          aria-controls={cardId(li, pi, "log")}
+                          aria-labelledby={cardId(li, pi, "name")}
+                          aria-describedby={`${cardId(li, pi, "state")} ${cardId(li, pi, "does")}`}
+                          onClick={() => openCard(li, pi)}
+                        >
+                          <span className="ag-plays__row">
+                            <span id={cardId(li, pi, "name")} className="ag-plays__name">
+                              {play.name}
+                            </span>
+                            <span id={cardId(li, pi, "state")} className="ag-plays__state">
+                              <span className="ag-plays__dot" aria-hidden="true" />
+                              {PLAY_STATE[play.status]}
+                            </span>
+                          </span>
+                          <span id={cardId(li, pi, "does")} className="ag-plays__does">
+                            {play.does}
+                          </span>
+                        </button>
+                        {/* the run log: always in the DOM (measured, and the
+                            SSR'd open card shows it), clipped to 0 when
+                            closed. The open card's lines are keyed by the
+                            lane's epoch so every opening re-mounts them and
+                            replays the rise-in. */}
+                        <div className="ag-plays__reveal">
+                          <ol id={cardId(li, pi, "log")} className="ag-plays__log" aria-hidden={open ? undefined : true}>
+                            {play.run.map((line, i) => (
+                              <li
+                                key={open ? `${epoch}-${i}` : `s-${i}`}
+                                className="ag-plays__line"
+                                style={{ "--ag-plays-i": i } as CSSProperties}
+                              >
+                                <span className="ag-plays__mark" aria-hidden="true" />
+                                {line}
+                              </li>
+                            ))}
+                          </ol>
+                        </div>
+                      </li>
+                    );
+                  })}
                 </ul>
               </div>
             ))}

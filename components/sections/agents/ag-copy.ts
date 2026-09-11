@@ -39,7 +39,10 @@ export const HERO = {
 } as const;
 
 export const SIDEKICK = {
-  kicker: "Super sidekick",
+  /* founder 2026-09-11 on the preview: "Super sidekick — strange naming".
+     "Super simple" = the section's point (ask in plain words); alternatives
+     offered in the PR: "Super easy", "Super natural". */
+  kicker: "Super simple",
   titleBefore: "Find new customers. From ",
   /** the rotating word (1.2s per word, 6s cycle) — includes the period */
   words: ["Claude.", "Codex.", "OpenClaw.", "Hermes.", "Grok Bot."] as const,
@@ -73,7 +76,8 @@ export const KNOWLEDGE = {
   title: "Pancake can find anything and anyone.",
   lede: "50+ data providers and tools behind one call, always routed to the cheapest source that has the answer. Think OpenRouter, for GTM.",
   /** 16 cards, draft order; tint cycles yellow→pink→purple→blue→green;
-      illustration files live in /public/lp/agents/data/<slug>.png (147×160) */
+      illustration files live in /public/lp/agents/data/<slug>.png (147×160).
+      `delay` is the draft's bob stagger — unused since the hop wave (2026-09-11). */
   cards: [
     ["Email addresses", "email-addresses"],
     ["Phone numbers", "phone-numbers"],
@@ -96,9 +100,13 @@ export const KNOWLEDGE = {
 
 export const SUPERPOWERS = {
   kicker: "Superpowers",
-  titleBefore: "What if your agent could ",
-  titleAccent: "download",
-  titleAfter: " GTM?",
+  /* founder 2026-09-11 on the preview: the draft's "What if your agent could
+     download GTM?" "means nothing". Replacement in the house voice (one idea,
+     concrete nouns); alternatives in the PR: "Four things your agent can't do
+     alone." / "Give your agent the whole GTM stack." No accent word. */
+  titleBefore: "Everything your agent needs to find customers.",
+  titleAccent: "",
+  titleAfter: "",
   prev: "Previous",
   next: "Next",
   slides: [
@@ -164,45 +172,64 @@ export const SUPERPOWERS = {
 
 export type PlayStatus = "green" | "orange" | "red";
 
+/** A play's state word, shown next to its dot (Grok Bot's device: the run
+    behind each bot is what sells it — a name + a colour did not). */
+export const PLAY_STATE: Record<PlayStatus, string> = {
+  green: "running",
+  orange: "waiting for review",
+  red: "retired",
+};
+
+export type Play = {
+  name: string;
+  status: PlayStatus;
+  /** what the play does, one line */
+  does: string;
+  /** the run behind it — three concrete lines, last one = what lands in your lap */
+  run: readonly [string, string, string];
+};
+
+/* DRAFT COPY (2026-09-11, Tristan to review): the play NAMES are the draft's,
+   verbatim; `does` and `run` are new — the founder asked this section to give
+   value like the Grok Bot page ("pick a team, open an example to see the run
+   behind it"). Numbers echo the chat mock (38 companies hiring SDRs, 41
+   decision makers) so the page tells one story. */
 export const PLAYS = {
   kicker: "Super plays",
   title: "Put your GTM on autopilot.",
   lede: "Pancake runs a squad of sub-agents. Each Play watches a signal, finds the leads, and hands them to a campaign. When one stops working, it retires and a fresh one takes its seat.",
   rootName: "Pancake",
   rootRole: "runs the squad",
-  columns: [
+  lanes: [
     {
       title: "Inbound plays",
       tint: "yellow" as Tint,
       plays: [
-        ["Pricing-page visitors", "green"],
-        ["Demo-request follow-up", "orange"],
-        ["Newsletter replies", "red"],
-        ["Inbound lead scoring", "green"],
-      ] as [string, PlayStatus][],
-      pool: ["Pricing-page visitors", "Demo-request follow-up", "Newsletter replies", "Inbound lead scoring", "Webinar attendees", "Free-trial nudges"],
+        { name: "Pricing-page visitors", status: "green", does: "Spots companies on your pricing page and reaches out the same day.", run: ["14 companies visited /pricing", "6 match your ICP", "6 intros drafted, waiting for you"] },
+        { name: "Demo-request follow-up", status: "green", does: "Answers every demo request and books the call.", run: ["3 demo requests overnight", "3 replies sent in your voice", "2 meetings on the calendar"] },
+        { name: "Newsletter replies", status: "red", does: "Turns newsletter replies into conversations.", run: ["0 replies in 14 days", "Play retired", "Seat given to Webinar attendees"] },
+        { name: "Inbound lead scoring", status: "green", does: "Scores every inbound lead against your ICP.", run: ["38 leads scored today", "9 marked hot", "Hot ones routed to you"] },
+      ] as Play[],
     },
     {
       title: "Outbound plays",
       tint: "purple" as Tint,
       plays: [
-        ["Hiring-signal outbound", "green"],
-        ["Funding-round play", "orange"],
-        ["Competitor mentions", "green"],
-        ["Job-change nudge", "green"],
-      ] as [string, PlayStatus][],
-      pool: ["Hiring-signal outbound", "Funding-round play", "Competitor mentions", "Job-change nudge", "Tech-stack switchers", "Event attendee outreach"],
+        { name: "Hiring-signal outbound", status: "green", does: "Companies hiring SDRs get a three-touch sequence.", run: ["38 companies posted an SDR role", "41 decision makers found", "3 touches drafted, sending tomorrow"] },
+        { name: "Funding-round play", status: "orange", does: "Fresh raises get a congrats and a pitch.", run: ["6 rounds announced this week", "6 notes drafted", "Waiting for your review"] },
+        { name: "Competitor mentions", status: "green", does: "Replies to people complaining about your rivals.", run: ["9 mentions found", "3 worth a reply", "3 replies drafted"] },
+        { name: "Job-change nudge", status: "green", does: "Champions who changed jobs get a hello at the new company.", run: ["5 champions moved", "5 new companies enriched", "5 hellos drafted"] },
+      ] as Play[],
     },
     {
       title: "Content plays",
       tint: "pink" as Tint,
       plays: [
-        ["Weekly SEO article", "green"],
-        ["LinkedIn posts", "orange"],
-        ["Reddit answers", "green"],
-        ["GEO citations check", "green"],
-      ] as [string, PlayStatus][],
-      pool: ["Weekly SEO article", "LinkedIn posts", "Reddit answers", "GEO citations check", "Customer story drafts", "Changelog posts"],
+        { name: "Weekly SEO article", status: "orange", does: "Drafts one article a week on the questions buyers ask.", run: ["12 questions found on Google", "1 article drafted", "Waiting for your review"] },
+        { name: "LinkedIn posts", status: "green", does: "Turns your wins into posts, in your voice.", run: ["2 wins spotted this week", "2 posts drafted", "Scheduled for Tuesday and Thursday"] },
+        { name: "Reddit answers", status: "green", does: "Answers the threads where buyers ask.", run: ["7 threads found", "4 answered", "3 skipped, wrong fit"] },
+        { name: "GEO citations check", status: "green", does: "Checks what ChatGPT says about you.", run: ["10 prompts checked", "Cited in 6", "4 gaps sent to the SEO play"] },
+      ] as Play[],
     },
   ],
 } as const;

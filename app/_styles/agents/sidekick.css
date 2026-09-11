@@ -1,9 +1,13 @@
-/* ── /agents · Super sidekick ─────────────────────────────────────────────
+/* ── /agents · Super simple (chat sidekick) ───────────────────────────────
    Draft geometry (draft-shots/desktop-sec-03.png, 1654 artboard): a 5fr/7fr
    grid, gap 64, columns centered on each other. Left = kicker → 16 → H2 with
    the rotating pink word → 24 → lede. Right = the chat card (625 wide at 1654):
    cream, 1px ink hairline, r24, padding 20/28/28, header row + transcript.
-   Markup: components/sections/agents/AgSidekick.tsx. */
+   Markup + the chat's GSAP loop: components/sections/agents/AgSidekick.tsx.
+   This file owns the rest states: how every row looks finished, and how it
+   hides IN PLACE (opacity / clip-path, never display) while the loop owns it,
+   so the card is its final height from the first paint and nothing ever
+   shifts while it plays. */
 
 .ag-sidekick__grid {
   align-items: center;
@@ -116,13 +120,15 @@
 }
 
 /* transcript: the draft's 15/24 on the kit scale → 16/24 (--lp-text-md, the
-   24px pitch kept), bubble → 18 → assistant lines/chips at 12 (draft) */
+   24px pitch kept as --ag-lh: the pill and the caret size to the line),
+   bubble → 18 → assistant lines/chips at 12 (draft) */
 .ag-sidekick__chat {
+  --ag-lh: 24px;
   display: flex;
   flex-direction: column;
   font-size: var(--lp-text-md);
   gap: 12px;
-  line-height: 24px;
+  line-height: var(--ag-lh);
 }
 .ag-sidekick__user {
   display: flex;
@@ -135,20 +141,67 @@
   max-width: 80%;
   padding: 12px 16px;
 }
-/* typed line: its own max-content width so the steps() reveal is per character
-   (the draft animated width 0→100 % of the column; same pace, no layout work) */
+/* assistant line: its own max-content width, one line (nowrap) ≥768 — the
+   staircase clips the run to a glyph edge, nothing needs overflow clipping
+   (and the link's touch hit box must not be cut). The line is the anchor
+   box of its two helpers below. */
 .ag-sidekick__type {
   align-self: flex-start;
   max-width: 100%;
-  overflow: hidden;
+  position: relative;
   white-space: nowrap;
   width: max-content;
 }
-/* the link never splits across lines: one hit box, "See the play" as a unit */
+/* the link never splits across lines: one hit box, "See the play" as a unit.
+   Its underline is a 1px currentColor bar at the run's content-box bottom
+   (0.1em up = where the font's underline sits) sized by --ag-ul, so the loop
+   can draw it left → right; at rest it is the full underline. */
 .lp .ag-sidekick__link {
+  --ag-ul: 100%;
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 calc(100% - 0.1em) / var(--ag-ul) 1px;
+  background-origin: content-box;
   color: var(--lp-purple-40);
-  text-decoration: underline;
+  text-decoration: none;
   white-space: nowrap;
+}
+/* typing pill: three 6px ink-60 dots in an ink-40 pill the height of the line,
+   absolutely over the line's first slot — it occupies the reserved space, so
+   the swap to the typed line moves nothing. Hidden at rest; the loop shows it
+   for 600ms before each line (one dot wave). */
+.ag-sidekick__dots {
+  align-items: center;
+  background: var(--lp-ink-40);
+  border-radius: 999px;
+  display: inline-flex;
+  gap: 4px;
+  height: var(--ag-lh);
+  left: 0;
+  opacity: 0;
+  padding: 0 10px;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+}
+.ag-sidekick__dots span {
+  background: var(--lp-ink-60);
+  border-radius: 50%;
+  display: block;
+  height: 6px;
+  width: 6px;
+}
+/* caret: 2px × 1em of ink, centred on the line, `left` = the last typed
+   glyph's right edge (set by the loop). Hidden at rest; visible only while
+   its line types. */
+.ag-sidekick__caret {
+  background: var(--lp-text);
+  display: block;
+  height: 1em;
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: calc((var(--ag-lh) - 1em) / 2);
+  width: 2px;
 }
 .ag-sidekick__toolrow {
   align-self: flex-start;
@@ -183,48 +236,34 @@
 }
 
 /* ── play states (data-play on the card) ──
-   "ssr"   = no JS yet: the final transcript (default styles above).
-   "armed" = hydrated, waiting for 30 % in view: every line hidden IN PLACE
-             (clip-path / opacity), so the card is its final height from the
-             first paint and nothing is inserted while it plays.
-   "play"  = the draft's script: `type` = steps(chars) over --ag-dur after
-             --ag-at, `riseIn` = .5s cubic-bezier(.2,.7,.2,1) fade; forwards.
-   "done"  = the script has ended (JS timer): no selector below matches, the
-             plain styles above show the transcript exactly (a forwards fill
-             can land one step short — see AgSidekick.tsx). */
-.ag-sidekick__card[data-play="armed"] .ag-sidekick__type,
-.ag-sidekick__card[data-play="play"] .ag-sidekick__type {
-  clip-path: inset(0 100% 0 0);
-}
-.ag-sidekick__card[data-play="armed"] .ag-sidekick__fade,
-.ag-sidekick__card[data-play="play"] .ag-sidekick__fade {
+   "ssr"   = no JS yet: the final transcript (the rest styles above).
+   "still" = prefers-reduced-motion: the same final transcript, no loop.
+   "loop"  = the GSAP cycle owns every row (AgSidekick.tsx). These rules are
+             the empty state it starts from — the same values as its
+             from-states, so the rows are already hidden IN PLACE when the
+             attribute lands and the card is its final height from the first
+             paint. GSAP's inline styles then take over. */
+.ag-sidekick__card[data-play="loop"] .ag-sidekick__user,
+.ag-sidekick__card[data-play="loop"] .ag-sidekick__toolrow,
+.ag-sidekick__card[data-play="loop"] .ag-sidekick__link {
   opacity: 0;
 }
-.ag-sidekick__card[data-play="play"] .ag-sidekick__type {
-  animation: ag-type var(--ag-dur, 1s) steps(var(--ag-n, 60)) var(--ag-at, 0s) forwards;
+.ag-sidekick__card[data-play="loop"] .ag-sidekick__link {
+  --ag-ul: 0%;
 }
-.ag-sidekick__card[data-play="play"] .ag-sidekick__fade {
-  animation: ag-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) var(--ag-at, 0s) forwards;
+.ag-sidekick__card[data-play="loop"] .ag-sidekick__typed {
+  clip-path: inset(0 100% 0 0);
 }
-@keyframes ag-type {
-  from {
-    clip-path: inset(0 100% 0 0);
-  }
-  to {
-    clip-path: inset(0 0 0 0);
-  }
-}
-@keyframes ag-rise {
-  to {
-    opacity: 1;
-  }
+.ag-sidekick__card[data-play="loop"] .ag-sidekick__check {
+  opacity: 0;
+  transform: scale(0);
 }
 
 /* ── responsive ── */
 /* narrow desktop (1025–1130, gutters 32): the 5fr/7fr split leaves the card
    523–585px, and a typed line is nowrap — the widest ("Three touches drafted
    … tomorrow.") is 472.5px at 16px, so the transcript column must stay ≥ ~480
-   or the line's tail is clipped. Gap 64 → 48 and side padding 28 → 24 give
+   or the line's tail overflows. Gap 64 → 48 and side padding 28 → 24 give
    it 485px at 1025; the head column grows to 380px, which also keeps "From
    OpenClaw." (365px at 57.336 Condensed) on one line — never an orphan. */
 @media (min-width: 1025px) and (max-width: 1130px) {
@@ -245,27 +284,24 @@
 /* touch: a ≥44px hit box for the inline link at every touch width — iPads
    run the 768–1024 layout with a finger, coarse pointers above it too.
    Vertical padding on an inline box widens the hit area without moving the
-   line (no layout effect); the typed line must not clip it (its reveal is
-   clip-path, not overflow — and the lines fit their column at these widths,
-   see the band rule above). */
+   line (no layout effect); the underline stays on the content box
+   (background-origin above), not on the padding edge. */
 @media (max-width: 1024px), (pointer: coarse) {
-  .ag-sidekick__type {
-    overflow: visible;
-  }
   .lp .ag-sidekick__link {
     padding-block: 14px; /* 16.7px inline box at 13.333 + 28 = 44.7; 20 + 28 at 16 */
   }
 }
 /* phone: 16/16/20 card, 13.333/22 transcript (--lp-text-sm); typed lines
-   wrap here, and a wrapping line can't type — same delays, the chip's fade
-   instead */
+   wrap here, and a wrapping run can't type — the loop fades each line in
+   place over its typing slot instead (AgSidekick.tsx, phone build), so the
+   run's empty state is opacity, not the clip edge. Caret off (never shown). */
 @media (max-width: 767px) {
   .lp .ag-sidekick__card {
     padding: 16px 16px 20px;
   }
   .ag-sidekick__chat {
+    --ag-lh: 22px;
     font-size: var(--lp-text-sm);
-    line-height: 22px;
   }
   .ag-sidekick__bubble {
     max-width: 90%;
@@ -274,13 +310,9 @@
     white-space: normal;
     width: auto;
   }
-  .ag-sidekick__card[data-play="armed"] .ag-sidekick__type,
-  .ag-sidekick__card[data-play="play"] .ag-sidekick__type {
+  .ag-sidekick__card[data-play="loop"] .ag-sidekick__typed {
     clip-path: none;
     opacity: 0;
-  }
-  .ag-sidekick__card[data-play="play"] .ag-sidekick__type {
-    animation: ag-rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) var(--ag-at, 0s) forwards;
   }
 }
 /* ≤375: the longest chip ("Used Pancake · sequence.create · 3 touches") is
@@ -302,19 +334,13 @@
   }
 }
 
-/* reduced motion: the settled state, no loops. The selectors restate the
-   state rules above at the same specificity (0,3,0) — later in the source,
-   so they win on source order — no override flag needed. */
+/* reduced motion: the settled state, no loops. The chat never enters "loop"
+   under the preference (AgSidekick.tsx stamps "still" and builds nothing;
+   a mid-visit flip tears the loop down), so only the word rotation needs a
+   CSS kill here. Same specificity (0,3,0) as the armed rule, later in the
+   source — no override flag needed. */
 @media (prefers-reduced-motion: reduce) {
   .ag-sidekick[data-inview="true"] .ag-sidekick__rw {
     animation: none;
-  }
-  .ag-sidekick__card[data-play="armed"] .ag-sidekick__type,
-  .ag-sidekick__card[data-play="play"] .ag-sidekick__type,
-  .ag-sidekick__card[data-play="armed"] .ag-sidekick__fade,
-  .ag-sidekick__card[data-play="play"] .ag-sidekick__fade {
-    animation: none;
-    clip-path: none;
-    opacity: 1;
   }
 }

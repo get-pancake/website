@@ -36,6 +36,20 @@
   gap: 16px;
   width: 464px;
 }
+/* Founder (preview, 2026-09-11): "le H1 et le CTA très éloignés vs l'autre
+   landing page". Production measured at 1654: the visible headline text ends
+   at x902 ("We bring you customers") and the column starts at 1027 — 125px.
+   This headline is shorter ("GTM superpowers." ends at 758), so the same
+   centered column left a 221px void. The column is anchored to the TEXT
+   instead: left 50% + 56 = 883 at 1654 (758 + 125), 776 at 1440 — the
+   H1 is center-anchored too, so the gap is 125 at every width ≥1201. Below
+   1200 the homepage's own right-anchoring takes over. */
+@media (min-width: 1201px) {
+  .ag-hero .lp-hero-col {
+    left: calc(50% + 56px);
+    transform: none;
+  }
+}
 .ag-hero__give {
   align-items: center;
   color: var(--lp-text);

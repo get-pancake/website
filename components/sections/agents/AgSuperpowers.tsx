@@ -138,7 +138,7 @@ export function AgSuperpowers() {
         <p className="ag-kicker">{SUPERPOWERS.kicker}</p>
         <h2 id="ag-superpowers-title" className="lp-title-section">
           {SUPERPOWERS.titleBefore}
-          <span className="ag-accent">{SUPERPOWERS.titleAccent}</span>
+          {SUPERPOWERS.titleAccent ? <span className="ag-accent">{SUPERPOWERS.titleAccent}</span> : null}
           {SUPERPOWERS.titleAfter}
         </h2>
       </div>

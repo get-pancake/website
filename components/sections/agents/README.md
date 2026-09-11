@@ -28,7 +28,7 @@ d'énormes checks à faire".
 | Piece | Where |
 |---|---|
 | Route | `app/agents/page.tsx` (noindex, provisional URL) |
-| Copy (verbatim, ALL strings) | `components/sections/agents/ag-copy.ts` — import, never re-type |
+| Copy (verbatim, ALL strings) | `components/sections/agents/ag-copy.ts` — import, never re-type. Draft copy the founder has NOT reviewed yet is marked DRAFT there (PLAYS.lanes `does`/`run`, the Superpowers H2, the "Super simple" kicker) |
 | Sections | `components/sections/agents/Ag*.tsx` — one per draft section |
 | Shared | `AgTerminal.tsx` (install terminal + copy), `AgAgentMarks.tsx` (5 marks + `AgMarksRow`), `useInView.ts` (`useInView`, `useReducedMotion`) |
 | Page end | `LpPricing` + `LpFooter` from landing-v3 (see Founder feedback, point 4) |
@@ -156,6 +156,29 @@ Consequences (binding, they override any "match the draft" line above):
   control under 44px, a font that is not the page's, a color that is not a
   token. Pixel-perfect is the bar.
 
+## Preview review round 2 (founder, 2026-09-11 evening — all shipped or in flight)
+
+- Hero: H1 in ONE colour (no pink accent — "pas sûr que AI agent doive être dans
+  une autre couleur"); the right column anchored 125px after the H1 TEXT, the
+  gap measured on production ("le H1 et le CTA très éloignés vs l'autre landing
+  page") — `left: 50% + 56px` at ≥1201; Hermes = the homepage portrait mark.
+- Copy: "Super sidekick" → "Super simple" (founder: "strange naming");
+  Superpowers H2 "What if your agent could download GTM?" → "Everything your
+  agent needs to find customers." (founder: "means nothing"); alternatives in
+  the PR. The remaining pink accent ("download") went with the old headline.
+- Chat mock: "animate this chat very dynamically" → a looping demo (bubble pop,
+  3-dot typing indicator, caret typing, tool chips whose check pops when the
+  tool returns, link underline draw, hold, fade, replay; paused off-screen).
+- Knowledge grid: "a more juicy way to present all those pancakes, Mobbin" →
+  staggered spring entrance, a hop wave rippling across the 16 cards every
+  ~5s, hover lift + deeper tint + hop (touch: tap = hop). Mobbin refs in the
+  builder's report / PR.
+- Super plays: "not sure that this adds value — get inspired by the Grok Bot
+  landing page" → each play is a RUN CARD: name + status word + what it does
+  + the three-line run behind it (Grok Bot: "pick a team, open an example to
+  see the run behind it"); one card open per lane, rotating every 6s, lanes
+  offset; DRAFT copy in `PLAYS.lanes` (ag-copy.ts) for Tristan to review.
+
 ## Grid, rhythm, breakpoints
 
 - Artboard 1654. Section column 1136 (`.ag-sec__inner`), side gutter
@@ -193,40 +216,42 @@ agents/hero.css — never re-add a centered stack, a min-height or an art
 lift here: the H1's ring clearance is the homepage's.
 
 ### Super sidekick — `AgSidekick.tsx` / `sidekick.css`
-5fr/7fr grid, gap 64. Left: `.ag-sec__head--left` kicker "Super sidekick" (gap 16
-in the draft), H2 "Find new customers. From " + rotating word (pink-40,
-`inline-grid` stack, `.rw` keyframes 6s linear infinite: 0%→4% fade/rise in,
-16.5%→19.5% out; delays 0/1.2/2.4/3.6/4.8s), lede.
-Right: chat card — `.ag-card` variant with `border: 1px solid var(--lp-ink-tr-10)`,
-radius 24, padding `20px 28px 28px`, gap 20. Header row 13.333px ink-90, gap 10:
-the rotating mark (22px, same `.rw` timing, order Claude/Codex/OpenClaw/Hermes/
-Grok Bot — use `AGENT_MARKS` reordered to `SIDEKICK.headerNames`), rotating name
-(600, ink-100), "· new chat". Body 15px/24px, gap 18: user bubble right-aligned
-(ink-40 bg, r18, `12px 16px`, max 80%); assistant lines that TYPE (nowrap,
-`width: 0 → 100%` with `steps(n)`, n = chars, durations/delays from the script);
-tool chips (`inline-flex`, 13.333/18, `5px 12px 5px 8px`, r999, white bg,
-`1px solid color-mix(ink-100 14%)`, mascot 16px, "Used **Pancake** · brain.read"
-+ green-30 check 12px) that `riseIn` .5s; last line ends with the "See the play"
-link (purple-40, underline, href `#`).
-The whole script PLAYS ONCE when the card is 30 % in view (draft: IO threshold
-.3), holds its final state; reduced motion → final state immediately.
-≤1024: stack (head, then card full width). ≤767: card padding `16px 16px 20px`,
-r24, body 14px/22px; typed lines would wrap → replace the width-typing with the
-`riseIn` reveal per line (same delays) so text can wrap; bubble max 90%.
-Card height must not change while it plays (reserve the final layout — e.g.
-lines are `visibility` / `clip` animated in place, not inserted).
+5fr/7fr grid, gap 64 (48 in the 1025–1130 band). Left: `.ag-sec__head--left`,
+kicker "Super simple", H2 "Find new customers. From " + the rotating word
+(6s `ag-rw` loop, delays 0/1.2/2.4/3.6/4.8, in view only, first word at rest),
+lede. Right: the chat card (card-cream, 1px ink-tr-10, r24, padding
+20/28/28; header = the rotating mark + name in step with the H2 word,
+"· new chat"). THE CHAT IS A LOOPING DEMO (founder 2026-09-11: "animate
+this chat very dynamically"): one paused GSAP timeline (`repeat: -1`, built
+after the lazy GSAP chunk + fonts + first IO report) — bubble pops
+(back.out), 3-dot typing pill in the line's slot (600ms), the line types
+with a caret (13ms/glyph, clip-path staircase on Range rects), tool chip
+rises with the check hidden while the mascot pulses, then the check pops
+(back.out), … "See the play" fades in and its underline draws; hold 3.5s;
+fade 240ms; wrap. Cycle 14.86s. Plays at ≥30% on stage, PAUSES (never
+resets) below, resumes on return, pauses while the link has keyboard
+focus; `data-play` = `ssr` (no JS: full transcript) / `loop` / `still`
+(reduced motion). Card height constant (491.75 at 1654, 573.55 at 375);
+phones fade+rise each wrapped line instead of the staircase, no caret. Link
+`tabindex -1` while hidden.
 
-### Super knowledge — `AgKnowledge.tsx` / `knowledge.css`
-Centered head; grid `repeat(4, 1fr)` gap 16, mt 56. Card: tint (`.ag-tint--*`),
-r24, padding `24px 24px 20px`, column, centered, gap 14: illustration 96px tall
-(`<img>` from `/lp/agents/data/<slug>.png`, `height: 96; width: auto`, loading
-lazy, `alt=""`) in a `.ag-knowledge__bob` wrapper (keyframes `bob` 3.2s
-ease-in-out infinite: `translateY(0) rotate(-2deg)` → `translateY(-6px)
-rotate(2deg)`, per-card `animation-delay` from `KNOWLEDGE.cards[i].delay`), label
-`.ag-title-sm` at 23.04px centered. All 16 cards equal height (grid stretch).
-Bob runs only while the section is in view. ≤1024: 3 columns. ≤767: 2 columns,
-gap 12, illustration 72px, padding `16px 12px 14px`, label 19.2px (`--lp-text-lg`,
-condensed) — labels must not wrap to 3 lines at 320px.
+### Super knowledge — `AgKnowledge.tsx` / `AgKnowledgeGrid.tsx` / `knowledge.css`
+Centered head; grid `repeat(4, 1fr)` gap 16, mt 56; card: tint, r24, padding
+`24px 24px 20px`, illustration 96px (`/lp/agents/data/<slug>.png`, alt="") in
+`.ag-knowledge__hop`, label `.ag-title-sm` at 23.04 centered; 16 cards equal
+height. MOTION (founder 2026-09-11: "a more juicy way to present all those
+pancakes"; Mobbin refs Framer developer tiles a2aceed5 / plugin grid f77772c2,
+Lattice integrations wall 2006d3b7 — the frame stays still, the art performs):
+ENTRANCE once per visit on first intersection — a diagonal cascade (slot from
+live geometry), opacity 0→1, translateY 18→0, scale .94→1, 420ms
+cubic-bezier(.2,.9,.2,1.1), 35ms/slot (30 ≤767); WAVE 1.6s after entering
+then every 5s — one 320ms hop per illustration (−8px, −3°→+3° lean, pivot at
+the feet) 60ms apart along the diagonal; HOVER (hover+fine pointer) lifts the
+card 4px + deepens its tint one ramp step (*-10 → *-20) + hops the art, 200/
+260ms, siblings untouched; TAP (touch) = one hop. All of it inside
+`prefers-reduced-motion: no-preference`; wave/entrance armed only in view;
+`KNOWLEDGE.cards[i].delay` is unused now. ≤1024 four compact columns (80px
+art, 19.2 label); ≤767 two columns, gap 12, 72px art.
 
 ### Superpowers — `AgSuperpowers.tsx` / `AgSuperpowersMocks.tsx` / `superpowers.css`
 FEATURE TABS (founder, preview review 2026-09-11: the draft's peeking
@@ -251,27 +276,24 @@ panes interleaved by `order`, the open row's pane 16px under it, inactive
 panes `display:none`, no autoplay; card padding 32 / 24 (≤767, r24). Card
 1136×571 at 1654 for every tab.
 
-### Super plays — `AgPlays.tsx` / `plays.css` (client)
-Centered head; below (mt 56): mascot column centered (mascot 104px in a `bob`
-wrapper at 1.1s — the draft's `#org .bob`), plum label (r12, `8px 14px`, 13.333,
-"**Pancake**" / "runs the squad" at .75 opacity); connector — port
-`draft-assets/org-connector.svg` (1136×130: three dotted curves from the label
-to each column with a 5px dot travelling along each via `animateMotion`
-0.8/0.95/1.1s); then `repeat(3, 1fr)` gap 24, `align-items: stretch`: column
-`.ag-tint--*` r30 padding `28px 24px`, gap 12, title `.ag-title-sm` centered
-(mb 8), rows = card-cream r12 `12px 16px` 14/20 with a 9px status dot
-(green-30 / yellow-40 / red-30) — status colors and pools from `PLAYS`.
-Simulation (draft `draft-scripts.js` "plays org chart"): every 900ms while in
-view, a burst of 2–3 rows (red ones favored 60 %): green→orange or orange→red
-with a `hit` pulse (scale 1.045 for .38s + a 2px pink-40/25% ring), red→retires
-(`out`: fade + translateX 24px, 220ms) and comes back as a FRESH pool name at a
-random position in the column, green, with `animIn`. Model it as React state
-(columns → rows {id, name, status}); randomness via `Math.random` in effects only
-(never during render — hydration). Reduced motion: static initial state.
-≤1024: connector hidden, columns stack full width (gap 16) under the mascot;
-≤767: column padding `20px 16px`, title 23.04. Column heights equal at every
-width (stretch); a retiring row must not change the column height (keep it in
-flow while animating).
+### Super plays — `AgPlays.tsx` / `plays.css`
+RUN CARDS (founder 2026-09-11: "not sure that this adds value — get inspired
+by the Grok Bot landing page": x.ai's "pick a team, open an example to see
+the run behind it"). Head + mascot (bob) + "Pancake / runs the squad" label +
+the dotted connector (≤1024: the stem) → three tinted lanes (grid stretch,
+`.ag-title-sm` titles) → 4 cards each (cream r12): `button.ag-plays__head`
+= name 16/600 + state (9px dot green-30/yellow-40/red-30 with the hairline
+ring + `PLAY_STATE` word 13.333 subtle, right) + `does` 13.333/20 subtle
+(2-line floor ≥1025 so all 12 cards match); a retired play's name is muted.
+ONE card per lane is open and shows the run: `ol` of 3 lines, 6px markers
+on one vertical line (last = green-30; all ink-50 when retired), lines
+rise in 220ms / 180ms apart. Rotation: a 2s clock, lane k mod 3 → each
+lane moves every 6s, 2s apart; holds = pointer on the lane, keyboard focus,
+a 5.5s rest after any click; off-screen no clock; reduced motion = first
+cards open, static; phones (≤767) no clock, tap to open. Lane height is
+constant: every card carries a clipped log box, `--ag-plays-log-h` = the
+tallest log, outgoing/incoming boxes animate on one 200ms ease (sum
+constant, proven per frame). Copy = `PLAYS.lanes` (DRAFT `does`/`run`).
 
 ### Super smart — `AgBrain.tsx` / `brain.css` (client)
 5fr/7fr grid gap 56, left head (kicker gap 16, H2, lede). Right: `.ag-card`
