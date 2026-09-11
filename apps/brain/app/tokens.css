@@ -1,0 +1,30 @@
+/* Brain layout aliases. Brand values come from the shared v3 foundation.
+   Geometry follows its 1296px content grid, 69.014px hero, 48px controls,
+   24/32/48px radii and 8/16/24/32/48/64/96px spacing. */
+.brain {
+  --brain-space-xs: 4px;
+  --brain-space-sm: 8px;
+  --brain-space-md: 16px;
+  --brain-space-lg: 24px;
+  --brain-space-xl: 32px;
+  --brain-space-2xl: 48px;
+  --brain-space-3xl: 64px;
+  --brain-space-4xl: 96px;
+  --brain-weight-regular: 400;
+  --brain-weight-medium: 500;
+  --brain-weight-semibold: 600;
+  --brain-grid: 1136px;
+  --brain-signup-width: 432px;
+  --brain-title-size: 69.014px;
+  --brain-title-tracking: -0.03em;
+  --brain-hero-clearance: 448px;
+  --brain-rule: 1px;
+  --brain-focus-width: 2px;
+  --brain-control-height: 48px;
+  --brain-avatar-size: 32px;
+  --brain-mobile-art-width: 163.33vw;
+  --brain-mobile-art-top: 0.3vw;
+  --brain-mobile-art-offset: -4.82vw;
+  --brain-mobile-clearance: 61.44vw;
+  --brain-ease: 200ms ease;
+}
