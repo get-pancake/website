@@ -1,0 +1,107 @@
+{
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "title": "Hero · Desktop",
+      "x": 0,
+      "y": 0,
+      "w": 1654,
+      "h": 980,
+      "page": "page-1"
+    },
+    {
+      "file": "MainMobile.dc.html",
+      "title": "Hero · Mobile",
+      "x": 1774,
+      "y": 0,
+      "w": 390,
+      "h": 1004,
+      "page": "page-1"
+    },
+    {
+      "file": "FigmaLayout.dc.html",
+      "title": "Figma two-column layout",
+      "x": 0,
+      "y": 0,
+      "w": 1654,
+      "h": 878,
+      "page": "page-2"
+    },
+    {
+      "file": "Team.dc.html",
+      "title": "A · Team (old kit)",
+      "x": 1774,
+      "y": 0,
+      "w": 1440,
+      "h": 940,
+      "page": "page-2"
+    },
+    {
+      "file": "Stacked.dc.html",
+      "title": "B · Stacked (old kit)",
+      "x": 3334,
+      "y": 0,
+      "w": 1440,
+      "h": 940,
+      "page": "page-2"
+    },
+    {
+      "file": "Outcome.dc.html",
+      "title": "C · Outcome (old kit)",
+      "x": 4894,
+      "y": 0,
+      "w": 1440,
+      "h": 940,
+      "page": "page-2"
+    },
+    {
+      "file": "FullPage.dc.html",
+      "title": "Full landing page · Desktop",
+      "x": 2284,
+      "y": 0,
+      "w": 1654,
+      "h": 8300,
+      "page": "page-1"
+    }
+  ],
+  "annotations": [
+    {
+      "id": "h1-main",
+      "x": 0,
+      "y": -220,
+      "w": 660,
+      "page": "page-1",
+      "text": "\"Give your AI agent GTM superpowers.\" ('your AI agent' in pink, no rotation). Built from the Figma GTM Landing Page hero (node 4197-9774): cream #FBF6F1, stacked-circle rainbow, nav, dark primary button; secondary button uses the light chrome fill.\nAgent marks: Claude, OpenAI (for Codex), OpenClaw, Grok (for GrokBot), Hermes (H from the pixel wordmark), all in plum.\nH1 face: Figma uses Aeonik Condensed Pro 600; Aeonik Bold stands in at the same size and tracking."
+    },
+    {
+      "id": "h1-alt",
+      "x": 0,
+      "y": -200,
+      "w": 560,
+      "page": "page-2",
+      "text": "Kept for reference: the Figma two-column hero with the new copy, and three earlier drafts on the old kit with alternative H1s."
+    },
+    {
+      "id": "fullpage",
+      "x": 2284,
+      "y": -260,
+      "w": 700,
+      "page": "page-1",
+      "text": "Rebuilt after the critique (2026-09-11): real responsive layout (fluid gutters, breakpoints 1216/1100/1024/900/767, mobile hero recomposition like the live site), balanced markup, real links, semantic sections, calmer motion (one-shot demos, JS-timed name rotation, chat that grows at reading pace, one play at a time in the org chart, brain hubs on a fixed ring with write-back pulses), reduced-motion honoured. Copy untouched. Site build: external WOFF2 fonts + avatar files, 126 KB HTML."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "page-1"
+  },
+  "pages": [
+    {
+      "id": "page-1",
+      "name": "Hero (Figma system)"
+    },
+    {
+      "id": "page-2",
+      "name": "Alternatives"
+    }
+  ]
+}
