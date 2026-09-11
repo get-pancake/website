@@ -133,13 +133,10 @@ Consequences (binding, they override any "match the draft" line above):
      slivers must span the card's full height at every width (anchor/scale them
      to the card, or cap the card at the artboard's 432 by tightening the
      content — measure both, keep the artboard geometry, report the numbers).
-  3. **Hero bottom**: "and watch it become a GTM super hero" and the mascot sit
-     in a dead cream band under the terminal, and the mascot is a static PNG on
-     a page where everything else moves. Tighten the stack (draft 40/36 →
-     32/24), give the mascot the page's idle bob (3.2s, in-view gated, off under
-     reduced motion), end the section a controlled 56px under the mascot on
-     desktop, and on phones end the hero right after the mascot — never stretch
-     the hero to the fold if that leaves more than ~80px of empty cream.
+  3. **Hero**: SUPERSEDED on the preview review (founder 2026-09-11 evening):
+     the centered stack is gone — H1 left + terminal block right, exactly the
+     homepage hero's geometry; the mascot is removed; "and watch it become a
+     GTM super hero" reads at the give line's 19.2px.
   4. **Footer** = `LpFooter` exactly as production (already the case). Never a
      re-implementation, never a variant. In production the black footer is
      always preceded by the pricing section's black band + rainbow wave — the
@@ -178,27 +175,22 @@ Consequences (binding, they override any "match the draft" line above):
 
 ## Section specs (desktop geometry from the draft; recompose per the rules above)
 
-### Hero — `AgHero.tsx` / `hero.css` (+ `AgHeroMascot.tsx`)
-Root keeps `lp-hero` so hero.css positions the art (the homepage's poses at
-every breakpoint), lifted 28px on desktop (`top: -148px`; a 40-phase WebKit
-sweep found the "G" under the green band for ~1s of each loop at −120).
-`.ag-hero__inner`: centered flex column, `padding: 220px 32px 56px` at ≥1025
-(no min-height — the founder's dead band under the mascot was the 860 floor),
-`translateZ(0)` + `will-change: transform` like `.lp-hero-inner`. Stack: H1
-69.014/−2.0704 on two lines (`.ag-hero__br`) → give row (19.2, gap 18, marks
-28) mt 56 → terminal mt 28 (hugs its content) → after line mt 32 → mascot
-112 mt 24, in `.ag-hero__bob` (the page's idle bob 3.2s, in-view gated,
-off under reduced motion). The section ends 56px under the mascot (812 at
-1654). Tablet ≤1024: padding-top 34vw, gutters 48, H1 clamp(40px, 6.4vw,
-62px). Phone ≤767: padding `61.44vw 32px 64px`, H1 clamp(30px, 8.846vw,
-35.559px), give row wraps (marks 24px), terminal full width (wraps once
-before the URL; xsm under 360), mascot 88, `min-height: 0` (the hero ends
-right after the mascot — never stretched to the fold). Landscape phones
-(≤1024 and ≤500 tall) get a lower art + top padding so the H1 is on the
-first screen. Short desktop windows ≤639 tall: padding-top 160 + art −208.
-QA: rainbow renders (WebKit runs the GL path; headless Chromium shows the
-static artboard), H1 glyphs clear of ink at every phase (qa/wk-sweep.cjs in
-the 2026-09-11 scratchpad), terminal above the fold at 1440×800/900.
+### Hero — `AgHero.tsx` / `hero.css`
+The HOMEPAGE hero, class for class (founder 2026-09-11: "répartis h1 et cta
+comme sur la landing page standard"): the section renders `lp-hero` /
+`lp-hero-art` / `lp-hero-inner` / `lp-hero-title` / `lp-hero-col`, so
+landing-v3/hero.css owns every breakpoint (640–758 fold clamp + short-window
+ladder, art at −120, H1 bottom-anchored at 68.65 on the 656 column, right
+column centered on x1211 and bottom-anchored at 84.65, ≤1200 edge anchoring,
+≤1024 flow at 34vw, ≤767 fold-filling stack). The right column carries what
+the homepage's lede + pills carry: "Give this to your agent" + the five marks
+(19.2), the install terminal (one line at 16px Fono, hugs 453px), "and watch
+it become a GTM super hero" (19.2 — founder: the same size as the give
+line); rows 16 apart; column width 464 on desktop (clear of the H1 down to
+1025), hugging ≤1024, stretched to the gutters on phones. No mascot
+(founder: "enlève le pancake monster qui traîne"). Nothing else in
+agents/hero.css — never re-add a centered stack, a min-height or an art
+lift here: the H1's ring clearance is the homepage's.
 
 ### Super sidekick — `AgSidekick.tsx` / `sidekick.css`
 5fr/7fr grid, gap 64. Left: `.ag-sec__head--left` kicker "Super sidekick" (gap 16
@@ -236,49 +228,28 @@ Bob runs only while the section is in view. ≤1024: 3 columns. ≤767: 2 column
 gap 12, illustration 72px, padding `16px 12px 14px`, label 19.2px (`--lp-text-lg`,
 condensed) — labels must not wrap to 3 lines at 320px.
 
-### Superpowers — `AgSuperpowers.tsx` / `superpowers.css` (client)
-Centered head, H2 with pink "download". Carousel (draft geometry): slides
-1120px, gap 24, track translated so the ACTIVE slide is centered
-(`translateX(calc(50% − 560px − i×1144px))`, transition `.65s
-cubic-bezier(.22,1,.36,1)`), inactive slides `opacity: .45; transform: scale(.96)`
-(the draft's carousel focus — keep it); section overflow hidden, full-bleed
-track (the section is `padding-left/right: 0` with the head padded).
-Slide = `.ag-card` grid 5fr/7fr gap 40, padding `48px 56px`, min-height 440:
-left = num (`.ag-kicker` in ink-80), `.ag-title-step` title, lede; right = mock
-panel (page-bg, r24, padding 24, min-height 340) with the user bubble (plum
-bg, ink-20 text, `18px 18px 4px 18px`, `10px 14px`, 13.333/20, max 88%,
-right-aligned) then the mock:
-- 01 mini brain: port `draft-assets/slide1-mini-brain.svg` (420×220, five hubs
-  from `SUPERPOWERS.slides[0].brain` with token colors, center plum node
-  `pulse` 2.4s, hubs `bdrift` 7s with the draft's delays; labels 12px Geist).
-- 02 chips: `.chip-pop` keyframes (4.2s ease-in-out infinite: 0/100% hidden
-  `scale(.85)`, 12–80% shown), delays 0.4s × i; chip 34px tall, r17, white,
-  `1px solid color-mix(ink-100 12%)`, 13.333.
-- 03 domains: three white rows (r12, `1px solid` 12% ink, `10px 14px`, 13.333,
-  host 600 + meta muted) `animIn` .5s forwards at 0/.6/1.2s; 4px bar
-  (`--lp-ink-tr-10` track) filled to `pct` with the token tone, `warm`
-  keyframe 1.6s ease-out .4s backwards; note 13.333 muted below.
-- 04 workflow: rows `wfPop` .5s `cubic-bezier(.2,.9,.2,1.2)` forwards at
-  .2/.8/1.1/1.7/2/2.9s; 36px round icon (tint bg + tone icon: mail / linkedin /
-  reply from `draft-assets/icon-*.svg` inlined), white row (r14, hairline,
-  label 600 + muted detail, uppercase 11.108/600/.4px tag on the tint), italic
-  11.5px ink-70 notes indented 50px, dashed vertical line (2px dashed 18% ink,
-  left 17) with the purple dot `wfDrop` 3.2s sliding down; green reply row;
-  note 12.5px muted, `margin-top: auto`.
-Mock animations restart each time a slide becomes active (re-mount the mock or
-toggle a class), and are paused when the section is off-screen.
-Controls under the track, centered, gap 16: prev/next 44px round white buttons
-with hairline (`1px solid color-mix(ink-100 16%)`), chevrons; dots 8px
-(active ink-100, others 20% ink). Autoplay every 11s (draft) while in view and
-not reduced-motion; clicking a neighbor slide, a dot or an arrow goes there and
-restarts the timer; keyboard: arrows work when a control is focused; pointer
-swipe ≥40px on the track.
-≤1024: scroll-snap carousel instead of the transform track — slides
-`calc(100% − 48px)` wide, `scroll-snap-align: center`, no dimming, no autoplay,
-dots follow the scrolled slide (scroll listener / IO), prev/next scroll the
-container; slide grid stacks (text, then mock), padding 32. ≤767: slide
-`calc(100% − 32px)`, padding 24, mock panel padding 16, min-heights off; chips
-wrap; the workflow's dashed line + dot keep working at the narrower width.
+### Superpowers — `AgSuperpowers.tsx` / `AgSuperpowersMocks.tsx` / `superpowers.css`
+FEATURE TABS (founder, preview review 2026-09-11: the draft's peeking
+carousel "à améliorer en utilisant des composants Mobbin"; references: Zoox
+b19088d0 quiet feature list, Fixa f0b54078 tab list + stage, Intercom
+fe15fe44 vertical list with active marker, Superhuman a35451f7 autoplay
+tabs). One cream `.ag-card` (padding 48/56) = grid 5fr/7fr gap 40. Left:
+`role=tablist` (vertical, roving tabindex, Arrow/Home/End) of four tabs —
+2px left rail (`--lp-ink-tr-10`; the active tab's rail FILLS top→bottom over
+9s and advances to the next tab on `animationend`), index "01" (Geist
+13.333/500/.04em subtle — `num.split(" / ")[0]`), title `.ag-title-sm`
+(ink-70 rest / ink active), the body (16/24 subtle, 33ch — every body sets
+in three lines so the card height never changes) collapsed 0fr→1fr on the
+inactive tabs. Right: the four panes stacked in one grid cell (`role=
+tabpanel`, page-bg r24 padding 24, bubble + mock), inactive hidden, active
+240ms fade + 6px rise; the mock re-mounts on activation (epoch key) and
+PLAYS ONCE, holding its settled state (chips / rows / bars / dot — the mini
+brain keeps its ambient drift). Holds: pointer resting on the card (non-
+touch), keyboard focus in the tablist, off-screen (useInView), reduced
+motion (static rail, no autoplay). ≤1024 = accordion: same DOM, tabs and
+panes interleaved by `order`, the open row's pane 16px under it, inactive
+panes `display:none`, no autoplay; card padding 32 / 24 (≤767, r24). Card
+1136×571 at 1654 for every tab.
 
 ### Super plays — `AgPlays.tsx` / `plays.css` (client)
 Centered head; below (mt 56): mascot column centered (mascot 104px in a `bob`
@@ -321,12 +292,24 @@ viewBox units) or scale the node sizes/font with a `compact` prop; nothing may b
 clipped by the card.
 
 ### Super addictive — `AgVersus.tsx` / `versus.css`
-Centered head (kicker + H2, no lede); grid `repeat(2, 1fr)` gap 16 mt 48,
-stretch. Card A `.ag-card` padding 48, gap 16: kicker "Agent alone" pink-40, four
-lines in `.ag-title-step` (one `<br>` per line — keep as a list `<ul>` for
-semantics with the same look). Card B: `--lp-terminal-bg` ground, `--lp-page-bg`
-text, r30, kicker purple-30. ≤1024: still two columns if ≥ 768 (padding 32),
-≤767: stack, padding 24, gap 12, lines 27.648px.
+ROW-BY-ROW COMPARISON (founder, preview review 2026-09-11: "show that we're
+comparing thing by thing"; references: Front 887ca35c row-aligned check/
+cross columns, Function dd3e214a + Superpower b9886dc1 highlighted column).
+Centered head (kicker + H2), mt 48, one cream `.ag-card` (padding 16)
+holding a real `<table>` (fixed layout, two 50% columns, sr-only caption):
+`<th scope=col>` kickers "Agent alone" pink-40 / "Agent + Pancake" purple-30
+(24/500 at every width), four `<tr>` from `VERSUS.rows` (the eight verbatim
+lines paired by theme: data / sending / follow-up / knowledge). Left cells:
+24px ✗ disc (ink-tr-10 fill, ink-70 stroke) + text `.ag-title-step` at
+`--lp-text-3xlg` (33.18 — 39.816 wraps "Warmed inboxes and LinkedIn");
+right cells paint `--lp-terminal-bg` with r24 on the first/last cell (one
+black block spanning header + rows), ✓ disc green-20 + page-bg text. Row
+hairlines at the same y in both columns (ink-tr-10 / 14% page-bg); rows
+81px at 1654, header 80. ≤1024: fluid text `clamp(19.2, 4.35cqi − 8.5,
+27.648)`, one line per cell down to 768. ≤767: a legend row ("✗ Agent
+alone" on cream, "✓ Agent + Pancake" as a black chip) then four stacked
+PAIRS — the ✗ line (19.2, ink-80) 8px above the ✓ black band (r12, 12/16),
+16px between pairs. No motion, no hover.
 
 ### CTA — `AgCta.tsx` / `cta.css` (markup exists; CSS additions only)
 Reuses the homepage CTA card verbatim (cta.css). Content order: title

@@ -27,6 +27,9 @@ export const META = {
     "Pancake gives your AI agent access to 50+ datasources, sending infrastructure, and a GTM brain that can orchestrate any GTM play.",
 } as const;
 
+/* Hero (founder 2026-09-11, on the preview): laid out like the homepage
+   hero — H1 left, this block right — no mascot; `after` reads at the same
+   size as `give`. */
 export const HERO = {
   titleBefore: "Give ",
   titleAccent: "your AI agent",
@@ -233,6 +236,18 @@ export const VERSUS = {
     kicker: "Agent + Pancake",
     lines: ["50+ sources behind one API", "Warmed inboxes and LinkedIn", "Sequence management", "A brain that remembers"],
   },
+  /** Row-by-row comparison (founder 2026-09-11: "show that we're comparing
+      thing by thing"). The eight draft lines, verbatim, paired by theme —
+      data / sending / follow-up / knowledge — in the draft's right-column
+      order; the left column is reordered to face its counterpart. The
+      "Forgets by tomorrow ↔ Sequence management" pair is the softest
+      (follow-ups over days vs. an agent with no memory) — flagged in the PR. */
+  rows: [
+    ["Scrapes what it can", "50+ sources behind one API"],
+    ["Can't send anything", "Warmed inboxes and LinkedIn"],
+    ["Forgets by tomorrow", "Sequence management"],
+    ["Guesses the ICP", "A brain that remembers"],
+  ],
 } as const;
 
 export const CTA = {

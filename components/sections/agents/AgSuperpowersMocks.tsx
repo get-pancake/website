@@ -2,13 +2,17 @@ import type { CSSProperties } from "react";
 import { SUPERPOWERS } from "./ag-copy";
 
 /**
- * /agents — Superpowers: the four animated mini-mocks inside the carousel
- * slides (draft #prims). Pure markup — every motion is a CSS keyframe in
- * app/_styles/agents/superpowers.css (ag-sp-*), ported 1:1 from draft-css.css.
- * The carousel re-mounts a mock (React `key`) each time its slide becomes
- * active, which is what restarts the one-shot animations. Colors are token
- * classes (`ag-sp-tone--*`, `ag-sp-wf__row--*`), never literals; text reads
- * in Geist through the kit's universal font rule (founder 2026-09-09: mock
+ * /agents — Superpowers: the four animated mini-mocks on the feature-tabs
+ * stage (draft #prims). Pure markup — every motion is a CSS keyframe in
+ * app/_styles/agents/superpowers.css (ag-sp-*), the draft's keyframes made
+ * ONE-SHOT: chips pop in once and stay, domain rows and warm bars fill
+ * once, workflow rows and the travelling dot land once (founder 2026-09-11:
+ * the looping chips that faded in and out looked broken); only the mini
+ * brain keeps its subtle ambient drift/pulse. The tabs re-mount a mock
+ * (React `key` = activation count) each time its tab becomes active, which
+ * is what replays the one-shot animations. Colors are token classes
+ * (`ag-sp-tone--*`, `ag-sp-wf__row--*`), never literals; text reads in
+ * Geist through the kit's universal font rule (founder 2026-09-09: mock
  * stages read in Geist, Fono stays on the install command).
  */
 
@@ -53,7 +57,7 @@ export function AgSpBrainMock() {
   );
 }
 
-/* ── 02 · enrichment chips (chipPop 4.2s loop, 0.4s × i) ── */
+/* ── 02 · enrichment chips (pop in once, 0.4s × i, and stay) ── */
 export function AgSpChipsMock() {
   return (
     <div className="ag-sp-chips">

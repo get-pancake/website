@@ -1,118 +1,245 @@
 /* ── /agents · versus — "Super addictive" ────────────────────────────────
-   Draft section 08 (desktop-sec-08.png): centered head, then two cards in a
-   `repeat(2, 1fr)` grid, gap 16, 48px under the head. Card A = cream
-   `.ag-card`, kicker pink-40; card B = the terminal-black ground with
-   page-bg text, kicker purple-30. Both: padding 48, column, gap 16, four
-   `.lp-title-step` lines. No motion in the draft — nothing to gate here. */
+   Founder (2026-09-11), on the draft's two cards of stacked lines: "we can
+   better show that we're comparing thing by thing and that it's not just
+   bloated text". So: ONE cream card is the frame of a comparison table —
+   two equal columns, four rows, the ✗ cell and the ✓ cell of a theme on the
+   same baseline. References (Mobbin): Front's two-column comparison with
+   row-aligned check/cross cells; the highlighted plan column of Function /
+   Superpower / Height (one dark block spanning the header and every row).
+   No motion in the draft — nothing to gate. Colors and alphas are tokens;
+   the only literal numbers are geometry.
 
-.ag-versus__grid {
-  /* founder rule: cards in a row are pixel-equal in height → grid + stretch,
-     never content-hugging (the black card's lines run longer than the
-     cream card's; the cream card must not end early) */
-  align-items: stretch;
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+   Geometry (1136 column): card padding 16 → table 1104 → columns 552.
+   Cell = padding 32 + 24px mark + 16 gap → 448px for the text. At the
+   `.ag-title-step` size (39.816) "Warmed inboxes and LinkedIn" measures
+   457px, so the cells step down one notch to 33.18 (`--lp-text-3xlg`,
+   381px, 67px slack) — every cell is one line, the whole point of the rows.
+   Rows: 20 + 40 line + 20 + 1 hairline = 81px; header 28 + 32 + 20 = 80. */
+
+.ag-versus__frame {
+  /* the line box of the cell text — the marks center on it (see .ag-versus__mark) */
+  --ag-versus-line: 40px;
+  /* the tablet text step is measured against the card, not the viewport:
+     container units ignore the scrollbar that `vw` counts */
+  container-type: inline-size;
   margin-top: 48px;
+  padding: 16px;
 }
-.ag-versus__card {
-  border-radius: var(--ag-r-card); /* 30 desktop / 24 phone, like the steps cards */
+.ag-versus__table {
+  /* separate + 0 spacing (the kit reset collapses): a collapsed table can
+     neither round its cells nor let a cell background carry a radius —
+     the black column needs both */
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed; /* two 50 % columns, whatever the copy's length */
+  width: 100%;
+}
+.ag-versus__th,
+.ag-versus__td {
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  min-width: 0;
-  padding: 48px;
-  text-align: left; /* copy left-justified inside cards (founder) */
+  text-align: left; /* copy left-justified inside cards (founder); `th` centers by default */
+  vertical-align: top; /* a cell that ever wrapped would still share its first line with its neighbor */
+  width: 50%;
 }
-.ag-versus__card--with {
+.ag-versus__th {
+  font-weight: 500; /* `th` bolds by default; the kicker recipe is 500 */
+  padding: 28px 32px 20px;
+}
+.ag-versus__td {
+  /* row hairlines: every body row draws its top edge, so the header gets
+     one too and the four rows are pixel-identical (81px) */
+  border-top: 1px solid var(--lp-ink-tr-10);
+  padding: 20px 32px;
+}
+
+/* ── the highlight column: "Agent + Pancake" ──
+   One black block from the header to the last row, r24 (the page's inner
+   frame radius: sidekick card, superpowers mock panel), page-bg text.
+   Painted per cell — the cells abut (border-spacing 0, integer row
+   heights), the first and last carry the corners. */
+.ag-versus__th--with,
+.ag-versus__td--with {
   background: var(--lp-terminal-bg);
   color: var(--lp-page-bg);
 }
-/* card kickers: the draft's `.lp-kicker` recipe (Condensed 24/32/500) in the
-   card's accent — `.ag-kicker` paints plum, hence the two-class override.
-   The size is pinned at every width (the foundation steps `.ag-kicker` to
-   19.2/26 on phones): pink-40 on the cream card is 4.01:1, which passes only
-   as WCAG large text — 24px at weight 500; at 19.2/500 it fails 4.5:1
-   (review #28). The two-class selector outranks the phone step. */
-.ag-versus__card .ag-versus__kicker {
+.ag-versus__td--with {
+  border-top-color: color-mix(in srgb, var(--lp-page-bg) 14%, transparent);
+}
+.ag-versus__th--with {
+  border-radius: 24px 24px 0 0;
+}
+.ag-versus__row:last-child .ag-versus__td--with {
+  border-radius: 0 0 24px 24px;
+}
+.ag-versus__td--alone {
+  color: var(--lp-text); /* full ink — the left column must read, not ghost (16:1 on cream) */
+}
+
+/* ── cells: mark + text ── */
+.ag-versus__cell {
+  /* flex-start + a computed top offset instead of `center`: identical for
+     the one-line cells this is designed for, and if a cell ever wraps the
+     mark stays on its FIRST line instead of drifting between the two */
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+  min-width: 0;
+}
+.ag-versus__mark {
+  border-radius: 50%;
+  display: grid;
+  flex: none;
+  height: 24px;
+  margin-top: calc((var(--ag-versus-line) - 24px) / 2);
+  place-items: center;
+  width: 24px;
+}
+.ag-versus__mark svg {
+  display: block;
+  height: 24px;
+  width: 24px;
+}
+.ag-versus__mark--alone {
+  background: var(--lp-ink-tr-10);
+  color: var(--lp-ink-70); /* the ✗ stroke */
+}
+.ag-versus__mark--with {
+  background: var(--lp-green-20);
+  color: var(--lp-ink-100); /* the ✓ stroke */
+}
+/* desktop + tablet headers are the two kickers alone — the columns carry
+   the meaning; the marks inside the headers are the phone legend's key */
+.ag-versus__th .ag-versus__mark {
+  display: none;
+}
+/* the text: the step recipe (Condensed 600) one notch down, on a 40px line
+   box so the row height is an integer and the hairlines land on the pixel */
+.ag-versus__td .ag-versus__text {
+  font-size: var(--lp-text-3xlg);
+  letter-spacing: -0.9954px; /* the recipe's −0.03em at 33.18 */
+  line-height: var(--ag-versus-line);
+  overflow-wrap: anywhere; /* a word can never push the table wider than its column */
+}
+/* column kickers: the draft's colors — pink-40 on the cream (4.01:1, passes
+   as 24px large text — never step it to 19.2, review #28), purple-30 on the
+   black (8.2:1). The two-class selector outranks the foundation's phone
+   step of `.ag-kicker`, so the size is pinned at every width. */
+.ag-versus__th .ag-versus__kicker {
   font-size: 24px;
   line-height: 32px;
   margin: 0;
 }
-.ag-versus__card--alone .ag-versus__kicker {
+.ag-versus__th--alone .ag-versus__kicker {
   color: var(--lp-pink-40);
 }
-.ag-versus__card--with .ag-versus__kicker {
+.ag-versus__th--with .ag-versus__kicker {
   color: var(--lp-purple-30);
 }
-/* the four lines: a list that looks like the draft's `<br>`-separated
-   `.lp-title-step` span — each item (carrying `.ag-title-step` itself, the
-   kit's `* { font-family }` beats inheritance) is one 1.2 line box, no
-   bullets, no extra rhythm; the black card's lines inherit its page-bg */
-.ag-versus__lines {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.ag-versus__lines li {
-  overflow-wrap: anywhere; /* a word can never push the card wider than its column */
-}
-/* the H2 is one line only on the 1136 column; where it wraps (≤1024) balance
+/* the H2 is one line on the 1136 column; where it wraps (≤1024) balance
    the two lines instead of orphaning "Pancake." — progressive enhancement */
 .ag-versus .lp-title-section {
   text-wrap: balance;
 }
 
-/* ── responsive ── */
-/* The widest line ("Warmed inboxes and LinkedIn") measures 457px at the
-   39.816 step — only 7px inside the 464px content box the 1136 column gives
-   each card. Below ~1220px the column shrinks with the viewport (gutters 32),
-   so the step scales with it instead of wrapping one item onto two lines
-   and breaking the four-line rhythm: size = (card content − 16px slack, a
-   classic scrollbar's worth) / 11.48 (= 457.22 / 39.816, the widest line's
-   width per font px), floored at a scale step; letter-spacing follows at
-   the scale's −0.03em. */
-@media (max-width: 1220px) {
-  .ag-versus__lines li {
-    /* card content = (100vw − 64 gutters − 16 gap) / 2 − 96 padding = 50vw − 136 */
-    font-size: clamp(var(--lp-text-xlg), 4.35vw - 13.3px, var(--lp-text-4xlg));
-    letter-spacing: -0.03em;
-  }
-}
+/* ── tablet ≤1024: same table, `.ag-title-sm` size, tighter cells ──
+   Text area per cell = 50cqi − 48 padding − 40 mark/gap. The widest line
+   is 11.485px per font px, so the size follows the card between the 2xlg
+   step (27.648, reached at 907px wide) and the lg floor, with 10px slack —
+   one line per cell at every tablet width instead of a wrapped row
+   breaking the rhythm (at 768 the step is ≈21.6px). */
 @media (max-width: 1024px) {
-  .ag-versus__grid {
+  .ag-versus__frame {
+    --ag-versus-line: 32px;
     margin-top: 40px;
   }
-  /* tablet keeps the two columns (spec) on a lighter padding */
-  .ag-versus__card {
-    padding: 32px;
+  .ag-versus__th {
+    padding: 20px 24px 16px;
   }
-  .ag-versus__lines li {
-    /* card content = (100vw − 48 section inset − 16 gap) / 2 − 64 padding = 50vw − 96 */
-    font-size: clamp(var(--lp-text-xlg), 4.35vw - 9.8px, var(--lp-text-4xlg));
+  .ag-versus__td {
+    padding: 16px 24px;
   }
-  /* the card kicker keeps 24/32 (see above): a 19.2 step would drop the pink
-     kicker under the large-text contrast floor; from 768 down the lines it
-     introduces scale from 23.6 to 19.9px, so at the smallest phones label
-     and lines meet at the same size — colour + weight still tell them apart */
+  .ag-versus__td .ag-versus__text {
+    font-size: clamp(var(--lp-text-lg), 4.3535cqi - 8.533px, var(--lp-text-2xlg));
+    letter-spacing: -0.03em;
+  }
 }
+
+/* ── phone ≤767: stacked PAIRS ──
+   Two columns can't hold 19px condensed lines side by side at 375, and
+   splitting the table into two lists would lose the thing-by-thing pairing
+   the founder asked for. So each row becomes one block: the ✗ line on the
+   cream, 8px above its ✓ line on a black band (r12, the phone's inner
+   radius under the r24 card), 16px between pairs. The header row becomes
+   the legend above the pairs: "✗ Agent alone" on the cream, "✓ Agent +
+   Pancake" on a black chip — each kicker keyed to the ground its lines
+   sit on, at the pinned 24px (see the kicker note above). */
 @media (max-width: 767px) {
-  .ag-versus__grid {
-    gap: 16px;
-    grid-template-columns: minmax(0, 1fr);
+  .ag-versus__frame {
+    --ag-versus-line: 24px;
     margin-top: 32px;
   }
-  .ag-versus__card {
-    gap: 12px;
-    padding: 24px;
+  .ag-versus__table,
+  .ag-versus__table thead,
+  .ag-versus__table tbody,
+  .ag-versus__row,
+  .ag-versus__th,
+  .ag-versus__td {
+    display: block;
+    width: auto;
   }
-  /* stacked, full width: the phone step (27.648) from ~407px up; narrower
-     phones scale it down again (at 375 the widest line is 318px on a 295px
-     content box; at 320 four of the black card's lines would wrap) */
-  .ag-versus__lines li {
-    /* card content = 100vw − 32 section inset − 48 padding = 100vw − 80 */
-    font-size: clamp(var(--lp-text-lg), 8.7vw - 7.9px, var(--lp-text-2xlg));
-    letter-spacing: -0.03em;
+  .ag-versus__th,
+  .ag-versus__td {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    padding: 0;
+  }
+  /* legend */
+  .ag-versus__row--head {
+    --ag-versus-line: 32px; /* the kicker's line box */
+    display: grid;
+    gap: 8px;
+  }
+  .ag-versus__th .ag-versus__mark {
+    display: grid;
+  }
+  .ag-versus__th--alone .ag-versus__cell {
+    padding: 0 16px;
+  }
+  .ag-versus__th--with .ag-versus__cell {
+    background: var(--lp-terminal-bg);
+    border-radius: var(--lp-r-sm);
+    color: var(--lp-page-bg);
+    display: inline-flex;
+    padding: 8px 16px; /* 48px tall like the ✓ bands, 16px inset so its mark lines up with every other mark (x = 32) */
+  }
+  /* pairs */
+  .ag-versus__table tbody {
+    border-top: 1px solid var(--lp-ink-tr-10);
+    display: grid;
+    gap: 16px;
+    margin-top: 16px;
+    padding-top: 16px;
+  }
+  .ag-versus__row {
+    display: grid;
+    gap: 8px;
+  }
+  .ag-versus__td--alone {
+    color: var(--lp-ink-80); /* 4.78:1 on the cream */
+    padding: 0 16px;
+  }
+  .ag-versus__td--with {
+    background: var(--lp-terminal-bg);
+    border-radius: var(--lp-r-sm);
+    color: var(--lp-page-bg);
+    padding: 12px 16px;
+  }
+  .ag-versus__cell {
+    gap: 12px;
+  }
+  .ag-versus__td .ag-versus__text {
+    font-size: var(--lp-text-lg);
+    letter-spacing: -0.576px; /* −0.03em at 19.2 */
   }
 }

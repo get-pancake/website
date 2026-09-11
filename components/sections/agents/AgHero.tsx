@@ -3,21 +3,22 @@ import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { LpViewportVar } from "@/components/sections/landing-v3/LpViewportVar";
 import { AgMarksRow } from "./AgAgentMarks";
-import { AgHeroMascot } from "./AgHeroMascot";
 import { AgTerminal } from "./AgTerminal";
 import { HERO } from "./ag-copy";
 
 /**
- * /agents — Hero. The homepage's rainbow art, byte for byte (LpPancakes DOM
- * rings + LpRainbowGL / LpArcCanvas renderers, positioned by hero.css via the
- * `lp-hero` / `lp-hero-art` classes), with the draft's CENTERED text stack
- * in the cream bowl under the arc: H1 (pink accent) → "Give this to your
- * agent" + the five marks → install terminal → "and watch it become a GTM
- * super hero" → the mascot (AgHeroMascot: the page's idle bob, in-view
- * gated). Layout in agents/hero.css (.ag-hero*): the section ends a
- * controlled 56px under the mascot on desktop and right after it on phones
- * (founder 2026-09-11 — the draft's dead cream band under the mascot is a
- * bug, not a feature).
+ * /agents — Hero. The homepage hero's geometry, class for class (founder
+ * 2026-09-11 on the preview: "répartis h1 et cta comme sur la landing page
+ * standard"): the rainbow art (LpPancakes DOM rings + LpRainbowGL /
+ * LpArcCanvas, positioned by landing-v3/hero.css through `lp-hero-art`),
+ * the H1 bottom-anchored on the left 656px column (`lp-hero-title`), and
+ * the right column (`lp-hero-col`, center x1211 at 1654) carrying what the
+ * homepage's lede + pills carry there: "Give this to your agent" + the five
+ * marks, the install terminal, "and watch it become a GTM super hero" (same
+ * size as the give line — founder). No mascot ("enlève le pancake monster
+ * qui traîne"). Every breakpoint is the homepage's (short-window ladder,
+ * ≤1200 edge anchoring, ≤1024 flow, ≤767 fold-filling bottom-anchored
+ * stack); agents/hero.css only sizes the column and its three rows.
  */
 export function AgHero() {
   return (
@@ -30,23 +31,21 @@ export function AgHero() {
         <LpArcCanvas />
         <LpRainbowGL variant="hero" />
       </div>
-      <div className="ag-hero__inner">
-        <h1 id="ag-hero-title" className="lp-display ag-hero__title">
+      <div className="lp-hero-inner">
+        <h1 id="ag-hero-title" className="lp-hero-title lp-display">
           {HERO.titleBefore}
           <span className="ag-accent">{HERO.titleAccent}</span>
-          <br className="ag-hero__br" />
-          {/* the space collapses at the line start while the break shows;
-              it keeps "agent" and "GTM" apart if hero.css ever hides it */}
-          {" "}
+          <br />
           {HERO.titleAfter}
         </h1>
-        <div className="ag-hero__give">
-          <span>{HERO.give}</span>
-          <AgMarksRow />
+        <div className="lp-hero-col ag-hero__col">
+          <div className="ag-hero__give">
+            <span>{HERO.give}</span>
+            <AgMarksRow />
+          </div>
+          <AgTerminal className="ag-hero__term" />
+          <p className="ag-hero__after">{HERO.after}</p>
         </div>
-        <AgTerminal className="ag-hero__term" />
-        <p className="ag-hero__after">{HERO.after}</p>
-        <AgHeroMascot />
       </div>
     </section>
   );

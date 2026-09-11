@@ -1,100 +1,191 @@
 /* ── /agents · superpowers ── (section stylesheet; see components/sections/agents/README.md)
-   The draft's #prims: centered head, then a FULL-BLEED carousel track (the
-   draft section has padding-left/right 0 and pads the head 259 = the
-   gutter), controls centered under it. Two layouts on one markup:
-   ≥1025 the draft's transform track (1120px slides, gap 24, active slide
-   centered, dimmed/scaled neighbors — the founder-kept carousel focus);
-   ≤1024 a native scroll-snap track (AgSuperpowers.tsx mirrors the same
-   breakpoint for its JS behaviors). Every mock animation is a 1:1 port of
-   draft-css.css, namespaced ag-sp-* so the brain section's identical
-   keyframe names can never collide. */
+   The draft's #prims, rebuilt as FEATURE TABS (founder 2026-09-11: the
+   carousel with dimmed, peeking neighbors was rejected — "améliore ce
+   carrousel en utilisant des composants Mobbin … do everything with
+   taste"). Reference pattern: Anchor's product section on Mobbin (a
+   vertical list of features on the left, the active one highlighted, a
+   large stage on the right that switches with it) and Zoox's quiet
+   feature list. One cream card on the 1136 column, the draft slide's own
+   geometry (padding 48 56, grid 5fr/7fr, gap 40):
+   LEFT  the tab list — index + condensed title, 2px rail down each tab's
+         left edge; the active tab reveals its body and its rail FILLS
+         top→bottom over the 9s dwell (the autoplay indicator).
+   RIGHT the stage — the four bubble+mock panes stacked in ONE grid cell,
+         so the stage is as tall as the tallest pane at every width and the
+         card never changes height while tabs switch.
+   ≤1024 the same items reflow into one column (order) as an accordion: the
+   active pane sits right under its row, closed rows are compact, no
+   autoplay. Every mock keyframe is the draft's, made ONE-SHOT (founder:
+   the looping chips that faded in and out looked broken) — chips pop in
+   once and stay, rows and bars fill once; only the mini brain keeps its
+   subtle ambient drift/pulse. Markup: components/sections/agents/AgSuperpowers.tsx. */
 
-.ag-sec.ag-superpowers {
-  padding-inline: 0;
-}
-.ag-superpowers .ag-sec__head {
-  padding-inline: var(--ag-gutter);
-}
-
-/* ── track ── */
-.ag-superpowers__viewport {
-  margin-top: 56px;
-  overflow: hidden; /* the track is 4×1144 wide; the page never scrolls sideways */
-  position: relative;
-}
-.ag-superpowers__track {
-  /* slide width: the draft's 1120, shrinking below 1184px viewports so the
-     active slide keeps a 32px margin instead of being cut by the clip */
-  --ag-sp-w: min(1120px, calc(100% - 64px));
-  --ag-sp-gap: 24px;
-  display: flex;
-  gap: var(--ag-sp-gap);
-  position: relative;
-  touch-action: pan-y;
-  /* draft: translateX(calc(50% − 560px − i×1144px)); --ag-sp-i is the active
-     index, set inline by the component */
-  transform: translateX(calc(50% - var(--ag-sp-w) / 2 - var(--ag-sp-i, 1) * (var(--ag-sp-w) + var(--ag-sp-gap))));
-}
-/* the draft's transitions, armed by the component for the 0.7s of a slide
-   change only (data-moving) — at rest nothing can be caught mid-flight
-   (headless captures restart idle transitions; a resize snaps, as in the draft) */
-.ag-superpowers[data-moving] .ag-superpowers__track {
-  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-}
-.ag-superpowers[data-moving] .ag-superpowers__slide {
-  transition:
-    opacity 0.5s ease,
-    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-/* ── slide (draft .ccard grid 5fr/7fr, gap 40, padding 48 56, min 440) ── */
-.ag-superpowers__slide {
-  align-items: center;
-  cursor: pointer; /* a neighbor click brings it to the front */
+/* ── card = the grid ──
+   Rows: the four tab rows; the last one is flexible so a stage taller than
+   the list absorbs the difference under the fourth tab instead of spreading
+   the tabs apart (they keep their 20px pitch, top-aligned to the stage).
+   The tablist wrapper is display: contents so the tabs are grid items. */
+.ag-superpowers__card {
+  column-gap: 40px;
   display: grid;
-  flex: 0 0 var(--ag-sp-w);
-  gap: 40px;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  min-height: 440px;
-  opacity: 0.45;
+  grid-template-rows: auto auto auto 1fr;
+  margin-top: 56px; /* draft: head → 56 → card */
   padding: 48px 56px;
-  transform: scale(0.96);
+  row-gap: 20px;
 }
-.ag-superpowers__slide[data-on] {
-  cursor: default;
-  opacity: 1;
-  transform: none;
+.ag-superpowers__tabs {
+  display: contents;
 }
-.ag-superpowers__text {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+
+/* ── tab ── full-width button, text left, 20px after the rail. The
+   button reset (reset.css) already gives font/color inherit, no
+   background, no border. */
+.ag-superpowers__tab {
+  align-self: start;
+  border-radius: var(--lp-r-2xsm); /* shapes the focus ring only */
+  color: var(--lp-text);
+  cursor: pointer;
+  display: block;
+  grid-column: 1;
+  padding: 4px 0 4px 20px;
+  position: relative;
+  text-align: left;
+  width: 100%;
 }
-.ag-superpowers__num {
-  color: var(--lp-subtle-text); /* draft: the kicker in ink-80 */
+.ag-superpowers__tab:focus-visible {
+  outline: 2px solid var(--lp-ink-100);
+  outline-offset: 4px;
+}
+/* the rail track: 2px, the full tab height, on every tab (the four align) */
+.ag-superpowers__tab::before {
+  background: var(--lp-ink-tr-10);
+  border-radius: 1px;
+  content: "";
+  inset: 0 auto 0 0;
+  position: absolute;
+  width: 2px;
+}
+/* the fill: rendered on the active tab only, re-mounted on every
+   activation (restart from 0). 9s linear = the dwell; `animationend`
+   activates the next tab. Play state = the gate below (in view, not held). */
+.ag-superpowers__fill {
+  animation: ag-sp-rail 9s linear forwards;
+  animation-play-state: var(--ag-sp-rail, paused);
+  background: var(--lp-text);
+  border-radius: 1px;
+  inset: 0 auto 0 0;
+  position: absolute;
+  transform: scaleY(0);
+  transform-origin: top;
+  width: 2px;
+}
+.ag-superpowers__index {
+  color: var(--lp-subtle-text);
+  display: block;
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 20px;
+}
+/* title: ink-70 at rest, ink-90 under the pointer, ink on the active tab */
+.ag-superpowers__title {
+  color: var(--lp-muted-text);
+  display: block;
+  margin-top: 6px;
+  transition: color 0.2s ease;
+}
+.ag-superpowers__tab:hover .ag-superpowers__title {
+  color: var(--lp-ink-90);
+}
+.ag-superpowers__tab[data-on] .ag-superpowers__title {
+  color: var(--lp-text);
+}
+/* body reveal: the body is in every tab inside a 0fr grid row (nothing
+   reserved), the active tab opens it to 1fr — both the collapse of the
+   previous tab and the expansion of the new one run over the same 200ms,
+   so the list slides and the tabs below glide instead of jumping. The 8px
+   under the title travels with it (margin 0 → 8). */
+.ag-superpowers__reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 0.2s ease,
+    margin-top 0.2s ease;
+}
+.ag-superpowers__tab[data-on] .ag-superpowers__reveal {
+  grid-template-rows: 1fr;
+  margin-top: 8px;
 }
 .ag-superpowers__body {
   color: var(--lp-subtle-text);
+  display: block;
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  min-height: 0; /* lets the 0fr row collapse */
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0s linear 0.2s;
+  visibility: hidden;
+}
+.ag-superpowers__tab[data-on] .ag-superpowers__body {
+  opacity: 1;
+  transition: opacity 0.2s ease 0.05s;
+  visibility: visible;
+}
+/* The card's height is the LIST's (the stacked stage is shorter than the
+   list at every desktop width: ~384 natural vs 442–541), so the list must
+   not depend on which tab is open. The four bodies are 108–119 characters:
+   at 33ch (≈348px in Geist, 1ch ≈ 10.5px) every one of them sets in exactly
+   three 24px lines from 1025 up (measured 1025→1654; at the column's full
+   390–423px, 01 and 04 dropped to two lines and the card grew 24px on the
+   others), and the 3-line floor guards a metric change — it never shows
+   with the page's fonts. ≤1024 the accordion hugs its content, no floor. */
+.ag-superpowers__copy {
+  display: block;
+  max-width: 33ch;
+  min-height: 72px;
 }
 
-/* ── mock panel (page-bg, r24, padding 24, min 340) + the user bubble ──
-   The panel STRETCHES to the card's content row (the grid keeps
-   align-items: center so the text column stays centered beside it): the
-   four slides are pixel-equal cards, so their four panels are too — a
-   content-hugging panel made the cream frame grow and shrink from slide to
-   slide (373/358/340/326, review #38). Inside, the brain keeps its
-   margin-block: auto centering and the workflow footnote its margin-top:
-   auto pin; chips and domains sit at the top like the draft's. */
-.ag-superpowers__mock {
-  align-self: stretch;
+/* ── stage panes ── the page-bg panel (r24, padding 24, min 340 — the
+   draft's mock panel) holding the bubble + the mock. All four share one
+   cell: the cell is the tallest pane (in practice the list, which is
+   taller — see the body floor above), every pane stretches to it: the
+   brain floats centered (margin-block: auto), chips, domains and the
+   workflow sit under the bubble like the draft's. Inactive panes stay laid
+   out, invisible, inert (mock animations paused on their first frame); the active one
+   fades in with a 6px rise over 240ms while the previous fades out. */
+.ag-superpowers__pane {
   background: var(--lp-page-bg);
   border-radius: var(--lp-r-lg);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  grid-area: 1 / 2 / 5 / 3;
   min-height: 340px;
+  opacity: 0;
   padding: 24px;
+  pointer-events: none;
+  transition:
+    opacity 0.24s ease,
+    visibility 0s linear 0.24s;
+  visibility: hidden;
+}
+.ag-superpowers__pane[data-on] {
+  animation: ag-sp-pane-in 0.24s ease-out both;
+  opacity: 1;
+  pointer-events: auto;
+  transition: none; /* the entrance is the animation, never the exit transition run backwards */
+  visibility: visible;
+}
+.ag-superpowers__mock {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
 }
 .ag-superpowers__mock--wf {
   gap: 12px;
@@ -120,13 +211,14 @@
 .ag-sp-tone--green-20 { --ag-sp-tone: var(--lp-green-20); }
 .ag-sp-tone--yellow-30 { --ag-sp-tone: var(--lp-yellow-30); }
 
-/* ── 01 · mini brain (slide1-mini-brain.svg 420×220) ── */
+/* ── 01 · mini brain (slide1-mini-brain.svg 420×220) — the one mock that
+   keeps its loops: a gentle 7s drift and a 2.4s pulse, subtle by design ── */
 .ag-sp-brain {
   align-self: center;
   display: block;
   height: auto;
-  margin-block: auto; /* stacked layouts stretch the panel: the graph floats mid-panel */
-  max-width: 560px; /* the desktop panel is ~565 wide; tablets don't blow it up */
+  margin-block: auto; /* the stretched pane: the graph floats mid-panel */
+  max-width: 560px; /* the desktop pane is ~526 wide; tablets don't blow it up */
   width: 100%;
 }
 .ag-sp-brain__edge {
@@ -150,7 +242,8 @@
   transform-origin: center;
 }
 
-/* ── 02 · chips (34px, r17, white, 12% hairline, chipPop 4.2s loop) ── */
+/* ── 02 · chips (34px, r17, white, 12% hairline) — pop in ONCE, 0.4s × i,
+   and stay (the draft's 4.2s in/out loop is gone) ── */
 .ag-sp-chips {
   align-content: flex-start;
   display: flex;
@@ -159,7 +252,7 @@
 }
 .ag-sp-chip {
   align-items: center;
-  animation: ag-sp-chip 4.2s ease-in-out infinite;
+  animation: ag-sp-chip 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.2) forwards;
   background: var(--lp-ink-0);
   border: 1px solid color-mix(in srgb, var(--lp-ink-100) 12%, transparent);
   border-radius: 17px;
@@ -170,7 +263,7 @@
   padding: 0 14px;
 }
 
-/* ── 03 · warm-up domains (white rows r12, animIn; 4px bar, warm) ── */
+/* ── 03 · warm-up domains (white rows r12, animIn once; 4px bar, warm once) ── */
 .ag-sp-domains {
   display: flex;
   flex-direction: column;
@@ -217,7 +310,7 @@
   font-size: var(--lp-text-sm);
 }
 
-/* ── 04 · workflow (dashed spine, dropping dot, wfPop rows) ── */
+/* ── 04 · workflow (dashed spine, the dot drops once, wfPop rows land once) ── */
 .ag-sp-wf {
   display: flex;
   flex-direction: column;
@@ -320,103 +413,53 @@
   font-weight: 600;
   line-height: 18px;
 }
+/* the footnote follows the rows (the mock's 12px gap), like the chips and
+   the domains' note: every pane reads bubble → content → air, since the
+   stacked stage is taller than any one mock */
 .ag-sp-wf__foot {
   color: var(--lp-subtle-text);
   font-size: var(--lp-text-sm); /* draft 12.5 → the kit's 13.333 step */
   line-height: 18px; /* the mock's line (label/reply rows); keeps the draft's ~18px footnote box */
-  margin-top: auto;
 }
 
-/* ── controls (draft: centered, gap 16, mt 28; 44px round arrows, 8px dots) ── */
-.ag-superpowers__controls {
-  align-items: center;
-  display: flex;
-  gap: 16px;
-  justify-content: center;
-  margin-top: 28px;
-}
-.lp .ag-superpowers__arrow {
-  align-items: center;
-  background: var(--lp-ink-0);
-  border: 1px solid color-mix(in srgb, var(--lp-ink-100) 16%, transparent);
-  border-radius: 50%;
-  color: var(--lp-text);
-  cursor: pointer;
-  display: inline-flex;
-  height: 44px;
-  justify-content: center;
-  padding: 0;
-  transition: border-color 0.15s ease;
-  width: 44px;
-}
-.ag-superpowers__arrow svg {
-  height: 16px;
-  width: 16px;
-}
-.ag-superpowers__arrow:hover {
-  border-color: color-mix(in srgb, var(--lp-ink-100) 40%, transparent);
-}
-.ag-superpowers__dots {
-  display: flex;
-}
-/* the dot is the 8px ::before; the button around it is the hit box. Desktop
-   keeps the draft's 8px dot + 8px gap pitch (16) but the box is 24 wide
-   (WCAG 2.5.8, review #21): the buttons overlap 4px on each side through
-   negative margins, so the dot centers still sit 16px apart and the 4-dot
-   group still measures 64. Touch widths get 44px boxes edge to edge. */
-.lp .ag-superpowers__dot {
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  display: grid;
-  height: 44px;
-  margin-inline: -4px;
-  padding: 0;
-  place-items: center;
-  width: 24px;
-}
-.ag-superpowers__dot::before {
-  background: var(--lp-ink-tr-40); /* ink-tr-20 read 1.56:1 on the page ground — the indicator vanished (review #42) */
-  border-radius: 50%;
-  content: "";
-  height: 8px;
-  transition: background 0.2s ease;
-  width: 8px;
-}
-.ag-superpowers__dot[aria-current="true"]::before {
-  background: var(--lp-ink-100);
-}
-.ag-superpowers__arrow:focus-visible,
-.ag-superpowers__dot:focus-visible {
-  outline: 2px solid var(--lp-ink-100); /* purple-30 was 2.38:1 on the page ground (review #44); ink like agent-lab.css */
-  outline-offset: 2px;
-}
-/* a finger on a wide tablet (the desktop track) still gets a 44px dot */
-@media (pointer: coarse) {
-  .lp .ag-superpowers__dot {
-    margin-inline: 0;
-    width: 44px;
-  }
-}
-
-/* ── viewport gate: every mock animation runs only while the section
-   intersects (useInView → data-inview). PAUSED is the stylesheet default:
-   a post-hydration stamp let the one-shots run ~0.5s at page load and the
-   dimmed neighbors resumed mid-animation on first entry (review #39);
-   [data-inview] flips the property to running, and with no JS (no
-   data-inview, ever) the component's <noscript> style sets the same
-   property so the mocks play to their settled states instead of sitting at
-   the empty first frame. Placed after the mock rules on purpose: their
-   `animation` shorthands would otherwise reset the play state. ── */
+/* ── gates ──
+   Mocks: every animation runs only while the section intersects (useInView
+   → data-inview). PAUSED is the stylesheet default: a post-hydration stamp
+   let the one-shots run ~0.5s at page load (review #39); [data-inview]
+   flips the property to running, and with no JS (no data-inview, ever) the
+   component's <noscript> style sets the same property so the mocks play to
+   their settled states instead of sitting at the empty first frame. A
+   hidden pane's mock stays paused on its first frame — activation re-mounts
+   it, so it starts fresh as the pane fades in.
+   Rail: in view AND not held (a pointer resting on the card, keyboard focus
+   inside the tablist → data-hold on the card).
+   Placed after the mock rules on purpose: their `animation` shorthands
+   would otherwise reset the play state. ── */
 .ag-superpowers__mock,
 .ag-superpowers__mock * {
   animation-play-state: var(--ag-sp-play, paused);
 }
+.ag-superpowers__pane[aria-hidden="true"] .ag-superpowers__mock,
+.ag-superpowers__pane[aria-hidden="true"] .ag-superpowers__mock * {
+  animation-play-state: paused;
+}
 .ag-superpowers[data-inview] {
   --ag-sp-play: running;
+  --ag-sp-rail: running;
+}
+.ag-superpowers__card[data-hold] {
+  --ag-sp-rail: paused;
 }
 
-/* ── keyframes (draft-css.css, 1:1) ── */
+/* ── keyframes (mock keyframes = draft-css.css, one-shot where they looped) ── */
+@keyframes ag-sp-rail {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes ag-sp-pane-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
 @keyframes ag-sp-bdrift {
   0% { transform: translate(0, 0); }
   33% { transform: translate(4px, -5px); }
@@ -428,8 +471,8 @@
   50% { transform: scale(1.12); }
 }
 @keyframes ag-sp-chip {
-  0%, 100% { opacity: 0; transform: scale(0.85); }
-  12%, 80% { opacity: 1; transform: scale(1); }
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: none; }
 }
 @keyframes ag-sp-in {
   from { opacity: 0; transform: translateY(8px); }
@@ -448,85 +491,58 @@
 }
 
 /* ── responsive ── */
-@media (max-width: 1360px) {
-  .ag-superpowers .ag-sec__head {
-    padding-inline: 32px;
-  }
-}
-/* ≤1024: native scroll-snap — the track scrolls, slides are the viewport
-   minus the 24px section inset, centered snapping, no dimming, no autoplay
-   (AgSuperpowers.tsx). Slides stack text over mock. */
+/* ≤1024: ACCORDION on the same items — one column, tab i then pane i
+   (order), closed rows compact (inactive panes not displayed), the open
+   pane hugs its content 16px under its row and fades in. No autoplay: the
+   rail is a static 2px mark on the active row (no animation → no
+   animationend → nothing advances). Card padding 32. */
 @media (max-width: 1024px) {
-  .ag-superpowers .ag-sec__head {
-    padding-inline: 24px;
-  }
-  .ag-superpowers__viewport {
-    overflow: visible;
-  }
-  .ag-superpowers__track {
-    -webkit-overflow-scrolling: touch;
-    gap: 12px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    padding-inline: 24px;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    touch-action: pan-x pan-y;
-    transform: none;
-  }
-  .ag-superpowers[data-moving] .ag-superpowers__track,
-  .ag-superpowers[data-moving] .ag-superpowers__slide {
-    transition: none; /* the scroller moves, not the transform */
-  }
-  .ag-superpowers__track::-webkit-scrollbar {
-    display: none;
-  }
-  .ag-superpowers__slide {
-    align-items: stretch;
-    cursor: default;
-    flex-basis: 100%; /* = viewport − 48 (the track's content box) */
-    gap: 24px;
+  .ag-superpowers__card {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto 1fr; /* the panel fills the card: equal-looking slides */
-    min-height: 0;
-    opacity: 1;
+    grid-template-rows: none;
     padding: 32px;
-    scroll-snap-align: center;
+  }
+  .ag-superpowers__tab {
+    order: calc(var(--ag-sp-i) * 2);
+  }
+  .ag-superpowers__fill {
+    animation: none;
     transform: none;
   }
-  .lp .ag-superpowers__dot {
-    margin-inline: 0;
-    width: 44px;
+  .ag-superpowers__copy {
+    max-width: none;
+    min-height: 0;
   }
-  /* stacked, the brain slide would set the row height through its 560px
-     graph; 440 keeps it within a few px of the workflow slide (no slack) */
+  .ag-superpowers__pane {
+    display: none;
+    grid-area: auto;
+    margin-top: -4px; /* row-gap 20 → 16 between the row and its pane */
+    min-height: 0;
+    order: calc(var(--ag-sp-i) * 2 + 1);
+    padding: 16px;
+    transition: none;
+  }
+  .ag-superpowers__pane[data-on] {
+    display: flex;
+  }
+  /* stacked, the brain pane would set its own height through the 560px
+     graph; 440 keeps it within a few px of the workflow pane */
   .ag-sp-brain {
     max-width: 440px;
   }
 }
 @media (max-width: 767px) {
-  .ag-superpowers .ag-sec__head {
-    padding-inline: 32px; /* 16 inset + 16 text gutter, like every section head */
-  }
-  .ag-superpowers__viewport {
+  .ag-superpowers__card {
     margin-top: 40px;
+    padding: 24px; /* --ag-r-card is 24 here (foundation) */
   }
-  .ag-superpowers__track {
-    gap: 8px;
-    padding-inline: 16px;
-  }
-  .ag-superpowers__slide {
-    gap: 20px;
-    padding: 24px;
-  }
-  .ag-superpowers__mock {
-    min-height: 0;
-    padding: 16px;
+  .ag-superpowers__tab {
+    padding-left: 16px;
   }
   /* the 420-unit viewBox renders at ~0.5–0.7× on phones: labels go to 20
      units (≈11–14px on screen), nodes grow with them, the scene shifts 60
      units left so "Positioning" still fits, and the box bleeds 8px into the
-     panel padding (transparent) for a little more scale on 320px screens */
+     pane padding (transparent) for a little more scale on 320px screens */
   .ag-sp-brain {
     margin-inline: -8px;
     max-width: none;
@@ -558,10 +574,23 @@
   }
 }
 
-/* ── reduced motion: settled states, nothing moves ── */
+/* ── reduced motion: no autoplay (no rail animation → nothing advances), a
+   static rail marks the active tab, panes and bodies switch instantly,
+   mocks show their settled states ── */
 @media (prefers-reduced-motion: reduce) {
-  .ag-superpowers[data-moving] .ag-superpowers__track,
-  .ag-superpowers[data-moving] .ag-superpowers__slide {
+  .ag-superpowers__fill {
+    animation: none;
+    transform: none;
+  }
+  .ag-superpowers__pane,
+  .ag-superpowers__pane[data-on] {
+    animation: none;
+    transition: none;
+  }
+  .ag-superpowers__title,
+  .ag-superpowers__reveal,
+  .ag-superpowers__body,
+  .ag-superpowers__tab[data-on] .ag-superpowers__body {
     transition: none;
   }
   .ag-sp-brain__hub,
