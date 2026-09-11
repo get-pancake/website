@@ -1,15 +1,16 @@
 import { SiClaude, SiOpenai } from "react-icons/si";
+import { HermesMark } from "@/components/sections/landing-v3/LpAgentMarks";
 import type { AgentName } from "./ag-copy";
 
 /**
  * The five agent marks of the /agents page, in the draft's order: Claude,
  * Codex, OpenClaw, Grok Bot, Hermes — monochrome plum on the cream page.
- * Claude/Codex reuse the homepage's react-icons marks; OpenClaw is the
- * draft's own drawing (its eyes are page-cream with plum pupils — the
- * homepage's OpenClawMark was drawn for the inverted plum hero and its eyes
- * would vanish on cream); Grok Bot is the draft's vector; Hermes is the
- * draft's "H" wordmark (a 96px raster, /lp/agents/hermes.png — the
- * homepage's HermesMark is a portrait mask, a different logo).
+ * Claude/Codex reuse the homepage's react-icons marks; Hermes is the
+ * homepage's HermesMark (the portrait silhouette, founder-approved on
+ * production — the draft's "H" wordmark was wrong: founder 2026-09-11);
+ * OpenClaw is the draft's own drawing (its eyes are page-cream with plum
+ * pupils — the homepage's OpenClawMark was drawn for the inverted plum hero
+ * and its eyes would vanish on cream); Grok Bot is the draft's vector.
  */
 
 export function ClaudeMark() {
@@ -50,9 +51,6 @@ export function GrokBotMark() {
   );
 }
 
-export function HermesMark() {
-  return <img src="/lp/agents/hermes.png" alt="" role="img" aria-label="Hermes" width={96} height={96} />;
-}
 
 export const AGENT_MARKS: { name: AgentName; Mark: () => JSX.Element }[] = [
   { name: "Claude", Mark: ClaudeMark },

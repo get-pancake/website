@@ -34,7 +34,7 @@ d'énormes checks à faire".
 | Page end | `LpPricing` + `LpFooter` from landing-v3 (see Founder feedback, point 4) |
 | CSS | `app/_styles/agents/<section>.css`, imported in order by `app/_styles/agents.css` (after `landing-v3.css`) |
 | Shared CSS | `app/_styles/agents/foundation.css` — `.ag-sec`, `.ag-sec__inner`, `.ag-sec__head(--left)`, `.ag-kicker`, `.ag-lede`, `.ag-accent`, `.ag-title-step`, `.ag-title-sm`, `.ag-sep`, `.ag-card`, `.ag-tint--*`, `.ag-marks`, `.ag-term*`, phone type steps |
-| Assets | `public/lp/agents/data/<slug>.png` (16 illustrations, 147×160), `public/lp/agents/grokbot.svg`, `public/pancake-monster.png` (mascot), `public/og-agents.png` |
+| Assets | `public/lp/agents/data/<slug>.png` (16 illustrations, 147×160), `public/lp/agents/grokbot.svg`, `public/og-agents.png`; Hermes = the homepage `HermesMark` portrait (the draft's "H" was wrong — founder) |
 
 Reused from landing-v3 (do not modify those files): `LpNav`, `LpFooter`, `LpModals`,
 `LpFitVars`, `LpFxLink`/`LpFxPill` (pills), `LpPancakes` + `LpRainbowGL` +
