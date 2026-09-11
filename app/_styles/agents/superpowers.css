@@ -1,0 +1,585 @@
+/* ── /agents · superpowers ── (section stylesheet; see components/sections/agents/README.md)
+   The draft's #prims: centered head, then a FULL-BLEED carousel track (the
+   draft section has padding-left/right 0 and pads the head 259 = the
+   gutter), controls centered under it. Two layouts on one markup:
+   ≥1025 the draft's transform track (1120px slides, gap 24, active slide
+   centered, dimmed/scaled neighbors — the founder-kept carousel focus);
+   ≤1024 a native scroll-snap track (AgSuperpowers.tsx mirrors the same
+   breakpoint for its JS behaviors). Every mock animation is a 1:1 port of
+   draft-css.css, namespaced ag-sp-* so the brain section's identical
+   keyframe names can never collide. */
+
+.ag-sec.ag-superpowers {
+  padding-inline: 0;
+}
+.ag-superpowers .ag-sec__head {
+  padding-inline: var(--ag-gutter);
+}
+
+/* ── track ── */
+.ag-superpowers__viewport {
+  margin-top: 56px;
+  overflow: hidden; /* the track is 4×1144 wide; the page never scrolls sideways */
+  position: relative;
+}
+.ag-superpowers__track {
+  /* slide width: the draft's 1120, shrinking below 1184px viewports so the
+     active slide keeps a 32px margin instead of being cut by the clip */
+  --ag-sp-w: min(1120px, calc(100% - 64px));
+  --ag-sp-gap: 24px;
+  display: flex;
+  gap: var(--ag-sp-gap);
+  position: relative;
+  touch-action: pan-y;
+  /* draft: translateX(calc(50% − 560px − i×1144px)); --ag-sp-i is the active
+     index, set inline by the component */
+  transform: translateX(calc(50% - var(--ag-sp-w) / 2 - var(--ag-sp-i, 1) * (var(--ag-sp-w) + var(--ag-sp-gap))));
+}
+/* the draft's transitions, armed by the component for the 0.7s of a slide
+   change only (data-moving) — at rest nothing can be caught mid-flight
+   (headless captures restart idle transitions; a resize snaps, as in the draft) */
+.ag-superpowers[data-moving] .ag-superpowers__track {
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ag-superpowers[data-moving] .ag-superpowers__slide {
+  transition:
+    opacity 0.5s ease,
+    transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── slide (draft .ccard grid 5fr/7fr, gap 40, padding 48 56, min 440) ── */
+.ag-superpowers__slide {
+  align-items: center;
+  cursor: pointer; /* a neighbor click brings it to the front */
+  display: grid;
+  flex: 0 0 var(--ag-sp-w);
+  gap: 40px;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  min-height: 440px;
+  opacity: 0.45;
+  padding: 48px 56px;
+  transform: scale(0.96);
+}
+.ag-superpowers__slide[data-on] {
+  cursor: default;
+  opacity: 1;
+  transform: none;
+}
+.ag-superpowers__text {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.ag-superpowers__num {
+  color: var(--lp-subtle-text); /* draft: the kicker in ink-80 */
+}
+.ag-superpowers__body {
+  color: var(--lp-subtle-text);
+}
+
+/* ── mock panel (page-bg, r24, padding 24, min 340) + the user bubble ──
+   The panel STRETCHES to the card's content row (the grid keeps
+   align-items: center so the text column stays centered beside it): the
+   four slides are pixel-equal cards, so their four panels are too — a
+   content-hugging panel made the cream frame grow and shrink from slide to
+   slide (373/358/340/326, review #38). Inside, the brain keeps its
+   margin-block: auto centering and the workflow footnote its margin-top:
+   auto pin; chips and domains sit at the top like the draft's. */
+.ag-superpowers__mock {
+  align-self: stretch;
+  background: var(--lp-page-bg);
+  border-radius: var(--lp-r-lg);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 340px;
+  padding: 24px;
+}
+.ag-superpowers__mock--wf {
+  gap: 12px;
+}
+.ag-sp-bubble {
+  align-self: flex-end;
+  background: var(--lp-ink-100);
+  border-radius: 18px 18px 4px 18px;
+  color: var(--lp-ink-20);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+  max-width: 88%;
+  padding: 10px 14px;
+}
+
+/* tone map (draft hex → tokens, README rule 1) — one custom property the
+   nodes / bars / icons / tags read */
+.ag-sp-tone--pink-30 { --ag-sp-tone: var(--lp-pink-30); }
+.ag-sp-tone--purple-40 { --ag-sp-tone: var(--lp-purple-40); }
+.ag-sp-tone--green-30 { --ag-sp-tone: var(--lp-green-30); }
+.ag-sp-tone--orange-30 { --ag-sp-tone: var(--lp-orange-30); }
+.ag-sp-tone--blue-40 { --ag-sp-tone: var(--lp-blue-40); }
+.ag-sp-tone--green-20 { --ag-sp-tone: var(--lp-green-20); }
+.ag-sp-tone--yellow-30 { --ag-sp-tone: var(--lp-yellow-30); }
+
+/* ── 01 · mini brain (slide1-mini-brain.svg 420×220) ── */
+.ag-sp-brain {
+  align-self: center;
+  display: block;
+  height: auto;
+  margin-block: auto; /* stacked layouts stretch the panel: the graph floats mid-panel */
+  max-width: 560px; /* the desktop panel is ~565 wide; tablets don't blow it up */
+  width: 100%;
+}
+.ag-sp-brain__edge {
+  stroke: var(--lp-ink-100);
+  stroke-opacity: 0.15;
+}
+.ag-sp-brain__hub {
+  animation: ag-sp-bdrift 7s ease-in-out infinite;
+}
+.ag-sp-brain__node {
+  fill: var(--ag-sp-tone);
+}
+.ag-sp-brain__label {
+  fill: var(--lp-text);
+  font-size: 12px; /* viewBox units — Geist via the kit's universal font rule */
+}
+.ag-sp-brain__root {
+  animation: ag-sp-pulse 2.4s ease-in-out infinite;
+  fill: var(--lp-ink-100);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ── 02 · chips (34px, r17, white, 12% hairline, chipPop 4.2s loop) ── */
+.ag-sp-chips {
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ag-sp-chip {
+  align-items: center;
+  animation: ag-sp-chip 4.2s ease-in-out infinite;
+  background: var(--lp-ink-0);
+  border: 1px solid color-mix(in srgb, var(--lp-ink-100) 12%, transparent);
+  border-radius: 17px;
+  display: inline-flex;
+  font-size: var(--lp-text-sm);
+  height: 34px;
+  opacity: 0;
+  padding: 0 14px;
+}
+
+/* ── 03 · warm-up domains (white rows r12, animIn; 4px bar, warm) ── */
+.ag-sp-domains {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ag-sp-domain {
+  animation: ag-sp-in 0.5s ease forwards;
+  background: var(--lp-ink-0);
+  border: 1px solid color-mix(in srgb, var(--lp-ink-100) 12%, transparent);
+  border-radius: var(--lp-r-sm);
+  display: flex;
+  flex-direction: column;
+  font-size: var(--lp-text-sm);
+  gap: 6px;
+  opacity: 0;
+  padding: 10px 14px;
+}
+.ag-sp-domain__row {
+  display: flex;
+  flex-wrap: wrap; /* narrow phones: the meta drops under the host */
+  gap: 2px 12px;
+  justify-content: space-between;
+}
+.ag-sp-domain__host {
+  font-weight: 600;
+}
+.ag-sp-domain__meta {
+  color: var(--lp-subtle-text);
+}
+.ag-sp-domain__track {
+  background: var(--lp-ink-tr-10);
+  border-radius: 2px;
+  height: 4px;
+}
+.ag-sp-domain__fill {
+  animation: ag-sp-warm 1.6s ease-out 0.4s backwards;
+  background: var(--ag-sp-tone);
+  border-radius: 2px;
+  height: 100%;
+  width: var(--ag-sp-pct); /* per-row inline: 100% / 64% / 18% */
+}
+.ag-sp-note {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+}
+
+/* ── 04 · workflow (dashed spine, dropping dot, wfPop rows) ── */
+.ag-sp-wf {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+  position: relative;
+}
+.ag-sp-wf__line {
+  border-left: 2px dashed color-mix(in srgb, var(--lp-ink-100) 18%, transparent);
+  bottom: 18px;
+  left: 17px;
+  position: absolute;
+  top: 18px;
+}
+.ag-sp-wf__dot {
+  animation: ag-sp-wf-drop 3.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+  background: var(--lp-purple-40);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--lp-purple-40) 18%, transparent);
+  height: 12px;
+  left: 12px;
+  position: absolute;
+  top: 18px;
+  width: 12px;
+  z-index: 2;
+}
+.ag-sp-wf__row {
+  align-items: center;
+  animation: ag-sp-wf-pop 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.2) forwards;
+  display: flex;
+  gap: 14px;
+  opacity: 0;
+}
+.ag-sp-wf__row--yellow { --ag-sp-tint: var(--lp-yellow-10); --ag-sp-tone: var(--lp-yellow-40); }
+.ag-sp-wf__row--blue { --ag-sp-tint: var(--lp-blue-10); --ag-sp-tone: var(--lp-blue-40); }
+.ag-sp-wf__row--purple { --ag-sp-tint: var(--lp-purple-10); --ag-sp-tone: var(--lp-purple-40); }
+.ag-sp-wf__row--green { --ag-sp-tint: var(--lp-green-10); --ag-sp-tone: var(--lp-green-30); }
+.ag-sp-wf__row--note {
+  color: var(--lp-ink-70);
+  display: block;
+  font-size: var(--lp-text-xsm); /* draft 11.5 → the kit's 11.108 step; the 16px line keeps the row height */
+  font-style: italic;
+  line-height: 16px;
+  padding-left: 50px;
+}
+.ag-sp-wf__icon {
+  align-items: center;
+  background: var(--ag-sp-tint);
+  border-radius: 50%;
+  color: var(--ag-sp-tone);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 36px;
+  justify-content: center;
+  position: relative;
+  width: 36px;
+  z-index: 1; /* above the dashed spine */
+}
+.ag-sp-wf__icon svg {
+  height: 16px;
+  width: 16px;
+}
+.ag-sp-wf__pill {
+  align-items: center;
+  background: var(--lp-ink-0);
+  border: 1px solid var(--lp-ink-tr-10);
+  border-radius: 14px;
+  display: flex;
+  flex-grow: 1;
+  gap: 12px;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 10px 14px;
+}
+.ag-sp-wf__label {
+  font-size: var(--lp-text-sm);
+  line-height: 18px;
+}
+.ag-sp-wf__label b {
+  font-weight: 600;
+}
+.ag-sp-wf__detail {
+  color: var(--lp-subtle-text);
+}
+.ag-sp-wf__tag {
+  background: var(--ag-sp-tint);
+  border-radius: 6px;
+  color: var(--ag-sp-tone);
+  font-size: var(--lp-text-xsm);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  line-height: 16px;
+  padding: 2px 8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ag-sp-wf__reply {
+  color: var(--lp-green-30);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  line-height: 18px;
+}
+.ag-sp-wf__foot {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm); /* draft 12.5 → the kit's 13.333 step */
+  line-height: 18px; /* the mock's line (label/reply rows); keeps the draft's ~18px footnote box */
+  margin-top: auto;
+}
+
+/* ── controls (draft: centered, gap 16, mt 28; 44px round arrows, 8px dots) ── */
+.ag-superpowers__controls {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 28px;
+}
+.lp .ag-superpowers__arrow {
+  align-items: center;
+  background: var(--lp-ink-0);
+  border: 1px solid color-mix(in srgb, var(--lp-ink-100) 16%, transparent);
+  border-radius: 50%;
+  color: var(--lp-text);
+  cursor: pointer;
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  padding: 0;
+  transition: border-color 0.15s ease;
+  width: 44px;
+}
+.ag-superpowers__arrow svg {
+  height: 16px;
+  width: 16px;
+}
+.ag-superpowers__arrow:hover {
+  border-color: color-mix(in srgb, var(--lp-ink-100) 40%, transparent);
+}
+.ag-superpowers__dots {
+  display: flex;
+}
+/* the dot is the 8px ::before; the button around it is the hit box. Desktop
+   keeps the draft's 8px dot + 8px gap pitch (16) but the box is 24 wide
+   (WCAG 2.5.8, review #21): the buttons overlap 4px on each side through
+   negative margins, so the dot centers still sit 16px apart and the 4-dot
+   group still measures 64. Touch widths get 44px boxes edge to edge. */
+.lp .ag-superpowers__dot {
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: grid;
+  height: 44px;
+  margin-inline: -4px;
+  padding: 0;
+  place-items: center;
+  width: 24px;
+}
+.ag-superpowers__dot::before {
+  background: var(--lp-ink-tr-40); /* ink-tr-20 read 1.56:1 on the page ground — the indicator vanished (review #42) */
+  border-radius: 50%;
+  content: "";
+  height: 8px;
+  transition: background 0.2s ease;
+  width: 8px;
+}
+.ag-superpowers__dot[aria-current="true"]::before {
+  background: var(--lp-ink-100);
+}
+.ag-superpowers__arrow:focus-visible,
+.ag-superpowers__dot:focus-visible {
+  outline: 2px solid var(--lp-ink-100); /* purple-30 was 2.38:1 on the page ground (review #44); ink like agent-lab.css */
+  outline-offset: 2px;
+}
+/* a finger on a wide tablet (the desktop track) still gets a 44px dot */
+@media (pointer: coarse) {
+  .lp .ag-superpowers__dot {
+    margin-inline: 0;
+    width: 44px;
+  }
+}
+
+/* ── viewport gate: every mock animation runs only while the section
+   intersects (useInView → data-inview). PAUSED is the stylesheet default:
+   a post-hydration stamp let the one-shots run ~0.5s at page load and the
+   dimmed neighbors resumed mid-animation on first entry (review #39);
+   [data-inview] flips the property to running, and with no JS (no
+   data-inview, ever) the component's <noscript> style sets the same
+   property so the mocks play to their settled states instead of sitting at
+   the empty first frame. Placed after the mock rules on purpose: their
+   `animation` shorthands would otherwise reset the play state. ── */
+.ag-superpowers__mock,
+.ag-superpowers__mock * {
+  animation-play-state: var(--ag-sp-play, paused);
+}
+.ag-superpowers[data-inview] {
+  --ag-sp-play: running;
+}
+
+/* ── keyframes (draft-css.css, 1:1) ── */
+@keyframes ag-sp-bdrift {
+  0% { transform: translate(0, 0); }
+  33% { transform: translate(4px, -5px); }
+  66% { transform: translate(-4px, 3px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes ag-sp-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+@keyframes ag-sp-chip {
+  0%, 100% { opacity: 0; transform: scale(0.85); }
+  12%, 80% { opacity: 1; transform: scale(1); }
+}
+@keyframes ag-sp-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ag-sp-warm {
+  from { width: 0; }
+}
+@keyframes ag-sp-wf-pop {
+  0% { opacity: 0; transform: translateY(8px) scale(0.96); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes ag-sp-wf-drop {
+  0% { top: 18px; }
+  100% { top: calc(100% - 30px); }
+}
+
+/* ── responsive ── */
+@media (max-width: 1360px) {
+  .ag-superpowers .ag-sec__head {
+    padding-inline: 32px;
+  }
+}
+/* ≤1024: native scroll-snap — the track scrolls, slides are the viewport
+   minus the 24px section inset, centered snapping, no dimming, no autoplay
+   (AgSuperpowers.tsx). Slides stack text over mock. */
+@media (max-width: 1024px) {
+  .ag-superpowers .ag-sec__head {
+    padding-inline: 24px;
+  }
+  .ag-superpowers__viewport {
+    overflow: visible;
+  }
+  .ag-superpowers__track {
+    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    padding-inline: 24px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    touch-action: pan-x pan-y;
+    transform: none;
+  }
+  .ag-superpowers[data-moving] .ag-superpowers__track,
+  .ag-superpowers[data-moving] .ag-superpowers__slide {
+    transition: none; /* the scroller moves, not the transform */
+  }
+  .ag-superpowers__track::-webkit-scrollbar {
+    display: none;
+  }
+  .ag-superpowers__slide {
+    align-items: stretch;
+    cursor: default;
+    flex-basis: 100%; /* = viewport − 48 (the track's content box) */
+    gap: 24px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr; /* the panel fills the card: equal-looking slides */
+    min-height: 0;
+    opacity: 1;
+    padding: 32px;
+    scroll-snap-align: center;
+    transform: none;
+  }
+  .lp .ag-superpowers__dot {
+    margin-inline: 0;
+    width: 44px;
+  }
+  /* stacked, the brain slide would set the row height through its 560px
+     graph; 440 keeps it within a few px of the workflow slide (no slack) */
+  .ag-sp-brain {
+    max-width: 440px;
+  }
+}
+@media (max-width: 767px) {
+  .ag-superpowers .ag-sec__head {
+    padding-inline: 32px; /* 16 inset + 16 text gutter, like every section head */
+  }
+  .ag-superpowers__viewport {
+    margin-top: 40px;
+  }
+  .ag-superpowers__track {
+    gap: 8px;
+    padding-inline: 16px;
+  }
+  .ag-superpowers__slide {
+    gap: 20px;
+    padding: 24px;
+  }
+  .ag-superpowers__mock {
+    min-height: 0;
+    padding: 16px;
+  }
+  /* the 420-unit viewBox renders at ~0.5–0.7× on phones: labels go to 20
+     units (≈11–14px on screen), nodes grow with them, the scene shifts 60
+     units left so "Positioning" still fits, and the box bleeds 8px into the
+     panel padding (transparent) for a little more scale on 320px screens */
+  .ag-sp-brain {
+    margin-inline: -8px;
+    max-width: none;
+    width: calc(100% + 16px);
+  }
+  .ag-sp-brain__scene {
+    transform: translateX(-60px);
+  }
+  .ag-sp-brain__label {
+    font-size: 20px;
+  }
+  .ag-sp-brain__node {
+    r: 12;
+  }
+  .ag-sp-brain__root {
+    r: 16;
+  }
+}
+/* 320-class phones: the workflow pill has ~134px for label + DAY tag, and
+   the label was wrapping to three lines beside the tag (review #43) — the
+   tag drops under the label (left, like a second line) and the pill
+   tightens so the label keeps two lines and the row stays taller than its
+   36px icon by one line only */
+@media (max-width: 359px) {
+  .ag-sp-wf__pill {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding: 8px 12px;
+  }
+}
+
+/* ── reduced motion: settled states, nothing moves ── */
+@media (prefers-reduced-motion: reduce) {
+  .ag-superpowers[data-moving] .ag-superpowers__track,
+  .ag-superpowers[data-moving] .ag-superpowers__slide {
+    transition: none;
+  }
+  .ag-sp-brain__hub,
+  .ag-sp-brain__root,
+  .ag-sp-chip,
+  .ag-sp-domain,
+  .ag-sp-domain__fill,
+  .ag-sp-wf__row,
+  .ag-sp-wf__dot {
+    animation: none;
+  }
+  .ag-sp-chip,
+  .ag-sp-domain,
+  .ag-sp-wf__row {
+    opacity: 1;
+    transform: none;
+  }
+  .ag-sp-wf__dot {
+    top: calc(100% - 30px);
+  }
+}

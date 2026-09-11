@@ -1,0 +1,278 @@
+/* ── /agents · plays ── (section stylesheet; see components/sections/agents/README.md)
+   The org chart under the "Super plays" head (draft #org): mascot → plum
+   label → three dotted curves (1136×130) → three tinted columns of plays.
+   Geometry = the draft's inline styles at 1654; colors = tokens only. Every
+   ambient loop (mascot bob, travelling dots, the JS simulation) runs only
+   while the section intersects (`data-inview`, stamped by useInView) and
+   never under prefers-reduced-motion. */
+
+.ag-plays__org {
+  margin-top: 56px; /* draft: mt 56 under the head */
+  position: relative;
+}
+
+/* ── root: mascot + label, centered (draft gap 10) ── */
+.ag-plays__root {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* the draft's `bob` keyframes (knowledge cards, 3.2s) at #org's 1.1s */
+@keyframes ag-plays-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(2deg);
+  }
+}
+.ag-plays__bob {
+  animation: ag-plays-bob 1.1s ease-in-out infinite;
+}
+.ag-plays:not([data-inview="true"]) .ag-plays__bob {
+  animation-play-state: paused;
+}
+.ag-plays__mascot {
+  display: block;
+  height: auto;
+  width: 104px; /* draft: 104 (496×512 source → 107 tall) */
+}
+/* plum label: r12, 8×14, 13.333/18, "Pancake" on its own line, role at .75 */
+.ag-plays__label {
+  background: var(--lp-ink-100);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-ink-20);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  line-height: 18px;
+  padding: 8px 14px;
+  text-align: center;
+}
+.ag-plays__label b {
+  display: block;
+  font-family: var(--lp-font-sans);
+  font-weight: 600;
+}
+.ag-plays__label span {
+  font-family: var(--lp-font-sans);
+  opacity: 0.75;
+}
+
+/* ── connector (draft org-connector.svg): three dotted cubic curves from the
+   label's foot to each column head, a 5px dot riding each (SMIL, paused
+   off-screen by AgPlays). ink-70 = the draft's #9a818f. Scales with the
+   column between 1025 and 1200 (viewBox keeps the curve ends over the column
+   centers); hidden ≤1024 where the columns stack. ── */
+.ag-plays__connector {
+  display: block;
+  height: auto;
+  margin: 0 auto;
+  overflow: visible;
+  width: 100%;
+}
+.ag-plays__line {
+  stroke: var(--lp-ink-70);
+}
+.ag-plays__spark {
+  fill: var(--lp-ink-70);
+}
+/* ≤1024 stand-in: a short dotted stem with its own travelling dot — the
+   cheaper equivalent of the connector's ambient motion on stacked layouts */
+.ag-plays__stem {
+  display: none;
+}
+
+/* ── columns: 3 × 1fr, gap 24, pixel-equal heights (founder rule: stretch) ── */
+.ag-plays__cols {
+  align-items: stretch;
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.ag-plays__col {
+  border-radius: var(--ag-r-card);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 28px 24px;
+}
+.ag-plays__col-title {
+  margin-bottom: 8px; /* draft: title mb 8 on top of the column's gap 12 */
+  text-align: center; /* the draft's centered label — an exception to left-justified card copy */
+}
+.ag-plays__list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* play row: card-cream r12, 12×16, 13.333/20 Geist, 9px status dot, gap 12.
+   The draft's 14px is off the kit scale (review #27) → --lp-text-sm on the
+   same 20px line box, so the row keeps its 44px (12 + 20 + 12) tap height. */
+.ag-plays__play {
+  align-items: center;
+  background: var(--lp-card-cream);
+  border-radius: var(--lp-r-sm);
+  box-sizing: border-box;
+  color: var(--lp-text);
+  display: flex;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  gap: 12px;
+  line-height: 20px;
+  min-width: 0;
+  padding: 12px 16px;
+  text-align: left;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.ag-plays__name {
+  font-family: var(--lp-font-sans);
+  min-width: 0;
+}
+.ag-plays__dot {
+  border-radius: 50%;
+  /* 1px ink hairline rim (inset, so the dot stays the draft's 9px): the
+     yellow-40 dot is 2.3:1 against the cream row, its darkened rim 3.4:1 —
+     the state reads as a shape, not only a hue (review #31); the row's
+     sr-only status text is the real screen-reader fix */
+  box-shadow: inset 0 0 0 1px var(--lp-ink-tr-20);
+  display: inline-block;
+  flex: none;
+  height: 9px;
+  transition: background 0.2s ease;
+  width: 9px;
+}
+.ag-plays__dot[data-status="green"] {
+  background: var(--lp-green-30);
+}
+.ag-plays__dot[data-status="orange"] {
+  background: var(--lp-yellow-40);
+}
+.ag-plays__dot[data-status="red"] {
+  background: var(--lp-red-30);
+}
+
+/* ── simulation states (draft .play.out / .in / .hit) — a retiring row stays
+   in flow (opacity + translate only) so the column never changes height ── */
+.ag-plays__play--out {
+  opacity: 0;
+  transform: translateX(24px);
+}
+@keyframes ag-plays-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.ag-plays__play--in {
+  animation: ag-plays-in 0.3s cubic-bezier(0.2, 0.9, 0.2, 1.2);
+}
+@keyframes ag-plays-hit {
+  0% {
+    transform: scale(1);
+  }
+  35% {
+    transform: scale(1.045);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+.ag-plays__play--hit {
+  animation: ag-plays-hit 0.38s ease;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--lp-pink-40) 25%, transparent);
+}
+
+/* ── ≤1024: connector off, columns stack full width under the mascot (gap 16);
+   a dotted stem keeps the org-chart link; tablets seat the plays 2×2 ── */
+@media (max-width: 1024px) {
+  .ag-plays__connector {
+    display: none;
+  }
+  .ag-plays__stem {
+    display: block;
+    height: 48px;
+    margin: 12px auto;
+    position: relative;
+    width: 5px;
+  }
+  /* 1px dots every 8px = the SVG's "1 7" round-capped dash */
+  .ag-plays__stem::before {
+    background: radial-gradient(circle at center, var(--lp-ink-70) 0 1px, transparent 1.5px) 0 0 / 5px 8px repeat-y;
+    content: "";
+    inset: 0;
+    position: absolute;
+  }
+  .ag-plays__stem::after {
+    animation: ag-plays-stem 0.95s linear infinite;
+    background: var(--lp-ink-70);
+    border-radius: 50%;
+    content: "";
+    height: 5px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 5px;
+  }
+  .ag-plays:not([data-inview="true"]) .ag-plays__stem::after {
+    animation-play-state: paused;
+  }
+  .ag-plays__cols {
+    gap: 16px;
+    grid-auto-rows: 1fr; /* stacked columns stay pixel-equal too */
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ag-plays__list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@keyframes ag-plays-stem {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(43px); /* 48 − the 5px dot */
+  }
+}
+
+/* ── phones: column 20×16, title 23.04 (foundation's .ag-title-sm step),
+   rows single-column again ── */
+@media (max-width: 767px) {
+  .ag-plays__org {
+    margin-top: 40px;
+  }
+  .ag-plays__col {
+    padding: 20px 16px;
+  }
+  .ag-plays__list {
+    display: flex;
+  }
+}
+
+/* ── reduced motion: the settled state, nothing loops ── */
+@media (prefers-reduced-motion: reduce) {
+  .ag-plays__bob,
+  .ag-plays__stem::after,
+  .ag-plays__play--in,
+  .ag-plays__play--hit {
+    animation: none;
+  }
+  .ag-plays__play,
+  .ag-plays__dot {
+    transition: none;
+  }
+}

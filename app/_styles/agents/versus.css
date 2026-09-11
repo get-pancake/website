@@ -1,0 +1,118 @@
+/* ── /agents · versus — "Super addictive" ────────────────────────────────
+   Draft section 08 (desktop-sec-08.png): centered head, then two cards in a
+   `repeat(2, 1fr)` grid, gap 16, 48px under the head. Card A = cream
+   `.ag-card`, kicker pink-40; card B = the terminal-black ground with
+   page-bg text, kicker purple-30. Both: padding 48, column, gap 16, four
+   `.lp-title-step` lines. No motion in the draft — nothing to gate here. */
+
+.ag-versus__grid {
+  /* founder rule: cards in a row are pixel-equal in height → grid + stretch,
+     never content-hugging (the black card's lines run longer than the
+     cream card's; the cream card must not end early) */
+  align-items: stretch;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 48px;
+}
+.ag-versus__card {
+  border-radius: var(--ag-r-card); /* 30 desktop / 24 phone, like the steps cards */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  padding: 48px;
+  text-align: left; /* copy left-justified inside cards (founder) */
+}
+.ag-versus__card--with {
+  background: var(--lp-terminal-bg);
+  color: var(--lp-page-bg);
+}
+/* card kickers: the draft's `.lp-kicker` recipe (Condensed 24/32/500) in the
+   card's accent — `.ag-kicker` paints plum, hence the two-class override.
+   The size is pinned at every width (the foundation steps `.ag-kicker` to
+   19.2/26 on phones): pink-40 on the cream card is 4.01:1, which passes only
+   as WCAG large text — 24px at weight 500; at 19.2/500 it fails 4.5:1
+   (review #28). The two-class selector outranks the phone step. */
+.ag-versus__card .ag-versus__kicker {
+  font-size: 24px;
+  line-height: 32px;
+  margin: 0;
+}
+.ag-versus__card--alone .ag-versus__kicker {
+  color: var(--lp-pink-40);
+}
+.ag-versus__card--with .ag-versus__kicker {
+  color: var(--lp-purple-30);
+}
+/* the four lines: a list that looks like the draft's `<br>`-separated
+   `.lp-title-step` span — each item (carrying `.ag-title-step` itself, the
+   kit's `* { font-family }` beats inheritance) is one 1.2 line box, no
+   bullets, no extra rhythm; the black card's lines inherit its page-bg */
+.ag-versus__lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ag-versus__lines li {
+  overflow-wrap: anywhere; /* a word can never push the card wider than its column */
+}
+/* the H2 is one line only on the 1136 column; where it wraps (≤1024) balance
+   the two lines instead of orphaning "Pancake." — progressive enhancement */
+.ag-versus .lp-title-section {
+  text-wrap: balance;
+}
+
+/* ── responsive ── */
+/* The widest line ("Warmed inboxes and LinkedIn") measures 457px at the
+   39.816 step — only 7px inside the 464px content box the 1136 column gives
+   each card. Below ~1220px the column shrinks with the viewport (gutters 32),
+   so the step scales with it instead of wrapping one item onto two lines
+   and breaking the four-line rhythm: size = (card content − 16px slack, a
+   classic scrollbar's worth) / 11.48 (= 457.22 / 39.816, the widest line's
+   width per font px), floored at a scale step; letter-spacing follows at
+   the scale's −0.03em. */
+@media (max-width: 1220px) {
+  .ag-versus__lines li {
+    /* card content = (100vw − 64 gutters − 16 gap) / 2 − 96 padding = 50vw − 136 */
+    font-size: clamp(var(--lp-text-xlg), 4.35vw - 13.3px, var(--lp-text-4xlg));
+    letter-spacing: -0.03em;
+  }
+}
+@media (max-width: 1024px) {
+  .ag-versus__grid {
+    margin-top: 40px;
+  }
+  /* tablet keeps the two columns (spec) on a lighter padding */
+  .ag-versus__card {
+    padding: 32px;
+  }
+  .ag-versus__lines li {
+    /* card content = (100vw − 48 section inset − 16 gap) / 2 − 64 padding = 50vw − 96 */
+    font-size: clamp(var(--lp-text-xlg), 4.35vw - 9.8px, var(--lp-text-4xlg));
+  }
+  /* the card kicker keeps 24/32 (see above): a 19.2 step would drop the pink
+     kicker under the large-text contrast floor; from 768 down the lines it
+     introduces scale from 23.6 to 19.9px, so at the smallest phones label
+     and lines meet at the same size — colour + weight still tell them apart */
+}
+@media (max-width: 767px) {
+  .ag-versus__grid {
+    gap: 16px;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 32px;
+  }
+  .ag-versus__card {
+    gap: 12px;
+    padding: 24px;
+  }
+  /* stacked, full width: the phone step (27.648) from ~407px up; narrower
+     phones scale it down again (at 375 the widest line is 318px on a 295px
+     content box; at 320 four of the black card's lines would wrap) */
+  .ag-versus__lines li {
+    /* card content = 100vw − 32 section inset − 48 padding = 100vw − 80 */
+    font-size: clamp(var(--lp-text-lg), 8.7vw - 7.9px, var(--lp-text-2xlg));
+    letter-spacing: -0.03em;
+  }
+}

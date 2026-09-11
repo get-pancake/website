@@ -1,0 +1,117 @@
+/* ── /agents · knowledge ── (section stylesheet; see components/sections/agents/README.md)
+   "Super knowledge": the centered head + 16 tinted illustration cards.
+   Draft geometry (desktop-sec-04, 1654 artboard): 1136 column, 4 columns,
+   gap 16, 56 under the lede, cards 272×182 r24 with a 96px illustration and
+   a 23.04 condensed label. Tablets get 3 columns, phones 2 — recomposed,
+   never zoomed. */
+
+/* grid — draft `repeat(4, minmax(0,1fr))`. grid-auto-rows: 1fr + the default
+   stretch = every card pixel-equal (founder rule: never content-hugging),
+   across rows too, so a phone label that wraps to two lines doesn't leave
+   one row taller than the others. */
+.ag-knowledge__grid {
+  display: grid;
+  gap: 16px;
+  grid-auto-rows: 1fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+  margin: 56px 0 0;
+  padding: 0;
+}
+/* card — pastel tint from .ag-tint--* (cycle yellow→pink→purple→blue→green),
+   r24: the draft's knowledge cards are 24, not the 30 of the cream cards.
+   Column, centered, 14 between the art and the label; justify-content
+   centers the pair when a stretched card has slack (phone rows). */
+.ag-knowledge__card {
+  align-items: center;
+  border-radius: var(--lp-r-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  justify-content: center;
+  padding: 24px 24px 20px;
+  text-align: center;
+}
+/* illustration — 147×160 raster shown 96 tall (draft), width follows (88) */
+.ag-knowledge__art {
+  height: 96px;
+  width: auto;
+}
+/* bob — the draft's keyframes 1:1: 3.2s ease-in-out, a 6px lift with a ±2°
+   sway; each card starts at its own negative delay (KNOWLEDGE.cards[i].delay,
+   set inline) so the sixteen drift out of phase. Paused until the grid
+   intersects (useInView → data-inview on the <ul>): sixteen composited
+   transforms must not run off-screen. A paused negative-delay animation still
+   sits at that delay's frame, so the rest pose IS the draft's staggered
+   pose. No will-change — sixteen promoted layers is the exact thing the
+   homepage's Safari audits ruled out. Section-prefixed keyframe name: plays
+   has its own bob at 1.1s and keyframe names are page-global. */
+@keyframes ag-knowledge-bob {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(2deg);
+  }
+}
+.ag-knowledge__bob {
+  animation: ag-knowledge-bob 3.2s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.ag-knowledge__grid[data-inview] .ag-knowledge__bob {
+  animation-play-state: running;
+}
+/* label — the draft's .lp-title-sm at 23.04 (xlg); tracking at the kit's
+   −0.03em ratio (the draft's inline size override kept the 27.648 tracking) */
+.ag-knowledge__label {
+  font-size: var(--lp-text-xlg);
+  letter-spacing: -0.69px;
+}
+
+/* ── tablet 768–1024: STILL four columns. The README's three would strand
+   the sixteenth card alone with two empty slots in a sixth row (dead space)
+   at both 1024 and 768; the draft's 4×4 rhythm holds instead on a compact
+   card — 80px art, 19.2 labels (the phone step). Cards are 232 wide at 1024
+   (every label one line) and 168 at 768 (the three longest wrap to two,
+   rows stay equal via grid-auto-rows). ── */
+@media (max-width: 1024px) {
+  .ag-knowledge__card {
+    gap: 12px;
+    padding: 20px 16px 16px;
+  }
+  .ag-knowledge__art {
+    height: 80px;
+  }
+  .ag-knowledge__label {
+    font-size: var(--lp-text-lg);
+    letter-spacing: -0.576px;
+  }
+}
+/* ── phone: 2 columns, gap 12, 72px art, 19.2 labels (must not reach three
+   lines at 320: the longest word, "Fundraising", is ~90px condensed inside a
+   114px content box) ── */
+@media (max-width: 767px) {
+  .ag-knowledge__grid {
+    gap: 12px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: 40px;
+  }
+  .ag-knowledge__card {
+    gap: 12px;
+    padding: 16px 12px 14px;
+  }
+  .ag-knowledge__art {
+    height: 72px;
+  }
+  .ag-knowledge__label {
+    font-size: var(--lp-text-lg);
+    letter-spacing: -0.576px;
+  }
+}
+/* reduced motion: the settled pose (no loop, no rotation) */
+@media (prefers-reduced-motion: reduce) {
+  .ag-knowledge__bob {
+    animation: none;
+  }
+}
