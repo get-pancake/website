@@ -27,7 +27,7 @@ the repository root. No asset download is needed.
 
 Current project: **pancake-brain** in the **getpancake** team,
 `prj_e9TBwJXKfPU2FFqn7nSuaTmBw1MR`.
-Reviewed preview: https://pancake-brain-kbd4ekz5l-getpancake.vercel.app/.
+Reviewed preview: https://pancake-brain-qhw2ng5od-getpancake.vercel.app/.
 The ready build uses a direct upload of committed source, with explicit target
 `staging`. Git source retrieval failed for the new project, so no automatic Git
 deployment connection was enabled. Avoid relying on an omitted target for a
@@ -106,3 +106,8 @@ Production promotion and DNS changes remain Tristan's manual step after review.
 
 If cutover fails, restore the recorded DNS target and matching Terraform state.
 No automatic production deployment or DNS mutation is included in this app.
+
+## Copy convention
+
+Use sentence case for headings. Preserve proper names and acronyms such as
+Pancake, Claude, ChatGPT, and GTM.

@@ -1,10 +1,10 @@
 # Brain replacement verification — September 11, 2026
 
-Code revision: `012479de1724e14cf60c1518b8a1e68ffdc890c5`.
+Code revision: `da0ad0bab6147e174b4f9a2004db21ee73a33b6b`.
 Draft review: https://github.com/get-pancake/website/pull/295.
 
-Vercel preview: https://pancake-brain-kbd4ekz5l-getpancake.vercel.app/.
-Deployment: `dpl_JTzaoSRMc49r7CUgfHEoitWUPw7y`, READY, explicit `staging` target.
+Vercel preview: https://pancake-brain-qhw2ng5od-getpancake.vercel.app/.
+Deployment: `dpl_3D8QJkaZhxaxxDdwyMmKwNzB4v29`, READY, explicit `staging` target.
 Vercel built the reviewed source directly after the new project's Git source
 retrieval failed. The app is not linked for automatic Git deployments.
 
@@ -64,6 +64,13 @@ retrieval failed. The app is not linked for automatic Git deployments.
   render, the top rainbow is absent, frame/card/input radii match, preview auth
   stays disabled, and no horizontal overflow or console errors were observed.
 - No shared component, auth, attribution, or marketing copy changes in this pass.
+
+## Headline casing
+
+- Hero updated to “Put your GTM on full autopilot”. The line break remains
+  after “on”; no wording or punctuation was added. Other headings already use
+  sentence case, retaining proper names and acronyms. Confirmed the exact heading
+  on the READY Vercel preview in Codex Browser.
 
 ## Automated checks
 

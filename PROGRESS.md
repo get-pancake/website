@@ -21,7 +21,7 @@
 
 - [x] Replace the top rainbow with shared CTA side ornaments and verify desktop/mobile radii and content clearance.
 
-Preview: https://pancake-brain-kbd4ekz5l-getpancake.vercel.app/
+Preview: https://pancake-brain-qhw2ng5od-getpancake.vercel.app/
 
 Draft PR: https://github.com/get-pancake/website/pull/295
 
