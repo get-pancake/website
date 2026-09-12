@@ -9,7 +9,7 @@ import { BrainSections } from "../components/BrainSections";
 const features = [
   ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in and your assistant runs prospecting, outreach and content on its own. No new dashboard to learn."],
   ["It finds the people ready to buy", "Keywords, competitors, influencers, hiring activity, tech stacks. Pancake watches the live signals and surfaces warm leads with the conversation attached."],
-  ["Start outreach campaigns from Claude or ChatGPT.", "Pancake writes personalized messages in your voice and follows up with the people ready to buy."],
+  ["Start outreach campaigns from Claude or ChatGPT", "Pancake writes personalized messages in your voice and follows up with the people ready to buy."],
 ];
 
 export default function BrainLanding() {
@@ -61,21 +61,20 @@ export default function BrainLanding() {
           </div>
         </div>
       </section>
-      <section className="brain-benefits" aria-label="What Pancake does for you">
-        <ul className="brain-features">
-          {features.map(([title, body]) => <li key={title}>
-            <img src="/lp/lp-p-check.svg" alt="" width={24} height={24} />
-            <div><h2>{title}</h2><p>{body}</p></div>
-          </li>)}
-        </ul>
+      <section className="brain-benefits" id="benefits" aria-label="What Pancake does for you">
+        <div className="brain-benefits-panel">
+          <ul className="brain-features">
+            {features.map(([title, body]) => <li key={title}>
+              <img src="/lp/lp-p-check.svg" alt="" width={24} height={24} />
+              <div><h2>{title}</h2><p>{body}</p></div>
+            </li>)}
+          </ul>
+        </div>
         <div className="brain-reassurance">
           <p><strong>SOC 2 compliant.</strong> Your data is encrypted at rest and in transit.</p>
           <p><strong>Up and running in 5 min.</strong> Connect Claude or ChatGPT, add your website, go.</p>
         </div>
       </section>
-      <div className="brain-trust" aria-label="Pancake commitments">
-        {["SOC 2 Type II", "End-to-end encrypted", "San Francisco, CA", "#1 on Product Hunt", "Cancel anytime"].map(text => <span key={text}>{text}</span>)}
-      </div>
       <BrainSections />
     </main>
   );
