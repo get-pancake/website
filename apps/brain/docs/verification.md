@@ -1,10 +1,10 @@
 # Brain replacement verification — September 11, 2026
 
-Code revision: `f874a0cb820450a909ef279683decd1c3daea4e5`.
+Code revision: `7cc8d879245c88f2e7f930a089dc19b5a9f923e0`.
 Draft review: https://github.com/get-pancake/website/pull/295.
 
-Vercel preview: https://pancake-brain-90op7oerw-getpancake.vercel.app/.
-Deployment: `dpl_2fkXNTYiYJgTweGiYrZLwWcSQGF9`, READY, explicit `staging` target.
+Vercel preview: https://pancake-brain-anyd62t8v-getpancake.vercel.app/.
+Deployment: `dpl_HQnP3t6rqrYLVVhFiyXr6ADTdP6C`, READY, explicit `staging` target.
 Vercel built the reviewed source directly after the new project's Git source
 retrieval failed. The app is not linked for automatic Git deployments.
 
@@ -25,53 +25,44 @@ retrieval failed. The app is not linked for automatic Git deployments.
 ## Hero, side artwork and benefits refinement
 
 - The hero contains the sentence-case headline, a 22-word outreach introduction,
-  social proof, and signup. The three supporting benefits follow below.
-- Both side ornaments reuse the shared `LpPancakes` and `LpRainbowGL` CTA
-  variants. Desktop/tablet artwork now uses a fixed 216px stage, uniformly
-  scaled to 0.5 of the original CTA. Its ring center is aligned with the frame
-  center. The stage no longer grows with the hero height, which had enlarged
-  the rings and made the visible portion nearly straight.
-- Desktop side gutters are 176px with a 48px inward artwork offset. Tablet
-  gutters and offsets taper without stretching the artwork horizontally.
-  Phone geometry remains unchanged. The frame clips the full-height render,
-  while the smaller stage exposes a substantially larger portion of the curve.
-- Visually checked multiple animation phases. An independent geometry review
-  sampled the source paths throughout rotation and found the desktop ink stays
-  within approximately 142px of each outside edge, inside its 176px gutter.
-- The frame centers at its content height instead of stretching the artwork to
-  fill tall viewports. The desktop content gap is 24px, signup width is 384px,
-  and the headline uses the existing 57.336px type-scale step. Its margins are
-  16px. Smaller screens progressively reduce the decorative edges.
-- A clipping gutter keeps animated artwork away from the text and signup.
-  The right ornament retains explicit matrix translation and origin 0 0 for
-  identical WebGL and DOM clipping at responsive scales.
-- Benefits now form one compact vertical checklist in a cream panel, with each
-  heading grouped with its explanation and consistent spacing/dividers. The
-  outreach benefit remains; its trailing heading period was removed.
-- The two reassurance statements sit together below the panel. Removed the
-  separate repeated trust strip; the existing footer retains the location.
+  social proof, and signup. Its content gap is 24px and signup width is 384px.
+- The rainbows reuse the main landing's `LpPancakes` and `LpRainbowGL` CTA
+  variants with the same artwork scale AND the same visible vertical crop.
+  Absolute clip frames center the ornaments without changing the hero height.
+- Compared the live `getpancake.ai` CTA and Brain in Codex Browser at 1280 × 720:
+  both have left artwork 560 × 432, right artwork 529 × 432, fit 1, top 0,
+  416px crop height, and 48px radius. The measured geometry matches exactly.
+- Above 1360px, the crop is 432px like the shared CTA. At 768–1024px it follows
+  the shared 336px artwork / 384px crop recipe. Narrower desktop/tablet widths
+  shift the ornaments outward for text clearance; phones retain their prior
+  compact edge treatment.
+- Both clip parents span the frame width on desktop, so a narrow gutter cannot
+  cut the inside curve into a straight line. The content reserves side space
+  separately. No shared artwork, renderer, colors or button recipes changed.
+- A local ResizeObserver refreshes the renderer after the clip size changes,
+  since shared GL observes only artwork size. Refresh is debounced by 120ms
+  to avoid recreating WebGL contexts continuously during a window drag.
+  Verified in-place 1201 → 1440 → 768 → 1440 resizing; final canvases return
+  to the full 560 × 432 and 529 × 432 desktop dimensions.
+- Benefits remain one vertical checklist in a cream panel. Each heading stays
+  grouped with its explanation; reassurance follows below. The repeated trust
+  strip is removed, and the existing footer retains the location.
 - At 1280 × 720 the hero ends at 720px and signup at 619px. At 1280 × 640
-  signup ends at 579px; at 1024 × 768 it ends at 643px. At 1440 × 900,
-  the artwork frame is 541px high, with both 176 × 541 canvases rendered.
-- Also checked 1201 × 720, 768 × 800, 390 × 844, and 325 × 927. The desktop
-  headline retains two lines across its breakpoint. No horizontal overflow.
-- On 390 × 844 and 325 × 927 phones, signup ends at 822px and 843px
-  respectively; supporting proof and benefits continue in natural page flow.
-- Responsive checks used a temporary same-origin iframe in Codex Browser,
-  removed before commit and deployment. Visually reviewed the hero at desktop,
-  tablet and phone sizes, and the benefits panel at desktop and phone sizes.
-- Frame, signup card and benefits panel use the shared 48px radius on desktop
-  and tablet, and 32px below 768px. Input/preview Google placeholder retain
-  12px; success panel 16px; filled buttons preserve shared squircle paths.
-- Google's live sign-in widget retains its provider-owned rectangular styling.
-  No auth, attribution, shared renderer or button component code changed.
-- Local build, TypeScript check and 17 auth/attribution regression tests passed.
-- The READY staging build was verified in Codex Browser at 1280 × 720 and
-  369 × 927. The desktop stage computes to 216px and uniform fit 0.5, with
-  visibly curved, thinner bands through the checked animation phases. Correct
-  fonts and radii, three checklist rows, no repeated trust strip, no horizontal
-  overflow, no broken loaded images or console errors. Both side canvases
-  rendered; auth/vendor gates and noindex metadata remain intact.
+  signup ends at 579px; at 1024 × 768 it ends at 643px. Also checked
+  1440 × 900, 1201 × 720, 768 × 800, 390 × 844, and 325 × 927.
+  No horizontal overflow; smaller screens retain natural vertical page flow.
+- The responsive iframe fixture was removed before commit and deployment.
+  Build, TypeScript validation and diff checks pass. The unchanged auth and
+  attribution code remains covered by the existing 17 passing regressions.
+- Frame, signup and benefits use shared 48px desktop/tablet and 32px mobile
+  radii. Inputs/preview Google placeholder retain 12px, success panel 16px,
+  and filled buttons preserve the exact shared squircle paths. Google's live
+  sign-in widget retains its provider-owned rectangular styling.
+
+- The READY hosted preview was visually verified at 1280 × 720. Its measured
+  artwork dimensions, fit, top position, crop height and radius match the live
+  main CTA values above. No horizontal overflow, broken loaded images or
+  browser errors; auth remains disabled and noindex metadata is intact.
 
 ## Headline casing
 
