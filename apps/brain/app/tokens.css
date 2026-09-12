@@ -18,9 +18,9 @@
   --brain-title-size: 69.014px;
   --brain-title-tracking: -0.03em;
   --brain-nav-height: 64px;
-  --brain-hero-bottom: var(--brain-space-lg);
-  --brain-hero-row-gap: var(--brain-space-md);
-  --brain-card-padding-block: var(--brain-space-lg);
+  --brain-hero-bottom: var(--brain-space-2xl);
+  --brain-hero-row-gap: var(--brain-space-xl);
+  --brain-card-padding-block: var(--brain-space-xl);
   --brain-rainbow-height: 64px;
   --brain-rainbow-source-width: 1654px;
   --brain-rainbow-scale: 0.14;
@@ -35,7 +35,7 @@
   --brain-ease: 200ms ease;
 }
 
-@media (max-width: 1200px), (max-height: 820px) {
+@media (max-width: 1200px) {
   .brain { --brain-title-size: 57.336px; }
 }
 @media (max-width: 1200px) {
@@ -51,7 +51,6 @@
     --brain-rainbow-top: -8px;
     --brain-hero-clearance: calc(var(--brain-rainbow-height) + var(--brain-space-sm));
     --brain-hero-bottom: var(--brain-space-sm);
-    --brain-hero-row-gap: var(--brain-space-sm);
     --brain-card-padding-block: var(--brain-space-md);
   }
 }

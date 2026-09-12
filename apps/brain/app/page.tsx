@@ -10,8 +10,7 @@ import { BrainSections } from "../components/BrainSections";
 const features = [
   ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in and your assistant runs prospecting, outreach and content on its own. No new dashboard to learn."],
   ["It finds the people ready to buy", "Keywords, competitors, influencers, hiring activity, tech stacks. Pancake watches the live signals and surfaces warm leads with the conversation attached."],
-  ["It gets you found on Google and ChatGPT", "Pancake spots the questions where AI search misses you, drafts the article, and publishes it to your CMS after your review."],
-  ["You always have the last word", "Approvals on every send and publish, plus a hard spend cap. Pancake can't overspend and can't go off-message."],
+  ["Start outreach campaigns from Claude or ChatGPT.", "Pancake writes personalized messages in your voice and follows up with the people ready to buy."],
 ];
 
 export default function BrainLanding() {
@@ -39,14 +38,8 @@ export default function BrainLanding() {
           <div className="brain-pitch">
             <p className="brain-eyebrow"><span aria-hidden="true" />Now in early access</p>
             <h1 id="brain-title" className="lp-display brain-title">Put Your GTM on<br />Full Autopilot</h1>
-            <p className="brain-lede">Pancake lets your Claude or ChatGPT run your go-to-market end to end. It monitors buying signals, finds warm leads, grows your AI search visibility, and learns from every interaction.</p>
+            <p className="brain-lede">Pancake lets your Claude or ChatGPT run your go-to-market. Find people ready to buy and start outreach campaigns from the same conversation.</p>
           </div>
-          <ul className="brain-features">
-            {features.map(([title, body]) => <li key={title}>
-              <img src="/lp/lp-p-check.svg" alt="" width={24} height={24} />
-              <div><h2>{title}</h2><p>{body}</p></div>
-            </li>)}
-          </ul>
           <div className="brain-proof">
             <div className="brain-avatars" aria-hidden="true">{["JL", "MK", "SR", "AN", "+"].map(initials => <span key={initials}>{initials}</span>)}</div>
             <p><strong>500+ founders</strong> already run their GTM on autopilot <span className="brain-stars" aria-label="5 stars">★★★★★</span></p>
@@ -58,11 +51,19 @@ export default function BrainLanding() {
               <SignupForm />
               <p className="brain-cancel">Cancel anytime</p>
             </div>
-            <div className="brain-reassurance">
-              <p><strong>SOC 2 compliant.</strong> Your data is encrypted at rest and in transit.</p>
-              <p><strong>Up and running in 5 min.</strong> Connect Claude or ChatGPT, add your website, go.</p>
-            </div>
           </aside>
+        </div>
+      </section>
+      <section className="brain-benefits" aria-label="What Pancake does for you">
+        <ul className="brain-features">
+          {features.map(([title, body]) => <li key={title}>
+            <img src="/lp/lp-p-check.svg" alt="" width={24} height={24} />
+            <div><h2>{title}</h2><p>{body}</p></div>
+          </li>)}
+        </ul>
+        <div className="brain-reassurance">
+          <p><strong>SOC 2 compliant.</strong> Your data is encrypted at rest and in transit.</p>
+          <p><strong>Up and running in 5 min.</strong> Connect Claude or ChatGPT, add your website, go.</p>
         </div>
       </section>
       <div className="brain-trust" aria-label="Pancake commitments">
