@@ -19,7 +19,9 @@
 
 - [x] Simplify the hero to headline, introduction, proof and signup; move benefits below it and replace the two requested claims with outreach from Claude/ChatGPT.
 
-Preview: https://pancake-brain-dfq5dcss1-getpancake.vercel.app/
+- [x] Replace the top rainbow with shared CTA side ornaments and verify desktop/mobile radii and content clearance.
+
+Preview: https://pancake-brain-kbd4ekz5l-getpancake.vercel.app/
 
 Draft PR: https://github.com/get-pancake/website/pull/295
 

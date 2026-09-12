@@ -1,10 +1,10 @@
 # Brain replacement verification — September 11, 2026
 
-Code revision: `bfb4ef6b0a9b236309a08ff61d3aaf0dfd37e270`.
+Code revision: `012479de1724e14cf60c1518b8a1e68ffdc890c5`.
 Draft review: https://github.com/get-pancake/website/pull/295.
 
-Vercel preview: https://pancake-brain-dfq5dcss1-getpancake.vercel.app/.
-Deployment: `dpl_5RmxSg4BTK7HPosiEBwtkGotCEZR`, READY, explicit `staging` target.
+Vercel preview: https://pancake-brain-kbd4ekz5l-getpancake.vercel.app/.
+Deployment: `dpl_JTzaoSRMc49r7CUgfHEoitWUPw7y`, READY, explicit `staging` target.
 Vercel built the reviewed source directly after the new project's Git source
 retrieval failed. The app is not linked for automatic Git deployments.
 
@@ -24,7 +24,9 @@ retrieval failed. The app is not linked for automatic Git deployments.
 
 ## Hero and outreach refinement
 
-- Kept the shallow shared rainbow and a desktop hero of at least one viewport.
+- Replaced the top rainbow with the exact left/right CTA ring components from
+  the main landing, clipped inside a shared rounded frame. The desktop hero
+  remains at least one viewport.
   The hero now contains the headline, a 22-word outreach-focused introduction,
   social proof, and signup. Increased headline/form spacing and restored the
   larger desktop headline after moving supporting details below the fold.
@@ -33,17 +35,35 @@ retrieval failed. The app is not linked for automatic Git deployments.
   outreach/follow-up copy. The remaining three benefits form a separate section
   with larger body text and more space; phones use a single column.
 - Reassurance text follows the benefits. No supporting content is clipped.
-- At 1280 × 720 the hero ends at 720px and the card at 647px. At 1280 × 640
-  the card ends at 587px; at 1024 × 768 it ends at 671px.
+- At 1280 × 720 the hero ends at 720px and the card at 619px. At 1280 × 640
+  the card ends at 579px; at 1024 × 768 it ends at 643px.
 - The complete signup card ends at 822px on a 390 × 844 phone and 843px on
   a 325 × 927 phone. No horizontal overflow was observed at any checked width.
 - Responsive dimensions were verified in same-origin iframe fixtures through
   Codex Browser, since its viewport override did not resize the active tab.
   The temporary fixture was removed before commit and deployment.
-- Hosted preview rechecked at 1280 × 720: the three intended benefits are present,
-  the benefits section begins below the hero at 720px, all images load, no console
-  errors or horizontal overflow occur, and preview authentication stays disabled.
 - Kept 48px controls, 16px input type, form logic, and attribution unchanged.
+
+## Side artwork and radius checks
+
+- Both ornaments reuse `LpPancakes` and `LpRainbowGL` CTA variants. A reserved
+  clipping gutter keeps every animation frame out of the text and form.
+- The right ornament uses explicit matrix translation with origin 0 0, matching
+  the shared WebGL renderer's clipping calculations and the DOM fallback.
+- Both canvases rendered visible 213 × 584 buffers at 1280 × 720. Also checked
+  1440 × 900, 1280 × 640, 1024 × 768, 768 × 800, 390 × 844, and 325 × 927.
+- Frame and signup card: shared 48px radius on desktop/tablet, 32px below 768px.
+  The former tablet-only 32px signup override now matches the reference CTA.
+- Inputs and preview Google placeholder: shared 12px. Success panel: 16px.
+  Filled buttons retain the exact shared Figma squircle paths (9/12/18px
+  recipes by size), and avatars/status indicators remain circular.
+- Google's production sign-in widget retains its provider-owned rectangular
+  styling. Its internal iframe radius cannot be verified from the disabled
+  preview, and it has not been overridden or clipped.
+- Hosted preview verified at 325 × 927 and 603 × 927: both side ornaments
+  render, the top rainbow is absent, frame/card/input radii match, preview auth
+  stays disabled, and no horizontal overflow or console errors were observed.
+- No shared component, auth, attribution, or marketing copy changes in this pass.
 
 ## Automated checks
 
