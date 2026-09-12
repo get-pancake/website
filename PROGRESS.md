@@ -21,9 +21,9 @@
 
 - [x] Replace the top rainbow with shared CTA side ornaments and verify desktop/mobile radii and content clearance.
 
-- [x] Match the main CTA artwork scale, crop and radii exactly; keep the tighter hero gap and aligned benefits checklist.
+- [x] Match the main CTA artwork scale, crop and radii exactly; add more vertical hero/form space and keep the aligned benefits checklist.
 
-Preview: https://pancake-brain-anyd62t8v-getpancake.vercel.app/
+Preview: https://pancake-brain-h4od8kz51-getpancake.vercel.app/
 
 Draft PR: https://github.com/get-pancake/website/pull/295
 
