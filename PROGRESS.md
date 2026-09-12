@@ -8,6 +8,27 @@
 - [ ] **Phase 6:** Rebuild `/build-in-public`
 - [ ] **Phase 7:** Final Pass
 
+## Brain landing / Vercel migration — September 11, 2026
+
+- [x] Compare contractor Brain page with the current v3 landing in Codex Browser.
+- [x] Create independent `apps/brain` Vercel app sharing active fonts, tokens, buttons, rainbow and step animations.
+- [x] Preserve the canonical attribution script including provider `click_id` and the existing credentialed email/Google auth contract.
+- [x] Pass production build, TypeScript, 17 regression tests, and desktop/mobile browser checks.
+- [x] Publish and verify a separate Vercel preview; open draft PR #295.
+- [ ] Manual Production rebuild, domain/Terraform cutover, and live signup/affiliate verification.
+
+- [x] Simplify the hero to headline, introduction, proof and signup; move benefits below it and replace the two requested claims with outreach from Claude/ChatGPT.
+
+- [x] Replace the top rainbow with shared CTA side ornaments and verify desktop/mobile radii and content clearance.
+
+- [x] Match the main CTA artwork scale, crop and radii exactly; add more vertical hero/form space and keep the aligned benefits checklist.
+
+Preview: https://pancake-brain-nragottmg-getpancake.vercel.app/
+
+Draft PR: https://github.com/get-pancake/website/pull/295
+
+Details: [Brain verification](apps/brain/docs/verification.md) and [deployment/cutover instructions](apps/brain/README.md).
+
 ## Mobile performance — September 7, 2026
 
 - [x] Measure the live homepage with Google Lighthouse on mobile and desktop; inspect local Performance traces and downloaded resources.
