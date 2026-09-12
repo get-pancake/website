@@ -1,10 +1,10 @@
 # Brain replacement verification — September 11, 2026
 
-Code revision: `2c57f60c2c8715d578097688723bbdbf193521ac`.
+Code revision: `f874a0cb820450a909ef279683decd1c3daea4e5`.
 Draft review: https://github.com/get-pancake/website/pull/295.
 
-Vercel preview: https://pancake-brain-16oazzlra-getpancake.vercel.app/.
-Deployment: `dpl_D4CaQLQYHJJFmHwgSc4hRux7g5Qo`, READY, explicit `staging` target.
+Vercel preview: https://pancake-brain-90op7oerw-getpancake.vercel.app/.
+Deployment: `dpl_2fkXNTYiYJgTweGiYrZLwWcSQGF9`, READY, explicit `staging` target.
 Vercel built the reviewed source directly after the new project's Git source
 retrieval failed. The app is not linked for automatic Git deployments.
 
@@ -27,8 +27,17 @@ retrieval failed. The app is not linked for automatic Git deployments.
 - The hero contains the sentence-case headline, a 22-word outreach introduction,
   social proof, and signup. The three supporting benefits follow below.
 - Both side ornaments reuse the shared `LpPancakes` and `LpRainbowGL` CTA
-  variants. At desktop widths of 1280px and above, the art retains its natural
-  proportions with no horizontal compression and reserves 208px per edge.
+  variants. Desktop/tablet artwork now uses a fixed 216px stage, uniformly
+  scaled to 0.5 of the original CTA. Its ring center is aligned with the frame
+  center. The stage no longer grows with the hero height, which had enlarged
+  the rings and made the visible portion nearly straight.
+- Desktop side gutters are 176px with a 48px inward artwork offset. Tablet
+  gutters and offsets taper without stretching the artwork horizontally.
+  Phone geometry remains unchanged. The frame clips the full-height render,
+  while the smaller stage exposes a substantially larger portion of the curve.
+- Visually checked multiple animation phases. An independent geometry review
+  sampled the source paths throughout rotation and found the desktop ink stays
+  within approximately 142px of each outside edge, inside its 176px gutter.
 - The frame centers at its content height instead of stretching the artwork to
   fill tall viewports. The desktop content gap is 24px, signup width is 384px,
   and the headline uses the existing 57.336px type-scale step. Its margins are
@@ -43,7 +52,7 @@ retrieval failed. The app is not linked for automatic Git deployments.
   separate repeated trust strip; the existing footer retains the location.
 - At 1280 × 720 the hero ends at 720px and signup at 619px. At 1280 × 640
   signup ends at 579px; at 1024 × 768 it ends at 643px. At 1440 × 900,
-  the artwork frame is 541px high, with both 208 × 541 canvases rendered.
+  the artwork frame is 541px high, with both 176 × 541 canvases rendered.
 - Also checked 1201 × 720, 768 × 800, 390 × 844, and 325 × 927. The desktop
   headline retains two lines across its breakpoint. No horizontal overflow.
 - On 390 × 844 and 325 × 927 phones, signup ends at 822px and 843px
@@ -57,7 +66,9 @@ retrieval failed. The app is not linked for automatic Git deployments.
 - Google's live sign-in widget retains its provider-owned rectangular styling.
   No auth, attribution, shared renderer or button component code changed.
 - Local build, TypeScript check and 17 auth/attribution regression tests passed.
-- The READY staging build was verified in Codex Browser at 369 × 927: correct
+- The READY staging build was verified in Codex Browser at 1280 × 720 and
+  369 × 927. The desktop stage computes to 216px and uniform fit 0.5, with
+  visibly curved, thinner bands through the checked animation phases. Correct
   fonts and radii, three checklist rows, no repeated trust strip, no horizontal
   overflow, no broken loaded images or console errors. Both side canvases
   rendered; auth/vendor gates and noindex metadata remain intact.

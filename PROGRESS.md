@@ -21,9 +21,9 @@
 
 - [x] Replace the top rainbow with shared CTA side ornaments and verify desktop/mobile radii and content clearance.
 
-- [x] Restore natural desktop rainbow proportions, tighten the hero gap, and rebuild benefits as one aligned checklist.
+- [x] Zoom side artwork out independently of hero height, tighten the hero gap, and rebuild benefits as one aligned checklist.
 
-Preview: https://pancake-brain-16oazzlra-getpancake.vercel.app/
+Preview: https://pancake-brain-90op7oerw-getpancake.vercel.app/
 
 Draft PR: https://github.com/get-pancake/website/pull/295
 
