@@ -1,10 +1,10 @@
 # Brain replacement verification — September 11, 2026
 
-Code revision: `8b834b4a8877f1b241840664738892a0f3dff793`.
+Code revision: `0d8d7d0f38149ee689285cff93081f8cdacc2550`.
 Draft review: https://github.com/get-pancake/website/pull/295.
 
-Vercel preview: https://pancake-brain-p5prpgg5z-getpancake.vercel.app/.
-Deployment: `dpl_7mA79mVcnvZ1AH6AFnuHpF92KkyT`, READY, explicit `staging` target.
+Vercel preview: https://pancake-brain-j46bhar1g-getpancake.vercel.app/.
+Deployment: `dpl_CpNPbYzy56WF6epmjKbb2i8XZ74x`, READY, explicit `staging` target.
 Vercel built the reviewed source directly after the new project's Git source
 retrieval failed. The app is not linked for automatic Git deployments.
 
@@ -21,6 +21,24 @@ retrieval failed. The app is not linked for automatic Git deployments.
   overflow, no console errors, `noindex, nofollow`, and auth/vendor gates intact.
 - Kept existing Brain marketing text and destinations. Privacy/Terms hash placeholders
   now link to the main site's actual legal pages.
+
+## First viewport refinement
+
+- Compressed the shared rainbow into a shallow band and reduced navigation and
+  form spacing. Desktop hero uses `min-height: calc(100svh - navigation height)`;
+  text and forms retain natural overflow on smaller windows or with zoom.
+- All headline, benefit, proof, signup and reassurance content fits at 1280 × 720,
+  1280 × 640, 1440 × 900 and 1024 × 768. No horizontal overflow was observed.
+- Phones show the headline and signup before the supporting benefits. At
+  390 × 844 the complete card ends at 830px; at 325 × 927 it ends at 827px.
+  Longer supporting text remains below the fold without clipping.
+- Responsive dimensions were verified in same-origin iframe fixtures through
+  Codex Browser, since its viewport override did not resize the active tab.
+  The temporary fixture was removed before commit and deployment.
+- Hosted updated preview rechecked at 1280 × 720: hero ends at 720px, signup
+  card at 609px, proof at 691px and reassurance at 693px. All images loaded,
+  no horizontal overflow or console errors, and preview auth remains disabled.
+- Kept all marketing copy, 48px controls, 16px input type, form logic, and tracking.
 
 ## Automated checks
 
