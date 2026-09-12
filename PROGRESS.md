@@ -17,9 +17,9 @@
 - [x] Publish and verify a separate Vercel preview; open draft PR #295.
 - [ ] Manual Production rebuild, domain/Terraform cutover, and live signup/affiliate verification.
 
-- [x] Fit the full desktop hero into the first viewport; keep headline and signup first on phones.
+- [x] Simplify the hero to headline, introduction, proof and signup; move benefits below it and replace the two requested claims with outreach from Claude/ChatGPT.
 
-Preview: https://pancake-brain-j46bhar1g-getpancake.vercel.app/
+Preview: https://pancake-brain-dfq5dcss1-getpancake.vercel.app/
 
 Draft PR: https://github.com/get-pancake/website/pull/295
 
