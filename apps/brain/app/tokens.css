@@ -13,18 +13,58 @@
   --brain-weight-regular: 400;
   --brain-weight-medium: 500;
   --brain-weight-semibold: 600;
-  --brain-grid: 1136px;
+  --brain-grid: 1296px;
   --brain-signup-width: 432px;
   --brain-title-size: 69.014px;
   --brain-title-tracking: -0.03em;
-  --brain-hero-clearance: 448px;
+  --brain-nav-height: 64px;
+  --brain-hero-bottom: var(--brain-space-lg);
+  --brain-hero-row-gap: var(--brain-space-md);
+  --brain-card-padding-block: var(--brain-space-lg);
+  --brain-rainbow-height: 64px;
+  --brain-rainbow-source-width: 1654px;
+  --brain-rainbow-scale: 0.14;
+  --brain-rainbow-top: -16px;
+  --brain-hero-clearance: calc(var(--brain-rainbow-height) + var(--brain-space-md));
   --brain-rule: 1px;
   --brain-focus-width: 2px;
   --brain-control-height: 48px;
   --brain-avatar-size: 32px;
   --brain-mobile-art-width: 163.33vw;
-  --brain-mobile-art-top: 0.3vw;
   --brain-mobile-art-offset: -4.82vw;
-  --brain-mobile-clearance: 61.44vw;
   --brain-ease: 200ms ease;
+}
+
+@media (max-width: 1200px), (max-height: 820px) {
+  .brain { --brain-title-size: 57.336px; }
+}
+@media (max-width: 1200px) {
+  .brain { --brain-signup-width: 384px; }
+}
+@media (max-width: 1024px) {
+  .brain { --brain-title-size: var(--lp-text-5xlg); }
+}
+@media (min-width: 768px) and (max-height: 700px) {
+  .brain {
+    --brain-rainbow-height: 24px;
+    --brain-rainbow-scale: 0.08;
+    --brain-rainbow-top: -8px;
+    --brain-hero-clearance: calc(var(--brain-rainbow-height) + var(--brain-space-sm));
+    --brain-hero-bottom: var(--brain-space-sm);
+    --brain-hero-row-gap: var(--brain-space-sm);
+    --brain-card-padding-block: var(--brain-space-md);
+  }
+}
+@media (max-width: 767px) {
+  .brain {
+    --brain-rainbow-height: 24px;
+    --brain-rainbow-top: -8px;
+    --brain-rainbow-scale: 0.2;
+    --brain-hero-clearance: calc(var(--brain-rainbow-height) + var(--brain-space-sm));
+    --brain-card-padding-block: var(--brain-space-md);
+    --brain-title-size: var(--lp-text-5xlg);
+  }
+}
+@media (max-width: 374px) {
+  .brain { --brain-title-size: var(--lp-text-4xlg); }
 }

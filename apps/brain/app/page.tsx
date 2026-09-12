@@ -29,25 +29,27 @@ export default function BrainLanding() {
         <div className="lp-nav-ctas"><LpFxLink href="#email" size="sm">Start free</LpFxLink></div>
       </header>
       <section className="brain-hero" aria-labelledby="brain-title">
-        <div className="lp-hero-art brain-hero-art" aria-hidden="true">
-          <div className="lp-anim-canvas lp-anim-canvas--hero"><LpPancakes variant="hero" /></div>
-          <LpArcCanvas /><LpRainbowGL variant="hero" />
+        <div className="brain-rainbow-band" aria-hidden="true">
+          <div className="lp-hero-art brain-hero-art">
+            <div className="lp-anim-canvas lp-anim-canvas--hero"><LpPancakes variant="hero" /></div>
+            <LpArcCanvas /><LpRainbowGL variant="hero" />
+          </div>
         </div>
         <div className="brain-hero-content">
           <div className="brain-pitch">
             <p className="brain-eyebrow"><span aria-hidden="true" />Now in early access</p>
             <h1 id="brain-title" className="lp-display brain-title">Put Your GTM on<br />Full Autopilot</h1>
             <p className="brain-lede">Pancake lets your Claude or ChatGPT run your go-to-market end to end. It monitors buying signals, finds warm leads, grows your AI search visibility, and learns from every interaction.</p>
-            <ul className="brain-features">
-              {features.map(([title, body]) => <li key={title}>
-                <img src="/lp/lp-p-check.svg" alt="" width={24} height={24} />
-                <div><h2>{title}</h2><p>{body}</p></div>
-              </li>)}
-            </ul>
-            <div className="brain-proof">
-              <div className="brain-avatars" aria-hidden="true">{["JL", "MK", "SR", "AN", "+"].map(initials => <span key={initials}>{initials}</span>)}</div>
-              <p><strong>500+ founders</strong> already run their GTM on autopilot <span className="brain-stars" aria-label="5 stars">★★★★★</span></p>
-            </div>
+          </div>
+          <ul className="brain-features">
+            {features.map(([title, body]) => <li key={title}>
+              <img src="/lp/lp-p-check.svg" alt="" width={24} height={24} />
+              <div><h2>{title}</h2><p>{body}</p></div>
+            </li>)}
+          </ul>
+          <div className="brain-proof">
+            <div className="brain-avatars" aria-hidden="true">{["JL", "MK", "SR", "AN", "+"].map(initials => <span key={initials}>{initials}</span>)}</div>
+            <p><strong>500+ founders</strong> already run their GTM on autopilot <span className="brain-stars" aria-label="5 stars">★★★★★</span></p>
           </div>
           <aside className="brain-signup" id="email" aria-labelledby="signup-title">
             <div className="brain-signup-card">
