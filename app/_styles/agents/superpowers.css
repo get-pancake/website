@@ -1,0 +1,614 @@
+/* ── /agents · superpowers ── (section stylesheet; see components/sections/agents/README.md)
+   The draft's #prims, rebuilt as FEATURE TABS (founder 2026-09-11: the
+   carousel with dimmed, peeking neighbors was rejected — "améliore ce
+   carrousel en utilisant des composants Mobbin … do everything with
+   taste"). Reference pattern: Anchor's product section on Mobbin (a
+   vertical list of features on the left, the active one highlighted, a
+   large stage on the right that switches with it) and Zoox's quiet
+   feature list. One cream card on the 1136 column, the draft slide's own
+   geometry (padding 48 56, grid 5fr/7fr, gap 40):
+   LEFT  the tab list — index + condensed title, 2px rail down each tab's
+         left edge; the active tab reveals its body and its rail FILLS
+         top→bottom over the 9s dwell (the autoplay indicator).
+   RIGHT the stage — the four bubble+mock panes stacked in ONE grid cell,
+         so the stage is as tall as the tallest pane at every width and the
+         card never changes height while tabs switch.
+   ≤1024 the same items reflow into one column (order) as an accordion: the
+   active pane sits right under its row, closed rows are compact, no
+   autoplay. Every mock keyframe is the draft's, made ONE-SHOT (founder:
+   the looping chips that faded in and out looked broken) — chips pop in
+   once and stay, rows and bars fill once; only the mini brain keeps its
+   subtle ambient drift/pulse. Markup: components/sections/agents/AgSuperpowers.tsx. */
+
+/* ── card = the grid ──
+   Rows: the four tab rows; the last one is flexible so a stage taller than
+   the list absorbs the difference under the fourth tab instead of spreading
+   the tabs apart (they keep their 20px pitch, top-aligned to the stage).
+   The tablist wrapper is display: contents so the tabs are grid items. */
+.ag-superpowers__card {
+  column-gap: 40px;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-rows: auto auto auto 1fr;
+  margin-top: 56px; /* draft: head → 56 → card */
+  padding: 48px 56px;
+  row-gap: 20px;
+}
+.ag-superpowers__tabs {
+  display: contents;
+}
+
+/* ── tab ── full-width button, text left, 20px after the rail. The
+   button reset (reset.css) already gives font/color inherit, no
+   background, no border. */
+.ag-superpowers__tab {
+  align-self: start;
+  border-radius: var(--lp-r-2xsm); /* shapes the focus ring only */
+  color: var(--lp-text);
+  cursor: pointer;
+  display: block;
+  grid-column: 1;
+  padding: 4px 0 4px 20px;
+  position: relative;
+  text-align: left;
+  width: 100%;
+}
+.ag-superpowers__tab:focus-visible {
+  outline: 2px solid var(--lp-ink-100);
+  outline-offset: 4px;
+}
+/* the rail track: 2px, the full tab height, on every tab (the four align) */
+.ag-superpowers__tab::before {
+  background: var(--lp-ink-tr-10);
+  border-radius: 1px;
+  content: "";
+  inset: 0 auto 0 0;
+  position: absolute;
+  width: 2px;
+}
+/* the fill: rendered on the active tab only, re-mounted on every
+   activation (restart from 0). 9s linear = the dwell; `animationend`
+   activates the next tab. Play state = the gate below (in view, not held). */
+.ag-superpowers__fill {
+  animation: ag-sp-rail 9s linear forwards;
+  animation-play-state: var(--ag-sp-rail, paused);
+  background: var(--lp-text);
+  border-radius: 1px;
+  inset: 0 auto 0 0;
+  position: absolute;
+  transform: scaleY(0);
+  transform-origin: top;
+  width: 2px;
+}
+.ag-superpowers__index {
+  color: var(--lp-subtle-text);
+  display: block;
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 20px;
+}
+/* title: ink-70 at rest, ink-90 under the pointer, ink on the active tab */
+.ag-superpowers__title {
+  color: var(--lp-muted-text);
+  display: block;
+  margin-top: 6px;
+  transition: color 0.2s ease;
+}
+.ag-superpowers__tab:hover .ag-superpowers__title {
+  color: var(--lp-ink-90);
+}
+.ag-superpowers__tab[data-on] .ag-superpowers__title {
+  color: var(--lp-text);
+}
+/* body reveal: the body is in every tab inside a 0fr grid row (nothing
+   reserved), the active tab opens it to 1fr — both the collapse of the
+   previous tab and the expansion of the new one run over the same 200ms,
+   so the list slides and the tabs below glide instead of jumping. The 8px
+   under the title travels with it (margin 0 → 8). */
+.ag-superpowers__reveal {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition:
+    grid-template-rows 0.2s ease,
+    margin-top 0.2s ease;
+}
+.ag-superpowers__tab[data-on] .ag-superpowers__reveal {
+  grid-template-rows: 1fr;
+  margin-top: 8px;
+}
+.ag-superpowers__body {
+  color: var(--lp-subtle-text);
+  display: block;
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  min-height: 0; /* lets the 0fr row collapse */
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    opacity 0.2s ease,
+    visibility 0s linear 0.2s;
+  visibility: hidden;
+}
+.ag-superpowers__tab[data-on] .ag-superpowers__body {
+  opacity: 1;
+  transition: opacity 0.2s ease 0.05s;
+  visibility: visible;
+}
+/* The card's height is the LIST's (the stacked stage is shorter than the
+   list at every desktop width: ~384 natural vs 442–541), so the list must
+   not depend on which tab is open. The four bodies are 108–119 characters:
+   at 33ch (≈348px in Geist, 1ch ≈ 10.5px) every one of them sets in exactly
+   three 24px lines from 1025 up (measured 1025→1654; at the column's full
+   390–423px, 01 and 04 dropped to two lines and the card grew 24px on the
+   others), and the 3-line floor guards a metric change — it never shows
+   with the page's fonts. ≤1024 the accordion hugs its content, no floor. */
+.ag-superpowers__copy {
+  display: block;
+  max-width: 33ch;
+  min-height: 72px;
+}
+
+/* ── stage panes ── the page-bg panel (r24, padding 24, min 340 — the
+   draft's mock panel) holding the bubble + the mock. All four share one
+   cell: the cell is the tallest pane (in practice the list, which is
+   taller — see the body floor above), every pane stretches to it: the
+   brain floats centered (margin-block: auto), chips, domains and the
+   workflow sit under the bubble like the draft's. Inactive panes stay laid
+   out, invisible, inert (mock animations paused on their first frame); the active one
+   fades in with a 6px rise over 240ms while the previous fades out. */
+.ag-superpowers__pane {
+  background: var(--lp-page-bg);
+  border-radius: var(--lp-r-lg);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  grid-area: 1 / 2 / 5 / 3;
+  min-height: 340px;
+  opacity: 0;
+  padding: 24px;
+  pointer-events: none;
+  transition:
+    opacity 0.24s ease,
+    visibility 0s linear 0.24s;
+  visibility: hidden;
+}
+.ag-superpowers__pane[data-on] {
+  animation: ag-sp-pane-in 0.24s ease-out both;
+  opacity: 1;
+  pointer-events: auto;
+  transition: none; /* the entrance is the animation, never the exit transition run backwards */
+  visibility: visible;
+}
+.ag-superpowers__mock {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+}
+.ag-superpowers__mock--wf {
+  gap: 12px;
+}
+.ag-sp-bubble {
+  align-self: flex-end;
+  background: var(--lp-ink-100);
+  border-radius: 18px 18px 4px 18px;
+  color: var(--lp-ink-20);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+  max-width: 88%;
+  padding: 10px 14px;
+}
+
+/* tone map (draft hex → tokens, README rule 1) — one custom property the
+   nodes / bars / icons / tags read */
+.ag-sp-tone--pink-30 { --ag-sp-tone: var(--lp-pink-30); }
+.ag-sp-tone--purple-40 { --ag-sp-tone: var(--lp-purple-40); }
+.ag-sp-tone--green-30 { --ag-sp-tone: var(--lp-green-30); }
+.ag-sp-tone--orange-30 { --ag-sp-tone: var(--lp-orange-30); }
+.ag-sp-tone--blue-40 { --ag-sp-tone: var(--lp-blue-40); }
+.ag-sp-tone--green-20 { --ag-sp-tone: var(--lp-green-20); }
+.ag-sp-tone--yellow-30 { --ag-sp-tone: var(--lp-yellow-30); }
+
+/* ── 01 · mini brain (slide1-mini-brain.svg 420×220) — the one mock that
+   keeps its loops: a gentle 7s drift and a 2.4s pulse, subtle by design ── */
+.ag-sp-brain {
+  align-self: center;
+  display: block;
+  height: auto;
+  margin-block: auto; /* the stretched pane: the graph floats mid-panel */
+  max-width: 560px; /* the desktop pane is ~526 wide; tablets don't blow it up */
+  width: 100%;
+}
+.ag-sp-brain__edge {
+  stroke: var(--lp-ink-100);
+  stroke-opacity: 0.15;
+}
+.ag-sp-brain__hub {
+  animation: ag-sp-bdrift 7s ease-in-out infinite;
+}
+.ag-sp-brain__node {
+  fill: var(--ag-sp-tone);
+}
+.ag-sp-brain__label {
+  fill: var(--lp-text);
+  font-size: 12px; /* viewBox units — Geist via the kit's universal font rule */
+}
+.ag-sp-brain__root {
+  animation: ag-sp-pulse 2.4s ease-in-out infinite;
+  fill: var(--lp-ink-100);
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* ── 02 · chips (34px, r17, white, 12% hairline) — pop in ONCE, 0.4s × i,
+   and stay (the draft's 4.2s in/out loop is gone) ── */
+.ag-sp-chips {
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.ag-sp-chip {
+  align-items: center;
+  animation: ag-sp-chip 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.2) forwards;
+  background: var(--lp-ink-0);
+  border: 1px solid color-mix(in srgb, var(--lp-ink-100) 12%, transparent);
+  border-radius: 17px;
+  display: inline-flex;
+  font-size: var(--lp-text-sm);
+  height: 34px;
+  opacity: 0;
+  padding: 0 14px;
+}
+
+/* ── 03 · warm-up domains (white rows r12, animIn once; 4px bar, warm once) ── */
+.ag-sp-domains {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ag-sp-domain {
+  animation: ag-sp-in 0.5s ease forwards;
+  background: var(--lp-ink-0);
+  border: 1px solid color-mix(in srgb, var(--lp-ink-100) 12%, transparent);
+  border-radius: var(--lp-r-sm);
+  display: flex;
+  flex-direction: column;
+  font-size: var(--lp-text-sm);
+  gap: 6px;
+  opacity: 0;
+  padding: 10px 14px;
+}
+.ag-sp-domain__row {
+  display: flex;
+  flex-wrap: wrap; /* narrow phones: the meta drops under the host */
+  gap: 2px 12px;
+  justify-content: space-between;
+}
+.ag-sp-domain__host {
+  font-weight: 600;
+}
+.ag-sp-domain__meta {
+  color: var(--lp-subtle-text);
+}
+.ag-sp-domain__track {
+  background: var(--lp-ink-tr-10);
+  border-radius: 2px;
+  height: 4px;
+}
+.ag-sp-domain__fill {
+  animation: ag-sp-warm 1.6s ease-out 0.4s backwards;
+  background: var(--ag-sp-tone);
+  border-radius: 2px;
+  height: 100%;
+  width: var(--ag-sp-pct); /* per-row inline: 100% / 64% / 18% */
+}
+.ag-sp-note {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+}
+
+/* ── 04 · workflow (dashed spine, the dot drops once, wfPop rows land once) ── */
+.ag-sp-wf {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+  position: relative;
+}
+.ag-sp-wf__line {
+  border-left: 2px dashed color-mix(in srgb, var(--lp-ink-100) 18%, transparent);
+  bottom: 18px;
+  left: 17px;
+  position: absolute;
+  top: 18px;
+}
+.ag-sp-wf__dot {
+  animation: ag-sp-wf-drop 3.2s cubic-bezier(0.4, 0, 0.2, 1) 0.2s forwards;
+  background: var(--lp-purple-40);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--lp-purple-40) 18%, transparent);
+  height: 12px;
+  left: 12px;
+  position: absolute;
+  top: 18px;
+  width: 12px;
+  z-index: 2;
+}
+.ag-sp-wf__row {
+  align-items: center;
+  animation: ag-sp-wf-pop 0.5s cubic-bezier(0.2, 0.9, 0.2, 1.2) forwards;
+  display: flex;
+  gap: 14px;
+  opacity: 0;
+}
+.ag-sp-wf__row--yellow { --ag-sp-tint: var(--lp-yellow-10); --ag-sp-tone: var(--lp-yellow-40); }
+.ag-sp-wf__row--blue { --ag-sp-tint: var(--lp-blue-10); --ag-sp-tone: var(--lp-blue-40); }
+.ag-sp-wf__row--purple { --ag-sp-tint: var(--lp-purple-10); --ag-sp-tone: var(--lp-purple-40); }
+.ag-sp-wf__row--green { --ag-sp-tint: var(--lp-green-10); --ag-sp-tone: var(--lp-green-30); }
+.ag-sp-wf__row--note {
+  color: var(--lp-ink-70);
+  display: block;
+  font-size: var(--lp-text-xsm); /* draft 11.5 → the kit's 11.108 step; the 16px line keeps the row height */
+  font-style: italic;
+  line-height: 16px;
+  padding-left: 50px;
+}
+.ag-sp-wf__icon {
+  align-items: center;
+  background: var(--ag-sp-tint);
+  border-radius: 50%;
+  color: var(--ag-sp-tone);
+  display: inline-flex;
+  flex-shrink: 0;
+  height: 36px;
+  justify-content: center;
+  position: relative;
+  width: 36px;
+  z-index: 1; /* above the dashed spine */
+}
+.ag-sp-wf__icon svg {
+  height: 16px;
+  width: 16px;
+}
+.ag-sp-wf__pill {
+  align-items: center;
+  background: var(--lp-ink-0);
+  border: 1px solid var(--lp-ink-tr-10);
+  border-radius: 14px;
+  display: flex;
+  flex-grow: 1;
+  gap: 12px;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 10px 14px;
+}
+.ag-sp-wf__label {
+  font-size: var(--lp-text-sm);
+  line-height: 18px;
+}
+.ag-sp-wf__label b {
+  font-weight: 600;
+}
+.ag-sp-wf__detail {
+  color: var(--lp-subtle-text);
+}
+.ag-sp-wf__tag {
+  background: var(--ag-sp-tint);
+  border-radius: 6px;
+  color: var(--ag-sp-tone);
+  font-size: var(--lp-text-xsm);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  line-height: 16px;
+  padding: 2px 8px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ag-sp-wf__reply {
+  color: var(--lp-green-30);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  line-height: 18px;
+}
+/* the footnote follows the rows (the mock's 12px gap), like the chips and
+   the domains' note: every pane reads bubble → content → air, since the
+   stacked stage is taller than any one mock */
+.ag-sp-wf__foot {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm); /* draft 12.5 → the kit's 13.333 step */
+  line-height: 18px; /* the mock's line (label/reply rows); keeps the draft's ~18px footnote box */
+}
+
+/* ── gates ──
+   Mocks: every animation runs only while the section intersects (useInView
+   → data-inview). PAUSED is the stylesheet default: a post-hydration stamp
+   let the one-shots run ~0.5s at page load (review #39); [data-inview]
+   flips the property to running, and with no JS (no data-inview, ever) the
+   component's <noscript> style sets the same property so the mocks play to
+   their settled states instead of sitting at the empty first frame. A
+   hidden pane's mock stays paused on its first frame — activation re-mounts
+   it, so it starts fresh as the pane fades in.
+   Rail: in view AND not held (a pointer resting on the card, keyboard focus
+   inside the tablist → data-hold on the card).
+   Placed after the mock rules on purpose: their `animation` shorthands
+   would otherwise reset the play state. ── */
+.ag-superpowers__mock,
+.ag-superpowers__mock * {
+  animation-play-state: var(--ag-sp-play, paused);
+}
+.ag-superpowers__pane[aria-hidden="true"] .ag-superpowers__mock,
+.ag-superpowers__pane[aria-hidden="true"] .ag-superpowers__mock * {
+  animation-play-state: paused;
+}
+.ag-superpowers[data-inview] {
+  --ag-sp-play: running;
+  --ag-sp-rail: running;
+}
+.ag-superpowers__card[data-hold] {
+  --ag-sp-rail: paused;
+}
+
+/* ── keyframes (mock keyframes = draft-css.css, one-shot where they looped) ── */
+@keyframes ag-sp-rail {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+@keyframes ag-sp-pane-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ag-sp-bdrift {
+  0% { transform: translate(0, 0); }
+  33% { transform: translate(4px, -5px); }
+  66% { transform: translate(-4px, 3px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes ag-sp-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+@keyframes ag-sp-chip {
+  from { opacity: 0; transform: scale(0.85); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ag-sp-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes ag-sp-warm {
+  from { width: 0; }
+}
+@keyframes ag-sp-wf-pop {
+  0% { opacity: 0; transform: translateY(8px) scale(0.96); }
+  100% { opacity: 1; transform: none; }
+}
+@keyframes ag-sp-wf-drop {
+  0% { top: 18px; }
+  100% { top: calc(100% - 30px); }
+}
+
+/* ── responsive ── */
+/* ≤1024: ACCORDION on the same items — one column, tab i then pane i
+   (order), closed rows compact (inactive panes not displayed), the open
+   pane hugs its content 16px under its row and fades in. No autoplay: the
+   rail is a static 2px mark on the active row (no animation → no
+   animationend → nothing advances). Card padding 32. */
+@media (max-width: 1024px) {
+  .ag-superpowers__card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    padding: 32px;
+  }
+  .ag-superpowers__tab {
+    order: calc(var(--ag-sp-i) * 2);
+  }
+  .ag-superpowers__fill {
+    animation: none;
+    transform: none;
+  }
+  .ag-superpowers__copy {
+    max-width: none;
+    min-height: 0;
+  }
+  .ag-superpowers__pane {
+    display: none;
+    grid-area: auto;
+    margin-top: -4px; /* row-gap 20 → 16 between the row and its pane */
+    min-height: 0;
+    order: calc(var(--ag-sp-i) * 2 + 1);
+    padding: 16px;
+    transition: none;
+  }
+  .ag-superpowers__pane[data-on] {
+    display: flex;
+  }
+  /* stacked, the brain pane would set its own height through the 560px
+     graph; 440 keeps it within a few px of the workflow pane */
+  .ag-sp-brain {
+    max-width: 440px;
+  }
+}
+@media (max-width: 767px) {
+  .ag-superpowers__card {
+    margin-top: 40px;
+    padding: 24px; /* --ag-r-card is 24 here (foundation) */
+  }
+  .ag-superpowers__tab {
+    padding-left: 16px;
+  }
+  /* the 420-unit viewBox renders at ~0.5–0.7× on phones: labels go to 20
+     units (≈11–14px on screen), nodes grow with them, the scene shifts 60
+     units left so "Positioning" still fits, and the box bleeds 8px into the
+     pane padding (transparent) for a little more scale on 320px screens */
+  .ag-sp-brain {
+    margin-inline: -8px;
+    max-width: none;
+    width: calc(100% + 16px);
+  }
+  .ag-sp-brain__scene {
+    transform: translateX(-60px);
+  }
+  .ag-sp-brain__label {
+    font-size: 20px;
+  }
+  .ag-sp-brain__node {
+    r: 12;
+  }
+  .ag-sp-brain__root {
+    r: 16;
+  }
+}
+/* 320-class phones: the workflow pill has ~134px for label + DAY tag, and
+   the label was wrapping to three lines beside the tag (review #43) — the
+   tag drops under the label (left, like a second line) and the pill
+   tightens so the label keeps two lines and the row stays taller than its
+   36px icon by one line only */
+@media (max-width: 359px) {
+  .ag-sp-wf__pill {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding: 8px 12px;
+  }
+}
+
+/* ── reduced motion: no autoplay (no rail animation → nothing advances), a
+   static rail marks the active tab, panes and bodies switch instantly,
+   mocks show their settled states ── */
+@media (prefers-reduced-motion: reduce) {
+  .ag-superpowers__fill {
+    animation: none;
+    transform: none;
+  }
+  .ag-superpowers__pane,
+  .ag-superpowers__pane[data-on] {
+    animation: none;
+    transition: none;
+  }
+  .ag-superpowers__title,
+  .ag-superpowers__reveal,
+  .ag-superpowers__body,
+  .ag-superpowers__tab[data-on] .ag-superpowers__body {
+    transition: none;
+  }
+  .ag-sp-brain__hub,
+  .ag-sp-brain__root,
+  .ag-sp-chip,
+  .ag-sp-domain,
+  .ag-sp-domain__fill,
+  .ag-sp-wf__row,
+  .ag-sp-wf__dot {
+    animation: none;
+  }
+  .ag-sp-chip,
+  .ag-sp-domain,
+  .ag-sp-wf__row {
+    opacity: 1;
+    transform: none;
+  }
+  .ag-sp-wf__dot {
+    top: calc(100% - 30px);
+  }
+}

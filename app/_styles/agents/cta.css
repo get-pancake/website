@@ -1,0 +1,80 @@
+/* ── /agents · cta ── (section stylesheet; see components/sections/agents/README.md)
+   The homepage's CTA card verbatim (landing-v3/cta.css: 1296 cream card r48,
+   the two animated rainbow slivers, the 464 text column, Start free + Book a
+   demo). Only the content rhythm and the install terminal are ours.
+   Draft geometry (desktop-bottom.png): content gap 32, body right under the
+   title (16), terminal 460 wide, then the pill pair.
+   Slivers vs. card height: the card is taller than the homepage's 432 (the
+   terminal adds a row) but the sliver ink still reaches the card's bottom
+   edge — the ring boxes spill 2622px past their 432px art box and the CARD is
+   the clip (cta.css overflow:hidden); LpRainbowGL sizes its canvas to
+   box ∩ card for the same reason. Measured 2026-09-11: card 516px at 1654,
+   ink to the bottom edge in both the static artboard and the GL path, so no
+   min-height is needed. */
+.ag-cta .lp-cta__content {
+  gap: 32px;
+}
+.ag-cta .lp-cta__text {
+  gap: 16px;
+}
+/* install terminal: the draft's 460 box, never wider than the column
+   (.ag-term itself hugs its content — foundation.css) */
+.ag-cta__term {
+  max-width: 100%;
+  width: 460px;
+}
+/* "Works with" row — the card's last line (founder 2026-09-11: the draft's
+   standalone strip between the card and the footer "traîne en bas"). Draft
+   row recipe: 13.333/500 subtle text, the five 28px marks (.ag-marks),
+   a dashed "any MCP client" chip; 40px under the pills = the content gap 32
+   + 8 here. Centered, wraps on phones (marks step to 24 via foundation). */
+.ag-cta__works {
+  align-items: center;
+  color: var(--lp-subtle-text);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  gap: 16px;
+  justify-content: center;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+.ag-cta__works-label {
+  white-space: nowrap;
+}
+.ag-cta__any {
+  border: 1px dashed var(--lp-ink-50);
+  border-radius: 9px;
+  padding: 6px 12px;
+  white-space: nowrap;
+}
+
+/* ── phones ── the card keeps the artboard's 30px text inset (cta.css), which
+   leaves the terminal 283px at 375: 80px of that is prompt + gaps + copy
+   button, and the URL alone is 218px at 13.333 Fono — it would spill past
+   the copy button. Let the black box overhang the text column by 14px per
+   side (still 16px inside the card edge) so the command wraps ONCE, between
+   the flag and the URL, down to ~345px; under 360px foundation steps the
+   command to xsm so the URL still lands whole on its own line. */
+@media (max-width: 767px) {
+  /* the artboard keeps the 48px card title on phones (cta.css) and this
+     title's longest word, "superpowers.", is 250px at 48: it fits the 283px
+     column at 375 but breaks mid-word in the 228px column at 320. Scale with
+     the viewport under ~370px (13vw = 41.6px at 320, 217px word); 48px from
+     370 up. Letter-spacing in em keeps the recipe's −1.44px at 48. */
+  .ag-cta .lp-cta__title {
+    font-size: min(48px, 13vw);
+    letter-spacing: -0.03em;
+  }
+  .ag-cta__term {
+    max-width: calc(100% + 28px);
+  }
+  /* The homepage card keeps the artboard's 224px block insets; with the
+     terminal row this card ran 896px tall at 375 with ~116px of bare cream
+     over the title (founder: >80px of empty cream is a flaw). 176 keeps
+     ~68px of air between the rotated bands (~108px tall) and the content. */
+  .ag-cta .lp-cta__card {
+    padding-block: 176px;
+  }
+}

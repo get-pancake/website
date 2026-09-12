@@ -1,0 +1,12 @@
+/* /agents landing — imported by app/agents/page.tsx AFTER landing-v3.css
+   (the token layer + nav/hero-art/cta/footer/modal recipes it reuses).
+   One file per section; order = page order. */
+@import "./agents/foundation.css";
+@import "./agents/hero.css";
+@import "./agents/sidekick.css";
+@import "./agents/knowledge.css";
+@import "./agents/superpowers.css";
+/* @import "./agents/plays.css"; — Super plays parked (see app/agents/page.tsx) */
+@import "./agents/brain.css";
+@import "./agents/versus.css";
+@import "./agents/cta.css";

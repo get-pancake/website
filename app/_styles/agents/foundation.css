@@ -1,0 +1,283 @@
+/* ── /agents landing — shared recipes ─────────────────────────────────────
+   Built on the landing-v3 token layer (foundation.css: --lp-* colors, type
+   scale, radii, fonts). Everything here is page-scoped under .lp-agents so
+   the homepage stylesheet is never touched. Draft reference: the approved
+   mockup (pancake-landing-draft.vercel.app, 1654 artboard, zoomed to fit);
+   this page recomposes it per breakpoint instead of zooming. */
+
+.lp-agents {
+  --ag-r-card: 30px; /* the landing's card radius (steps/CTA cards); r24 on phones */
+  --ag-content: 1136px; /* section column = artboard 1654 − 2×259 */
+  --ag-gutter: max(32px, calc(50% - 568px)); /* = 259px at 1654, 32px floor */
+}
+
+/* section: 128px rhythm, centered 1136 column */
+.ag-sec {
+  padding: 128px var(--ag-gutter);
+  position: relative;
+}
+.ag-sec__inner {
+  margin-inline: auto;
+  max-width: var(--ag-content);
+  width: 100%;
+}
+/* heading block: kicker / H2 / lede — centered by default (draft .sec-head) */
+.ag-sec__head {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: center;
+}
+.ag-sec__head--left {
+  align-items: flex-start;
+  text-align: left;
+}
+.ag-kicker {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 32px;
+}
+.ag-accent {
+  color: var(--lp-pink-40);
+}
+/* The kit's universal `* { font-family: var(--font-body) }` (style.css) hits
+   every span inside a heading — the pink accents and the rotating word were
+   rendering in Geist inside Condensed headlines (review 2026-09-11). Title
+   descendants inherit the title's face. */
+.lp-agents :is(.lp-display, .lp-title-section, .lp-title-card, .ag-title-step, .ag-title-sm, .ag-kicker) * {
+  font-family: inherit;
+}
+/* .lp-agents scope: `.lp p { margin: 0 }` (0,1,1) outranks a lone class */
+.lp-agents .ag-lede {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  margin-top: 8px;
+  max-width: 720px;
+}
+/* card-level titles (draft .lp-title-step / .lp-title-sm) */
+.ag-title-step {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-4xlg);
+  font-weight: 600;
+  letter-spacing: -1.1945px;
+  line-height: 1.2;
+  margin: 0;
+}
+.ag-title-sm {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-2xlg);
+  font-weight: 600;
+  letter-spacing: -0.83px;
+  line-height: 1.2;
+  margin: 0;
+}
+/* hairline between sections (draft .lp-sep) */
+.ag-sep {
+  border: 0;
+  border-top: 1px solid color-mix(in srgb, var(--lp-ink-50) 55%, transparent);
+  height: 0;
+  margin: 0 auto;
+  width: min(var(--ag-content), calc(100% - 64px));
+}
+/* cream card + pastel tints (tokens: *-10 ramps) */
+.ag-card {
+  background: var(--lp-card-cream);
+  border-radius: var(--ag-r-card);
+  box-sizing: border-box;
+}
+.ag-tint--yellow { background: var(--lp-yellow-10); }
+.ag-tint--pink { background: var(--lp-pink-10); }
+.ag-tint--purple { background: var(--lp-purple-10); }
+.ag-tint--blue { background: var(--lp-blue-10); }
+.ag-tint--green { background: var(--lp-green-10); }
+.ag-muted {
+  color: var(--lp-subtle-text);
+}
+
+/* agent marks row (AgMarksRow): 28px monochrome marks, gap 22 (draft) */
+.ag-marks {
+  align-items: center;
+  color: var(--lp-text);
+  display: inline-flex;
+  gap: 22px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ag-marks li {
+  display: grid;
+  place-items: center;
+}
+.ag-marks svg,
+.ag-marks img,
+.ag-marks .ag-mark-mask {
+  display: block;
+  height: 28px;
+  width: 28px;
+}
+/* Hermes: a baked alpha silhouette tinted by currentColor. A CSS mask, not
+   the homepage's SVG mask + feColorMatrix — iOS Safari ignores a filter
+   inside an SVG mask and painted the raw framed photo (device test
+   2026-09-11). */
+.ag-mark-mask {
+  background: currentColor;
+  mask: url("/lp/agents/hermes-mark.png") center / contain no-repeat;
+  -webkit-mask: url("/lp/agents/hermes-mark.png") center / contain no-repeat;
+}
+
+/* install terminal (AgTerminal): black box, Fono for the command ONLY —
+   the kit's `* { font-family }` beats inheritance, hence the descendant rule */
+.ag-term {
+  align-items: center;
+  background: var(--lp-terminal-bg);
+  border-radius: var(--lp-r-sm);
+  box-sizing: border-box;
+  color: var(--lp-page-bg);
+  display: flex;
+  font-size: var(--lp-text-md);
+  gap: 12px;
+  line-height: 24px;
+  padding: 16px 16px 16px 20px;
+}
+.ag-term * {
+  font-family: var(--lp-font-fono);
+}
+.ag-term__prompt {
+  color: var(--lp-pink-30);
+  flex: none;
+}
+.ag-term__code {
+  color: var(--lp-yellow-30);
+  flex: 1 1 auto;
+  min-width: 0;
+  text-align: left;
+  white-space: nowrap;
+}
+.ag-term__cmd,
+.ag-term__url {
+  white-space: nowrap;
+}
+/* 44px hit box around the draft's 28px outlined glyph */
+.lp .ag-term__copy {
+  background: transparent;
+  border: 0;
+  color: var(--lp-page-bg);
+  cursor: pointer;
+  display: grid;
+  flex: none;
+  height: 44px;
+  margin: -8px;
+  padding: 0;
+  place-items: center;
+  width: 44px;
+}
+.ag-term__copy-box {
+  align-items: center;
+  border: 1px solid color-mix(in srgb, var(--lp-page-bg) 30%, transparent);
+  border-radius: 7px;
+  display: inline-flex;
+  height: 28px;
+  justify-content: center;
+  transition: border-color 0.15s ease;
+  width: 28px;
+}
+.ag-term__copy-box svg {
+  height: 14px;
+  width: 14px;
+}
+.ag-term__copy:hover .ag-term__copy-box {
+  border-color: color-mix(in srgb, var(--lp-page-bg) 70%, transparent);
+}
+.ag-term__copy:focus-visible {
+  outline: 2px solid var(--lp-green-20);
+  outline-offset: -6px;
+}
+.ag-term[data-copy-state="copied"] .ag-term__copy-box {
+  border-color: var(--lp-green-20);
+  color: var(--lp-green-20);
+}
+
+/* ── responsive rhythm ── */
+@media (max-width: 1360px) {
+  .ag-sec {
+    padding: 128px 32px;
+  }
+}
+@media (max-width: 1024px) {
+  .ag-sec {
+    padding: 96px 24px;
+  }
+  .ag-sep {
+    width: calc(100% - 48px);
+  }
+}
+@media (max-width: 767px) {
+  .lp-agents {
+    --ag-r-card: 24px;
+  }
+  .ag-sec {
+    padding: 64px 16px;
+  }
+  /* text blocks sit on the hero's 32px gutter; cards on the 16px inset */
+  .ag-sec__head {
+    padding-inline: 16px;
+  }
+  .ag-sep {
+    width: calc(100% - 32px);
+  }
+  /* phone type steps (the steps/testimonials recipe) */
+  .lp-agents .lp-title-section {
+    font-size: 35.559px;
+    letter-spacing: -1.0668px;
+    line-height: 41px;
+  }
+  .ag-title-step {
+    font-size: var(--lp-text-2xlg);
+    letter-spacing: -0.83px;
+  }
+  .ag-title-sm {
+    font-size: var(--lp-text-xlg);
+    letter-spacing: -0.69px;
+  }
+  .ag-kicker {
+    font-size: var(--lp-text-lg);
+    line-height: 26px;
+  }
+  .ag-marks {
+    gap: 16px;
+  }
+  .ag-marks svg,
+  .ag-marks img,
+  .ag-marks .ag-mark-mask {
+    height: 24px;
+    width: 24px;
+  }
+  /* the command wraps ONCE, between the flag and the URL — never inside the URL */
+  .ag-term {
+    font-size: var(--lp-text-sm);
+    gap: 8px;
+    line-height: 20px;
+    padding: 12px 12px 12px 16px;
+  }
+  .ag-term__code {
+    white-space: normal;
+  }
+}
+/* Under 360px the 13.333 URL (218px) no longer fits beside the prompt and
+   the copy button inside a 32px gutter — one more step keeps it whole on
+   its own line (the hero and CTA instances bleed a few px sideways too). */
+@media (max-width: 359px) {
+  .ag-term {
+    font-size: var(--lp-text-xsm);
+    line-height: 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ag-term__copy-box {
+    transition: none;
+  }
+}

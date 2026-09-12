@@ -1,0 +1,134 @@
+/* ── /agents · brain ── (section stylesheet; see components/sections/agents/README.md)
+   "Super smart": the left head beside the GTM brain card. Draft geometry
+   (desktop-sec-07, 1654 artboard): the 1136 column split minmax(0,5fr) /
+   minmax(0,7fr) with a 56 gap, vertically centred; the card is the cream
+   .ag-card with 16 padding, overflow hidden, holding one SVG at 100 % width
+   (860×600 viewBox → 598×417 at 1654). Stacks ≤1024, phone-recomposed
+   ≤767 — never zoomed. */
+
+.ag-brain__grid {
+  align-items: center;
+  display: grid;
+  gap: 56px;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+}
+/* head — the draft's column is gap 16 with the lede's own 8 on top (= 24
+   under the H2); the foundation head is gap 8, so only the gap changes */
+.ag-brain__head {
+  gap: 16px;
+}
+/* card — 16 padding, clipped: the live graph's ripples and a drifting leaf
+   may cross the box edge and must not paint outside the rounded card */
+.ag-brain__card {
+  overflow: hidden;
+  padding: 16px;
+}
+/* one drawing at a time: width-driven height from the viewBox aspect, so the
+   static → live swap (same viewBox) changes nothing in the layout. The SVG is
+   decoration (aria-hidden under the card's role="img"): no pointer target,
+   no text selection on a phone drag. */
+.ag-brain__svg {
+  display: block;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  width: 100%;
+}
+.ag-brain__svg--compact {
+  display: none;
+}
+/* labels: Geist (founder 2026-09-09: mock stages read in Geist — the draft
+   had Fono here), plum, 15 viewBox units = the draft's font-size="15".
+   The selector beats the kit's layered `* { font-family }` rule. CSS px on
+   SVG text are user units, so the size scales with the drawing. */
+.ag-brain__svg text {
+  fill: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+}
+/* the phone geometry: 27 units in a 600-wide box = 11.5px on the 256px svg
+   of a 320 viewport (the README's ≥11px floor, review #18 — 24 units gave
+   10.2 there), 14.0 at 375, 15.2 at 402. Mirrors COMPACT.font in
+   AgBrainGraph (the under-hub label offset). */
+.ag-brain__svg[data-variant="compact"] text {
+  font-size: 27px;
+}
+/* 1025–1264: the 7fr card shrinks from 630 to 528 (svg 598 → 496) while the
+   15-unit labels would render 10.4 → 8.7px (review #37). SVG font-size is
+   user units, so no constant holds a screen size across the band; this
+   linear ramp is the chord of 11.3px × 860 / svgW between 1025 and 1264
+   (svgW = (100vw − 64 gutters − 56 gap) × 7/12 − 32 padding), i.e. labels
+   render 11.3–11.4px through the band and the ramp lands on the draft's 15
+   at 1265 — no step at either end. vw resolves against the page viewport,
+   then counts as user units (same in Blink/WebKit/Gecko). */
+@media (min-width: 1025px) and (max-width: 1264px) {
+  .ag-brain__svg[data-variant="wide"] text {
+    font-size: calc(39.225px - 1.915vw);
+  }
+}
+/* edges — the draft: static drawing 13 % ink hairline, live graph 14 % at 1.1 */
+.ag-brain__edges {
+  fill: none;
+  stroke: var(--lp-ink-100);
+  stroke-opacity: 0.14;
+  stroke-width: 1.1;
+}
+.ag-brain__edges--static {
+  stroke-opacity: 0.13;
+  stroke-width: 1;
+}
+.ag-brain__ripples {
+  fill: none;
+}
+/* the static drawing's sway — the draft's `bdrift` 1:1 (7s ease-in-out, a
+   4/5-unit wander) on each hub group, negative delays set inline so the
+   eight are out of phase. Paused until the card intersects (useInView →
+   data-inview); page-global keyframe names are section-prefixed (plays /
+   knowledge / superpowers carry their own loops). */
+@keyframes ag-brain-drift {
+  0% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(4px, -5px);
+  }
+  66% {
+    transform: translate(-4px, 3px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+.ag-brain__group {
+  animation: ag-brain-drift 7s ease-in-out infinite;
+  animation-play-state: paused;
+}
+.ag-brain__card[data-inview] .ag-brain__group {
+  animation-play-state: running;
+}
+
+/* ── tablet ≤1024: head over the card, full width (README: stack, gap 32) ── */
+@media (max-width: 1024px) {
+  .ag-brain__grid {
+    gap: 32px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+/* ── phone ≤767: the compact drawing (square box, labels under the hubs);
+   the live graph switches geometry at the same query (COMPACT_MQ) ── */
+@media (max-width: 767px) {
+  .ag-brain__svg--wide {
+    display: none;
+  }
+  .ag-brain__svg--compact {
+    display: block;
+  }
+}
+/* reduced motion: the static drawing, still (AgBrainGraph never mounts the
+   live graph under this query) */
+@media (prefers-reduced-motion: reduce) {
+  .ag-brain__group {
+    animation: none;
+  }
+}

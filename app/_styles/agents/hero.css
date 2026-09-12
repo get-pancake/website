@@ -1,0 +1,118 @@
+/* ── /agents · hero ── (section stylesheet; see components/sections/agents/README.md)
+   The HOMEPAGE hero, class for class (founder 2026-09-11: "répartis h1 et
+   cta comme sur la landing page standard"): AgHero renders `lp-hero` /
+   `lp-hero-art` / `lp-hero-inner` / `lp-hero-title` / `lp-hero-col`, so
+   landing-v3/hero.css owns the geometry — the 640–758 fold clamp and its
+   short-window ladder, the art at −120 under the nav, the H1 bottom-
+   anchored at 68.65 on the 656px column (left edge 259 at 1654), the right
+   column centered on x1211 and bottom-anchored at 84.65, the ≤1200 edge
+   anchoring, the ≤1024 flow (34vw top), the ≤767 fold-filling stack. The
+   H1's clearance from the rotating rings is the homepage's, already lived
+   with in production.
+
+   This file only shapes the right column's content — the homepage's lede
+   + pill pair becomes here:
+
+     "Give this to your agent" 19.2 + the five 28px marks   (gap 18)
+      16
+     the install terminal, ONE line at 16px Fono (hugs: ~520px)
+      16
+     "and watch it become a GTM super hero" 19.2 (founder: the same size as
+     the give line)
+
+   No mascot (founder: "enlève le pancake monster qui traîne"). */
+
+/* The homepage column hugs its 368px lede; the one-line command
+   ("$ curl -fsSL https://getpancake.ai/install.md" + the copy glyph at
+   16px Fono) measures 453, so the column is 464 (the kit's media-card
+   width). It stays centered on x1211 (landing-v3: left 50% + 384 with
+   translateX(−50%)) → 979–1443 at 1654: inside the 1296 grid's right
+   margin (1475) and 64px clear of the H1's right edge (915). ≤1200 the
+   homepage right-anchors it at 48px; at 1025 the 5.4vw headline ends at
+   448 and the column starts at 513 — still clear, so one width serves
+   every desktop size. Rows 16 apart (the homepage's 24 separates two
+   rows; three rows read tighter). */
+.ag-hero .lp-hero-col {
+  gap: 16px;
+  width: 464px;
+}
+/* Founder (preview, 2026-09-11): "le H1 et le CTA très éloignés vs l'autre
+   landing page". Production measured at 1654: the visible headline text ends
+   at x902 ("We bring you customers") and the column starts at 1027 — 125px.
+   This headline is shorter ("GTM superpowers." ends at 758), so the same
+   centered column left a 221px void. The column is anchored to the TEXT
+   instead: left 50% + 56 = 883 at 1654 (758 + 125), 776 at 1440 — the
+   H1 is center-anchored too, so the gap is 125 at every width ≥1201. Below
+   1200 the homepage's own right-anchoring takes over. */
+@media (min-width: 1201px) {
+  .ag-hero .lp-hero-col {
+    left: calc(50% + 56px);
+    transform: none;
+  }
+}
+.ag-hero__give {
+  align-items: center;
+  color: var(--lp-text);
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--lp-text-lg);
+  gap: 12px 18px;
+  line-height: 1.5;
+}
+/* hugs the command (flex item of a flex-start column = max-content wide,
+   capped at the column); the foundation's 16/16/16/20 is the CTA's — the
+   hero pads 20/20/20/24 (the draft's terminal) */
+.ag-hero__term {
+  max-width: 100%;
+  padding: 20px 20px 20px 24px;
+}
+/* `.lp p { margin: 0 }` (0,1,1) outranks a lone class — scope it */
+.lp-agents .ag-hero__after {
+  color: var(--lp-text);
+  font-size: var(--lp-text-lg);
+  line-height: 1.5;
+  /* phones fold the line once — balanced, so "hero" is never alone on the
+     second line (progressive enhancement; one line wherever it fits) */
+  text-wrap: balance;
+}
+
+/* ≤1024: flow layout (title, then the column, 48px gutters); the column
+   hugs its content — the 672px+ row fits the one-line command. The
+   command's wrapping is foundation's (nowrap; phones fold once before the
+   URL) — an override here at (0,2,0) would outrank the phone rule and pin
+   the column to the one-line width (seen 2026-09-11: a 433px inner on a
+   375 viewport). */
+@media (max-width: 1024px) {
+  .ag-hero .lp-hero-col {
+    max-width: 100%;
+    width: auto;
+  }
+}
+/* ≤767: the phone stack (32px gutters, 23px gaps, bottom-anchored to the
+   fold — landing-v3). The column and the terminal stretch to the gutters;
+   the sentence sits on one line and the 24px marks (foundation) on the
+   next; the command folds once before the URL (foundation's phone rule). */
+@media (max-width: 767px) {
+  .ag-hero .lp-hero-col {
+    align-self: stretch;
+    gap: 16px;
+    width: auto;
+  }
+  .ag-hero__give {
+    gap: 12px;
+  }
+  .ag-hero__term {
+    align-self: stretch;
+    padding: 12px 12px 12px 16px;
+  }
+}
+/* <360: the URL is one unbreakable 217px word at 13.333 and the code box
+   only has ~176px inside the 32px gutters at 320 — foundation steps the
+   command to xsm (181px); the box also bleeds to the 16px card inset so
+   the URL never runs under the copy glyph. */
+@media (max-width: 359px) {
+  .ag-hero__term {
+    margin-inline: -16px;
+    max-width: none;
+  }
+}
