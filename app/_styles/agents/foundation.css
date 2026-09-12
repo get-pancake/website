@@ -113,10 +113,20 @@
   place-items: center;
 }
 .ag-marks svg,
-.ag-marks img {
+.ag-marks img,
+.ag-marks .ag-mark-mask {
   display: block;
   height: 28px;
   width: 28px;
+}
+/* Hermes: a baked alpha silhouette tinted by currentColor. A CSS mask, not
+   the homepage's SVG mask + feColorMatrix — iOS Safari ignores a filter
+   inside an SVG mask and painted the raw framed photo (device test
+   2026-09-11). */
+.ag-mark-mask {
+  background: currentColor;
+  mask: url("/lp/agents/hermes-mark.png") center / contain no-repeat;
+  -webkit-mask: url("/lp/agents/hermes-mark.png") center / contain no-repeat;
 }
 
 /* install terminal (AgTerminal): black box, Fono for the command ONLY —
@@ -241,7 +251,8 @@
     gap: 16px;
   }
   .ag-marks svg,
-  .ag-marks img {
+  .ag-marks img,
+  .ag-marks .ag-mark-mask {
     height: 24px;
     width: 24px;
   }

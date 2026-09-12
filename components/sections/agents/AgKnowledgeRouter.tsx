@@ -70,7 +70,6 @@ const CORNER = 5; // trace elbow radius — fits inside a 12px gutter
 const PLAY_RATIO = 0.25;
 
 const ON = "is-on";
-const LANDED = "is-landed";
 const POP = "is-pop";
 const HOP = "is-hop";
 
@@ -249,13 +248,10 @@ function mount(stage: HTMLElement): () => void {
   const rows = Array.from(reqs.children).filter(isEl);
   const tiles = Array.from(grid.children).filter(isEl);
   const bubbles: HTMLElement[] = [];
-  const results: HTMLElement[] = [];
   for (const row of rows) {
     const bubble = row.querySelector<HTMLElement>(".ag-knowledge__bubble");
-    const result = row.querySelector<HTMLElement>(".ag-knowledge__result");
-    if (!bubble || !result) return () => {};
+    if (!bubble) return () => {};
     bubbles.push(bubble);
-    results.push(result);
   }
   const n = rows.length;
   if (n === 0 || tiles.length === 0) return () => {};
@@ -281,9 +277,9 @@ function mount(stage: HTMLElement): () => void {
 
   /* Slots: the active row sits at slot 0 (centred on the stage's middle in
      the row layout — the CSS fallback translateY(50%) is the same pose for
-     SSR — or at the bottom of the requests box, above the result reserve,
-     when stacked); the previous requests stack above it, cyclically, 8px
-     apart. Also the stage's two reserves, from the measured rows. */
+     SSR — or at the bottom of the requests box when stacked); the previous
+     requests stack above it, cyclically, 8px apart. Also the stacked
+     layouts' box height, from the measured rows. */
   const layout = () => {
     const depth = Math.max(1, parseInt(getComputedStyle(stage).getPropertyValue("--ag-k-hist"), 10) || 4);
     const stack = stacked();
@@ -295,10 +291,8 @@ function mount(stage: HTMLElement): () => void {
       rows[i]!.style.transform = `translateY(${y.toFixed(2)}px)`;
       y -= heights[i]! + ROW_GAP;
     }
-    const reserve = ROW_GAP + Math.max(...results.map((r) => r.offsetHeight));
     const tallest = [...heights].sort((a, b) => b - a).slice(0, depth);
-    const boxH = tallest.reduce((s, h) => s + h, 0) + (depth - 1) * ROW_GAP + reserve;
-    stage.style.setProperty("--ag-k-res", `${reserve}px`);
+    const boxH = tallest.reduce((s, h) => s + h, 0) + (depth - 1) * ROW_GAP;
     stage.style.setProperty("--ag-k-req-h", `${boxH}px`);
   };
 
@@ -343,9 +337,8 @@ function mount(stage: HTMLElement): () => void {
     window.cancelAnimationFrame(raf);
   };
 
-  /* the current route goes: result line, lit tile, legs and dots fade (150ms) */
+  /* the current route goes: lit tile, legs and dots fade (150ms) */
   const retire = () => {
-    results[index]!.classList.remove(LANDED);
     tileOf(index).classList.remove(ON);
     leg1.classList.remove(ON);
     leg2.classList.remove(ON);
@@ -353,8 +346,8 @@ function mount(stage: HTMLElement): () => void {
     dotB.classList.remove(ON);
   };
 
-  /* the landed state (idempotent): both legs drawn, dots gone, tile lit,
-     result shown; `fresh` = the dot just landed, so the illustration hops */
+  /* the landed state (idempotent): both legs drawn, dots gone, tile lit;
+     `fresh` = the dot just landed, so the illustration hops */
   const land = (fresh: boolean) => {
     draw(1);
     draw(2);
@@ -362,7 +355,6 @@ function mount(stage: HTMLElement): () => void {
     dotB.classList.remove(ON);
     const tile = tileOf(index);
     tile.classList.add(ON);
-    results[index]!.classList.add(LANDED);
     if (fresh) {
       const hop = tile.querySelector<HTMLElement>(".ag-knowledge__hop");
       if (hop) once(hop, HOP, HOP_MS);
@@ -479,7 +471,6 @@ function mount(stage: HTMLElement): () => void {
   );
 
   // take over from the SSR stylesheet state in one task: same pose, no flash
-  results[0]!.classList.add(LANDED);
   tileOf(0).classList.add(ON);
   stage.dataset.resizing = "";
   layout();

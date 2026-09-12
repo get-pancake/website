@@ -1,13 +1,16 @@
 import { SiClaude, SiOpenai } from "react-icons/si";
-import { HermesMark } from "@/components/sections/landing-v3/LpAgentMarks";
 import type { AgentName } from "./ag-copy";
 
 /**
  * The five agent marks of the /agents page, in the draft's order: Claude,
  * Codex, OpenClaw, Grok Bot, Hermes — monochrome plum on the cream page.
  * Claude/Codex reuse the homepage's react-icons marks; Hermes is the
- * homepage's HermesMark (the portrait silhouette, founder-approved on
- * production — the draft's "H" wordmark was wrong: founder 2026-09-11);
+ * production portrait (founder 2026-09-11: the draft's "H" wordmark was
+ * wrong) — but as a BAKED alpha silhouette behind a CSS mask, not the
+ * homepage's runtime SVG mask + feColorMatrix: iOS Safari ignores a filter
+ * inside a mask and painted the raw framed photo on the cream page
+ * (simulator, iPhone 17 Pro, 2026-09-11). scripts made
+ * /lp/agents/hermes-mark.png from the same portrait;
  * OpenClaw is the draft's own drawing (its eyes are page-cream with plum
  * pupils — the homepage's OpenClawMark was drawn for the inverted plum hero
  * and its eyes would vanish on cream); Grok Bot is the draft's vector.
@@ -51,6 +54,14 @@ export function GrokBotMark() {
   );
 }
 
+
+/** The baked portrait, tinted by `currentColor` through a CSS mask — the
+    same ink as the four vector marks in every engine. */
+export function HermesMark() {
+  return (
+    <span className="ag-mark-mask" role="img" aria-label="Hermes" />
+  );
+}
 
 export const AGENT_MARKS: { name: AgentName; Mark: () => JSX.Element }[] = [
   { name: "Claude", Mark: ClaudeMark },

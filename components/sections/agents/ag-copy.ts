@@ -100,15 +100,17 @@ export const KNOWLEDGE = {
       request comes in, Pancake routes it to the source that answers
       (founder: "plus créatifs pour intégrer ce composant intelligemment" —
       the 16 tiles are the sources behind the lede's "one call"). `source` =
-      the tile slug that lights up; `via` = the muted result line. */
+      the tile slug that lights up. (A result line under the bubble was tried
+      and cut — founder 2026-09-11: "remove sloppy text like this"; the lit
+      tile is the answer.) */
   routeLabel: "one call",
   requests: [
-    { text: "Find Jane's email at Acme.", source: "email-addresses", via: "cheapest of 4 providers" },
-    { text: "Who's hiring SDRs this week?", source: "hiring-signals", via: "38 companies, live" },
-    { text: "Does ChatGPT recommend us?", source: "geo-ranking", via: "10 prompts checked" },
-    { text: "Who just raised a Series A?", source: "fundraising-signals", via: "6 rounds this week" },
-    { text: "What's on Acme's stack?", source: "stack-signals", via: "cheapest of 3 providers" },
-    { text: "Which visitors came back twice?", source: "website-visitors", via: "your site, live" },
+    { text: "Find Jane's email at Acme.", source: "email-addresses" },
+    { text: "Who's hiring SDRs this week?", source: "hiring-signals" },
+    { text: "Does ChatGPT recommend us?", source: "geo-ranking" },
+    { text: "Who just raised a Series A?", source: "fundraising-signals" },
+    { text: "What's on Acme's stack?", source: "stack-signals" },
+    { text: "Which visitors came back twice?", source: "website-visitors" },
   ],
 } as const;
 

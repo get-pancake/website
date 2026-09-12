@@ -43,8 +43,7 @@
    the values here are the no-JS fallbacks). */
 .ag-knowledge__stage {
   --ag-k-hist: 4; /* history depth: the active request + 3 previous */
-  --ag-k-res: 28px; /* room under the active bubble for its result line: 8 + one 20px line */
-  --ag-k-req-h: 212px; /* the requests box in the stacked layouts: 4 one-line bubbles + gaps + the reserve */
+  --ag-k-req-h: 184px; /* the requests box in the stacked layouts: 4 one-line bubbles + gaps */
   align-items: center;
   column-gap: 32px;
   display: grid;
@@ -128,53 +127,15 @@
   padding: 10px 14px;
   transform-origin: 100% 100%;
 }
-/* result line: "→ <source> · <via>", 8px under its bubble, on the bubble's
-   right edge; the hit in ink 500, the via in subtle 400. Two nowrap halves
-   with a breakable space between them, so a narrow column breaks the line
-   between them and never inside. Cream backing: in the stacked layouts the
-   trace runs down behind it. Hidden until the route lands (200ms in, 150ms
-   out with the retiring route). */
-.ag-knowledge__result {
-  background: var(--lp-card-cream);
-  color: var(--lp-text);
-  font-size: var(--lp-text-sm);
-  font-weight: 500;
-  line-height: 20px;
-  margin-top: 8px;
-  max-width: 100%;
-  opacity: 0;
-  position: absolute;
-  right: 0;
-  text-align: right;
-  top: 100%;
-  transition: opacity 150ms ease;
-  width: max-content;
-}
-.ag-knowledge__result.is-landed {
-  opacity: 1;
-  transition-duration: 200ms;
-}
-.ag-knowledge__hit,
-.ag-knowledge__via {
-  white-space: nowrap;
-}
-.ag-knowledge__via {
-  color: var(--lp-subtle-text);
-  font-weight: 400;
-}
-/* no JS: the first request stays routed (its tile carries is-on in the markup) */
-.ag-knowledge__stage[data-play="ssr"] .ag-knowledge__req[data-slot="0"] .ag-knowledge__result {
-  opacity: 1;
-}
+/* no JS: the first request stays active (its tile carries is-on in the markup) */
 
 /* ── HUB ── the mascot in a quiet 1px ring (the trace's two anchors: the
    ring's left and right edges), "one call" 13.333/500 subtle under it */
 .ag-knowledge__hub {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: grid;
   justify-self: center;
+  place-items: center;
+  position: relative;
 }
 .ag-knowledge__hub-ring {
   border-radius: 50%;
@@ -191,11 +152,18 @@
   transform-origin: 50% 100%;
   width: 64px;
 }
+/* out of flow: the ring alone is what the row centres, so its centre sits on
+   the tile grid's middle row gutter and leg 1 is a dead straight line */
 .ag-knowledge__hub-label {
   color: var(--lp-subtle-text);
   font-size: var(--lp-text-sm);
   font-weight: 500;
+  left: 50%;
   line-height: 20px;
+  position: absolute;
+  top: calc(100% + 8px);
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
 /* ── SOURCES ── 4×4, gap 12, tiles pixel-equal (1fr columns, one content
@@ -332,7 +300,6 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .ag-knowledge__req,
-  .ag-knowledge__result,
   .ag-knowledge__tile,
   .ag-knowledge__leg,
   .ag-knowledge__dot {
@@ -343,7 +310,7 @@
 /* ── stacked: ≤1200 ── requests → hub → tiles in one column, 32 apart; the
    bubbles centre (a straight trace down into the ring, then down the middle
    column gutter), the requests box takes its measured height (rows are out
-   of flow), the active row sits above the result reserve. */
+   of flow) and the active row sits on its floor. */
 @media (max-width: 1200px) {
   .ag-knowledge__stage {
     grid-template-columns: minmax(0, 1fr);
@@ -356,18 +323,20 @@
     justify-self: stretch;
   }
   .ag-knowledge__req {
-    bottom: var(--ag-k-res);
+    bottom: 0;
     justify-content: center;
     transform: none;
   }
+  /* the trace leaves the ring's bottom edge straight down — the centred
+     label sat on that line (device test 2026-09-11), so it moves beside the
+     ring, clear of the route */
+  .ag-knowledge__hub-label {
+    left: calc(100% + 10px);
+    top: 50%;
+    transform: translateY(-50%);
+  }
   .ag-knowledge__bubble {
     transform-origin: 50% 100%;
-  }
-  .ag-knowledge__result {
-    left: 50%;
-    right: auto;
-    text-align: center;
-    transform: translateX(-50%);
   }
   .ag-knowledge__tiles {
     justify-self: stretch;
@@ -388,8 +357,7 @@
 @media (max-width: 767px) {
   .ag-knowledge__stage {
     --ag-k-hist: 2;
-    --ag-k-res: 48px;
-    --ag-k-req-h: 176px; /* two two-line bubbles + gap + the reserve (no-JS ceiling; JS tightens it) */
+    --ag-k-req-h: 128px; /* two two-line bubbles + gap (no-JS ceiling; JS tightens it) */
     margin-top: 40px;
     padding: 24px;
     row-gap: 24px;
@@ -406,22 +374,56 @@
     width: 48px;
   }
   .ag-knowledge__tiles {
+    /* 1fr rows: a label that needs a third line (360px screens) lifts every
+       tile with it — the sixteen stay pixel-equal (founder's card rule) */
     gap: 8px;
+    grid-auto-rows: 1fr;
   }
+  /* the label is back on the tile: it used to ride the result line, which is
+     gone (founder 2026-09-11). 11.108/14, up to two lines, so the longest
+     single word ("Fundraising", 61px) sits inside a 67px tile at 375. */
   .ag-knowledge__tile {
-    aspect-ratio: 1;
     border-radius: var(--lp-r-sm);
-    display: grid;
-    padding: 8px;
-    place-items: center;
+    padding: 8px 2px 10px;
   }
   .ag-knowledge__hop {
     aspect-ratio: 147 / 160;
-    height: 100%;
-    max-height: 48px;
+    height: 44px;
   }
   .ag-knowledge__art {
     height: 100%;
+  }
+  /* Labels break at the SPACE, never mid-word: hyphens:auto filled each line
+     greedily and produced "Email ad-/dresses", "GEO rank-/ing" on the device
+     (iPhone 17 Pro, 2026-09-11). The tile gives its full width to the text
+     (63 → 71px at 402) so the longest word, "Fundraising" (61px at 11.108),
+     sits on one line down to 375. overflow-wrap stays as the last resort. */
+  .ag-knowledge__label {
+    font-size: var(--lp-text-xsm);
+    line-height: 14px;
+    overflow-wrap: break-word;
+    text-align: center;
+    white-space: normal; /* the base rule keeps desktop labels on one line */
+  }
+}
+/* 360–374: 60px of tile text, one step down so "Fundraising" (55px at 10)
+   still sits on one line instead of snapping */
+@media (max-width: 374px) {
+  .ag-knowledge__label {
+    font-size: 10px;
+  }
+}
+@media (max-width: 359px) {
+  .ag-knowledge__stage {
+    padding: 16px;
+  }
+  /* 54px tiles cannot hold "Fundraising" at any size on the scale — the
+     illustration alone, with the label left to assistive tech */
+  .ag-knowledge__tile {
+    aspect-ratio: 1;
+    display: grid;
+    padding: 8px;
+    place-items: center;
   }
   .ag-knowledge__label {
     clip-path: inset(50%);
@@ -429,10 +431,5 @@
     overflow: hidden;
     position: absolute;
     width: 1px;
-  }
-}
-@media (max-width: 359px) {
-  .ag-knowledge__stage {
-    padding: 16px;
   }
 }

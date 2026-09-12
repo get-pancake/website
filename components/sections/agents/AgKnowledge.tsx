@@ -22,7 +22,6 @@ import { AgKnowledgeRouter } from "./AgKnowledgeRouter";
  */
 
 const FIRST_SOURCE = KNOWLEDGE.requests[0]?.source;
-const labelOf = (slug: string) => KNOWLEDGE.cards.find((c) => c.slug === slug)?.label ?? slug;
 
 /* what a screen reader gets instead of the aria-hidden request history */
 const SR_DEMO = `Demo: six agent requests go through ${KNOWLEDGE.routeLabel} to Pancake, which routes each one to the single source that has the answer.`;
@@ -42,8 +41,9 @@ export function AgKnowledge() {
         <AgKnowledgeRouter>
           <p className="lp-sr-only">{SR_DEMO}</p>
 
-          {/* REQUESTS — one row per request: the agent bubble + its result
-              line (shown once the route lands). The first row is the SSR
+          {/* REQUESTS — one row per request: the agent bubble alone (a result
+              line was cut — founder 2026-09-11: "remove sloppy text like
+              this"; the lit tile is the answer). The first row is the SSR
               active slot; AgKnowledgeRouter re-slots the rest. */}
           <ol className="ag-knowledge__reqs" aria-hidden="true">
             {KNOWLEDGE.requests.map((req, i) => (
@@ -55,10 +55,6 @@ export function AgKnowledge() {
                 data-arrived={i === 0 ? "" : undefined}
               >
                 <p className="ag-knowledge__bubble">{req.text}</p>
-                <p className="ag-knowledge__result">
-                  <span className="ag-knowledge__hit">→ {labelOf(req.source)}</span>{" "}
-                  <span className="ag-knowledge__via">· {req.via}</span>
-                </p>
               </li>
             ))}
           </ol>

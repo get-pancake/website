@@ -251,7 +251,13 @@ active one centred with its result line "→ label · via", three previous
 above it at receding opacity — a history, never a hover dim) → HUB (the
 mascot 64 in a 96px hairline ring + `routeLabel`) → SOURCES (16 tiles 4×4,
 tint r16, 56px art, 12px label). A 1.5px dashed trace runs through the
-GRID'S GUTTERS and a 6px plum dot rides it. Per request (≈4s, six = a 24s
+GRID'S GUTTERS and a 6px plum dot rides it: leg 1 is DEAD STRAIGHT (the ring
+is centred on the grid's middle row gutter — the hub label hangs out of flow
+so it cannot shift it; a 14px offset used to route the horizontal run
+through the second row of cards and put a Z-jog on leg 1), leg 2 is the
+minimum two elbows — along that gutter, up/down the target's column gutter,
+a stub into its left edge. Gate: qa/cross2.cjs samples both legs every 2px
+against all 16 tile rects — zero crossings at every width, 2 corners flat. Per request (≈4s, six = a 24s
 loop): bubble pops (320ms back.out) → 0.40 dot leaves along leg 1 (420ms)
 → hub hop → 0.92 leg 2 → 1.34 the dot lands on the tile's edge, the tile
 lights (2px ink ring, label 600, one art hop) and the result line fades in
@@ -261,8 +267,10 @@ ones. Plays at ≥25% in view and only when the tab is visible; pauses
 off-screen and resumes its phase; reduced motion = the first request shown
 routed and static; SSR/no-JS = that same state minus the legs. Stage height
 constant (548 at 1654). ≤1200 stacks (requests → hub → tiles, trace drawn
-top→bottom); ≤767 icon-only tiles (48px art) with the label carried by the
-result line. NO hover on the tiles, ever. Mobbin refs: Apollo integrations
+top→bottom); ≤767 the tiles keep their labels (11.108, 10px under 375, breaking at
+SPACES — `hyphens: auto` produced "Email ad-/dresses" on the device) and the
+hub label sits BESIDE the ring (the stacked trace leaves the ring's bottom
+edge and ran straight through a centred label). NO hover on the tiles, ever. Mobbin refs: Apollo integrations
 marketplace, Perplexity model orchestration, Lattice integrations wall.
 QA hook `window.__agKnowledge` = { go, pause, play, state }.
 
