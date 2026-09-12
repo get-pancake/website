@@ -1,26 +1,40 @@
-import re, json, os, shutil, glob
+import re, json, os, shutil, glob, hashlib
 W = os.path.dirname(os.path.abspath(__file__))
 S = os.path.join(W, "..", "site")
-os.makedirs(os.path.join(S, "avatars"), exist_ok=True)
-for f in glob.glob(os.path.join(W, "avatars", "*-160.png")) + [os.path.join(W, "pancake-monster.png")]:
-    shutil.copy(f, os.path.join(S, "avatars" if f.endswith("-160.png") else "", os.path.basename(f)))
+
+# fonts and avatars ship under content-hashed names so the one-year immutable cache can never serve a stale file
+def fingerprint(src_glob, out_dir):
+    os.makedirs(out_dir, exist_ok=True)
+    for old in glob.glob(os.path.join(out_dir, "*")):
+        os.remove(old)
+    names = {}
+    for f in sorted(glob.glob(src_glob)):
+        base, ext = os.path.splitext(os.path.basename(f))
+        h = hashlib.sha256(open(f, "rb").read()).hexdigest()[:8]
+        names[base] = f"{base}.{h}{ext}"
+        shutil.copy(f, os.path.join(out_dir, names[base]))
+    return names
+FONT = fingerprint(os.path.join(W, "fonts", "*.woff2"), os.path.join(S, "fonts"))
+AVATAR = fingerprint(os.path.join(W, "avatars", "*-160.png"), os.path.join(S, "avatars"))
+shutil.copy(os.path.join(W, "pancake-monster.png"), os.path.join(S, "pancake-monster.png"))
 src = open(W + "/FullPage.dc.html").read()
 style = re.search(r'<helmet>\s*<style>(.*?)</style>\s*</helmet>', src, flags=re.S).group(1)
 body = src[src.index("</helmet>") + 9:src.index("</x-dc>")]
 rings = open(W + "/rings.json").read()
 
 # fonts: external WOFF2 instead of inline OTF (the artboards keep the inline copy)
-FONTS = """
-@font-face{font-family:"Aeonik Condensed Pro";font-weight:500;font-display:swap;src:url(fonts/AeonikCondensedPro-Medium.woff2) format("woff2");}
-@font-face{font-family:"Aeonik Condensed Pro";font-weight:600;font-display:swap;src:url(fonts/AeonikCondensedPro-SemiBold.woff2) format("woff2");}
-@font-face{font-family:"Aeonik Fono";font-weight:400;font-display:swap;src:url(fonts/AeonikFono-Regular.woff2) format("woff2");}
-@font-face{font-family:"Aeonik Fono";font-weight:500;font-display:swap;src:url(fonts/AeonikFono-Medium.woff2) format("woff2");}
-@font-face{font-family:"Aeonik Fono";font-weight:600;font-display:swap;src:url(fonts/AeonikFono-SemiBold.woff2) format("woff2");}
+FONTS = f"""
+@font-face{{font-family:"Aeonik Condensed Pro";font-weight:500;font-display:swap;src:url(/fonts/{FONT["AeonikCondensedPro-Medium"]}) format("woff2");}}
+@font-face{{font-family:"Aeonik Condensed Pro";font-weight:600;font-display:swap;src:url(/fonts/{FONT["AeonikCondensedPro-SemiBold"]}) format("woff2");}}
+@font-face{{font-family:"Aeonik Fono";font-weight:400;font-display:swap;src:url(/fonts/{FONT["AeonikFono-Regular"]}) format("woff2");}}
+@font-face{{font-family:"Aeonik Fono";font-weight:500;font-display:swap;src:url(/fonts/{FONT["AeonikFono-Medium"]}) format("woff2");}}
+@font-face{{font-family:"Aeonik Fono";font-weight:600;font-display:swap;src:url(/fonts/{FONT["AeonikFono-SemiBold"]}) format("woff2");}}
 """
 style = re.sub(r'/\*FONTS\*/.*?/\*/FONTS\*/', FONTS, style, flags=re.S)
 assert "base64" not in style, "inline font survived"
 # avatars: files instead of data URIs
-body, n_av = re.subn(r'(<img alt="" data-av="([^"]+)" width="160" height="160") src="data:image/png;base64,[^"]+"', r'\1 loading="lazy" decoding="async" src="avatars/\2-160.png"', body)
+body, n_av = re.subn(r'(<img alt="" data-av="([^"]+)" width="160" height="160") src="data:image/png;base64,[^"]+"', lambda m: f'{m.group(1)} loading="lazy" decoding="async" src="/avatars/{AVATAR[m.group(2) + "-160"]}"', body)
+body = body.replace('src="pancake-monster.png"', 'src="/pancake-monster.png"')
 assert n_av == 16, n_av
 assert body.count("data:image/png;base64") <= 6, "avatar data URI survived"  # the two bitmap agent marks (Codex, Hermes) stay inline
 # nesting check: every closing tag must match the innermost open element
@@ -48,13 +62,13 @@ head = f'''<!doctype html>
 <meta property="og:type" content="website"><meta property="og:site_name" content="Pancake">
 <meta property="og:title" content="Give your AI agent GTM superpowers"><meta property="og:description" content="{desc}">
 <meta property="og:url" content="https://pancake-landing-draft.vercel.app/"><meta property="og:image" content="https://pancake-landing-draft.vercel.app/og-v2.png">
-<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
-<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Give your AI agent GTM superpowers"><meta name="twitter:description" content="{desc}"><meta name="twitter:image" content="https://pancake-landing-draft.vercel.app/og-v2.png">
-<link rel="icon" href="favicon-32x32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preload" href="fonts/AeonikCondensedPro-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/AeonikFono-Regular.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/AeonikFono-Medium.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/AeonikFono-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Give your AI agent GTM superpowers — Pancake">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Give your AI agent GTM superpowers"><meta name="twitter:description" content="{desc}"><meta name="twitter:image" content="https://pancake-landing-draft.vercel.app/og-v2.png"><meta name="twitter:image:alt" content="Give your AI agent GTM superpowers — Pancake">
+<link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preload" href="/fonts/{FONT["AeonikCondensedPro-SemiBold"]}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/{FONT["AeonikFono-Regular"]}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/{FONT["AeonikFono-Medium"]}" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/{FONT["AeonikFono-SemiBold"]}" as="font" type="font/woff2" crossorigin>
 <style>{style}
 html,body{{overflow-x:clip;}}
 .lp-hero-art.gl .lp-anim-box{{display:none;}}.lp-hero-art canvas{{position:absolute;left:0;top:0;width:1654px;height:878px;display:block;}}
@@ -182,7 +196,11 @@ if(window.IntersectionObserver){new IntersectionObserver(function(es){es.forEach
 html = head + body + JS.replace('__RINGS__', rings)
 open(S + "/index.html", "w").write(html)
 json.dump({"cleanUrls": True, "headers": [
-    {"source": "/(.*)\\.png", "headers": [{"key": "Cache-Control", "value": "public, max-age=86400"}]},
+    {"source": "/(.*)", "headers": [
+        {"key": "X-Robots-Tag", "value": "noindex"},
+        {"key": "X-Content-Type-Options", "value": "nosniff"},
+        {"key": "Referrer-Policy", "value": "strict-origin-when-cross-origin"}]},
+    {"source": "/([^/]+)\\.png", "headers": [{"key": "Cache-Control", "value": "public, max-age=86400"}]},
     {"source": "/(fonts|avatars)/(.*)", "headers": [{"key": "Cache-Control", "value": "public, max-age=31536000, immutable"}]},
 ]}, open(S + "/vercel.json", "w"), indent=1)
 print("site written", len(html) // 1024, "KB")

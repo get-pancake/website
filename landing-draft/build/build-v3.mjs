@@ -6,7 +6,7 @@ process.chdir(HERE);
 const SITE = path.resolve(HERE, "../..");   // the website repo root: fonts and lp/*.svg are read from it
 const LIVE = "https://getpancake.ai";
 const otf = (dir, name) => fs.readFileSync(`${SITE}/app/fonts/${dir}/${name}.otf`).toString("base64");
-const svgFile = (f, style) => fs.readFileSync(`${SITE}/public/lp/${f}`, "utf8").replace(/<\?xml[^>]*>/, "").replace(/id="([^"]+)"/g, (m, id) => `id="${f.replace(/\W/g, "")}-${id}"`).replace(/url\(#([^)]+)\)/g, (m, id) => `url(#${f.replace(/\W/g, "")}-${id})`).replace(/\s(width|height)="[^"]*"/, "").replace(/\s(width|height)="[^"]*"/, "").replace("<svg", `<svg style="${style}" aria-hidden="true"`);
+const svgFile = (f, style) => fs.readFileSync(`${SITE}/public/lp/${f}`, "utf8").replace(/<\?xml[^>]*>/, "").replace(/id="([^"]+)"/g, (m, id) => `id="${f.replace(/\W/g, "")}-${id}"`).replace(/url\(#([^)]+)\)/g, (m, id) => `url(#${f.replace(/\W/g, "")}-${id})`).replace(/\s(width|height)="[^"]*"/, "").replace(/\s(width|height)="[^"]*"/, "").replace(/<svg([^>]*?)\sstyle="[^"]*"/, "<svg$1").replace(/<svg([^>]*?)\spreserveAspectRatio="[^"]*"/, "<svg$1").replace("<svg", `<svg style="${style}" aria-hidden="true"`);
 /* agent marks (snapshot in agents.html): give each mark an accessible name */
 const agents = fs.readFileSync("agents.html", "utf8").replace(/<span title="([^"]+)">/g, (m, t) => `<span title="${t === "GrokBot" ? "Grok Bot" : t}" role="img" aria-label="${t === "GrokBot" ? "Grok Bot" : t}">`);
 const { RING, ARCS } = JSON.parse(fs.readFileSync("rings.json", "utf8"));
@@ -245,7 +245,7 @@ const rainbow = () => `<div class="lp-hero-art"><div class="lp-anim-canvas--hero
 
 /* ── shared bits ── */
 const navLogo = svgFile("lp-nav-logo.svg", "width:114.956px;height:56px;display:block;");
-const footLogo = fs.readFileSync(`${SITE}/public/lp/lp-footer-logo.svg`, "utf8").replace(/<\?xml[^>]*>/, "").replace(/id="([^"]+)"/g, 'id="foot-$1"').replace(/url\(#([^)]+)\)/g, "url(#foot-$1)").replace("<svg", '<svg aria-hidden="true" style="display:block;"');
+const footLogo = fs.readFileSync(`${SITE}/public/lp/lp-footer-logo.svg`, "utf8").replace(/<\?xml[^>]*>/, "").replace(/id="([^"]+)"/g, 'id="foot-$1"').replace(/url\(#([^)]+)\)/g, "url(#foot-$1)").replace(/<svg([^>]*?)\sstyle="[^"]*"/, "<svg$1").replace("<svg", '<svg aria-hidden="true" style="display:block;"');
 const ctaLeft = svgFile("lp-cta-rainbow-left.svg", "position:absolute;left:0;top:0;width:560px;height:432px;").replace("<svg", '<svg class="cta-art"');
 const ctaRight = svgFile("lp-cta-rainbow-right.svg", "position:absolute;right:0;top:0;width:529px;height:432px;").replace("<svg", '<svg class="cta-art"');
 const copyIcon = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"></rect><path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2"></path></svg>`;
@@ -276,7 +276,7 @@ GTM superpowers.</h1>
   <p class="hero-line give">Give this to your agent ${agents}</p>
   ${install()}
   <p class="hero-line watch">and watch it become a GTM super hero</p>
-  <img src="pancake-monster.png" alt="" class="hero-mascot" width="112" height="112">
+  <img src="pancake-monster.png" alt="" class="hero-mascot" width="112" height="116">
 </div>`;
 const hero = `<section class="lp-hero" aria-labelledby="h-hero">${rainbow()}${heroInner.replace('class="lp-display lp-hero-title"', 'class="lp-display lp-hero-title" id="h-hero"')}</section>`;
 
@@ -409,7 +409,7 @@ const s4 = `
   </div>
   <div style="position:relative;margin-top:56px;">
     <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
-      <div class="bob"><img alt="" src="pancake-monster.png" style="width:104px;height:auto;display:block;" width="104" height="104"></div>
+      <div class="bob"><img alt="" src="pancake-monster.png" style="width:104px;height:auto;display:block;" width="104" height="107"></div>
       <span style="background:#2c002a;color:#fff7ec;border-radius:12px;padding:8px 14px;font-size:13.333px;line-height:18px;text-align:center;"><b style="display:block;font-weight:600;">Pancake</b><span style="opacity:.75;">runs the squad</span></span>
     </div>
     <svg class="org-svg" viewBox="0 0 1136 130" fill="none" aria-hidden="true">
