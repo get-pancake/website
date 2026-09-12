@@ -9,7 +9,6 @@ import { AgBrain } from "@/components/sections/agents/AgBrain";
 import { AgCta } from "@/components/sections/agents/AgCta";
 import { AgHero } from "@/components/sections/agents/AgHero";
 import { AgKnowledge } from "@/components/sections/agents/AgKnowledge";
-import { AgPlays } from "@/components/sections/agents/AgPlays";
 import { AgSidekick } from "@/components/sections/agents/AgSidekick";
 import { AgSuperpowers } from "@/components/sections/agents/AgSuperpowers";
 import { AgVersus } from "@/components/sections/agents/AgVersus";
@@ -63,8 +62,10 @@ export default function AgentsLanding() {
       <AgKnowledge />
       <hr className="ag-sep" />
       <AgSuperpowers />
-      <hr className="ag-sep" />
-      <AgPlays />
+      {/* Super plays is PARKED (founder 2026-09-11: "let's kill this part for
+          now"). AgPlays.tsx, plays.css and PLAYS in ag-copy.ts stay in the
+          repo, unmounted, with the CSS import commented out — remount here
+          and restore the import to bring it back. */}
       <hr className="ag-sep" />
       <AgBrain />
       <hr className="ag-sep" />

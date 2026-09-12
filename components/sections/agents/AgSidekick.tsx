@@ -534,7 +534,9 @@ export function AgSidekick() {
               return (
                 <p key={i} className="ag-sidekick__type">
                   <span className="ag-sidekick__typed">{item.text}</span>
-                  {"link" in item ? (
+                  {/* inert while Super plays is parked (no script line carries
+                      a link) — restore the link in ag-copy.ts when it returns */}
+                  {"link" in item && typeof item.link === "string" ? (
                     <a className="ag-sidekick__link" href="#ag-plays">
                       {item.link}
                     </a>

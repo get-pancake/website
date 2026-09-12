@@ -62,7 +62,9 @@ export const SIDEKICK = {
     { kind: "type", text: "38 companies posted an SDR role this week, 41 decision makers.", at: 5.1, dur: 0.99 },
     { kind: "tool", text: "sequence.create · 3 touches", at: 6.5 },
     { kind: "type", text: "Three touches drafted in your voice. First sends go out tomorrow.", at: 7.0, dur: 1.02 },
-    { kind: "type", text: "Done. You'll get 10 new hiring-intent leads a day. ", at: 8.6, dur: 1.12, link: "See the play" },
+    /* "See the play" linked to the Super plays section, parked 2026-09-11 —
+       the line ends on the outcome until that section comes back. */
+    { kind: "type", text: "Done. You'll get 10 new hiring-intent leads a day.", at: 8.6, dur: 1.12 },
   ] as const,
   toolPrefix: "Used ",
   toolBrand: "Pancake",

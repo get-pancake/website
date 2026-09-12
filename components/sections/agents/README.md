@@ -297,24 +297,16 @@ panes interleaved by `order`, the open row's pane 16px under it, inactive
 panes `display:none`, no autoplay; card padding 32 / 24 (≤767, r24). Card
 1136×571 at 1654 for every tab.
 
-### Super plays — `AgPlays.tsx` / `plays.css`
-RUN CARDS (founder 2026-09-11: "not sure that this adds value — get inspired
-by the Grok Bot landing page": x.ai's "pick a team, open an example to see
-the run behind it"). Head + mascot (bob) + "Pancake / runs the squad" label +
-the dotted connector (≤1024: the stem) → three tinted lanes (grid stretch,
-`.ag-title-sm` titles) → 4 cards each (cream r12): `button.ag-plays__head`
-= name 16/600 + state (9px dot green-30/yellow-40/red-30 with the hairline
-ring + `PLAY_STATE` word 13.333 subtle, right) + `does` 13.333/20 subtle
-(2-line floor ≥1025 so all 12 cards match); a retired play's name is muted.
-ONE card per lane is open and shows the run: `ol` of 3 lines, 6px markers
-on one vertical line (last = green-30; all ink-50 when retired), lines
-rise in 220ms / 180ms apart. Rotation: a 2s clock, lane k mod 3 → each
-lane moves every 6s, 2s apart; holds = pointer on the lane, keyboard focus,
-a 5.5s rest after any click; off-screen no clock; reduced motion = first
-cards open, static; phones (≤767) no clock, tap to open. Lane height is
-constant: every card carries a clipped log box, `--ag-plays-log-h` = the
-tallest log, outgoing/incoming boxes animate on one 200ms ease (sum
-constant, proven per frame). Copy = `PLAYS.lanes` (DRAFT `does`/`run`).
+### Super plays — PARKED (founder 2026-09-11: "let's kill this part for now")
+`AgPlays.tsx`, `plays.css` and `PLAYS` / `PLAY_STATE` in ag-copy.ts stay in
+the repo, unmounted: the section is out of `app/agents/page.tsx` (with one
+separator, so the rhythm has no double gap) and `plays.css` is commented out
+of `app/_styles/agents.css`. The chat's "See the play" pointed at it, so that
+line now ends on the outcome (its `link` is gone from `SIDEKICK.script`; the
+JSX that renders it is inert but kept). To bring it back: remount
+`<AgPlays />` + its `<hr>`, restore the CSS import and the script's `link`.
+The build was Grok Bot-style RUN CARDS — name + state word + what it does +
+the three-line run behind it, one open card per lane rotating every 6s.
 
 ### Super smart — `AgBrain.tsx` / `brain.css` (client)
 5fr/7fr grid gap 56, left head (kicker gap 16, H2, lede). Right: `.ag-card`

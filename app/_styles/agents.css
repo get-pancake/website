@@ -6,7 +6,7 @@
 @import "./agents/sidekick.css";
 @import "./agents/knowledge.css";
 @import "./agents/superpowers.css";
-@import "./agents/plays.css";
+/* @import "./agents/plays.css"; — Super plays parked (see app/agents/page.tsx) */
 @import "./agents/brain.css";
 @import "./agents/versus.css";
 @import "./agents/cta.css";
