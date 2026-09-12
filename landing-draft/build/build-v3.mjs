@@ -37,7 +37,7 @@ h1,h2,h3{text-wrap:balance;}
 .lp-btn{align-items:center;background:var(--lp-ink-100);border:0;border-radius:12px;color:var(--lp-ink-20);cursor:pointer;display:inline-flex;font-family:var(--lp-font-fono);font-size:16px;font-weight:600;justify-content:center;line-height:1.5;padding:12px 20px;white-space:nowrap;box-sizing:border-box;height:48px;min-width:136px;}
 .lp-btn[data-size="sm"]{border-radius:9px;font-size:13.333px;padding:9px 15px;height:38px;min-width:110px;}
 .lp-btn--tinted{background:#f5e5d6;color:var(--lp-ink-100);}
-.lp-btn:focus-visible,.copy:focus-visible,.prim-dots button:focus-visible,.prim-prev:focus-visible,.prim-next:focus-visible,.chat-replay:focus-visible{outline:2px solid var(--lp-purple-30);outline-offset:2px;}
+.lp-btn:focus-visible,.copy:focus-visible,.prim-dots button:focus-visible,.prim-prev:focus-visible,.prim-next:focus-visible,.chat-replay:focus-visible{outline:2px solid var(--lp-purple-40);outline-offset:2px;}
 .lp-nav{height:120px;position:relative;z-index:2;}
 .lp-nav-logo{position:absolute;left:max(32px,calc(50% - 648px));top:50%;transform:translateY(-50%);width:114.956px;height:56px;}
 .lp-nav-logo svg{width:114.956px;height:56px;display:block;}
@@ -118,8 +118,8 @@ h1,h2,h3{text-wrap:balance;}
 /* carousel */
 .prim-wrap{position:relative;margin-top:56px;}
 .prim-viewport{overflow:hidden;transition:height .5s cubic-bezier(.22,1,.36,1);}
-.prim-track{display:flex;gap:24px;transition:transform .65s cubic-bezier(.22,1,.36,1);}
-.prim-slide{flex:0 0 var(--sw);align-self:flex-start;box-sizing:border-box;opacity:.45;transform:scale(.96);transition:opacity .5s ease,transform .65s cubic-bezier(.22,1,.36,1);cursor:pointer;}
+.prim-track{display:flex;gap:24px;transition:transform .65s cubic-bezier(.22,1,.36,1);touch-action:pan-y;}
+.prim-slide{flex:0 0 var(--sw);align-self:flex-start;box-sizing:border-box;opacity:.6;transform:scale(.96);transition:opacity .5s ease,transform .65s cubic-bezier(.22,1,.36,1);cursor:pointer;}
 .prim-slide.is-on{opacity:1;transform:none;cursor:default;}
 .prim-card{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:center;padding:48px 56px;min-height:440px;}
 .prim-text{display:flex;flex-direction:column;gap:14px;}
@@ -129,7 +129,7 @@ h1,h2,h3{text-wrap:balance;}
 .prim-prev,.prim-next{width:44px;height:44px;border-radius:50%;border:1px solid rgba(44,0,42,.16);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
 .prim-dots{display:flex;gap:0;}
 .prim-dots button{position:relative;width:40px;height:44px;padding:0;border:0;background:none;cursor:pointer;}
-.prim-dots button::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:4px;background:rgba(44,0,42,.2);transition:width .3s ease,margin .3s ease;}
+.prim-dots button::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:4px;background:rgba(44,0,42,.4);transition:width .3s ease,margin .3s ease;}
 .prim-dots button.is-on::before{width:28px;margin-left:-14px;}
 .prim-dots button.is-on::after{content:"";position:absolute;left:50%;top:50%;height:8px;margin:-4px 0 0 -14px;width:0;border-radius:4px;background:#2c002a;animation:dotfill 11s linear forwards;}
 .prim-dots button.is-on.paused::after{animation-play-state:paused;}
@@ -306,7 +306,7 @@ const s1 = `
     </div>
     <div class="ccard chat-card" style="padding:20px 28px 28px;display:flex;flex-direction:column;gap:20px;">
       <div style="display:flex;align-items:center;gap:10px;font-size:13.333px;color:#6c4b65;padding-bottom:14px;border-bottom:1px solid rgba(44,0,42,.08);">${rotAvatar()}<span style="font-weight:600;color:#2c002a;">${rotName()}</span><span>· new chat</span></div>
-      <div id="chat" class="chat">
+      <div id="chat" class="chat" tabindex="-1" style="outline:none;">
         ${row(`<div>Find companies hiring SDRs and reach out to 10 hot leads a day.</div>`, 0.2, "me")}
         ${row("Setting this up as a daily play. Checking your GTM brain first.", 1.6)}
         ${tool("brain.read", 3.2)}
@@ -359,16 +359,16 @@ const step = (day, title, meta, tile, icon, d) => `<div class="wf-row" style="an
     <span style="font-size:13.333px;line-height:18px;"><b style="font-weight:600;">${title}</b><span class="body-muted"> · ${meta}</span></span>
     <span style="font-size:12px;line-height:16px;font-weight:600;letter-spacing:.4px;text-transform:uppercase;color:${tile[1]};background:${tile[0]};border-radius:6px;padding:2px 8px;white-space:nowrap;">${day}</span>
   </div></div>`;
-const branch = (t, d) => `<div class="wf-row" style="animation-delay:${d}s;padding-left:50px;font-size:13.333px;line-height:18px;color:#9a818f;font-style:italic;">${t}</div>`;
+const branch = (t, d) => `<div class="wf-row" style="animation-delay:${d}s;padding-left:50px;font-size:13.333px;line-height:18px;color:#85687c;font-style:italic;">${t}</div>`;
 const animSeq = `<div style="display:flex;flex-direction:column;gap:12px;width:100%;">${prompt("Reach out to these 41 leads: email, LinkedIn if no reply, then one follow-up.")}
 <div style="position:relative;display:flex;flex-direction:column;gap:8px;margin-top:4px;">
   <div style="position:absolute;left:17px;top:18px;bottom:18px;border-left:2px dashed rgba(44,0,42,.18);"></div>
   <div class="wf-drop" style="position:absolute;left:12px;top:18px;width:12px;height:12px;border-radius:50%;background:#8d43fd;box-shadow:0 0 0 4px rgba(141,67,253,.18);z-index:2;"></div>
-  ${step("Day 1", "Email", "intro, in your voice", ["#ffe9d1", "#f38f43"], "mail", 0.2)}
+  ${step("Day 1", "Email", "intro, in your voice", ["#ffe9d1", "#9a4a0f"], "mail", 0.2)}
   ${branch("no reply after 3 days →", 0.8)}
-  ${step("Day 4", "LinkedIn", "connect + short note", ["#d9e9ff", "#4660e7"], "li", 1.1)}
+  ${step("Day 4", "LinkedIn", "connect + short note", ["#d9e9ff", "#2f47c8"], "li", 1.1)}
   ${branch("still nothing →", 1.7)}
-  ${step("Day 9", "Email", "follow-up, new angle", ["#efddf1", "#8d43fd"], "mail", 2.0)}
+  ${step("Day 9", "Email", "follow-up, new angle", ["#efddf1", "#6b2fd0"], "mail", 2.0)}
   <div class="wf-row" style="animation-delay:2.9s;display:flex;align-items:center;gap:14px;">
     <span style="width:36px;height:36px;border-radius:50%;background:#ceead5;color:#037d48;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:1;">${ico.reply}</span>
     <span style="font-size:13.333px;line-height:18px;color:#037d48;font-weight:600;">Reply from Jane · sequence stops, meeting booked</span>
