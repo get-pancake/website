@@ -39,11 +39,11 @@ h1,h2,h3{text-wrap:balance;}
 .lp-btn--tinted{background:#f5e5d6;color:var(--lp-ink-100);}
 .lp-btn:focus-visible,.copy:focus-visible,.prim-dots button:focus-visible,.prim-prev:focus-visible,.prim-next:focus-visible,.chat-replay:focus-visible{outline:2px solid var(--lp-purple-30);outline-offset:2px;}
 .lp-nav{height:120px;position:relative;z-index:2;}
-.lp-nav-logo{position:absolute;left:var(--gut);top:50%;transform:translateY(-50%);width:114.956px;height:56px;}
+.lp-nav-logo{position:absolute;left:max(32px,calc(50% - 648px));top:50%;transform:translateY(-50%);width:114.956px;height:56px;}
 .lp-nav-logo svg{width:114.956px;height:56px;display:block;}
 .lp-nav-links{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;gap:34px;white-space:nowrap;}
 .lp-nav-links a{font-size:13.333px;font-weight:500;letter-spacing:.1333px;line-height:1.5;}
-.lp-nav-ctas{position:absolute;right:var(--gut);top:41px;display:flex;gap:8px;}
+.lp-nav-ctas{position:absolute;right:max(32px,calc(50% - 648px));top:41px;display:flex;gap:8px;}
 .sec{padding:128px var(--gut);position:relative;}
 .sec-head{display:flex;flex-direction:column;gap:8px;text-align:center;align-items:center;}
 .lede{max-width:720px;margin-top:8px;text-wrap:pretty;}
@@ -98,8 +98,8 @@ h1,h2,h3{text-wrap:balance;}
 @keyframes edgeIn{from{opacity:0}to{opacity:1}}.edge-in{animation:edgeIn .6s ease .4s backwards;}
 /* chat */
 .chat{display:flex;flex-direction:column;gap:14px;font-size:15px;line-height:24px;}
-.crow{display:flex;}
-.crow.me{justify-content:flex-end;}
+.crow{display:block;}
+.crow.me{display:flex;justify-content:flex-end;}
 .crow.me>div{max-width:80%;background:#f0e9e3;border-radius:16px;padding:12px 16px;}
 .crow.on{animation:riseIn .4s cubic-bezier(.2,.7,.2,1) both;opacity:0;transform:translateY(8px);}
 .chat-typing{display:none;gap:5px;align-items:center;height:24px;padding-left:2px;}
@@ -107,7 +107,7 @@ h1,h2,h3{text-wrap:balance;}
 .chat-typing i{width:6px;height:6px;border-radius:50%;background:#bba8ae;animation:tdot 1.2s ease-in-out infinite;}
 .chat-typing i:nth-child(2){animation-delay:.2s}.chat-typing i:nth-child(3){animation-delay:.4s}
 @keyframes tdot{0%,60%,100%{opacity:.35;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
-.chat-replay{display:none;align-self:flex-end;margin-top:2px;background:none;border:0;padding:6px 0;font-size:13.333px;color:#85687c;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
+.chat-replay{display:none;align-self:flex-end;margin-top:2px;background:none;border:0;padding:10px 0;font-size:13.333px;color:#85687c;cursor:pointer;text-decoration:underline;text-underline-offset:3px;}
 .chat-replay.on{display:inline-block;}
 .tool{display:inline-flex;align-items:center;gap:8px;padding:5px 12px 5px 8px;border-radius:999px;border:1px solid rgba(44,0,42,.14);background:#fff;font-size:13.333px;line-height:18px;color:#6c4b65;}
 /* data types */
@@ -124,10 +124,11 @@ h1,h2,h3{text-wrap:balance;}
 .prim-card{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:center;padding:48px 56px;min-height:440px;}
 .prim-text{display:flex;flex-direction:column;gap:14px;}
 .prim-demo{background:#fbf6f1;border-radius:24px;padding:24px;min-height:340px;box-sizing:border-box;display:flex;}
+.prim-demo>div{width:100%;min-width:0;}
 .prim-nav{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:28px;}
 .prim-prev,.prim-next{width:44px;height:44px;border-radius:50%;border:1px solid rgba(44,0,42,.16);background:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
-.prim-dots{display:flex;gap:4px;}
-.prim-dots button{position:relative;width:24px;height:24px;padding:0;border:0;background:none;cursor:pointer;}
+.prim-dots{display:flex;gap:0;}
+.prim-dots button{position:relative;width:40px;height:44px;padding:0;border:0;background:none;cursor:pointer;}
 .prim-dots button::before{content:"";position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:4px;background:rgba(44,0,42,.2);transition:width .3s ease,margin .3s ease;}
 .prim-dots button.is-on::before{width:28px;margin-left:-14px;}
 .prim-dots button.is-on::after{content:"";position:absolute;left:50%;top:50%;height:8px;margin:-4px 0 0 -14px;width:0;border-radius:4px;background:#2c002a;animation:dotfill 11s linear forwards;}
@@ -146,6 +147,7 @@ h1,h2,h3{text-wrap:balance;}
 @keyframes warnTint{0%{background:#fffbf6}40%{background:#fdebd8}100%{background:#fffbf6}}.play.warn{animation:warnTint .7s ease;}
 .play.in{animation:animIn .32s cubic-bezier(.2,.9,.2,1.2);}
 .pdot{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0;transition:background .4s ease;}
+#brain text{paint-order:stroke;stroke:var(--lp-card-cream);stroke-width:5px;stroke-linejoin:round;}
 /* vs + cta + works + footer */
 .vs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:48px;}
 .vs-card{padding:48px;display:flex;flex-direction:column;gap:16px;border-radius:30px;}
@@ -196,7 +198,9 @@ h1,h2,h3{text-wrap:balance;}
 @media (max-width:900px){
   .prim-card{grid-template-columns:minmax(0,1fr);gap:24px;}
   .vs{grid-template-columns:minmax(0,1fr);}
+  .play{font-size:13.333px;padding:10px 12px;}.org-col{padding:20px 12px;}
 }
+@media (max-width:820px){.tcard{padding:18px 8px 16px;}.tcard .lp-title-sm{font-size:18px;}}
 @media (max-width:767px){
   :root{--gut:24px;--sw:calc(100vw - 48px);}
   body{font-size:15px;}
@@ -230,6 +234,7 @@ h1,h2,h3{text-wrap:balance;}
   .lp-foot-head{color:var(--lp-ink-60);font-size:13.333px;}
   .lp-foot-links{margin-top:6px;gap:0;}.lp-foot-links a{padding:10px 0;display:inline-block;}
   .lp-foot-lines{margin-top:24px;}
+  .lp-foot-legal a{display:inline-block;padding:12px 0;margin:-12px 0;}
 }
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important;}
@@ -246,10 +251,10 @@ const rainbow = () => `<div class="lp-hero-art"><div class="lp-anim-canvas--hero
 /* ── shared bits ── */
 const navLogo = svgFile("lp-nav-logo.svg", "width:114.956px;height:56px;display:block;");
 const footLogo = fs.readFileSync(`${SITE}/public/lp/lp-footer-logo.svg`, "utf8").replace(/<\?xml[^>]*>/, "").replace(/id="([^"]+)"/g, 'id="foot-$1"').replace(/url\(#([^)]+)\)/g, "url(#foot-$1)").replace(/<svg([^>]*?)\sstyle="[^"]*"/, "<svg$1").replace("<svg", '<svg aria-hidden="true" style="display:block;"');
-const ctaLeft = svgFile("lp-cta-rainbow-left.svg", "position:absolute;left:0;top:0;width:560px;height:432px;").replace("<svg", '<svg class="cta-art"');
-const ctaRight = svgFile("lp-cta-rainbow-right.svg", "position:absolute;right:0;top:0;width:529px;height:432px;").replace("<svg", '<svg class="cta-art"');
+const ctaLeft = svgFile("lp-cta-rainbow-left.svg", "position:absolute;left:0;top:0;height:100%;width:auto;").replace("<svg", '<svg class="cta-art"');
+const ctaRight = svgFile("lp-cta-rainbow-right.svg", "position:absolute;right:0;top:0;height:100%;width:auto;").replace("<svg", '<svg class="cta-art"');
 const copyIcon = `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"></rect><path d="M10.5 5.5V3.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2"></path></svg>`;
-const install = () => `<div class="term"><span class="ps" aria-hidden="true">$</span><code class="cmd">curl -fsSL <wbr>https://getpancake.ai/install.md</code><button type="button" class="copy" aria-label="Copy install command" title="Copy">${copyIcon}</button></div>`;
+const install = () => `<div class="term"><span class="ps" aria-hidden="true">$</span><code class="cmd">curl -fsSL <wbr>https://getpancake.ai/<wbr>install.md</code><button type="button" class="copy" aria-label="Copy install command" title="Copy">${copyIcon}</button></div>`;
 const nav = `<header class="lp-nav"><a class="lp-nav-logo" href="${LIVE}/" aria-label="Pancake home">${navLogo}</a><nav class="lp-nav-links" aria-label="Main"><a href="${LIVE}/#how-it-works">Product</a><a href="${LIVE}/#why">Company</a><a href="${LIVE}/blog">Blog</a></nav><div class="lp-nav-ctas"><a class="lp-btn" data-size="sm" href="https://app.getpancake.ai">Start free</a><a class="lp-btn lp-btn--tinted" data-size="sm" href="https://zcal.co/i/ZEHl48rv" target="_blank" rel="noopener noreferrer">Book a demo</a></div></header>`;
 const doc = (body) => `<!doctype html>
 <html>
@@ -340,7 +345,7 @@ const s2 = `
 /* ── 3. primitives carousel (catalog) ── */
 const prompt = (t) => `<div class="prompt">${t}</div>`;
 const brainHubs = [["ICP", 110, 60, "#ff7aa0"], ["Personas", 300, 50, "#8d43fd"], ["Voice", 320, 170, "#037d48"], ["Competitors", 90, 170, "#d43900"], ["Positioning", 316, 110, "#4660e7"]];
-const animBrain = `<div style="display:flex;flex-direction:column;gap:14px;height:100%;">${prompt("Is this lead ICP? Write a message in my tone.")}<svg viewBox="0 0 420 220" style="width:100%;height:auto;display:block;" aria-hidden="true">${brainHubs.map(h => `<line class="edge-in" x1="210" y1="110" x2="${h[1]}" y2="${h[2]}" stroke="#2c002a" stroke-opacity=".15"></line>`).join("")}${brainHubs.map((h, i) => `<g class="pop-in" style="animation-delay:${(.5 + i * .12).toFixed(2)}s;transform-origin:${h[1]}px ${h[2]}px;"><circle cx="${h[1]}" cy="${h[2]}" r="10" fill="${h[3]}"></circle><text x="${h[1] + 15}" y="${h[2] + 5}" font-family="Aeonik Fono, monospace" font-size="12" fill="#2c002a">${h[0]}</text></g>`).join("")}<circle cx="210" cy="110" r="14" fill="#2c002a" class="center-in"></circle></svg></div>`;
+const animBrain = `<div style="display:flex;flex-direction:column;gap:14px;height:100%;">${prompt("Is this lead ICP? Write a message in my tone.")}<svg viewBox="0 0 420 220" style="width:100%;height:auto;display:block;" aria-hidden="true">${brainHubs.map(h => `<line class="edge-in" x1="210" y1="110" x2="${h[1]}" y2="${h[2]}" stroke="#2c002a" stroke-opacity=".15"></line>`).join("")}${brainHubs.map((h, i) => `<g class="pop-in" style="animation-delay:${(.5 + i * .12).toFixed(2)}s;transform-origin:${h[1]}px ${h[2]}px;"><circle cx="${h[1]}" cy="${h[2]}" r="10" fill="${h[3]}"></circle><text x="${h[1] + 15}" y="${h[2] + 5}" font-family="Aeonik Fono, monospace" font-size="14" fill="#2c002a">${h[0]}</text></g>`).join("")}<circle cx="210" cy="110" r="14" fill="#2c002a" class="center-in"></circle></svg></div>`;
 const animData = `<div style="display:flex;flex-direction:column;gap:14px;height:100%;">${prompt("Get me everything on Jane at Acme.")}<div style="display:flex;flex-wrap:wrap;gap:10px;align-content:flex-start;">${["jane@acme.com", "+1 415 555 0142", "linkedin.com/in/jane", "Head of Sales · Acme", "Hiring: 2 SDRs", "Raised $8M · Series A", "Stack: HubSpot, Segment", "Visited /pricing twice"].map((t, i) => `<span class="chip pop-in" style="animation-delay:${(.4 + i * .28).toFixed(2)}s;">${t}</span>`).join("")}</div></div>`;
 const animSend = `<div style="display:flex;flex-direction:column;gap:14px;height:100%;">${prompt("Set up 3 sending domains with 3 inboxes each and warm them up.")}<div style="display:flex;flex-direction:column;gap:8px;">${[["acme-mail.com", "warm-up 100%", "#68cea7", 100, 0], ["try-acme.io", "warm-up 64%", "#ffbd7a", 64, .6], ["acme-outreach.com", "warm-up 18%", "#ff7aa0", 18, 1.2]].map(([d, l, c, p, dl]) => `<div class="anim-in" style="animation-delay:${dl}s;background:#fff;border:1px solid rgba(44,0,42,.12);border-radius:12px;padding:10px 14px;display:flex;flex-direction:column;gap:6px;font-size:13.333px;"><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;"><span style="font-weight:600;">${d}</span><span class="body-muted">3 inboxes · ${l}</span></div><div style="height:4px;background:rgba(44,0,42,.08);border-radius:2px;"><div class="warm" style="height:100%;width:${p}%;background:${c};border-radius:2px;"></div></div></div>`).join("")}</div><span class="body-muted" style="font-size:13.333px;">Bought, configured, DKIM and SPF set. Ready to send in 14 days.</span></div>`;
 const ico = {
@@ -413,7 +418,7 @@ const s4 = `
       <span style="background:#2c002a;color:#fff7ec;border-radius:12px;padding:8px 14px;font-size:13.333px;line-height:18px;text-align:center;"><b style="display:block;font-weight:600;">Pancake</b><span style="opacity:.75;">runs the squad</span></span>
     </div>
     <svg class="org-svg" viewBox="0 0 1136 130" fill="none" aria-hidden="true">
-      ${[190, 568, 946].map((x, i) => `<path d="M 568 0 C 568 70 ${x} 60 ${x} 130" stroke="#9a818f" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round"></path><circle r="0" fill="#9a818f"><animateMotion id="mo${i}" begin="indefinite" dur="1.1s" fill="remove" path="M 568 0 C 568 70 ${x} 60 ${x} 130"></animateMotion><set attributeName="r" to="5" begin="mo${i}.begin" end="mo${i}.end"></set></circle>`).join("")}
+      ${[181.33, 568, 954.67].map((x, i) => `<path d="M 568 0 C 568 70 ${x} 60 ${x} 130" stroke="#9a818f" stroke-width="2" stroke-dasharray="1 7" stroke-linecap="round"></path><circle r="0" fill="#9a818f"><animateMotion id="mo${i}" begin="indefinite" dur="1.1s" fill="remove" path="M 568 0 C 568 70 ${x} 60 ${x} 130"></animateMotion><set attributeName="r" to="5" begin="mo${i}.begin" end="mo${i}.end"></set></circle>`).join("")}
     </svg>
     <div class="org-grid">
       ${orgCols.map(([t, tint, plays], ci) => `<div class="org-col" data-col="${ci}" style="background:${tint};"><span class="lp-title-sm" style="text-align:center;margin-bottom:8px;">${t}</span>${plays.map((p, i) => { const s = ci === 1 && i === 1 ? "o" : "g"; return `<div class="play" data-s="${s}"><span class="pdot" style="background:${s === "o" ? "#f38f43" : "#037d48"};"></span><span class="pname">${p}</span></div>`; }).join("")}</div>`).join("")}
