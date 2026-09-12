@@ -1,10 +1,10 @@
 # Brain replacement verification — September 11, 2026
 
-Code revision: `57f95828b4158fac06560a4a65d378b87d21a46c`.
+Code revision: `61c86a9689ca4747e576a6057010535191671d60`.
 Draft review: https://github.com/get-pancake/website/pull/295.
 
-Vercel preview: https://pancake-brain-h4od8kz51-getpancake.vercel.app/.
-Deployment: `dpl_9o5ifTRzEcNRzR4Lm767TAmoBYqG`, READY, explicit `staging` target.
+Vercel preview: https://pancake-brain-nragottmg-getpancake.vercel.app/.
+Deployment: `dpl_BKLE7B7bZhsDFNUsu6JMWVuEyVNx`, READY, explicit `staging` target.
 Vercel built the reviewed source directly after the new project's Git source
 retrieval failed. The app is not linked for automatic Git deployments.
 
@@ -47,18 +47,21 @@ retrieval failed. The app is not linked for automatic Git deployments.
 - Benefits remain one vertical checklist in a cream panel. Each heading stays
   grouped with its explanation; reassurance follows below. The repeated trust
   strip is removed, and the existing footer retains the location.
-- Increased desktop hero content padding and signup card padding from 32 to 48px,
-  form top gap from 16 to 24px, and divider/cancel spacing from 8 to 16px. The
-  proof row has 48px breathing room on taller screens. Label/input/help grouping
-  remains 8px. At 1440 × 900, the hero frame is 637px tall (previously 541), and
-  the signup card is 541px tall (previously 477).
-- Screens at most 800px tall retain 32px outer/card padding; the existing short
-  viewport adjustment still applies below 700px. At 1280 × 720 signup ends at 635px;
-  at 1280 × 640 it ends at 595px; at 1024 × 768 it ends at 659px. The hero still
-  ends at the viewport edge. Also checked 768 × 800, 390 × 844 and325 × 927.
-- Phones use 24px signup padding and the roomier form gaps, with natural vertical
-  scrolling. No horizontal overflow at any checked size. Desktop artwork stage,
-  crop height and radii are unchanged; its fit remains 1.
+- The desktop hero frame now has a minimum height of 896px and 96px vertical
+  content padding. Signup padding is also 96px, with a 48px form top gap,
+  24px divider/cancel gaps and 16px field gaps. The proof row gap is 64px.
+  This increases actual content spacing as well as the overall frame height.
+- Removed both desktop height-compaction queries. At 1440 × 900, 1280 × 720,
+  and 1280 × 640 the hero frame measures 901px and the signup card 709px.
+  Previously the frame was 637px on tall screens and 573px on a 720px laptop.
+  The taller layout intentionally scrolls on shorter displays instead of
+  collapsing back to fit one viewport.
+- At 768 × 800, the frame grows naturally to 981px around a 789px signup card.
+  Phones reset the desktop minimum, use 32px card padding and 24px outer
+  content padding, and retain 8px field gaps. At 390 × 844 the signup card is
+  537px high. No horizontal overflow at any checked size.
+- Desktop artwork scale, crop and corner radii are unchanged. Its fit remains
+  1, with the 432px/416px crop matching the reference at the relevant widths.
 - The responsive iframe fixture was removed before commit and deployment.
   Build, TypeScript validation and diff checks pass. The unchanged auth and
   attribution code remains covered by the existing 17 passing regressions.
@@ -71,8 +74,8 @@ retrieval failed. The app is not linked for automatic Git deployments.
   artwork dimensions, fit, top position, crop height and radius match the live
   main CTA values above. No horizontal overflow, broken loaded images or
   browser errors; auth remains disabled and noindex metadata is intact. The
-  hosted 1280 × 720 hero frame is now 573px tall, with a 509px signup card,
-  24px form top gap and 16px divider margins.
+  hosted hero frame measures 901px and the signup card 709px, matching the
+  local checks. Both side crops remain 416px high with 432px source artwork.
 
 ## Headline casing
 
