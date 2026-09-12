@@ -1,10 +1,10 @@
 # Brain replacement verification — September 11, 2026
 
-Code revision: `da0ad0bab6147e174b4f9a2004db21ee73a33b6b`.
+Code revision: `2c57f60c2c8715d578097688723bbdbf193521ac`.
 Draft review: https://github.com/get-pancake/website/pull/295.
 
-Vercel preview: https://pancake-brain-qhw2ng5od-getpancake.vercel.app/.
-Deployment: `dpl_3D8QJkaZhxaxxDdwyMmKwNzB4v29`, READY, explicit `staging` target.
+Vercel preview: https://pancake-brain-16oazzlra-getpancake.vercel.app/.
+Deployment: `dpl_D4CaQLQYHJJFmHwgSc4hRux7g5Qo`, READY, explicit `staging` target.
 Vercel built the reviewed source directly after the new project's Git source
 retrieval failed. The app is not linked for automatic Git deployments.
 
@@ -22,48 +22,45 @@ retrieval failed. The app is not linked for automatic Git deployments.
 - Preserved Brain destinations and the untouched product/pricing copy. Privacy/Terms
   hash placeholders now link to the main site's actual legal pages.
 
-## Hero and outreach refinement
+## Hero, side artwork and benefits refinement
 
-- Replaced the top rainbow with the exact left/right CTA ring components from
-  the main landing, clipped inside a shared rounded frame. The desktop hero
-  remains at least one viewport.
-  The hero now contains the headline, a 22-word outreach-focused introduction,
-  social proof, and signup. Increased headline/form spacing and restored the
-  larger desktop headline after moving supporting details below the fold.
-- Removed the two requested AI-search/publishing and approval benefits. Added
-  “Start outreach campaigns from Claude or ChatGPT.” with concise personalized
-  outreach/follow-up copy. The remaining three benefits form a separate section
-  with larger body text and more space; phones use a single column.
-- Reassurance text follows the benefits. No supporting content is clipped.
-- At 1280 × 720 the hero ends at 720px and the card at 619px. At 1280 × 640
-  the card ends at 579px; at 1024 × 768 it ends at 643px.
-- The complete signup card ends at 822px on a 390 × 844 phone and 843px on
-  a 325 × 927 phone. No horizontal overflow was observed at any checked width.
-- Responsive dimensions were verified in same-origin iframe fixtures through
-  Codex Browser, since its viewport override did not resize the active tab.
-  The temporary fixture was removed before commit and deployment.
-- Kept 48px controls, 16px input type, form logic, and attribution unchanged.
-
-## Side artwork and radius checks
-
-- Both ornaments reuse `LpPancakes` and `LpRainbowGL` CTA variants. A reserved
-  clipping gutter keeps every animation frame out of the text and form.
-- The right ornament uses explicit matrix translation with origin 0 0, matching
-  the shared WebGL renderer's clipping calculations and the DOM fallback.
-- Both canvases rendered visible 213 × 584 buffers at 1280 × 720. Also checked
-  1440 × 900, 1280 × 640, 1024 × 768, 768 × 800, 390 × 844, and 325 × 927.
-- Frame and signup card: shared 48px radius on desktop/tablet, 32px below 768px.
-  The former tablet-only 32px signup override now matches the reference CTA.
-- Inputs and preview Google placeholder: shared 12px. Success panel: 16px.
-  Filled buttons retain the exact shared Figma squircle paths (9/12/18px
-  recipes by size), and avatars/status indicators remain circular.
-- Google's production sign-in widget retains its provider-owned rectangular
-  styling. Its internal iframe radius cannot be verified from the disabled
-  preview, and it has not been overridden or clipped.
-- Hosted preview verified at 325 × 927 and 603 × 927: both side ornaments
-  render, the top rainbow is absent, frame/card/input radii match, preview auth
-  stays disabled, and no horizontal overflow or console errors were observed.
-- No shared component, auth, attribution, or marketing copy changes in this pass.
+- The hero contains the sentence-case headline, a 22-word outreach introduction,
+  social proof, and signup. The three supporting benefits follow below.
+- Both side ornaments reuse the shared `LpPancakes` and `LpRainbowGL` CTA
+  variants. At desktop widths of 1280px and above, the art retains its natural
+  proportions with no horizontal compression and reserves 208px per edge.
+- The frame centers at its content height instead of stretching the artwork to
+  fill tall viewports. The desktop content gap is 24px, signup width is 384px,
+  and the headline uses the existing 57.336px type-scale step. Its margins are
+  16px. Smaller screens progressively reduce the decorative edges.
+- A clipping gutter keeps animated artwork away from the text and signup.
+  The right ornament retains explicit matrix translation and origin 0 0 for
+  identical WebGL and DOM clipping at responsive scales.
+- Benefits now form one compact vertical checklist in a cream panel, with each
+  heading grouped with its explanation and consistent spacing/dividers. The
+  outreach benefit remains; its trailing heading period was removed.
+- The two reassurance statements sit together below the panel. Removed the
+  separate repeated trust strip; the existing footer retains the location.
+- At 1280 × 720 the hero ends at 720px and signup at 619px. At 1280 × 640
+  signup ends at 579px; at 1024 × 768 it ends at 643px. At 1440 × 900,
+  the artwork frame is 541px high, with both 208 × 541 canvases rendered.
+- Also checked 1201 × 720, 768 × 800, 390 × 844, and 325 × 927. The desktop
+  headline retains two lines across its breakpoint. No horizontal overflow.
+- On 390 × 844 and 325 × 927 phones, signup ends at 822px and 843px
+  respectively; supporting proof and benefits continue in natural page flow.
+- Responsive checks used a temporary same-origin iframe in Codex Browser,
+  removed before commit and deployment. Visually reviewed the hero at desktop,
+  tablet and phone sizes, and the benefits panel at desktop and phone sizes.
+- Frame, signup card and benefits panel use the shared 48px radius on desktop
+  and tablet, and 32px below 768px. Input/preview Google placeholder retain
+  12px; success panel 16px; filled buttons preserve shared squircle paths.
+- Google's live sign-in widget retains its provider-owned rectangular styling.
+  No auth, attribution, shared renderer or button component code changed.
+- Local build, TypeScript check and 17 auth/attribution regression tests passed.
+- The READY staging build was verified in Codex Browser at 369 × 927: correct
+  fonts and radii, three checklist rows, no repeated trust strip, no horizontal
+  overflow, no broken loaded images or console errors. Both side canvases
+  rendered; auth/vendor gates and noindex metadata remain intact.
 
 ## Headline casing
 
