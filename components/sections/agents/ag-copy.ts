@@ -96,6 +96,20 @@ export const KNOWLEDGE = {
     ["Company news", "company-news"],
     ["Reviews & intent", "reviews-intent"],
   ].map(([label, slug], i) => ({ label, slug, tint: TINT_CYCLE[i % 5]!, delay: -(i * 0.7) })),
+  /** DRAFT COPY (2026-09-11, Tristan to review) — the router demo: an agent's
+      request comes in, Pancake routes it to the source that answers
+      (founder: "plus créatifs pour intégrer ce composant intelligemment" —
+      the 16 tiles are the sources behind the lede's "one call"). `source` =
+      the tile slug that lights up; `via` = the muted result line. */
+  routeLabel: "one call",
+  requests: [
+    { text: "Find Jane's email at Acme.", source: "email-addresses", via: "cheapest of 4 providers" },
+    { text: "Who's hiring SDRs this week?", source: "hiring-signals", via: "38 companies, live" },
+    { text: "Does ChatGPT recommend us?", source: "geo-ranking", via: "10 prompts checked" },
+    { text: "Who just raised a Series A?", source: "fundraising-signals", via: "6 rounds this week" },
+    { text: "What's on Acme's stack?", source: "stack-signals", via: "cheapest of 3 providers" },
+    { text: "Which visitors came back twice?", source: "website-visitors", via: "your site, live" },
+  ],
 } as const;
 
 export const SUPERPOWERS = {

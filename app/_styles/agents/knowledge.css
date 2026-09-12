@@ -1,110 +1,315 @@
 /* ── /agents · knowledge ── (section stylesheet; see components/sections/agents/README.md)
-   "Super knowledge": the centered head + 16 tinted illustration cards.
-   Draft geometry (desktop-sec-04, 1654 artboard): 1136 column, 4 columns,
-   gap 16, 56 under the lede, cards 272×182 r24 with a 96px illustration and
-   a 23.04 condensed label. Tablets keep 4 columns on a compact card, phones
-   get 2 — recomposed, never zoomed.
+   "Super knowledge": the centered head over ONE cream card — the ROUTER
+   DEMO of the lede (founder, preview review 2026-09-11: the flat 4×4 wall
+   with its hop wave and green hover was rejected — "plus créatifs pour
+   intégrer ce composant intelligemment"). Mobbin refs: Apollo's integrations
+   marketplace (one central mark, circuit traces out to the providers),
+   Perplexity's model orchestration (a hub among many small tiles, only the
+   chosen path drawn), Lattice's integrations wall (a tile grid where the
+   connected ones light up). Structure and choreography:
+   components/sections/agents/AgKnowledge.tsx + AgKnowledgeRouter.tsx.
 
-   Motion (founder, preview review 2026-09-11 — "a more juicy way to present
-   all those pancakes"; Mobbin refs: Framer developer tiles = the frame stays
-   still and the icon inside performs, Framer plugin grid = the same pastel
-   tile + label language with a staggered reveal, Lattice integrations wall =
-   tiles popping in across a grid). Three moves, all driven by AgKnowledgeGrid
-   stamping data-attributes / the `is-hop` class, all keyframes and timings
-   here, all gated to the viewport and off under reduced motion:
-   1. ENTRANCE — the cards pop in once (opacity 0→1, 18px rise, scale .94→1,
-      420ms on an overshooting spring), 35ms apart along the top-left →
-      bottom-right diagonal (30ms on phones), then hold.
-   2. WAVE — every ~5s one hop ripples across the sixteen illustrations.
-   3. HOVER / TAP — the card lifts 4px and its tint deepens one ramp step,
-      its illustration hops; the other cards do not move, dim or blur. */
+   ≥1201 (the 1136 column) the card is the tabs card's frame (padding 48/56,
+   r30) holding three zones left → right on one 452px stage:
+     REQUESTS  1fr (283px)  the agent bubbles (the chat/tabs bubble recipe),
+                            right-aligned, the active one centred on the
+                            stage's middle so its trace leaves level with the
+                            hub; 3 previous above it at receding opacity — a
+                            history, never a hover dim; its result line under
+                            it once the route lands.
+     HUB       112px        the mascot (64) in a 96px hairline ring, "one call".
+     SOURCES   2fr (565px)  the sixteen tiles 4×4, gap 12: tint r16, padding
+                            12/8, 56px illustration + a 12px/500 label — at
+                            13.333 "Fundraising signals" (124px at 600) needs
+                            148px tiles, which leaves no room for one-line
+                            bubbles and result lines; every label is one line
+                            at 12 (the longest, 111px, inside the 117px box).
+   The trace: 1.5px dashed ink-20 through the grid's gutters (the hub is
+   centred on the middle row gutter, the elbow turns down the target column's
+   gutter), a 6px plum dot riding it. No hover on the tiles (touch parity;
+   the founder rejected the tint change) — the lit tile is the mechanic.
+   1025–1200 the column (961–1136) cannot hold 16 labelled tiles beside a
+   request column, so the stacked layout starts there: requests → hub →
+   tiles, the trace drawn top → bottom (down the middle column gutter, along
+   the target row's gutter, into the tile's top edge). Tablets keep the
+   labelled tiles (155–219px wide); phones show icon-only tiles (48px art,
+   r12) — the result line carries the label — and one previous request. */
 
-/* grid — draft `repeat(4, minmax(0,1fr))`. grid-auto-rows: 1fr + the default
-   stretch = every card pixel-equal (founder rule: never content-hugging),
-   across rows too, so a phone label that wraps to two lines doesn't leave
-   one row taller than the others. --ag-k-step = the entrance stagger. */
-.ag-knowledge__grid {
-  --ag-k-step: 35ms;
-  display: grid;
-  gap: 16px;
-  grid-auto-rows: 1fr;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  list-style: none;
-  margin: 56px 0 0;
-  padding: 0;
-}
-/* card — pastel tint from .ag-tint--* (cycle yellow→pink→purple→blue→green),
-   r24: the draft's knowledge cards are 24, not the 30 of the cream cards.
-   Column, centered, 14 between the art and the label; justify-content
-   centers the pair when a stretched card has slack (phone rows). */
-.ag-knowledge__card {
+/* ── the stage ── the grid IS the card. The tile grid sets the row height
+   (452 at ≥1201: 4 × 104 + 3 × 12); the requests column stretches to it and
+   the hub centres on it, which puts the hub's centre on the grid's middle
+   gutter — the trace's horizontal run. The three custom properties are the
+   client piece's contract (it overwrites the two reserves from measurements;
+   the values here are the no-JS fallbacks). */
+.ag-knowledge__stage {
+  --ag-k-hist: 4; /* history depth: the active request + 3 previous */
+  --ag-k-res: 28px; /* room under the active bubble for its result line: 8 + one 20px line */
+  --ag-k-req-h: 212px; /* the requests box in the stacked layouts: 4 one-line bubbles + gaps + the reserve */
   align-items: center;
-  border-radius: var(--lp-r-lg);
+  column-gap: 32px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 112px minmax(0, 2fr);
+  margin-top: 56px; /* draft: head → 56 → the section's body */
+  padding: 48px 56px;
+  position: relative;
+}
+/* Geist for every reading string in the mock (founder 2026-09-09) — declared
+   on the descendants, not the container: the kit's `* { font-family }` rule
+   beats inheritance. */
+.ag-knowledge__stage,
+.ag-knowledge__stage * {
+  font-family: var(--lp-font-sans);
+}
+
+/* ── REQUESTS ── a positioned box; every row is absolutely positioned in it
+   and placed by slot (inline transform from the client piece). Above the
+   overlay (z 2 > the route's 1): the trace starts at the bubble's edge and,
+   stacked, passes behind the result line's cream backing. overflow: clip so a
+   row sliding out of the history never peeks past the card's padding. */
+.ag-knowledge__reqs {
+  align-self: stretch;
+  list-style: none;
+  margin: 0;
+  overflow: clip;
+  padding: 0;
+  position: relative;
+  z-index: 2;
+}
+/* row: full width, the bubble at its right edge (the chat recipe), the
+   row's bottom on the stage's middle — translateY(50%) (half its OWN
+   height) centres it there without a measurement: the SSR pose of the
+   active row and the client's slot 0 are the same pixel. Slots slide over
+   320ms on the kit's ease-out; the client kills the transition for the one
+   row that jumps to slot 0. */
+.ag-knowledge__req {
+  bottom: 50%;
+  display: flex;
+  justify-content: flex-end;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  transform: translateY(50%);
+  transition:
+    transform 320ms cubic-bezier(0.22, 0.61, 0.36, 1),
+    opacity 320ms ease;
+}
+/* the history recedes: 1 / .45 / .28 / .14, then gone */
+.ag-knowledge__req[data-slot="0"] {
+  opacity: 1;
+}
+.ag-knowledge__req[data-slot="-1"] {
+  opacity: 0.45;
+}
+.ag-knowledge__req[data-slot="-2"] {
+  opacity: 0.28;
+}
+.ag-knowledge__req[data-slot="-3"] {
+  opacity: 0.14;
+}
+/* a request that has not arrived yet this visit is not history (the slots
+   are cyclic: on the first pass the rows "before" request 1 are 4, 5, 6) */
+.ag-knowledge__req:not([data-arrived]) {
+  opacity: 0;
+}
+.ag-knowledge__stage[data-resizing] .ag-knowledge__req {
+  transition: none;
+}
+/* the agent bubble = the tabs card's .ag-sp-bubble / the chat's plum bubble:
+   ink-100 on ink-20, 13.333/20, r 18 18 4 18 (the tail at the send corner,
+   also the pop's origin), ≤88 % of the column */
+.ag-knowledge__bubble {
+  background: var(--lp-ink-100);
+  border-radius: 18px 18px 4px 18px;
+  color: var(--lp-ink-20);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+  max-width: 88%;
+  padding: 10px 14px;
+  transform-origin: 100% 100%;
+}
+/* result line: "→ <source> · <via>", 8px under its bubble, on the bubble's
+   right edge; the hit in ink 500, the via in subtle 400. Two nowrap halves
+   with a breakable space between them, so a narrow column breaks the line
+   between them and never inside. Cream backing: in the stacked layouts the
+   trace runs down behind it. Hidden until the route lands (200ms in, 150ms
+   out with the retiring route). */
+.ag-knowledge__result {
+  background: var(--lp-card-cream);
+  color: var(--lp-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 20px;
+  margin-top: 8px;
+  max-width: 100%;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  top: 100%;
+  transition: opacity 150ms ease;
+  width: max-content;
+}
+.ag-knowledge__result.is-landed {
+  opacity: 1;
+  transition-duration: 200ms;
+}
+.ag-knowledge__hit,
+.ag-knowledge__via {
+  white-space: nowrap;
+}
+.ag-knowledge__via {
+  color: var(--lp-subtle-text);
+  font-weight: 400;
+}
+/* no JS: the first request stays routed (its tile carries is-on in the markup) */
+.ag-knowledge__stage[data-play="ssr"] .ag-knowledge__req[data-slot="0"] .ag-knowledge__result {
+  opacity: 1;
+}
+
+/* ── HUB ── the mascot in a quiet 1px ring (the trace's two anchors: the
+   ring's left and right edges), "one call" 13.333/500 subtle under it */
+.ag-knowledge__hub {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  justify-content: center;
-  padding: 24px 24px 20px;
-  text-align: center;
+  gap: 8px;
+  justify-self: center;
 }
-/* illustration — 147×160 raster shown 96 tall (draft), width follows (88) */
-.ag-knowledge__art {
-  display: block;
+.ag-knowledge__hub-ring {
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--lp-ink-tr-10);
+  display: grid;
   height: 96px;
-  width: auto;
+  place-items: center;
+  width: 96px;
 }
-/* hop wrapper — the illustration is what moves; it pivots on its feet
-   (bottom center) so the ±3° sway reads as a character leaning into the
-   jump, not a tile tilting. Shrink-wrapped by the column flex's
-   align-items: center, so the box IS the image box. */
-.ag-knowledge__hop {
+/* pivots on its feet like the tiles' illustrations (the hop keyframes) */
+.ag-knowledge__mascot {
+  display: block;
+  height: auto;
   transform-origin: 50% 100%;
+  width: 64px;
 }
-/* label — the draft's .lp-title-sm at 23.04 (xlg); tracking at the kit's
-   −0.03em ratio (the draft's inline size override kept the 27.648 tracking) */
-.ag-knowledge__label {
-  font-size: var(--lp-text-xlg);
-  letter-spacing: -0.69px;
+.ag-knowledge__hub-label {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 20px;
 }
 
-/* ── motion: only when the visitor allows it. No `reduce` overrides needed —
-   nothing below exists under reduced motion, so SSR / no-JS / reduce all
-   paint the settled grid above. ── */
+/* ── SOURCES ── 4×4, gap 12, tiles pixel-equal (1fr columns, one content
+   height). Tile: tint (.ag-tint--*), r16, padding 12/8, column-centred:
+   56px illustration → 8 → one 16px label line = 104px. The lit tile wears a
+   2px plum ring as an inset shadow (no layout shift; 0-width at rest so the
+   150ms transition has a shadow to interpolate from) and a 600 label. */
+.ag-knowledge__tiles {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ag-knowledge__tile {
+  align-items: center;
+  border-radius: var(--lp-r-m);
+  box-shadow: inset 0 0 0 0 var(--lp-ink-100);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 8px;
+  transition: box-shadow 150ms ease;
+}
+.ag-knowledge__tile.is-on {
+  box-shadow: inset 0 0 0 2px var(--lp-ink-100);
+}
+/* hop wrapper — the illustration is what moves; it pivots on its feet
+   (bottom centre) so the ±3° sway reads as a character leaning into the
+   jump, not a tile tilting */
+.ag-knowledge__hop {
+  display: block;
+  transform-origin: 50% 100%;
+}
+/* 147×160 raster shown 56 tall, width follows (51) */
+.ag-knowledge__art {
+  display: block;
+  height: 56px;
+  width: auto;
+}
+/* 12px (see the head comment — the kit's 13.333 step wraps the long labels),
+   one line always: nowrap, never two */
+.ag-knowledge__label {
+  color: var(--lp-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  white-space: nowrap;
+}
+.ag-knowledge__tile.is-on .ag-knowledge__label {
+  font-weight: 600;
+}
+
+/* ── THE ROUTE ── an SVG overlay the size of the stage (CSS px, no viewBox:
+   the client piece writes path coordinates measured against this box).
+   Two legs (bubble → hub, hub → tile), two 6px dots (one per leg: the first
+   fades INTO the ring, the second leaves it). Between the tiles (z 1) and
+   the requests (z 2). */
+.ag-knowledge__route {
+  height: 100%;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+.ag-knowledge__leg {
+  fill: none;
+  opacity: 0;
+  stroke: var(--lp-ink-tr-20);
+  stroke-dasharray: 4 4;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+  transition: opacity 150ms ease;
+}
+.ag-knowledge__leg.is-on {
+  opacity: 1;
+}
+.ag-knowledge__dot {
+  fill: var(--lp-ink-100);
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+.ag-knowledge__dot.is-on {
+  opacity: 1;
+}
+
+/* ── motion ── the two one-shots the client piece triggers by class (removed
+   on animationend). Only when the visitor allows motion: under reduced
+   motion the stage is the static first route (no pops, no hops, no slides). */
 @media (prefers-reduced-motion: no-preference) {
-  /* ENTRANCE. `data-armed` = JS is running and motion is allowed: the cards
-     hide until the grid enters. `data-entered` (stamped once, on the first
-     intersection) starts the pop; --ag-k-slot is the card's diagonal slot
-     (0–15, set inline by AgKnowledgeGrid from the live geometry).
-     fill-mode: backwards holds the hidden pose through each card's delay,
-     and once the run ends the card is back on its plain styles — the last
-     keyframe equals the rest pose, so nothing snaps, and a finished
-     animation no longer sits on `transform` (a forwards fill would override
-     the hover lift for good). */
-  .ag-knowledge__grid[data-armed]:not([data-entered]) .ag-knowledge__card {
-    opacity: 0;
-  }
-  .ag-knowledge__grid[data-entered] .ag-knowledge__card {
-    animation: ag-knowledge-pop 420ms cubic-bezier(0.2, 0.9, 0.2, 1.1) backwards;
-    animation-delay: calc(var(--ag-k-slot, 0) * var(--ag-k-step));
+  /* the bubble pops from its send corner: 0→1, 10px→0, .96→1, 320ms back.out */
+  .ag-knowledge__bubble.is-pop {
+    animation: ag-knowledge-pop 320ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
   }
   @keyframes ag-knowledge-pop {
     from {
       opacity: 0;
-      transform: translateY(18px) scale(0.94);
+      transform: translateY(10px) scale(0.96);
     }
     to {
       opacity: 1;
       transform: translateY(0) scale(1);
     }
   }
-
-  /* HOP — one 320ms jump, shared by the wave, the hover and the tap
-     (AgKnowledgeGrid toggles `is-hop` for exactly one run). Launch fast and
-     lean back (−3°), fall under gravity, land leaning forward (+3°), settle:
-     0→40% up on an ease-out, 40→78% down on an ease-in, the last 22% a soft
-     recovery. The keyframes end at the rest pose, so removing the class on
-     animationend is invisible. */
-  .ag-knowledge__hop.is-hop {
+  /* HOP — one 320ms jump (the mascot when a request passes through it, the
+     illustration when its tile lights). Launch fast and lean back (−3°),
+     fall under gravity, land leaning forward (+3°), settle: 0→40 % up on an
+     ease-out, 40→78 % down on an ease-in, the last 22 % a soft recovery.
+     Ends at the rest pose, so removing the class is invisible. */
+  .ag-knowledge__hop.is-hop,
+  .ag-knowledge__mascot.is-hop {
     animation: ag-knowledge-hop 320ms linear;
   }
   @keyframes ag-knowledge-hop {
@@ -124,83 +329,110 @@
       transform: translateY(0) rotate(0deg);
     }
   }
-
-  /* HOVER (real hover, fine pointer — phones get the tap instead, and never
-     a sticky hover state): the hovered card lifts 4px and its tint deepens
-     one ramp step (*-10 → *-20), 200ms in / 260ms out on the kit's ease-out.
-     Siblings untouched (founder rule: no dim, no blur on the others). A whole
-     px of lift keeps the label crisp at rest; no will-change — the
-     transition promotes the one card for 200ms and drops it again. */
-  @media (hover: hover) and (pointer: fine) {
-    .ag-knowledge__card {
-      transition:
-        transform 260ms cubic-bezier(0.22, 0.61, 0.36, 1),
-        background-color 260ms cubic-bezier(0.22, 0.61, 0.36, 1);
-    }
-    .ag-knowledge__card:hover {
-      transform: translateY(-4px);
-      transition-duration: 200ms;
-    }
-  }
 }
-/* the deeper tint is a color, not motion: it also answers hover under
-   reduced motion (instant, no lift) */
-@media (hover: hover) and (pointer: fine) {
-  .ag-knowledge__card.ag-tint--yellow:hover {
-    background: var(--lp-yellow-20);
-  }
-  .ag-knowledge__card.ag-tint--pink:hover {
-    background: var(--lp-pink-20);
-  }
-  .ag-knowledge__card.ag-tint--purple:hover {
-    background: var(--lp-purple-20);
-  }
-  .ag-knowledge__card.ag-tint--blue:hover {
-    background: var(--lp-blue-20);
-  }
-  .ag-knowledge__card.ag-tint--green:hover {
-    background: var(--lp-green-20);
+@media (prefers-reduced-motion: reduce) {
+  .ag-knowledge__req,
+  .ag-knowledge__result,
+  .ag-knowledge__tile,
+  .ag-knowledge__leg,
+  .ag-knowledge__dot {
+    transition: none;
   }
 }
 
-/* ── tablet 768–1024: STILL four columns. The README's three would strand
-   the sixteenth card alone with two empty slots in a sixth row (dead space)
-   at both 1024 and 768; the draft's 4×4 rhythm holds instead on a compact
-   card — 80px art, 19.2 labels (the phone step). Cards are 232 wide at 1024
-   (every label one line) and 168 at 768 (the three longest wrap to two,
-   rows stay equal via grid-auto-rows). ── */
+/* ── stacked: ≤1200 ── requests → hub → tiles in one column, 32 apart; the
+   bubbles centre (a straight trace down into the ring, then down the middle
+   column gutter), the requests box takes its measured height (rows are out
+   of flow), the active row sits above the result reserve. */
+@media (max-width: 1200px) {
+  .ag-knowledge__stage {
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    row-gap: 32px;
+  }
+  .ag-knowledge__reqs {
+    align-self: auto;
+    height: var(--ag-k-req-h);
+    justify-self: stretch;
+  }
+  .ag-knowledge__req {
+    bottom: var(--ag-k-res);
+    justify-content: center;
+    transform: none;
+  }
+  .ag-knowledge__bubble {
+    transform-origin: 50% 100%;
+  }
+  .ag-knowledge__result {
+    left: 50%;
+    right: auto;
+    text-align: center;
+    transform: translateX(-50%);
+  }
+  .ag-knowledge__tiles {
+    justify-self: stretch;
+  }
+}
+/* tablet: the card's 32px frame; tiles 219 (1024) → 155 (768) wide, labels on */
 @media (max-width: 1024px) {
-  .ag-knowledge__card {
-    gap: 12px;
-    padding: 20px 16px 16px;
-  }
-  .ag-knowledge__art {
-    height: 80px;
-  }
-  .ag-knowledge__label {
-    font-size: var(--lp-text-lg);
-    letter-spacing: -0.576px;
+  .ag-knowledge__stage {
+    padding: 32px;
   }
 }
-/* ── phone: 2 columns, gap 12, 72px art, 19.2 labels (must not reach three
-   lines at 320: the longest word, "Fundraising", is ~90px condensed inside a
-   114px content box); the entrance stagger tightens to 30ms ── */
+/* phone: r24 card, padding 24 (16 under 360 so four 8px-gapped tiles keep a
+   42px illustration at 320), one previous request, a 48px mascot in a 72
+   ring, ICON-ONLY square tiles (r12, 48px art) — the label stays in the DOM
+   for AT (the sr-only clip) and the result line carries it for everyone.
+   The result reserve holds two lines: the longest result (276px) wraps
+   between its halves under ~300px of column. */
 @media (max-width: 767px) {
-  .ag-knowledge__grid {
-    --ag-k-step: 30ms;
-    gap: 12px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .ag-knowledge__stage {
+    --ag-k-hist: 2;
+    --ag-k-res: 48px;
+    --ag-k-req-h: 176px; /* two two-line bubbles + gap + the reserve (no-JS ceiling; JS tightens it) */
     margin-top: 40px;
+    padding: 24px;
+    row-gap: 24px;
   }
-  .ag-knowledge__card {
-    gap: 12px;
-    padding: 16px 12px 14px;
+  .ag-knowledge__req[data-slot="-2"],
+  .ag-knowledge__req[data-slot="-3"] {
+    opacity: 0;
+  }
+  .ag-knowledge__hub-ring {
+    height: 72px;
+    width: 72px;
+  }
+  .ag-knowledge__mascot {
+    width: 48px;
+  }
+  .ag-knowledge__tiles {
+    gap: 8px;
+  }
+  .ag-knowledge__tile {
+    aspect-ratio: 1;
+    border-radius: var(--lp-r-sm);
+    display: grid;
+    padding: 8px;
+    place-items: center;
+  }
+  .ag-knowledge__hop {
+    aspect-ratio: 147 / 160;
+    height: 100%;
+    max-height: 48px;
   }
   .ag-knowledge__art {
-    height: 72px;
+    height: 100%;
   }
   .ag-knowledge__label {
-    font-size: var(--lp-text-lg);
-    letter-spacing: -0.576px;
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    width: 1px;
+  }
+}
+@media (max-width: 359px) {
+  .ag-knowledge__stage {
+    padding: 16px;
   }
 }

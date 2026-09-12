@@ -169,10 +169,16 @@ Consequences (binding, they override any "match the draft" line above):
 - Chat mock: "animate this chat very dynamically" → a looping demo (bubble pop,
   3-dot typing indicator, caret typing, tool chips whose check pops when the
   tool returns, link underline draw, hold, fade, replay; paused off-screen).
-- Knowledge grid: "a more juicy way to present all those pancakes, Mobbin" →
-  staggered spring entrance, a hop wave rippling across the 16 cards every
-  ~5s, hover lift + deeper tint + hop (touch: tap = hop). Mobbin refs in the
-  builder's report / PR.
+- Knowledge grid, take 1: "a more juicy way to present all those pancakes,
+  Mobbin" → entrance cascade + hop wave + hover lift/deeper tint. REJECTED
+  the same evening ("pas content de ça, je veux qu'on soit plus créatifs pour
+  intégrer ce composant intelligemment" — his crop showed the hover's
+  saturated green). Take 2 = the ROUTER DEMO: the 16 tiles are the sources
+  behind the lede's "one call" — an agent's request (KNOWLEDGE.requests,
+  DRAFT copy) pops in on the left, a dot travels request → Pancake hub →
+  the one source that answers, which lights up with a result line; six
+  requests loop; static first route without JS / reduced motion. Never a
+  hover tint change again.
 - Super plays: "not sure that this adds value — get inspired by the Grok Bot
   landing page" → each play is a RUN CARD: name + status word + what it does
   + the three-line run behind it (Grok Bot: "pick a team, open an example to
@@ -235,23 +241,30 @@ focus; `data-play` = `ssr` (no JS: full transcript) / `loop` / `still`
 phones fade+rise each wrapped line instead of the staircase, no caret. Link
 `tabindex -1` while hidden.
 
-### Super knowledge — `AgKnowledge.tsx` / `AgKnowledgeGrid.tsx` / `knowledge.css`
-Centered head; grid `repeat(4, 1fr)` gap 16, mt 56; card: tint, r24, padding
-`24px 24px 20px`, illustration 96px (`/lp/agents/data/<slug>.png`, alt="") in
-`.ag-knowledge__hop`, label `.ag-title-sm` at 23.04 centered; 16 cards equal
-height. MOTION (founder 2026-09-11: "a more juicy way to present all those
-pancakes"; Mobbin refs Framer developer tiles a2aceed5 / plugin grid f77772c2,
-Lattice integrations wall 2006d3b7 — the frame stays still, the art performs):
-ENTRANCE once per visit on first intersection — a diagonal cascade (slot from
-live geometry), opacity 0→1, translateY 18→0, scale .94→1, 420ms
-cubic-bezier(.2,.9,.2,1.1), 35ms/slot (30 ≤767); WAVE 1.6s after entering
-then every 5s — one 320ms hop per illustration (−8px, −3°→+3° lean, pivot at
-the feet) 60ms apart along the diagonal; HOVER (hover+fine pointer) lifts the
-card 4px + deepens its tint one ramp step (*-10 → *-20) + hops the art, 200/
-260ms, siblings untouched; TAP (touch) = one hop. All of it inside
-`prefers-reduced-motion: no-preference`; wave/entrance armed only in view;
-`KNOWLEDGE.cards[i].delay` is unused now. ≤1024 four compact columns (80px
-art, 19.2 label); ≤767 two columns, gap 12, 72px art.
+### Super knowledge — `AgKnowledge.tsx` / `AgKnowledgeRouter.tsx` / `knowledge.css`
+THE ROUTER DEMO (founder 2026-09-11, take 2 — the flat 4×4 wall with a hop
+wave and a green hover was rejected: "plus créatifs pour intégrer ce
+composant intelligemment"). The 16 tiles are the SOURCES behind the lede's
+"one call". Centered head, then ONE cream card = a stage of three zones at
+≥1201: REQUESTS (the six `KNOWLEDGE.requests` as plum agent bubbles, the
+active one centred with its result line "→ label · via", three previous
+above it at receding opacity — a history, never a hover dim) → HUB (the
+mascot 64 in a 96px hairline ring + `routeLabel`) → SOURCES (16 tiles 4×4,
+tint r16, 56px art, 12px label). A 1.5px dashed trace runs through the
+GRID'S GUTTERS and a 6px plum dot rides it. Per request (≈4s, six = a 24s
+loop): bubble pops (320ms back.out) → 0.40 dot leaves along leg 1 (420ms)
+→ hub hop → 0.92 leg 2 → 1.34 the dot lands on the tile's edge, the tile
+lights (2px ink ring, label 600, one art hop) and the result line fades in
+→ hold 2.66s. Geometry measured live (getBoundingClientRect + a
+ResizeObserver), so one code path draws the row layout and the stacked
+ones. Plays at ≥25% in view and only when the tab is visible; pauses
+off-screen and resumes its phase; reduced motion = the first request shown
+routed and static; SSR/no-JS = that same state minus the legs. Stage height
+constant (548 at 1654). ≤1200 stacks (requests → hub → tiles, trace drawn
+top→bottom); ≤767 icon-only tiles (48px art) with the label carried by the
+result line. NO hover on the tiles, ever. Mobbin refs: Apollo integrations
+marketplace, Perplexity model orchestration, Lattice integrations wall.
+QA hook `window.__agKnowledge` = { go, pause, play, state }.
 
 ### Superpowers — `AgSuperpowers.tsx` / `AgSuperpowersMocks.tsx` / `superpowers.css`
 FEATURE TABS (founder, preview review 2026-09-11: the draft's peeking
