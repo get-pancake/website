@@ -21,13 +21,13 @@ img { max-width: 100%; }
 .brain .brain-nav { height: var(--brain-nav-height); }
 .brain-hero { min-height: calc(100svh - var(--brain-nav-height)); display: grid; padding: var(--brain-hero-clearance) var(--brain-hero-margin) var(--brain-hero-bottom); }
 .brain-hero-frame { position: relative; isolation: isolate; display: grid; align-self: center; width: 100%; max-width: var(--brain-grid); margin-inline: auto; border-radius: var(--lp-r-2xlg); overflow: clip; }
-/* Render a smaller CTA ring inside the full-height frame: fitting the art
-   to the hero height zooms into almost straight, oversized bands. The shared
-   renderer covers the rail beyond the art box, so the bow stays visible. */
-.brain-side-rail { position: absolute; inset-block: 0; width: var(--brain-hero-rail); overflow: clip; pointer-events: none; }
+/* The clip parents reproduce the main CTA card's full width, fixed height
+   and radius. Keeping both the artwork scale and visible y-range identical
+   preserves the reference curve; hero content height cannot change its crop. */
+.brain-side-rail { position: absolute; top: calc((100% - var(--brain-art-crop-height)) / 2); height: var(--brain-art-crop-height); width: 100%; border-radius: var(--lp-r-2xlg); overflow: clip; pointer-events: none; }
 .brain-side-rail--left { left: 0; }
 .brain-side-rail--right { right: 0; }
-.brain .brain-side-art { position: absolute; top: calc(50% - var(--brain-art-center)); height: var(--brain-art-height); width: auto; max-width: none; transform: scaleX(var(--brain-side-scale)); transform-origin: 0 0; }
+.brain .brain-side-art { position: absolute; top: 0; height: var(--brain-art-height); width: auto; max-width: none; transform: scaleX(var(--brain-side-scale)); transform-origin: 0 0; }
 .brain .brain-side-art.lp-cta__art--left { left: var(--brain-art-offset); }
 /* The shared renderer reads a matrix with origin 0 0. Make the right-edge
    anchoring explicit in that matrix so DOM and WebGL clip identically. */
@@ -107,6 +107,7 @@ img { max-width: 100%; }
   .brain .lp-nav-ctas { display: flex; position: static; }
   .brain .lp-nav-logo { flex: 0 0 auto; }
   .brain-hero-frame { border-radius: var(--lp-r-xlg); }
+  .brain-side-rail { width: var(--brain-hero-rail); border-radius: 0; }
   .brain-hero-content { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "pitch" "signup" "proof"; row-gap: var(--brain-space-md); }
   .brain-pitch, .brain-signup { width: 100%; }
   .brain-eyebrow { font-size: var(--lp-text-xsm); }

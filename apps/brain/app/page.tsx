@@ -1,10 +1,9 @@
-import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
-import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { SignupForm } from "../components/SignupForm";
 import { BrainSections } from "../components/BrainSections";
+import { BrainHeroArtwork } from "../components/BrainHeroArtwork";
 
 const features = [
   ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in and your assistant runs prospecting, outreach and content on its own. No new dashboard to learn."],
@@ -28,18 +27,7 @@ export default function BrainLanding() {
       </header>
       <section className="brain-hero" aria-labelledby="brain-title">
         <div className="brain-hero-frame">
-          <div className="brain-side-rail brain-side-rail--left" aria-hidden="true">
-            <div className="lp-cta__art lp-cta__art--left brain-side-art">
-              <div className="lp-anim-canvas lp-anim-canvas--cta-left"><LpPancakes variant="ctaLeft" /></div>
-              <LpRainbowGL variant="ctaLeft" />
-            </div>
-          </div>
-          <div className="brain-side-rail brain-side-rail--right" aria-hidden="true">
-            <div className="lp-cta__art lp-cta__art--right brain-side-art">
-              <div className="lp-anim-canvas lp-anim-canvas--cta-right"><LpPancakes variant="ctaRight" /></div>
-              <LpRainbowGL variant="ctaRight" />
-            </div>
-          </div>
+          <BrainHeroArtwork />
           <div className="brain-hero-content">
             <div className="brain-pitch">
               <p className="brain-eyebrow"><span aria-hidden="true" />Now in early access</p>
