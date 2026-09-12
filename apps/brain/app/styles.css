@@ -20,7 +20,7 @@ img { max-width: 100%; }
 .brain-skip:focus { transform: none; }
 .brain .brain-nav { height: var(--brain-nav-height); }
 .brain-hero { min-height: calc(100svh - var(--brain-nav-height)); display: grid; padding: var(--brain-hero-clearance) var(--brain-hero-margin) var(--brain-hero-bottom); }
-.brain-hero-frame { position: relative; isolation: isolate; display: grid; align-self: center; width: 100%; max-width: var(--brain-grid); margin-inline: auto; border-radius: var(--lp-r-2xlg); overflow: clip; }
+.brain-hero-frame { position: relative; isolation: isolate; display: grid; align-self: center; min-height: var(--brain-hero-min-height); width: 100%; max-width: var(--brain-grid); margin-inline: auto; border-radius: var(--lp-r-2xlg); overflow: clip; }
 /* The clip parents reproduce the main CTA card's full width, fixed height
    and radius. Keeping both the artwork scale and visible y-range identical
    preserves the reference curve; hero content height cannot change its crop. */
@@ -68,7 +68,7 @@ img { max-width: 100%; }
 .brain-form__google { min-height: var(--brain-control-height); display: flex; justify-content: center; }
 .brain-form__divider { display: flex; align-items: center; gap: var(--brain-space-md); margin-block: var(--brain-form-divider-gap); font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
 .brain-form__divider::before, .brain-form__divider::after { content: ""; height: var(--brain-rule); flex: 1; background: var(--lp-subtle-stroke); }
-.brain-form__fields { display: grid; gap: var(--brain-space-sm); }
+.brain-form__fields { display: grid; gap: var(--brain-form-field-gap); }
 .brain-form__label { font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); }
 .brain-form__input { display: block; width: 100%; height: var(--brain-control-height); padding-inline: var(--brain-space-md); background: var(--lp-page-bg); border: var(--brain-rule) solid var(--lp-subtle-stroke); border-radius: var(--lp-r-sm); color: var(--lp-text); font-size: var(--lp-text-md); transition: border-color var(--brain-ease), background var(--brain-ease); }
 .brain-form__input:focus { background: var(--lp-surface); border-color: var(--lp-purple-30); }
