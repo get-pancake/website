@@ -43,7 +43,7 @@ export default function BrainLanding() {
           <div className="brain-hero-content">
             <div className="brain-pitch">
               <p className="brain-eyebrow"><span aria-hidden="true" />Now in early access</p>
-              <h1 id="brain-title" className="lp-display brain-title">Put Your GTM on<br />Full Autopilot</h1>
+              <h1 id="brain-title" className="lp-display brain-title">Put your GTM on<br />full autopilot</h1>
               <p className="brain-lede">Pancake lets your Claude or ChatGPT run your go-to-market. Find people ready to buy and start outreach campaigns from the same conversation.</p>
             </div>
             <div className="brain-proof">
