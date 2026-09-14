@@ -37,7 +37,7 @@ img { max-width: 100%; }
 .brain .brain-side-art.lp-cta__art--right { right: var(--brain-art-offset); transform: translateX(calc(100% * (1 - var(--brain-side-scale)))) scaleX(var(--brain-side-scale)); }
 /* Two columns filling the frame: the copy column centres its pitch and
    proof; the signup column centres its form. No inner card. */
-.brain-hero-content { position: relative; z-index: 1; width: 100%; padding: var(--brain-hero-content-padding) var(--brain-hero-inset); display: grid; grid-template-columns: minmax(0, 1fr) var(--brain-signup-width); grid-template-areas: "left signup"; grid-template-rows: 1fr; align-items: stretch; column-gap: var(--brain-space-lg); }
+.brain-hero-content { position: relative; z-index: 1; width: 100%; padding: var(--brain-hero-content-padding) var(--brain-hero-inset); display: grid; grid-template-columns: minmax(0, 440px) var(--brain-signup-width); grid-template-areas: "left signup"; grid-template-rows: 1fr; justify-content: center; align-items: stretch; column-gap: var(--brain-space-2xl); }
 .brain-left { grid-area: left; display: flex; flex-direction: column; justify-content: center; gap: var(--brain-hero-row-gap); }
 .brain-pitch { grid-area: pitch; }
 .brain-eyebrow { display: flex; gap: var(--brain-space-sm); align-items: center; color: var(--lp-subtle-text); font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); }

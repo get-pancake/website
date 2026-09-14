@@ -18,7 +18,8 @@
   --brain-hero-max-width: 1600px;
   --brain-title-size: 57.336px;
   --brain-title-tracking: -0.03em;
-  --brain-nav-height: 64px;
+  /* Same bar as getpancake.ai: 120px, logo centred at 60px (nav.css). */
+  --brain-nav-height: 120px;
   --brain-hero-bottom: var(--brain-space-lg);
   --brain-hero-margin: var(--brain-space-md);
   --brain-hero-clearance: var(--brain-space-md);
@@ -29,17 +30,21 @@
   /* The rainbow slivers run the cartouche's full height, like the main CTA
      card, squeezed to 70% horizontally so the rays sit closer together
      (founder, 2026-09-14). Their band is 37% × 0.7 ≈ 26% of the frame
-     height. The frame height is the viewport height, capped by what the
-     width can afford (390px headline column + 24px gap + 360px form + two
-     rails + 16px air each) and by 900px on very tall screens:
-     H ≤ (frame width − 838px) / 0.518, frame = 100vw − 32px. */
-  --brain-art-height: min(var(--brain-hero-avail), calc((100vw - 870px) / 0.518), 900px);
+     height. The frame height is the viewport height minus a little air
+     (the founder wants the cartouche a touch under full height), capped by
+     what the width can afford — a 400px headline column + 48px gap + 360px
+     form between the two bands, each followed by 48px + 16px of air — and
+     by 840px on very tall screens: H ≤ (frame width − 936px) / 0.518,
+     frame = 100vw − 32px. */
+  --brain-art-height: min(calc(var(--brain-hero-avail) - 32px), calc((100vw - 968px) / 0.518), 840px);
   --brain-hero-min-height: var(--brain-art-height);
   --brain-hero-content-padding: clamp(48px, calc(var(--brain-art-height) * 0.08), 96px);
   --brain-hero-row-gap: clamp(40px, calc(var(--brain-art-height) * 0.08), 80px);
   --brain-art-offset: 0px;
   --brain-side-scale: 0.7;
-  --brain-hero-rail: calc(var(--brain-art-height) * 0.37 * var(--brain-side-scale) + var(--brain-space-md));
+  /* Air between the band's widest point and the copy. */
+  --brain-hero-air: var(--brain-space-2xl);
+  --brain-hero-rail: calc(var(--brain-art-height) * 0.37 * var(--brain-side-scale) + var(--brain-hero-air));
   --brain-hero-inset: calc(var(--brain-hero-rail) + var(--brain-space-md));
   --brain-benefits-width: 960px;
   --brain-rule: 1px;
@@ -76,6 +81,7 @@
 }
 @media (max-width: 767px) {
   .brain {
+    --brain-nav-height: 104px;
     --brain-hero-margin: var(--brain-space-sm);
     --brain-hero-clearance: var(--brain-space-md);
     --brain-hero-bottom: var(--brain-space-lg);
