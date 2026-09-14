@@ -36,7 +36,8 @@ export function BrainHeroArtwork() {
   }, []);
 
   return <div ref={clipRef} className="brain-side-rail" aria-hidden="true">
-    <div className="lp-cta__art lp-cta__art--right brain-side-art">
+    {/* Without the renderer, the kit shows the artboard only under [data-lp-gl-off]. */}
+    <div className="lp-cta__art lp-cta__art--right brain-side-art" {...(gl ? {} : { "data-lp-gl-off": "" })}>
       <div className="lp-anim-canvas lp-anim-canvas--cta-right"><LpPancakes variant="ctaRight" /></div>
       {gl ? <LpRainbowGL key={clipRevision} variant="ctaRight" /> : null}
     </div>
