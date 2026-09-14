@@ -27,7 +27,10 @@ const LOGOS: TrustLogo[] = [
   { name: "AgentMail", src: "/logos/agentmail.svg", ratio: 1986 / 363, body: [0.2, 0.78] },
   { name: "Hyperspell", src: "/logos/hyperspell.svg", ratio: 577 / 91, body: [0.235, 0.82] },
   { name: "Praxis", src: "/logos/praxis.png", ratio: 1392 / 370, body: [0.24, 0.755] },
-  { name: "Kinro", src: "/logos/kinro.svg", ratio: 550.16 / 134.94, body: [0.325, 0.87] },
+  /* Kinro's 2026 mark: jaguar + KINRO caps (kinro.com/brand/logos, graphite
+     file). All caps, so the band is narrowed: its caps match the others' cap
+     height (~19px) rather than their x-height. */
+  { name: "Kinro", src: "/logos/kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75] },
   { name: "Covera", src: "/logos/covera.png", ratio: 188 / 40, body: [0.32, 0.995] },
   { name: "PromptLayer", src: "/logos/promptlayer.svg", ratio: 138.224 / 20.808, body: [0.18, 0.78] },
 ];
