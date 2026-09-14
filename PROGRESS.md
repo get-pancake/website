@@ -25,7 +25,7 @@
 
 - [x] 2026-09-14 review fixes (Tristan): LeadJourney and the LinkedIn Insight Tag load on the canonical hostname with the main site's ids; the hero frame becomes the CTA card (cream fill, content-sized, signup above the fold on 1366×768 and 1280×720); Google sign-in is the provider's pill button with a matching placeholder; AI-search claims removed from the benefits, pricing list, step 02 and metadata; every link stays on the page (nav → How it works / Pricing, pricing CTA → the form); email hint dropped; signup card titled “Start free”.
 
-Preview: https://pancake-brain-nragottmg-getpancake.vercel.app/
+Preview: https://pancake-brain-nfgq0k9mk-getpancake.vercel.app/ (2026-09-14, commit c3983c9; earlier review: https://pancake-brain-nragottmg-getpancake.vercel.app/)
 
 Draft PR: https://github.com/get-pancake/website/pull/295
 
