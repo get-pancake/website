@@ -40,6 +40,9 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
   const [googleAttempt, setGoogleAttempt] = useState(0);
   const [googleReady, setGoogleReady] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
+  // Off production the form looks exactly like the live one; the notice only
+  // appears once someone actually tries to sign up.
+  const [previewBlocked, setPreviewBlocked] = useState(false);
   const googleButton = useRef<HTMLDivElement>(null);
   const operationInFlight = useRef(false);
   const mounted = useRef(false);
@@ -117,7 +120,7 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
   async function submitEmail(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (operationInFlight.current) return;
-    if (!enabled) { setError(PREVIEW_AUTH_MESSAGE); return; }
+    if (!enabled) { setPreviewBlocked(true); return; }
     operationInFlight.current = true;
     setBusy("email");
     setError("");
@@ -135,7 +138,7 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
   }
 
   const googlePlaceholder = !enabled || !googleReady || busy !== null;
-  const describedBy = [error ? errorId : "", !enabled && origin ? previewId : ""].filter(Boolean).join(" ") || undefined;
+  const describedBy = [error ? errorId : "", previewBlocked ? previewId : ""].filter(Boolean).join(" ") || undefined;
 
   return (
     <div id={id} className={`brain-form ${className}`.trim()} aria-busy={busy !== null}>
@@ -149,17 +152,11 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
         <div className="brain-form__success" role="status">
           <h3 className="brain-form__success-title">Check your inbox</h3>
           <p>We sent a sign-in link to <strong className="brain-form__success-email">{sentTo}</strong>.</p>
-          <p>Open it to continue to Pancake.</p>
+          <p>Open it to start your setup.</p>
           <button type="button" className="brain-form__retry" onClick={() => { setSentTo(""); setError(""); }}>Use a different email or try again</button>
         </div>
       ) : (
         <>
-          {origin && !enabled ? (
-            <p id={previewId} className="brain-form__notice">
-              {PREVIEW_AUTH_MESSAGE}{" "}
-              <a href={`${APP_ORIGIN}/login`} target="_blank" rel="noopener noreferrer">Open Pancake</a>
-            </p>
-          ) : null}
           <div className="brain-form__google" aria-busy={enabled && !googleReady && !googleError}>
             <div ref={googleButton} className="brain-form__google-host" hidden={googlePlaceholder} />
             {googlePlaceholder && !googleError ? (
@@ -167,8 +164,7 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
                 type="button"
                 className="brain-google-btn"
                 disabled={enabled}
-                aria-describedby={!enabled && origin ? previewId : undefined}
-                onClick={enabled ? undefined : () => setError(PREVIEW_AUTH_MESSAGE)}
+                onClick={enabled ? undefined : () => setPreviewBlocked(true)}
               >
                 <GoogleLogo />
                 <span>{busy === "google" ? "Signing in…" : "Continue with Google"}</span>
@@ -183,7 +179,7 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
           </div>
           <div className="brain-form__divider"><span>or</span></div>
           <form className="brain-form__fields" onSubmit={submitEmail}>
-            <label className="brain-form__label" htmlFor={emailId}>Email address</label>
+            <label className="brain-form__label" htmlFor={emailId}>Work email</label>
             <input
               id={emailId}
               className="brain-form__input"
@@ -200,10 +196,16 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
               aria-describedby={describedBy}
             />
             <LpFxPill type="submit" className="brain-form__submit" disabled={busy !== null}>
-              {busy === "email" ? "Sending…" : "Continue"}
+              {busy === "email" ? "Sending…" : "Continue with email"}
             </LpFxPill>
           </form>
           {error ? <p id={errorId} className="brain-form__error" role="alert">{error}</p> : null}
+          {previewBlocked ? (
+            <p id={previewId} className="brain-form__notice" role="status">
+              {PREVIEW_AUTH_MESSAGE}{" "}
+              <a href={`${APP_ORIGIN}/login`} target="_blank" rel="noopener noreferrer">Open Pancake</a>
+            </p>
+          ) : null}
         </>
       )}
     </div>

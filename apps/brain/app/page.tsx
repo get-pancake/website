@@ -44,7 +44,7 @@ export default function BrainLanding() {
             <BrainHeroArtwork />
             <div className="brain-signup">
               <h2 className="lp-display brain-signup-title" id="signup-title">Start free</h2>
-              <p className="brain-signup-intro">Create your account. Your assistant takes it from there.</p>
+              <p className="brain-signup-intro">Add your website. Pancake learns who buys from you and starts the outreach. Set up in five minutes.</p>
               <SignupForm />
               <p className="brain-cancel">Cancel anytime</p>
             </div>
@@ -59,10 +59,6 @@ export default function BrainLanding() {
               <div><h2>{title}</h2><p>{body}</p></div>
             </li>)}
           </ul>
-        </div>
-        <div className="brain-reassurance">
-          <p><strong>SOC 2 compliant.</strong> Your data is encrypted at rest and in transit.</p>
-          <p><strong>Up and running in 5 min.</strong> Connect Claude or ChatGPT, add your website, go.</p>
         </div>
       </section>
       <BrainSections />

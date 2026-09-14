@@ -6,7 +6,7 @@ export const BRAIN_ORIGIN = "https://brain.getpancake.ai";
 export const GOOGLE_CLIENT_ID =
   "1000959441723-8uq5ck0pr6rjslhsnerdlnqnmjb5q4ot.apps.googleusercontent.com";
 export const PREVIEW_AUTH_MESSAGE =
-  "This is a preview. Sign-up is available on the live Pancake site.";
+  "Preview build. Sign-up only works on brain.getpancake.ai.";
 
 export interface AuthEnvironment {
   origin: string;
