@@ -27,18 +27,19 @@
      compact laptop recipe (min) to a roomy 1080p one (max). */
   --brain-hero-avail: calc(100svh - var(--brain-nav-height) - var(--brain-hero-clearance) - var(--brain-hero-bottom));
   /* The rainbow slivers run the cartouche's full height, like the main CTA
-     card, and keep their aspect — so the taller the frame, the wider the
-     band (37% of the height). The frame height is therefore the viewport
-     height, capped by what the width can afford (390px headline column +
-     24px gap + 360px form + two rails + 16px air each) and by 900px on very
-     tall screens: H ≤ (frame width − 838px) / 0.74, frame = 100vw − 32px. */
-  --brain-art-height: min(var(--brain-hero-avail), calc((100vw - 870px) / 0.74), 900px);
+     card, squeezed to 70% horizontally so the rays sit closer together
+     (founder, 2026-09-14). Their band is 37% × 0.7 ≈ 26% of the frame
+     height. The frame height is the viewport height, capped by what the
+     width can afford (390px headline column + 24px gap + 360px form + two
+     rails + 16px air each) and by 900px on very tall screens:
+     H ≤ (frame width − 838px) / 0.518, frame = 100vw − 32px. */
+  --brain-art-height: min(var(--brain-hero-avail), calc((100vw - 870px) / 0.518), 900px);
   --brain-hero-min-height: var(--brain-art-height);
   --brain-hero-content-padding: clamp(48px, calc(var(--brain-art-height) * 0.08), 96px);
   --brain-hero-row-gap: clamp(40px, calc(var(--brain-art-height) * 0.08), 80px);
   --brain-art-offset: 0px;
-  --brain-side-scale: 1;
-  --brain-hero-rail: calc(var(--brain-art-height) * 0.37 + var(--brain-space-md));
+  --brain-side-scale: 0.7;
+  --brain-hero-rail: calc(var(--brain-art-height) * 0.37 * var(--brain-side-scale) + var(--brain-space-md));
   --brain-hero-inset: calc(var(--brain-hero-rail) + var(--brain-space-md));
   --brain-benefits-width: 960px;
   --brain-rule: 1px;
