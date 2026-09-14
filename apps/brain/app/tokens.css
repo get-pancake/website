@@ -29,7 +29,6 @@
   --brain-hero-min-height: min(var(--brain-hero-avail), 900px);
   --brain-hero-content-padding: clamp(48px, calc(var(--brain-hero-avail) * 0.08), 96px);
   --brain-hero-row-gap: clamp(40px, calc(var(--brain-hero-avail) * 0.08), 80px);
-  --brain-card-padding-block: clamp(40px, calc(var(--brain-hero-avail) * 0.075), 80px);
   /* Rainbow slivers: the shared 560×432 / 529×432 CTA art (aspect kept by
      width:auto), scaled with the frame — 68% of its height, capped so the
      headline column keeps about 400px and the H1 its two lines. */
@@ -71,7 +70,6 @@
     --brain-hero-min-height: var(--brain-art-crop-height);
     --brain-hero-content-padding: var(--brain-space-2xl);
     --brain-hero-row-gap: var(--brain-space-2xl);
-    --brain-card-padding-block: var(--brain-space-2xl);
     --brain-form-top-gap: var(--brain-space-lg);
     --brain-form-divider-gap: var(--brain-space-md);
     --brain-cancel-gap: var(--brain-space-md);
@@ -93,7 +91,6 @@
     --brain-art-crop-height: 100%;
     --brain-art-offset: 0px;
     --brain-hero-inset: var(--brain-space-lg);
-    --brain-card-padding-block: var(--brain-space-xl);
     --brain-form-top-gap: var(--brain-space-lg);
     --brain-form-divider-gap: var(--brain-space-md);
     --brain-cancel-gap: var(--brain-space-md);

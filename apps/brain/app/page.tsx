@@ -42,12 +42,10 @@ export default function BrainLanding() {
               </div>
             </div>
             <aside className="brain-signup" id="email" aria-labelledby="signup-title">
-              <div className="brain-signup-card">
-                <h2 className="lp-display brain-signup-title" id="signup-title">Start free</h2>
-                <p className="brain-signup-intro">Create your account. Your assistant takes it from there.</p>
-                <SignupForm />
-                <p className="brain-cancel">Cancel anytime</p>
-              </div>
+              <h2 className="lp-display brain-signup-title" id="signup-title">Start free</h2>
+              <p className="brain-signup-intro">Create your account. Your assistant takes it from there.</p>
+              <SignupForm />
+              <p className="brain-cancel">Cancel anytime</p>
             </aside>
           </div>
         </div>
