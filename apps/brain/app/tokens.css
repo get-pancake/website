@@ -54,9 +54,10 @@
   --brain-focus-width: 2px;
   --brain-form-top-gap: clamp(24px, calc(var(--brain-art-height) * 0.04), 48px);
   --brain-form-divider-gap: clamp(16px, calc(var(--brain-art-height) * 0.025), 24px);
-  --brain-cancel-gap: var(--brain-form-divider-gap);
   --brain-form-field-gap: var(--brain-space-md);
   --brain-control-height: 48px;
+  /* Founder: the wordmarks in pure black, not the plum ink. */
+  --brain-trust-ink: #000000;
   --brain-trust-gap: var(--brain-space-2xl);
   --brain-trust-duration: 30s;
   /* Google's own button palette: the placeholder must match what GIS renders. */
@@ -80,7 +81,6 @@
     --brain-hero-row-gap: var(--brain-space-lg);
     --brain-form-top-gap: var(--brain-space-lg);
     --brain-form-divider-gap: var(--brain-space-md);
-    --brain-cancel-gap: var(--brain-space-md);
   }
 }
 @media (max-width: 767px) {

@@ -44,7 +44,6 @@ export default function BrainLanding() {
               <h2 className="lp-display brain-signup-title" id="signup-title">Start free</h2>
               <p className="brain-signup-intro">Add your website. Pancake learns who buys from you and starts the outreach. Set up in five minutes.</p>
               <SignupForm />
-              <p className="brain-cancel">Cancel anytime</p>
             </div>
           </aside>
         </div>

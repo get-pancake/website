@@ -46,7 +46,7 @@ img { max-width: 100%; }
 .brain-trust__yc { width: 1.15em; height: 1.15em; border-radius: 2px; }
 .brain-trust__band { margin-top: var(--brain-space-md); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
 .brain-trust__track { display: flex; width: max-content; }
-.brain-trust__seq { list-style: none; margin: 0; padding: 0 0 0 var(--brain-trust-gap); display: flex; align-items: center; gap: var(--brain-trust-gap); animation: brain-trust-scroll var(--brain-trust-duration) linear infinite; color: var(--lp-text); }
+.brain-trust__seq { list-style: none; margin: 0; padding: 0 0 0 var(--brain-trust-gap); display: flex; align-items: center; gap: var(--brain-trust-gap); animation: brain-trust-scroll var(--brain-trust-duration) linear infinite; color: var(--brain-trust-ink); }
 .brain-trust:hover .brain-trust__seq { animation-play-state: paused; }
 .brain-trust__item { display: flex; align-items: center; }
 .brain-trust__logo { display: block; background: currentColor; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; }
@@ -65,7 +65,6 @@ img { max-width: 100%; }
 .brain-signup { position: relative; z-index: 1; width: var(--brain-signup-width); display: flex; flex-direction: column; justify-content: center; }
 .brain-signup-title { font-size: var(--lp-text-3xlg); line-height: 1.2; letter-spacing: var(--brain-title-tracking); }
 .brain-signup-intro { margin-top: var(--brain-space-sm) !important; color: var(--lp-ink-tr-70); font-size: var(--lp-text-sm); }
-.brain-cancel { text-align: center; font-size: var(--lp-text-sm); color: var(--lp-subtle-text); margin-top: var(--brain-cancel-gap) !important; }
 .brain-form { margin-top: var(--brain-form-top-gap); }
 .brain-form__google { min-height: var(--brain-google-height); display: flex; align-items: center; justify-content: center; }
 .brain-form__google-host { display: flex; justify-content: center; width: 100%; }
