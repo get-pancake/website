@@ -4,6 +4,7 @@ import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { SignupForm } from "../components/SignupForm";
 import { BrainSections } from "../components/BrainSections";
 import { BrainHeroArtwork } from "../components/BrainHeroArtwork";
+import { BrainTrustBand } from "../components/BrainTrustBand";
 
 const features = [
   ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in and your assistant runs prospecting and outreach on its own. No new dashboard to learn."],
@@ -34,10 +35,7 @@ export default function BrainLanding() {
               <h1 id="brain-title" className="lp-display brain-title">Put your GTM on<br />full autopilot</h1>
               <p className="brain-lede">Pancake lets your Claude or ChatGPT run your go-to-market. Find people ready to buy and start outreach campaigns from the same conversation.</p>
             </div>
-            <div className="brain-proof">
-              <div className="brain-avatars" aria-hidden="true">{["JL", "MK", "SR", "AN", "+"].map(initials => <span key={initials}>{initials}</span>)}</div>
-              <p><strong>500+ founders</strong> already run their GTM on autopilot <span className="brain-stars" aria-label="5 stars">★★★★★</span></p>
-            </div>
+            <BrainTrustBand />
           </div>
           {/* The conversion card: white, with the right rainbow sliver inside it. */}
           <aside className="brain-signup-card" id="email" aria-labelledby="signup-title">

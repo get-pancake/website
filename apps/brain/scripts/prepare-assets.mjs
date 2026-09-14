@@ -5,7 +5,7 @@ const root = new URL("../../../", import.meta.url);
 const output = new URL("../public/", import.meta.url);
 await mkdir(output, { recursive: true });
 // Build artifacts come from the same versioned v3 assets as getpancake.ai.
-for (const name of ["lp", "og-image.png"]) {
+for (const name of ["lp", "logos", "og-image.png"]) {
   await cp(new URL(`public/${name}`, root), new URL(name, output), { recursive: true });
 }
 await cp(new URL("app/icon.png", root), new URL("icon.png", output));

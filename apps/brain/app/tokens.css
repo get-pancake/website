@@ -14,7 +14,7 @@
   --brain-weight-medium: 500;
   --brain-weight-semibold: 600;
   --brain-grid: 1296px;
-  --brain-signup-width: 360px;
+  --brain-signup-width: 400px;
   --brain-title-size: 57.336px;
   --brain-title-tracking: -0.03em;
   /* Same bar as getpancake.ai: 120px, logo centred at 60px (nav.css). */
@@ -32,14 +32,14 @@
      rays sit closer (founder, 2026-09-14). The band is 37% × 0.7 ≈ 26% of
      the card height and the card width follows it. The card height is the
      viewport height minus a little air, capped by the row's width budget —
-     a 400px copy column, the 64px gap, then the card (48px pad + 360px form
+     a 400px copy column, the 48px gap, then the card (48px pad + 400px form
      + 48px air + band) inside the 1296px grid — and by 840px on very tall
-     screens: H ≤ (row width − 920px) / 0.259. */
-  --brain-art-height: min(calc(var(--brain-hero-avail) - 32px), calc((min(100vw - 32px, var(--brain-grid)) - 920px) / 0.259), 840px);
+     screens: H ≤ (row width − 944px) / 0.259. */
+  --brain-art-height: min(calc(var(--brain-hero-avail) - 32px), calc((min(100vw - 32px, var(--brain-grid)) - 944px) / 0.259), 840px);
   --brain-hero-min-height: var(--brain-art-height);
   --brain-hero-content-padding: clamp(48px, calc(var(--brain-art-height) * 0.08), 96px);
   --brain-hero-row-gap: clamp(40px, calc(var(--brain-art-height) * 0.08), 80px);
-  --brain-hero-gap: var(--brain-space-3xl);
+  --brain-hero-gap: var(--brain-space-2xl);
   --brain-art-offset: 0px;
   --brain-side-scale: 0.7;
   /* Air between the band's widest point and the form. */
