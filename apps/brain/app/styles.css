@@ -75,9 +75,9 @@ img { max-width: 100%; }
 .brain-form__input:focus { background: var(--lp-surface); border-color: var(--lp-purple-30); }
 .brain-form__input::placeholder { color: var(--lp-subtle-text); }
 .brain-form__fields > p { font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
-/* width: max-content — as a grid item the pill otherwise settles on a fixed
-   box that clips longer labels; it also overrides the 135px phone pill. */
-.brain .brain-form__submit, .brain .brain-form__retry { justify-self: start; width: max-content; margin-top: var(--brain-space-sm); }
+/* The pill is the kit's Figma-exact 136×54 squircle (fixed clip-path), so its
+   label must fit the artboard width: keep it to one or two short words. */
+.brain .brain-form__submit, .brain .brain-form__retry { justify-self: start; margin-top: var(--brain-space-sm); }
 .brain-form__retry { background: transparent; border: 0; padding: 0; color: var(--lp-text); font-size: var(--lp-text-sm); text-align: left; text-decoration: underline; text-underline-offset: 0.2em; }
 .brain-form__google:has(.brain-form__error) { flex-direction: column; gap: var(--brain-space-sm); align-items: flex-start; }
 .brain-form__notice, .brain-form__error, .brain-form__success, .brain-form__terms { margin-top: var(--brain-space-md); font-size: var(--lp-text-sm); }

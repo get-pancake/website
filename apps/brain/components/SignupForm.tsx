@@ -196,7 +196,7 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
               aria-describedby={describedBy}
             />
             <LpFxPill type="submit" className="brain-form__submit" disabled={busy !== null}>
-              {busy === "email" ? "Sending…" : "Continue with email"}
+              {busy === "email" ? "Sending…" : "Continue"}
             </LpFxPill>
           </form>
           {error ? <p id={errorId} className="brain-form__error" role="alert">{error}</p> : null}
