@@ -25,7 +25,7 @@
 
 - [x] 2026-09-14 review fixes (Tristan): LeadJourney and the LinkedIn Insight Tag load on the canonical hostname with the main site's ids; the hero is one white cartouche (no inner card) spanning the viewport width minus 16px margins (max 1600px): the rainbow slivers run its full height and clip at its corners like the main CTA card, squeezed to 70% horizontally so the rays sit closer together; the copy sits on the left and the signup on the right; the nav is the main site's 120px bar; the frame height follows the viewport minus 32px, capped by the width the two columns need (a 440px copy column and the 360px form, 48px apart, centred with 48px of air from each band: H ≤ (frame − 936px) / 0.518) and by 840px, so the headline keeps two lines and the form stays above the fold on 1366×768 and 1280×720; tablets and phones use one centred column with thin edge strips; Google sign-in is the provider's pill button with a matching placeholder; AI-search claims removed from the benefits, pricing list, step 02 and metadata; every link stays on the page (nav → How it works / Pricing, pricing CTA → the form); email hint dropped; signup card titled “Start free”.
 
-Preview: https://pancake-brain-n7inn2h0v-getpancake.vercel.app/ (2026-09-14, commit 59bc0e2 — full-height rainbows squeezed to 70%)
+Preview: https://pancake-brain-amtkgklwj-getpancake.vercel.app/ (2026-09-14, commit b095c80 — main-site nav, shorter cartouche, centred columns)
 
 Draft PR: https://github.com/get-pancake/website/pull/295
 
