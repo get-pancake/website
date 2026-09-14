@@ -1,6 +1,5 @@
 @import "../../../app/_styles/landing-v3/foundation.css";
 @import "../../../app/_styles/landing-v3/nav.css";
-@import "../../../app/_styles/landing-v3/hero.css";
 @import "../../../app/_styles/landing-v3/steps.css";
 @import "../../../app/_styles/landing-v3/pricing.css";
 @import "../../../app/_styles/landing-v3/footer.css";
@@ -71,9 +70,9 @@ img { max-width: 100%; }
 .brain-form__google-host[hidden] { display: none; }
 /* Mirrors the pill button Google renders on production (outline theme, large). */
 .brain-google-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--brain-space-sm); width: 100%; max-width: 400px; height: var(--brain-google-height); padding-inline: var(--brain-space-md); background: var(--lp-surface); border: var(--brain-rule) solid var(--brain-google-stroke); border-radius: var(--brain-google-height); color: var(--brain-google-ink); font-family: var(--lp-font-sans); font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); letter-spacing: 0.25px; line-height: 1; white-space: nowrap; }
-.brain-google-btn:disabled { cursor: progress; }
+.brain-google-btn:disabled { cursor: progress; opacity: 0.6; }
 .brain-google-btn svg { flex: 0 0 auto; }
-.brain-form__divider { display: flex; align-items: center; gap: var(--brain-space-md); margin-block: var(--brain-form-divider-gap); font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
+.brain-form__divider { display: flex; align-items: center; gap: var(--brain-space-md); margin-block: var(--brain-form-divider-gap); font-size: var(--lp-text-sm); color: var(--lp-subtle-text); }
 /* The card is white, so the rules use the stronger stroke (ink-50). */
 .brain-form__divider::before, .brain-form__divider::after { content: ""; height: var(--brain-rule); flex: 1; background: var(--lp-stroke); }
 .brain-form__fields { display: grid; gap: var(--brain-form-field-gap); }
@@ -83,6 +82,8 @@ img { max-width: 100%; }
 .brain-form__input:focus { background: var(--lp-surface); border-color: var(--lp-purple-40); }
 .brain .brain-form__input:focus-visible { outline-offset: 0; }
 .brain-form__input::placeholder { color: var(--lp-subtle-text); }
+/* Once the reader has touched the field, an invalid address shows (Safari 16.5+). */
+.brain-form__input:user-invalid { border-color: var(--lp-red-40); }
 .brain-form__fields > p { font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
 /* The pill is the kit's Figma-exact 136×54 squircle (fixed clip-path), so its
    label must fit the artboard width: keep it to one or two short words. */
@@ -128,6 +129,8 @@ img { max-width: 100%; }
   .brain .lp-foot-frame { padding-bottom: calc(var(--brain-space-2xl) + var(--brain-sticky-height) + env(safe-area-inset-bottom)); }
   /* The card is on screen, so the nav pill only duplicates it; the sticky bar owns the return path. */
   .brain .lp-nav-ctas { display: none; }
+  /* Text links in the form keep a 44px touch height. */
+  .brain-form__notice a, .brain-form__retry { display: inline-block; padding-block: 12px; margin-block: -12px; }
   /* One left edge (32px) for logo, copy, card content, benefits text and pricing; cards at 16px. */
   .brain-pitch, .brain-trust { padding-inline: var(--brain-space-md); }
   .brain-eyebrow__desk { display: none; }
@@ -151,6 +154,18 @@ img { max-width: 100%; }
 .brain-sticky-cta .lp-btn { flex: 0 0 auto; }
 @media (min-width: 768px) { .brain-sticky-cta { display: none; } }
 @media (prefers-reduced-motion: reduce) { .brain-sticky-cta { transition: none; } }
+/* Step 03's yellow numeral is 2.3:1 on cream; the kit's orange passes. */
+.brain .lp-steps__row:nth-child(3) .lp-steps__num { color: var(--lp-orange-30); }
+/* LpAnimFreeze marks the carousel off-stage; nothing to restore, just pause. */
+.brain-trust[data-lp-offstage] .brain-trust__seq { animation-play-state: paused; }
+/* Landscape phones: the compact bar and the sticky CTA, like portrait. */
+@media (max-height: 480px) and (pointer: coarse) {
+  .brain { --brain-nav-height: 64px; }
+  .brain-sticky-cta { display: flex; }
+  .brain .lp-nav-ctas { display: none; }
+}
+/* Notches in landscape: keep the bar and the sticky CTA inside the safe area. */
+.brain .brain-nav, .brain-sticky-cta { padding-left: max(var(--brain-space-md), env(safe-area-inset-left)); padding-right: max(var(--brain-space-md), env(safe-area-inset-right)); }
 @media (max-width: 767px) {
   .brain .brain-nav { position: relative; padding: 0 var(--brain-space-xl); justify-content: space-between; }
   .brain .lp-nav-logo { flex: 0 0 auto; }
@@ -169,4 +184,14 @@ img { max-width: 100%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .brain *, .brain *::before, .brain *::after { scroll-behavior: auto !important; }
+}
+
+/* The narrowest iPhones (SE, 12/13 mini, 375pt): the lede and the card
+   intro wrap one line more, so tighten the rhythm to keep Continue in reach. */
+@media (max-width: 375px) {
+  .brain { --brain-form-top-gap: 12px; --brain-form-divider-gap: 8px; }
+  .brain-hero-content { row-gap: 12px; }
+  .brain-title { margin-block: 8px; }
+  .brain-signup-card { padding-top: 20px; }
+  .brain-lede { font-size: 15px; line-height: 1.45; }
 }

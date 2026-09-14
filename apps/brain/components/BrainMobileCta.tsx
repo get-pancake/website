@@ -21,7 +21,7 @@ export function BrainMobileCta() {
     // Only once the card is above the viewport: never before the reader reaches it.
     const cardObserver = new IntersectionObserver(([entry]) => {
       setCardAbove(!entry.isIntersecting && entry.boundingClientRect.bottom < 0);
-    }, { threshold: 0 });
+    }, { threshold: 0, rootMargin: "96px 0px 0px 0px" }); // appears once the card is well gone
     cardObserver.observe(card);
     // Never two identical pills on one screen: step aside for the pricing CTA.
     const pricingCta = document.querySelector(".lp-price-cta");

@@ -180,7 +180,7 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
                 onClick={enabled ? undefined : () => setPreviewBlocked(true)}
               >
                 <GoogleLogo />
-                <span>{busy === "google" ? "Signing in…" : "Continue with Google"}</span>
+                <span>{busy === "google" ? "Signing in…" : enabled && !googleReady ? "Loading Google…" : "Continue with Google"}</span>
               </button>
             ) : null}
             {googleError ? (

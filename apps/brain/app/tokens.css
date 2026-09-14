@@ -94,7 +94,7 @@
     --brain-hero-bottom: var(--brain-space-lg);
     --brain-hero-content-padding: var(--brain-space-lg);
     --brain-form-top-gap: var(--brain-space-md);
-    --brain-form-divider-gap: 12px;
+    --brain-form-divider-gap: 10px;
     --brain-form-field-gap: var(--brain-space-sm);
     --brain-title-size: var(--lp-text-4xlg);
   }

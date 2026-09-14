@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { LEADJOURNEY_TRACKING_SCRIPT_URL, LINKEDIN_INSIGHT_PARTNER_ID } from "@/lib/analytics/vendor-config";
 import "./styles.css";
@@ -28,6 +28,10 @@ const condensed = localFont({
   ],
   variable: "--font-aeonik-condensed", display: "swap",
 });
+
+// viewport-fit=cover makes the safe-area insets real (sticky bar, landscape
+// notches); the page paints its own cream, so nothing shows under the bars.
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#fbf6f1", colorScheme: "light" };
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://brain.getpancake.ai"),

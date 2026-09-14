@@ -43,7 +43,7 @@ export default function BrainLanding() {
             <BrainTrustBand />
           </div>
           {/* The conversion card: white, with the right rainbow sliver inside it. */}
-          <aside className="brain-signup-card" id="email" aria-labelledby="signup-title">
+          <aside className="brain-signup-card" id="email" aria-labelledby="signup-title" tabIndex={-1}>
             <BrainHeroArtwork />
             <div className="brain-signup">
               <h2 className="lp-display brain-signup-title" id="signup-title">Start free</h2>
