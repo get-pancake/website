@@ -14,8 +14,9 @@
   --brain-weight-medium: 500;
   --brain-weight-semibold: 600;
   --brain-grid: 1296px;
-  --brain-signup-width: 384px;
-  --brain-title-size: clamp(57.336px, calc(var(--brain-hero-avail) * 0.076), 60px);
+  --brain-signup-width: 360px;
+  --brain-hero-max-width: 1600px;
+  --brain-title-size: 57.336px;
   --brain-title-tracking: -0.03em;
   --brain-nav-height: 64px;
   --brain-hero-bottom: var(--brain-space-lg);
@@ -25,25 +26,25 @@
      100svh. Every vertical measure below scales with that height, from the
      compact laptop recipe (min) to a roomy 1080p one (max). */
   --brain-hero-avail: calc(100svh - var(--brain-nav-height) - var(--brain-hero-clearance) - var(--brain-hero-bottom));
-  /* Capped at 900px so a 1080p screen still shows the next section peeking. */
-  --brain-hero-min-height: min(var(--brain-hero-avail), 900px);
-  --brain-hero-content-padding: clamp(48px, calc(var(--brain-hero-avail) * 0.08), 96px);
-  --brain-hero-row-gap: clamp(40px, calc(var(--brain-hero-avail) * 0.08), 80px);
-  /* Rainbow slivers: the shared 560×432 / 529×432 CTA art (aspect kept by
-     width:auto), scaled with the frame — 68% of its height, capped so the
-     headline column keeps about 400px and the H1 its two lines. */
-  --brain-art-height: clamp(432px, calc(var(--brain-hero-avail) * 0.68), 544px);
-  --brain-art-crop-height: var(--brain-art-height);
+  /* The rainbow slivers run the cartouche's full height, like the main CTA
+     card, and keep their aspect — so the taller the frame, the wider the
+     band (37% of the height). The frame height is therefore the viewport
+     height, capped by what the width can afford (390px headline column +
+     24px gap + 360px form + two rails + 16px air each) and by 900px on very
+     tall screens: H ≤ (frame width − 838px) / 0.74, frame = 100vw − 32px. */
+  --brain-art-height: min(var(--brain-hero-avail), calc((100vw - 870px) / 0.74), 900px);
+  --brain-hero-min-height: var(--brain-art-height);
+  --brain-hero-content-padding: clamp(48px, calc(var(--brain-art-height) * 0.08), 96px);
+  --brain-hero-row-gap: clamp(40px, calc(var(--brain-art-height) * 0.08), 80px);
   --brain-art-offset: 0px;
   --brain-side-scale: 1;
-  /* The visible band is ~37% of the art height; add air before the copy. */
-  --brain-hero-rail: calc(var(--brain-art-height) * 0.37 + var(--brain-space-lg));
+  --brain-hero-rail: calc(var(--brain-art-height) * 0.37 + var(--brain-space-md));
   --brain-hero-inset: calc(var(--brain-hero-rail) + var(--brain-space-md));
   --brain-benefits-width: 960px;
   --brain-rule: 1px;
   --brain-focus-width: 2px;
-  --brain-form-top-gap: clamp(24px, calc(var(--brain-hero-avail) * 0.04), 48px);
-  --brain-form-divider-gap: clamp(16px, calc(var(--brain-hero-avail) * 0.025), 24px);
+  --brain-form-top-gap: clamp(24px, calc(var(--brain-art-height) * 0.04), 48px);
+  --brain-form-divider-gap: clamp(16px, calc(var(--brain-art-height) * 0.025), 24px);
   --brain-cancel-gap: var(--brain-form-divider-gap);
   --brain-form-field-gap: var(--brain-space-md);
   --brain-control-height: 48px;
@@ -55,21 +56,18 @@
   --brain-ease: 200ms ease;
 }
 
-@media (max-width: 1279px) {
-  /* The art shifts 32px outward, so the band alone sets the rail. */
-  .brain { --brain-title-size: 57.336px; --brain-hero-rail: calc(var(--brain-art-height) * 0.37); --brain-art-offset: calc(-1 * var(--brain-space-xl)); --brain-signup-width: 384px; }
-}
 @media (max-width: 1024px) {
-  /* Tablets keep the compact, content-sized recipe. */
+  /* Tablets and phones: one column, the rainbows become thin edge strips,
+     the frame sizes to its content. */
   .brain {
     --brain-title-size: var(--lp-text-5xlg);
-    --brain-hero-rail: 96px;
-    --brain-art-offset: calc(-1 * var(--brain-space-3xl));
-    --brain-art-height: 336px;
-    --brain-art-crop-height: 384px;
-    --brain-hero-min-height: var(--brain-art-crop-height);
+    --brain-hero-min-height: 0px;
+    --brain-hero-rail: 12px;
+    --brain-side-scale: 0.04;
+    --brain-art-offset: 0px;
+    --brain-hero-inset: var(--brain-space-xl);
     --brain-hero-content-padding: var(--brain-space-2xl);
-    --brain-hero-row-gap: var(--brain-space-2xl);
+    --brain-hero-row-gap: var(--brain-space-lg);
     --brain-form-top-gap: var(--brain-space-lg);
     --brain-form-divider-gap: var(--brain-space-md);
     --brain-cancel-gap: var(--brain-space-md);
@@ -84,12 +82,6 @@
     --brain-hero-clearance: var(--brain-space-md);
     --brain-hero-bottom: var(--brain-space-lg);
     --brain-hero-content-padding: var(--brain-space-lg);
-    --brain-hero-min-height: 0px;
-    --brain-hero-rail: 12px;
-    --brain-side-scale: 0.04;
-    --brain-art-height: 100%;
-    --brain-art-crop-height: 100%;
-    --brain-art-offset: 0px;
     --brain-hero-inset: var(--brain-space-lg);
     --brain-form-top-gap: var(--brain-space-lg);
     --brain-form-divider-gap: var(--brain-space-md);

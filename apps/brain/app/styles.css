@@ -23,21 +23,21 @@ img { max-width: 100%; }
 /* One white cartouche holds everything: the rainbow slivers clipped at its
    edges, the copy on the left, the signup on the right. It fills the first
    viewport on desktop (see --brain-hero-min-height) and hugs the nav. */
-.brain-hero-frame { position: relative; isolation: isolate; display: grid; align-self: start; min-height: var(--brain-hero-min-height); width: 100%; max-width: var(--brain-grid); margin-inline: auto; background: var(--lp-surface); border-radius: var(--lp-r-2xlg); overflow: clip; }
-/* The clip parents reproduce the main CTA card's full width, fixed height
-   and radius. Keeping both the artwork scale and visible y-range identical
-   preserves the reference curve; hero content height cannot change its crop. */
-.brain-side-rail { position: absolute; top: calc((100% - var(--brain-art-crop-height)) / 2); height: var(--brain-art-crop-height); width: 100%; border-radius: var(--lp-r-2xlg); overflow: clip; pointer-events: none; }
+.brain-hero-frame { position: relative; isolation: isolate; display: grid; align-self: start; min-height: var(--brain-hero-min-height); width: 100%; max-width: var(--brain-hero-max-width); margin-inline: auto; background: var(--lp-surface); border-radius: var(--lp-r-2xlg); overflow: clip; }
+/* The clip parents are the cartouche itself: the art spans its full height
+   (aspect kept by width:auto) and is cut by the same corners, exactly as the
+   slivers sit in the main CTA card. */
+.brain-side-rail { position: absolute; top: 0; height: 100%; width: 100%; border-radius: var(--lp-r-2xlg); overflow: clip; pointer-events: none; }
 .brain-side-rail--left { left: 0; }
 .brain-side-rail--right { right: 0; }
-.brain .brain-side-art { position: absolute; top: 0; height: var(--brain-art-height); width: auto; max-width: none; transform: scaleX(var(--brain-side-scale)); transform-origin: 0 0; }
+.brain .brain-side-art { position: absolute; top: 0; height: 100%; width: auto; max-width: none; transform: scaleX(var(--brain-side-scale)); transform-origin: 0 0; }
 .brain .brain-side-art.lp-cta__art--left { left: var(--brain-art-offset); }
 /* The shared renderer reads a matrix with origin 0 0. Make the right-edge
    anchoring explicit in that matrix so DOM and WebGL clip identically. */
 .brain .brain-side-art.lp-cta__art--right { right: var(--brain-art-offset); transform: translateX(calc(100% * (1 - var(--brain-side-scale)))) scaleX(var(--brain-side-scale)); }
 /* Two columns filling the frame: the copy column centres its pitch and
    proof; the signup column centres its form. No inner card. */
-.brain-hero-content { position: relative; z-index: 1; max-width: calc(var(--brain-grid) + 2 * var(--brain-space-xl)); margin-inline: auto; width: 100%; padding: var(--brain-hero-content-padding) var(--brain-hero-inset); display: grid; grid-template-columns: minmax(0, 1fr) var(--brain-signup-width); grid-template-areas: "left signup"; grid-template-rows: 1fr; align-items: stretch; column-gap: var(--brain-space-lg); }
+.brain-hero-content { position: relative; z-index: 1; width: 100%; padding: var(--brain-hero-content-padding) var(--brain-hero-inset); display: grid; grid-template-columns: minmax(0, 1fr) var(--brain-signup-width); grid-template-areas: "left signup"; grid-template-rows: 1fr; align-items: stretch; column-gap: var(--brain-space-lg); }
 .brain-left { grid-area: left; display: flex; flex-direction: column; justify-content: center; gap: var(--brain-hero-row-gap); }
 .brain-pitch { grid-area: pitch; }
 .brain-eyebrow { display: flex; gap: var(--brain-space-sm); align-items: center; color: var(--lp-subtle-text); font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); }
@@ -108,17 +108,18 @@ img { max-width: 100%; }
   .brain .lp-foot-frame { padding-inline: var(--brain-space-xl); }
 }
 @media (max-width: 1024px) {
-  .brain-hero-content { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .brain-side-rail { width: var(--brain-hero-rail); border-radius: 0; }
+  .brain-hero-content { max-width: 672px; margin-inline: auto; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "pitch" "signup" "proof"; row-gap: var(--brain-space-md); }
+  .brain-left { display: contents; }
+  .brain-pitch, .brain-signup { width: 100%; }
+  .brain-signup { max-width: 448px; padding-block: var(--brain-space-md); }
+  .brain-proof { flex-direction: row; align-items: center; }
 }
 @media (max-width: 767px) {
   .brain .brain-nav { position: relative; padding: 0 var(--brain-space-xl); justify-content: space-between; }
   .brain .lp-nav-ctas { display: flex; position: static; }
   .brain .lp-nav-logo { flex: 0 0 auto; }
   .brain-hero-frame { border-radius: var(--lp-r-xlg); }
-  .brain-side-rail { width: var(--brain-hero-rail); border-radius: 0; }
-  .brain-hero-content { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "pitch" "signup" "proof"; row-gap: var(--brain-space-md); }
-  .brain-left { display: contents; }
-  .brain-pitch, .brain-signup { width: 100%; }
   .brain-eyebrow { font-size: var(--lp-text-xsm); }
   .brain-title { margin-block: var(--brain-space-md); }
   .brain-benefits { padding-block: var(--brain-space-2xl); }
@@ -126,8 +127,6 @@ img { max-width: 100%; }
   .brain-features li { grid-template-columns: var(--brain-space-lg) minmax(0, 1fr); gap: var(--brain-space-sm); }
   .brain-features h2 { font-size: var(--lp-text-lg); }
   .brain-reassurance { grid-template-columns: minmax(0, 1fr); gap: var(--brain-space-md); margin-top: var(--brain-space-lg); padding-inline: var(--brain-space-lg); }
-  .brain-proof { flex-direction: row; align-items: center; }
-  .brain-signup { padding-block: var(--brain-space-md); }
   .brain-signup-title { font-size: var(--lp-text-3xlg); }
   .brain .lp-foot-brand { flex-wrap: wrap; }
   .brain .lp-foot-line { margin: var(--brain-space-xl) 0 0; }
