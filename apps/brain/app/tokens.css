@@ -73,9 +73,6 @@
     --brain-cancel-gap: var(--brain-space-md);
   }
 }
-@media (min-width: 768px) and (max-width: 900px) {
-  .brain { --brain-title-size: var(--lp-text-4xlg); --brain-hero-rail: 64px; --brain-art-offset: calc(-1 * var(--brain-space-4xl)); }
-}
 @media (max-width: 767px) {
   .brain {
     --brain-hero-margin: var(--brain-space-sm);
