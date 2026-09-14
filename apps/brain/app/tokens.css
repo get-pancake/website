@@ -15,37 +15,40 @@
   --brain-weight-semibold: 600;
   --brain-grid: 1296px;
   --brain-signup-width: 360px;
-  --brain-hero-max-width: 1600px;
   --brain-title-size: 57.336px;
   --brain-title-tracking: -0.03em;
   /* Same bar as getpancake.ai: 120px, logo centred at 60px (nav.css). */
   --brain-nav-height: 120px;
   --brain-hero-bottom: var(--brain-space-lg);
-  --brain-hero-margin: var(--brain-space-md);
+  /* Same side margins as the nav (nav.css): 32px, or the 1296px grid's. */
+  --brain-hero-margin: max(var(--brain-space-xl), calc(50% - 648px));
   --brain-hero-clearance: var(--brain-space-md);
   /* The frame fills the first viewport: nav + clearance + frame + bottom =
      100svh. Every vertical measure below scales with that height, from the
      compact laptop recipe (min) to a roomy 1080p one (max). */
   --brain-hero-avail: calc(100svh - var(--brain-nav-height) - var(--brain-hero-clearance) - var(--brain-hero-bottom));
-  /* The rainbow slivers run the cartouche's full height, like the main CTA
-     card, squeezed to 70% horizontally so the rays sit closer together
-     (founder, 2026-09-14). Their band is 37% × 0.7 ≈ 26% of the frame
-     height. The frame height is the viewport height minus a little air
-     (the founder wants the cartouche a touch under full height), capped by
-     what the width can afford — a 400px headline column + 48px gap + 360px
-     form between the two bands, each followed by 48px + 16px of air — and
-     by 840px on very tall screens: H ≤ (frame width − 936px) / 0.518,
-     frame = 100vw − 32px. */
-  --brain-art-height: min(calc(var(--brain-hero-avail) - 32px), calc((100vw - 968px) / 0.518), 840px);
+  /* The conversion card is the cartouche now: white, on the right, with the
+     right rainbow sliver running its full height, squeezed to 70% so the
+     rays sit closer (founder, 2026-09-14). The band is 37% × 0.7 ≈ 26% of
+     the card height and the card width follows it. The card height is the
+     viewport height minus a little air, capped by the row's width budget —
+     a 400px copy column, the 64px gap, then the card (48px pad + 360px form
+     + 48px air + band) inside the 1296px grid — and by 840px on very tall
+     screens: H ≤ (row width − 920px) / 0.259. */
+  --brain-art-height: min(calc(var(--brain-hero-avail) - 32px), calc((min(100vw - 32px, var(--brain-grid)) - 920px) / 0.259), 840px);
   --brain-hero-min-height: var(--brain-art-height);
   --brain-hero-content-padding: clamp(48px, calc(var(--brain-art-height) * 0.08), 96px);
   --brain-hero-row-gap: clamp(40px, calc(var(--brain-art-height) * 0.08), 80px);
+  --brain-hero-gap: var(--brain-space-3xl);
   --brain-art-offset: 0px;
   --brain-side-scale: 0.7;
-  /* Air between the band's widest point and the copy. */
+  /* Air between the band's widest point and the form. */
   --brain-hero-air: var(--brain-space-2xl);
-  --brain-hero-rail: calc(var(--brain-art-height) * 0.37 * var(--brain-side-scale) + var(--brain-hero-air));
-  --brain-hero-inset: calc(var(--brain-hero-rail) + var(--brain-space-md));
+  --brain-card-pad: var(--brain-space-2xl);
+  --brain-band: calc(var(--brain-art-height) * 0.37 * var(--brain-side-scale));
+  --brain-card-width: calc(var(--brain-card-pad) + var(--brain-signup-width) + var(--brain-hero-air) + var(--brain-band));
+  /* Phones and tablets: the sliver becomes a thin strip this wide. */
+  --brain-hero-rail: 12px;
   --brain-benefits-width: 960px;
   --brain-rule: 1px;
   --brain-focus-width: 2px;
@@ -71,7 +74,6 @@
     --brain-hero-rail: 12px;
     --brain-side-scale: 0.04;
     --brain-art-offset: 0px;
-    --brain-hero-inset: var(--brain-space-xl);
     --brain-hero-content-padding: var(--brain-space-2xl);
     --brain-hero-row-gap: var(--brain-space-lg);
     --brain-form-top-gap: var(--brain-space-lg);
@@ -86,7 +88,6 @@
     --brain-hero-clearance: var(--brain-space-md);
     --brain-hero-bottom: var(--brain-space-lg);
     --brain-hero-content-padding: var(--brain-space-lg);
-    --brain-hero-inset: var(--brain-space-lg);
     --brain-form-top-gap: var(--brain-space-lg);
     --brain-form-divider-gap: var(--brain-space-md);
     --brain-cancel-gap: var(--brain-space-md);
@@ -95,5 +96,5 @@
   }
 }
 @media (max-width: 374px) {
-  .brain { --brain-title-size: var(--lp-text-4xlg); --brain-hero-inset: var(--brain-space-md); --brain-hero-rail: 8px; --brain-side-scale: 0.025; }
+  .brain { --brain-title-size: var(--lp-text-4xlg); --brain-hero-rail: 8px; --brain-side-scale: 0.025; }
 }

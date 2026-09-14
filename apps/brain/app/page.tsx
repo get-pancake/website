@@ -27,27 +27,28 @@ export default function BrainLanding() {
         <div className="lp-nav-ctas"><LpFxLink href="#email" size="sm">Start free</LpFxLink></div>
       </header>
       <section className="brain-hero" aria-labelledby="brain-title">
-        <div className="brain-hero-frame">
-          <BrainHeroArtwork />
-          <div className="brain-hero-content">
-            <div className="brain-left">
-              <div className="brain-pitch">
-                <p className="brain-eyebrow"><span aria-hidden="true" />Now in early access</p>
-                <h1 id="brain-title" className="lp-display brain-title">Put your GTM on<br />full autopilot</h1>
-                <p className="brain-lede">Pancake lets your Claude or ChatGPT run your go-to-market. Find people ready to buy and start outreach campaigns from the same conversation.</p>
-              </div>
-              <div className="brain-proof">
-                <div className="brain-avatars" aria-hidden="true">{["JL", "MK", "SR", "AN", "+"].map(initials => <span key={initials}>{initials}</span>)}</div>
-                <p><strong>500+ founders</strong> already run their GTM on autopilot <span className="brain-stars" aria-label="5 stars">★★★★★</span></p>
-              </div>
+        <div className="brain-hero-content">
+          <div className="brain-left">
+            <div className="brain-pitch">
+              <p className="brain-eyebrow"><span aria-hidden="true" />Now in early access</p>
+              <h1 id="brain-title" className="lp-display brain-title">Put your GTM on<br />full autopilot</h1>
+              <p className="brain-lede">Pancake lets your Claude or ChatGPT run your go-to-market. Find people ready to buy and start outreach campaigns from the same conversation.</p>
             </div>
-            <aside className="brain-signup" id="email" aria-labelledby="signup-title">
+            <div className="brain-proof">
+              <div className="brain-avatars" aria-hidden="true">{["JL", "MK", "SR", "AN", "+"].map(initials => <span key={initials}>{initials}</span>)}</div>
+              <p><strong>500+ founders</strong> already run their GTM on autopilot <span className="brain-stars" aria-label="5 stars">★★★★★</span></p>
+            </div>
+          </div>
+          {/* The conversion card: white, with the right rainbow sliver inside it. */}
+          <aside className="brain-signup-card" id="email" aria-labelledby="signup-title">
+            <BrainHeroArtwork />
+            <div className="brain-signup">
               <h2 className="lp-display brain-signup-title" id="signup-title">Start free</h2>
               <p className="brain-signup-intro">Create your account. Your assistant takes it from there.</p>
               <SignupForm />
               <p className="brain-cancel">Cancel anytime</p>
-            </aside>
-          </div>
+            </div>
+          </aside>
         </div>
       </section>
       <section className="brain-benefits" id="benefits" aria-label="What Pancake does for you">
