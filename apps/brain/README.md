@@ -27,8 +27,8 @@ the repository root. No asset download is needed.
 
 Current project: **pancake-brain** in the **getpancake** team,
 `prj_e9TBwJXKfPU2FFqn7nSuaTmBw1MR`.
-Reviewed preview: https://pancake-brain-kp81qxbtv-getpancake.vercel.app/ (staging
-target, direct upload of commit `1e48025`).
+Reviewed preview: https://pancake-brain-4fofjsxgp-getpancake.vercel.app/ (staging
+target, direct upload of commit `58d4bc0`).
 The ready build uses a direct upload of committed source, with explicit target
 `staging`. Git source retrieval failed for the new project, so no automatic Git
 deployment connection was enabled. Avoid relying on an omitted target for a
