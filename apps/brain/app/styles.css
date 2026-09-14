@@ -77,7 +77,9 @@ img { max-width: 100%; }
 .brain-form__fields { display: grid; gap: var(--brain-form-field-gap); }
 .brain-form__label { font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); }
 .brain-form__input { display: block; width: 100%; height: var(--brain-control-height); padding-inline: var(--brain-space-md); background: var(--lp-page-bg); border: var(--brain-rule) solid var(--lp-subtle-stroke); border-radius: var(--lp-r-sm); color: var(--lp-text); font-size: var(--lp-text-md); transition: border-color var(--brain-ease), background var(--brain-ease); }
-.brain-form__input:focus { background: var(--lp-surface); border-color: var(--lp-purple-30); }
+/* One ring on focus: the border turns purple and the outline sits on it. */
+.brain-form__input:focus { background: var(--lp-surface); border-color: var(--lp-purple-40); }
+.brain .brain-form__input:focus-visible { outline-offset: 0; }
 .brain-form__input::placeholder { color: var(--lp-subtle-text); }
 .brain-form__fields > p { font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
 /* The pill is the kit's Figma-exact 136×54 squircle (fixed clip-path), so its
@@ -106,20 +108,33 @@ img { max-width: 100%; }
 }
 @media (max-width: 1024px) {
   .brain-side-rail { width: var(--brain-hero-rail); border-radius: 0; }
-  .brain-hero-content { max-width: 672px; min-height: 0; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "pitch" "card" "proof"; row-gap: var(--brain-space-lg); }
+  .brain-hero-content { max-width: 672px; min-height: 0; grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-template-areas: "pitch" "card" "proof"; row-gap: var(--brain-space-md); }
   .brain-left { display: contents; }
   .brain-pitch, .brain-signup { width: 100%; }
   .brain-left { padding-block: 0; }
-  .brain-signup-card { width: 100%; padding: var(--brain-space-xl) calc(var(--brain-hero-rail) + var(--brain-space-lg)) var(--brain-space-xl) var(--brain-space-lg); }
+  .brain-signup-card { width: 100%; padding: var(--brain-space-lg) calc(var(--brain-hero-rail) + var(--brain-space-lg)) var(--brain-space-lg) var(--brain-space-lg); }
   .brain-signup { max-width: 448px; }
 }
+/* Phone conversion details: the submit spans the card like the Google
+   button (the kit's fixed squircle only applies from 768px up), and a sticky
+   Start free bar takes over once the card has scrolled away. */
+@media (max-width: 767px) {
+  .brain .brain-form__submit { width: 100%; justify-self: stretch; }
+  .brain .lp-foot-frame { padding-bottom: calc(var(--brain-space-3xl) + 72px + env(safe-area-inset-bottom)); }
+}
+.brain-sticky-cta { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: flex; align-items: center; justify-content: space-between; gap: var(--brain-space-md); padding: var(--brain-space-sm) var(--brain-space-md) calc(var(--brain-space-sm) + env(safe-area-inset-bottom)); background: var(--lp-page-bg); box-shadow: 0 -1px 0 var(--lp-subtle-stroke); transform: translateY(110%); transition: transform 0.25s ease; }
+.brain-sticky-cta[data-shown="true"] { transform: none; }
+.brain-sticky-cta__note { color: var(--lp-subtle-text); font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); }
+.brain-sticky-cta .lp-btn { width: auto; flex: 0 0 auto; }
+@media (min-width: 768px) { .brain-sticky-cta { display: none; } }
+@media (prefers-reduced-motion: reduce) { .brain-sticky-cta { transition: none; } }
 @media (max-width: 767px) {
   .brain .brain-nav { position: relative; padding: 0 var(--brain-space-xl); justify-content: space-between; }
   .brain .lp-nav-ctas { display: flex; position: static; }
   .brain .lp-nav-logo { flex: 0 0 auto; }
   .brain-signup-card { border-radius: var(--lp-r-xlg); }
   .brain-eyebrow { font-size: var(--lp-text-xsm); }
-  .brain-title { margin-block: var(--brain-space-md); }
+  .brain-title { margin-block: 12px; }
   .brain-trust { --brain-trust-scale: 0.85; --brain-trust-duration: 22s; }
   .brain-benefits { padding-block: var(--brain-space-2xl); }
   .brain-benefits-panel { padding: var(--brain-space-sm) var(--brain-space-lg); border-radius: var(--lp-r-xlg); }

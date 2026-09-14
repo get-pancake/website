@@ -85,15 +85,17 @@
 }
 @media (max-width: 767px) {
   .brain {
-    --brain-nav-height: 104px;
+    /* Phones: a compact bar and tight vertical rhythm so the whole signup
+       card, Continue included, sits above the fold on a 390×664 Safari. */
+    --brain-nav-height: 72px;
     --brain-hero-margin: var(--brain-space-sm);
-    --brain-hero-clearance: var(--brain-space-md);
+    --brain-hero-clearance: var(--brain-space-sm);
     --brain-hero-bottom: var(--brain-space-lg);
     --brain-hero-content-padding: var(--brain-space-lg);
-    --brain-form-top-gap: var(--brain-space-lg);
-    --brain-form-divider-gap: var(--brain-space-md);
+    --brain-form-top-gap: var(--brain-space-md);
+    --brain-form-divider-gap: 12px;
     --brain-form-field-gap: var(--brain-space-sm);
-    --brain-title-size: var(--lp-text-5xlg);
+    --brain-title-size: var(--lp-text-4xlg);
   }
 }
 @media (max-width: 374px) {

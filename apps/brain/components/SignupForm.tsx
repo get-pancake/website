@@ -187,6 +187,10 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
               name="email"
               autoComplete="email"
               inputMode="email"
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="go"
               placeholder="name@company.com"
               required
               maxLength={254}

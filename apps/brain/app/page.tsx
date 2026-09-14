@@ -5,6 +5,7 @@ import { SignupForm } from "../components/SignupForm";
 import { BrainSections } from "../components/BrainSections";
 import { BrainHeroArtwork } from "../components/BrainHeroArtwork";
 import { BrainTrustBand } from "../components/BrainTrustBand";
+import { BrainMobileCta } from "../components/BrainMobileCta";
 
 const features = [
   ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in and your assistant runs prospecting and outreach on its own. No new dashboard to learn."],
@@ -59,6 +60,7 @@ export default function BrainLanding() {
         </div>
       </section>
       <BrainSections />
+      <BrainMobileCta />
     </main>
   );
 }
