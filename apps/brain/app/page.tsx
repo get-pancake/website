@@ -32,11 +32,7 @@ export default function BrainLanding() {
         <div className="brain-hero-content">
           <div className="brain-left">
             <div className="brain-pitch">
-              {/* Phones get the proof on the first screen: the eyebrow carries it and the carousel label hides. */}
-              <p className="brain-eyebrow">
-                <span className="brain-eyebrow__desk">Now in early access</span>
-                <span className="brain-eyebrow__phone">Early access · Trusted by dozens of <img className="brain-trust__yc" src="/logos/yc.svg" alt="YC" width={16} height={16} /> companies</span>
-              </p>
+              <p className="brain-eyebrow">Now in early access</p>
               <h1 id="brain-title" className="lp-display brain-title">Put your GTM on<br />full autopilot</h1>
               <p className="brain-lede">Pancake lets your Claude or ChatGPT run your <span className="brain-nowrap">go-to-market</span>. Find people ready to buy and start outreach campaigns from the same conversation.</p>
             </div>

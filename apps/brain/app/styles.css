@@ -32,7 +32,6 @@ img { max-width: 100%; }
    the right edge inside that matrix so DOM and WebGL clip identically. */
 .brain .brain-side-art { position: absolute; top: 0; right: var(--brain-art-offset); height: 100%; width: auto; max-width: none; transform-origin: 0 0; transform: translateX(calc(100% * (1 - var(--brain-side-scale)))) scaleX(var(--brain-side-scale)); }
 .brain-eyebrow { color: var(--lp-subtle-text); font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); }
-.brain-eyebrow__phone { display: none; }
 .brain-nowrap { white-space: nowrap; }
 .brain-title { font-size: var(--brain-title-size); line-height: 1.05; letter-spacing: var(--brain-title-tracking); margin-block: var(--brain-space-md); }
 /* The lede fills its column (two lines at 1440), so the copy block reaches
@@ -133,9 +132,6 @@ img { max-width: 100%; }
   .brain-form__notice a, .brain-form__retry { display: inline-block; padding-block: 12px; margin-block: -12px; }
   /* One left edge (32px) for logo, copy, card content, benefits text and pricing; cards at 16px. */
   .brain-pitch, .brain-trust { padding-inline: var(--brain-space-md); }
-  .brain-eyebrow__desk { display: none; }
-  .brain-eyebrow__phone { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.3em; }
-  .brain-trust__label { display: none; }
   .brain-benefits { padding: var(--brain-space-2xl) var(--brain-space-md) 56px; }
   .brain-benefits-panel { padding: var(--brain-space-sm) var(--brain-space-md); }
   .brain .lp-steps { padding-top: 0; }
