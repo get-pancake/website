@@ -13,6 +13,23 @@ import {
   loadGoogleIdentity,
 } from "../lib/auth";
 
+// Google renders its own pill button on production (max 400px wide). The
+// placeholder below mirrors it, so previews and the loading state look the same.
+const GOOGLE_BUTTON_MAX_WIDTH = 400;
+const GOOGLE_BUTTON_MIN_WIDTH = 200;
+
+/** Google's "G" mark, as drawn on the provider button. */
+function GoogleLogo() {
+  return (
+    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 48 48">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+    </svg>
+  );
+}
+
 export function SignupForm({ id = "signup", className = "" }: { id?: string; className?: string }) {
   const [origin, setOrigin] = useState("");
   const [email, setEmail] = useState("");
@@ -81,9 +98,12 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
             });
           },
         });
+        // The host is hidden until Google is ready; measure the visible form column.
+        const column = googleButton.current.parentElement?.clientWidth || GOOGLE_BUTTON_MAX_WIDTH;
+        const width = Math.round(Math.min(GOOGLE_BUTTON_MAX_WIDTH, Math.max(GOOGLE_BUTTON_MIN_WIDTH, column)));
         googleButton.current.replaceChildren();
         identity.renderButton(googleButton.current, {
-          type: "standard", theme: "outline", size: "large", text: "continue_with", shape: "rectangular",
+          type: "standard", theme: "outline", size: "large", text: "continue_with", shape: "pill", logo_alignment: "center", width,
         });
         setGoogleReady(true);
       } catch (reason) {
@@ -114,6 +134,9 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
     }
   }
 
+  const googlePlaceholder = !enabled || !googleReady || busy !== null;
+  const describedBy = [error ? errorId : "", !enabled && origin ? previewId : ""].filter(Boolean).join(" ") || undefined;
+
   return (
     <div id={id} className={`brain-form ${className}`.trim()} aria-busy={busy !== null}>
       {signedIn ? (
@@ -138,10 +161,17 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
             </p>
           ) : null}
           <div className="brain-form__google" aria-busy={enabled && !googleReady && !googleError}>
-            <div ref={googleButton} hidden={!enabled || !googleReady || busy !== null} />
-            {(!enabled || !googleReady || busy !== null) && !googleError ? (
-              <button type="button" className="lp-btn lp-btn--outline" disabled>
-                {busy === "google" ? "Signing in…" : enabled && !googleReady ? "Loading Google sign-in…" : "Continue with Google"}
+            <div ref={googleButton} className="brain-form__google-host" hidden={googlePlaceholder} />
+            {googlePlaceholder && !googleError ? (
+              <button
+                type="button"
+                className="brain-google-btn"
+                disabled={enabled}
+                aria-describedby={!enabled && origin ? previewId : undefined}
+                onClick={enabled ? undefined : () => setError(PREVIEW_AUTH_MESSAGE)}
+              >
+                <GoogleLogo />
+                <span>{busy === "google" ? "Signing in…" : "Continue with Google"}</span>
               </button>
             ) : null}
             {googleError ? (
@@ -161,16 +191,15 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
               name="email"
               autoComplete="email"
               inputMode="email"
-              placeholder="Enter your email address..."
+              placeholder="name@company.com"
               required
               maxLength={254}
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               disabled={busy !== null}
-              aria-describedby={[`${id}-email-hint`, error ? errorId : !enabled && origin ? previewId : ""].filter(Boolean).join(" ")}
+              aria-describedby={describedBy}
             />
-            <span id={`${id}-email-hint`} className="brain-form__hint">e.g. name@company.com</span>
-            <LpFxPill type="submit" className="brain-form__submit" disabled={!enabled || busy !== null}>
+            <LpFxPill type="submit" className="brain-form__submit" disabled={busy !== null}>
               {busy === "email" ? "Sending…" : "Continue"}
             </LpFxPill>
           </form>

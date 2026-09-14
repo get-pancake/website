@@ -19,8 +19,11 @@ img { max-width: 100%; }
 .brain-skip { position: absolute; top: var(--brain-space-sm); left: var(--brain-space-md); z-index: 50; background: var(--lp-surface); padding: var(--brain-space-md); transform: translateY(-150%); }
 .brain-skip:focus { transform: none; }
 .brain .brain-nav { height: var(--brain-nav-height); }
-.brain-hero { min-height: calc(100svh - var(--brain-nav-height)); display: grid; padding: var(--brain-hero-clearance) var(--brain-hero-margin) var(--brain-hero-bottom); }
-.brain-hero-frame { position: relative; isolation: isolate; display: grid; align-self: center; min-height: var(--brain-hero-min-height); width: 100%; max-width: var(--brain-grid); margin-inline: auto; border-radius: var(--lp-r-2xlg); overflow: clip; }
+.brain-hero { display: grid; padding: var(--brain-hero-clearance) var(--brain-hero-margin) var(--brain-hero-bottom); }
+/* The frame is the main CTA card: cream fill, 48px radius, rainbow slivers
+   clipped at its edges. It hugs the nav and sizes to its content, so the
+   signup stays above the fold on 1366×768 and 1280×720 laptops. */
+.brain-hero-frame { position: relative; isolation: isolate; display: grid; align-self: start; min-height: var(--brain-hero-min-height); width: 100%; max-width: var(--brain-grid); margin-inline: auto; background: var(--lp-card-cream); border-radius: var(--lp-r-2xlg); overflow: clip; }
 /* The clip parents reproduce the main CTA card's full width, fixed height
    and radius. Keeping both the artwork scale and visible y-range identical
    preserves the reference curve; hero content height cannot change its crop. */
@@ -58,14 +61,20 @@ img { max-width: 100%; }
 .brain-avatars span:nth-child(5) { background: var(--lp-ink-40); }
 .brain-stars { display: block; color: var(--lp-text); letter-spacing: 0.12em; }
 .brain-signup { grid-area: signup; scroll-margin-top: var(--brain-space-xl); }
-.brain-signup-card { background: var(--lp-card-cream); padding: var(--brain-card-padding-block) var(--brain-space-xl); border-radius: var(--lp-r-2xlg); }
+.brain-signup-card { background: var(--lp-surface); padding: var(--brain-card-padding-block) var(--brain-space-xl); border-radius: var(--lp-r-2xlg); }
 .brain-signup-title { font-size: var(--lp-text-3xlg); line-height: 1.2; letter-spacing: var(--brain-title-tracking); }
 .brain-signup-intro { margin-top: var(--brain-space-sm) !important; color: var(--lp-ink-tr-70); font-size: var(--lp-text-sm); }
 .brain-cancel { text-align: center; font-size: var(--lp-text-sm); color: var(--lp-subtle-text); margin-top: var(--brain-cancel-gap) !important; }
 .brain-reassurance { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--brain-space-xl); margin-top: var(--brain-space-xl); padding-inline: var(--brain-space-2xl); color: var(--lp-subtle-text); font-size: var(--lp-text-sm); line-height: 1.6; }
 .brain-reassurance strong { color: var(--lp-text); font-weight: var(--brain-weight-medium); }
 .brain-form { margin-top: var(--brain-form-top-gap); }
-.brain-form__google { min-height: var(--brain-control-height); display: flex; justify-content: center; }
+.brain-form__google { min-height: var(--brain-google-height); display: flex; align-items: center; justify-content: center; }
+.brain-form__google-host { display: flex; justify-content: center; width: 100%; }
+.brain-form__google-host[hidden] { display: none; }
+/* Mirrors the pill button Google renders on production (outline theme, large). */
+.brain-google-btn { display: inline-flex; align-items: center; justify-content: center; gap: var(--brain-space-sm); width: 100%; max-width: 400px; height: var(--brain-google-height); padding-inline: var(--brain-space-md); background: var(--lp-surface); border: var(--brain-rule) solid var(--brain-google-stroke); border-radius: var(--brain-google-height); color: var(--brain-google-ink); font-family: var(--lp-font-sans); font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); letter-spacing: 0.25px; line-height: 1; white-space: nowrap; }
+.brain-google-btn:disabled { cursor: progress; }
+.brain-google-btn svg { flex: 0 0 auto; }
 .brain-form__divider { display: flex; align-items: center; gap: var(--brain-space-md); margin-block: var(--brain-form-divider-gap); font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
 .brain-form__divider::before, .brain-form__divider::after { content: ""; height: var(--brain-rule); flex: 1; background: var(--lp-subtle-stroke); }
 .brain-form__fields { display: grid; gap: var(--brain-form-field-gap); }
@@ -74,7 +83,6 @@ img { max-width: 100%; }
 .brain-form__input:focus { background: var(--lp-surface); border-color: var(--lp-purple-30); }
 .brain-form__input::placeholder { color: var(--lp-subtle-text); }
 .brain-form__fields > p { font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
-.brain-form__hint { font-size: var(--lp-text-xsm); color: var(--lp-subtle-text); }
 .brain .brain-form__submit, .brain .brain-form__retry { justify-self: start; margin-top: var(--brain-space-sm); }
 .brain-form__retry { background: transparent; border: 0; padding: 0; color: var(--lp-text); font-size: var(--lp-text-sm); text-align: left; text-decoration: underline; text-underline-offset: 0.2em; }
 .brain-form__google:has(.brain-form__error) { flex-direction: column; gap: var(--brain-space-sm); align-items: flex-start; }
@@ -86,7 +94,6 @@ img { max-width: 100%; }
 .brain-form__success-title { font-family: var(--lp-font-cond); font-weight: var(--brain-weight-semibold); font-size: var(--lp-text-2xlg); }
 .brain-form__success-email { overflow-wrap: anywhere; font-weight: var(--brain-weight-medium); }
 .brain .lp-btn:disabled { cursor: not-allowed; opacity: 0.6; }
-.brain-form__google > .lp-btn { width: 100%; clip-path: none; border-radius: var(--lp-r-sm); font-weight: var(--brain-weight-medium); font-size: var(--lp-text-sm); height: var(--brain-control-height); }
 .brain-price-currency { font-size: var(--lp-text-3xlg); font-weight: var(--brain-weight-regular); letter-spacing: normal; }
 .brain .lp-price-amount { white-space: nowrap; }
 .brain .lp-foot { height: auto; min-height: 0; }

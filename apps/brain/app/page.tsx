@@ -6,9 +6,9 @@ import { BrainSections } from "../components/BrainSections";
 import { BrainHeroArtwork } from "../components/BrainHeroArtwork";
 
 const features = [
-  ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in and your assistant runs prospecting, outreach and content on its own. No new dashboard to learn."],
+  ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in and your assistant runs prospecting and outreach on its own. No new dashboard to learn."],
   ["It finds the people ready to buy", "Keywords, competitors, influencers, hiring activity, tech stacks. Pancake watches the live signals and surfaces warm leads with the conversation attached."],
-  ["Start outreach campaigns from Claude or ChatGPT", "Pancake writes personalized messages in your voice and follows up with the people ready to buy."],
+  ["Launch campaigns without leaving the chat", "Pancake writes personalized messages in your voice and handles the follow-ups."],
 ];
 
 export default function BrainLanding() {
@@ -17,11 +17,12 @@ export default function BrainLanding() {
       <a className="brain-skip" href="#email">Skip to signup</a>
       <LpFitVars /><LpAnimFreeze />
       <header className="lp-nav brain-nav">
-        <a className="lp-nav-logo" href="https://getpancake.ai/" aria-label="Pancake — visit getpancake.ai">
+        {/* Paid-traffic page: every link stays on the page. The logo reloads the top. */}
+        <a className="lp-nav-logo" href="/" aria-label="Pancake">
           <img src="/lp/lp-nav-logo.svg" width={114.956} height={56} alt="" />
         </a>
         <nav className="lp-nav-links" aria-label="Primary">
-          <a href="#how-it-works">Product</a><a href="https://getpancake.ai/blog">Blog</a>
+          <a href="#how-it-works">How it works</a><a href="#pricing">Pricing</a>
         </nav>
         <div className="lp-nav-ctas"><LpFxLink href="#email" size="sm">Start free</LpFxLink></div>
       </header>
@@ -40,8 +41,8 @@ export default function BrainLanding() {
             </div>
             <aside className="brain-signup" id="email" aria-labelledby="signup-title">
               <div className="brain-signup-card">
-                <h2 className="lp-display brain-signup-title" id="signup-title">Welcome to Pancake</h2>
-                <p className="brain-signup-intro">Create your account and put your GTM on autopilot.</p>
+                <h2 className="lp-display brain-signup-title" id="signup-title">Start free</h2>
+                <p className="brain-signup-intro">Create your account. Your assistant takes it from there.</p>
                 <SignupForm />
                 <p className="brain-cancel">Cancel anytime</p>
               </div>

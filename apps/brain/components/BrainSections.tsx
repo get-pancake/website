@@ -1,16 +1,22 @@
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
-import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
+import { LP_STEPS, LpSteps } from "@/components/sections/landing-v3/LpSteps";
 
+// Brain sells outreach only (founder call, 2026-09-11): the main site's AI-search
+// bullets stay off this page, in the pricing list and in step 02 alike.
 const FEATURES = [
   "Every agent included",
   "5 to 15 warm leads per month",
   "2 to 3 new customers",
-  "30 articles posted",
-  "Google ranking and ChatGPT citations",
   "Approvals and a hard spend cap",
 ];
+
+const BRAIN_STEPS = LP_STEPS.map((step) =>
+  step.num === "02"
+    ? { ...step, body: "Pancake reaches out to the people ready to buy, in your voice." }
+    : step,
+);
 
 function BrainPricing() {
   return (
@@ -32,14 +38,9 @@ function BrainPricing() {
           </ul>
         </div>
         <div className="lp-price-ctas">
-          <LpFxLink
-            href="https://app.getpancake.ai/login"
-            target="_blank"
-            rel="noopener noreferrer"
-            size="lg"
-            className="lp-price-cta"
-          >
-            Get started
+          {/* One exit on this page: the signup form. */}
+          <LpFxLink href="#email" size="lg" className="lp-price-cta">
+            Start free
           </LpFxLink>
         </div>
       </div>
@@ -77,7 +78,7 @@ function BrainFooter() {
           </p>
         </div>
         <p className="lp-foot-line">
-          {"2026 Pancake · San Francisco, CA · "}
+          {"2026 Pancake · San Francisco, CA · "}
           <a href="https://getpancake.ai/privacy">Privacy</a>
           {" · "}
           <a href="https://getpancake.ai/terms">Terms</a>
@@ -90,7 +91,7 @@ function BrainFooter() {
 export function BrainSections() {
   return (
     <>
-      <LpSteps />
+      <LpSteps steps={BRAIN_STEPS} />
       <BrainPricing />
       <BrainFooter />
     </>

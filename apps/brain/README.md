@@ -78,8 +78,12 @@ contracts, not real account creation or delivery of affiliate conversions.
 The backend owns conversion delivery. See
 [the pinned artifact and integration notes](docs/attribution-source.md).
 
-LeadJourney loads only on a Production build at the exact canonical Brain
-hostname. No main-site GTM or other vendor tags are introduced here.
+Vendor tags agreed with OBVIOUS — LeadJourney and the LinkedIn Insight Tag,
+the same ids as `getpancake.ai` (`lib/analytics/vendor-config.ts`) — load at
+runtime only when the page is served at `brain.getpancake.ai`, whatever the
+build environment. Set `NEXT_PUBLIC_BRAIN_VENDOR_TAGS=1` on a preview build to
+force them on for a tag check, and never leave it set on a shared preview: the
+campaign data would count the test traffic. No GTM or Meta pixel loads here.
 
 ## Manual production cutover
 
@@ -88,9 +92,9 @@ Production promotion and DNS changes remain Tristan's manual step after review.
 1. Record the approved preview URL and commit, and verify desktop/mobile layout,
    form error states, artwork, links, and the attribution contract tests.
 2. Prepare a **new build of that revision in Vercel's Production environment**.
-   Promoting a Preview-built artifact alone is insufficient: auth, vendor
-   loading, and indexing gates are compiled at build time and would retain
-   their Preview settings.
+   Promoting a Preview-built artifact alone is insufficient: the auth and
+   indexing gates are compiled at build time and would retain their Preview
+   settings (vendor tags key off the hostname at runtime).
 3. Coordinate the Brain DNS change with the infrastructure owner. The existing
    provider-owned record is maintained in `brain-lovable.tf`; update that
    Terraform configuration as part of the cutover so a future apply cannot

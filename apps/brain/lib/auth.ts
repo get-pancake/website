@@ -115,7 +115,7 @@ export function createAuthClient(environment: AuthEnvironment, fetcher: typeof f
 type GoogleCredential = { credential: string };
 export interface GoogleIdentity {
   initialize(options: { client_id: string; nonce: string; callback: (response: GoogleCredential) => void; auto_select: boolean }): void;
-  renderButton(element: HTMLElement, options: { type: "standard"; theme: "outline"; size: "large"; text: "continue_with"; shape: "rectangular" }): void;
+  renderButton(element: HTMLElement, options: { type: "standard"; theme: "outline"; size: "large"; text: "continue_with"; shape: "pill" | "rectangular"; logo_alignment?: "left" | "center"; width?: number }): void;
 }
 
 type CaptchaEnterprise = {

@@ -18,13 +18,14 @@
   --brain-title-size: 57.336px;
   --brain-title-tracking: -0.03em;
   --brain-nav-height: 64px;
-  --brain-hero-bottom: var(--brain-space-2xl);
-  --brain-hero-row-gap: var(--brain-space-3xl);
-  --brain-card-padding-block: var(--brain-space-4xl);
+  --brain-hero-bottom: var(--brain-space-lg);
+  --brain-hero-row-gap: var(--brain-space-2xl);
+  --brain-card-padding-block: var(--brain-space-2xl);
   --brain-hero-margin: var(--brain-space-md);
-  --brain-hero-clearance: var(--brain-space-lg);
-  --brain-hero-content-padding: var(--brain-space-4xl);
-  --brain-hero-min-height: 896px;
+  --brain-hero-clearance: var(--brain-space-md);
+  --brain-hero-content-padding: var(--brain-space-2xl);
+  /* Never shorter than the rainbow crop; otherwise the content decides. */
+  --brain-hero-min-height: var(--brain-art-crop-height);
   --brain-hero-rail: 208px;
   --brain-side-scale: 1;
   /* Exact shared CTA stage and visible crop; independent of signup height. */
@@ -35,11 +36,15 @@
   --brain-benefits-width: 960px;
   --brain-rule: 1px;
   --brain-focus-width: 2px;
-  --brain-form-top-gap: var(--brain-space-2xl);
-  --brain-form-divider-gap: var(--brain-space-lg);
-  --brain-cancel-gap: var(--brain-space-lg);
+  --brain-form-top-gap: var(--brain-space-lg);
+  --brain-form-divider-gap: var(--brain-space-md);
+  --brain-cancel-gap: var(--brain-space-md);
   --brain-form-field-gap: var(--brain-space-md);
   --brain-control-height: 48px;
+  /* Google's own button palette: the placeholder must match what GIS renders. */
+  --brain-google-height: 40px;
+  --brain-google-stroke: #dadce0;
+  --brain-google-ink: #1f1f1f;
   --brain-avatar-size: 32px;
   --brain-ease: 200ms ease;
 }
@@ -71,7 +76,7 @@
     --brain-art-offset: 0px;
     --brain-hero-inset: var(--brain-space-lg);
     --brain-card-padding-block: var(--brain-space-xl);
-    --brain-form-top-gap: var(--brain-space-xl);
+    --brain-form-top-gap: var(--brain-space-lg);
     --brain-form-divider-gap: var(--brain-space-md);
     --brain-cancel-gap: var(--brain-space-md);
     --brain-form-field-gap: var(--brain-space-sm);
