@@ -56,8 +56,8 @@
   --brain-form-divider-gap: clamp(16px, calc(var(--brain-art-height) * 0.025), 24px);
   --brain-form-field-gap: var(--brain-space-md);
   --brain-control-height: 48px;
-  /* Founder: the wordmarks in pure black, not the plum ink. */
-  --brain-trust-ink: #000000;
+  /* Founder: the wordmarks in the filled buttons' plum (Continue & co). */
+  --brain-trust-ink: var(--lp-inverted-surface);
   --brain-trust-gap: var(--brain-space-2xl);
   --brain-trust-duration: 30s;
   /* Google's own button palette: the placeholder must match what GIS renders. */
