@@ -57,6 +57,8 @@
   --brain-cancel-gap: var(--brain-form-divider-gap);
   --brain-form-field-gap: var(--brain-space-md);
   --brain-control-height: 48px;
+  --brain-trust-gap: var(--brain-space-2xl);
+  --brain-trust-duration: 30s;
   /* Google's own button palette: the placeholder must match what GIS renders. */
   --brain-google-height: 40px;
   --brain-google-stroke: #dadce0;

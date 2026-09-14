@@ -38,14 +38,21 @@ img { max-width: 100%; }
 /* The lede fills its column (two lines at 1440), so the copy block reaches
    the card instead of leaving a cream gulf between them. */
 .brain-lede { font-size: var(--lp-text-md); line-height: 1.5; max-width: 64ch; }
-/* Trust band: the V1 logo strip, static, in the copy column. One subtle
-   ink for every mark; the row wraps to two lines in the column. */
+/* Trust carousel: the V1 logo strip in the copy column. One ink, one
+   optical height; the track scrolls left (per-copy -100%, LpMarquee's
+   seamless wrap) and fades at both edges of the column. */
 .brain-trust { --brain-trust-scale: 1; grid-area: proof; }
-.brain-trust__label { color: var(--lp-subtle-text); font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); }
-.brain-trust__row { list-style: none; margin: var(--brain-space-md) 0 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--brain-space-md) var(--brain-space-xl); color: var(--lp-text); opacity: 0.55; }
-.brain-trust__item { display: flex; align-items: center; gap: var(--brain-space-sm); }
-.brain-trust__name { font-family: var(--lp-font-sans); font-size: calc(var(--brain-trust-scale) * 19px); font-weight: var(--brain-weight-semibold); letter-spacing: -0.02em; line-height: 1; }
+.brain-trust__label { display: flex; align-items: center; gap: 0.35em; color: var(--lp-subtle-text); font-size: var(--lp-text-sm); font-weight: var(--brain-weight-medium); }
+.brain-trust__yc { width: 1.15em; height: 1.15em; border-radius: 2px; }
+.brain-trust__band { margin-top: var(--brain-space-md); overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.brain-trust__track { display: flex; width: max-content; }
+.brain-trust__seq { list-style: none; margin: 0; padding: 0 0 0 var(--brain-trust-gap); display: flex; align-items: center; gap: var(--brain-trust-gap); animation: brain-trust-scroll var(--brain-trust-duration) linear infinite; color: var(--lp-text); }
+.brain-trust:hover .brain-trust__seq { animation-play-state: paused; }
+.brain-trust__item { display: flex; align-items: center; }
 .brain-trust__logo { display: block; background: currentColor; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-position: center; mask-position: center; }
+.brain-trust__sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: 0; padding: 0; list-style: none; }
+@keyframes brain-trust-scroll { to { transform: translateX(-100%); } }
+@media (prefers-reduced-motion: reduce) { .brain-trust__seq { animation: none; } }
 /* One reading column keeps each benefit and its explanation together. */
 .brain-benefits { max-width: calc(var(--brain-benefits-width) + 2 * var(--brain-space-xl)); margin-inline: auto; padding: var(--brain-space-xl) var(--brain-space-xl) var(--brain-space-3xl); }
 .brain-benefits-panel { background: var(--lp-card-cream); border-radius: var(--lp-r-2xlg); padding: var(--brain-space-xl) var(--brain-space-2xl); }
@@ -115,7 +122,7 @@ img { max-width: 100%; }
   .brain-signup-card { border-radius: var(--lp-r-xlg); }
   .brain-eyebrow { font-size: var(--lp-text-xsm); }
   .brain-title { margin-block: var(--brain-space-md); }
-  .brain-trust { --brain-trust-scale: 0.85; }
+  .brain-trust { --brain-trust-scale: 0.85; --brain-trust-duration: 22s; }
   .brain-benefits { padding-block: var(--brain-space-2xl); }
   .brain-benefits-panel { padding: var(--brain-space-sm) var(--brain-space-lg); border-radius: var(--lp-r-xlg); }
   .brain-features li { grid-template-columns: var(--brain-space-lg) minmax(0, 1fr); gap: var(--brain-space-sm); }
