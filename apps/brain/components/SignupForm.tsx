@@ -82,14 +82,12 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
             operationInFlight.current = true;
             setBusy("google");
             setError("");
-            // Open in the callback before awaiting the API; provide a real link if blocked.
-            const destination = window.open("about:blank", "_blank");
-            if (destination) destination.opener = null;
             void client.googleLogin(credential).then(() => {
-              if (destination && !destination.closed) destination.location.href = `${APP_ORIGIN}/onboarding`;
               if (mounted.current) setSignedIn(true);
+              // Same-tab hand-off: phones block pre-opened windows, and the
+              // shared .getpancake.ai cookie travels with the session anyway.
+              window.location.assign(`${APP_ORIGIN}/onboarding`);
             }).catch((reason: unknown) => {
-              destination?.close();
               if (mounted.current) {
                 setError(authErrorMessage(reason));
                 // The nonce is consumed per attempt. A retry always receives a fresh one.
@@ -117,8 +115,13 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
     return () => { cancelled = true; };
   }, [client, enabled, googleAttempt, sentTo, signedIn]);
 
-  async function submitEmail(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  const errorRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    // On a phone the error would land under the fold edge; bring it up.
+    if (error) errorRef.current?.scrollIntoView({ block: "nearest" });
+  }, [error]);
+
+  async function sendMagicLink(address: string) {
     if (operationInFlight.current) return;
     if (!enabled) { setPreviewBlocked(true); return; }
     operationInFlight.current = true;
@@ -127,14 +130,19 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
     try {
       const siteKey = await client.captchaSiteKey();
       const captchaToken = siteKey === null ? undefined : await getCaptchaToken(siteKey);
-      await client.requestMagicLink(email, captchaToken);
-      if (mounted.current) setSentTo(email.trim());
+      await client.requestMagicLink(address, captchaToken);
+      if (mounted.current) setSentTo(address.trim());
     } catch (reason) {
       if (mounted.current) setError(authErrorMessage(reason));
     } finally {
       operationInFlight.current = false;
       if (mounted.current) setBusy(null);
     }
+  }
+
+  function submitEmail(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void sendMagicLink(email);
   }
 
   const googlePlaceholder = !enabled || !googleReady || busy !== null;
@@ -146,14 +154,19 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
         <div className="brain-form__success" role="status">
           <h3 className="brain-form__success-title">You’re signed in.</h3>
           <p>Continue to Pancake to get started.</p>
-          <a className="lp-btn brain-form__submit" href={`${APP_ORIGIN}/onboarding`} target="_blank" rel="noopener noreferrer">Open Pancake</a>
+          <a className="lp-btn brain-form__submit" href={`${APP_ORIGIN}/onboarding`}>Open Pancake</a>
         </div>
       ) : sentTo ? (
         <div className="brain-form__success" role="status">
           <h3 className="brain-form__success-title">Check your inbox</h3>
           <p>We sent a sign-in link to <strong className="brain-form__success-email">{sentTo}</strong>.</p>
           <p>Open it to start your setup.</p>
-          <button type="button" className="brain-form__retry" onClick={() => { setSentTo(""); setError(""); }}>Use a different email or try again</button>
+          <p className="brain-form__success-hint">Didn’t get it? Check spam, or resend.</p>
+          <div className="brain-form__success-actions">
+            <button type="button" className="brain-form__retry" disabled={busy !== null} onClick={() => void sendMagicLink(sentTo)}>{busy === "email" ? "Sending…" : "Resend link"}</button>
+            <button type="button" className="brain-form__retry" disabled={busy !== null} onClick={() => { setSentTo(""); setError(""); }}>Use another email</button>
+          </div>
+          {error ? <p className="brain-form__error" role="alert">{error}</p> : null}
         </div>
       ) : (
         <>
@@ -199,11 +212,11 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
               disabled={busy !== null}
               aria-describedby={describedBy}
             />
+            {error ? <p ref={errorRef} id={errorId} className="brain-form__error" role="alert">{error}</p> : null}
             <LpFxPill type="submit" className="brain-form__submit" disabled={busy !== null}>
               {busy === "email" ? "Sending…" : "Continue"}
             </LpFxPill>
           </form>
-          {error ? <p id={errorId} className="brain-form__error" role="alert">{error}</p> : null}
           {previewBlocked ? (
             <p id={previewId} className="brain-form__notice" role="status">
               {PREVIEW_AUTH_MESSAGE}{" "}

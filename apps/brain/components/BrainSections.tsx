@@ -2,6 +2,7 @@ import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { LP_STEPS, LpSteps } from "@/components/sections/landing-v3/LpSteps";
+import { S2_ROWS } from "@/components/sections/landing-v3/lp-step-data";
 
 // Brain sells outreach only (founder call, 2026-09-11): the main site's AI-search
 // bullets stay off this page, in the pricing list and in step 02 alike.
@@ -12,9 +13,17 @@ const FEATURES = [
   "Approvals and a hard spend cap",
 ];
 
+// The homepage mock lists Content and AI search agents; this page sells
+// outreach only, so those two rows become outreach ones (same faces).
+const BRAIN_S2_ROWS = S2_ROWS.map((row) =>
+  row.name === "Content" ? { ...row, name: "Follow-ups", count: "31 sent" }
+  : row.name === "AI search" ? { ...row, name: "Meetings", count: "6 booked" }
+  : row,
+);
+
 const BRAIN_STEPS = LP_STEPS.map((step) =>
   step.num === "02"
-    ? { ...step, body: "Pancake reaches out to the people ready to buy, in your voice." }
+    ? { ...step, body: "Pancake reaches out to the people ready to buy, in your voice.", s2Rows: BRAIN_S2_ROWS }
     : step,
 );
 

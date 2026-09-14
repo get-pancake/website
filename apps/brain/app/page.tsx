@@ -8,9 +8,9 @@ import { BrainTrustBand } from "../components/BrainTrustBand";
 import { BrainMobileCta } from "../components/BrainMobileCta";
 
 const features = [
-  ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in and your assistant runs prospecting and outreach on its own. No new dashboard to learn."],
-  ["It finds the people ready to buy", "Keywords, competitors, influencers, hiring activity, tech stacks. Pancake watches the live signals and surfaces warm leads with the conversation attached."],
-  ["Launch campaigns without leaving the chat", "Pancake writes personalized messages in your voice and handles the follow-ups."],
+  ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in. Your assistant runs prospecting and outreach on its own. No new dashboard."],
+  ["Finds people ready to buy", "Keywords, competitors, influencers, hiring, tech stacks. Pancake watches the signals and surfaces warm leads with context."],
+  ["Runs outreach in your voice", "Pancake writes the messages and handles the follow-ups, from the chat."],
 ];
 
 export default function BrainLanding() {
@@ -32,9 +32,13 @@ export default function BrainLanding() {
         <div className="brain-hero-content">
           <div className="brain-left">
             <div className="brain-pitch">
-              <p className="brain-eyebrow"><span aria-hidden="true" />Now in early access</p>
+              {/* Phones get the proof on the first screen: the eyebrow carries it and the carousel label hides. */}
+              <p className="brain-eyebrow">
+                <span className="brain-eyebrow__desk">Now in early access</span>
+                <span className="brain-eyebrow__phone">Early access · Trusted by dozens of <img className="brain-trust__yc" src="/logos/yc.svg" alt="YC" width={16} height={16} /> companies</span>
+              </p>
               <h1 id="brain-title" className="lp-display brain-title">Put your GTM on<br />full autopilot</h1>
-              <p className="brain-lede">Pancake lets your Claude or ChatGPT run your go-to-market. Find people ready to buy and start outreach campaigns from the same conversation.</p>
+              <p className="brain-lede">Pancake lets your Claude or ChatGPT run your <span className="brain-nowrap">go-to-market</span>. Find people ready to buy and start outreach campaigns from the same conversation.</p>
             </div>
             <BrainTrustBand />
           </div>
@@ -43,7 +47,7 @@ export default function BrainLanding() {
             <BrainHeroArtwork />
             <div className="brain-signup">
               <h2 className="lp-display brain-signup-title" id="signup-title">Start free</h2>
-              <p className="brain-signup-intro">Add your website. Pancake learns who buys from you and starts the outreach. Set up in five minutes.</p>
+              <p className="brain-signup-intro">Sign up, add your website, and Pancake starts the outreach. Five-minute setup.</p>
               <SignupForm />
             </div>
           </aside>

@@ -138,7 +138,7 @@ function S2Face({ r, i }: { r: S2Row; i: number }) {
   );
 }
 
-function S2Stage() {
+function S2Stage({ rows = S2_ROWS }: { rows?: S2Row[] }) {
   return (
     <div className="lp-step-stage lp-step-stage--s2" aria-hidden="true">
       {/* card body: an SVG rect so its y/height can be tweened while the corner radius + stroke stay true */}
@@ -149,7 +149,7 @@ function S2Stage() {
       <p className="lp-s2-title">Agents</p>
 
       <div className="lp-s2-rows">
-        {S2_ROWS.map((r, i) => (
+        {rows.map((r, i) => (
           <div key={r.name} className="lp-s2-arow" style={{ top: S2_ROW_TOP(i) }}>
             {i === 0 && <i className="lp-s2-pill" />}
             <div className="lp-s2-face">
@@ -284,11 +284,12 @@ function S3Stage() {
 
 const STAGES: Record<StepVariant, () => JSX.Element> = {
   s1: S1Stage,
-  s2: S2Stage,
+  s2: () => <S2Stage />,
   s3: S3Stage,
 };
 
-export function LpStepStage({ variant }: { variant: StepVariant }) {
+export function LpStepStage({ variant, s2Rows }: { variant: StepVariant; s2Rows?: S2Row[] }) {
+  if (variant === "s2") return <S2Stage rows={s2Rows} />;
   const Stage = STAGES[variant];
   return <Stage />;
 }

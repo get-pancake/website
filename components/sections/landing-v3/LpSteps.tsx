@@ -13,6 +13,7 @@
 // verbatim — not the artboard's.
 
 import { LpStepAnim } from "./LpStepAnim";
+import type { S2Row } from "./lp-step-data";
 import type { StepVariant } from "./lp-step-timelines";
 
 export type LpStep = {
@@ -27,6 +28,8 @@ export type LpStep = {
   variant: StepVariant;
   /** What the animation shows — the only copy a screen reader gets. */
   alt: string;
+  /** Step 02 only: the agent rows of the mock (defaults to the homepage set). */
+  s2Rows?: S2Row[];
 };
 
 /** The homepage copy. Other pages (apps/brain) pass an edited list. */
@@ -71,7 +74,7 @@ export function LpSteps({ steps = LP_STEPS }: { steps?: LpStep[] } = {}) {
                 <h3 className="lp-steps__step-title lp-display">{step.title}</h3>
                 <p className="lp-steps__body">{step.body}</p>
               </div>
-              <LpStepAnim className="lp-steps__media" variant={step.variant} alt={step.alt} />
+              <LpStepAnim className="lp-steps__media" variant={step.variant} alt={step.alt} s2Rows={step.s2Rows} />
             </div>
           ))}
         </div>

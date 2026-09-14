@@ -87,9 +87,10 @@
   .brain {
     /* Phones: a compact bar and tight vertical rhythm so the whole signup
        card, Continue included, sits above the fold on a 390×664 Safari. */
-    --brain-nav-height: 72px;
-    --brain-hero-margin: var(--brain-space-sm);
+    --brain-nav-height: 64px;
+    --brain-hero-margin: var(--brain-space-md);
     --brain-hero-clearance: var(--brain-space-sm);
+    --brain-sticky-height: 64px;
     --brain-hero-bottom: var(--brain-space-lg);
     --brain-hero-content-padding: var(--brain-space-lg);
     --brain-form-top-gap: var(--brain-space-md);
