@@ -16,7 +16,12 @@
 - [x] Pass production build, TypeScript, 17 regression tests, and desktop/mobile browser checks.
 - [x] Publish and verify a separate Vercel preview; open draft PR #295.
 - [x] Production build in the `pancake-brain` project (READY, 2026-09-14) and `brain.getpancake.ai` attached to it.
-- [ ] DNS: merge and apply get-pancake/pancake-cmo PR #908 (targeted), then live signup/affiliate verification on the canonical domain.
+- [x] 2026-09-14: explicitly authorized production DNS cutover in Cloud Console; Brain A record now `76.76.21.21`, TTL 300. Canonical HTTPS serves the Vercel production build.
+- [x] Verify real Google and work-email magic-link sign-in into the app, plus server-side UTM cookie handoff. These were existing-account sign-ins, not new-account conversions.
+- [x] Merge get-pancake/pancake-cmo PR #908 through its merge queue after CI passed (`9ccfc051`, September 14 at 17:52 PDT); desired Terraform configuration matches live DNS.
+- [ ] Provider `click_id` new-account conversion delivery and Obvious tag-checker verification. Backend LeadJourney configuration remains in shadow mode; existing-account sign-in checks do not prove new-account conversions.
+
+Live: https://brain.getpancake.ai/ — [production cutover record](apps/brain/docs/production-cutover.md).
 
 - [x] Simplify the hero to headline, introduction, proof and signup; move benefits below it and replace the two requested claims with outreach from Claude/ChatGPT.
 

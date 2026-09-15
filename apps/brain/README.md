@@ -5,6 +5,12 @@ styles, rainbow artwork, buttons, and step components. Its canonical address is
 `https://brain.getpancake.ai/`. The main website's routes and deployment remain
 separate.
 
+**Live in production since September 14, 2026.** The canonical domain now
+resolves to Vercel; HTTPS, Google sign-in, work-email magic-link sign-in and
+UTM cookie handoff have been verified. See the
+[production cutover record](docs/production-cutover.md) for the exact deployment,
+DNS change, infrastructure merge status and remaining provider conversion checks.
+
 ## Local development and validation
 
 From the repository root, install the existing root dependencies with `npm ci`.
@@ -97,7 +103,9 @@ State on 2026-09-14 (commit `8e99129`): the Production build is READY at
 `A brain.getpancake.ai 76.76.21.21`. The record lives in Google Cloud DNS, managed by
 `infra/prod/brain-lovable.tf` in `get-pancake/pancake-cmo`; PR #908 there points it at
 Vercel and carries the targeted apply command. Until that record lands, the hostname
-keeps serving the Lovable page.
+keeps serving the Lovable page. The record was subsequently changed in Cloud
+Console on September 14; the production cutover record above contains the
+verified current state.
 
 1. Record the approved preview URL and commit, and verify desktop/mobile layout,
    form error states, artwork, links, and the attribution contract tests.
