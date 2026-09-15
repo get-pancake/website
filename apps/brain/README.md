@@ -90,7 +90,17 @@ the same ids as `getpancake.ai` (`lib/analytics/vendor-config.ts`) — load at
 runtime only when the page is served at `brain.getpancake.ai`, whatever the
 build environment. Set `NEXT_PUBLIC_BRAIN_VENDOR_TAGS=1` on a preview build to
 force them on for a tag check, and never leave it set on a shared preview: the
-campaign data would count the test traffic. No GTM or Meta pixel loads here.
+campaign data would count the test traffic.
+
+Google attribution uses the shared web container `GTM-P3Z79WKD`, enabled only
+on the exact HTTPS Brain origin in a production build. The shared
+`AnalyticsEvents` component emits one sanitized initial `page_view` and later
+route views: the Google tag's `send_page_view=false` means loading GTM alone
+does not create a session. GTM forwards these views to `G-6KWBYRZSDX` through
+`gtm.getpancake.ai`. Its LinkedIn/X production triggers only match the main
+landing, so Brain's existing direct LinkedIn loader remains the sole sender.
+Google is never enabled by the vendor preview override. No Meta pixel loads
+here; signup/trial/purchase conversions remain backend facts.
 
 ## Manual production cutover
 
