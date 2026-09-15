@@ -19,7 +19,7 @@ const LOGOS: CustomerLogo[] = [
   { name: "Fleet", file: "fleet.png", ratio: 240 / 91, body: [35 / 91, 70 / 91] },
   { name: "Requesty", file: "requesty.avif", ratio: 1515 / 463, body: [144 / 463, 297 / 463] },
   { name: "Alpic", file: "alpic.svg", ratio: 266.246 / 52.146, body: [0.14, 0.86] },
-  { name: "Praxis", file: "praxis.png", ratio: 1392 / 370, body: [0.24, 0.755] },
+  { name: "Praxis", file: "praxis.png", ratio: 1392 / 370, body: [0.24, 0.755], yc: true },
   { name: "Kinro", file: "kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75], yc: true },
   { name: "Covera", file: "covera.png", ratio: 188 / 40, body: [0.32, 0.995], yc: true },
   { name: "Spacefill", file: "spacefill.svg", ratio: 192 / 33, body: [0.2411, 0.7591] },

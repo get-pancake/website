@@ -14,7 +14,7 @@
 - [x] Match brain.getpancake.ai's plum alpha masks, optical logo sizing, continuous leftward motion, spacing, and edge fades.
 - [x] Source real wordmarks from the current brain project and official company websites; record provenance under `public/logos/customers/README.md`.
 - [x] Keep a single accessible customer list and a static wrapping layout for reduced-motion preferences.
-- [x] Add small orange YC marks centered on a shared baseline beneath Hyperspell, AgentMail, Kinro, and Covera; verify each affiliation against its official YC profile.
+- [x] Add small orange YC marks centered on a shared baseline beneath Hyperspell, AgentMail, Praxis, Kinro, and Covera; verify four affiliations against official YC profiles and include Praxis on Tristan's explicit confirmation.
 - [x] Verify desktop/mobile layout and overflow in Codex Browser; keep four sequences for uninterrupted 4K coverage.
 - [x] Pass targeted ESLint, production build/type checks, and independent code review. Existing unrelated build warnings remain.
 

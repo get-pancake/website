@@ -32,4 +32,4 @@ Affiliations verified September 15, 2026 against official profiles:
 - [Kinro — Spring 2026](https://www.ycombinator.com/companies/kinro), matching kinro.com.
 - [Covera — Fall 2026](https://www.ycombinator.com/companies/covera), matching covera-agents.com.
 
-Praxis (runpraxis.ai) has no verified matching YC profile from this check; its official site did not identify a YC affiliation. It remains unbadged along with the other companies without verified YC affiliation.
+Praxis (runpraxis.ai) is also badged: Tristan explicitly confirmed its YC affiliation on September 15, 2026. Its affiliation is founder-confirmed; no batch is asserted. The remaining companies are unbadged.
