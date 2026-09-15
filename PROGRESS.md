@@ -8,6 +8,16 @@
 - [ ] **Phase 6:** Rebuild `/build-in-public`
 - [ ] **Phase 7:** Final Pass
 
+## Customer logo carousel — September 15, 2026
+
+- [x] Add Hyperspell, AgentMail, Fleet, Requesty, Alpic, Praxis, Kinro, Covera, Spacefill, and Kardinal directly below the homepage hero, in that order.
+- [x] Match brain.getpancake.ai's plum alpha masks, optical logo sizing, continuous leftward motion, spacing, and edge fades.
+- [x] Source real wordmarks from the current brain project and official company websites; record provenance under `public/logos/customers/README.md`.
+- [x] Keep a single accessible customer list and a static wrapping layout for reduced-motion preferences.
+- [x] Add small orange YC marks as 12px superscripts at the top-right of Hyperspell, AgentMail, Praxis, Kinro, and Covera; verify four affiliations against official YC profiles and include Praxis on Tristan's explicit confirmation.
+- [x] Verify desktop/mobile layout and overflow in Codex Browser; keep four sequences for uninterrupted 4K coverage.
+- [x] Pass targeted ESLint, production build/type checks, and independent code review. Existing unrelated build warnings remain.
+
 ## Mobile performance — September 7, 2026
 
 - [x] Measure the live homepage with Google Lighthouse on mobile and desktop; inspect local Performance traces and downloaded resources.

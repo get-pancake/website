@@ -1,84 +1,94 @@
-/* landing-v3/marquee.css — Logo strip marquee (Figma 4257:4924, 1654×106).
-   Track = 4 identical copies of the V1 partner-wordmark sequence (LpMarquee).
-   Sequence width at desktop scale: Σ rounded logo widths (1069px) + 8 gaps
-   × 64px = exactly 1581px. Each COPY scrolls left by translateX(-100%) of
-   itself = one sequence at every breakpoint (widths, heights, and gaps all
-   scale by --lp-marquee-scale); the four copies share one keyframe set and
-   one style flush, so they move in lockstep and the wrap point is
-   pixel-identical — no visible seam (the same motion the track-level
-   -100% / 4 gave). The animation sits on the copies, not the 6324px track:
-   Gecko composites a transform animation only while the frame fits its
-   prerender cap — 4096 device px per axis (2048 CSS px at dpr 2) and 1.125×
-   the viewport (bugzilla 1760918 / 1364221) — else ContentTooLarge:
-   main-thread restyle + paint every vsync, will-change or not. Speed ~34 CSS
-   px/s: 1581 / 46.5s desktop, 753.03 / 22.15s on phones. mix-blend multiply
-   .43 sits on the TRACK, not the imgs: a transform creates a stacking
-   context that would isolate per-img blending from the page background (the
-   copies' transforms live inside the track's blended group, so the strip
-   still multiplies against the page). Section clips its own overflow. */
-
+/* Founder reference: brain.getpancake.ai (2026-09-15).
+   Solid plum alpha masks, optically aligned wordmarks, 48px gaps and a
+   seamless leftward loop with 10% edge fades. Animate each copy rather
+   than one oversized track; LpAnimFreeze releases off-screen animation.
+   The duration accounts for ten logos to preserve the reference's speed. */
 .lp-marquee {
   --lp-marquee-scale: 1;
   overflow: hidden;
-  /* 8 + 89.58 + 8.42 = Figma's integer 106px section — keeps every section
-     below on the artboard grid (audit: 8px/8px left the page 0.42px short) */
-  padding: 8px 8px 8.42px;
-}
-.lp-marquee__track {
-  align-items: center; /* logos 22–34px, vertically centered in the band */
-  display: flex;
-  height: 89.58px; /* band interior — section lands on Figma's 106px */
-  mix-blend-mode: multiply;
-  opacity: 0.43;
-  pointer-events: none;
-  width: max-content; /* size to the copies — no animation here (header) */
-}
-.lp-marquee__seq {
-  align-items: center;
-  /* one sequence (1581px) per loop / 46.5s = 34.0 px/s */
-  animation: lp-marquee-scroll 46.5s linear infinite;
-  display: flex;
-  flex: none;
-  will-change: transform;
-}
-.lp-marquee__seq img {
-  flex: none;
-  /* Gap lives on every img (trailing one included), so each sequence copy
-     spans logos + 8 gaps and copies butt together with the same rhythm. */
-  margin-right: calc(var(--lp-marquee-scale) * 64px);
-  max-width: none;
+  padding-block: var(--lp-space-8);
+  color: var(--lp-ink-100);
 }
 
-/* One sequence per loop: -100% of the COPY itself (was -100% / COPY_COUNT of
-   the track — the same distance, every copy is the same width). */
+.lp-marquee__band {
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, var(--lp-ink-100) 10%, var(--lp-ink-100) 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, var(--lp-ink-100) 10%, var(--lp-ink-100) 90%, transparent);
+}
+
+.lp-marquee__track {
+  display: flex;
+  width: max-content;
+}
+
+.lp-marquee__seq {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--lp-customer-logo-gap);
+  padding-left: var(--lp-customer-logo-gap);
+  animation: lp-marquee-scroll var(--lp-customer-logo-duration) linear infinite;
+  will-change: transform;
+}
+
+.lp-marquee__item {
+  position: relative;
+  display: grid;
+  flex: none;
+  justify-items: center;
+  grid-template-rows: calc(var(--lp-customer-logo-row-height) * var(--lp-marquee-scale));
+}
+
+.lp-marquee__mark {
+  display: grid;
+  place-items: center;
+}
+
+.lp-marquee__yc {
+  /* Attach the superscript to the shared optical letter body. The existing
+     inter-logo gap contains it, so sequence widths and loop speed stay exact. */
+  position: absolute;
+  left: calc(100% + var(--lp-customer-yc-gap));
+  bottom: calc(50% + var(--lp-customer-logo-body) * var(--lp-marquee-scale) / 2);
+  width: var(--lp-customer-yc-size);
+  height: var(--lp-customer-yc-size);
+  background: url("/logos/customers/yc.svg") center / contain no-repeat;
+}
+
+.lp-marquee__logo {
+  display: block;
+  flex: none;
+  background: currentColor;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+}
+
 @keyframes lp-marquee-scroll {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-100%);
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+@media (max-width: 767px) {
+  .lp-marquee {
+    --lp-marquee-scale: var(--lp-customer-logo-mobile-scale);
+    --lp-customer-logo-duration: var(--lp-customer-logo-mobile-duration);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .lp-marquee__band { -webkit-mask-image: none; mask-image: none; }
+  .lp-marquee__track { width: auto; }
   .lp-marquee__seq {
     animation: none;
+    will-change: auto;
+    flex: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-inline: var(--lp-space-8);
   }
-}
-
-/* Phones: Figma mobile artboard node 4389:8321 (402×50.29) — the desktop
-   106px section scaled ×0.4763: band 42.67px inside 3.81px padding, logo
-   sizes + gaps scale via --lp-marquee-scale. */
-@media (max-width: 767px) {
-  .lp-marquee {
-    --lp-marquee-scale: 0.4763;
-    padding: 3.81px;
-  }
-  .lp-marquee__track {
-    height: 42.67px;
-  }
-  .lp-marquee__seq {
-    /* sequence 1581 × 0.4763 = 753.03px / 22.15s = 34.0 px/s */
-    animation-duration: 22.15s;
-  }
+  .lp-marquee__seq + .lp-marquee__seq { display: none; }
 }
