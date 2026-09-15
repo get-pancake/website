@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { LEADJOURNEY_TRACKING_SCRIPT_URL, LINKEDIN_INSIGHT_PARTNER_ID } from "@/lib/analytics/vendor-config";
+import { AnalyticsEvents } from "@/components/analytics/AnalyticsEvents";
+import { googleTagManagerBootstrap } from "../lib/google-tracking";
 import "./styles.css";
 
 const geist = localFont({
@@ -72,9 +74,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Engineer-owned synchronous writer: capture click_id before auth or vendor scripts. */}
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script src="/pancake-attribution.min.js" />
+        <script dangerouslySetInnerHTML={{ __html: googleTagManagerBootstrap(process.env.VERCEL_ENV) }} />
       </head>
       <body>
         {children}
+        {/* The shared Google tag disables automatic views; this creates the initial GA4 session. */}
+        <AnalyticsEvents />
         {/* LinkedIn asks for its tag right above the closing body tag. */}
         <script dangerouslySetInnerHTML={{ __html: vendorTagLoader }} />
       </body>
