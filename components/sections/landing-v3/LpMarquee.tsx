@@ -27,7 +27,7 @@ const LOGOS: StripLogo[] = [
   { name: "PromptLayer", src: "/logos/promptlayer.svg", ratio: 138.224 / 20.808, heightPx: 22 },
   { name: "FullEnrich", src: "/logos/fullenrich.svg", ratio: 131.165 / 24, heightPx: 32 },
   { name: "Hexa", src: "/logos/hexa.svg", ratio: 117.345 / 39.468, heightPx: 34 },
-  { name: "Kinro", src: "/logos/kinro.svg", ratio: 550.16 / 134.94, heightPx: 30 },
+  { name: "Kinro", src: "/logos/kinro.svg", ratio: 1308 / 356, heightPx: 30 },
   { name: "Exa", src: "/logos/exa.svg", ratio: 277.273 / 100, heightPx: 32 },
   { name: "Anchor Browser", src: "/logos/anchorbrowser.svg", ratio: 115.674 / 20, heightPx: 27 },
   { name: "AgentMail", src: "/logos/agentmail.svg", ratio: 1986 / 363, heightPx: 30 },

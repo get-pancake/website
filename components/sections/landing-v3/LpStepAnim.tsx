@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import type { gsap } from "@/lib/gsap";
 
 import { LpStepStage } from "./LpStepMocks";
+import type { S2Row } from "./lp-step-data";
 import type { StepVariant } from "./lp-step-timelines";
 
 const loadAnimation = () => Promise.all([
@@ -44,11 +45,14 @@ export function LpStepAnim({
   variant,
   alt,
   className,
+  s2Rows,
 }: {
   variant: StepVariant;
   /** what the animation shows — the only copy a screen reader gets */
   alt: string;
   className?: string;
+  /** step 02 only: override the mock's agent rows (see LpSteps) */
+  s2Rows?: S2Row[];
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
 
@@ -184,7 +188,7 @@ export function LpStepAnim({
 
   return (
     <div ref={hostRef} className={className} role="img" aria-label={alt}>
-      <LpStepStage variant={variant} />
+      <LpStepStage variant={variant} s2Rows={s2Rows} />
     </div>
   );
 }

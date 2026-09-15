@@ -8,6 +8,35 @@
 - [ ] **Phase 6:** Rebuild `/build-in-public`
 - [ ] **Phase 7:** Final Pass
 
+## Brain landing / Vercel migration — September 11, 2026
+
+- [x] Compare contractor Brain page with the current v3 landing in Codex Browser.
+- [x] Create independent `apps/brain` Vercel app sharing active fonts, tokens, buttons, rainbow and step animations.
+- [x] Preserve the canonical attribution script including provider `click_id` and the existing credentialed email/Google auth contract.
+- [x] Pass production build, TypeScript, 17 regression tests, and desktop/mobile browser checks.
+- [x] Publish and verify a separate Vercel preview; open draft PR #295.
+- [x] Production build in the `pancake-brain` project (READY, 2026-09-14) and `brain.getpancake.ai` attached to it.
+- [x] 2026-09-14: explicitly authorized production DNS cutover in Cloud Console; Brain A record now `76.76.21.21`, TTL 300. Canonical HTTPS serves the Vercel production build.
+- [x] Verify real Google and work-email magic-link sign-in into the app, plus server-side UTM cookie handoff. These were existing-account sign-ins, not new-account conversions.
+- [x] Merge get-pancake/pancake-cmo PR #908 through its merge queue after CI passed (`9ccfc051`, September 14 at 17:52 PDT); desired Terraform configuration matches live DNS.
+- [ ] Provider `click_id` new-account conversion delivery and Obvious tag-checker verification. Backend LeadJourney configuration remains in shadow mode; existing-account sign-in checks do not prove new-account conversions.
+
+Live: https://brain.getpancake.ai/ — [production cutover record](apps/brain/docs/production-cutover.md).
+
+- [x] Simplify the hero to headline, introduction, proof and signup; move benefits below it and replace the two requested claims with outreach from Claude/ChatGPT.
+
+- [x] Replace the top rainbow with shared CTA side ornaments and verify desktop/mobile radii and content clearance.
+
+- [x] Match the main CTA artwork scale, crop and radii exactly; add more vertical hero/form space and keep the aligned benefits checklist.
+
+- [x] 2026-09-14 review fixes (Tristan): LeadJourney and the LinkedIn Insight Tag load on the canonical hostname with the main site's ids; the hero sits on the 1296px grid: the copy on the cream page, aligned with the logo, and the conversion block in a white card on the right, aligned with the nav CTA, with only the right rainbow sliver inside it (full card height, squeezed to 70%, clipped by the card's corners like the main CTA card); the nav is the main site's 120px bar; the card height follows the viewport minus 32px, capped by the row's width budget (H ≤ (row − 920px) / 0.259) and by 840px, so the headline keeps two lines and the form stays above the fold on 1366×768 and 1280×720; tablets and phones stack the copy then the card with a thin edge strip; card copy cut to the conversion essentials (Start free · Add your website. Pancake learns who buys from you and starts the outreach. Set up in five minutes. · Work email · Continue) — Cancel anytime removed later the same day; phone pass on the iPhone 17 simulator (Safari): 72px bar, 40px H1, tighter card so Continue sits above the fold on a 390×664 Safari, full-width submit, email keyboard hints (autocapitalize/autocorrect off, enterkeyhint go), single focus ring, and a phone-only sticky “Start free” bar once the card scrolls away; then three audit agents (conversion, taste, UX/a11y/perf) on the iPhone 17 Simulator: one 32px left edge, nav pill hidden on phones, pricing before the steps, outreach-only agent rows in the step 02 mock (kit gains an s2Rows override), same-tab Google hand-off, Resend / Use another email, tighter benefits copy, no WebGL for the 12px strip (artboard under data-lp-gl-off), carousel paused off-stage, viewport-fit=cover + theme-color, orange step 03 numeral, :user-invalid border, 375pt rhythm so Continue clears a 13 mini fold, the preview notice only appears after someone tries to sign up, and the SOC 2 / reassurance strip is gone; the placeholder “500+ founders ★★★★★” proof is replaced by a “Trusted by dozens of [YC badge] companies” carousel in the copy column (AgentMail, Hyperspell, Praxis, Kinro, Covera, PromptLayer — shared public/logos, one-ink masks at one 24px optical height, LpMarquee-style seamless loop, paused on hover, static under reduced motion; Hyperspell's wordmark from hyperspell.com, Praxis's from runpraxis.ai, Covera's from its YC profile image, both PNGs turned into alpha masks; yc.svg authored); the copy column and the card sit 48px apart with the lede filling the column and the form at 400px; Google sign-in is the provider's pill button with a matching placeholder; AI-search claims removed from the benefits, pricing list, step 02 and metadata; every link stays on the page (nav → How it works / Pricing, pricing CTA → the form); email hint dropped; signup card titled “Start free”.
+
+Preview: https://pancake-brain-ikna7ja6n-getpancake.vercel.app/ (2026-09-14, commit 8e99129 — mobile pass, Kinro's new wordmark, Trusted-by label above the logos)
+
+Draft PR: https://github.com/get-pancake/website/pull/295
+
+Details: [Brain verification](apps/brain/docs/verification.md) and [deployment/cutover instructions](apps/brain/README.md).
+
 ## Mobile performance — September 7, 2026
 
 - [x] Measure the live homepage with Google Lighthouse on mobile and desktop; inspect local Performance traces and downloaded resources.

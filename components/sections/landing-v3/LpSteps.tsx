@@ -13,9 +13,10 @@
 // verbatim — not the artboard's.
 
 import { LpStepAnim } from "./LpStepAnim";
+import type { S2Row } from "./lp-step-data";
 import type { StepVariant } from "./lp-step-timelines";
 
-type Step = {
+export type LpStep = {
   num: string;
   title: string;
   body: string;
@@ -27,9 +28,12 @@ type Step = {
   variant: StepVariant;
   /** What the animation shows — the only copy a screen reader gets. */
   alt: string;
+  /** Step 02 only: the agent rows of the mock (defaults to the homepage set). */
+  s2Rows?: S2Row[];
 };
 
-const STEPS: Step[] = [
+/** The homepage copy. Other pages (apps/brain) pass an edited list. */
+export const LP_STEPS: LpStep[] = [
   {
     num: "01",
     title: "Add your website.\nPancake builds your GTM brain.",
@@ -53,7 +57,7 @@ const STEPS: Step[] = [
   },
 ];
 
-export function LpSteps() {
+export function LpSteps({ steps = LP_STEPS }: { steps?: LpStep[] } = {}) {
   return (
     <section className="lp-steps" id="how-it-works">
       <div className="lp-steps__org">
@@ -62,7 +66,7 @@ export function LpSteps() {
           <h2 className="lp-steps__title lp-title-section">Pancake fills your pipeline.</h2>
         </header>
         <div className="lp-steps__list">
-          {STEPS.map((step) => (
+          {steps.map((step) => (
             <div className="lp-steps__row" key={step.num}>
               <div className="lp-steps__text">
                 <p className="lp-steps__num lp-display">{step.num}</p>
@@ -70,7 +74,7 @@ export function LpSteps() {
                 <h3 className="lp-steps__step-title lp-display">{step.title}</h3>
                 <p className="lp-steps__body">{step.body}</p>
               </div>
-              <LpStepAnim className="lp-steps__media" variant={step.variant} alt={step.alt} />
+              <LpStepAnim className="lp-steps__media" variant={step.variant} alt={step.alt} s2Rows={step.s2Rows} />
             </div>
           ))}
         </div>

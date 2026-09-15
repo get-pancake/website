@@ -1,0 +1,66 @@
+import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
+import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
+import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
+import { SignupForm } from "../components/SignupForm";
+import { BrainSections } from "../components/BrainSections";
+import { BrainHeroArtwork } from "../components/BrainHeroArtwork";
+import { BrainTrustBand } from "../components/BrainTrustBand";
+import { BrainMobileCta } from "../components/BrainMobileCta";
+
+const features = [
+  ["Your Claude or ChatGPT becomes your GTM operator", "Plug Pancake in. Your assistant runs prospecting and outreach on its own. No new dashboard."],
+  ["Finds people ready to buy", "Keywords, competitors, influencers, hiring, tech stacks. Pancake watches the signals and surfaces warm leads with context."],
+  ["Runs outreach in your voice", "Pancake writes the messages and handles the follow-ups, from the chat."],
+];
+
+export default function BrainLanding() {
+  return (
+    <main className="lp brain" id="main-content">
+      <a className="brain-skip" href="#email">Skip to signup</a>
+      <LpFitVars /><LpAnimFreeze />
+      <header className="lp-nav brain-nav">
+        {/* Paid-traffic page: every link stays on the page. The logo reloads the top. */}
+        <a className="lp-nav-logo" href="/" aria-label="Pancake">
+          <img src="/lp/lp-nav-logo.svg" width={114.956} height={56} alt="" />
+        </a>
+        <nav className="lp-nav-links" aria-label="Primary">
+          <a href="#how-it-works">How it works</a><a href="#pricing">Pricing</a>
+        </nav>
+        <div className="lp-nav-ctas"><LpFxLink href="#email" size="sm">Start free</LpFxLink></div>
+      </header>
+      <section className="brain-hero" aria-labelledby="brain-title">
+        <div className="brain-hero-content">
+          <div className="brain-left">
+            <div className="brain-pitch">
+              <p className="brain-eyebrow">Now in early access</p>
+              <h1 id="brain-title" className="lp-display brain-title">Put your GTM on<br />full autopilot</h1>
+              <p className="brain-lede">Pancake lets your Claude or ChatGPT run your <span className="brain-nowrap">go-to-market</span>. Find people ready to buy and start outreach campaigns from the same conversation.</p>
+            </div>
+            <BrainTrustBand />
+          </div>
+          {/* The conversion card: white, with the right rainbow sliver inside it. */}
+          <aside className="brain-signup-card" id="email" aria-labelledby="signup-title" tabIndex={-1}>
+            <BrainHeroArtwork />
+            <div className="brain-signup">
+              <h2 className="lp-display brain-signup-title" id="signup-title">Start free</h2>
+              <p className="brain-signup-intro">Sign up, add your website, and Pancake starts the outreach. Five-minute setup.</p>
+              <SignupForm />
+            </div>
+          </aside>
+        </div>
+      </section>
+      <section className="brain-benefits" id="benefits" aria-label="What Pancake does for you">
+        <div className="brain-benefits-panel">
+          <ul className="brain-features">
+            {features.map(([title, body]) => <li key={title}>
+              <img src="/lp/lp-p-check.svg" alt="" width={24} height={24} />
+              <div><h2>{title}</h2><p>{body}</p></div>
+            </li>)}
+          </ul>
+        </div>
+      </section>
+      <BrainSections />
+      <BrainMobileCta />
+    </main>
+  );
+}

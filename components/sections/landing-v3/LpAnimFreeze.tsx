@@ -34,6 +34,7 @@ import { useEffect } from "react";
 const STAGES = [
   ".lp-banner__card",
   ".lp-marquee",
+  ".brain-trust",
   ".lp-tst-strip",
 ].join(", ");
 

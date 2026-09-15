@@ -1,0 +1,104 @@
+/* Brain layout aliases. Brand values come from the shared v3 foundation.
+   Geometry follows its 1296px content grid, 69.014px hero, 48px controls,
+   24/32/48px radii and 8/16/24/32/48/64/96px spacing. */
+.brain {
+  --brain-space-xs: 4px;
+  --brain-space-sm: 8px;
+  --brain-space-md: 16px;
+  --brain-space-lg: 24px;
+  --brain-space-xl: 32px;
+  --brain-space-2xl: 48px;
+  --brain-space-3xl: 64px;
+  --brain-space-4xl: 96px;
+  --brain-weight-regular: 400;
+  --brain-weight-medium: 500;
+  --brain-weight-semibold: 600;
+  --brain-grid: 1296px;
+  --brain-signup-width: 400px;
+  --brain-title-size: 57.336px;
+  --brain-title-tracking: -0.03em;
+  /* Same bar as getpancake.ai: 120px, logo centred at 60px (nav.css). */
+  --brain-nav-height: 120px;
+  --brain-hero-bottom: var(--brain-space-lg);
+  /* Same side margins as the nav (nav.css): 32px, or the 1296px grid's. */
+  --brain-hero-margin: max(var(--brain-space-xl), calc(50% - 648px));
+  --brain-hero-clearance: var(--brain-space-md);
+  /* The frame fills the first viewport: nav + clearance + frame + bottom =
+     100svh. Every vertical measure below scales with that height, from the
+     compact laptop recipe (min) to a roomy 1080p one (max). */
+  --brain-hero-avail: calc(100svh - var(--brain-nav-height) - var(--brain-hero-clearance) - var(--brain-hero-bottom));
+  /* The conversion card is the cartouche now: white, on the right, with the
+     right rainbow sliver running its full height, squeezed to 70% so the
+     rays sit closer (founder, 2026-09-14). The band is 37% × 0.7 ≈ 26% of
+     the card height and the card width follows it. The card height is the
+     viewport height minus a little air, capped by the row's width budget —
+     a 400px copy column, the 48px gap, then the card (48px pad + 400px form
+     + 48px air + band) inside the 1296px grid — and by 840px on very tall
+     screens: H ≤ (row width − 944px) / 0.259. */
+  --brain-art-height: min(calc(var(--brain-hero-avail) - 32px), calc((min(100vw - 32px, var(--brain-grid)) - 944px) / 0.259), 840px);
+  --brain-hero-min-height: var(--brain-art-height);
+  --brain-hero-content-padding: clamp(48px, calc(var(--brain-art-height) * 0.08), 96px);
+  --brain-hero-row-gap: clamp(40px, calc(var(--brain-art-height) * 0.08), 80px);
+  --brain-hero-gap: var(--brain-space-2xl);
+  --brain-art-offset: 0px;
+  --brain-side-scale: 0.7;
+  /* Air between the band's widest point and the form. */
+  --brain-hero-air: var(--brain-space-2xl);
+  --brain-card-pad: var(--brain-space-2xl);
+  --brain-band: calc(var(--brain-art-height) * 0.37 * var(--brain-side-scale));
+  --brain-card-width: calc(var(--brain-card-pad) + var(--brain-signup-width) + var(--brain-hero-air) + var(--brain-band));
+  /* Phones and tablets: the sliver becomes a thin strip this wide. */
+  --brain-hero-rail: 12px;
+  --brain-benefits-width: 960px;
+  --brain-rule: 1px;
+  --brain-focus-width: 2px;
+  --brain-form-top-gap: clamp(24px, calc(var(--brain-art-height) * 0.04), 48px);
+  --brain-form-divider-gap: clamp(16px, calc(var(--brain-art-height) * 0.025), 24px);
+  --brain-form-field-gap: var(--brain-space-md);
+  --brain-control-height: 48px;
+  /* Founder: the wordmarks in the filled buttons' plum (Continue & co). */
+  --brain-trust-ink: var(--lp-inverted-surface);
+  --brain-trust-gap: var(--brain-space-2xl);
+  --brain-trust-duration: 30s;
+  /* Google's own button palette: the placeholder must match what GIS renders. */
+  --brain-google-height: 40px;
+  --brain-google-stroke: #dadce0;
+  --brain-google-ink: #1f1f1f;
+  --brain-avatar-size: 32px;
+  --brain-ease: 200ms ease;
+}
+
+@media (max-width: 1024px) {
+  /* Tablets and phones: one column, the rainbows become thin edge strips,
+     the frame sizes to its content. */
+  .brain {
+    --brain-title-size: var(--lp-text-5xlg);
+    --brain-hero-min-height: 0px;
+    --brain-hero-rail: 12px;
+    --brain-side-scale: 0.04;
+    --brain-art-offset: 0px;
+    --brain-hero-content-padding: var(--brain-space-2xl);
+    --brain-hero-row-gap: var(--brain-space-lg);
+    --brain-form-top-gap: var(--brain-space-lg);
+    --brain-form-divider-gap: var(--brain-space-md);
+  }
+}
+@media (max-width: 767px) {
+  .brain {
+    /* Phones: a compact bar and tight vertical rhythm so the whole signup
+       card, Continue included, sits above the fold on a 390×664 Safari. */
+    --brain-nav-height: 64px;
+    --brain-hero-margin: var(--brain-space-md);
+    --brain-hero-clearance: var(--brain-space-sm);
+    --brain-sticky-height: 64px;
+    --brain-hero-bottom: var(--brain-space-lg);
+    --brain-hero-content-padding: var(--brain-space-lg);
+    --brain-form-top-gap: var(--brain-space-md);
+    --brain-form-divider-gap: 10px;
+    --brain-form-field-gap: var(--brain-space-sm);
+    --brain-title-size: var(--lp-text-4xlg);
+  }
+}
+@media (max-width: 374px) {
+  .brain { --brain-title-size: var(--lp-text-4xlg); --brain-hero-rail: 8px; --brain-side-scale: 0.025; }
+}
