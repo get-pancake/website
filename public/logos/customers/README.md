@@ -23,7 +23,7 @@ Existing brain assets came from `pancake-brain-vercel/apps/brain/public/logos`, 
 
 ## YC badges
 
-Small orange YC marks are centered beneath the verified YC companies, with one shared badge baseline. The original 48 × 48 SVG in `yc.svg` was read from Y Combinator's own site header through Codex Browser; its official orange and vector paths are unchanged.
+Small orange YC marks sit as 12px superscripts just above the top-right of the YC company logos, separated by a 4px gap. They share an optical alignment based on the wordmarks' letter bodies and sit inside the existing inter-logo spacing, preserving carousel width and speed. The original 48 × 48 SVG in `yc.svg` was read from Y Combinator's own site header through Codex Browser; its official orange and vector paths are unchanged.
 
 Affiliations verified September 15, 2026 against official profiles:
 

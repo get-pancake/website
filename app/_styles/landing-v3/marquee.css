@@ -32,11 +32,11 @@
 }
 
 .lp-marquee__item {
+  position: relative;
   display: grid;
   flex: none;
   justify-items: center;
-  grid-template-rows: calc(var(--lp-customer-logo-row-height) * var(--lp-marquee-scale)) var(--lp-customer-yc-size);
-  row-gap: var(--lp-customer-yc-gap);
+  grid-template-rows: calc(var(--lp-customer-logo-row-height) * var(--lp-marquee-scale));
 }
 
 .lp-marquee__mark {
@@ -45,6 +45,11 @@
 }
 
 .lp-marquee__yc {
+  /* Attach the superscript to the shared optical letter body. The existing
+     inter-logo gap contains it, so sequence widths and loop speed stay exact. */
+  position: absolute;
+  left: calc(100% + var(--lp-customer-yc-gap));
+  bottom: calc(50% + var(--lp-customer-logo-body) * var(--lp-marquee-scale) / 2);
   width: var(--lp-customer-yc-size);
   height: var(--lp-customer-yc-size);
   background: url("/logos/customers/yc.svg") center / contain no-repeat;

@@ -79,8 +79,8 @@
     --lp-customer-logo-mobile-duration: 36.5s;
     --lp-customer-logo-mobile-scale: 0.85;
     --lp-customer-logo-row-height: 44px;
-    --lp-customer-yc-size: 16px;
-    --lp-customer-yc-gap: var(--spacing-md);
+    --lp-customer-yc-size: var(--spacing-lg);
+    --lp-customer-yc-gap: var(--spacing-sm);
   }
 }
 
