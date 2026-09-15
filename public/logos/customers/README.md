@@ -20,3 +20,16 @@ The visual reference is [brain.getpancake.ai](https://brain.getpancake.ai/): sol
 | kardinal.svg | [Kardinal official SVG](https://kardinal.ai/wp-content/uploads/2019/09/Logo-White.svg), exported with Codex Browser | 152 × 24 |
 
 Existing brain assets came from `pancake-brain-vercel/apps/brain/public/logos`, with optical body bounds from `BrainTrustBand.tsx`. New wordmarks use their actual artwork ratios and letter-body bounds; all paint with the same CSS color, regardless of the asset's original color. Raster assets retain their transparency. No runtime requests to the companies' sites are needed.
+
+## YC badges
+
+Small orange YC marks are centered beneath the verified YC companies, with one shared badge baseline. The original 48 × 48 SVG in `yc.svg` was read from Y Combinator's own site header through Codex Browser; its official orange and vector paths are unchanged.
+
+Affiliations verified September 15, 2026 against official profiles:
+
+- [Hyperspell — Fall 2025](https://www.ycombinator.com/companies/hyperspell), matching hyperspell.com.
+- [AgentMail — Summer 2025](https://www.ycombinator.com/companies/agentmail), matching agentmail.to.
+- [Kinro — Spring 2026](https://www.ycombinator.com/companies/kinro), matching kinro.com.
+- [Covera — Fall 2026](https://www.ycombinator.com/companies/covera), matching covera-agents.com.
+
+Praxis (runpraxis.ai) has no verified matching YC profile from this check; its official site did not identify a YC affiliation. It remains unbadged along with the other companies without verified YC affiliation.

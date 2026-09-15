@@ -31,6 +31,25 @@
   will-change: transform;
 }
 
+.lp-marquee__item {
+  display: grid;
+  flex: none;
+  justify-items: center;
+  grid-template-rows: calc(var(--lp-customer-logo-row-height) * var(--lp-marquee-scale)) var(--lp-customer-yc-size);
+  row-gap: var(--lp-customer-yc-gap);
+}
+
+.lp-marquee__mark {
+  display: grid;
+  place-items: center;
+}
+
+.lp-marquee__yc {
+  width: var(--lp-customer-yc-size);
+  height: var(--lp-customer-yc-size);
+  background: url("/logos/customers/yc.svg") center / contain no-repeat;
+}
+
 .lp-marquee__logo {
   display: block;
   flex: none;

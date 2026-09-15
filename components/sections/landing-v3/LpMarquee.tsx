@@ -8,19 +8,20 @@ type CustomerLogo = {
   name: string;
   file: string;
   ratio: number;
+  yc?: boolean;
   /** Letter-body bounds within the artwork; normalizes apparent type size. */
   body: [number, number];
 };
 
 const LOGOS: CustomerLogo[] = [
-  { name: "Hyperspell", file: "hyperspell.svg", ratio: 577 / 91, body: [0.235, 0.82] },
-  { name: "AgentMail", file: "agentmail.svg", ratio: 1986 / 363, body: [0.2, 0.78] },
+  { name: "Hyperspell", file: "hyperspell.svg", ratio: 577 / 91, body: [0.235, 0.82], yc: true },
+  { name: "AgentMail", file: "agentmail.svg", ratio: 1986 / 363, body: [0.2, 0.78], yc: true },
   { name: "Fleet", file: "fleet.png", ratio: 240 / 91, body: [35 / 91, 70 / 91] },
   { name: "Requesty", file: "requesty.avif", ratio: 1515 / 463, body: [144 / 463, 297 / 463] },
   { name: "Alpic", file: "alpic.svg", ratio: 266.246 / 52.146, body: [0.14, 0.86] },
   { name: "Praxis", file: "praxis.png", ratio: 1392 / 370, body: [0.24, 0.755] },
-  { name: "Kinro", file: "kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75] },
-  { name: "Covera", file: "covera.png", ratio: 188 / 40, body: [0.32, 0.995] },
+  { name: "Kinro", file: "kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75], yc: true },
+  { name: "Covera", file: "covera.png", ratio: 188 / 40, body: [0.32, 0.995], yc: true },
   { name: "Spacefill", file: "spacefill.svg", ratio: 192 / 33, body: [0.2411, 0.7591] },
   { name: "Kardinal", file: "kardinal.svg", ratio: 152 / 24, body: [0.23, 0.83] },
 ];
@@ -49,18 +50,21 @@ export function LpMarquee() {
           {Array.from({ length: COPY_COUNT }, (_, copy) => (
             <div className="lp-marquee__seq" key={copy}>
               {LOGOS.map((logo) => (
-                <span
-                  className="lp-marquee__logo"
-                  key={logo.name}
-                  style={markStyle(logo)}
-                />
+                <div className="lp-marquee__item" key={logo.name}>
+                  <div className="lp-marquee__mark">
+                    <span className="lp-marquee__logo" style={markStyle(logo)} />
+                  </div>
+                  {logo.yc && <span className="lp-marquee__yc" />}
+                </div>
               ))}
             </div>
           ))}
         </div>
       </div>
       <ul className="lp-sr-only">
-        {LOGOS.map((logo) => <li key={logo.name}>{logo.name}</li>)}
+        {LOGOS.map((logo) => (
+          <li key={logo.name}>{logo.name}{logo.yc ? " — Y Combinator" : ""}</li>
+        ))}
       </ul>
     </section>
   );
