@@ -90,6 +90,15 @@ campaign data would count the test traffic. No GTM or Meta pixel loads here.
 
 Production promotion and DNS changes remain Tristan's manual step after review.
 
+State on 2026-09-14 (commit `8e99129`): the Production build is READY at
+`https://pancake-brain-nms6jxohc-getpancake.vercel.app` (aliased to
+`pancake-brain.vercel.app`; both SSO-walled, the custom domain is public), and
+`brain.getpancake.ai` is attached to the project — Vercel asks for
+`A brain.getpancake.ai 76.76.21.21`. The record lives in Google Cloud DNS, managed by
+`infra/prod/brain-lovable.tf` in `get-pancake/pancake-cmo`; PR #908 there points it at
+Vercel and carries the targeted apply command. Until that record lands, the hostname
+keeps serving the Lovable page.
+
 1. Record the approved preview URL and commit, and verify desktop/mobile layout,
    form error states, artwork, links, and the attribution contract tests.
 2. Prepare a **new build of that revision in Vercel's Production environment**.

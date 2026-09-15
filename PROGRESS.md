@@ -15,7 +15,8 @@
 - [x] Preserve the canonical attribution script including provider `click_id` and the existing credentialed email/Google auth contract.
 - [x] Pass production build, TypeScript, 17 regression tests, and desktop/mobile browser checks.
 - [x] Publish and verify a separate Vercel preview; open draft PR #295.
-- [ ] Manual Production rebuild, domain/Terraform cutover, and live signup/affiliate verification.
+- [x] Production build in the `pancake-brain` project (READY, 2026-09-14) and `brain.getpancake.ai` attached to it.
+- [ ] DNS: merge and apply get-pancake/pancake-cmo PR #908 (targeted), then live signup/affiliate verification on the canonical domain.
 
 - [x] Simplify the hero to headline, introduction, proof and signup; move benefits below it and replace the two requested claims with outreach from Claude/ChatGPT.
 
