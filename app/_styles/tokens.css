@@ -69,6 +69,15 @@
     --spacing-lg: 12px;
     --spacing-xl: 16px;
     --spacing-xxl: 24px;
+
+    /* Customer carousel — brain.getpancake.ai reference, founder 2026-09-15.
+       Match its optical letter height, gap and mobile scale. Loop timings
+       preserve the reference's travel speed with the ten-customer list. */
+    --lp-customer-logo-body: 14px;
+    --lp-customer-logo-gap: 48px;
+    --lp-customer-logo-duration: 49.7s;
+    --lp-customer-logo-mobile-duration: 36.5s;
+    --lp-customer-logo-mobile-scale: 0.85;
   }
 }
 

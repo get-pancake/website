@@ -1,69 +1,67 @@
-/**
- * Landing v3 — Logo strip marquee (Figma node 4257:4924, 1654×106).
- * Interim content: the V1 partner wordmarks from public/logos/ stand in
- * until the new set lands (founder 2026-08-31: "reprends les logos de la
- * V1 en attendant qu'on mette les nouveaux"). Per-mark optical heights
- * and aspect ratios mirror components/sections/home/HomeLogoMarquee.tsx
- * (don't edit that file — copy here). The SVGs are all currentColor, so
- * <img> paints them black; marquee.css greys them to the old strip's tone
- * (mix-blend multiply ×0.43 on the track). The 8-logo sequence renders
- * COPY_COUNT times and CSS scrolls the track left by exactly one sequence
- * (translateX(-100%) of each copy (marquee.css: per-copy animations — Gecko will not composite a transform animation on a track wider than 4096 device px)) — every copy is the same width, so the
- * wrap is pixel-identical and seamless. Static under prefers-reduced-motion.
- * Decorative: empty alts + aria-hidden track.
- */
+import type { CSSProperties } from "react";
 
-type StripLogo = {
+/** Customer logos in the founder's order. The brain landing is the source
+ * for the plum masks, optical sizing and continuous leftward scroll.
+ * Artwork and provenance: public/logos/customers/README.md.
+ */
+type CustomerLogo = {
   name: string;
-  src: string;
-  /** width / height of the artwork's viewBox — keeps the native aspect. */
+  file: string;
   ratio: number;
-  /** Optical height in px at desktop scale — tuned per mark (HomeLogoMarquee). */
-  heightPx: number;
+  /** Letter-body bounds within the artwork; normalizes apparent type size. */
+  body: [number, number];
 };
 
-// V1 set: "Trusted by" four, then "Powered by" four (HomeLogoMarquee order).
-const LOGOS: StripLogo[] = [
-  { name: "PromptLayer", src: "/logos/promptlayer.svg", ratio: 138.224 / 20.808, heightPx: 22 },
-  { name: "FullEnrich", src: "/logos/fullenrich.svg", ratio: 131.165 / 24, heightPx: 32 },
-  { name: "Hexa", src: "/logos/hexa.svg", ratio: 117.345 / 39.468, heightPx: 34 },
-  { name: "Kinro", src: "/logos/kinro.svg", ratio: 550.16 / 134.94, heightPx: 30 },
-  { name: "Exa", src: "/logos/exa.svg", ratio: 277.273 / 100, heightPx: 32 },
-  { name: "Anchor Browser", src: "/logos/anchorbrowser.svg", ratio: 115.674 / 20, heightPx: 27 },
-  { name: "AgentMail", src: "/logos/agentmail.svg", ratio: 1986 / 363, heightPx: 30 },
-  { name: "LiteLLM", src: "/logos/litellm.svg", ratio: 3538 / 735, heightPx: 24 },
+const LOGOS: CustomerLogo[] = [
+  { name: "Hyperspell", file: "hyperspell.svg", ratio: 577 / 91, body: [0.235, 0.82] },
+  { name: "AgentMail", file: "agentmail.svg", ratio: 1986 / 363, body: [0.2, 0.78] },
+  { name: "Fleet", file: "fleet.png", ratio: 240 / 91, body: [35 / 91, 70 / 91] },
+  { name: "Requesty", file: "requesty.avif", ratio: 1515 / 463, body: [144 / 463, 297 / 463] },
+  { name: "Alpic", file: "alpic.svg", ratio: 266.246 / 52.146, body: [0.14, 0.86] },
+  { name: "Praxis", file: "praxis.png", ratio: 1392 / 370, body: [0.24, 0.755] },
+  { name: "Kinro", file: "kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75] },
+  { name: "Covera", file: "covera.png", ratio: 188 / 40, body: [0.32, 0.995] },
+  { name: "Spacefill", file: "spacefill.svg", ratio: 192 / 33, body: [0.2411, 0.7591] },
+  { name: "Kardinal", file: "kardinal.svg", ratio: 152 / 24, body: [0.23, 0.83] },
 ];
 
-/**
- * Copies of the sequence. 4 × 1581px ≈ 6324px of track: coverage holds up to
- * ~4743px-wide viewports (track − one sequence ≥ viewport), comfortably past
- * the 2560px requirement. Keep in sync with the per-copy -100% keyframe in marquee.css.
- */
+function markStyle(logo: CustomerLogo): CSSProperties {
+  const height = 1 / (logo.body[1] - logo.body[0]);
+  const nudge = (0.5 - (logo.body[0] + logo.body[1]) / 2) * height;
+  return {
+    WebkitMaskImage: `url(/logos/customers/${logo.file})`,
+    maskImage: `url(/logos/customers/${logo.file})`,
+    width: `calc(var(--lp-customer-logo-body) * var(--lp-marquee-scale) * ${height * logo.ratio})`,
+    height: `calc(var(--lp-customer-logo-body) * var(--lp-marquee-scale) * ${height})`,
+    transform: `translateY(calc(var(--lp-customer-logo-body) * var(--lp-marquee-scale) * ${nudge}))`,
+  };
+}
+
+// Four copies keep the full-width band filled on 4K monitors throughout a loop.
+// Each copy translates by its own width, including its leading gap.
 const COPY_COUNT = 4;
 
 export function LpMarquee() {
   return (
-    <section className="lp-marquee">
-      <div aria-hidden="true" className="lp-marquee__track">
-        {Array.from({ length: COPY_COUNT }, (_, copy) => (
-          <div className="lp-marquee__seq" key={copy}>
-            {LOGOS.map((logo) => (
-              <img
-                alt=""
-                key={logo.name}
-                src={logo.src}
-                style={{
-                  /* Rounded design width × the breakpoint scale var, so the
-                     sequence width scales linearly and the -100%/COPY_COUNT
-                     wrap stays exact at every breakpoint. */
-                  height: `calc(var(--lp-marquee-scale) * ${logo.heightPx}px)`,
-                  width: `calc(var(--lp-marquee-scale) * ${Math.round(logo.heightPx * logo.ratio)}px)`,
-                }}
-              />
-            ))}
-          </div>
-        ))}
+    <section className="lp-marquee" aria-label="Customers">
+      <div className="lp-marquee__band">
+        <div aria-hidden="true" className="lp-marquee__track">
+          {Array.from({ length: COPY_COUNT }, (_, copy) => (
+            <div className="lp-marquee__seq" key={copy}>
+              {LOGOS.map((logo) => (
+                <span
+                  className="lp-marquee__logo"
+                  key={logo.name}
+                  style={markStyle(logo)}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
+      <ul className="lp-sr-only">
+        {LOGOS.map((logo) => <li key={logo.name}>{logo.name}</li>)}
+      </ul>
     </section>
   );
 }
