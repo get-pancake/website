@@ -214,7 +214,7 @@
     width: auto;
     min-width: calc(3 * var(--lp-space-12));
   }
-  /* "Connecting you to AI sales" may wrap on a narrow phone: two lines
+  /* "Connecting you to Pancake" may wrap on a narrow phone: two lines
      reserved, so "Listening" does not pull the mascot down. */
   .lp.ai-call .ai-call__state {
     min-height: 2.4em;

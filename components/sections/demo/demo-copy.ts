@@ -98,9 +98,10 @@ export const ERRORS = {
     routed Calendly calendar inline, prefilled, then AI sales as the "talk
     now" path. title, frameTitle, the fallback line and aiSalesLine are the
     2026-09-16 booking brief. aiSales was the founder's 2026-09-15 "Chat
-    with AI sales"; since 2026-09-16 it reads "Talk to AI sales" (François:
-    "I want it to feel like you're talking to the website, not a chatbar"),
-    and the pill opens the full-screen call (AI_CALL below). The intro
+    with AI sales"; since 2026-09-16 it reads "Talk to Pancake" (François:
+    "I want it to feel like you're talking to the website, not a chatbar",
+    then "Don't call it AI sales, call it Pancake"), and the pill opens the
+    full-screen call (AI_CALL below). The intro
     (2026-09-16, direct calendar, landing-voice) names the calendar the team
     size routed to: the frame opens compact, with Calendly's own event title
     hidden, so this line is where the visitor learns what they are booking.
@@ -125,8 +126,8 @@ export const BOOKING = {
   fallbackBefore: "Calendar not loading? ",
   fallbackLink: "Open it in a new tab",
   fallbackAfter: ".",
-  aiSalesLine: "Rather talk now? AI sales answers right away.",
-  aiSales: "Talk to AI sales",
+  aiSalesLine: "Rather talk now? Pancake answers right away.",
+  aiSales: "Talk to Pancake",
 } as const;
 
 /** The full-screen voice call with the ElevenLabs agent (AiSalesCall),
@@ -137,14 +138,14 @@ export const BOOKING = {
     The same line is shown under the mascot and announced once per change. */
 export const AI_CALL = {
   /** the dialog's accessible name (a visually hidden heading) */
-  title: "Talk to AI sales",
-  connecting: "Connecting you to AI sales",
+  title: "Talk to Pancake",
+  connecting: "Connecting you to Pancake",
   listening: "Listening",
-  speaking: "AI sales is speaking",
+  speaking: "Pancake is speaking",
   /** replaces "Listening" while the visitor's microphone is muted */
   muted: "Your mic is muted",
   ended: "Call ended",
-  micDenied: "Allow your microphone to talk to AI sales.",
+  micDenied: "Allow your microphone to talk to Pancake.",
   failed: "We could not connect. Try again, or pick a time on the calendar.",
   endCall: "End call",
   /** the mute pill's label: mute while the mic is on, unmute while muted */

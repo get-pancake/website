@@ -573,7 +573,7 @@
   text-underline-offset: 0.2em;
 }
 /* Named exception to foundation.css "button keep same sizes" (founder
-   2026-09-03): "Talk to AI sales" (16 chars, founder 2026-09-16) and "Start a
+   2026-09-03): "Talk to Pancake" (15 chars, founder 2026-09-16) and "Start a
    new submission" (22, verbatim) overflow the 136px squircle.
    These two pills hug their label with the md pill's Figma radius; the
    submit and every other pill keep the Figma geometry. (0,3,0) beats

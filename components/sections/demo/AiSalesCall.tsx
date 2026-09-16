@@ -27,7 +27,7 @@ import { AI_CALL } from "./demo-copy";
  * (François, 2026-09-16: "I asked for something similar to the Eleven Labs
  * where the agent takes up the screen and there's no chat. I want it to
  * feel like you're talking to the website, not a chatbar"). DemoBooking
- * mounts it when the visitor clicks "Talk to AI sales" and unmounts it on
+ * mounts it when the visitor clicks "Talk to Pancake" and unmounts it on
  * `onClose`. Styles: app/_styles/ai-sales-call.css.
  *
  * Mounting IS starting: the click that mounts it flushes this component's
@@ -80,7 +80,7 @@ import { AI_CALL } from "./demo-copy";
  * hidden heading and described by the disclosure line. Focus moves to the
  * dialog on open, to the first button when the controls change (ended,
  * errors), is trapped inside (Tab cycles, focus that escapes is pulled
- * back) and returns to the trigger on close (the "Talk to AI sales" pill
+ * back) and returns to the trigger on close (the "Talk to Pancake" pill
  * when the click did not focus it: Safari, Firefox on macOS). Body scroll
  * is locked while mounted. One visually hidden status region announces the
  * state line (ANNOUNCE_DELAY_MS after it changes, so a region that just
@@ -95,7 +95,7 @@ import { AI_CALL } from "./demo-copy";
 
 type Phase = "connecting" | "listening" | "speaking" | "ended" | "mic-denied" | "failed";
 
-/** A pause shorter than this keeps "AI sales is speaking" on screen. */
+/** A pause shorter than this keeps "Pancake is speaking" on screen. */
 const LISTEN_SETTLE_MS = 600;
 const ANNOUNCE_DELAY_MS = 150;
 /** The SDK's volume is the mean of the voice-range bins: speech lands around

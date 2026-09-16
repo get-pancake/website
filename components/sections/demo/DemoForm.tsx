@@ -41,7 +41,7 @@ import { DemoBooking } from "./DemoBooking";
  * booking (DemoBooking): the Calendly calendar the team size routes to,
  * inline and prefilled from the successful submission's answers
  * (lib/booking.ts mirrors the routing form's routes, so Calendly never asks
- * the questions again; François, 2026-09-16), plus "Talk to AI sales" (the
+ * the questions again; François, 2026-09-16), plus "Talk to Pancake" (the
  * full-screen voice call, AiSalesCall). Its own error paths stay inside it:
  * a frame that never loads shows a new-tab link to the same prefilled
  * calendar, and a call that cannot start shows its own failure state with

@@ -53,7 +53,7 @@ import { BOOKING } from "./demo-copy";
  * region that mounts together with its content is not announced, so the
  * persistent status node in DemoForm carries the state change.
  *
- * "Talk to AI sales" opens the full-screen voice call with the ElevenLabs
+ * "Talk to Pancake" opens the full-screen voice call with the ElevenLabs
  * agent "[WEBSITE] AI sales" (AiSalesCall; ElevenLabs workspace, published
  * 2026-09-16; decision page decisions/2026-09-15-demo-page-and-ai-sales-agent.md
  * in the pancake-brain repo). François, 2026-09-16: "I want it to feel like
