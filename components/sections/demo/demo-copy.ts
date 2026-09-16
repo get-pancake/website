@@ -96,12 +96,24 @@ export const ERRORS = {
   network: "We could not reach Pancake. Check your connection and try again.",
 } as const;
 
-/** title…restart VERBATIM from the founder's brief. */
+/** title…restart VERBATIM from the founder's brief. The aiSales* state
+    strings (2026-09-16, the ElevenLabs agent wired to the pill) follow
+    landing-voice: the widget opens at the bottom right and its first
+    control reads "Start the call" (lib/ai-sales.ts). */
 export const SUCCESS = {
   title: "Thanks for reaching out!",
   body: "Our team will get back to you soon!",
   faster: "Get contacted faster by choosing to connect with our AI sales",
   aiSales: "Chat with AI sales",
+  /** the pill while the widget script loads, then once the widget is open (one widget, one click) */
+  aiSalesOpening: "Opening AI sales…",
+  aiSalesReady: "AI sales is ready",
+  /** visually hidden status once the widget is open */
+  aiSalesOpened: "AI sales opened at the bottom right of the page. Press Start the call.",
+  /** inline alert when the script cannot load; the pill reads "Chat with AI sales" again */
+  aiSalesErrorBefore: "We could not open AI sales. Try again, or ",
+  aiSalesErrorLink: "visit our support page",
+  aiSalesErrorAfter: ".",
   videoTitle: "Pancake demo",
   videoSrc: "https://www.youtube-nocookie.com/embed/Fk8sqw61NqE?rel=0",
   again: "To submit updated details, start a new submission below:",

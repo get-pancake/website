@@ -406,11 +406,13 @@
   flex: none;
   accent-color: var(--lp-purple-40);
 }
-.lp-demo .demo-form__error {
+/* The success state's AI sales error line (DemoSuccess) reads like the
+   form's, so the two share these rules and the ≤767 tap rows below. */
+.lp-demo :is(.demo-form__error, .demo-success__error) {
   color: var(--lp-red-40);
   font-size: var(--lp-text-sm);
 }
-.lp-demo .demo-form__error a {
+.lp-demo :is(.demo-form__error, .demo-success__error) a {
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
@@ -523,6 +525,13 @@
     height: auto;
     width: auto;
   }
+}
+/* "AI sales is ready" keeps the aria-disabled look above (one widget, one
+   click: the ElevenLabs panel is open at the bottom right) but nothing is
+   in progress any more, so no progress cursor. Same (0,3,0) as the busy
+   rule; this one comes later. The widget's own UI is not ours to style. */
+.lp-demo .demo-success__cta[data-state="ready"] {
+  cursor: default;
 }
 /* The kit's dark surface shows for the instant before YouTube paints its
    player (--lp-terminal-bg is the founder's terminal background, not a
@@ -663,7 +672,8 @@
   }
   /* 44px tap rows for the 13px inline links (brain does the same for its notice links) */
   .lp-demo .demo-form__help a,
-  .lp-demo .demo-form__error a {
+  .lp-demo .demo-form__error a,
+  .lp-demo .demo-success__error a {
     display: inline-block;
     padding-block: var(--lp-space-3);
     margin-block: calc(-1 * var(--lp-space-3));

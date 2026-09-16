@@ -19,6 +19,7 @@ Scope: `/demo`, a contact-sales page in the ElevenLabs layout (François, 2026-0
 - [x] Document `SLACK_DEMO_WEBHOOK_URL` and `AIRTABLE_DEMO_REQUESTS_TABLE_ID` in `.env.local.example`.
 - [x] Pass targeted ESLint and type checks, and independent code review.
 - [x] 2026-09-16: split the card into two steps like ElevenLabs (François: "two steps in the form, just like on ElevenLabs"): identity first behind "Let's go", the three qualification questions second with Back and "Request a demo", a two-segment progress bar beside the help line, values kept across Back, and still one POST at the end. Review fixes: a double-tap guard on the phone pills (the other step's button sits under the finger) and a step-1 height floor at two columns so the card, H1 and footer do not move between steps.
+- [x] 2026-09-16: wire "Chat with AI sales" to the published ElevenLabs agent "[WEBSITE] AI sales" (François: the agent exists, a visitor talks to it for qualification). The pill loads the ElevenLabs widget script from unpkg on click, never on page load (a third-party runtime script, not an npm package; flagged in the PR), mounts one expanded, dismissible widget at the bottom right with the visitor's first name and company website as dynamic variables, and reads "Opening AI sales…", then "AI sales is ready" (one widget, one click), or an inline error line with the support link. `NEXT_PUBLIC_ELEVENLABS_AI_SALES_AGENT_ID` overrides the agent id; empty turns the pill off (documented in `.env.local.example`).
 
 ## Customer logo carousel — September 15, 2026
 

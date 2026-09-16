@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
+import { type AiSalesVisitor } from "@/lib/ai-sales";
 import { submissionAttemptForEmail, type BrowserSubmissionAttempt } from "@/lib/analytics/submission-id";
 import {
   EMAIL_MAX,
@@ -130,6 +131,10 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
   // attempt (the `invalid` event fires per control on a blocked submit).
   const [step2Touched, setStep2Touched] = useState(false);
   const [error, setError] = useState<ErrorKind | null>(null);
+  // The first name and normalised website of the SUCCESSFUL submission,
+  // for the AI sales agent (DemoSuccess); nothing else leaves the form,
+  // and a restart clears it.
+  const [visitor, setVisitor] = useState<AiSalesVisitor | null>(null);
   const inFlight = useRef(false); // the double-submit guard: controls stay enabled
   const mounted = useRef(false);
   // One UUID per email retry chain (Airtable upserts on it); null after a restart.
@@ -300,6 +305,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
 
     if (!mounted.current) return;
     if (succeeded) {
+      setVisitor({ firstName: parsed.value.firstName, website: parsed.value.website });
       setStatus("success");
     } else if (failure) {
       fail(failure);
@@ -311,6 +317,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
   function restart() {
     submission.current = null;
     focusFirstOnIdle.current = true;
+    setVisitor(null);
     setError(null);
     setStatus("idle");
     setStep(1);
@@ -328,7 +335,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
         {busy ? CARD.sending : status === "success" ? SUCCESS.title : ""}
       </p>
       {status === "success" ? (
-        <DemoSuccess onReset={restart} />
+        <DemoSuccess visitor={visitor} onReset={restart} />
       ) : (
         <>
           <h2 id="demo-card-title" className="lp-display demo-card__title" ref={titleRef} tabIndex={-1}>
