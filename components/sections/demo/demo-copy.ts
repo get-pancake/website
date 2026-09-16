@@ -36,12 +36,17 @@ export const TRUST = { before: "Trusted by dozens of ", ycAlt: "YC", after: " co
     is the step-2 pill's busy label. `talk` is the voice path beside the
     submit on both steps (François, 2026-09-16: "choose to directly talk to
     Pancake's AI instead ... next to Let's go ... on both steps of the
-    form"): Pancake asks the questions left, fills the form and books. */
+    form"): Pancake asks the questions left, fills the form and opens a
+    time. It reads "Talk to our AI" since 2026-09-16 (François: "Talk to
+    Pancake" could mean talking to a representative of Pancake): the button
+    says who answers, and the agent keeps the name Pancake inside the call.
+    Four words: a named exception to landing-voice's 3-word label cap, like
+    BOOKED.restart. */
 export const CARD = {
   title: "Book a demo",
   intro: "Two quick steps, then pick a time.",
   submit: "Let's go",
-  talk: "Talk to Pancake",
+  talk: "Talk to our AI",
   submitting: "Sending…",
   /** visually hidden status line while the request is in flight */
   sending: "Sending your request.",
@@ -105,16 +110,18 @@ export const ERRORS = {
     2026-09-16 booking brief. aiSales was the founder's 2026-09-15 "Chat
     with AI sales"; since 2026-09-16 it reads "Talk to Pancake" (François:
     "I want it to feel like you're talking to the website, not a chatbar",
-    then "Don't call it AI sales, call it Pancake"), and the pill opens the
-    full-screen call (AI_CALL below). The intro
+    then "Don't call it AI sales, call it Pancake"), and since the same day
+    "Talk to our AI" with "Our AI answers right away." (François: "Talk to
+    Pancake" could read as a person); the pill opens the full-screen call
+    (AI_CALL below). The intro
     (2026-09-16, direct calendar, landing-voice) names the calendar the team
     size routed to: the frame opens compact, with Calendly's own event title
     hidden, so this line is where the visitor learns what they are booking.
     No "Submit" any more (no routing form); name and email are prefilled on
     every calendar. The answers line prefilled into every calendar's prep
     question is built with the URL (lib/booking.ts). slotBefore/slotAfter
-    (2026-09-16, landing-voice) replace the intro once the "Talk to Pancake"
-    agent opened the time the visitor picked. */
+    (2026-09-16, landing-voice) replace the intro once the voice agent
+    opened the time the visitor picked. */
 export const BOOKING = {
   title: "Pick a time",
   /** introBefore + calendar[destination key] + introAfter */
@@ -136,26 +143,28 @@ export const BOOKING = {
   fallbackBefore: "Calendar not loading? ",
   fallbackLink: "Open it in a new tab",
   fallbackAfter: ".",
-  aiSalesLine: "Rather talk now? Pancake answers right away.",
-  aiSales: "Talk to Pancake",
+  aiSalesLine: "Rather talk now? Our AI answers right away.",
+  aiSales: "Talk to our AI",
 } as const;
 
 /** The full-screen voice call with the ElevenLabs agent (AiSalesCall),
     opened by BOOKING.aiSales (François, 2026-09-16: the agent takes up the
     screen, no chat). The state lines, the controls and the disclosure are
     the 2026-09-16 call brief ("Mute" / "Unmute" included); `muted` and
-    `newTab` follow landing-voice.
+    `newTab` follow landing-voice. title, connecting and micDenied say "our
+    AI" (2026-09-16), so the first words after the click never read as a
+    person; "Pancake is speaking" and the agent's greeting keep the name.
     The same line is shown under the mascot and announced once per change. */
 export const AI_CALL = {
   /** the dialog's accessible name (a visually hidden heading) */
-  title: "Talk to Pancake",
-  connecting: "Connecting you to Pancake",
+  title: "Talk to Pancake, our AI agent",
+  connecting: "Connecting you to our AI",
   listening: "Listening",
   speaking: "Pancake is speaking",
   /** replaces "Listening" while the visitor's microphone is muted */
   muted: "Your mic is muted",
   ended: "Call ended",
-  micDenied: "Allow your microphone to talk to Pancake.",
+  micDenied: "Allow your microphone to talk to our AI.",
   failed: "We could not connect. Try again, or pick a time on the calendar.",
   /** `failed` and `back` when the call closes onto a form step */
   failedForm: "We could not connect. Try again, or fill in the form.",

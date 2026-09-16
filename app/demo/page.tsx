@@ -14,7 +14,7 @@ import "@/app/_styles/ai-sales-call.css";
  * form (the Calendly routing questions) in the white card on the right.
  * After submit the card hands off to booking: the Calendly calendar the team
  * size routes to, inline and prefilled (lib/booking.ts), then a booked state
- * with the demo video (2026-09-16). "Talk to Pancake" on the booking state
+ * with the demo video (2026-09-16). "Talk to our AI" on the booking state
  * opens a full-screen voice call with the ElevenLabs agent (AiSalesCall,
  * styled by ai-sales-call.css).
  * Every "Book a demo" CTA on the site links here. Route is provisional:

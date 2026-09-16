@@ -443,44 +443,31 @@
   justify-self: start;
   margin-top: var(--lp-space-2);
 }
-/* The submit row. Step 1: "Let's go", then "Talk to Pancake" beside it
-   (François, 2026-09-16). Step 2: Back at the left edge (ElevenLabs), "Pick
-   a time" and "Talk to Pancake" together at the right. The row carries the
-   gap above. */
+/* The button rows. Step 1: "Let's go", then "Talk to our AI" beside it
+   (François, 2026-09-16). Step 2: "Pick a time" and "Talk to our AI" in
+   step 1's spots, then Back as a quiet text button pushed to the row's end,
+   over the progress bar (François, 2026-09-16: not under the pills). About
+   370px of the 400px column, so both steps are one 48px row and the card
+   keeps its height between them. The wrap only fires under text zoom: Back
+   drops to its own line, still at the end. Step 1 keeps
+   .demo-form__actions--start as the hook the hug exception below skips.
+   The row carries the gap above. */
 .demo-form__actions {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   flex-wrap: wrap;
   gap: var(--lp-space-3);
   margin-top: var(--lp-space-2);
 }
-.demo-form__actions--start {
-  justify-content: flex-start;
-}
-/* Step 2's three pills do not fit one line in the card column: the submit
-   pair comes first in the DOM, so when the row wraps Back drops under it,
-   matching step 1 where the submit leads. At ≥1201px step 1's one-line row
-   keeps step 2's two-line height, so the card does not jump between steps. */
-@media (min-width: 1201px) {
-  .demo-form__actions--start:has(.demo-form__talk) {
-    min-height: calc(2 * var(--demo-control-height) + var(--lp-space-3));
-    align-content: flex-start;
-  }
-}
-.demo-form__actions-end {
-  display: flex;
-  align-items: center;
-  gap: var(--lp-space-3);
-}
 .lp-demo .demo-form__actions .demo-form__submit {
   margin-top: 0;
 }
 /* Named exception to "button keep same sizes" (see the success pills below):
-   "Pick a time" and "Talk to Pancake" (15 chars) hug their label with the
-   md pill's Figma radius and never drop under the kit box, so "Sending…"
-   does not shrink the submit mid-request. "Back" (4 chars) and "Let's go"
-   keep the kit's fixed geometry. */
+   "Pick a time" and "Talk to our AI" (14 chars) hug their label with the md
+   pill's Figma radius and never drop under the kit box, so "Sending…" does
+   not shrink the submit mid-request. "Let's go" keeps the kit's fixed
+   geometry. */
 @media (min-width: 768px) {
   .lp-demo .demo-form__actions:not(.demo-form__actions--start) .demo-form__submit,
   .lp-demo .demo-form__actions .demo-form__talk {
@@ -491,10 +478,53 @@
     min-width: var(--demo-pill-width);
   }
 }
-/* Busy look while the label reads "Sending…"; the button stays a real,
-   focusable, enabled control (onSubmit early-returns). Nothing on the page
-   is ever disabled, so there are no disabled-state rules. */
-.lp-demo .lp-btn[aria-disabled="true"] {
+/* Back: not a kit pill (LpFxPill is a fixed 136px box with a flood, as heavy
+   as the two actions before it). A native button in the pill labels' ink and
+   type, with a border-drawn chevron (nothing added to its accessible name)
+   and a 48px target. The negative end margin puts the word on the column
+   edge while the target spills into the air beside it (the card clips only
+   at its own edge, 48px further). Underlined on hover, never dimmed except
+   while busy. */
+.lp-demo .demo-form__back {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lp-space-2);
+  min-height: var(--demo-control-height);
+  margin-inline: auto calc(-1 * var(--lp-space-3));
+  padding: 0 var(--lp-space-3);
+  border: 0;
+  border-radius: var(--lp-r-sm);
+  background: none;
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
+}
+/* the select's chevron recipe, pointing left; nudged right so its ink centres in its box */
+.lp-demo .demo-form__back::before {
+  content: "";
+  flex: none;
+  width: var(--lp-space-2);
+  height: var(--lp-space-2);
+  border-left: var(--demo-chevron-stroke) solid currentColor;
+  border-bottom: var(--demo-chevron-stroke) solid currentColor;
+  transform: translateX(25%) rotate(45deg);
+}
+@media (hover: hover) {
+  .lp-demo .demo-form__back:hover:not([aria-disabled="true"]) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+}
+/* Busy look while the label reads "Sending…"; every control stays a real,
+   focusable, enabled control (onSubmit and goBack early-return). Nothing on
+   the page is ever disabled, so there are no disabled-state rules. */
+.lp-demo :is(.lp-btn, .demo-form__back)[aria-disabled="true"] {
   opacity: 0.6;
   cursor: progress;
 }
@@ -595,7 +625,7 @@
   text-underline-offset: 0.2em;
 }
 /* Named exception to foundation.css "button keep same sizes" (founder
-   2026-09-03): "Talk to Pancake" (15 chars, founder 2026-09-16) and "Start a
+   2026-09-03): "Talk to our AI" (14 chars, founder 2026-09-16) and "Start a
    new submission" (22, verbatim) overflow the 136px squircle.
    These two pills hug their label with the md pill's Figma radius; the
    submit and every other pill keep the Figma geometry. (0,3,0) beats
@@ -729,19 +759,20 @@
     justify-self: stretch;
   }
   /* The rows stack in DOM order and every pill spans the card (the kit
-     pins 135px at ≤767). Step 1: "Let's go", then "Talk to Pancake".
-     Step 2: "Pick a time", "Talk to Pancake", then Back. */
+     pins 135px at ≤767). Step 1: "Let's go", then "Talk to our AI". Step 2:
+     "Pick a time", "Talk to our AI", then Back as a full-width 48px text
+     row, its label centred like the pills'. */
   .lp-demo .demo-form__actions {
     flex-direction: column;
     align-items: stretch;
     gap: var(--lp-space-3);
   }
-  .lp-demo .demo-form__actions-end {
-    flex-direction: column;
-    align-items: stretch;
-  }
   .lp-demo .demo-form__actions .lp-btn {
     width: 100%;
+  }
+  /* an auto margin on the cross axis would block the stretch */
+  .lp-demo .demo-form__back {
+    margin-inline: 0;
   }
   .lp-demo .demo-form__foot {
     flex-direction: column;

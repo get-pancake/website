@@ -13,7 +13,7 @@
  * exact string (DEMO_BOOKING_ROUTES copies the routing form's routes). A
  * value with no route falls back to the discovery call without an error,
  * while Loops emails still go through the routing form itself, so the two
- * paths would book different calendars (the "Talk to Pancake" agent books
+ * paths would book different calendars (the voice agent books
  * what lib/booking.ts routes, like the page). It broke
  * once on 2026-09-16, when the Calendly buckets changed from 1-2 / 3-10 /
  * 11-50 / 51-200 / 201+ to the four below. Any change to Calendly's routes,
@@ -182,7 +182,7 @@ export function parseDemoRequest(input: unknown): DemoRequestParse {
 
 /** The answers of a demo request known so far: every field that is valid
     on its own, nothing else (a half-typed email is left out). What the
-    "Talk to Pancake" call starts with when the visitor opens it from the
+    voice call starts with when the visitor opens it from the
     form, before the request is complete. Pure. */
 export type DemoRequestPartial = Partial<Omit<DemoRequest, "submissionId">>;
 

@@ -337,7 +337,7 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Voice calls:</strong> the audio of the call, its transcript, and the
                 answers the agent collects. A call starts only after you click &quot;Talk to
-                Pancake&quot; and allow your microphone. The call screen tells you that you are
+                our AI&quot; and allow your microphone. The call screen tells you that you are
                 talking to an AI agent and that the call is recorded.
               </li>
               <li>
@@ -367,15 +367,16 @@ export default function PrivacyPolicyPage() {
               <li>
                 <strong>Attio</strong>, our CRM, and <strong>Slack</strong> and{" "}
                 <strong>Airtable</strong>, where our team is notified of new requests, receive
-                your form answers.
+                your form answers. The voice agent also posts a short summary of each call to
+                our Slack, with a link to the call in ElevenLabs.
               </li>
             </ul>
             <h3>Retention</h3>
             <ul>
-              <li>Call recordings and transcripts: deleted after 90 days</li>
+              <li>Call recordings and transcripts in ElevenLabs: deleted after 90 days</li>
               <li>
-                Form answers and CRM records: kept while we are in contact with you or your
-                company, and deleted on request
+                Form answers, CRM records, and call summaries in our Slack: kept while we are in
+                contact with you or your company, and deleted on request
               </li>
               <li>Bookings: kept in Calendly and our calendars as long as needed for the meeting</li>
             </ul>

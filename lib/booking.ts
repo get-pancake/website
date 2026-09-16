@@ -51,7 +51,7 @@ export type DemoBookingDestination = Readonly<{
   /** the event type's public link (what the routing form redirects to) */
   url: string;
   /** the event type's Calendly API URI: the calendar whose open times the
-      "Talk to Pancake" agent reads (lib/ai-sales.ts booking_event_type).
+      voice agent reads (lib/ai-sales.ts booking_event_type).
       Read 2026-09-16 from Calendly's public booking lookup of `url`. */
   eventTypeUri: string;
   /** the URL parameter that prefills the optional booking question "Please

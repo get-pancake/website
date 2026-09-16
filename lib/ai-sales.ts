@@ -1,5 +1,5 @@
 /**
- * The ElevenLabs "AI sales" agent behind "Talk to Pancake" on /demo's
+ * The ElevenLabs "AI sales" agent behind "Talk to our AI" on /demo's
  * booking state (François, 2026-09-16: the agent exists and is published;
  * a visitor talks to it for qualification). Client-safe: no `server-only`,
  * no node imports, nothing touches `window` or `document` at module scope;

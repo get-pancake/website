@@ -30,7 +30,7 @@ import { BOOKING } from "./demo-copy";
  * routed calendar (BOOKING.calendar). The embed is prefilled with name,
  * email and a one-line summary of the answers (team size, account, goal,
  * website), shown in every calendar's optional prep question. With a
- * `slot` (a time the "Talk to Pancake" agent opened, DemoForm), the frame
+ * `slot` (a time the voice agent opened, DemoForm), the frame
  * opens that time's booking page instead, same prefill, and the intro says
  * to confirm it (BOOKING.slotBefore). Nothing else about the visitor goes
  * to Calendly: the frame gets the browser's default referrer policy, so
@@ -55,7 +55,7 @@ import { BOOKING } from "./demo-copy";
  * region that mounts together with its content is not announced, so the
  * persistent status node in DemoForm carries the state change.
  *
- * "Talk to Pancake" asks DemoForm to open the full-screen voice call with
+ * "Talk to our AI" asks DemoForm to open the full-screen voice call with
  * the ElevenLabs agent (AiSalesCall; `onTalk`). DemoForm owns the call, so
  * the same call serves both form steps and this state, and a call keeps
  * running when the form moves here under it. With no agent id

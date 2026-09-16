@@ -56,7 +56,7 @@ import { DemoBooking } from "./DemoBooking";
  * booking (DemoBooking): the Calendly calendar the team size routes to,
  * inline and prefilled from the successful submission's answers
  * (lib/booking.ts mirrors the routing form's routes, so Calendly never asks
- * the questions again; François, 2026-09-16), plus "Talk to Pancake" (the
+ * the questions again; François, 2026-09-16), plus "Talk to our AI" (the
  * full-screen voice call, AiSalesCall). Its own error paths stay inside it:
  * a frame that never loads shows a new-tab link to the same prefilled
  * calendar, and a call that cannot start shows its own failure state with
@@ -84,7 +84,7 @@ import { DemoBooking } from "./DemoBooking";
  * aria-busy + aria-disabled on the pill prevent re-entry instead, and
  * focus moves to the failing field or the alert on every error.
  *
- * "Talk to Pancake" (François, 2026-09-16: "choose to directly talk to
+ * "Talk to our AI" (François, 2026-09-16: "choose to directly talk to
  * Pancake's AI instead ... next to Let's go ... on both steps of the
  * form"): beside the submit on both steps, and in the booking state. This
  * component owns the one full-screen call (AiSalesCall), so a call keeps
@@ -172,8 +172,8 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
   const [error, setError] = useState<ErrorKind | null>(null);
   // What the SUCCESSFUL submission hands on, and a restart clears: the
   // answers the Calendly event URL uses (the team size picks the calendar;
-  // name, email and the answers line prefill it) and the "Talk to Pancake"
-  // agent books with, both in DemoBooking. The submission id goes to
+  // name, email and the answers line prefill it) and the voice agent
+  // finds a time with, both in DemoBooking. The submission id goes to
   // /api/demo-request only, never to DemoBooking (Calendly or the agent).
   const [answers, setAnswers] = useState<DemoBookingAnswers | null>(null);
   const inFlight = useRef(false); // the double-submit guard: controls stay enabled
@@ -273,13 +273,16 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     setStep(next);
   }
 
-  /** The phone double-tap guard. A click flushes the new step before the
-      second tap of a double-tap lands, and at ≤767px the top half of
-      "Let's go" sits where Back renders on step 2 (and Back's lower half
-      where "Let's go" renders on step 1), so that second tap would bounce
-      the visitor straight back with no error to explain it. Ignore it, the
-      way the kit's pill FX ignores touch pointerenter. A keyboard user
-      cannot reach the other step's button in STEP_SETTLE_MS. */
+  /** The double-tap guard. A click flushes the new step before the second
+      tap of a double-tap lands, so that tap hits whatever the other step
+      renders under the finger. From 1201px both rows sit at the same height:
+      "Let's go" becomes "Pick a time". On phones step 2's fields are shorter,
+      so its buttons start higher (measured at 375px): "Let's go" overlaps
+      step 2's "Talk to our AI" and Back, and Back overlaps "Let's go" and
+      step 1's "Talk to our AI". onSubmit, goBack and openCall all ignore a
+      tap within STEP_SETTLE_MS, the way the kit's pill FX ignores touch
+      pointerenter. A keyboard user cannot reach the other step's button in
+      that time. */
   function stepJustChanged(): boolean {
     return Date.now() - stepChangedAt.current < STEP_SETTLE_MS;
   }
@@ -474,7 +477,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
       ok: true,
       local_start: localTimeLabel(new Date(picked.start), timeZone),
       message:
-        "The booking page for that time is open on the visitor's screen, with their name, email and answers filled in. The call closes by itself after your next sentence.",
+        "The booking page for that time is open on the visitor's screen, with their name, email and answers filled in. The call closes by itself once you have said that.",
     };
   }
 
@@ -701,11 +704,9 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
             ) : null}
             {/* Only the active step's submit exists (see the header note on
                 implicit submission). Step 1 is never busy: no request leaves
-                it. Back is a plain button; while a request is in flight it
-                looks busy like the submit and goBack early-returns. */}
-            {/* "Talk to Pancake" is a plain button beside the submit (never
-                the form's default button: it follows the submit in DOM
-                order). Not rendered without an agent id. */}
+                it. "Talk to our AI" is a plain button after the submit, so it
+                is never the form's default button; not rendered without an
+                agent id. */}
             {step === 1 ? (
               <div className="demo-form__actions demo-form__actions--start">
                 <LpFxPill type="submit" className="demo-form__submit">
@@ -725,37 +726,40 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
               </div>
             ) : (
               <div className="demo-form__actions">
-                {/* DOM order = visual order: the submit pair first, Back under
-                    it when the row wraps (and last in the tab order). */}
-                <div className="demo-form__actions-end">
-                  <LpFxPill
-                    type="submit"
-                    className="demo-form__submit"
-                    aria-disabled={busy}
-                    onClick={(event) => {
-                      // A double-click on "Let's go" lands here on desktop:
-                      // cancel it before the browser validates step 2.
-                      if (stepJustChanged()) event.preventDefault();
-                    }}
-                  >
-                    {busy ? CARD.submitting : STEP2.submit}
-                  </LpFxPill>
-                  {AI_SALES_ENABLED ? (
-                    <LpFxPill
-                      type="button"
-                      className="lp-btn--outline demo-form__talk"
-                      data-ai-sales-trigger=""
-                      aria-haspopup="dialog"
-                      aria-disabled={busy}
-                      onClick={openCall}
-                    >
-                      {CARD.talk}
-                    </LpFxPill>
-                  ) : null}
-                </div>
-                <LpFxPill type="button" className="lp-btn--outline demo-form__back" aria-disabled={busy} onClick={goBack}>
-                  {STEP2.back}
+                {/* One row, DOM order = visual order = tab order: the submit
+                    and the call keep step 1's spots, then Back as a quiet
+                    text button at the row's end, over the progress bar
+                    (François, 2026-09-16: not under the pills). A native
+                    button, not LpFxPill: type="button" keeps it from
+                    submitting the form. While a request is in flight it
+                    looks busy like the pills; goBack early-returns. */}
+                <LpFxPill
+                  type="submit"
+                  className="demo-form__submit"
+                  aria-disabled={busy}
+                  onClick={(event) => {
+                    // A double-click on "Let's go" lands here on desktop:
+                    // cancel it before the browser validates step 2.
+                    if (stepJustChanged()) event.preventDefault();
+                  }}
+                >
+                  {busy ? CARD.submitting : STEP2.submit}
                 </LpFxPill>
+                {AI_SALES_ENABLED ? (
+                  <LpFxPill
+                    type="button"
+                    className="lp-btn--outline demo-form__talk"
+                    data-ai-sales-trigger=""
+                    aria-haspopup="dialog"
+                    aria-disabled={busy}
+                    onClick={openCall}
+                  >
+                    {CARD.talk}
+                  </LpFxPill>
+                ) : null}
+                <button type="button" className="demo-form__back" aria-disabled={busy} onClick={goBack}>
+                  {STEP2.back}
+                </button>
               </div>
             )}
           </form>
