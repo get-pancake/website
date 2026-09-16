@@ -8,9 +8,10 @@ import {
   CALENDLY_ORIGIN,
   CALENDLY_TWO_COLUMN_MIN,
   calendlyPageHeight,
-  demoBookingPrefillUrl,
+  demoBookingDestination,
+  demoBookingEventUrl,
   isCalendlyEventScheduled,
-  type DemoBookingPrefill,
+  type DemoBookingAnswers,
 } from "@/lib/booking";
 import { BOOKING, SUPPORT_HREF } from "./demo-copy";
 
@@ -20,13 +21,18 @@ import { BOOKING, SUPPORT_HREF } from "./demo-copy";
  * straight with us"). DemoForm's state machine: … submitting ──200──▶
  * booking (this) ──calendly.event_scheduled──▶ booked (DemoBooked).
  *
- * The card holds the Calendly routing form (lib/booking.ts: it owns the
- * routing and feeds Attio) as an Inline embed, prefilled with the answers of
- * the successful submission (`prefill`: team size, account, goal, name,
- * email; nothing else about the visitor goes to Calendly: the frame gets the
- * browser's default referrer policy, so only the site's origin travels, and
- * no camera or microphone permission). The visitor
- * presses Calendly's own Submit, then picks a slot. The embed:
+ * The card holds the Calendly calendar the successful submission's team
+ * size routes to (`answers`; lib/booking.ts demoBookingDestination mirrors
+ * the live routing form's routes: François, 2026-09-16, "route you to the
+ * right calendar"), as an Inline embed. The routing form itself is not
+ * embedded: it would ask the same questions again. The intro names the
+ * routed calendar (BOOKING.calendar). The embed is prefilled with name,
+ * email and a one-line summary of the answers (team size, account, goal,
+ * website; the group demos show it in their one booking question, the other
+ * calls ignore it). Nothing else about the visitor goes to Calendly: the
+ * frame gets the browser's default referrer policy, so only the site's
+ * origin travels, and no camera or microphone permission. The visitor picks
+ * a slot and confirms. The embed:
  *   - is built after mount: its colors come from the card's computed CSS
  *     and --demo-cal-primary, as LpModals did (PR #288), so the design
  *     tokens stay the single source;
@@ -37,7 +43,7 @@ import { BOOKING, SUPPORT_HREF } from "./demo-copy";
  *     checked, once): `onBooked` moves DemoForm to the booked state;
  *   - when blocked (third-party storage, an extension, a strict privacy
  *     mode) never reports a real page height: after FRAME_STUCK_MS the
- *     new-tab link to the same prefilled URL appears (LpModals' escape
+ *     new-tab link to the same prefilled calendar appears (LpModals' escape
  *     hatch). The iframe's `load` event is no signal: browsers fire it for
  *     a blocked or error page too.
  * No analytics fire here (AGENTS.md: analytics changes need explicit scope).
@@ -72,11 +78,11 @@ type AiSalesState = "idle" | "opening" | "ready" | "error";
 const FRAME_STUCK_MS = 6000;
 
 export function DemoBooking({
-  prefill,
+  answers,
   visitor,
   onBooked,
 }: {
-  prefill: DemoBookingPrefill;
+  answers: DemoBookingAnswers;
   visitor: AiSalesVisitor | null;
   onBooked: () => void;
 }) {
@@ -95,6 +101,7 @@ export function DemoBooking({
   // nothing to do), cleared on error so the visitor can try again.
   const aiSalesLocked = useRef(false);
   const mounted = useRef(false);
+  const destination = demoBookingDestination(answers.teamSize);
 
   useEffect(() => { titleRef.current?.focus(); }, []);
   useEffect(() => {
@@ -113,7 +120,7 @@ export function DemoBooking({
     const card = wrap.closest<HTMLElement>(".demo-card") ?? wrap;
     const cardStyle = getComputedStyle(card);
     setFrameSrc(
-      demoBookingPrefillUrl(prefill, {
+      demoBookingEventUrl(answers, {
         compact: wrap.clientWidth < CALENDLY_TWO_COLUMN_MIN,
         colors: {
           background: cardStyle.backgroundColor,
@@ -122,7 +129,7 @@ export function DemoBooking({
         },
       }),
     );
-  }, [prefill]);
+  }, [answers]);
 
   // Calendly's Inline embed contract: page height and the booking. Only
   // Calendly's origin AND this frame's window are trusted.
@@ -191,7 +198,9 @@ export function DemoBooking({
       <h2 id="demo-card-title" className="lp-display demo-card__title" ref={titleRef} tabIndex={-1}>
         {BOOKING.title}
       </h2>
-      <p className="demo-success__lead">{BOOKING.intro}</p>
+      <p className="demo-success__lead">
+        {BOOKING.introBefore}{BOOKING.calendar[destination.key]}{BOOKING.introAfter}
+      </p>
       <div className="demo-success__cal">
         <div ref={frameWrapRef} className="demo-success__frame">
           {/* Exists only in this state: nothing from Calendly loads before a

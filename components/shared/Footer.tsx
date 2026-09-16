@@ -44,8 +44,8 @@ const columns: { title: string; links: FooterLink[] }[] = [
     links: [
       { href: "/blog", label: "Blog" },
       { href: "/careers", label: "Careers" },
-      // /demo, same tab (François, 2026-09-16): its form hands off to the
-      // Calendly routing form, never a direct event link (lib/booking.ts).
+      // /demo, same tab (François, 2026-09-16): its form routes the visitor
+      // to the right Calendly calendar (lib/booking.ts).
       { href: DEMO_PAGE_PATH, label: "Book a meeting" },
       { href: "https://discord.gg/brJ99Up6ym", label: "Discord" },
     ],

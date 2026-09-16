@@ -8,15 +8,18 @@ import type { Goal, HasAccount, TeamSize } from "@/lib/demo-request";
  * to lead to the demo page"). The page-level Calendly dialogs (LpModals,
  * LandingModals) are no longer mounted anywhere.
  *
- * Behind /demo, the booking destination is still Calendly's
- * qualification/routing form (DEMO_BOOKING_URL): it asks team size, whether
- * the visitor has a Pancake account and the optional #1 goal, routes each
- * combination to the right event type inside Calendly, and feeds Attio
- * (routing submissions and bookings). After /api/demo-request lands, /demo
- * embeds THIS form inline, prefilled with the visitor's answers
- * (demoBookingPrefillUrl). Never link a direct event: it would bypass the
- * routing and Attio (Calendly setup 2026-09-07, all routing combinations
- * preview-tested).
+ * /demo asks the routing form's questions itself (lib/demo-request.ts), so
+ * after /api/demo-request lands it embeds the calendar those answers route
+ * to (demoBookingDestination, demoBookingEventUrl), not the routing form,
+ * which would ask the same questions again (François, 2026-09-16: "could we
+ * use the questions from the demo page as answers to the router directly,
+ * and route you to the right calendar?").
+ *
+ * DEMO_BOOKING_URL is Calendly's qualification/routing form "Pancake
+ * discovery call" (id 402887), still the public booking link: Calendly
+ * routes everyone who opens it (Loops emails, the AI sales agent, the
+ * unmounted dialogs) and feeds Attio from it (routing submissions and
+ * bookings).
  */
 export const DEMO_BOOKING_URL = "https://calendly.com/d/d3zd-2yc-x2s";
 
@@ -24,21 +27,78 @@ export const DEMO_BOOKING_URL = "https://calendly.com/d/d3zd-2yc-x2s";
 export const DEMO_PAGE_PATH = "/demo";
 
 /*
- * The routing form's question ids. Calendly prefills a question from a query
- * param keyed by its id, valued with the option's exact visible text
- * (verified live 2026-09-16: all three prefilled; the visitor still presses
- * Calendly's own Submit, then picks a slot). The option text lives in
- * lib/demo-request.ts (TEAM_SIZES, GOALS) and must match Calendly verbatim.
+ * The calendars /demo books directly. Mirrors the live Calendly routing form
+ * 402887, read 2026-09-16: its routes run in order on the Team size answer
+ * only (the account and goal answers never change the calendar), and any
+ * other value falls back to the discovery call. Calendly still routes
+ * everyone who uses the routing form URL (Loops emails, the AI sales agent),
+ * so both paths must land on the same calendar: any change to Calendly's
+ * routes, buckets or event links updates this table, DEMO_BOOKING_ROUTES and
+ * lib/demo-request.ts TEAM_SIZES in the same change.
+ *
+ * The direct event links bypass the routing form by design (founder
+ * decision, 2026-09-16). So /demo bookings create no "Calendly Routing Form
+ * Submissions" in Attio; the bookings themselves still reach Attio.
  */
-/** Team size: required dropdown, options "1-2" / "3-20" / "21-50" / "51+". */
-export const CALENDLY_TEAM_SIZE_QUESTION_ID = "6bbdc262-0cf1-4225-ae54-cafa8bd90e7d";
-/** "Do you already have a Pancake account?": required radio, "Yes" / "No". */
-export const CALENDLY_HAS_ACCOUNT_QUESTION_ID = "370f031a-d6d3-4fed-be3a-5a57b2710ef3";
-/** "What is the #1 thing Pancake can do for you?": optional dropdown (GOALS). */
-export const CALENDLY_GOAL_QUESTION_ID = "efdf2fa6-ab52-4437-9b6a-1b376e79bf98";
+export type DemoBookingDestinationKey = "discovery" | "enterprise" | "groupDemo" | "largeGroupDemo";
 
-/** The form's values are lowercase; Calendly's radio options are capitalised. */
-const CALENDLY_HAS_ACCOUNT: Record<HasAccount, "Yes" | "No"> = { yes: "Yes", no: "No" };
+export type DemoBookingDestination = Readonly<{
+  key: DemoBookingDestinationKey;
+  /** the event type's name in Calendly */
+  name: string;
+  /** the event type's public link (what the routing form redirects to) */
+  url: string;
+}>;
+
+export const DEMO_BOOKING_DESTINATIONS: Readonly<Record<DemoBookingDestinationKey, DemoBookingDestination>> =
+  Object.freeze({
+    /** 30 min, Round Robin; asks name and email only */
+    discovery: Object.freeze({
+      key: "discovery",
+      name: "Pancake discovery call",
+      url: "https://calendly.com/d/d3nb-49j-dv2/pancake-discovery-call",
+    }),
+    /** 45 min, Collective; set up like the discovery call (2026-09-08) */
+    enterprise: Object.freeze({
+      key: "enterprise",
+      name: "Pancake enterprise discovery call",
+      url: "https://calendly.com/d/dz6m-cfh-bz7/pancake-enterprise-discovery-call",
+    }),
+    /** 30 min, Group; one optional question, prefilled through `a1` */
+    groupDemo: Object.freeze({
+      key: "groupDemo",
+      name: "Pancake group demo",
+      url: "https://calendly.com/getpancake/pancake-group-demo",
+    }),
+    /** 30 min, Group; one optional question, prefilled through `a1` */
+    largeGroupDemo: Object.freeze({
+      key: "largeGroupDemo",
+      name: "Pancake group demo (L)",
+      url: "https://calendly.com/getpancake/pancake-large-group-demo",
+    }),
+  });
+
+/** The routing form's routes, in Calendly's order (first match wins). */
+const DEMO_BOOKING_ROUTES: ReadonlyArray<Readonly<{ teamSize: TeamSize; destination: DemoBookingDestinationKey }>> =
+  Object.freeze([
+    Object.freeze({ teamSize: "21-50", destination: "discovery" }),
+    Object.freeze({ teamSize: "51+", destination: "enterprise" }),
+    Object.freeze({ teamSize: "3-20", destination: "groupDemo" }),
+    Object.freeze({ teamSize: "1-2", destination: "largeGroupDemo" }),
+  ]);
+
+/** Calendly's fallback when no route matches. */
+const DEMO_BOOKING_FALLBACK: DemoBookingDestinationKey = "discovery";
+
+/**
+ * The calendar a Team size answer routes to, as the routing form would
+ * route it. Takes any string: a value with no route gets the fallback, as in
+ * Calendly. Pure.
+ */
+export function demoBookingDestination(teamSize: string): DemoBookingDestination {
+  const route = DEMO_BOOKING_ROUTES.find((candidate) => candidate.teamSize === teamSize);
+  return DEMO_BOOKING_DESTINATIONS[route ? route.destination : DEMO_BOOKING_FALLBACK];
+}
 
 /** The routing form's Calendly id — the `scheduler_id` on analytics events. */
 export const DEMO_SCHEDULER_ID = "d3zd-2yc-x2s" as const;
@@ -57,7 +117,8 @@ export const CALENDLY_TWO_COLUMN_MIN = 1000;
 
 /** Calendly posts its loading spinner's height too (26px measured
  *  2026-09-07); page-height reports under this are not a page and must not
- *  resize the frame. Its shortest real page (the routing form) is ~650px. */
+ *  resize the frame. Real pages are far taller (the routing form measured
+ *  ~650px). */
 export const CALENDLY_MIN_PAGE_HEIGHT = 200;
 
 /** Colors the embed is skinned with — Calendly's `background_color` /
@@ -80,13 +141,11 @@ export type EmbedOptions = {
 };
 
 /**
- * The routing form as an Inline embed. `embed_domain`/`embed_type` are
- * Calendly's own embed contract (enables its in-frame sizing + postMessage);
- * every param set here survives the routing form's redirect to the event
- * type (verified 2026-09-07). Call only from the browser (the frame is built
- * after mount, from computed colors).
+ * Calendly's Inline embed params. `embed_domain`/`embed_type` are Calendly's
+ * own embed contract (enables its in-frame sizing + postMessage). Call only
+ * from the browser (the frame is built after mount, from computed colors).
  */
-export function demoBookingEmbedUrl({ compact = false, colors = {} }: EmbedOptions = {}) {
+function calendlyEmbedParams({ compact = false, colors = {} }: EmbedOptions): URLSearchParams {
   const domain = typeof window === "undefined" ? "getpancake.ai" : window.location.hostname;
   const params = new URLSearchParams({
     embed_domain: domain,
@@ -100,42 +159,74 @@ export function demoBookingEmbedUrl({ compact = false, colors = {} }: EmbedOptio
   if (background) params.set("background_color", background);
   if (text) params.set("text_color", text);
   if (primary) params.set("primary_color", primary);
-  return `${DEMO_BOOKING_URL}?${params.toString()}`;
+  return params;
 }
 
-/** What /demo hands Calendly after a successful request: the three routing
- *  answers plus the name and email for the booking page. Nothing else about
- *  the visitor (no website, no submission id) goes to Calendly. */
-export type DemoBookingPrefill = {
-  teamSize: TeamSize;
-  hasAccount: HasAccount;
-  /** optional question: omitted from the URL when empty */
-  goal?: Goal | "";
+/**
+ * The routing form as an Inline embed, for the unmounted dialogs (LpModals,
+ * LandingModals). Every param set here survives the routing form's redirect
+ * to the event type (verified 2026-09-07).
+ */
+export function demoBookingEmbedUrl(options: EmbedOptions = {}) {
+  return `${DEMO_BOOKING_URL}?${calendlyEmbedParams(options).toString()}`;
+}
+
+/** What /demo hands Calendly after a successful request: the answers the
+ *  event URL uses. Nothing else about the visitor (no submission id) goes to
+ *  Calendly. */
+export type DemoBookingAnswers = {
   firstName: string;
   lastName: string;
   email: string;
+  /** normalised (lib/demo-request.ts normalizeWebsite) */
+  website: string;
+  teamSize: TeamSize;
+  hasAccount: HasAccount;
+  /** optional question: left out of the context line when empty */
+  goal?: Goal | "";
 };
 
+/** The context line's ceiling, in characters. Every field is bounded by
+ *  lib/demo-request.ts, so only an unusually long website can reach it. */
+export const DEMO_BOOKING_CONTEXT_MAX = 500;
+
+/** The form's values are lowercase; the context line reads like Calendly's options. */
+const HAS_ACCOUNT_TEXT: Record<HasAccount, "Yes" | "No"> = { yes: "Yes", no: "No" };
+
 /**
- * demoBookingEmbedUrl (embed + color params kept) plus the prefill: the three
- * routing answers keyed by question id, then `name` ("First Last") and
- * `email`, which Calendly carries to the booking page after routing (every
- * query param survives the redirect, verified 2026-09-07). Encoded with
- * URLSearchParams, then `+` written as `%20`: the form the prefill was
- * verified with live (2026-09-16), decoded the same by every parser; a
- * literal plus (an email alias) is already `%2B`. Client-safe.
+ * The plain-text line prefilled into the group demos' one booking question
+ * ("Please share anything that will help prepare for our meeting.", `a1`),
+ * so the host sees the /demo answers: "Team size: 3-20. Pancake account: No.
+ * Goal: Find qualified leads. Website: https://acme.com/". Goal is left out
+ * when empty. A line that would pass DEMO_BOOKING_CONTEXT_MAX drops the
+ * website rather than cut a URL in half.
  */
-export function demoBookingPrefillUrl(prefill: DemoBookingPrefill, options: EmbedOptions = {}) {
-  const embed = new URL(demoBookingEmbedUrl(options));
-  const params = embed.searchParams;
-  params.set(CALENDLY_TEAM_SIZE_QUESTION_ID, prefill.teamSize);
-  params.set(CALENDLY_HAS_ACCOUNT_QUESTION_ID, CALENDLY_HAS_ACCOUNT[prefill.hasAccount]);
-  if (prefill.goal) params.set(CALENDLY_GOAL_QUESTION_ID, prefill.goal);
-  const name = [prefill.firstName.trim(), prefill.lastName.trim()].filter(Boolean).join(" ");
+function demoBookingContext(answers: DemoBookingAnswers): string {
+  const facts = [`Team size: ${answers.teamSize}.`, `Pancake account: ${HAS_ACCOUNT_TEXT[answers.hasAccount]}.`];
+  if (answers.goal) facts.push(`Goal: ${answers.goal}.`);
+  const website = answers.website.trim();
+  const line = [...facts, ...(website ? [`Website: ${website}`] : [])].join(" ");
+  return line.length <= DEMO_BOOKING_CONTEXT_MAX ? line : facts.join(" ").slice(0, DEMO_BOOKING_CONTEXT_MAX);
+}
+
+/**
+ * The routed calendar (demoBookingDestination) as an Inline embed, prefilled:
+ * the embed and color params, then `name` ("First Last"), `email` and `a1`
+ * (the context line). The discovery and enterprise calls have no custom
+ * question, and Calendly ignores `a1` there. Encoded with URLSearchParams,
+ * then `+` written as `%20`: the form the routing-form prefill was verified
+ * with live (2026-09-16), decoded the same by every parser; a literal plus
+ * (an email alias) is already `%2B`. Call only from the browser.
+ */
+export function demoBookingEventUrl(answers: DemoBookingAnswers, options: EmbedOptions = {}) {
+  const params = calendlyEmbedParams(options);
+  const name = [answers.firstName.trim(), answers.lastName.trim()].filter(Boolean).join(" ");
   if (name) params.set("name", name);
-  const email = prefill.email.trim();
+  const email = answers.email.trim();
   if (email) params.set("email", email);
-  return `${DEMO_BOOKING_URL}?${params.toString().replace(/\+/g, "%20")}`;
+  params.set("a1", demoBookingContext(answers));
+  const { url } = demoBookingDestination(answers.teamSize);
+  return `${url}?${params.toString().replace(/\+/g, "%20")}`;
 }
 
 /**

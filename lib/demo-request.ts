@@ -2,24 +2,30 @@
  * /demo request contract, shared by the form (browser) and the API route.
  * Browser-safe on purpose: no `server-only`, no node imports. The option
  * lists live here once so the selects and the server check the same values.
- * The questions are the Calendly routing form's (lib/booking.ts), which
- * /demo opens prefilled with these answers after the request lands.
+ * The questions are the Calendly routing form's (lib/booking.ts). After the
+ * request lands, /demo routes these answers itself and opens the calendar
+ * the routing form would pick, so Calendly does not ask them again.
  */
 
 /**
  * MUST equal the Calendly routing form's Team size option text, character
- * for character (ASCII hyphen-minus): the booking step prefills the form
- * with this exact string, and a value Calendly does not list is dropped
- * without an error, so the visitor would pick again by hand. It broke once
- * on 2026-09-16, when the Calendly buckets changed from 1-2 / 3-10 / 11-50 /
- * 51-200 / 201+ to the four below. Change both together.
+ * for character (ASCII hyphen-minus): lib/booking.ts routes /demo on this
+ * exact string (DEMO_BOOKING_ROUTES copies the routing form's routes). A
+ * value with no route falls back to the discovery call without an error,
+ * while Loops emails and the AI sales agent still go through the routing
+ * form itself, so the two paths would book different calendars. It broke
+ * once on 2026-09-16, when the Calendly buckets changed from 1-2 / 3-10 /
+ * 11-50 / 51-200 / 201+ to the four below. Any change to Calendly's routes,
+ * buckets or event links updates this list and lib/booking.ts in the same
+ * change.
  */
 export const TEAM_SIZES = ["1-2", "3-20", "21-50", "51+"] as const;
 export type TeamSize = (typeof TEAM_SIZES)[number];
-/** Form values; lib/booking.ts maps them to Calendly's "Yes" / "No". */
+/** Form values; lib/booking.ts writes them as "Yes" / "No" in the booking's answers line. */
 export const HAS_ACCOUNT = ["yes", "no"] as const;
 export type HasAccount = (typeof HAS_ACCOUNT)[number];
-/** Same rule as TEAM_SIZES: the Calendly option text, verbatim. */
+/** The Calendly routing form's option text, verbatim, so an answer reads the
+    same on both paths. Not used for routing (only Team size is). */
 export const GOALS = [
   "Find qualified leads",
   "Help me run my GTM from Claude / other",

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "rea
 import { LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
 import { type AiSalesVisitor } from "@/lib/ai-sales";
 import { submissionAttemptForEmail, type BrowserSubmissionAttempt } from "@/lib/analytics/submission-id";
-import { type DemoBookingPrefill } from "@/lib/booking";
+import { type DemoBookingAnswers } from "@/lib/booking";
 import {
   EMAIL_MAX,
   GOALS,
@@ -22,7 +22,7 @@ import { DemoBooked } from "./DemoBooked";
 import { DemoBooking } from "./DemoBooking";
 
 /**
- * The qualification form (the Calendly routing questions) in two steps
+ * The qualification form (the Calendly routing form's questions) in two steps
  * (François, 2026-09-16: "two steps in the form, just like on ElevenLabs"),
  * then the booking hand-off (François, 2026-09-16: "they're booking
  * straight with us"), and its state machine:
@@ -38,13 +38,16 @@ import { DemoBooking } from "./DemoBooking";
  *        │                                                               ▼
  *        └──────────────────────── restart (empty form) ◀───────────  booked
  *
- * booking (DemoBooking): the Calendly routing form inline, prefilled with
- * the successful submission's answers (lib/booking.ts), plus "Chat with AI
- * sales". Its own error paths stay inside it: a frame that never loads
- * shows a new-tab link to the same prefilled form, and a widget script that
- * fails shows the AI sales alert line. booked (DemoBooked): the confirmation,
- * the demo video and "Start a new submission". No state leads back from
- * booking to the form: the visitor edits answers in Calendly's own form.
+ * booking (DemoBooking): the Calendly calendar the team size routes to,
+ * inline and prefilled from the successful submission's answers
+ * (lib/booking.ts mirrors the routing form's routes, so Calendly never asks
+ * the questions again; François, 2026-09-16), plus "Chat with AI sales". Its
+ * own error paths stay inside it: a frame that never loads shows a new-tab
+ * link to the same prefilled calendar, and a widget script that fails shows
+ * the AI sales alert line. booked (DemoBooked): the confirmation, the demo
+ * video and "Start a new submission". No state leads back from booking to
+ * the form: name and email stay editable on Calendly's booking page, and a
+ * different team size means a new visit to /demo.
  *
  * Both step groups stay mounted inside the ONE <form>: every control is
  * uncontrolled, so hiding the inactive group (display:none via `hidden`)
@@ -136,11 +139,13 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
   const [step2Touched, setStep2Touched] = useState(false);
   const [error, setError] = useState<ErrorKind | null>(null);
   // What the SUCCESSFUL submission hands on, and a restart clears: the
-  // first name and normalised website for the AI sales agent, and the three
-  // routing answers plus name and email for the Calendly prefill (both in
-  // DemoBooking). Nothing else leaves the form.
+  // first name and normalised website for the AI sales agent, and the
+  // answers the Calendly event URL uses (the team size picks the calendar;
+  // name, email and the answers line prefill it), both in DemoBooking. The
+  // submission id goes to /api/demo-request only, never to DemoBooking
+  // (Calendly or AI sales).
   const [visitor, setVisitor] = useState<AiSalesVisitor | null>(null);
-  const [prefill, setPrefill] = useState<DemoBookingPrefill | null>(null);
+  const [answers, setAnswers] = useState<DemoBookingAnswers | null>(null);
   const inFlight = useRef(false); // the double-submit guard: controls stay enabled
   const mounted = useRef(false);
   // One UUID per email retry chain (Airtable upserts on it); null after a restart.
@@ -318,7 +323,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     if (proceed) {
       const { firstName, lastName, email, website, teamSize, hasAccount, goal } = parsed.value;
       setVisitor({ firstName, website });
-      setPrefill({ teamSize, hasAccount, ...(goal ? { goal } : {}), firstName, lastName, email });
+      setAnswers({ firstName, lastName, email, website, teamSize, hasAccount, ...(goal ? { goal } : {}) });
       setStatus("booking");
     } else if (failure) {
       fail(failure);
@@ -336,7 +341,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     submission.current = null;
     focusFirstOnIdle.current = true;
     setVisitor(null);
-    setPrefill(null);
+    setAnswers(null);
     setError(null);
     setStatus("idle");
     setStep(1);
@@ -354,8 +359,8 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
       <p className="lp-sr-only" role="status">
         {busy ? CARD.sending : status === "booking" ? BOOKING.title : status === "booked" ? BOOKED.title : ""}
       </p>
-      {status === "booking" && prefill ? (
-        <DemoBooking prefill={prefill} visitor={visitor} onBooked={onBooked} />
+      {status === "booking" && answers ? (
+        <DemoBooking answers={answers} visitor={visitor} onBooked={onBooked} />
       ) : status === "booked" ? (
         <DemoBooked onReset={restart} />
       ) : (

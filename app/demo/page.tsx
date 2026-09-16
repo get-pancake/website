@@ -11,8 +11,9 @@ import "@/app/_styles/demo.css";
  * /demo — contact-sales page in the ElevenLabs split layout (François,
  * 2026-09-15): brain.getpancake.ai's hero on the left, the qualification
  * form (the Calendly routing questions) in the white card on the right.
- * After submit the card hands off to booking: the Calendly routing form
- * inline, prefilled, then a booked state with the demo video (2026-09-16).
+ * After submit the card hands off to booking: the Calendly calendar the team
+ * size routes to, inline and prefilled (lib/booking.ts), then a booked state
+ * with the demo video (2026-09-16).
  * Every "Book a demo" CTA on the site links here. Route is provisional:
  * noindex, not in the sitemap, until the founder decides where it lives
  * (same as /agents).

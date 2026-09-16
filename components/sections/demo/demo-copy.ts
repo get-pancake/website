@@ -11,6 +11,8 @@
  * instead of editing here silently.
  */
 
+import type { DemoBookingDestinationKey } from "@/lib/booking";
+
 export const META = {
   // Tab title is EXACTLY "Pancake" on the landings (founder rule, app/page.tsx).
   title: "Pancake",
@@ -93,15 +95,30 @@ export const ERRORS = {
 } as const;
 
 /** The booking state, right after the request lands (DemoBooking): the
-    Calendly routing form inline, prefilled, then AI sales as the "talk now"
-    path. title, intro, frameTitle, the fallback line and aiSalesLine are
-    the 2026-09-16 booking brief; aiSales is the founder's 2026-09-15 label.
+    routed Calendly calendar inline, prefilled, then AI sales as the "talk
+    now" path. title, frameTitle, the fallback line and aiSalesLine are the
+    2026-09-16 booking brief; aiSales is the founder's 2026-09-15 label.
     The aiSales* state strings (2026-09-16, the ElevenLabs agent wired to
     the pill) follow landing-voice: the widget opens at the bottom right and
-    its first control reads "Start the call" (lib/ai-sales.ts). */
+    its first control reads "Start the call" (lib/ai-sales.ts). The intro
+    (2026-09-16, direct calendar, landing-voice) names the calendar the team
+    size routed to: the frame opens compact, with Calendly's own event title
+    hidden, so this line is where the visitor learns what they are booking.
+    No "Submit" any more (no routing form); name and email are prefilled on
+    every calendar. The answers line prefilled into the group demos'
+    booking question is built with the URL (lib/booking.ts). */
 export const BOOKING = {
   title: "Pick a time",
-  intro: "Your answers are filled in. Press Submit, then choose a slot.",
+  /** introBefore + calendar[destination key] + introAfter */
+  introBefore: "Book your ",
+  introAfter: " below. Your name and email are filled in.",
+  /** per lib/booking.ts DEMO_BOOKING_DESTINATIONS key; both group demos read the same */
+  calendar: {
+    discovery: "discovery call",
+    enterprise: "enterprise call",
+    groupDemo: "group demo",
+    largeGroupDemo: "group demo",
+  } satisfies Record<DemoBookingDestinationKey, string>,
   /** the iframe's accessible name (= the retired dialog's frame title) */
   frameTitle: "Book a demo with Pancake",
   /** shown only when the frame has not loaded after a beat */
