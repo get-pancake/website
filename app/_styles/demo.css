@@ -44,6 +44,7 @@
   --demo-form-top-gap: var(--lp-space-8); /* intro → fields (brain: 24–48) */
   --demo-field-gap: var(--lp-space-4);
   --demo-control-height: 48px; /* = brain */
+  --demo-pill-width: 136px; /* = the kit's md pill (foundation.css) */
   --demo-focus-width: calc(2 * var(--lp-line)); /* audience.css writes its rings this way */
   --demo-chevron-stroke: calc(2 * var(--lp-line));
   --demo-ease: 200ms ease;
@@ -251,6 +252,39 @@
   gap: var(--demo-field-gap);
   margin-top: var(--demo-form-top-gap);
 }
+/* One group per step, both mounted so the uncontrolled values survive Back
+   (founder 2026-09-16: two steps like ElevenLabs). The inactive group is
+   hidden with the `hidden` attribute: display:none, so its controls leave
+   the tab order and the AT tree and FormData still carries them. The
+   explicit rule is needed because demo.css is unlayered (landing-v3.css
+   says why), so `display: grid` here beats both the UA's [hidden] rule and
+   Tailwind preflight's layered `[hidden]:where(...) { display: none }`
+   (app/globals.css, @layer tw-base) regardless of specificity. */
+.demo-form__step {
+  display: grid;
+  gap: var(--demo-field-gap);
+  min-width: 0;
+}
+.demo-form__step[hidden] {
+  display: none;
+}
+/* Two columns: the card is the taller grid item, so its height sets the
+   hero row and where the vertically centred copy column and the footer
+   sit. Step 2 (three rows, 248px) is 88px shorter than step 1 (four text
+   fields: 4 × (20px label at .lp's 1.5 line-height + 4 + 48) + 3 × 16 =
+   336px), so without a floor the H1 would jump 44px and the footer 88px on
+   every "Let's go" and Back (two-step split, 2026-09-16; ElevenLabs has
+   four controls on each step and never moves). Step 1's height is the
+   floor and the rows stay at the top (a grid's default align-content
+   would spread them), so the button row sits at the same y on both steps.
+   One column keeps flowing: the card sets no row height there and a phone
+   would only get empty space. */
+@media (min-width: 1201px) {
+  .demo-form__step {
+    min-height: calc(4 * (1.5 * var(--lp-text-sm) + var(--lp-space-1) + var(--demo-control-height)) + 3 * var(--demo-field-gap));
+    align-content: start;
+  }
+}
 .demo-form__field {
   display: grid;
   gap: var(--lp-space-1);
@@ -300,6 +334,13 @@
 .demo-form__input:user-invalid,
 .demo-form__input[aria-invalid="true"] {
   border-color: var(--lp-red-40);
+}
+/* Step 2 arrives after step 1's submit attempt, which would already paint
+   the untouched required select red (:user-invalid counts a submit as
+   interaction). DemoForm marks the group fresh until its first change or its
+   own blocked submit; the server's aria flag still wins. */
+.demo-form__step[data-fresh] .demo-form__input:user-invalid:not([aria-invalid="true"]) {
+  border-color: var(--lp-stroke);
 }
 .demo-form__select-wrap {
   position: relative;
@@ -377,6 +418,32 @@
   justify-self: start;
   margin-top: var(--lp-space-2);
 }
+/* Step 2: Back at the left edge, "Request a demo" at the right (ElevenLabs).
+   The row carries the gap above; the submit's own margin is for step 1. */
+.demo-form__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--lp-space-3);
+  margin-top: var(--lp-space-2);
+}
+.lp-demo .demo-form__actions .demo-form__submit {
+  margin-top: 0;
+}
+/* Named exception to "button keep same sizes" (see the success pills below):
+   "Request a demo" (14 chars) overflows the 136px md squircle. It hugs its
+   label with the md pill's Figma radius and never drops under the kit box,
+   so "Sending…" does not shrink it mid-request. "Back" (4 chars) keeps the
+   kit's fixed outline geometry, so the pair reads as two md pills. */
+@media (min-width: 768px) {
+  .lp-demo .demo-form__actions .demo-form__submit {
+    clip-path: none;
+    border-radius: var(--lp-r-sm);
+    height: auto;
+    width: auto;
+    min-width: var(--demo-pill-width);
+  }
+}
 /* Busy look while the label reads "Sending…"; the button stays a real,
    focusable, enabled control (onSubmit early-returns). Nothing on the page
    is ever disabled, so there are no disabled-state rules. */
@@ -384,14 +451,45 @@
   opacity: 0.6;
   cursor: progress;
 }
-.lp-demo .demo-form__help {
+/* Under the form on both steps, never in the success state: the help line
+   left, the two-segment progress bar right (ElevenLabs); stacked on phones. */
+.lp-demo .demo-form__foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--lp-space-4);
   margin-top: var(--lp-space-4);
+}
+.lp-demo .demo-form__help {
   color: var(--lp-subtle-text);
   font-size: var(--lp-text-sm);
 }
 .lp-demo .demo-form__help a {
   text-decoration: underline;
   text-underline-offset: 0.2em;
+}
+/* The bar is aria-hidden decoration; the visually hidden "Step n of 2"
+   beside it is the text. Done and current segments in ink, the pending
+   one in the stroke grey. */
+.demo-form__progress {
+  position: relative;
+  flex: none;
+}
+.demo-form__progress-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-1);
+}
+.demo-form__progress-seg {
+  display: block;
+  width: var(--lp-space-8);
+  height: var(--lp-space-1);
+  border-radius: var(--lp-r-2xsm);
+  background: var(--lp-stroke);
+  transition: background-color var(--demo-ease);
+}
+.demo-form__progress-seg[data-filled] {
+  background: var(--lp-text);
 }
 
 /* ── success state and video frame ── */
@@ -543,6 +641,22 @@
     width: 100%;
     justify-self: stretch;
   }
+  /* Step 2's row stacks with the submit on top (DOM order stays Back,
+     submit: the desktop reading order, which is also the tab order) and
+     both pills span the card (the kit pins 135px at ≤767). */
+  .lp-demo .demo-form__actions {
+    flex-direction: column-reverse;
+    align-items: stretch;
+    gap: var(--lp-space-3);
+  }
+  .lp-demo .demo-form__actions .lp-btn {
+    width: 100%;
+  }
+  .lp-demo .demo-form__foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--lp-space-3);
+  }
   /* kit pins 135px at ≤767 */
   .lp-demo .demo-success .lp-btn {
     width: 100%;
@@ -601,7 +715,8 @@
   .lp-demo *::after {
     scroll-behavior: auto !important;
   }
-  .demo-form__input {
+  .demo-form__input,
+  .demo-form__progress-seg {
     transition: none;
   }
 }

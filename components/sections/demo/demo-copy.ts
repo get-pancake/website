@@ -2,7 +2,8 @@
  * /demo — every visible string. The hero block is VERBATIM from the brain
  * landing (founder copy, brain.getpancake.ai, PR #295) and the card/success
  * strings are the founder's 2026-09-15 brief; new strings (intro, errors,
- * busy line, support line, meta description) follow
+ * busy line, support line, meta description, the step-2 card and the
+ * progress text of the 2026-09-16 two-step split) follow
  * .claude/skills/landing-voice. One module so a copy tweak is a one-line
  * change; flag deviations in the PR instead of editing here silently.
  */
@@ -26,6 +27,8 @@ export const HERO = {
 
 export const TRUST = { before: "Trusted by dozens of ", ycAlt: "YC", after: " companies" } as const;
 
+/** Step 1 of the card (identity). `submit` advances to step 2; `submitting`
+    is the step-2 pill's busy label. */
 export const CARD = {
   title: "Book a demo",
   intro: "Fill out the form and our team will reach out.",
@@ -36,6 +39,23 @@ export const CARD = {
   helpBefore: "Looking for help? Visit our ",
   helpLink: "support page",
   helpAfter: ".",
+} as const;
+
+/** Step 2 of the card (qualification). Founder 2026-09-16: "two steps in
+    the form, just like on ElevenLabs" (their step 2 is "Tell us about
+    yourself" with a Back button); the title names the team the three
+    questions are about. */
+export const STEP2 = {
+  title: "Tell us about your team",
+  intro: "Three quick answers so we come prepared.",
+  back: "Back",
+  submit: "Request a demo",
+} as const;
+
+/** Visually hidden text of the two-segment progress bar; the bar itself is aria-hidden. */
+export const PROGRESS = {
+  step1: "Step 1 of 2",
+  step2: "Step 2 of 2",
 } as const;
 
 export const FIELDS = {

@@ -16,17 +16,32 @@ import {
   parseDemoRequest,
   type DemoRequestField,
 } from "@/lib/demo-request";
-import { CARD, ERRORS, FIELDS, SUCCESS, SUPPORT_HREF } from "./demo-copy";
+import { CARD, ERRORS, FIELDS, PROGRESS, STEP2, SUCCESS, SUPPORT_HREF } from "./demo-copy";
 import { DemoSuccess } from "./DemoSuccess";
 
 /**
- * The qualification form (the Calendly routing questions) and its state
- * machine:
+ * The qualification form (the Calendly routing questions) in two steps
+ * (François, 2026-09-16: "two steps in the form, just like on ElevenLabs")
+ * and its state machine:
  *
- *   idle ──submit──▶ submitting ──200 ok──▶ success ──restart──▶ idle
- *     ▲                  │
- *     │                  └──parse fail / 4xx / 5xx / throw──▶ error ──submit──▶ submitting
- *     └── (error is idle + message; every control stays enabled)
+ *   step 1 (identity) ──"Let's go"──▶ step 2 (qualification) ──"Request a demo"──▶ submitting
+ *        ▲    ▲                           │         ▲                                   │
+ *        │    └──────────── Back ─────────┘         │                    ┌── 200 ok ────┤
+ *        │                                          │                    ▼              │
+ *        │   error (idle + message, on the step ────┘                 success           │
+ *        │   that owns the failing field) ◀── parse fail / 4xx / 5xx / throw ◀──────────┘
+ *        └──────────────────────── restart (empty form) ◀── success
+ *
+ * Both step groups stay mounted inside the ONE <form>: every control is
+ * uncontrolled, so hiding the inactive group (display:none via `hidden`)
+ * keeps the values across Back, and the single POST at the end carries
+ * every field. Only the active step's submit button is rendered, so the
+ * form's default button (implicit submission on Enter) is always the
+ * visible one: on step 1 it advances, on step 2 it sends. Step 2's
+ * controls are `required` only while step 2 is shown: Chrome refuses to
+ * focus an invalid hidden control and would block step 1's submit. A tap
+ * within STEP_SETTLE_MS of a step change is ignored: on phones the other
+ * step's button sits under the finger (see `stepJustChanged`).
  *
  * Ported from brain's SignupForm (aria-busy, ids from `id`, inFlight +
  * mounted refs, role=alert error line, "Sending…", LpFxPill submit) with
@@ -38,6 +53,7 @@ import { DemoSuccess } from "./DemoSuccess";
  */
 
 type Status = "idle" | "submitting" | "error" | "success";
+type Step = 1 | 2;
 type ErrorKind =
   | { code: "field"; field: DemoRequestField }
   | { code: "invalid" | "rateLimited" | "unavailable" | "network" };
@@ -45,6 +61,10 @@ type ErrorKind =
 // Cold start + two 5s upstream timeouts, with margin; past that the user
 // retries with the form intact.
 const FETCH_TIMEOUT_MS = 15000;
+// The phone double-tap guard (see stepJustChanged). Longer than any
+// double-tap, shorter than the time a human needs to reach the other
+// step's button: the second tap of a double-tap arrives within ~300ms.
+const STEP_SETTLE_MS = 400;
 
 /** Explicit control ids, never the form's named-element lookup: for
     hasAccount that returns a RadioNodeList, which has no focus().
@@ -59,6 +79,23 @@ function controlIdFor(id: string, field: DemoRequestField): string | undefined {
     case "hasAccount": return `${id}-has-account-yes`;
     case "goal": return `${id}-goal`;
     default: return undefined;
+  }
+}
+
+/** The step that shows a field's control; null for submissionId (no control). */
+function stepOf(field: DemoRequestField): Step | null {
+  switch (field) {
+    case "firstName":
+    case "lastName":
+    case "email":
+    case "website":
+      return 1;
+    case "teamSize":
+    case "hasAccount":
+    case "goal":
+      return 2;
+    default:
+      return null;
   }
 }
 
@@ -83,14 +120,26 @@ function errorMessage(kind: ErrorKind): ReactNode {
 
 export function DemoForm({ id = "demo-form" }: { id?: string }) {
   const [status, setStatus] = useState<Status>("idle");
+  const [step, setStep] = useState<Step>(1);
+  // Step 1's "Let's go" is a real submit, and a submit attempt makes every
+  // invalid control match :user-invalid from then on (spec: "user
+  // interacted" includes a submit). The step-2 controls only become
+  // `required` on step 2, so on arrival the empty Team size select would
+  // already wear the red border before the visitor touched anything. The
+  // step-2 group is marked fresh until its first change or its own submit
+  // attempt (the `invalid` event fires per control on a blocked submit).
+  const [step2Touched, setStep2Touched] = useState(false);
   const [error, setError] = useState<ErrorKind | null>(null);
   const inFlight = useRef(false); // the double-submit guard: controls stay enabled
   const mounted = useRef(false);
   // One UUID per email retry chain (Airtable upserts on it); null after a restart.
   const submission = useRef<BrowserSubmissionAttempt | null>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const firstNameRef = useRef<HTMLInputElement>(null);
   const errorRef = useRef<HTMLParagraphElement>(null);
   const focusFirstOnIdle = useRef(false);
+  const focusTitleOnStep = useRef(false);
+  const stepChangedAt = useRef(0); // set by goTo; read by stepJustChanged
 
   const firstNameId = `${id}-first-name`;
   const lastNameId = `${id}-last-name`;
@@ -112,11 +161,24 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     return () => { mounted.current = false; };
   }, []);
 
+  // After "Let's go" or Back: the step's title (tabIndex -1, no ring; the
+  // success H2 gets the same treatment). One channel for the step change:
+  // the heading announces the new step and, on phones, brings the card top
+  // back into view. Never on first load, never on restart (First name) and
+  // never on a server error that flips the step (the failing control wins:
+  // this effect is declared first so the error effect below focuses last).
+  useEffect(() => {
+    if (!focusTitleOnStep.current) return;
+    focusTitleOnStep.current = false;
+    titleRef.current?.focus();
+  }, [step]);
+
   // After a failed submit: the failing control (focusing scrolls it into
   // view; the red border marks it and aria-describedby links the message),
   // otherwise the alert itself (tabIndex -1; on phones this brings the
   // message up from under the fold edge). Each setError is a new object, so
-  // this runs on every failure.
+  // this runs on every failure. `fail` has already switched to the step
+  // that shows the control, in the same commit, so it is displayed here.
   useEffect(() => {
     if (!error) return;
     const controlId = error.code === "field" ? controlIdFor(id, error.field) : undefined;
@@ -135,16 +197,63 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     }
   }, [status]);
 
+  /** Show the error on the step that owns the failing control (a server 400
+      naming a step-1 field arrives while step 2 is shown). */
+  function fail(kind: ErrorKind) {
+    if (kind.code === "field") {
+      const owner = stepOf(kind.field);
+      if (owner) setStep(owner);
+    }
+    setError(kind);
+    setStatus("error");
+  }
+
+  function goTo(next: Step) {
+    focusTitleOnStep.current = true;
+    stepChangedAt.current = Date.now();
+    setError(null);
+    setStatus("idle");
+    setStep(next);
+  }
+
+  /** The phone double-tap guard. A click flushes the new step before the
+      second tap of a double-tap lands, and at ≤767px the top half of
+      "Let's go" sits where Back renders on step 2 (and Back's lower half
+      where "Let's go" renders on step 1), so that second tap would bounce
+      the visitor straight back with no error to explain it. Ignore it, the
+      way the kit's pill FX ignores touch pointerenter. A keyboard user
+      cannot reach the other step's button in STEP_SETTLE_MS. */
+  function stepJustChanged(): boolean {
+    return Date.now() - stepChangedAt.current < STEP_SETTLE_MS;
+  }
+
+  function goBack() {
+    if (inFlight.current) return; // the request keeps its step
+    if (stepJustChanged()) return; // the second tap of a double-tap on "Let's go"
+    goTo(1);
+  }
+
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (inFlight.current) return; // a second click or Enter while busy
+    if (stepJustChanged()) return; // the second tap of a double-tap on Back
     const data = new FormData(event.currentTarget);
-    // Native required/email validation ran first, so in practice only the
-    // website can fail here.
+    // Native required/email validation ran first on the visible step. The
+    // shared parser reports the first failing field in form order, so on
+    // step 1 it judges the identity fields (a whitespace name, "a@b", a
+    // website that is not one) before it can reach the untouched
+    // qualification fields; on step 2 it checks everything.
     const parsed = parseDemoRequest(Object.fromEntries(data));
+    if (step === 1) {
+      if (!parsed.ok && stepOf(parsed.field) === 1) {
+        fail({ code: "field", field: parsed.field });
+        return;
+      }
+      goTo(2); // never a request from step 1
+      return;
+    }
     if (!parsed.ok) {
-      setError({ code: "field", field: parsed.field });
-      setStatus("error");
+      fail({ code: "field", field: parsed.field });
       return;
     }
     submission.current = submissionAttemptForEmail(submission.current, parsed.value.email);
@@ -193,17 +302,19 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     if (succeeded) {
       setStatus("success");
     } else if (failure) {
-      setError(failure);
-      setStatus("error");
+      fail(failure);
     }
   }
 
-  // The form subtree remounts empty (unmounted in the success state; every control is uncontrolled).
+  // The form subtree remounts empty on step 1 (unmounted in the success
+  // state; every control is uncontrolled).
   function restart() {
     submission.current = null;
     focusFirstOnIdle.current = true;
     setError(null);
     setStatus("idle");
+    setStep(1);
+    setStep2Touched(false);
   }
 
   return (
@@ -211,7 +322,8 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
       {/* Persistent, outside the swapped subtree, so its text CHANGES rather
           than mounts: "Sending your request." (the pill's label change may be
           missed) and the thank-you title (the brief's status role); the H2
-          focus in DemoSuccess is the second, reliable channel. */}
+          focus in DemoSuccess is the second, reliable channel. Step changes
+          are not announced here: the focused step title is their channel. */}
       <p className="lp-sr-only" role="status">
         {busy ? CARD.sending : status === "success" ? SUCCESS.title : ""}
       </p>
@@ -219,8 +331,10 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
         <DemoSuccess onReset={restart} />
       ) : (
         <>
-          <h2 id="demo-card-title" className="lp-display demo-card__title">{CARD.title}</h2>
-          <p className="demo-card__intro">{CARD.intro}</p>
+          <h2 id="demo-card-title" className="lp-display demo-card__title" ref={titleRef} tabIndex={-1}>
+            {step === 1 ? CARD.title : STEP2.title}
+          </h2>
+          <p className="demo-card__intro">{step === 1 ? CARD.intro : STEP2.intro}</p>
           {/* NO noValidate: native required/email checks give :user-invalid.
               method="post": before hydration (or with JS off) the browser
               submits natively; the HTML default is a GET that would put the
@@ -235,149 +349,194 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
             <div className="lp-sr-only" aria-hidden="true">
               <input type="text" name={HONEYPOT_FIELD} tabIndex={-1} autoComplete="off" aria-hidden="true" />
             </div>
-            <div className="demo-form__field">
-              <label className="demo-form__label" htmlFor={firstNameId}>
-                {FIELDS.firstName}<span aria-hidden="true">{FIELDS.required}</span>
-              </label>
-              <input
-                ref={firstNameRef}
-                id={firstNameId}
-                className="demo-form__input"
-                type="text"
-                name="firstName"
-                autoComplete="given-name"
-                required
-                maxLength={NAME_MAX}
-                {...invalid("firstName")}
-              />
-            </div>
-            <div className="demo-form__field">
-              <label className="demo-form__label" htmlFor={lastNameId}>
-                {FIELDS.lastName}<span aria-hidden="true">{FIELDS.required}</span>
-              </label>
-              <input
-                id={lastNameId}
-                className="demo-form__input"
-                type="text"
-                name="lastName"
-                autoComplete="family-name"
-                required
-                maxLength={NAME_MAX}
-                {...invalid("lastName")}
-              />
-            </div>
-            <div className="demo-form__field">
-              <label className="demo-form__label" htmlFor={emailId}>
-                {FIELDS.email}<span aria-hidden="true">{FIELDS.required}</span>
-              </label>
-              <input
-                id={emailId}
-                className="demo-form__input"
-                type="email"
-                name="email"
-                autoComplete="email"
-                inputMode="email"
-                autoCapitalize="none"
-                autoCorrect="off"
-                spellCheck={false}
-                placeholder={FIELDS.emailPlaceholder}
-                required
-                maxLength={EMAIL_MAX}
-                {...invalid("email")}
-              />
-            </div>
-            <div className="demo-form__field">
-              <label className="demo-form__label" htmlFor={websiteId}>
-                {FIELDS.website}<span aria-hidden="true">{FIELDS.required}</span>
-              </label>
-              {/* type=text, not url: "acme.com" must pass (the route adds the scheme). */}
-              <input
-                id={websiteId}
-                className="demo-form__input"
-                type="text"
-                name="website"
-                autoComplete="url"
-                inputMode="url"
-                autoCapitalize="none"
-                autoCorrect="off"
-                spellCheck={false}
-                placeholder={FIELDS.websitePlaceholder}
-                required
-                maxLength={WEBSITE_MAX}
-                {...invalid("website")}
-              />
-            </div>
-            <div className="demo-form__field">
-              <label className="demo-form__label" htmlFor={teamSizeId}>
-                {FIELDS.teamSize}<span aria-hidden="true">{FIELDS.required}</span>
-              </label>
-              <div className="demo-form__select-wrap">
-                <select
-                  id={teamSizeId}
-                  className="demo-form__input demo-form__select"
-                  name="teamSize"
-                  required
-                  defaultValue=""
-                  {...invalid("teamSize")}
-                >
-                  <option value="" disabled>{FIELDS.choose}</option>
-                  {TEAM_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
-                </select>
+            {/* Step 1: identity. `required` only while shown, like step 2:
+                a hidden control the browser cannot focus must never block
+                the visible step's submit; the parser catches it instead. */}
+            <div className="demo-form__step" data-step="1" hidden={step !== 1}>
+              <div className="demo-form__field">
+                <label className="demo-form__label" htmlFor={firstNameId}>
+                  {FIELDS.firstName}<span aria-hidden="true">{FIELDS.required}</span>
+                </label>
+                <input
+                  ref={firstNameRef}
+                  id={firstNameId}
+                  className="demo-form__input"
+                  type="text"
+                  name="firstName"
+                  autoComplete="given-name"
+                  required={step === 1}
+                  maxLength={NAME_MAX}
+                  {...invalid("firstName")}
+                />
+              </div>
+              <div className="demo-form__field">
+                <label className="demo-form__label" htmlFor={lastNameId}>
+                  {FIELDS.lastName}<span aria-hidden="true">{FIELDS.required}</span>
+                </label>
+                <input
+                  id={lastNameId}
+                  className="demo-form__input"
+                  type="text"
+                  name="lastName"
+                  autoComplete="family-name"
+                  required={step === 1}
+                  maxLength={NAME_MAX}
+                  {...invalid("lastName")}
+                />
+              </div>
+              <div className="demo-form__field">
+                <label className="demo-form__label" htmlFor={emailId}>
+                  {FIELDS.email}<span aria-hidden="true">{FIELDS.required}</span>
+                </label>
+                <input
+                  id={emailId}
+                  className="demo-form__input"
+                  type="email"
+                  name="email"
+                  autoComplete="email"
+                  inputMode="email"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  placeholder={FIELDS.emailPlaceholder}
+                  required={step === 1}
+                  maxLength={EMAIL_MAX}
+                  {...invalid("email")}
+                />
+              </div>
+              <div className="demo-form__field">
+                <label className="demo-form__label" htmlFor={websiteId}>
+                  {FIELDS.website}<span aria-hidden="true">{FIELDS.required}</span>
+                </label>
+                {/* type=text, not url: "acme.com" must pass (the route adds the scheme). */}
+                <input
+                  id={websiteId}
+                  className="demo-form__input"
+                  type="text"
+                  name="website"
+                  autoComplete="url"
+                  inputMode="url"
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                  placeholder={FIELDS.websitePlaceholder}
+                  required={step === 1}
+                  maxLength={WEBSITE_MAX}
+                  {...invalid("website")}
+                />
               </div>
             </div>
-            {/* The fieldset is not a control: it carries the description, both radios the invalid flag. */}
-            <fieldset
-              id={hasAccountId}
-              className="demo-form__group"
-              aria-describedby={invalidField === "hasAccount" ? errorId : undefined}
+            {/* Step 2: qualification. */}
+            <div
+              className="demo-form__step"
+              data-step="2"
+              data-fresh={step === 2 && !step2Touched ? "" : undefined}
+              hidden={step !== 2}
+              onChangeCapture={() => setStep2Touched(true)}
+              onInvalidCapture={() => setStep2Touched(true)}
             >
-              <legend className="demo-form__legend">
-                {FIELDS.hasAccount}<span aria-hidden="true">{FIELDS.required}</span>
-              </legend>
-              <div className="demo-form__radios">
-                {HAS_ACCOUNT.map((value) => (
-                  <label key={value} className="demo-form__radio" htmlFor={`${hasAccountId}-${value}`}>
-                    <input
-                      id={`${hasAccountId}-${value}`}
-                      type="radio"
-                      name="hasAccount"
-                      value={value}
-                      required
-                      aria-invalid={invalidField === "hasAccount" ? true : undefined}
-                    />
-                    {value === "yes" ? FIELDS.yes : FIELDS.no}
-                  </label>
-                ))}
+              <div className="demo-form__field">
+                <label className="demo-form__label" htmlFor={teamSizeId}>
+                  {FIELDS.teamSize}<span aria-hidden="true">{FIELDS.required}</span>
+                </label>
+                <div className="demo-form__select-wrap">
+                  <select
+                    id={teamSizeId}
+                    className="demo-form__input demo-form__select"
+                    name="teamSize"
+                    required={step === 2}
+                    defaultValue=""
+                    {...invalid("teamSize")}
+                  >
+                    <option value="" disabled>{FIELDS.choose}</option>
+                    {TEAM_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
+                  </select>
+                </div>
               </div>
-            </fieldset>
-            <div className="demo-form__field">
-              {/* No star: optional. */}
-              <label className="demo-form__label" htmlFor={goalId}>{FIELDS.goal}</label>
-              <div className="demo-form__select-wrap">
-                <select
-                  id={goalId}
-                  className="demo-form__input demo-form__select"
-                  name="goal"
-                  defaultValue=""
-                  {...invalid("goal")}
-                >
-                  <option value="">{FIELDS.choose}</option>
-                  {GOALS.map((goal) => <option key={goal} value={goal}>{goal}</option>)}
-                </select>
+              {/* The fieldset is not a control: it carries the description, both radios the invalid flag. */}
+              <fieldset
+                id={hasAccountId}
+                className="demo-form__group"
+                aria-describedby={invalidField === "hasAccount" ? errorId : undefined}
+              >
+                <legend className="demo-form__legend">
+                  {FIELDS.hasAccount}<span aria-hidden="true">{FIELDS.required}</span>
+                </legend>
+                <div className="demo-form__radios">
+                  {HAS_ACCOUNT.map((value) => (
+                    <label key={value} className="demo-form__radio" htmlFor={`${hasAccountId}-${value}`}>
+                      <input
+                        id={`${hasAccountId}-${value}`}
+                        type="radio"
+                        name="hasAccount"
+                        value={value}
+                        required={step === 2}
+                        aria-invalid={invalidField === "hasAccount" ? true : undefined}
+                      />
+                      {value === "yes" ? FIELDS.yes : FIELDS.no}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+              <div className="demo-form__field">
+                {/* No star: optional. */}
+                <label className="demo-form__label" htmlFor={goalId}>{FIELDS.goal}</label>
+                <div className="demo-form__select-wrap">
+                  <select
+                    id={goalId}
+                    className="demo-form__input demo-form__select"
+                    name="goal"
+                    defaultValue=""
+                    {...invalid("goal")}
+                  >
+                    <option value="">{FIELDS.choose}</option>
+                    {GOALS.map((goal) => <option key={goal} value={goal}>{goal}</option>)}
+                  </select>
+                </div>
               </div>
             </div>
+            {/* One alert for both steps, under the visible group: `fail`
+                shows the step that owns the field, so it is never about a
+                hidden control. */}
             {error ? (
               <p ref={errorRef} id={errorId} className="demo-form__error" role="alert" tabIndex={-1}>
                 {errorMessage(error)}
               </p>
             ) : null}
-            <LpFxPill type="submit" className="demo-form__submit" aria-disabled={busy}>
-              {busy ? CARD.submitting : CARD.submit}
-            </LpFxPill>
+            {/* Only the active step's submit exists (see the header note on
+                implicit submission). Step 1 is never busy: no request leaves
+                it. Back is a plain button; while a request is in flight it
+                looks busy like the submit and goBack early-returns. */}
+            {step === 1 ? (
+              <LpFxPill type="submit" className="demo-form__submit">
+                {CARD.submit}
+              </LpFxPill>
+            ) : (
+              <div className="demo-form__actions">
+                <LpFxPill type="button" className="lp-btn--outline demo-form__back" aria-disabled={busy} onClick={goBack}>
+                  {STEP2.back}
+                </LpFxPill>
+                <LpFxPill type="submit" className="demo-form__submit" aria-disabled={busy}>
+                  {busy ? CARD.submitting : STEP2.submit}
+                </LpFxPill>
+              </div>
+            )}
           </form>
-          <p id={helpId} className="demo-form__help">
-            {CARD.helpBefore}<a href={SUPPORT_HREF}>{CARD.helpLink}</a>{CARD.helpAfter}
-          </p>
+          {/* Help line left, the two-segment progress bar right (ElevenLabs);
+              stacked on phones. The bar is decoration; "Step n of 2" is the
+              text. Not in the success state. */}
+          <div className="demo-form__foot">
+            <p id={helpId} className="demo-form__help">
+              {CARD.helpBefore}<a href={SUPPORT_HREF}>{CARD.helpLink}</a>{CARD.helpAfter}
+            </p>
+            <div className="demo-form__progress">
+              <span className="lp-sr-only">{step === 1 ? PROGRESS.step1 : PROGRESS.step2}</span>
+              <span className="demo-form__progress-bar" aria-hidden="true">
+                <span className="demo-form__progress-seg" data-filled="" />
+                <span className="demo-form__progress-seg" data-filled={step === 2 ? "" : undefined} />
+              </span>
+            </div>
+          </div>
         </>
       )}
     </div>

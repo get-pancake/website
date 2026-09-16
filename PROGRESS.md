@@ -18,6 +18,7 @@ Scope: `/demo`, a contact-sales page in the ElevenLabs layout (François, 2026-0
 - [x] Stub the "Chat with AI sales" button for the ElevenLabs agent (founder: "let's program the Eleven Labs agent later on").
 - [x] Document `SLACK_DEMO_WEBHOOK_URL` and `AIRTABLE_DEMO_REQUESTS_TABLE_ID` in `.env.local.example`.
 - [x] Pass targeted ESLint and type checks, and independent code review.
+- [x] 2026-09-16: split the card into two steps like ElevenLabs (François: "two steps in the form, just like on ElevenLabs"): identity first behind "Let's go", the three qualification questions second with Back and "Request a demo", a two-segment progress bar beside the help line, values kept across Back, and still one POST at the end. Review fixes: a double-tap guard on the phone pills (the other step's button sits under the finger) and a step-1 height floor at two columns so the card, H1 and footer do not move between steps.
 
 ## Customer logo carousel — September 15, 2026
 
