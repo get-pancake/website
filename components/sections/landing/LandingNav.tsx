@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { DEMO_BOOKING_URL } from "@/lib/booking";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 
 import { FxPillLink } from "./FxPill";
 import { LandingNavMenu } from "./LandingNavMenu";
@@ -11,9 +11,9 @@ import { NAV_LINKS } from "./nav-links";
  * (Book a call outline, Get started primary). Text links collapse away below
  * 768px, where the bar pins to the top and a menu button opens the plum
  * sheet carrying the same map (mobile QA 2026-08-26 — the footer alone was
- * the only navigation on a ~13-viewport page). "Book a call" is a real link
- * to the Calendly form with a data-lv2-open="call" upgrade: pages that mount LandingModals
- * intercept it into the booking dialog, everywhere else it just navigates.
+ * the only navigation on a ~13-viewport page). "Book a demo" is a same-tab
+ * link to /demo (François, 2026-09-16); the Calendly dialog it used to open
+ * (LandingModals) is no longer mounted.
  */
 
 export function LandingNav() {
@@ -45,11 +45,8 @@ export function LandingNav() {
           </FxPillLink>
           <FxPillLink
             variant="outline"
-            href={DEMO_BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+            href={DEMO_PAGE_PATH}
             className="lv2-nav-call"
-            data-lv2-open="call"
             data-analytics-id="call_nav"
           >
             Book a demo

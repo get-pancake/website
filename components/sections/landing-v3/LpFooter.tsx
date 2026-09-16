@@ -9,7 +9,7 @@
  * has four links; don't drop it to match Figma.
  */
 
-import { DEMO_BOOKING_URL } from "@/lib/booking";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 
 type FootLink = { label: string; href: string; external?: boolean };
 
@@ -30,7 +30,8 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       { label: "About", href: "/#why" },
       { label: "Careers", href: "/careers" },
       { label: "Affiliate program", href: "https://partners.dub.co/pancake-ai", external: true },
-      { label: "Book a demo", href: DEMO_BOOKING_URL, external: true },
+      // Same tab: /demo (François, 2026-09-16), no longer the Calendly form.
+      { label: "Book a demo", href: DEMO_PAGE_PATH },
       { label: "Contact", href: "mailto:hey@pancake.ai" },
     ],
   },

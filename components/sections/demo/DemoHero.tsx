@@ -30,7 +30,7 @@ export function DemoHero() {
         </div>
         {/* White card with the CTA card's right rainbow sliver (brain's
             "cartouche", founder 2026-09-14). The artwork is a sibling of the
-            body so idle → success → idle never remounts it: LpFitVars
+            body so form → booking → booked → form never remounts it: LpFitVars
             queries the DOM once at mount, and a remounted art would get no
             --lp-fit and stay blank. */}
         <section className="demo-card" id="demo" aria-labelledby="demo-card-title">

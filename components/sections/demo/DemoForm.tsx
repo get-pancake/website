@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "rea
 import { LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
 import { type AiSalesVisitor } from "@/lib/ai-sales";
 import { submissionAttemptForEmail, type BrowserSubmissionAttempt } from "@/lib/analytics/submission-id";
+import { type DemoBookingPrefill } from "@/lib/booking";
 import {
   EMAIL_MAX,
   GOALS,
@@ -17,21 +18,34 @@ import {
   parseDemoRequest,
   type DemoRequestField,
 } from "@/lib/demo-request";
-import { CARD, ERRORS, FIELDS, PROGRESS, STEP2, SUCCESS, SUPPORT_HREF } from "./demo-copy";
-import { DemoSuccess } from "./DemoSuccess";
+import { BOOKED, BOOKING, CARD, ERRORS, FIELDS, PROGRESS, STEP2, SUPPORT_HREF } from "./demo-copy";
+import { DemoBooked } from "./DemoBooked";
+import { DemoBooking } from "./DemoBooking";
 
 /**
  * The qualification form (the Calendly routing questions) in two steps
- * (François, 2026-09-16: "two steps in the form, just like on ElevenLabs")
- * and its state machine:
+ * (François, 2026-09-16: "two steps in the form, just like on ElevenLabs"),
+ * then the booking hand-off (François, 2026-09-16: "they're booking
+ * straight with us"), and its state machine:
  *
  *   step 1 (identity) ──"Let's go"──▶ step 2 (qualification) ──"Request a demo"──▶ submitting
  *        ▲    ▲                           │         ▲                                   │
  *        │    └──────────── Back ─────────┘         │                    ┌── 200 ok ────┤
  *        │                                          │                    ▼              │
- *        │   error (idle + message, on the step ────┘                 success           │
+ *        │   error (idle + message, on the step ────┘                 booking           │
  *        │   that owns the failing field) ◀── parse fail / 4xx / 5xx / throw ◀──────────┘
- *        └──────────────────────── restart (empty form) ◀── success
+ *        │                                                               │
+ *        │                                                  calendly.event_scheduled
+ *        │                                                               ▼
+ *        └──────────────────────── restart (empty form) ◀───────────  booked
+ *
+ * booking (DemoBooking): the Calendly routing form inline, prefilled with
+ * the successful submission's answers (lib/booking.ts), plus "Chat with AI
+ * sales". Its own error paths stay inside it: a frame that never loads
+ * shows a new-tab link to the same prefilled form, and a widget script that
+ * fails shows the AI sales alert line. booked (DemoBooked): the confirmation,
+ * the demo video and "Start a new submission". No state leads back from
+ * booking to the form: the visitor edits answers in Calendly's own form.
  *
  * Both step groups stay mounted inside the ONE <form>: every control is
  * uncontrolled, so hiding the inactive group (display:none via `hidden`)
@@ -53,7 +67,7 @@ import { DemoSuccess } from "./DemoSuccess";
  * focus moves to the failing field or the alert on every error.
  */
 
-type Status = "idle" | "submitting" | "error" | "success";
+type Status = "idle" | "submitting" | "error" | "booking" | "booked";
 type Step = 1 | 2;
 type ErrorKind =
   | { code: "field"; field: DemoRequestField }
@@ -131,10 +145,12 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
   // attempt (the `invalid` event fires per control on a blocked submit).
   const [step2Touched, setStep2Touched] = useState(false);
   const [error, setError] = useState<ErrorKind | null>(null);
-  // The first name and normalised website of the SUCCESSFUL submission,
-  // for the AI sales agent (DemoSuccess); nothing else leaves the form,
-  // and a restart clears it.
+  // What the SUCCESSFUL submission hands on, and a restart clears: the
+  // first name and normalised website for the AI sales agent, and the three
+  // routing answers plus name and email for the Calendly prefill (both in
+  // DemoBooking). Nothing else leaves the form.
   const [visitor, setVisitor] = useState<AiSalesVisitor | null>(null);
+  const [prefill, setPrefill] = useState<DemoBookingPrefill | null>(null);
   const inFlight = useRef(false); // the double-submit guard: controls stay enabled
   const mounted = useRef(false);
   // One UUID per email retry chain (Airtable upserts on it); null after a restart.
@@ -167,9 +183,9 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
   }, []);
 
   // After "Let's go" or Back: the step's title (tabIndex -1, no ring; the
-  // success H2 gets the same treatment). One channel for the step change:
-  // the heading announces the new step and, on phones, brings the card top
-  // back into view. Never on first load, never on restart (First name) and
+  // booking and booked H2s get the same treatment). One channel for the step
+  // change: the heading announces the new step and, on phones, brings the
+  // card top back into view. Never on first load, never on restart (First name) and
   // never on a server error that flips the step (the failing control wins:
   // this effect is declared first so the error effect below focuses last).
   useEffect(() => {
@@ -305,19 +321,27 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
 
     if (!mounted.current) return;
     if (succeeded) {
-      setVisitor({ firstName: parsed.value.firstName, website: parsed.value.website });
-      setStatus("success");
+      const { firstName, lastName, email, website, teamSize, hasAccount, goal } = parsed.value;
+      setVisitor({ firstName, website });
+      setPrefill({ teamSize, hasAccount, ...(goal ? { goal } : {}), firstName, lastName, email });
+      setStatus("booking");
     } else if (failure) {
       fail(failure);
     }
   }
 
-  // The form subtree remounts empty on step 1 (unmounted in the success
-  // state; every control is uncontrolled).
+  /** DemoBooking calls it once, on Calendly's calendly.event_scheduled. */
+  function onBooked() {
+    setStatus("booked");
+  }
+
+  // The form subtree remounts empty on step 1 (unmounted in the booking and
+  // booked states; every control is uncontrolled).
   function restart() {
     submission.current = null;
     focusFirstOnIdle.current = true;
     setVisitor(null);
+    setPrefill(null);
     setError(null);
     setStatus("idle");
     setStep(1);
@@ -328,14 +352,17 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     <div id={id} className="demo-form">
       {/* Persistent, outside the swapped subtree, so its text CHANGES rather
           than mounts: "Sending your request." (the pill's label change may be
-          missed) and the thank-you title (the brief's status role); the H2
-          focus in DemoSuccess is the second, reliable channel. Step changes
-          are not announced here: the focused step title is their channel. */}
+          missed), then the booking and booked titles (the brief's status
+          role); the H2 focus in DemoBooking / DemoBooked is the second,
+          reliable channel. Step changes are not announced here: the focused
+          step title is their channel. */}
       <p className="lp-sr-only" role="status">
-        {busy ? CARD.sending : status === "success" ? SUCCESS.title : ""}
+        {busy ? CARD.sending : status === "booking" ? BOOKING.title : status === "booked" ? BOOKED.title : ""}
       </p>
-      {status === "success" ? (
-        <DemoSuccess visitor={visitor} onReset={restart} />
+      {status === "booking" && prefill ? (
+        <DemoBooking prefill={prefill} visitor={visitor} onBooked={onBooked} />
+      ) : status === "booked" ? (
+        <DemoBooked onReset={restart} />
       ) : (
         <>
           <h2 id="demo-card-title" className="lp-display demo-card__title" ref={titleRef} tabIndex={-1}>
@@ -531,7 +558,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
           </form>
           {/* Help line left, the two-segment progress bar right (ElevenLabs);
               stacked on phones. The bar is decoration; "Step n of 2" is the
-              text. Not in the success state. */}
+              text. Not after a successful submission. */}
           <div className="demo-form__foot">
             <p id={helpId} className="demo-form__help">
               {CARD.helpBefore}<a href={SUPPORT_HREF}>{CARD.helpLink}</a>{CARD.helpAfter}

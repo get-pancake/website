@@ -1,14 +1,25 @@
 /**
  * /demo request contract, shared by the form (browser) and the API route.
  * Browser-safe on purpose: no `server-only`, no node imports. The option
- * lists live here once so the selects and the server check the same values
- * (the questions mirror the Calendly routing form the site used before).
+ * lists live here once so the selects and the server check the same values.
+ * The questions are the Calendly routing form's (lib/booking.ts), which
+ * /demo opens prefilled with these answers after the request lands.
  */
 
-export const TEAM_SIZES = ["1-2", "3-10", "11-50", "51-200", "201+"] as const;
+/**
+ * MUST equal the Calendly routing form's Team size option text, character
+ * for character (ASCII hyphen-minus): the booking step prefills the form
+ * with this exact string, and a value Calendly does not list is dropped
+ * without an error, so the visitor would pick again by hand. It broke once
+ * on 2026-09-16, when the Calendly buckets changed from 1-2 / 3-10 / 11-50 /
+ * 51-200 / 201+ to the four below. Change both together.
+ */
+export const TEAM_SIZES = ["1-2", "3-20", "21-50", "51+"] as const;
 export type TeamSize = (typeof TEAM_SIZES)[number];
+/** Form values; lib/booking.ts maps them to Calendly's "Yes" / "No". */
 export const HAS_ACCOUNT = ["yes", "no"] as const;
 export type HasAccount = (typeof HAS_ACCOUNT)[number];
+/** Same rule as TEAM_SIZES: the Calendly option text, verbatim. */
 export const GOALS = [
   "Find qualified leads",
   "Help me run my GTM from Claude / other",

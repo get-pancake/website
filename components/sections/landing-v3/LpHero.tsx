@@ -1,10 +1,11 @@
 import { AudienceHeadline, AudienceSelector } from "./LpAudience";
 import { LpAgentStart } from "./LpAgentStart";
 import { LpArcCanvas } from "@/components/sections/landing-v3/LpArcCanvas";
-import { LpFxLink, LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
+import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { LpViewportVar } from "@/components/sections/landing-v3/LpViewportVar";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 
 // Landing v3 — Hero (Figma node 4257:4906, 1654×758).
 // The rainbow art (animated per-arc pancakes group, anim.css) lives in a
@@ -42,17 +43,17 @@ export function LpHero() {
             <LpFxLink href="https://app.getpancake.ai" data-analytics-id="app_hero">
               Start free
             </LpFxLink>
-            {/* Opens the Calendly booking sheet via LpModals' data-lv2-open
-                contract; analytics fire there off the allow-listed call_hero
-                id. All widths (founder 2026-09-01) — the desktop artboard
-                draws one CTA, deliberately overridden. */}
-            <LpFxPill
+            {/* A same-tab link to /demo (François, 2026-09-16; it opened the
+                Calendly sheet before), keeping the allow-listed call_hero id.
+                All widths (founder 2026-09-01) — the desktop artboard draws
+                one CTA, deliberately overridden. */}
+            <LpFxLink
+              href={DEMO_PAGE_PATH}
               className="lp-btn--tinted lp-btn--demo lp-hero-call"
-              data-lv2-open="call"
               data-analytics-id="call_hero"
             >
               Book a demo
-            </LpFxPill>
+            </LpFxLink>
           </div>
         </div>
         <div className="lp-hero-col lp-hero-col--agent"><LpAgentStart /></div>

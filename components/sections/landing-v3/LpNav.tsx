@@ -1,7 +1,7 @@
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNavMenu } from "@/components/sections/landing-v3/LpNavMenu";
 import { LpNavScroll } from "@/components/sections/landing-v3/LpNavScroll";
-import { DEMO_BOOKING_URL } from "@/lib/booking";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 
 /**
  * Landing v3 — Nav (Figma node 4257:4894, 1654×120).
@@ -32,18 +32,14 @@ export function LpNav() {
         >
           Start free
         </LpFxLink>
-        {/* Same trigger contract as the sheet's pill: LpModals' document
-            listener turns the booking href into the dialog on pages that
-            mount it; elsewhere it opens the Calendly form in a new tab.
-            Hidden ≤767 (nav.css) — the bar has room for one pill, the sheet
-            carries both. */}
+        {/* A same-tab link to /demo on every page, like the sheet's pill
+            (François, 2026-09-16: the "Book a demo" buttons lead to the demo
+            page; the Calendly dialog is no longer mounted). Hidden ≤767
+            (nav.css) — the bar has room for one pill, the sheet carries both. */}
         <LpFxLink
-          href={DEMO_BOOKING_URL}
+          href={DEMO_PAGE_PATH}
           size="sm"
           className="lp-btn--tinted lp-btn--demo"
-          target="_blank"
-          rel="noopener noreferrer"
-          data-lv2-open="call"
           data-analytics-id="call_nav"
         >
           Book a demo

@@ -1,6 +1,7 @@
-import { LpFxLink, LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
+import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { AgMarksRow } from "./AgAgentMarks";
 import { AgTerminal } from "./AgTerminal";
 import { CTA, WORKS_WITH } from "./ag-copy";
@@ -12,7 +13,8 @@ import { CTA, WORKS_WITH } from "./ag-copy";
  * one line, the install terminal, the Start free / Book a demo pair, and the
  * quiet "Works with" row as the card's last line (founder 2026-09-11: the
  * draft's standalone strip "traîne en bas" — it lives inside the card now).
- * CTA ids are the allow-listed final-CTA ids (app_final / call_final).
+ * CTA ids are the allow-listed final-CTA ids (app_final / call_final); Book a
+ * demo is a same-tab link to /demo (François, 2026-09-16).
  */
 export function AgCta() {
   return (
@@ -40,9 +42,9 @@ export function AgCta() {
             <LpFxLink href="https://app.getpancake.ai" data-analytics-id="app_final">
               {CTA.primary}
             </LpFxLink>
-            <LpFxPill className="lp-btn--tinted lp-btn--demo" data-lv2-open="call" data-analytics-id="call_final">
+            <LpFxLink href={DEMO_PAGE_PATH} className="lp-btn--tinted lp-btn--demo" data-analytics-id="call_final">
               {CTA.secondary}
-            </LpFxPill>
+            </LpFxLink>
           </div>
           <div className="ag-cta__works">
             <span className="ag-cta__works-label">{WORKS_WITH.label}</span>

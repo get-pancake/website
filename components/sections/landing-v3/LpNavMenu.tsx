@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
-import { DEMO_BOOKING_URL } from "@/lib/booking";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 
 /**
  * Mobile nav menu — burger + plum sheet behind the ≤767px bar (Figma mobile
@@ -14,9 +14,8 @@ import { DEMO_BOOKING_URL } from "@/lib/booking";
  * left-justified, Escape closes, focus trapped, body scroll locked via
  * body.menu-open (same :has(main.lp) scoping as the modal lock).
  * The bar's "Get started" pill moves in here on mobile and keeps its
- * allow-listed app_nav id; "Book a call" rides the site-wide
- * data-lv2-open="call" trigger with the Calendly form URL as href fallback —
- * on /careers (no LpModals mounted) it degrades to a plain new-tab link.
+ * allow-listed app_nav id; "Book a demo" is a same-tab link to /demo, like
+ * the bar's pill (François, 2026-09-16), and keeps its call_nav id.
  */
 export function LpNavMenu() {
   const [open, setOpen] = useState(false);
@@ -147,16 +146,11 @@ export function LpNavMenu() {
           >
             Start free
           </LpFxLink>
-          {/* target/rel mirror the site-wide trigger contract: LpModals'
-              document listener preventDefaults this into the dialog on pages
-              that mount it; on /careers it opens the Calendly form in a new
-              tab instead of navigating the site away. */}
+          {/* Same tab: /demo is part of the site. close() unlocks the body
+              scroll before the navigation, as for the links above. */}
           <LpFxLink
-            href={DEMO_BOOKING_URL}
+            href={DEMO_PAGE_PATH}
             className="lp-btn--outline lp-btn--demo lp-nav-menu-call"
-            target="_blank"
-            rel="noopener noreferrer"
-            data-lv2-open="call"
             data-analytics-id="call_nav"
             onClick={close}
           >

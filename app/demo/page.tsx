@@ -10,10 +10,12 @@ import "@/app/_styles/demo.css";
 /**
  * /demo — contact-sales page in the ElevenLabs split layout (François,
  * 2026-09-15): brain.getpancake.ai's hero on the left, the qualification
- * form (the Calendly routing questions) in the white card on the right, and
- * the thank-you state with the demo video after submit. Route is
- * provisional: noindex, not in the sitemap, until the founder decides where
- * it lives (same as /agents).
+ * form (the Calendly routing questions) in the white card on the right.
+ * After submit the card hands off to booking: the Calendly routing form
+ * inline, prefilled, then a booked state with the demo video (2026-09-16).
+ * Every "Book a demo" CTA on the site links here. Route is provisional:
+ * noindex, not in the sitemap, until the founder decides where it lives
+ * (same as /agents).
  */
 
 export const viewport: Viewport = { themeColor: "#fbf6f1" };
@@ -59,8 +61,8 @@ export default function DemoPage() {
         </a>
       </header>
       <DemoHero />
-      {/* LpFooter is a 467px black block with a Calendly "Book a demo" link;
-          brain's one-line footer instead. */}
+      {/* LpFooter is a 467px black block with a "Book a demo" link back to
+          this page; brain's one-line footer instead. */}
       <footer className="demo-foot">
         <p className="demo-foot__line">
           {FOOTER.line}

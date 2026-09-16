@@ -10,9 +10,9 @@ import { isAppCtaId, pushAcquisitionEvent } from "@/lib/analytics/data-layer";
  * the pointer to flood the pill while the label slides up (l1 exits, l2
  * arrives), retracting toward the exit point on leave. Geometry stays the
  * Figma-exact `.lp-btn`; the FX layers are pure overlays.
- * LpFxLink is the anchor twin (real navigations); LpFxPill is the button twin
- * for in-page triggers (the "Book a call" dialog opener — its analytics fire
- * in LpModals, keyed off data-analytics-id, so no wiring here).
+ * LpFxLink is the anchor twin (real navigations, "Book a demo" to /demo
+ * included since 2026-09-16); LpFxPill is the button twin for in-page actions
+ * (the /demo card's submit, Back, AI sales and restart pills).
  */
 
 const FILLS = [

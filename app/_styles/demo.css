@@ -5,7 +5,8 @@
    (the founder's cartouche, 2026-09-14) with two changes: the rainbow art is
    pinned to a token height instead of the viewport (a seven-field card
    exceeds every laptop viewport, and the pinned art keeps the same ink in
-   the idle, error and success states), and the one-column step is 1200px
+   the form and booked states; the taller booking state stretches it
+   vertically, same ink width), and the one-column step is 1200px
    (brain's 1024 would drop the copy column under 300px next to the 736px
    card).
    Specificity notes: `.lp p { margin: 0 }` / `.lp a { color: inherit }` are
@@ -30,9 +31,11 @@
   --demo-card-radius: var(--lp-r-2xlg); /* 48; 32 on phones */
   --demo-form-width: 400px; /* brain's signup width */
   --demo-air: var(--lp-space-12); /* form ↔ rainbow ink */
-  /* The idle card's designed height; the art is pinned to it in both
-     states so the visible ink is identical before and after submit. One
-     column: unused (the strip follows the card again). */
+  /* The form card's designed height; the art is pinned to it so the
+     visible ink is identical in the form and booked states. A taller card
+     (the booking state's Calendly frame) stretches the art vertically
+     through --demo-art-stretch (DemoArtwork). One column: unused (the strip
+     follows the card again). */
   --demo-art-height: 925px;
   --demo-side-scale: 0.7; /* founder 2026-09-14: rays squeezed so they sit closer */
   /* brain's formula: visible ink ≈ 240px */
@@ -49,6 +52,12 @@
   --demo-chevron-stroke: calc(2 * var(--lp-line));
   --demo-ease: 200ms ease;
   --demo-title-size: var(--lp-text-6xlg);
+  /* Booking state (DemoBooking): the Calendly frame's height before its
+     first calendly.page_height report (the routing form measures ~650px),
+     and the ceiling on those reports: past it Calendly scrolls inside the
+     frame instead of stretching the page. */
+  --demo-cal-initial: 680px;
+  --demo-cal-max: 1200px;
   font-synthesis: none;
 }
 
@@ -69,7 +78,7 @@
   outline-color: var(--lp-purple-40);
 }
 /* Both receive programmatic focus after a submit; neither is interactive,
-   the ring would only decorate "Thanks for reaching out!" or the red line. */
+   the ring would only decorate "Pick a time", "You're booked" or the red line. */
 .lp-demo :is(.demo-card__title, .demo-form__error):focus-visible {
   outline: none;
 }
@@ -110,6 +119,16 @@
 }
 .demo-pitch {
   grid-area: pitch;
+}
+/* Booking state, two columns: the card grows to 1000–1400px and its height
+   follows each calendly.page_height report (routing form, calendar, slots),
+   so a centred copy column would sit ~400px down and slide while the
+   visitor clicks in the frame. Pin it to the top instead; the form and
+   booked states keep the centring. */
+@media (min-width: 1201px) {
+  .demo-hero__content:has(.demo-success--booking) .demo-left {
+    justify-content: flex-start;
+  }
 }
 .demo-eyebrow {
   color: var(--lp-subtle-text);
@@ -156,7 +175,10 @@
   justify-content: center;
 }
 /* = LpRainbowGL's clip (art.offsetParent): must stay positioned. It follows
-   the card and crops the pinned art in the shorter success state. */
+   the card and crops the pinned art in the shorter booked state; the booking
+   state's Calendly frame can make the card taller than the art token, and
+   DemoArtwork then writes --demo-art-stretch here (rail height / art height,
+   never below 1). */
 .demo-side-rail {
   position: absolute;
   top: 0;
@@ -171,7 +193,9 @@
    `.lp-cta__art { height: 336px }` and anim.css's aspect resets; the ≤767
    rotations are scoped to .lp-cta__card and never fire. The shared renderer
    reads a matrix with origin 0 0: anchor the squeeze at the right edge
-   inside that matrix so DOM and WebGL clip identically. */
+   inside that matrix so DOM and WebGL clip identically. The vertical
+   stretch rides in the same matrix (1 unless the card outgrows the art),
+   so the band width (--demo-band) never changes. */
 .lp-demo .demo-side-art {
   position: absolute;
   top: 0;
@@ -180,7 +204,7 @@
   width: auto;
   max-width: none;
   transform-origin: 0 0;
-  transform: translateX(calc(100% * (1 - var(--demo-side-scale)))) scaleX(var(--demo-side-scale));
+  transform: translateX(calc(100% * (1 - var(--demo-side-scale)))) scale(var(--demo-side-scale), var(--demo-art-stretch, 1));
 }
 .demo-card__title {
   font-size: var(--lp-text-3xlg);
@@ -406,7 +430,7 @@
   flex: none;
   accent-color: var(--lp-purple-40);
 }
-/* The success state's AI sales error line (DemoSuccess) reads like the
+/* The booking state's AI sales error line (DemoBooking) reads like the
    form's, so the two share these rules and the ≤767 tap rows below. */
 .lp-demo :is(.demo-form__error, .demo-success__error) {
   color: var(--lp-red-40);
@@ -453,7 +477,7 @@
   opacity: 0.6;
   cursor: progress;
 }
-/* Under the form on both steps, never in the success state: the help line
+/* Under the form on both steps, never after submit: the help line
    left, the two-segment progress bar right (ElevenLabs); stacked on phones. */
 .lp-demo .demo-form__foot {
   display: flex;
@@ -494,7 +518,9 @@
   background: var(--lp-text);
 }
 
-/* ── success state and video frame ── */
+/* ── booking and booked states (DemoBooking, DemoBooked), video frame ── */
+/* One wrapper recipe for both post-submit states: the submission succeeded
+   in both, so the class keeps its name. */
 .demo-success {
   display: grid;
   gap: var(--lp-space-4);
@@ -504,12 +530,48 @@
   margin-top: calc(-1 * var(--lp-space-2));
   color: var(--lp-ink-tr-70);
   font-size: var(--lp-text-md);
+  text-wrap: pretty;
 }
-.lp-demo .demo-success__faster,
+.lp-demo .demo-success__note,
 .lp-demo .demo-success__again {
   font-size: var(--lp-text-sm);
   color: var(--lp-text);
   text-wrap: pretty;
+}
+/* The Calendly routing form, inline (booking state). The group spans the
+   card body (the grid starts its items). The frame's height follows
+   calendly.page_height (DemoBooking writes --demo-cal-h) under the cap;
+   --demo-cal-primary is read as Calendly's primary color (buttons, selected
+   dates = the site's plum pill), as modal.css's --cal-primary was. */
+.demo-success__cal {
+  justify-self: stretch;
+  min-width: 0;
+}
+.demo-success__frame {
+  --demo-cal-primary: var(--lp-inverted-surface);
+  width: 100%;
+  height: min(var(--demo-cal-h, var(--demo-cal-initial)), var(--demo-cal-max));
+  overflow: clip;
+  transition: height var(--demo-ease);
+}
+.demo-success__frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* The blocked-frame escape hatch: empty (no height) until the frame is stuck. */
+.lp-demo .demo-success__fallback {
+  color: var(--lp-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+}
+.lp-demo .demo-success__fallback:not(:empty) {
+  margin-top: var(--lp-space-2);
+}
+.lp-demo .demo-success__fallback a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 /* Named exception to foundation.css "button keep same sizes" (founder
    2026-09-03): "Chat with AI sales" (18 chars) and "Start a new submission"
@@ -615,9 +677,11 @@
     width: var(--demo-rail);
     border-radius: 0;
   }
-  /* --demo-art-height is unused here */
+  /* --demo-art-height is unused here, and the strip already follows the
+     card: the rail's stretch is overridden on the art itself. */
   .lp-demo .demo-side-art {
     height: 100%;
+    --demo-art-stretch: 1;
   }
 }
 @media (max-width: 767px) {
@@ -673,7 +737,8 @@
   /* 44px tap rows for the 13px inline links (brain does the same for its notice links) */
   .lp-demo .demo-form__help a,
   .lp-demo .demo-form__error a,
-  .lp-demo .demo-success__error a {
+  .lp-demo .demo-success__error a,
+  .lp-demo .demo-success__fallback a {
     display: inline-block;
     padding-block: var(--lp-space-3);
     margin-block: calc(-1 * var(--lp-space-3));
@@ -683,6 +748,15 @@
   }
   .demo-foot {
     padding-inline: var(--lp-space-8);
+  }
+  /* Calendly lays out from about 320px. Inside the card padding the frame
+     got 299px on a 375px phone (QA 2026-09-16), so on phones it bleeds to
+     the card edges, over the 12px rainbow strip (the body paints above the
+     rail): 343px at 375, 328px at 360. A 320px phone still gets 288px, as
+     the card itself clips any wider bleed. */
+  .lp-demo .demo-success__frame {
+    width: auto;
+    margin-inline: calc(-1 * var(--lp-space-4)) calc(-1 * (var(--demo-rail) + var(--lp-space-4)));
   }
 }
 /* The narrowest iPhones (SE, 12/13 mini, 375pt): the lede and the card
@@ -726,7 +800,8 @@
     scroll-behavior: auto !important;
   }
   .demo-form__input,
-  .demo-form__progress-seg {
+  .demo-form__progress-seg,
+  .demo-success__frame {
     transition: none;
   }
 }

@@ -1,6 +1,6 @@
 /**
  * The ElevenLabs "AI sales" agent behind "Chat with AI sales" on /demo's
- * thank-you state (François, 2026-09-16: the agent exists and is published;
+ * booking state (François, 2026-09-16: the agent exists and is published;
  * a visitor talks to it for qualification). Client-safe: no `server-only`,
  * no node imports; `openAiSales` touches `document` and runs from a click.
  *

@@ -1,6 +1,7 @@
-import { LpFxLink, LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
+import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 
 /**
  * Landing v3 — Section 7: CTA "Try Pancake now" (Figma node 4389:4492).
@@ -43,18 +44,18 @@ export function LpCta() {
             <LpFxLink href="https://app.getpancake.ai" data-analytics-id="app_final">
               Start free
             </LpFxLink>
-            {/* opens the Calendly booking sheet (LpModals) via the data-lv2-open
-                contract; scheduler analytics fire in the modal off call_final.
+            {/* A same-tab link to /demo (François, 2026-09-16; it opened the
+                Calendly sheet before), keeping the call_final id.
                 Tinted skin — same as the hero's Book a demo (founder
                 2026-09-01: "bouton book a call différent que dans hero");
                 the outline variant is retired here. */}
-            <LpFxPill
+            <LpFxLink
+              href={DEMO_PAGE_PATH}
               className="lp-btn--tinted lp-btn--demo"
-              data-lv2-open="call"
               data-analytics-id="call_final"
             >
               Book a demo
-            </LpFxPill>
+            </LpFxLink>
           </div>
         </div>
       </div>

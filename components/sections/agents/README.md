@@ -4,8 +4,9 @@ The second landing: a new message + positioning ("Give your AI agent GTM
 superpowers") to test against the homepage. Source of truth for structure, copy
 and motion = the approved draft mockup **https://pancake-landing-draft.vercel.app/**
 (a static 1654px HTML page that zooms to fit). This page rebuilds it on the
-landing-v3 design system: same tokens, fonts, nav, rainbow art, pills, CTA card,
-footer and booking sheet as the homepage, recomposed per breakpoint (never zoomed).
+landing-v3 design system: same tokens, fonts, nav, rainbow art, pills, CTA card
+and footer as the homepage, recomposed per breakpoint (never zoomed). "Book a
+demo" links to `/demo` (2026-09-16), as on the homepage.
 
 Founder brief (2026-09-11): "réutiliser les composants et les polices natives de
 la landing page réelle … les bonnes animations … reprendre tous les éléments de
@@ -36,9 +37,10 @@ d'énormes checks à faire".
 | Shared CSS | `app/_styles/agents/foundation.css` — `.ag-sec`, `.ag-sec__inner`, `.ag-sec__head(--left)`, `.ag-kicker`, `.ag-lede`, `.ag-accent`, `.ag-title-step`, `.ag-title-sm`, `.ag-sep`, `.ag-card`, `.ag-tint--*`, `.ag-marks`, `.ag-term*`, phone type steps |
 | Assets | `public/lp/agents/data/<slug>.png` (16 illustrations, 147×160), `public/lp/agents/grokbot.svg`, `public/og-agents.png`; Hermes = the homepage `HermesMark` portrait (the draft's "H" was wrong — founder) |
 
-Reused from landing-v3 (do not modify those files): `LpNav`, `LpFooter`, `LpModals`,
+Reused from landing-v3 (do not modify those files): `LpNav`, `LpFooter`,
 `LpFitVars`, `LpFxLink`/`LpFxPill` (pills), `LpPancakes` + `LpRainbowGL` +
-`LpArcCanvas` (rainbow), `LpViewportVar`, `HermesMark`; tokens/recipes from
+`LpArcCanvas` (rainbow), `LpViewportVar`, `HermesMark` (`LpModals` unmounted
+2026-09-16: Book a demo links to `/demo`, so no page mounts the booking sheet); tokens/recipes from
 `app/_styles/landing-v3/foundation.css`, hero art geometry from `hero.css`, CTA card
 from `cta.css`. Override under `.lp-agents` / `.ag-*` only.
 
