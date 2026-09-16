@@ -12,8 +12,9 @@
  * for character (ASCII hyphen-minus): lib/booking.ts routes /demo on this
  * exact string (DEMO_BOOKING_ROUTES copies the routing form's routes). A
  * value with no route falls back to the discovery call without an error,
- * while Loops emails and the AI sales agent still go through the routing
- * form itself, so the two paths would book different calendars. It broke
+ * while Loops emails still go through the routing form itself, so the two
+ * paths would book different calendars (the "Talk to Pancake" agent books
+ * what lib/booking.ts routes, like the page). It broke
  * once on 2026-09-16, when the Calendly buckets changed from 1-2 / 3-10 /
  * 11-50 / 51-200 / 201+ to the four below. Any change to Calendly's routes,
  * buckets or event links updates this list and lib/booking.ts in the same
@@ -177,6 +178,31 @@ export function parseDemoRequest(input: unknown): DemoRequestParse {
       ...(submissionId ? { submissionId } : {}),
     },
   };
+}
+
+/** The answers of a demo request known so far: every field that is valid
+    on its own, nothing else (a half-typed email is left out). What the
+    "Talk to Pancake" call starts with when the visitor opens it from the
+    form, before the request is complete. Pure. */
+export type DemoRequestPartial = Partial<Omit<DemoRequest, "submissionId">>;
+
+export function parsePartialDemoRequest(input: unknown): DemoRequestPartial {
+  if (typeof input !== "object" || input === null) return {};
+  const body = input as Record<string, unknown>;
+  const partial: DemoRequestPartial = {};
+  const firstName = cleanName(body.firstName);
+  if (firstName) partial.firstName = firstName;
+  const lastName = cleanName(body.lastName);
+  if (lastName) partial.lastName = lastName;
+  const email = typeof body.email === "string" ? cleanText(body.email).toLowerCase() : "";
+  if (email && email.length <= EMAIL_MAX && EMAIL_RE.test(email)) partial.email = email;
+  const website =
+    typeof body.website === "string" && body.website.length <= WEBSITE_MAX ? normalizeWebsite(body.website) : null;
+  if (website) partial.website = website;
+  if (isOneOf(TEAM_SIZES, body.teamSize)) partial.teamSize = body.teamSize;
+  if (isOneOf(HAS_ACCOUNT, body.hasAccount)) partial.hasAccount = body.hasAccount;
+  if (isOneOf(GOALS, body.goal)) partial.goal = body.goal;
+  return partial;
 }
 
 /** The route's success shape, checked before the form trusts a 2xx. */

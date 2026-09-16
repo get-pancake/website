@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
-import { AI_SALES_ENABLED, type AiSalesVisitor } from "@/lib/ai-sales";
+import { AI_SALES_ENABLED } from "@/lib/ai-sales";
 import {
   CALENDLY_MIN_PAGE_HEIGHT,
   CALENDLY_ORIGIN,
@@ -13,7 +13,6 @@ import {
   isCalendlyEventScheduled,
   type DemoBookingAnswers,
 } from "@/lib/booking";
-import { AiSalesCall } from "./AiSalesCall";
 import { BOOKING } from "./demo-copy";
 
 /**
@@ -53,20 +52,12 @@ import { BOOKING } from "./demo-copy";
  * region that mounts together with its content is not announced, so the
  * persistent status node in DemoForm carries the state change.
  *
- * "Talk to Pancake" opens the full-screen voice call with the ElevenLabs
- * agent "[WEBSITE] AI sales" (AiSalesCall; ElevenLabs workspace, published
- * 2026-09-16; decision page decisions/2026-09-15-demo-page-and-ai-sales-agent.md
- * in the pancake-brain repo). François, 2026-09-16: "I want it to feel like
- * you're talking to the website, not a chatbar", so the call takes the
- * screen and there is no chat. The click mounts the call, and mounting
- * starts it: lib/ai-sales.ts loads the SDK on that click, never before, and
- * the agent gets the visitor's first name and company website (`visitor`:
- * the two fields of the successful submission, nothing else). The pill is a
- * plain enabled button with no busy state of its own: the call covers the
- * page while it is open and hands focus back to the pill when it closes.
- * With no agent id (lib/ai-sales.ts) the pill renders as before, inert. Do
- * not link it to Calendly. The booked state does not repeat the pill; a
- * call still open when this state unmounts is ended.
+ * "Talk to Pancake" asks DemoForm to open the full-screen voice call with
+ * the ElevenLabs agent (AiSalesCall; `onTalk`). DemoForm owns the call, so
+ * the same call serves both form steps and this state, and a call keeps
+ * running when the form moves here under it. With no agent id
+ * (lib/ai-sales.ts) the pill renders as before, inert. Do not link it to
+ * Calendly. The booked state does not repeat the pill.
  */
 
 /** Calendly's first page_height report comes once its app has started,
@@ -75,12 +66,12 @@ const FRAME_STUCK_MS = 6000;
 
 export function DemoBooking({
   answers,
-  visitor,
   onBooked,
+  onTalk,
 }: {
   answers: DemoBookingAnswers;
-  visitor: AiSalesVisitor | null;
   onBooked: () => void;
+  onTalk: () => void;
 }) {
   const titleRef = useRef<HTMLHeadingElement>(null);
   const frameWrapRef = useRef<HTMLDivElement>(null);
@@ -92,7 +83,6 @@ export function DemoBooking({
   const booked = useRef(false); // calendly.event_scheduled is acted on once
   // The listener is registered once; it calls the latest callback.
   const onBookedRef = useRef(onBooked);
-  const [callOpen, setCallOpen] = useState(false);
   const destination = demoBookingDestination(answers.teamSize);
 
   useEffect(() => { titleRef.current?.focus(); }, []);
@@ -199,18 +189,15 @@ export function DemoBooking({
       </div>
       <p className="demo-success__note">{BOOKING.aiSalesLine}</p>
       {AI_SALES_ENABLED ? (
-        <>
-          <LpFxPill
-            type="button"
-            className="demo-success__cta"
-            data-ai-sales-trigger=""
-            aria-haspopup="dialog"
-            onClick={() => setCallOpen(true)}
-          >
-            {BOOKING.aiSales}
-          </LpFxPill>
-          {callOpen ? <AiSalesCall visitor={visitor} onClose={() => setCallOpen(false)} /> : null}
-        </>
+        <LpFxPill
+          type="button"
+          className="demo-success__cta"
+          data-ai-sales-trigger=""
+          aria-haspopup="dialog"
+          onClick={onTalk}
+        >
+          {BOOKING.aiSales}
+        </LpFxPill>
       ) : (
         <LpFxPill type="button" className="demo-success__cta" data-ai-sales-trigger="">
           {BOOKING.aiSales}

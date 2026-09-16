@@ -14,13 +14,18 @@ import { PancakeMonster } from "@/components/mascot/pancake-monster/PancakeMonst
 import { LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
 import {
   AI_SALES_AGENT_ID,
+  AI_SALES_BOOKING_TOOL,
+  AI_SALES_FORM_TOOL,
   aiSalesDynamicVariables,
   loadAiSalesSdk,
+  visitorTimeZone,
+  type AiSalesFormToolParams,
+  type AiSalesFormToolResult,
   type AiSalesMode,
   type AiSalesSession,
-  type AiSalesVisitor,
 } from "@/lib/ai-sales";
-import { AI_CALL } from "./demo-copy";
+import type { DemoRequestPartial } from "@/lib/demo-request";
+import { AI_CALL, BOOKING } from "./demo-copy";
 
 /**
  * The full-screen voice call with the ElevenLabs agent "[WEBSITE] AI sales"
@@ -44,8 +49,23 @@ import { AI_CALL } from "./demo-copy";
  * the SDK's own microphone request finds access granted (no second prompt
  * in Safari). startSession itself cannot be cancelled: a call closed during
  * its token fetch and room join (plus a built-in 3 s delay on Android)
- * still creates the conversation, with the first name and website, and it
- * is ended the moment startSession resolves.
+ * still creates the conversation, with the visitor's variables, and it is
+ * ended the moment startSession resolves.
+ *
+ * The form by voice (François, 2026-09-16: "the AI assistant ... should be
+ * able to answer the form with you directly before booking a meeting"):
+ * DemoForm mounts the call from either form step or from the calendar and
+ * passes `known`, the answers valid so far; the session gets them as
+ * dynamic variables (lib/ai-sales.ts aiSalesDynamicVariables). The agent
+ * asks for the rest and calls the browser tool AI_SALES_FORM_TOOL, which
+ * runs `onFormAnswers`: DemoForm validates, sends the request and moves to
+ * the calendar behind the call, and the JSON result goes back to the agent
+ * (a field error, or the booking values).
+ *
+ * Booking (François, 2026-09-16: the agent books the Calendly meeting
+ * itself): when the booking tool reports success (onAgentToolResponse, not
+ * an error), `onBooked` fires once; DemoForm moves the page to "You're
+ * booked" when the call closes, not during it.
  *
  *   connecting ──connected──▶ listening ◀──mode──▶ speaking
  *     │  │                        │  End call / agent hangs up
@@ -54,7 +74,8 @@ import { AI_CALL } from "./demo-copy";
  *     │  └─ mic refused ──▶ mic-denied ─┐
  *     └──── anything else ─▶ failed ────┴─ Try again ──▶ connecting
  *
- * A connection error during the call (onDisconnect "error") shows failed.
+ * A connection error during the call (onDisconnect "error") shows failed,
+ * or ended once the agent has booked (no second conversation).
  * End call while still connecting closes the call: the visitor never
  * talked, so "Call ended" would be wrong (what a close can still stop: see
  * above). Escape ends the call and closes from any state. The session ends
@@ -121,7 +142,7 @@ function isMicDenied(error: unknown): boolean {
   return name === "NotAllowedError" || name === "PermissionDeniedError";
 }
 
-function statusLine(phase: Phase, muted: boolean): string {
+function statusLine(phase: Phase, muted: boolean, returnsTo: "form" | "calendar"): string {
   switch (phase) {
     case "connecting":
       return AI_CALL.connecting;
@@ -134,7 +155,7 @@ function statusLine(phase: Phase, muted: boolean): string {
     case "mic-denied":
       return AI_CALL.micDenied;
     case "failed":
-      return AI_CALL.failed;
+      return returnsTo === "form" ? AI_CALL.failedForm : AI_CALL.failed;
   }
 }
 
@@ -150,7 +171,23 @@ function level(read: () => number): number {
   }
 }
 
-export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | null; onClose: () => void }) {
+export function AiSalesCall({
+  known,
+  sent,
+  returnsTo,
+  onFormAnswers,
+  onBooked,
+  onClose,
+}: {
+  known: DemoRequestPartial;
+  /** the request for `known` was already sent (opened from the calendar) */
+  sent: boolean;
+  /** what closing the call shows: a form step, or the calendar / booked state */
+  returnsTo: "form" | "calendar";
+  onFormAnswers: (params: AiSalesFormToolParams) => Promise<AiSalesFormToolResult>;
+  onBooked: () => void;
+  onClose: () => void;
+}) {
   const [phase, setPhase] = useState<Phase>("connecting");
   const [muted, setMuted] = useState(false);
   const [announcement, setAnnouncement] = useState("");
@@ -158,6 +195,8 @@ export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | nu
   const [retries, setRetries] = useState(0);
   /** The mascot's px size, measured from its slot (the component takes a number). */
   const [mascotSize, setMascotSize] = useState<number | null>(null);
+  /** the agent booked in this call: the back pill says so */
+  const [booked, setBooked] = useState(false);
 
   const titleId = useId();
   const noteId = useId();
@@ -174,11 +213,19 @@ export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | nu
   const modeRef = useRef<AiSalesMode>("listening");
   const mutedRef = useRef(false);
   const settleTimer = useRef<number | undefined>(undefined);
-  const visitorRef = useRef(visitor);
+  // Read when a session starts: a retry starts with what the form knows then.
+  const knownRef = useRef(known);
+  const sentRef = useRef(sent);
   const onCloseRef = useRef(onClose);
+  const onBookedRef = useRef(onBooked);
+  const onFormAnswersRef = useRef(onFormAnswers);
+  const bookedRef = useRef(false); // onBooked fires once per mounted call
 
-  useEffect(() => { visitorRef.current = visitor; }, [visitor]);
+  useEffect(() => { knownRef.current = known; }, [known]);
+  useEffect(() => { sentRef.current = sent; }, [sent]);
   useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
+  useEffect(() => { onBookedRef.current = onBooked; }, [onBooked]);
+  useEffect(() => { onFormAnswersRef.current = onFormAnswers; }, [onFormAnswers]);
 
   /** End whatever is running or starting; state is the caller's to set. */
   const stop = useCallback(() => {
@@ -211,11 +258,33 @@ export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | nu
       micProbe = navigator.mediaDevices.getUserMedia({ audio: true });
       const [sdk] = await Promise.all([loadAiSalesSdk(), micProbe]);
       if (!current()) return; // closed during the prompt or the load: nothing sent
-      const dynamicVariables = aiSalesDynamicVariables(visitorRef.current ?? {});
+      const dynamicVariables = aiSalesDynamicVariables(knownRef.current, {
+        sent: sentRef.current,
+        timeZone: visitorTimeZone(),
+        now: new Date(),
+        meetingNames: BOOKING.calendar,
+      });
       const session = await sdk.startSession({
         agentId,
         connectionType: "webrtc",
-        ...(dynamicVariables ? { dynamicVariables } : {}),
+        dynamicVariables,
+        clientTools: {
+          // Answered even from a stale attempt: the SDK routes the call to
+          // the session that asked, and a request the page accepted stands.
+          [AI_SALES_FORM_TOOL]: async (params) => JSON.stringify(await onFormAnswersRef.current(params ?? {})),
+        },
+        onAgentToolResponse: ({ tool_name, is_error, is_called, is_blocked, status }) => {
+          // Only a call that ran and succeeded is a booking (review
+          // 2026-09-16: "skipped" and "blocked" arrive with is_error false).
+          // Not gated on the attempt: a booking that lands while the call is
+          // closing is still a booking.
+          const succeeded =
+            status !== undefined ? status === "success" : !is_error && is_called !== false && is_blocked !== true;
+          if (tool_name !== AI_SALES_BOOKING_TOOL || !succeeded || bookedRef.current) return;
+          bookedRef.current = true;
+          setBooked(true);
+          onBookedRef.current();
+        },
         onConnect: () => {
           if (!current()) return;
           connectedRef.current = true;
@@ -238,7 +307,9 @@ export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | nu
           if (!current()) return; // ended by us (stop bumped the attempt)
           sessionRef.current = null; // the SDK is already closing it
           stop();
-          setPhase(details.reason === "error" ? "failed" : "ended");
+          // After a booking a dropped connection is a normal end: "Try again"
+          // would start a new conversation that could book a second meeting.
+          setPhase(details.reason === "error" && !bookedRef.current ? "failed" : "ended");
         },
       });
       if (!current()) {
@@ -320,8 +391,16 @@ export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | nu
         first.focus();
       }
     };
+    // Focus that leaves the call (the page behind it moving on and focusing
+    // its new heading or a field) goes back to where it was in the call.
+    let lastInside: HTMLElement | null = null;
     const onFocusIn = (event: FocusEvent) => {
-      if (event.target instanceof Node && !dialog.contains(event.target)) dialog.focus();
+      if (!(event.target instanceof HTMLElement)) return;
+      if (dialog.contains(event.target)) {
+        lastInside = event.target;
+        return;
+      }
+      (lastInside?.isConnected ? lastInside : dialog).focus();
     };
     document.addEventListener("keydown", onKeyDown);
     document.addEventListener("focusin", onFocusIn);
@@ -342,7 +421,11 @@ export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | nu
         ? active
         : document.querySelector<HTMLElement>("[data-ai-sales-trigger]");
     return () => {
-      if (trigger?.isConnected) trigger.focus();
+      // The form may have moved on during the call (the agent sent it): the
+      // pill that opened the call is gone, so the heading of the screen now
+      // shown (every state has #demo-card-title) takes focus.
+      const target = trigger?.isConnected ? trigger : document.getElementById("demo-card-title");
+      target?.focus();
     };
   }, []);
 
@@ -377,7 +460,7 @@ export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | nu
     };
   }, []);
 
-  const line = statusLine(phase, muted);
+  const line = statusLine(phase, muted, returnsTo);
 
   // One announcement per shown line, never per volume frame. Cleared first:
   // a retry that fails again within the delay sets the same text, which
@@ -526,7 +609,7 @@ export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | nu
             </>
           ) : group === "ended" ? (
             <LpFxPill key="back" className="ai-call__back" onClick={backToCalendar}>
-              {AI_CALL.back}
+              {booked ? AI_CALL.backBooked : returnsTo === "form" ? AI_CALL.backForm : AI_CALL.back}
             </LpFxPill>
           ) : (
             <>
@@ -534,7 +617,7 @@ export function AiSalesCall({ visitor, onClose }: { visitor: AiSalesVisitor | nu
                 {AI_CALL.retry}
               </LpFxPill>
               <LpFxPill key="back" className="lp-btn--outline ai-call__back" onClick={backToCalendar}>
-                {AI_CALL.back}
+                {booked ? AI_CALL.backBooked : returnsTo === "form" ? AI_CALL.backForm : AI_CALL.back}
               </LpFxPill>
             </>
           )}

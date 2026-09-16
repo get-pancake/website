@@ -443,25 +443,47 @@
   justify-self: start;
   margin-top: var(--lp-space-2);
 }
-/* Step 2: Back at the left edge, "Request a demo" at the right (ElevenLabs).
-   The row carries the gap above; the submit's own margin is for step 1. */
+/* The submit row. Step 1: "Let's go", then "Talk to Pancake" beside it
+   (François, 2026-09-16). Step 2: Back at the left edge (ElevenLabs), "Pick
+   a time" and "Talk to Pancake" together at the right. The row carries the
+   gap above. */
 .demo-form__actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   gap: var(--lp-space-3);
   margin-top: var(--lp-space-2);
+}
+.demo-form__actions--start {
+  justify-content: flex-start;
+}
+/* Step 2's three pills do not fit one line in the card column: the submit
+   pair comes first in the DOM, so when the row wraps Back drops under it,
+   matching step 1 where the submit leads. At ≥1201px step 1's one-line row
+   keeps step 2's two-line height, so the card does not jump between steps. */
+@media (min-width: 1201px) {
+  .demo-form__actions--start:has(.demo-form__talk) {
+    min-height: calc(2 * var(--demo-control-height) + var(--lp-space-3));
+    align-content: flex-start;
+  }
+}
+.demo-form__actions-end {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-3);
 }
 .lp-demo .demo-form__actions .demo-form__submit {
   margin-top: 0;
 }
 /* Named exception to "button keep same sizes" (see the success pills below):
-   "Request a demo" (14 chars) overflows the 136px md squircle. It hugs its
-   label with the md pill's Figma radius and never drops under the kit box,
-   so "Sending…" does not shrink it mid-request. "Back" (4 chars) keeps the
-   kit's fixed outline geometry, so the pair reads as two md pills. */
+   "Pick a time" and "Talk to Pancake" (15 chars) hug their label with the
+   md pill's Figma radius and never drop under the kit box, so "Sending…"
+   does not shrink the submit mid-request. "Back" (4 chars) and "Let's go"
+   keep the kit's fixed geometry. */
 @media (min-width: 768px) {
-  .lp-demo .demo-form__actions .demo-form__submit {
+  .lp-demo .demo-form__actions:not(.demo-form__actions--start) .demo-form__submit,
+  .lp-demo .demo-form__actions .demo-form__talk {
     clip-path: none;
     border-radius: var(--lp-r-sm);
     height: auto;
@@ -706,13 +728,17 @@
     width: 100%;
     justify-self: stretch;
   }
-  /* Step 2's row stacks with the submit on top (DOM order stays Back,
-     submit: the desktop reading order, which is also the tab order) and
-     both pills span the card (the kit pins 135px at ≤767). */
+  /* The rows stack in DOM order and every pill spans the card (the kit
+     pins 135px at ≤767). Step 1: "Let's go", then "Talk to Pancake".
+     Step 2: "Pick a time", "Talk to Pancake", then Back. */
   .lp-demo .demo-form__actions {
-    flex-direction: column-reverse;
+    flex-direction: column;
     align-items: stretch;
     gap: var(--lp-space-3);
+  }
+  .lp-demo .demo-form__actions-end {
+    flex-direction: column;
+    align-items: stretch;
   }
   .lp-demo .demo-form__actions .lp-btn {
     width: 100%;

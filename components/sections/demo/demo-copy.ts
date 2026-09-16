@@ -33,11 +33,15 @@ export const HERO = {
 export const TRUST = { before: "Trusted by dozens of ", ycAlt: "YC", after: " companies" } as const;
 
 /** Step 1 of the card (identity). `submit` advances to step 2; `submitting`
-    is the step-2 pill's busy label. */
+    is the step-2 pill's busy label. `talk` is the voice path beside the
+    submit on both steps (François, 2026-09-16: "choose to directly talk to
+    Pancake's AI instead ... next to Let's go ... on both steps of the
+    form"): Pancake asks the questions left, fills the form and books. */
 export const CARD = {
   title: "Book a demo",
   intro: "Two quick steps, then pick a time.",
   submit: "Let's go",
+  talk: "Talk to Pancake",
   submitting: "Sending…",
   /** visually hidden status line while the request is in flight */
   sending: "Sending your request.",
@@ -49,12 +53,13 @@ export const CARD = {
 /** Step 2 of the card (qualification). Founder 2026-09-16: "two steps in
     the form, just like on ElevenLabs" (their step 2 is "Tell us about
     yourself" with a Back button); the title names the team the three
-    questions are about. */
+    questions are about. `submit` reads "Pick a time" since 2026-09-16
+    (François: "'Request a demo' in step 2 should be called 'Pick a time'"). */
 export const STEP2 = {
   title: "Tell us about your team",
   intro: "Three quick answers so we come prepared.",
   back: "Back",
-  submit: "Request a demo",
+  submit: "Pick a time",
 } as const;
 
 /** Visually hidden text of the two-segment progress bar; the bar itself is aria-hidden. */
@@ -147,12 +152,17 @@ export const AI_CALL = {
   ended: "Call ended",
   micDenied: "Allow your microphone to talk to Pancake.",
   failed: "We could not connect. Try again, or pick a time on the calendar.",
+  /** `failed` and `back` when the call closes onto a form step */
+  failedForm: "We could not connect. Try again, or fill in the form.",
   endCall: "End call",
   /** the mute pill's label: mute while the mic is on, unmute while muted */
   mute: "Mute",
   unmute: "Unmute",
   retry: "Try again",
   back: "Back to the calendar",
+  backForm: "Back to the form",
+  /** once the agent booked in the call: closing shows "You're booked" */
+  backBooked: "See your booking",
   /** disclosureBefore + privacy link + newTab (visually hidden) */
   disclosureBefore: "You are talking to an AI agent. The call is recorded. ",
   privacy: "Privacy",

@@ -17,9 +17,10 @@ import type { Goal, HasAccount, TeamSize } from "@/lib/demo-request";
  *
  * DEMO_BOOKING_URL is Calendly's qualification/routing form "Pancake
  * discovery call" (id 402887), still the public booking link: Calendly
- * routes everyone who opens it (Loops emails, the AI sales agent, the
- * unmounted dialogs) and feeds Attio from it (routing submissions and
- * bookings).
+ * routes everyone who opens it (Loops emails, the unmounted dialogs) and
+ * feeds Attio from it (routing submissions and bookings). The "Talk to
+ * Pancake" agent no longer sends people there: it books the calendar this
+ * file routes to (lib/ai-sales.ts).
  */
 export const DEMO_BOOKING_URL = "https://calendly.com/d/d3zd-2yc-x2s";
 
@@ -31,8 +32,8 @@ export const DEMO_PAGE_PATH = "/demo";
  * 402887, read 2026-09-16: its routes run in order on the Team size answer
  * only (the account and goal answers never change the calendar), and any
  * other value falls back to the discovery call. Calendly still routes
- * everyone who uses the routing form URL (Loops emails, the AI sales agent),
- * so both paths must land on the same calendar: any change to Calendly's
+ * everyone who uses the routing form URL (Loops emails), so both paths must
+ * land on the same calendar: any change to Calendly's
  * routes, buckets or event links updates this table, DEMO_BOOKING_ROUTES and
  * lib/demo-request.ts TEAM_SIZES in the same change.
  *
@@ -48,7 +49,27 @@ export type DemoBookingDestination = Readonly<{
   name: string;
   /** the event type's public link (what the routing form redirects to) */
   url: string;
+  /** the event type's Calendly API URI: what the "Talk to Pancake" agent's
+      Calendly tools book (lib/ai-sales.ts booking_event_type). Read
+      2026-09-16 from Calendly's public booking lookup of `url`. */
+  eventTypeUri: string;
+  /** the Calendly location kind a booking through the API sends
+      (lib/ai-sales.ts booking_location). Tested 2026-09-16 through the
+      agent: without a location the group demo is refused ("The specified
+      location kind is not configured for this event type."); with
+      google_conference the group demo and the Round Robin discovery call
+      both pass the location check (Calendly's docs say to omit it for Round
+      Robin; the live API accepts it). "custom" (group demo (L)) is untested:
+      every booking stopped earlier at email verification. */
+  locationKind: "google_conference" | "custom";
+  /** the event type's one enabled booking question, verbatim (the API
+      matches it exactly), or null when the booking form asks name and email
+      only. Read 2026-09-16 in Calendly. */
+  bookingQuestion: string | null;
 }>;
+
+/** The group demos' one optional booking question, verbatim. */
+export const DEMO_BOOKING_PREP_QUESTION = "Please share anything that will help prepare for our meeting.";
 
 export const DEMO_BOOKING_DESTINATIONS: Readonly<Record<DemoBookingDestinationKey, DemoBookingDestination>> =
   Object.freeze({
@@ -57,24 +78,36 @@ export const DEMO_BOOKING_DESTINATIONS: Readonly<Record<DemoBookingDestinationKe
       key: "discovery",
       name: "Pancake discovery call",
       url: "https://calendly.com/d/d3nb-49j-dv2/pancake-discovery-call",
+      eventTypeUri: "https://api.calendly.com/event_types/023673f1-50f0-4ef7-b225-8d3f90e6d1dc",
+      locationKind: "google_conference",
+      bookingQuestion: null,
     }),
     /** 45 min, Collective; set up like the discovery call (2026-09-08) */
     enterprise: Object.freeze({
       key: "enterprise",
       name: "Pancake enterprise discovery call",
       url: "https://calendly.com/d/dz6m-cfh-bz7/pancake-enterprise-discovery-call",
+      eventTypeUri: "https://api.calendly.com/event_types/e377c789-7c07-4b99-84cd-5a5464b7ce31",
+      locationKind: "google_conference",
+      bookingQuestion: null,
     }),
     /** 30 min, Group; one optional question, prefilled through `a1` */
     groupDemo: Object.freeze({
       key: "groupDemo",
       name: "Pancake group demo",
       url: "https://calendly.com/getpancake/pancake-group-demo",
+      eventTypeUri: "https://api.calendly.com/event_types/c871757a-39d8-4385-aad8-6857c65acd03",
+      locationKind: "google_conference",
+      bookingQuestion: DEMO_BOOKING_PREP_QUESTION,
     }),
     /** 30 min, Group; one optional question, prefilled through `a1` */
     largeGroupDemo: Object.freeze({
       key: "largeGroupDemo",
       name: "Pancake group demo (L)",
       url: "https://calendly.com/getpancake/pancake-large-group-demo",
+      eventTypeUri: "https://api.calendly.com/event_types/47de85c5-afaf-432e-8d4f-fb96d06c795a",
+      locationKind: "custom",
+      bookingQuestion: DEMO_BOOKING_PREP_QUESTION,
     }),
   });
 
@@ -201,7 +234,7 @@ const HAS_ACCOUNT_TEXT: Record<HasAccount, "Yes" | "No"> = { yes: "Yes", no: "No
  * when empty. A line that would pass DEMO_BOOKING_CONTEXT_MAX drops the
  * website rather than cut a URL in half.
  */
-function demoBookingContext(answers: DemoBookingAnswers): string {
+export function demoBookingContext(answers: DemoBookingAnswers): string {
   const facts = [`Team size: ${answers.teamSize}.`, `Pancake account: ${HAS_ACCOUNT_TEXT[answers.hasAccount]}.`];
   if (answers.goal) facts.push(`Goal: ${answers.goal}.`);
   const website = answers.website.trim();
