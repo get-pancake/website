@@ -9,10 +9,10 @@
  * sales", published 2026-09-16 as a public agent (no auth, no signed URL).
  * It is a voice agent (chat mode off). Decision page:
  * decisions/2026-09-15-demo-page-and-ai-sales-agent.md in the pancake-brain
- * repo. Since 2026-09-16 it is wired to book the visitor's routed Calendly
- * meeting during the call (see aiSalesDynamicVariables): the visitor's
- * name, email, website and answers go to ElevenLabs with the session, for
- * that booking.
+ * repo. Since 2026-09-16 it fills the demo form by voice and opens the
+ * visitor's chosen Calendly time on the page (see aiSalesDynamicVariables):
+ * the visitor's name, website and answers go to ElevenLabs with the
+ * session; the typed email does not.
  *
  * How the call runs (François, 2026-09-16: "I want it to feel like you're
  * talking to the website, not a chatbar"): no ElevenLabs widget. The site
@@ -37,14 +37,8 @@
  * SDK contract: https://elevenlabs.io/docs/eleven-agents/libraries/java-script
  */
 
+import { demoBookingDestination, type DemoBookingAnswers, type DemoBookingDestinationKey } from "@/lib/booking";
 import {
-  demoBookingContext,
-  demoBookingDestination,
-  type DemoBookingAnswers,
-  type DemoBookingDestinationKey,
-} from "@/lib/booking";
-import {
-  EMAIL_MAX,
   NAME_MAX,
   WEBSITE_MAX,
   type DemoRequestField,
@@ -83,34 +77,31 @@ const SDK_TIMEOUT_MS = 10_000;
  * AI_SALES_FORM_TOOL: the page validates the answers with the form's own
  * parser, sends the same /api/demo-request, and moves to the routed
  * calendar behind the call (DemoForm). The tool's result carries the
- * booking values below, so the agent can go on and book.
+ * booking values below.
  *
- * Booking (François, 2026-09-16: "give Eleven Labs agent access to
- * Calendly"): the ElevenLabs Calendly integration, with his personal access
- * token stored in ElevenLabs, never in this repo. Two Calendly tools only,
- * "List event type available times" and "Create event invitee"; nothing
- * that reads or cancels other meetings. Their parameters booking_event_type,
- * email, first_name, last_name, visitor_timezone, booking_location (an
- * object) and booking_questions_and_answers (a list) are "Variable"
- * parameters filled by ElevenLabs, never by the model.
+ * Picking a time (François, 2026-09-16: "ok not to do the full booking but
+ * redirect where you see fit, with as much of the work already done as
+ * possible"): the agent reads open times with the ElevenLabs Calendly
+ * integration ("List event type available times" only; François's personal
+ * access token is stored in ElevenLabs, never in this repo; its event type
+ * parameter is the Variable booking_event_type, never the model's). When
+ * the visitor picks one, the agent calls the browser tool AI_SALES_SLOT_TOOL
+ * and the page opens that time's Calendly booking page in the card, with
+ * name, email and answers filled in (lib/booking.ts demoBookingSlot); the
+ * visitor confirms it themselves once the call closes. The agent no longer
+ * books through Calendly's API: tested 2026-09-16, Calendly refuses API
+ * bookings while an event type requires email verification ("The
+ * verification code provided is invalid or missing."), and the group demo
+ * and the discovery call do.
  *
  * Every key is always sent (ElevenLabs refuses to start a conversation
- * when a variable the agent uses is missing, and an object parameter needs
- * an object). Keep the names in step with the agent in ElevenLabs.
- *
- * Tested 2026-09-16 in the ElevenLabs preview: open times come back and the
- * booking request reaches Calendly with the right event type, invitee,
- * location and answers, but Calendly refuses it while the event type
- * requires email verification ("The verification code provided is invalid
- * or missing."): the group demo and the discovery call do. The agent then
- * sends the visitor to the calendar on the page.
+ * when a variable the agent uses is missing). Keep the names in step with
+ * the agent in ElevenLabs.
  */
 export type AiSalesDynamicVariables = {
   first_name: string;
   last_name: string;
-  /** read by the booking tool only, never by the prompt */
-  email: string;
-  /** "yes" when `email` is known: what the prompt reads instead of the address */
+  /** "yes" when the form has a valid email; the address itself stays on the page */
   email_known: "yes" | "no";
   company_website: string;
   /** lib/demo-request.ts TEAM_SIZES, or "" */
@@ -127,8 +118,8 @@ export type AiSalesDynamicVariables = {
   visitor_local_time: string;
 } & AiSalesBookingVariables;
 
-/** The values the booking tools read: empty until the request is sent (a
-    booking always follows a sent request, so the team is notified). */
+/** The values the times tool reads: empty until the request is sent (a
+    time is only opened after a sent request, so the team is notified). */
 export type AiSalesBookingVariables = {
   /** "yes" once /api/demo-request was sent for these answers, else "no" */
   form_sent: "yes" | "no";
@@ -136,11 +127,6 @@ export type AiSalesBookingVariables = {
   booking_event_type: string;
   /** what the page calls that calendar: "group demo", "discovery call", … */
   booking_meeting_name: string;
-  /** Calendly's `location` for that calendar (lib/booking.ts locationKind) */
-  booking_location: { kind: string };
-  /** Calendly's `questions_and_answers`: the calendar's booking question
-      with the context line the embed prefills, or [] when it has none */
-  booking_questions_and_answers: ReadonlyArray<{ question: string; answer: string; position: number }>;
 };
 
 /** What the page calls each calendar (components/sections/demo/demo-copy.ts BOOKING.calendar). */
@@ -189,10 +175,6 @@ export function aiSalesBookingVariables(answers: DemoBookingAnswers, meetingName
     form_sent: "yes",
     booking_event_type: destination.eventTypeUri,
     booking_meeting_name: meetingNames[destination.key],
-    booking_location: { kind: destination.locationKind },
-    booking_questions_and_answers: destination.bookingQuestion
-      ? [{ question: destination.bookingQuestion, answer: demoBookingContext(answers), position: 0 }]
-      : [],
   };
 }
 
@@ -200,8 +182,6 @@ const NO_BOOKING: AiSalesBookingVariables = {
   form_sent: "no",
   booking_event_type: "",
   booking_meeting_name: "",
-  booking_location: { kind: "" },
-  booking_questions_and_answers: [],
 };
 
 /** The session's `dynamicVariables`: the answers known so far ("" for the
@@ -217,7 +197,6 @@ export function aiSalesDynamicVariables(
   return {
     first_name: capped(known.firstName, NAME_MAX),
     last_name: capped(known.lastName, NAME_MAX),
-    email: capped(known.email, EMAIL_MAX),
     email_known: known.email ? "yes" : "no",
     company_website: capped(known.website, WEBSITE_MAX),
     team_size: known.teamSize ?? "",
@@ -252,16 +231,15 @@ export type AiSalesFormToolParams = Partial<
 
 /** The tool's answer. On success it repeats the cleaned answers and the
     booking values: the agent's tool assignments copy them into the
-    dynamic variables the booking tools read (ElevenLabs "Dynamic Variable
-    Assignments", value paths like `response.booking_event_type`; the email
-    one is sanitized, so it never reaches the model's context). */
+    dynamic variables the prompt and the times tool read (ElevenLabs
+    "Dynamic Variable Assignments", value paths like
+    `response.booking_event_type`). The email is not repeated. */
 export type AiSalesFormToolResult =
   | ({
       ok: true;
       message: string;
       first_name: string;
       last_name: string;
-      email: string;
       email_known: "yes";
       company_website: string;
       team_size: string;
@@ -296,8 +274,23 @@ export const FORM_TOOL_PARAM: Readonly<Record<DemoRequestField, string>> = {
   submissionId: "email",
 };
 
-/** The agent's Calendly booking tool, as ElevenLabs names it in tool events. */
-export const AI_SALES_BOOKING_TOOL = "calendly_create_event_invitee";
+/**
+ * The browser tool the agent calls once the visitor has picked and confirmed
+ * an open time (declared as a Client tool on the agent, "wait for
+ * response" on). One string parameter, start_time: the slot's start_time
+ * exactly as "List event type available times" returned it. The page opens
+ * that time's booking page on the routed calendar (DemoForm, DemoBooking)
+ * and answers with AiSalesSlotToolResult, JSON-encoded; the call then
+ * closes by itself once the agent has said so (AiSalesCall).
+ */
+export const AI_SALES_SLOT_TOOL = "open_booking_time";
+
+export type AiSalesSlotToolParams = Partial<Record<"start_time", unknown>>;
+
+export type AiSalesSlotToolResult =
+  /** local_start: the time as the visitor's clock reads it, for the agent to repeat */
+  | { ok: true; message: string; local_start: string }
+  | { ok: false; message: string };
 
 /* ── the slice of @elevenlabs/client 1.25.0 the call uses ──
    Written here instead of importing the package's types: the SDK is not an
@@ -322,20 +315,8 @@ export type AiSalesSessionOptions = {
   onConnect?: (props: { conversationId: string }) => void;
   onDisconnect?: (details: AiSalesDisconnect) => void;
   onModeChange?: (props: { mode: AiSalesMode }) => void;
-  /** A server-side tool call finished (the agent must send the
-      "agent_tool_response" client event, set in ElevenLabs). Only `status`
-      "success" means the tool ran and succeeded: a call can also be
-      "error" (e.g. Calendly refused the booking), "blocked" or "skipped"
-      (never sent). Older events may lack `status`. */
-  onAgentToolResponse?: (props: {
-    tool_name: string;
-    is_error: boolean;
-    is_called?: boolean;
-    is_blocked?: boolean;
-    status?: "success" | "error" | "blocked" | "skipped";
-  }) => void;
   /** Browser tools the agent can call; the returned string goes back to it. */
-  clientTools?: Record<string, (parameters: AiSalesFormToolParams) => Promise<string>>;
+  clientTools?: Record<string, (parameters: Record<string, unknown> | undefined) => Promise<string>>;
 };
 
 /** A VoiceConversation, as far as the call is concerned. */

@@ -7,11 +7,15 @@ import {
   FORM_TOOL_PARAM,
   aiSalesBookingVariables,
   formToolInput,
+  localTimeLabel,
+  visitorTimeZone,
   type AiSalesFormToolParams,
   type AiSalesFormToolResult,
+  type AiSalesSlotToolParams,
+  type AiSalesSlotToolResult,
 } from "@/lib/ai-sales";
 import { submissionAttemptForEmail, type BrowserSubmissionAttempt } from "@/lib/analytics/submission-id";
-import { type DemoBookingAnswers } from "@/lib/booking";
+import { demoBookingSlot, type DemoBookingAnswers, type DemoBookingSlot } from "@/lib/booking";
 import {
   EMAIL_MAX,
   GOALS,
@@ -90,8 +94,10 @@ import { DemoBooking } from "./DemoBooking";
  * its browser tool: `answerByVoice` runs the same parser and the same
  * request as the submit (`sendRequest`), then moves to the booking state
  * behind the call; the agent gets back a field error or the booking values.
- * A booking the agent makes moves the page to "You're booked" when the call
- * closes.
+ * When the visitor picks one of the open times the agent reads out,
+ * `openSlotByVoice` opens that time's booking page in the card (`slot`),
+ * prefilled, and the call closes by itself: the visitor confirms on
+ * Calendly, which moves the page to "You're booked" as usual.
  */
 
 type Status = "idle" | "submitting" | "error" | "booking" | "booked";
@@ -100,7 +106,8 @@ type ErrorKind =
   | { code: "field"; field: DemoRequestField }
   | { code: "invalid" };
 
-// Cold start + two 5s upstream timeouts, with margin; past that the user
+// Cold start + the 5s upstream timeouts (Slack, Airtable and Attio run in
+// parallel), with margin; past that the user
 // retries with the form intact.
 const FETCH_TIMEOUT_MS = 15000;
 // The phone double-tap guard (see stepJustChanged). Longer than any
@@ -180,13 +187,16 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
   const focusTitleOnStep = useRef(false);
   const stepChangedAt = useRef(0); // set by goTo; read by stepJustChanged
   const formRef = useRef<HTMLFormElement>(null);
-  // The call: open with the answers known at the click. `statusRef` lets the
-  // agent's tool, which runs outside React's render, see the live state.
+  // The call: open with the answers known at the click. `statusRef` and
+  // `answersRef` let the agent's tools, which run outside React's render, see
+  // the live state.
   const [call, setCall] = useState<{ known: DemoRequestPartial; sent: boolean } | null>(null);
-  const bookedInCall = useRef(false);
-  const callOpen = useRef(false); // read by a booking reported after the call closed
+  /** the time the agent opened in the calendar; null = the calendar itself */
+  const [slot, setSlot] = useState<DemoBookingSlot | null>(null);
   const statusRef = useRef<Status>("idle");
   statusRef.current = status;
+  const answersRef = useRef<DemoBookingAnswers | null>(null);
+  answersRef.current = answers;
 
   const firstNameId = `${id}-first-name`;
   const lastNameId = `${id}-last-name`;
@@ -322,7 +332,8 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
 
     // The booking is the conversion (founder 2026-09-16: "they're booking
     // straight with us"), and Calendly records it and feeds Attio. The POST
-    // only notifies the team (Slack / Airtable), so it is best effort: only a
+    // notifies the team and records the lead (Slack / Airtable / Attio), so
+    // it is best effort: only a
     // 400 about the visitor's own input stops them. A 403, 429, 5xx
     // (including "no delivery configured"), timeout or network error still
     // opens the calendar; the route logs every delivery failure server side
@@ -368,7 +379,9 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     if (proceed) {
       const { firstName, lastName, email, website, teamSize, hasAccount, goal } = value;
       const next: DemoBookingAnswers = { firstName, lastName, email, website, teamSize, hasAccount, ...(goal ? { goal } : {}) };
+      answersRef.current = next;
       setAnswers(next);
+      setSlot(null);
       setStatus("booking");
       return { answers: next };
     }
@@ -392,14 +405,13 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
         : formRef.current
           ? parsePartialDemoRequest(Object.fromEntries(new FormData(formRef.current)))
           : {};
-    callOpen.current = true;
     setCall({ known, sent });
   }
 
   /** The agent's browser tool: the answers it collected, sent like the form. */
   async function answerByVoice(params: AiSalesFormToolParams): Promise<AiSalesFormToolResult> {
     if (!mounted.current) return { ok: false, field: "", message: "The page is closed." };
-    if (statusRef.current === "booked" || bookedInCall.current) {
+    if (statusRef.current === "booked") {
       return { ok: false, field: "", message: "The visitor is already booked. Do not book again." };
     }
     if (inFlight.current) {
@@ -424,7 +436,6 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
         message: `Sent. The ${booking.booking_meeting_name} calendar is now on the page behind the call, with their name and email filled in.`,
         first_name: sentAnswers.firstName,
         last_name: sentAnswers.lastName,
-        email: sentAnswers.email,
         email_known: "yes",
         company_website: sentAnswers.website,
         team_size: sentAnswers.teamSize,
@@ -439,17 +450,39 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
       : { ok: false, field: "", message: ERRORS.invalid };
   }
 
-  function closeCall() {
-    callOpen.current = false;
-    setCall(null);
-    if (bookedInCall.current) {
-      bookedInCall.current = false;
-      if (mounted.current) setStatus("booked");
+  /** The agent's second browser tool: the open time the visitor picked,
+      opened on the routed calendar with their details filled in. */
+  function openSlotByVoice(params: AiSalesSlotToolParams): AiSalesSlotToolResult {
+    if (!mounted.current) return { ok: false, message: "The page is closed." };
+    if (statusRef.current === "booked") {
+      return { ok: false, message: "The visitor is already booked. Do not open another time." };
     }
+    if (statusRef.current !== "booking" || !answersRef.current) {
+      return { ok: false, message: "Send the demo form with submit_demo_request first, then open the time." };
+    }
+    const timeZone = visitorTimeZone();
+    const picked = demoBookingSlot(params.start_time, new Date(), timeZone);
+    if (!picked) {
+      return {
+        ok: false,
+        message:
+          "That start_time is not an open time. Pass the start_time of the slot exactly as the list of available times returned it.",
+      };
+    }
+    setSlot(picked);
+    return {
+      ok: true,
+      local_start: localTimeLabel(new Date(picked.start), timeZone),
+      message:
+        "The booking page for that time is open on the visitor's screen, with their name, email and answers filled in. The call closes by itself after your next sentence.",
+    };
   }
 
-  /** DemoBooking calls it once: on Calendly's calendly.event_scheduled, or
-      when a call in which the agent booked closes. */
+  function closeCall() {
+    setCall(null);
+  }
+
+  /** DemoBooking calls it once, on Calendly's calendly.event_scheduled. */
   function onBooked() {
     setStatus("booked");
   }
@@ -458,9 +491,9 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
   // booked states; every control is uncontrolled).
   function restart() {
     submission.current = null;
-    bookedInCall.current = false;
     focusFirstOnIdle.current = true;
     setAnswers(null);
+    setSlot(null);
     setError(null);
     setStatus("idle");
     setStep(1);
@@ -475,14 +508,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
           sent={call.sent}
           returnsTo={status === "booking" || status === "booked" ? "calendar" : "form"}
           onFormAnswers={answerByVoice}
-          onBooked={() => {
-            if (callOpen.current) {
-              bookedInCall.current = true;
-              return;
-            }
-            // Reported while the call was already closing (Escape): show it now.
-            if (mounted.current && statusRef.current === "booking") setStatus("booked");
-          }}
+          onSlot={openSlotByVoice}
           onClose={closeCall}
         />
       ) : null}
@@ -496,7 +522,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
         {busy ? CARD.sending : status === "booking" ? BOOKING.title : status === "booked" ? BOOKED.title : ""}
       </p>
       {status === "booking" && answers ? (
-        <DemoBooking answers={answers} onBooked={onBooked} onTalk={openCall} />
+        <DemoBooking answers={answers} slot={slot} onBooked={onBooked} onTalk={openCall} />
       ) : status === "booked" ? (
         <DemoBooked onReset={restart} />
       ) : (

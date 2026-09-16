@@ -111,13 +111,18 @@ export const ERRORS = {
     size routed to: the frame opens compact, with Calendly's own event title
     hidden, so this line is where the visitor learns what they are booking.
     No "Submit" any more (no routing form); name and email are prefilled on
-    every calendar. The answers line prefilled into the group demos'
-    booking question is built with the URL (lib/booking.ts). */
+    every calendar. The answers line prefilled into every calendar's prep
+    question is built with the URL (lib/booking.ts). slotBefore/slotAfter
+    (2026-09-16, landing-voice) replace the intro once the "Talk to Pancake"
+    agent opened the time the visitor picked. */
 export const BOOKING = {
   title: "Pick a time",
   /** introBefore + calendar[destination key] + introAfter */
   introBefore: "Book your ",
   introAfter: " below. Your name and email are filled in.",
+  /** once Pancake opened the time picked on the call: slotBefore + calendar + slotAfter */
+  slotBefore: "Confirm your ",
+  slotAfter: " below. Pancake filled in your details.",
   /** per lib/booking.ts DEMO_BOOKING_DESTINATIONS key; both group demos read the same */
   calendar: {
     discovery: "discovery call",
@@ -161,8 +166,8 @@ export const AI_CALL = {
   retry: "Try again",
   back: "Back to the calendar",
   backForm: "Back to the form",
-  /** once the agent booked in the call: closing shows "You're booked" */
-  backBooked: "See your booking",
+  /** once the agent opened the picked time on the page (it closes by itself) */
+  backSlot: "Confirm your time",
   /** disclosureBefore + privacy link + newTab (visually hidden) */
   disclosureBefore: "You are talking to an AI agent. The call is recorded. ",
   privacy: "Privacy",

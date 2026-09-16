@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 import { normalizeAirtableBaseId, normalizeAirtableToken } from "@/lib/airtable-config";
+import { writeAttioDemoRequest } from "@/lib/attio-demo-request";
 import {
   BODY_MAX,
   DEMO_REQUEST_SOURCE,
@@ -25,7 +26,9 @@ export const runtime = "nodejs";
  *   3. server-side validation (lib/demo-request.ts, shared with the form).
  *   4. a per-instance circuit breaker (GLOBAL_LIMIT) behind validation, so
  *      one warm instance cannot post unbounded Slack messages / Airtable rows.
- * Leads go to Slack and/or Airtable and are never dropped silently: when
+ * Leads go to Slack, Airtable and/or Attio (the CRM: person by email, company
+ * by domain, answers as a note; lib/attio-demo-request.ts) and are never
+ * dropped silently: when
  * nothing lands the route answers 503 and the page asks the visitor to
  * retry. A retry with the same submission id upserts the Airtable row
  * instead of duplicating it. No PII in logs (status codes and reason
@@ -356,10 +359,12 @@ export async function POST(request: NextRequest) {
     else console.error("Demo request Airtable config incomplete");
   }
 
-  if (!slackUrl && !airtableCfg) {
+  const attioToken = process.env.ATTIO_API_KEY?.trim() || undefined;
+
+  if (!slackUrl && !airtableCfg && !attioToken) {
     if (!production) {
       console.info(
-        "Demo request accepted without delivery: set SLACK_DEMO_WEBHOOK_URL or AIRTABLE_DEMO_REQUESTS_TABLE_ID",
+        "Demo request accepted without delivery: set SLACK_DEMO_WEBHOOK_URL, AIRTABLE_DEMO_REQUESTS_TABLE_ID or ATTIO_API_KEY",
       );
       return json({ ok: true, delivered: [] }, 200);
     }
@@ -367,16 +372,18 @@ export async function POST(request: NextRequest) {
     return json({ ok: false, error: "unavailable" }, 503);
   }
 
-  const [slack, airtable] = await Promise.all([
+  const [slack, airtable, attio] = await Promise.all([
     slackUrl ? notifySlack(slackUrl, lead) : ("skipped" as const),
     airtableCfg ? writeAirtable(airtableCfg, lead) : ("skipped" as const),
+    attioToken ? writeAttioDemoRequest(attioToken, lead) : ("skipped" as const),
   ]);
 
   const delivered: DemoRequestDelivery[] = [];
   if (slack === "sent") delivered.push("slack");
   if (airtable === "sent") delivered.push("airtable");
+  if (attio === "sent") delivered.push("attio");
   if (delivered.length > 0) return json({ ok: true, delivered }, 200);
 
-  console.error("Demo request delivery failed", { slack, airtable });
+  console.error("Demo request delivery failed", { slack, airtable, attio });
   return json({ ok: false, error: "unavailable" }, 503);
 }

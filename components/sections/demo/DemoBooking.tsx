@@ -12,6 +12,7 @@ import {
   demoBookingEventUrl,
   isCalendlyEventScheduled,
   type DemoBookingAnswers,
+  type DemoBookingSlot,
 } from "@/lib/booking";
 import { BOOKING } from "./demo-copy";
 
@@ -28,11 +29,13 @@ import { BOOKING } from "./demo-copy";
  * embedded: it would ask the same questions again. The intro names the
  * routed calendar (BOOKING.calendar). The embed is prefilled with name,
  * email and a one-line summary of the answers (team size, account, goal,
- * website; the group demos show it in their one booking question, the other
- * calls ignore it). Nothing else about the visitor goes to Calendly: the
- * frame gets the browser's default referrer policy, so only the site's
- * origin travels, and no camera or microphone permission. The visitor picks
- * a slot and confirms. The embed:
+ * website), shown in every calendar's optional prep question. With a
+ * `slot` (a time the "Talk to Pancake" agent opened, DemoForm), the frame
+ * opens that time's booking page instead, same prefill, and the intro says
+ * to confirm it (BOOKING.slotBefore). Nothing else about the visitor goes
+ * to Calendly: the frame gets the browser's default referrer policy, so
+ * only the site's origin travels, and no camera or microphone permission.
+ * The visitor picks a slot and confirms. The embed:
  *   - is built after mount: its colors come from the card's computed CSS
  *     and --demo-cal-primary, as LpModals did (PR #288), so the design
  *     tokens stay the single source;
@@ -66,10 +69,12 @@ const FRAME_STUCK_MS = 6000;
 
 export function DemoBooking({
   answers,
+  slot,
   onBooked,
   onTalk,
 }: {
   answers: DemoBookingAnswers;
+  slot: DemoBookingSlot | null;
   onBooked: () => void;
   onTalk: () => void;
 }) {
@@ -97,17 +102,25 @@ export function DemoBooking({
     if (!wrap) return;
     const card = wrap.closest<HTMLElement>(".demo-card") ?? wrap;
     const cardStyle = getComputedStyle(card);
+    // A new page in the frame (the agent opened a time): loaded again only
+    // once it reports its height.
+    frameLoaded.current = false;
+    setFrameStuck(false);
     setFrameSrc(
-      demoBookingEventUrl(answers, {
-        compact: wrap.clientWidth < CALENDLY_TWO_COLUMN_MIN,
-        colors: {
-          background: cardStyle.backgroundColor,
-          text: cardStyle.color,
-          primary: getComputedStyle(wrap).getPropertyValue("--demo-cal-primary"),
+      demoBookingEventUrl(
+        answers,
+        {
+          compact: wrap.clientWidth < CALENDLY_TWO_COLUMN_MIN,
+          colors: {
+            background: cardStyle.backgroundColor,
+            text: cardStyle.color,
+            primary: getComputedStyle(wrap).getPropertyValue("--demo-cal-primary"),
+          },
         },
-      }),
+        slot,
+      ),
     );
-  }, [answers]);
+  }, [answers, slot]);
 
   // Calendly's Inline embed contract: page height and the booking. Only
   // Calendly's origin AND this frame's window are trusted.
@@ -156,7 +169,9 @@ export function DemoBooking({
         {BOOKING.title}
       </h2>
       <p className="demo-success__lead">
-        {BOOKING.introBefore}{BOOKING.calendar[destination.key]}{BOOKING.introAfter}
+        {slot ? BOOKING.slotBefore : BOOKING.introBefore}
+        {BOOKING.calendar[destination.key]}
+        {slot ? BOOKING.slotAfter : BOOKING.introAfter}
       </p>
       <div className="demo-success__cal">
         <div ref={frameWrapRef} className="demo-success__frame">

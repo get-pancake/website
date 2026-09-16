@@ -19,8 +19,9 @@ import type { Goal, HasAccount, TeamSize } from "@/lib/demo-request";
  * discovery call" (id 402887), still the public booking link: Calendly
  * routes everyone who opens it (Loops emails, the unmounted dialogs) and
  * feeds Attio from it (routing submissions and bookings). The "Talk to
- * Pancake" agent no longer sends people there: it books the calendar this
- * file routes to (lib/ai-sales.ts).
+ * Pancake" agent no longer sends people there: it offers open times on the
+ * calendar this file routes to and opens the one the visitor picks
+ * (demoBookingSlot, lib/ai-sales.ts).
  */
 export const DEMO_BOOKING_URL = "https://calendly.com/d/d3zd-2yc-x2s";
 
@@ -49,38 +50,29 @@ export type DemoBookingDestination = Readonly<{
   name: string;
   /** the event type's public link (what the routing form redirects to) */
   url: string;
-  /** the event type's Calendly API URI: what the "Talk to Pancake" agent's
-      Calendly tools book (lib/ai-sales.ts booking_event_type). Read
-      2026-09-16 from Calendly's public booking lookup of `url`. */
+  /** the event type's Calendly API URI: the calendar whose open times the
+      "Talk to Pancake" agent reads (lib/ai-sales.ts booking_event_type).
+      Read 2026-09-16 from Calendly's public booking lookup of `url`. */
   eventTypeUri: string;
-  /** the Calendly location kind a booking through the API sends
-      (lib/ai-sales.ts booking_location). Tested 2026-09-16 through the
-      agent: without a location the group demo is refused ("The specified
-      location kind is not configured for this event type."); with
-      google_conference the group demo and the Round Robin discovery call
-      both pass the location check (Calendly's docs say to omit it for Round
-      Robin; the live API accepts it). "custom" (group demo (L)) is untested:
-      every booking stopped earlier at email verification. */
-  locationKind: "google_conference" | "custom";
-  /** the event type's one enabled booking question, verbatim (the API
-      matches it exactly), or null when the booking form asks name and email
-      only. Read 2026-09-16 in Calendly. */
-  bookingQuestion: string | null;
+  /** the URL parameter that prefills the optional booking question "Please
+      share anything that will help prepare for our meeting." with the
+      context line (demoBookingContext). Calendly numbers questions by
+      position, disabled ones included: the group demos ask it first (`a1`);
+      the two calls got it on 2026-09-16 (François: add the prep question)
+      as their second question, after a disabled first one (`a2`). Checked
+      live the same day: `a2` fills it on both calls, `a1` does not. */
+  answerParam: "a1" | "a2";
 }>;
-
-/** The group demos' one optional booking question, verbatim. */
-export const DEMO_BOOKING_PREP_QUESTION = "Please share anything that will help prepare for our meeting.";
 
 export const DEMO_BOOKING_DESTINATIONS: Readonly<Record<DemoBookingDestinationKey, DemoBookingDestination>> =
   Object.freeze({
-    /** 30 min, Round Robin; asks name and email only */
+    /** 30 min, Round Robin */
     discovery: Object.freeze({
       key: "discovery",
       name: "Pancake discovery call",
       url: "https://calendly.com/d/d3nb-49j-dv2/pancake-discovery-call",
       eventTypeUri: "https://api.calendly.com/event_types/023673f1-50f0-4ef7-b225-8d3f90e6d1dc",
-      locationKind: "google_conference",
-      bookingQuestion: null,
+      answerParam: "a2",
     }),
     /** 45 min, Collective; set up like the discovery call (2026-09-08) */
     enterprise: Object.freeze({
@@ -88,26 +80,23 @@ export const DEMO_BOOKING_DESTINATIONS: Readonly<Record<DemoBookingDestinationKe
       name: "Pancake enterprise discovery call",
       url: "https://calendly.com/d/dz6m-cfh-bz7/pancake-enterprise-discovery-call",
       eventTypeUri: "https://api.calendly.com/event_types/e377c789-7c07-4b99-84cd-5a5464b7ce31",
-      locationKind: "google_conference",
-      bookingQuestion: null,
+      answerParam: "a2",
     }),
-    /** 30 min, Group; one optional question, prefilled through `a1` */
+    /** 30 min, Group */
     groupDemo: Object.freeze({
       key: "groupDemo",
       name: "Pancake group demo",
       url: "https://calendly.com/getpancake/pancake-group-demo",
       eventTypeUri: "https://api.calendly.com/event_types/c871757a-39d8-4385-aad8-6857c65acd03",
-      locationKind: "google_conference",
-      bookingQuestion: DEMO_BOOKING_PREP_QUESTION,
+      answerParam: "a1",
     }),
-    /** 30 min, Group; one optional question, prefilled through `a1` */
+    /** 30 min, Group */
     largeGroupDemo: Object.freeze({
       key: "largeGroupDemo",
       name: "Pancake group demo (L)",
       url: "https://calendly.com/getpancake/pancake-large-group-demo",
       eventTypeUri: "https://api.calendly.com/event_types/47de85c5-afaf-432e-8d4f-fb96d06c795a",
-      locationKind: "custom",
-      bookingQuestion: DEMO_BOOKING_PREP_QUESTION,
+      answerParam: "a1",
     }),
   });
 
@@ -227,9 +216,9 @@ export const DEMO_BOOKING_CONTEXT_MAX = 500;
 const HAS_ACCOUNT_TEXT: Record<HasAccount, "Yes" | "No"> = { yes: "Yes", no: "No" };
 
 /**
- * The plain-text line prefilled into the group demos' one booking question
- * ("Please share anything that will help prepare for our meeting.", `a1`),
- * so the host sees the /demo answers: "Team size: 3-20. Pancake account: No.
+ * The plain-text line prefilled into every calendar's booking question
+ * ("Please share anything that will help prepare for our meeting.", through
+ * the destination's answerParam), so the host sees the /demo answers: "Team size: 3-20. Pancake account: No.
  * Goal: Find qualified leads. Website: https://acme.com/". Goal is left out
  * when empty. A line that would pass DEMO_BOOKING_CONTEXT_MAX drops the
  * website rather than cut a URL in half.
@@ -243,23 +232,92 @@ export function demoBookingContext(answers: DemoBookingAnswers): string {
 }
 
 /**
- * The routed calendar (demoBookingDestination) as an Inline embed, prefilled:
- * the embed and color params, then `name` ("First Last"), `email` and `a1`
- * (the context line). The discovery and enterprise calls have no custom
- * question, and Calendly ignores `a1` there. Encoded with URLSearchParams,
- * then `+` written as `%20`: the form the routing-form prefill was verified
- * with live (2026-09-16), decoded the same by every parser; a literal plus
- * (an email alias) is already `%2B`. Call only from the browser.
+ * One open time on the routed calendar, as Calendly's own page links to it:
+ * `<event url>/<start>?month=YYYY-MM&date=YYYY-MM-DD` opens "Enter Booking
+ * Details" for that time, with the prefill params applied (checked live on
+ * the discovery call, the enterprise call and the group demo, 2026-09-16).
+ * The visitor only confirms. What Calendly shows for a time taken in the
+ * meantime was not tested; its booking page has a back arrow to the
+ * calendar either way.
  */
-export function demoBookingEventUrl(answers: DemoBookingAnswers, options: EmbedOptions = {}) {
+export type DemoBookingSlot = Readonly<{
+  /** UTC, whole seconds: "2026-09-21T18:00:00Z" */
+  start: string;
+  /** the calendar month and day behind the booking page, in the visitor's zone */
+  month: string;
+  date: string;
+}>;
+
+/** How far ahead a slot may be: Calendly's own booking windows are shorter. */
+export const DEMO_BOOKING_SLOT_MAX_DAYS = 90;
+
+const SLOT_START_RE =
+  /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2})(?:\.\d{1,9})?)?(?:Z|([+-])(\d{2}):?(\d{2}))$/;
+
+/**
+ * A slot from a start time the agent read from Calendly's available times
+ * ("2026-09-21T18:00:00.000000Z", or with an offset), or null when it is not
+ * an ISO date-time with a zone, not a real date, in the past, or more than
+ * DEMO_BOOKING_SLOT_MAX_DAYS ahead. Parsed by hand: Safari's Date parser
+ * refuses microseconds. Pure.
+ */
+export function demoBookingSlot(startTime: unknown, now: Date, timeZone: string): DemoBookingSlot | null {
+  if (typeof startTime !== "string") return null;
+  const match = SLOT_START_RE.exec(startTime.trim());
+  if (!match) return null;
+  const [, y, mo, d, h, mi, sec, sign, offH, offM] = match;
+  const offsetMinutes = sign ? (sign === "-" ? -1 : 1) * (Number(offH) * 60 + Number(offM)) : 0;
+  const fields = [Number(y), Number(mo) - 1, Number(d), Number(h), Number(mi), Number(sec ?? "0")] as const;
+  const local = new Date(Date.UTC(...fields));
+  // Date.UTC rolls over (February 30 becomes March 2): reject what it changed.
+  if (
+    local.getUTCFullYear() !== fields[0] ||
+    local.getUTCMonth() !== fields[1] ||
+    local.getUTCDate() !== fields[2] ||
+    local.getUTCHours() !== fields[3] ||
+    local.getUTCMinutes() !== fields[4] ||
+    local.getUTCSeconds() !== fields[5]
+  ) {
+    return null;
+  }
+  const start = new Date(local.getTime() - offsetMinutes * 60_000);
+  const ahead = start.getTime() - now.getTime();
+  if (ahead <= 0 || ahead > DEMO_BOOKING_SLOT_MAX_DAYS * 24 * 60 * 60 * 1000) return null;
+  let day: string;
+  try {
+    // en-CA formats as YYYY-MM-DD.
+    day = new Intl.DateTimeFormat("en-CA", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(start);
+  } catch {
+    day = start.toISOString().slice(0, 10);
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) day = start.toISOString().slice(0, 10);
+  return { start: start.toISOString().replace(/\.\d{3}Z$/, "Z"), month: day.slice(0, 7), date: day };
+}
+
+/**
+ * The routed calendar (demoBookingDestination) as an Inline embed, prefilled:
+ * the embed and color params, then `name` ("First Last"), `email` and the
+ * context line in the destination's answerParam. With a `slot`, the embed
+ * opens that time's booking page instead of the calendar (DemoBookingSlot).
+ * Encoded with URLSearchParams, then `+` written as `%20`: the form the
+ * routing-form prefill was verified with live (2026-09-16), decoded the
+ * same by every parser; a literal plus (an email alias) is already `%2B`.
+ * Call only from the browser.
+ */
+export function demoBookingEventUrl(answers: DemoBookingAnswers, options: EmbedOptions = {}, slot?: DemoBookingSlot | null) {
   const params = calendlyEmbedParams(options);
+  if (slot) {
+    params.set("month", slot.month);
+    params.set("date", slot.date);
+  }
   const name = [answers.firstName.trim(), answers.lastName.trim()].filter(Boolean).join(" ");
   if (name) params.set("name", name);
   const email = answers.email.trim();
   if (email) params.set("email", email);
-  params.set("a1", demoBookingContext(answers));
-  const { url } = demoBookingDestination(answers.teamSize);
-  return `${url}?${params.toString().replace(/\+/g, "%20")}`;
+  const { url, answerParam } = demoBookingDestination(answers.teamSize);
+  params.set(answerParam, demoBookingContext(answers));
+  const path = slot ? `${url}/${slot.start}` : url;
+  return `${path}?${params.toString().replace(/\+/g, "%20")}`;
 }
 
 /**

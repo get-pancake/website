@@ -77,7 +77,7 @@ export type DemoRequest = {
   submissionId?: string;
 };
 export type DemoRequestParse = { ok: true; value: DemoRequest } | { ok: false; field: DemoRequestField };
-export type DemoRequestDelivery = "slack" | "airtable";
+export type DemoRequestDelivery = "slack" | "airtable" | "attio";
 export type DemoRequestErrorCode = "invalid" | "forbidden" | "rate_limited" | "unavailable";
 export type DemoRequestResponse =
   | { ok: true; delivered: DemoRequestDelivery[] }
@@ -212,6 +212,6 @@ export function isDemoRequestOk(value: unknown): value is { ok: true; delivered:
   return (
     body.ok === true &&
     Array.isArray(body.delivered) &&
-    body.delivered.every((item) => item === "slack" || item === "airtable")
+    body.delivered.every((item) => item === "slack" || item === "airtable" || item === "attio")
   );
 }

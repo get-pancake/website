@@ -14,8 +14,8 @@ import { PancakeMonster } from "@/components/mascot/pancake-monster/PancakeMonst
 import { LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
 import {
   AI_SALES_AGENT_ID,
-  AI_SALES_BOOKING_TOOL,
   AI_SALES_FORM_TOOL,
+  AI_SALES_SLOT_TOOL,
   aiSalesDynamicVariables,
   loadAiSalesSdk,
   visitorTimeZone,
@@ -23,6 +23,8 @@ import {
   type AiSalesFormToolResult,
   type AiSalesMode,
   type AiSalesSession,
+  type AiSalesSlotToolParams,
+  type AiSalesSlotToolResult,
 } from "@/lib/ai-sales";
 import type { DemoRequestPartial } from "@/lib/demo-request";
 import { AI_CALL, BOOKING } from "./demo-copy";
@@ -31,7 +33,7 @@ import { AI_CALL, BOOKING } from "./demo-copy";
  * The full-screen voice call with the ElevenLabs agent "[WEBSITE] AI sales"
  * (François, 2026-09-16: "I asked for something similar to the Eleven Labs
  * where the agent takes up the screen and there's no chat. I want it to
- * feel like you're talking to the website, not a chatbar"). DemoBooking
+ * feel like you're talking to the website, not a chatbar"). DemoForm
  * mounts it when the visitor clicks "Talk to Pancake" and unmounts it on
  * `onClose`. Styles: app/_styles/ai-sales-call.css.
  *
@@ -62,10 +64,16 @@ import { AI_CALL, BOOKING } from "./demo-copy";
  * the calendar behind the call, and the JSON result goes back to the agent
  * (a field error, or the booking values).
  *
- * Booking (François, 2026-09-16: the agent books the Calendly meeting
- * itself): when the booking tool reports success (onAgentToolResponse, not
- * an error), `onBooked` fires once; DemoForm moves the page to "You're
- * booked" when the call closes, not during it.
+ * The chosen time (François, 2026-09-16: "redirect where you see fit, with
+ * as much of the work already done as possible"): the agent offers open
+ * times and calls the browser tool AI_SALES_SLOT_TOOL with the one the
+ * visitor confirmed. `onSlot` opens that time's prefilled booking page in
+ * the card behind the call. From then on the call is handed off: once the
+ * agent has finished saying so (speaking, then HANDOFF_CLOSE_MS of
+ * listening), or after HANDOFF_SILENT_MS if it says nothing, the call
+ * closes by itself and focus lands on the card's title, so the visitor is
+ * looking at the page with one button left to press. The back pill reads
+ * "Confirm your time" meanwhile.
  *
  *   connecting ──connected──▶ listening ◀──mode──▶ speaking
  *     │  │                        │  End call / agent hangs up
@@ -75,7 +83,7 @@ import { AI_CALL, BOOKING } from "./demo-copy";
  *     └──── anything else ─▶ failed ────┴─ Try again ──▶ connecting
  *
  * A connection error during the call (onDisconnect "error") shows failed,
- * or ended once the agent has booked (no second conversation).
+ * or ended once a time was opened (no second conversation).
  * End call while still connecting closes the call: the visitor never
  * talked, so "Call ended" would be wrong (what a close can still stop: see
  * above). Escape ends the call and closes from any state. The session ends
@@ -131,6 +139,11 @@ const VOLUME_EASE = 0.25;
 const MASCOT_ART_SCALE = 1.8;
 /** See the header: clicks this soon after the controls swap are ignored. */
 const SWAP_GUARD_MS = 400;
+/** After the handoff: how long the agent must stay quiet once it has
+    spoken before the call closes (longer than a pause between sentences). */
+const HANDOFF_CLOSE_MS = 1500;
+/** After the handoff: the close when the agent never starts speaking. */
+const HANDOFF_SILENT_MS = 8000;
 
 /** getUserMedia refused by the visitor, the browser setting or a policy.
     Every other failure (no microphone, network, jsDelivr, ElevenLabs,
@@ -176,7 +189,7 @@ export function AiSalesCall({
   sent,
   returnsTo,
   onFormAnswers,
-  onBooked,
+  onSlot,
   onClose,
 }: {
   known: DemoRequestPartial;
@@ -185,7 +198,8 @@ export function AiSalesCall({
   /** what closing the call shows: a form step, or the calendar / booked state */
   returnsTo: "form" | "calendar";
   onFormAnswers: (params: AiSalesFormToolParams) => Promise<AiSalesFormToolResult>;
-  onBooked: () => void;
+  /** the agent's chosen time: DemoForm opens it on the page */
+  onSlot: (params: AiSalesSlotToolParams) => AiSalesSlotToolResult;
   onClose: () => void;
 }) {
   const [phase, setPhase] = useState<Phase>("connecting");
@@ -195,8 +209,8 @@ export function AiSalesCall({
   const [retries, setRetries] = useState(0);
   /** The mascot's px size, measured from its slot (the component takes a number). */
   const [mascotSize, setMascotSize] = useState<number | null>(null);
-  /** the agent booked in this call: the back pill says so */
-  const [booked, setBooked] = useState(false);
+  /** a time was opened on the page in this call: the back pill says so */
+  const [handedOff, setHandedOff] = useState(false);
 
   const titleId = useId();
   const noteId = useId();
@@ -217,14 +231,18 @@ export function AiSalesCall({
   const knownRef = useRef(known);
   const sentRef = useRef(sent);
   const onCloseRef = useRef(onClose);
-  const onBookedRef = useRef(onBooked);
+  const onSlotRef = useRef(onSlot);
   const onFormAnswersRef = useRef(onFormAnswers);
-  const bookedRef = useRef(false); // onBooked fires once per mounted call
+  const handedOffRef = useRef(false);
+  const spokeAfterHandoffRef = useRef(false);
+  const handoffTimer = useRef<number | undefined>(undefined);
+  /** `close`, for the handoff timers (set once `close` exists, below) */
+  const closeRef = useRef<() => void>(() => {});
 
   useEffect(() => { knownRef.current = known; }, [known]);
   useEffect(() => { sentRef.current = sent; }, [sent]);
   useEffect(() => { onCloseRef.current = onClose; }, [onClose]);
-  useEffect(() => { onBookedRef.current = onBooked; }, [onBooked]);
+  useEffect(() => { onSlotRef.current = onSlot; }, [onSlot]);
   useEffect(() => { onFormAnswersRef.current = onFormAnswers; }, [onFormAnswers]);
 
   /** End whatever is running or starting; state is the caller's to set. */
@@ -233,6 +251,7 @@ export function AiSalesCall({
     startingRef.current = false;
     connectedRef.current = false;
     window.clearTimeout(settleTimer.current);
+    window.clearTimeout(handoffTimer.current);
     const session = sessionRef.current;
     sessionRef.current = null;
     if (session) void session.endSession().catch(() => {});
@@ -272,18 +291,21 @@ export function AiSalesCall({
           // Answered even from a stale attempt: the SDK routes the call to
           // the session that asked, and a request the page accepted stands.
           [AI_SALES_FORM_TOOL]: async (params) => JSON.stringify(await onFormAnswersRef.current(params ?? {})),
-        },
-        onAgentToolResponse: ({ tool_name, is_error, is_called, is_blocked, status }) => {
-          // Only a call that ran and succeeded is a booking (review
-          // 2026-09-16: "skipped" and "blocked" arrive with is_error false).
-          // Not gated on the attempt: a booking that lands while the call is
-          // closing is still a booking.
-          const succeeded =
-            status !== undefined ? status === "success" : !is_error && is_called !== false && is_blocked !== true;
-          if (tool_name !== AI_SALES_BOOKING_TOOL || !succeeded || bookedRef.current) return;
-          bookedRef.current = true;
-          setBooked(true);
-          onBookedRef.current();
+          [AI_SALES_SLOT_TOOL]: async (params) => {
+            const result = onSlotRef.current(params ?? {});
+            // The handoff (see the header). A second time the agent opens
+            // replaces the first on the page; the close stays armed.
+            if (result.ok && current() && !handedOffRef.current) {
+              handedOffRef.current = true;
+              spokeAfterHandoffRef.current = false;
+              setHandedOff(true);
+              window.clearTimeout(handoffTimer.current);
+              handoffTimer.current = window.setTimeout(() => {
+                if (current() && !spokeAfterHandoffRef.current) closeRef.current();
+              }, HANDOFF_SILENT_MS);
+            }
+            return JSON.stringify(result);
+          },
         },
         onConnect: () => {
           if (!current()) return;
@@ -295,6 +317,17 @@ export function AiSalesCall({
           modeRef.current = mode;
           if (!connectedRef.current) return;
           window.clearTimeout(settleTimer.current);
+          if (handedOffRef.current) {
+            if (mode === "speaking") {
+              spokeAfterHandoffRef.current = true;
+              window.clearTimeout(handoffTimer.current);
+            } else if (spokeAfterHandoffRef.current) {
+              window.clearTimeout(handoffTimer.current);
+              handoffTimer.current = window.setTimeout(() => {
+                if (current()) closeRef.current();
+              }, HANDOFF_CLOSE_MS);
+            }
+          }
           if (mode === "speaking") {
             setPhase("speaking");
             return;
@@ -307,9 +340,9 @@ export function AiSalesCall({
           if (!current()) return; // ended by us (stop bumped the attempt)
           sessionRef.current = null; // the SDK is already closing it
           stop();
-          // After a booking a dropped connection is a normal end: "Try again"
-          // would start a new conversation that could book a second meeting.
-          setPhase(details.reason === "error" && !bookedRef.current ? "failed" : "ended");
+          // After the handoff a dropped connection is a normal end: the time
+          // is open on the page, and "Try again" would start over.
+          setPhase(details.reason === "error" && !handedOffRef.current ? "failed" : "ended");
         },
       });
       if (!current()) {
@@ -336,6 +369,7 @@ export function AiSalesCall({
     stop();
     onCloseRef.current();
   }, [stop]);
+  useEffect(() => { closeRef.current = close; }, [close]);
 
   // Open = start. The cleanup ends the session on unmount (StrictMode's
   // dev remount included: the first attempt goes stale, the second runs).
@@ -423,8 +457,10 @@ export function AiSalesCall({
     return () => {
       // The form may have moved on during the call (the agent sent it): the
       // pill that opened the call is gone, so the heading of the screen now
-      // shown (every state has #demo-card-title) takes focus.
-      const target = trigger?.isConnected ? trigger : document.getElementById("demo-card-title");
+      // shown (every state has #demo-card-title) takes focus. After the
+      // handoff the heading always does: the chosen time is under it.
+      const title = document.getElementById("demo-card-title");
+      const target = handedOffRef.current || !trigger?.isConnected ? title : trigger;
       target?.focus();
     };
   }, []);
@@ -609,7 +645,7 @@ export function AiSalesCall({
             </>
           ) : group === "ended" ? (
             <LpFxPill key="back" className="ai-call__back" onClick={backToCalendar}>
-              {booked ? AI_CALL.backBooked : returnsTo === "form" ? AI_CALL.backForm : AI_CALL.back}
+              {handedOff ? AI_CALL.backSlot : returnsTo === "form" ? AI_CALL.backForm : AI_CALL.back}
             </LpFxPill>
           ) : (
             <>
@@ -617,7 +653,7 @@ export function AiSalesCall({
                 {AI_CALL.retry}
               </LpFxPill>
               <LpFxPill key="back" className="lp-btn--outline ai-call__back" onClick={backToCalendar}>
-                {booked ? AI_CALL.backBooked : returnsTo === "form" ? AI_CALL.backForm : AI_CALL.back}
+                {handedOff ? AI_CALL.backSlot : returnsTo === "form" ? AI_CALL.backForm : AI_CALL.back}
               </LpFxPill>
             </>
           )}
