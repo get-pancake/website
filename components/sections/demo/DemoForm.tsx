@@ -14,7 +14,6 @@ import {
   TEAM_SIZES,
   WEBSITE_MAX,
   isDemoRequestField,
-  isDemoRequestOk,
   parseDemoRequest,
   type DemoRequestField,
 } from "@/lib/demo-request";
@@ -71,7 +70,7 @@ type Status = "idle" | "submitting" | "error" | "booking" | "booked";
 type Step = 1 | 2;
 type ErrorKind =
   | { code: "field"; field: DemoRequestField }
-  | { code: "invalid" | "rateLimited" | "unavailable" | "network" };
+  | { code: "invalid" };
 
 // Cold start + two 5s upstream timeouts, with margin; past that the user
 // retries with the form intact.
@@ -118,19 +117,10 @@ function fieldOf(body: unknown): unknown {
   return typeof body === "object" && body !== null && "field" in body ? (body as { field?: unknown }).field : undefined;
 }
 
+// Only the visitor's own input can block the flow: a server-side delivery
+// problem never does (see onSubmit).
 function errorMessage(kind: ErrorKind): ReactNode {
-  if (kind.code === "field") return ERRORS[kind.field];
-  if (kind.code === "invalid") return ERRORS.invalid;
-  if (kind.code === "network") return ERRORS.network;
-  // Locked out or nothing landed: the visitor keeps a path to sales (no invented email).
-  const rateLimited = kind.code === "rateLimited";
-  return (
-    <>
-      {rateLimited ? ERRORS.rateLimitedBefore : ERRORS.unavailableBefore}
-      <a href={SUPPORT_HREF}>{rateLimited ? ERRORS.rateLimitedLink : ERRORS.unavailableLink}</a>
-      {rateLimited ? ERRORS.rateLimitedAfter : ERRORS.unavailableAfter}
-    </>
-  );
+  return kind.code === "field" ? ERRORS[kind.field] : ERRORS.invalid;
 }
 
 export function DemoForm({ id = "demo-form" }: { id?: string }) {
@@ -282,7 +272,15 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     setStatus("submitting");
     setError(null);
 
-    let succeeded = false;
+    // The booking is the conversion (founder 2026-09-16: "they're booking
+    // straight with us"), and Calendly records it and feeds Attio. The POST
+    // only notifies the team (Slack / Airtable), so it is best effort: only a
+    // 400 about the visitor's own input stops them. A 403, 429, 5xx
+    // (including "no delivery configured"), timeout or network error still
+    // opens the calendar; the route logs every delivery failure server side
+    // (without form values). QA 2026-09-16: an unconfigured Preview blocked
+    // every visitor from booking.
+    let proceed = false;
     let failure: ErrorKind | null = null;
     try {
       // Same-origin: the attribution cookie travels automatically. The
@@ -299,28 +297,25 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
       });
       const body: unknown = await response.json().catch(() => null);
       const field = fieldOf(body);
-      if (response.ok && isDemoRequestOk(body)) {
-        succeeded = true;
-      } else if (response.status === 400 && isDemoRequestField(field)) {
+      if (response.status === 400 && isDemoRequestField(field)) {
         failure = { code: "field", field };
       } else if (response.status === 400 || response.status === 413) {
         // A proxy error page or a future server field name never reaches ERRORS[…] or the focus map.
         failure = { code: "invalid" };
-      } else if (response.status === 429) {
-        failure = { code: "rateLimited" };
       } else {
-        failure = { code: "unavailable" };
+        // 200, or a delivery-side refusal: the calendar opens either way.
+        proceed = true;
       }
     } catch {
-      // Includes TimeoutError / AbortError from the 15s signal: the copy says
-      // to check the connection and retry, form intact.
-      failure = { code: "network" };
+      // TimeoutError / AbortError from the 15s signal or a network error:
+      // the notification is lost, the booking is not.
+      proceed = true;
     } finally {
       inFlight.current = false;
     }
 
     if (!mounted.current) return;
-    if (succeeded) {
+    if (proceed) {
       const { firstName, lastName, email, website, teamSize, hasAccount, goal } = parsed.value;
       setVisitor({ firstName, website });
       setPrefill({ teamSize, hasAccount, ...(goal ? { goal } : {}), firstName, lastName, email });

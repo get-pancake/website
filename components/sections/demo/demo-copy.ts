@@ -90,13 +90,6 @@ export const ERRORS = {
   submissionId: "Check the form and try again.",
   invalid: "Check the form and try again.",
   // The route's window is 10 minutes (landing-voice: real numbers).
-  rateLimitedBefore: "Too many tries. Wait 10 minutes, or ",
-  rateLimitedLink: "visit our support page",
-  rateLimitedAfter: ".",
-  unavailableBefore: "We could not send that. Try again in a moment, or ",
-  unavailableLink: "visit our support page",
-  unavailableAfter: ".",
-  network: "We could not reach Pancake. Check your connection and try again.",
 } as const;
 
 /** The booking state, right after the request lands (DemoBooking): the
