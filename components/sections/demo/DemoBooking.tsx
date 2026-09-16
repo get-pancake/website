@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { LpFxPill } from "@/components/sections/landing-v3/LpFxButton";
-import { AI_SALES_ENABLED, openAiSales, type AiSalesVisitor } from "@/lib/ai-sales";
+import { AI_SALES_ENABLED, type AiSalesVisitor } from "@/lib/ai-sales";
 import {
   CALENDLY_MIN_PAGE_HEIGHT,
   CALENDLY_ORIGIN,
@@ -13,7 +13,8 @@ import {
   isCalendlyEventScheduled,
   type DemoBookingAnswers,
 } from "@/lib/booking";
-import { BOOKING, SUPPORT_HREF } from "./demo-copy";
+import { AiSalesCall } from "./AiSalesCall";
+import { BOOKING } from "./demo-copy";
 
 /**
  * The booking state that replaces the form in the card once
@@ -52,26 +53,21 @@ import { BOOKING, SUPPORT_HREF } from "./demo-copy";
  * region that mounts together with its content is not announced, so the
  * persistent status node in DemoForm carries the state change.
  *
- * "Chat with AI sales" opens the ElevenLabs agent "[WEBSITE] AI sales"
- * (ElevenLabs workspace, published 2026-09-16; decision page
- * decisions/2026-09-15-demo-page-and-ai-sales-agent.md in the pancake-brain
- * repo). lib/ai-sales.ts loads the widget script on that click, never
- * before, and mounts the widget at the bottom right of the page with the
- * visitor's first name and company website (`visitor`: the two fields of
- * the successful submission, nothing else). The pill's states:
- *
- *   idle ──click──▶ opening ──mounted──▶ ready (stays: one widget, one click)
- *                      └── load fails ──▶ error (label back, alert line, click again)
- *
- * As in DemoForm, the button is never `disabled` (the focused control would
- * drop focus to <body>): a ref guards re-entry and aria-disabled marks
- * opening and ready. Nothing in the widget's own UI is ours to style. With
- * no agent id (lib/ai-sales.ts) the pill renders as before, inert. Do not
- * link it to Calendly. The booked state does not repeat the pill; a widget
- * already open stays on the page.
+ * "Talk to AI sales" opens the full-screen voice call with the ElevenLabs
+ * agent "[WEBSITE] AI sales" (AiSalesCall; ElevenLabs workspace, published
+ * 2026-09-16; decision page decisions/2026-09-15-demo-page-and-ai-sales-agent.md
+ * in the pancake-brain repo). François, 2026-09-16: "I want it to feel like
+ * you're talking to the website, not a chatbar", so the call takes the
+ * screen and there is no chat. The click mounts the call, and mounting
+ * starts it: lib/ai-sales.ts loads the SDK on that click, never before, and
+ * the agent gets the visitor's first name and company website (`visitor`:
+ * the two fields of the successful submission, nothing else). The pill is a
+ * plain enabled button with no busy state of its own: the call covers the
+ * page while it is open and hands focus back to the pill when it closes.
+ * With no agent id (lib/ai-sales.ts) the pill renders as before, inert. Do
+ * not link it to Calendly. The booked state does not repeat the pill; a
+ * call still open when this state unmounts is ended.
  */
-
-type AiSalesState = "idle" | "opening" | "ready" | "error";
 
 /** Calendly's first page_height report comes once its app has started,
  *  later than the document's load: long enough for a slow phone. */
@@ -96,18 +92,10 @@ export function DemoBooking({
   const booked = useRef(false); // calendly.event_scheduled is acted on once
   // The listener is registered once; it calls the latest callback.
   const onBookedRef = useRef(onBooked);
-  const [aiSales, setAiSales] = useState<AiSalesState>("idle");
-  // Set on opening, kept on ready (the widget is open: a second click has
-  // nothing to do), cleared on error so the visitor can try again.
-  const aiSalesLocked = useRef(false);
-  const mounted = useRef(false);
+  const [callOpen, setCallOpen] = useState(false);
   const destination = demoBookingDestination(answers.teamSize);
 
   useEffect(() => { titleRef.current?.focus(); }, []);
-  useEffect(() => {
-    mounted.current = true;
-    return () => { mounted.current = false; };
-  }, []);
   useEffect(() => { onBookedRef.current = onBooked; }, [onBooked]);
 
   // The frame's URL: the card's own colors (the frame's wrapper is
@@ -172,27 +160,6 @@ export function DemoBooking({
     return () => window.clearTimeout(timer);
   }, [frameSrc]);
 
-  async function onAiSales() {
-    if (aiSalesLocked.current) return; // a second click while opening, or after ready
-    aiSalesLocked.current = true;
-    setAiSales("opening");
-    let opened = false;
-    try {
-      await openAiSales(visitor ?? {});
-      opened = true;
-    } catch {
-      // Offline, unpkg down, the script blocked, or the 10s timeout: the
-      // line says to try again and keeps the support path.
-    }
-    if (!opened) aiSalesLocked.current = false;
-    if (!mounted.current) return; // the booking landed (booked state) mid-load
-    setAiSales(opened ? "ready" : "error");
-  }
-
-  const aiSalesBusy = aiSales === "opening" || aiSales === "ready";
-  const aiSalesLabel =
-    aiSales === "opening" ? BOOKING.aiSalesOpening : aiSales === "ready" ? BOOKING.aiSalesReady : BOOKING.aiSales;
-
   return (
     <div className="demo-success demo-success--booking">
       <h2 id="demo-card-title" className="lp-display demo-card__title" ref={titleRef} tabIndex={-1}>
@@ -233,29 +200,16 @@ export function DemoBooking({
       <p className="demo-success__note">{BOOKING.aiSalesLine}</p>
       {AI_SALES_ENABLED ? (
         <>
-          {/* Persistent from mount and empty until it changes (a live region
-              that mounts with its text is not announced): the opening label,
-              whose change on the pill may be missed, then where the widget
-              landed and what to press. Absolutely positioned (lp-sr-only), so
-              it takes no grid row. */}
-          <p className="lp-sr-only" role="status">
-            {aiSales === "opening" ? BOOKING.aiSalesOpening : aiSales === "ready" ? BOOKING.aiSalesOpened : ""}
-          </p>
           <LpFxPill
             type="button"
             className="demo-success__cta"
             data-ai-sales-trigger=""
-            data-state={aiSales}
-            aria-disabled={aiSalesBusy}
-            onClick={onAiSales}
+            aria-haspopup="dialog"
+            onClick={() => setCallOpen(true)}
           >
-            {aiSalesLabel}
+            {BOOKING.aiSales}
           </LpFxPill>
-          {aiSales === "error" ? (
-            <p className="demo-success__error" role="alert">
-              {BOOKING.aiSalesErrorBefore}<a href={SUPPORT_HREF}>{BOOKING.aiSalesErrorLink}</a>{BOOKING.aiSalesErrorAfter}
-            </p>
-          ) : null}
+          {callOpen ? <AiSalesCall visitor={visitor} onClose={() => setCallOpen(false)} /> : null}
         </>
       ) : (
         <LpFxPill type="button" className="demo-success__cta" data-ai-sales-trigger="">

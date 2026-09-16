@@ -1,25 +1,37 @@
 /**
- * The ElevenLabs "AI sales" agent behind "Chat with AI sales" on /demo's
+ * The ElevenLabs "AI sales" agent behind "Talk to AI sales" on /demo's
  * booking state (François, 2026-09-16: the agent exists and is published;
  * a visitor talks to it for qualification). Client-safe: no `server-only`,
- * no node imports; `openAiSales` touches `document` and runs from a click.
+ * no node imports, nothing touches `window` or `document` at module scope;
+ * `loadAiSalesSdk` runs from a click.
  *
  * Where the agent lives: the ElevenLabs workspace, agent "[WEBSITE] AI
  * sales", published 2026-09-16 as a public agent (no auth, no signed URL).
- * Decision page: decisions/2026-09-15-demo-page-and-ai-sales-agent.md in
- * the pancake-brain repo.
+ * It is a voice agent (chat mode off). Decision page:
+ * decisions/2026-09-15-demo-page-and-ai-sales-agent.md in the pancake-brain
+ * repo.
  *
- * Why the loader is lazy: the widget is a third-party runtime dependency
- * (the `@elevenlabs/convai-widget-embed` script served by unpkg, not an npm
- * package; flagged in the PR per AGENTS.md). It loads only after the
- * visitor asks for it, never on page load: /demo ships nothing from
- * ElevenLabs until the pill is clicked, and a visitor who never clicks never
- * contacts unpkg. The widget is voice-first (a mic permission prompt on
- * "Start the call") and draws its own fixed bubble/panel at the bottom right
- * of the viewport; nothing in it is ours to style. No analytics events fire
- * here (AGENTS.md: analytics changes need explicit scope).
+ * How the call runs (François, 2026-09-16: "I want it to feel like you're
+ * talking to the website, not a chatbar"): no ElevenLabs widget. The site
+ * draws its own full-screen call (components/sections/demo/AiSalesCall.tsx)
+ * and drives the conversation through ElevenLabs' browser SDK,
+ * `@elevenlabs/client`, pinned to AI_SALES_SDK_VERSION.
  *
- * Widget contract: https://elevenlabs.io/docs/agents-platform/customization/widget
+ * THIRD-PARTY RUNTIME DEPENDENCY (flagged in the PR per AGENTS.md: not an
+ * npm package, nothing in package.json): the SDK is jsDelivr's ES module
+ * build of `@elevenlabs/client@1.25.0` (built from the package's browser
+ * entry, dist/platform/web/index.js). That module imports `livekit-client`
+ * from the same jsDelivr host (the voice call is WebRTC through LiveKit).
+ * The version is pinned in the URL, so a new ElevenLabs release never
+ * reaches visitors without a code change; bump it on purpose and re-test a
+ * call. No SRI: jsDelivr's +esm files are generated, and jsDelivr advises
+ * against SRI on them. A failed LiveKit fetch cannot be retried without a
+ * page reload (see failedImports). Nothing loads before the visitor
+ * clicks: a visitor who never clicks never contacts jsDelivr, LiveKit or
+ * ElevenLabs. No analytics events fire here (AGENTS.md: analytics changes
+ * need explicit scope).
+ *
+ * SDK contract: https://elevenlabs.io/docs/eleven-agents/libraries/java-script
  */
 
 import { NAME_MAX, WEBSITE_MAX } from "@/lib/demo-request";
@@ -35,26 +47,14 @@ export const AI_SALES_AGENT_ID: string | null =
 
 export const AI_SALES_ENABLED = AI_SALES_AGENT_ID !== null;
 
-/** ElevenLabs' documented embed snippet, unpinned as they publish it. */
-export const AI_SALES_WIDGET_SRC = "https://unpkg.com/@elevenlabs/convai-widget-embed";
+/** Pinned on purpose (see the header): change it only with a tested call. */
+export const AI_SALES_SDK_VERSION = "1.25.0";
+export const AI_SALES_SDK_URL = `https://cdn.jsdelivr.net/npm/@elevenlabs/client@${AI_SALES_SDK_VERSION}/+esm`;
 
-const SCRIPT_ID = "elevenlabs-convai-widget-embed";
-const WIDGET_TAG = "elevenlabs-convai";
-/** A cold unpkg fetch plus the module's own start-up, with margin; past
-    that the pill shows the error line and the visitor can click again. */
-const SCRIPT_TIMEOUT_MS = 10_000;
-
-/** The widget's own UI strings: the widget renders them, so they live with
-    the integration; the page's strings stay in
-    components/sections/demo/demo-copy.ts. */
-export const AI_SALES_WIDGET_TEXT = {
-  action: "Talk to AI sales",
-  startCall: "Start the call",
-  endCall: "End the call",
-  expand: "Open AI sales",
-  listening: "Listening",
-  speaking: "AI sales is speaking",
-} as const;
+/** A cold jsDelivr fetch of the SDK plus LiveKit (two modules), with margin;
+    past that the call shows the failure state and "Try again" waits on the
+    same, still running, import. */
+const SDK_TIMEOUT_MS = 10_000;
 
 /** What the agent may know about the visitor: the first name and the
     normalised company website of the successful demo request, so the agent
@@ -70,8 +70,8 @@ function trimmed(value: string | undefined, max: number): string | undefined {
   return clean ? clean : undefined;
 }
 
-/** The `dynamic-variables` payload: only the keys that have a value, null
-    when there is nothing to pass (the attribute is then left off). */
+/** The session's `dynamicVariables`: only the keys that have a value, null
+    when there is nothing to pass (the option is then left off). */
 export function aiSalesDynamicVariables(visitor: AiSalesVisitor): DynamicVariables | null {
   const first_name = trimmed(visitor.firstName, NAME_MAX);
   const company_website = trimmed(visitor.website, WEBSITE_MAX);
@@ -82,113 +82,103 @@ export function aiSalesDynamicVariables(visitor: AiSalesVisitor): DynamicVariabl
   };
 }
 
-let scriptReady: Promise<void> | null = null;
+/* ── the slice of @elevenlabs/client 1.25.0 the call uses ──
+   Written here instead of importing the package's types: the SDK is not an
+   npm dependency. Mirrors dist/types.d.ts, dist/BaseConversation.d.ts,
+   dist/VoiceConversation.d.ts and dist/utils/BaseConnection.d.ts. */
+
+export type AiSalesMode = "speaking" | "listening";
+
+/** DisconnectionDetails, narrowed to what the call reads. */
+export type AiSalesDisconnect =
+  | { reason: "error"; message: string }
+  | { reason: "agent" }
+  | { reason: "user" };
+
+export type AiSalesSessionOptions = {
+  agentId: string;
+  /** Voice goes over WebRTC (LiveKit); the SDK's own default for a voice
+      session with an agent id, written out so the transport is on record. */
+  connectionType: "webrtc";
+  dynamicVariables?: DynamicVariables;
+  /** Fires just before startSession resolves. */
+  onConnect?: (props: { conversationId: string }) => void;
+  onDisconnect?: (details: AiSalesDisconnect) => void;
+  onModeChange?: (props: { mode: AiSalesMode }) => void;
+};
+
+/** A VoiceConversation, as far as the call is concerned. */
+export interface AiSalesSession {
+  endSession(): Promise<void>;
+  setMicMuted(isMuted: boolean): void;
+  /** 0..1: the mean of the voice-range frequency bins (speech sits low in it). */
+  getInputVolume(): number;
+  getOutputVolume(): number;
+}
+
+/** The SDK's `Conversation` namespace. startSession asks for the microphone
+    (getUserMedia rejects with a NotAllowedError when the visitor or the
+    browser refuses), connects, and rejects on any setup failure. It cannot
+    be cancelled once called, so AiSalesCall asks for the microphone first. */
+export interface AiSalesSdk {
+  startSession(options: AiSalesSessionOptions): Promise<AiSalesSession>;
+}
+
+function sdkFrom(module: unknown): AiSalesSdk | null {
+  if (typeof module !== "object" || module === null || !("Conversation" in module)) return null;
+  const conversation = (module as { Conversation: unknown }).Conversation;
+  if (typeof conversation !== "object" || conversation === null) return null;
+  return typeof (conversation as { startSession?: unknown }).startSession === "function"
+    ? (conversation as AiSalesSdk)
+    : null;
+}
+
+let sdkReady: Promise<AiSalesSdk> | null = null;
+/** Bumped after a failed import (not after a timeout): Chromium keeps a
+    failed module fetch in the document's module map, so the same URL would
+    fail again without touching the network. jsDelivr ignores the query.
+    The query only helps when the SDK module itself failed. The SDK imports
+    LiveKit from a fixed absolute path (`/npm/livekit-client@2.22.3/+esm`
+    when checked on 2026-09-16, a separate module of about 584 KB) that no
+    query can change: when that nested fetch is the one that failed (a
+    flaky mobile network), every Try again fails at once until the page is
+    reloaded. Flagged in the PR. */
+let failedImports = 0;
 
 /**
- * Inject the widget script once (one tag, by id) and resolve when the
- * custom element is defined: that, not the script's load event, is the
- * signal that the widget can mount. Rejects on a script error or after
- * SCRIPT_TIMEOUT_MS. A failure clears the memo so the next click tries
- * again: after a network error the tag is removed and re-injected (a script
- * element never re-runs); after a timeout it stays, because a slow script
- * still executes when it lands and the next attempt only has to wait.
+ * Load the SDK once and return its `Conversation` namespace. Memoised: the
+ * second call, and every call while the first is in flight, share one
+ * import. Rejects when the import fails, the module is not the expected
+ * shape, or after SDK_TIMEOUT_MS; a rejection clears the memo so the next
+ * click tries again. That retry recovers from a failed or slow SDK fetch,
+ * not from a failed LiveKit fetch (see failedImports). A timed-out import
+ * keeps running (an import cannot be cancelled), and the retry, on the same
+ * URL, joins it.
  */
-function loadWidgetScript(): Promise<void> {
-  if (scriptReady) return scriptReady;
-  const attempt = new Promise<void>((resolve, reject) => {
-    if (typeof document === "undefined" || typeof customElements === "undefined") {
-      reject(new Error("AI sales: custom elements are not available"));
-      return;
-    }
-    if (customElements.get(WIDGET_TAG)) {
-      resolve();
-      return;
-    }
-    const existing = document.getElementById(SCRIPT_ID);
-    const script = existing instanceof HTMLScriptElement ? existing : document.createElement("script");
-    let settled = false;
-    const timer = window.setTimeout(() => {
-      fail(new Error("AI sales: the widget script timed out"));
-    }, SCRIPT_TIMEOUT_MS);
-    const done = () => {
-      if (settled) return;
-      settled = true;
-      window.clearTimeout(timer);
-      resolve();
-    };
-    const fail = (error: unknown) => {
-      if (settled) return;
-      settled = true;
-      window.clearTimeout(timer);
-      reject(error instanceof Error ? error : new Error("AI sales: the widget script failed"));
-    };
-    script.addEventListener(
-      "error",
-      () => {
-        script.remove();
-        fail(new Error("AI sales: the widget script failed to load"));
+export function loadAiSalesSdk(): Promise<AiSalesSdk> {
+  if (sdkReady) return sdkReady;
+  const url = failedImports === 0 ? AI_SALES_SDK_URL : `${AI_SALES_SDK_URL}?retry=${failedImports}`;
+  const attempt = new Promise<AiSalesSdk>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error("AI sales: the SDK timed out")), SDK_TIMEOUT_MS);
+    // webpackIgnore: the browser fetches the URL itself at runtime; webpack
+    // must neither bundle nor rewrite it.
+    import(/* webpackIgnore: true */ url).then(
+      (module: unknown) => {
+        clearTimeout(timer);
+        const sdk = sdkFrom(module);
+        if (sdk) resolve(sdk);
+        else reject(new Error("AI sales: the SDK module has no Conversation.startSession"));
       },
-      { once: true },
+      (error: unknown) => {
+        clearTimeout(timer);
+        failedImports += 1;
+        reject(error instanceof Error ? error : new Error("AI sales: the SDK failed to load"));
+      },
     );
-    if (!existing) {
-      script.id = SCRIPT_ID;
-      script.src = AI_SALES_WIDGET_SRC;
-      script.async = true;
-      script.type = "text/javascript";
-      document.head.appendChild(script);
-    }
-    customElements.whenDefined(WIDGET_TAG).then(done, fail);
   });
-  scriptReady = attempt;
+  sdkReady = attempt;
   attempt.catch(() => {
-    if (scriptReady === attempt) scriptReady = null;
+    if (sdkReady === attempt) sdkReady = null;
   });
   return attempt;
-}
-
-/** ONE widget on the page: reuse it when it is already mounted (a second
-    click, or a restart followed by another submission). */
-function mountWidget(agentId: string, visitor: AiSalesVisitor): HTMLElement {
-  const mounted = document.querySelector<HTMLElement>(WIDGET_TAG);
-  if (mounted) {
-    // Reused after "Start a new submission" and a second submission: refresh
-    // the seed so the agent is never greeted with the previous visitor's
-    // name. The widget reads the attribute when it starts a conversation, so
-    // this only matters before the first call; dismissing the widget keeps
-    // the element (it collapses to its own launcher, verified 2026-09-16).
-    setVisitorAttribute(mounted, visitor);
-    return mounted;
-  }
-  const widget = document.createElement(WIDGET_TAG);
-  widget.setAttribute("agent-id", agentId);
-  widget.setAttribute("variant", "expanded");
-  widget.setAttribute("dismissible", "true");
-  widget.setAttribute("action-text", AI_SALES_WIDGET_TEXT.action);
-  widget.setAttribute("start-call-text", AI_SALES_WIDGET_TEXT.startCall);
-  widget.setAttribute("end-call-text", AI_SALES_WIDGET_TEXT.endCall);
-  widget.setAttribute("expand-text", AI_SALES_WIDGET_TEXT.expand);
-  widget.setAttribute("listening-text", AI_SALES_WIDGET_TEXT.listening);
-  widget.setAttribute("speaking-text", AI_SALES_WIDGET_TEXT.speaking);
-  setVisitorAttribute(widget, visitor);
-  document.body.appendChild(widget);
-  return widget;
-}
-
-/** The only visitor data that reaches the third party: first name + website. */
-function setVisitorAttribute(widget: HTMLElement, visitor: AiSalesVisitor): void {
-  const variables = aiSalesDynamicVariables(visitor);
-  if (variables) widget.setAttribute("dynamic-variables", JSON.stringify(variables));
-  else widget.removeAttribute("dynamic-variables");
-}
-
-/**
- * Open the AI sales widget: load the script (once), then mount the element
- * (once). Resolves when the widget is in the DOM; the widget then fetches
- * the agent and draws itself at the bottom right. Rejects when the feature
- * is off or the script cannot be loaded; the caller shows the error line.
- */
-export async function openAiSales(visitor: AiSalesVisitor = {}): Promise<void> {
-  if (!AI_SALES_AGENT_ID) throw new Error("AI sales is off: no agent id");
-  await loadWidgetScript();
-  mountWidget(AI_SALES_AGENT_ID, visitor);
 }

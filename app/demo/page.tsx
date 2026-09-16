@@ -6,6 +6,7 @@ import { DemoHero } from "@/components/sections/demo/DemoHero";
 import { FOOTER, META } from "@/components/sections/demo/demo-copy";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/demo.css";
+import "@/app/_styles/ai-sales-call.css";
 
 /**
  * /demo — contact-sales page in the ElevenLabs split layout (François,
@@ -13,7 +14,9 @@ import "@/app/_styles/demo.css";
  * form (the Calendly routing questions) in the white card on the right.
  * After submit the card hands off to booking: the Calendly calendar the team
  * size routes to, inline and prefilled (lib/booking.ts), then a booked state
- * with the demo video (2026-09-16).
+ * with the demo video (2026-09-16). "Talk to AI sales" on the booking state
+ * opens a full-screen voice call with the ElevenLabs agent (AiSalesCall,
+ * styled by ai-sales-call.css).
  * Every "Book a demo" CTA on the site links here. Route is provisional:
  * noindex, not in the sitemap, until the founder decides where it lives
  * (same as /agents).

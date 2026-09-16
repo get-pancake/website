@@ -431,13 +431,11 @@
   flex: none;
   accent-color: var(--lp-purple-40);
 }
-/* The booking state's AI sales error line (DemoBooking) reads like the
-   form's, so the two share these rules and the ≤767 tap rows below. */
-.lp-demo :is(.demo-form__error, .demo-success__error) {
+.lp-demo .demo-form__error {
   color: var(--lp-red-40);
   font-size: var(--lp-text-sm);
 }
-.lp-demo :is(.demo-form__error, .demo-success__error) a {
+.lp-demo .demo-form__error a {
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
@@ -575,8 +573,8 @@
   text-underline-offset: 0.2em;
 }
 /* Named exception to foundation.css "button keep same sizes" (founder
-   2026-09-03): "Chat with AI sales" (18 chars) and "Start a new submission"
-   (22) are the founder's verbatim labels and overflow the 136px squircle.
+   2026-09-03): "Talk to AI sales" (16 chars, founder 2026-09-16) and "Start a
+   new submission" (22, verbatim) overflow the 136px squircle.
    These two pills hug their label with the md pill's Figma radius; the
    submit and every other pill keep the Figma geometry. (0,3,0) beats
    `.lp .lp-btn--outline` 136×48 and the `.lp-btn` squircle; .lp-btn-fx
@@ -588,13 +586,6 @@
     height: auto;
     width: auto;
   }
-}
-/* "AI sales is ready" keeps the aria-disabled look above (one widget, one
-   click: the ElevenLabs panel is open at the bottom right) but nothing is
-   in progress any more, so no progress cursor. Same (0,3,0) as the busy
-   rule; this one comes later. The widget's own UI is not ours to style. */
-.lp-demo .demo-success__cta[data-state="ready"] {
-  cursor: default;
 }
 /* The kit's dark surface shows for the instant before YouTube paints its
    player (--lp-terminal-bg is the founder's terminal background, not a
@@ -738,7 +729,6 @@
   /* 44px tap rows for the 13px inline links (brain does the same for its notice links) */
   .lp-demo .demo-form__help a,
   .lp-demo .demo-form__error a,
-  .lp-demo .demo-success__error a,
   .lp-demo .demo-success__fallback a {
     display: inline-block;
     padding-block: var(--lp-space-3);

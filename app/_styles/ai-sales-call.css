@@ -1,0 +1,282 @@
+/* The AI sales call (components/sections/demo/AiSalesCall.tsx): the
+   full-screen voice call with the ElevenLabs agent, opened by "Talk to AI
+   sales" on /demo's booking state (François, 2026-09-16: the agent takes up
+   the screen, no chat, "like you're talking to the website"). Imported by
+   app/demo/page.tsx after landing-v3.css and demo.css.
+   The call is portalled to <body>, outside main.lp.lp-demo, so its root
+   carries `lp lp-demo ai-call` itself: the --lp-* and --demo-* tokens, the
+   kit's pill recipe and the page's focus rings apply inside it. Every rule is
+   scoped under .ai-call; the root rules are written `.lp.ai-call` (0,2,0) to
+   beat `.lp`'s own position, overflow and background, and text rules
+   `.lp.ai-call .x` to beat `.lp p { margin: 0 }` / `.lp a` (0,1,1).
+   The stage receives --ai-call-out (the agent's voice) and --ai-call-in (the
+   visitor's microphone), 0..1, from one requestAnimationFrame loop while the
+   call is connected; both rest at 0 otherwise and under reduced motion. */
+
+.lp.ai-call {
+  /* 1vh, or 1svh where supported (below): the small viewport, so a phone's
+     browser bars never push the controls off screen. A second declaration
+     cannot be the fallback: custom properties are not validated. */
+  --ai-call-vh: 1vh;
+  /* Big enough to feel like the page is talking, small enough that the
+     state line, the controls and the disclosure fit one phone screen. */
+  --ai-call-mascot: clamp(calc(2 * var(--lp-space-12)), min(calc(38 * var(--ai-call-vh)), 64vw), calc(10 * var(--lp-space-12)));
+  /* = the lg pill: the controls row keeps its height when End call leaves */
+  --ai-call-controls-height: calc(var(--lp-space-12) + var(--lp-space-4) + var(--lp-space-2));
+  --ai-call-gap: var(--lp-space-8);
+  position: fixed;
+  inset: 0;
+  z-index: 50; /* = the site's call dialog layer (modal.css), above the nav (30) and menu (40) */
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto; /* only a very short landscape screen ever scrolls */
+  overscroll-behavior: contain;
+  background: var(--lp-page-bg);
+  padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+}
+@supports (height: 1svh) {
+  .lp.ai-call {
+    --ai-call-vh: 1svh;
+  }
+}
+/* Focus lands on the dialog itself on open: no ring around the viewport. */
+.lp.ai-call:focus-visible {
+  outline: none;
+}
+
+/* The /demo nav's wordmark, at the nav's height and left edge. */
+.ai-call__top {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: calc(var(--demo-nav-height) + env(safe-area-inset-top));
+  padding: env(safe-area-inset-top) max(var(--lp-space-8), var(--demo-margin)) 0;
+}
+.lp.ai-call .ai-call__logo {
+  width: auto;
+  height: calc(var(--lp-space-12) + var(--lp-space-2)); /* = .lp-nav-logo */
+}
+
+/* ── stage: mascot, state line, controls ── */
+.ai-call__stage {
+  --ai-call-out: 0;
+  --ai-call-in: 0;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ai-call-gap);
+  padding: var(--lp-space-4);
+}
+.ai-call__visual {
+  position: relative;
+  flex: none;
+  width: var(--ai-call-mascot);
+  aspect-ratio: 1;
+}
+/* The listening ring: a soft disc behind the mascot that breathes with the
+   visitor's voice. Hidden while the agent speaks, a slow pulse while
+   connecting. Transform and opacity only (composited). */
+.ai-call__ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: var(--lp-purple-10);
+  box-shadow: inset 0 0 0 calc(2 * var(--lp-line)) var(--lp-purple-20);
+  opacity: 0;
+  transform: scale(calc(0.9 + 0.14 * var(--ai-call-in)));
+  transition: opacity var(--demo-ease);
+}
+.ai-call[data-phase="listening"] .ai-call__ring {
+  opacity: calc(0.5 + 0.5 * var(--ai-call-in));
+}
+.ai-call[data-phase="connecting"] .ai-call__ring {
+  animation: ai-call-connecting 1.6s ease-in-out infinite;
+}
+@keyframes ai-call-connecting {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(0.88);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.96);
+  }
+}
+/* The mascot bounces and swells with the agent's voice, anchored at its
+   base. No pointer events: a tap would make it shake ("upset"), and the
+   fork cursor is off (disableForkCursor). */
+.ai-call__mascot {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  transform-origin: 50% 100%;
+  transform: translateY(calc(-1 * var(--lp-space-4) * var(--ai-call-out))) scale(calc(1 + 0.08 * var(--ai-call-out)));
+}
+/* The monster's box is MASCOT_ART_SCALE (1.8) times the slot, because its
+   drawing fills only about 41% of the box (AiSalesCall.tsx): centred on the
+   slot, the character fills about 74% of it. The grid's place-items would
+   push an item larger than its cell to the bottom right. The overflow is
+   transparent, painted over nothing clickable (no pointer events above), and
+   the root's overflow-x keeps it from scrolling sideways. (0,2,0) beats
+   PancakeMonster.css's position: relative. */
+.ai-call__mascot > .pancake-monster {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+}
+
+/* + .lp-display = Condensed 600. Centred under the centred mascot (the
+   page's copy is left-aligned; this is a call screen, not copy). */
+.lp.ai-call .ai-call__state {
+  max-width: 28ch;
+  min-height: 1.2em; /* one line: the mascot does not move between states */
+  font-size: var(--lp-text-3xlg);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-wrap: balance;
+}
+/* The two error lines are full sentences. */
+.lp.ai-call:is([data-phase="mic-denied"], [data-phase="failed"]) .ai-call__state {
+  max-width: 32ch;
+  font-size: var(--lp-text-xlg);
+}
+
+.ai-call__controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--lp-space-3);
+  min-height: var(--ai-call-controls-height);
+}
+/* Muted: the outline pill turns into the filled plum pill with a cream
+   label, and reads "Unmute". A pastel fill read about 1.2:1 on the cream
+   page, under the 3:1 a state indicator needs. (0,5,0) beats the outline
+   pill's transparent ground and plum label; on hover the kit's plum .l2
+   label slides in over the flood as usual. The ring goes back to the kit's
+   purple-30, which reads on plum (demo.css). */
+.lp.ai-call .lp-btn--outline.ai-call__mute[data-muted] {
+  background: var(--lp-inverted-surface);
+  color: var(--lp-text-on-inverted);
+}
+.lp.ai-call .lp-btn--outline.ai-call__mute[data-muted]:focus-visible {
+  outline-color: var(--lp-purple-30);
+}
+/* Named exception to foundation.css "button keep same sizes", as for the
+   booking state's pills (demo.css): "Back to the calendar" (20 chars)
+   overflows the 136px md squircle, so it hugs its label with the md pill's
+   Figma radius. End call (lg), Mute and Try again keep the Figma boxes.
+   (0,3,0) beats `.lp .lp-btn--outline` 136×48 and the `.lp-btn` squircle. */
+@media (min-width: 768px) {
+  .lp.ai-call .ai-call__back {
+    clip-path: none;
+    border-radius: var(--lp-r-sm);
+    height: auto;
+    width: auto;
+  }
+}
+
+/* The disclosure, pinned to the bottom. */
+.lp.ai-call .ai-call__note {
+  flex: none;
+  padding: var(--lp-space-4) var(--lp-space-8) var(--lp-space-8);
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  text-align: center;
+  text-wrap: balance;
+}
+/* 44px tap row for the 13px link (demo.css does the same) */
+.lp.ai-call .ai-call__note a {
+  display: inline-block;
+  padding-block: var(--lp-space-3);
+  margin-block: calc(-1 * var(--lp-space-3));
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* ── phones ── */
+@media (max-width: 767px) {
+  .lp.ai-call {
+    --ai-call-gap: var(--demo-space-6);
+  }
+  /* The kit pins every pill to 135px here: End call at the lg size needs
+     its label's width, and every pill gets the same floor so the pairs
+     match. Below 375px the floor goes (narrow phones, below). */
+  .lp.ai-call .ai-call__controls .lp-btn {
+    width: auto;
+    min-width: calc(3 * var(--lp-space-12));
+  }
+  /* "Connecting you to AI sales" may wrap on a narrow phone: two lines
+     reserved, so "Listening" does not pull the mascot down. */
+  .lp.ai-call .ai-call__state {
+    min-height: 2.4em;
+    font-size: var(--lp-text-2xlg);
+  }
+  .lp.ai-call .ai-call__note {
+    padding: var(--lp-space-3) var(--lp-space-4) var(--lp-space-4);
+  }
+}
+
+/* ── narrow phones (320–374px) ──
+   At 320×568, End call (about 151px) + the 144px floor on its neighbour is
+   wider than the 288px stage: the pair wrapped to two rows and pushed the
+   disclosure line below the screen. Without the floor the pairs stay on one
+   row, and a smaller mascot keeps every state on one screen. */
+@media (max-width: 374px) {
+  .lp.ai-call {
+    --ai-call-mascot: clamp(calc(2 * var(--lp-space-12)), min(calc(32 * var(--ai-call-vh)), 56vw), calc(10 * var(--lp-space-12)));
+  }
+  .lp.ai-call .ai-call__controls .lp-btn {
+    min-width: 0;
+  }
+}
+
+/* ── short screens (landscape phones) ── */
+@media (max-height: 560px) {
+  .lp.ai-call {
+    --ai-call-gap: var(--lp-space-3);
+    --ai-call-mascot: clamp(calc(2 * var(--lp-space-12)), calc(26 * var(--ai-call-vh)), calc(10 * var(--lp-space-12)));
+  }
+  .ai-call__top {
+    height: calc(var(--lp-space-12) + env(safe-area-inset-top));
+  }
+  .lp.ai-call .ai-call__logo {
+    height: var(--lp-space-8);
+  }
+  .lp.ai-call .ai-call__state {
+    min-height: 1.2em;
+    font-size: var(--lp-text-xlg);
+  }
+  /* the bottom padding holds the Privacy link's 12px tap padding */
+  .lp.ai-call .ai-call__note {
+    padding-block: var(--lp-space-2) var(--lp-space-3);
+  }
+}
+
+/* No bounce, no swell, no breathing: the state line and the controls carry
+   the call. The volume loop does not run either (AiSalesCall). */
+@media (prefers-reduced-motion: reduce) {
+  .ai-call__mascot,
+  .ai-call__ring {
+    transform: none;
+  }
+  .ai-call[data-phase="connecting"] .ai-call__ring {
+    animation: none;
+    opacity: 0.5;
+  }
+  .ai-call__ring {
+    transition: none;
+  }
+  /* the mascot's own happy hop (PancakeMonster.css) */
+  .ai-call .pancake-monster__inner {
+    animation: none;
+  }
+}

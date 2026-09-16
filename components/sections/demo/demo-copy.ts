@@ -97,10 +97,10 @@ export const ERRORS = {
 /** The booking state, right after the request lands (DemoBooking): the
     routed Calendly calendar inline, prefilled, then AI sales as the "talk
     now" path. title, frameTitle, the fallback line and aiSalesLine are the
-    2026-09-16 booking brief; aiSales is the founder's 2026-09-15 label.
-    The aiSales* state strings (2026-09-16, the ElevenLabs agent wired to
-    the pill) follow landing-voice: the widget opens at the bottom right and
-    its first control reads "Start the call" (lib/ai-sales.ts). The intro
+    2026-09-16 booking brief. aiSales was the founder's 2026-09-15 "Chat
+    with AI sales"; since 2026-09-16 it reads "Talk to AI sales" (François:
+    "I want it to feel like you're talking to the website, not a chatbar"),
+    and the pill opens the full-screen call (AI_CALL below). The intro
     (2026-09-16, direct calendar, landing-voice) names the calendar the team
     size routed to: the frame opens compact, with Calendly's own event title
     hidden, so this line is where the visitor learns what they are booking.
@@ -126,16 +126,36 @@ export const BOOKING = {
   fallbackLink: "Open it in a new tab",
   fallbackAfter: ".",
   aiSalesLine: "Rather talk now? AI sales answers right away.",
-  aiSales: "Chat with AI sales",
-  /** the pill while the widget script loads, then once the widget is open (one widget, one click) */
-  aiSalesOpening: "Opening AI sales…",
-  aiSalesReady: "AI sales is ready",
-  /** visually hidden status once the widget is open */
-  aiSalesOpened: "AI sales opened at the bottom right of the page. Press Start the call.",
-  /** inline alert when the script cannot load; the pill reads "Chat with AI sales" again */
-  aiSalesErrorBefore: "We could not open AI sales. Try again, or ",
-  aiSalesErrorLink: "visit our support page",
-  aiSalesErrorAfter: ".",
+  aiSales: "Talk to AI sales",
+} as const;
+
+/** The full-screen voice call with the ElevenLabs agent (AiSalesCall),
+    opened by BOOKING.aiSales (François, 2026-09-16: the agent takes up the
+    screen, no chat). The state lines, the controls and the disclosure are
+    the 2026-09-16 call brief ("Mute" / "Unmute" included); `muted` and
+    `newTab` follow landing-voice.
+    The same line is shown under the mascot and announced once per change. */
+export const AI_CALL = {
+  /** the dialog's accessible name (a visually hidden heading) */
+  title: "Talk to AI sales",
+  connecting: "Connecting you to AI sales",
+  listening: "Listening",
+  speaking: "AI sales is speaking",
+  /** replaces "Listening" while the visitor's microphone is muted */
+  muted: "Your mic is muted",
+  ended: "Call ended",
+  micDenied: "Allow your microphone to talk to AI sales.",
+  failed: "We could not connect. Try again, or pick a time on the calendar.",
+  endCall: "End call",
+  /** the mute pill's label: mute while the mic is on, unmute while muted */
+  mute: "Mute",
+  unmute: "Unmute",
+  retry: "Try again",
+  back: "Back to the calendar",
+  /** disclosureBefore + privacy link + newTab (visually hidden) */
+  disclosureBefore: "You are talking to an AI agent. The call is recorded. ",
+  privacy: "Privacy",
+  newTab: " (opens in a new tab)",
 } as const;
 
 /** The booked state, once Calendly reports the booking (DemoBooked). title
