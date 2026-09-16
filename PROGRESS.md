@@ -8,6 +8,17 @@
 - [ ] **Phase 6:** Rebuild `/build-in-public`
 - [ ] **Phase 7:** Final Pass
 
+## Demo page — September 15, 2026
+
+Scope: `/demo`, a contact-sales page in the ElevenLabs layout (François, 2026-09-15): the brain.getpancake.ai hero on the left, the qualification form in the white card on the right, and a thank-you state with the demo video after submit. Not indexed and not in the sitemap until the founder decides where it lives.
+
+- [x] Build `/demo` on the landing-v3 kit with the brain hero copy verbatim, the customer logo band, and the card's rainbow sliver.
+- [x] Add the seven-question form that mirrors the Calendly routing form, with busy, error and success states and keyboard focus that survives every outcome.
+- [x] Add `POST /api/demo-request` with the waitlist route's origin allow-list, a honeypot, the per-IP rate limit, a per-instance circuit breaker behind validation (503, never 429), Slack and Airtable delivery (upsert on the submission id), and a local no-delivery mode.
+- [x] Stub the "Chat with AI sales" button for the ElevenLabs agent (founder: "let's program the Eleven Labs agent later on").
+- [x] Document `SLACK_DEMO_WEBHOOK_URL` and `AIRTABLE_DEMO_REQUESTS_TABLE_ID` in `.env.local.example`.
+- [x] Pass targeted ESLint and type checks, and independent code review.
+
 ## Customer logo carousel — September 15, 2026
 
 - [x] Add Hyperspell, AgentMail, Fleet, Requesty, Alpic, Praxis, Kinro, Covera, Spacefill, and Kardinal directly below the homepage hero, in that order.
