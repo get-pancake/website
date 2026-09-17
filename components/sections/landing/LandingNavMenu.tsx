@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { DEMO_BOOKING_URL } from "@/lib/booking";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 
 import { NAV_LINKS } from "./nav-links";
 
@@ -11,9 +11,9 @@ import { NAV_LINKS } from "./nav-links";
  * Mobile nav menu — the plum sheet behind the ≤767px menu button (mobile QA
  * 2026-08-26: below the old breakpoint phones had no route to Pricing or How
  * it works above a footer ~13 viewports down). Footer-rhyme
- * surface: inverted plum, cream links, left-justified. Book a call rides the
- * same data-lv2-open="call" upgrade as the nav pill and reuses its
- * allowlisted cta id — the menu is part of the nav surface, and the
+ * surface: inverted plum, cream links, left-justified. Book a demo is the
+ * same same-tab /demo link as the nav pill (François, 2026-09-16) and reuses
+ * its allowlisted cta id — the menu is part of the nav surface, and the
  * analytics contract stays untouched.
  */
 export function LandingNavMenu() {
@@ -131,20 +131,10 @@ export function LandingNavMenu() {
               </Link>
             ),
           )}
-          {/* target/rel mirror the nav pill: on pages without LandingModals
-              (/privacy, /terms) the fallback opens a new tab instead of
-              navigating the site away; the dialog's preventDefault suppresses
-              it everywhere else. */}
-          <a
-            href={DEMO_BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            data-lv2-open="call"
-            data-analytics-id="call_nav"
-            onClick={close}
-          >
+          {/* An internal route like the links above: same tab, next/link. */}
+          <Link href={DEMO_PAGE_PATH} prefetch={false} data-analytics-id="call_nav" onClick={close}>
             Book a demo
-          </a>
+          </Link>
         </nav>
       </div>
     </>

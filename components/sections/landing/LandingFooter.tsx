@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { DEMO_BOOKING_URL } from "@/lib/booking";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 
 /**
  * Landing footer — rime.ai-style plum band: link columns on the left, the
@@ -37,7 +37,8 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
       { href: "/careers", label: "Careers" },
       { href: "/blog", label: "Blog" },
       { href: "https://partners.dub.co/pancake-ai", label: "Affiliate program", external: true },
-      { href: DEMO_BOOKING_URL, label: "Book a demo", external: true },
+      // Same tab: /demo (François, 2026-09-16), no longer the Calendly form.
+      { href: DEMO_PAGE_PATH, label: "Book a demo" },
       { href: "mailto:hey@pancake.ai", label: "Contact" },
       { href: "/support", label: "Support" },
     ],

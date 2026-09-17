@@ -10,7 +10,6 @@ import { LpHero } from "@/components/sections/landing-v3/LpHero";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
 import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
-import { LpModals } from "@/components/sections/landing-v3/LpModals";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
@@ -117,7 +116,7 @@ export default function Home({ searchParams }: { searchParams: { audience?: stri
       <LpTestimonials />
       <LpPricing />
       <LpFooter />
-      <LpModals />
+      {/* LpModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}
     </LpAudience>
   );
 }

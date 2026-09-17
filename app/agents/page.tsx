@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
-import { LpModals } from "@/components/sections/landing-v3/LpModals";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { AgBrain } from "@/components/sections/agents/AgBrain";
@@ -79,7 +78,7 @@ export default function AgentsLanding() {
           one-line removal if he wants the page without pricing. */}
       <LpPricing />
       <LpFooter />
-      <LpModals />
+      {/* LpModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}
     </main>
   );
 }

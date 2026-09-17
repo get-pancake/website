@@ -1,0 +1,855 @@
+/* /demo — imported by app/demo/page.tsx AFTER landing-v3.css (the token
+   layer + nav/cta/anim/marquee/audience recipes it reuses). Every rule is
+   scoped under .lp-demo (page root main.lp.lp-demo, so --lp-* tokens
+   inherit). Geometry ported from brain's app_tokens.css / app_styles.css
+   (the founder's cartouche, 2026-09-14) with two changes: the rainbow art is
+   pinned to a token height instead of the viewport (a seven-field card
+   exceeds every laptop viewport, and the pinned art keeps the same ink in
+   the form and booked states; the taller booking state stretches it
+   vertically, same ink width), and the one-column step is 1200px
+   (brain's 1024 would drop the copy column under 300px next to the 736px
+   card).
+   Specificity notes: `.lp p { margin: 0 }` / `.lp a { color: inherit }` are
+   (0,1,1), so paragraphs with margins and underlined links are written
+   `.lp-demo .x`; the `.lp-btn` geometry overrides are (0,3,0). */
+
+.lp-demo {
+  /* audience.css has --lp-space 1/2/3/4/8/12 only */
+  --demo-space-6: 24px;
+  --demo-space-16: 64px;
+  --demo-space-24: 96px;
+  --demo-nav-height: 120px; /* = .lp-nav; 64 on phones */
+  --demo-grid: 1296px;
+  /* nav.css logo/CTA margin: the 1296 grid or 32px gutters */
+  --demo-margin: max(var(--lp-space-8), calc(50% - 648px));
+  --demo-hero-clearance: var(--lp-space-4); /* nav → row */
+  --demo-hero-bottom: var(--demo-space-16); /* row → footer */
+  --demo-hero-gap: var(--lp-space-12); /* copy column ↔ card */
+  --demo-row-gap: var(--lp-space-12); /* pitch ↔ trust band */
+  --demo-card-pad: var(--lp-space-12); /* card left padding */
+  --demo-card-pad-y: var(--lp-space-12); /* card top/bottom padding */
+  --demo-card-radius: var(--lp-r-2xlg); /* 48; 32 on phones */
+  --demo-form-width: 400px; /* brain's signup width */
+  --demo-air: var(--lp-space-12); /* form ↔ rainbow ink */
+  /* The form card's designed height; the art is pinned to it so the
+     visible ink is identical in the form and booked states. A taller card
+     (the booking state's Calendly frame) stretches the art vertically
+     through --demo-art-stretch (DemoArtwork). One column: unused (the strip
+     follows the card again). */
+  --demo-art-height: 925px;
+  --demo-side-scale: 0.7; /* founder 2026-09-14: rays squeezed so they sit closer */
+  /* brain's formula: visible ink ≈ 240px */
+  --demo-band: calc(var(--demo-art-height) * 0.37 * var(--demo-side-scale));
+  /* ≈ 736 */
+  --demo-card-width: calc(var(--demo-card-pad) + var(--demo-form-width) + var(--demo-air) + var(--demo-band));
+  --demo-art-offset: 0px;
+  --demo-rail: 12px; /* one-column strip */
+  --demo-form-top-gap: var(--lp-space-8); /* intro → fields (brain: 24–48) */
+  --demo-field-gap: var(--lp-space-4);
+  --demo-control-height: 48px; /* = brain */
+  --demo-pill-width: 136px; /* = the kit's md pill (foundation.css) */
+  --demo-focus-width: calc(2 * var(--lp-line)); /* audience.css writes its rings this way */
+  --demo-chevron-stroke: calc(2 * var(--lp-line));
+  --demo-ease: 200ms ease;
+  --demo-title-size: var(--lp-text-6xlg);
+  /* Booking state (DemoBooking): the Calendly frame's height before its
+     first calendly.page_height report (set for the routing form, ~650px;
+     not re-measured for the calendar /demo now opens on),
+     and the ceiling on those reports: past it Calendly scrolls inside the
+     frame instead of stretching the page. */
+  --demo-cal-initial: 680px;
+  --demo-cal-max: 1200px;
+  font-synthesis: none;
+}
+
+/* ── page-wide ── */
+.lp-demo :focus-visible {
+  outline: var(--demo-focus-width) solid var(--lp-purple-40);
+  outline-offset: var(--lp-space-1);
+}
+/* kit default restated so the page rule above cannot win */
+.lp-demo .lp-btn:focus-visible {
+  outline-color: var(--lp-purple-30);
+  outline-offset: calc(-1 * var(--lp-space-1));
+}
+/* The ring is drawn inside the pill: purple-30 reads 7.2:1 on the plum
+   fills but 2.55:1 on the outline pill's white ground ("Start a new
+   submission"), under the 3:1 non-text minimum. purple-40 on white is 4.82:1. */
+.lp-demo .lp-btn--outline:focus-visible {
+  outline-color: var(--lp-purple-40);
+}
+/* Both receive programmatic focus after a submit; neither is interactive,
+   the ring would only decorate "Pick a time", "You're booked" or the red line. */
+.lp-demo :is(.demo-card__title, .demo-form__error):focus-visible {
+  outline: none;
+}
+/* style.css `* { font-family }` guard (agents precedent) */
+.lp-demo .lp-display * {
+  font-family: inherit;
+}
+.lp-demo .demo-nav {
+  height: var(--demo-nav-height);
+}
+
+/* ── hero grid, copy column, card, art (desktop) ── */
+.demo-hero {
+  display: grid;
+  padding: var(--demo-hero-clearance) var(--demo-margin) var(--demo-hero-bottom);
+}
+/* Two blocks on the cream page: the copy on the left, straight on the
+   background; the conversion card on the right, white, 48px radius, with
+   the right rainbow sliver running its full height. */
+.demo-hero__content {
+  width: 100%;
+  max-width: var(--demo-grid);
+  margin-inline: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--demo-card-width);
+  grid-template-areas: "left card";
+  column-gap: var(--demo-hero-gap);
+  align-items: stretch;
+}
+.demo-left {
+  grid-area: left;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--demo-row-gap);
+  padding-block: var(--demo-card-pad-y);
+}
+.demo-pitch {
+  grid-area: pitch;
+}
+/* Booking state, two columns: the card grows to 1000–1400px and its height
+   follows each calendly.page_height report (calendar, slots, details form),
+   so a centred copy column would sit ~400px down and slide while the
+   visitor clicks in the frame. Pin it to the top instead; the form and
+   booked states keep the centring. */
+@media (min-width: 1201px) {
+  .demo-hero__content:has(.demo-success--booking) .demo-left {
+    justify-content: flex-start;
+  }
+}
+.demo-eyebrow {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+}
+/* + .lp-display = Condensed 600 */
+.demo-title {
+  font-size: var(--demo-title-size);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-block: var(--lp-space-4);
+}
+.lp-demo .demo-lede {
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  max-width: 64ch;
+  text-wrap: pretty;
+}
+.demo-nowrap {
+  white-space: nowrap;
+}
+/* right padding 0: the band lives there */
+.demo-card {
+  grid-area: card;
+  position: relative;
+  isolation: isolate;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: var(--demo-card-radius);
+  overflow: clip;
+  padding: var(--demo-card-pad-y) 0 var(--demo-card-pad-y) var(--demo-card-pad);
+  scroll-margin-top: var(--lp-space-8);
+}
+.demo-card__body {
+  position: relative;
+  z-index: 1;
+  width: var(--demo-form-width);
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+/* = LpRainbowGL's clip (art.offsetParent): must stay positioned. It follows
+   the card and crops the pinned art in the shorter booked state; the booking
+   state's Calendly frame can make the card taller than the art token, and
+   DemoArtwork then writes --demo-art-stretch here (rail height / art height,
+   never below 1). */
+.demo-side-rail {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  overflow: clip;
+  pointer-events: none;
+}
+/* Height from the token, not the card. (0,2,0) beats cta.css ≤1024
+   `.lp-cta__art { height: 336px }` and anim.css's aspect resets; the ≤767
+   rotations are scoped to .lp-cta__card and never fire. The shared renderer
+   reads a matrix with origin 0 0: anchor the squeeze at the right edge
+   inside that matrix so DOM and WebGL clip identically. The vertical
+   stretch rides in the same matrix (1 unless the card outgrows the art),
+   so the band width (--demo-band) never changes. */
+.lp-demo .demo-side-art {
+  position: absolute;
+  top: 0;
+  right: var(--demo-art-offset);
+  height: var(--demo-art-height);
+  width: auto;
+  max-width: none;
+  transform-origin: 0 0;
+  transform: translateX(calc(100% * (1 - var(--demo-side-scale)))) scale(var(--demo-side-scale), var(--demo-art-stretch, 1));
+}
+.demo-card__title {
+  font-size: var(--lp-text-3xlg);
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+.lp-demo .demo-card__intro {
+  margin-top: var(--lp-space-2);
+  color: var(--lp-ink-tr-70);
+  font-size: var(--lp-text-sm);
+  text-wrap: pretty;
+}
+
+/* ── trust band ── */
+.demo-trust {
+  grid-area: proof;
+  min-width: 0;
+}
+.demo-trust__label {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+}
+.lp-demo .demo-trust__yc {
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 2px;
+}
+/* marquee.css pads 32px for the homepage strip; the 44px kit row
+   (--lp-customer-logo-row-height) around a ~25px logo body plus this 8px
+   gives brain's ~16px label→logo optical gap. QA: tune this margin, or
+   override --lp-customer-logo-row-height in the column, not the kit. */
+.lp-demo .demo-trust .lp-marquee {
+  padding-block: 0;
+  margin-top: var(--lp-space-2);
+}
+/* the YC mark once, in the label (brain's optics) */
+.lp-demo .demo-trust .lp-marquee__yc {
+  display: none;
+}
+/* brief: pause on hover; marquee.css has none */
+@media (hover: hover) {
+  .lp-demo .demo-trust .lp-marquee__band:hover .lp-marquee__seq {
+    animation-play-state: paused;
+  }
+}
+/* marquee.css centres the wrapped marks and insets them 32px for the
+   full-width strip; in a left-aligned copy column that reads as centred rows
+   offset from the pitch. Brain's fallback is a static left-aligned row. The
+   kit's own reduced-motion rules (animation off, mask off, second copy
+   hidden) still apply. */
+@media (prefers-reduced-motion: reduce) {
+  .lp-demo .demo-trust .lp-marquee__seq {
+    justify-content: flex-start;
+    padding-inline: 0;
+    row-gap: var(--lp-space-2);
+  }
+}
+
+/* ── form controls ── */
+/* The gap sits on the field grid, under the intro (brain: div.brain-form
+   { margin-top }); on the wrapper it would land above the H2, inside a
+   centred flex body, invisible. */
+.demo-form__fields {
+  display: grid;
+  gap: var(--demo-field-gap);
+  margin-top: var(--demo-form-top-gap);
+}
+/* One group per step, both mounted so the uncontrolled values survive Back
+   (founder 2026-09-16: two steps like ElevenLabs). The inactive group is
+   hidden with the `hidden` attribute: display:none, so its controls leave
+   the tab order and the AT tree and FormData still carries them. The
+   explicit rule is needed because demo.css is unlayered (landing-v3.css
+   says why), so `display: grid` here beats both the UA's [hidden] rule and
+   Tailwind preflight's layered `[hidden]:where(...) { display: none }`
+   (app/globals.css, @layer tw-base) regardless of specificity. */
+.demo-form__step {
+  display: grid;
+  gap: var(--demo-field-gap);
+  min-width: 0;
+}
+.demo-form__step[hidden] {
+  display: none;
+}
+/* Two columns: the card is the taller grid item, so its height sets the
+   hero row and where the vertically centred copy column and the footer
+   sit. Step 2 (three rows, 248px) is 88px shorter than step 1 (four text
+   fields: 4 × (20px label at .lp's 1.5 line-height + 4 + 48) + 3 × 16 =
+   336px), so without a floor the H1 would jump 44px and the footer 88px on
+   every "Let's go" and Back (two-step split, 2026-09-16; ElevenLabs has
+   four controls on each step and never moves). Step 1's height is the
+   floor and the rows stay at the top (a grid's default align-content
+   would spread them), so the button row sits at the same y on both steps.
+   One column keeps flowing: the card sets no row height there and a phone
+   would only get empty space. */
+@media (min-width: 1201px) {
+  .demo-form__step {
+    min-height: calc(4 * (1.5 * var(--lp-text-sm) + var(--lp-space-1) + var(--demo-control-height)) + 3 * var(--demo-field-gap));
+    align-content: start;
+  }
+}
+.demo-form__field {
+  display: grid;
+  gap: var(--lp-space-1);
+  min-width: 0;
+}
+.demo-form__label,
+.demo-form__legend {
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+}
+.demo-form__legend {
+  display: block;
+  padding: 0;
+  margin-bottom: var(--lp-space-1);
+}
+.demo-form__group {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.demo-form__input {
+  display: block;
+  width: 100%;
+  height: var(--demo-control-height);
+  padding-inline: var(--lp-space-4);
+  background: var(--lp-page-bg);
+  border: var(--lp-line) solid var(--lp-stroke);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  font-size: var(--lp-text-md);
+  transition: border-color var(--demo-ease), background-color var(--demo-ease);
+}
+/* One ring on focus: the border turns purple and the outline sits on it. */
+.demo-form__input:focus {
+  background: var(--lp-surface);
+  border-color: var(--lp-purple-40);
+}
+.lp-demo .demo-form__input:focus-visible {
+  outline-offset: 0;
+}
+.demo-form__input::placeholder {
+  color: var(--lp-subtle-text);
+}
+/* Once the reader has touched the field, an invalid value shows (Safari 16.5+);
+   the server's field errors use the aria flag. */
+.demo-form__input:user-invalid,
+.demo-form__input[aria-invalid="true"] {
+  border-color: var(--lp-red-40);
+}
+/* Step 2 arrives after step 1's submit attempt, which would already paint
+   the untouched required select red (:user-invalid counts a submit as
+   interaction). DemoForm marks the group fresh until its first change or its
+   own blocked submit; the server's aria flag still wins. */
+.demo-form__step[data-fresh] .demo-form__input:user-invalid:not([aria-invalid="true"]) {
+  border-color: var(--lp-stroke);
+}
+.demo-form__select-wrap {
+  position: relative;
+}
+/* "Help me run my GTM from Claude / other" is ~300px at 16px, wider than
+   the select's content box on 320–375px phones; Chromium and WebKit honour
+   the ellipsis on selects. The 16px size stays so iOS does not zoom. */
+.demo-form__select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: calc(var(--lp-space-4) * 2 + var(--lp-space-2));
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* placeholder tint; engines without :has show plum, harmless */
+.demo-form__select:has(option[value=""]:checked) {
+  color: var(--lp-subtle-text);
+}
+/* The tint inherits into the open list where the engine paints it itself
+   (Firefox, Chromium on Windows/Linux/Android): the options read in plum,
+   only the disabled team-size placeholder stays muted. */
+.demo-form__select option {
+  color: var(--lp-text);
+}
+.demo-form__select option:disabled {
+  color: var(--lp-subtle-text);
+}
+/* chevron from borders (no asset, no hex), inset by its own stroke past the padding edge */
+.demo-form__select-wrap::after {
+  content: "";
+  position: absolute;
+  right: calc(var(--lp-space-4) + var(--demo-chevron-stroke));
+  top: 50%;
+  width: var(--lp-space-2);
+  height: var(--lp-space-2);
+  border-right: var(--demo-chevron-stroke) solid var(--lp-subtle-text);
+  border-bottom: var(--demo-chevron-stroke) solid var(--lp-subtle-text);
+  transform: translateY(-70%) rotate(45deg);
+  pointer-events: none;
+}
+.demo-form__radios {
+  display: flex;
+  align-items: center;
+  gap: var(--demo-space-6);
+  min-height: var(--demo-control-height);
+}
+/* 44px touch row without moving the layout */
+.demo-form__radio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-2);
+  font-size: var(--lp-text-md);
+  cursor: pointer;
+  padding-block: var(--lp-space-3);
+  margin-block: calc(-1 * var(--lp-space-3));
+}
+/* 20px, audience.css's icon-size calc */
+.demo-form__radio input {
+  width: calc(var(--lp-space-4) + var(--lp-space-1));
+  height: calc(var(--lp-space-4) + var(--lp-space-1));
+  margin: 0;
+  flex: none;
+  accent-color: var(--lp-purple-40);
+}
+.lp-demo .demo-form__error {
+  color: var(--lp-red-40);
+  font-size: var(--lp-text-sm);
+}
+.lp-demo .demo-form__error a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+.lp-demo .demo-form__submit {
+  justify-self: start;
+  margin-top: var(--lp-space-2);
+}
+/* The button rows. Step 1: "Let's go", then "Talk to our AI" beside it
+   (François, 2026-09-16). Step 2: "Pick a time" and "Talk to our AI" in
+   step 1's spots, then Back as a quiet text button pushed to the row's end,
+   over the progress bar (François, 2026-09-16: not under the pills). About
+   370px of the 400px column, so both steps are one 48px row and the card
+   keeps its height between them. The wrap only fires under text zoom: Back
+   drops to its own line, still at the end. Step 1 keeps
+   .demo-form__actions--start as the hook the hug exception below skips.
+   The row carries the gap above. */
+.demo-form__actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--lp-space-3);
+  margin-top: var(--lp-space-2);
+}
+.lp-demo .demo-form__actions .demo-form__submit {
+  margin-top: 0;
+}
+/* Named exception to "button keep same sizes" (see the success pills below):
+   "Pick a time" and "Talk to our AI" (14 chars) hug their label with the md
+   pill's Figma radius and never drop under the kit box, so "Sending…" does
+   not shrink the submit mid-request. "Let's go" keeps the kit's fixed
+   geometry. */
+@media (min-width: 768px) {
+  .lp-demo .demo-form__actions:not(.demo-form__actions--start) .demo-form__submit,
+  .lp-demo .demo-form__actions .demo-form__talk {
+    clip-path: none;
+    border-radius: var(--lp-r-sm);
+    height: auto;
+    width: auto;
+    min-width: var(--demo-pill-width);
+  }
+}
+/* Back: not a kit pill (LpFxPill is a fixed 136px box with a flood, as heavy
+   as the two actions before it). A native button in the pill labels' ink and
+   type, with a border-drawn chevron (nothing added to its accessible name)
+   and a 48px target. The negative end margin puts the word on the column
+   edge while the target spills into the air beside it (the card clips only
+   at its own edge, 48px further). Underlined on hover, never dimmed except
+   while busy. */
+.lp-demo .demo-form__back {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--lp-space-2);
+  min-height: var(--demo-control-height);
+  margin-inline: auto calc(-1 * var(--lp-space-3));
+  padding: 0 var(--lp-space-3);
+  border: 0;
+  border-radius: var(--lp-r-sm);
+  background: none;
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  line-height: 1.5;
+  white-space: nowrap;
+  cursor: pointer;
+}
+/* the select's chevron recipe, pointing left; nudged right so its ink centres in its box */
+.lp-demo .demo-form__back::before {
+  content: "";
+  flex: none;
+  width: var(--lp-space-2);
+  height: var(--lp-space-2);
+  border-left: var(--demo-chevron-stroke) solid currentColor;
+  border-bottom: var(--demo-chevron-stroke) solid currentColor;
+  transform: translateX(25%) rotate(45deg);
+}
+@media (hover: hover) {
+  .lp-demo .demo-form__back:hover:not([aria-disabled="true"]) {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+}
+/* Busy look while the label reads "Sending…"; every control stays a real,
+   focusable, enabled control (onSubmit and goBack early-return). Nothing on
+   the page is ever disabled, so there are no disabled-state rules. */
+.lp-demo :is(.lp-btn, .demo-form__back)[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: progress;
+}
+/* Under the form on both steps, never after submit: the help line
+   left, the two-segment progress bar right (ElevenLabs); stacked on phones. */
+.lp-demo .demo-form__foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--lp-space-4);
+  margin-top: var(--lp-space-4);
+}
+.lp-demo .demo-form__help {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+}
+.lp-demo .demo-form__help a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* The bar is aria-hidden decoration; the visually hidden "Step n of 2"
+   beside it is the text. Done and current segments in ink, the pending
+   one in the stroke grey. */
+.demo-form__progress {
+  position: relative;
+  flex: none;
+}
+.demo-form__progress-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-1);
+}
+.demo-form__progress-seg {
+  display: block;
+  width: var(--lp-space-8);
+  height: var(--lp-space-1);
+  border-radius: var(--lp-r-2xsm);
+  background: var(--lp-stroke);
+  transition: background-color var(--demo-ease);
+}
+.demo-form__progress-seg[data-filled] {
+  background: var(--lp-text);
+}
+
+/* ── booking and booked states (DemoBooking, DemoBooked), video frame ── */
+/* One wrapper recipe for both post-submit states: the submission succeeded
+   in both, so the class keeps its name. */
+.demo-success {
+  display: grid;
+  gap: var(--lp-space-4);
+  justify-items: start;
+}
+.lp-demo .demo-success__lead {
+  margin-top: calc(-1 * var(--lp-space-2));
+  color: var(--lp-ink-tr-70);
+  font-size: var(--lp-text-md);
+  text-wrap: pretty;
+}
+.lp-demo .demo-success__note,
+.lp-demo .demo-success__again {
+  font-size: var(--lp-text-sm);
+  color: var(--lp-text);
+  text-wrap: pretty;
+}
+/* The routed Calendly calendar, inline (booking state). The group spans the
+   card body (the grid starts its items). The frame's height follows
+   calendly.page_height (DemoBooking writes --demo-cal-h) under the cap;
+   --demo-cal-primary is read as Calendly's primary color (buttons, selected
+   dates = the site's plum pill), as modal.css's --cal-primary was. */
+.demo-success__cal {
+  justify-self: stretch;
+  min-width: 0;
+}
+.demo-success__frame {
+  --demo-cal-primary: var(--lp-inverted-surface);
+  width: 100%;
+  height: min(var(--demo-cal-h, var(--demo-cal-initial)), var(--demo-cal-max));
+  overflow: clip;
+  transition: height var(--demo-ease);
+}
+.demo-success__frame iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+/* The blocked-frame escape hatch: empty (no height) until the frame is stuck. */
+.lp-demo .demo-success__fallback {
+  color: var(--lp-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+}
+.lp-demo .demo-success__fallback:not(:empty) {
+  margin-top: var(--lp-space-2);
+}
+.lp-demo .demo-success__fallback a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* Named exception to foundation.css "button keep same sizes" (founder
+   2026-09-03): "Talk to our AI" (14 chars, founder 2026-09-16) and "Start a
+   new submission" (22, verbatim) overflow the 136px squircle.
+   These two pills hug their label with the md pill's Figma radius; the
+   submit and every other pill keep the Figma geometry. (0,3,0) beats
+   `.lp .lp-btn--outline` 136×48 and the `.lp-btn` squircle; .lp-btn-fx
+   inherits the radius so the flood clips correctly. */
+@media (min-width: 768px) {
+  .lp-demo .demo-success .lp-btn {
+    clip-path: none;
+    border-radius: var(--lp-r-sm);
+    height: auto;
+    width: auto;
+  }
+}
+/* The kit's dark surface shows for the instant before YouTube paints its
+   player (--lp-terminal-bg is the founder's terminal background, not a
+   letterbox). */
+.demo-success__video {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--lp-r-lg);
+  overflow: hidden;
+  background: var(--lp-inverted-surface);
+}
+.demo-success__video iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ── footer ── */
+.demo-foot {
+  padding: var(--lp-space-8) var(--demo-margin) var(--lp-space-12);
+}
+/* the kit's .lp-foot-line uses ink-60 on black; on cream ink-80 keeps ~4:1 */
+.lp-demo .demo-foot__line {
+  max-width: var(--demo-grid);
+  margin-inline: auto;
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  line-height: 1.5;
+}
+.lp-demo .demo-foot__line a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  display: inline-block;
+  padding-block: var(--lp-space-3);
+  margin-block: calc(-1 * var(--lp-space-3));
+}
+
+/* ── breakpoints ── */
+/* Two columns still; the art keeps the founder's 0.7 and the card its 736px.
+   Only the H1 steps down so "Put your GTM on" fits the 353px column at 1201
+   (Condensed 5xlg); brain keeps 6xlg at two columns (flagged in the PR). */
+@media (max-width: 1280px) {
+  .lp-demo {
+    --demo-title-size: var(--lp-text-5xlg);
+  }
+}
+/* One column: the rainbow becomes a thin edge strip that follows the card
+   again (as brain's ≤1024); the trust band comes AFTER the card, as brain
+   does, so the form stays above the fold on phones. */
+@media (max-width: 1200px) {
+  .lp-demo {
+    --demo-side-scale: 0.04;
+    --demo-card-pad-y: var(--demo-space-6);
+    --demo-row-gap: var(--demo-space-6);
+    --demo-form-top-gap: var(--demo-space-6);
+    --demo-title-size: var(--lp-text-5xlg);
+  }
+  .demo-hero__content {
+    max-width: 672px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "pitch" "card" "proof";
+    row-gap: var(--lp-space-4);
+  }
+  /* its gap/padding vanish; the grid row-gap rules */
+  .demo-left {
+    display: contents;
+  }
+  .demo-pitch,
+  .demo-card__body {
+    width: 100%;
+  }
+  .demo-card__body {
+    max-width: 448px;
+  }
+  .demo-card {
+    width: 100%;
+    padding: var(--demo-space-6) calc(var(--demo-rail) + var(--lp-space-4)) var(--demo-space-6) var(--lp-space-4);
+  }
+  .demo-side-rail {
+    width: var(--demo-rail);
+    border-radius: 0;
+  }
+  /* --demo-art-height is unused here, and the strip already follows the
+     card: the rail's stretch is overridden on the art itself. */
+  .lp-demo .demo-side-art {
+    height: 100%;
+    --demo-art-stretch: 1;
+  }
+}
+@media (max-width: 767px) {
+  .lp-demo {
+    --demo-nav-height: 64px;
+    --demo-margin: var(--lp-space-4);
+    --demo-hero-clearance: var(--lp-space-2);
+    --demo-hero-bottom: var(--lp-space-8);
+    --demo-form-top-gap: var(--lp-space-4);
+    --demo-field-gap: var(--lp-space-3);
+    --demo-title-size: var(--lp-text-4xlg);
+    --demo-card-radius: var(--lp-r-xlg);
+  }
+  /* nav.css makes .lp-nav sticky/104px/flex on phones; the logo is static
+     there. Keep the flex, drop the sticky; notches stay inside the safe area. */
+  .lp-demo .demo-nav {
+    position: relative;
+    padding: 0 max(var(--lp-space-8), env(safe-area-inset-right)) 0 max(var(--lp-space-8), env(safe-area-inset-left));
+  }
+  /* text on the 32px edge, card on 16px (brain's rhythm) */
+  .demo-pitch,
+  .demo-trust {
+    padding-inline: var(--lp-space-4);
+  }
+  .demo-title {
+    margin-block: var(--lp-space-3);
+  }
+  /* the submit spans the card (the kit's fixed squircle only applies from 768px up) */
+  .lp-demo .demo-form__submit {
+    width: 100%;
+    justify-self: stretch;
+  }
+  /* The rows stack in DOM order and every pill spans the card (the kit
+     pins 135px at ≤767). Step 1: "Let's go", then "Talk to our AI". Step 2:
+     "Pick a time", "Talk to our AI", then Back as a full-width 48px text
+     row, its label centred like the pills'. */
+  .lp-demo .demo-form__actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--lp-space-3);
+  }
+  .lp-demo .demo-form__actions .lp-btn {
+    width: 100%;
+  }
+  /* an auto margin on the cross axis would block the stretch */
+  .lp-demo .demo-form__back {
+    margin-inline: 0;
+  }
+  .lp-demo .demo-form__foot {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--lp-space-3);
+  }
+  /* kit pins 135px at ≤767 */
+  .lp-demo .demo-success .lp-btn {
+    width: 100%;
+  }
+  /* 44px tap rows for the 13px inline links (brain does the same for its notice links) */
+  .lp-demo .demo-form__help a,
+  .lp-demo .demo-form__error a,
+  .lp-demo .demo-success__fallback a {
+    display: inline-block;
+    padding-block: var(--lp-space-3);
+    margin-block: calc(-1 * var(--lp-space-3));
+  }
+  .demo-form__radios {
+    gap: var(--lp-space-4);
+  }
+  .demo-foot {
+    padding-inline: var(--lp-space-8);
+  }
+  /* Calendly lays out from about 320px. Inside the card padding the frame
+     got 299px on a 375px phone (QA 2026-09-16), so on phones it bleeds to
+     the card edges, over the 12px rainbow strip (the body paints above the
+     rail): 343px at 375, 328px at 360. A 320px phone still gets 288px, as
+     the card itself clips any wider bleed. */
+  .lp-demo .demo-success__frame {
+    width: auto;
+    margin-inline: calc(-1 * var(--lp-space-4)) calc(-1 * (var(--demo-rail) + var(--lp-space-4)));
+  }
+}
+/* The narrowest iPhones (SE, 12/13 mini, 375pt): the lede and the card
+   intro wrap one line more, so tighten the rhythm (brain's step). */
+@media (max-width: 375px) {
+  .lp-demo {
+    --demo-form-top-gap: var(--lp-space-3);
+  }
+  .demo-hero__content {
+    row-gap: var(--lp-space-3);
+  }
+  .demo-title {
+    margin-block: var(--lp-space-2);
+  }
+  .lp-demo .demo-lede {
+    font-size: 15px;
+    line-height: 1.45;
+  }
+}
+@media (max-width: 374px) {
+  .lp-demo {
+    --demo-rail: 8px;
+    --demo-side-scale: 0.025;
+  }
+  .demo-card__title {
+    font-size: var(--lp-text-2xlg);
+  }
+}
+/* landscape phones: the compact bar, like portrait */
+@media (max-height: 480px) and (pointer: coarse) {
+  .lp-demo {
+    --demo-nav-height: 64px;
+  }
+}
+/* plus the trust-band override above; marquee static wrap, pill FX off and
+   GL off are the kit's own rules */
+@media (prefers-reduced-motion: reduce) {
+  .lp-demo *,
+  .lp-demo *::before,
+  .lp-demo *::after {
+    scroll-behavior: auto !important;
+  }
+  .demo-form__input,
+  .demo-form__progress-seg,
+  .demo-success__frame {
+    transition: none;
+  }
+}

@@ -21,7 +21,7 @@ export default function PrivacyPolicyPage() {
         <LandingNav />
         <section className="lv2s" aria-labelledby="privacy-heading">
           <article className="lv2-legal">
-            <p className="lv2-legal-updated">Last updated: August 27, 2026</p>
+            <p className="lv2-legal-updated">Last updated: September 16, 2026</p>
             <h1 id="privacy-heading">Privacy Policy</h1>
 
             <p>
@@ -66,6 +66,11 @@ export default function PrivacyPolicyPage() {
                 AI client you connect, the Pancake workspace records needed to answer them, and
                 metadata about the connection. This may include your GTM Brain, business-contact
                 lead records, signal settings, SEO plans, run history, and feedback.
+              </li>
+              <li>
+                <strong>Demo Request Data (if applicable):</strong> your answers to our demo form,
+                recordings and transcripts of calls with our AI voice agent, and the meeting you
+                book. See section 10.
               </li>
             </ul>
 
@@ -139,6 +144,7 @@ export default function PrivacyPolicyPage() {
                 Slack data: retained only as needed to provide the service and may be deleted
                 immediately after processing depending on the feature
               </li>
+              <li>Demo requests and voice calls: as described in section 10</li>
             </ul>
             <p>We may retain certain data longer if required by law.</p>
 
@@ -313,7 +319,73 @@ export default function PrivacyPolicyPage() {
               your third-party conversation solely because you use the connector.
             </p>
 
-            <h2>10. Contact</h2>
+            <h2>10. Demo Requests and Voice Calls</h2>
+            <p>
+              On{" "}
+              <a href="https://getpancake.ai/demo" target="_blank" rel="noopener noreferrer">
+                getpancake.ai/demo
+              </a>{" "}
+              you can book a demo by filling in a short form or by talking to Pancake, our AI
+              voice agent.
+            </p>
+            <h3>What we collect</h3>
+            <ul>
+              <li>
+                <strong>Form answers:</strong> first and last name, work email, company website,
+                team size, whether you have a Pancake account, and your main goal.
+              </li>
+              <li>
+                <strong>Voice calls:</strong> the audio of the call, its transcript, and the
+                answers the agent collects. A call starts only after you click &quot;Talk to
+                our AI&quot; and allow your microphone. The call screen tells you that you are
+                talking to an AI agent and that the call is recorded.
+              </li>
+              <li>
+                <strong>Booking details:</strong> the meeting time you choose and anything you
+                add on the booking page.
+              </li>
+            </ul>
+            <h3>How we use it</h3>
+            <p>
+              We use this data to route you to the right meeting, prepare for it, and keep a
+              record of our conversations with your company. We do not sell it or use it for
+              advertising.
+            </p>
+            <h3>Who processes it</h3>
+            <ul>
+              <li>
+                <strong>ElevenLabs</strong> runs the voice agent. It receives the call audio, the
+                transcript, and the form answers you already typed, except your email address.
+                The agent&apos;s language model runs through ElevenLabs. The call software loads
+                from the jsDelivr content delivery network when you start a call.
+              </li>
+              <li>
+                <strong>Calendly</strong> schedules the meeting. The voice agent reads open times
+                from Calendly and opens the time you pick with your name, email, and answers
+                filled in. You confirm the booking yourself.
+              </li>
+              <li>
+                <strong>Attio</strong>, our CRM, and <strong>Slack</strong> and{" "}
+                <strong>Airtable</strong>, where our team is notified of new requests, receive
+                your form answers. The voice agent also posts a short summary of each call to
+                our Slack, with a link to the call in ElevenLabs.
+              </li>
+            </ul>
+            <h3>Retention</h3>
+            <ul>
+              <li>Call recordings and transcripts in ElevenLabs: deleted after 90 days</li>
+              <li>
+                Form answers, CRM records, and call summaries in our Slack: kept while we are in
+                contact with you or your company, and deleted on request
+              </li>
+              <li>Bookings: kept in Calendly and our calendars as long as needed for the meeting</li>
+            </ul>
+            <p>
+              To access or delete this data, contact{" "}
+              <a href="mailto:privacy@pancake.ai">privacy@pancake.ai</a>.
+            </p>
+
+            <h2>11. Contact</h2>
             <p>For any questions or requests regarding your data, you can contact us at:</p>
             <p>
               <a href="mailto:privacy@pancake.ai">
@@ -321,7 +393,7 @@ export default function PrivacyPolicyPage() {
               </a>
             </p>
 
-            <h2>11. Changes to This Policy</h2>
+            <h2>12. Changes to This Policy</h2>
             <p>
               This policy may be updated at any time. We encourage you to review it regularly.
               Significant changes will be communicated where appropriate.

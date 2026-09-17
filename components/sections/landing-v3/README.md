@@ -86,7 +86,7 @@ back during a fidelity pass:
 - Casing: no capitals on common nouns mid-sentence ("Pancake sells it",
   "While you run your business,", "GTM brain").
 - CTAs (founder, 2026-09-03): primary "Start free" (app.getpancake.ai)
-  and secondary "Book a demo" (Calendly qualification-form sheet) on the nav bar, hero and final
+  and secondary "Book a demo" (a same-tab link to /demo since 2026-09-16; it opened the Calendly qualification-form sheet before) on the nav bar, hero and final
   CTA, always in that order; pricing keeps the primary only (founder, same
   day: "enlève Book a demo du pricing"); the phone bar keeps the primary
   only (the sheet carries both), the final CTA shows both on phones too.

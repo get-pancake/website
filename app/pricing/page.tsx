@@ -2,16 +2,17 @@
  * Pricing V2 — one flat plan, Okara-simplified (founder call 2026-08-06:
  * $99/month flat, everything included; the V1 token-pack model is retired).
  * Rides the landing skin (.lv2) so the two pages read as one product:
- * nav + header + single plan card with the feature list + booking modal.
+ * nav + header + single plan card with the feature list. Book a demo links
+ * to /demo (2026-09-16); the booking modal is no longer mounted.
  */
 import type { Metadata } from "next";
 
-import { FxPill, FxPillLink } from "@/components/sections/landing/FxPill";
+import { FxPillLink } from "@/components/sections/landing/FxPill";
 import { PriceGroups } from "@/components/sections/landing/PriceGroups";
 import { LandingFooter } from "@/components/sections/landing/LandingFooter";
-import { LandingModals } from "@/components/sections/landing/LandingModals";
 import { LandingNav } from "@/components/sections/landing/LandingNav";
 import { PancakeStack } from "@/components/sections/pricing/PancakeStack";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { pricingV2 } from "@/lib/copy";
 import "@/app/_styles/landing-v2.css";
 
@@ -89,13 +90,13 @@ export default function PricingPage() {
                   <FxPillLink href="https://app.getpancake.ai" data-analytics-id="app_pricing_page">
                     Start free
                   </FxPillLink>
-                  <FxPill
+                  <FxPillLink
                     variant="outline"
-                    data-lv2-open="call"
+                    href={DEMO_PAGE_PATH}
                     data-analytics-id="call_pricing_page"
                   >
                     Book a demo
-                  </FxPill>
+                  </FxPillLink>
                 </div>
                 <p className="lv2-price-fine">{pricingV2.fine}</p>
               </div>
@@ -107,7 +108,7 @@ export default function PricingPage() {
         </section>
       </div>
       <LandingFooter />
-      <LandingModals />
+      {/* LandingModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}
     </main>
   );
 }
