@@ -1,0 +1,46 @@
+name: Pancake score (weekly)
+
+# Scores every trialing or paying workspace from the analytics MCP and sends the
+# "Your Pancake score" email through Loops. See scripts/pancake-score/README.md.
+
+on:
+  schedule:
+    - cron: "0 16 * * 1" # Mondays 16:00 UTC (9am Pacific)
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run reports counts only; send emails everyone who is due"
+        type: choice
+        options: [dry-run, send]
+        default: dry-run
+      only_email:
+        description: "Optional: send one sample score email to this address and nothing else"
+        type: string
+        required: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pancake-score
+  cancel-in-progress: false
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: scripts/pancake-score
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Score workspaces and send to Loops
+        env:
+          ANALYTICS_MCP_TOKEN: ${{ secrets.ANALYTICS_MCP_TOKEN }}
+          LOOPS_API_KEY: ${{ secrets.LOOPS_API_KEY }}
+          # Scheduled runs only send once the repo variable PANCAKE_SCORE_SEND is "true".
+          MODE: ${{ github.event_name == 'schedule' && (vars.PANCAKE_SCORE_SEND == 'true' && 'send' || 'dry-run') || inputs.mode }}
+          ONLY_EMAIL: ${{ inputs.only_email }}
+        run: node scripts/pancake-score/run.mjs
