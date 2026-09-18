@@ -1,5 +1,7 @@
 /** Locked marketing copy — do not change without explicit approval */
 
+import { TRIAL_DAYS, TRIAL_NOTICE } from "@/lib/trial";
+
 export const hero = {
   /** H1 line 1 (break before autonomous) */
   h1Before: "Let OpenClaw run your",
@@ -224,10 +226,8 @@ export const pricing = {
     /** $100 in free credits to start. Surfaced verbatim in `trialCaption`;
      *  kept as a number for back-office math. */
     freeTokensDollars: 100,
-    /** Trial length in days — source of truth since f6da811 (3 → 7); the
-     *  field was dropped in the v4 copy restructure and is restored for the
-     *  closing-CTA note, which derives from it instead of hardcoding. */
-    days: 7,
+    /** Keep legacy pages aligned with the current confirmed trial duration. */
+    days: TRIAL_DAYS,
   },
   currency: "USD" as const,
   currencySymbol: "$",
@@ -468,5 +468,5 @@ export const pricingV2 = {
     { rest: "Approvals and a hard spend cap. You stay in control." },
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot). */
-  fine: "No card needed.",
+  fine: TRIAL_NOTICE,
 } as const;

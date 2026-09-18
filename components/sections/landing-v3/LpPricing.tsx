@@ -1,6 +1,7 @@
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
+import { TRIAL_LABEL } from "@/lib/trial";
 
 /**
  * Landing v3 — Pricing (Figma node 4257:5083, 1654×890, bg #000).
@@ -54,7 +55,7 @@ export function LpPricing() {
             Start free
           </LpFxLink>
         </div>
-        <p className="lp-price-note">No credit card needed</p>
+        <p className="lp-price-note">{TRIAL_LABEL}</p>
       </div>
       {/* Animated pancakes group: 1654×1039 canvas where the old composite img
           sat (top -0.66px, centered); the 2622×1039 container's left offset

@@ -9,6 +9,7 @@ import {
   SUPPORT_EMAIL_URL,
   SUPPORT_GMAIL_URL,
 } from "@/lib/contact";
+import { TRIAL_DAYS } from "@/lib/trial";
 import "@/app/_styles/landing-v2.css";
 
 export const metadata: Metadata = {
@@ -37,6 +38,12 @@ export default function SupportPage() {
                 open Gmail
               </a>
               . You do not need a Pancake account to contact us.
+            </p>
+
+            <h2>Free trial</h2>
+            <p>
+              You can begin signup without a credit card. Pancake offers a {TRIAL_DAYS}-day
+              free trial, and a credit card is required to start the trial.
             </p>
 
             <h2>Billing, cancellations, and refunds</h2>

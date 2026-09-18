@@ -12,7 +12,7 @@
  * source of truth — no hardcoded dollars):
  *   - headline   ← pricing.manifesto.title        ("No tiers. No tricks.")
  *   - $49        ← pricing.infrastructureDollars
- *   - $100 chip  ← pricing.trial.freeTokensDollars
+ *   - trial chips ← shared trial disclosure in lib/trial.ts
  *
  * Styles live in `app/_styles/home-pricing-teaser.css` (imported below —
  * App Router allows global CSS imports from any component, so the section
@@ -22,18 +22,16 @@
 import { HOME_PAGE_CONTAINER_CLASS } from "@/components/sections/home/home-layout";
 import { H2 } from "@/components/ui/Headings";
 import { pricing } from "@/lib/copy";
+import { TRIAL_CARD_REQUIREMENT, TRIAL_LABEL } from "@/lib/trial";
 import "@/app/_styles/home-pricing-teaser.css";
 
 /**
- * Proof chips — the three friction-killers next to the CTAs.
- * The first derives from `pricing.trial.freeTokensDollars`; "Cancel anytime"
- * mirrors `pricing.manifesto.items[2]` ("No surprises. … Cancel anytime.");
- * "No credit card required" matches the closing-CTA note in HomeLandingBody
- * so the promise reads identically everywhere on the page.
+ * Trial disclosures match the closing CTA; cancellation wording remains
+ * consistent with the existing pricing copy.
  */
 const PROOF_CHIPS = [
-  `${pricing.currencySymbol}${pricing.trial.freeTokensDollars} in free credits`,
-  "No credit card required",
+  TRIAL_LABEL,
+  TRIAL_CARD_REQUIREMENT,
   "Cancel anytime",
 ] as const;
 

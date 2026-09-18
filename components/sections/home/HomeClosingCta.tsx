@@ -6,7 +6,7 @@
  * one pink button, one quiet note).
  *
  * Text keeps the established direction: the title cashes the hero claim
- * ("Give Pancake its first job"), the note derives from `pricing.trial`.
+ * ("Give Pancake its first job"), the note uses the shared trial disclosure.
  * The previous orbit-stage + eye-tracking mascot version is gone per the
  * brief ("do not reinvent" the Figma layout); the decor layer spans the
  * SECTION, not the container — `.home-landing-section--closing` carries
@@ -16,7 +16,7 @@
  * float keyframes only), no GSAP, no client hooks.
  */
 
-import { pricing } from "@/lib/copy";
+import { TRIAL_LABEL } from "@/lib/trial";
 import { PANCAKE_TINTS } from "@/lib/pancake-palette";
 
 /** Figma `1892:4502` geometry, verbatim: three dotted orbits concentric
@@ -60,9 +60,7 @@ function PancakeGlyph({ variant }: { variant: keyof typeof PANCAKE_TINTS }) {
 }
 
 export function HomeClosingCta() {
-  /* Short note per the Figma comp — the pricing teaser one band up
-     already carries the credits line (review: the long note echoed it). */
-  const note = `${pricing.trial.days}-day free trial • No credit card required`;
+  const note = TRIAL_LABEL;
 
   return (
     <div className="home-closing">

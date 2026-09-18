@@ -5,8 +5,8 @@
  * (https://claude.ai/public/artifacts/e2884f06-20f2-464d-84a5-789dcb53fec1).
  * Intentionally independent from the main site's design system — all styling
  * lives in ./get-started.css, scoped under #get-started-page so the artifact's
- * generic class names can't leak. The only copy change from the artifact is the
- * <h1>.
+ * generic class names can't leak. The headline and trial disclosure reflect
+ * the current founder-approved copy.
  *
  * Fonts: the artifact loads DM Sans + DM Mono from Google Fonts; here they are
  * self-hosted via next/font and exposed as --font-dm-sans / --font-dm-mono,
@@ -14,6 +14,7 @@
  */
 import type { Metadata } from "next";
 import { DM_Sans, DM_Mono } from "next/font/google";
+import { TRIAL_CARD_REQUIREMENT, TRIAL_NOTICE } from "@/lib/trial";
 
 import "./get-started.css";
 
@@ -34,14 +35,14 @@ const dmMono = DM_Mono({
 export const metadata: Metadata = {
   title: "Get started: The AI coworker that does the work for you · Pancake",
   description:
-    "Create your Pancake account. $100 in free credits, no card required. Stack autonomous agents across growth, engineering and ops so your company keeps running even while you sleep.",
+    `Create your Pancake account. ${TRIAL_NOTICE} Stack autonomous agents across growth, engineering and ops so your company keeps running even while you sleep.`,
   alternates: { canonical: "https://getpancake.ai/get-started" },
   openGraph: {
     type: "website",
     url: "https://getpancake.ai/get-started",
     title: "Get started with Pancake, the AI coworker that does the work for you",
     description:
-      "Create your account. $100 in free credits, no card required. Stack autonomous agents across growth, engineering and ops.",
+      `Create your account. ${TRIAL_NOTICE} Stack autonomous agents across growth, engineering and ops.`,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Get started with Pancake" }],
     siteName: "Pancake",
   },
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Get started with Pancake, the AI coworker that does the work for you",
     description:
-      "Create your account. $100 in free credits, no card required.",
+      `Create your account. ${TRIAL_NOTICE}`,
     images: ["/og-image.png"],
   },
 };
@@ -142,7 +143,7 @@ export default function GetStartedPage() {
 
             <div className="gs-card">
               <h2 className="card-title">Welcome to Pancake</h2>
-              <p className="card-sub">Create your account. $100 in free credits, no card required.</p>
+              <p className="card-sub">Create your account. {TRIAL_NOTICE}</p>
 
               <a className="btn-google" href="https://beta.getpancake.ai">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -177,7 +178,7 @@ export default function GetStartedPage() {
                   <rect x="1" y="4.5" width="9" height="6" rx="1.2" stroke="#bba8ae" strokeWidth="1.1" />
                   <path d="M3.2 4.5V3A2.3 2.3 0 0 1 7.8 3v1.5" stroke="#bba8ae" strokeWidth="1.1" />
                 </svg>
-                No credit card required &nbsp;·&nbsp; Cancel anytime
+                {TRIAL_CARD_REQUIREMENT} &nbsp;·&nbsp; Cancel anytime
               </p>
             </div>
 
