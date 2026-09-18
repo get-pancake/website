@@ -15,7 +15,11 @@
 - [x] Update every privacy, security, and terms contact link using shared contact constants.
 - [x] Surface the existing cancellation/refund policy on Support and link directly to the billing terms.
 - [x] Pass the production build (including lint/type checks), independent review, and Codex Browser checks of both footers, `/contact`, every privacy email link, billing anchor, and desktop/mobile support layout. Existing unrelated lint warnings remain.
-- [ ] Prepare a preview and draft PR. Production promotion remains manual.
+- [x] Create a Vercel preview deployment and draft PR. Production promotion remains manual.
+
+Preview: https://pancake-git-codex-fix-contact-support-getpancake.vercel.app/support
+
+Draft PR: https://github.com/get-pancake/website/pull/300
 
 Trial duration, trial feature access, multi-website limits, and personal-email signup eligibility require product confirmation before adding new public claims. The support/legal pages still use their existing legacy layout; this repair changes contact behavior and content only.
 
