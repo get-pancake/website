@@ -8,6 +8,15 @@
 - [ ] **Phase 6:** Rebuild `/build-in-public`
 - [ ] **Phase 7:** Final Pass
 
+## Trial terms correction — September 18, 2026
+
+Tristan confirmed that the trial lasts **3 days** and a **credit card is required to start the trial**. Visitors can begin signup without a card. The homepage uses "3-day free trial" with no card caption; Support and Pricing explain when the card is required. These facts supersede earlier blanket no-card claims and the legacy seven-day trial value.
+
+- [x] Record the confirmed terms in `AGENTS.md` and shared `lib/trial.ts` disclosures.
+- [x] Add the trial terms to Support and correct the homepage, agents page, pricing page, get-started page/metadata, and two affected blog articles.
+- [x] Align dormant trial copy with the same facts so it cannot reintroduce the incorrect claims.
+- [x] Pass the production build, independent review, and Codex Browser checks of homepage/agents wording, the Support explanation, Pricing, and get-started metadata. The 390px layouts fit without horizontal overflow. Existing unrelated lint warnings remain.
+
 ## Contact and support repair — September 18, 2026
 
 - [x] Replace the undeliverable support and privacy addresses with the existing shared `support@getpancake.ai` mailbox, confirmed by current customer support correspondence.
@@ -21,7 +30,7 @@ Preview: https://pancake-git-codex-fix-contact-support-getpancake.vercel.app/sup
 
 Draft PR: https://github.com/get-pancake/website/pull/300
 
-Trial duration, trial feature access, multi-website limits, and personal-email signup eligibility require product confirmation before adding new public claims. The support/legal pages still use their existing legacy layout; this repair changes contact behavior and content only.
+Trial duration and the card requirement are now confirmed in the correction above. Trial feature access, multi-website limits, and personal-email signup eligibility still require product confirmation before adding new public claims. The support/legal pages still use their existing legacy layout; this repair changes contact behavior and content only.
 
 ## Demo page — September 15, 2026
 

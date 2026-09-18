@@ -13,6 +13,7 @@ import { HomeHeroPancakeMonster } from "@/components/sections/home/HomeHeroPanca
 import { HomeLogoMarquee } from "@/components/sections/home/HomeLogoMarquee";
 import { H1 } from "@/components/ui/Headings";
 import { PANCAKE_TINTS } from "@/lib/pancake-palette";
+import { TRIAL_LABEL } from "@/lib/trial";
 
 /**
  * Full two-tone pancake (side + top paths from `pancake-svgs/angled-1.svg`,
@@ -68,7 +69,7 @@ export function HomeHero() {
             >
               Get started for free
             </a>
-            <p className="home-hero-cta-note">No credit card required • SOC 2 compliant</p>
+            <p className="home-hero-cta-note">{TRIAL_LABEL} • SOC 2 compliant</p>
           </div>
         </div>
 

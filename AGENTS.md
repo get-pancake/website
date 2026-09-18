@@ -35,6 +35,17 @@ Refinements (copy, perf, polish) come later. Don't pre-optimize.
 
 ## Hard rules
 
+### Confirmed product facts — September 18, 2026
+
+- The free trial lasts **3 days**.
+- Visitors can **begin signup without a credit card**. The card requirement applies when they start the trial, not when they enter the funnel.
+- A **credit card is required to start** the trial.
+- The main homepage should use the neutral "3-day free trial" wording, without a card requirement caption. Explain the trial's card requirement on Support and Pricing.
+- Tristan explicitly confirmed these terms. Use `lib/trial.ts` for shared website disclosures; never imply the trial itself is card-free or lasts seven days.
+- Trial feature access, multi-website limits, and Gmail signup eligibility are not yet confirmed. Do not infer them from the paid plan.
+
+### Project constraints
+
 - **Match Figma exactly.** Spacing, type, color, radius — pixel-perfect. Use the design system page as source of truth, never invent values.
 - **Never reference values, styles, or assets from the old design system.** If you find a trace of the old system in the codebase (old hex values, old Tailwind classes, old component files, old fonts, old logos), flag it — do not use it. Phase 1 strips them before any new design work begins. The only design source of truth from Phase 2 onward is the Figma v3 design system.
 - **Analytics changes require explicit scope.** The authorized v2 contract uses one vendor-neutral `page_view` plus allowlisted waitlist/scheduler events; GTM maps them to GA4 and paid platforms. Keep vendor tags production-only, never put form values or arbitrary query strings in analytics, and never treat CTA/scheduler clicks as primary conversions.

@@ -19,6 +19,7 @@ import "@/app/_styles/home-faq.css";
 
 import { HOME_PAGE_CONTAINER_CLASS } from "@/components/sections/home/home-layout";
 import { H2 } from "@/components/ui/Headings";
+import { TRIAL_NOTICE } from "@/lib/trial";
 
 /**
  * Q&A source of truth.
@@ -56,7 +57,7 @@ export const FAQ_ITEMS: readonly { q: string; a: string }[] = [
   },
   {
     q: "What does it cost?",
-    a: "$49/month flat for the always-on setup, plus a token pack at the labs' public price — no markup. You start with $100 in free credits, no credit card required, and you can cancel anytime. The only thing we stack is pancakes.",
+    a: `$49/month flat for the always-on setup, plus a token pack at the labs' public price — no markup. ${TRIAL_NOTICE} You can cancel anytime. The only thing we stack is pancakes.`,
   },
 ];
 
