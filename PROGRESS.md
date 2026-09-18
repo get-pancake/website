@@ -8,6 +8,17 @@
 - [ ] **Phase 6:** Rebuild `/build-in-public`
 - [ ] **Phase 7:** Final Pass
 
+## Contact and support repair — September 18, 2026
+
+- [x] Replace the undeliverable support and privacy addresses with the existing shared `support@getpancake.ai` mailbox, confirmed by current customer support correspondence.
+- [x] Route Contact links and `/contact` to `/support`; provide a visible email address and optional Gmail compose link for visitors without a configured mail app.
+- [x] Update every privacy, security, and terms contact link using shared contact constants.
+- [x] Surface the existing cancellation/refund policy on Support and link directly to the billing terms.
+- [x] Pass the production build (including lint/type checks), independent review, and Codex Browser checks of both footers, `/contact`, every privacy email link, billing anchor, and desktop/mobile support layout. Existing unrelated lint warnings remain.
+- [ ] Prepare a preview and draft PR. Production promotion remains manual.
+
+Trial duration, trial feature access, multi-website limits, and personal-email signup eligibility require product confirmation before adding new public claims. The support/legal pages still use their existing legacy layout; this repair changes contact behavior and content only.
+
 ## Demo page — September 15, 2026
 
 Scope: `/demo`, a contact-sales page in the ElevenLabs layout (François, 2026-09-15): the brain.getpancake.ai hero on the left, the qualification form in the white card on the right, and a thank-you state with the demo video after submit. Not indexed and not in the sitemap until the founder decides where it lives.

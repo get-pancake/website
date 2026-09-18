@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { SUPPORT_PATH } from "@/lib/contact";
 
 /**
  * Landing footer — rime.ai-style plum band: link columns on the left, the
@@ -39,8 +40,8 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
       { href: "https://partners.dub.co/pancake-ai", label: "Affiliate program", external: true },
       // Same tab: /demo (François, 2026-09-16), no longer the Calendly form.
       { href: DEMO_PAGE_PATH, label: "Book a demo" },
-      { href: "mailto:hey@pancake.ai", label: "Contact" },
-      { href: "/support", label: "Support" },
+      { href: SUPPORT_PATH, label: "Contact" },
+      { href: SUPPORT_PATH, label: "Support" },
     ],
   },
   {
@@ -87,7 +88,7 @@ export function LandingFooter() {
                 <span className="lv2-footer-eyebrow">{col.title}</span>
                 <ul>
                   {col.links.map((link) => (
-                    <li key={link.href}>
+                    <li key={link.label}>
                       <FooterLinkItem {...link} />
                     </li>
                   ))}

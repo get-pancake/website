@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { LandingFooter } from "@/components/sections/landing/LandingFooter";
 import { LandingNav } from "@/components/sections/landing/LandingNav";
+import { SUPPORT_EMAIL, SUPPORT_EMAIL_URL } from "@/lib/contact";
 import "@/app/_styles/landing-v2.css";
 
 export const metadata: Metadata = {
@@ -19,7 +20,7 @@ export default function TermsOfServicePage() {
         <LandingNav />
         <section className="lv2s" aria-labelledby="terms-heading">
           <article className="lv2-legal">
-            <p className="lv2-legal-updated">Last updated: August 24, 2026</p>
+            <p className="lv2-legal-updated">Last updated: September 18, 2026</p>
             <h1 id="terms-heading">Terms of Service</h1>
 
             <p>
@@ -57,7 +58,7 @@ export default function TermsOfServicePage() {
               <li>Reverse engineer or attempt to extract source code (except where permitted by law)</li>
             </ul>
 
-            <h2>4. Fees &amp; Billing</h2>
+            <h2 id="fees-billing">4. Fees &amp; Billing</h2>
             <p>
               Some features of Pancake require a paid subscription. Current pricing is listed on
               our{" "}
@@ -173,8 +174,8 @@ export default function TermsOfServicePage() {
             <h2>15. Contact</h2>
             <p>If you have any questions about these Terms, you can contact us at:</p>
             <p>
-              <a href="mailto:hey@pancake.ai">
-                <strong>hey@pancake.ai</strong>
+              <a href={SUPPORT_EMAIL_URL}>
+                <strong>{SUPPORT_EMAIL}</strong>
               </a>
             </p>
           </article>
