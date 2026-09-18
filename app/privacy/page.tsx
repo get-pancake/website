@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { LandingFooter } from "@/components/sections/landing/LandingFooter";
 import { LandingNav } from "@/components/sections/landing/LandingNav";
+import { PRIVACY_EMAIL_URL, SUPPORT_EMAIL } from "@/lib/contact";
 import "@/app/_styles/landing-v2.css";
 
 export const metadata: Metadata = {
@@ -21,7 +22,7 @@ export default function PrivacyPolicyPage() {
         <LandingNav />
         <section className="lv2s" aria-labelledby="privacy-heading">
           <article className="lv2-legal">
-            <p className="lv2-legal-updated">Last updated: September 16, 2026</p>
+            <p className="lv2-legal-updated">Last updated: September 18, 2026</p>
             <h1 id="privacy-heading">Privacy Policy</h1>
 
             <p>
@@ -159,8 +160,8 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p>
               To exercise your rights, contact us at:{" "}
-              <a href="mailto:privacy@pancake.ai">
-                <strong>privacy@pancake.ai</strong>
+              <a href={PRIVACY_EMAIL_URL}>
+                <strong>{SUPPORT_EMAIL}</strong>
               </a>
             </p>
 
@@ -248,7 +249,7 @@ export default function PrivacyPolicyPage() {
                 Third-party apps with account access
               </a>{" "}
               page, or by emailing{" "}
-              <a href="mailto:privacy@pancake.ai">privacy@pancake.ai</a>. On revocation or
+              <a href={PRIVACY_EMAIL_URL}>{SUPPORT_EMAIL}</a>. On revocation or
               account deletion, all stored Google user data is deleted within 14 days, except
               where retention is required by law.
             </p>
@@ -382,14 +383,14 @@ export default function PrivacyPolicyPage() {
             </ul>
             <p>
               To access or delete this data, contact{" "}
-              <a href="mailto:privacy@pancake.ai">privacy@pancake.ai</a>.
+              <a href={PRIVACY_EMAIL_URL}>{SUPPORT_EMAIL}</a>.
             </p>
 
             <h2>11. Contact</h2>
             <p>For any questions or requests regarding your data, you can contact us at:</p>
             <p>
-              <a href="mailto:privacy@pancake.ai">
-                <strong>privacy@pancake.ai</strong>
+              <a href={PRIVACY_EMAIL_URL}>
+                <strong>{SUPPORT_EMAIL}</strong>
               </a>
             </p>
 

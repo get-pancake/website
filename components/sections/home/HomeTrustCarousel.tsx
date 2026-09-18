@@ -33,6 +33,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { animate, motion, useMotionValue, useMotionValueEvent, useTransform } from "framer-motion";
 import type { MotionValue } from "framer-motion";
 import { PANCAKE_TINTS } from "@/lib/pancake-palette";
+import { SUPPORT_EMAIL_URL } from "@/lib/contact";
 
 /* ─────────────────────────────── geometry ─────────────────────────────── */
 
@@ -453,7 +454,7 @@ const TRUST_CARDS: TrustCardDef[] = [
     body: (
       <>
         Audited every year by people we don&rsquo;t employ. Want the report?{" "}
-        <a href="mailto:hey@pancake.ai" className="home-trust-seal__mail">
+        <a href={SUPPORT_EMAIL_URL} className="home-trust-seal__mail">
           Email us
         </a>
         .

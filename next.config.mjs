@@ -25,6 +25,7 @@ const nextConfig = {
     ];
     return [
       { source: "/favicon.ico", destination: "/icon.png", permanent: false },
+      { source: "/contact", destination: "/support", permanent: false },
       // Influencer program archived (see app/_influencers). Temporary redirects
       // only — clients must not cache these past a future revival.
       { source: "/creators", destination: "/", permanent: false },

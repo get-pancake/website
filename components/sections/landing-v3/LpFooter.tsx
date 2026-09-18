@@ -2,14 +2,15 @@
  * Landing v3 — Footer (Figma node 4258:253, 1654×515, bg #000).
  * Brand block at x259; three right-aligned link columns (right edges at frame
  * x1011/1203/1395). Internal targets use relative hrefs (same tab); external
- * targets open in a new tab. mailto:hey@pancake.ai is VERBATIM from Figma
- * (flagged in the PR — probably should be hey@getpancake.ai).
+ * targets open in a new tab. Contact opens the support page so visitors
+ * can reach us without a configured desktop mail client.
  * "Affiliate program" is a founder addition (2026-09-03: "Affiliate should
  * appear in the footer of the landing page") — the artboard's Company column
  * has four links; don't drop it to match Figma.
  */
 
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { SUPPORT_PATH } from "@/lib/contact";
 
 type FootLink = { label: string; href: string; external?: boolean };
 
@@ -32,7 +33,7 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       { label: "Affiliate program", href: "https://partners.dub.co/pancake-ai", external: true },
       // Same tab: /demo (François, 2026-09-16), no longer the Calendly form.
       { label: "Book a demo", href: DEMO_PAGE_PATH },
-      { label: "Contact", href: "mailto:hey@pancake.ai" },
+      { label: "Contact", href: SUPPORT_PATH },
     ],
   },
   {
