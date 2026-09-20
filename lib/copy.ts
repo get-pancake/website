@@ -460,12 +460,16 @@ export const pricingV2 = {
   includedIntro: "What a month gets you:",
   /** The value lines — figure first. The lead and customer ranges are the
       founder's own (2026-08-19). The 90-day AI-search window is a placeholder
-      he has to confirm before this ships. */
+      he has to confirm before this ships.
+      No spend cap here (founder 2026-09-19): the plan is flat, there is no
+      variable spend to cap, and a prospect read the old "hard spend cap" as
+      LLM API costs on top of the $99. The control line names what you approve
+      today — leads and articles. */
   value: [
     { figure: "5 to 15", rest: "warm leads" },
     { figure: "2 to 3", rest: "new customers" },
     { figure: "30", rest: "articles, ranking on Google and cited by ChatGPT within 90 days" },
-    { rest: "Approvals and a hard spend cap. You stay in control." },
+    { rest: "Approvals on leads and articles. You stay in control." },
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot). */
   fine: TRIAL_NOTICE,

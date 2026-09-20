@@ -32,8 +32,10 @@ export function LpCta() {
         <div className="lp-cta__content">
           <div className="lp-cta__text">
             <h2 className="lp-title-card lp-cta__title">Try Pancake now</h2>
+            {/* "Pancake can’t overspend." retired (founder 2026-09-19): the
+                plan is flat, so the cost-certainty line says that instead. */}
             <p className="lp-cta__body">
-              Pancake can’t overspend.
+              $99 a month, flat.
               <br />
               Every lead arrives with its conversation attached.
             </p>

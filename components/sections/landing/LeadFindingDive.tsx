@@ -164,8 +164,9 @@ const STEPS: Step[] = [
   },
 ];
 
+/* The spend-cap guarantee was retired 2026-09-19 (flat plan, nothing to cap);
+   this section is unmounted, the line is gone so it can't come back with it. */
 const GUARANTEES = [
-  "A hard spend cap on every run. It can't overspend.",
   "Every lead arrives with its conversation attached. Your first message opens warm.",
 ] as const;
 

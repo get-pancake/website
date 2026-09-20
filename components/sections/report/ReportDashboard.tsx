@@ -360,7 +360,7 @@ function PancakeCard() {
       </header>
       <p>
         The same agents that ran this scan can run the fixes — llms.txt first, then the
-        content behind every search you{"’"}re missing. You set the spend cap.
+        content behind every search you{"’"}re missing.
       </p>
       <FxButton size="lg" onClick={() => window.open("https://beta.getpancake.ai", "_blank")}>
         Put the agents to work
