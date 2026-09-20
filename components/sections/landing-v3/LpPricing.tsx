@@ -16,7 +16,9 @@ const CHECKLIST = [
   "2 to 3 new customers.",
   "30 articles posted.",
   "Google ranking and ChatGPT citations.",
-  "Approvals and a hard spend cap.",
+  // No spend cap (founder 2026-09-19): flat plan, nothing to cap — same line
+  // as pricingV2.value in lib/copy.ts.
+  "Approvals on leads and articles.",
 ];
 
 export function LpPricing() {
