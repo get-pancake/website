@@ -324,7 +324,9 @@ export async function POST(request: NextRequest) {
   }
 
   const parsed = parseDemoRequest(body);
-  if (!parsed.ok) return json({ ok: false, error: "invalid", field: parsed.field }, 400);
+  if (!parsed.ok) {
+    return json({ ok: false, error: "invalid", field: parsed.field, ...(parsed.reason ? { reason: parsed.reason } : {}) }, 400);
+  }
 
   // After validation so garbage bodies never consume it; see GLOBAL_LIMIT.
   const perInstance = rateLimit("demo:global", GLOBAL_LIMIT.max, GLOBAL_LIMIT.windowMs);

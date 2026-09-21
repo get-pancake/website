@@ -95,6 +95,8 @@ export const ERRORS = {
   firstName: "Enter your first name.",
   lastName: "Enter your last name.",
   email: "Enter a valid work email.",
+  /** a valid address at Gmail, Outlook, Yahoo… (lib/personal-email.ts; François, 2026-09-21: work emails only) */
+  emailPersonal: "Use your work email. Personal addresses can't book a demo.",
   website: "Enter a website like acme.com.",
   teamSize: "Pick a team size.",
   hasAccount: "Tell us if you have a Pancake account.",

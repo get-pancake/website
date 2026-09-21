@@ -24,10 +24,12 @@ import {
   NAME_MAX,
   TEAM_SIZES,
   WEBSITE_MAX,
+  isDemoRequestErrorReason,
   isDemoRequestField,
   parseDemoRequest,
   parsePartialDemoRequest,
   type DemoRequest,
+  type DemoRequestErrorReason,
   type DemoRequestField,
   type DemoRequestPartial,
 } from "@/lib/demo-request";
@@ -103,7 +105,7 @@ import { DemoBooking } from "./DemoBooking";
 type Status = "idle" | "submitting" | "error" | "booking" | "booked";
 type Step = 1 | 2;
 type ErrorKind =
-  | { code: "field"; field: DemoRequestField }
+  | { code: "field"; field: DemoRequestField; reason?: DemoRequestErrorReason }
   | { code: "invalid" };
 
 // Cold start + the 5s upstream timeouts (Slack, Airtable and Attio run in
@@ -152,10 +154,25 @@ function fieldOf(body: unknown): unknown {
   return typeof body === "object" && body !== null && "field" in body ? (body as { field?: unknown }).field : undefined;
 }
 
+function reasonOf(body: unknown): DemoRequestErrorReason | undefined {
+  const reason = typeof body === "object" && body !== null ? (body as { reason?: unknown }).reason : undefined;
+  return isDemoRequestErrorReason(reason) ? reason : undefined;
+}
+
+/** A field failure; the reason only when there is one, so equal failures stay equal objects. */
+function fieldFailure(field: DemoRequestField, reason?: DemoRequestErrorReason): ErrorKind {
+  return reason ? { code: "field", field, reason } : { code: "field", field };
+}
+
+/** The line for a failing field: a personal email gets its own (it is a valid address, just not a work one). */
+function fieldMessage(field: DemoRequestField, reason?: DemoRequestErrorReason): string {
+  return reason === "personal_email" ? ERRORS.emailPersonal : ERRORS[field];
+}
+
 // Only the visitor's own input can block the flow: a server-side delivery
 // problem never does (see onSubmit).
 function errorMessage(kind: ErrorKind): ReactNode {
-  return kind.code === "field" ? ERRORS[kind.field] : ERRORS.invalid;
+  return kind.code === "field" ? fieldMessage(kind.field, kind.reason) : ERRORS.invalid;
 }
 
 export function DemoForm({ id = "demo-form" }: { id?: string }) {
@@ -306,14 +323,14 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     const parsed = parseDemoRequest(Object.fromEntries(data));
     if (step === 1) {
       if (!parsed.ok && stepOf(parsed.field) === 1) {
-        fail({ code: "field", field: parsed.field });
+        fail(fieldFailure(parsed.field, parsed.reason));
         return;
       }
       goTo(2); // never a request from step 1
       return;
     }
     if (!parsed.ok) {
-      fail({ code: "field", field: parsed.field });
+      fail(fieldFailure(parsed.field, parsed.reason));
       return;
     }
     await sendRequest(parsed.value, String(data.get(HONEYPOT_FIELD) ?? ""));
@@ -360,7 +377,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
       const body: unknown = await response.json().catch(() => null);
       const field = fieldOf(body);
       if (response.status === 400 && isDemoRequestField(field)) {
-        failure = { code: "field", field };
+        failure = fieldFailure(field, reasonOf(body));
       } else if (response.status === 400 || response.status === 413) {
         // A proxy error page or a future server field name never reaches ERRORS[…] or the focus map.
         failure = { code: "invalid" };
@@ -426,7 +443,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     if (call?.known.email) input.email = call.known.email;
     const parsed = parseDemoRequest(input);
     if (!parsed.ok) {
-      return { ok: false, field: FORM_TOOL_PARAM[parsed.field], message: ERRORS[parsed.field] };
+      return { ok: false, field: FORM_TOOL_PARAM[parsed.field], message: fieldMessage(parsed.field, parsed.reason) };
     }
     const outcome = await sendRequest(parsed.value, "");
     if (outcome && "answers" in outcome) {
@@ -449,7 +466,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     }
     const failed = outcome?.failure;
     return failed?.code === "field"
-      ? { ok: false, field: FORM_TOOL_PARAM[failed.field], message: ERRORS[failed.field] }
+      ? { ok: false, field: FORM_TOOL_PARAM[failed.field], message: fieldMessage(failed.field, failed.reason) }
       : { ok: false, field: "", message: ERRORS.invalid };
   }
 
