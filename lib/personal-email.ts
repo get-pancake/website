@@ -5,9 +5,10 @@
  * the form, in the voice agent's browser tool and in /api/demo-request, so
  * a personal address never reaches the calendar.
  *
- * Free and consumer ISP mailboxes only, never a company's own domain. The
- * Calendly routing form "Pancake discovery call" (still linked from Loops
- * emails) blocks the same list with its own route; keep the two in step.
+ * Free and consumer ISP mailboxes only, never a company's own domain.
+ * Calendly itself does not filter (François, 2026-09-21: "having the blocker
+ * on the website is enough"): its booking page and the routing form linked
+ * from Loops emails still accept any address.
  */
 
 /** Exact domains. */
