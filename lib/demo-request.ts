@@ -7,6 +7,8 @@
  * the routing form would pick, so Calendly does not ask them again.
  */
 
+import { isPersonalEmail } from "@/lib/personal-email";
+
 /**
  * MUST equal the Calendly routing form's Team size option text, character
  * for character (ASCII hyphen-minus): lib/booking.ts routes /demo on this
@@ -76,12 +78,17 @@ export type DemoRequest = {
   goal?: Goal;
   submissionId?: string;
 };
-export type DemoRequestParse = { ok: true; value: DemoRequest } | { ok: false; field: DemoRequestField };
+/** Why a field failed, when its generic "enter a valid …" line would mislead:
+    a personal address is a valid email, just not one that can book. */
+export type DemoRequestErrorReason = "personal_email";
+export type DemoRequestParse =
+  | { ok: true; value: DemoRequest }
+  | { ok: false; field: DemoRequestField; reason?: DemoRequestErrorReason };
 export type DemoRequestDelivery = "slack" | "airtable" | "attio";
 export type DemoRequestErrorCode = "invalid" | "forbidden" | "rate_limited" | "unavailable";
 export type DemoRequestResponse =
   | { ok: true; delivered: DemoRequestDelivery[] }
-  | { ok: false; error: DemoRequestErrorCode; field?: DemoRequestField };
+  | { ok: false; error: DemoRequestErrorCode; field?: DemoRequestField; reason?: DemoRequestErrorReason };
 
 function isOneOf<const T extends readonly string[]>(list: T, value: unknown): value is T[number] {
   return typeof value === "string" && (list as readonly string[]).includes(value);
@@ -89,6 +96,10 @@ function isOneOf<const T extends readonly string[]>(list: T, value: unknown): va
 
 export function isDemoRequestField(value: unknown): value is DemoRequestField {
   return isOneOf(DEMO_REQUEST_FIELDS, value);
+}
+
+export function isDemoRequestErrorReason(value: unknown): value is DemoRequestErrorReason {
+  return value === "personal_email";
 }
 
 /** Collapse whitespace (a pasted tab or newline becomes one space), then
@@ -140,6 +151,9 @@ export function parseDemoRequest(input: unknown): DemoRequestParse {
 
   const email = typeof body.email === "string" ? cleanText(body.email).toLowerCase() : "";
   if (!email || email.length > EMAIL_MAX || !EMAIL_RE.test(email)) return { ok: false, field: "email" };
+  // Work emails only (lib/personal-email.ts): checked here, so the form, the
+  // voice agent's tool and the API route all refuse the same addresses.
+  if (isPersonalEmail(email)) return { ok: false, field: "email", reason: "personal_email" };
 
   const website =
     typeof body.website === "string" && body.website.length <= WEBSITE_MAX
@@ -181,7 +195,8 @@ export function parseDemoRequest(input: unknown): DemoRequestParse {
 }
 
 /** The answers of a demo request known so far: every field that is valid
-    on its own, nothing else (a half-typed email is left out). What the
+    on its own, nothing else (a half-typed or personal email is left out, so
+    the voice agent asks for a work email). What the
     voice call starts with when the visitor opens it from the
     form, before the request is complete. Pure. */
 export type DemoRequestPartial = Partial<Omit<DemoRequest, "submissionId">>;
@@ -195,7 +210,7 @@ export function parsePartialDemoRequest(input: unknown): DemoRequestPartial {
   const lastName = cleanName(body.lastName);
   if (lastName) partial.lastName = lastName;
   const email = typeof body.email === "string" ? cleanText(body.email).toLowerCase() : "";
-  if (email && email.length <= EMAIL_MAX && EMAIL_RE.test(email)) partial.email = email;
+  if (email && email.length <= EMAIL_MAX && EMAIL_RE.test(email) && !isPersonalEmail(email)) partial.email = email;
   const website =
     typeof body.website === "string" && body.website.length <= WEBSITE_MAX ? normalizeWebsite(body.website) : null;
   if (website) partial.website = website;
