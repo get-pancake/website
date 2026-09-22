@@ -1,0 +1,65 @@
+/* ── /for hero (spec §2.2) — landing-v3/hero.css untouched ───────────────
+   The page reuses the homepage hero class for class (.lp-hero, .lp-hero-art,
+   .lp-hero-inner, .lp-hero-title, .lp-hero-col). The only change: the H1's
+   absolute anchoring moves onto .vx-hero__lockup (badge + H1), so the H1's
+   bottom edge (68.65px) and left edge (x152 at 1440) stay the homepage's and
+   the kit badge grows UPWARD into the free cream band under the rings — the
+   slot the homepage gives its audience toggle. The short-window scale ladder
+   still applies (it scales .lp-hero-inner). */
+
+.lp-vx .vx-hero__lockup {
+  align-items: flex-start;
+  bottom: 68.65px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  left: calc(50% - 240px);
+  position: absolute;
+  transform: translateX(-50%);
+  width: 656px;
+}
+/* the title rides inside the lockup: static, the lockup carries the anchor */
+.lp-vx .vx-hero__lockup .lp-hero-title {
+  bottom: auto;
+  left: auto;
+  position: static;
+  transform: none;
+}
+/* font: inherit — the kit's universal `* { font-family }` would otherwise
+   put the spans in Geist (the homepage's .lp-hero-title__copy does the same) */
+.lp-vx .vx-hero__line {
+  display: block;
+  font: inherit;
+  letter-spacing: inherit;
+}
+/* hero badge: the kit badge, one step up (brand tone: pink-10 / pink ink) */
+.lp-vx .vx-badge--hero {
+  font-size: 12px;
+  max-width: 100%;
+  padding: 4px 10px;
+  white-space: normal;
+}
+
+/* ≤1200: the homepage's edge anchoring (title left 48, clamp size) */
+@media (max-width: 1200px) {
+  .lp-vx .vx-hero__lockup {
+    left: 48px;
+    transform: none;
+    width: auto;
+  }
+}
+/* ≤1024: the homepage's flow column — lockup in flow above the lede column */
+@media (max-width: 1024px) {
+  .lp-vx .vx-hero__lockup {
+    bottom: auto;
+    left: auto;
+    position: static;
+    width: auto;
+  }
+}
+@media (max-width: 767px) {
+  .lp-vx .vx-hero__lockup {
+    gap: 14px;
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,12 @@
+/* /for/<vertical> + /for hub — imported by app/for/** AFTER landing-v3.css
+   (the token layer + nav / hero art / CTA / pricing / footer recipes it
+   reuses). One file per section, order = page order; everything scoped under
+   .lp-vx. demo.css is owned by the demo (VxDemo / VxDemoPlayer). */
+@import "./verticals/foundation.css";
+@import "./verticals/hero.css";
+@import "./verticals/demo.css";
+@import "./verticals/signals.css";
+@import "./verticals/control.css";
+@import "./verticals/faq.css";
+@import "./verticals/related.css";
+@import "./verticals/hub.css";

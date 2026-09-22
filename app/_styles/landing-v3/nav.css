@@ -255,3 +255,179 @@
 body.menu-open:has(main.lp) {
   overflow: hidden;
 }
+
+/* ── "Industries" entry (founder 2026-09-22, "do like Origami") ──────────
+   A link to the /for hub + a disclosure panel with every approved vertical,
+   categories as columns, "All industries" at the foot. Server HTML (all
+   links crawlable), opened by CSS on hover and on keyboard focus
+   (:focus-within); Escape = [data-dismissed] (LpNavMenu effect). The panel
+   hangs from .lp-nav-links (its translate makes it the containing block),
+   centred on the page under the bar. Hidden ≤767 with the links row — the
+   phone sheet links the hub instead. The trigger keeps the other links'
+   exact type and 40px tap box; the only geometry change to the bar is the
+   centred group growing by one item. */
+.lp-nav-ind {
+  display: flex;
+}
+/* The links row's translate makes it a stacking context under the hero
+   (which paints later, with its rings over the bar band): lift the row
+   while the panel is open, and only then. */
+.lp-nav-links:has(.lp-nav-ind:is(:hover, :focus-within):not([data-dismissed])) {
+  z-index: 60;
+}
+/* 768–900: four links + the two pills no longer fit dead-centre (the row
+   ran under "Start free" at 768) → centre the row in the free span between
+   the logo and the pills instead; the panel stays centred on the page. */
+@media (min-width: 768px) and (max-width: 900px) {
+  .lp-nav-links {
+    --lp-nav-shift: -56px;
+    left: calc(50% + var(--lp-nav-shift));
+  }
+}
+.lp-nav-ind__trigger {
+  align-items: center;
+  display: inline-flex;
+  gap: 5px;
+}
+.lp-nav-ind__caret {
+  fill: none;
+  flex: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lp-nav-ind__panel {
+  left: 50%;
+  opacity: 0;
+  /* the transparent top band bridges the pointer from the link to the card */
+  padding-top: 18px;
+  pointer-events: none;
+  position: absolute;
+  top: calc(50% + 20px);
+  transform: translate(calc(-50% - var(--lp-nav-shift, 0px)), -4px);
+  transition:
+    opacity 160ms ease-out,
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 200ms;
+  visibility: hidden;
+  width: min(1040px, calc(100vw - 64px));
+  z-index: 60;
+}
+.lp-nav-ind:is(:hover, :focus-within):not([data-dismissed]) .lp-nav-ind__panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(calc(-50% - var(--lp-nav-shift, 0px)), 0);
+  transition:
+    opacity 160ms ease-out,
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
+  visibility: visible;
+}
+.lp-nav-ind:is(:hover, :focus-within):not([data-dismissed]) .lp-nav-ind__caret {
+  transform: rotate(180deg);
+}
+/* the bar clips its box (overflow: clip, artboard frame) — let the open
+   panel out while it is open, and only then */
+.lp-nav:has(.lp-nav-ind:is(:hover, :focus-within):not([data-dismissed])) {
+  overflow: visible;
+}
+.lp-nav-ind__card {
+  background: var(--lp-card-cream);
+  border-radius: var(--lp-r-lg);
+  box-shadow:
+    inset 0 0 0 1px var(--lp-subtle-stroke),
+    0 12px 30px color-mix(in srgb, var(--lp-ink-100) 10%, transparent),
+    0 4px 18px color-mix(in srgb, var(--lp-blue-30) 8%, transparent);
+  max-height: calc(100vh - 140px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px 32px 20px;
+  white-space: normal;
+}
+/* categories flow as balanced columns (multi-column), never split */
+.lp-nav-ind__cols {
+  column-count: 4;
+  column-gap: 32px;
+}
+.lp-nav-ind__col {
+  break-inside: avoid;
+  padding-bottom: 20px;
+}
+.lp-nav-ind__cat {
+  border-bottom: 1px solid var(--lp-subtle-stroke);
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-xsm);
+  font-weight: 600;
+  letter-spacing: 0.453px;
+  line-height: 16px;
+  margin: 0 0 6px;
+  padding-bottom: 8px;
+  text-transform: uppercase;
+}
+.lp-nav-ind__col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp .lp-nav-ind__col a {
+  border-radius: 6px;
+  color: var(--lp-text);
+  display: block;
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.1333px;
+  line-height: 20px;
+  margin-inline: -8px;
+  padding: 6px 8px;
+}
+.lp .lp-nav-ind__all {
+  align-items: center;
+  border-top: 1px solid var(--lp-subtle-stroke);
+  color: var(--lp-text);
+  display: flex;
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  gap: 8px;
+  letter-spacing: 0.1333px;
+  line-height: 20px;
+  margin-top: 0;
+  padding: 14px 0 4px;
+}
+.lp-nav-ind__all svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+@media (hover: hover) {
+  .lp .lp-nav-ind__col a:hover {
+    background: var(--lp-surface);
+  }
+  .lp .lp-nav-ind__all:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+.lp .lp-nav-ind a:focus-visible {
+  outline: 2px solid var(--lp-ink-100);
+  outline-offset: 2px;
+}
+@media (max-width: 1024px) {
+  .lp-nav-ind__cols {
+    column-count: 3;
+  }
+  .lp-nav-ind__card {
+    padding: 24px 24px 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-nav-ind__panel,
+  .lp-nav-ind:is(:hover, :focus-within):not([data-dismissed]) .lp-nav-ind__panel,
+  .lp-nav-ind__caret {
+    transition: none;
+  }
+}

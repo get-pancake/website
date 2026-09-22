@@ -1,0 +1,211 @@
+/* ── /for/<vertical> — shared recipes (spec §1) ────────────────────────────
+   Built on the landing-v3 token layer (landing-v3/foundation.css). Everything
+   is scoped under .lp-vx, and every rule is written `.lp-vx .x` (0,2,0) so it
+   beats the kit's `.lp p { margin: 0 }` / `.lp img` / `.lp button` resets
+   (0,1,1). No colour literals in app/_styles/verticals/ except the demo's
+   scoped app palette (demo.css, owned by the demo): lp tokens + color-mix.
+   The kit's universal `* { font-family }` beats inheritance, so type rules
+   set font-family on the element itself. */
+
+.lp-vx {
+  /* one text edge per breakpoint = the hero H1's own left edge (hero.css:
+     left calc(50% − 240px) minus half of 656 → 50% − 568; ≤1200 48; ≤767 32) */
+  --vx-edge: calc(50% - 568px);
+  /* the 1296 card grid (LpCta), 16px floor */
+  --vx-card-m: max(16px, calc(50% - 648px));
+  --vx-rhythm: 112px;
+  --vx-head-gap: 48px;
+  --vx-hair: var(--lp-subtle-stroke);
+  /* Q7 (founder, unanswered → spec default): eyebrows in Aeonik Fono. If Fono
+     stays code-only: var(--lp-font-sans) + weight 600 in .vx-eyebrow. */
+  --vx-eyebrow-font: var(--lp-font-fono);
+  --vx-num: color-mix(in srgb, var(--lp-pink-40) 80%, var(--lp-ink-100));
+  /* mock windows: the app's card shadow re-expressed on the plum ink */
+  --vx-win-shadow:
+    inset 0 0 0 1px var(--vx-hair),
+    0 8px 24px -4px color-mix(in srgb, var(--lp-ink-100) 6%, transparent),
+    0 1px 2px color-mix(in srgb, var(--lp-ink-100) 3%, transparent);
+  /* app controls (buttons, checkboxes) */
+  --vx-ctl-shadow:
+    0 1px 1px color-mix(in srgb, var(--lp-ink-100) 3%, transparent),
+    0 3px 6px -3px color-mix(in srgb, var(--lp-ink-100) 4.3%, transparent);
+
+  /* signal tones = the app's six chip tones re-expressed on lp ramps */
+  --vx-hiring-bg: var(--lp-yellow-10);
+  --vx-hiring-fg: color-mix(in srgb, var(--lp-yellow-40) 58%, var(--lp-ink-100));
+  --vx-keyword-bg: var(--lp-blue-10);
+  --vx-keyword-fg: color-mix(in srgb, var(--lp-blue-40) 78%, var(--lp-ink-100));
+  --vx-competitor-bg: var(--lp-pink-10);
+  --vx-competitor-fg: color-mix(in srgb, var(--lp-pink-40) 82%, var(--lp-ink-100));
+  --vx-influencer-bg: var(--lp-green-10);
+  --vx-influencer-fg: var(--lp-green-30);
+  --vx-own_brand-bg: var(--lp-purple-10);
+  --vx-own_brand-fg: color-mix(in srgb, var(--lp-purple-40) 80%, var(--lp-ink-100));
+  --vx-stack-bg: color-mix(in srgb, var(--lp-green-10) 62%, var(--lp-blue-10));
+  --vx-stack-fg: color-mix(in srgb, var(--lp-green-30) 70%, var(--lp-blue-40));
+  --vx-neutral-bg: var(--lp-ink-30);
+  --vx-neutral-fg: var(--lp-subtle-text);
+  --vx-ok-bg: var(--lp-green-10); /* "qualified", "Approved", "Active" */
+  --vx-ok-fg: var(--lp-green-30);
+}
+@media (max-width: 1200px) {
+  .lp-vx {
+    --vx-edge: 48px;
+    --vx-card-m: 16px;
+  }
+}
+@media (max-width: 1024px) {
+  .lp-vx {
+    --vx-head-gap: 40px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-vx {
+    --vx-edge: 32px;
+    --vx-rhythm: 96px;
+    --vx-head-gap: 32px;
+  }
+}
+
+/* tone → --t-bg / --t-fg (kit badges on the page; the demo's app chips read the same pair) */
+.lp-vx [data-tone] {
+  --t-bg: var(--vx-neutral-bg);
+  --t-fg: var(--vx-neutral-fg);
+}
+.lp-vx [data-tone="hiring"] { --t-bg: var(--vx-hiring-bg); --t-fg: var(--vx-hiring-fg); }
+.lp-vx [data-tone="keyword"] { --t-bg: var(--vx-keyword-bg); --t-fg: var(--vx-keyword-fg); }
+.lp-vx [data-tone="competitor"] { --t-bg: var(--vx-competitor-bg); --t-fg: var(--vx-competitor-fg); }
+.lp-vx [data-tone="influencer"] { --t-bg: var(--vx-influencer-bg); --t-fg: var(--vx-influencer-fg); }
+.lp-vx [data-tone="own_brand"] { --t-bg: var(--vx-own_brand-bg); --t-fg: var(--vx-own_brand-fg); }
+.lp-vx [data-tone="stack"] { --t-bg: var(--vx-stack-bg); --t-fg: var(--vx-stack-fg); }
+.lp-vx [data-tone="ok"] { --t-bg: var(--vx-ok-bg); --t-fg: var(--vx-ok-fg); }
+.lp-vx [data-tone="brand"] { --t-bg: var(--lp-pink-10); --t-fg: var(--vx-competitor-fg); }
+
+/* ── section frame ── */
+.lp-vx .vx-sec {
+  padding-top: var(--vx-rhythm);
+}
+.lp-vx .vx-col {
+  padding-inline: var(--vx-edge);
+}
+
+/* ── §1.7 page labels: the kit `.badge` recipe on lp tokens — flat tint +
+   same-colour 1px border, semibold caps, squircle; never a shadow, never
+   rotated (founder: no sticker labels) ── */
+.lp-vx .vx-badge {
+  align-items: center;
+  align-self: flex-start;
+  background: var(--t-bg);
+  border: 1px solid var(--t-bg);
+  border-radius: var(--lp-r-sm);
+  box-shadow: none;
+  color: var(--t-fg);
+  corner-shape: squircle;
+  display: inline-flex;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-xsm);
+  font-weight: 600;
+  letter-spacing: 0.453px;
+  line-height: 16px;
+  margin: 0;
+  padding: 3px 9px;
+  text-transform: uppercase;
+  transform: none;
+  white-space: nowrap;
+}
+
+/* ── §1.3 section head ── */
+.lp-vx .vx-eyebrow {
+  align-items: center;
+  color: var(--lp-text);
+  display: flex;
+  font-family: var(--vx-eyebrow-font);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  gap: 16px;
+  letter-spacing: 0.08em;
+  line-height: 20px;
+  margin: 0;
+  text-transform: uppercase;
+}
+.lp-vx .vx-eyebrow::after {
+  background: var(--lp-pink-30);
+  border-radius: 2px;
+  content: "";
+  flex: 1;
+  height: 3px;
+  min-width: 24px;
+}
+.lp-vx .vx-head {
+  align-items: flex-end;
+  display: flex;
+  gap: 48px;
+  justify-content: space-between;
+  margin-top: 28px;
+}
+.lp-vx .vx-h2 {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-6xlg);
+  font-weight: 600;
+  letter-spacing: -1.7201px;
+  line-height: 1.1;
+  margin: 0;
+  max-width: calc(100% - 416px);
+  text-wrap: balance;
+}
+.lp-vx .vx-lede {
+  color: var(--lp-text);
+  flex: none;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  width: 368px;
+}
+@media (max-width: 1024px) {
+  .lp-vx .vx-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .lp-vx .vx-h2 {
+    font-size: var(--lp-text-5xlg);
+    letter-spacing: -1.43px;
+    max-width: 720px;
+  }
+  .lp-vx .vx-lede {
+    max-width: 560px;
+    width: auto;
+  }
+}
+@media (max-width: 767px) {
+  .lp-vx .vx-head {
+    margin-top: 20px;
+  }
+  .lp-vx .vx-h2 {
+    font-size: 35.559px;
+    letter-spacing: -1.07px;
+    line-height: 41px;
+    max-width: none;
+  }
+  .lp-vx .vx-lede {
+    max-width: none;
+  }
+}
+
+/* fictional-data note under every mock section (demo, signals, control) */
+.lp-vx .vx-note {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+}
+
+/* ── §1.10 focus ring for the Vx sections' real controls (the reused nav,
+   pills, CTA and footer keep their own) ── */
+.lp-vx .vx-sec :is(a, summary):focus-visible,
+.lp-vx .vx-sec a.vx-hubcard:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--lp-ink-100);
+  outline-offset: 2px;
+}

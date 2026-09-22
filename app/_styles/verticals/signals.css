@@ -1,0 +1,156 @@
+/* ── Signals (spec §2.5) — 4 pixel-equal cream cards, zero JS ─────────────
+   Equal heights from first paint, and every part lined up across the row:
+   each card spans 4 rows of the parent grid and adopts them as a SUBGRID
+   (badge · title · body · Watching panel), so the tallest title, body and
+   panel in a row set that row for all four cards — no JS, no fixed guesses.
+   (The spec's fixed 2-line title slot + 2-row chip area broke on the first
+   real config: two recruiting panels need 3 chip rows at 200px.) The
+   fallback for engines without subgrid (none in the support matrix) is the
+   flex column + stretch below: equal card heights, panels pinned bottom.
+   No dead band: badge → title is 16px. */
+
+.lp-vx .vx-sig-grid {
+  align-items: stretch;
+  column-gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-top: var(--vx-head-gap);
+  row-gap: 0;
+}
+.lp-vx .vx-sig-card {
+  background: var(--lp-card-cream);
+  border-radius: var(--lp-r-lg);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 24px;
+}
+@supports (grid-template-rows: subgrid) {
+  .lp-vx .vx-sig-card {
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+  .lp-vx .vx-sig-card > .vx-badge {
+    align-self: start;
+    justify-self: start;
+  }
+  /* the panel fills its (shared) row: four equal panels */
+  .lp-vx .vx-sig-card > .vx-watch {
+    margin-top: 0;
+  }
+}
+.lp-vx .vx-sig-card__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-2xlg);
+  font-weight: 600;
+  letter-spacing: -0.83px;
+  line-height: 32px;
+  margin: 16px 0 0;
+  text-wrap: balance;
+}
+.lp-vx .vx-sig-card__body {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  line-height: 22px;
+  margin: 8px 0 20px;
+}
+/* the app's Signals-page item list, on a white panel nested parallel in the card */
+.lp-vx .vx-watch {
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-m);
+  box-shadow: inset 0 0 0 1px var(--vx-hair);
+  margin-top: auto;
+  padding: 12px;
+}
+.lp-vx .vx-sig-card__body {
+  align-self: start;
+}
+.lp-vx .vx-watch__label {
+  align-items: center;
+  color: var(--lp-muted-text);
+  display: flex;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-xsm);
+  font-weight: 600;
+  gap: 6px;
+  letter-spacing: 0.453px;
+  line-height: 16px;
+  text-transform: uppercase;
+}
+.lp-vx .vx-watch__icon {
+  flex: none;
+}
+.lp-vx .vx-watch__chips {
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+}
+/* app item chip: muted fill, r6, 12px, h24, px8 (APP-UI-REFERENCE, Signals) */
+.lp-vx .vx-wchip {
+  background: var(--lp-surface-3);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px var(--vx-hair);
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: 12px;
+  height: 24px;
+  line-height: 24px;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-vx .vx-wmore {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 24px;
+}
+.lp-vx .vx-sig-foot {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+  margin-top: 20px;
+}
+
+/* 4 columns only ≥1201 (card text ≥ 216px; the spec's copy budgets are
+   measured at 224). At 1025–1200 the column is 100% − 96 and four cards
+   would run 172–216px wide (3-line titles, 6-line bodies) → 2 × 2, like
+   the spec's tablet grid. */
+@media (max-width: 1200px) {
+  .lp-vx .vx-sig-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  /* the gap between the two card rows (row-gap stays 0 inside the subgrids) */
+  .lp-vx .vx-sig-card:nth-child(-n + 2) {
+    margin-bottom: 16px;
+  }
+}
+@media (max-width: 1024px) {
+  .lp-vx .vx-sig-card {
+    padding: 20px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-vx .vx-sig-grid {
+    grid-template-columns: minmax(0, 1fr);
+    margin-inline: calc(var(--vx-card-m) - var(--vx-edge));
+  }
+  .lp-vx .vx-sig-card {
+    padding: 20px 16px;
+  }
+  .lp-vx .vx-sig-card:nth-child(-n + 3) {
+    margin-bottom: 12px;
+  }
+}

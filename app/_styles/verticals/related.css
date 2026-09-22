@@ -1,0 +1,137 @@
+/* ── Related (spec §2.8) — breadcrumb eyebrow + full-width rows ───────────
+   The breadcrumb IS the section eyebrow (same Fono caps + pink bar). Its
+   links are 44px tall tap targets (12px padding) whose negative block margin
+   keeps the eyebrow's 20px line box, so the head sits exactly like every
+   other; on phones the crumbs wrap (the current page — not a link — takes
+   the second line) and the bar steps aside. */
+
+.lp-vx .vx-crumbs ol {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+  row-gap: 4px;
+}
+.lp-vx .vx-crumbs li {
+  align-items: center;
+  display: flex;
+  white-space: nowrap;
+}
+.lp-vx .vx-crumbs a {
+  color: var(--lp-text);
+  display: inline-block;
+  font-family: var(--vx-eyebrow-font);
+  margin: -12px -4px; /* 44px tap box, visual line unchanged */
+  padding: 12px 4px;
+  text-decoration: underline;
+  text-decoration-color: var(--lp-stroke);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.lp-vx .vx-crumbs span {
+  font-family: var(--vx-eyebrow-font);
+}
+.lp-vx .vx-crumbs__sep {
+  color: var(--lp-muted-text);
+  padding-inline: 10px;
+}
+.lp-vx .vx-crumbs [aria-current="page"] {
+  color: var(--lp-subtle-text);
+}
+@media (hover: hover) {
+  .lp-vx .vx-crumbs a:hover {
+    text-decoration-color: currentColor;
+  }
+}
+@media (max-width: 767px) {
+  .lp-vx .vx-crumbs::after {
+    display: none;
+  }
+}
+
+.lp-vx .vx-rel {
+  border-top: 1px solid var(--vx-hair);
+  list-style: none;
+  margin: var(--vx-head-gap) 0 0;
+  padding: 0;
+}
+.lp-vx .vx-rel li {
+  border-bottom: 1px solid var(--vx-hair);
+}
+.lp-vx .vx-rel__row {
+  align-items: center;
+  color: var(--lp-text);
+  column-gap: 24px;
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) 24px;
+  min-height: 72px;
+  padding: 16px 0;
+}
+.lp-vx .vx-rel__name {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-xlg);
+  font-weight: 600;
+  letter-spacing: -0.46px;
+  line-height: 28px;
+}
+.lp-vx .vx-rel__line {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  line-height: 22px;
+}
+.lp-vx .vx-rel__arrow {
+  fill: none;
+  height: 16px;
+  justify-self: end;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 16px;
+}
+@media (hover: hover) {
+  .lp-vx .vx-rel__row:hover .vx-rel__name {
+    text-decoration: underline;
+    text-decoration-color: var(--lp-stroke);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+  }
+  .lp-vx .vx-rel__row:hover .vx-rel__arrow {
+    transform: translateX(3px);
+  }
+}
+@media (max-width: 1024px) {
+  .lp-vx .vx-rel__row {
+    grid-template-columns: 240px minmax(0, 1fr) 24px;
+  }
+}
+/* phones: name over line, arrow right, spanning both */
+@media (max-width: 767px) {
+  .lp-vx .vx-rel__row {
+    column-gap: 16px;
+    grid-template-columns: minmax(0, 1fr) 24px;
+    row-gap: 2px;
+  }
+  .lp-vx .vx-rel__name {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .lp-vx .vx-rel__line {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .lp-vx .vx-rel__arrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-vx .vx-rel__arrow {
+    transition: none;
+  }
+}

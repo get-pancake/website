@@ -1,0 +1,77 @@
+/* ── FAQ (spec §2.7) — native <details>, zero JS ──────────────────────────
+   880px list on the text edge, hairline rules, 64px summaries (56 phones),
+   plus icon turning to × (45°) when open. The only transition outside the
+   demo besides hover fills; none under reduced motion. */
+
+.lp-vx .vx-faq {
+  border-top: 1px solid var(--vx-hair);
+  margin-top: var(--vx-head-gap);
+  max-width: 880px;
+}
+.lp-vx .vx-qa {
+  border-bottom: 1px solid var(--vx-hair);
+}
+.lp-vx .vx-qa summary {
+  align-items: center;
+  color: var(--lp-text);
+  cursor: pointer;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  list-style: none;
+  min-height: 64px;
+  padding: 18px 0;
+}
+.lp-vx .vx-qa summary::-webkit-details-marker {
+  display: none;
+}
+.lp-vx .vx-qa__q {
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  font-weight: 600;
+  line-height: 28px;
+}
+.lp-vx .vx-qa__icon {
+  fill: none;
+  flex: none;
+  height: 20px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.6;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 20px;
+}
+.lp-vx .vx-qa[open] .vx-qa__icon {
+  transform: rotate(45deg);
+}
+.lp-vx .vx-qa__a {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  max-width: 720px;
+  padding-bottom: 20px;
+}
+@media (hover: hover) {
+  .lp-vx .vx-qa summary:hover .vx-qa__q {
+    text-decoration: underline;
+    text-decoration-color: var(--lp-stroke);
+    text-underline-offset: 4px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-vx .vx-qa summary {
+    gap: 16px;
+    min-height: 56px;
+    padding: 16px 0;
+  }
+  .lp-vx .vx-qa__q {
+    font-size: var(--lp-text-md);
+    line-height: 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-vx .vx-qa__icon {
+    transition: none;
+  }
+}

@@ -79,6 +79,37 @@ export function LpNavMenu() {
   // next route scroll-locked — same belt-and-braces as LpModals.
   useEffect(() => () => document.body.classList.remove("menu-open"), []);
 
+  // Desktop "Industries" panel (LpNav, CSS :hover / :focus-within): Escape
+  // dismisses it without moving the pointer or losing the keyboard place
+  // (WCAG 1.4.13) — focus returns to the Industries link and the panel stays
+  // shut until the pointer leaves or focus leaves the entry.
+  useEffect(() => {
+    const ind = document.querySelector<HTMLElement>(".lp-nav-ind");
+    if (!ind) return;
+    const trigger = ind.querySelector<HTMLElement>(".lp-nav-ind__trigger");
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      const focusedInside = ind.contains(document.activeElement);
+      if (!focusedInside && !ind.matches(":hover")) return;
+      ind.dataset.dismissed = "";
+      if (focusedInside) trigger?.focus();
+    };
+    const onFocusOut = (e: FocusEvent) => {
+      if (!ind.contains(e.relatedTarget as Node | null)) delete ind.dataset.dismissed;
+    };
+    const onLeave = () => {
+      if (!ind.contains(document.activeElement)) delete ind.dataset.dismissed;
+    };
+    document.addEventListener("keydown", onKey);
+    ind.addEventListener("focusout", onFocusOut);
+    ind.addEventListener("pointerleave", onLeave);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      ind.removeEventListener("focusout", onFocusOut);
+      ind.removeEventListener("pointerleave", onLeave);
+    };
+  }, []);
+
   return (
     <>
       <button
@@ -129,6 +160,11 @@ export function LpNavMenu() {
         <nav aria-label="Menu">
           <a href="/#how-it-works" onClick={close}>
             Product
+          </a>
+          {/* the /for hub (the desktop bar's Industries panel lists every
+              vertical; on phones the hub page is the list) */}
+          <a href="/for" onClick={close}>
+            Industries
           </a>
           <a href="/#why" onClick={close}>
             Company

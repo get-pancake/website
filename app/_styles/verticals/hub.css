@@ -1,0 +1,127 @@
+/* ── /for hub (spec §3) — "Industries" ───────────────────────────────────
+   Head = the section-head pattern with the H1 at H2 scale; then one group
+   per category (VerticalCategory order): a caps label with a hairline under
+   it, and a grid of cream link cards (3 / 2 / 1 columns, equal heights per
+   row, the whole card is the link, hover fill = surface, no sibling dim). */
+
+.lp-vx-hub .vx-hub-head {
+  padding-top: 96px;
+}
+.lp-vx .vx-hub__group {
+  border-bottom: 1px solid var(--vx-hair);
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.453px;
+  line-height: 20px;
+  margin: 48px 0 16px;
+  padding-bottom: 12px;
+  text-transform: uppercase;
+}
+.lp-vx .vx-hub__groups {
+  margin-top: var(--vx-head-gap);
+}
+.lp-vx .vx-hub__groups > :first-child .vx-hub__group {
+  margin-top: 0;
+}
+.lp-vx .vx-hub-grid {
+  align-items: stretch;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-vx .vx-hub-grid > li {
+  display: flex;
+  min-width: 0;
+}
+.lp-vx .vx-hubcard {
+  background: var(--lp-card-cream);
+  border-radius: var(--lp-r-lg);
+  color: var(--lp-text);
+  column-gap: 16px;
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) 16px;
+  grid-template-rows: auto 1fr;
+  min-height: 112px;
+  padding: 20px 24px;
+  row-gap: 4px;
+  transition: background-color 160ms ease-out;
+}
+.lp-vx .vx-hubcard__name {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-xlg);
+  font-weight: 600;
+  gap: 8px;
+  letter-spacing: -0.46px;
+  line-height: 28px;
+}
+.lp-vx .vx-hubcard__line {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  grid-column: 1;
+  line-height: 22px;
+}
+.lp-vx .vx-hubcard__arrow {
+  fill: none;
+  grid-column: 2;
+  grid-row: 1;
+  height: 16px;
+  margin-top: 6px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 16px;
+}
+@media (hover: hover) {
+  .lp-vx .vx-hubcard:hover {
+    background: var(--lp-surface);
+  }
+  .lp-vx .vx-hubcard:hover .vx-hubcard__arrow {
+    transform: translateX(3px);
+  }
+}
+.lp-vx .vx-hub__soon {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  margin-top: var(--vx-head-gap);
+}
+@media (max-width: 1024px) {
+  .lp-vx .vx-hub-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 767px) {
+  .lp-vx-hub .vx-hub-head {
+    padding-top: 64px;
+  }
+  .lp-vx .vx-hub__group {
+    margin-top: 40px;
+  }
+  .lp-vx .vx-hub-grid {
+    grid-template-columns: minmax(0, 1fr);
+    margin-inline: calc(var(--vx-card-m) - var(--vx-edge));
+  }
+  .lp-vx .vx-hubcard {
+    min-height: 96px;
+    padding: 20px 16px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-vx .vx-hubcard,
+  .lp-vx .vx-hubcard__arrow {
+    transition: none;
+  }
+}
