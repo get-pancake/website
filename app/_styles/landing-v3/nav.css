@@ -255,3 +255,295 @@
 body.menu-open:has(main.lp) {
   overflow: hidden;
 }
+
+/* ── "Industries" entry (founder 2026-09-22, "do like Origami") ──────────
+   A link to the /for hub + a caret button that discloses a panel with every
+   approved vertical, categories on a row-aligned grid, "All industries" at
+   the foot. Server HTML (all links crawlable). Open state is JS-driven
+   (LpNavMenu effect): [data-open] while open, [data-closing] during the
+   200ms fade — every open selector below keys on those, never on :hover /
+   :focus-within. The panel hangs from .lp-nav-links (its translate makes it
+   the containing block), centred on the page and as wide as the bar's frame
+   (logo left edge → pills right edge). Hidden ≤767 with the links row — the
+   phone sheet links the hub instead. The link + caret keep the old trigger's
+   exact footprint (text, 5px, 10px caret), so the closed bar is unchanged. */
+.lp-nav-ind {
+  display: flex;
+}
+/* The links row's translate makes it a stacking context under the hero
+   (which paints later, with its rings over the bar band): lift the row
+   while the panel is open or fading out, and only then. */
+.lp-nav-links:has(.lp-nav-ind:is([data-open], [data-closing])) {
+  z-index: 60;
+}
+/* 768–900: four links + the two pills no longer fit dead-centre (the row
+   ran under "Start free" at 768) → centre the row in the free span between
+   the logo and the pills instead; the panel stays centred on the page. */
+@media (min-width: 768px) and (max-width: 900px) {
+  .lp-nav-links {
+    --lp-nav-shift: -56px;
+    left: calc(50% + var(--lp-nav-shift));
+  }
+}
+/* Caret button: a 14×24 box centred on the 10px caret, 3px clear of the
+   link so its focus ring never touches the "s"; margins 3 / −2 keep the
+   footprint at the old 5px gap + 10px caret. The ::after stretches the hit
+   area to 40×40, from the link's edge into the gap before "Company" (24px
+   gap ≤1024 → 1px taken from the link side instead). Focus ring = the
+   browser default, like Product / Company / Blog. */
+.lp .lp-nav-ind__toggle {
+  align-self: center;
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  color: var(--lp-text);
+  cursor: pointer;
+  display: grid;
+  font: inherit;
+  height: 24px;
+  margin: 0 -2px 0 3px;
+  padding: 0;
+  place-items: center;
+  position: relative;
+  width: 14px;
+}
+.lp-nav-ind__toggle::after {
+  content: "";
+  inset: -8px -23px -8px -3px;
+  position: absolute;
+}
+@media (max-width: 1024px) {
+  .lp-nav-ind__toggle::after {
+    inset: -8px -22px -8px -4px;
+  }
+}
+.lp-nav-ind__caret {
+  fill: none;
+  flex: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+  transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* Card edges = the bar's frame at every width: margin
+   max(32px, 50% − 648px) like .lp-nav-logo / .lp-nav-ctas, of the bar's
+   width (--lp-nav-w, set by the controller on open; 100vw is only the
+   pre-measure fallback). Centred on the page: the translate undoes the
+   768–900 row shift. */
+.lp-nav-ind__panel {
+  --lp-nav-edge: max(32px, calc(var(--lp-nav-w, 100vw) / 2 - 648px));
+  left: 50%;
+  opacity: 0;
+  /* the transparent top band bridges the pointer from the link to the card */
+  padding-top: 18px;
+  position: absolute;
+  top: calc(50% + 20px);
+  transform: translate(calc(-50% - var(--lp-nav-shift, 0px)), -4px);
+  transition:
+    opacity 160ms ease-out,
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s linear 200ms;
+  visibility: hidden;
+  width: calc(var(--lp-nav-w, 100vw) - 2 * var(--lp-nav-edge));
+  z-index: 60;
+}
+.lp-nav-ind[data-open] .lp-nav-ind__panel {
+  opacity: 1;
+  transform: translate(calc(-50% - var(--lp-nav-shift, 0px)), 0);
+  transition:
+    opacity 160ms ease-out,
+    transform 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
+  visibility: visible;
+}
+.lp-nav-ind[data-open] .lp-nav-ind__caret {
+  transform: rotate(180deg);
+}
+/* the bar clips its box (overflow: clip, artboard frame) — let the panel
+   out while it is open or fading, and only then (closing too: without it
+   the fading card was clipped to a 22px strip) */
+.lp-nav:has(.lp-nav-ind:is([data-open], [data-closing])) {
+  overflow: visible;
+}
+/* A real 1px border, not an inset shadow: the scroller clips its content
+   inside the border, so the sticky footer never paints over the stroke.
+   Padding is 1px less than the design value to keep the content box.
+   --lp-text is pinned: the agents audience turns the bar's text cream. */
+.lp-nav-ind__card {
+  --lp-text: var(--lp-ink-100);
+  background: var(--lp-card-cream);
+  border: 1px solid var(--lp-subtle-stroke);
+  border-radius: var(--lp-r-lg);
+  box-shadow:
+    0 12px 30px color-mix(in srgb, var(--lp-ink-100) 10%, transparent),
+    0 4px 18px color-mix(in srgb, var(--lp-blue-30) 8%, transparent);
+  max-height: calc(100vh - 124px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 23px 31px 0;
+  /* focus moves keep the focused link clear of the sticky footer */
+  scroll-padding-bottom: 56px;
+  white-space: normal;
+}
+/* Row-aligned grid (LpNav NAV_COLUMNS places each category): row 1 and
+   row 2 headings share one baseline across all four columns. */
+.lp-nav-ind__cols {
+  align-items: start;
+  display: grid;
+  gap: 16px 32px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding-bottom: 16px;
+}
+.lp-nav-ind__col {
+  grid-column: var(--lp-ind-col);
+  grid-row: var(--lp-ind-row);
+}
+.lp .lp-nav-ind__cat {
+  border-bottom: 1px solid var(--lp-subtle-stroke);
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-xsm);
+  font-weight: 600;
+  letter-spacing: 0.453px;
+  line-height: 16px;
+  margin: 0 0 4px;
+  padding-bottom: 8px;
+  text-transform: uppercase;
+}
+.lp-nav-ind__col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp .lp-nav-ind__col a {
+  border-radius: 6px;
+  color: var(--lp-text);
+  display: block;
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.1333px;
+  line-height: 20px;
+  margin-inline: -8px;
+  padding: 4px 8px;
+}
+/* Sticky foot: on short screens the card scrolls and "All industries"
+   stays in view, its hairline the cue that more sits above. */
+.lp .lp-nav-ind__all {
+  align-items: center;
+  background: var(--lp-card-cream);
+  border-top: 1px solid var(--lp-subtle-stroke);
+  bottom: 0;
+  color: var(--lp-text);
+  display: flex;
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  gap: 8px;
+  letter-spacing: 0.1333px;
+  line-height: 20px;
+  margin-top: 0;
+  padding: 12px 0;
+  position: sticky;
+}
+.lp-nav-ind__all svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+@media (hover: hover) {
+  .lp .lp-nav-ind__col a:hover {
+    background: var(--lp-surface);
+  }
+  .lp .lp-nav-ind__all:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+/* Custom ring inside the panel only; the Industries link and the caret keep
+   the browser default their siblings get. */
+.lp .lp-nav-ind__panel a:focus-visible {
+  outline: 2px solid var(--lp-ink-100);
+  outline-offset: 0; /* 2px clear of the heading hairline above the first link */
+}
+/* 1025–1152: the widest link ("Software development agencies", 205px) needs
+   a 206px column — tighter gutters keep four columns down to 1025. */
+@media (min-width: 1025px) and (max-width: 1152px) {
+  .lp-nav-ind__card {
+    padding-inline: 23px;
+  }
+  .lp-nav-ind__cols {
+    column-gap: 24px;
+  }
+}
+/* ≤1024: the four columns fold into two, pairs intact (NAV_COLUMNS). */
+@media (max-width: 1024px) {
+  .lp-nav-ind__card {
+    padding: 23px 23px 0;
+  }
+  .lp-nav-ind__cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lp-nav-ind__col {
+    grid-column: var(--lp-ind-col-sm);
+    grid-row: var(--lp-ind-row-sm);
+  }
+}
+/* Touch: no caret, no panel — "Industries" is a plain link to the hub. */
+@media (hover: none) {
+  .lp .lp-nav-ind__toggle,
+  .lp .lp-nav-ind__panel {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-nav-ind__panel,
+  .lp-nav-ind[data-open] .lp-nav-ind__panel,
+  .lp-nav-ind__caret {
+    transition: none;
+  }
+}
+
+/* ── Coarse pointers (M13): every bar target reaches 44×44 through an
+   invisible ::after — no paint, no geometry change. inset
+   min(0px, 50% − 22px) grows a side only when that side is under 44px:
+   the links (40 tall) gain 2px above and below, the 38px pills 3px, the
+   burger (38 wide at 320, where the row squeezes it) 3px each side. */
+@media (pointer: coarse) {
+  .lp-nav-links > a,
+  .lp .lp-nav-ind__trigger,
+  .lp .lp-nav-menu-btn {
+    position: relative;
+  }
+  .lp-nav-links > a::after,
+  .lp .lp-nav-ind__trigger::after,
+  .lp .lp-nav-menu-btn::after,
+  .lp .lp-nav-ctas .lp-btn::after {
+    content: "";
+    inset: min(0px, calc(50% - 22px));
+    position: absolute;
+  }
+  .lp-nav-ind__toggle::after {
+    bottom: -10px;
+    top: -10px;
+  }
+  /* The pill's own overflow:hidden would clip the slop; its FX layer and
+     label clip themselves, so nothing else can spill out. */
+  .lp .lp-nav-ctas .lp-btn {
+    overflow: visible;
+  }
+}
+/* ≥768 the pills are clipped by their Figma squircle (foundation.css), and a
+   clip-path clips hit-testing too: same sm path (110×38) plus two strips
+   outside the box, y −3→0 and 38→41, where the pill paints nothing — so
+   the pixels are the squircle's and the ::after slop stays tappable.
+   Regenerate with the foundation path (scripts/squircle-path.mjs 110 38 9 0.75). */
+@media (pointer: coarse) and (min-width: 768px) {
+  @supports (clip-path: path("M 0 0 Z")) {
+    .lp .lp-nav-ctas .lp-btn[data-size="sm"] {
+      clip-path: path("M 94.25 0 c 6.32 0 9.48 0 11.75 1.517 a 9 9 0 0 1 2.483 2.483 c 1.517 2.27 1.517 5.43 1.517 11.75 L 110 22.25 c 0 6.32 0 9.48 -1.517 11.75 a 9 9 0 0 1 -2.483 2.483 c -2.27 1.517 -5.43 1.517 -11.75 1.517 L 15.75 38 c -6.32 0 -9.48 0 -11.75 -1.517 a 9 9 0 0 1 -2.483 -2.483 c -1.517 -2.27 -1.517 -5.43 -1.517 -11.75 L 0 15.75 c 0 -6.32 0 -9.48 1.517 -11.75 a 9 9 0 0 1 2.483 -2.483 c 2.27 -1.517 5.43 -1.517 11.75 -1.517 Z M 0 -3 H 110 V 0 H 0 Z M 0 38 H 110 V 41 H 0 Z");
+    }
+  }
+}

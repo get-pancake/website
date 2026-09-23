@@ -1,0 +1,332 @@
+/* ── Control (spec §2.6) — the homepage steps-row grammar, zero JS ───────
+   ≥1025: 656 text card + 464 media card (flex ratios), radius 30,
+   min-height 426, equal heights (flex stretch). ≤1024 stacked, media second.
+   ≤767 broken out to the 16px card edge (card text lands back on 32).
+   The media card holds the app's preflight dialog + enrollment toast, parallel
+   frames on white surfaces with the app's card shadow in lp ink. */
+
+.lp-vx .vx-ctl-row {
+  display: flex;
+  gap: 16px;
+  margin-top: var(--vx-head-gap);
+}
+.lp-vx .vx-ctl-text,
+.lp-vx .vx-ctl-media {
+  background: var(--lp-card-cream);
+  border-radius: 30px;
+  min-height: 426px;
+  min-width: 0;
+}
+.lp-vx .vx-ctl-text {
+  display: flex;
+  flex: 656 1 0;
+  flex-direction: column;
+  padding: 48px;
+}
+/* Three facts and two hairlines filling the card: first fact on the top
+   inset, last on the bottom inset, and the free height shared EQUALLY by the
+   four gaps (space-between over five items, 24px floor), so each rule sits
+   dead centre between its facts whatever their heights. (Spec: facts pinned
+   to the bottom with the LpSteps spacer — but the H2 left the card for the
+   section head, so nothing sat above the spacer and the card showed a
+   ~150px empty band at 1440.) The rules are their own aria-hidden <li>s
+   (VxControl), not fact borders. */
+.lp-vx .vx-ctl-facts {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: space-between;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-vx .vx-ctl-fact {
+  flex: none;
+}
+.lp-vx .vx-ctl-rule {
+  background: var(--vx-hair);
+  flex: none;
+  height: 1px;
+}
+.lp-vx .vx-ctl-fact__row {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px;
+}
+.lp-vx .vx-ctl-fact__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-xlg);
+  font-weight: 600;
+  letter-spacing: -0.46px;
+  line-height: 28px;
+  margin: 0;
+}
+.lp-vx .vx-ctl-fact__body {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  line-height: 22px;
+  margin-top: 4px;
+  max-width: 480px;
+}
+.lp-vx .vx-check {
+  flex: none;
+  height: 20px;
+  margin-top: 4px;
+  width: 20px;
+}
+.lp-vx .vx-check__disc {
+  fill: var(--vx-ok-bg);
+}
+.lp-vx .vx-check__tick {
+  fill: none;
+  stroke: var(--vx-ok-fg);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.lp-vx .vx-ctl-media {
+  align-items: center;
+  display: flex;
+  flex: 464 1 0;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+  padding: 32px;
+}
+.lp-vx .vx-ctl-stage,
+.lp-vx .vx-ctl-media .vx-note {
+  max-width: 400px;
+  width: 100%;
+}
+.lp-vx .vx-ctl-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* preflight dialog (campaigns/copy.ts `preflight`) */
+.lp-vx .vx-dialog {
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-m);
+  box-shadow: var(--vx-win-shadow);
+  padding: 20px;
+}
+.lp-vx .vx-dialog__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+}
+.lp-vx .vx-dialog__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 14px 0 0;
+}
+.lp-vx .vx-dialog__row {
+  align-items: baseline;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 88px minmax(0, 1fr);
+}
+.lp-vx .vx-dialog__row dt {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 12px;
+  line-height: 18px;
+}
+.lp-vx .vx-dialog__row dd {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: 12.5px;
+  line-height: 18px;
+  margin: 0;
+  min-width: 0;
+  text-wrap: pretty;
+}
+/* in-app chip (h20, fully rounded, 11/500, inset ring) — scoped here so the
+   demo's own app chips (demo.css) and this one never restyle each other */
+.lp-vx .vx-ctl-stage .vx-chip {
+  align-items: center;
+  background: var(--t-bg);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--t-fg) 18%, transparent);
+  color: var(--t-fg);
+  display: inline-flex;
+  font-family: var(--lp-font-sans);
+  font-size: 11px;
+  font-weight: 500;
+  height: 20px;
+  line-height: 14px;
+  padding: 0 8px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.lp-vx .vx-dialog__btns {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+/* app buttons (28h, r8, 12/500, .24 tracking, control shadow) — spans, not controls */
+.lp-vx .vx-abtn {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-xsm);
+  box-shadow: inset 0 0 0 1px var(--vx-hair), var(--vx-ctl-shadow);
+  color: var(--lp-text);
+  display: inline-flex;
+  flex: none;
+  font-family: var(--lp-font-sans);
+  font-size: 12px;
+  font-weight: 500;
+  height: 28px;
+  letter-spacing: 0.24px;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+.lp-vx .vx-abtn--primary {
+  background: var(--lp-ink-100);
+  box-shadow: var(--vx-ctl-shadow);
+  color: var(--lp-surface);
+}
+
+/* enrollment toast (campaigns/copy.ts `enrollment`) */
+.lp-vx .vx-toast {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-sm);
+  box-shadow: var(--vx-win-shadow);
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+}
+.lp-vx .vx-toast__icon {
+  margin-top: 0;
+}
+.lp-vx .vx-toast__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.lp-vx .vx-toast__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 18px;
+}
+.lp-vx .vx-toast__body {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 12px;
+  line-height: 16px;
+}
+
+@media (max-width: 1024px) {
+  .lp-vx .vx-ctl-row {
+    flex-direction: column;
+  }
+  .lp-vx .vx-ctl-text,
+  .lp-vx .vx-ctl-media {
+    flex: none;
+    min-height: 0;
+  }
+  .lp-vx .vx-ctl-text {
+    padding: 40px;
+  }
+  /* stacked (768–899, or no subgrid): the stage on the card's 40px inset,
+     the facts' edge above — not centred between two empty flanks */
+  .lp-vx .vx-ctl-media {
+    align-items: flex-start;
+    padding: 40px;
+  }
+}
+/* 900–1024: the full-width media card is split — dialog left (its 400px),
+   toast then the note stacked in the right column (≥308px), both from the
+   40px inset. The stage (role="img") stays ONE element: it spans the whole
+   grid as a subgrid, so its dialog and toast take the parent's tracks and
+   the note (outside the image, by rule) slots in under the toast. */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 900px) and (max-width: 1024px) {
+    .lp-vx .vx-ctl-media {
+      align-items: start;
+      column-gap: 16px;
+      display: grid;
+      grid-template-columns: 400px minmax(0, 1fr);
+      grid-template-rows: auto auto 1fr;
+      row-gap: 12px;
+    }
+    /* gap normal: the subgrid takes the parent's 16 / 12 (its own flex gap
+       of 12 would shift the toast off the 16px column gutter) */
+    .lp-vx .vx-ctl-stage {
+      display: grid;
+      gap: normal;
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      grid-template-columns: subgrid;
+      grid-template-rows: subgrid;
+      max-width: none;
+    }
+    .lp-vx .vx-ctl-stage > .vx-dialog {
+      grid-column: 1;
+      grid-row: 1 / -1;
+    }
+    .lp-vx .vx-ctl-stage > .vx-toast {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .lp-vx .vx-ctl-media > .vx-note {
+      grid-column: 2;
+      grid-row: 2;
+      max-width: none;
+    }
+  }
+}
+@media (max-width: 767px) {
+  .lp-vx .vx-ctl-row {
+    gap: 12px;
+    margin-inline: calc(var(--vx-card-m) - var(--vx-edge));
+  }
+  .lp-vx .vx-ctl-text,
+  .lp-vx .vx-ctl-media {
+    border-radius: var(--lp-r-lg);
+  }
+  .lp-vx .vx-ctl-text {
+    padding: 24px 16px;
+  }
+  .lp-vx .vx-ctl-facts {
+    gap: 20px;
+  }
+  .lp-vx .vx-ctl-fact__row {
+    gap: 12px;
+  }
+  .lp-vx .vx-ctl-media {
+    padding: 24px 16px;
+  }
+  .lp-vx .vx-dialog {
+    padding: 16px;
+  }
+  .lp-vx .vx-dialog__row {
+    grid-template-columns: 76px minmax(0, 1fr);
+  }
+}
+/* ≤359 the value column would be ~140px ("Mon–Fri · 9 AM–6 PM (ET)" is
+   ~150): each label goes over its value */
+@media (max-width: 359px) {
+  .lp-vx .vx-dialog__row {
+    gap: 0;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-vx .vx-dialog__row dt {
+    font-size: 11px;
+    line-height: 16px;
+  }
+}

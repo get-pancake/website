@@ -1,0 +1,1659 @@
+/* ── VxDemo: the product visual (spec §4; Origami-style, 2026-09-22) ─────────────
+   Owner: the demo. Imported by app/_styles/verticals.css after foundation.css.
+   Scoped under .lp-vx (0,2,0 beats the kit's .lp p / .lp button resets).
+
+   Layout: glued under the hero — a full-bleed cream band opened by a hairline;
+   the horizontal tab bar (4 equal tabs) on the text column (--vx-edge), the app
+   window right under it on the 1296 card grid (--vx-card-m), then the foot on
+   the text column: the active step's caption + Pause / Replay, the honesty note
+   under the caption (critics 2026-09-22: the caption above the window pushed
+   the product below the fold). The prompts are the hero's rows
+   (hero.css). The stage stacks two windows (the Pancake app, Slack) in one
+   grid cell; inside the app window the three pages (Signals, Leads, Campaign)
+   stack in one grid cell; every per-prompt slot stacks its 3 variants in one
+   grid cell (.vx-var). So every height is the tallest alternative from first
+   paint, with no JS measuring (founder: equal heights, zero CLS).
+
+   Motion contract with VxDemoPlayer (lib/verticals/demo-timeline.ts):
+   no [data-armed] = the final frame (SSR, no JS, reduced motion);
+   [data-armed] = timeline mode: [data-cue] without .is-on is hidden in place,
+   [data-uncue] shows until its cue id is reached (.is-off), [data-swap] shows
+   "before" until .is-sw, [data-mark] shows its state on .is-mk.
+   [data-snap] kills transitions for the one frame a pane is (re)armed; [data-cut]
+   does the same for windows and pages when the prompt changes. */
+
+/* ─── app palette ──────────────────────────────────────────────────────────
+   The mocks reproduce the live app (appref APP-UI-REFERENCE, computed styles
+   2026-09-22). These are the APP's own colours, declared once and scoped to
+   the stage; where an lp token is the same value it is used instead
+   (ink #2c002a = --lp-ink-100, card #fff = --lp-surface, pink #ff7aa0 =
+   --lp-pink-30). Nothing outside the stage reads them. */
+.lp-vx .vx-stage {
+  --app-ink: var(--lp-ink-100);
+  --app-card: var(--lp-surface);
+  --app-pink: var(--lp-pink-30);
+  --app-bg: #fafaf8;
+  --app-muted: #f5f3f2;
+  --app-muted-fg: #70676f;
+  --app-tertiary: #756d74;
+  --app-border: #ece9e7;
+  --app-pink-pale: #ffd6e1;
+  --app-pink-dark: #b52e59;
+  --app-blue-pale: #eaf2ff;
+  --app-blue: #83b3ff;
+  /* the ✕ of the reject square drawn as a background (rows 1–4 draw it on a pseudo-element) */
+  --app-x: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23756d74' stroke-width='2.2' stroke-linecap='round'%3E%3Cpath d='M7 7l10 10M17 7 7 17'/%3E%3C/svg%3E");
+  /* signal chip tones (bg / fg / ring) */
+  --app-keyword-bg: #f4f8ff;    --app-keyword-fg: #3f6faf;    --app-keyword-ring: #cbdcf5;
+  --app-competitor-bg: #ffeaf0; --app-competitor-fg: #b52e59; --app-competitor-ring: #f3c5d2;
+  --app-influencer-bg: #f3faef; --app-influencer-fg: #387a61; --app-influencer-ring: #c9dfd3;
+  --app-own-bg: #f5f0ff;        --app-own-fg: #6b3fb0;        --app-own-ring: #d8c9f2;
+  --app-hiring-bg: #fff2e8;     --app-hiring-fg: #a84b00;     --app-hiring-ring: #f6d3b5;
+  --app-stack-bg: #ecfbf8;      --app-stack-fg: #0f766e;      --app-stack-ring: #bfe8e0;
+  /* shadows (app values, expressed on the ink / blue above) */
+  --app-sh-card: 0 8px 24px -4px color-mix(in srgb, var(--app-ink) 6%, transparent), 0 1px 2px color-mix(in srgb, var(--app-ink) 3%, transparent);
+  --app-sh-chrome: 0 2px 8px color-mix(in srgb, var(--app-ink) 6%, transparent);
+  --app-sh-float: 0 12px 30px color-mix(in srgb, var(--app-ink) 10%, transparent), 0 4px 18px color-mix(in srgb, var(--app-blue) 8%, transparent);
+  --app-sh-control: 0 1px 1px color-mix(in srgb, var(--app-ink) 3%, transparent), 0 3px 6px -3px color-mix(in srgb, var(--app-ink) 4.3%, transparent);
+}
+.lp-vx .vx-stage [data-kind="keyword"]    { --k-bg: var(--app-keyword-bg);    --k-fg: var(--app-keyword-fg);    --k-ring: var(--app-keyword-ring); }
+.lp-vx .vx-stage [data-kind="competitor"] { --k-bg: var(--app-competitor-bg); --k-fg: var(--app-competitor-fg); --k-ring: var(--app-competitor-ring); }
+.lp-vx .vx-stage [data-kind="influencer"] { --k-bg: var(--app-influencer-bg); --k-fg: var(--app-influencer-fg); --k-ring: var(--app-influencer-ring); }
+.lp-vx .vx-stage [data-kind="own_brand"]  { --k-bg: var(--app-own-bg);        --k-fg: var(--app-own-fg);        --k-ring: var(--app-own-ring); }
+.lp-vx .vx-stage [data-kind="hiring"]     { --k-bg: var(--app-hiring-bg);     --k-fg: var(--app-hiring-fg);     --k-ring: var(--app-hiring-ring); }
+.lp-vx .vx-stage [data-kind="stack"]      { --k-bg: var(--app-stack-bg);      --k-fg: var(--app-stack-fg);      --k-ring: var(--app-stack-ring); }
+
+/* ─── section band + tab bar + caption ─────────────────────────────────────── */
+/* the band: page cream → card cream between two full-bleed hairlines (Origami's grey → white edge);
+   #vx-demo is the hero rows' link target, the phone nav's compact sticky bar (64) cleared */
+.lp-vx .vx-demo {
+  background: var(--lp-card-cream);
+  border-block: 1px solid var(--vx-hair);
+  padding-bottom: 40px;
+  position: relative;
+  scroll-margin-top: 0px;
+}
+.lp-vx .vx-demo__card { position: relative; }
+
+.lp-vx .vx-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-inline: var(--vx-edge);
+}
+.lp-vx .vx-tab {
+  align-items: center;
+  background: none;
+  border: 0;
+  color: var(--lp-subtle-text);
+  cursor: pointer;
+  display: flex;
+  font-family: var(--lp-font-sans);
+  height: 56px;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 6px;
+  position: relative;
+  transition: color 0.2s ease;
+}
+.lp-vx .vx-tab[aria-selected="true"] { color: var(--lp-text); }
+@media (hover: hover) {
+  .lp-vx .vx-tab:hover { color: var(--lp-text); }
+}
+.lp-vx .vx-tab__label {
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+}
+.lp-vx .vx-tab__num {
+  color: var(--vx-num);
+  font-family: var(--lp-font-sans);
+  font-variant-numeric: tabular-nums;
+  margin-right: 2px;
+}
+/* the underline: ONLY the active tab draws one (Origami; a rule under all four read as a
+   second frame, narrower than the window). Its ink bar is full, or — once the clock has run on
+   the view — the dwell's progress (--p) over a faint full-width track, so the selected tab
+   always reads as selected, paused or not */
+.lp-vx .vx-tab__rail {
+  background: transparent;
+  bottom: 0;
+  height: 2px;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+}
+.lp-vx .vx-tab__rail > i {
+  background: var(--lp-ink-100);
+  inset: 0;
+  position: absolute;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.lp-vx .vx-tab[aria-selected="true"] .vx-tab__rail { background: var(--lp-ink-tr-10); }
+.lp-vx .vx-tab[aria-selected="true"] .vx-tab__rail > i { transform: scaleX(var(--p, 1)); }
+/* the pink step number marks the selected tab only (four pink numbers out-shouted the underline) */
+.lp-vx .vx-tab:not([aria-selected="true"]) .vx-tab__num { color: inherit; }
+
+/* the active step, one line on desktop: all four stacked in one cell (fixed height); it sits in
+   the foot, under the window */
+.lp-vx .vx-tabtext { display: grid; grid-area: cap; min-width: 0; }
+.lp-vx .vx-tabtext > p {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  grid-area: 1 / 1;
+  line-height: 22px;
+  min-width: 0;
+  text-wrap: pretty;
+}
+.lp-vx .vx-tabtext__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-weight: 600;
+}
+.lp-vx .vx-tabtext__body { font-family: var(--lp-font-sans); }
+.lp-vx .vx-demo__card:not([data-tab="0"]) .vx-tabtext > [data-t="0"],
+.lp-vx .vx-demo__card:not([data-tab="1"]) .vx-tabtext > [data-t="1"],
+.lp-vx .vx-demo__card:not([data-tab="2"]) .vx-tabtext > [data-t="2"],
+.lp-vx .vx-demo__card:not([data-tab="3"]) .vx-tabtext > [data-t="3"] { visibility: hidden; }
+
+.lp-vx .vx-tab:focus-visible,
+.lp-vx .vx-ctrl__btn:focus-visible,
+.lp-vx .vx-stage:focus-visible { outline: 2px solid var(--lp-ink-100); outline-offset: 2px; }
+.lp-vx .vx-tab:focus-visible { outline-offset: -2px; }
+
+/* stage: two windows in one cell; the cursor rides on top */
+.lp-vx .vx-stage {
+  container: vxstage / inline-size;
+  display: grid;
+  margin: 16px var(--vx-card-m) 0;
+  min-width: 0;
+  position: relative;
+}
+.lp-vx .vx-stage > .vx-win { grid-area: 1 / 1; min-width: 0; }
+
+/* stacked alternatives: prompt variants + before/after swaps (§1.8) */
+.lp-vx .vx-var { display: grid; min-width: 0; }
+.lp-vx .vx-var > * { grid-area: 1 / 1; min-width: 0; }
+/* data-p lists the prompts a variant covers ("0", "12"…): identical signal-card views share
+   one element (DOM budget), so a variant hides when its list lacks the current prompt */
+.lp-vx .vx-demo__card[data-prompt="0"] .vx-var > [data-p]:not([data-p*="0"]),
+.lp-vx .vx-demo__card[data-prompt="1"] .vx-var > [data-p]:not([data-p*="1"]),
+.lp-vx .vx-demo__card[data-prompt="2"] .vx-var > [data-p]:not([data-p*="2"]) { visibility: hidden; }
+.lp-vx .vx-swapc { display: grid; min-width: 0; }
+.lp-vx .vx-swapc > [data-s] { grid-area: 1 / 1; min-width: 0; }
+.lp-vx .vx-demo__card:not([data-armed]) [data-swap] > [data-s="before"],
+.lp-vx .vx-demo__card[data-armed] [data-swap].is-sw > [data-s="before"] { visibility: hidden; }
+.lp-vx .vx-demo__card[data-armed] [data-swap]:not(.is-sw) > [data-s="after"] { opacity: 0; visibility: hidden; }
+.lp-vx .vx-demo__card[data-armed] [data-swap] > [data-s="after"] { transition: opacity 0.2s ease; }
+
+/* cue reveals, in place (no layout change) */
+.lp-vx .vx-demo__card[data-armed] [data-cue] {
+  transition: opacity 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lp-vx .vx-demo__card[data-armed] [data-cue]:not(.is-on) { opacity: 0; transform: translateY(6px); }
+.lp-vx .vx-demo__card[data-armed] .vx-row[data-cue] {
+  transition: opacity 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
+}
+/* (the pane / window crossfade is NOT snapped: only what the timeline drives) */
+.lp-vx .vx-demo__card[data-snap] :is([data-cue], [data-uncue], [data-swap] > [data-s], .vx-switch, [data-cursor], .vx-row, .vx-cursor),
+.lp-vx .vx-demo__card[data-snap] .vx-switch::after { transition: none !important; }
+/* a prompt change (the autoplay wrap Slack → next Brief, a prompt click) cuts windows and
+   pages: data-prompt already names the next prompt, a fading window would show its names */
+.lp-vx .vx-demo__card[data-cut] :is(.vx-win, .vx-pane) { transition: none !important; }
+
+/* windows: the incoming one fades in on top, the outgoing one stays under it for
+   the 200ms, then hides (nothing visible is wiped) */
+.lp-vx .vx-win { opacity: 1; transition: opacity 0.2s ease; visibility: visible; z-index: 1; }
+.lp-vx .vx-demo__card[data-tab="3"] .vx-win[data-win="app"],
+.lp-vx .vx-demo__card:not([data-tab="3"]) .vx-win[data-win="slack"] {
+  opacity: 0;
+  transition: opacity 0s linear 0.2s, visibility 0s linear 0.2s;
+  visibility: hidden;
+  z-index: 0;
+}
+/* app pages share the window's chrome, and their titles sit in the same spot: sequential,
+   never overlapping — the outgoing page fades out in 100ms, then the incoming one fades in */
+.lp-vx .vx-pane { opacity: 1; transition: opacity 0.16s ease 0.1s; visibility: visible; z-index: 1; }
+.lp-vx .vx-demo__card:not([data-tab="0"]) .vx-pane[data-pane="0"],
+.lp-vx .vx-demo__card:not([data-tab="1"]) .vx-pane[data-pane="1"],
+.lp-vx .vx-demo__card:not([data-tab="2"]) .vx-pane[data-pane="2"] {
+  opacity: 0;
+  transition: opacity 0.1s ease, visibility 0s linear 0.1s;
+  visibility: hidden;
+  z-index: 0;
+}
+
+/* cursor + press */
+.lp-vx .vx-cursor {
+  color: var(--lp-ink-100);
+  filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--lp-ink-100) 25%, transparent));
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transition: opacity 0.2s ease;
+  z-index: 5;
+}
+.lp-vx .vx-cursor.is-on { opacity: 1; }
+.lp-vx .vx-cursor svg { display: block; transform-origin: 2px 2px; transition: transform 0.1s ease; }
+.lp-vx .vx-cursor.is-click svg { transform: scale(0.86); }
+.lp-vx .vx-stage [data-cursor] { transition: transform 0.12s ease; }
+.lp-vx .vx-stage [data-cursor].is-press { transform: scale(0.96); }
+
+/* foot: the caption and the honesty note stacked on the left (22 + 2 + 20 = the 44px buttons),
+   Pause / Replay on the right; every slot reserved from SSR (zero CLS) */
+.lp-vx .vx-demo__foot {
+  align-items: center;
+  column-gap: 24px;
+  display: grid;
+  grid-template-areas: "cap ctrl" "note ctrl";
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 14px var(--vx-edge) 0;
+  row-gap: 2px;
+}
+.lp-vx .vx-demo__foot .vx-note { grid-area: note; }
+.lp-vx .vx-ctrl { display: flex; flex: none; gap: 4px; grid-area: ctrl; margin-right: -10px; }
+.lp-vx .vx-demo__card:not([data-ready]) .vx-ctrl,
+.lp-vx .vx-demo__card[data-reduced] .vx-ctrl { visibility: hidden; }
+/* no JS (no data-ready): the bar shows what the stage shows (Brief) and invites no click */
+.lp-vx .vx-demo__card:not([data-ready]) .vx-tab { cursor: default; }
+@media (hover: hover) {
+  .lp-vx .vx-demo__card:not([data-ready]) .vx-tab:not([aria-selected="true"]):hover { color: var(--lp-subtle-text); }
+}
+.lp-vx .vx-demo__foot .vx-note { text-wrap: pretty; }
+.lp-vx .vx-ctrl__btn {
+  align-items: center;
+  background: none;
+  border: 0;
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  cursor: pointer;
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  width: 44px;
+}
+.lp-vx .vx-ctrl__btn:hover { background: var(--lp-ink-tr-5); }
+.lp-vx .vx-ctrl__btn::before {
+  background: currentColor;
+  content: "";
+  height: 16px;
+  -webkit-mask: var(--i) center / contain no-repeat;
+  mask: var(--i) center / contain no-repeat;
+  width: 16px;
+}
+
+
+/* ─── the app (shared chrome) ──────────────────────────────────────────────── */
+.lp-vx .vx-win {
+  background: var(--app-bg);
+  border-radius: var(--lp-r-m);
+  box-shadow: var(--app-sh-card);
+  color: var(--app-ink);
+  font-family: var(--lp-font-sans);
+  font-size: 12px;
+  line-height: 1.45;
+  overflow: hidden;
+  position: relative;
+}
+.lp-vx .vx-win::after { /* hairline ON TOP of the pages (an inset shadow would sit under them) */
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  content: "";
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 4;
+}
+.lp-vx .vx-stage :where(p, ul, ol) { list-style: none; margin: 0; padding: 0; }
+.lp-vx .vx-stage * { font-family: var(--lp-font-sans); }
+.lp-vx .vx-stage :is(.vx-page__title, .vx-sigpage__group, .vx-sig__top, .vx-drawer__name) { font-family: var(--lp-font-aeonik); }
+
+/* icons: one pseudo-element each, a mask tinted by currentColor (the masks are at the end) */
+.lp-vx .vx-stage [data-ico]::before {
+  background: var(--ico-c, currentColor);
+  content: "";
+  flex: none;
+  height: var(--ico, 14px);
+  -webkit-mask: var(--i) center / contain no-repeat;
+  mask: var(--i) center / contain no-repeat;
+  width: var(--ico, 14px);
+}
+
+.lp-vx .vx-app { display: flex; flex-direction: column; }
+.lp-vx .vx-app__bar {
+  align-items: center;
+  display: flex;
+  flex: none;
+  gap: 12px;
+  height: 52px;
+  padding: 0 12px 0 16px;
+  position: relative;
+}
+.lp-vx .vx-app__logo { display: block; flex: none; height: 22px; width: auto; }
+.lp-vx .vx-app__center {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.lp-vx .vx-app__home {
+  --ico: 14px;
+  align-items: center;
+  background: var(--app-card);
+  border-radius: 9px;
+  box-shadow: var(--app-sh-chrome);
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+.lp-vx .vx-app__nav {
+  background: var(--app-card);
+  border-radius: 10px;
+  box-shadow: var(--app-sh-chrome);
+  display: flex;
+  padding: 3px;
+}
+.lp-vx .vx-app__nav > span {
+  border-radius: 8px;
+  color: var(--app-muted-fg);
+  font-size: 11px;
+  height: 24px;
+  line-height: 24px;
+  text-align: center;
+  width: 70px;
+}
+.lp-vx .vx-app__nav > .is-cur {
+  background: var(--app-pink-pale);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--app-pink) 14%, transparent);
+  color: var(--app-ink);
+  font-weight: 600;
+  letter-spacing: 0.12px;
+}
+.lp-vx .vx-app__cta {
+  align-items: center;
+  background: var(--app-card);
+  border-radius: 10px;
+  box-shadow: var(--app-sh-chrome);
+  display: inline-flex;
+  font-size: 11px;
+  font-weight: 500;
+  height: 30px;
+  letter-spacing: 0.01em;
+  margin-left: auto;
+  padding: 0 11px 0 5px;
+  white-space: nowrap;
+}
+.lp-vx .vx-app__mark {
+  align-items: center;
+  background: var(--app-card);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  display: flex;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+.lp-vx .vx-app__mark { --ico: 11px; }
+.lp-vx .vx-app__mark + .vx-app__mark { margin: 0 7px 0 -5px; }
+.lp-vx .vx-app__body {
+  display: grid;
+  flex: 1;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-height: 0;
+}
+.lp-vx .vx-app__stack { display: grid; grid-column: 2; min-height: 0; min-width: 0; }
+.lp-vx .vx-pane { background: var(--app-bg); grid-area: 1 / 1; min-width: 0; position: relative; }
+
+/* floating rail card; the blue-pale active item follows the tab */
+.lp-vx .vx-rail {
+  background: var(--app-card);
+  border-radius: 14px;
+  box-shadow: var(--app-sh-float);
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  grid-column: 1;
+  margin: 2px 0 12px 12px;
+  padding: 6px;
+  width: 124px;
+}
+.lp-vx .vx-rail__ws {
+  align-items: center;
+  border-bottom: 1px solid var(--app-border);
+  display: flex;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 7px;
+  height: 39px;
+  margin: 0 2px 5px;
+  padding: 0 3px 5px;
+}
+.lp-vx .vx-rail__ws::before {
+  align-items: center;
+  background: var(--app-ink);
+  border-radius: 6px;
+  color: var(--app-card);
+  content: attr(data-initial);
+  display: flex;
+  flex: none;
+  font-size: 10px;
+  font-weight: 600;
+  height: 20px;
+  justify-content: center;
+  width: 20px;
+}
+/* every workspace name is two words: two lines inside the fixed 39px header, never cut */
+.lp-vx .vx-rail__ws span {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-height: 13px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: normal;
+}
+.lp-vx .vx-rail__item {
+  --ico: 13px;
+  align-items: center;
+  border-radius: 8px;
+  display: flex;
+  font-size: 11px;
+  gap: 8px;
+  height: 30px;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+.lp-vx .vx-rail__foot { margin-top: auto; }
+.lp-vx .vx-demo__card[data-tab="0"] .vx-rail__item[data-item="0"],
+.lp-vx .vx-demo__card[data-tab="1"] .vx-rail__item[data-item="1"],
+.lp-vx .vx-demo__card[data-tab="2"] .vx-rail__item[data-item="2"],
+.lp-vx .vx-demo__card[data-tab="3"] .vx-rail__item[data-item="2"] {
+  background: var(--app-blue-pale);
+  box-shadow: 0 3px 5px color-mix(in srgb, var(--app-blue) 12%, transparent);
+  font-weight: 500;
+  letter-spacing: 0.15px;
+}
+
+/* pages */
+.lp-vx .vx-page { min-width: 0; padding: 12px 16px 16px 18px; }
+.lp-vx .vx-page__title {
+  align-items: center;
+  display: flex;
+  font-size: 18px;
+  font-weight: 700;
+  gap: 8px;
+  letter-spacing: -0.27px;
+  line-height: 24px;
+}
+.lp-vx .vx-page__sub { color: var(--app-muted-fg); font-size: 11px; line-height: 15px; margin-top: 2px; }
+
+/* shared app atoms */
+.lp-vx .vx-chip {
+  align-items: center;
+  align-self: start;
+  background: var(--k-bg, var(--app-muted));
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--k-ring, var(--app-border));
+  color: var(--k-fg, var(--app-muted-fg));
+  display: inline-flex;
+  flex: none;
+  font-size: 10.5px;
+  font-weight: 500;
+  height: 19px;
+  line-height: 13px;
+  padding: 0 7px;
+  white-space: nowrap;
+  width: fit-content;
+}
+.lp-vx .vx-stagepill { /* "qualified" / "Active": the app's green tone */
+  align-items: center;
+  background: var(--app-influencer-bg);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--app-influencer-ring);
+  color: var(--app-influencer-fg);
+  display: inline-flex;
+  flex: none;
+  font-family: var(--lp-font-sans);
+  font-size: 10.5px;
+  font-weight: 500;
+  height: 19px;
+  letter-spacing: 0;
+  padding: 0 6px;
+  white-space: nowrap;
+  width: fit-content;
+}
+.lp-vx .vx-btn {
+  --ico: 12px;
+  align-items: center;
+  background: var(--app-card);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-control);
+  color: var(--app-ink);
+  display: inline-flex;
+  flex: none;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 5px;
+  height: 26px;
+  letter-spacing: 0.22px;
+  padding: 0 9px;
+  white-space: nowrap;
+  width: fit-content;
+}
+.lp-vx .vx-btn--ink { background: var(--app-ink); box-shadow: var(--app-sh-control); color: var(--app-card); }
+.lp-vx .vx-xbtn {
+  --ico: 12px;
+  align-items: center;
+  background: var(--app-card);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-control);
+  color: var(--app-tertiary);
+  display: inline-flex;
+  flex: none;
+  height: 26px;
+  justify-content: center;
+  width: 26px;
+}
+.lp-vx .vx-pair { align-items: center; display: inline-flex; gap: 5px; }
+/* Approve + the ✕ square in one element: the square is the ::after, 5px to the right */
+.lp-vx .vx-btn--x { margin-right: 31px; position: relative; }
+.lp-vx .vx-btn--x::after {
+  background: var(--app-card) var(--app-x) center / 12px no-repeat;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-control);
+  content: "";
+  height: 26px;
+  position: absolute;
+  right: -31px;
+  top: 0;
+  width: 26px;
+}
+.lp-vx .vx-av {
+  align-items: center;
+  background: var(--app-muted);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--app-ink) 8%, transparent);
+  display: flex;
+  flex: none;
+  font-size: 10px;
+  font-weight: 500;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+
+/* ─── 01 Brief: Signals page + docked Ask Pancake panel ─────────────────────── */
+.lp-vx .vx-brief { display: grid; grid-template-columns: minmax(0, 1fr) 320px; }
+.lp-vx .vx-sigpage__group { font-size: 12.5px; font-weight: 600; line-height: 16px; margin: 14px 0 7px; }
+.lp-vx .vx-sigs { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.lp-vx .vx-sig {
+  background: var(--app-card);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px;
+  position: relative;
+}
+.lp-vx .vx-sig__top {
+  align-items: center;
+  display: flex;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 7px;
+  line-height: 16px;
+  min-height: 22px;
+  padding-right: 48px;
+  white-space: nowrap;
+}
+.lp-vx .vx-sig__tile {
+  --ico: 13px;
+  align-items: center;
+  background: var(--k-bg);
+  border-radius: 6px;
+  color: var(--k-fg);
+  display: flex;
+  flex: none;
+  height: 22px;
+  justify-content: center;
+  width: 22px;
+}
+.lp-vx .vx-sig__v { display: block; min-width: 0; }
+.lp-vx .vx-sig__corner { position: absolute; right: 10px; top: 13px; justify-items: end; }
+.lp-vx .vx-sig__body { display: grid; min-height: 30px; }
+.lp-vx .vx-sig__empty {
+  -webkit-box-orient: vertical;
+  color: var(--app-muted-fg);
+  display: -webkit-box;
+  font-size: 10.5px;
+  -webkit-line-clamp: 2;
+  line-height: 15px;
+  overflow: hidden;
+}
+.lp-vx .vx-sig__chips { align-content: flex-start; display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
+.lp-vx .vx-sig__tail { align-items: center; display: flex; gap: 4px; max-width: 100%; min-width: 0; }
+/* the app's watched-item chips (vx-achip: not signals.css's landing .vx-wchip). A long item
+   wraps to a 2-line chip instead of an ellipsis; every card body is one stacked cell per prompt,
+   so the tallest variant is reserved from first paint. */
+.lp-vx .vx-achip {
+  -webkit-box-orient: vertical;
+  background: var(--app-muted);
+  border-radius: 6px;
+  display: -webkit-box;
+  flex: 0 1 auto;
+  font-size: 10.5px;
+  -webkit-line-clamp: 2;
+  line-height: 15px;
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  padding: 3.5px 7px;
+  text-wrap: balance;
+}
+.lp-vx .vx-amore { flex: none; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+.lp-vx .vx-setup {
+  align-items: center;
+  background: var(--app-card);
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-control);
+  display: inline-flex;
+  font-size: 10px;
+  font-weight: 500;
+  height: 20px;
+  padding: 0 7px;
+  white-space: nowrap;
+}
+/* toggle (on = ink, the app's): the thumb slides when its swap turns on */
+.lp-vx .vx-switch {
+  background: var(--app-ink);
+  border-radius: 999px;
+  display: block;
+  height: 15px;
+  margin-top: 2px;
+  position: relative;
+  transition: background-color 0.16s ease;
+  width: 26px;
+}
+.lp-vx .vx-switch::after {
+  background: var(--app-card);
+  border-radius: 50%;
+  content: "";
+  height: 11px;
+  left: 2px;
+  position: absolute;
+  top: 2px;
+  transform: translateX(11px);
+  transition: transform 0.16s ease;
+  width: 11px;
+}
+.lp-vx .vx-demo__card[data-armed] [data-swap]:not(.is-sw) > .vx-switch { background: var(--app-border); }
+.lp-vx .vx-demo__card[data-armed] [data-swap]:not(.is-sw) > .vx-switch::after { transform: none; }
+
+.lp-vx .vx-chat {
+  background: var(--app-card);
+  border-left: 1px solid var(--app-border);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+.lp-vx .vx-chat__head {
+  --ico: 15px;
+  --ico-c: var(--app-pink);
+  align-items: center;
+  border-bottom: 1px solid var(--app-border);
+  display: flex;
+  flex: none;
+  font-size: 11.5px;
+  font-weight: 500;
+  gap: 7px;
+  height: 40px;
+  padding: 0 12px;
+}
+/* "+ New chat": the panel header's right-side action (the ⌘K hint lives on the launcher) */
+.lp-vx .vx-chat__new {
+  --ico: 11px;
+  --ico-c: var(--app-muted-fg);
+  align-items: center;
+  color: var(--app-muted-fg);
+  display: inline-flex;
+  font-size: 10.5px;
+  font-weight: 500;
+  gap: 3px;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.lp-vx .vx-chat__log { align-content: start; flex: 1; min-height: 0; padding: 12px; }
+/* the empty conversation's starter chips (copilot starters), bottom of the log, until SEND */
+.lp-vx .vx-starters {
+  align-content: flex-end;
+  align-items: flex-start;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lp-vx .vx-starters > span {
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  color: color-mix(in srgb, var(--app-ink) 80%, transparent);
+  font-size: 11px;
+  line-height: 24px;
+  max-width: 100%;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+.lp-vx .vx-demo__card:not([data-armed]) .vx-starters,
+.lp-vx .vx-demo__card[data-armed] .vx-starters.is-off { opacity: 0; visibility: hidden; }
+.lp-vx .vx-demo__card[data-armed] .vx-starters { transition: opacity 180ms ease, visibility 0s linear 180ms; }
+.lp-vx .vx-demo__card[data-armed] .vx-starters:not(.is-off) { transition: opacity 180ms ease; }
+.lp-vx .vx-thread { display: flex; flex-direction: column; gap: 7px; }
+.lp-vx .vx-bubble {
+  align-self: flex-end;
+  background: var(--app-ink);
+  border-radius: 12px;
+  color: var(--app-card);
+  font-size: 11.5px;
+  line-height: 16px;
+  max-width: 90%;
+  padding: 7px 10px;
+  text-wrap: pretty;
+}
+.lp-vx .vx-tool {
+  --ico: 12px;
+  --ico-c: var(--app-pink);
+  align-items: center;
+  background: var(--app-card);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  display: flex;
+  font-size: 11px;
+  gap: 7px;
+  height: 28px;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+.lp-vx .vx-tool__st {
+  color: var(--app-pink-dark);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.72px;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+.lp-vx .vx-answer {
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  font-size: 11.5px;
+  line-height: 16px;
+  padding: 8px 10px;
+  text-wrap: pretty;
+}
+/* the live "RECOMMENDED NEXT MOVE" card: pale pink, indented from the log's edge, a 2px pink
+   rule inside it at 12px, caps label */
+.lp-vx .vx-prop {
+  background: var(--app-competitor-bg);
+  border-radius: 10px;
+  margin-left: 24px;
+  padding: 9px 11px 10px 20px;
+  position: relative;
+}
+.lp-vx .vx-prop::before {
+  background: var(--app-pink);
+  border-radius: 2px;
+  bottom: 10px;
+  content: "";
+  left: 12px;
+  position: absolute;
+  top: 10px;
+  width: 2px;
+}
+.lp-vx .vx-prop__label {
+  color: var(--app-pink-dark);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.72px;
+  line-height: 12px;
+  text-transform: uppercase;
+}
+.lp-vx .vx-prop__label > [data-s="after"] { color: var(--app-influencer-fg); }
+.lp-vx .vx-prop__title { font-size: 12px; font-weight: 600; line-height: 16px; margin-top: 2px; }
+.lp-vx .vx-prop__rows { display: flex; flex-direction: column; gap: 5px; margin-top: 7px; }
+.lp-vx .vx-prop__rows li {
+  color: color-mix(in srgb, var(--app-ink) 82%, transparent);
+  display: grid;
+  font-size: 11px;
+  gap: 8px;
+  grid-template-columns: 70px minmax(0, 1fr);
+  line-height: 15px;
+  text-wrap: pretty;
+}
+/* the row's kind chip is li::before (one element per row): .vx-chip's recipe */
+.lp-vx .vx-prop__rows li::before {
+  align-items: center;
+  align-self: start;
+  background: var(--k-bg, var(--app-muted));
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--k-ring, var(--app-border));
+  color: var(--k-fg, var(--app-muted-fg));
+  content: attr(data-label);
+  display: inline-flex;
+  font-size: 10.5px;
+  font-weight: 500;
+  height: 19px;
+  line-height: 13px;
+  margin-top: -2px;
+  padding: 0 7px;
+  white-space: nowrap;
+  width: fit-content;
+}
+.lp-vx .vx-prop__foot { margin-top: 9px; }
+.lp-vx .vx-prop__saved {
+  --ico: 14px;
+  --ico-c: var(--app-influencer-fg);
+  align-items: flex-start;
+  display: flex;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 6px;
+  line-height: 15px;
+  text-wrap: pretty;
+}
+.lp-vx .vx-composer {
+  align-items: center;
+  background: var(--app-card);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  display: flex;
+  flex: none;
+  gap: 8px;
+  height: 38px;
+  margin: 0 12px 12px;
+  padding: 0 5px 0 11px;
+}
+.lp-vx .vx-composer__field { display: grid; flex: 1; font-size: 11.5px; min-width: 0; overflow: hidden; }
+.lp-vx .vx-composer__field > * { grid-area: 1 / 1; min-width: 0; }
+/* input-like: short text sits left, long text keeps its end in view (no growth) */
+.lp-vx .vx-composer__in { display: flex; overflow: hidden; white-space: nowrap; }
+/* the island slides a long line left with a transform (its end in view, no layout shift) */
+.lp-vx .vx-composer__line { flex: none; min-width: 100%; }
+.lp-vx .vx-typed::after {
+  background: currentColor;
+  content: "";
+  display: inline-block;
+  height: 13px;
+  margin-left: 1px;
+  vertical-align: -2px;
+  visibility: hidden;
+  width: 1.5px;
+}
+.lp-vx .vx-composer.has-text .vx-typed::after { visibility: visible; }
+/* two placeholders, picked by the chat column's own width (never cut mid-word) */
+.lp-vx .vx-chat { container: vxchat / inline-size; }
+.lp-vx .vx-ph::after { color: var(--app-muted-fg); content: attr(data-long); white-space: nowrap; }
+@container vxchat (max-width: 299px) {
+  .lp-vx .vx-ph::after { content: attr(data-short); }
+}
+.lp-vx .vx-composer.has-text .vx-ph { visibility: hidden; }
+.lp-vx .vx-send {
+  --ico: 13px;
+  align-items: center;
+  background: var(--app-ink);
+  border-radius: 50%;
+  color: var(--app-card);
+  display: flex;
+  flex: none;
+  height: 26px;
+  justify-content: center;
+  width: 26px;
+}
+
+/* ─── 02 Leads: header-less table + the lead sheet over it ─────────────────── */
+.lp-vx .vx-count {
+  align-items: center;
+  color: var(--app-muted-fg);
+  display: flex;
+  font-size: 11px;
+  gap: 10px;
+  line-height: 16px;
+  margin-top: 12px;
+  padding-left: 12px;
+}
+.lp-vx .vx-count::before,
+.lp-vx .vx-row::before { /* the app's 16px select checkbox */
+  background: var(--app-card);
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--app-ink) 25%, transparent), var(--app-sh-control);
+  content: "";
+  flex: none;
+  height: 14px;
+  width: 14px;
+}
+.lp-vx .vx-table {
+  background: var(--app-card);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+  margin-top: 8px;
+}
+/* one flat grid per row: cb | avatar | name / role | chip / detail | stage | actions */
+.lp-vx .vx-row {
+  align-content: center;
+  align-items: center;
+  border-bottom: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+  column-gap: 10px;
+  display: grid;
+  grid-template-columns: 14px 30px 190px 132px 58px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  height: 48px;
+  padding: 0 10px 0 12px;
+  row-gap: 1px;
+  transition: background-color 0.2s ease;
+}
+.lp-vx .vx-row:last-child { border-bottom: 0; }
+.lp-vx .vx-rowset > .vx-row:first-child { border-radius: 10px 10px 0 0; }
+.lp-vx .vx-row::before { grid-area: 1 / 1 / 3 / 2; }
+.lp-vx .vx-row > .vx-av { grid-area: 1 / 2 / 3 / 3; }
+.lp-vx .vx-row__name { grid-area: 1 / 3; }
+.lp-vx .vx-row__role { grid-area: 2 / 3; }
+.lp-vx .vx-row > .vx-chip { grid-area: 1 / 4; }
+.lp-vx .vx-row__detail { grid-area: 2 / 4; }
+.lp-vx .vx-row::after { grid-area: 1 / 5 / 3 / 6; } /* the stage pill (drawn with the sheet's, below) */
+.lp-vx .vx-row__act { grid-area: 1 / 6 / 3 / 7; justify-self: end; }
+.lp-vx .vx-row__act.vx-swapc { justify-items: end; }
+.lp-vx .vx-demo__card:not([data-armed]) .vx-row[data-mark],
+.lp-vx .vx-row.is-mk { background: color-mix(in srgb, var(--app-muted) 75%, transparent); }
+.lp-vx .vx-row__name {
+  align-items: center;
+  color: color-mix(in srgb, var(--app-ink) 90%, transparent);
+  display: flex;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 5px;
+  justify-self: start;
+  line-height: 17px;
+  max-width: 100%;
+  white-space: nowrap;
+}
+.lp-vx .vx-row__name::after { /* LinkedIn glyph */
+  background: color-mix(in srgb, var(--app-ink) 45%, transparent);
+  content: "";
+  flex: none;
+  height: 12px;
+  -webkit-mask: var(--li) center / contain no-repeat;
+  mask: var(--li) center / contain no-repeat;
+  width: 12px;
+}
+.lp-vx .vx-row__role,
+.lp-vx .vx-row__detail {
+  color: var(--app-tertiary);
+  font-size: 11px;
+  line-height: 15px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-vx .vx-row__detail { color: var(--app-muted-fg); font-size: 10.5px; }
+.lp-vx .vx-bad {
+  --ico: 11px;
+  align-items: center;
+  color: var(--app-muted-fg);
+  display: flex;
+  font-size: 11px;
+  gap: 6px;
+  line-height: 16px;
+  margin-top: 10px;
+  padding-left: 10px;
+}
+
+/* the lead sheet floats over the table, as the app's 680px sheet does. It shares the page's
+   grid cell (not absolute), so the stage reserves its natural height: the action bar can never
+   be pushed out of a short stage. */
+.lp-vx .vx-leads { display: grid; grid-template-columns: minmax(0, 1fr); }
+.lp-vx .vx-leads > .vx-page { grid-area: 1 / 1; }
+.lp-vx .vx-drawer {
+  background: var(--app-card);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-float);
+  display: flex;
+  flex-direction: column;
+  grid-area: 1 / 1;
+  justify-self: end;
+  margin: 2px 12px 12px 0;
+  padding: 12px 14px 10px;
+  position: relative;
+  width: 280px;
+  z-index: 2;
+}
+.lp-vx .vx-demo__card[data-armed] .vx-drawer[data-cue] { transition-duration: 260ms; }
+.lp-vx .vx-demo__card[data-armed] .vx-drawer[data-cue]:not(.is-on) { transform: translateX(16px); }
+/* "Ask AI" rides the sheet's action bar (left), so the head's name and role get its full width */
+.lp-vx .vx-btn--ai {
+  --ico: 11px;
+  --ico-c: var(--app-pink);
+  font-size: 10.5px;
+  gap: 4px;
+  height: 26px;
+  letter-spacing: 0;
+  padding: 0 8px;
+}
+.lp-vx .vx-drawer__head {
+  align-content: center;
+  align-items: center;
+  column-gap: 10px;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr);
+  min-height: 40px;
+}
+.lp-vx .vx-av--lg { font-size: 12px; grid-row: 1 / 3; height: 40px; width: 40px; }
+/* the stacked variants reserve the tallest head, so a 2-line name or role never moves the sheet */
+.lp-vx .vx-drawer__name {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.22px;
+  line-height: 19px;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+.lp-vx .vx-drawer__role {
+  -webkit-box-orient: vertical;
+  color: var(--app-tertiary);
+  display: -webkit-box;
+  font-size: 11px;
+  -webkit-line-clamp: 2;
+  line-height: 15px;
+  overflow: hidden;
+  white-space: normal;
+}
+.lp-vx .vx-drawer__chips { align-items: center; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.lp-vx .vx-drawer__chips::before, /* the stage pill ("qualified") */
+.lp-vx .vx-row::after {
+  align-self: center;
+  background: var(--app-influencer-bg);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--app-influencer-ring);
+  color: var(--app-influencer-fg);
+  content: attr(data-stage);
+  font-size: 10.5px;
+  font-weight: 500;
+  height: 19px;
+  line-height: 19px;
+  padding: 0 6px;
+  white-space: nowrap;
+  width: fit-content;
+}
+.lp-vx .vx-conf { color: var(--app-tertiary); font-size: 10.5px; white-space: nowrap; }
+/* property grid, flat: labels row, values row, labels row, values row */
+.lp-vx .vx-props {
+  border-top: 1px solid var(--app-border);
+  column-gap: 12px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 10px;
+  padding-top: 9px;
+}
+.lp-vx .vx-props > span {
+  --ico: 11px;
+  align-items: center;
+  color: var(--app-muted-fg);
+  display: flex;
+  font-size: 10.5px;
+  gap: 5px;
+  line-height: 14px;
+}
+.lp-vx .vx-props > span:nth-child(5),
+.lp-vx .vx-props > span:nth-child(6) { margin-top: 7px; }
+.lp-vx .vx-props > b,
+.lp-vx .vx-props > .vx-var > b {
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 16px;
+  margin-top: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-vx .vx-link { color: var(--app-keyword-fg); }
+.lp-vx .vx-sigbox {
+  background: var(--app-muted);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  padding: 8px 10px 9px;
+  position: relative;
+}
+/* the sheet's section labels ("SIGNAL", "TIMELINE"): 9px caps, 4px above their block */
+.lp-vx .vx-sigbox::before,
+.lp-vx .vx-tl::before {
+  color: var(--app-tertiary);
+  content: attr(data-label);
+  font-size: 9px;
+  font-weight: 500;
+  left: 0;
+  letter-spacing: 0.72px;
+  line-height: 12px;
+  position: absolute;
+  text-transform: uppercase;
+  top: -16px;
+}
+.lp-vx .vx-sigbox__why {
+  color: color-mix(in srgb, var(--app-ink) 80%, transparent);
+  font-size: 11.5px;
+  line-height: 17px;
+  margin-top: 6px;
+  text-wrap: pretty;
+}
+/* TIMELINE: 24px icon tiles on a hairline rail, newest first */
+.lp-vx .vx-tlv { margin-top: 24px; }
+.lp-vx .vx-tl { display: flex; flex-direction: column; gap: 6px; position: relative; }
+.lp-vx .vx-tl__e {
+  --ico: 12px;
+  --ico-c: var(--app-tertiary);
+  display: flex;
+  flex-direction: column;
+  min-height: 24px;
+  min-width: 0;
+  padding-left: 32px;
+  position: relative;
+}
+.lp-vx .vx-tl__e::after { /* the tile, under the glyph (::before) */
+  background: var(--app-card);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  content: "";
+  height: 24px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 24px;
+}
+.lp-vx .vx-tl__e::before { left: 6px; position: absolute; top: 6px; z-index: 1; }
+.lp-vx .vx-tl__e:has(+ .vx-tl__e) > b::before { /* the rail down to the next tile */
+  background: var(--app-border);
+  bottom: -6px;
+  content: "";
+  left: 11.5px;
+  position: absolute;
+  top: 24px;
+  width: 1px;
+}
+.lp-vx .vx-tl__e > b { font-size: 11.5px; font-weight: 500; line-height: 16px; padding-top: 1px; }
+.lp-vx .vx-tl__e > span {
+  color: var(--app-muted-fg);
+  font-size: 10.5px;
+  line-height: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-vx .vx-tl__e i { color: var(--app-keyword-fg); font-style: normal; }
+.lp-vx .vx-tl__note { color: var(--app-muted-fg); font-size: 10.5px; line-height: 14px; padding-left: 32px; text-wrap: pretty; }
+/* the sticky action bar: Ask AI left, Approve + ✕ (then Add to campaign) right, in one cell */
+.lp-vx .vx-drawer__foot {
+  align-items: center;
+  column-gap: 8px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  margin-top: auto;
+  padding-top: 10px;
+}
+.lp-vx .vx-drawer__foot > [data-s] { grid-area: 1 / 2; justify-self: end; }
+
+/* ─── 03 Outreach: the lead's campaign journey ─────────────────────────────── */
+/* the campaign page fills the window (the tallest pane sets the stage): the journey card runs
+   to the bottom and its "Up next" panel stretches with it, the notes pinned at its foot — no
+   empty band under the card on any width */
+.lp-vx .vx-camp { display: flex; flex-direction: column; }
+.lp-vx .vx-camp > .vx-page { display: flex; flex: 1; flex-direction: column; }
+.lp-vx .vx-camp .vx-journey { display: flex; flex: 1; flex-direction: column; }
+.lp-vx .vx-camp .vx-journey__grid { flex: 1; }
+.lp-vx .vx-journey {
+  background: var(--app-card);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+  margin-top: 12px;
+  padding: 12px 14px 14px;
+}
+.lp-vx .vx-journey__head {
+  align-items: center;
+  border-bottom: 1px solid var(--app-border);
+  display: flex;
+  gap: 10px;
+  padding-bottom: 10px;
+}
+.lp-vx .vx-journey__lead { flex: 1; }
+.lp-vx .vx-journey__who {
+  align-items: center;
+  column-gap: 10px;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+}
+.lp-vx .vx-journey__who > .vx-av { grid-row: 1 / 3; }
+.lp-vx .vx-journey__who > b { font-size: 12px; font-weight: 600; line-height: 17px; }
+.lp-vx .vx-journey__who::after { color: var(--app-tertiary); content: attr(data-step); font-size: 11px; grid-column: 2; line-height: 15px; }
+.lp-vx .vx-journey__grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 300px);
+  margin-top: 12px;
+}
+.lp-vx .vx-step {
+  column-gap: 10px;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  padding: 5px 0;
+  position: relative;
+}
+.lp-vx .vx-step:not(:last-child)::before { /* the journey rail */
+  background: var(--app-border);
+  bottom: -5px;
+  content: "";
+  left: 11.5px;
+  position: absolute;
+  top: 31px;
+  width: 1px;
+}
+.lp-vx .vx-step__tile {
+  --ico: 13px;
+  align-items: center;
+  background: var(--k-bg);
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px var(--k-ring);
+  color: var(--k-fg);
+  display: flex;
+  grid-row: 1 / 3;
+  height: 24px;
+  justify-content: center;
+  width: 24px;
+}
+.lp-vx .vx-step[data-state="upcoming"] .vx-step__tile { background: var(--app-muted); box-shadow: inset 0 0 0 1px var(--app-border); color: var(--app-muted-fg); }
+.lp-vx .vx-step[data-state="now"] .vx-step__tile { box-shadow: inset 0 0 0 1px var(--k-ring), 0 0 0 3px color-mix(in srgb, var(--app-pink) 28%, transparent); }
+.lp-vx .vx-step__name { font-size: 11.5px; font-weight: 500; line-height: 16px; padding-top: 3px; }
+.lp-vx .vx-step__sub { color: var(--app-muted-fg); font-size: 10.5px; grid-column: 2 / 4; line-height: 14px; margin-top: 1px; }
+.lp-vx .vx-step__st { color: var(--app-muted-fg); font-size: 10.5px; line-height: 16px; padding-top: 3px; }
+.lp-vx .vx-step[data-state="done"] .vx-step__st { color: var(--app-influencer-fg); }
+.lp-vx .vx-step[data-state="now"] .vx-step__st { color: var(--app-pink-dark); font-weight: 600; }
+.lp-vx .vx-next {
+  background: var(--app-bg);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 11px 12px 12px;
+}
+.lp-vx .vx-next__label { color: var(--app-tertiary); font-size: 10.5px; font-weight: 600; line-height: 14px; text-wrap: pretty; }
+/* the step's status notes, pinned under the message: "Writing from their activity…" while it
+   streams → "Drafted — …" (muted plain text, as the app), then the footnote */
+.lp-vx .vx-next__end { margin-top: auto; padding-top: 10px; }
+.lp-vx .vx-next__draft { color: var(--app-muted-fg); font-size: 10.5px; line-height: 14px; }
+.lp-vx .vx-next__draft > [data-s] { text-wrap: pretty; }
+.lp-vx .vx-next__writing { align-items: center; display: flex; gap: 6px; }
+.lp-vx .vx-next__writing::before { /* the app's spinner, spinning only while it shows */
+  border: 1.5px solid color-mix(in srgb, var(--app-muted-fg) 30%, transparent);
+  border-radius: 50%;
+  border-top-color: var(--app-muted-fg);
+  box-sizing: border-box;
+  content: "";
+  flex: none;
+  height: 10px;
+  width: 10px;
+}
+.lp-vx .vx-demo__card[data-armed] [data-swap]:not(.is-sw) > .vx-next__writing::before { animation: vx-spin 0.8s linear infinite; }
+@keyframes vx-spin { to { transform: rotate(360deg); } }
+/* the message: the ghost (final text) and the live span share one cell, so streaming never grows it */
+.lp-vx .vx-msg { display: grid; font-size: 11.5px; line-height: 17px; margin-top: 9px; }
+.lp-vx .vx-msg > span { grid-area: 1 / 1; }
+.lp-vx .vx-msg__live { visibility: hidden; }
+.lp-vx .vx-msg.is-streaming .vx-msg__ghost { visibility: hidden; }
+.lp-vx .vx-msg.is-streaming .vx-msg__live { visibility: visible; }
+.lp-vx .vx-next__foot {
+  --ico: 11px;
+  --ico-c: var(--app-pink);
+  align-items: center;
+  color: var(--app-muted-fg);
+  display: flex;
+  font-size: 10.5px;
+  gap: 5px;
+  line-height: 14px;
+  padding-top: 3px;
+}
+
+
+/* ─── 04 Slack: the channel post (Slack's aubergine sidebar = lp plum) ─────── */
+.lp-vx .vx-slack {
+  background: var(--lp-surface);
+  display: grid;
+  font-size: 12.5px;
+  grid-template-columns: 172px minmax(0, 1fr);
+}
+.lp-vx .vx-slack__side {
+  background: var(--lp-ink-100);
+  color: color-mix(in srgb, var(--lp-surface) 70%, transparent);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 10px;
+}
+.lp-vx .vx-slack__ws { color: var(--lp-surface); font-size: 13px; font-weight: 700; line-height: 18px; padding: 0 8px 12px; }
+.lp-vx .vx-slack__grp { font-size: 11px; line-height: 16px; padding: 4px 8px; }
+.lp-vx .vx-slack__ch { border-radius: 6px; font-size: 12px; line-height: 18px; padding: 3px 8px; }
+.lp-vx .vx-slack__ch.is-cur { background: var(--lp-blue-40); color: var(--lp-surface); font-weight: 600; }
+.lp-vx .vx-slack__main { display: flex; flex-direction: column; min-width: 0; }
+.lp-vx .vx-slack__bar {
+  align-items: center;
+  border-bottom: 1px solid var(--lp-ink-40);
+  display: flex;
+  flex: none;
+  font-size: 13px;
+  font-weight: 700;
+  height: 44px;
+  padding: 0 16px;
+}
+/* anchored to the composer, as Slack is: the newest post sits on it */
+.lp-vx .vx-slack__feed { display: flex; flex: 1; flex-direction: column; gap: 10px; justify-content: flex-end; padding: 14px 16px; }
+.lp-vx .vx-smsg--cont + .vx-smsg--cont { margin-top: 2px; } /* 12px between the posts */
+/* the third post fills a narrow window's taller channel (stage ≤939, below); wide windows show two */
+.lp-vx .vx-smsg--extra { display: none; }
+.lp-vx .vx-smsg { column-gap: 10px; display: grid; grid-template-columns: 32px minmax(0, 1fr); line-height: 18px; }
+.lp-vx .vx-smsg__av { grid-row: 1 / 3; }
+.lp-vx .vx-smsg--cont { line-height: 18px; padding-left: 42px; }
+.lp-vx .vx-smsg--cont::before { content: attr(data-intro); display: block; }
+.lp-vx .vx-smsg__av { background: var(--lp-yellow-10); border-radius: 7px; display: block; height: 32px; object-fit: contain; padding: 3px; width: 32px; }
+.lp-vx .vx-smsg__meta { align-items: baseline; display: flex; gap: 6px; }
+.lp-vx .vx-smsg__meta b { font-weight: 700; }
+.lp-vx .vx-apptag {
+  background: var(--lp-ink-30);
+  border-radius: 3px;
+  color: var(--lp-subtle-text);
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 14px;
+  padding: 0 4px;
+}
+.lp-vx .vx-smsg__time { color: var(--lp-subtle-text); font-size: 11px; }
+.lp-vx .vx-scard { border-left: 4px solid var(--lp-pink-30); border-radius: 2px; margin-top: 5px; padding: 1px 0 1px 11px; }
+.lp-vx .vx-scard b { font-weight: 700; }
+.lp-vx .vx-scard__sig { color: var(--lp-subtle-text); display: block; }
+.lp-vx .vx-scard__btns { margin-top: 7px; }
+.lp-vx .vx-spair { display: flex; gap: 8px; }
+/* Slack's ✅ / ❌ as drawn glyphs (identical in every engine, never OS emoji) */
+.lp-vx .vx-sbtn,
+.lp-vx .vx-scard__done {
+  --ico: 14px;
+  align-items: center;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 6px;
+  height: 28px;
+}
+.lp-vx .vx-sbtn {
+  background: var(--lp-surface);
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px var(--lp-ink-50);
+  padding: 0 11px;
+}
+.lp-vx [data-ico="sg-ok"] { --ico-c: var(--lp-green-20); }
+.lp-vx [data-ico="sg-no"] { --ico-c: var(--lp-red-30); }
+.lp-vx .vx-scard::after { color: var(--lp-blue-40); content: attr(data-open); display: block; font-size: 11.5px; margin-top: 7px; }
+.lp-vx .vx-slack__composer {
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--lp-ink-50);
+  color: var(--lp-subtle-text);
+  flex: none;
+  font-size: 12px;
+  line-height: 18px;
+  margin: 0 16px 14px;
+  padding: 9px 12px;
+}
+
+/* ─── stage recompositions: by the stage's own width (container queries) ──── */
+/* wide windows (≥940: 1024 → 992, 1200 → 1168, 1280 → 1248, 1440 → 1296): the lead sheet sits
+   BESIDE the table instead of over it, so every row keeps its Approve buttons. 940–1099 buys the
+   table its width by dropping the rail (as ≤819 already does); ≥1100 keeps the rail and gives
+   the chat column 20px more. */
+@container vxstage (min-width: 940px) {
+  .lp-vx .vx-leads { grid-template-columns: minmax(0, 1fr) 288px; }
+  .lp-vx .vx-drawer {
+    box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+    grid-area: 1 / 2;
+    justify-self: stretch;
+    width: auto;
+  }
+}
+@container vxstage (min-width: 940px) and (max-width: 1099px) {
+  .lp-vx .vx-rail { display: none; }
+}
+@container vxstage (min-width: 1100px) {
+  .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr) 340px; }
+  .lp-vx .vx-leads { grid-template-columns: minmax(0, 1fr) 312px; }
+}
+/* under 940 the sheet floats over the table (the app's own sheet): the columns it would cut
+   (stage pill, row actions) step out instead of peeking at its edge */
+@container vxstage (max-width: 939px) {
+  .lp-vx .vx-row::after,
+  .lp-vx .vx-row__act { visibility: hidden; }
+  /* the channel runs taller than two posts here (the stage is set by the Brief / Leads panes):
+     a third post instead of an empty band under the channel bar. The posts drop their "Open in
+     Pancake" line (Approve / Reject carry the action), so three fit the height the other panes
+     set — the Slack window must never be the tallest pane (swept: stage heights unchanged on
+     all 40 pages at 320–900) — and what height is left spreads evenly between the posts
+     instead of pooling under the bar */
+  .lp-vx .vx-smsg--extra { display: block; }
+  .lp-vx .vx-scard::after { content: none; }
+  .lp-vx .vx-slack__feed { justify-content: space-evenly; }
+}
+/* 560–939 (tablets): the journey stacks like the phone one — steps, then "Up next" — with the
+   three message steps folded into step 4's row: two columns stretched the "Up next" card into
+   a 160px void. The step notes go with the fold ("6 hours after they accept" is the invite's). */
+@container vxstage (min-width: 560px) and (max-width: 939px) {
+  .lp-vx .vx-journey__grid { grid-template-columns: minmax(0, 1fr); }
+  .lp-vx .vx-steps > .vx-step:nth-child(n + 5) { display: none; }
+  .lp-vx .vx-step[data-fold]::before { content: none; }
+  .lp-vx .vx-step[data-fold] > :is(.vx-step__name, .vx-step__sub) { display: none; }
+  .lp-vx .vx-step[data-fold]::after {
+    content: attr(data-fold);
+    font-size: 11.5px;
+    font-weight: 500;
+    grid-area: 1 / 2;
+    line-height: 16px;
+    padding-top: 3px;
+  }
+}
+@container vxstage (max-width: 819px) {
+  .lp-vx .vx-rail { display: none; }
+  .lp-vx .vx-slack { grid-template-columns: 150px minmax(0, 1fr); }
+}
+@container vxstage (max-width: 699px) {
+  .lp-vx .vx-prop { margin-left: 12px; } /* the 272px chat column: half the indent */
+  .lp-vx .vx-app__cta { display: none; }
+  .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr) 272px; }
+  .lp-vx .vx-row { grid-template-columns: 14px 30px 170px 124px 0 0; }
+  .lp-vx .vx-drawer { width: 256px; }
+  .lp-vx .vx-btn--ai { display: none; }
+  .lp-vx .vx-drawer__head { padding-right: 0; }
+  .lp-vx .vx-journey__grid { grid-template-columns: minmax(0, 1fr); }
+  .lp-vx .vx-slack { grid-template-columns: minmax(0, 1fr); }
+  .lp-vx .vx-slack__side { display: none; }
+}
+@container vxstage (max-width: 559px) {
+  /* phones: recomposed, nothing zoomed or cropped */
+  /* the chat alone fills the Brief pane here, and a shorter prompt's thread would leave a band
+     over the composer: the thread sits ON the composer, as a chat does (the slack is above it) */
+  .lp-vx .vx-chat__log { align-content: end; }
+  .lp-vx .vx-chat__log > .vx-thread { align-self: end; }
+  .lp-vx .vx-app__bar { gap: 8px; height: 48px; padding: 0 10px 0 12px; }
+  .lp-vx .vx-app__logo { height: 20px; }
+  .lp-vx .vx-app__center { left: auto; margin-left: auto; position: static; transform: none; }
+  .lp-vx .vx-app__home { display: none; }
+  .lp-vx .vx-app__nav > span { width: 62px; }
+  .lp-vx .vx-page { padding: 10px 12px 14px; }
+  .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr); }
+  .lp-vx .vx-sigpage { display: none; }
+  .lp-vx .vx-chat { border-left: 0; border-top: 1px solid var(--app-border); }
+  .lp-vx .vx-chat__head { height: 38px; }
+  .lp-vx .vx-leads .vx-page__sub { display: none; }
+  .lp-vx .vx-chat__log { padding: 12px 12px 10px; }
+  .lp-vx .vx-bubble, .lp-vx .vx-answer { font-size: 12.5px; line-height: 18px; }
+  /* phones: the card spans the log (the indent would cost a line per row); the rule stays inside */
+  .lp-vx .vx-prop { margin-left: 0; }
+  .lp-vx .vx-prop__rows li { font-size: 11.5px; grid-template-columns: 70px minmax(0, 1fr); line-height: 16px; }
+  .lp-vx .vx-count::before, .lp-vx .vx-row::before { display: none; }
+  /* two rows only, so the "5 qualified leads" line would contradict what shows */
+  .lp-vx .vx-count { display: none; }
+  .lp-vx .vx-table { margin-top: 10px; }
+  .lp-vx .vx-row { grid-template-columns: 30px minmax(0, 1fr) auto; height: 52px; padding: 0 10px; }
+  .lp-vx .vx-row > .vx-av { grid-column: 1; }
+  .lp-vx .vx-row__name, .lp-vx .vx-row__role { grid-column: 2; }
+  .lp-vx .vx-row > .vx-chip { align-self: center; grid-area: 1 / 3 / 3 / 4; }
+  .lp-vx .vx-row::after, .lp-vx .vx-row__act, .lp-vx .vx-row__detail { display: none; }
+  .lp-vx .vx-rowset > .vx-row:nth-child(n + 3) { display: none; }
+  .lp-vx .vx-rowset > .vx-row:nth-child(2) { border-bottom: 0; }
+  .lp-vx .vx-drawer {
+    box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+    grid-area: 2 / 1;
+    justify-self: stretch;
+    margin: 0 12px 12px;
+    width: auto;
+  }
+  .lp-vx .vx-demo__card[data-armed] .vx-drawer[data-cue]:not(.is-on) { transform: translateY(12px); }
+  /* the phone sheet: head, chips, the signal box and the action bar (the table above
+     already carries the lead's sighting) */
+  .lp-vx .vx-btn--ai, .lp-vx .vx-props, .lp-vx .vx-tlv { display: none; }
+  .lp-vx .vx-drawer__head { padding-right: 0; }
+  .lp-vx .vx-drawer__foot { padding-top: 10px; }
+  .lp-vx .vx-journey { padding: 10px 12px 12px; }
+  .lp-vx .vx-step { padding: 4px 0; }
+  .lp-vx .vx-step__sub { display: none; }
+  .lp-vx .vx-step:not(:last-child)::before { bottom: -4px; top: 29px; }
+  /* the three message steps fold into step 4's row (its data-fold label); the status notes go
+     (the footnote stays) */
+  .lp-vx .vx-steps > .vx-step:nth-child(n + 5) { display: none; }
+  .lp-vx .vx-step[data-fold]::before { content: none; }
+  .lp-vx .vx-step[data-fold] > .vx-step__name { display: none; }
+  .lp-vx .vx-step[data-fold]::after {
+    content: attr(data-fold);
+    font-size: 11.5px;
+    font-weight: 500;
+    grid-area: 1 / 2;
+    line-height: 16px;
+    padding-top: 3px;
+  }
+  .lp-vx .vx-next__draft { display: none; }
+  .lp-vx .vx-next__end { padding-top: 8px; }
+  /* phones: tighter Slack posts, so the three fit the height the other panes set */
+  .lp-vx .vx-slack__feed { gap: 6px; padding: 10px 12px; }
+  .lp-vx .vx-scard { margin-top: 3px; }
+  .lp-vx .vx-scard__btns { margin-top: 5px; }
+  .lp-vx :is(.vx-sbtn, .vx-scard__done) { height: 26px; }
+  .lp-vx .vx-slack__composer { margin: 0 12px 12px; }
+  .lp-vx .vx-smsg--cont { padding-left: 0; }
+}
+/* ≤359 (375 / 390 phones and below): the lead lines wrap to two, and every post reserves its
+   longest prompt's line — a 12px channel keeps the three posts inside the stage */
+@container vxstage (max-width: 359px) {
+  .lp-vx .vx-slack { font-size: 12px; }
+  .lp-vx :is(.vx-smsg, .vx-smsg--cont) { line-height: 17px; }
+}
+@container vxstage (max-width: 340px) {
+  /* narrow phones: the lead's kind chip lives on the sheet below, so "role @ company" gets the row */
+  .lp-vx .vx-row { grid-template-columns: 30px minmax(0, 1fr); }
+  .lp-vx .vx-row > .vx-chip { display: none; }
+}
+
+/* ─── page breakpoints ─────────────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .lp-vx .vx-demo { padding-bottom: 32px; }
+}
+@media (max-width: 767px) {
+  .lp-vx .vx-demo { padding-bottom: 28px; scroll-margin-top: 64px; }
+  .lp-vx .vx-tab { height: 52px; padding: 0 2px; }
+  .lp-vx .vx-tab__label { font-size: 14px; }
+  .lp-vx .vx-stage { margin-top: 12px; }
+  .lp-vx .vx-cursor { display: none; }
+  /* phones: the caption takes the column (2–3 lines), the note and the buttons share the row under it */
+  .lp-vx .vx-demo__foot { grid-template-areas: "cap cap" "note ctrl"; margin-top: 12px; row-gap: 4px; }
+}
+/* short desktop windows (hero.css has the other half of this tier and its bounds): a 48px bar
+   and a 12px gap to the window */
+@media (min-width: 1000px) and (min-height: 760px) and (max-height: 859px),
+  (min-width: 768px) and (max-width: 999px) and (min-height: 780px) and (max-height: 879px) {
+  .lp-vx .vx-tab { height: 48px; }
+  .lp-vx .vx-stage { margin-top: 12px; }
+}
+/* no JS on a phone: the sticky nav stays 104 tall and transparent (LpNavScroll never compacts
+   it), so a prompt row's #vx-demo jump must clear 104, and the bar needs a ground or the hero
+   shows through it */
+@media (max-width: 767px) and (scripting: none) {
+  .lp-vx .vx-demo { scroll-margin-top: 104px; }
+  .lp-vx .lp-nav { background: var(--lp-page-bg); box-shadow: 0 1px 0 var(--vx-hair); }
+}
+@media (max-width: 420px) {
+  .lp-vx .vx-tab__num { display: none; }
+}
+@media (max-width: 359px) {
+  .lp-vx .vx-tab__label { font-size: 13px; letter-spacing: -0.1px; }
+}
+
+/* reduced motion: the final frames, nothing moves (the island never arms) */
+@media (prefers-reduced-motion: reduce) {
+  .lp-vx .vx-demo__card *,
+  .lp-vx .vx-demo__card *::before,
+  .lp-vx .vx-demo__card *::after { transition: none !important; }
+  .lp-vx .vx-cursor { display: none; }
+  .lp-vx .vx-demo__card .vx-ctrl { visibility: hidden; }
+}
+
+/* ─── icon masks (24px grid; generated, one custom property each) ──────────── */
+.lp-vx [data-ico="pause"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.7' stroke-linecap='round' fill='none'%3E%3Cpath d='M8.25 5.25v13.5m7.5-13.5v13.5'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="play"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M7.5 4.8v14.4L18.9 12z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="replay"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4.8 12a7.2 7.2 0 1 0 2.25-5.25M4.5 3.9v3.9h3.9'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="house"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4.5 10.5 12 4.5l7.5 6V19a1 1 0 0 1-1 1h-4v-5.5h-5V20h-4a1 1 0 0 1-1-1z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="grid"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Crect x='4' y='4' width='6.5' height='6.5' rx='1.6'/%3E%3Crect x='13.5' y='4' width='6.5' height='6.5' rx='1.6'/%3E%3Crect x='4' y='13.5' width='6.5' height='6.5' rx='1.6'/%3E%3Crect x='13.5' y='13.5' width='6.5' height='6.5' rx='1.6'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="users"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Ccircle cx='9' cy='8.5' r='3.5'/%3E%3Cpath d='M3 19.5c.8-3.2 3.2-5 6-5s5.2 1.8 6 5M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14.8c1.7.6 2.9 2.2 3.4 4.7'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="send"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M20.5 3.5 10.8 13.2M20.5 3.5l-6.2 17-3.5-7.3-7.3-3.5z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="pulse"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M3 12h4l2.5-6 5 12 2.5-6h4'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="sparkle"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M11 2.5c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5 4.6-.6 6.9-2.9 7.5-7.5zM18.5 14.5c.3 2.1 1.4 3.2 3.5 3.5-2.1.3-3.2 1.4-3.5 3.5-.3-2.1-1.4-3.2-3.5-3.5 2.1-.3 3.2-1.4 3.5-3.5z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="gear"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4 7.5h9M17 7.5h3M4 16.5h3M11 16.5h9'/%3E%3Ccircle cx='15' cy='7.5' r='2.2'/%3E%3Ccircle cx='9' cy='16.5' r='2.2'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="check"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="check-circle"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M12 2.5a9.5 9.5 0 1 1 0 19 9.5 9.5 0 0 1 0-19zm4.4 5.9-6 6-2.7-2.7-1.6 1.6 4.3 4.3 7.6-7.6z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="arrow-up"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M12 19V5.5M6.5 11 12 5.5l5.5 5.5'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="x"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.2' stroke-linecap='round' fill='none'%3E%3Cpath d='M7 7l10 10M17 7 7 17'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="caret"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M9.5 6l6 6-6 6'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="plus"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' fill='none'%3E%3Cpath d='M12 5.5v13M5.5 12h13'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="li"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2.6 7.4H5.4V18h2.2zM6.5 5.9a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6zm11.1 7.6c0-2.3-1.2-3.3-2.9-3.3-1.2 0-1.9.6-2.2 1.1v-.9h-2.2V18h2.2v-4c0-1.1.5-1.8 1.4-1.8.9 0 1.4.7 1.4 1.8v4h2.3z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="hash"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M5 9h15M4 15h15M10.5 4 8.5 20M15.5 4l-2 16'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="target"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Ccircle cx='12' cy='12' r='4.5'/%3E%3Ccircle cx='12' cy='12' r='1' fill='black'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="megaphone"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4 10v4a1 1 0 0 0 1 1h2.5L16 19.5v-15L7.5 9H5a1 1 0 0 0-1 1zM7.5 15l1.3 4.5M19 9.5a3 3 0 0 1 0 5'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="building"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4.5 20.5V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v15.5M14.5 9.5h4a1 1 0 0 1 1 1v10M2.5 20.5h19M8 8h3M8 12h3M8 16h3'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="briefcase"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Crect x='3.5' y='7' width='17' height='12.5' rx='2'/%3E%3Cpath d='M9 7V5.5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1V7M3.5 12.5h17'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="stack"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M12 3.5 3.5 8 12 12.5 20.5 8zM3.5 12 12 16.5 20.5 12M3.5 16 12 20.5 20.5 16'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="eye"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="thumbs"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M7.5 10.5v9h-3v-9zM7.5 10.5 11.3 4c1.4 0 2.4 1 2.1 2.5l-.6 3.5h5.7a2 2 0 0 1 2 2.4l-1.2 5.8a2 2 0 0 1-2 1.8H7.5'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="user-plus"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Ccircle cx='10' cy='8' r='3.8'/%3E%3Cpath d='M3.5 19.5c.8-3.4 3.4-5.5 6.5-5.5s5.7 2.1 6.5 5.5M18.5 8v6M15.5 11h6'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="heart"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M12 20s-7.5-4.4-7.5-10.1A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.6C19.5 15.6 12 20 12 20z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="chat"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4.5 5h15a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-10l-5 3.5V6a1 1 0 0 1 1-1z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="medal"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M12 3.5l2.4 4.8 5.3.8-3.8 3.7.9 5.2L12 15.5 7.2 18l.9-5.2-3.8-3.7 5.3-.8z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="globe"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Cpath d='M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5S9.7 5.9 12 3.5z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="sg-ok"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M5 2h14a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zm12.6 6.3-2-1.9-6.2 6.7-2.9-2.9-1.9 1.9 4.9 4.9z'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="sg-no"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='3.6' stroke-linecap='round' fill='none'%3E%3Cpath d='M6 6l12 12M18 6 6 18'/%3E%3C/svg%3E"); }
+.lp-vx .vx-row__name { --li: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M5 3h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2zm2.6 7.4H5.4V18h2.2zM6.5 5.9a1.3 1.3 0 1 0 0 2.6 1.3 1.3 0 0 0 0-2.6zm11.1 7.6c0-2.3-1.2-3.3-2.9-3.3-1.2 0-1.9.6-2.2 1.1v-.9h-2.2V18h2.2v-4c0-1.1.5-1.8 1.4-1.8.9 0 1.4.7 1.4 1.8v4h2.3z'/%3E%3C/svg%3E"); }
+/* the two agent marks reuse the homepage's own logo files (same origin) */
+.lp-vx [data-ico="claude"] { --i: url("/lp/lp-f3-logo-claude.svg"); }
+.lp-vx [data-ico="codex"] { --i: url("/lp/lp-f3-logo-chatgpt.svg"); }

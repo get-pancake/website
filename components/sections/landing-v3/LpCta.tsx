@@ -11,8 +11,26 @@ import { DEMO_PAGE_PATH } from "@/lib/booking";
  * @ right:0 == x767 at the 1296 width); inside, the 1478×2622 rotated group
  * container sits at the group's card offset: right (0, -1019), left
  * (-918, -1019) — sliver-relative. The card's overflow clip crops the rest.
+ *
+ * Optional `title` / `body` (the /for pages, spec §2.9): omitted, the card
+ * renders the homepage copy below, byte for byte. A vertical passes its own
+ * one-line title (≤464px at 48px) and two body lines.
  */
-export function LpCta() {
+const CTA_TITLE = "Try Pancake now";
+/* "Pancake can’t overspend." retired (founder 2026-09-19): the plan is flat,
+   so the cost-certainty line says that instead. */
+const CTA_BODY: readonly [string, string] = [
+  "$99 a month, flat.",
+  "Every lead arrives with its conversation attached.",
+];
+
+export function LpCta({
+  title = CTA_TITLE,
+  body = CTA_BODY,
+}: {
+  title?: string;
+  body?: readonly [string, string];
+} = {}) {
   return (
     <section className="lp-cta">
       <div className="lp-cta__card">
@@ -31,13 +49,11 @@ export function LpCta() {
         </div>
         <div className="lp-cta__content">
           <div className="lp-cta__text">
-            <h2 className="lp-title-card lp-cta__title">Try Pancake now</h2>
-            {/* "Pancake can’t overspend." retired (founder 2026-09-19): the
-                plan is flat, so the cost-certainty line says that instead. */}
+            <h2 className="lp-title-card lp-cta__title">{title}</h2>
             <p className="lp-cta__body">
-              $99 a month, flat.
+              {body[0]}
               <br />
-              Every lead arrives with its conversation attached.
+              {body[1]}
             </p>
           </div>
           <div className="lp-cta__btns">

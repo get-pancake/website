@@ -1,0 +1,7 @@
+/* /for hub only — imported by app/for/page.tsx AFTER landing-v3.css instead
+   of verticals.css (PERF-CSS-11): the hub renders the section-head pattern
+   and the industry cards, never a demo, a hero, signals, control, FAQ or
+   related rows, so it loads the two sheets it uses and not demo.css (59KB).
+   /for/<vertical> keeps verticals.css (every sheet, this one's two included). */
+@import "./verticals/foundation.css";
+@import "./verticals/hub.css";

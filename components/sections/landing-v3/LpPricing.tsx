@@ -21,7 +21,11 @@ const CHECKLIST = [
   "Approvals on leads and articles.",
 ];
 
-export function LpPricing() {
+/**
+ * Optional `checklist` (the /for pages, spec §2.10): omitted, the homepage
+ * CHECKLIST above renders unchanged.
+ */
+export function LpPricing({ checklist = CHECKLIST }: { checklist?: readonly string[] } = {}) {
   return (
     <section id="pricing" className="lp-price">
       <div className="lp-price-frame">
@@ -37,7 +41,7 @@ export function LpPricing() {
             </p>
           </div>
           <ul className="lp-price-list">
-            {CHECKLIST.map((item) => (
+            {checklist.map((item) => (
               <li key={item} className="lp-price-item">
                 <img src="/lp/lp-p-check.svg" alt="" width={24} height={24} />
                 <span>{item}</span>
