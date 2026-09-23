@@ -31,13 +31,24 @@ export interface DemoLeadView {
 export interface DemoSigView {
   kind: SignalKind;
   label: string;
-  /** on = static on (own brand); proposed = switches on at approval; empty = "Set up". */
-  state: "on" | "proposed" | "empty";
-  /** Index among this prompt's proposed kinds, in app order (the `b.sig{i}` swap id). */
+  /** on = static on (own brand); proposed = switches on at approval; empty = "Set up";
+   *  grown = static on (own brand) whose approved items append "+N more" at approval. */
+  state: "on" | "proposed" | "empty" | "grown";
+  /** Index among this prompt's animated cards (proposed + grown), in app order (the `b.sig{i}` swap id). */
   order: number;
   chips: string[];
   more: number;
+  /** grown only: items the approval appends (the "+N more" after the swap). */
+  grow: number;
   empty: string;
+}
+
+/** The lead sheet's TIMELINE (leads/lead-timeline.tsx), newest first after "Qualified as a lead". */
+export interface DemoTimelineView {
+  /** The engagement that surfaced the lead, or null (hiring / stack, or an authored post). */
+  sighting: { kind: "comment" | "reaction"; source: string } | null;
+  /** The cold-lead note (hiring / stack leads), or null. */
+  cold: string | null;
 }
 
 export interface DemoProposalView {
@@ -57,6 +68,10 @@ export interface DemoPromptView {
   leads: DemoLeadView[];
   featured: { why: string; confidence: number; seniority: string };
   message: string;
+  /** Lead 0's sheet timeline. */
+  timeline: DemoTimelineView;
+  /** The Outreach message footnote (campaigns/copy.ts sheet.writtenFrom / writtenInVoice). */
+  written: string;
   lens: DemoLens;
 }
 
@@ -84,6 +99,7 @@ export interface DemoModel {
 }
 
 const APP_ORDER: SignalKind[] = SIGNAL_GROUPS.flatMap((g) => g.kinds);
+const C = VX_DEMO.app;
 
 /** "Dana Whitfield" → "DW"; "Tomás Reyes" → "TR". */
 export function initialsOf(name: string): string {
@@ -108,28 +124,50 @@ function proposalText(kind: SignalKind, items: string[]): string {
 /** Signals-page cards show at most 2 chips, then "+N more" (fits the mock's card width). */
 const CHIP_LIMIT = 2;
 
+/** Kinds with no engagement sightings: company-signal leads are sourced cold (finalize-run: "No sightings"). */
+const COLD_KINDS: SignalKind[] = ["hiring", "stack"];
+
 function sigsFor(p: DemoPrompt, ws: { name: string; sender: string }): Record<SignalKind, DemoSigView> {
-  const proposedKinds = APP_ORDER.filter((k) => p.proposal.some((r) => r.kind === k));
   const out = {} as Record<SignalKind, DemoSigView>;
+  // Own brand is always on (the workspace page + the sender are connected at signup): a proposal
+  // that names it appends its NEW items to the static card, it never resets it to "Set up".
+  const owned = [`${ws.name} page`, ws.sender, ws.name].map((x) => x.trim().toLowerCase());
+  let order = 0;
   for (const kind of APP_ORDER) {
     const row = p.proposal.find((r) => r.kind === kind);
-    const base = { kind, label: SIGNAL_LABEL[kind], empty: SIGNAL_EMPTY[kind] };
-    if (row) {
+    const base = { kind, label: SIGNAL_LABEL[kind], empty: SIGNAL_EMPTY[kind], grow: 0 };
+    if (kind === "own_brand") {
+      const extra = row ? row.items.filter((i) => !owned.includes(i.trim().toLowerCase())) : [];
+      out[kind] = {
+        ...base,
+        state: extra.length ? "grown" : "on",
+        order: extra.length ? order++ : -1,
+        chips: [`${ws.name} page`, ws.sender],
+        more: 0,
+        grow: extra.length,
+      };
+    } else if (row) {
       const items = row.items.map((i) => itemText(kind, i));
       out[kind] = {
         ...base,
         state: "proposed",
-        order: proposedKinds.indexOf(kind),
+        order: order++,
         chips: items.slice(0, CHIP_LIMIT),
         more: Math.max(0, items.length - CHIP_LIMIT),
       };
-    } else if (kind === "own_brand") {
-      out[kind] = { ...base, state: "on", order: -1, chips: [`${ws.name} page`, ws.sender], more: 0 };
     } else {
       out[kind] = { ...base, state: "empty", order: -1, chips: [], more: 0 };
     }
   }
   return out;
+}
+
+/** The sighting behind an engagement lead, read from its signal line ("Commented on …", "Liked …"). */
+function sightingOf(kind: SignalKind, signal: string): DemoTimelineView["sighting"] {
+  if (COLD_KINDS.includes(kind)) return null;
+  if (/\b(comment(ed)?|repl(y|ied))\b/i.test(signal)) return { kind: "comment", source: SIGNAL_LABEL[kind] };
+  if (/\b(liked?|reacted)\b/i.test(signal)) return { kind: "reaction", source: SIGNAL_LABEL[kind] };
+  return null; // an authored post: the app's timeline has no entry for it
 }
 
 function fill(tpl: string, prompt: string, lead: string): string {
@@ -151,6 +189,7 @@ export function buildDemoModel(v: VerticalConfig): DemoModel {
       signal: l.signal,
     }));
     const sigs = sigsFor(p, ws);
+    const lead0 = p.leads[0];
     return {
       kind: p.kind,
       kindLabel: SIGNAL_LABEL[p.kind],
@@ -161,10 +200,16 @@ export function buildDemoModel(v: VerticalConfig): DemoModel {
       leads,
       featured: { why: p.featured.why, confidence: p.featured.confidence, seniority: p.featured.seniority },
       message: p.message,
+      timeline: {
+        sighting: sightingOf(lead0.kind, lead0.signal),
+        cold: COLD_KINDS.includes(lead0.kind) ? C.drawer.cold(SIGNAL_LABEL[lead0.kind]) : null,
+      },
+      // the app's footnote: evidence > 0 → "Written from n signals", none → "Written in your Brain voice"
+      written: COLD_KINDS.includes(lead0.kind) ? C.campaign.writtenInVoice : C.campaign.writtenFrom(1),
       lens: {
         typeLen: p.text.length,
         rows: p.proposal.length,
-        sigs: APP_ORDER.filter((k) => sigs[k].state === "proposed").length,
+        sigs: APP_ORDER.filter((k) => sigs[k].order >= 0).length,
         streamLen: p.message.length,
       },
     };

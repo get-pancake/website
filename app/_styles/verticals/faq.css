@@ -1,12 +1,13 @@
 /* ── FAQ (spec §2.7) — native <details>, zero JS ──────────────────────────
-   880px list on the text edge, hairline rules, 64px summaries (56 phones),
-   plus icon turning to × (45°) when open. The only transition outside the
-   demo besides hover fills; none under reduced motion. */
+   Full-column list (hairlines and + icons end on the same right edge as the
+   Related rows and every other block), answers held to a 720px measure,
+   64px summaries (56 phones), plus icon turning to × (45°) when open. The
+   only transition outside the demo besides hover fills; none under reduced
+   motion. */
 
 .lp-vx .vx-faq {
   border-top: 1px solid var(--vx-hair);
   margin-top: var(--vx-head-gap);
-  max-width: 880px;
 }
 .lp-vx .vx-qa {
   border-bottom: 1px solid var(--vx-hair);

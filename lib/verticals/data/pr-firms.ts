@@ -22,8 +22,9 @@ export const prFirms: VerticalConfig = {
   hubLine: "Find founders asking for press and teams hiring comms.",
 
   hero: {
+    title: "Find founders asking how to get press coverage.",
     h1: ["You pitch the press", "We bring you clients"],
-    lede: "Pancake finds founders posting about press and companies hiring comms roles. Your pitch arrives before the referrals do.",
+    lede: "Comms job openings and fans of media relations pros bring you whoever hires PR. Your pitch lands before the referrals do.",
   },
 
   workspace: { name: "Quintrell PR", sender: "Ivy Quintrell" },
@@ -33,8 +34,8 @@ export const prFirms: VerticalConfig = {
     prompts: [
       {
         kind: "hiring",
-        text: "We're a tech PR firm. Find US software companies with 25 to 250 staff hiring a comms manager.",
-        reply: "I'll watch job posts for comms and PR roles at US software companies that size.",
+        text: "We’re a tech PR firm. Find US software companies with 25 to 250 staff hiring a comms manager.",
+        reply: "I’ll watch job posts for comms and PR roles at US software companies that size.",
         proposal: [
           { kind: "hiring", items: ["Communications manager", "PR manager", "Head of Communications"] },
           { kind: "stack", items: ["Cision", "Muck Rack"] },
@@ -53,12 +54,12 @@ export const prFirms: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Harriet, saw Wingspar Labs is hiring a communications manager. Reporter relationships take years to build. We bring ours to software companies your size and work alongside in-house comms. Would a short intro before your new hire starts be useful?",
+          "Hi Harriet, thanks for the connection. We’re a tech PR firm, so I keep a running list of the outlets people want most. Which one would you most like to land in?",
       },
       {
         kind: "keyword",
         text: "I run a tech PR firm. Find US B2B founders posting that they want more press coverage.",
-        reply: "I'll watch B2B founders’ posts about press, coverage and telling their story.",
+        reply: "I’ll watch B2B founders’ posts about press, coverage and telling their story.",
         proposal: [
           { kind: "keyword", items: ["press coverage", "founder story", "how to get press"] },
           { kind: "competitor", items: ["Wickline PR", "Signalhouse Comms"] },
@@ -69,7 +70,7 @@ export const prFirms: VerticalConfig = {
           { name: "Lucia Benedetti", role: "Co-founder", company: "Quartzline", kind: "keyword", signal: "Posted on founder story" },
           { name: "Rohan Iyengar", role: "CEO", company: "Meridel", kind: "competitor", signal: "Liked a Wickline post" },
           { name: "Josephine Kurtz", role: "Founder", company: "Quillstone", kind: "keyword", signal: "Posted about coverage" },
-          { name: "Byron Achebe", role: "Co-founder", company: "Kindling Robotics", kind: "influencer", signal: "Liked Khalidi’s post" },
+          { name: "Byron Achebe", role: "Co-founder", company: "Kindling Robotics", kind: "influencer", signal: "Liked a Khalidi post" },
         ],
         featured: {
           why: "Parcelwise is a 40-person US logistics software company. Kojo founded it and asked in a post this week how startups get press.",
@@ -77,23 +78,23 @@ export const prFirms: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Kojo, saw your post asking how startups get press. In logistics tech, trade reporters usually want a customer story more than a launch. We run PR for B2B software companies and help founders find that angle. Want a few story angles for Parcelwise?",
+          "Hi Kojo, came across your post asking how startups get press. What story would you most want a reporter to tell about Parcelwise?",
       },
       {
         kind: "influencer",
-        text: "We pitch tech press. Find US heads of comms engaging with media relations experts' posts.",
-        reply: "I'll watch who engages with the comms experts you name and keep US tech companies.",
+        text: "We pitch tech press. Find US heads of comms engaging with media relations experts’ posts.",
+        reply: "I’ll watch who engages with the comms experts you name and keep US tech companies.",
         proposal: [
           { kind: "influencer", items: ["Noor Khalidi", "Grant Esterhaus"] },
           { kind: "keyword", items: ["media relations", "trade press"] },
           { kind: "hiring", items: ["PR manager", "Comms and content lead"] },
         ],
         leads: [
-          { name: "Toni Sutherland", role: "Head of Comms", company: "Veritrail", kind: "influencer", signal: "Replied to Noor Khalidi" },
-          { name: "Garrett Oberlin", role: "VP Comms", company: "Weyburn Health", kind: "influencer", signal: "Liked Esterhaus’s post" },
+          { name: "Toni Sutherland", role: "Head of Comms", company: "Veritrail", kind: "influencer", signal: "Commented on a post" },
+          { name: "Garrett Oberlin", role: "VP Comms", company: "Weyburn Health", kind: "influencer", signal: "Liked an Esterhaus post" },
           { name: "Anjali Raman", role: "Comms Director", company: "Beaconrise", kind: "keyword", signal: "Posted on pitching press" },
           { name: "Emilio Zavala", role: "Head of Brand", company: "Sablecrest", kind: "hiring", signal: "Comms lead role open" },
-          { name: "Efua Ansah", role: "Director of Comms", company: "Northgale", kind: "influencer", signal: "Replied to Esterhaus" },
+          { name: "Efua Ansah", role: "Director of Comms", company: "Northgale", kind: "influencer", signal: "Commented on a post" },
         ],
         featured: {
           why: "Veritrail is a 210-person US software company. Toni leads communications and commented on Noor Khalidi’s trade press post this week.",
@@ -101,7 +102,7 @@ export const prFirms: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Toni, saw your comment on Noor Khalidi’s post about trade press. Trade and business press for B2B software companies is most of what we do. If Veritrail ever needs extra reach there, I’d be glad to compare notes.",
+          "Hi Toni, noticed your comment on Noor Khalidi’s post about trade press. Which trade outlet matters most to your buyers?",
       },
     ],
   },
@@ -126,7 +127,7 @@ export const prFirms: VerticalConfig = {
       {
         kind: "influencer",
         title: "Fans of media relations pros",
-        body: "Heads of comms who react or reply to the media relations voices you name become leads.",
+        body: "Heads of comms who engage with the media relations voices you name become leads.",
         watching: ["Noor Khalidi", "Grant Esterhaus"],
       },
       {
@@ -141,19 +142,19 @@ export const prFirms: VerticalConfig = {
   faq: [
     {
       q: "Can you tell me which startups raised money?",
-      a: "No. There's no funding signal. Pancake reads LinkedIn posts, engagement and job posts, so you see who talks about press, not who raised.",
+      a: "No. There’s no funding signal. Pancake reads LinkedIn posts, engagement and job posts, so you see who talks about press, not who raised.",
     },
     {
       q: "Will it pitch journalists for me?",
-      a: "No. Pancake finds your clients: the founders and comms leads who hire PR. Media outreach stays with your team.",
+      a: "No. Pancake finds your clients: the founders and heads of comms who hire PR. Media outreach stays with your team.",
     },
     {
-      q: "Can Pancake tell which founders have a story?",
-      a: "No. It finds founders talking about press or hiring comms. The story is your call.",
+      q: "Can it find founders before a launch?",
+      a: "Only when they post about it. Add phrases like “launching soon” as keywords, and Pancake finds the founders who use them. Quiet launches stay invisible.",
     },
     {
       q: "Does it work for consumer and lifestyle PR?",
-      a: "Less well. Pancake works from LinkedIn, where B2B tech founders and comms leads post. Consumer and lifestyle brands post less there.",
+      a: "Less well. Pancake works from LinkedIn, where B2B tech founders and heads of comms post. Consumer and lifestyle brands post less there.",
     },
   ],
 

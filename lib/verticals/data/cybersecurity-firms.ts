@@ -22,13 +22,14 @@ export const cybersecurityFirms: VerticalConfig = {
     badge: "For cybersecurity firms",
   },
 
-  meta: { seoTitle: "Pancake for Cybersecurity Firms: SaaS Teams Facing Audits" },
+  meta: { seoTitle: "Pancake for Cybersecurity Firms: Find Security Clients" },
 
   hubLine: "Find companies facing audits or hiring security staff.",
 
   hero: {
+    title: "Find CTOs preparing for their first SOC 2 audit.",
     h1: ["You secure companies", "We bring you clients"],
-    lede: "Pancake finds CTOs posting about SOC 2 or hiring security roles, then messages them on LinkedIn. Get there before the audit.",
+    lede: "Pancake reads GRC openings, job posts naming Vanta, and rival MSSPs’ pages. You scope the work before another firm does.",
   },
 
   workspace: { name: "Varnholt Security", sender: "Keira Varnholt" },
@@ -39,7 +40,7 @@ export const cybersecurityFirms: VerticalConfig = {
       {
         kind: "keyword",
         text: "We run SOC 2 readiness. Find CTOs at US SaaS companies posting about their first SOC 2 audit.",
-        reply: "I'll watch posts about SOC 2 audits and keep CTOs at US SaaS companies.",
+        reply: "I’ll watch posts about SOC 2 audits and keep CTOs at US SaaS companies.",
         proposal: [
           { kind: "keyword", items: ["first SOC 2 audit", "SOC 2 Type II", "security questionnaire"] },
           { kind: "hiring", items: ["Compliance manager", "GRC analyst"] },
@@ -59,12 +60,12 @@ export const cybersecurityFirms: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Delaney, saw your post about Gantrywise’s first SOC 2 audit. The first one tends to land on the CTO’s desk. We run SOC 2 readiness for SaaS teams your size, from gap assessment to auditor handoff. Open to a short call?",
+          "Hi Delaney, I saw you’re preparing Gantrywise for its first SOC 2 audit. Which part of the prep is taking the most time?",
       },
       {
         kind: "hiring",
         text: "We run a 24/7 SOC. Find US companies with 200 to 2,000 staff hiring their own SOC analysts.",
-        reply: "I'll watch US job posts for SOC analyst roles and find who leads security there.",
+        reply: "I’ll watch US job posts for SOC analyst roles and find who leads security there.",
         proposal: [
           { kind: "hiring", items: ["SOC analyst", "Security analyst", "Detection engineer"] },
           { kind: "stack", items: ["CrowdStrike", "SentinelOne", "Splunk"] },
@@ -84,12 +85,12 @@ export const cybersecurityFirms: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Octavia, saw Coppervane Health is hiring a SOC analyst. One analyst covers about 40 hours a week, and alerts arrive all 168. We run a 24/7 SOC for healthcare teams your size, next to your in-house hire. Open to a short call?",
+          "Hi Octavia, thanks for accepting. I run a 24/7 security operations center. How does your team handle alerts that land overnight?",
       },
       {
         kind: "stack",
         text: "We run pentests for SOC 2 audits. Find US SaaS companies whose job posts name Vanta or Drata.",
-        reply: "I'll watch US job posts that name Vanta or Drata and find who owns security.",
+        reply: "I’ll watch US job posts that name Vanta or Drata and find who owns security.",
         proposal: [
           { kind: "stack", items: ["Vanta", "Drata", "Secureframe"] },
           { kind: "keyword", items: ["penetration test", "pentest report"] },
@@ -108,7 +109,7 @@ export const cybersecurityFirms: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Rosario, saw Quellstone’s security roles ask for Vanta experience. SOC 2 auditors often ask for a recent pentest report. We run pentests for SaaS teams your size and write the report with your auditor in mind. Open to a short call?",
+          "Hi Rosario, good to connect. We run pentests timed to SOC 2 audits. How far ahead do you usually book yours?",
       },
     ],
   },
@@ -139,7 +140,7 @@ export const cybersecurityFirms: VerticalConfig = {
       },
       {
         kind: "competitor",
-        title: "Fans of rival security firms",
+        title: "Rival security firms’ audience",
         body: "IT and security leaders who comment on or like a rival MSSP or pentest firm’s posts become your leads.",
         watching: ["Ironwake Security", "Tallwater Cyber"],
         more: 1,
@@ -154,11 +155,11 @@ export const cybersecurityFirms: VerticalConfig = {
     },
     {
       q: "Can messages mention what’s exposed on their domain?",
-      a: "No. Pancake never scans or probes a prospect’s systems. Each message is written from the lead’s public signal, like a SOC 2 post, plus your offer.",
+      a: "No. Pancake never scans or probes a prospect’s systems. Messages start from the lead’s own post when there is one, and from your Brain.",
     },
     {
       q: "Security leaders ignore vendor pitches. Will this read like one?",
-      a: "The connection request has no note, so there’s no pitch to ignore. Messages are written from the post or job ad behind each lead. Leads you don’t approve never hear from you.",
+      a: "The connection request has no note, so there’s no pitch to ignore. When a lead posted or commented, the message starts from that post. Leads you don’t approve never hear from you.",
     },
     {
       q: "Can it find companies that need a pentest?",

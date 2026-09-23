@@ -26,8 +26,9 @@ export const aiAutomationAgencies: VerticalConfig = {
   hubLine: "Find ops leaders with manual work to automate.",
 
   hero: {
+    title: "Find ops leaders hiring data entry clerks.",
     h1: ["You automate ops work", "We bring you clients"],
-    lede: "Pancake finds ops leaders posting about manual work, and firms whose job posts name Zapier. You bring the automation.",
+    lede: "Admin job posts and Zapier or n8n in listings, then the COO who owns that work. Offer the automation instead of the hire.",
   },
 
   workspace: { name: "Cogspring Automation", sender: "Dorian Mbatha" },
@@ -38,7 +39,7 @@ export const aiAutomationAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We automate admin work. Find US firms with 50 to 500 staff hiring data entry clerks.",
-        reply: "I'll watch job posts for data entry and admin roles at US firms that size.",
+        reply: "I’ll watch job posts for data entry and admin roles at US firms that size.",
         proposal: [
           { kind: "hiring", items: ["Data entry clerk", "Administrative assistant"] },
           { kind: "keyword", items: ["manual processes", "too many spreadsheets"] },
@@ -57,12 +58,12 @@ export const aiAutomationAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Marisol, saw Harrowgate is hiring a data entry clerk. In property management, that role often means retyping leases and vendor invoices. We build AI workflows that read those documents and fill in the fields. Want to see one run on a sample lease?",
+          "Hi Marisol, thanks for connecting. We automate admin work, so I’m always hunting down the tasks teams still do by hand. Which one eats the most hours on your side?",
       },
       {
         kind: "stack",
         text: "Find US firms whose job posts mention Zapier or n8n. We rebuild those workflows with AI.",
-        reply: "I'll watch job posts that name Zapier or n8n and find the ops lead at each firm.",
+        reply: "I’ll watch job posts that name Zapier or n8n and find the ops lead at each firm.",
         proposal: [
           { kind: "stack", items: ["Zapier", "n8n", "Airtable"] },
           { kind: "hiring", items: ["Automation specialist", "Operations analyst"] },
@@ -81,12 +82,12 @@ export const aiAutomationAgencies: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Georgina, saw Tallisford's open roles ask for Zapier experience. Zaps tend to multiply as a brokerage grows. We rebuild them with AI steps, like reading a policy PDF and routing it to the right team. Open to a quick walkthrough?",
+          "Hi Georgina, happy to be connected. I rebuild automation workflows with AI, so I hear a lot about brittle ones. Which workflow do you wish ran itself?",
       },
       {
         kind: "keyword",
-        text: "Find COOs at US B2B services firms posting about manual processes. I'm an AI consultant.",
-        reply: "I'll watch posts about manual processes and keep COOs at B2B services firms.",
+        text: "Find COOs at US B2B services firms posting about manual processes. I’m an AI consultant.",
+        reply: "I’ll watch posts about manual processes and keep COOs at B2B services firms.",
         proposal: [
           { kind: "keyword", items: ["manual processes", "client onboarding"] },
           { kind: "influencer", items: ["Rhea Montaño", "Tobin Iredale"] },
@@ -96,7 +97,7 @@ export const aiAutomationAgencies: VerticalConfig = {
           { name: "Fatima Ghorbani", role: "COO", company: "Quinlan Hart", kind: "keyword", signal: "Posted on onboarding" },
           { name: "Brent Vandermolen", role: "COO", company: "Lockridge", kind: "influencer", signal: "Liked a Montaño post" },
           { name: "Lorna Quigley", role: "Managing Partner", company: "Stanbury", kind: "keyword", signal: "Posted on manual work" },
-          { name: "Ekow Danquah", role: "VP Operations", company: "Kettleby", kind: "influencer", signal: "Commented on Iredale" },
+          { name: "Ekow Danquah", role: "VP Operations", company: "Kettleby", kind: "influencer", signal: "Commented on a post" },
           { name: "Ezekiel Hargrove", role: "COO", company: "Gatwood", kind: "hiring", signal: "Ops coordinator role" },
         ],
         featured: {
@@ -105,7 +106,7 @@ export const aiAutomationAgencies: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Fatima, saw your post about the manual steps in client onboarding at Quinlan Hart. Chasing documents by hand adds up fast. I help accounting firms your size automate intake and follow-ups with AI. Worth 20 minutes to compare notes?",
+          "Hi Fatima, spotted your post about the manual steps in client onboarding at Quinlan Hart. Which step takes your team the longest?",
       },
     ],
   },
@@ -155,7 +156,7 @@ export const aiAutomationAgencies: VerticalConfig = {
     },
     {
       q: "My offer changes every month. Can Pancake keep up?",
-      a: "Yes. Edit the ICP in your Brain any time. The next morning's leads follow the new version.",
+      a: "Yes. Edit the ICP in your Brain any time. The next morning’s leads follow the new version.",
     },
     {
       q: "Can it find leaders asking where to start with AI?",

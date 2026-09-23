@@ -26,19 +26,20 @@ export const retailTechStartups: VerticalConfig = {
   hubLine: "Find e-commerce and insights leaders at consumer brands.",
 
   hero: {
+    title: "Find e-commerce heads venting about apparel returns.",
     h1: ["You help brands sell", "We bring you customers"],
-    lede: "Pancake finds brands hiring insights managers or naming Salsify in job posts. You reach them while the need is fresh.",
+    lede: "Insights openings, Salsify or Akeneo in job posts and comments on your page. The buyer arrives by breakfast.",
   },
 
   workspace: { name: "Endaisle", sender: "Esteban Cordero" },
 
   demo: {
-    h2: "Every post is a brief.",
+    h2: "Find who owns the shelf.",
     prompts: [
       {
         kind: "hiring",
         text: "We run shopper research for brands. Find US brands hiring consumer insights managers.",
-        reply: "I'll watch insights job posts at US consumer brands and skip agency listings.",
+        reply: "I’ll watch insights job posts at US consumer brands and skip agency listings.",
         proposal: [
           { kind: "hiring", items: ["Consumer insights manager", "Shopper insights analyst"] },
           { kind: "keyword", items: ["consumer insights", "shopper research"] },
@@ -57,12 +58,12 @@ export const retailTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Whitney, saw Toastwell is hiring a consumer insights manager. We run shopper interviews for snack brands, with findings back in a week. That could cover the gap while you hire. Worth a look?",
+          "Hi Whitney, nice to be connected. We run shopper research, usually one-on-one interviews. What would you most like to learn about your shoppers?",
       },
       {
         kind: "stack",
         text: "We check product data. Find US consumer brands whose job posts name Salsify or Akeneo.",
-        reply: "I'll watch brand job posts that name Salsify or Akeneo and find who owns product data.",
+        reply: "I’ll watch brand job posts that name Salsify or Akeneo and find who owns product data.",
         proposal: [
           { kind: "stack", items: ["Salsify", "Akeneo"] },
           { kind: "hiring", items: ["Product data specialist", "PIM manager"] },
@@ -81,12 +82,12 @@ export const retailTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Aditi, saw Brisa Home’s product data roles call for Salsify. Listing errors get products pulled from retailer sites. We check every listing against your Salsify records before a retailer flags it. Want us to check a few live listings?",
+          "Hi Aditi, happy to be connected. We build software that catches errors in product listings. How do bad listings usually come to your attention?",
       },
       {
         kind: "keyword",
         text: "Our fit tool cuts apparel returns. Find US heads of e-commerce posting about returns.",
-        reply: "I'll watch posts about returns and sizing from e-commerce leaders at US apparel brands.",
+        reply: "I’ll watch posts about returns and sizing from e-commerce leaders at US apparel brands.",
         proposal: [
           { kind: "keyword", items: ["apparel returns", "sizing issues", "return costs"] },
           { kind: "influencer", items: ["Marisa Quenneville"] },
@@ -105,7 +106,7 @@ export const retailTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Simone, read your post about return costs at Heddle & Twill. Many apparel returns start with a size guess. Our fit tool helps shoppers pick the right size before checkout. Worth a look before your next drop?",
+          "Hi Simone, I noticed your post about return costs at Heddle & Twill. What’s the most common reason customers send things back?",
       },
     ],
   },

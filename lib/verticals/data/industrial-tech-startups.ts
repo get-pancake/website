@@ -28,8 +28,9 @@ export const industrialTechStartups: VerticalConfig = {
   hubLine: "Find plants whose job posts name the systems you plug into.",
 
   hero: {
+    title: "Find plant leaders who hire for OSIsoft PI skills.",
     h1: ["You sell to factories", "We bring you customers"],
-    lede: "Pancake finds plants hiring reliability engineers or naming OSIsoft PI in job posts. Then it writes to whoever runs the line.",
+    lede: "Pancake tracks reliability and SCADA openings plus OT security posts, not a trade-show list. Meet the VP who runs the line.",
   },
 
   workspace: { name: "Tachline", sender: "Anneke Moreland" },
@@ -40,7 +41,7 @@ export const industrialTechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "Our AI reads historian data. Find US manufacturers whose job posts name OSIsoft PI.",
-        reply: "I'll find plants whose job posts ask for OSIsoft PI and keep their ops leads.",
+        reply: "I’ll find plants whose job posts ask for OSIsoft PI and keep their ops leads.",
         proposal: [
           { kind: "stack", items: ["OSIsoft PI", "AVEVA PI", "Ignition"] },
           { kind: "hiring", items: ["Reliability engineer", "Controls engineer"] },
@@ -60,12 +61,12 @@ export const industrialTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Graciela, saw OSIsoft PI in Billetworks’ job posts. That historian already holds the data to catch failures early. We turn PI data into maintenance alerts for metals plants, with no new sensors. Open to piloting it on one line?",
+          "Hi Graciela, thanks for the connect. I work on software that reads plant historian data. How does your team find out a machine is about to fail?",
       },
       {
         kind: "hiring",
         text: "We flag failing assets. Find US utilities and solar operators hiring reliability engineers.",
-        reply: "I'll track reliability openings at US utilities and solar operators.",
+        reply: "I’ll track reliability openings at US utilities and solar operators.",
         proposal: [
           { kind: "hiring", items: ["Reliability engineer", "SCADA engineer", "Maintenance planner"] },
           { kind: "stack", items: ["Maximo", "OSIsoft PI"] },
@@ -84,12 +85,12 @@ export const industrialTechStartups: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Ramona, saw Sagebluff has two reliability engineer roles open. Solar fleets often grow faster than the teams that keep them running. We flag failing inverters and trackers from data you already collect. Worth testing on one site?",
+          "Hi Ramona, glad to connect. We build software that flags failing equipment early. What eats most of your maintenance hours?",
       },
       {
         kind: "keyword",
         text: "We secure plant networks. Find US manufacturing leaders posting about OT security.",
-        reply: "I'll watch OT security posts and keep plant, controls and IT leaders at manufacturers.",
+        reply: "I’ll watch OT security posts and keep plant, controls and IT leaders at manufacturers.",
         proposal: [
           { kind: "keyword", items: ["OT security", "IEC 62443", "ICS security"] },
           { kind: "hiring", items: ["OT security engineer", "Controls engineer"] },
@@ -99,7 +100,7 @@ export const industrialTechStartups: VerticalConfig = {
         leads: [
           { name: "Clint Haberman", role: "Controls Manager", company: "Quirewood", kind: "keyword", signal: "Posted on OT security" },
           { name: "Esi Owusu", role: "IT Director", company: "Swarfield", kind: "keyword", signal: "Posted on IEC 62443" },
-          { name: "Bogdan Petrescu", role: "VP Manufacturing", company: "Tubewright", kind: "influencer", signal: "Commented on Voigt" },
+          { name: "Bogdan Petrescu", role: "VP Manufacturing", company: "Tubewright", kind: "influencer", signal: "Commented on a post" },
           { name: "Tracy Gundlach", role: "CISO", company: "Rivetry", kind: "competitor", signal: "Liked a Fenwarden post" },
           { name: "Hiroshi Tanabe", role: "Plant Manager", company: "Crankmoor", kind: "hiring", signal: "OT security role open" },
         ],
@@ -109,7 +110,7 @@ export const industrialTechStartups: VerticalConfig = {
           seniority: "Manager",
         },
         message:
-          "Hi Clint, saw your post on OT security. Older mill controllers were never built to sit on a network. We map and monitor plant networks without touching the process. Worth a look at one mill?",
+          "Hi Clint, I saw you posted about OT security at Quirewood. What’s the oldest controller still on your network?",
       },
     ],
   },
@@ -134,7 +135,7 @@ export const industrialTechStartups: VerticalConfig = {
       {
         kind: "keyword",
         title: "Plant leaders who post",
-        body: "Few do, so Pancake catches their posts on downtime or OT security and attaches each one to the lead.",
+        body: "Few plant leaders post, so Pancake catches the ones writing about downtime or OT security, post attached.",
         watching: ["unplanned downtime", "OT security", "predictive maintenance"],
       },
       {

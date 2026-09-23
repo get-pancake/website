@@ -13,8 +13,10 @@
    Motion contract with VxDemoPlayer (lib/verticals/demo-timeline.ts):
    no [data-armed] = the final frame (SSR, no JS, reduced motion);
    [data-armed] = timeline mode: [data-cue] without .is-on is hidden in place,
-   [data-swap] shows "before" until .is-sw, [data-mark] shows its state on .is-mk.
-   [data-snap] kills transitions for the one frame a pane is (re)armed. */
+   [data-uncue] shows until its cue id is reached (.is-off), [data-swap] shows
+   "before" until .is-sw, [data-mark] shows its state on .is-mk.
+   [data-snap] kills transitions for the one frame a pane is (re)armed; [data-cut]
+   does the same for windows and pages when the prompt changes. */
 
 /* ─── app palette ──────────────────────────────────────────────────────────
    The mocks reproduce the live app (appref APP-UI-REFERENCE, computed styles
@@ -62,7 +64,8 @@
   background: var(--lp-card-cream);
   border-radius: 30px;
   margin: var(--vx-head-gap) var(--vx-card-m) 0;
-  padding: 40px calc(var(--vx-edge) - var(--vx-card-m));
+  /* the text edge, never under 32px (at 1201–1240 the difference collapses to 16–21px) */
+  padding: 40px max(32px, calc(var(--vx-edge) - var(--vx-card-m)));
   position: relative;
 }
 .lp-vx .vx-demo__label {
@@ -114,16 +117,21 @@
   font-weight: 500;
   line-height: 22px;
   margin-top: 10px;
+  text-wrap: pretty;
 }
 
 /* body: tabs | stage */
+/* stretch: the tab rail and the window end on the same line; 256 puts the stage's left
+   edge on the Signals section's second column (x440 at 1440) */
 .lp-vx .vx-demo__body {
-  align-items: start;
+  align-items: stretch;
   column-gap: 32px;
   display: grid;
-  grid-template-columns: 248px minmax(0, 1fr);
+  grid-template-columns: 256px minmax(0, 1fr);
 }
 .lp-vx .vx-tabs { display: flex; flex-direction: column; }
+/* when the window is taller than the steps, the hairline rail runs on to its bottom edge */
+.lp-vx .vx-tabs::after { background: var(--vx-hair); border-radius: 1px; content: ""; flex: 1 1 0; width: 2px; }
 .lp-vx .vx-tab {
   background: none;
   border: 0;
@@ -164,7 +172,7 @@
 .lp-vx .vx-tab__num { color: var(--vx-num); font-variant-numeric: tabular-nums; }
 .lp-vx .vx-tab__title,
 .lp-vx .vx-tabtext__title {
-  color: var(--lp-muted-text);
+  color: var(--lp-subtle-text);
   display: block;
   font-family: var(--lp-font-cond);
   font-size: var(--lp-text-xlg);
@@ -182,6 +190,7 @@
   font-size: 15px;
   line-height: 22px;
   margin-top: 6px;
+  text-wrap: pretty;
 }
 .lp-vx .vx-tab[aria-selected="true"] .vx-tab__title,
 .lp-vx .vx-tab[aria-selected="true"] .vx-tab__body,
@@ -222,20 +231,30 @@
   transition: opacity 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
 }
 /* (the pane / window crossfade is NOT snapped: only what the timeline drives) */
-.lp-vx .vx-demo__card[data-snap] :is([data-cue], [data-swap] > [data-s], .vx-switch, [data-cursor], .vx-row, .vx-cursor),
+.lp-vx .vx-demo__card[data-snap] :is([data-cue], [data-uncue], [data-swap] > [data-s], .vx-switch, [data-cursor], .vx-row, .vx-cursor),
 .lp-vx .vx-demo__card[data-snap] .vx-switch::after { transition: none !important; }
+/* a prompt change (the autoplay wrap Slack → next Brief, a prompt click) cuts windows and
+   pages: data-prompt already names the next prompt, a fading window would show its names */
+.lp-vx .vx-demo__card[data-cut] :is(.vx-win, .vx-pane) { transition: none !important; }
 
-/* windows and app pages: the incoming one fades in on top, the outgoing one
-   stays under it for the 200ms, then hides (nothing visible is wiped) */
-.lp-vx .vx-win,
-.lp-vx .vx-pane { opacity: 1; transition: opacity 0.2s ease; visibility: visible; z-index: 1; }
+/* windows: the incoming one fades in on top, the outgoing one stays under it for
+   the 200ms, then hides (nothing visible is wiped) */
+.lp-vx .vx-win { opacity: 1; transition: opacity 0.2s ease; visibility: visible; z-index: 1; }
 .lp-vx .vx-demo__card[data-tab="3"] .vx-win[data-win="app"],
-.lp-vx .vx-demo__card:not([data-tab="3"]) .vx-win[data-win="slack"],
+.lp-vx .vx-demo__card:not([data-tab="3"]) .vx-win[data-win="slack"] {
+  opacity: 0;
+  transition: opacity 0s linear 0.2s, visibility 0s linear 0.2s;
+  visibility: hidden;
+  z-index: 0;
+}
+/* app pages share the window's chrome, and their titles sit in the same spot: sequential,
+   never overlapping — the outgoing page fades out in 100ms, then the incoming one fades in */
+.lp-vx .vx-pane { opacity: 1; transition: opacity 0.16s ease 0.1s; visibility: visible; z-index: 1; }
 .lp-vx .vx-demo__card:not([data-tab="0"]) .vx-pane[data-pane="0"],
 .lp-vx .vx-demo__card:not([data-tab="1"]) .vx-pane[data-pane="1"],
 .lp-vx .vx-demo__card:not([data-tab="2"]) .vx-pane[data-pane="2"] {
   opacity: 0;
-  transition: opacity 0s linear 0.2s, visibility 0s linear 0.2s;
+  transition: opacity 0.1s ease, visibility 0s linear 0.1s;
   visibility: hidden;
   z-index: 0;
 }
@@ -269,6 +288,13 @@
 .lp-vx .vx-ctrl { display: flex; flex: none; gap: 4px; margin-right: -10px; }
 .lp-vx .vx-demo__card:not([data-ready]) .vx-ctrl,
 .lp-vx .vx-demo__card[data-reduced] .vx-ctrl { visibility: hidden; }
+/* no JS (no data-ready): nothing is interactive, so the tabs read as a static list — every
+   step in full ink, no rail highlight — and nothing invites a click */
+.lp-vx .vx-demo__card:not([data-ready]) :is(.vx-tab, .vx-prompt) { cursor: default; }
+.lp-vx .vx-demo__card:not([data-ready]) .vx-tab :is(.vx-tab__label, .vx-tab__title, .vx-tab__body) { color: var(--lp-text); }
+.lp-vx .vx-demo__card:not([data-ready]) .vx-tab .vx-tab__rail > i { transform: scale(0); }
+.lp-vx .vx-demo__card:not([data-ready]) .vx-prompt:not([aria-pressed="true"]):hover { background: transparent; }
+.lp-vx .vx-demo__foot .vx-note { text-wrap: pretty; }
 .lp-vx .vx-ctrl__btn {
   align-items: center;
   background: none;
@@ -441,7 +467,6 @@
   height: 39px;
   margin: 0 2px 5px;
   padding: 0 3px 5px;
-  white-space: nowrap;
 }
 .lp-vx .vx-rail__ws::before {
   align-items: center;
@@ -457,7 +482,16 @@
   justify-content: center;
   width: 20px;
 }
-.lp-vx .vx-rail__ws span { overflow: hidden; text-overflow: ellipsis; }
+/* every workspace name is two words: two lines inside the fixed 39px header, never cut */
+.lp-vx .vx-rail__ws span {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-height: 13px;
+  min-width: 0;
+  overflow: hidden;
+  white-space: normal;
+}
 .lp-vx .vx-rail__item {
   --ico: 13px;
   align-items: center;
@@ -640,21 +674,25 @@
 }
 .lp-vx .vx-sig__chips { align-content: flex-start; display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
 .lp-vx .vx-sig__tail { align-items: center; display: flex; gap: 4px; max-width: 100%; min-width: 0; }
-.lp-vx .vx-wchip {
+/* the app's watched-item chips (vx-achip: not signals.css's landing .vx-wchip). A long item
+   wraps to a 2-line chip instead of an ellipsis; every card body is one stacked cell per prompt,
+   so the tallest variant is reserved from first paint. */
+.lp-vx .vx-achip {
+  -webkit-box-orient: vertical;
   background: var(--app-muted);
   border-radius: 6px;
+  display: -webkit-box;
   flex: 0 1 auto;
   font-size: 10.5px;
-  height: 22px;
-  line-height: 22px;
+  -webkit-line-clamp: 2;
+  line-height: 15px;
   max-width: 100%;
   min-width: 0;
   overflow: hidden;
-  padding: 0 7px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  padding: 3.5px 7px;
+  text-wrap: balance;
 }
-.lp-vx .vx-wmore { flex: none; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
+.lp-vx .vx-amore { flex: none; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
 .lp-vx .vx-setup {
   align-items: center;
   background: var(--app-card);
@@ -714,18 +752,43 @@
   height: 40px;
   padding: 0 12px;
 }
-.lp-vx .vx-chat__head kbd {
-  background: var(--app-muted);
-  border-radius: 5px;
-  box-shadow: inset 0 0 0 1px var(--app-border);
+/* "+ New chat": the panel header's right-side action (the ⌘K hint lives on the launcher) */
+.lp-vx .vx-chat__new {
+  --ico: 11px;
+  --ico-c: var(--app-muted-fg);
+  align-items: center;
   color: var(--app-muted-fg);
-  font-family: var(--lp-font-sans);
-  font-size: 10px;
-  line-height: 16px;
+  display: inline-flex;
+  font-size: 10.5px;
+  font-weight: 500;
+  gap: 3px;
   margin-left: auto;
-  padding: 0 5px;
+  white-space: nowrap;
 }
 .lp-vx .vx-chat__log { align-content: start; flex: 1; min-height: 0; padding: 12px; }
+/* the empty conversation's starter chips (copilot starters), bottom of the log, until SEND */
+.lp-vx .vx-starters {
+  align-content: flex-end;
+  align-items: flex-start;
+  align-self: end;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lp-vx .vx-starters > span {
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  color: color-mix(in srgb, var(--app-ink) 80%, transparent);
+  font-size: 11px;
+  line-height: 24px;
+  max-width: 100%;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+.lp-vx .vx-demo__card:not([data-armed]) .vx-starters,
+.lp-vx .vx-demo__card[data-armed] .vx-starters.is-off { opacity: 0; visibility: hidden; }
+.lp-vx .vx-demo__card[data-armed] .vx-starters { transition: opacity 180ms ease, visibility 0s linear 180ms; }
+.lp-vx .vx-demo__card[data-armed] .vx-starters:not(.is-off) { transition: opacity 180ms ease; }
 .lp-vx .vx-thread { display: flex; flex-direction: column; gap: 7px; }
 .lp-vx .vx-bubble {
   align-self: flex-end;
@@ -736,6 +799,7 @@
   line-height: 16px;
   max-width: 90%;
   padding: 7px 10px;
+  text-wrap: pretty;
 }
 .lp-vx .vx-tool {
   --ico: 12px;
@@ -765,22 +829,25 @@
   font-size: 11.5px;
   line-height: 16px;
   padding: 8px 10px;
+  text-wrap: pretty;
 }
-/* the live "RECOMMENDED NEXT MOVE" card: pale pink, 2px pink rule, caps label */
+/* the live "RECOMMENDED NEXT MOVE" card: pale pink, indented from the log's edge, a 2px pink
+   rule inside it at 12px, caps label */
 .lp-vx .vx-prop {
   background: var(--app-competitor-bg);
   border-radius: 10px;
-  padding: 9px 11px 10px 13px;
+  margin-left: 24px;
+  padding: 9px 11px 10px 20px;
   position: relative;
 }
 .lp-vx .vx-prop::before {
   background: var(--app-pink);
   border-radius: 2px;
-  bottom: 9px;
+  bottom: 10px;
   content: "";
-  left: 0;
+  left: 12px;
   position: absolute;
-  top: 9px;
+  top: 10px;
   width: 2px;
 }
 .lp-vx .vx-prop__label {
@@ -801,6 +868,7 @@
   gap: 8px;
   grid-template-columns: 70px minmax(0, 1fr);
   line-height: 15px;
+  text-wrap: pretty;
 }
 /* the row's kind chip is li::before (one element per row): .vx-chip's recipe */
 .lp-vx .vx-prop__rows li::before {
@@ -831,6 +899,7 @@
   font-weight: 500;
   gap: 6px;
   line-height: 15px;
+  text-wrap: pretty;
 }
 .lp-vx .vx-composer {
   align-items: center;
@@ -860,7 +929,12 @@
   width: 1.5px;
 }
 .lp-vx .vx-composer.has-text .vx-typed::after { visibility: visible; }
-.lp-vx .vx-ph { color: var(--app-muted-fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+/* two placeholders, picked by the chat column's own width (never cut mid-word) */
+.lp-vx .vx-chat { container: vxchat / inline-size; }
+.lp-vx .vx-ph::after { color: var(--app-muted-fg); content: attr(data-long); white-space: nowrap; }
+@container vxchat (max-width: 299px) {
+  .lp-vx .vx-ph::after { content: attr(data-short); }
+}
 .lp-vx .vx-composer.has-text .vx-ph { visibility: hidden; }
 .lp-vx .vx-send {
   --ico: 13px;
@@ -973,61 +1047,66 @@
   padding-left: 10px;
 }
 
-/* the lead sheet floats over the table, as the app's 680px sheet does */
+/* the lead sheet floats over the table, as the app's 680px sheet does. It shares the page's
+   grid cell (not absolute), so the stage reserves its natural height: the action bar can never
+   be pushed out of a short stage. */
+.lp-vx .vx-leads { display: grid; grid-template-columns: minmax(0, 1fr); }
+.lp-vx .vx-leads > .vx-page { grid-area: 1 / 1; }
 .lp-vx .vx-drawer {
   background: var(--app-card);
   border-radius: 14px;
-  bottom: 12px;
   box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-float);
   display: flex;
   flex-direction: column;
-  padding: 14px 14px 12px;
-  position: absolute;
-  right: 12px;
-  top: 2px;
+  grid-area: 1 / 1;
+  justify-self: end;
+  margin: 2px 12px 12px 0;
+  padding: 12px 14px 10px;
+  position: relative;
   width: 280px;
   z-index: 2;
 }
 .lp-vx .vx-demo__card[data-armed] .vx-drawer[data-cue] { transition-duration: 260ms; }
 .lp-vx .vx-demo__card[data-armed] .vx-drawer[data-cue]:not(.is-on) { transform: translateX(16px); }
+/* "Ask AI" rides the sheet's action bar (left), so the head's name and role get its full width */
 .lp-vx .vx-btn--ai {
   --ico: 11px;
   --ico-c: var(--app-pink);
   font-size: 10.5px;
   gap: 4px;
-  height: 24px;
+  height: 26px;
   letter-spacing: 0;
-  padding: 0 7px;
-  position: absolute;
-  right: 14px;
-  top: 14px;
+  padding: 0 8px;
 }
 .lp-vx .vx-drawer__head {
+  align-content: center;
   align-items: center;
   column-gap: 10px;
   display: grid;
   grid-template-columns: 40px minmax(0, 1fr);
-  padding-right: 64px;
+  min-height: 40px;
 }
 .lp-vx .vx-av--lg { font-size: 12px; grid-row: 1 / 3; height: 40px; width: 40px; }
+/* the stacked variants reserve the tallest head, so a 2-line name or role never moves the sheet */
 .lp-vx .vx-drawer__name {
   font-size: 15px;
   font-weight: 600;
   letter-spacing: -0.22px;
   line-height: 19px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
 }
 .lp-vx .vx-drawer__role {
+  -webkit-box-orient: vertical;
   color: var(--app-tertiary);
+  display: -webkit-box;
   font-size: 11px;
+  -webkit-line-clamp: 2;
   line-height: 15px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: normal;
 }
-.lp-vx .vx-drawer__chips { align-items: center; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.lp-vx .vx-drawer__chips { align-items: center; display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
 .lp-vx .vx-drawer__chips::before, /* the stage pill ("qualified") */
 .lp-vx .vx-row::after {
   align-self: center;
@@ -1051,8 +1130,8 @@
   column-gap: 12px;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  margin-top: 12px;
-  padding-top: 11px;
+  margin-top: 10px;
+  padding-top: 9px;
 }
 .lp-vx .vx-props > span {
   --ico: 11px;
@@ -1064,7 +1143,7 @@
   line-height: 14px;
 }
 .lp-vx .vx-props > span:nth-child(5),
-.lp-vx .vx-props > span:nth-child(6) { margin-top: 9px; }
+.lp-vx .vx-props > span:nth-child(6) { margin-top: 7px; }
 .lp-vx .vx-props > b,
 .lp-vx .vx-props > .vx-var > b {
   font-size: 11.5px;
@@ -1080,11 +1159,15 @@
   background: var(--app-muted);
   border-radius: 10px;
   box-shadow: inset 0 0 0 1px var(--app-border);
-  margin-top: 32px;
-  padding: 9px 10px 10px;
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  padding: 8px 10px 9px;
   position: relative;
 }
-.lp-vx .vx-sigbox::before { /* the sheet's "SIGNAL" section label */
+/* the sheet's section labels ("SIGNAL", "TIMELINE"): 9px caps, 4px above their block */
+.lp-vx .vx-sigbox::before,
+.lp-vx .vx-tl::before {
   color: var(--app-tertiary);
   content: attr(data-label);
   font-size: 9px;
@@ -1094,16 +1177,70 @@
   line-height: 12px;
   position: absolute;
   text-transform: uppercase;
-  top: -18px;
+  top: -16px;
 }
-.lp-vx .vx-sigbox__top { align-items: center; color: var(--app-tertiary); display: flex; font-size: 10.5px; gap: 7px; }
 .lp-vx .vx-sigbox__why {
   color: color-mix(in srgb, var(--app-ink) 80%, transparent);
   font-size: 11.5px;
   line-height: 17px;
   margin-top: 6px;
+  text-wrap: pretty;
 }
-.lp-vx .vx-drawer__foot { justify-items: end; margin-top: auto; padding-top: 12px; }
+/* TIMELINE: 24px icon tiles on a hairline rail, newest first */
+.lp-vx .vx-tlv { margin-top: 24px; }
+.lp-vx .vx-tl { display: flex; flex-direction: column; gap: 6px; position: relative; }
+.lp-vx .vx-tl__e {
+  --ico: 12px;
+  --ico-c: var(--app-tertiary);
+  display: flex;
+  flex-direction: column;
+  min-height: 24px;
+  min-width: 0;
+  padding-left: 32px;
+  position: relative;
+}
+.lp-vx .vx-tl__e::after { /* the tile, under the glyph (::before) */
+  background: var(--app-card);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  content: "";
+  height: 24px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 24px;
+}
+.lp-vx .vx-tl__e::before { left: 6px; position: absolute; top: 6px; z-index: 1; }
+.lp-vx .vx-tl__e:has(+ .vx-tl__e) > b::before { /* the rail down to the next tile */
+  background: var(--app-border);
+  bottom: -6px;
+  content: "";
+  left: 11.5px;
+  position: absolute;
+  top: 24px;
+  width: 1px;
+}
+.lp-vx .vx-tl__e > b { font-size: 11.5px; font-weight: 500; line-height: 16px; padding-top: 1px; }
+.lp-vx .vx-tl__e > span {
+  color: var(--app-muted-fg);
+  font-size: 10.5px;
+  line-height: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-vx .vx-tl__e i { color: var(--app-keyword-fg); font-style: normal; }
+.lp-vx .vx-tl__note { color: var(--app-muted-fg); font-size: 10.5px; line-height: 14px; padding-left: 32px; text-wrap: pretty; }
+/* the sticky action bar: Ask AI left, Approve + ✕ (then Add to campaign) right, in one cell */
+.lp-vx .vx-drawer__foot {
+  align-items: center;
+  column-gap: 8px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  margin-top: auto;
+  padding-top: 10px;
+}
+.lp-vx .vx-drawer__foot > [data-s] { grid-area: 1 / 2; justify-self: end; }
 
 /* ─── 03 Outreach: the lead's campaign journey ─────────────────────────────── */
 .lp-vx .vx-journey {
@@ -1181,19 +1318,25 @@
   min-width: 0;
   padding: 11px 12px 12px;
 }
-.lp-vx .vx-next__label { color: var(--app-tertiary); font-size: 10.5px; font-weight: 600; line-height: 14px; }
-.lp-vx .vx-next__draft {
-  align-self: flex-start;
-  background: var(--app-keyword-bg);
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px var(--app-keyword-ring);
-  color: var(--app-keyword-fg);
-  font-size: 10.5px;
-  font-weight: 500;
-  line-height: 14px;
-  margin-top: 7px;
-  padding: 3px 7px;
+.lp-vx .vx-next__label { color: var(--app-tertiary); font-size: 10.5px; font-weight: 600; line-height: 14px; text-wrap: pretty; }
+/* the step's status notes, pinned under the message: "Writing from their activity…" while it
+   streams → "Drafted — …" (muted plain text, as the app), then the footnote */
+.lp-vx .vx-next__end { margin-top: auto; padding-top: 10px; }
+.lp-vx .vx-next__draft { color: var(--app-muted-fg); font-size: 10.5px; line-height: 14px; }
+.lp-vx .vx-next__draft > [data-s] { text-wrap: pretty; }
+.lp-vx .vx-next__writing { align-items: center; display: flex; gap: 6px; }
+.lp-vx .vx-next__writing::before { /* the app's spinner, spinning only while it shows */
+  border: 1.5px solid color-mix(in srgb, var(--app-muted-fg) 30%, transparent);
+  border-radius: 50%;
+  border-top-color: var(--app-muted-fg);
+  box-sizing: border-box;
+  content: "";
+  flex: none;
+  height: 10px;
+  width: 10px;
 }
+.lp-vx .vx-demo__card[data-armed] [data-swap]:not(.is-sw) > .vx-next__writing::before { animation: vx-spin 0.8s linear infinite; }
+@keyframes vx-spin { to { transform: rotate(360deg); } }
 /* the message: the ghost (final text) and the live span share one cell, so streaming never grows it */
 .lp-vx .vx-msg { display: grid; font-size: 11.5px; line-height: 17px; margin-top: 9px; }
 .lp-vx .vx-msg > span { grid-area: 1 / 1; }
@@ -1209,9 +1352,9 @@
   font-size: 10.5px;
   gap: 5px;
   line-height: 14px;
-  margin-top: auto;
-  padding-top: 10px;
+  padding-top: 3px;
 }
+
 
 /* ─── 04 Slack: the channel post (Slack's aubergine sidebar = lp plum) ─────── */
 .lp-vx .vx-slack {
@@ -1243,8 +1386,9 @@
   height: 44px;
   padding: 0 16px;
 }
-.lp-vx .vx-slack__feed { display: flex; flex: 1; flex-direction: column; gap: 10px; padding: 14px 16px; }
-.lp-vx .vx-slead { display: flex; flex-direction: column; gap: 12px; }
+/* anchored to the composer, as Slack is: the newest post sits on it */
+.lp-vx .vx-slack__feed { display: flex; flex: 1; flex-direction: column; gap: 10px; justify-content: flex-end; padding: 14px 16px; }
+.lp-vx .vx-smsg--cont + .vx-smsg--cont { margin-top: 2px; } /* 12px between the two posts */
 .lp-vx .vx-smsg { column-gap: 10px; display: grid; grid-template-columns: 32px minmax(0, 1fr); line-height: 18px; }
 .lp-vx .vx-smsg__av { grid-row: 1 / 3; }
 .lp-vx .vx-smsg--cont { line-height: 18px; padding-left: 42px; }
@@ -1261,10 +1405,10 @@
   line-height: 14px;
   padding: 0 4px;
 }
-.lp-vx .vx-smsg__time { color: var(--lp-muted-text); font-size: 11px; }
+.lp-vx .vx-smsg__time { color: var(--lp-subtle-text); font-size: 11px; }
 .lp-vx .vx-scard { border-left: 4px solid var(--lp-pink-30); border-radius: 2px; margin-top: 5px; padding: 1px 0 1px 11px; }
 .lp-vx .vx-scard b { font-weight: 700; }
-.lp-vx .vx-scard__sig { color: var(--lp-subtle-text); }
+.lp-vx .vx-scard__sig { color: var(--lp-subtle-text); display: block; }
 .lp-vx .vx-scard__btns { margin-top: 7px; }
 .lp-vx .vx-spair { display: flex; gap: 8px; }
 /* Slack's ✅ / ❌ as drawn glyphs (identical in every engine, never OS emoji) */
@@ -1290,7 +1434,7 @@
 .lp-vx .vx-slack__composer {
   border-radius: 8px;
   box-shadow: inset 0 0 0 1px var(--lp-ink-50);
-  color: var(--lp-muted-text);
+  color: var(--lp-subtle-text);
   flex: none;
   font-size: 12px;
   line-height: 18px;
@@ -1304,6 +1448,7 @@
   .lp-vx .vx-slack { grid-template-columns: 150px minmax(0, 1fr); }
 }
 @container vxstage (max-width: 699px) {
+  .lp-vx .vx-prop { margin-left: 12px; } /* the 272px chat column: half the indent */
   .lp-vx .vx-app__cta { display: none; }
   .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr) 272px; }
   .lp-vx .vx-row { grid-template-columns: 14px 30px 170px 124px 0 0; }
@@ -1327,41 +1472,64 @@
   .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr); }
   .lp-vx .vx-sigpage { display: none; }
   .lp-vx .vx-chat { border-left: 0; border-top: 1px solid var(--app-border); }
-  .lp-vx .vx-chat__head kbd { display: none; }
   .lp-vx .vx-chat__head { height: 38px; }
   .lp-vx .vx-leads .vx-page__sub { display: none; }
   .lp-vx .vx-chat__log { padding: 12px 12px 10px; }
   .lp-vx .vx-bubble, .lp-vx .vx-answer { font-size: 12.5px; line-height: 18px; }
-  .lp-vx .vx-prop__rows li { font-size: 11.5px; grid-template-columns: 76px minmax(0, 1fr); line-height: 16px; }
+  /* phones: the card spans the log (the indent would cost a line per row); the rule stays inside */
+  .lp-vx .vx-prop { margin-left: 0; }
+  .lp-vx .vx-prop__rows li { font-size: 11.5px; grid-template-columns: 70px minmax(0, 1fr); line-height: 16px; }
   .lp-vx .vx-count::before, .lp-vx .vx-row::before { display: none; }
-  .lp-vx .vx-count { padding-left: 2px; }
+  /* two rows only, so the "5 qualified leads" line would contradict what shows */
+  .lp-vx .vx-count { display: none; }
+  .lp-vx .vx-table { margin-top: 10px; }
   .lp-vx .vx-row { grid-template-columns: 30px minmax(0, 1fr) auto; height: 52px; padding: 0 10px; }
   .lp-vx .vx-row > .vx-av { grid-column: 1; }
   .lp-vx .vx-row__name, .lp-vx .vx-row__role { grid-column: 2; }
   .lp-vx .vx-row > .vx-chip { align-self: center; grid-area: 1 / 3 / 3 / 4; }
   .lp-vx .vx-row::after, .lp-vx .vx-row__act, .lp-vx .vx-row__detail { display: none; }
-  .lp-vx .vx-rowset > .vx-row:nth-child(n + 4) { display: none; }
-  .lp-vx .vx-rowset > .vx-row:nth-child(3) { border-bottom: 0; }
+  .lp-vx .vx-rowset > .vx-row:nth-child(n + 3) { display: none; }
+  .lp-vx .vx-rowset > .vx-row:nth-child(2) { border-bottom: 0; }
   .lp-vx .vx-drawer {
-    bottom: auto;
     box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+    grid-area: 2 / 1;
+    justify-self: stretch;
     margin: 0 12px 12px;
-    position: relative;
-    right: auto;
-    top: auto;
     width: auto;
   }
   .lp-vx .vx-demo__card[data-armed] .vx-drawer[data-cue]:not(.is-on) { transform: translateY(12px); }
-  .lp-vx .vx-btn--ai, .lp-vx .vx-props { display: none; }
+  /* the phone sheet: head, chips, the signal box and the action bar (the table above
+     already carries the lead's sighting) */
+  .lp-vx .vx-btn--ai, .lp-vx .vx-props, .lp-vx .vx-tlv { display: none; }
   .lp-vx .vx-drawer__head { padding-right: 0; }
   .lp-vx .vx-drawer__foot { padding-top: 10px; }
   .lp-vx .vx-journey { padding: 10px 12px 12px; }
   .lp-vx .vx-step { padding: 4px 0; }
   .lp-vx .vx-step__sub { display: none; }
   .lp-vx .vx-step:not(:last-child)::before { bottom: -4px; top: 29px; }
+  /* the three message steps fold into step 4's row (its data-fold label); the status notes go
+     (the footnote stays) */
+  .lp-vx .vx-steps > .vx-step:nth-child(n + 5) { display: none; }
+  .lp-vx .vx-step[data-fold]::before { content: none; }
+  .lp-vx .vx-step[data-fold] > .vx-step__name { display: none; }
+  .lp-vx .vx-step[data-fold]::after {
+    content: attr(data-fold);
+    font-size: 11.5px;
+    font-weight: 500;
+    grid-area: 1 / 2;
+    line-height: 16px;
+    padding-top: 3px;
+  }
+  .lp-vx .vx-next__draft { display: none; }
+  .lp-vx .vx-next__end { padding-top: 8px; }
   .lp-vx .vx-slack__feed { padding: 12px; }
   .lp-vx .vx-slack__composer { margin: 0 12px 12px; }
   .lp-vx .vx-smsg--cont { padding-left: 0; }
+}
+@container vxstage (max-width: 340px) {
+  /* narrow phones: the lead's kind chip lives on the sheet below, so "role @ company" gets the row */
+  .lp-vx .vx-row { grid-template-columns: 30px minmax(0, 1fr); }
+  .lp-vx .vx-row > .vx-chip { display: none; }
 }
 
 /* ─── page breakpoints: tabs become a strip ≤1180, phones ≤767 ─────────────── */
@@ -1371,6 +1539,7 @@
 @media (max-width: 1180px) {
   .lp-vx .vx-demo__body { grid-template-columns: minmax(0, 1fr); }
   .lp-vx .vx-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .lp-vx .vx-tabs::after { content: none; }
   .lp-vx .vx-tab { align-items: center; display: flex; height: 48px; justify-content: center; padding: 0 4px; text-align: center; }
   .lp-vx .vx-tab__title, .lp-vx .vx-tab__body { display: none; }
   .lp-vx .vx-tab__label { color: var(--lp-subtle-text); transition: color 0.2s ease; }
@@ -1387,24 +1556,24 @@
   .lp-vx .vx-tabtext__title { margin-top: 0; }
 }
 @media (max-width: 1024px) {
-  /* the phone snap row: one prompt card and the edge of the next */
+  /* 768–1024: the 3-up grid stays (equal heights, outer edges on the content edges) */
+  .lp-vx .vx-prompt { padding-inline: 14px; }
+}
+@media (max-width: 767px) {
+  .lp-vx .vx-demo__card { border-radius: 24px; padding: 20px 16px; }
+  /* the phone snap row: one prompt card and the edge of the next (≥768 keeps the 3-up grid) */
   .lp-vx .vx-prompts {
     display: flex;
-    margin-inline: -32px;
+    margin-inline: -16px;
     overflow-x: auto;
     overscroll-behavior-x: contain;
-    padding: 0 32px 2px;
-    scroll-padding-inline: 32px;
+    padding: 0 16px 2px;
+    scroll-padding-inline: 16px;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
   }
   .lp-vx .vx-prompts::-webkit-scrollbar { display: none; }
-  .lp-vx .vx-prompt { flex: 0 0 min(84%, 340px); scroll-snap-align: start; }
-}
-@media (max-width: 767px) {
-  .lp-vx .vx-demo__card { border-radius: 24px; padding: 20px 16px; }
-  .lp-vx .vx-prompts { margin-inline: -16px; padding-inline: 16px; scroll-padding-inline: 16px; }
-  .lp-vx .vx-prompt { flex-basis: min(84%, 320px); }
+  .lp-vx .vx-prompt { flex: 0 0 min(84%, 320px); scroll-snap-align: start; }
   .lp-vx .vx-tab { height: 44px; }
   .lp-vx .vx-tabtext { margin: 14px 0; }
   .lp-vx .vx-tabtext__title { font-size: 21px; line-height: 24px; }
@@ -1455,6 +1624,7 @@
 .lp-vx [data-ico="eye"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z'/%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="thumbs"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M7.5 10.5v9h-3v-9zM7.5 10.5 11.3 4c1.4 0 2.4 1 2.1 2.5l-.6 3.5h5.7a2 2 0 0 1 2 2.4l-1.2 5.8a2 2 0 0 1-2 1.8H7.5'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="user-plus"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Ccircle cx='10' cy='8' r='3.8'/%3E%3Cpath d='M3.5 19.5c.8-3.4 3.4-5.5 6.5-5.5s5.7 2.1 6.5 5.5M18.5 8v6M15.5 11h6'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="heart"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M12 20s-7.5-4.4-7.5-10.1A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.6C19.5 15.6 12 20 12 20z'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="chat"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4.5 5h15a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-10l-5 3.5V6a1 1 0 0 1 1-1z'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="medal"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M12 3.5l2.4 4.8 5.3.8-3.8 3.7.9 5.2L12 15.5 7.2 18l.9-5.2-3.8-3.7 5.3-.8z'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="globe"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Cpath d='M3.5 12h17M12 3.5c2.3 2.4 3.4 5.2 3.4 8.5s-1.1 6.1-3.4 8.5c-2.3-2.4-3.4-5.2-3.4-8.5S9.7 5.9 12 3.5z'/%3E%3C/svg%3E"); }

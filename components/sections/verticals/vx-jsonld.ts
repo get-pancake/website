@@ -3,11 +3,13 @@
 //   /for/<slug>: WebPage + BreadcrumbList (Home → Industries → vertical) + FAQPage
 //   /for:        WebPage + BreadcrumbList (Home → Industries) + ItemList of approved pages
 // No SoftwareApplication (homepage-only by design); Organization/WebSite come from the root layout.
-// The FAQPage Q/As are built from faqItems(v) — the same array VxFaq renders — so the
-// visible <details> text and the JSON-LD can never drift (audit gate §7.3.2).
+// The FAQPage Q/As are the vertical's own v.faq (3–4 items) — the first items VxFaq renders from
+// faqItems(v) = [...v.faq, ...VX_FAQ.shared] — so the JSON-LD stays a verbatim subset of the
+// visible <details> text (audit gate §7.3.2), and the 5 shared Q/As don't repeat as structured
+// data on all 40 URLs (SEO-JSONLD-05).
 
 import { VX_HUB, VX_META, VX_RELATED } from "@/components/sections/verticals/vx-copy";
-import { SITE_URL, faqItems, verticalUrl } from "@/lib/verticals";
+import { SITE_URL, verticalUrl } from "@/lib/verticals";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
 const HUB_URL = `${SITE_URL}/for`;
@@ -48,7 +50,7 @@ export function verticalJsonLd(v: VerticalConfig) {
       {
         "@type": "FAQPage",
         "@id": `${url}#faq`,
-        mainEntity: faqItems(v).map((f) => ({
+        mainEntity: v.faq.map((f) => ({
           "@type": "Question",
           name: f.q,
           acceptedAnswer: { "@type": "Answer", text: f.a },

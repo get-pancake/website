@@ -33,6 +33,12 @@ const STREAM_START = 2500;
 const STREAM_MS = 14;
 const STREAM_MAX = 3000;
 
+/** The proposal card (and its first row) arrives; later rows follow every ROW_MS. */
+const PROP = 3000;
+const ROW_MS = 120;
+
+const sorted = (list: Cue[]): Cue[] => [...list].sort((a, b) => a[1] - b[1]);
+
 const streamEnd = (lens: DemoLens) => STREAM_START + Math.min(STREAM_MS * lens.streamLen, STREAM_MAX);
 
 /** Last cue of a tab. At t ≥ END the frame is the final frame. */
@@ -56,19 +62,24 @@ interface TabCues {
 
 function cuesOf(tab: DemoTab, lens: DemoLens): TabCues {
   if (tab === 0) {
+    // the proposal card arrives WITH its first row; the Approve footer only once every row is in
+    // (b.bubble also hides the empty conversation's starter chips: data-uncue)
     const on: Cue[] = [
       ["b.bubble", SEND],
       ["b.tool", 2480],
       ["b.reply", 2680],
-      ["b.prop", 3000],
+      ["b.prop", PROP],
     ];
-    for (let j = 0; j < lens.rows; j++) on.push([`b.row${j}`, 3150 + 180 * j]);
+    for (let j = 0; j < lens.rows; j++) on.push([`b.row${j}`, PROP + ROW_MS * j]);
+    on.push(["b.foot", PROP + ROW_MS * Math.max(0, lens.rows - 1) + 300]);
     const sw: Cue[] = [["b.approved", 5120]];
     for (let i = 0; i < lens.sigs; i++) sw.push([`b.sig${i}`, 5400 + 220 * i]);
-    return { on, sw, mk: [] };
+    return { on: sorted(on), sw, mk: [] };
   }
   if (tab === 1) {
     return {
+      // the table card arrives WITH row 0; the sheet with its chips, then properties, signal,
+      // timeline, and its Approve footer last
       on: [
         ["l.rows", 400],
         ["l.row0", 400],
@@ -78,25 +89,30 @@ function cuesOf(tab: DemoTab, lens: DemoLens): TabCues {
         ["l.row4", 1000],
         ["l.bad", 1200],
         ["l.drawer", 2550],
-        ["l.d1", 2850],
-        ["l.d2", 3050],
-        ["l.d3", 3250],
+        ["l.d1", 2550],
+        ["l.d2", 2700],
+        ["l.d3", 2850],
+        ["l.d4", 3050],
+        ["l.foot", 3400],
       ],
       sw: [["l.added", 5520]],
       mk: [["l.sel", 2450]],
     };
   }
   if (tab === 2) {
+    // the journey card arrives with its head (lead + status chip); while the message streams the
+    // note reads "Writing from their activity…", then swaps to the Drafted note with the footnote
     const on: Cue[] = [["o.head", 200]];
     for (let k = 0; k < 6; k++) on.push([`o.s${k}`, 400 + 240 * k]);
     on.push(["o.next", 2200], ["o.foot", streamEnd(lens) + 300]);
-    return { on, sw: [], mk: [] };
+    return { on, sw: [["o.drafted", streamEnd(lens) + 300]], mk: [] };
   }
   return {
+    // "Here are the fresh leads of the day": both posts land together
     on: [
       ["s.intro", 300],
       ["s.lead0", 900],
-      ["s.lead1", 4300],
+      ["s.lead1", 1050],
     ],
     sw: [["s.approved", 3520]],
     mk: [],
@@ -108,6 +124,8 @@ interface Move {
   to: string;
   t0: number;
   t1: number;
+  /** Offset (px) from the target's centre: the post-click drift off what was clicked. */
+  d?: readonly [number, number];
 }
 interface Press {
   target: string;
@@ -123,11 +141,15 @@ interface CursorPlan {
   presses: Press[];
 }
 
+/** After a click the cursor drifts this far down-right, off the text the click revealed. */
+const DRIFT = [28, 28] as const;
+const drift = (to: string, pressEnd: number): Move => ({ to, t0: pressEnd + 60, t1: pressEnd + 360, d: DRIFT });
+
 const CURSOR: Record<DemoTab, CursorPlan | null> = {
   0: {
     show: 4300,
     hide: 6400,
-    moves: [{ to: "b.approve", t0: 4300, t1: 5000 }],
+    moves: [{ to: "b.approve", t0: 4300, t1: 5000 }, drift("b.approve", 5120)],
     presses: [{ target: "b.approve", t0: 5000, t1: 5120, scale: true }],
   },
   1: {
@@ -135,7 +157,9 @@ const CURSOR: Record<DemoTab, CursorPlan | null> = {
     hide: 6300,
     moves: [
       { to: "l.pick", t0: 1800, t1: 2450 },
+      drift("l.pick", 2450),
       { to: "l.approve", t0: 4700, t1: 5400 },
+      drift("l.approve", 5520),
     ],
     presses: [
       { target: "l.pick", t0: 2330, t1: 2450, scale: false },
@@ -144,8 +168,10 @@ const CURSOR: Record<DemoTab, CursorPlan | null> = {
   },
   2: null,
   3: {
+    // Slack: "Approved" replaces the buttons and "Open in Pancake" sits under them, so the
+    // cursor fades out 200ms after the click instead of drifting onto the link
     show: 2700,
-    hide: 5000,
+    hide: 3720,
     moves: [{ to: "s.approve", t0: 2700, t1: 3400 }],
     presses: [{ target: "s.approve", t0: 3400, t1: 3520, scale: true }],
   },
@@ -159,6 +185,9 @@ export interface DemoCursor {
   /** null = CURSOR_ENTRY. */
   from: string | null;
   to: string | null;
+  /** Pixel offsets from the `from` / `to` targets' centres (post-click drifts). */
+  fromD: readonly [number, number];
+  toD: readonly [number, number];
   /** Eased progress 0–1 from `from` to `to`. */
   k: number;
   /** Target currently pressed (scale .96), if any. */
@@ -191,24 +220,31 @@ function reached(list: Cue[], t: number): string[] {
   return out;
 }
 
+const ZERO = [0, 0] as const;
+const NO_CURSOR: DemoCursor = { visible: false, from: null, to: null, fromD: ZERO, toD: ZERO, k: 0, press: null, click: false };
+
 function cursorAt(tab: DemoTab, t: number): DemoCursor {
   const plan = CURSOR[tab];
-  const none: DemoCursor = { visible: false, from: null, to: null, k: 0, press: null, click: false };
-  if (!plan) return none;
+  if (!plan) return NO_CURSOR;
   const visible = t >= plan.show && t < plan.hide;
   let from: string | null = null;
   let to: string | null = null;
+  let fromD: readonly [number, number] = ZERO;
+  let toD: readonly [number, number] = ZERO;
   let k = 0;
   for (const m of plan.moves) {
     if (t < m.t0) break;
     if (t < m.t1) {
       to = m.to;
+      toD = m.d ?? ZERO;
       k = easeOutCubic((t - m.t0) / (m.t1 - m.t0));
       break;
     }
     // arrived: rest here until the next move starts
     from = m.to;
     to = m.to;
+    fromD = m.d ?? ZERO;
+    toD = fromD;
     k = 1;
   }
   let press: string | null = null;
@@ -219,7 +255,7 @@ function cursorAt(tab: DemoTab, t: number): DemoCursor {
       if (p.scale) press = p.target;
     }
   }
-  return { visible, from, to, k, press, click };
+  return { visible, from, to, fromD, toD, k, press, click };
 }
 
 /** Pure: the frame of `tab` at `t` ms. Deterministic, seekable, no side effects. */
@@ -246,7 +282,7 @@ export function frameAt(tab: DemoTab, t: number, lens: DemoLens): DemoFrame {
     }
   }
 
-  const cursor = t >= end ? { visible: false, from: null, to: null, k: 0, press: null, click: false } : cursorAt(tab, tt);
+  const cursor = t >= end ? NO_CURSOR : cursorAt(tab, tt);
   return {
     on,
     sw,

@@ -4,6 +4,7 @@ import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { LpViewportVar } from "@/components/sections/landing-v3/LpViewportVar";
 import { VX_CTA_LABELS } from "@/components/sections/verticals/vx-copy";
+import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
@@ -22,7 +23,7 @@ import type { VerticalConfig } from "@/lib/verticals/types";
  */
 export function VxHero({ v }: { v: VerticalConfig }) {
   return (
-    <section className="lp-hero vx-hero" aria-labelledby="vx-hero-title">
+    <section id="main-content" tabIndex={-1} className="lp-hero vx-hero" aria-labelledby="vx-hero-title">
       <LpViewportVar />
       <div className="lp-hero-art" aria-hidden="true">
         <div className="lp-anim-canvas lp-anim-canvas--hero">
@@ -33,16 +34,21 @@ export function VxHero({ v }: { v: VerticalConfig }) {
       </div>
       <div className="lp-hero-inner">
         <div className="vx-hero__lockup">
-          <p className="vx-badge vx-badge--hero" data-tone="brand">
-            {v.name.badge}
-          </p>
+          {/* The badge rides INSIDE the H1 (SEO: the vertical's name is in the H1) as its own
+              block with its own type; the sr-only ": " and "." make the text content read
+              "For MSPs: You run IT for companies. We bring you clients". */}
           <h1 id="vx-hero-title" className="lp-hero-title lp-display">
-            <span className="vx-hero__line">{v.hero.h1[0]}</span>{" "}
+            <span className="vx-badge vx-badge--hero" data-tone="brand">
+              {v.name.badge}
+            </span>
+            <span className="vx-sr">: </span>
+            <span className="vx-hero__line">{v.hero.h1[0]}</span>
+            <span className="vx-sr">.</span>{" "}
             <span className="vx-hero__line">{v.hero.h1[1]}</span>
           </h1>
         </div>
         <div className="lp-hero-col">
-          <p className="lp-hero-lede">{v.hero.lede}</p>
+          <p className="lp-hero-lede">{vxNoWidow(v.hero.lede)}</p>
           <div className="lp-hero-btns">
             <LpFxLink href="https://app.getpancake.ai" data-analytics-id="app_hero">
               {VX_CTA_LABELS.primary}

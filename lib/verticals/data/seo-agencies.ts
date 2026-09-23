@@ -22,8 +22,9 @@ export const seoAgencies: VerticalConfig = {
   hubLine: "Find marketers posting about lost organic traffic.",
 
   hero: {
+    title: "Find marketers blaming a core update for lost traffic.",
     h1: ["You rank their sites", "We bring you clients"],
-    lede: "Pancake finds marketers posting about lost traffic or hiring for SEO, then reaches them on LinkedIn. Pitch the fix.",
+    lede: "Pancake follows zero-click threads and SEO job posts to whoever owns search. Sell the recovery while the drop stings.",
   },
 
   workspace: { name: "Crawlmere SEO", sender: "Rhea Montague" },
@@ -34,7 +35,7 @@ export const seoAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "We fix organic traffic. Find heads of marketing at US SaaS firms posting about AI Overviews.",
-        reply: "I'll watch posts about AI Overviews and traffic drops, and keep SaaS marketing heads.",
+        reply: "I’ll watch posts about AI Overviews and traffic drops, and keep SaaS marketing heads.",
         proposal: [
           { kind: "keyword", items: ["AI Overviews", "organic traffic drop", "zero-click search"] },
           { kind: "influencer", items: ["Mirela Olander"] },
@@ -43,7 +44,7 @@ export const seoAgencies: VerticalConfig = {
         leads: [
           { name: "Yusuf Demirci", role: "Head of Growth", company: "Kelvary", kind: "keyword", signal: "Posted on AI Overviews" },
           { name: "Celeste Duchene", role: "Head of Content", company: "Gravelbeam", kind: "keyword", signal: "Posted on zero-click" },
-          { name: "Andre Balogun", role: "VP Marketing", company: "Verrow", kind: "influencer", signal: "Liked Olander’s post" },
+          { name: "Andre Balogun", role: "VP Marketing", company: "Verrow", kind: "influencer", signal: "Liked an Olander post" },
           { name: "Lakshmi Pillai", role: "Content Lead", company: "Fablewise", kind: "hiring", signal: "SEO specialist role" },
           { name: "Grady Wetherell", role: "Growth Lead", company: "Oxleaf", kind: "keyword", signal: "Posted on traffic drop" },
         ],
@@ -53,12 +54,12 @@ export const seoAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Yusuf, saw your post about AI Overviews cutting Kelvary’s blog clicks. We rework SaaS content for AI answers and classic search, starting with the pages that lost the most. Want a short list of what we’d fix first?",
+          "Hi Yusuf, read your post about AI Overviews cutting Kelvary’s blog clicks. Which pages took the biggest hit?",
       },
       {
         kind: "hiring",
-        text: "We're an SEO agency. Find US fintechs with 50 to 300 staff hiring an SEO or content manager.",
-        reply: "I'll watch job posts for SEO and content roles at US fintechs that size.",
+        text: "We’re an SEO agency. Find US fintechs with 50 to 300 staff hiring an SEO or content manager.",
+        reply: "I’ll watch job posts for SEO and content roles at US fintechs that size.",
         proposal: [
           { kind: "hiring", items: ["SEO manager", "Content marketing manager", "SEO specialist"] },
           { kind: "stack", items: ["Semrush", "Ahrefs"] },
@@ -77,31 +78,31 @@ export const seoAgencies: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Rosalind, saw Kelpstone is hiring an SEO manager. A new SEO lead moves faster when technical fixes and content are already underway. We run both for fintech teams and work next to in-house hires. Would a call help while the role is open?",
+          "Hi Rosalind, appreciate the connection. We’re an SEO agency, and search has changed a lot this year. Is organic still growing for you, or holding flat?",
       },
       {
         kind: "stack",
         text: "We do e-commerce SEO. Find US online retailers whose job posts name Semrush or Ahrefs.",
-        reply: "I'll find US online retailers whose job posts name Semrush or Ahrefs.",
+        reply: "I’ll track retailers whose job posts name those tools, then find who runs e-commerce.",
         proposal: [
           { kind: "stack", items: ["Semrush", "Ahrefs"] },
           { kind: "hiring", items: ["E-commerce SEO specialist"] },
           { kind: "keyword", items: ["category page rankings"] },
         ],
         leads: [
-          { name: "Nadine Brouwer", role: "VP E-commerce", company: "Pawlander", kind: "stack", signal: "Semrush in job posts" },
+          { name: "Nadine Brouwer", role: "VP E-commerce", company: "Burrowpaw", kind: "stack", signal: "Semrush in job posts" },
           { name: "Otis Kittredge", role: "Head of Growth", company: "Corkery Supply", kind: "stack", signal: "Ahrefs in job posts" },
           { name: "Marisela Duarte", role: "SEO Manager", company: "Loamwell Goods", kind: "hiring", signal: "E-commerce SEO role" },
           { name: "Arjun Bhattacharya", role: "Growth Lead", company: "Lanternly", kind: "keyword", signal: "Posted on category SEO" },
-          { name: "Sofia Trevisan", role: "Founder", company: "Moth & Moss", kind: "stack", signal: "Ahrefs in job posts" },
+          { name: "Sofia Trevisan", role: "Founder", company: "Plumcork", kind: "stack", signal: "Ahrefs in job posts" },
         ],
         featured: {
-          why: "Pawlander is a 150-person US pet supplies retailer. Its open job posts name Semrush, and Nadine runs e-commerce.",
+          why: "Burrowpaw is a 150-person US pet supplies retailer. Its open job posts name Semrush, and Nadine runs e-commerce.",
           confidence: 84,
           seniority: "VP",
         },
         message:
-          "Hi Nadine, saw Pawlander is hiring for roles that work in Semrush, so organic search looks like a priority. We run SEO for online retailers, from category pages to product copy. Want a quick read on which categories have the most room to grow?",
+          "Hi Nadine, great to connect. We do e-commerce SEO, so I think a lot about how stores get found. Which bring in more sales for you, category pages or product pages?",
       },
     ],
   },

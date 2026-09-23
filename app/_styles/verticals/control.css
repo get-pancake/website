@@ -23,38 +23,36 @@
   flex-direction: column;
   padding: 48px;
 }
-/* Three facts as three equal bands separated by hairlines, filling the card.
-   (Spec: facts pinned to the bottom with the LpSteps spacer — but the H2
-   left the card for the section head, so nothing sat above the spacer and
-   the card showed a ~150px empty band at 1440. Equal bands keep the card
-   full at every media-card height, parallel rules, left-justified copy.) */
+/* Three facts and two hairlines filling the card: first fact on the top
+   inset, last on the bottom inset, and the free height shared EQUALLY by the
+   four gaps (space-between over five items, 24px floor), so each rule sits
+   dead centre between its facts whatever their heights. (Spec: facts pinned
+   to the bottom with the LpSteps spacer — but the H2 left the card for the
+   section head, so nothing sat above the spacer and the card showed a
+   ~150px empty band at 1440.) The rules are their own aria-hidden <li>s
+   (VxControl), not fact borders. */
 .lp-vx .vx-ctl-facts {
   display: flex;
   flex: 1;
   flex-direction: column;
+  gap: 24px;
+  justify-content: space-between;
   list-style: none;
   margin: 0;
   padding: 0;
 }
 .lp-vx .vx-ctl-fact {
-  border-top: 1px solid var(--vx-hair);
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  justify-content: center;
-  padding-block: 24px;
+  flex: none;
+}
+.lp-vx .vx-ctl-rule {
+  background: var(--vx-hair);
+  flex: none;
+  height: 1px;
 }
 .lp-vx .vx-ctl-fact__row {
   align-items: flex-start;
   display: flex;
   gap: 16px;
-}
-.lp-vx .vx-ctl-fact:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-.lp-vx .vx-ctl-fact:last-child {
-  padding-bottom: 0;
 }
 .lp-vx .vx-ctl-fact__title {
   color: var(--lp-text);
@@ -71,7 +69,7 @@
   font-size: 15px;
   line-height: 22px;
   margin-top: 4px;
-  max-width: 440px;
+  max-width: 480px;
 }
 .lp-vx .vx-check {
   flex: none;
@@ -137,7 +135,7 @@
   grid-template-columns: 88px minmax(0, 1fr);
 }
 .lp-vx .vx-dialog__row dt {
-  color: var(--lp-muted-text);
+  color: var(--lp-subtle-text);
   font-family: var(--lp-font-sans);
   font-size: 12px;
   line-height: 18px;
@@ -244,8 +242,52 @@
   .lp-vx .vx-ctl-text {
     padding: 40px;
   }
+  /* stacked (768–899, or no subgrid): the stage on the card's 40px inset,
+     the facts' edge above — not centred between two empty flanks */
   .lp-vx .vx-ctl-media {
-    padding: 40px 32px;
+    align-items: flex-start;
+    padding: 40px;
+  }
+}
+/* 900–1024: the full-width media card is split — dialog left (its 400px),
+   toast then the note stacked in the right column (≥308px), both from the
+   40px inset. The stage (role="img") stays ONE element: it spans the whole
+   grid as a subgrid, so its dialog and toast take the parent's tracks and
+   the note (outside the image, by rule) slots in under the toast. */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 900px) and (max-width: 1024px) {
+    .lp-vx .vx-ctl-media {
+      align-items: start;
+      column-gap: 16px;
+      display: grid;
+      grid-template-columns: 400px minmax(0, 1fr);
+      grid-template-rows: auto auto 1fr;
+      row-gap: 12px;
+    }
+    /* gap normal: the subgrid takes the parent's 16 / 12 (its own flex gap
+       of 12 would shift the toast off the 16px column gutter) */
+    .lp-vx .vx-ctl-stage {
+      display: grid;
+      gap: normal;
+      grid-column: 1 / -1;
+      grid-row: 1 / -1;
+      grid-template-columns: subgrid;
+      grid-template-rows: subgrid;
+      max-width: none;
+    }
+    .lp-vx .vx-ctl-stage > .vx-dialog {
+      grid-column: 1;
+      grid-row: 1 / -1;
+    }
+    .lp-vx .vx-ctl-stage > .vx-toast {
+      grid-column: 2;
+      grid-row: 1;
+    }
+    .lp-vx .vx-ctl-media > .vx-note {
+      grid-column: 2;
+      grid-row: 2;
+      max-width: none;
+    }
   }
 }
 @media (max-width: 767px) {
@@ -260,8 +302,8 @@
   .lp-vx .vx-ctl-text {
     padding: 24px 16px;
   }
-  .lp-vx .vx-ctl-fact {
-    padding-block: 20px;
+  .lp-vx .vx-ctl-facts {
+    gap: 20px;
   }
   .lp-vx .vx-ctl-fact__row {
     gap: 12px;
@@ -274,5 +316,17 @@
   }
   .lp-vx .vx-dialog__row {
     grid-template-columns: 76px minmax(0, 1fr);
+  }
+}
+/* ≤359 the value column would be ~140px ("Mon–Fri · 9 AM–6 PM (ET)" is
+   ~150): each label goes over its value */
+@media (max-width: 359px) {
+  .lp-vx .vx-dialog__row {
+    gap: 0;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-vx .vx-dialog__row dt {
+    font-size: 11px;
+    line-height: 16px;
   }
 }

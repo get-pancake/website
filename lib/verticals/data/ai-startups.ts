@@ -26,8 +26,9 @@ export const aiStartups: VerticalConfig = {
   hubLine: "Find teams hiring for the work your product automates.",
 
   hero: {
+    title: "Find COOs posting a job your product already does.",
     h1: ["You end the busywork", "We bring you customers"],
-    lede: "Pancake finds companies hiring for the manual roles your AI covers, then messages the team lead. Pilots start there.",
+    lede: "Pancake reads threads on manual data entry, Kofax in hiring ads and your rival’s fans. Every lead brings a reason to pilot.",
   },
 
   workspace: { name: "Parselane", sender: "Zainab Mirza" },
@@ -38,7 +39,7 @@ export const aiStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "Our AI processes purchase orders. Find US distributors hiring order entry specialists.",
-        reply: "I'll watch order entry job posts at US distributors and find who runs operations.",
+        reply: "I’ll watch order entry job posts at US distributors and find who runs operations.",
         proposal: [
           { kind: "hiring", items: ["Order entry specialist", "Order processing clerk"] },
           { kind: "keyword", items: ["manual order entry", "PO processing"] },
@@ -57,12 +58,12 @@ export const aiStartups: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Damilare, saw Bramlett Supply opened two order entry roles. Keying purchase orders by hand gets harder to staff every year. We read POs in any format straight into your ERP, and your team reviews only the orders we flag. Open to a short call about a pilot?",
+          "Hi Damilare, I work on software that reads purchase orders in whatever format they arrive. How do orders get into your system today?",
       },
       {
         kind: "keyword",
         text: "Find claims leaders at US insurers posting about AI pilots. Our product reads claim files.",
-        reply: "I'll watch posts about AI in claims and keep claims leaders at US insurers.",
+        reply: "I’ll watch posts about AI in claims and keep claims leaders at US insurers.",
         proposal: [
           { kind: "keyword", items: ["AI in claims", "claims backlog", "AI pilot"] },
           { kind: "hiring", items: ["Claims processor", "Claims examiner"] },
@@ -81,19 +82,19 @@ export const aiStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Madhuri, saw your post about running an AI pilot in claims at Grayhaven. Messy files are where most claims pilots stall. We read whole claim files, handwritten notes included, and pull out the facts adjusters check first. Worth comparing notes on your pilot?",
+          "Hi Madhuri, I read your post about running an AI pilot in claims at Grayhaven. Which part of the claim file did you start with?",
       },
       {
         kind: "competitor",
         text: "We replace Scanlith’s document capture. Find US ops leaders who engage with Scanlith’s posts.",
-        reply: "I'll watch Scanlith’s company page and keep ops leaders who react or comment.",
+        reply: "I’ll watch Scanlith’s company page and keep ops leaders who react or comment.",
         proposal: [
           { kind: "competitor", items: ["Scanlith Systems", "Formcrest"] },
           { kind: "stack", items: ["Kofax", "UiPath"] },
           { kind: "keyword", items: ["manual data entry", "document processing"] },
         ],
         leads: [
-          { name: "Marta Engebretsen", role: "VP Operations", company: "Lorwick", kind: "competitor", signal: "Commented on Scanlith" },
+          { name: "Marta Engebretsen", role: "VP Operations", company: "Lorwick", kind: "competitor", signal: "Commented on a post" },
           { name: "Reggie Whitsett", role: "COO", company: "Wickersham Foods", kind: "competitor", signal: "Liked a Scanlith post" },
           { name: "Duncan Arbuthnot", role: "VP Finance", company: "Tellico", kind: "stack", signal: "Kofax in job posts" },
           { name: "Latoya Brisbin", role: "Automation Lead", company: "Quarrow", kind: "stack", signal: "UiPath in job posts" },
@@ -105,13 +106,13 @@ export const aiStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Marta, saw your comment on template-based document capture. Templates tend to break every time a shipper changes a form. We read bills of lading, invoices and rate confirmations without templates, so your team only checks exceptions. Open to a short call?",
+          "Hi Marta, I saw your comment on Scanlith’s post about document capture. Which documents still get keyed in by hand on your side?",
       },
     ],
   },
 
   signals: {
-    h2: "Manual work shows up in job posts.",
+    h2: "Busywork has a job title.",
     cards: [
       {
         kind: "hiring",
@@ -144,7 +145,7 @@ export const aiStartups: VerticalConfig = {
   faq: [
     {
       q: "Buyers are wary of AI claims. What do messages say?",
-      a: "They’re written from the lead’s signal, like a job post or their own post. The rest draws on your Brain, so put hard proof there, like accuracy on real files.",
+      a: "They start from the lead’s own post or comment when there is one. The rest comes from your Brain, so put hard proof there, like accuracy on real files.",
     },
     {
       q: "Can it find teams piloting a rival AI tool?",

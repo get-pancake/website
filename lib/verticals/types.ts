@@ -55,7 +55,14 @@ export interface VerticalConfig {
 
   hero: {
     /**
-     * Two lines, no periods, the homepage pattern "You {job} / We bring you {clients|customers}".
+     * The functional H1 (founder 2026-09-22: "more functional than inspirational — check
+     * Origami"). One sentence, starts with "Find", names the vertical's buyer and the signal
+     * moment, ends with a period. ≤56 chars, ≤2 lines at the desktop H1 size. Unique across
+     * configs. Rendered under the "Pancake for {plural}" label inside the same <h1>.
+     */
+    title?: string;
+    /**
+     * LEGACY (the retired homepage-clone hero): two lines, no periods, "You {job} / We bring you {clients|customers}".
      * Each ≤22 chars and ≤643px at 69.014px Aeonik Condensed 600 (643 = the homepage's own
      * "We bring you customers"). Line 1 unique across configs.
      */

@@ -23,8 +23,9 @@ export const webDesignAgencies: VerticalConfig = {
   hubLine: "Find companies posting about a new site or hiring web roles.",
 
   hero: {
+    title: "Find marketing heads scoping a website redesign.",
     h1: ["You build websites", "We bring you clients"],
-    lede: "Pancake finds marketers posting about a new site and companies hiring web designers, then messages them. Win the redesign.",
+    lede: "Pancake scans LinkedIn posts and web design job posts, then names who owns the site. Win the rebuild before it goes in-house.",
   },
 
   workspace: { name: "Kernwell Studio", sender: "Malik Ostrander" },
@@ -34,8 +35,8 @@ export const webDesignAgencies: VerticalConfig = {
     prompts: [
       {
         kind: "hiring",
-        text: "We're a Webflow studio. Find US B2B companies with 20 to 200 staff hiring a Webflow developer.",
-        reply: "I'll watch job posts for Webflow and web design roles at B2B firms that size.",
+        text: "We’re a Webflow studio. Find US B2B companies with 20 to 200 staff hiring a Webflow developer.",
+        reply: "I’ll watch job posts for Webflow and web design roles at B2B firms that size.",
         proposal: [
           { kind: "hiring", items: ["Webflow developer", "Web designer", "Website manager"] },
           { kind: "stack", items: ["Webflow", "Framer"] },
@@ -55,12 +56,12 @@ export const webDesignAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Joanna, saw Tillwright is hiring a Webflow developer. We build Webflow sites for B2B software teams and keep shipping pages after launch. Want to see two B2B sites we built and still maintain?",
+          "Hi Joanna, thanks for connecting. I run a web studio, so I’m forever looking at other companies’ sites. Which page on yours would you rebuild first?",
       },
       {
         kind: "keyword",
         text: "Find heads of marketing at US B2B firms with 10 to 100 staff posting about a website redesign.",
-        reply: "I'll watch posts about redesigns and site launches, and keep B2B marketing heads.",
+        reply: "I’ll watch posts about redesigns and site launches, and keep B2B marketing heads.",
         proposal: [
           { kind: "keyword", items: ["website redesign", "new website", "site migration"] },
           { kind: "influencer", items: ["Omar Ruskin"] },
@@ -69,7 +70,7 @@ export const webDesignAgencies: VerticalConfig = {
         leads: [
           { name: "Ravi Chandrasekar", role: "VP Marketing", company: "Larkhaven", kind: "keyword", signal: "Posted about a new site" },
           { name: "Adeline Nkosi", role: "Founder & CEO", company: "Birchlight", kind: "keyword", signal: "Posted “new website”" },
-          { name: "Wyatt Pennock", role: "Growth Marketer", company: "Lumkin", kind: "influencer", signal: "Liked Ruskin’s post" },
+          { name: "Wyatt Pennock", role: "Growth Marketer", company: "Lumkin", kind: "influencer", signal: "Liked a Ruskin post" },
           { name: "Leilani Nakoa", role: "Head of Marketing", company: "Greywick", kind: "hiring", signal: "Web developer role" },
           { name: "Simone Gallagher", role: "Brand Manager", company: "Vesperline", kind: "keyword", signal: "Posted on migration" },
         ],
@@ -79,12 +80,12 @@ export const webDesignAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Ravi, saw your post about Larkhaven’s site falling behind the product. We redesign B2B software sites in Webflow and hand over a CMS your team can edit without a developer. Open to a short call on scope?",
+          "Hi Ravi, came across your post about Larkhaven’s site falling behind the product. What feels most out of date, the messaging or the design?",
       },
       {
         kind: "stack",
         text: "We rebuild sites in Webflow. Find US SaaS firms whose job posts mention WordPress.",
-        reply: "I'll find SaaS companies whose job posts name WordPress, like web or content roles.",
+        reply: "I’ll find SaaS companies whose job posts name WordPress, like web or content roles.",
         proposal: [
           { kind: "stack", items: ["WordPress"] },
           { kind: "hiring", items: ["Website manager", "Web developer"] },
@@ -103,13 +104,13 @@ export const webDesignAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Terrence, saw Solvane’s web developer role calls for WordPress. If a rebuild ever comes up, we move SaaS sites from WordPress to Webflow, redirects and SEO included. Worth a short call to compare the two paths?",
+          "Hi Terrence, happy to be connected. I rebuild websites, and who owns the site varies a lot between teams. Who updates yours day to day, marketing or engineering?",
       },
     ],
   },
 
   signals: {
-    h2: "Teams say when the site falls behind.",
+    h2: "A web hire means a site project.",
     cards: [
       {
         kind: "hiring",
@@ -150,8 +151,8 @@ export const webDesignAgencies: VerticalConfig = {
       a: "No. Add Framer as a Stack tool and as a keyword, and Pancake looks for it in job posts and LinkedIn posts instead.",
     },
     {
-      q: "Can Pancake grade a prospect’s current site?",
-      a: "No. Pancake doesn’t score websites. It finds people posting about a new site, and companies hiring web roles.",
+      q: "Won’t a company hiring a Webflow developer build in-house?",
+      a: "Some will. The post still shows the site is a priority now. Pitch the build while they hire, or support for the new developer.",
     },
     {
       q: "I white-label for other agencies. Can it find them?",
@@ -161,5 +162,5 @@ export const webDesignAgencies: VerticalConfig = {
 
   related: ["branding-agencies", "ux-design-agencies", "seo-agencies", "shopify-agencies"],
 
-  cta: { title: "Build their next site." },
+  cta: { title: "Own their site for good." },
 };

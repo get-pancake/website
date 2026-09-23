@@ -25,19 +25,20 @@ export const fractionalCfos: VerticalConfig = {
   hubLine: "Find founders hiring a VP Finance or posting about runway.",
 
   hero: {
+    title: "Find the CEO behind each VP Finance job post.",
     h1: ["You run the numbers", "We bring you clients"],
-    lede: "Pancake finds companies hiring a VP Finance and founders posting about runway. You step in as their part-time CFO.",
+    lede: "Controller openings, QuickBooks in listings and runway talk, not a stale database. Step in as their part-time CFO.",
   },
 
   workspace: { name: "Corriveau Finance", sender: "Megan Corriveau" },
 
   demo: {
-    h2: "Describe the company that needs you.",
+    h2: "Reach the CEO before the seat fills.",
     prompts: [
       {
         kind: "hiring",
         text: "Part-time CFO here. Find US companies with 20 to 150 people hiring a VP Finance or controller.",
-        reply: "I'll watch job posts for finance leaders at US companies with 20 to 150 people.",
+        reply: "I’ll watch job posts for finance leaders at US companies with 20 to 150 people.",
         proposal: [
           { kind: "hiring", items: ["VP Finance", "Financial controller", "Head of Finance"] },
           { kind: "stack", items: ["QuickBooks", "NetSuite"] },
@@ -56,12 +57,12 @@ export const fractionalCfos: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Philippa, saw Coppervale is hiring a VP Finance. Until that seat is filled, someone still has to own the forecast and the next board deck. I cover that part-time for software companies your size. Open to a short call?",
+          "Hi Philippa, nice to connect. I work as a part-time CFO, so I like hearing how other companies plan ahead. Which number do you watch most closely each month?",
       },
       {
         kind: "stack",
         text: "Find US firms with 30 to 200 staff whose job posts name QuickBooks. I help them outgrow it.",
-        reply: "I'll find companies whose job posts name QuickBooks, then the leader who owns finance.",
+        reply: "I’ll find companies whose job posts name QuickBooks, then the leader who owns finance.",
         proposal: [
           { kind: "stack", items: ["QuickBooks", "Xero"] },
           { kind: "hiring", items: ["Accounting manager", "Staff accountant"] },
@@ -80,12 +81,12 @@ export const fractionalCfos: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Dominic, saw Wickhaven Supply's job posts ask for QuickBooks. At 120 people, month-end close is often where that setup starts to strain. I help distributors your size plan the next step, part-time. Worth a short call?",
+          "Hi Dominic, great to connect. I help companies outgrow their first accounting setup, and month-end is where it shows first. How many days does your close take?",
       },
       {
         kind: "keyword",
         text: "Find US SaaS founders posting about runway or unit economics. I own those numbers, part-time.",
-        reply: "I'll watch founder posts about runway and unit economics at US SaaS companies.",
+        reply: "I’ll watch founder posts about runway and unit economics at US SaaS companies.",
         proposal: [
           { kind: "keyword", items: ["cash runway", "unit economics", "13-week cash flow"] },
           { kind: "influencer", items: ["Delphine Marsh", "Oren Blackwell"] },
@@ -104,13 +105,13 @@ export const fractionalCfos: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Viktor, saw your post about runway at Parapet Cloud. A 13-week cash flow often answers that faster than a new model. I run finance part-time for SaaS founders your size. Worth a short call to walk through it?",
+          "Hi Viktor, your post about stretching runway at Parapet Cloud made me curious. Which lever are you pulling first, spend or revenue?",
       },
     ],
   },
 
   signals: {
-    h2: "A finance job post is your cue.",
+    h2: "Runway posts come before the CFO hire.",
     cards: [
       {
         kind: "hiring",
@@ -122,7 +123,7 @@ export const fractionalCfos: VerticalConfig = {
       {
         kind: "stack",
         title: "Accounting tools in job posts",
-        body: "A job post that asks for QuickBooks or NetSuite tells you which books you'd walk into.",
+        body: "A job post that asks for QuickBooks or NetSuite tells you which books you’d walk into.",
         watching: ["QuickBooks", "Xero", "NetSuite"],
       },
       {
@@ -144,11 +145,11 @@ export const fractionalCfos: VerticalConfig = {
   faq: [
     {
       q: "Can it tell who still runs finance on a bookkeeper?",
-      a: "Not directly. Pancake can't see a company's books. A controller or VP Finance job post is the tell, and each lead shows it.",
+      a: "Not directly. Pancake can’t see a company’s books. A controller or VP Finance job post is the tell, and each lead shows it.",
     },
     {
       q: "Can it find companies that raised a round?",
-      a: "No. Pancake doesn't see funding or financials. It finds finance job posts and founders posting about runway or board prep.",
+      a: "No. Pancake doesn’t see funding or financials. It finds finance job posts and founders posting about runway or board prep.",
     },
     {
       q: "Can I pause outreach during close week?",

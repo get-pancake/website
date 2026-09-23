@@ -19,13 +19,14 @@ export const consultants: VerticalConfig = {
     badge: "For consultants",
   },
 
-  meta: { seoTitle: "Pancake for Consultants: Clients Who Need Your Expertise" },
+  meta: { seoTitle: "Pancake for Consultants: Execs Posting Your Problem" },
 
   hubLine: "Find executives posting about the problem you solve.",
 
   hero: {
+    title: "Find executives writing about the problem you fix.",
     h1: ["You know the fix", "We bring you clients"],
-    lede: "Pancake finds executives posting about the problem you solve, or hiring for it. Then it opens the conversation on LinkedIn.",
+    lede: "Pancake reads comments under your posts and job openings in your niche. Each lead arrives with its reason, so you open warm.",
   },
 
   workspace: { name: "Halloran Advisory", sender: "Claire Halloran" },
@@ -36,7 +37,7 @@ export const consultants: VerticalConfig = {
       {
         kind: "keyword",
         text: "I fix ops at scale-ups. Find US COOs at 50-300-person firms posting about scaling pains.",
-        reply: "I'll watch COO posts about scaling pains and keep companies with 50 to 300 people.",
+        reply: "I’ll watch COO posts about scaling pains and keep companies with 50 to 300 people.",
         proposal: [
           { kind: "keyword", items: ["scaling pains", "process improvement", "ops bottlenecks"] },
           { kind: "hiring", items: ["Operations manager", "Program manager"] },
@@ -55,12 +56,12 @@ export const consultants: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Lorraine, saw your post about scaling pains at Quarrystone. At 140 people, the handoffs that worked at 40 tend to slip. I help COOs at software companies that size rebuild them. Worth 20 minutes to compare notes?",
+          "Hi Lorraine, your post on scaling pains at Quarrystone stuck with me. Which handoff is slipping first?",
       },
       {
         kind: "stack",
         text: "I set up product analytics. Find US startups whose job posts mention Mixpanel or Amplitude.",
-        reply: "I'll find startups whose job posts name those tools, then the product leader at each.",
+        reply: "I’ll find startups whose job posts name those tools, then the product leader at each.",
         proposal: [
           { kind: "stack", items: ["Mixpanel", "Amplitude"] },
           { kind: "hiring", items: ["Product analyst", "Growth product manager"] },
@@ -79,12 +80,12 @@ export const consultants: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Kwabena, saw Fablewick is hiring people who know Mixpanel. Mixpanel only pays off with a clean tracking plan behind it. I set up product analytics for startups your size. Open to a short call about yours?",
+          "Hi Kwabena, good to be connected. I set up product analytics for startups, and every team swears by a different number. Which one do you check first each morning?",
       },
       {
         kind: "own_brand",
         text: "Founders comment on my pricing posts. Turn the ones at US B2B software companies into leads.",
-        reply: "I'll watch who engages with your posts and keep founders at US B2B software companies.",
+        reply: "I’ll watch who engages with your posts and keep founders at US B2B software companies.",
         proposal: [
           { kind: "own_brand", items: ["Claire Halloran", "Halloran Advisory"] },
           { kind: "keyword", items: ["usage-based pricing", "pricing page"] },
@@ -93,7 +94,7 @@ export const consultants: VerticalConfig = {
         ],
         leads: [
           { name: "Benedict Oduya", role: "Founder & CEO", company: "Graniteleaf", kind: "own_brand", signal: "Commented on a post" },
-          { name: "Priscilla Yuen", role: "CEO", company: "Shoalworks", kind: "own_brand", signal: "Liked your pricing post" },
+          { name: "Priscilla Yuen", role: "CEO", company: "Shoalworks", kind: "own_brand", signal: "Liked a Halloran post" },
           { name: "Mateo Galarza", role: "Head of Revenue", company: "Coldspire", kind: "keyword", signal: "Posted on usage pricing" },
           { name: "Hollis Vandermeer", role: "CRO", company: "Moorbeck", kind: "influencer", signal: "Liked a Kovac post" },
           { name: "Yara Nassif", role: "COO", company: "Lanternfield", kind: "competitor", signal: "Liked a Marrowby post" },
@@ -104,7 +105,7 @@ export const consultants: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Benedict, thanks for commenting on my pricing post. At 60 people, pricing often lags what the product now does. I help B2B founders reset pricing and packaging. Open to comparing notes on how you price today?",
+          "Hi Benedict, good to see your comment on my pricing post. How does Graniteleaf price today, per seat or by usage?",
       },
     ],
   },
@@ -128,7 +129,7 @@ export const consultants: VerticalConfig = {
       {
         kind: "hiring",
         title: "Job posts that signal the need",
-        body: "Pancake reads job posts for roles tied to your specialty, then finds the executive you'd pitch.",
+        body: "Pancake reads job posts for roles tied to your specialty, then finds the executive you’d pitch.",
         watching: ["Operations manager", "Head of Strategy", "Business analyst"],
         more: 1,
       },
@@ -147,8 +148,8 @@ export const consultants: VerticalConfig = {
       a: "No. New leads arrive each morning, and you pick which ones join your campaign. Approve three a week or thirty.",
     },
     {
-      q: "Won't outreach hurt a reputation built on referrals?",
-      a: "Each message is short and written from the signal behind that lead, like the post they wrote. Nobody hears from you until you approve them.",
+      q: "Won’t outreach hurt a reputation built on referrals?",
+      a: "Not when it reads like a peer. Each message is short, in your Brain voice, and never a pitch. Nobody hears from you until you approve them.",
     },
     {
       q: "Can it stick to my niche?",

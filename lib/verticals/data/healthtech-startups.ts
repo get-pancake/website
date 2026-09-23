@@ -29,8 +29,9 @@ export const healthtechStartups: VerticalConfig = {
   hubLine: "Find hospitals and clinic groups whose job posts name Epic.",
 
   hero: {
-    h1: ["You sell to hospitals", "We bring you customers"],
-    lede: "Pancake finds hospitals naming Epic in job posts and clinics hiring schedulers. Each morning, you get the leader who buys.",
+    title: "Find revenue cycle VPs adding prior auth staff.",
+    h1: ["You sell to providers", "We bring you customers"],
+    lede: "Hospital job posts naming Epic and what health leaders post, not a stale provider list. You reach the budget holder.",
   },
 
   workspace: { name: "Wardwise", sender: "Temitope Oyinlola" },
@@ -41,7 +42,7 @@ export const healthtechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "Our scheduling tool plugs into Epic. Find US hospitals whose job posts name it.",
-        reply: "I'll watch hospital job posts that name Epic and find who runs patient access.",
+        reply: "I’ll watch hospital job posts that name Epic and find who runs patient access.",
         proposal: [
           { kind: "stack", items: ["Epic", "Epic Cadence"] },
           { kind: "hiring", items: ["Medical scheduler", "Patient access specialist"] },
@@ -61,12 +62,12 @@ export const healthtechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Loretta, saw Ivers Health is hiring schedulers who know Epic Cadence. Our scheduling layer runs on top of Cadence and refills cancelled slots from the waitlist. Worth a 20-minute look?",
+          "Hi Loretta, appreciate the connect. I work on patient scheduling software. What happens to a slot when a patient cancels the day before?",
       },
       {
         kind: "hiring",
         text: "We automate prior auth. Find US specialty clinic groups hiring prior auth specialists.",
-        reply: "I'll watch prior auth job posts at US specialty groups and find who runs revenue cycle.",
+        reply: "I’ll watch prior auth job posts at US specialty groups and find who runs revenue cycle.",
         proposal: [
           { kind: "hiring", items: ["Prior auth specialist", "Authorization coordinator"] },
           { kind: "keyword", items: ["prior authorization", "claim denials"] },
@@ -85,12 +86,12 @@ export const healthtechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Rosalyn, saw Alcott Ortho has two prior auth roles open. We automate prior auth submissions for orthopedic groups, so each specialist clears more cases a day. Worth a quick look while you hire?",
+          "Hi Rosalyn, glad to connect. We build software that automates prior authorizations. How long does a typical auth take to come back?",
       },
       {
         kind: "keyword",
         text: "Our shift app fills caregiver gaps. Find US senior-living leaders posting about staffing.",
-        reply: "I'll watch posts from senior-living leaders about caregiver staffing and turnover.",
+        reply: "I’ll watch posts from senior-living leaders about caregiver staffing and turnover.",
         proposal: [
           { kind: "keyword", items: ["caregiver shortage", "staff turnover"] },
           { kind: "hiring", items: ["Caregiver", "Certified nursing assistant"] },
@@ -109,7 +110,7 @@ export const healthtechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Ingrid, read your post about caregiver shortages at Stillhollow Living. Open shifts land on the caregivers already stretched thin. Our app fills them from your own caregiver pool first. Worth trying at one community?",
+          "Hi Ingrid, I read your post about caregiver shortages at Stillhollow Living. How are open shifts getting filled right now?",
       },
     ],
   },
@@ -141,7 +142,7 @@ export const healthtechStartups: VerticalConfig = {
       {
         kind: "influencer",
         title: "Voices health leaders follow",
-        body: "Pancake keeps the operations and IT leaders who engage with their posts.",
+        body: "Pancake keeps the operations and IT leaders who engage with health-system voices.",
         watching: ["Winslow Tregear", "Imogen Faircloth"],
         more: 2,
       },

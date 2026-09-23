@@ -24,8 +24,9 @@ export const gtmAgencies: VerticalConfig = {
   hubLine: "Find B2B founders who are building outbound.",
 
   hero: {
+    title: "Find founders hiring SDRs to build outbound.",
     h1: ["You build pipeline", "We bring you clients"],
-    lede: "Pancake finds B2B startups hiring SDRs and opens a LinkedIn conversation with their founders. Your own pipeline fills first.",
+    lede: "Pancake reads sales job posts, the tools they name and GTM creators’ commenters. Your own pipeline fills every morning.",
   },
 
   workspace: { name: "Quillon Outbound", sender: "Reuben Castile" },
@@ -36,7 +37,7 @@ export const gtmAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "I run outbound for startups. Find US B2B companies with 10 to 50 people hiring an SDR.",
-        reply: "I'll watch SDR and BDR job posts at US startups that size, then find who runs sales.",
+        reply: "I’ll watch SDR and BDR job posts at US startups that size, then find who runs sales.",
         proposal: [
           { kind: "hiring", items: ["SDR", "BDR", "Founding account executive"] },
           { kind: "keyword", items: ["building outbound", "first sales hire"] },
@@ -55,12 +56,12 @@ export const gtmAgencies: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Priyanka, saw Sorrelwork is hiring an SDR. A new rep takes a few months to ramp. We run outbound for B2B startups your size, so pipeline keeps moving while you hire. Worth 15 minutes this week?",
+          "Hi Priyanka, thanks for accepting. I work on outbound with startups, and each one finds its first deals a different way. Where have your best ones come from so far?",
       },
       {
         kind: "stack",
         text: "Find US B2B companies whose job posts name Clay or Apollo. We run that stack for them.",
-        reply: "I'll track job posts that ask for Clay or Apollo and keep the growth and sales leaders.",
+        reply: "I’ll track job posts that ask for Clay or Apollo and keep the growth and sales leaders.",
         proposal: [
           { kind: "stack", items: ["Clay", "Apollo"] },
           { kind: "hiring", items: ["GTM engineer", "Growth operations manager"] },
@@ -69,7 +70,7 @@ export const gtmAgencies: VerticalConfig = {
         leads: [
           { name: "Marcus Delacroix", role: "Head of Growth", company: "Lucarne Labs", kind: "stack", signal: "Clay in job posts" },
           { name: "Beatriz Almeida", role: "VP Sales", company: "Lintel Data", kind: "stack", signal: "Apollo in job posts" },
-          { name: "Yaw Adomako", role: "CRO", company: "Soffitworks", kind: "hiring", signal: "GTM engineer role" },
+          { name: "Yaw Adomako", role: "CRO", company: "Soffitworks", kind: "hiring", signal: "GTM engineer role open" },
           { name: "Lucia Ferraro", role: "Founder", company: "Purlinworks", kind: "keyword", signal: "Posted about Clay" },
           { name: "Ethan Morrow", role: "Head of Revenue", company: "Joistware", kind: "hiring", signal: "Growth ops role open" },
         ],
@@ -79,12 +80,12 @@ export const gtmAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Marcus, saw Lucarne’s growth role asks for Clay experience. We build and run Clay and Apollo outbound for B2B teams your size. Want to see the first workflow we’d set up for you?",
+          "Hi Marcus, good to be connected. My team builds and runs outbound stacks all day. Is prospecting still mostly manual on your side?",
       },
       {
         kind: "influencer",
-        text: "Find US SaaS founders who engage with outbound creators' posts. We work with teams under 50.",
-        reply: "I'll watch fans of the outbound creators you name and keep SaaS teams under 50.",
+        text: "Find US SaaS founders who engage with outbound creators’ posts. We work with teams under 50.",
+        reply: "I’ll watch fans of the outbound creators you name and keep SaaS teams under 50.",
         proposal: [
           { kind: "influencer", items: ["Tessa Brightwell", "Rafael Sousa"] },
           { kind: "keyword", items: ["founder-led sales", "SDR ramp"] },
@@ -92,7 +93,7 @@ export const gtmAgencies: VerticalConfig = {
         ],
         leads: [
           { name: "Hana Kobayashi", role: "Founder & CEO", company: "Oriellane", kind: "influencer", signal: "Liked a Brightwell post" },
-          { name: "Isaac Feldman", role: "Co-founder", company: "Spindlebird", kind: "influencer", signal: "Commented on Sousa" },
+          { name: "Isaac Feldman", role: "Co-founder", company: "Spindlebird", kind: "influencer", signal: "Commented on a post" },
           { name: "Renata Oliveira", role: "CEO", company: "Mortisebay", kind: "keyword", signal: "Posted on SDR ramp" },
           { name: "Tyrone Beasley", role: "Founder", company: "Grommetry", kind: "own_brand", signal: "Liked a Quillon post" },
           { name: "Mira Castellane", role: "Head of Sales", company: "Plinthwise", kind: "influencer", signal: "Liked a Sousa post" },
@@ -103,7 +104,7 @@ export const gtmAgencies: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Hana, saw the Tessa Brightwell post on founder-led sales. It’s the stage where a founder’s calendar fills with prospecting. We run outbound for SaaS teams under 50, so you can hand that part off. Worth a chat about Oriellane’s pipeline?",
+          "Hi Hana, saw you liked Tessa Brightwell’s post on founder-led sales. Are you still running most of Oriellane’s sales calls yourself?",
       },
     ],
   },
@@ -147,16 +148,16 @@ export const gtmAgencies: VerticalConfig = {
       a: "Yes. Open one workspace per client at $99 a month each. Each client gets its own Brain and needs its own LinkedIn account to send from.",
     },
     {
-      q: "Isn't Pancake a rival to my agency?",
+      q: "Isn’t Pancake a rival to my agency?",
       a: "It does part of what you sell: finding leads and opening LinkedIn conversations. Use it to fill your own pipeline, or run it as one piece of a client engagement.",
     },
     {
-      q: "Do clients have to hand over their LinkedIn password?",
-      a: "No. The account connects through a secure LinkedIn sign-in page, and Pancake never sees the password. Seats are unlimited, so a client can join the workspace and connect it.",
+      q: "Won’t a team hiring a GTM engineer build its Clay setup in-house?",
+      a: "Some will. The post still shows outbound is a priority now. Pitch the build while they hire, or support for the new engineer.",
     },
     {
       q: "Can I change the sequence steps?",
-      a: "No. Every workspace runs one fixed LinkedIn sequence. What changes per lead is the message, written from its signal and your Brain voice.",
+      a: "No. Every workspace runs one fixed LinkedIn sequence. What changes per lead is the message: it starts from the lead’s own post when there is one, always in your Brain voice.",
     },
   ],
 

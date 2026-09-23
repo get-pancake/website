@@ -21,13 +21,14 @@ export const hrTechStartups: VerticalConfig = {
     badge: "For HR tech startups",
   },
 
-  meta: { seoTitle: "Pancake for HR Tech Startups: People Leaders, Found" },
+  meta: { seoTitle: "Pancake for HR Tech Startups: Reach People Leaders" },
 
   hubLine: "Find People leaders at firms naming BambooHR in job posts.",
 
   hero: {
+    title: "Find People leaders still running on BambooHR.",
     h1: ["You build for HR teams", "We bring you customers"],
-    lede: "Pancake finds companies whose job posts name BambooHR, and People leaders posting about retention. You see why each one fits.",
+    lede: "Pancake tracks HR openings, rival HR suites’ pages and turnover talk on LinkedIn. You get the buyer and why they fit.",
   },
 
   workspace: { name: "Stayforth", sender: "Jonas Aldecoa" },
@@ -38,7 +39,7 @@ export const hrTechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "Our HRIS replaces BambooHR. Find US employers with 200 to 1,000 staff whose job posts name it.",
-        reply: "I'll track job posts that name BambooHR and bring you the VP People or CHRO.",
+        reply: "I’ll track job posts that name BambooHR and bring you the VP People or CHRO.",
         proposal: [
           { kind: "stack", items: ["BambooHR"] },
           { kind: "hiring", items: ["HR generalist", "People operations specialist"] },
@@ -57,12 +58,12 @@ export const hrTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Tamika, saw Fennimore's HR generalist post lists BambooHR. We help property managers your size switch HR systems, and we run the data migration for you. Open to a short demo?",
+          "Hi Tamika, happy to be connected. My team makes HR software for People teams. What’s the one report you still build by hand?",
       },
       {
         kind: "keyword",
-        text: "Find US CHROs at hotel and restaurant groups posting about turnover. That's our market.",
-        reply: "I'll watch posts about turnover and keep People leaders at US hospitality groups.",
+        text: "Find US CHROs at hotel and restaurant groups posting about turnover. That’s our market.",
+        reply: "I’ll watch posts about turnover and keep People leaders at US hospitality groups.",
         proposal: [
           { kind: "keyword", items: ["employee turnover", "frontline retention", "stay interviews"] },
           { kind: "influencer", items: ["Winona Taggart", "Ruben Hakobyan"] },
@@ -81,12 +82,12 @@ export const hrTechStartups: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Denise, saw your post about front-desk turnover at Larkmead Hotels. We run short check-ins with new hires at 30, 60 and 90 days and flag who may leave. Worth comparing notes?",
+          "Hi Denise, I noticed your post about front-desk turnover at Larkmead Hotels. When do most new hires decide to leave?",
       },
       {
         kind: "hiring",
         text: "Our tool cleans HR data. Find US employers of 500 to 5,000 people hiring HRIS analysts.",
-        reply: "I'll watch HRIS job posts at US employers that size, then find the head of People Ops.",
+        reply: "I’ll watch HRIS job posts at US employers that size, then find the head of People Ops.",
         proposal: [
           { kind: "hiring", items: ["HRIS analyst", "HRIS manager", "People data analyst"] },
           { kind: "stack", items: ["Workday", "UKG Pro"] },
@@ -105,7 +106,7 @@ export const hrTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Anand, saw Kilbarron is hiring an HRIS analyst. Much of that role usually goes to fixing duplicate and stale records. We clean HR data automatically, so the analyst starts on reporting. Open to a short call?",
+          "Hi Anand, glad we’re connected. We build a tool that cleans up HR data. How confident are you in your headcount numbers today?",
       },
     ],
   },
@@ -116,7 +117,7 @@ export const hrTechStartups: VerticalConfig = {
       {
         kind: "stack",
         title: "HR systems named in job posts",
-        body: "Any job post that asks for BambooHR or Paylocity puts that company, and its People lead, on your list.",
+        body: "Job posts that ask for BambooHR or Paylocity bring you the company’s People lead, if it fits your ICP.",
         watching: ["BambooHR", "Paylocity", "UKG Pro", "Workday"],
       },
       {
@@ -129,7 +130,7 @@ export const hrTechStartups: VerticalConfig = {
       {
         kind: "influencer",
         title: "The HR writers CHROs follow",
-        body: "Pancake keeps the People leaders who comment on those writers' posts, if their company fits.",
+        body: "People leaders who comment on the HR voices you name become leads, if their company fits.",
         watching: ["Winona Taggart", "Ruben Hakobyan"],
         more: 2,
       },

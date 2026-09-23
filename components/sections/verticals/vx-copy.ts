@@ -70,9 +70,9 @@ export const VX_DEMO = {
   controls: { pause: "Pause demo", play: "Play demo", replay: "Replay demo" },
   /** role="img" labels per pane; {prompt} = active prompt text, {lead} = lead 0 name. */
   paneAria: {
-    brief: "Pancake's Signals page and chat. The request “{prompt}” becomes proposed signal settings, approved. First leads arrive tomorrow morning.",
-    leads: "Pancake's Leads page: five qualified leads. {lead} is open with the reason the lead fits, approved and ready to add to the campaign.",
-    outreach: "Pancake's Campaign page: {lead}'s LinkedIn journey. Profile visit and like done, connection request now, first message drafted.",
+    brief: "Pancake’s Signals page and chat. The request “{prompt}” becomes proposed signal settings, approved. First leads arrive tomorrow morning.",
+    leads: "Pancake’s Leads page: five qualified leads. {lead} is open with the reason the lead fits, approved and ready to add to the campaign.",
+    outreach: "Pancake’s Campaign page: {lead}’s LinkedIn journey. Profile visit and like done, connection request now, first message drafted for after they accept.",
     slack: "A Slack channel where Pancake posts new leads with Approve and Reject buttons. {lead} is approved.",
   },
   app: {
@@ -89,15 +89,26 @@ export const VX_DEMO = {
     },
     chat: {
       head: "Ask Pancake anything",
-      kbd: "⌘K",
+      /** The panel header's right-side action (the app shows ⌘K only on the launcher pill). */
+      newChat: "New chat",
       placeholder: "Ask a follow-up or change your dashboard…",
+      /** Shown instead of `placeholder` when the chat column is under 300px. */
+      placeholderShort: "Ask a follow-up…",
+      /** copilot/host/starters.ts PAGE_STARTERS.outboundSignals — the empty conversation's chips. */
+      starters: [
+        "Which signals should I turn on?",
+        "How does post engagement find leads?",
+        "What do the hiring and stack signals track?",
+      ],
       /** Tool row of the live copilot transcript (observed 2026-09-22): label + status. */
       tool: "Checking signal settings",
       toolDone: "Done",
       proposalTitle: "Signal settings",
-      proposed: "Proposed",
+      /** The live proposal card's caps kicker, then its approved state. */
+      proposed: "Recommended next move",
       approved: "Approved",
-      approve: "Approve",
+      /** The confirm of the app's review dialog: the demo folds Review → confirm into one click. */
+      approve: "Approve change",
       saved: "Saved. First leads arrive tomorrow morning.",
       stackSuffix: ", named in job posts",
     },
@@ -117,25 +128,44 @@ export const VX_DEMO = {
       country: "United States",
       profile: "Profile ↗",
       signal: "Signal",
-      why: "Why this lead fits",
+      /** leads/lead-timeline.tsx: the sheet's TIMELINE section. */
+      timeline: "Timeline",
+      qualified: "Qualified as a lead",
+      commented: "Commented on a post",
+      reacted: "Reacted to a post",
+      like: "Like",
+      viewPost: "View post ↗",
+      /** The cold-lead note (hiring / stack leads have no engagement sightings). */
+      cold: (source: string) => `No engagement signals yet — this lead was sourced via ${source}.`,
     },
     campaign: {
       title: "Campaign",
       status: "Active",
       sub: "Pancake runs one warm outreach campaign, tuned for you.",
+      /** campaigns/copy.ts journey.panelTitle · journey.stepOf(3, 6). */
       journey: "Campaign journey · Step 3 of 6",
+      /** campaigns/copy.ts leads.status.invited (the invite step is current → "invited", blue). */
       leadStatus: "Invited",
+      /** sequence-template.ts v2: visit → like → note-less invite → message 1 six hours after they
+       *  accept → two follow-ups 72h apart (an unaccepted invite ends the sequence after 7 days). */
       steps: [
         { label: "Visit their profile", sub: "", state: "Done" },
         { label: "Like a recent post", sub: "", state: "Done" },
         { label: "Send a connection request", sub: "No note — just the request, so it never reads as a pitch.", state: "Now" },
-        { label: "Follow-up message", sub: "after 6 hours", state: "Upcoming" },
+        { label: "First message (after they accept)", sub: "6 hours after they accept", state: "Upcoming" },
         { label: "Follow-up message", sub: "after 3 days", state: "Upcoming" },
         { label: "Follow-up message", sub: "after 3 days", state: "Upcoming" },
       ],
-      upNext: "Up next · Follow-up message",
+      /** Phones: the three message steps folded into one row. */
+      fold: "3 follow-up messages",
+      upNext: "Up next · First message (after they accept)",
+      /** campaigns/copy.ts sheet.writing → journey.draftNote, as a before / after pair. */
+      writing: "Writing from their activity…",
       draft: "Drafted — sends when the sequence reaches this step.",
-      written: "Written from 2 signals + your Brain voice.",
+      /** sheet.writtenFrom(n): engagement leads (n = the sightings on the lead's timeline). */
+      writtenFrom: (n: number) => `Written from ${n} signal${n === 1 ? "" : "s"} + your Brain voice.`,
+      /** sheet.writtenInVoice: hiring / stack leads have no sightings (finalize-run: "No sightings"). */
+      writtenInVoice: "Written in your Brain voice.",
     },
     slack: {
       channels: "Channels",
@@ -165,15 +195,18 @@ export const VX_SIGNALS = {
   watching: "Watching",
   more: (n: number) => `+${n} more`,
   lede: (v: VerticalConfig) => `Pancake watches six buying signals. These four matter most to ${v.name.short}.`,
-  /** Derived from the 2 kinds NOT on the cards + the opt-in kinds that ARE on the cards. */
+  /** The 2 kinds NOT on the cards ("can also watch": nothing is watched until set up), then the
+   *  opt-in fact, on every page (signal-settings.ts optInSignalKinds = hiring, stack: off by
+   *  default). "Both" when the first sentence just named exactly those two (no back-to-back
+   *  "Hiring and Stack … Hiring and Stack"). */
   foot: (v: VerticalConfig) => {
     const shown = v.signals.cards.map((c) => c.kind);
     const all = SIGNAL_GROUPS.flatMap((g) => g.kinds);
-    const missing = all.filter((k) => !shown.includes(k)).map((k) => SIGNAL_LABEL[k]);
-    const optIn = shown.filter((k) => SIGNAL_OPT_IN.includes(k)).map((k) => SIGNAL_LABEL[k]);
-    const a = `Pancake also watches ${list(missing)}.`;
-    const b = optIn.length ? ` ${list(optIn)} ${optIn.length > 1 ? "take" : "takes"} one click to switch on.` : "";
-    return a + b;
+    const missingKinds = all.filter((k) => !shown.includes(k));
+    const missing = missingKinds.map((k) => SIGNAL_LABEL[k]);
+    const sameTwo = missingKinds.length === SIGNAL_OPT_IN.length && SIGNAL_OPT_IN.every((k) => missingKinds.includes(k));
+    const optIn = sameTwo ? "Both" : list(SIGNAL_OPT_IN.map((k) => SIGNAL_LABEL[k]));
+    return `Pancake can also watch the ${list(missing)} signals. ${optIn} start switched off. One click turns each on.`;
   },
 };
 
@@ -184,9 +217,9 @@ export const VX_CONTROL = {
   h2: "You choose who hears from you.",
   lede: "Pancake contacts only the leads you approve and add to your campaign. Nothing goes out for 10 minutes, so you can undo.",
   facts: [
-    { title: "Your own LinkedIn", body: "Outreach goes out from your account, paced by LinkedIn's own limits." },
+    { title: "Your own LinkedIn", body: "Outreach goes out from your account, paced by LinkedIn’s own limits." },
     { title: "No pitch in the invite", body: "Connection requests go out with no note." },
-    { title: "Weekdays, business hours", body: "Pancake sends Monday to Friday, 9 AM to 6 PM, in your time zone." },
+    { title: "Weekdays, business hours", body: "Pancake sends Monday to Friday, 9\u00a0AM to 6\u00a0PM, in your time zone." },
   ],
   dialog: {
     title: (lead: string) => `Add ${lead} to your campaign?`,
@@ -195,21 +228,21 @@ export const VX_CONTROL = {
       ["Sends as", `${sender} — your own LinkedIn account`],
       ["Sequence", "LinkedIn signal outreach"],
       ["Messages", "3 personal messages, written from their activity in your Brain voice"],
-      ["First action", "No earlier than 9:42 AM, inside the send window."],
-      ["Send window", "Mon–Fri · 9 AM–6 PM (ET)"],
-      ["Objective", `Book a meeting — replies get cal.example/${sender.split(" ")[0].toLowerCase()}`],
+      ["First action", "No earlier than 9:42\u00a0AM, inside the send window."],
+      ["Send window", "Mon–Fri · 9\u00a0AM–\u20606\u00a0PM (ET)"],
+      ["Objective", `Book a meeting — replies get\u00a0cal.example/${sender.split(" ")[0].toLowerCase()}`],
     ],
     cancel: "Cancel",
     confirm: "Add to campaign",
   },
   toast: {
     title: (lead: string) => `${lead} added to your campaign`,
-    body: "Nothing goes out before 9:42 AM. Undo any time until then.",
+    body: "Nothing goes out before 9:42\u00a0AM. Undo any time until then.",
     undo: "Undo",
   },
   /** role="img" label for the dialog + toast mock (screen-reader text, one sentence each). */
   aria: (lead: string, sender: string) =>
-    `Pancake's confirmation before ${lead} joins your campaign: outreach sends as ${sender} from your own LinkedIn account, Monday to Friday, 9 AM to 6 PM. After you confirm, nothing goes out before 9:42 AM and you can undo until then.`,
+    `Pancake’s confirmation before ${lead} joins your campaign: outreach sends as ${sender} from your own LinkedIn account, Monday to Friday, 9 AM to 6 PM. After you confirm, nothing goes out before 9:42 AM and you can undo until then.`,
 };
 
 /* ─── VxFaq ─────────────────────────────────────────────────────────────────── */
@@ -217,7 +250,8 @@ export const VX_CONTROL = {
 export const VX_FAQ = {
   eyebrow: "FAQ",
   h2: (v: VerticalConfig) => `Questions ${v.name.short} ask.`,
-  /** Appended after the 3–4 vertical items, in this order. Same array → FAQPage JSON-LD. */
+  /** Appended after the 3–4 vertical items, in this order (visible list only: the FAQPage
+   *  JSON-LD carries the vertical items alone, so these 5 don't repeat on 40 URLs). */
   shared: [
     {
       q: "What does Pancake send, and where?",
@@ -229,7 +263,7 @@ export const VX_FAQ = {
     },
     {
       q: "Can I read the messages before they send?",
-      a: "You can read each one in the lead's campaign journey. Messages send on their own when their step comes. You can't edit or approve them one by one. To stop outreach, remove the lead or pause the campaign.",
+      a: "You can read each one in the lead’s campaign journey. Messages send on their own when their step comes. You can’t edit or approve them one by one. To stop outreach, remove the lead or pause the campaign.",
     },
     {
       q: "How many leads will I get?",
@@ -255,25 +289,37 @@ export const VX_RELATED = {
 
 export const VX_CTA_BODY: [string, string] = ["$99 a month, flat.", "First leads arrive tomorrow morning."];
 
-export const VX_PRICING_CHECKLIST: string[] = [
+/** Pages whose readers SELL articles (the config caveat: never sell Pancake's daily article
+ *  to them) swap the AI SEO line for the Claude Code line. A Set on purpose: slugs are routing
+ *  keys, not visible copy, and a Set serializes to {} so the FIXED_LEAK copy lint
+ *  (validate.ts) keeps scanning only real strings. */
+export const VX_NO_ARTICLE_SLUGS: ReadonlySet<string> = new Set(["seo-agencies"]);
+
+/** The /for pricing checklist; `slug` = the page (the hub passes none). */
+export const VX_PRICING_CHECKLIST = (slug?: string): string[] => [
   "5 to 15 new leads a day.",
   "Every lead comes with its reason.",
   "LinkedIn outreach from your account.",
   "You approve every lead first.",
-  VX_AI_SEO_MENTION ? "One article a day for your site." : "Works with Claude Code and Codex.",
+  VX_AI_SEO_MENTION && !(slug && VX_NO_ARTICLE_SLUGS.has(slug))
+    ? "One article a day for your site."
+    : "Works with Claude Code and Codex.",
   "Unlimited seats.",
 ];
 
 /* ─── /for hub ──────────────────────────────────────────────────────────────── */
 
+/** Hub lede = hub meta description (the vertical pages use description = hero lede too). */
+const HUB_LEDE =
+  "One page per industry, from agencies and consultants to software startups, each with the signals Pancake watches and the leads it finds.";
+
 export const VX_HUB = {
   eyebrow: "Industries",
   h1: "Pick your industry.",
-  lede: "Each page shows the signals, example prompts and leads that fit one market.",
+  lede: HUB_LEDE,
   draft: "Draft",
   soon: "More industries soon.",
-  metaDescription:
-    "Pancake finds the people your business sells to, from the signals they leave on LinkedIn and in job posts. Pick your industry.",
+  metaDescription: HUB_LEDE,
 };
 
 /* ─── titles / meta ─────────────────────────────────────────────────────────── */
@@ -282,6 +328,9 @@ export const VX_META = {
   title: (v: VerticalConfig) => (VX_TITLE_MODE === "brand" ? "Pancake" : v.meta.seoTitle),
   /** og:title + twitter:title ride the value prop in both modes (/agents precedent, ag-copy META). */
   ogTitle: (v: VerticalConfig) => `Pancake for ${v.name.plural}`,
-  hubTitle: () => (VX_TITLE_MODE === "brand" ? "Pancake" : "Industries — Pancake"),
+  /** n = the number of listed pages (the hub passes approvedVerticals().length). */
+  hubTitle: (n: number) => (VX_TITLE_MODE === "brand" ? "Pancake" : `Pancake by Industry: Find B2B Customers in ${n} Markets`),
   hubOgTitle: "Pancake for your industry",
+  /** og:image:alt / twitter:image:alt: every /for URL shares /og-image.png, the homepage card. */
+  ogImageAlt: "Pancake: You run your company. We bring you customers.",
 };

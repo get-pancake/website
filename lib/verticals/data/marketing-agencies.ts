@@ -22,8 +22,9 @@ export const marketingAgencies: VerticalConfig = {
   hubLine: "Find B2B teams hiring marketers or asking for an agency.",
 
   hero: {
+    title: "Find B2B founders crowdsourcing their next agency.",
     h1: ["You do the marketing", "We bring you clients"],
-    lede: "Pancake finds B2B firms hiring marketers or asking for an agency, then messages the head of marketing. Pitch before the RFP.",
+    lede: "LinkedIn posts, marketing job posts and rivals’ comment threads, not a bought list. Every morning, meet who holds the brief.",
   },
 
   workspace: { name: "Ybarra Growth", sender: "Carmen Ybarra" },
@@ -34,10 +35,10 @@ export const marketingAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We do industrial marketing. Find US manufacturers with 50 to 500 staff hiring marketers.",
-        reply: "I'll watch marketing job posts from US manufacturers and skip staffing-firm listings.",
+        reply: "I’ll watch marketing job posts from US manufacturers and skip staffing-firm listings.",
         proposal: [
           { kind: "hiring", items: ["Marketing manager", "Marketing coordinator", "Trade show coordinator"] },
-          { kind: "stack", items: ["HubSpot", "Adobe InDesign"] },
+          { kind: "stack", items: ["HubSpot", "Marketo"] },
           { kind: "keyword", items: ["trade show leads"] },
           { kind: "competitor", items: ["Pinwright Marketing"] },
         ],
@@ -45,7 +46,7 @@ export const marketingAgencies: VerticalConfig = {
           { name: "Colette Varnum", role: "Marketing Director", company: "Tarrowby", kind: "hiring", signal: "2 marketing roles open" },
           { name: "Rafferty Tuazon", role: "President", company: "Quenlin", kind: "hiring", signal: "Marketing manager role" },
           { name: "Shira Feldstein", role: "Marketing Manager", company: "Veltrona", kind: "keyword", signal: "Posted on trade shows" },
-          { name: "Beau Arceneaux", role: "VP Sales", company: "Brazeline", kind: "stack", signal: "InDesign in job posts" },
+          { name: "Beau Arceneaux", role: "Marketing Director", company: "Brazeline", kind: "stack", signal: "HubSpot in job posts" },
           { name: "Ximena Barragán", role: "Brand Manager", company: "Hexley", kind: "competitor", signal: "Liked a Pinwright post" },
         ],
         featured: {
@@ -54,12 +55,12 @@ export const marketingAgencies: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Colette, saw Tarrowby is hiring a marketing manager and a trade show coordinator. We run marketing for industrial manufacturers, including trade show campaigns and distributor content. Worth a call on what your new hires could hand off to us?",
+          "Hi Colette, good to connect. We do industrial marketing, so I like hearing which channels still pull their weight. Which one brings you the best leads today?",
       },
       {
         kind: "keyword",
-        text: "Find US founders asking for marketing agency recommendations. We're a B2B shop.",
-        reply: "I'll watch posts asking for a B2B agency and skip the agencies pitching in the comments.",
+        text: "Find US founders asking for marketing agency recommendations. We’re a B2B shop.",
+        reply: "I’ll watch posts asking for a B2B agency and skip the agencies pitching in the comments.",
         proposal: [
           { kind: "keyword", items: ["looking for an agency", "agency recommendations"] },
           { kind: "hiring", items: ["Demand gen manager"] },
@@ -78,23 +79,23 @@ export const marketingAgencies: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Tariq, saw your post asking for B2B marketing agency picks. We run demand gen for payments companies, and every engagement starts with a 90-day plan. Want me to sketch what the first month could look like for Coinrill?",
+          "Hi Tariq, saw your post asking for B2B marketing agency picks. What would the agency own first: pipeline, content or the brand?",
       },
       {
         kind: "influencer",
-        text: "We do demand gen for SaaS. Find US heads of marketing engaging with B2B experts' posts.",
-        reply: "I'll watch posts from the experts your buyers follow and keep SaaS marketing heads.",
+        text: "We do demand gen for SaaS. Find US heads of marketing engaging with B2B experts’ posts.",
+        reply: "I’ll watch posts from the experts your buyers follow and keep SaaS marketing heads.",
         proposal: [
           { kind: "influencer", items: ["Philippa Grange", "Lionel Dunaway"] },
           { kind: "keyword", items: ["pipeline target", "demand generation"] },
           { kind: "hiring", items: ["Field marketing manager"] },
         ],
         leads: [
-          { name: "Imani Prewitt", role: "Head of Marketing", company: "Arbolade", kind: "influencer", signal: "Replied to Grange’s post" },
-          { name: "Caleb Yoshimura", role: "VP Marketing", company: "Orchardly", kind: "influencer", signal: "Liked Dunaway’s post" },
+          { name: "Imani Prewitt", role: "Head of Marketing", company: "Arbolade", kind: "influencer", signal: "Commented on a post" },
+          { name: "Caleb Yoshimura", role: "VP Marketing", company: "Orchardly", kind: "influencer", signal: "Liked a Dunaway post" },
           { name: "Soraya Akinyemi", role: "Demand Gen Lead", company: "Kiteline", kind: "keyword", signal: "Posted on pipeline" },
           { name: "Tobin Mattingly", role: "Marketing Manager", company: "Tarnway", kind: "hiring", signal: "Field marketing role" },
-          { name: "Ruth Abiodun", role: "CMO", company: "Pewterly", kind: "influencer", signal: "Liked Grange’s post" },
+          { name: "Ruth Abiodun", role: "CMO", company: "Pewterly", kind: "influencer", signal: "Liked a Grange post" },
         ],
         featured: {
           why: "Imani leads marketing at Arbolade, a 120-person US SaaS company, and commented on Philippa Grange’s post about pipeline targets.",
@@ -102,7 +103,7 @@ export const marketingAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Imani, saw your comment on Philippa Grange’s post about pipeline targets. We run demand gen for SaaS companies, with paid and content under one plan and one number. Open to comparing how we’d build next quarter’s pipeline?",
+          "Hi Imani, noticed your comment on Philippa Grange’s post about pipeline targets. Who sets the pipeline number at Arbolade, marketing or sales?",
       },
     ],
   },
@@ -127,7 +128,7 @@ export const marketingAgencies: VerticalConfig = {
       {
         kind: "own_brand",
         title: "Your posts, turned into leads",
-        body: "Every like on your agency’s posts gets checked, and the B2B marketers among them become leads.",
+        body: "Pancake checks who likes your agency’s recent posts and keeps the B2B marketers among them.",
         watching: ["Ybarra Growth", "Carmen Ybarra"],
       },
       {

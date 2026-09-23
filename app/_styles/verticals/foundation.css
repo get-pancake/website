@@ -13,7 +13,13 @@
   --vx-edge: calc(50% - 568px);
   /* the 1296 card grid (LpCta), 16px floor */
   --vx-card-m: max(16px, calc(50% - 648px));
-  --vx-rhythm: 112px;
+  /* the homepage's section rhythm, as VISIBLE gaps (measured on getpancake.ai
+     2026-09-22, card → next card or head): 160 ≥1025 (steps → banner →
+     features), 96 ≤1024 (banner → features, testimonials → pricing) and on
+     phones (testimonials → pricing). Every gap between two /for blocks is
+     exactly this: .vx-sec pads by it, the marquee and the CTA are trimmed
+     to it below. */
+  --vx-rhythm: 160px;
   --vx-head-gap: 48px;
   --vx-hair: var(--lp-subtle-stroke);
   /* Q7 (founder, unanswered → spec default): eyebrows in Aeonik Fono. If Fono
@@ -35,18 +41,25 @@
   --vx-hiring-fg: color-mix(in srgb, var(--lp-yellow-40) 58%, var(--lp-ink-100));
   --vx-keyword-bg: var(--lp-blue-10);
   --vx-keyword-fg: color-mix(in srgb, var(--lp-blue-40) 78%, var(--lp-ink-100));
+  /* every fg ≥ 4.5:1 on its own bg (A11Y-CONTRAST-03): competitor/brand 4.74,
+     influencer/ok 4.92, stack 5.21, neutral 5.07, hiring 4.72, keyword 5.76,
+     own brand 4.96 */
   --vx-competitor-bg: var(--lp-pink-10);
-  --vx-competitor-fg: color-mix(in srgb, var(--lp-pink-40) 82%, var(--lp-ink-100));
+  --vx-competitor-fg: color-mix(in srgb, var(--lp-pink-40) 74%, var(--lp-ink-100));
   --vx-influencer-bg: var(--lp-green-10);
-  --vx-influencer-fg: var(--lp-green-30);
+  --vx-influencer-fg: color-mix(in srgb, var(--lp-green-30) 88%, var(--lp-ink-100));
   --vx-own_brand-bg: var(--lp-purple-10);
   --vx-own_brand-fg: color-mix(in srgb, var(--lp-purple-40) 80%, var(--lp-ink-100));
   --vx-stack-bg: color-mix(in srgb, var(--lp-green-10) 62%, var(--lp-blue-10));
-  --vx-stack-fg: color-mix(in srgb, var(--lp-green-30) 70%, var(--lp-blue-40));
+  --vx-stack-fg: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--lp-green-30) 70%, var(--lp-blue-40)) 88%,
+    var(--lp-ink-100)
+  );
   --vx-neutral-bg: var(--lp-ink-30);
-  --vx-neutral-fg: var(--lp-subtle-text);
+  --vx-neutral-fg: color-mix(in srgb, var(--lp-subtle-text) 88%, var(--lp-ink-100));
   --vx-ok-bg: var(--lp-green-10); /* "qualified", "Approved", "Active" */
-  --vx-ok-fg: var(--lp-green-30);
+  --vx-ok-fg: color-mix(in srgb, var(--lp-green-30) 88%, var(--lp-ink-100));
 }
 @media (max-width: 1200px) {
   .lp-vx {
@@ -57,12 +70,12 @@
 @media (max-width: 1024px) {
   .lp-vx {
     --vx-head-gap: 40px;
+    --vx-rhythm: 96px;
   }
 }
 @media (max-width: 767px) {
   .lp-vx {
     --vx-edge: 32px;
-    --vx-rhythm: 96px;
     --vx-head-gap: 32px;
   }
 }
@@ -84,6 +97,35 @@
 /* ── section frame ── */
 .lp-vx .vx-sec {
   padding-top: var(--vx-rhythm);
+}
+/* the marquee carries its own 32px block padding (landing-v3/marquee.css):
+   trim it on both sides so card → logos → next head are rhythm gaps too
+   (the −1 is the logos' optical nudge: the tallest mark starts 1px under
+   the band) */
+.lp-vx .vx-logos {
+  padding-top: calc(var(--vx-rhythm) - 32px - 1px);
+}
+.lp-vx .vx-logos + .vx-sec {
+  padding-top: calc(var(--vx-rhythm) - 32px);
+}
+/* LpCta pads 96/72/56 on top: the last /for block → CTA card is a rhythm gap */
+.lp-vx .lp-cta {
+  padding-top: var(--vx-rhythm);
+}
+/* the skip link's target (the hero / the hub head, tabindex -1): focus lands
+   there so the next Tab reaches the first CTA — a container, not a control,
+   so no ring around the whole section */
+.lp-vx #main-content:focus {
+  outline: none;
+}
+/* visually hidden, still read (the H1's ": " and "." between badge and lines) */
+.lp-vx .vx-sr {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
 }
 .lp-vx .vx-col {
   padding-inline: var(--vx-edge);
@@ -136,8 +178,10 @@
   height: 3px;
   min-width: 24px;
 }
+/* last baseline: the lede's last line sits ON the H2's last baseline (flex-end
+   left it 5px low: the 24px lede leading vs the H2's) */
 .lp-vx .vx-head {
-  align-items: flex-end;
+  align-items: last baseline;
   display: flex;
   gap: 48px;
   justify-content: space-between;
@@ -149,7 +193,7 @@
   font-size: var(--lp-text-6xlg);
   font-weight: 600;
   letter-spacing: -1.7201px;
-  line-height: 1.1;
+  line-height: 68.8px; /* = the homepage .lp-title-section (57.336 × 1.2) */
   margin: 0;
   max-width: calc(100% - 416px);
   text-wrap: balance;
@@ -171,6 +215,7 @@
   .lp-vx .vx-h2 {
     font-size: var(--lp-text-5xlg);
     letter-spacing: -1.43px;
+    line-height: 1.1;
     max-width: 720px;
   }
   .lp-vx .vx-lede {
@@ -191,6 +236,35 @@
   .lp-vx .vx-lede {
     max-width: none;
   }
+}
+
+/* no one-word last lines (D10 / M6): body copy wraps "pretty", short card names balance */
+.lp-vx :is(
+    .vx-hubcard__line,
+    .vx-rel__line,
+    .vx-sig-card__body,
+    .vx-sig-foot,
+    .vx-ctl-fact__body,
+    .vx-faq-sec summary,
+    .vx-qa p,
+    .vx-lede,
+    .vx-toast__title,
+    .vx-toast__body,
+    .vx-dialog__title,
+    .lp-hero-lede,
+    .lp-cta__body
+  ) {
+  text-wrap: pretty;
+}
+.lp-vx :is(.vx-hubcard__title, .vx-qa__q, .lp-cta__title, .lp-price-title) {
+  text-wrap: balance;
+}
+/* vxNoWidow (vx-text.tsx): a paragraph's last two words, kept on one line.
+   font inherit — the kit's universal font-family rule would reset the span */
+.lp-vx .vx-nw {
+  font: inherit;
+  letter-spacing: inherit;
+  white-space: nowrap;
 }
 
 /* fictional-data note under every mock section (demo, signals, control) */

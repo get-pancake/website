@@ -1,6 +1,7 @@
 import { VxArrow } from "@/components/sections/verticals/VxRelated";
 import { VxHead } from "@/components/sections/verticals/VxHead";
 import { VX_HUB } from "@/components/sections/verticals/vx-copy";
+import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import { hubGroups, verticalPath } from "@/lib/verticals";
 
 /**
@@ -15,7 +16,7 @@ import { hubGroups, verticalPath } from "@/lib/verticals";
 export function VxHubGrid() {
   const groups = hubGroups();
   return (
-    <section className="vx-sec vx-hub vx-hub-head" aria-labelledby="vx-hub-title">
+    <section id="main-content" tabIndex={-1} className="vx-sec vx-hub vx-hub-head" aria-labelledby="vx-hub-title">
       <div className="vx-col">
         <VxHead as="h1" id="vx-hub-title" eyebrow={VX_HUB.eyebrow} title={VX_HUB.h1} lede={VX_HUB.lede} />
         {groups.length === 0 ? (
@@ -32,7 +33,8 @@ export function VxHubGrid() {
                     <li key={v.slug}>
                       <a className="vx-hubcard" href={verticalPath(v)}>
                         <span className="vx-hubcard__name lp-display">
-                          {v.name.title}
+                          {/* own box, so text-wrap: balance acts on the name (hub.css) */}
+                          <span className="vx-hubcard__title">{vxNoWidow(v.name.title, 20)}</span>
                           {v.status === "draft" ? (
                             <span className="vx-badge" data-tone="neutral">
                               {VX_HUB.draft}
@@ -40,7 +42,7 @@ export function VxHubGrid() {
                           ) : null}
                         </span>
                         <VxArrow className="vx-hubcard__arrow" />
-                        <span className="vx-hubcard__line">{v.hubLine}</span>
+                        <span className="vx-hubcard__line">{vxNoWidow(v.hubLine)}</span>
                       </a>
                     </li>
                   ))}

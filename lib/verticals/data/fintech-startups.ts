@@ -20,13 +20,14 @@ export const fintechStartups: VerticalConfig = {
     badge: "For fintech startups",
   },
 
-  meta: { seoTitle: "Pancake for Fintech Startups: Finance Teams, Found Daily" },
+  meta: { seoTitle: "Pancake for Fintech Startups: Reach Finance Leaders" },
 
   hubLine: "Find finance teams hiring AP staff or posting about the close.",
 
   hero: {
+    title: "Find controllers whose AP teams need another clerk.",
     h1: ["You build for CFOs", "We bring you customers"],
-    lede: "Pancake finds finance teams hiring AP staff or naming your rival tool in job posts. You get the controller who signs.",
+    lede: "Finance job posts that name SAP Concur, LinkedIn posts on month-end close. Each morning, Pancake brings you the CFO who signs.",
   },
 
   workspace: { name: "Settleworth", sender: "Adrian Mowbray" },
@@ -37,7 +38,7 @@ export const fintechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "We automate AP. Find US companies with 200 to 1,000 people hiring accounts payable staff.",
-        reply: "I'll watch AP job posts at US companies that size, then find the finance leader.",
+        reply: "I’ll watch AP job posts at US companies that size, then find the finance leader.",
         proposal: [
           { kind: "hiring", items: ["Accounts payable specialist", "AP clerk", "Billing specialist"] },
           { kind: "stack", items: ["Bill.com", "NetSuite"] },
@@ -57,12 +58,12 @@ export const fintechStartups: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Gabriel, saw Marlowe Foods is hiring an AP specialist. We automate invoice capture and approvals for food distributors, so new hires work exceptions instead of keying invoices. Worth a short call?",
+          "Hi Gabriel, good to meet you here. I work on AP automation. What slows invoice approvals down most on your side?",
       },
       {
         kind: "stack",
         text: "We replace SAP Concur. Find US companies of 100 to 500 people that ask for it in job posts.",
-        reply: "I'll flag job posts that ask for Concur or Expensify, then find who runs finance.",
+        reply: "I’ll flag job posts that ask for Concur or Expensify, then find who runs finance.",
         proposal: [
           { kind: "stack", items: ["SAP Concur", "Expensify"] },
           { kind: "hiring", items: ["Travel and expense analyst", "Staff accountant"] },
@@ -81,12 +82,12 @@ export const fintechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Leticia, saw Pattendale's staff accountant post asks for SAP Concur. We replace Concur at engineering firms your size, with receipts matched to card spend automatically. Open to a short demo?",
+          "Hi Leticia, thanks for accepting. We make expense software. How long does your team take to close out expenses each month?",
       },
       {
         kind: "keyword",
         text: "Find US controllers and CFOs posting about month-end close. Our software shortens it.",
-        reply: "I'll watch posts about month-end close and keep finance leaders at US companies.",
+        reply: "I’ll watch posts about month-end close and keep finance leaders at US companies.",
         proposal: [
           { kind: "keyword", items: ["month-end close", "close checklist", "reconciliations"] },
           { kind: "influencer", items: ["Odette Brannock", "Silas Okpara"] },
@@ -105,7 +106,7 @@ export const fintechStartups: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Keisha, saw your post about month-end close at Wendling. Reconciliations are usually where the days go. We automate them for finance teams your size. Open to comparing notes on your close?",
+          "Hi Keisha, I saw your post about the slow month-end close at Wendling. How many days does the close take right now?",
       },
     ],
   },
@@ -129,14 +130,14 @@ export const fintechStartups: VerticalConfig = {
       {
         kind: "keyword",
         title: "Controllers posting about close",
-        body: "A controller's post about a slow close becomes a lead, and the first message starts from it.",
+        body: "A controller’s post about a slow close becomes a lead, and the first message starts from it.",
         watching: ["AP backlog", "cash flow", "month-end close"],
         more: 2,
       },
       {
         kind: "competitor",
         title: "Commenters on rival fintechs",
-        body: "Pancake watches rival fintechs' company pages and keeps the finance leaders who engage.",
+        body: "Pancake watches rival fintechs’ company pages and keeps the finance leaders who engage.",
         watching: ["Paywharf", "Duebright", "Spendlane"],
       },
     ],
@@ -149,11 +150,11 @@ export const fintechStartups: VerticalConfig = {
     },
     {
       q: "Can we target companies that bank with a rival?",
-      a: "No. Banking relationships aren't public. Stack sees only tools named in job posts, like SAP Concur or NetSuite.",
+      a: "No. Banking relationships aren’t public. Stack sees only tools named in job posts, like SAP Concur or NetSuite.",
     },
     {
-      q: "Can compliance sign off on each message first?",
-      a: "No. Messages send on their own once a lead joins the campaign. Have compliance vet your Brain voice first, and pause the campaign whenever they need.",
+      q: "How do we keep compliance in the loop?",
+      a: "Compliance signs off once, on your Brain voice and offer. Pancake writes every message from those. Pause the campaign any time they need a closer look.",
     },
     {
       q: "Can it find buyers at banks and insurers?",
@@ -163,5 +164,5 @@ export const fintechStartups: VerticalConfig = {
 
   related: ["fractional-cfos", "saas-startups", "legal-tech-startups", "ai-startups"],
 
-  cta: { title: "Make the CFO's shortlist." },
+  cta: { title: "Make the CFO’s shortlist." },
 };

@@ -5,7 +5,11 @@
    bottom edge (68.65px) and left edge (x152 at 1440) stay the homepage's and
    the kit badge grows UPWARD into the free cream band under the rings — the
    slot the homepage gives its audience toggle. The short-window scale ladder
-   still applies (it scales .lp-hero-inner). */
+   still applies (it scales .lp-hero-inner).
+   The badge is the H1's first child (SEO: the vertical's name is IN the H1),
+   a block with its own badge type so none of the display face leaks in; on
+   phones it leaves the flow (as the homepage toggle does) so the headline and
+   the CTA pair sit exactly where the homepage puts them. */
 
 .lp-vx .vx-hero__lockup {
   align-items: flex-start;
@@ -32,12 +36,21 @@
   font: inherit;
   letter-spacing: inherit;
 }
-/* hero badge: the kit badge, one step up (brand tone: pink-10 / pink ink) */
+/* hero badge: the kit badge, one step up (brand tone: pink-10 / pink ink).
+   Inside the H1: display flex + fit-content (a block, so the H1's strut and
+   line-height never touch it), and every inheritable text property the H1
+   sets is restated (.vx-badge sets family, size, weight, tracking, leading,
+   case). margin-bottom = the lockup gap it had as the H1's sibling. */
 .lp-vx .vx-badge--hero {
+  display: flex;
   font-size: 12px;
+  font-style: normal;
+  margin-bottom: 16px;
   max-width: 100%;
   padding: 4px 10px;
+  text-wrap: wrap;
   white-space: normal;
+  width: fit-content;
 }
 
 /* ≤1200: the homepage's edge anchoring (title left 48, clamp size) */
@@ -61,5 +74,14 @@
   .lp-vx .vx-hero__lockup {
     gap: 14px;
     max-width: 100%;
+    position: relative;
+  }
+  /* out of flow, 14px above the headline: the CTA pair ends where the
+     homepage's does (561 at 320×568, 603 at 375×667) */
+  .lp-vx .vx-badge--hero {
+    bottom: calc(100% + 14px);
+    left: 0;
+    margin-bottom: 0;
+    position: absolute;
   }
 }

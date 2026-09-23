@@ -27,8 +27,9 @@ export const cloudConsultancies: VerticalConfig = {
   hubLine: "Find companies hiring DevOps or asking for VMware skills.",
 
   hero: {
+    title: "Find IT directors with VMware in their job posts.",
     h1: ["You run the migration", "We bring you clients"],
-    lede: "Pancake reads job posts for VMware skills and DevOps openings, then finds the CTO. Pitch the migration, job post in hand.",
+    lede: "DevOps and SRE openings, plus CTOs writing on cloud costs, not a stale database. You pitch the migration with proof in hand.",
   },
 
   workspace: { name: "Hsieh Cloud", sender: "Vivian Hsieh" },
@@ -39,7 +40,7 @@ export const cloudConsultancies: VerticalConfig = {
       {
         kind: "stack",
         text: "We move VMware estates to Azure. Find US companies whose job posts name VMware or vSphere.",
-        reply: "I'll track VMware and vSphere in US job posts, then find the infrastructure lead.",
+        reply: "I’ll track VMware and vSphere in US job posts, then find the infrastructure lead.",
         proposal: [
           { kind: "stack", items: ["VMware", "vSphere"] },
           { kind: "keyword", items: ["VMware licensing", "data center exit"] },
@@ -59,12 +60,12 @@ export const cloudConsultancies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Gustavo, noticed Brantmoor Mutual’s job posts ask for VMware experience. Plenty of IT teams are weighing the next VMware renewal against a move to Azure. We plan and run those migrations for mid-size insurers. Open to a call on how others phased theirs?",
+          "Hi Gustavo, good to be connected. My team moves on-prem servers to the cloud. What’s the next big infrastructure decision on your plate?",
       },
       {
         kind: "hiring",
         text: "We run DevOps as a service. Find US firms with 100 to 1,000 staff hiring a DevOps engineer.",
-        reply: "I'll watch job posts for DevOps and SRE roles and skip listings posted by recruiters.",
+        reply: "I’ll watch job posts for DevOps and SRE roles and skip listings posted by recruiters.",
         proposal: [
           { kind: "hiring", items: ["DevOps engineer", "Site reliability engineer", "Platform engineer"] },
           { kind: "stack", items: ["Terraform", "Kubernetes"] },
@@ -84,12 +85,12 @@ export const cloudConsultancies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Xiomara, saw Tarlton Health is hiring a DevOps engineer. If part of that role is getting infrastructure into Terraform, that’s the project we run most. We do DevOps as a service for health-tech teams, with HIPAA in mind. Would a short call help?",
+          "Hi Xiomara, thanks for accepting. We run DevOps as a service, mostly infrastructure as code and on-call cover. How does your team split its time between new work and upkeep?",
       },
       {
         kind: "keyword",
-        text: "Find CTOs at US companies with 50 to 500 staff posting about cloud costs. We do FinOps.",
-        reply: "I'll watch CTOs’ posts about cloud bills and FinOps at US companies that size.",
+        text: "Find tech and finance leaders at US firms with 50 to 500 staff posting about cloud costs.",
+        reply: "I’ll watch tech and finance leaders’ posts about cloud bills at US firms that size.",
         proposal: [
           { kind: "keyword", items: ["cloud costs", "AWS bill", "FinOps"] },
           { kind: "influencer", items: ["Nandini Sarangi", "Joss Ferrier"] },
@@ -109,7 +110,7 @@ export const cloudConsultancies: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Navid, saw you posted about cloud spend growing faster than revenue. The waste usually sits in idle capacity and commitments nobody uses. We run FinOps reviews for mid-size SaaS teams and leave a cost plan your engineers can keep. Worth 20 minutes?",
+          "Hi Navid, you posted that cloud spend is growing faster than revenue at Sprywell. Did you find where most of the growth came from?",
       },
     ],
   },

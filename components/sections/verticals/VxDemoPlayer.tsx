@@ -26,6 +26,8 @@ const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayout
 interface PaneCache {
   el: HTMLElement;
   cues: HTMLElement[];
+  /** Reverse cues: shown while armed until their cue id is reached (`[data-uncue]` → `.is-off`). */
+  uncues: HTMLElement[];
   swaps: HTMLElement[];
   marks: HTMLElement[];
   targets: HTMLElement[];
@@ -113,6 +115,7 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
     const c: PaneCache = {
       el,
       cues: q("[data-cue]"),
+      uncues: q("[data-uncue]"),
       swaps: q("[data-swap]"),
       marks: q("[data-mark]"),
       targets: q("[data-cursor]"),
@@ -180,6 +183,7 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
         const sw = new Set(f.sw);
         const mk = new Set(f.mk);
         for (const e of p.cues) e.classList.toggle("is-on", on.has(e.dataset.cue ?? ""));
+        for (const e of p.uncues) e.classList.toggle("is-off", on.has(e.dataset.uncue ?? ""));
         for (const e of p.swaps) e.classList.toggle("is-sw", sw.has(e.dataset.swap ?? ""));
         for (const e of p.marks) e.classList.toggle("is-mk", mk.has(e.dataset.mark ?? ""));
         for (const e of p.targets) e.classList.toggle("is-press", f.cursor.press === e.dataset.cursor);
@@ -212,8 +216,8 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
           cur.classList.remove("is-on", "is-click");
         } else {
           const entry = { x: stage.clientWidth * CURSOR_ENTRY.x, y: stage.clientHeight * CURSOR_ENTRY.y };
-          const from = a ?? entry;
-          const to = b ?? from;
+          const from = a ? { x: a.x + c.fromD[0], y: a.y + c.fromD[1] } : entry;
+          const to = b ? { x: b.x + c.toD[0], y: b.y + c.toD[1] } : from;
           const px = from.x + (to.x - from.x) * c.k;
           const py = from.y + (to.y - from.y) * c.k;
           cur.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0)`;
@@ -231,6 +235,7 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
       const p = pane(tab);
       if (!p) return;
       for (const e of p.cues) e.classList.add("is-on");
+      for (const e of p.uncues) e.classList.add("is-off");
       for (const e of p.swaps) e.classList.add("is-sw");
       for (const e of p.marks) e.classList.add("is-mk");
       for (const e of p.targets) e.classList.remove("is-press");
@@ -342,6 +347,11 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
     x.prompt = view.prompt;
     x.tab = view.tab;
     x.prevTab = view.tab;
+    // A prompt change (the autoplay wrap from Slack to the next prompt's Brief, or a prompt
+    // click) swaps windows / pages with NO crossfade: data-prompt already points at the next
+    // prompt, so an outgoing window fading out would show the next prompt's names.
+    // Set before anything reads layout, so the first style pass sees it.
+    if (promptChanged) card.setAttribute("data-cut", "");
     if (prev !== view.tab) finalize(prev);
     x.sig = "";
     card.setAttribute("data-snap", "");
@@ -349,6 +359,7 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
     apply(frameAt(view.tab, x.t, lensOf(view.prompt)), true);
     void card.offsetHeight; // commit the snapped state before transitions come back
     card.removeAttribute("data-snap");
+    card.removeAttribute("data-cut");
     setRail();
     // keep the active prompt card in view inside its own strip (never scrolls the page),
     // only when the prompt changed (a peeking visitor's strip is left alone on tab changes)
@@ -683,6 +694,8 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
               id={`vx-tab-${i}`}
               className="vx-tab"
               aria-controls="vx-panel"
+              aria-labelledby={`vx-tab-${i}-l`}
+              aria-describedby={`vx-tab-${i}-t vx-tab-${i}-b`}
               aria-selected={i === tab}
               tabIndex={i === tab ? 0 : -1}
               onClick={() => userGo(ctl.current.prompt, TABS[i])}
@@ -694,18 +707,26 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
                   }}
                 />
               </span>
-              <span className="vx-tab__label">
+              {/* name = "01 Brief"; title + body are the description (hidden ≤1180, where the
+                  visible copy is the .vx-tabtext below — referenced hidden text still counts) */}
+              <span className="vx-tab__label" id={`vx-tab-${i}-l`}>
                 <span className="vx-tab__num">{t.num}</span> {t.label}
               </span>{" "}
-              <span className="vx-tab__title">{t.title}</span>{" "}
-              <span className="vx-tab__body">{t.body}</span>
+              <span className="vx-tab__title" id={`vx-tab-${i}-t`}>
+                {t.title}
+              </span>{" "}
+              <span className="vx-tab__body" id={`vx-tab-${i}-b`}>
+                {t.body}
+              </span>
             </button>
           ))}
         </div>
 
-        <div className="vx-tabtext" aria-hidden="true">
+        {/* ≤1180 the tabs show labels only and this is the visible copy: the active step is
+            readable, the stacked inactive ones (visibility: hidden) stay out of the tree */}
+        <div className="vx-tabtext">
           {model.tabs.map((t, i) => (
-            <div key={t.num} data-t={i}>
+            <div key={t.num} data-t={i} aria-hidden={i === tab ? undefined : true}>
               <p className="vx-tabtext__title">{t.title}</p>
               <p className="vx-tabtext__body">{t.body}</p>
             </div>

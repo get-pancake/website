@@ -40,14 +40,15 @@ export function generateMetadata({ params }: { params: { vertical: string } }): 
       url,
       title: ogTitle,
       description: v.hero.lede,
-      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: ogTitle }],
+      // the shared homepage card, so the alt describes that image, not this page
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: VX_META.ogImageAlt }],
       siteName: "Pancake",
     },
     twitter: {
       card: "summary_large_image",
       title: ogTitle,
       description: v.hero.lede,
-      images: ["/og-image.png"],
+      images: [{ url: "/og-image.png", alt: VX_META.ogImageAlt }],
     },
   };
 }

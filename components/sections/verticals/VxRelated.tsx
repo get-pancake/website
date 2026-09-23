@@ -1,5 +1,6 @@
 import { VxHead } from "@/components/sections/verticals/VxHead";
 import { VX_RELATED } from "@/components/sections/verticals/vx-copy";
+import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import { relatedFor, verticalPath } from "@/lib/verticals";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
@@ -53,7 +54,7 @@ export function VxRelated({ v }: { v: VerticalConfig }) {
             <li key={r.slug}>
               <a className="vx-rel__row" href={verticalPath(r)}>
                 <span className="vx-rel__name lp-display">{r.name.title}</span>
-                <span className="vx-rel__line">{r.hubLine}</span>
+                <span className="vx-rel__line">{vxNoWidow(r.hubLine)}</span>
                 <VxArrow className="vx-rel__arrow" />
               </a>
             </li>

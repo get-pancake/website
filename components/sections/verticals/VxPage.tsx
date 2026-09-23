@@ -29,7 +29,9 @@ import type { VerticalConfig } from "@/lib/verticals/types";
  */
 export function VxPage({ v }: { v: VerticalConfig }) {
   return (
-    <main id="main-content" className="lp lp-vx">
+    // No id here: the skip link's #main-content target is the hero (VxHero), so it lands past
+    // the nav instead of on the logo; main.lp stays the kit's selector root.
+    <main className="lp lp-vx">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(verticalJsonLd(v)) }}
@@ -50,7 +52,7 @@ export function VxPage({ v }: { v: VerticalConfig }) {
       <VxFaq v={v} />
       <VxRelated v={v} />
       <LpCta title={v.cta.title} body={VX_CTA_BODY} />
-      <LpPricing checklist={VX_PRICING_MODE === "truthful" ? VX_PRICING_CHECKLIST : undefined} />
+      <LpPricing checklist={VX_PRICING_MODE === "truthful" ? VX_PRICING_CHECKLIST(v.slug) : undefined} />
       <LpFooter />
     </main>
   );

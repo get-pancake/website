@@ -1,5 +1,8 @@
+import { Fragment } from "react";
+
 import { VxHead } from "@/components/sections/verticals/VxHead";
 import { VX_CONTROL, VX_NOTE } from "@/components/sections/verticals/vx-copy";
+import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
 /** 20px check disc (the app's success tone on lp ramps). */
@@ -39,23 +42,27 @@ export function VxControl({ v }: { v: VerticalConfig }) {
         <div className="vx-ctl-row">
           <div className="vx-ctl-text">
             <ul className="vx-ctl-facts">
-              {VX_CONTROL.facts.map((f) => (
-                <li key={f.title} className="vx-ctl-fact">
-                  <div className="vx-ctl-fact__row">
-                    <CheckDisc className="vx-check" />
-                    <div>
-                      <h3 className="vx-ctl-fact__title lp-display">{f.title}</h3>
-                      <p className="vx-ctl-fact__body">{f.body}</p>
+              {VX_CONTROL.facts.map((f, i) => (
+                <Fragment key={f.title}>
+                  {/* the hairline is its own item, centred in the gap (control.css) */}
+                  {i > 0 ? <li aria-hidden="true" className="vx-ctl-rule" /> : null}
+                  <li className="vx-ctl-fact">
+                    <div className="vx-ctl-fact__row">
+                      <CheckDisc className="vx-check" />
+                      <div>
+                        <h3 className="vx-ctl-fact__title lp-display">{f.title}</h3>
+                        <p className="vx-ctl-fact__body">{f.body}</p>
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
+                </Fragment>
               ))}
             </ul>
           </div>
           <div className="vx-ctl-media">
             <div className="vx-ctl-stage" role="img" aria-label={VX_CONTROL.aria(lead, sender)}>
               <div className="vx-dialog">
-                <p className="vx-dialog__title">{VX_CONTROL.dialog.title(lead)}</p>
+                <p className="vx-dialog__title">{vxNoWidow(VX_CONTROL.dialog.title(lead))}</p>
                 <dl className="vx-dialog__rows">
                   {rows.map(([label, value]) => (
                     <div key={label} className="vx-dialog__row" data-row={label}>
@@ -72,13 +79,13 @@ export function VxControl({ v }: { v: VerticalConfig }) {
               <div className="vx-toast">
                 <CheckDisc className="vx-check vx-toast__icon" />
                 <div className="vx-toast__text">
-                  <p className="vx-toast__title">{VX_CONTROL.toast.title(lead)}</p>
+                  <p className="vx-toast__title">{vxNoWidow(VX_CONTROL.toast.title(lead))}</p>
                   <p className="vx-toast__body">{VX_CONTROL.toast.body}</p>
                 </div>
                 <span className="vx-abtn vx-toast__undo">{VX_CONTROL.toast.undo}</span>
               </div>
             </div>
-            <p className="vx-note">{VX_NOTE}</p>
+            <p className="vx-note">{vxNoWidow(VX_NOTE)}</p>
           </div>
         </div>
       </div>

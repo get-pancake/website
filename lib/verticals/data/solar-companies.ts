@@ -16,7 +16,7 @@ export const solarCompanies: VerticalConfig = {
   name: {
     plural: "commercial solar companies",
     title: "Commercial solar companies",
-    short: "solar installers",
+    short: "C&I solar teams",
     badge: "For commercial solar",
   },
 
@@ -25,8 +25,9 @@ export const solarCompanies: VerticalConfig = {
   hubLine: "Reach the people who pay a company’s power bill.",
 
   hero: {
-    h1: ["You install solar", "We bring you customers"],
-    lede: "Rate hikes get facility leaders posting. Pancake finds them and the companies hiring energy managers. You pitch the roof.",
+    title: "Find facility heads whose posts flag demand charges.",
+    h1: ["You build C&I solar", "We bring you customers"],
+    lede: "Pancake reads energy manager openings, CFO comments under energy experts and rival installers’ pages. You pitch the savings.",
   },
 
   workspace: { name: "Sunbarrow Energy", sender: "Lucas Arbogast" },
@@ -37,7 +38,7 @@ export const solarCompanies: VerticalConfig = {
       {
         kind: "keyword",
         text: "We put solar on factory roofs. Find US facilities directors posting about energy costs.",
-        reply: "I'll watch posts about energy costs and keep facilities leaders at US manufacturers.",
+        reply: "I’ll watch posts about energy costs and keep facilities leaders at US manufacturers.",
         proposal: [
           { kind: "keyword", items: ["energy costs", "demand charges", "utility rate hike"] },
           { kind: "hiring", items: ["Energy manager", "Facilities manager"] },
@@ -57,12 +58,12 @@ export const solarCompanies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Marisa, saw your post about energy costs at Cobbwell. Molding lines draw power all day, and demand charges pile on top. We design and install rooftop solar with storage for manufacturers. Open to a quick look at a year of your bills?",
+          "Hi Marisa, you posted about rising energy costs at Cobbwell. Are demand charges or the base rate hurting more?",
       },
       {
         kind: "hiring",
         text: "We build on-site solar. Find US cold storage companies hiring an energy manager.",
-        reply: "I'll track energy job posts at US cold storage firms and find who runs their sites.",
+        reply: "I’ll track energy job posts at US cold storage firms and find who runs their sites.",
         proposal: [
           { kind: "hiring", items: ["Energy manager", "Facilities manager", "Refrigeration engineer"] },
           { kind: "keyword", items: ["power costs", "cold storage energy"] },
@@ -81,23 +82,23 @@ export const solarCompanies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Tobias, saw Frostvale is hiring an energy manager. Cold storage runs compressors day and night, so power is a top cost. We design and build on-site solar for cold chain sites. Worth checking what one warehouse roof could cover?",
+          "Hi Tobias, good to meet you here. We design and build on-site solar. Who keeps an eye on energy costs on your side today?",
       },
       {
         kind: "influencer",
         text: "We sell solar with storage. Find US food processing CFOs who engage with energy experts.",
-        reply: "I'll track who comments on energy experts’ posts and keep food processing CFOs.",
+        reply: "I’ll track who comments on energy experts’ posts and keep food processing CFOs.",
         proposal: [
           { kind: "influencer", items: ["Joan Lasko", "Ravi Mehra"] },
           { kind: "keyword", items: ["power purchase agreement", "energy budget"] },
           { kind: "competitor", items: ["Sunquarry Commercial"] },
         ],
         leads: [
-          { name: "Bernadette Fogarty", role: "CFO", company: "Harlowe Creamery", kind: "influencer", signal: "Commented on Lasko" },
+          { name: "Bernadette Fogarty", role: "CFO", company: "Harlowe Creamery", kind: "influencer", signal: "Commented on a post" },
           { name: "Juan Medina", role: "VP Finance", company: "Pickwell Foods", kind: "influencer", signal: "Liked a Mehra post" },
           { name: "Thanh Pham", role: "Controller", company: "Oatcastle Mills", kind: "keyword", signal: "Posted about PPAs" },
           { name: "Rhonda Beckwith", role: "CFO", company: "Brinecraft", kind: "competitor", signal: "Liked a Sunquarry post" },
-          { name: "Arturo Salgado", role: "Treasurer", company: "Tallgrain Foods", kind: "influencer", signal: "Commented on Mehra" },
+          { name: "Arturo Salgado", role: "Treasurer", company: "Tallgrain Foods", kind: "influencer", signal: "Commented on a post" },
         ],
         featured: {
           why: "Harlowe Creamery is a 260-person US dairy processor. Bernadette is the CFO and commented on Joan Lasko’s post about locking in power prices.",
@@ -105,7 +106,7 @@ export const solarCompanies: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Bernadette, saw your comment on Joan Lasko’s post about locking in power prices. A solar PPA fixes the price on part of the bill for 20 years. We build solar with storage for food processors. Want the numbers for one plant?",
+          "Hi Bernadette, I came across your comment on Joan Lasko’s post about locking in power prices. How far ahead does Harlowe usually buy its power?",
       },
     ],
   },
@@ -116,7 +117,7 @@ export const solarCompanies: VerticalConfig = {
       {
         kind: "keyword",
         title: "Posts about the power bill",
-        body: "Pancake keeps the facility and finance leaders who write them, and shows you the post.",
+        body: "Facility and finance leaders who post about the power bill become leads, post attached.",
         watching: ["energy costs", "demand charges", "utility rate hike"],
         more: 2,
       },
@@ -129,14 +130,14 @@ export const solarCompanies: VerticalConfig = {
       },
       {
         kind: "influencer",
-        title: "Fans of energy voices",
+        title: "CFOs who follow energy voices",
         body: "When a CFO or facility head comments on an energy expert’s post, Pancake brings you that person.",
         watching: ["Joan Lasko", "Ravi Mehra", "Colleen Hartwig"],
       },
       {
         kind: "competitor",
         title: "Your rivals’ audience",
-        body: "Pancake finds the buyers among the people reacting to other solar developers’ posts.",
+        body: "Pancake finds the buyers among people reacting to other commercial solar companies’ posts.",
         watching: ["Ampridge Solar", "Sunquarry Commercial", "Heliaport Energy"],
       },
     ],
@@ -153,7 +154,7 @@ export const solarCompanies: VerticalConfig = {
     },
     {
       q: "Can I target my service area?",
-      a: "By country, yes. State or city targeting isn’t reliable, and a company’s buildings can sit far from its head office. Confirm the site before you quote.",
+      a: "Yes. Name your states in the Brain and each lead is checked against them. A company’s plants can sit far from its head office, so confirm the site before you quote.",
     },
     {
       q: "Many businesses lease. Can it find the building owner?",

@@ -1,5 +1,6 @@
 import { VxHead } from "@/components/sections/verticals/VxHead";
 import { SIGNAL_LABEL, VX_NOTE, VX_SIGNALS } from "@/components/sections/verticals/vx-copy";
+import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
 /** Phosphor "Eye" (regular), 256 viewBox — the app's icon set. */
@@ -35,7 +36,7 @@ export function VxSignals({ v }: { v: VerticalConfig }) {
                 {SIGNAL_LABEL[c.kind]}
               </span>
               <h3 className="vx-sig-card__title lp-display">{c.title}</h3>
-              <p className="vx-sig-card__body">{c.body}</p>
+              <p className="vx-sig-card__body">{vxNoWidow(c.body)}</p>
               <div className="vx-watch">
                 <p className="vx-watch__label">
                   <EyeIcon />
@@ -54,9 +55,9 @@ export function VxSignals({ v }: { v: VerticalConfig }) {
           ))}
         </div>
         <p className="vx-sig-foot">
-          {VX_SIGNALS.foot(v)}
+          {vxNoWidow(VX_SIGNALS.foot(v))}
           <br />
-          {VX_NOTE}
+          {vxNoWidow(VX_NOTE)}
         </p>
       </div>
     </section>

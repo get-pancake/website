@@ -26,8 +26,9 @@ export const saasStartups: VerticalConfig = {
   hubLine: "Find buyers engaging with your competitors’ posts.",
 
   hero: {
+    title: "Find support heads in your rivals’ comment sections.",
     h1: ["You build the product", "We bring you customers"],
-    lede: "Pancake finds people who engage with your rivals’ posts or post about the pain you fix, then messages them. Demos, sooner.",
+    lede: "Pancake reads churn and backlog threads, plus job ads naming Zendesk, then says why each buyer fits. Demos start warm.",
   },
 
   workspace: { name: "Nookline", sender: "Farida Oyebanji" },
@@ -38,7 +39,7 @@ export const saasStartups: VerticalConfig = {
       {
         kind: "competitor",
         text: "Find heads of support at US companies with 50 to 500 people who engage with our rivals’ posts.",
-        reply: "I'll watch posts from your rivals’ company pages and keep heads of support.",
+        reply: "I’ll watch posts from your rivals’ company pages and keep heads of support.",
         proposal: [
           { kind: "competitor", items: ["Tixwell", "Ticketmoor"] },
           { kind: "keyword", items: ["ticket backlog", "first response time"] },
@@ -46,7 +47,7 @@ export const saasStartups: VerticalConfig = {
           { kind: "influencer", items: ["Celestine Obuya"] },
         ],
         leads: [
-          { name: "Jolene Kaczmarek", role: "Head of Support", company: "Pantrywell", kind: "competitor", signal: "Commented on Tixwell" },
+          { name: "Jolene Kaczmarek", role: "Head of Support", company: "Pantrywell", kind: "competitor", signal: "Commented on a post" },
           { name: "Andrés Solórzano", role: "VP Support", company: "Stayloft", kind: "competitor", signal: "Liked a Ticketmoor post" },
           { name: "Kendra Bellamy", role: "Head of CX", company: "Petalpost", kind: "keyword", signal: "Ticket backlog post" },
           { name: "Vivek Anantharaman", role: "COO", company: "Tuckbox Meals", kind: "hiring", signal: "Support ops role open" },
@@ -58,12 +59,12 @@ export const saasStartups: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Jolene, saw your comment about ticket routing. In grocery delivery, the order’s status tells you more than the queue does. We route each ticket by what happened to the order, so late deliveries reach the right rep first. Worth a short look?",
+          "Hi Jolene, I came across your comment on Tixwell’s post about ticket routing. What decides which rep gets a ticket at Pantrywell?",
       },
       {
         kind: "stack",
         text: "Our helpdesk replaces Zendesk. Find US companies with 50 to 500 people whose job posts name it.",
-        reply: "I'll watch US job posts that name Zendesk and find who runs support at each company.",
+        reply: "I’ll watch US job posts that name Zendesk and find who runs support at each company.",
         proposal: [
           { kind: "stack", items: ["Zendesk", "Freshdesk"] },
           { kind: "hiring", items: ["Customer support specialist", "Support team lead"] },
@@ -82,12 +83,12 @@ export const saasStartups: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Paz, saw Cinchbox is hiring support specialists who know Zendesk. Adding seats is often when the helpdesk bill gets a second look. Our helpdesk moves your macros and ticket history over in a week and costs less per seat. Open to a short comparison?",
+          "Hi Paz, great to be connected. I work on helpdesk software. How many tickets does your team handle on a busy day?",
       },
       {
         kind: "keyword",
         text: "We sell customer onboarding software. Find US customer success leads posting about churn.",
-        reply: "I'll watch posts about churn and onboarding and keep customer success leaders.",
+        reply: "I’ll watch posts about churn and onboarding and keep customer success leaders.",
         proposal: [
           { kind: "keyword", items: ["churn", "customer onboarding", "time to value"] },
           { kind: "hiring", items: ["Implementation specialist", "Onboarding manager"] },
@@ -106,13 +107,13 @@ export const saasStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Nia, saw your post about churn in the first 90 days. That window is usually decided in onboarding. We build guided onboarding that shows each account its next step, so fewer customers stall in week two. Worth comparing notes?",
+          "Hi Nia, you wrote about churn in the first 90 days. What’s the first sign an account is about to stall?",
       },
     ],
   },
 
   signals: {
-    h2: "The pain shows up in public.",
+    h2: "Rivals’ posts draw your buyers.",
     cards: [
       {
         kind: "competitor",
@@ -130,7 +131,7 @@ export const saasStartups: VerticalConfig = {
       },
       {
         kind: "stack",
-        title: "Companies on the old tool",
+        title: "The old tool, in job posts",
         body: "Pancake finds companies whose support job posts ask for Zendesk or Intercom, then brings you the support lead.",
         watching: ["Zendesk", "Freshdesk", "Intercom"],
       },

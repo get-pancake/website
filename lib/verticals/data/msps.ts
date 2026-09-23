@@ -26,8 +26,9 @@ export const msps: VerticalConfig = {
   hubLine: "Find companies hiring IT staff and meet the ops lead.",
 
   hero: {
+    title: "Find office managers about to hire in-house IT.",
     h1: ["You keep IT running", "We bring you clients"],
-    lede: "Pancake finds companies hiring IT staff or naming Intune in job posts, then brings you the ops lead. Win the contract.",
+    lede: "Pancake reads Intune job posts, cyber insurance posts and rival MSPs’ pages. Your proposal arrives before their offer letter.",
   },
 
   workspace: { name: "Cobbold IT", sender: "Nolan Cobbold" },
@@ -37,8 +38,8 @@ export const msps: VerticalConfig = {
     prompts: [
       {
         kind: "hiring",
-        text: "We're a managed IT provider. Find US companies with 30 to 200 staff hiring an IT manager.",
-        reply: "I'll watch job posts for IT roles at US firms that size and skip other IT providers.",
+        text: "We’re a managed IT provider. Find US companies with 30 to 200 staff hiring an IT manager.",
+        reply: "I’ll watch job posts for IT roles at US firms that size and skip other IT providers.",
         proposal: [
           { kind: "hiring", items: ["IT manager", "IT support technician", "Systems administrator"] },
           { kind: "stack", items: ["Microsoft 365", "Intune"] },
@@ -58,12 +59,12 @@ export const msps: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Gloria, saw Oxbury Freight is hiring an IT manager. Whoever takes the role will still need cover for after-hours tickets and patching. We run managed IT for freight brokers your size and work alongside in-house managers. Open to a quick call?",
+          "Hi Gloria, thanks for connecting. I run managed IT, mostly help desk and after-hours cover. How does your team handle IT today?",
       },
       {
         kind: "stack",
         text: "We manage Microsoft 365. Find US firms with 50 to 250 staff whose job posts name Intune.",
-        reply: "I'll watch job posts at US firms that size for Intune, Entra ID or Microsoft 365.",
+        reply: "I’ll watch job posts at US firms that size for Intune, Entra ID or Microsoft 365.",
         proposal: [
           { kind: "stack", items: ["Intune", "Entra ID", "Microsoft 365"] },
           { kind: "hiring", items: ["Help desk analyst", "IT support technician"] },
@@ -82,12 +83,12 @@ export const msps: VerticalConfig = {
           seniority: "Manager",
         },
         message:
-          "Hi Teodoro, saw Wetherby Foods is hiring for Intune skills. Keeping device enrollment and compliance policies current across plants is steady work. We run co-managed Intune for food manufacturers, and your team keeps admin control. Worth a quick call?",
+          "Hi Teodoro, glad to be connected. We manage devices and user accounts alongside in-house IT. What takes up most of your week right now?",
       },
       {
         kind: "keyword",
         text: "Find US ops and finance leads posting about cyber insurance. We close the gaps insurers flag.",
-        reply: "I'll watch posts about cyber insurance, phishing and MFA from ops and finance leaders.",
+        reply: "I’ll watch posts about cyber insurance, phishing and MFA from ops and finance leaders.",
         proposal: [
           { kind: "keyword", items: ["cyber insurance renewal", "phishing attempt", "MFA rollout"] },
           { kind: "influencer", items: ["Bettina Harcourt"] },
@@ -106,13 +107,13 @@ export const msps: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Maureen, read your post about the cyber insurance renewal. The MFA and backup questions trip up a lot of firms your size. We set up those controls for engineering firms and document them for the insurer. Worth a call before next year’s renewal?",
+          "Hi Maureen, I read your post about Sandhill Civil’s cyber insurance renewal. Which question on the form was hardest to answer?",
       },
     ],
   },
 
   signals: {
-    h2: "IT pain shows up in public.",
+    h2: "Small IT teams hire in the open.",
     cards: [
       {
         kind: "hiring",
@@ -164,5 +165,5 @@ export const msps: VerticalConfig = {
 
   related: ["cybersecurity-firms", "cloud-consultancies", "data-consultancies", "software-development-agencies"],
 
-  cta: { title: "Be their IT team instead." },
+  cta: { title: "Back up their IT team." },
 };

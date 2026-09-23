@@ -26,8 +26,9 @@ export const corporateTrainingCompanies: VerticalConfig = {
   hubLine: "Find L&D leaders posting about manager training.",
 
   hero: {
+    title: "Find L&D heads the week they post on manager training.",
     h1: ["You train their teams", "We bring you clients"],
-    lede: "Pancake finds L&D leaders posting about manager training, and companies hiring enablement roles. Get in before the RFP.",
+    lede: "Pancake reads enablement openings and rival firms’ pages, and shows why each buyer fits. You’re in before procurement.",
   },
 
   workspace: { name: "Wendover Learning", sender: "Monica Wendover" },
@@ -38,7 +39,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We run sales training. Find US firms of 500 to 5,000 people hiring a sales enablement manager.",
-        reply: "I'll watch job posts for enablement roles at US companies with 500 to 5,000 people.",
+        reply: "I’ll watch job posts for enablement roles at US companies with 500 to 5,000 people.",
         proposal: [
           { kind: "hiring", items: ["Sales enablement manager", "Sales trainer"] },
           { kind: "stack", items: ["Highspot", "Seismic"] },
@@ -58,12 +59,12 @@ export const corporateTrainingCompanies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Warren, saw Norvale is hiring a sales enablement manager. Whoever takes that seat inherits onboarding on day one. We run sales onboarding programs for teams your size, so the new hire starts with a playbook. Worth a short call before they start?",
+          "Hi Warren, thanks for connecting. I run sales training, mainly new-rep onboarding. What does a new rep’s first month look like on your team?",
       },
       {
         kind: "keyword",
         text: "Find US L&D leaders posting about manager training or upskilling. We run those programs.",
-        reply: "I'll watch posts on manager training and upskilling from L&D leaders at US companies.",
+        reply: "I’ll watch posts on manager training and upskilling from L&D leaders at US companies.",
         proposal: [
           { kind: "keyword", items: ["manager training", "upskilling", "new manager program"] },
           { kind: "influencer", items: ["Josefina Arbuckle", "Anand Venkatraman"] },
@@ -83,12 +84,12 @@ export const corporateTrainingCompanies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Lauren, saw your post about training new managers at Meadowmark. Most new managers get the title months before they get any training. We run manager programs for care providers your size. Open to a short call on how you train them today?",
+          "Hi Lauren, you wrote about training new managers at Meadowmark. How soon after a promotion does their training start?",
       },
       {
         kind: "stack",
         text: "We build courses for Docebo and Cornerstone. Find US companies whose job posts name either.",
-        reply: "I'll find US companies whose job posts name Docebo or Cornerstone, then the L&D lead.",
+        reply: "I’ll find US companies whose job posts name Docebo or Cornerstone, then the L&D lead.",
         proposal: [
           { kind: "stack", items: ["Docebo", "Cornerstone"] },
           { kind: "hiring", items: ["Instructional designer", "LMS administrator"] },
@@ -107,7 +108,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Cedric, saw Pettiward is hiring an instructional designer who knows Docebo. One designer can only build so many courses at once. We build Docebo courses for L&D teams, so launches don’t wait on the hire. Want a sample module?",
+          "Hi Cedric, glad we’re connected. We build online courses with in-house learning teams. Which course has sat on your list the longest?",
       },
     ],
   },

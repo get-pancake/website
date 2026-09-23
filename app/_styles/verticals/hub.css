@@ -25,10 +25,13 @@
 .lp-vx .vx-hub__groups > :first-child .vx-hub__group {
   margin-top: 0;
 }
+/* grid-auto-rows 1fr: every card of a group is the height of its tallest,
+   row to row, not just within a row (founder rule: equal card heights) */
 .lp-vx .vx-hub-grid {
   align-items: stretch;
   display: grid;
   gap: 12px;
+  grid-auto-rows: 1fr;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
   margin: 0;
@@ -42,7 +45,9 @@
   background: var(--lp-card-cream);
   border-radius: var(--lp-r-lg);
   color: var(--lp-text);
-  column-gap: 16px;
+  column-gap: 12px; /* "Software development agencies" holds one line at 3-up */
+  /* the name's size reads the card's width (below) */
+  container-type: inline-size;
   display: grid;
   flex: 1;
   grid-template-columns: minmax(0, 1fr) 16px;
@@ -63,12 +68,30 @@
   letter-spacing: -0.46px;
   line-height: 28px;
 }
+/* the name's own box (text-wrap: balance, foundation.css): font inherit — the
+   kit's universal font-family rule would otherwise set it in Geist */
+.lp-vx .vx-hubcard__title {
+  font: inherit;
+  letter-spacing: inherit;
+}
+/* One line per name at every width, so every card of the hub is one height
+   (not just every card of a group): the name steps down from 23.04px only
+   where the longest one ("Software development agencies", 12.74 × its size
+   in Condensed 600) would wrap — 768–846 and ≤385 (≥ 17.9px at 320).
+   100cqi = the card's content box; − 28 = the arrow column + gap. */
+.lp-vx .vx-hubcard__name {
+  font-size: min(var(--lp-text-xlg), calc((100cqi - 28px) / 12.76));
+  letter-spacing: -0.02em;
+}
+/* two description lines reserved: one-line and two-line hub lines make
+   the same card */
 .lp-vx .vx-hubcard__line {
   color: var(--lp-subtle-text);
   font-family: var(--lp-font-sans);
   font-size: 15px;
   grid-column: 1;
   line-height: 22px;
+  min-height: 44px;
 }
 .lp-vx .vx-hubcard__arrow {
   fill: none;
@@ -98,7 +121,9 @@
   line-height: 24px;
   margin-top: var(--vx-head-gap);
 }
-@media (max-width: 1024px) {
+/* 2-up from 1200 down (as Signals): 3-up cards under 1201 are too narrow
+   for the longest name at full size */
+@media (max-width: 1200px) {
   .lp-vx .vx-hub-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

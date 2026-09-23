@@ -23,19 +23,20 @@ export const martechStartups: VerticalConfig = {
   hubLine: "Find marketers hiring ops roles or posting about attribution.",
 
   hero: {
+    title: "Find growth leads reacting to attribution experts.",
     h1: ["You sell to marketers", "We bring you customers"],
-    lede: "Pancake finds marketers posting about attribution and teams whose job posts still list Marketo. Pitch the switch.",
+    lede: "Pancake reads marketing ops openings and job posts naming Marketo, then shows why each buyer fits. Pitch the switch.",
   },
 
   workspace: { name: "Adwhistle", sender: "Vivienne Okereke" },
 
   demo: {
-    h2: "Three ways into a marketing team.",
+    h2: "Pick the gap your tool closes.",
     prompts: [
       {
         kind: "hiring",
         text: "We automate ad reporting. Find US insurers and SaaS firms hiring marketing ops managers.",
-        reply: "I'll watch job posts for marketing ops roles at US insurers and SaaS firms.",
+        reply: "I’ll watch job posts for marketing ops roles at US insurers and SaaS firms.",
         proposal: [
           { kind: "hiring", items: ["Marketing ops manager", "Paid media analyst"] },
           { kind: "stack", items: ["Google Ads", "Meta Ads", "Looker Studio"] },
@@ -54,12 +55,12 @@ export const martechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Lorraine, saw Brookhale is hiring a marketing operations manager. Much of that role is pulling ad numbers into weekly reports. We automate ad reporting across Google and Meta, so your new hire starts on analysis. Open to a short look?",
+          "Hi Lorraine, appreciate the connect. We build software that automates ad reporting. How long does the weekly marketing report take your team?",
       },
       {
         kind: "stack",
         text: "We replace Marketo. Find US B2B companies whose marketing job posts still list it.",
-        reply: "I'll find US B2B companies whose job posts name Marketo and keep the marketing leads.",
+        reply: "I’ll find US B2B companies whose job posts name Marketo and keep the marketing leads.",
         proposal: [
           { kind: "stack", items: ["Marketo", "Pardot"] },
           { kind: "keyword", items: ["marketing automation", "Marketo migration"] },
@@ -79,19 +80,19 @@ export const martechStartups: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Sabine, saw Quelltide is hiring marketers with Marketo experience. People who know Marketo well are slow to find. Our automation platform takes a week to learn, and we move your programs over for you. Worth a short walkthrough?",
+          "Hi Sabine, good to connect. I work on marketing automation software. Which campaign takes your team the longest to build?",
       },
       {
         kind: "influencer",
         text: "We sell attribution software. Find US growth leads engaging with measurement experts.",
-        reply: "I'll watch who engages with measurement experts’ posts and keep US growth leads.",
+        reply: "I’ll watch who engages with measurement experts’ posts and keep US growth leads.",
         proposal: [
           { kind: "influencer", items: ["Vesna Dykstra", "Kwame Dunleavy"] },
           { kind: "keyword", items: ["attribution", "marketing mix modeling"] },
           { kind: "competitor", items: ["Tallyloop"] },
         ],
         leads: [
-          { name: "Dashiell Crane", role: "Head of Growth", company: "Thimbleway", kind: "influencer", signal: "Commented on Dykstra" },
+          { name: "Dashiell Crane", role: "Head of Growth", company: "Thimbleway", kind: "influencer", signal: "Commented on a post" },
           { name: "Zainab Olatunji", role: "Growth Lead", company: "Saltbrook", kind: "influencer", signal: "Liked a Dunleavy post" },
           { name: "Gustavo Pimentel", role: "VP Growth", company: "Sunmere", kind: "keyword", signal: "Posted on attribution" },
           { name: "Phoebe Lanning", role: "Analytics Lead", company: "Ospreyline", kind: "keyword", signal: "Posted about MMM" },
@@ -103,7 +104,7 @@ export const martechStartups: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Dashiell, saw your comment on Vesna Dykstra’s post about attribution. Channel credit is the argument most growth teams never settle. We built attribution your finance team can audit line by line. Open to a short demo?",
+          "Hi Dashiell, you commented on Vesna Dykstra’s post about attribution. Which channel gets argued over most at Thimbleway?",
       },
     ],
   },
@@ -145,7 +146,7 @@ export const martechStartups: VerticalConfig = {
   faq: [
     {
       q: "Marketers get pitched daily. How is this different?",
-      a: "The connection request carries no pitch. Messages are written from what surfaced the lead: a job post, their own post or an expert’s post they engaged with.",
+      a: "The connection request carries no pitch. When a marketer posted, or engaged with an expert’s post, the first message starts from it. Job-post leads get a message in your voice.",
     },
     {
       q: "Can you find agencies as well as brands?",

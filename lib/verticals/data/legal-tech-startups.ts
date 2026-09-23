@@ -23,11 +23,12 @@ export const legalTechStartups: VerticalConfig = {
 
   meta: { seoTitle: "Pancake for Legal Tech Startups: Find Law Firm Buyers" },
 
-  hubLine: "Find law firms hiring paralegals and GCs posting on contracts.",
+  hubLine: "Find GCs posting about contracts and firms hiring paralegals.",
 
   hero: {
+    title: "Find the managing partner when a paralegal role opens.",
     h1: ["You build for lawyers", "We bring you customers"],
-    lede: "Pancake finds law firms hiring paralegals or asking for Clio in job posts. You reach the partner who decides.",
+    lede: "Job posts that name Clio and GCs’ posts on contract review, not a bar directory. Each lead is the lawyer who decides.",
   },
 
   workspace: { name: "Pleadwell", sender: "Celia Ndiaye" },
@@ -38,7 +39,7 @@ export const legalTechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "Our intake tool serves immigration firms. Find US immigration law firms hiring paralegals.",
-        reply: "I'll watch paralegal job posts at US immigration firms, then find the managing partner.",
+        reply: "I’ll watch paralegal job posts at US immigration firms, then find the managing partner.",
         proposal: [
           { kind: "hiring", items: ["Immigration paralegal", "Legal intake specialist", "Legal assistant"] },
           { kind: "keyword", items: ["client intake", "immigration practice"] },
@@ -57,20 +58,20 @@ export const legalTechStartups: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Farida, saw Kasraei Law is hiring a paralegal. In immigration practices, intake calls and forms eat a big share of paralegal time. We automate intake for immigration firms, from first form to case file. Worth a look while you hire?",
+          "Hi Farida, I work on client intake software. How do new clients get from first call to a case file today?",
       },
       {
         kind: "stack",
         text: "Our billing tool plugs into Clio. Find US law firms of 10 to 100 people whose job posts list it.",
-        reply: "I'll find firms whose job posts name Clio, then the partner or COO who runs the firm.",
+        reply: "I’ll find firms whose job posts name Clio, then the partner or COO who runs the firm.",
         proposal: [
-          { kind: "stack", items: ["Clio", "Clio Manage"] },
+          { kind: "stack", items: ["Clio", "MyCase"] },
           { kind: "hiring", items: ["Legal billing specialist", "Legal assistant"] },
           { kind: "keyword", items: ["billable hours", "time entry"] },
         ],
         leads: [
           { name: "Meera Thakkar", role: "COO", company: "Pellbrook Legal", kind: "stack", signal: "Clio in job posts" },
-          { name: "Dorin Vasilescu", role: "Partner", company: "Vasilescu Law", kind: "stack", signal: "Clio Manage in job posts" },
+          { name: "Dorin Vasilescu", role: "Partner", company: "Vasilescu Law", kind: "stack", signal: "MyCase in job posts" },
           { name: "Amara Lindell", role: "Ops Director", company: "Kinnear Law", kind: "hiring", signal: "Billing role open" },
           { name: "Chase Pemberton", role: "Partner", company: "Tarrant Loew", kind: "keyword", signal: "Posted on time entry" },
           { name: "Yesenia Ruelas", role: "Administrator", company: "Galvez Law", kind: "stack", signal: "Clio in job posts" },
@@ -81,12 +82,12 @@ export const legalTechStartups: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Meera, saw Pellbrook Legal's legal assistant post lists Clio. Our tool plugs into Clio and turns calendar entries into draft time entries, so fewer hours go unbilled. Worth a short demo for your team?",
+          "Hi Meera, good to be connected. We build legal billing software. How do your lawyers log their hours?",
       },
       {
         kind: "keyword",
         text: "We speed up contract review. Find US general counsels posting about contract backlogs.",
-        reply: "I'll watch posts about contract review and keep in-house legal leaders at US companies.",
+        reply: "I’ll watch posts about contract review and keep in-house legal leaders at US companies.",
         proposal: [
           { kind: "keyword", items: ["contract review", "contract backlog", "legal front door"] },
           { kind: "influencer", items: ["Imelda Strauss", "Rupert Kanagawa"] },
@@ -105,7 +106,7 @@ export const legalTechStartups: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Sienna, saw your post about the contract backlog at Norwick. NDAs and standard sales paper usually fill most of that queue. We review those against your playbook, so your team keeps the hard ones. Open to a short call?",
+          "Hi Sienna, your post mentioned a growing contract backlog at Norwick. What kind of contract fills most of the queue?",
       },
     ],
   },
@@ -123,7 +124,7 @@ export const legalTechStartups: VerticalConfig = {
       {
         kind: "stack",
         title: "Practice tools in job posts",
-        body: "When a firm's job post asks for Clio or iManage, Pancake brings you the firm's COO or managing partner.",
+        body: "When a firm’s job post asks for Clio or iManage, Pancake brings you the firm’s COO or managing partner.",
         watching: ["Clio", "iManage", "NetDocuments", "MyCase"],
       },
       {
@@ -158,7 +159,7 @@ export const legalTechStartups: VerticalConfig = {
     },
     {
       q: "Can I target one state?",
-      a: "Not reliably. Country is the filter that holds. Name your state in the Brain, and reject any lead outside it so the Brain learns.",
+      a: "Yes, with a trade-off. Leads are sourced across the US, then checked against the state named in your Brain. One state means fewer leads each morning.",
     },
   ],
 

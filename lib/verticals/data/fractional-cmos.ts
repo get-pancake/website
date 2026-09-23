@@ -24,8 +24,9 @@ export const fractionalCmos: VerticalConfig = {
   hubLine: "Find B2B founders hiring a Head of Marketing.",
 
   hero: {
+    title: "Find founders whose next hire is a Head of Marketing.",
     h1: ["You lead marketing", "We bring you clients"],
-    lede: "Pancake finds founders hiring a Head of Marketing or posting about positioning, then messages them. Be the part-time answer.",
+    lede: "Leadership job posts, GTM questions and reactions to your content. Pitch part-time before a full-time offer goes out.",
   },
 
   workspace: { name: "Castaneda Growth", sender: "Lucia Castaneda" },
@@ -35,8 +36,8 @@ export const fractionalCmos: VerticalConfig = {
     prompts: [
       {
         kind: "hiring",
-        text: "I'm a fractional CMO. Find US B2B startups with 10 to 80 people hiring a Head of Marketing.",
-        reply: "I'll watch senior marketing job posts at US B2B startups with 10 to 80 people.",
+        text: "I’m a fractional CMO. Find US B2B startups with 10 to 80 people hiring a Head of Marketing.",
+        reply: "I’ll watch senior marketing job posts at US B2B startups with 10 to 80 people.",
         proposal: [
           { kind: "hiring", items: ["Head of Marketing", "VP Marketing", "Marketing Director"] },
           { kind: "keyword", items: ["first marketing hire", "need a marketer"] },
@@ -55,19 +56,19 @@ export const fractionalCmos: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Oluwaseun, saw Ledgerpine is hiring a Head of Marketing. At 45 people, that role is mostly positioning plus one channel that works. I do that part-time for B2B startups your size. Worth a call while the role is open?",
+          "Hi Oluwaseun, glad we’re connected. As a fractional CMO, I spend a lot of time on how startups find their first channel. Which one has brought you the most customers so far?",
       },
       {
         kind: "own_brand",
         text: "B2B founders like my posts on positioning. Turn the US ones with under 100 staff into leads.",
-        reply: "I'll track reactions to your posts and keep founders at US B2B firms under 100 people.",
+        reply: "I’ll track reactions to your posts and keep founders at US B2B firms under 100 people.",
         proposal: [
           { kind: "own_brand", items: ["Lucia Castaneda", "Castaneda Growth"] },
           { kind: "keyword", items: ["positioning", "messaging", "category design"] },
           { kind: "influencer", items: ["Marguerite Abiola", "Idris Callander"] },
         ],
         leads: [
-          { name: "Tobias Engstrom", role: "Co-founder & CEO", company: "Glintmoor", kind: "own_brand", signal: "Liked your latest post" },
+          { name: "Tobias Engstrom", role: "Co-founder & CEO", company: "Glintmoor", kind: "own_brand", signal: "Liked a Castaneda post" },
           { name: "Adaora Ikwuemesi", role: "Founder", company: "Kettlerock", kind: "own_brand", signal: "Commented on a post" },
           { name: "Wren Haverford", role: "CEO", company: "Sableport", kind: "keyword", signal: "Posted on positioning" },
           { name: "Jasper Nettlefold", role: "Head of Growth", company: "Mintwhistle", kind: "influencer", signal: "Liked an Abiola post" },
@@ -79,12 +80,12 @@ export const fractionalCmos: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Tobias, thanks for liking my post on positioning. At 28 people, the founder usually still writes the pitch. I lead marketing part-time for B2B startups that size. Open to a short call about Glintmoor's positioning?",
+          "Hi Tobias, noticed you liked my post on positioning. Who writes Glintmoor’s pitch today, you or someone on the team?",
       },
       {
         kind: "keyword",
         text: "Find US B2B founders posting about their go-to-market plan. I build it with them, part-time.",
-        reply: "I'll watch founder posts about go-to-market plans and keep US B2B companies.",
+        reply: "I’ll watch founder posts about go-to-market plans and keep US B2B companies.",
         proposal: [
           { kind: "keyword", items: ["go-to-market plan", "launch plan"] },
           { kind: "hiring", items: ["Marketing manager", "Demand generation manager"] },
@@ -103,7 +104,7 @@ export const fractionalCmos: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Mariela, saw your post about Gablefield's go-to-market plan. Most plans list ten channels. The work is picking the first one. I build go-to-market plans with B2B founders, part-time. Open to trading notes?",
+          "Hi Mariela, came across your post about Gablefield’s go-to-market plan. Which channel gets the first bet?",
       },
     ],
   },
@@ -132,7 +133,7 @@ export const fractionalCmos: VerticalConfig = {
       },
       {
         kind: "competitor",
-        title: "Founders on rival firms' posts",
+        title: "Founders on rival firms’ posts",
         body: "Pancake watches posts from other fractional marketing firms and keeps the founders who engage.",
         watching: ["Oxlip Fractional", "Thistledown CMO"],
       },
@@ -142,11 +143,11 @@ export const fractionalCmos: VerticalConfig = {
   faq: [
     {
       q: "Am I competing with full-time candidates?",
-      a: "Often, yes. Pancake brings you the founder while the role is open. That's when a part-time option gets a fair hearing.",
+      a: "Often, yes. Pancake brings you the founder while the role is open. That’s when a part-time option gets a fair hearing.",
     },
     {
       q: "Does Pancake know which startups have no CMO?",
-      a: "No. It can't see an org chart. It sees marketing leadership job posts and founders posting about marketing, and each lead shows which one.",
+      a: "No. It can’t see an org chart. It sees marketing leadership job posts and founders posting about marketing, and each lead shows which one.",
     },
     {
       q: "Will the messages sound like me?",
@@ -154,7 +155,7 @@ export const fractionalCmos: VerticalConfig = {
     },
     {
       q: "Will other marketers who like my posts become leads?",
-      a: "Not unless you sell to them. Pancake checks every lead against the buyers in your Brain, so peers don't pass.",
+      a: "Not unless you sell to them. Pancake checks every lead against the buyers in your Brain, so peers don’t pass.",
     },
   ],
 

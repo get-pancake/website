@@ -25,8 +25,9 @@ export const logisticsTechStartups: VerticalConfig = {
   hubLine: "Find the ops leaders at 3PLs, carriers and shippers.",
 
   hero: {
+    title: "Find 3PL ops leaders short on dispatchers.",
     h1: ["You build for 3PLs", "We bring you customers"],
-    lede: "Pancake finds 3PLs hiring dispatchers, then the ops leader behind the hire. You reach them before peak season.",
+    lede: "Pancake scans job posts that name your TMS or WMS, and LinkedIn posts about peak season. You get there before the rush.",
   },
 
   workspace: { name: "Lanewright", sender: "Gunnar Thorsby" },
@@ -37,7 +38,7 @@ export const logisticsTechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "Our routing tool cuts dispatch work. Find US 3PLs hiring dispatchers or load planners.",
-        reply: "I'll watch dispatch job posts at US 3PLs and find the ops leader who owns the team.",
+        reply: "I’ll watch dispatch job posts at US 3PLs and find the ops leader who owns the team.",
         proposal: [
           { kind: "hiring", items: ["Dispatcher", "Load planner", "Transportation planner"] },
           { kind: "stack", items: ["Samsara", "McLeod"] },
@@ -57,12 +58,12 @@ export const logisticsTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Ray, saw Tolan Logistics has three dispatcher roles open. Hiring is one way to cover more loads. Our routing tool builds the day’s plan, so each dispatcher runs more trucks. Worth seeing it on one of your lanes?",
+          "Hi Ray, great to be connected. I work on routing software that builds the day’s dispatch plan. How many trucks does your team plan on a typical day?",
       },
       {
         kind: "keyword",
         text: "Our tool cuts late deliveries. Find US heads of logistics posting about peak season.",
-        reply: "I'll watch US logistics leaders’ posts about peak season and late deliveries.",
+        reply: "I’ll watch US logistics leaders’ posts about peak season and late deliveries.",
         proposal: [
           { kind: "keyword", items: ["peak season", "on-time delivery"] },
           { kind: "influencer", items: ["Ignatius Wray"] },
@@ -81,12 +82,12 @@ export const logisticsTechStartups: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Kiara, read your post about peak season prep at Cragmoor. Late orders in the holiday rush cost the most goodwill. Our tool flags at-risk shipments while there’s still time to reroute. Worth a short call before the rush?",
+          "Hi Kiara, you posted about peak season prep at Cragmoor. What’s the one thing you’re changing from last year?",
       },
       {
         kind: "stack",
         text: "Our slotting tool works with Manhattan WMS. Find US distributors whose job posts name it.",
-        reply: "I'll watch job posts that name Manhattan WMS and find who runs the warehouses.",
+        reply: "I’ll watch job posts that name Manhattan WMS and find who runs the warehouses.",
         proposal: [
           { kind: "stack", items: ["Manhattan WMS", "Manhattan SCALE"] },
           { kind: "hiring", items: ["Warehouse operations manager", "Inventory control manager"] },
@@ -105,13 +106,13 @@ export const logisticsTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Min-jun, saw Corliss Supply’s warehouse roles ask for Manhattan WMS experience. We built a slotting layer that works alongside Manhattan and shortens pick paths. Could I show you the math on one of your DCs?",
+          "Hi Min-jun, nice to be connected. We build slotting software that shortens pick paths. How often do you re-slot your warehouses?",
       },
     ],
   },
 
   signals: {
-    h2: "Freight pain shows up on LinkedIn.",
+    h2: "Every dispatch opening is a lead.",
     cards: [
       {
         kind: "hiring",

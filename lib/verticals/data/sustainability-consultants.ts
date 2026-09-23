@@ -26,8 +26,9 @@ export const sustainabilityConsultants: VerticalConfig = {
   hubLine: "Find companies hiring for climate reporting.",
 
   hero: {
+    title: "Find CFOs wrestling with scope 3 supplier data.",
     h1: ["You cut carbon", "We bring you clients"],
-    lede: "Pancake finds CFOs posting about scope 3 and companies hiring sustainability managers. You reach them before the RFP.",
+    lede: "Pancake reads sustainability openings and job posts naming EcoVadis or Sphera. Help them publish the first report.",
   },
 
   workspace: { name: "Eskerline Climate", sender: "Leonie Barrera" },
@@ -38,17 +39,17 @@ export const sustainabilityConsultants: VerticalConfig = {
       {
         kind: "keyword",
         text: "I do carbon accounting. Find CFOs at US firms with 250 to 1,000 staff posting about scope 3.",
-        reply: "I'll watch scope 3 posts and keep CFOs and finance heads at US companies that size.",
+        reply: "I’ll watch scope 3 posts and keep CFOs and finance heads at US companies that size.",
         proposal: [
           { kind: "keyword", items: ["scope 3", "supplier emissions", "carbon inventory"] },
           { kind: "influencer", items: ["Wanjiru Kamau", "Miriam Hollenbeck"] },
           { kind: "hiring", items: ["Carbon accountant"] },
-          { kind: "stack", items: ["Persefoni", "Workiva"] },
+          { kind: "stack", items: ["Persefoni", "Sphera"] },
         ],
         leads: [
           { name: "Sunil Chaudhry", role: "CFO", company: "Glenfinch Foods", kind: "keyword", signal: "Posted on scope 3" },
           { name: "Rosa Villaverde", role: "Controller", company: "Hapsworth", kind: "keyword", signal: "Posted on emissions" },
-          { name: "Ethan Brightman", role: "VP Finance", company: "Catalpa Home", kind: "influencer", signal: "Commented on Kamau" },
+          { name: "Ethan Brightman", role: "VP Finance", company: "Catalpa Home", kind: "influencer", signal: "Commented on a post" },
           { name: "Folake Adeniran", role: "Finance Director", company: "Gorsefield", kind: "hiring", signal: "Carbon accountant role" },
           { name: "Owen Takahashi", role: "CFO", company: "Yarrowby", kind: "stack", signal: "Persefoni in job posts" },
         ],
@@ -58,12 +59,12 @@ export const sustainabilityConsultants: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Sunil, saw your post about getting scope 3 data out of suppliers. That’s where most first inventories stall. We build carbon inventories for food companies, supplier data included. Want to compare notes on where yours stands?",
+          "Hi Sunil, I noticed your post on getting scope 3 data out of suppliers. How many suppliers have sent numbers back so far?",
       },
       {
         kind: "hiring",
         text: "Find US companies hiring a sustainability manager. We run the program until they start.",
-        reply: "I'll watch sustainability job posts and find the finance or ops leader at each company.",
+        reply: "I’ll watch sustainability job posts and find the finance or ops leader at each company.",
         proposal: [
           { kind: "hiring", items: ["Sustainability manager", "Head of Sustainability", "ESG reporting analyst"] },
           { kind: "keyword", items: ["net zero target", "climate disclosure"] },
@@ -82,12 +83,12 @@ export const sustainabilityConsultants: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Aaliyah, saw Tidebrook is hiring a sustainability manager. Customer questionnaires don’t pause while that search runs. We run sustainability programs for packaging companies until the new hire starts. Want a hand covering the gap?",
+          "Hi Aaliyah, I run sustainability programs, mostly carbon inventories and customer questionnaires. Who handles those questionnaires on your team now?",
       },
       {
         kind: "stack",
         text: "We improve supplier ratings. Find US manufacturers whose job posts mention EcoVadis.",
-        reply: "I'll track job posts naming EcoVadis and keep quality and sustainability leads.",
+        reply: "I’ll track job posts naming EcoVadis and keep quality and sustainability leads.",
         proposal: [
           { kind: "stack", items: ["EcoVadis", "Sphera"] },
           { kind: "keyword", items: ["EcoVadis rating", "supplier questionnaire"] },
@@ -106,7 +107,7 @@ export const sustainabilityConsultants: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Jorge, saw Wirebrook’s job posts name EcoVadis. Large buyers keep raising the score they ask suppliers for. We help manufacturers lift their EcoVadis rating, from policies to evidence. Worth a look before your next assessment?",
+          "Hi Jorge, we help suppliers raise their sustainability ratings. How often do customers ask for your score?",
       },
     ],
   },
@@ -131,13 +132,13 @@ export const sustainabilityConsultants: VerticalConfig = {
       {
         kind: "stack",
         title: "Reporting tools in job posts",
-        body: "When a job post asks for Workiva or EcoVadis, you know the team already reports on sustainability.",
-        watching: ["EcoVadis", "Workiva", "Persefoni", "Watershed"],
+        body: "When a job post asks for EcoVadis or Persefoni, the team likely reports on sustainability already.",
+        watching: ["EcoVadis", "Persefoni", "Sphera"],
       },
       {
         kind: "influencer",
         title: "Fans of disclosure experts",
-        body: "Pancake keeps the CFOs and sustainability leads who comment on their posts.",
+        body: "CFOs and sustainability leads who comment on the voices you name become leads.",
         watching: ["Wanjiru Kamau", "Miriam Hollenbeck"],
       },
     ],

@@ -26,6 +26,10 @@
   font-family: var(--vx-eyebrow-font);
   margin: -12px -4px; /* 44px tap box, visual line unchanged */
   padding: 12px 4px;
+  /* above the wrapped second line (phones: the current page drops under
+     Home / Industries and its line box would take the bottom of the tap box) */
+  position: relative;
+  z-index: 1;
   text-decoration: underline;
   text-decoration-color: var(--lp-stroke);
   text-decoration-thickness: 1px;
@@ -35,7 +39,7 @@
   font-family: var(--vx-eyebrow-font);
 }
 .lp-vx .vx-crumbs__sep {
-  color: var(--lp-muted-text);
+  color: var(--lp-subtle-text); /* 4.77:1 on the page cream (muted was 3.31) */
   padding-inline: 10px;
 }
 .lp-vx .vx-crumbs [aria-current="page"] {

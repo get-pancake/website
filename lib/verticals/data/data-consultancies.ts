@@ -25,8 +25,9 @@ export const dataConsultancies: VerticalConfig = {
   hubLine: "Find CFOs posting about bad data and teams hiring data roles.",
 
   hero: {
+    title: "Find CFOs who say their dashboards disagree.",
     h1: ["You build data stacks", "We bring you clients"],
-    lede: "Pancake finds companies hiring data engineers and CFOs posting about messy reports. Reach whoever owns the numbers.",
+    lede: "Pancake reads data engineer openings, Snowflake job ads and who likes your posts. Sell them one set of numbers.",
   },
 
   workspace: { name: "Okoye Analytics", sender: "Nneka Okoye" },
@@ -37,7 +38,7 @@ export const dataConsultancies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We build data stacks. Find US online retailers with 100 to 500 staff hiring a data engineer.",
-        reply: "I'll flag data roles at US online retailers that size and find who leads data.",
+        reply: "I’ll flag data roles at US online retailers that size and find who leads data.",
         proposal: [
           { kind: "hiring", items: ["Data engineer", "Analytics engineer", "BI developer"] },
           { kind: "stack", items: ["Snowflake", "dbt"] },
@@ -57,12 +58,12 @@ export const dataConsultancies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Talin, saw Pomfret Goods is hiring a data engineer. New data hires often spend their first months fixing pipelines. We lay the Snowflake and dbt groundwork for online retailers, so your engineer starts on models instead. Open to a short call?",
+          "Hi Talin, I build data stacks, usually starting with the pipelines. Which report does everyone ask your team for first?",
       },
       {
         kind: "stack",
-        text: "We're a Snowflake partner. Find US companies whose job posts mention Snowflake or Power BI.",
-        reply: "I'll find US companies hiring for Snowflake or Power BI skills, then their data lead.",
+        text: "We’re a Snowflake partner. Find US companies whose job posts mention Snowflake or Power BI.",
+        reply: "I’ll find US companies hiring for Snowflake or Power BI skills, then their data lead.",
         proposal: [
           { kind: "stack", items: ["Snowflake", "Power BI"] },
           { kind: "hiring", items: ["Head of Data", "Power BI developer"] },
@@ -81,12 +82,12 @@ export const dataConsultancies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Dorothea, Snowflake keeps coming up in Pembury Supply’s job posts. For distributors, the first asks are usually margin and inventory reports. We’re a Snowflake partner and build those models with your analysts. Worth a short call?",
+          "Hi Dorothea, glad to be connected. My team builds data models alongside in-house analysts. What’s next on your data roadmap?",
       },
       {
         kind: "keyword",
         text: "Find CFOs at US companies posting about data quality or dashboard sprawl. We fix reporting.",
-        reply: "I'll watch posts about data quality and dashboard sprawl, and keep US finance leaders.",
+        reply: "I’ll watch posts about data quality and dashboard sprawl, and keep US finance leaders.",
         proposal: [
           { kind: "keyword", items: ["data quality", "dashboard sprawl", "month-end reporting"] },
           { kind: "competitor", items: ["Merganser Analytics", "Ormond Data"] },
@@ -105,7 +106,7 @@ export const dataConsultancies: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Lamont, saw your post on reports that disagree about revenue. Usually each report defines revenue a little differently. We rebuild finance reporting on one shared model for building-products makers. Worth a call to compare notes?",
+          "Hi Lamont, you wrote that no two reports at Keelby agree on revenue. Which two drift apart the most?",
       },
     ],
   },
@@ -150,7 +151,7 @@ export const dataConsultancies: VerticalConfig = {
     },
     {
       q: "Snowflake is in lots of job posts. Won’t I drown in leads?",
-      a: "No. Each lead is checked against your ICP before it reaches you. Narrow the company size or industry and the list gets sharper.",
+      a: "No. Pancake sends 5 to 15 leads a day, each checked against your ICP. Narrow the size or industry and the list gets sharper.",
     },
     {
       q: "Can I target finance buyers, not data teams?",

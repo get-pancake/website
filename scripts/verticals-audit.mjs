@@ -11,16 +11,19 @@
 //   1. Shingles   main content (hero + demo, all variants + signals + control + FAQ + related;
 //                 nav, marquee, CTA, pricing, footer excluded): for every pair of pages the
 //                 5-word-shingle containment |A∩B|/|A| ≤ 0.50, both ways.
-//   2. JSON-LD    every block parses; exactly one WebPage; FAQPage Q/As = the visible
-//                 <details> text; BreadcrumbList = Home → Industries → page, URLs resolve.
-//                 Hub: ItemList = the approved pages.
+//   2. JSON-LD    every block parses; exactly one WebPage; FAQPage = the page's own vertical
+//                 Q/As (v.faq, in order), every one verbatim in a visible <details>, none of
+//                 the 5 shared Q/As (VX_FAQ.shared stay visible-only: the same five answers on
+//                 40 pages are not this page's FAQ, SEO-JSONLD-05); BreadcrumbList = Home →
+//                 Industries → page, URLs resolve. Hub: ItemList = the approved pages.
 //   3. Lints      BANNED (validate.ts) over the rendered <main> text minus LpNav and LpFooter
 //                 (FAQ answers keep their negation allowance; LpPricing's lines are
 //                 allow-listed only when VX_PRICING_MODE = "homepage"), lowercase "pancake".
 //   4. DOM        ≤1,400 elements in <main> (the nav's Industries panel not counted: it is the
 //                 founder's site-wide addition and grows with the registry), ≤650 in
 //                 .vx-demo__card, exactly one <h1>, and
-//                 H1 textContent = "{h1[0]} {h1[1]}".
+//                 H1 textContent = "{name.badge}: {h1[0]}. {h1[1]}" (VxHero: the badge rides
+//                 inside the H1, sr-only ": " and "." make it read as one sentence).
 //   5. CSS        no colour literals (#hex, rgb(, rgba(, hsl() in app/_styles/verticals/*.css —
 //                 except custom-property declarations in demo.css (the app's own palette,
 //                 scoped to the demo).
@@ -133,7 +136,8 @@ async function extract(html) {
       a: norm(d.querySelector(".vx-qa__a")?.textContent),
     }));
     const ld = [...document.querySelectorAll('script[type="application/ld+json"]')].map((s) => s.textContent);
-    const h1s = [...document.querySelectorAll("h1")].map(textOf);
+    // raw textContent (what search engines and screen readers get), whitespace-collapsed
+    const h1s = [...document.querySelectorAll("h1")].map((h) => norm(h.textContent));
     const card = document.querySelector(".vx-demo__card");
     return {
       content,
@@ -152,7 +156,8 @@ async function extract(html) {
 }
 
 /* ── gates per page ────────────────────────────────────────────────────────── */
-const NEGATION = /^(No\b|Not\b|Never\b|There'?s no\b|There is no\b|Pancake doesn'?t\b|It doesn'?t\b|Pancake never\b|No emails\b)/;
+// = validate.ts NEGATION (curly or straight apostrophe)
+const NEGATION = /^(No\b|Not\b|Never\b|There[’']?s no\b|There is no\b|Pancake doesn[’']?t\b|It doesn[’']?t\b|Pancake never\b|No emails\b)/;
 const sentences = (s) => s.split(/(?<=[.!?])\s+/);
 const shingles = new Map();
 
@@ -184,6 +189,8 @@ function graphOf(ldBlocks, where) {
   }
   return nodes;
 }
+const normWs = (s) => (s ?? "").replace(/\s+/g, " ").trim();
+const SHARED_FAQ_Q = new Set(COPY.VX_FAQ.shared.map((f) => normWs(f.q)));
 const KNOWN_URLS = new Set([SITE, `${SITE}/for`, ...ALL_VERTICALS.map((v) => `${SITE}/for/${v.slug}`)]);
 
 for (const v of ALL_VERTICALS) {
@@ -199,7 +206,10 @@ for (const v of ALL_VERTICALS) {
   if (x.demoCount == null) warn("dom", path, "no .vx-demo__card on the page");
   else if (x.demoCount > 650) fail("dom", path, `${x.demoCount} elements in .vx-demo__card (max 650)`);
   if (x.h1s.length !== 1) fail("dom", path, `${x.h1s.length} <h1> (want exactly 1)`);
-  else if (x.h1s[0] !== `${v.hero.h1[0]} ${v.hero.h1[1]}`) fail("dom", path, `H1 text "${x.h1s[0]}" ≠ "${v.hero.h1[0]} ${v.hero.h1[1]}"`);
+  else {
+    const wantH1 = `${v.name.badge}: ${v.hero.h1[0]}. ${v.hero.h1[1]}`;
+    if (x.h1s[0] !== wantH1) fail("dom", path, `H1 text "${x.h1s[0]}" ≠ "${wantH1}"`);
+  }
   // 3. lints
   lintText(path, x.blocks, x.faqAnswers, x.pricingLines);
   // 2. JSON-LD
@@ -209,9 +219,20 @@ for (const v of ALL_VERTICALS) {
   const faqLd = g.find((n) => n["@type"] === "FAQPage");
   if (!faqLd) fail("jsonld", path, "no FAQPage");
   else {
-    const ldQa = (faqLd.mainEntity ?? []).map((q) => ({ q: q.name, a: q.acceptedAnswer?.text }));
-    const same = ldQa.length === x.faq.length && ldQa.every((q, i) => q.q === x.faq[i].q && q.a === x.faq[i].a);
-    if (!same) fail("jsonld", path, `FAQPage (${ldQa.length}) ≠ visible <details> (${x.faq.length})`);
+    const ldQa = (faqLd.mainEntity ?? []).map((q) => ({ q: normWs(q.name), a: normWs(q.acceptedAnswer?.text) }));
+    // (a) every JSON-LD Q/A is on the page, verbatim, as one <details>
+    for (const qa of ldQa) {
+      if (!x.faq.some((d) => d.q === qa.q && d.a === qa.a)) fail("jsonld", path, `FAQPage Q/A not verbatim in a visible <details>: "${qa.q}"`);
+    }
+    // (b) the JSON-LD is exactly the vertical Q/As, in config order
+    const want = v.faq.map((f) => ({ q: normWs(f.q), a: normWs(f.a) }));
+    const same = ldQa.length === want.length && ldQa.every((qa, i) => qa.q === want[i].q && qa.a === want[i].a);
+    if (!same) fail("jsonld", path, `FAQPage (${ldQa.length} Q/As) ≠ the page's ${want.length} vertical Q/As (v.faq)`);
+    // (c) the 5 shared Q/As are visible-only
+    const leaked = ldQa.filter((qa) => SHARED_FAQ_Q.has(qa.q));
+    if (leaked.length) fail("jsonld", path, `FAQPage carries ${leaked.length} shared Q/A(s) (VX_FAQ.shared stays out of the JSON-LD): ${leaked.map((qa) => `"${qa.q}"`).join(", ")}`);
+    // (d) every vertical Q/A is visible
+    for (const f of want) if (!x.faq.some((d) => d.q === f.q)) fail("jsonld", path, `vertical Q/A not rendered as a <details>: "${f.q}"`);
   }
   const bc = g.find((n) => n["@type"] === "BreadcrumbList");
   const want = [SITE, `${SITE}/for`, `${SITE}/for/${v.slug}`];

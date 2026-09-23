@@ -11,19 +11,20 @@ export const developerTools: VerticalConfig = {
   updated: "2026-09-22",
 
   name: {
-    plural: "developer tools companies",
-    title: "Developer tools companies",
+    plural: "devtools startups",
+    title: "Devtools startups",
     short: "devtools founders",
-    badge: "For developer tools",
+    badge: "For devtools startups",
   },
 
-  meta: { seoTitle: "Pancake for Developer Tools: Reach Engineering Leads" },
+  meta: { seoTitle: "Pancake for Devtools Startups: Reach Engineering Leads" },
 
   hubLine: "Find engineering teams naming the tool you replace.",
 
   hero: {
+    title: "Find engineering leads who name your rival when hiring.",
     h1: ["You ship dev tools", "We bring you customers"],
-    lede: "Pancake finds engineers posting about slow CI or LLM bills and teams whose job posts name the tool you replace. Win the swap.",
+    lede: "Posts on flaky tests or LLM bills, comments on vendor pages, not a stale database. Your first message starts from their post.",
   },
 
   workspace: { name: "Runwarden", sender: "Ivar Rask" },
@@ -34,7 +35,7 @@ export const developerTools: VerticalConfig = {
       {
         kind: "stack",
         text: "Our CI replaces Jenkins. Find US companies with 100 to 1,000 employees whose job posts name it.",
-        reply: "I'll watch job posts that name Jenkins and keep companies with 100 to 1,000 employees.",
+        reply: "I’ll watch job posts that name Jenkins and keep companies with 100 to 1,000 employees.",
         proposal: [
           { kind: "stack", items: ["Jenkins", "CircleCI", "Travis CI"] },
           { kind: "keyword", items: ["slow CI", "flaky tests"] },
@@ -54,12 +55,12 @@ export const developerTools: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Signe, saw Waybright is hiring engineers who know Jenkins. Jenkins builds tend to slow down as a test suite grows. Our CI runs your existing pipelines in parallel, with no plugins to maintain. Open to a 20-minute look?",
+          "Hi Signe, thanks for the connect. I work on a CI service built for large test suites. How long does a full build take on your team these days?",
       },
       {
         kind: "keyword",
         text: "We route LLM calls. Find AI engineers at US startups posting about LLM costs or rate limits.",
-        reply: "I'll watch posts about LLM costs and rate limits and keep engineers at US startups.",
+        reply: "I’ll watch posts about LLM costs and rate limits and keep engineers at US startups.",
         proposal: [
           { kind: "keyword", items: ["LLM costs", "rate limits", "model fallback"] },
           { kind: "influencer", items: ["Beatrix Kallio", "Tunde Ashiru"] },
@@ -79,12 +80,12 @@ export const developerTools: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Chidinma, saw your post on LLM costs climbing with usage. We route each call to the cheapest model that meets your quality bar, and fail over when a provider rate-limits. Worth comparing against your current setup?",
+          "Hi Chidinma, you posted about rising LLM costs at Loomtide. What’s driving most of the spend, volume or model choice?",
       },
       {
         kind: "hiring",
         text: "We build an internal developer platform. Find US software companies hiring platform engineers.",
-        reply: "I'll watch US job posts for platform engineers and skip listings from staffing agencies.",
+        reply: "I’ll watch US job posts for platform engineers and skip listings from staffing agencies.",
         proposal: [
           { kind: "hiring", items: ["Platform engineer", "DevEx engineer"] },
           { kind: "stack", items: ["Kubernetes", "Terraform", "Backstage"] },
@@ -104,7 +105,7 @@ export const developerTools: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Quentin, saw Oxbowline is hiring two platform engineers. A new platform team often spends its first quarter building the paved roads every team needs. Ours ship on day one, so your hires start on what’s specific to Oxbowline. Open to a short call?",
+          "Hi Quentin, glad we’re connected. We build internal developer platforms. How long does a new engineer take to ship a first change?",
       },
     ],
   },
@@ -135,8 +136,8 @@ export const developerTools: VerticalConfig = {
       },
       {
         kind: "competitor",
-        title: "Fans of the incumbent",
-        body: "Every engineer who likes or comments on a rival vendor’s post lands in your queue.",
+        title: "Engineers on rivals’ posts",
+        body: "Engineers who like or comment on a rival vendor’s post become leads once they fit your ICP.",
         watching: ["Relaywright CI", "Throttlebay"],
       },
     ],
@@ -145,10 +146,10 @@ export const developerTools: VerticalConfig = {
   faq: [
     {
       q: "Developers ignore sales outreach. Will this work?",
-      a: "Pancake reaches the roles you pick, like engineering managers or heads of platform. It connects without a pitch, then writes from the signal behind each lead.",
+      a: "Pancake reaches the roles you pick, like engineering managers or heads of platform. It connects without a pitch. When an engineer posted about the problem, the message starts from that post.",
     },
     {
-      q: "We're open source. Can it find our GitHub users?",
+      q: "We’re open source. Can it find our GitHub users?",
       a: "No. Pancake reads LinkedIn and job posts, not GitHub, npm or product usage. Point it at your own posts and the problems your users write about instead.",
     },
     {

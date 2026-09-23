@@ -23,8 +23,9 @@ export const videoProductionCompanies: VerticalConfig = {
   hubLine: "Find tech marketers with a launch to film.",
 
   hero: {
+    title: "Find tech marketers teasing an upcoming product launch.",
     h1: ["You make videos", "We bring you clients"],
-    lede: "Pancake finds tech marketers posting about a launch or hiring a video producer. Each morning brings a story worth filming.",
+    lede: "Pancake catches trade-show posts, video producer job posts and rival studios’ fans. Pitch the film before the shoot is booked.",
   },
 
   workspace: { name: "Halide Films", sender: "Emmett Ferris" },
@@ -35,7 +36,7 @@ export const videoProductionCompanies: VerticalConfig = {
       {
         kind: "keyword",
         text: "We make explainer videos. Find product marketers at US robotics firms posting about a launch.",
-        reply: "I'll watch launch and trade show posts from marketers at US robotics firms.",
+        reply: "I’ll watch launch and trade show posts from marketers at US robotics firms.",
         proposal: [
           { kind: "keyword", items: ["product launch", "launch video", "trade show"] },
           { kind: "hiring", items: ["Product marketing manager"] },
@@ -54,12 +55,12 @@ export const videoProductionCompanies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Desmond, saw your post about the upcoming launch at Servotide. Robots are hard to explain in a spec sheet and easy to show in 90 seconds. We make explainer videos for robotics and hardware teams. Open to a short call about the launch film?",
+          "Hi Desmond, spotted your post about Servotide’s upcoming launch. How are you planning to show the product in action?",
       },
       {
         kind: "hiring",
-        text: "Find US B2B tech companies hiring an in-house video producer. We're the studio option.",
-        reply: "I'll find B2B tech employers with open video producer and motion designer roles.",
+        text: "Find US B2B tech companies hiring an in-house video producer. We’re the studio option.",
+        reply: "I’ll find B2B tech employers with open video producer and motion designer roles.",
         proposal: [
           { kind: "hiring", items: ["Video producer", "Motion designer", "Videographer"] },
           { kind: "stack", items: ["Premiere Pro", "After Effects"] },
@@ -78,23 +79,23 @@ export const videoProductionCompanies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Georgia, saw Norcaster is hiring an in-house video producer. One producer keeps a channel running. Launch films and customer stories need a crew. We're a B2B video studio that works alongside in-house teams your size. Open to a short call?",
+          "Hi Georgia, glad we’re connected. We make videos for B2B tech companies, and I watch far too many of everyone else’s. Which one has stuck with you lately?",
       },
       {
         kind: "influencer",
         text: "We film tech brands. Find CMOs at US firms of 50 to 500 people engaging with B2B storytellers.",
-        reply: "I'll find tech CMOs who engage with B2B storytellers' posts at firms that size.",
+        reply: "I’ll find tech CMOs who engage with B2B storytellers’ posts at firms that size.",
         proposal: [
           { kind: "influencer", items: ["Tess Orr", "Mae Adeyemi", "Rosalie Blythe"] },
           { kind: "keyword", items: ["brand film", "B2B storytelling"] },
           { kind: "competitor", items: ["Matchcut Films"] },
         ],
         leads: [
-          { name: "Soren Lindahl", role: "CMO", company: "Ironhedge Cloud", kind: "influencer", signal: "Commented on Tess Orr" },
+          { name: "Soren Lindahl", role: "CMO", company: "Ironhedge Cloud", kind: "influencer", signal: "Commented on a post" },
           { name: "Lakshmi Kesavan", role: "VP Marketing", company: "Vantlow", kind: "influencer", signal: "Liked an Adeyemi post" },
           { name: "Felix Ogunleye", role: "CMO", company: "Quantbrook", kind: "keyword", signal: "Posted on a brand film" },
           { name: "Beth Wasilewski", role: "Brand Director", company: "Kelpwater", kind: "competitor", signal: "Liked a Matchcut post" },
-          { name: "Luca Ferrandi", role: "Head of Marketing", company: "Windlass", kind: "influencer", signal: "Liked a Tess Orr post" },
+          { name: "Luca Ferrandi", role: "Head of Marketing", company: "Windlass", kind: "influencer", signal: "Liked an Orr post" },
         ],
         featured: {
           why: "Ironhedge Cloud is a 300-person US infrastructure software company. Soren is CMO and commented on a Tess Orr post about brand films.",
@@ -102,7 +103,7 @@ export const videoProductionCompanies: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Soren, saw your comment on Tess Orr's post about B2B brand films. Infrastructure is hard to film, so the story has to carry it. We make brand films for technical software companies. Worth a short call?",
+          "Hi Soren, your comment on Tess Orr’s post about B2B brand films caught my eye. Do you think they work for infrastructure software?",
       },
     ],
   },
@@ -132,7 +133,7 @@ export const videoProductionCompanies: VerticalConfig = {
       {
         kind: "competitor",
         title: "Marketers liking rival reels",
-        body: "Marketers who like or comment on another studio's reel become leads, with the post attached.",
+        body: "Marketers who like or comment on another studio’s reel become leads, with the post attached.",
         watching: ["Framewell Studios", "Matchcut Films"],
       },
     ],
@@ -159,5 +160,5 @@ export const videoProductionCompanies: VerticalConfig = {
 
   related: ["branding-agencies", "event-agencies", "pr-firms", "marketing-agencies"],
 
-  cta: { title: "Film the next launch." },
+  cta: { title: "Film their launch." },
 };

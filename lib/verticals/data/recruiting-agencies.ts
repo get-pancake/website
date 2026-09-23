@@ -21,8 +21,9 @@ export const recruitingAgencies: VerticalConfig = {
   hubLine: "Find companies hiring the roles you place.",
 
   hero: {
+    title: "Find hiring managers with open roles you can fill.",
     h1: ["You place candidates", "We bring you clients"],
-    lede: "Pancake finds companies hiring the roles you place. Each morning, it brings you the person who owns the hire.",
+    lede: "Pancake reads employer job posts, never agency listings, and names who owns each search. Reach them ahead of rival recruiters.",
   },
 
   workspace: { name: "Ferro Talent", sender: "Nadia Ferro" },
@@ -33,7 +34,7 @@ export const recruitingAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "I place backend engineers. Find US SaaS companies with 50 to 200 people hiring them.",
-        reply: "I'll watch job posts for those roles and skip listings from other agencies.",
+        reply: "I’ll watch job posts for those roles and skip listings from other agencies.",
         proposal: [
           { kind: "hiring", items: ["Backend engineer", "Senior backend engineer", "Platform engineer"] },
           { kind: "stack", items: ["Go", "Kubernetes"] },
@@ -53,12 +54,12 @@ export const recruitingAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Dana, saw Brindlecloud opened three backend engineer roles this month. That’s a lot to fill at once. We place senior backend engineers with SaaS teams your size. Open to a short call about the Go roles?",
+          "Hi Dana, thanks for connecting. I place backend engineers with software teams, so I like getting to know the people who build them. Which engineers are hardest to find on your side right now?",
       },
       {
         kind: "keyword",
-        text: "I place early sales hires. Find US founders posting that they're building a sales team.",
-        reply: "I'll watch founders’ posts about sales hiring, plus the sales roles they open.",
+        text: "I place early sales hires. Find US founders posting that they’re building a sales team.",
+        reply: "I’ll watch founders’ posts about sales hiring, plus the sales roles they open.",
         proposal: [
           { kind: "keyword", items: ["building our sales team", "hiring our first AE"] },
           { kind: "hiring", items: ["Account executive", "Sales development rep"] },
@@ -77,12 +78,12 @@ export const recruitingAgencies: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Owen, saw your post about building a sales team at Pollenworks. The first reps set the bar for everyone after them. We place early sales hires at B2B startups your size. Worth comparing notes on the profile?",
+          "Hi Owen, read your post about building the sales team at Pollenworks. Is the first hire a closer, or someone to book meetings?",
       },
       {
         kind: "competitor",
-        text: "I recruit for US fintechs. Find heads of talent engaging with rival recruiters' posts.",
-        reply: "I'll watch posts from the agencies you compete with and keep people at fintechs.",
+        text: "I recruit compliance teams for US fintechs. Find heads of talent engaging with rival recruiters.",
+        reply: "I’ll watch posts from the agencies you compete with and keep people at fintechs.",
         proposal: [
           { kind: "competitor", items: ["Crestmoor Search", "Ledgerline Talent"] },
           { kind: "hiring", items: ["Compliance analyst", "Risk analyst", "AML investigator"] },
@@ -90,18 +91,18 @@ export const recruitingAgencies: VerticalConfig = {
         ],
         leads: [
           { name: "Grace Adebayo", role: "Head of Talent", company: "Halvard Pay", kind: "competitor", signal: "Liked a Crestmoor post" },
-          { name: "Julian Mercer", role: "VP People", company: "Keelwater Pay", kind: "competitor", signal: "Liked a Ledgerline post" },
-          { name: "Hannah Obi", role: "Recruiting Lead", company: "Ashgrove Pay", kind: "hiring", signal: "2 compliance roles open" },
+          { name: "Julian Mercer", role: "VP People", company: "Keelwater", kind: "competitor", signal: "Liked a Ledgerline post" },
+          { name: "Hannah Obi", role: "Recruiter", company: "Ashgrove Ledger", kind: "hiring", signal: "2 compliance roles open" },
           { name: "Victor Salas", role: "COO", company: "Clearbeck", kind: "keyword", signal: "Posted on compliance" },
           { name: "Mei Tanaka", role: "Talent Partner", company: "Tarnfield", kind: "hiring", signal: "Risk analyst role open" },
         ],
         featured: {
-          why: "Halvard Pay is a 210-person US fintech with two compliance roles open. Grace leads talent and liked a Crestmoor Search post this week.",
+          why: "Grace leads talent at Halvard Pay, a 210-person US fintech. She liked a Crestmoor Search post this week on why compliance searches drag on.",
           confidence: 90,
           seniority: "Head",
         },
         message:
-          "Hi Grace, saw Halvard Pay has two compliance roles open. Strong compliance analysts rarely answer job ads. We place compliance and risk analysts at fintechs. Open to a short call this week?",
+          "Hi Grace, noticed you liked a post on why compliance searches drag on. Does that match what you’re seeing at Halvard?",
       },
     ],
   },
@@ -148,11 +149,11 @@ export const recruitingAgencies: VerticalConfig = {
     },
     {
       q: "Does it plug into my ATS?",
-      a: "No. There's no ATS connection and no export. You review and approve leads in Pancake or Slack.",
+      a: "No. There’s no ATS connection and no export. You review and approve leads in Pancake or Slack.",
     },
     {
       q: "Can I run two desks, like tech and finance?",
-      a: "Yes, with one workspace per desk. Each workspace has its own Brain, its own LinkedIn sender and its own $99 plan.",
+      a: "Yes, with one workspace per desk, each with its own Brain and $99 plan. Each desk also needs its own LinkedIn account to send from.",
     },
   ],
 

@@ -1,6 +1,7 @@
 // lib/verticals/data/event-agencies.ts — Pancake for event agencies.
 // Every person, company, rival agency, expert and workspace below is invented.
-// Caveat (brief): country-level targeting only, never city or venue radius. Corporate (B2B) events only.
+// Caveat (brief): leads are sourced US-wide, then checked against the region in the Brain (no venue radius).
+// Corporate (B2B) events only.
 import type { VerticalConfig } from "../types";
 
 export const eventAgencies: VerticalConfig = {
@@ -19,11 +20,12 @@ export const eventAgencies: VerticalConfig = {
 
   meta: { seoTitle: "Pancake for Event Agencies: Teams Planning Offsites" },
 
-  hubLine: "Find People leads posting about offsites or hiring event roles.",
+  hubLine: "Find HR leaders planning offsites or hiring event roles.",
 
   hero: {
+    title: "Find HR leaders planning the next company offsite.",
     h1: ["You plan the offsite", "We bring you clients"],
-    lede: "Pancake finds People and marketing leads posting about offsites or hiring event roles. Pitch before the venue is booked.",
+    lede: "Pancake reads event job openings and who likes rival agencies’ posts. The chief of staff hears from you first.",
   },
 
   workspace: { name: "Linnell Events", sender: "Camille Linnell" },
@@ -34,7 +36,7 @@ export const eventAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "We plan corporate retreats. Find US heads of People posting about planning a company offsite.",
-        reply: "I'll watch People leaders’ posts about offsites and retreats at US companies.",
+        reply: "I’ll watch People leaders’ posts about offsites and retreats at US companies.",
         proposal: [
           { kind: "keyword", items: ["company offsite", "team retreat", "in-person week"] },
           { kind: "hiring", items: ["Workplace experience manager"] },
@@ -53,12 +55,12 @@ export const eventAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Genevieve, saw your post about planning Northloom’s offsite. Getting 180 people to one place is a project on its own. We run retreats for remote teams, from venue search to run of show. Want three venue ideas that fit a group your size?",
+          "Hi Genevieve, read your post about planning Northloom’s offsite. What matters most this time, the venue or the agenda?",
       },
       {
         kind: "hiring",
         text: "We produce field events. Find US B2B companies with 200 to 2,000 staff hiring a field marketer.",
-        reply: "I'll watch job posts for field marketing and event roles at US B2B companies that size.",
+        reply: "I’ll watch job posts for field marketing and event roles at US B2B companies that size.",
         proposal: [
           { kind: "hiring", items: ["Field marketing manager", "Event manager", "Events coordinator"] },
           { kind: "stack", items: ["Cvent", "Bizzabo"] },
@@ -77,12 +79,12 @@ export const eventAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Lorenzo, saw Ashlar Data is hiring a field marketing manager. A new hire still needs a crew on site. We produce field events and roadshows for B2B software teams. Want a rough budget for a three-city roadshow?",
+          "Hi Lorenzo, good to connect. We produce field events, and formats come and go fast. Which one has worked best for you lately?",
       },
       {
         kind: "competitor",
-        text: "I run an offsite agency. Find US chiefs of staff engaging with rival offsite agencies' posts.",
-        reply: "I'll watch who engages with rival offsite agencies’ posts and keep chiefs of staff.",
+        text: "I run an offsite agency. Find US chiefs of staff engaging with rival offsite agencies’ posts.",
+        reply: "I’ll watch who engages with rival offsite agencies’ posts and keep chiefs of staff.",
         proposal: [
           { kind: "competitor", items: ["Tallpine Offsites", "Gatherfield Co"] },
           { kind: "keyword", items: ["leadership offsite", "exec retreat"] },
@@ -92,7 +94,7 @@ export const eventAgencies: VerticalConfig = {
           { name: "Nina Kovalenko", role: "Chief of Staff", company: "Kestrelline", kind: "competitor", signal: "Liked a Tallpine post" },
           { name: "Ezra Kingsley", role: "Chief of Staff", company: "Pellwright", kind: "competitor", signal: "Liked a Gatherfield post" },
           { name: "Aisha Rahimi", role: "COO", company: "Zinnia Health", kind: "keyword", signal: "Posted on exec retreats" },
-          { name: "Callum Ferrante", role: "Chief of Staff", company: "Tinsmith Labs", kind: "influencer", signal: "Liked Tenbrook’s post" },
+          { name: "Callum Ferrante", role: "Chief of Staff", company: "Tinsmith Labs", kind: "influencer", signal: "Liked a Tenbrook post" },
           { name: "Anoush Petrosyan", role: "VP Operations", company: "Glassbrook", kind: "competitor", signal: "Liked a Tallpine post" },
         ],
         featured: {
@@ -101,7 +103,7 @@ export const eventAgencies: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Nina, the leadership offsite often lands on the chief of staff’s desk. We plan exec retreats for fintech teams, facilitation included. Want a sample agenda from a two-day retreat?",
+          "Hi Nina, saw you liked a post about leadership retreats. How often does your exec team get away together?",
       },
     ],
   },
@@ -126,7 +128,7 @@ export const eventAgencies: VerticalConfig = {
       {
         kind: "competitor",
         title: "Fans of rival event agencies",
-        body: "A People or marketing lead who likes or comments on a rival agency’s post becomes your lead.",
+        body: "A head of People or marketing who engages with a rival agency’s post becomes your lead.",
         watching: ["Gatherfield Co", "Tallpine Offsites"],
       },
       {
@@ -140,8 +142,8 @@ export const eventAgencies: VerticalConfig = {
 
   faq: [
     {
-      q: "Can I target companies in my city?",
-      a: "Not reliably. Pancake targets by country, not by city or venue radius. City-only audiences come back thin.",
+      q: "Can I keep leads in my city or state?",
+      a: "Yes, with a trade-off. Leads are sourced across the US, then checked against the region named in your Brain. A narrower region means fewer leads each morning.",
     },
     {
       q: "Do you find weddings or private clients?",
@@ -149,15 +151,15 @@ export const eventAgencies: VerticalConfig = {
     },
     {
       q: "Can it find companies with an offsite on the calendar?",
-      a: "Only when someone posts about it. Pancake can't see calendars or event budgets.",
+      a: "Only when someone posts about it. Pancake can’t see calendars or event budgets.",
     },
     {
       q: "Should I pitch People or marketing?",
-      a: "Both, for different events. People leads and chiefs of staff own offsites. Field marketers own summits and roadshows.",
+      a: "Both, for different events. Heads of People and chiefs of staff own offsites. Field marketers own summits and roadshows.",
     },
   ],
 
   related: ["pr-firms", "video-production-companies", "corporate-training-companies", "marketing-agencies"],
 
-  cta: { title: "Plan their next kickoff." },
+  cta: { title: "Plan their sales kickoff." },
 };

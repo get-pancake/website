@@ -29,7 +29,7 @@ export const BANNED: [RegExp, string][] = [
   [/\bdraft mode\b|\b(approve|review) (each|every) message\b|\bmessage approvals?\b/i, "draft mode"],
   [/\bguarantee(d|s)?\b|\bin (a few |2 |two )?minutes\b|\binstant(ly)?\b/i, "guarantee / instant"],
   [/\b(response|reply|open) rates?\b|\b\d+ ?% (response|reply|open)/i, "rates"],
-  [/\bspend cap\b|\bcan'?t overspend\b|\btoken costs?\b|\bunlimited leads\b/i, "pricing claim"],
+  [/\bspend cap\b|\bcan[’']?t overspend\b|\btoken costs?\b|\bunlimited leads\b/i, "pricing claim"],
   [/\b50\+ (data )?providers\b/i, "50+ providers"],
   [/\bmulti-?lingual\b|\bmulti-?language\b|\bany language\b/i, "languages"],
   [/\bplays\b|\bmultiple campaigns\b|\bcustom sequences?\b/i, "unshipped campaign features"],
@@ -48,8 +48,9 @@ export const BANNED: [RegExp, string][] = [
 const NON_US = /\b(UK|U\.K\.|United Kingdom|England|London|Europe(an)?|EMEA|Germany|German|Berlin|Munich|France|French|Paris|Spain|Madrid|Canada|Canadian|Toronto|Ireland|Irish|Dublin|Australia|Sydney|India|Singapore|DACH|Nordics?|APAC|LATAM|Netherlands|Amsterdam)\b/;
 /** Hard-coded dates go stale. */
 const DATE = /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]* \d{1,2}\b|\b20\d\d\b|\blast run\b/i;
-/** Negation openers: a banned term is allowed in an FAQ answer sentence that starts like this. */
-const NEGATION = /^(No\b|Not\b|Never\b|There'?s no\b|There is no\b|Pancake doesn'?t\b|It doesn'?t\b|Pancake never\b|No emails\b)/;
+/** Negation openers: a banned term is allowed in an FAQ answer sentence that starts like this.
+ *  Curly or straight apostrophe (copy moves to ’, D11 — the allowance must follow it). */
+const NEGATION = /^(No\b|Not\b|Never\b|There[’']?s no\b|There is no\b|Pancake doesn[’']?t\b|It doesn[’']?t\b|Pancake never\b|No emails\b)/;
 /** Landing-voice rule 5 (warn only). */
 const HEDGES = /\b(actually|really|just|very|truly|simply|seamless(ly)?|powerful|robust|comprehensive|high-quality)\b/i;
 /** Fixed copy must not name a vertical. */
@@ -61,6 +62,30 @@ const REAL_BRANDS = [
   "Clay", "ZoomInfo", "Lusha", "Cognism", "Marketo", "Mailchimp", "Klaviyo", "Intercom", "Zendesk", "Gong",
   "Segment", "Amplitude", "Mixpanel", "Webflow", "WordPress", "Notion", "Airtable", "Zapier", "Slack", "Asana",
   "Jira", "Stripe", "Snowflake", "Greenhouse", "Lever", "Workable", "Workday", "Shopify", "Google", "LinkedIn",
+  // CT-07: real DTC brands once used as invented leads (renamed 2026-09-22)
+  "Harbor & Hue", "Emberly Candles", "Pawlander",
+];
+
+/* ── copy-review rules (2026-09-22 QA round; all warn-only until the content rewrite lands) ── */
+
+/** CT-01: "companies your size" is the stock outbound tell. */
+const MSG_SIZE = /\b(your|that) size\b/i;
+/** CT-01/CT-08: message 1 asks for a call or a demo (the sequence has two more messages; lead with value). */
+const MSG_CALL_ASK = /\b(short|quick) call\b|\b(\d+|ten|fifteen|twenty|thirty) minutes\b|\bcompar(e|ing) notes\b|\bbook a\b|\bdemo\b|\bmeeting\b/i;
+/** CT-01 (soft): an "we do X for Y" offer sentence. */
+const MSG_OFFER = /\b(we|I) (run|do|help|build|place|plan|fix|automate)\b[^.?!]*\bfor\b/i;
+/** CT-04: how many messages site-wide may share the same first 3 words after "Hi {first},". */
+const OPENER_MAX = 6;
+/** CT-08: a company-signal lead (hiring/stack) has no sighting — the message must not cite the job posts. */
+const MSG_COMPANY_SIGNAL = /\bhiring\b|\bjob (post|ad)s?\b|\broles?\b|\bopen(ed|ing)?\b(?! to\b)/i;
+/** D11/CT-16/CT-18: a straight apostrophe where a typographic ’ belongs (letter'letter, {x}'s, plural s' ). */
+const STRAIGHT_APOS = new RegExp("[\\p{L}}]'\\p{L}|[sS]'(?=\\s)", "u");
+/** CT-16/CT-12/D14: lead signal lines the product never writes. */
+const SIGNAL_GRAMMAR: [RegExp, string][] = [
+  [/^(Commented on|Replied to) [A-Z][\w’'-]+$/, "names a bare surname or company (say whose post: “Commented on a Pike post”)"],
+  [/^Replied to\b/, "“Replied to …” (the product sees comments and likes: “Commented on …”)"],
+  [/(’|')s post$/, "possessive “…’s post” (use “a {Name} post”)"],
+  [/^Job post:|in a job post$|in job ads$/, "stack grammar (must read “{Tool} in job posts”)"],
 ];
 
 type Issue = { slug: string; level: "error" | "warn"; msg: string };
@@ -90,6 +115,30 @@ function renderedStrings(v: VerticalConfig): [string, string][] {
   return out;
 }
 
+/** Every FIXED string (vx-copy), with its export path. Functions contribute the text of their
+ *  string and template literals (every branch), each `${…}` rendered as "{x}". */
+function fixedStrings(): [string, string][] {
+  const out: [string, string][] = [];
+  const walk = (val: unknown, path: string): void => {
+    if (typeof val === "string") out.push([path, val]);
+    else if (typeof val === "function") {
+      const lit = /`((?:\\.|[^`\\])*)`|"((?:\\.|[^"\\])*)"/g;
+      const src = String(val);
+      for (let m = lit.exec(src); m; m = lit.exec(src)) out.push([`${path}()`, (m[1] ?? m[2] ?? "").replace(/\$\{[^}]*\}/g, "{x}")]);
+    } else if (Array.isArray(val)) val.forEach((x, i) => walk(x, `${path}[${i}]`));
+    else if (val && typeof val === "object") for (const [k, x] of Object.entries(val)) walk(x, path ? `${path}.${k}` : k);
+  };
+  walk({ ...FIXED }, "");
+  return out;
+}
+
+const esc = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/** Whole-word, case-insensitive (items of ≤3 chars, like "Go" or "dbt", match case-sensitively). */
+const hasTerm = (text: string, term: string) =>
+  new RegExp(`(^|[^\\p{L}\\p{N}])${esc(term)}($|[^\\p{L}\\p{N}])`, term.length <= 3 ? "u" : "iu").test(text);
+const normLine = (s: string) => s.toLowerCase().replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, " ").trim();
+const lastSentence = (s: string) => s.trim().split(/(?<=[.!?])\s+/).filter(Boolean).pop() ?? "";
+
 export function validateVerticals(all: VerticalConfig[]): Issue[] {
   const issues: Issue[] = [];
   const err = (slug: string, msg: string) => issues.push({ slug, level: "error", msg });
@@ -97,6 +146,10 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
   const max = (slug: string, path: string, s: string, n: number) => s.length > n && err(slug, `${path} is ${s.length} chars (max ${n}): "${s}"`);
 
   const slugs = new Set<string>();
+  /** Cross-config copy repetition (CT-04, CT-09/CT-21): key → first user(s). */
+  const closings = new Map<string, string>();
+  const openers = new Map<string, string[]>();
+  const ledeEnds = new Map<string, string>();
   const seen = { h1: new Map<string, string>(), lede: new Map<string, string>(), title: new Map<string, string>(), person: new Map<string, string>(), company: new Map<string, string>(), workspace: new Map<string, string>() };
   const once = (bucket: Map<string, string>, key: string, slug: string, what: string) => {
     const k = key.toLowerCase();
@@ -117,7 +170,6 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
     if (!v.meta.seoTitle.startsWith("Pancake for ")) err(s, 'meta.seoTitle starts with "Pancake for "');
     max(s, "meta.seoTitle", v.meta.seoTitle, 60);
     // "AI" only as part of the vertical's own name ("AI startups"), never as Pancake's category (founder 2026-09-22).
-    const esc = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const noName = (x: string) => x.replace(new RegExp(esc(v.name.title), "ig"), "").replace(new RegExp(esc(v.name.plural), "ig"), "");
     if (/\bAI\b/.test(noName(v.meta.seoTitle))) err(s, 'meta.seoTitle: no "AI" outside the vertical name');
     if (/\bAI\b/.test(v.hero.h1.join(" "))) warn(s, 'hero.h1 mentions "AI": fine only for the customer\'s product, never for Pancake');
@@ -128,6 +180,13 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
     max(s, "hero.lede", v.hero.lede, 126);
     if (words(v.hero.lede) > 30) err(s, "hero.lede over 30 words");
     once(seen.h1, v.hero.h1[0], s, "H1 line 1"); once(seen.lede, v.hero.lede, s, "lede"); once(seen.title, v.meta.seoTitle, s, "seoTitle");
+    // CT-09/CT-21: the lede's closing sentence is the meta description's last word — no two pages share it.
+    {
+      const end = lastSentence(v.hero.lede);
+      const prev = ledeEnds.get(normLine(end));
+      if (prev) warn(s, `hero.lede last sentence already used by ${prev}: "${end}"`);
+      else ledeEnds.set(normLine(end), s);
+    }
     once(seen.workspace, v.workspace.name, s, "workspace");
     max(s, "workspace.name", v.workspace.name, 20);
     // ── demo ──
@@ -154,6 +213,10 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
       p.leads.forEach((l, j) => {
         if (!proposed.includes(l.kind)) err(s, `${at}.leads[${j}].kind ${l.kind} is not in the proposal`);
         max(s, `${at}.leads[${j}].signal`, l.signal, 24);
+        for (const [re, why] of SIGNAL_GRAMMAR) if (re.test(l.signal)) warn(s, `${at}.leads[${j}].signal ${why}: "${l.signal}"`);
+        if (l.kind === "stack" && !/ in job posts$/.test(l.signal) && !/^Job post:|in a job post$|in job ads$/.test(l.signal)) {
+          warn(s, `${at}.leads[${j}].signal stack grammar (must read “{Tool} in job posts”): "${l.signal}"`);
+        }
         if (!/^\S+ \S+/.test(l.name)) err(s, `${at}.leads[${j}].name needs first + last`);
         once(seen.person, l.name, s, "person"); once(seen.company, l.company, s, "company");
         if (REAL_BRANDS.some((b) => l.company.toLowerCase() === b.toLowerCase())) err(s, `real brand as company: ${l.company}`);
@@ -165,10 +228,41 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
       max(s, `${at}.message`, p.message, 280);
       const first = p.leads[0].name.split(" ")[0];
       if (!p.message.startsWith(`Hi ${first},`)) err(s, `${at}.message starts "Hi ${first},"`);
+      // ── message copy review (warn-only; see the promotion list in the QA report) ──
+      const msg = p.message;
+      const hit = (re: RegExp) => msg.match(re)?.[0];
+      if (hit(MSG_SIZE)) warn(s, `${at}.message says "${hit(MSG_SIZE)}" (CT-01: name the fact, not the size)`);
+      if (hit(MSG_CALL_ASK)) warn(s, `${at}.message asks for a call/demo ("${hit(MSG_CALL_ASK)}"): message 1 leads with value`);
+      if (hit(MSG_OFFER)) warn(s, `${at}.message soft: offer sentence "${hit(MSG_OFFER)}…"`);
+      const lead0 = p.leads[0];
+      if (lead0.kind === "hiring" || lead0.kind === "stack") {
+        const co = lead0.company;
+        const coFirst = co.split(/\s+/)[0];
+        const terms = [co, ...(co.includes(" ") && coFirst.length >= 5 ? [coFirst] : [])];
+        const items = p.proposal.filter((r) => r.kind === "hiring" || r.kind === "stack").flatMap((r) => r.items);
+        const found = [
+          ...terms.filter((t) => hasTerm(msg, t)).map((t) => `company "${t}"`),
+          ...items.filter((t) => hasTerm(msg, t)).map((t) => `proposal item "${t}"`),
+          ...(hit(MSG_COMPANY_SIGNAL) ? [`"${hit(MSG_COMPANY_SIGNAL)}"`] : []),
+        ];
+        if (found.length) warn(s, `${at}.message cites a ${lead0.kind} sighting the product doesn't have (${found.join(", ")})`);
+      }
+      // CT-04: closing line unique site-wide; opener template (first 3 words after the greeting) counted.
+      const close = lastSentence(msg);
+      const prevClose = closings.get(normLine(close));
+      if (prevClose) warn(s, `${at}.message closing line already used by ${prevClose}: "${close}"`);
+      else closings.set(normLine(close), `${s}#${i}`);
+      let body = msg.replace(/^Hi [^,]+,\s*/, "");
+      for (const t of [lead0.company, lead0.company.split(/\s+/)[0]]) if (t.length >= 4) body = body.replace(new RegExp(esc(t), "g"), "{company}");
+      body = body.replace(new RegExp(`\\b${esc(first)}\\b`, "g"), "{first}");
+      const opener = normLine(body).split(" ").slice(0, 3).map((w) => w.replace(/[,.!?:;]+$/, "")).join(" ");
+      openers.set(opener, [...(openers.get(opener) ?? []), `${s}#${i}`]);
     });
     // ── signals ──
     max(s, "signals.h2", v.signals.h2, 40); if (words(v.signals.h2) > 8) err(s, "signals.h2 over 8 words");
     if (new Set(v.signals.cards.map((c) => c.kind)).size !== 4) err(s, "signals.cards need 4 different kinds");
+    const fansOf = v.signals.cards.filter((c) => /^Fans of\b/.test(c.title));
+    if (fansOf.length > 1) warn(s, `${fansOf.length} signals card titles start "Fans of" (CT-13: one per page): ${fansOf.map((c) => `"${c.title}"`).join(", ")}`);
     v.signals.cards.forEach((c, i) => {
       max(s, `signals.cards[${i}].title`, c.title, 32); max(s, `signals.cards[${i}].body`, c.body, 110);
       if (sentences(c.body) !== 1) err(s, `signals.cards[${i}].body must be one sentence`);
@@ -202,7 +296,13 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
       if (/\bpancake\b/.test(str)) err(s, `${path}: lowercase "pancake"`);
       if (emDashes(str) > 1) err(s, `${path}: more than one em dash`);
       if (HEDGES.test(str)) warn(s, `${path}: hedge word (landing-voice rule 5): "${str}"`);
+      if (STRAIGHT_APOS.test(str)) warn(s, `${path}: straight apostrophe (use ’): "${str}"`);
     }
+  }
+
+  // ── message openers: one template may not carry the site (CT-04) ──
+  for (const [opener, users] of Array.from(openers.entries()).sort((a, b) => b[1].length - a[1].length)) {
+    if (users.length > OPENER_MAX) warn("site", `message opener "${opener} …" used ${users.length}× (max ${OPENER_MAX}): ${users.join(", ")}`);
   }
 
   // ── cross-config ──
@@ -211,9 +311,11 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
   for (const v of all) if (all.length > 1 && !linked.has(v.slug)) warn(v.slug, "no other page links here (hub only)");
 
   // ── fixed copy must stay vertical-neutral ──
-  const fixedText = JSON.stringify(FIXED, (_k, val) => (typeof val === "function" ? String(val) : val));
+  // VX_HUB is exempt: it renders on /for only, where naming industries is the point.
+  const fixedText = JSON.stringify(FIXED, (k, val) => (k === "VX_HUB" ? undefined : typeof val === "function" ? String(val) : val));
   const leak = fixedText.replace(/SIGNAL_\w+|"hiring"|"Hiring"/g, "").match(FIXED_LEAK);
   if (leak) err("vx-copy", `fixed copy names a vertical: "${leak[0]}"`);
+  for (const [path, str] of fixedStrings()) if (STRAIGHT_APOS.test(str)) warn("vx-copy", `${path}: straight apostrophe (use ’): "${str}"`);
 
   return issues;
 }

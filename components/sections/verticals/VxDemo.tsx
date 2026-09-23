@@ -14,6 +14,7 @@
 //
 // Cue / swap / mark ids are the timeline's (lib/verticals/demo-timeline.ts):
 //   data-cue  → revealed in place at its time      (.is-on)
+//   data-uncue → shown until that cue id is reached (.is-off; armed only)
 //   data-swap → children [data-s=before|after]     (.is-sw)
 //   data-mark → a state class, e.g. the picked row (.is-mk)
 //   data-cursor → a cursor target (.is-press while clicked)
@@ -116,11 +117,11 @@ function Chips({ s, className, ...rest }: { s: DemoSigView; className?: string; 
   const [c1, c2] = s.chips;
   return (
     <span className={`vx-sig__chips${className ? ` ${className}` : ""}`} {...rest}>
-      {c1 && <span className="vx-wchip">{c1}</span>}
+      {c1 && <span className="vx-achip">{c1}</span>}
       {(c2 || s.more > 0) && (
         <span className="vx-sig__tail">
-          {c2 && <span className="vx-wchip">{c2}</span>}
-          {s.more > 0 && <span className="vx-wmore">{A.signals.more(s.more)}</span>}
+          {c2 && <span className="vx-achip">{c2}</span>}
+          {s.more > 0 && <span className="vx-amore">{A.signals.more(s.more)}</span>}
         </span>
       )}
     </span>
@@ -128,6 +129,20 @@ function Chips({ s, className, ...rest }: { s: DemoSigView; className?: string; 
 }
 
 function SigBody({ s, p }: { s: DemoSigView; p?: string }) {
+  if (s.state === "grown") {
+    // Own brand stays on; the approval appends the proposed profiles as "+N more"
+    return (
+      <span className="vx-sig__v" data-p={p}>
+        <span className="vx-sig__corner">
+          <span className="vx-switch" />
+        </span>
+        <span className="vx-sig__body vx-swapc" data-swap={`b.sig${s.order}`}>
+          <Chips s={s} data-s="before" />
+          <Chips s={{ ...s, more: s.more + s.grow }} data-s="after" />
+        </span>
+      </span>
+    );
+  }
   if (s.state === "proposed") {
     const id = `b.sig${s.order}`;
     return (
@@ -161,7 +176,7 @@ function SigBody({ s, p }: { s: DemoSigView; p?: string }) {
 
 /** Identical static views (on / empty, same chips) share one element; a proposed view is always its own. */
 const sigKey = (s: DemoSigView, i: number) =>
-  s.state === "proposed" ? `p${i}` : `${s.state}|${s.chips.join("|")}|${s.more}|${s.empty}`;
+  s.state === "proposed" || s.state === "grown" ? `p${i}` : `${s.state}|${s.chips.join("|")}|${s.more}|${s.empty}`;
 
 function SigCard({ kind, prompts }: { kind: SignalKind; prompts: DemoPromptView[] }) {
   const views = prompts.map((p) => p.sigs[kind]);
@@ -213,9 +228,17 @@ function BriefPane({ m }: { m: DemoModel }) {
       <div className="vx-chat">
         <p className="vx-chat__head" data-ico="sparkle">
           {A.chat.head}
-          <kbd>{A.chat.kbd}</kbd>
+          <span className="vx-chat__new" data-ico="plus">
+            {A.chat.newChat}
+          </span>
         </p>
         <div className="vx-chat__log vx-var">
+          {/* the empty conversation's starter chips, until the prompt is sent (armed only) */}
+          <p className="vx-starters" data-uncue="b.bubble">
+            {A.chat.starters.map((q) => (
+              <span key={q}>{q}</span>
+            ))}
+          </p>
           {m.prompts.map((p, i) => (
             <div key={i} className="vx-thread" data-p={i}>
               <p className="vx-bubble" data-cue="b.bubble">
@@ -242,7 +265,7 @@ function BriefPane({ m }: { m: DemoModel }) {
                     </li>
                   ))}
                 </ul>
-                <p className="vx-prop__foot vx-swapc" data-swap="b.approved">
+                <p className="vx-prop__foot vx-swapc" data-swap="b.approved" data-cue="b.foot">
                   <span className="vx-btn" data-s="before" data-ico="check" data-cursor="b.approve">
                     {A.chat.approve}
                   </span>
@@ -261,7 +284,8 @@ function BriefPane({ m }: { m: DemoModel }) {
                 <span className="vx-typed" />
               </span>
             </span>
-            <span className="vx-ph">{A.chat.placeholder}</span>
+            {/* the placeholder is a pseudo-element: the long line, or the short one under 300px */}
+            <span className="vx-ph" data-long={A.chat.placeholder} data-short={A.chat.placeholderShort} />
           </span>
           <span className="vx-send" data-ico="arrow-up" />
         </div>
@@ -329,12 +353,10 @@ function LeadsPane({ m }: { m: DemoModel }) {
       </div>
 
       <div className="vx-drawer" data-cue="l.drawer">
-        <span className="vx-btn vx-btn--ai" data-ico="sparkle">
-          {A.drawer.askAi}
-        </span>
-        {/* DOM budget: head + chips and the signal box vary per prompt; the property grid is
-            shared, with only its two per-lead values in variants (all rows are one line, so
-            the stacked cells keep today's heights) */}
+        {/* DOM budget: head + chips, the signal box and the timeline vary per prompt; the
+            property grid is shared, with only its two per-lead values in variants (all rows are
+            one line, so the stacked cells keep today's heights). Every stacked slot reserves its
+            tallest variant, so the sheet never changes height between prompts. */}
         <div className="vx-var">
           {m.prompts.map((p, i) => {
             const l = p.leads[0];
@@ -344,7 +366,7 @@ function LeadsPane({ m }: { m: DemoModel }) {
                   <span className="vx-av vx-av--lg">{l.initials}</span>
                   <span className="vx-drawer__name">{l.name}</span>
                   <span className="vx-drawer__role">
-                    {l.role} at {l.company}
+                    {l.role} @ {l.company}
                   </span>
                 </div>
                 <p className="vx-drawer__chips" data-cue="l.d1" data-stage={A.drawer.stage}>
@@ -377,21 +399,49 @@ function LeadsPane({ m }: { m: DemoModel }) {
           <b>{A.drawer.country}</b>
           <b className="vx-link">{A.drawer.profile}</b>
         </div>
+        {/* SIGNAL: the chip + the qualification reason, as the app's box */}
         <div className="vx-var">
           {m.prompts.map((p, i) => {
             const l = p.leads[0];
             return (
               <div key={i} className="vx-sigbox" data-p={i} data-cue="l.d3" data-label={A.drawer.signal}>
-                <p className="vx-sigbox__top">
-                  <Chip kind={l.kind}>{l.kindLabel}</Chip>
-                  {A.drawer.why}
-                </p>
+                <Chip kind={l.kind}>{l.kindLabel}</Chip>
                 <p className="vx-sigbox__why">{p.featured.why}</p>
               </div>
             );
           })}
         </div>
-        <p className="vx-drawer__foot vx-swapc" data-swap="l.added">
+        {/* TIMELINE (leads/lead-timeline.tsx): "Qualified as a lead" + reason, then the sighting
+            that surfaced the lead, or the cold-lead note for hiring / stack leads */}
+        <div className="vx-var vx-tlv">
+          {m.prompts.map((p, i) => {
+            const t = p.timeline;
+            const sg = t.sighting;
+            return (
+              <div key={i} className="vx-tl" data-p={i} data-cue="l.d4" data-label={A.drawer.timeline}>
+                <p className="vx-tl__e" data-ico="target">
+                  <b>{A.drawer.qualified}</b>
+                  <span className="vx-tl__why">{p.featured.why}</span>
+                </p>
+                {sg && (
+                  <p className="vx-tl__e" data-ico={sg.kind === "comment" ? "chat" : "heart"}>
+                    <b>{sg.kind === "comment" ? A.drawer.commented : A.drawer.reacted}</b>
+                    <span>
+                      {sg.source}
+                      {sg.kind === "reaction" ? ` · ${A.drawer.like}` : ""} · <i>{A.drawer.viewPost}</i>
+                    </span>
+                  </p>
+                )}
+                {t.cold && <p className="vx-tl__note">{t.cold}</p>}
+              </div>
+            );
+          })}
+        </div>
+        {/* the action bar is its own swap cell: Ask AI (left) stays, Approve ✕ → Add to campaign */}
+        <div className="vx-drawer__foot" data-cue="l.foot" data-swap="l.added">
+          <span className="vx-btn vx-btn--ai" data-ico="sparkle">
+            {A.drawer.askAi}
+          </span>
           <span className="vx-pair" data-s="before">
             <span className="vx-btn" data-ico="check" data-cursor="l.approve">
               {A.leads.approve}
@@ -401,7 +451,7 @@ function LeadsPane({ m }: { m: DemoModel }) {
           <span className="vx-btn vx-btn--ink" data-s="after" data-ico="plus">
             {A.leads.add}
           </span>
-        </p>
+        </div>
       </div>
     </div>
   );
@@ -418,9 +468,10 @@ function OutreachPane({ m }: { m: DemoModel }) {
     <div className="vx-pane vx-camp" data-pane="2">
       <div className="vx-page">
         <PageHead title={C.title} sub={C.sub} extra={<span className="vx-stagepill">{C.status}</span>} />
-        <div className="vx-journey">
+        {/* the card arrives with its head (the lead + the "Invited" status chip): o.head */}
+        <div className="vx-journey" data-cue="o.head">
           <div className="vx-journey__head">
-            <span className="vx-var vx-journey__lead" data-cue="o.head">
+            <span className="vx-var vx-journey__lead">
               {m.prompts.map((p, i) => {
                 const l = p.leads[0];
                 return (
@@ -431,12 +482,20 @@ function OutreachPane({ m }: { m: DemoModel }) {
                 );
               })}
             </span>
-            <Chip kind="own_brand">{C.leadStatus}</Chip>
+            {/* campaign-lead-view.ts: the invite step is current → "Invited", blue */}
+            <Chip kind="keyword">{C.leadStatus}</Chip>
           </div>
           <div className="vx-journey__grid">
             <ol className="vx-steps">
+              {/* phones fold the three message steps into step 4's row: data-fold is its label there */}
               {C.steps.map((s, k) => (
-                <li key={k} className="vx-step" data-cue={`o.s${k}`} data-state={s.state.toLowerCase()}>
+                <li
+                  key={k}
+                  className="vx-step"
+                  data-cue={`o.s${k}`}
+                  data-state={s.state.toLowerCase()}
+                  data-fold={k === 3 ? C.fold : undefined}
+                >
                   <span className="vx-step__tile" data-kind={STEP_TONE[k]} data-ico={STEP_ICON[k]} />
                   <span className="vx-step__name">{s.label}</span>
                   <span className="vx-step__st">{s.state}</span>
@@ -446,7 +505,6 @@ function OutreachPane({ m }: { m: DemoModel }) {
             </ol>
             <div className="vx-next" data-cue="o.next">
               <p className="vx-next__label">{C.upNext}</p>
-              <p className="vx-next__draft">{C.draft}</p>
               <div className="vx-var">
                 {m.prompts.map((p, i) => (
                   <p key={i} className="vx-msg" data-p={i}>
@@ -455,9 +513,21 @@ function OutreachPane({ m }: { m: DemoModel }) {
                   </p>
                 ))}
               </div>
-              <p className="vx-next__foot" data-cue="o.foot" data-ico="sparkle">
-                {C.written}
-              </p>
+              <div className="vx-next__end">
+                <p className="vx-next__draft vx-swapc" data-swap="o.drafted">
+                  <span className="vx-next__writing" data-s="before">
+                    {C.writing}
+                  </span>
+                  <span data-s="after">{C.draft}</span>
+                </p>
+                <div className="vx-var">
+                  {footGroups(m.prompts).map((g) => (
+                    <p key={g.p} className="vx-next__foot" data-p={g.p} data-cue="o.foot" data-ico="sparkle">
+                      {g.text}
+                    </p>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -466,43 +536,63 @@ function OutreachPane({ m }: { m: DemoModel }) {
   );
 }
 
+/** The footnote per prompt, identical ones sharing one element (data-p lists the prompts). */
+function footGroups(prompts: DemoPromptView[]): { p: string; text: string }[] {
+  const out: { p: string; text: string }[] = [];
+  prompts.forEach((pr, i) => {
+    const hit = out.find((g) => g.text === pr.written);
+    if (hit) hit.p += String(i);
+    else out.push({ p: String(i), text: pr.written });
+  });
+  return out;
+}
+
 /* ─── 04 Slack: the channel post ───────────────────────────────────────────── */
 
-function SlackCard({ l, approve }: { l: DemoPromptView["leads"][number]; approve: boolean }) {
+/** One "New lead from Pancake" post: the card chrome and buttons are shared, only the lead's
+ *  line varies per prompt (DOM budget); the stacked variants reserve the tallest line. */
+function SlackLead({ m, i }: { m: DemoModel; i: 0 | 1 }) {
   const S = A.slack;
-  const pair = (s?: string) => (
-    <span className="vx-spair" data-s={s}>
-      <span className="vx-sbtn" data-ico="sg-ok" data-cursor={approve ? "s.approve" : undefined}>
-        {S.approve}
-      </span>
-      <span className="vx-sbtn" data-ico="sg-no">
-        {S.reject}
-      </span>
-    </span>
-  );
+  const approve = i === 0;
   return (
-    <div className="vx-scard" data-open={S.open}>
-      <p>
-        <b>{l.name}</b> — {l.role}, {l.company}
-      </p>
-      <p className="vx-scard__sig">{l.slackKind}</p>
-      {approve ? (
-        <p className="vx-scard__btns vx-swapc" data-swap="s.approved">
-          {pair("before")}
-          <span className="vx-scard__done" data-s="after" data-ico="sg-ok">
-            {S.approved}
-          </span>
-        </p>
-      ) : (
-        <p className="vx-scard__btns vx-spair">
-          <span className="vx-sbtn" data-ico="sg-ok">
-            {S.approve}
-          </span>
-          <span className="vx-sbtn" data-ico="sg-no">
-            {S.reject}
-          </span>
-        </p>
-      )}
+    <div className="vx-smsg--cont" data-cue={`s.lead${i}`} data-intro={S.leadIntro}>
+      <div className="vx-scard" data-open={S.open}>
+        <div className="vx-var">
+          {m.prompts.map((p, k) => {
+            const l = p.leads[i];
+            return (
+              <p key={k} data-p={k}>
+                <b>{l.name}</b> — {l.role}, {l.company}
+                <span className="vx-scard__sig">{l.slackKind}</span>
+              </p>
+            );
+          })}
+        </div>
+        {approve ? (
+          <p className="vx-scard__btns vx-swapc" data-swap="s.approved">
+            <span className="vx-spair" data-s="before">
+              <span className="vx-sbtn" data-ico="sg-ok" data-cursor="s.approve">
+                {S.approve}
+              </span>
+              <span className="vx-sbtn" data-ico="sg-no">
+                {S.reject}
+              </span>
+            </span>
+            <span className="vx-scard__done" data-s="after" data-ico="sg-ok">
+              {S.approved}
+            </span>
+          </p>
+        ) : (
+          <p className="vx-scard__btns vx-spair">
+            <span className="vx-sbtn" data-ico="sg-ok">
+              {S.approve}
+            </span>
+            <span className="vx-sbtn" data-ico="sg-no">
+              {S.reject}
+            </span>
+          </p>
+        )}
+      </div>
     </div>
   );
 }
@@ -533,18 +623,8 @@ function SlackWindow({ m }: { m: DemoModel }) {
             </p>
             <p className="vx-smsg__text">{S.intro}</p>
           </div>
-          <div className="vx-var">
-            {m.prompts.map((p, i) => (
-              <div key={i} className="vx-slead" data-p={i}>
-                <div className="vx-smsg--cont" data-cue="s.lead0" data-intro={S.leadIntro}>
-                  <SlackCard l={p.leads[0]} approve />
-                </div>
-                <div className="vx-smsg--cont" data-cue="s.lead1" data-intro={S.leadIntro}>
-                  <SlackCard l={p.leads[1]} approve={false} />
-                </div>
-              </div>
-            ))}
-          </div>
+          <SlackLead m={m} i={0} />
+          <SlackLead m={m} i={1} />
         </div>
         <p className="vx-slack__composer">{S.composer}</p>
       </div>

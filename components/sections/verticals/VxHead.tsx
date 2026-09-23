@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import { vxNoWidow } from "@/components/sections/verticals/vx-text";
+
 /**
  * The one section-head pattern of the /for template (spec §1.3): eyebrow
  * (Fono caps + a pink bar running to the right text edge), then the hero's
@@ -30,7 +32,7 @@ export function VxHead({
         <Tag id={id} className="vx-h2 lp-display">
           {title}
         </Tag>
-        {lede ? <p className="vx-lede">{lede}</p> : null}
+        {lede ? <p className="vx-lede">{vxNoWidow(lede)}</p> : null}
       </div>
     </>
   );

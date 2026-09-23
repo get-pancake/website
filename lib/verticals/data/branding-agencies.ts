@@ -20,13 +20,14 @@ export const brandingAgencies: VerticalConfig = {
     badge: "For branding agencies",
   },
 
-  meta: { seoTitle: "Pancake for Branding Agencies: Startups Due a Rebrand" },
+  meta: { seoTitle: "Pancake for Branding Agencies: Startups Planning a Rebrand" },
 
   hubLine: "Find startup founders planning a rebrand.",
 
   hero: {
+    title: "Find startup founders weighing a rebrand or new name.",
     h1: ["You build brands", "We bring you clients"],
-    lede: "Pancake finds startup founders who post about a rebrand or hire a brand designer. You meet them mid-decision.",
+    lede: "Pancake reads LinkedIn posts, brand design job posts and comments on rival studios’ work. Get in before the brief is written.",
   },
 
   workspace: { name: "Wenlock Studio", sender: "Margot Wenlock" },
@@ -36,8 +37,8 @@ export const brandingAgencies: VerticalConfig = {
     prompts: [
       {
         kind: "keyword",
-        text: "We're a brand studio. Find founders at US startups of 10 to 100 people posting about a rebrand.",
-        reply: "I'll watch founders' posts about a rebrand or a new name at startups that size.",
+        text: "We’re a brand studio. Find founders at US startups of 10 to 100 people posting about a rebrand.",
+        reply: "I’ll watch founders’ posts about a rebrand or a new name at startups that size.",
         proposal: [
           { kind: "keyword", items: ["rebrand", "brand refresh", "renaming"] },
           { kind: "hiring", items: ["Brand designer", "Head of Brand"] },
@@ -56,21 +57,21 @@ export const brandingAgencies: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Samir, saw your post that a rebrand is next at Wexley. We do positioning and identity for software startups your size, and we start with the story before the logo. Worth 20 minutes while you scope it?",
+          "Hi Samir, saw your post that a rebrand is next at Wexley. What’s driving it, a new market or a product that outgrew the name?",
       },
       {
         kind: "hiring",
-        text: "Find US startups hiring a senior brand designer or art director. We build the brand they'll use.",
-        reply: "I'll watch startup job posts for brand designers and art directors.",
+        text: "Find US startups hiring a senior brand designer or art director. We build the brand they’ll use.",
+        reply: "I’ll watch startup job posts for brand designers and art directors.",
         proposal: [
           { kind: "hiring", items: ["Brand designer", "Art director", "Creative director"] },
-          { kind: "stack", items: ["Figma", "Adobe Illustrator"] },
+          { kind: "stack", items: ["Adobe Illustrator", "Brandfolder"] },
           { kind: "keyword", items: ["brand identity", "visual identity"] },
         ],
         leads: [
-          { name: "Paloma Iturbe", role: "VP Marketing", company: "Ashlock", kind: "hiring", signal: "Senior brand designer" },
+          { name: "Paloma Iturbe", role: "VP Marketing", company: "Ashlock", kind: "hiring", signal: "Senior designer role" },
           { name: "Trevor Oyama", role: "Co-founder", company: "Plumbago Labs", kind: "hiring", signal: "Art director role" },
-          { name: "Zainab Holloway", role: "Head of Growth", company: "Loomwright", kind: "stack", signal: "Figma in job posts" },
+          { name: "Zainab Holloway", role: "Head of Growth", company: "Loomwright", kind: "stack", signal: "Brandfolder in job posts" },
           { name: "Fergus Moorcroft", role: "COO", company: "Sundry Freight", kind: "keyword", signal: "Posted on brand identity" },
           { name: "Rania Khoury", role: "CMO", company: "Tenpenny", kind: "hiring", signal: "Creative director role" },
         ],
@@ -80,22 +81,22 @@ export const brandingAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Paloma, saw Ashlock is hiring a senior brand designer. A new designer ramps faster with a finished identity system to build on. We build those for fintech teams your size, then hand them over. Worth a call before your hire starts?",
+          "Hi Paloma, glad to connect. Startup brands are my day job, so I collect favorites. Which one do you admire most right now?",
       },
       {
         kind: "influencer",
-        text: "I run a design studio. Find COOs at US startups who engage with brand strategists' posts.",
-        reply: "I'll watch the brand strategists you name and keep startup COOs who engage.",
+        text: "I run a design studio. Find COOs at US startups who engage with brand strategists’ posts.",
+        reply: "I’ll watch the brand strategists you name and keep startup COOs who engage.",
         proposal: [
           { kind: "influencer", items: ["Maren Solberg", "Nell Ortega", "Rhys Calloway"] },
           { kind: "keyword", items: ["brand strategy", "positioning"] },
           { kind: "own_brand", items: ["Wenlock Studio", "Margot Wenlock"] },
         ],
         leads: [
-          { name: "Adwoa Quaye", role: "COO", company: "Mullion", kind: "influencer", signal: "Commented on Solberg" },
-          { name: "Ambrose Keane", role: "COO", company: "Joinery Labs", kind: "influencer", signal: "Liked a Nell Ortega post" },
+          { name: "Adwoa Quaye", role: "COO", company: "Mullion", kind: "influencer", signal: "Commented on a post" },
+          { name: "Ambrose Keane", role: "COO", company: "Joinery Labs", kind: "influencer", signal: "Liked an Ortega post" },
           { name: "Lucía Arredondo", role: "Head of Brand", company: "Mudlark Labs", kind: "keyword", signal: "Posted on positioning" },
-          { name: "Thao Dinh", role: "CEO", company: "Quaddle", kind: "own_brand", signal: "Liked your case study" },
+          { name: "Thao Dinh", role: "CEO", company: "Quaddle", kind: "own_brand", signal: "Liked a Wenlock post" },
           { name: "Anneliese Vorhees", role: "COO", company: "Rookwell Robotics", kind: "influencer", signal: "Liked a Solberg post" },
         ],
         featured: {
@@ -104,7 +105,7 @@ export const brandingAgencies: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Adwoa, saw your comment on Maren Solberg's post about brand strategy. We do strategy and identity for software startups your size, from positioning to the design system. Is a rebrand anywhere on Mullion's roadmap?",
+          "Hi Adwoa, saw your comment on Maren Solberg’s post about brand strategy. Who owns positioning at Mullion today, you or marketing?",
       },
     ],
   },
@@ -134,7 +135,7 @@ export const brandingAgencies: VerticalConfig = {
       {
         kind: "competitor",
         title: "Founders eyeing other studios",
-        body: "A founder commenting on another studio's case study lands in your leads, post attached.",
+        body: "A founder commenting on another studio’s case study lands in your leads, post attached.",
         watching: ["Oxenford Studio", "Kerning Brand Co."],
       },
     ],
@@ -147,7 +148,7 @@ export const brandingAgencies: VerticalConfig = {
     },
     {
       q: "Can it find startups whose brand looks dated?",
-      a: "No. Pancake doesn't judge brands. It finds founders who post about a rebrand or hire for one.",
+      a: "No. Pancake doesn’t judge brands. It finds founders who post about a rebrand or hire for one.",
     },
     {
       q: "What if they already rebranded, or hired a studio?",
@@ -157,5 +158,5 @@ export const brandingAgencies: VerticalConfig = {
 
   related: ["ux-design-agencies", "web-design-agencies", "video-production-companies", "marketing-agencies"],
 
-  cta: { title: "Brand the next startup." },
+  cta: { title: "Win the rebrand brief." },
 };

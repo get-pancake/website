@@ -24,8 +24,9 @@ export const solopreneurs: VerticalConfig = {
   hubLine: "Find B2B buyers each morning without a sales team.",
 
   hero: {
+    title: "Find B2B buyers who react to your build-in-public posts.",
     h1: ["You build it alone", "We bring you customers"],
-    lede: "Pancake finds your buyers on LinkedIn overnight. You pick who gets a message. You keep building.",
+    lede: "Pancake reads comments under your niche’s creators and a bigger rival’s page. Approve a lead in one click, then keep building.",
   },
 
   workspace: { name: "Rutherford Labs", sender: "Esme Rutherford" },
@@ -36,31 +37,31 @@ export const solopreneurs: VerticalConfig = {
       {
         kind: "own_brand",
         text: "People like my build-in-public posts. Find the US ones who run B2B teams and could buy.",
-        reply: "I'll track likes and comments on your posts and keep people running US B2B teams.",
+        reply: "I’ll track likes and comments on your posts and keep people running US B2B teams.",
         proposal: [
           { kind: "own_brand", items: ["Esme Rutherford", "Rutherford Labs"] },
           { kind: "influencer", items: ["Anselm Crowder"] },
           { kind: "competitor", items: ["Changemill"] },
         ],
         leads: [
-          { name: "Ishaan Varma", role: "Head of Product", company: "Hazelgrove", kind: "own_brand", signal: "Replied to your post" },
+          { name: "Ishaan Varma", role: "Head of Product", company: "Hazelgrove", kind: "own_brand", signal: "Commented on a post" },
           { name: "Clementine Burke", role: "Product Manager", company: "Minnowbrook", kind: "own_brand", signal: "Liked your build log" },
           { name: "Folasade Akintola", role: "Founder & CEO", company: "Tinwhistle", kind: "own_brand", signal: "Liked your demo video" },
           { name: "Mattias Kroll", role: "VP Engineering", company: "Slatehaven", kind: "influencer", signal: "Liked a Crowder post" },
           { name: "Paloma Ibarra", role: "Product Lead", company: "Driftwillow", kind: "competitor", signal: "Liked a Changemill post" },
         ],
         featured: {
-          why: "Ishaan leads product at Hazelgrove, a 70-person US software company. He replied to your post about writing release notes.",
+          why: "Ishaan leads product at Hazelgrove, a 70-person US software company. He commented on your post about writing release notes.",
           confidence: 87,
           seniority: "Head",
         },
         message:
-          "Hi Ishaan, thanks for replying to my release notes post. I built a tool that turns merged pull requests into release notes customers read. Want a look before your next release?",
+          "Hi Ishaan, thanks for your comment on my post about release notes. How does your team write them today?",
       },
       {
         kind: "keyword",
         text: "I built a Slack standup bot alone. Find US eng managers posting about async standups.",
-        reply: "I'll watch posts about async standups and keep engineering managers at US companies.",
+        reply: "I’ll watch posts about async standups and keep engineering managers at US companies.",
         proposal: [
           { kind: "keyword", items: ["async standups", "standup fatigue", "meeting-free days"] },
           { kind: "hiring", items: ["Engineering manager"] },
@@ -80,19 +81,19 @@ export const solopreneurs: VerticalConfig = {
           seniority: "Manager",
         },
         message:
-          "Hi Saoirse, saw your post about dropping daily standups. Most teams still want the update, not the meeting. I built a Slack bot that collects updates async and posts one summary. Happy to set it up for your team free for a week?",
+          "Hi Saoirse, I spotted your post about moving standups async. What did your team miss once the daily standup was gone?",
       },
       {
         kind: "influencer",
         text: "I sell reporting to small agencies. Find US agency owners who engage with agency coaches.",
-        reply: "I'll watch who engages with those coaches’ posts and keep owners of US agencies.",
+        reply: "I’ll watch who engages with those coaches’ posts and keep owners of US agencies.",
         proposal: [
           { kind: "influencer", items: ["Delia Kerr", "Kenji Lockard"] },
           { kind: "keyword", items: ["client reporting", "monthly reports"] },
           { kind: "competitor", items: ["Clientglass"] },
         ],
         leads: [
-          { name: "Lupe Galindo", role: "Founder", company: "Sweetgrass Digital", kind: "influencer", signal: "Commented on Kerr" },
+          { name: "Lupe Galindo", role: "Founder", company: "Sweetgrass Digital", kind: "influencer", signal: "Commented on a post" },
           { name: "Rufus Kinsella", role: "Partner", company: "Hartwell & Vine", kind: "influencer", signal: "Liked a Lockard post" },
           { name: "Adanna Ilori", role: "Founder", company: "Wildrye Creative", kind: "keyword", signal: "Posted on client reports" },
           { name: "Hugo Lachance", role: "Account Director", company: "Kitewell", kind: "keyword", signal: "Posted on reporting" },
@@ -104,7 +105,7 @@ export const solopreneurs: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Lupe, saw your comment on Delia Kerr’s post about client reporting. Monthly reports eat whole days at small agencies. I built a tool that turns each client’s numbers into a branded report. Want me to build one for a Sweetgrass client?",
+          "Hi Lupe, you commented on Delia Kerr’s post about client reporting. How long does a monthly client report take your team?",
       },
     ],
   },
@@ -133,7 +134,7 @@ export const solopreneurs: VerticalConfig = {
       },
       {
         kind: "competitor",
-        title: "Fans of the bigger tool",
+        title: "The bigger tool’s audience",
         body: "People who react to a bigger rival’s posts become leads for the tool you built alone.",
         watching: ["Huddlebox", "Clientglass", "Changemill"],
       },
@@ -142,7 +143,7 @@ export const solopreneurs: VerticalConfig = {
 
   faq: [
     {
-      q: "I can't review leads every day. What happens?",
+      q: "I can’t review leads every day. What happens?",
       a: "New leads wait until you get to them. Pancake never contacts a lead you haven’t approved. Approving one from Slack takes a click.",
     },
     {

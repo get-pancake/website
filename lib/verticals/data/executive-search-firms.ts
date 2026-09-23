@@ -24,8 +24,9 @@ export const executiveSearchFirms: VerticalConfig = {
   hubLine: "Reach CEOs hiring VP and C-level leaders.",
 
   hero: {
+    title: "Find CEOs building out their leadership team.",
     h1: ["You fill the C-suite", "We bring you clients"],
-    lede: "Pancake finds companies posting VP and C-level roles and reaches their CEOs from your LinkedIn. You pitch the search.",
+    lede: "VP and C-level job posts, succession talk and fans of rival search firms. Pancake names who signs the retainer.",
   },
 
   workspace: { name: "Quarshie Search", sender: "Miriam Quarshie" },
@@ -36,7 +37,7 @@ export const executiveSearchFirms: VerticalConfig = {
       {
         kind: "hiring",
         text: "I place revenue leaders. Find US companies of 200 to 1,000 people hiring a CRO or VP Sales.",
-        reply: "I'll watch employer job posts for CRO and VP Sales roles and find who owns each hire.",
+        reply: "I’ll watch employer job posts for CRO and VP Sales roles and find who owns each hire.",
         proposal: [
           { kind: "hiring", items: ["Chief Revenue Officer", "VP Sales", "SVP Sales"] },
           { kind: "keyword", items: ["hiring a CRO", "our next sales leader"] },
@@ -55,12 +56,12 @@ export const executiveSearchFirms: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Elaine, saw Harlowmere posted a Chief Revenue Officer role. A CRO shapes the sales team for years, so the shortlist matters. We run retained searches for revenue leaders at software companies your size. Open to a call about the brief?",
+          "Hi Elaine, glad we’re connected. I place revenue leaders, so I ask everyone the same question. What’s the first thing you look for in a sales leader?",
       },
       {
         kind: "keyword",
         text: "I run senior searches. Find US founders posting about building their leadership team.",
-        reply: "I'll watch for founders posting about their leadership team or succession.",
+        reply: "I’ll watch for founders posting about their leadership team or succession.",
         proposal: [
           { kind: "keyword", items: ["building the exec team", "succession planning"] },
           { kind: "hiring", items: ["Chief Operating Officer", "Chief Financial Officer"] },
@@ -79,19 +80,19 @@ export const executiveSearchFirms: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Graham, read your post about building Carrowby’s leadership team. We run retained searches for founder-led companies at your stage, from COO to CFO. Would it help to talk through which seat to fill first?",
+          "Hi Graham, caught your post about building Carrowby’s leadership team. Which seat are you filling first?",
       },
       {
         kind: "influencer",
         text: "I run CEO and board searches. Find US chairs and directors engaging with governance experts.",
-        reply: "I'll watch who reacts to the governance voices you name and keep chairs and directors.",
+        reply: "I’ll watch who reacts to the governance voices you name and keep chairs and directors.",
         proposal: [
           { kind: "influencer", items: ["Harriet Kimura", "Desmond Pryor"] },
           { kind: "keyword", items: ["CEO succession", "board effectiveness"] },
           { kind: "own_brand", items: ["Quarshie Search"] },
         ],
         leads: [
-          { name: "Constance Wyeth", role: "Board Chair", company: "Lightfoot Mutual", kind: "influencer", signal: "Commented on Kimura" },
+          { name: "Constance Wyeth", role: "Board Chair", company: "Lightfoot Mutual", kind: "influencer", signal: "Commented on a post" },
           { name: "Everett Nwosu", role: "Board Director", company: "Ottermoor Bank", kind: "influencer", signal: "Liked a Pryor post" },
           { name: "Lorraine Castellanos", role: "Board Member", company: "Quennell Bio", kind: "keyword", signal: "Posted on board reviews" },
           { name: "Tobias Kerrigan", role: "Board Member", company: "Brandwick", kind: "own_brand", signal: "Liked a Quarshie post" },
@@ -103,7 +104,7 @@ export const executiveSearchFirms: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Constance, saw your comment on Harriet Kimura’s post about CEO succession. An outside slate helps a board test its inside candidates. We run CEO searches for insurers and banks your size. Open to a short call on how we’d scope one?",
+          "Hi Constance, saw your comment on Harriet Kimura’s post about CEO succession. How far ahead does your board plan for it?",
       },
     ],
   },
@@ -148,7 +149,7 @@ export const executiveSearchFirms: VerticalConfig = {
     },
     {
       q: "Can it tell me when a CFO or CEO steps down?",
-      a: "No. There's no job-change signal, so Pancake can't see departures or appointments. It sees posted roles, and leaders posting about their team.",
+      a: "No. There’s no job-change signal, so Pancake can’t see departures or appointments. It sees posted roles, and leaders posting about their team.",
     },
     {
       q: "Will it skip companies that already retained a search firm?",
@@ -156,7 +157,7 @@ export const executiveSearchFirms: VerticalConfig = {
     },
     {
       q: "Can I target PE-backed companies?",
-      a: "Not by ownership: Pancake can't see who backs a company. Add operating partners to the roles in your Brain, and Pancake finds the ones engaging with your topics.",
+      a: "Not by ownership: Pancake can’t see who backs a company. Add Operating Partner as a persona in your Brain, and Pancake keeps the ones engaging with your topics.",
     },
   ],
 

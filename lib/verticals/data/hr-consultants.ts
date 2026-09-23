@@ -26,8 +26,9 @@ export const hrConsultants: VerticalConfig = {
   hubLine: "Find founders hiring HR roles or posting about handbooks.",
 
   hero: {
+    title: "Find founders setting up performance reviews and PTO.",
     h1: ["You run people ops", "We bring you clients"],
-    lede: "Pancake finds small companies hiring HR generalists, and founders posting about reviews or handbooks. Be their HR team first.",
+    lede: "HR manager openings and Gusto or Rippling in job posts show Pancake who needs help. You cover the gap until they hire.",
   },
 
   workspace: { name: "Farnsworth People", sender: "Joelle Farnsworth" },
@@ -37,8 +38,8 @@ export const hrConsultants: VerticalConfig = {
     prompts: [
       {
         kind: "hiring",
-        text: "I do HR part-time. Find US companies with 20 to 100 staff posting an HR manager role.",
-        reply: "I'll watch job posts for HR roles at US companies with 20 to 100 people.",
+        text: "I’m a fractional HR lead. Find US companies with 20 to 100 staff posting an HR manager role.",
+        reply: "I’ll watch job posts for HR roles at US companies with 20 to 100 people.",
         proposal: [
           { kind: "hiring", items: ["HR manager", "HR generalist", "People ops manager"] },
           { kind: "keyword", items: ["employee handbook", "first HR hire"] },
@@ -57,12 +58,12 @@ export const hrConsultants: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Shelby, saw Tollgarth is hiring an HR manager. I run HR part-time for logistics companies your size. Some clients keep me on while they search, then have me help pick the hire. Worth a quick call this week?",
+          "Hi Shelby, thanks for connecting. I work as a fractional HR lead for a handful of companies. Who fields the HR questions on your team today?",
       },
       {
         kind: "keyword",
         text: "Find US founders posting about performance reviews or an employee handbook. I set those up.",
-        reply: "I'll watch founder posts on reviews and handbooks at US companies with 20 to 150 people.",
+        reply: "I’ll watch founder posts on reviews and handbooks at US companies with 20 to 150 people.",
         proposal: [
           { kind: "keyword", items: ["performance reviews", "employee handbook", "PTO policy"] },
           { kind: "influencer", items: ["Beatrice Lusk"] },
@@ -81,12 +82,12 @@ export const hrConsultants: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Gabriel, saw your post about performance reviews at Tuckett. Reviews run smoother when every manager uses the same rubric and the same dates. I set up review cycles and handbooks for teams your size. Worth a call before your next round?",
+          "Hi Gabriel, I saw your post about running performance reviews at Tuckett. What would you change before the next round?",
       },
       {
         kind: "stack",
         text: "I run HR for small teams on Gusto or Rippling. Find US companies whose job posts name them.",
-        reply: "I'll find companies whose job posts name Gusto or Rippling, then the founder or COO.",
+        reply: "I’ll find companies whose job posts name Gusto or Rippling, then the founder or COO.",
         proposal: [
           { kind: "stack", items: ["Gusto", "Rippling", "Justworks"] },
           { kind: "hiring", items: ["Operations manager", "Payroll specialist"] },
@@ -105,13 +106,13 @@ export const hrConsultants: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Rebecca, saw Pennock’s office manager job post lists Gusto. Gusto runs payroll. The handbook, reviews and leave policy still need an owner. I run HR part-time for Gusto teams your size. Open to a short call?",
+          "Hi Rebecca, good to be connected. I’m a fractional HR lead, mostly handbooks, reviews and leave policy. Who keeps the handbook up to date where you are?",
       },
     ],
   },
 
   signals: {
-    h2: "HR gaps show up in job posts.",
+    h2: "Founders post their HR gaps.",
     cards: [
       {
         kind: "hiring",

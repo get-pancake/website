@@ -71,7 +71,7 @@
 }
 .lp-vx .vx-watch__label {
   align-items: center;
-  color: var(--lp-muted-text);
+  color: var(--lp-subtle-text);
   display: flex;
   font-family: var(--lp-font-sans);
   font-size: var(--lp-text-xsm);
@@ -135,6 +135,28 @@
   /* the gap between the two card rows (row-gap stays 0 inside the subgrids) */
   .lp-vx .vx-sig-card:nth-child(-n + 2) {
     margin-bottom: 16px;
+  }
+}
+/* 2 × 2 (768–1200): both card rows on ONE explicit track list — the two
+   "Watching" rows are 1fr, so they resolve to the same height (the taller
+   panel set) and a row of 2-chip-line panels matches a row of 3-chip-line
+   ones: the four cards come out one height unless their titles or bodies
+   wrap to different line counts across the two rows (CSS can equalize one
+   flexible track group per grid; `grid-auto-rows: 1fr` would equalize ALL
+   eight rows and blow the badge rows up to panel height). 16px = the gap
+   between the card rows, as its own track. */
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 768px) and (max-width: 1200px) {
+    .lp-vx .vx-sig-grid {
+      grid-template-rows: auto auto auto 1fr 16px auto auto auto 1fr;
+    }
+    .lp-vx .vx-sig-card:nth-child(-n + 2) {
+      grid-row: 1 / span 4;
+      margin-bottom: 0;
+    }
+    .lp-vx .vx-sig-card:nth-child(n + 3) {
+      grid-row: 6 / span 4;
+    }
   }
 }
 @media (max-width: 1024px) {

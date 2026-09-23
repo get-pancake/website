@@ -24,19 +24,20 @@ export const revopsConsultants: VerticalConfig = {
   hubLine: "Find companies whose job posts name your CRM.",
 
   hero: {
+    title: "Find sales leaders explaining a missed forecast.",
     h1: ["You fix the CRM", "We bring you clients"],
-    lede: "Pancake finds companies hiring RevOps roles or naming HubSpot in job posts. Their sales leader hears from you on LinkedIn.",
+    lede: "Salesforce admin openings and HubSpot in job posts, not a stale contact list. Scope the cleanup before the new admin starts.",
   },
 
   workspace: { name: "Ledgewood RevOps", sender: "Anita Ferencz" },
 
   demo: {
-    h2: "HubSpot or Salesforce, pick your lane.",
+    h2: "Find sales teams outgrowing their CRM.",
     prompts: [
       {
         kind: "stack",
-        text: "I'm a HubSpot partner. Find US companies of 50 to 300 people whose job posts name HubSpot.",
-        reply: "I'll match HubSpot job posts to the sales or RevOps leader at each company.",
+        text: "I’m a HubSpot partner. Find US companies of 50 to 300 people whose job posts name HubSpot.",
+        reply: "I’ll match HubSpot job posts to the sales or RevOps leader at each company.",
         proposal: [
           { kind: "stack", items: ["HubSpot"] },
           { kind: "hiring", items: ["HubSpot administrator", "Marketing operations manager"] },
@@ -56,12 +57,12 @@ export const revopsConsultants: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Gretchen, saw Wainsford’s sales roles ask for HubSpot experience. Adding reps is a good moment to tidy stages and routing. We’re a HubSpot partner working with sales teams your size. Want a quick look at your pipeline stages?",
+          "Hi Gretchen, nice to connect. I help sales teams set up their CRM, and every team reads its pipeline differently. Which report do you look at first on Monday?",
       },
       {
         kind: "hiring",
         text: "I fix Salesforce orgs. Find US B2B companies of 100 to 500 people hiring a Salesforce admin.",
-        reply: "I'll watch job posts for Salesforce admin roles and find the VP Sales or COO.",
+        reply: "I’ll watch job posts for Salesforce admin roles and find the VP Sales or COO.",
         proposal: [
           { kind: "hiring", items: ["Salesforce administrator", "Sales operations analyst"] },
           { kind: "stack", items: ["Salesforce", "Gong"] },
@@ -80,12 +81,12 @@ export const revopsConsultants: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Terrence, saw Tackline is hiring a Salesforce administrator. A new admin often inherits years of custom fields. We clean up Salesforce orgs for sales teams your size, so the hire starts on a tidy base. Open to a short call before they start?",
+          "Hi Terrence, thanks for the connection. I spend my days untangling messy CRM setups. Which field in yours does nobody trust?",
       },
       {
         kind: "keyword",
         text: "Find US sales leaders posting about forecast accuracy or a CRM migration. I scope both.",
-        reply: "I'll watch sales leaders' posts on forecasting or CRM moves and attach each post.",
+        reply: "I’ll watch sales leaders’ posts on forecasting or CRM moves and attach each post.",
         proposal: [
           { kind: "keyword", items: ["forecast accuracy", "CRM migration", "pipeline hygiene"] },
           { kind: "influencer", items: ["Imogen Oakes"] },
@@ -104,7 +105,7 @@ export const revopsConsultants: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Bianca, read your post on forecast accuracy. Forecast misses often trace back to fuzzy stage definitions. We fix pipeline stages and reporting for B2B sales teams your size. Want the three things we’d check first?",
+          "Hi Bianca, spotted your post on forecast accuracy at Brailwick. Do the misses start early in the pipeline or at commit?",
       },
     ],
   },
@@ -145,15 +146,15 @@ export const revopsConsultants: VerticalConfig = {
   faq: [
     {
       q: "Can Pancake tell which CRM a company uses?",
-      a: "Only when its job posts name it. Stack reads the tools listed in job posts, not a company's website or code.",
+      a: "Only when its job posts name it. Stack reads the tools listed in job posts, not a company’s website or code.",
     },
     {
       q: "Does Pancake sync leads into HubSpot or Salesforce?",
-      a: "No. There's no CRM sync and no export. Leads live in Pancake and Slack, where you approve them.",
+      a: "No. There’s no CRM sync and no export. Leads live in Pancake and Slack, where you approve them.",
     },
     {
-      q: "Will I get companies that already have a RevOps team?",
-      a: "Sometimes. A RevOps job post can mean a team is growing, not missing. Each rejection, with a reason, tunes what Pancake looks for next.",
+      q: "Won’t a company hiring a Salesforce admin fix its CRM in-house?",
+      a: "Some will. The post still shows the CRM is a priority now. Pitch the cleanup while they hire, or support for the new admin.",
     },
     {
       q: "Can one workspace cover HubSpot and Salesforce clients?",
@@ -163,5 +164,5 @@ export const revopsConsultants: VerticalConfig = {
 
   related: ["gtm-agencies", "data-consultancies", "martech-startups", "marketing-agencies"],
 
-  cta: { title: "Scope your next CRM fix." },
+  cta: { title: "Scope the CRM cleanup." },
 };
