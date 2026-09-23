@@ -345,7 +345,7 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
       !x.seeking &&
       !x.gate &&
       x.inView &&
-      (x.oneShot || (x.autoplay && !x.hover && !x.focusHold))
+      (x.oneShot || (x.autoplay && !x.focusHold))
     );
   }, []);
 
@@ -368,10 +368,11 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
 
   advanceRef.current = () => {
     const x = ctl.current;
-    // a hero-row start plays its Brief tab even under the pointer (oneShot); from the next
-    // tab on, autoplay's normal holds (hover, keyboard focus) apply again
+    // a hero-row or tab start plays its tab even under keyboard focus (oneShot); from the next
+    // tab on, the keyboard-focus hold applies again. A mouse over the window never holds
+    // (founder 2026-09-22: "when Brief is over it goes to Leads etc. — for now it blocks").
     x.oneShot = false;
-    if (x.hover || x.focusHold) {
+    if (x.focusHold) {
       // held: keep this tab's final frame (t stays at the dwell's end, so the demo moves on as
       // soon as the hold ends) instead of cutting to the next tab's empty first frame
       x.t = DWELL[x.tab];
@@ -439,6 +440,8 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
         x.armed = false;
         x.t = endOf(tab, lensOf(prompt));
       } else {
+        // play the chosen tab from its first frame, then carry on to the next tabs
+        x.autoplay = true;
         x.oneShot = true;
         x.armed = true;
         x.t = 0;
@@ -660,13 +663,13 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
           gateObs.disconnect();
           return;
         }
-        if (e.isIntersecting && e.intersectionRatio >= 0.9) {
+        if (e.isIntersecting && e.intersectionRatio >= 0.5) {
           x.gate = false;
           gateObs.disconnect();
           sync();
         }
       },
-      { threshold: [0, 0.5, 0.9, 1] },
+      { threshold: [0, 0.25, 0.5, 1] },
     );
     if (composer) gateObs.observe(composer);
     else x.gate = false;
@@ -678,32 +681,8 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
     x.hidden = document.hidden;
     document.addEventListener("visibilitychange", onVis);
 
-    // hover = the mouse MOVING over the app window. Scrolling the page under a resting pointer
-    // fires pointerover / pointermove at the same client position (zero movement): not a hover.
-    // movementX/Y alone is not enough (WebKit may report 0 for real moves), so a move also
-    // counts when the client position differs from the last one seen anywhere on the page.
-    let lastX = NaN;
-    let lastY = NaN;
-    const onAnyMove = (e: PointerEvent) => {
-      lastX = e.clientX;
-      lastY = e.clientY;
-    };
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType !== "mouse" || x.hover) return;
-      const moved = e.movementX !== 0 || e.movementY !== 0 || (!Number.isNaN(lastX) && (e.clientX !== lastX || e.clientY !== lastY));
-      if (!moved) return;
-      x.hover = true;
-      sync();
-    };
-    // bubble phase: runs after the stage's own listener, so onMove compares with the previous position
-    window.addEventListener("pointermove", onAnyMove, { passive: true });
-    const onLeave = (e: PointerEvent) => {
-      if (e.pointerType !== "mouse" || !x.hover) return;
-      x.hover = false;
-      sync();
-    };
-    stage.addEventListener("pointermove", onMove);
-    stage.addEventListener("pointerleave", onLeave);
+    // No hover hold: a mouse over the app window never pauses autoplay (founder 2026-09-22 —
+    // the demo read as "blocked" while people looked at it). Pause / Replay are the controls.
 
     const holdZones = () => [card.querySelector<HTMLElement>(".vx-tabs")];
     const onFocusIn = (e: FocusEvent) => {
@@ -806,9 +785,6 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
       mqReduce.removeEventListener("change", onReduce);
       document.removeEventListener("click", onRow);
       document.removeEventListener("visibilitychange", onVis);
-      stage.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointermove", onAnyMove);
-      stage.removeEventListener("pointerleave", onLeave);
       card.removeEventListener("focusin", onFocusIn);
       card.removeEventListener("focusout", onFocusOut);
       if (qa) delete w.__vx;

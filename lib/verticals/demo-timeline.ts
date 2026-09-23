@@ -23,8 +23,19 @@ export interface DemoLens {
   streamLen: number;
 }
 
-/** Autoplay dwell per tab (ms): the rest of the dwell after END holds the final frame. */
-export const DWELL: readonly [number, number, number, number] = [10000, 10000, 9500, 9000];
+/**
+ * Playback pace (founder 2026-09-22: "accelerate each section"). Every cue time in this file is
+ * authored in DESIGN ms; the real clock is design × PACE. `endOf`, `DWELL` and `frameAt` speak
+ * real ms, so the player never sees design time.
+ */
+export const PACE = 0.6;
+
+/**
+ * Autoplay dwell per tab (real ms): the tab's own animation (endOf) + a ~1.5 s hold on the final
+ * frame, then the next tab. Brief ends at 3840, Leads 3780, Outreach ≤ 3480, Slack 3000.
+ * One prompt = ~20 s (was ~38 s at 10/10/9.5/9 s).
+ */
+export const DWELL: readonly [number, number, number, number] = [5400, 5300, 5000, 4500];
 
 const TYPE_START = 250;
 const TYPE_MS = 18;
@@ -41,12 +52,17 @@ const sorted = (list: Cue[]): Cue[] => [...list].sort((a, b) => a[1] - b[1]);
 
 const streamEnd = (lens: DemoLens) => STREAM_START + Math.min(STREAM_MS * lens.streamLen, STREAM_MAX);
 
-/** Last cue of a tab. At t ≥ END the frame is the final frame. */
-export function endOf(tab: DemoTab, lens: DemoLens): number {
+/** Last cue of a tab, in DESIGN ms. */
+function designEnd(tab: DemoTab, lens: DemoLens): number {
   if (tab === 0) return 6400;
   if (tab === 1) return 6300;
   if (tab === 2) return streamEnd(lens) + 300;
   return 5000;
+}
+
+/** Last cue of a tab, in REAL ms (design × PACE). At t ≥ END the frame is the final frame. */
+export function endOf(tab: DemoTab, lens: DemoLens): number {
+  return Math.round(designEnd(tab, lens) * PACE);
 }
 
 type Cue = readonly [id: string, at: number];
@@ -260,9 +276,11 @@ function cursorAt(tab: DemoTab, t: number): DemoCursor {
   return { visible, from, to, fromD, toD, k, press, click };
 }
 
-/** Pure: the frame of `tab` at `t` ms. Deterministic, seekable, no side effects. */
-export function frameAt(tab: DemoTab, t: number, lens: DemoLens): DemoFrame {
-  const end = endOf(tab, lens);
+/** Pure: the frame of `tab` at `t` REAL ms (scaled to design ms by PACE). Deterministic,
+ *  seekable, no side effects. */
+export function frameAt(tab: DemoTab, tReal: number, lens: DemoLens): DemoFrame {
+  const end = designEnd(tab, lens);
+  const t = tReal >= endOf(tab, lens) ? end : tReal / PACE;
   const tt = Math.max(0, Math.min(t, end));
   const c = cuesOf(tab, lens);
   const on = reached(c.on, tt);

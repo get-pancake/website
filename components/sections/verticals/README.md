@@ -166,11 +166,13 @@ Never edit `LpMarquee.tsx`.
 - **Autoplay holds** (`VxDemoPlayer`): the demo never parks on an empty frame.
   It arms (Brief from t = 0) unless more than 160px of the window shows when
   it approaches; the FIRST start also waits for the Brief composer to be on
-  screen (any click opens that gate); ≥35% of the card visible to run. Hover =
-  a real mouse MOVE over the window (not the tab bar or the foot, not a pointer
-  the page scrolled under); a prompt row, Replay or Play clears it; a tab that
-  ends under a hover / keyboard hold keeps its final frame and moves on when
-  the hold ends.
+  screen (half of it; any click opens that gate); ≥35% of the card visible to
+  run. **No hover hold** (founder 2026-09-22: the demo read as blocked while
+  people looked at it): only Pause and a KEYBOARD focus in the tab list hold it.
+  A tab click or a prompt row plays that tab from its first frame, then
+  autoplay carries on (Brief → Leads → Outreach → Slack → next prompt). Pace:
+  every cue is authored in design ms and played at `PACE` = 0.6; dwells
+  5.4 / 5.3 / 5.0 / 4.5 s (≈20 s per prompt).
 - The composer's long line slides with a transform (no layout shift while
   typing). The Related section's eyebrow is "Industries" (the breadcrumb
   left it). `name.badge` is no longer rendered (kept in the schema).
