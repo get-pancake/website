@@ -26,8 +26,7 @@ export const hrTechStartups: VerticalConfig = {
   hubLine: "Find People leaders at firms naming BambooHR in job posts.",
 
   hero: {
-    title: "Find People leaders still running on BambooHR.",
-    h1: ["You build for HR teams", "We bring you customers"],
+    title: "Find HR leaders whose job posts name a rival suite.",
     lede: "Pancake tracks HR openings, rival HR suites’ pages and turnover talk on LinkedIn. You get the buyer and why they fit.",
   },
 

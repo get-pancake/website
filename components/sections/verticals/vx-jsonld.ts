@@ -1,6 +1,6 @@
 // components/sections/verticals/vx-jsonld.ts — structured data for /for pages (spec §8).
 // One <script type="application/ld+json"> per page with an @graph:
-//   /for/<slug>: WebPage + BreadcrumbList (Home → Industries → vertical) + FAQPage
+//   /for/<slug>: WebPage + BreadcrumbList (Home → Industries → vertical, = the hero breadcrumb) + FAQPage
 //   /for:        WebPage + BreadcrumbList (Home → Industries) + ItemList of approved pages
 // No SoftwareApplication (homepage-only by design); Organization/WebSite come from the root layout.
 // The FAQPage Q/As are the vertical's own v.faq (3–4 items) — the first items VxFaq renders from
@@ -8,7 +8,7 @@
 // visible <details> text (audit gate §7.3.2), and the 5 shared Q/As don't repeat as structured
 // data on all 40 URLs (SEO-JSONLD-05).
 
-import { VX_HUB, VX_META, VX_RELATED } from "@/components/sections/verticals/vx-copy";
+import { VX_CRUMBS, VX_HUB, VX_META } from "@/components/sections/verticals/vx-copy";
 import { SITE_URL, verticalUrl } from "@/lib/verticals";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
@@ -41,8 +41,8 @@ export function verticalJsonLd(v: VerticalConfig) {
       },
       crumbs(
         [
-          { name: VX_RELATED.crumbs.home, url: SITE_URL },
-          { name: VX_RELATED.crumbs.hub, url: HUB_URL },
+          { name: VX_CRUMBS.home, url: SITE_URL },
+          { name: VX_CRUMBS.hub, url: HUB_URL },
           { name: v.name.title, url },
         ],
         `${url}#breadcrumb`,
@@ -76,8 +76,8 @@ export function hubJsonLd(approved: VerticalConfig[]) {
       },
       crumbs(
         [
-          { name: VX_RELATED.crumbs.home, url: SITE_URL },
-          { name: VX_RELATED.crumbs.hub, url: HUB_URL },
+          { name: VX_CRUMBS.home, url: SITE_URL },
+          { name: VX_CRUMBS.hub, url: HUB_URL },
         ],
         `${HUB_URL}#breadcrumb`,
       ),

@@ -24,8 +24,7 @@ export const uxDesignAgencies: VerticalConfig = {
 
   hero: {
     title: "Find product leaders posting about onboarding drop-off.",
-    h1: ["You design products", "We bring you clients"],
-    lede: "Activation threads and designer openings, not a stale database. Every morning, a SaaS team to pitch while the pain is fresh.",
+    lede: "Pancake reads activation threads, designer openings and Pendo in job posts. Every morning, a SaaS team to pitch while the pain is fresh.",
   },
 
   workspace: { name: "Pembrook Studio", sender: "Rowan Pembrook" },

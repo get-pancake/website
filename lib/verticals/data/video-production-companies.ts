@@ -24,7 +24,6 @@ export const videoProductionCompanies: VerticalConfig = {
 
   hero: {
     title: "Find tech marketers teasing an upcoming product launch.",
-    h1: ["You make videos", "We bring you clients"],
     lede: "Pancake catches trade-show posts, video producer job posts and rival studios’ fans. Pitch the film before the shoot is booked.",
   },
 

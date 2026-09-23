@@ -25,7 +25,6 @@ export const consultants: VerticalConfig = {
 
   hero: {
     title: "Find executives writing about the problem you fix.",
-    h1: ["You know the fix", "We bring you clients"],
     lede: "Pancake reads comments under your posts and job openings in your niche. Each lead arrives with its reason, so you open warm.",
   },
 

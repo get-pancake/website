@@ -52,14 +52,23 @@ export const SIGNAL_OPT_IN: SignalKind[] = ["hiring", "stack"];
 export const VX_CTA_LABELS = { primary: "Start free", secondary: "Book a demo" } as const;
 export const VX_NOTE = "Illustrative. Names and companies are fictional.";
 
+/** The breadcrumb (visible in the hero, and the BreadcrumbList JSON-LD): Home › Industries › {name.title}. */
+export const VX_CRUMBS = { home: "Home", hub: "Industries", aria: "Breadcrumb" } as const;
+
+/* ─── VxHero (founder 2026-09-22: functional, Origami-style — no homepage art) ─── */
+
+export const VX_HERO = {
+  /** The label line inside the H1 (= og:title): "Pancake for {plural}". */
+  label: (v: VerticalConfig) => `Pancake for ${v.name.plural}`,
+  /** The caps label over the example-prompt rows. */
+  promptsLabel: "Example prompts",
+  /** Each row's accessible name suffix: the row plays that prompt in the demo below. */
+  promptHint: "Play it in the demo.",
+};
+
 /* ─── VxDemo ────────────────────────────────────────────────────────────────── */
 
 export const VX_DEMO = {
-  eyebrow: "How it works",
-  lede:
-    "Pick an example. Pancake turns it into signals, finds the people and writes the outreach. You approve each lead.",
-  promptsLabel: "Try an example",
-  promptsAria: "Example prompts",
   tablistAria: "Pancake, step by step",
   tabs: [
     { key: "brief", num: "01", label: "Brief", title: "Say who you sell to.", body: "Pancake turns it into signals to watch. You approve them once." },
@@ -279,8 +288,8 @@ export const VX_FAQ = {
 /* ─── VxRelated + breadcrumb ────────────────────────────────────────────────── */
 
 export const VX_RELATED = {
-  crumbs: { home: "Home", hub: "Industries" },
-  crumbAria: "Breadcrumb",
+  /** The breadcrumb moved to the hero (2026-09-22): the section eyebrow is the hub's name. */
+  eyebrow: "Industries",
   h2: "Pancake for teams like yours.",
   hubRow: { title: "All industries", line: "See every industry Pancake works for." },
 };
@@ -326,8 +335,8 @@ export const VX_HUB = {
 
 export const VX_META = {
   title: (v: VerticalConfig) => (VX_TITLE_MODE === "brand" ? "Pancake" : v.meta.seoTitle),
-  /** og:title + twitter:title ride the value prop in both modes (/agents precedent, ag-copy META). */
-  ogTitle: (v: VerticalConfig) => `Pancake for ${v.name.plural}`,
+  /** og:title + twitter:title = the H1's label line, in both modes (/agents precedent, ag-copy META). */
+  ogTitle: (v: VerticalConfig) => VX_HERO.label(v),
   /** n = the number of listed pages (the hub passes approvedVerticals().length). */
   hubTitle: (n: number) => (VX_TITLE_MODE === "brand" ? "Pancake" : `Pancake by Industry: Find B2B Customers in ${n} Markets`),
   hubOgTitle: "Pancake for your industry",

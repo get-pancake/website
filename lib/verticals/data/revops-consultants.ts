@@ -25,8 +25,7 @@ export const revopsConsultants: VerticalConfig = {
 
   hero: {
     title: "Find sales leaders explaining a missed forecast.",
-    h1: ["You fix the CRM", "We bring you clients"],
-    lede: "Salesforce admin openings and HubSpot in job posts, not a stale contact list. Scope the cleanup before the new admin starts.",
+    lede: "Pancake reads Salesforce admin openings, HubSpot in job posts and forecast talk. Scope the cleanup before the new admin starts.",
   },
 
   workspace: { name: "Ledgewood RevOps", sender: "Anita Ferencz" },

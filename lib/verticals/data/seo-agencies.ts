@@ -23,7 +23,6 @@ export const seoAgencies: VerticalConfig = {
 
   hero: {
     title: "Find marketers blaming a core update for lost traffic.",
-    h1: ["You rank their sites", "We bring you clients"],
     lede: "Pancake follows zero-click threads and SEO job posts to whoever owns search. Sell the recovery while the drop stings.",
   },
 

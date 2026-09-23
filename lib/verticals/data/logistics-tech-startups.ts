@@ -26,7 +26,6 @@ export const logisticsTechStartups: VerticalConfig = {
 
   hero: {
     title: "Find 3PL ops leaders short on dispatchers.",
-    h1: ["You build for 3PLs", "We bring you customers"],
     lede: "Pancake scans job posts that name your TMS or WMS, and LinkedIn posts about peak season. You get there before the rush.",
   },
 

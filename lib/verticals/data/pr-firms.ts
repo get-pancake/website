@@ -23,7 +23,6 @@ export const prFirms: VerticalConfig = {
 
   hero: {
     title: "Find founders asking how to get press coverage.",
-    h1: ["You pitch the press", "We bring you clients"],
     lede: "Comms job openings and fans of media relations pros bring you whoever hires PR. Your pitch lands before the referrals do.",
   },
 

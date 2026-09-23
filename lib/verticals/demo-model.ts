@@ -77,13 +77,12 @@ export interface DemoPromptView {
 
 /** Everything the client island needs — and nothing else. */
 export interface PlayerModel {
-  prompts: { kind: SignalKind; badge: string; text: string; message: string; lens: DemoLens }[];
+  /** The prompt rows live in the hero (server HTML); the island only types and streams. */
+  prompts: { text: string; message: string; lens: DemoLens }[];
   tabs: { num: string; label: string; title: string; body: string }[];
   /** [prompt][tab] role="img" labels. */
   aria: string[][];
   labels: {
-    prompts: string;
-    promptsAria: string;
     tablist: string;
     note: string;
     pause: string;
@@ -218,8 +217,6 @@ export function buildDemoModel(v: VerticalConfig): DemoModel {
   const A = VX_DEMO.paneAria;
   const player: PlayerModel = {
     prompts: prompts.map((p) => ({
-      kind: p.kind,
-      badge: p.kindLabel,
       text: p.text,
       message: p.message,
       lens: p.lens,
@@ -229,8 +226,6 @@ export function buildDemoModel(v: VerticalConfig): DemoModel {
       [A.brief, A.leads, A.outreach, A.slack].map((tpl) => fill(tpl, p.text, p.leads[0].name)),
     ),
     labels: {
-      prompts: VX_DEMO.promptsLabel,
-      promptsAria: VX_DEMO.promptsAria,
       tablist: VX_DEMO.tablistAria,
       note: VX_NOTE,
       pause: VX_DEMO.controls.pause,

@@ -27,7 +27,6 @@ export const aiStartups: VerticalConfig = {
 
   hero: {
     title: "Find COOs posting a job your product already does.",
-    h1: ["You end the busywork", "We bring you customers"],
     lede: "Pancake reads threads on manual data entry, Kofax in hiring ads and your rival’s fans. Every lead brings a reason to pilot.",
   },
 

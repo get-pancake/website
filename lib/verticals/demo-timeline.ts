@@ -108,11 +108,13 @@ function cuesOf(tab: DemoTab, lens: DemoLens): TabCues {
     return { on, sw: [["o.drafted", streamEnd(lens) + 300]], mk: [] };
   }
   return {
-    // "Here are the fresh leads of the day": both posts land together
+    // "Here are the fresh leads of the day": the posts land together (the third one shows in a
+    // narrow window only)
     on: [
       ["s.intro", 300],
       ["s.lead0", 900],
       ["s.lead1", 1050],
+      ["s.lead2", 1200],
     ],
     sw: [["s.approved", 3520]],
     mk: [],

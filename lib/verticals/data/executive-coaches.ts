@@ -26,7 +26,6 @@ export const executiveCoaches: VerticalConfig = {
 
   hero: {
     title: "Find founder-CEOs learning to delegate in public.",
-    h1: ["You coach leaders", "We bring you clients"],
     lede: "Pancake reads reactions to your posts, senior job openings and fans of leadership authors. You spend the week coaching.",
   },
 

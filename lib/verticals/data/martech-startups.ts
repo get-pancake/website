@@ -24,7 +24,6 @@ export const martechStartups: VerticalConfig = {
 
   hero: {
     title: "Find growth leads reacting to attribution experts.",
-    h1: ["You sell to marketers", "We bring you customers"],
     lede: "Pancake reads marketing ops openings and job posts naming Marketo, then shows why each buyer fits. Pitch the switch.",
   },
 

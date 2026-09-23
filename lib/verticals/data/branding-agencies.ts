@@ -26,7 +26,6 @@ export const brandingAgencies: VerticalConfig = {
 
   hero: {
     title: "Find startup founders weighing a rebrand or new name.",
-    h1: ["You build brands", "We bring you clients"],
     lede: "Pancake reads LinkedIn posts, brand design job posts and comments on rival studios’ work. Get in before the brief is written.",
   },
 

@@ -22,7 +22,6 @@ export const recruitingAgencies: VerticalConfig = {
 
   hero: {
     title: "Find hiring managers with open roles you can fill.",
-    h1: ["You place candidates", "We bring you clients"],
     lede: "Pancake reads employer job posts, never agency listings, and names who owns each search. Reach them ahead of rival recruiters.",
   },
 

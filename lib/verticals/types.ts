@@ -41,7 +41,8 @@ export interface VerticalConfig {
     title: string;
     /** Plural audience noun for templates: "Questions {short} ask.", "matter most to {short}". ≤22. */
     short: string;
-    /** Hero kit badge: "For recruiting agencies". ≤26 chars and ≤288px (12px Geist 600 caps + padding). */
+    /** "For recruiting agencies". ≤26 chars. NOT rendered since the 2026-09-22 hero redesign (the
+     *  H1's label is VX_HERO.label = "Pancake for {plural}"); kept until the copy owners retire it. */
     badge: string;
   };
 
@@ -57,17 +58,13 @@ export interface VerticalConfig {
     /**
      * The functional H1 (founder 2026-09-22: "more functional than inspirational — check
      * Origami"). One sentence, starts with "Find", names the vertical's buyer and the signal
-     * moment, ends with a period. ≤56 chars, ≤2 lines at the desktop H1 size. Unique across
-     * configs. Rendered under the "Pancake for {plural}" label inside the same <h1>.
+     * moment, ends with a period. ≤56 chars; ≤2 lines at the desktop H1 size (57.336px Aeonik
+     * Condensed 600 at 880px), ≤3 at 326 (phones). Unique across configs. Rendered under the
+     * "Pancake for {plural}" label inside the same <h1>.
      */
-    title?: string;
-    /**
-     * LEGACY (the retired homepage-clone hero): two lines, no periods, "You {job} / We bring you {clients|customers}".
-     * Each ≤22 chars and ≤643px at 69.014px Aeonik Condensed 600 (643 = the homepage's own
-     * "We bring you customers"). Line 1 unique across configs.
-     */
-    h1: [string, string];
-    /** = <meta name=description>. ≤126 chars, ≤30 words, ≤3 lines at 368px Geist 16/24. */
+    title: string;
+    /** = <meta name=description>. ≤150 chars, ≤30 words; ≤2 lines at 640px (Geist 19.2/28.8),
+     *  ≤5 at 326px (phones, 16/24). */
     lede: string;
   };
 
@@ -80,9 +77,11 @@ export interface VerticalConfig {
   };
 
   demo: {
-    /** Section H2 under the "How it works" eyebrow. ≤8 words, ≤40 chars, ≤2 lines at 720px (57.336px). */
+    /** The demo section's heading: visually hidden since 2026-09-22 (the tab bar is the visible
+     *  head), read by screen readers and the document outline. ≤8 words, ≤40 chars. */
     h2: string;
-    /** Exactly 3 example prompts. Their primary kinds must be pairwise different. */
+    /** Exactly 3 example prompts (the hero's "Example prompts" rows + the demo). Their primary
+     *  kinds must be pairwise different. */
     prompts: [DemoPrompt, DemoPrompt, DemoPrompt];
   };
 
@@ -106,10 +105,11 @@ export interface VerticalConfig {
 }
 
 export interface DemoPrompt {
-  /** The primary signal: the prompt card's badge. Must equal proposal[0].kind. */
+  /** The primary signal: the hero row's badge. Must equal proposal[0].kind. */
   kind: SignalKind;
   /**
-   * First person, what the owner would type. ≤96 chars; ≤3 lines at 328px (Geist 500 15/22).
+   * First person, what the owner would type. ≤96 chars; one line in the desktop hero row (≤760px
+   * at Geist 15, the 1025px column), ≤3 lines in the phone row (badge inline, 280px at 390).
    * US geography only. Only filters that exist: roles, keywords, competitor pages, company
    * size, industry, US geography, tools named in job posts. No job-count thresholds, no
    * "hiring their first X", no funding/news/job changes. The 3 prompts within ±12 chars.

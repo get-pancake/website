@@ -53,6 +53,9 @@ const DATE = /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]* \d{
 const NEGATION = /^(No\b|Not\b|Never\b|There[’']?s no\b|There is no\b|Pancake doesn[’']?t\b|It doesn[’']?t\b|Pancake never\b|No emails\b)/;
 /** Landing-voice rule 5 (warn only). */
 const HEDGES = /\b(actually|really|just|very|truly|simply|seamless(ly)?|powerful|robust|comprehensive|high-quality)\b/i;
+/** Origami closes every /for lede with "…, not a stale database." — never echo that tagline or a
+ *  variant ("not a bought list", "not a bar directory", "not a stale provider list"; critic 2026-09-22). */
+const ORIGAMI_TAGLINE = /\bnot an? (stale|bought|purchased|static)\b|\bnot an? [\w’'-]+( [\w’'-]+)? (list|lists|database|directory)\b/i;
 /** Fixed copy must not name a vertical. */
 const FIXED_LEAK = /\b(recruit\w*|placements?|placed|desks?|agenc(y|ies)|candidates?|staffing|talent|clients?|installers?|solar)\b/i;
 /** Real brands that must never be a lead company or a workspace (marquee customers + stack tools). */
@@ -98,7 +101,7 @@ const emDashes = (s: string) => (s.match(/—/g) ?? []).length;
 function renderedStrings(v: VerticalConfig): [string, string][] {
   const out: [string, string][] = [
     ["name.plural", v.name.plural], ["name.title", v.name.title], ["name.short", v.name.short], ["name.badge", v.name.badge],
-    ["meta.seoTitle", v.meta.seoTitle], ["hubLine", v.hubLine], ["hero.h1[0]", v.hero.h1[0]], ["hero.h1[1]", v.hero.h1[1]],
+    ["meta.seoTitle", v.meta.seoTitle], ["hubLine", v.hubLine], ["hero.title", v.hero.title],
     ["hero.lede", v.hero.lede], ["workspace.name", v.workspace.name], ["workspace.sender", v.workspace.sender],
     ["demo.h2", v.demo.h2], ["signals.h2", v.signals.h2], ["cta.title", v.cta.title],
   ];
@@ -150,7 +153,7 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
   const closings = new Map<string, string>();
   const openers = new Map<string, string[]>();
   const ledeEnds = new Map<string, string>();
-  const seen = { h1: new Map<string, string>(), lede: new Map<string, string>(), title: new Map<string, string>(), person: new Map<string, string>(), company: new Map<string, string>(), workspace: new Map<string, string>() };
+  const seen = { heroTitle: new Map<string, string>(), lede: new Map<string, string>(), title: new Map<string, string>(), person: new Map<string, string>(), company: new Map<string, string>(), workspace: new Map<string, string>() };
   const once = (bucket: Map<string, string>, key: string, slug: string, what: string) => {
     const k = key.toLowerCase();
     const prev = bucket.get(k);
@@ -172,14 +175,21 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
     // "AI" only as part of the vertical's own name ("AI startups"), never as Pancake's category (founder 2026-09-22).
     const noName = (x: string) => x.replace(new RegExp(esc(v.name.title), "ig"), "").replace(new RegExp(esc(v.name.plural), "ig"), "");
     if (/\bAI\b/.test(noName(v.meta.seoTitle))) err(s, 'meta.seoTitle: no "AI" outside the vertical name');
-    if (/\bAI\b/.test(v.hero.h1.join(" "))) warn(s, 'hero.h1 mentions "AI": fine only for the customer\'s product, never for Pancake');
+    if (/\bAI\b/.test(noName(v.hero.title ?? ""))) warn(s, 'hero.title mentions "AI": fine only for the customer\'s product, never for Pancake');
     max(s, "hubLine", v.hubLine, 64);
-    // ── hero ──
-    v.hero.h1.forEach((l, i) => { max(s, `hero.h1[${i}]`, l, 22); if (/[.!?]$/.test(l)) err(s, `hero.h1[${i}] must not end with punctuation (homepage H1 has none)`); });
-    if (!/^We bring you /.test(v.hero.h1[1])) warn(s, 'hero.h1[1] off-pattern ("We bring you …")');
-    max(s, "hero.lede", v.hero.lede, 126);
+    // ── hero (the functional H1, founder 2026-09-22) ──
+    const title = typeof v.hero.title === "string" ? v.hero.title.trim() : "";
+    if (!title) err(s, "hero.title is required");
+    else {
+      max(s, "hero.title", title, 56);
+      if (!/^Find /.test(title)) err(s, `hero.title starts with "Find ": "${title}"`);
+      if (!title.endsWith(".")) err(s, `hero.title ends with a period: "${title}"`);
+      if (sentences(title) !== 1) err(s, `hero.title must be one sentence: "${title}"`);
+      once(seen.heroTitle, title, s, "hero.title");
+    }
+    max(s, "hero.lede", v.hero.lede, 150);
     if (words(v.hero.lede) > 30) err(s, "hero.lede over 30 words");
-    once(seen.h1, v.hero.h1[0], s, "H1 line 1"); once(seen.lede, v.hero.lede, s, "lede"); once(seen.title, v.meta.seoTitle, s, "seoTitle");
+    once(seen.lede, v.hero.lede, s, "lede"); once(seen.title, v.meta.seoTitle, s, "seoTitle");
     // CT-09/CT-21: the lede's closing sentence is the meta description's last word — no two pages share it.
     {
       const end = lastSentence(v.hero.lede);
@@ -296,6 +306,7 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
       if (/\bpancake\b/.test(str)) err(s, `${path}: lowercase "pancake"`);
       if (emDashes(str) > 1) err(s, `${path}: more than one em dash`);
       if (HEDGES.test(str)) warn(s, `${path}: hedge word (landing-voice rule 5): "${str}"`);
+      if (ORIGAMI_TAGLINE.test(str)) err(s, `${path}: echoes Origami’s “not a stale database” tagline: "${str}"`);
       if (STRAIGHT_APOS.test(str)) warn(s, `${path}: straight apostrophe (use ’): "${str}"`);
     }
   }

@@ -25,7 +25,6 @@ export const solopreneurs: VerticalConfig = {
 
   hero: {
     title: "Find B2B buyers who react to your build-in-public posts.",
-    h1: ["You build it alone", "We bring you customers"],
     lede: "Pancake reads comments under your niche’s creators and a bigger rival’s page. Approve a lead in one click, then keep building.",
   },
 

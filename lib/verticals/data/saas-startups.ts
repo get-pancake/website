@@ -26,9 +26,8 @@ export const saasStartups: VerticalConfig = {
   hubLine: "Find buyers engaging with your competitors’ posts.",
 
   hero: {
-    title: "Find support heads in your rivals’ comment sections.",
-    h1: ["You build the product", "We bring you customers"],
-    lede: "Pancake reads churn and backlog threads, plus job ads naming Zendesk, then says why each buyer fits. Demos start warm.",
+    title: "Find buyers engaging with your competitors’ posts.",
+    lede: "Pancake reads posts about the problem you solve, your rivals’ pages and job ads naming the tools you replace. Demos start warm.",
   },
 
   workspace: { name: "Nookline", sender: "Farida Oyebanji" },

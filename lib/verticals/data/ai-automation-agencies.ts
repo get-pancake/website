@@ -27,7 +27,6 @@ export const aiAutomationAgencies: VerticalConfig = {
 
   hero: {
     title: "Find ops leaders hiring data entry clerks.",
-    h1: ["You automate ops work", "We bring you clients"],
     lede: "Admin job posts and Zapier or n8n in listings, then the COO who owns that work. Offer the automation instead of the hire.",
   },
 

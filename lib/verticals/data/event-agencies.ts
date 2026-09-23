@@ -24,7 +24,6 @@ export const eventAgencies: VerticalConfig = {
 
   hero: {
     title: "Find HR leaders planning the next company offsite.",
-    h1: ["You plan the offsite", "We bring you clients"],
     lede: "Pancake reads event job openings and who likes rival agencies’ posts. The chief of staff hears from you first.",
   },
 

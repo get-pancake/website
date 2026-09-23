@@ -27,7 +27,6 @@ export const corporateTrainingCompanies: VerticalConfig = {
 
   hero: {
     title: "Find L&D heads the week they post on manager training.",
-    h1: ["You train their teams", "We bring you clients"],
     lede: "Pancake reads enablement openings and rival firms’ pages, and shows why each buyer fits. You’re in before procurement.",
   },
 

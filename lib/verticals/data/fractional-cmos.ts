@@ -25,7 +25,6 @@ export const fractionalCmos: VerticalConfig = {
 
   hero: {
     title: "Find founders whose next hire is a Head of Marketing.",
-    h1: ["You lead marketing", "We bring you clients"],
     lede: "Leadership job posts, GTM questions and reactions to your content. Pitch part-time before a full-time offer goes out.",
   },
 

@@ -26,7 +26,6 @@ export const fintechStartups: VerticalConfig = {
 
   hero: {
     title: "Find controllers whose AP teams need another clerk.",
-    h1: ["You build for CFOs", "We bring you customers"],
     lede: "Finance job posts that name SAP Concur, LinkedIn posts on month-end close. Each morning, Pancake brings you the CFO who signs.",
   },
 

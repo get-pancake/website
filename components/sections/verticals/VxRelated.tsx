@@ -13,42 +13,18 @@ export function VxArrow({ className = "vx-arrow" }: { className?: string }) {
 }
 
 /**
- * Related (spec §2.8). The section eyebrow IS the visible breadcrumb
- * (Home / Industries / {vertical}), matching the BreadcrumbList JSON-LD;
- * links padded to 44px tap height. Rows = 3–5 siblings (relatedFor: approved
- * pages link to approved siblings only, backfilled from the category) + the
- * "All industries" row → /for. Each sibling row reads the sibling's OWN
- * name.title + hubLine — never copy written per linking page.
+ * Related (spec §2.8). Eyebrow "Industries" (the breadcrumb moved to the hero,
+ * 2026-09-22), then the rows: 3–5 siblings (relatedFor: approved pages link to
+ * approved siblings only, backfilled from the category) + the "All industries"
+ * row → /for. Each sibling row reads the sibling's OWN name.title + hubLine —
+ * never copy written per linking page.
  */
 export function VxRelated({ v }: { v: VerticalConfig }) {
   const rows = relatedFor(v);
-  const crumbs = (
-    <nav className="vx-eyebrow vx-crumbs" aria-label={VX_RELATED.crumbAria}>
-      <ol>
-        {/* separators trail their crumb, so a wrapped phone line ends with "/"
-            and the page name starts the next one */}
-        <li>
-          <a href="/">{VX_RELATED.crumbs.home}</a>
-          <span className="vx-crumbs__sep" aria-hidden="true">
-            /
-          </span>
-        </li>
-        <li>
-          <a href="/for">{VX_RELATED.crumbs.hub}</a>
-          <span className="vx-crumbs__sep" aria-hidden="true">
-            /
-          </span>
-        </li>
-        <li>
-          <span aria-current="page">{v.name.title}</span>
-        </li>
-      </ol>
-    </nav>
-  );
   return (
     <section className="vx-sec vx-related" aria-labelledby="vx-related-title">
       <div className="vx-col">
-        <VxHead id="vx-related-title" eyebrow={crumbs} title={VX_RELATED.h2} />
+        <VxHead id="vx-related-title" eyebrow={VX_RELATED.eyebrow} title={VX_RELATED.h2} />
         <ul className="vx-rel">
           {rows.map((r) => (
             <li key={r.slug}>

@@ -28,7 +28,6 @@ export const cybersecurityFirms: VerticalConfig = {
 
   hero: {
     title: "Find CTOs preparing for their first SOC 2 audit.",
-    h1: ["You secure companies", "We bring you clients"],
     lede: "Pancake reads GRC openings, job posts naming Vanta, and rival MSSPs’ pages. You scope the work before another firm does.",
   },
 

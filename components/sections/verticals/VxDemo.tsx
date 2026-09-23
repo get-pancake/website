@@ -1,6 +1,10 @@
-// VxDemo — "How it works", the product visual of a /for page (spec §4). SERVER component.
+// VxDemo — the product visual of a /for page (spec §4). SERVER component.
 //
-// Renders the section head and every product surface for all three example prompts
+// Glued under the hero (founder 2026-09-22, Origami-style): no visible section head — a
+// full-bleed hairline, the horizontal tab bar and the full-width app window. The prompts are
+// the hero's "Example prompts" rows (VxHero); the island listens to them.
+//
+// Renders every product surface for all three example prompts
 // (stacked in one grid cell per slot, so heights are fixed from first paint with no JS
 // measuring), then hands the surfaces to the client island as children. Only this
 // vertical's PlayerModel crosses the client boundary.
@@ -23,7 +27,6 @@ import { Fragment, type ReactNode } from "react";
 import { buildDemoModel, type DemoModel, type DemoPromptView, type DemoSigView } from "@/lib/verticals/demo-model";
 import type { SignalKind, VerticalConfig } from "@/lib/verticals/types";
 import { VxDemoPlayer } from "./VxDemoPlayer";
-import { VxHead } from "./VxHead";
 import { SIGNAL_GROUPS, VX_DEMO } from "./vx-copy";
 
 const A = VX_DEMO.app;
@@ -550,12 +553,14 @@ function footGroups(prompts: DemoPromptView[]): { p: string; text: string }[] {
 /* ─── 04 Slack: the channel post ───────────────────────────────────────────── */
 
 /** One "New lead from Pancake" post: the card chrome and buttons are shared, only the lead's
- *  line varies per prompt (DOM budget); the stacked variants reserve the tallest line. */
-function SlackLead({ m, i }: { m: DemoModel; i: 0 | 1 }) {
+ *  line varies per prompt (DOM budget); the stacked variants reserve the tallest line.
+ *  The third post (lead 2) shows only in a narrow window (stage ≤939, demo.css): there the
+ *  channel is taller than two posts, and two left an empty band under the channel bar. */
+function SlackLead({ m, i }: { m: DemoModel; i: 0 | 1 | 2 }) {
   const S = A.slack;
   const approve = i === 0;
   return (
-    <div className="vx-smsg--cont" data-cue={`s.lead${i}`} data-intro={S.leadIntro}>
+    <div className={i === 2 ? "vx-smsg--cont vx-smsg--extra" : "vx-smsg--cont"} data-cue={`s.lead${i}`} data-intro={S.leadIntro}>
       <div className="vx-scard" data-open={S.open}>
         <div className="vx-var">
           {m.prompts.map((p, k) => {
@@ -625,6 +630,7 @@ function SlackWindow({ m }: { m: DemoModel }) {
           </div>
           <SlackLead m={m} i={0} />
           <SlackLead m={m} i={1} />
+          <SlackLead m={m} i={2} />
         </div>
         <p className="vx-slack__composer">{S.composer}</p>
       </div>
@@ -637,10 +643,12 @@ function SlackWindow({ m }: { m: DemoModel }) {
 export function VxDemo({ v }: { v: VerticalConfig }) {
   const m = buildDemoModel(v);
   return (
-    <section className="vx-sec vx-demo" id="how-it-works" aria-labelledby="vx-demo-title">
-      <div className="vx-col">
-        <VxHead id="vx-demo-title" eyebrow={VX_DEMO.eyebrow} title={v.demo.h2} lede={VX_DEMO.lede} />
-      </div>
+    // id="vx-demo": the hero's prompt rows link here (scroll-margin-top clears the sticky phone nav)
+    <section className="vx-demo" id="vx-demo" aria-labelledby="vx-demo-title">
+      {/* the section's name for the outline and screen readers; the tab bar is the visible head */}
+      <h2 id="vx-demo-title" className="vx-sr">
+        {v.demo.h2}
+      </h2>
       <VxDemoPlayer
         model={m.player}
         app={

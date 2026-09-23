@@ -8,8 +8,9 @@
    set font-family on the element itself. */
 
 .lp-vx {
-  /* one text edge per breakpoint = the hero H1's own left edge (hero.css:
-     left calc(50% − 240px) minus half of 656 → 50% − 568; ≤1200 48; ≤767 32) */
+  /* one text edge per breakpoint: the hero column, the demo's tab bar and
+     every section head start here (the 1136 text column: 50% − 568; ≤1200
+     48; ≤767 32) */
   --vx-edge: calc(50% - 568px);
   /* the 1296 card grid (LpCta), 16px floor */
   --vx-card-m: max(16px, calc(50% - 648px));
@@ -41,7 +42,7 @@
   --vx-hiring-fg: color-mix(in srgb, var(--lp-yellow-40) 58%, var(--lp-ink-100));
   --vx-keyword-bg: var(--lp-blue-10);
   --vx-keyword-fg: color-mix(in srgb, var(--lp-blue-40) 78%, var(--lp-ink-100));
-  /* every fg ≥ 4.5:1 on its own bg (A11Y-CONTRAST-03): competitor/brand 4.74,
+  /* every fg ≥ 4.5:1 on its own bg (A11Y-CONTRAST-03): competitor 4.74, brand (ink) 14+,
      influencer/ok 4.92, stack 5.21, neutral 5.07, hiring 4.72, keyword 5.76,
      own brand 4.96 */
   --vx-competitor-bg: var(--lp-pink-10);
@@ -92,7 +93,8 @@
 .lp-vx [data-tone="own_brand"] { --t-bg: var(--vx-own_brand-bg); --t-fg: var(--vx-own_brand-fg); }
 .lp-vx [data-tone="stack"] { --t-bg: var(--vx-stack-bg); --t-fg: var(--vx-stack-fg); }
 .lp-vx [data-tone="ok"] { --t-bg: var(--vx-ok-bg); --t-fg: var(--vx-ok-fg); }
-.lp-vx [data-tone="brand"] { --t-bg: var(--lp-pink-10); --t-fg: var(--vx-competitor-fg); }
+/* the H1 label "Pancake for {plural}": neutral ink on the page (pink read as the Competitor signal) */
+.lp-vx [data-tone="brand"] { --t-bg: color-mix(in srgb, var(--lp-ink-100) 5%, var(--lp-page-bg)); --t-fg: var(--lp-text); }
 
 /* ── section frame ── */
 .lp-vx .vx-sec {
@@ -118,7 +120,8 @@
 .lp-vx #main-content:focus {
   outline: none;
 }
-/* visually hidden, still read (the H1's ": " and "." between badge and lines) */
+/* visually hidden, still read (the H1's ": " between label and title, the
+   demo's H2, the prompt rows' "Play it in the demo.") */
 .lp-vx .vx-sr {
   clip-path: inset(50%);
   height: 1px;
@@ -251,7 +254,6 @@
     .vx-toast__title,
     .vx-toast__body,
     .vx-dialog__title,
-    .lp-hero-lede,
     .lp-cta__body
   ) {
   text-wrap: pretty;

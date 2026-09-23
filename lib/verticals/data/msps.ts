@@ -27,7 +27,6 @@ export const msps: VerticalConfig = {
 
   hero: {
     title: "Find office managers about to hire in-house IT.",
-    h1: ["You keep IT running", "We bring you clients"],
     lede: "Pancake reads Intune job posts, cyber insurance posts and rival MSPs’ pages. Your proposal arrives before their offer letter.",
   },
 

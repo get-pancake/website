@@ -23,8 +23,7 @@ export const developerTools: VerticalConfig = {
 
   hero: {
     title: "Find engineering leads who name your rival when hiring.",
-    h1: ["You ship dev tools", "We bring you customers"],
-    lede: "Posts on flaky tests or LLM bills, comments on vendor pages, not a stale database. Your first message starts from their post.",
+    lede: "Pancake reads posts on flaky tests and LLM bills, plus comments on rival vendors’ pages. Your first message starts from their post.",
   },
 
   workspace: { name: "Runwarden", sender: "Ivar Rask" },

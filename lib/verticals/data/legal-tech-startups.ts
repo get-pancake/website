@@ -27,8 +27,7 @@ export const legalTechStartups: VerticalConfig = {
 
   hero: {
     title: "Find the managing partner when a paralegal role opens.",
-    h1: ["You build for lawyers", "We bring you customers"],
-    lede: "Job posts that name Clio and GCs’ posts on contract review, not a bar directory. Each lead is the lawyer who decides.",
+    lede: "Pancake reads job posts that name Clio, paralegal openings and GCs’ posts on contract review. Each lead is the lawyer who decides.",
   },
 
   workspace: { name: "Pleadwell", sender: "Celia Ndiaye" },

@@ -26,7 +26,6 @@ export const dataConsultancies: VerticalConfig = {
 
   hero: {
     title: "Find CFOs who say their dashboards disagree.",
-    h1: ["You build data stacks", "We bring you clients"],
     lede: "Pancake reads data engineer openings, Snowflake job ads and who likes your posts. Sell them one set of numbers.",
   },
 

@@ -25,7 +25,6 @@ export const executiveSearchFirms: VerticalConfig = {
 
   hero: {
     title: "Find CEOs building out their leadership team.",
-    h1: ["You fill the C-suite", "We bring you clients"],
     lede: "VP and C-level job posts, succession talk and fans of rival search firms. Pancake names who signs the retainer.",
   },
 

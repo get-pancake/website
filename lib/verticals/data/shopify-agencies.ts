@@ -26,7 +26,6 @@ export const shopifyAgencies: VerticalConfig = {
 
   hero: {
     title: "Find brands whose job posts ask for Shopify Plus.",
-    h1: ["You build on Shopify", "We bring you clients"],
     lede: "Pancake reads replatforming talk and developer openings, then names the head of e-commerce. You quote the build.",
   },
 

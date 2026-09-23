@@ -61,15 +61,30 @@ const FONTS = `
 
 /* ── budgets (spec §7.2) ───────────────────────────────────────────────────── */
 // kind "w": single-line width ≤ max px. kind "l": line count at `width` ≤ max.
+// kind "row": the phone prompt row — the kit badge inline before the prompt (hero.css ≤767),
+// line count at `width`. `warn: true` = over budget is a warning, not a failure.
+// `clampTo`: CSS clamps the box to `max` lines (the rest ellipsized, the full text elsewhere);
+// up to `clampTo` lines is reported as clamped (a count), beyond it fails.
 const COND = (size, ls) => `font-family:C;font-weight:600;font-size:${size}px;letter-spacing:${ls}px`;
 const GEIST = (size, weight = 400) => `font-family:G;font-weight:${weight};font-size:${size}px`;
+const BADGE = `${GEIST(11.108, 600)};letter-spacing:.453px;text-transform:uppercase;line-height:16px;padding:3px 9px;border:1px solid transparent`;
 const T = {
-  h1: { kind: "w", css: COND(69.014, -2.0704), max: 643, what: "H1 line at 69.014px" },
-  badge: { kind: "w", css: `${GEIST(12, 600)};letter-spacing:.453px;text-transform:uppercase`, pad: 22, max: 288, what: "hero badge (+ padding)" },
-  lede: { kind: "l", css: GEIST(16), lh: 24, width: 368, max: 3, what: "hero lede at 368" },
-  prompt328: { kind: "l", css: GEIST(15, 500), lh: 22, width: 328, max: 3, what: "prompt at 328" },
-  prompt248: { kind: "l", css: GEIST(15, 500), lh: 22, width: 248, max: 4, what: "prompt at 248" },
-  prompt270: { kind: "l", css: GEIST(15, 500), lh: 22, width: 270, max: 4, what: "prompt at 270" },
+  // hero (2026-09-22 redesign): the functional H1 title, its "Pancake for {plural}" badge, the lede
+  title: { kind: "l", css: COND(57.336, -1.7201), lh: 63.07, width: 880, max: 2, what: "hero title at 880 (desktop)" },
+  titleT: { kind: "l", css: COND(47.784, -1.43), lh: 52.56, width: 672, max: 3, what: "hero title at 672 (768 tablet)" },
+  titleM: { kind: "l", css: COND(35.559, -1.067), lh: 40, width: 326, max: 3, what: "hero title at 326 (390 phone)" },
+  // the H1 label is the kit badge at the kit size (11.108, padding 9 + 1px border); ≤389 its
+  // tracking tightens to 0.1px (hero.css) so the longest plural stays one line at 375
+  label: { kind: "w", css: `${GEIST(11.108, 600)};letter-spacing:.453px;text-transform:uppercase`, pad: 20, max: 326, what: "H1 label badge on one line at 390 (326 column)" },
+  labelS: { kind: "w", css: `${GEIST(11.108, 600)};letter-spacing:.1px;text-transform:uppercase`, pad: 20, max: 311, what: "H1 label badge on one line at 375 (311 column)" },
+  lede: { kind: "l", css: GEIST(19.2), lh: 28.8, width: 640, max: 2, what: "hero lede at 640 (desktop)" },
+  ledeM: { kind: "l", css: GEIST(16), lh: 24, width: 326, max: 5, what: "hero lede at 326 (phone)" },
+  // the hero's example-prompt rows: one line on desktop (the 1025 column leaves 760 for the text),
+  // 2 lines in the phone row (326 − 46 of padding and arrow = 280, badge inline): hero.css clamps
+  // the row to 2 lines and ellipsizes the rest (the full prompt is typed in the demo); a prompt
+  // needing more than 3 lines would lose too much of itself, so that fails
+  promptRow: { kind: "w", css: GEIST(15), max: 760, what: "prompt row text on one line at 1025" },
+  promptPhone: { kind: "row", css: GEIST(15), lh: 24, width: 280, max: 3, what: "phone prompt row (badge inline, 280 text box) at 390" },
   h2d: { kind: "l", css: COND(57.336, -1.7201), lh: 63.07, width: 720, max: 2, what: "H2 at 720" },
   h2m: { kind: "l", css: COND(35.559, -1.07), lh: 41, width: 326, max: 3, what: "H2 at 326 (phone)" },
   sigTitle: { kind: "l", css: COND(27.648, -0.83), lh: 32, width: 224, max: 2, what: "signal card title at 224" },
@@ -98,10 +113,15 @@ const jobs = [];
 const add = (slug, field, t, text) => jobs.push({ slug, field, t, text });
 for (const v of configs) {
   const s = v.slug;
-  v.hero.h1.forEach((l, i) => add(s, `hero.h1[${i}]`, "h1", l));
-  add(s, "name.badge", "badge", v.name.badge);
+  add(s, "hero.title", "title", v.hero.title);
+  add(s, "hero.title", "titleT", v.hero.title);
+  add(s, "hero.title", "titleM", v.hero.title);
+  add(s, "H1 label (Pancake for {plural})", "label", `Pancake for ${v.name.plural}`);
+  add(s, "H1 label (Pancake for {plural})", "labelS", `Pancake for ${v.name.plural}`);
   add(s, "hero.lede", "lede", v.hero.lede);
-  for (const [f, h] of [["demo.h2", v.demo.h2], ["signals.h2", v.signals.h2]]) {
+  add(s, "hero.lede", "ledeM", v.hero.lede);
+  // demo.h2 is visually hidden since 2026-09-22: no pixel budget
+  for (const [f, h] of [["signals.h2", v.signals.h2]]) {
     add(s, f, "h2d", h);
     add(s, f, "h2m", h);
   }
@@ -109,9 +129,8 @@ for (const v of configs) {
   add(s, "hubLine", "hubLine", v.hubLine);
   v.demo.prompts.forEach((p, i) => {
     const at = `prompts[${i}]`;
-    add(s, `${at}.text`, "prompt328", p.text);
-    add(s, `${at}.text`, "prompt248", p.text);
-    add(s, `${at}.text`, "prompt270", p.text);
+    add(s, `${at}.text`, "promptRow", p.text);
+    jobs.push({ slug: s, field: `${at}.text (phone row)`, t: "promptPhone", text: p.text, badge: SIGNAL_LABEL[p.kind] });
     add(s, `${at}.text (bubble)`, "bubble", p.text);
     add(s, `${at}.featured.why`, "why", p.featured.why);
     add(s, `${at}.message`, "message", p.message);
@@ -143,7 +162,7 @@ await page.evaluate(async () => {
   await Promise.all(["600 40px C", "400 16px G", "500 16px G", "600 16px G"].map((f) => document.fonts.load(f)));
 });
 const measured = await page.evaluate(
-  ({ jobs, T, chipJobs }) => {
+  ({ jobs, T, chipJobs, BADGE }) => {
     const width = (text, css) => {
       const s = document.createElement("span");
       s.className = "n";
@@ -154,11 +173,17 @@ const measured = await page.evaluate(
       s.remove();
       return w;
     };
-    const lines = (text, css, w, lh) => {
+    const lines = (text, css, w, lh, badge) => {
       const d = document.createElement("div");
       d.className = "b";
       d.style.cssText = `${css};width:${w}px;line-height:${lh}px`;
-      d.textContent = text;
+      if (badge) {
+        const b = document.createElement("span");
+        b.style.cssText = `${BADGE};display:inline-flex;margin-right:8px;vertical-align:top`;
+        b.textContent = badge;
+        d.appendChild(b);
+        d.appendChild(document.createTextNode(text));
+      } else d.textContent = text;
       document.body.appendChild(d);
       const h = d.getBoundingClientRect().height;
       d.remove();
@@ -166,7 +191,7 @@ const measured = await page.evaluate(
     };
     const out = jobs.map((j) => {
       const t = T[j.t];
-      const value = t.kind === "w" ? width(j.text, t.css) + (t.pad ?? 0) : lines(j.text, t.css, t.width, t.lh);
+      const value = t.kind === "w" ? width(j.text, t.css) + (t.pad ?? 0) : lines(j.text, t.css, t.width, t.lh, j.badge);
       return { ...j, value: Math.round(value * 10) / 10 };
     });
     const chips = chipJobs.map((c) => {
@@ -191,16 +216,22 @@ const measured = await page.evaluate(
     });
     return { out, chips };
   },
-  { jobs, T, chipJobs },
+  { jobs, T, chipJobs, BADGE },
 );
 await browser.close();
 
 /* ── report ────────────────────────────────────────────────────────────────── */
 const fails = [];
 const warns = [];
+const clamped = new Map();
 for (const m of measured.out) {
   const t = T[m.t];
-  if (m.value > t.max) fails.push({ slug: m.slug, field: m.field, what: t.what, value: m.value, max: t.max, unit: t.kind === "w" ? "px" : " lines", text: m.text });
+  if (m.value <= t.max) continue;
+  if (t.clampTo && m.value <= t.clampTo) {
+    clamped.set(m.t, (clamped.get(m.t) ?? 0) + 1);
+    continue;
+  }
+  (t.warn ? warns : fails).push({ slug: m.slug, field: m.field, what: t.what, value: m.value, max: t.clampTo ?? t.max, unit: t.kind === "w" ? "px" : " lines", text: m.text });
 }
 // all proposal rows of one prompt together ≤ 9 lines
 const rowsBy = new Map();
@@ -219,10 +250,11 @@ for (const c of measured.chips) {
 }
 
 if (asJson) {
-  console.log(JSON.stringify({ configs: configs.length, measured: measured.out.length + measured.chips.length, fails, warns, ...(args.includes("--all") ? { values: measured.out.map(({ slug, field, t, value }) => ({ slug, field, budget: t, value, max: T[t].max })), chips: measured.chips.map(({ slug, field, rows }) => ({ slug, field, rows })) } : {}) }, null, 2));
+  console.log(JSON.stringify({ configs: configs.length, measured: measured.out.length + measured.chips.length, fails, warns, clamped: Object.fromEntries(clamped), ...(args.includes("--all") ? { values: measured.out.map(({ slug, field, t, value }) => ({ slug, field, budget: t, value, max: T[t].max })), chips: measured.chips.map(({ slug, field, rows }) => ({ slug, field, rows })) } : {}) }, null, 2));
 } else {
   for (const w of warns) console.warn(`warn ${w.slug}  ${w.field}: ${w.what} ${w.value}${w.unit} (> ${w.max}) — ${w.text}`);
   for (const f of fails) console.error(`FAIL ${f.slug}  ${f.field}: ${f.what} ${f.value}${f.unit} (max ${f.max})${f.text ? ` — "${f.text}"` : ""}`);
+  for (const [t, n] of clamped) console.log(`clamped ${n} × ${T[t].what}: ${T[t].max} lines shown, ellipsized (≤ ${T[t].clampTo} lines of text)`);
   console.log(
     `[verticals-budget] ${configs.length} config(s), ${measured.out.length + measured.chips.length} measurements: ${fails.length} failure(s), ${warns.length} warning(s)`,
   );

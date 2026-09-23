@@ -1,60 +1,6 @@
-/* ── Related (spec §2.8) — breadcrumb eyebrow + full-width rows ───────────
-   The breadcrumb IS the section eyebrow (same Fono caps + pink bar). Its
-   links are 44px tall tap targets (12px padding) whose negative block margin
-   keeps the eyebrow's 20px line box, so the head sits exactly like every
-   other; on phones the crumbs wrap (the current page — not a link — takes
-   the second line) and the bar steps aside. */
-
-.lp-vx .vx-crumbs ol {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  list-style: none;
-  margin: 0;
-  min-width: 0;
-  padding: 0;
-  row-gap: 4px;
-}
-.lp-vx .vx-crumbs li {
-  align-items: center;
-  display: flex;
-  white-space: nowrap;
-}
-.lp-vx .vx-crumbs a {
-  color: var(--lp-text);
-  display: inline-block;
-  font-family: var(--vx-eyebrow-font);
-  margin: -12px -4px; /* 44px tap box, visual line unchanged */
-  padding: 12px 4px;
-  /* above the wrapped second line (phones: the current page drops under
-     Home / Industries and its line box would take the bottom of the tap box) */
-  position: relative;
-  z-index: 1;
-  text-decoration: underline;
-  text-decoration-color: var(--lp-stroke);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 4px;
-}
-.lp-vx .vx-crumbs span {
-  font-family: var(--vx-eyebrow-font);
-}
-.lp-vx .vx-crumbs__sep {
-  color: var(--lp-subtle-text); /* 4.77:1 on the page cream (muted was 3.31) */
-  padding-inline: 10px;
-}
-.lp-vx .vx-crumbs [aria-current="page"] {
-  color: var(--lp-subtle-text);
-}
-@media (hover: hover) {
-  .lp-vx .vx-crumbs a:hover {
-    text-decoration-color: currentColor;
-  }
-}
-@media (max-width: 767px) {
-  .lp-vx .vx-crumbs::after {
-    display: none;
-  }
-}
+/* ── Related (spec §2.8) — "Industries" eyebrow + full-width rows ─────────
+   The breadcrumb that used to be this section's eyebrow moved to the hero
+   (2026-09-22, hero.css). */
 
 .lp-vx .vx-rel {
   border-top: 1px solid var(--vx-hair);

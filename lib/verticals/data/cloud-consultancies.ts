@@ -28,8 +28,7 @@ export const cloudConsultancies: VerticalConfig = {
 
   hero: {
     title: "Find IT directors with VMware in their job posts.",
-    h1: ["You run the migration", "We bring you clients"],
-    lede: "DevOps and SRE openings, plus CTOs writing on cloud costs, not a stale database. You pitch the migration with proof in hand.",
+    lede: "Pancake reads DevOps openings, VMware in job posts and CTOs writing on cloud costs. You pitch the migration with proof in hand.",
   },
 
   workspace: { name: "Hsieh Cloud", sender: "Vivian Hsieh" },

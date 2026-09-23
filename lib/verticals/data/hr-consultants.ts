@@ -27,7 +27,6 @@ export const hrConsultants: VerticalConfig = {
 
   hero: {
     title: "Find founders setting up performance reviews and PTO.",
-    h1: ["You run people ops", "We bring you clients"],
     lede: "HR manager openings and Gusto or Rippling in job posts show Pancake who needs help. You cover the gap until they hire.",
   },
 

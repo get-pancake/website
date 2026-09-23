@@ -30,8 +30,7 @@ export const healthtechStartups: VerticalConfig = {
 
   hero: {
     title: "Find revenue cycle VPs adding prior auth staff.",
-    h1: ["You sell to providers", "We bring you customers"],
-    lede: "Hospital job posts naming Epic and what health leaders post, not a stale provider list. You reach the budget holder.",
+    lede: "Pancake reads hospital job posts naming Epic, prior auth openings and health leaders’ posts. You reach the budget holder.",
   },
 
   workspace: { name: "Wardwise", sender: "Temitope Oyinlola" },

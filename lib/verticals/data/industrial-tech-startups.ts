@@ -29,8 +29,7 @@ export const industrialTechStartups: VerticalConfig = {
 
   hero: {
     title: "Find plant leaders who hire for OSIsoft PI skills.",
-    h1: ["You sell to factories", "We bring you customers"],
-    lede: "Pancake tracks reliability and SCADA openings plus OT security posts, not a trade-show list. Meet the VP who runs the line.",
+    lede: "Pancake tracks reliability and SCADA openings, OSIsoft PI in job posts and OT security talk. Meet the VP who runs the line.",
   },
 
   workspace: { name: "Tachline", sender: "Anneke Moreland" },

@@ -27,7 +27,6 @@ export const sustainabilityConsultants: VerticalConfig = {
 
   hero: {
     title: "Find CFOs wrestling with scope 3 supplier data.",
-    h1: ["You cut carbon", "We bring you clients"],
     lede: "Pancake reads sustainability openings and job posts naming EcoVadis or Sphera. Help them publish the first report.",
   },
 

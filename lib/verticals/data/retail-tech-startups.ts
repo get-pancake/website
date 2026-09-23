@@ -27,8 +27,7 @@ export const retailTechStartups: VerticalConfig = {
 
   hero: {
     title: "Find e-commerce heads venting about apparel returns.",
-    h1: ["You help brands sell", "We bring you customers"],
-    lede: "Insights openings, Salsify or Akeneo in job posts and comments on your page. The buyer arrives by breakfast.",
+    lede: "Pancake reads LinkedIn posts on return costs, Salsify or Akeneo in job posts and comments on your page. The buyer arrives by breakfast.",
   },
 
   workspace: { name: "Endaisle", sender: "Esteban Cordero" },

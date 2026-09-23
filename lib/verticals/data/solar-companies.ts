@@ -25,9 +25,8 @@ export const solarCompanies: VerticalConfig = {
   hubLine: "Reach the people who pay a company’s power bill.",
 
   hero: {
-    title: "Find facility heads whose posts flag demand charges.",
-    h1: ["You build C&I solar", "We bring you customers"],
-    lede: "Pancake reads energy manager openings, CFO comments under energy experts and rival installers’ pages. You pitch the savings.",
+    title: "Find facility heads posting about energy costs.",
+    lede: "Pancake reads energy manager openings, CFOs commenting on energy experts’ posts and rival installers’ pages. You pitch the savings.",
   },
 
   workspace: { name: "Sunbarrow Energy", sender: "Lucas Arbogast" },

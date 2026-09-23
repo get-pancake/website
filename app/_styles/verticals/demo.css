@@ -1,10 +1,14 @@
-/* ── VxDemo: "How it works", the product visual (spec §4) ─────────────────────
+/* ── VxDemo: the product visual (spec §4; Origami-style, 2026-09-22) ─────────────
    Owner: the demo. Imported by app/_styles/verticals.css after foundation.css.
    Scoped under .lp-vx (0,2,0 beats the kit's .lp p / .lp button resets).
 
-   Layout: one cream card (steps.css radius 30) on the 1296 card grid; content on
-   the 1136 text column. Prompts on top, then tabs (vertical ≥1181, strip below)
-   and the stage. The stage stacks two windows (the Pancake app, Slack) in one
+   Layout: glued under the hero — a full-bleed cream band opened by a hairline;
+   the horizontal tab bar (4 equal tabs) on the text column (--vx-edge), the app
+   window right under it on the 1296 card grid (--vx-card-m), then the foot on
+   the text column: the active step's caption + Pause / Replay, the honesty note
+   under the caption (critics 2026-09-22: the caption above the window pushed
+   the product below the fold). The prompts are the hero's rows
+   (hero.css). The stage stacks two windows (the Pancake app, Slack) in one
    grid cell; inside the app window the three pages (Signals, Leads, Campaign)
    stack in one grid cell; every per-prompt slot stacks its 3 variants in one
    grid cell (.vx-var). So every height is the tallest alternative from first
@@ -59,149 +63,113 @@
 .lp-vx .vx-stage [data-kind="hiring"]     { --k-bg: var(--app-hiring-bg);     --k-fg: var(--app-hiring-fg);     --k-ring: var(--app-hiring-ring); }
 .lp-vx .vx-stage [data-kind="stack"]      { --k-bg: var(--app-stack-bg);      --k-fg: var(--app-stack-fg);      --k-ring: var(--app-stack-ring); }
 
-/* ─── section + card ───────────────────────────────────────────────────────── */
-.lp-vx .vx-demo__card {
+/* ─── section band + tab bar + caption ─────────────────────────────────────── */
+/* the band: page cream → card cream between two full-bleed hairlines (Origami's grey → white edge);
+   #vx-demo is the hero rows' link target, the phone nav's compact sticky bar (64) cleared */
+.lp-vx .vx-demo {
   background: var(--lp-card-cream);
-  border-radius: 30px;
-  margin: var(--vx-head-gap) var(--vx-card-m) 0;
-  /* the text edge, never under 32px (at 1201–1240 the difference collapses to 16–21px) */
-  padding: 40px max(32px, calc(var(--vx-edge) - var(--vx-card-m)));
+  border-block: 1px solid var(--vx-hair);
+  padding-bottom: 40px;
   position: relative;
+  scroll-margin-top: 0px;
 }
-.lp-vx .vx-demo__label {
-  color: var(--lp-subtle-text);
-  font-family: var(--lp-font-sans);
-  font-size: var(--lp-text-sm);
-  font-weight: 600;
-  line-height: 20px;
-  margin-bottom: 12px;
-}
+.lp-vx .vx-demo__card { position: relative; }
 
-/* prompt cards: kit badge + the prompt, equal heights (grid row), no dimming */
-.lp-vx .vx-prompts {
+.lp-vx .vx-tabs {
   display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  margin-bottom: 28px;
-  position: relative;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-inline: var(--vx-edge);
 }
-.lp-vx .vx-prompt {
-  align-items: flex-start;
-  background: transparent;
-  border: 0;
-  border-radius: var(--lp-r-m);
-  box-shadow: inset 0 0 0 1px var(--vx-hair);
-  color: var(--lp-text);
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  font-family: var(--lp-font-sans);
-  padding: 14px 18px 16px;
-  text-align: left;
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
-}
-.lp-vx .vx-prompt:hover { background: color-mix(in srgb, var(--lp-surface) 55%, transparent); }
-.lp-vx .vx-prompt[aria-pressed="true"] {
-  background: var(--lp-surface);
-  box-shadow: inset 0 0 0 1px var(--lp-ink-tr-20), inset 0 -2px 0 var(--lp-ink-100);
-}
-.lp-vx .vx-prompt:focus-visible,
-.lp-vx .vx-tab:focus-visible,
-.lp-vx .vx-ctrl__btn:focus-visible,
-.lp-vx .vx-stage:focus-visible { outline: 2px solid var(--lp-ink-100); outline-offset: 2px; }
-.lp-vx .vx-prompt .vx-badge { flex: none; }
-.lp-vx .vx-prompt__text {
-  display: block;
-  font-family: var(--lp-font-sans);
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 22px;
-  margin-top: 10px;
-  text-wrap: pretty;
-}
-
-/* body: tabs | stage */
-/* stretch: the tab rail and the window end on the same line; 256 puts the stage's left
-   edge on the Signals section's second column (x440 at 1440) */
-.lp-vx .vx-demo__body {
-  align-items: stretch;
-  column-gap: 32px;
-  display: grid;
-  grid-template-columns: 256px minmax(0, 1fr);
-}
-.lp-vx .vx-tabs { display: flex; flex-direction: column; }
-/* when the window is taller than the steps, the hairline rail runs on to its bottom edge */
-.lp-vx .vx-tabs::after { background: var(--vx-hair); border-radius: 1px; content: ""; flex: 1 1 0; width: 2px; }
 .lp-vx .vx-tab {
+  align-items: center;
   background: none;
   border: 0;
-  color: var(--lp-text);
+  color: var(--lp-subtle-text);
   cursor: pointer;
-  display: block;
+  display: flex;
   font-family: var(--lp-font-sans);
-  padding: 14px 0 14px 20px;
+  height: 56px;
+  justify-content: center;
+  min-width: 0;
+  padding: 0 6px;
   position: relative;
-  text-align: left;
-  width: 100%;
+  transition: color 0.2s ease;
 }
+.lp-vx .vx-tab[aria-selected="true"] { color: var(--lp-text); }
+@media (hover: hover) {
+  .lp-vx .vx-tab:hover { color: var(--lp-text); }
+}
+.lp-vx .vx-tab__label {
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+}
+.lp-vx .vx-tab__num {
+  color: var(--vx-num);
+  font-family: var(--lp-font-sans);
+  font-variant-numeric: tabular-nums;
+  margin-right: 2px;
+}
+/* the underline: ONLY the active tab draws one (Origami; a rule under all four read as a
+   second frame, narrower than the window). Its ink bar is full, or — once the clock has run on
+   the view — the dwell's progress (--p) over a faint full-width track, so the selected tab
+   always reads as selected, paused or not */
 .lp-vx .vx-tab__rail {
-  background: var(--vx-hair);
-  border-radius: 1px;
+  background: transparent;
   bottom: 0;
+  height: 2px;
   left: 0;
   overflow: hidden;
   position: absolute;
-  top: 0;
-  width: 2px;
+  right: 0;
 }
 .lp-vx .vx-tab__rail > i {
   background: var(--lp-ink-100);
   inset: 0;
   position: absolute;
-  transform: scaleY(0);
-  transform-origin: top;
+  transform: scaleX(0);
+  transform-origin: left;
 }
-.lp-vx .vx-tab[aria-selected="true"] .vx-tab__rail > i { transform: scaleY(var(--p, 1)); }
-.lp-vx .vx-tab__label {
-  display: block;
-  font-family: var(--lp-font-sans);
-  font-size: var(--lp-text-sm);
-  font-weight: 600;
-  line-height: 20px;
-}
-.lp-vx .vx-tab__num { color: var(--vx-num); font-variant-numeric: tabular-nums; }
-.lp-vx .vx-tab__title,
-.lp-vx .vx-tabtext__title {
+.lp-vx .vx-tab[aria-selected="true"] .vx-tab__rail { background: var(--lp-ink-tr-10); }
+.lp-vx .vx-tab[aria-selected="true"] .vx-tab__rail > i { transform: scaleX(var(--p, 1)); }
+/* the pink step number marks the selected tab only (four pink numbers out-shouted the underline) */
+.lp-vx .vx-tab:not([aria-selected="true"]) .vx-tab__num { color: inherit; }
+
+/* the active step, one line on desktop: all four stacked in one cell (fixed height); it sits in
+   the foot, under the window */
+.lp-vx .vx-tabtext { display: grid; grid-area: cap; min-width: 0; }
+.lp-vx .vx-tabtext > p {
   color: var(--lp-subtle-text);
-  display: block;
-  font-family: var(--lp-font-cond);
-  font-size: var(--lp-text-xlg);
-  font-weight: 600;
-  letter-spacing: -0.46px;
-  line-height: 26px;
-  margin-top: 4px;
-  transition: color 0.2s ease;
-}
-.lp-vx .vx-tab__body,
-.lp-vx .vx-tabtext__body {
-  color: var(--lp-subtle-text);
-  display: block;
   font-family: var(--lp-font-sans);
   font-size: 15px;
+  grid-area: 1 / 1;
   line-height: 22px;
-  margin-top: 6px;
+  min-width: 0;
   text-wrap: pretty;
 }
-.lp-vx .vx-tab[aria-selected="true"] .vx-tab__title,
-.lp-vx .vx-tab[aria-selected="true"] .vx-tab__body,
-.lp-vx .vx-tabtext__title,
-.lp-vx .vx-tabtext__body { color: var(--lp-text); }
-.lp-vx .vx-tabtext { display: none; }
+.lp-vx .vx-tabtext__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-weight: 600;
+}
+.lp-vx .vx-tabtext__body { font-family: var(--lp-font-sans); }
+.lp-vx .vx-demo__card:not([data-tab="0"]) .vx-tabtext > [data-t="0"],
+.lp-vx .vx-demo__card:not([data-tab="1"]) .vx-tabtext > [data-t="1"],
+.lp-vx .vx-demo__card:not([data-tab="2"]) .vx-tabtext > [data-t="2"],
+.lp-vx .vx-demo__card:not([data-tab="3"]) .vx-tabtext > [data-t="3"] { visibility: hidden; }
+
+.lp-vx .vx-tab:focus-visible,
+.lp-vx .vx-ctrl__btn:focus-visible,
+.lp-vx .vx-stage:focus-visible { outline: 2px solid var(--lp-ink-100); outline-offset: 2px; }
+.lp-vx .vx-tab:focus-visible { outline-offset: -2px; }
 
 /* stage: two windows in one cell; the cursor rides on top */
 .lp-vx .vx-stage {
   container: vxstage / inline-size;
   display: grid;
+  margin: 16px var(--vx-card-m) 0;
   min-width: 0;
   position: relative;
 }
@@ -277,23 +245,26 @@
 .lp-vx .vx-stage [data-cursor] { transition: transform 0.12s ease; }
 .lp-vx .vx-stage [data-cursor].is-press { transform: scale(0.96); }
 
-/* foot: honesty note + Pause / Replay (space reserved from SSR: zero CLS) */
+/* foot: the caption and the honesty note stacked on the left (22 + 2 + 20 = the 44px buttons),
+   Pause / Replay on the right; every slot reserved from SSR (zero CLS) */
 .lp-vx .vx-demo__foot {
   align-items: center;
-  display: flex;
-  gap: 16px;
-  justify-content: space-between;
-  margin-top: 20px;
+  column-gap: 24px;
+  display: grid;
+  grid-template-areas: "cap ctrl" "note ctrl";
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 14px var(--vx-edge) 0;
+  row-gap: 2px;
 }
-.lp-vx .vx-ctrl { display: flex; flex: none; gap: 4px; margin-right: -10px; }
+.lp-vx .vx-demo__foot .vx-note { grid-area: note; }
+.lp-vx .vx-ctrl { display: flex; flex: none; gap: 4px; grid-area: ctrl; margin-right: -10px; }
 .lp-vx .vx-demo__card:not([data-ready]) .vx-ctrl,
 .lp-vx .vx-demo__card[data-reduced] .vx-ctrl { visibility: hidden; }
-/* no JS (no data-ready): nothing is interactive, so the tabs read as a static list — every
-   step in full ink, no rail highlight — and nothing invites a click */
-.lp-vx .vx-demo__card:not([data-ready]) :is(.vx-tab, .vx-prompt) { cursor: default; }
-.lp-vx .vx-demo__card:not([data-ready]) .vx-tab :is(.vx-tab__label, .vx-tab__title, .vx-tab__body) { color: var(--lp-text); }
-.lp-vx .vx-demo__card:not([data-ready]) .vx-tab .vx-tab__rail > i { transform: scale(0); }
-.lp-vx .vx-demo__card:not([data-ready]) .vx-prompt:not([aria-pressed="true"]):hover { background: transparent; }
+/* no JS (no data-ready): the bar shows what the stage shows (Brief) and invites no click */
+.lp-vx .vx-demo__card:not([data-ready]) .vx-tab { cursor: default; }
+@media (hover: hover) {
+  .lp-vx .vx-demo__card:not([data-ready]) .vx-tab:not([aria-selected="true"]):hover { color: var(--lp-subtle-text); }
+}
 .lp-vx .vx-demo__foot .vx-note { text-wrap: pretty; }
 .lp-vx .vx-ctrl__btn {
   align-items: center;
@@ -916,7 +887,8 @@
 .lp-vx .vx-composer__field { display: grid; flex: 1; font-size: 11.5px; min-width: 0; overflow: hidden; }
 .lp-vx .vx-composer__field > * { grid-area: 1 / 1; min-width: 0; }
 /* input-like: short text sits left, long text keeps its end in view (no growth) */
-.lp-vx .vx-composer__in { display: flex; justify-content: flex-end; overflow: hidden; white-space: nowrap; }
+.lp-vx .vx-composer__in { display: flex; overflow: hidden; white-space: nowrap; }
+/* the island slides a long line left with a transform (its end in view, no layout shift) */
 .lp-vx .vx-composer__line { flex: none; min-width: 100%; }
 .lp-vx .vx-typed::after {
   background: currentColor;
@@ -1243,6 +1215,13 @@
 .lp-vx .vx-drawer__foot > [data-s] { grid-area: 1 / 2; justify-self: end; }
 
 /* ─── 03 Outreach: the lead's campaign journey ─────────────────────────────── */
+/* the campaign page fills the window (the tallest pane sets the stage): the journey card runs
+   to the bottom and its "Up next" panel stretches with it, the notes pinned at its foot — no
+   empty band under the card on any width */
+.lp-vx .vx-camp { display: flex; flex-direction: column; }
+.lp-vx .vx-camp > .vx-page { display: flex; flex: 1; flex-direction: column; }
+.lp-vx .vx-camp .vx-journey { display: flex; flex: 1; flex-direction: column; }
+.lp-vx .vx-camp .vx-journey__grid { flex: 1; }
 .lp-vx .vx-journey {
   background: var(--app-card);
   border-radius: 10px;
@@ -1388,7 +1367,9 @@
 }
 /* anchored to the composer, as Slack is: the newest post sits on it */
 .lp-vx .vx-slack__feed { display: flex; flex: 1; flex-direction: column; gap: 10px; justify-content: flex-end; padding: 14px 16px; }
-.lp-vx .vx-smsg--cont + .vx-smsg--cont { margin-top: 2px; } /* 12px between the two posts */
+.lp-vx .vx-smsg--cont + .vx-smsg--cont { margin-top: 2px; } /* 12px between the posts */
+/* the third post fills a narrow window's taller channel (stage ≤939, below); wide windows show two */
+.lp-vx .vx-smsg--extra { display: none; }
 .lp-vx .vx-smsg { column-gap: 10px; display: grid; grid-template-columns: 32px minmax(0, 1fr); line-height: 18px; }
 .lp-vx .vx-smsg__av { grid-row: 1 / 3; }
 .lp-vx .vx-smsg--cont { line-height: 18px; padding-left: 42px; }
@@ -1443,6 +1424,58 @@
 }
 
 /* ─── stage recompositions: by the stage's own width (container queries) ──── */
+/* wide windows (≥940: 1024 → 992, 1200 → 1168, 1280 → 1248, 1440 → 1296): the lead sheet sits
+   BESIDE the table instead of over it, so every row keeps its Approve buttons. 940–1099 buys the
+   table its width by dropping the rail (as ≤819 already does); ≥1100 keeps the rail and gives
+   the chat column 20px more. */
+@container vxstage (min-width: 940px) {
+  .lp-vx .vx-leads { grid-template-columns: minmax(0, 1fr) 288px; }
+  .lp-vx .vx-drawer {
+    box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+    grid-area: 1 / 2;
+    justify-self: stretch;
+    width: auto;
+  }
+}
+@container vxstage (min-width: 940px) and (max-width: 1099px) {
+  .lp-vx .vx-rail { display: none; }
+}
+@container vxstage (min-width: 1100px) {
+  .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr) 340px; }
+  .lp-vx .vx-leads { grid-template-columns: minmax(0, 1fr) 312px; }
+}
+/* under 940 the sheet floats over the table (the app's own sheet): the columns it would cut
+   (stage pill, row actions) step out instead of peeking at its edge */
+@container vxstage (max-width: 939px) {
+  .lp-vx .vx-row::after,
+  .lp-vx .vx-row__act { visibility: hidden; }
+  /* the channel runs taller than two posts here (the stage is set by the Brief / Leads panes):
+     a third post instead of an empty band under the channel bar. The posts drop their "Open in
+     Pancake" line (Approve / Reject carry the action), so three fit the height the other panes
+     set — the Slack window must never be the tallest pane (swept: stage heights unchanged on
+     all 40 pages at 320–900) — and what height is left spreads evenly between the posts
+     instead of pooling under the bar */
+  .lp-vx .vx-smsg--extra { display: block; }
+  .lp-vx .vx-scard::after { content: none; }
+  .lp-vx .vx-slack__feed { justify-content: space-evenly; }
+}
+/* 560–939 (tablets): the journey stacks like the phone one — steps, then "Up next" — with the
+   three message steps folded into step 4's row: two columns stretched the "Up next" card into
+   a 160px void. The step notes go with the fold ("6 hours after they accept" is the invite's). */
+@container vxstage (min-width: 560px) and (max-width: 939px) {
+  .lp-vx .vx-journey__grid { grid-template-columns: minmax(0, 1fr); }
+  .lp-vx .vx-steps > .vx-step:nth-child(n + 5) { display: none; }
+  .lp-vx .vx-step[data-fold]::before { content: none; }
+  .lp-vx .vx-step[data-fold] > :is(.vx-step__name, .vx-step__sub) { display: none; }
+  .lp-vx .vx-step[data-fold]::after {
+    content: attr(data-fold);
+    font-size: 11.5px;
+    font-weight: 500;
+    grid-area: 1 / 2;
+    line-height: 16px;
+    padding-top: 3px;
+  }
+}
 @container vxstage (max-width: 819px) {
   .lp-vx .vx-rail { display: none; }
   .lp-vx .vx-slack { grid-template-columns: 150px minmax(0, 1fr); }
@@ -1452,8 +1485,6 @@
   .lp-vx .vx-app__cta { display: none; }
   .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr) 272px; }
   .lp-vx .vx-row { grid-template-columns: 14px 30px 170px 124px 0 0; }
-  .lp-vx .vx-row::after,
-  .lp-vx .vx-row__act { visibility: hidden; }
   .lp-vx .vx-drawer { width: 256px; }
   .lp-vx .vx-btn--ai { display: none; }
   .lp-vx .vx-drawer__head { padding-right: 0; }
@@ -1463,6 +1494,10 @@
 }
 @container vxstage (max-width: 559px) {
   /* phones: recomposed, nothing zoomed or cropped */
+  /* the chat alone fills the Brief pane here, and a shorter prompt's thread would leave a band
+     over the composer: the thread sits ON the composer, as a chat does (the slack is above it) */
+  .lp-vx .vx-chat__log { align-content: end; }
+  .lp-vx .vx-chat__log > .vx-thread { align-self: end; }
   .lp-vx .vx-app__bar { gap: 8px; height: 48px; padding: 0 10px 0 12px; }
   .lp-vx .vx-app__logo { height: 20px; }
   .lp-vx .vx-app__center { left: auto; margin-left: auto; position: static; transform: none; }
@@ -1522,9 +1557,19 @@
   }
   .lp-vx .vx-next__draft { display: none; }
   .lp-vx .vx-next__end { padding-top: 8px; }
-  .lp-vx .vx-slack__feed { padding: 12px; }
+  /* phones: tighter Slack posts, so the three fit the height the other panes set */
+  .lp-vx .vx-slack__feed { gap: 6px; padding: 10px 12px; }
+  .lp-vx .vx-scard { margin-top: 3px; }
+  .lp-vx .vx-scard__btns { margin-top: 5px; }
+  .lp-vx :is(.vx-sbtn, .vx-scard__done) { height: 26px; }
   .lp-vx .vx-slack__composer { margin: 0 12px 12px; }
   .lp-vx .vx-smsg--cont { padding-left: 0; }
+}
+/* ≤359 (375 / 390 phones and below): the lead lines wrap to two, and every post reserves its
+   longest prompt's line — a 12px channel keeps the three posts inside the stage */
+@container vxstage (max-width: 359px) {
+  .lp-vx .vx-slack { font-size: 12px; }
+  .lp-vx :is(.vx-smsg, .vx-smsg--cont) { line-height: 17px; }
 }
 @container vxstage (max-width: 340px) {
   /* narrow phones: the lead's kind chip lives on the sheet below, so "role @ company" gets the row */
@@ -1532,60 +1577,38 @@
   .lp-vx .vx-row > .vx-chip { display: none; }
 }
 
-/* ─── page breakpoints: tabs become a strip ≤1180, phones ≤767 ─────────────── */
-@media (max-width: 1200px) {
-  .lp-vx .vx-demo__card { padding: 32px; }
-}
-@media (max-width: 1180px) {
-  .lp-vx .vx-demo__body { grid-template-columns: minmax(0, 1fr); }
-  .lp-vx .vx-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); }
-  .lp-vx .vx-tabs::after { content: none; }
-  .lp-vx .vx-tab { align-items: center; display: flex; height: 48px; justify-content: center; padding: 0 4px; text-align: center; }
-  .lp-vx .vx-tab__title, .lp-vx .vx-tab__body { display: none; }
-  .lp-vx .vx-tab__label { color: var(--lp-subtle-text); transition: color 0.2s ease; }
-  .lp-vx .vx-tab[aria-selected="true"] .vx-tab__label { color: var(--lp-text); }
-  .lp-vx .vx-tab__rail { height: 2px; left: 0; right: 0; top: auto; width: auto; }
-  .lp-vx .vx-tab__rail > i { transform: scaleX(0); transform-origin: left; }
-  .lp-vx .vx-tab[aria-selected="true"] .vx-tab__rail > i { transform: scaleX(var(--p, 1)); }
-  .lp-vx .vx-tabtext { display: grid; margin: 16px 0; }
-  .lp-vx .vx-tabtext > div { grid-area: 1 / 1; min-width: 0; }
-  .lp-vx .vx-demo__card:not([data-tab="0"]) .vx-tabtext > [data-t="0"],
-  .lp-vx .vx-demo__card:not([data-tab="1"]) .vx-tabtext > [data-t="1"],
-  .lp-vx .vx-demo__card:not([data-tab="2"]) .vx-tabtext > [data-t="2"],
-  .lp-vx .vx-demo__card:not([data-tab="3"]) .vx-tabtext > [data-t="3"] { visibility: hidden; }
-  .lp-vx .vx-tabtext__title { margin-top: 0; }
-}
+/* ─── page breakpoints ─────────────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  /* 768–1024: the 3-up grid stays (equal heights, outer edges on the content edges) */
-  .lp-vx .vx-prompt { padding-inline: 14px; }
+  .lp-vx .vx-demo { padding-bottom: 32px; }
 }
 @media (max-width: 767px) {
-  .lp-vx .vx-demo__card { border-radius: 24px; padding: 20px 16px; }
-  /* the phone snap row: one prompt card and the edge of the next (≥768 keeps the 3-up grid) */
-  .lp-vx .vx-prompts {
-    display: flex;
-    margin-inline: -16px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    padding: 0 16px 2px;
-    scroll-padding-inline: 16px;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-  }
-  .lp-vx .vx-prompts::-webkit-scrollbar { display: none; }
-  .lp-vx .vx-prompt { flex: 0 0 min(84%, 320px); scroll-snap-align: start; }
-  .lp-vx .vx-tab { height: 44px; }
-  .lp-vx .vx-tabtext { margin: 14px 0; }
-  .lp-vx .vx-tabtext__title { font-size: 21px; line-height: 24px; }
+  .lp-vx .vx-demo { padding-bottom: 28px; scroll-margin-top: 64px; }
+  .lp-vx .vx-tab { height: 52px; padding: 0 2px; }
+  .lp-vx .vx-tab__label { font-size: 14px; }
+  .lp-vx .vx-stage { margin-top: 12px; }
   .lp-vx .vx-cursor { display: none; }
-  .lp-vx .vx-demo__foot { align-items: flex-start; margin-top: 12px; }
-  .lp-vx .vx-demo__foot .vx-note { padding-top: 12px; }
+  /* phones: the caption takes the column (2–3 lines), the note and the buttons share the row under it */
+  .lp-vx .vx-demo__foot { grid-template-areas: "cap cap" "note ctrl"; margin-top: 12px; row-gap: 4px; }
+}
+/* short desktop windows (hero.css has the other half of this tier and its bounds): a 48px bar
+   and a 12px gap to the window */
+@media (min-width: 1000px) and (min-height: 760px) and (max-height: 859px),
+  (min-width: 768px) and (max-width: 999px) and (min-height: 780px) and (max-height: 879px) {
+  .lp-vx .vx-tab { height: 48px; }
+  .lp-vx .vx-stage { margin-top: 12px; }
+}
+/* no JS on a phone: the sticky nav stays 104 tall and transparent (LpNavScroll never compacts
+   it), so a prompt row's #vx-demo jump must clear 104, and the bar needs a ground or the hero
+   shows through it */
+@media (max-width: 767px) and (scripting: none) {
+  .lp-vx .vx-demo { scroll-margin-top: 104px; }
+  .lp-vx .lp-nav { background: var(--lp-page-bg); box-shadow: 0 1px 0 var(--vx-hair); }
 }
 @media (max-width: 420px) {
   .lp-vx .vx-tab__num { display: none; }
 }
 @media (max-width: 359px) {
-  .lp-vx .vx-tab__label { font-size: 12px; letter-spacing: -0.1px; }
+  .lp-vx .vx-tab__label { font-size: 13px; letter-spacing: -0.1px; }
 }
 
 /* reduced motion: the final frames, nothing moves (the island never arms) */

@@ -22,8 +22,8 @@
 //   4. DOM        ≤1,400 elements in <main> (the nav's Industries panel not counted: it is the
 //                 founder's site-wide addition and grows with the registry), ≤650 in
 //                 .vx-demo__card, exactly one <h1>, and
-//                 H1 textContent = "{name.badge}: {h1[0]}. {h1[1]}" (VxHero: the badge rides
-//                 inside the H1, sr-only ": " and "." make it read as one sentence).
+//                 H1 textContent = "Pancake for {plural}: {hero.title}" (VxHero, 2026-09-22: the
+//                 label badge rides inside the H1, an sr-only ": " joins it to the title).
 //   5. CSS        no colour literals (#hex, rgb(, rgba(, hsl() in app/_styles/verticals/*.css —
 //                 except custom-property declarations in demo.css (the app's own palette,
 //                 scoped to the demo).
@@ -207,7 +207,7 @@ for (const v of ALL_VERTICALS) {
   else if (x.demoCount > 650) fail("dom", path, `${x.demoCount} elements in .vx-demo__card (max 650)`);
   if (x.h1s.length !== 1) fail("dom", path, `${x.h1s.length} <h1> (want exactly 1)`);
   else {
-    const wantH1 = `${v.name.badge}: ${v.hero.h1[0]}. ${v.hero.h1[1]}`;
+    const wantH1 = `${COPY.VX_HERO.label(v)}: ${v.hero.title}`;
     if (x.h1s[0] !== wantH1) fail("dom", path, `H1 text "${x.h1s[0]}" ≠ "${wantH1}"`);
   }
   // 3. lints

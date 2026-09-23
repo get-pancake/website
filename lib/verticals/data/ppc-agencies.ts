@@ -23,7 +23,6 @@ export const ppcAgencies: VerticalConfig = {
 
   hero: {
     title: "Find e-commerce brands staffing up paid media.",
-    h1: ["You run paid media", "We bring you clients"],
     lede: "Google Ads in job posts and CAC debates on LinkedIn lead to the head of growth. Run their ads while the role sits open.",
   },
 

@@ -27,8 +27,7 @@ export const softwareDevelopmentAgencies: VerticalConfig = {
 
   hero: {
     title: "Find founders searching for a technical co-founder.",
-    h1: ["You build software", "We bring you clients"],
-    lede: "Engineering openings and React or Flutter in job posts, not a stale database. You ship while they interview.",
+    lede: "Pancake reads engineering openings, Flutter in job posts and technical co-founder searches. You ship while they interview.",
   },
 
   workspace: { name: "Anvilry Software", sender: "Idris Fairbanks" },

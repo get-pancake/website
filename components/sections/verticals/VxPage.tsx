@@ -20,12 +20,13 @@ import { verticalJsonLd } from "@/components/sections/verticals/vx-jsonld";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
 /**
- * One /for/<slug> page from one VerticalConfig (spec §2, order D8):
- * Nav → Hero → How it works (demo) → Logos → Signals → Control → FAQ →
- * Related → CTA → Pricing → Footer. Every section is a server component;
- * the demo's VxDemoPlayer is the page's only client island (plus the
- * shared landing-v3 islands the homepage already ships: nav menu, pills,
- * rainbow canvases, marquee freeze).
+ * One /for/<slug> page from one VerticalConfig (spec §2, order D8; hero
+ * redesign 2026-09-22): Nav → Hero (functional, no homepage art) → Demo
+ * (glued under it) → Logos → Signals → Control → FAQ → Related → CTA →
+ * Pricing → Footer. Every section is a server component; the demo's
+ * VxDemoPlayer is the page's only client island (plus the shared
+ * landing-v3 islands the homepage already ships: nav menu, pills, the CTA
+ * and pricing rainbow canvases, marquee freeze).
  */
 export function VxPage({ v }: { v: VerticalConfig }) {
   return (
@@ -36,7 +37,8 @@ export function VxPage({ v }: { v: VerticalConfig }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(verticalJsonLd(v)) }}
       />
-      {/* --lp-fit for the hero art + CTA slivers (iOS cqw-in-trig workaround) */}
+      {/* --lp-fit for the CTA slivers + pricing art (iOS cqw-in-trig workaround); the hero has
+          no art any more, so its .lp-hero-art target simply matches nothing */}
       <LpFitVars />
       {/* frees the marquee's GPU layers off-screen (iPhone OOM guard) */}
       <LpAnimFreeze />

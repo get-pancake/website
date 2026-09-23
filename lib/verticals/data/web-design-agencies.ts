@@ -24,7 +24,6 @@ export const webDesignAgencies: VerticalConfig = {
 
   hero: {
     title: "Find marketing heads scoping a website redesign.",
-    h1: ["You build websites", "We bring you clients"],
     lede: "Pancake scans LinkedIn posts and web design job posts, then names who owns the site. Win the rebuild before it goes in-house.",
   },
 
