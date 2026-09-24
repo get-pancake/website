@@ -27,7 +27,7 @@ export const retailTechStartups: VerticalConfig = {
 
   hero: {
     title: "Find e-commerce heads venting about apparel returns.",
-    lede: "Pancake reads LinkedIn posts on return costs, Salsify or Akeneo in job posts and comments on your page. The buyer arrives by breakfast.",
+    lede: "Pancake reads posts on return costs, Salsify or Akeneo in job posts and comments on your page. The buyer arrives by breakfast.",
   },
 
   workspace: { name: "Endaisle", sender: "Esteban Cordero" },
@@ -150,7 +150,7 @@ export const retailTechStartups: VerticalConfig = {
     },
     {
       q: "Do you track which brands sell on Amazon?",
-      a: "No. Marketplace, sales and POS data are out of reach. Pancake works from LinkedIn posts and job posts.",
+      a: "No. Marketplace, sales and POS data are out of reach. Pancake works from people’s posts, comments and job posts.",
     },
     {
       q: "Will it find shoppers for our research panels?",
@@ -158,7 +158,7 @@ export const retailTechStartups: VerticalConfig = {
     },
     {
       q: "Can it find small DTC brands?",
-      a: "Yes, when their team posts on LinkedIn or opens roles. Brands under 50 people show up less often than bigger ones.",
+      a: "Yes, when their team posts or opens roles. Brands under 50 people show up less often than bigger ones.",
     },
   ],
 

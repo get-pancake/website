@@ -158,7 +158,7 @@ export const cybersecurityFirms: VerticalConfig = {
     },
     {
       q: "Security leaders ignore vendor pitches. Will this read like one?",
-      a: "The connection request has no note, so there’s no pitch to ignore. When a lead posted or commented, the message starts from that post. Leads you don’t approve never hear from you.",
+      a: "The invite has no note, so there’s no pitch to ignore. When a lead posted or commented, the message starts from that post. Leads you don’t approve never hear from you.",
     },
     {
       q: "Can it find companies that need a pentest?",

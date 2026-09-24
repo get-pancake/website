@@ -1,6 +1,6 @@
 // lib/verticals/data/logistics-tech-startups.ts — /for/logistics-tech-startups.
 // Buyers: operations and supply-chain leads at 3PLs, carriers and brands shipping at volume.
-// Caveat (brief): small carriers and owner-operators are sparse on LinkedIn. No freight, shipment
+// Caveat (brief): small carriers and owner-operators rarely post or keep profiles. No freight, shipment
 // or load-board data. Never cite the homepage marquee's logistics logos as proof for this vertical.
 // Every person, company, rival vendor, influencer and workspace below is invented; Manhattan WMS,
 // Manhattan SCALE, SAP EWM, Samsara and McLeod are real tools named in job posts (Stack signal).
@@ -26,7 +26,7 @@ export const logisticsTechStartups: VerticalConfig = {
 
   hero: {
     title: "Find 3PL ops leaders short on dispatchers.",
-    lede: "Pancake scans job posts that name your TMS or WMS, and LinkedIn posts about peak season. You get there before the rush.",
+    lede: "Pancake scans job posts that name your TMS or WMS and spots ops leaders posting about peak season. You get there before the rush.",
   },
 
   workspace: { name: "Lanewright", sender: "Gunnar Thorsby" },
@@ -144,12 +144,12 @@ export const logisticsTechStartups: VerticalConfig = {
 
   faq: [
     {
-      q: "Our buyers rarely post on LinkedIn. Will it work?",
+      q: "Our buyers rarely post. Will it work?",
       a: "Partly. Hiring and Stack read job posts, so a 3PL surfaces even if its leaders never post. Keyword and Competitor need people who engage.",
     },
     {
       q: "Can it find small trucking fleets?",
-      a: "Rarely. Owner-operators are thin on LinkedIn. Fleets big enough to hire dispatchers and post jobs show up.",
+      a: "Rarely. Few owner-operators post or keep a profile. Fleets big enough to hire dispatchers and post jobs show up.",
     },
     {
       q: "Do you track shipments or freight data?",

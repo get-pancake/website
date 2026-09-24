@@ -1,6 +1,6 @@
 // lib/verticals/data/marketing-agencies.ts — B2B marketing agencies (merged: digital, growth, B2B marketing).
 // Every person, company, rival agency, expert and workspace below is invented.
-// Caveat (brief): no local-SMB prompts or examples; buyers are B2B people visible on LinkedIn.
+// Caveat (brief): no local-SMB prompts or examples; buyers are B2B people with public profiles.
 import type { VerticalConfig } from "../types";
 
 export const marketingAgencies: VerticalConfig = {
@@ -73,7 +73,7 @@ export const marketingAgencies: VerticalConfig = {
           { name: "Hollis Brightbill", role: "Co-founder", company: "Glowtide", kind: "keyword", signal: "Asked for agency picks" },
         ],
         featured: {
-          why: "Coinrill is a 45-person US payments company. Tariq, its founder, asked on LinkedIn this week for B2B marketing agency picks.",
+          why: "Coinrill is a 45-person US payments company. Tariq, its founder, posted this week asking for B2B marketing agency picks.",
           confidence: 92,
           seniority: "Founder",
         },
@@ -120,7 +120,7 @@ export const marketingAgencies: VerticalConfig = {
       {
         kind: "keyword",
         title: "Founders asking for an agency",
-        body: "When a founder asks for agency picks on LinkedIn, Pancake brings you the post and the person.",
+        body: "When a founder posts asking for agency picks, Pancake brings you the post and the person.",
         watching: ["looking for an agency", "agency recommendations"],
         more: 2,
       },
@@ -142,11 +142,11 @@ export const marketingAgencies: VerticalConfig = {
   faq: [
     {
       q: "Most of my clients are local businesses. Will it work?",
-      a: "Only partly. Pancake finds people at B2B companies on LinkedIn, and local shops are thin there. Aim it at your B2B buyers first.",
+      a: "Only partly. Pancake finds people at B2B companies, and local shops rarely post or keep profiles. Aim it at your B2B buyers first.",
     },
     {
       q: "We have ten retainer clients. One account or ten?",
-      a: "Ten workspaces, $99 each, under one login. Each client gets its own Brain, leads and LinkedIn sender.",
+      a: "Ten workspaces, $99 each, under one login. Each client gets its own Brain, leads and sending account.",
     },
     {
       q: "Won’t I get the agencies pitching in the comments?",

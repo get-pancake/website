@@ -20,6 +20,32 @@ on every page lives in `vx-copy.ts`. Full spec: the session's
 | Solar = commercial & industrial solar installers (`/for/solar-companies`) | its config |
 | "Not sure we should re-do the full landing each time, which is more inspirational than functional — check Origami!" → functional hero (breadcrumb, H1 = "Pancake for {plural}" badge + `hero.title`, lede, CTA pair, example-prompt rows that drive the demo), no homepage art; the demo right under it with a horizontal tab bar and the full-width app window | `VxHero`, `VxDemo`, `VxDemoPlayer`, `hero.css`, `demo.css` |
 
+## Founder decision (2026-09-23): no platform names on /for pages
+
+Team feedback, relayed by the founder: LinkedIn scans the web for startups that
+sell automation on its platform and bans them, which is why Gojiberry took every
+mention of LinkedIn off its site. So no /for page (the 40 `/for/<slug>` pages
+and the `/for` hub) names the platform anywhere: visible copy, FAQ (and so the
+FAQPage JSON-LD), pricing checklist, titles, meta and og descriptions, aria
+labels, alt text, and the product demo (its labels, and no platform logo: the
+glyph after each lead name is gone). The product is unchanged; the copy
+describes it without the name:
+
+| Say | Never |
+|---|---|
+| "from your own account": a profile visit, a like on a recent post, an invite with no note, then up to three messages; no emails, no calls | "LinkedIn outreach", "your own LinkedIn" |
+| "people posting about …", "people engaging with your rivals' posts", "fans of …'s posts", "comments on …" | "LinkedIn posts", "LinkedIn signals" |
+| "profile", "invite" (preferred over "connection request") | Sales Navigator, InMail, "LI" |
+| "at a human pace" | "paced by LinkedIn's own limits" |
+
+In the demo the app's platform signal group reads **People signals** (beside
+Company signals) and the lead sheet's platform row reads **Profile · View ↗**
+(a neutral person icon). `PLATFORM` in `validate.ts` is the gate: an ERROR on
+every config string, every fixed `vx-copy.ts` string (function literals
+included) and what the fixed templates render with each config; "LI" as a
+word is a warning. Out of scope: the shared footer's link to Pancake's own
+company page (site chrome) and the homepage, /agents and the blog.
+
 Still open (spec defaults hold, flagged to the founder): one AI SEO line in
 the pricing checklist (`VX_AI_SEO_MENTION`), the truthful checklist on /for
 pages only (`VX_PRICING_MODE`), Fono eyebrows (`--vx-eyebrow-font`).
@@ -64,7 +90,9 @@ Never edit `LpMarquee.tsx`.
 
 ## Non-negotiables
 
-1. **Truth.** LinkedIn-only outreach; six signals only (Keyword, Competitor,
+1. **Truth.** Outreach from the customer's own account only, and the platform
+   is never named (see the 2026-09-23 decision above; `PLATFORM` in
+   validate.ts); six signals only (Keyword, Competitor,
    Influencer, Own brand, Hiring, Stack = tools named in job posts); no email,
    phones, maps, funding, job changes, website visitors; no draft mode or
    per-message approval; leads arrive each morning; $99/month flat; 3-day

@@ -140,7 +140,7 @@ export const seoAgencies: VerticalConfig = {
   faq: [
     {
       q: "Can Pancake see a prospect’s rankings?",
-      a: "No. Rankings and audits stay your job. Pancake reads LinkedIn posts and job posts, then brings you the person behind them.",
+      a: "No. Rankings and audits stay your job. Pancake reads public posts and job posts, then brings you the person behind them.",
     },
     {
       q: "We serve SaaS and e-commerce. Can one setup cover both?",
@@ -152,7 +152,7 @@ export const seoAgencies: VerticalConfig = {
     },
     {
       q: "Can Pancake send prospects a free SEO audit?",
-      a: "No. Outreach is plain LinkedIn text, up to 500 characters a message, with no attachments. The audit comes after they reply.",
+      a: "No. Outreach is plain text from your own account, up to 500 characters a message, with no attachments. The audit comes after they reply.",
     },
   ],
 

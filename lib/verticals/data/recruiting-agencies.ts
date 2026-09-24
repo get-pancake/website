@@ -152,7 +152,7 @@ export const recruitingAgencies: VerticalConfig = {
     },
     {
       q: "Can I run two desks, like tech and finance?",
-      a: "Yes, with one workspace per desk, each with its own Brain and $99 plan. Each desk also needs its own LinkedIn account to send from.",
+      a: "Yes, with one workspace per desk, each with its own Brain and $99 plan. Each desk also needs its own account to send from.",
     },
   ],
 

@@ -1,6 +1,6 @@
 // lib/verticals/data/solar-companies.ts — /for/solar-companies.
 // Commercial & industrial (C&I) solar installers: rooftop, carport and storage sold to businesses
-// (founder 2026-09-22). Buyers are facilities, operations and finance leaders on LinkedIn.
+// (founder 2026-09-22). Buyers are facilities, operations and finance leaders.
 // Every person, company, rival developer, influencer and workspace below is invented.
 // Evidence: founder-named ("solar agencies"), zero customers or trials: an SEO bet.
 // Caveat: never "solar leads", homeowners, permits, roof or property data, maps. Businesses only.
@@ -145,7 +145,7 @@ export const solarCompanies: VerticalConfig = {
   faq: [
     {
       q: "Do you find residential customers?",
-      a: "No. Pancake finds decision makers at businesses, from what they post on LinkedIn and from job posts. It doesn’t sell lead lists.",
+      a: "No. Pancake finds decision makers at businesses, from what they post and from job posts. It doesn’t sell lead lists.",
     },
     {
       q: "Can it find buildings by roof size or permits?",

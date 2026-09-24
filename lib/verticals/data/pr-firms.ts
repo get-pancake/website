@@ -141,7 +141,7 @@ export const prFirms: VerticalConfig = {
   faq: [
     {
       q: "Can you tell me which startups raised money?",
-      a: "No. There’s no funding signal. Pancake reads LinkedIn posts, engagement and job posts, so you see who talks about press, not who raised.",
+      a: "No. There’s no funding signal. Pancake reads public posts, engagement and job posts, so you see who talks about press, not who raised.",
     },
     {
       q: "Will it pitch journalists for me?",
@@ -153,7 +153,7 @@ export const prFirms: VerticalConfig = {
     },
     {
       q: "Does it work for consumer and lifestyle PR?",
-      a: "Less well. Pancake works from LinkedIn, where B2B tech founders and heads of comms post. Consumer and lifestyle brands post less there.",
+      a: "Less well. Pancake finds people who post about their work, and B2B tech founders and heads of comms do that most. Consumer and lifestyle brands post less.",
     },
   ],
 

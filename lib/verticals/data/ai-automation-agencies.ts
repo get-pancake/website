@@ -1,7 +1,7 @@
 // lib/verticals/data/ai-automation-agencies.ts — /for/ai-automation-agencies.
 // Merged in: AI consultants. Every person, company, rival firm, influencer and workspace below is invented.
 // Evidence: 11 trials, 0 paying; an AI-transformation advisory pays (also counted under consultants).
-// Caveat: prompts target B2B firms visible on LinkedIn, never local SMBs (dentists, trades, coaches).
+// Caveat: prompts target B2B firms whose people post about work, never local SMBs (dentists, trades, coaches).
 // Trial-only evidence: not a flagship, no success stories. "Make" stays out (ambiguous Stack name).
 // Angle kept apart from ai-startups (distributors, claims, "busywork"): the agency's buyers are ops
 // leaders at property managers, brokerages and accounting firms, and the Zapier / n8n rebuild.
@@ -147,7 +147,7 @@ export const aiAutomationAgencies: VerticalConfig = {
   faq: [
     {
       q: "I automate for dentists and contractors. Will Pancake find them?",
-      a: "Rarely. Pancake finds people on LinkedIn, where dentists and contractors seldom post. Firms with an ops team show up far more often.",
+      a: "Rarely. Pancake finds people from their profiles and posts, and dentists and contractors seldom post. Firms with an ops team show up far more often.",
     },
     {
       q: "I build in Claude all day. Can Pancake run from there?",

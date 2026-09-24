@@ -146,7 +146,7 @@ export const eventAgencies: VerticalConfig = {
     },
     {
       q: "Do you find weddings or private clients?",
-      a: "No. Pancake finds people at companies on LinkedIn, not consumers. Aim it at corporate events.",
+      a: "No. Pancake finds people at companies, not consumers. Aim it at corporate events.",
     },
     {
       q: "Can it find companies with an offsite on the calendar?",

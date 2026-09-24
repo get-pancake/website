@@ -1,6 +1,6 @@
 // lib/verticals/data/developer-tools.ts — developer tools companies (merged: AI infra startups, open-source companies).
 // Every person, company, rival vendor, writer and workspace below is invented.
-// Caveat (brief): no GitHub, npm or product-usage data. One LinkedIn sender per workspace.
+// Caveat (brief): no GitHub, npm or product-usage data. One sender account per workspace.
 import type { VerticalConfig } from "../types";
 
 export const developerTools: VerticalConfig = {
@@ -149,15 +149,15 @@ export const developerTools: VerticalConfig = {
     },
     {
       q: "We’re open source. Can it find our GitHub users?",
-      a: "No. Pancake reads LinkedIn and job posts, not GitHub, npm or product usage. Point it at your own posts and the problems your users write about instead.",
+      a: "No. Pancake reads posts, comments and job posts, not GitHub, npm or product usage. Point it at your own posts and the problems your users write about instead.",
     },
     {
       q: "Does a job post naming Jenkins mean they still run it?",
       a: "Not always. A job post lists the tools a team wants candidates to know. Pancake can’t see what a team has installed.",
     },
     {
-      q: "Can each founder send from their own LinkedIn?",
-      a: "Not from one workspace. Each workspace has one LinkedIn sender, so pick the founder whose profile engineers trust.",
+      q: "Can each founder send from their own account?",
+      a: "Not from one workspace. Each workspace has one sender, so pick the founder whose profile engineers trust.",
     },
   ],
 

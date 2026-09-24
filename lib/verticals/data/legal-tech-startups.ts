@@ -145,8 +145,8 @@ export const legalTechStartups: VerticalConfig = {
 
   faq: [
     {
-      q: "Are lawyers even reachable on LinkedIn?",
-      a: "Firm leaders who post, engage or hire show up. Solo practitioners who stay quiet on LinkedIn are hard to find.",
+      q: "Can Pancake reach lawyers who rarely post?",
+      a: "Firm leaders who post, engage or hire show up. Solo practitioners who stay quiet online are hard to find.",
     },
     {
       q: "Can we target one practice area?",

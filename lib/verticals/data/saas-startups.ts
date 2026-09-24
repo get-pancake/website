@@ -4,7 +4,7 @@
 // Every person, company, rival product, influencer and workspace below is invented.
 // Evidence: largest paying group (12 paying vertical/ops SaaS, 33 trial+, 43 signups).
 // Caveat: every example names a concrete problem and buyer. Competitor = engagement with a rival's
-// LinkedIn posts, never "their customers". No homepage marquee logos as proof.
+// posts, never "their customers". No homepage marquee logos as proof.
 import type { VerticalConfig } from "../types";
 
 export const saasStartups: VerticalConfig = {
@@ -159,7 +159,7 @@ export const saasStartups: VerticalConfig = {
     },
     {
       q: "Our buyers run small businesses. Will this work?",
-      a: "It works when your buyers are active on LinkedIn. Many owners of small shops aren’t, so leads there will be sparse.",
+      a: "It works when your buyers post and comment about their work. Many owners of small shops don’t, so leads there will be sparse.",
     },
   ],
 

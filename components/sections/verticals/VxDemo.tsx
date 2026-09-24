@@ -31,9 +31,13 @@ import { SIGNAL_GROUPS, VX_DEMO } from "./vx-copy";
 
 const A = VX_DEMO.app;
 
-// DOM budget (spec §4.3: demo ≤ 650 elements): every icon, checkbox and LinkedIn glyph is a
-// pseudo-element (data-ico → a CSS mask in demo.css), lead rows are one flat grid, and
-// anything identical across the three prompts is rendered once, outside the variants.
+// DOM budget (spec §4.3: demo ≤ 650 elements): every icon and checkbox is a pseudo-element
+// (data-ico → a CSS mask in demo.css), lead rows are one flat grid, and anything identical
+// across the three prompts is rendered once, outside the variants.
+//
+// No platform names or logos anywhere in the mock (founder 2026-09-23, validate.ts PLATFORM):
+// the app's platform glyph after each lead name is gone, and the sheet's platform row reads
+// "Profile · View ↗".
 
 const SIG_ICON: Record<SignalKind, string> = {
   keyword: "hash",
@@ -311,7 +315,7 @@ function LeadsPane({ m }: { m: DemoModel }) {
           {m.prompts.map((p, i) => (
             <div key={i} className="vx-rowset" data-p={i}>
               {p.leads.map((l, r) => (
-                // one flat grid per row: ::before = checkbox, name::after = LinkedIn glyph
+                // one flat grid per row: ::before = checkbox, ::after = the stage pill
                 <div
                   key={l.name}
                   className="vx-row"
@@ -398,9 +402,9 @@ function LeadsPane({ m }: { m: DemoModel }) {
             ))}
           </div>
           <span data-ico="globe">{A.drawer.props.country}</span>
-          <span data-ico="li">{A.drawer.props.linkedin}</span>
+          <span data-ico="user">{A.drawer.props.profile}</span>
           <b>{A.drawer.country}</b>
-          <b className="vx-link">{A.drawer.profile}</b>
+          <b className="vx-link">{A.drawer.profileLink}</b>
         </div>
         {/* SIGNAL: the chip + the qualification reason, as the app's box */}
         <div className="vx-var">

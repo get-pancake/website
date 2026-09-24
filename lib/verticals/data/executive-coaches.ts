@@ -1,7 +1,7 @@
 // lib/verticals/data/executive-coaches.ts — paying (a leadership coach & speaker) + ~4 trials.
 // Merged in: leadership coaches, business coaches. Re-aimed at founders and CEOs (brief review
 // #64-70) so it doesn't overlap corporate-training-companies (L&D buyers).
-// Caveat (brief): Own brand needs the coach's LinkedIn activity, but no audience is required
+// Caveat (brief): Own brand needs the coach's own posts, but no audience is required
 // (Keyword, Hiring and Influencer work without posts). No consumer or life-coaching buyers.
 // Every person, company, rival firm, author and workspace below is invented.
 import type { VerticalConfig } from "../types";
@@ -36,7 +36,7 @@ export const executiveCoaches: VerticalConfig = {
     prompts: [
       {
         kind: "own_brand",
-        text: "I write about how CEOs spend their week on LinkedIn. Find the US CEOs who react to those posts.",
+        text: "I post about how CEOs spend their week. Find the US CEOs who react to those posts.",
         reply: "I’ll watch who reacts to your posts and keep founders and CEOs at US companies.",
         proposal: [
           { kind: "own_brand", items: ["Lydia Kovacevic", "Kovacevic Coaching"] },
@@ -144,7 +144,7 @@ export const executiveCoaches: VerticalConfig = {
 
   faq: [
     {
-      q: "I rarely post on LinkedIn. Will this work?",
+      q: "I rarely post. Will this work?",
       a: "Yes. Own brand is one signal of six. Keyword, Hiring and Influencer find leaders whether you post or not.",
     },
     {
@@ -157,7 +157,7 @@ export const executiveCoaches: VerticalConfig = {
     },
     {
       q: "Can it find people who pay for their own coaching?",
-      a: "Only people at companies. Pancake finds leads through LinkedIn activity and job posts, so it fits executive coaching, not life coaching.",
+      a: "Only people at companies. Pancake finds leads through work profiles, posts and job openings, so it fits executive coaching, not life coaching.",
     },
   ],
 

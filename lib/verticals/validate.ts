@@ -56,9 +56,22 @@ const HEDGES = /\b(actually|really|just|very|truly|simply|seamless(ly)?|powerful
 /** Origami closes every /for lede with "…, not a stale database." — never echo that tagline or a
  *  variant ("not a bought list", "not a bar directory", "not a stale provider list"; critic 2026-09-22). */
 const ORIGAMI_TAGLINE = /\bnot an? (stale|bought|purchased|static)\b|\bnot an? [\w’'-]+( [\w’'-]+)? (list|lists|database|directory)\b/i;
+/** No platform names on /for pages (founder 2026-09-23, after team feedback: LinkedIn scans the web
+ *  for startups that sell automation on its platform and bans them, which is why Gojiberry took
+ *  every mention off its site). The product is unchanged; the copy never names the platform:
+ *  outreach goes out "from your own account" (a profile visit, a like on a recent post, an invite
+ *  with no note, up to three messages), signals are "people posting about …", "people engaging
+ *  with your rivals' posts", "fans of …'s posts", a lead has a "profile", the app's platform signal
+ *  group is "People signals". ERROR on every config string (visible copy, FAQ → FAQPage JSON-LD,
+ *  titles, meta, aria/alt text built from it), on every fixed vx-copy string, and on what the
+ *  fixed templates render with each config. Also its tools: Sales Navigator, InMail. */
+export const PLATFORM = /linked\s*in|sales\s*nav(igator)?\b|\binmails?\b/i;
+/** The platform's initials, as a word (case-sensitive): a warning, "LI" can be a place. */
+const PLATFORM_ABBR = /\bLI\b/;
 /** Fixed copy must not name a vertical. */
 const FIXED_LEAK = /\b(recruit\w*|placements?|placed|desks?|agenc(y|ies)|candidates?|staffing|talent|clients?|installers?|solar)\b/i;
-/** Real brands that must never be a lead company or a workspace (marquee customers + stack tools). */
+/** Real brands that must never be a lead company or a workspace (marquee customers + stack tools).
+ *  ("LinkedIn" stays listed: this is a name check, and PLATFORM already bans it anywhere.) */
 const REAL_BRANDS = [
   "Hyperspell", "AgentMail", "Fleet", "Requesty", "Alpic", "Praxis", "Kinro", "Covera", "Spacefill", "Kardinal",
   "Salesforce", "HubSpot", "Pipedrive", "Attio", "Close", "Outreach", "Salesloft", "Apollo", "Instantly", "Lemlist",
@@ -135,6 +148,40 @@ function fixedStrings(): [string, string][] {
   return out;
 }
 
+/** Every string value of a config, at any depth, with its path (PLATFORM scans all of them:
+ *  a string that is not rendered today, like name.badge, may be tomorrow). */
+function configStrings(v: VerticalConfig): [string, string][] {
+  const out: [string, string][] = [];
+  const walk = (val: unknown, path: string): void => {
+    if (typeof val === "string") out.push([path, val]);
+    else if (Array.isArray(val)) val.forEach((x, i) => walk(x, `${path}[${i}]`));
+    else if (val && typeof val === "object") for (const [k, x] of Object.entries(val)) walk(x, path ? `${path}.${k}` : k);
+  };
+  walk(v, "");
+  return out;
+}
+
+/** What the fixed templates (vx-copy functions) render with this config: the per-page outputs. */
+function composedStrings(v: VerticalConfig): [string, string][] {
+  const { VX_HERO, VX_SIGNALS, VX_FAQ, VX_META, VX_PRICING_CHECKLIST, VX_CONTROL, VX_DEMO } = FIXED;
+  const lead = v.demo.prompts[0]?.leads[0]?.name ?? "";
+  const sender = v.workspace.sender;
+  const out: [string, string][] = [
+    ["VX_HERO.label()", VX_HERO.label(v)], ["VX_SIGNALS.lede()", VX_SIGNALS.lede(v)], ["VX_SIGNALS.foot()", VX_SIGNALS.foot(v)],
+    ["VX_FAQ.h2()", VX_FAQ.h2(v)], ["VX_META.title()", VX_META.title(v)], ["VX_META.ogTitle()", VX_META.ogTitle(v)],
+    ["VX_CONTROL.dialog.title()", VX_CONTROL.dialog.title(lead)], ["VX_CONTROL.toast.title()", VX_CONTROL.toast.title(lead)],
+    ["VX_CONTROL.aria()", VX_CONTROL.aria(lead, sender)],
+    ...VX_CONTROL.dialog.rows(sender).map(([k, x], i): [string, string] => [`VX_CONTROL.dialog.rows()[${i}]`, `${k} ${x}`]),
+    ...VX_PRICING_CHECKLIST(v.slug).map((x, i): [string, string] => [`VX_PRICING_CHECKLIST()[${i}]`, x]),
+  ];
+  v.demo.prompts.forEach((p, i) => {
+    for (const [k, tpl] of Object.entries(VX_DEMO.paneAria)) {
+      out.push([`prompts[${i}] VX_DEMO.paneAria.${k}`, tpl.replace("{prompt}", p.text).replace("{lead}", p.leads[0]?.name ?? "")]);
+    }
+  });
+  return out;
+}
+
 const esc = (x: string) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 /** Whole-word, case-insensitive (items of ≤3 chars, like "Go" or "dbt", match case-sensitively). */
 const hasTerm = (text: string, term: string) =>
@@ -149,6 +196,8 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
   const max = (slug: string, path: string, s: string, n: number) => s.length > n && err(slug, `${path} is ${s.length} chars (max ${n}): "${s}"`);
 
   const slugs = new Set<string>();
+  /** PLATFORM: a fixed string naming the platform is reported once, as "vx-copy" (below), not per page. */
+  const fixedNamed = fixedStrings().some(([, str]) => PLATFORM.test(str));
   /** Cross-config copy repetition (CT-04, CT-09/CT-21): key → first user(s). */
   const closings = new Map<string, string>();
   const openers = new Map<string, string[]>();
@@ -309,6 +358,24 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
       if (ORIGAMI_TAGLINE.test(str)) err(s, `${path}: echoes Origami’s “not a stale database” tagline: "${str}"`);
       if (STRAIGHT_APOS.test(str)) warn(s, `${path}: straight apostrophe (use ’): "${str}"`);
     }
+
+    // ── no platform name (PLATFORM, founder 2026-09-23): every config string, then the fixed
+    //    templates rendered with it (only when the config and vx-copy are both clean, so one bad
+    //    string is not listed five or forty times) ──
+    {
+      let named = false;
+      for (const [path, str] of configStrings(v)) {
+        const m = str.match(PLATFORM);
+        if (m) { named = true; err(s, `${path}: names the platform ("${m[0]}"), never on /for pages: "${str}"`); }
+        else if (PLATFORM_ABBR.test(str)) warn(s, `${path}: "LI" reads as the platform's initials: "${str}"`);
+      }
+      if (!named && !fixedNamed) {
+        for (const [path, str] of composedStrings(v)) {
+          const m = str.match(PLATFORM);
+          if (m) err(s, `${path}: renders the platform name ("${m[0]}"): "${str}"`);
+        }
+      }
+    }
   }
 
   // ── message openers: one template may not carry the site (CT-04) ──
@@ -326,7 +393,13 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
   const fixedText = JSON.stringify(FIXED, (k, val) => (k === "VX_HUB" ? undefined : typeof val === "function" ? String(val) : val));
   const leak = fixedText.replace(/SIGNAL_\w+|"hiring"|"Hiring"/g, "").match(FIXED_LEAK);
   if (leak) err("vx-copy", `fixed copy names a vertical: "${leak[0]}"`);
-  for (const [path, str] of fixedStrings()) if (STRAIGHT_APOS.test(str)) warn("vx-copy", `${path}: straight apostrophe (use ’): "${str}"`);
+  for (const [path, str] of fixedStrings()) {
+    if (STRAIGHT_APOS.test(str)) warn("vx-copy", `${path}: straight apostrophe (use ’): "${str}"`);
+    // PLATFORM (founder 2026-09-23): VX_HUB included — the hub is a /for page too
+    const m = str.match(PLATFORM);
+    if (m) err("vx-copy", `${path}: names the platform ("${m[0]}"), never on /for pages: "${str}"`);
+    else if (PLATFORM_ABBR.test(str)) warn("vx-copy", `${path}: "LI" reads as the platform's initials: "${str}"`);
+  }
 
   return issues;
 }

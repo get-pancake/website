@@ -26,7 +26,7 @@ export const fractionalCfos: VerticalConfig = {
 
   hero: {
     title: "Find the CEO behind each VP Finance job post.",
-    lede: "Pancake reads controller openings, QuickBooks in job posts and LinkedIn talk about cash runway. Step in as their part-time CFO.",
+    lede: "Pancake reads controller openings, QuickBooks in job posts and founders posting about cash runway. Step in as their part-time CFO.",
   },
 
   workspace: { name: "Corriveau Finance", sender: "Megan Corriveau" },
