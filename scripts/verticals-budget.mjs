@@ -2,8 +2,9 @@
 // scripts/verticals-budget.mjs — pixel budgets for every /for config, measured with the
 // REAL fonts (spec §7.2). Run before every PR that touches lib/verticals/data/*:
 //
-//   node scripts/verticals-budget.mjs                 all configs
+//   node scripts/verticals-budget.mjs                 all configs + the homepage demo
 //   node scripts/verticals-budget.mjs recruiting-agencies seo-agencies
+//   node scripts/verticals-budget.mjs homepage        the homepage demo only (lib/verticals/home-demo.ts)
 //   node scripts/verticals-budget.mjs --json          machine-readable report
 //
 // How: loads the configs through jiti (TypeScript + the "@/" alias, no build), then
@@ -31,10 +32,15 @@ const only = args.filter((a) => !a.startsWith("--"));
 /* ── load configs (TS) ─────────────────────────────────────────────────────── */
 const jiti = req("jiti")(join(root, "index.js"), { alias: { "@": root }, interopDefault: true, cache: false });
 const { ALL_VERTICALS } = jiti("./lib/verticals/data/index.ts");
+const { HOME_DEMO } = jiti("./lib/verticals/home-demo.ts");
 const { SIGNAL_LABEL } = jiti("./components/sections/verticals/vx-copy.ts");
+// the homepage's demo (not a /for page): its demo strings get the same budgets, plus its H2
+// (visible on the homepage, the /for demo H2 is hidden) at the section-head H2 budgets
+const HOME = "homepage";
+const withHome = !only.length || only.includes(HOME);
 const configs = only.length ? ALL_VERTICALS.filter((v) => only.includes(v.slug)) : ALL_VERTICALS;
-if (only.length && configs.length !== only.length) {
-  const missing = only.filter((s) => !configs.some((v) => v.slug === s));
+if (only.length && configs.length + (withHome ? 1 : 0) !== only.length) {
+  const missing = only.filter((s) => s !== HOME && !configs.some((v) => v.slug === s));
   console.error(`[verticals-budget] unknown slug(s): ${missing.join(", ")}`);
   process.exit(2);
 }
@@ -111,6 +117,22 @@ const rowText = (r) => {
 /** Flatten every measurable string into jobs. */
 const jobs = [];
 const add = (slug, field, t, text) => jobs.push({ slug, field, t, text });
+/** The demo's strings (a config's, or the homepage demo's): prompt rows, chat, sheet, leads, message. */
+function addDemo(s, d) {
+  d.demo.prompts.forEach((p, i) => {
+    const at = `prompts[${i}]`;
+    add(s, `${at}.text`, "promptRow", p.text);
+    jobs.push({ slug: s, field: `${at}.text (phone row)`, t: "promptPhone", text: p.text, badge: SIGNAL_LABEL[p.kind] });
+    add(s, `${at}.text (bubble)`, "bubble", p.text);
+    add(s, `${at}.featured.why`, "why", p.featured.why);
+    add(s, `${at}.message`, "message", p.message);
+    p.proposal.forEach((r, j) => add(s, `${at}.proposal[${j}]`, "prow", rowText(r)));
+    p.leads.forEach((l, j) => {
+      add(s, `${at}.leads[${j}] role · company`, "person", `${l.role} · ${l.company}`);
+      add(s, `${at}.leads[${j}].signal`, "leadSignal", l.signal);
+    });
+  });
+}
 for (const v of configs) {
   const s = v.slug;
   add(s, "hero.title", "title", v.hero.title);
@@ -127,23 +149,16 @@ for (const v of configs) {
   }
   add(s, "cta.title", "cta", v.cta.title);
   add(s, "hubLine", "hubLine", v.hubLine);
-  v.demo.prompts.forEach((p, i) => {
-    const at = `prompts[${i}]`;
-    add(s, `${at}.text`, "promptRow", p.text);
-    jobs.push({ slug: s, field: `${at}.text (phone row)`, t: "promptPhone", text: p.text, badge: SIGNAL_LABEL[p.kind] });
-    add(s, `${at}.text (bubble)`, "bubble", p.text);
-    add(s, `${at}.featured.why`, "why", p.featured.why);
-    add(s, `${at}.message`, "message", p.message);
-    p.proposal.forEach((r, j) => add(s, `${at}.proposal[${j}]`, "prow", rowText(r)));
-    p.leads.forEach((l, j) => {
-      add(s, `${at}.leads[${j}] role · company`, "person", `${l.role} · ${l.company}`);
-      add(s, `${at}.leads[${j}].signal`, "leadSignal", l.signal);
-    });
-  });
+  addDemo(s, v);
   v.signals.cards.forEach((c, i) => {
     add(s, `signals.cards[${i}].title`, "sigTitle", c.title);
     add(s, `signals.cards[${i}].body`, "sigBody", c.body);
   });
+}
+if (withHome) {
+  addDemo(HOME, HOME_DEMO);
+  add(HOME, "demo.h2 (the homepage section H2)", "h2d", HOME_DEMO.demo.h2);
+  add(HOME, "demo.h2 (the homepage section H2)", "h2m", HOME_DEMO.demo.h2);
 }
 const chipJobs = configs.flatMap((v) =>
   v.signals.cards.map((c, i) => ({
@@ -256,7 +271,7 @@ if (asJson) {
   for (const f of fails) console.error(`FAIL ${f.slug}  ${f.field}: ${f.what} ${f.value}${f.unit} (max ${f.max})${f.text ? ` — "${f.text}"` : ""}`);
   for (const [t, n] of clamped) console.log(`clamped ${n} × ${T[t].what}: ${T[t].max} lines shown, ellipsized (≤ ${T[t].clampTo} lines of text)`);
   console.log(
-    `[verticals-budget] ${configs.length} config(s), ${measured.out.length + measured.chips.length} measurements: ${fails.length} failure(s), ${warns.length} warning(s)`,
+    `[verticals-budget] ${configs.length} config(s)${withHome ? " + the homepage demo" : ""}, ${measured.out.length + measured.chips.length} measurements: ${fails.length} failure(s), ${warns.length} warning(s)`,
   );
 }
 process.exit(fails.length ? 1 : 0);

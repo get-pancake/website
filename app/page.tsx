@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
 import { LpBanner } from "@/components/sections/landing-v3/LpBanner";
 import { LpCta } from "@/components/sections/landing-v3/LpCta";
+import { LpDemoTour } from "@/components/sections/landing-v3/LpDemoTour";
 import { LpFeatures } from "@/components/sections/landing-v3/LpFeatures";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
@@ -16,6 +17,7 @@ import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
 import { LpTestimonials } from "@/components/sections/landing-v3/LpTestimonials";
 import { pricingV2 } from "@/lib/copy";
 import "@/app/_styles/landing-v3.css";
+import "@/app/_styles/home-demo.css";
 
 /**
  * Landing v3 — 1:1 replication of the Figma "Pancake-Design" desktop artboard
@@ -108,6 +110,8 @@ export default function Home({ searchParams }: { searchParams: { audience?: stri
       <LpNav />
       <LpHero />
       <LpMarquee />
+      {/* the /for product demo (founder 2026-09-23): after the logos, before the steps */}
+      <LpDemoTour />
       <LpAgentLab />
       <LpSteps />
       <LpBanner />

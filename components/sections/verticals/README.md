@@ -59,10 +59,10 @@ pages only (`VX_PRICING_MODE`), Fono eyebrows (`--vx-eyebrow-font`).
 | Registry | `lib/verticals/index.ts` (lookups, `relatedFor`, `faqItems`, `hubGroups`, `navGroups`, validation at module load) reading `lib/verticals/data/index.ts` (**generated**) |
 | Schema / rules | `lib/verticals/types.ts`, `lib/verticals/validate.ts` |
 | Page | `VxPage.tsx`: LpFitVars (CTA + pricing arts) → LpAnimFreeze (marquee) → LpNav → VxHero → VxDemo → LpMarquee → VxSignals → VxControl → VxFaq → VxRelated → LpCta → LpPricing → LpFooter |
-| Sections | `VxHero` (breadcrumb, H1, lede, CTA pair, example-prompt rows), `VxHead` (the one section head), `VxSignals`, `VxControl`, `VxFaq`, `VxRelated`, `VxHubGrid` — server components, zero JS |
-| Demo | `VxDemo.tsx` (section `#vx-demo`, visually hidden H2 = `demo.h2`) + `VxDemoPlayer.tsx` (the page's only client island: tab bar, stage, then the foot — caption, Pause / Replay, note; it also drives the hero's prompt rows), `lib/verticals/demo-model.ts`, `demo-timeline.ts`, `app/_styles/verticals/demo.css` |
+| Sections | `VxHero` (breadcrumb, H1, lede, CTA pair, example-prompt rows = `VxPromptRows`), `VxHead` (the one section head), `VxSignals`, `VxControl`, `VxFaq`, `VxRelated`, `VxHubGrid` — server components, zero JS |
+| Demo | `VxDemo.tsx` (section `#vx-demo`, visually hidden H2 = `demo.h2`; `headless` drops it — the homepage's section has a visible one) + `VxDemoPlayer.tsx` (the page's only client island: tab bar, stage, then the foot — caption, Pause / Replay, note; it also drives the hero's prompt rows), `lib/verticals/demo-model.ts`, `demo-timeline.ts`, `app/_styles/verticals/demo.css` |
 | Structured data | `vx-jsonld.ts` — WebPage + BreadcrumbList (= the hero breadcrumb) + FAQPage (hub: + ItemList) |
-| CSS | `app/_styles/verticals.css` (manifest, imported AFTER `landing-v3.css`) → `verticals/{foundation,hero,demo,signals,control,faq,related,hub}.css`, all under `.lp-vx` |
+| CSS | `app/_styles/verticals.css` (manifest, imported AFTER `landing-v3.css`) → `verticals/{foundation,hero,prompts,demo,signals,control,faq,related,hub}.css`, all under `.lp-vx` |
 | Scripts | `scripts/verticals-registry.mjs`, `scripts/verticals-budget.mjs`, `scripts/verticals-audit.mjs` |
 
 Shared-file edits are optional props whose defaults keep the homepage
@@ -204,6 +204,29 @@ Never edit `LpMarquee.tsx`.
 - The composer's long line slides with a transform (no layout shift while
   typing). The Related section's eyebrow is "Industries" (the breadcrumb
   left it). `name.badge` is no longer rendered (kept in the schema).
+
+## The demo on the homepage (2026-09-23)
+
+Founder decision, relaying the team ("blown away by this part, should probably be on the
+normal landing page"): the same demo, in its own homepage section, `LpDemoTour`
+(`components/sections/landing-v3/`), right after the customer logos. No fork: `VxPromptRows` +
+`VxDemo headless` + the one `VxDemoPlayer` island.
+
+| Piece | Where |
+|---|---|
+| Data | `lib/verticals/home-demo.ts` — `HOME_DEMO: DemoSource` (= `Pick<VerticalConfig, "workspace" \| "demo">`): Studio Pelican, the homepage's own fictional customer (LpSteps, LpFeatures), three prompts from one business (Keyword, Competitor, Hiring), US targets. Not in the registry, the sitemap, the hub or the nav |
+| Rules | `validateVerticals(all, { homepage: HOME_DEMO })` (lib/verticals/index.ts): the demo, workspace, lint and PLATFORM rules, in the same uniqueness pools as the 40 configs (people, companies, workspaces, message closings / openers) — a production build fails on it like on a config. `verticals-budget.mjs` measures it as `homepage` (+ its H2, visible there, at the section-head budgets) |
+| Section | `LpDemoTour.tsx`: `<section class="lp-vx lp-tour">` — the /for section head (eyebrow, H2 = `HOME_DEMO.demo.h2`, lede), `VxPromptRows`, `VxDemo headless`. `.lp-vx` sits on the section only, so no /for rule reaches another homepage section |
+| CSS | `app/_styles/home-demo.css` (imported by `app/page.tsx` after `landing-v3.css`) → `verticals/{foundation,prompts,demo}.css` + `landing-v3/demo-tour.css` (the section's place in the homepage rhythm: 160 / 96 visible gaps from the logos and to LpSteps' kicker, LpSteps untouched) |
+| Agents view | hidden with every other human section (`audience.css`: direct `<section>` children of the page except the hero and the lab); `display: none` never intersects, so the island's clock stays stopped |
+
+Shared-file changes this needed, /for output unchanged (computed styles of the rows, tabs and
+stage diffed old vs new CSS at 7 window sizes × 2 pages, focus ring included: identical):
+the prompt rows moved from `hero.css` to `prompts.css` (the label's margin-top and the fold
+tier's list gap stay in hero.css, the tier now `.vx-hero .vx-hp-list`); demo.css's short-window
+tier (48px bar) is scoped to `.vx-hero + .vx-demo` (the homepage demo is far below the fold);
+the Slack mascot `<img>` is `loading="lazy"` (React hoisted a `<link rel=preload>` for it into
+every page's head — the one change to /for HTML).
 
 ## QA
 

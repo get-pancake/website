@@ -2,7 +2,8 @@
 //
 // Glued under the hero (founder 2026-09-22, Origami-style): no visible section head — a
 // full-bleed hairline, the horizontal tab bar and the full-width app window. The prompts are
-// the hero's "Example prompts" rows (VxHero); the island listens to them.
+// the hero's "Example prompts" rows (VxPromptRows in VxHero); the island listens to them.
+// The homepage renders it too (LpDemoTour, `headless`, fed by lib/verticals/home-demo.ts).
 //
 // Renders every product surface for all three example prompts
 // (stacked in one grid cell per slot, so heights are fixed from first paint with no JS
@@ -25,7 +26,7 @@
 
 import { Fragment, type ReactNode } from "react";
 import { buildDemoModel, type DemoModel, type DemoPromptView, type DemoSigView } from "@/lib/verticals/demo-model";
-import type { SignalKind, VerticalConfig } from "@/lib/verticals/types";
+import type { DemoSource, SignalKind } from "@/lib/verticals/types";
 import { VxDemoPlayer } from "./VxDemoPlayer";
 import { SIGNAL_GROUPS, VX_DEMO } from "./vx-copy";
 
@@ -623,8 +624,10 @@ function SlackWindow({ m }: { m: DemoModel }) {
         <p className="vx-slack__bar"># {S.channel}</p>
         <div className="vx-slack__feed">
           <div className="vx-smsg" data-cue="s.intro">
+            {/* lazy: the Slack pane is the demo's last step — without it React hoists a
+                <link rel="preload"> for the mascot into <head>, ahead of the page's own art */}
             {/* eslint-disable-next-line @next/next/no-img-element -- 6 KB mascot, the Slack app avatar */}
-            <img className="vx-smsg__av" src="/pancake-mark.png" alt="" width={32} height={32} />
+            <img className="vx-smsg__av" src="/pancake-mark.png" alt="" width={32} height={32} loading="lazy" decoding="async" />
             <p className="vx-smsg__meta">
               <b>{S.bot}</b>
               <span className="vx-apptag">{S.app}</span>
@@ -644,15 +647,22 @@ function SlackWindow({ m }: { m: DemoModel }) {
 
 /* ─── section ──────────────────────────────────────────────────────────────── */
 
-export function VxDemo({ v }: { v: VerticalConfig }) {
+/**
+ * `headless`: the demo sits inside a section that already has its visible head (the homepage's
+ * LpDemoTour: eyebrow, H2 = demo.h2, lede, prompt rows) — no hidden H2, no own accessible name
+ * (the band is a plain part of that section, not a second landmark with the same title).
+ */
+export function VxDemo({ v, headless = false }: { v: DemoSource; headless?: boolean }) {
   const m = buildDemoModel(v);
   return (
-    // id="vx-demo": the hero's prompt rows link here (scroll-margin-top clears the sticky phone nav)
-    <section className="vx-demo" id="vx-demo" aria-labelledby="vx-demo-title">
+    // id="vx-demo": the prompt rows link here (scroll-margin-top clears the sticky phone nav)
+    <section className="vx-demo" id="vx-demo" aria-labelledby={headless ? undefined : "vx-demo-title"}>
       {/* the section's name for the outline and screen readers; the tab bar is the visible head */}
-      <h2 id="vx-demo-title" className="vx-sr">
-        {v.demo.h2}
-      </h2>
+      {headless ? null : (
+        <h2 id="vx-demo-title" className="vx-sr">
+          {v.demo.h2}
+        </h2>
+      )}
       <VxDemoPlayer
         model={m.player}
         app={

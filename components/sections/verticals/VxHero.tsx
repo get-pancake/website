@@ -1,6 +1,6 @@
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
-import { VxArrow } from "@/components/sections/verticals/VxRelated";
-import { SIGNAL_LABEL, VX_CRUMBS, VX_CTA_LABELS, VX_HERO } from "@/components/sections/verticals/vx-copy";
+import { VxPromptRows } from "@/components/sections/verticals/VxPromptRows";
+import { VX_CRUMBS, VX_CTA_LABELS, VX_HERO } from "@/components/sections/verticals/vx-copy";
 import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import type { VerticalConfig } from "@/lib/verticals/types";
@@ -15,11 +15,9 @@ import type { VerticalConfig } from "@/lib/verticals/types";
  *                an sr-only ": " between them, so the H1 reads "Pancake for X: Find …"
  *   lede         hero.lede (= meta description)
  *   CTA pair     Start free (app_hero) · Book a demo (/demo, call_hero)
- *   prompts      "Example prompts": the demo's three prompts as rows. Each is a real link to
- *                #vx-demo (crawlable, works without JS); the demo island (VxDemoPlayer) takes
- *                the clicks over, plays that prompt from the Brief tab and marks the row it is
- *                showing (data-active + aria-current). Server HTML = prompt 0 active, which is
- *                what the demo renders before JS.
+ *   prompts      "Example prompts": the demo's three prompts as rows (VxPromptRows, shared with
+ *                the homepage's demo section). Each is a real link to #vx-demo; the demo island
+ *                (VxDemoPlayer) takes the clicks over and plays that prompt.
  */
 export function VxHero({ v }: { v: VerticalConfig }) {
   return (
@@ -54,39 +52,7 @@ export function VxHero({ v }: { v: VerticalConfig }) {
             {VX_CTA_LABELS.secondary}
           </LpFxLink>
         </div>
-        <p className="vx-hero__label" id="vx-prompts-label">
-          {VX_HERO.promptsLabel}
-        </p>
-        {/* one grid, rows on a subgrid: the badges share one column, so every prompt starts
-            on the same x and every arrow ends on the same x (equal rows, not ragged pills) */}
-        <ul className="vx-hp-list" aria-labelledby="vx-prompts-label">
-          {v.demo.prompts.map((p, i) => (
-            <li key={i}>
-              <a
-                className="vx-hp"
-                href="#vx-demo"
-                data-vx-prompt={i}
-                data-active={i === 0 ? "" : undefined}
-                aria-current={i === 0 ? "true" : undefined}
-              >
-                {/* display: contents on desktop (the badge and the text stay subgrid cells); on
-                    phones the 2-line clamp box (the full prompt is still in the HTML and is
-                    typed in full in the demo) */}
-                <span className="vx-hp__body">
-                  <span className="vx-badge" data-tone={p.kind}>
-                    {SIGNAL_LABEL[p.kind]}
-                  </span>
-                  <span className="vx-hp__text">
-                    {p.text}
-                    <span className="vx-sr"> {VX_HERO.promptHint}</span>
-                  </span>
-                </span>
-                {/* points DOWN: the row plays the prompt in the demo right below (it never leaves the page) */}
-                <VxArrow className="vx-hp__arrow" />
-              </a>
-            </li>
-          ))}
-        </ul>
+        <VxPromptRows prompts={v.demo.prompts} />
       </div>
     </section>
   );

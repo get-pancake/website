@@ -1,0 +1,9 @@
+/* Homepage only (app/page.tsx, AFTER landing-v3.css): the /for product demo in its own section
+   (LpDemoTour). Only what the demo needs from the /for kit — the .lp-vx tokens + section-head
+   recipes, the "Example prompts" rows, the demo — all scoped under .lp-vx, which on the
+   homepage is the demo section alone (nothing reaches the other sections). Not the /for hero,
+   signals, control, FAQ, related or hub files. */
+@import "./verticals/foundation.css";
+@import "./verticals/prompts.css";
+@import "./verticals/demo.css";
+@import "./landing-v3/demo-tour.css";
