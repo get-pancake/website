@@ -49,7 +49,7 @@ export function HomeNav() {
   // somewhere new instead of being redundant.
   const onPricingPage = pathname === "/pricing";
   const sideLinkLabel = onPricingPage ? "Sign in" : "Pricing";
-  const sideLinkHref = onPricingPage ? "https://beta.getpancake.ai" : "/pricing";
+  const sideLinkHref = onPricingPage ? "https://app.getpancake.ai" : "/pricing";
 
   // Lock body scroll while the drawer is open + close on Escape.
   useEffect(() => {
@@ -128,7 +128,7 @@ export function HomeNav() {
                 tracking for v2 is event-based and does not infer conversions
                 from this destination hostname. */}
             <a
-              href="https://beta.getpancake.ai"
+              href="https://app.getpancake.ai"
               className="button inline-flex w-fit shrink-0 items-center justify-center no-underline"
               data-size="sm"
             >
@@ -219,7 +219,7 @@ export function HomeNav() {
             </Link>
             {/* Drawer CTA — same analytics contract as the desktop nav CTA. */}
             <a
-              href="https://beta.getpancake.ai"
+              href="https://app.getpancake.ai"
               className="button mt-[var(--spacing-xl)] inline-flex w-fit shrink-0 items-center justify-center no-underline"
               data-size="lg"
               tabIndex={drawerOpen ? 0 : -1}

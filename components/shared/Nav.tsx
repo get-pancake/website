@@ -8,7 +8,7 @@ type NavProps = {
   showCta?: boolean;
 };
 
-export function Nav({ ctaHref = "https://beta.getpancake.ai", showCta = true }: NavProps) {
+export function Nav({ ctaHref = "https://app.getpancake.ai", showCta = true }: NavProps) {
   return (
     <header
       className="fixed left-0 right-0 top-0 z-50 !shadow-none backdrop-blur-md"

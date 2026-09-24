@@ -4,9 +4,12 @@ import type { ComponentPropsWithoutRef } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
+import { LpCta } from "@/components/sections/landing-v3/LpCta";
+import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
-import { formatPostDate, getAllPosts, getPostBySlug } from "@/lib/posts";
+import { formatPostDate, getAllPosts, getPostBySlug, type PostMeta } from "@/lib/posts";
 import "@/app/_styles/landing-v3.css";
 import "../blog.css";
 
@@ -14,7 +17,8 @@ import "../blog.css";
  * Blog post on the landing-v3 system (2026-09-03) — see app/blog/page.tsx for
  * the why. Header band (date / title / description / byline) on the 1296
  * grid, the markdown body on a 760px measure, the frontmatter FAQ as cream
- * cards. Article + FAQPage JSON-LD unchanged.
+ * cards, then "Keep reading" (frontmatter `related`) and the homepage CTA.
+ * Article + FAQPage + BreadcrumbList JSON-LD.
  */
 
 /* Status-bar zone matches the lp cream (Dynamic Island fix, 2026-08-31) */
@@ -28,28 +32,49 @@ export async function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
 }
 
+const SITE = "https://getpancake.ai";
+const ORG_ID = `${SITE}/#organization`;
+const OG_IMAGE = "/og-image.png";
+const TITLE_SUFFIX = " · Pancake";
+/** Google truncates SERP titles around 60 characters. */
+const TITLE_BUDGET = 60;
+
+/** SERP title: the frontmatter `seo_title` verbatim when set; otherwise the
+ *  H1 plus " · Pancake" when that fits the budget, else the H1 alone (a
+ *  truncated brand suffix only wastes the budget — Google shows the site
+ *  name on its own line). */
+function serpTitle(meta: PostMeta): string {
+  if (meta.seo_title) return meta.seo_title;
+  const branded = `${meta.title}${TITLE_SUFFIX}`;
+  return branded.length <= TITLE_BUDGET ? branded : meta.title;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) return {};
+  const url = `${SITE}/blog/${slug}`;
+  const title = serpTitle(post.meta);
   return {
-    title: `${post.meta.title} — Pancake Blog`,
+    title: { absolute: title },
     description: post.meta.description,
-    alternates: { canonical: `https://getpancake.ai/blog/${slug}` },
+    alternates: { canonical: url },
     openGraph: {
       type: "article",
-      url: `https://getpancake.ai/blog/${slug}`,
-      title: post.meta.title,
+      url,
+      title,
       description: post.meta.description,
       publishedTime: post.meta.date,
       modifiedTime: post.meta.last_updated,
-      authors: [post.meta.author],
+      authors: post.meta.author ? [post.meta.author] : undefined,
       siteName: "Pancake",
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Pancake" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: post.meta.title,
+      title,
       description: post.meta.description,
+      images: [OG_IMAGE],
     },
   };
 }
@@ -72,6 +97,22 @@ export default async function BlogPost({ params }: Props) {
   if (!post) notFound();
 
   const { meta, content } = post;
+  const url = `${SITE}/blog/${slug}`;
+
+  // "Keep reading": frontmatter slugs that resolve to a live post, max 3.
+  const related = (meta.related ?? [])
+    .filter((s) => s !== slug)
+    .map((s) => getPostBySlug(s)?.meta)
+    .filter((m): m is PostMeta => Boolean(m))
+    .slice(0, 3);
+
+  const pancakeOrg = {
+    "@type": "Organization",
+    "@id": ORG_ID,
+    name: "Pancake",
+    url: SITE,
+    logo: { "@type": "ImageObject", url: `${SITE}/pancake-mark.png` },
+  };
 
   // Build Article JSON-LD
   const articleJsonLd = {
@@ -79,21 +120,27 @@ export default async function BlogPost({ params }: Props) {
     "@type": "Article",
     headline: meta.title,
     description: meta.description,
+    image: `${SITE}${OG_IMAGE}`,
     datePublished: meta.date,
     dateModified: meta.last_updated || meta.date,
-    author: {
-      "@type": "Person",
-      name: meta.author,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "Pancake",
-      url: "https://getpancake.ai",
-    },
+    // No named author on a few posts: credit the organization, never an
+    // empty Person.
+    author: meta.author ? { "@type": "Person", name: meta.author } : pancakeOrg,
+    publisher: pancakeOrg,
     mainEntityOfPage: {
       "@type": "WebPage",
-      "@id": `https://getpancake.ai/blog/${slug}`,
+      "@id": url,
     },
+  };
+
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Pancake", item: SITE },
+      { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE}/blog` },
+      { "@type": "ListItem", position: 3, name: meta.title, item: url },
+    ],
   };
 
   // Build FAQPage JSON-LD if post has FAQ entries
@@ -120,6 +167,10 @@ export default async function BlogPost({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       {faqJsonLd && (
         <script
           type="application/ld+json"
@@ -127,6 +178,10 @@ export default async function BlogPost({ params }: Props) {
         />
       )}
 
+      {/* --lp-fit for the CTA slivers (iOS cqw workaround) + off-screen GPU
+          layer freeze — same pair the homepage and /for pages mount. */}
+      <LpFitVars />
+      <LpAnimFreeze />
       <LpNav />
 
       <article>
@@ -141,7 +196,7 @@ export default async function BlogPost({ params }: Props) {
             <h1 className="lp-blog-post__title lp-display">{meta.title}</h1>
             <p className="lp-blog-lede lp-blog-post__lede">{meta.description}</p>
             <p className="lp-blog-meta">
-              <span>By {meta.author}</span>
+              <span>By {meta.author ?? "Pancake"}</span>
               <span aria-hidden="true">&middot;</span>
               <span>Last updated {formatPostDate(meta.last_updated || meta.date)}</span>
             </p>
@@ -173,11 +228,32 @@ export default async function BlogPost({ params }: Props) {
                   </dl>
                 </section>
               )}
+
+              {related.length > 0 && (
+                <section className="lp-blog-related" aria-labelledby="blog-related-heading">
+                  <h2 id="blog-related-heading" className="lp-blog-faq__title">
+                    Keep reading
+                  </h2>
+                  <ul className="lp-blog-cards">
+                    {related.map((r) => (
+                      <li key={r.slug}>
+                        <a className="lp-blog-card" href={`/blog/${r.slug}`}>
+                          <h3 className="lp-blog-card__title lp-display">{r.title}</h3>
+                          <p className="lp-blog-card__desc">{r.description}</p>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
             </div>
           </div>
         </div>
       </article>
 
+      {/* Every post ends on the homepage CTA (founder 2026-09-24: don't
+          undersell — blog readers are the site's biggest organic audience). */}
+      <LpCta />
       <LpFooter />
     </main>
   );

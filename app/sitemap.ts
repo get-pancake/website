@@ -20,24 +20,44 @@ function maxUpdated(): string {
     .at(-1)!;
 }
 
+/** Newest post date — the blog index changes when a post does. */
+function newestPostDate(): Date {
+  const dates = getAllPosts().map((p) => safeDate(p.last_updated || p.date).getTime());
+  return dates.length ? new Date(Math.max(...dates)) : new Date();
+}
+
+/**
+ * Static pages carry the date their visible content last changed — bump the
+ * entry when you ship a copy/content change to that page. `new Date()` here
+ * stamped every build as a change, which teaches Google to ignore <lastmod>
+ * for the whole sitemap (blog posts and /for included).
+ */
+const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
+  { path: "", updated: "2026-09-24", priority: 1.0 },
+  { path: "/pricing", updated: "2026-09-24", priority: 0.8 },
+  { path: "/ai-gtm-report", updated: "2026-09-19", priority: 0.9 },
+  { path: "/open-roadmap", updated: "2026-07-06", priority: 0.6 },
+  { path: "/careers", updated: "2026-08-31", priority: 0.5 },
+  { path: "/privacy", updated: "2026-09-18", priority: 0.3 },
+  { path: "/terms", updated: "2026-09-18", priority: 0.3 },
+  { path: "/support", updated: "2026-09-18", priority: 0.3 },
+  { path: "/viktor-vs-pancake", updated: "2026-08-28", priority: 0.8 },
+  { path: "/claude-tag-vs-pancake", updated: "2026-08-28", priority: 0.8 },
+  { path: "/gojiberry-vs-pancake", updated: "2026-08-28", priority: 0.8 },
+  { path: "/lemlist-vs-pancake", updated: "2026-08-28", priority: 0.8 },
+  { path: "/origami-vs-pancake", updated: "2026-08-28", priority: 0.8 },
+  { path: "/openclaw-vs-pancake", updated: "2026-08-28", priority: 0.8 },
+  { path: "/pancake-vs-paperclips", updated: "2026-08-28", priority: 0.8 },
+];
+
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
-    { url: "https://getpancake.ai", lastModified: new Date(), priority: 1.0 },
-    { url: "https://getpancake.ai/pricing", lastModified: new Date(), priority: 0.8 },
-    { url: "https://getpancake.ai/ai-gtm-report", lastModified: new Date(), priority: 0.9 },
-    { url: "https://getpancake.ai/open-roadmap", lastModified: new Date(), priority: 0.6 },
-    { url: "https://getpancake.ai/careers", lastModified: new Date(), priority: 0.5 },
-    { url: "https://getpancake.ai/privacy", lastModified: new Date(), priority: 0.3 },
-    { url: "https://getpancake.ai/terms", lastModified: new Date(), priority: 0.3 },
-    { url: "https://getpancake.ai/support", lastModified: new Date(), priority: 0.3 },
-    { url: "https://getpancake.ai/blog", lastModified: new Date(), priority: 0.8 },
-    { url: "https://getpancake.ai/viktor-vs-pancake", lastModified: new Date(), priority: 0.8 },
-    { url: "https://getpancake.ai/claude-tag-vs-pancake", lastModified: new Date(), priority: 0.8 },
-    { url: "https://getpancake.ai/gojiberry-vs-pancake", lastModified: new Date(), priority: 0.8 },
-    { url: "https://getpancake.ai/lemlist-vs-pancake", lastModified: new Date(), priority: 0.8 },
-    { url: "https://getpancake.ai/origami-vs-pancake", lastModified: new Date(), priority: 0.8 },
-    { url: "https://getpancake.ai/openclaw-vs-pancake", lastModified: new Date(), priority: 0.8 },
-    { url: "https://getpancake.ai/pancake-vs-paperclips", lastModified: new Date(), priority: 0.8 },
+    ...STATIC_PAGES.map((p) => ({
+      url: `https://getpancake.ai${p.path}`,
+      lastModified: new Date(p.updated),
+      priority: p.priority,
+    })),
+    { url: "https://getpancake.ai/blog", lastModified: newestPostDate(), priority: 0.8 },
     // /for — the Industries hub + every APPROVED vertical (drafts are noindex and
     // stay out). lastModified = the config's fixed `updated` date (no daily churn).
     ...(approvedVerticals().length

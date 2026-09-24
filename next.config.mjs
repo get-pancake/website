@@ -25,14 +25,35 @@ const nextConfig = {
     ];
     return [
       { source: "/favicon.ico", destination: "/icon.png", permanent: false },
-      { source: "/contact", destination: "/support", permanent: false },
+      { source: "/contact", destination: "/support", statusCode: 301 },
       // Influencer program archived (see app/_influencers). Temporary redirects
       // only — clients must not cache these past a future revival.
       { source: "/creators", destination: "/", permanent: false },
       { source: "/influencers", destination: "/", permanent: false },
       // llms.txt (and possibly LLM answers built from it) link /signup;
       // the route never existed — send those visitors to the real signup.
-      { source: "/signup", destination: "https://beta.getpancake.ai", permanent: false },
+      { source: "/signup", destination: "https://app.getpancake.ai", permanent: false },
+      // People type getpancake.ai/login: send them to the app (temporary, so
+      // it can later point at a dedicated app login route).
+      { source: "/login", destination: "https://app.getpancake.ai", permanent: false },
+      { source: "/signin", destination: "https://app.getpancake.ai", permanent: false },
+      { source: "/sign-in", destination: "https://app.getpancake.ai", permanent: false },
+      // Removed or moved pages → the closest live page, 301 (founder rule
+      // 2026-09-24: never leave a known URL on a 404; every removal or URL
+      // change ships with a 301 here).
+      // Deleted in 7d4437e (duplicate of the Cofounder.AI comparison).
+      { source: "/blog/pancake-vs-cofounder", destination: "/blog/pancake-vs-cofounder-ai", statusCode: 301 },
+      // Deleted in 222b8e8 (unverifiable revenue claim).
+      { source: "/blog/autonomous-company-at-30k-mrr", destination: "/blog/autonomous-company-benchmark-2026", statusCode: 301 },
+      // The GTM report's first address (d4d95bf) before it moved to /ai-gtm-report.
+      { source: "/report", destination: "/ai-gtm-report", statusCode: 301 },
+      // From the Search Console "Not found (404)" export (2026-09-24,
+      // raw/getpancake-ai-search-console-404-2026-09-24.csv):
+      // the privacy page's old address…
+      { source: "/privacy-policy", destination: "/privacy", statusCode: 301 },
+      // …and "/month", which Googlebot lifts from the "$99/month" string in
+      // the page payload (not a real link) — the pricing page answers it.
+      { source: "/month", destination: "/pricing", statusCode: 301 },
       ...dead.map((path) => ({
         source: `/${path}`,
         destination: "/",

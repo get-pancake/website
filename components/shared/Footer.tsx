@@ -24,7 +24,7 @@ const columns: { title: string; links: FooterLink[] }[] = [
     links: [
       { href: "/pricing", label: "Pricing" },
       { href: "/open-roadmap", label: "Roadmap" },
-      { href: "https://beta.getpancake.ai", label: "Sign in" },
+      { href: "https://app.getpancake.ai", label: "Sign in" },
     ],
   },
   {
@@ -107,7 +107,7 @@ export function Footer() {
               <PancakeLogo variant="inverted" className="h-11" />
             </Link>
             <p className="max-w-[260px] text-sm leading-relaxed">
-              The AI employee that does the work for you.
+              The AI GTM team that brings you customers.
             </p>
             {/* -m-3 offsets the p-3 hit padding so the icon row keeps its
                 optical position; each icon is a 42px touch target (mobile

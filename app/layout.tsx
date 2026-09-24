@@ -99,18 +99,20 @@ const geistSans = localFont({
 // Canonical host is the apex domain: https://getpancake.ai serves 200 directly,
 // and the www host 308-redirects to it (verified via curl -sI).
 // Every absolute URL below (canonical, og:url, JSON-LD) uses the apex host.
+// Default title/OG for routes that set none (founder 2026-09-24: "we're not an AI
+// coworker any more, we're AI GTM"). The homepage sets its own <title>: "Pancake".
 export const metadata: Metadata = {
   metadataBase: new URL("https://getpancake.ai"),
-  title: "Pancake: The AI employee that does the work for you",
+  title: "Pancake: The AI GTM team that brings you customers",
   description:
     "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
-  alternates: {
-    canonical: "https://getpancake.ai",
-  },
+  // No `alternates.canonical` and no `openGraph.url` here: both would be
+  // inherited by every route that doesn't set its own, and a canonical that
+  // points at the homepage tells Google the page is a duplicate of `/` (it hid
+  // /pricing until 2026-09-24). Each indexable page sets its own canonical.
   openGraph: {
     type: "website",
-    url: "https://getpancake.ai",
-    title: "Pancake: The AI employee that does the work for you",
+    title: "Pancake: The AI GTM team that brings you customers",
     description:
       "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "You run your company. We bring you customers." }],
@@ -118,7 +120,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pancake: The AI employee that does the work for you",
+    title: "Pancake: The AI GTM team that brings you customers",
     description:
       "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
     images: ["/og-image.png"],
@@ -134,6 +136,7 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": "https://getpancake.ai/#organization",
   name: "Pancake",
   alternateName: "Pancake AI",
   url: "https://getpancake.ai",
@@ -155,16 +158,23 @@ const organizationJsonLd = {
     "https://www.linkedin.com/company/get-pancake",
     "https://www.tiktok.com/@getpancake",
     "https://www.instagram.com/get.pancake/",
+    "https://www.producthunt.com/products/pancake-6",
   ],
 };
 
 // WebSite JSON-LD — no SearchAction: the site has no /search route, and a
-// SearchAction pointing at a 404 hurts more than it helps.
+// SearchAction pointing at a 404 hurts more than it helps. Google reads the
+// SERP site name from this node (name first, then alternateName), not from
+// page titles — so "Pancake AI" lives here and the homepage <title> stays
+// exactly "Pancake".
 const webSiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": "https://getpancake.ai/#website",
   name: "Pancake",
+  alternateName: ["Pancake AI", "getpancake.ai"],
   url: "https://getpancake.ai",
+  publisher: { "@id": "https://getpancake.ai/#organization" },
 };
 
 const googleTagManagerId = "GTM-P3Z79WKD";

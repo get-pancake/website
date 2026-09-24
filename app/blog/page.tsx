@@ -18,16 +18,26 @@ import "./blog.css";
 /* Status-bar zone matches the lp cream (Dynamic Island fix, 2026-08-31) */
 export const viewport: Viewport = { themeColor: "#fbf6f1" };
 
+const DESCRIPTION =
+  "Guides and tool comparisons for founders who sell: buying signals, warm leads, outreach and the AI tools that run go-to-market.";
+
 export const metadata: Metadata = {
   title: "Blog · Pancake",
-  description: "Guides and strategies on AI-native company building, automation, and the future of work.",
+  description: DESCRIPTION,
   alternates: { canonical: "https://getpancake.ai/blog" },
   openGraph: {
     type: "website",
     url: "https://getpancake.ai/blog",
     title: "Blog · Pancake",
-    description: "Guides and strategies on AI-native company building, automation, and the future of work.",
+    description: DESCRIPTION,
     siteName: "Pancake",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Pancake" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Blog · Pancake",
+    description: DESCRIPTION,
+    images: ["/og-image.png"],
   },
 };
 

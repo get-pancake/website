@@ -44,9 +44,9 @@ export const metadata: Metadata = {
      revert had swapped in the July v1 copy ("AI coworker in Slack, $49/
      month" — wrong positioning, wrong price). Known trade-off: with a
      one-word <title>, Google may build its own title from other signals
-     (it showed "Pancake's AI" once); the og/twitter titles and the JSON-LD
-     names carry the full "Pancake — You run your company. We bring you
-     customers." so it has a coherent descriptive title to pick instead. */
+     (it showed "Pancake's AI" once); the og/twitter titles carry the full
+     "Pancake — You run your company. We bring you customers." and the
+     WebSite JSON-LD (root layout) carries the site name + "Pancake AI". */
   title: "Pancake",
   description:
     "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
@@ -73,7 +73,9 @@ export const metadata: Metadata = {
 const softwareApplicationJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
+  "@id": "https://getpancake.ai/#software",
   name: "Pancake",
+  alternateName: "Pancake AI",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   url: "https://getpancake.ai",
@@ -84,10 +86,20 @@ const softwareApplicationJsonLd = {
     url: "https://getpancake.ai/pricing",
     price: String(pricingV2.monthlyDollars),
     priceCurrency: pricingV2.currency,
+    priceSpecification: {
+      "@type": "UnitPriceSpecification",
+      price: String(pricingV2.monthlyDollars),
+      priceCurrency: pricingV2.currency,
+      billingDuration: "P1M",
+      unitText: "MONTH",
+    },
     availability: "https://schema.org/InStock",
   },
+  // @id ties this node to the root layout's Organization; name + url stay
+  // inline so the node still validates for parsers that don't resolve @id.
   publisher: {
     "@type": "Organization",
+    "@id": "https://getpancake.ai/#organization",
     name: "Pancake",
     url: "https://getpancake.ai",
   },

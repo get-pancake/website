@@ -102,7 +102,7 @@ export function HomeClosingCta() {
       </p>
       <div className="home-landing-closing-cta">
         <a
-          href="https://beta.getpancake.ai"
+          href="https://app.getpancake.ai"
           className="button inline-flex w-fit shrink-0 items-center justify-center no-underline"
           data-size="lg"
         >
