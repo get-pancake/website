@@ -112,7 +112,14 @@ export interface VerticalConfig {
  * block. Every VerticalConfig is one; the homepage demo (lib/verticals/home-demo.ts) is one with
  * no /for page behind it — same rules (validateVerticals' `demos`), not in the registry.
  */
-export type DemoSource = Pick<VerticalConfig, "workspace" | "demo">;
+export type DemoSource = Pick<VerticalConfig, "workspace" | "demo"> & {
+  /**
+   * The homepage demo only (LpDemoTour renders it; a /for page's head is its hero): the section
+   * eyebrow and the lede beside the H2 (= demo.h2). Here so validateVerticals lints them with the
+   * demo (banned claims, platform names) and scripts/verticals-budget.mjs measures the lede.
+   */
+  head?: { eyebrow: string; lede: string };
+};
 
 export interface DemoPrompt {
   /** The primary signal: the hero row's badge. Must equal proposal[0].kind. */

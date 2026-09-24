@@ -13,15 +13,26 @@
 // (the rail, "Sends as", Slack), so three prompts from one business, three different signals:
 // people posting about a launch (Keyword), people engaging with rival studios (Competitor),
 // companies hiring for the launch team (Hiring). US targets only (outreach is in English).
-// Every person, company, rival studio and storyteller below is invented.
+// Every person, company, rival studio and storyteller below is invented, and the lede says Studio
+// Pelican is an example (critics 2026-09-23: under the verified customer logos, a bare "Studio
+// Pelican makes launch videos" read as a customer story).
 import type { DemoSource } from "./types";
 
-export const HOME_DEMO: DemoSource = {
-  workspace: { name: "Studio Pelican", sender: "Maren Lindell" },
+export const HOME_DEMO: DemoSource & Required<Pick<DemoSource, "head">> = {
+  workspace: { name: "Studio Pelican", sender: "Astrid Norling" },
+
+  /** The section head beside demo.h2 (LpDemoTour). The lede says Studio Pelican is an example
+   *  (right under the verified customer logos), puts the website first, so the demo reads as what
+   *  follows LpSteps' "01 Add your website" rather than a second first step, and ends on
+   *  tomorrow's leads (they arrive every morning; landing-voice: Pancake acts, payoff last). */
+  head: {
+    eyebrow: "See it work",
+    lede: "Studio Pelican, an example studio, makes SaaS launch videos. Pancake has read its website. Pick one of its prompts and meet tomorrow’s leads.",
+  },
 
   demo: {
     /** Rendered VISIBLY on the homepage: the demo section's H2 (LpDemoTour). */
-    h2: "One prompt in. Warm leads out.",
+    h2: "One prompt in. Leads every morning.",
     prompts: [
       {
         kind: "keyword",
@@ -29,15 +40,15 @@ export const HOME_DEMO: DemoSource = {
         reply: "I’ll watch release and launch day posts from product marketers at US SaaS companies.",
         proposal: [
           { kind: "keyword", items: ["new release", "launch day", "product demo"] },
-          { kind: "influencer", items: ["Dara Ellwood"] },
+          { kind: "influencer", items: ["Tovah Ellwood"] },
           { kind: "competitor", items: ["Bramble Reels"] },
         ],
         leads: [
           { name: "Tamsin Okafor", role: "Director of PMM", company: "Quillfern", kind: "keyword", signal: "Posted about a release" },
           { name: "Wes Pomeroy", role: "VP Marketing", company: "Stackhollow", kind: "keyword", signal: "Posted on launch day" },
           { name: "Imani Coldwell", role: "CMO", company: "Ferngate", kind: "influencer", signal: "Liked an Ellwood post" },
-          { name: "Anders Nakamura", role: "PMM Lead", company: "Loomwise", kind: "competitor", signal: "Liked a Bramble post" },
-          { name: "Rosa Delacroix", role: "Founder & CEO", company: "Pixelmoor", kind: "keyword", signal: "Posted a product demo" },
+          { name: "Anders Forsythe", role: "PMM Lead", company: "Loomwise", kind: "competitor", signal: "Liked a Bramble post" },
+          { name: "Rosa Hartigan", role: "Founder & CEO", company: "Cindermoor", kind: "keyword", signal: "Posted a product demo" },
         ],
         featured: {
           why: "Quillfern is a 140-person US SaaS company. Tamsin runs product marketing and posted this week about an upcoming release.",
@@ -45,23 +56,23 @@ export const HOME_DEMO: DemoSource = {
           seniority: "Director",
         },
         message:
-          "Hi Tamsin, saw the release you teased this week. Launch videos are all we make at Studio Pelican. What should a buyer understand in the first ten seconds of yours?",
+          "Hi Tamsin, saw you teased a release at Quillfern this week. How will you show it on launch day, a video or screenshots?",
       },
       {
         kind: "competitor",
-        text: "Find marketing leads at US SaaS companies who engage with rival video studios’ posts.",
+        text: "Find heads of marketing at US SaaS companies who engage with rival video studios’ posts.",
         reply: "I’ll find SaaS marketers who like or comment on rival studios’ posts.",
         proposal: [
           { kind: "competitor", items: ["Bramble Reels", "Ferrow Motion"] },
           { kind: "keyword", items: ["explainer video", "customer story"] },
-          { kind: "influencer", items: ["Dara Ellwood", "Owen Pascoe"] },
+          { kind: "influencer", items: ["Tovah Ellwood", "Owen Pascoe"] },
         ],
         leads: [
-          { name: "Nate Abernathy", role: "Head of Content", company: "Quorra Labs", kind: "competitor", signal: "Liked a Bramble post" },
-          { name: "Chloe Vandermeer", role: "Brand Director", company: "Hexfield", kind: "competitor", signal: "Liked a Ferrow post" },
+          { name: "Nate Trevino", role: "Head of Content", company: "Quorra Labs", kind: "competitor", signal: "Liked a Bramble post" },
+          { name: "Chloe Abelard", role: "Brand Director", company: "Hexfield", kind: "competitor", signal: "Liked a Ferrow post" },
           { name: "Omar Tessaro", role: "VP Marketing", company: "Gridwell", kind: "keyword", signal: "Posted a customer story" },
           { name: "Bea Soriano", role: "CMO", company: "Cloudnook", kind: "influencer", signal: "Liked a Pascoe post" },
-          { name: "Jonah Pritchard", role: "Content Lead", company: "Signalry", kind: "competitor", signal: "Liked a Bramble post" },
+          { name: "Jonah Stoddard", role: "Content Lead", company: "Signalry", kind: "competitor", signal: "Liked a Bramble post" },
         ],
         featured: {
           why: "Quorra Labs is a 90-person US SaaS company. Nate leads content and liked a Bramble Reels post about explainer videos.",
@@ -69,31 +80,31 @@ export const HOME_DEMO: DemoSource = {
           seniority: "Head",
         },
         message:
-          "Hi Nate, saw you liked Bramble Reels’ post on explainer videos. We make them for SaaS teams too. Which one made you want to try the product it was selling?",
+          "Hi Nate, saw you liked Bramble Reels’ post on explainer videos. Is video on Quorra Labs’ content plan this year?",
       },
       {
         kind: "hiring",
-        text: "Find US SaaS companies of 50 to 500 people hiring a product marketing manager.",
-        reply: "I’ll find SaaS companies of 50 to 500 people with an open product marketing role.",
+        text: "Find US SaaS companies hiring a product marketer. A new PMM means launches ahead.",
+        reply: "I’ll find US SaaS companies with an open product marketing role.",
         proposal: [
           { kind: "hiring", items: ["Product marketing manager", "Head of product marketing"] },
           { kind: "stack", items: ["Wistia", "Vidyard"] },
           { kind: "keyword", items: ["release notes"] },
         ],
         leads: [
-          { name: "Elena Marchetti", role: "VP Marketing", company: "Tidewell", kind: "hiring", signal: "PMM role open" },
-          { name: "Theo Brandvold", role: "CMO", company: "Parcelry", kind: "hiring", signal: "Head of PMM role" },
+          { name: "Elena Marchetti", role: "VP Marketing", company: "Harborlane", kind: "hiring", signal: "PMM role open" },
+          { name: "Leopold Fairbairn", role: "CMO", company: "Parcelry", kind: "hiring", signal: "Head of PMM role" },
           { name: "Ruth Adeyinka", role: "Head of Growth", company: "Brimstack", kind: "stack", signal: "Wistia in job posts" },
-          { name: "Marco Villaseñor", role: "PMM Director", company: "Oakhatch", kind: "hiring", signal: "PMM role open" },
-          { name: "Sienna Hollis", role: "VP Marketing", company: "Tallowby", kind: "keyword", signal: "Posted release notes" },
+          { name: "Lucian Ashcombe", role: "PMM Director", company: "Oakhatch", kind: "hiring", signal: "PMM role open" },
+          { name: "Nell Lowenthal", role: "VP Marketing", company: "Tallowby", kind: "keyword", signal: "Posted release notes" },
         ],
         featured: {
-          why: "Tidewell is a 210-person US SaaS company with a product marketing role open. Elena runs marketing and owns that hire.",
+          why: "Harborlane is a 210-person US SaaS company with a product marketing role open. Elena runs the marketing team it joins.",
           confidence: 88,
           seniority: "VP",
         },
         message:
-          "Hi Elena, we make the 60-second launch videos SaaS teams put on their pricing page. What does a new visitor watch on yours today?",
+          "Hi Elena, nice to connect. When your team ships a feature, who makes the launch video?",
       },
     ],
   },

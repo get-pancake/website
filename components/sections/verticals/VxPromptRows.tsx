@@ -14,16 +14,32 @@ import type { DemoPrompt } from "@/lib/verticals/types";
  * Styles: app/_styles/verticals/prompts.css (the label keeps its historical `vx-hero__label`
  * class so the /for HTML did not change when the rows moved out of VxHero; its margin-top
  * belongs to the context: hero.css / landing-v3/demo-tour.css).
+ *
+ * `label="hidden"` (the homepage, whose lede already says "pick one of its prompts"): no visible
+ * caps label; the list keeps the same accessible name through aria-label.
  */
-export function VxPromptRows({ prompts }: { prompts: readonly DemoPrompt[] }) {
+export function VxPromptRows({
+  prompts,
+  label = "visible",
+}: {
+  prompts: readonly DemoPrompt[];
+  label?: "visible" | "hidden";
+}) {
+  const shown = label === "visible";
   return (
     <>
-      <p className="vx-hero__label" id="vx-prompts-label">
-        {VX_HERO.promptsLabel}
-      </p>
+      {shown ? (
+        <p className="vx-hero__label" id="vx-prompts-label">
+          {VX_HERO.promptsLabel}
+        </p>
+      ) : null}
       {/* one grid, rows on a subgrid: the badges share one column, so every prompt starts
           on the same x and every arrow ends on the same x (equal rows, not ragged pills) */}
-      <ul className="vx-hp-list" aria-labelledby="vx-prompts-label">
+      <ul
+        className="vx-hp-list"
+        aria-labelledby={shown ? "vx-prompts-label" : undefined}
+        aria-label={shown ? undefined : VX_HERO.promptsLabel}
+      >
         {prompts.map((p, i) => (
           <li key={i}>
             <a

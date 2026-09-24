@@ -123,7 +123,8 @@ function promptStrings(d: DemoSource): [string, string][] {
 
 /** Every string a demo-only source renders (the homepage demo: its H2 is visible there). */
 function demoStrings(d: DemoSource): [string, string][] {
-  return [["workspace.name", d.workspace.name], ["workspace.sender", d.workspace.sender], ["demo.h2", d.demo.h2], ...promptStrings(d)];
+  const head: [string, string][] = d.head ? [["head.eyebrow", d.head.eyebrow], ["head.lede", d.head.lede]] : [];
+  return [["workspace.name", d.workspace.name], ["workspace.sender", d.workspace.sender], ["demo.h2", d.demo.h2], ...head, ...promptStrings(d)];
 }
 
 /** Every per-vertical string that renders, with its field path (for lint messages). */

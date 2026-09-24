@@ -92,6 +92,10 @@ const T = {
   promptRow: { kind: "w", css: GEIST(15), max: 760, what: "prompt row text on one line at 1025" },
   promptPhone: { kind: "row", css: GEIST(15), lh: 24, width: 280, max: 3, what: "phone prompt row (badge inline, 280 text box) at 390" },
   h2d: { kind: "l", css: COND(57.336, -1.7201), lh: 63.07, width: 720, max: 2, what: "H2 at 720" },
+  // the homepage demo's section lede (LpDemoTour, HOME_DEMO.head.lede): 368 beside the H2 ≥1025,
+  // no taller than a two-line H2 (4 × 24 < 2 × 68.8); the 326 phone column
+  homeLede: { kind: "l", css: GEIST(16), lh: 24, width: 368, max: 4, what: "homepage demo lede at 368 (desktop)" },
+  homeLedeM: { kind: "l", css: GEIST(16), lh: 24, width: 326, max: 6, what: "homepage demo lede at 326 (phone)" },
   h2m: { kind: "l", css: COND(35.559, -1.07), lh: 41, width: 326, max: 3, what: "H2 at 326 (phone)" },
   sigTitle: { kind: "l", css: COND(27.648, -0.83), lh: 32, width: 224, max: 2, what: "signal card title at 224" },
   sigBody: { kind: "l", css: GEIST(15), lh: 22, width: 224, max: 4, what: "signal card body at 224" },
@@ -159,6 +163,8 @@ if (withHome) {
   addDemo(HOME, HOME_DEMO);
   add(HOME, "demo.h2 (the homepage section H2)", "h2d", HOME_DEMO.demo.h2);
   add(HOME, "demo.h2 (the homepage section H2)", "h2m", HOME_DEMO.demo.h2);
+  add(HOME, "head.lede (the homepage section lede)", "homeLede", HOME_DEMO.head.lede);
+  add(HOME, "head.lede (the homepage section lede)", "homeLedeM", HOME_DEMO.head.lede);
 }
 const chipJobs = configs.flatMap((v) =>
   v.signals.cards.map((c, i) => ({

@@ -607,7 +607,7 @@ function SlackLead({ m, i }: { m: DemoModel; i: 0 | 1 | 2 }) {
   );
 }
 
-function SlackWindow({ m }: { m: DemoModel }) {
+function SlackWindow({ m, lazyAvatar }: { m: DemoModel; lazyAvatar: boolean }) {
   const S = A.slack;
   return (
     <>
@@ -624,10 +624,19 @@ function SlackWindow({ m }: { m: DemoModel }) {
         <p className="vx-slack__bar"># {S.channel}</p>
         <div className="vx-slack__feed">
           <div className="vx-smsg" data-cue="s.intro">
-            {/* lazy: the Slack pane is the demo's last step — without it React hoists a
-                <link rel="preload"> for the mascot into <head>, ahead of the page's own art */}
+            {/* lazy on the homepage only (`headless`): there the demo sits far below the fold, and an
+                eager img makes React hoist a <link rel="preload"> for the mascot into <head>, a
+                change outside the demo section. The /for pages keep their markup (eager). */}
             {/* eslint-disable-next-line @next/next/no-img-element -- 6 KB mascot, the Slack app avatar */}
-            <img className="vx-smsg__av" src="/pancake-mark.png" alt="" width={32} height={32} loading="lazy" decoding="async" />
+            <img
+              className="vx-smsg__av"
+              src="/pancake-mark.png"
+              alt=""
+              width={32}
+              height={32}
+              loading={lazyAvatar ? "lazy" : undefined}
+              decoding={lazyAvatar ? "async" : undefined}
+            />
             <p className="vx-smsg__meta">
               <b>{S.bot}</b>
               <span className="vx-apptag">{S.app}</span>
@@ -651,8 +660,19 @@ function SlackWindow({ m }: { m: DemoModel }) {
  * `headless`: the demo sits inside a section that already has its visible head (the homepage's
  * LpDemoTour: eyebrow, H2 = demo.h2, lede, prompt rows) — no hidden H2, no own accessible name
  * (the band is a plain part of that section, not a second landmark with the same title).
+ * `gate`: what the first autoplay start waits for (VxDemoPlayer). "composer" (the /for pages:
+ * the demo sits right under the hero) or "window" (the homepage: ≥768 it starts once 35% of the
+ * app window shows, since its section head keeps the composer below most laptop folds).
  */
-export function VxDemo({ v, headless = false }: { v: DemoSource; headless?: boolean }) {
+export function VxDemo({
+  v,
+  headless = false,
+  gate = "composer",
+}: {
+  v: DemoSource;
+  headless?: boolean;
+  gate?: "composer" | "window";
+}) {
   const m = buildDemoModel(v);
   return (
     // id="vx-demo": the prompt rows link here (scroll-margin-top clears the sticky phone nav)
@@ -665,6 +685,7 @@ export function VxDemo({ v, headless = false }: { v: DemoSource; headless?: bool
       )}
       <VxDemoPlayer
         model={m.player}
+        gate={gate}
         app={
           <>
             <AppBar />
@@ -678,7 +699,7 @@ export function VxDemo({ v, headless = false }: { v: DemoSource; headless?: bool
             </div>
           </>
         }
-        slack={<SlackWindow m={m} />}
+        slack={<SlackWindow m={m} lazyAvatar={headless} />}
       />
     </section>
   );
