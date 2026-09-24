@@ -1,7 +1,7 @@
 import { Fragment } from "react";
 
 import { VxHead } from "@/components/sections/verticals/VxHead";
-import { VX_CONTROL, VX_NOTE } from "@/components/sections/verticals/vx-copy";
+import { VX_CONTROL } from "@/components/sections/verticals/vx-copy";
 import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
@@ -25,8 +25,7 @@ function CheckDisc({ className }: { className: string }) {
  * radius 30, min-height 426, equal heights). The media card is the app's
  * preflight dialog (campaigns/copy.ts `preflight`) with the enrollment toast
  * under it (`enrollment`), parallel, never rotated. Mock buttons are spans
- * inside a role="img" (not focusable); the visible fictional note sits
- * outside the image.
+ * inside a role="img" (not focusable).
  *
  * Time coherence with the demo: leads land 8:30 AM, the lead is added at
  * 9:32 AM, first action no earlier than 9:42 AM, inside Mon–Fri 9–6.
@@ -85,7 +84,6 @@ export function VxControl({ v }: { v: VerticalConfig }) {
                 <span className="vx-abtn vx-toast__undo">{VX_CONTROL.toast.undo}</span>
               </div>
             </div>
-            <p className="vx-note">{vxNoWidow(VX_NOTE)}</p>
           </div>
         </div>
       </div>

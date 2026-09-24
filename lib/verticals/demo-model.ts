@@ -11,7 +11,6 @@ import {
   SIGNAL_LABEL,
   SLACK_SIGNAL_LABEL,
   VX_DEMO,
-  VX_NOTE,
 } from "@/components/sections/verticals/vx-copy";
 import type { DemoLens } from "./demo-timeline";
 import type { DemoPrompt, DemoSource, SignalKind } from "./types";
@@ -85,10 +84,8 @@ export interface PlayerModel {
   aria: string[][];
   labels: {
     tablist: string;
-    note: string;
     pause: string;
     play: string;
-    replay: string;
   };
 }
 
@@ -228,10 +225,8 @@ export function buildDemoModel(v: DemoSource): DemoModel {
     ),
     labels: {
       tablist: VX_DEMO.tablistAria,
-      note: VX_NOTE,
       pause: VX_DEMO.controls.pause,
       play: VX_DEMO.controls.play,
-      replay: VX_DEMO.controls.replay,
     },
   };
 

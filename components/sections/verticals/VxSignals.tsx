@@ -1,5 +1,5 @@
 import { VxHead } from "@/components/sections/verticals/VxHead";
-import { SIGNAL_LABEL, VX_NOTE, VX_SIGNALS } from "@/components/sections/verticals/vx-copy";
+import { SIGNAL_LABEL, VX_SIGNALS } from "@/components/sections/verticals/vx-copy";
 import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
@@ -22,7 +22,7 @@ function EyeIcon() {
  * lines and the "Watching" panel a fixed two chip rows, so the panels line up
  * too); badge = kit label (page-level), chips = the app's Signals-page item
  * chips. The foot line is derived from the cards (the 2 kinds not shown + the
- * opt-in kinds that are), then the fictional-data note.
+ * opt-in kinds that are).
  */
 export function VxSignals({ v }: { v: VerticalConfig }) {
   return (
@@ -54,11 +54,7 @@ export function VxSignals({ v }: { v: VerticalConfig }) {
             </article>
           ))}
         </div>
-        <p className="vx-sig-foot">
-          {vxNoWidow(VX_SIGNALS.foot(v))}
-          <br />
-          {vxNoWidow(VX_NOTE)}
-        </p>
+        <p className="vx-sig-foot">{vxNoWidow(VX_SIGNALS.foot(v))}</p>
       </div>
     </section>
   );

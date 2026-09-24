@@ -269,14 +269,6 @@
   white-space: nowrap;
 }
 
-/* fictional-data note under every mock section (demo, signals, control) */
-.lp-vx .vx-note {
-  color: var(--lp-subtle-text);
-  font-family: var(--lp-font-sans);
-  font-size: var(--lp-text-sm);
-  line-height: 20px;
-}
-
 /* ── §1.10 focus ring for the Vx sections' real controls (the reused nav,
    pills, CTA and footer keep their own) ── */
 .lp-vx .vx-sec :is(a, summary):focus-visible,

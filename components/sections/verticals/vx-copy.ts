@@ -54,7 +54,6 @@ export const SIGNAL_OPT_IN: SignalKind[] = ["hiring", "stack"];
 /* ─── page chrome ───────────────────────────────────────────────────────────── */
 
 export const VX_CTA_LABELS = { primary: "Start free", secondary: "Book a demo" } as const;
-export const VX_NOTE = "Illustrative. Names and companies are fictional.";
 
 /** The breadcrumb (visible in the hero, and the BreadcrumbList JSON-LD): Home › Industries › {name.title}. */
 export const VX_CRUMBS = { home: "Home", hub: "Industries", aria: "Breadcrumb" } as const;
@@ -80,7 +79,7 @@ export const VX_DEMO = {
     { key: "outreach", num: "03", label: "Outreach", title: "Reach out as yourself.", body: "Pancake visits, likes and invites from your own account, then writes." },
     { key: "slack", num: "04", label: "Slack", title: "Approve from Slack.", body: "New leads post to your channel. Approve or reject in one click." },
   ],
-  controls: { pause: "Pause demo", play: "Play demo", replay: "Replay demo" },
+  controls: { pause: "Pause demo", play: "Play demo" },
   /** role="img" labels per pane; {prompt} = active prompt text, {lead} = lead 0 name. */
   paneAria: {
     brief: "Pancake’s Signals page and chat. The request “{prompt}” becomes proposed signal settings, approved. First leads arrive tomorrow morning.",
