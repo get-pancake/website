@@ -4,6 +4,9 @@ import type { ComponentPropsWithoutRef } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
 
+import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
+import { LpCta } from "@/components/sections/landing-v3/LpCta";
+import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { formatPostDate, getAllPosts, getPostBySlug, type PostMeta } from "@/lib/posts";
@@ -14,8 +17,8 @@ import "../blog.css";
  * Blog post on the landing-v3 system (2026-09-03) — see app/blog/page.tsx for
  * the why. Header band (date / title / description / byline) on the 1296
  * grid, the markdown body on a 760px measure, the frontmatter FAQ as cream
- * cards, then "Keep reading" (frontmatter `related`). Article + FAQPage +
- * BreadcrumbList JSON-LD.
+ * cards, then "Keep reading" (frontmatter `related`) and the homepage CTA.
+ * Article + FAQPage + BreadcrumbList JSON-LD.
  */
 
 /* Status-bar zone matches the lp cream (Dynamic Island fix, 2026-08-31) */
@@ -175,6 +178,10 @@ export default async function BlogPost({ params }: Props) {
         />
       )}
 
+      {/* --lp-fit for the CTA slivers (iOS cqw workaround) + off-screen GPU
+          layer freeze — same pair the homepage and /for pages mount. */}
+      <LpFitVars />
+      <LpAnimFreeze />
       <LpNav />
 
       <article>
@@ -244,6 +251,9 @@ export default async function BlogPost({ params }: Props) {
         </div>
       </article>
 
+      {/* Every post ends on the homepage CTA (founder 2026-09-24: don't
+          undersell — blog readers are the site's biggest organic audience). */}
+      <LpCta />
       <LpFooter />
     </main>
   );

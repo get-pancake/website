@@ -99,9 +99,11 @@ const geistSans = localFont({
 // Canonical host is the apex domain: https://getpancake.ai serves 200 directly,
 // and the www host 308-redirects to it (verified via curl -sI).
 // Every absolute URL below (canonical, og:url, JSON-LD) uses the apex host.
+// Default title/OG for routes that set none (founder 2026-09-24: "we're not an AI
+// coworker any more, we're AI GTM"). The homepage sets its own <title>: "Pancake".
 export const metadata: Metadata = {
   metadataBase: new URL("https://getpancake.ai"),
-  title: "Pancake: The AI employee that does the work for you",
+  title: "Pancake: The AI GTM team that brings you customers",
   description:
     "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
   // No `alternates.canonical` and no `openGraph.url` here: both would be
@@ -110,7 +112,7 @@ export const metadata: Metadata = {
   // /pricing until 2026-09-24). Each indexable page sets its own canonical.
   openGraph: {
     type: "website",
-    title: "Pancake: The AI employee that does the work for you",
+    title: "Pancake: The AI GTM team that brings you customers",
     description:
       "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "You run your company. We bring you customers." }],
@@ -118,7 +120,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pancake: The AI employee that does the work for you",
+    title: "Pancake: The AI GTM team that brings you customers",
     description:
       "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
     images: ["/og-image.png"],
