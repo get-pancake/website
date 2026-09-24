@@ -154,7 +154,7 @@ export const cloudConsultancies: VerticalConfig = {
     },
     {
       q: "Can it pull leads from AWS or Azure partner portals?",
-      a: "No. Pancake works from LinkedIn and job posts. Leads from partner portals stay in your portal.",
+      a: "No. Pancake works from profiles, public posts and job posts. Leads from partner portals stay in your portal.",
     },
     {
       q: "Will it bring me engineers instead of CTOs?",

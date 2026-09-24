@@ -1,8 +1,8 @@
 // lib/verticals/data/gtm-agencies.ts
 // Every person, company, rival agency, creator and workspace below is invented.
 // Caveat (brief): Pancake overlaps the reader's own service, so the page leads with
-// "fill your own pipeline" and puts clients second. One workspace and one LinkedIn
-// sender per client ($99 each); no multi-client dashboard, no custom sequences, no email.
+// "fill your own pipeline" and puts clients second. One workspace and one sending
+// account per client ($99 each); no multi-client dashboard, no custom sequences, no email.
 import type { VerticalConfig } from "../types";
 
 export const gtmAgencies: VerticalConfig = {
@@ -144,11 +144,11 @@ export const gtmAgencies: VerticalConfig = {
   faq: [
     {
       q: "Can I run Pancake for my clients?",
-      a: "Yes. Open one workspace per client at $99 a month each. Each client gets its own Brain and needs its own LinkedIn account to send from.",
+      a: "Yes. Open one workspace per client at $99 a month each. Each client gets its own Brain and needs its own account to send from.",
     },
     {
       q: "Isn’t Pancake a rival to my agency?",
-      a: "It does part of what you sell: finding leads and opening LinkedIn conversations. Use it to fill your own pipeline, or run it as one piece of a client engagement.",
+      a: "It does part of what you sell: finding leads and opening conversations. Use it to fill your own pipeline, or run it as one piece of a client engagement.",
     },
     {
       q: "Won’t a team hiring a GTM engineer build its Clay setup in-house?",
@@ -156,7 +156,7 @@ export const gtmAgencies: VerticalConfig = {
     },
     {
       q: "Can I change the sequence steps?",
-      a: "No. Every workspace runs one fixed LinkedIn sequence. What changes per lead is the message: it starts from the lead’s own post when there is one, always in your Brain voice.",
+      a: "No. Every workspace runs one fixed sequence. What changes per lead is the message: it starts from the lead’s own post when there is one, always in your Brain voice.",
     },
   ],
 

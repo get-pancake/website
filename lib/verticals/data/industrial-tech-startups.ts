@@ -149,11 +149,11 @@ export const industrialTechStartups: VerticalConfig = {
   faq: [
     {
       q: "Plant managers barely post. Where do leads come from?",
-      a: "Mostly from job posts. A plant hiring a reliability engineer or asking for Maximo shows up even if nobody there posts. Each lead still needs a LinkedIn profile, since outreach runs there.",
+      a: "Mostly from job posts. A plant hiring a reliability engineer or asking for Maximo shows up even if nobody there posts. Each lead still needs a public profile, since outreach runs from your account to theirs.",
     },
     {
       q: "Can it read a prospect’s sensor or SCADA data?",
-      a: "No. Pancake never sees inside a plant. It reads job posts and what plant leaders post and engage with on LinkedIn.",
+      a: "No. Pancake never sees inside a plant. It reads job posts and what plant leaders post and engage with.",
     },
     {
       q: "Our sales cycles run nine months. What’s the point?",

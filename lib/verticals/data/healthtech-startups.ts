@@ -3,7 +3,7 @@
 // groups and senior-living operators. Prompts map to the trial evidence: scheduling for hospitals
 // (Epic), front-office automation for clinic groups, staffing for senior-living operators.
 // Caveat (brief): B2B health organisations only, never patients. No patient-data, HIPAA or
-// clinical claims. Small practices are sparse on LinkedIn. Every person, company, rival vendor,
+// clinical claims. Small practices rarely post or keep active profiles. Every person, company, rival vendor,
 // influencer and workspace below is invented; Epic, Epic Cadence, Cerner, athenahealth and
 // ModMed are real EHR names that appear in job posts (Stack signal).
 // FAQ "buying committee": company signals collect only the top `personasPerCompany` (default 2)
@@ -151,11 +151,11 @@ export const healthtechStartups: VerticalConfig = {
   faq: [
     {
       q: "Does Pancake touch patient data?",
-      a: "No. Pancake never sees patient records. It works from what health leaders post on LinkedIn and the roles their teams open.",
+      a: "No. Pancake never sees patient records. It works from what health leaders post and the roles their teams open.",
     },
     {
       q: "Can it find single-doctor practices?",
-      a: "Rarely. Solo practices are thin on LinkedIn. Hospitals, clinic groups and senior-living operators show up far more often.",
+      a: "Rarely. Solo practitioners seldom post or keep an active profile. Hospitals, clinic groups and senior-living operators show up far more often.",
     },
     {
       q: "Will it reach clinicians who can’t buy?",
@@ -163,7 +163,7 @@ export const healthtechStartups: VerticalConfig = {
     },
     {
       q: "Can it map a hospital’s whole buying committee?",
-      a: "No. When a hospital matches on Hiring or Stack, Pancake brings the one or two people who best fit your buyer roles. LinkedIn signals bring whoever posted or engaged.",
+      a: "No. When a hospital matches on Hiring or Stack, Pancake brings the one or two people who best fit your buyer roles. People signals bring whoever posted or engaged.",
     },
   ],
 

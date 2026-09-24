@@ -3,6 +3,9 @@
 // pages lives in components/sections/verticals/vx-copy.ts. Budgets in the comments
 // are enforced by validateVerticals() (chars) and scripts/verticals-budget.mjs (px,
 // real fonts). Only server components import this module and lib/verticals/*.
+// No string here may name the outreach platform or its tools (founder 2026-09-23: PLATFORM in
+// validate.ts, an error): say "from your own account", "profile", "invite", "people posting
+// about …", "fans of …'s posts" instead.
 
 /** The six executable signal kinds (product signal-copy.ts). No others exist. */
 export type SignalKind = "keyword" | "competitor" | "influencer" | "own_brand" | "hiring" | "stack";

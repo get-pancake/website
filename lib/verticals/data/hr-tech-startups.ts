@@ -27,7 +27,7 @@ export const hrTechStartups: VerticalConfig = {
 
   hero: {
     title: "Find HR leaders whose job posts name a rival suite.",
-    lede: "Pancake tracks HR openings, rival HR suites’ pages and turnover talk on LinkedIn. You get the buyer and why they fit.",
+    lede: "Pancake tracks HR openings, rival HR suites’ pages and posts about turnover. You get the buyer and why they fit.",
   },
 
   workspace: { name: "Stayforth", sender: "Jonas Aldecoa" },
@@ -149,7 +149,7 @@ export const hrTechStartups: VerticalConfig = {
     },
     {
       q: "Do you use employee data?",
-      a: "No. Pancake never sees HR systems or employee records, only public LinkedIn posts and job ads.",
+      a: "No. Pancake never sees HR systems or employee records, only public posts and job ads.",
     },
     {
       q: "Will it reach employees instead of buyers?",

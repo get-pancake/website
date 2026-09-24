@@ -145,7 +145,7 @@ export const martechStartups: VerticalConfig = {
   faq: [
     {
       q: "Marketers get pitched daily. How is this different?",
-      a: "The connection request carries no pitch. When a marketer posted, or engaged with an expert’s post, the first message starts from it. Job-post leads get a message in your voice.",
+      a: "The invite carries no pitch. When a marketer posted, or engaged with an expert’s post, the first message starts from it. Job-post leads get a message in your voice.",
     },
     {
       q: "Can you find agencies as well as brands?",
@@ -157,7 +157,7 @@ export const martechStartups: VerticalConfig = {
     },
     {
       q: "Will these leads turn into pipeline?",
-      a: "Pancake finds the people and opens the conversation on LinkedIn. Your offer decides what converts. Every approval and rejection sharpens who it finds next.",
+      a: "Pancake finds the people and opens the conversation from your own account. Your offer decides what converts. Every approval and rejection sharpens who it finds next.",
     },
   ],
 

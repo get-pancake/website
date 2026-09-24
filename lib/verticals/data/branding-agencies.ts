@@ -26,7 +26,7 @@ export const brandingAgencies: VerticalConfig = {
 
   hero: {
     title: "Find startup founders weighing a rebrand or new name.",
-    lede: "Pancake reads LinkedIn posts, brand design job posts and comments on rival studios’ work. Get in before the brief is written.",
+    lede: "Pancake reads founders’ posts, brand design job posts and comments on rival studios’ work. Get in before the brief is written.",
   },
 
   workspace: { name: "Wenlock Studio", sender: "Margot Wenlock" },
@@ -143,7 +143,7 @@ export const brandingAgencies: VerticalConfig = {
   faq: [
     {
       q: "My work sells on the portfolio. Why outreach?",
-      a: "Pancake starts the conversation on LinkedIn. A positive reply gets your booking link, and the portfolio comes to the call.",
+      a: "Pancake starts the conversation from your own account. A positive reply gets your booking link, and the portfolio comes to the call.",
     },
     {
       q: "Can it find startups whose brand looks dated?",

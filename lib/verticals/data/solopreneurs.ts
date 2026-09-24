@@ -1,7 +1,7 @@
 // lib/verticals/data/solopreneurs.ts — solopreneurs (merged: indie hackers, micro-SaaS and bootstrapped founders).
 // Every person, company, rival tool, creator and workspace below is invented.
 // Caveat (brief): B2B only, consumer-facing solo products won't work. Own brand needs the
-// founder's LinkedIn activity. No "while you sleep" results promises. This page owns the
+// founder's own posts. No "while you sleep" results promises. This page owns the
 // approval-gate angle (brief review 3b).
 import type { VerticalConfig } from "../types";
 
@@ -121,7 +121,7 @@ export const solopreneurs: VerticalConfig = {
       {
         kind: "keyword",
         title: "People posting your problem",
-        body: "Pancake searches LinkedIn posts for the problem you solve, in the words your buyers use.",
+        body: "Pancake searches public posts for the problem you solve, in the words your buyers use.",
         watching: ["async standups", "client reporting"],
         more: 3,
       },
@@ -151,10 +151,10 @@ export const solopreneurs: VerticalConfig = {
     },
     {
       q: "My buyers are consumers. Will it work?",
-      a: "No. Pancake finds B2B buyers on LinkedIn: people who buy for a team or a company.",
+      a: "No. Pancake finds B2B buyers: people who buy for a team or a company.",
     },
     {
-      q: "Do I need a big LinkedIn following?",
+      q: "Do I need a big following?",
       a: "No. Keyword, Competitor and Influencer signals work with zero followers. Your own posts become a fourth source once people engage with them.",
     },
   ],

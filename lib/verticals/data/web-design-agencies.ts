@@ -24,7 +24,7 @@ export const webDesignAgencies: VerticalConfig = {
 
   hero: {
     title: "Find marketing heads scoping a website redesign.",
-    lede: "Pancake scans LinkedIn posts and web design job posts, then names who owns the site. Win the rebuild before it goes in-house.",
+    lede: "Pancake scans public posts and web design job posts, then names who owns the site. Win the rebuild before it goes in-house.",
   },
 
   workspace: { name: "Kernwell Studio", sender: "Malik Ostrander" },
@@ -147,7 +147,7 @@ export const webDesignAgencies: VerticalConfig = {
     },
     {
       q: "We build in Framer. Is this only for Webflow studios?",
-      a: "No. Add Framer as a Stack tool and as a keyword, and Pancake looks for it in job posts and LinkedIn posts instead.",
+      a: "No. Add Framer as a Stack tool and as a keyword, and Pancake looks for it in job posts and in people’s posts instead.",
     },
     {
       q: "Won’t a company hiring a Webflow developer build in-house?",

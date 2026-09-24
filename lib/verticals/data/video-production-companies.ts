@@ -149,7 +149,7 @@ export const videoProductionCompanies: VerticalConfig = {
     },
     {
       q: "Can it find companies booked for a trade show?",
-      a: "Only when they post about it. Pancake reads LinkedIn posts and job posts, not exhibitor lists.",
+      a: "Only when they post about it. Pancake reads public posts and job posts, not exhibitor lists.",
     },
     {
       q: "Does it work for photo and animation studios?",

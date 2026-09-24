@@ -2,7 +2,7 @@
 // Merged in: IT support companies.
 // Every person, company, rival MSP, influencer and workspace below is invented.
 // Evidence: 3 paying (hosting & cloud; IT support; a video-meeting/ID partner) + ~6 trials incl. a 150-person IT firm.
-// Caveat: tiny local offices are sparse on LinkedIn; sourcing is country-level, the service area is an ICP
+// Caveat: tiny local offices rarely post or keep profiles; sourcing is country-level, the service area is an ICP
 // check (FAQ says so). Stack = tools named in job posts, never network, DNS or device scans. MSPs post help
 // desk jobs themselves, so the ICP check (competing vendor) matters here.
 import type { VerticalConfig } from "../types";
@@ -146,7 +146,7 @@ export const msps: VerticalConfig = {
   faq: [
     {
       q: "Most of my clients are 10-person offices. Will Pancake find them?",
-      a: "Some. The smallest offices are thin on LinkedIn, so firms of 30 people or more show up more often.",
+      a: "Some. Staff at the smallest offices rarely post or keep profiles, so firms of 30 people or more show up more often.",
     },
     {
       q: "Can I keep leads inside my service area?",

@@ -159,7 +159,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
     },
     {
       q: "Can our whole team use it?",
-      a: "Yes. Seats are unlimited. Outreach sends from one LinkedIn account per workspace, so pick the name your buyers should see.",
+      a: "Yes. Seats are unlimited. Outreach sends from one teammate’s account per workspace, so pick the name your buyers should see.",
     },
   ],
 

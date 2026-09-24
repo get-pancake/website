@@ -149,7 +149,7 @@ export const shopifyAgencies: VerticalConfig = {
     },
     {
       q: "Will it find one-person stores?",
-      a: "Rarely. A solo store seldom posts jobs or talks shop on LinkedIn, so Pancake has little to go on. Brands with a small team show up far more.",
+      a: "Rarely. A solo store seldom posts jobs or talks shop online, so Pancake has little to go on. Brands with a small team show up far more.",
     },
     {
       q: "Can it find brands on Magento or BigCommerce?",
@@ -157,7 +157,7 @@ export const shopifyAgencies: VerticalConfig = {
     },
     {
       q: "Can outreach come from our agency page?",
-      a: "No. It goes out from one person’s LinkedIn account, connected once. Your agency page still helps: people who engage with its posts become leads.",
+      a: "No. It goes out from one teammate’s personal account, connected once. Your agency page still helps: people who engage with its posts become leads.",
     },
   ],
 

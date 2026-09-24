@@ -23,7 +23,7 @@ export const ppcAgencies: VerticalConfig = {
 
   hero: {
     title: "Find e-commerce brands staffing up paid media.",
-    lede: "Google Ads in job posts and CAC debates on LinkedIn lead to the head of growth. Run their ads while the role sits open.",
+    lede: "Google Ads in job posts and public CAC debates lead to the head of growth. Run their ads while the role sits open.",
   },
 
   workspace: { name: "Brennick Media", sender: "Aria Brennick" },
@@ -85,7 +85,7 @@ export const ppcAgencies: VerticalConfig = {
         text: "I manage B2B ad accounts. Find US SaaS teams whose job posts ask for Google Ads skills.",
         reply: "I’ll look for Google Ads in US SaaS job posts, then find each team’s head of growth.",
         proposal: [
-          { kind: "stack", items: ["Google Ads", "LinkedIn Ads"] },
+          { kind: "stack", items: ["Google Ads", "Microsoft Ads"] },
           { kind: "hiring", items: ["Demand gen manager", "Paid acquisition lead"] },
           { kind: "own_brand", items: ["Brennick Media"] },
           { kind: "keyword", items: ["paid pipeline"] },
@@ -128,8 +128,8 @@ export const ppcAgencies: VerticalConfig = {
       {
         kind: "stack",
         title: "Ad platforms in job posts",
-        body: "A job post that names Google Ads or LinkedIn Ads puts that company on your list.",
-        watching: ["Google Ads", "LinkedIn Ads", "Meta Ads Manager"],
+        body: "A job post that names Google Ads or Microsoft Ads puts that company on your list.",
+        watching: ["Google Ads", "Microsoft Ads", "Meta Ads Manager"],
         more: 1,
       },
       {
@@ -144,7 +144,7 @@ export const ppcAgencies: VerticalConfig = {
   faq: [
     {
       q: "Can you see how much they spend on ads?",
-      a: "No. Pancake reads job posts and LinkedIn activity, not ad accounts, pixels or spend. You size the budget on the first call.",
+      a: "No. Pancake reads job posts and public posts, not ad accounts, pixels or spend. You size the budget on the first call.",
     },
     {
       q: "Can it find brands that fired their agency?",
@@ -152,7 +152,7 @@ export const ppcAgencies: VerticalConfig = {
     },
     {
       q: "Can I target brands by ad platform?",
-      a: "Yes, through job posts. The Stack signal finds companies whose job posts name Google Ads, Meta Ads Manager or LinkedIn Ads. Brands that aren’t hiring won’t show up this way.",
+      a: "Yes, through job posts. The Stack signal finds companies whose job posts name Google Ads, Meta Ads Manager or Microsoft Ads. Brands that aren’t hiring won’t show up this way.",
     },
     {
       q: "Will a company hiring in-house want an agency?",

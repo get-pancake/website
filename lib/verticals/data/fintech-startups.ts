@@ -26,7 +26,7 @@ export const fintechStartups: VerticalConfig = {
 
   hero: {
     title: "Find controllers whose AP teams need another clerk.",
-    lede: "Finance job posts that name SAP Concur, LinkedIn posts on month-end close. Each morning, Pancake brings you the CFO who signs.",
+    lede: "Finance job posts that name SAP Concur, controllers posting about month-end close. Each morning, Pancake brings you the CFO who signs.",
   },
 
   workspace: { name: "Settleworth", sender: "Adrian Mowbray" },
@@ -157,7 +157,7 @@ export const fintechStartups: VerticalConfig = {
     },
     {
       q: "Can it find buyers at banks and insurers?",
-      a: "Yes, if their people are active on LinkedIn or their job posts match your signals. Name the institution type in your Brain, like US credit unions, and each lead is checked against it.",
+      a: "Yes, if their people post and comment, or their job posts match your signals. Name the institution type in your Brain, like US credit unions, and each lead is checked against it.",
     },
   ],
 
