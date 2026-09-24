@@ -54,7 +54,6 @@ export const SIGNAL_OPT_IN: SignalKind[] = ["hiring", "stack"];
 /* ─── page chrome ───────────────────────────────────────────────────────────── */
 
 export const VX_CTA_LABELS = { primary: "Start free", secondary: "Book a demo" } as const;
-export const VX_NOTE = "Illustrative. Names and companies are fictional.";
 
 /** The breadcrumb (visible in the hero, and the BreadcrumbList JSON-LD): Home › Industries › {name.title}. */
 export const VX_CRUMBS = { home: "Home", hub: "Industries", aria: "Breadcrumb" } as const;

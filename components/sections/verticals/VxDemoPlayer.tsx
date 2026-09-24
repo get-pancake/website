@@ -3,7 +3,7 @@
 // VxDemoPlayer — the ONLY client island of a /for page (spec §4.2, §4.8).
 //
 // Renders the demo shell (the horizontal tab bar, the stage, then the foot: the active step's
-// caption + Pause / Replay, the honesty note under them) and receives the four product surfaces as SERVER-rendered children
+// caption + Pause / Replay) and receives the four product surfaces as SERVER-rendered children
 // (`app`, `slack`), so the island's props are only this vertical's PlayerModel (≈2 KB) and the
 // pane markup costs no JS.
 //
@@ -908,7 +908,7 @@ export function VxDemoPlayer({
       </div>
 
       {/* the foot, under the window (so the window starts right under the tab bar): the active
-          step's caption, Pause / Replay on the right, the honesty note under the caption */}
+          step's caption, Pause / Replay on the right */}
       <div className="vx-demo__foot">
         {/* the active step in one line (phones: two or three): all four stacked in one cell, the
             inactive ones visibility: hidden, so the caption never changes height. Each is its
@@ -931,7 +931,6 @@ export function VxDemoPlayer({
           />
           <button type="button" className="vx-ctrl__btn" aria-label={L.replay} data-ico="replay" onClick={onReplay} />
         </div>
-        <p className="vx-note">{L.note}</p>
       </div>
     </div>
   );

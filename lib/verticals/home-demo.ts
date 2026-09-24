@@ -13,8 +13,8 @@
 // (the rail, "Sends as", Slack), so three prompts from one business, three different signals:
 // people posting about a launch (Keyword), people engaging with rival studios (Competitor),
 // companies hiring for the launch team (Hiring). US targets only (outreach is in English).
-// Every person, company, rival studio and storyteller below is invented; the demo's foot says so
-// ("Illustrative. Names and companies are fictional.").
+// Every person, company, rival studio and storyteller below is invented (no on-page disclaimer
+// since 2026-09-24, founder: "remove the disclaimers under the design").
 import type { DemoSource } from "./types";
 
 export const HOME_DEMO: DemoSource = {

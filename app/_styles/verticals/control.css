@@ -97,8 +97,7 @@
   justify-content: center;
   padding: 32px;
 }
-.lp-vx .vx-ctl-stage,
-.lp-vx .vx-ctl-media .vx-note {
+.lp-vx .vx-ctl-stage {
   max-width: 400px;
   width: 100%;
 }
@@ -250,10 +249,9 @@
   }
 }
 /* 900–1024: the full-width media card is split — dialog left (its 400px),
-   toast then the note stacked in the right column (≥308px), both from the
-   40px inset. The stage (role="img") stays ONE element: it spans the whole
-   grid as a subgrid, so its dialog and toast take the parent's tracks and
-   the note (outside the image, by rule) slots in under the toast. */
+   the toast in the right column (≥308px), both from the 40px inset. The
+   stage (role="img") stays ONE element: it spans the whole grid as a
+   subgrid, so its dialog and toast take the parent's tracks. */
 @supports (grid-template-rows: subgrid) {
   @media (min-width: 900px) and (max-width: 1024px) {
     .lp-vx .vx-ctl-media {
@@ -261,7 +259,7 @@
       column-gap: 16px;
       display: grid;
       grid-template-columns: 400px minmax(0, 1fr);
-      grid-template-rows: auto auto 1fr;
+      grid-template-rows: auto 1fr;
       row-gap: 12px;
     }
     /* gap normal: the subgrid takes the parent's 16 / 12 (its own flex gap
@@ -282,11 +280,6 @@
     .lp-vx .vx-ctl-stage > .vx-toast {
       grid-column: 2;
       grid-row: 1;
-    }
-    .lp-vx .vx-ctl-media > .vx-note {
-      grid-column: 2;
-      grid-row: 2;
-      max-width: none;
     }
   }
 }

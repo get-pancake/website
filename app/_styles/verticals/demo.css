@@ -5,9 +5,9 @@
    Layout: glued under the hero — a full-bleed cream band opened by a hairline;
    the horizontal tab bar (4 equal tabs) on the text column (--vx-edge), the app
    window right under it on the 1296 card grid (--vx-card-m), then the foot on
-   the text column: the active step's caption + Pause / Replay, the honesty note
-   under the caption (critics 2026-09-22: the caption above the window pushed
-   the product below the fold). The prompts are the hero's rows
+   the text column: the active step's caption + Pause / Replay (critics
+   2026-09-22: the caption above the window pushed the product below the fold).
+   No fictional-data note under any mock since 2026-09-24 (founder). The prompts are the hero's rows
    (hero.css). The stage stacks two windows (the Pancake app, Slack) in one
    grid cell; inside the app window the three pages (Signals, Leads, Campaign)
    stack in one grid cell; every per-prompt slot stacks its 3 variants in one
@@ -245,18 +245,16 @@
 .lp-vx .vx-stage [data-cursor] { transition: transform 0.12s ease; }
 .lp-vx .vx-stage [data-cursor].is-press { transform: scale(0.96); }
 
-/* foot: the caption and the honesty note stacked on the left (22 + 2 + 20 = the 44px buttons),
-   Pause / Replay on the right; every slot reserved from SSR (zero CLS) */
+/* foot: the caption on the left, Pause / Replay on the right (the 44px buttons set the row);
+   every slot reserved from SSR (zero CLS) */
 .lp-vx .vx-demo__foot {
   align-items: center;
   column-gap: 24px;
   display: grid;
-  grid-template-areas: "cap ctrl" "note ctrl";
+  grid-template-areas: "cap ctrl";
   grid-template-columns: minmax(0, 1fr) auto;
   margin: 14px var(--vx-edge) 0;
-  row-gap: 2px;
 }
-.lp-vx .vx-demo__foot .vx-note { grid-area: note; }
 .lp-vx .vx-ctrl { display: flex; flex: none; gap: 4px; grid-area: ctrl; margin-right: -10px; }
 .lp-vx .vx-demo__card:not([data-ready]) .vx-ctrl,
 .lp-vx .vx-demo__card[data-reduced] .vx-ctrl { visibility: hidden; }
@@ -265,7 +263,6 @@
 @media (hover: hover) {
   .lp-vx .vx-demo__card:not([data-ready]) .vx-tab:not([aria-selected="true"]):hover { color: var(--lp-subtle-text); }
 }
-.lp-vx .vx-demo__foot .vx-note { text-wrap: pretty; }
 .lp-vx .vx-ctrl__btn {
   align-items: center;
   background: none;
@@ -1581,8 +1578,8 @@
   .lp-vx .vx-tab__label { font-size: 14px; }
   .lp-vx .vx-stage { margin-top: 12px; }
   .lp-vx .vx-cursor { display: none; }
-  /* phones: the caption takes the column (2–3 lines), the note and the buttons share the row under it */
-  .lp-vx .vx-demo__foot { grid-template-areas: "cap cap" "note ctrl"; margin-top: 12px; row-gap: 4px; }
+  /* phones: the caption takes the column (2–3 lines), the buttons sit on the row under it, right */
+  .lp-vx .vx-demo__foot { grid-template-areas: "cap cap" ". ctrl"; margin-top: 12px; row-gap: 4px; }
 }
 /* short desktop windows (hero.css has the other half of this tier and its bounds): a 48px bar
    and a 12px gap to the window. The /for fold tuning only — the demo right under the hero; the
