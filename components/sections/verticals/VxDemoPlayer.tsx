@@ -3,7 +3,7 @@
 // VxDemoPlayer — the ONLY client island of a /for page (spec §4.2, §4.8).
 //
 // Renders the demo shell (the horizontal tab bar, the stage, then the foot: the active step's
-// caption + Pause / Replay) and receives the four product surfaces as SERVER-rendered children
+// caption + a keyboard-only Pause) and receives the four product surfaces as SERVER-rendered children
 // (`app`, `slack`), so the island's props are only this vertical's PlayerModel (≈2 KB) and the
 // pane markup costs no JS.
 //
@@ -27,7 +27,7 @@
 //   · hover = a real mouse move over the app window (the stage), not a pointer the page
 //     scrolled under it (Chrome fires movement-less pointer events on scroll), and not the
 //     tab bar / foot: the controls must not pause what they control;
-//   · a click (prompt row, Replay, Play) clears the hover: the visitor asked to watch;
+//   · a click (prompt row, Play) clears the hover: the visitor asked to watch;
 //   · a tab that ends under a hover / keyboard hold keeps its FINAL frame (the next tab's
 //     first frame is empty until its cues arrive);
 //   · the first start waits until the Brief's composer is on screen, so the prompt is typed
@@ -544,22 +544,6 @@ export function VxDemoPlayer({
     sync();
   };
 
-  const onReplay = () => {
-    const x = ctl.current;
-    stop();
-    x.paused = false;
-    setPaused(false);
-    x.autoplay = true;
-    x.oneShot = true; // the Brief replays even under the pointer, then autoplay carries on
-    x.hover = false;
-    x.gate = false;
-    x.started = true;
-    x.seeking = false;
-    x.t = 0;
-    x.armed = true;
-    go(x.prompt, 0);
-  };
-
   /* ── mount: media queries, observers, holds, QA hooks ────────────────────── */
 
   useEffect(() => {
@@ -688,7 +672,7 @@ export function VxDemoPlayer({
 
     // The FIRST start also waits for the Brief's composer (where the prompt is typed) to be on
     // screen: at 390 the 35% rule alone started the typing 330px below the fold. Any click on
-    // a prompt row, a tab, Play or Replay opens the gate at once.
+    // a prompt row, a tab or Play opens the gate at once.
     // gate="window" (the homepage, ≥768): OR 35% of the app window (of the viewport, for a
     // window taller than it) — its section head keeps the composer below most laptop folds.
     // 35, not 45: with the head read at the top of the screen (eyebrow at y=40) the window
@@ -730,7 +714,8 @@ export function VxDemoPlayer({
     document.addEventListener("visibilitychange", onVis);
 
     // No hover hold: a mouse over the app window never pauses autoplay (founder 2026-09-22 —
-    // the demo read as "blocked" while people looked at it). Pause / Replay are the controls.
+    // the demo read as "blocked" while people looked at it). Pause is the control — keyboard
+    // only since 2026-09-24 (demo.css), with the tab list's focus hold below.
 
     const holdZones = () => [card.querySelector<HTMLElement>(".vx-tabs")];
     const onFocusIn = (e: FocusEvent) => {
@@ -908,7 +893,9 @@ export function VxDemoPlayer({
       </div>
 
       {/* the foot, under the window (so the window starts right under the tab bar): the active
-          step's caption, Pause / Replay on the right */}
+          step's caption. No visible controls (founder 2026-09-24: "remove the pause and replay
+          buttons"); Pause stays for keyboard users, shown only on keyboard focus or while it
+          holds the demo paused (WCAG 2.2.2: the demo moves on its own for more than 5 s) */}
       <div className="vx-demo__foot">
         {/* the active step in one line (phones: two or three): all four stacked in one cell, the
             inactive ones visibility: hidden, so the caption never changes height. Each is its
@@ -921,15 +908,17 @@ export function VxDemoPlayer({
           ))}
         </div>
         <div className="vx-ctrl">
+          {/* tabIndex: Safari's default Tab order skips buttons without one (the tabs and the stage
+              set theirs too); this is the only pause, so plain Tab must reach it */}
           <button
             type="button"
             className="vx-ctrl__btn"
+            tabIndex={0}
             aria-pressed={paused}
             aria-label={L.pause}
             data-ico={paused ? "play" : "pause"}
             onClick={onPause}
           />
-          <button type="button" className="vx-ctrl__btn" aria-label={L.replay} data-ico="replay" onClick={onReplay} />
         </div>
       </div>
     </div>

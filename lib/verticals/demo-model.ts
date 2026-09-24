@@ -86,7 +86,6 @@ export interface PlayerModel {
     tablist: string;
     pause: string;
     play: string;
-    replay: string;
   };
 }
 
@@ -228,7 +227,6 @@ export function buildDemoModel(v: DemoSource): DemoModel {
       tablist: VX_DEMO.tablistAria,
       pause: VX_DEMO.controls.pause,
       play: VX_DEMO.controls.play,
-      replay: VX_DEMO.controls.replay,
     },
   };
 

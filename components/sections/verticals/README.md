@@ -60,7 +60,7 @@ pages only (`VX_PRICING_MODE`), Fono eyebrows (`--vx-eyebrow-font`).
 | Schema / rules | `lib/verticals/types.ts`, `lib/verticals/validate.ts` |
 | Page | `VxPage.tsx`: LpFitVars (CTA + pricing arts) → LpAnimFreeze (marquee) → LpNav → VxHero → VxDemo → LpMarquee → VxSignals → VxControl → VxFaq → VxRelated → LpCta → LpPricing → LpFooter |
 | Sections | `VxHero` (breadcrumb, H1, lede, CTA pair, example-prompt rows = `VxPromptRows`), `VxHead` (the one section head), `VxSignals`, `VxControl`, `VxFaq`, `VxRelated`, `VxHubGrid` — server components, zero JS |
-| Demo | `VxDemo.tsx` (section `#vx-demo`, visually hidden H2 = `demo.h2`; `headless` drops it — the homepage's section has a visible one) + `VxDemoPlayer.tsx` (the page's only client island: tab bar, stage, then the foot — caption, Pause / Replay; it also drives the hero's prompt rows), `lib/verticals/demo-model.ts`, `demo-timeline.ts`, `app/_styles/verticals/demo.css` |
+| Demo | `VxDemo.tsx` (section `#vx-demo`, visually hidden H2 = `demo.h2`; `headless` drops it — the homepage's section has a visible one) + `VxDemoPlayer.tsx` (the page's only client island: tab bar, stage, then the foot — the caption, and a keyboard-only Pause; it also drives the hero's prompt rows), `lib/verticals/demo-model.ts`, `demo-timeline.ts`, `app/_styles/verticals/demo.css` |
 | Structured data | `vx-jsonld.ts` — WebPage + BreadcrumbList (= the hero breadcrumb) + FAQPage (hub: + ItemList) |
 | CSS | `app/_styles/verticals.css` (manifest, imported AFTER `landing-v3.css`) → `verticals/{foundation,hero,prompts,demo,signals,control,faq,related,hub}.css`, all under `.lp-vx` |
 | Scripts | `scripts/verticals-registry.mjs`, `scripts/verticals-budget.mjs`, `scripts/verticals-audit.mjs` |
@@ -182,8 +182,11 @@ Never edit `LpMarquee.tsx`.
   on that view the dwell's progress over a faint full-width track (paused
   progress stays); the app window 16px under the bar on the 1296 grid; the
   foot under the window: the active step's one-line caption (four stacked
-  cells, fixed height) left, Pause / Replay right (phones: caption full
-  width, buttons under it). No "Illustrative. Names and companies are
+  cells, fixed height). No visible controls since 2026-09-24 (founder:
+  "remove the pause and replay buttons"): Replay is gone; Pause stays for
+  keyboard users only (WCAG 2.2.2), clipped like a skip link until it takes
+  keyboard focus or holds the demo paused, then it shows at the foot's right
+  end (phones: under the caption). No "Illustrative. Names and companies are
   fictional." note under the demo, the signals or the control card since
   2026-09-24 (founder: "remove the disclaimers under the design"). Stage container
   queries: ≥940 the lead sheet sits beside the table (940–1099 drops the
@@ -198,7 +201,8 @@ Never edit `LpMarquee.tsx`.
   it approaches; the FIRST start also waits for the Brief composer to be on
   screen (half of it; any click opens that gate); ≥35% of the card visible to
   run. **No hover hold** (founder 2026-09-22: the demo read as blocked while
-  people looked at it): only Pause and a KEYBOARD focus in the tab list hold it.
+  people looked at it): only the keyboard Pause and a KEYBOARD focus in the tab
+  list hold it.
   A tab click or a prompt row plays that tab from its first frame, then
   autoplay carries on (Brief → Leads → Outreach → Slack → next prompt). Pace:
   every cue is authored in design ms and played at `PACE` = 0.6; dwells

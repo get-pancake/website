@@ -5,8 +5,9 @@
    Layout: glued under the hero — a full-bleed cream band opened by a hairline;
    the horizontal tab bar (4 equal tabs) on the text column (--vx-edge), the app
    window right under it on the 1296 card grid (--vx-card-m), then the foot on
-   the text column: the active step's caption + Pause / Replay (critics
-   2026-09-22: the caption above the window pushed the product below the fold).
+   the text column: the active step's caption (critics 2026-09-22: the caption
+   above the window pushed the product below the fold); no visible controls
+   since 2026-09-24 (founder), Pause is keyboard-only.
    No fictional-data note under any mock since 2026-09-24 (founder). The prompts are the hero's rows
    (hero.css). The stage stacks two windows (the Pancake app, Slack) in one
    grid cell; inside the app window the three pages (Signals, Leads, Campaign)
@@ -139,7 +140,7 @@
 
 /* the active step, one line on desktop: all four stacked in one cell (fixed height); it sits in
    the foot, under the window */
-.lp-vx .vx-tabtext { display: grid; grid-area: cap; min-width: 0; }
+.lp-vx .vx-tabtext { display: grid; min-width: 0; }
 .lp-vx .vx-tabtext > p {
   color: var(--lp-subtle-text);
   font-family: var(--lp-font-sans);
@@ -245,17 +246,31 @@
 .lp-vx .vx-stage [data-cursor] { transition: transform 0.12s ease; }
 .lp-vx .vx-stage [data-cursor].is-press { transform: scale(0.96); }
 
-/* foot: the caption on the left, Pause / Replay on the right (the 44px buttons set the row);
-   every slot reserved from SSR (zero CLS) */
+/* foot: the active step's caption, 14px under the window (as on production before, where it
+   topped the 44px Pause / Replay row, the note under it). No visible controls (founder 2026-09-24: "remove the pause and
+   replay buttons"). Pause stays for keyboard users (WCAG 2.2.2: the demo moves on its own for
+   more than 5 s), like a skip link: out of the flow and clipped to 1px until it takes keyboard
+   focus or holds the demo paused, then it shows at the foot's right end, where the pair sat.
+   A mouse user never sees it; nothing reflows when it shows (zero CLS). */
 .lp-vx .vx-demo__foot {
-  align-items: center;
-  column-gap: 24px;
-  display: grid;
-  grid-template-areas: "cap ctrl";
-  grid-template-columns: minmax(0, 1fr) auto;
   margin: 14px var(--vx-edge) 0;
+  position: relative;
 }
-.lp-vx .vx-ctrl { display: flex; flex: none; gap: 4px; grid-area: ctrl; margin-right: -10px; }
+.lp-vx .vx-ctrl {
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+.lp-vx .vx-ctrl__btn:not(:focus-visible):not([aria-pressed="true"]) {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
 .lp-vx .vx-demo__card:not([data-ready]) .vx-ctrl,
 .lp-vx .vx-demo__card[data-reduced] .vx-ctrl { visibility: hidden; }
 /* no JS (no data-ready): the bar shows what the stage shows (Brief) and invites no click */
@@ -1578,8 +1593,13 @@
   .lp-vx .vx-tab__label { font-size: 14px; }
   .lp-vx .vx-stage { margin-top: 12px; }
   .lp-vx .vx-cursor { display: none; }
-  /* phones: the caption takes the column (2–3 lines), the buttons sit on the row under it, right */
-  .lp-vx .vx-demo__foot { grid-template-areas: "cap cap" ". ctrl"; margin-top: 12px; row-gap: 4px; }
+  /* phones: the caption takes the column (2–3 lines); the keyboard Pause shows under it, right
+     (beside it, it would cover the caption's last words). On /for the band's 28px bottom padding
+     can't hold it (4 + 44): while it shows, the band pads as the old in-flow row did (4 + 44 +
+     28), so it never crosses the hairline. The homepage's demo has open space below instead. */
+  .lp-vx .vx-demo__foot { margin-top: 12px; }
+  .lp-vx .vx-ctrl { top: calc(100% + 4px); transform: none; }
+  .lp-vx .vx-hero + .vx-demo:has(.vx-ctrl__btn:is(:focus-visible, [aria-pressed="true"])) { padding-bottom: 76px; }
 }
 /* short desktop windows (hero.css has the other half of this tier and its bounds): a 48px bar
    and a 12px gap to the window. The /for fold tuning only — the demo right under the hero; the
@@ -1615,7 +1635,6 @@
 /* ─── icon masks (24px grid; generated, one custom property each) ──────────── */
 .lp-vx [data-ico="pause"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.7' stroke-linecap='round' fill='none'%3E%3Cpath d='M8.25 5.25v13.5m7.5-13.5v13.5'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="play"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M7.5 4.8v14.4L18.9 12z'/%3E%3C/svg%3E"); }
-.lp-vx [data-ico="replay"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4.8 12a7.2 7.2 0 1 0 2.25-5.25M4.5 3.9v3.9h3.9'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="house"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4.5 10.5 12 4.5l7.5 6V19a1 1 0 0 1-1 1h-4v-5.5h-5V20h-4a1 1 0 0 1-1-1z'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="grid"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Crect x='4' y='4' width='6.5' height='6.5' rx='1.6'/%3E%3Crect x='13.5' y='4' width='6.5' height='6.5' rx='1.6'/%3E%3Crect x='4' y='13.5' width='6.5' height='6.5' rx='1.6'/%3E%3Crect x='13.5' y='13.5' width='6.5' height='6.5' rx='1.6'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="users"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Ccircle cx='9' cy='8.5' r='3.5'/%3E%3Cpath d='M3 19.5c.8-3.2 3.2-5 6-5s5.2 1.8 6 5M15.5 5.2a3.5 3.5 0 0 1 0 6.6M17.5 14.8c1.7.6 2.9 2.2 3.4 4.7'/%3E%3C/svg%3E"); }
