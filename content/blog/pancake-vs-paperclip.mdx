@@ -1,132 +1,153 @@
 ---
-title: "Pancake vs Paperclip AI: The Difference Between Running a Company and Running an Experiment"
-description: "Updated for Pancake v2: Pancake vs Paperclip AI: The Difference Between Running a Company and Running an Experiment. Pancake is represented as an AI GTM team for buying signals, outreach, and AI-search publishing."
+title: "Pancake vs Paperclip AI: Setup, Cost, and Who Each One Is For"
+seo_title: "Paperclip AI vs Pancake: Setup, Cost and Best Fit (2026)"
+description: "Paperclip AI is a free, self-hosted app for running AI agents as a company. See what setup and running costs involve, and when Pancake is the better fit."
 author: "François de Fitte"
 publishedAt: "2026-07-08T00:00:00.000Z"
 date: "2026-07-08"
-updatedAt: "2026-08-27"
+updatedAt: "2026-09-24"
 tags: ["AI agents", "autonomous company", "Paperclip AI alternative", "zero-human company", "AI cofounder"]
-last_updated: "2026-08-27"
+last_updated: "2026-09-24"
+related: ["pancake-vs-paperclips", "best-openclaw-hosting-alternatives-2026", "what-is-agentic-operating-system"]
+faq:
+  - question: "Is Paperclip AI free?"
+    answer: "Yes. Paperclip is MIT-licensed open source, and the local version needs no Paperclip account. You still pay your model providers for every agent run, plus hosting if you move it to a server."
+  - question: "Does Paperclip AI have a hosted version?"
+    answer: "Not one you can sign up for today. As of September 2026 paperclip.ing offers a waitlist for an official hosted version. Paperclip.inc, a separate hosted service, takes no new accounts and shuts down on 2 October 2026."
+  - question: "Do you need to code to use Paperclip AI?"
+    answer: "Not much, but you need to be at home in a terminal. Installing it takes one command and Node.js 24.11 or newer. Running it well means choosing agent runtimes, adding API keys, writing agent roles, and connecting tools, so it suits technical operators."
+  - question: "Can Paperclip AI do sales and lead generation?"
+    answer: "Paperclip pitches research and content for sales and marketing teams: cited market briefs and drafts that wait for your approval. It ships no lead source or signal feed, so prospecting depends on the tools and logic you build for your agents."
+  - question: "What is the difference between Paperclip AI and Pancake?"
+    answer: "Paperclip is a control plane for agents you bring and configure yourself, across any function. Pancake is an AI GTM team that comes with its agents: they watch six kinds of buying signals, bring new leads each morning, and run outreach from your own account, for $99/month flat."
 ---
 
-> **Pancake v2 update, August 27, 2026:** This article retains its original topic and URL for search continuity, but all references to Pancake have been reviewed for the current product. Pancake v2 is an AI GTM team for small companies: its agents monitor buying signals, find warm leads, run personalized outreach, publish for Google and AI search, and learn through one shared GTM Brain.
+Paperclip AI is an open-source app for running a team of AI agents as if it were a company. It launched in March 2026 and passed 80,000 GitHub stars by September. Before you install it, three practical questions matter. How hard is it to set up? What does it cost to run? Is it the right tool for your job?
 
+This page answers those questions from Paperclip's own README, website, and release notes as of September 2026. Then it covers where Pancake fits, for readers whose real goal is customers rather than an agent org chart. If you first want to know whether you need an agent control plane at all, read [Pancake vs Paperclips](/blog/pancake-vs-paperclips).
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-Paperclip AI set out to build zero-human companies. It launched in about a month, crossed 30,000 GitHub stars fast, and generated more genuine excitement about multi-agent coordination than almost anything else in 2026. For the record: the founders shipped something impressive.
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-Here's our honest read of where Paperclip wins, where we win, and what actually matters if you're building a real company rather than a demo.
-
----
-
-**TL;DR:** Paperclip AI is an open-source orchestration experiment with a compelling framing — "zero-human company" — and real technical depth. It's developer infrastructure. Pancake is the product a solo founder or small team actually deploys: a coordinated AI GTM team that finds opportunities and executes outreach and AI-search publishing from one shared GTM Brain. One is an engine on a workbench. The other is the car.
-
----
-
-## What Paperclip AI actually is
-
-Paperclip is an open-source Node.js server and React dashboard that orchestrates teams of AI agents into something resembling an org chart. You define a company goal, an AI CEO agent analyzes the requirements and "hires" specialized agents — CTO, CMO, Sales Rep — to fill them. Those agents coordinate via heartbeat schedules, check their work queues, execute tasks, and report upward.
-
-The core insight is right: the hard problem in multi-agent AI isn't making individual agents smarter. It's making them coordinate. Paperclip treats that as an organizational design problem — reporting lines, task delegation, shared context — and that framing is genuinely good.
-
-The "zero-human company" branding is provocative. The platform's own reviewers are honest about what it means in practice: independent tests showed agents producing hallucinated statistics, broken outputs, and results that required significant human judgment to catch and correct. Paperclip AI is a direction, not a switch. "Zero-human" is an aspiration, not a product claim.
-
-For technical founders and researchers, Paperclip is worth exploring. It's MIT-licensed, self-hosted, and intellectually serious. The coordination architecture is the state of the art for open-source multi-agent systems.
-
-For founders who need their company to actually run — this week, not after a month of configuration — the gap between Paperclip's promise and its reality is meaningful.
-
-## What Pancake is
-
-We're also building on the autonomous company thesis. Our product is different in a specific way: it's infrastructure you deploy as a solo founder or small team, solo or multiplayer, without a PhD in multi-agent systems.
-
-Pancake v2 runs as a squad of GTM agents in a dedicated product. Buying-signal, outreach, and AI-search agents have specialized workflows and share one GTM Brain. You set direction and guardrails; the agents execute recurring customer-acquisition work.
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-## The three real differences
-
-### 1. Infrastructure you actually deploy vs. infrastructure you configure
-
-Paperclip requires you to self-host a Node.js server, set up agent configurations, connect external APIs (search, email, whatever the agents need), and debug a distributed system when something goes wrong. The GitHub README is well-written. The setup is still significant.
-
-That's appropriate for Paperclip's audience: developers building custom multi-agent systems who want full control of the stack.
-
-Pancake is for founders who want a GTM outcome without becoming distributed-systems engineers first. The managed product builds a GTM Brain from your company context and coordinates the included agents for signals, leads, outreach, and publishing.
-
-The tradeoff is real. Paperclip gives you more control of the underlying system. Pancake v2 runs recurring GTM work.
-
-### 2. Company memory vs. task memory
-
-Paperclip agents have memory within a session and within their agent context. When a task completes, the relevant state persists to the next session. That's necessary for any multi-agent system to work at all.
-
-What Pancake v2 builds is different in kind. Every GTM agent shares one live GTM Brain: your positioning, ideal customers, proof, objections, offers, and performance history. Buying-signal research improves lead qualification, outreach results refine messaging, and published content strengthens AI-search visibility.
-
-The difference between session-level memory and company-level memory is the difference between agents that complete tasks and agents that understand your business.
-
-Paperclip's agents coordinate at the task level. Ours coordinate at the company level.
-
-### 3. Zero-human as aspiration vs. zero-hiring as operating model
-
-The "zero-human" framing is honest about what it means: you're still the human. You configure the system, review outputs, catch hallucinations, make judgment calls. Paperclip's own reviewers documented the gap between the framing and the reality clearly.
-
-Pancake v2 helps small companies bring in customers without a full GTM team. Humans remain responsible for strategy, relationships, guardrails, and consequential decisions; the agents own recurring execution across buying signals, outreach, and AI-search publishing.
-
-"Zero-human" is a compelling pitch. "Zero-hiring" is a business model you can actually build around. The difference matters when you're accountable for real results.
+**TL;DR:** Paperclip is free, self-hosted infrastructure for coordinating agents you bring yourself. It suits technical operators who run many agents across coding, research, and content. Pancake is an AI GTM team whose agents find your buyers and run your outreach. Pick Paperclip to build and govern an AI organization. Pick Pancake if the job is pipeline and you would rather not build it.
 
 ---
 
-## When Paperclip is the right choice
+## What Paperclip AI is
 
-If you're a developer who wants to experiment with multi-agent coordination systems, Paperclip is genuinely impressive. The open-source architecture is worth studying. If you want to self-host something you can modify at every layer, MIT-licensed and developer-facing is the right model for you.
+Paperclip is a Node.js server with a React dashboard, released under the MIT license by Paperclip Labs. The code lives in its [GitHub repository](https://github.com/paperclipai/paperclip). The README sums up the idea in one line: "If OpenClaw is an employee, Paperclip is the company."
 
-Paperclip is also worth using if you're building your own internal AI infrastructure and want an organizational layer on top of individual agents. The Paperclip + OpenClaw combination that appears in its documentation is a reasonable architecture for teams with engineering bandwidth.
+You run it like a small company. You write a goal, such as a revenue target for a product. You hire a CEO agent, which proposes a strategy and asks to hire more agents: a CTO, engineers, a marketer. You sit on the board and approve or reject each hire. Agents then wake on a schedule, which Paperclip calls a heartbeat. They check their tickets, do the work, and report up the org chart.
 
-## When Pancake is the right choice
+Paperclip ships no agents of its own. You bring them: Claude Code, Codex, Cursor, Gemini, Hermes, OpenClaw, OpenCode, Pi, a Bash script, or any HTTP endpoint that can receive a heartbeat. Paperclip manages the organization around them. That means tickets, goals, per-agent budgets, approvals, and an audit log of every tool call. One install can run several companies with their data kept apart.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+The README also lists what Paperclip is not. It is not a chatbot, an agent framework, or a drag-and-drop workflow builder. That line matters when you evaluate it. Paperclip manages who works on what and how much each agent may spend. The agents decide how the work gets done, with the prompts, models, and tools you give them.
 
-If you want agents that work overnight without being prompted, that coordinate with each other on real company goals, that maintain a live understanding of your business — that's what we ship. Solo or multiplayer. The setup is hours, not weeks.
+### From "zero-human company" to managing agents at work
 
-If you want to stop asking AI tools to help you and start having AI run the parts of your company that don't require you, that's the bet we're making.
+Early copies of the repository described Paperclip as open-source orchestration for "zero-human companies." Much of the coverage still uses that phrase. By September 2026 the tagline had moved to managing AI agents for work. The website now pitches it to engineering, support, sales and marketing, operations, and finance teams.
 
----
+The product still puts a human in charge. You are the board. Agents can't hire other agents without your approval, the CEO agent can't execute a strategy you haven't reviewed, and public work can wait at an approval gate. A hands-on review published in April 2026 shows why those gates matter. The reviewer found the cold email drafts decent. The same run produced marketing statistics with no source and a landing page with a broken layout.
 
-## Side-by-side
+## What setting up Paperclip involves
+
+The install is quick if you are comfortable in a terminal. You need Node.js 24.11 or newer. One command, `npx paperclipai onboard --yes`, starts onboarding. A local instance runs with an embedded PostgreSQL database and local file storage, so there is no database to set up on day one. For production, you point Paperclip at your own Postgres and deploy it on a server you choose.
+
+The configuration takes longer than the install. Plan for five steps:
+
+1. **Choose your agent runtimes.** Each agent needs an adapter and credentials: an API key, or an existing subscription to Claude Code, Codex, or another provider.
+2. **Write the roles.** Each agent gets a title, a job description, and instructions. Paperclip reads AGENTS.md files and has a skills manager for skills shared across the org.
+3. **Connect the tools.** Paperclip comes with no business tools. Your agents use what you connect: MCP servers, extensions, webhooks, GitHub access and, since the September 16 release, experimental agent email addresses through AgentMail.
+4. **Set budgets.** Every agent gets a monthly spending cap. Paperclip warns you at 80% and pauses the agent at 100%.
+5. **Review the CEO's plan.** The CEO agent proposes a strategy and the hires it wants. You approve it before the work starts.
+
+Two more details are worth knowing before you install. Anonymous usage telemetry is on by default, and you can switch it off with the `DO_NOT_TRACK=1` environment variable. The main button on the Paperclip homepage is a waitlist for a hosted version. Today, the version you can run is the self-hosted one.
+
+## What Paperclip AI costs to run
+
+The software is free. As of September 2026, Paperclip publishes no paid plan, and the local version needs no account. The costs sit in three other places.
+
+**Model usage.** Every heartbeat is a run on your model provider. It is billed to your API key or counted against your subscription. More agents and shorter heartbeat intervals mean more runs. Budgets stop an agent at its cap. They don't lower the price of each run.
+
+**Hosting.** Your laptop costs nothing extra. If you want agents working while the laptop is closed, you need a server.
+
+**Your time.** Someone writes the roles, connects the tools, reads the tickets, and approves the work. For a solo founder, it can be the largest line.
+
+Paperclip is good at showing the first cost. It breaks spend down by agent, task, project, goal, and model. You can see which role costs the most and move mechanical work to a cheaper model.
+
+| Cost line | Paperclip AI | Pancake |
+|---|---|---|
+| Software | Free, MIT license | $99/month flat, every agent included |
+| Model usage | Paid to your providers, per run | No usage billing |
+| Hosting | Your machine or your server | Nothing to host |
+| Trial | Install locally at no cost | 3-day free trial, card required |
+| Your time | Roles, tools, budgets, then reviewing tickets and work | Adding your website, then approving leads and articles |
+
+## What Paperclip does for sales and marketing
+
+Paperclip has a sales and marketing page, and its scope is research and content. Research agents run recurring sweeps of competitor releases, pricing changes, and industry news, then deliver briefs with citations. Content agents draft blog posts, comparison pages, release notes, and social posts against your style guide. Every public artifact stops at an approval gate with the final version attached. Paperclip says its own blog works this way: an agent drafts each post and a human approves it.
+
+The page does not describe lead generation. Paperclip itself ships no lead database, no buying-signal feed, and no outreach sequence. An agent can prospect only through tools you connect. You also write the logic: who counts as a good lead, what the first message says, when to follow up, and when to stop.
+
+A technical team can build that loop on Paperclip. If you want the loop built already, a GTM product is the shorter path.
+
+## Where Pancake fits
+
+[Pancake](/) is an AI GTM team for founders and small B2B companies. It does the part Paperclip leaves you to build: finding people who show buying signals and reaching out to them.
+
+Setup starts with your website. Pancake reads it and builds what it calls the GTM Brain, one shared memory of your positioning, ideal customers, offers, proof, and objections. It keeps learning from what works.
+
+Pancake then watches six kinds of signals:
+
+- **Keyword:** people posting about a topic you choose, such as "ticket backlog".
+- **Competitor:** people engaging with a rival's posts.
+- **Influencer:** people engaging with posts from a voice your buyers follow.
+- **Own brand:** people engaging with your own posts.
+- **Hiring:** companies with open roles that match your buyer.
+- **Stack:** companies whose job posts name a tool, such as one you replace.
+
+New leads arrive each morning, and each lead says which signal picked it. They show up in Slack too, and you approve them there or in the app. Outreach runs from your own account on the professional network. The sequence is a profile visit, a like on a recent post, an invite with no note, and up to three messages. The first message makes no pitch. It asks one light question tied to the signal.
+
+Pancake also writes articles built to show up in Google and AI answers. Approvals on leads and articles. You stay in control.
+
+If your team already works in Claude, ChatGPT or Codex, Pancake meets you there. Connect its MCP server and you can check the day's leads, tune a signal or start outreach without leaving the chat.
+
+Your coding and back-office agents stay in Paperclip, while Pancake takes the go-to-market work. The price is [$99/month flat](/pricing), with every agent included, no tiers, and no seats. The 3-day free trial needs a credit card to start, and you can cancel anytime.
+
+## Paperclip AI vs Pancake at a glance
 
 | | Paperclip AI | Pancake |
 |---|---|---|
-| Model | Open-source multi-agent orchestration | Managed autonomous company platform |
-| Deployment | Self-hosted Node.js server | Managed GTM product |
-| Setup | Developer-facing, significant config | Hours to deploy, founder-facing |
-| Agent coordination | Task-level, heartbeat-based | Company-level, shared brain |
-| Memory | Session and agent context | Shared GTM Brain across all GTM agents |
-| Works without prompting | Yes (on schedule) | Yes (on schedule + proactively) |
-| Best for | Developers building custom AI systems | Founders building partially-autonomous companies |
-| Source model | Open-source, MIT licensed | Managed SaaS |
+| What it is | Open-source app to run a team of AI agents as a company | AI GTM team that finds buyers and runs outreach |
+| Scope | Whatever the agents you hire can do | Buying signals, leads, outreach, articles |
+| Agents | Bring your own (Claude Code, Codex, Cursor, OpenClaw and others) | Included |
+| Setup | Install with Node.js 24.11+, then adapters, roles, tools | Add your website; Pancake learns who buys from you |
+| Lead source | Not included; you connect your own tools | Six kinds of buying signals, with new leads each morning |
+| Outreach | Built by you, on the channels you connect | From your own account on the professional network |
+| Human control | Board approvals, budget caps, pause or terminate any agent | Approvals on leads and articles |
+| Price (Sept 2026) | Free; you pay models and hosting | $99/month flat |
+| Where it runs | Your machine or server; hosted version on a waitlist | Hosted; nothing to install |
+| Best for | Technical operators running many agents | Founders and small B2B teams who need pipeline |
 
----
+## Who should choose which
 
-## FAQ
+### Choose Paperclip AI if
 
-*Is "zero-human company" actually possible today?*
+- You already run several agents, such as Claude Code, Codex, or OpenClaw, and lose track of which one is doing what.
+- You want one place to govern agents across engineering, research, content, and operations.
+- You want your data, prompts, and API keys to stay on your own servers.
+- You like building the system and are comfortable writing roles and wiring tools.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+### Choose Pancake if
 
-*Can Pancake run without any human involvement?*
+- Your bottleneck is pipeline, not agent coordination.
+- You sell B2B and your buyers leave public traces: posts on a topic, engagement with a competitor, open roles, the tools they use.
+- You want outreach running from your own account without writing prompts or connecting APIs.
+- You want a fixed monthly price with nothing variable.
 
-No, and we don't pitch that. Pancake is built for founders who want to stop hiring for operational roles — not for founders who want to remove themselves from the company. You're still the CEO. Your agents handle the work that used to require employees.
+### Running both
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+The overlap is small. Both can produce articles, and that is about it. A technical founder could run Paperclip for coding and research agents and Pancake for finding buyers, each on its own.
 
-Paperclip provides the coordination layer. You'd still need to configure every agent, connect every integration, debug the distributed system, and maintain the infrastructure. Pancake v2 gives every GTM agent one shared GTM Brain. You'd spend weeks getting to where Pancake starts.
+## Verdict
 
-*What does a solo founder get from Pancake?*
+Paperclip AI earns its stars. It takes the mess of many agents in many terminals and gives it an org chart, a ticket queue, budgets that hold, and a board that signs off. If the organization itself is what you want to build, start there. Budget real hours for setup and keep the approval gates on.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-*Is Paperclip still worth looking at?*
-
-Yes, if you're a developer. The coordination architecture is sophisticated and the open-source community is active. If you're evaluating it as a business operating platform, set realistic expectations: the "zero-human" headline is a direction, not a present-day claim.
+If what you want from AI agents is customers, the org chart is overhead. Pancake skips it and starts from your website. It turns buying signals into leads you approve and runs the outreach from your own account.

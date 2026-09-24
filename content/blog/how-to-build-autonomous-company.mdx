@@ -1,49 +1,61 @@
 ---
 title: "How to Build an Autonomous Company in 2026: The Complete Playbook"
+seo_title: "How to Build an Autonomous Company (2026 Playbook)"
+description: "How to build an autonomous company in 2026: a five-step playbook for handing repeatable work to AI agents, what it costs next to hiring, where it breaks."
 publishedAt: "2026-07-06"
-updatedAt: "2026-08-27"
+updatedAt: "2026-09-24"
 date: "2026-07-06"
 author: "François de Fitte"
-summary: "We built Pancake from $0 to $30K MRR without hiring a single employee. Here's the exact operational playbook we used — and the five-step framework any founder can follow to build an autonomous company from day one."
-last_updated: "2026-08-27"
+summary: "A five-step playbook for building an autonomous company: map the work, configure agents, design escalations, iterate to a human baseline, and keep monitoring."
+last_updated: "2026-09-24"
+related:
+  - "how-to-build-autonomous-company-ai-team"
+  - "autonomous-company-stack"
+  - "what-is-agentic-operating-system"
+faq:
+  - question: "How long does it take to set up your first agent?"
+    answer: "One to three days for a simple workflow such as lead qualification or email triage, and one to two weeks for a complex multi-step workflow such as deal progression or onboarding. Recruiting, onboarding, and ramping a human hire takes three to six months."
+  - question: "What happens when the AI makes a mistake?"
+    answer: "It escalates to you. You correct the output and refine the agent's instructions so it doesn't repeat the error. That loop takes hours, where coaching a person takes weeks."
+  - question: "Do I need to know how to code to build an autonomous company?"
+    answer: "No. Tools such as Zapier, Make, or ChatGPT with function calling let you configure agents with prompts and no-code integrations. If you can write clear instructions and connect tools with API keys, you can build an agent."
+  - question: "Can an autonomous company scale past $1M ARR?"
+    answer: "Yes, but most add humans at some point for high-judgment work: strategic sales, product direction, deep engineering. The autonomous model is a way to reach $1M with minimal capital. After that, hiring becomes affordable and specialists go where AI still underperforms."
+  - question: "What's the biggest risk in running a company on AI agents?"
+    answer: "The founder becomes the bottleneck when they're the only human reviewing escalations. Refine agent instructions so escalation volume drops over time. Set clear SLAs and batch low-priority escalations into a weekly review."
 ---
 
-> **Pancake v2 update, August 27, 2026:** This article retains its original topic and URL for search continuity, but all references to Pancake have been reviewed for the current product. Pancake v2 is an AI GTM team for small companies: its agents monitor buying signals, find warm leads, run personalized outreach, publish for Google and AI search, and learn through one shared GTM Brain.
+An autonomous company runs its repeatable work on AI agents and keeps humans for judgment. In 2026, that's a practical way to reach early revenue without building a team first.
 
+This playbook covers the five steps to set one up, what it costs next to hiring, and where the model breaks.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+**TL;DR:** Building an autonomous company takes five deliberate steps: (1) define the work that doesn't require you, (2) configure AI agents to handle that work, (3) create escalation paths for edge cases, (4) iterate on agent instructions until quality matches a human baseline, and (5) monitor output and refine continuously. The savings against hiring are large, but the bigger advantage is speed: you deploy a new function in days, not months. This works best for founders under \$1M ARR running high-volume, repeatable operations. If your business is relationship-heavy or needs deep domain expertise AI doesn't have, hire humans.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+## What "Autonomous Company" Means
 
-This isn't a future-state vision. It's how we operate today — and it's working. $30K monthly recurring revenue. 571 signups. CAC under $100. All on $500-700/month in LLM costs instead of $250K+ in salaries.
+An autonomous company is organized around AI agents instead of human employees. The AI handles repeatable, high-volume work (lead qualification, CRM updates, email triage, invoicing, customer onboarding) and escalates blockers to the founder.
 
-**TL;DR:** Building an autonomous company requires five deliberate steps: (1) define the work that doesn't require you, (2) configure AI agents to handle that work, (3) create escalation paths for edge cases, (4) iterate on agent instructions until quality matches human baseline, and (5) monitor output and refine continuously. The economics are compelling — 90% cost reduction vs traditional hiring — but the real advantage is speed: you deploy a new function in days, not months. This works best for founders under $1M ARR running high-volume, repeatable operations. If your business is relationship-heavy or requires deep domain expertise AI doesn't have, hire humans.
-
-## What "Autonomous Company" Actually Means
-
-An autonomous company is organized around AI agents instead of human employees. The AI handles repeatable, high-volume work — lead qualification, CRM updates, email triage, invoicing, customer onboarding — and escalates blockers to the founder.
-
-This is not "AI helping humans do their jobs." It's AI *doing the jobs* that founders used to hire for.
+The difference from a productivity tool is ownership. The agent does the job a founder would otherwise hire for.
 
 The shift became possible in 2024-2025 when LLMs (GPT-4, Claude, Gemini) crossed the reasoning threshold: they can now handle multi-step workflows, interpret context, write coherent communications, and execute tasks that required human judgment two years ago.
 
-Most founders still think of AI as a productivity tool (summarize this email, draft this doc). That's underutilizing it. The real leverage is treating AI as your first ten hires — not an assistant to your first ten hires.
+Most founders still think of AI as a productivity tool (summarize this email, draft this doc). That's underusing it. The payoff comes from treating AI as your first ten hires instead of an assistant to them.
 
 ## Why This Matters Now
 
-The traditional path to $1M ARR looks like this: build product → raise capital → hire a team → scale revenue.
+The traditional path to \$1M ARR looks like this: build product → raise capital → hire a team → scale revenue.
 
-The problem is that hiring forces premature scaling. Each hire is a fixed cost commitment: salary, benefits, recruiting fees, management overhead. You need $300K-500K in capital to support a five-person team for a year. Most founders don't have that.
+The problem is that hiring forces premature scaling. Each hire is a fixed cost commitment: salary, benefits, recruiting fees, management overhead. You need \$300K-500K in capital to support a five-person team for a year. Most founders don't have that.
 
 The autonomous path is different: build product → deploy AI agents → scale revenue → hire selectively for high-judgment work.
 
-You reach $1M ARR on <$10K/year in LLM costs. You preserve capital. You stay lean. You learn faster because you're still in the loop on every function instead of managing people who are in the loop.
+LLM costs for a small agent stack run to a few hundred dollars a month, a rounding error next to one salary. You preserve capital. You stay lean. You learn faster because you're still in the loop on every function instead of managing people who are in the loop.
 
-This doesn't work for everyone. If you're selling into enterprise with 9-month sales cycles, hire sales. If your product requires deep regulatory expertise, hire compliance. But if you're a founder building a transactional SaaS for a technical audience, you can probably run 60-80% of operations autonomously — and delay hiring until you've proven the model at scale.
+This doesn't work for everyone. If you're selling into enterprise with 9-month sales cycles, hire sales. If your product requires deep regulatory expertise, hire compliance. But if you're building a transactional SaaS for a technical audience, you can probably run 60-80% of operations autonomously and delay hiring until the model is proven. [Five signs you're ready](/blog/autonomous-company-readiness) is a quick check before you start.
 
 ## The Five-Step Playbook
 
-Here's the exact framework we used to go from "should we hire someone for this?" to "we just deployed an agent for this."
+Here's the framework for going from "should we hire someone for this?" to "we just deployed an agent for this."
 
 ### Step 1: Map the Work That Doesn't Require You
 
@@ -59,9 +71,9 @@ Now ask for each task: **Does this require founder judgment, or is it repeatable
 
 Anything repeatable and rule-based can be delegated to an AI agent. Anything that requires strategic judgment, creative problem-solving, or deep customer relationships stays with you.
 
-For us at Pancake:
+A typical split for an early SaaS company:
 - **Automate:** Lead qualification, demo booking, CRM updates, follow-ups, invoicing, expense tracking, support triage, blog post drafting
-- **Keep:** Strategic sales calls, product direction, customer escalations, hiring decisions (when we eventually hire)
+- **Keep:** Strategic sales calls, product direction, customer escalations, hiring decisions (when you eventually hire)
 
 Most founders underestimate how much of their daily work is repeatable. If you're spending 10 hours/week updating your CRM, chasing invoices, or answering the same support questions, that's 10 hours/week an AI agent can handle.
 
@@ -69,7 +81,7 @@ Most founders underestimate how much of their daily work is repeatable. If you'r
 
 Once you've identified the repeatable work, you configure an AI agent to handle it.
 
-An "agent" is not a standalone product — it's a system you build using an LLM (like Claude or GPT-4), a prompt that defines the agent's role and instructions, and integrations to the tools your business uses (CRM, email, Slack, accounting software).
+An "agent" here is a system you build from three parts: an LLM (like Claude or GPT-4), a prompt that defines the agent's role and instructions, and integrations to the tools your business uses (CRM, email, Slack, accounting software).
 
 **Example: Sales Agent**
 
@@ -77,30 +89,30 @@ Role: Qualify inbound leads, book demos, follow up on no-shows, update CRM.
 
 Prompt (simplified):
 ```
-You are the sales agent for Pancake. Your job:
+You are the sales agent for [Company]. Your job:
 1. When a lead fills out our contact form, assess fit (check their company size, use case, budget).
 2. If high fit, send a personalized email booking a demo. Use this template: [template].
 3. If they don't reply in 48 hours, send one follow-up. Use this template: [template].
 4. Update HubSpot with lead status (qualified, demo booked, no-show, not a fit).
-5. Escalate to François if: enterprise deal >$10K/year, technical question outside your knowledge, angry customer.
+5. Escalate to the founder if: enterprise deal >$10K/year, technical question outside your knowledge, angry customer.
 ```
 
 Integrations: HubSpot API (CRM updates), Gmail API (send emails), Slack (escalations).
 
-You don't need to write code for this. Platforms like Pancake (yes, we run on Pancake), Zapier, Make, or even a custom GPT with function calling can handle the orchestration.
+You don't need to write code for this. Zapier, Make, or a custom GPT with function calling can handle the orchestration.
 
-**The key:** Be specific in your instructions. The more explicit your prompt, the less the agent will escalate. Think of it like training a junior hire — except the "training" is refining a prompt, and the feedback loop is hours instead of weeks.
+**The key:** Be specific in your instructions. The more explicit your prompt, the less the agent will escalate. Think of it like training a junior hire, except the "training" is refining a prompt and the feedback loop is hours instead of weeks.
 
 ### Step 3: Create Escalation Paths for Edge Cases
 
-No agent will handle 100% of cases autonomously. There will be edge cases, ambiguous situations, and tasks that genuinely require human judgment.
+No agent will handle 100% of cases autonomously. There will be edge cases, ambiguous situations, and tasks that require human judgment.
 
 Design your escalation paths upfront:
 
 **Define what triggers an escalation:**
 - The agent doesn't have enough information to decide
 - The customer is frustrated or angry (sentiment analysis flags this)
-- The deal size exceeds a threshold ($10K/year for us)
+- The deal size exceeds a threshold (for example, \$10K/year)
 - The request is outside the agent's scope (e.g., a product feature request when the agent only handles support)
 
 **Define how escalations surface:**
@@ -113,11 +125,11 @@ Design your escalation paths upfront:
 - Medium-priority: founder reviews within 24 hours (feature requests, edge cases)
 - Low-priority: founder reviews weekly (process improvements, agent tuning)
 
-For the first month, expect 30-40% of tasks to escalate. That's normal. As you refine the agent's instructions, escalation rate drops to 10-15%. After three months, it should be below 5% for well-defined workflows.
+For the first month, expect 30-40% of tasks to escalate. That's normal. As you refine the agent's instructions, the escalation rate drops to 10-15%. After three months, it should be below 5% for well-defined workflows.
 
 ### Step 4: Iterate on Agent Instructions Until Quality Matches Human Baseline
 
-The first version of your agent will be mediocre. That's expected. The goal is to get it to "good enough" — matching the quality you'd accept from a human junior hire — and then iterate toward "great."
+The first version of your agent will be mediocre. That's expected. The goal is to get it to "good enough," matching the quality you'd accept from a junior hire, and then iterate toward "great."
 
 **Run the agent in parallel for 1-2 weeks.** Let the agent handle tasks, but review every output before it goes live. Compare agent performance to how you (or a human teammate) would have handled it.
 
@@ -128,16 +140,16 @@ The first version of your agent will be mediocre. That's expected. The goal is t
 
 **Refine the prompt based on errors.** Every time the agent makes a mistake, ask: "What instruction would have prevented this?" Add that instruction.
 
-**Example refinements we made:**
-- Sales agent was too aggressive in follow-ups → added: "If they reply asking for more time, don't follow up again until they re-engage."
-- Finance agent was missing expense categories → added: "If an expense doesn't fit the standard categories, escalate to François with the receipt."
-- Support agent was giving generic answers → added: "Always check our docs first. If the answer is in the docs, link to the relevant section. If not, escalate."
+**Example refinements:**
+- Sales agent too aggressive in follow-ups → add: "If they reply asking for more time, don't follow up again until they re-engage."
+- Finance agent missing expense categories → add: "If an expense doesn't fit the standard categories, escalate to the founder with the receipt."
+- Support agent giving generic answers → add: "Always check our docs first. If the answer is in the docs, link to the relevant section. If not, escalate."
 
-After 2-3 iterations, the agent's output quality should match or exceed your own for that workflow. At that point, you can cut over fully and reduce oversight to spot-checks.
+After 2-3 iterations, the agent's output quality should match your own for that workflow. At that point, you can cut over fully and reduce oversight to spot-checks.
 
 ### Step 5: Monitor Output and Refine Continuously
 
-Agents don't "learn" in the traditional sense — they execute the instructions you give them. That means you need to monitor output over time and refine as your business evolves.
+A prompt-based agent executes the instructions you give it. It doesn't retrain itself. That means you need to monitor output over time and refine as your business evolves.
 
 **Weekly review:** Spot-check 5-10 agent outputs per function. Flag anything that feels off.
 
@@ -145,24 +157,24 @@ Agents don't "learn" in the traditional sense — they execute the instructions 
 
 **Quarterly audit:** Are your agents still aligned with your business? If your ICP changed, your sales agent needs new qualification criteria. If your pricing changed, your finance agent needs updated invoice templates.
 
-We spend ~2 hours/week across all agents on monitoring and refinement. That's less time than a single 1-on-1 with a human hire — and the feedback loop is instant.
+Budget about two hours a week across all agents for monitoring and refinement. That's less time than a weekly 1-on-1 with each human hire would take, and each fix takes effect on the next run.
 
 ## The Economics: Autonomous vs Traditional
 
-Here's what it actually costs to run an autonomous company vs hiring a traditional team to $1M ARR:
+Here's an estimate of what it costs to run an autonomous company vs hiring a traditional team on the way to \$1M ARR:
 
-| Cost Category | Autonomous (Pancake) | Traditional Baseline |
-|---------------|----------------------|----------------------|
-| **Headcount** | $0 (founders only) | $300K-500K/year (5-7 hires: sales, eng, ops, support, marketing) |
-| **LLM API costs** | $500-700/month | N/A |
-| **Software/tools** | $300/month (HubSpot, Slack, accounting) | $1,500/month (CRM + sales engagement + support desk + analytics) |
-| **Recruiting** | $0 | $30K-50K in fees (15-20% of first-year salary) |
-| **Office/benefits** | $0 (remote, no employees) | $50K/year (health insurance, 401k match, office space) |
-| **Total annual cost** | ~$10K | ~$400K-600K |
+| Cost Category | Autonomous (agent stack) | Traditional Baseline |
+|---------------|--------------------------|----------------------|
+| **Headcount** | \$0 (founders only) | \$300K-500K/year (5-7 hires: sales, eng, ops, support, marketing) |
+| **LLM API costs** | \$500-700/month at full volume | N/A |
+| **Software/tools** | \$300/month (HubSpot, Slack, accounting) | \$1,500/month (CRM + sales engagement + support desk + analytics) |
+| **Recruiting** | \$0 | \$30K-50K in fees (15-20% of first-year salary) |
+| **Office/benefits** | \$0 (remote, no employees) | \$50K/year (health insurance, 401k match, office space) |
+| **Total annual cost** | ~\$10K | ~\$400K-600K |
 
-We're spending 98% less to reach $1M ARR. That's not an exaggeration — it's the real delta.
+On these estimates, the agent stack costs about 98% less per year. The table leaves out one line: founder time.
 
-The trade-off: we (the founders) are more involved in daily operations than we would be if we hired a team. We review escalations, refine agent prompts, and handle high-judgment decisions ourselves. But we're also learning faster, iterating faster, and staying capital-efficient in a way that wouldn't be possible with a traditional team.
+That's the trade-off. As a founder, you're more involved in daily operations than you would be with a team. You review escalations, refine agent prompts, and handle high-judgment decisions yourself. In return, you learn faster, iterate faster, and stay capital-efficient in a way a traditional team rarely allows.
 
 ## What This Doesn't Work For
 
@@ -172,50 +184,44 @@ Autonomous companies are not a universal solution. This model breaks down when:
 
 **2. Your product requires deep domain expertise AI doesn't have.** If you're building biotech software and every customer conversation requires PhD-level biology knowledge, hire a domain expert. LLMs are great generalists but weak specialists.
 
-**3. You're already post-PMF and scaling fast.** If you've raised $10M and hiring velocity is a competitive advantage, hire. The autonomous model is for capital efficiency, not blitz-scaling.
+**3. You're already post-PMF and scaling fast.** If you've raised \$10M and hiring velocity is a competitive advantage, hire. The autonomous model is for capital efficiency, not blitz-scaling.
 
 **4. Regulation requires human-in-the-loop.** Some industries (healthcare, finance, legal) mandate human sign-off on every decision. AI can assist, but can't replace.
 
-If your business fits any of the above, the traditional model still wins. If you're a founder building a transactional SaaS, marketplace, or creator tool for a technical audience under $1M ARR, the autonomous model is 10x more capital-efficient.
+If your business fits any of the above, the traditional model still wins. If you're building a transactional SaaS, marketplace, or creator tool for a technical audience under \$1M ARR, the autonomous model is far more capital-efficient.
 
-## Real-World Example: How Pancake uses its own GTM agents
+## Example: A Four-Agent Setup for a Small SaaS Company
 
-We're not just selling the autonomous company model — we live it. Here's our actual operational stack:
+Here's how the playbook translates into agents for a two-founder SaaS company. Each agent escalates to a founder when it hits one of its rules.
 
-**Sales Agent (Atlas):**
+**Sales agent:**
 - Qualifies inbound leads from website form submissions
-- Books demos via Calendly API
-- Sends follow-up emails to no-shows (one follow-up, then stops)
-- Updates HubSpot CRM with lead status
-- Escalates to François if: deal >$10K/year, technical question, or lead explicitly asks for a founder
+- Books demos through a calendar API
+- Sends one follow-up email to no-shows, then stops
+- Updates the CRM with lead status
+- Escalates to the sales founder if the deal is over \$10K/year, the question is technical, or the lead asks for a founder
 
-**Finance Agent (Ledger):**
-- Tracks revenue, expenses, and burn rate in QuickBooks
+**Finance agent:**
+- Tracks revenue, expenses, and burn rate in the accounting tool
 - Generates invoices for annual deals
 - Monitors payment status and sends reminders for overdue invoices
-- Escalates to Guillaume if: payment fails twice, expense is uncategorized, or burn rate exceeds budget
+- Escalates if a payment fails twice, an expense is uncategorized, or burn exceeds budget
 
-**Ops Agent (Onboard):**
-- Onboards new customers: sends welcome email, links to docs, schedules first check-in
-- Answers support questions via Slack and email
-- Monitors product usage via PostHog; flags churned users
-- Escalates to Theophile if: bug report, feature request, or customer is frustrated
+**Ops agent:**
+- Onboards new customers: welcome email, links to docs, first check-in
+- Answers support questions in Slack and email
+- Monitors product usage and flags accounts at risk of churning
+- Escalates bug reports, feature requests, and frustrated customers
 
-**Content Agent (Scribe):**
-- Writes first drafts of blog posts following our GEO playbook
+**Content agent:**
+- Writes first drafts of blog posts
 - Drafts email newsletters
 - Updates product docs when features ship
-- Escalates to François for final review before publishing
-
-**Monthly cost:** $500-700 in LLM API usage (Claude Sonnet for most tasks, GPT-4o for specialized tasks).
-
-**Founder time:** ~10 hours/week reviewing escalations and refining agent prompts.
-
-**Output:** We're operating at the same pace as a traditional 8-10 person team — but spending 98% less.
+- Sends every draft to a founder for final review before publishing
 
 ## Getting Started: Your First Autonomous Function
 
-If you're reading this and thinking "I want to try this," start with one function. Don't try to automate everything at once.
+If you want to try this, start with one function. Don't try to automate everything at once.
 
 **Pick the highest-volume, lowest-judgment function in your business.** For most founders, that's:
 - Lead qualification (sales)
@@ -225,43 +231,20 @@ If you're reading this and thinking "I want to try this," start with one functio
 
 **Step 1:** Document the current workflow in a checklist. Every step, every decision point, every edge case you can think of.
 
-**Step 2:** Write a prompt that replicates that checklist. Use a tool like ChatGPT, Claude, or an agent platform (like Pancake) to test it on 10 real examples.
+**Step 2:** Write a prompt that replicates that checklist. Use ChatGPT, Claude, or an agent platform to test it on 10 real examples.
 
 **Step 3:** Refine the prompt until the agent's output matches your own for 8 out of 10 cases. That's your quality baseline.
 
 **Step 4:** Run the agent in parallel with yourself for 1-2 weeks. Review every output. Iterate on edge cases.
 
-**Step 5:** Cut over fully once error rate is <10%. Monitor weekly. Refine monthly.
+**Step 5:** Cut over fully once the error rate is under 10%. Monitor weekly. Refine monthly.
 
-Most founders who try this realize they can automate 60-80% of the work they thought required a human hire.
-
-## FAQ
-
-**How long does it take to set up your first agent?**
-1-3 days for a simple workflow (lead qualification, email triage). 1-2 weeks for a complex multi-step workflow (deal progression, onboarding). Compare that to 3-6 months to recruit, onboard, and ramp a human hire.
-
-**What happens when the AI makes a mistake?**
-It escalates to you. You review, correct the output, and refine the agent's instructions so it doesn't repeat the error. This feedback loop is faster than coaching a human — hours instead of weeks.
-
-**Do I need to know how to code?**
-No. Most agent platforms (Pancake, Zapier, Make, or even ChatGPT with function calling) let you configure agents with prompts and no-code integrations. If you can write clear instructions and connect tools via API keys, you can build an agent.
-
-**Can an autonomous company scale past $1M ARR?**
-Yes, but most will add humans at some point for high-judgment work: strategic sales, product direction, deep engineering. The autonomous model gets you to $1M with minimal capital. After that, hiring becomes affordable and you bring in specialists where AI still underperforms.
-
-**What's the biggest risk?**
-Founder bottleneck. If you're the only human reviewing every escalation, you become the constraint. The mitigation: refine agent prompts aggressively so escalation volume drops over time. Set clear SLAs and batch-review low-priority escalations weekly instead of reacting in real-time.
+One function you can buy instead of build is finding customers. [Pancake](/) sells it ready-made: an AI GTM team whose agents find your buyers and start the conversations. You skip the prompt-writing: Pancake reads your website for your positioning, your buyers and the objections they raise. Its agents then track six kinds of buying signals, from people engaging with a competitor's posts to companies hiring for the role you sell to. Each morning's leads arrive with the signal behind them. The ones you approve get a warm start from your own account: a profile visit and a like before the invite, then a first message that asks about the signal. Every agent is included for [\$99 a month, flat](/pricing). Your build time goes to the support, ops and finance agents in this playbook.
 
 ## The Bottom Line
 
-Building an autonomous company is not about replacing humans entirely. It's about using AI to handle the repeatable, high-volume work so you can focus on the high-judgment, high-leverage decisions that actually move the business.
+Building an autonomous company doesn't mean replacing every human. It means handing the repeatable, high-volume work to AI so you can focus on the high-judgment decisions that move the business.
 
-The traditional path to $1M ARR requires $300K-500K in capital and 6-12 months of hiring. The autonomous path requires $10K and 1-2 months of agent configuration.
+The traditional path to \$1M ARR requires \$300K-500K in capital and 6-12 months of hiring. The autonomous path starts with one agent, a few hundred dollars a month, and a few weeks of configuration.
 
-We're living proof it works. $30K MRR. Zero employees. $500/month in LLM costs. And we're still just getting started.
-
-If you're a founder trying to reach $1M without raising or hiring prematurely, this is the playbook.
-
----
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+Start with the function that costs you the most hours this week. Add the next one when the first runs without you.

@@ -1,94 +1,95 @@
 ---
 date: "2026-07-13"
 title: "How to Run HR Without an HR Team in 2026"
-description: "A practical breakdown of how solo and small founding teams run hiring, onboarding, and people ops with AI agents instead of hiring an HR department. What agents can own outright, where a human still has to sign off, and the people-ops stack that keeps a small team functional without headcount."
+description: "How to run HR without an HR team: what AI agents can own in hiring, onboarding and compliance, what a founder must decide, and the people-ops stack."
 publishedAt: "2026-07-13"
-updatedAt: "2026-08-27"
+updatedAt: "2026-09-24"
 author: "François de Fitte"
+related:
+  - "how-to-run-legal-without-a-legal-team"
+  - "ai-agents-for-startup-operations"
+  - "what-is-agentic-operating-system"
 faq:
   - question: "Can AI agents really run HR without a human on the team?"
-    answer: "Agents can own the mechanical and repetitive work end-to-end: screening resumes against a rubric, scheduling interviews, drafting offer letters from an approved template, running onboarding checklists, and tracking PTO and compliance deadlines. What they can't do is make the final hiring call, handle a termination conversation, or navigate a harassment complaint. The realistic split is agents handle process and paperwork, a founder handles every decision that affects a person's livelihood or a legal exposure."
+    answer: "Agents can own the mechanical, repetitive work: screening resumes against a rubric, scheduling interviews, drafting offer letters from an approved template, running onboarding checklists, and tracking PTO and compliance deadlines. They can't make the final hiring call, hold a termination conversation, or handle a harassment complaint. Agents run the process and the paperwork; a founder makes every decision that affects someone's livelihood or creates legal exposure."
   - question: "What HR tasks should an agent handle first?"
-    answer: "Resume screening and interview scheduling. Both are high-volume, low-judgment-per-instance tasks where a documented rubric does most of the work, and mistakes are cheap to catch, a bad screen just means a slightly worse candidate slate, not a legal or human problem. Onboarding checklists are a close second: laptop provisioning, account setup, first-week task lists are pure process with no judgment call involved."
+    answer: "Resume screening and interview scheduling. Both are high-volume tasks where a written rubric does most of the work, and mistakes are cheap to catch: a bad screen means a slightly weaker candidate slate, not a legal problem. Onboarding checklists come next, since laptop setup, accounts and first-week task lists involve no judgment call."
   - question: "How much does agent-based people ops cost compared to hiring an HR person?"
-    answer: "A dedicated HR generalist runs $60K-$90K a year fully loaded in most US markets, and most companies under 15 people don't have enough HR volume to justify one. Running the same scope with agents plus an HR platform (ATS, payroll, benefits admin) typically costs $150-$500 a month in software and AI compute, plus a PEO or fractional HR consultant on retainer for anything with legal exposure. The gap holds until headcount and case complexity (multi-state employment, layoffs, disputes) outpace what a founder can review in a weekly pass."
+    answer: "A dedicated HR generalist runs $60K-$90K a year fully loaded in most US markets, and most companies under 15 people don't have the HR volume to justify one. Running the same scope with agents plus an HR platform (ATS, payroll, benefits admin) typically costs $150-$500 a month in software and AI compute, plus a PEO or fractional HR consultant for anything with legal exposure. The gap holds until headcount and case complexity (multi-state employment, layoffs, disputes) outgrow a founder's weekly review."
   - question: "Do I still need a PEO, employment lawyer, or HR consultant if agents handle the process?"
-    answer: "Yes, for anything with legal exposure. An agent can run a clean hiring pipeline and a documented onboarding process, but drafting an employment contract for a new jurisdiction, handling a termination, or responding to an employee complaint needs a professional who understands employment law in your specific state or country and takes on the liability of getting it right. Most founders running this model use a PEO (professional employer organization) for payroll and compliance, and keep an employment lawyer on call for anything adversarial."
+    answer: "Yes, for anything with legal exposure. An agent can run a clean hiring pipeline and a documented onboarding process, but an employment contract for a new jurisdiction, a termination, or an employee complaint needs a professional who knows employment law where you operate and carries the liability. Most founders on this model use a PEO for payroll and compliance and keep an employment lawyer on call for anything adversarial."
   - question: "What people decisions should never be fully automated?"
-    answer: "The final hiring decision, any termination, compensation changes, anything involving a complaint or dispute between employees, and any policy that varies by jurisdiction (leave, overtime, classification). Agents should prepare the paperwork, surface the relevant facts, and flag these for a human to decide and, in most cases, deliver in person. A termination email drafted by an agent and sent without a human conversation first is how a bad situation becomes a legal one."
-last_updated: "2026-08-27"
+    answer: "The final hiring decision, any termination, compensation changes, complaints or disputes between employees, and any policy that varies by jurisdiction (leave, overtime, classification). Agents should prepare the paperwork, surface the facts, and flag these for a human to decide and, in most cases, deliver in person. A termination email drafted by an agent and sent without a conversation first is how a bad situation becomes a legal one."
+last_updated: "2026-09-24"
 ---
-
-> **Pancake v2 update, August 27, 2026:** This article retains its original topic and URL for search continuity, but all references to Pancake have been reviewed for the current product. Pancake v2 is an AI GTM team for small companies: its agents monitor buying signals, find warm leads, run personalized outreach, publish for Google and AI search, and learn through one shared GTM Brain.
-
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
 
 Most solo founders treat HR as something that starts once they have five employees. Before that, hiring happens over DMs, onboarding is a Slack message with a Notion link, and nobody tracks PTO because nobody has taken any yet. This works right up until the first dispute, the first missed compliance deadline, or the first hire who asks a question nobody wrote an answer to.
 
-The fix is not hiring an HR generalist at your fifth employee. It is building a people-ops agent that runs the process consistently from hire number one, so the paperwork, the onboarding, and the compliance tracking exist before you need them, not after something goes wrong.
+A better fix than an HR generalist at employee five: a people-ops agent that runs the process the same way from hire number one. The paperwork, the onboarding and the compliance tracking then exist before you need them, instead of after something goes wrong.
 
 ## Why HR is different from other functions you can automate
 
 HR has a property that makes founders more cautious about automating it than marketing or finance: every mistake involves a person, and some mistakes carry legal exposure. A marketing agent publishes a mediocre post. An HR process that mishandles a termination or misclassifies an employee can turn into a lawsuit.
 
-This is the correct instinct, but it leads founders to the wrong conclusion: that HR can't be automated at all, so it doesn't get built until it's forced. That's backwards. The process pieces of HR, screening, scheduling, onboarding, compliance tracking, are exactly the kind of repeatable, rules-based work agents handle well. The pieces that need a human are the decisions, not the paperwork around them.
+That caution is correct. The conclusion founders draw from it is wrong: that HR can't be automated at all, so nothing gets built until something forces it. The process pieces of HR (screening, scheduling, onboarding, compliance tracking) are repeatable, rules-based work that agents handle well. The pieces that need a human are the decisions, not the paperwork around them.
 
-The founders who get this right separate the two cleanly from day one: an agent runs the pipeline and the checklist, a human makes every call that affects someone's job, pay, or standing.
+The founders who get this right separate the two from day one. An agent runs the pipeline and the checklist. A human makes every call that affects someone's job, pay, or standing.
 
-## What a people-ops agent can actually own
+## What a people-ops agent can own
 
-**Resume screening against a rubric.** If you've written down what a good candidate looks like for a role, an agent can screen a stack of resumes against it faster and more consistently than a founder doing it between meetings. It should surface the top matches with reasoning, not silently reject anyone.
+**Resume screening against a rubric.** If you've written down what a good candidate looks like for a role, an agent can screen a stack of resumes against it faster and more consistently than a founder doing it between meetings. It should surface the top matches with reasoning, and never reject anyone silently.
 
-**Interview scheduling and coordination.** Chasing calendar availability across a candidate and two or three interviewers is pure logistics. An agent can own this end-to-end, including reminders and reschedules.
+**Interview scheduling and coordination.** Chasing calendar availability across a candidate and two or three interviewers is pure logistics. An agent can own it end to end, including reminders and reschedules.
 
-**Onboarding checklists.** Laptop and account provisioning, benefits enrollment reminders, first-week task lists, intro Slack messages to the team. This is a documented sequence with no judgment call, which makes it one of the highest-leverage things to hand off immediately.
+**Onboarding checklists.** Laptop and account provisioning, benefits enrollment reminders, first-week task lists, intro messages to the team. This is a documented sequence with no judgment call, which makes it one of the first things to hand off.
 
-**Offer letter drafting from an approved template.** Once compensation and terms are decided by a human, generating the letter itself is a fill-in-the-template task. The agent drafts, a human still signs off before it goes out.
+**Offer letter drafting from an approved template.** Once a human has decided compensation and terms, generating the letter is a fill-in-the-template task. The agent drafts it. A human signs off before it goes out.
 
-**PTO, compliance deadline, and policy tracking.** Who is due for a benefits renewal, whose visa or contractor agreement needs review, which state's leave law applies to which employee. This is exactly the kind of detail that quietly slips when a founder is tracking it by memory, and exactly the kind of detail an agent tracks perfectly.
+**PTO, compliance deadline, and policy tracking.** Who is due for a benefits renewal, whose visa or contractor agreement needs review, which state's leave law applies to which employee. These details slip when a founder tracks them from memory. An agent doesn't forget them once the dates live in a system.
 
-**Answering repeated policy questions.** "How much PTO do I have left," "what's our parental leave policy," "how does the 401k match work." If it's documented, an agent can answer it instantly instead of a founder digging through a Notion doc for the third time this month.
+**Answering repeated policy questions.** "How much PTO do I have left," "what's our parental leave policy," "how does the 401k match work." If the answer is documented, an agent can give it in seconds, instead of a founder digging through a Notion doc for the third time this month.
 
 ## Where people ops still needs a human
 
-**The final hiring decision.** An agent can build the shortlist and summarize interview feedback. The judgment call on who joins the team, and the culture fit read that comes from an actual conversation, stays with a person.
+**The final hiring decision.** An agent can build the shortlist and summarize interview feedback. The call on who joins the team, and the read that only comes from a real conversation, stays with a person.
 
-**Any termination.** This needs a human conversation, full stop. An agent can prepare the paperwork and the compliance checklist that goes with it, but the conversation itself, and the decision to have it, is never automated.
+**Any termination.** This needs a human conversation, full stop. An agent can prepare the paperwork and the compliance checklist that goes with it. The decision and the conversation are never automated.
 
-**Compensation changes.** Raises, promotions, equity grants. These are judgment calls with financial and legal weight that belong to a founder, not a rubric.
+**Compensation changes.** Raises, promotions, equity grants. These are judgment calls with financial and legal weight, and they belong to a founder, not a rubric.
 
-**Complaints and disputes between people.** If two employees have a conflict, or someone raises a complaint about another person, this needs a human who can actually listen and investigate. An agent routing this to a template response makes it worse, not better.
+**Complaints and disputes between people.** If two employees have a conflict, or someone raises a complaint about a colleague, a human has to listen and investigate. An agent answering with a template makes it worse.
 
-**Anything jurisdiction-specific.** Employment law varies by state and country in ways that carry real liability if you get it wrong. An agent can flag "this employee is in a different state, check the leave policy," but the actual determination should go to a PEO or employment lawyer, not a generated answer.
+**Anything jurisdiction-specific.** Employment law varies by state and country, and getting it wrong carries real liability. An agent can flag "this employee is in a different state, check the leave policy." The determination itself goes to a PEO or an employment lawyer.
 
 ## The people-ops stack that makes this work
 
-**1. Written policies before the agent goes live.** PTO policy, remote work policy, a documented hiring rubric per role. An agent with no written policy improvises, and an improvising HR process is how inconsistent treatment happens, which is its own liability. Spend the time writing these down before automating anything.
+**1. Written policies before the agent goes live.** PTO policy, remote work policy, a documented hiring rubric per role. An agent with no written policy improvises, and an improvising HR process treats people inconsistently, which is its own liability. Write these down before you automate anything.
 
-**2. An ATS or lightweight hiring tracker the agent can read and write to.** The agent needs a system of record for candidates and their status, not a set of email threads it's trying to reconstruct context from every time.
+**2. An ATS or lightweight hiring tracker the agent can read and write to.** The agent needs a system of record for candidates and their status. A pile of email threads forces it to rebuild context every time.
 
-**3. A PEO or payroll platform handling the compliance-heavy mechanics.** Payroll, tax withholding, and benefits administration are heavily regulated and not worth building in-house even with agents. Use a PEO (Justworks, Rippling, Gusto, or similar) for this layer; let the agent handle the coordination around it, not the compliance itself.
+**3. A PEO or payroll platform for the compliance-heavy mechanics.** Payroll, tax withholding and benefits administration are heavily regulated and not worth building in-house, even with agents. Use a PEO or payroll platform (Justworks, Rippling, Gusto, or similar) for this layer. The agent handles the coordination around it, not the compliance itself.
 
-**4. A clear escalation line to an employment lawyer or fractional HR consultant.** Not for daily use, for the handful of moments a year, a termination, a complaint, a jurisdiction question, that need a professional. Know who that is before you need them, not after.
+**4. A clear escalation line to an employment lawyer or fractional HR consultant.** Not for daily use. For the handful of moments a year that need a professional: a termination, a complaint, a jurisdiction question. Know who that person is before you need them.
 
-**5. A human review cadence, even at tiny scale.** A 15-minute weekly check on what the agent handled, what it escalated, and any policy question that came up more than once. This is where a founder catches a subtle problem, a rubric that's screening out good candidates, a policy nobody wrote down, before it becomes a pattern.
+**5. A human review cadence, even at tiny scale.** A 15-minute weekly check on what the agent handled, what it escalated, and which policy question came up more than once. This is where a founder catches a subtle problem before it becomes a pattern: a rubric that screens out good candidates, or a policy nobody wrote down.
 
 ## Stage-by-stage: what to automate when
 
-**Pre-hire (0 employees, contractors only).** Get the hiring rubric and offer template written before your first hire, not during. This is the cheapest time to do it.
+**Pre-hire (0 employees, contractors only).** Write the hiring rubric and the offer template before your first hire, not during it. This is the cheapest time to do it.
 
-**First 1-5 hires.** Agent runs screening, scheduling, and onboarding. Every hiring decision and every offer still goes through the founder personally. A PEO handles payroll from hire one, this is not worth DIY-ing even at this size.
+**First 1-5 hires.** The agent runs screening, scheduling and onboarding. Every hiring decision and every offer still goes through the founder personally. A PEO handles payroll from hire one. It isn't worth doing yourself, even at this size.
 
-**5-15 people.** Compliance tracking (PTO, benefits renewals, policy questions) fully automated. The agent is now handling enough repeated policy questions that documenting and automating answers saves real founder time. Still no automated hiring decisions or terminations.
+**5-15 people.** Compliance tracking (PTO, benefits renewals, policy questions) runs fully on the agent. By now it answers enough repeated policy questions that the founder time saved is real. Hiring decisions and terminations stay human.
 
-**15+ people, or first jurisdiction beyond your home state.** This is usually the point a founder brings on a fractional HR consultant or part-time HR hire, not because the agent stopped working, but because case complexity (multiple states, a first real dispute, a first layoff) now needs a person with employment law judgment reviewing decisions, with the agent still running the process underneath.
+**15+ people, or your first employee outside your home state.** This is usually when a founder brings in a fractional HR consultant or a part-time HR hire. The agent still runs the process underneath. What changed is case complexity: multiple states, a first real dispute, a first layoff. Those need a person with employment-law judgment reviewing decisions.
 
 ## What this looks like in practice
 
-Pancake uses its own GTM agents: hiring, onboarding, and policy tracking for the team building this product go through an agent-run process, with every hiring decision, offer, and anything involving a person's standing still made by a human. The pattern holds whether you're a solo founder hiring your first contractor or a ten-person team onboarding your fifth engineer: agents run the process, people make the decisions.
+Picture a six-person startup hiring its first account executive. The agent publishes the role from the approved template, screens 140 applications against the written rubric, and sends the founder a shortlist of eight with a reason next to each name. It books the interviews, collects the scorecards, and drafts the offer once the founder has picked a candidate and set the salary. After the signature, onboarding runs from the checklist: accounts, laptop, a benefits enrollment reminder, a first-week plan. The founder's hours went to interviews and the decision.
 
-Solo or multiplayer, the split doesn't change. What changes is how much process there is to run, which is exactly the part an agent scales without adding headcount.
+Before you open a sales role like that one, look hard at the work it covers. If the job is mostly finding prospects and starting conversations, hand that part to [Pancake](/) first. Pancake is an AI GTM team whose agents track who posts about the problem you solve, who engages with a competitor, and which companies have open roles that match your buyer. Every lead reaches you with the signal behind it. Approve it, and Pancake opens the conversation from your own account with a question about that signal. One plan covers every agent at [$99/month flat](/pricing), and [Pancake vs hiring a BDR](/blog/pancake-vs-hiring-a-bdr) sets it against the salary line.
+
+Solo or multiplayer, the split between process and decisions doesn't change. What grows is the amount of process to run, and that is the part an agent absorbs without adding headcount.
 
 ---
 

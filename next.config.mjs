@@ -59,6 +59,18 @@ const nextConfig = {
         destination: "/",
         permanent: true,
       })),
+      // Blog posts retired 2026-09-24 (founder rule: every removed page ships
+      // a 301 to the closest live page; scripts/url-guard.mjs enforces it).
+      // Near-duplicate of the aicofounders.co comparison:
+      { source: "/blog/pancake-vs-aicofounders", destination: "/blog/pancake-vs-ai-cofounders", statusCode: 301 },
+      // Slugs that never existed but get Search Console impressions (LLM-invented
+      // or mistyped links, 2026-09-24 Performance report) — send them to the post
+      // they clearly mean.
+      { source: "/blog/pancake-vs-viktor", destination: "/blog/viktor-vs-pancake", statusCode: 301 },
+      { source: "/blog/what-is-an-agentic-operating-system", destination: "/blog/what-is-agentic-operating-system", statusCode: 301 },
+      { source: "/blog/onemancompany", destination: "/blog/pancake-vs-onemancompany", statusCode: 301 },
+      { source: "/blog/w26-solo-founders", destination: "/blog/yc-w26-solo-founders", statusCode: 301 },
+      { source: "/blog/what-is-an-ai-first-startup", destination: "/blog/what-is-ai-first-startup", statusCode: 301 },
     ];
   },
 };

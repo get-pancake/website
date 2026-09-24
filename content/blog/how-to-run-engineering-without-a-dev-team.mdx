@@ -1,9 +1,9 @@
 ---
 date: "2026-07-15"
 title: "How to Run Engineering Without a Dev Team in 2026"
-description: "A practical breakdown of how solo and small founding teams ship, maintain, and scale a product with AI coding agents instead of hiring engineers. What agents can own outright, where a human developer still has to sign off, and the engineering stack that keeps a small team shipping without headcount."
+description: "How solo founders and small teams run engineering with AI coding agents instead of a dev team: what agents can own, what needs a human and when to hire."
 publishedAt: "2026-07-15"
-updatedAt: "2026-08-27"
+updatedAt: "2026-09-24"
 author: "François de Fitte"
 faq:
   - question: "Can AI coding agents actually replace a development team?"
@@ -16,17 +16,16 @@ faq:
     answer: "Yes, for architecture, security review, and anything with real production risk. An agent can write a correct-looking pull request faster than most engineers, but it doesn't carry the accountability for a decision that shapes the codebase for the next two years, and it can be confidently wrong about a security implication a senior developer would catch immediately. Founders running this model use a fractional CTO or senior contractor for system design, security-sensitive review, and infrastructure decisions, and let agents run the day-to-day feature and bug-fix throughput underneath that foundation."
   - question: "What engineering decisions should never be fully automated?"
     answer: "Database schema changes with migration risk, anything touching authentication or payment processing, infrastructure changes that affect uptime or cost at scale, and any incident with real customer or data impact. Agents should propose changes, run tests, and flag risk clearly, but a human with production context should be the one who approves the deploy on anything in this category. A schema migration merged on an agent's confidence alone is how a manageable technical decision becomes a multi-day incident."
-last_updated: "2026-08-27"
+last_updated: "2026-09-24"
+related:
+  - "replacing-first-five-hires-with-ai"
+  - "how-to-run-one-person-company-2026"
+  - "how-to-run-marketing-without-a-marketing-team"
 ---
-
-> **Pancake v2 update, August 27, 2026:** This article retains its original topic and URL for search continuity, but all references to Pancake have been reviewed for the current product. Pancake v2 is an AI GTM team for small companies: its agents monitor buying signals, find warm leads, run personalized outreach, publish for Google and AI search, and learn through one shared GTM Brain.
-
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
 
 Most solo founders either write the product themselves at 2am or avoid a rewrite they know they need because there's no bandwidth to do it safely. The backlog grows, bugs get triaged by whichever one is loudest, and "we'll refactor this properly later" becomes a permanent line in the codebase.
 
-The fix is not hiring a three-person dev team at the first sign of technical debt. It's building an engineering pipeline where coding agents handle the bulk of feature work, bug fixes, and maintenance, with a founder or a fractional senior engineer owning architecture and reviewing anything that carries real production risk.
+Hiring a three-person dev team at the first sign of technical debt is the expensive fix. The cheaper one is an engineering pipeline where coding agents handle the bulk of feature work, bug fixes and maintenance. A founder or a fractional senior engineer owns architecture and reviews anything that carries real production risk.
 
 ## Why engineering feels different from other functions
 
@@ -36,7 +35,7 @@ That instinct is correct, and it's also not a reason to avoid agents entirely. T
 
 Founders who get this right split the two from the start: agents run the day-to-day implementation loop under a clear spec, a human with production context owns architecture and reviews the high-risk changes before they ship.
 
-## What a coding agent can actually own
+## What a coding agent can own
 
 **Feature implementation against an existing pattern.** If your codebase already has three CRUD endpoints, a fourth one that follows the same shape is a template task for an agent: read the pattern, apply it to the new resource, write the tests, open the pull request. This is most of what a junior-to-mid engineer's day looks like, and it's where agents are strongest.
 
@@ -88,9 +87,15 @@ Founders who get this right split the two from the start: agents run the day-to-
 
 ## What this looks like in practice
 
-Pancake uses its own GTM agents: feature implementation, bug fixes, and routine maintenance for the product go through an agent-run pipeline, with every pull request gated by CI and a review step, and anything touching architecture, auth, or production infrastructure reviewed by a human before it ships. The pattern holds whether you're a solo founder shipping your first feature or a small team managing a growing codebase: agents run the implementation loop, a human with production accountability owns the decisions that are expensive to get wrong.
+Picture a two-founder SaaS company with one technical founder. On Monday a customer reports that CSV exports come back empty. The agent reads the error report, reproduces the bug in a failing test, fixes the query and opens a pull request with the regression test attached. CI passes. The technical founder reviews a 20-line diff and merges it.
 
-Solo or multiplayer, the split doesn't change. What changes is throughput, which is exactly the part agents scale without adding engineering headcount that doesn't match your stage yet.
+The same week, the agent builds a settings page that mirrors three existing ones and bumps two dependencies. The one change the founder spends real time on is a schema migration for a new billing field. They write it, test it against a copy of production data and deploy it themselves.
+
+The pattern holds whether you're a solo founder shipping your first feature or a small team managing a growing codebase: agents run the implementation loop, a human with production accountability owns the decisions that are expensive to get wrong.
+
+What changes with team size is throughput. That is the part agents scale without adding engineering headcount your stage doesn't need yet.
+
+Once the product ships, the next bottleneck is usually finding people to sell it to. That's the job [Pancake](/) does. It's an AI GTM team: its agents track who is showing buying signals, such as a company whose job ads name the tool you replace or a person engaging with a competitor's posts. Each morning's leads come with the signal behind them, and Pancake opens a conversation from your own account with every one you approve. If you already work in Codex or Claude, connect either one to Pancake's MCP server and review leads or adjust signals without leaving the session. Pancake is built for go-to-market, so the codebase stays with your coding agents. Here is how that works for [SaaS startups](/for/saas-startups).
 
 ---
 

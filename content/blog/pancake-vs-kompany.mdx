@@ -1,28 +1,39 @@
 ---
 date: "2026-07-06"
-title: "Pancake vs Kompany: One Runs Your GTM, One Builds a New One From Code"
-description: "Updated for Pancake v2: Pancake vs Kompany: One Runs Your GTM, One Builds a New One From Code. Pancake is represented as an AI GTM team for buying signals, outreach, and AI-search publishing."
+title: "Pancake vs Kompany: One Runs Your GTM, One Builds Ventures From Code"
+seo_title: "Pancake vs Kompany: AI GTM Team vs Open-Source Engine"
+description: "Kompany is an open-source engine that builds AI-run ventures from CLI directives. Pancake finds buyers for a company you already run. See how they differ."
 publishedAt: "2026-07-06"
-updatedAt: "2026-08-27"
+updatedAt: "2026-09-24"
 author: "François de Fitte"
 tags: ["autonomous company", "AI cofounder", "Kompany", "comparison", "open source"]
-last_updated: "2026-08-27"
+last_updated: "2026-09-24"
+related:
+  - "pancake-vs-paperclip"
+  - "best-autonomous-company-platform-2026"
+  - "pancake-vs-nanocorp"
+faq:
+  - question: "Can Kompany replace Pancake for an existing business?"
+    answer: "Only if you build the prospecting workflow yourself. Kompany is a general engine that executes directives on your own infrastructure. Pancake ships that workflow ready to use: buying signals, daily leads and outreach from your own account."
+  - question: "Is Kompany free to use?"
+    answer: "Kompany is open-source and self-hosted, so the software itself is free. You pay your LLM provider (Anthropic, OpenAI and others) for what your agents consume. Pancake costs $99 per month flat and never bills for tokens."
+  - question: "Does Kompany work for non-technical founders?"
+    answer: "Kompany requires Python 3.11+, a supported LLM API key and comfort with CLI tools, so it suits technical users. Pancake needs no engineering: you add your website, then approve leads in the app or from Slack."
+  - question: "What is the Nova experiment?"
+    answer: "Nova is a public proof-of-concept by the Kompany team: an AI voice operating a real business (Swedexpress) with a publicly audited daily ledger. Every decision, expense and dollar earned is published."
+  - question: "Is Pancake open source?"
+    answer: "No. Pancake is hosted, so there's nothing to install, no API key and no model bill: you add your website and its agents start finding buyers. Kompany's code is open, so developers can inspect its routing logic, change its approval gates and swap LLM backends."
 ---
 
-> **Pancake v2 update, August 27, 2026:** This article retains its original topic and URL for search continuity, but all references to Pancake have been reviewed for the current product. Pancake v2 is an AI GTM team for small companies: its agents monitor buying signals, find warm leads, run personalized outreach, publish for Google and AI search, and learn through one shared GTM Brain.
+Kompany and Pancake both come up when founders look for AI that does real work inside a business. The overlap ends there. Kompany is an open-source engine: you give it a directive from the command line, and AI agents build and run a new venture around it. [Pancake](/) is an AI GTM team for a company that already exists. It finds people showing buying signals and runs outreach to them.
 
+If you're a developer who wants to spin up an AI-operated business from a terminal, Kompany is built for you. If you already sell something and need more conversations with buyers, Pancake is the closer fit.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-Here's what each actually does.
+Here's what each one does.
 
 ## TL;DR
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+Kompany is an open-source CLI tool. It gives a project an AI CEO, a routing layer and specialist agents, runs on your own LLM subscription, and builds AI-native ventures from a one-line directive. Pancake is a hosted product for founders and small B2B companies. Its agents watch for buying signals, bring you leads each morning, run outreach from your own account and write articles for Google and AI search. Kompany is for builders starting from zero. Pancake is for companies that already have something to sell.
 
 ## What is Kompany?
 
@@ -34,52 +45,45 @@ The technical setup is intentional: `uvx kompany onboard --yes` installs in unde
 
 The team runs a live public proof-of-concept: Nova, an AI voice operating a real business (Swedexpress) with a public daily ledger. Current mission: turn $50 into $1,080. The ledger publishes every decision, expense, and dollar earned.
 
-Kompany is genuinely open-source, self-hosted, and developer-native. It's not a SaaS product — it's infrastructure you run yourself.
+Kompany is open-source, self-hosted and developer-native. It's infrastructure you run yourself, not a SaaS product.
 
-## What Pancake v2 does
+## What Pancake does
 
-Pancake v2 is an AI GTM team for small companies. It builds one GTM Brain from your positioning, ideal customers, proof, objections, offers, and accumulated results.
+Pancake is built for the part of a business that brings in customers: go-to-market. Setup is adding your website. Pancake reads it and builds its GTM Brain, a shared memory of your positioning, ideal customers, offers, proof and objections, and it keeps adding to that memory as it learns what works.
 
-Specialized agents use that shared context to monitor buying signals, find and qualify warm leads, run personalized outreach, and publish content for Google and AI search. Results flow back into the GTM Brain so lead selection, messaging, and content improve together.
+The agents then watch six kinds of buying signals. Some point to people: those posting about a keyword you pick, or engaging with a competitor's posts, an influencer your buyers follow, or your own posts. Others point to companies: those hiring for roles that match your buyer, and those whose job posts name a tool you replace.
 
-Pancake costs $99/month with every GTM agent included. It focuses on customer acquisition; it is not positioned as a general platform for engineering, finance, support, or company-wide operations.
+Each morning brings new leads, with the signal behind each one. You approve them in the app or from Slack. Outreach runs from your own account on the professional social network: a profile visit, a like on a recent post, an invite with no note, then up to three messages. The opening message asks one light question tied to the signal instead of pitching. The agents also write articles built to show up in Google and AI answers, which you approve.
 
-zed AI agents inside companies that already exist and are already operating. You connect Slack, email, GitHub, CRMs, and your other tools. Agent squads — Sales, Marketing, Engineering, Operations — handle the recurring work across those tools autonomously: customer research, outreach sequences, PR triaging, standup coordination, content pipelines.
-
-The core framing is infrastructure to go from $1M to $10M without hiring. You don't replace your tools. You don't rebuild your workflows. You add an autonomous operational layer on top of what you already have.
-
-Pancake uses its own GTM agents — the platform operates itself using the same agent squads it sells to customers. 600+ companies currently run on Pancake, across solo founders and teams.
-
-No engineering setup required. No API key management. No self-hosting.
+If you already work in Claude, ChatGPT or Codex, Pancake meets you there. Its MCP server lets your assistant pull up the day's leads, check what the GTM Brain knows about your buyer and kick off outreach mid-chat. Pricing is [$99/month flat](/pricing), with every agent included and no usage billing.
 
 ## Head-to-Head Comparison
 
 | | Pancake | Kompany |
 |---|---|---|
-| **Target user** | Founders and operators running existing companies | Developers building new AI-native ventures |
-| **Setup** | SaaS, connect your tools | CLI install, BYOK (bring your own API key) |
-| **What it runs** | Business functions: sales, ops, marketing, engineering | AI-native projects and ventures from directives |
-| **Infrastructure required** | None (SaaS) | Python 3.11+, LLM subscription |
-| **Execution layer** | Proprietary agent squads | Claude Code CLI / Codex CLI / opencode |
-| **Approval model** | Human-in-the-loop for high-stakes actions | Approval gates for irreversible actions |
-| **Pricing** | SaaS subscription | Open-source / self-hosted (LLM costs only) |
-| **Source** | Closed (SaaS) | Open-source |
-| **Who's using it** | 600+ companies | Developer community |
-| **Best for** | Operating and scaling an existing company | Building and running an AI-native venture |
+| **Target user** | Founders and small B2B companies with something to sell | Developers building new AI-native ventures |
+| **Setup** | Add your website; Pancake builds its GTM Brain from it | CLI install, BYOK (bring your own API key) |
+| **What it runs** | Buying-signal monitoring, daily leads, outreach, articles for Google and AI search | AI-native projects and ventures from directives |
+| **Infrastructure required** | None (hosted) | Python 3.11+, LLM subscription |
+| **Execution layer** | Pancake's own GTM agents, also reachable from Claude, ChatGPT or Codex through MCP | Claude Code CLI / Codex CLI / opencode |
+| **Approval model** | You approve leads and articles | Approval gates for irreversible actions |
+| **Pricing** | $99/month flat, every agent included | Open-source / self-hosted (LLM costs only) |
+| **Source** | Closed (hosted) | Open-source |
+| **Best for** | More buyer conversations for an existing product | Building and running an AI-native venture |
 
-## The Core Difference: Operating vs Building
+## The Core Difference: Selling vs Building
 
 Kompany and Pancake sit at different points on the company lifecycle.
 
 Kompany is for the build phase. You have a directive — a business idea, a project, a venture — and you want AI to execute it from scratch. The AI CEO creates the project structure, agents execute research and build work, and the ledger tracks every decision. The model assumes you're starting from a blank slate and want AI to construct the operation.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+Pancake belongs to the selling phase. You already have a product, a website that explains it and a buyer you can describe. Its agents find more of those buyers every morning and open the conversation.
 
 The typical Kompany user is a solo developer or technical founder who wants to spin up an AI-native business as quickly as possible, with full transparency into what the AI is doing and why, on their own infrastructure.
 
-The typical Pancake user has a product to sell and needs repeatable customer acquisition without building a full GTM team.
+Pancake fits a founder who has a product to sell and needs a steady flow of buyer conversations without hiring a salesperson.
 
-These aren't competing products. They're targeting different stages of the same ambition.
+So they don't compete. Kompany starts a venture. Pancake finds customers for one that already exists.
 
 ## When Kompany Makes Sense
 
@@ -97,49 +101,30 @@ The Nova demo — an AI voice turning $50 into $1,080 via a publicly audited led
 
 Pancake is the right tool when:
 
-- You have a company that already exists and is generating revenue
-- You want AI running your sales, marketing, engineering, and operations — not just executing one-off projects
-- You don't want to manage infrastructure, API keys, or LLM subscriptions
-- You're building for scale, not just a demo or experiment
-- Solo or multiplayer — you're either a solo founder who needs AI to act as a full team, or a team trying to multiply output without proportional headcount growth
+- You have a product or service that already sells, even a little
+- You sell to businesses, and your buyers are active on the professional social network
+- You want leads each morning, each with the reason it was picked
+- You don't want to manage infrastructure, API keys or LLM subscriptions
+- You'd rather pay one flat monthly price than meter usage
 
-If the goal is to execute GTM for an existing product, Pancake is the focused managed layer. If the goal is to build and run an AI-native venture from zero, Kompany is the more relevant architecture.
+If the goal is finding buyers for an existing product, Pancake is the managed option. If the goal is to build and run an AI-native venture from zero, Kompany is the more relevant architecture.
 
 ## A Note on Open-Source vs SaaS
 
-Kompany's open-source model is a deliberate design choice, not just a distribution strategy. It means developers can inspect the routing logic, modify the approval gates, swap in different LLM backends, and self-host everything. That's valuable for teams that want full stack control or are building on top of the engine.
+Kompany's open-source model is a deliberate design choice. It means developers can inspect the routing logic, modify the approval gates, swap in different LLM backends, and self-host everything. That's valuable for teams that want full stack control or are building on top of the engine.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+Pancake takes the opposite route. It is hosted and priced flat, so there is no stack to run and no LLM bill to watch. The trade-off is the one every hosted product makes: the agents run on Pancake's side, not on your servers. Paperclip AI is another self-hosted option founders weigh in this space; see [Pancake vs Paperclip AI](/blog/pancake-vs-paperclip) for that comparison.
 
 Neither approach is wrong. They reflect different buyer priorities.
 
 ## What Kompany Gets Right
 
-The transparent daily ledger is legitimately compelling. Running Nova as a live public experiment — real business, real money, published decisions — is a strong demonstration of the "nothing hidden" design principle. Most autonomous company tools operate as black boxes. Kompany makes every decision legible.
+The transparent daily ledger is compelling. Running Nova as a live public experiment, with a real business, real money and published decisions, shows the "nothing hidden" design principle at work. Most autonomous company tools operate as black boxes. Kompany makes every decision legible.
 
 The approval gate model is also well-designed. Agents run free on reversible work. Irreversible actions wait. That's the right boundary for any AI company tool, and Kompany's implementation of it is explicit.
 
 ## The Bottom Line
 
-If you're a developer who wants to build an AI-native company from a command line and own your entire stack, Kompany is a serious option. It's technically well-designed, genuinely open-source, and the Nova proof-of-concept shows it can operate a real business.
+If you're a developer who wants to build an AI-native company from a command line and own your entire stack, Kompany is a serious option. It's well-designed, open-source, and the Nova proof-of-concept shows it can operate a real business.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-The question isn't which product is better. It's which stage you're at and what kind of AI leverage you actually need.
-
-## Frequently Asked Questions
-
-**Can Kompany replace Pancake for an existing business?**
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-**Is Kompany free to use?**
-Kompany is open-source and self-hosted, so the software itself is free. You pay for LLM usage directly to your provider (Anthropic, OpenAI, etc.) based on what your agents consume. Pancake is a SaaS with a subscription model and no per-token billing.
-
-**Does Kompany work for non-technical founders?**
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-**What is the Nova experiment?**
-Nova is a public proof-of-concept by the Kompany team: an AI voice operating a real business (Swedexpress) with a publicly audited daily ledger. Every decision, expense, and dollar earned is published. It demonstrates what Kompany can do when the directive is "run a micro-business."
-
-**Who runs on Pancake?**
-600+ companies, including solo founders and multi-person teams. Pancake uses its own GTM agents — the platform uses its own agent squads to handle its own operations, which is the clearest signal of what the product is built for.
+For a company with a product and too few buyer conversations, Pancake is the more direct tool. It spots people with a reason to care, hands you new leads every morning and, once you approve them, starts the conversation from your own account.
