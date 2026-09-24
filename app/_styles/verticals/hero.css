@@ -127,110 +127,15 @@
   margin-top: 28px;
 }
 
-/* ── example prompts: the eyebrow label, then one row per prompt ── */
+/* ── example prompts: the rows themselves are prompts.css (VxPromptRows, shared with the
+   homepage's demo section); the hero only sets where the label starts ── */
 .lp-vx .vx-hero__label {
-  color: var(--lp-subtle-text);
-  font-family: var(--vx-eyebrow-font);
-  font-size: var(--lp-text-sm);
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  line-height: 20px;
   margin-top: 32px;
-  text-transform: uppercase;
-}
-/* the badge + text wrapper is transparent to the grid on desktop (phones: the clamp box) */
-.lp-vx .vx-hp__body {
-  display: contents;
-}
-/* rows share one grid (subgrid): badge column = the widest badge, text column
-   = the longest prompt, arrow column; the list hugs its longest row, so the
-   three rows are one width and their texts and arrows line up */
-.lp-vx .vx-hp-list {
-  display: grid;
-  gap: 8px 0;
-  grid-template-columns: max-content minmax(0, max-content) max-content;
-  list-style: none;
-  margin: 12px 0 0;
-  max-width: 100%;
-  padding: 0;
-  width: fit-content;
-}
-.lp-vx .vx-hp-list > li {
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-}
-/* start-aligned: a row that wraps (768–1024) keeps its badge and arrow on the first line */
-.lp-vx .vx-hp {
-  align-items: start;
-  background: var(--lp-surface);
-  border-radius: var(--lp-r-sm);
-  box-shadow: inset 0 0 0 1px var(--lp-ink-tr-10);
-  color: var(--lp-text);
-  column-gap: 14px;
-  corner-shape: squircle;
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-  min-height: 44px;
-  padding: 10px 16px 10px 10px;
-  text-decoration: none;
-  transition: box-shadow 0.2s ease;
-}
-/* one badge width per page (the column's): a type column, not ragged chips */
-.lp-vx .vx-hp .vx-badge {
-  justify-content: center;
-  justify-self: stretch;
-}
-.lp-vx .vx-hp__text {
-  font-family: var(--lp-font-sans);
-  font-size: 15px;
-  line-height: 22px;
-  min-width: 0;
-  padding-top: 1px;
-  text-wrap: pretty;
-}
-.lp-vx .vx-hp__arrow {
-  color: var(--lp-subtle-text);
-  fill: none;
-  height: 16px;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  margin-top: 4px;
-  stroke-width: 1.6;
-  /* a DOWN arrow: the row plays its prompt in the demo right below, it never leaves the page */
-  transform: rotate(90deg);
-  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), color 0.2s ease;
-  width: 16px;
-}
-/* the row the demo is showing: an ink ring (1.5px; the others keep theirs —
-   founder: never dim the rest) */
-.lp-vx .vx-hp[data-active] {
-  box-shadow: inset 0 0 0 1.5px var(--lp-ink-100);
-}
-.lp-vx .vx-hp[data-active] .vx-hp__arrow {
-  color: var(--lp-text);
-}
-@media (hover: hover) {
-  .lp-vx .vx-hp:not([data-active]):hover {
-    box-shadow: inset 0 0 0 1px var(--lp-ink-tr-40);
-  }
-  .lp-vx .vx-hp:hover .vx-hp__arrow {
-    color: var(--lp-text);
-    transform: translateY(2px) rotate(90deg);
-  }
 }
 .lp-vx .vx-hero :is(a, .vx-hp):focus-visible {
   border-radius: 4px;
   outline: 2px solid var(--lp-ink-100);
   outline-offset: 2px;
-}
-/* a focused row rings in the kit's focus purple (.lp-btn:focus-visible): the ink would read as
-   a second "selected" row next to the active one's ink ring */
-.lp-vx .vx-hero .vx-hp:focus-visible {
-  border-radius: var(--lp-r-sm);
-  outline-color: var(--lp-purple-30);
 }
 
 /* ── 768–1024: the section-title step down; rows wrap to two lines in place ── */
@@ -274,15 +179,15 @@
   .lp-vx .vx-hero__label {
     margin-top: 20px;
   }
-  .lp-vx .vx-hp-list {
+  /* the hero's fold tuning (0,3,0: prompts.css, loaded after, sets the regular gap) */
+  .lp-vx .vx-hero .vx-hp-list {
     gap: 6px 0;
     margin-top: 8px;
   }
 }
 
-/* ── phones: recomposed, not zoomed. The same stack; each row takes the full
-   column and its badge leads the prompt's first line (two lines at most, the
-   rest ellipsized), the arrow centred on the right ── */
+/* ── phones: recomposed, not zoomed. The same stack (the prompt rows' own
+   phone layout is in prompts.css) ── */
 @media (max-width: 767px) {
   .lp-vx .vx-hero {
     padding: 40px 0 32px;
@@ -309,41 +214,6 @@
   .lp-vx .vx-hero__label {
     margin-top: 24px;
   }
-  .lp-vx .vx-hp-list {
-    display: flex;
-    flex-direction: column;
-    width: auto;
-  }
-  .lp-vx .vx-hp-list > li {
-    display: block;
-  }
-  /* text box = column − 10 − 36 (280 at 390). The badge leads line 1 and the prompt runs to
-     3 lines at most. Never clamped: an ellipsis cut the prompts mid-sentence ("50 to 20…"),
-     and the example is the point of the row — a lower tab bar on phones is the lesser cost. */
-  .lp-vx .vx-hp {
-    display: block;
-    padding: 10px 36px 10px 10px;
-    position: relative;
-  }
-  .lp-vx .vx-hp__body {
-    display: block;
-  }
-  .lp-vx .vx-hp .vx-badge {
-    display: inline-flex;
-    margin-right: 8px;
-    vertical-align: top;
-  }
-  .lp-vx .vx-hp__text {
-    display: inline;
-    line-height: 24px;
-    padding-top: 0;
-  }
-  .lp-vx .vx-hp__arrow {
-    margin-top: -8px;
-    position: absolute;
-    right: 12px;
-    top: 50%;
-  }
 }
 @media (min-width: 768px) and (max-width: 999px) and (max-height: 779px) {
   .lp-vx .vx-hero {
@@ -365,11 +235,5 @@
     min-width: 0;
     padding-inline: 10px;
     width: auto;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .lp-vx .vx-hp,
-  .lp-vx .vx-hp__arrow {
-    transition: none;
   }
 }

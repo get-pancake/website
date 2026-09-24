@@ -1,0 +1,44 @@
+/* ── Demo tour — the /for product demo on the homepage (LpDemoTour) ────────
+   Only the four tabs (founder 2026-09-24): tab bar, app window, foot. Every
+   rule inside is the /for demo, styled by verticals/{foundation,demo}.css
+   under the section's own .lp-vx (home-demo.css imports them, homepage
+   only). This file is the section's place in the homepage rhythm: the
+   visible gaps the homepage uses between blocks (160 ≥1025, 96 ≤1024 and on
+   phones, --vx-rhythm), measured from the marquee's logos above to the tab
+   bar, and from the demo's foot to LpSteps' kicker below — LpSteps itself is
+   untouched, so the bottom margin makes up the difference with its own top
+   padding (16 + 128 ≥1025, 16 + 96 at 768–1024, 58 + 16 on phones).
+
+   1440: logos → 160 → tab bar, app window, foot → 160 → "While you run your
+   business,"
+
+   The demo sits on the page, not on the /for full-bleed cream stripe between
+   two hairlines (every other homepage surface is a rounded card); the tab
+   rail is its only line. */
+
+/* the marquee pads 32 under its logos */
+.lp-tour {
+  margin-bottom: 16px; /* + LpSteps' 144 = 160 */
+  padding-top: calc(var(--vx-rhythm) - 32px);
+}
+/* loads after demo.css, so it also wins over the ≤1024 / ≤767 paddings: the margin below then
+   measures from the foot */
+.lp-tour .vx-demo {
+  background: none;
+  border-block: 0;
+  padding-bottom: 0;
+  padding-top: 0;
+}
+
+@media (max-width: 1024px) {
+  /* LpSteps pads 112 here; the 96 rhythm can't be met without touching it — 112 it is */
+  .lp-tour {
+    margin-bottom: 0;
+  }
+}
+@media (max-width: 767px) {
+  /* + LpSteps' 74 = 96 */
+  .lp-tour {
+    margin-bottom: 22px;
+  }
+}

@@ -107,6 +107,14 @@ export interface VerticalConfig {
   };
 }
 
+/**
+ * What the product demo reads (VxDemo, VxPromptRows, buildDemoModel): the workspace and the demo
+ * block. Every VerticalConfig is one; the homepage demo (lib/verticals/home-demo.ts) is one with
+ * no /for page behind it — same rules (validateVerticals' `demos`), not in the registry.
+ */
+/** The workspace + demo part of a config: what VxDemo renders (a /for config, or HOME_DEMO). */
+export type DemoSource = Pick<VerticalConfig, "workspace" | "demo">;
+
 export interface DemoPrompt {
   /** The primary signal: the hero row's badge. Must equal proposal[0].kind. */
   kind: SignalKind;

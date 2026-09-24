@@ -167,6 +167,13 @@ back during a fidelity pass:
   coup"). The mp4s + posters are gone.
 - Footer content sits 48px closer to the pricing rings (height 467, brand
   top 56.43, cols top 76.75; Figma: 515/104.43/124.75).
+- Demo tour (2026-09-23, founder: the /for product demo "should probably be on
+  the normal landing page"): `LpDemoTour.tsx`, between LpMarquee and LpAgentLab
+  — the /for demo reused as-is, just the four tabs (founder 2026-09-24: "only keep the 4
+  tabs": no section head, no example-prompt rows; the H2 is visually hidden) — VxDemo + its
+  one client island with Studio Pelican's data (`lib/verticals/home-demo.ts`), styles in
+  `app/_styles/home-demo.css` (homepage only, scoped by `.lp-vx` on the section).
+  Details: `components/sections/verticals/README.md` ("The demo on the homepage").
 - /careers runs on this design system (`app/careers/page.tsx` +
   `app/_styles/landing-v3/careers.css`, imported by the page only — not in
   the landing-v3.css manifest).

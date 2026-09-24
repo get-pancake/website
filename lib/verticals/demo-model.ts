@@ -1,4 +1,5 @@
-// lib/verticals/demo-model.ts — SERVER ONLY. VerticalConfig → DemoModel (spec §4.2, §4.6).
+// lib/verticals/demo-model.ts — SERVER ONLY. DemoSource (a VerticalConfig, or the homepage demo) →
+// DemoModel (spec §4.2, §4.6).
 // Flattens one vertical into display-ready strings for the VxDemo panes (server
 // components) and a small PlayerModel for the client island. Never import this module
 // (or the registry) from a "use client" file: only `DemoModel["player"]` crosses the
@@ -13,7 +14,7 @@ import {
   VX_NOTE,
 } from "@/components/sections/verticals/vx-copy";
 import type { DemoLens } from "./demo-timeline";
-import type { DemoPrompt, SignalKind, VerticalConfig } from "./types";
+import type { DemoPrompt, DemoSource, SignalKind } from "./types";
 
 export interface DemoLeadView {
   name: string;
@@ -173,7 +174,7 @@ function fill(tpl: string, prompt: string, lead: string): string {
   return tpl.replace("{prompt}", prompt).replace("{lead}", lead);
 }
 
-export function buildDemoModel(v: VerticalConfig): DemoModel {
+export function buildDemoModel(v: DemoSource): DemoModel {
   const ws = v.workspace;
   const prompts: DemoPromptView[] = v.demo.prompts.map((p) => {
     const leads: DemoLeadView[] = p.leads.map((l) => ({

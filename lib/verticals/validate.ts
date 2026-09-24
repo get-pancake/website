@@ -3,7 +3,7 @@
 // scripts/verticals-budget.mjs (Playwright + real fonts); HTML-level gates (shingles, JSON-LD
 // parity, DOM size) in scripts/verticals-audit.mjs. Warnings print; errors throw.
 
-import type { SignalKind, VerticalConfig } from "@/lib/verticals/types";
+import type { DemoSource, SignalKind, VerticalConfig } from "@/lib/verticals/types";
 import * as FIXED from "@/components/sections/verticals/vx-copy";
 
 const KINDS: SignalKind[] = ["keyword", "competitor", "influencer", "own_brand", "hiring", "stack"];
@@ -110,6 +110,22 @@ const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
 const sentences = (s: string) => s.split(/(?<=[.!?])\s+(?=[A-Z“"'$0-9])/).filter(Boolean).length;
 const emDashes = (s: string) => (s.match(/—/g) ?? []).length;
 
+/** The demo's prompt strings (every prompt: text, reply, why, message, proposal items, leads). */
+function promptStrings(d: DemoSource): [string, string][] {
+  const out: [string, string][] = [];
+  d.demo.prompts.forEach((p, i) => {
+    out.push([`prompts[${i}].text`, p.text], [`prompts[${i}].reply`, p.reply], [`prompts[${i}].why`, p.featured.why], [`prompts[${i}].message`, p.message]);
+    p.proposal.forEach((r, j) => r.items.forEach((it, k) => out.push([`prompts[${i}].proposal[${j}].items[${k}]`, it])));
+    p.leads.forEach((l, j) => out.push([`prompts[${i}].leads[${j}]`, `${l.name} ${l.role} ${l.company} ${l.signal}`]));
+  });
+  return out;
+}
+
+/** Every string a demo-only source renders (the homepage demo; its H2 is a visually hidden heading). */
+function demoStrings(d: DemoSource): [string, string][] {
+  return [["workspace.name", d.workspace.name], ["workspace.sender", d.workspace.sender], ["demo.h2", d.demo.h2], ...promptStrings(d)];
+}
+
 /** Every per-vertical string that renders, with its field path (for lint messages). */
 function renderedStrings(v: VerticalConfig): [string, string][] {
   const out: [string, string][] = [
@@ -118,11 +134,7 @@ function renderedStrings(v: VerticalConfig): [string, string][] {
     ["hero.lede", v.hero.lede], ["workspace.name", v.workspace.name], ["workspace.sender", v.workspace.sender],
     ["demo.h2", v.demo.h2], ["signals.h2", v.signals.h2], ["cta.title", v.cta.title],
   ];
-  v.demo.prompts.forEach((p, i) => {
-    out.push([`prompts[${i}].text`, p.text], [`prompts[${i}].reply`, p.reply], [`prompts[${i}].why`, p.featured.why], [`prompts[${i}].message`, p.message]);
-    p.proposal.forEach((r, j) => r.items.forEach((it, k) => out.push([`prompts[${i}].proposal[${j}].items[${k}]`, it])));
-    p.leads.forEach((l, j) => out.push([`prompts[${i}].leads[${j}]`, `${l.name} ${l.role} ${l.company} ${l.signal}`]));
-  });
+  out.push(...promptStrings(v));
   v.signals.cards.forEach((c, i) => {
     out.push([`signals.cards[${i}].title`, c.title], [`signals.cards[${i}].body`, c.body]);
     c.watching.forEach((w, j) => out.push([`signals.cards[${i}].watching[${j}]`, w]));
@@ -150,7 +162,7 @@ function fixedStrings(): [string, string][] {
 
 /** Every string value of a config, at any depth, with its path (PLATFORM scans all of them:
  *  a string that is not rendered today, like name.badge, may be tomorrow). */
-function configStrings(v: VerticalConfig): [string, string][] {
+function configStrings(v: VerticalConfig | DemoSource): [string, string][] {
   const out: [string, string][] = [];
   const walk = (val: unknown, path: string): void => {
     if (typeof val === "string") out.push([path, val]);
@@ -163,7 +175,7 @@ function configStrings(v: VerticalConfig): [string, string][] {
 
 /** What the fixed templates (vx-copy functions) render with this config: the per-page outputs. */
 function composedStrings(v: VerticalConfig): [string, string][] {
-  const { VX_HERO, VX_SIGNALS, VX_FAQ, VX_META, VX_PRICING_CHECKLIST, VX_CONTROL, VX_DEMO } = FIXED;
+  const { VX_HERO, VX_SIGNALS, VX_FAQ, VX_META, VX_PRICING_CHECKLIST, VX_CONTROL } = FIXED;
   const lead = v.demo.prompts[0]?.leads[0]?.name ?? "";
   const sender = v.workspace.sender;
   const out: [string, string][] = [
@@ -174,8 +186,15 @@ function composedStrings(v: VerticalConfig): [string, string][] {
     ...VX_CONTROL.dialog.rows(sender).map(([k, x], i): [string, string] => [`VX_CONTROL.dialog.rows()[${i}]`, `${k} ${x}`]),
     ...VX_PRICING_CHECKLIST(v.slug).map((x, i): [string, string] => [`VX_PRICING_CHECKLIST()[${i}]`, x]),
   ];
-  v.demo.prompts.forEach((p, i) => {
-    for (const [k, tpl] of Object.entries(VX_DEMO.paneAria)) {
+  out.push(...composedDemoStrings(v));
+  return out;
+}
+
+/** What the demo's fixed templates (the panes' role="img" labels) render with a demo source. */
+function composedDemoStrings(d: DemoSource): [string, string][] {
+  const out: [string, string][] = [];
+  d.demo.prompts.forEach((p, i) => {
+    for (const [k, tpl] of Object.entries(FIXED.VX_DEMO.paneAria)) {
       out.push([`prompts[${i}] VX_DEMO.paneAria.${k}`, tpl.replace("{prompt}", p.text).replace("{lead}", p.leads[0]?.name ?? "")]);
     }
   });
@@ -189,7 +208,12 @@ const hasTerm = (text: string, term: string) =>
 const normLine = (s: string) => s.toLowerCase().replace(/[’‘]/g, "'").replace(/[“”]/g, '"').replace(/\s+/g, " ").trim();
 const lastSentence = (s: string) => s.trim().split(/(?<=[.!?])\s+/).filter(Boolean).pop() ?? "";
 
-export function validateVerticals(all: VerticalConfig[]): Issue[] {
+/**
+ * `demos`: demo-only sources, keyed by a name for the messages (the homepage demo:
+ * { homepage: HOME_DEMO }). They get the demo, workspace, lint and platform rules and share the
+ * uniqueness pools (people, companies, workspaces, message closings and openers) with the configs.
+ */
+export function validateVerticals(all: VerticalConfig[], demos: Record<string, DemoSource> = {}): Issue[] {
   const issues: Issue[] = [];
   const err = (slug: string, msg: string) => issues.push({ slug, level: "error", msg });
   const warn = (slug: string, msg: string) => issues.push({ slug, level: "warn", msg });
@@ -210,51 +234,18 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
     else bucket.set(k, slug);
   };
 
-  for (const v of all) {
-    const s = v.slug;
-    // ── identity ──
-    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(s)) err(s, "slug must be kebab-case");
-    if (slugs.has(s)) err(s, "duplicate slug"); slugs.add(s);
-    if (!CATEGORIES.includes(v.category)) err(s, `unknown category ${v.category}`);
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(v.updated)) err(s, "updated must be YYYY-MM-DD");
-    max(s, "name.plural", v.name.plural, 32); max(s, "name.title", v.name.title, 32); max(s, "name.short", v.name.short, 22); max(s, "name.badge", v.name.badge, 26);
-    if (!v.name.badge.startsWith("For ")) err(s, 'name.badge starts with "For "');
-    if (!v.meta.seoTitle.startsWith("Pancake for ")) err(s, 'meta.seoTitle starts with "Pancake for "');
-    max(s, "meta.seoTitle", v.meta.seoTitle, 60);
-    // "AI" only as part of the vertical's own name ("AI startups"), never as Pancake's category (founder 2026-09-22).
-    const noName = (x: string) => x.replace(new RegExp(esc(v.name.title), "ig"), "").replace(new RegExp(esc(v.name.plural), "ig"), "");
-    if (/\bAI\b/.test(noName(v.meta.seoTitle))) err(s, 'meta.seoTitle: no "AI" outside the vertical name');
-    if (/\bAI\b/.test(noName(v.hero.title ?? ""))) warn(s, 'hero.title mentions "AI": fine only for the customer\'s product, never for Pancake');
-    max(s, "hubLine", v.hubLine, 64);
-    // ── hero (the functional H1, founder 2026-09-22) ──
-    const title = typeof v.hero.title === "string" ? v.hero.title.trim() : "";
-    if (!title) err(s, "hero.title is required");
-    else {
-      max(s, "hero.title", title, 56);
-      if (!/^Find /.test(title)) err(s, `hero.title starts with "Find ": "${title}"`);
-      if (!title.endsWith(".")) err(s, `hero.title ends with a period: "${title}"`);
-      if (sentences(title) !== 1) err(s, `hero.title must be one sentence: "${title}"`);
-      once(seen.heroTitle, title, s, "hero.title");
-    }
-    max(s, "hero.lede", v.hero.lede, 150);
-    if (words(v.hero.lede) > 30) err(s, "hero.lede over 30 words");
-    once(seen.lede, v.hero.lede, s, "lede"); once(seen.title, v.meta.seoTitle, s, "seoTitle");
-    // CT-09/CT-21: the lede's closing sentence is the meta description's last word — no two pages share it.
-    {
-      const end = lastSentence(v.hero.lede);
-      const prev = ledeEnds.get(normLine(end));
-      if (prev) warn(s, `hero.lede last sentence already used by ${prev}: "${end}"`);
-      else ledeEnds.set(normLine(end), s);
-    }
-    once(seen.workspace, v.workspace.name, s, "workspace");
-    max(s, "workspace.name", v.workspace.name, 20);
-    // ── demo ──
-    max(s, "demo.h2", v.demo.h2, 40); if (words(v.demo.h2) > 8) err(s, "demo.h2 over 8 words");
-    const primary = v.demo.prompts.map((p) => p.kind);
+  /* ── the demo's own rules, shared by every config and every demo-only source ── */
+  const checkWorkspace = (s: string, d: DemoSource) => {
+    once(seen.workspace, d.workspace.name, s, "workspace");
+    max(s, "workspace.name", d.workspace.name, 20);
+  };
+  const checkDemo = (s: string, d: DemoSource) => {
+    max(s, "demo.h2", d.demo.h2, 40); if (words(d.demo.h2) > 8) err(s, "demo.h2 over 8 words");
+    const primary = d.demo.prompts.map((p) => p.kind);
     if (new Set(primary).size !== 3) err(s, "the 3 prompts need 3 different primary kinds");
-    const lens = v.demo.prompts.map((p) => p.text.length);
+    const lens = d.demo.prompts.map((p) => p.text.length);
     if (Math.max(...lens) - Math.min(...lens) > 12) warn(s, `prompt lengths ${lens.join("/")} differ by >12 chars (card heights)`);
-    v.demo.prompts.forEach((p, i) => {
+    d.demo.prompts.forEach((p, i) => {
       const at = `prompts[${i}]`;
       max(s, `${at}.text`, p.text, 96); max(s, `${at}.reply`, p.reply, 88);
       if (!/^I'll |^I’ll /.test(p.reply)) warn(s, `${at}.reply should start "I'll"`);
@@ -317,6 +308,88 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
       const opener = normLine(body).split(" ").slice(0, 3).map((w) => w.replace(/[,.!?:;]+$/, "")).join(" ");
       openers.set(opener, [...(openers.get(opener) ?? []), `${s}#${i}`]);
     });
+  };
+  /** Lints over rendered strings (banned claims, geography, dates, casing, dashes, hedges, taglines). */
+  const lint = (s: string, strings: [string, string][]) => {
+    for (const [path, str] of strings) {
+      const isFaqAnswer = /^faq\[\d+\]\.a$/.test(path);
+      for (const [re, label] of BANNED) {
+        if (!re.test(str)) continue;
+        if (isFaqAnswer) {
+          const bad = str.split(/(?<=[.!?])\s+/).some((sent) => re.test(sent) && !NEGATION.test(sent.trim()));
+          if (!bad) continue;
+        }
+        err(s, `${path}: banned (${label}): "${str}"`);
+      }
+      if (NON_US.test(str)) err(s, `${path}: non-US geography: "${str}"`);
+      if (DATE.test(str)) err(s, `${path}: hard-coded date: "${str}"`);
+      if (/\bpancake\b/.test(str)) err(s, `${path}: lowercase "pancake"`);
+      if (emDashes(str) > 1) err(s, `${path}: more than one em dash`);
+      if (HEDGES.test(str)) warn(s, `${path}: hedge word (landing-voice rule 5): "${str}"`);
+      if (ORIGAMI_TAGLINE.test(str)) err(s, `${path}: echoes Origami’s “not a stale database” tagline: "${str}"`);
+      if (STRAIGHT_APOS.test(str)) warn(s, `${path}: straight apostrophe (use ’): "${str}"`);
+    }
+  };
+  /** No platform name: every string of the source, then the fixed templates rendered with it. */
+  const checkPlatform = (s: string, src: VerticalConfig | DemoSource, composed: () => [string, string][]) => {
+    // ── no platform name (PLATFORM, founder 2026-09-23): every config string, then the fixed
+    //    templates rendered with it (only when the config and vx-copy are both clean, so one bad
+    //    string is not listed five or forty times) ──
+    {
+      let named = false;
+      for (const [path, str] of configStrings(src)) {
+        const m = str.match(PLATFORM);
+        if (m) { named = true; err(s, `${path}: names the platform ("${m[0]}"), never on /for pages: "${str}"`); }
+        else if (PLATFORM_ABBR.test(str)) warn(s, `${path}: "LI" reads as the platform's initials: "${str}"`);
+      }
+      if (!named && !fixedNamed) {
+        for (const [path, str] of composed()) {
+          const m = str.match(PLATFORM);
+          if (m) err(s, `${path}: renders the platform name ("${m[0]}"): "${str}"`);
+        }
+      }
+    }
+  };
+
+  for (const v of all) {
+    const s = v.slug;
+    // ── identity ──
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(s)) err(s, "slug must be kebab-case");
+    if (slugs.has(s)) err(s, "duplicate slug"); slugs.add(s);
+    if (!CATEGORIES.includes(v.category)) err(s, `unknown category ${v.category}`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v.updated)) err(s, "updated must be YYYY-MM-DD");
+    max(s, "name.plural", v.name.plural, 32); max(s, "name.title", v.name.title, 32); max(s, "name.short", v.name.short, 22); max(s, "name.badge", v.name.badge, 26);
+    if (!v.name.badge.startsWith("For ")) err(s, 'name.badge starts with "For "');
+    if (!v.meta.seoTitle.startsWith("Pancake for ")) err(s, 'meta.seoTitle starts with "Pancake for "');
+    max(s, "meta.seoTitle", v.meta.seoTitle, 60);
+    // "AI" only as part of the vertical's own name ("AI startups"), never as Pancake's category (founder 2026-09-22).
+    const noName = (x: string) => x.replace(new RegExp(esc(v.name.title), "ig"), "").replace(new RegExp(esc(v.name.plural), "ig"), "");
+    if (/\bAI\b/.test(noName(v.meta.seoTitle))) err(s, 'meta.seoTitle: no "AI" outside the vertical name');
+    if (/\bAI\b/.test(noName(v.hero.title ?? ""))) warn(s, 'hero.title mentions "AI": fine only for the customer\'s product, never for Pancake');
+    max(s, "hubLine", v.hubLine, 64);
+    // ── hero (the functional H1, founder 2026-09-22) ──
+    const title = typeof v.hero.title === "string" ? v.hero.title.trim() : "";
+    if (!title) err(s, "hero.title is required");
+    else {
+      max(s, "hero.title", title, 56);
+      if (!/^Find /.test(title)) err(s, `hero.title starts with "Find ": "${title}"`);
+      if (!title.endsWith(".")) err(s, `hero.title ends with a period: "${title}"`);
+      if (sentences(title) !== 1) err(s, `hero.title must be one sentence: "${title}"`);
+      once(seen.heroTitle, title, s, "hero.title");
+    }
+    max(s, "hero.lede", v.hero.lede, 150);
+    if (words(v.hero.lede) > 30) err(s, "hero.lede over 30 words");
+    once(seen.lede, v.hero.lede, s, "lede"); once(seen.title, v.meta.seoTitle, s, "seoTitle");
+    // CT-09/CT-21: the lede's closing sentence is the meta description's last word — no two pages share it.
+    {
+      const end = lastSentence(v.hero.lede);
+      const prev = ledeEnds.get(normLine(end));
+      if (prev) warn(s, `hero.lede last sentence already used by ${prev}: "${end}"`);
+      else ledeEnds.set(normLine(end), s);
+    }
+    checkWorkspace(s, v);
+    // ── demo ──
+    checkDemo(s, v);
     // ── signals ──
     max(s, "signals.h2", v.signals.h2, 40); if (words(v.signals.h2) > 8) err(s, "signals.h2 over 8 words");
     if (new Set(v.signals.cards.map((c) => c.kind)).size !== 4) err(s, "signals.cards need 4 different kinds");
@@ -340,42 +413,17 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
     max(s, "cta.title", v.cta.title, 28);
 
     // ── lints over every rendered string ──
-    for (const [path, str] of renderedStrings(v)) {
-      const isFaqAnswer = /^faq\[\d+\]\.a$/.test(path);
-      for (const [re, label] of BANNED) {
-        if (!re.test(str)) continue;
-        if (isFaqAnswer) {
-          const bad = str.split(/(?<=[.!?])\s+/).some((sent) => re.test(sent) && !NEGATION.test(sent.trim()));
-          if (!bad) continue;
-        }
-        err(s, `${path}: banned (${label}): "${str}"`);
-      }
-      if (NON_US.test(str)) err(s, `${path}: non-US geography: "${str}"`);
-      if (DATE.test(str)) err(s, `${path}: hard-coded date: "${str}"`);
-      if (/\bpancake\b/.test(str)) err(s, `${path}: lowercase "pancake"`);
-      if (emDashes(str) > 1) err(s, `${path}: more than one em dash`);
-      if (HEDGES.test(str)) warn(s, `${path}: hedge word (landing-voice rule 5): "${str}"`);
-      if (ORIGAMI_TAGLINE.test(str)) err(s, `${path}: echoes Origami’s “not a stale database” tagline: "${str}"`);
-      if (STRAIGHT_APOS.test(str)) warn(s, `${path}: straight apostrophe (use ’): "${str}"`);
-    }
+    lint(s, renderedStrings(v));
 
-    // ── no platform name (PLATFORM, founder 2026-09-23): every config string, then the fixed
-    //    templates rendered with it (only when the config and vx-copy are both clean, so one bad
-    //    string is not listed five or forty times) ──
-    {
-      let named = false;
-      for (const [path, str] of configStrings(v)) {
-        const m = str.match(PLATFORM);
-        if (m) { named = true; err(s, `${path}: names the platform ("${m[0]}"), never on /for pages: "${str}"`); }
-        else if (PLATFORM_ABBR.test(str)) warn(s, `${path}: "LI" reads as the platform's initials: "${str}"`);
-      }
-      if (!named && !fixedNamed) {
-        for (const [path, str] of composedStrings(v)) {
-          const m = str.match(PLATFORM);
-          if (m) err(s, `${path}: renders the platform name ("${m[0]}"): "${str}"`);
-        }
-      }
-    }
+    checkPlatform(s, v, () => composedStrings(v));
+  }
+
+  // ── demo-only sources (the homepage demo): the same demo rules, in the same uniqueness pools ──
+  for (const [s, d] of Object.entries(demos)) {
+    checkWorkspace(s, d);
+    checkDemo(s, d);
+    lint(s, demoStrings(d));
+    checkPlatform(s, d, () => composedDemoStrings(d));
   }
 
   // ── message openers: one template may not carry the site (CT-04) ──
@@ -405,8 +453,8 @@ export function validateVerticals(all: VerticalConfig[]): Issue[] {
 }
 
 /** Called from lib/verticals/index.ts at module load. */
-export function assertVerticals(all: VerticalConfig[]): void {
-  const issues = validateVerticals(all);
+export function assertVerticals(all: VerticalConfig[], demos: Record<string, DemoSource> = {}): void {
+  const issues = validateVerticals(all, demos);
   for (const i of issues.filter((x) => x.level === "warn")) console.warn(`[verticals] warn ${i.slug}: ${i.msg}`);
   const errors = issues.filter((x) => x.level === "error");
   if (errors.length) throw new Error(`[verticals] ${errors.length} error(s):\n` + errors.map((e) => `  ${e.slug}: ${e.msg}`).join("\n"));

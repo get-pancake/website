@@ -3,7 +3,9 @@
 // it from a "use client" module (the demo island gets its slice through props).
 //
 // The config list itself is GENERATED (lib/verticals/data/index.ts, by
-// scripts/verticals-registry.mjs). validateVerticals() runs once at module load:
+// scripts/verticals-registry.mjs). validateVerticals() runs once at module load, over the 40
+// configs and the homepage's demo (HOME_DEMO: not a page, not in VERTICALS; checked here so its
+// people, companies and workspace stay unique against the configs, and a bad claim fails the build):
 //   - production builds (`next build`, Vercel): any error THROWS → the build fails;
 //   - dev: errors and warnings are logged, pages keep rendering (configs are
 //     written by several people at once; one half-written file must not take
@@ -11,6 +13,7 @@
 
 import { SIGNAL_GROUPS } from "@/components/sections/verticals/vx-copy";
 import { ALL_VERTICALS } from "@/lib/verticals/data";
+import { HOME_DEMO } from "@/lib/verticals/home-demo";
 import type { FaqItem, VerticalCategory, VerticalConfig } from "@/lib/verticals/types";
 import { assertVerticals, validateVerticals } from "@/lib/verticals/validate";
 import { VX_FAQ } from "@/components/sections/verticals/vx-copy";
@@ -46,19 +49,22 @@ export const VERTICAL_SLUGS: readonly string[] = VERTICALS.map((v) => v.slug);
 
 /* ── validation at module load ─────────────────────────────────────────────── */
 
+/** Demo-only sources validated with the configs (keys name them in the messages). */
+const DEMO_SOURCES = { homepage: HOME_DEMO };
+
 declare global {
   // eslint-disable-next-line no-var
   var __vxValidatedKey: string | undefined;
 }
 if (process.env.NODE_ENV === "production") {
-  assertVerticals([...VERTICALS]);
+  assertVerticals([...VERTICALS], DEMO_SOURCES);
 } else {
   // Log once per registry content (HMR re-evaluates this module on every save).
-  const key = VERTICAL_SLUGS.join(",") + ":" + JSON.stringify(VERTICALS).length;
+  const key = VERTICAL_SLUGS.join(",") + ":" + JSON.stringify(VERTICALS).length + ":" + JSON.stringify(DEMO_SOURCES).length;
   if (globalThis.__vxValidatedKey !== key) {
     globalThis.__vxValidatedKey = key;
     try {
-      const issues = validateVerticals([...VERTICALS]);
+      const issues = validateVerticals([...VERTICALS], DEMO_SOURCES);
       const errors = issues.filter((i) => i.level === "error");
       const warns = issues.filter((i) => i.level === "warn");
       for (const w of warns) console.warn(`[verticals] warn ${w.slug}: ${w.msg}`);

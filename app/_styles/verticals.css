@@ -4,6 +4,7 @@
    .lp-vx. demo.css is owned by the demo (VxDemo / VxDemoPlayer). */
 @import "./verticals/foundation.css";
 @import "./verticals/hero.css";
+@import "./verticals/prompts.css";
 @import "./verticals/demo.css";
 @import "./verticals/signals.css";
 @import "./verticals/control.css";

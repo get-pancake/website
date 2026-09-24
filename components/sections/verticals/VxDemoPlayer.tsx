@@ -31,7 +31,10 @@
 //   · a tab that ends under a hover / keyboard hold keeps its FINAL frame (the next tab's
 //     first frame is empty until its cues arrive);
 //   · the first start waits until the Brief's composer is on screen, so the prompt is typed
-//     where the visitor can see it.
+//     where the visitor can see it (`gate="window"`, the homepage: ≥768 it waits for 35% of
+//     the app window instead; phones keep the composer rule).
+// data-run on the card = the clock is ticking: CSS loops (the Outreach "Writing…" spinner) run
+// only then, so a card armed off-screen or paused costs no style recalcs.
 // Rail: the active tab's underline is full unless the clock has run on this view; then it
 // shows the dwell's progress (paused progress stays) on a faint full-width track.
 
@@ -87,7 +90,18 @@ type View = { prompt: number; tab: DemoTab; n: number };
 
 const TABS: DemoTab[] = [0, 1, 2, 3];
 
-export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: ReactNode; slack: ReactNode }) {
+export function VxDemoPlayer({
+  model,
+  app,
+  slack,
+  gate = "composer",
+}: {
+  model: PlayerModel;
+  app: ReactNode;
+  slack: ReactNode;
+  /** What the first start waits for: the Brief's composer, or (≥768) 35% of the app window. */
+  gate?: "composer" | "window";
+}) {
   const [view, setView] = useState<View>({ prompt: 0, tab: 0, n: 0 });
   const [paused, setPaused] = useState(false);
 
@@ -293,11 +307,20 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
 
   /* ── clock ───────────────────────────────────────────────────────────────── */
 
+  /** data-run mirrors the clock (CSS loops key off it); written only when it changes. */
+  const runAttr = useRef(false);
+  const setRun = useCallback((on: boolean) => {
+    if (runAttr.current === on) return;
+    runAttr.current = on;
+    cardRef.current?.toggleAttribute("data-run", on);
+  }, []);
+
   const stop = useCallback(() => {
     const x = ctl.current;
     if (x.raf) cancelAnimationFrame(x.raf);
     x.raf = 0;
-  }, []);
+    setRun(false);
+  }, [setRun]);
 
   const advanceRef = useRef<() => void>(() => {});
 
@@ -322,16 +345,18 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
           x.oneShot = false;
           apply(frameAt(x.tab, end, lens));
           setRail();
+          setRun(false);
           return;
         }
       } else {
+        setRun(false);
         return;
       }
       apply(frameAt(x.tab, x.t, lens));
       setRail();
       x.raf = requestAnimationFrame(tick);
     },
-    [apply, lensOf, setRail],
+    [apply, lensOf, setRail, setRun],
   );
 
   /** Whether the clock should tick now (pending excluded: the view commit asks before clearing it). */
@@ -358,7 +383,8 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
     } else if (!run && x.raf) {
       stop();
     }
-  }, [stop, tick, willRun]);
+    setRun(run);
+  }, [setRun, stop, tick, willRun]);
 
   const go = useCallback((prompt: number, tab: DemoTab) => {
     ctl.current.pending = true;
@@ -581,8 +607,11 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
     // The scroll CENTRES the band in the viewport under the sticky phone nav (64 once
     // compacted; the desktop nav scrolls away): on a 900-tall desktop the band lands ~110 below
     // the top instead of pinning its hairline to the edge over a strip of the next section; a
-    // band taller than the viewport (phones) starts right under the nav.
+    // band taller than the viewport (phones) starts right under the nav — unless that leaves the
+    // Brief's composer (where the picked prompt is typed) under the fold (320×568): then the
+    // page scrolls just far enough to show it, 12px above the bottom edge.
     const section = card.closest<HTMLElement>("section") ?? card;
+    const composerEl = card.querySelector<HTMLElement>('[data-pane="0"] .vx-composer');
     const mqPhone = window.matchMedia("(max-width: 767px)");
     const onRow = (e: MouseEvent) => {
       const row = (e.target as Element | null)?.closest?.<HTMLElement>("[data-vx-prompt]");
@@ -593,7 +622,12 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
       playPrompt(i);
       const r = section.getBoundingClientRect();
       const nav = mqPhone.matches ? 64 : 0;
-      const top = window.scrollY + r.top - nav - Math.max(0, (window.innerHeight - nav - r.height) / 2);
+      let top = window.scrollY + r.top - nav - Math.max(0, (window.innerHeight - nav - r.height) / 2);
+      const cb = composerEl?.getBoundingClientRect();
+      if (cb && cb.height > 0) {
+        const need = window.scrollY + cb.bottom + 12 - window.innerHeight;
+        if (need > top) top = need;
+      }
       window.scrollTo({ top: Math.max(0, Math.round(top)), behavior: x.reduced ? "auto" : "smooth" });
       if (e.detail === 0) stage.focus({ preventScroll: true });
     };
@@ -655,24 +689,38 @@ export function VxDemoPlayer({ model, app, slack }: { model: PlayerModel; app: R
     // The FIRST start also waits for the Brief's composer (where the prompt is typed) to be on
     // screen: at 390 the 35% rule alone started the typing 330px below the fold. Any click on
     // a prompt row, a tab, Play or Replay opens the gate at once.
+    // gate="window" (the homepage, ≥768): OR 35% of the app window (of the viewport, for a
+    // window taller than it) — its section head keeps the composer below most laptop folds.
+    // 35, not 45: with the head read at the top of the screen (eyebrow at y=40) the window
+    // shows 37% at 1024×768 and 40% at 1280×720, 49–76% on 1366×768 … 1440×900 laptops.
     const composer = card.querySelector<HTMLElement>('[data-pane="0"] .vx-composer');
+    const appWin = gate === "window" ? card.querySelector<HTMLElement>('[data-win="app"]') : null;
+    const mqWide = window.matchMedia("(min-width: 768px)");
+    const WIN_SHARE = 0.35;
     const gateObs = new IntersectionObserver(
       (entries) => {
-        const e = entries[entries.length - 1];
         if (!x.gate) {
           gateObs.disconnect();
           return;
         }
-        if (e.isIntersecting && e.intersectionRatio >= 0.5) {
+        const open = entries.some((e) => {
+          if (!e.isIntersecting) return false;
+          if (e.target === composer) return e.intersectionRatio >= 0.5;
+          const vh = e.rootBounds?.height ?? window.innerHeight;
+          const denom = Math.max(1, Math.min(e.boundingClientRect.height, vh));
+          return mqWide.matches && e.intersectionRect.height / denom >= WIN_SHARE;
+        });
+        if (open) {
           x.gate = false;
           gateObs.disconnect();
           sync();
         }
       },
-      { threshold: [0, 0.25, 0.5, 1] },
+      { threshold: appWin ? Array.from({ length: 21 }, (_, i) => i / 20) : [0, 0.25, 0.5, 1] },
     );
     if (composer) gateObs.observe(composer);
-    else x.gate = false;
+    if (appWin) gateObs.observe(appWin);
+    if (!composer && !appWin) x.gate = false;
 
     const onVis = () => {
       x.hidden = document.hidden;
