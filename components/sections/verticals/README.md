@@ -209,15 +209,17 @@ Never edit `LpMarquee.tsx`.
 
 Founder decision, relaying the team ("blown away by this part, should probably be on the
 normal landing page"): the same demo, in its own homepage section, `LpDemoTour`
-(`components/sections/landing-v3/`), right after the customer logos. No fork: `VxPromptRows` +
-`VxDemo headless` + the one `VxDemoPlayer` island.
+(`components/sections/landing-v3/`), right after the customer logos. No fork: `VxDemo headless`
++ the one `VxDemoPlayer` island. **Just the four tabs** (founder 2026-09-24, on the preview:
+"remove this part but only keep the 4 tabs"): no eyebrow, visible H2, lede or example-prompt
+rows on the homepage; autoplay walks the three prompts on its own.
 
 | Piece | Where |
 |---|---|
-| Data | `lib/verticals/home-demo.ts` — `HOME_DEMO: DemoSource` (= `Pick<VerticalConfig, "workspace" \| "demo">` + the optional `head`: the section's eyebrow and lede, so they are linted and budgeted with the demo): Studio Pelican, the homepage's own fictional customer (LpSteps, LpFeatures), three prompts from one business (Keyword, Competitor, Hiring), US targets. The lede says it is an example (it sits right under the verified customer logos). Not in the registry, the sitemap, the hub or the nav |
-| Rules | `validateVerticals(all, { homepage: HOME_DEMO })` (lib/verticals/index.ts): the demo, workspace, lint and PLATFORM rules, in the same uniqueness pools as the 40 configs (people, companies, workspaces, message closings / openers) — a production build fails on it like on a config. `verticals-budget.mjs` measures it as `homepage` (+ its H2, visible there, at the section-head budgets) |
-| Section | `LpDemoTour.tsx`: `<section class="lp-vx lp-tour">` — the /for section head (eyebrow, H2 = `HOME_DEMO.demo.h2`, one sentence per line, lede = `HOME_DEMO.head.lede`), `VxPromptRows label="hidden"` (no visible "Example prompts": the lede says "pick one of its prompts"; the list keeps it as its aria-label), `VxDemo headless gate="window"` (≥768 the first start waits for 35% of the app window instead of the composer, which the section head keeps below most laptop folds; phones keep the composer rule). `.lp-vx` sits on the section only, so no /for rule reaches another homepage section |
-| CSS | `app/_styles/home-demo.css` (imported by `app/page.tsx` after `landing-v3.css`) → `verticals/{foundation,prompts,demo}.css` + `landing-v3/demo-tour.css` (the section's place in the homepage rhythm: 160 / 112 / 96 visible gaps from the logos and to LpSteps' kicker, LpSteps untouched; no full-bleed cream stripe or hairlines — every other homepage surface is a rounded card, and the top hairline cut the rows off the demo they drive; ≥768 the prompt rows run the head's full measure, arrows on the lede's right edge, equal heights; 768–1024 the H2 keeps the homepage title size, 57.336 / 68.8) |
+| Data | `lib/verticals/home-demo.ts` — `HOME_DEMO: DemoSource` (= `Pick<VerticalConfig, "workspace" \| "demo">`): Studio Pelican, the homepage's own fictional customer (LpSteps, LpFeatures), three prompts from one business (Keyword, Competitor, Hiring), US targets; the demo's foot says names and companies are fictional. Not in the registry, the sitemap, the hub or the nav |
+| Rules | `validateVerticals(all, { homepage: HOME_DEMO })` (lib/verticals/index.ts): the demo, workspace, lint and PLATFORM rules, in the same uniqueness pools as the 40 configs (people, companies, workspaces, message closings / openers) — a production build fails on it like on a config. `verticals-budget.mjs` measures it as `homepage` |
+| Section | `LpDemoTour.tsx`: `<section class="lp-vx lp-tour">` — a visually hidden H2 (`HOME_DEMO.demo.h2`, for screen readers and the outline) + `VxDemo headless gate="window"` (≥768 the first start waits for 35% of the app window instead of the composer; phones keep the composer rule). `.lp-vx` sits on the section only, so no /for rule reaches another homepage section |
+| CSS | `app/_styles/home-demo.css` (imported by `app/page.tsx` after `landing-v3.css`) → `verticals/{foundation,demo}.css` + `landing-v3/demo-tour.css` (the section's place in the homepage rhythm: 160 / 112 / 96 visible gaps from the logos to the tab bar and from the foot to LpSteps' kicker, LpSteps untouched; no full-bleed cream stripe or hairlines — every other homepage surface is a rounded card; the tab rail is the demo's only line) |
 | Agents view | hidden with every other human section (`audience.css`: direct `<section>` children of the page except the hero and the lab); `display: none` never intersects, so the island's clock stays stopped |
 
 Shared-file changes this needed, /for output unchanged (computed styles of the rows, tabs and

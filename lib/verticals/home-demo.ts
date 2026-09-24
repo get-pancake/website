@@ -13,25 +13,15 @@
 // (the rail, "Sends as", Slack), so three prompts from one business, three different signals:
 // people posting about a launch (Keyword), people engaging with rival studios (Competitor),
 // companies hiring for the launch team (Hiring). US targets only (outreach is in English).
-// Every person, company, rival studio and storyteller below is invented, and the lede says Studio
-// Pelican is an example (critics 2026-09-23: under the verified customer logos, a bare "Studio
-// Pelican makes launch videos" read as a customer story).
+// Every person, company, rival studio and storyteller below is invented; the demo's foot says so
+// ("Illustrative. Names and companies are fictional.").
 import type { DemoSource } from "./types";
 
-export const HOME_DEMO: DemoSource & Required<Pick<DemoSource, "head">> = {
+export const HOME_DEMO: DemoSource = {
   workspace: { name: "Studio Pelican", sender: "Astrid Norling" },
 
-  /** The section head beside demo.h2 (LpDemoTour). The lede says Studio Pelican is an example
-   *  (right under the verified customer logos), puts the website first, so the demo reads as what
-   *  follows LpSteps' "01 Add your website" rather than a second first step, and ends on
-   *  tomorrow's leads (they arrive every morning; landing-voice: Pancake acts, payoff last). */
-  head: {
-    eyebrow: "See it work",
-    lede: "Studio Pelican, an example studio, makes SaaS launch videos. Pancake has read its website. Pick one of its prompts and meet tomorrow’s leads.",
-  },
-
   demo: {
-    /** Rendered VISIBLY on the homepage: the demo section's H2 (LpDemoTour). */
+    /** The homepage demo section's visually hidden H2 (LpDemoTour): the tabs are its visible head. */
     h2: "One prompt in. Leads every morning.",
     prompts: [
       {

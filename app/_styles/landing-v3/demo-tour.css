@@ -1,62 +1,33 @@
 /* ── Demo tour — the /for product demo on the homepage (LpDemoTour) ────────
-   Everything inside is the /for demo, styled by verticals/{foundation,
-   prompts,demo}.css under the section's own .lp-vx (home-demo.css imports
-   them, homepage only). This file is the section's place in the homepage
-   rhythm: the visible gaps the homepage uses between blocks (160 ≥1025,
-   96 ≤1024 and on phones, --vx-rhythm), measured from the marquee's logos
-   above and to LpSteps' kicker below — LpSteps itself is untouched, so the
-   bottom margin makes up the difference with its own top padding (16 + 128
-   ≥1025, 16 + 96 at 768–1024, 58 + 16 on phones).
+   Only the four tabs (founder 2026-09-24): tab bar, app window, foot. Every
+   rule inside is the /for demo, styled by verticals/{foundation,demo}.css
+   under the section's own .lp-vx (home-demo.css imports them, homepage
+   only). This file is the section's place in the homepage rhythm: the
+   visible gaps the homepage uses between blocks (160 ≥1025, 96 ≤1024 and on
+   phones, --vx-rhythm), measured from the marquee's logos above to the tab
+   bar, and from the demo's foot to LpSteps' kicker below — LpSteps itself is
+   untouched, so the bottom margin makes up the difference with its own top
+   padding (16 + 128 ≥1025, 16 + 96 at 768–1024, 58 + 16 on phones).
 
-   1440: logos → 160 → eyebrow · 28 · H2 / lede · 48 · rows · 32 · tab bar,
-   app window, foot → 160 → "While you run your business,"
+   1440: logos → 160 → tab bar, app window, foot → 160 → "While you run your
+   business,"
 
-   Critics 2026-09-23: no visible "Example prompts" label (the lede says
-   "pick one of its prompts"; VxPromptRows label="hidden"), no full-bleed
-   cream stripe or hairlines (every other homepage surface is a rounded card;
-   the hairline cut the rows off from the demo they drive), the rows run the
-   head's full measure (they stopped 37px into the lede's column), and the H2
-   stays at the homepage title size from 768 to 1024. */
+   The demo sits on the page, not on the /for full-bleed cream stripe between
+   two hairlines (every other homepage surface is a rounded card); the tab
+   rail is its only line. */
 
 /* the marquee pads 32 under its logos */
 .lp-tour {
   margin-bottom: 16px; /* + LpSteps' 144 = 160 */
   padding-top: calc(var(--vx-rhythm) - 32px);
 }
-/* the head → rows gap is the /for section head's own (48 / 40 / 32) */
-.lp-tour .vx-hp-list {
-  margin-top: var(--vx-head-gap);
-}
-/* ≥768 the rows fill the head's measure (eyebrow bar → lede's right edge): the text column
-   takes the slack, so the arrows end on the lede's right edge (phones: full column already).
-   Equal rows from first paint: where one prompt wraps (≈ 800–920) the others take its height */
-@media (min-width: 768px) {
-  .lp-tour .vx-hp-list {
-    grid-auto-rows: 1fr;
-    grid-template-columns: max-content minmax(0, 1fr) max-content;
-    width: 100%;
-  }
-}
-/* rows → tab bar: the /for hero's 32 */
-.lp-tour .lp-tour__head {
-  padding-bottom: 32px;
-}
-/* the demo sits on the page, not on a full-bleed cream stripe between two hairlines; the tab
-   rail is its only line. Loads after demo.css, so it also wins over the ≤1024 / ≤767 paddings:
-   the margin below then measures from the foot */
+/* loads after demo.css, so it also wins over the ≤1024 / ≤767 paddings: the margin below then
+   measures from the foot */
 .lp-tour .vx-demo {
   background: none;
   border-block: 0;
   padding-bottom: 0;
-}
-/* 768–1024: the homepage titles keep 57.336 / 68.8 here (LpSteps, LpFeatures, LpPricing);
-   the /for head steps down to 47.784 at ≤1024 */
-@media (min-width: 768px) and (max-width: 1024px) {
-  .lp-tour .vx-h2 {
-    font-size: var(--lp-text-6xlg);
-    letter-spacing: -1.7201px;
-    line-height: 1.2;
-  }
+  padding-top: 0;
 }
 
 @media (max-width: 1024px) {
@@ -69,17 +40,5 @@
   /* + LpSteps' 74 = 96 */
   .lp-tour {
     margin-bottom: 22px;
-  }
-}
-/* the H2's sentences (LpDemoTour): the line breaks between them, never inside one. Under 360
-   "Leads every morning." outgrows the column, so it wraps like any title there. font inherit —
-   the kit's universal font-family rule would reset the span */
-.lp-tour .lp-tour__s {
-  font: inherit;
-  letter-spacing: inherit;
-}
-@media (min-width: 360px) {
-  .lp-tour .lp-tour__s {
-    white-space: nowrap;
   }
 }
