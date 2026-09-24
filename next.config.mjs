@@ -47,6 +47,13 @@ const nextConfig = {
       { source: "/blog/autonomous-company-at-30k-mrr", destination: "/blog/autonomous-company-benchmark-2026", statusCode: 301 },
       // The GTM report's first address (d4d95bf) before it moved to /ai-gtm-report.
       { source: "/report", destination: "/ai-gtm-report", statusCode: 301 },
+      // From the Search Console "Not found (404)" export (2026-09-24,
+      // raw/getpancake-ai-search-console-404-2026-09-24.csv):
+      // the privacy page's old address…
+      { source: "/privacy-policy", destination: "/privacy", statusCode: 301 },
+      // …and "/month", which Googlebot lifts from the "$99/month" string in
+      // the page payload (not a real link) — the pricing page answers it.
+      { source: "/month", destination: "/pricing", statusCode: 301 },
       ...dead.map((path) => ({
         source: `/${path}`,
         destination: "/",
