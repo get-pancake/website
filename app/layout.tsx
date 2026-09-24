@@ -104,12 +104,12 @@ export const metadata: Metadata = {
   title: "Pancake: The AI employee that does the work for you",
   description:
     "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
-  alternates: {
-    canonical: "https://getpancake.ai",
-  },
+  // No `alternates.canonical` and no `openGraph.url` here: both would be
+  // inherited by every route that doesn't set its own, and a canonical that
+  // points at the homepage tells Google the page is a duplicate of `/` (it hid
+  // /pricing until 2026-09-24). Each indexable page sets its own canonical.
   openGraph: {
     type: "website",
-    url: "https://getpancake.ai",
     title: "Pancake: The AI employee that does the work for you",
     description:
       "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
@@ -134,6 +134,7 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
+  "@id": "https://getpancake.ai/#organization",
   name: "Pancake",
   alternateName: "Pancake AI",
   url: "https://getpancake.ai",
@@ -155,16 +156,23 @@ const organizationJsonLd = {
     "https://www.linkedin.com/company/get-pancake",
     "https://www.tiktok.com/@getpancake",
     "https://www.instagram.com/get.pancake/",
+    "https://www.producthunt.com/products/pancake-6",
   ],
 };
 
 // WebSite JSON-LD — no SearchAction: the site has no /search route, and a
-// SearchAction pointing at a 404 hurts more than it helps.
+// SearchAction pointing at a 404 hurts more than it helps. Google reads the
+// SERP site name from this node (name first, then alternateName), not from
+// page titles — so "Pancake AI" lives here and the homepage <title> stays
+// exactly "Pancake".
 const webSiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
+  "@id": "https://getpancake.ai/#website",
   name: "Pancake",
+  alternateName: ["Pancake AI", "getpancake.ai"],
   url: "https://getpancake.ai",
+  publisher: { "@id": "https://getpancake.ai/#organization" },
 };
 
 const googleTagManagerId = "GTM-P3Z79WKD";

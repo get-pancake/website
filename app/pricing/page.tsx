@@ -18,34 +18,57 @@ import "@/app/_styles/landing-v2.css";
 
 const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDollars}/month flat for your whole AI sales and marketing team. Everything included. No tiers, no seats.`;
 
+const TITLE = `Pancake Pricing: $${pricingV2.monthlyDollars}/month flat`;
+const URL = "https://getpancake.ai/pricing";
+
+/* Brand-first title: the page answers "pancake pricing" / "pancake ai pricing".
+   The self canonical matters — without it the page inherited the homepage
+   canonical from the root layout and Google treated /pricing as a duplicate
+   of `/` (fixed 2026-09-24). */
 export const metadata: Metadata = {
-  title: `Pricing: $${pricingV2.monthlyDollars}/month flat · Pancake`,
+  title: TITLE,
   description: DESCRIPTION,
+  alternates: { canonical: URL },
   openGraph: {
-    title: `Pancake Pricing: $${pricingV2.monthlyDollars}/month flat`,
-    description: DESCRIPTION,
     type: "website",
+    url: URL,
+    title: TITLE,
+    description: DESCRIPTION,
+    siteName: "Pancake",
+    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Pancake" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: `Pancake Pricing: $${pricingV2.monthlyDollars}/month flat`,
+    title: TITLE,
     description: DESCRIPTION,
+    images: ["/og-image.png"],
   },
 };
 
 /* Product / Offer JSON-LD — one plan, one price, kept in lockstep with
-   the visible card via pricingV2. */
+   the visible card via pricingV2. The UnitPriceSpecification says the price
+   is per month (a bare Offer price reads as a one-off). */
 const productJsonLd = {
   "@context": "https://schema.org",
   "@type": "Product",
   name: "Pancake: AI agents that bring you customers",
   description: DESCRIPTION,
+  url: URL,
   brand: { "@type": "Brand", name: "Pancake" },
   offers: {
     "@type": "Offer",
+    url: URL,
     price: String(pricingV2.monthlyDollars),
     priceCurrency: pricingV2.currency,
+    priceSpecification: {
+      "@type": "UnitPriceSpecification",
+      price: String(pricingV2.monthlyDollars),
+      priceCurrency: pricingV2.currency,
+      billingDuration: "P1M",
+      unitText: "MONTH",
+    },
     availability: "https://schema.org/InStock",
+    seller: { "@type": "Organization", "@id": "https://getpancake.ai/#organization", name: "Pancake" },
   },
 };
 

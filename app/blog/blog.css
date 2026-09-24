@@ -278,6 +278,21 @@
   margin: 0;
 }
 
+/* ── Keep reading (frontmatter `related`) — the index cards, one size down ── */
+.lp-blog-related {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.lp-blog-related .lp-blog-card {
+  padding: 24px 32px;
+}
+.lp-blog-related .lp-blog-card__title {
+  font-size: var(--lp-text-xlg);
+  letter-spacing: -0.4608px;
+  margin: 0;
+}
+
 /* ── responsive (careers.css breakpoints) ── */
 @media (max-width: 1024px) {
   .lp-blog-hero {

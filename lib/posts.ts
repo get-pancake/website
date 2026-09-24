@@ -5,11 +5,16 @@ import matter from "gray-matter";
 export interface PostFrontmatter {
   title: string;
   description: string;
+  /** SERP <title>, used verbatim when set (keep it ≤ 60 chars). The H1 stays `title`. */
+  seo_title?: string;
   date: string;
   last_updated: string;
-  author: string;
+  /** Missing on a few posts — the template falls back to the Pancake organization. */
+  author?: string;
   slug: string;
   pinned?: boolean;
+  /** Slugs for the "Keep reading" block (internal links between posts). */
+  related?: string[];
   faq?: { question: string; answer: string }[];
 }
 
