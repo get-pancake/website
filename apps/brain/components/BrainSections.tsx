@@ -10,7 +10,10 @@ const FEATURES = [
   "Every agent included",
   "5 to 15 warm leads per month",
   "2 to 3 new customers",
-  "Approvals and a hard spend cap",
+  // No spend cap (founder 2026-09-19, main site PR #302): the plan is $99 flat,
+  // there is no variable spend to cap. The control line names what you approve
+  // today; articles stay off this outreach-only page.
+  "Approvals on every lead",
 ];
 
 // The homepage mock lists Content and AI search agents; this page sells
