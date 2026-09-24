@@ -15,24 +15,24 @@ related:
   - "best-autonomous-company-platform-2026"
 faq:
   - question: "What is the main difference between Pancake and Kortix?"
-    answer: "Kortix is open-source infrastructure where you build your own agents on a shared Linux machine, for any process you choose. Pancake is a hosted AI GTM team with ready-made agents that find buyers, run outreach and write articles. Kortix is broad and needs engineering. Pancake is narrow and needs none."
+    answer: "Kortix is open-source infrastructure where you build your own agents on a shared Linux machine, for any process you choose. Pancake is a hosted AI GTM team with ready-made agents that find buyers, run outreach and write articles. Kortix is a toolkit that needs engineers. Pancake is built to bring in customers and needs no code."
   - question: "Is Kortix open source?"
-    answer: "Yes. Kortix is open-source and can be self-hosted on your own infrastructure, which helps teams with data residency requirements or those who want to own the full agent stack. Pancake is a hosted product and does not offer self-hosting."
+    answer: "Yes. Kortix is open-source and can be self-hosted on your own infrastructure, which helps teams with data residency requirements or those who want to own the full agent stack. Pancake is hosted, so there are no servers to run or patch."
   - question: "Does Pancake work for teams or only solo founders?"
     answer: "Both. Pricing is $99 per month flat with no seats, so a solo founder and a small team pay the same. Pancake posts each new lead to Slack, so anyone in the channel can see it."
   - question: "How long does it take to get started on each platform?"
     answer: "Pancake setup starts with adding your website, and new leads then arrive each morning. Kortix's timeline depends on engineering work: writing agent definitions, setting up integrations and testing execution in the Linux environment."
   - question: "Which platform is better for a non-technical founder?"
     answer: "Pancake, if the goal is finding buyers. It needs no code, no agent definitions and no servers. Kortix's configuration model assumes engineering skill."
-  - question: "Can Pancake run engineering or DevOps work like Kortix?"
-    answer: "No. Pancake doesn't touch engineering, DevOps, finance or internal operations. If you need agents with bash access and Docker, Kortix is built for that."
+  - question: "Can I run Pancake from Claude or ChatGPT?"
+    answer: "Yes. Connect Claude, ChatGPT or Codex to Pancake's hosted MCP server, then ask it in plain language to show today's leads, change a signal or start outreach. Sign-in happens in the browser, so there's no API key to paste."
 ---
 
 Kortix calls itself "the open-source AI command center for your company." Founders researching that category also run into [Pancake](/), and the two get compared. They shouldn't be confused.
 
-Kortix is infrastructure: you build your own agent workforce on a shared machine and point it at any process. Pancake is an AI GTM team with one job. It finds people showing buying signals and runs outreach to them.
+Kortix is infrastructure: you build your own agent workforce on a shared machine and point it at any process. Pancake is an AI GTM team focused on finding customers. Its agents spot people showing buying signals and start the conversations.
 
-**TL;DR:** Kortix is open-source infrastructure for technical teams who want to build custom agent systems on a shared Linux machine. Pancake is a hosted product whose agents do one function out of the box: prospecting. If you have engineers and want to automate many processes on your own stack, Kortix is a serious option. If you are a founder or small B2B team that needs more conversations with buyers, and you don't want to configure Docker containers to get them, Pancake fits.
+**TL;DR:** Kortix is open-source infrastructure for technical teams who want to build custom agent systems on a shared Linux machine. Pancake is a hosted AI GTM team whose agents work out of the box: they find buyers, open conversations and write articles for Google and AI answers. If you have engineers and want to automate many processes on your own stack, Kortix is a serious option. If you are a founder or small B2B team that needs more conversations with buyers, and you don't want to configure Docker containers to get them, Pancake fits.
 
 ---
 
@@ -40,7 +40,7 @@ Kortix is infrastructure: you build your own agent workforce on a shared machine
 
 Kortix states its thesis as "76% agents, 24% humans": a company where agents do most of the execution and humans verify and steer. That is a claim about the whole company.
 
-Pancake makes a narrower claim. It covers go-to-market: finding buyers, starting conversations and writing articles that get found in Google and AI answers. Engineering, finance and internal operations stay outside its scope.
+Pancake goes deep on one part of the company: go-to-market. Its agents find buyers, start conversations and write articles built for Google and AI answers.
 
 So the overlap is smaller than search results suggest. The real difference is scope, and who each product is built for.
 
@@ -50,7 +50,7 @@ So the overlap is smaller than search results suggest. The real difference is sc
 
 Kortix is infrastructure. The product is an open-source shared machine (Linux Ubuntu) where every agent runs in the same environment, shares the same filesystem, the same databases, the same credentials. You define agents as markdown files with identities, permissions, tools, and activation rules. Kortix provides the runtime — bash, package managers, Docker containers, cron/webhook triggers, 3,000+ integrations — and you assemble the workforce. The open-source model means you can self-host everything on your own servers.
 
-Pancake is a finished product with a fixed scope. You add your website and it builds its GTM Brain: your positioning, ideal customers, offers, proof and objections in one shared memory. Its agents watch six kinds of buying signals, such as people posting about a keyword you pick or companies hiring for roles that match your buyer. New leads arrive each morning with the reason each was picked. You approve them in the app or from Slack, and outreach runs from your own account on the professional social network. The agents also write articles for Google and AI search, which you approve. It costs [$99/month flat](/pricing), with every agent included.
+Pancake is a finished product. You add your website and it builds its GTM Brain: your positioning, ideal customers, offers, proof and objections in one shared memory. Its agents watch six kinds of buying signals, such as people posting about a keyword you pick or companies hiring for roles that match your buyer. New leads arrive each morning with the reason each was picked. You approve them in the app or from Slack, and outreach runs from your own account on the professional social network. The agents also write articles for Google and AI search, which you approve. It costs [$99/month flat](/pricing), with every agent included.
 
 ---
 
@@ -62,12 +62,12 @@ Pancake is a finished product with a fixed scope. You add your website and it bu
 | Technical requirement | None | Requires engineering skill to configure fully |
 | Infrastructure | Hosted SaaS | Open-source, self-hosted or cloud |
 | Agent execution environment | Managed by Pancake | Shared Linux Ubuntu machine |
-| Scope | Go-to-market only: signals, leads, outreach, articles | Any process you define agents for |
-| Pre-built agent roles | Yes, for GTM only | No — you define every agent |
-| Open source | No | Yes |
+| Scope | Go-to-market: signals, leads, outreach, articles | Any process you define agents for |
+| Pre-built agent roles | Yes, built for GTM | No — you define every agent |
+| Open source | — (hosted) | Yes |
 | Built for | Founders and small B2B companies that need buyers | Process-heavy companies at any scale |
 | Founder interaction model | Approve leads and articles; outreach runs on its own | Prompt-driven with scheduled automation |
-| Self-hosting option | No | Yes |
+| Self-hosting option | — | Yes |
 
 *Kortix details are based on its public product documentation as of June 2026. Pancake details are current as of September 2026.*
 
@@ -89,15 +89,15 @@ The gap is time. A month spent writing and testing agent definitions is a month 
 
 Kortix gives you the ability to define agents for every function. That ability is valuable — but it means you are making every decision about how those agents should work, what they should have access to, and how they should hand off to each other.
 
-Pancake's workflow is fixed. One part watches signals and picks leads. Outreach follows a set sequence: a profile visit, a like on a recent post, an invite with no note, then up to three messages. The first message asks one light question tied to the signal instead of pitching. Articles are written for Google and AI search, and none goes out until you approve it.
+Pancake's workflow is already built. One part watches signals and picks leads. Outreach follows a set sequence: a profile visit, a like on a recent post, an invite with no note, then up to three messages. The first message asks one light question tied to the signal instead of pitching. Articles are written for Google and AI search, and none goes out until you approve it. If you'd rather steer from an AI assistant, connect Claude, ChatGPT or Codex through Pancake's MCP server and adjust signals from there.
 
-For founders who want to own the agent design decisions, Kortix's model is more appropriate. For founders who want prospecting done without the architecture work, Pancake's fixed workflow is the shorter path.
+For founders who want to own the agent design decisions, Kortix's model is more appropriate. For founders who want prospecting done without the architecture work, Pancake's ready-made workflow is the shorter path.
 
-### A narrow scope is easier to judge
+### A focused product is easier to judge
 
-Because Pancake does one thing, you can evaluate it on one question: do the leads fit your buyer, and does the stated signal make sense for each?
+Kortix's positioning is broad: "Take process-heavy companies and turn them into AI-operated ones." That is a migration from an existing state. Its value depends on which processes you rebuild and how well you build them.
 
-Kortix's positioning is broader: "Take process-heavy companies and turn them into AI-operated ones." That is a migration from an existing state. Its value depends on which processes you rebuild and how well you build them.
+Pancake is built around one outcome, so you can judge it on one question: do the leads fit your buyer, and does the stated signal make sense for each? [See how Pancake finds your buyers](/).
 
 ---
 
@@ -113,7 +113,7 @@ That control matters if your company handles sensitive data you cannot send thro
 
 Kortix can run entirely on your own servers. For regulated industries — healthcare, finance, legal — where data residency requirements are strict, that option can be a compliance requirement rather than a preference.
 
-Pancake does not offer self-hosting. If on-premise deployment is a requirement for your situation, Kortix is the relevant option.
+Pancake is hosted by design, so if on-premise deployment is a requirement for your situation, Kortix is the relevant option.
 
 ### Engineering-native agent design
 
@@ -131,7 +131,7 @@ The right platform depends on the answers to three questions.
 
 **Do you have engineering bandwidth for infrastructure work?** If yes, Kortix's flexibility is a real asset. If no, Pancake asks for none.
 
-**Do you need to own the infrastructure?** If data residency or compliance requires on-premise deployment, Kortix is the platform that supports it. If a hosted service is acceptable, Pancake's simplicity is the trade-off.
+**Do you need to own the infrastructure?** If data residency or compliance requires on-premise deployment, Kortix is the platform that supports it. If a hosted service works for you, Pancake removes the infrastructure work entirely.
 
 Most solo founders and small B2B teams whose bottleneck is pipeline will find Pancake closer to what they need. Technical teams automating an existing business, or working under compliance and infrastructure requirements, will get more from Kortix's flexibility. For more on the category Kortix belongs to, see [What Is an Agentic Operating System?](/blog/what-is-agentic-operating-system).
 

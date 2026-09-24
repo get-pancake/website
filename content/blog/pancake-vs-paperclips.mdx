@@ -31,7 +31,7 @@ faq:
 
 Paperclip belongs to a young category: the control plane for AI agents. This page explains what that layer does, the signs you need one and the signs you don't. Then it compares Paperclip with [Pancake](/), an AI GTM team, for readers whose real goal is customers.
 
-**TL;DR:** Paperclip coordinates agents you bring. It assigns their work, wakes them on a schedule, caps what each one spends and logs every step. You need that layer once you run many agents across many jobs. Pancake does one job, which is pipeline. Its agents pick new leads from buying signals each morning and reach out to them from your own account. Pick Paperclip to manage an organization of agents. Pick Pancake if what you need is customers.
+**TL;DR:** Paperclip coordinates agents you bring. It assigns their work, wakes them on a schedule, caps what each one spends and logs every step. You need that layer once you run many agents across many jobs. Pancake is an AI GTM team built for one job: customers. Its agents pick new leads from buying signals each morning and start the conversation with each one from your own account. Pick Paperclip to manage an organization of agents. Pick Pancake if what you need is customers.
 
 ---
 
@@ -87,9 +87,9 @@ As of September 2026, the page does not describe a lead database, a buying-signa
 
 ## Where Pancake fits
 
-Pancake is not a control plane, and it does not run a whole company. It is an AI GTM team for founders and small B2B companies. Its agents find people who show buying signals, run outreach for you and write articles built to show up in Google and AI answers.
+Pancake is an AI GTM team with the agents already built. They find the people showing buying signals, start conversations with them from your own account and write articles built to show up in Google and in AI answers. It is made for founders and small B2B companies.
 
-Setup starts with your website. Pancake learns who buys from you (positioning, ideal customers, offers, proof and objections) and keeps it in one shared memory called the GTM Brain. It keeps learning from what works. Its agents watch six kinds of signal:
+Setup starts with your website. Pancake learns who buys from you (positioning, ideal customers, offers, proof and objections) and keeps it in one shared memory called the GTM Brain. Every result makes it sharper. Its agents watch six kinds of signal:
 
 1. **Keyword:** people posting about a topic you choose, such as "ticket backlog".
 2. **Competitor:** people engaging with a rival's posts.
@@ -98,9 +98,11 @@ Setup starts with your website. Pancake learns who buys from you (positioning, i
 5. **Hiring:** companies with open roles that match your buyer.
 6. **Stack:** companies whose job posts name a tool, such as one you replace.
 
-New leads arrive each morning, and each one says which signal picked it. You approve leads in the app, or from Slack, where Pancake posts each new one. Outreach runs from your own account on the professional social network. The sequence is a profile visit, a like on a recent post, an invite with no note, then up to three messages. The opening message makes no pitch. It asks one light question tied to the signal. Pancake also writes articles for Google and AI search, and you approve each one.
+Each morning brings new leads, and each one says which signal picked it. You approve them in the app, or from Slack, where Pancake posts every new lead. Outreach runs from your own account on the professional social network: Pancake visits the profile, likes a recent post and sends an invite with no note, then follows with up to three messages. The opening message makes no pitch. It asks one light question tied to the signal, so the opener is about the buyer. The articles it writes for Google and AI search go out once you approve them.
 
-The price is [$99/month flat](/pricing), with every agent included and no usage billing. The 3-day free trial needs a credit card, and you can cancel anytime. There is no org chart to design and no agent runtime to connect. Pancake does not send email, sync to a CRM or cover jobs outside go-to-market.
+If your team already works in Claude or Codex, you don't need a control plane to bring Pancake into the loop. Its MCP server connects Claude, ChatGPT or Codex to your workspace. From that chat, you can read the GTM Brain, go through the day's leads, tune a signal or launch outreach.
+
+There is no org chart to design and no agent runtime to connect. The 3-day free trial needs a credit card, and you can cancel anytime. After that, Pancake costs [$99/month flat](/pricing), with every agent included and no usage billing.
 
 ## Pancake vs Paperclips at a glance
 
@@ -113,6 +115,7 @@ The price is [$99/month flat](/pricing), with every agent included and no usage 
 | Where it runs | Your machine or your server; hosted version on a waitlist | Pancake runs it for you |
 | Lead source | None built in | Six signal types, new leads each morning |
 | Outreach | Whatever your agents are built to send | Visit, like, invite with no note, up to three messages from your own account |
+| Works with your AI tools | Runs Claude Code, Codex, Cursor, OpenClaw and other agents you connect | Claude, ChatGPT or Codex drive it through its MCP server |
 | Human control | Board approvals, per-agent budgets, audit log | Approvals on leads and articles |
 | Price (as of September 2026) | Free software; you pay model providers and hosting | $99/month flat; 3-day free trial, card required |
 | Best for | Technical operators running many agents | Founders who need pipeline without building it |
@@ -126,7 +129,7 @@ The code is MIT-licensed. You can fork it, audit it and extend it with plugins. 
 If your engineers run Claude Code or Codex all day, Paperclip organizes the agents you already pay for. Nothing gets replaced.
 
 ### You need agents beyond sales and marketing
-Paperclip's own examples include coder agents that open pull requests, support agents that triage the queue and reporting agents that assemble the numbers. Each one gets a seat in the same org chart. Pancake has no role in that work.
+Paperclip's own examples include coder agents that open pull requests, support agents that triage the queue and reporting agents that assemble the numbers. Each one gets a seat in the same org chart. Pancake is built for go-to-market, so that work stays with Paperclip.
 
 ### You want governance across many agents
 Paperclip gives you per-agent budgets, board approvals, an audit log and separate companies on one install. All of it sits in one open-source dashboard you can read line by line.
@@ -134,7 +137,7 @@ Paperclip gives you per-agent budgets, board approvals, an audit log and separat
 ## Where Pancake is the better choice
 
 ### The goal is pipeline, and you'd rather not build it
-With Paperclip, prospecting depends on agents, data and outreach logic you assemble. Pancake arrives with the signals, the daily lead picks and the outreach sequence already wired together.
+With Paperclip, prospecting depends on agents, data and outreach logic you assemble. Pancake arrives with the signals, the daily lead picks and the outreach sequence already wired together, all set up from your website.
 
 ### You don't have hours to manage an agent org
 Your daily work in Pancake is short. You approve the morning's leads and any new articles. That keeps you in charge of who gets contacted and what gets published.
@@ -152,4 +155,4 @@ Do you want to run an organization of agents, or do you want more customers from
 
 If it's the organization, Paperclip is a serious, active open-source project with a large community, and the software is free. Budget for model runs and for the time it takes to design and supervise the org. For setup steps and running costs in detail, read [Pancake vs Paperclip AI: setup, cost, and who each one is for](/blog/pancake-vs-paperclip).
 
-If it's customers, Paperclip gives you the structure, and you still build the sales agents yourself. Pancake is that team already built, for one job, at one flat price.
+If it's customers, Paperclip gives you the structure, and you still build the sales agents yourself. Pancake is that GTM team, already built, with new leads waiting every morning at one flat price.

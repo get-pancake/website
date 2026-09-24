@@ -12,7 +12,7 @@ faq:
   - question: "What is the difference between startup.studio and Pancake?"
     answer: "Startup.studio turns an idea into a new company run by AI employees: a CEO agent writes the plan and you approve it as the board. Pancake starts from a company that already sells. Its agents watch for buying signals, and after you approve a lead, outreach runs from your own account."
   - question: "Can Pancake build a company from scratch like startup.studio?"
-    answer: "No. Pancake starts after the company exists: it reads your website to learn what you sell and who buys it. Product, code and support stay with you."
+    answer: "Pancake starts once the company exists. It reads your website to learn what you sell and who buys it, then finds people showing buying signals and opens conversations with them from your own account."
   - question: "Does startup.studio require you to give up control of your company?"
     answer: "No. Startup.studio casts you as the board: you approve strategy, hires and budgets, and you can pause or terminate any agent at any time. The agents handle the work between those decisions."
   - question: "How much does startup.studio cost compared with Pancake?"
@@ -38,13 +38,15 @@ Pricing on its homepage in September 2026 had three tiers. Solo founder costs $4
 
 ## What Pancake does
 
-Pancake has no CEO agent and doesn't create companies. It works on one function of a company that already exists: go-to-market.
+Pancake gives the company you already run an AI GTM team. Its agents find your buyers, contact them from your own account and write articles made to show up in Google and AI answers.
 
 Setup starts with your website. Pancake reads it and builds its GTM Brain, a shared memory of your positioning, ideal customers, offers, proof and objections. It keeps learning from what works.
 
 Its agents watch six kinds of buying signals, from people posting about a topic you pick to companies whose job posts name a tool you replace. New leads arrive each morning with the signal that triggered them. You approve the ones you want, in the app or in Slack.
 
-Outreach then runs from your own account on the professional social network: a profile visit, a like on a recent post, an invite with no note, then up to three messages. Pancake also writes articles for Google and AI search, and those wait for your approval too. It costs [$99/month flat](/pricing), every agent included.
+Outreach runs from your own account on the professional social network and builds up in steps: profile visit, like, invite with no note, then as many as three messages. The articles it writes wait for your approval too.
+
+Where startup.studio lets you bring your own agent, Pancake lets you bring your own assistant. Its MCP server plugs Claude, ChatGPT or Codex into your workspace, so the chat you already use can check leads, retune signals and launch outreach. One plan covers all of it: [$99/month flat](/pricing), every agent included.
 
 ## The core difference in one table
 
@@ -54,7 +56,7 @@ Outreach then runs from your own account on the professional social network: a p
 | **Your role** | Board member: you approve strategy, hires and budgets | Founder: you approve leads and articles |
 | **Who does the work** | A CEO agent leading an org chart of AI employees | GTM agents sharing one GTM Brain |
 | **Scope** | Strategy, product, code, marketing, support | Buying signals, outreach, articles for Google and AI search |
-| **Where it works** | Agents build and run a new stack | The Pancake app, Slack, and your own professional-network account |
+| **Where it works** | Agents build and run a new stack | The Pancake app, Slack, Claude, ChatGPT or Codex, and your own professional-network account |
 | **Memory** | Company-scoped to each autonomous business | GTM Brain built from your website, updated with results |
 | **Pricing** | $49/mo Solo founder, $199/mo Operator, custom Conglomerate | $99/mo flat, every agent included |
 | **Best for** | Building a new AI-native company from zero | A small B2B company that needs more buyer conversations |
@@ -71,23 +73,23 @@ The risk is that you lose the feedback loop. When agents build, ship, and market
 
 Pancake fits when the company exists and the bottleneck is pipeline. You have an offer, some proof, and a fair idea of who buys. What you lack is the time to find those people every week and write to each of them.
 
-That is the whole scope. Pancake won't write your code, answer support tickets or plan an ad budget. It finds people who recently showed a signal, like engaging with a competitor's posts or working at a company that opened a role matching your buyer, and it messages them from your account.
+Pancake takes that work off your list. It finds people who recently showed a signal, like engaging with a competitor's posts or working at a company that opened a role matching your buyer, and it messages them from your account.
 
-The first message pitches nothing. It asks one light question tied to the signal that surfaced the lead. For a [SaaS startup](/for/saas-startups) or a small agency, this prospecting is the part of GTM that most often loses to everything else on the founder's list.
+The first message pitches nothing. It asks one light question about the signal that surfaced the lead. For a [SaaS startup](/for/saas-startups) or a small agency, this prospecting is the part of GTM that most often loses to everything else on the founder's list.
 
 ## The autonomy depth comparison
 
 Startup.studio operates at L4-L5 autonomy for the businesses it creates: agents plan, code, ship and market on their own, and you step in to approve hires, budgets and strategy. That depth is only possible because the agents built the infrastructure and own the full context from day one.
 
-Pancake draws the line somewhere else. Finding leads happens without you. Choosing who gets contacted stays with you, because every lead waits for your approval. Once you approve one, the outreach sequence runs on its own, and you don't review each message before it goes out.
+Pancake draws the line somewhere else. Finding leads happens without you. Choosing who gets contacted stays with you, because every lead waits for your approval. Once you approve one, the outreach sequence runs on its own.
 
-Neither model is better in general. It comes down to whether you want agents running the whole company or one job inside it.
+Neither model is better in general. It comes down to whether you want agents running the whole company or finding customers for the one you run.
 
 ## The honest trade-offs
 
 Startup.studio's weakness is integration depth. When an agent-built business needs to connect to a third-party tool that wasn't in scope at setup, or when a customer situation requires context that lives in a tool the agents don't have access to, you hit a wall. "Bring your own agent" is a strong idea, but it pays off only if you have agents that already know your stack.
 
-Pancake's constraint is scope. It covers finding buyers, starting conversations and writing articles for search. It sends no email, doesn't sync to a CRM, and leaves the rest of the company to you. It also needs something to sell: with no product and no idea who buys, the GTM Brain has nothing to learn from.
+Pancake's trade-off is focus. Every agent works on go-to-market, and the GTM Brain learns from a company that already sells, so Pancake starts once you have an offer and a website that explains it.
 
 ## The infrastructure question
 
@@ -95,7 +97,7 @@ Both platforms make architectural bets that determine what you can and can't do.
 
 Startup.studio's bet: agents can build and own the full stack if given the right goal and budget. That bet pays off for greenfield businesses where there's no existing infrastructure to integrate and no human team to work alongside.
 
-Pancake's bet is narrower. For a small company that already sells, the most useful thing is a daily list of people who recently showed a buying signal, plus a first message that makes sense to them. The six signals, the morning leads and a GTM Brain that improves as results come in all serve that.
+Pancake's bet is on customers. For a small company that already sells, the most useful thing is a daily list of people who recently showed a buying signal, plus a first message that makes sense to them. The six signals, the morning leads and a GTM Brain that improves as results come in all serve that.
 
 ## Which one is right for you
 

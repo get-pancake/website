@@ -30,6 +30,8 @@ const slugs = new Set(fs.readdirSync(DIR).filter((f) => f.endsWith(".mdx")).map(
 const PANCAKE_CLAIMS = [
   [/\bAI[ -]?co-?founders?\b/i, "Pancake called an AI co-founder"],
   [/\bsuper-?agents?\b|\bAI workforce\b|\bco-?pilots?\b|\bvirtual assistants?\b/i, "banned identity term"],
+  // Founder 2026-09-24: "on est plus un AI coworker, on est vraiment sur le AI GTM".
+  [/\bAI (co-?worker|employee|teammate)s?\b|\bco-?workers?\b/i, "Pancake is an AI GTM team, not a coworker/employee (fine in a contrast)"],
   [/\bspend caps?\b|\bcan[’']?t overspend\b|\btokens?\b|\btoken (packs?|costs?|billing)\b/i, "spend cap / token billing"],
   [/\bsquads?\b|\biMessage\b|\bOpenClaw runtime\b/i, "V1 product feature"],
   [/\b(engineering|finance|legal|HR|DevOps|bookkeeping|invoicing)\b/i, "V1 function (check it's a negation)"],
@@ -65,6 +67,7 @@ for (const file of files) {
   const serp = fm.seo_title || (`${fm.title}${SERP_TITLE_SUFFIX}`.length <= SERP_TITLE_BUDGET ? `${fm.title}${SERP_TITLE_SUFFIX}` : fm.title);
   if (serp && serp.length > SERP_TITLE_BUDGET) warn(rel, `SERP title is ${serp.length} chars — add a seo_title ≤ ${SERP_TITLE_BUDGET}`);
   if (fm.seo_title && fm.seo_title.length > SERP_TITLE_BUDGET) err(rel, `seo_title is ${fm.seo_title.length} chars (max ${SERP_TITLE_BUDGET})`);
+  if (new Set(fm.related ?? []).size !== (fm.related ?? []).length) err(rel, `related lists the same post twice`);
   for (const r of fm.related ?? []) {
     if (r === slug) err(rel, `related lists the post itself`);
     else if (!slugs.has(r)) err(rel, `related slug "${r}" has no post`);

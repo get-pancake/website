@@ -23,7 +23,7 @@ faq:
   - question: "What happens when an agent acts on outdated context?"
     answer: "A good memory layer records when each fact was last confirmed and flags old ones. Showing that context may be stale without drowning agents in doubt is still an open problem in the category."
   - question: "Does Pancake have organizational memory?"
-    answer: "Pancake keeps a narrower version for go-to-market, called the GTM Brain. It starts from your website, and Pancake's agents use it to find buyers and run outreach. It doesn't cover engineering, finance or support."
+    answer: "Yes, for go-to-market. Pancake's GTM Brain learns your positioning, ideal customers, offers, proof and objections from your website. Every Pancake agent draws on it to find buyers, start conversations and write articles, and it improves as results come in."
 ---
 
 Organizational memory AI captures what your company knows (decisions, customer conversations, process changes) and makes it available to AI agents, so they act with your context instead of guessing.
@@ -134,20 +134,22 @@ You don't need this yet if:
 
 ---
 
-## A Scoped Example: Pancake's GTM Brain
+## Memory for Go-to-Market: Pancake's GTM Brain
 
-Company-wide memory is hard to build. Memory for one function is easier, and it runs the same loop at a smaller size.
+Company-wide memory is still hard to build. Memory for one function works today.
 
-[Pancake](/) is an AI GTM team for founders and small B2B companies, and its memory covers go-to-market only. You add your website. Pancake reads it and records who buys from you: your positioning, ideal customers, offers, proof and the objections buyers raise. That record is the GTM Brain, and all of Pancake's agents share it.
+[Pancake](/) is an AI GTM team for founders and small B2B companies. Its agents spot buyers, open conversations and write articles, all from one shared memory. You add your website. Pancake reads it and records who buys from you: your positioning, ideal customers, offers, proof and the objections buyers raise. That record is the GTM Brain.
 
-Here is the four-step loop from earlier, applied to one job:
+Here is the four-step loop from earlier, applied to go-to-market:
 
 - **Capture:** the GTM Brain starts from your website, not from a dump of every Slack message.
 - **Structure:** it holds what a seller needs to know, such as who the buyer is and which proof you can point to.
-- **Query:** the agent that watches buying signals uses it to judge which people fit your buyer. Each lead arrives with the signal that picked it, so you can check the reasoning before you approve.
-- **Update:** it keeps learning from what works.
+- **Query:** the agent that watches buying signals uses it to judge which people fit your buyer. Each lead arrives with the signal that picked it, so you can check the reasoning before you approve. The outreach and article agents read the same memory, so every message and every post tells one story.
+- **Update:** it keeps learning from what works, so the memory gets sharper with every result.
 
-The limits are as clear as the scope. The GTM Brain doesn't hold your engineering, finance or support knowledge, and Pancake doesn't run those functions. If your problem is finding buyers and starting conversations, a memory this narrow is enough. If agents across the whole company need to share context, you need the broader layer this post describes.
+The memory is also open to your own AI assistant. Connect Claude, ChatGPT or Codex through Pancake's MCP server and it can read the GTM Brain, review leads and start outreach in the same conversation.
+
+If your problem is finding buyers and starting conversations, the GTM Brain gives you that memory with nothing to build, for [$99 a month, flat](/pricing). Shared context across every function is the broader layer this post describes.
 
 ---
 

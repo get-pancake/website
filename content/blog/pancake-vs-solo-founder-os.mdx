@@ -21,18 +21,18 @@ faq:
   - question: "Can I use Solo Founder OS and Pancake together?"
     answer: "Yes. They run independently: SFOS on your machine, Pancake as a hosted product. A technical founder could keep SFOS for code review and cost audits and use Pancake to find buyers and run outreach."
   - question: "Does Pancake have a self-hosted version?"
-    answer: "No. Pancake is a managed SaaS product. There is no self-hosted option."
+    answer: "Pancake is a hosted product with no self-hosted edition, so there is nothing to install, patch or keep alive on your side. You add your website and its agents start work."
   - question: "Does Pancake send cold email like Solo Founder OS?"
-    answer: "No. Pancake sends no email at all. Its outreach runs from your own account on the professional social network, starting with a profile visit and an invite with no note."
+    answer: "Pancake works a different channel: your own account on the professional social network. It visits the profile, likes a recent post, sends an invite with no note, then up to three messages; the first one asks a question about the signal. SFOS drafts cold emails and sends them over SMTP once you approve them."
   - question: "What is the main reason to choose Pancake over Solo Founder OS?"
-    answer: "You sell to businesses and want more buyer conversations without maintaining software. Pancake has nothing to install or update. If you want full control over code and data and like developer tooling, SFOS is worth serious consideration."
+    answer: "You sell to businesses and want more buyer conversations with no software to maintain. Pancake picks leads from six kinds of buying signal each morning and starts the conversation from your own account. If you want full control over code and data and like developer tooling, SFOS is worth serious consideration."
 ---
 
 If you search for ways to run a one-person company using AI, two names come up in different contexts: Pancake and Solo Founder OS. Solo Founder OS is an open-source stack of 11 agents meant to cover a one-person company's operations. [Pancake](/) is an AI GTM team: a hosted product whose agents find buyers and run outreach for founders and small B2B companies.
 
 The gap between them could not be wider.
 
-**TL;DR:** Solo Founder OS is an open-source Python library maintained by a solo developer. You install it, configure it, debug it, and keep it running yourself, and it spreads across marketing, support, payments, and code review. Pancake is a managed product you start by adding your website, and it sticks to go-to-market: buying signals, outreach, and articles for search. The two meet only at SFOS's customer-discovery and outreach agents.
+**TL;DR:** Solo Founder OS is an open-source Python library maintained by a solo developer. You install it, configure it, debug it, and keep it running yourself, and it spreads across marketing, support, payments, and code review. Pancake is a hosted AI GTM team you start by adding your website. Its agents pick leads from buying signals, open conversations from your own account and write articles for search. The two meet only at SFOS's customer-discovery and outreach agents.
 
 ---
 
@@ -54,11 +54,11 @@ Current version as of this writing: v0.28.0 (released June 11, 2026). The projec
 
 ## What Is Pancake?
 
-Pancake starts from your website and builds its GTM Brain from what it reads there: your positioning, ideal customers, offers, proof, and objections. It keeps learning from what works.
+Pancake hands you new leads every morning and opens the conversation with each one you approve. It starts from your website and builds its GTM Brain from what it reads there: your positioning, ideal customers, offers, proof, and objections. It keeps refining that picture as results come in.
 
-Its agents watch six kinds of buying signals, from people posting about a topic you choose to companies whose job posts name a tool you replace. New leads arrive each morning with the signal that picked them. You approve leads in the app or from Slack, and Pancake runs the outreach from your own account on the professional social network. It also writes articles for Google and AI search, which you approve before they go out.
+Its agents watch six kinds of buying signals, ranging from a post on a topic you choose to a job listing that names a tool you replace. Each new lead comes with the signal that picked it. You approve leads in the app or from Slack, and Pancake runs the outreach from your own account on the professional social network. The first message asks a question about that signal, so the conversation opens warm. Pancake also writes articles for Google and AI search, which you approve before they go out.
 
-There is nothing to install and no API key to manage. Pancake costs [$99/month flat](/pricing), with every agent included and no usage charges.
+If you already work in Claude, ChatGPT or Codex, you can drive Pancake from there. Its hosted MCP server links that chat to your workspace: ask for today's leads, tweak a signal or kick off outreach without switching tabs. Sign-in happens in the browser, and there is nothing to install and no API key to manage. Pancake costs [$99/month flat](/pricing), with every agent included and no usage charges.
 
 ---
 
@@ -74,15 +74,15 @@ Two questions separate these tools. What does each one cover, and what does it t
 | **Maintenance** | None on your side | You handle updates, debugging, version conflicts |
 | **API keys** | None needed | Your keys, your cost |
 | **Outreach channel** | Your own account on the professional social network | Cold email via SMTP |
-| **Bilingual EN/Chinese sync** | Not offered | Yes (bilingual sync agent) |
+| **Bilingual EN/Chinese sync** | — | Yes (bilingual sync agent) |
 | **Data storage** | Platform-hosted | Your disk |
 | **Human approval** | You approve each lead and article; outreach then runs on its own | Queue-driven (agents draft, you approve every action) |
-| **Open source** | No | MIT licensed |
+| **Open source** | — | MIT licensed |
 | **Cost** | $99/month flat, no usage fees | API cost only (~$0.06/week) |
 
 The HITL model difference is significant. Solo Founder OS works on a queue model: the agents draft content, draft replies, draft outreach. You review and approve from the queue before anything goes out. This is a deliberate design choice, not a limitation. Every action is human-confirmed.
 
-Pancake puts the approval earlier. You approve each lead and each article. Once a lead is approved, the outreach sequence runs from your account with no draft queue: a profile visit, a like on a recent post, an invite with no note, then up to three messages. You don't review each message before it sends.
+Pancake puts the approval earlier, on each lead and each article. Once a lead is approved, the outreach sequence runs from your account with no draft queue to clear: a profile visit, a like on a recent post, an invite with no note, then up to three messages.
 
 Neither approach is wrong. The right one depends on how much you want to stay in the loop versus how much you want to remove yourself from routine decisions.
 
@@ -102,9 +102,9 @@ Solo Founder OS has 11 agents across 7 canonical layers. Here is what each one d
 - **bilingual-content-sync-agent** — EN to Chinese i18n diff, Claude translation, HITL apply
 - **build-quality-agent** — pre-push Claude diff reviewer and local build runner
 
-This is a developer-first toolset. The marketing agent posts to Chinese social platforms. The cost-audit agent monitors specific DevOps providers. The build-quality agent reviews code diffs. If you are a technical solo founder, especially one building in a bilingual market, this stack has capabilities Pancake does not have.
+This is a developer-first toolset. The marketing agent posts to Chinese social platforms. The cost-audit agent monitors specific DevOps providers. The build-quality agent reviews code diffs. If you are a technical solo founder, especially one building in a bilingual market, that breadth is the draw.
 
-Pancake covers far less ground and goes deeper on the part it covers. Where the two meet, the approaches differ. SFOS scrapes Reddit for pain points and drafts cold emails for you to approve. Pancake works from buying signals, tells you why each lead was picked, and reaches out on the professional social network instead of by email. Support, analytics, cost audits, payments, translation, and code review are not part of Pancake.
+Pancake goes deep where the two meet: finding buyers and starting conversations. SFOS scrapes Reddit for pain points and drafts cold emails for you to approve. Pancake picks leads from six kinds of buying signal, tells you why each one was picked and opens the conversation on the professional social network with a question about that signal.
 
 ---
 
@@ -135,7 +135,7 @@ There is also a progression path. You might start with SFOS on a side project. I
 
 Some founders choose SFOS specifically because it is open source. You can read every line of code. You can modify any agent. You can run it offline. Your data never leaves your machine.
 
-Pancake is closed source and hosted. Your website content, leads, and approvals live on Pancake's platform, and the outreach runs through your own account.
+Pancake takes the other side of that trade. Your website content, leads, and approvals live on Pancake's platform, and the outreach runs through your own account. There is no server, cron job or package for you to look after.
 
 Both positions have merit. The open-source argument matters most when you have regulatory constraints, data residency requirements, or a strong preference for not depending on a third-party platform. For most founders, the question is simpler: do you have the engineering time and interest to run and maintain this yourself?
 
@@ -149,6 +149,6 @@ Solo Founder OS is a genuinely impressive open-source project. The fact that a s
 
 It is also a developer tool, not a founder tool. Running it requires comfort with Python packaging, cron configuration, and hands-on debugging. The queue model means you are reviewing drafts regularly. The $0.06/week operating cost is real, but the time cost is not zero.
 
-Pancake is narrower and asks for no upkeep. It does not try to run your company. It finds B2B buyers who show signals and reaches out to them, for one flat monthly price.
+Pancake asks for no upkeep and puts all of its agents on pipeline. It finds B2B buyers who show signals, starts the conversation with the ones you approve and writes articles built to surface in Google and AI answers, for one flat monthly price.
 
 If you can `pip install` your infrastructure and want full data ownership, SFOS is a legitimate choice. If you sell to businesses and want to open Slack in the morning to a list of leads, each with the reason it was picked, that is what Pancake is built for.

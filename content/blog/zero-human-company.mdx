@@ -22,9 +22,9 @@ faq:
   - question: "How is guided autonomy different from a zero-human company?"
     answer: "In a zero-human setup, agents decide without human checkpoints. In guided autonomy, agents run the execution and a person approves anything above a set threshold. You get a company you can audit and correct instead of one that breaks in ways you can't trace."
   - question: "What tools are used to build an autonomous company?"
-    answer: "Most setups combine an orchestrator or agent runtime (Paperclip, or direct API access to a model), a shared knowledge base such as Notion, and an async channel like Slack where agents report. Specialist tools then cover single functions, such as Pancake for finding buyers and running outreach."
+    answer: "Most setups combine an orchestrator or agent runtime (Paperclip, or direct API access to a model), a shared knowledge base such as Notion, and an async channel like Slack where agents report. Agents built for one function sit on top: for go-to-market, Pancake watches buying signals and starts conversations with the people showing them."
   - question: "Is Pancake a zero-human company platform?"
-    answer: "No. Pancake is an AI GTM team for founders and small B2B companies. Its agents find people who show buying signals, run outreach from your own account and write articles for Google and AI search, while you approve the leads and the articles."
+    answer: "No. Pancake is an AI GTM team built on guided autonomy. Its agents find your buyers, start the conversations from your own account and write articles built to show up in Google and AI answers. You approve the leads and the articles, so you stay in control."
 ---
 
 In March 2026, a GitHub repository called Paperclip went from zero to 43,900 stars in 30 days. By September it had passed 80,000. The tagline at launch: "open-source orchestration for zero-human companies."
@@ -93,7 +93,7 @@ In practice, the split is easy to see once you list the work.
 - Investor communications
 - Partnerships and distribution strategy
 
-Sales prospecting shows the line well. [Pancake](/), an AI GTM team for founders and small B2B companies, puts the human checkpoint on the lead. Its agents watch for buying signals and bring you new leads each morning, each with the reason it was picked. You approve the leads you want. From there, outreach runs from your own account without a sign-off on each message.
+Sales prospecting shows the line well. [Pancake](/), an AI GTM team for founders and small B2B companies, puts the human checkpoint on the lead. Its agents watch six kinds of buying signals and bring you new leads each morning, each with the reason it was picked. You approve the leads you want. From there, Pancake runs the whole sequence from your own account, and the first message asks about the signal instead of pitching. All of it costs [$99 a month, flat](/pricing).
 
 The 80/20 holds. The agents compound on execution. The founders compound on judgment.
 
@@ -107,7 +107,7 @@ Building a guided-autonomy company requires three things that a zero-human archi
 Each agent has a defined domain: one writes content, another categorizes expenses. When a decision falls outside the scope, the agent escalates rather than improvising. This prevents the most expensive failure mode of autonomous systems: confident agents making consequential decisions they weren't designed for.
 
 **2. A shared company brain.**
-Agents that do not share context make inconsistent decisions. Pancake applies this inside go-to-market with what it calls the GTM Brain, one memory of your positioning, ideal customers, offers, proof and objections. The agent that picks leads, the one that runs outreach and the one that writes articles all draw on it, so they tell the same story.
+Agents that do not share context make inconsistent decisions. Pancake builds this for go-to-market with what it calls the GTM Brain, one memory of your positioning, ideal customers, offers, proof and objections, learned from your website. The agent that picks leads, the one that runs outreach and the one that writes articles all draw on it, so they tell the same story.
 
 **3. An immutable log.**
 Every action, every decision, every tool call is written to an audit log you can review. The log is a safety feature, and it is also what makes iterative improvement possible. When an agent makes a decision you'd have made differently, you can see exactly what it saw and adjust its configuration. Without the log, you are flying blind.
