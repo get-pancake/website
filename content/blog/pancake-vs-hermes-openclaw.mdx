@@ -1,156 +1,127 @@
 ---
-title: "Pancake vs Hermes vs OpenClaw: Why You Need All Three"
-description: "Updated for Pancake v2: Pancake vs Hermes vs OpenClaw: Why You Need All Three. Pancake is represented as an AI GTM team for buying signals, outreach, and AI-search publishing."
+title: "Pancake vs Hermes vs OpenClaw: Which One Do You Need?"
+seo_title: "Hermes vs OpenClaw vs Pancake: Which One Do You Need?"
+description: "Hermes Agent and OpenClaw are open-source agents you host and configure yourself. Pancake is a hosted AI GTM team. What each does and which fits your job."
 date: "2026-07-08"
-last_updated: "2026-08-27"
+last_updated: "2026-09-24"
 author: "François Lanthier Nadeau"
+related:
+  - "best-openclaw-hosting-alternatives-2026"
+  - "what-is-openclaw-pancake-ai-runtime"
+  - "openclaw-for-founders-managed-vs-diy"
 faq:
   - question: "What's the difference between Hermes, OpenClaw, and Pancake?"
-    answer: "Pancake v2 is an AI GTM team for buying signals, warm leads, outreach, and AI-search publishing. Its agents share one GTM Brain."
-  - question: "Do I need to choose between Hermes, OpenClaw, and Pancake?"
-    answer: "Pancake v2 is an AI GTM team for buying signals, warm leads, outreach, and AI-search publishing. Its agents share one GTM Brain."
-  - question: "Can Pancake run on infrastructure other than Hermes and OpenClaw?"
-    answer: "Pancake v2 is an AI GTM team for buying signals, warm leads, outreach, and AI-search publishing. Its agents share one GTM Brain."
-  - question: "What does 'Pancake uses its own GTM agents' mean?"
-    answer: "Every piece of Pancake's own operations — buying signals, outreach, and AI-search publishing — is run by the same AI agents and squads that customers get access to. We don't sell infrastructure we wouldn't run ourselves. If a squad doesn't work for us, it doesn't ship."
-  - question: "Is Pancake just a wrapper around Hermes and OpenClaw?"
-    answer: "Pancake v2 is an AI GTM team for buying signals, warm leads, outreach, and AI-search publishing. Its agents share one GTM Brain."
+    answer: "Hermes Agent (from Nous Research) and OpenClaw are free, open-source AI agents you host and set up for any task. Pancake is a hosted AI GTM team: its agents find people who show buying signals, run outreach from your own account and write articles for Google and AI search."
+  - question: "Is Hermes Agent an alternative to OpenClaw?"
+    answer: "Yes. Both are self-hosted, model-agnostic agents with memory, skills, scheduled jobs and a gateway to chat apps. Hermes ships a migration command for OpenClaw users that brings over their settings, memories, skills and keys."
+  - question: "Do I need Hermes or OpenClaw to use Pancake?"
+    answer: "No. You don't install, host or configure an agent framework to use Pancake. You add your website, and Pancake learns who buys from you before it starts finding leads."
+  - question: "Can I build my own outreach agent on Hermes or OpenClaw instead?"
+    answer: "You can. Both run skills and scheduled jobs, so a technical founder can script lead research and message drafts. Expect to maintain the data sources, the targeting and the outreach logic yourself."
+  - question: "How much do Hermes, OpenClaw, and Pancake cost?"
+    answer: "Hermes Agent and OpenClaw are free under the MIT license. You pay for hosting and for the model you connect. Pancake is $99/month flat with every agent included, after a 3-day free trial that requires a card."
 ---
 
-> **Pancake v2 update, August 27, 2026:** This article retains its original topic and URL for search continuity, but all references to Pancake have been reviewed for the current product. Pancake v2 is an AI GTM team for small companies: its agents monitor buying signals, find warm leads, run personalized outreach, publish for Google and AI search, and learn through one shared GTM Brain.
+People compare Hermes, OpenClaw and Pancake as if they were three versions of the same tool. Two of them are close cousins. The third does a different job.
 
+Hermes Agent and OpenClaw are open-source AI agents. You host them, connect a model and teach them whatever you want done. Pancake is a hosted product with one job: finding buyers for a small B2B company and starting conversations with them.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
----
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-They're not.
-
-They're layers in a stack — and confusing them costs founders weeks of misaligned work.
-
-Here's how to think about them clearly.
+Here is what each one does, where they overlap, and how to pick.
 
 ---
 
-## What Hermes actually does
+## What Hermes Agent does
 
-Hermes is an AI agent runtime framework.
+Hermes Agent is an open-source agent from Nous Research, released under the MIT license in February 2026. You install it on your laptop, in Docker, on a small VPS or on a serverless host. Then you talk to it from the terminal or from 20+ messaging platforms, including Telegram, Discord, Slack, WhatsApp, Signal and email.
 
-It's infrastructure for building agents: session management, tool calling, context persistence, and the plumbing that connects models to the outside world. If you're writing code to build AI agents from scratch, Hermes gives you the scaffolding so you're not building session handling and tool routing yourself.
+Its selling point is a learning loop. After a complex task, Hermes writes a reusable skill file and stores what happened in memory. Next time, it searches its past conversations before it starts. It works with the model you choose: Nous Portal, OpenRouter, OpenAI or your own endpoint. A built-in cron runs tasks on a schedule, and subagents take on work in parallel.
 
-It's excellent at what it does. It's also not a product for end users.
-
-Think of Hermes as the engine. Powerful, well-designed, necessary — but an engine alone doesn't get you anywhere. You still need to build the rest of the car.
+That makes Hermes a strong pick for a technical person who wants one agent that gets better at their own routine. It is still a system you operate. Hosting, API keys, model bills and permissions are yours to manage.
 
 ---
 
 ## What OpenClaw does
 
-OpenClaw is an orchestration and gateway layer.
+OpenClaw is the open-source personal assistant created by Peter Steinberger. The nonprofit OpenClaw Foundation now develops it under the MIT license. Its core is the Gateway: one process on your own machine or server that connects an AI agent to the chat apps you already use. The list runs from WhatsApp, Telegram and Slack to iMessage, Signal and Microsoft Teams.
 
-It sits between your agents and the outside world, managing routing, cost optimization, model fallbacks, and cross-agent coordination. When an agent needs to call an API, switch between models, or hand off to another agent, OpenClaw handles the dispatch.
+You choose the model provider and set a failover. You teach the agent procedures through skills and install more from the ClawHub marketplace. Cron jobs and webhooks schedule the work. Multi-agent routing keeps sessions apart per agent, workspace or sender.
 
-If Hermes is the engine, OpenClaw is the transmission.
-
-Still infrastructure. Still not something a solo founder building a product needs to think about directly.
+OpenClaw is general purpose by design. It can read your documents, open web pages and send messages on your behalf. What it does on a given day depends on how you set it up.
 
 ---
 
-## What Pancake v2 does
+## Hermes vs OpenClaw: alternatives, not layers
 
-Pancake v2 is an AI GTM team for small companies. It builds one GTM Brain from your positioning, ideal customers, proof, objections, offers, and accumulated results.
+The two projects overlap far more than they stack. Both are self-hosted and model-agnostic. Both keep memory, learn skills, run scheduled jobs and reach you through a messaging gateway. Hermes even ships `hermes claw migrate`, a command that imports an existing OpenClaw setup into Hermes.
 
-Specialized agents use that shared context to monitor buying signals, find and qualify warm leads, run personalized outreach, and publish content for Google and AI search. Results flow back into the GTM Brain so lead selection, messaging, and content improve together.
-
-Pancake costs $99/month with every GTM agent included. It focuses on customer acquisition; it is not positioned as a general platform for engineering, finance, support, or company-wide operations.
-
-zed squads (growth, engineering coordination, content, ops) with defined roles, persistent memory, KPIs, and proven workflows.
-
-When you spin up Pancake, you're not deploying a blank agent runtime and figuring out what to tell it. You're getting an operations team that's already configured:
-
-- A growth squad that knows how to run outbound on a schedule, track pipeline, and log every conversation
-- An engineering coordination squad that triages tickets, maintains the backlog, and flags blockers
-- A content squad that publishes on cadence, monitors performance, and surfaces what's working
-- An ops squad that handles scheduling, internal coordination, and follow-up
-
-Each squad has memory of your company, your ICP, your voice, and your goals. They work 24/7. They surface decisions that need human judgment. They log everything.
-
-Pancake is the car. It runs. You drive it.
+So you pick one of the two. OpenClaw fits if you want the larger community and the ClawHub skills marketplace. Hermes fits if you want the agent to write and refine its own skills as it works.
 
 ---
 
-## Why this isn't a "choose one" question
+## Where Pancake fits
 
-If you're an AI infrastructure engineer building custom agentic systems for your company, Hermes and OpenClaw are foundational tools. You'll likely use both.
+Pancake is not a third agent framework. You don't host it, pick a model or write skills. [Pancake](/) is an AI GTM team for founders and small B2B companies: AI agents that find your buyers and run your outreach.
 
-If you're a founder who wants to go from $1 to $1M without hiring, you don't want to spend 3-6 months building that foundation. You want a company that's already running.
+Setup is your website. Pancake reads it and learns who buys from you (your positioning, ideal customers, offers, proof and objections) into one shared memory it calls the GTM Brain. It keeps learning from what works.
 
-That's the difference.
+Its agents watch six kinds of buying signals:
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+- people posting about a keyword you choose, such as "ticket backlog";
+- people engaging with a competitor's posts;
+- people engaging with posts from a voice your buyers follow;
+- people engaging with your own posts;
+- companies hiring for roles that match your buyer;
+- companies whose job posts name a tool you replace.
 
----
+New leads arrive each morning, each with the signal that picked it. You approve them in the app or from Slack. Outreach then runs from your own account on the professional network: a profile visit, a like on a recent post, an invite with no note, and up to three messages. The first message makes no pitch. It asks one light question tied to the signal.
 
-## The infrastructure-vs-platform distinction matters
-
-This is not a new pattern.
-
-AWS gives you compute, storage, and networking. Vercel gives you a deployment platform with opinions about how web apps should work. Both are valuable. They solve different problems.
-
-Kubernetes gives you container orchestration. Render gives you "push to deploy." Both exist because different buyers have different problems.
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-The mistake is treating them as competitors when they're actually layers in the same stack.
+Pancake also writes articles built to show up in Google and AI answers, and you approve each one. The price is [$99/month flat](/pricing) with every agent included, after a 3-day free trial.
 
 ---
 
-## What Pancake v2 does
+## Side by side
 
-Pancake v2 is an AI GTM team for small companies. It builds one GTM Brain from your positioning, ideal customers, proof, objections, offers, and accumulated results.
-
-Specialized agents use that shared context to monitor buying signals, find and qualify warm leads, run personalized outreach, and publish content for Google and AI search. Results flow back into the GTM Brain so lead selection, messaging, and content improve together.
-
-Pancake costs $99/month with every GTM agent included. It focuses on customer acquisition; it is not positioned as a general platform for engineering, finance, support, or company-wide operations.
-
-## When to use Hermes and OpenClaw directly
-
-If you're building something custom — a vertical AI product, a domain-specific agent, an internal tool for your company's unique workflow — Hermes and OpenClaw are the right foundation.
-
-You'll have full control. You'll build exactly what you need. You'll also spend 3-6 months building memory systems, squad coordination, workflow definitions, and all the operational harness that makes agents useful instead of just capable.
-
-That's a reasonable trade-off for companies where the operational layer is their competitive advantage, or where their workflows are so specific that off-the-shelf solutions don't apply.
-
-For everyone else — solo founders, small teams, companies building products that aren't AI-native — that 3-6 months is a sunk cost you can avoid.
+| | Hermes Agent | OpenClaw | Pancake |
+|---|---|---|---|
+| What it is | Open-source, self-improving agent | Open-source personal assistant and gateway | Hosted AI GTM team |
+| Scope | General purpose | General purpose | Buying signals, outreach, articles for Google and AI search |
+| Where it runs | Your machine, Docker, a VPS or serverless | Your machine or server | Hosted by Pancake |
+| How you use it | Terminal, Telegram, Discord, Slack, WhatsApp, Signal, email and more | WhatsApp, Telegram, Slack, iMessage, Signal, Teams and more | The Pancake app, plus lead approvals in Slack |
+| Setup | Install, connect a model, add skills | Install the Gateway, connect channels and a model, add skills | Add your website |
+| Memory | Agent-curated memory and self-written skills | Sessions per agent, workspace or sender, plus skills | One GTM Brain shared by every agent |
+| Price | Free (MIT); you pay hosting and model usage | Free (MIT); you pay hosting and model usage | $99/month flat |
+| Best for | Developers who want an agent that learns their routine | Developers and power users who live in chat apps | Founders and small B2B teams looking for buyers |
 
 ---
 
-## The "Pancake uses its own GTM agents" signal
+## Which one you need
 
-The strongest credibility signal we can give you: Pancake uses its own GTM agents.
+Choose by the job, not by the layer.
 
-Every piece of our operations — outbound, content, engineering coordination, customer support, internal ops — is run by the same squads that customers get. We don't sell infrastructure we wouldn't trust ourselves.
+- **Hermes Agent** if you're technical and want one general agent that improves at your own routine.
+- **OpenClaw** if you want a personal assistant you can extend with community-built skills, and you're happy to host it.
+- **Pancake** if the job is finding B2B customers and you'd rather not build that pipeline yourself.
 
-When a growth workflow doesn't work for us, we fix it before it ships to customers. When a content squad produces mediocre output, we tune it until it's something we'd publish. When coordination breaks down, we patch the underlying workflow before anyone else sees it.
-
-This isn't a side project. This is how we run our company.
-
-If you're evaluating Pancake, the question isn't "can AI do this?" — the question is "do these specific squads, with these specific workflows, produce output I'd trust in my business?"
-
-We run that test every day. On ourselves.
+Pancake and the other two rarely compete for the same slot. A self-hosted agent can sort your inbox and calendar while Pancake works on pipeline. Neither depends on the other.
 
 ---
 
-## The real question: do you want to build infrastructure, or run a company?
+## When to build on Hermes or OpenClaw
 
-There's no right answer to that question. Some founders love building infrastructure. Some find the engineering challenge rewarding. Some have workflows so unique that custom-built is the only option.
+If you're building something custom, start from an open-source agent. A vertical AI product, a domain-specific agent or an internal tool for a workflow no product covers all need that foundation.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+You get full control, and you build exactly what you need. You also build what makes agents useful rather than merely capable: memory design, workflow definitions, approval rules, testing and upkeep.
 
-You don't choose between them. You choose what layer you want to work at.
+That trade-off makes sense when the agent system is your competitive advantage, or when your workflow is so specific that no product fits.
 
-[See Pancake in action at getpancake.ai](https://getpancake.ai)
+Could you rebuild Pancake's job this way? Partly. Both frameworks can run scheduled research and draft messages. You would still own the signal sources, the lead rules, the outreach steps and the fixes when something upstream changes. For a founder whose product isn't AI, those hours come out of selling. Our [OpenClaw hosting comparison](/blog/best-openclaw-hosting-alternatives-2026) shows what the self-hosted route costs before you write a single skill.
+
+---
+
+## The real question: which job are you filling?
+
+Some founders enjoy building agents. Some have workflows so unusual that custom is the only option. For them, Hermes Agent or OpenClaw is the right starting point, and the choice between the two comes down to channels, skills and taste.
+
+If the job on your list is "find people who might buy and start the conversation," an agent framework is a long way round. Pancake does that one job for you.
+
+[See how Pancake finds your buyers](https://getpancake.ai)

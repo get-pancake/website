@@ -1,101 +1,122 @@
 ---
 date: "2026-07-03"
-title: "What Is OpenClaw? The Runtime Behind Pancake v1"
-description: "OpenClaw was part of Pancake v1's agent infrastructure. Pancake v2 is now a focused AI GTM team. Here is what changed and when each product makes sense."
+title: "What Is OpenClaw? The Open-Source AI Agent, Explained"
+seo_title: "What Is OpenClaw? The Open-Source AI Agent Explained (2026)"
+description: "What is OpenClaw? The open-source AI agent you host yourself: how its Gateway, skills and memory work, what it costs, the security risks, and who it suits."
 publishedAt: "2026-07-03"
-updatedAt: "2026-08-27"
+updatedAt: "2026-09-24"
 cover_image: "/blog/what-is-openclaw-pancake-cover.webp"
-cover_image_alt: "OpenClaw agent runtime compared with the managed Pancake v2 GTM product"
+cover_image_alt: "Two stacked blocks labeled OpenClaw and Pancake"
 author: "François de Fitte"
 category: "autonomous company"
-tags: ["OpenClaw AI", "OpenClaw vs Pancake", "what is OpenClaw", "AI agent runtime", "Pancake v2"]
+tags: ["OpenClaw AI", "OpenClaw vs Pancake", "what is OpenClaw", "AI agent runtime", "open-source AI agent"]
+related:
+  - "best-openclaw-hosting-alternatives-2026"
+  - "pancake-vs-hermes-openclaw"
+  - "openclaw-for-founders-managed-vs-diy"
 faq:
   - question: "What is OpenClaw?"
-    answer: "OpenClaw is an open-source platform for running AI agents and connecting them to tools. It is infrastructure for people who want to assemble and operate their own agent system."
+    answer: "OpenClaw is a free, open-source AI agent that runs on hardware you control. You reach it from chat apps like WhatsApp, Telegram, Slack or iMessage, and it works with the AI model you connect."
+  - question: "Who created OpenClaw?"
+    answer: "Austrian developer Peter Steinberger first released it in November 2025. He joined OpenAI in February 2026, and the nonprofit OpenClaw Foundation now stewards the project."
+  - question: "Is OpenClaw free?"
+    answer: "The software is free under the MIT license. You still pay your model provider for usage, and for hosting unless it runs on a computer you already own."
+  - question: "Is OpenClaw safe to use?"
+    answer: "It can be, with care. Skills can run code on your machine, and researchers found hundreds of malicious skills on ClawHub in early 2026. Read skills before installing them, limit what the agent can reach, and never expose the Gateway to the open internet."
   - question: "Is OpenClaw the same as Pancake?"
-    answer: "Pancake v2 is an AI GTM team for buying signals, warm leads, outreach, and AI-search publishing. Its agents share one GTM Brain."
-  - question: "Does Pancake v2 require OpenClaw?"
-    answer: "No customer needs to install or manage OpenClaw to use Pancake v2. Pancake v1 used OpenClaw in its broader autonomous-company architecture; v2 is sold and experienced as a focused GTM product."
-  - question: "How much does Pancake cost?"
-    answer: "Pancake v2 costs $99 per month, with every GTM agent included."
-last_updated: "2026-08-27"
+    answer: "No. OpenClaw is a general-purpose agent you host and configure. Pancake is a hosted AI GTM team: you add your website, and its agents find people showing buying signals and run outreach to them."
+last_updated: "2026-09-24"
 ---
 
-> **Pancake v2 update, August 27, 2026:** This URL is preserved because people still use it to understand the relationship between OpenClaw and Pancake. The relationship described in the original article applied to Pancake v1. Pancake v2 is a focused AI GTM team, not a managed autonomous-company runtime.
+OpenClaw is an AI assistant you host yourself. It runs on your laptop, a spare computer or a rented server. You message it from WhatsApp, Telegram, Slack or iMessage the way you'd message a person. It reads documents, browses the web, runs commands and sends messages for you, using whichever AI model you plug in.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+The project passed 240,000 GitHub stars by March 2026. This guide covers where it came from, how it works, what it costs, where it goes wrong, and how it differs from a hosted product like Pancake.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+## Where OpenClaw came from
 
-## What OpenClaw is
+Peter Steinberger, the Austrian developer who founded PSPDFKit, built it as a personal tool: an AI assistant on his own hardware that he could reach over WhatsApp. It first shipped in November 2025. It was best known as Clawdbot, then briefly Moltbot, before it became OpenClaw in late January 2026.
 
-OpenClaw is an open-source agent platform. It is useful when you want direct control over agent configuration, model selection, tool access, memory, deployment, and maintenance.
+In February 2026 Steinberger joined OpenAI. The project stayed open source and moved to the OpenClaw Foundation, a nonprofit that steers development under the MIT license.
 
-That flexibility is the point. It also means the operator owns the implementation work: deciding what the agents should do, connecting the necessary tools, testing workflows, monitoring failures, and maintaining the system as dependencies change.
+## How OpenClaw works
 
-OpenClaw is therefore best understood as infrastructure, not a ready-made GTM outcome.
+An OpenClaw setup has four moving parts.
 
-## How OpenClaw related to Pancake v1
+**The Gateway.** A single process on your machine or server. It holds your sessions, routes messages and keeps the connections to your chat apps: WhatsApp, Telegram, Slack, Discord, Signal, iMessage, Microsoft Teams, Matrix and more through plugins.
 
-Pancake v1 used OpenClaw as part of a broader product vision: a managed set of agents that could support work across a company. Earlier versions of this article described OpenClaw as the engine and Pancake as the assembled car.
+**The model.** OpenClaw ships no AI of its own. You connect a provider such as Claude, GPT, Gemini or a local model, and you can set a failover for when one is down.
 
-That description is useful history, but it no longer describes the product Pancake sells.
+**Skills.** A skill teaches the agent a repeatable procedure. You write your own or install one from ClawHub, the community marketplace.
 
-Pancake v2 narrowed the mission to customer acquisition. The product is organized around a shared GTM Brain and agents that can:
+**Memory and schedules.** Configuration and conversation history stay on your machine, so the agent can pick up past work. Cron jobs and webhooks let it act without a prompt, such as a morning summary or an hourly check.
 
-- monitor buying signals;
-- identify and qualify warm leads;
-- run personalized outreach;
-- publish content for Google and AI search;
-- measure results and feed what works back into the GTM Brain.
+One Gateway can also run several agents. Multi-agent routing gives each agent, workspace or sender its own session.
 
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+## What people use OpenClaw for
 
-## OpenClaw vs Pancake v2
+The uses are whatever its owner sets up. Common ones include sorting an inbox, managing a calendar, researching a topic on a schedule, filling in web forms and running scripts on a home server. Developers also use it to steer coding agents from their phone.
 
-| | OpenClaw | Pancake v2 |
+That range is the appeal. It also means OpenClaw does nothing useful until you decide what it should do and wire it up.
+
+## What OpenClaw costs
+
+The software costs nothing. Running it costs money in two places:
+
+- **Model usage.** Every message and every scheduled job calls the model you connected, billed by your provider.
+- **Hosting.** Free on a computer you already own. A small VPS or a managed OpenClaw host starts at a few dollars a month. Our [OpenClaw hosting comparison](/blog/best-openclaw-hosting-alternatives-2026) lists current plans.
+
+The cost that doesn't show on a bill is your time: installing, updating, vetting skills and fixing things when a dependency changes.
+
+## The risks to know
+
+OpenClaw has deep access by design. It can run shell commands, read files and send messages as you. Each of those abilities is also a way in for an attacker.
+
+- **Skills run code.** In early 2026, researchers found hundreds of malicious skills on ClawHub. Many posed as crypto wallets or YouTube tools and installed info-stealing malware on Macs.
+- **Prompt injection.** A web page or message the agent reads can carry instructions it may follow. Limit what it can touch.
+- **Exposed gateways.** A Gateway reachable from the public internet is an open door. Keep it on a private network or behind a VPN.
+
+## Who OpenClaw is for
+
+OpenClaw suits developers and technical operators. It fits if you want one assistant across your chat apps, full control over models and data, and you're willing to host and maintain it.
+
+If that's you, the next choice is self-hosting or a managed host. The main open-source alternative is Hermes Agent from Nous Research, which we compare in [Pancake vs Hermes vs OpenClaw](/blog/pancake-vs-hermes-openclaw).
+
+## OpenClaw vs Pancake
+
+Pancake is not an OpenClaw host, and you don't install or run OpenClaw to use it. It is an AI GTM team for founders and small B2B companies, built for one job: finding people who show buying signals and running outreach to them.
+
+You add your website. Pancake learns your positioning, ideal customers, offers, proof and objections into one shared memory, the GTM Brain. Its agents watch for signals such as people engaging with a competitor's posts or companies whose job posts name a tool you replace. Leads arrive each morning with the reason they were picked, and you approve them in the app or from Slack.
+
+Outreach then runs from your own account on the professional network. It starts with a profile visit, a like on a recent post and an invite with no note, followed by up to three messages. The first one asks a light question about the signal and makes no pitch. Pancake also writes articles for Google and AI search, which you approve.
+
+| | OpenClaw | Pancake |
 |---|---|---|
-| Product type | Open-source agent platform | Managed AI GTM team |
-| Primary user | Developers and technical operators | Founders and small GTM teams |
-| Scope | General-purpose | Customer acquisition |
-| Setup | You assemble agents, tools, and workflows | GTM agents and workflows are included |
-| Shared context | You design the memory architecture | One GTM Brain shared across every agent |
-| Execution | Depends on what you build | Signals, leads, outreach, and AI-search publishing |
-| Ongoing maintenance | Self-managed | Managed product |
-| Pancake price | Not applicable | $99/month, every GTM agent included |
+| What it is | Open-source personal AI agent | Hosted AI GTM team |
+| Built for | Developers and technical operators | Founders and small B2B companies |
+| Scope | General purpose | Buying signals, outreach, articles for Google and AI search |
+| Setup | Install the Gateway, connect a model and chat apps, add skills | Add your website |
+| Memory | Local history and skills you manage | One GTM Brain that learns who buys from you |
+| Upkeep | Yours: updates, skills, security | Handled by Pancake |
+| Price | Free software; you pay model usage and hosting | [$99/month flat](/pricing), every agent included |
 
 ## When OpenClaw is the better choice
 
-OpenClaw is the better fit when:
+- Your use case goes well beyond sales and marketing.
+- You want to inspect and change the agent system itself.
+- You have engineering time for deployment and upkeep.
+- Owning the stack matters more to you than reaching an outcome fast.
 
-- your use case extends far beyond GTM;
-- you want to inspect and modify the underlying agent system;
-- you have engineering time for deployment and maintenance;
-- owning the infrastructure is more important than reaching an outcome quickly.
-
-For a technical team building a bespoke agent product, that control can be valuable.
+For a technical team building a custom agent product, that control is worth the work.
 
 ## When Pancake is the better choice
 
-Pancake is the better fit when:
+- The goal right now is finding customers.
+- You want signal research, outreach and articles to draw on the same knowledge of your buyers.
+- You want the work done each day, not suggested.
+- You don't want to build or maintain an agent runtime.
 
-- the immediate goal is to bring in customers;
-- buying-signal research, outreach, and content should learn from the same context;
-- you want the system to execute recurring work rather than only suggest it;
-- you do not want to build or maintain an agent runtime.
+The GTM Brain ties it together. Every agent reads from the same picture of who buys from you, and Pancake keeps learning from what works.
 
-Pancake's GTM Brain is the connective layer. What the signal agent learns improves lead qualification. Outreach results refine messaging. Published content expands AI-search visibility. Each agent contributes to the same operating memory rather than working as an isolated automation.
+## The short version
 
-## The practical decision
-
-The decision is no longer “managed OpenClaw or DIY OpenClaw.” It is “general agent infrastructure or a focused GTM product.”
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
-
-## Summary
-
-OpenClaw was part of the story of Pancake v1. Pancake v2 has a clearer job: it is an AI GTM team for small companies. Its agents share one GTM Brain and carry customer-acquisition work through from discovery to execution.
-
-Pancake v2 is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run outreach, and publish for AI search through one shared GTM Brain.
+OpenClaw is a free, self-hosted AI agent with a large community and real security trade-offs. It can do almost anything you configure it to do, and nothing until you do. Pancake does one thing, finding your buyers and starting the conversation, and costs $99/month flat after a 3-day free trial.
