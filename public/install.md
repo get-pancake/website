@@ -7,7 +7,7 @@ not a shell script: read it and execute only the setup steps for that client.
 ## Connection details
 
 - Server name: `pancake`
-- MCP URL: `https://app.getpancake.ai/api/mcp`
+- MCP URL: `https://app.pancake.ai/api/mcp`
 - Transport: Streamable HTTP
 - Authentication: browser-based OAuth with PKCE; scope `mcp`
 - Workspace: the user selects it during browser consent, not in the server URL.
@@ -32,7 +32,7 @@ client manage OAuth credentials and refresh them.
 If no existing connection was found, run:
 
 ```sh
-codex mcp add pancake --url https://app.getpancake.ai/api/mcp
+codex mcp add pancake --url https://app.pancake.ai/api/mcp
 ```
 
 Then, if authentication is still needed:
@@ -51,7 +51,7 @@ Reference: [Codex MCP documentation](https://developers.openai.com/codex/mcp).
 If no existing connection was found, run:
 
 ```sh
-claude mcp add --transport http --scope user pancake https://app.getpancake.ai/api/mcp
+claude mcp add --transport http --scope user pancake https://app.pancake.ai/api/mcp
 ```
 
 This uses the user's configuration across projects. If the user requested project
@@ -73,7 +73,7 @@ Registration (DCR). For a local CLI that needs an explicit public OAuth client I
 or client metadata URL, use:
 
 ```text
-https://app.getpancake.ai/.well-known/mcp-clients/pancake-cli.json
+https://app.pancake.ai/.well-known/mcp-clients/pancake-cli.json
 ```
 
 This URL is public metadata, not a secret. It allows loopback callbacks with paths
@@ -116,4 +116,4 @@ The MCP connection exposes Pancake tools. It does not itself install a workflow
 skill or plugin. Existing Pancake plugins can remain the source of that guidance.
 
 For manual setup or connection management, open
-[Pancake's MCP settings](https://app.getpancake.ai/workspace/mcp).
+[Pancake's MCP settings](https://app.pancake.ai/workspace/mcp).
