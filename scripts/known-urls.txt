@@ -1,4 +1,4 @@
-# Every public URL of getpancake.ai that search engines know (2026-09-24: live sitemap +
+# Every public URL of pancake.ai (getpancake.ai until PAN-1318) that search engines know (2026-09-24: live sitemap +
 # reachable non-sitemap routes). scripts/url-guard.mjs fails the build if one of them stops
 # resolving without a redirect in next.config.mjs. Founder rule: a removed or renamed page
 # always ships with a 301 to the closest live page. Add new public URLs here when you ship them.

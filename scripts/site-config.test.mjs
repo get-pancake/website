@@ -16,7 +16,7 @@ import {
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
-test("with no variable set, every origin is today's getpancake.ai host", () => {
+test("with no variable set, the site, app and ingest are on pancake.ai; provider hosts have not moved", () => {
   const config = resolveSiteConfig({});
   assert.deepEqual(
     {
@@ -28,28 +28,28 @@ test("with no variable set, every origin is today's getpancake.ai host", () => {
       squads: config.squadsOrigin,
     },
     {
-      site: "https://getpancake.ai",
-      app: "https://app.getpancake.ai",
-      analyticsIngest: "https://beta-api.getpancake.ai",
+      site: "https://pancake.ai",
+      app: "https://app.pancake.ai",
+      analyticsIngest: "https://beta-api.pancake.ai",
       posthog: "https://e.getpancake.ai",
       leadJourney: "https://t.getpancake.ai",
       squads: "https://squads.getpancake.ai",
     },
   );
-  assert.equal(config.siteHost, "getpancake.ai");
+  assert.equal(config.siteHost, "pancake.ai");
   assert.equal(resolveSiteConfig({ NEXT_PUBLIC_SITE_ORIGIN: "  " }).siteOrigin, DEFAULT_ORIGINS.site);
 });
 
-test("the cutover values move the site, app and ingest; provider hosts wait for their own variables", () => {
+test("the getpancake.ai values roll the site, app and ingest back", () => {
   const config = resolveSiteConfig({
-    NEXT_PUBLIC_SITE_ORIGIN: "https://pancake.ai/",
-    NEXT_PUBLIC_APP_ORIGIN: " https://app.pancake.ai ",
-    NEXT_PUBLIC_ANALYTICS_INGEST_ORIGIN: "https://beta-api.pancake.ai",
+    NEXT_PUBLIC_SITE_ORIGIN: "https://getpancake.ai/",
+    NEXT_PUBLIC_APP_ORIGIN: " https://app.getpancake.ai ",
+    NEXT_PUBLIC_ANALYTICS_INGEST_ORIGIN: "https://beta-api.getpancake.ai",
   });
-  assert.equal(config.siteOrigin, "https://pancake.ai");
-  assert.equal(config.siteHost, "pancake.ai");
-  assert.equal(config.appOrigin, "https://app.pancake.ai");
-  assert.equal(config.analyticsIngestOrigin, "https://beta-api.pancake.ai");
+  assert.equal(config.siteOrigin, "https://getpancake.ai");
+  assert.equal(config.siteHost, "getpancake.ai");
+  assert.equal(config.appOrigin, "https://app.getpancake.ai");
+  assert.equal(config.analyticsIngestOrigin, "https://beta-api.getpancake.ai");
   assert.equal(config.posthogOrigin, "https://e.getpancake.ai");
   assert.equal(config.leadJourneyOrigin, "https://t.getpancake.ai");
 });
@@ -98,13 +98,13 @@ test("the canonical host is always a production host", () => {
   const hosts = (env) => [...resolveSiteConfig(env).productionHosts].sort();
   const families = ["getpancake.ai", "pancake.ai", "www.getpancake.ai", "www.pancake.ai"];
   assert.deepEqual(hosts({}), families);
-  assert.deepEqual(hosts({ NEXT_PUBLIC_SITE_ORIGIN: "https://pancake.ai" }), families);
+  assert.deepEqual(hosts({ NEXT_PUBLIC_SITE_ORIGIN: "https://getpancake.ai" }), families);
   assert.deepEqual(hosts({ NEXT_PUBLIC_SITE_ORIGIN: "https://staging.example.com" }), [...families, "staging.example.com"].sort());
 });
 
 test("staff emails on both company domains are allowed unless an explicit list overrides them", () => {
-  assert.deepEqual([...PANCAKE_DOMAINS], ["getpancake.ai", "pancake.ai"]);
-  assert.deepEqual([...staffEmailDomains(undefined)], ["getpancake.ai", "pancake.ai"]);
+  assert.deepEqual([...PANCAKE_DOMAINS], ["pancake.ai", "getpancake.ai"]);
+  assert.deepEqual([...staffEmailDomains(undefined)], ["pancake.ai", "getpancake.ai"]);
   assert.deepEqual([...staffEmailDomains(" Example.com, pancake.ai ,")], ["example.com", "pancake.ai"]);
   // A variable that is set but empty keeps failing closed, as before.
   assert.deepEqual([...staffEmailDomains("")], []);
@@ -131,27 +131,27 @@ test("the environment reaches the module and next.config.mjs redirects", () => {
     );
 
   assert.deepEqual(run({}), {
-    site: "https://getpancake.ai",
-    host: "getpancake.ai",
-    app: "https://app.getpancake.ai",
-    ingest: "https://beta-api.getpancake.ai",
+    site: "https://pancake.ai",
+    host: "pancake.ai",
+    app: "https://app.pancake.ai",
+    ingest: "https://beta-api.pancake.ai",
     posthog: "https://e.getpancake.ai",
-    destinations: ["https://app.getpancake.ai"],
+    destinations: ["https://app.pancake.ai"],
     count: 4,
   });
   assert.deepEqual(
     run({
-      NEXT_PUBLIC_SITE_ORIGIN: "https://pancake.ai",
-      NEXT_PUBLIC_APP_ORIGIN: "https://app.pancake.ai",
-      NEXT_PUBLIC_ANALYTICS_INGEST_ORIGIN: "https://beta-api.pancake.ai",
+      NEXT_PUBLIC_SITE_ORIGIN: "https://getpancake.ai",
+      NEXT_PUBLIC_APP_ORIGIN: "https://app.getpancake.ai",
+      NEXT_PUBLIC_ANALYTICS_INGEST_ORIGIN: "https://beta-api.getpancake.ai",
     }),
     {
-      site: "https://pancake.ai",
-      host: "pancake.ai",
-      app: "https://app.pancake.ai",
-      ingest: "https://beta-api.pancake.ai",
+      site: "https://getpancake.ai",
+      host: "getpancake.ai",
+      app: "https://app.getpancake.ai",
+      ingest: "https://beta-api.getpancake.ai",
       posthog: "https://e.getpancake.ai",
-      destinations: ["https://app.pancake.ai"],
+      destinations: ["https://app.getpancake.ai"],
       count: 4,
     },
   );
