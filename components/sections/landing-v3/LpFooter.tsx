@@ -11,6 +11,7 @@
 
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { SUPPORT_PATH } from "@/lib/contact";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 type FootLink = { label: string; href: string; external?: boolean };
 
@@ -21,7 +22,7 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
     links: [
       { label: "How it works", href: "/#how-it-works" },
       { label: "Pricing", href: "/pricing" },
-      { label: "Open the app", href: "https://app.getpancake.ai", external: true },
+      { label: "Open the app", href: APP_ORIGIN, external: true },
     ],
   },
   {

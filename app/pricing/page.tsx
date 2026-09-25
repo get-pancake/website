@@ -14,12 +14,13 @@ import { LandingNav } from "@/components/sections/landing/LandingNav";
 import { PancakeStack } from "@/components/sections/pricing/PancakeStack";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { pricingV2 } from "@/lib/copy";
+import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v2.css";
 
 const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDollars}/month flat for your whole AI sales and marketing team. Everything included. No tiers, no seats.`;
 
 const TITLE = `Pancake Pricing: $${pricingV2.monthlyDollars}/month flat`;
-const URL = "https://getpancake.ai/pricing";
+const URL = `${SITE_ORIGIN}/pricing`;
 
 /* Brand-first title: the page answers "pancake pricing" / "pancake ai pricing".
    The self canonical matters — without it the page inherited the homepage
@@ -68,7 +69,7 @@ const productJsonLd = {
       unitText: "MONTH",
     },
     availability: "https://schema.org/InStock",
-    seller: { "@type": "Organization", "@id": "https://getpancake.ai/#organization", name: "Pancake" },
+    seller: { "@type": "Organization", "@id": `${SITE_ORIGIN}/#organization`, name: "Pancake" },
   },
 };
 
@@ -110,7 +111,7 @@ export default function PricingPage() {
                 <p className="lv2-price-sub">{pricingV2.access}</p>
                 <PriceGroups />
                 <div className="lv2-button-group">
-                  <FxPillLink href="https://app.getpancake.ai" data-analytics-id="app_pricing_page">
+                  <FxPillLink href={APP_ORIGIN} data-analytics-id="app_pricing_page">
                     Start free
                   </FxPillLink>
                   <FxPillLink

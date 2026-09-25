@@ -4,6 +4,7 @@ import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { DemoHero } from "@/components/sections/demo/DemoHero";
 import { FOOTER, META } from "@/components/sections/demo/demo-copy";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/demo.css";
 import "@/app/_styles/ai-sales-call.css";
@@ -31,10 +32,10 @@ export const metadata: Metadata = {
   title: META.title,
   description: META.description,
   robots: { index: false, follow: false },
-  alternates: { canonical: "https://getpancake.ai/demo" },
+  alternates: { canonical: `${SITE_ORIGIN}/demo` },
   openGraph: {
     type: "website",
-    url: "https://getpancake.ai/demo",
+    url: `${SITE_ORIGIN}/demo`,
     title: META.ogTitle,
     description: META.description,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: META.ogTitle }],

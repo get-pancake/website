@@ -13,6 +13,7 @@ import {
   META_BROWSER_PIXEL_ID,
   PANCAKE_ANALYTICS_INGEST_ORIGIN,
 } from "@/lib/analytics/vendor-config";
+import { PRODUCTION_SITE_HOSTS, SITE_HOST, SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * Lato — Slack's UI typeface (SIL Open Font License, served via next/font/google).
@@ -96,13 +97,14 @@ const geistSans = localFont({
   display: "swap",
 });
 
-// Canonical host is the apex domain: https://getpancake.ai serves 200 directly,
-// and the www host 308-redirects to it (verified via curl -sI).
+// Canonical host is the apex domain, SITE_ORIGIN (lib/site-config.mjs; today
+// https://getpancake.ai, which serves 200 directly while the www host
+// 308-redirects to it, verified via curl -sI).
 // Every absolute URL below (canonical, og:url, JSON-LD) uses the apex host.
 // Default title/OG for routes that set none (founder 2026-09-24: "we're not an AI
 // coworker any more, we're AI GTM"). The homepage sets its own <title>: "Pancake".
 export const metadata: Metadata = {
-  metadataBase: new URL("https://getpancake.ai"),
+  metadataBase: new URL(SITE_ORIGIN),
   title: "Pancake: The AI GTM team that brings you customers",
   description:
     "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
@@ -136,11 +138,11 @@ export const metadata: Metadata = {
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "@id": "https://getpancake.ai/#organization",
+  "@id": `${SITE_ORIGIN}/#organization`,
   name: "Pancake",
   alternateName: "Pancake AI",
-  url: "https://getpancake.ai",
-  logo: "https://getpancake.ai/pancake-mark.png",
+  url: SITE_ORIGIN,
+  logo: `${SITE_ORIGIN}/pancake-mark.png`,
   description:
     "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
   foundingDate: "2024",
@@ -170,11 +172,11 @@ const organizationJsonLd = {
 const webSiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "@id": "https://getpancake.ai/#website",
+  "@id": `${SITE_ORIGIN}/#website`,
   name: "Pancake",
-  alternateName: ["Pancake AI", "getpancake.ai"],
-  url: "https://getpancake.ai",
-  publisher: { "@id": "https://getpancake.ai/#organization" },
+  alternateName: ["Pancake AI", SITE_HOST],
+  url: SITE_ORIGIN,
+  publisher: { "@id": `${SITE_ORIGIN}/#organization` },
 };
 
 const googleTagManagerId = "GTM-P3Z79WKD";
@@ -188,8 +190,9 @@ const productionVendorTrackingEnabled =
 const tagManagerDebugEnabled =
   !productionVendorTrackingEnabled && process.env.PANCAKE_ANALYTICS_DEBUG === "1";
 const tagManagerEnabled = productionVendorTrackingEnabled || tagManagerDebugEnabled;
-const productionHostnameGuard =
-  "var h=window.location.hostname.toLowerCase();if(h!=='getpancake.ai'&&h!=='www.getpancake.ai'){return;}";
+// Both domains, apex and www (lib/site-config.mjs): the site answers on
+// getpancake.ai and pancake.ai through the move, and tags run on either.
+const productionHostnameGuard = `var h=window.location.hostname.toLowerCase();if(${JSON.stringify(PRODUCTION_SITE_HOSTS)}.indexOf(h)<0){return;}`;
 
 export default function RootLayout({
   children,

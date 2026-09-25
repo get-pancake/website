@@ -5,6 +5,7 @@ import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { AgMarksRow } from "./AgAgentMarks";
 import { AgTerminal } from "./AgTerminal";
 import { CTA, WORKS_WITH } from "./ag-copy";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * /agents — final CTA. The homepage's CTA card (cta.css geometry, the two
@@ -39,7 +40,7 @@ export function AgCta() {
           </div>
           <AgTerminal className="ag-cta__term" />
           <div className="lp-cta__btns">
-            <LpFxLink href="https://app.getpancake.ai" data-analytics-id="app_final">
+            <LpFxLink href={APP_ORIGIN} data-analytics-id="app_final">
               {CTA.primary}
             </LpFxLink>
             <LpFxLink href={DEMO_PAGE_PATH} className="lp-btn--tinted lp-btn--demo" data-analytics-id="call_final">

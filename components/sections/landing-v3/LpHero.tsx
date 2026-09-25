@@ -6,6 +6,7 @@ import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { LpViewportVar } from "@/components/sections/landing-v3/LpViewportVar";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 // Landing v3 — Hero (Figma node 4257:4906, 1654×758).
 // The rainbow art (animated per-arc pancakes group, anim.css) lives in a
@@ -40,7 +41,7 @@ export function LpHero() {
             your AI search visibility, and learn from every interaction.
           </p>
           <div className="lp-hero-btns">
-            <LpFxLink href="https://app.getpancake.ai" data-analytics-id="app_hero">
+            <LpFxLink href={APP_ORIGIN} data-analytics-id="app_hero">
               Start free
             </LpFxLink>
             {/* A same-tab link to /demo (François, 2026-09-16; it opened the

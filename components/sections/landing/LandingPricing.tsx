@@ -5,6 +5,7 @@ import { pricingV2 } from "@/lib/copy";
 
 import { FxPillLink } from "./FxPill";
 import { PriceGroups } from "./PriceGroups";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * Pricing — one flat number, Okara-simple (founder call 2026-08-06: $99/month
@@ -37,7 +38,7 @@ export function LandingPricing() {
             <p className="lv2-price-sub">{pricingV2.access}</p>
             <PriceGroups />
             <div className="lv2-button-group">
-              <FxPillLink href="https://app.getpancake.ai" data-analytics-id="app_pricing_card">
+              <FxPillLink href={APP_ORIGIN} data-analytics-id="app_pricing_card">
                 Get started
               </FxPillLink>
               <Link href="/pricing" className="lv2-price-link">

@@ -3,10 +3,12 @@ import "server-only";
 import { createHash } from "node:crypto";
 
 import { META_BROWSER_PIXEL_ID } from "@/lib/analytics/vendor-config";
+import { isProductionSiteHost, SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 const META_GRAPH_API_VERSION = process.env.META_GRAPH_API_VERSION ?? "v25.0";
 const META_FETCH_TIMEOUT_MS = 2500;
-const PRODUCTION_HOSTS = new Set(["getpancake.ai", "www.getpancake.ai"]);
+/** Where a lead happened when the Referer cannot tell: the canonical homepage. */
+const FALLBACK_EVENT_SOURCE_URL = `${SITE_ORIGIN}/`;
 const ATTRIBUTION_QUERY_KEYS = new Set([
   "utm_source",
   "utm_medium",
@@ -56,7 +58,7 @@ function cleanString(value: string | undefined, maxLength: number) {
 
 function cleanEventSourceUrl(value: string | undefined) {
   const rawUrl = cleanString(value, 2048);
-  if (!rawUrl) return "https://getpancake.ai/";
+  if (!rawUrl) return FALLBACK_EVENT_SOURCE_URL;
 
   try {
     const source = new URL(rawUrl);
@@ -64,9 +66,9 @@ function cleanEventSourceUrl(value: string | undefined) {
       source.protocol !== "https:" ||
       source.username ||
       source.password ||
-      !PRODUCTION_HOSTS.has(source.hostname.toLowerCase())
+      !isProductionSiteHost(source.hostname)
     ) {
-      return "https://getpancake.ai/";
+      return FALLBACK_EVENT_SOURCE_URL;
     }
 
     const cleaned = new URL(`${source.origin}${source.pathname}`);
@@ -77,7 +79,7 @@ function cleanEventSourceUrl(value: string | undefined) {
     }
     return cleaned.toString();
   } catch {
-    return "https://getpancake.ai/";
+    return FALLBACK_EVENT_SOURCE_URL;
   }
 }
 
@@ -91,7 +93,7 @@ function cleanEventTimeSeconds(value: number | undefined) {
 }
 
 function analyticsDeliveryMode(requestHostname: string): "live" | "test" | null {
-  const canonicalRequestHost = PRODUCTION_HOSTS.has(requestHostname.trim().toLowerCase());
+  const canonicalRequestHost = isProductionSiteHost(requestHostname);
   const production =
     process.env.NODE_ENV === "production" &&
     process.env.VERCEL_ENV === "production" &&

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { SUPPORT_PATH } from "@/lib/contact";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * Landing footer — rime.ai-style plum band: link columns on the left, the
@@ -28,7 +29,7 @@ const COLUMNS: { title: string; links: FooterLink[] }[] = [
     links: [
       { href: "/#how-it-works", label: "How it works" },
       { href: "/pricing", label: "Pricing" },
-      { href: "https://app.getpancake.ai", label: "Open the app", external: true },
+      { href: APP_ORIGIN, label: "Open the app", external: true },
     ],
   },
   {

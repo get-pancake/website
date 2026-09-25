@@ -3,6 +3,7 @@ import { VxPromptRows } from "@/components/sections/verticals/VxPromptRows";
 import { VX_CRUMBS, VX_CTA_LABELS, VX_HERO } from "@/components/sections/verticals/vx-copy";
 import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
 /**
@@ -45,7 +46,7 @@ export function VxHero({ v }: { v: VerticalConfig }) {
         </h1>
         <p className="vx-hero__lede">{vxNoWidow(v.hero.lede)}</p>
         <div className="lp-hero-btns vx-hero__btns">
-          <LpFxLink href="https://app.getpancake.ai" data-analytics-id="app_hero">
+          <LpFxLink href={APP_ORIGIN} data-analytics-id="app_hero">
             {VX_CTA_LABELS.primary}
           </LpFxLink>
           <LpFxLink href={DEMO_PAGE_PATH} className="lp-btn--tinted lp-btn--demo" data-analytics-id="call_hero">

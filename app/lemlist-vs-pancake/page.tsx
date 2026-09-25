@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 const title = "Lemlist vs Pancake: Outbound Platform vs AI GTM Team";
 const description = "Compare Lemlist and Pancake: a multichannel sales-engagement platform your team operates versus an AI GTM team that finds buyers and starts conversations.";
@@ -8,10 +9,10 @@ const description = "Compare Lemlist and Pancake: a multichannel sales-engagemen
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "https://getpancake.ai/lemlist-vs-pancake" },
+  alternates: { canonical: `${SITE_ORIGIN}/lemlist-vs-pancake` },
   openGraph: {
     type: "website",
-    url: "https://getpancake.ai/lemlist-vs-pancake",
+    url: `${SITE_ORIGIN}/lemlist-vs-pancake`,
     title,
     description,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Lemlist vs Pancake" }],
@@ -95,7 +96,7 @@ const config: GtmComparisonConfig = {
   sources: [
     { href: "https://www.lemlist.com/", label: "Lemlist product page" },
     { href: "https://www.lemlist.com/pricing", label: "Lemlist pricing" },
-    { href: "https://getpancake.ai/", label: "Pancake product page" },
+    { href: `${SITE_ORIGIN}/`, label: "Pancake product page" },
   ],
 };
 

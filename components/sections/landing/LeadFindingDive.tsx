@@ -1,4 +1,5 @@
 import { FxPillLink } from "./FxPill";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * Lead-finding deep dive — the Greptile move: show the mechanism, earn the
@@ -220,7 +221,7 @@ export function LeadFindingDive() {
         </ul>
 
         <div className="lv2-button-group">
-          <FxPillLink href="https://app.getpancake.ai" data-analytics-id="app_lead_finding">
+          <FxPillLink href={APP_ORIGIN} data-analytics-id="app_lead_finding">
             Get started
           </FxPillLink>
         </div>

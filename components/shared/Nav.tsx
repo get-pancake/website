@@ -2,13 +2,14 @@ import Link from "next/link";
 import { hero } from "@/lib/copy";
 import { PancakeLogo } from "./PancakeLogo";
 import { SiDiscord } from "react-icons/si";
+import { APP_ORIGIN, SQUADS_ORIGIN } from "@/lib/site-config.mjs";
 
 type NavProps = {
   ctaHref?: string;
   showCta?: boolean;
 };
 
-export function Nav({ ctaHref = "https://app.getpancake.ai", showCta = true }: NavProps) {
+export function Nav({ ctaHref = APP_ORIGIN, showCta = true }: NavProps) {
   return (
     <header
       className="fixed left-0 right-0 top-0 z-50 !shadow-none backdrop-blur-md"
@@ -33,7 +34,7 @@ export function Nav({ ctaHref = "https://app.getpancake.ai", showCta = true }: N
             Build in public
           </Link>
           <a
-            href="https://squads.getpancake.ai/"
+            href={`${SQUADS_ORIGIN}/`}
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-medium text-[var(--text)] underline-offset-4 transition hover:underline"

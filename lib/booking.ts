@@ -1,4 +1,5 @@
 import type { Goal, HasAccount, TeamSize } from "@/lib/demo-request";
+import { SITE_HOST } from "@/lib/site-config.mjs";
 
 /**
  * Demo booking, end to end.
@@ -168,7 +169,7 @@ export type EmbedOptions = {
  * from the browser (the frame is built after mount, from computed colors).
  */
 function calendlyEmbedParams({ compact = false, colors = {} }: EmbedOptions): URLSearchParams {
-  const domain = typeof window === "undefined" ? "getpancake.ai" : window.location.hostname;
+  const domain = typeof window === "undefined" ? SITE_HOST : window.location.hostname;
   const params = new URLSearchParams({
     embed_domain: domain,
     embed_type: "Inline",

@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 const title = "OpenClaw vs Pancake: Agent Runtime vs Managed AI GTM Team";
 const description = "Compare OpenClaw and Pancake: an open-source agent runtime you configure versus a managed AI GTM team that finds leads, runs outreach, and writes articles.";
 
 export const metadata: Metadata = {
   title, description,
-  alternates: { canonical: "https://getpancake.ai/openclaw-vs-pancake" },
-  openGraph: { type: "website", url: "https://getpancake.ai/openclaw-vs-pancake", title, description, images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "OpenClaw vs Pancake" }], siteName: "Pancake" },
+  alternates: { canonical: `${SITE_ORIGIN}/openclaw-vs-pancake` },
+  openGraph: { type: "website", url: `${SITE_ORIGIN}/openclaw-vs-pancake`, title, description, images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "OpenClaw vs Pancake" }], siteName: "Pancake" },
   twitter: { card: "summary_large_image", title, description, images: ["/og-image.png"] },
 };
 
@@ -52,7 +53,7 @@ const config: GtmComparisonConfig = {
     { q: "Can I use both?", a: "Yes. A developer can run custom internal agents on OpenClaw while using Pancake for managed GTM. The systems solve different layers of the problem." },
   ],
   related: [{ href: "/viktor-vs-pancake", label: "Viktor vs Pancake" }, { href: "/pancake-vs-paperclips", label: "Paperclip vs Pancake" }, { href: "/", label: "how Pancake works" }],
-  sources: [{ href: "https://github.com/openclaw/openclaw", label: "OpenClaw repository" }, { href: "https://github.com/openclaw/openclaw/blob/main/docs/concepts/agent-runtimes.md", label: "OpenClaw runtime documentation" }, { href: "https://getpancake.ai/", label: "Pancake product page" }],
+  sources: [{ href: "https://github.com/openclaw/openclaw", label: "OpenClaw repository" }, { href: "https://github.com/openclaw/openclaw/blob/main/docs/concepts/agent-runtimes.md", label: "OpenClaw runtime documentation" }, { href: `${SITE_ORIGIN}/`, label: "Pancake product page" }],
 };
 
 export default function OpenClawVsPancakePage() { return <GtmComparisonPage config={config} />; }

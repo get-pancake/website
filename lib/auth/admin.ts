@@ -1,12 +1,14 @@
 import { cookies } from "next/headers";
 import crypto from "node:crypto";
 
+import { staffEmailDomains } from "@/lib/site-config.mjs";
+
 /**
  * Admin identity — the ONE place that decides who may delete ideas.
  *
  * Google sign-in model: an admin signs in with Google on the hidden
  * /open-roadmap/admin page; we verify their email is verified AND on an
- * allow-listed company domain (default getpancake.ai), then set a signed,
+ * allow-listed company domain (default getpancake.ai and pancake.ai), then set a signed,
  * HttpOnly cookie that proves "a verified company user authenticated, until
  * exp". Every privileged route checks that cookie server-side. The cookie is
  * signed with ROADMAP_AUTH_SECRET (the HMAC key), so a client can't forge it,
@@ -21,11 +23,11 @@ const AUTH_SECRET = process.env.ROADMAP_AUTH_SECRET;
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_OAUTH_CLIENT_ID;
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_OAUTH_CLIENT_SECRET;
 
-/** Allow-listed email domains (comma-separated env, defaults to getpancake.ai). */
-const ALLOWED_DOMAINS = (process.env.ROADMAP_ALLOWED_EMAIL_DOMAINS ?? "getpancake.ai")
-  .split(",")
-  .map((d) => d.trim().toLowerCase())
-  .filter(Boolean);
+/**
+ * Allow-listed email domains: the comma-separated ROADMAP_ALLOWED_EMAIL_DOMAINS, else both company
+ * domains (getpancake.ai and pancake.ai: staff addresses move to pancake.ai, the old ones stay).
+ */
+export const ADMIN_EMAIL_DOMAINS = staffEmailDomains(process.env.ROADMAP_ALLOWED_EMAIL_DOMAINS);
 
 const SESSION_TTL_SECONDS = 7 * 24 * 60 * 60; // 7 days
 
@@ -46,7 +48,7 @@ export function isAllowedAdminEmail(email: unknown): email is string {
   if (typeof email !== "string") return false;
   const at = email.lastIndexOf("@");
   if (at <= 0 || at === email.length - 1) return false;
-  return ALLOWED_DOMAINS.includes(email.slice(at + 1).toLowerCase());
+  return ADMIN_EMAIL_DOMAINS.includes(email.slice(at + 1).toLowerCase());
 }
 
 /**

@@ -2,6 +2,8 @@ import "server-only";
 
 import crypto from "node:crypto";
 
+import { ADMIN_EMAIL_DOMAINS } from "@/lib/auth/admin";
+
 /**
  * Google OAuth 2.0 (authorization-code) helpers for admin sign-in.
  *
@@ -81,12 +83,12 @@ export function buildAuthUrl(opts: { redirectUri: string; state: string }): stri
     prompt: "select_account",
     include_granted_scopes: "true",
   });
-  const firstDomain = (process.env.ROADMAP_ALLOWED_EMAIL_DOMAINS ?? "getpancake.ai")
-    .split(",")[0]
-    .trim();
   // `hd` is only a UI hint (pre-selects the workspace) — NOT enforcement. The
   // real domain check happens on the verified email in the callback route.
-  if (firstDomain) params.set("hd", firstDomain);
+  // With several allowed domains, "*" asks for any Workspace account instead
+  // of hiding the ones on the other domain.
+  const hd = ADMIN_EMAIL_DOMAINS.length > 1 ? "*" : ADMIN_EMAIL_DOMAINS[0];
+  if (hd) params.set("hd", hd);
   return `${AUTH_ENDPOINT}?${params.toString()}`;
 }
 

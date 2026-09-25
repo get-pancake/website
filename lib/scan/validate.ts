@@ -1,5 +1,7 @@
 import "server-only";
 
+import { PANCAKE_DOMAINS } from "@/lib/site-config.mjs";
+
 /**
  * Target validation for the free scan. Mirrors the waitlist route's
  * `normalizeUrl` contract (accepts bare "acme.com") and adds the guards a
@@ -20,7 +22,7 @@ const MEGA_DOMAINS = new Set([
   "twitter.com",
 ]);
 
-const OWN_DOMAINS = new Set(["getpancake.ai", "getbasalt.ai"]);
+const OWN_DOMAINS = new Set([...PANCAKE_DOMAINS, "getbasalt.ai"]);
 
 const IPV4_RE = /^\d{1,3}(\.\d{1,3}){3}$/;
 

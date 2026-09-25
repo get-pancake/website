@@ -22,6 +22,7 @@
 import { HOME_PAGE_CONTAINER_CLASS } from "@/components/sections/home/home-layout";
 import { H2 } from "@/components/ui/Headings";
 import { pricing } from "@/lib/copy";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { TRIAL_CARD_REQUIREMENT, TRIAL_LABEL } from "@/lib/trial";
 import "@/app/_styles/home-pricing-teaser.css";
 
@@ -132,12 +133,12 @@ export function HomePricingTeaser() {
           </ul>
           <div className="home-pricing-teaser__cta">
             {/*
-              Signup CTA MUST stay a real <a href="https://app.getpancake.ai">
+              Signup CTA MUST stay a real <a href={APP_ORIGIN}>
               anchor — analytics fires on the hostname (no buttons/router).
               Class string mirrors the closing CTA in HomeLandingBody.
             */}
             <a
-              href="https://app.getpancake.ai"
+              href={APP_ORIGIN}
               className="button inline-flex w-fit shrink-0 items-center justify-center no-underline"
               data-size="lg"
             >

@@ -17,6 +17,7 @@ import {
 } from "@/lib/analytics/waitlist-delivery";
 import { normalizeAirtableBaseId, normalizeAirtableToken } from "@/lib/airtable-config";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { isProductionSiteHost } from "@/lib/site-config.mjs";
 
 export const runtime = "nodejs";
 
@@ -31,7 +32,6 @@ const HANDOFF_CHOICES = [
 ];
 const SOURCE_CHOICES = new Set(["landing-v2", "gtm-report"]);
 const AIRTABLE_TIMEOUT_MS = 5000;
-const PRODUCTION_HOSTS = new Set(["getpancake.ai", "www.getpancake.ai"]);
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -77,7 +77,8 @@ function hasApprovedOrigin(request: Request) {
     const origin = new URL(rawOrigin);
     const hostname = origin.hostname.toLowerCase();
     const local = process.env.NODE_ENV !== "production" && LOCAL_HOSTS.has(hostname);
-    const approved = PRODUCTION_HOSTS.has(hostname) || VERCEL_HOSTS.has(hostname) || local;
+    // Both domains, apex and www (lib/site-config.mjs), plus this deployment's Vercel hosts.
+    const approved = isProductionSiteHost(hostname) || VERCEL_HOSTS.has(hostname) || local;
 
     return (
       approved &&

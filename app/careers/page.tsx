@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/landing-v3/careers.css";
 
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
   title: "Careers — Pancake",
   description:
     "Pancake is five people in San Francisco building the AI agents that bring small businesses customers. See open roles, meet the team, or send a note.",
-  alternates: { canonical: "https://getpancake.ai/careers" },
+  alternates: { canonical: `${SITE_ORIGIN}/careers` },
 };
 
 type Role = {

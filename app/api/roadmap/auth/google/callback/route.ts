@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 import {
   ADMIN_COOKIE_NAME,
+  ADMIN_EMAIL_DOMAINS,
   isAdminAuthConfigured,
   isAllowedAdminEmail,
   mintAdminCookie,
@@ -13,6 +14,7 @@ import {
   getRedirectUri,
   stateMatches,
 } from "@/lib/auth/google";
+import { isStaffGoogleIdentity } from "@/lib/site-config.mjs";
 
 export const runtime = "nodejs";
 
@@ -48,7 +50,11 @@ export async function GET(request: Request) {
   const claims = await exchangeCodeForClaims({ code, redirectUri: getRedirectUri(request) });
   if (!claims) return fail(request, "exchange");
 
-  if (!isAllowedAdminEmail(claims.email)) return fail(request, "domain");
+  // The verified email AND Google's hosted-domain claim must be on a staff Workspace domain:
+  // an unmanaged Google account with an address on the domain has no `hd` (PAN-1318).
+  if (!isStaffGoogleIdentity(claims, ADMIN_EMAIL_DOMAINS) || !isAllowedAdminEmail(claims.email)) {
+    return fail(request, "domain");
+  }
 
   const { value, maxAge } = mintAdminCookie(claims.email);
   const res = NextResponse.redirect(new URL("/open-roadmap", request.url));

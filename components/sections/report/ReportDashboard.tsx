@@ -9,6 +9,7 @@ import { FxButton } from "./FxButton";
 import { BoltIcon, MarkIcon } from "./MarkIcon";
 import { formatMembers } from "./ScanTheater";
 import type { ReportState, ScoreBreakdown } from "./useReport";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * Owner.com-style locked report: warm score rail on the left, the real report
@@ -362,7 +363,7 @@ function PancakeCard() {
         The same agents that ran this scan can run the fixes — llms.txt first, then the
         content behind every search you{"’"}re missing.
       </p>
-      <FxButton size="lg" onClick={() => window.open("https://app.getpancake.ai", "_blank")}>
+      <FxButton size="lg" onClick={() => window.open(APP_ORIGIN, "_blank")}>
         Put the agents to work
       </FxButton>
     </div>

@@ -16,6 +16,7 @@ import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
 import { LpTestimonials } from "@/components/sections/landing-v3/LpTestimonials";
 import { pricingV2 } from "@/lib/copy";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/home-demo.css";
 
@@ -50,10 +51,10 @@ export const metadata: Metadata = {
   title: "Pancake",
   description:
     "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
-  alternates: { canonical: "https://getpancake.ai" },
+  alternates: { canonical: SITE_ORIGIN },
   openGraph: {
     type: "website",
-    url: "https://getpancake.ai",
+    url: SITE_ORIGIN,
     title: "Pancake — You run your company. We bring you customers.",
     description:
       "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
@@ -73,17 +74,17 @@ export const metadata: Metadata = {
 const softwareApplicationJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "@id": "https://getpancake.ai/#software",
+  "@id": `${SITE_ORIGIN}/#software`,
   name: "Pancake",
   alternateName: "Pancake AI",
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
-  url: "https://getpancake.ai",
+  url: SITE_ORIGIN,
   description:
     "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
   offers: {
     "@type": "Offer",
-    url: "https://getpancake.ai/pricing",
+    url: `${SITE_ORIGIN}/pricing`,
     price: String(pricingV2.monthlyDollars),
     priceCurrency: pricingV2.currency,
     priceSpecification: {
@@ -99,9 +100,9 @@ const softwareApplicationJsonLd = {
   // inline so the node still validates for parsers that don't resolve @id.
   publisher: {
     "@type": "Organization",
-    "@id": "https://getpancake.ai/#organization",
+    "@id": `${SITE_ORIGIN}/#organization`,
     name: "Pancake",
-    url: "https://getpancake.ai",
+    url: SITE_ORIGIN,
   },
 };
 

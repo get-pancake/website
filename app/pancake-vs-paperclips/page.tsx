@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 const title = "Paperclip vs Pancake: AI Company Control Plane vs AI GTM Team";
 const description = "Compare Paperclip and Pancake: a self-hosted control plane for AI companies versus a managed AI GTM team that finds your buyers and starts conversations.";
 
 export const metadata: Metadata = {
   title, description,
-  alternates: { canonical: "https://getpancake.ai/pancake-vs-paperclips" },
-  openGraph: { type: "website", url: "https://getpancake.ai/pancake-vs-paperclips", title, description, images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Paperclip vs Pancake" }], siteName: "Pancake" },
+  alternates: { canonical: `${SITE_ORIGIN}/pancake-vs-paperclips` },
+  openGraph: { type: "website", url: `${SITE_ORIGIN}/pancake-vs-paperclips`, title, description, images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Paperclip vs Pancake" }], siteName: "Pancake" },
   twitter: { card: "summary_large_image", title, description, images: ["/og-image.png"] },
 };
 
@@ -52,7 +53,7 @@ const config: GtmComparisonConfig = {
     { q: "Can I use both?", a: "Yes. A technical team can use Paperclip as a broader company control plane and Pancake as the managed GTM function, though it should evaluate overlapping costs and responsibilities." },
   ],
   related: [{ href: "/openclaw-vs-pancake", label: "OpenClaw vs Pancake" }, { href: "/viktor-vs-pancake", label: "Viktor vs Pancake" }, { href: "/", label: "how Pancake works" }],
-  sources: [{ href: "https://docs.paperclip.ing/guides/welcome/what-is-paperclip/", label: "Paperclip documentation" }, { href: "https://github.com/paperclipai/paperclip", label: "Paperclip repository" }, { href: "https://getpancake.ai/", label: "Pancake product page" }],
+  sources: [{ href: "https://docs.paperclip.ing/guides/welcome/what-is-paperclip/", label: "Paperclip documentation" }, { href: "https://github.com/paperclipai/paperclip", label: "Paperclip repository" }, { href: `${SITE_ORIGIN}/`, label: "Pancake product page" }],
 };
 
 export default function PaperclipVsPancakePage() { return <GtmComparisonPage config={config} />; }

@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { FxPill, FxPillLink } from "./FxPill";
 import { mountSnake } from "./snake";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * The hero stage — full-height band under the nav where the snake wanders,
@@ -92,7 +93,7 @@ export function LandingHero() {
             <FxPill variant="outline" data-lv2-open="call" data-analytics-id="call_hero">
               Book a call
             </FxPill>
-            <FxPillLink href="https://app.getpancake.ai" data-analytics-id="app_hero">
+            <FxPillLink href={APP_ORIGIN} data-analytics-id="app_hero">
               Get started
             </FxPillLink>
           </div>

@@ -41,6 +41,8 @@ import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import { SITE_ORIGIN } from "../lib/site-config.mjs";
+
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const req = createRequire(join(root, "package.json"));
 const args = process.argv.slice(2);
@@ -50,7 +52,7 @@ const argVal = (k) => {
 };
 const BASE = argVal("--base")?.replace(/\/$/, "");
 const asJson = args.includes("--json");
-const SITE = "https://getpancake.ai";
+const SITE = SITE_ORIGIN; // the build's canonical origin (NEXT_PUBLIC_SITE_ORIGIN, lib/site-config.mjs)
 const EXPECTED_PAGES = 40;
 
 /* ── registry + copy (TS via jiti) ─────────────────────────────────────────── */

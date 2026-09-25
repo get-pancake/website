@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllPosts } from "@/lib/posts";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { approvedVerticals, verticalUrl } from "@/lib/verticals";
 
 /**
@@ -53,15 +54,15 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...STATIC_PAGES.map((p) => ({
-      url: `https://getpancake.ai${p.path}`,
+      url: `${SITE_ORIGIN}${p.path}`,
       lastModified: new Date(p.updated),
       priority: p.priority,
     })),
-    { url: "https://getpancake.ai/blog", lastModified: newestPostDate(), priority: 0.8 },
+    { url: `${SITE_ORIGIN}/blog`, lastModified: newestPostDate(), priority: 0.8 },
     // /for — the Industries hub + every APPROVED vertical (drafts are noindex and
     // stay out). lastModified = the config's fixed `updated` date (no daily churn).
     ...(approvedVerticals().length
-      ? [{ url: "https://getpancake.ai/for", lastModified: new Date(maxUpdated()), priority: 0.7 }]
+      ? [{ url: `${SITE_ORIGIN}/for`, lastModified: new Date(maxUpdated()), priority: 0.7 }]
       : []),
     ...approvedVerticals().map((v) => ({
       url: verticalUrl(v),
@@ -69,7 +70,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.7 as number,
     })),
     ...getAllPosts().map((post) => ({
-      url: `https://getpancake.ai/blog/${post.slug}`,
+      url: `${SITE_ORIGIN}/blog/${post.slug}`,
       lastModified: safeDate(post.last_updated || post.date),
       priority: 0.7 as number,
     })),

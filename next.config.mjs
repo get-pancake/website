@@ -1,3 +1,5 @@
+import { APP_ORIGIN } from "./lib/site-config.mjs";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /** In dev, disable webpack filesystem cache — reduces stale chunk manifest mismatches. */
@@ -32,12 +34,13 @@ const nextConfig = {
       { source: "/influencers", destination: "/", permanent: false },
       // llms.txt (and possibly LLM answers built from it) link /signup;
       // the route never existed — send those visitors to the real signup.
-      { source: "/signup", destination: "https://app.getpancake.ai", permanent: false },
+      // APP_ORIGIN is lib/site-config.mjs (NEXT_PUBLIC_APP_ORIGIN, read at build).
+      { source: "/signup", destination: APP_ORIGIN, permanent: false },
       // People type getpancake.ai/login: send them to the app (temporary, so
       // it can later point at a dedicated app login route).
-      { source: "/login", destination: "https://app.getpancake.ai", permanent: false },
-      { source: "/signin", destination: "https://app.getpancake.ai", permanent: false },
-      { source: "/sign-in", destination: "https://app.getpancake.ai", permanent: false },
+      { source: "/login", destination: APP_ORIGIN, permanent: false },
+      { source: "/signin", destination: APP_ORIGIN, permanent: false },
+      { source: "/sign-in", destination: APP_ORIGIN, permanent: false },
       // Removed or moved pages → the closest live page, 301 (founder rule
       // 2026-09-24: never leave a known URL on a 404; every removal or URL
       // change ships with a 301 here).

@@ -2,13 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 import { SiClaude, SiOpenai } from "react-icons/si";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { CursorMark, HermesMark, OpenClawMark } from "./LpAgentMarks";
 
 // The instruction names the outcome and the URL, not a tool: an agent with a shell will curl it, one
 // with a fetch tool will fetch it, and a chat assistant will open it. A `curl` one-liner made
 // shell-less assistants stop at "I can't run commands" (2026-09-10). The app's Workspace › AI access
-// page (pancake-cmo, PAN-862) pins this exact sentence — change both together.
-const instruction = "Set up Pancake by reading https://getpancake.ai/install.md and following its instructions.";
+// page (pancake-cmo, PAN-862) pins this exact sentence — change both together, including the
+// install.md host when NEXT_PUBLIC_SITE_ORIGIN moves the site (pancake-cmo MCP_INSTALL_DOC_URL).
+const instruction = `Set up Pancake by reading ${SITE_ORIGIN}/install.md and following its instructions.`;
 
 export function LpAgentStart() {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");

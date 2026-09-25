@@ -7,8 +7,7 @@ import { HomeLandingTestimonials } from "@/components/sections/home/HomeLandingT
 import { Footer } from "@/components/shared/Footer";
 import { Badge } from "@/components/ui/Badge";
 import { H2, H3 } from "@/components/ui/Headings";
-
-const APP_URL = "https://app.getpancake.ai";
+import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 export type ComparisonCellData = { text: string; mark?: "yes" | "no" };
 export type ComparisonRow = {
@@ -56,7 +55,7 @@ function ComparisonCell({ cell }: { cell: ComparisonCellData }) {
 }
 
 export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
-  const canonicalUrl = `https://getpancake.ai/${config.slug}`;
+  const canonicalUrl = `${SITE_ORIGIN}/${config.slug}`;
   const webPageJsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -64,7 +63,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
     url: canonicalUrl,
     description: config.heroSummary,
     dateModified: "2026-08-27",
-    isPartOf: { "@type": "WebSite", name: "Pancake", url: "https://getpancake.ai" },
+    isPartOf: { "@type": "WebSite", name: "Pancake", url: SITE_ORIGIN },
     author: { "@type": "Person", name: "François de Fitte" },
     about: [
       { "@type": "Thing", name: config.competitor },
@@ -100,7 +99,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
 
           <div className="vvp-hero__cta">
             <div className="vvp-hero__cta-row">
-              <a href={APP_URL} className="button inline-flex w-fit shrink-0 items-center justify-center no-underline" data-size="lg">
+              <a href={APP_ORIGIN} className="button inline-flex w-fit shrink-0 items-center justify-center no-underline" data-size="lg">
                 Try Pancake
               </a>
               <a href="#vvp-compare" className="button inline-flex w-fit shrink-0 items-center justify-center no-underline" data-size="lg" data-variant="subtle">
@@ -215,7 +214,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
           <h2 id="vvp-closing-heading" className="heading home-landing-section__closing-title text-center">{config.closingTitle}</h2>
           <p className="home-landing-section__lede home-landing-section__lede--closing text-center">{config.closingLede}</p>
           <div className="home-landing-closing-cta">
-            <a href={APP_URL} className="button inline-flex w-fit shrink-0 items-center justify-center no-underline" data-size="lg">Try Pancake</a>
+            <a href={APP_ORIGIN} className="button inline-flex w-fit shrink-0 items-center justify-center no-underline" data-size="lg">Try Pancake</a>
             <p className="home-landing-closing-cta__note">$99 a month • No GTM team required • SOC 2 compliant</p>
           </div>
         </div>
