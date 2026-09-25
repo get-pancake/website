@@ -10,6 +10,7 @@ import {
   isProductionSiteHost,
   PANCAKE_DOMAINS,
   resolveSiteConfig,
+  isStaffGoogleIdentity,
   staffEmailDomains,
 } from "../lib/site-config.mjs";
 
@@ -183,4 +184,21 @@ test("no active source hard-codes a getpancake.ai URL outside lib/site-config.mj
   if (hardCoded.test(readFileSync(join(root, "next.config.mjs"), "utf8"))) offenders.push("next.config.mjs");
 
   assert.deepEqual(offenders, [], "use the origins from lib/site-config.mjs instead");
+});
+
+test("staff sign-in needs a Workspace-managed account on a staff domain (PAN-1318)", () => {
+  const domains = staffEmailDomains(undefined);
+  const staff = (email, hd, email_verified = true) =>
+    isStaffGoogleIdentity({ email, hd, email_verified }, domains);
+  assert.equal(staff("ada@getpancake.ai", "getpancake.ai"), true);
+  assert.equal(staff("ada@pancake.ai", "pancake.ai"), true);
+  // A secondary-domain account in the getpancake.ai organization.
+  assert.equal(staff("ada@pancake.ai", "getpancake.ai"), true);
+  // An unmanaged Google account on the domain has no hd claim: refused.
+  assert.equal(staff("previous-owner@pancake.ai", undefined), false);
+  assert.equal(staff("ada@pancake.ai", "pancake.ai", false), false);
+  assert.equal(staff("ada@evilpancake.ai", "evilpancake.ai"), false);
+  assert.equal(staff("ada@example.com", "pancake.ai"), false);
+  assert.equal(staff("ada@pancake.ai", "example.com"), false);
+  assert.equal(isStaffGoogleIdentity({ email: "ada@pancake.ai", hd: "pancake.ai", email_verified: true }, []), false);
 });
