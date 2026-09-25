@@ -57,16 +57,34 @@ review is underway. Do not assign `brain.getpancake.ai`, alter the existing
 website's project settings, or move production traffic as part of preview
 creation.
 
+## Domains (PAN-1318)
+
+The page's origins live in `lib/origins.mjs`. Each reads a variable on the
+pancake-brain Vercel project and defaults to today's getpancake.ai host;
+`NEXT_PUBLIC_*` values are inlined at build time, so a change needs a redeploy.
+
+| Variable | Default | Used for |
+| --- | --- | --- |
+| `NEXT_PUBLIC_BRAIN_ORIGIN` | `https://brain.getpancake.ai` | canonical and Open Graph URLs, the origin where production signup, GTM and vendor tags run |
+| `NEXT_PUBLIC_APP_ORIGIN` | `https://app.getpancake.ai` | the auth API called with credentials, and where signup lands |
+| `NEXT_PUBLIC_SITE_ORIGIN` | `https://getpancake.ai` | the footer's Privacy and Terms links |
+
+Move the Brain and the app together (`https://brain.pancake.ai` with
+`https://app.pancake.ai`): signup relies on cookies shared inside one
+registrable domain, and a build whose two origins disagree fails. The backend
+CORS list, Google OAuth authorized JavaScript origins and the reCAPTCHA key's
+domains must allow the new Brain origin first.
+
 ## Authentication and attribution
 
-Auth requests go directly to `https://app.getpancake.ai` with credentials. Email
+Auth requests go directly to the app origin (`https://app.getpancake.ai`) with credentials. Email
 uses the existing captcha and magic-link endpoints. Google uses the existing
 nonce and Google ID token endpoints. There is no proxy or alternate backend.
 
 By default, signup works only when both conditions hold:
 
 - The deployment was built with Vercel's `production` environment.
-- The browser origin is exactly `https://brain.getpancake.ai`.
+- The browser origin is exactly the Brain origin (`https://brain.getpancake.ai`).
 
 Local and preview pages show a signup preview with requests disabled.
 `NEXT_PUBLIC_BRAIN_AUTH_ALLOWED_ORIGINS` can allow specific comma-separated
@@ -78,8 +96,9 @@ Do not manually override `NEXT_PUBLIC_BRAIN_DEPLOYMENT_ENV`; the Next.js
 configuration derives it from Vercel.
 
 The synchronous attribution artifact captures inbound UTMs and `click_id`
-before signup. On the canonical hostname it writes the shared
-`.getpancake.ai` cookie; previews on `vercel.app` cannot reproduce that
+before signup. On the canonical hostname it writes the cookie shared across
+the parent domain (`.getpancake.ai`, or `.pancake.ai` on brain.pancake.ai);
+previews on `vercel.app` cannot reproduce that
 parent-domain handoff. Successful mock tests prove the request and cookie
 contracts, not real account creation or delivery of affiliate conversions.
 The backend owns conversion delivery. See
@@ -87,7 +106,7 @@ The backend owns conversion delivery. See
 
 Vendor tags agreed with OBVIOUS — LeadJourney and the LinkedIn Insight Tag,
 the same ids as `getpancake.ai` (`lib/analytics/vendor-config.ts`) — load at
-runtime only when the page is served at `brain.getpancake.ai`, whatever the
+runtime only when the page is served at the Brain host (`brain.getpancake.ai`), whatever the
 build environment. Set `NEXT_PUBLIC_BRAIN_VENDOR_TAGS=1` on a preview build to
 force them on for a tag check, and never leave it set on a shared preview: the
 campaign data would count the test traffic.
