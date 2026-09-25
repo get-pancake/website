@@ -5,6 +5,7 @@ import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { FxPillLink } from "./FxPill";
 import { LandingNavMenu } from "./LandingNavMenu";
 import { NAV_LINKS } from "./nav-links";
+import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * Landing nav — rime.ai-shaped: wordmark left, text links + two pills right
@@ -20,7 +21,7 @@ export function LandingNav() {
   return (
     <header className="lv2-nav">
       <div className="lv2-nav-inner">
-        <a href="https://getpancake.ai/" className="lv2-nav-wordmark" aria-label="Pancake">
+        <a href={`${SITE_ORIGIN}/`} className="lv2-nav-wordmark" aria-label="Pancake">
           {/* eslint-disable-next-line @next/next/no-img-element -- fixed-size brand asset, same treatment as the static landing */}
           <img src="/pancake-wordmark.png" alt="Pancake" />
         </a>
@@ -40,7 +41,7 @@ export function LandingNav() {
           </nav>
           {/* Primary first, secondary second — the founder's site-wide CTA
               order (2026-09-03), same labels as the v3 chrome. */}
-          <FxPillLink href="https://app.getpancake.ai" data-analytics-id="app_nav">
+          <FxPillLink href={APP_ORIGIN} data-analytics-id="app_nav">
             Start free
           </FxPillLink>
           <FxPillLink

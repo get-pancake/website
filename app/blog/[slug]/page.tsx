@@ -10,6 +10,7 @@ import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { formatPostDate, getAllPosts, getPostBySlug, type PostMeta } from "@/lib/posts";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v3.css";
 import "../blog.css";
 
@@ -32,7 +33,7 @@ export async function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
 }
 
-const SITE = "https://getpancake.ai";
+const SITE = SITE_ORIGIN;
 const ORG_ID = `${SITE}/#organization`;
 const OG_IMAGE = "/og-image.png";
 const TITLE_SUFFIX = " · Pancake";

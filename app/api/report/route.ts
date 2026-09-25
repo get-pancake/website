@@ -6,6 +6,7 @@ import { checkPromptOnChatGPT, isConfigured, rankedKeywords } from "@/lib/scan/d
 import { deriveChecks, extractSnippets, fetchSite } from "@/lib/scan/fetch-site";
 import { analyzeIcp, analyzeSite } from "@/lib/scan/analyze";
 import { validateScanTarget } from "@/lib/scan/validate";
+import { SITE_HOST } from "@/lib/site-config.mjs";
 import type {
   Analysis,
   CommunityItem,
@@ -123,7 +124,7 @@ async function verifyCommunities(
       const timer = setTimeout(() => ctrl.abort(), 2500);
       try {
         const res = await fetch(`https://www.reddit.com/r/${m[1]}/about.json`, {
-          headers: { "User-Agent": "pancake-gtm-report/1.0 (getpancake.ai)" },
+          headers: { "User-Agent": `pancake-gtm-report/1.0 (${SITE_HOST})` },
           signal: ctrl.signal,
           cache: "no-store",
         });

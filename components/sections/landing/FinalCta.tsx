@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { FxPill, FxPillLink } from "./FxPill";
 import { mountSnake } from "./snake";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * Closing CTA — its own snake stage, same engine and reveal as the hero: the
@@ -58,7 +59,7 @@ export function FinalCta() {
           <FxPill variant="outline" data-lv2-open="call" data-analytics-id="call_final">
             Book a call
           </FxPill>
-          <FxPillLink href="https://app.getpancake.ai" data-analytics-id="app_final">
+          <FxPillLink href={APP_ORIGIN} data-analytics-id="app_final">
             Get started
           </FxPillLink>
         </div>

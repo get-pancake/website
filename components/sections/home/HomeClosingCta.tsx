@@ -16,6 +16,7 @@
  * float keyframes only), no GSAP, no client hooks.
  */
 
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { TRIAL_LABEL } from "@/lib/trial";
 import { PANCAKE_TINTS } from "@/lib/pancake-palette";
 
@@ -102,7 +103,7 @@ export function HomeClosingCta() {
       </p>
       <div className="home-landing-closing-cta">
         <a
-          href="https://app.getpancake.ai"
+          href={APP_ORIGIN}
           className="button inline-flex w-fit shrink-0 items-center justify-center no-underline"
           data-size="lg"
         >

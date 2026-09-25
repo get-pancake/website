@@ -1,6 +1,7 @@
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { TRIAL_LABEL } from "@/lib/trial";
 
 /**
@@ -53,7 +54,7 @@ export function LpPricing({ checklist = CHECKLIST }: { checklist?: readonly stri
             demo du pricing") — the one surface without the secondary pill. */}
         <div className="lp-price-ctas">
           <LpFxLink
-            href="https://app.getpancake.ai"
+            href={APP_ORIGIN}
             size="lg"
             className="lp-price-cta"
             data-analytics-id="app_pricing_card"

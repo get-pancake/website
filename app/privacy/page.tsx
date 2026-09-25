@@ -3,13 +3,14 @@ import type { Metadata } from "next";
 import { LandingFooter } from "@/components/sections/landing/LandingFooter";
 import { LandingNav } from "@/components/sections/landing/LandingNav";
 import { PRIVACY_EMAIL_URL, SUPPORT_EMAIL } from "@/lib/contact";
+import { APP_ORIGIN, SITE_HOST, SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v2.css";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — Pancake",
   description:
     "How Pancake (Basalt AI Inc.) collects, uses, and protects personal data across our website, web app, and integrations.",
-  alternates: { canonical: "https://getpancake.ai/privacy" },
+  alternates: { canonical: `${SITE_ORIGIN}/privacy` },
 };
 
 /* Content note: the "Google User Data" section is part of our Google OAuth
@@ -30,12 +31,12 @@ export default function PrivacyPolicyPage() {
               USA. As part of its activities, Pancake may process personal data. We attach the
               utmost importance to the security and confidentiality of user data, whether
               collected via our website (
-              <a href="https://getpancake.ai" target="_blank" rel="noopener noreferrer">
-                https://getpancake.ai
+              <a href={SITE_ORIGIN} target="_blank" rel="noopener noreferrer">
+                {SITE_ORIGIN}
               </a>
               ), web application (
-              <a href="https://app.getpancake.ai" target="_blank" rel="noopener noreferrer">
-                https://app.getpancake.ai
+              <a href={APP_ORIGIN} target="_blank" rel="noopener noreferrer">
+                {APP_ORIGIN}
               </a>
               ), or integrations such as Slack, ChatGPT, Codex, and Claude.
             </p>
@@ -323,8 +324,8 @@ export default function PrivacyPolicyPage() {
             <h2>10. Demo Requests and Voice Calls</h2>
             <p>
               On{" "}
-              <a href="https://getpancake.ai/demo" target="_blank" rel="noopener noreferrer">
-                getpancake.ai/demo
+              <a href={`${SITE_ORIGIN}/demo`} target="_blank" rel="noopener noreferrer">
+                {`${SITE_HOST}/demo`}
               </a>{" "}
               you can book a demo by filling in a short form or by talking to Pancake, our AI
               voice agent.

@@ -4,6 +4,7 @@ import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNavMenu } from "@/components/sections/landing-v3/LpNavMenu";
 import { LpNavScroll } from "@/components/sections/landing-v3/LpNavScroll";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { navGroups, verticalPath } from "@/lib/verticals";
 import type { VerticalCategory } from "@/lib/verticals/types";
 
@@ -43,7 +44,7 @@ export function LpNav() {
       </nav>
       <div className="lp-nav-ctas">
         <LpFxLink
-          href="https://app.getpancake.ai"
+          href={APP_ORIGIN}
           size="sm"
           data-analytics-id="app_nav"
         >

@@ -7,6 +7,7 @@ import { SiDiscord } from "react-icons/si";
 
 import { HOME_PAGE_CONTAINER_CLASS } from "@/components/sections/home/home-layout";
 import { Button } from "@/components/ui/Button";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /** Same Discord invite as `main`'s Nav. */
 const DISCORD_INVITE_URL = "https://discord.gg/brJ99Up6ym";
@@ -49,7 +50,7 @@ export function HomeNav() {
   // somewhere new instead of being redundant.
   const onPricingPage = pathname === "/pricing";
   const sideLinkLabel = onPricingPage ? "Sign in" : "Pricing";
-  const sideLinkHref = onPricingPage ? "https://app.getpancake.ai" : "/pricing";
+  const sideLinkHref = onPricingPage ? APP_ORIGIN : "/pricing";
 
   // Lock body scroll while the drawer is open + close on Escape.
   useEffect(() => {
@@ -128,7 +129,7 @@ export function HomeNav() {
                 tracking for v2 is event-based and does not infer conversions
                 from this destination hostname. */}
             <a
-              href="https://app.getpancake.ai"
+              href={APP_ORIGIN}
               className="button inline-flex w-fit shrink-0 items-center justify-center no-underline"
               data-size="sm"
             >
@@ -219,7 +220,7 @@ export function HomeNav() {
             </Link>
             {/* Drawer CTA — same analytics contract as the desktop nav CTA. */}
             <a
-              href="https://app.getpancake.ai"
+              href={APP_ORIGIN}
               className="button mt-[var(--spacing-xl)] inline-flex w-fit shrink-0 items-center justify-center no-underline"
               data-size="lg"
               tabIndex={drawerOpen ? 0 : -1}

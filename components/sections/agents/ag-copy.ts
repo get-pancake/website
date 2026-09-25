@@ -6,6 +6,8 @@
  * PR instead of editing here silently.
  */
 
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+
 export const AGENT_NAMES = ["Claude", "Codex", "OpenClaw", "Grok Bot", "Hermes"] as const;
 export type AgentName = (typeof AGENT_NAMES)[number];
 
@@ -16,8 +18,8 @@ export type AgentName = (typeof AGENT_NAMES)[number];
 export const INSTALL_COMMAND = {
   prompt: "$",
   cmd: "curl -fsSL",
-  url: "https://getpancake.ai/install.md",
-  full: "curl -fsSL https://getpancake.ai/install.md",
+  url: `${SITE_ORIGIN}/install.md`,
+  full: `curl -fsSL ${SITE_ORIGIN}/install.md`,
 } as const;
 
 export const META = {

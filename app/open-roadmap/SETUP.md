@@ -29,19 +29,21 @@ won't work until it has.)
 
 Admins sign in with Google on the **hidden** `/open-roadmap/admin` page (not
 linked anywhere, `noindex`). Only verified emails on an allow-listed company
-domain (default `getpancake.ai`) get admin, which unlocks delete.
+domain (default `getpancake.ai` and `pancake.ai`) get admin, which unlocks delete.
 
 1. In **Google Cloud Console → APIs & Services → Credentials**, create an
    **OAuth client ID** of type **Web application**. Under *Authorised redirect
    URIs*, add one per origin:
    - `http://localhost:3001/api/roadmap/auth/google/callback` (local dev)
    - `https://getpancake.ai/api/roadmap/auth/google/callback` (production)
+   - `https://pancake.ai/api/roadmap/auth/google/callback` (production once
+     pancake.ai serves the site: the URI follows the host the admin signs in on)
 2. Copy the **Client ID** → `GOOGLE_OAUTH_CLIENT_ID` and **Client secret** →
    `GOOGLE_OAUTH_CLIENT_SECRET`.
 3. Set `ROADMAP_AUTH_SECRET` to a long random string (`openssl rand -hex 32`) —
    it's the HMAC key that signs the admin session cookie.
 4. (Optional) Set `ROADMAP_ALLOWED_EMAIL_DOMAINS` (comma-separated) to change or
-   extend the allowed domains. Defaults to `getpancake.ai`.
+   extend the allowed domains. Defaults to `getpancake.ai,pancake.ai`.
 5. Visit `/open-roadmap/admin`, click **Sign in with Google**. On success a
    signed, HttpOnly cookie (valid 7 days) is set and delete buttons appear on
    the board. **Sign out** (on the board or the admin page) clears it.
@@ -69,7 +71,7 @@ Copy `.env.local.example` → `.env.local` for local dev, and set the same vars 
 | `GOOGLE_OAUTH_CLIENT_ID` | Google OAuth client ID |
 | `GOOGLE_OAUTH_CLIENT_SECRET` | Google OAuth client secret (secret) |
 | `ROADMAP_AUTH_SECRET` | admin session signing key (secret) |
-| `ROADMAP_ALLOWED_EMAIL_DOMAINS` | optional; allowed email domains (default `getpancake.ai`) |
+| `ROADMAP_ALLOWED_EMAIL_DOMAINS` | optional; allowed email domains (default `getpancake.ai,pancake.ai`) |
 
 Redeploy. The board switches from preview mode to live automatically.
 

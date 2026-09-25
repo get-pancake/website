@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { formatPostDate, getAllPosts } from "@/lib/posts";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v3.css";
 import "./blog.css";
 
@@ -24,10 +25,10 @@ const DESCRIPTION =
 export const metadata: Metadata = {
   title: "Blog · Pancake",
   description: DESCRIPTION,
-  alternates: { canonical: "https://getpancake.ai/blog" },
+  alternates: { canonical: `${SITE_ORIGIN}/blog` },
   openGraph: {
     type: "website",
-    url: "https://getpancake.ai/blog",
+    url: `${SITE_ORIGIN}/blog`,
     title: "Blog · Pancake",
     description: DESCRIPTION,
     siteName: "Pancake",

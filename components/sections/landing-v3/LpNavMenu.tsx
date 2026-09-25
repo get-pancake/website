@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * Mobile nav menu — burger + plum sheet behind the ≤767px bar (Figma mobile
@@ -371,7 +372,7 @@ export function LpNavMenu() {
         </nav>
         <div className="lp-nav-menu-ctas">
           <LpFxLink
-            href="https://app.getpancake.ai"
+            href={APP_ORIGIN}
             className="lp-nav-menu-app"
             data-analytics-id="app_nav"
             onClick={close}

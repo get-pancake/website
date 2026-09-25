@@ -12,6 +12,7 @@ import {
   type DemoRequestResponse,
 } from "@/lib/demo-request";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { isProductionSiteHost, SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 export const runtime = "nodejs";
 
@@ -51,8 +52,7 @@ const IP_LIMIT = { max: 5, windowMs: 10 * 60 * 1000 }; // = waitlist
 const GLOBAL_LIMIT = { max: 600, windowMs: 10 * 60 * 1000 };
 const AIRTABLE_TABLE_ID_RE = /^tbl[a-zA-Z0-9]{14}$/;
 const AIRTABLE_MERGE_FIELD = "Submission ID";
-const FALLBACK_PAGE_URL = "https://getpancake.ai/demo";
-const PRODUCTION_HOSTS = new Set(["getpancake.ai", "www.getpancake.ai"]);
+const FALLBACK_PAGE_URL = `${SITE_ORIGIN}/demo`;
 const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
 const ATTRIBUTION_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -86,10 +86,14 @@ const VERCEL_HOSTS = new Set(
     .filter((hostname): hostname is string => Boolean(hostname)),
 );
 
-/** "production" for getpancake.ai / Vercel hosts, "local" for localhost outside production, null otherwise. */
+/**
+ * "production" for the website's hosts on both domains (getpancake.ai and pancake.ai, apex and www;
+ * lib/site-config.mjs) and this deployment's Vercel hosts, "local" for localhost outside production,
+ * null otherwise.
+ */
 function approvedHost(hostname: string): "production" | "local" | null {
   const host = hostname.toLowerCase();
-  if (PRODUCTION_HOSTS.has(host) || VERCEL_HOSTS.has(host)) return "production";
+  if (isProductionSiteHost(host) || VERCEL_HOSTS.has(host)) return "production";
   if (process.env.NODE_ENV !== "production" && LOCAL_HOSTS.has(host)) return "local";
   return null;
 }

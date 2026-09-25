@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 const title = "Claude Tag vs Pancake: AI Teammate vs AI GTM Team";
 const description = "Compare Claude Tag and Pancake: a shared Claude teammate in Slack versus an AI GTM team that finds buyers, starts conversations, and works from Claude.";
@@ -8,8 +9,8 @@ const description = "Compare Claude Tag and Pancake: a shared Claude teammate in
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "https://getpancake.ai/claude-tag-vs-pancake" },
-  openGraph: { type: "website", url: "https://getpancake.ai/claude-tag-vs-pancake", title, description, images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Claude Tag vs Pancake" }], siteName: "Pancake" },
+  alternates: { canonical: `${SITE_ORIGIN}/claude-tag-vs-pancake` },
+  openGraph: { type: "website", url: `${SITE_ORIGIN}/claude-tag-vs-pancake`, title, description, images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Claude Tag vs Pancake" }], siteName: "Pancake" },
   twitter: { card: "summary_large_image", title, description, images: ["/og-image.png"] },
 };
 
@@ -55,7 +56,7 @@ const config: GtmComparisonConfig = {
     { q: "Can I use both?", a: "Yes. Claude Tag covers internal work in Slack while Pancake runs your go-to-market. You can also connect Claude, ChatGPT, or Codex to Pancake through its MCP server to review leads, adjust signals, and start outreach from a conversation." },
   ],
   related: [{ href: "/viktor-vs-pancake", label: "Viktor vs Pancake" }, { href: "/openclaw-vs-pancake", label: "OpenClaw vs Pancake" }, { href: "/", label: "how Pancake works" }],
-  sources: [{ href: "https://www.anthropic.com/news/introducing-claude-tag", label: "Anthropic's Claude Tag announcement" }, { href: "https://getpancake.ai/", label: "Pancake product page" }],
+  sources: [{ href: "https://www.anthropic.com/news/introducing-claude-tag", label: "Anthropic's Claude Tag announcement" }, { href: `${SITE_ORIGIN}/`, label: "Pancake product page" }],
 };
 
 export default function ClaudeTagVsPancakePage() { return <GtmComparisonPage config={config} />; }

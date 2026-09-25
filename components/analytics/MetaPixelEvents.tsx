@@ -6,6 +6,7 @@ import {
   isAcquisitionEventName,
   PANCAKE_ACQUISITION_EVENT,
 } from "@/lib/analytics/data-layer";
+import { isProductionSiteHost } from "@/lib/site-config.mjs";
 
 /**
  * Browser twin of the server-side Meta CAPI `Lead` conversion.
@@ -27,7 +28,6 @@ import {
  * values), and Meta matching stays cookie/CAPI-based.
  */
 
-const PRODUCTION_HOSTS = new Set(["getpancake.ai", "www.getpancake.ai"]);
 const LEAD_EVENT_ID_RE = /^lead\.[0-9a-f]{64}$/;
 
 type MetaPixelWindow = Window & {
@@ -79,7 +79,7 @@ export function trackMetaLeadTwin(detail: Record<string, unknown>): boolean {
 
 export function MetaPixelEvents() {
   useEffect(() => {
-    if (!PRODUCTION_HOSTS.has(window.location.hostname.toLowerCase())) return;
+    if (!isProductionSiteHost(window.location.hostname)) return;
 
     const onAcquisitionEvent = (rawEvent: Event) => {
       if (!(rawEvent instanceof CustomEvent) || !isRecord(rawEvent.detail)) return;

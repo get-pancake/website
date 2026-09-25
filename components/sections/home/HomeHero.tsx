@@ -13,6 +13,7 @@ import { HomeHeroPancakeMonster } from "@/components/sections/home/HomeHeroPanca
 import { HomeLogoMarquee } from "@/components/sections/home/HomeLogoMarquee";
 import { H1 } from "@/components/ui/Headings";
 import { PANCAKE_TINTS } from "@/lib/pancake-palette";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { TRIAL_LABEL } from "@/lib/trial";
 
 /**
@@ -63,7 +64,7 @@ export function HomeHero() {
           <p className="home-hero-body whitespace-pre-line">{HERO_SUB}</p>
           <div className="home-hero-cta-row">
             <a
-              href="https://app.getpancake.ai"
+              href={APP_ORIGIN}
               className="button inline-flex w-fit shrink-0 items-center justify-center no-underline"
               data-size="lg"
             >

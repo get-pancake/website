@@ -4,13 +4,14 @@ import Link from "next/link";
 import { LandingFooter } from "@/components/sections/landing/LandingFooter";
 import { LandingNav } from "@/components/sections/landing/LandingNav";
 import { SUPPORT_EMAIL, SUPPORT_EMAIL_URL } from "@/lib/contact";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v2.css";
 
 export const metadata: Metadata = {
   title: "Terms of Service — Pancake",
   description:
     "The terms governing your access to and use of Pancake — including the website, web app, and Slack integration.",
-  alternates: { canonical: "https://getpancake.ai/terms" },
+  alternates: { canonical: `${SITE_ORIGIN}/terms` },
 };
 
 export default function TermsOfServicePage() {

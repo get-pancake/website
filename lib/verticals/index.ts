@@ -16,9 +16,10 @@ import { ALL_VERTICALS } from "@/lib/verticals/data";
 import { HOME_DEMO } from "@/lib/verticals/home-demo";
 import type { FaqItem, VerticalCategory, VerticalConfig } from "@/lib/verticals/types";
 import { assertVerticals, validateVerticals } from "@/lib/verticals/validate";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { VX_FAQ } from "@/components/sections/verticals/vx-copy";
 
-export const SITE_URL = "https://getpancake.ai";
+export const SITE_URL = SITE_ORIGIN;
 
 /** Hub / nav group order (= the VerticalCategory union order in types.ts). */
 export const CATEGORY_ORDER: VerticalCategory[] = [

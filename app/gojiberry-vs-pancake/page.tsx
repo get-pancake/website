@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 const title = "Gojiberry vs Pancake: Outreach Agent vs AI GTM Team";
 const description = "Compare Gojiberry and Pancake: focused AI prospecting and outreach versus an AI GTM team that finds buyers, starts conversations, and writes for AI search.";
@@ -8,10 +9,10 @@ const description = "Compare Gojiberry and Pancake: focused AI prospecting and o
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "https://getpancake.ai/gojiberry-vs-pancake" },
+  alternates: { canonical: `${SITE_ORIGIN}/gojiberry-vs-pancake` },
   openGraph: {
     type: "website",
-    url: "https://getpancake.ai/gojiberry-vs-pancake",
+    url: `${SITE_ORIGIN}/gojiberry-vs-pancake`,
     title,
     description,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Gojiberry vs Pancake" }],
@@ -94,7 +95,7 @@ const config: GtmComparisonConfig = {
   ],
   sources: [
     { href: "https://gojiberry.ai/", label: "Gojiberry product page" },
-    { href: "https://getpancake.ai/", label: "Pancake product page" },
+    { href: `${SITE_ORIGIN}/`, label: "Pancake product page" },
   ],
 };
 

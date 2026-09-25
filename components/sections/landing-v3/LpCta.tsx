@@ -2,6 +2,7 @@ import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * Landing v3 — Section 7: CTA "Try Pancake now" (Figma node 4389:4492).
@@ -59,7 +60,7 @@ export function LpCta({
           <div className="lp-cta__btns">
             {/* Primary first, secondary second — the hero's order on every
                 surface (founder 2026-09-03). */}
-            <LpFxLink href="https://app.getpancake.ai" data-analytics-id="app_final">
+            <LpFxLink href={APP_ORIGIN} data-analytics-id="app_final">
               Start free
             </LpFxLink>
             {/* A same-tab link to /demo (François, 2026-09-16; it opened the

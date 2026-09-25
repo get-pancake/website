@@ -8,11 +8,11 @@ import {
   isAcquisitionEventName,
   PANCAKE_ACQUISITION_EVENT,
 } from "@/lib/analytics/data-layer";
+import { isProductionSiteHost, POSTHOG_ORIGIN } from "@/lib/site-config.mjs";
 
 const POSTHOG_KEY = "phc_zPxWVjFcxYkbR7VnfdFkxvWdaGNChzVa2Yjmwe5PSrey";
-const POSTHOG_HOST = "https://e.getpancake.ai";
+const POSTHOG_HOST = POSTHOG_ORIGIN;
 const POSTHOG_UI_HOST = "https://eu.posthog.com";
-const PRODUCTION_HOSTS = new Set(["getpancake.ai", "www.getpancake.ai"]);
 
 const attributionKeys = [
   "utm_source",
@@ -194,8 +194,9 @@ function capturePageView() {
   });
 }
 
+/** Both domains, apex and www: `cross_subdomain_cookie` scopes PostHog's cookie to the one visited. */
 function isApprovedProductionHost() {
-  return PRODUCTION_HOSTS.has(window.location.hostname.toLowerCase());
+  return isProductionSiteHost(window.location.hostname);
 }
 
 function cleanLandingUrl(value: string) {

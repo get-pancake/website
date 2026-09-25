@@ -1,3 +1,5 @@
+import { PANCAKE_DOMAINS, SITE_HOST } from "@/lib/site-config.mjs";
+
 /**
  * /demo requests into Attio, the CRM (François, 2026-09-16: "the answer to
  * the form merges with the answer to the Calendly form, so that we don't
@@ -71,7 +73,7 @@ const NOT_A_COMPANY = new Set([
   "icloud.com",
   "notion.site",
   "calendly.com",
-  "getpancake.ai",
+  ...PANCAKE_DOMAINS,
 ]);
 
 /** The website's company domain ("acme.com"), or null when it is not one. Pure. */
@@ -99,7 +101,7 @@ export function attioNote(lead: AttioDemoLead): { title: string; content: string
     `Source: ${lead.source} (${lead.pageUrl})`,
     `Submitted: ${lead.submittedAt}`,
   ];
-  return { title: "Demo request from getpancake.ai", content: lines.join("\n") };
+  return { title: `Demo request from ${SITE_HOST}`, content: lines.join("\n") };
 }
 
 type AttioCall = { ok: true; body: unknown } | { ok: false; status: number | "timeout" | "network" };

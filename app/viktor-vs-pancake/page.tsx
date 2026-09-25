@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 const title = "Viktor vs Pancake: General AI Employee vs AI GTM Team";
 const description = "Compare Viktor and Pancake: a broad AI employee in Slack and Teams versus an AI GTM team that finds buyers, starts conversations, and writes for AI search.";
@@ -8,8 +9,8 @@ const description = "Compare Viktor and Pancake: a broad AI employee in Slack an
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "https://getpancake.ai/viktor-vs-pancake" },
-  openGraph: { type: "website", url: "https://getpancake.ai/viktor-vs-pancake", title, description, images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Viktor vs Pancake" }], siteName: "Pancake" },
+  alternates: { canonical: `${SITE_ORIGIN}/viktor-vs-pancake` },
+  openGraph: { type: "website", url: `${SITE_ORIGIN}/viktor-vs-pancake`, title, description, images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Viktor vs Pancake" }], siteName: "Pancake" },
   twitter: { card: "summary_large_image", title, description, images: ["/og-image.png"] },
 };
 
@@ -55,7 +56,7 @@ const config: GtmComparisonConfig = {
     { q: "How does pricing compare?", a: "At the time of review, Viktor advertised paid plans from $50 per month after free credits. Pancake starts with a 3-day free trial (card required), then costs one flat $99 a month. Confirm Viktor's current limits before buying." },
   ],
   related: [{ href: "/claude-tag-vs-pancake", label: "Claude Tag vs Pancake" }, { href: "/openclaw-vs-pancake", label: "OpenClaw vs Pancake" }, { href: "/", label: "how Pancake works" }],
-  sources: [{ href: "https://viktor.com/", label: "Viktor product page" }, { href: "https://viktor.com/docs/getting-started", label: "Viktor documentation" }, { href: "https://getpancake.ai/", label: "Pancake product page" }],
+  sources: [{ href: "https://viktor.com/", label: "Viktor product page" }, { href: "https://viktor.com/docs/getting-started", label: "Viktor documentation" }, { href: `${SITE_ORIGIN}/`, label: "Pancake product page" }],
 };
 
 export default function ViktorVsPancakePage() { return <GtmComparisonPage config={config} />; }

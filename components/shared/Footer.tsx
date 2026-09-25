@@ -5,6 +5,7 @@ import { SiX, SiYoutube } from "react-icons/si";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 
 import { PancakeLogo } from "./PancakeLogo";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 const socials = [
   { href: "https://x.com/getpancake_ai", label: "Pancake on X", Icon: SiX },
@@ -24,7 +25,7 @@ const columns: { title: string; links: FooterLink[] }[] = [
     links: [
       { href: "/pricing", label: "Pricing" },
       { href: "/open-roadmap", label: "Roadmap" },
-      { href: "https://app.getpancake.ai", label: "Sign in" },
+      { href: APP_ORIGIN, label: "Sign in" },
     ],
   },
   {

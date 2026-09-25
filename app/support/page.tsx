@@ -9,13 +9,14 @@ import {
   SUPPORT_EMAIL_URL,
   SUPPORT_GMAIL_URL,
 } from "@/lib/contact";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { TRIAL_DAYS } from "@/lib/trial";
 import "@/app/_styles/landing-v2.css";
 
 export const metadata: Metadata = {
   title: "Support — Pancake",
   description: "Contact Pancake for product, account, billing, privacy, and connection support.",
-  alternates: { canonical: "https://getpancake.ai/support" },
+  alternates: { canonical: `${SITE_ORIGIN}/support` },
 };
 
 export default function SupportPage() {
