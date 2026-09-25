@@ -61,6 +61,7 @@ test("a malformed origin fails loudly with the variable's name", () => {
     "https://pancake.ai/?q=1",
     "https://pancake.ai/#top",
     "https://user:secret@pancake.ai",
+    "https://pan'cake.ai",
     "not a url",
   ]) {
     assert.throws(
