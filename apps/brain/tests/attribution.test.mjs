@@ -35,7 +35,7 @@ function visitor(initialCookie = "") {
 }
 
 test("attribution is the unchanged, pinned canonical artifact", () => {
-  assert.equal(createHash("sha256").update(snippet).digest("hex"), "eaf029646b38bdb3285d4e7d78826bc1af3a1d7aa2b8468eeda5e086c0bd5da6");
+  assert.equal(createHash("sha256").update(snippet).digest("hex"), "daa595c8a5d59f3ba32801b466c0030fd836e91d2adf3b6cc39c0e56487f68ee");
 });
 
 test("Brain retains every campaign dimension and provider click_id in its shared domain cookie", () => {
@@ -117,6 +117,21 @@ test("bounded history keeps the first and newest four distinct acquisition touch
   assert.deepEqual(state.t.map((touch) => touch.s), ["s0", "s4", "s5", "s6", "s7"]);
   assert.equal(state.t[4].k.click_id, "c7");
   assert.ok(browser.value.length <= 3000);
+});
+
+test("the shared cookie follows the Pancake domain actually visited (PAN-1321)", () => {
+  for (const [href, domain] of [
+    ["https://brain.getpancake.ai/?click_id=provider-click", "Domain=.getpancake.ai"],
+    ["https://brain.pancake.ai/?click_id=provider-click", "Domain=.pancake.ai"],
+  ]) {
+    const browser = visitor();
+    browser.visit(href);
+    const attributes = browser.write.split("; ").slice(1);
+    assert.deepEqual(attributes.filter((attribute) => attribute.startsWith("Domain=")), [domain], href);
+  }
+  // A visit from the other Pancake domain is not an external referral.
+  const moved = visitor();
+  assert.equal(moved.visit("https://brain.pancake.ai/", "https://brain.getpancake.ai/").t[0].r, undefined);
 });
 
 test("preview/local hosts never receive a production domain cookie", () => {

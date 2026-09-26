@@ -3,6 +3,7 @@ import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { LP_STEPS, LpSteps } from "@/components/sections/landing-v3/LpSteps";
 import { S2_ROWS } from "@/components/sections/landing-v3/lp-step-data";
+import { SITE_ORIGIN } from "../lib/origins.mjs";
 
 // Brain sells outreach only (founder call, 2026-09-11): the main site's AI-search
 // bullets stay off this page, in the pricing list and in step 02 alike.
@@ -84,16 +85,16 @@ function BrainFooter() {
             San Francisco, CA
           </p>
           <p className="lp-foot-legal">
-            <a href="https://getpancake.ai/privacy">Privacy</a>
+            <a href={`${SITE_ORIGIN}/privacy`}>Privacy</a>
             {" • "}
-            <a href="https://getpancake.ai/terms">Terms</a>
+            <a href={`${SITE_ORIGIN}/terms`}>Terms</a>
           </p>
         </div>
         <p className="lp-foot-line">
           {"2026 Pancake · San Francisco, CA · "}
-          <a href="https://getpancake.ai/privacy">Privacy</a>
+          <a href={`${SITE_ORIGIN}/privacy`}>Privacy</a>
           {" · "}
-          <a href="https://getpancake.ai/terms">Terms</a>
+          <a href={`${SITE_ORIGIN}/terms`}>Terms</a>
         </p>
       </div>
     </footer>

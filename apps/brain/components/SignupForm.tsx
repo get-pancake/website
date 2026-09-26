@@ -85,7 +85,7 @@ export function SignupForm({ id = "signup", className = "" }: { id?: string; cla
             void client.googleLogin(credential).then(() => {
               if (mounted.current) setSignedIn(true);
               // Same-tab hand-off: phones block pre-opened windows, and the
-              // shared .getpancake.ai cookie travels with the session anyway.
+              // cookie shared across the parent domain travels with the session anyway.
               window.location.assign(`${APP_ORIGIN}/onboarding`);
             }).catch((reason: unknown) => {
               if (mounted.current) {

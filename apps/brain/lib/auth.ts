@@ -1,12 +1,13 @@
 /** Browser-only integration with Pancake's existing auth API (PAN-844/845).
- * No server proxy: the shared .getpancake.ai cookies must reach the app directly.
+ * No server proxy: the cookies shared across the parent domain (.getpancake.ai today,
+ * .pancake.ai after PAN-1318) must reach the app directly. Origins: lib/origins.mjs.
  */
-export const APP_ORIGIN = "https://app.getpancake.ai";
-export const BRAIN_ORIGIN = "https://brain.getpancake.ai";
+import { APP_ORIGIN, BRAIN_HOST, BRAIN_ORIGIN } from "./origins.mjs";
+
+export { APP_ORIGIN, BRAIN_ORIGIN };
 export const GOOGLE_CLIENT_ID =
   "1000959441723-8uq5ck0pr6rjslhsnerdlnqnmjb5q4ot.apps.googleusercontent.com";
-export const PREVIEW_AUTH_MESSAGE =
-  "Preview build. Sign-up only works on brain.getpancake.ai.";
+export const PREVIEW_AUTH_MESSAGE = `Preview build. Sign-up only works on ${BRAIN_HOST}.`;
 
 export interface AuthEnvironment {
   origin: string;
