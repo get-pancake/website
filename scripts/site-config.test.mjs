@@ -16,7 +16,7 @@ import {
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
-test("with no variable set, the site, app and ingest are on pancake.ai; provider hosts have not moved", () => {
+test("with no variable set, the site, app, ingest and PostHog are on pancake.ai", () => {
   const config = resolveSiteConfig({});
   assert.deepEqual(
     {
@@ -31,7 +31,7 @@ test("with no variable set, the site, app and ingest are on pancake.ai; provider
       site: "https://pancake.ai",
       app: "https://app.pancake.ai",
       analyticsIngest: "https://beta-api.pancake.ai",
-      posthog: "https://e.getpancake.ai",
+      posthog: "https://e.pancake.ai",
       leadJourney: "https://t.getpancake.ai",
       squads: "https://squads.getpancake.ai",
     },
@@ -40,11 +40,12 @@ test("with no variable set, the site, app and ingest are on pancake.ai; provider
   assert.equal(resolveSiteConfig({ NEXT_PUBLIC_SITE_ORIGIN: "  " }).siteOrigin, DEFAULT_ORIGINS.site);
 });
 
-test("the getpancake.ai values roll the site, app and ingest back", () => {
+test("the getpancake.ai values roll the site, app, ingest and PostHog back", () => {
   const config = resolveSiteConfig({
     NEXT_PUBLIC_SITE_ORIGIN: "https://getpancake.ai/",
     NEXT_PUBLIC_APP_ORIGIN: " https://app.getpancake.ai ",
     NEXT_PUBLIC_ANALYTICS_INGEST_ORIGIN: "https://beta-api.getpancake.ai",
+    NEXT_PUBLIC_POSTHOG_ORIGIN: "https://e.getpancake.ai",
   });
   assert.equal(config.siteOrigin, "https://getpancake.ai");
   assert.equal(config.siteHost, "getpancake.ai");
@@ -135,7 +136,7 @@ test("the environment reaches the module and next.config.mjs redirects", () => {
     host: "pancake.ai",
     app: "https://app.pancake.ai",
     ingest: "https://beta-api.pancake.ai",
-    posthog: "https://e.getpancake.ai",
+    posthog: "https://e.pancake.ai",
     destinations: ["https://app.pancake.ai"],
     count: 4,
   });
@@ -144,6 +145,7 @@ test("the environment reaches the module and next.config.mjs redirects", () => {
       NEXT_PUBLIC_SITE_ORIGIN: "https://getpancake.ai",
       NEXT_PUBLIC_APP_ORIGIN: "https://app.getpancake.ai",
       NEXT_PUBLIC_ANALYTICS_INGEST_ORIGIN: "https://beta-api.getpancake.ai",
+      NEXT_PUBLIC_POSTHOG_ORIGIN: "https://e.getpancake.ai",
     }),
     {
       site: "https://getpancake.ai",
