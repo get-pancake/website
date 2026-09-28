@@ -97,9 +97,9 @@ const geistSans = localFont({
   display: "swap",
 });
 
-// Canonical host is the apex domain, SITE_ORIGIN (lib/site-config.mjs; today
-// https://getpancake.ai, which serves 200 directly while the www host
-// 308-redirects to it, verified via curl -sI).
+// Canonical host is the apex domain, SITE_ORIGIN (lib/site-config.mjs;
+// https://pancake.ai since the PAN-1318 cutover). The www host 308-redirects
+// to it, and so do getpancake.ai and www.getpancake.ai (Vercel domain settings).
 // Every absolute URL below (canonical, og:url, JSON-LD) uses the apex host.
 // Default title/OG for routes that set none (founder 2026-09-24: "we're not an AI
 // coworker any more, we're AI GTM"). The homepage sets its own <title>: "Pancake".
