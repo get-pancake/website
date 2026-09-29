@@ -34,15 +34,14 @@ import { useEffect } from "react";
 const STAGES = [
   ".lp-banner__card",
   ".lp-marquee",
-  ".lp-tst-strip",
 ].join(", ");
 
 /** Animated members inside a stage (mirror of the anim.css offstage block).
-    The marquees animate per card / per copy, never the track: Gecko refuses
-    to composite a transform animation on a frame wider than its 4096-device-px
-    prerender cap (testimonials.css / marquee.css). */
+    The marquee animates per copy, never the track: Gecko refuses to
+    composite a transform animation on a frame wider than its 4096-device-px
+    prerender cap (marquee.css). */
 const MEMBERS =
-  ".lp-anim-spin--cw, .lp-anim-spin--ccw, .lp-anim-bubble, .lp-tst-track .lp-tst-card, .lp-marquee__seq";
+  ".lp-anim-spin--cw, .lp-anim-spin--ccw, .lp-anim-bubble, .lp-marquee__seq";
 
 export function LpAnimFreeze() {
   useEffect(() => {

@@ -14,7 +14,6 @@ import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
-import { LpTestimonials } from "@/components/sections/landing-v3/LpTestimonials";
 import { pricingV2 } from "@/lib/copy";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v3.css";
@@ -130,7 +129,6 @@ export default function Home({ searchParams }: { searchParams: { audience?: stri
       <LpBanner />
       <LpFeatures />
       <LpCta />
-      <LpTestimonials />
       <LpPricing />
       <LpFooter />
       {/* LpModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}

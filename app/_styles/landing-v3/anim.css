@@ -330,7 +330,6 @@
   [data-lp-offstage] .lp-anim-bubble {
     animation-name: none;
   }
-  [data-lp-offstage] .lp-tst-track .lp-tst-card,
   [data-lp-offstage] .lp-marquee__seq {
     animation-name: none;
     will-change: auto;
@@ -340,7 +339,6 @@
   [data-lp-offstage] .lp-anim-spin--cw,
   [data-lp-offstage] .lp-anim-spin--ccw,
   [data-lp-offstage] .lp-anim-bubble,
-  [data-lp-offstage] .lp-tst-track .lp-tst-card,
   [data-lp-offstage] .lp-marquee__seq {
     animation-play-state: paused;
   }
