@@ -97,7 +97,7 @@ const TEAM: TeamMember[] = [
   },
 ];
 
-const APPLY_EMAIL = "guillaume@getpancake.ai";
+const APPLY_EMAIL = "guillaume@pancake.ai";
 
 export default function CareersPage() {
   return (

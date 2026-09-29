@@ -1,6 +1,6 @@
 /** Encoded in booth QR — opens mail with pre-filled waitlist message. No backend. */
 const DEFAULT_BOOTH_QR_MAILTO =
-  "mailto:tristan@getbasalt.ai?subject=Waitlist%20-%20Human%20X&body=Hi%2C%20I%20want%20to%20join%20the%20Basalt%20waitlist%20and%20get%20my%20free%20credits.";
+  "mailto:tristan@pancake.ai?subject=Waitlist%20-%20Human%20X&body=Hi%2C%20I%20want%20to%20join%20the%20Basalt%20waitlist%20and%20get%20my%20free%20credits.";
 
 /** Payload for the booth QR (mailto or override). */
 export function getBoothQrPayload(): string {
@@ -19,5 +19,5 @@ export function getBoothQrEmailDisplay(): string {
       return match[1];
     }
   }
-  return "tristan@getbasalt.ai";
+  return "tristan@pancake.ai";
 }

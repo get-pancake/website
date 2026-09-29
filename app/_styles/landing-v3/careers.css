@@ -221,7 +221,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  /* 880: the full lede ("…Send a note to guillaume@getpancake.ai.") measures
+  /* 880: the full lede ("…Send a note to guillaume@pancake.ai.") measures
      873px at text-lg — the old 720 cap wrapped it mid-sentence (founder
      2026-09-01: "retour à la ligne inutile"). The card leaves 952px next to
      the button at desktop, so one line fits; narrow viewports still wrap
