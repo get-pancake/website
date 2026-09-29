@@ -143,8 +143,7 @@ html:has(main.lp) {
    layers (H1 vanish recurrence) — skipping offscreen sections frees the
    budget everywhere. Estimates per breakpoint below. */
 .lp-banner,
-.lp-feat,
-.lp-tst {
+.lp-feat {
   content-visibility: auto;
 }
 /* NOT the ring arts any more (.lp-cta, .lp-price-art — dropped 2026-09-02).
@@ -170,9 +169,6 @@ html:has(main.lp) {
   .lp-cta {
     contain-intrinsic-size: auto 624px;
   }
-  .lp-tst {
-    contain-intrinsic-size: auto 670px;
-  }
 }
 @media (max-width: 767px) {
   /* Per-section estimates within ~2% of the rendered heights at 393 (sweep
@@ -187,9 +183,6 @@ html:has(main.lp) {
   }
   .lp-cta {
     contain-intrinsic-size: auto 860px;
-  }
-  .lp-tst {
-    contain-intrinsic-size: auto 450px;
   }
 }
 /* iOS Safari paints the status-bar / Dynamic-Island band with the BODY's
@@ -224,7 +217,7 @@ body:has(main.lp) {
   font-size: var(--lp-text-md);
   line-height: 1.5;
   overflow-x: hidden; /* legacy-engine fallback (Safari ≤15) for the clip below */
-  overflow-x: clip; /* full-bleed art (rainbows, testimonial rows) exceeds the viewport */
+  overflow-x: clip; /* full-bleed art (rainbows) exceeds the viewport */
   position: relative;
 }
 .lp img {

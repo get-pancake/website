@@ -130,9 +130,9 @@ back during a fidelity pass:
   illustrations (`/public/how/step-*.svg`) stay as the designer's stills.
 - Logo strip scrolls (seamless 1424px-period tile
   `lp-logo-strip-tile.png`, ~34 px/s leftward, blend moved to the track).
-- Testimonials: two counter-scrolling marquees (~28.75 px/s), 48px between
-  rows (Figma had 96), 8 distinct fictional authors/tweets; phones keep the
-  old single stacked column (row 2 hidden there).
+- Testimonials ("Take it from them", Figma 4257:5006): removed from the
+  homepage 2026-09-28 (founder: old content — 8 fictional authors/tweets
+  from the AI-org pitch). The CTA band now sits directly above pricing.
 - "How Pancake finds customers": the four mock UIs are IN-PAGE animations
   (DOM + CSS + GSAP) since 2026-09-03 — founder: no 500 KB–1 MB video
   downloads, vector-crisp at every DPR. `LpFeatAnim.tsx` drives them with the
