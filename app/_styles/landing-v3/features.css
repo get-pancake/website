@@ -458,7 +458,7 @@
   white-space: nowrap;
 }
 
-/* ══ f2 · LinkedIn post + the draft in its rainbow ring (feat-warm-message-
+/* ══ f2 · a prospect's post + the draft in its rainbow ring (feat-warm-message-
    anim). Tight bounds 405 wide; the post copy runs two lines (founder's
    Product Hunt string, 2026-09-03: the post card grew one 26px line) and the
    draft runs five, at Figma's own line pitch (the artboard card is 255.22 =
@@ -475,9 +475,11 @@
   top: 81.248px;
   width: 405px;
 }
-/* LinkedIn pastiche (Figma sets Inter — not loaded by the app; the stack
+/* Social-post pastiche (Figma sets Inter — not loaded by the app; the stack
    falls back to the system face, whose measured compensation the
-   letter-spacings carry). Palette = LinkedIn's, page-scoped literals. */
+   letter-spacings carry). Neutral greys, page-scoped literals: since
+   2026-09-29 the post carries no platform's chrome (no brand blue, no
+   connection degree, no reaction bubbles). */
 .lp-f2-post {
   background: rgba(255, 255, 255, 0.8);
   border-radius: 14.4px;
@@ -505,10 +507,14 @@
 #lpf2-pi-like,
 #lpf2-pi-comment,
 #lpf2-pi-repost,
-#lpf2-pi-send,
+#lpf2-pi-send {
+  opacity: 0;
+}
+/* the platform's reaction bubbles stay in the baked art (lp-feat-art.ts is
+   generated) but never paint — the site doesn't show Pancake reacting */
 #lpf2-pi-bubbleLike,
 #lpf2-pi-bubbleHeart {
-  opacity: 0;
+  display: none;
 }
 .lp-f2-avatar {
   border-radius: 50%;
@@ -537,13 +543,6 @@
   font-weight: 700;
   letter-spacing: 0.27px;
   line-height: 15px;
-}
-.lp-f2-degree {
-  color: #666666;
-  font-size: 10.8px;
-  font-weight: 400;
-  letter-spacing: 0;
-  margin-left: 3.6px;
 }
 .lp-f2-headline {
   color: #666666;
@@ -590,7 +589,7 @@
   gap: 1.8px;
 }
 .lp-f2-skelgrp i {
-  background: rgba(10, 102, 194, 0.16);
+  background: rgba(25, 25, 25, 0.08);
   border-radius: 2.7px;
   display: block;
   height: 14.4px;

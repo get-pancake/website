@@ -59,13 +59,19 @@ const ORIGAMI_TAGLINE = /\bnot an? (stale|bought|purchased|static)\b|\bnot an? [
 /** No platform names on /for pages (founder 2026-09-23, after team feedback: LinkedIn scans the web
  *  for startups that sell automation on its platform and bans them, which is why Gojiberry took
  *  every mention off its site). The product is unchanged; the copy never names the platform:
- *  outreach goes out "from your own account" (a profile visit, a like on a recent post, an invite
- *  with no note, up to three messages), signals are "people posting about …", "people engaging
+ *  outreach goes out "under your name" (a warm-up, a first touch with no pitch, up to three
+ *  messages — SEQUENCE below), signals are "people posting about …", "people engaging
  *  with your rivals' posts", "fans of …'s posts", a lead has a "profile", the app's platform signal
  *  group is "People signals". ERROR on every config string (visible copy, FAQ → FAQPage JSON-LD,
  *  titles, meta, aria/alt text built from it), on every fixed vx-copy string, and on what the
  *  fixed templates render with each config. Also its tools: Sales Navigator, InMail. */
 export const PLATFORM = /linked\s*in|sales\s*nav(igator)?\b|\binmails?\b/i;
+/** No platform steps either (founder 2026-09-29, "vitrine plus compliant"): the copy tells the
+ *  outreach at the outcome level and never lists what runs on the member's account — the profile
+ *  visit, the like, the invite ("after they accept"), a "human pace" that reads as dodging the
+ *  platform's limits, or "the professional (social) network" that names it by another name.
+ *  ERROR, same scope as PLATFORM. */
+export const SEQUENCE = /profile visits?|visits? (their|the) profile|(like|likes|liking) (on )?(a|their) recent post|\binvit(e|es|ed)\b|human pace|professional (social )?network|after they accept|connection requests?/i;
 /** The platform's initials, as a word (case-sensitive): a warning, "LI" can be a place. */
 const PLATFORM_ABBR = /\bLI\b/;
 /** Fixed copy must not name a vertical. */
@@ -222,6 +228,8 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
   const slugs = new Set<string>();
   /** PLATFORM: a fixed string naming the platform is reported once, as "vx-copy" (below), not per page. */
   const fixedNamed = fixedStrings().some(([, str]) => PLATFORM.test(str));
+  /** SEQUENCE: same once-only reporting for a fixed string that lists the platform steps. */
+  const fixedStepped = fixedStrings().some(([, str]) => SEQUENCE.test(str));
   /** Cross-config copy repetition (CT-04, CT-09/CT-21): key → first user(s). */
   const closings = new Map<string, string>();
   const openers = new Map<string, string[]>();
@@ -349,6 +357,20 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
         }
       }
     }
+    // ── no platform steps (SEQUENCE, founder 2026-09-29), same two passes ──
+    {
+      let stepped = false;
+      for (const [path, str] of configStrings(src)) {
+        const m = str.match(SEQUENCE);
+        if (m) { stepped = true; err(s, `${path}: lists a platform step ("${m[0]}"), tell the outcome instead: "${str}"`); }
+      }
+      if (!stepped && !fixedStepped) {
+        for (const [path, str] of composed()) {
+          const m = str.match(SEQUENCE);
+          if (m) err(s, `${path}: renders a platform step ("${m[0]}"): "${str}"`);
+        }
+      }
+    }
   };
 
   for (const v of all) {
@@ -447,6 +469,9 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
     const m = str.match(PLATFORM);
     if (m) err("vx-copy", `${path}: names the platform ("${m[0]}"), never on /for pages: "${str}"`);
     else if (PLATFORM_ABBR.test(str)) warn("vx-copy", `${path}: "LI" reads as the platform's initials: "${str}"`);
+    // SEQUENCE (founder 2026-09-29)
+    const st = str.match(SEQUENCE);
+    if (st) err("vx-copy", `${path}: lists a platform step ("${st[0]}"), tell the outcome instead: "${str}"`);
   }
 
   return issues;

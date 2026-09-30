@@ -42,9 +42,9 @@ const FEATURES: Feature[] = [
   {
     side: "right",
     title: "Every first message starts warm",
-    body: "Pancake visits their profile, likes a recent post, and connects before following up. Every message starts from their activity and sounds like you.",
+    body: "Pancake opens with something they posted, never a pitch. Every message sounds like you.",
     variant: "f2",
-    alt: "Animation: a LinkedIn post by Sarah Velasquez announcing a Product Hunt launch in 21 days gets liked, then a draft reply is written inside a rainbow ring — Hey Sarah, saw you're launching on Product Hunt in 21 days. We make SaaS launch videos people understand in seconds. Want an idea for yours? — its status reads Draft ready, then Message sent.",
+    alt: "Animation: a post by Sarah Velasquez announcing a Product Hunt launch in 21 days, then a draft reply is written inside a rainbow ring — Hey Sarah, saw you're launching on Product Hunt in 21 days. We make SaaS launch videos people understand in seconds. Want an idea for yours? — its status reads Draft ready, then Message sent.",
   },
   {
     side: "left",

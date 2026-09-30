@@ -103,10 +103,11 @@ function MailIcon() {
     </svg>
   );
 }
-function LinkedinIcon() {
+/* a plain chat bubble: the DM step carries no platform's logo (2026-09-29) */
+function DmIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
-      <path d="M6.94 8.5H3.56V20h3.38V8.5zM5.25 3.5a1.96 1.96 0 1 0 0 3.92 1.96 1.96 0 0 0 0-3.92zM20.45 20h-3.37v-5.6c0-1.34-.03-3.06-1.86-3.06-1.87 0-2.15 1.46-2.15 2.96V20H9.7V8.5h3.24v1.57h.05c.45-.85 1.55-1.75 3.19-1.75 3.42 0 4.05 2.25 4.05 5.17V20h.22z" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false">
+      <path d="M5 5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-7l-5 4v-4H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z" />
     </svg>
   );
 }
@@ -118,7 +119,7 @@ function ReplyIcon() {
     </svg>
   );
 }
-const ICONS = { mail: MailIcon, linkedin: LinkedinIcon, reply: ReplyIcon } as const;
+const ICONS = { mail: MailIcon, dm: DmIcon, reply: ReplyIcon } as const;
 
 export function AgSpWorkflowMock() {
   return (

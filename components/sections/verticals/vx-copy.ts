@@ -3,7 +3,10 @@
 // App-UI strings are verbatim from get-pancake/pancake-cmo @07513e8 (product-truth §3,
 // campaigns/copy.ts, signal-copy.ts, leads-table.tsx, slack lead-finding-message.ts), except
 // where the app names the outreach platform: /for pages never do (founder 2026-09-23, validate.ts
-// PLATFORM), so those read "People signals", "Profile · View ↗", "Send an invite", "your own account".
+// PLATFORM), so those read "People signals", "Profile · View ↗", "your own account". Since
+// 2026-09-29 (founder: "vitrine plus compliant") the outreach is told at the outcome level too —
+// a warm-up, a first touch with no pitch, up to three messages — never the visit / like / invite
+// steps (validate.ts SEQUENCE).
 // In the repo, import TRIAL_LABEL from "@/lib/trial" instead of the local constant below.
 
 import { TRIAL_LABEL } from "@/lib/trial";
@@ -76,7 +79,7 @@ export const VX_DEMO = {
   tabs: [
     { key: "brief", num: "01", label: "Brief", title: "Say who you sell to.", body: "Pancake turns it into signals to watch. You approve them once." },
     { key: "leads", num: "02", label: "Leads", title: "Wake up to warm leads.", body: "New leads land by 8:30 AM, each with the signal behind it." },
-    { key: "outreach", num: "03", label: "Outreach", title: "Reach out as yourself.", body: "Pancake visits, likes and invites from your own account, then writes." },
+    { key: "outreach", num: "03", label: "Outreach", title: "Reach out as yourself.", body: "Pancake warms up each lead, then writes as you." },
     { key: "slack", num: "04", label: "Slack", title: "Approve from Slack.", body: "New leads post to your channel. Approve or reject in one click." },
   ],
   controls: { pause: "Pause demo", play: "Play demo" },
@@ -84,7 +87,7 @@ export const VX_DEMO = {
   paneAria: {
     brief: "Pancake’s Signals page and chat. The request “{prompt}” becomes proposed signal settings, approved. First leads arrive tomorrow morning.",
     leads: "Pancake’s Leads page: five qualified leads. {lead} is open with the reason the lead fits, approved and ready to add to the campaign.",
-    outreach: "Pancake’s Campaign page: {lead}’s campaign journey. Profile visit and like done, invite now, first message drafted for after they accept.",
+    outreach: "Pancake’s Campaign page: {lead}’s campaign journey. Warm-up done, first touch now, first message drafted for the next step.",
     slack: "A Slack channel where Pancake posts new leads with Approve and Reject buttons. {lead} is approved.",
   },
   app: {
@@ -157,21 +160,22 @@ export const VX_DEMO = {
       sub: "Pancake runs one warm outreach campaign, tuned for you.",
       /** campaigns/copy.ts journey.panelTitle · journey.stepOf(3, 6). */
       journey: "Campaign journey · Step 3 of 6",
-      /** campaigns/copy.ts leads.status.invited (the invite step is current → "invited", blue). */
-      leadStatus: "Invited",
-      /** sequence-template.ts v2: visit → like → note-less invite → message 1 six hours after they
-       *  accept → two follow-ups 72h apart (an unaccepted invite ends the sequence after 7 days). */
+      /** The app's status here is "invited" (blue); the page says "Warming up" (outcome level, 2026-09-29). */
+      leadStatus: "Warming up",
+      /** sequence-template.ts v2 is visit → like → note-less invite → message 1 six hours after they
+       *  accept → two follow-ups 72h apart. Since 2026-09-29 the page shows the same six steps at the
+       *  outcome level (VxDemo folds from index 3, so the count and the Done / Now split stay). */
       steps: [
-        { label: "Visit their profile", sub: "", state: "Done" },
-        { label: "Like a recent post", sub: "", state: "Done" },
-        { label: "Send an invite", sub: "No note — just the invite, so it never reads as a pitch.", state: "Now" },
-        { label: "First message (after they accept)", sub: "6 hours after they accept", state: "Upcoming" },
+        { label: "Read their activity", sub: "", state: "Done" },
+        { label: "Warm-up", sub: "", state: "Done" },
+        { label: "First touch", sub: "No pitch, so it never reads as sales.", state: "Now" },
+        { label: "First message", sub: "One light question about their signal.", state: "Upcoming" },
         { label: "Follow-up message", sub: "after 3 days", state: "Upcoming" },
         { label: "Follow-up message", sub: "after 3 days", state: "Upcoming" },
       ],
       /** Phones: the three message steps folded into one row. */
       fold: "3 follow-up messages",
-      upNext: "Up next · First message (after they accept)",
+      upNext: "Up next · First message",
       /** campaigns/copy.ts sheet.writing → journey.draftNote, as a before / after pair. */
       writing: "Writing from their activity…",
       draft: "Drafted — sends when the sequence reaches this step.",
@@ -230,8 +234,8 @@ export const VX_CONTROL = {
   h2: "You choose who hears from you.",
   lede: "Pancake contacts only the leads you approve and add to your campaign. Nothing goes out for 10 minutes, so you can undo.",
   facts: [
-    { title: "Your own account", body: "Outreach goes out under your name, at a human pace." },
-    { title: "No pitch in the invite", body: "Invites go out with no note." },
+    { title: "Under your name", body: "Every message goes out as you, in your voice." },
+    { title: "No pitch up front", body: "The first touch never sells." },
     { title: "Weekdays, business hours", body: "Pancake sends Monday to Friday, 9\u00a0AM to 6\u00a0PM, in your time zone." },
   ],
   dialog: {
@@ -268,7 +272,7 @@ export const VX_FAQ = {
   shared: [
     {
       q: "What does Pancake send?",
-      a: "From your own account: a profile visit, a like on a recent post, an invite with no note, then up to three messages. No emails, no calls.",
+      a: "Up to three short messages under your name, after a light warm-up. No emails, no calls.",
     },
     {
       q: "What do I approve?",

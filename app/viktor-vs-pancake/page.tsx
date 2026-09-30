@@ -42,7 +42,7 @@ const config: GtmComparisonConfig = {
     { feature: "Recurring work", competitor: { text: "Scheduled tasks and proactive suggestions", mark: "yes" }, pancake: { text: "New leads every morning from six kinds of buying signals", mark: "yes" } },
     { feature: "GTM Brain", competitor: { text: "Shared company memory" }, pancake: { text: "Positioning, buyers, offers, proof, and objections, learned from your website", mark: "yes" } },
     { feature: "AI-search articles", competitor: { text: "Can complete broad content tasks" }, pancake: { text: "Writes articles for Google and AI answers that you approve", mark: "yes" } },
-    { feature: "Outreach", competitor: { text: "Can manage workflows across connected tools" }, pancake: { text: "Profile visit, like, invite, then up to three messages from your account", mark: "yes" } },
+    { feature: "Outreach", competitor: { text: "Can manage workflows across connected tools" }, pancake: { text: "A warm-up, then up to three messages under your name", mark: "yes" } },
     { feature: "Public starting price", competitor: { text: "$50/month after free credits", mark: "yes" }, pancake: { text: "$99/month flat, every agent included", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Teams wanting one broad shared AI employee" }, pancake: { text: "Founders and small B2B teams that need customers" } },
   ],

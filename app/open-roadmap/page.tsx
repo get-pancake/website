@@ -16,7 +16,7 @@ import { STATUS_META } from "@/components/sections/roadmap/roadmap-data";
 import { Footer } from "@/components/shared/Footer";
 import { Badge } from "@/components/ui/Badge";
 import { isAdmin } from "@/lib/auth/admin";
-import { getIdeas } from "@/lib/roadmap/ideas";
+import { getIdeas, isPublicIdea } from "@/lib/roadmap/ideas";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 // Always render per-request: the board reflects live Supabase data and the
@@ -48,7 +48,10 @@ export const metadata: Metadata = {
 };
 
 export default async function OpenRoadmapPage() {
-  const [{ ideas, source, truncated }, admin] = await Promise.all([getIdeas(), isAdmin()]);
+  const [{ ideas: allIdeas, source, truncated }, admin] = await Promise.all([getIdeas(), isAdmin()]);
+  // Ideas naming the outreach platform stay off the public board and its JSON-LD (see
+  // isPublicIdea); admins still see every idea so they can edit or delete it.
+  const ideas = admin ? allIdeas : allIdeas.filter(isPublicIdea);
   const backendEnabled = source === "supabase";
 
   // ItemList JSON-LD built from the live list so it can't drift from the page.
