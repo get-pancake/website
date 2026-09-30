@@ -3,26 +3,28 @@
 import { gsap } from "@/lib/gsap";
 
 /**
- * The four "How Pancake finds customers" build-ups as GSAP timelines — the
- * choreography of pancake-studio shorts/feat-{signals,warm-message,ai-search,
- * learns}-anim (the compositions the mp4s were rendered from), ported tween
- * for tween onto the same markup and CSS (LpFeatMocks.tsx / features.css).
+ * The four "How Pancake finds customers" build-ups as GSAP timelines — f1,
+ * f2 and f4 are the choreography of pancake-studio shorts/feat-{signals,
+ * warm-message,learns}-anim (the compositions the mp4s were rendered from),
+ * ported tween for tween onto the same markup and CSS (LpFeatMocks.tsx /
+ * features.css); f5 (Plays, 2026-09-30) has no composition and was
+ * storyboarded here from the app's Play UI.
  * Each timeline is built paused on its stage root when the card first
  * touches the viewport (laid out — f2 measures its glyphs); LpFeatAnim.tsx
  * owns playback (60 % in view → play once → hold the last frame = the
  * designer's picture). Every builder is seek-safe: sets and tweens only, no
  * callbacks, no randomness.
  *
- * Deviations from the compositions, both founder-requested 2026-09-03:
- * - f3: the question is typed in the composer bar and sent up into the
- *   blue bubble (was: typed inside the bubble; composer settled last).
+ * Deviation from the compositions, founder-requested 2026-09-03:
  * - f2: no Send button — the card is the message and its status (DRAFT
  *   READY in yellow, flipping to MESSAGE SENT in green); the card hugs the
  *   five-line copy and the ring follows (F2_RING). Typing reveals the real
  *   text run with a clip staircase (no span layer, no handover snap).
  */
 
-export type FeatVariant = "f1" | "f2" | "f3" | "f4";
+// variant ids are identities, not positions: f3 (the AI-answers card) was retired
+// 2026-09-30 and the Plays card (f5) opens the section
+export type FeatVariant = "f1" | "f2" | "f4" | "f5";
 export type BuiltFeat = { tl: gsap.core.Timeline; cleanup: () => void };
 
 type Timeline = gsap.core.Timeline;
@@ -414,229 +416,6 @@ function buildF2(root: HTMLElement): BuiltFeat {
   return { tl, cleanup: () => created.forEach((n) => n.parentNode?.removeChild(n)) };
 }
 
-/* ── f3 · Show up where buyers search (feat-ai-search-anim, composer cut) ──
-   the card rises with its composer → the caret blinks in the composer bar,
-   the question is typed there (the bar grows line by line like a real chat
-   input) → send: the bar clears and the question pops up into the blue
-   bubble → the ChatGPT spiral, "Thought for 1s", the Claude asterisk, the
-   answer streams (Studio Pelican lands with a peach flash), the Gemini star
-   → rest = the designer's picture. Downstream timings are the composition's. */
-function buildF3(root: HTMLElement): BuiltFeat {
-  const { $, $$ } = query(root);
-  const created: Node[] = [];
-
-  // the composer's typed run: one span per character (display toggled, so
-  // the bar wraps and grows exactly like a text field), each carrying the
-  // caret that follows it; a zero-width holder in front blinks before typing
-  const QUESTION = "best studio for a SaaS launch video in Stockholm";
-  const ctyped = $(".lp-f3-ctyped");
-  const mkCaret = () => {
-    const i = document.createElement("i");
-    i.className = "lp-f3-crt";
-    return i;
-  };
-  const c0 = document.createElement("span");
-  c0.className = "lp-f3-ch lp-f3-ch0";
-  c0.textContent = "​";
-  const caret0 = mkCaret();
-  c0.appendChild(caret0);
-  ctyped.appendChild(c0);
-  created.push(c0);
-  const chars: HTMLElement[] = [];
-  const carets: HTMLElement[] = [];
-  for (const c of QUESTION) {
-    const s = document.createElement("span");
-    s.className = "lp-f3-ch";
-    s.textContent = c;
-    const i = mkCaret();
-    s.appendChild(i);
-    ctyped.appendChild(s);
-    created.push(s);
-    chars.push(s);
-    carets.push(i);
-  }
-
-  // the answer, one span per word; the site's string verbatim (typographic apostrophe, "\n\n" paragraph break)
-  const P1 = "For B2B SaaS launch videos in Stockholm, I’d recommend";
-  const P2 = "They turn complex products into clear stories, from strategy to final animation.";
-  const answer = $(".lp-f3-answer--anim");
-  const words: HTMLElement[] = [];
-  const addWords = (text: string) =>
-    text.split(" ").forEach((w, i) => {
-      if (i) {
-        const sp = document.createTextNode(" ");
-        answer.appendChild(sp);
-        created.push(sp);
-      }
-      const s = document.createElement("span");
-      s.className = "lp-f3-w";
-      s.textContent = w;
-      answer.appendChild(s);
-      created.push(s);
-      words.push(s);
-    });
-  addWords(P1);
-  const sp1 = document.createTextNode(" ");
-  answer.appendChild(sp1);
-  created.push(sp1);
-  const pelican = document.createElement("span");
-  pelican.className = "lp-f3-w";
-  const mark = document.createElement("b");
-  mark.className = "lp-f3-mark";
-  mark.textContent = "Studio Pelican.";
-  pelican.appendChild(mark);
-  answer.appendChild(pelican);
-  created.push(pelican);
-  words.push(pelican);
-  const br = document.createTextNode("\n\n");
-  answer.appendChild(br);
-  created.push(br);
-  addWords(P2);
-  const P2_START = P1.split(" ").length + 1; // para 1 words, then the highlighted mark, then para 2
-
-  const card = $(".lp-f3-card");
-  const bubble = $(".lp-f3-bubble");
-  const gpt = $(".lp-f3-chatgpt");
-  const gem = $(".lp-f3-gemini");
-  const cla = $(".lp-f3-claude");
-  const thought = $(".lp-f3-thought");
-  const shim = $(".lp-f3-shim");
-  const ask = $(".lp-f3-ask");
-  const caretBaked = $<SVGPathElement>(".lpf3-caret0");
-  const answerPlain = $(".lp-f3-answer--plain");
-  const sparks = $$<SVGSVGElement>(".lp-f3-spk");
-
-  const HAIRLINE = "inset 0 0 0 0.4px #ddcfcd";
-  const SH_LIFT = "inset 0 0 0 0.4px rgba(221,207,205,1), 0 22px 44px rgba(44,0,42,0.10)";
-  const SH_REST = "inset 0 0 0 0.4px rgba(221,207,205,1), 0 0px 0px rgba(44,0,42,0)";
-
-  /* ===== initial (frame 0) state: cream only — the composer belongs to the card and rises with it ===== */
-  gsap.set(card, { opacity: 0, y: 44, boxShadow: SH_LIFT });
-  gsap.set(bubble, { opacity: 0, scale: 0.85, transformOrigin: "100% 50%" });
-  gsap.set(answerPlain, { opacity: 0 }); // the site's plain answer takes over once the stream is done
-  gsap.set(thought, { opacity: 0, y: 6 });
-  gsap.set(shim, { opacity: 0, backgroundPosition: "100% 0%" });
-  gsap.set(words, { opacity: 0, y: 3 });
-  gsap.set(pelican, { transformOrigin: "50% 50%" });
-  gsap.set(gpt, { opacity: 0, rotation: -140, scale: 0.5, x: -24, transformOrigin: "50% 50%" });
-  gsap.set(cla, { opacity: 0, rotation: -270, scale: 0.35, transformOrigin: "50% 50%" });
-  gsap.set(gem, { opacity: 0, rotation: -25, scale: 0, transformOrigin: "50% 50%" });
-  gsap.set(sparks, { opacity: 0, scale: 0, transformOrigin: "50% 50%" });
-
-  const tl = gsap.timeline({ paused: true });
-
-  // caret blink: on .42 s / off .42 s, `cycles` times, ends "on" (explicit sets — seek-exact)
-  const blink = (el: Element, t: number, cycles: number) => {
-    for (let c = 0; c < cycles; c++) {
-      tl.set(el, { opacity: 1 }, t + c * 0.84);
-      tl.set(el, { opacity: 0 }, t + c * 0.84 + 0.42);
-    }
-    tl.set(el, { opacity: 1 }, t + cycles * 0.84);
-  };
-
-  /* — 1 · the card rises in (0 – .85), its lift shadow settles away — */
-  tl.to(card, { opacity: 1, duration: 0.4, ease: "power2.out" }, 0);
-  tl.to(card, { y: 0, duration: 0.85, ease: "power3.out" }, 0);
-  tl.to(card, { boxShadow: SH_REST, duration: 0.9, ease: "power2.out" }, 0.45);
-  tl.set(card, { boxShadow: HAIRLINE }, 1.4);
-
-  /* — 2 · the composer's caret takes over from the baked one and blinks once, then the question types in the bar (1.6 – 3.57) — */
-  tl.set(caretBaked, { opacity: 0 }, 0.75);
-  blink(caret0, 0.75, 1);
-  const T0 = 1.6;
-  const DT = 0.042;
-  tl.set(ask, { opacity: 0 }, T0); // the placeholder leaves with the first character
-  chars.forEach((s, i) => {
-    const t = T0 + i * DT;
-    tl.set(s, { display: "inline" }, t);
-    tl.set(i ? carets[i - 1] : caret0, { opacity: 0 }, t);
-    tl.set(carets[i], { opacity: 1 }, t);
-  });
-  const T_LAST = T0 + (chars.length - 1) * DT; // 3.574
-  const caretLast = carets[chars.length - 1];
-  // one idle blink on the last character, then send
-  tl.set(caretLast, { opacity: 0 }, T_LAST + 0.46);
-  tl.set(caretLast, { opacity: 1 }, T_LAST + 0.7);
-
-  /* — 3 · send (4.35): the bar clears and settles back to one line, the question pops up into the blue bubble — */
-  const SEND = 4.35;
-  tl.set(caretLast, { opacity: 0 }, SEND);
-  tl.set(chars, { display: "none" }, SEND);
-  tl.set(caretBaked, { opacity: 1 }, SEND);
-  tl.to(ask, { opacity: 1, duration: 0.2, ease: "power2.out" }, SEND + 0.05);
-  tl.to(bubble, { opacity: 1, duration: 0.18, ease: "power2.out" }, SEND);
-  tl.to(bubble, { scale: 1, duration: 0.5, ease: "back.out(1.6)" }, SEND);
-
-  /* — 4 · the ChatGPT spiral rotates into place behind the card (4.45 – 5.45) — */
-  tl.to(gpt, { opacity: 1, duration: 0.3, ease: "power2.out" }, 4.45);
-  tl.to(gpt, { rotation: 0, scale: 1, x: 0, duration: 1.0, ease: "back.out(1.3)" }, 4.45);
-
-  /* — 5 · "Thought for 1s" rises in with two shimmer sweeps, then a short pause (4.75 – 6.35) — */
-  tl.to(thought, { opacity: 1, y: 0, duration: 0.4, ease: "power3.out" }, 4.75);
-  tl.to(shim, { opacity: 1, duration: 0.2, ease: "power1.out" }, 4.85);
-  tl.fromTo(
-    shim,
-    { backgroundPosition: "100% 0%" },
-    { backgroundPosition: "0% 0%", duration: 0.7, ease: "power1.inOut", repeat: 1, immediateRender: false },
-    4.85,
-  );
-  tl.to(shim, { opacity: 0, duration: 0.25, ease: "power1.in" }, 6.1);
-
-  /* — 6 · the Claude asterisk spins in (5.35 – 6.35) — */
-  tl.to(cla, { opacity: 1, duration: 0.25, ease: "power2.out" }, 5.35);
-  tl.to(cla, { rotation: 0, scale: 1, duration: 1.0, ease: "back.out(1.4)" }, 5.35);
-
-  /* — 7 · the answer streams word by word at 40 ms; "Studio Pelican." lands with a peach flash (6.35 – 8.25) — */
-  const A0 = 6.35;
-  const DW = 0.04;
-  const A2 = 7.15;
-  words.forEach((w, i) => {
-    const t = i < P2_START ? A0 + i * DW : A2 + (i - P2_START) * DW;
-    tl.to(w, { opacity: 1, y: 0, duration: 0.22, ease: "power2.out" }, t);
-  });
-  const T_PELICAN = A0 + (P2_START - 1) * DW; // 6.75
-  tl.fromTo(
-    pelican,
-    { scale: 1.35 },
-    { scale: 1, duration: 0.55, ease: "back.out(2)", immediateRender: false },
-    T_PELICAN,
-  );
-  tl.fromTo(
-    mark,
-    { backgroundColor: "#ffa45f", boxShadow: "0 0 0 6px rgba(255,164,95,0.45)" },
-    {
-      backgroundColor: "#ffbd7a",
-      boxShadow: "0 0 0 0px rgba(255,164,95,0)",
-      duration: 0.6,
-      ease: "power2.out",
-      immediateRender: false,
-    },
-    T_PELICAN,
-  );
-  tl.set(mark, { clearProps: "boxShadow,backgroundColor" }, T_PELICAN + 0.65);
-  const T_ANSWER_DONE = A2 + (words.length - P2_START - 1) * DW + 0.25; // last word fully in
-  tl.set(answer, { opacity: 0 }, T_ANSWER_DONE); // streamed spans → the plain <p>
-  tl.set(answerPlain, { opacity: 1 }, T_ANSWER_DONE);
-
-  /* — 8 · the Gemini star scales in with a sparkle (7.35 – 8.65) — */
-  tl.to(gem, { opacity: 1, duration: 0.2, ease: "power1.out" }, 7.35);
-  tl.to(gem, { scale: 1, duration: 1.3, ease: "elastic.out(1, 0.5)" }, 7.35);
-  tl.to(gem, { rotation: 0, duration: 0.9, ease: "power3.out" }, 7.35);
-  sparks.forEach((s, i) => {
-    const t = 7.55 + i * 0.11;
-    tl.to(s, { opacity: 1, duration: 0.12, ease: "power1.out" }, t);
-    tl.to(s, { scale: 1, duration: 0.3, ease: "back.out(2)" }, t);
-    tl.to(s, { rotation: 90, duration: 0.65, ease: "power1.out" }, t);
-    tl.to(s, { scale: 0, opacity: 0, duration: 0.3, ease: "power2.in" }, t + 0.35);
-  });
-
-  /* — 9 · rest state = the designer's picture: drop every identity transform so the DOM paints exactly like the static site (9.02 – 10.5) — */
-  tl.set([card, bubble, gpt, cla, gem, thought, pelican, ...words], { clearProps: "transform" }, 9.02);
-  tl.to({}, { duration: 0.001 }, 10.499); // pad to the composition's 10.5 s
-
-  return { tl, cleanup: () => created.forEach((n) => n.parentNode?.removeChild(n)) };
-}
-
 /* ── f4 · Pancake learns from what wins (feat-learns-anim) ──
    chart card rises → 12 bars grow from the baseline, the count ticks 0 → 56,
    the arrow pops → "What worked" slides in, chips pop → "Brain updated"
@@ -759,11 +538,257 @@ function buildF4(root: HTMLElement): BuiltFeat {
   return { tl, cleanup: () => {} };
 }
 
+/* ── f5 · Ask for the people you want (Plays, 2026-09-30; replaces f3's AI-answers cut) ──
+   the Agent's composer rises → the request types in the bar → send: it becomes
+   the plum bubble → the Play card rises in DRAFT, its three rows resolve (Not
+   decided yet → value, 1·2·3 → ticks) → Create and run search is pressed →
+   DRAFT flips to ACTIVE, Discover · Enrich · Qualify complete → the leads card
+   rises, "25 new leads" ticks up, three leads land, each why line wipes in,
+   NEW pops → rest = the end picture (= the CSS rest markup = the static and
+   reduced-motion still). No studio composition: built here from the app's Play
+   UI. Frame 0 is set with gsap.set (the LpFeatAnim context reverts it). */
+function buildF5(root: HTMLElement): BuiltFeat {
+  registerTxtPlugin();
+  const { $, $$ } = query(root);
+  const created: Node[] = [];
+
+  // the composer's typed run (f3's recipe): one span per character, display
+  // toggled, each carrying the caret that follows it; a zero-width holder in
+  // front blinks before the first character
+  const REQUEST = "Find US SaaS founders with a launch coming up.";
+  const ctyped = $(".lp-f5-ctyped");
+  const mkCaret = () => {
+    const i = document.createElement("i");
+    i.className = "lp-f5-crt";
+    return i;
+  };
+  const c0 = document.createElement("span");
+  c0.className = "lp-f5-ch lp-f5-ch0";
+  c0.textContent = "​";
+  const caret0 = mkCaret();
+  c0.appendChild(caret0);
+  ctyped.appendChild(c0);
+  created.push(c0);
+  const chars: HTMLElement[] = [];
+  const carets: HTMLElement[] = [];
+  for (const ch of REQUEST) {
+    const s = document.createElement("span");
+    s.className = "lp-f5-ch";
+    s.textContent = ch;
+    const c = mkCaret();
+    s.appendChild(c);
+    ctyped.appendChild(s);
+    created.push(s);
+    chars.push(s);
+    carets.push(c);
+  }
+
+  const composer = $(".lp-f5-composer");
+  const spark = $(".lp-f5-spark");
+  const ph = $(".lp-f5-ph");
+  const send = $(".lp-f5-send");
+  const bubble = $(".lp-f5-bubble");
+  const play = $(".lp-f5-play");
+  const draft = $(".lp-f5-badge--draft");
+  const active = $(".lp-f5-badge--active");
+  const rows = $$(".lp-f5-row").map((r) => ({
+    circ: r.querySelector<HTMLElement>(".lp-f5-circ")!,
+    num: r.querySelector<HTMLElement>(".lp-f5-num")!,
+    tick: r.querySelector<SVGSVGElement>(".lp-f5-tick")!,
+    fin: r.querySelector<HTMLElement>(".lp-f5-val-final")!,
+    wait: r.querySelector<HTMLElement>(".lp-f5-val-wait")!,
+  }));
+  const shims = $$(".lp-f5-shim");
+  const create = $(".lp-f5-create");
+  const chips = $$(".lp-f5-chip").map((c) => ({
+    el: c,
+    step: c.querySelector<SVGSVGElement>(".lp-f5-cstep")!,
+    done: c.querySelector<SVGSVGElement>(".lp-f5-cdone")!,
+  }));
+  const chipEls = chips.map((c) => c.el);
+  const links = $$(".lp-f5-link");
+  const leads = $(".lp-f5-leads");
+  const lcount = $(".lp-f5-lcount");
+  const leadRows = $$(".lp-f5-lead");
+  const whys = $$(".lp-f5-why");
+  const news = $$(".lp-f5-badge--new");
+
+  // GSAP can't tween var(): the tokens as literals (foundation.css)
+  const PLUM = "#2c002a"; // ink-100
+  const GREEN10 = "#ceead5";
+  const CHIP_OFF = "inset 0 0 0 0.45px #ddcfcd"; // ink-50 hairline
+  const CHIP_ON = "inset 0 0 0 0.45px #68cea7"; // green-20 hairline
+
+  /* ===== frame 0: cream only ===== */
+  gsap.set(composer, { autoAlpha: 0, y: 16 });
+  gsap.set(spark, { scale: 0.5, transformOrigin: "50% 50%" });
+  gsap.set(send, { backgroundColor: "#bba8ae", transformOrigin: "50% 50%" }); // ink-60 = empty bar
+  gsap.set(bubble, { autoAlpha: 0, scale: 0.85, transformOrigin: "100% 50%" });
+  gsap.set(play, { autoAlpha: 0, y: 28 });
+  gsap.set(draft, { opacity: 1 });
+  gsap.set(active, { opacity: 0 });
+  rows.forEach(({ circ, num, tick, fin, wait }) => {
+    gsap.set(circ, { backgroundColor: "rgba(44,0,42,0.05)" }); // ink-tr-5 = not decided
+    gsap.set(num, { opacity: 1 });
+    gsap.set(tick, { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" });
+    gsap.set(fin, { opacity: 0 });
+    gsap.set(wait, { opacity: 1 });
+  });
+  gsap.set(shims, { backgroundPosition: "100% 0%" });
+  gsap.set(create, { autoAlpha: 0, y: 6, transformOrigin: "50% 50%" });
+  chips.forEach(({ el, step, done }) => {
+    gsap.set(el, { autoAlpha: 0, y: 6, backgroundColor: "#ffffff", boxShadow: CHIP_OFF, color: "#9a818f" });
+    gsap.set(step, { opacity: 1 });
+    gsap.set(done, { opacity: 0, scale: 0.3, transformOrigin: "50% 50%" });
+  });
+  gsap.set(links, { scaleX: 0, transformOrigin: "0 50%" });
+  gsap.set(leads, { autoAlpha: 0, y: 32 });
+  gsap.set(leadRows, { autoAlpha: 0, y: 10 });
+  gsap.set(whys, { clipPath: "inset(0% 100% 0% 0%)" });
+  gsap.set(news, { autoAlpha: 0, scale: 0.6, transformOrigin: "50% 50%" });
+
+  const tl = gsap.timeline({ paused: true });
+  tl.set(lcount, { txt: "0" }, 0);
+
+  // caret blink: on .42 s / off .42 s, `cycles` times, ends "on" (explicit sets — seek-exact)
+  const blink = (el: Element, t: number, cycles: number) => {
+    for (let c = 0; c < cycles; c++) {
+      tl.set(el, { opacity: 1 }, t + c * 0.84);
+      tl.set(el, { opacity: 0 }, t + c * 0.84 + 0.42);
+    }
+    tl.set(el, { opacity: 1 }, t + cycles * 0.84);
+  };
+
+  /* — 1 · the composer rises, Pancake's sparkle pops, the caret blinks once (0.1 – 1.6) — */
+  tl.to(composer, { autoAlpha: 1, y: 0, duration: 0.65, ease: "power3.out" }, 0.1);
+  tl.to(spark, { scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 0.3);
+  blink(caret0, 0.75, 1);
+
+  /* — 2 · the request types in the bar at 32 ms a character (1.6 – 3.04) — */
+  const T0 = 1.6;
+  const DT = 0.032;
+  tl.set(ph, { opacity: 0 }, T0); // the placeholder leaves with the first character
+  tl.to(send, { backgroundColor: PLUM, duration: 0.2, ease: "power2.out" }, T0);
+  chars.forEach((s, i) => {
+    const t = T0 + i * DT;
+    tl.set(s, { display: "inline" }, t);
+    tl.set(i ? carets[i - 1] : caret0, { opacity: 0 }, t);
+    tl.set(carets[i], { opacity: 1 }, t);
+  });
+  const T_LAST = T0 + (chars.length - 1) * DT; // 3.04
+  const caretLast = carets[carets.length - 1];
+  tl.set(caretLast, { opacity: 0 }, T_LAST + 0.42); // one idle blink on the last character
+  tl.set(caretLast, { opacity: 1 }, T_LAST + 0.66);
+
+  /* — 3 · send (3.8 press, 3.9 send): the bar resets and leaves, then the request pops up as the plum
+     bubble in its slot (hand-off, no cross-fade: the bubble starts once the bar is mostly gone) — */
+  tl.to(
+    send,
+    {
+      keyframes: [
+        { scale: 0.86, duration: 0.08, ease: "power2.out" },
+        { scale: 1, duration: 0.3, ease: "back.out(2)" },
+      ],
+    },
+    3.8,
+  );
+  const SEND = 3.9;
+  tl.set(caretLast, { opacity: 0 }, SEND);
+  tl.set(chars, { display: "none" }, SEND);
+  tl.set(ph, { opacity: 1 }, SEND); // an emptied chat input shows its placeholder again
+  tl.to(send, { backgroundColor: "#bba8ae", duration: 0.15, ease: "power1.out" }, SEND);
+  tl.to(composer, { autoAlpha: 0, y: -6, duration: 0.18, ease: "power2.out" }, SEND);
+  tl.to(bubble, { autoAlpha: 1, duration: 0.18, ease: "power2.out" }, SEND + 0.1);
+  tl.to(bubble, { scale: 1, duration: 0.5, ease: "back.out(1.6)" }, SEND + 0.1);
+
+  /* — 4 · the Play card rises in DRAFT; the placeholders shimmer; the rows resolve one by one (4.1 – 5.9) — */
+  tl.to(play, { autoAlpha: 1, y: 0, duration: 0.65, ease: "power3.out" }, 4.1);
+  shims.forEach((s, i) => {
+    tl.to(s, { opacity: 1, duration: 0.2, ease: "power1.out" }, 4.4 + i * 0.08);
+    tl.to(s, { backgroundPosition: "0% 0%", duration: 0.7, ease: "power1.inOut" }, 4.4 + i * 0.08);
+  });
+  [4.85, 5.2, 5.55].forEach((t, k) => {
+    const { circ, num, tick, fin, wait } = rows[k];
+    tl.to(wait, { y: -6, opacity: 0, duration: 0.14, ease: "power1.in" }, t);
+    tl.fromTo(
+      fin,
+      { y: 6, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.32, ease: "back.out(1.6)", immediateRender: false },
+      t + 0.1,
+    );
+    tl.to(circ, { backgroundColor: GREEN10, duration: 0.22, ease: "power2.inOut" }, t);
+    tl.to(num, { opacity: 0, duration: 0.12, ease: "power1.in" }, t);
+    tl.to(tick, { opacity: 1, duration: 0.1, ease: "power1.out" }, t + 0.04);
+    tl.to(tick, { scale: 1, duration: 0.3, ease: "back.out(2)" }, t + 0.04);
+  });
+
+  /* — 5 · Create and run search slides in, is pressed and leaves; DRAFT flips to ACTIVE (5.9 – 6.98) — */
+  tl.to(create, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power3.out" }, 5.9);
+  tl.to(
+    create,
+    {
+      keyframes: [
+        { scale: 0.96, duration: 0.08, ease: "power2.out" },
+        { scale: 1, duration: 0.28, ease: "back.out(2)" },
+      ],
+    },
+    6.4,
+  );
+  const GO = 6.6;
+  tl.to(create, { autoAlpha: 0, duration: 0.14, ease: "power1.in" }, GO);
+  tl.to(draft, { y: -6, opacity: 0, duration: 0.14, ease: "power1.in" }, GO);
+  tl.fromTo(
+    active,
+    { y: 6, opacity: 0 },
+    { y: 0, opacity: 1, duration: 0.32, ease: "back.out(1.6)", immediateRender: false },
+    GO + 0.12,
+  );
+
+  /* — 6 · the steps run: the chips land once the button is gone, then Discover · Enrich · Qualify
+     complete (6.72 – 7.85) — */
+  tl.to(chipEls, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out", stagger: 0.06 }, GO + 0.12);
+  [6.95, 7.25, 7.55].forEach((t, k) => {
+    const { el, step, done } = chips[k];
+    tl.to(el, { backgroundColor: GREEN10, boxShadow: CHIP_ON, color: PLUM, duration: 0.22, ease: "power2.inOut" }, t);
+    tl.to(step, { opacity: 0, duration: 0.12, ease: "power1.in" }, t);
+    tl.to(done, { opacity: 1, duration: 0.1, ease: "power1.out" }, t + 0.04);
+    tl.to(done, { scale: 1, duration: 0.3, ease: "back.out(2)" }, t + 0.04);
+    if (k < links.length) tl.to(links[k], { scaleX: 1, duration: 0.25, ease: "power2.out" }, t + 0.05);
+  });
+
+  /* — 7 · the leads: the card rises, the count ticks 0 → 25, three leads land, each why line
+     wipes in, NEW pops (7.7 – 9.2) — */
+  tl.to(leads, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 7.7);
+  for (let k = 1; k <= 25; k++) {
+    tl.set(lcount, { txt: String(k) }, 7.8 + 0.9 * (1 - Math.sqrt(1 - k / 25))); // quad-out: brisk, then settling
+  }
+  [7.95, 8.2, 8.45].forEach((t, k) => {
+    tl.to(leadRows[k], { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
+    tl.to(whys[k], { clipPath: "inset(0% 0% 0% 0%)", duration: 0.5, ease: "power2.out" }, t + 0.18);
+    tl.to(news[k], { autoAlpha: 1, scale: 1, duration: 0.45, ease: "back.out(1.7)" }, t + 0.3);
+  });
+
+  /* — 8 · rest = the static picture: drop identity transforms, clips and the chips' tweened
+     paint (all equal to the CSS rest values) at 9.25, hold to 9.8 — */
+  tl.set(
+    [bubble, play, leads, active, ...leadRows, ...news, ...rows.map((r) => r.tick), ...rows.map((r) => r.fin)],
+    { clearProps: "transform" },
+    9.25,
+  );
+  tl.set(chipEls, { clearProps: "transform,backgroundColor,boxShadow,color" }, 9.25);
+  tl.set(chips.map((c) => c.done), { clearProps: "transform" }, 9.25);
+  tl.set(links, { clearProps: "transform" }, 9.25);
+  tl.set(whys, { clipPath: "none" }, 9.25);
+  tl.to({}, { duration: 0.001 }, 9.799); // hold the picture to 9.8
+
+  return { tl, cleanup: () => created.forEach((n) => n.parentNode?.removeChild(n)) };
+}
+
 const BUILDERS: Record<FeatVariant, (root: HTMLElement) => BuiltFeat> = {
   f1: buildF1,
   f2: buildF2,
-  f3: buildF3,
   f4: buildF4,
+  f5: buildF5,
 };
 
 export function buildFeatTimeline(variant: FeatVariant, root: HTMLElement): BuiltFeat {

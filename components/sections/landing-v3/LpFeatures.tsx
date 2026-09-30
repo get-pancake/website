@@ -32,26 +32,29 @@ type Feature = {
 };
 
 const FEATURES: Feature[] = [
+  // Plays open the section (2026-09-30): a Play is the unit of work, and the
+  // card replaced the AI-answers one (f3) when AI SEO was retired. Sides keep
+  // alternating: f5 left, f1 right, f2 left, f4 right.
   {
     side: "left",
+    title: "Ask for the people \nyou want",
+    body: "Pancake turns one sentence into a Play: who to reach, how to find them, how many. You create it. Every lead comes back with why they fit.",
+    variant: "f5",
+    alt: "Animation: in the Pancake Agent, the request Find US SaaS founders with a launch coming up is typed and sent; Pancake plans a Play called Founders about to launch (who: early-stage SaaS founders in the US, found through the people engaging with launch posts, 25 leads per search), it is created and switches from Draft to Active, its Discover, Enrich and Qualify steps complete, and 25 new leads arrive, the first three each with a line on why they fit: the search that surfaced them, then the requirement they meet, such as Commented on a launch post, Seed-stage SaaS.",
+  },
+  {
+    side: "right",
     title: "Tell Pancake \nwhat to watch",
     body: "Choose the keywords, competitors, influencers, hiring activity, and tech stacks that matter. Pancake finds matching prospects and shows the signal behind every match.",
     variant: "f1",
     alt: "Animation: a Signals panel where keyword mentions, competitor engagement, companies hiring and technologies used switch on one by one (4 active), then a Roles panel where Sales, Marketing and Customer success get checked (3 selected), and a clay alternatives note lands by the first signal.",
   },
   {
-    side: "right",
+    side: "left",
     title: "Every first message starts warm",
     body: "Pancake opens with something they posted, never a pitch. Every message sounds like you.",
     variant: "f2",
     alt: "Animation: a post by Sarah Velasquez announcing a Product Hunt launch in 21 days, then a draft reply is written inside a rainbow ring — Hey Sarah, saw you're launching on Product Hunt in 21 days. We make SaaS launch videos people understand in seconds. Want an idea for yours? — its status reads Draft ready, then Message sent.",
-  },
-  {
-    side: "left",
-    title: "Show up where \nbuyers search",
-    body: "Pancake finds the questions where Google and AI miss you. It drafts the article, waits for your review, and publishes it to your CMS.",
-    variant: "f3",
-    alt: "Animation: in an AI chat, the question best studio for a SaaS launch video in Stockholm is typed in the message bar and sent; the answer recommends Studio Pelican, while the ChatGPT, Claude and Gemini logos appear around the chat.",
   },
   {
     side: "right",
@@ -65,7 +68,7 @@ const FEATURES: Feature[] = [
 function FeatureCard({ f }: { f: Feature }) {
   return (
     <>
-      <article className="lp-feat-card" data-side={f.side}>
+      <article className="lp-feat-card" data-side={f.side} data-variant={f.variant}>
         <FeatureText title={f.title} body={f.body} />
         <LpFeatAnim className="lp-feat-mockzone" variant={f.variant} alt={f.alt} />
       </article>

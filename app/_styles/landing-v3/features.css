@@ -3,10 +3,13 @@
    +32 vs rev1: a 4th separator closes the section. Heading pt-128 px-128,
    centered title. Cards 1296×621 (r48, no bg). Separators 1136w, 0.5px
    ink-50. The four mock UIs are in-page animations (DOM + CSS + GSAP —
-   LpFeatAnim.tsx / LpFeatMocks.tsx / lp-feat-timelines.ts): the markup and
-   the values below are the pancake-studio compositions' (shorts/feat-*-anim,
-   the sources of the former mp4s), themselves the Figma-exact mocks this file
-   carried before the video pass. Rest state = the artboard. */
+   LpFeatAnim.tsx / LpFeatMocks.tsx / lp-feat-timelines.ts): for f1, f2 and
+   f4 the markup and the values below are the pancake-studio compositions'
+   (shorts/feat-*-anim, the sources of the former mp4s), themselves the
+   Figma-exact mocks this file carried before the video pass; f5 (Plays,
+   2026-09-30) is the app's Play UI at 0.9 scale, built here. Rest state =
+   the artboard (f5: the end picture). Order: f5 left, f1 right, f2 left,
+   f4 right. */
 
 .lp-feat {
   display: flex;
@@ -107,8 +110,7 @@
    ResizeObserver; the trig quotient is the pre-hydration fallback (iOS
    mis-resolves it, LpFitVars.tsx — one wrong first frame, self-corrected).
    No clipping: Figma's frame does not clip its content either — f1's clay
-   note paints 21px left of the frame, f3's Gemini star 36px right of it
-   (the page clips bleed). */
+   note paints 21px left of the frame (the page clips bleed). */
 .lp-feat-mockzone {
   container-type: inline-size;
   height: 621px;
@@ -157,7 +159,7 @@
 }
 /* (paragraph margins are already zero via foundation's `.lp p` — a rule of
    (0,1,1) specificity: any mock paragraph that NEEDS a margin states it with
-   a compound selector, e.g. `.lp-feat-stage .lp-f3-answer`) */
+   a compound selector, e.g. `.lp-feat-stage .lp-fN-thing`) */
 
 /* ══ f1 · Signals + Roles (feat-signals-anim, Figma-parity cut 2026-09-03:
    exact instance geometry inside node 4389:863 — stage 516.8×428 at
@@ -700,125 +702,48 @@
   position: relative; /* hosts its caret */
 }
 
-/* ══ f3 · AI-answers collage (feat-ai-search-anim, composer cut 2026-09-03).
-   Root = tight bounds of the collage in the zone: x20.92 (spiral left) →
-   596.08 (gemini right), y28.1 (claude top) → 538.7 (card bottom). ChatGPT
-   spiral BEHIND the chat card; Gemini star and Claude asterisk above it. ══ */
-.lp-feat-stage--f3 {
-  font-size: 12.8px;
-  line-height: 1.5;
-}
-.lp-feat-f3 {
-  height: 510.6px;
-  left: 20.92px;
+/* ══ f5 · Plays (2026-09-30, replaces the AI-answers collage): the request
+   typed in the Agent's composer and sent as a plum bubble → the Play Pancake
+   plans (Who / How we find them / How many, DRAFT → ACTIVE, Discover ·
+   Enrich · Qualify) → the leads it brings, each with why they fit. The app's
+   UI at 0.9 scale (f4's card recipe: r21.6, 0.45px hairlines, 14.4 padding,
+   Condensed 22.52 titles). Tight bounds 450 × 509.44, centred in the zone.
+   Rest = the end picture: every animation-only layer is hidden here and
+   driven by lp-feat-timelines.ts. Every run is nowrap (measured budgets in
+   the README). ══ */
+.lp-feat-f5 {
+  height: 509.44px;
+  left: 55px;
   position: absolute;
-  top: 28.1px;
-  width: 575.16px;
+  top: 55.78px;
+  width: 450px;
 }
-.lp-f3-chatgpt {
-  height: 140.81px;
-  left: 0;
-  position: absolute;
-  top: 225.8px;
-  width: 140.81px;
-}
-.lp-f3-card {
+
+/* slot A (y 0, 38.4 tall): the request — the composer is animation-only,
+   the plum bubble is the rest picture */
+.lp-f5-composer {
   background: var(--lp-ink-0);
-  border-radius: 25.6px;
-  box-shadow: inset 0 0 0 0.4px var(--lp-ink-50);
-  height: 456px;
-  left: 101.08px;
-  position: absolute;
-  top: 54.6px;
-  width: 316px;
-}
-.lp-f3-gemini {
-  height: 240.5px;
-  left: 334.66px;
-  position: absolute;
-  top: 101.13px;
-  width: 240.5px;
-}
-.lp-f3-claude {
-  height: 109.21px;
-  left: 39.48px;
-  position: absolute;
-  top: 0;
-  width: 109.21px;
-}
-.lp-f3-bubble {
-  background: var(--lp-blue-40);
-  border-radius: 16px;
-  color: var(--lp-ink-0);
-  padding: 8px 12.8px;
-  position: absolute;
-  right: 32.4px;
-  top: 32.4px;
-  width: 190.88px;
-}
-.lp-f3-bubble p {
-  font-size: 12.8px;
-  line-height: 1.5;
-}
-.lp-f3-resp {
-  left: 32.4px;
-  position: absolute;
-  top: 137.6px;
-  width: 225.6px;
-}
-.lp-f3-thought {
-  color: var(--lp-ink-80);
-  font-size: 12.8px;
-  line-height: 1.5;
-  position: relative;
-  white-space: nowrap;
-}
-.lp-feat-stage .lp-f3-answer {
-  color: var(--lp-ink-100);
-  font-size: 12.8px;
-  line-height: 1.5;
-  margin-top: 6.4px; /* outranks foundation's `.lp p { margin: 0 }` */
-  white-space: pre-line;
-}
-.lp-f3-mark {
-  background: var(--lp-yellow-30);
-  border-radius: 6.4px;
-  font-weight: 700;
-  margin: -1.25px -3.6px;
-  padding: 1.25px 3.6px;
-  white-space: nowrap;
-}
-.lp-feat-stage .lp-f3-answer--anim {
-  left: 0;
-  margin-top: 0;
-  position: absolute;
-  top: 25.6px; /* 19.2 thought + 6.4 gap */
-  width: 225.6px;
-}
-/* the composer bar: 251.2×38.4 at (32.4, 385.2) at rest, anchored to the
-   card's bottom so it grows UPWARD while the question is typed in it — a
-   real chat input; its icon row (plus, caret, mic, voice) stays on the
-   bottom line, the placeholder on the first */
-.lp-f3-composer {
-  background: var(--lp-ink-20);
   border-radius: 19.2px;
-  bottom: 32.4px;
-  box-shadow: inset 0 0 0 0.4px var(--lp-ink-50);
-  left: 32.4px;
-  min-height: 38.4px;
-  padding: 11.7px 60px 11.7px 38.4px;
-  position: absolute;
-  width: 251.2px;
-}
-.lp-f3-compicons {
-  bottom: 0;
+  box-shadow: inset 0 0 0 0.45px var(--lp-ink-50);
   height: 38.4px;
   left: 0;
+  opacity: 0;
   position: absolute;
-  width: 251.2px;
+  top: 0;
+  visibility: hidden;
+  width: 450px;
 }
-.lp-f3-ask {
-  color: var(--lp-ink-60);
+.lp-f5-spark {
+  color: var(--lp-pink-30);
+  height: 14.4px;
+  left: 14.4px;
+  overflow: visible;
+  position: absolute;
+  top: 12px;
+  width: 14.4px;
+}
+.lp-f5-ph,
+.lp-f5-ctyped {
   font-size: 12.8px;
   left: 38.4px;
   line-height: 15px;
@@ -826,25 +751,24 @@
   top: 11.7px;
   white-space: nowrap;
 }
-.lp-f3-ctyped {
-  color: var(--lp-ink-100);
-  font-size: 12.8px;
-  line-height: 15px;
-  min-height: 15px;
-  position: relative;
+.lp-f5-ph {
+  color: var(--lp-ink-60);
 }
-/* one span per typed character: display toggled by the timeline, so the bar
-   wraps and grows exactly like a text field; each carries the caret that
-   follows it */
-.lp-f3-ch {
+.lp-f5-ctyped {
+  color: var(--lp-ink-100);
+  min-height: 15px;
+}
+/* one span per typed character (display toggled by the timeline), each
+   carrying the caret that follows it; the zero-width holder blinks first */
+.lp-f5-ch {
   display: none;
   position: relative;
 }
-.lp-f3-ch0 {
-  display: inline; /* the zero-width holder the caret blinks on before the first character */
+.lp-f5-ch0 {
+  display: inline;
 }
-.lp-f3-crt {
-  background: var(--lp-blue-40);
+.lp-f5-crt {
+  background: var(--lp-ink-100);
   border-radius: 1px;
   bottom: -2.1px;
   opacity: 0;
@@ -853,27 +777,387 @@
   top: -2.1px;
   width: 1.2px;
 }
-.lp-f3-ch0 .lp-f3-crt {
-  right: 0.2px; /* = the baked caret's spot (x 38.2) */
+.lp-f5-ch0 .lp-f5-crt {
+  right: 0.2px;
 }
-.lp-f3-w {
-  display: inline-block; /* one span per streamed word */
+.lp-f5-send {
+  align-items: center;
+  background: var(--lp-ink-60);
+  border-radius: 7.2px;
+  color: var(--lp-ink-0);
+  display: flex;
+  height: 25.2px;
+  justify-content: center;
+  position: absolute;
+  right: 6.6px;
+  top: 6.6px;
+  width: 25.2px;
 }
-.lp-f3-shim {
+.lp-f5-send svg {
+  height: 12.6px;
+  width: 12.6px;
+}
+.lp-f5-bubble {
+  background: var(--lp-ink-100);
+  border-radius: 14.4px;
+  color: var(--lp-ink-0);
+  font-size: 12.8px;
+  line-height: 19.2px;
+  padding: 8px 12.8px;
+  position: absolute;
+  right: 0;
+  top: 1.6px;
+  white-space: nowrap;
+}
+
+/* the two cards: the Play (y 51.2) and the leads (y 296.56), 12.8 apart */
+.lp-f5-card {
+  background: var(--lp-ink-0);
+  border-radius: 21.6px;
+  box-shadow: inset 0 0 0 0.45px var(--lp-ink-40);
+  left: 0;
+  position: absolute;
+  width: 450px;
+}
+.lp-f5-play {
+  height: 232.56px; /* 14.4 + head 45.36 + 10.8 + rows 3 × 36 + 10.8 + foot 28.8 + 14.4 */
+  padding: 14.4px;
+  top: 51.2px;
+}
+.lp-f5-leads {
+  height: 212.88px; /* 14.4 + header 29.28 + 3.6 + rows 3 × 52.8 + 7.2 */
+  padding: 14.4px 14.4px 7.2px;
+  top: 296.56px;
+}
+
+/* the Play's header: tile, NEW PLAY / title, status badge */
+.lp-f5-head {
+  display: flex;
+  gap: 10.8px;
+  height: 45.36px;
+  position: relative;
+}
+.lp-f5-tile {
+  align-items: center;
+  background: var(--lp-pink-10);
+  border-radius: 10.8px;
+  box-shadow: inset 0 0 0 0.45px var(--lp-pink-20);
+  color: var(--lp-pink-40);
+  display: flex;
+  flex: none;
+  height: 36px;
+  justify-content: center;
+  margin-top: 4.68px;
+  width: 36px;
+}
+.lp-f5-tile svg {
+  height: 18px;
+  width: 18px;
+}
+.lp-f5-eyebrow {
+  color: var(--lp-ink-70);
+  font-size: 10.72px;
+  font-weight: 500;
+  letter-spacing: 1.072px;
+  line-height: 1.5;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.lp-f5-title,
+.lp-f5-lhead {
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-cond); /* after `.lp-feat-stage *` at equal specificity: wins */
+  font-size: 22.52px;
+  font-weight: 500;
+  letter-spacing: -0.2252px;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+.lp-f5-lcount {
+  font-family: var(--lp-font-cond);
+  font-variant-numeric: tabular-nums; /* 0 → 25 ticks */
+}
+.lp-f5-status {
+  position: absolute;
+  right: 0;
+  top: 12.42px; /* centred on the 45.36 header: (45.36 − 20.52) / 2 */
+}
+
+/* the kit .badge at 0.9 scale: flat tint + same-colour border, plum
+   semibold uppercase, no shadow, no tilt */
+.lp-f5-badge {
+  align-items: center;
+  background: var(--b);
+  border: 0.9px solid var(--b);
+  border-radius: 5.4px;
+  color: var(--lp-ink-100);
+  display: inline-flex;
+  font-size: 10.08px;
+  font-weight: 600;
+  gap: 4.5px;
+  letter-spacing: 0.408px;
+  line-height: 1.5;
+  padding: 1.8px 7.2px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.lp-f5-badge--active {
+  --b: var(--lp-green-10);
+}
+.lp-f5-badge--active i {
+  background: var(--lp-green-30);
+  border-radius: 50%;
+  display: block;
+  flex: none;
+  height: 5.4px;
+  width: 5.4px;
+}
+.lp-f5-badge--draft {
+  --b: var(--lp-yellow-20);
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.lp-f5-badge--new {
+  --b: var(--lp-blue-10);
+  position: absolute;
+  right: 0;
+  top: 6.54px; /* centred on the name line: 7.2 + 9.6 − 20.52 / 2 */
+}
+
+/* the plan: three rows, each a circle (step number → tick), label, value */
+.lp-f5-rows {
+  margin-top: 10.8px;
+}
+.lp-f5-row {
+  align-items: center;
+  display: flex;
+  gap: 10.8px;
+  height: 36px;
+  position: relative;
+}
+/* row hairlines: a 0.45px top border on a zero-height layer (WebKit drops an
+   inset box-shadow with a sub-pixel y offset; the layer keeps layout exact) */
+.lp-f5-row::before,
+.lp-f5-lead::before {
+  border-top: 0.45px solid var(--lp-ink-40);
+  content: "";
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.lp-f5-circ {
+  background: var(--lp-green-10);
+  border-radius: 50%;
+  color: var(--lp-green-30);
+  flex: none;
+  height: 21.6px;
+  position: relative;
+  width: 21.6px;
+}
+.lp-f5-num {
+  align-items: center;
+  color: var(--lp-ink-70);
+  display: flex;
+  font-size: 10.8px;
+  font-style: normal;
+  font-weight: 500;
+  inset: 0;
+  justify-content: center;
+  line-height: 1;
+  opacity: 0;
+  position: absolute;
+}
+.lp-f5-tick {
+  height: 10.8px;
+  left: 5.4px;
+  position: absolute;
+  top: 5.4px;
+  width: 10.8px;
+}
+.lp-f5-lab {
+  color: var(--lp-ink-70);
+  flex: none;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+  width: 115.2px;
+}
+.lp-f5-val {
+  color: var(--lp-ink-100);
+  flex: 1;
+  font-size: 12.8px;
+  font-weight: 500;
+  line-height: 1.5;
+  min-width: 0;
+  position: relative;
+  white-space: nowrap;
+}
+.lp-f5-val-final {
+  display: inline-block; /* transformable (the value lands from below) */
+}
+.lp-f5-val-wait {
+  color: var(--lp-ink-60);
+  font-weight: 400;
+  left: 0;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+}
+.lp-f5-shim {
   background: linear-gradient(100deg, rgba(255, 255, 255, 0) 40%, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0) 60%);
   background-clip: text;
   -webkit-background-clip: text;
   background-size: 300% 100%;
   color: transparent;
   left: 0;
+  opacity: 0;
   pointer-events: none;
   position: absolute;
   top: 0;
   white-space: nowrap;
 }
-.lp-f3-spk {
-  overflow: visible;
+
+/* the foot: the Create button (animation-only) and the steps strip (rest)
+   share one 28.8 box */
+.lp-f5-foot {
+  height: 28.8px;
+  margin-top: 10.8px;
+  position: relative;
+}
+.lp-f5-steps {
+  align-items: center;
+  display: flex;
+  gap: 7.2px;
+  height: 28.8px;
+}
+.lp-f5-chip {
+  align-items: center;
+  background: var(--lp-green-10);
+  border-radius: 7.2px;
+  box-shadow: inset 0 0 0 0.45px var(--lp-green-20);
+  color: var(--lp-ink-100);
+  display: flex;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 5.4px;
+  line-height: 1.6;
+  padding: 3.6px 7.2px;
+  white-space: nowrap;
+}
+.lp-f5-cico {
+  color: var(--lp-green-30);
+  flex: none;
+  height: 12px;
+  position: relative;
+  width: 12px;
+}
+.lp-f5-cico svg {
+  height: 12px;
+  inset: 0;
   position: absolute;
+  width: 12px;
+}
+.lp-f5-cstep {
+  color: var(--lp-ink-70);
+  opacity: 0;
+}
+.lp-f5-cstep--spark {
+  overflow: visible;
+  transform: scale(0.8); /* the filled star reads heavier than the line icons */
+}
+.lp-f5-link {
+  background: var(--lp-ink-50);
+  display: block;
+  flex: none;
+  height: 0.9px;
+  width: 10.8px;
+}
+.lp-f5-create {
+  align-items: center;
+  background: var(--lp-ink-100);
+  border-radius: 7.2px;
+  color: var(--lp-ink-0);
+  display: flex;
+  font-size: 12px;
+  font-weight: 500;
+  gap: 7.2px;
+  inset: 0;
+  justify-content: center;
+  line-height: 1;
+  opacity: 0;
+  position: absolute;
+  visibility: hidden;
+}
+.lp-f5-create svg {
+  height: 12.6px;
+  width: 12.6px;
+}
+
+/* the leads: avatar, name + role, why they fit, NEW */
+.lp-f5-list {
+  margin-top: 3.6px;
+}
+.lp-f5-lead {
+  height: 52.8px;
+  padding: 7.2px 0 7.2px 39.6px;
+  position: relative;
+}
+.lp-f5-av {
+  align-items: center;
+  border-radius: 50%;
+  color: var(--lp-ink-90);
+  display: flex;
+  font-size: 10.8px;
+  font-weight: 600;
+  height: 28.8px;
+  justify-content: center;
+  left: 0;
+  letter-spacing: 0.2px;
+  position: absolute;
+  top: 12px;
+  width: 28.8px;
+}
+.lp-f5-av--1 {
+  background: var(--lp-purple-10);
+}
+.lp-f5-av--2 {
+  background: var(--lp-blue-10);
+}
+.lp-f5-av--3 {
+  background: var(--lp-yellow-10);
+}
+.lp-f5-who {
+  color: var(--lp-ink-100);
+  font-size: 12.8px;
+  line-height: 19.2px;
+  white-space: nowrap;
+}
+.lp-f5-name {
+  font-weight: 600;
+}
+.lp-f5-role {
+  color: var(--lp-ink-70);
+  font-size: 12px;
+  margin-left: 7.2px;
+}
+.lp-f5-why {
+  align-items: center;
+  color: var(--lp-ink-90);
+  display: flex;
+  font-size: 12.8px;
+  gap: 5.4px;
+  line-height: 19.2px;
+  white-space: nowrap;
+}
+.lp-f5-wspark {
+  color: var(--lp-pink-30);
+  flex: none;
+  height: 10.8px;
+  overflow: visible;
+  width: 10.8px;
 }
 
 /* ══ f4 · reply-rate chart, What worked, Brain updated (feat-learns-anim).
@@ -1178,7 +1462,9 @@
   .lp-feat-body {
     line-height: 1.2;
   }
-  .lp-feat-card:first-of-type .lp-feat-h {
+  /* f1's title wraps naturally on phones (by variant, not position: the
+     Plays card opens the section and keeps its manual break) */
+  .lp-feat-card[data-variant="f1"] .lp-feat-h {
     max-width: 204px;
     white-space: normal;
   }

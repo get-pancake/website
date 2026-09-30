@@ -98,7 +98,8 @@ back during a fidelity pass:
 - Copy pass (founder, 2026-09-03), verbatim: steps heading "Pancake fills
   your pipeline." (was "Pancake sells it"); step 01 body "From your website,
   Pancake learns who buys from you, what to say, and where to show up. Always
-  up to date."; signals card body "…Pancake finds matching prospects and shows
+  up to date." (2026-09-30, AI SEO retired: now "…and where to find them.");
+  signals card body "…Pancake finds matching prospects and shows
   the signal behind every match."; pricing "$99/month" (display "$99" + inline
   "/month" in the per-line style) instead of "99 USD" / "per month, flat".
 - Steps media cards are the designer's vector illustrations (Figma 4636:3164,
@@ -106,7 +107,8 @@ back during a fidelity pass:
   as 464×426 SVGs with outlined text (`/public/how/step-*.svg`), contain-fit
   in a card that keeps the 464/426 aspect at every width — nothing cropped on
   phones. Step 03 copy is the founder's override, not the artboard's. The
-  old studio loop trio (`/public/how/*-loop.mp4`) is retired from this section;
+  old studio loop trio (`/public/how/*-loop.mp4`) is unused; `agents-loop.mp4` (it
+  showed the AI SEO planner) was deleted on 2026-09-30, the other two stay served;
   the designer's storyboard loops took each card over as the founder approved
   them (all three done 2026-09-02), and since 2026-09-07 they animate IN PLACE
   as DOM + CSS + GSAP — the same treatment as the feature cards below (founder:
@@ -140,22 +142,24 @@ back during a fidelity pass:
   the last frame = the designer's picture, reduced motion = that picture,
   stage hidden until armed so hydration never flashes the end state);
   `LpFeatMocks.tsx` is the mocks' markup, `features.css` their Figma-exact
-  geometry, `lp-feat-timelines.ts` the four timelines ported tween for tween
-  from the pancake-studio compositions (`shorts/feat-*-anim`, the storyboards
-  the mp4s were rendered from), `lp-feat-art.ts` the inline SVG art extracted
-  from them by script (never hand-edit the path data). The 560×621 stage
+  geometry, `lp-feat-timelines.ts` the timelines (f1, f2, f4
+  ported tween for tween from the pancake-studio compositions
+  `shorts/feat-*-anim`, the storyboards the mp4s were rendered from; f5
+  storyboarded here), `lp-feat-art.ts` the inline SVG art extracted from the
+  compositions by script (never hand-edit the path data). The 560×621 stage
   scales AS PIXELS with the zone (`--lp-fit`, ResizeObserver + trig fallback —
   never `zoom`, iOS relayouts zoomed text); the zone keeps the 560/621 aspect
   at every width and does not clip (f1's clay note paints 21px left of the
-  frame, f3's Gemini star 36px right of it, as in Figma). QA hook:
-  `window.__lpFeat[f1..f4]` = the timelines (seek + screenshot, compare with
-  the composition renders). f1 is the founder's Figma-parity cut (instance at
-  31/97, no row hairlines, Companies hiring highlighted at rest, one sticker).
-  Founder changes of 2026-09-03 that exist ONLY here (the studio compositions
-  are behind on them): f3 types the question in the composer bar — which
-  grows like a real chat input — then sends it up into the blue bubble; f2's
-  draft card has NO Send button ("ressortir l'esprit que c'est autonome"): it
-  is the message and its status — DRAFT READY (yellow-40) lands once the draft
+  frame, as in Figma). QA hook: `window.__lpFeat[f1|f2|f4|f5]` = the
+  timelines (seek + screenshot, compare with the composition renders).
+  Variant ids are identities, not positions: the cards read f5 (left), f1
+  (right), f2 (left), f4 (right), and each `<article>` carries
+  `data-variant` (the phone title rule targets f1 by it). f1 is the
+  founder's Figma-parity cut (instance at 31/97, no row hairlines, Companies
+  hiring highlighted at rest, one sticker).
+  Founder change of 2026-09-03 that exists ONLY here (the studio composition
+  is behind on it): f2's draft card has NO Send button ("ressortir l'esprit
+  que c'est autonome"): it is the message and its status — DRAFT READY (yellow-40) lands once the draft
   is written and flips to MESSAGE SENT (green-30), the picture that holds. The
   card hugs the five-line copy at Figma's own 28.985 line pitch (the artboard's
   255.22 card = 4 lines + paddings + button) and the ring is cut to follow
@@ -165,6 +169,40 @@ back during a fidelity pass:
   a per-character span layer lost kerning across the spans in WebKit and the
   text visibly tightened at the hand-over (founder: "le texte rétrécit d'un
   coup"). The mp4s + posters are gone.
+- Plays card (f5, 2026-09-30) replaced f3, the AI-answers collage (ChatGPT /
+  Claude / Gemini logos around a chat), when AI SEO was retired from the
+  product (pancake-cmo #1037). It has no studio composition: it is the app's
+  Play UI at 0.9 scale (f4's card recipe), a 450×509.44 group centred in the
+  zone. The Agent composer types "Find US SaaS founders with a launch coming
+  up." and sends it as the plum bubble; the Play card rises in DRAFT (Who /
+  How we find them / How many resolve from "Not decided yet", numbers →
+  ticks); "Create and run search" is pressed; DRAFT → ACTIVE and Discover ·
+  Enrich · Qualify complete; the leads card ticks to "25 new leads" and three
+  leads land, each with a why-they-fit line and a kit-badge NEW. 9.8 s.
+  "How we find them" is "Engaging with launch posts" (the Play's
+  topic-engagement way finds the people engaging with posts, not the
+  authors), and the why lines use the app's format (pancake-cmo
+  `lead-why.ts`): the search that surfaced them ("Commented on" /
+  "Reacted to" a post), " · ", then the ICP requirement they meet
+  ("Commented on a launch post · Seed-stage SaaS").
+  Unlike f1/f2/f4 its rest markup IS the end picture (composer, DRAFT, waits,
+  step numbers/icons and the Create button are hidden by CSS; frame 0 is
+  `gsap.set` in `buildF5`, reverted by the LpFeatAnim context), so the static
+  fallback and reduced motion need no extra rule. QA gate: an element shot at
+  `progress(1)` pixel-matches the static fallback (animation chunk blocked)
+  and reduced motion, in Chromium and WebKit. Every run is `nowrap`; measured
+  budgets (unscaled px): bubble 309 / 450, title right edge 289 vs the status
+  badge at 372, values ≤ 188 / 263, why lines ≤ 310 with the spark (right
+  edge ≤ 349, 31 clear of NEW at 380: the NEW column stays empty below the
+  badge), name + role ≤ 211 (clear of NEW at 380). Row hairlines are a 0.45px
+  `border-top` on a zero-height `::before`: WebKit drops an inset box-shadow
+  with a sub-pixel y offset. People and companies are fictional (Ledgerlark,
+  Tidewren, Kitefold web-checked 2026-09-30; the spec's Quiltstack was
+  swapped out, it is a Quilt Data stack name). Left out on purpose: the lead
+  rows' platform icon, "Add to campaign" (outreach is f2's story), time
+  dividers, a cursor. `public/lp/lp-f3-logo-chatgpt.svg` and
+  `lp-f3-logo-claude.svg` stay: `app/_styles/verticals/demo.css` uses them
+  for the demo tour's Codex / Claude icons (the Gemini logo is deleted).
 - Footer content sits 48px closer to the pricing rings (height 467, brand
   top 56.43, cols top 76.75; Figma: 515/104.43/124.75).
 - Demo tour (2026-09-23, founder: the /for product demo "should probably be on

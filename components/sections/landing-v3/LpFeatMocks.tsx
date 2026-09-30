@@ -1,11 +1,15 @@
-import { F2_POST_ICONS, F2_RING, F2_RING_EXTRA, F3_COMPOSER_ICONS, F4_RING } from "./lp-feat-art";
+import { Fragment } from "react";
+
+import { F2_POST_ICONS, F2_RING, F2_RING_EXTRA, F4_RING } from "./lp-feat-art";
 import type { FeatVariant } from "./lp-feat-timelines";
 
 /**
  * The four "How Pancake finds customers" mock UIs — the designer's pictures
  * as DOM (Figma-exact geometry in features.css), the same markup the
- * pancake-studio compositions animate (shorts/feat-*-anim). Rest state =
- * the artboard; every animation-only layer (typed runs, counters, stickers)
+ * pancake-studio compositions animate (shorts/feat-*-anim). f5, the Plays
+ * card (2026-09-30), has no studio source: it is the app's Play UI at 0.9
+ * scale, built here. Rest state = the artboard (for f5, the end picture);
+ * every animation-only layer (typed runs, counters, stickers)
  * is invisible at rest and filled/driven by lp-feat-timelines.ts. Purely
  * decorative — the host carries the alt text (LpFeatAnim.tsx).
  */
@@ -214,66 +218,173 @@ function F2Stage() {
   );
 }
 
-/* ── f3 · AI-answers collage ── */
+/* ── f5 · Plays: the request, the Play it becomes, the leads it brings (2026-09-30,
+   replaces the AI-answers collage) ── */
 
-function Spark({ left, top, size, fill }: { left: number; top: number; size: number; fill: string }) {
+// Pancake's sparkle: a 4-point star (-1..1 box, filled with currentColor)
+const F5_SPARK = "M0,-1 Q0,0 1,0 Q0,0 0,1 Q0,0 -1,0 Q0,0 0,-1 Z";
+// hand-drawn line icons on a 16 grid (stroke = currentColor 1.3, round joins)
+const F5_ICON = {
+  layers: "M8 2 14 5.2 8 8.4 2 5.2Z M2 8 8 11.2 14 8 M2 10.8 8 14 14 10.8",
+  search: "M11.2 7A4.2 4.2 0 1 1 2.8 7A4.2 4.2 0 1 1 11.2 7Z M10.2 10.2 13.2 13.2",
+  send: "M13.5 2.5 6.8 9.2 M13.5 2.5 9.3 13.5 6.8 9.2 2.5 6.7Z",
+  funnel: "M2.5 3h11l-4.2 5v4.5l-2.6 1.2V8Z",
+} as const;
+
+function Sparkle({ className }: { className: string }) {
   return (
-    <svg
-      className="lp-f3-spk"
-      viewBox="-1 -1 2 2"
-      style={{ left: `${left}px`, top: `${top}px`, width: `${size}px`, height: `${size}px` }}
-    >
-      <path d="M0,-1 Q0,0 1,0 Q0,0 0,1 Q0,0 -1,0 Q0,0 0,-1 Z" fill={fill} />
+    <svg className={className} viewBox="-1 -1 2 2">
+      <path d={F5_SPARK} fill="currentColor" />
     </svg>
   );
 }
 
-function F3Stage() {
+function LineIcon({ name, className }: { name: keyof typeof F5_ICON; className?: string }) {
   return (
-    <div className="lp-feat-stage lp-feat-stage--f3" aria-hidden="true">
-      <div className="lp-feat-f3">
-        <img className="lp-f3-chatgpt" src="/lp/lp-f3-logo-chatgpt.svg" alt="" width={141} height={141} loading="lazy" decoding="async" />
-        <div className="lp-f3-card">
-          <div className="lp-f3-bubble">
-            <p>best studio for a SaaS launch video in Stockholm</p>
-          </div>
-          <div className="lp-f3-resp">
-            <p className="lp-f3-thought">
-              Thought for 1s
-              <span className="lp-f3-shim" aria-hidden="true">
-                Thought for 1s
+    <svg
+      className={className}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.3}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d={F5_ICON[name]} />
+    </svg>
+  );
+}
+
+function Tick({ className }: { className: string }) {
+  return (
+    <svg className={className} viewBox="0 0 12 12" fill="none">
+      <path d="M2.6 6.3 5 8.6 9.4 3.7" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const F5_PLAN = [
+  { label: "Who", value: "Early-stage SaaS founders (US)" },
+  { label: "How we find them", value: "Engaging with launch posts" },
+  { label: "How many", value: "25 leads per search" },
+];
+// each step's own icon shows while it runs and hands over to the green tick when it
+// completes (so Qualify's own icon is the funnel, not a tick)
+const F5_STEPS = [
+  { label: "Discover", icon: "search" },
+  { label: "Enrich", icon: "sparkle" },
+  { label: "Qualify", icon: "funnel" },
+] as const;
+// fictional people and companies (web-checked 2026-09-30: no live SaaS brand by these names).
+// "Why they fit" follows the app's format (pancake-cmo lead-why.ts): the search that surfaced
+// them ("Commented on" / "Reacted to" a post), a middle dot, the ICP requirement they meet
+const F5_LEADS = [
+  { ini: "NP", name: "Nora Pellington", role: "Founder, Ledgerlark", why: "Commented on a launch post · Seed-stage SaaS" },
+  { ini: "DA", name: "Devin Arkwell", role: "CEO, Tidewren", why: "Reacted to a launch-day post · Series A SaaS CEO" },
+  { ini: "AS", name: "Ama Sorensby", role: "Co-founder, Kitefold", why: "Reacted to a launch-video post · Pre-launch SaaS" },
+];
+
+function F5Stage() {
+  return (
+    <div className="lp-feat-stage lp-feat-stage--f5" aria-hidden="true">
+      <div className="lp-feat-f5">
+        {/* the request: typed in the Agent's composer (animation-only layer, one span per
+            character built by the timeline), then sent up as the plum bubble (rest) */}
+        <div className="lp-f5-composer">
+          <Sparkle className="lp-f5-spark" />
+          <p className="lp-f5-ph">Ask Pancake anything…</p>
+          <p className="lp-f5-ctyped" />
+          <span className="lp-f5-send">
+            <LineIcon name="send" />
+          </span>
+        </div>
+        <p className="lp-f5-bubble">Find US SaaS founders with a launch coming up.</p>
+
+        {/* the Play Pancake plans: the in-flow text is the picture that holds; the waits,
+            step numbers, Draft and the Create button are animation-only layers */}
+        <div className="lp-f5-card lp-f5-play">
+          <div className="lp-f5-head">
+            <span className="lp-f5-tile">
+              <LineIcon name="layers" />
+            </span>
+            <div>
+              <p className="lp-f5-eyebrow">New Play</p>
+              <p className="lp-f5-title">Founders about to launch</p>
+            </div>
+            <div className="lp-f5-status">
+              <span className="lp-f5-badge lp-f5-badge--active">
+                <i />
+                Active
               </span>
-            </p>
-            <p className="lp-f3-answer lp-f3-answer--plain">
-              For B2B SaaS launch videos in Stockholm, I’d recommend <b className="lp-f3-mark">Studio Pelican.</b>
-              {"\n\n"}
-              They turn complex products into clear stories, from strategy to final animation.
-            </p>
-            <p className="lp-f3-answer lp-f3-answer--anim" />
+              <span className="lp-f5-badge lp-f5-badge--draft">Draft</span>
+            </div>
           </div>
-          {/* the composer: the question is typed here (one span per character, built at
-              mount) and sent up into the bubble; the icon row is inlined so the baked
-              caret can hand over to the typing caret */}
-          <div className="lp-f3-composer">
-            <p className="lp-f3-ctyped" />
-            <svg
-              className="lp-f3-compicons"
-              viewBox="154.4 467.7 251.2 38.4"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              dangerouslySetInnerHTML={{ __html: F3_COMPOSER_ICONS }}
-            />
-            <p className="lp-f3-ask">Ask Chat</p>
+          <div className="lp-f5-rows">
+            {F5_PLAN.map((r, i) => (
+              <div className="lp-f5-row" key={r.label}>
+                <span className="lp-f5-circ">
+                  <i className="lp-f5-num">{i + 1}</i>
+                  <Tick className="lp-f5-tick" />
+                </span>
+                <p className="lp-f5-lab">{r.label}</p>
+                <p className="lp-f5-val">
+                  <span className="lp-f5-val-final">{r.value}</span>
+                  <span className="lp-f5-val-wait">
+                    Not decided yet<span className="lp-f5-shim">Not decided yet</span>
+                  </span>
+                </p>
+              </div>
+            ))}
+          </div>
+          <div className="lp-f5-foot">
+            <div className="lp-f5-steps">
+              {F5_STEPS.map((s, i) => (
+                <Fragment key={s.label}>
+                  {i > 0 && <i className="lp-f5-link" />}
+                  <span className="lp-f5-chip">
+                    <span className="lp-f5-cico">
+                      {s.icon === "sparkle" ? (
+                        <Sparkle className="lp-f5-cstep lp-f5-cstep--spark" />
+                      ) : (
+                        <LineIcon name={s.icon} className="lp-f5-cstep" />
+                      )}
+                      <Tick className="lp-f5-cdone" />
+                    </span>
+                    {s.label}
+                  </span>
+                </Fragment>
+              ))}
+            </div>
+            <span className="lp-f5-create">
+              <LineIcon name="search" />
+              Create and run search
+            </span>
           </div>
         </div>
-        <img className="lp-f3-gemini" src="/lp/lp-f3-logo-gemini.svg" alt="" width={241} height={241} loading="lazy" decoding="async" />
-        <img className="lp-f3-claude" src="/lp/lp-f3-logo-claude.svg" alt="" width={109} height={109} loading="lazy" decoding="async" />
+
+        {/* the leads the Play brings back, each with why they fit */}
+        <div className="lp-f5-card lp-f5-leads">
+          <p className="lp-f5-lhead">
+            <span className="lp-f5-lcount">25</span> new leads
+          </p>
+          <div className="lp-f5-list">
+            {F5_LEADS.map((l, i) => (
+              <div className="lp-f5-lead" key={l.name}>
+                <span className={`lp-f5-av lp-f5-av--${i + 1}`}>{l.ini}</span>
+                <p className="lp-f5-who">
+                  <span className="lp-f5-name">{l.name}</span>
+                  <span className="lp-f5-role">{l.role}</span>
+                </p>
+                <p className="lp-f5-why">
+                  <Sparkle className="lp-f5-wspark" />
+                  {l.why}
+                </p>
+                <span className="lp-f5-badge lp-f5-badge--new">New</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-      {/* Gemini sparkles: 4-point stars in the star's own colours (stage coordinates), gone by 8.5 s */}
-      <Spark left={479} top={131} size={14} fill="#FABC12" />
-      <Spark left={534} top={184} size={12} fill="#3186FF" />
-      <Spark left={528} top={323} size={14} fill="#F94543" />
-      <Spark left={446} top={350} size={11} fill="#08B962" />
     </div>
   );
 }
@@ -333,8 +444,8 @@ function F4Stage() {
 const STAGES: Record<FeatVariant, () => JSX.Element> = {
   f1: F1Stage,
   f2: F2Stage,
-  f3: F3Stage,
   f4: F4Stage,
+  f5: F5Stage,
 };
 
 export function LpFeatStage({ variant }: { variant: FeatVariant }) {
