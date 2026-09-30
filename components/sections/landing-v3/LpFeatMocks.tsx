@@ -130,7 +130,7 @@ function F1Stage() {
   );
 }
 
-/* ── f2 · LinkedIn post + the draft in its rainbow ring ── */
+/* ── f2 · a prospect's post + the draft in its rainbow ring ── */
 
 function Skel({ w }: { w: string }) {
   return (
@@ -144,8 +144,9 @@ function F2Stage() {
   return (
     <div className="lp-feat-stage lp-feat-stage--f2" aria-hidden="true">
       <div className="lp-feat-f2">
-        {/* LinkedIn-style x-post: icon layer = the site's baked SVG, inlined so the globe /
-            action icons / reaction bubbles animate */}
+        {/* a generic social post (no platform chrome since 2026-09-29: no connection degree,
+            no reaction bubbles, no brand blue): icon layer = the site's baked SVG, inlined so
+            the globe / action icons animate */}
         <div className="lp-f2-post">
           <svg
             className="lp-f2-posticons"
@@ -157,7 +158,7 @@ function F2Stage() {
           <img className="lp-f2-avatar" src="/lp/lp-f2-avatar-sarah.jpg" alt="" width={43} height={43} loading="lazy" decoding="async" />
           <div className="lp-f2-meta">
             <p className="lp-f2-name">
-              Sarah Velasquez<span className="lp-f2-degree">• 1st</span>
+              Sarah Velasquez
             </p>
             <p className="lp-f2-headline">Principal Design Engineer @ Shift | Ex-Apple Design</p>
             <p className="lp-f2-time">3h •</p>

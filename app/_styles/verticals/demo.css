@@ -1467,7 +1467,7 @@
 }
 /* 560–939 (tablets): the journey stacks like the phone one — steps, then "Up next" — with the
    three message steps folded into step 4's row: two columns stretched the "Up next" card into
-   a 160px void. The step notes go with the fold ("6 hours after they accept" is the invite's). */
+   a 160px void. The step notes go with the fold (the first message's note rides with it). */
 @container vxstage (min-width: 560px) and (max-width: 939px) {
   .lp-vx .vx-journey__grid { grid-template-columns: minmax(0, 1fr); }
   .lp-vx .vx-steps > .vx-step:nth-child(n + 5) { display: none; }

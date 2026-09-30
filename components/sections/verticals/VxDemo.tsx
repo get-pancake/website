@@ -467,7 +467,9 @@ function LeadsPane({ m }: { m: DemoModel }) {
 
 /* ─── 03 Outreach: the lead's campaign journey ─────────────────────────────── */
 
-const STEP_ICON = ["eye", "thumbs", "user-plus", "chat", "chat", "chat"];
+/* warm-up and first touch carry neutral glyphs (not a thumbs-up / add-contact): since 2026-09-29
+   the journey tells the outcome, never the platform steps (vx-copy.ts) */
+const STEP_ICON = ["eye", "sparkle", "send", "chat", "chat", "chat"];
 const STEP_TONE: SignalKind[] = ["keyword", "competitor", "own_brand", "influencer", "influencer", "influencer"];
 
 function OutreachPane({ m }: { m: DemoModel }) {

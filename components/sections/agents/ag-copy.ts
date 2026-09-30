@@ -85,7 +85,7 @@ export const KNOWLEDGE = {
   cards: [
     ["Email addresses", "email-addresses"],
     ["Phone numbers", "phone-numbers"],
-    ["LinkedIn data", "linkedin-data"],
+    ["Profile data", "profile-data"],
     ["X data", "x-data"],
     ["Web search", "web-search"],
     ["SEO analytics", "seo-analytics"],
@@ -152,7 +152,7 @@ export const SUPERPOWERS = {
       chips: [
         "jane@acme.com",
         "+1 415 555 0142",
-        "linkedin.com/in/jane",
+        "Profile · View ↗",
         "Head of Sales · Acme",
         "Hiring: 2 SDRs",
         "Raised $8M · Series A",
@@ -176,11 +176,11 @@ export const SUPERPOWERS = {
       num: "04 / 04",
       title: "Campaign creation and sequencing.",
       body: "Describe the outreach in a sentence. Pancake turns it into a workflow, runs it, and stops when someone replies.",
-      prompt: "Reach out to these 41 leads: email, LinkedIn if no reply, then one follow-up.",
+      prompt: "Reach out to these 41 leads: email, a DM if no reply, then one follow-up.",
       steps: [
         { icon: "mail", tint: "yellow", label: "Email", detail: " · intro, in your voice", tag: "Day 1" },
         { note: "no reply after 3 days →" },
-        { icon: "linkedin", tint: "blue", label: "LinkedIn", detail: " · connect + short note", tag: "Day 4" },
+        { icon: "dm", tint: "blue", label: "DM", detail: " · short note, no pitch", tag: "Day 4" },
         { note: "still nothing →" },
         { icon: "mail", tint: "purple", label: "Email", detail: " · follow-up, new angle", tag: "Day 9" },
         { icon: "reply", tint: "green", reply: "Reply from Jane · sequence stops, meeting booked" },
@@ -246,7 +246,7 @@ export const PLAYS = {
       tint: "pink" as Tint,
       plays: [
         { name: "Weekly SEO article", status: "orange", does: "Drafts one article a week on the questions buyers ask.", run: ["12 questions found on Google", "1 article drafted", "Waiting for your review"] },
-        { name: "LinkedIn posts", status: "green", does: "Turns your wins into posts, in your voice.", run: ["2 wins spotted this week", "2 posts drafted", "Scheduled for Tuesday and Thursday"] },
+        { name: "Social posts", status: "green", does: "Turns your wins into posts, in your voice.", run: ["2 wins spotted this week", "2 posts drafted", "Scheduled for Tuesday and Thursday"] },
         { name: "Reddit answers", status: "green", does: "Answers the threads where buyers ask.", run: ["7 threads found", "4 answered", "3 skipped, wrong fit"] },
         { name: "GEO citations check", status: "green", does: "Checks what ChatGPT says about you.", run: ["10 prompts checked", "Cited in 6", "4 gaps sent to the SEO play"] },
       ] as Play[],
@@ -281,7 +281,7 @@ export const VERSUS = {
   },
   with: {
     kicker: "Agent + Pancake",
-    lines: ["50+ sources behind one API", "Warmed inboxes and LinkedIn", "Sequence management", "A brain that remembers"],
+    lines: ["50+ sources behind one API", "Warmed inboxes and DMs", "Sequence management", "A brain that remembers"],
   },
   /** Row-by-row comparison (founder 2026-09-11: "show that we're comparing
       thing by thing"). The eight draft lines, verbatim, paired by theme —
@@ -291,7 +291,7 @@ export const VERSUS = {
       (follow-ups over days vs. an agent with no memory) — flagged in the PR. */
   rows: [
     ["Scrapes what it can", "50+ sources behind one API"],
-    ["Can't send anything", "Warmed inboxes and LinkedIn"],
+    ["Can't send anything", "Warmed inboxes and DMs"],
     ["Forgets by tomorrow", "Sequence management"],
     ["Guesses the ICP", "A brain that remembers"],
   ],

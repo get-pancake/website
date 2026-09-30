@@ -34,6 +34,16 @@ export function mapIdeaRow(row: IdeaRow): RoadmapIdea {
   };
 }
 
+/** Visitor ideas that name the outreach platform stay off the public board (founder 2026-09-29,
+ *  "vitrine plus compliant": the site never names it, and a visitor's post would). They stay in
+ *  Supabase, admins still see them on the board, and they come back if the text is edited.
+ *  Same pattern as PLATFORM in lib/verticals/validate.ts. */
+const OFF_BOARD = /linked\s*in|sales\s*nav(igator)?\b|\binmails?\b/i;
+
+export function isPublicIdea(idea: RoadmapIdea): boolean {
+  return !OFF_BOARD.test(`${idea.title} ${idea.description}`);
+}
+
 export type IdeasResult = {
   ideas: RoadmapIdea[];
   /** Where the data came from — drives the "preview mode" notice + UI gating. */

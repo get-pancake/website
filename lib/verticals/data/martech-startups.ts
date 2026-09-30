@@ -145,7 +145,7 @@ export const martechStartups: VerticalConfig = {
   faq: [
     {
       q: "Marketers get pitched daily. How is this different?",
-      a: "The invite carries no pitch. When a marketer posted, or engaged with an expert’s post, the first message starts from it. Job-post leads get a message in your voice.",
+      a: "The first touch carries no pitch. When a marketer posted, or engaged with an expert’s post, the first message starts from it. Job-post leads get a message in your voice.",
     },
     {
       q: "Can you find agencies as well as brands?",

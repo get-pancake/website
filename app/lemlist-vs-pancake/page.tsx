@@ -51,7 +51,7 @@ const config: GtmComparisonConfig = {
     {
       n: "03",
       title: "Outbound depth versus GTM breadth",
-      body: "Lemlist goes deep on sales engagement across email, the professional network, calls, WhatsApp, and SMS. Pancake connects outreach with six kinds of buying signals and with articles built to show up in Google and AI answers.",
+      body: "Lemlist goes deep on sales engagement across email, social, calls, WhatsApp, and SMS. Pancake connects outreach with six kinds of buying signals and with articles built to show up in Google and AI answers.",
       angle: "Lemlist covers more outbound channels. Pancake covers more of GTM.",
     },
     {
@@ -71,7 +71,7 @@ const config: GtmComparisonConfig = {
     { feature: "Core job", competitor: { text: "Equip teams to build and manage outbound", mark: "yes" }, pancake: { text: "Finds buyers and opens conversations for you", mark: "yes" } },
     { feature: "Operating model", competitor: { text: "Sales reps or operators run campaigns" }, pancake: { text: "Agents own recurring execution", mark: "yes" } },
     { feature: "Prospect data", competitor: { text: "Large B2B database and enrichment", mark: "yes" }, pancake: { text: "Leads picked daily from six kinds of buying signals", mark: "yes" } },
-    { feature: "Outbound channels", competitor: { text: "Email, professional-network steps, calls, WhatsApp, and SMS", mark: "yes" }, pancake: { text: "Your own professional-network account" } },
+    { feature: "Outbound channels", competitor: { text: "Email, social steps, calls, WhatsApp, and SMS", mark: "yes" }, pancake: { text: "Direct messages under your name" } },
     { feature: "Deliverability tooling", competitor: { text: "Dedicated hub and lemwarm", mark: "yes" }, pancake: { text: "—" } },
     { feature: "Shared GTM Brain", competitor: { text: "Campaign and lead context" }, pancake: { text: "Your market and offers, learned from your website", mark: "yes" } },
     { feature: "AI-search content", competitor: { text: "Not the core product", mark: "no" }, pancake: { text: "Search articles written for you to approve", mark: "yes" } },
@@ -83,7 +83,7 @@ const config: GtmComparisonConfig = {
   faqs: [
     { q: "What is the main difference between Lemlist and Pancake?", a: "Lemlist is a sales-engagement platform that gives sales teams data, sequencing, multichannel controls, deliverability tools, and integrations. Pancake is an AI GTM team that runs the outbound work itself, from picking leads off buying signals to opening each conversation from your own account." },
     { q: "Is Lemlist better for email deliverability?", a: "Lemlist has the more specialized deliverability toolkit, including lemwarm and a dedicated deliverability hub. It is the stronger choice when a team needs hands-on control over high-volume outbound infrastructure." },
-    { q: "Which product supports more outbound channels?", a: "Lemlist publicly supports a broader set of outbound channels, including email, the professional network, calls, WhatsApp, and SMS. Pancake starts conversations from your own account on the professional network, and each first message asks about the signal that picked the lead." },
+    { q: "Which product supports more outbound channels?", a: "Lemlist publicly supports a broader set of outbound channels, including email, social, calls, WhatsApp, and SMS. Pancake starts conversations under your name, and each first message asks about the signal that picked the lead." },
     { q: "Does Pancake replace a sales team?", a: "Pancake lets founders and lean teams run GTM without hiring an SDR or sales-operations team. Its agents find the buyers and open the conversations. You approve leads and articles, set the direction, and handle the conversations that need you." },
     { q: "How does pricing compare?", a: "Lemlist uses tiered plans whose current price and included channels depend on the package and team needs. Pancake has one plan with no tiers: $99 a month flat, after a 3-day free trial (card required). Check Lemlist's pricing page for current limits before deciding." },
     { q: "Can Lemlist and Pancake work together?", a: "They can run side by side. A sales team can keep Lemlist for email sequencing and deliverability while Pancake watches buying signals, opens conversations from the founder's own account, and writes articles for AI search." },

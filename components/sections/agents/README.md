@@ -338,7 +338,7 @@ holding a real `<table>` (fixed layout, two 50% columns, sr-only caption):
 (24/500 at every width), four `<tr>` from `VERSUS.rows` (the eight verbatim
 lines paired by theme: data / sending / follow-up / knowledge). Left cells:
 24px ✗ disc (ink-tr-10 fill, ink-70 stroke) + text `.ag-title-step` at
-`--lp-text-3xlg` (33.18 — 39.816 wraps "Warmed inboxes and LinkedIn");
+`--lp-text-3xlg` (33.18 — 39.816 wrapped the widest draft cell, reworded to "Warmed inboxes and DMs" on 2026-09-29);
 right cells paint `--lp-terminal-bg` with r24 on the first/last cell (one
 black block spanning header + rows), ✓ disc green-20 + page-bg text. Row
 hairlines at the same y in both columns (ink-tr-10 / 14% page-bg); rows

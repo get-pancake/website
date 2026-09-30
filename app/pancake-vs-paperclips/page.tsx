@@ -37,7 +37,7 @@ const config: GtmComparisonConfig = {
     { feature: "Primary model", competitor: { text: "Companies, goals, org chart, tasks, and budgets" }, pancake: { text: "GTM Brain, buying signals, leads, outreach, and articles" } },
     { feature: "Setup", competitor: { text: "Self-host and configure agents and adapters" }, pancake: { text: "Add your website, get a GTM Brain", mark: "yes" } },
     { feature: "Customization", competitor: { text: "Arbitrary roles, runtimes, hierarchy, and plugins", mark: "yes" }, pancake: { text: "Choose from six kinds of buying signals" } },
-    { feature: "Outbound", competitor: { text: "You create the outreach agents and workflow" }, pancake: { text: "Visit, like, invite, then up to three messages", mark: "yes" } },
+    { feature: "Outbound", competitor: { text: "You create the outreach agents and workflow" }, pancake: { text: "A warm-up, then up to three messages", mark: "yes" } },
     { feature: "AI-search content", competitor: { text: "You create the content agents and workflow" }, pancake: { text: "Pancake writes them; you approve each one", mark: "yes" } },
     { feature: "Governance", competitor: { text: "Budgets, approvals, board control, and hierarchy", mark: "yes" }, pancake: { text: "You approve leads and articles", mark: "yes" } },
     { feature: "Pricing", competitor: { text: "Open source plus runtime, hosting, models, and labor" }, pancake: { text: "$99/month flat, all agents, no seats", mark: "yes" } },

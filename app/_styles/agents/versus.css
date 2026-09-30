@@ -11,8 +11,9 @@
 
    Geometry (1136 column): card padding 16 → table 1104 → columns 552.
    Cell = padding 32 + 24px mark + 16 gap → 448px for the text. At the
-   `.ag-title-step` size (39.816) "Warmed inboxes and LinkedIn" measures
-   457px, so the cells step down one notch to 33.18 (`--lp-text-3xlg`,
+   `.ag-title-step` size (39.816) the widest draft cell ("Warmed inboxes and
+   …" before its 2026-09-29 rewording) measured 457px, so the cells step
+   down one notch to 33.18 (`--lp-text-3xlg`,
    381px, 67px slack) — every cell is one line, the whole point of the rows.
    Rows: 20 + 40 line + 20 + 1 hairline = 81px; header 28 + 32 + 20 = 80. */
 

@@ -42,7 +42,7 @@ const config: GtmComparisonConfig = {
     { feature: "Memory", competitor: { text: "Permitted channel and tool context", mark: "yes" }, pancake: { text: "GTM Brain learned from your website, shared by every agent", mark: "yes" } },
     { feature: "Breadth", competitor: { text: "Engineering, support, analytics, research, and more", mark: "yes" }, pancake: { text: "Focused on GTM" } },
     { feature: "AI-search articles", competitor: { text: "Can assist through connected tools" }, pancake: { text: "Articles for Google and AI search, approved by you", mark: "yes" } },
-    { feature: "Outbound system", competitor: { text: "Can complete delegated workflows" }, pancake: { text: "Visit, like, invite, then up to three messages from your account", mark: "yes" } },
+    { feature: "Outbound system", competitor: { text: "Can complete delegated workflows" }, pancake: { text: "A warm-up, then up to three messages under your name", mark: "yes" } },
     { feature: "Availability", competitor: { text: "Beta for eligible Enterprise and Team customers" }, pancake: { text: "$99/month flat, 3-day free trial", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Teams that want Claude across many jobs" }, pancake: { text: "Small B2B companies that need pipeline" } },
   ],

@@ -33,10 +33,10 @@ describes it without the name:
 
 | Say | Never |
 |---|---|
-| "from your own account": a profile visit, a like on a recent post, an invite with no note, then up to three messages; no emails, no calls | "LinkedIn outreach", "your own LinkedIn" |
+| "under your name": a light warm-up, a first touch with no pitch, then up to three messages; no emails, no calls | "LinkedIn outreach", "your own LinkedIn", and since 2026-09-29 the steps themselves: "profile visit", "like on a recent post", "invite", "after they accept", "the professional network" (`SEQUENCE` in `validate.ts`) |
 | "people posting about …", "people engaging with your rivals' posts", "fans of …'s posts", "comments on …" | "LinkedIn posts", "LinkedIn signals" |
-| "profile", "invite" (preferred over "connection request") | Sales Navigator, InMail, "LI" |
-| "at a human pace" | "paced by LinkedIn's own limits" |
+| "profile", "first touch" | Sales Navigator, InMail, "LI", "invite", "connection request" |
+| "Monday to Friday, 9 AM to 6 PM" | "at a human pace", "paced by LinkedIn's own limits" |
 
 In the demo the app's platform signal group reads **People signals** (beside
 Company signals) and the lead sheet's platform row reads **Profile · View ↗**

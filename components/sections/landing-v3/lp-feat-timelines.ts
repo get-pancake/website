@@ -161,7 +161,7 @@ function buildF1(root: HTMLElement): BuiltFeat {
 
 /* ── f2 · Every first message starts warm (feat-warm-message-anim) ──
    the post rises → its copy types → skeleton shimmers → action row + counts
-   → Pancake likes it → the draft card slides up and the ring draws around it
+   → the draft card slides up and the ring draws around it
    → the message types → DRAFT READY (yellow) lands → flips to MESSAGE SENT
    (green) → hold. Founder 2026-09-03: no Send button — the card is the
    message and its status; the status changing by itself is the point. */
@@ -254,7 +254,7 @@ function buildF2(root: HTMLElement): BuiltFeat {
     return ns;
   };
   const counts = $$(".lp-f2-count");
-  const likeN = mkCounter(counts[0], 34);
+  const likeN = mkCounter(counts[0], 33);
   const otherN = [1, 2, 3].map((i) => mkCounter(counts[i], 5));
 
   /* ring draw masks: dash lengths from the actual squircle geometry (font-independent) */
@@ -374,27 +374,8 @@ function buildF2(root: HTMLElement): BuiltFeat {
   tick(likeN, 0, 33, 3.4, 0.9);
   otherN.forEach((ns, i) => tick(ns, 0, 5, 3.55 + i * 0.1, 0.45));
 
-  /* — Phase 5 · Pancake likes the post: the icon pulses, 33 → 34, the reaction bubbles pop (4.55 – 5.3 s) — */
-  const P = 4.55;
-  const like = $("#lpf2-pi-like");
-  tl.to(like, { scale: 1.35, transformOrigin: "50% 50%", duration: 0.16, ease: "power2.out" }, P);
-  tl.to(like, { scale: 1, duration: 0.55, ease: "elastic.out(1, 0.5)" }, P + 0.16);
-  tick(likeN, 33, 34, P + 0.1, 0);
-  (
-    [
-      ["#lpf2-pi-bubbleLike", P + 0.12],
-      ["#lpf2-pi-bubbleHeart", P + 0.24],
-    ] as const
-  ).forEach(([s, t]) => {
-    const el = $(s);
-    tl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.18, ease: "power2.out", immediateRender: false }, t);
-    tl.fromTo(
-      el,
-      { scale: 0.3, transformOrigin: "50% 50%" },
-      { scale: 1, duration: 0.45, ease: "back.out(1.8)", immediateRender: false },
-      t,
-    );
-  });
+  /* (Phase 5 — Pancake liking the post, reaction bubbles popping — removed 2026-09-29:
+     the site never shows the product acting on the platform, founder "vitrine plus compliant") */
 
   /* — Phase 6 · the draft card slides up empty and the rainbow ring draws around it, four strokes chasing (4.95 – 6.95 s) — */
   tl.fromTo(
