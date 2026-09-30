@@ -2,7 +2,7 @@
    Solid plum alpha masks, optically aligned wordmarks, 48px gaps and a
    seamless leftward loop with 10% edge fades. Animate each copy rather
    than one oversized track; LpAnimFreeze releases off-screen animation.
-   The duration accounts for ten logos to preserve the reference's speed. */
+   The duration accounts for eleven logos to preserve the reference's speed. */
 .lp-marquee {
   --lp-marquee-scale: 1;
   overflow: hidden;

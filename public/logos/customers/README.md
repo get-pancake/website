@@ -2,12 +2,13 @@
 
 Added September 15, 2026 for the founder-requested carousel below the homepage hero.
 
-The visual reference is [brain.getpancake.ai](https://brain.getpancake.ai/): solid plum (`--lp-ink-100`), alpha masks, 14px optical letter bodies, 48px gaps, 0.85 mobile scale, continuous linear leftward movement, and 10% edge fades. The ten-logo sequence is approximately 1705.3px on desktop and 1521.5px on mobile. Its 49.7s / 36.5s durations preserve the reference's approximately 34.3 / 41.7px per second. Reduced motion displays all ten marks in a static wrapping row.
+The visual reference is [brain.getpancake.ai](https://brain.getpancake.ai/): solid plum (`--lp-ink-100`), alpha masks, 14px optical letter bodies, 48px gaps, 0.85 mobile scale, continuous linear leftward movement, and 10% edge fades. The eleven-logo sequence is approximately 1857.2px on desktop and 1657.9px on mobile. Its 54.1s / 39.8s durations preserve the reference's approximately 34.3 / 41.7px per second. Reduced motion displays all eleven marks in a static wrapping row.
 
 ## Sources
 
 | File | Official source / acquisition | Artwork box |
 | --- | --- | --- |
+| kong.svg | [Kong](https://konghq.com), the konghq.com header SVG (gorilla mark + wordmark), paths unchanged, fill set to black for the mask; added September 30, 2026 (paying customer). Body bounds = the lowercase "ong" (14.2–31.17 of 40) | 126 × 40 |
 | hyperspell.svg | [Hyperspell](https://hyperspell.com), copied from the current brain landing | 577 × 91 |
 | agentmail.svg | Current [brain landing](https://brain.getpancake.ai/logos/agentmail.svg) | 1986 × 363 |
 | fleet.png | [Fleet](https://fleet.co/en), [official CDN asset](https://res.cloudinary.com/fleet-co/image/upload/c_scale,w_240/fleet_newLogo_wdsjyf?_a=ATRSRkS0), exported with Codex Browser | 240 × 91 |
