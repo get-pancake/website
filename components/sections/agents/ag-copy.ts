@@ -75,12 +75,23 @@ export const SIDEKICK = {
 export type Tint = "yellow" | "pink" | "purple" | "blue" | "green";
 const TINT_CYCLE: Tint[] = ["yellow", "pink", "purple", "blue", "green"];
 
+/** Tiles drawn with an illustration filed under another name (the art has no
+    baked text). 2026-09-30, AI SEO retired: the "SEO analytics" and "GEO
+    ranking" tiles became two ways a Play finds leads (a direct match on
+    role, industry, size and location; people engaging with a topic). They
+    keep their place, tint and pancake. */
+const TILE_ART: Record<string, string> = {
+  "company-data": "seo-analytics",
+  "topic-engagement": "geo-ranking",
+};
+
 export const KNOWLEDGE = {
   kicker: "Super knowledge",
   title: "Pancake can find anything and anyone.",
   lede: "50+ data providers and tools behind one call, always routed to the cheapest source that has the answer. Think OpenRouter, for GTM.",
   /** 16 cards, draft order; tint cycles yellow→pink→purple→blue→green;
-      illustration files live in /public/lp/agents/data/<slug>.png (147×160).
+      illustration files live in /public/lp/agents/data/<art>.png (147×160),
+      `art` = the slug unless TILE_ART says otherwise.
       `delay` is the draft's bob stagger — unused since the hop wave (2026-09-11). */
   cards: [
     ["Email addresses", "email-addresses"],
@@ -88,8 +99,8 @@ export const KNOWLEDGE = {
     ["Profile data", "profile-data"],
     ["X data", "x-data"],
     ["Web search", "web-search"],
-    ["SEO analytics", "seo-analytics"],
-    ["GEO ranking", "geo-ranking"],
+    ["Company data", "company-data"],
+    ["Topic engagement", "topic-engagement"],
     ["Hiring signals", "hiring-signals"],
     ["Stack signals", "stack-signals"],
     ["Fundraising signals", "fundraising-signals"],
@@ -99,7 +110,7 @@ export const KNOWLEDGE = {
     ["Website visitors", "website-visitors"],
     ["Company news", "company-news"],
     ["Reviews & intent", "reviews-intent"],
-  ].map(([label, slug], i) => ({ label, slug, tint: TINT_CYCLE[i % 5]!, delay: -(i * 0.7) })),
+  ].map(([label, slug], i) => ({ label, slug, art: TILE_ART[slug] ?? slug, tint: TINT_CYCLE[i % 5]!, delay: -(i * 0.7) })),
   /** DRAFT COPY (2026-09-11, Tristan to review) — the router demo: an agent's
       request comes in, Pancake routes it to the source that answers
       (founder: "plus créatifs pour intégrer ce composant intelligemment" —
@@ -111,7 +122,10 @@ export const KNOWLEDGE = {
   requests: [
     { text: "Find Jane's email at Acme.", source: "email-addresses" },
     { text: "Who's hiring SDRs this week?", source: "hiring-signals" },
-    { text: "Does ChatGPT recommend us?", source: "geo-ranking" },
+    /* was "Does ChatGPT recommend us?" → GEO ranking, retired with AI SEO
+       (2026-09-30). Now a Play's way to find leads: people engaging with a
+       topic. Same length as the longest bubble (31 chars). */
+    { text: "Who's talking about cold email?", source: "topic-engagement" },
     { text: "Who just raised a Series A?", source: "fundraising-signals" },
     { text: "What's on Acme's stack?", source: "stack-signals" },
     { text: "Which visitors came back twice?", source: "website-visitors" },
@@ -242,6 +256,11 @@ export const PLAYS = {
       ] as Play[],
     },
     {
+      /* PARKED, never rendered (AgPlays is off the page). "Weekly SEO article"
+         and "GEO citations check" below are AI SEO, retired from the product
+         2026-09-30 (pancake-cmo PR #1037): rewrite this lane (and the
+         Pricing-page visitors play above: no website-visitor claims) before
+         AgPlays comes back. */
       title: "Content plays",
       tint: "pink" as Tint,
       plays: [
@@ -259,7 +278,9 @@ export const BRAIN = {
   title: "A GTM brain that remembers every play.",
   lede: "ICP, personas, competitors, positioning, and every experiment your agent ran: what worked and what didn't. Your agent reads the brain before a play and writes back after. An audit trail that makes the next play smarter.",
   root: "Pancake",
-  /** [label, token color name, leaf count] — draft order, clockwise from top */
+  /** [label, token color name, leaf count] — draft order, clockwise from top.
+      The last hub read "Keywords" (an SEO-era label) until AI SEO was
+      retired, 2026-09-30; the Brain holds your messaging, so it reads that. */
   hubs: [
     ["ICP", "pink-30", 4],
     ["Personas", "purple-40", 2],
@@ -268,7 +289,7 @@ export const BRAIN = {
     ["Voice", "green-30", 4],
     ["Plays", "yellow-30", 3],
     ["Objections", "blue-30", 3],
-    ["Keywords", "yellow-40", 4],
+    ["Messaging", "yellow-40", 4],
   ] as const,
 } as const;
 

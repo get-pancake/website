@@ -80,7 +80,7 @@ export function AgKnowledge() {
                 <span className="ag-knowledge__hop" aria-hidden="true">
                   <img
                     className="ag-knowledge__art"
-                    src={`/lp/agents/data/${card.slug}.png`}
+                    src={`/lp/agents/data/${card.art}.png`}
                     alt=""
                     width={147}
                     height={160}

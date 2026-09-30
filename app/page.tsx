@@ -14,7 +14,7 @@ import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
-import { pricingV2 } from "@/lib/copy";
+import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/home-demo.css";
@@ -46,25 +46,27 @@ export const metadata: Metadata = {
      one-word <title>, Google may build its own title from other signals
      (it showed "Pancake's AI" once); the og/twitter titles carry the full
      "Pancake — You run your company. We bring you customers." and the
-     WebSite JSON-LD (root layout) carries the site name + "Pancake AI". */
+     WebSite JSON-LD (root layout) carries the site name + "Pancake AI".
+     2026-09-30: AI SEO retired from the product (pancake-cmo PR #1037), so
+     only the third clause changed: "grow your AI search visibility" became
+     "reach out in your voice". The sentence now lives once, as
+     SITE_DESCRIPTION in lib/copy.ts, shared by the hero lede, this metadata,
+     the JSON-LD below and the root layout. Change it only with the founder. */
   title: "Pancake",
-  description:
-    "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
+  description: SITE_DESCRIPTION,
   alternates: { canonical: SITE_ORIGIN },
   openGraph: {
     type: "website",
     url: SITE_ORIGIN,
     title: "Pancake — You run your company. We bring you customers.",
-    description:
-      "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
+    description: SITE_DESCRIPTION,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "You run your company. We bring you customers." }],
     siteName: "Pancake",
   },
   twitter: {
     card: "summary_large_image",
     title: "Pancake — You run your company. We bring you customers.",
-    description:
-      "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
+    description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
 };
@@ -79,8 +81,7 @@ const softwareApplicationJsonLd = {
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
   url: SITE_ORIGIN,
-  description:
-    "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
+  description: SITE_DESCRIPTION,
   offers: {
     "@type": "Offer",
     url: `${SITE_ORIGIN}/pricing`,

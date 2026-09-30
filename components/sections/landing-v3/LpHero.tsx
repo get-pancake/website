@@ -6,6 +6,7 @@ import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { LpViewportVar } from "@/components/sections/landing-v3/LpViewportVar";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { SITE_DESCRIPTION } from "@/lib/copy";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 // Landing v3 — Hero (Figma node 4257:4906, 1654×758).
@@ -36,10 +37,9 @@ export function LpHero() {
           <AudienceHeadline />
         </h1>
         <div className="lp-hero-col lp-hero-col--human">
-          <p className="lp-hero-lede">
-            Pancake’s AI agents monitor buying signals, find warm leads, grow
-            your AI search visibility, and learn from every interaction.
-          </p>
+          {/* The hero lede = the Google description line (SITE_DESCRIPTION,
+              lib/copy.ts): founder-sensitive, 2026-09-30 AI SEO retired. */}
+          <p className="lp-hero-lede">{SITE_DESCRIPTION}</p>
           <div className="lp-hero-btns">
             <LpFxLink href={APP_ORIGIN} data-analytics-id="app_hero">
               Start free

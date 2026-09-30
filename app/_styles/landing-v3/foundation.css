@@ -82,7 +82,7 @@
 
   /* page-specific values seen on the artboard (not in the ramps) */
   --lp-page-bg: #fbf6f1;
-  --lp-card-cream: #fffbf6; /* = ink-10; step cards, CTA card, feature-3/4 tiles */
+  --lp-card-cream: #fffbf6; /* = ink-10; step cards, CTA card */
   --lp-terminal-bg: #000; /* Founder-directed terminal background. */
 
   /* type scale (collection "text-size") */

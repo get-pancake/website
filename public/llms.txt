@@ -1,10 +1,18 @@
 # Pancake
 
-> Pancake is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, run personalized outreach, publish content for Google and AI search, and learn from every result through one shared GTM Brain. Pancake costs $99 per month, with every GTM agent included.
+> Pancake is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, reach out in the customer's voice, and learn from every interaction through one shared GTM Brain. Pancake costs $99 per month, with every GTM agent included.
 
 ## What Pancake does
 
-Pancake builds a GTM Brain from a company's positioning, ideal customers, offers, proof, objections, and results. Specialized agents use that shared context to identify opportunities, execute outreach, publish AI-search content, measure outcomes, and continuously improve the GTM motion.
+Pancake researches a company from its website and builds a GTM Brain: the ideal customer, personas, competitors, messaging and voice. Every new Play starts from that Brain.
+
+Plays are the core of the product. The customer tells Pancake in plain English who they want to reach, and Pancake builds the Play with them: who to find, how to find them, and how many leads per search (up to 50). The customer reviews the Play and runs it. Each search runs Discover, Enrich, then Qualify. One Play finds one audience one way; customers run as many Plays as they need, one per audience.
+
+A Play finds leads in one of six ways: people engaging with competitors' or experts' posts, people engaging with chosen topics, companies using a technology, companies hiring for a role, recently funded companies, or a direct match on role, industry, company size and location. Every lead arrives with one line on why it fits. Pancake shows every step of each search and why people were set aside. Each Play shows its reply rate and an activity log, and any Play can be paused.
+
+The customer approves every lead before anyone is contacted. Pancake writes a personal message for every lead from why they fit, in the customer's voice or from their own template, and the customer can read and edit any message before it goes out. Messages go out as direct messages under the customer's name, from their own accounts. A reply stops the sequence. When a prospect says yes, Pancake replies once with the customer's booking link.
+
+The app opens on a chat with the Pancake Agent. New leads also arrive in Slack, where the customer can approve or pass, and a morning email sums up what is waiting. Customers can also run Pancake from Claude, ChatGPT or Codex over MCP: create and run Plays, review leads, add them to campaigns and edit their messages, on the same Brain and the same leads. When the customer rejects a lead with a reason, Pancake suggests Brain changes they can accept or ignore.
 
 ## Who it is for
 
@@ -12,7 +20,7 @@ Pancake is for solo founders and small companies that have a product to sell and
 
 ## Product boundaries
 
-Pancake focuses on go-to-market: buying signals, warm leads, outreach from the customer's own account, and articles for Google and AI search. It is not an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. Older blog articles about those topics keep their URLs; their descriptions of Pancake were rewritten on September 24, 2026 to match the current product.
+Pancake focuses on outbound: finding a company's buyers and starting the conversation, with Plays, warm leads and personal outreach from the customer's own accounts. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on September 30, 2026 to match the current product.
 
 ## Key pages
 
@@ -23,53 +31,9 @@ Pancake focuses on go-to-market: buying signals, warm leads, outreach from the c
 - [Claude Tag vs Pancake](https://pancake.ai/claude-tag-vs-pancake) — ambient general teammate vs focused autonomous GTM execution
 - [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain powering every GTM agent
 - [Lemlist vs Pancake](https://pancake.ai/lemlist-vs-pancake) — sales-engagement software your team operates vs GTM agents that operate the motion
-- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — content-led suggestions vs end-to-end GTM execution and publishing
+- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — live-web research and content-led suggestions vs an AI GTM team that finds buyers and starts the conversation
 - [OpenClaw vs Pancake](https://pancake.ai/openclaw-vs-pancake) — self-managed general agent infrastructure vs a managed GTM product
 - [Paperclips vs Pancake](https://pancake.ai/pancake-vs-paperclips) — open-source AI-company control plane vs a managed AI GTM team
-
-## Industries
-
-- [Pancake by industry](https://pancake.ai/for) — how Pancake finds B2B customers in 40 markets
-- [Pancake for AI automation agencies](https://pancake.ai/for/ai-automation-agencies)
-- [Pancake for AI startups](https://pancake.ai/for/ai-startups)
-- [Pancake for branding agencies](https://pancake.ai/for/branding-agencies)
-- [Pancake for cloud consultancies](https://pancake.ai/for/cloud-consultancies)
-- [Pancake for consultants](https://pancake.ai/for/consultants)
-- [Pancake for corporate training companies](https://pancake.ai/for/corporate-training-companies)
-- [Pancake for cybersecurity firms](https://pancake.ai/for/cybersecurity-firms)
-- [Pancake for data consultancies](https://pancake.ai/for/data-consultancies)
-- [Pancake for devtools startups](https://pancake.ai/for/developer-tools)
-- [Pancake for event agencies](https://pancake.ai/for/event-agencies)
-- [Pancake for executive coaches](https://pancake.ai/for/executive-coaches)
-- [Pancake for executive search firms](https://pancake.ai/for/executive-search-firms)
-- [Pancake for fintech startups](https://pancake.ai/for/fintech-startups)
-- [Pancake for fractional CFOs](https://pancake.ai/for/fractional-cfos)
-- [Pancake for fractional CMOs](https://pancake.ai/for/fractional-cmos)
-- [Pancake for GTM agencies](https://pancake.ai/for/gtm-agencies)
-- [Pancake for healthtech startups](https://pancake.ai/for/healthtech-startups)
-- [Pancake for HR consultants](https://pancake.ai/for/hr-consultants)
-- [Pancake for HR tech startups](https://pancake.ai/for/hr-tech-startups)
-- [Pancake for industrial tech startups](https://pancake.ai/for/industrial-tech-startups)
-- [Pancake for legal tech startups](https://pancake.ai/for/legal-tech-startups)
-- [Pancake for logistics tech startups](https://pancake.ai/for/logistics-tech-startups)
-- [Pancake for marketing agencies](https://pancake.ai/for/marketing-agencies)
-- [Pancake for martech startups](https://pancake.ai/for/martech-startups)
-- [Pancake for MSPs](https://pancake.ai/for/msps)
-- [Pancake for PPC agencies](https://pancake.ai/for/ppc-agencies)
-- [Pancake for PR firms](https://pancake.ai/for/pr-firms)
-- [Pancake for recruiting agencies](https://pancake.ai/for/recruiting-agencies)
-- [Pancake for retail tech startups](https://pancake.ai/for/retail-tech-startups)
-- [Pancake for RevOps consultants](https://pancake.ai/for/revops-consultants)
-- [Pancake for SaaS startups](https://pancake.ai/for/saas-startups)
-- [Pancake for SEO agencies](https://pancake.ai/for/seo-agencies)
-- [Pancake for Shopify agencies](https://pancake.ai/for/shopify-agencies)
-- [Pancake for software development agencies](https://pancake.ai/for/software-development-agencies)
-- [Pancake for commercial solar companies](https://pancake.ai/for/solar-companies)
-- [Pancake for solopreneurs](https://pancake.ai/for/solopreneurs)
-- [Pancake for sustainability consultants](https://pancake.ai/for/sustainability-consultants)
-- [Pancake for UX design agencies](https://pancake.ai/for/ux-design-agencies)
-- [Pancake for video production companies](https://pancake.ai/for/video-production-companies)
-- [Pancake for web design agencies](https://pancake.ai/for/web-design-agencies)
 
 ## Industries
 
@@ -215,4 +179,4 @@ Pancake focuses on go-to-market: buying signals, warm leads, outreach from the c
 
 ---
 
-Last updated: September 24, 2026
+Last updated: September 30, 2026

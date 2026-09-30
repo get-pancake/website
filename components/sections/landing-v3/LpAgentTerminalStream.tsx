@@ -9,6 +9,9 @@ type Slot = { x: number; width: number };
 
 // Illustrative pseudocode, deliberately not product API calls. The finite
 // source is prepared once per font and recycled; the visible history never grows.
+// 2026-09-30, AI SEO retired: the three search-intent / useful-answer lines
+// became a Play's path (plan who, how, how many → create → run → why they
+// fit → your approval). Same count and slots, so the ink cycle is unchanged.
 const SOURCE = [
   '// pancake.simulation — illustrative pseudocode. no messages are sent.',
   'const human = { status: "building", focus: "the company" }; const agent = { focus: "bring customers", context: [offer, buyers, voice] };',
@@ -16,19 +19,19 @@ const SOURCE = [
   'signals.filter(is_relevant).map(signal => ({ problem: signal.need, timing: signal.when, fit: match(offer, signal) }));',
   'for (const signal of buying_signals) { const reason = understand(signal); const next_move = prepare({ reason, offer, voice }); queue_for_review(next_move); }',
   'const first_message = draft({ context, reason: "a real need", tone: voice, length: "short" }); first_message.status = "awaiting review";',
-  'search.intent = ["find a solution", "compare options", "choose a product"]; const useful_answer = explain(problem, offer, proof);',
+  'const play = plays.plan({ who: "heads of sales at seed-stage SaaS", how: "hiring_for_role", how_many: 50 }); review(play);',
   'const brain = { offer: understand(product), buyers: recognize(audience), voice: learn(style), memory: [] };',
   '// relevance > volume. context > guesswork. useful > loud.',
   'const buying_signal = { problem: "growing team", constraint: "manual work", timing: "this quarter" }; const fit = compare(buying_signal, offer);',
   'outreach.preview = { who: audience.best_fit, why: fit.reason, message: first_message }; outreach.state = "draft";',
-  'discovery.questions.map(question => ({ intent: understand(question), answer: draft_answer(question, context), evidence: proof }));',
+  'plays.create(play); const search = plays.run(play); search.steps = ["discover", "enrich", "qualify"]; log(search.research);',
   'while (human.is_building) { refresh(context); notice(signals); prepare(next_move); learn(feedback); }',
   'voice.rules = ["be concrete", "skip the jargon", "sound human"]; const message = rewrite(draft, voice);',
   'if (!useful(message) || !relevant(person, offer)) { return rethink(); } else { queue_for_review(message); }',
   'const context = { offer: product.what, buyers: product.who, proof: product.why, voice: human.style };',
   '// the human runs the company. the agent joins the dots.',
   'const next_customer = problem + timing + fit; const next_move = { context, direction: "help", human_in_the_loop: true };',
-  'search.questions.forEach(question => { understand_intent(question); connect_to_offer(question); draft_useful_answer(question); });',
+  'search.leads.forEach(lead => { lead.why_they_fit = explain(lead.signal, lead.role); queue_for_approval(lead); });',
   'memory.push({ resonated: feedback.yes, missed: feedback.no, changed: feedback.new }); context = refresh(memory);',
   'const tomorrow = { context: a_little_better, next_move: a_little_clearer }; continue_working(tomorrow);',
 ] as const;

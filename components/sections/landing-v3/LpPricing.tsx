@@ -11,15 +11,18 @@ import { TRIAL_LABEL } from "@/lib/trial";
  * black-on-black against the footer, so the section clips it safely.
  */
 
+/* Six lines, so the layout holds. AI SEO retired 2026-09-30 (pancake-cmo PR
+   #1037): the articles and Google/ChatGPT lines became Plays + messages, and
+   the control line names leads only (message review is optional, so never
+   "approvals on messages"). No spend cap (founder 2026-09-19): flat plan,
+   nothing to cap. Kept in step with pricingV2.value in lib/copy.ts. */
 const CHECKLIST = [
   "Every agent included.",
   "5 to 15 warm leads.",
   "2 to 3 new customers.",
-  "30 articles posted.",
-  "Google ranking and ChatGPT citations.",
-  // No spend cap (founder 2026-09-19): flat plan, nothing to cap — same line
-  // as pricingV2.value in lib/copy.ts.
-  "Approvals on leads and articles.",
+  "As many Plays as you need.",
+  "A personal message for each lead.",
+  "You approve every lead.",
 ];
 
 /**

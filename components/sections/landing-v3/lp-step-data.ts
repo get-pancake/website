@@ -180,17 +180,21 @@ export type S2Row = {
 };
 
 /** Five agent rows: blob tint, pancake parts + their offsets inside the 22.4
-    mask box, eye boxes (Figma left/top/w/h + rotation) */
+    mask box, eye boxes (Figma left/top/w/h + rotation). Names/counts are no
+    longer the composition's verbatim: 2026-09-30, AI SEO retired, so
+    "Content · 3 articles live" became "Plays · 3 active" and "AI search ·
+    4 mentions" became "Messages · 72 sent" (shapes, eyes and offsets
+    unchanged). The alt text in LpSteps.tsx lists these rows: keep in sync. */
 export const S2_ROWS: S2Row[] = [
   { name: "Pipeline", count: "24 warm leads", blob: "#FFE9D1", sides: SIDES_FLAT, sidesFill: "#FFDBB5", top: TOP_FLAT, topFill: "#FFBD7A", py: 3.73,
     eyes: [{ x: 12.8, y: 8.32, w: 4.438, h: 6.104, rot: 85.05 }, { x: 20.56, y: 8.0, w: 3.472, h: 4.776, rot: 85.05 }] },
   { name: "Signals", count: "48 detected", blob: "#EFDDF1", sides: SIDES_TALL, sidesFill: "#DEC3F5", top: TOP_TALL, topFill: "#BA8BFF", py: 1.87,
     eyes: [{ x: 11.17, y: 10.78, w: 4.438, h: 6.104, rot: 85.05 }, { x: 18.93, y: 10.46, w: 3.472, h: 4.776, rot: 85.05 }] },
-  { name: "Content", count: "3 articles live", blob: "#FFD9DA", sides: SIDES_LEAN, sidesFill: "#FFBBC7", top: TOP_LEAN, topFill: "#FF7AA0", py: 1.87,
+  { name: "Plays", count: "3 active", blob: "#FFD9DA", sides: SIDES_LEAN, sidesFill: "#FFBBC7", top: TOP_LEAN, topFill: "#FF7AA0", py: 1.87,
     eyes: [{ x: 11.41, y: 10.65, w: 3.971, h: 5.792, rot: 89.88 }, { x: 20.8, y: 11.2, w: 3.107, h: 4.532, rot: 89.88 }] },
   { name: "Replies", count: "12 received", blob: "#CEEAD5", sides: SIDES_LEAN, sidesFill: "#68CEA7", sidesOpacity: 0.32, top: TOP_LEAN, topFill: "#68CEA7", py: 1.87,
     eyes: [{ x: 16.48, y: 11.2, w: 4.259, h: 5.916, rot: -86.98 }, { x: 9.6, y: 11.88, w: 3.332, h: 4.629, rot: -86.98 }] },
-  { name: "AI search", count: "4 mentions", blob: "#BCDBFF", sides: SIDES_AI, sidesFill: "#92C5FF", top: TOP_AI, topFill: "#57A5FF", py: 1.87,
+  { name: "Messages", count: "72 sent", blob: "#BCDBFF", sides: SIDES_AI, sidesFill: "#92C5FF", top: TOP_AI, topFill: "#57A5FF", py: 1.87,
     eyes: [{ x: 11.24, y: 10.35, w: 4.315, h: 5.953, rot: 93.6 }, { x: 19.05, y: 11.11, w: 3.376, h: 4.658, rot: 93.6 }] },
 ];
 /** frame-1 row boxes (h 40, gap 16) */

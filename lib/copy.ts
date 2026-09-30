@@ -3,6 +3,17 @@
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { TRIAL_DAYS, TRIAL_NOTICE } from "@/lib/trial";
 
+/**
+ * The site description: the homepage hero lede, which is also the Google
+ * description line (homepage + root-layout metadata, og/twitter, and the
+ * Organization + SoftwareApplication JSON-LD all read it from here).
+ * 2026-09-30: AI SEO retired from the product (pancake-cmo PR #1037), so the
+ * third clause "grow your AI search visibility" became "reach out in your
+ * voice". Founder-sensitive: change only with the founder's sign-off.
+ */
+export const SITE_DESCRIPTION =
+  "Pancake’s AI agents monitor buying signals, find warm leads, reach out in your voice, and learn from every interaction.";
+
 export const hero = {
   /** H1 line 1 (break before autonomous) */
   h1Before: "Let OpenClaw run your",
@@ -460,17 +471,21 @@ export const pricingV2 = {
   /** Intro to the value list. */
   includedIntro: "What a month gets you:",
   /** The value lines — figure first. The lead and customer ranges are the
-      founder's own (2026-08-19). The 90-day AI-search window is a placeholder
-      he has to confirm before this ships.
+      founder's own (2026-08-19).
       No spend cap here (founder 2026-09-19): the plan is flat, there is no
       variable spend to cap, and a prospect read the old "hard spend cap" as
-      LLM API costs on top of the $99. The control line names what you approve
-      today — leads and articles. */
+      LLM API costs on top of the $99.
+      AI SEO retired 2026-09-30 (pancake-cmo PR #1037): the "30 articles,
+      ranking on Google and cited by ChatGPT" line is gone, and the control
+      line names leads only. You approve every lead before anyone is
+      contacted; reading or editing a message before it sends is optional, so
+      never write "approvals on messages". Kept in step with the
+      homepage CHECKLIST (LpPricing.tsx). */
   value: [
     { figure: "5 to 15", rest: "warm leads" },
     { figure: "2 to 3", rest: "new customers" },
-    { figure: "30", rest: "articles, ranking on Google and cited by ChatGPT within 90 days" },
-    { rest: "Approvals on leads and articles. You stay in control." },
+    { rest: "A personal message for each lead, in your voice" },
+    { rest: "You approve every lead. You stay in control." },
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot). */
   fine: TRIAL_NOTICE,

@@ -17,7 +17,9 @@ import { pricingV2 } from "@/lib/copy";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v2.css";
 
-const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDollars}/month flat for your whole AI sales and marketing team. Everything included. No tiers, no seats.`;
+/* "AI GTM team", the identity term (2026-09-24); it read "AI sales and
+   marketing team" until AI SEO was retired (2026-09-30). */
+const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDollars}/month flat for your whole AI GTM team. Everything included. No tiers, no seats.`;
 
 const TITLE = `Pancake Pricing: $${pricingV2.monthlyDollars}/month flat`;
 const URL = `${SITE_ORIGIN}/pricing`;
