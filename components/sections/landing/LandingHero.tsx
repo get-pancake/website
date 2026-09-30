@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 
 import { FxPill, FxPillLink } from "./FxPill";
 import { mountSnake } from "./snake";
+import { SITE_DESCRIPTION } from "@/lib/copy";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
@@ -12,16 +13,16 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
  * landing's `.prefooter` section: H1 left, H2 + the two CTAs right — the
  * same disposition as the previous production hero. (The owner.com-style
  * AI GTM report input shipped here briefly; founder pulled it 2026-08-11
- * pre-launch — the /ai-gtm-report route still exists, just unlinked.)
+ * pre-launch; the /ai-gtm-report route itself retired 2026-09-30 and 301s
+ * to the homepage.)
  */
 
 // SMB pass 2026-08-11: "GTM" read as big-company jargon to the audience we
-// actually sell to. Customers, not pipeline; bring, not find (covers outbound
-// AND being found on Google/ChatGPT). Two sentences, period each — the V1
-// cadence that worked, and the voice skill's strongest form.
+// actually sell to. Customers, not pipeline. Two sentences, period each — the
+// V1 cadence that worked, and the voice skill's strongest form. The H2 reads
+// the shared SITE_DESCRIPTION (AI SEO retired 2026-09-30).
 const H1_LINES = ["You run your company.", "We bring you customers."] as const;
-const H2_COPY =
-  "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.";
+const H2_COPY = SITE_DESCRIPTION;
 
 export function LandingHero() {
   const stageRef = useRef<HTMLElement>(null);

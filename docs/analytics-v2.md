@@ -77,9 +77,9 @@ the natural successor). PostHog already captures the new event via
 ### Waitlist events (retired from the landing 2026-08-24)
 
 The events below remain implemented in `lib/analytics/data-layer.ts` and the
-`/api/waitlist` route (still called by the `/ai-gtm-report` flow via
-`useReport`), but no landing CTA opens the waitlist modal anymore, so they no
-longer fire from `/` or `/pricing`.
+`/api/waitlist` route, but no landing CTA opens the waitlist modal anymore, so they no
+longer fire from `/` or `/pricing`. The route has had no caller on the site since the
+`/ai-gtm-report` scanner retired on 2026-09-30 (it now 301s to `/`).
 
 All waitlist events use `form_id=landing_waitlist` and `lead_type=waitlist`.
 

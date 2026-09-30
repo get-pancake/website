@@ -48,8 +48,12 @@ const nextConfig = {
       { source: "/blog/pancake-vs-cofounder", destination: "/blog/pancake-vs-cofounder-ai", statusCode: 301 },
       // Deleted in 222b8e8 (unverifiable revenue claim).
       { source: "/blog/autonomous-company-at-30k-mrr", destination: "/blog/autonomous-company-benchmark-2026", statusCode: 301 },
-      // The GTM report's first address (d4d95bf) before it moved to /ai-gtm-report.
-      { source: "/report", destination: "/ai-gtm-report", statusCode: 301 },
+      // The free AI GTM report (a ChatGPT/Google visibility scanner) retired
+      // 2026-09-30 with AI SEO (pancake-cmo #1037). It has no successor, so the
+      // homepage is the closest live page; the founder may retarget it.
+      { source: "/ai-gtm-report", destination: "/", statusCode: 301 },
+      // The report's first address (d4d95bf); straight to "/" so it never chains.
+      { source: "/report", destination: "/", statusCode: 301 },
       // From the Search Console "Not found (404)" export (2026-09-24,
       // raw/getpancake-ai-search-console-404-2026-09-24.csv):
       // the privacy page's old address…

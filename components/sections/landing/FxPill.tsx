@@ -10,10 +10,11 @@ import { isAppCtaId, pushAcquisitionEvent } from "@/lib/analytics/data-layer";
  * Kit Button wearing landing-v2's exact clothes — both halves of its hover:
  * the label slides up (l1 exits, l2 arrives) while a snake-palette circle
  * expands from the pointer to flood the button, retracting toward the exit
- * point on leave. Same port as the report page's FxButton, scoped with lv2-
- * class names so the landing page carries its own styles (report.css only
- * loads on /ai-gtm-report). Geometry overrides live in landing-v2.css under
- * `.lv2 .button`. `FxPillLink` is the anchor twin for real navigations.
+ * point on leave. Same port as the retired report page's FxButton (the
+ * /ai-gtm-report scanner, removed 2026-09-30), scoped with lv2- class names
+ * so the landing page carries its own styles. Geometry overrides live in
+ * landing-v2.css under `.lv2 .button`. `FxPillLink` is the anchor twin for
+ * real navigations.
  */
 
 const FILLS = [
