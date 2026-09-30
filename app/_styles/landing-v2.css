@@ -549,28 +549,11 @@ body.menu-open:has(main.lv2) {
   clip-path: path("M 0 0 Z");
 }
 
-/* The owner.com-style live experience: domain in, report out. */
-.lv2-hero-pill {
-  display: flex;
-  gap: var(--spacing-md);
-  width: 100%;
-}
-.lv2-hero-pill .input {
-  flex: 1;
-  min-width: 0;
-}
-/* Invalid domain: the negative ring. The lv2 input is border-0/box-shadow,
-   so the kit's layered border hook would be a no-op here. */
+/* Invalid input: the negative ring. The lv2 input is border-0/box-shadow,
+   so the kit's layered border hook would be a no-op here. (The hero's
+   domain-in/report-out pill that first needed it retired 2026-09-30.) */
 .lv2 .input[data-err] {
   box-shadow: inset 0 0 0 2px var(--negative-stroke);
-}
-@media (max-width: 479px) {
-  .lv2-hero-pill {
-    flex-direction: column;
-  }
-  .lv2-hero-pill .button {
-    width: 100%;
-  }
 }
 
 /* ── Section scaffolding below the hero ── */

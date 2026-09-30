@@ -34,7 +34,9 @@ const dmMono = DM_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Get started: The AI coworker that does the work for you · Pancake",
+  // "AI GTM team", never "AI coworker" / "AI cofounder" (identity rule,
+  // 2026-09-24); the rest of this orphaned page is the previous positioning.
+  title: "Get started: The AI GTM team that does the work for you · Pancake",
   description:
     `Create your Pancake account. ${TRIAL_NOTICE} Stack autonomous agents across growth, engineering and ops so your company keeps running even while you sleep.`,
   alternates: { canonical: `${SITE_ORIGIN}/get-started` },
@@ -45,7 +47,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: `${SITE_ORIGIN}/get-started`,
-    title: "Get started with Pancake, the AI coworker that does the work for you",
+    title: "Get started with Pancake, the AI GTM team that does the work for you",
     description:
       `Create your account. ${TRIAL_NOTICE} Stack autonomous agents across growth, engineering and ops.`,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Get started with Pancake" }],
@@ -53,7 +55,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Get started with Pancake, the AI coworker that does the work for you",
+    title: "Get started with Pancake, the AI GTM team that does the work for you",
     description:
       `Create your account. ${TRIAL_NOTICE}`,
     images: ["/og-image.png"],
@@ -136,7 +138,7 @@ export default function GetStartedPage() {
                 <div className="av av5">+</div>
               </div>
               <div className="proof-text">
-                <div><strong>500+ founders</strong> already onboarded their AI cofounder</div>
+                <div><strong>500+ founders</strong> already onboarded their AI GTM team</div>
                 <div className="proof-stars">★★★★★</div>
               </div>
             </div>

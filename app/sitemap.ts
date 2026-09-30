@@ -34,21 +34,20 @@ function newestPostDate(): Date {
  * for the whole sitemap (blog posts and /for included).
  */
 const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
-  { path: "", updated: "2026-09-24", priority: 1.0 },
-  { path: "/pricing", updated: "2026-09-24", priority: 0.8 },
-  { path: "/ai-gtm-report", updated: "2026-09-19", priority: 0.9 },
+  { path: "", updated: "2026-09-30", priority: 1.0 },
+  { path: "/pricing", updated: "2026-09-30", priority: 0.8 },
   { path: "/open-roadmap", updated: "2026-07-06", priority: 0.6 },
-  { path: "/careers", updated: "2026-08-31", priority: 0.5 },
+  { path: "/careers", updated: "2026-09-30", priority: 0.5 },
   { path: "/privacy", updated: "2026-09-18", priority: 0.3 },
   { path: "/terms", updated: "2026-09-18", priority: 0.3 },
   { path: "/support", updated: "2026-09-18", priority: 0.3 },
-  { path: "/viktor-vs-pancake", updated: "2026-08-28", priority: 0.8 },
-  { path: "/claude-tag-vs-pancake", updated: "2026-08-28", priority: 0.8 },
-  { path: "/gojiberry-vs-pancake", updated: "2026-08-28", priority: 0.8 },
-  { path: "/lemlist-vs-pancake", updated: "2026-08-28", priority: 0.8 },
-  { path: "/origami-vs-pancake", updated: "2026-08-28", priority: 0.8 },
-  { path: "/openclaw-vs-pancake", updated: "2026-08-28", priority: 0.8 },
-  { path: "/pancake-vs-paperclips", updated: "2026-08-28", priority: 0.8 },
+  { path: "/viktor-vs-pancake", updated: "2026-09-30", priority: 0.8 },
+  { path: "/claude-tag-vs-pancake", updated: "2026-09-30", priority: 0.8 },
+  { path: "/gojiberry-vs-pancake", updated: "2026-09-30", priority: 0.8 },
+  { path: "/lemlist-vs-pancake", updated: "2026-09-30", priority: 0.8 },
+  { path: "/origami-vs-pancake", updated: "2026-09-30", priority: 0.8 },
+  { path: "/openclaw-vs-pancake", updated: "2026-09-30", priority: 0.8 },
+  { path: "/pancake-vs-paperclips", updated: "2026-09-30", priority: 0.8 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

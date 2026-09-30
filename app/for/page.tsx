@@ -67,7 +67,7 @@ export default function IndustriesHub() {
       <LpNav />
       <VxHubGrid />
       <LpCta title="Try Pancake now" body={VX_CTA_BODY} />
-      <LpPricing checklist={VX_PRICING_MODE === "truthful" ? VX_PRICING_CHECKLIST() : undefined} />
+      <LpPricing checklist={VX_PRICING_MODE === "truthful" ? VX_PRICING_CHECKLIST : undefined} />
       <LpFooter />
     </main>
   );

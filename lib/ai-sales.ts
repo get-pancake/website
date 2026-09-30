@@ -220,7 +220,9 @@ export function completeAnswers(known: DemoRequestPartial): DemoBookingAnswers |
  * as a Client tool on the agent, "wait for response" on). Parameters, all
  * strings: first_name, last_name, email, company_website, team_size (one of
  * lib/demo-request.ts TEAM_SIZES), has_pancake_account ("yes" / "no"),
- * goal (one of GOALS, or empty). The page answers with
+ * goal (one of GOALS, or empty; lib/demo-request.ts LEGACY_GOALS is still
+ * accepted and passed through: legacy value, 2026-09-30: remove once
+ * Calendly + ElevenLabs no longer send it). The page answers with
  * AiSalesFormToolResult, JSON-encoded.
  */
 export const AI_SALES_FORM_TOOL = "submit_demo_request";

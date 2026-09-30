@@ -32,7 +32,8 @@ export const BANNED: [RegExp, string][] = [
   [/\bspend cap\b|\bcan[’']?t overspend\b|\btoken costs?\b|\bunlimited leads\b/i, "pricing claim"],
   [/\b50\+ (data )?providers\b/i, "50+ providers"],
   [/\bmulti-?lingual\b|\bmulti-?language\b|\bany language\b/i, "languages"],
-  [/\bplays\b|\bmultiple campaigns\b|\bcustom sequences?\b/i, "unshipped campaign features"],
+  // "plays" left this rule on 2026-09-30: Plays shipped (the core of Pancake v2).
+  [/\bmultiple campaigns\b|\bcustom sequences?\b/i, "unshipped campaign features"],
   [/@Pancake\b|\bask Pancake in Slack\b|\bSlack (chat|DMs?)\b/i, "Slack chat"],
   [/\bpublish(es|ing)? to WordPress\b|\bWordPress (site|plugin|publishing)\b/i, "WordPress publishing"],
   [/\bsolar leads\b/i, "solar leads"],
@@ -43,6 +44,27 @@ export const BANNED: [RegExp, string][] = [
   [/\b(industry|vertical)[- ]specific (AI|model)\b|\btrained on\b/i, "vertical AI claim"],
   [/\b(candidates?|people) (free up|on (our|the) bench)\b/i, "private-fact claim in outreach"],
 ];
+
+/** AI SEO retired 2026-09-30 (pancake-cmo PR #1037: SEO articles off for every workspace). Pancake
+ *  never claims articles, AI search or AI answers, search visibility, ChatGPT or AI citations,
+ *  rankings on Google, GEO or AEO. ERROR, but only where Pancake describes itself (CLAIM_PATH
+ *  below, and every fixed vx-copy string) and with no FAQ negation allowance: a /for page never
+ *  names SEO as something Pancake does or did. SEO as the reader's industry stays fine, because
+ *  the audience fields are never scanned: /for/seo-agencies keeps "AI Overviews", "ChatGPT search"
+ *  and "I sell GEO", and web design pages keep WordPress and Webflow as stack signals. */
+export const AI_SEO: RegExp[] = [
+  /\bAI[ -]?SEO\b|\barticles?\b|\bAI (search|answers?)\b|\bsearch visibility\b|\b(ChatGPT|AI) citations?\b|\b(rank|ranks|ranking|ranked) (on|in) Google\b/i,
+  // the acronyms, case-sensitive ("geo" is a common word prefix)
+  /\b(GEO|AEO)\b/,
+];
+/** The config fields where Pancake describes itself (the AI_SEO scope): the SEO title, the hub
+ *  line, the hero, the demo's H2 and Pancake's chat reply, the signals H2 and card titles and
+ *  bodies, FAQ answers, the CTA title. The audience fields stay out: names and workspace, the
+ *  owner's prompt, proposal items, leads, the lead's "why", the owner's outreach message, the
+ *  watched items and the buyer's FAQ question. Demo-only sources (the homepage) use the same
+ *  paths (demo.h2, prompts[i].reply). */
+const CLAIM_PATH = /^(meta\.seoTitle|hubLine|hero\.(title|lede)|demo\.h2|prompts\[\d+\]\.reply|signals\.h2|signals\.cards\[\d+\]\.(title|body)|faq\[\d+\]\.a|cta\.title)$/;
+const aiSeoHit = (s: string) => AI_SEO.map((re) => s.match(re)?.[0]).find(Boolean);
 
 /** Non-US geography (outreach language can't be changed; D23/C12). */
 const NON_US = /\b(UK|U\.K\.|United Kingdom|England|London|Europe(an)?|EMEA|Germany|German|Berlin|Munich|France|French|Paris|Spain|Madrid|Canada|Canadian|Toronto|Ireland|Irish|Dublin|Australia|Sydney|India|Singapore|DACH|Nordics?|APAC|LATAM|Netherlands|Amsterdam)\b/;
@@ -181,7 +203,7 @@ function configStrings(v: VerticalConfig | DemoSource): [string, string][] {
 
 /** What the fixed templates (vx-copy functions) render with this config: the per-page outputs. */
 function composedStrings(v: VerticalConfig): [string, string][] {
-  const { VX_HERO, VX_SIGNALS, VX_FAQ, VX_META, VX_PRICING_CHECKLIST, VX_CONTROL } = FIXED;
+  const { VX_HERO, VX_SIGNALS, VX_FAQ, VX_META, VX_CONTROL } = FIXED;
   const lead = v.demo.prompts[0]?.leads[0]?.name ?? "";
   const sender = v.workspace.sender;
   const out: [string, string][] = [
@@ -190,7 +212,6 @@ function composedStrings(v: VerticalConfig): [string, string][] {
     ["VX_CONTROL.dialog.title()", VX_CONTROL.dialog.title(lead)], ["VX_CONTROL.toast.title()", VX_CONTROL.toast.title(lead)],
     ["VX_CONTROL.aria()", VX_CONTROL.aria(lead, sender)],
     ...VX_CONTROL.dialog.rows(sender).map(([k, x], i): [string, string] => [`VX_CONTROL.dialog.rows()[${i}]`, `${k} ${x}`]),
-    ...VX_PRICING_CHECKLIST(v.slug).map((x, i): [string, string] => [`VX_PRICING_CHECKLIST()[${i}]`, x]),
   ];
   out.push(...composedDemoStrings(v));
   return out;
@@ -328,6 +349,10 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
           if (!bad) continue;
         }
         err(s, `${path}: banned (${label}): "${str}"`);
+      }
+      if (CLAIM_PATH.test(path)) {
+        const seo = aiSeoHit(str);
+        if (seo) err(s, `${path}: AI SEO retired 2026-09-30 ("${seo}"), never a Pancake claim: "${str}"`);
       }
       if (NON_US.test(str)) err(s, `${path}: non-US geography: "${str}"`);
       if (DATE.test(str)) err(s, `${path}: hard-coded date: "${str}"`);
@@ -472,6 +497,9 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
     // SEQUENCE (founder 2026-09-29)
     const st = str.match(SEQUENCE);
     if (st) err("vx-copy", `${path}: lists a platform step ("${st[0]}"), tell the outcome instead: "${str}"`);
+    // AI_SEO (2026-09-30): every fixed string is Pancake describing itself, VX_HUB included
+    const seo = aiSeoHit(str);
+    if (seo) err("vx-copy", `${path}: AI SEO retired 2026-09-30 ("${seo}"), never a Pancake claim: "${str}"`);
   }
 
   return issues;

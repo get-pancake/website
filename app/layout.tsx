@@ -13,6 +13,7 @@ import {
   META_BROWSER_PIXEL_ID,
   PANCAKE_ANALYTICS_INGEST_ORIGIN,
 } from "@/lib/analytics/vendor-config";
+import { SITE_DESCRIPTION } from "@/lib/copy";
 import { PRODUCTION_SITE_HOSTS, SITE_HOST, SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
@@ -103,11 +104,12 @@ const geistSans = localFont({
 // Every absolute URL below (canonical, og:url, JSON-LD) uses the apex host.
 // Default title/OG for routes that set none (founder 2026-09-24: "we're not an AI
 // coworker any more, we're AI GTM"). The homepage sets its own <title>: "Pancake".
+// Description = SITE_DESCRIPTION (lib/copy.ts), the homepage hero lede; its
+// "grow your AI search visibility" clause went on 2026-09-30 (AI SEO retired).
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: "Pancake: The AI GTM team that brings you customers",
-  description:
-    "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
+  description: SITE_DESCRIPTION,
   // No `alternates.canonical` and no `openGraph.url` here: both would be
   // inherited by every route that doesn't set its own, and a canonical that
   // points at the homepage tells Google the page is a duplicate of `/` (it hid
@@ -115,16 +117,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     title: "Pancake: The AI GTM team that brings you customers",
-    description:
-      "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
+    description: SITE_DESCRIPTION,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "You run your company. We bring you customers." }],
     siteName: "Pancake",
   },
   twitter: {
     card: "summary_large_image",
     title: "Pancake: The AI GTM team that brings you customers",
-    description:
-      "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
+    description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
 };
@@ -143,8 +143,7 @@ const organizationJsonLd = {
   alternateName: "Pancake AI",
   url: SITE_ORIGIN,
   logo: `${SITE_ORIGIN}/pancake-mark.png`,
-  description:
-    "Pancake’s AI agents monitor buying signals, find warm leads, grow your AI search visibility, and learn from every interaction.",
+  description: SITE_DESCRIPTION,
   foundingDate: "2024",
   address: {
     "@type": "PostalAddress",

@@ -14,6 +14,8 @@ type CustomerLogo = {
 };
 
 const LOGOS: CustomerLogo[] = [
+  // Kong Inc. (konghq.com), paying since 2026-09-30; body = its lowercase "ong".
+  { name: "Kong", file: "kong.svg", ratio: 126 / 40, body: [14.2 / 40, 31.17 / 40] },
   { name: "Hyperspell", file: "hyperspell.svg", ratio: 577 / 91, body: [0.235, 0.82], yc: true },
   { name: "AgentMail", file: "agentmail.svg", ratio: 1986 / 363, body: [0.2, 0.78], yc: true },
   { name: "Fleet", file: "fleet.png", ratio: 240 / 91, body: [35 / 91, 70 / 91] },

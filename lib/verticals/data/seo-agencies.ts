@@ -1,6 +1,8 @@
 // lib/verticals/data/seo-agencies.ts — SEO agencies (merged: GEO / AI-search and content-marketing agencies).
 // Every person, company, expert and workspace below is invented.
-// Caveat (brief): don't sell Pancake's own daily article here; no ranking, traffic or AI-citation claims for Pancake.
+// Caveat (brief): SEO is the reader's industry here, never a Pancake capability: no article, ranking,
+// traffic or AI-citation claims for Pancake (AI SEO retired 2026-09-30; validate.ts AI_SEO scans only
+// the fields where Pancake describes itself, so the audience's "AI Overviews" and "GEO" stay).
 import type { VerticalConfig } from "../types";
 
 export const seoAgencies: VerticalConfig = {

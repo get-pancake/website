@@ -111,9 +111,9 @@ export default function CareersPage() {
             Build the autonomous GTM team.
           </h1>
           <p className="lp-crs-lede lp-crs-hero__lede">
-            Pancake&rsquo;s agents find warm leads and grow AI search visibility for small
-            businesses, on their own. We are five people in San Francisco, and every hire
-            shapes the company.
+            Pancake&rsquo;s agents find warm leads for small businesses and start the
+            conversation. We are five people in San Francisco, and every hire shapes the
+            company.
           </p>
           <ul className="lp-crs-facts" aria-label="Company facts">
             {FACTS.map((fact) => (

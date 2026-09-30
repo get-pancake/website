@@ -20,8 +20,8 @@ import type { SignalKind, VerticalConfig } from "@/lib/verticals/types";
 export const VX_TITLE_MODE = "descriptive" as "brand" | "descriptive"; // founder 2026-09-22: descriptive SEO titles on /for/*
 /** D15. "truthful" = VX_PRICING_CHECKLIST on /for pages; "homepage" = LpPricing default. */
 export const VX_PRICING_MODE: "truthful" | "homepage" = "truthful";
-/** D3. true = one AI SEO line in the pricing checklist (the only mention on the page). */
-export const VX_AI_SEO_MENTION = true;
+// D3 (one AI SEO line in the pricing checklist) is gone: AI SEO retired from the product on
+// 2026-09-30 (pancake-cmo PR #1037). validate.ts AI_SEO fails the build on any AI SEO claim.
 
 /* ─── signal vocabulary ─────────────────────────────────────────────────────── */
 
@@ -91,7 +91,14 @@ export const VX_DEMO = {
     slack: "A Slack channel where Pancake posts new leads with Approve and Reject buttons. {lead} is approved.",
   },
   app: {
-    nav: ["Outbound", "AI SEO", "Brain"],
+    /** The v2 app's main sidebar (pancake-cmo app-nav.ts, 2026-09-30) reads Brain · Agent · Leads ·
+     *  Plays; the bar shows three of them, in that order. "Agent" stays out: /for pages never say
+     *  "agent" (validate.ts BANNED, and scripts/verticals-audit.mjs lints the demo's text too).
+     *  Every pane of the demo (the Signals page and chat, the leads, the campaign) sits inside a
+     *  Play, whose own pages are the rail's (Overview, Leads, …), so "Plays" is the current tab. */
+    nav: ["Brain", "Leads", "Plays"],
+    /** Index into `nav` of the current tab (the pink-pale pill). */
+    navCur: 2,
     cta: "Use in Claude / Codex",
     rail: ["Overview", "Leads", "Campaign"],
     railFoot: "Signals",
@@ -280,7 +287,7 @@ export const VX_FAQ = {
     },
     {
       q: "Can I read the messages before they send?",
-      a: "You can read each one in the lead’s campaign journey. Messages send on their own when their step comes. You can’t edit or approve them one by one. To stop outreach, remove the lead or pause the campaign.",
+      a: "Yes. Each lead gets personal messages in your voice. Read and edit any of them before it goes out, or let them send as written. A reply stops the sequence.",
     },
     {
       q: "How many leads will I get?",
@@ -306,21 +313,14 @@ export const VX_RELATED = {
 
 export const VX_CTA_BODY: [string, string] = ["$99 a month, flat.", "First leads arrive tomorrow morning."];
 
-/** Pages whose readers SELL articles (the config caveat: never sell Pancake's daily article
- *  to them) swap the AI SEO line for the Claude Code line. A Set on purpose: slugs are routing
- *  keys, not visible copy, and a Set serializes to {} so the FIXED_LEAK copy lint
- *  (validate.ts) keeps scanning only real strings. */
-export const VX_NO_ARTICLE_SLUGS: ReadonlySet<string> = new Set(["seo-agencies"]);
-
-/** The /for pricing checklist; `slug` = the page (the hub passes none). */
-export const VX_PRICING_CHECKLIST = (slug?: string): string[] => [
+/** The /for pricing checklist: the same six lines on every /for page and the hub. The fifth line
+ *  was the AI SEO article until 2026-09-30; it now matches the homepage's Plays line. */
+export const VX_PRICING_CHECKLIST: readonly string[] = [
   "5 to 15 new leads a day.",
   "Every lead comes with its reason.",
   "Outreach from your own account.",
   "You approve every lead first.",
-  VX_AI_SEO_MENTION && !(slug && VX_NO_ARTICLE_SLUGS.has(slug))
-    ? "One article a day for your site."
-    : "Works with Claude Code and Codex.",
+  "As many Plays as you need.",
   "Unlimited seats.",
 ];
 

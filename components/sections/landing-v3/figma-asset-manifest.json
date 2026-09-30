@@ -83,24 +83,6 @@
   "ok": true,
   "bytes": 519
  },
- "09-feature-3.tsx:imgChatGptLogo1": {
-  "url": "b39dd1a9-ef63-4004-bf4f-334d3b6be637.svg",
-  "file": "lp-f3-chatgpt.svg",
-  "ok": true,
-  "bytes": 2925
- },
- "09-feature-3.tsx:imgIconArrowDown": {
-  "url": "bcdfca25-5177-4af4-bd16-f7379be1953f.svg",
-  "file": "lp-f3-arrow-down.svg",
-  "ok": true,
-  "bytes": 871
- },
- "09-feature-3.tsx:imgCheck": {
-  "url": "94f0834f-c09e-4798-9a25-227dfc81cdc5.svg",
-  "file": "lp-f3-check.svg",
-  "ok": true,
-  "bytes": 518
- },
  "10-feature-4.tsx:imgFill": {
   "url": "4097c3f3-9bd1-4709-abe6-33de1616beb2.svg",
   "file": "lp-f4-arrow-up.svg",

@@ -28,15 +28,28 @@ export type TeamSize = (typeof TEAM_SIZES)[number];
 export const HAS_ACCOUNT = ["yes", "no"] as const;
 export type HasAccount = (typeof HAS_ACCOUNT)[number];
 /** The Calendly routing form's option text, verbatim, so an answer reads the
-    same on both paths. Not used for routing (only Team size is). */
+    same on both paths. Not used for routing (only Team size is). These are
+    the options the /demo form shows: the routing form's list minus
+    LEGACY_GOALS, until Calendly drops that option too. */
 export const GOALS = [
   "Find qualified leads",
   "Help me run my GTM from Claude / other",
-  "Grow visibility in AI search",
   "Automate outreach",
   "Explore what Pancake can do",
 ] as const;
-export type Goal = (typeof GOALS)[number];
+/** Goals the parser still accepts but the form no longer shows, passed
+    through as sent (Slack, Airtable, Attio and the calendar's prep line get
+    the visitor's own answer). "Grow visibility in AI search" left the form
+    when AI SEO was retired (2026-09-30, pancake-cmo PR #1037). The Calendly
+    routing form still offers it (GOALS mirrors that form word for word), and
+    the ElevenLabs agent's goal list, set in ElevenLabs, can still send it
+    through the form tool (lib/ai-sales.ts): refusing it would fail that tool
+    mid-call. Drop it from Calendly and ElevenLabs first, then here. */
+// legacy value, 2026-09-30: remove once Calendly + ElevenLabs no longer send it
+export const LEGACY_GOALS = ["Grow visibility in AI search"] as const;
+/** What parseDemoRequest / parsePartialDemoRequest accept: GOALS + LEGACY_GOALS. */
+export const ACCEPTED_GOALS = [...GOALS, ...LEGACY_GOALS] as const;
+export type Goal = (typeof ACCEPTED_GOALS)[number];
 
 export const DEMO_REQUEST_SOURCE = "demo-page";
 /** Never a real field: bots fill it, humans never see it. The waitlist's
@@ -168,7 +181,7 @@ export function parseDemoRequest(input: unknown): DemoRequestParse {
 
   let goal: Goal | undefined;
   if (!isBlank(body.goal)) {
-    if (!isOneOf(GOALS, body.goal)) return { ok: false, field: "goal" };
+    if (!isOneOf(ACCEPTED_GOALS, body.goal)) return { ok: false, field: "goal" };
     goal = body.goal;
   }
 
@@ -216,7 +229,7 @@ export function parsePartialDemoRequest(input: unknown): DemoRequestPartial {
   if (website) partial.website = website;
   if (isOneOf(TEAM_SIZES, body.teamSize)) partial.teamSize = body.teamSize;
   if (isOneOf(HAS_ACCOUNT, body.hasAccount)) partial.hasAccount = body.hasAccount;
-  if (isOneOf(GOALS, body.goal)) partial.goal = body.goal;
+  if (isOneOf(ACCEPTED_GOALS, body.goal)) partial.goal = body.goal;
   return partial;
 }
 

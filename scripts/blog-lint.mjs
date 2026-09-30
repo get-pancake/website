@@ -9,7 +9,8 @@
  *   node scripts/blog-lint.mjs a.mdx b.mdx
  *
  * ERRORS fail the build. WARNINGS are printed for the author to judge
- * (snippet lengths, claims about Pancake that break the copy rules).
+ * (snippet lengths, claims about Pancake that break the copy rules). One
+ * claim is an ERROR: AI SEO as something Pancake does (retired 2026-09-30).
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -26,7 +27,28 @@ const files = process.argv.slice(2).length
   : fs.readdirSync(DIR).filter((f) => f.endsWith(".mdx")).map((f) => path.join(DIR, f));
 const slugs = new Set(fs.readdirSync(DIR).filter((f) => f.endsWith(".mdx")).map((f) => f.slice(0, -4)));
 
-/** Claims about Pancake that the copy rules forbid (checked per sentence that names Pancake). */
+/**
+ * AI SEO, retired 2026-09-30 (pancake-cmo #1037): articles, "AI search", being
+ * ranked or cited in Google / ChatGPT / AI answers, publishing to a CMS. The
+ * post pointing at itself ("this article", "our article", "the article below")
+ * doesn't count, and neither does bare "SEO" (SEO agencies are a target industry).
+ */
+const AI_SEO = new RegExp(
+  [
+    String.raw`(?<!\b(?:this|that|our|related|previous|next|full|companion|earlier|linked|following) )\barticles?\b(?! (?:above|below))`,
+    String.raw`\bAI (?:search|answers?|overviews?)\b|\bsearch visibility\b|\bAI SEO\b|\b(?:generative|answer) engine optimi[sz]ation\b`,
+    String.raw`\b(?:search|SEO) (?:content|posts?|pages?)\b|\b(?:ChatGPT|AI|LLM) citations?\b`,
+    String.raw`\b(?:rank(?:s|ed|ing)?|cited|shows? up|showing up|surfaces?)\b[^.;]{0,30}\b(?:Google|ChatGPT|Gemini|Perplexity)\b`,
+    String.raw`\bpublish(?:es|ing)? (?:to|on) (?:your )?(?:CMS|site|blog|website)\b`,
+  ].join("|"),
+  "i",
+);
+
+/**
+ * Claims about Pancake that the copy rules forbid (checked per sentence that names
+ * Pancake). A third field "error" fails the build instead of warning; those rules
+ * run on pancakeUnits() so a topical sentence can't trip them.
+ */
 const PANCAKE_CLAIMS = [
   [/\bAI[ -]?co-?founders?\b/i, "Pancake called an AI co-founder"],
   [/\bsuper-?agents?\b|\bAI workforce\b|\bco-?pilots?\b|\bvirtual assistants?\b/i, "banned identity term"],
@@ -38,8 +60,70 @@ const PANCAKE_CLAIMS = [
   [/\blinked\s*in\b|\bsales\s*nav(igator)?\b|\binmails?\b/i, "platform name next to Pancake"],
   [/\bguarantee(d|s)?\b|\b(response|reply|open) rates?\b/i, "result promise"],
   [/\be-?mail (outreach|sequences?)\b|\bcold e-?mail\b|\bphone calls?\b|\bdialer\b/i, "channel Pancake doesn't run"],
+  // An error, not a warning: the retirement must not regress. A competitor's
+  // content is fine in its own sentence or after ", while" / ", whereas".
+  [AI_SEO, "AI SEO retired 2026-09-30 (Pancake writes no articles, gets no one found in Google or AI answers)", "error"],
 ];
 const NEGATION = /\b(not|isn[’']t|doesn[’']t|don[’']t|no longer|never|without|instead of|unlike|rather than|no)\b/i;
+const NAMES_PANCAKE = /\bPancake\b/;
+
+/**
+ * What a post says about Pancake, at the grain an "error" rule needs: every clause
+ * that names Pancake (body prose, FAQ answers, the description — split at sentence
+ * ends, ";" and ", while/whereas", so "Jasper writes articles, while Pancake finds
+ * buyers" leaves Pancake's half clean), plus the table cells that speak for it. A
+ * comparison table names Pancake once, in its header, so every cell of that column
+ * counts; a list-style table counts each cell of the row led by Pancake.
+ *
+ * A clause that opens on a pronoun ("It", "Its agents", "They"), or points back with
+ * "its", right after a clause that speaks for Pancake, in the same paragraph, speaks
+ * for Pancake too: "Pancake takes that one over. It … writes articles aimed at Google.
+ * You approve its leads and articles" passed the lint before
+ * (autonomous-company-benchmark-2026, 2026-09-30). Any other clause ends the chain.
+ */
+const POINTS_BACK = /^(?:it|its|they|their)\b|\bits\b/i;
+function pancakeUnits(body, fm) {
+  const units = [];
+  const prose = [];
+  let table = [];
+  const flushTable = () => {
+    const rows = table
+      .filter((l) => !/^[\s|:-]+$/.test(l)) // the |---|---| separator
+      .map((l) => l.replace(/^\||\|$/g, "").split("|").map((c) => c.replace(/[*_`]/g, " ").trim()));
+    table = [];
+    if (!rows.length) return;
+    const col = rows[0].findIndex((c) => NAMES_PANCAKE.test(c));
+    for (const row of rows.slice(1)) {
+      if (col >= 0) units.push(row[col] ?? "");
+      else if (row.slice(0, 2).some((c) => NAMES_PANCAKE.test(c))) units.push(...row);
+    }
+  };
+  for (const line of body.split("\n")) {
+    if (line.trim().startsWith("|")) table.push(line.trim());
+    else {
+      flushTable();
+      prose.push(line);
+    }
+  }
+  flushTable();
+
+  const clauses = [];
+  const paragraphs = [prose.join("\n"), ...(fm.faq ?? []).map((q) => q.answer), fm.description ?? ""]
+    .join("\n\n")
+    .split(/\n(?=\s*(?:#|[-*+] |\d+\. ))|\n{2,}/);
+  for (const para of paragraphs) {
+    let speaksForPancake = false;
+    for (const raw of para.split(/(?<=[.!?][*_]*)\s+|;|, (?:while|whereas) /i)) {
+      const s = raw.replace(/[*_`>#]/g, " ").replace(/\s+/g, " ").trim();
+      if (!s) continue;
+      if (NAMES_PANCAKE.test(s) || (speaksForPancake && POINTS_BACK.test(s))) {
+        clauses.push(s);
+        speaksForPancake = true;
+      } else speaksForPancake = false;
+    }
+  }
+  return [...clauses, ...units.filter(Boolean)];
+}
 
 let errors = 0;
 let warnings = 0;
@@ -103,9 +187,15 @@ for (const file of files) {
 
   // Claims about Pancake (warnings: a human judges negations and context).
   for (const s of sentences) {
-    if (!/\bPancake\b/.test(s)) continue;
-    for (const [re, label] of PANCAKE_CLAIMS) {
-      if (re.test(s) && !NEGATION.test(s)) warn(rel, `${label}: "${s.slice(0, 90)}…"`);
+    if (!NAMES_PANCAKE.test(s)) continue;
+    for (const [re, label, level] of PANCAKE_CLAIMS) {
+      if (level !== "error" && re.test(s) && !NEGATION.test(s)) warn(rel, `${label}: "${s.slice(0, 90)}…"`);
+    }
+  }
+  // …and the ones that fail the build, on the finer grain of pancakeUnits().
+  for (const u of pancakeUnits(body, fm)) {
+    for (const [re, label, level] of PANCAKE_CLAIMS) {
+      if (level === "error" && re.test(u) && !NEGATION.test(u)) err(rel, `${label}: "${u.slice(0, 90)}…"`);
     }
   }
 }

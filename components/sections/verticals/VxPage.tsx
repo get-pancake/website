@@ -54,7 +54,7 @@ export function VxPage({ v }: { v: VerticalConfig }) {
       <VxFaq v={v} />
       <VxRelated v={v} />
       <LpCta title={v.cta.title} body={VX_CTA_BODY} />
-      <LpPricing checklist={VX_PRICING_MODE === "truthful" ? VX_PRICING_CHECKLIST(v.slug) : undefined} />
+      <LpPricing checklist={VX_PRICING_MODE === "truthful" ? VX_PRICING_CHECKLIST : undefined} />
       <LpFooter />
     </main>
   );

@@ -44,6 +44,12 @@ Refinements (copy, perf, polish) come later. Don't pre-optimize.
 - Tristan explicitly confirmed these terms. Use `lib/trial.ts` for shared website disclosures; never imply the trial itself is card-free or lasts seven days.
 - Trial feature access, multi-website limits, and Gmail signup eligibility are not yet confirmed. Do not infer them from the paid plan.
 
+### AI SEO retired — September 30, 2026
+
+- **AI SEO is retired** (2026-09-30, pancake-cmo PR #1037): never present SEO articles, AI search visibility, Google/ChatGPT rankings or citations as something Pancake does.
+- **Plays are the core product.** The site description lives once, in `lib/copy.ts` `SITE_DESCRIPTION` (hero lede + every meta/JSON-LD copy). Change it only with Tristan's sign-off.
+- SEO as a topic (a blog post, SEO agencies as an industry, a competitor's SEO product) is fine.
+
 ### Project constraints
 
 - **Match Figma exactly.** Spacing, type, color, radius — pixel-perfect. Use the design system page as source of truth, never invent values.

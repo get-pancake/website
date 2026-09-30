@@ -10,7 +10,11 @@
 // close it." + the follow-up body. Founder copy pass (2026-09-03): the
 // section heading ("Pancake fills your pipeline.", was "Pancake sells it")
 // and the step 01 body ("From your website, Pancake learns…") are his words
-// verbatim — not the artboard's.
+// verbatim — not the artboard's. 2026-09-30, AI SEO retired (pancake-cmo PR
+// #1037): step 01 ends on "where to find them" (was "where to show up"), step
+// 02 talks Plays + lead approval + outreach (was "gets you found on Google and
+// ChatGPT"), and the step 02 Agents list swaps its Content / AI search rows
+// for Plays / Messages (S2_ROWS in lp-step-data.ts).
 
 import { LpStepAnim } from "./LpStepAnim";
 import type { StepVariant } from "./lp-step-timelines";
@@ -33,16 +37,16 @@ const STEPS: Step[] = [
   {
     num: "01",
     title: "Add your website.\nPancake builds your GTM brain.",
-    body: "From your website, Pancake learns who buys from you, what to say, and where to show up. Always up to date.",
+    body: "From your website, Pancake learns who buys from you, what to say, and where to find them. Always up to date.",
     variant: "s1",
     alt: "Animation: a website address is typed and researched; from the Studio Pelican node a knowledge graph blooms — purple, green, pink, orange and blue branches — then a market profile fills in: Company, Offering, Ideal clients.",
   },
   {
     num: "02",
     title: "Agents start working.",
-    body: "Pancake reaches out to the people ready to buy and gets you found on Google and ChatGPT.",
+    body: "Your Plays find the people ready to buy. You approve each one. Pancake writes to them under your name.",
     variant: "s2",
-    alt: "Animation: the Pipeline agent (24 warm leads) opens its checklist by itself and works through it — monitor buying signals, find people ready to buy, enrich every prospect, score leads for ICP fit, write outreach in your voice, follow-up automatically — each item loading, then ticked.",
+    alt: "Animation: an Agents list with Pipeline (24 warm leads), Signals (48 detected), Plays (3 active), Replies (12 received), Messages (72 sent). The Pipeline agent opens its checklist by itself and works through it: monitor buying signals, find people ready to buy, enrich every prospect, score leads for ICP fit, write outreach in your voice, follow-up automatically. Each item loads, then ticks.",
   },
   {
     num: "03",
