@@ -46,9 +46,22 @@ included) and what the fixed templates render with each config; "LI" as a
 word is a warning. Out of scope: the shared footer's link to Pancake's own
 company page (site chrome) and the homepage, /agents and the blog.
 
-Still open (spec defaults hold, flagged to the founder): one AI SEO line in
-the pricing checklist (`VX_AI_SEO_MENTION`), the truthful checklist on /for
-pages only (`VX_PRICING_MODE`), Fono eyebrows (`--vx-eyebrow-font`).
+Still open (spec defaults hold, flagged to the founder): the truthful
+checklist on /for pages only (`VX_PRICING_MODE`), Fono eyebrows
+(`--vx-eyebrow-font`).
+
+## 2026-09-30: AI SEO retired, Plays shipped
+
+AI SEO left the product (pancake-cmo PR #1037: SEO articles off for every
+workspace), and Plays became the core of Pancake v2. On /for pages:
+
+| Change | Where |
+|---|---|
+| The pricing checklist's AI SEO line ("One article a day for your site.", swapped for the Claude Code line on `seo-agencies`) is gone with its flag and slug set: every page and the hub read the same six lines, the fifth "As many Plays as you need." (the homepage checklist's line) | `VX_PRICING_CHECKLIST` (a constant now), `VxPage`, `app/for/page.tsx` |
+| The demo's app bar reads **Brain · Leads · Plays** (the v2 sidebar's order, "Agent" left out because /for pages never say "agent"), Plays current: every pane sits inside a Play | `VX_DEMO.app.nav` / `navCur`, `VxDemo` |
+| Shared FAQ "Can I read the messages before they send?": yes, read and edit any of them before it goes out (optional, never a mandatory approval) | `VX_FAQ.shared` |
+| `AI_SEO` (an error): articles, AI search / AI answers, search visibility, ChatGPT / AI citations, ranking on Google, GEO, AEO. Scanned only where Pancake describes itself (`CLAIM_PATH`: SEO title, hub line, hero, demo H2, chat reply, signals H2 and card titles / bodies, FAQ answers, CTA title; every fixed `vx-copy.ts` string), with no FAQ negation allowance. The audience fields stay out, so `seo-agencies` keeps "AI Overviews" and "I sell GEO" and web design pages keep WordPress | `validate.ts` |
+| "plays" left the "unshipped campaign features" ban | `validate.ts` `BANNED` |
 
 ## Files
 
@@ -95,7 +108,10 @@ Never edit `LpMarquee.tsx`.
    validate.ts); six signals only (Keyword, Competitor,
    Influencer, Own brand, Hiring, Stack = tools named in job posts); no email,
    phones, maps, funding, job changes, website visitors; no draft mode or
-   per-message approval; leads arrive each morning; $99/month flat; 3-day
+   per-message approval (reading and editing messages is optional); no AI
+   SEO for Pancake (articles, AI search, Google / ChatGPT rankings or
+   citations, GEO / AEO: `AI_SEO`, no negation allowance); leads arrive each
+   morning; $99/month flat; 3-day
    trial with a card (`lib/trial.ts`). `BANNED` in validate.ts is the gate;
    FAQ answers may negate ("No. …").
 2. **Tokens only** in `app/_styles/verticals/` — lp tokens + `color-mix()`.

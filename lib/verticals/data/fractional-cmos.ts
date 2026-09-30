@@ -10,7 +10,7 @@ export const fractionalCmos: VerticalConfig = {
   status: "approved",
   category: "Consultants & advisors",
   evidence: "seo-bet",
-  updated: "2026-09-22",
+  updated: "2026-09-30",
 
   name: {
     plural: "fractional CMOs",
@@ -150,7 +150,7 @@ export const fractionalCmos: VerticalConfig = {
     },
     {
       q: "Will the messages sound like me?",
-      a: "Each message is written for that lead in the voice saved in your Brain, and you can edit that voice.",
+      a: "Yes. Each message is written for that lead in the voice saved in your Brain. Read and edit any of them before it goes out.",
     },
     {
       q: "Will other marketers who like my posts become leads?",

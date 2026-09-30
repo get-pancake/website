@@ -8,8 +8,8 @@
 // scripts/verticals-budget.mjs measures its strings with the demo's pixel budgets ("homepage").
 //
 // Story: Studio Pelican, the homepage's own fictional customer (LpSteps types studio-pelican.com
-// and its Brain reads "SaaS launch videos" for "B2B SaaS teams"; LpFeatures' AI answer recommends
-// it), so the page reads as one company from the demo to the features. One workspace per demo
+// and its Brain reads "SaaS launch videos" for "B2B SaaS teams"; LpFeatures' Plays card targets its
+// buyers), so the page reads as one company from the demo to the features. One workspace per demo
 // (the rail, "Sends as", Slack), so three prompts from one business, three different signals:
 // people posting about a launch (Keyword), people engaging with rival studios (Competitor),
 // companies hiring for the launch team (Hiring). US targets only (outreach is in English).

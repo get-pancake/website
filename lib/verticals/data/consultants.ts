@@ -10,7 +10,7 @@ export const consultants: VerticalConfig = {
   status: "approved",
   category: "Consultants & advisors",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-09-30",
 
   name: {
     plural: "consultants",
@@ -148,7 +148,7 @@ export const consultants: VerticalConfig = {
     },
     {
       q: "Won’t outreach hurt a reputation built on referrals?",
-      a: "Not when it reads like a peer. Each message is short, in your Brain voice, and never a pitch. Nobody hears from you until you approve them.",
+      a: "Not when it reads like a peer. Each message is short, in your Brain voice, and never a pitch. You approve every lead before anyone is contacted.",
     },
     {
       q: "Can it stick to my niche?",

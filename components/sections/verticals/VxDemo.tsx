@@ -11,7 +11,8 @@
 // vertical's PlayerModel crosses the client boundary.
 //
 // Fidelity: every surface copies the live app (appref APP-UI-REFERENCE, 2026-09-22):
-// Outbound · AI SEO · Brain tablist with the pink-pale indicator, the floating rail with
+// Brain · Leads · Plays tablist (three of the v2 sidebar's destinations, since 2026-09-30; Plays
+// current, VX_DEMO.app.navCur) with the pink-pale indicator, the floating rail with
 // the blue-pale active item, the Signals page cards, the docked Ask Pancake panel (user
 // bubble, tool row, answer card, pale-pink proposal card), the header-less leads table,
 // the lead sheet, the campaign journey and the Slack "New lead from Pancake" post.
@@ -68,7 +69,7 @@ function AppBar() {
         <span className="vx-app__home" data-ico="house" />
         <span className="vx-app__nav">
           {A.nav.map((l, i) => (
-            <span key={l} className={i === 0 ? "is-cur" : undefined}>
+            <span key={l} className={i === A.navCur ? "is-cur" : undefined}>
               {l}
             </span>
           ))}
