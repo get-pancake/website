@@ -9,6 +9,14 @@ import { Badge } from "@/components/ui/Badge";
 import { H2, H3 } from "@/components/ui/Headings";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 
+// Two different dates, kept apart on purpose:
+// - PAGE_MODIFIED: when Pancake's side of these pages last changed (JSON-LD dateModified).
+//   2026-09-30: AI SEO retired from the product; the copy now describes Plays.
+// - FACTS_REVIEWED: when the competitor facts (features, prices) were last checked.
+//   Shown under Sources. Move it only after re-checking every competitor's public pages.
+const PAGE_MODIFIED = "2026-09-30";
+const FACTS_REVIEWED = "August 27, 2026";
+
 export type ComparisonCellData = { text: string; mark?: "yes" | "no" };
 export type ComparisonRow = {
   feature: string;
@@ -62,7 +70,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
     name: `${config.competitor} vs Pancake`,
     url: canonicalUrl,
     description: config.heroSummary,
-    dateModified: "2026-08-27",
+    dateModified: PAGE_MODIFIED,
     isPartOf: { "@type": "WebSite", name: "Pancake", url: SITE_ORIGIN },
     author: { "@type": "Person", name: "François de Fitte" },
     about: [
@@ -241,7 +249,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
           <p className="vvp-related">
             Sources: {config.sources.map((source, index) => (
               <span key={source.href}>{index > 0 ? ", " : ""}<a href={source.href} target="_blank" rel="noopener noreferrer" className="underline">{source.label}</a></span>
-            ))}. Reviewed August 27, 2026.
+            ))}. Reviewed {FACTS_REVIEWED}.
           </p>
         </div>
       </section>
