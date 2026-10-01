@@ -16,7 +16,7 @@ import {
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
-test("with no variable set, the site, app, ingest and PostHog are on pancake.ai", () => {
+test("with no variable set, the site, app, ingest, PostHog and LeadJourney are on pancake.ai", () => {
   const config = resolveSiteConfig({});
   assert.deepEqual(
     {
@@ -32,7 +32,7 @@ test("with no variable set, the site, app, ingest and PostHog are on pancake.ai"
       app: "https://app.pancake.ai",
       analyticsIngest: "https://beta-api.pancake.ai",
       posthog: "https://e.pancake.ai",
-      leadJourney: "https://t.getpancake.ai",
+      leadJourney: "https://t.pancake.ai",
       squads: "https://squads.getpancake.ai",
     },
   );
@@ -40,12 +40,13 @@ test("with no variable set, the site, app, ingest and PostHog are on pancake.ai"
   assert.equal(resolveSiteConfig({ NEXT_PUBLIC_SITE_ORIGIN: "  " }).siteOrigin, DEFAULT_ORIGINS.site);
 });
 
-test("the getpancake.ai values roll the site, app, ingest and PostHog back", () => {
+test("the getpancake.ai values roll the site, app, ingest, PostHog and LeadJourney back", () => {
   const config = resolveSiteConfig({
     NEXT_PUBLIC_SITE_ORIGIN: "https://getpancake.ai/",
     NEXT_PUBLIC_APP_ORIGIN: " https://app.getpancake.ai ",
     NEXT_PUBLIC_ANALYTICS_INGEST_ORIGIN: "https://beta-api.getpancake.ai",
     NEXT_PUBLIC_POSTHOG_ORIGIN: "https://e.getpancake.ai",
+    NEXT_PUBLIC_LEADJOURNEY_ORIGIN: "https://t.getpancake.ai",
   });
   assert.equal(config.siteOrigin, "https://getpancake.ai");
   assert.equal(config.siteHost, "getpancake.ai");
