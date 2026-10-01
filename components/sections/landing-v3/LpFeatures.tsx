@@ -10,8 +10,9 @@ import type { FeatVariant } from "@/components/sections/landing-v3/lp-feat-timel
  * 2026-09-03 (founder: no video downloads, vector-based), the same markup,
  * geometry and choreography as the pancake-studio compositions that used to
  * be served as mp4s (LpFeatMocks.tsx, features.css, lp-feat-timelines.ts).
- * LpFeatAnim plays each once when its card comes into view and holds the
- * designer's picture as the last frame.
+ * LpFeatAnim plays each once as its card arrives (lp-play-once.ts) and holds
+ * the designer's picture as the last frame — which is also what the markup
+ * shows before and without the animation.
  */
 
 function FeatureText({ title, body }: { title: string; body: string }) {

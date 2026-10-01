@@ -320,10 +320,16 @@ export function LpBottleneck() {
     // Two observers: a wide one to PRELOAD (import + JSON + pre-rendered
     // still) a viewport ahead, and a tight one to PLAY only once ≥35% of the
     // card is really on screen — so the pour's opening frames are seen.
+    // The poster stays loading="lazy" for startup bytes, but a viewport out
+    // it loads now: WebKit's lazy-load margin is smaller than Chromium's, and
+    // a fast scroll would meet the card before its bottle (2026-09-30).
+    const poster = holder.querySelector<HTMLImageElement>(".lp-banner__poster img");
     const io = new IntersectionObserver(
       (entries) => {
         onStage = entries.some((e) => e.isIntersecting);
-        if (onStage) boot();
+        if (!onStage) return;
+        if (poster && poster.loading !== "eager") poster.loading = "eager";
+        boot();
       },
       { rootMargin: "100% 0%" },
     );

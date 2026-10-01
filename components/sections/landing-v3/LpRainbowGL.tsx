@@ -105,6 +105,11 @@ const MAX_SAMPLES = 2048;
 const CHORD = 8; // user units per flattened segment (sub-0.02px sagitta here)
 const MIN_FRAME_MS = 14; // ≤ 60 draws/s (a 16.7ms period never skips; 8.3ms draws every other tick)
 const SHRINK_DELAY_MS = 1000; // off-stage grace before the drawing buffer is released
+// Desktop: one frame is drawn this far ahead of the loop's margin, so a fast
+// scroll never meets the art's section before its first frame (2026-09-30:
+// pricing showed its black band, title unreadable, for two frames). Phones
+// already run the loop from 75 %.
+const WARM_MARGIN = "100% 0%";
 const ANNULUS_SEGMENTS = 180; // inner edge of the colour pass (chord error 0.4px at r 1200, under the next ring)
 const GOVERNOR_WINDOW_MS = 2000;
 const GOVERNOR_MIN_FRAMES = 24; // < 12 fps sustained …
@@ -475,6 +480,7 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
     let dpr = 1;
     let raf = 0;
     let near = false; // within the observer margin → the loop runs
+    let warm = false; // one frame requested ahead of that margin (desktop)
     let live = false; // [data-lp-gl] is on: the canvas is the render
     let disposed = false;
     let lost = false;
@@ -706,25 +712,30 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
 
     const frame = () => {
       raf = 0;
-      if (disposed || lost || off || !near || document.hidden || !gl) return;
+      // ahead = the single frame drawn before the loop's margin: the static
+      // pose (cycle 0, pop done), exactly what the loop's first frame draws
+      const ahead = !near;
+      if (disposed || lost || off || (ahead && !warm) || document.hidden || !gl) return;
       if (!rings.length && !build()) {
         raf = requestAnimationFrame(frame); // LpFitVars not there yet — retry
         return;
       }
       const now = performance.now();
       // ≤ 60 draws/s (see header, 2); the phase clock keeps running
-      if (lastDraw && now - lastDraw < MIN_FRAME_MS) {
+      if (!ahead && lastDraw && now - lastDraw < MIN_FRAME_MS) {
         raf = requestAnimationFrame(frame);
         return;
       }
-      if (!t0) t0 = now;
-      if (!bootAt) bootAt = now;
+      if (!ahead) {
+        if (!t0) t0 = now;
+        if (!bootAt) bootAt = now;
+      }
       // test hook: freeze the clock at a cycle fraction (gates only);
       // designed delays still apply, so hook 0 == the static artboard incl.
       // the CTA-left ±131.4° de-mirror
       const hook = (window as unknown as { __lpArcPhase?: number }).__lpArcPhase;
-      const elapsed = typeof hook === "number" ? hook * LOOP_MS : now - t0;
-      const popP = typeof hook === "number" ? 1 : Math.min(1, (now - popT0) / POP_MS);
+      const elapsed = typeof hook === "number" ? hook * LOOP_MS : ahead ? 0 : now - t0;
+      const popP = typeof hook === "number" || ahead ? 1 : Math.min(1, (now - popT0) / POP_MS);
 
       gl.stencilMask(0xff);
       gl.clearColor(0, 0, 0, 0);
@@ -781,6 +792,10 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
         live = true;
         art.setAttribute("data-lp-gl", ""); // first frame drew — swap
       }
+      if (ahead) {
+        warm = false; // drawn ahead; the loop waits for its own margin
+        return;
+      }
       // governor (see header, 5): a loop that cannot keep 12 fps for two
       // consecutive windows means the GPU (or its readback) is the
       // bottleneck — every art goes static for the session
@@ -809,6 +824,12 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
     };
 
     const start = () => {
+      if (warm && raf) {
+        // a frame-ahead request is superseded by the loop itself
+        cancelAnimationFrame(raf);
+        raf = 0;
+        warm = false;
+      }
       if (raf || disposed || lost || off) return;
       if (reduced.matches || !near || document.hidden) return;
       if (!gl && !initGL()) {
@@ -830,7 +851,45 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
     const stop = () => {
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
+      warm = false;
     };
+    // Desktop, within a viewport of the art: create the context and draw the
+    // static pose once, so the canvas is the render before the section shows.
+    // No boot pop for an art drawn unseen (it would replay on the loop's
+    // first frames); the buffer is released like the loop's, off stage.
+    const warmUp = () => {
+      if (phone || near || raf || disposed || lost || off) return;
+      if (reduced.matches || document.hidden) return;
+      if (live && canvas.width !== 1) return; // it already holds its frame
+      if (!gl && !initGL()) {
+        declareOff();
+        return;
+      }
+      if (live) rings = []; // the buffer was released off stage: rebuild
+      if (!popT0) popT0 = performance.now() - POP_MS;
+      warm = true;
+      raf = requestAnimationFrame(frame);
+    };
+    const warmIo = phone
+      ? null
+      : new IntersectionObserver(
+          (entries) => {
+            if (entries.some((e) => e.isIntersecting)) {
+              warmUp();
+              return;
+            }
+            if (near) return;
+            clearTimeout(shrinkTimer);
+            shrinkTimer = window.setTimeout(() => {
+              if (near || disposed) return;
+              if (gl && live && canvas.width !== 1) {
+                canvas.width = 1;
+                canvas.height = 1;
+              }
+            }, SHRINK_DELAY_MS);
+          },
+          { rootMargin: WARM_MARGIN },
+        );
     const restoreDom = () => {
       stop();
       live = false;
@@ -926,11 +985,13 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       c.addEventListener("webglcontextlost", onLost);
       c.addEventListener("webglcontextrestored", onRestored);
       io.observe(c);
+      warmIo?.observe(c);
     };
     const unlisten = (c: HTMLCanvasElement) => {
       c.removeEventListener("webglcontextlost", onLost);
       c.removeEventListener("webglcontextrestored", onRestored);
       io.unobserve(c);
+      warmIo?.unobserve(c);
     };
     const scheduleRecover = () => {
       clearTimeout(recoverTimer);
@@ -1010,6 +1071,7 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       clearTimeout(shrinkTimer);
       clearTimeout(recoverTimer);
       io.disconnect();
+      warmIo?.disconnect();
       ro.disconnect();
       dprMq.removeEventListener("change", onDpr);
       reduced.removeEventListener("change", onMedia);

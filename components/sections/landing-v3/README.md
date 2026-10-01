@@ -113,9 +113,9 @@ back during a fidelity pass:
   them (all three done 2026-09-02), and since 2026-09-07 they animate IN PLACE
   as DOM + CSS + GSAP — the same treatment as the feature cards below (founder:
   "faire de même avec les trois premiers", "réplique parfaitement les
-  animations"). `LpStepAnim.tsx` drives them with the contract the mp4s had
-  (plays once at 60 % in view, pauses off-screen, holds the last frame =
-  the brain / the Agents view / the filled week, reduced motion = that frame);
+  animations"). `LpStepAnim.tsx` drives them through `lp-play-once.ts` (see
+  "Playback" below; plays once, holds the last frame = the brain / the Agents
+  view / the filled week, reduced motion = that frame);
   `LpStepMocks.tsx` is the mocks' markup, `steps.css` (bottom) their geometry,
   `lp-step-timelines.ts` the three timelines ported tween for tween from the
   pancake-studio compositions (`shorts/brain-research-loop`,
@@ -130,6 +130,27 @@ back during a fidelity pass:
   compare with the composition renders; s2's time is the 11.2 s master's).
   The storyboard mp4s + posters and `LpLoopVideo.tsx` are gone; the SVG
   illustrations (`/public/how/step-*.svg`) stay as the designer's stills.
+- Playback (2026-09-30, founder: "les motions apparaissent de manière molle…
+  quand tu scrolles rapidement tu fais face à beaucoup de vides"):
+  `lp-play-once.ts` drives the feature and step cards. Prepared a viewport
+  ahead (code fetched, timeline built once the content-visibility section
+  renders, one build per frame); switched, unseen, 15 % of a viewport below
+  the fold to its FIRST SCENE (each builder's `cue`: a composed frame, never
+  empty); played once its top crosses 60 % of the viewport height, or after
+  1 s with half of it on screen when scrolling stopped (founder: "tu
+  commences les animations trop vite quand mon écran n'est pas focus
+  dessus"); the picture instead of a build-up when the visitor flies past
+  (> 2.5 px/ms, or a jump of half a viewport); fast-forwarded to the picture
+  (~0.35 s) when the card leaves through the top unfinished; finished once
+  it is gone after playing; never rewound while on screen. The build-ups
+  were tightened at the same time (same beats and pictures, 30–40 % shorter:
+  f5 9.8 → 6.6 s, f1 8.6 → 5.9, f2 11.9 → 7.3, f4 7.45 → 5.2, s1 9.2 → 6.5,
+  s2 11.2 → 8.9, s3 7.0 → 4.7). Measured with a scroll screencast (1440 and
+  390 wide, 1000 px/s, flick, down-then-up): no card is ever empty on screen
+  (production before: f5 100 %, f4 49–100 % of its time in view). The WebGL
+  arts (CTA, pricing) draw one frame a viewport ahead on desktop
+  (LpRainbowGL WARM_MARGIN) so a fast scroll no longer meets the pricing
+  section's black band; the banner poster loads eagerly a viewport out.
 - Logo strip scrolls (seamless 1424px-period tile
   `lp-logo-strip-tile.png`, ~34 px/s leftward, blend moved to the track).
 - Testimonials ("Take it from them", Figma 4257:5006): removed from the
@@ -137,10 +158,11 @@ back during a fidelity pass:
   from the AI-org pitch). The CTA band now sits directly above pricing.
 - "How Pancake finds customers": the four mock UIs are IN-PAGE animations
   (DOM + CSS + GSAP) since 2026-09-03 — founder: no 500 KB–1 MB video
-  downloads, vector-crisp at every DPR. `LpFeatAnim.tsx` drives them with the
-  contract the mp4s had (plays once at 60 % in view, pauses off-screen, holds
-  the last frame = the designer's picture, reduced motion = that picture,
-  stage hidden until armed so hydration never flashes the end state);
+  downloads, vector-crisp at every DPR. `LpFeatAnim.tsx` drives them through
+  `lp-play-once.ts` (see "Playback" below; plays once, holds the last frame =
+  the designer's picture, reduced motion = that picture). The markup rests
+  on that picture (2026-09-30), so a card is never blank — before the code
+  arrives, without JS, or if a build throws; each builder sets its own frame 0;
   `LpFeatMocks.tsx` is the mocks' markup, `features.css` their Figma-exact
   geometry, `lp-feat-timelines.ts` the timelines (f1, f2, f4
   ported tween for tween from the pancake-studio compositions

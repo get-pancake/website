@@ -134,18 +134,30 @@
   pointer-events: none;
   position: absolute;
   top: 0;
-  transform: scale(var(--lp-fit, tan(atan2(100cqw, 560px))));
+  /* ≥1341 the zone is the fixed 560 box: the pre-hydration value is exactly 1 */
+  transform: scale(var(--lp-fit, 1));
   transform-origin: 0 0;
   user-select: none;
   -webkit-user-select: none;
-  /* hidden until LpFeatAnim has armed the timeline at frame 0 (cream only —
-     what the video's first-frame poster showed); "static" = the rest-state
-     picture as a still */
-  visibility: hidden;
+  /* visible from the server render: the markup IS each card's end picture
+     (2026-09-30, never a blank card); the timeline rewinds it to its first
+     frame only while the card is off screen (lp-play-once.ts) */
   width: 560px;
 }
-.lp-feat-mockzone[data-lp-anim] > .lp-feat-stage {
-  visibility: visible;
+/* ≤1340 the zone is fluid, and iOS WebKit mis-resolves container units inside
+   trig (the LpFitVars diagnosis; steps.css measured 1.196 for 0.802), so the
+   picture would paint blown up until hydration: the stage waits for
+   LpFeatAnim's measurement (data-lp-fit, written with --lp-fit in the same
+   frame); the trig quotient stays the value fallback for engines that get it
+   right. */
+@media (max-width: 1340px) {
+  .lp-feat-stage {
+    transform: scale(var(--lp-fit, tan(atan2(100cqw, 560px))));
+    visibility: hidden;
+  }
+  .lp-feat-mockzone[data-lp-fit] > .lp-feat-stage {
+    visibility: visible;
+  }
 }
 /* the kit's `* { font-family }` (style.css) outranks inheritance — every
    mock element states its face; the per-element rules below override */
@@ -278,7 +290,8 @@
   width: 32px;
 }
 .lp-f1-knob {
-  /* on → x +12.8 (left 14.4), by the timeline */
+  /* on → x +12.8 (left 14.4): the picture's switched-on rows (--on) rest
+     there, and the timeline slides them over from the left */
   background: var(--lp-ink-0);
   border-radius: 50%;
   display: block;
@@ -287,6 +300,17 @@
   position: absolute;
   top: 1.6px;
   width: 16px;
+}
+/* the picture: four signals switched on, "Companies hiring" highlighted
+   (the timeline starts them off — lp-feat-timelines.ts buildF1 frame 0) */
+.lp-f1-row--on .lp-f1-toggle {
+  background: #037d48;
+}
+.lp-f1-row--on .lp-f1-knob {
+  transform: translateX(12.8px);
+}
+.lp-f1-row--hl {
+  background-color: rgba(44, 0, 42, 0.05);
 }
 .lp-f1-chev {
   flex: none;
@@ -403,23 +427,25 @@
   position: relative;
   width: 19.2px;
 }
-/* the empty outline under a check: visible until its check lands, then
-   opacity 0 = the artboard */
+/* the empty outline under a check: the timeline shows it until its check
+   lands; at rest (the picture) the check covers it, opacity 0 = the artboard */
 .lp-f1-checkwrap .lp-f1-checkbox-off {
   inset: 0;
+  opacity: 0;
   position: absolute;
 }
 .lp-f1-checkwrap .lp-f1-checkimg {
   position: relative;
 }
 /* Figma annotation: bubble img + text share one box (75.63×42.85 at left
-   −48, top 45.6), rotated −13.36° about the shared center by the timeline */
+   −48, top 45.6), rotated −13.36° about the shared center — at rest (the
+   picture); the timeline lands it last */
 .lp-f1-sticker {
   height: 42.85px;
   left: -48px;
-  opacity: 0;
   position: absolute;
   top: 45.6px;
+  transform: rotate(-13.36deg);
   width: 75.63px;
 }
 .lp-f1-sticker-bg {
@@ -488,7 +514,6 @@
   box-shadow: inset 0 0 0 0.9px #e8e6e3;
   height: 196.4px;
   left: 19.46px;
-  opacity: 0;
   position: absolute;
   top: 0;
   width: 363.6px;
@@ -505,13 +530,6 @@
   top: 0;
   width: 364px;
 }
-#lpf2-pi-globe,
-#lpf2-pi-like,
-#lpf2-pi-comment,
-#lpf2-pi-repost,
-#lpf2-pi-send {
-  opacity: 0;
-}
 /* the platform's reaction bubbles stay in the baked art (lp-feat-art.ts is
    generated) but never paint — the site doesn't show Pancake reacting */
 #lpf2-pi-bubbleLike,
@@ -522,7 +540,6 @@
   border-radius: 50%;
   height: 43.2px;
   left: 14.4px;
-  opacity: 0;
   position: absolute;
   top: 14.6px;
   width: 43.2px;
@@ -535,9 +552,6 @@
   position: absolute;
   top: 14.4px;
   white-space: nowrap;
-}
-.lp-f2-meta p {
-  opacity: 0;
 }
 .lp-f2-name {
   color: #191919;
@@ -595,7 +609,6 @@
   border-radius: 2.7px;
   display: block;
   height: 14.4px;
-  opacity: 0;
   overflow: hidden;
   position: relative;
 }
@@ -605,6 +618,9 @@
   left: 0;
   position: absolute;
   top: 0;
+  /* at rest the sheen has passed (the timeline sweeps it once): out of every
+     bar (≤136.8 wide), clipped by the bar */
+  transform: translateX(310.5px);
   width: 90px;
 }
 .lp-f2-count {
@@ -613,7 +629,6 @@
   font-weight: 700;
   font-variant-numeric: tabular-nums; /* ticking count */
   line-height: 13px;
-  opacity: 0;
   position: absolute;
   top: 168.31px;
 }
@@ -625,6 +640,7 @@
   white-space: nowrap;
 }
 .lp-f2-count .lp-f2-n--final {
+  opacity: 1; /* the picture: the timeline hides it until its tick */
   position: static; /* the site's own number is the in-flow text; earlier states stack over it */
 }
 .lp-f2-count .lp-f2-n--zero {
@@ -636,7 +652,6 @@
 .lp-f2-draftgrp {
   height: 247.685px;
   left: 0;
-  opacity: 0;
   position: absolute;
   top: 213.8px;
   width: 405px;
@@ -677,7 +692,6 @@
 }
 .lp-f2-eyebrow-sent {
   display: inline-block;
-  opacity: 0;
 }
 .lp-f2-eyebrow-draft {
   color: var(--lp-yellow-40);
@@ -685,10 +699,6 @@
   opacity: 0;
   position: absolute;
   top: 0;
-}
-/* the static fallback (build failure) shows the rest picture: sent */
-.lp-feat-mockzone[data-lp-anim="static"] .lp-f2-eyebrow-sent {
-  opacity: 1;
 }
 .lp-f2-msg {
   color: var(--lp-ink-100);
