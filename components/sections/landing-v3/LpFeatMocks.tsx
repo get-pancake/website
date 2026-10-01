@@ -8,17 +8,31 @@ import type { FeatVariant } from "./lp-feat-timelines";
  * as DOM (Figma-exact geometry in features.css), the same markup the
  * pancake-studio compositions animate (shorts/feat-*-anim). f5, the Plays
  * card (2026-09-30), has no studio source: it is the app's Play UI at 0.9
- * scale, built here. Rest state = the artboard (for f5, the end picture);
- * every animation-only layer (typed runs, counters, stickers)
- * is invisible at rest and filled/driven by lp-feat-timelines.ts. Purely
+ * scale, built here. Rest state = the END picture of every card (since
+ * 2026-09-30: toggles on, checks landed, the post and the sent draft in place),
+ * so the server render is never blank; every animation-only layer (typing
+ * carets, earlier counter digits, the composer, DRAFT READY) is invisible at
+ * rest, and each builder in lp-feat-timelines.ts sets its first frame. Purely
  * decorative — the host carries the alt text (LpFeatAnim.tsx).
  */
 
 /* ── f1 · Signals + Roles ── */
 
-function SignalRow({ label, children }: { label: string; children: React.ReactNode }) {
+function SignalRow({
+  label,
+  on,
+  highlight,
+  children,
+}: {
+  label: string;
+  /** switched on in the picture (the timeline flips it) */
+  on?: boolean;
+  /** the row Figma keeps highlighted */
+  highlight?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <div className="lp-f1-row">
+    <div className={`lp-f1-row${on ? " lp-f1-row--on" : ""}${highlight ? " lp-f1-row--hl" : ""}`}>
       {children}
       <p className="lp-f1-label">{label}</p>
       <span className="lp-f1-toggle">
@@ -78,11 +92,11 @@ function F1Stage() {
               <span className="lp-f1-cnt-alt">3</span>
             </p>
           </div>
-          <SignalRow label="Keyword mentions">
+          <SignalRow label="Keyword mentions" on>
             <DocTile tone="pink" />
             <img className="lp-f1-avatar" src="/lp/lp-f1-avatar-purple.svg" alt="" width={38} height={38} loading="lazy" decoding="async" />
           </SignalRow>
-          <SignalRow label="Competitor engagement">
+          <SignalRow label="Competitor engagement" on>
             <span className="lp-f1-tile lp-f1-tile--amber">
               <span className="lp-f1-chart">
                 <i className="lp-f1-bar1" />
@@ -97,13 +111,13 @@ function F1Stage() {
           <SignalRow label="Industry expert engagement">
             <img className="lp-f1-icon32" src="/lp/lp-f1-avatar-green.svg" alt="" width={32} height={32} loading="lazy" decoding="async" />
           </SignalRow>
-          <SignalRow label="Companies hiring">
+          <SignalRow label="Companies hiring" on highlight>
             <DocTile tone="blue" blue />
           </SignalRow>
           <SignalRow label="Your brand engagement">
             <DocTile tone="cream" />
           </SignalRow>
-          <SignalRow label="Technologies used">
+          <SignalRow label="Technologies used" on>
             <DocTile tone="pink" />
           </SignalRow>
         </div>
@@ -183,10 +197,11 @@ function F2Stage() {
               <Skel w="136.8px" />
             </span>
           </div>
-          <span className="lp-f2-count" style={{ left: "32.4px" }} />
-          <span className="lp-f2-count" style={{ left: "79.8px" }} />
-          <span className="lp-f2-count" style={{ left: "119.2px" }} />
-          <span className="lp-f2-count" style={{ left: "158.6px" }} />
+          {/* the final counts are the in-flow text; the timeline stacks the ticking digits over them */}
+          <span className="lp-f2-count" style={{ left: "32.4px" }}><span className="lp-f2-n lp-f2-n--final">33</span></span>
+          <span className="lp-f2-count" style={{ left: "79.8px" }}><span className="lp-f2-n lp-f2-n--final">5</span></span>
+          <span className="lp-f2-count" style={{ left: "119.2px" }}><span className="lp-f2-n lp-f2-n--final">5</span></span>
+          <span className="lp-f2-count" style={{ left: "158.6px" }}><span className="lp-f2-n lp-f2-n--final">5</span></span>
         </div>
 
         {/* the draft card in its rainbow ring (see lp-feat-art.ts for the ring's construction) */}

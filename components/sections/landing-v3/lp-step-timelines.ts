@@ -42,9 +42,10 @@ function measureRightEdges(el: HTMLElement): number[] {
  * the choreography of pancake-studio shorts/brain-research-loop,
  * pipeline-checklist-loop and meetings-calendar-loop (the compositions the
  * mp4s were rendered from), ported tween for tween onto the same markup and
- * CSS (LpStepMocks.tsx / steps.css). Each timeline is built paused on its
- * stage root when the card first touches the viewport; LpStepAnim.tsx owns
- * playback (60 % in view → play once → hold the last frame). Every builder is
+ * CSS (LpStepMocks.tsx / steps.css), paced tighter on 2026-09-30 (see each
+ * builder's "Pace" note). Each timeline is built paused on its stage root a
+ * viewport ahead of the card; lp-play-once.ts owns playback (as the card
+ * arrives → play once → hold the last frame). Every builder is
  * seek-safe: sets and tweens only, no callbacks, no randomness. Frame 0 of
  * every timeline equals the markup's rest state (the poster the video had).
  */
@@ -161,27 +162,26 @@ function buildS1(root: HTMLElement): BuiltStep {
   tl.set(clabel, { opacity: 0, y: 0 }, 0);
   tl.set(ui, { opacity: 1 }, 0);
 
-  /* — 1 · empty state, one caret blink (0 – 0.55 s) — */
-  tl.set(caret, { opacity: 0 }, 0.15);
-  tl.set(caret, { opacity: 1 }, 0.4);
+  /* Pace (2026-09-30, founder: "tout plus dynamique"): the same beats, no
+     idle caret blinks, 30 ms a key (was 45), each later beat closer — the
+     brain pops at ~1.6 s (was 2.43), the held brain returns at ~6.2 s (was
+     ~8.5). */
 
-  /* — 2 · typing "studio-pelican.com" (0.55 – ~1.45 s; 45 ms a key, half the old jitter) — */
-  let t = 0.55;
+  /* — 1 · typing "studio-pelican.com" from 0.2 s (30 ms a key, a third of the old jitter) — */
+  let t = 0.2;
   typedEdges.forEach((acc, i) => {
-    t += 0.045 + (S1_JIT[i] ?? 0) / 2;
+    t += 0.03 + (S1_JIT[i] ?? 0) / 3;
     const right = Math.max(0, typedWidth - acc);
     tl.set(typed, { clipPath: "inset(0 " + right.toFixed(3) + "px 0 0)" }, t);
     tl.set(caret, { x: +acc.toFixed(3) }, t);
     if (i === 0) tl.set(ph, { opacity: 0 }, t);
   });
   const tTyped = t;
-  tl.set(caret, { opacity: 0 }, tTyped + 0.2);
-  tl.set(caret, { opacity: 1 }, tTyped + 0.4);
 
-  /* — 3 · pointer eases in from lower right and clicks (~1.55 – 2.3 s) — */
-  const tPtr = tTyped + 0.1;
-  const tC = tPtr + 0.5;
-  tl.to(cursor, { x: 0, y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, tPtr);
+  /* — 3 · pointer eases in from lower right and clicks (~0.85 – 1.3 s) — */
+  const tPtr = tTyped + 0.05;
+  const tC = tPtr + 0.35;
+  tl.to(cursor, { x: 0, y: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, tPtr);
   tl.to(cursor, { scale: 0.88, duration: 0.08, ease: "power2.in" }, tC);
   tl.to(cursor, { scale: 1, duration: 0.26, ease: "back.out(1.6)" }, tC + 0.08);
   tl.to(btn, { scale: 0.94, duration: 0.09, ease: "power2.in" }, tC);
@@ -195,28 +195,28 @@ function buildS1(root: HTMLElement): BuiltStep {
     tC + 0.02,
   );
 
-  /* — 4 · input + button dissolve, the brain node pops (~2.4 s), the graph blooms (to ~4.8 s) — */
-  const tB = tC + 0.4;
+  /* — 4 · input + button dissolve, the brain node pops (~1.6 s), the graph blooms (to ~3 s) — */
+  const tB = tC + 0.3;
   tl.to(ui, { opacity: 0, duration: 0.28, ease: "power2.in" }, tC + 0.25);
   tl.fromTo(center, { scale: 0 }, { scale: 1, duration: 0.7, ease: "elastic.out(1, 0.5)" }, tB);
   tl.fromTo(clabel, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, tB + 0.2);
 
   S1_HUBS.forEach((h, i) => {
-    const t0 = tB + 0.25 + i * 0.12;
+    const t0 = tB + 0.2 + i * 0.1;
     tl.to(hubEdges[i], { strokeDashoffset: 0, duration: 0.42, ease: "power2.inOut" }, t0);
     tl.fromTo(hubDots[i], { scale: 0 }, { scale: 1, duration: 0.6, ease: "elastic.out(1, 0.5)" }, t0 + 0.29);
     const nMain = h.leaves.length;
-    const base = tB + 0.75 + i * 0.135;
+    const base = tB + 0.55 + i * 0.11;
     leafEdges[i].forEach((e, k) => {
-      const tk = k < nMain ? base + k * 0.075 : base + nMain * 0.075 + (k - nMain) * 0.07;
+      const tk = k < nMain ? base + k * 0.06 : base + nMain * 0.06 + (k - nMain) * 0.055;
       if (e) tl.to(e, { strokeDashoffset: 0, duration: 0.29, ease: "power1.inOut" }, tk);
       const d = leafDots[i][k];
       if (d) tl.fromTo(d, { scale: 0 }, { scale: 1, duration: 0.45, ease: "elastic.out(1, 0.5)" }, tk + 0.12);
     });
   });
 
-  /* — 5 · the graph glides left + shrinks; all but the blue cluster soften; panel fades in (~4.6 – 6.1 s) — */
-  const tG = tB + 2.15;
+  /* — 5 · the graph glides left + shrinks; all but the blue cluster soften; panel fades in (~3.2 – 4.4 s) — */
+  const tG = tB + 1.6;
   tl.to(graph, { x: -130.5, y: 42.08, scale: 0.55, duration: 0.75, ease: "power3.inOut" }, tG);
   tl.to(clabel, { opacity: 0, duration: 0.26, ease: "power2.in" }, tG);
   tl.to([center, ...softDots], { opacity: 0.45, duration: 0.6, ease: "power2.inOut" }, tG + 0.08);
@@ -237,12 +237,12 @@ function buildS1(root: HTMLElement): BuiltStep {
     tG + 0.68,
   );
 
-  /* — 6 · "5 insights": the rows resolve one by one (~6.1 – 7.7 s) — */
-  const tR = tG + 1.5;
+  /* — 6 · "5 insights": the rows resolve one by one (~4.4 – 5.6 s) — */
+  const tR = tG + 1.2;
   tl.to(subA, { opacity: 0, y: -6, duration: 0.15, ease: "power2.in" }, tR);
   tl.fromTo(subB, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out" }, tR + 0.09);
   rows.forEach((r, i) => {
-    const tr = tR + 0.08 + i * 0.165;
+    const tr = tR + 0.08 + i * 0.14;
     tl.to(srows[i], { opacity: 0, duration: 0.17, ease: "power2.in" }, tr);
     tl.fromTo(r, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" }, tr + 0.06);
     tl.fromTo(
@@ -253,14 +253,14 @@ function buildS1(root: HTMLElement): BuiltStep {
     );
   });
 
-  /* — 7 · back to the company brain, held as the last image (~7.7 – 9.2 s) — */
-  const tX = tR + 1.65;
+  /* — 7 · back to the company brain, held as the last image (~5.7 – 6.7 s) — */
+  const tX = tR + 1.3;
   tl.to(panel, { x: 300, opacity: 0, duration: 0.3, ease: "power2.in" }, tX);
   tl.to(graph, { x: 0, y: 0, scale: 1, duration: 0.68, ease: "power3.inOut" }, tX + 0.04);
   tl.to([center, ...softDots], { opacity: 1, duration: 0.45, ease: "power2.inOut" }, tX + 0.15);
   tl.to(softEdges, { opacity: 1, duration: 0.45, ease: "power2.inOut" }, tX + 0.15);
   tl.fromTo(clabel, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out" }, tX + 0.49);
-  /* hold ~8.5 → 9.2 : the static illustration */
+  /* hold from ~6.2: the static illustration */
 
   // the invisible UI and panel go back to their frame-0 poses during the hold
   // (the site never rewinds, but a seek to 0 must still show the pristine input)
@@ -275,7 +275,7 @@ function buildS1(root: HTMLElement): BuiltStep {
   tl.set(panel, { x: 0, opacity: 1 }, tZ);
   tl.set([ptitle, subA, subB, ...srows, ...rows], { opacity: 0 }, tZ);
   tl.set(subA, { y: 0 }, tZ);
-  tl.set({}, {}, 9.2); // pad to the full 9.2 s
+  tl.set({}, {}, tZ + 0.05); // the held brain (the composition padded to 9.2 s)
 
   return { tl, cleanup: () => {} };
 }
@@ -335,45 +335,50 @@ function buildS2(root: HTMLElement): BuiltStep {
   tl.set(strikes, { scaleX: 0 }, 0);
   tl.set(procLabels, { color: "#2c002a" }, 0);
 
-  /* — Phase 1 · the list holds; two avatars blink (0 – 2.0 s) — */
+  /* Pace (2026-09-30, founder: "tout plus dynamique"): the opening hold is
+     one blink (the agent opens Pipeline at 0.8 s of the cut, was 2.0), every
+     item works 0.45 s (was 0.62; the held "Score leads for ICP fit" 1.0 s,
+     was 1.5), and the fold-back follows the last item — 9.1 s on the master
+     (was 11.2). Cut seconds below; O = the opening's shift. */
+  const O = -1.2;
+  /* — Phase 1 · the list holds; an avatar blinks (0 – 0.8 s) — */
   const blink = (eyes: SVGGElement[], t: number) =>
     tl.to(eyes, { scaleY: 0.08, transformOrigin: "50% 50%", duration: 0.09, yoyo: true, repeat: 1, ease: "sine.inOut" }, t);
-  blink(eyeGroups[0], 0.9);
-  blink(eyeGroups[3], 1.5);
+  blink(eyeGroups[3], 0.3);
 
-  /* — Phase 2 · the agent opens Pipeline by itself: the pill lights, the row settles, no cursor (2.0 – 2.9 s) — */
-  tl.fromTo(pill, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 2.0);
-  blink(eyeGroups[0], 2.25);
-  tl.to(prow, { scale: 0.94, duration: 0.14, ease: "power2.in" }, 2.45);
-  tl.to(prow, { scale: 1, duration: 0.32, ease: "back.out(1.6)" }, 2.59);
+  /* — Phase 2 · the agent opens Pipeline by itself: the pill lights, the row settles, no cursor (0.8 – 1.7 s) — */
+  tl.fromTo(pill, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 2.0 + O);
+  blink(eyeGroups[0], 2.25 + O);
+  tl.to(prow, { scale: 0.94, duration: 0.14, ease: "power2.in" }, 2.45 + O);
+  tl.to(prow, { scale: 1, duration: 0.32, ease: "back.out(1.6)" }, 2.59 + O);
 
-  /* — Phase 3 · the card morphs into the Pipeline view (2.9 – 3.65 s), the checklist fills it from 3.35 — */
-  tl.to(pill, { opacity: 0, duration: 0.25, ease: "power2.in" }, 2.9);
-  tl.to(title, { opacity: 0, y: -8, duration: 0.3, ease: "power2.in" }, 2.9);
-  tl.to(otherRows, { opacity: 0, y: 8, duration: 0.3, ease: "power2.in", stagger: 0.05 }, 2.9);
+  /* — Phase 3 · the card morphs into the Pipeline view (1.7 – 2.45 s), the checklist fills it from 2.15 — */
+  tl.to(pill, { opacity: 0, duration: 0.25, ease: "power2.in" }, 2.9 + O);
+  tl.to(title, { opacity: 0, y: -8, duration: 0.3, ease: "power2.in" }, 2.9 + O);
+  tl.to(otherRows, { opacity: 0, y: 8, duration: 0.3, ease: "power2.in", stagger: 0.05 }, 2.9 + O);
   tl.fromTo(
     cardrect,
     { attr: { y: 101, height: 356 } },
     { attr: { y: 50.75, height: 456.5 }, duration: 0.6, ease: "power3.inOut", immediateRender: false },
-    3.05,
+    3.05 + O,
   );
-  tl.to(prow, { y: S2_HEADER_DY, duration: 0.6, ease: "power3.inOut" }, 3.05);
-  tl.fromTo(chev, { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, 3.5);
+  tl.to(prow, { y: S2_HEADER_DY, duration: 0.6, ease: "power3.inOut" }, 3.05 + O);
+  tl.fromTo(chev, { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, 3.5 + O);
   tl.fromTo(
     crowEls,
     { opacity: 0, y: 10 },
     { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.085, immediateRender: false },
-    3.35,
+    3.35 + O,
   );
 
-  /* — Phase 4 · each item is processed in turn (4.4 – 12.6 s):
+  /* — Phase 4 · each item is processed in turn (3.2 – ~10.3 s):
        the blue card lifts over the row with its spinner, works, then the row ticks and the card moves on.
        Item 3 ("Score leads for ICP fit") is held longer — that frame is the static step-2 illustration. — */
   const LIFT = 0.32;
   const DONE = 0.26;
-  const GAP = 0.08;
-  const WORK = (k: number) => (k === 3 ? 1.5 : 0.62);
-  let t = 4.4;
+  const GAP = 0.06;
+  const WORK = (k: number) => (k === 3 ? 1.0 : 0.45);
+  let t = 4.4 + O;
   S2_PROC.forEach((k) => {
     // place the card on this row (it is invisible at this moment) and show this item's label
     tl.set(hl, { top: HL_TOP(k), ...HL_FLAT, backgroundColor: HL_BG_OFF, borderColor: HL_BD_OFF, boxShadow: HL_SH_OFF, opacity: 0 }, t);
@@ -404,10 +409,10 @@ function buildS2(root: HTMLElement): BuiltStep {
     tl.to(strikes[k], { scaleX: 1, duration: 0.3, ease: "power2.out" }, td + 0.2);
     t = td + DONE + GAP;
   });
-  /* ≈ 12.6 s */
+  /* ≈ 10.3 s */
 
-  /* — Phase 5 · fold back to the Agents list (12.6 – 13.6 s), then the Agents view holds as the last image (13.6 – 15 s) — */
-  const F = 12.6;
+  /* — Phase 5 · fold back to the Agents list (F – F + 1), then the Agents view holds as the last image — */
+  const F = t;
   tl.to(crowEls.slice().reverse(), { opacity: 0, y: -10, duration: 0.26, ease: "power2.in", stagger: 0.04 }, F + 0.05);
   // reset the ticked items while they are invisible
   tl.set(cbOn, { scale: 0 }, F + 0.7);
@@ -434,15 +439,15 @@ function buildS2(root: HTMLElement): BuiltStep {
     { opacity: 1, y: 0, duration: 0.32, ease: "power3.out", stagger: 0.085, immediateRender: false },
     F + 0.63,
   );
-  blink(eyeGroups[2], 14.35); // a blink during the closing hold; eyes are open again by 14.53
+  blink(eyeGroups[2], F + 1.25); // a blink during the closing hold; eyes are open again 0.18 s later
 
   /* The site seeks and plays `master`; the child's timeScale maps the master's
      time into the cut (cut time = master time × 4/3), so every seek stays
-     deterministic and the cut above needs no retiming. 11.2 s on the master =
-     14.93 s of the cut — inside the closing hold (last blink done at 14.53). */
+     deterministic. The master ends in the closing hold, once the last blink
+     is done (F + 1.6 of the cut; the mp4 padded to 11.2 s). */
   master.add(tl, 0);
   tl.timeScale(1 / 0.75);
-  master.set({}, {}, 11.2); // pad to the mp4's 11.2 s
+  master.set({}, {}, (F + 1.6) * 0.75);
 
   return { tl: master, cleanup: () => {} };
 }
@@ -450,7 +455,11 @@ function buildS2(root: HTMLElement): BuiltStep {
 /* ── step 03 · Pancake gets you the meeting (meetings-calendar-loop, 7 s) ──
    0 – 0.5 empty week · Mon / Tue / Wed / Thu 1.1 s each: chips pop in, the
    day circle hops and the numbers slide in / out of it, outcomes stamp the
-   past meetings · the marker settles on Thu 22 and the filled week holds. */
+   past meetings · the marker settles on Thu 22 and the filled week holds.
+   Pace (2026-09-30, founder: "tout plus dynamique"): the composition's
+   seconds (S3_CHIPS, the T_ beats) map through `at` — the first meeting
+   pops at 0.2 s (was 0.55), each day lasts 0.83 s (was 1.1), the week is
+   full at ~4.1 s (was ~5.7). Tween lengths are unchanged. */
 function buildS3(root: HTMLElement): BuiltStep {
   const { $, $$ } = query(root);
   const circle = $(".lp-s3-circle");
@@ -468,11 +477,12 @@ function buildS3(root: HTMLElement): BuiltStep {
   }));
 
   const tl = gsap.timeline({ paused: true });
+  const at = (t: number) => 0.2 + (t - 0.55) * 0.75;
 
   // chips: tiny -> full (elastic), fully invisible at frame 0
   chips.forEach((c) => {
-    tl.fromTo(c.el, { scale: 0.3 }, { scale: 1, duration: 0.6, ease: "elastic.out(1, 0.55)" }, c.pop);
-    tl.fromTo(c.el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.14, ease: "power1.out" }, c.pop);
+    tl.fromTo(c.el, { scale: 0.3 }, { scale: 1, duration: 0.6, ease: "elastic.out(1, 0.55)" }, at(c.pop));
+    tl.fromTo(c.el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.14, ease: "power1.out" }, at(c.pop));
   });
 
   // the day circle hops from day i to day j; the numbers slide in / out of it
@@ -505,10 +515,10 @@ function buildS3(root: HTMLElement): BuiltStep {
     tl.to(c.txt, { opacity: 0.62, duration: 0.35, ease: "power1.out" }, t);
   };
 
-  const T_TUE = 1.6;
-  const T_WED = 2.7;
-  const T_THU = 3.8;
-  const T_FRI = 4.9;
+  const T_TUE = at(1.6);
+  const T_WED = at(2.7);
+  const T_THU = at(3.8);
+  const T_FRI = at(4.9);
   const byDay = (d: number) => chips.filter((c) => c.day === d);
 
   /* — Mon -> Tue — */
@@ -533,7 +543,7 @@ function buildS3(root: HTMLElement): BuiltStep {
     T_FRI,
   );
   byDay(3).forEach((c, k) => outcome(c, T_FRI + 0.15 + k * 0.15));
-  tl.set({}, {}, 7); // pad to the full 7 s hold (last badge lands at ~5.7)
+  tl.set({}, {}, T_FRI + 1.2); // hold once the last badge has landed (the composition padded to 7 s)
 
   return { tl, cleanup: () => {} };
 }

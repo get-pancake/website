@@ -2,15 +2,17 @@
 
 import { useEffect, useRef } from "react";
 
-import type { gsap } from "@/lib/gsap";
-
 import { LpStepStage } from "./LpStepMocks";
+import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
 import type { StepVariant } from "./lp-step-timelines";
 
-const loadAnimation = () => Promise.all([
-  import("@/lib/gsap"),
-  import("./lp-step-timelines"),
-]);
+/** playback rate of the three steps (1 = the compositions' pace) */
+const STEP_SPEED = 1;
+
+const loadAnimation = (variant: StepVariant): Promise<PlayOnceRuntime> =>
+  Promise.all([import("@/lib/gsap"), import("./lp-step-timelines")]).then(
+    ([{ gsap }, { buildStepTimeline }]) => ({ gsap, build: (stage) => buildStepTimeline(variant, stage) }),
+  );
 
 /**
  * A "Pancake fills your pipeline" media card that animates its mock UI in
@@ -20,16 +22,14 @@ const loadAnimation = () => Promise.all([
  * video downloads, vector-crisp at every DPR, the animations replicated
  * exactly).
  *
- * Same contract as LpLoopVideo had for these cards (and LpFeatAnim keeps):
- * - plays ONCE, when the card is 60 % in view; scrolled away before the end
- *   → paused, resumed on return; once complete it never restarts and holds
- *   its last frame — the brain, the Agents view, the filled calendar;
- * - prefers-reduced-motion shows that last frame directly (seek to the end),
- *   and a flip of the preference mid-visit is honored (lifted → starts over);
- * - the markup's rest state IS the composition's frame 0 (what the video's
- *   poster showed), so the server-rendered card is already the right still
- *   and nothing flashes at hydration; if the build ever throws, that still
- *   stands ("static").
+ * Playback is lp-play-once.ts, shared with the feature cards (2026-09-30:
+ * prepared a viewport ahead, played as the card arrives, the picture when
+ * the visitor flies past, finished when they scroll away; once, then the
+ * last frame holds — the brain, the Agents view, the filled calendar).
+ * Unlike the feature cards, the markup's rest state IS the composition's
+ * frame 0 (what the video's poster showed: never blank), so the
+ * server-rendered card is already the right still and nothing flashes at
+ * hydration; if the build ever throws, that still stands ("static").
  *
  * Geometry: the stage is the 464×426 media card at design size and scales as
  * pixels with the card (--lp-fit = card width / 464, via ResizeObserver).
@@ -56,130 +56,15 @@ export function LpStepAnim({
     const host = hostRef.current;
     const stage = host?.querySelector<HTMLElement>(".lp-step-stage");
     if (!host || !stage) return;
-
-    // fit scale: the layout content width of the card (immune to ancestor transforms)
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        const box = entry.contentBoxSize?.[0];
-        const width = box ? box.inlineSize : entry.contentRect.width;
-        if (!(width > 0)) continue;
-        host.style.setProperty("--lp-fit", String(width / 464));
-        // measured: the fluid-width stage may show (steps.css ≤1360 — iOS
-        // mis-resolves the CSS fallback, so the poster waits for this value)
-        host.dataset.lpFit = "";
-      }
+    return mountPlayOnce({
+      host,
+      stage,
+      designWidth: 464,
+      load: () => loadAnimation(variant),
+      restIsEnd: false,
+      qa: { registry: "__lpStep", key: variant },
+      speed: STEP_SPEED,
     });
-    ro.observe(host);
-
-    const motionMq = matchMedia("(prefers-reduced-motion: reduce)");
-    let disposed = false;
-    let touching = false;
-    let inView = false;
-    let done = false;
-    let loadRequested = false;
-    let runtime: Awaited<ReturnType<typeof loadAnimation>> | undefined;
-    let tl: gsap.core.Timeline | undefined;
-    let cleanupDom: (() => void) | undefined;
-    let ctx: gsap.Context | undefined;
-
-    const sync = () => {
-      if (!tl) return;
-      if (motionMq.matches) {
-        // the final still, no motion at all (events suppressed: not "done" —
-        // lifting the preference mid-visit starts the build-up over)
-        tl.pause();
-        tl.progress(1, true);
-        return;
-      }
-      if (done) return;
-      if (inView) {
-        tl.play();
-        host.dataset.lpAnim = "playing";
-      } else {
-        tl.pause();
-      }
-    };
-
-    // Fetch the animation code only when the card first touches the viewport.
-    // Keep the server-rendered first frame while it loads, and only build
-    // while intersecting: step 02 needs the check marks' laid-out geometry.
-    const arm = () => {
-      if (ctx || disposed) return;
-      if (!runtime) {
-        if (loadRequested) return;
-        loadRequested = true;
-        void loadAnimation().then((loaded) => {
-          if (disposed) return;
-          runtime = loaded;
-          // A slow connection may finish after the visitor has scrolled away.
-          // Keep the code ready and build on their next viewport entry.
-          if (touching) arm();
-        }).catch((err) => {
-          if (disposed) return;
-          host.dataset.lpAnim = "static";
-          if (process.env.NODE_ENV !== "production") console.error(err);
-        });
-        return;
-      }
-      const [{ gsap }, { buildStepTimeline }] = runtime;
-      ctx = gsap.context(() => {
-        try {
-          const built = buildStepTimeline(variant, stage);
-          tl = built.tl;
-          cleanupDom = built.cleanup;
-          tl.eventCallback("onComplete", () => {
-            done = true;
-            host.dataset.lpAnim = "done";
-          });
-          tl.pause(0); // frame 0 = the rest markup
-          host.dataset.lpAnim = "armed";
-          // QA hook (like __lpFeat): seek a card's timeline to any moment and
-          // compare with the composition's render
-          const w = window as unknown as { __lpStep?: Record<string, gsap.core.Timeline> };
-          w.__lpStep = { ...w.__lpStep, [variant]: tl };
-        } catch (err) {
-          // never a broken card: the rest-state markup is the poster still
-          host.dataset.lpAnim = "static";
-          if (process.env.NODE_ENV !== "production") console.error(err);
-        }
-      }, stage);
-      // Loading is asynchronous: use the current visibility and motion
-      // preference, including changes made while the chunk was downloading.
-      sync();
-    };
-
-    const onMotion = () => {
-      if (!tl) return;
-      if (!motionMq.matches && !done) tl.progress(0, true);
-      sync();
-    };
-    const io = new IntersectionObserver(
-      (entries) => {
-        const e = entries[entries.length - 1];
-        touching = e.isIntersecting;
-        // "focused on it" = 60 % visible (the video's threshold)
-        inView = touching && e.intersectionRatio >= 0.6 - 1e-3;
-        if (touching) arm();
-        sync();
-      },
-      { threshold: [0, 0.6] },
-    );
-    io.observe(host);
-    motionMq.addEventListener("change", onMotion);
-
-    return () => {
-      disposed = true;
-      io.disconnect();
-      ro.disconnect();
-      motionMq.removeEventListener("change", onMotion);
-      ctx?.revert();
-      cleanupDom?.();
-      const w = window as unknown as { __lpStep?: Record<string, gsap.core.Timeline> };
-      if (w.__lpStep) delete w.__lpStep[variant];
-      delete host.dataset.lpAnim;
-      delete host.dataset.lpFit;
-      host.style.removeProperty("--lp-fit");
-    };
   }, [variant]);
 
   return (

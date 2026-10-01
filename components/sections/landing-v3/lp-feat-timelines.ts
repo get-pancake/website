@@ -9,10 +9,12 @@ import { gsap } from "@/lib/gsap";
  * ported tween for tween onto the same markup and CSS (LpFeatMocks.tsx /
  * features.css); f5 (Plays, 2026-09-30) has no composition and was
  * storyboarded here from the app's Play UI.
- * Each timeline is built paused on its stage root when the card first
- * touches the viewport (laid out — f2 measures its glyphs); LpFeatAnim.tsx
- * owns playback (60 % in view → play once → hold the last frame = the
- * designer's picture). Every builder is seek-safe: sets and tweens only, no
+ * Each timeline is built paused on its stage root a viewport ahead of the
+ * card, once laid out (f2 measures its glyphs); lp-play-once.ts owns
+ * playback (as the card arrives → play once → hold the last frame = the
+ * designer's picture). The markup rests on that picture (2026-09-30: never a
+ * blank card), so each builder first sets its frame 0 — gsap.set, undone by
+ * the context's revert. Every builder is seek-safe: sets and tweens only, no
  * callbacks, no randomness.
  *
  * Deviation from the compositions, founder-requested 2026-09-03:
@@ -62,6 +64,14 @@ function buildF1(root: HTMLElement): BuiltFeat {
   const sigDigits = digitSeq($(".lp-f1-sigcount")); // 0 1 2 3 4
   const roleDigits = digitSeq($(".lp-f1-rolecount")); // 0 1 2 3
 
+  /* frame 0 — the markup rests on the picture: toggles off, knobs left, no
+     highlight, the empty outlines under the checks, no sticker */
+  gsap.set(actRows.map((r) => r.querySelector(".lp-f1-toggle")), { backgroundColor: "#ddcfcd" }); // ink-50
+  gsap.set(actRows.map((r) => r.querySelector(".lp-f1-knob")), { x: 0 });
+  gsap.set(rows[3], { backgroundColor: "rgba(44,0,42,0)" });
+  gsap.set(checkWraps.map((w) => w.querySelector(".lp-f1-checkbox-off")), { opacity: 1 });
+  gsap.set(sticker, { opacity: 0, rotation: 0 });
+
   const tl = gsap.timeline({ paused: true });
 
   /* — initial states — */
@@ -108,13 +118,17 @@ function buildF1(root: HTMLElement): BuiltFeat {
     );
   };
 
-  /* — 0.05 – 1.15 s · the Signals card rises in, rows stagger, toggles off, "0 active" — */
-  tl.fromTo(signals, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7, ease: "power3.out" }, 0.05);
-  tl.fromTo(sighead, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" }, 0.25);
-  tl.fromTo(rows, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power3.out", stagger: 0.075 }, 0.3);
+  /* Pace (2026-09-30, founder: "tout plus dynamique"): the same acts, 0.65 s
+     apart (was 1.15) — Roles opens at 3.6 s (was 5.95), the sticker lands at
+     5.4 s (was 8.15). */
 
-  /* — acts, 1.15 s apart: each toggle flips and the count ticks — */
-  const ACTS = [1.35, 2.5, 3.65, 4.8];
+  /* — 0.05 – 0.95 s · the Signals card rises in, rows stagger, toggles off, "0 active" — */
+  tl.fromTo(signals, { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }, 0.05);
+  tl.fromTo(sighead, { y: 10, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out" }, 0.15);
+  tl.fromTo(rows, { y: 16, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "power3.out", stagger: 0.06 }, 0.2);
+
+  /* — acts, 0.65 s apart: each toggle flips and the count ticks — */
+  const ACTS = [1.0, 1.65, 2.3, 2.95];
   ACTS.forEach((t0, k) => {
     flip(actRows[k], t0);
     tick(sigDigits, k + 1, t0 + 0.14);
@@ -122,8 +136,8 @@ function buildF1(root: HTMLElement): BuiltFeat {
   // Figma's final/rest state keeps Companies hiring highlighted
   tl.to(rows[3], { backgroundColor: "rgba(44,0,42,0.05)", duration: 0.22, ease: "power1.out" }, ACTS[2]);
 
-  /* — 5.95 s · the Roles panel springs open from its signals-card side, "0 selected", rows settle — */
-  const R = 5.95;
+  /* — 3.6 s · the Roles panel springs open from its signals-card side, "0 selected", rows settle — */
+  const R = 3.6;
   tl.fromTo(
     roles,
     { x: -40, scale: 0.72, transformOrigin: "0% 48%" },
@@ -138,8 +152,8 @@ function buildF1(root: HTMLElement): BuiltFeat {
     R + 0.12,
   );
 
-  /* — 6.65 / 7.0 / 7.35 s · Sales → Marketing → Customer success pop in, the header counting 1 → 2 → 3 — */
-  const CHECKS = [6.65, 7.0, 7.35];
+  /* — 4.2 / 4.5 / 4.8 s · Sales → Marketing → Customer success pop in, the header counting 1 → 2 → 3 — */
+  const CHECKS = [4.2, 4.5, 4.8];
   CHECKS.forEach((t, i) => {
     const img = checkWraps[i].querySelector<HTMLElement>(".lp-f1-checkimg")!;
     const off = checkWraps[i].querySelector<HTMLElement>(".lp-f1-checkbox-off")!;
@@ -149,14 +163,14 @@ function buildF1(root: HTMLElement): BuiltFeat {
     tick(roleDigits, i + 1, t + 0.15);
   });
 
-  /* — 8.15 s · the clay sticker settles at its rest spot; everything holds — */
+  /* — 5.4 s · the clay sticker settles at its rest spot; everything holds — */
   tl.fromTo(
     sticker,
     { scale: 0.75, rotation: TILT - 8, x: -6, y: -8 },
     { scale: 1, rotation: TILT, x: 0, y: 0, duration: 0.45, ease: "back.out(1.6)", immediateRender: false },
-    8.15,
+    5.4,
   );
-  tl.fromTo(sticker, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power1.out", immediateRender: false }, 8.15);
+  tl.fromTo(sticker, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power1.out", immediateRender: false }, 5.4);
 
   return { tl, cleanup: () => {} };
 }
@@ -236,14 +250,19 @@ function buildF2(root: HTMLElement): BuiltFeat {
   const bodyGlyphs = measureGlyphs(body);
   const msgGlyphs = measureGlyphs(msg);
 
-  /* counters: the final number is the in-flow text, the earlier states are stacked over it */
+  /* counters: the final number is the in-flow text (server-rendered), the
+     earlier states are stacked over it and it waits for its tick */
   const mkCounter = (el: HTMLElement, max: number) => {
     const ns: HTMLElement[] = [];
-    const fin = document.createElement("span");
-    fin.className = "lp-f2-n lp-f2-n--final";
-    fin.textContent = String(max);
-    el.appendChild(fin);
-    created.push(fin);
+    let fin = el.querySelector<HTMLElement>(".lp-f2-n--final");
+    if (!fin) {
+      fin = document.createElement("span");
+      fin.className = "lp-f2-n lp-f2-n--final";
+      fin.textContent = String(max);
+      el.appendChild(fin);
+      created.push(fin);
+    }
+    gsap.set(fin, { opacity: 0 });
     for (let k = 0; k < max; k++) {
       const n = document.createElement("span");
       n.className = "lp-f2-n" + (k === 0 ? " lp-f2-n--zero" : "");
@@ -319,91 +338,101 @@ function buildF2(root: HTMLElement): BuiltFeat {
   const headline = $(".lp-f2-headline");
   const time = $(".lp-f2-time");
   const globe = $("#lpf2-pi-globe");
+  const bars = $$(".lp-f2-skelgrp i");
+  const draftgrp = $(".lp-f2-draftgrp");
+  const rowEls: Element[] = [];
+  ["#lpf2-pi-like", "#lpf2-pi-comment", "#lpf2-pi-repost", "#lpf2-pi-send"].forEach((s, i) =>
+    rowEls.push($(s), counts[i]),
+  );
+  /* frame 0 — the markup rests on the sent picture: the post's parts, its
+     action row and the draft card wait for their entrances */
+  gsap.set([avatar, name, headline, time, globe, ...bars, ...rowEls, draftgrp], { opacity: 0 });
 
-  /* — Phase 1 · the post rises: card, avatar, name / headline / time (0 – 1.0 s) — */
-  tl.fromTo(post, { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.65, ease: "power3.out" }, 0);
+  /* Pace (2026-09-30, founder: "tout plus dynamique"): the same beats in the
+     same order, overlapped and brisker — the post types at 20 ms a character
+     (was 36) while its skeleton and action row land, the draft card rises at
+     2.25 s (was 4.95), the message types at 12 ms a character (was 17), and
+     MESSAGE SENT holds from ~6 s (was ~10.6). */
+
+  /* — Phase 1 · the post rises: card, avatar, name / headline / time (0 – 0.8 s) — */
+  tl.fromTo(post, { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power3.out" }, 0);
   tl.fromTo(
     avatar,
     { scale: 0.6, autoAlpha: 0 },
-    { scale: 1, autoAlpha: 1, duration: 0.55, ease: "back.out(1.6)", immediateRender: false },
-    0.28,
+    { scale: 1, autoAlpha: 1, duration: 0.45, ease: "back.out(1.6)", immediateRender: false },
+    0.15,
   );
   tl.fromTo(
     [name, headline, time],
     { y: 10, autoAlpha: 0 },
-    { y: 0, autoAlpha: 1, duration: 0.45, ease: "power3.out", stagger: 0.09, immediateRender: false },
-    0.38,
+    { y: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out", stagger: 0.06, immediateRender: false },
+    0.22,
   );
   tl.fromTo(
     globe,
     { y: 10, autoAlpha: 0 },
-    { y: 0, autoAlpha: 1, duration: 0.45, ease: "power3.out", immediateRender: false },
-    0.56,
+    { y: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out", immediateRender: false },
+    0.35,
   );
 
-  /* — Phase 2 · the post text types in with a caret (0.75 – 2.6 s) — */
-  const tBody = typeIn(1.0, body, bodyCaret, bodyGlyphs, 0.036, (c) => (c === "." ? 0.07 : 0));
+  /* — Phase 2 · the post text types in with a caret (0.45 – ~1.4 s) — */
+  const tBody = typeIn(0.45, body, bodyCaret, bodyGlyphs, 0.02, (c) => (c === "." ? 0.05 : 0));
   typeDone(body, bodyCaret, tBody);
 
-  /* — Phase 3 · the skeleton lines grow in and shimmer once (2.0 – 3.5 s) — */
-  const bars = $$(".lp-f2-skelgrp i");
+  /* — Phase 3 · the skeleton lines grow in and shimmer once (1.0 – 2.05 s) — */
   tl.fromTo(
     bars,
     { scaleX: 0.6, autoAlpha: 0, transformOrigin: "0 50%" },
-    { scaleX: 1, autoAlpha: 1, duration: 0.4, ease: "power3.out", stagger: 0.07, immediateRender: false },
-    2.0,
+    { scaleX: 1, autoAlpha: 1, duration: 0.35, ease: "power3.out", stagger: 0.05, immediateRender: false },
+    1.0,
   );
   $$(".lp-f2-skelgrp i b").forEach((b, i) =>
     tl.fromTo(
       b,
       { x: -SHEEN_W - SKEL_LEFT[i] },
-      { x: SKEL_W - SKEL_LEFT[i], duration: 0.75, ease: "power1.inOut" },
-      2.75,
+      { x: SKEL_W - SKEL_LEFT[i], duration: 0.6, ease: "power1.inOut" },
+      1.45,
     ),
   );
 
-  /* — Phase 4 · the action row lands and the counts tick up (2.95 – 4.3 s) — */
-  const rowEls: Element[] = [];
-  ["#lpf2-pi-like", "#lpf2-pi-comment", "#lpf2-pi-repost", "#lpf2-pi-send"].forEach((s, i) =>
-    rowEls.push($(s), counts[i]),
-  );
+  /* — Phase 4 · the action row lands and the counts tick up (1.5 – 2.45 s) — */
   tl.fromTo(
     rowEls,
     { y: 8, autoAlpha: 0 },
-    { y: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out", stagger: 0.07, immediateRender: false },
-    2.95,
+    { y: 0, autoAlpha: 1, duration: 0.35, ease: "power3.out", stagger: 0.05, immediateRender: false },
+    1.5,
   );
-  tick(likeN, 0, 33, 3.4, 0.9);
-  otherN.forEach((ns, i) => tick(ns, 0, 5, 3.55 + i * 0.1, 0.45));
+  tick(likeN, 0, 33, 1.75, 0.7);
+  otherN.forEach((ns, i) => tick(ns, 0, 5, 1.85 + i * 0.08, 0.4));
 
   /* (Phase 5 — Pancake liking the post, reaction bubbles popping — removed 2026-09-29:
      the site never shows the product acting on the platform, founder "vitrine plus compliant") */
 
-  /* — Phase 6 · the draft card slides up empty and the rainbow ring draws around it, four strokes chasing (4.95 – 6.95 s) — */
+  /* — Phase 6 · the draft card slides up empty and the rainbow ring draws around it, four strokes chasing (2.25 – 3.85 s) — */
   tl.fromTo(
-    $(".lp-f2-draftgrp"),
+    draftgrp,
     { y: 44, autoAlpha: 0 },
-    { y: 0, autoAlpha: 1, duration: 0.75, ease: "power3.out", immediateRender: false },
-    4.95,
+    { y: 0, autoAlpha: 1, duration: 0.6, ease: "power3.out", immediateRender: false },
+    2.25,
   );
-  drawPaths.forEach((p, i) => tl.to(p, { strokeDashoffset: 0, duration: 1.3, ease: "power2.inOut" }, 5.3 + i * 0.12));
+  drawPaths.forEach((p, i) => tl.to(p, { strokeDashoffset: 0, duration: 1.1, ease: "power2.inOut" }, 2.45 + i * 0.1));
 
-  /* — Phase 7 · the message types (6.3 – ~8.9 s) — */
-  const tMsg = typeIn(6.3, msg, msgCaret, msgGlyphs, 0.017, (c, n) =>
-    c === "." && n === " " ? 0.09 : c === "," ? 0.05 : 0,
+  /* — Phase 7 · the message types (2.9 – ~4.75 s) — */
+  const tMsg = typeIn(2.9, msg, msgCaret, msgGlyphs, 0.012, (c, n) =>
+    c === "." && n === " " ? 0.06 : c === "," ? 0.035 : 0,
   );
   typeDone(msg, msgCaret, tMsg);
 
   /* — Phase 8 · the status speaks for itself: DRAFT READY (yellow) lands once the draft is written,
      then flips to MESSAGE SENT (green) — the sent picture holds — */
-  const T_READY = tMsg + 0.55;
+  const T_READY = tMsg + 0.4;
   tl.fromTo(
     eyebrowDraft,
     { y: 6, opacity: 0 },
     { y: 0, opacity: 1, duration: 0.32, ease: "back.out(1.6)", immediateRender: false },
     T_READY,
   );
-  const T_SENT = T_READY + 1.15;
+  const T_SENT = T_READY + 0.85;
   tl.to(eyebrowDraft, { y: -6, opacity: 0, duration: 0.18, ease: "power2.in" }, T_SENT);
   tl.fromTo(
     eyebrowSent,
@@ -411,7 +440,7 @@ function buildF2(root: HTMLElement): BuiltFeat {
     { y: 0, opacity: 1, duration: 0.32, ease: "back.out(1.6)", immediateRender: false },
     T_SENT + 0.06,
   );
-  tl.to({}, { duration: 0.001 }, T_SENT + 1.3); // hold the sent picture
+  tl.to({}, { duration: 0.001 }, T_SENT + 1.0); // hold the sent picture
 
   return { tl, cleanup: () => created.forEach((n) => n.parentNode?.removeChild(n)) };
 }
@@ -462,17 +491,20 @@ function buildF4(root: HTMLElement): BuiltFeat {
 
   const tl = gsap.timeline({ paused: true });
 
+  /* Pace (2026-09-30, founder: "tout plus dynamique"): the same beats, no
+     empty lead-in (the chart rose at 0.4 s) and closer together — "Brain
+     updated" lands at 3.2 s (was 4.95), the picture at ~5.2 s (was 7.45). */
   const T = {
-    graph: 0.4, // chart card rises
-    bars: 1.05,
-    barStep: 0.08, // 12 bars from the baseline, ≈ 80 ms apart
-    count: 1.55, // 0 → 56% over the bars' growth
-    arrow: 2.75, // the green arrow pops once the count lands
-    worked: 3.4,
-    chips: 3.85, // "What worked" slides in, chips pop one after another
-    brain: 4.95,
-    ring: 5.25,
-    sub: 6.15, // "Brain updated" slides up, the ring draws around it, subtitle fades in
+    graph: 0.05, // chart card rises
+    bars: 0.55,
+    barStep: 0.06, // 12 bars from the baseline, 60 ms apart
+    count: 1.2, // 0 → 56% over the bars' growth
+    arrow: 1.85, // the green arrow pops once the count lands
+    worked: 2.2,
+    chips: 2.55, // "What worked" slides in, chips pop one after another
+    brain: 3.2,
+    ring: 3.4,
+    sub: 4.0, // "Brain updated" slides up, the ring draws around it, subtitle fades in
   };
 
   /* frame 0: empty cream — every card and its parts start hidden */
@@ -519,7 +551,7 @@ function buildF4(root: HTMLElement): BuiltFeat {
   tl.fromTo(
     chips,
     { scale: 0.6, autoAlpha: 0, transformOrigin: "50% 50%" },
-    { scale: 1, autoAlpha: 1, transformOrigin: "50% 50%", duration: 0.5, ease: "back.out(1.7)", stagger: 0.13 },
+    { scale: 1, autoAlpha: 1, transformOrigin: "50% 50%", duration: 0.5, ease: "back.out(1.7)", stagger: 0.1 },
     T.chips,
   );
 
@@ -529,7 +561,7 @@ function buildF4(root: HTMLElement): BuiltFeat {
     tl.fromTo(
       p,
       { strokeDashoffset: lens[i] },
-      { strokeDashoffset: 0, duration: 1.9, ease: "power2.inOut", immediateRender: false },
+      { strokeDashoffset: 0, duration: 1.5, ease: "power2.inOut", immediateRender: false },
       T.ring + 0.1 * i,
     );
   });
@@ -650,23 +682,21 @@ function buildF5(root: HTMLElement): BuiltFeat {
   const tl = gsap.timeline({ paused: true });
   tl.set(lcount, { txt: "0" }, 0);
 
-  // caret blink: on .42 s / off .42 s, `cycles` times, ends "on" (explicit sets — seek-exact)
-  const blink = (el: Element, t: number, cycles: number) => {
-    for (let c = 0; c < cycles; c++) {
-      tl.set(el, { opacity: 1 }, t + c * 0.84);
-      tl.set(el, { opacity: 0 }, t + c * 0.84 + 0.42);
-    }
-    tl.set(el, { opacity: 1 }, t + cycles * 0.84);
-  };
+  /* Pace (2026-09-30, founder: "tout plus dynamique" — a card scrolled past
+     at reading speed must not be a bare composer bar): the Play card rises
+     with the composer, in DRAFT with its rows "Not decided yet" shimmering,
+     like the app's panel that "takes shape" beside the chat; the request types
+     at 14 ms a character (was 32), no idle blinks, and the rows resolve once
+     it is sent. The picture holds from ~6.2 s (was 9.8). */
 
-  /* — 1 · the composer rises, Pancake's sparkle pops, the caret blinks once (0.1 – 1.6) — */
-  tl.to(composer, { autoAlpha: 1, y: 0, duration: 0.65, ease: "power3.out" }, 0.1);
-  tl.to(spark, { scale: 1, duration: 0.5, ease: "back.out(1.8)" }, 0.3);
-  blink(caret0, 0.75, 1);
+  /* — 1 · the composer rises, Pancake's sparkle pops, the caret shows (0.05 – 0.25) — */
+  tl.to(composer, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.05);
+  tl.to(spark, { scale: 1, duration: 0.45, ease: "back.out(1.8)" }, 0.12);
+  tl.set(caret0, { opacity: 1 }, 0.18);
 
-  /* — 2 · the request types in the bar at 32 ms a character (1.6 – 3.04) — */
-  const T0 = 1.6;
-  const DT = 0.032;
+  /* — 2 · the request types in the bar at 14 ms a character (0.25 – 0.88) — */
+  const T0 = 0.25;
+  const DT = 0.014;
   tl.set(ph, { opacity: 0 }, T0); // the placeholder leaves with the first character
   tl.to(send, { backgroundColor: PLUM, duration: 0.2, ease: "power2.out" }, T0);
   chars.forEach((s, i) => {
@@ -675,13 +705,12 @@ function buildF5(root: HTMLElement): BuiltFeat {
     tl.set(i ? carets[i - 1] : caret0, { opacity: 0 }, t);
     tl.set(carets[i], { opacity: 1 }, t);
   });
-  const T_LAST = T0 + (chars.length - 1) * DT; // 3.04
+  const T_LAST = T0 + (chars.length - 1) * DT; // 0.88
   const caretLast = carets[carets.length - 1];
-  tl.set(caretLast, { opacity: 0 }, T_LAST + 0.42); // one idle blink on the last character
-  tl.set(caretLast, { opacity: 1 }, T_LAST + 0.66);
 
-  /* — 3 · send (3.8 press, 3.9 send): the bar resets and leaves, then the request pops up as the plum
+  /* — 3 · send (1.03 press, 1.13 send): the bar resets and leaves, then the request pops up as the plum
      bubble in its slot (hand-off, no cross-fade: the bubble starts once the bar is mostly gone) — */
+  const PRESS = T_LAST + 0.15;
   tl.to(
     send,
     {
@@ -690,9 +719,9 @@ function buildF5(root: HTMLElement): BuiltFeat {
         { scale: 1, duration: 0.3, ease: "back.out(2)" },
       ],
     },
-    3.8,
+    PRESS,
   );
-  const SEND = 3.9;
+  const SEND = PRESS + 0.1;
   tl.set(caretLast, { opacity: 0 }, SEND);
   tl.set(chars, { display: "none" }, SEND);
   tl.set(ph, { opacity: 1 }, SEND); // an emptied chat input shows its placeholder again
@@ -701,13 +730,16 @@ function buildF5(root: HTMLElement): BuiltFeat {
   tl.to(bubble, { autoAlpha: 1, duration: 0.18, ease: "power2.out" }, SEND + 0.1);
   tl.to(bubble, { scale: 1, duration: 0.5, ease: "back.out(1.6)" }, SEND + 0.1);
 
-  /* — 4 · the Play card rises in DRAFT; the placeholders shimmer; the rows resolve one by one (4.1 – 5.9) — */
-  tl.to(play, { autoAlpha: 1, y: 0, duration: 0.65, ease: "power3.out" }, 4.1);
+  /* — 4 · the Play card rises in DRAFT with the composer (0.15); the placeholders shimmer while the
+     request types; once sent, the rows resolve one by one (1.43 – 2.43) — */
+  const PLAY = 0.15;
+  tl.to(play, { autoAlpha: 1, y: 0, duration: 0.65, ease: "power3.out" }, PLAY);
   shims.forEach((s, i) => {
-    tl.to(s, { opacity: 1, duration: 0.2, ease: "power1.out" }, 4.4 + i * 0.08);
-    tl.to(s, { backgroundPosition: "0% 0%", duration: 0.7, ease: "power1.inOut" }, 4.4 + i * 0.08);
+    tl.to(s, { opacity: 1, duration: 0.2, ease: "power1.out" }, PLAY + 0.3 + i * 0.08);
+    tl.to(s, { backgroundPosition: "0% 0%", duration: 0.7, ease: "power1.inOut" }, PLAY + 0.3 + i * 0.08);
   });
-  [4.85, 5.2, 5.55].forEach((t, k) => {
+  const DECIDE = SEND + 0.3;
+  [DECIDE, DECIDE + 0.35, DECIDE + 0.7].forEach((t, k) => {
     const { circ, num, tick, fin, wait } = rows[k];
     tl.to(wait, { y: -6, opacity: 0, duration: 0.14, ease: "power1.in" }, t);
     tl.fromTo(
@@ -722,8 +754,9 @@ function buildF5(root: HTMLElement): BuiltFeat {
     tl.to(tick, { scale: 1, duration: 0.3, ease: "back.out(2)" }, t + 0.04);
   });
 
-  /* — 5 · Create and run search slides in, is pressed and leaves; DRAFT flips to ACTIVE (5.9 – 6.98) — */
-  tl.to(create, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power3.out" }, 5.9);
+  /* — 5 · Create and run search slides in, is pressed and leaves; DRAFT flips to ACTIVE (2.43 – 3.42) — */
+  const CREATE = DECIDE + 1.0;
+  tl.to(create, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power3.out" }, CREATE);
   tl.to(
     create,
     {
@@ -732,9 +765,9 @@ function buildF5(root: HTMLElement): BuiltFeat {
         { scale: 1, duration: 0.28, ease: "back.out(2)" },
       ],
     },
-    6.4,
+    CREATE + 0.35,
   );
-  const GO = 6.6;
+  const GO = CREATE + 0.55;
   tl.to(create, { autoAlpha: 0, duration: 0.14, ease: "power1.in" }, GO);
   tl.to(draft, { y: -6, opacity: 0, duration: 0.14, ease: "power1.in" }, GO);
   tl.fromTo(
@@ -745,9 +778,9 @@ function buildF5(root: HTMLElement): BuiltFeat {
   );
 
   /* — 6 · the steps run: the chips land once the button is gone, then Discover · Enrich · Qualify
-     complete (6.72 – 7.85) — */
+     complete (3.1 – 4.23) — */
   tl.to(chipEls, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out", stagger: 0.06 }, GO + 0.12);
-  [6.95, 7.25, 7.55].forEach((t, k) => {
+  [GO + 0.35, GO + 0.65, GO + 0.95].forEach((t, k) => {
     const { el, step, done } = chips[k];
     tl.to(el, { backgroundColor: GREEN10, boxShadow: CHIP_ON, color: PLUM, duration: 0.22, ease: "power2.inOut" }, t);
     tl.to(step, { opacity: 0, duration: 0.12, ease: "power1.in" }, t);
@@ -757,29 +790,30 @@ function buildF5(root: HTMLElement): BuiltFeat {
   });
 
   /* — 7 · the leads: the card rises, the count ticks 0 → 25, three leads land, each why line
-     wipes in, NEW pops (7.7 – 9.2) — */
-  tl.to(leads, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 7.7);
+     wipes in, NEW pops (4.08 – 5.58) — */
+  tl.to(leads, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, GO + 1.1);
   for (let k = 1; k <= 25; k++) {
-    tl.set(lcount, { txt: String(k) }, 7.8 + 0.9 * (1 - Math.sqrt(1 - k / 25))); // quad-out: brisk, then settling
+    tl.set(lcount, { txt: String(k) }, GO + 1.2 + 0.9 * (1 - Math.sqrt(1 - k / 25))); // quad-out: brisk, then settling
   }
-  [7.95, 8.2, 8.45].forEach((t, k) => {
+  [GO + 1.35, GO + 1.6, GO + 1.85].forEach((t, k) => {
     tl.to(leadRows[k], { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out" }, t);
     tl.to(whys[k], { clipPath: "inset(0% 0% 0% 0%)", duration: 0.5, ease: "power2.out" }, t + 0.18);
     tl.to(news[k], { autoAlpha: 1, scale: 1, duration: 0.45, ease: "back.out(1.7)" }, t + 0.3);
   });
 
   /* — 8 · rest = the static picture: drop identity transforms, clips and the chips' tweened
-     paint (all equal to the CSS rest values) at 9.25, hold to 9.8 — */
+     paint (all equal to the CSS rest values) at ~5.6, hold ~0.55 s — */
+  const REST = GO + 2.65;
   tl.set(
     [bubble, play, leads, active, ...leadRows, ...news, ...rows.map((r) => r.tick), ...rows.map((r) => r.fin)],
     { clearProps: "transform" },
-    9.25,
+    REST,
   );
-  tl.set(chipEls, { clearProps: "transform,backgroundColor,boxShadow,color" }, 9.25);
-  tl.set(chips.map((c) => c.done), { clearProps: "transform" }, 9.25);
-  tl.set(links, { clearProps: "transform" }, 9.25);
-  tl.set(whys, { clipPath: "none" }, 9.25);
-  tl.to({}, { duration: 0.001 }, 9.799); // hold the picture to 9.8
+  tl.set(chipEls, { clearProps: "transform,backgroundColor,boxShadow,color" }, REST);
+  tl.set(chips.map((c) => c.done), { clearProps: "transform" }, REST);
+  tl.set(links, { clearProps: "transform" }, REST);
+  tl.set(whys, { clipPath: "none" }, REST);
+  tl.to({}, { duration: 0.001 }, REST + 0.549); // hold the picture
 
   return { tl, cleanup: () => created.forEach((n) => n.parentNode?.removeChild(n)) };
 }
