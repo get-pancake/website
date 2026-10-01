@@ -9,35 +9,42 @@ import type { gsap } from "@/lib/gsap";
  *
  * Founder 2026-09-30: "les motions apparaissent de manière molle… quand tu
  * scrolles rapidement tu fais face à beaucoup de vides… il faut que l'écran
- * reste blanc le moins longtemps possible". The video-era contract (wait for
- * 60 % in view, fetch the code on first touch, start from an empty frame,
- * pause half-built when scrolled away) left every feature card blank for
- * 0.5–0.9 s after it entered at a reading scroll, and blank for good at a
- * flick. The contract now:
+ * reste blanc le moins longtemps possible", then, on the first version of
+ * this driver (which played from below the fold): "tu commences les
+ * animations un peu trop vite quand mon écran n'est pas focus dessus". The
+ * video-era contract (wait for 60 % in view, fetch the code on first touch,
+ * start from an empty frame, pause half-built when scrolled away) left every
+ * feature card blank for 0.5–0.9 s after it entered at a reading scroll, and
+ * blank for good at a flick. The contract now — a card is never empty on
+ * screen, and its build-up plays where the visitor is looking:
  *
  * - PREPARE one viewport ahead (above or below): the timeline code is
  *   fetched, and the timeline built as soon as the card is laid out
  *   (a content-visibility:auto section skips its subtree's layout, so the
  *   build waits for the section to be rendered — f2 measures its glyphs).
- *   Builds queue one per frame, so phones never take one long task.
- * - PLAY as the card arrives: from 15 % of a viewport below the fold, so the
- *   first beats have played by the time it shows. Once, then it holds its
- *   last frame (the designer's picture) and never restarts.
- * - FLYING PAST (> 2.5 px/ms when it arrives) shows the picture instead of a
- *   build-up nobody would see.
+ *   Builds queue one per frame, so phones never take one long task. Until
+ *   then, and while it waits far away, the card is the server-rendered
+ *   picture (restIsEnd — the feature cards) or its own first frame (steps).
+ * - CUE below the fold: as the card comes within 15 % of a viewport of the
+ *   fold, it switches — unseen — to its FIRST SCENE (the builder's `cue`: a
+ *   composed frame, never empty — the Signals card with its toggles off, the
+ *   post before its text types…) and enters the screen on it.
+ * - PLAY where the visitor looks: once the card's top crosses 60 % of the
+ *   viewport height — or, for a visitor who stopped scrolling short of that
+ *   line, after 1 s with at least half the card on screen (a card that only
+ *   peeks in at the bottom waits). Once, then it holds its last frame (the
+ *   designer's picture) and never restarts.
+ * - FLYING PAST (> 2.5 px/ms, or a jump of half a viewport) shows the
+ *   picture instead of a build-up nobody would see.
  * - LEAVING THROUGH THE TOP while unfinished fast-forwards it to the picture
  *   (~0.35 s): the part still on screen is the card's lower half, which the
- *   build-ups fill last — measured, at a 1000 px/s scroll a feature card's
- *   lower half sat empty for its whole exit. Gone after it was seen: it
- *   finishes, so a visitor who comes back finds the picture, never a
- *   half-built card. Pre-rolled but never seen: it rewinds, invisibly.
- * - NEVER EMPTY WHAT IS ON SCREEN: where the server-rendered stage is the
- *   end picture (restIsEnd — the feature cards), a prepared card keeps
- *   showing that picture and rewinds to its first frame only as it starts
- *   playing, below the fold. A card that is already on screen when it would
- *   start (reload mid-page, an anchor, the code arriving late, scrolling back
- *   up into it) keeps the picture. Reduced motion keeps it too, without
- *   downloading any animation code.
+ *   build-ups fill last. Gone after it played: it finishes, so a visitor who
+ *   comes back finds the picture, never a half-built card. Cued but never
+ *   reached: back to rest, unseen.
+ * - NEVER EMPTY WHAT IS ON SCREEN: a card that is already on screen in its
+ *   resting picture (reload mid-page, an anchor, the code arriving late,
+ *   scrolling back up into it) keeps it. Reduced motion keeps it too,
+ *   without downloading any animation code.
  * - prefers-reduced-motion = the picture; lifting it mid-visit lets a card
  *   that has not finished play its build-up (the steps rest on their first
  *   frame, so they still need the timeline to show their picture).
@@ -50,7 +57,8 @@ import type { gsap } from "@/lib/gsap";
  */
 
 type Timeline = gsap.core.Timeline;
-type Built = { tl: Timeline; cleanup: () => void };
+/** cue: the timeline time of the card's first scene (0 = its first frame) */
+type Built = { tl: Timeline; cleanup: () => void; cue?: number };
 export type PlayOnceRuntime = {
   gsap: typeof import("@/lib/gsap").gsap;
   build: (stage: HTMLElement) => Built;
@@ -80,8 +88,13 @@ export type PlayOnceOptions = {
 const FAST_SCROLL = 2.5;
 /** prepare this far ahead of the viewport, above and below */
 const PREPARE_MARGIN = "100% 0px 100% 0px";
-/** start playing this far below the fold */
-const PREROLL_MARGIN = "0px 0px 15% 0px";
+/** switch to the first scene this far below the fold (unseen) */
+const CUE_MARGIN = "0px 0px 15% 0px";
+/** play once the card's top is above this share of the viewport height */
+const FOCUS_MARGIN = "0px 0px -40% 0px"; // the top 60 %
+/** half the card on screen this long, short of the focus line (scrolling stopped): play */
+const DWELL_MS = 1000;
+const DWELL_MIN_RATIO = 0.5;
 /** leaving through the top unfinished: the rest of the build-up plays in this long */
 const RUSH_S = 0.35;
 
@@ -153,11 +166,15 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   const motionMq = matchMedia("(prefers-reduced-motion: reduce)");
   const untrack = trackScroll();
   let disposed = false;
-  let preroll = false; // within the play zone (viewport + 15 % below)
+  let near = false; // on screen or within 15 % below the fold
   let visible = false; // on screen
-  let seen = false; // has been on screen since it last started
-  let started = false; // its build-up is under way (frame 0 → …)
-  let done = false;
+  let focused = false; // its top above 60 % of the viewport height
+  let ratio = 0; // share of the card on screen
+  /** rest: the resting picture · cued: the first scene, waiting for focus ·
+      playing: its build-up · done: the last frame holds */
+  let phase: "rest" | "cued" | "playing" | "done" = "rest";
+  let cue = 0;
+  let dwell = 0;
   let loading = false;
   let queued = false;
   let runtime: PlayOnceRuntime | undefined;
@@ -177,59 +194,74 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       checkVisibility?: (opts: { contentVisibilityAuto: boolean }) => boolean;
     }).checkVisibility;
     if (typeof check === "function") return check.call(stage, { contentVisibilityAuto: true });
-    return preroll || visible; // older engines: the card itself is intersecting
+    return near || visible; // older engines: the card itself is intersecting
+  };
+
+  const toRest = () => {
+    if (!tl) return;
+    if (o.restIsEnd) tl.progress(1, true);
+    else tl.pause(0);
+    phase = "rest";
+    host.dataset.lpAnim = "armed";
+  };
+  const toCue = () => {
+    if (!tl) return;
+    tl.pause(cue);
+    phase = "cued";
+    host.dataset.lpAnim = "cued";
+  };
+  const play = () => {
+    if (!tl) return;
+    tl.play();
+    phase = "playing";
+    host.dataset.lpAnim = "playing";
   };
   const finish = () => {
     if (!tl) return;
     tl.progress(1);
-    done = true;
+    phase = "done";
     host.dataset.lpAnim = "done";
   };
   // the visitor is moving on while the card is still building: fast-forward
   const rush = () => {
-    if (!tl || done || motionMq.matches || !tl.isActive()) return;
+    if (!tl || phase !== "playing" || motionMq.matches || !tl.isActive()) return;
     const left = tl.duration() - tl.time();
     if (left > 0) tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
   };
 
-  // waiting to play: the picture (restIsEnd) or the steps' own first frame
-  const rest = () => {
-    if (!tl) return;
-    if (o.restIsEnd) tl.progress(1, true);
-    else tl.pause(0);
-    host.dataset.lpAnim = "armed";
-  };
-
   const decide = () => {
     if (!tl || disposed) return;
+    clearTimeout(dwell);
+    dwell = 0;
     if (motionMq.matches) {
       tl.pause();
       tl.progress(1, true);
       return;
     }
-    if (done) return;
-    if (preroll || visible) {
-      if (!started) {
-        // flying past, or already on screen (entering from above): the
-        // picture, not a build-up nobody sees or a picture that empties
-        if (scrollSpeed() > FAST_SCROLL || (o.restIsEnd && visible)) {
-          finish();
-          return;
-        }
-        started = true;
-        seen = visible;
-        tl.pause(0); // still below the fold: frame 0 is not seen
-      }
-      tl.play();
-      host.dataset.lpAnim = "playing";
-    } else if (started) {
-      if (seen) {
-        finish(); // scrolled away mid-way: come back to the picture
-      } else {
-        started = false; // pre-rolled, never on screen: back to rest, unseen
-        rest();
-      }
+    if (phase === "done") return;
+    const fast = scrollSpeed() > FAST_SCROLL;
+    if (phase === "rest") {
+      if (!near) return; // far away: keep resting
+      // flying past, or already showing its picture on screen (built late,
+      // entering from above): the picture, never a frame that empties
+      if (fast || (o.restIsEnd && visible)) return finish();
+      toCue(); // still below the fold: the first scene, unseen
     }
+    if (phase === "cued") {
+      if (!near) return toRest(); // went away before reaching it: unseen
+      if (focused) return fast ? finish() : play();
+      if (visible && ratio >= DWELL_MIN_RATIO) {
+        // half on screen but short of the focus line: a visitor who stopped
+        dwell = window.setTimeout(() => {
+          dwell = 0;
+          if (phase === "cued" && visible && ratio >= DWELL_MIN_RATIO && !motionMq.matches) play();
+        }, DWELL_MS);
+      }
+      return;
+    }
+    // playing: carry on while it can still be seen; gone, it finishes
+    if (near) tl.play();
+    else finish();
   };
 
   const build = () => {
@@ -240,9 +272,10 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
         const built = buildTimeline(stage);
         tl = built.tl;
         cleanupDom = built.cleanup;
+        cue = Math.min(Math.max(built.cue ?? 0, 0), tl.duration());
         if (o.speed && o.speed !== 1) tl.timeScale(o.speed);
         tl.eventCallback("onComplete", () => {
-          done = true;
+          phase = "done";
           host.dataset.lpAnim = "done";
         });
         if (motionMq.matches) {
@@ -251,10 +284,10 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
         } else if (o.restIsEnd && onScreen()) {
           // never empty what is already on screen: keep the picture
           tl.progress(1, true);
-          done = true;
+          phase = "done";
           host.dataset.lpAnim = "done";
         } else {
-          rest();
+          toRest();
         }
         const w = window as unknown as Record<string, Record<string, Timeline> | undefined>;
         w[o.qa.registry] = { ...w[o.qa.registry], [o.qa.key]: tl };
@@ -279,7 +312,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     }
   };
   const prepare = () => {
-    if (runtime) return requestBuild(preroll || visible);
+    if (runtime) return requestBuild(near || visible);
     if (loading || disposed) return;
     // reduced motion over a picture that is already the end: nothing to fetch
     if (o.restIsEnd && motionMq.matches) return;
@@ -287,7 +320,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     void o.load().then((loaded) => {
       if (disposed) return;
       runtime = loaded;
-      requestBuild(preroll || visible);
+      requestBuild(near || visible);
     }).catch((err) => {
       if (disposed) return;
       host.dataset.lpAnim = "static";
@@ -303,23 +336,29 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     { rootMargin: PREPARE_MARGIN },
   );
   nearIo.observe(o.layoutRoot ?? host);
-  const playIo = new IntersectionObserver(
+  const cueIo = new IntersectionObserver(
     (entries) => {
-      preroll = last(entries).isIntersecting;
-      if (preroll) prepare();
+      near = last(entries).isIntersecting;
+      if (near) prepare();
       decide();
     },
-    { rootMargin: PREROLL_MARGIN },
+    { rootMargin: CUE_MARGIN },
   );
-  playIo.observe(host);
+  cueIo.observe(host);
+  const focusIo = new IntersectionObserver(
+    (entries) => {
+      focused = last(entries).isIntersecting;
+      decide();
+    },
+    { rootMargin: FOCUS_MARGIN },
+  );
+  focusIo.observe(host);
   const viewIo = new IntersectionObserver(
     (entries) => {
       const e = last(entries);
       visible = e.isIntersecting;
-      if (visible) {
-        seen = true;
-        prepare();
-      }
+      ratio = visible ? e.intersectionRatio : 0;
+      if (visible) prepare();
       decide();
       // a tenth of the card already gone above the top edge
       if (visible && e.boundingClientRect.top < 0 && e.intersectionRatio < 0.9) rush();
@@ -330,7 +369,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
 
   // the section rendering its contents is when a card can be measured and built
   const onRendered = (e: Event) => {
-    if ((e as Event & { skipped?: boolean }).skipped === false) requestBuild(preroll || visible);
+    if ((e as Event & { skipped?: boolean }).skipped === false) requestBuild(near || visible);
   };
   o.layoutRoot?.addEventListener("contentvisibilityautostatechange", onRendered);
 
@@ -344,15 +383,17 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     }
     // lifted mid-visit: a card that has not finished may play its build-up
     if (!tl) return prepare();
-    if (!done && !started) rest();
+    if (phase === "rest" || phase === "cued") toRest();
     decide();
   };
   motionMq.addEventListener("change", onMotion);
 
   return () => {
     disposed = true;
+    clearTimeout(dwell);
     nearIo.disconnect();
-    playIo.disconnect();
+    cueIo.disconnect();
+    focusIo.disconnect();
     viewIo.disconnect();
     ro.disconnect();
     untrack();

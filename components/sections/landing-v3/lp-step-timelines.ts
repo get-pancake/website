@@ -51,7 +51,8 @@ function measureRightEdges(el: HTMLElement): number[] {
  */
 
 export type StepVariant = "s1" | "s2" | "s3";
-export type BuiltStep = { tl: gsap.core.Timeline; cleanup: () => void };
+/** cue: the first scene where the card waits for the visitor (0: the poster) */
+export type BuiltStep = { tl: gsap.core.Timeline; cleanup: () => void; cue: number };
 
 function query(root: HTMLElement) {
   return {
@@ -277,7 +278,7 @@ function buildS1(root: HTMLElement): BuiltStep {
   tl.set(subA, { y: 0 }, tZ);
   tl.set({}, {}, tZ + 0.05); // the held brain (the composition padded to 9.2 s)
 
-  return { tl, cleanup: () => {} };
+  return { tl, cleanup: () => {}, cue: 0 };
 }
 
 /* ── step 02 · Agents start working (pipeline-checklist-loop, 11.2 s) ──
@@ -449,7 +450,7 @@ function buildS2(root: HTMLElement): BuiltStep {
   tl.timeScale(1 / 0.75);
   master.set({}, {}, (F + 1.6) * 0.75);
 
-  return { tl: master, cleanup: () => {} };
+  return { tl: master, cleanup: () => {}, cue: 0 };
 }
 
 /* ── step 03 · Pancake gets you the meeting (meetings-calendar-loop, 7 s) ──
@@ -545,7 +546,7 @@ function buildS3(root: HTMLElement): BuiltStep {
   byDay(3).forEach((c, k) => outcome(c, T_FRI + 0.15 + k * 0.15));
   tl.set({}, {}, T_FRI + 1.2); // hold once the last badge has landed (the composition padded to 7 s)
 
-  return { tl, cleanup: () => {} };
+  return { tl, cleanup: () => {}, cue: 0 };
 }
 
 const BUILDERS: Record<StepVariant, (root: HTMLElement) => BuiltStep> = {
