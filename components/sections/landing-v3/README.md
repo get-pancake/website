@@ -134,13 +134,17 @@ back during a fidelity pass:
   quand tu scrolles rapidement tu fais face à beaucoup de vides"):
   `lp-play-once.ts` drives the feature and step cards. Prepared a viewport
   ahead (code fetched, timeline built once the content-visibility section
-  renders, one build per frame); played from 15 % of a viewport below the
-  fold; the picture instead of a build-up when the visitor flies past
+  renders, one build per frame); switched, unseen, 15 % of a viewport below
+  the fold to its FIRST SCENE (each builder's `cue`: a composed frame, never
+  empty); played once its top crosses 60 % of the viewport height, or after
+  1 s with half of it on screen when scrolling stopped (founder: "tu
+  commences les animations trop vite quand mon écran n'est pas focus
+  dessus"); the picture instead of a build-up when the visitor flies past
   (> 2.5 px/ms, or a jump of half a viewport); fast-forwarded to the picture
   (~0.35 s) when the card leaves through the top unfinished; finished once
-  it is gone after being seen; never rewound while on screen. The build-ups
+  it is gone after playing; never rewound while on screen. The build-ups
   were tightened at the same time (same beats and pictures, 30–40 % shorter:
-  f5 9.8 → 6.2 s, f1 8.6 → 5.9, f2 11.9 → 7.0, f4 7.45 → 5.2, s1 9.2 → 6.5,
+  f5 9.8 → 6.6 s, f1 8.6 → 5.9, f2 11.9 → 7.3, f4 7.45 → 5.2, s1 9.2 → 6.5,
   s2 11.2 → 8.9, s3 7.0 → 4.7). Measured with a scroll screencast (1440 and
   390 wide, 1000 px/s, flick, down-then-up): no card is ever empty on screen
   (production before: f5 100 %, f4 49–100 % of its time in view). The WebGL
