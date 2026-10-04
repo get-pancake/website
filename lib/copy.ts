@@ -480,10 +480,14 @@ export const pricingV2 = {
       line names leads only. You approve every lead before anyone is
       contacted; reading or editing a message before it sends is optional, so
       never write "approvals on messages". Kept in step with the
-      homepage CHECKLIST (LpPricing.tsx). */
+      homepage CHECKLIST (LpPricing.tsx).
+      The customers line says what Pancake is built for, never a promise
+      (founder 2026-10-04: "how can you guarantee customers?" kept coming
+      back, and the Terms promise no results). `lead` sits before the
+      figure so the number stays bold mid-line. */
   value: [
     { figure: "5 to 15", rest: "warm leads" },
-    { figure: "2 to 3", rest: "new customers" },
+    { lead: "Built to land", figure: "2 to 3", rest: "new customers" },
     { rest: "A personal message for each lead, in your voice" },
     { rest: "You approve every lead. You stay in control." },
   ],

@@ -15,11 +15,14 @@ import { TRIAL_LABEL } from "@/lib/trial";
    #1037): the articles and Google/ChatGPT lines became Plays + messages, and
    the control line names leads only (message review is optional, so never
    "approvals on messages"). No spend cap (founder 2026-09-19): flat plan,
-   nothing to cap. Kept in step with pricingV2.value in lib/copy.ts. */
+   nothing to cap. The customers line states what Pancake is built for, not
+   a promise (founder 2026-10-04: prospects kept asking how we can guarantee
+   customers; the Terms promise no results). Kept in step with
+   pricingV2.value in lib/copy.ts. */
 const CHECKLIST = [
   "Every agent included.",
   "5 to 15 warm leads.",
-  "2 to 3 new customers.",
+  "Built to land 2 to 3 new customers.",
   "As many Plays as you need.",
   "A personal message for each lead.",
   "You approve every lead.",
