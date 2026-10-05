@@ -468,8 +468,9 @@ export const pricingV2 = {
   perMonth: "/ month flat",
   /** The line under the price (Okara: "Full agent suite access"). */
   access: "Every agent included",
-  /** Intro to the value list. */
-  includedIntro: "What a month gets you:",
+  /** Intro to the value list. It read "What a month gets you:" until the
+      leads line dropped its count (2026-10-05). */
+  includedIntro: "What you get:",
   /** The value lines — figure first. The lead and customer ranges are the
       founder's own (2026-08-19).
       No spend cap here (founder 2026-09-19): the plan is flat, there is no
@@ -480,10 +481,18 @@ export const pricingV2 = {
       line names leads only. You approve every lead before anyone is
       contacted; reading or editing a message before it sends is optional, so
       never write "approvals on messages". Kept in step with the
-      homepage CHECKLIST (LpPricing.tsx). */
+      homepage CHECKLIST (LpPricing.tsx).
+      The customers line says what Pancake is built for, never a promise
+      (founder 2026-10-04: "how can you guarantee customers?" kept coming
+      back, and the Terms promise no results). `lead` sits before the
+      figure so the number stays bold mid-line. No lead count (founder
+      2026-10-05): Plays make leads as many as you want, and the nightly run
+      has them waiting every morning. Revisit if credit enforcement ships
+      (pancake-cmo PR #1220). */
   value: [
-    { figure: "5 to 15", rest: "warm leads" },
-    { figure: "2 to 3", rest: "new customers" },
+    { rest: "As many Plays and leads as you want" },
+    { rest: "Warm leads every morning" },
+    { lead: "Built to land", figure: "2 to 3", rest: "customers a month" },
     { rest: "A personal message for each lead, in your voice" },
     { rest: "You approve every lead. You stay in control." },
   ],

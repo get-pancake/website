@@ -2,7 +2,8 @@ import { pricingV2 } from "@/lib/copy";
 
 /**
  * The value list of the pricing card, Okara-shaped: an intro line, then what a
- * month buys with the figure up front (the founder's own ranges). Shared by
+ * month buys with the figure up front (the founder's own ranges; an optional
+ * `lead` goes before it). Shared by
  * the homepage card and /pricing. Server-rendered, zero JS.
  */
 export function PriceGroups() {
@@ -23,6 +24,7 @@ export function PriceGroups() {
               />
             </svg>
             <span>
+              {"lead" in v ? `${v.lead} ` : null}
               {"figure" in v && <strong className="lv2-price-value-figure">{v.figure}</strong>}
               {"figure" in v ? " " : null}
               {v.rest}
