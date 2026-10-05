@@ -468,8 +468,9 @@ export const pricingV2 = {
   perMonth: "/ month flat",
   /** The line under the price (Okara: "Full agent suite access"). */
   access: "Every agent included",
-  /** Intro to the value list. */
-  includedIntro: "What a month gets you:",
+  /** Intro to the value list. It read "What a month gets you:" until the
+      leads line took its real unit, every morning (2026-10-05). */
+  includedIntro: "What you get:",
   /** The value lines — figure first. The lead and customer ranges are the
       founder's own (2026-08-19).
       No spend cap here (founder 2026-09-19): the plan is flat, there is no
@@ -484,10 +485,11 @@ export const pricingV2 = {
       The customers line says what Pancake is built for, never a promise
       (founder 2026-10-04: "how can you guarantee customers?" kept coming
       back, and the Terms promise no results). `lead` sits before the
-      figure so the number stays bold mid-line. */
+      figure so the number stays bold mid-line. Leads land every morning
+      (the nightly run), never "a month" (2026-10-05). */
   value: [
-    { figure: "5 to 15", rest: "warm leads" },
-    { lead: "Built to land", figure: "2 to 3", rest: "new customers" },
+    { figure: "5 to 15", rest: "warm leads every morning" },
+    { lead: "Built to land", figure: "2 to 3", rest: "customers a month" },
     { rest: "A personal message for each lead, in your voice" },
     { rest: "You approve every lead. You stay in control." },
   ],
