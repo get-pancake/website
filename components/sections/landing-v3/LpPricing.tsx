@@ -17,17 +17,19 @@ import { TRIAL_LABEL } from "@/lib/trial";
    "approvals on messages"). No spend cap (founder 2026-09-19): flat plan,
    nothing to cap. The customers line states what Pancake is built for, not
    a promise (founder 2026-10-04: prospects kept asking how we can guarantee
-   customers; the Terms promise no results). Leads carry their unit (founder
-   2026-10-05, "clearer, not modest"): the nightly run lands them every
-   morning, and the bare "5 to 15 warm leads" read as per month. Same lines
-   in pricingV2.value (lib/copy.ts), the /for checklist, the app's checkout
-   card and the Brain page. */
+   customers; the Terms promise no results). No lead count (founder
+   2026-10-05: "now that there are Plays you can have as many leads as you
+   want"): a Play search keeps up to 50 leads, Plays are unlimited, and
+   credits run in shadow mode, so nothing caps them. Revisit if credit
+   enforcement ships (pancake-cmo PR #1220). The nightly run is why leads
+   wait every morning. Same lines in pricingV2.value (lib/copy.ts), the /for
+   checklist, the app's checkout card and the Brain page. */
 const CHECKLIST = [
   "Every agent included.",
-  "5 to 15 warm leads every morning.",
+  "As many Plays and leads as you want.",
+  "Warm leads every morning.",
   // \u00a0 keeps "customers a month." together when a narrow phone wraps it.
   "Built to land 2 to 3 customers\u00a0a\u00a0month.",
-  "As many Plays as you need.",
   "A personal message for each lead.",
   "You approve every lead.",
 ];

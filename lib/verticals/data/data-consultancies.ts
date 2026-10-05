@@ -150,7 +150,7 @@ export const dataConsultancies: VerticalConfig = {
     },
     {
       q: "Snowflake is in lots of job posts. Won’t I drown in leads?",
-      a: "No. Pancake sends 5 to 15 warm leads every morning, each checked against your ICP. Narrow the size or industry and the list gets sharper.",
+      a: "No. You set how many leads each search keeps, and each one is checked against your ICP. Narrow the size or industry and the list gets sharper.",
     },
     {
       q: "Can I target finance buyers, not data teams?",

@@ -6,7 +6,7 @@
 
 Pancake researches a company from its website and builds a GTM Brain: the ideal customer, personas, competitors, messaging and voice. Every new Play starts from that Brain.
 
-Plays are the core of the product. The customer tells Pancake in plain English who they want to reach, and Pancake builds the Play with them: who to find, how to find them, and how many leads per search (up to 50). The customer reviews the Play and runs it. Each search runs Discover, Enrich, then Qualify. One Play finds one audience one way; customers run as many Plays as they need, one per audience. Every night Pancake searches again, so 5 to 15 warm leads are waiting every morning.
+Plays are the core of the product. The customer tells Pancake in plain English who they want to reach, and Pancake builds the Play with them: who to find, how to find them, and how many leads per search (up to 50). The customer reviews the Play and runs it. Each search runs Discover, Enrich, then Qualify. One Play finds one audience one way; customers run as many Plays as they need, one per audience. Every night Pancake searches again, so new leads are waiting every morning.
 
 A Play finds leads in one of six ways: people engaging with competitors' or experts' posts, people engaging with chosen topics, companies using a technology, companies hiring for a role, recently funded companies, or a direct match on role, industry, company size and location. Every lead arrives with one line on why it fits. Pancake shows every step of each search and why people were set aside. Each Play shows its reply rate and an activity log, and any Play can be paused.
 

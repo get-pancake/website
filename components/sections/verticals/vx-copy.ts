@@ -291,7 +291,7 @@ export const VX_FAQ = {
     },
     {
       q: "How many leads will I get?",
-      a: "Pancake aims for 5 to 15 warm leads every morning. The count depends on how many people match your signals.",
+      a: "As many as you want. Each Play search keeps up to 50 new leads, you run as many Plays as you need, and Pancake searches again every night.",
     },
     {
       q: "What does it cost?",
@@ -316,11 +316,11 @@ export const VX_CTA_BODY: [string, string] = ["$99 a month, flat.", "First leads
 /** The /for pricing checklist: the same six lines on every /for page and the hub. The fifth line
  *  was the AI SEO article until 2026-09-30; it now matches the homepage's Plays line. */
 export const VX_PRICING_CHECKLIST: readonly string[] = [
-  "5 to 15 warm leads every morning.",
+  "Warm leads every morning.",
   "Every lead comes with its reason.",
   "Outreach from your own account.",
   "You approve every lead first.",
-  "As many Plays as you need.",
+  "As many Plays and leads as you want.",
   "Unlimited seats.",
 ];
 
