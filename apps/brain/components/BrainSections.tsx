@@ -7,13 +7,16 @@ import { SITE_ORIGIN } from "../lib/origins.mjs";
 
 // Brain sells outreach only (founder call, 2026-09-11): the main site's AI-search
 // bullets stay off this page, in the pricing list and in step 02 alike.
-// Same lines as the main site's pricing (website PR #320, 2026-10-05): leads
-// land every morning from the nightly run (never "per month", which undersold
-// them 30x), and the customers line says what Pancake is built for, never a
-// promise, since prospects kept asking how we can guarantee customers.
+// Same lines as the main site's pricing (website PR #320, 2026-10-05): no lead
+// count, since Plays make leads as many as you want (founder 2026-10-05; the
+// old "5 to 15 warm leads per month" undersold them), the nightly run has them
+// waiting every morning, and the customers line says what Pancake is built
+// for, never a promise, since prospects kept asking how we can guarantee
+// customers.
 const FEATURES = [
   "Every agent included",
-  "5 to 15 warm leads every morning",
+  "As many Plays and leads as you want",
+  "Warm leads every morning",
   // \u00a0 keeps "customers a month" together when a narrow phone wraps it.
   "Built to land 2 to 3 customers\u00a0a\u00a0month",
   // No spend cap (founder 2026-09-19, main site PR #302): the plan is $99 flat,
