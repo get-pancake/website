@@ -1,0 +1,723 @@
+/* ── /guides/claude — "Use Pancake in Claude" (the ManyChat DM page) ───────
+   Imported AFTER landing-v3.css and verticals.css: the page is a /for-kit page
+   (.lp-vx: text edge, section rhythm, VxHead, the FAQ accordion) plus the
+   pieces only this guide has — promo bar, coupon, copy blocks, client tabs,
+   the .md card, steps, control cards. Mobile first in spirit: most visitors
+   arrive on a phone, in Instagram's in-app browser, so every control is a
+   44px tap target and code wraps instead of scrolling the page sideways.
+   Every rule is `.lp-guide .x` (0,2,0) to beat the kit's `.lp p` resets, and
+   type rules set font-family on the element (the kit's universal
+   `* { font-family }` beats inheritance). Tokens only: lp ramps + color-mix. */
+
+.lp-guide {
+  --gd-promo-h: 48px;
+  --gd-card-r: var(--lp-r-xlg);
+  --gd-tap: 44px;
+}
+
+/* ── promo bar: sticky above everything, plum ── */
+.lp-guide .gd-promo {
+  align-items: center;
+  background: var(--lp-inverted-surface);
+  color: var(--lp-text-on-inverted);
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  min-height: var(--gd-promo-h);
+  padding: 6px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 31; /* above the mobile sticky nav (30) and its cream slab shadow */
+}
+.lp-guide .gd-promo__text {
+  font-family: var(--lp-font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  min-width: 0;
+}
+.lp-guide .gd-promo__text span {
+  font-family: var(--lp-font-sans);
+}
+.lp-guide .gd-promo__short {
+  display: none;
+}
+@media (max-width: 639px) {
+  .lp-guide .gd-promo {
+    justify-content: space-between;
+  }
+  .lp-guide .gd-promo__long {
+    display: none;
+  }
+  .lp-guide .gd-promo__short {
+    display: inline;
+    white-space: nowrap;
+  }
+}
+/* phones: the nav is sticky too (landing-v3/nav.css) — park it under the bar */
+@media (max-width: 767px) {
+  .lp-guide .lp-nav {
+    top: var(--gd-promo-h);
+  }
+}
+
+/* ── copy buttons ── */
+.lp-guide .gd-copy {
+  align-items: center;
+  background: var(--lp-surface);
+  border: 1px solid var(--lp-stroke);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  cursor: pointer;
+  display: inline-flex;
+  flex: none;
+  font-family: var(--lp-font-sans);
+  font-size: 14px;
+  font-weight: 600;
+  gap: 6px;
+  justify-content: center;
+  line-height: 20px;
+  min-height: var(--gd-tap);
+  padding: 0 14px;
+  white-space: nowrap;
+}
+.lp-guide .gd-copy span {
+  font-family: var(--lp-font-sans);
+}
+.lp-guide .gd-copy__icon {
+  flex: none;
+}
+.lp-guide .gd-copy[data-copied] {
+  color: var(--lp-positive-text);
+}
+.lp-guide .gd-copy:focus-visible,
+.lp-guide .gd-link:focus-visible,
+.lp-guide .gd-tab:focus-visible,
+.lp-guide .gd-tabs__panel:focus-visible {
+  outline: 2px solid var(--lp-purple-40);
+  outline-offset: 2px;
+}
+@media (hover: hover) {
+  .lp-guide .gd-copy:hover {
+    background: var(--lp-surface-3);
+  }
+}
+/* hero / .md card pills: the hero pill's metrics (48px, 16px label, r12), any width */
+.lp-guide .gd-copy--pill {
+  background: var(--lp-ink-30);
+  border-color: transparent;
+  border-radius: 12px;
+  font-size: 16px;
+  min-height: 48px;
+  padding: 0 20px;
+}
+.lp-guide .gd-copy--pill span {
+  font-size: 16px;
+}
+.lp-guide .gd-copy--dark {
+  background: var(--lp-inverted-surface);
+  color: var(--lp-text-on-inverted);
+}
+.lp-guide .gd-copy--dark[data-copied] {
+  color: var(--lp-green-10);
+}
+.lp-guide .gd-copy--on-dark {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--lp-text-on-inverted) 40%, transparent);
+  color: var(--lp-text-on-inverted);
+  min-height: 36px;
+  position: relative;
+}
+/* 36px visible, 44px to the finger */
+.lp-guide .gd-copy--on-dark::after {
+  content: "";
+  inset: -4px;
+  position: absolute;
+}
+.lp-guide .gd-copy--on-dark[data-copied] {
+  color: var(--lp-green-10);
+}
+@media (hover: hover) {
+  .lp-guide .gd-copy--pill:hover {
+    background: var(--lp-ink-40);
+  }
+  .lp-guide .gd-copy--dark:hover {
+    background: color-mix(in srgb, var(--lp-inverted-surface) 88%, var(--lp-text-on-inverted));
+  }
+  .lp-guide .gd-copy--on-dark:hover {
+    background: color-mix(in srgb, var(--lp-text-on-inverted) 12%, transparent);
+  }
+}
+
+.lp-guide .gd-link {
+  align-items: center;
+  color: var(--lp-text);
+  display: inline-flex;
+  font-family: var(--lp-font-sans);
+  font-size: 16px;
+  font-weight: 600;
+  min-height: var(--gd-tap);
+  text-decoration: underline;
+  text-decoration-color: var(--lp-stroke);
+  text-underline-offset: 4px;
+}
+
+/* ── hero ── */
+.lp-guide .gd-hero__title {
+  margin: 0;
+}
+.lp-guide .gd-hero__setup {
+  color: var(--lp-text);
+  font-weight: 600;
+  margin-top: 8px;
+}
+.lp-guide .gd-hero__btns {
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* the coupon: the one loud block on the page */
+.lp-guide .gd-coupon {
+  background: var(--lp-surface);
+  border-radius: var(--gd-card-r);
+  box-shadow: var(--vx-win-shadow);
+  display: grid;
+  grid-template-columns: minmax(200px, 240px) 1fr;
+  margin-top: 28px;
+  max-width: 680px;
+  overflow: hidden;
+}
+.lp-guide .gd-coupon__deal {
+  background: var(--lp-pink-20);
+  border-right: 2px dashed color-mix(in srgb, var(--lp-ink-100) 28%, transparent);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 24px;
+}
+.lp-guide .gd-coupon__big {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-6xlg);
+  font-weight: 600;
+  letter-spacing: -1.7201px;
+  line-height: 1;
+}
+.lp-guide .gd-coupon__sub {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  font-weight: 600;
+  line-height: 24px;
+  margin-top: 8px;
+}
+.lp-guide .gd-coupon__use {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 24px;
+}
+.lp-guide .gd-coupon__line {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+}
+.lp-guide .gd-coupon__code {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lp-guide .gd-coupon__code code {
+  background: var(--lp-surface-3);
+  border: 1.5px dashed var(--lp-ink-tr-40);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  font-family: var(--lp-font-fono);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 28px;
+  padding: 7px 14px;
+  user-select: all;
+  -webkit-user-select: all;
+}
+.lp-guide .gd-coupon__fine {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+}
+@media (max-width: 599px) {
+  .lp-guide .gd-coupon {
+    grid-template-columns: 1fr;
+  }
+  .lp-guide .gd-coupon__deal {
+    align-items: baseline;
+    border-bottom: 2px dashed color-mix(in srgb, var(--lp-ink-100) 28%, transparent);
+    border-right: 0;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    padding: 18px 20px;
+  }
+  .lp-guide .gd-coupon__big {
+    font-size: var(--lp-text-5xlg);
+  }
+  .lp-guide .gd-coupon__sub {
+    margin-top: 0;
+  }
+  .lp-guide .gd-coupon__use {
+    padding: 18px 20px 20px;
+  }
+}
+
+/* ── shared prose + cards ── */
+.lp-guide .gd-prose {
+  max-width: 680px;
+}
+.lp-guide .gd-prose p {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  line-height: 28.8px;
+  text-wrap: pretty;
+}
+.lp-guide .gd-prose p + p {
+  margin-top: 16px;
+}
+.lp-guide .gd-prose--lead {
+  margin-top: var(--vx-head-gap);
+}
+.lp-guide .gd-card {
+  background: var(--lp-card-cream);
+  border-radius: var(--gd-card-r);
+  box-shadow: inset 0 0 0 1px var(--vx-hair);
+  padding: 32px;
+}
+.lp-guide .gd-card__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin: 0;
+}
+@media (max-width: 767px) {
+  .lp-guide .gd-card {
+    padding: 24px 20px;
+  }
+  .lp-guide .gd-prose p {
+    font-size: var(--lp-text-md);
+    line-height: 26px;
+  }
+}
+
+/* ── What Pancake does ── */
+.lp-guide .gd-what__grid {
+  align-items: start;
+  display: grid;
+  gap: 48px;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 464px);
+  margin-top: var(--vx-head-gap);
+}
+.lp-guide .gd-ways__list {
+  counter-reset: gd-way;
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+.lp-guide .gd-ways__list li {
+  align-items: baseline;
+  border-top: 1px solid var(--vx-hair);
+  color: var(--lp-text);
+  counter-increment: gd-way;
+  display: flex;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  gap: 14px;
+  line-height: 24px;
+  padding: 12px 0;
+}
+.lp-guide .gd-ways__list li:first-child {
+  border-top: 0;
+}
+.lp-guide .gd-ways__list li::before {
+  color: var(--vx-num);
+  content: counter(gd-way, decimal-leading-zero);
+  flex: none;
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+}
+@media (max-width: 1024px) {
+  .lp-guide .gd-what__grid {
+    gap: 32px;
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Setup: the .md card ── */
+.lp-guide #setup,
+.lp-guide [role="tab"] {
+  scroll-margin-top: calc(var(--gd-promo-h) + 24px);
+}
+@media (max-width: 767px) {
+  .lp-guide #setup,
+  .lp-guide [role="tab"] {
+    scroll-margin-top: calc(var(--gd-promo-h) + 88px); /* + the compact sticky nav */
+  }
+}
+.lp-guide .gd-md {
+  align-items: center;
+  background: var(--lp-yellow-10);
+  box-shadow: none;
+  display: grid;
+  gap: 32px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  margin-top: var(--vx-head-gap);
+}
+.lp-guide .gd-md__body {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  margin-top: 12px;
+  max-width: 480px;
+}
+.lp-guide .gd-md__btns {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 24px;
+}
+.lp-guide .gd-md__preview {
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-m);
+  box-shadow: inset 0 0 0 1px var(--vx-hair);
+  margin: 0;
+  max-height: 232px;
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent);
+  mask-image: linear-gradient(to bottom, black 70%, transparent);
+  overflow: hidden;
+  padding: 16px 18px;
+}
+.lp-guide .gd-md__preview code {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: 13px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.lp-guide .gd-byhand {
+  color: var(--lp-subtle-text);
+  font-family: var(--vx-eyebrow-font);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 20px;
+  margin-top: 48px;
+  text-transform: uppercase;
+}
+@media (max-width: 1024px) {
+  .lp-guide .gd-md {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Steps 01–04 ── */
+.lp-guide .gd-steps {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+.lp-guide .gd-step {
+  border-top: 1px solid var(--vx-hair);
+  display: grid;
+  gap: 48px;
+  grid-template-columns: minmax(220px, 320px) minmax(0, 1fr);
+  padding: 32px 0 40px;
+}
+.lp-guide .gd-step__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+}
+.lp-guide .gd-step__title span {
+  font-family: var(--lp-font-cond);
+}
+.lp-guide .gd-step__num {
+  color: var(--vx-num);
+}
+.lp-guide .gd-step__body {
+  max-width: 760px;
+  min-width: 0;
+}
+.lp-guide .gd-step__body p,
+.lp-guide .gd-step__body li,
+.lp-guide .gd-tabs__panel p,
+.lp-guide .gd-tabs__panel li {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+}
+.lp-guide .gd-step__body > * + *,
+.lp-guide .gd-tabs__panel > * + * {
+  margin-top: 16px;
+}
+.lp-guide .gd-step strong {
+  font-family: var(--lp-font-sans);
+  font-weight: 600;
+}
+.lp-guide .gd-step :not(pre) > code {
+  background: var(--lp-ink-30);
+  border-radius: 6px;
+  color: var(--lp-text);
+  font-family: var(--lp-font-fono);
+  font-size: 0.875em;
+  padding: 1px 6px;
+}
+.lp-guide .gd-list {
+  list-style: decimal; /* the kit resets lists to none */
+  margin: 0;
+  padding-left: 1.4em;
+}
+.lp-guide .gd-list > li + li {
+  margin-top: 12px;
+}
+.lp-guide .gd-list > li::marker {
+  color: var(--vx-num);
+  font-family: var(--lp-font-sans);
+  font-weight: 600;
+}
+/* p.x (0,2,1), later in the file: beats `.gd-step__body p` / `.gd-tabs__panel p` */
+.lp-guide p.gd-caption,
+.lp-guide p.gd-signin,
+.lp-guide p.gd-prompts__lead,
+.lp-guide p.gd-prompts__note {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+}
+.lp-guide p.gd-signin {
+  margin-top: 20px;
+}
+@media (max-width: 1024px) {
+  .lp-guide .gd-step {
+    gap: 20px;
+    grid-template-columns: 1fr;
+    padding: 28px 0 32px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-guide .gd-step__title {
+    font-size: var(--lp-text-2xlg);
+  }
+}
+
+/* ── copy blocks (prompts and commands) ── */
+.lp-guide .gd-block {
+  align-items: flex-start;
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-m);
+  box-shadow: inset 0 0 0 1px var(--lp-subtle-stroke);
+  display: flex;
+  gap: 12px;
+  margin-top: 10px;
+  padding: 8px 8px 8px 16px;
+}
+.lp-guide .gd-list .gd-block {
+  margin-top: 10px;
+}
+.lp-guide .gd-block__text {
+  flex: 1;
+  margin: 0;
+  min-width: 0;
+  padding: 10px 0;
+}
+.lp-guide .gd-block__text code {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  line-height: 24px;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.lp-guide .gd-block[data-kind="code"] {
+  background: var(--lp-inverted-surface);
+  box-shadow: none;
+}
+.lp-guide .gd-block[data-kind="code"] .gd-block__text code {
+  color: var(--lp-text-on-inverted);
+  font-family: var(--lp-font-fono);
+  font-size: 14px;
+  line-height: 22px;
+}
+.lp-guide .gd-block[data-kind="code"] .gd-copy {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--lp-text-on-inverted) 40%, transparent);
+  color: var(--lp-text-on-inverted);
+}
+.lp-guide .gd-block[data-kind="code"] .gd-copy[data-copied] {
+  color: var(--lp-green-10);
+}
+.lp-guide .gd-ph {
+  background: var(--lp-yellow-20);
+  border-radius: 4px;
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-weight: 600;
+  padding: 0 3px;
+}
+@media (max-width: 479px) {
+  /* narrow phones: the button drops under the text, full width, so prompts keep their measure */
+  .lp-guide .gd-block {
+    flex-direction: column;
+    gap: 4px;
+    padding: 6px 8px 8px 14px;
+  }
+  .lp-guide .gd-block .gd-copy {
+    align-self: stretch;
+  }
+}
+
+/* ── step 02 client tabs ── */
+.lp-guide .gd-tabs__bar {
+  border-bottom: 1px solid var(--vx-hair);
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.lp-guide .gd-tabs__bar::-webkit-scrollbar {
+  display: none;
+}
+.lp-guide .gd-tab {
+  align-items: center;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--lp-subtle-text);
+  cursor: pointer;
+  display: inline-flex;
+  flex: none;
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  gap: 8px;
+  margin-bottom: -1px;
+  min-height: var(--gd-tap);
+  padding: 0 14px;
+  white-space: nowrap;
+}
+.lp-guide .gd-tab span {
+  font-family: var(--lp-font-sans);
+}
+.lp-guide .gd-tab[aria-selected="true"] {
+  border-bottom-color: var(--lp-pink-30);
+  color: var(--lp-text);
+}
+.lp-guide .gd-tab__logo {
+  flex: none;
+  height: 18px;
+  width: 18px;
+}
+@media (hover: hover) {
+  .lp-guide .gd-tab:hover {
+    color: var(--lp-text);
+  }
+}
+
+/* ── skills table ── */
+.lp-guide .gd-table-wrap {
+  overflow-x: auto;
+}
+.lp-guide .gd-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.lp-guide .gd-table th,
+.lp-guide .gd-table td {
+  border-bottom: 1px solid var(--vx-hair);
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  padding: 10px 16px 10px 0;
+  text-align: left;
+  vertical-align: top;
+}
+.lp-guide .gd-table th {
+  color: var(--lp-subtle-text);
+  font-family: var(--vx-eyebrow-font);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.lp-guide .gd-table td:first-child {
+  white-space: nowrap;
+}
+
+/* ── step 04 prompt groups ── */
+.lp-guide .gd-prompts {
+  margin-top: 28px;
+}
+.lp-guide p.gd-prompts__title {
+  color: var(--lp-subtle-text);
+  font-family: var(--vx-eyebrow-font);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+.lp-guide p.gd-prompts__lead {
+  margin-top: 12px;
+}
+.lp-guide p.gd-prompts__note {
+  margin-top: 8px;
+}
+
+/* ── Control ── */
+.lp-guide .gd-control__grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: var(--vx-head-gap) 0 0;
+  padding: 0;
+}
+.lp-guide .gd-control__card p {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  margin-top: 10px;
+}
+@media (max-width: 767px) {
+  .lp-guide .gd-control__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── final CTA (LpCta): the code line under Start free ── */
+.lp-guide .lp-cta__note {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  line-height: 20px;
+  margin-top: -32px; /* the card's 48px column gap, tightened to 16 */
+}

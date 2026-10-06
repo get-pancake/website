@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
@@ -16,6 +18,10 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
  * Optional `title` / `body` (the /for pages, spec §2.9): omitted, the card
  * renders the homepage copy below, byte for byte. A vertical passes its own
  * one-line title (≤464px at 48px) and two body lines.
+ *
+ * Optional `buttons` / `note` (/guides/claude, 2026-10-06): a page may swap
+ * the CTA pair for its own buttons and add one small line under them; its
+ * body may be one sentence instead of two lines.
  */
 const CTA_TITLE = "Try Pancake now";
 /* "Pancake can’t overspend." retired (founder 2026-09-19): the plan is flat,
@@ -28,9 +34,13 @@ const CTA_BODY: readonly [string, string] = [
 export function LpCta({
   title = CTA_TITLE,
   body = CTA_BODY,
+  buttons,
+  note,
 }: {
   title?: string;
-  body?: readonly [string, string];
+  body?: readonly [string, string] | string;
+  buttons?: ReactNode;
+  note?: string;
 } = {}) {
   return (
     <section className="lp-cta">
@@ -52,30 +62,41 @@ export function LpCta({
           <div className="lp-cta__text">
             <h2 className="lp-title-card lp-cta__title">{title}</h2>
             <p className="lp-cta__body">
-              {body[0]}
-              <br />
-              {body[1]}
+              {typeof body === "string" ? (
+                body
+              ) : (
+                <>
+                  {body[0]}
+                  <br />
+                  {body[1]}
+                </>
+              )}
             </p>
           </div>
-          <div className="lp-cta__btns">
-            {/* Primary first, secondary second — the hero's order on every
-                surface (founder 2026-09-03). */}
-            <LpFxLink href={APP_ORIGIN} data-analytics-id="app_final">
-              Start free
-            </LpFxLink>
-            {/* A same-tab link to /demo (François, 2026-09-16; it opened the
-                Calendly sheet before), keeping the call_final id.
-                Tinted skin — same as the hero's Book a demo (founder
-                2026-09-01: "bouton book a call différent que dans hero");
-                the outline variant is retired here. */}
-            <LpFxLink
-              href={DEMO_PAGE_PATH}
-              className="lp-btn--tinted lp-btn--demo"
-              data-analytics-id="call_final"
-            >
-              Book a demo
-            </LpFxLink>
-          </div>
+          {buttons ? (
+            <div className="lp-cta__btns">{buttons}</div>
+          ) : (
+            <div className="lp-cta__btns">
+              {/* Primary first, secondary second — the hero's order on every
+                  surface (founder 2026-09-03). */}
+              <LpFxLink href={APP_ORIGIN} data-analytics-id="app_final">
+                Start free
+              </LpFxLink>
+              {/* A same-tab link to /demo (François, 2026-09-16; it opened the
+                  Calendly sheet before), keeping the call_final id.
+                  Tinted skin — same as the hero's Book a demo (founder
+                  2026-09-01: "bouton book a call différent que dans hero");
+                  the outline variant is retired here. */}
+              <LpFxLink
+                href={DEMO_PAGE_PATH}
+                className="lp-btn--tinted lp-btn--demo"
+                data-analytics-id="call_final"
+              >
+                Book a demo
+              </LpFxLink>
+            </div>
+          )}
+          {note ? <p className="lp-cta__note">{note}</p> : null}
         </div>
       </div>
     </section>

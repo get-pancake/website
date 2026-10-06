@@ -41,6 +41,7 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "/privacy", updated: "2026-09-18", priority: 0.3 },
   { path: "/terms", updated: "2026-09-18", priority: 0.3 },
   { path: "/support", updated: "2026-09-18", priority: 0.3 },
+  { path: "/guides/claude", updated: "2026-10-06", priority: 0.7 },
   { path: "/viktor-vs-pancake", updated: "2026-09-30", priority: 0.8 },
   { path: "/claude-tag-vs-pancake", updated: "2026-09-30", priority: 0.8 },
   { path: "/gojiberry-vs-pancake", updated: "2026-09-30", priority: 0.8 },
