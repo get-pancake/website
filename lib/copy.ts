@@ -465,7 +465,10 @@ export const pricingV2 = {
       the figures up front. */
   title: "Simple, transparent pricing",
   blurb: "One plan, everything included. No hidden fees, no surprises.",
-  perMonth: "/ month flat",
+  /** "per workspace", not "flat" (2026-10-06): a customer read the $99 as
+      possibly covering a second workspace. Billing is per workspace in the
+      app (pancake-cmo `subscribe-additional-workspace.ts`). */
+  perMonth: "/ month per workspace",
   /** The line under the price (Okara: "Full agent suite access"). */
   access: "Every agent included",
   /** Intro to the value list. It read "What a month gets you:" until the
@@ -498,4 +501,64 @@ export const pricingV2 = {
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot). */
   fine: TRIAL_NOTICE,
+} as const;
+
+/**
+ * What one plan covers — the /pricing section under the card (PlanMap.tsx),
+ * written 2026-10-06 after a customer email: "Does $99 include a second
+ * workspace and second LinkedIn account? … We have two separate ICPs."
+ * Every line is checked against pancake-cmo main (2026-10-06):
+ * - One plan per workspace: a second workspace is its own subscription at the
+ *   same price, charged off-session to the card on file, no trial
+ *   (`billing/commands/subscribe-additional-workspace.ts`).
+ * - Teammates: `workspace_seats` is a plain included feature, no quota.
+ * - Sending accounts: no billing gate on connecting more; a sequence sends
+ *   from ONE account or rotates across a group of 1-10
+ *   (`ROUND_ROBIN_POOL_MAX_SENDERS`). If the $39 sender licence of the 09-24
+ *   pricing spec ships, rewrite the accounts answer first.
+ * - Two audiences: a Play owns its targeting, copied from the Brain then
+ *   edited per Play (ADR 0075); the Brain stays shared.
+ * The platform is never named (François 2026-09-23): "accounts you send
+ * from", never LinkedIn.
+ */
+export const pricingPlan = {
+  title: "One plan per workspace.",
+  lede: "A workspace is one company. Its plan covers the Brain, every Play, your whole team and the accounts you send from.",
+  workspace: "Your workspace",
+  price: `${pricingV2.currencySymbol}${pricingV2.monthlyDollars} / month`,
+  brain: {
+    name: "Brain",
+    body: "What Pancake knows about your company and how you sell. Every Play uses it.",
+  },
+  plays: [
+    { name: "Agency owners", senders: ["Sarah"] },
+    { name: "Marketing leads", senders: ["Sarah", "Tom"] },
+  ],
+  playKicker: "Play",
+  playMeta: "Its own audience and messages",
+  sendsAs: "Sends as",
+  newPlay: { name: "New Play", body: "As many as you want" },
+  team: { members: ["Sarah", "Tom", "Maya"], body: "Invite your whole team at no extra cost." },
+  another: {
+    name: "Another company?",
+    body: `That's a second workspace, with its own Brain and its own ${pricingV2.currencySymbol}${pricingV2.monthlyDollars} plan.`,
+  },
+  faq: [
+    {
+      q: "I sell to two audiences. One workspace or two?",
+      a: "One. Give each audience its own Play, with its own targeting, messages and accounts. Both Plays share the Brain.",
+    },
+    {
+      q: "Can I send from more than one account?",
+      a: "Yes, at no extra cost. Each Play sends from one account or rotates across up to ten.",
+    },
+    {
+      q: "Do I pay per teammate?",
+      a: "No. Invite your whole team to the workspace.",
+    },
+    {
+      q: "When do I need a second workspace?",
+      a: `When you run a second company or brand. It gets its own Brain and its own ${pricingV2.currencySymbol}${pricingV2.monthlyDollars} plan, charged to the same card from day one, without a second trial.`,
+    },
+  ],
 } as const;
