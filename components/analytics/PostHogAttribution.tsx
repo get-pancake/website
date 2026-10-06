@@ -270,6 +270,8 @@ const ACQUISITION_PROPERTY_KEYS = new Set([
   "status_code",
   "scheduler_id",
   "presentation",
+  "block_id",
+  "tab_id",
 ]);
 
 function cleanAcquisitionProperties(detail: Record<string, unknown>) {

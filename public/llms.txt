@@ -26,6 +26,7 @@ Pancake focuses on outbound: finding a company's buyers and starting the convers
 
 - [Homepage](https://pancake.ai/) — current product, agents, workflow, and pricing
 - [Pricing](https://pancake.ai/pricing) — $99 per month with every GTM agent included
+- [Use Pancake in Claude](https://pancake.ai/guides/claude): connect Pancake to Claude, Claude Code or Codex over MCP, with prompts
 - [Blog](https://pancake.ai/blog) — the complete article archive
 - [Viktor vs Pancake](https://pancake.ai/viktor-vs-pancake) — broad AI employee vs focused AI GTM team
 - [Claude Tag vs Pancake](https://pancake.ai/claude-tag-vs-pancake) — ambient general teammate vs focused autonomous GTM execution

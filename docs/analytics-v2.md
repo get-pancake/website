@@ -64,7 +64,8 @@ links emit one allow-listed micro event so the funnel stays measurable:
 | `app_cta_clicked` | Micro | A "Get started" app link is clicked (fires before navigation) | `cta_id` |
 
 Approved app CTA IDs are `app_nav`, `app_hero`, `app_lead_finding`,
-`app_pricing_card`, `app_final`, and `app_pricing_page`.
+`app_pricing_card`, `app_final`, `app_pricing_page`, and (2026-10-06, the
+/guides/claude page) `app_guide_claude_hero` and `app_guide_claude_final`.
 
 **GTM action required:** the published container has no trigger for
 `app_cta_clicked` yet, and the `lead_form_*`/`lead_submitted` events below can
@@ -73,6 +74,20 @@ Add a Custom Event trigger for `app_cta_clicked` and decide deliberately what
 replaces `lead_submitted` as the paid-platform conversion (the in-app signup is
 the natural successor). PostHog already captures the new event via
 `PANCAKE_ACQUISITION_EVENT` with no changes.
+
+### /guides/claude engagement events (added 2026-10-06)
+
+The ManyChat DM page (`/guides/claude`) measures which blocks people copy and
+which AI client they pick. Both are diagnostic, never conversions; the page's
+Start free links use `app_cta_clicked` above.
+
+| Event | Tier | Exact firing rule | Event-specific fields |
+| --- | --- | --- | --- |
+| `guide_claude_copy` | Diagnostic | A Copy button's clipboard write succeeded | `block_id` (a fixed slug from `guide-copy.ts`, e.g. `promo-code`, `hero-setup-md`, `prompt-first-play`) |
+| `guide_claude_tab` | Diagnostic | The visitor picks a client tab in step 02 | `tab_id` (`claude`, `claude-code`, `codex`, `other`) |
+
+PostHog captures both via `PANCAKE_ACQUISITION_EVENT`. GTM has no trigger for
+them; add one only if GA4 should see them.
 
 ### Waitlist events (retired from the landing 2026-08-24)
 

@@ -31,6 +31,9 @@ export const APP_CTA_IDS = [
   "app_pricing_card",
   "app_final",
   "app_pricing_page",
+  // /guides/claude (the ManyChat DM page, 2026-10-06): its two Start free links.
+  "app_guide_claude_hero",
+  "app_guide_claude_final",
 ] as const;
 
 export type WaitlistCtaId = (typeof WAITLIST_CTA_IDS)[number];
@@ -95,7 +98,17 @@ export type AcquisitionEventPayloads = {
   };
   lead_submitted: LeadFormContext & { handoff_count: number };
   app_cta_clicked: { cta_id: AppCtaId };
+  /** /guides/claude: a Copy button copied its block (prompt, command, code or the whole .md). */
+  guide_claude_copy: { block_id: string };
+  /** /guides/claude: the visitor picked an AI client tab in step 02. */
+  guide_claude_tab: { tab_id: GuideClaudeTabId };
 };
+
+export const GUIDE_CLAUDE_TAB_IDS = ["claude", "claude-code", "codex", "other"] as const;
+export type GuideClaudeTabId = (typeof GUIDE_CLAUDE_TAB_IDS)[number];
+const GUIDE_CLAUDE_TAB_ID_SET = new Set<string>(GUIDE_CLAUDE_TAB_IDS);
+/** Block ids are fixed slugs in the page source (guide-copy.ts), never user text. */
+const GUIDE_CLAUDE_BLOCK_ID = /^[a-z0-9-]{1,40}$/;
 
 export type AcquisitionEventName = keyof AcquisitionEventPayloads;
 export const PANCAKE_ACQUISITION_EVENT = "pancake:acquisition-event";
@@ -109,6 +122,8 @@ const ACQUISITION_EVENT_NAMES = new Set<AcquisitionEventName>([
   "lead_submit_failed",
   "lead_submitted",
   "app_cta_clicked",
+  "guide_claude_copy",
+  "guide_claude_tab",
 ]);
 
 export function isAcquisitionEventName(value: unknown): value is AcquisitionEventName {
@@ -130,6 +145,9 @@ const EVENT_METADATA: Record<AcquisitionEventName, EventMetadata> = {
   lead_submitted: { funnelStage: "lead", conversionTier: "primary" },
   // CTA clicks are micro by contract — signups convert in-app, not here.
   app_cta_clicked: { funnelStage: "app", conversionTier: "micro" },
+  // Guide engagement, never a conversion: no GTM trigger maps these yet.
+  guide_claude_copy: { funnelStage: "app", conversionTier: "diagnostic" },
+  guide_claude_tab: { funnelStage: "app", conversionTier: "diagnostic" },
 };
 
 type DataLayerWindow = Window & {
@@ -155,6 +173,8 @@ export function emptyMappedEventFields() {
     scheduler_id: null,
     presentation: null,
     attribution_id: null,
+    block_id: null,
+    tab_id: null,
   };
 }
 
@@ -222,6 +242,18 @@ function sanitizePayload(
     const ctaId = typeof raw.cta_id === "string" ? raw.cta_id : null;
     if (!isAppCtaId(ctaId)) return null;
     return { cta_id: ctaId };
+  }
+
+  if (eventName === "guide_claude_copy") {
+    const blockId = typeof raw.block_id === "string" ? raw.block_id : null;
+    if (blockId === null || !GUIDE_CLAUDE_BLOCK_ID.test(blockId)) return null;
+    return { block_id: blockId };
+  }
+
+  if (eventName === "guide_claude_tab") {
+    const tabId = typeof raw.tab_id === "string" ? raw.tab_id : null;
+    if (tabId === null || !GUIDE_CLAUDE_TAB_ID_SET.has(tabId)) return null;
+    return { tab_id: tabId };
   }
 
   if (eventName.startsWith("lead_")) {
