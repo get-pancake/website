@@ -24,7 +24,7 @@ export const viewport: Viewport = { themeColor: "#fbf6f1" };
 export const metadata: Metadata = {
   title: "Careers — Pancake",
   description:
-    "Pancake is five people in San Francisco building the AI agents that bring small businesses customers. See open roles, meet the team, or send a note.",
+    "Pancake is four people in San Francisco building the AI agents that bring small businesses customers. See open roles, meet the team, or send a note.",
   alternates: { canonical: `${SITE_ORIGIN}/careers` },
 };
 
@@ -53,7 +53,7 @@ type Fact = {
 const ROLES: Role[] = [];
 
 const FACTS: Fact[] = [
-  { label: "5 people", tone: "purple" },
+  { label: "4 people", tone: "purple" },
   { label: "San Francisco, CA", tone: "yellow" },
   { label: "$5M seed", tone: "green" },
   { label: "Founded 2026", tone: "pink" },
@@ -89,12 +89,6 @@ const TEAM: TeamMember[] = [
     photo: "/team/zakaria.jpg",
     linkedin: "https://www.linkedin.com/in/zakaria-benhadi-13b02288/",
   },
-  {
-    name: "Théophile Cousin",
-    role: "Founding Engineer",
-    photo: "/team/theophile.jpg",
-    linkedin: "https://www.linkedin.com/in/theocousin/",
-  },
 ];
 
 const APPLY_EMAIL = "guillaume@pancake.ai";
@@ -112,7 +106,7 @@ export default function CareersPage() {
           </h1>
           <p className="lp-crs-lede lp-crs-hero__lede">
             Pancake&rsquo;s agents find warm leads for small businesses and start the
-            conversation. We are five people in San Francisco, and every hire shapes the
+            conversation. We are four people in San Francisco, and every hire shapes the
             company.
           </p>
           <ul className="lp-crs-facts" aria-label="Company facts">
