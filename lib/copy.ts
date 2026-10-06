@@ -519,8 +519,7 @@ export const pricingV2 = {
  * - Two audiences: a Play owns its targeting, copied from the Brain then
  *   edited per Play (ADR 0075); the Brain stays shared.
  * The platform is never named (François 2026-09-23): "accounts you send
- * from", never LinkedIn. The `marker` numbers tie each answer to its spot on
- * the diagram.
+ * from", never LinkedIn.
  */
 export const pricingPlan = {
   title: "One plan per workspace.",
@@ -546,22 +545,18 @@ export const pricingPlan = {
   },
   faq: [
     {
-      marker: 1,
       q: "I sell to two audiences. One workspace or two?",
       a: "One. Give each audience its own Play, with its own targeting, messages and accounts. Both Plays share the Brain.",
     },
     {
-      marker: 2,
       q: "Can I send from more than one account?",
       a: "Yes, at no extra cost. Each Play sends from one account or rotates across up to ten.",
     },
     {
-      marker: 3,
       q: "Do I pay per teammate?",
       a: "No. Invite your whole team to the workspace.",
     },
     {
-      marker: 4,
       q: "When do I need a second workspace?",
       a: `When you run a second company or brand. It gets its own Brain and its own ${pricingV2.currencySymbol}${pricingV2.monthlyDollars} plan, charged to the same card from day one, without a second trial.`,
     },

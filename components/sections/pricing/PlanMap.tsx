@@ -4,18 +4,11 @@ import { pricingPlan as p } from "@/lib/copy";
  * /pricing — "One plan per workspace": what the $99 covers, drawn as the
  * workspace itself (Brain on top, one Play per audience, the accounts each
  * Play sends as, the team), a dashed second workspace beside it, and the four
- * questions customers ask answered next to the picture. Numbered markers tie
- * each answer to its spot on the diagram. Server-rendered, zero JS.
+ * questions customers ask answered next to the picture. No numbering: a
+ * second count beside the answers read as two parallel lists (founder
+ * 2026-10-06). Server-rendered, zero JS.
  * Copy and fact sources: `pricingPlan` in lib/copy.ts.
  */
-
-function Marker({ n }: { n: number }) {
-  return (
-    <span className="lv2-plan-marker" aria-hidden="true">
-      {n}
-    </span>
-  );
-}
 
 /* One colour per teammate, the same in the senders and the team row. */
 function Avatar({ name }: { name: string }) {
@@ -53,20 +46,15 @@ export function PlanMap() {
 
               {/* Brain → Plays: the trunk splits into one drop per Play
                   (pure CSS, aligned to the plays grid's columns). */}
-              <div className="lv2-plan-link">
-                <Marker n={1} />
-              </div>
+              <div className="lv2-plan-link" aria-hidden="true" />
               <ul className="lv2-plan-plays">
-                {p.plays.map((play, i) => (
+                {p.plays.map((play) => (
                   <li key={play.name} className="lv2-plan-play">
                     <span className="lv2-plan-kicker">{p.playKicker}</span>
                     <p className="lv2-plan-play-name">{play.name}</p>
                     <p className="lv2-plan-play-meta">{p.playMeta}</p>
                     <div className="lv2-plan-senders">
-                      <span className="lv2-plan-senders-label">
-                        {i === 1 ? <Marker n={2} /> : null}
-                        {p.sendsAs}
-                      </span>
+                      <span className="lv2-plan-senders-label">{p.sendsAs}</span>
                       <span className="lv2-plan-chips">
                         {play.senders.map((s) => (
                           <span key={s} className="lv2-plan-chip">
@@ -88,7 +76,6 @@ export function PlanMap() {
               </ul>
 
               <div className="lv2-plan-team">
-                <Marker n={3} />
                 <span className="lv2-plan-team-faces" aria-hidden="true">
                   {p.team.members.map((m) => (
                     <Avatar key={m} name={m} />
@@ -100,21 +87,15 @@ export function PlanMap() {
             </div>
 
             <div className="lv2-plan-ws lv2-plan-ws--another">
-              <Marker n={4} />
-              <div>
-                <p className="lv2-plan-another-name">{p.another.name}</p>
-                <p className="lv2-plan-another-body">{p.another.body}</p>
-              </div>
+              <p className="lv2-plan-another-name">{p.another.name}</p>
+              <p className="lv2-plan-another-body">{p.another.body}</p>
             </div>
           </div>
 
           <dl className="lv2-plan-faq">
             {p.faq.map((item) => (
               <div key={item.q} className="lv2-plan-faq-item">
-                <dt>
-                  <Marker n={item.marker} />
-                  {item.q}
-                </dt>
+                <dt>{item.q}</dt>
                 <dd>{item.a}</dd>
               </div>
             ))}
