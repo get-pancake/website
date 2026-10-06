@@ -12,14 +12,16 @@ import { PriceGroups } from "@/components/sections/landing/PriceGroups";
 import { LandingFooter } from "@/components/sections/landing/LandingFooter";
 import { LandingNav } from "@/components/sections/landing/LandingNav";
 import { PancakeStack } from "@/components/sections/pricing/PancakeStack";
+import { PlanMap } from "@/components/sections/pricing/PlanMap";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
-import { pricingV2 } from "@/lib/copy";
+import { pricingPlan, pricingV2 } from "@/lib/copy";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v2.css";
 
 /* "AI GTM team", the identity term (2026-09-24); it read "AI sales and
-   marketing team" until AI SEO was retired (2026-09-30). */
-const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDollars}/month flat for your whole AI GTM team. Everything included. No tiers, no seats.`;
+   marketing team" until AI SEO was retired (2026-09-30). "per workspace"
+   since 2026-10-06, the unit the plan is billed on (see pricingPlan). */
+const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDollars}/month per workspace for your whole AI GTM team. Everything included. No tiers, no seats.`;
 
 const TITLE = `Pancake Pricing: $${pricingV2.monthlyDollars}/month flat`;
 const URL = `${SITE_ORIGIN}/pricing`;
@@ -75,12 +77,28 @@ const productJsonLd = {
   },
 };
 
+/* FAQPage JSON-LD — the PlanMap answers, verbatim, so search engines and
+   assistants quote the per-workspace rules instead of guessing them. */
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: pricingPlan.faq.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+
 export default function PricingPage() {
   return (
     <main className="lv2">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <div className="lv2-viewport lv2-viewport--page">
         <LandingNav />
@@ -133,6 +151,10 @@ export default function PricingPage() {
           </div>
         </section>
       </div>
+      {/* What the $99 covers — workspace, Plays, accounts, team (2026-10-06,
+          after a customer asked whether it includes a second workspace and
+          a second sending account). */}
+      <PlanMap />
       <LandingFooter />
       {/* LandingModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}
     </main>
