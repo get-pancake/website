@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
-const title = "Origami vs Pancake: GTM Suggestions vs AI GTM Team";
-const description = "Compare Origami and Pancake: live-web research and content-led GTM suggestions versus an AI GTM team that finds your buyers and starts the conversations.";
+const title = "Origami vs Pancake: GTM Suggestions vs Plays That Run";
+const description = "Compare Origami and Pancake: live-web research and content-led GTM suggestions versus Plays that find your buyers and start the conversations.";
 
 export const metadata: Metadata = {
   title,
@@ -29,7 +29,7 @@ const config: GtmComparisonConfig = {
   heroSummary: "Origami searches the live web, identifies prospects, and suggests content-led GTM opportunities. Pancake runs Plays that find your buyers, tells you why each one fits, and opens the conversations from your own account.",
   competitorBody: "A GTM research and prospecting product that searches live sources, builds lists, enriches contacts, and helps teams turn market information into content-led motions. It also includes multichannel sequencing for outbound follow-up.",
   competitorChoose: "Choose it when you want flexible live-web research and suggestions.",
-  pancakeBody: "An AI GTM team that goes from who you want to reach to the first conversation. Every lead arrives with one line on why they fit. Pancake writes each one a personal message from that reason, in your voice.",
+  pancakeBody: "A GTM platform that goes from who you want to reach to the first conversation. Every lead arrives with one line on why they fit. Pancake writes each one a personal message from that reason, in your voice.",
   pancakeChoose: "Choose it when you want GTM work done, not suggested.",
   verdictTitle: "Origami suggests the motion. Pancake runs it.",
   verdictLede: "Origami is useful for discovering people and content-led opportunities. Pancake is built for founders who want that market knowledge turned into leads and conversations.",
@@ -80,7 +80,7 @@ const config: GtmComparisonConfig = {
   closingTitle: "Do not stop at the suggestion. Ship the motion.",
   closingLede: "Tell Pancake who you want to reach. It builds a Play to find them, and every lead arrives with why they fit.",
   faqs: [
-    { q: "What is the main difference between Origami and Pancake?", a: "Origami is strong at live-web research, prospect lists, enrichment, and suggesting content-led GTM motions. Pancake is an AI GTM team that acts on what it finds. You tell it who you want to reach, it builds a Play to find them, and you approve every lead before anyone is contacted." },
+    { q: "What is the main difference between Origami and Pancake?", a: "Origami is strong at live-web research, prospect lists, enrichment, and suggesting content-led GTM motions. Pancake acts on what it finds. You tell it who you want to reach, it builds a Play to find them, and you approve every lead before anyone is contacted." },
     { q: "Does Origami publish content for me?", a: "No. Origami can suggest content-led opportunities and support the research behind them, but your team still writes and publishes the content. Pancake focuses on outbound: finding your buyers and starting the conversation." },
     { q: "Does Origami run outbound?", a: "Origami includes a multichannel sequencer, so it can support outbound execution after a list is created. Pancake ties outreach to the lead: each one arrives with one line on why they fit, and its personal message is written from that reason. A reply stops the sequence." },
     { q: "Which is better for prospect research?", a: "Origami may be the better fit for teams that primarily want natural-language searches across many live sources, data waterfalls, and flexible list building. Pancake is the better fit when you want that research turned into conversations without running the lists yourself." },

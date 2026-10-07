@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
-const title = "Paperclip vs Pancake: AI Company Control Plane vs AI GTM Team";
-const description = "Compare Paperclip and Pancake: a self-hosted control plane for AI companies versus a managed AI GTM team that finds your buyers and starts conversations.";
+const title = "Paperclip vs Pancake: AI Company Control Plane vs GTM Platform";
+const description = "Compare Paperclip and Pancake: a self-hosted control plane for AI companies versus a managed GTM platform that finds your buyers and starts conversations.";
 
 export const metadata: Metadata = {
   title, description,
@@ -15,14 +15,14 @@ export const metadata: Metadata = {
 
 const config: GtmComparisonConfig = {
   slug: "pancake-vs-paperclips", competitor: "Paperclip", competitorInitial: "P",
-  heroLede: "An AI company control plane versus a managed AI GTM team.",
+  heroLede: "An AI company control plane versus a managed GTM platform.",
   heroSummary: "Paperclip lets technical founders create a company, set goals, hire AI agents into an org chart, assign budgets, and monitor work. Pancake arrives finished: a Brain researched from your website, and Plays that find your buyers and start the conversations.",
   competitorBody: "An open-source control plane for autonomous AI companies. You create goals, a CEO agent, reporting lines, tasks, heartbeats, budgets, and approvals, then connect and operate the agent runtimes yourself.",
   competitorChoose: "Choose it when you want to design and govern an AI organization.",
-  pancakeBody: "A managed AI GTM team. Pancake builds the Brain from your website, finds leads with a reason on each one, and starts the conversations from your own account.",
+  pancakeBody: "A managed GTM platform. Pancake builds the Brain from your website, finds leads with a reason on each one, and starts the conversations from your own account.",
   pancakeChoose: "Choose it when you want GTM work completed without building the org chart.",
   verdictTitle: "Choose Paperclip to orchestrate agents. Choose Pancake to bring customers.",
-  verdictLede: "Paperclip is broad infrastructure for a developer-operated AI company. Pancake is an AI GTM team built for one job: bringing a small company its customers.",
+  verdictLede: "Paperclip is broad infrastructure for a developer-operated AI company. Pancake is a GTM platform built for one job: bringing a small company its customers.",
   competitorBestFit: "Paperclip is the stronger fit for developers who want to self-host a multi-agent organization, choose agent adapters, define a hierarchy, control budgets, and apply the system across functions beyond GTM.",
   differencesLede: "Both use multiple agents and recurring work, but the buyer assembles Paperclip while Pancake arrives with the GTM function assembled.",
   differences: [
@@ -33,7 +33,7 @@ const config: GtmComparisonConfig = {
     { n: "05", title: "Open source versus subscription", body: "Paperclip is open source and self-hosted, with separate runtime, model, infrastructure, and maintenance costs. Pancake is one $99 monthly subscription that already covers the runtime, models, and hosting.", angle: "Build cost and control versus a predictable managed outcome." },
   ],
   rows: [
-    { feature: "Core job", competitor: { text: "Control plane for an autonomous AI company", mark: "yes" }, pancake: { text: "Managed AI GTM team", mark: "yes" } },
+    { feature: "Core job", competitor: { text: "Control plane for an autonomous AI company", mark: "yes" }, pancake: { text: "Managed GTM platform", mark: "yes" } },
     { feature: "Primary model", competitor: { text: "Companies, goals, org chart, tasks, and budgets" }, pancake: { text: "Brain, Plays, leads, and outreach" } },
     { feature: "Setup", competitor: { text: "Self-host and configure agents and adapters" }, pancake: { text: "Add your website, get a GTM Brain", mark: "yes" } },
     { feature: "Customization", competitor: { text: "Arbitrary roles, runtimes, hierarchy, and plugins", mark: "yes" }, pancake: { text: "Six ways a Play finds leads" } },
@@ -46,7 +46,7 @@ const config: GtmComparisonConfig = {
   closingTitle: "Hire the GTM team instead of designing one.",
   closingLede: "Tell Pancake who you want to reach. It builds a Play to find them, and every lead arrives with why they fit.",
   faqs: [
-    { q: "What is the main difference between Paperclip and Pancake?", a: "Paperclip is an open-source control plane for creating and governing AI-agent organizations. Pancake is a managed AI GTM team: instead of an org chart, you get agents that already know how to find your buyers and start the conversations." },
+    { q: "What is the main difference between Paperclip and Pancake?", a: "Paperclip is an open-source control plane for creating and governing AI-agent organizations. Pancake is a managed GTM platform: instead of an org chart, you get Plays that already know how to find your buyers and start the conversations." },
     { q: "Which product is more customizable?", a: "Paperclip. Developers can define companies, roles, hierarchies, adapters, prompts, budgets, and plugins. Pancake's GTM jobs come ready-made, and you configure what matters for selling: who to reach, how to find them, and which leads you approve." },
     { q: "Is Paperclip free?", a: "Paperclip is open source, but users still pay for hosting, agent runtimes, models, data, and maintenance. Pancake has none of those line items: one flat $99 a month." },
     { q: "Which is faster to deploy for sales and marketing?", a: "Pancake. Its agents come built around finding customers, so setup is your website and a plain-English description of who you want to reach. Paperclip requires the user to design and configure those agents and workflows." },

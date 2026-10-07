@@ -16,7 +16,7 @@ faq:
     answer: "Yes, for architecture, security review, and anything with real production risk. An agent can write a correct-looking pull request faster than most engineers, but it doesn't carry the accountability for a decision that shapes the codebase for the next two years, and it can be confidently wrong about a security implication a senior developer would catch immediately. Founders running this model use a fractional CTO or senior contractor for system design, security-sensitive review, and infrastructure decisions, and let agents run the day-to-day feature and bug-fix throughput underneath that foundation."
   - question: "What engineering decisions should never be fully automated?"
     answer: "Database schema changes with migration risk, anything touching authentication or payment processing, infrastructure changes that affect uptime or cost at scale, and any incident with real customer or data impact. Agents should propose changes, run tests, and flag risk clearly, but a human with production context should be the one who approves the deploy on anything in this category. A schema migration merged on an agent's confidence alone is how a manageable technical decision becomes a multi-day incident."
-last_updated: "2026-09-24"
+last_updated: "2026-10-07"
 related:
   - "replacing-first-five-hires-with-ai"
   - "how-to-run-one-person-company-2026"
@@ -95,7 +95,7 @@ The pattern holds whether you're a solo founder shipping your first feature or a
 
 What changes with team size is throughput. That is the part agents scale without adding engineering headcount your stage doesn't need yet.
 
-Once the product ships, the next bottleneck is usually finding people to sell it to. That's the job [Pancake](/) does. It's an AI GTM team: its agents track who is showing buying signals, such as a company whose job ads name the tool you replace or a person engaging with a competitor's posts. Each morning's leads come with the signal behind them, and Pancake opens a conversation from your own account with every one you approve. If you already work in Codex or Claude, connect either one to Pancake's MCP server and review leads or adjust signals without leaving the session. Pancake is built for go-to-market, so the codebase stays with your coding agents. Here is how that works for [SaaS startups](/for/saas-startups).
+Once the product ships, the next bottleneck is usually finding people to sell it to. That's the job [Pancake](/) does. It tracks who is showing buying signals, such as a company whose job ads name the tool you replace or a person engaging with a competitor's posts. Each morning's leads come with the signal behind them, and Pancake opens a conversation from your own account with every one you approve. If you already work in Codex or Claude, connect either one to Pancake's MCP server and review leads or adjust signals without leaving the session. Pancake is built for go-to-market, so the codebase stays with your coding agents. Here is how that works for [SaaS startups](/for/saas-startups).
 
 ---
 

@@ -102,13 +102,14 @@ const geistSans = localFont({
 // https://pancake.ai since the PAN-1318 cutover). The www host 308-redirects
 // to it, and so do getpancake.ai and www.getpancake.ai (Vercel domain settings).
 // Every absolute URL below (canonical, og:url, JSON-LD) uses the apex host.
-// Default title/OG for routes that set none (founder 2026-09-24: "we're not an AI
-// coworker any more, we're AI GTM"). The homepage sets its own <title>: "Pancake".
+// Default title/OG for routes that set none: the homepage H1, since "AI GTM team"
+// retired with the launch positioning (2026-10-07). The homepage sets its own
+// <title>: "Pancake".
 // Description = SITE_DESCRIPTION (lib/copy.ts), the homepage hero lede; its
 // "grow your AI search visibility" clause went on 2026-09-30 (AI SEO retired).
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
-  title: "Pancake: The AI GTM team that brings you customers",
+  title: "Pancake: You run your company. We bring you customers.",
   description: SITE_DESCRIPTION,
   // No `alternates.canonical` and no `openGraph.url` here: both would be
   // inherited by every route that doesn't set its own, and a canonical that
@@ -116,14 +117,14 @@ export const metadata: Metadata = {
   // /pricing until 2026-09-24). Each indexable page sets its own canonical.
   openGraph: {
     type: "website",
-    title: "Pancake: The AI GTM team that brings you customers",
+    title: "Pancake: You run your company. We bring you customers.",
     description: SITE_DESCRIPTION,
     images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "You run your company. We bring you customers." }],
     siteName: "Pancake",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Pancake: The AI GTM team that brings you customers",
+    title: "Pancake: You run your company. We bring you customers.",
     description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
