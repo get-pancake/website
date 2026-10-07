@@ -13,6 +13,11 @@ import type { VerticalCategory } from "@/lib/verticals/types";
  * Logo left edge 179px, links dead-center, dark CTA right-anchored at the
  * same 179px margin (= the 1296 content grid's side margin at 1654).
  * Link targets are provisional (not specified in Figma) — flagged in the PR.
+ * 2026-10-07: "Pricing" (/pricing) replaces the artboard's "Company" (/#why,
+ * the 10x banner, not a company page; About lives in the footer), and a plain
+ * "Sign in" text link to the app sits before the pills (≥1025px only; the
+ * phone sheet carries it below). Returning customers had no way in but
+ * "Start free". Its signin_nav id stays out of the acquisition allow-list.
  * CTA pair (founder 2026-09-03): "Start free" then "Book a demo", the
  * hero's order, on every surface — the artboard bar drew one pill.
  * ≤767px (Figma mobile node 4389:8182): logo + burger only — links and the
@@ -27,7 +32,7 @@ import type { VerticalCategory } from "@/lib/verticals/types";
  * (click / Enter / Space) and closes it on Escape, pointer leave (after a
  * grace), focus leaving, or a press outside; data-open / data-closing on
  * .lp-nav-ind drive nav.css. Closed = visibility:hidden, so its links are
- * out of the Tab order: Tab goes Industries → caret → Company. Touch
+ * out of the Tab order: Tab goes Industries → caret → Pricing. Touch
  * (hover:none): no caret, no panel — "Industries" is just the hub link.
  */
 export function LpNav() {
@@ -39,10 +44,13 @@ export function LpNav() {
       <nav className="lp-nav-links" aria-label="Primary">
         <a href="/#how-it-works">Product</a>
         <LpNavIndustries />
-        <a href="/#why">Company</a>
+        <a href="/pricing">Pricing</a>
         <a href="/blog">Blog</a>
       </nav>
       <div className="lp-nav-ctas">
+        <a className="lp-nav-signin" href={APP_ORIGIN} data-analytics-id="signin_nav">
+          Sign in
+        </a>
         <LpFxLink
           href={APP_ORIGIN}
           size="sm"

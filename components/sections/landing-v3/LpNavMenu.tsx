@@ -96,7 +96,7 @@ export function LpNavMenu() {
   //   1.4.13); ArrowUp / ArrowDown / Home / End walk the panel links;
   // - focus leaving the entry, or a press outside it, closes it;
   // - closing moves focus out of the panel first and makes the fading panel
-  //   inert, so Tab during the fade lands on Company, never on <body>.
+  //   inert, so Tab during the fade lands on Pricing, never on <body>.
   // Touch (pointerType "touch", or a hover:none device): never opens —
   // "Industries" is the hub link and nav.css hides the caret.
   useEffect(() => {
@@ -165,7 +165,7 @@ export function LpNavMenu() {
 
     // Safe triangle: exit point → the panel's top corners. A pointer moving
     // inside it is on its way to the card, so each move renews the grace; a
-    // pointer that rests, or veers off (along the bar to Product / Company),
+    // pointer that rests, or veers off (along the bar to Product / Pricing),
     // lets the grace run out.
     const onCorridor = (e: PointerEvent) => {
       if (!exit || state !== "open") return;
@@ -363,11 +363,16 @@ export function LpNavMenu() {
           <a href="/for" onClick={close}>
             Industries
           </a>
-          <a href="/#why" onClick={close}>
-            Company
+          <a href="/pricing" onClick={close}>
+            Pricing
           </a>
           <a href="/blog" onClick={close}>
             Blog
+          </a>
+          {/* 2026-10-07: the bar's "Sign in" (returning customers), same
+              signin_nav id, kept out of the acquisition allow-list. */}
+          <a href={APP_ORIGIN} data-analytics-id="signin_nav" onClick={close}>
+            Sign in
           </a>
         </nav>
         <div className="lp-nav-menu-ctas">

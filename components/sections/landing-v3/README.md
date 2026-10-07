@@ -225,8 +225,10 @@ back during a fidelity pass:
   dividers, a cursor. `public/lp/lp-f3-logo-chatgpt.svg` and
   `lp-f3-logo-claude.svg` stay: `app/_styles/verticals/demo.css` uses them
   for the demo tour's Codex / Claude icons (the Gemini logo is deleted).
-- Footer content sits 48px closer to the pricing rings (height 467, brand
-  top 56.43, cols top 76.75; Figma: 515/104.43/124.75).
+- Footer content sits 48px closer to the pricing rings (brand top 56.43,
+  cols top 76.75; Figma: 104.43/124.75). Since 2026-10-07 the footer is in
+  flow with padding and has no fixed height (it was 467; Figma 515), so the
+  four link columns can grow without overflowing.
 - Demo tour (2026-09-23, founder: the /for product demo "should probably be on
   the normal landing page"): `LpDemoTour.tsx`, between LpMarquee and LpAgentLab
   — the /for demo reused as-is, just the four tabs (founder 2026-09-24: "only keep the 4

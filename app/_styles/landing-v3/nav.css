@@ -12,12 +12,14 @@
    with the page. On phones position:sticky keeps the artboard's layout slot
    (hero min-height math untouched) and the bar is transparent at the very
    top — pixel-identical to the artboard. Past 8px (LpNavScroll stamps
-   .is-scrolled) it compresses 104→64 with the logo at 0.79, near-opaque
-   cream + hairline — NO backdrop-filter: a standing blur on phones is the
-   GPU load class that killed WebContent. The second shadow is a solid cream
-   slab above the bar: iOS ghosts page content through the status-bar /
-   Dynamic-Island zone, and the slab makes bar + island band one continuous
-   chrome (own-element shadows are not cut by the bar's overflow: clip).
+   .is-scrolled) it compresses 104→64 with the logo at 0.79, opaque cream
+   (--lp-page-bg; 2026-10-07: the 0.96 alpha let body and table text show
+   through behind the logo and the pill) + hairline — NO backdrop-filter:
+   a standing blur on phones is the GPU load class that killed WebContent.
+   The second shadow is a solid cream slab above the bar: iOS ghosts page
+   content through the status-bar / Dynamic-Island zone, and the slab makes
+   bar + island band one continuous chrome (own-element shadows are not cut
+   by the bar's overflow: clip).
    z-index 30: above sections, under the menu sheet (40) / call dialog (50). */
 @media (max-width: 767px) {
   .lp-nav {
@@ -35,10 +37,10 @@
     z-index: 30;
   }
   .lp-nav.is-scrolled {
-    background-color: rgba(251, 246, 241, 0.96);
+    background-color: var(--lp-page-bg);
     box-shadow:
       0 1px 0 rgba(44, 0, 42, 0.08),
-      0 -120px 0 rgba(251, 246, 241, 0.96);
+      0 -120px 0 var(--lp-page-bg);
     height: var(--lp-nav-compact-height);
     /* Keep the original flow space throughout the height transition, so
        compacting the sticky bar never pulls the content underneath up. */
@@ -100,11 +102,49 @@
   right: max(32px, calc(50% - 648px));
   top: calc(50% - 19px);
 }
+/* "Sign in" (2026-10-07): a plain text link before the pills, set like the
+   centre links; 9px block padding makes it exactly the sm pill's 38px, so
+   the row keeps its height and the pills don't move. ≥1025 only: from 768
+   to 1024 the bar is already tight, and phones get it in the sheet. */
+.lp-nav-signin {
+  display: none;
+}
+@media (min-width: 1025px) {
+  .lp .lp-nav-signin {
+    color: var(--lp-text);
+    display: block;
+    font-size: var(--lp-text-sm);
+    font-weight: 500;
+    letter-spacing: 0.1333px;
+    line-height: 1.5;
+    margin-right: 8px;
+    padding-block: 9px;
+  }
+}
 
 @media (max-width: 1024px) {
   .lp-nav-links {
     gap: 24px;
   }
+}
+
+/* Focus ring on the tinted "Book a demo" pill (2026-10-07, WCAG 1.4.11):
+   foundation's purple-30 ring is 2.07:1 on the #f5e5d6 fill. --lp-text is
+   plum there (15:1) and turns cream in the agents view, where the pill is
+   dark plum — so the ring stays visible in both. Every tinted pill (nav,
+   hero, CTA, /for hero, /agents) loads this sheet via landing-v3.css. The
+   cream "Start free" pill in the phone sheet gets the same plum ring
+   (purple-30 on cream is about 2.4:1); the sheet's outline pill sits on plum
+   and keeps purple-30. /demo's outline pills have their own ring (demo.css). */
+.lp .lp-btn--tinted:focus-visible,
+.lp .lp-nav-menu .lp-btn:not(.lp-btn--outline):focus-visible {
+  outline-color: var(--lp-text);
+}
+
+/* Same-page hash links (LpNavScroll): a keyboard jump moves focus to the
+   target section like a native fragment jump, without a ring around it. */
+.lp [data-lp-hash-target]:focus {
+  outline: none;
 }
 
 /* ── Mobile (Figma node 4389:8182, 402×88 at y80 — 16px below page top) ──
@@ -288,9 +328,9 @@ body.menu-open:has(main.lp) {
 /* Caret button: a 14×24 box centred on the 10px caret, 3px clear of the
    link so its focus ring never touches the "s"; margins 3 / −2 keep the
    footprint at the old 5px gap + 10px caret. The ::after stretches the hit
-   area to 40×40, from the link's edge into the gap before "Company" (24px
+   area to 40×40, from the link's edge into the gap before "Pricing" (24px
    gap ≤1024 → 1px taken from the link side instead). Focus ring = the
-   browser default, like Product / Company / Blog. */
+   browser default, like Product / Pricing / Blog. */
 .lp .lp-nav-ind__toggle {
   align-self: center;
   appearance: none;
@@ -514,12 +554,14 @@ body.menu-open:has(main.lp) {
 @media (pointer: coarse) {
   .lp-nav-links > a,
   .lp .lp-nav-ind__trigger,
-  .lp .lp-nav-menu-btn {
+  .lp .lp-nav-menu-btn,
+  .lp .lp-nav-signin {
     position: relative;
   }
   .lp-nav-links > a::after,
   .lp .lp-nav-ind__trigger::after,
   .lp .lp-nav-menu-btn::after,
+  .lp .lp-nav-signin::after,
   .lp .lp-nav-ctas .lp-btn::after {
     content: "";
     inset: min(0px, calc(50% - 22px));

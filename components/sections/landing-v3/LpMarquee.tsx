@@ -1,8 +1,13 @@
 import type { CSSProperties } from "react";
 
+import { LpMarqueePause } from "@/components/sections/landing-v3/LpMarqueePause";
+
 /** Customer logos in the founder's order. The brain landing is the source
  * for the plum masks, optical sizing and continuous leftward scroll.
  * Artwork and provenance: public/logos/customers/README.md.
+ * 2026-10-07: the loop pauses while a pointer rests on the band, and a small
+ * pause button (LpMarqueePause, outside the band so it never pauses itself)
+ * stops it for keyboard and touch users (WCAG 2.2.2).
  */
 type CustomerLogo = {
   name: string;
@@ -63,6 +68,7 @@ export function LpMarquee() {
           ))}
         </div>
       </div>
+      <LpMarqueePause />
       <ul className="lp-sr-only">
         {LOGOS.map((logo) => (
           <li key={logo.name}>{logo.name}{logo.yc ? " — Y Combinator" : ""}</li>

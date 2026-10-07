@@ -14,6 +14,7 @@ import {
   type AiSalesSlotToolParams,
   type AiSalesSlotToolResult,
 } from "@/lib/ai-sales";
+import { pushAcquisitionEvent } from "@/lib/analytics/data-layer";
 import { submissionAttemptForEmail, type BrowserSubmissionAttempt } from "@/lib/analytics/submission-id";
 import { demoBookingSlot, type DemoBookingAnswers, type DemoBookingSlot } from "@/lib/booking";
 import {
@@ -33,6 +34,7 @@ import {
   type DemoRequestField,
   type DemoRequestPartial,
 } from "@/lib/demo-request";
+import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { AiSalesCall } from "./AiSalesCall";
 import { BOOKED, BOOKING, CARD, ERRORS, FIELDS, PROGRESS, STEP2, SUPPORT_HREF } from "./demo-copy";
 import { DemoBooked } from "./DemoBooked";
@@ -171,7 +173,28 @@ function fieldMessage(field: DemoRequestField, reason?: DemoRequestErrorReason):
 
 // Only the visitor's own input can block the flow: a server-side delivery
 // problem never does (see onSubmit).
+// A personal email gets a next step on screen (2026-10-07): "Start free"
+// links the app, so a solo founder without a work address isn't stuck.
+// fieldMessage stays a plain string: the voice agent's tool results read it.
+// A text link, not a pill, inside the alert line (demo.css underlines it);
+// the click pushes app_cta_clicked itself, like LpFxLink does.
 function errorMessage(kind: ErrorKind): ReactNode {
+  if (kind.code === "field" && kind.reason === "personal_email") {
+    const copy = ERRORS.emailPersonalVisible;
+    return (
+      <>
+        {copy.before}
+        <a
+          href={APP_ORIGIN}
+          data-analytics-id="app_demo_personal_email"
+          onClick={() => pushAcquisitionEvent("app_cta_clicked", { cta_id: "app_demo_personal_email" })}
+        >
+          {copy.link}
+        </a>
+        {copy.after}
+      </>
+    );
+  }
   return kind.code === "field" ? fieldMessage(kind.field, kind.reason) : ERRORS.invalid;
 }
 

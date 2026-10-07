@@ -6,24 +6,36 @@
  * when configured, falling back to static seed (read-only) otherwise so the
  * page always renders. Mutations run through server API routes so the
  * service-role key never reaches the browser.
+ *
+ * 2026-10-07: noindex (follow) until the board holds Plays-era ideas — it
+ * showed V1 "squads", an email agent marked In progress and spam rows, in
+ * the page and its ItemList JSON-LD (keep-or-retire is founder decision
+ * D14). The V1 meta copy ("Upvote the squads…") is gone. The sitewide chrome
+ * (LpNav + LpFooter inside main.lp) replaces HomeNav + the shared footer;
+ * the board keeps its kit styling (roadmap-lp.css).
  */
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
 import { HOME_PAGE_CONTAINER_CLASS } from "@/components/sections/home/home-layout";
-import { HomeNav } from "@/components/sections/home/HomeNav";
+import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
+import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { RoadmapBoard } from "@/components/sections/roadmap/RoadmapBoard";
 import { STATUS_META } from "@/components/sections/roadmap/roadmap-data";
-import { Footer } from "@/components/shared/Footer";
 import { Badge } from "@/components/ui/Badge";
 import { isAdmin } from "@/lib/auth/admin";
 import { getIdeas, isPublicIdea } from "@/lib/roadmap/ideas";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
+import "@/app/_styles/landing-v3.css";
+import "./roadmap-lp.css";
 
 // Always render per-request: the board reflects live Supabase data and the
 // signed-in user. (Without this, a build with env present could cache stale
 // rows; a build without env could bake in seed data.)
 export const dynamic = "force-dynamic";
+
+/* Status-bar zone matches the lp cream (Dynamic Island fix, 2026-08-31) */
+export const viewport: Viewport = { themeColor: "#fbf6f1" };
 
 /* 2026-10-07 (audit 1.8, 8.7): noindex (follow) and out of the sitemap until the
    roadmap's future is decided (D14): the board still showed V1 "squads" ideas and
@@ -68,16 +80,16 @@ export default async function OpenRoadmapPage() {
   };
 
   return (
-    <main id="main-content" className="roadmap-page min-h-screen">
+    <main id="main-content" className="lp roadmap-page min-h-screen">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(roadmapJsonLd) }}
       />
 
-      <HomeNav />
+      <LpNav />
 
       {/* Hero */}
-      <section className="home-landing-section roadmap-hero" aria-labelledby="roadmap-hero-heading">
+      <section className="lp-kit home-landing-section roadmap-hero" aria-labelledby="roadmap-hero-heading">
         <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
           <header className="home-landing-section__header">
             <Badge variant="brand-alt-1">Open roadmap</Badge>
@@ -91,7 +103,7 @@ export default async function OpenRoadmapPage() {
       {/* Board */}
       <section
         id="roadmap"
-        className="home-landing-section home-landing-section--alt roadmap-board-section"
+        className="lp-kit home-landing-section home-landing-section--alt roadmap-board-section"
         aria-labelledby="roadmap-board-heading"
       >
         <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
@@ -108,7 +120,7 @@ export default async function OpenRoadmapPage() {
       </section>
 
       {/* Closing CTA */}
-      <section className="home-landing-section" aria-labelledby="roadmap-closing-heading">
+      <section className="lp-kit home-landing-section" aria-labelledby="roadmap-closing-heading">
         <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner home-landing-section__inner--closing`}>
           <h2 id="roadmap-closing-heading" className="heading home-landing-section__closing-title text-center">
             Got an idea?
@@ -129,7 +141,7 @@ export default async function OpenRoadmapPage() {
         </div>
       </section>
 
-      <Footer />
+      <LpFooter />
     </main>
   );
 }

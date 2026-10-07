@@ -1,0 +1,97 @@
+/* /pricing only — imported by app/pricing/page.tsx AFTER landing-v3.css and
+   landing-v2.css (2026-10-07). The page wears the sitewide chrome (LpNav +
+   LpFooter inside main.lp) around the lv2 pricing body (div.lv2), so these
+   rules keep the lv2 sections whole inside the .lp scope and lay out the
+   three sections added that day. Two-class selectors throughout: both kits
+   are unlayered, and CSS chunk order across routes is not guaranteed, so
+   nothing here may depend on source order. */
+
+/* foundation.css `.lp p { margin: 0 }` (0,1,1) outranks lv2's single-class
+   rule: give the fine print back its pull-up under the CTA pair. */
+.lv2-pricing-page .lv2-price-fine {
+  margin-top: -0.5rem;
+}
+
+/* ── Logo row under the card (PricingLogos.tsx) ──
+   The homepage marquee, frozen: one copy, wrapped, left-aligned like the
+   copy above it, no edge fades (the reduced-motion recipe of marquee.css,
+   at every width). */
+.lv2-pricing-logos {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: clamp(2.5rem, 6vh, 4rem);
+}
+.lv2-pricing-logos .lv2-pricing-logos-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--subtle-text);
+}
+.lv2-pricing-logos .lp-marquee {
+  overflow: visible;
+  padding-block: 0;
+}
+.lv2-pricing-logos .lp-marquee__band {
+  overflow: visible;
+  -webkit-mask-image: none;
+  mask-image: none;
+}
+.lv2-pricing-logos .lp-marquee__track {
+  width: auto;
+}
+.lv2-pricing-logos .lp-marquee__seq {
+  animation: none;
+  will-change: auto;
+  flex: 1;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding-inline: 0;
+  row-gap: 1rem;
+}
+.lv2-pricing-logos .lp-marquee__seq + .lp-marquee__seq {
+  display: none;
+}
+/* No motion, no control: LpMarqueePause already stays hidden on a strip
+   that doesn't animate; this keeps it gone even before its effect runs. */
+.lp .lv2-pricing-logos .lp-marquee__pause {
+  display: none;
+}
+/* Phones: the marquee's 48px gap left two logos a row (six rows). A
+   tighter gap still clears the YC mark (spacing-lg + spacing-sm wide). */
+@media (max-width: 767px) {
+  .lv2-pricing-logos .lp-marquee__seq {
+    column-gap: 1.5rem;
+    row-gap: 0.75rem;
+  }
+}
+
+/* ── "Everything in the $99." (PlanIncluded.tsx) ──
+   The card's check-mark list, two columns from 640px. */
+.lv2-included .lv2-included-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.875rem clamp(2rem, 5vw, 4.5rem);
+  max-width: 52rem;
+}
+@media (min-width: 640px) {
+  .lv2-included .lv2-included-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ── "Billing questions." (BillingFaq.tsx) ──
+   PlanMap's answer list, two columns from 1024px; below, landing-v2.css
+   keeps its 40rem reading measure. The second answer opens the right
+   column, so it drops the top rule and padding like the first. */
+@media (min-width: 1024px) {
+  .lv2-billing .lv2-billing-faq {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(2rem, 5vw, 4.5rem);
+    padding-top: 0;
+  }
+  .lv2-billing .lv2-billing-faq .lv2-plan-faq-item:nth-child(2) {
+    border-top: 0;
+    padding-top: 0;
+  }
+}

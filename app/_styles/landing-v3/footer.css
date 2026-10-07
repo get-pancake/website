@@ -1,9 +1,16 @@
 /* ── Landing v3 · Footer (node 4258:253, 1654×515, bg #000) ───────────────────
    Brand block at frame x259 (= 50% − 568px), logo 239.672×116.755 at block
-   (1.377, 0). Three right-aligned columns, boxes w176 whose RIGHT edges sit at
-   frame x1011/1203/1395 → lefts 50%+8 / 50%+200 / 50%+392. --lp-foot-shift
-   nudges all three left in lockstep when the viewport can't fit x1395 + 24px
-   (kicks in only below ~1184px; 0px at the 1654 reference). */
+   (1.377, 0). Right-aligned columns, boxes w176 whose RIGHT edges sit at
+   frame x1011/1203/1395 (a 192px pitch: 176 + 16 gap), the last one mirroring
+   the brand's left margin.
+
+   2026-10-07: flow layout at every width. The columns used to be absolutely
+   positioned at fixed lefts inside a fixed 467px band, so a fourth column or
+   a longer list overflowed. Now the frame is a flex row (brand left, columns
+   right) with the artboard's margins as padding: same pixels at the 1654
+   reference for the three original columns, and the new Resources column
+   takes the next 192px slot to the left. Height follows the content; the
+   bottom padding keeps the 140px under the tallest column (Social). */
 
 /* Founder tweak (2026-08-28): content pulled 48px up toward the pricing
    rings ("rapproche le footer des cercles"), height reduced in step so the
@@ -12,21 +19,23 @@
 .lp-foot {
   background: #000;
   color: #fff;
-  height: 467px;
   position: relative;
 }
 .lp-foot-frame {
-  --lp-foot-shift: max(0px, 592px - 50%);
-  height: 100%;
+  align-items: flex-start;
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
   margin-inline: auto;
+  /* min(1654px, 100%) = the frame's own width: padding % reads the footer's */
+  padding: 56.43px max(32px, calc(min(1654px, 100%) / 2 - 568px)) 139.82px;
   position: relative;
   width: min(1654px, 100%);
 }
 .lp-foot-brand {
+  flex: none;
   height: 270.755px;
-  left: max(32px, calc(50% - 568px));
-  position: absolute;
-  top: 56.43px;
+  position: relative;
   width: 241.047px;
 }
 .lp-foot-logo {
@@ -50,20 +59,21 @@
 .lp-foot-legal {
   top: 250.75px;
 }
+.lp-foot-cols {
+  display: flex;
+  gap: 16px;
+  margin-top: 20.32px; /* artboard: columns' top 76.75 vs the brand's 56.43 */
+  min-width: 0; /* lets the row (and so its columns) shrink under ~1100 */
+}
+/* width (not flex-basis) sets the 176px box: it is also what the columns
+   row reports as its own width, so the row is 4 × 176 + gaps and the right
+   edges keep the 192px pitch. Below ~1100 they shrink, never under their
+   longest label (the brand gap absorbs the rest). */
 .lp-foot-col {
-  position: absolute;
+  flex: 0 1 auto;
+  min-width: max-content;
   text-align: right;
-  top: 76.75px;
   width: 176px;
-}
-.lp-foot-col[data-col="product"] {
-  left: calc(50% + 8px - var(--lp-foot-shift));
-}
-.lp-foot-col[data-col="company"] {
-  left: calc(50% + 200px - var(--lp-foot-shift));
-}
-.lp-foot-col[data-col="social"] {
-  left: calc(50% + 392px - var(--lp-foot-shift));
 }
 .lp-foot-head {
   font-weight: 600;
@@ -78,30 +88,24 @@
 .lp-foot-links a:last-child {
   margin-bottom: 0;
 }
-/* Mobile-only single meta line ("2026 Pancake · San Francisco, CA · Privacy ·
+/* Mobile-only single meta line ("© 2026 Pancake · San Francisco, CA · Privacy ·
    Terms") — hidden at ≥768 where the brand block carries lines + legal. */
 .lp-foot-line {
   display: none;
 }
 
-/* ≤1024: recompose to flow — brand block, then columns as a wrapping row. */
+/* ≤1024: stack — brand block, then the columns as a wrapping row. */
 @media (max-width: 1024px) {
-  .lp-foot {
-    height: auto;
-  }
   .lp-foot-frame {
-    display: flex;
+    align-items: stretch;
     flex-direction: column;
     gap: 56px;
-    height: auto;
+    justify-content: flex-start;
     padding: 64px 48px;
     width: 100%;
   }
   .lp-foot-brand {
     height: auto;
-    left: auto;
-    position: static;
-    top: auto;
     width: auto;
   }
   .lp-foot-logo,
@@ -116,20 +120,20 @@
     margin-top: 16px;
   }
   .lp-foot-cols {
-    display: flex;
     flex-wrap: wrap;
     gap: 48px 64px;
+    margin-top: 0;
   }
   .lp-foot-col {
-    left: auto;
-    position: static;
+    flex: none;
     text-align: left;
-    top: auto;
+    width: 176px;
   }
 }
 
 /* ≤767: compact recompose (2026-08-31, "très long à scroller") — logo row
-   (140px), Product + Company side by side, Social as a wrapped row, then one
+   (140px), the link columns two by two (2026-10-07: Product + Resources,
+   then Company), Social as a wrapped row, then one
    muted meta line replacing the brand lines + legal. Every link keeps a 44px
    effective tap target: col/social links 24px line + 2×10px padding-block;
    meta links pad to 44px but cancel it with negative margins so the line
@@ -153,6 +157,7 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
   .lp-foot-col {
+    min-width: 0; /* a long label ("Connect your agent") wraps inside its cell at 320 */
     width: auto; /* desktop's fixed 176px overflows a 320px grid cell */
   }
   .lp-foot-col[data-col="social"] {

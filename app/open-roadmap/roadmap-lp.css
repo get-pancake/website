@@ -1,0 +1,27 @@
+/* /open-roadmap and /open-roadmap/admin — the sitewide chrome (LpNav +
+   LpFooter inside main.lp, 2026-10-07) around the board, which stays kit UI
+   (components.css, layered). landing-v3's base resets are UNLAYERED —
+   `.lp p { margin: 0 }`, `.lp a { color: inherit; text-decoration: none }`,
+   `.lp img { display: block }` — so they would beat every layered kit rule
+   inside the board (paragraph margins, the "Share an idea" button label,
+   link colours). The .lp-kit sections hand exactly those properties back to
+   the layers (revert-layer = "use the kit's value"). Two-class selectors:
+   nothing here depends on stylesheet order. */
+.lp .lp-kit p {
+  margin: revert-layer;
+}
+.lp .lp-kit a {
+  color: revert-layer;
+  text-decoration: revert-layer;
+}
+.lp .lp-kit img {
+  display: revert-layer;
+}
+
+/* The section right under LpNav (the board's hero, the admin sign-in) takes
+   the cream page background the nav band shows, so there is no cream-to-white
+   seam under the nav (2026-10-07; the old white HomeNav blended into a white
+   hero). Later sections keep their kit surfaces. */
+.lp > .lp-nav + .lp-kit {
+  background-color: var(--lp-page-bg);
+}

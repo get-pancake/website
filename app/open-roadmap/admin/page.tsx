@@ -10,11 +10,13 @@
 import type { Metadata } from "next";
 
 import { HOME_PAGE_CONTAINER_CLASS } from "@/components/sections/home/home-layout";
-import { HomeNav } from "@/components/sections/home/HomeNav";
+import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
+import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { AdminSignOut } from "@/components/sections/roadmap/AdminSignOut";
-import { Footer } from "@/components/shared/Footer";
 import { Badge } from "@/components/ui/Badge";
 import { getAdminSession, isAdminAuthConfigured } from "@/lib/auth/admin";
+import "@/app/_styles/landing-v3.css";
+import "../roadmap-lp.css";
 
 export const dynamic = "force-dynamic";
 
@@ -43,10 +45,11 @@ export default async function RoadmapAdminPage({
   const error = errorKey ? ERROR_COPY[errorKey] ?? "Sign-in failed. Please try again." : null;
 
   return (
-    <main id="main-content" className="roadmap-page min-h-screen">
-      <HomeNav />
+    // Same chrome as the board (LpNav + LpFooter in main.lp, 2026-10-07).
+    <main id="main-content" className="lp roadmap-page min-h-screen">
+      <LpNav />
 
-      <section className="home-landing-section" aria-labelledby="roadmap-admin-heading">
+      <section className="lp-kit home-landing-section" aria-labelledby="roadmap-admin-heading">
         <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
           <div className="roadmap-admin">
             <header className="roadmap-admin__header">
@@ -100,7 +103,7 @@ export default async function RoadmapAdminPage({
         </div>
       </section>
 
-      <Footer />
+      <LpFooter />
     </main>
   );
 }
