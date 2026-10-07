@@ -1,7 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
 
-import { CHANGELOG_PATH, LATEST_CHANGELOG_ENTRY } from "@/components/sections/changelog/changelog-data";
-import { LpAnnounce, type Announcement } from "@/components/sections/landing-v3/LpAnnounce";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNavMenu, type LpNavItem } from "@/components/sections/landing-v3/LpNavMenu";
 import { LpNavScroll } from "@/components/sections/landing-v3/LpNavScroll";
@@ -26,11 +24,13 @@ import type { VerticalCategory } from "@/lib/verticals/types";
  * pill move into LpNavMenu's sheet; the pill keeps its app_nav id there.
  *
  * Menus (founder 2026-10-07, "inspire-toi de la compet pour rendre accessible
- * les pages que t'as créées"): /plays, /changelog, /compare and the Claude
- * guide were linked from nowhere but the sitemap. Like Unify and Octave, the
- * bar reads Product ▾ · Industries ▾ · Pricing · Resources ▾; "Blog" moved
- * into Resources, and "Resources" links to /blog. PRODUCT_MENU and
- * RESOURCES_MENU are the one source: the phone sheet gets them as props.
+ * les pages que t'as créées"): /plays, /compare and the Claude guide were
+ * linked from nowhere but the sitemap. Like Unify and Octave, the bar reads
+ * Product ▾ · Industries ▾ · Pricing · Resources ▾; "Blog" moved into
+ * Resources, and "Resources" links to /blog. PRODUCT_MENU and RESOURCES_MENU
+ * are the one source: the phone sheet gets them as props. No changelog
+ * (founder 2026-10-08: a dated feed needs an entry every release) and so no
+ * release bar above the nav either; a launch-day bar can come back here.
  *
  * Every ▾ entry is the same disclosure (LpNavDisclosure, born as "Industries",
  * founder 2026-09-22, "do like Origami"): a plain link to the entry's main
@@ -50,65 +50,59 @@ import type { VerticalCategory } from "@/lib/verticals/types";
  */
 export function LpNav() {
   return (
-    <>
-      {/* Announcement bar (2026-10-07, Octave / Alta / Unify pattern): above
-          the bar on every page that renders the nav, in normal flow, so it
-          scrolls away and the phone's sticky bar keeps top: 0. */}
-      <LpAnnounce announcement={ANNOUNCEMENT} />
-      <header className="lp-nav">
-        <a className="lp-nav-logo" href="/" aria-label="Pancake home">
-          <img alt="" src="/lp/lp-nav-logo.svg" width={114.956} height={56} />
+    <header className="lp-nav">
+      <a className="lp-nav-logo" href="/" aria-label="Pancake home">
+        <img alt="" src="/lp/lp-nav-logo.svg" width={114.956} height={56} />
+      </a>
+      <nav className="lp-nav-links" aria-label="Primary">
+        <LpNavDisclosure
+          name="product"
+          label="Product"
+          href="/#how-it-works"
+          toggleLabel="Show product pages"
+          className="lp-nav-dd--menu"
+        >
+          <LpNavMenuList items={PRODUCT_MENU} />
+        </LpNavDisclosure>
+        <LpNavIndustries />
+        <a href="/pricing">Pricing</a>
+        <LpNavDisclosure
+          name="resources"
+          label="Resources"
+          href="/blog"
+          toggleLabel="Show resources"
+          className="lp-nav-dd--menu"
+        >
+          <LpNavMenuList items={RESOURCES_MENU} />
+        </LpNavDisclosure>
+      </nav>
+      <div className="lp-nav-ctas">
+        <a className="lp-nav-signin" href={APP_ORIGIN} data-analytics-id="signin_nav">
+          Sign in
         </a>
-        <nav className="lp-nav-links" aria-label="Primary">
-          <LpNavDisclosure
-            name="product"
-            label="Product"
-            href="/#how-it-works"
-            toggleLabel="Show product pages"
-            className="lp-nav-dd--menu"
-          >
-            <LpNavMenuList items={PRODUCT_MENU} />
-          </LpNavDisclosure>
-          <LpNavIndustries />
-          <a href="/pricing">Pricing</a>
-          <LpNavDisclosure
-            name="resources"
-            label="Resources"
-            href="/blog"
-            toggleLabel="Show resources"
-            className="lp-nav-dd--menu"
-          >
-            <LpNavMenuList items={RESOURCES_MENU} />
-          </LpNavDisclosure>
-        </nav>
-        <div className="lp-nav-ctas">
-          <a className="lp-nav-signin" href={APP_ORIGIN} data-analytics-id="signin_nav">
-            Sign in
-          </a>
-          <LpFxLink
-            href={APP_ORIGIN}
-            size="sm"
-            data-analytics-id="app_nav"
-          >
-            Start free
-          </LpFxLink>
-          {/* A same-tab link to /demo on every page, like the sheet's pill
-              (François, 2026-09-16: the "Book a demo" buttons lead to the demo
-              page; the Calendly dialog is no longer mounted). Hidden ≤767
-              (nav.css) — the bar has room for one pill, the sheet carries both. */}
-          <LpFxLink
-            href={DEMO_PAGE_PATH}
-            size="sm"
-            className="lp-btn--tinted lp-btn--demo"
-            data-analytics-id="call_nav"
-          >
-            Book a demo
-          </LpFxLink>
-        </div>
-        <LpNavMenu product={PRODUCT_MENU} resources={RESOURCES_MENU} />
-        <LpNavScroll />
-      </header>
-    </>
+        <LpFxLink
+          href={APP_ORIGIN}
+          size="sm"
+          data-analytics-id="app_nav"
+        >
+          Start free
+        </LpFxLink>
+        {/* A same-tab link to /demo on every page, like the sheet's pill
+            (François, 2026-09-16: the "Book a demo" buttons lead to the demo
+            page; the Calendly dialog is no longer mounted). Hidden ≤767
+            (nav.css) — the bar has room for one pill, the sheet carries both. */}
+        <LpFxLink
+          href={DEMO_PAGE_PATH}
+          size="sm"
+          className="lp-btn--tinted lp-btn--demo"
+          data-analytics-id="call_nav"
+        >
+          Book a demo
+        </LpFxLink>
+      </div>
+      <LpNavMenu product={PRODUCT_MENU} resources={RESOURCES_MENU} />
+      <LpNavScroll />
+    </header>
   );
 }
 
@@ -118,27 +112,6 @@ export function LpNav() {
  * says. "Claude and Codex" is the guide's "Pancake in Claude and Codex",
  * shortened to the label budget inside the Product menu.
  */
-/**
- * The announcement bar's one line (2026-10-07). A new id shows the bar again
- * to visitors who closed the previous one; it names the changelog entry it
- * announces, and the dev server fails loudly when a newer entry lands without
- * a new announcement (the bar and the changelog can't drift apart). Launch
- * timing (public V2 launch Oct 13–14) is a founder call: to hold the bar,
- * drop the <LpAnnounce> line above.
- */
-const ANNOUNCEMENT: Announcement = {
-  id: "pancake-v2",
-  text: "Pancake v2: build Plays in the app, Claude or Codex.",
-  short: "Pancake v2 is live.",
-  cta: "See what’s new",
-  href: CHANGELOG_PATH,
-};
-if (process.env.NODE_ENV === "development" && ANNOUNCEMENT.id !== LATEST_CHANGELOG_ENTRY.id) {
-  throw new Error(
-    `LpNav ANNOUNCEMENT.id "${ANNOUNCEMENT.id}" is not the newest changelog entry "${LATEST_CHANGELOG_ENTRY.id}": update the announcement (or its id) with the changelog.`,
-  );
-}
-
 const PRODUCT_MENU: LpNavItem[] = [
   {
     label: "How it works",
@@ -162,11 +135,6 @@ const RESOURCES_MENU: LpNavItem[] = [
     label: "Blog",
     href: "/blog",
     description: "Guides and notes on finding B2B customers.",
-  },
-  {
-    label: "Changelog",
-    href: "/changelog",
-    description: "What’s new in Pancake, newest first.",
   },
   {
     label: "Compare",

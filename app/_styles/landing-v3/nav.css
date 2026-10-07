@@ -230,8 +230,8 @@
   display: flex;
 }
 /* The sheet lives inside the phone's sticky bar, a stacking context at z 30;
-   the announcement bar (31, announce.css) and /guides/claude's promo bar
-   (31) sit above that. While the sheet is open, the bar rises over both. */
+   /guides/claude's promo bar (31) sits above that. While the sheet is open,
+   the bar rises over it. */
 @media (max-width: 767px) {
   .lp-nav:has(.lp-nav-menu.is-open) {
     z-index: 41;
@@ -493,7 +493,7 @@ body.menu-open:has(main.lp) {
     0 12px 30px color-mix(in srgb, var(--lp-ink-100) 10%, transparent),
     0 4px 18px color-mix(in srgb, var(--lp-blue-30) 8%, transparent);
   /* 124 = the card's top under a bar at the page top (98) + 26px of air;
-     --lp-nav-top (set on open) adds the announcement bar above the nav */
+     --lp-nav-top (set on open) adds a promo bar above the nav (/guides/claude) */
   max-height: calc(100vh - 124px - var(--lp-nav-top, 0px));
   overflow-y: auto;
   overscroll-behavior: contain;

@@ -3,7 +3,6 @@
    beats the @layer'd kit, same strategy as landing-v2.css. Scoped to .lp. */
 @import "./landing-v3/foundation.css";
 @import "./landing-v3/nav.css";
-@import "./landing-v3/announce.css";
 @import "./landing-v3/hero.css";
 @import "./landing-v3/marquee.css";
 @import "./landing-v3/steps.css";

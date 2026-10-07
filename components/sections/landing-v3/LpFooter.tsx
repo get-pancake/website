@@ -14,7 +14,7 @@
  * instead of the /#why banner. The bottom line reads "© 2026 Pancake".
  * 2026-10-07 (founder: "inspire-toi de la compet pour rendre accessible les
  * pages que t'as créées"): the fat footer Unify and Origami run. Product links
- * the example Plays, Resources the Changelog and the /compare hub, and a
+ * the example Plays, Resources the /compare hub, and a
  * Compare column lists the GTM-tool comparison pages plus "All comparisons".
  * This reverses the 2026-09-03 call to keep the comparison pages out of the
  * link tree, and drops this header's "No Compare column (D13)" note. The
@@ -26,7 +26,6 @@
  * open founder decision D23).
  */
 
-import { CHANGELOG_PATH } from "@/components/sections/changelog/changelog-data";
 import { COMPARE_PATH, COMPARISONS, compareName, comparePath } from "@/components/sections/compare/compare-data";
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
@@ -53,7 +52,6 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
     title: "Resources",
     links: [
       { label: "Blog", href: "/blog" },
-      { label: "Changelog", href: CHANGELOG_PATH },
       { label: "Comparisons", href: COMPARE_PATH },
       { label: "Support", href: SUPPORT_PATH },
       { label: "Connect your agent", href: "/guides/claude#setup" },

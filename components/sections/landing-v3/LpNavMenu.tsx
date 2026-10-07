@@ -300,9 +300,9 @@ function wireDisclosure(entry: HTMLElement, closeOthers: (self: Disclosure) => v
   // The Industries card spans the bar's frame (logo left edge → pills right
   // edge), a function of the bar's width: 100vw would count a classic
   // scrollbar. The compact cards size to their content and ignore it.
-  // Every card's max-height counts from where the bar actually sits: the
-  // announcement bar (or /guides/claude's promo bar) pushes it down, and a
-  // fixed 100vh − 124px ran the card's foot off the screen.
+  // Every card's max-height counts from where the bar actually sits:
+  // /guides/claude's promo bar pushes it down, and a fixed 100vh − 124px ran
+  // the card's foot off the screen.
   const measure = () => {
     entry.style.setProperty("--lp-nav-w", `${nav.clientWidth}px`);
     entry.style.setProperty("--lp-nav-top", `${Math.round(nav.getBoundingClientRect().top)}px`);

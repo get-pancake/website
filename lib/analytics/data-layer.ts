@@ -61,14 +61,6 @@ export const APP_CTA_IDS = [
  *  never fire app_cta_clicked. */
 export const SIGNIN_CTA_IDS = ["signin_nav", "signin_footer"] as const;
 
-/** Site-chrome content links (2026-10-07): the announcement bar's link above
- *  the nav (nav_announce, LpAnnounce → /changelog). Tagged for GTM click
- *  triggers only, like SIGNIN_CTA_IDS: reading a release note is not an
- *  acquisition click, so these never fire app_cta_clicked or a scheduler
- *  event. The nav's menu links (Product / Resources panels, phone sheet)
- *  stay untagged, like Pricing and the Industries links. */
-export const NAV_LINK_IDS = ["nav_announce"] as const;
-
 export type WaitlistCtaId = (typeof WAITLIST_CTA_IDS)[number];
 export type CallCtaId = (typeof CALL_CTA_IDS)[number];
 export type AppCtaId = (typeof APP_CTA_IDS)[number];
