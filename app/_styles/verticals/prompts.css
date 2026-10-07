@@ -13,6 +13,34 @@
   line-height: 20px;
   text-transform: uppercase;
 }
+/* the label's line (2026-10-07): the caps label, then "See all example Plays →" (/plays) on
+   the rows' right edge. The wrapper hugs the rows (fit-content, as the list does), so the line
+   is as wide as they are. Zero added height ≥768: baselines align and the link's line box is
+   the label's 20px, so the hero's fold tuning (hero.css) still holds. Its tap box grows to 36px
+   through a pseudo-element (8px each way: the rows start 8px under it in the short-window tier,
+   12px otherwise, so it never covers a row), and the focus ring (hero.css) stays on the text.
+   A phone too narrow for both (393: 137 + 24 + 180 > 329) wraps it to a line of its own under
+   the label, 4px down. */
+.lp-vx .vx-hp-wrap {
+  max-width: 100%;
+  width: fit-content;
+}
+.lp-vx .vx-hp-head {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 24px;
+  justify-content: space-between;
+}
+.lp-vx .vx-hp-head .vx-hp-more {
+  line-height: 20px;
+  position: relative;
+}
+.lp-vx .vx-hp-head .vx-hp-more::after {
+  content: "";
+  inset: -8px 0;
+  position: absolute;
+}
 /* the badge + text wrapper is transparent to the grid on desktop (phones: the clamp box) */
 .lp-vx .vx-hp__body {
   display: contents;
@@ -109,6 +137,9 @@
 /* ── phones: recomposed, not zoomed. Each row takes the full column and its
    badge leads the prompt's first line, the arrow centred on the right ── */
 @media (max-width: 767px) {
+  .lp-vx .vx-hp-wrap {
+    width: auto;
+  }
   .lp-vx .vx-hp-list {
     display: flex;
     flex-direction: column;

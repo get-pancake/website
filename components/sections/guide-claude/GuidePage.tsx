@@ -401,16 +401,29 @@ function StepAsk() {
     <Step num={STEP_ASK.num} title={STEP_ASK.title}>
       <p>{STEP_ASK.intro}</p>
       {STEP_ASK.groups.map((g) => (
-        <div key={g.title} className="gd-prompts">
-          <p className="gd-prompts__title">{g.title}</p>
-          {g.prompts.map((p) => (
-            <Fragment key={p.id}>
-              {"lead" in p && p.lead ? <p className="gd-prompts__lead">{p.lead}</p> : null}
-              <CopyBlock id={p.id} text={p.text} />
-              {"note" in p && p.note ? <p className="gd-prompts__note">{p.note}</p> : null}
-            </Fragment>
-          ))}
-        </div>
+        <Fragment key={g.title}>
+          <div className="gd-prompts">
+            <p className="gd-prompts__title">{g.title}</p>
+            {g.prompts.map((p) => (
+              <Fragment key={p.id}>
+                {"lead" in p && p.lead ? <p className="gd-prompts__lead">{p.lead}</p> : null}
+                <CopyBlock id={p.id} text={p.text} />
+                {"note" in p && p.note ? <p className="gd-prompts__note">{p.note}</p> : null}
+              </Fragment>
+            ))}
+          </div>
+          {/* the group's closing link (2026-10-07: "More ideas: example Plays →" under the
+              first-Play prompts): a body paragraph, so the step's own 16px rhythm spaces it and
+              the next group keeps its 28px; the link look is .lp-textlink (pricing.css) */}
+          {"more" in g && g.more ? (
+            <p>
+              <a className="lp-textlink" href={g.more.href}>
+                {g.more.label}
+                <span aria-hidden="true"> →</span>
+              </a>
+            </p>
+          ) : null}
+        </Fragment>
       ))}
       <p>{STEP_ASK.outro}</p>
     </Step>

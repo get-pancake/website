@@ -1,3 +1,4 @@
+import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { pricingV2 } from "@/lib/copy";
 import { TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
 
@@ -197,6 +198,9 @@ export const STEP_SKILLS = {
 
 export type GuidePrompt = { id: string; text: string; lead?: string; note?: string };
 
+/** A text link closing a prompt group (GuidePage renders it under the group's prompts). */
+export type GuideMore = { label: string; href: string };
+
 export const STEP_ASK = {
   num: "04",
   title: "Ask",
@@ -225,6 +229,10 @@ export const STEP_ASK = {
           text: "Track [profile URL of a competitor or an expert]. I want the people who engage with their posts.",
         },
       ],
+      // 2026-10-07 (founder: "inspire-toi de la compet pour rendre accessible les pages que t'as
+      // créées"): the first-Play prompts end on a route to /plays, the example-Plays gallery,
+      // for a reader who wants another request to start from. A quiet text link (.lp-textlink).
+      more: { label: "More ideas: example Plays", href: PLAYS_PATH },
     },
     {
       title: "Every morning",
@@ -251,7 +259,7 @@ export const STEP_ASK = {
         { id: "prompt-brain-suggestions", text: "Pancake has suggestions for my Brain. Show me what would change, then apply the ones I accept." },
       ],
     },
-  ] satisfies readonly { title: string; prompts: readonly GuidePrompt[] }[],
+  ] satisfies readonly { title: string; prompts: readonly GuidePrompt[]; more?: GuideMore }[],
   outro: "When you pass on a lead and say why, Pancake proposes Brain changes. You accept them or ignore them.",
 } as const;
 

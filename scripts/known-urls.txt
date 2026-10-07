@@ -168,6 +168,7 @@
 /blog/alta-alternatives
 /guides/claude
 /plays
+/compare
 /unify-vs-pancake
 /octave-vs-pancake
 /alta-vs-pancake

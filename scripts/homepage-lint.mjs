@@ -50,6 +50,12 @@ const FILES = [
   "components/sections/landing-v3/LpCta.tsx",
   "components/sections/landing-v3/LpPricing.tsx",
   "components/sections/guide-claude/guide-copy.ts",
+  // site chrome (2026-10-07): the nav menus, the announcement bar and the /compare hub. Not yet
+  // LpFooter.tsx or compare-data.ts: both fail today until D23 (the platform label) and the
+  // Viktor lede are decided.
+  "components/sections/landing-v3/LpNav.tsx",
+  "components/sections/landing-v3/LpAnnounce.tsx",
+  "components/sections/compare/compare-copy.ts",
 ];
 
 /* ── rules ─────────────────────────────────────────────────────────────────── */

@@ -1,0 +1,19 @@
+/* /compare — the comparisons hub (components/sections/compare). Imported by app/compare/page.tsx
+   AFTER landing-v3.css (the token layer + nav / CTA / footer recipes). Like verticals-hub.css it
+   loads only the /for sheets the page renders, read-only: the foundation (text edge, rhythm,
+   section head, focus ring), the hub cards and the Related rows. No new visual language: the one
+   rule below is the /for hub's head offset, keyed on this page's own class (hub.css keys it on
+   .lp-vx-hub, which stays /for's). */
+@import "../_styles/verticals/foundation.css";
+@import "../_styles/verticals/hub.css";
+@import "../_styles/verticals/related.css";
+
+/* the head sits 96 under the nav (64 on phones), as the /for hub's */
+.lp-vx-compare .vx-hub-head {
+  padding-top: 96px;
+}
+@media (max-width: 767px) {
+  .lp-vx-compare .vx-hub-head {
+    padding-top: 64px;
+  }
+}

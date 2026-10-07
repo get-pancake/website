@@ -1,0 +1,196 @@
+/* landing-v3/announce.css — the announcement bar above the nav (LpAnnounce,
+   2026-10-07; the Octave / Alta / Unify pattern). One 36px plum line in
+   normal flow, before .lp-nav: it scrolls away with the page, so the phone's
+   sticky bar keeps top: 0 and only sits under it while it is in view, and
+   the desktop rainbow stays anchored to the nav's top (hero.css top: -120px
+   counts from the nav, not from the page). Kit language only: the inverted
+   plum surface of the phone sheet and the /guides/claude promo bar, the
+   nav's 13.333 type, the "All industries" arrow. No motion of its own: ✕
+   removes it at once (user-initiated, so not a layout shift), and the
+   pre-paint script hides it before the first frame for a visitor who closed
+   it earlier ([data-dismissed]).
+   Desktop: message + arrow link centred, ✕ at the right edge of the nav's
+   frame (max(32px, 50% − 648px), under "Book a demo"). ≤767: message from the
+   logo's 32px edge, truncated with an ellipsis so the arrow link and ✕ stay
+   on the one line; ≤561 a short line replaces it (below). */
+
+.lp-announce {
+  --lp-announce-h: 36px;
+  align-items: center;
+  background: var(--lp-inverted-surface);
+  box-sizing: border-box;
+  color: var(--lp-text-on-inverted);
+  column-gap: 8px;
+  display: grid;
+  /* a spacer as wide as ✕ on the left keeps the message truly centred */
+  grid-template-columns: 36px minmax(0, 1fr) 36px;
+  height: calc(var(--lp-announce-h) + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) max(32px, calc(50% - 648px), env(safe-area-inset-right, 0px)) 0
+    max(32px, calc(50% - 648px), env(safe-area-inset-left, 0px));
+  /* above the phone's sticky bar (30) so the ✕'s touch slop wins the 4px it
+     lends from the nav's empty top band; the bar rises to 41 while its
+     sheet is open (nav.css), so the sheet still covers this one */
+  position: relative;
+  z-index: 31;
+}
+.lp-announce[data-dismissed] {
+  display: none;
+}
+/* Agents view (?audience=agents): hidden, not inverted. That view strips
+   the page to the hero and the agent lab (no sections, no footer) around
+   one terminal command; a human release note in a cream-on-plum inversion
+   would compete with that command. visibility: hidden, not display: none
+   (2026-10-07): the bar keeps its 36px slot, so the audience switch (whose
+   own view-transition group never crossfades) stays under the pointer that
+   clicked it, and a shared ?audience=agents link, which switches after
+   hydration, shifts nothing. Hidden also leaves the tab order and the
+   accessibility tree; the main's ink shows through. The agent first-screen
+   maths (audience.css, --lp-agent-nav-height) adds the slot below. */
+.lp-audience-page[data-audience="agents"] > .lp-announce {
+  visibility: hidden;
+}
+.lp-audience-page[data-audience="agents"]:has(> .lp-announce:not([data-dismissed])) > .lp-hero {
+  --lp-agent-nav-height: calc(var(--lp-space-12) * 2 + var(--lp-space-3) * 2 + 36px + env(safe-area-inset-top, 0px));
+}
+@media (max-width: 767px) {
+  .lp-audience-page[data-audience="agents"]:has(> .lp-announce:not([data-dismissed])) > .lp-hero {
+    --lp-agent-nav-height: calc(var(--lp-space-12) * 2 + var(--lp-space-2) + 36px + env(safe-area-inset-top, 0px));
+  }
+}
+/* /guides/claude: its sticky coupon bar already sits up there (the ManyChat
+   DM page) — one bar, not two. */
+.lp-guide > .lp-announce {
+  display: none;
+}
+
+.lp .lp-announce__link {
+  align-items: center;
+  color: inherit;
+  display: flex;
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  gap: 12px;
+  grid-column: 2;
+  justify-self: center;
+  letter-spacing: 0.1333px;
+  line-height: 20px;
+  max-width: 100%;
+  min-width: 0;
+  /* the bar's full height is the target; the inline padding gives the
+     focus ring room around the text */
+  padding: 8px;
+  white-space: nowrap;
+}
+.lp-announce__text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lp-announce__cta {
+  align-items: center;
+  display: inline-flex;
+  flex: none;
+  font-weight: 600;
+  gap: 6px;
+}
+.lp-announce__cta svg,
+.lp-announce__close svg {
+  fill: none;
+  flex: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+@media (hover: hover) {
+  .lp .lp-announce__link:hover .lp-announce__cta {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+  .lp .lp-announce__close:hover {
+    background: color-mix(in srgb, var(--lp-text-on-inverted) 10%, transparent);
+  }
+}
+
+/* ✕: 36×36 like the bar, a 12px cross whose right edge sits 12px inside
+   the frame (≤767: 28px from the screen edge, the burger lines' edge). */
+.lp .lp-announce__close {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: var(--lp-r-xsm);
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  grid-column: 3;
+  height: 36px;
+  padding: 0;
+  place-items: center;
+  position: relative;
+  width: 36px;
+}
+/* Rings: cream on plum, like the sheet's links and close button (purple-30
+   on plum is about 4:1 and thin). Drawn inside, so the bar's 36px holds them. */
+.lp .lp-announce__link:focus-visible,
+.lp .lp-announce__close:focus-visible {
+  border-radius: var(--lp-r-xsm);
+  outline: 2px solid var(--lp-text-on-inverted);
+  outline-offset: -2px;
+}
+
+@media (max-width: 767px) {
+  .lp-announce {
+    grid-template-columns: minmax(0, 1fr) 36px;
+    /* text from the logo's edge; the ✕ box ends 16px from the screen edge */
+    padding-left: max(24px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .lp .lp-announce__link {
+    gap: 8px;
+    grid-column: 1;
+    justify-self: start;
+  }
+  .lp .lp-announce__close {
+    grid-column: 2;
+  }
+}
+/* The phone line (ANNOUNCEMENT.short) is hidden above 561px; it is
+   aria-hidden, so the link's name is always the full sentence. */
+.lp-announce__text--short {
+  display: none;
+}
+/* ≤561 the line no longer fits (332px message + "See what's new →"). Rather
+   than cut the sentence mid-word (≈190–250px of it at 320–375), the short
+   line replaces it on screen (2026-10-07); the long one and the label leave
+   the screen, not the accessibility tree, and the arrow stays. The whole
+   line is the link; the ellipsis stays only as a guard at very narrow
+   widths. */
+@media (max-width: 561px) {
+  .lp-announce__text--short {
+    display: block;
+  }
+  .lp-announce__text:not(.lp-announce__text--short),
+  .lp-announce__cta-label {
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+}
+
+/* Coarse pointers: the 36px rows reach 44px through an invisible ::after
+   (the nav's M13 recipe) — 4px above (off the page's top edge) and 4px
+   below, over the nav's empty top band. */
+@media (pointer: coarse) {
+  .lp .lp-announce__link {
+    position: relative;
+  }
+  .lp .lp-announce__link::after,
+  .lp .lp-announce__close::after {
+    content: "";
+    inset: -4px 0;
+    position: absolute;
+  }
+}

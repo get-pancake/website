@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { COMPARE_PATH } from "@/components/sections/compare/compare-data";
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { getAllPosts } from "@/lib/posts";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
@@ -61,6 +62,8 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "/guides/claude", updated: "2026-10-07", priority: 0.7 },
   // example Plays (audit plan 3.7), new on 2026-10-07
   { path: PLAYS_PATH, updated: newest("2026-10-07", maxUpdated()), priority: 0.7 },
+  // the comparisons hub (2026-10-07): every comparison page below links back to it
+  { path: COMPARE_PATH, updated: "2026-10-07", priority: 0.7 },
   { path: "/viktor-vs-pancake", updated: "2026-10-07", priority: 0.8 },
   { path: "/claude-tag-vs-pancake", updated: "2026-10-07", priority: 0.8 },
   { path: "/gojiberry-vs-pancake", updated: "2026-10-07", priority: 0.8 },

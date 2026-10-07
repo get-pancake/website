@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
+import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { VxHead } from "@/components/sections/verticals/VxHead";
 import { VxArrow } from "@/components/sections/verticals/VxRelated";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
@@ -17,6 +18,11 @@ import "@/app/_styles/verticals-hub.css";
  * system-ui box with the homepage's title, no link and a skip link to
  * nothing. Five ways back in, then the CTA pair (founder 2026-09-03: "Start
  * free" then "Book a demo"). Next adds the noindex itself.
+ * 2026-10-07 (founder: "inspire-toi de la compet pour rendre accessible les
+ * pages que t'as créées"): a sixth way, Example Plays (/plays), next to
+ * Industries, the page its examples come from. Its line is the second half of
+ * the /plays lede (the first, "It builds the Play.", needs the H1 above it).
+ * Six cards fill two rows of three.
  */
 
 export const metadata: Metadata = {
@@ -27,6 +33,7 @@ const WAYS_BACK = [
   { name: "Home", href: "/", line: "Tell Pancake who to reach. It builds the Play." },
   { name: "Pricing", href: "/pricing", line: "$99 a month per workspace." },
   { name: "Industries", href: "/for", line: "Pancake for your industry, with example Plays." },
+  { name: "Example Plays", href: PLAYS_PATH, line: "Start from an example, or write your own." },
   { name: "Blog", href: "/blog", line: "Guides and comparisons for founders who sell." },
   { name: "Support", href: SUPPORT_PATH, line: "Questions about your account, billing or a connection." },
 ] as const;

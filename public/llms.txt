@@ -77,6 +77,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Careers](https://pancake.ai/careers) — the team and open roles
 - [Privacy Policy](https://pancake.ai/privacy) — what Pancake (Basalt AI Inc.) collects and how it is used
 - [Terms of Service](https://pancake.ai/terms) — the terms for the website and the app
+- [Comparisons](https://pancake.ai/compare) — every comparison page in one place: GTM tools (Origami, Unify, Octave, Alta, Lemlist, Gojiberry) and AI agents (Claude Tag, Viktor, OpenClaw, Paperclip), plus the blog's guides to alternatives for GTM tools
 - [Viktor vs Pancake](https://pancake.ai/viktor-vs-pancake) — broad AI employee vs Plays that find buyers and start the conversation
 - [Claude Tag vs Pancake](https://pancake.ai/claude-tag-vs-pancake) — ambient general teammate vs focused autonomous GTM execution
 - [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain behind every Play
