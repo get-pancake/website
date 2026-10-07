@@ -128,11 +128,13 @@ function BriefPane({ m }: { m: DemoModel }) {
         {/* 2026-10-07 (founder: "writing the play super fast on the very right side of the panel
             is super strange, I want to see it in the very centre"): one centered conversation.
             Before the request is sent, the app's empty state with the input in the middle of the
-            window, where the request is typed; it fades out when the request is sent. */}
-        <div className="vx-hero" data-uncue="b.bubble">
-          <span className="vx-hero__tile" data-ico="stack" />
-          <p className="vx-hero__title">{A.plays.readyTitle}</p>
-          <p className="vx-hero__body">{A.plays.readyBody}</p>
+            window, where the request is typed; it fades out when the request is sent.
+            Its classes are vx-ready*, never vx-hero*: that is the /for and guide page hero, and
+            demo.css's empty-state rules took it over (2026-10-08 hotfix). */}
+        <div className="vx-ready" data-uncue="b.bubble">
+          <span className="vx-ready__tile" data-ico="stack" />
+          <p className="vx-ready__title">{A.plays.readyTitle}</p>
+          <p className="vx-ready__body">{A.plays.readyBody}</p>
           <Composer typing />
         </div>
         <div className="vx-chat__log vx-var">
