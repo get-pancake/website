@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
-const title = "OpenClaw vs Pancake: Agent Runtime vs Managed AI GTM Team";
-const description = "Compare OpenClaw and Pancake: an open-source agent runtime you configure versus a managed AI GTM team that finds your buyers and starts the conversations.";
+const title = "OpenClaw vs Pancake: Agent Runtime vs Managed GTM Platform";
+const description = "Compare OpenClaw and Pancake: an open-source agent runtime you configure versus a managed GTM platform that finds your buyers and starts the conversations.";
 
 export const metadata: Metadata = {
   title, description,
@@ -16,10 +16,10 @@ export const metadata: Metadata = {
 const config: GtmComparisonConfig = {
   slug: "openclaw-vs-pancake", competitor: "OpenClaw", competitorInitial: "O",
   heroLede: "An agent runtime you assemble versus a GTM team you hire.",
-  heroSummary: "OpenClaw is open-source infrastructure for configuring agents, models, tools, channels, memory, and schedules. Pancake is a managed AI GTM team: it builds a Play for each audience you sell to, finds the leads, and starts the conversations, all from one Brain.",
+  heroSummary: "OpenClaw is open-source infrastructure for configuring agents, models, tools, channels, memory, and schedules. Pancake is a managed GTM platform: it builds a Play for each audience you sell to, finds the leads, and starts the conversations, all from one Brain.",
   competitorBody: "An open-source agent runtime for technical users who want control over providers, models, channels, tools, skills, workspaces, schedules, and deployment. You decide what the agent should do and maintain the system that does it.",
   competitorChoose: "Choose it when you want to build and own the agent stack.",
-  pancakeBody: "A finished AI GTM team for founders and small B2B companies. Add your website and Pancake builds the Brain. Tell it who you want to reach, and it builds a Play to find them. There is no runtime, model, or server to manage.",
+  pancakeBody: "A finished GTM platform for founders and small B2B companies. Add your website and Pancake builds the Brain. Tell it who you want to reach, and it builds a Play to find them. There is no runtime, model, or server to manage.",
   pancakeChoose: "Choose it when you want customer acquisition running, not an agent project.",
   verdictTitle: "Choose OpenClaw to build. Choose Pancake to run GTM.",
   verdictLede: "OpenClaw offers flexibility and infrastructure ownership. Pancake packages the GTM expertise, runs it for you, and aims every agent at finding customers.",
@@ -33,7 +33,7 @@ const config: GtmComparisonConfig = {
     { n: "05", title: "Free software still has an operating cost", body: "OpenClaw is open source, but hosting, model usage, data providers, maintenance, debugging, and your time remain. Pancake is $99 a month flat, every agent included, with no model or hosting bills on top.", angle: "Compare total ownership cost with the cost of a finished outcome." },
   ],
   rows: [
-    { feature: "Product layer", competitor: { text: "Open-source agent runtime", mark: "yes" }, pancake: { text: "Ready-to-run AI GTM team", mark: "yes" } },
+    { feature: "Product layer", competitor: { text: "Open-source agent runtime", mark: "yes" }, pancake: { text: "Ready-to-run GTM platform", mark: "yes" } },
     { feature: "Setup", competitor: { text: "Install, configure, connect, and maintain" }, pancake: { text: "Your website URL, nothing to install", mark: "yes" } },
     { feature: "Customization", competitor: { text: "Models, runtimes, channels, skills, and code", mark: "yes" }, pancake: { text: "Describe who to reach, approve every lead" } },
     { feature: "GTM Brain", competitor: { text: "General workspace instructions and memory" }, pancake: { text: "Ideal customer, personas, competitors, messaging, and voice", mark: "yes" } },
@@ -45,8 +45,8 @@ const config: GtmComparisonConfig = {
   closingTitle: "Skip the agent infrastructure project.",
   closingLede: "Start with the GTM Brain, agents, and recurring workflows already assembled around bringing customers.",
   faqs: [
-    { q: "What is the main difference between OpenClaw and Pancake?", a: "OpenClaw is open-source agent infrastructure that a technical user configures and maintains. Pancake is an AI GTM team you use, not a system you build: it already knows how to build a Play, find the leads, and open conversations from your own account." },
-    { q: "Is Pancake managed OpenClaw hosting?", a: "No. Pancake is an AI GTM team, not a hosting service. The infrastructure is Pancake's job. You approve every lead." },
+    { q: "What is the main difference between OpenClaw and Pancake?", a: "OpenClaw is open-source agent infrastructure that a technical user configures and maintains. Pancake is a GTM platform you use, not a system you build: it already knows how to build a Play, find the leads, and open conversations from your own account." },
+    { q: "Is Pancake managed OpenClaw hosting?", a: "No. Pancake is a GTM platform, not an OpenClaw hosting service. The infrastructure is Pancake's job. You approve every lead." },
     { q: "Is OpenClaw free?", a: "The software is open source. Running it still creates hosting, model, data-provider, maintenance, and engineering costs. Pancake folds all of that into one flat price: $99 a month." },
     { q: "Which gives me more control?", a: "OpenClaw. It is the better choice when you need to select runtimes, modify agent code, self-host, or build use cases outside GTM. Pancake leaves the GTM decisions with you: you choose who to reach and approve every lead." },
     { q: "Can I use both?", a: "Yes. A developer can run custom internal agents on OpenClaw while using Pancake for managed GTM. The systems solve different layers of the problem." },

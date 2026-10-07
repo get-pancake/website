@@ -18,10 +18,11 @@ import { pricingPlan, pricingV2 } from "@/lib/copy";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/landing-v2.css";
 
-/* "AI GTM team", the identity term (2026-09-24); it read "AI sales and
-   marketing team" until AI SEO was retired (2026-09-30). "per workspace"
-   since 2026-10-06, the unit the plan is billed on (see pricingPlan). */
-const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDollars}/month per workspace for your whole AI GTM team. Everything included. No tiers, no seats.`;
+/* No team label: it read "AI sales and marketing team" until AI SEO was
+   retired (2026-09-30), then "AI GTM team" until the launch positioning
+   (2026-10-07). "per workspace" since 2026-10-06, the unit the plan is
+   billed on (see pricingPlan). */
+const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDollars}/month per workspace, with as many Plays and leads as you want. Everything included. No tiers, no seats.`;
 
 const TITLE = `Pancake Pricing: $${pricingV2.monthlyDollars}/month flat`;
 const URL = `${SITE_ORIGIN}/pricing`;

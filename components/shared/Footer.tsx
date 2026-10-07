@@ -108,7 +108,7 @@ export function Footer() {
               <PancakeLogo variant="inverted" className="h-11" />
             </Link>
             <p className="max-w-[260px] text-sm leading-relaxed">
-              The AI GTM team that brings you customers.
+              You run your company. We bring you customers.
             </p>
             {/* -m-3 offsets the p-3 hit padding so the icon row keeps its
                 optical position; each icon is a 42px touch target (mobile

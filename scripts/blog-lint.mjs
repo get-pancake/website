@@ -9,8 +9,9 @@
  *   node scripts/blog-lint.mjs a.mdx b.mdx
  *
  * ERRORS fail the build. WARNINGS are printed for the author to judge
- * (snippet lengths, claims about Pancake that break the copy rules). One
- * claim is an ERROR: AI SEO as something Pancake does (retired 2026-09-30).
+ * (snippet lengths, claims about Pancake that break the copy rules). Two
+ * claims are ERRORS: AI SEO as something Pancake does (retired 2026-09-30),
+ * and "AI GTM team" as what Pancake is (retired 2026-10-07).
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -53,7 +54,7 @@ const PANCAKE_CLAIMS = [
   [/\bAI[ -]?co-?founders?\b/i, "Pancake called an AI co-founder"],
   [/\bsuper-?agents?\b|\bAI workforce\b|\bco-?pilots?\b|\bvirtual assistants?\b/i, "banned identity term"],
   // Founder 2026-09-24: "on est plus un AI coworker, on est vraiment sur le AI GTM".
-  [/\bAI (co-?worker|employee|teammate)s?\b|\bco-?workers?\b/i, "Pancake is an AI GTM team, not a coworker/employee (fine in a contrast)"],
+  [/\bAI (co-?worker|employee|teammate)s?\b|\bco-?workers?\b/i, "Pancake is not an AI coworker/employee (fine in a contrast)"],
   [/\bspend caps?\b|\bcan[’']?t overspend\b|\btokens?\b|\btoken (packs?|costs?|billing)\b/i, "spend cap / token billing"],
   [/\bsquads?\b|\biMessage\b|\bOpenClaw runtime\b/i, "V1 product feature"],
   [/\b(engineering|finance|legal|HR|DevOps|bookkeeping|invoicing)\b/i, "V1 function (check it's a negation)"],
@@ -63,6 +64,9 @@ const PANCAKE_CLAIMS = [
   // An error, not a warning: the retirement must not regress. A competitor's
   // content is fine in its own sentence or after ", while" / ", whereas".
   [AI_SEO, "AI SEO retired 2026-09-30 (Pancake writes no articles, gets no one found in Google or AI answers)", "error"],
+  // Retired with the October 2026 launch (founder 2026-10-06): Pancake is where
+  // GTM runs ("your agent decides, Pancake runs it"), not an "AI GTM team".
+  [/\bAI (?:GTM|go-to-market) teams?\b/i, "\"AI GTM team\" retired 2026-10-07 (say what Pancake does: it finds buyers and starts the conversation)", "error"],
 ];
 const NEGATION = /\b(not|isn[’']t|doesn[’']t|don[’']t|no longer|never|without|instead of|unlike|rather than|no)\b/i;
 const NAMES_PANCAKE = /\bPancake\b/;

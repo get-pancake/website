@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
-const title = "Claude Tag vs Pancake: AI Teammate vs AI GTM Team";
-const description = "Compare Claude Tag and Pancake: a shared Claude teammate in Slack versus an AI GTM team that finds buyers, starts conversations, and works from Claude.";
+const title = "Claude Tag vs Pancake: AI Teammate vs GTM Platform";
+const description = "Compare Claude Tag and Pancake: a shared Claude teammate in Slack versus a GTM platform that finds buyers, starts conversations, and works from Claude.";
 
 export const metadata: Metadata = {
   title,
@@ -18,11 +18,11 @@ const config: GtmComparisonConfig = {
   slug: "claude-tag-vs-pancake",
   competitor: "Claude Tag",
   competitorInitial: "C",
-  heroLede: "A shared AI teammate versus an AI GTM team that finds your buyers.",
+  heroLede: "A shared AI teammate versus a GTM platform that finds your buyers.",
   heroSummary: "Claude Tag lets a team delegate broad work to Claude inside Slack, with channel context, connected tools, asynchronous tasks, and optional ambient initiative. Pancake finds the people you want to reach, tells you why each one fits, and starts the conversations. Run it all from Claude, ChatGPT, or Codex.",
   competitorBody: "Anthropic's shared Claude teammate in Slack. Team members tag Claude into work, grant selected channel and tool access, and let it complete asynchronous tasks. Ambient behavior can surface updates and follow up proactively.",
   competitorChoose: "Choose it when your team wants Claude across many collaborative jobs.",
-  pancakeBody: "An AI GTM team with the jobs already built. Tell it who you want to reach, and it builds a Play to find them. Every lead arrives with why they fit and gets a personal message in your voice.",
+  pancakeBody: "A GTM platform with the jobs already built. Tell it who you want to reach, and it builds a Play to find them. Every lead arrives with why they fit and gets a personal message in your voice.",
   pancakeChoose: "Choose it when you want a GTM function, not another teammate to delegate to.",
   verdictTitle: "Choose Claude Tag for flexible team delegation. Choose Pancake to find customers.",
   verdictLede: "Claude Tag is broader and native to Claude and Slack. Pancake is built for one job, customers, and does the recurring work that brings them in.",
@@ -36,7 +36,7 @@ const config: GtmComparisonConfig = {
     { n: "05", title: "Different buying models", body: "Claude Tag is available in beta to eligible Claude Enterprise and Team customers and uses organization spend controls. Pancake is a standalone subscription: $99 a month flat, every agent included, no seats.", angle: "An extension of a Claude workspace versus a complete GTM subscription." },
   ],
   rows: [
-    { feature: "Core job", competitor: { text: "Shared Claude teammate for broad work", mark: "yes" }, pancake: { text: "AI GTM team for customer acquisition", mark: "yes" } },
+    { feature: "Core job", competitor: { text: "Shared Claude teammate for broad work", mark: "yes" }, pancake: { text: "GTM platform for customer acquisition", mark: "yes" } },
     { feature: "Interface", competitor: { text: "Slack", mark: "yes" }, pancake: { text: "Pancake app, lead approvals in Slack, and Claude, ChatGPT, or Codex via MCP", mark: "yes" } },
     { feature: "Initiative", competitor: { text: "Ambient updates and follow-up when enabled", mark: "yes" }, pancake: { text: "Plays that find leads, each with why they fit", mark: "yes" } },
     { feature: "Memory", competitor: { text: "Permitted channel and tool context", mark: "yes" }, pancake: { text: "A Brain researched from your website; every Play starts from it", mark: "yes" } },
@@ -48,7 +48,7 @@ const config: GtmComparisonConfig = {
   closingTitle: "Give your go-to-market a team of its own.",
   closingLede: "Tell Pancake who you want to reach. It builds a Play to find them, and every lead arrives with why they fit.",
   faqs: [
-    { q: "What is the main difference between Claude Tag and Pancake?", a: "Claude Tag is a shared Claude teammate in Slack for broad collaborative work. Pancake is an AI GTM team: you tell it who you want to reach, it builds a Play to find them, and it starts conversations from your own account." },
+    { q: "What is the main difference between Claude Tag and Pancake?", a: "Claude Tag is a shared Claude teammate in Slack for broad collaborative work. Pancake is a GTM platform: you tell it who you want to reach, it builds a Play to find them, and it starts conversations from your own account." },
     { q: "Does Claude Tag work proactively?", a: "Yes. Anthropic says ambient behavior can proactively surface relevant information and follow up on unresolved work. Pancake is proactive on GTM: it searches every night and posts each new lead to Slack for your approval." },
     { q: "Is Pancake cheaper than Claude Tag?", a: "They are sold differently, so a percentage comparison would be misleading. Claude Tag is attached to eligible Claude Enterprise and Team plans with spend controls. Pancake has a 3-day free trial (card required), then one price for every agent: $99 a month." },
     { q: "Which is better for a small company without a GTM team?", a: "Pancake. Its jobs and Brain are built around winning customers, so you don't design the workflow yourself. You describe who you want to reach in plain English, and Pancake builds the Play with you. Claude Tag is stronger when an existing team wants a flexible Claude collaborator across many functions." },

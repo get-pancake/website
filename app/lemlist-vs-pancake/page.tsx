@@ -3,8 +3,8 @@ import type { Metadata } from "next";
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
-const title = "Lemlist vs Pancake: Outbound Platform vs AI GTM Team";
-const description = "Compare Lemlist and Pancake: a multichannel sales-engagement platform your team operates versus an AI GTM team that finds buyers and starts conversations.";
+const title = "Lemlist vs Pancake: Outbound Platform vs Plays That Run";
+const description = "Compare Lemlist and Pancake: a multichannel sales-engagement platform your team operates versus Plays that find buyers and start conversations for you.";
 
 export const metadata: Metadata = {
   title,
@@ -26,10 +26,10 @@ const config: GtmComparisonConfig = {
   competitor: "Lemlist",
   competitorInitial: "L",
   heroLede: "A sales platform your team operates versus agents that operate for you.",
-  heroSummary: "Lemlist gives sales teams a large lead database, multichannel campaign controls, enrichment, and deliverability tooling. Pancake gives founders an AI GTM team: Plays that find your buyers, a reason on every lead, and conversations started from your own account.",
+  heroSummary: "Lemlist gives sales teams a large lead database, multichannel campaign controls, enrichment, and deliverability tooling. Pancake gives founders Plays that find your buyers, a reason on every lead, and conversations started from your own account.",
   competitorBody: "A mature sales-engagement platform for building and managing outbound campaigns. Teams use its lead database, enrichment, sequencing, multichannel steps, deliverability tools, and integrations to control the sales workflow.",
   competitorChoose: "Choose it when a sales team wants deep campaign control.",
-  pancakeBody: "An AI GTM team for founders who want the work done for them. Tell it who you want to reach, and it builds a Play to find them. Each lead gets a personal message written from why they fit. There are no sequences to build.",
+  pancakeBody: "A GTM platform for founders who want the work done for them. Tell it who you want to reach, and it builds a Play to find them. Each lead gets a personal message written from why they fit. There are no sequences to build.",
   pancakeChoose: "Choose it when you want GTM outcomes without staffing the platform.",
   verdictTitle: "Choose Lemlist to equip a sales team. Choose Pancake to avoid building one.",
   verdictLede: "Lemlist is the stronger operator's toolkit. Pancake is designed for a founder who wants agents to own and run the motion.",
@@ -80,7 +80,7 @@ const config: GtmComparisonConfig = {
   closingTitle: "Stop staffing the platform. Start running GTM.",
   closingLede: "Hand the outbound work to agents that find your buyers and open the conversations for you.",
   faqs: [
-    { q: "What is the main difference between Lemlist and Pancake?", a: "Lemlist is a sales-engagement platform that gives sales teams data, sequencing, multichannel controls, deliverability tools, and integrations. Pancake is an AI GTM team that runs the outbound work itself, from finding the leads to opening each conversation from your own account." },
+    { q: "What is the main difference between Lemlist and Pancake?", a: "Lemlist is a sales-engagement platform that gives sales teams data, sequencing, multichannel controls, deliverability tools, and integrations. Pancake runs the outbound work itself, from finding the leads to opening each conversation from your own account." },
     { q: "Is Lemlist better for email deliverability?", a: "Lemlist has the more specialized deliverability toolkit, including lemwarm and a dedicated deliverability hub. It is the stronger choice when a team needs hands-on control over high-volume outbound infrastructure." },
     { q: "Which product supports more outbound channels?", a: "Lemlist publicly supports a broader set of outbound channels, including email, social, calls, WhatsApp, and SMS. Pancake sends direct messages under your name, each one written from why the lead fits. A reply stops the sequence." },
     { q: "Does Pancake replace a sales team?", a: "Pancake lets founders and lean teams run GTM without hiring an SDR or sales-operations team. Its agents find the buyers and open the conversations. You approve every lead, set the direction, and handle the conversations that need you." },
