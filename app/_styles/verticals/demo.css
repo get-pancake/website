@@ -179,8 +179,8 @@
 /* stacked alternatives: prompt variants + before/after swaps (§1.8) */
 .lp-vx .vx-var { display: grid; min-width: 0; }
 .lp-vx .vx-var > * { grid-area: 1 / 1; min-width: 0; }
-/* data-p lists the prompts a variant covers ("0", "12"…): identical signal-card views share
-   one element (DOM budget), so a variant hides when its list lacks the current prompt */
+/* data-p lists the prompts a variant covers ("0", "12"…): identical views share one element
+   (DOM budget), so a variant hides when its list lacks the current prompt */
 .lp-vx .vx-demo__card[data-prompt="0"] .vx-var > [data-p]:not([data-p*="0"]),
 .lp-vx .vx-demo__card[data-prompt="1"] .vx-var > [data-p]:not([data-p*="1"]),
 .lp-vx .vx-demo__card[data-prompt="2"] .vx-var > [data-p]:not([data-p*="2"]) { visibility: hidden; }
@@ -200,8 +200,7 @@
   transition: opacity 220ms ease, transform 220ms cubic-bezier(0.22, 1, 0.36, 1), background-color 0.2s ease;
 }
 /* (the pane / window crossfade is NOT snapped: only what the timeline drives) */
-.lp-vx .vx-demo__card[data-snap] :is([data-cue], [data-uncue], [data-swap] > [data-s], .vx-switch, [data-cursor], .vx-row, .vx-cursor),
-.lp-vx .vx-demo__card[data-snap] .vx-switch::after { transition: none !important; }
+.lp-vx .vx-demo__card[data-snap] :is([data-cue], [data-uncue], [data-swap] > [data-s], [data-cursor], .vx-row, .vx-cursor),
 /* a prompt change (the autoplay wrap Slack → next Brief, a prompt click) cuts windows and
    pages: data-prompt already names the next prompt, a fading window would show its names */
 .lp-vx .vx-demo__card[data-cut] :is(.vx-win, .vx-pane) { transition: none !important; }
@@ -325,7 +324,7 @@
 }
 .lp-vx .vx-stage :where(p, ul, ol) { list-style: none; margin: 0; padding: 0; }
 .lp-vx .vx-stage * { font-family: var(--lp-font-sans); }
-.lp-vx .vx-stage :is(.vx-page__title, .vx-sigpage__group, .vx-sig__top, .vx-drawer__name) { font-family: var(--lp-font-aeonik); }
+.lp-vx .vx-stage :is(.vx-page__title, .vx-drawer__name) { font-family: var(--lp-font-aeonik); }
 
 /* icons: one pseudo-element each, a mask tinted by currentColor (the masks are at the end) */
 .lp-vx .vx-stage [data-ico]::before {
@@ -605,114 +604,148 @@
   width: 30px;
 }
 
-/* ─── 01 Brief: Signals page + docked Ask Pancake panel ─────────────────────── */
+/* ─── 01 Play: the Plays page + docked Ask Pancake panel (2026-10-07) ────────── */
 .lp-vx .vx-brief { display: grid; grid-template-columns: minmax(0, 1fr) 320px; }
-.lp-vx .vx-sigpage__group { font-size: 12.5px; font-weight: 600; line-height: 16px; margin: 14px 0 7px; }
-.lp-vx .vx-sigs { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.lp-vx .vx-sig {
-  background: var(--app-card);
+/* the page swaps from the Plays empty state to the Play the request became */
+.lp-vx .vx-plays { align-content: start; }
+.lp-vx .vx-plays__ready {
+  align-content: center;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  min-height: 100%;
+  padding: 24px 12px 40px;
+  text-align: center;
+}
+.lp-vx .vx-plays__tile {
+  --ico: 18px;
+  --ico-c: var(--app-pink);
+  align-items: center;
+  background: var(--app-competitor-bg);
   border-radius: 10px;
-  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+  box-shadow: inset 0 0 0 1px var(--app-competitor-ring, var(--app-border));
   display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0;
-  padding: 10px;
+  height: 36px;
+  justify-content: center;
+  margin-bottom: 4px;
+  width: 36px;
+}
+.lp-vx .vx-plays__title { font-family: var(--lp-font-aeonik); font-size: 15px; font-weight: 700; line-height: 20px; }
+.lp-vx .vx-plays__body { color: var(--app-muted-fg); font-size: 11.5px; line-height: 16px; max-width: 260px; text-wrap: pretty; }
+.lp-vx .vx-plays__play { min-width: 0; }
+.lp-vx .vx-plays__play .vx-page__title { align-items: flex-start; text-wrap: pretty; }
+.lp-vx .vx-plays__play .vx-stagepill { margin-top: 3px; }
+/* the app's search status (PAN-1740): one banner while the first search runs */
+.lp-vx .vx-plays__search {
+  --ico: 14px;
+  --ico-c: var(--app-influencer-fg);
+  align-items: flex-start;
+  background: var(--app-influencer-bg);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-influencer-ring);
+  column-gap: 8px;
+  display: grid;
+  grid-template-columns: 14px minmax(0, 1fr);
+  margin-top: 12px;
+  padding: 9px 11px;
+}
+.lp-vx .vx-plays__search::before { grid-row: span 2; margin-top: 1px; }
+.lp-vx .vx-plays__search b { font-size: 11.5px; font-weight: 600; line-height: 16px; }
+.lp-vx .vx-plays__search span { color: var(--app-muted-fg); font-size: 11px; line-height: 15px; }
+.lp-vx .vx-plays__facts {
+  column-gap: 12px;
+  display: grid;
+  font-size: 11.5px;
+  grid-template-columns: max-content minmax(0, 1fr);
+  line-height: 16px;
+  margin: 14px 0 0;
+  row-gap: 9px;
+}
+.lp-vx .vx-plays__facts dt { color: var(--app-muted-fg); font-size: 11px; }
+.lp-vx .vx-plays__facts dd { align-items: flex-start; display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 0; min-width: 0; text-wrap: pretty; }
+.lp-vx .vx-plays__stepsh { color: var(--app-muted-fg); font-size: 11px; font-weight: 500; line-height: 15px; margin-top: 18px; }
+.lp-vx .vx-plays__steps { display: grid; gap: 12px; margin-top: 9px; }
+.lp-vx .vx-plays__steps li {
+  column-gap: 10px;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
   position: relative;
 }
-.lp-vx .vx-sig__top {
-  align-items: center;
-  display: flex;
-  font-size: 12px;
-  font-weight: 600;
-  gap: 7px;
-  line-height: 16px;
-  min-height: 22px;
-  padding-right: 48px;
-  white-space: nowrap;
+/* the thin line joining one step's icon to the next */
+.lp-vx .vx-plays__steps li:not(:last-child)::after {
+  background: var(--app-border);
+  bottom: -11px;
+  content: "";
+  left: 11px;
+  position: absolute;
+  top: 25px;
+  width: 1px;
 }
-.lp-vx .vx-sig__tile {
-  --ico: 13px;
+.lp-vx .vx-plays__sico {
+  --ico: 12px;
   align-items: center;
-  background: var(--k-bg);
-  border-radius: 6px;
-  color: var(--k-fg);
+  background: var(--app-muted);
+  border-radius: 50%;
   display: flex;
-  flex: none;
+  grid-row: span 2;
   height: 22px;
   justify-content: center;
   width: 22px;
 }
-.lp-vx .vx-sig__v { display: block; min-width: 0; }
-.lp-vx .vx-sig__corner { position: absolute; right: 10px; top: 13px; justify-items: end; }
-.lp-vx .vx-sig__body { display: grid; min-height: 30px; }
-.lp-vx .vx-sig__empty {
-  -webkit-box-orient: vertical;
-  color: var(--app-muted-fg);
-  display: -webkit-box;
-  font-size: 10.5px;
-  -webkit-line-clamp: 2;
-  line-height: 15px;
-  overflow: hidden;
+.lp-vx .vx-plays__steps b { font-size: 12px; font-weight: 600; line-height: 16px; padding-top: 2px; }
+.lp-vx .vx-plays__steps li > span:last-child { color: var(--app-muted-fg); font-size: 11px; line-height: 15px; text-wrap: pretty; }
+
+/* the Play card (plays/play-draft-panel.tsx): "New play" + Draft → Created, the three slots
+   each with a green check, then one full-width "Create play and run search" */
+.lp-vx .vx-play__top { align-items: center; display: flex; gap: 8px; justify-content: space-between; }
+.lp-vx .vx-play__kicker {
+  color: var(--app-pink-dark);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.72px;
+  line-height: 12px;
+  text-transform: uppercase;
 }
-.lp-vx .vx-sig__chips { align-content: flex-start; display: flex; flex-wrap: wrap; gap: 4px; min-width: 0; }
-.lp-vx .vx-sig__tail { align-items: center; display: flex; gap: 4px; max-width: 100%; min-width: 0; }
-/* the app's watched-item chips (vx-achip: not signals.css's landing .vx-wchip). A long item
-   wraps to a 2-line chip instead of an ellipsis; every card body is one stacked cell per prompt,
-   so the tallest variant is reserved from first paint. */
-.lp-vx .vx-achip {
-  -webkit-box-orient: vertical;
-  background: var(--app-muted);
-  border-radius: 6px;
-  display: -webkit-box;
-  flex: 0 1 auto;
-  font-size: 10.5px;
-  -webkit-line-clamp: 2;
-  line-height: 15px;
-  max-width: 100%;
-  min-width: 0;
-  overflow: hidden;
-  padding: 3.5px 7px;
-  text-wrap: balance;
-}
-.lp-vx .vx-amore { flex: none; font-size: 10.5px; font-weight: 600; white-space: nowrap; }
-.lp-vx .vx-setup {
-  align-items: center;
-  background: var(--app-card);
-  border-radius: 7px;
-  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-control);
-  display: inline-flex;
+.lp-vx .vx-play__pill > [data-s] {
+  border-radius: 999px;
   font-size: 10px;
   font-weight: 500;
-  height: 20px;
-  padding: 0 7px;
+  justify-self: end;
+  line-height: 16px;
+  padding: 0 6px;
   white-space: nowrap;
 }
-/* toggle (on = ink, the app's): the thumb slides when its swap turns on */
-.lp-vx .vx-switch {
-  background: var(--app-ink);
-  border-radius: 999px;
-  display: block;
-  height: 15px;
-  margin-top: 2px;
-  position: relative;
-  transition: background-color 0.16s ease;
-  width: 26px;
+.lp-vx .vx-play__pill > [data-s="before"] { background: var(--app-card); box-shadow: inset 0 0 0 1px var(--app-border); color: var(--app-muted-fg); }
+.lp-vx .vx-play__pill > [data-s="after"] {
+  background: var(--app-influencer-bg);
+  box-shadow: inset 0 0 0 1px var(--app-influencer-ring);
+  color: var(--app-influencer-fg);
 }
-.lp-vx .vx-switch::after {
-  background: var(--app-card);
-  border-radius: 50%;
-  content: "";
-  height: 11px;
-  left: 2px;
-  position: absolute;
-  top: 2px;
-  transform: translateX(11px);
-  transition: transform 0.16s ease;
-  width: 11px;
+.lp-vx .vx-play__name { font-size: 12.5px; font-weight: 600; line-height: 17px; margin-top: 3px; text-wrap: pretty; }
+.lp-vx .vx-play__rows { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+.lp-vx .vx-play__rows li {
+  --ico: 12px;
+  --ico-c: var(--app-influencer-fg);
+  align-items: start;
+  column-gap: 6px;
+  display: grid;
+  font-size: 11px;
+  grid-template-columns: 12px 96px minmax(0, 1fr);
+  line-height: 15px;
 }
-.lp-vx .vx-demo__card[data-armed] [data-swap]:not(.is-sw) > .vx-switch { background: var(--app-border); }
-.lp-vx .vx-demo__card[data-armed] [data-swap]:not(.is-sw) > .vx-switch::after { transform: none; }
+.lp-vx .vx-play__rows li::before { margin-top: 1.5px; }
+.lp-vx .vx-play__k { color: var(--app-muted-fg); }
+.lp-vx .vx-play__v {
+  align-items: flex-start;
+  color: color-mix(in srgb, var(--app-ink) 86%, transparent);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 5px;
+  min-width: 0;
+  text-wrap: pretty;
+}
+.lp-vx .vx-play__v .vx-chip { margin-top: -2px; }
+.lp-vx .vx-play__go { height: 28px; justify-content: center; width: 100%; }
 
 .lp-vx .vx-chat {
   background: var(--app-card);
@@ -832,45 +865,6 @@
   position: absolute;
   top: 10px;
   width: 2px;
-}
-.lp-vx .vx-prop__label {
-  color: var(--app-pink-dark);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.72px;
-  line-height: 12px;
-  text-transform: uppercase;
-}
-.lp-vx .vx-prop__label > [data-s="after"] { color: var(--app-influencer-fg); }
-.lp-vx .vx-prop__title { font-size: 12px; font-weight: 600; line-height: 16px; margin-top: 2px; }
-.lp-vx .vx-prop__rows { display: flex; flex-direction: column; gap: 5px; margin-top: 7px; }
-.lp-vx .vx-prop__rows li {
-  color: color-mix(in srgb, var(--app-ink) 82%, transparent);
-  display: grid;
-  font-size: 11px;
-  gap: 8px;
-  grid-template-columns: 70px minmax(0, 1fr);
-  line-height: 15px;
-  text-wrap: pretty;
-}
-/* the row's kind chip is li::before (one element per row): .vx-chip's recipe */
-.lp-vx .vx-prop__rows li::before {
-  align-items: center;
-  align-self: start;
-  background: var(--k-bg, var(--app-muted));
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px var(--k-ring, var(--app-border));
-  color: var(--k-fg, var(--app-muted-fg));
-  content: attr(data-label);
-  display: inline-flex;
-  font-size: 10.5px;
-  font-weight: 500;
-  height: 19px;
-  line-height: 13px;
-  margin-top: -2px;
-  padding: 0 7px;
-  white-space: nowrap;
-  width: fit-content;
 }
 .lp-vx .vx-prop__foot { margin-top: 9px; }
 .lp-vx .vx-prop__saved {
@@ -1511,7 +1505,7 @@
   .lp-vx .vx-app__nav > span { width: 62px; }
   .lp-vx .vx-page { padding: 10px 12px 14px; }
   .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr); }
-  .lp-vx .vx-sigpage { display: none; }
+  .lp-vx .vx-plays { display: none; }
   .lp-vx .vx-chat { border-left: 0; border-top: 1px solid var(--app-border); }
   .lp-vx .vx-chat__head { height: 38px; }
   .lp-vx .vx-leads .vx-page__sub { display: none; }
@@ -1519,7 +1513,7 @@
   .lp-vx .vx-bubble, .lp-vx .vx-answer { font-size: 12.5px; line-height: 18px; }
   /* phones: the card spans the log (the indent would cost a line per row); the rule stays inside */
   .lp-vx .vx-prop { margin-left: 0; }
-  .lp-vx .vx-prop__rows li { font-size: 11.5px; grid-template-columns: 70px minmax(0, 1fr); line-height: 16px; }
+  .lp-vx .vx-play__rows li { font-size: 11.5px; grid-template-columns: 12px 102px minmax(0, 1fr); line-height: 16px; }
   .lp-vx .vx-count::before, .lp-vx .vx-row::before { display: none; }
   /* two rows only, so the "5 qualified leads" line would contradict what shows */
   .lp-vx .vx-count { display: none; }
@@ -1643,6 +1637,7 @@
 .lp-vx [data-ico="sparkle"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M11 2.5c.6 4.6 2.9 6.9 7.5 7.5-4.6.6-6.9 2.9-7.5 7.5-.6-4.6-2.9-6.9-7.5-7.5 4.6-.6 6.9-2.9 7.5-7.5zM18.5 14.5c.3 2.1 1.4 3.2 3.5 3.5-2.1.3-3.2 1.4-3.5 3.5-.3-2.1-1.4-3.2-3.5-3.5 2.1-.3 3.2-1.4 3.5-3.5z'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="gear"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M4 7.5h9M17 7.5h3M4 16.5h3M11 16.5h9'/%3E%3Ccircle cx='15' cy='7.5' r='2.2'/%3E%3Ccircle cx='9' cy='16.5' r='2.2'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="check"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
+.lp-vx [data-ico="search"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Ccircle cx='10.5' cy='10.5' r='6'/%3E%3Cpath d='m15 15 5 5'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="check-circle"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M12 2.5a9.5 9.5 0 1 1 0 19 9.5 9.5 0 0 1 0-19zm4.4 5.9-6 6-2.7-2.7-1.6 1.6 4.3 4.3 7.6-7.6z'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="arrow-up"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M12 19V5.5M6.5 11 12 5.5l5.5 5.5'/%3E%3C/svg%3E"); }
 .lp-vx [data-ico="x"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.2' stroke-linecap='round' fill='none'%3E%3Cpath d='M7 7l10 10M17 7 7 17'/%3E%3C/svg%3E"); }

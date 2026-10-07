@@ -38,6 +38,7 @@ export const msps: VerticalConfig = {
       {
         kind: "hiring",
         text: "We’re a managed IT provider. Find US companies with 30 to 200 staff hiring an IT manager.",
+        play: "Companies hiring an IT manager",
         reply: "I’ll watch job posts for IT roles at US firms that size and skip other IT providers.",
         proposal: [
           { kind: "hiring", items: ["IT manager", "IT support technician", "Systems administrator"] },
@@ -63,6 +64,7 @@ export const msps: VerticalConfig = {
       {
         kind: "stack",
         text: "We manage Microsoft 365. Find US firms with 50 to 250 staff whose job posts name Intune.",
+        play: "Firms running Intune",
         reply: "I’ll watch job posts at US firms that size for Intune, Entra ID or Microsoft 365.",
         proposal: [
           { kind: "stack", items: ["Intune", "Entra ID", "Microsoft 365"] },
@@ -87,6 +89,7 @@ export const msps: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US ops and finance leads posting about cyber insurance. We close the gaps insurers flag.",
+        play: "Ops leads posting about cyber insurance",
         reply: "I’ll watch posts about cyber insurance, phishing and MFA from ops and finance leaders.",
         proposal: [
           { kind: "keyword", items: ["cyber insurance renewal", "phishing attempt", "MFA rollout"] },

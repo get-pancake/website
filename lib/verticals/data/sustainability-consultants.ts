@@ -38,6 +38,7 @@ export const sustainabilityConsultants: VerticalConfig = {
       {
         kind: "keyword",
         text: "I do carbon accounting. Find CFOs at US firms with 250 to 1,000 staff posting about scope 3.",
+        play: "CFOs posting about scope 3",
         reply: "I’ll watch scope 3 posts and keep CFOs and finance heads at US companies that size.",
         proposal: [
           { kind: "keyword", items: ["scope 3", "supplier emissions", "carbon inventory"] },
@@ -63,6 +64,7 @@ export const sustainabilityConsultants: VerticalConfig = {
       {
         kind: "hiring",
         text: "Find US companies hiring a sustainability manager. We run the program until they start.",
+        play: "Companies hiring a sustainability manager",
         reply: "I’ll watch sustainability job posts and find the finance or ops leader at each company.",
         proposal: [
           { kind: "hiring", items: ["Sustainability manager", "Head of Sustainability", "ESG reporting analyst"] },
@@ -87,6 +89,7 @@ export const sustainabilityConsultants: VerticalConfig = {
       {
         kind: "stack",
         text: "We improve supplier ratings. Find US manufacturers whose job posts mention EcoVadis.",
+        play: "Manufacturers using EcoVadis",
         reply: "I’ll track job posts naming EcoVadis and keep quality and sustainability leads.",
         proposal: [
           { kind: "stack", items: ["EcoVadis", "Sphera"] },

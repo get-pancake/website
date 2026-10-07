@@ -36,6 +36,7 @@ export const revopsConsultants: VerticalConfig = {
       {
         kind: "stack",
         text: "I’m a HubSpot partner. Find US companies of 50 to 300 people whose job posts name HubSpot.",
+        play: "Companies running HubSpot",
         reply: "I’ll match HubSpot job posts to the sales or RevOps leader at each company.",
         proposal: [
           { kind: "stack", items: ["HubSpot"] },
@@ -61,6 +62,7 @@ export const revopsConsultants: VerticalConfig = {
       {
         kind: "hiring",
         text: "I fix Salesforce orgs. Find US B2B companies of 100 to 500 people hiring a Salesforce admin.",
+        play: "B2B companies hiring a Salesforce admin",
         reply: "I’ll watch job posts for Salesforce admin roles and find the VP Sales or COO.",
         proposal: [
           { kind: "hiring", items: ["Salesforce administrator", "Sales operations analyst"] },
@@ -85,6 +87,7 @@ export const revopsConsultants: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US sales leaders posting about forecast accuracy or a CRM migration. I scope both.",
+        play: "Sales leaders posting about forecasting",
         reply: "I’ll watch sales leaders’ posts on forecasting or CRM moves and attach each post.",
         proposal: [
           { kind: "keyword", items: ["forecast accuracy", "CRM migration", "pipeline hygiene"] },

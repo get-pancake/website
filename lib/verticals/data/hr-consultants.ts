@@ -38,6 +38,7 @@ export const hrConsultants: VerticalConfig = {
       {
         kind: "hiring",
         text: "I’m a fractional HR lead. Find US companies with 20 to 100 staff posting an HR manager role.",
+        play: "Companies hiring an HR manager",
         reply: "I’ll watch job posts for HR roles at US companies with 20 to 100 people.",
         proposal: [
           { kind: "hiring", items: ["HR manager", "HR generalist", "People ops manager"] },
@@ -62,6 +63,7 @@ export const hrConsultants: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US founders posting about performance reviews or an employee handbook. I set those up.",
+        play: "Founders posting about performance reviews",
         reply: "I’ll watch founder posts on reviews and handbooks at US companies with 20 to 150 people.",
         proposal: [
           { kind: "keyword", items: ["performance reviews", "employee handbook", "PTO policy"] },
@@ -86,6 +88,7 @@ export const hrConsultants: VerticalConfig = {
       {
         kind: "stack",
         text: "I run HR for small teams on Gusto or Rippling. Find US companies whose job posts name them.",
+        play: "Small teams on Gusto or Rippling",
         reply: "I’ll find companies whose job posts name Gusto or Rippling, then the founder or COO.",
         proposal: [
           { kind: "stack", items: ["Gusto", "Rippling", "Justworks"] },

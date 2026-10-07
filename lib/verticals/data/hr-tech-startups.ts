@@ -38,6 +38,7 @@ export const hrTechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "Our HRIS replaces BambooHR. Find US employers with 200 to 1,000 staff whose job posts name it.",
+        play: "Employers running BambooHR",
         reply: "I’ll track job posts that name BambooHR and bring you the VP People or CHRO.",
         proposal: [
           { kind: "stack", items: ["BambooHR"] },
@@ -62,6 +63,7 @@ export const hrTechStartups: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US CHROs at hotel and restaurant groups posting about turnover. That’s our market.",
+        play: "Hospitality CHROs posting about turnover",
         reply: "I’ll watch posts about turnover and keep People leaders at US hospitality groups.",
         proposal: [
           { kind: "keyword", items: ["employee turnover", "frontline retention", "stay interviews"] },
@@ -86,6 +88,7 @@ export const hrTechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "Our tool cleans HR data. Find US employers of 500 to 5,000 people hiring HRIS analysts.",
+        play: "Employers hiring HRIS analysts",
         reply: "I’ll watch HRIS job posts at US employers that size, then find the head of People Ops.",
         proposal: [
           { kind: "hiring", items: ["HRIS analyst", "HRIS manager", "People data analyst"] },

@@ -35,6 +35,7 @@ export const martechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "We automate ad reporting. Find US insurers and SaaS firms hiring marketing ops managers.",
+        play: "Teams hiring marketing ops managers",
         reply: "I’ll watch job posts for marketing ops roles at US insurers and SaaS firms.",
         proposal: [
           { kind: "hiring", items: ["Marketing ops manager", "Paid media analyst"] },
@@ -59,6 +60,7 @@ export const martechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "We replace Marketo. Find US B2B companies whose marketing job posts still list it.",
+        play: "B2B companies still on Marketo",
         reply: "I’ll find US B2B companies whose job posts name Marketo and keep the marketing leads.",
         proposal: [
           { kind: "stack", items: ["Marketo", "Pardot"] },
@@ -84,6 +86,7 @@ export const martechStartups: VerticalConfig = {
       {
         kind: "influencer",
         text: "We sell attribution software. Find US growth leads engaging with measurement experts.",
+        play: "Growth leads following measurement experts",
         reply: "I’ll watch who engages with measurement experts’ posts and keep US growth leads.",
         proposal: [
           { kind: "influencer", items: ["Vesna Dykstra", "Kwame Dunleavy"] },

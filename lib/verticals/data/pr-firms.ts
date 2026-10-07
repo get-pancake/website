@@ -34,6 +34,7 @@ export const prFirms: VerticalConfig = {
       {
         kind: "hiring",
         text: "We’re a tech PR firm. Find US software companies with 25 to 250 staff hiring a comms manager.",
+        play: "Software companies hiring a comms manager",
         reply: "I’ll watch job posts for comms and PR roles at US software companies that size.",
         proposal: [
           { kind: "hiring", items: ["Communications manager", "PR manager", "Head of Communications"] },
@@ -58,6 +59,7 @@ export const prFirms: VerticalConfig = {
       {
         kind: "keyword",
         text: "I run a tech PR firm. Find US B2B founders posting that they want more press coverage.",
+        play: "Founders who want more press",
         reply: "I’ll watch B2B founders’ posts about press, coverage and telling their story.",
         proposal: [
           { kind: "keyword", items: ["press coverage", "founder story", "how to get press"] },
@@ -82,6 +84,7 @@ export const prFirms: VerticalConfig = {
       {
         kind: "influencer",
         text: "We pitch tech press. Find US heads of comms engaging with media relations experts’ posts.",
+        play: "Comms heads following media relations pros",
         reply: "I’ll watch who engages with the comms experts you name and keep US tech companies.",
         proposal: [
           { kind: "influencer", items: ["Noor Khalidi", "Grant Esterhaus"] },

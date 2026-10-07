@@ -38,6 +38,7 @@ export const aiStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "Our AI processes purchase orders. Find US distributors hiring order entry specialists.",
+        play: "Distributors hiring order entry staff",
         reply: "I’ll watch order entry job posts at US distributors and find who runs operations.",
         proposal: [
           { kind: "hiring", items: ["Order entry specialist", "Order processing clerk"] },
@@ -62,6 +63,7 @@ export const aiStartups: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find claims leaders at US insurers posting about AI pilots. Our product reads claim files.",
+        play: "Claims leaders posting about AI pilots",
         reply: "I’ll watch posts about AI in claims and keep claims leaders at US insurers.",
         proposal: [
           { kind: "keyword", items: ["AI in claims", "claims backlog", "AI pilot"] },
@@ -86,6 +88,7 @@ export const aiStartups: VerticalConfig = {
       {
         kind: "competitor",
         text: "We replace Scanlith’s document capture. Find US ops leaders who engage with Scanlith’s posts.",
+        play: "Ops leaders engaging with Scanlith",
         reply: "I’ll watch Scanlith’s company page and keep ops leaders who react or comment.",
         proposal: [
           { kind: "competitor", items: ["Scanlith Systems", "Formcrest"] },

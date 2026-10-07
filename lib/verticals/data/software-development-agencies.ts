@@ -38,6 +38,7 @@ export const softwareDevelopmentAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We build MVPs. Find US startups with under 50 people hiring a founding engineer.",
+        play: "Startups hiring a founding engineer",
         reply: "I’ll watch job posts at US startups that size and bring you the founder or CTO.",
         proposal: [
           { kind: "hiring", items: ["Founding engineer", "Senior full-stack engineer"] },
@@ -63,6 +64,7 @@ export const softwareDevelopmentAgencies: VerticalConfig = {
       {
         kind: "stack",
         text: "We’re a Flutter shop. Find US companies whose job posts mention Flutter or Dart.",
+        play: "Companies building with Flutter",
         reply: "I’ll watch US job posts that name Flutter or Dart and find who owns the app.",
         proposal: [
           { kind: "stack", items: ["Flutter", "Dart"] },
@@ -87,6 +89,7 @@ export const softwareDevelopmentAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US founders posting that they need a technical co-founder. We can be the team.",
+        play: "Founders looking for a technical co-founder",
         reply: "I’ll watch founders’ posts about co-founder searches and MVP builds.",
         proposal: [
           { kind: "keyword", items: ["technical co-founder", "building our MVP"] },

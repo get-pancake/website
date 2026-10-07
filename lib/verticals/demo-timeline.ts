@@ -15,10 +15,8 @@ export type DemoTab = 0 | 1 | 2 | 3;
 export interface DemoLens {
   /** Prompt text length (chars) — typed into the Brief composer. */
   typeLen: number;
-  /** Proposal rows (3–4). */
+  /** Play card rows (Who, How we find them, How many). */
   rows: number;
-  /** Signals-page cards that switch on after approval (= proposed kinds). */
-  sigs: number;
   /** Follow-up message length (chars) — streamed in the Outreach tab. */
   streamLen: number;
 }
@@ -78,7 +76,7 @@ interface TabCues {
 
 function cuesOf(tab: DemoTab, lens: DemoLens): TabCues {
   if (tab === 0) {
-    // the proposal card arrives WITH its first row; the Approve footer only once every row is in
+    // the Play card arrives WITH its first row; its Create button only once every row is in
     // (b.bubble also hides the empty conversation's starter chips: data-uncue)
     const on: Cue[] = [
       ["b.bubble", SEND],
@@ -89,7 +87,6 @@ function cuesOf(tab: DemoTab, lens: DemoLens): TabCues {
     for (let j = 0; j < lens.rows; j++) on.push([`b.row${j}`, PROP + ROW_MS * j]);
     on.push(["b.foot", PROP + ROW_MS * Math.max(0, lens.rows - 1) + 300]);
     const sw: Cue[] = [["b.approved", 5120]];
-    for (let i = 0; i < lens.sigs; i++) sw.push([`b.sig${i}`, 5400 + 220 * i]);
     return { on: sorted(on), sw, mk: [] };
   }
   if (tab === 1) {

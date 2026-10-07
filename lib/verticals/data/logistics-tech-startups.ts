@@ -37,6 +37,7 @@ export const logisticsTechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "Our routing tool cuts dispatch work. Find US 3PLs hiring dispatchers or load planners.",
+        play: "3PLs hiring dispatchers",
         reply: "I’ll watch dispatch job posts at US 3PLs and find the ops leader who owns the team.",
         proposal: [
           { kind: "hiring", items: ["Dispatcher", "Load planner", "Transportation planner"] },
@@ -62,6 +63,7 @@ export const logisticsTechStartups: VerticalConfig = {
       {
         kind: "keyword",
         text: "Our tool cuts late deliveries. Find US heads of logistics posting about peak season.",
+        play: "Logistics heads posting about peak season",
         reply: "I’ll watch US logistics leaders’ posts about peak season and late deliveries.",
         proposal: [
           { kind: "keyword", items: ["peak season", "on-time delivery"] },
@@ -86,6 +88,7 @@ export const logisticsTechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "Our slotting tool works with Manhattan WMS. Find US distributors whose job posts name it.",
+        play: "Distributors running Manhattan WMS",
         reply: "I’ll watch job posts that name Manhattan WMS and find who runs the warehouses.",
         proposal: [
           { kind: "stack", items: ["Manhattan WMS", "Manhattan SCALE"] },

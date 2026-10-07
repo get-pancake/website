@@ -50,6 +50,26 @@ Still open (spec defaults hold, flagged to the founder): the truthful
 checklist on /for pages only (`VX_PRICING_MODE`), Fono eyebrows
 (`--vx-eyebrow-font`).
 
+## 2026-10-07: the demo shows the app's Plays
+
+The founder: "make the app juicy and easy to get", taking components from the app as the
+launch-week videos did. The demo now copies pancake-cmo @ac480839 (and the launch-week capture
+of the Play creation screen) instead of the September app:
+
+| Where | Before | Now |
+|---|---|---|
+| Tab labels | Brief · Leads · Outreach · Slack | Play · Leads · Sequence · Slack |
+| Tab 01 page | the Signals page (six signal cards, "Set up" and empty states) | the Plays page: "Ready when you are", then the new Play, Active, "Searching for new leads" (plays/copy.ts) |
+| Tab 01 chat card | "Recommended next move · Signal settings", rows, "Approve change" | the Play card (play-draft-panel.tsx): New play · Draft → Created, Who · How we find them · How many, "Create play and run search" |
+| Rail | Overview · Leads · Campaign, Signals at the foot | Overview · Leads · Sequence, Sourcing at the foot; tab 01 lights Overview |
+| Leads / Sequence | "Add to campaign", the Campaign page | "Start contacting", the Sequence page ("Pancake runs this Play's outreach, tuned for you.") |
+| Control | "Add {lead} to your campaign?" | "Start contacting {lead}?", "{lead} is in the sequence" |
+
+Each prompt names its Play (`play`, ≤44 chars, audience first, no "US": validate.ts). "Who" is
+the leads' job titles (two, then "+N more"); "How we find them" is proposal row 0; "How many" is
+the launch-week capture's 25 per search. Phones keep the chat only, so the card carries the
+whole story there.
+
 ## 2026-09-30: AI SEO retired, Plays shipped
 
 AI SEO left the product (pancake-cmo PR #1037: SEO articles off for every

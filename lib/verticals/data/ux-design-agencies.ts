@@ -35,6 +35,7 @@ export const uxDesignAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We’re a UX studio. Find US SaaS companies of 30 to 300 people hiring product designers.",
+        play: "SaaS companies hiring product designers",
         reply: "I’ll watch SaaS job posts for product and UX designers at companies that size.",
         proposal: [
           { kind: "hiring", items: ["Senior product designer", "UX designer", "Design lead"] },
@@ -59,6 +60,7 @@ export const uxDesignAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "I run a UX studio. Find US heads of product posting about onboarding drop-off or activation.",
+        play: "Product heads posting about activation",
         reply: "I’ll watch product leaders’ posts about drop-off and activation at software companies.",
         proposal: [
           { kind: "keyword", items: ["onboarding drop-off", "activation rate", "time to value"] },
@@ -83,6 +85,7 @@ export const uxDesignAgencies: VerticalConfig = {
       {
         kind: "competitor",
         text: "We only do B2B SaaS. Find US product leaders engaging with rival design studios’ posts.",
+        play: "Product leaders following rival studios",
         reply: "I’ll track who engages with rival studios’ posts and keep product leaders at B2B SaaS.",
         proposal: [
           { kind: "competitor", items: ["Crosshatch UX", "Gouache Studio"] },

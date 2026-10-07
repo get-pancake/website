@@ -38,6 +38,7 @@ export const legalTechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "Our intake tool serves immigration firms. Find US immigration law firms hiring paralegals.",
+        play: "Immigration firms hiring paralegals",
         reply: "I’ll watch paralegal job posts at US immigration firms, then find the managing partner.",
         proposal: [
           { kind: "hiring", items: ["Immigration paralegal", "Legal intake specialist", "Legal assistant"] },
@@ -62,6 +63,7 @@ export const legalTechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "Our billing tool plugs into Clio. Find US law firms of 10 to 100 people whose job posts list it.",
+        play: "Law firms running Clio",
         reply: "I’ll find firms whose job posts name Clio, then the partner or COO who runs the firm.",
         proposal: [
           { kind: "stack", items: ["Clio", "MyCase"] },
@@ -86,6 +88,7 @@ export const legalTechStartups: VerticalConfig = {
       {
         kind: "keyword",
         text: "We speed up contract review. Find US general counsels posting about contract backlogs.",
+        play: "General counsels on contract backlogs",
         reply: "I’ll watch posts about contract review and keep in-house legal leaders at US companies.",
         proposal: [
           { kind: "keyword", items: ["contract review", "contract backlog", "legal front door"] },

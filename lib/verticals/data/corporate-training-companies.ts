@@ -38,6 +38,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We run sales training. Find US firms of 500 to 5,000 people hiring a sales enablement manager.",
+        play: "Firms hiring a sales enablement manager",
         reply: "I’ll watch job posts for enablement roles at US companies with 500 to 5,000 people.",
         proposal: [
           { kind: "hiring", items: ["Sales enablement manager", "Sales trainer"] },
@@ -63,6 +64,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US L&D leaders posting about manager training or upskilling. We run those programs.",
+        play: "L&D leaders posting about upskilling",
         reply: "I’ll watch posts on manager training and upskilling from L&D leaders at US companies.",
         proposal: [
           { kind: "keyword", items: ["manager training", "upskilling", "new manager program"] },
@@ -88,6 +90,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
       {
         kind: "stack",
         text: "We build courses for Docebo and Cornerstone. Find US companies whose job posts name either.",
+        play: "Companies on Docebo or Cornerstone",
         reply: "I’ll find US companies whose job posts name Docebo or Cornerstone, then the L&D lead.",
         proposal: [
           { kind: "stack", items: ["Docebo", "Cornerstone"] },

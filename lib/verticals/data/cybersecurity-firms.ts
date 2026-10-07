@@ -39,6 +39,7 @@ export const cybersecurityFirms: VerticalConfig = {
       {
         kind: "keyword",
         text: "We run SOC 2 readiness. Find CTOs at US SaaS companies posting about their first SOC 2 audit.",
+        play: "CTOs facing their first SOC 2 audit",
         reply: "I’ll watch posts about SOC 2 audits and keep CTOs at US SaaS companies.",
         proposal: [
           { kind: "keyword", items: ["first SOC 2 audit", "SOC 2 Type II", "security questionnaire"] },
@@ -64,6 +65,7 @@ export const cybersecurityFirms: VerticalConfig = {
       {
         kind: "hiring",
         text: "We run a 24/7 SOC. Find US companies with 200 to 2,000 staff hiring their own SOC analysts.",
+        play: "Companies hiring SOC analysts",
         reply: "I’ll watch US job posts for SOC analyst roles and find who leads security there.",
         proposal: [
           { kind: "hiring", items: ["SOC analyst", "Security analyst", "Detection engineer"] },
@@ -89,6 +91,7 @@ export const cybersecurityFirms: VerticalConfig = {
       {
         kind: "stack",
         text: "We run pentests for SOC 2 audits. Find US SaaS companies whose job posts name Vanta or Drata.",
+        play: "SaaS teams using Vanta or Drata",
         reply: "I’ll watch US job posts that name Vanta or Drata and find who owns security.",
         proposal: [
           { kind: "stack", items: ["Vanta", "Drata", "Secureframe"] },

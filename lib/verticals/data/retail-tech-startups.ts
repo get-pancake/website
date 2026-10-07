@@ -38,6 +38,7 @@ export const retailTechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "We run shopper research for brands. Find US brands hiring consumer insights managers.",
+        play: "Brands hiring consumer insights managers",
         reply: "I’ll watch insights job posts at US consumer brands and skip agency listings.",
         proposal: [
           { kind: "hiring", items: ["Consumer insights manager", "Shopper insights analyst"] },
@@ -62,6 +63,7 @@ export const retailTechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "We check product data. Find US consumer brands whose job posts name Salsify or Akeneo.",
+        play: "Brands running Salsify or Akeneo",
         reply: "I’ll watch brand job posts that name Salsify or Akeneo and find who owns product data.",
         proposal: [
           { kind: "stack", items: ["Salsify", "Akeneo"] },
@@ -86,6 +88,7 @@ export const retailTechStartups: VerticalConfig = {
       {
         kind: "keyword",
         text: "Our fit tool cuts apparel returns. Find US heads of e-commerce posting about returns.",
+        play: "E-commerce heads posting about returns",
         reply: "I’ll watch posts about returns and sizing from e-commerce leaders at US apparel brands.",
         proposal: [
           { kind: "keyword", items: ["apparel returns", "sizing issues", "return costs"] },

@@ -35,6 +35,7 @@ export const webDesignAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We’re a Webflow studio. Find US B2B companies with 20 to 200 staff hiring a Webflow developer.",
+        play: "B2B companies hiring a Webflow developer",
         reply: "I’ll watch job posts for Webflow and web design roles at B2B firms that size.",
         proposal: [
           { kind: "hiring", items: ["Webflow developer", "Web designer", "Website manager"] },
@@ -60,6 +61,7 @@ export const webDesignAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find heads of marketing at US B2B firms with 10 to 100 staff posting about a website redesign.",
+        play: "Marketing heads planning a redesign",
         reply: "I’ll watch posts about redesigns and site launches, and keep B2B marketing heads.",
         proposal: [
           { kind: "keyword", items: ["website redesign", "new website", "site migration"] },
@@ -84,6 +86,7 @@ export const webDesignAgencies: VerticalConfig = {
       {
         kind: "stack",
         text: "We rebuild sites in Webflow. Find US SaaS firms whose job posts mention WordPress.",
+        play: "SaaS firms running WordPress",
         reply: "I’ll find SaaS companies whose job posts name WordPress, like web or content roles.",
         proposal: [
           { kind: "stack", items: ["WordPress"] },

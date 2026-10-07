@@ -41,6 +41,7 @@ export const healthtechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "Our scheduling tool plugs into Epic. Find US hospitals whose job posts name it.",
+        play: "Hospitals running Epic",
         reply: "I’ll watch hospital job posts that name Epic and find who runs patient access.",
         proposal: [
           { kind: "stack", items: ["Epic", "Epic Cadence"] },
@@ -66,6 +67,7 @@ export const healthtechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "We automate prior auth. Find US specialty clinic groups hiring prior auth specialists.",
+        play: "Clinic groups hiring prior auth staff",
         reply: "I’ll watch prior auth job posts at US specialty groups and find who runs revenue cycle.",
         proposal: [
           { kind: "hiring", items: ["Prior auth specialist", "Authorization coordinator"] },
@@ -90,6 +92,7 @@ export const healthtechStartups: VerticalConfig = {
       {
         kind: "keyword",
         text: "Our shift app fills caregiver gaps. Find US senior-living leaders posting about staffing.",
+        play: "Senior living leaders posting about staffing",
         reply: "I’ll watch posts from senior-living leaders about caregiver staffing and turnover.",
         proposal: [
           { kind: "keyword", items: ["caregiver shortage", "staff turnover"] },

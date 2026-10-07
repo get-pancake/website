@@ -35,6 +35,7 @@ export const videoProductionCompanies: VerticalConfig = {
       {
         kind: "keyword",
         text: "We make explainer videos. Find product marketers at US robotics firms posting about a launch.",
+        play: "Robotics marketers posting about a launch",
         reply: "I’ll watch launch and trade show posts from marketers at US robotics firms.",
         proposal: [
           { kind: "keyword", items: ["product launch", "launch video", "trade show"] },
@@ -59,6 +60,7 @@ export const videoProductionCompanies: VerticalConfig = {
       {
         kind: "hiring",
         text: "Find US B2B tech companies hiring an in-house video producer. We’re the studio option.",
+        play: "Tech companies hiring a video producer",
         reply: "I’ll find B2B tech employers with open video producer and motion designer roles.",
         proposal: [
           { kind: "hiring", items: ["Video producer", "Motion designer", "Videographer"] },
@@ -83,6 +85,7 @@ export const videoProductionCompanies: VerticalConfig = {
       {
         kind: "influencer",
         text: "We film tech brands. Find CMOs at US firms of 50 to 500 people engaging with B2B storytellers.",
+        play: "CMOs following B2B storytellers",
         reply: "I’ll find tech CMOs who engage with B2B storytellers’ posts at firms that size.",
         proposal: [
           { kind: "influencer", items: ["Tess Orr", "Mae Adeyemi", "Rosalie Blythe"] },

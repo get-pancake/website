@@ -138,11 +138,11 @@ const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
 const sentences = (s: string) => s.split(/(?<=[.!?])\s+(?=[A-Z“"'$0-9])/).filter(Boolean).length;
 const emDashes = (s: string) => (s.match(/—/g) ?? []).length;
 
-/** The demo's prompt strings (every prompt: text, reply, why, message, proposal items, leads). */
+/** The demo's prompt strings (every prompt: text, play, reply, why, message, proposal items, leads). */
 function promptStrings(d: DemoSource): [string, string][] {
   const out: [string, string][] = [];
   d.demo.prompts.forEach((p, i) => {
-    out.push([`prompts[${i}].text`, p.text], [`prompts[${i}].reply`, p.reply], [`prompts[${i}].why`, p.featured.why], [`prompts[${i}].message`, p.message]);
+    out.push([`prompts[${i}].text`, p.text], [`prompts[${i}].play`, p.play], [`prompts[${i}].reply`, p.reply], [`prompts[${i}].why`, p.featured.why], [`prompts[${i}].message`, p.message]);
     p.proposal.forEach((r, j) => r.items.forEach((it, k) => out.push([`prompts[${i}].proposal[${j}].items[${k}]`, it])));
     p.leads.forEach((l, j) => out.push([`prompts[${i}].leads[${j}]`, `${l.name} ${l.role} ${l.company} ${l.signal}`]));
   });
@@ -277,6 +277,12 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
     d.demo.prompts.forEach((p, i) => {
       const at = `prompts[${i}]`;
       max(s, `${at}.text`, p.text, 96); max(s, `${at}.reply`, p.reply, 88);
+      // the Play card's name (2026-10-07): two lines at most in the 272px chat column
+      if (!p.play?.trim()) err(s, `${at}.play is missing`);
+      else {
+        max(s, `${at}.play`, p.play, 44);
+        if (/\.$/.test(p.play) || /\bUS\b/.test(p.play)) err(s, `${at}.play: no period and no "US" (every prompt is US): "${p.play}"`);
+      }
       if (!/^I'll |^I’ll /.test(p.reply)) warn(s, `${at}.reply should start "I'll"`);
       if (sentences(p.reply) !== 1) err(s, `${at}.reply must be one sentence`);
       if (p.proposal.length < 3 || p.proposal.length > 4) err(s, `${at}.proposal needs 3–4 rows`);

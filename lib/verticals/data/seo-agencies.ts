@@ -36,6 +36,7 @@ export const seoAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "We fix organic traffic. Find heads of marketing at US SaaS firms posting about AI Overviews.",
+        play: "Marketing heads posting about AI Overviews",
         reply: "I’ll watch posts about AI Overviews and traffic drops, and keep SaaS marketing heads.",
         proposal: [
           { kind: "keyword", items: ["AI Overviews", "organic traffic drop", "zero-click search"] },
@@ -60,6 +61,7 @@ export const seoAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We’re an SEO agency. Find US fintechs with 50 to 300 staff hiring an SEO or content manager.",
+        play: "Fintechs hiring an SEO or content manager",
         reply: "I’ll watch job posts for SEO and content roles at US fintechs that size.",
         proposal: [
           { kind: "hiring", items: ["SEO manager", "Content marketing manager", "SEO specialist"] },
@@ -84,6 +86,7 @@ export const seoAgencies: VerticalConfig = {
       {
         kind: "stack",
         text: "We do e-commerce SEO. Find US online retailers whose job posts name Semrush or Ahrefs.",
+        play: "Online retailers using Semrush or Ahrefs",
         reply: "I’ll track retailers whose job posts name those tools, then find who runs e-commerce.",
         proposal: [
           { kind: "stack", items: ["Semrush", "Ahrefs"] },

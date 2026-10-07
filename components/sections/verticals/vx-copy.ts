@@ -42,15 +42,6 @@ export const SIGNAL_GROUPS: { label: string; kinds: SignalKind[] }[] = [
   { label: "People signals", kinds: ["keyword", "competitor", "influencer", "own_brand"] },
   { label: "Company signals", kinds: ["hiring", "stack"] },
 ];
-/** signal-copy.ts SIGNAL_CARD_COPY[kind].empty — the Signals-page card before setup. */
-export const SIGNAL_EMPTY: Record<SignalKind, string> = {
-  keyword: "No keywords are in your brain yet.",
-  competitor: "No competitors are in your brain yet.",
-  influencer: "No influencers or experts are in your brain yet.",
-  own_brand: "No company, team, or personal profiles are connected yet.",
-  hiring: "No hiring roles were collected for this signal.",
-  stack: "No technologies were collected for this signal.",
-};
 /** signal-settings.ts: defaultEnabledSignalKinds vs optInSignalKinds. */
 export const SIGNAL_OPT_IN: SignalKind[] = ["hiring", "stack"];
 
@@ -77,17 +68,17 @@ export const VX_HERO = {
 export const VX_DEMO = {
   tablistAria: "Pancake, step by step",
   tabs: [
-    { key: "brief", num: "01", label: "Brief", title: "Say who you sell to.", body: "Pancake turns it into signals to watch. You approve them once." },
-    { key: "leads", num: "02", label: "Leads", title: "Wake up to warm leads.", body: "New leads land by 8:30 AM, each with the signal behind it." },
-    { key: "outreach", num: "03", label: "Outreach", title: "Reach out as yourself.", body: "Pancake warms up each lead, then writes as you." },
+    { key: "brief", num: "01", label: "Play", title: "Tell Pancake who to reach.", body: "It builds the Play and runs the first search right away." },
+    { key: "leads", num: "02", label: "Leads", title: "Wake up to warm leads.", body: "New leads land by 8:30 AM, each with the reason it fits." },
+    { key: "outreach", num: "03", label: "Sequence", title: "A personal message for every lead.", body: "Pancake warms up each lead, then writes from their signal, as you." },
     { key: "slack", num: "04", label: "Slack", title: "Approve from Slack.", body: "New leads post to your channel. Approve or reject in one click." },
   ],
   controls: { pause: "Pause demo", play: "Play demo" },
   /** role="img" labels per pane; {prompt} = active prompt text, {lead} = lead 0 name. */
   paneAria: {
-    brief: "Pancake’s Signals page and chat. The request “{prompt}” becomes proposed signal settings, approved. First leads arrive tomorrow morning.",
-    leads: "Pancake’s Leads page: five qualified leads. {lead} is open with the reason the lead fits, approved and ready to add to the campaign.",
-    outreach: "Pancake’s Campaign page: {lead}’s campaign journey. Warm-up done, first touch now, first message drafted for the next step.",
+    brief: "Pancake’s Sourcing page and chat. The request “{prompt}” becomes a new Play, created. Its first search is running.",
+    leads: "The Play’s Leads page: five qualified leads. {lead} is open with the reason the lead fits, approved and ready to contact.",
+    outreach: "The Play’s Sequence page: {lead}’s journey. Warm-up done, first touch now, first message drafted for the next step.",
     slack: "A Slack channel where Pancake posts new leads with Approve and Reject buttons. {lead} is approved.",
   },
   app: {
@@ -100,14 +91,33 @@ export const VX_DEMO = {
     /** Index into `nav` of the current tab (the pink-pale pill). */
     navCur: 2,
     cta: "Use in Claude / Codex",
-    rail: ["Overview", "Leads", "Campaign"],
-    railFoot: "Signals",
-    signals: {
-      title: "Signals",
-      sub: "Choose the signals Pancake uses to find qualified leads.",
-      setUp: "Set up",
-      /** SIGNAL_PREVIEW_LIMIT grammar on the Signals-page cards. */
-      more: (n: number) => `+${n} more`,
+    rail: ["Overview", "Leads", "Sequence"],
+    railFoot: "Sourcing",
+    /** Tab 01's page, before and after the Play is created (2026-10-07: the app's Plays replaced
+     *  the Signals page). Before: the Plays empty state (plays/copy.ts, the deferred state's
+     *  second sentence). After: the new Play with its search status (plays/copy.ts searchStatus,
+     *  PAN-1740) and the Active filter's word. pancake-cmo @ac480839. */
+    plays: {
+      readyTitle: "Ready when you are",
+      readyBody: "Tell Pancake who you want to find, and it builds your first Play with you.",
+      status: "Active",
+      searching: "Searching for new leads",
+      leave: "You can leave this page: the search keeps going without you.",
+      /** "The steps it will run" (play-draft-panel.tsx) with play-funnel.ts's step copy, picked by
+       *  the Play's source; the app's platform name is dropped (validate.ts PLATFORM). */
+      stepsTitle: "The steps it will run",
+      step: { discover: "Discover", people: "Find people", enrich: "Enrich", qualify: "Qualify" },
+      discoverBy: {
+        keyword: "People engaging with posts about your keywords.",
+        competitor: "People engaging with posts from the companies and voices you watch.",
+        influencer: "People engaging with posts from the companies and voices you watch.",
+        own_brand: "People engaging with posts from the companies and voices you watch.",
+        hiring: "Companies hiring for the roles you target.",
+        stack: "Companies using the technologies you target.",
+      } satisfies Record<SignalKind, string>,
+      findPeople: "The buyers and champions at each company.",
+      enrich: "Their profile, so the judge reads real facts.",
+      qualify: "Judged against your ideal customer profile and disqualifiers.",
     },
     chat: {
       head: "Ask Pancake anything",
@@ -116,30 +126,39 @@ export const VX_DEMO = {
       placeholder: "Ask a follow-up or change your dashboard…",
       /** Shown instead of `placeholder` when the chat column is under 300px. */
       placeholderShort: "Ask a follow-up…",
-      /** copilot/host/starters.ts PAGE_STARTERS.outboundSignals — the empty conversation's chips. */
+      /** The empty conversation's chips: one Play request, then two about how a Play finds people. */
       starters: [
-        "Which signals should I turn on?",
+        "Create a play",
         "How does post engagement find leads?",
         "What do the hiring and stack signals track?",
       ],
-      /** Tool row of the live copilot transcript (observed 2026-09-22): label + status. */
-      tool: "Checking signal settings",
+      /** Tool row of the live Play creation transcript (launch-week capture, 2026-09-30): label + status. */
+      tool: "Reviewing saved Plays",
       toolDone: "Done",
-      proposalTitle: "Signal settings",
-      /** The live proposal card's caps kicker, then its approved state. */
-      proposed: "Recommended next move",
-      approved: "Approved",
-      /** The confirm of the app's review dialog: the demo folds Review → confirm into one click. */
-      approve: "Approve change",
-      saved: "Saved. First leads arrive tomorrow morning.",
+      /** The Play card: plays/play-draft-panel.tsx + play-draft.ts SLOT_LABEL (pancake-cmo @ac480839).
+       *  Its one button creates the Play and starts its first search ("Create only" is gone). */
+      play: {
+        kicker: "New play",
+        draft: "Draft",
+        created: "Created",
+        who: "Who",
+        how: "How we find them",
+        howMany: "How many",
+        /** proposed.leadsPerRun, the 25 of the launch-week capture. */
+        perSearch: "25 leads per search",
+        /** The Who value: the leads' job titles, two then "+N more" (SIGNAL_PREVIEW_LIMIT grammar). */
+        more: (n: number) => `+${n} more`,
+        create: "Create play and run search",
+        ready: "Your play is ready. Its first search is running.",
+      },
       stackSuffix: ", named in job posts",
     },
     leads: {
       title: "Leads",
-      sub: "People matched to your ideal customer profile, with the signal behind each match.",
+      sub: "The people this Play found and qualified.",
       count: (n: number) => `${n} qualified lead${n === 1 ? "" : "s"} in this workspace`,
       approve: "Approve",
-      add: "Add to campaign",
+      add: "Start contacting",
       bad: "Bad leads (1)",
     },
     drawer: {
@@ -162,11 +181,11 @@ export const VX_DEMO = {
       cold: (source: string) => `No engagement signals yet — this lead was sourced via ${source}.`,
     },
     campaign: {
-      title: "Campaign",
+      title: "Sequence",
       status: "Active",
-      sub: "Pancake runs one warm outreach campaign, tuned for you.",
-      /** campaigns/copy.ts journey.panelTitle · journey.stepOf(3, 6). */
-      journey: "Campaign journey · Step 3 of 6",
+      sub: "Pancake runs this Play’s outreach, tuned for you.",
+      /** campaigns/copy.ts journey.sectionTitle · journey.stepOf(3, 6). */
+      journey: "Sequence · Step 3 of 6",
       /** The app's status here is "invited" (blue); the page says "Warming up" (outcome level, 2026-09-29). */
       leadStatus: "Warming up",
       /** sequence-template.ts v2 is visit → like → note-less invite → message 1 six hours after they
@@ -239,34 +258,33 @@ export const VX_SIGNALS = {
 export const VX_CONTROL = {
   eyebrow: "Control",
   h2: "You choose who hears from you.",
-  lede: "Pancake contacts only the leads you approve and add to your campaign. Nothing goes out for 10 minutes, so you can undo.",
+  lede: "Pancake contacts only the leads you approve and add to a sequence. Nothing goes out for 10 minutes, so you can undo.",
   facts: [
     { title: "Under your name", body: "Every message goes out as you, in your voice." },
     { title: "No pitch up front", body: "The first touch never sells." },
     { title: "Weekdays, business hours", body: "Pancake sends Monday to Friday, 9\u00a0AM to 6\u00a0PM, in your time zone." },
   ],
   dialog: {
-    title: (lead: string) => `Add ${lead} to your campaign?`,
+    title: (lead: string) => `Start contacting ${lead}?`,
     rows: (sender: string) => [
-      ["Campaign", "Active"],
+      ["Sequence", "Active"],
       ["Sends as", `${sender} — your own account`],
-      ["Sequence", "Signal outreach"],
       ["Messages", "3 personal messages, written from their activity in your Brain voice"],
       ["First action", "No earlier than 9:42\u00a0AM, inside the send window."],
       ["Send window", "Mon–Fri · 9\u00a0AM–\u20606\u00a0PM (ET)"],
       ["Objective", `Book a meeting — replies get\u00a0cal.example/${sender.split(" ")[0].toLowerCase()}`],
     ],
     cancel: "Cancel",
-    confirm: "Add to campaign",
+    confirm: "Start contacting",
   },
   toast: {
-    title: (lead: string) => `${lead} added to your campaign`,
+    title: (lead: string) => `${lead} is in the sequence`,
     body: "Nothing goes out before 9:42\u00a0AM. Undo any time until then.",
     undo: "Undo",
   },
   /** role="img" label for the dialog + toast mock (screen-reader text, one sentence each). */
   aria: (lead: string, sender: string) =>
-    `Pancake’s confirmation before ${lead} joins your campaign: outreach sends as ${sender} from your own account, Monday to Friday, 9 AM to 6 PM. After you confirm, nothing goes out before 9:42 AM and you can undo until then.`,
+    `Pancake’s confirmation before ${lead} joins the sequence: outreach sends as ${sender} from your own account, Monday to Friday, 9 AM to 6 PM. After you confirm, nothing goes out before 9:42 AM and you can undo until then.`,
 };
 
 /* ─── VxFaq ─────────────────────────────────────────────────────────────────── */
@@ -283,7 +301,7 @@ export const VX_FAQ = {
     },
     {
       q: "What do I approve?",
-      a: "Every lead. Pancake contacts only leads you approve and add to your campaign, and you get 10 minutes to undo.",
+      a: "Every lead. Pancake contacts only leads you approve and add to a sequence, and you get 10 minutes to undo.",
     },
     {
       q: "Can I read the messages before they send?",
@@ -295,7 +313,7 @@ export const VX_FAQ = {
     },
     {
       q: "What does it cost?",
-      a: `$99 a month, flat, with unlimited seats. The ${TRIAL_LABEL} needs a card.`,
+      a: `$99 a month per workspace, with unlimited seats. The ${TRIAL_LABEL} needs a card.`,
     },
   ],
 };
@@ -311,7 +329,7 @@ export const VX_RELATED = {
 
 /* ─── LpCta / LpPricing overrides (optional props, homepage defaults untouched) ─ */
 
-export const VX_CTA_BODY: [string, string] = ["$99 a month, flat.", "First leads arrive tomorrow morning."];
+export const VX_CTA_BODY: [string, string] = ["$99 a month per workspace.", "First leads arrive tomorrow morning."];
 
 /** The /for pricing checklist: the same six lines on every /for page and the hub. The fifth line
  *  was the AI SEO article until 2026-09-30; it now matches the homepage's Plays line. */

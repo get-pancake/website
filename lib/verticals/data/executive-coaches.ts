@@ -37,6 +37,7 @@ export const executiveCoaches: VerticalConfig = {
       {
         kind: "own_brand",
         text: "I post about how CEOs spend their week. Find the US CEOs who react to those posts.",
+        play: "CEOs who react to your posts",
         reply: "I’ll watch who reacts to your posts and keep founders and CEOs at US companies.",
         proposal: [
           { kind: "own_brand", items: ["Lydia Kovacevic", "Kovacevic Coaching"] },
@@ -62,6 +63,7 @@ export const executiveCoaches: VerticalConfig = {
       {
         kind: "keyword",
         text: "I coach founder-CEOs. Find US startups of 50 to 200 people whose CEO posts about scaling.",
+        play: "Startup CEOs posting about scaling",
         reply: "I’ll watch CEO posts about scaling and keep US startups with 50 to 200 people.",
         proposal: [
           { kind: "keyword", items: ["scaling as a CEO", "first-time CEO", "delegation"] },
@@ -86,6 +88,7 @@ export const executiveCoaches: VerticalConfig = {
       {
         kind: "hiring",
         text: "I coach new tech leaders. Find US software companies hiring a Head of Engineering or Product.",
+        play: "Companies hiring a Head of Engineering",
         reply: "I’ll watch job posts for those leadership roles and find the CEO behind each hire.",
         proposal: [
           { kind: "hiring", items: ["Head of Engineering", "Head of Product", "Director of Operations"] },

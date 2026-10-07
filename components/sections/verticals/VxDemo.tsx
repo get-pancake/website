@@ -13,9 +13,9 @@
 // Fidelity: every surface copies the live app (appref APP-UI-REFERENCE, 2026-09-22):
 // Brain · Leads · Plays tablist (three of the v2 sidebar's destinations, since 2026-09-30; Plays
 // current, VX_DEMO.app.navCur) with the pink-pale indicator, the floating rail with
-// the blue-pale active item, the Signals page cards, the docked Ask Pancake panel (user
-// bubble, tool row, answer card, pale-pink proposal card), the header-less leads table,
-// the lead sheet, the campaign journey and the Slack "New lead from Pancake" post.
+// the blue-pale active item, the Plays page, the docked Ask Pancake panel (user bubble, tool
+// row, answer card, the pale-pink Play card), the header-less leads table, the lead sheet,
+// the sequence journey and the Slack "New lead from Pancake" post.
 // Mock controls are spans inside role="img" windows — never focusable.
 //
 // Cue / swap / mark ids are the timeline's (lib/verticals/demo-timeline.ts):
@@ -25,11 +25,11 @@
 //   data-mark → a state class, e.g. the picked row (.is-mk)
 //   data-cursor → a cursor target (.is-press while clicked)
 
-import { Fragment, type ReactNode } from "react";
-import { buildDemoModel, type DemoModel, type DemoPromptView, type DemoSigView } from "@/lib/verticals/demo-model";
+import type { ReactNode } from "react";
+import { buildDemoModel, type DemoModel, type DemoPromptView } from "@/lib/verticals/demo-model";
 import type { DemoSource, SignalKind } from "@/lib/verticals/types";
 import { VxDemoPlayer } from "./VxDemoPlayer";
-import { SIGNAL_GROUPS, VX_DEMO } from "./vx-copy";
+import { VX_DEMO } from "./vx-copy";
 
 const A = VX_DEMO.app;
 
@@ -90,7 +90,7 @@ function Rail({ m }: { m: DemoModel }) {
       <span className="vx-rail__ws" data-initial={m.workspace.initial}>
         <span>{m.workspace.name}</span>
       </span>
-      <span className="vx-rail__item" data-ico="grid">
+      <span className="vx-rail__item" data-ico="grid" data-item="0">
         {A.rail[0]}
       </span>
       <span className="vx-rail__item" data-ico="users" data-item="1">
@@ -99,7 +99,7 @@ function Rail({ m }: { m: DemoModel }) {
       <span className="vx-rail__item" data-ico="send" data-item="2">
         {A.rail[2]}
       </span>
-      <span className="vx-rail__item vx-rail__foot" data-ico="pulse" data-item="0">
+      <span className="vx-rail__item vx-rail__foot" data-ico="pulse">
         {A.railFoot}
       </span>
     </div>
@@ -118,120 +118,83 @@ function PageHead({ title, sub, extra }: { title: string; sub: string; extra?: R
   );
 }
 
-/* ─── 01 Brief: Signals page + docked Ask Pancake panel ─────────────────────── */
+/* ─── 01 Play: the Plays page + docked Ask Pancake panel ────────────────────── */
+// 2026-10-07: the app's Plays replaced the Signals page here. The chat's card is the app's Play
+// card (plays/play-draft-panel.tsx: "New play", Draft → Created, Who · How we find them · How
+// many, one "Create play and run search" button); the page beside it is the Plays empty state,
+// then the Play the request became, its first search running. Phones show the chat only.
 
-function Chips({ s, className, ...rest }: { s: DemoSigView; className?: string; "data-s"?: string }) {
-  // chip 1, then chip 2 + "+N more" as one unbreakable group: when the group wraps to
-  // the second row it takes the full width, so "+N more" can never be pushed out of view
-  const [c1, c2] = s.chips;
+/** The Play card's rows (play-draft.ts SLOT_LABEL): a check, the slot, its value. */
+function PlayRows({ p }: { p: DemoPromptView }) {
+  const P = A.chat.play;
   return (
-    <span className={`vx-sig__chips${className ? ` ${className}` : ""}`} {...rest}>
-      {c1 && <span className="vx-achip">{c1}</span>}
-      {(c2 || s.more > 0) && (
-        <span className="vx-sig__tail">
-          {c2 && <span className="vx-achip">{c2}</span>}
-          {s.more > 0 && <span className="vx-amore">{A.signals.more(s.more)}</span>}
+    <ul className="vx-play__rows">
+      <li data-cue="b.row0" data-ico="check">
+        <span className="vx-play__k">{P.who}</span>
+        <span className="vx-play__v">{p.play.who}</span>
+      </li>
+      <li data-cue="b.row1" data-ico="check">
+        <span className="vx-play__k">{P.how}</span>
+        <span className="vx-play__v">
+          <Chip kind={p.play.how.kind}>{p.play.how.label}</Chip>
+          <span>{p.play.how.text}</span>
         </span>
-      )}
-    </span>
-  );
-}
-
-function SigBody({ s, p }: { s: DemoSigView; p?: string }) {
-  if (s.state === "grown") {
-    // Own brand stays on; the approval appends the proposed profiles as "+N more"
-    return (
-      <span className="vx-sig__v" data-p={p}>
-        <span className="vx-sig__corner">
-          <span className="vx-switch" />
-        </span>
-        <span className="vx-sig__body vx-swapc" data-swap={`b.sig${s.order}`}>
-          <Chips s={s} data-s="before" />
-          <Chips s={{ ...s, more: s.more + s.grow }} data-s="after" />
-        </span>
-      </span>
-    );
-  }
-  if (s.state === "proposed") {
-    const id = `b.sig${s.order}`;
-    return (
-      <span className="vx-sig__v" data-p={p}>
-        <span className="vx-sig__corner vx-swapc" data-swap={id}>
-          <span className="vx-setup" data-s="before">
-            {A.signals.setUp}
-          </span>
-          <span className="vx-switch" data-s="after" />
-        </span>
-        <span className="vx-sig__body vx-swapc" data-swap={id}>
-          <span className="vx-sig__empty" data-s="before">
-            {s.empty}
-          </span>
-          <Chips s={s} data-s="after" />
-        </span>
-      </span>
-    );
-  }
-  return (
-    <span className="vx-sig__v" data-p={p}>
-      <span className="vx-sig__corner">
-        {s.state === "on" ? <span className="vx-switch" /> : <span className="vx-setup">{A.signals.setUp}</span>}
-      </span>
-      <span className="vx-sig__body">
-        {s.state === "on" ? <Chips s={s} /> : <span className="vx-sig__empty">{s.empty}</span>}
-      </span>
-    </span>
-  );
-}
-
-/** Identical static views (on / empty, same chips) share one element; a proposed view is always its own. */
-const sigKey = (s: DemoSigView, i: number) =>
-  s.state === "proposed" || s.state === "grown" ? `p${i}` : `${s.state}|${s.chips.join("|")}|${s.more}|${s.empty}`;
-
-function SigCard({ kind, prompts }: { kind: SignalKind; prompts: DemoPromptView[] }) {
-  const views = prompts.map((p) => p.sigs[kind]);
-  // DOM budget: group the three prompt views by content; a group's data-p lists every prompt
-  // it covers ("12" = prompts 1 and 2), and demo.css hides a variant whose data-p lacks the
-  // current prompt. One group for all three = no variant wrapper at all.
-  const groups: { s: DemoSigView; p: string }[] = [];
-  views.forEach((s, i) => {
-    const hit = groups.find((g) => sigKey(g.s, -1) === sigKey(s, i));
-    if (hit) hit.p += String(i);
-    else groups.push({ s, p: String(i) });
-  });
-  return (
-    <div className="vx-sig" data-kind={kind}>
-      <span className="vx-sig__top">
-        <span className="vx-sig__tile" data-ico={SIG_ICON[kind]} />
-        {views[0].label}
-      </span>
-      {groups.length === 1 ? (
-        <SigBody s={views[0]} />
-      ) : (
-        <span className="vx-var">
-          {groups.map((g) => (
-            <SigBody key={g.p} s={g.s} p={g.p} />
-          ))}
-        </span>
-      )}
-    </div>
+      </li>
+      <li data-cue="b.row2" data-ico="check">
+        <span className="vx-play__k">{P.howMany}</span>
+        <span className="vx-play__v">{P.perSearch}</span>
+      </li>
+    </ul>
   );
 }
 
 function BriefPane({ m }: { m: DemoModel }) {
+  const P = A.chat.play;
   return (
     <div className="vx-pane vx-brief" data-pane="0">
-      <div className="vx-page vx-sigpage">
-        <PageHead title={A.signals.title} sub={A.signals.sub} />
-        {SIGNAL_GROUPS.map((g) => (
-          <Fragment key={g.label}>
-            <p className="vx-sigpage__group">{g.label}</p>
-            <div className="vx-sigs">
-              {g.kinds.map((k) => (
-                <SigCard key={k} kind={k} prompts={m.prompts} />
-              ))}
+      <div className="vx-page vx-plays vx-swapc" data-swap="b.approved">
+        <div className="vx-plays__ready" data-s="before">
+          <span className="vx-plays__tile" data-ico="stack" />
+          <p className="vx-plays__title">{A.plays.readyTitle}</p>
+          <p className="vx-plays__body">{A.plays.readyBody}</p>
+        </div>
+        <div className="vx-var" data-s="after">
+          {m.prompts.map((p, i) => (
+            <div key={i} className="vx-plays__play" data-p={i}>
+              <p className="vx-page__title">
+                {p.play.name}
+                <span className="vx-stagepill">{A.plays.status}</span>
+              </p>
+              <p className="vx-plays__search" data-ico="pulse">
+                <b>{A.plays.searching}</b>
+                <span>{A.plays.leave}</span>
+              </p>
+              <dl className="vx-plays__facts">
+                <dt>{P.who}</dt>
+                <dd>{p.play.who}</dd>
+                <dt>{P.how}</dt>
+                <dd>
+                  <Chip kind={p.play.how.kind}>{p.play.how.label}</Chip>
+                  <span>{p.play.how.text}</span>
+                </dd>
+                <dt>{P.howMany}</dt>
+                <dd>{P.perSearch}</dd>
+              </dl>
+              <p className="vx-plays__stepsh">{A.plays.stepsTitle}</p>
+              <ol className="vx-plays__steps">
+                {p.play.steps.map((st, j) => (
+                  <li key={st.title}>
+                    <span className="vx-plays__sico" data-ico={st.ico} />
+                    <b>
+                      {j + 1}. {st.title}
+                    </b>
+                    <span>{st.body}</span>
+                  </li>
+                ))}
+              </ol>
             </div>
-          </Fragment>
-        ))}
+          ))}
+        </div>
       </div>
 
       <div className="vx-chat">
@@ -260,26 +223,22 @@ function BriefPane({ m }: { m: DemoModel }) {
               <p className="vx-answer" data-cue="b.reply">
                 {p.reply}
               </p>
-              <div className="vx-prop" data-cue="b.prop">
-                <p className="vx-prop__label vx-swapc" data-swap="b.approved">
-                  <span data-s="before">{A.chat.proposed}</span>
-                  <span data-s="after">{A.chat.approved}</span>
+              <div className="vx-prop vx-play" data-cue="b.prop">
+                <p className="vx-play__top">
+                  <span className="vx-play__kicker">{P.kicker}</span>
+                  <span className="vx-play__pill vx-swapc" data-swap="b.approved">
+                    <span data-s="before">{P.draft}</span>
+                    <span data-s="after">{P.created}</span>
+                  </span>
                 </p>
-                <p className="vx-prop__title">{A.chat.proposalTitle}</p>
-                <ul className="vx-prop__rows">
-                  {p.proposal.map((r, j) => (
-                    // the kind chip is li::before (data-kind tints it, data-label is its text)
-                    <li key={r.kind} data-cue={`b.row${j}`} data-kind={r.kind} data-label={r.label}>
-                      {r.text}
-                    </li>
-                  ))}
-                </ul>
+                <p className="vx-play__name">{p.play.name}</p>
+                <PlayRows p={p} />
                 <p className="vx-prop__foot vx-swapc" data-swap="b.approved" data-cue="b.foot">
-                  <span className="vx-btn" data-s="before" data-ico="check" data-cursor="b.approve">
-                    {A.chat.approve}
+                  <span className="vx-btn vx-btn--ink vx-play__go" data-s="before" data-ico="search" data-cursor="b.approve">
+                    {P.create}
                   </span>
                   <span className="vx-prop__saved" data-s="after" data-ico="check-circle">
-                    {A.chat.saved}
+                    {P.ready}
                   </span>
                 </p>
               </div>
