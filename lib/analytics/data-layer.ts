@@ -25,6 +25,8 @@ export const CALL_CTA_IDS = [
   // don't merge into the homepage call_hero / call_final.
   "call_compare_hero",
   "call_compare_final",
+  // /plays (example Plays, 2026-10-07): the head's Book a demo.
+  "call_plays_hero",
 ] as const;
 
 /** The "Get started" links to app.getpancake.ai (waitlist retired 2026-08-24). */
@@ -41,6 +43,9 @@ export const APP_CTA_IDS = [
   // The 7 comparison pages (GtmComparisonPage, 2026-10-07): hero and closing Start free.
   "app_compare_hero",
   "app_compare_final",
+  // /plays (example Plays, 2026-10-07): the head's Start free. Its CTA card and pricing card
+  // keep the shared app_final / app_pricing_card ids, as /for pages do.
+  "app_plays_hero",
 ] as const;
 
 export type WaitlistCtaId = (typeof WAITLIST_CTA_IDS)[number];

@@ -66,6 +66,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 
 - [Homepage](https://pancake.ai/) — what Pancake does, how it works, and pricing
 - [Pricing](https://pancake.ai/pricing) — $99 a month per workspace, with as many Plays and leads as you want
+- [Example Plays](https://pancake.ai/plays) — 120 example Plays for 40 kinds of B2B business, grouped by how each Play finds people, plus funding, lookalikes, role match, web evidence and reactions to one post
 - [Use Pancake in Claude](https://pancake.ai/guides/claude) — connect Pancake to Claude, Claude Code or Codex over MCP, with prompts
 - [Use Pancake in Claude, as Markdown](https://pancake.ai/guides/claude.md) — the same guide written for an agent to follow
 - [Connect your agent](https://pancake.ai/install.md) — setup steps an AI agent can follow to connect Pancake over MCP
@@ -81,6 +82,9 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain behind every Play
 - [Lemlist vs Pancake](https://pancake.ai/lemlist-vs-pancake) — a sales-engagement platform your team operates vs Plays that find buyers and start conversations for you
 - [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — on-demand live-web searches and plays billed in credits vs Plays that search every night and start the conversation
+- [Unify vs Pancake](https://pancake.ai/unify-vs-pancake) — an outbound platform for sales reps, priced per seat plus credits, vs Plays that find buyers for $99 a month per workspace
+- [Octave vs Pancake](https://pancake.ai/octave-vs-pancake) — a context layer that feeds your GTM tools and agents vs Plays that find buyers and start the conversation
+- [Alta vs Pancake](https://pancake.ai/alta-vs-pancake) — named AI agents for outbound, inbound and calls, sold by custom quote, vs self-serve Plays for $99 a month per workspace
 - [OpenClaw vs Pancake](https://pancake.ai/openclaw-vs-pancake) — an open-source agent runtime you configure vs a managed GTM platform
 - [Paperclips vs Pancake](https://pancake.ai/pancake-vs-paperclips) — a self-hosted control plane for AI companies vs a managed GTM platform
 
