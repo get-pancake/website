@@ -65,7 +65,8 @@ links emit one allow-listed micro event so the funnel stays measurable:
 
 Approved app CTA IDs are `app_nav`, `app_hero`, `app_lead_finding`,
 `app_pricing_card`, `app_final`, `app_pricing_page`, and (2026-10-06, the
-/guides/claude page) `app_guide_claude_hero` and `app_guide_claude_final`.
+/guides/claude page) `app_guide_claude_hero` and `app_guide_claude_final`, and
+(2026-10-07, the /plays page) `app_plays_hero`.
 
 **GTM action required:** the published container has no trigger for
 `app_cta_clicked` yet, and the `lead_form_*`/`lead_submitted` events below can
@@ -132,6 +133,7 @@ Approved scheduler CTA IDs are:
 - `call_hero`
 - `call_final`
 - `call_pricing_page`
+- `call_plays_hero` (2026-10-07, the /plays page)
 
 The old `trial_click`, `meeting_click`, onboarding, Slack, and subscription events are not part of the v2 funnel and must not be configured as v2 primary conversions.
 

@@ -1,0 +1,425 @@
+/* /plays — example Plays (components/sections/plays). Imported by app/plays/page.tsx AFTER
+   landing-v3.css (the token layer + nav / CTA / pricing / footer recipes). Like
+   verticals-hub.css it loads only the /for sheets the page renders: the foundation (text edge,
+   rhythm, kit badge, section head, focus ring), the Signals card parts ("More ways": title, body,
+   white panel, foot line) and the FAQ accordion — never demo.css. The page's own pieces follow.
+   Verticals rules hold: lp tokens + color-mix only (no colour literals), every rule written
+   `.lp-vx .x` (0,2,0) so it beats the kit's `.lp p` / `.lp a` resets (0,1,1), and the font set
+   on each text element (the kit's universal font-family rule beats inheritance). */
+@import "../_styles/verticals/foundation.css";
+@import "../_styles/verticals/signals.css";
+@import "../_styles/verticals/faq.css";
+
+/* ── head: the /for hub's head (VxHead as the H1, 96 under the nav), then the CTA pair and the
+   jump links (one per group: kit badge + its count) ── */
+.lp-vx-plays .pl-head {
+  padding-top: 96px;
+}
+.lp-vx .pl-head__btns {
+  margin-top: 32px;
+}
+.lp-vx .pl-jump {
+  margin-top: 40px;
+}
+/* = the /for "Example prompts" caps label (prompts.css .vx-hero__label) */
+.lp-vx .pl-jump__label {
+  color: var(--lp-subtle-text);
+  font-family: var(--vx-eyebrow-font);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 20px;
+  margin: 0;
+  text-transform: uppercase;
+}
+.lp-vx .pl-jump__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+/* the prompt rows' white tile + hairline ring (prompts.css .vx-hp), 44px tap height */
+.lp-vx .pl-jump__link {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-sm);
+  box-shadow: inset 0 0 0 1px var(--lp-ink-tr-10);
+  color: var(--lp-text);
+  corner-shape: squircle;
+  display: inline-flex;
+  gap: 10px;
+  min-height: 44px;
+  padding: 10px 14px 10px 10px;
+  text-decoration: none;
+  transition: box-shadow 0.2s ease;
+}
+.lp-vx .pl-jump__n {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+/* ── the gallery: one block per signal kind. The jump links index it, so the first block sits
+   one group gap under them, not a full section rhythm ── */
+.lp-vx-plays .pl-groups {
+  padding-top: 112px;
+}
+.lp-vx .pl-group {
+  scroll-margin-top: 24px;
+}
+.lp-vx .pl-group + .pl-group {
+  margin-top: 112px;
+}
+.lp-vx .pl-group__top {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin: 0;
+}
+.lp-vx .pl-group__count {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: 14px;
+  line-height: 20px;
+}
+/* the section head's split (foundation .vx-head) one step smaller: title left, the line in the
+   368px lede column, last baselines aligned */
+.lp-vx .pl-group__head {
+  align-items: last baseline;
+  display: flex;
+  gap: 48px;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+.lp-vx .pl-group__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-4xlg);
+  font-weight: 600;
+  letter-spacing: -1.19px;
+  line-height: 1.15;
+  margin: 0;
+  max-width: calc(100% - 416px);
+  text-wrap: balance;
+}
+.lp-vx .pl-group__line {
+  color: var(--lp-text);
+  flex: none;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  margin: 0;
+  text-wrap: pretty;
+  width: 368px;
+}
+
+/* example cards: 2 columns, equal heights per row (stretch); the whole card links to the /for page
+   the prompt comes from — prompt on top, "Pancake for {plural} →" pinned to the bottom */
+.lp-vx .pl-ex-grid {
+  align-items: stretch;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: 24px 0 0;
+  padding: 0;
+}
+.lp-vx .pl-ex-grid > li {
+  display: flex;
+  min-width: 0;
+  scroll-margin-top: 24px;
+}
+.lp-vx .pl-ex {
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-sm);
+  box-shadow: inset 0 0 0 1px var(--lp-ink-tr-10);
+  color: var(--lp-text);
+  corner-shape: squircle;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 16px 18px;
+  text-decoration: none;
+  transition: box-shadow 0.2s ease;
+}
+.lp-vx .pl-ex__text {
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  line-height: 22px;
+  text-wrap: pretty;
+}
+.lp-vx .pl-ex__for {
+  align-items: center;
+  color: var(--lp-subtle-text);
+  display: flex;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  gap: 6px;
+  line-height: 20px;
+  transition: color 0.2s ease;
+}
+.lp-vx .pl-ex__label {
+  font: inherit;
+  min-width: 0;
+}
+.lp-vx .pl-ex__arrow {
+  fill: none;
+  flex: none;
+  height: 16px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 16px;
+}
+
+/* "Show N more": a native <details>; the summary swaps its label and turns its + into × */
+.lp-vx .pl-more {
+  margin-top: 12px;
+}
+.lp-vx .pl-more > summary {
+  align-items: center;
+  border-radius: var(--lp-r-sm);
+  box-shadow: inset 0 0 0 1px var(--lp-ink-tr-10);
+  color: var(--lp-text);
+  corner-shape: squircle;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: var(--lp-font-sans);
+  font-size: 15px;
+  font-weight: 600;
+  gap: 10px;
+  line-height: 22px;
+  list-style: none;
+  min-height: 44px;
+  padding: 10px 14px 10px 16px;
+  transition: box-shadow 0.2s ease;
+}
+.lp-vx .pl-more > summary::-webkit-details-marker {
+  display: none;
+}
+.lp-vx .pl-more__show,
+.lp-vx .pl-more__hide {
+  font: inherit;
+}
+.lp-vx .pl-more[open] .pl-more__show,
+.lp-vx .pl-more:not([open]) .pl-more__hide {
+  display: none;
+}
+.lp-vx .pl-more__icon {
+  fill: none;
+  flex: none;
+  height: 16px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.6;
+  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 16px;
+}
+.lp-vx .pl-more[open] .pl-more__icon {
+  transform: rotate(45deg);
+}
+
+@media (hover: hover) {
+  .lp-vx .pl-jump__link:hover,
+  .lp-vx .pl-ex:hover,
+  .lp-vx .pl-more > summary:hover {
+    box-shadow: inset 0 0 0 1px var(--lp-ink-tr-40);
+  }
+  .lp-vx .pl-jump__link:hover .pl-jump__n,
+  .lp-vx .pl-ex:hover .pl-ex__for {
+    color: var(--lp-text);
+  }
+  .lp-vx .pl-ex:hover .pl-ex__arrow {
+    transform: translateX(3px);
+  }
+}
+/* the foundation's ink focus ring (.vx-sec a / summary), on the tiles' own radius */
+.lp-vx .vx-sec :is(.pl-jump__link, .pl-ex):focus-visible,
+.lp-vx .vx-sec .pl-more > summary:focus-visible {
+  border-radius: var(--lp-r-sm);
+}
+
+/* ── More ways: the Signals card recipe (cream card, kit badge, Condensed title, one-sentence
+   body, white panel), 3 + 2 on desktop so no slot stays empty. ≥1201 the cards of a row share
+   their rows through a subgrid (badge · title · body · panel line up across the row), as Signals
+   does; each row keeps its own panel height (auto, not 1fr: the 2-card row's one-line examples
+   would sit in 3-line panels) ── */
+.lp-vx .pl-ways {
+  align-items: stretch;
+  column-gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  margin-top: var(--vx-head-gap);
+  row-gap: 16px;
+}
+.lp-vx .pl-way {
+  background: var(--lp-card-cream);
+  border-radius: var(--lp-r-lg);
+  display: flex;
+  flex-direction: column;
+  grid-column: span 2;
+  min-width: 0;
+  padding: 24px;
+}
+.lp-vx .pl-way:nth-child(n + 4) {
+  grid-column: span 3;
+}
+.lp-vx .pl-way__prompt {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: 14px;
+  line-height: 20px;
+  margin: 8px 0 0;
+  text-wrap: pretty;
+}
+@supports (grid-template-rows: subgrid) {
+  @media (min-width: 1201px) {
+    .lp-vx .pl-ways {
+      grid-template-rows: auto auto auto auto 16px auto auto auto auto;
+      row-gap: 0;
+    }
+    .lp-vx .pl-way {
+      display: grid;
+      grid-template-rows: subgrid;
+      row-gap: 0;
+    }
+    .lp-vx .pl-way:nth-child(-n + 3) {
+      grid-row: 1 / span 4;
+    }
+    .lp-vx .pl-way:nth-child(n + 4) {
+      grid-row: 6 / span 4;
+    }
+    .lp-vx .pl-way > .vx-badge {
+      align-self: start;
+      justify-self: start;
+    }
+    .lp-vx .pl-way > .vx-watch {
+      margin-top: 0;
+    }
+  }
+}
+/* 2-up from 1200 down (as Signals), the fifth card full width */
+@media (max-width: 1200px) {
+  .lp-vx .pl-ways {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lp-vx .pl-way,
+  .lp-vx .pl-way:nth-child(n + 4) {
+    grid-column: auto;
+  }
+  .lp-vx .pl-way:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ── ≤1024: heads stack (the section head's own step), gaps step down ── */
+@media (max-width: 1024px) {
+  .lp-vx-plays .pl-groups {
+    padding-top: 80px;
+  }
+  .lp-vx .pl-group + .pl-group {
+    margin-top: 80px;
+  }
+  .lp-vx .pl-group__head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .lp-vx .pl-group__title {
+    font-size: var(--lp-text-3xlg);
+    letter-spacing: -1px;
+    max-width: 720px;
+  }
+  .lp-vx .pl-group__line {
+    max-width: 560px;
+    width: auto;
+  }
+  .lp-vx .pl-way {
+    padding: 20px;
+  }
+}
+
+/* ── phones: recomposed, not zoomed. One column; cards break out to the card margin (as the
+   Signals and hub grids); anchors land under the sticky 64px bar ── */
+@media (max-width: 767px) {
+  .lp-vx-plays .pl-head {
+    padding-top: 64px;
+  }
+  .lp-vx .pl-head__btns {
+    margin-top: 24px;
+  }
+  .lp-vx .pl-jump {
+    margin-top: 32px;
+  }
+  .lp-vx .pl-group,
+  .lp-vx .pl-ex-grid > li {
+    scroll-margin-top: 80px;
+  }
+  .lp-vx-plays .pl-groups {
+    padding-top: 64px;
+  }
+  .lp-vx .pl-group + .pl-group {
+    margin-top: 64px;
+  }
+  .lp-vx .pl-group__title {
+    font-size: 28px;
+    letter-spacing: -0.84px;
+    max-width: none;
+  }
+  .lp-vx .pl-group__line {
+    max-width: none;
+  }
+  .lp-vx .pl-ex-grid {
+    gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 20px;
+  }
+  .lp-vx .pl-ex {
+    padding: 14px 16px;
+  }
+  .lp-vx .pl-more {
+    margin-top: 8px;
+  }
+  .lp-vx .pl-more > .pl-ex-grid {
+    margin-top: 8px;
+  }
+  .lp-vx .pl-ways {
+    grid-template-columns: minmax(0, 1fr);
+    margin-inline: calc(var(--vx-card-m) - var(--vx-edge));
+    row-gap: 12px;
+  }
+  .lp-vx .pl-way:last-child:nth-child(odd) {
+    grid-column: auto;
+  }
+  .lp-vx .pl-way {
+    padding: 20px 16px;
+  }
+}
+/* 320–359: the pill pair shares the column (the fixed 135 + 8 + 135 overflows 256), as the /for hero */
+@media (max-width: 359px) {
+  .lp-vx .pl-head__btns .lp-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 10px;
+    width: auto;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-vx .pl-jump__link,
+  .lp-vx .pl-ex,
+  .lp-vx .pl-ex__for,
+  .lp-vx .pl-ex__arrow,
+  .lp-vx .pl-more > summary,
+  .lp-vx .pl-more__icon {
+    transition: none;
+  }
+}

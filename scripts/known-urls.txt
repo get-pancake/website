@@ -166,3 +166,8 @@
 /blog/origami-alternatives
 /blog/trigify-alternatives
 /blog/alta-alternatives
+/guides/claude
+/plays
+/unify-vs-pancake
+/octave-vs-pancake
+/alta-vs-pancake
