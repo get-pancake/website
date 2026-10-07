@@ -22,7 +22,7 @@
 //                 and, with no allowance, CAMPAIGN ("Play" / "sequence", never "campaign") and
 //                 WORKSPACE_SPLIT (a second audience is a second Play, never a second $99
 //                 workspace: audit 1.4, 2026-10-07).
-//   4. DOM        ≤1,400 elements in <main> (the nav's Industries panel not counted: it is the
+//   4. DOM        ≤1,400 elements in <main> (the nav's panels not counted: Industries is the
 //                 founder's site-wide addition and grows with the registry), ≤650 in
 //                 .vx-demo__card, exactly one <h1>, and
 //                 H1 textContent = "Pancake for {plural}: {hero.title}" (VxHero, 2026-09-22: the
@@ -152,9 +152,12 @@ async function extract(html) {
       faq,
       ld,
       h1s,
-      // the nav's Industries panel (founder 2026-09-22) postdates the spec's 1,400 budget and
-      // grows with the registry: it is counted apart
-      mainCount: main ? main.querySelectorAll("*").length - (main.querySelector(".lp-nav-ind__panel")?.querySelectorAll("*").length ?? 0) : 0,
+      // the nav's panels (Industries, founder 2026-09-22; Product and Resources, 2026-10-07)
+      // postdate the spec's 1,400 budget and grow with the registry: they are counted apart
+      mainCount: main
+        ? main.querySelectorAll("*").length -
+          [...main.querySelectorAll(".lp-nav-dd__panel")].reduce((n, p) => n + p.querySelectorAll("*").length, 0)
+        : 0,
       demoCount: card ? card.querySelectorAll("*").length : null,
     };
   });

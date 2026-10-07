@@ -101,6 +101,16 @@
   font-size: var(--lp-text-md);
   line-height: 1.5;
 }
+/* The Plays card's route to /plays (2026-10-07, LpFeatures `more`): one
+   .lp-textlink line under the body (pricing.css has its look). Here the
+   column is centered with a 64px bottom pad that lifts title + body to the
+   artboard's position; the line takes 48px of it (the 24 gap + its 24px
+   line), so title and body stay exactly where they were. ≤1340 the pad is 0
+   (the card rules below outrank this one) and the line simply follows the
+   body. */
+.lp-feat-text--more {
+  padding-bottom: calc(64px - 24px - 1.5 * var(--lp-text-md));
+}
 
 /* ── the media zone + its stage ──
    The zone is the artboard's 560×621 media frame. The stage inside is that

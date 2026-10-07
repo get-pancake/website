@@ -37,11 +37,17 @@ export function mapIdeaRow(row: IdeaRow): RoadmapIdea {
 /** Visitor ideas that name the outreach platform stay off the public board (founder 2026-09-29,
  *  "vitrine plus compliant": the site never names it, and a visitor's post would). They stay in
  *  Supabase, admins still see them on the board, and they come back if the text is edited.
- *  Same pattern as PLATFORM in lib/verticals/validate.ts. */
-const OFF_BOARD = /linked\s*in|sales\s*nav(igator)?\b|\binmails?\b/i;
+ *  Same pattern as PLATFORM in lib/verticals/validate.ts.
+ *  2026-10-07: V1 positioning stays off too: "squads" (the old product — an "Email agent squad"
+ *  showed as In progress, and email isn't in the product) and "cofounder" (retired pitch). */
+const OFF_BOARD = /linked\s*in|sales\s*nav(igator)?\b|\binmails?\b|\bsquads?\b|co-?founders?/i;
+
+/** A real idea's title has at least one Latin word of 3+ letters (2026-10-07): spam rows like a
+ *  Bengali-only "বিগ" or a digit string "O1314551213" stay off the board. Admins still see them. */
+const READABLE_TITLE = /[a-z]{3,}/i;
 
 export function isPublicIdea(idea: RoadmapIdea): boolean {
-  return !OFF_BOARD.test(`${idea.title} ${idea.description}`);
+  return READABLE_TITLE.test(idea.title) && !OFF_BOARD.test(`${idea.title} ${idea.description}`);
 }
 
 export type IdeasResult = {

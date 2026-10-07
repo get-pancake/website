@@ -1,0 +1,8 @@
+# Pancake (pancake.ai) security contact. RFC 9116.
+# Report a suspected vulnerability by email with the subject "Security report".
+# Do not include customer data or credentials.
+Contact: mailto:support@pancake.ai
+Expires: 2027-09-30T00:00:00.000Z
+Preferred-Languages: en
+Canonical: https://pancake.ai/.well-known/security.txt
+Policy: https://pancake.ai/support#security

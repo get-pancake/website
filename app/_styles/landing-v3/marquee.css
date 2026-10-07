@@ -8,6 +8,7 @@
   overflow: hidden;
   padding-block: var(--lp-space-8);
   color: var(--lp-ink-100);
+  position: relative; /* the pause button's anchor */
 }
 
 .lp-marquee__band {
@@ -67,6 +68,62 @@
   mask-position: center;
 }
 
+/* Pause (2026-10-07, WCAG 2.2.2): a pointer resting on the band, or the
+   pause button (LpMarqueePause → data-paused on the strip). The button sits
+   outside the band, so hovering or focusing it never pauses the loop on its
+   own and "Play" always means play. Independent of anim.css's off-stage
+   freeze: both only ever pause. */
+@media (hover: hover) {
+  .lp-marquee__band:hover .lp-marquee__seq {
+    animation-play-state: paused;
+  }
+}
+.lp-marquee[data-paused] .lp-marquee__seq {
+  animation-play-state: paused;
+}
+/* Minimal control until the designer styles it: a 28px cream disc with a
+   hairline at the strip's right end, over the band's faded edge (the 10%
+   mask), so it covers no visible logo; 44px hit area via ::after. */
+.lp .lp-marquee__pause {
+  align-items: center;
+  background: var(--lp-page-bg);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--lp-stroke);
+  color: var(--lp-ink-80);
+  cursor: pointer;
+  display: flex;
+  height: 28px;
+  justify-content: center;
+  padding: 0;
+  position: absolute;
+  right: var(--lp-space-2);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+}
+/* hidden until LpMarqueePause sees the strip move (a frozen row has none) */
+.lp .lp-marquee__pause[hidden] {
+  display: none;
+}
+.lp .lp-marquee__pause::after {
+  content: "";
+  inset: -8px;
+  position: absolute;
+}
+.lp .lp-marquee__pause svg {
+  fill: currentColor;
+}
+.lp .lp-marquee__pause:focus-visible {
+  outline: 2px solid var(--lp-text);
+  outline-offset: 2px;
+}
+@media (hover: hover) {
+  .lp .lp-marquee__pause:hover {
+    color: var(--lp-ink-100);
+  }
+}
+
 @keyframes lp-marquee-scroll {
   from { transform: translateX(0); }
   to { transform: translateX(-100%); }
@@ -91,4 +148,5 @@
     padding-inline: var(--lp-space-8);
   }
   .lp-marquee__seq + .lp-marquee__seq { display: none; }
+  .lp .lp-marquee__pause { display: none; }
 }

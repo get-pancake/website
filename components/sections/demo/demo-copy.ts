@@ -95,8 +95,13 @@ export const ERRORS = {
   firstName: "Enter your first name.",
   lastName: "Enter your last name.",
   email: "Enter a valid work email.",
-  /** a valid address at Gmail, Outlook, Yahoo… (lib/personal-email.ts; François, 2026-09-21: work emails only) */
+  /** a valid address at Gmail, Outlook, Yahoo… (lib/personal-email.ts; François, 2026-09-21: work emails only).
+      This line also goes to the voice agent's tool results (DemoForm fieldMessage). */
   emailPersonal: "Use your work email. Personal addresses can't book a demo.",
+  /** The VISIBLE line for a personal email (2026-10-07): the same rule plus a
+      next step, so a solo founder without a work address isn't stuck.
+      "Start free" links the app (app_demo_personal_email). */
+  emailPersonalVisible: { before: "Use your work email. No work email? ", link: "Start free", after: " instead." },
   website: "Enter a website like acme.com.",
   teamSize: "Pick a team size.",
   hasAccount: "Tell us if you have a Pancake account.",
@@ -197,5 +202,6 @@ export const BOOKED = {
   restart: "Start a new submission",
 } as const;
 
-export const FOOTER = { line: "2026 Pancake · San Francisco, CA · ", privacy: "Privacy", terms: "Terms", sep: " · " } as const;
+// "©" added 2026-10-07 to match the site footer ("© 2026 Pancake").
+export const FOOTER = { line: "© 2026 Pancake · San Francisco, CA · ", privacy: "Privacy", terms: "Terms", sep: " · " } as const;
 export const SUPPORT_HREF = "/support";

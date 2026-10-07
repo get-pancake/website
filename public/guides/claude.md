@@ -77,6 +77,8 @@ release."
 Build the Play with them. Show the plan and the credit cost before you run anything, and run it only
 after a clear yes. New leads arrive every morning after that.
 
+More ideas: [example Plays](https://pancake.ai/plays)
+
 ## Rules
 
 - Read the workspace before you answer. Ask before you change anything.

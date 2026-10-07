@@ -1,5 +1,6 @@
 import { LpFeatAnim } from "@/components/sections/landing-v3/LpFeatAnim";
 import type { FeatVariant } from "@/components/sections/landing-v3/lp-feat-timelines";
+import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 
 /**
  * Landing v3 — section 6 "How Pancake finds customers" (Figma 4257:4976,
@@ -15,11 +16,24 @@ import type { FeatVariant } from "@/components/sections/landing-v3/lp-feat-timel
  * shows before and without the animation.
  */
 
-function FeatureText({ title, body }: { title: string; body: string }) {
+/** A quiet text link under a card's body (.lp-textlink, pricing.css: the "See how →" under
+ *  the demo tour is the pattern). One card carries one, never a pill: the cards sell, the
+ *  link only routes. */
+type FeatureMore = { href: string; label: string };
+
+function FeatureText({ title, body, more }: { title: string; body: string; more?: FeatureMore }) {
   return (
-    <div className="lp-feat-text">
+    <div className={more ? "lp-feat-text lp-feat-text--more" : "lp-feat-text"}>
       <h3 className="lp-title-card lp-feat-h">{title}</h3>
       <p className="lp-feat-body">{body}</p>
+      {more ? (
+        <p className="lp-feat-more">
+          <a className="lp-textlink" href={more.href}>
+            {more.label}
+            <span aria-hidden="true"> →</span>
+          </a>
+        </p>
+      ) : null}
     </div>
   );
 }
@@ -30,6 +44,7 @@ type Feature = {
   body: string;
   variant: FeatVariant;
   alt: string;
+  more?: FeatureMore;
 };
 
 const FEATURES: Feature[] = [
@@ -46,10 +61,23 @@ const FEATURES: Feature[] = [
   // message asks instead of pitching; f4 sells what the brain learns from
   // (lead reviews) and the per-Play stats. Its mock keeps the "+56%" chart
   // and the f2 post keeps its globe and action icons (founder 2026-10-08).
+  // 2026-10-07 (founder: "inspire-toi de la compet pour rendre accessible les
+  // pages que t'as créées"; Origami's "Explore buyer examples" under its plays
+  // carousel is the model): the Plays card routes to /plays, the example-Plays
+  // gallery, with one text line under its body. Here, not under step 02: this
+  // card is the one about asking for a Play, and its text column floats beside
+  // the art (centered ≥1341, a flex column ≤1340, stacked above it on phones),
+  // so a line more never reaches the art box. Step 02's text card shares its
+  // row with the fixed-aspect art card: at 1030 wide that card is 313px tall
+  // and step 02's text already needs 310, so a 40px line would stretch the
+  // row (measured 2026-10-07). ≥1341 the line sits in the column's bottom padding
+  // (features.css .lp-feat-text--more), so the title and body keep their
+  // artboard position.
   {
     side: "left",
     title: "Ask for the people \nyou want",
     body: "Tell Pancake who to reach. It builds the Play: who, how to find them, how many. It asks what it needs, searches every night and says why each lead fits.",
+    more: { href: PLAYS_PATH, label: "See example Plays" },
     variant: "f5",
     alt: "Animation: in the Pancake Agent, the request Find US SaaS founders with a launch coming up is typed and sent; Pancake plans a Play called Founders about to launch (who: early-stage SaaS founders in the US, found through the people engaging with launch posts, 25 leads per search), it is created and switches from Draft to Active, its Discover, Enrich and Qualify steps complete, and 25 new leads arrive, the first three each with a line on why they fit: the search that surfaced them, then the requirement they meet, such as Commented on a launch post, Seed-stage SaaS.",
   },
@@ -80,7 +108,7 @@ function FeatureCard({ f }: { f: Feature }) {
   return (
     <>
       <article className="lp-feat-card" data-side={f.side} data-variant={f.variant}>
-        <FeatureText title={f.title} body={f.body} />
+        <FeatureText title={f.title} body={f.body} more={f.more} />
         <LpFeatAnim className="lp-feat-mockzone" variant={f.variant} alt={f.alt} />
       </article>
       <hr className="lp-feat-sep" />

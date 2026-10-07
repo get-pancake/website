@@ -15,8 +15,11 @@ export function DemoHero() {
         <div className="demo-left">
           <div className="demo-pitch">
             <p className="demo-eyebrow">{HERO.eyebrow}</p>
+            {/* The space before <br/> keeps the two lines apart in the text
+                crawlers and assistants read ("…GTM on full autopilot", not
+                "onfull"); the copy itself is locked (demo-copy.ts). */}
             <h1 id="demo-title" className="lp-display demo-title">
-              {HERO.titleLine1}
+              {HERO.titleLine1}{" "}
               <br />
               {HERO.titleLine2}
             </h1>

@@ -24,7 +24,8 @@ const columns: { title: string; links: FooterLink[] }[] = [
     title: "Product",
     links: [
       { href: "/pricing", label: "Pricing" },
-      { href: "/open-roadmap", label: "Roadmap" },
+      // "Roadmap" (/open-roadmap) dropped 2026-10-07: the board is noindex
+      // until it holds Plays-era ideas (founder decision D14).
       { href: APP_ORIGIN, label: "Sign in" },
     ],
   },

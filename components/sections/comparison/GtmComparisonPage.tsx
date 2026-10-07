@@ -2,6 +2,14 @@ import type { Viewport } from "next";
 import Link from "next/link";
 import { LuBadgeCheck, LuCheck, LuCreditCard, LuLock, LuSparkles, LuUserCheck, LuX } from "react-icons/lu";
 
+import { COMPARE_LINKS, COMPARE_META } from "@/components/sections/compare/compare-copy";
+import {
+  COMPARE_PATH,
+  compareEntry,
+  compareName,
+  comparePath,
+  compareSiblings,
+} from "@/components/sections/compare/compare-data";
 import { HOME_PAGE_CONTAINER_CLASS } from "@/components/sections/home/home-layout";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
@@ -100,12 +108,35 @@ function CtaPair({ placement }: { placement: "hero" | "final" }) {
   );
 }
 
+/**
+ * This page's card on /compare (2026-10-07: the hub links every comparison page, and each page
+ * links back). The hub shows each page's own heroLede, so a page missing from
+ * components/sections/compare/compare-data.ts, or a competitor name or heroLede changed here and
+ * not there, fails the build (the pages are static, so this runs at prerender) with the fix.
+ */
+function hubEntry(config: GtmComparisonConfig) {
+  const entry = compareEntry(config.slug);
+  if (!entry || entry.competitor !== config.competitor || entry.line !== config.heroLede) {
+    throw new Error(
+      `/${config.slug} is missing or out of date in components/sections/compare/compare-data.ts: ` +
+        `set competitor "${config.competitor}" and line "${config.heroLede}" (the page's heroLede), so /compare lists it.`,
+    );
+  }
+  return entry;
+}
+
 export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
+  const entry = hubEntry(config);
   const canonicalUrl = `${SITE_ORIGIN}/${config.slug}`;
-  const pageName = `${config.competitor} vs Pancake`;
-  // One @graph: WebPage (with an @id) + BreadcrumbList (Pancake > this page; there is no
-  // /compare hub yet, so no middle crumb) + FAQPage. Organization and WebSite come from the
-  // root layout; the WebSite reference keeps name + url inline for parsers that don't resolve @id.
+  const pageName = compareName(entry);
+  // "More comparisons": the other pages of this page's /compare group, minus the ones its own
+  // "Keep reading" line already links.
+  const moreComparisons = compareSiblings(config.slug).filter(
+    (c) => !config.related.some((link) => link.href === comparePath(c)),
+  );
+  // One @graph: WebPage (with an @id) + BreadcrumbList (Pancake > Comparisons > this page; the
+  // /compare hub, 2026-10-07) + FAQPage. Organization and WebSite come from the root layout;
+  // the WebSite reference keeps name + url inline for parsers that don't resolve @id.
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
@@ -129,8 +160,9 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
         "@type": "BreadcrumbList",
         "@id": `${canonicalUrl}#breadcrumb`,
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Pancake", item: SITE_ORIGIN },
-          { "@type": "ListItem", position: 2, name: pageName, item: canonicalUrl },
+          { "@type": "ListItem", position: 1, name: COMPARE_META.crumbs.home, item: SITE_ORIGIN },
+          { "@type": "ListItem", position: 2, name: COMPARE_META.crumbs.page, item: `${SITE_ORIGIN}${COMPARE_PATH}` },
+          { "@type": "ListItem", position: 3, name: pageName, item: canonicalUrl },
         ],
       },
       {
@@ -280,6 +312,13 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
                 <span className="vvp-nowrap">$99 a month per workspace&nbsp;•</span>{" "}
                 <span className="vvp-nowrap">You approve every lead</span>
               </p>
+              {/* 2026-10-07 (founder: make the comparison pages reachable, as Unify, Origami,
+                  Octave and Alta do): back to the /compare hub. The hero's text-link recipe
+                  (vvp-hero__jump); the arrow is aria-hidden, so the link reads its words only. */}
+              <Link href={COMPARE_PATH} className="vvp-hero__jump">
+                {COMPARE_LINKS.seeAll}
+                <span aria-hidden="true">&nbsp;→</span>
+              </Link>
             </div>
           </div>
         </section>
@@ -302,6 +341,17 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
                 <span key={link.href}>{index > 0 ? ", " : ""}<Link href={link.href} className="underline">{link.label}</Link></span>
               ))}.
             </p>
+            {moreComparisons.length > 0 ? (
+              <p className="vvp-related">
+                {COMPARE_LINKS.more}{" "}
+                {moreComparisons.map((c) => (
+                  <span key={c.slug}>
+                    <Link href={comparePath(c)} className="underline">{compareName(c)}</Link>,{" "}
+                  </span>
+                ))}
+                or <Link href={COMPARE_PATH} className="underline">{COMPARE_LINKS.moreAll}</Link>.
+              </p>
+            ) : null}
             <p className="vvp-related">
               Sources: {config.sources.map((source, index) => (
                 <span key={source.href}>{index > 0 ? ", " : ""}<a href={source.href} target="_blank" rel="noopener noreferrer" className="underline">{source.label}</a></span>

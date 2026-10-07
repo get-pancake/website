@@ -27,6 +27,8 @@ export const CALL_CTA_IDS = [
   "call_compare_final",
   // /plays (example Plays, 2026-10-07): the head's Book a demo.
   "call_plays_hero",
+  // The 404 page's "Book a demo" (2026-10-07), apart from the nav and hero metrics.
+  "call_404",
 ] as const;
 
 /** The "Get started" links to app.getpancake.ai (waitlist retired 2026-08-24). */
@@ -46,7 +48,18 @@ export const APP_CTA_IDS = [
   // /plays (example Plays, 2026-10-07): the head's Start free. Its CTA card and pricing card
   // keep the shared app_final / app_pricing_card ids, as /for pages do.
   "app_plays_hero",
+  // 2026-10-07: the 404 page's Start free and the /demo personal-email
+  // error's "Start free" text link.
+  "app_404",
+  "app_demo_personal_email",
 ] as const;
+
+/** Sign-in links for returning customers (2026-10-07): the nav bar + phone
+ *  sheet (signin_nav) and the footer's "Sign in" (signin_footer, formerly
+ *  "Open the app"). Tagged for click triggers, but kept OUT of APP_CTA_IDS on
+ *  purpose: a returning user signing in is not an acquisition click, so these
+ *  never fire app_cta_clicked. */
+export const SIGNIN_CTA_IDS = ["signin_nav", "signin_footer"] as const;
 
 export type WaitlistCtaId = (typeof WAITLIST_CTA_IDS)[number];
 export type CallCtaId = (typeof CALL_CTA_IDS)[number];

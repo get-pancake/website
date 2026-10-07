@@ -1,9 +1,22 @@
 /* ── Landing v3 · Footer (node 4258:253, 1654×515, bg #000) ───────────────────
    Brand block at frame x259 (= 50% − 568px), logo 239.672×116.755 at block
-   (1.377, 0). Three right-aligned columns, boxes w176 whose RIGHT edges sit at
-   frame x1011/1203/1395 → lefts 50%+8 / 50%+200 / 50%+392. --lp-foot-shift
-   nudges all three left in lockstep when the viewport can't fit x1395 + 24px
-   (kicks in only below ~1184px; 0px at the 1654 reference). */
+   (1.377, 0). Right-aligned columns, boxes w176 whose RIGHT edges sit at
+   frame x1011/1203/1395 (a 192px pitch: 176 + 16 gap), the last one mirroring
+   the brand's left margin.
+
+   2026-10-07: flow layout at every width. The columns used to be absolutely
+   positioned at fixed lefts inside a fixed 467px band, so a fourth column or
+   a longer list overflowed. Now the frame is a flex row (brand left, columns
+   right) with the artboard's margins as padding. Height follows the content;
+   the bottom padding keeps the 140px under the tallest column.
+
+   2026-10-07, fat footer (Unify / Origami): five columns (Product, Resources,
+   Compare, Company, Social). Five 176px boxes no longer fit beside the brand
+   in the 1136px content band, so each column is as wide as its longest label
+   with a 48px gutter between them: every gap between two columns of text
+   reads the same, right-aligned as on the artboard (≈820px of columns, ≈75px
+   clear of the brand). The row stacks under 1200, where it would crowd the
+   brand. */
 
 /* Founder tweak (2026-08-28): content pulled 48px up toward the pricing
    rings ("rapproche le footer des cercles"), height reduced in step so the
@@ -12,21 +25,23 @@
 .lp-foot {
   background: #000;
   color: #fff;
-  height: 467px;
   position: relative;
 }
 .lp-foot-frame {
-  --lp-foot-shift: max(0px, 592px - 50%);
-  height: 100%;
+  align-items: flex-start;
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
   margin-inline: auto;
+  /* min(1654px, 100%) = the frame's own width: padding % reads the footer's */
+  padding: 56.43px max(32px, calc(min(1654px, 100%) / 2 - 568px)) 139.82px;
   position: relative;
   width: min(1654px, 100%);
 }
 .lp-foot-brand {
+  flex: none;
   height: 270.755px;
-  left: max(32px, calc(50% - 568px));
-  position: absolute;
-  top: 56.43px;
+  position: relative;
   width: 241.047px;
 }
 .lp-foot-logo {
@@ -50,20 +65,19 @@
 .lp-foot-legal {
   top: 250.75px;
 }
+.lp-foot-cols {
+  display: flex;
+  /* Safety net: a wider fallback face or a sixth column wraps the last
+     column onto a second right-aligned line instead of running off. */
+  flex-wrap: wrap;
+  gap: 48px;
+  justify-content: flex-end;
+  margin-top: 20.32px; /* artboard: columns' top 76.75 vs the brand's 56.43 */
+  min-width: 0;
+}
 .lp-foot-col {
-  position: absolute;
+  flex: none; /* as wide as the longest label */
   text-align: right;
-  top: 76.75px;
-  width: 176px;
-}
-.lp-foot-col[data-col="product"] {
-  left: calc(50% + 8px - var(--lp-foot-shift));
-}
-.lp-foot-col[data-col="company"] {
-  left: calc(50% + 200px - var(--lp-foot-shift));
-}
-.lp-foot-col[data-col="social"] {
-  left: calc(50% + 392px - var(--lp-foot-shift));
 }
 .lp-foot-head {
   font-weight: 600;
@@ -78,30 +92,41 @@
 .lp-foot-links a:last-child {
   margin-bottom: 0;
 }
-/* Mobile-only single meta line ("2026 Pancake · San Francisco, CA · Privacy ·
+/* Hover: the Industries panel's "all" link recipe (nav.css
+   .lp-nav-ind__all), so a long list shows which link the pointer is on. */
+@media (hover: hover) {
+  .lp-foot a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+}
+/* The phone sheet's ring (nav.css .lp-nav-menu nav a), cream on black. */
+.lp-foot a:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--lp-text-on-inverted);
+  outline-offset: 3px;
+}
+/* Mobile-only single meta line ("© 2026 Pancake · San Francisco, CA · Privacy ·
    Terms") — hidden at ≥768 where the brand block carries lines + legal. */
 .lp-foot-line {
   display: none;
 }
 
-/* ≤1024: recompose to flow — brand block, then columns as a wrapping row. */
-@media (max-width: 1024px) {
-  .lp-foot {
-    height: auto;
-  }
+/* ≤1199: stack — brand block, then the columns on a grid that holds five
+   across from ~1000 up (each ≥156px: "Gojiberry vs Pancake" is 153), four
+   then one below that, three then two at 768. (Was ≤1024 with four columns;
+   five beside the brand need the 1136 band.) */
+@media (max-width: 1199px) {
   .lp-foot-frame {
-    display: flex;
+    align-items: stretch;
     flex-direction: column;
     gap: 56px;
-    height: auto;
+    justify-content: flex-start;
     padding: 64px 48px;
     width: 100%;
   }
   .lp-foot-brand {
     height: auto;
-    left: auto;
-    position: static;
-    top: auto;
     width: auto;
   }
   .lp-foot-logo,
@@ -116,20 +141,38 @@
     margin-top: 16px;
   }
   .lp-foot-cols {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 48px 64px;
+    display: grid;
+    gap: 48px 32px;
+    grid-template-columns: repeat(auto-fit, minmax(156px, 1fr));
+    margin-top: 0;
   }
   .lp-foot-col {
-    left: auto;
-    position: static;
     text-align: left;
-    top: auto;
+  }
+}
+
+/* Touch screens from 768 up (tablets): the 24px links grow to 44px tap
+   targets (10px above and below, the 13px spacing folded in), and the
+   Privacy / Terms links pad to 44px without moving the line, as the phone
+   meta line does. ≤767 has its own recompose below. */
+@media (pointer: coarse) and (min-width: 768px) {
+  .lp-foot-links {
+    margin-top: 7.43px; /* the head-to-first-label gap stays 17.43 */
+  }
+  .lp-foot-links a {
+    margin-bottom: 0;
+    padding-block: 10px;
+  }
+  .lp-foot-legal a {
+    display: inline-block;
+    margin: -12px -6px;
+    padding: 12px 6px;
   }
 }
 
 /* ≤767: compact recompose (2026-08-31, "très long à scroller") — logo row
-   (140px), Product + Company side by side, Social as a wrapped row, then one
+   (140px), the link columns two by two (2026-10-07: Product + Resources,
+   then Compare + Company), Social as a wrapped row, then one
    muted meta line replacing the brand lines + legal. Every link keeps a 44px
    effective tap target: col/social links 24px line + 2×10px padding-block;
    meta links pad to 44px but cancel it with negative margins so the line
@@ -153,7 +196,7 @@
     grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   }
   .lp-foot-col {
-    width: auto; /* desktop's fixed 176px overflows a 320px grid cell */
+    min-width: 0; /* a long label ("Gojiberry vs Pancake") wraps inside its cell at 320 */
   }
   .lp-foot-col[data-col="social"] {
     grid-column: 1 / -1;

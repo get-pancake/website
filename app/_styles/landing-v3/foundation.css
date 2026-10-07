@@ -512,3 +512,17 @@ body:has(main.lp) {
   max-width: 1296px;
   width: 100%;
 }
+
+/* Anchor targets under the phone's sticky bar (2026-10-07): ≤767 the nav is
+   sticky and compacts to 64px (nav.css --lp-nav-compact-height, which lives
+   on .lp-nav, hence the fallback), so a jump to Product / How it works
+   (#how-it-works), the banner (#why) or #pricing landed with its top ~40px
+   under the bar. Every in-page target inside main.lp gets it, so the legal
+   pages' headings (/terms#fees-billing), /careers#team and any later anchor
+   land clear of the bar too. Desktop's bar scrolls away with the page: no
+   margin there. */
+@media (max-width: 767px) {
+  .lp [id] {
+    scroll-margin-top: calc(var(--lp-nav-compact-height, 64px) + 8px);
+  }
+}

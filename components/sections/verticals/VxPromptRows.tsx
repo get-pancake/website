@@ -1,6 +1,11 @@
+import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { VxArrow } from "@/components/sections/verticals/VxRelated";
 import { SIGNAL_LABEL, VX_HERO } from "@/components/sections/verticals/vx-copy";
 import type { DemoPrompt } from "@/lib/verticals/types";
+
+/** The route to /plays on the label's line (see below). Kept here, not in VX_HERO, while
+ *  vx-copy.ts belongs to another change; it can move there with the next copy pass. */
+const PROMPTS_MORE = "See all example Plays";
 
 /**
  * "Example prompts": the demo's three prompts as rows, right above the demo. On /for pages they
@@ -17,6 +22,15 @@ import type { DemoPrompt } from "@/lib/verticals/types";
  *
  * `label="hidden"` (the homepage, whose lede already says "pick one of its prompts"): no visible
  * caps label; the list keeps the same accessible name through aria-label.
+ *
+ * 2026-10-07 (founder: "inspire-toi de la compet pour rendre accessible les pages que t'as
+ * créées"; Origami's "Explore buyer examples" under its plays carousel is the model): the label
+ * shares its line with "See all example Plays →" (/plays, the 120 /for prompts in one gallery),
+ * right-aligned on the rows' edge, a quiet .lp-textlink (pricing.css). On the label's line, not
+ * under the rows: the hero's height is tuned so the fold never cuts the demo's tab bar
+ * (hero.css), and the shared line adds no height ≥768. Phones too narrow for both wrap the
+ * link under the label. Only with the visible label: the homepage has its own links. The link
+ * sits before the rows in the DOM as on screen, so focus order matches what is seen.
  */
 export function VxPromptRows({
   prompts,
@@ -27,11 +41,18 @@ export function VxPromptRows({
 }) {
   const shown = label === "visible";
   return (
-    <>
+    // the wrapper hugs the rows (fit-content), so the link on the label's line ends on their edge
+    <div className="vx-hp-wrap">
       {shown ? (
-        <p className="vx-hero__label" id="vx-prompts-label">
-          {VX_HERO.promptsLabel}
-        </p>
+        <div className="vx-hp-head">
+          <p className="vx-hero__label" id="vx-prompts-label">
+            {VX_HERO.promptsLabel}
+          </p>
+          <a className="lp-textlink vx-hp-more" href={PLAYS_PATH}>
+            {PROMPTS_MORE}
+            <span aria-hidden="true"> →</span>
+          </a>
+        </div>
       ) : null}
       {/* one grid, rows on a subgrid: the badges share one column, so every prompt starts
           on the same x and every arrow ends on the same x (equal rows, not ragged pills) */}
@@ -67,6 +88,6 @@ export function VxPromptRows({
           </li>
         ))}
       </ul>
-    </>
+    </div>
   );
 }

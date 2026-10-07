@@ -1,23 +1,34 @@
 /**
  * Pricing V2 — one flat plan, Okara-simplified (founder call 2026-08-06:
  * $99/month flat, everything included; the V1 token-pack model is retired).
- * Rides the landing skin (.lv2) so the two pages read as one product:
- * nav + header + single plan card with the feature list. Book a demo links
- * to /demo (2026-09-16); the booking modal is no longer mounted.
+ * The pricing body rides the landing skin (.lv2): header + single plan card
+ * with the feature list. Book a demo links to /demo (2026-09-16); the
+ * booking modal is no longer mounted.
+ * 2026-10-07: the sitewide chrome (LpNav + LpFooter inside main.lp, like the
+ * homepage, /for and /blog) replaced LandingNav/LandingFooter, so clicking
+ * Pricing no longer drops Industries and Product. The lv2 body sits in its
+ * own div.lv2; app/pricing/pricing.css keeps it whole inside .lp. Added the
+ * logo row, "Everything in the $99." and "Billing questions.".
  */
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 
+import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
+import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { FxPillLink } from "@/components/sections/landing/FxPill";
 import { PriceGroups } from "@/components/sections/landing/PriceGroups";
-import { LandingFooter } from "@/components/sections/landing/LandingFooter";
-import { LandingNav } from "@/components/sections/landing/LandingNav";
+import { BillingFaq } from "@/components/sections/pricing/BillingFaq";
 import { PancakeStack } from "@/components/sections/pricing/PancakeStack";
+import { PlanIncluded } from "@/components/sections/pricing/PlanIncluded";
 import { PlanMap } from "@/components/sections/pricing/PlanMap";
+import { PricingLogos } from "@/components/sections/pricing/PricingLogos";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
-import { pricingPlan, pricingV2 } from "@/lib/copy";
+import { pricingFaq, pricingPlan, pricingV2 } from "@/lib/copy";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
+import { TRIAL_DAYS, TRIAL_NOTICE } from "@/lib/trial";
+import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/landing-v2.css";
+import "./pricing.css";
 
 /* No team label: it read "AI sales and marketing team" until AI SEO was
    retired (2026-09-30), then "AI GTM team" until the launch positioning
@@ -29,52 +40,85 @@ const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDo
 const TITLE = `Pancake Pricing: $${pricingV2.monthlyDollars}/month per workspace`;
 const URL = `${SITE_ORIGIN}/pricing`;
 
+/* Status-bar zone matches the lp cream behind LpNav (as on every lp page). */
+export const viewport: Viewport = { themeColor: "#fbf6f1" };
+
 /* Brand-first title: the page answers "pancake pricing" / "pancake ai pricing".
    The self canonical matters — without it the page inherited the homepage
    canonical from the root layout and Google treated /pricing as a duplicate
-   of `/` (fixed 2026-09-24). */
+   of `/` (fixed 2026-09-24). The text/markdown alternate (2026-10-07) points
+   agents at public/pricing.md, the same facts without 50 KB of HTML. */
 export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: URL },
+  alternates: {
+    canonical: URL,
+    types: { "text/markdown": `${SITE_ORIGIN}/pricing.md` },
+  },
   // Share card via lib/social-meta.ts (2026-10-07, audit 8.1/8.4): adds
   // twitter:site and gives the homepage card the alt of its own text.
   ...social({ path: "/pricing", title: TITLE, description: DESCRIPTION }),
 };
 
-/* Product / Offer JSON-LD — one plan, one price, kept in lockstep with
-   the visible card via pricingV2. The UnitPriceSpecification says the price
-   is per month (a bare Offer price reads as a one-off). */
-const productJsonLd = {
+const SELLER = {
+  "@type": "Organization",
+  "@id": `${SITE_ORIGIN}/#organization`,
+  name: "Pancake",
+} as const;
+
+/* SoftwareApplication JSON-LD — the homepage's #software entity, not a second
+   product (2026-10-07: it was a separate Product named "Pancake: AI agents
+   that bring you customers"). Same @id, so this node only adds the offers:
+   the plan, kept in lockstep with the visible card via pricingV2 (the
+   UnitPriceSpecification says the price is per month; a bare Offer price
+   reads as a one-off), and the free trial from lib/trial.ts. */
+const softwareJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Product",
-  name: "Pancake: AI agents that bring you customers",
-  description: DESCRIPTION,
-  url: URL,
-  brand: { "@type": "Brand", name: "Pancake" },
-  offers: {
-    "@type": "Offer",
-    url: URL,
-    price: String(pricingV2.monthlyDollars),
-    priceCurrency: pricingV2.currency,
-    priceSpecification: {
-      "@type": "UnitPriceSpecification",
+  "@type": "SoftwareApplication",
+  "@id": `${SITE_ORIGIN}/#software`,
+  name: "Pancake",
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  url: SITE_ORIGIN,
+  offers: [
+    {
+      "@type": "Offer",
+      name: "Pancake plan",
+      url: URL,
+      description: "Per workspace, billed monthly. Teammates included.",
       price: String(pricingV2.monthlyDollars),
       priceCurrency: pricingV2.currency,
-      billingDuration: "P1M",
-      unitText: "MONTH",
+      priceSpecification: {
+        "@type": "UnitPriceSpecification",
+        price: String(pricingV2.monthlyDollars),
+        priceCurrency: pricingV2.currency,
+        billingDuration: "P1M",
+        unitText: "MONTH",
+      },
+      availability: "https://schema.org/InStock",
+      seller: SELLER,
     },
-    availability: "https://schema.org/InStock",
-    seller: { "@type": "Organization", "@id": `${SITE_ORIGIN}/#organization`, name: "Pancake" },
-  },
+    {
+      "@type": "Offer",
+      name: "Free trial",
+      url: URL,
+      description: TRIAL_NOTICE,
+      price: "0",
+      priceCurrency: pricingV2.currency,
+      eligibleDuration: { "@type": "QuantitativeValue", value: TRIAL_DAYS, unitCode: "DAY" },
+      availability: "https://schema.org/InStock",
+      seller: SELLER,
+    },
+  ],
 };
 
-/* FAQPage JSON-LD — the PlanMap answers, verbatim, so search engines and
-   assistants quote the per-workspace rules instead of guessing them. */
+/* FAQPage JSON-LD — the PlanMap and Billing answers, verbatim, so search
+   engines and assistants quote the per-workspace and billing rules instead
+   of guessing them. */
 const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: pricingPlan.faq.map((item) => ({
+  mainEntity: [...pricingPlan.faq, ...pricingFaq.items].map((item) => ({
     "@type": "Question",
     name: item.q,
     acceptedAnswer: { "@type": "Answer", text: item.a },
@@ -83,17 +127,17 @@ const faqJsonLd = {
 
 export default function PricingPage() {
   return (
-    <main className="lv2">
+    <main id="main-content" className="lp">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
       />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
-      <div className="lv2-viewport lv2-viewport--page">
-        <LandingNav />
+      <LpNav />
+      <div className="lv2">
         {/* Same composition as the homepage pricing fold — brand band, card,
             pancake-stack mascot — so "See full pricing" doesn't land on a
             barer page than the teaser it came from (mobile QA 2026-08-26).
@@ -140,14 +184,19 @@ export default function PricingPage() {
                 <PancakeStack count={3} />
               </div>
             </div>
+
+            {/* Proof next to the price (2026-10-07): the homepage logos. */}
+            <PricingLogos />
           </div>
         </section>
+        {/* What the $99 covers — workspace, Plays, accounts, team (2026-10-06,
+            after a customer asked whether it includes a second workspace and
+            a second sending account). */}
+        <PlanMap />
+        <PlanIncluded />
+        <BillingFaq />
       </div>
-      {/* What the $99 covers — workspace, Plays, accounts, team (2026-10-06,
-          after a customer asked whether it includes a second workspace and
-          a second sending account). */}
-      <PlanMap />
-      <LandingFooter />
+      <LpFooter />
       {/* LandingModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}
     </main>
   );

@@ -110,8 +110,10 @@ export default function CareersPage() {
       {/* Hero + quick facts */}
       <section className="lp-crs-hero" aria-labelledby="careers-heading">
         <div className="lp-content lp-crs-hero__inner">
+          {/* 2026-10-07: was "Build the autonomous GTM team." — the retired
+              "GTM team" pitch (#325); the H1 says what the team builds. */}
           <h1 id="careers-heading" className="lp-crs-hero__title lp-title-section">
-            Build the autonomous GTM team.
+            Help founders find their customers.
           </h1>
           <p className="lp-crs-lede lp-crs-hero__lede">
             Pancake&rsquo;s agents find warm leads for small businesses and start the
