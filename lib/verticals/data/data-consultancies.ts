@@ -11,7 +11,7 @@ export const dataConsultancies: VerticalConfig = {
   status: "approved",
   category: "IT, cloud & security",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "data consultancies",
@@ -50,7 +50,7 @@ export const dataConsultancies: VerticalConfig = {
           { name: "Porter Alcaraz", role: "VP Analytics", company: "Saltmarsh Co", kind: "hiring", signal: "Analytics engineer role" },
           { name: "Agata Pruszynski", role: "BI Manager", company: "Ashgill", kind: "stack", signal: "dbt in job posts" },
           { name: "Venkat Ramaswamy", role: "CFO", company: "Tessford", kind: "keyword", signal: "Source of truth post" },
-          { name: "Greta Holmquist", role: "Head of BI", company: "Vellmar", kind: "competitor", signal: "Liked a Merganser post" },
+          { name: "Greta Holmquist", role: "Head of BI", company: "Vellmar", kind: "competitor", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Pomfret Goods, a 230-person US online retailer, is hiring a data engineer. Talin heads its data team.",
@@ -75,7 +75,7 @@ export const dataConsultancies: VerticalConfig = {
           { name: "Octavio Barragan", role: "CTO", company: "Wrenhurst", kind: "stack", signal: "Power BI in job posts" },
           { name: "Hyun-woo Jang", role: "COO", company: "Marrick", kind: "hiring", signal: "Head of Data role" },
           { name: "Nomvula Dlamini", role: "BI Lead", company: "Castlemont", kind: "hiring", signal: "Power BI developer role" },
-          { name: "Ellis Brockway", role: "CFO", company: "Sedgemoor", kind: "own_brand", signal: "Liked your post" },
+          { name: "Ellis Brockway", role: "CFO", company: "Sedgemoor", kind: "own_brand", signal: "Engaged with your post" },
         ],
         featured: {
           why: "Dorothea runs data at Pembury Supply, a 400-person US distributor. Snowflake shows up in its open job posts.",
@@ -83,7 +83,7 @@ export const dataConsultancies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Dorothea, glad to be connected. My team builds data models alongside in-house analysts. What’s next on your data roadmap?",
+          "Hi Dorothea, my team builds data models alongside in-house analysts. What’s next on your data roadmap?",
       },
       {
         kind: "keyword",
@@ -98,8 +98,8 @@ export const dataConsultancies: VerticalConfig = {
         leads: [
           { name: "Lamont Whitacre", role: "CFO", company: "Keelby Materials", kind: "keyword", signal: "Posted on data quality" },
           { name: "Faisal Rahimtoola", role: "Controller", company: "Coltmoor", kind: "keyword", signal: "Posted on dashboards" },
-          { name: "Winifred Asante", role: "VP Finance", company: "Tallbrook", kind: "competitor", signal: "Liked an Ormond post" },
-          { name: "Mateus Coelho", role: "Head of Data", company: "Lindmoor", kind: "influencer", signal: "Liked a Brennan post" },
+          { name: "Winifred Asante", role: "VP Finance", company: "Tallbrook", kind: "competitor", signal: "Engaged with Ormond" },
+          { name: "Mateus Coelho", role: "Head of Data", company: "Lindmoor", kind: "influencer", signal: "Engaged with a post" },
           { name: "Priscila Monteiro", role: "CFO", company: "Harwick", kind: "keyword", signal: "Posted on month-end" },
         ],
         featured: {

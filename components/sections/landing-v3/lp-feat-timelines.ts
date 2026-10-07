@@ -450,10 +450,12 @@ function buildF2(root: HTMLElement): BuiltFeat {
   return { tl, cleanup: () => created.forEach((n) => n.parentNode?.removeChild(n)), cue: 0.75 };
 }
 
-/* ── f4 · Pancake learns from what wins (feat-learns-anim) ──
+/* ── f4 · Pancake learns from every review (feat-learns-anim) ──
    chart card rises → 12 bars grow from the baseline, the count ticks 0 → 56,
-   the arrow pops → "What worked" slides in, chips pop → "Brain updated"
-   slides up while the rainbow ring draws around it, subtitle fades in. */
+   the arrow pops → "Brain learned" slides in, chips pop → "Brain updated"
+   slides up while the rainbow ring draws around it, subtitle fades in.
+   The "+56%" count and its arrow stay (founder 2026-10-08, reverting the
+   2026-10-07 audit's plain reply count). */
 let txtPluginRegistered = false;
 function registerTxtPlugin() {
   if (txtPluginRegistered) return;
@@ -506,7 +508,7 @@ function buildF4(root: HTMLElement): BuiltFeat {
     count: 1.2, // 0 → 56% over the bars' growth
     arrow: 1.85, // the green arrow pops once the count lands
     worked: 2.2,
-    chips: 2.55, // "What worked" slides in, chips pop one after another
+    chips: 2.55, // "Brain learned" slides in, chips pop one after another
     brain: 3.2,
     ring: 3.4,
     sub: 4.0, // "Brain updated" slides up, the ring draws around it, subtitle fades in
@@ -551,7 +553,7 @@ function buildF4(root: HTMLElement): BuiltFeat {
     T.arrow,
   );
 
-  /* — "What worked" slides in, its chips pop in one after another — */
+  /* — "Brain learned" slides in, its chips pop in one after another — */
   tl.fromTo(worked, { y: 32, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, ease: "power3.out" }, T.worked);
   tl.fromTo(
     chips,

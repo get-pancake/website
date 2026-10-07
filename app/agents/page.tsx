@@ -13,6 +13,7 @@ import { AgSuperpowers } from "@/components/sections/agents/AgSuperpowers";
 import { AgVersus } from "@/components/sections/agents/AgVersus";
 import { META } from "@/components/sections/agents/ag-copy";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/agents.css";
 
@@ -34,20 +35,14 @@ export const metadata: Metadata = {
   description: META.description,
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE_ORIGIN}/agents` },
-  openGraph: {
-    type: "website",
-    url: `${SITE_ORIGIN}/agents`,
+  // Share card via lib/social-meta.ts (2026-10-07, audit 8.1). Its own image,
+  // whose headline is META.ogTitle, so that is the alt.
+  ...social({
+    path: "/agents",
     title: META.ogTitle,
     description: META.description,
-    images: [{ url: "/og-agents.png", width: 1200, height: 630, alt: META.ogTitle }],
-    siteName: "Pancake",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: META.ogTitle,
-    description: META.description,
-    images: ["/og-agents.png"],
-  },
+    image: { url: "/og-agents.png", alt: META.ogTitle },
+  }),
 };
 
 export default function AgentsLanding() {

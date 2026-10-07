@@ -11,7 +11,7 @@ export const executiveCoaches: VerticalConfig = {
   status: "approved",
   category: "Consultants & advisors",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "executive coaches",
@@ -46,11 +46,11 @@ export const executiveCoaches: VerticalConfig = {
           { kind: "competitor", items: ["Keelhaven Leadership"] },
         ],
         leads: [
-          { name: "Nora Kessling", role: "Founder & CEO", company: "Kellby Health", kind: "own_brand", signal: "Liked a Kovacevic post" },
+          { name: "Nora Kessling", role: "Founder & CEO", company: "Kellby Health", kind: "own_brand", signal: "Engaged with Kovacevic" },
           { name: "Ahmad Farrokhzad", role: "CEO", company: "Dunmore Analytics", kind: "own_brand", signal: "Commented on a post" },
           { name: "Gwendolyn Sayre", role: "Co-founder & CEO", company: "Moxley Labs", kind: "keyword", signal: "Posted on delegation" },
-          { name: "Rodrigo Anzaldúa", role: "COO", company: "Tenmile Robotics", kind: "influencer", signal: "Liked a Pettigrew post" },
-          { name: "Kenji Morikawa", role: "CEO", company: "Dunlevy Freight", kind: "competitor", signal: "Liked a Keelhaven post" },
+          { name: "Rodrigo Anzaldúa", role: "COO", company: "Tenmile Robotics", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Kenji Morikawa", role: "CEO", company: "Dunlevy Freight", kind: "competitor", signal: "Engaged with Keelhaven" },
         ],
         featured: {
           why: "Kellby Health is a 110-person US health software company. Nora, its founder and CEO, liked your post on how CEOs spend their week.",
@@ -73,8 +73,8 @@ export const executiveCoaches: VerticalConfig = {
         leads: [
           { name: "Bettina Rosenthal", role: "Founder & CEO", company: "Ambrin", kind: "keyword", signal: "Posted on scaling up" },
           { name: "Desmond Kwarteng", role: "CEO", company: "Cindral Data", kind: "keyword", signal: "Posted on delegation" },
-          { name: "Heather Quarles", role: "Founder", company: "Ostlund Health", kind: "influencer", signal: "Liked a Blake post" },
-          { name: "Sanjay Kothari", role: "CEO", company: "Blueloam Pay", kind: "competitor", signal: "Liked an Oakspur post" },
+          { name: "Heather Quarles", role: "Founder", company: "Ostlund Health", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Sanjay Kothari", role: "CEO", company: "Blueloam Pay", kind: "competitor", signal: "Engaged with Oakspur" },
           { name: "Ruby Anchondo", role: "Founder & CEO", company: "Ivywick", kind: "keyword", signal: "Posted “first-time CEO”" },
         ],
         featured: {
@@ -100,7 +100,7 @@ export const executiveCoaches: VerticalConfig = {
           { name: "Caroline Vogelsang", role: "VP People", company: "Duskfield Labs", kind: "hiring", signal: "Head of Product role" },
           { name: "Malik Freeman", role: "COO", company: "Gadsden Works", kind: "hiring", signal: "Ops director role open" },
           { name: "Elena Voronova", role: "Chief of Staff", company: "Gildercrest", kind: "keyword", signal: "Posted on first 90 days" },
-          { name: "Parker Nakamura", role: "Head of People", company: "Loftridge", kind: "competitor", signal: "Liked an Oakspur post" },
+          { name: "Parker Nakamura", role: "Head of People", company: "Loftridge", kind: "competitor", signal: "Engaged with Oakspur" },
         ],
         featured: {
           why: "Stonewick Software is a 240-person US company hiring a Head of Engineering. Ibrahim is the CEO and owns the hire.",
@@ -108,7 +108,7 @@ export const executiveCoaches: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Ibrahim, thanks for the connection. I coach new tech leaders. In your view, what makes a new leader’s first 90 days go well?",
+          "Hi Ibrahim, I coach new tech leaders. In your view, what makes a new leader’s first 90 days go well?",
       },
     ],
   },
@@ -148,7 +148,7 @@ export const executiveCoaches: VerticalConfig = {
   faq: [
     {
       q: "I rarely post. Will this work?",
-      a: "Yes. Own brand is one signal of six. Keyword, Hiring and Influencer find leaders whether you post or not.",
+      a: "Yes. Own brand is one signal of several. Keyword, Hiring and Influencer find leaders whether you post or not.",
     },
     {
       q: "Can it book discovery calls?",

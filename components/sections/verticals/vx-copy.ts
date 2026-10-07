@@ -7,6 +7,9 @@
 // 2026-09-29 (founder: "vitrine plus compliant") the outreach is told at the outcome level too —
 // a warm-up, a first touch with no pitch, up to three messages — never the visit / like / invite
 // steps (validate.ts SEQUENCE).
+// 2026-10-07 (audit 1.3): the app renamed Campaign to Sequence (pancake-cmo app-nav.ts
+// PLAY_PAGE_ITEMS, campaigns/copy.ts), so the mock says Sequence too, and no visible string
+// says "campaign" (validate.ts CAMPAIGN).
 // In the repo, import TRIAL_LABEL from "@/lib/trial" instead of the local constant below.
 
 import { TRIAL_LABEL } from "@/lib/trial";
@@ -161,7 +164,10 @@ export const VX_SIGNALS = {
   eyebrow: "Signals",
   watching: "Watching",
   more: (n: number) => `+${n} more`,
-  lede: (v: VerticalConfig) => `Pancake watches six buying signals. These four matter most to ${v.name.short}.`,
+  /** 2026-10-07 (audit 6.5): one count site-wide, the eight ways public/llms.txt lists (posts by
+   *  rivals, experts or your brand; one post's reactions; topics; hiring; stack; funding;
+   *  lookalikes; role match). "Six buying signals" undercounted once funding shipped. */
+  lede: (v: VerticalConfig) => `A Play finds leads eight ways. These four signals matter most to ${v.name.short}.`,
   /** The 2 kinds NOT on the cards ("can also watch": nothing is watched until set up), then the
    *  opt-in fact, on every page (signal-settings.ts optInSignalKinds = hiring, stack: off by
    *  default). "Both" when the first sentence just named exactly those two (no back-to-back
@@ -253,7 +259,12 @@ export const VX_RELATED = {
 
 /* ─── LpCta / LpPricing overrides (optional props, homepage defaults untouched) ─ */
 
-export const VX_CTA_BODY: [string, string] = ["$99 a month per workspace.", "First leads arrive tomorrow morning."];
+/** 2026-10-07: the same two lines as the homepage band (LpCta CTA_BODY): the promise, then the
+ *  price unit and what is not billed. */
+export const VX_CTA_BODY: [string, string] = [
+  "Tell Pancake who to reach. It builds the Play.",
+  "$99 a month per workspace. Your whole team included.",
+];
 
 /** The /for pricing checklist: the same six lines on every /for page and the hub. The fifth line
  *  was the AI SEO article until 2026-09-30; it now matches the homepage's Plays line. */
@@ -274,7 +285,8 @@ const HUB_LEDE =
 
 export const VX_HUB = {
   eyebrow: "Industries",
-  h1: "Pick your industry.",
+  /** 2026-10-07 (audit 6.6): the H1 says what the page is for (it read "Pick your industry."). */
+  h1: "Find customers in your industry.",
   lede: HUB_LEDE,
   draft: "Draft",
   soon: "More industries soon.",
@@ -290,6 +302,5 @@ export const VX_META = {
   /** n = the number of listed pages (the hub passes approvedVerticals().length). */
   hubTitle: (n: number) => (VX_TITLE_MODE === "brand" ? "Pancake" : `Pancake by Industry: Find B2B Customers in ${n} Markets`),
   hubOgTitle: "Pancake for your industry",
-  /** og:image:alt / twitter:image:alt: every /for URL shares /og-image.png, the homepage card. */
-  ogImageAlt: "Pancake: You run your company. We bring you customers.",
+  // og:image:alt comes from lib/social-meta.ts OG_IMAGE_ALT since 2026-10-07 (the shared card).
 };

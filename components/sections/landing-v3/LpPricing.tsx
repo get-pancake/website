@@ -75,6 +75,14 @@ export function LpPricing({ checklist = CHECKLIST }: { checklist?: readonly stri
           </LpFxLink>
         </div>
         <p className="lp-price-note">{TRIAL_LABEL}</p>
+        {/* The route to /pricing (2026-10-07: the homepage linked it from the
+            footer only). A text link, not a pill, so Start free stays this
+            card's one CTA. */}
+        <p className="lp-price-more">
+          <a className="lp-textlink" href="/pricing">
+            See what one plan covers<span aria-hidden="true"> →</span>
+          </a>
+        </p>
       </div>
       {/* Animated pancakes group: 1654×1039 canvas where the old composite img
           sat (top -0.66px, centered); the 2622×1039 container's left offset

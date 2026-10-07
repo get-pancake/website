@@ -7,7 +7,7 @@ export const recruitingAgencies: VerticalConfig = {
   status: "approved",
   category: "Sales, GTM & recruiting",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "recruiting agencies",
@@ -46,7 +46,7 @@ export const recruitingAgencies: VerticalConfig = {
           { name: "Marcus Oyelowo", role: "Head of Talent", company: "Quaystack", kind: "hiring", signal: "Senior backend role" },
           { name: "Priya Natarajan", role: "CTO & Co-founder", company: "Fernhollow", kind: "keyword", signal: "Posted “we’re hiring”" },
           { name: "Tomás Reyes", role: "Engineering Lead", company: "Tallowmere", kind: "stack", signal: "Kubernetes in job posts" },
-          { name: "Leah Brandt", role: "Talent Lead", company: "Orbitleaf", kind: "competitor", signal: "Liked a Northpeak post" },
+          { name: "Leah Brandt", role: "Talent Lead", company: "Orbitleaf", kind: "competitor", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Brindlecloud, a 140-person US SaaS company, opened three backend engineer roles this month. Dana runs engineering and owns those hires.",
@@ -54,7 +54,7 @@ export const recruitingAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Dana, thanks for connecting. I place backend engineers with software teams, so I like getting to know the people who build them. Which engineers are hardest to find on your side right now?",
+          "Hi Dana, I place backend engineers with software teams, so I like getting to know the people who build them. Which engineers are hardest to find on your side right now?",
       },
       {
         kind: "keyword",
@@ -70,7 +70,7 @@ export const recruitingAgencies: VerticalConfig = {
           { name: "Owen Castellano", role: "Founder & CEO", company: "Pollenworks", kind: "keyword", signal: "Posted about sales hires" },
           { name: "Ines Alvarado", role: "COO", company: "Cadrelane", kind: "hiring", signal: "Account executive role" },
           { name: "Kofi Mensah", role: "Co-founder", company: "Hearthmark", kind: "hiring", signal: "AE and SDR roles open" },
-          { name: "Rachel Imura", role: "Head of People", company: "Lumenfold", kind: "competitor", signal: "Liked a Launchline post" },
+          { name: "Rachel Imura", role: "Head of People", company: "Lumenfold", kind: "competitor", signal: "Engaged with a post" },
           { name: "Theo Lindgren", role: "Founder", company: "Nimbleroot", kind: "keyword", signal: "Posted “first AE hire”" },
         ],
         featured: {
@@ -92,8 +92,8 @@ export const recruitingAgencies: VerticalConfig = {
           { kind: "keyword", items: ["growing our compliance team"] },
         ],
         leads: [
-          { name: "Grace Adebayo", role: "Head of Talent", company: "Halvard Pay", kind: "competitor", signal: "Liked a Crestmoor post" },
-          { name: "Julian Mercer", role: "VP People", company: "Keelwater", kind: "competitor", signal: "Liked a Ledgerline post" },
+          { name: "Grace Adebayo", role: "Head of Talent", company: "Halvard Pay", kind: "competitor", signal: "Engaged with a post" },
+          { name: "Julian Mercer", role: "VP People", company: "Keelwater", kind: "competitor", signal: "Engaged with Ledgerline" },
           { name: "Hannah Obi", role: "Recruiter", company: "Ashgrove Ledger", kind: "hiring", signal: "2 compliance roles open" },
           { name: "Victor Salas", role: "COO", company: "Clearbeck", kind: "keyword", signal: "Posted on compliance" },
           { name: "Mei Tanaka", role: "Talent Partner", company: "Tarnfield", kind: "hiring", signal: "Risk analyst role open" },
@@ -155,7 +155,7 @@ export const recruitingAgencies: VerticalConfig = {
     },
     {
       q: "Can I run two desks, like tech and finance?",
-      a: "Yes, with one workspace per desk, each with its own Brain and $99 plan. Each desk also needs its own account to send from.",
+      a: "Yes. Give each desk its own Play, with its own targeting, messages and sending accounts. One workspace, one $99 plan.",
     },
   ],
 

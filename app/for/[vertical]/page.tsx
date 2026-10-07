@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { VxPage } from "@/components/sections/verticals/VxPage";
 import { VX_META } from "@/components/sections/verticals/vx-copy";
+import { social } from "@/lib/social-meta";
 import { VERTICAL_SLUGS, getVertical, isApproved, verticalUrl } from "@/lib/verticals";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/verticals.css";
@@ -35,21 +36,9 @@ export function generateMetadata({ params }: { params: { vertical: string } }): 
     description: v.hero.lede,
     alternates: { canonical: url },
     robots: isApproved(v) ? { index: true, follow: true } : { index: false, follow: true },
-    openGraph: {
-      type: "website",
-      url,
-      title: ogTitle,
-      description: v.hero.lede,
-      // the shared homepage card, so the alt describes that image, not this page
-      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: VX_META.ogImageAlt }],
-      siteName: "Pancake",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: ogTitle,
-      description: v.hero.lede,
-      images: [{ url: "/og-image.png", alt: VX_META.ogImageAlt }],
-    },
+    // Share card via lib/social-meta.ts (2026-10-07, audit 8.1/8.4): the shared
+    // homepage card, with the alt = its printed text (no "Pancake:" prefix).
+    ...social({ path: `/for/${v.slug}`, title: ogTitle, description: v.hero.lede }),
   };
 }
 

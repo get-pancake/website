@@ -4,13 +4,20 @@ import { LandingFooter } from "@/components/sections/landing/LandingFooter";
 import { LandingNav } from "@/components/sections/landing/LandingNav";
 import { PRIVACY_EMAIL_URL, SUPPORT_EMAIL } from "@/lib/contact";
 import { APP_ORIGIN, SITE_HOST, SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v2.css";
 
+const TITLE = "Privacy Policy — Pancake";
+const DESCRIPTION =
+  "How Pancake (Basalt AI Inc.) collects, uses, and protects personal data across our website, web app, and integrations.";
+
 export const metadata: Metadata = {
-  title: "Privacy Policy — Pancake",
-  description:
-    "How Pancake (Basalt AI Inc.) collects, uses, and protects personal data across our website, web app, and integrations.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: `${SITE_ORIGIN}/privacy` },
+  // Its own share card (2026-10-07, audit 8.2): it shared as the homepage,
+  // with the homepage title and no og:url.
+  ...social({ path: "/privacy", title: TITLE, description: DESCRIPTION }),
 };
 
 /* Content note: the "Google User Data" section is part of our Google OAuth

@@ -14,6 +14,8 @@ import {
   FAQ,
   FINAL,
   GUIDE_MD_PATH,
+  GUIDE_META,
+  GUIDE_PATH,
   HERO,
   LOGO_SRC,
   PROMO_BAR,
@@ -28,6 +30,7 @@ import {
 } from "@/components/sections/guide-claude/guide-copy";
 import { VxHead } from "@/components/sections/verticals/VxHead";
 import { vxNoWidow } from "@/components/sections/verticals/vx-text";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * /guides/claude — "Use Pancake in Claude", the destination of the ManyChat DMs (most
@@ -42,11 +45,15 @@ import { vxNoWidow } from "@/components/sections/verticals/vx-text";
  *
  * Client islands: the copy buttons, the step 02 tabs, the two Start free links (utm_*
  * pass-through) — plus the nav/CTA islands every landing page ships.
+ *
+ * Structured data (audit 7.7, 2026-10-07): WebPage + BreadcrumbList (Home → this guide) +
+ * FAQPage, the FAQ's Q/As verbatim (the cost answer stays visible-only, see FAQ in guide-copy).
  */
 export function GuidePage({ markdown }: { markdown: string }) {
   const preview = markdown.split("\n").slice(0, 9).join("\n");
   return (
     <main className="lp lp-vx lp-guide">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(guideJsonLd()) }} />
       <LpFitVars />
       <PromoBar />
       <LpNav />
@@ -65,6 +72,40 @@ export function GuidePage({ markdown }: { markdown: string }) {
       <LpFooter />
     </main>
   );
+}
+
+function guideJsonLd() {
+  const url = `${SITE_ORIGIN}${GUIDE_PATH}`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: GUIDE_META.ogTitle,
+        description: GUIDE_META.description,
+        inLanguage: "en-US",
+        isPartOf: { "@type": "WebSite", name: "Pancake", url: SITE_ORIGIN },
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: GUIDE_META.crumbHome, item: SITE_ORIGIN },
+          { "@type": "ListItem", position: 2, name: GUIDE_META.crumbPage, item: url },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        mainEntity: FAQ.items
+          .filter((f) => !("inJsonLd" in f && f.inJsonLd === false))
+          .map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+      },
+    ],
+  };
 }
 
 function PromoBar() {

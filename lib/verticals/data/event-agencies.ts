@@ -9,7 +9,7 @@ export const eventAgencies: VerticalConfig = {
   status: "approved",
   category: "Marketing & creative agencies",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "event agencies",
@@ -46,7 +46,7 @@ export const eventAgencies: VerticalConfig = {
           { name: "Genevieve Park", role: "Head of People", company: "Northloom", kind: "keyword", signal: "Posted about an offsite" },
           { name: "Nathaniel Farrell", role: "VP People", company: "Lindenhall", kind: "keyword", signal: "Posted on team retreats" },
           { name: "Brianna Castillo", role: "People Ops Director", company: "Sproutline", kind: "hiring", signal: "Workplace role open" },
-          { name: "Isaac Brandvold", role: "Chief People Officer", company: "Irisfield", kind: "competitor", signal: "Liked a Gatherfield post" },
+          { name: "Isaac Brandvold", role: "Chief People Officer", company: "Irisfield", kind: "competitor", signal: "Engaged with a post" },
           { name: "Maya Okorie", role: "Head of Culture", company: "Mossgate", kind: "keyword", signal: "Posted about a retreat" },
         ],
         featured: {
@@ -80,7 +80,7 @@ export const eventAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Lorenzo, good to connect. We produce field events, and formats come and go fast. Which one has worked best for you lately?",
+          "Hi Lorenzo, we produce field events, and formats come and go fast. Which one has worked best for you lately?",
       },
       {
         kind: "competitor",
@@ -93,11 +93,11 @@ export const eventAgencies: VerticalConfig = {
           { kind: "influencer", items: ["Rosa Tenbrook"] },
         ],
         leads: [
-          { name: "Nina Kovalenko", role: "Chief of Staff", company: "Kestrelline", kind: "competitor", signal: "Liked a Tallpine post" },
-          { name: "Ezra Kingsley", role: "Chief of Staff", company: "Pellwright", kind: "competitor", signal: "Liked a Gatherfield post" },
+          { name: "Nina Kovalenko", role: "Chief of Staff", company: "Kestrelline", kind: "competitor", signal: "Engaged with Tallpine" },
+          { name: "Ezra Kingsley", role: "Chief of Staff", company: "Pellwright", kind: "competitor", signal: "Engaged with a post" },
           { name: "Aisha Rahimi", role: "COO", company: "Zinnia Health", kind: "keyword", signal: "Posted on exec retreats" },
-          { name: "Callum Ferrante", role: "Chief of Staff", company: "Tinsmith Labs", kind: "influencer", signal: "Liked a Tenbrook post" },
-          { name: "Anoush Petrosyan", role: "VP Operations", company: "Glassbrook", kind: "competitor", signal: "Liked a Tallpine post" },
+          { name: "Callum Ferrante", role: "Chief of Staff", company: "Tinsmith Labs", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Anoush Petrosyan", role: "VP Operations", company: "Glassbrook", kind: "competitor", signal: "Engaged with Tallpine" },
         ],
         featured: {
           why: "Kestrelline is a 260-person US fintech. Nina is chief of staff and liked a Tallpine Offsites post about leadership retreats this week.",

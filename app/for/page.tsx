@@ -14,6 +14,7 @@ import {
   VX_PRICING_MODE,
 } from "@/components/sections/verticals/vx-copy";
 import { hubJsonLd } from "@/components/sections/verticals/vx-jsonld";
+import { social } from "@/lib/social-meta";
 import { SITE_URL, approvedVerticals } from "@/lib/verticals";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/verticals-hub.css";
@@ -37,21 +38,9 @@ export function generateMetadata(): Metadata {
     description: VX_HUB.metaDescription,
     alternates: { canonical: HUB_URL },
     robots: indexable ? { index: true, follow: true } : { index: false, follow: true },
-    openGraph: {
-      type: "website",
-      url: HUB_URL,
-      title: VX_META.hubOgTitle,
-      description: VX_HUB.metaDescription,
-      // the shared homepage card, so the alt describes that image, not this page
-      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: VX_META.ogImageAlt }],
-      siteName: "Pancake",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: VX_META.hubOgTitle,
-      description: VX_HUB.metaDescription,
-      images: [{ url: "/og-image.png", alt: VX_META.ogImageAlt }],
-    },
+    // Share card via lib/social-meta.ts (2026-10-07, audit 8.1/8.4): the shared
+    // homepage card, with the alt = its printed text (no "Pancake:" prefix).
+    ...social({ path: "/for", title: VX_META.hubOgTitle, description: VX_HUB.metaDescription }),
   };
 }
 

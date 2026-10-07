@@ -924,7 +924,8 @@
 .lp-s3-chip--blue .lp-s3-bar {
   background: var(--lp-blue-30);
 }
-/* outcome badges: tiny pills stamped on the chip's top-right corner, sliding in from the right */
+/* outcome badges: tiny pills stamped on the chip's top-right corner, sliding in from the right
+   ("Booked", green — 2026-10-07, was "Closed": Pancake can't know a deal closed — or "→ follow-up") */
 .lp-s3-badge {
   align-items: center;
   border-radius: 999px;
@@ -951,7 +952,7 @@
   height: 7px;
   width: 7px;
 }
-.lp-s3-badge--closed {
+.lp-s3-badge--booked {
   background: var(--lp-green-30);
   color: var(--lp-ink-0);
 }

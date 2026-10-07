@@ -10,7 +10,7 @@ export const solopreneurs: VerticalConfig = {
   status: "approved",
   category: "Startups & solo founders",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "solopreneurs",
@@ -45,10 +45,10 @@ export const solopreneurs: VerticalConfig = {
         ],
         leads: [
           { name: "Ishaan Varma", role: "Head of Product", company: "Hazelgrove", kind: "own_brand", signal: "Commented on a post" },
-          { name: "Clementine Burke", role: "Product Manager", company: "Minnowbrook", kind: "own_brand", signal: "Liked your build log" },
-          { name: "Folasade Akintola", role: "Founder & CEO", company: "Tinwhistle", kind: "own_brand", signal: "Liked your demo video" },
-          { name: "Mattias Kroll", role: "VP Engineering", company: "Slatehaven", kind: "influencer", signal: "Liked a Crowder post" },
-          { name: "Paloma Ibarra", role: "Product Lead", company: "Driftwillow", kind: "competitor", signal: "Liked a Changemill post" },
+          { name: "Clementine Burke", role: "Product Manager", company: "Minnowbrook", kind: "own_brand", signal: "Engaged with your post" },
+          { name: "Folasade Akintola", role: "Founder & CEO", company: "Tinwhistle", kind: "own_brand", signal: "Engaged with your video" },
+          { name: "Mattias Kroll", role: "VP Engineering", company: "Slatehaven", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Paloma Ibarra", role: "Product Lead", company: "Driftwillow", kind: "competitor", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Ishaan leads product at Hazelgrove, a 70-person US software company. He commented on your post about writing release notes.",
@@ -74,7 +74,7 @@ export const solopreneurs: VerticalConfig = {
           { name: "Bao Nguyen", role: "Engineering Lead", company: "Blueshale", kind: "keyword", signal: "Meeting-free days post" },
           { name: "Linnea Bergstrom", role: "CTO", company: "Vellumway", kind: "hiring", signal: "Eng manager role open" },
           { name: "Rocco Santangelo", role: "Team Lead", company: "Winterpeak", kind: "stack", signal: "Jira in job posts" },
-          { name: "Keturah Mills", role: "VP Engineering", company: "Owlbridge", kind: "competitor", signal: "Liked a Huddlebox post" },
+          { name: "Keturah Mills", role: "VP Engineering", company: "Owlbridge", kind: "competitor", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Fernbrook is a 130-person US health records company. Saoirse manages engineering and posted this week about async standups.",
@@ -96,10 +96,10 @@ export const solopreneurs: VerticalConfig = {
         ],
         leads: [
           { name: "Lupe Galindo", role: "Founder", company: "Sweetgrass Digital", kind: "influencer", signal: "Commented on a post" },
-          { name: "Rufus Kinsella", role: "Partner", company: "Hartwell & Vine", kind: "influencer", signal: "Liked a Lockard post" },
+          { name: "Rufus Kinsella", role: "Partner", company: "Hartwell & Vine", kind: "influencer", signal: "Engaged with a post" },
           { name: "Adanna Ilori", role: "Founder", company: "Wildrye Creative", kind: "keyword", signal: "Posted on client reports" },
           { name: "Hugo Lachance", role: "Account Director", company: "Kitewell", kind: "keyword", signal: "Posted on reporting" },
-          { name: "Mercedes Oyarzun", role: "COO", company: "Bellbird Media", kind: "competitor", signal: "Liked a Clientglass post" },
+          { name: "Mercedes Oyarzun", role: "COO", company: "Bellbird Media", kind: "competitor", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Sweetgrass Digital is a 14-person US marketing agency. Lupe founded it and commented on a Delia Kerr post about client reporting.",
@@ -150,7 +150,7 @@ export const solopreneurs: VerticalConfig = {
     },
     {
       q: "Is $99 worth it before I have revenue?",
-      a: "You see the first leads Pancake found before your trial starts. After the 3-day trial, it’s $99 a month, flat.",
+      a: "You see the first leads Pancake found before your trial starts. After the 3-day trial, it’s $99 a month per workspace.",
     },
     {
       q: "My buyers are consumers. Will it work?",

@@ -2,7 +2,7 @@
 
 > Pancake is the Vercel for GTM: one place to deploy, host and run go-to-market agents. AI agents like Claude and Codex can plan a company's GTM but can't run it. They have no data to find people, no way to reach them and no memory of the business. Pancake is that missing piece. Your agent decides. Pancake runs it.
 
-Pancake works from Claude, ChatGPT, Codex or any agent that supports MCP, and from its own web app. It costs $99 per month per workspace, with as many Plays and leads as you want.
+Pancake works from Claude, Claude Code, Codex and other MCP clients with browser sign-in, and from its own web app. It costs $99 a month per workspace, with as many Plays and leads as you want.
 
 ## The Vercel for GTM
 
@@ -37,9 +37,9 @@ A reply stops the sequence. Pancake reads the reply and labels it "positive", "i
 
 New leads also arrive in Slack, where the customer can approve or pass, and a morning email sums up what is waiting. When the customer rejects a lead with a reason, Pancake suggests Brain changes they can accept or ignore.
 
-## From any AI agent
+## From your AI agent
 
-Claude, ChatGPT, Codex and any agent that supports MCP connect to Pancake with a browser sign-in. There is no API key. From the agent, customers create and run Plays, review leads, add them to sequences and edit their messages, on the same Brain and the same leads as the app. Adding a lead to a sequence starts real outreach from the customer's own account. In the web app, the same work happens in a chat with the Pancake Agent.
+Claude (web, desktop and mobile), Claude Code and Codex connect with a browser sign-in. There is no API key. Other MCP clients work when they support browser OAuth with a client ID metadata document: https://pancake.ai/install.md lists them. Cursor can't connect yet. From the agent, customers create and run Plays, review leads, add them to sequences and edit their messages, on the same Brain and the same leads as the app. Adding a lead to a sequence starts real outreach from the customer's own account. In the web app, the same work happens in a chat with the Pancake Agent.
 
 ## Who it is for
 
@@ -47,24 +47,40 @@ Pancake is for founders who do their own sales, small B2B teams, agencies and GT
 
 ## Pricing
 
-$99 per month per workspace, with as many Plays and leads as you want. A workspace is one company. Its plan covers the Brain, every Play, the whole team and the accounts the customer sends from. A second company or brand is a second workspace at the same price. The free trial lasts 3 days, and a credit card is required to start it.
+$99 a month per workspace, with as many Plays and leads as you want. A workspace is one company. Its plan covers the Brain, every Play, the whole team and the accounts the customer sends from. A second company or brand is a second workspace at the same price. The free trial lasts 3 days, and a credit card is required to start it.
+
+After the trial, the plan renews monthly on the card the customer added. Canceling before the trial ends costs nothing; after that, access continues until the end of the current billing period. No charge per teammate.
+
+## Facts
+
+- A sequence is a light warm-up, then up to 3 messages, sent on weekdays between 09:00 and 18:00 in the customer's time zone.
+- After a lead is added to a sequence, nothing goes out for 10 minutes, so the customer can undo.
+- Delivery: Slack, an 08:30 email digest, and daily, weekday, weekly or custom schedules.
+- MCP server: https://app.pancake.ai/api/mcp (Streamable HTTP, browser OAuth, no API key). About 90 tools, plugins for Claude Code and Codex, and 4 skills.
 
 ## Product boundaries
 
-Pancake finds a company's buyers and starts the conversation, from the customer's own accounts. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on October 7, 2026 to match the current product.
+Pancake finds a company's buyers and starts the conversation, from the customer's own accounts. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. It does not send outreach by email, sync leads to a CRM, identify website visitors, look up phone numbers or make calls. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on October 7, 2026 to match the current product.
 
 ## Key pages
 
 - [Homepage](https://pancake.ai/) — what Pancake does, how it works, and pricing
-- [Pricing](https://pancake.ai/pricing) — $99 per month per workspace, with as many Plays and leads as you want
+- [Pricing](https://pancake.ai/pricing) — $99 a month per workspace, with as many Plays and leads as you want
 - [Use Pancake in Claude](https://pancake.ai/guides/claude) — connect Pancake to Claude, Claude Code or Codex over MCP, with prompts
-- [Connect any agent](https://pancake.ai/install.md) — setup steps an AI agent can follow to connect Pancake over MCP
+- [Use Pancake in Claude, as Markdown](https://pancake.ai/guides/claude.md) — the same guide written for an agent to follow
+- [Connect your agent](https://pancake.ai/install.md) — setup steps an AI agent can follow to connect Pancake over MCP
+- [Pancake skills](https://raw.githubusercontent.com/get-pancake/agent-plugins/main/skills.md) — how an agent installs the Pancake skills
+- [Full text](https://pancake.ai/llms-full.txt) — this file, the setup steps, the Claude guide and the pricing answers in one document
 - [Blog](https://pancake.ai/blog) — the complete article archive
+- [Support](https://pancake.ai/support) — product, account, billing and connection help
+- [Careers](https://pancake.ai/careers) — the team and open roles
+- [Privacy Policy](https://pancake.ai/privacy) — what Pancake (Basalt AI Inc.) collects and how it is used
+- [Terms of Service](https://pancake.ai/terms) — the terms for the website and the app
 - [Viktor vs Pancake](https://pancake.ai/viktor-vs-pancake) — broad AI employee vs Plays that find buyers and start the conversation
 - [Claude Tag vs Pancake](https://pancake.ai/claude-tag-vs-pancake) — ambient general teammate vs focused autonomous GTM execution
 - [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain behind every Play
 - [Lemlist vs Pancake](https://pancake.ai/lemlist-vs-pancake) — a sales-engagement platform your team operates vs Plays that find buyers and start conversations for you
-- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — live-web research and content-led suggestions vs Plays that find buyers and start the conversation
+- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — on-demand live-web searches and plays billed in credits vs Plays that search every night and start the conversation
 - [OpenClaw vs Pancake](https://pancake.ai/openclaw-vs-pancake) — an open-source agent runtime you configure vs a managed GTM platform
 - [Paperclips vs Pancake](https://pancake.ai/pancake-vs-paperclips) — a self-hosted control plane for AI companies vs a managed GTM platform
 
@@ -112,7 +128,9 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Pancake for video production companies](https://pancake.ai/for/video-production-companies)
 - [Pancake for web design agencies](https://pancake.ai/for/web-design-agencies)
 
-## Blog archive
+## Guides and comparisons
+
+Articles about finding B2B customers and the tools people compare with Pancake.
 
 - [AiSDR Alternatives: 7 AI Sales Tools Compared for 2026](https://pancake.ai/blog/aisdr-alternatives) — AiSDR alternatives compared: Pancake, Artisan, Reply.io, Gojiberry, Valley, Amplemarket and 11x, with September 2026 prices and the team each one fits.
 - [Alta Alternatives: 7 AI GTM Tools Compared for 2026](https://pancake.ai/blog/alta-alternatives) — Alta alternatives compared: Pancake, 11x, Artisan, Amplemarket, AiSDR, Valley and Qualified, with September 2026 prices and the team each one fits.
@@ -124,8 +142,16 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Origami Alternatives: 6 AI Tools to Find Buyers in 2026](https://pancake.ai/blog/origami-alternatives) — Origami alternatives compared: Pancake, Clay, Apollo, Gojiberry, Valley and Amplemarket, with September 2026 prices and the team each one fits best.
 - [Trigify Alternatives: 6 Social Signal Tools to Replace It in 2026](https://pancake.ai/blog/trigify-alternatives) — Trigify's app closes October 22, 2026 for most customers. Compare Pancake, Teamfluence, Octolens, Clay, Gojiberry and Common Room on price and fit.
 - [Valley Alternatives: 6 Tools for Signal-Based Outreach in 2026](https://pancake.ai/blog/valley-alternatives) — Valley alternatives compared: Pancake, Gojiberry, Amplemarket, HeyReach, Expandi and Dripify, with September 2026 prices and who each tool fits best.
+- [Pancake vs Hiring a BDR: The Economics of AI-Run Outbound](https://pancake.ai/blog/pancake-vs-hiring-a-bdr) — A first BDR costs about $108,600 a year, fully loaded. Pancake costs $99 a month. What each one does, where the human still wins, and when to hire.
+- [Viktor Alternatives: 8 AI Agents and Tools Compared for 2026](https://pancake.ai/blog/viktor-alternatives) — Viktor alternatives compared: Pancake, Lindy, Claude Tag, Dust, Glean, Zapier Agents, Relevance AI and Slackbot, with September 2026 prices and best fits.
+- [Pancake vs Victora: A Leads List vs a Play That Runs](https://pancake.ai/blog/pancake-vs-victora) — Victora reads Reddit and Hacker News and hands you a leads list for $49 a month. Pancake finds B2B buyers eight ways and runs outreach for $99.
+
+## Optional
+
+The rest of the blog archive, mostly on topics outside the product (see Product boundaries). Their descriptions of Pancake are current.
+
 - [How to Run Engineering Without a Dev Team in 2026](https://pancake.ai/blog/how-to-run-engineering-without-a-dev-team) — How solo founders and small teams run engineering with AI coding agents instead of a dev team: what agents can own, what needs a human and when to hire.
-- [Cofounder.co Alternatives: 8 AI Agent Platforms Compared (2026)](https://pancake.ai/blog/cofounder-co-alternatives) — Cofounder.co alternatives for 2026: Pancake for customers, plus Polsia, NanoCorp, Paperclip, SoGood, Lindy, Lovable and Durable, with prices and best fit.
+- [Cofounder.co Alternatives: 8 AI Agent Platforms Compared (2026)](https://pancake.ai/blog/cofounder-co-alternatives) — Cofounder.co alternatives for 2026: Polsia, NanoCorp, Paperclip, SoGood, Lindy, Lovable and Durable compared, plus where Pancake fits if you need customers.
 - [How to Run Legal Without a Legal Team in 2026](https://pancake.ai/blog/how-to-run-legal-without-a-legal-team) — How to run legal without a legal team: what AI agents can own in contracts, deadlines and document upkeep, and where a licensed lawyer must still sign off.
 - [How to Run HR Without an HR Team in 2026](https://pancake.ai/blog/how-to-run-hr-without-an-hr-team) — How to run HR without an HR team: what AI agents can own in hiring, onboarding and compliance, what a founder must decide, and the people-ops stack.
 - [Best OpenClaw Hosting & Managed Alternatives in 2026 (Full Comparison)](https://pancake.ai/blog/best-openclaw-hosting-alternatives-2026) — Managed OpenClaw hosting compared (September 2026): Agent 37, xCloud, MyClaw, Hostinger, StartClaw and more, plus free options and self-hosting costs.
@@ -140,14 +166,12 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Pancake vs Cofounder.co: Whole-Company Agents vs a GTM Platform](https://pancake.ai/blog/pancake-vs-cofounder-co) — Pancake vs Cofounder.co: what each does, pricing as of September 2026, and who should pick which. Agents for the whole company vs a GTM platform.
 - [Pancake vs Comatch AI: Finding a Co-Founder vs Finding Buyers](https://pancake.ai/blog/pancake-vs-comatch) — Comatch AI matches you with a human co-founder and gives the pair a shared workspace. Pancake finds buyers and runs outreach. Here's who each one fits.
 - [Pancake vs Hermes vs OpenClaw: Which One Do You Need?](https://pancake.ai/blog/pancake-vs-hermes-openclaw) — Hermes Agent and OpenClaw are open-source agents you host and configure yourself. Pancake is a hosted GTM platform. What each does and which fits your job.
-- [Pancake vs Hiring a BDR: The Economics of AI-Run Outbound](https://pancake.ai/blog/pancake-vs-hiring-a-bdr) — A first BDR costs about $108,600 a year, fully loaded. Pancake costs $99 a month. What each one does, where the human still wins, and when to hire.
 - [Pancake vs Paperclip AI: Setup, Cost, and Who Each One Is For](https://pancake.ai/blog/pancake-vs-paperclip) — Paperclip AI is a free, self-hosted app for running AI agents as a company. See what setup and running costs involve, and when Pancake is the better fit.
 - [Pancake vs Vybe: Building Internal Tools vs Finding Customers](https://pancake.ai/blog/pancake-vs-vybe) — Vybe gives your team AI coworkers and custom internal apps. Pancake is a GTM platform that finds buyers and runs outreach. Here's which one fits you.
 - [How Solo Founders Are Replacing Their First 5 Hires With AI in 2026](https://pancake.ai/blog/replacing-first-five-hires-with-ai) — Which of a startup's first five hires AI can replace or delay in 2026: BDR, marketer, ops, customer success, finance. Where each breaks, and when to hire.
 - [Running a Company With AI: What Actually Works in 2026](https://pancake.ai/blog/running-a-company-with-ai) — Running a company with AI in 2026: the five functions agents handle well, the four they can't replace, and the rules for drawing the line between them.
 - [The next unicorns will have five employees.](https://pancake.ai/blog/the-next-unicorns-will-have-five-employees) — Why AI that works without being prompted changes who can build a big company, and why we turned Basalt into Pancake to find buyers for small B2B teams.
 - [Traditional Company vs Autonomous Company: What's the Difference in 2026?](https://pancake.ai/blog/traditional-vs-autonomous-company) — Traditional vs autonomous company: how each one scales, what it costs, where AI agents replace early hires, where they fall short, and how to switch over.
-- [Viktor Alternatives: 8 AI Agents and Tools Compared for 2026](https://pancake.ai/blog/viktor-alternatives) — Viktor alternatives compared: Pancake, Lindy, Claude Tag, Dust, Glean, Zapier Agents, Relevance AI and Slackbot, with September 2026 prices and best fits.
 - [What Is an Agentic Workforce? How Founders Are Replacing Employees With AI Agents in 2026](https://pancake.ai/blog/what-is-agentic-workforce) — An agentic workforce is a team of AI agents that own recurring work. See its four layers, how to build one, its cost next to hiring, and where it breaks.
 - [What Is an AI Co-Founder? A Complete Guide for 2026](https://pancake.ai/blog/what-is-an-ai-cofounder) — An AI co-founder is software that advises, drafts, or runs part of a founder's work. What these tools own, where humans stay essential, how to judge them.
 - [What is an autonomous company?](https://pancake.ai/blog/what-is-an-autonomous-company) — An autonomous company runs its operations on AI agents that work without being prompted. What the harness includes, how the model runs, and where it fails.
@@ -166,7 +190,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Pancake vs AI Cofounders (aicofounders.co): Building the Startup vs Finding Buyers](https://pancake.ai/blog/pancake-vs-ai-cofounders) — AI Cofounders (aicofounders.co) offers six co-founder agents that build startup assets. Pancake finds buyers for what you sell. Which fits your stage.
 - [Pancake vs Andon Labs: One Studies Autonomous Companies, One Finds Your Buyers](https://pancake.ai/blog/pancake-vs-andon-labs) — Pancake vs Andon Labs: Andon Labs runs AI-operated stores and the Pion preview to study autonomous businesses. Pancake finds buyers for your company.
 - [Pancake vs Autonoma: One Finds Your Buyers, One Runs Your Codebase](https://pancake.ai/blog/pancake-vs-autonoma) — Pancake vs Autonoma: Autonoma's 29 agents automate coding, deployment and security for engineering teams. Pancake finds B2B buyers and opens conversations.
-- [Cofounder.so Is Gone: The 5 Best Cofounder.so Alternatives in 2026](https://pancake.ai/blog/pancake-vs-cofounder-so) — Cofounder.so appears to be gone: its domain is parked. Compare 5 alternatives for 2026, from Pancake for customers to Fonda, CoFounder.im and Cofounder.
+- [Cofounder.so Is Gone: The 5 Best Cofounder.so Alternatives in 2026](https://pancake.ai/blog/pancake-vs-cofounder-so) — Cofounder.so appears to be gone: its domain is parked. Its alternatives for 2026 compared, plus where Pancake fits if what you need is customers.
 - [Pancake vs CoFounderBot: One Builds Your Product, One Finds Your Buyers](https://pancake.ai/blog/pancake-vs-cofounderbot) — Pancake vs CoFounderBot: CoFounderBot's seven agents build and ship your product on your own OpenRouter key. Pancake is a GTM platform that finds buyers.
 - [Pancake vs Copreneur.ai: The Difference Between Knowing What to Do and Getting It Done](https://pancake.ai/blog/pancake-vs-copreneur-ai) — Copreneur.ai picks your most important task each morning. Pancake finds buyers and runs your outreach. Here is which bottleneck each one fixes.
 - [Pancake vs Crevio: One Runs Your GTM, One Builds Your Storefront](https://pancake.ai/blog/pancake-vs-crevio) — Crevio builds storefronts and checkout for creators selling digital products. Pancake finds B2B buyers and runs your outreach. Here is which one you need.
@@ -178,7 +202,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Pancake vs Light Anchor: One Runs Your GTM, One Builds AI-Run Brands](https://pancake.ai/blog/pancake-vs-light-anchor) — Light Anchor builds and runs its own AI-operated consumer brands. Pancake is a GTM platform that finds buyers for your company. Here is how the two differ.
 - [Pancake vs Naïve: Autonomous Company Infrastructure vs a GTM Platform](https://pancake.ai/blog/pancake-vs-naive) — Naïve gives developers 100+ agent primitives, from company formation to cards and inboxes. Pancake finds your B2B buyers. What each does, price and fit.
 - [Pancake vs NanoCorp: One Runs Your GTM, One Builds Mini-Businesses on Autopilot](https://pancake.ai/blog/pancake-vs-nanocorp) — NanoCorp launches AI-run micro-businesses from one prompt and keeps 20% of withdrawn revenue. Pancake is a $99/month GTM platform. Which one fits you.
-- [PAIR Alternatives in 2026: What to Use Now That PAIR Is Offline](https://pancake.ai/blog/pancake-vs-pair) — PAIR, an AI co-founder tool, appears offline as of September 2026. Compare the best PAIR alternatives, led by Pancake for founders who need customers.
+- [PAIR Alternatives in 2026: What to Use Now That PAIR Is Offline](https://pancake.ai/blog/pancake-vs-pair) — PAIR, an AI co-founder tool, appears offline as of September 2026. Its alternatives compared, plus where Pancake fits if what you need is customers.
 - [Pancake vs Pango: Customer Acquisition vs Post-Purchase Operations](https://pancake.ai/blog/pancake-vs-pango) — Pango automates e-commerce post-purchase work: returns, tracking, and order support. Pancake finds B2B buyers and runs outreach. Here's which one you need.
 - [Pancake vs Paperclips: Do You Need an AI Company Control Plane?](https://pancake.ai/blog/pancake-vs-paperclips) — Paperclips (Paperclip AI) is an open-source control plane for running AI agents as a company. See what it does, when you need one, and where Pancake fits.
 - [Pancake vs Shogo: One Runs Your GTM, One Builds Software That Runs Itself](https://pancake.ai/blog/pancake-vs-shogo) — Shogo builds open-source internal software that keeps rewriting itself. Pancake finds B2B buyers and runs your outreach. Which one fits your problem?
@@ -189,17 +213,16 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Pancake vs mettaCofounder: GTM Platform vs Marketing & Sales Partnership](https://pancake.ai/blog/pancake-vs-mettacofounder) — mettaCofounder is a six-month marketing and sales partnership for coaches and consultants. Pancake is a GTM platform at $99/month. Scope, price and fit.
 - [The 12 Best AI Co-Founder Tools in 2026 (Ranked and Compared)](https://pancake.ai/blog/best-ai-cofounder-tools-2026) — The 12 best AI co-founder tools in 2026, ranked: what each one does, who approves its work, what it costs as of September 2026, and who it fits best.
 - [The 5 Levels of AI Co-Founder Autonomy (And Which One You Actually Need)](https://pancake.ai/blog/five-levels-ai-cofounder-autonomy) — The five levels of AI co-founder autonomy, from chatbots that answer when asked to AI that sets its own goals. See where 14 tools sit and what you need.
-- [Pancake vs Victora: A Leads List vs a Play That Runs](https://pancake.ai/blog/pancake-vs-victora) — Victora reads Reddit and Hacker News and hands you a leads list for $49 a month. Pancake finds B2B buyers from six signals and runs outreach for $99.
 - [What Is an Agentic Operating System? Components, Examples and Limits in 2026](https://pancake.ai/blog/what-is-agentic-operating-system) — An agentic operating system (agentic OS) gives AI agents memory, tools, orchestration and permissions. What it means in 2026, with examples and limits.
 - [How to Run a One-Person Company in 2026 (The Complete Playbook)](https://pancake.ai/blog/how-to-run-one-person-company-2026) — How to run a one-person company in 2026: three business models that work solo, the AI stack behind them, a four-step playbook, and the mistakes to avoid.
-- [Pancake vs CoFounder.AI: One Finds Your Buyers, One Works Across the Business](https://pancake.ai/blog/pancake-vs-cofounder-ai) — CoFounder.AI is an AI business partner with six specialists from $39/month. Pancake finds B2B buyers for $99/month flat. What each does, pricing and fit.
+- [Pancake vs CoFounder.AI: One Finds Your Buyers, One Works Across the Business](https://pancake.ai/blog/pancake-vs-cofounder-ai) — CoFounder.AI is an AI business partner with six specialists from $39/month. Pancake finds B2B buyers for $99/month per workspace. Scope, pricing and fit.
 - [Pancake vs Doola: One Runs Your GTM, One Files Its Paperwork](https://pancake.ai/blog/pancake-vs-doola) — Doola's AI Co-Founder handles U.S. formation, compliance, and banking for e-commerce founders. Pancake finds B2B buyers and runs outreach. Compare them.
 - [Pancake vs Locus Founder: Same Goal, Different Machines](https://pancake.ai/blog/pancake-vs-locus-founder) — Locus Founder builds an internet business from a text message. Pancake finds B2B buyers and runs outreach for a company you run. Which fits your stage?
 - [Pancake vs OneManCompany: One Runs Your GTM, One Builds a Pixel-Art Office Simulation](https://pancake.ai/blog/pancake-vs-onemancompany) — OneManCompany is a free, open-source agent OS where AI employees work in a pixel-art office. Pancake finds buyers for B2B founders. What each does.
-- [Pancake vs Polsia: One Finds Your Buyers, One Runs the Whole Company](https://pancake.ai/blog/pancake-vs-polsia) — Pancake vs Polsia compared: what each one runs, the fees Polsia takes on payments and ad spend, Pancake's flat $99 a month, and which fits your company.
+- [Pancake vs Polsia: One Finds Your Buyers, One Runs the Whole Company](https://pancake.ai/blog/pancake-vs-polsia) — Pancake vs Polsia: what each one runs, the fees Polsia takes on payments and ad spend, Pancake's $99 a month per workspace, and which fits your company.
 - [Pancake vs Startup.Studio: One Runs Your GTM, One Builds a New Company From Scratch](https://pancake.ai/blog/pancake-vs-startup-studio) — Startup.studio staffs a new company with AI agents while you act as the board. Pancake finds B2B buyers and runs outreach for the company you already run.
 - [Pancake vs Thomas: One Is an AI Founder, One Makes You a Better One](https://pancake.ai/blog/pancake-vs-thomas) — Thomas (YC P26) is an AI founder that runs its own companies and isn't for sale. Pancake works for you: it finds your buyers and starts conversations.
-- [Viktor vs Pancake Pricing: What You Actually Pay in 2026](https://pancake.ai/blog/viktor-vs-pancake-pricing) — Viktor pricing as of September 2026: $100 in free credits, then plans from $50/month for 20,000 credits. How it compares with Pancake's $99 flat plan.
+- [Viktor vs Pancake Pricing: What You Actually Pay in 2026](https://pancake.ai/blog/viktor-vs-pancake-pricing) — Viktor pricing as of September 2026: $100 in free credits, then plans from $50/month for 20,000 credits, compared with Pancake's $99 a month per workspace.
 - [What Is OpenClaw? The Open-Source AI Agent, Explained](https://pancake.ai/blog/what-is-openclaw-pancake-ai-runtime) — What is OpenClaw? The open-source AI agent you host yourself: how its Gateway, skills and memory work, what it costs, the security risks, and who it suits.
 - [What Is Organizational Memory AI? The Infrastructure Layer for Autonomous Companies](https://pancake.ai/blog/what-is-organizational-memory-ai) — Organizational memory AI turns a company's decisions and know-how into context AI agents can query. How it works, how it differs from RAG and who needs it.
 - [Team Agent Platforms Compared: Viktor, Dust, Glean, and Claude Tag](https://pancake.ai/blog/team-agent-platforms-compared) — Viktor, Dust, Glean, and Claude Tag compared: how each team agent platform works in Slack, who it fits, and where a GTM platform like Pancake differs.

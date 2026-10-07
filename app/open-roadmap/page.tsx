@@ -18,33 +18,30 @@ import { Badge } from "@/components/ui/Badge";
 import { isAdmin } from "@/lib/auth/admin";
 import { getIdeas, isPublicIdea } from "@/lib/roadmap/ideas";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { social } from "@/lib/social-meta";
 
 // Always render per-request: the board reflects live Supabase data and the
 // signed-in user. (Without this, a build with env present could cache stale
 // rows; a build without env could bake in seed data.)
 export const dynamic = "force-dynamic";
 
+/* 2026-10-07 (audit 1.8, 8.7): noindex (follow) and out of the sitemap until the
+   roadmap's future is decided (D14): the board still showed V1 "squads" ideas and
+   spam. "squads" left the descriptions too (the V1 product), and the card's alt is
+   the text printed in the shared homepage image (audit 8.4). */
+const DESCRIPTION =
+  "Upvote the features and integrations you want, post your own ideas, and see what's planned, in progress and shipped.";
+
 export const metadata: Metadata = {
   title: "Open roadmap: Vote on what Pancake builds next · Pancake",
-  description:
-    "Pancake's public roadmap. Upvote the squads, features, and integrations you want, post your own ideas, and see what's planned, in progress, and shipped.",
+  description: `Pancake's public roadmap. ${DESCRIPTION}`,
+  robots: { index: false, follow: true },
   alternates: { canonical: `${SITE_ORIGIN}/open-roadmap` },
-  openGraph: {
-    type: "website",
-    url: `${SITE_ORIGIN}/open-roadmap`,
+  ...social({
+    path: "/open-roadmap",
     title: "Pancake Open Roadmap: Vote on what we build next",
-    description:
-      "Upvote the squads, features, and integrations you want, and post your own ideas. See what's planned, in progress, and shipped.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Pancake Open Roadmap" }],
-    siteName: "Pancake",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Pancake Open Roadmap: Vote on what we build next",
-    description:
-      "Upvote the squads, features, and integrations you want, and post your own ideas.",
-    images: ["/og-image.png"],
-  },
+    description: DESCRIPTION,
+  }),
 };
 
 export default async function OpenRoadmapPage() {

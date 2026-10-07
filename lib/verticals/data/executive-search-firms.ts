@@ -10,7 +10,7 @@ export const executiveSearchFirms: VerticalConfig = {
   status: "approved",
   category: "Sales, GTM & recruiting",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "executive search firms",
@@ -47,7 +47,7 @@ export const executiveSearchFirms: VerticalConfig = {
           { name: "Elaine Brancato", role: "CEO", company: "Harlowmere Systems", kind: "hiring", signal: "CRO role posted" },
           { name: "Rashid Lateef", role: "VP People", company: "Dunmarsh Freight", kind: "hiring", signal: "VP Sales role open" },
           { name: "Brooke Hendry", role: "Founder & CEO", company: "Wexbridge Pay", kind: "keyword", signal: "Posted “hiring a CRO”" },
-          { name: "Gideon Winterbourne", role: "Operating Partner", company: "Corranby", kind: "competitor", signal: "Liked a Tennant post" },
+          { name: "Gideon Winterbourne", role: "Operating Partner", company: "Corranby", kind: "competitor", signal: "Engaged with Tennant" },
           { name: "Nkechi Obialo", role: "CEO", company: "Yarrowgate Logistics", kind: "hiring", signal: "SVP Sales role open" },
         ],
         featured: {
@@ -56,7 +56,7 @@ export const executiveSearchFirms: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Elaine, glad we’re connected. I place revenue leaders, so I ask everyone the same question. What’s the first thing you look for in a sales leader?",
+          "Hi Elaine, I place revenue leaders, so I ask everyone the same question. What’s the first thing you look for in a sales leader?",
       },
       {
         kind: "keyword",
@@ -73,7 +73,7 @@ export const executiveSearchFirms: VerticalConfig = {
           { name: "Adaeze Okonkwo", role: "CEO", company: "Fenwhistle Diagnostics", kind: "keyword", signal: "Posted on succession" },
           { name: "Silas Bergquist", role: "Founder", company: "Pellmoor Medical", kind: "hiring", signal: "COO role posted" },
           { name: "Yuki Harada", role: "CHRO", company: "Merrowdale Health", kind: "hiring", signal: "CFO role open" },
-          { name: "Paloma Ruiz", role: "President", company: "Ambersill Foods", kind: "competitor", signal: "Liked a Mirefield post" },
+          { name: "Paloma Ruiz", role: "President", company: "Ambersill Foods", kind: "competitor", signal: "Engaged with Mirefield" },
         ],
         featured: {
           why: "Carrowby Robotics is a 260-person US manufacturer. Graham, its founder and CEO, posted this week about building his leadership team.",
@@ -95,10 +95,10 @@ export const executiveSearchFirms: VerticalConfig = {
         ],
         leads: [
           { name: "Constance Wyeth", role: "Board Chair", company: "Lightfoot Mutual", kind: "influencer", signal: "Commented on a post" },
-          { name: "Everett Nwosu", role: "Board Director", company: "Ottermoor Bank", kind: "influencer", signal: "Liked a Pryor post" },
+          { name: "Everett Nwosu", role: "Board Director", company: "Ottermoor Bank", kind: "influencer", signal: "Engaged with a post" },
           { name: "Lorraine Castellanos", role: "Board Member", company: "Quennell Bio", kind: "keyword", signal: "Posted on board reviews" },
-          { name: "Tobias Kerrigan", role: "Board Member", company: "Brandwick", kind: "own_brand", signal: "Liked a Quarshie post" },
-          { name: "Rosalind Thibodeaux", role: "Board Chair", company: "Thornlea Group", kind: "influencer", signal: "Liked a Kimura post" },
+          { name: "Tobias Kerrigan", role: "Board Member", company: "Brandwick", kind: "own_brand", signal: "Engaged with Quarshie" },
+          { name: "Rosalind Thibodeaux", role: "Board Chair", company: "Thornlea Group", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Lightfoot Mutual is a 900-person US insurer. Constance chairs its board and commented on a Harriet Kimura post about CEO succession.",

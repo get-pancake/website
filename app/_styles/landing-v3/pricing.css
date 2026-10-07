@@ -135,6 +135,45 @@
   top: 550.99px;
   width: 203px;
 }
+/* the route to /pricing (2026-10-07): one text line under the note (its 24px
+   line + 12), still on the cream. At this x the art's first band starts near
+   y675 (lp-pancakes-pricing.svg), about 60px under the line, so the rings'
+   ~15px rotation dip stays clear of it */
+.lp-price-more {
+  left: max(32px, calc(50% - 568px));
+  position: absolute;
+  top: 586.99px;
+  white-space: nowrap;
+}
+
+/* ── Quiet text links (2026-10-07): a line of body copy, underlined, never a
+   pill. Under the pricing card's Start free (above: Start free stays the
+   card's one CTA) and under the homepage demo tour (LpDemoTour: "Works in
+   Claude and Codex. See how →"; its spacing is the last rule here, the
+   tour's own file being demo-tour.css). (0,2,0): beats `.lp a`. ── */
+.lp .lp-textlink {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-decoration-thickness: var(--lp-line, 1px);
+  text-underline-offset: 0.25em;
+  transition: text-decoration-color 0.16s ease-out;
+}
+.lp .lp-textlink:hover {
+  text-decoration-color: currentColor;
+}
+.lp .lp-textlink:focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--lp-text);
+  outline-offset: 3px;
+}
+/* under the demo's foot, on its text edge (.vx-col) */
+.lp-tour .lp-tour__claude {
+  margin-top: 24px;
+}
 
 /* ≤1024: recompose to flow — cream section, art becomes a full-width flow image
    at the bottom. The wave SVG is transparent below its outermost arc, so the
@@ -156,7 +195,8 @@
   .lp-price-price,
   .lp-price-list,
   .lp-price-ctas,
-  .lp-price-note {
+  .lp-price-note,
+  .lp-price-more {
     left: auto;
     position: static;
     top: auto;
@@ -185,6 +225,9 @@
      silently zeroed a plain .lp-price-note margin */
   .lp-price .lp-price-note {
     margin-top: 16px;
+  }
+  .lp-price .lp-price-more {
+    margin-top: 8px;
   }
   .lp-price-art {
     background: #000;

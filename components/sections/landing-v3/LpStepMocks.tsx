@@ -255,8 +255,8 @@ function S3Stage() {
                 ))}
               </div>
               {/* outcome badge, stamped on the chip's top-right corner once the meeting is past */}
-              <div className={"lp-s3-badge " + (c.outcome === "closed" ? "lp-s3-badge--closed" : "lp-s3-badge--follow")}>
-                {c.outcome === "closed" ? (
+              <div className={"lp-s3-badge " + (c.outcome === "booked" ? "lp-s3-badge--booked" : "lp-s3-badge--follow")}>
+                {c.outcome === "booked" ? (
                   <>
                     <svg viewBox="0 0 8 8" xmlns="http://www.w3.org/2000/svg">
                       <path
@@ -268,7 +268,7 @@ function S3Stage() {
                         strokeLinejoin="round"
                       />
                     </svg>
-                    <span>Closed</span>
+                    <span>Booked</span>
                   </>
                 ) : (
                   <span>→ follow-up</span>

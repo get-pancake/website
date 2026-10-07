@@ -11,7 +11,7 @@ export const fractionalCfos: VerticalConfig = {
   status: "approved",
   category: "Consultants & advisors",
   evidence: "seo-bet",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "fractional CFOs",
@@ -57,7 +57,7 @@ export const fractionalCfos: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Philippa, nice to connect. I work as a part-time CFO, so I like hearing how other companies plan ahead. Which number do you watch most closely each month?",
+          "Hi Philippa, I work as a part-time CFO, so I like hearing how other companies plan ahead. Which number do you watch most closely each month?",
       },
       {
         kind: "stack",
@@ -82,7 +82,7 @@ export const fractionalCfos: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Dominic, great to connect. I help companies outgrow their first accounting setup, and month-end is where it shows first. How many days does your close take?",
+          "Hi Dominic, I help companies outgrow their first accounting setup, and month-end is where it shows first. How many days does your close take?",
       },
       {
         kind: "keyword",
@@ -97,7 +97,7 @@ export const fractionalCfos: VerticalConfig = {
         leads: [
           { name: "Viktor Makela", role: "Founder & CEO", company: "Parapet Cloud", kind: "keyword", signal: "Posted on cash runway" },
           { name: "Janelle Beaudry", role: "CEO", company: "Cinderlane", kind: "keyword", signal: "Unit economics post" },
-          { name: "Hector Zubizarreta", role: "COO", company: "Sprigwell", kind: "influencer", signal: "Liked a Marsh post" },
+          { name: "Hector Zubizarreta", role: "COO", company: "Sprigwell", kind: "influencer", signal: "Engaged with a post" },
           { name: "Ayesha Rahman", role: "Co-founder", company: "Tesserafield", kind: "hiring", signal: "FP&A manager role" },
           { name: "Colin Ferreira", role: "Founder", company: "Duneglass", kind: "keyword", signal: "Posted on cash flow" },
         ],
@@ -155,7 +155,7 @@ export const fractionalCfos: VerticalConfig = {
     },
     {
       q: "Can I pause outreach during close week?",
-      a: "Yes. Pausing the campaign stops sending right away, and scheduled steps hold. When you resume, each lead picks up where it left off.",
+      a: "Yes. Pausing the Play stops sending right away, and scheduled steps hold. When you resume, each lead picks up where it left off.",
     },
   ],
 

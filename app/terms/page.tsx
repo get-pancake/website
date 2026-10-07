@@ -5,13 +5,20 @@ import { LandingFooter } from "@/components/sections/landing/LandingFooter";
 import { LandingNav } from "@/components/sections/landing/LandingNav";
 import { SUPPORT_EMAIL, SUPPORT_EMAIL_URL } from "@/lib/contact";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v2.css";
 
+const TITLE = "Terms of Service — Pancake";
+const DESCRIPTION =
+  "The terms governing your access to and use of Pancake — including the website, web app, and Slack integration.";
+
 export const metadata: Metadata = {
-  title: "Terms of Service — Pancake",
-  description:
-    "The terms governing your access to and use of Pancake — including the website, web app, and Slack integration.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: `${SITE_ORIGIN}/terms` },
+  // Its own share card (2026-10-07, audit 8.2): it shared as the homepage,
+  // with the homepage title and no og:url.
+  ...social({ path: "/terms", title: TITLE, description: DESCRIPTION }),
 };
 
 export default function TermsOfServicePage() {

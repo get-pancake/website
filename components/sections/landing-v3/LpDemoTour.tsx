@@ -18,9 +18,20 @@
 // landing-v3/demo-tour.css for the spacing). A direct <section> child of main: the agents view
 // hides it with every other human section (audience.css), and the island's clock stops there
 // (display: none never intersects).
+//
+// 2026-10-07 (audit): the mock UI was about half of the homepage's crawlable text (fake leads,
+// "No keywords are in your brain yet" ×6). One sr-only summary now says what the demo shows,
+// before it. The mock app itself is data-nosnippet (on VxDemoPlayer's stage, so the tabs and
+// captions stay quotable); only Google honors that, so for GPTBot and ClaudeBot the summary is
+// what carries the meaning. Under the demo, one text link: the humans view's only route to
+// /guides/claude (the mock's "Use in Claude / Codex" button left with #327, so this link is the
+// demo's only pointer to the agents; a line in the hero itself waits for the founder). Its look: .lp-textlink, pricing.css.
 
 import { VxDemo } from "@/components/sections/verticals/VxDemo";
 import { HOME_DEMO } from "@/lib/verticals/home-demo";
+
+const TOUR_SUMMARY =
+  "Product demo: Tell Pancake who to reach. It builds the Play. Leads arrive each morning with why they fit. You approve each lead, then Pancake writes a personal message for every lead.";
 
 export function LpDemoTour() {
   return (
@@ -28,8 +39,14 @@ export function LpDemoTour() {
       <h2 id="lp-tour-title" className="lp-sr-only">
         {HOME_DEMO.demo.h2}
       </h2>
+      <p className="lp-sr-only">{TOUR_SUMMARY}</p>
       {/* the first start waits for the app window (≥768), not the composer */}
       <VxDemo v={HOME_DEMO} headless gate="window" />
+      <p className="vx-col lp-tour__claude">
+        <a className="lp-textlink" href="/guides/claude">
+          Works in Claude and Codex. See how<span aria-hidden="true"> →</span>
+        </a>
+      </p>
     </section>
   );
 }

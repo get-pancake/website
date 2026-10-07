@@ -14,6 +14,12 @@ import { TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
  *     (compliance rule, website PR #315);
  *   - Control and FAQ lines fact-checked against the app (see CONTROL), and
  *     the FAQ's cost answer gives the price.
+ * 2026-10-07 (site audit 1.5, 5, 6.5, 7.5, 7.7, 8.5): "the people who fit", not "ready to
+ * buy"; "sequence", never "campaign"; "Every draft." (not "Every message.", which reads as
+ * approving every message); eight ways a Play finds leads, the public/llms.txt list (it said
+ * six); the first search runs right away (not "first leads tomorrow morning"); the "Other
+ * agents" line names only clients with browser sign-in and says Cursor can't connect yet; a
+ * descriptive title and an og:title of its own. The credit lines wait on the founder (D6).
  * The agent version of this guide is public/guides/claude.md (same edits);
  * the page embeds it at build time so "Copy as Markdown" never awaits the
  * network (the Instagram in-app browser blocks clipboard writes after an
@@ -25,9 +31,17 @@ export const GUIDE_MD_PATH = "/guides/claude.md";
 export const PROMO_CODE = "PANCAKE20";
 
 export const GUIDE_META = {
-  title: "Use Pancake in Claude · Pancake",
+  /** <title>: the three clients and the protocol people search for (audit 7.7). */
+  title: "Use Pancake in Claude, Claude Code or Codex (MCP)",
   description:
-    "Connect Pancake to Claude in five minutes. Ask for warm leads, build Plays and edit your outreach from one chat.",
+    "Connect Pancake to Claude, Claude Code or Codex in five minutes. Ask for warm leads, build Plays and edit any message from one chat. No API key.",
+  /** og:title / twitter:title (audit 8.5): og:site_name already says Pancake. */
+  ogTitle: "Use Pancake in Claude",
+  /** The card is the homepage's (brief §2), so the alt is the text in that image. */
+  ogImageAlt: "You run your company. We bring you customers.",
+  /** BreadcrumbList: Home → this guide (there is no /guides index page). */
+  crumbHome: "Pancake",
+  crumbPage: "Use Pancake in Claude",
 } as const;
 
 export const PROMO_BAR = {
@@ -54,19 +68,22 @@ export const COUPON = {
 
 export const WHAT = {
   eyebrow: "What Pancake does",
-  h2: "Pancake finds the people ready to buy",
+  h2: "Pancake finds the people who fit",
   paragraphs: [
     "Pancake reads your website and builds your GTM Brain: who buys from you, what to say to them, where to find them.",
     "Plays use that Brain. You tell Pancake who you want to reach, it builds the search with you, and you run it. Every night Pancake searches again, so new leads wait for you each morning. Each one comes with one line on why it fits.",
     "You approve every lead before anyone hears from you. Pancake writes a personal message from that reason, in your voice, and sends it from your own account. A reply stops the sequence.",
   ],
-  cardTitle: "Six ways a Play finds leads",
+  /** The public/llms.txt list, in the same count (the site said "six" in places, llms.txt eight). */
+  cardTitle: "Eight ways a Play finds leads",
   ways: [
-    "People who engage with a competitor's or an expert's posts",
+    "People who engage with posts by a competitor, an expert or your brand",
+    "Everyone who reacted to one specific post",
     "People who engage with topics you choose",
     "Companies using a given technology",
     "Companies hiring for a given role",
     "Companies that just raised money",
+    "Companies that look like your best customers",
     "A direct match on role, industry, company size and location",
   ],
 } as const;
@@ -153,8 +170,10 @@ export const STEP_CONNECT = {
     manual: `codex mcp add pancake --url ${MCP_URL}\ncodex mcp login pancake`,
   },
   other: {
+    // 2026-10-07 (audit 7.5): only clients with browser sign-in. The plugin repo marks Cursor
+    // "expected to FAIL without CIMD" and Gemini CLI as needing a static client id.
     intro:
-      "Cursor, VS Code, Gemini CLI, Factory Droid and other MCP clients: paste the same line into your agent. It reads the instructions and configures itself.",
+      "VS Code, GitHub Copilot CLI, Factory Droid, goose and other clients with browser sign-in: paste the same line. Your agent checks what your client supports and sets it up. Cursor can't connect yet.",
     line: SETUP_LINE,
   },
   signIn: "Sign-in happens in your browser. Pancake never asks you for an API key, a token or a password.",
@@ -220,8 +239,8 @@ export const STEP_ASK = {
         { id: "prompt-message", text: "Show me the message Pancake wrote for [name]. Make it shorter and open on their post." },
         {
           id: "prompt-campaign",
-          text: "Add [name] to my campaign.",
-          note: "Adding a lead to a campaign starts the outreach from your own account. Claude asks you to confirm first.",
+          text: "Add [name] to my sequence.",
+          note: "Adding a lead to a sequence starts the outreach from your own account. Claude asks you to confirm first.",
         },
       ],
     },
@@ -241,7 +260,7 @@ export const CONTROL = {
   h2: "You stay in charge",
   cards: [
     { title: "Every lead.", body: "Nobody hears from you until you approve them." },
-    { title: "Every message.", body: "Read and edit any message before it goes out. It leaves from your own account, under your name." },
+    { title: "Every draft.", body: "Read and edit any message before it goes out. It leaves from your own account, under your name." },
     // Fact-checked against pancake-cmo main (2026-10-06): per-AI credit ceilings exist but run in
     // shadow mode, and the per-client Pause switch hides behind the creditsUiEnabled flag (off),
     // so the brief's "own daily and monthly credit ceiling" and "Pause" lines are out; the
@@ -262,11 +281,14 @@ export const FAQ = {
     },
     {
       q: "Can Claude send messages without me?",
-      a: "No. Claude asks before it changes anything, and outreach starts only when you add a lead to a campaign.",
+      a: "No. Claude asks before it changes anything, and outreach starts only when you add a lead to a sequence.",
     },
     {
       q: "What does it cost?",
-      a: `Pancake starts with a ${TRIAL_LABEL}, then costs $${pricingV2.monthlyDollars} a month (20% less for a year with code ${PROMO_CODE}). Lead searches use credits, and Claude tells you the cost of each search before it runs.`,
+      a: `Pancake starts with a ${TRIAL_LABEL}, then costs $${pricingV2.monthlyDollars} a month per workspace (20% less for a year with code ${PROMO_CODE}). Lead searches use credits, and Claude tells you the cost of each search before it runs.`,
+      /** Visible only, not in the FAQPage JSON-LD: the credits story waits on the founder (D6),
+       *  and structured data is what assistants quote. */
+      inJsonLd: false,
     },
     {
       q: "Where else do my leads show up?",
@@ -276,8 +298,9 @@ export const FAQ = {
 } as const;
 
 export const FINAL = {
-  title: "Your first leads arrive tomorrow morning",
-  body: `Start your ${TRIAL_LABEL}, connect Claude, run one Play tonight.`,
+  // a new Play's first search starts as soon as it exists (2026-10-07), then every night
+  title: "Your first search runs right away",
+  body: `Start your ${TRIAL_LABEL}, connect Claude, create one Play. New leads every morning.`,
   cta: "Start free",
   note: `Code ${PROMO_CODE} · 20% off for a year`,
 } as const;

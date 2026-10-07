@@ -22,7 +22,10 @@ export const BANNED: [RegExp, string][] = [
   [/\bagents?\b/i, "agents wording"],
   [/\b(e-?mails?|inbox(es)?|cold e-?mail)\b/i, "email"],
   [/\b(phone|mobile number|dial(er|ing)|cold call(s|ing)?)\b/i, "phone"],
-  [/\b(funding|fundrais\w*|series [a-e] round|job[- ]changes?|changed jobs|press releases?)\b/i, "funding/job-change/news signal"],
+  // "funding" left this rule on 2026-10-07 (founder: what is in the app's code can be pitched;
+  // Plays find recently funded companies, funding-gate.ts). Fundraising, rounds, job changes and
+  // news stay out.
+  [/\b(fundrais\w*|series [a-e] round|job[- ]changes?|changed jobs|press releases?)\b/i, "fundraising/job-change/news signal"],
   [/\b(website|site) visitors?\b|\bde-?anonymi[sz]\w*/i, "website visitors"],
   [/\bgoogle maps\b|\blocal (business )?lists?\b|\bhomeowners?\b/i, "local/consumer leads"],
   [/\bCRM (sync|integration)s?\b|\bsyncs? (to|with) (your )?(CRM|HubSpot|Salesforce)\b|\bCSV\b|\bexports?\b/i, "CRM sync/export"],
@@ -77,7 +80,7 @@ const NEGATION = /^(No\b|Not\b|Never\b|There[’']?s no\b|There is no\b|Pancake 
 const HEDGES = /\b(actually|really|just|very|truly|simply|seamless(ly)?|powerful|robust|comprehensive|high-quality)\b/i;
 /** Origami closes every /for lede with "…, not a stale database." — never echo that tagline or a
  *  variant ("not a bought list", "not a bar directory", "not a stale provider list"; critic 2026-09-22). */
-const ORIGAMI_TAGLINE = /\bnot an? (stale|bought|purchased|static)\b|\bnot an? [\w’'-]+( [\w’'-]+)? (list|lists|database|directory)\b/i;
+export const ORIGAMI_TAGLINE = /\bnot an? (stale|bought|purchased|static)\b|\bnot an? [\w’'-]+( [\w’'-]+)? (list|lists|database|directory)\b/i;
 /** No platform names on /for pages (founder 2026-09-23, after team feedback: LinkedIn scans the web
  *  for startups that sell automation on its platform and bans them, which is why Gojiberry took
  *  every mention off its site). The product is unchanged; the copy never names the platform:
@@ -93,7 +96,24 @@ export const PLATFORM = /linked\s*in|sales\s*nav(igator)?\b|\binmails?\b/i;
  *  visit, the like, the invite ("after they accept"), a "human pace" that reads as dodging the
  *  platform's limits, or "the professional (social) network" that names it by another name.
  *  ERROR, same scope as PLATFORM. */
-export const SEQUENCE = /profile visits?|visits? (their|the) profile|(like|likes|liking) (on )?(a|their) recent post|\binvit(e|es|ed)\b|human pace|professional (social )?network|after they accept|connection requests?/i;
+export const SEQUENCE = /profile visits?|visits? (their|the) profile|(like|likes|liking) (on )?(a|their) recent post|\binvit(e|es|ed)\b|human pace|professional (social )?network|after they accept|connection requests?|\bthanks for (accepting|connecting|the connection)\b|\b(glad|good|great|nice|happy) (we[’']re |to be )?(connected|to connect)\b/i;
+// 2026-10-07 (audit 1.3): the outreach mocks opened "nice to connect", "thanks for accepting",
+// "glad we’re connected": each one tells the invite step. SEQUENCE now bans those openers.
+
+/** "Play" and "sequence", never "campaign" (founder rule; the app renamed it Sequence, pancake-cmo
+ *  app-nav.ts / campaigns/copy.ts). ERROR on every config string, every fixed vx-copy string and
+ *  what the templates render, in visible copy, aria and alt text alike. Code identifiers never
+ *  match: the word may not touch a letter, digit, "_" or "-" ("campaign_*" tool names,
+ *  "prompt-campaign" ids, "campaignId"). scripts/homepage-lint.mjs and verticals-audit.mjs reuse it. */
+export const CAMPAIGN = /(?<![\w-])campaigns?(?![\w-])/i;
+
+/** Audit 1.4 (2026-10-07): one workspace is one company. A second audience, offer, desk or market
+ *  is a second Play in the same workspace, on the same $99 plan, and a Play sends from one account
+ *  or rotates across up to ten (lib/copy.ts pricingPlan.faq). These answers doubled the price in
+ *  the FAQPage JSON-LD. ERROR on every config string; verticals-audit.mjs checks the HTML too.
+ *  (One workspace per CLIENT company stays right: gtm-agencies, marketing-agencies.) */
+export const WORKSPACE_SPLIT =
+  /\bone (sender|fixed sequence) per workspace\b|\b(each|every) workspace (has|runs) one (sender|fixed sequence)\b|\b(account|sender)[^.]{0,20} per workspace\b|\bworkspace per (offer|desk|market|audience)\b|\bsecond \$99 workspace\b|\b(market|offer|desk|audience) in its own workspace\b|\b(its|their) own \$99 plan\b/i;
 /** The platform's initials, as a word (case-sensitive): a warning, "LI" can be a place. */
 const PLATFORM_ABBR = /\bLI\b/;
 /** Fixed copy must not name a vertical. */
@@ -251,6 +271,8 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
   const fixedNamed = fixedStrings().some(([, str]) => PLATFORM.test(str));
   /** SEQUENCE: same once-only reporting for a fixed string that lists the platform steps. */
   const fixedStepped = fixedStrings().some(([, str]) => SEQUENCE.test(str));
+  /** CAMPAIGN: same once-only reporting for a fixed string that says "campaign". */
+  const fixedCampaign = fixedStrings().some(([, str]) => CAMPAIGN.test(str));
   /** Cross-config copy repetition (CT-04, CT-09/CT-21): key → first user(s). */
   const closings = new Map<string, string>();
   const openers = new Map<string, string[]>();
@@ -299,6 +321,10 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
         if (!proposed.includes(l.kind)) err(s, `${at}.leads[${j}].kind ${l.kind} is not in the proposal`);
         max(s, `${at}.leads[${j}].signal`, l.signal, 24);
         for (const [re, why] of SIGNAL_GRAMMAR) if (re.test(l.signal)) warn(s, `${at}.leads[${j}].signal ${why}: "${l.signal}"`);
+        // 2026-10-07 (audit 1.3): "Liked an Ellwood post" in a leads table reads as a like step;
+        // competitor leads say "Engaged with {Company}", expert leads "Engaged with a post" (or
+        // "… a {Name} post" when it fits 24 chars: a bare surname reads as the person)
+        if (/^Liked\b/i.test(l.signal)) err(s, `${at}.leads[${j}].signal reads as a like step, say "Engaged with …": "${l.signal}"`);
         if (l.kind === "stack" && !/ in job posts$/.test(l.signal) && !/^Job post:|in a job post$|in job ads$/.test(l.signal)) {
           warn(s, `${at}.leads[${j}].signal stack grammar (must read “{Tool} in job posts”): "${l.signal}"`);
         }
@@ -399,6 +425,23 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
         for (const [path, str] of composed()) {
           const m = str.match(SEQUENCE);
           if (m) err(s, `${path}: renders a platform step ("${m[0]}"): "${str}"`);
+        }
+      }
+    }
+    // ── "Play" / "sequence", never "campaign" (CAMPAIGN, 2026-10-07), same two passes; and no
+    //    workspace-per-audience pricing (WORKSPACE_SPLIT, audit 1.4) in any config string ──
+    {
+      let said = false;
+      for (const [path, str] of configStrings(src)) {
+        const m = str.match(CAMPAIGN);
+        if (m) { said = true; err(s, `${path}: says "${m[0]}", say Play or sequence: "${str}"`); }
+        const w = str.match(WORKSPACE_SPLIT);
+        if (w) err(s, `${path}: splits one company across workspaces ("${w[0]}"): a second audience is a second Play, same workspace, same $99: "${str}"`);
+      }
+      if (!said && !fixedCampaign) {
+        for (const [path, str] of composed()) {
+          const m = str.match(CAMPAIGN);
+          if (m) err(s, `${path}: renders "${m[0]}", say Play or sequence: "${str}"`);
         }
       }
     }
@@ -503,6 +546,9 @@ export function validateVerticals(all: VerticalConfig[], demos: Record<string, D
     // SEQUENCE (founder 2026-09-29)
     const st = str.match(SEQUENCE);
     if (st) err("vx-copy", `${path}: lists a platform step ("${st[0]}"), tell the outcome instead: "${str}"`);
+    // CAMPAIGN (2026-10-07): the mock app says Sequence, as the app does
+    const cp = str.match(CAMPAIGN);
+    if (cp) err("vx-copy", `${path}: says "${cp[0]}", say Play or sequence: "${str}"`);
     // AI_SEO (2026-09-30): every fixed string is Pancake describing itself, VX_HUB included
     const seo = aiSeoHit(str);
     if (seo) err("vx-copy", `${path}: AI SEO retired 2026-09-30 ("${seo}"), never a Pancake claim: "${str}"`);

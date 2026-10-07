@@ -2,8 +2,10 @@ import type { Metadata, Viewport } from "next";
 
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
+import { BLOG_DESCRIPTION, BLOG_FEED_ALTERNATE, BLOG_TITLE } from "@/lib/blog-meta";
 import { formatPostDate, getAllPosts } from "@/lib/posts";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 import "./blog.css";
 
@@ -19,27 +21,13 @@ import "./blog.css";
 /* Status-bar zone matches the lp cream (Dynamic Island fix, 2026-08-31) */
 export const viewport: Viewport = { themeColor: "#fbf6f1" };
 
-const DESCRIPTION =
-  "Guides and tool comparisons for founders who sell: buying signals, warm leads, outreach and the AI tools that run go-to-market.";
-
 export const metadata: Metadata = {
   title: "Blog · Pancake",
-  description: DESCRIPTION,
-  alternates: { canonical: `${SITE_ORIGIN}/blog` },
-  openGraph: {
-    type: "website",
-    url: `${SITE_ORIGIN}/blog`,
-    title: "Blog · Pancake",
-    description: DESCRIPTION,
-    siteName: "Pancake",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Pancake" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Blog · Pancake",
-    description: DESCRIPTION,
-    images: ["/og-image.png"],
-  },
+  description: BLOG_DESCRIPTION,
+  // The RSS feed (app/blog/rss.xml) is advertised in <head> (2026-10-07).
+  alternates: { canonical: `${SITE_ORIGIN}/blog`, types: BLOG_FEED_ALTERNATE },
+  // Share card via lib/social-meta.ts (2026-10-07, audit 8.1/8.4).
+  ...social({ path: "/blog", title: "Blog · Pancake", description: BLOG_DESCRIPTION }),
 };
 
 export default function BlogIndex() {
@@ -51,12 +39,15 @@ export default function BlogIndex() {
 
       <section className="lp-blog-hero" aria-labelledby="blog-heading">
         <div className="lp-content lp-blog-hero__inner">
+          {/* "Blog" alone said nothing to search or AI engines (2026-10-07,
+              audit 6.6); the <title> stays "Blog · Pancake". */}
           <h1 id="blog-heading" className="lp-blog-hero__title lp-title-section">
-            Blog
+            {BLOG_TITLE}
           </h1>
+          {/* 2026-10-07 (audit 3.14): the V1 "recipes" intro ("help small teams achieve great
+              things with AI") no longer said what Pancake does. */}
           <p className="lp-blog-lede">
-            We are Pancake and we help small teams achieve great things with AI. This is where we
-            share our recipes, come cook with us!
+            Guides, comparisons and notes on finding B2B customers with Plays.
           </p>
         </div>
       </section>

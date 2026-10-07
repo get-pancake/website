@@ -11,7 +11,7 @@ export const fintechStartups: VerticalConfig = {
   status: "approved",
   category: "Vertical software",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "fintech startups",
@@ -50,7 +50,7 @@ export const fintechStartups: VerticalConfig = {
           { name: "Mariko Endo", role: "VP Finance", company: "Bellhaven", kind: "hiring", signal: "2 AP clerk roles open" },
           { name: "Lamar Pettiford", role: "CFO", company: "Grainhouse", kind: "keyword", signal: "Posted on AP backlog" },
           { name: "Radoslaw Pietrzak", role: "Finance Director", company: "Vantress", kind: "stack", signal: "NetSuite in job posts" },
-          { name: "Aaliyah Merriweather", role: "CFO", company: "Osterly", kind: "competitor", signal: "Liked a Paywharf post" },
+          { name: "Aaliyah Merriweather", role: "CFO", company: "Osterly", kind: "competitor", signal: "Engaged with Paywharf" },
         ],
         featured: {
           why: "Marlowe Foods is a 480-person US food distributor with an AP specialist role open. Gabriel is the controller and oversees payables.",
@@ -83,7 +83,7 @@ export const fintechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Leticia, thanks for accepting. We make expense software. How long does your team take to close out expenses each month?",
+          "Hi Leticia, we make expense software. How long does your team take to close out expenses each month?",
       },
       {
         kind: "keyword",
@@ -98,7 +98,7 @@ export const fintechStartups: VerticalConfig = {
         leads: [
           { name: "Keisha Danforth", role: "Controller", company: "Wendling", kind: "keyword", signal: "Posted on month-end" },
           { name: "Emil Bartosz", role: "CFO", company: "Selbourne", kind: "keyword", signal: "Reconciliation post" },
-          { name: "Tamara Yusupova", role: "VP Finance", company: "Lanyon", kind: "influencer", signal: "Liked a Brannock post" },
+          { name: "Tamara Yusupova", role: "VP Finance", company: "Lanyon", kind: "influencer", signal: "Engaged with a post" },
           { name: "Obafemi Lawal", role: "Head of Finance", company: "Quarlton", kind: "hiring", signal: "Revenue accountant role" },
           { name: "Inés Arriaga", role: "Finance Lead", company: "Hatterly", kind: "keyword", signal: "Close checklist post" },
         ],
@@ -156,7 +156,7 @@ export const fintechStartups: VerticalConfig = {
     },
     {
       q: "How do we keep compliance in the loop?",
-      a: "Compliance signs off once, on your Brain voice and offer. Pancake writes every message from those. Pause the campaign any time they need a closer look.",
+      a: "Compliance signs off once, on your Brain voice and offer. Pancake writes every message from those. Pause the Play any time they need a closer look.",
     },
     {
       q: "Can it find buyers at banks and insurers?",

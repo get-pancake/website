@@ -8,7 +8,7 @@ export const marketingAgencies: VerticalConfig = {
   status: "approved",
   category: "Marketing & creative agencies",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "marketing agencies",
@@ -47,7 +47,7 @@ export const marketingAgencies: VerticalConfig = {
           { name: "Rafferty Tuazon", role: "President", company: "Quenlin", kind: "hiring", signal: "Marketing manager role" },
           { name: "Shira Feldstein", role: "Marketing Manager", company: "Veltrona", kind: "keyword", signal: "Posted on trade shows" },
           { name: "Beau Arceneaux", role: "Marketing Director", company: "Brazeline", kind: "stack", signal: "HubSpot in job posts" },
-          { name: "Ximena Barragán", role: "Brand Manager", company: "Hexley", kind: "competitor", signal: "Liked a Pinwright post" },
+          { name: "Ximena Barragán", role: "Brand Manager", company: "Hexley", kind: "competitor", signal: "Engaged with Pinwright" },
         ],
         featured: {
           why: "Tarrowby is a 240-person US valve maker hiring a marketing manager and a trade show coordinator. Colette directs its marketing.",
@@ -55,7 +55,7 @@ export const marketingAgencies: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Colette, good to connect. We do industrial marketing, so I like hearing which channels still pull their weight. Which one brings you the best leads today?",
+          "Hi Colette, we do industrial marketing, so I like hearing which channels still pull their weight. Which one brings you the best leads today?",
       },
       {
         kind: "keyword",
@@ -71,7 +71,7 @@ export const marketingAgencies: VerticalConfig = {
           { name: "Tariq Sarraf", role: "Founder & CEO", company: "Coinrill", kind: "keyword", signal: "Asked for an agency" },
           { name: "Odessa Kincannon", role: "Head of Marketing", company: "Wrenlow", kind: "keyword", signal: "Asked for referrals" },
           { name: "Jerome Okonjo", role: "CEO", company: "Ardenwise", kind: "hiring", signal: "Demand gen role open" },
-          { name: "Lucinda Espinal", role: "VP Marketing", company: "Dovecote Labs", kind: "competitor", signal: "Liked an Oxcart post" },
+          { name: "Lucinda Espinal", role: "VP Marketing", company: "Dovecote Labs", kind: "competitor", signal: "Engaged with Oxcart" },
           { name: "Hollis Brightbill", role: "Co-founder", company: "Glowtide", kind: "keyword", signal: "Asked for agency picks" },
         ],
         featured: {
@@ -94,10 +94,10 @@ export const marketingAgencies: VerticalConfig = {
         ],
         leads: [
           { name: "Imani Prewitt", role: "Head of Marketing", company: "Arbolade", kind: "influencer", signal: "Commented on a post" },
-          { name: "Caleb Yoshimura", role: "VP Marketing", company: "Orchardly", kind: "influencer", signal: "Liked a Dunaway post" },
+          { name: "Caleb Yoshimura", role: "VP Marketing", company: "Orchardly", kind: "influencer", signal: "Engaged with a post" },
           { name: "Soraya Akinyemi", role: "Demand Gen Lead", company: "Kiteline", kind: "keyword", signal: "Posted on pipeline" },
           { name: "Tobin Mattingly", role: "Marketing Manager", company: "Tarnway", kind: "hiring", signal: "Field marketing role" },
-          { name: "Ruth Abiodun", role: "CMO", company: "Pewterly", kind: "influencer", signal: "Liked a Grange post" },
+          { name: "Ruth Abiodun", role: "CMO", company: "Pewterly", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Imani leads marketing at Arbolade, a 120-person US SaaS company, and commented on Philippa Grange’s post about pipeline targets.",

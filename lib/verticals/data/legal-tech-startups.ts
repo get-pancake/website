@@ -12,7 +12,7 @@ export const legalTechStartups: VerticalConfig = {
   status: "approved",
   category: "Vertical software",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "legal tech startups",
@@ -49,7 +49,7 @@ export const legalTechStartups: VerticalConfig = {
           { name: "Farida Kasraei", role: "Managing Partner", company: "Kasraei Law", kind: "hiring", signal: "Paralegal role open" },
           { name: "Graciela Montoya", role: "COO", company: "Arbelo Law", kind: "hiring", signal: "2 paralegal roles open" },
           { name: "Wynn Tabachnik", role: "Partner", company: "Tabachnik Law", kind: "keyword", signal: "Posted on client intake" },
-          { name: "Shonda Merriam", role: "Practice Manager", company: "Beckley Law", kind: "competitor", signal: "Liked a Visaloop post" },
+          { name: "Shonda Merriam", role: "Practice Manager", company: "Beckley Law", kind: "competitor", signal: "Engaged with Visaloop" },
           { name: "Ansel Okoro", role: "Managing Attorney", company: "Bloch Rhee", kind: "hiring", signal: "Intake specialist role" },
         ],
         featured: {
@@ -83,7 +83,7 @@ export const legalTechStartups: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Meera, good to be connected. We build legal billing software. How do your lawyers log their hours?",
+          "Hi Meera, we build legal billing software. How do your lawyers log their hours?",
       },
       {
         kind: "keyword",
@@ -98,7 +98,7 @@ export const legalTechStartups: VerticalConfig = {
         leads: [
           { name: "Sienna Cavendish", role: "General Counsel", company: "Norwick", kind: "keyword", signal: "Contract backlog post" },
           { name: "Andrés Bustamante", role: "Deputy GC", company: "Pallister", kind: "keyword", signal: "Contract review post" },
-          { name: "Mai Nguyen-Ross", role: "Legal Ops Lead", company: "Rennick", kind: "influencer", signal: "Liked a Strauss post" },
+          { name: "Mai Nguyen-Ross", role: "Legal Ops Lead", company: "Rennick", kind: "influencer", signal: "Engaged with a post" },
           { name: "Terrell Blackwood", role: "VP Legal", company: "Brisemont", kind: "hiring", signal: "Contracts manager role" },
           { name: "Liesl Brandvik", role: "Head of Legal", company: "Everbrook", kind: "keyword", signal: "Legal front door post" },
         ],

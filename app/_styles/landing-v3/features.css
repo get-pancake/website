@@ -493,14 +493,15 @@
    4 × 28.985 + paddings + the button, i.e. the face's natural line height,
    not the 1.3 ratio the CSS approximated). No Send button (founder
    2026-09-03: "ressortir l'esprit que c'est autonome"): the card is the
-   message and its status, so it hugs eyebrow + five lines (218.905) and the
-   ring is cut to follow (lp-feat-art.ts). The mock is 461.485 tall now and
-   keeps its centre in the zone. ══ */
+   message and its status, so it hugs eyebrow + the message lines and the
+   ring is cut to follow (lp-feat-art.ts). 2026-10-07: the message is four
+   lines (189.92), one 28.985 pitch shorter: the mock is 432.5 tall and its
+   top moves down half of that, so its centre stays in the zone. ══ */
 .lp-feat-f2 {
-  height: 461.485px;
+  height: 432.5px;
   left: 78.85px;
   position: absolute;
-  top: 81.248px;
+  top: 95.7405px;
   width: 405px;
 }
 /* Social-post pastiche (Figma sets Inter — not loaded by the app; the stack
@@ -531,7 +532,9 @@
   width: 364px;
 }
 /* the platform's reaction bubbles stay in the baked art (lp-feat-art.ts is
-   generated) but never paint — the site doesn't show Pancake reacting */
+   generated) but never paint — the site doesn't show Pancake reacting. The
+   globe and the four action icons do paint (founder 2026-10-08 kept them,
+   reverting the 2026-10-07 audit that hid the globe, repost and send). */
 #lpf2-pi-bubbleLike,
 #lpf2-pi-bubbleHeart {
   display: none;
@@ -650,14 +653,14 @@
    (white base + 4 outside-stroke squiggles), each squiggle behind its own
    draw mask so it can trace the contour — lp-feat-art.ts */
 .lp-f2-draftgrp {
-  height: 247.685px;
+  height: 218.7px;
   left: 0;
   position: absolute;
   top: 213.8px;
   width: 405px;
 }
 .lp-f2-ring {
-  height: 247.685px;
+  height: 218.7px;
   left: 0;
   overflow: visible;
   position: absolute;
@@ -670,7 +673,7 @@
   display: flex;
   flex-direction: column;
   gap: 19.3px;
-  height: 218.905px; /* 19.3 + 16.08 + 19.3 + 5 × 28.985 + 19.3 */
+  height: 189.92px; /* 19.3 + 16.08 + 19.3 + 4 × 28.985 + 19.3 */
   left: 13.15px;
   padding: 19.3px;
   position: absolute;
@@ -1170,7 +1173,9 @@
   width: 10.8px;
 }
 
-/* ══ f4 · reply-rate chart, What worked, Brain updated (feat-learns-anim).
+/* ══ f4 · reply-rate chart, Brain learned, Brain updated (feat-learns-anim;
+   the "+56%" chart and its arrow stay, founder 2026-10-08, reverting the
+   2026-10-07 audit's plain reply count).
    Tight bounds: x41.89 (ring left) → 516.89, y76.5 (graph top) → 559.5
    (ring bottom). ══ */
 .lp-feat-f4 {

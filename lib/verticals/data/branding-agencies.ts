@@ -11,7 +11,7 @@ export const brandingAgencies: VerticalConfig = {
   status: "approved",
   category: "Marketing & creative agencies",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "branding agencies",
@@ -48,7 +48,7 @@ export const brandingAgencies: VerticalConfig = {
           { name: "Samir Bitar", role: "Co-founder & CEO", company: "Wexley", kind: "keyword", signal: "Posted about a rebrand" },
           { name: "Allison Tebbetts", role: "COO", company: "Stiltwise", kind: "keyword", signal: "Posted on brand refresh" },
           { name: "Jonah Whitcombe", role: "Head of Marketing", company: "Transom", kind: "hiring", signal: "Brand designer role" },
-          { name: "Noemi Lamothe", role: "Founder", company: "Almsbury Health", kind: "competitor", signal: "Liked an Oxenford post" },
+          { name: "Noemi Lamothe", role: "Founder", company: "Almsbury Health", kind: "competitor", signal: "Engaged with Oxenford" },
           { name: "Esteban Ocampo", role: "CEO", company: "Hexmoor", kind: "keyword", signal: "Posted about renaming" },
         ],
         featured: {
@@ -82,7 +82,7 @@ export const brandingAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Paloma, glad to connect. Startup brands are my day job, so I collect favorites. Which one do you admire most right now?",
+          "Hi Paloma, startup brands are my day job, so I collect favorites. Which one do you admire most right now?",
       },
       {
         kind: "influencer",
@@ -96,10 +96,10 @@ export const brandingAgencies: VerticalConfig = {
         ],
         leads: [
           { name: "Adwoa Quaye", role: "COO", company: "Mullion", kind: "influencer", signal: "Commented on a post" },
-          { name: "Ambrose Keane", role: "COO", company: "Joinery Labs", kind: "influencer", signal: "Liked an Ortega post" },
+          { name: "Ambrose Keane", role: "COO", company: "Joinery Labs", kind: "influencer", signal: "Engaged with a post" },
           { name: "Lucía Arredondo", role: "Head of Brand", company: "Mudlark Labs", kind: "keyword", signal: "Posted on positioning" },
-          { name: "Thao Dinh", role: "CEO", company: "Quaddle", kind: "own_brand", signal: "Liked a Wenlock post" },
-          { name: "Anneliese Vorhees", role: "COO", company: "Rookwell Robotics", kind: "influencer", signal: "Liked a Solberg post" },
+          { name: "Thao Dinh", role: "CEO", company: "Quaddle", kind: "own_brand", signal: "Engaged with Wenlock" },
+          { name: "Anneliese Vorhees", role: "COO", company: "Rookwell Robotics", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Mullion is a 60-person US software company. Adwoa is COO and commented on a Maren Solberg post about brand strategy.",

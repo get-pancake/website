@@ -865,12 +865,16 @@ export function VxDemoPlayer({
         ))}
       </div>
 
+      {/* data-nosnippet (audit 2.6, 2026-10-07): the mock app's text (fake leads, the Play
+          card, the message) is a large share of the homepage's crawlable text; Google won't
+          quote it in a snippet. Only Google honors it, and the tabs and captions stay quotable. */}
       <div
         className="vx-stage"
         id="vx-panel"
         role="tabpanel"
         tabIndex={0}
         aria-labelledby={`vx-tab-${tab}`}
+        data-nosnippet=""
         ref={stageRef}
       >
         <div className="vx-win vx-app" data-win="app" role="img" aria-label={model.aria[prompt][Math.min(tab, 2)]}>

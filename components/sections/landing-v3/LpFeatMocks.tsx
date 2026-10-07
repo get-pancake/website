@@ -163,8 +163,9 @@ function F2Stage() {
     <div className="lp-feat-stage lp-feat-stage--f2" aria-hidden="true">
       <div className="lp-feat-f2">
         {/* a generic social post (no platform chrome since 2026-09-29: no connection degree,
-            no reaction bubbles, no brand blue): icon layer = the site's baked SVG, inlined so
-            the globe / action icons animate */}
+            no reaction bubbles, no brand blue; the globe and the four action icons stay, founder
+            2026-10-08): icon layer = the site's baked SVG, inlined so the globe / action icons
+            animate */}
         <div className="lp-f2-post">
           <svg
             className="lp-f2-posticons"
@@ -178,7 +179,9 @@ function F2Stage() {
             <p className="lp-f2-name">
               Sarah Velasquez
             </p>
-            <p className="lp-f2-headline">Principal Design Engineer @ Shift | Ex-Apple Design</p>
+            {/* 2026-10-07: a plain role (was "Principal Design Engineer @ Shift | Ex-Apple
+                Design", a real brand in an invented profile, in the platform's headline format) */}
+            <p className="lp-f2-headline">Design lead at Shift</p>
             <p className="lp-f2-time">3h •</p>
           </div>
           {/* typed by revealing this very run (clip staircase + caret, lp-feat-timelines.ts) */}
@@ -222,9 +225,12 @@ function F2Stage() {
               <span className="lp-f2-eyebrow-sent">Message sent</span>
               <span className="lp-f2-eyebrow-draft">Draft ready</span>
             </p>
+            {/* 2026-10-07: the message asks about her launch instead of pitching (was "We make SaaS
+                launch videos people understand in seconds. Want an idea for yours?"), matching the
+                card's copy. Shorter, so it may wrap to four of the card's five lines. */}
             <p className="lp-f2-msg">
-              Hey Sarah, saw you’re launching on Product Hunt in 21 days. We make SaaS launch videos people
-              understand in seconds. Want an idea for yours?
+              Hey Sarah, saw you’re launching on Product Hunt in 21 days. How will you show it on launch
+              day, a video or screenshots?
             </p>
           </div>
         </div>
@@ -404,7 +410,12 @@ function F5Stage() {
   );
 }
 
-/* ── f4 · reply-rate chart, What worked, Brain updated ── */
+/* ── f4 · reply-rate chart, Brain learned, Brain updated ──
+   The "+56% reply rate vs last period" chart and its green arrow stay
+   (founder 2026-10-08, reverting the 2026-10-07 audit's plain reply count).
+   2026-10-07: "What worked" (opening, length, ask: the app learns no message
+   patterns) became "Brain learned" with ICP lessons from lead reviews, and
+   the brain card points to the next search. */
 
 function F4Stage() {
   return (
@@ -430,11 +441,11 @@ function F4Stage() {
         </div>
 
         <div className="lp-f4-card lp-f4-hair lp-f4-worked">
-          <p className="lp-f4-ctitle">What worked</p>
+          <p className="lp-f4-ctitle">Brain learned</p>
           <div className="lp-f4-chips">
-            <span className="lp-f4-chip">Lead with launch timing</span>
-            <span className="lp-f4-chip">Shorter intros</span>
-            <span className="lp-f4-chip">Offer one idea</span>
+            <span className="lp-f4-chip">Founders, not marketers</span>
+            <span className="lp-f4-chip">Seed to Series A</span>
+            <span className="lp-f4-chip">US only</span>
           </div>
         </div>
 
@@ -448,7 +459,7 @@ function F4Stage() {
           />
           <div className="lp-f4-card lp-f4-braincard">
             <p className="lp-f4-ctitle">Brain updated</p>
-            <p className="lp-f4-brainsub">Winning patterns saved for the next campaign.</p>
+            <p className="lp-f4-brainsub">Your next search starts from it.</p>
           </div>
         </div>
       </div>

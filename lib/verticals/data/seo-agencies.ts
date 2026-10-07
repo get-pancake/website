@@ -10,7 +10,7 @@ export const seoAgencies: VerticalConfig = {
   status: "approved",
   category: "Marketing & creative agencies",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "SEO agencies",
@@ -46,7 +46,7 @@ export const seoAgencies: VerticalConfig = {
         leads: [
           { name: "Yusuf Demirci", role: "Head of Growth", company: "Kelvary", kind: "keyword", signal: "Posted on AI Overviews" },
           { name: "Celeste Duchene", role: "Head of Content", company: "Gravelbeam", kind: "keyword", signal: "Posted on zero-click" },
-          { name: "Andre Balogun", role: "VP Marketing", company: "Verrow", kind: "influencer", signal: "Liked an Olander post" },
+          { name: "Andre Balogun", role: "VP Marketing", company: "Verrow", kind: "influencer", signal: "Engaged with a post" },
           { name: "Lakshmi Pillai", role: "Content Lead", company: "Fablewise", kind: "hiring", signal: "SEO specialist role" },
           { name: "Grady Wetherell", role: "Growth Lead", company: "Oxleaf", kind: "keyword", signal: "Posted on traffic drop" },
         ],
@@ -106,7 +106,7 @@ export const seoAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Nadine, great to connect. We do e-commerce SEO, so I think a lot about how stores get found. Which bring in more sales for you, category pages or product pages?",
+          "Hi Nadine, we do e-commerce SEO, so I think a lot about how stores get found. Which bring in more sales for you, category pages or product pages?",
       },
     ],
   },
@@ -149,7 +149,7 @@ export const seoAgencies: VerticalConfig = {
     },
     {
       q: "We serve SaaS and e-commerce. Can one setup cover both?",
-      a: "Yes, if one pitch fits both, since your Brain can list several industries. If the pitches differ, run the second market in its own workspace at $99 a month.",
+      a: "Yes. Run one Play per market, each with its own targeting and messages. Both share your Brain and one $99 plan.",
     },
     {
       q: "I sell GEO. Can it find people worried about ChatGPT answers?",

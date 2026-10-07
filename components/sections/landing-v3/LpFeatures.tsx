@@ -36,33 +36,43 @@ const FEATURES: Feature[] = [
   // Plays open the section (2026-09-30): a Play is the unit of work, and the
   // card replaced the AI-answers one (f3) when AI SEO was retired. Sides keep
   // alternating: f5 left, f1 right, f2 left, f4 right.
+  // 2026-10-07 copy pass (titles kept except f4): f5 carries the ads line
+  // ("Tell Pancake who to reach. It builds the Play.") and sells the
+  // clarifying questions + the nightly search; f1 lists every way a Play finds
+  // people (funding and lookalikes included: they are in the app, and what
+  // the app does can be pitched, founder 2026-10-07) and the ICP check; f2
+  // opens with the lead's signal (a post, an open role, a new tool), sells the
+  // per-sequence language and tone and the editable draft, and its mock
+  // message asks instead of pitching; f4 sells what the brain learns from
+  // (lead reviews) and the per-Play stats. Its mock keeps the "+56%" chart
+  // and the f2 post keeps its globe and action icons (founder 2026-10-08).
   {
     side: "left",
     title: "Ask for the people \nyou want",
-    body: "Pancake turns one sentence into a Play: who to reach, how to find them, how many. You create it. Every lead comes back with why they fit.",
+    body: "Tell Pancake who to reach. It builds the Play: who, how to find them, how many. It asks what it needs, searches every night and says why each lead fits.",
     variant: "f5",
     alt: "Animation: in the Pancake Agent, the request Find US SaaS founders with a launch coming up is typed and sent; Pancake plans a Play called Founders about to launch (who: early-stage SaaS founders in the US, found through the people engaging with launch posts, 25 leads per search), it is created and switches from Draft to Active, its Discover, Enrich and Qualify steps complete, and 25 new leads arrive, the first three each with a line on why they fit: the search that surfaced them, then the requirement they meet, such as Commented on a launch post, Seed-stage SaaS.",
   },
   {
     side: "right",
     title: "Tell Pancake \nwhat to watch",
-    body: "Choose the keywords, competitors, influencers, hiring activity, and tech stacks that matter. Pancake finds matching prospects and shows the signal behind every match.",
+    body: "Pick keywords, competitors, experts, one specific post, hiring, tech stack, fresh funding or lookalikes of a company you name. Pancake checks every match against your ICP and shows the signal behind it.",
     variant: "f1",
     alt: "Animation: a Signals panel where keyword mentions, competitor engagement, companies hiring and technologies used switch on one by one (4 active), then a Roles panel where Sales, Marketing and Customer success get checked (3 selected), and a clay alternatives note lands by the first signal.",
   },
   {
     side: "left",
     title: "Every first message starts warm",
-    body: "Pancake opens with something they posted, never a pitch. Every message sounds like you.",
+    body: "Pancake opens with their signal: a post, an open role, a new tool. Each sequence has its own language and tone. Edit any draft before it sends.",
     variant: "f2",
-    alt: "Animation: a post by Sarah Velasquez announcing a Product Hunt launch in 21 days, then a draft reply is written inside a rainbow ring — Hey Sarah, saw you're launching on Product Hunt in 21 days. We make SaaS launch videos people understand in seconds. Want an idea for yours? — its status reads Draft ready, then Message sent.",
+    alt: "Animation: a post by Sarah Velasquez, design lead at Shift, announcing a Product Hunt launch in 21 days, then a draft message is written inside a rainbow ring — Hey Sarah, saw you're launching on Product Hunt in 21 days. How will you show it on launch day, a video or screenshots? — its status reads Draft ready, then Message sent.",
   },
   {
     side: "right",
-    title: "Pancake learns from what wins",
-    body: "Pancake compares reply rates and remembers which opening, message length, and ask worked. The next campaign starts there.",
+    title: "Pancake learns from every review",
+    body: "Approve or reject a lead and your brain learns who fits. Each Play tracks contacts, replies and wins, so you see what works.",
     variant: "f4",
-    alt: "Animation: a chart grows week by week to a reply rate 56% up versus last period, a What worked card lists Lead with launch timing, Shorter intros and Offer one idea, and a Brain updated card confirms the winning patterns are saved for the next campaign.",
+    alt: "Animation: a chart grows week by week to a reply rate 56% up versus last period, a Brain learned card lists Founders, not marketers, Seed to Series A and US only, and a Brain updated card confirms your next search starts from it.",
   },
 ];
 

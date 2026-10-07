@@ -16,6 +16,7 @@ import { PlanMap } from "@/components/sections/pricing/PlanMap";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { pricingPlan, pricingV2 } from "@/lib/copy";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v2.css";
 
 /* No team label: it read "AI sales and marketing team" until AI SEO was
@@ -36,20 +37,9 @@ export const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
   alternates: { canonical: URL },
-  openGraph: {
-    type: "website",
-    url: URL,
-    title: TITLE,
-    description: DESCRIPTION,
-    siteName: "Pancake",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Pancake" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: TITLE,
-    description: DESCRIPTION,
-    images: ["/og-image.png"],
-  },
+  // Share card via lib/social-meta.ts (2026-10-07, audit 8.1/8.4): adds
+  // twitter:site and gives the homepage card the alt of its own text.
+  ...social({ path: "/pricing", title: TITLE, description: DESCRIPTION }),
 };
 
 /* Product / Offer JSON-LD — one plan, one price, kept in lockstep with

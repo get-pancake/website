@@ -10,7 +10,7 @@ export const gtmAgencies: VerticalConfig = {
   status: "approved",
   category: "Sales, GTM & recruiting",
   evidence: "founder",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "GTM agencies",
@@ -47,7 +47,7 @@ export const gtmAgencies: VerticalConfig = {
           { name: "Priyanka Raghunathan", role: "Founder & CEO", company: "Sorrelwork", kind: "hiring", signal: "SDR role posted" },
           { name: "Colin Treadway", role: "Head of Sales", company: "Bollard Data", kind: "hiring", signal: "BDR role open" },
           { name: "Serena Radovanovic", role: "Co-founder", company: "Trundlebay", kind: "keyword", signal: "Posted on outbound" },
-          { name: "Darnell Hightower", role: "CEO", company: "Cantlewick HR", kind: "competitor", signal: "Liked a Pipeforge post" },
+          { name: "Darnell Hightower", role: "CEO", company: "Cantlewick HR", kind: "competitor", signal: "Engaged with Pipeforge" },
           { name: "Wen Zhao", role: "VP Growth", company: "Gusset Pay", kind: "hiring", signal: "Founding AE role open" },
         ],
         featured: {
@@ -56,7 +56,7 @@ export const gtmAgencies: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Priyanka, thanks for accepting. I work on outbound with startups, and each one finds its first deals a different way. Where have your best ones come from so far?",
+          "Hi Priyanka, I work on outbound with startups, and each one finds its first deals a different way. Where have your best ones come from so far?",
       },
       {
         kind: "stack",
@@ -81,7 +81,7 @@ export const gtmAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Marcus, good to be connected. My team builds and runs outbound stacks all day. Is prospecting still mostly manual on your side?",
+          "Hi Marcus, my team builds and runs outbound stacks all day. Is prospecting still mostly manual on your side?",
       },
       {
         kind: "influencer",
@@ -94,11 +94,11 @@ export const gtmAgencies: VerticalConfig = {
           { kind: "own_brand", items: ["Quillon Outbound"] },
         ],
         leads: [
-          { name: "Hana Kobayashi", role: "Founder & CEO", company: "Oriellane", kind: "influencer", signal: "Liked a Brightwell post" },
+          { name: "Hana Kobayashi", role: "Founder & CEO", company: "Oriellane", kind: "influencer", signal: "Engaged with a post" },
           { name: "Isaac Feldman", role: "Co-founder", company: "Spindlebird", kind: "influencer", signal: "Commented on a post" },
           { name: "Renata Oliveira", role: "CEO", company: "Mortisebay", kind: "keyword", signal: "Posted on SDR ramp" },
-          { name: "Tyrone Beasley", role: "Founder", company: "Grommetry", kind: "own_brand", signal: "Liked a Quillon post" },
-          { name: "Mira Castellane", role: "Head of Sales", company: "Plinthwise", kind: "influencer", signal: "Liked a Sousa post" },
+          { name: "Tyrone Beasley", role: "Founder", company: "Grommetry", kind: "own_brand", signal: "Engaged with Quillon" },
+          { name: "Mira Castellane", role: "Head of Sales", company: "Plinthwise", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Oriellane is a 35-person US SaaS company. Hana, its founder and CEO, liked a Tessa Brightwell post about founder-led sales.",
@@ -159,7 +159,7 @@ export const gtmAgencies: VerticalConfig = {
     },
     {
       q: "Can I change the sequence steps?",
-      a: "No. Every workspace runs one fixed sequence. What changes per lead is the message: it starts from the lead’s own post when there is one, always in your Brain voice.",
+      a: "Yes, what each step says. Every sequence is a light warm-up, then up to three messages. Use AI-written messages or your own template per step, and edit any draft.",
     },
   ],
 

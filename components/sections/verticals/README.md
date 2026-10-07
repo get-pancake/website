@@ -84,6 +84,17 @@ workspace), and Plays became the core of Pancake v2. On /for pages:
 | `AI_SEO` (an error): articles, AI search / AI answers, search visibility, ChatGPT / AI citations, ranking on Google, GEO, AEO. Scanned only where Pancake describes itself (`CLAIM_PATH`: SEO title, hub line, hero, demo H2, chat reply, signals H2 and card titles / bodies, FAQ answers, CTA title; every fixed `vx-copy.ts` string), with no FAQ negation allowance. The audience fields stay out, so `seo-agencies` keeps "AI Overviews" and "I sell GEO" and web design pages keep WordPress | `validate.ts` |
 | "plays" left the "unshipped campaign features" ban | `validate.ts` `BANNED` |
 
+## 2026-10-07: site audit (truth pass)
+
+| Change | Where |
+|---|---|
+| `CAMPAIGN` (an error) keeps "campaign" out of every visible string, on top of #327's rename to Play / Sequence: every config string, every fixed string and what the templates render; the shared FAQ and the five config FAQs say "sequence". Code identifiers (`campaign_*`, `prompt-campaign`, the `campaign` copy key) never match | configs, `validate.ts` |
+| Outreach mocks no longer open on "nice to connect", "glad we’re connected", "thanks for accepting" (the invite step): the opener is gone, the message starts on who the sender is. `SEQUENCE` bans those openers | configs, `home-demo.ts`, `validate.ts` |
+| Seven FAQ answers that split one company across $99 workspaces now give each audience, offer, desk or market its own Play in one workspace, and a Play sends from one account or up to ten. `WORKSPACE_SPLIT` (an error) in validate.ts and the audit | 7 configs, `validate.ts`, `verticals-audit.mjs` |
+| "funding" left `BANNED` (founder: what the app's code does can be pitched; Plays find recently funded companies). The signals lede counts the eight ways llms.txt lists, not "six buying signals" | `validate.ts`, `VX_SIGNALS.lede` |
+| Lead signal lines never say "Liked … post" (an error): a competitor lead reads "Engaged with {Company}", an expert lead "Engaged with a {Name} post" where it fits 24 characters, else "Engaged with a post" (a bare surname read as engaging with the person) | configs, `home-demo.ts`, `validate.ts` |
+| Hub H1 "Find customers in your industry."; `data-nosnippet` on the demo stage (Google only) | `VX_HUB`, `VxDemoPlayer.tsx` |
+
 ## Files
 
 | Piece | Where |
@@ -126,9 +137,10 @@ Never edit `LpMarquee.tsx`.
 
 1. **Truth.** Outreach from the customer's own account only, and the platform
    is never named (see the 2026-09-23 decision above; `PLATFORM` in
-   validate.ts); six signals only (Keyword, Competitor,
-   Influencer, Own brand, Hiring, Stack = tools named in job posts); no email,
-   phones, maps, funding, job changes, website visitors; no draft mode or
+   validate.ts); six signal cards only (Keyword, Competitor,
+   Influencer, Own brand, Hiring, Stack = tools named in job posts; funding may
+   be named since 2026-10-07); no email, phones, maps, job changes, website
+   visitors; "Play" and "sequence", never "campaign"; no draft mode or
    per-message approval (reading and editing messages is optional); no AI
    SEO for Pancake (articles, AI search, Google / ChatGPT rankings or
    citations, GEO / AEO: `AI_SEO`, no negation allowance); leads arrive each

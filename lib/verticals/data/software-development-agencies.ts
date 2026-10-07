@@ -12,7 +12,7 @@ export const softwareDevelopmentAgencies: VerticalConfig = {
   status: "approved",
   category: "Tech & build agencies",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "software development agencies",
@@ -51,7 +51,7 @@ export const softwareDevelopmentAgencies: VerticalConfig = {
           { name: "Cormac Yarborough", role: "CTO", company: "Quenchwork", kind: "hiring", signal: "Full-stack role open" },
           { name: "Anjali Venkataraman", role: "Founder", company: "Loamline", kind: "keyword", signal: "Posted about an MVP" },
           { name: "Thaddeus Okwuosa", role: "Head of Product", company: "Nettlefield", kind: "stack", signal: "React in job posts" },
-          { name: "Rosalind Etheridge", role: "COO", company: "Petrelwick", kind: "competitor", signal: "Liked a Loomgate post" },
+          { name: "Rosalind Etheridge", role: "COO", company: "Petrelwick", kind: "competitor", signal: "Engaged with Loomgate" },
         ],
         featured: {
           why: "Parrotbill is a 12-person US health software startup with a founding engineer role open. Ximena is the CEO and owns the hire.",
@@ -59,7 +59,7 @@ export const softwareDevelopmentAgencies: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Ximena, great to connect. We build MVPs, and early products are my favorite kind of work. What’s the next feature you can’t wait to ship?",
+          "Hi Ximena, we build MVPs, and early products are my favorite kind of work. What’s the next feature you can’t wait to ship?",
       },
       {
         kind: "stack",
@@ -99,8 +99,8 @@ export const softwareDevelopmentAgencies: VerticalConfig = {
         leads: [
           { name: "Marguerite Hoekstra", role: "Founder", company: "Brightfen", kind: "keyword", signal: "Asked for a co-founder" },
           { name: "Lachlan Ostrowski", role: "Co-founder & CEO", company: "Wickerbay", kind: "keyword", signal: "Posted on MVP scope" },
-          { name: "Ruth Quattlebaum", role: "Founder", company: "Duneweave", kind: "influencer", signal: "Liked a Terwilliger post" },
-          { name: "Kai Tuiasosopo", role: "CEO", company: "Cairnwood", kind: "competitor", signal: "Liked a Hexbolt post" },
+          { name: "Ruth Quattlebaum", role: "Founder", company: "Duneweave", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Kai Tuiasosopo", role: "CEO", company: "Cairnwood", kind: "competitor", signal: "Engaged with Hexbolt" },
           { name: "Ulysses Pacheco", role: "Founder & CEO", company: "Juniperline", kind: "competitor", signal: "Commented on a post" },
         ],
         featured: {

@@ -1,0 +1,55 @@
+/* Comparison pages (GtmComparisonPage.tsx: /viktor-, /claude-tag-, /gojiberry-, /lemlist-,
+   /openclaw-, /origami-vs-pancake, /pancake-vs-paperclips).
+
+   2026-10-07 (site audit 3.2): the pages wear the landing chrome, LpNav + LpFooter inside
+   main.lp, while the body keeps its @layer component kit sections (home-landing-section,
+   vvp-*). landing-v3.css is unlayered, so its base resets beat every layered kit rule on the
+   same property. These rules hand those properties back to the kit inside .vvp-body only;
+   the nav and footer keep the landing-v3 base. Unlayered on purpose, like landing-v3.css. */
+
+/* `.lp p { margin: 0 }`, `.lp a { color: inherit; text-decoration: none }` and
+   `.lp img { display: block }` would drop the hero summary's auto centering, the diff
+   angles' top gap and the Tailwind `underline` on the Keep reading / Sources links.
+   revert-layer rolls each property back to the layered (kit) value. */
+.lp .vvp-body p {
+  margin: revert-layer;
+}
+.lp .vvp-body a:not(.lp-btn) {
+  color: revert-layer;
+  text-decoration: revert-layer;
+}
+.lp .vvp-body img {
+  display: revert-layer;
+}
+
+/* One ground with the nav band: the desktop nav is transparent over main.lp's cream, so the
+   sections sit on the same page cream, and the alternate bands on the card cream. */
+.lp .vvp-body .home-landing-section {
+  background-color: var(--lp-page-bg);
+}
+.lp .vvp-body .home-landing-section--alt {
+  background-color: var(--lp-card-cream);
+}
+
+/* H1 (audit 1.16): the kit's `h1.heading` (0,1,1) set the header-01 size over the section
+   title's (0,1,0) size, while the title's 52/42/36px line-height stayed, so two-line titles
+   overlapped on phones. Use the size the line-height was made for. */
+.lp .vvp-hero__title {
+  font-size: var(--font-size-home-landing-section-title);
+}
+
+/* "See how they compare": a text link under the CTA pair (it was a third pill; the pair is
+   Start free then Book a demo on every surface, founder 2026-09-03). `a.` matches the
+   specificity of the revert rule above, and this rule comes later. */
+.lp .vvp-body a.vvp-hero__jump {
+  color: var(--lp-text);
+  font-size: var(--lp-text-md);
+  font-weight: var(--font-semibold);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+/* Closing note: each phrase stays on one line, so a phone breaks between them, never inside. */
+.lp .vvp-body .vvp-nowrap {
+  white-space: nowrap;
+}
