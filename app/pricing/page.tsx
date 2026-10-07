@@ -24,7 +24,8 @@ import "@/app/_styles/landing-v2.css";
    billed on (see pricingPlan). */
 const DESCRIPTION = `Pancake is ${pricingV2.currencySymbol}${pricingV2.monthlyDollars}/month per workspace, with as many Plays and leads as you want. Everything included. No tiers, no seats.`;
 
-const TITLE = `Pancake Pricing: $${pricingV2.monthlyDollars}/month flat`;
+// "per workspace", like the card (2026-10-06); it said "flat" until 2026-10-07.
+const TITLE = `Pancake Pricing: $${pricingV2.monthlyDollars}/month per workspace`;
 const URL = `${SITE_ORIGIN}/pricing`;
 
 /* Brand-first title: the page answers "pancake pricing" / "pancake ai pricing".

@@ -470,7 +470,7 @@ export const pricingV2 = {
       app (pancake-cmo `subscribe-additional-workspace.ts`). */
   perMonth: "/ month per workspace",
   /** The line under the price (Okara: "Full agent suite access"). */
-  access: "Every agent included",
+  access: "Everything included",
   /** Intro to the value list. It read "What a month gets you:" until the
       leads line dropped its count (2026-10-05). */
   includedIntro: "What you get:",

@@ -36,6 +36,10 @@ const nextConfig = {
       // the route never existed — send those visitors to the real signup.
       // APP_ORIGIN is lib/site-config.mjs (NEXT_PUBLIC_APP_ORIGIN, read at build).
       { source: "/signup", destination: APP_ORIGIN, permanent: false },
+      // /get-started was the V1 signup page (autonomous agents across engineering
+      // and ops, an unverified "500+ founders"), orphaned and noindex since
+      // 2026-09-24. Retired 2026-10-07: old links go to the real signup.
+      { source: "/get-started", destination: APP_ORIGIN, statusCode: 301 },
       // People type getpancake.ai/login: send them to the app (temporary, so
       // it can later point at a dedicated app login route).
       { source: "/login", destination: APP_ORIGIN, permanent: false },

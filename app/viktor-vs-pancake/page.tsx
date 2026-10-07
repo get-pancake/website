@@ -33,7 +33,7 @@ const config: GtmComparisonConfig = {
     { n: "02", title: "Shared workspace memory versus a structured GTM Brain", body: "Viktor remembers company context and prior work. Pancake reads your website and builds a Brain of your ideal customer, personas, competitors, messaging, and voice. Every new Play starts from it.", angle: "One memory, built for winning customers." },
     { n: "03", title: "Tasks across tools versus Plays that find buyers", body: "Viktor can build reports, update tools, create apps, and schedule recurring work. Pancake runs Plays. Each search discovers, enriches, and qualifies leads. Once you approve a lead, Pancake starts the conversation.", angle: "Breadth of tasks versus depth of outcome." },
     { n: "04", title: "Viktor wins on interface and integration breadth", body: "Viktor's Slack and Teams presence, fast install, and 3,200+ advertised integrations make it compelling for organizations that want a shared employee in their existing communication layer. New Pancake leads arrive in Slack for your approval, and you can run it all from Claude, ChatGPT, or Codex.", angle: "Choose Viktor when the collaboration surface matters most." },
-    { n: "05", title: "Different entry prices", body: "Viktor publicly starts at $50 per month after free credits. Pancake is $99 a month flat, with every agent included, no seats, and no usage billing. Compare what each subscription gets done every month.", angle: "A lower generalist entry price versus a full GTM team at one flat price." },
+    { n: "05", title: "Different entry prices", body: "Viktor publicly starts at $50 per month after free credits. Pancake is $99 a month flat, with everything included, no seats, and no usage billing. Compare what each subscription gets done every month.", angle: "A lower generalist entry price versus a full GTM team at one flat price." },
   ],
   rows: [
     { feature: "Core job", competitor: { text: "General AI employee across company functions", mark: "yes" }, pancake: { text: "GTM platform that finds buyers and starts conversations", mark: "yes" } },
@@ -42,7 +42,7 @@ const config: GtmComparisonConfig = {
     { feature: "Recurring work", competitor: { text: "Scheduled tasks and proactive suggestions", mark: "yes" }, pancake: { text: "New leads every morning, each with why they fit", mark: "yes" } },
     { feature: "GTM Brain", competitor: { text: "Shared company memory" }, pancake: { text: "Ideal customer, personas, competitors, messaging, and voice, researched from your website", mark: "yes" } },
     { feature: "Outreach", competitor: { text: "Can manage workflows across connected tools" }, pancake: { text: "A warm-up, then up to three messages under your name", mark: "yes" } },
-    { feature: "Public starting price", competitor: { text: "$50/month after free credits", mark: "yes" }, pancake: { text: "$99/month flat, every agent included", mark: "yes" } },
+    { feature: "Public starting price", competitor: { text: "$50/month after free credits", mark: "yes" }, pancake: { text: "$99/month flat, everything included", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Teams wanting one broad shared AI employee" }, pancake: { text: "Founders and small B2B teams that need customers" } },
   ],
   closingTitle: "Put Pancake on your pipeline.",

@@ -25,7 +25,7 @@ import { TRIAL_LABEL } from "@/lib/trial";
    wait every morning. Same lines in pricingV2.value (lib/copy.ts), the /for
    checklist, the app's checkout card and the Brain page. */
 const CHECKLIST = [
-  "Every agent included.",
+  "Everything included.",
   "As many Plays and leads as you want.",
   "Warm leads every morning.",
   // \u00a0 keeps "customers a month." together when a narrow phone wraps it.
