@@ -1,40 +1,72 @@
 # Pancake
 
-> Pancake is an AI GTM team for small companies. Its agents monitor buying signals, find warm leads, reach out in the customer's voice, and learn from every interaction through one shared GTM Brain. Pancake costs $99 per month, with every GTM agent included.
+> Pancake is the Vercel for GTM: one place to deploy, host and run go-to-market agents. AI agents like Claude and Codex can plan a company's GTM but can't run it. They have no data to find people, no way to reach them and no memory of the business. Pancake is that missing piece. Your agent decides. Pancake runs it.
+
+Pancake works from Claude, ChatGPT, Codex or any agent that supports MCP, and from its own web app. It costs $99 per month per workspace, with as many Plays and leads as you want.
+
+## The Vercel for GTM
+
+Vercel takes a website built in any editor, puts it online and keeps it running. Nobody touches a server. Pancake takes a GTM idea described to any agent, turns it into a Play and keeps it running. Nobody touches a data provider or a sending tool.
+
+- Deploy: an idea leaves the conversation and becomes a Play on Pancake.
+- Host: the Play lives on Pancake, not in a chat or on a laptop, with its own targeting, leads, messages and history.
+- Run: Pancake runs the Play on its schedule, laptop closed. It finds new leads and contacts the ones the customer approves.
 
 ## What Pancake does
 
-Pancake researches a company from its website and builds a GTM Brain: the ideal customer, personas, competitors, messaging and voice. Every new Play starts from that Brain.
+Pancake researches a company from its website and builds a GTM Brain: what it sells, its ideal customers, personas, competitors, messaging and voice. Every Play starts from that Brain, so the customer never re-explains the business.
 
-Plays are the core of the product. The customer tells Pancake in plain English who they want to reach, and Pancake builds the Play with them: who to find, how to find them, and how many leads per search (up to 50). The customer reviews the Play and runs it. Each search runs Discover, Enrich, then Qualify. One Play finds one audience one way; customers run as many Plays as they need, one per audience. Every night Pancake searches again, so new leads are waiting every morning.
+A Play is one GTM idea turned into a search that runs. The customer tells Pancake who to reach in one sentence, from their agent or in the app. Pancake asks what it needs to know, then builds the Play: who to find, how to find them, and how many leads per search (up to 50). Customers run as many Plays as they want, one per audience. Every night each Play searches again, so new leads are waiting every morning.
 
-A Play finds leads in one of six ways: people engaging with competitors' or experts' posts, people engaging with chosen topics, companies using a technology, companies hiring for a role, recently funded companies, or a direct match on role, industry, company size and location. Every lead arrives with one line on why it fits. Pancake shows every step of each search and why people were set aside. Each Play shows its reply rate and an activity log, and any Play can be paused.
+A Play can find:
 
-The customer approves every lead before anyone is contacted. Pancake writes a personal message for every lead from why they fit, in the customer's voice or from their own template, and the customer can read and edit any message before it goes out. Messages go out as direct messages under the customer's name, from their own accounts. A reply stops the sequence. When a prospect says yes, Pancake replies once with the customer's booking link.
+- people engaging with posts from competitors, experts or the customer's own brand
+- everyone who reacted to one specific post
+- people posting about topics the customer chooses
+- companies hiring for a role
+- companies using a technology
+- recently funded companies
+- companies that look like the customer's best customers
+- people matching a role, industry, company size and location
 
-The app opens on a chat with the Pancake Agent. New leads also arrive in Slack, where the customer can approve or pass, and a morning email sums up what is waiting. Customers can also run Pancake from Claude, ChatGPT or Codex over MCP: create and run Plays, review leads, add them to campaigns and edit their messages, on the same Brain and the same leads. When the customer rejects a lead with a reason, Pancake suggests Brain changes they can accept or ignore.
+Every lead arrives with one line on why it fits. Pancake checks each lead against the ideal customer profile in the Brain and shows every step of each search, including why people were set aside. Each Play shows its reply rate and an activity log, and any Play can be paused.
+
+The customer approves every lead before anyone is contacted. Pancake writes a personal message for each lead from why they fit, in the customer's voice or from their own template. The customer can read and edit any message before it goes out. Messages go out as direct messages under the customer's name, from their own accounts. A Play sends from one account or rotates across up to ten, and each lead keeps the same sender.
+
+A reply stops the sequence. Pancake reads the reply and labels it "positive", "in your hands" or "not interested". When a prospect says yes, Pancake replies once with the customer's calendar link or app link. Every other reply goes back to the customer.
+
+New leads also arrive in Slack, where the customer can approve or pass, and a morning email sums up what is waiting. When the customer rejects a lead with a reason, Pancake suggests Brain changes they can accept or ignore.
+
+## From any AI agent
+
+Claude, ChatGPT, Codex and any agent that supports MCP connect to Pancake with a browser sign-in. There is no API key. From the agent, customers create and run Plays, review leads, add them to sequences and edit their messages, on the same Brain and the same leads as the app. Adding a lead to a sequence starts real outreach from the customer's own account. In the web app, the same work happens in a chat with the Pancake Agent.
 
 ## Who it is for
 
-Pancake is for solo founders and small companies that have a product to sell and need repeatable customer acquisition without assembling a full GTM team or a collection of disconnected point tools.
+Pancake is for founders who do their own sales, small B2B teams, agencies and GTM engineers, especially those who already work with an AI agent. It gives them a repeatable way to find customers without wiring data providers and sending tools together themselves.
+
+## Pricing
+
+$99 per month per workspace, with as many Plays and leads as you want. A workspace is one company. Its plan covers the Brain, every Play, the whole team and the accounts the customer sends from. A second company or brand is a second workspace at the same price. The free trial lasts 3 days, and a credit card is required to start it.
 
 ## Product boundaries
 
-Pancake focuses on outbound: finding a company's buyers and starting the conversation, with Plays, warm leads and personal outreach from the customer's own accounts. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on September 30, 2026 to match the current product.
+Pancake finds a company's buyers and starts the conversation, from the customer's own accounts. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. Older blog articles keep their URLs, and some still call Pancake an "AI GTM team". The description at the top of this file is the current one.
 
 ## Key pages
 
-- [Homepage](https://pancake.ai/) — current product, agents, workflow, and pricing
-- [Pricing](https://pancake.ai/pricing) — $99 per month with every GTM agent included
-- [Use Pancake in Claude](https://pancake.ai/guides/claude): connect Pancake to Claude, Claude Code or Codex over MCP, with prompts
+- [Homepage](https://pancake.ai/) — what Pancake does, how it works, and pricing
+- [Pricing](https://pancake.ai/pricing) — $99 per month per workspace, with as many Plays and leads as you want
+- [Use Pancake in Claude](https://pancake.ai/guides/claude) — connect Pancake to Claude, Claude Code or Codex over MCP, with prompts
+- [Connect any agent](https://pancake.ai/install.md) — setup steps an AI agent can follow to connect Pancake over MCP
 - [Blog](https://pancake.ai/blog) — the complete article archive
-- [Viktor vs Pancake](https://pancake.ai/viktor-vs-pancake) — broad AI employee vs focused AI GTM team
+- [Viktor vs Pancake](https://pancake.ai/viktor-vs-pancake) — broad AI employee vs Plays that find buyers and start the conversation
 - [Claude Tag vs Pancake](https://pancake.ai/claude-tag-vs-pancake) — ambient general teammate vs focused autonomous GTM execution
-- [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain powering every GTM agent
+- [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain behind every Play
 - [Lemlist vs Pancake](https://pancake.ai/lemlist-vs-pancake) — sales-engagement software your team operates vs GTM agents that operate the motion
-- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — live-web research and content-led suggestions vs an AI GTM team that finds buyers and starts the conversation
+- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — live-web research and content-led suggestions vs Plays that find buyers and start the conversation
 - [OpenClaw vs Pancake](https://pancake.ai/openclaw-vs-pancake) — self-managed general agent infrastructure vs a managed GTM product
-- [Paperclips vs Pancake](https://pancake.ai/pancake-vs-paperclips) — open-source AI-company control plane vs a managed AI GTM team
+- [Paperclips vs Pancake](https://pancake.ai/pancake-vs-paperclips) — open-source AI-company control plane vs a managed GTM product
 
 ## Industries
 
@@ -180,4 +212,4 @@ Pancake focuses on outbound: finding a company's buyers and starting the convers
 
 ---
 
-Last updated: September 30, 2026
+Last updated: October 7, 2026
