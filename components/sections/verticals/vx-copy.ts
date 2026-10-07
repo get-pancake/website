@@ -68,9 +68,9 @@ export const VX_HERO = {
 export const VX_DEMO = {
   tablistAria: "Pancake, step by step",
   tabs: [
-    { key: "brief", num: "01", label: "Play", title: "Tell Pancake who to reach.", body: "It builds the Play and runs the first search right away." },
+    { key: "brief", num: "01", label: "Play", title: "Tell Pancake who to reach.", body: "It builds the Play and runs its first search." },
     { key: "leads", num: "02", label: "Leads", title: "Wake up to warm leads.", body: "New leads land by 8:30 AM, each with the reason it fits." },
-    { key: "outreach", num: "03", label: "Sequence", title: "A personal message for every lead.", body: "Pancake warms up each lead, then writes from their signal, as you." },
+    { key: "outreach", num: "03", label: "Sequence", title: "A personal message for every lead.", body: "Pancake warms up each lead, then writes as you." },
     { key: "slack", num: "04", label: "Slack", title: "Approve from Slack.", body: "New leads post to your channel. Approve or reject in one click." },
   ],
   controls: { pause: "Pause demo", play: "Play demo" },
@@ -116,7 +116,8 @@ export const VX_DEMO = {
         stack: "Companies using the technologies you target.",
       } satisfies Record<SignalKind, string>,
       findPeople: "The buyers and champions at each company.",
-      enrich: "Their profile, so the judge reads real facts.",
+      /** The app says "so the judge reads real facts"; a visitor doesn't know the judge. */
+      enrich: "Their profile, so every lead is judged on real facts.",
       qualify: "Judged against your ideal customer profile and disqualifiers.",
     },
     chat: {
