@@ -22,29 +22,30 @@ export interface DemoLens {
 }
 
 /**
- * Playback pace (founder 2026-09-22: "accelerate each section"). Every cue time in this file is
- * authored in DESIGN ms; the real clock is design × PACE. `endOf`, `DWELL` and `frameAt` speak
- * real ms, so the player never sees design time.
+ * Playback pace. Every cue time in this file is authored in DESIGN ms; the real clock is
+ * design × PACE. `endOf`, `DWELL` and `frameAt` speak real ms, so the player never sees design
+ * time. 0.6 since 2026-09-22 ("accelerate each section"); back to 1 on 2026-10-07 (founder: "on
+ * comprend pas le produit, c'est trop accéléré"), with fewer beats per tab.
  */
-export const PACE = 0.6;
+export const PACE = 1;
 
 /**
- * Autoplay dwell per tab (real ms): the tab's own animation (endOf) + a ~1.5 s hold on the final
- * frame, then the next tab. Brief ends at 3840, Leads 3780, Outreach ≤ 3480, Slack 3000.
- * One prompt = ~20 s (was ~38 s at 10/10/9.5/9 s).
+ * Autoplay dwell per tab (real ms): the tab's own animation (endOf) + a ~2.2 s hold on the final
+ * frame, then the next tab. Play ends at 6600, Leads 5400, Sequence ≤ 5700, Slack 5000.
+ * One prompt = ~31 s.
  */
-export const DWELL: readonly [number, number, number, number] = [5400, 5300, 5000, 4500];
+export const DWELL: readonly [number, number, number, number] = [8800, 7600, 7900, 7200];
 
 const TYPE_START = 250;
 const TYPE_MS = 18;
 const SEND = 2300;
-const STREAM_START = 2500;
-const STREAM_MS = 14;
-const STREAM_MAX = 3000;
+const STREAM_START = 1200;
+const STREAM_MS = 22;
+const STREAM_MAX = 4200;
 
-/** The proposal card (and its first row) arrives; later rows follow every ROW_MS. */
-const PROP = 3000;
-const ROW_MS = 120;
+/** The Play card (and its first row) arrives; the second row follows ROW_MS later. */
+const PROP = 3300;
+const ROW_MS = 350;
 
 const sorted = (list: Cue[]): Cue[] => [...list].sort((a, b) => a[1] - b[1]);
 
@@ -52,8 +53,8 @@ const streamEnd = (lens: DemoLens) => STREAM_START + Math.min(STREAM_MS * lens.s
 
 /** Last cue of a tab, in DESIGN ms. */
 function designEnd(tab: DemoTab, lens: DemoLens): number {
-  if (tab === 0) return 6400;
-  if (tab === 1) return 6300;
+  if (tab === 0) return 6600;
+  if (tab === 1) return 5400;
   if (tab === 2) return streamEnd(lens) + 300;
   return 5000;
 }
@@ -80,44 +81,35 @@ function cuesOf(tab: DemoTab, lens: DemoLens): TabCues {
     // (b.bubble also hides the empty conversation's starter chips: data-uncue)
     const on: Cue[] = [
       ["b.bubble", SEND],
-      ["b.tool", 2480],
-      ["b.reply", 2680],
+      ["b.reply", 2800],
       ["b.prop", PROP],
     ];
     for (let j = 0; j < lens.rows; j++) on.push([`b.row${j}`, PROP + ROW_MS * j]);
-    on.push(["b.foot", PROP + ROW_MS * Math.max(0, lens.rows - 1) + 300]);
-    const sw: Cue[] = [["b.approved", 5120]];
+    on.push(["b.foot", PROP + ROW_MS * Math.max(0, lens.rows - 1) + 350]);
+    const sw: Cue[] = [["b.approved", 5320]];
     return { on: sorted(on), sw, mk: [] };
   }
   if (tab === 1) {
     return {
-      // the table card arrives WITH row 0; the sheet with its chips, then properties, signal,
-      // timeline, and its Approve footer last
+      // three rows, one by one; the first is picked, its sheet says why it fits, then Approve →
+      // Start contacting
       on: [
         ["l.rows", 400],
         ["l.row0", 400],
-        ["l.row1", 550],
-        ["l.row2", 700],
-        ["l.row3", 850],
-        ["l.row4", 1000],
-        ["l.bad", 1200],
-        ["l.drawer", 2550],
-        ["l.d1", 2550],
-        ["l.d2", 2700],
-        ["l.d3", 2850],
-        ["l.d4", 3050],
-        ["l.foot", 3400],
+        ["l.row1", 750],
+        ["l.row2", 1100],
+        ["l.drawer", 2300],
+        ["l.d3", 2500],
+        ["l.foot", 2900],
       ],
-      sw: [["l.added", 5520]],
-      mk: [["l.sel", 2450]],
+      sw: [["l.added", 4420]],
+      mk: [["l.sel", 2200]],
     };
   }
   if (tab === 2) {
-    // the journey card arrives with its head (lead + status chip); while the message streams the
-    // note reads "Writing from their activity…", then swaps to the Drafted note with the footnote
-    const on: Cue[] = [["o.head", 200]];
-    for (let k = 0; k < 6; k++) on.push([`o.s${k}`, 400 + 240 * k]);
-    on.push(["o.next", 2200], ["o.foot", streamEnd(lens) + 300]);
+    // the card arrives with the lead; while the message streams the note reads "Writing from
+    // their activity…", then swaps to the Drafted note with the footnote
+    const on: Cue[] = [["o.head", 300], ["o.next", 800], ["o.foot", streamEnd(lens) + 300]];
     return { on, sw: [["o.drafted", streamEnd(lens) + 300]], mk: [] };
   }
   return {
@@ -162,23 +154,23 @@ const drift = (to: string, pressEnd: number): Move => ({ to, t0: pressEnd + 60, 
 
 const CURSOR: Record<DemoTab, CursorPlan | null> = {
   0: {
-    show: 4300,
-    hide: 6400,
-    moves: [{ to: "b.approve", t0: 4300, t1: 5000 }, drift("b.approve", 5120)],
-    presses: [{ target: "b.approve", t0: 5000, t1: 5120, scale: true }],
+    show: 4500,
+    hide: 6600,
+    moves: [{ to: "b.approve", t0: 4500, t1: 5200 }, drift("b.approve", 5320)],
+    presses: [{ target: "b.approve", t0: 5200, t1: 5320, scale: true }],
   },
   1: {
-    show: 1800,
-    hide: 6300,
+    show: 1400,
+    hide: 5400,
     moves: [
-      { to: "l.pick", t0: 1800, t1: 2450 },
-      drift("l.pick", 2450),
-      { to: "l.approve", t0: 4700, t1: 5400 },
-      drift("l.approve", 5520),
+      { to: "l.pick", t0: 1400, t1: 2080 },
+      drift("l.pick", 2200),
+      { to: "l.approve", t0: 3600, t1: 4300 },
+      drift("l.approve", 4420),
     ],
     presses: [
-      { target: "l.pick", t0: 2330, t1: 2450, scale: false },
-      { target: "l.approve", t0: 5400, t1: 5520, scale: true },
+      { target: "l.pick", t0: 2080, t1: 2200, scale: false },
+      { target: "l.approve", t0: 4300, t1: 4420, scale: true },
     ],
   },
   2: null,

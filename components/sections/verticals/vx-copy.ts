@@ -76,77 +76,38 @@ export const VX_DEMO = {
   controls: { pause: "Pause demo", play: "Play demo" },
   /** role="img" labels per pane; {prompt} = active prompt text, {lead} = lead 0 name. */
   paneAria: {
-    brief: "Pancake’s Sourcing page and chat. The request “{prompt}” becomes a new Play, created. Its first search is running.",
-    leads: "The Play’s Leads page: five qualified leads. {lead} is open with the reason the lead fits, approved and ready to contact.",
-    outreach: "The Play’s Sequence page: {lead}’s journey. Warm-up done, first touch now, first message drafted for the next step.",
+    brief: "Pancake’s chat. The request “{prompt}” becomes a new Play, created. Its first search is running.",
+    leads: "The Play’s leads, each with why they fit. {lead} is open, approved and ready to contact.",
+    outreach: "The first message Pancake writes for {lead}, from their activity, in your voice.",
     slack: "A Slack channel where Pancake posts new leads with Approve and Reject buttons. {lead} is approved.",
   },
+  /** The app window. 2026-10-07 (founder: "on comprend pas le produit… trop de boutons, trop de
+   *  texte"): the window keeps the logo only (no nav, no rail, no "Use in Claude / Codex"), and
+   *  each tab shows one moment of pancake-cmo @ac480839 with nothing around it. */
   app: {
-    /** The v2 app's main sidebar (pancake-cmo app-nav.ts, 2026-09-30) reads Brain · Agent · Leads ·
-     *  Plays; the bar shows three of them, in that order. "Agent" stays out: /for pages never say
-     *  "agent" (validate.ts BANNED, and scripts/verticals-audit.mjs lints the demo's text too).
-     *  Every pane of the demo (the Signals page and chat, the leads, the campaign) sits inside a
-     *  Play, whose own pages are the rail's (Overview, Leads, …), so "Plays" is the current tab. */
-    nav: ["Brain", "Leads", "Plays"],
-    /** Index into `nav` of the current tab (the pink-pale pill). */
-    navCur: 2,
-    cta: "Use in Claude / Codex",
-    rail: ["Overview", "Leads", "Sequence"],
-    railFoot: "Sourcing",
-    /** Tab 01's page, before and after the Play is created (2026-10-07: the app's Plays replaced
-     *  the Signals page). Before: the Plays empty state (plays/copy.ts, the deferred state's
-     *  second sentence). After: the new Play with its search status (plays/copy.ts searchStatus,
-     *  PAN-1740) and the Active filter's word. pancake-cmo @ac480839. */
+    /** Tab 01's page, before and after the Play is created: the Plays empty state (plays/copy.ts,
+     *  the deferred state's second sentence), then the new Play with its search status
+     *  (plays/copy.ts searchStatus, PAN-1740) and the Active filter's word. */
     plays: {
       readyTitle: "Ready when you are",
       readyBody: "Tell Pancake who you want to find, and it builds your first Play with you.",
       status: "Active",
       searching: "Searching for new leads",
       leave: "You can leave this page: the search keeps going without you.",
-      /** "The steps it will run" (play-draft-panel.tsx) with play-funnel.ts's step copy, picked by
-       *  the Play's source; the app's platform name is dropped (validate.ts PLATFORM). */
-      stepsTitle: "The steps it will run",
-      step: { discover: "Discover", people: "Find people", enrich: "Enrich", qualify: "Qualify" },
-      discoverBy: {
-        keyword: "People engaging with posts about your keywords.",
-        competitor: "People engaging with posts from the companies and voices you watch.",
-        influencer: "People engaging with posts from the companies and voices you watch.",
-        own_brand: "People engaging with posts from the companies and voices you watch.",
-        hiring: "Companies hiring for the roles you target.",
-        stack: "Companies using the technologies you target.",
-      } satisfies Record<SignalKind, string>,
-      findPeople: "The buyers and champions at each company.",
-      /** The app says "so the judge reads real facts"; a visitor doesn't know the judge. */
-      enrich: "Their profile, so every lead is judged on real facts.",
-      qualify: "Judged against your ideal customer profile and disqualifiers.",
     },
     chat: {
-      head: "Ask Pancake anything",
-      /** The panel header's right-side action (the app shows ⌘K only on the launcher pill). */
-      newChat: "New chat",
-      placeholder: "Ask a follow-up or change your dashboard…",
+      /** The app's composer placeholder (launch-week capture). */
+      placeholder: "Ask Pancake anything…",
       /** Shown instead of `placeholder` when the chat column is under 300px. */
-      placeholderShort: "Ask a follow-up…",
-      /** The empty conversation's chips: one Play request, then two about how a Play finds people. */
-      starters: [
-        "Create a play",
-        "How does post engagement find leads?",
-        "What do the hiring and stack signals track?",
-      ],
-      /** Tool row of the live Play creation transcript (launch-week capture, 2026-09-30): label + status. */
-      tool: "Reviewing saved Plays",
-      toolDone: "Done",
-      /** The Play card: plays/play-draft-panel.tsx + play-draft.ts SLOT_LABEL (pancake-cmo @ac480839).
-       *  Its one button creates the Play and starts its first search ("Create only" is gone). */
+      placeholderShort: "Ask Pancake…",
+      /** The Play card: plays/play-draft-panel.tsx + play-draft.ts SLOT_LABEL. Its one button
+       *  creates the Play and starts its first search ("Create only" is gone). Who and How only. */
       play: {
         kicker: "New play",
         draft: "Draft",
         created: "Created",
         who: "Who",
         how: "How we find them",
-        howMany: "How many",
-        /** proposed.leadsPerRun, the 25 of the launch-week capture. */
-        perSearch: "25 leads per search",
         /** The Who value: the leads' job titles, two then "+N more" (SIGNAL_PREVIEW_LIMIT grammar). */
         more: (n: number) => `+${n} more`,
         create: "Create play and run search",
@@ -157,51 +118,17 @@ export const VX_DEMO = {
     leads: {
       title: "Leads",
       sub: "The people this Play found and qualified.",
-      count: (n: number) => `${n} qualified lead${n === 1 ? "" : "s"} in this workspace`,
       approve: "Approve",
       add: "Start contacting",
-      bad: "Bad leads (1)",
     },
     drawer: {
-      askAi: "Ask AI",
-      stage: "qualified",
-      confidence: (n: number) => `Confidence ${n}%`,
-      /** The app's platform row reads "Profile" here (no platform name on /for, founder 2026-09-23). */
-      props: { company: "Company", seniority: "Seniority", country: "Country", profile: "Profile" },
-      country: "United States",
-      profileLink: "View ↗",
+      /** The caption of the "why this lead fits" box. */
       signal: "Signal",
-      /** leads/lead-timeline.tsx: the sheet's TIMELINE section. */
-      timeline: "Timeline",
-      qualified: "Qualified as a lead",
-      commented: "Commented on a post",
-      reacted: "Reacted to a post",
-      like: "Like",
-      viewPost: "View post ↗",
-      /** The cold-lead note (hiring / stack leads have no engagement sightings). */
-      cold: (source: string) => `No engagement signals yet — this lead was sourced via ${source}.`,
     },
     campaign: {
       title: "Sequence",
       status: "Active",
       sub: "Pancake runs this Play’s outreach, tuned for you.",
-      /** campaigns/copy.ts journey.sectionTitle · journey.stepOf(3, 6). */
-      journey: "Sequence · Step 3 of 6",
-      /** The app's status here is "invited" (blue); the page says "Warming up" (outcome level, 2026-09-29). */
-      leadStatus: "Warming up",
-      /** sequence-template.ts v2 is visit → like → note-less invite → message 1 six hours after they
-       *  accept → two follow-ups 72h apart. Since 2026-09-29 the page shows the same six steps at the
-       *  outcome level (VxDemo folds from index 3, so the count and the Done / Now split stay). */
-      steps: [
-        { label: "Read their activity", sub: "", state: "Done" },
-        { label: "Warm-up", sub: "", state: "Done" },
-        { label: "First touch", sub: "No pitch, so it never reads as sales.", state: "Now" },
-        { label: "First message", sub: "One light question about their signal.", state: "Upcoming" },
-        { label: "Follow-up message", sub: "after 3 days", state: "Upcoming" },
-        { label: "Follow-up message", sub: "after 3 days", state: "Upcoming" },
-      ],
-      /** Phones: the three message steps folded into one row. */
-      fold: "3 follow-up messages",
       upNext: "Up next · First message",
       /** campaigns/copy.ts sheet.writing → journey.draftNote, as a before / after pair. */
       writing: "Writing from their activity…",

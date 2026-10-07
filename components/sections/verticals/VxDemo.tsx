@@ -38,17 +38,7 @@ const A = VX_DEMO.app;
 // across the three prompts is rendered once, outside the variants.
 //
 // No platform names or logos anywhere in the mock (founder 2026-09-23, validate.ts PLATFORM):
-// the app's platform glyph after each lead name is gone, and the sheet's platform row reads
-// "Profile · View ↗".
-
-const SIG_ICON: Record<SignalKind, string> = {
-  keyword: "hash",
-  competitor: "target",
-  influencer: "megaphone",
-  own_brand: "building",
-  hiring: "briefcase",
-  stack: "stack",
-};
+// the app's platform glyph after each lead name is gone.
 
 function Chip({ kind, children }: { kind: SignalKind; children: string }) {
   return (
@@ -58,50 +48,16 @@ function Chip({ kind, children }: { kind: SignalKind; children: string }) {
   );
 }
 
-/* ─── app chrome (shared by Brief, Leads and Outreach) ─────────────────────── */
+/* ─── app chrome (shared by Play, Leads and Sequence) ──────────────────────── */
+// 2026-10-07 (founder: "on comprend pas le produit… trop de boutons, trop de texte"): the window
+// keeps the logo only. The app's nav, its "Use in Claude / Codex" button and the Play's rail are
+// gone: each tab shows one moment of the product, nothing around it.
 
 function AppBar() {
   return (
     <div className="vx-app__bar">
       {/* eslint-disable-next-line @next/next/no-img-element -- the site's own wordmark, tiny, decorative */}
       <img className="vx-app__logo" src="/lp/lp-nav-logo.svg" alt="" width={45} height={22} />
-      <span className="vx-app__center">
-        <span className="vx-app__home" data-ico="house" />
-        <span className="vx-app__nav">
-          {A.nav.map((l, i) => (
-            <span key={l} className={i === A.navCur ? "is-cur" : undefined}>
-              {l}
-            </span>
-          ))}
-        </span>
-      </span>
-      <span className="vx-app__cta">
-        <span className="vx-app__mark" data-ico="claude" />
-        <span className="vx-app__mark" data-ico="codex" />
-        {A.cta}
-      </span>
-    </div>
-  );
-}
-
-function Rail({ m }: { m: DemoModel }) {
-  return (
-    <div className="vx-rail">
-      <span className="vx-rail__ws" data-initial={m.workspace.initial}>
-        <span>{m.workspace.name}</span>
-      </span>
-      <span className="vx-rail__item" data-ico="grid" data-item="0">
-        {A.rail[0]}
-      </span>
-      <span className="vx-rail__item" data-ico="users" data-item="1">
-        {A.rail[1]}
-      </span>
-      <span className="vx-rail__item" data-ico="send" data-item="2">
-        {A.rail[2]}
-      </span>
-      <span className="vx-rail__item vx-rail__foot" data-ico="pulse">
-        {A.railFoot}
-      </span>
     </div>
   );
 }
@@ -123,8 +79,10 @@ function PageHead({ title, sub, extra }: { title: string; sub: string; extra?: R
 // card (plays/play-draft-panel.tsx: "New play", Draft → Created, Who · How we find them · How
 // many, one "Create play and run search" button); the page beside it is the Plays empty state,
 // then the Play the request became, its first search running. Phones show the chat only.
+// 2026-10-07: no starter chips, no tool row, two rows on the card, no facts on the page.
 
-/** The Play card's rows (play-draft.ts SLOT_LABEL): a check, the slot, its value. */
+/** The Play card's rows (play-draft.ts SLOT_LABEL): a check, the slot, its value. Who and How
+ *  only: "How many" was one row too many for a first look (founder 2026-10-07). */
 function PlayRows({ p }: { p: DemoPromptView }) {
   const P = A.chat.play;
   return (
@@ -139,10 +97,6 @@ function PlayRows({ p }: { p: DemoPromptView }) {
           <Chip kind={p.play.how.kind}>{p.play.how.label}</Chip>
           <span>{p.play.how.text}</span>
         </span>
-      </li>
-      <li data-cue="b.row2" data-ico="check">
-        <span className="vx-play__k">{P.howMany}</span>
-        <span className="vx-play__v">{P.perSearch}</span>
       </li>
     </ul>
   );
@@ -169,56 +123,17 @@ function BriefPane({ m }: { m: DemoModel }) {
                 <b>{A.plays.searching}</b>
                 <span>{A.plays.leave}</span>
               </p>
-              <dl className="vx-plays__facts">
-                <dt>{P.who}</dt>
-                <dd>{p.play.who}</dd>
-                <dt>{P.how}</dt>
-                <dd>
-                  <Chip kind={p.play.how.kind}>{p.play.how.label}</Chip>
-                  <span>{p.play.how.text}</span>
-                </dd>
-                <dt>{P.howMany}</dt>
-                <dd>{P.perSearch}</dd>
-              </dl>
-              <p className="vx-plays__stepsh">{A.plays.stepsTitle}</p>
-              <ol className="vx-plays__steps">
-                {p.play.steps.map((st, j) => (
-                  <li key={st.title}>
-                    <span className="vx-plays__sico" data-ico={st.ico} />
-                    <b>
-                      {j + 1}. {st.title}
-                    </b>
-                    <span>{st.body}</span>
-                  </li>
-                ))}
-              </ol>
             </div>
           ))}
         </div>
       </div>
 
       <div className="vx-chat">
-        <p className="vx-chat__head" data-ico="sparkle">
-          {A.chat.head}
-          <span className="vx-chat__new" data-ico="plus">
-            {A.chat.newChat}
-          </span>
-        </p>
         <div className="vx-chat__log vx-var">
-          {/* the empty conversation's starter chips, until the prompt is sent (armed only) */}
-          <p className="vx-starters" data-uncue="b.bubble">
-            {A.chat.starters.map((q) => (
-              <span key={q}>{q}</span>
-            ))}
-          </p>
           {m.prompts.map((p, i) => (
             <div key={i} className="vx-thread" data-p={i}>
               <p className="vx-bubble" data-cue="b.bubble">
                 {p.text}
-              </p>
-              <p className="vx-tool" data-cue="b.tool" data-ico="gear">
-                {A.chat.tool}
-                <span className="vx-tool__st">{A.chat.toolDone}</span>
               </p>
               <p className="vx-answer" data-cue="b.reply">
                 {p.reply}
@@ -262,28 +177,23 @@ function BriefPane({ m }: { m: DemoModel }) {
   );
 }
 
-/* ─── 02 Leads: header-less table + lead sheet ─────────────────────────────── */
+/* ─── 02 Leads: three leads with their reason + the first lead's sheet ──────── */
+// 2026-10-07 (founder: too many buttons, too much text): three rows that each say why the lead
+// fits, no checkboxes, no count, no per-row buttons; the sheet keeps the lead, why they fit,
+// and the one action (Approve, then Start contacting).
+
+const LEAD_ROWS = 3;
 
 function LeadsPane({ m }: { m: DemoModel }) {
   return (
     <div className="vx-pane vx-leads" data-pane="1">
       <div className="vx-page">
         <PageHead title={A.leads.title} sub={A.leads.sub} />
-        <p className="vx-count" data-cue="l.rows">
-          {A.leads.count(5)}
-        </p>
         <div className="vx-table vx-var" data-cue="l.rows">
           {m.prompts.map((p, i) => (
             <div key={i} className="vx-rowset" data-p={i}>
-              {p.leads.map((l, r) => (
-                // one flat grid per row: ::before = checkbox, ::after = the stage pill
-                <div
-                  key={l.name}
-                  className="vx-row"
-                  data-cue={`l.row${r}`}
-                  data-mark={r === 0 ? "l.sel" : undefined}
-                  data-stage={A.drawer.stage}
-                >
+              {p.leads.slice(0, LEAD_ROWS).map((l, r) => (
+                <div key={l.name} className="vx-row" data-cue={`l.row${r}`} data-mark={r === 0 ? "l.sel" : undefined}>
                   <span className="vx-av">{l.initials}</span>
                   <span className="vx-row__name" data-cursor={r === 0 ? "l.pick" : undefined}>
                     {l.name}
@@ -293,81 +203,29 @@ function LeadsPane({ m }: { m: DemoModel }) {
                   </span>
                   <Chip kind={l.kind}>{l.kindLabel}</Chip>
                   <span className="vx-row__detail">{l.signal}</span>
-                  {r === 0 ? (
-                    <span className="vx-row__act vx-swapc" data-swap="l.added">
-                      <span className="vx-pair" data-s="before">
-                        <span className="vx-btn" data-ico="check">
-                          {A.leads.approve}
-                        </span>
-                        <span className="vx-xbtn" data-ico="x" />
-                      </span>
-                      <span className="vx-btn vx-btn--ink" data-s="after" data-ico="plus">
-                        {A.leads.add}
-                      </span>
-                    </span>
-                  ) : (
-                    <span className="vx-row__act vx-btn vx-btn--x" data-ico="check">
-                      {A.leads.approve}
-                    </span>
-                  )}
                 </div>
               ))}
             </div>
           ))}
         </div>
-        <p className="vx-bad" data-cue="l.bad" data-ico="caret">
-          {A.leads.bad}
-        </p>
       </div>
 
       <div className="vx-drawer" data-cue="l.drawer">
-        {/* DOM budget: head + chips, the signal box and the timeline vary per prompt; the
-            property grid is shared, with only its two per-lead values in variants (all rows are
-            one line, so the stacked cells keep today's heights). Every stacked slot reserves its
-            tallest variant, so the sheet never changes height between prompts. */}
         <div className="vx-var">
           {m.prompts.map((p, i) => {
             const l = p.leads[0];
             return (
-              <div key={i} className="vx-drawer__v" data-p={i}>
-                <div className="vx-drawer__head">
-                  <span className="vx-av vx-av--lg">{l.initials}</span>
-                  <span className="vx-drawer__name">{l.name}</span>
-                  <span className="vx-drawer__role">
-                    {l.role} @ {l.company}
-                  </span>
-                </div>
-                <p className="vx-drawer__chips" data-cue="l.d1" data-stage={A.drawer.stage}>
-                  <Chip kind={l.kind}>{l.kindLabel}</Chip>
-                  <span className="vx-conf">{A.drawer.confidence(p.featured.confidence)}</span>
-                </p>
+              <div key={i} className="vx-drawer__head" data-p={i}>
+                <span className="vx-av vx-av--lg">{l.initials}</span>
+                <span className="vx-drawer__name">{l.name}</span>
+                <span className="vx-drawer__role">
+                  {l.role} @ {l.company}
+                </span>
               </div>
             );
           })}
         </div>
-        <div className="vx-props" data-cue="l.d2">
-          <span data-ico="building">{A.drawer.props.company}</span>
-          <span data-ico="medal">{A.drawer.props.seniority}</span>
-          <div className="vx-var">
-            {m.prompts.map((p, i) => (
-              <b key={i} data-p={i}>
-                {p.leads[0].company}
-              </b>
-            ))}
-          </div>
-          <div className="vx-var">
-            {m.prompts.map((p, i) => (
-              <b key={i} data-p={i}>
-                {p.featured.seniority}
-              </b>
-            ))}
-          </div>
-          <span data-ico="globe">{A.drawer.props.country}</span>
-          <span data-ico="user">{A.drawer.props.profile}</span>
-          <b>{A.drawer.country}</b>
-          <b className="vx-link">{A.drawer.profileLink}</b>
-        </div>
-        {/* SIGNAL: the chip + the qualification reason, as the app's box */}
+        {/* why this lead fits: the chip + the qualification reason, as the app's box */}
         <div className="vx-var">
           {m.prompts.map((p, i) => {
             const l = p.leads[0];
@@ -379,37 +237,8 @@ function LeadsPane({ m }: { m: DemoModel }) {
             );
           })}
         </div>
-        {/* TIMELINE (leads/lead-timeline.tsx): "Qualified as a lead" + reason, then the sighting
-            that surfaced the lead, or the cold-lead note for hiring / stack leads */}
-        <div className="vx-var vx-tlv">
-          {m.prompts.map((p, i) => {
-            const t = p.timeline;
-            const sg = t.sighting;
-            return (
-              <div key={i} className="vx-tl" data-p={i} data-cue="l.d4" data-label={A.drawer.timeline}>
-                <p className="vx-tl__e" data-ico="target">
-                  <b>{A.drawer.qualified}</b>
-                  <span className="vx-tl__why">{p.featured.why}</span>
-                </p>
-                {sg && (
-                  <p className="vx-tl__e" data-ico={sg.kind === "comment" ? "chat" : "heart"}>
-                    <b>{sg.kind === "comment" ? A.drawer.commented : A.drawer.reacted}</b>
-                    <span>
-                      {sg.source}
-                      {sg.kind === "reaction" ? ` · ${A.drawer.like}` : ""} · <i>{A.drawer.viewPost}</i>
-                    </span>
-                  </p>
-                )}
-                {t.cold && <p className="vx-tl__note">{t.cold}</p>}
-              </div>
-            );
-          })}
-        </div>
-        {/* the action bar is its own swap cell: Ask AI (left) stays, Approve ✕ → Add to campaign */}
+        {/* the one action: Approve ✕, then Start contacting */}
         <div className="vx-drawer__foot" data-cue="l.foot" data-swap="l.added">
-          <span className="vx-btn vx-btn--ai" data-ico="sparkle">
-            {A.drawer.askAi}
-          </span>
           <span className="vx-pair" data-s="before">
             <span className="vx-btn" data-ico="check" data-cursor="l.approve">
               {A.leads.approve}
@@ -425,12 +254,9 @@ function LeadsPane({ m }: { m: DemoModel }) {
   );
 }
 
-/* ─── 03 Outreach: the lead's campaign journey ─────────────────────────────── */
-
-/* warm-up and first touch carry neutral glyphs (not a thumbs-up / add-contact): since 2026-09-29
-   the journey tells the outcome, never the platform steps (vx-copy.ts) */
-const STEP_ICON = ["eye", "sparkle", "send", "chat", "chat", "chat"];
-const STEP_TONE: SignalKind[] = ["keyword", "competitor", "own_brand", "influencer", "influencer", "influencer"];
+/* ─── 03 Sequence: the first message, written for the lead ─────────────────── */
+// 2026-10-07 (founder: too much text): the six-step journey list and the status chip are gone;
+// the card is the lead and the message Pancake writes for them, then the drafted note.
 
 function OutreachPane({ m }: { m: DemoModel }) {
   const C = A.campaign;
@@ -438,41 +264,21 @@ function OutreachPane({ m }: { m: DemoModel }) {
     <div className="vx-pane vx-camp" data-pane="2">
       <div className="vx-page">
         <PageHead title={C.title} sub={C.sub} extra={<span className="vx-stagepill">{C.status}</span>} />
-        {/* the card arrives with its head (the lead + the "Invited" status chip): o.head */}
         <div className="vx-journey" data-cue="o.head">
           <div className="vx-journey__head">
             <span className="vx-var vx-journey__lead">
               {m.prompts.map((p, i) => {
                 const l = p.leads[0];
                 return (
-                  <span key={i} className="vx-journey__who" data-p={i} data-step={C.journey}>
+                  <span key={i} className="vx-journey__who" data-p={i} data-step={`${l.role} @ ${l.company}`}>
                     <span className="vx-av">{l.initials}</span>
                     <b>{l.name}</b>
                   </span>
                 );
               })}
             </span>
-            {/* campaign-lead-view.ts: the invite step is current → "Invited", blue */}
-            <Chip kind="keyword">{C.leadStatus}</Chip>
           </div>
           <div className="vx-journey__grid">
-            <ol className="vx-steps">
-              {/* phones fold the three message steps into step 4's row: data-fold is its label there */}
-              {C.steps.map((s, k) => (
-                <li
-                  key={k}
-                  className="vx-step"
-                  data-cue={`o.s${k}`}
-                  data-state={s.state.toLowerCase()}
-                  data-fold={k === 3 ? C.fold : undefined}
-                >
-                  <span className="vx-step__tile" data-kind={STEP_TONE[k]} data-ico={STEP_ICON[k]} />
-                  <span className="vx-step__name">{s.label}</span>
-                  <span className="vx-step__st">{s.state}</span>
-                  {s.sub && <span className="vx-step__sub">{s.sub}</span>}
-                </li>
-              ))}
-            </ol>
             <div className="vx-next" data-cue="o.next">
               <p className="vx-next__label">{C.upNext}</p>
               <div className="vx-var">
@@ -652,7 +458,6 @@ export function VxDemo({
           <>
             <AppBar />
             <div className="vx-app__body">
-              <Rail m={m} />
               <div className="vx-app__stack">
                 <BriefPane m={m} />
                 <LeadsPane m={m} />

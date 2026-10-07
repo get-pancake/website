@@ -50,25 +50,26 @@ Still open (spec defaults hold, flagged to the founder): the truthful
 checklist on /for pages only (`VX_PRICING_MODE`), Fono eyebrows
 (`--vx-eyebrow-font`).
 
-## 2026-10-07: the demo shows the app's Plays
+## 2026-10-07: the demo shows the app's Plays, one moment per tab
 
-The founder: "make the app juicy and easy to get", taking components from the app as the
-launch-week videos did. The demo now copies pancake-cmo @ac480839 (and the launch-week capture
-of the Play creation screen) instead of the September app:
+Founder: "make the app juicy and easy to get", taking components from the app as the
+launch-week videos did; then, on the first preview, "on comprend pas le produit, c'est trop
+accéléré et trop compliqué, trop de boutons, trop de texte". The demo copies pancake-cmo
+@ac480839 (and the launch-week capture of the Play creation screen), and each tab shows one
+moment of the product with nothing around it:
 
 | Where | Before | Now |
 |---|---|---|
-| Tab labels | Brief · Leads · Outreach · Slack | Play · Leads · Sequence · Slack |
-| Tab 01 page | the Signals page (six signal cards, "Set up" and empty states) | the Plays page: "Ready when you are", then the new Play, Active, "Searching for new leads" (plays/copy.ts) |
-| Tab 01 chat card | "Recommended next move · Signal settings", rows, "Approve change" | the Play card (play-draft-panel.tsx): New play · Draft → Created, Who · How we find them · How many, "Create play and run search" |
-| Rail | Overview · Leads · Campaign, Signals at the foot | Overview · Leads · Sequence, Sourcing at the foot; tab 01 lights Overview |
-| Leads / Sequence | "Add to campaign", the Campaign page | "Start contacting", the Sequence page ("Pancake runs this Play's outreach, tuned for you.") |
+| Pace | ×0.6 (2026-09-22), ~20 s a prompt | ×1, a ~2.2 s hold on each final frame, ~31 s a prompt |
+| Window | the app's nav, "Use in Claude / Codex", the Play's rail | the logo only |
+| Tab 01 "Play" (was "Brief") | the Signals page (six cards, "Set up", empty states) + "Signal settings · Approve change" | the chat: the request, Pancake's one-line reply, the Play card (play-draft-panel.tsx: New play, Draft → Created, Who · How we find them, "Create play and run search"); the page beside it: "Ready when you are", then the new Play, Active, "Searching for new leads" |
+| Tab 02 "Leads" | 5 rows with checkboxes, stage pills and Approve ✕, "Bad leads", a sheet with chips, properties and a timeline | 3 rows, each with why the lead fits; the sheet keeps the lead, why, and Approve → "Start contacting" |
+| Tab 03 "Sequence" (was "Outreach") | the six-step journey list + the Campaign page | the lead and the message Pancake writes for them, read at a glance |
 | Control | "Add {lead} to your campaign?" | "Start contacting {lead}?", "{lead} is in the sequence" |
 
 Each prompt names its Play (`play`, ≤44 chars, audience first, no "US": validate.ts). "Who" is
-the leads' job titles (two, then "+N more"); "How we find them" is proposal row 0; "How many" is
-the launch-week capture's 25 per search. Phones keep the chat only, so the card carries the
-whole story there.
+the leads' job titles (two, then "+N more"); "How we find them" is proposal row 0. Phones keep
+the chat only, so the card tells the whole story there.
 
 ## 2026-09-30: AI SEO retired, Plays shipped
 

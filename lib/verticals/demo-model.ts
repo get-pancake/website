@@ -21,14 +21,6 @@ export interface DemoLeadView {
   signal: string;
 }
 
-/** The lead sheet's TIMELINE (leads/lead-timeline.tsx), newest first after "Qualified as a lead". */
-export interface DemoTimelineView {
-  /** The engagement that surfaced the lead, or null (hiring / stack, or an authored post). */
-  sighting: { kind: "comment" | "reaction"; source: string } | null;
-  /** The cold-lead note (hiring / stack leads), or null. */
-  cold: string | null;
-}
-
 export interface DemoProposalView {
   kind: SignalKind;
   label: string;
@@ -43,8 +35,6 @@ export interface DemoPlayView {
   who: string;
   /** "How we find them": the request's first source (proposal row 0), kind chip + items. */
   how: DemoProposalView;
-  /** "The steps it will run" (play-funnel.ts planSteps): title, line, icon. */
-  steps: { title: string; body: string; ico: string }[];
 }
 
 export interface DemoPromptView {
@@ -56,8 +46,6 @@ export interface DemoPromptView {
   leads: DemoLeadView[];
   featured: { why: string; confidence: number; seniority: string };
   message: string;
-  /** Lead 0's sheet timeline. */
-  timeline: DemoTimelineView;
   /** The Outreach message footnote (campaigns/copy.ts sheet.writtenFrom / writtenInVoice). */
   written: string;
   lens: DemoLens;
@@ -114,25 +102,6 @@ function whoOf(p: DemoPrompt): string {
   return roles.slice(0, 2).join(", ") + more;
 }
 
-/** The steps a Play runs (play-funnel.ts planSteps): a company source finds the people next. */
-function stepsOf(kind: SignalKind): DemoPlayView["steps"] {
-  const S = C.plays;
-  return [
-    { title: S.step.discover, body: S.discoverBy[kind], ico: "search" },
-    ...(COLD_KINDS.includes(kind) ? [{ title: S.step.people, body: S.findPeople, ico: "users" }] : []),
-    { title: S.step.enrich, body: S.enrich, ico: "sparkle" },
-    { title: S.step.qualify, body: S.qualify, ico: "check" },
-  ];
-}
-
-/** The sighting behind an engagement lead, read from its signal line ("Commented on …", "Liked …"). */
-function sightingOf(kind: SignalKind, signal: string): DemoTimelineView["sighting"] {
-  if (COLD_KINDS.includes(kind)) return null;
-  if (/\b(comment(ed)?|repl(y|ied))\b/i.test(signal)) return { kind: "comment", source: SIGNAL_LABEL[kind] };
-  if (/\b(liked?|reacted)\b/i.test(signal)) return { kind: "reaction", source: SIGNAL_LABEL[kind] };
-  return null; // an authored post: the app's timeline has no entry for it
-}
-
 function fill(tpl: string, prompt: string, lead: string): string {
   return tpl.replace("{prompt}", prompt).replace("{lead}", lead);
 }
@@ -158,19 +127,15 @@ export function buildDemoModel(v: DemoSource): DemoModel {
       kindLabel: SIGNAL_LABEL[p.kind],
       text: p.text,
       reply: p.reply,
-      play: { name: p.play, who: whoOf(p), how: proposal[0], steps: stepsOf(p.kind) },
+      play: { name: p.play, who: whoOf(p), how: proposal[0] },
       leads,
       featured: { why: p.featured.why, confidence: p.featured.confidence, seniority: p.featured.seniority },
       message: p.message,
-      timeline: {
-        sighting: sightingOf(lead0.kind, lead0.signal),
-        cold: COLD_KINDS.includes(lead0.kind) ? C.drawer.cold(SIGNAL_LABEL[lead0.kind]) : null,
-      },
       // the app's footnote: evidence > 0 → "Written from n signals", none → "Written in your Brain voice"
       written: COLD_KINDS.includes(lead0.kind) ? C.campaign.writtenInVoice : C.campaign.writtenFrom(1),
       lens: {
         typeLen: p.text.length,
-        rows: 3,
+        rows: 2,
         streamLen: p.message.length,
       },
     };
