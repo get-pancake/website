@@ -63,7 +63,12 @@ const OFF_FOR = {
   "guarantee / instant": [/\bguarantee(d|s)?\b|\binstant(ly)?\b|\b(leads?|results?|customers?|meetings?|replies)\b[^.]{0,40}\bin (a few |2 |two )?minutes\b/i, "guarantee / instant"],
 };
 /** Text a rule may not read (names of other products). */
-const ALLOW = [[/\bco-?pilots?\b/i, /\bGitHub Copilot\b/g]];
+const ALLOW = [
+  [/\bco-?pilots?\b/i, /\bGitHub Copilot\b/g],
+  // the f4 animation's alt describes its mock chart, "+56% reply rate vs last period", which
+  // the founder kept (2026-10-08); the rate rule still reads every other line of copy
+  [OFF_FOR.rates[0], /\ba reply rate 56% up versus last period\b/g],
+];
 /** Rules a negated sentence may cross (the product's boundaries, said as boundaries). */
 const NEGATABLE = new Set(["email outreach", "phone lookup / calls", "CRM sync/export", "website visitors", "local/consumer leads"]);
 const NEGATION = /^(No\b|Not\b|Never\b|There[’']?s no\b|There is no\b|Pancake doesn[’']?t\b|It doesn[’']?t\b|Pancake never\b|No emails\b)/;

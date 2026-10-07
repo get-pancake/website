@@ -532,15 +532,11 @@
   width: 364px;
 }
 /* the platform's reaction bubbles stay in the baked art (lp-feat-art.ts is
-   generated) but never paint — the site doesn't show Pancake reacting. Since
-   2026-10-07 the globe and the repost / send icons don't paint either: with
-   them the row copied the platform's action bar; a like and a comment remain
-   (their counts in LpFeatMocks.tsx, their entrances in lp-feat-timelines.ts) */
+   generated) but never paint — the site doesn't show Pancake reacting. The
+   globe and the four action icons do paint (founder 2026-10-08 kept them,
+   reverting the 2026-10-07 audit that hid the globe, repost and send). */
 #lpf2-pi-bubbleLike,
-#lpf2-pi-bubbleHeart,
-#lpf2-pi-globe,
-#lpf2-pi-repost,
-#lpf2-pi-send {
+#lpf2-pi-bubbleHeart {
   display: none;
 }
 .lp-f2-avatar {
@@ -1177,8 +1173,9 @@
   width: 10.8px;
 }
 
-/* ══ f4 · a Play's replies, Brain learned, Brain updated (feat-learns-anim;
-   2026-10-07: a plain reply count replaced the "+56%" lift and its arrow).
+/* ══ f4 · reply-rate chart, Brain learned, Brain updated (feat-learns-anim;
+   the "+56%" chart and its arrow stay, founder 2026-10-08, reverting the
+   2026-10-07 audit's plain reply count).
    Tight bounds: x41.89 (ring left) → 516.89, y76.5 (graph top) → 559.5
    (ring bottom). ══ */
 .lp-feat-f4 {
@@ -1215,10 +1212,14 @@
   font-family: var(--lp-font-cond);
   font-size: 41.47px;
   font-weight: 500;
-  font-variant-numeric: tabular-nums; /* 0 → 12 ticks */
+  font-variant-numeric: tabular-nums; /* 0 → 56 ticks */
   letter-spacing: -0.4147px;
   line-height: 29px;
   white-space: nowrap;
+}
+.lp-f4-arrow {
+  height: 16.89px;
+  width: 16.89px;
 }
 .lp-f4-vs {
   color: var(--lp-ink-70);

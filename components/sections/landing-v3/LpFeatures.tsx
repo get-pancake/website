@@ -44,7 +44,8 @@ const FEATURES: Feature[] = [
   // opens with the lead's signal (a post, an open role, a new tool), sells the
   // per-sequence language and tone and the editable draft, and its mock
   // message asks instead of pitching; f4 sells what the brain learns from
-  // (lead reviews) and the per-Play stats, not an invented lift.
+  // (lead reviews) and the per-Play stats. Its mock keeps the "+56%" chart
+  // and the f2 post keeps its globe and action icons (founder 2026-10-08).
   {
     side: "left",
     title: "Ask for the people \nyou want",
@@ -71,7 +72,7 @@ const FEATURES: Feature[] = [
     title: "Pancake learns from every review",
     body: "Approve or reject a lead and your brain learns who fits. Each Play tracks contacts, replies and wins, so you see what works.",
     variant: "f4",
-    alt: "Animation: a chart of the replies to the Founders about to launch Play grows week by week to 12, a Brain learned card lists Founders, not marketers, Seed to Series A and US only, and a Brain updated card confirms your next search starts from it.",
+    alt: "Animation: a chart grows week by week to a reply rate 56% up versus last period, a Brain learned card lists Founders, not marketers, Seed to Series A and US only, and a Brain updated card confirms your next search starts from it.",
   },
 ];
 

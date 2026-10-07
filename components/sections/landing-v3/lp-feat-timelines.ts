@@ -183,10 +183,7 @@ function buildF1(root: HTMLElement): BuiltFeat {
    → the draft card slides up and the ring draws around it
    → the message types → DRAFT READY (yellow) lands → flips to MESSAGE SENT
    (green) → hold. Founder 2026-09-03: no Send button — the card is the
-   message and its status; the status changing by itself is the point.
-   2026-10-07: the action row is a like and a comment with their counts; the
-   globe and the repost / send icons (the platform's own action bar) are
-   hidden in features.css, so they and their counts left the timeline. */
+   message and its status; the status changing by itself is the point. */
 
 /** Typing on the REAL text run: the paragraph is revealed glyph by glyph with
     a clip-path staircase (full lines above, the current line up to the glyph
@@ -280,9 +277,9 @@ function buildF2(root: HTMLElement): BuiltFeat {
     ns.push(fin);
     return ns;
   };
-  const counts = $$(".lp-f2-count"); // like, comment
+  const counts = $$(".lp-f2-count");
   const likeN = mkCounter(counts[0], 33);
-  const commentN = mkCounter(counts[1], 5);
+  const otherN = [1, 2, 3].map((i) => mkCounter(counts[i], 5));
 
   /* ring draw masks: dash lengths from the actual squircle geometry (font-independent) */
   const drawPaths = $$<SVGPathElement>(".lpf2-drawp");
@@ -343,13 +340,16 @@ function buildF2(root: HTMLElement): BuiltFeat {
   const name = $(".lp-f2-name");
   const headline = $(".lp-f2-headline");
   const time = $(".lp-f2-time");
+  const globe = $("#lpf2-pi-globe");
   const bars = $$(".lp-f2-skelgrp i");
   const draftgrp = $(".lp-f2-draftgrp");
   const rowEls: Element[] = [];
-  ["#lpf2-pi-like", "#lpf2-pi-comment"].forEach((s, i) => rowEls.push($(s), counts[i]));
+  ["#lpf2-pi-like", "#lpf2-pi-comment", "#lpf2-pi-repost", "#lpf2-pi-send"].forEach((s, i) =>
+    rowEls.push($(s), counts[i]),
+  );
   /* frame 0 — the markup rests on the sent picture: the post's parts, its
      action row and the draft card wait for their entrances */
-  gsap.set([avatar, name, headline, time, ...bars, ...rowEls, draftgrp], { opacity: 0 });
+  gsap.set([avatar, name, headline, time, globe, ...bars, ...rowEls, draftgrp], { opacity: 0 });
 
   /* Pace (2026-09-30, founder: "tout plus dynamique"): the same beats in the
      same order, overlapped and brisker — the post types at 20 ms a character
@@ -371,6 +371,12 @@ function buildF2(root: HTMLElement): BuiltFeat {
     { y: 10, autoAlpha: 0 },
     { y: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out", stagger: 0.06, immediateRender: false },
     0.22,
+  );
+  tl.fromTo(
+    globe,
+    { y: 10, autoAlpha: 0 },
+    { y: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out", immediateRender: false },
+    0.35,
   );
 
   /* — Phase 2 · the post text types in with a caret (0.8 – ~1.75 s) — */
@@ -401,7 +407,7 @@ function buildF2(root: HTMLElement): BuiltFeat {
     1.85,
   );
   tick(likeN, 0, 33, 2.1, 0.7);
-  tick(commentN, 0, 5, 2.2, 0.4);
+  otherN.forEach((ns, i) => tick(ns, 0, 5, 2.2 + i * 0.08, 0.4));
 
   /* (Phase 5 — Pancake liking the post, reaction bubbles popping — removed 2026-09-29:
      the site never shows the product acting on the platform, founder "vitrine plus compliant") */
@@ -445,12 +451,11 @@ function buildF2(root: HTMLElement): BuiltFeat {
 }
 
 /* ── f4 · Pancake learns from every review (feat-learns-anim) ──
-   chart card rises → 12 bars grow from the baseline, the Play's reply count
-   ticks 0 → 12 → "Brain learned" slides in, chips pop → "Brain updated"
+   chart card rises → 12 bars grow from the baseline, the count ticks 0 → 56,
+   the arrow pops → "Brain learned" slides in, chips pop → "Brain updated"
    slides up while the rainbow ring draws around it, subtitle fades in.
-   2026-10-07: the count is a plain per-Play total (was "+0%" → "+56%", an
-   invented reply-rate lift) and the green arrow that popped after it is gone
-   (LpFeatMocks.tsx); every other beat keeps its time. */
+   The "+56%" count and its arrow stay (founder 2026-10-08, reverting the
+   2026-10-07 audit's plain reply count). */
 let txtPluginRegistered = false;
 function registerTxtPlugin() {
   if (txtPluginRegistered) return;
@@ -474,6 +479,7 @@ function buildF4(root: HTMLElement): BuiltFeat {
   const { $, $$ } = query(root);
   const graph = $(".lp-f4-graph");
   const pct = $(".lp-f4-pct");
+  const arrow = $(".lp-f4-arrow");
   const bars = $$(".lp-f4-bar");
   const weeks = $$(".lp-f4-weeks span");
   const worked = $(".lp-f4-worked");
@@ -499,7 +505,8 @@ function buildF4(root: HTMLElement): BuiltFeat {
     graph: 0.05, // chart card rises
     bars: 0.55,
     barStep: 0.06, // 12 bars from the baseline, 60 ms apart
-    count: 1.2, // 0 → 12 replies over the bars' growth
+    count: 1.2, // 0 → 56% over the bars' growth
+    arrow: 1.85, // the green arrow pops once the count lands
     worked: 2.2,
     chips: 2.55, // "Brain learned" slides in, chips pop one after another
     brain: 3.2,
@@ -508,7 +515,7 @@ function buildF4(root: HTMLElement): BuiltFeat {
   };
 
   /* frame 0: empty cream — every card and its parts start hidden */
-  tl.set(pct, { txt: "0" }, 0);
+  tl.set(pct, { txt: "+0%" }, 0);
 
   /* — chart card rises in — */
   tl.fromTo(graph, { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.65, ease: "power3.out" }, T.graph);
@@ -531,13 +538,20 @@ function buildF4(root: HTMLElement): BuiltFeat {
     );
   });
 
-  /* — the reply count ticks 0 → 12 as the bars grow (mild ease-out: brisk ticks, soft landing);
-     the last tick writes the markup's own "12" — */
-  const REPLIES = 12;
-  for (let k = 1; k <= REPLIES; k++) {
-    const p = 1 - Math.pow(1 - k / REPLIES, 1 / 1.6);
-    tl.set(pct, { txt: String(k) }, T.bars + T.count * p);
+  /* — the percentage ticks 0 → 56 as the bars grow (mild ease-out: brisk ticks, soft landing) — */
+  for (let k = 1; k <= 56; k++) {
+    const p = 1 - Math.pow(1 - k / 56, 1 / 1.6);
+    tl.set(pct, { txt: "+" + k + "%" }, T.bars + T.count * p);
   }
+
+  /* — the arrow pops — */
+  tl.fromTo(arrow, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.15, ease: "power2.out" }, T.arrow);
+  tl.fromTo(
+    arrow,
+    { scale: 0.4, transformOrigin: "50% 50%" },
+    { scale: 1, transformOrigin: "50% 50%", duration: 0.8, ease: "elastic.out(1, 0.5)" },
+    T.arrow,
+  );
 
   /* — "Brain learned" slides in, its chips pop in one after another — */
   tl.fromTo(worked, { y: 32, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.6, ease: "power3.out" }, T.worked);
@@ -560,7 +574,7 @@ function buildF4(root: HTMLElement): BuiltFeat {
   });
   tl.fromTo(sub, { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out" }, T.sub);
 
-  // first scene: the chart card in place, its bars at the baseline, "0"
+  // first scene: the chart card in place, its bars at the baseline, "+0%"
   return { tl, cleanup: () => {}, cue: T.bars };
 }
 
