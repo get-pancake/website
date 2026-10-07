@@ -31,20 +31,22 @@ export const PACE = 1;
 
 /**
  * Autoplay dwell per tab (real ms): the tab's own animation (endOf) + a ~2.2 s hold on the final
- * frame, then the next tab. Play ends at 6600, Leads 5400, Sequence ≤ 5700, Slack 5000.
- * One prompt = ~31 s.
+ * frame, then the next tab. Play ends at 9500, Leads 5400, Sequence ≤ 5700, Slack 5000.
+ * One prompt = ~34 s.
  */
-export const DWELL: readonly [number, number, number, number] = [8800, 7600, 7900, 7200];
+export const DWELL: readonly [number, number, number, number] = [11700, 7600, 7900, 7200];
 
-const TYPE_START = 250;
-const TYPE_MS = 18;
-const SEND = 2300;
+/** The request types in the centered input at a readable pace (2026-10-07: 18 ms a character
+ *  read as "super fast"): ≤96 characters end by 4632, a beat before SEND. */
+const TYPE_START = 600;
+const TYPE_MS = 42;
+const SEND = 5000;
 const STREAM_START = 1200;
 const STREAM_MS = 22;
 const STREAM_MAX = 4200;
 
 /** The Play card (and its first row) arrives; the second row follows ROW_MS later. */
-const PROP = 3300;
+const PROP = 6000;
 const ROW_MS = 350;
 
 const sorted = (list: Cue[]): Cue[] => [...list].sort((a, b) => a[1] - b[1]);
@@ -53,7 +55,7 @@ const streamEnd = (lens: DemoLens) => STREAM_START + Math.min(STREAM_MS * lens.s
 
 /** Last cue of a tab, in DESIGN ms. */
 function designEnd(tab: DemoTab, lens: DemoLens): number {
-  if (tab === 0) return 6600;
+  if (tab === 0) return 9500;
   if (tab === 1) return 5400;
   if (tab === 2) return streamEnd(lens) + 300;
   return 5000;
@@ -81,12 +83,12 @@ function cuesOf(tab: DemoTab, lens: DemoLens): TabCues {
     // (b.bubble also hides the empty conversation's starter chips: data-uncue)
     const on: Cue[] = [
       ["b.bubble", SEND],
-      ["b.reply", 2800],
+      ["b.reply", 5500],
       ["b.prop", PROP],
     ];
     for (let j = 0; j < lens.rows; j++) on.push([`b.row${j}`, PROP + ROW_MS * j]);
     on.push(["b.foot", PROP + ROW_MS * Math.max(0, lens.rows - 1) + 350]);
-    const sw: Cue[] = [["b.approved", 5320]];
+    const sw: Cue[] = [["b.approved", 8020]];
     return { on: sorted(on), sw, mk: [] };
   }
   if (tab === 1) {
@@ -154,10 +156,10 @@ const drift = (to: string, pressEnd: number): Move => ({ to, t0: pressEnd + 60, 
 
 const CURSOR: Record<DemoTab, CursorPlan | null> = {
   0: {
-    show: 4500,
-    hide: 6600,
-    moves: [{ to: "b.approve", t0: 4500, t1: 5200 }, drift("b.approve", 5320)],
-    presses: [{ target: "b.approve", t0: 5200, t1: 5320, scale: true }],
+    show: 7200,
+    hide: 9500,
+    moves: [{ to: "b.approve", t0: 7200, t1: 7900 }, drift("b.approve", 8020)],
+    presses: [{ target: "b.approve", t0: 7900, t1: 8020, scale: true }],
   },
   1: {
     show: 1400,

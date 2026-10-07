@@ -85,15 +85,11 @@ export const VX_DEMO = {
    *  texte"): the window keeps the logo only (no nav, no rail, no "Use in Claude / Codex"), and
    *  each tab shows one moment of pancake-cmo @ac480839 with nothing around it. */
   app: {
-    /** Tab 01's page, before and after the Play is created: the Plays empty state (plays/copy.ts,
-     *  the deferred state's second sentence), then the new Play with its search status
-     *  (plays/copy.ts searchStatus, PAN-1740) and the Active filter's word. */
+    /** Tab 01's empty state, centered over the input where the request is typed: the Plays empty
+     *  state (plays/copy.ts, the deferred state's second sentence). */
     plays: {
       readyTitle: "Ready when you are",
       readyBody: "Tell Pancake who you want to find, and it builds your first Play with you.",
-      status: "Active",
-      searching: "Searching for new leads",
-      leave: "You can leave this page: the search keeps going without you.",
     },
     chat: {
       /** The app's composer placeholder (launch-week capture). */

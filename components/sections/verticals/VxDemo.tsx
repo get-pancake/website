@@ -74,12 +74,9 @@ function PageHead({ title, sub, extra }: { title: string; sub: string; extra?: R
   );
 }
 
-/* ─── 01 Play: the Plays page + docked Ask Pancake panel ────────────────────── */
-// 2026-10-07: the app's Plays replaced the Signals page here. The chat's card is the app's Play
-// card (plays/play-draft-panel.tsx: "New play", Draft → Created, Who · How we find them · How
-// many, one "Create play and run search" button); the page beside it is the Plays empty state,
-// then the Play the request became, its first search running. Phones show the chat only.
-// 2026-10-07: no starter chips, no tool row, two rows on the card, no facts on the page.
+/* ─── 01 Play: one centered conversation ───────────────────────────────────── */
+// 2026-10-07: the request becomes the app's Play card (plays/play-draft-panel.tsx: "New play",
+// Draft → Created, Who · How we find them, one "Create play and run search" button).
 
 /** The Play card's rows (play-draft.ts SLOT_LABEL): a check, the slot, its value. Who and How
  *  only: "How many" was one row too many for a first look (founder 2026-10-07). */
@@ -102,33 +99,42 @@ function PlayRows({ p }: { p: DemoPromptView }) {
   );
 }
 
+/** The chat input. The player types the prompt into the pane's FIRST `.vx-typed` and gates the
+ *  first start on the pane's FIRST `.vx-composer`: the centered one, so render it first. */
+function Composer({ typing = false, cue }: { typing?: boolean; cue?: string }) {
+  return (
+    <div className={typing ? "vx-composer vx-composer--hero" : "vx-composer"} data-cue={cue}>
+      <span className="vx-composer__field">
+        {typing && (
+          <span className="vx-composer__in">
+            <span className="vx-composer__line">
+              <span className="vx-typed" />
+            </span>
+          </span>
+        )}
+        {/* the placeholder is a pseudo-element: the long line, or the short one under 300px */}
+        <span className="vx-ph" data-long={A.chat.placeholder} data-short={A.chat.placeholderShort} />
+      </span>
+      <span className="vx-send" data-ico="arrow-up" />
+    </div>
+  );
+}
+
 function BriefPane({ m }: { m: DemoModel }) {
   const P = A.chat.play;
   return (
     <div className="vx-pane vx-brief" data-pane="0">
-      <div className="vx-page vx-plays vx-swapc" data-swap="b.approved">
-        <div className="vx-plays__ready" data-s="before">
-          <span className="vx-plays__tile" data-ico="stack" />
-          <p className="vx-plays__title">{A.plays.readyTitle}</p>
-          <p className="vx-plays__body">{A.plays.readyBody}</p>
-        </div>
-        <div className="vx-var" data-s="after">
-          {m.prompts.map((p, i) => (
-            <div key={i} className="vx-plays__play" data-p={i}>
-              <p className="vx-page__title">
-                {p.play.name}
-                <span className="vx-stagepill">{A.plays.status}</span>
-              </p>
-              <p className="vx-plays__search" data-ico="pulse">
-                <b>{A.plays.searching}</b>
-                <span>{A.plays.leave}</span>
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className="vx-chat">
+        {/* 2026-10-07 (founder: "writing the play super fast on the very right side of the panel
+            is super strange, I want to see it in the very centre"): one centered conversation.
+            Before the request is sent, the app's empty state with the input in the middle of the
+            window, where the request is typed; it fades out when the request is sent. */}
+        <div className="vx-hero" data-uncue="b.bubble">
+          <span className="vx-hero__tile" data-ico="stack" />
+          <p className="vx-hero__title">{A.plays.readyTitle}</p>
+          <p className="vx-hero__body">{A.plays.readyBody}</p>
+          <Composer typing />
+        </div>
         <div className="vx-chat__log vx-var">
           {m.prompts.map((p, i) => (
             <div key={i} className="vx-thread" data-p={i}>
@@ -160,18 +166,8 @@ function BriefPane({ m }: { m: DemoModel }) {
             </div>
           ))}
         </div>
-        <div className="vx-composer">
-          <span className="vx-composer__field">
-            <span className="vx-composer__in">
-              <span className="vx-composer__line">
-                <span className="vx-typed" />
-              </span>
-            </span>
-            {/* the placeholder is a pseudo-element: the long line, or the short one under 300px */}
-            <span className="vx-ph" data-long={A.chat.placeholder} data-short={A.chat.placeholderShort} />
-          </span>
-          <span className="vx-send" data-ico="arrow-up" />
-        </div>
+        {/* once the request is sent, the input docks under the conversation */}
+        <Composer cue="b.bubble" />
       </div>
     </div>
   );

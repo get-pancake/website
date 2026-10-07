@@ -467,20 +467,23 @@
   width: 30px;
 }
 
-/* ─── 01 Play: the Plays page + docked Ask Pancake panel (2026-10-07) ────────── */
-.lp-vx .vx-brief { display: grid; grid-template-columns: minmax(0, 1fr) 320px; }
-/* the page swaps from the Plays empty state to the Play the request became */
-.lp-vx .vx-plays { align-content: start; }
-.lp-vx .vx-plays__ready {
+/* ─── 01 Play: one centered conversation (2026-10-07) ────────────────────────── */
+/* founder: "writing the play super fast on the very right side of the panel is super strange, I
+   want to see it in the very centre". One column, centered in the window, white like the app's
+   chat; before the request is sent, the empty state and the input sit in its middle. */
+.lp-vx .vx-brief { background: var(--app-card); display: grid; grid-template-columns: minmax(0, 1fr); }
+.lp-vx .vx-hero {
   align-content: center;
+  background: var(--app-card);
   display: grid;
-  gap: 6px;
+  inset: 0;
   justify-items: center;
-  min-height: 100%;
-  padding: 24px 12px 40px;
+  padding: 24px 20px;
+  position: absolute;
   text-align: center;
+  z-index: 1;
 }
-.lp-vx .vx-plays__tile {
+.lp-vx .vx-hero__tile {
   --ico: 18px;
   --ico-c: var(--app-pink);
   align-items: center;
@@ -490,32 +493,34 @@
   display: flex;
   height: 36px;
   justify-content: center;
-  margin-bottom: 4px;
+  margin-bottom: 10px;
   width: 36px;
 }
-.lp-vx .vx-plays__title { font-family: var(--lp-font-aeonik); font-size: 15px; font-weight: 700; line-height: 20px; }
-.lp-vx .vx-plays__body { color: var(--app-muted-fg); font-size: 11.5px; line-height: 16px; max-width: 260px; text-wrap: pretty; }
-.lp-vx .vx-plays__play { min-width: 0; }
-.lp-vx .vx-plays__play .vx-page__title { align-items: flex-start; text-wrap: pretty; }
-.lp-vx .vx-plays__play .vx-stagepill { margin-top: 3px; }
-/* the app's search status (PAN-1740): one banner while the first search runs */
-.lp-vx .vx-plays__search {
-  --ico: 14px;
-  --ico-c: var(--app-influencer-fg);
-  align-items: flex-start;
-  background: var(--app-influencer-bg);
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 1px var(--app-influencer-ring);
-  column-gap: 8px;
-  display: grid;
-  grid-template-columns: 14px minmax(0, 1fr);
-  margin-top: 12px;
-  padding: 9px 11px;
+.lp-vx .vx-hero__title { font-family: var(--lp-font-aeonik); font-size: 18px; font-weight: 700; line-height: 24px; }
+.lp-vx .vx-hero__body { color: var(--app-muted-fg); font-size: 12.5px; line-height: 18px; margin-top: 4px; max-width: 340px; text-wrap: pretty; }
+/* the empty state leaves when the request is sent (b.bubble); the final frame never shows it */
+.lp-vx .vx-demo__card:not([data-armed]) .vx-hero,
+.lp-vx .vx-demo__card[data-armed] .vx-hero.is-off { opacity: 0; visibility: hidden; }
+.lp-vx .vx-demo__card[data-armed] .vx-hero { transition: opacity 250ms ease, visibility 0s linear 250ms; }
+.lp-vx .vx-demo__card[data-armed] .vx-hero:not(.is-off) { transition: opacity 250ms ease; }
+/* the centered input: wide, two lines, the request wraps instead of sliding (.vx-composer.…: it
+   must beat the base input rule further down) */
+.lp-vx .vx-composer.vx-composer--hero {
+  align-items: flex-end;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+  height: auto;
+  margin: 18px 0 0;
+  max-width: 520px;
+  min-height: 62px;
+  padding: 10px 8px 8px 14px;
+  text-align: left;
+  width: 100%;
 }
-.lp-vx .vx-plays__search::before { grid-row: span 2; margin-top: 1px; }
-.lp-vx .vx-plays__search b { font-size: 11.5px; font-weight: 600; line-height: 16px; }
-.lp-vx .vx-plays__search span { color: var(--app-muted-fg); font-size: 11px; line-height: 15px; }
-/* the thin line joining one step's icon to the next */
+.lp-vx .vx-composer--hero .vx-composer__field { align-self: stretch; font-size: 14px; line-height: 20px; }
+.lp-vx .vx-composer--hero .vx-composer__in { white-space: normal; }
+.lp-vx .vx-composer--hero .vx-composer__line { flex: 1; min-width: 0; }
+.lp-vx .vx-composer--hero .vx-typed::after { height: 17px; vertical-align: -3px; }
+.lp-vx .vx-composer--hero .vx-ph::after { white-space: normal; }
 
 /* the Play card (plays/play-draft-panel.tsx): "New play" + Draft → Created, the three slots
    each with a green check, then one full-width "Create play and run search" */
@@ -570,33 +575,33 @@
 .lp-vx .vx-play__go { height: 28px; justify-content: center; width: 100%; }
 
 .lp-vx .vx-chat {
-  background: var(--app-card);
-  border-left: 1px solid var(--app-border);
   display: flex;
   flex-direction: column;
+  justify-self: center;
+  max-width: 640px;
   min-height: 0;
   min-width: 0;
+  position: relative;
+  width: 100%;
 }
-/* "+ New chat": the panel header's right-side action (the ⌘K hint lives on the launcher) */
-.lp-vx .vx-chat__log { align-content: start; flex: 1; min-height: 0; padding: 12px; }
-/* the empty conversation's starter chips (copilot starters), bottom of the log, until SEND */
+.lp-vx .vx-chat__log { align-content: center; flex: 1; min-height: 0; padding: 12px; }
 .lp-vx .vx-thread { display: flex; flex-direction: column; gap: 7px; }
 .lp-vx .vx-bubble {
   align-self: flex-end;
   background: var(--app-ink);
   border-radius: 12px;
   color: var(--app-card);
-  font-size: 11.5px;
-  line-height: 16px;
-  max-width: 90%;
+  font-size: 13px;
+  line-height: 19px;
+  max-width: 85%;
   padding: 7px 10px;
   text-wrap: pretty;
 }
 .lp-vx .vx-answer {
   border-radius: 10px;
   box-shadow: inset 0 0 0 1px var(--app-border);
-  font-size: 11.5px;
-  line-height: 16px;
+  font-size: 13px;
+  line-height: 19px;
   padding: 8px 10px;
   text-wrap: pretty;
 }
@@ -1007,7 +1012,6 @@
   }
 }
 @container vxstage (min-width: 1100px) {
-  .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr) 340px; }
   .lp-vx .vx-leads { grid-template-columns: minmax(0, 1fr) 312px; }
 }
 /* under 940 the sheet floats over the table (the app's own sheet) */
@@ -1027,7 +1031,6 @@
 }
 @container vxstage (max-width: 699px) {
   .lp-vx .vx-prop { margin-left: 12px; } /* the 272px chat column: half the indent */
-  .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr) 272px; }
   .lp-vx .vx-row { grid-template-columns: 30px 170px minmax(0, 1fr); }
   .lp-vx .vx-drawer { width: 256px; }
   .lp-vx .vx-drawer__head { padding-right: 0; }
@@ -1043,9 +1046,6 @@
   .lp-vx .vx-app__bar { gap: 8px; height: 48px; padding: 0 10px 0 12px; }
   .lp-vx .vx-app__logo { height: 20px; }
   .lp-vx .vx-page { padding: 10px 12px 14px; }
-  .lp-vx .vx-brief { grid-template-columns: minmax(0, 1fr); }
-  .lp-vx .vx-plays { display: none; }
-  .lp-vx .vx-chat { border-left: 0; border-top: 1px solid var(--app-border); }
   .lp-vx .vx-leads .vx-page__sub { display: none; }
   .lp-vx .vx-chat__log { padding: 12px 12px 10px; }
   .lp-vx .vx-bubble, .lp-vx .vx-answer { font-size: 12.5px; line-height: 18px; }
