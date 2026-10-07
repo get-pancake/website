@@ -37,6 +37,7 @@ export const brandingAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "We’re a brand studio. Find founders at US startups of 10 to 100 people posting about a rebrand.",
+        play: "Founders posting about a rebrand",
         reply: "I’ll watch founders’ posts about a rebrand or a new name at startups that size.",
         proposal: [
           { kind: "keyword", items: ["rebrand", "brand refresh", "renaming"] },
@@ -61,6 +62,7 @@ export const brandingAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "Find US startups hiring a senior brand designer or art director. We build the brand they’ll use.",
+        play: "Startups hiring a brand designer",
         reply: "I’ll watch startup job posts for brand designers and art directors.",
         proposal: [
           { kind: "hiring", items: ["Brand designer", "Art director", "Creative director"] },
@@ -85,6 +87,7 @@ export const brandingAgencies: VerticalConfig = {
       {
         kind: "influencer",
         text: "I run a design studio. Find COOs at US startups who engage with brand strategists’ posts.",
+        play: "COOs following brand strategists",
         reply: "I’ll watch the brand strategists you name and keep startup COOs who engage.",
         proposal: [
           { kind: "influencer", items: ["Maren Solberg", "Nell Ortega", "Rhys Calloway"] },

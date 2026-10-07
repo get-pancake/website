@@ -38,6 +38,7 @@ export const aiAutomationAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We automate admin work. Find US firms with 50 to 500 staff hiring data entry clerks.",
+        play: "Firms hiring data entry clerks",
         reply: "I’ll watch job posts for data entry and admin roles at US firms that size.",
         proposal: [
           { kind: "hiring", items: ["Data entry clerk", "Administrative assistant"] },
@@ -62,6 +63,7 @@ export const aiAutomationAgencies: VerticalConfig = {
       {
         kind: "stack",
         text: "Find US firms whose job posts mention Zapier or n8n. We rebuild those workflows with AI.",
+        play: "Firms running Zapier or n8n",
         reply: "I’ll watch job posts that name Zapier or n8n and find the ops lead at each firm.",
         proposal: [
           { kind: "stack", items: ["Zapier", "n8n", "Airtable"] },
@@ -86,6 +88,7 @@ export const aiAutomationAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find COOs at US B2B services firms posting about manual processes. I’m an AI consultant.",
+        play: "COOs posting about manual processes",
         reply: "I’ll watch posts about manual processes and keep COOs at B2B services firms.",
         proposal: [
           { kind: "keyword", items: ["manual processes", "client onboarding"] },

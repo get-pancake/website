@@ -36,6 +36,7 @@ export const consultants: VerticalConfig = {
       {
         kind: "keyword",
         text: "I fix ops at scale-ups. Find US COOs at 50-300-person firms posting about scaling pains.",
+        play: "COOs posting about scaling pains",
         reply: "I’ll watch COO posts about scaling pains and keep companies with 50 to 300 people.",
         proposal: [
           { kind: "keyword", items: ["scaling pains", "process improvement", "ops bottlenecks"] },
@@ -60,6 +61,7 @@ export const consultants: VerticalConfig = {
       {
         kind: "stack",
         text: "I set up product analytics. Find US startups whose job posts mention Mixpanel or Amplitude.",
+        play: "Startups using Mixpanel or Amplitude",
         reply: "I’ll find startups whose job posts name those tools, then the product leader at each.",
         proposal: [
           { kind: "stack", items: ["Mixpanel", "Amplitude"] },
@@ -84,6 +86,7 @@ export const consultants: VerticalConfig = {
       {
         kind: "own_brand",
         text: "Founders comment on my pricing posts. Turn the ones at US B2B software companies into leads.",
+        play: "Founders commenting on your pricing posts",
         reply: "I’ll watch who engages with your posts and keep founders at US B2B software companies.",
         proposal: [
           { kind: "own_brand", items: ["Claire Halloran", "Halloran Advisory"] },

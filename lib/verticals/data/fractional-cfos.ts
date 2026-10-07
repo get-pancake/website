@@ -37,6 +37,7 @@ export const fractionalCfos: VerticalConfig = {
       {
         kind: "hiring",
         text: "Part-time CFO here. Find US companies with 20 to 150 people hiring a VP Finance or controller.",
+        play: "Startups hiring a VP Finance or controller",
         reply: "I’ll watch job posts for finance leaders at US companies with 20 to 150 people.",
         proposal: [
           { kind: "hiring", items: ["VP Finance", "Financial controller", "Head of Finance"] },
@@ -61,6 +62,7 @@ export const fractionalCfos: VerticalConfig = {
       {
         kind: "stack",
         text: "Find US firms with 30 to 200 staff whose job posts name QuickBooks. I help them outgrow it.",
+        play: "Firms running QuickBooks",
         reply: "I’ll find companies whose job posts name QuickBooks, then the leader who owns finance.",
         proposal: [
           { kind: "stack", items: ["QuickBooks", "Xero"] },
@@ -85,6 +87,7 @@ export const fractionalCfos: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US SaaS founders posting about runway or unit economics. I own those numbers, part-time.",
+        play: "SaaS founders posting about runway",
         reply: "I’ll watch founder posts about runway and unit economics at US SaaS companies.",
         proposal: [
           { kind: "keyword", items: ["cash runway", "unit economics", "13-week cash flow"] },

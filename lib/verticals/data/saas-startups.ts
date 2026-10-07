@@ -38,6 +38,7 @@ export const saasStartups: VerticalConfig = {
       {
         kind: "competitor",
         text: "Find heads of support at US companies with 50 to 500 people who engage with our rivals’ posts.",
+        play: "Support heads engaging with rivals",
         reply: "I’ll watch posts from your rivals’ company pages and keep heads of support.",
         proposal: [
           { kind: "competitor", items: ["Tixwell", "Ticketmoor"] },
@@ -63,6 +64,7 @@ export const saasStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "Our helpdesk replaces Zendesk. Find US companies with 50 to 500 people whose job posts name it.",
+        play: "Companies running Zendesk",
         reply: "I’ll watch US job posts that name Zendesk and find who runs support at each company.",
         proposal: [
           { kind: "stack", items: ["Zendesk", "Freshdesk"] },
@@ -87,6 +89,7 @@ export const saasStartups: VerticalConfig = {
       {
         kind: "keyword",
         text: "We sell customer onboarding software. Find US customer success leads posting about churn.",
+        play: "Customer success leads on churn",
         reply: "I’ll watch posts about churn and onboarding and keep customer success leaders.",
         proposal: [
           { kind: "keyword", items: ["churn", "customer onboarding", "time to value"] },

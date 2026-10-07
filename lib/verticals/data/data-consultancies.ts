@@ -37,6 +37,7 @@ export const dataConsultancies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We build data stacks. Find US online retailers with 100 to 500 staff hiring a data engineer.",
+        play: "Online retailers hiring a data engineer",
         reply: "I’ll flag data roles at US online retailers that size and find who leads data.",
         proposal: [
           { kind: "hiring", items: ["Data engineer", "Analytics engineer", "BI developer"] },
@@ -62,6 +63,7 @@ export const dataConsultancies: VerticalConfig = {
       {
         kind: "stack",
         text: "We’re a Snowflake partner. Find US companies whose job posts mention Snowflake or Power BI.",
+        play: "Companies on Snowflake or Power BI",
         reply: "I’ll find US companies hiring for Snowflake or Power BI skills, then their data lead.",
         proposal: [
           { kind: "stack", items: ["Snowflake", "Power BI"] },
@@ -86,6 +88,7 @@ export const dataConsultancies: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find CFOs at US companies posting about data quality or dashboard sprawl. We fix reporting.",
+        play: "CFOs posting about data quality",
         reply: "I’ll watch posts about data quality and dashboard sprawl, and keep US finance leaders.",
         proposal: [
           { kind: "keyword", items: ["data quality", "dashboard sprawl", "month-end reporting"] },

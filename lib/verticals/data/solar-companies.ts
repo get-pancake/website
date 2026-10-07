@@ -37,6 +37,7 @@ export const solarCompanies: VerticalConfig = {
       {
         kind: "keyword",
         text: "We put solar on factory roofs. Find US facilities directors posting about energy costs.",
+        play: "Facilities directors on energy costs",
         reply: "I’ll watch posts about energy costs and keep facilities leaders at US manufacturers.",
         proposal: [
           { kind: "keyword", items: ["energy costs", "demand charges", "utility rate hike"] },
@@ -62,6 +63,7 @@ export const solarCompanies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We build on-site solar. Find US cold storage companies hiring an energy manager.",
+        play: "Cold storage firms hiring an energy manager",
         reply: "I’ll track energy job posts at US cold storage firms and find who runs their sites.",
         proposal: [
           { kind: "hiring", items: ["Energy manager", "Facilities manager", "Refrigeration engineer"] },
@@ -86,6 +88,7 @@ export const solarCompanies: VerticalConfig = {
       {
         kind: "influencer",
         text: "We sell solar with storage. Find US food processing CFOs who engage with energy experts.",
+        play: "Food plant CFOs following energy experts",
         reply: "I’ll track who comments on energy experts’ posts and keep food processing CFOs.",
         proposal: [
           { kind: "influencer", items: ["Joan Lasko", "Ravi Mehra"] },

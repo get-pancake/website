@@ -37,6 +37,7 @@ export const fintechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "We automate AP. Find US companies with 200 to 1,000 people hiring accounts payable staff.",
+        play: "Companies hiring accounts payable staff",
         reply: "I’ll watch AP job posts at US companies that size, then find the finance leader.",
         proposal: [
           { kind: "hiring", items: ["Accounts payable specialist", "AP clerk", "Billing specialist"] },
@@ -62,6 +63,7 @@ export const fintechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "We replace SAP Concur. Find US companies of 100 to 500 people that ask for it in job posts.",
+        play: "Companies running SAP Concur",
         reply: "I’ll flag job posts that ask for Concur or Expensify, then find who runs finance.",
         proposal: [
           { kind: "stack", items: ["SAP Concur", "Expensify"] },
@@ -86,6 +88,7 @@ export const fintechStartups: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US controllers and CFOs posting about month-end close. Our software shortens it.",
+        play: "Controllers posting about month-end close",
         reply: "I’ll watch posts about month-end close and keep finance leaders at US companies.",
         proposal: [
           { kind: "keyword", items: ["month-end close", "close checklist", "reconciliations"] },

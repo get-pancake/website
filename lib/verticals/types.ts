@@ -126,9 +126,15 @@ export interface DemoPrompt {
    * "hiring their first X", no funding/news/job changes. The 3 prompts within ±12 chars.
    */
   text: string;
+  /**
+   * The Play this request becomes: its name on the demo's Play card ("New play · Draft", the app's
+   * play-draft-panel.tsx) and on the Play's page once created. Audience first, like the app's own
+   * names ("Clinic owners in Texas"): ≤44 chars, no "US" (every prompt is US), no period.
+   */
+  play: string;
   /** Pancake's one-sentence reply in the chat. ≤88 chars, starts "I'll". */
   reply: string;
-  /** 3–4 rows of the "Signal settings · Proposed" card. Unique kinds; row 0 = kind. */
+  /** 3–4 sources the request names. Unique kinds; row 0 = kind = the Play card's "How we find them". */
   proposal: ProposalRow[];
   /** Exactly 5 invented people. Lead 0 is the featured lead (drawer, journey, Slack, Control). */
   leads: [DemoLead, DemoLead, DemoLead, DemoLead, DemoLead];

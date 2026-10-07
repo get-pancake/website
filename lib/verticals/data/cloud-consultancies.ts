@@ -39,6 +39,7 @@ export const cloudConsultancies: VerticalConfig = {
       {
         kind: "stack",
         text: "We move VMware estates to Azure. Find US companies whose job posts name VMware or vSphere.",
+        play: "Companies running VMware",
         reply: "I’ll track VMware and vSphere in US job posts, then find the infrastructure lead.",
         proposal: [
           { kind: "stack", items: ["VMware", "vSphere"] },
@@ -64,6 +65,7 @@ export const cloudConsultancies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We run DevOps as a service. Find US firms with 100 to 1,000 staff hiring a DevOps engineer.",
+        play: "Firms hiring a DevOps engineer",
         reply: "I’ll watch job posts for DevOps and SRE roles and skip listings posted by recruiters.",
         proposal: [
           { kind: "hiring", items: ["DevOps engineer", "Site reliability engineer", "Platform engineer"] },
@@ -89,6 +91,7 @@ export const cloudConsultancies: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find tech and finance leaders at US firms with 50 to 500 staff posting about cloud costs.",
+        play: "Tech and finance leads on cloud costs",
         reply: "I’ll watch tech and finance leaders’ posts about cloud bills at US firms that size.",
         proposal: [
           { kind: "keyword", items: ["cloud costs", "AWS bill", "FinOps"] },

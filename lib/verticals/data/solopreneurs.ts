@@ -36,6 +36,7 @@ export const solopreneurs: VerticalConfig = {
       {
         kind: "own_brand",
         text: "People like my build-in-public posts. Find the US ones who run B2B teams and could buy.",
+        play: "B2B team leads who like your posts",
         reply: "I’ll track likes and comments on your posts and keep people running US B2B teams.",
         proposal: [
           { kind: "own_brand", items: ["Esme Rutherford", "Rutherford Labs"] },
@@ -60,6 +61,7 @@ export const solopreneurs: VerticalConfig = {
       {
         kind: "keyword",
         text: "I built a Slack standup bot alone. Find US eng managers posting about async standups.",
+        play: "Eng managers posting about async standups",
         reply: "I’ll watch posts about async standups and keep engineering managers at US companies.",
         proposal: [
           { kind: "keyword", items: ["async standups", "standup fatigue", "meeting-free days"] },
@@ -85,6 +87,7 @@ export const solopreneurs: VerticalConfig = {
       {
         kind: "influencer",
         text: "I sell reporting to small agencies. Find US agency owners who engage with agency coaches.",
+        play: "Agency owners following agency coaches",
         reply: "I’ll watch who engages with those coaches’ posts and keep owners of US agencies.",
         proposal: [
           { kind: "influencer", items: ["Delia Kerr", "Kenji Lockard"] },

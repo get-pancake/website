@@ -36,6 +36,7 @@ export const executiveSearchFirms: VerticalConfig = {
       {
         kind: "hiring",
         text: "I place revenue leaders. Find US companies of 200 to 1,000 people hiring a CRO or VP Sales.",
+        play: "Companies hiring a CRO or VP Sales",
         reply: "I’ll watch employer job posts for CRO and VP Sales roles and find who owns each hire.",
         proposal: [
           { kind: "hiring", items: ["Chief Revenue Officer", "VP Sales", "SVP Sales"] },
@@ -60,6 +61,7 @@ export const executiveSearchFirms: VerticalConfig = {
       {
         kind: "keyword",
         text: "I run senior searches. Find US founders posting about building their leadership team.",
+        play: "Founders building a leadership team",
         reply: "I’ll watch for founders posting about their leadership team or succession.",
         proposal: [
           { kind: "keyword", items: ["building the exec team", "succession planning"] },
@@ -84,6 +86,7 @@ export const executiveSearchFirms: VerticalConfig = {
       {
         kind: "influencer",
         text: "I run CEO and board searches. Find US chairs and directors engaging with governance experts.",
+        play: "Board members following governance experts",
         reply: "I’ll watch who reacts to the governance voices you name and keep chairs and directors.",
         proposal: [
           { kind: "influencer", items: ["Harriet Kimura", "Desmond Pryor"] },

@@ -66,7 +66,7 @@ export function VxControl({ v }: { v: VerticalConfig }) {
                   {rows.map(([label, value]) => (
                     <div key={label} className="vx-dialog__row" data-row={label}>
                       <dt>{label}</dt>
-                      <dd>{label === "Campaign" ? <span className="vx-chip" data-tone="ok">{value}</span> : value}</dd>
+                      <dd>{label === "Sequence" ? <span className="vx-chip" data-tone="ok">{value}</span> : value}</dd>
                     </div>
                   ))}
                 </dl>

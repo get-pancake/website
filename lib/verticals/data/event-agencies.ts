@@ -35,6 +35,7 @@ export const eventAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "We plan corporate retreats. Find US heads of People posting about planning a company offsite.",
+        play: "Heads of People planning an offsite",
         reply: "I’ll watch People leaders’ posts about offsites and retreats at US companies.",
         proposal: [
           { kind: "keyword", items: ["company offsite", "team retreat", "in-person week"] },
@@ -59,6 +60,7 @@ export const eventAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We produce field events. Find US B2B companies with 200 to 2,000 staff hiring a field marketer.",
+        play: "B2B companies hiring a field marketer",
         reply: "I’ll watch job posts for field marketing and event roles at US B2B companies that size.",
         proposal: [
           { kind: "hiring", items: ["Field marketing manager", "Event manager", "Events coordinator"] },
@@ -83,6 +85,7 @@ export const eventAgencies: VerticalConfig = {
       {
         kind: "competitor",
         text: "I run an offsite agency. Find US chiefs of staff engaging with rival offsite agencies’ posts.",
+        play: "Chiefs of staff following rival agencies",
         reply: "I’ll watch who engages with rival offsite agencies’ posts and keep chiefs of staff.",
         proposal: [
           { kind: "competitor", items: ["Tallpine Offsites", "Gatherfield Co"] },

@@ -36,6 +36,7 @@ export const fractionalCmos: VerticalConfig = {
       {
         kind: "hiring",
         text: "I’m a fractional CMO. Find US B2B startups with 10 to 80 people hiring a Head of Marketing.",
+        play: "B2B startups hiring a Head of Marketing",
         reply: "I’ll watch senior marketing job posts at US B2B startups with 10 to 80 people.",
         proposal: [
           { kind: "hiring", items: ["Head of Marketing", "VP Marketing", "Marketing Director"] },
@@ -60,6 +61,7 @@ export const fractionalCmos: VerticalConfig = {
       {
         kind: "own_brand",
         text: "B2B founders like my posts on positioning. Turn the US ones with under 100 staff into leads.",
+        play: "Founders who like your positioning posts",
         reply: "I’ll track reactions to your posts and keep founders at US B2B firms under 100 people.",
         proposal: [
           { kind: "own_brand", items: ["Lucia Castaneda", "Castaneda Growth"] },
@@ -84,6 +86,7 @@ export const fractionalCmos: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US B2B founders posting about their go-to-market plan. I build it with them, part-time.",
+        play: "Founders posting about their GTM plan",
         reply: "I’ll watch founder posts about go-to-market plans and keep US B2B companies.",
         proposal: [
           { kind: "keyword", items: ["go-to-market plan", "launch plan"] },

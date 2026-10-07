@@ -37,6 +37,7 @@ export const shopifyAgencies: VerticalConfig = {
       {
         kind: "stack",
         text: "We’re a Shopify Plus partner. Find US brands whose job posts mention Shopify Plus.",
+        play: "Brands running Shopify Plus",
         reply: "I’ll watch US job posts that name Shopify Plus and find who runs e-commerce.",
         proposal: [
           { kind: "stack", items: ["Shopify Plus", "Shopify"] },
@@ -62,6 +63,7 @@ export const shopifyAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "Find US brands with 20 to 200 staff hiring a Shopify developer. We do that work on retainer.",
+        play: "Brands hiring a Shopify developer",
         reply: "I’ll watch job posts for Shopify developers at US brands with 20 to 200 staff.",
         proposal: [
           { kind: "hiring", items: ["Shopify developer", "Shopify theme developer"] },
@@ -86,6 +88,7 @@ export const shopifyAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US e-commerce managers posting about replatforming or conversion rate. We do both.",
+        play: "E-commerce managers on replatforming",
         reply: "I’ll watch e-commerce posts about replatforming and conversion, plus who reacts.",
         proposal: [
           { kind: "keyword", items: ["replatforming", "conversion rate", "checkout speed"] },

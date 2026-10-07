@@ -36,6 +36,7 @@ export const gtmAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "I run outbound for startups. Find US B2B companies with 10 to 50 people hiring an SDR.",
+        play: "B2B companies hiring an SDR",
         reply: "I’ll watch SDR and BDR job posts at US startups that size, then find who runs sales.",
         proposal: [
           { kind: "hiring", items: ["SDR", "BDR", "Founding account executive"] },
@@ -60,6 +61,7 @@ export const gtmAgencies: VerticalConfig = {
       {
         kind: "stack",
         text: "Find US B2B companies whose job posts name Clay or Apollo. We run that stack for them.",
+        play: "Companies running Clay or Apollo",
         reply: "I’ll track job posts that ask for Clay or Apollo and keep the growth and sales leaders.",
         proposal: [
           { kind: "stack", items: ["Clay", "Apollo"] },
@@ -84,6 +86,7 @@ export const gtmAgencies: VerticalConfig = {
       {
         kind: "influencer",
         text: "Find US SaaS founders who engage with outbound creators’ posts. We work with teams under 50.",
+        play: "SaaS founders following outbound creators",
         reply: "I’ll watch fans of the outbound creators you name and keep SaaS teams under 50.",
         proposal: [
           { kind: "influencer", items: ["Tessa Brightwell", "Rafael Sousa"] },

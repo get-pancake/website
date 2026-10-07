@@ -34,6 +34,7 @@ export const ppcAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We run paid media. Find US e-commerce brands with 10 to 150 staff hiring a paid media manager.",
+        play: "Brands hiring a paid media manager",
         reply: "I’ll watch job posts for paid media roles at US e-commerce brands that size.",
         proposal: [
           { kind: "hiring", items: ["Paid media manager", "PPC specialist", "Paid social specialist"] },
@@ -59,6 +60,7 @@ export const ppcAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "My agency fixes rising CAC. Find US heads of growth posting about CAC or Performance Max.",
+        play: "Growth heads posting about CAC",
         reply: "I’ll watch posts about CAC and Performance Max from heads of growth at US companies.",
         proposal: [
           { kind: "keyword", items: ["rising CAC", "Performance Max", "blended ROAS"] },
@@ -83,6 +85,7 @@ export const ppcAgencies: VerticalConfig = {
       {
         kind: "stack",
         text: "I manage B2B ad accounts. Find US SaaS teams whose job posts ask for Google Ads skills.",
+        play: "SaaS teams hiring for Google Ads",
         reply: "I’ll look for Google Ads in US SaaS job posts, then find each team’s head of growth.",
         proposal: [
           { kind: "stack", items: ["Google Ads", "Microsoft Ads"] },

@@ -34,6 +34,7 @@ export const developerTools: VerticalConfig = {
       {
         kind: "stack",
         text: "Our CI replaces Jenkins. Find US companies with 100 to 1,000 employees whose job posts name it.",
+        play: "Companies still running Jenkins",
         reply: "I’ll watch job posts that name Jenkins and keep companies with 100 to 1,000 employees.",
         proposal: [
           { kind: "stack", items: ["Jenkins", "CircleCI", "Travis CI"] },
@@ -59,6 +60,7 @@ export const developerTools: VerticalConfig = {
       {
         kind: "keyword",
         text: "We route LLM calls. Find AI engineers at US startups posting about LLM costs or rate limits.",
+        play: "AI engineers posting about LLM costs",
         reply: "I’ll watch posts about LLM costs and rate limits and keep engineers at US startups.",
         proposal: [
           { kind: "keyword", items: ["LLM costs", "rate limits", "model fallback"] },
@@ -84,6 +86,7 @@ export const developerTools: VerticalConfig = {
       {
         kind: "hiring",
         text: "We build an internal developer platform. Find US software companies hiring platform engineers.",
+        play: "Companies hiring platform engineers",
         reply: "I’ll watch US job posts for platform engineers and skip listings from staffing agencies.",
         proposal: [
           { kind: "hiring", items: ["Platform engineer", "DevEx engineer"] },

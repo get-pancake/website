@@ -50,6 +50,27 @@ Still open (spec defaults hold, flagged to the founder): the truthful
 checklist on /for pages only (`VX_PRICING_MODE`), Fono eyebrows
 (`--vx-eyebrow-font`).
 
+## 2026-10-07: the demo shows the app's Plays, one moment per tab
+
+Founder: "make the app juicy and easy to get", taking components from the app as the
+launch-week videos did; then, on the first preview, "on comprend pas le produit, c'est trop
+accéléré et trop compliqué, trop de boutons, trop de texte". The demo copies pancake-cmo
+@ac480839 (and the launch-week capture of the Play creation screen), and each tab shows one
+moment of the product with nothing around it:
+
+| Where | Before | Now |
+|---|---|---|
+| Pace | ×0.6 (2026-09-22), ~20 s a prompt | ×1, a ~2.2 s hold on each final frame, ~31 s a prompt |
+| Window | the app's nav, "Use in Claude / Codex", the Play's rail | the logo only |
+| Tab 01 "Play" (was "Brief") | the Signals page (six cards, "Set up", empty states) + a 320px chat column on the right, the prompt typed at 18 ms a character | one centered conversation (≤640px): "Ready when you are" with the input in the middle of the window, the request typed there at 42 ms a character ("I want to see it in the very centre"); once sent, the request, Pancake's one-line reply and the Play card (play-draft-panel.tsx: New play, Draft → Created, Who · How we find them, "Create play and run search"), the input docked below |
+| Tab 02 "Leads" | 5 rows with checkboxes, stage pills and Approve ✕, "Bad leads", a sheet with chips, properties and a timeline | 3 rows, each with why the lead fits; the sheet keeps the lead, why, and Approve → "Start contacting" |
+| Tab 03 "Sequence" (was "Outreach") | the six-step journey list + the Campaign page | the lead and the message Pancake writes for them, read at a glance |
+| Control | "Add {lead} to your campaign?" | "Start contacting {lead}?", "{lead} is in the sequence" |
+
+Each prompt names its Play (`play`, ≤44 chars, audience first, no "US": validate.ts). "Who" is
+the leads' job titles (two, then "+N more"); "How we find them" is proposal row 0. Phones keep
+the chat only, so the card tells the whole story there.
+
 ## 2026-09-30: AI SEO retired, Plays shipped
 
 AI SEO left the product (pancake-cmo PR #1037: SEO articles off for every

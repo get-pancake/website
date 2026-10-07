@@ -40,6 +40,7 @@ export const industrialTechStartups: VerticalConfig = {
       {
         kind: "stack",
         text: "Our AI reads historian data. Find US manufacturers whose job posts name OSIsoft PI.",
+        play: "Manufacturers running OSIsoft PI",
         reply: "I’ll find plants whose job posts ask for OSIsoft PI and keep their ops leads.",
         proposal: [
           { kind: "stack", items: ["OSIsoft PI", "AVEVA PI", "Ignition"] },
@@ -65,6 +66,7 @@ export const industrialTechStartups: VerticalConfig = {
       {
         kind: "hiring",
         text: "We flag failing assets. Find US utilities and solar operators hiring reliability engineers.",
+        play: "Utilities hiring reliability engineers",
         reply: "I’ll track reliability openings at US utilities and solar operators.",
         proposal: [
           { kind: "hiring", items: ["Reliability engineer", "SCADA engineer", "Maintenance planner"] },
@@ -89,6 +91,7 @@ export const industrialTechStartups: VerticalConfig = {
       {
         kind: "keyword",
         text: "We secure plant networks. Find US manufacturing leaders posting about OT security.",
+        play: "Plant leaders posting about OT security",
         reply: "I’ll watch OT security posts and keep plant, controls and IT leaders at manufacturers.",
         proposal: [
           { kind: "keyword", items: ["OT security", "IEC 62443", "ICS security"] },

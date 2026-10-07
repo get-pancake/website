@@ -34,6 +34,7 @@ export const marketingAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "We do industrial marketing. Find US manufacturers with 50 to 500 staff hiring marketers.",
+        play: "Manufacturers hiring marketers",
         reply: "I’ll watch marketing job posts from US manufacturers and skip staffing-firm listings.",
         proposal: [
           { kind: "hiring", items: ["Marketing manager", "Marketing coordinator", "Trade show coordinator"] },
@@ -59,6 +60,7 @@ export const marketingAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "Find US founders asking for marketing agency recommendations. We’re a B2B shop.",
+        play: "Founders asking for a marketing agency",
         reply: "I’ll watch posts asking for a B2B agency and skip the agencies pitching in the comments.",
         proposal: [
           { kind: "keyword", items: ["looking for an agency", "agency recommendations"] },
@@ -83,6 +85,7 @@ export const marketingAgencies: VerticalConfig = {
       {
         kind: "influencer",
         text: "We do demand gen for SaaS. Find US heads of marketing engaging with B2B experts’ posts.",
+        play: "Marketing heads following B2B experts",
         reply: "I’ll watch posts from the experts your buyers follow and keep SaaS marketing heads.",
         proposal: [
           { kind: "influencer", items: ["Philippa Grange", "Lionel Dunaway"] },

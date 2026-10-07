@@ -27,6 +27,7 @@ export const HOME_DEMO: DemoSource = {
       {
         kind: "keyword",
         text: "We make SaaS launch videos. Find US product marketers posting about an upcoming release.",
+        play: "Product marketers before a launch",
         reply: "I’ll watch release and launch day posts from product marketers at US SaaS companies.",
         proposal: [
           { kind: "keyword", items: ["new release", "launch day", "product demo"] },
@@ -51,6 +52,7 @@ export const HOME_DEMO: DemoSource = {
       {
         kind: "competitor",
         text: "Find heads of marketing at US SaaS companies who engage with rival video studios’ posts.",
+        play: "Marketing heads following rival studios",
         reply: "I’ll find SaaS marketers who like or comment on rival studios’ posts.",
         proposal: [
           { kind: "competitor", items: ["Bramble Reels", "Ferrow Motion"] },
@@ -75,6 +77,7 @@ export const HOME_DEMO: DemoSource = {
       {
         kind: "hiring",
         text: "Find US SaaS companies hiring a product marketer. A new PMM means launches ahead.",
+        play: "SaaS companies hiring a product marketer",
         reply: "I’ll find US SaaS companies with an open product marketing role.",
         proposal: [
           { kind: "hiring", items: ["Product marketing manager", "Head of product marketing"] },

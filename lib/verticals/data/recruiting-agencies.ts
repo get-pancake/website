@@ -33,6 +33,7 @@ export const recruitingAgencies: VerticalConfig = {
       {
         kind: "hiring",
         text: "I place backend engineers. Find US SaaS companies with 50 to 200 people hiring them.",
+        play: "SaaS companies hiring backend engineers",
         reply: "I’ll watch job posts for those roles and skip listings from other agencies.",
         proposal: [
           { kind: "hiring", items: ["Backend engineer", "Senior backend engineer", "Platform engineer"] },
@@ -58,6 +59,7 @@ export const recruitingAgencies: VerticalConfig = {
       {
         kind: "keyword",
         text: "I place early sales hires. Find US founders posting that they’re building a sales team.",
+        play: "Founders building a sales team",
         reply: "I’ll watch founders’ posts about sales hiring, plus the sales roles they open.",
         proposal: [
           { kind: "keyword", items: ["building our sales team", "hiring our first AE"] },
@@ -82,6 +84,7 @@ export const recruitingAgencies: VerticalConfig = {
       {
         kind: "competitor",
         text: "I recruit compliance teams for US fintechs. Find heads of talent engaging with rival recruiters.",
+        play: "Heads of talent following rival recruiters",
         reply: "I’ll watch posts from the agencies you compete with and keep people at fintechs.",
         proposal: [
           { kind: "competitor", items: ["Crestmoor Search", "Ledgerline Talent"] },
