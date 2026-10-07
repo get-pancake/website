@@ -12,7 +12,7 @@ export const hrConsultants: VerticalConfig = {
   status: "approved",
   category: "Consultants & advisors",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "HR consultants",
@@ -50,7 +50,7 @@ export const hrConsultants: VerticalConfig = {
           { name: "Ramón Iturbide", role: "Principal", company: "Kessick Architects", kind: "hiring", signal: "HR generalist role" },
           { name: "Dawn Pritchard", role: "Head of Ops", company: "Halden Supply", kind: "hiring", signal: "People ops role open" },
           { name: "DeShawn Carter", role: "Founder", company: "Fieldvane", kind: "keyword", signal: "Posted on first HR hire" },
-          { name: "Yvonne Castellucci", role: "COO", company: "Ferncastle Clinics", kind: "competitor", signal: "Liked a Graftwood post" },
+          { name: "Yvonne Castellucci", role: "COO", company: "Ferncastle Clinics", kind: "competitor", signal: "Engaged with Graftwood" },
         ],
         featured: {
           why: "Tollgarth Freight is a 70-person US logistics company with an HR manager role open. Shelby is the COO and owns the hire.",
@@ -58,7 +58,7 @@ export const hrConsultants: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Shelby, thanks for connecting. I work as a fractional HR lead for a handful of companies. Who fields the HR questions on your team today?",
+          "Hi Shelby, I work as a fractional HR lead for a handful of companies. Who fields the HR questions on your team today?",
       },
       {
         kind: "keyword",
@@ -73,7 +73,7 @@ export const hrConsultants: VerticalConfig = {
         leads: [
           { name: "Gabriel Szymanski", role: "Founder & CEO", company: "Tuckett", kind: "keyword", signal: "Posted on reviews" },
           { name: "Meera Sundaram", role: "CEO", company: "Marlstone Studio", kind: "keyword", signal: "Posted on handbooks" },
-          { name: "Connor Healy", role: "Co-founder", company: "Barrowby", kind: "influencer", signal: "Liked a Lusk post" },
+          { name: "Connor Healy", role: "Co-founder", company: "Barrowby", kind: "influencer", signal: "Engaged with a Lusk post" },
           { name: "Cherise Beaumont", role: "COO", company: "Gorrick Roasters", kind: "hiring", signal: "Office manager role" },
           { name: "Hugo Echegaray", role: "Founder", company: "Venable Builders", kind: "keyword", signal: "Posted on PTO policy" },
         ],
@@ -108,7 +108,7 @@ export const hrConsultants: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Rebecca, good to be connected. I’m a fractional HR lead, mostly handbooks, reviews and leave policy. Who keeps the handbook up to date where you are?",
+          "Hi Rebecca, I’m a fractional HR lead, mostly handbooks, reviews and leave policy. Who keeps the handbook up to date where you are?",
       },
     ],
   },

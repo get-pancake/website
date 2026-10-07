@@ -21,6 +21,10 @@ export const CALL_CTA_IDS = [
   "call_final",
   "call_pricing_page",
   "call_careers",
+  // The 7 comparison pages (2026-10-07): their own Book a demo ids, so these clicks
+  // don't merge into the homepage call_hero / call_final.
+  "call_compare_hero",
+  "call_compare_final",
 ] as const;
 
 /** The "Get started" links to app.getpancake.ai (waitlist retired 2026-08-24). */
@@ -34,6 +38,9 @@ export const APP_CTA_IDS = [
   // /guides/claude (the ManyChat DM page, 2026-10-06): its two Start free links.
   "app_guide_claude_hero",
   "app_guide_claude_final",
+  // The 7 comparison pages (GtmComparisonPage, 2026-10-07): hero and closing Start free.
+  "app_compare_hero",
+  "app_compare_final",
 ] as const;
 
 export type WaitlistCtaId = (typeof WAITLIST_CTA_IDS)[number];

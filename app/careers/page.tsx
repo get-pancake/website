@@ -4,6 +4,7 @@ import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/landing-v3/careers.css";
 
@@ -26,6 +27,14 @@ export const metadata: Metadata = {
   description:
     "Pancake is four people in San Francisco building the AI agents that bring small businesses customers. See open roles, meet the team, or send a note.",
   alternates: { canonical: `${SITE_ORIGIN}/careers` },
+  // Its own share card (2026-10-07, audit 8.2): it shared as the homepage, with
+  // the homepage title and no og:url. The image stays the shared homepage card.
+  ...social({
+    path: "/careers",
+    title: "Careers at Pancake",
+    description:
+      "Four people in San Francisco building Pancake. Tell it who to reach and it builds the Play. See open roles, meet the team, or send a note.",
+  }),
 };
 
 type Role = {

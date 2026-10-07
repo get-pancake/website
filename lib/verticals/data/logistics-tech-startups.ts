@@ -11,7 +11,7 @@ export const logisticsTechStartups: VerticalConfig = {
   status: "approved",
   category: "Vertical software",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "logistics tech startups",
@@ -50,7 +50,7 @@ export const logisticsTechStartups: VerticalConfig = {
           { name: "Shanelle Pickens", role: "Dispatch Manager", company: "Kimber Haul", kind: "hiring", signal: "Load planner role open" },
           { name: "Trent Mazurek", role: "COO", company: "Stellwagen Carriers", kind: "stack", signal: "McLeod in job posts" },
           { name: "Elvira Arambula", role: "Head of Linehaul", company: "Brackman LTL", kind: "keyword", signal: "Posted on empty miles" },
-          { name: "Earl Haskins", role: "Branch Manager", company: "Garvey 3PL", kind: "competitor", signal: "Liked a Haulbridge post" },
+          { name: "Earl Haskins", role: "Branch Manager", company: "Garvey 3PL", kind: "competitor", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Tolan Logistics is a 400-person 3PL in Memphis with three dispatcher roles open. Ray runs operations and owns the dispatch team.",
@@ -58,7 +58,7 @@ export const logisticsTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Ray, great to be connected. I work on routing software that builds the day’s dispatch plan. How many trucks does your team plan on a typical day?",
+          "Hi Ray, I work on routing software that builds the day’s dispatch plan. How many trucks does your team plan on a typical day?",
       },
       {
         kind: "keyword",
@@ -73,7 +73,7 @@ export const logisticsTechStartups: VerticalConfig = {
         leads: [
           { name: "Kiara Vandiver", role: "Head of Logistics", company: "Cragmoor", kind: "keyword", signal: "Posted on peak season" },
           { name: "Wade Pruneda", role: "VP Supply Chain", company: "Ferrin Home", kind: "keyword", signal: "Posted about delays" },
-          { name: "Latisha Fairley", role: "Fulfillment Lead", company: "Haverly Tea", kind: "influencer", signal: "Liked a Wray post" },
+          { name: "Latisha Fairley", role: "Fulfillment Lead", company: "Haverly Tea", kind: "influencer", signal: "Engaged with a Wray post" },
           { name: "Hamza Siddiqui", role: "Logistics Manager", company: "Deckle", kind: "hiring", signal: "Transport manager role" },
           { name: "Carla Buonocore", role: "COO", company: "Barkwell Pet Co", kind: "keyword", signal: "Posted about peak prep" },
         ],
@@ -108,7 +108,7 @@ export const logisticsTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Min-jun, nice to be connected. We build slotting software that shortens pick paths. How often do you re-slot your warehouses?",
+          "Hi Min-jun, we build slotting software that shortens pick paths. How often do you re-slot your warehouses?",
       },
     ],
   },

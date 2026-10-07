@@ -13,7 +13,7 @@ export const cybersecurityFirms: VerticalConfig = {
   status: "approved",
   category: "IT, cloud & security",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "cybersecurity firms",
@@ -52,7 +52,7 @@ export const cybersecurityFirms: VerticalConfig = {
           { name: "Nikolai Pavlicek", role: "VP Engineering", company: "Heronfield", kind: "keyword", signal: "Posted on SOC 2 Type II" },
           { name: "Shanice Colquitt", role: "Head of Security", company: "Lanyardly", kind: "hiring", signal: "GRC analyst role open" },
           { name: "Hugo Villanueva", role: "CTO & Co-founder", company: "Pikestaff", kind: "stack", signal: "Vanta in job posts" },
-          { name: "Tamika Brashear", role: "Compliance Manager", company: "Tessaline", kind: "competitor", signal: "Liked an Ironwake post" },
+          { name: "Tamika Brashear", role: "Compliance Manager", company: "Tessaline", kind: "competitor", signal: "Engaged with Ironwake" },
         ],
         featured: {
           why: "Gantrywise is a 60-person US SaaS company. Delaney is the CTO and posted this week about preparing for a first SOC 2 audit.",
@@ -78,7 +78,7 @@ export const cybersecurityFirms: VerticalConfig = {
           { name: "Rohit Ravindran", role: "Head of IT", company: "Stonecrop Freight", kind: "hiring", signal: "Detection engineer role" },
           { name: "Svetlana Sokolova", role: "VP IT", company: "Kettlewell Bank", kind: "stack", signal: "SentinelOne in job posts" },
           { name: "Clement Fairbrother", role: "IT Director", company: "Shorewick", kind: "keyword", signal: "Posted on alert fatigue" },
-          { name: "Pilar Castañeda", role: "COO", company: "Marrowgate Title", kind: "competitor", signal: "Liked a Tallwater post" },
+          { name: "Pilar Castañeda", role: "COO", company: "Marrowgate Title", kind: "competitor", signal: "Engaged with Tallwater" },
         ],
         featured: {
           why: "Coppervane Health is a 420-person US healthcare company with a SOC analyst role open. Octavia is the CISO and owns the hire.",
@@ -86,7 +86,7 @@ export const cybersecurityFirms: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Octavia, thanks for accepting. I run a 24/7 security operations center. How does your team handle alerts that land overnight?",
+          "Hi Octavia, I run a 24/7 security operations center. How does your team handle alerts that land overnight?",
       },
       {
         kind: "stack",
@@ -102,7 +102,7 @@ export const cybersecurityFirms: VerticalConfig = {
           { name: "Rosario Villaseñor", role: "Head of GRC", company: "Quellstone", kind: "stack", signal: "Vanta in job posts" },
           { name: "Kenji Amundsen", role: "CISO", company: "Glintwork", kind: "stack", signal: "Drata in job posts" },
           { name: "Ayodele Brisco", role: "VP Engineering", company: "Harborvault", kind: "keyword", signal: "Posted on a pentest" },
-          { name: "Travis Okimoto", role: "CTO", company: "Fennoscope", kind: "competitor", signal: "Liked a Scarpline post" },
+          { name: "Travis Okimoto", role: "CTO", company: "Fennoscope", kind: "competitor", signal: "Engaged with Scarpline" },
           { name: "Lorena Quijada", role: "Head of IT", company: "Lumbergate", kind: "keyword", signal: "Pentest report post" },
         ],
         featured: {
@@ -111,7 +111,7 @@ export const cybersecurityFirms: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Rosario, good to connect. We run pentests timed to SOC 2 audits. How far ahead do you usually book yours?",
+          "Hi Rosario, we run pentests timed to SOC 2 audits. How far ahead do you usually book yours?",
       },
     ],
   },

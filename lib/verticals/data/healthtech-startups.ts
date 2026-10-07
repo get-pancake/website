@@ -15,7 +15,7 @@ export const healthtechStartups: VerticalConfig = {
   status: "approved",
   category: "Vertical software",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "healthtech startups",
@@ -54,7 +54,7 @@ export const healthtechStartups: VerticalConfig = {
           { name: "Cornelius Mabry", role: "CIO", company: "Tessmer Regional", kind: "stack", signal: "Epic in job posts" },
           { name: "Noreen Donnellan", role: "COO", company: "Wilmarth Health", kind: "hiring", signal: "Medical scheduler role" },
           { name: "Jun Watanabe", role: "Ops Director", company: "Sutterby Health", kind: "keyword", signal: "Posted about no-shows" },
-          { name: "Adrienne Boudreaux", role: "CMIO", company: "Ruddock Health", kind: "competitor", signal: "Liked a Queuemark post" },
+          { name: "Adrienne Boudreaux", role: "CMIO", company: "Ruddock Health", kind: "competitor", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Ivers Health is a 3,800-person US health system. Its scheduler job posts name Epic Cadence, and Loretta runs patient access.",
@@ -87,7 +87,7 @@ export const healthtechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Rosalyn, glad to connect. We build software that automates prior authorizations. How long does a typical auth take to come back?",
+          "Hi Rosalyn, we build software that automates prior authorizations. How long does a typical auth take to come back?",
       },
       {
         kind: "keyword",
@@ -102,7 +102,7 @@ export const healthtechStartups: VerticalConfig = {
         leads: [
           { name: "Ingrid Haugland", role: "VP Operations", company: "Stillhollow Living", kind: "keyword", signal: "Posted about staffing" },
           { name: "Kwame Osei-Bonsu", role: "COO", company: "Quailridge Living", kind: "hiring", signal: "4 caregiver roles open" },
-          { name: "Deepa Venugopal", role: "VP Clinical Ops", company: "Vessey Living", kind: "influencer", signal: "Liked a Tregear post" },
+          { name: "Deepa Venugopal", role: "VP Clinical Ops", company: "Vessey Living", kind: "influencer", signal: "Engaged with a post" },
           { name: "Khalid Mansoori", role: "CEO", company: "Parrish Care", kind: "keyword", signal: "Posted on turnover" },
           { name: "Cordelia Grummond", role: "VP People", company: "Caldicott Senior", kind: "hiring", signal: "CNA roles open" },
         ],

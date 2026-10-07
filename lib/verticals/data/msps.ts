@@ -12,7 +12,7 @@ export const msps: VerticalConfig = {
   status: "approved",
   category: "IT, cloud & security",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "MSPs",
@@ -51,7 +51,7 @@ export const msps: VerticalConfig = {
           { name: "Fintan Kilgallen", role: "Office Manager", company: "Varga & Lowe", kind: "hiring", signal: "Sysadmin role open" },
           { name: "Ruthanne Obregon", role: "Controller", company: "Stanwick Supply", kind: "stack", signal: "M365 in job posts" },
           { name: "Tavita Leiataua", role: "VP Operations", company: "Marshgate", kind: "keyword", signal: "Posted on an IT outage" },
-          { name: "Ezinne Obasi", role: "Ops Director", company: "Tolliver", kind: "competitor", signal: "Liked a Patchbay post" },
+          { name: "Ezinne Obasi", role: "Ops Director", company: "Tolliver", kind: "competitor", signal: "Engaged with Patchbay" },
         ],
         featured: {
           why: "Oxbury Freight, a 90-person US freight broker, has an IT manager role open. Gloria runs operations as COO.",
@@ -59,7 +59,7 @@ export const msps: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Gloria, thanks for connecting. I run managed IT, mostly help desk and after-hours cover. How does your team handle IT today?",
+          "Hi Gloria, I run managed IT, mostly help desk and after-hours cover. How does your team handle IT today?",
       },
       {
         kind: "stack",
@@ -84,7 +84,7 @@ export const msps: VerticalConfig = {
           seniority: "Manager",
         },
         message:
-          "Hi Teodoro, glad to be connected. We manage devices and user accounts alongside in-house IT. What takes up most of your week right now?",
+          "Hi Teodoro, we manage devices and user accounts alongside in-house IT. What takes up most of your week right now?",
       },
       {
         kind: "keyword",
@@ -99,8 +99,8 @@ export const msps: VerticalConfig = {
         leads: [
           { name: "Maureen Dunmore", role: "CFO", company: "Sandhill Civil", kind: "keyword", signal: "Cyber insurance post" },
           { name: "Marcelo Zubiaga", role: "COO", company: "Hartsell & Voss", kind: "keyword", signal: "Posted on phishing" },
-          { name: "Beverly Tsukamoto", role: "Ops Director", company: "Pikeridge", kind: "influencer", signal: "Liked a Harcourt post" },
-          { name: "Solomon Oyewole", role: "Practice Manager", company: "Aldwick", kind: "competitor", signal: "Liked a Bluecairn post" },
+          { name: "Beverly Tsukamoto", role: "Ops Director", company: "Pikeridge", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Solomon Oyewole", role: "Practice Manager", company: "Aldwick", kind: "competitor", signal: "Engaged with Bluecairn" },
           { name: "Keziah Montgomery", role: "Controller", company: "Garrowby", kind: "keyword", signal: "Posted on MFA rollout" },
         ],
         featured: {

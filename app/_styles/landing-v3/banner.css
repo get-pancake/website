@@ -1,8 +1,11 @@
 /* landing-v3/banner.css — section 5 "Building got 10x easier / Selling didn’t"
-   (Figma 4257:4953; card 4420:961). The card is a fixed 1622×721 composition;
-   the art canvas keeps its exact px geometry and scales uniformly with the card
-   (scale = card-width/1622 → exactly 1 at the 1654 artboard). Titles use cqw so
-   they track the art (1cqw = 16.22px at 1622); comments give the artboard px. */
+   (Figma 4257:4953; card 4420:961). The card is a fixed 1622×721 composition
+   on desktop; the art is the designer's bottleneck Lottie (LpBottleneck.tsx).
+   Titles use cqw so they track the art (1cqw = 16.22px at 1622); comments
+   give the artboard px.
+   2026-10-07 cleanup: the pre-Lottie art stack (union bottle, drop, CSS bubble
+   canvas, and the ≤767 dome/bottle/dot/lip/bubble nodes) had no markup left
+   since the Lottie landed — its dormant rules are gone. */
 
 .lp-banner {
   padding: 16px;
@@ -55,61 +58,6 @@
 .lp-banner__lottie[data-live] .lp-banner__poster {
   display: none;
 }
-.lp-banner__art {
-  inset: 0;
-  position: absolute;
-}
-/* Inert pass-through wrapper; ≤767 it becomes the bottle-shaped clip frame */
-.lp-banner__bubblebox {
-  display: contents;
-}
-/* Legacy engines without container units get the clean yellow card + titles
-   instead of misscaled art */
-@supports not (width: 1cqw) {
-  .lp-banner__canvas {
-    display: none;
-  }
-}
-.lp-banner__canvas {
-  height: 721px;
-  left: 0;
-  position: absolute;
-  top: 0;
-  /* number = card-width / 1622; --lp-fit fed by LpFitVars.tsx (iOS WebKit
-     mis-resolves cqw inside trig — the expression stays as fallback only) */
-  transform: scale(var(--lp-fit, tan(atan2(100cqw, 1622px))));
-  transform-origin: 0 0;
-  width: 1622px;
-}
-.lp-banner__canvas img {
-  position: absolute;
-}
-.lp-banner__union {
-  height: 721px;
-  left: 0;
-  top: 0.42px; /* Figma: bottle sits 0.42px into the card */
-  width: 965px;
-}
-.lp-banner__drop {
-  /* renders before the union in the DOM → behind the bottle (founder
-     2026-08-31); geometry is the artboard's exact box */
-  height: 81.5px;
-  left: 959px;
-  top: 377px;
-  width: 49.07px;
-}
-.lp-banner__bubbles {
-  height: 671px;
-  left: 0;
-  top: 0;
-  width: 958px;
-}
-.lp-banner__bubble-extra {
-  height: 32.86px;
-  left: 545px;
-  top: 155.42px;
-  width: 32.86px;
-}
 
 /* Titles — marketing/title-lg via .lp-title-section (Condensed SemiBold, lh 1.2);
    size/tracking/position rescaled to cqw so they stay glued to the art. */
@@ -132,107 +80,35 @@
   width: 22.68804cqw; /* 368px */
 }
 
-/* Mobile-only nodes (m-dome/m-bottle/m-dot/m-lip/body/br) exist for the ≤767
-   composition only — dead on desktop/tablet. */
-.lp-banner__m-dome,
-.lp-banner__m-bottle,
-.lp-banner__m-dot,
-.lp-banner__m-lip,
-.lp-banner__m-bubble,
-.lp-banner__body,
+/* The "Building got / 10x easier." line break exists for the ≤767 layout only. */
 .lp-banner__br {
   display: none;
 }
 
-/* ≤767 — Figma mobile artboard (4389:8243; card 4389:8244 370×808 #fffbf6 r32,
-   clips). Tall cream card: slim BLUE bottle (redrawn mobile vector 4389:8246,
-   bbox 370×903.7 at y-414, visible part exported as 370×490) pours straight
-   down into an orange dome (4389:8245, bbox -209.8,418 792×786); neck lip cap
-   4389:8283 (162.7,487.1 52.9×13.9 r3.59); static orange dot 4389:8280
-   (273.6,271.1 ⌀16.9). Titles: Condensed SemiBold 35.559/auto(≈1.15)/-3%,
-   centered in the 32px-inset column — white 4389:8284 at y93 on the bottle,
-   ink 4389:8285 at y538 on the dome. Body 4389:8286: Fono 16/150% at 48,601
-   w274. The desktop union/drop imgs are hidden and the bubble canvas is reused
-   rotated 90° cw + scaled 0.625 (Figma places the same cloud at 0.6247 of
-   desktop scale), anchored so the desktop neck mouth (965,351.5) lands on the
-   mobile neck mouth (186,494): translate = (405.7, -109.1)px at card 370 —
-   the purple cluster pours down the neck exactly like node 4389:8247.
-   Positions are % of the aspect-locked card (370×808 basis); type in cqw. */
+/* ≤767 — the vertical Lottie (720×1620) in a tall yellow card. Titles:
+   Condensed SemiBold 35.559/auto(≈1.15)/-3%, centered in the 32px-inset
+   column — white at y93 on the bottle, ink at y538 under the neck (Figma
+   mobile artboard 4389:8243, founder recolor 2026-08-31: desktop colors).
+   Positions are % of the aspect-locked card (370×672 basis); type in cqw. */
 @media (max-width: 767px) {
   .lp-banner {
     padding: 24px 16px; /* Frame 226: 24 vertical, 16 sides */
   }
+  /* founder 2026-10-07: the mobile-only body line under "Selling didn't."
+     is gone (desktop never had it), so the card stops 93px under that title
+     — the same margin "Building got" has above it: 579 + 93 = 672. */
   .lp-banner__card {
-    aspect-ratio: 370 / 808;
-    /* founder 2026-08-31: desktop colors in vertical format — yellow card,
-       black bottle (was cream card + blue bottle per the mobile artboard) */
+    aspect-ratio: 370 / 672;
     background: var(--lp-yellow-30);
     border-radius: var(--lp-r-xlg); /* 32 */
   }
-  .lp-banner__m-dome {
-    display: block;
-    height: 48.267%; /* 390 (dome clipped by card bottom; export is 387 —
-                        stretched ~1% via preserveAspectRatio=none to seal
-                        the bottom edge) */
-    left: 0;
-    position: absolute;
-    top: 51.733%; /* 418 */
-    width: 100%;
-  }
-  .lp-banner__m-bottle {
-    display: block;
-    height: auto; /* 490 via the 370:490 viewBox */
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
-  }
-  .lp-banner__m-dot {
-    aspect-ratio: 1;
-    background: var(--lp-yellow-30);
-    border-radius: 50%;
-    display: block;
-    left: 73.946%; /* 273.6 */
-    position: absolute;
-    top: 33.552%; /* 271.1 */
-    width: 4.568%; /* 16.9 */
-  }
-  .lp-banner__m-lip {
-    aspect-ratio: 52.9 / 13.9;
-    background: #000; /* lip follows the black bottle (founder recolor) */
-    border-radius: 3.59px;
-    border-radius: 0.971cqw; /* 3.59 */
-    display: block;
-    left: 43.973%; /* 162.7 */
-    position: absolute;
-    top: 60.285%; /* 487.1 */
-    width: 14.297%; /* 52.9 */
-  }
-  /* The whole desktop canvas (union + drop + spinning bubbles) is replaced
-     on phones by the m-bottle vector and the artboard-native m-bubbles
-     (founder 2026-08-31: the transformed desktop cloud could not match the
-     mobile artboard's bubble constellation) — also frees the GPU layers. */
-  .lp-banner__canvas {
-    display: none;
-  }
-  .lp-banner__m-bubble {
-    aspect-ratio: 1;
-    border-radius: 50%;
-    display: block;
-    position: absolute;
-  }
-  /* Clip frame: same box as .lp-banner__m-bottle (card top-left, 370:490),
-     so the canvas transform above keeps its anchor; the objectBoundingBox
-     clip (LpBanner.tsx svg) confines every bubble to the bottle silhouette
-     (founder 2026-08-31: bubbles were drifting out on the left). */
-  .lp-banner__bubblebox {
-    aspect-ratio: 370 / 490;
-    clip-path: url(#lp-bottle-clip);
-    display: block;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%;
+  /* The art keeps its 370:808 box pinned to the card top, so the bottle and
+     the drop sit exactly where they did; the shorter card only clips the
+     empty orange under the neck. LpBottleneck measures this box, not the
+     card, so its drop placement is unchanged. */
+  .lp-banner__lottie {
+    aspect-ratio: 370 / 808;
+    bottom: auto;
   }
   .lp-banner__br {
     display: inline; /* Figma line break: "Building got" / "10x easier." */
@@ -246,19 +122,9 @@
     width: 82.703%; /* 306 */
   }
   .lp-banner__title--left {
-    top: 11.51%; /* 93 */
+    top: 13.839%; /* 93 of 672 */
   }
   .lp-banner__title--right {
-    top: 66.584%; /* 538 */
-  }
-  .lp-banner__body {
-    display: block;
-    font-size: 4.3243cqw; /* 16 */
-    left: 12.973%; /* 48 */
-    line-height: 1.5;
-    margin: 0;
-    position: absolute;
-    top: 74.381%; /* 601 */
-    width: 74.054%; /* 274 */
+    top: 80.06%; /* 538 of 672 */
   }
 }

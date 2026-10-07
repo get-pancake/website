@@ -1,5 +1,8 @@
 # Connect your agent to Pancake
 
+Pancake finds a company's buyers and starts the conversation from its own accounts.
+The user approves every lead before anyone is contacted.
+
 These are instructions for the coding agent reading this file. Configure Pancake
 in the client running this session, then help the user sign in. This is Markdown,
 not a shell script: read it and execute only the setup steps for that client.
@@ -93,6 +96,11 @@ OAuth support before configuring it; do not invent a client secret.
   compatible extension is installed, explain the requirement and follow the
   user's package-install permissions before adding one. See
   [Pi's extension model](https://pi.dev/).
+- **VS Code, GitHub Copilot CLI, Factory Droid, goose:** check the installed
+  version against the requirements above, then add the MCP URL with the client's
+  own command or settings file.
+- **Cursor:** it can't connect to Pancake yet. Do not configure it; offer Codex or
+  Claude Code instead.
 
 These are compatibility requirements, not a claim that every client version or
 extension has been tested. If the installed client cannot meet them, explain the
@@ -107,7 +115,8 @@ specific limitation and offer Codex or Claude Code as the documented alternative
    startup, tell the user to restart the client and resume verification.
 3. Use the client's MCP tool discovery to list Pancake's available tools. If a
    suitable read-only workspace or profile tool is available, call it to confirm
-   access. Do not send messages, start campaigns, or change workspace data to test.
+   access. Do not send messages, add leads to a sequence, or change workspace
+   data to test.
 4. Report what was configured, whether sign-in completed, and whether tools are
    available in this session. If a step is still pending, give the exact next
    action instead of claiming setup is complete.

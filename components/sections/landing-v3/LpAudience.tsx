@@ -3,8 +3,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 
-import { useSearchParams } from "next/navigation";
-
 export type Audience = "humans" | "agents";
 type AudienceUpdate = Audience | ((current: Audience) => Audience);
 const AudienceContext = createContext<{ audience: Audience; setAudience: (value: AudienceUpdate) => void }>({
@@ -34,6 +32,12 @@ const glyphProgress = (() => {
   return steps.map(step => step / t);
 })();
 
+/** The H1 is the human headline alone (2026-10-07): LpHero's wrapper is a
+    div that keeps the grid both copies overlay in, so crawlers no longer read
+    "…customers > @agents, get gtm superpowers" (plus its 28 glyph spans) as
+    the page's H1, and the two lines read as sentences (sr-only periods; the
+    artboard has none). The agent line stays a span; in the agents view, where
+    the human H1 is aria-hidden, it takes the heading role for screen readers. */
 export function AudienceHeadline() {
   const { audience } = useAudience();
   const [fontReady, setFontReady] = useState(false);
@@ -45,10 +49,15 @@ export function AudienceHeadline() {
     return () => { mounted = false; };
   }, []);
   return <>
-    <span className="lp-hero-title__copy" aria-hidden={audience === "agents"}>
-      You run your company<br />We bring you customers
-    </span>
-    <span className="lp-hero-title__copy lp-hero-title__copy--agent" aria-hidden={audience === "humans"}>
+    <h1 id="lp-hero-title" className="lp-hero-title__copy" aria-hidden={audience === "agents"}>
+      You run your company<span className="lp-sr-only">.</span> <br />We bring you customers<span className="lp-sr-only">.</span>
+    </h1>
+    <span
+      className="lp-hero-title__copy lp-hero-title__copy--agent"
+      aria-hidden={audience === "humans"}
+      role={audience === "agents" ? "heading" : undefined}
+      aria-level={audience === "agents" ? 1 : undefined}
+    >
       <span className="lp-sr-only">{`> ${agentHeadline}`}</span>
       <span className="lp-agent-headline" data-font-ready={fontReady} aria-hidden="true">
         <span className="lp-agent-headline__text"><span className="lp-agent-headline__prompt">{"> "}</span>{Array.from(agentHeadline, (letter, index) =>
@@ -60,34 +69,36 @@ export function AudienceHeadline() {
   </>;
 }
 
-/** A real URL for sharing/back/forward, without navigation or remounting art. */
-export function LpAudience({ initialAudience, children }: { initialAudience: Audience; children: ReactNode }) {
-  const searchParams = useSearchParams();
-  const urlAudience: Audience = searchParams ? (searchParams.get("audience") === "agents" ? "agents" : "humans") : initialAudience;
-  const [audience, setRenderedAudience] = useState(urlAudience);
-  const desiredAudience = useRef(urlAudience);
-  const committedAudience = useRef(urlAudience);
+const audienceFromUrl = (): Audience =>
+  new URL(window.location.href).searchParams.get("audience") === "agents" ? "agents" : "humans";
+
+/** A real URL for sharing/back/forward, without navigation or remounting art.
+    The homepage is static (2026-10-07): the server always renders the humans
+    view and the URL is read on mount, never during render. Reading it with
+    useSearchParams (and the page's searchParams prop) made / dynamic: no CDN
+    cache, about twice the TTFB of /pricing. A shared ?audience=agents link
+    switches to the agents view once hydrated; both copies are in the HTML
+    either way. */
+export function LpAudience({ children }: { children: ReactNode }) {
+  const [audience, setRenderedAudience] = useState<Audience>("humans");
+  const desiredAudience = useRef<Audience>("humans");
+  const committedAudience = useRef<Audience>("humans");
   const activeTransition = useRef<ViewTransition | null>(null);
   const request = useRef(0);
   const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
-    // Browser history still drives the view. Ignore a stale router restore
-    // when another toggle has already moved the URL forward.
-    const current: Audience = new URL(window.location.href).searchParams.get("audience") === "agents" ? "agents" : "humans";
-    if (urlAudience !== current || current === committedAudience.current) return;
-    request.current += 1;
-    activeTransition.current?.skipTransition();
-    committedAudience.current = current;
-    desiredAudience.current = current;
-    setRenderedAudience(current);
-  }, [urlAudience]);
-
-  useEffect(() => {
+    // The URL picks the view on arrival (a shared ?audience=agents link, a
+    // reload); browser history drives it after that.
+    const arrived = audienceFromUrl();
+    if (arrived !== committedAudience.current) {
+      committedAudience.current = desiredAudience.current = arrived;
+      setRenderedAudience(arrived);
+    }
     const onPopState = () => {
       request.current += 1;
       activeTransition.current?.skipTransition();
-      const current: Audience = new URL(window.location.href).searchParams.get("audience") === "agents" ? "agents" : "humans";
+      const current = audienceFromUrl();
       committedAudience.current = desiredAudience.current = current;
       setRenderedAudience(current);
     };
@@ -107,6 +118,9 @@ export function LpAudience({ initialAudience, children }: { initialAudience: Aud
     const url = new URL(window.location.href);
     if (value === "agents") url.searchParams.set("audience", "agents");
     else url.searchParams.delete("audience");
+    // a section anchor (#how-it-works, #pricing) points at a section the
+    // other view may hide: the switched URL carries none
+    url.hash = "";
     const commit = () => {
       if (request.current !== id) return;
       committedAudience.current = value;
@@ -185,8 +199,16 @@ export function AudienceSelector() {
     position();
     return () => observer.disconnect();
   }, []);
+  // The labels are click targets too (2026-10-07: tapping "For agents" did
+  // nothing). They stay aria-hidden: the switch is the one control screen
+  // readers and keyboards get, so there are never three controls for one state.
   return <div ref={selectorRef} className="lp-audience-selector">
-    <span className="lp-audience-selector__label" data-active={audience === "humans"}>For humans</span>
+    <span
+      className="lp-audience-selector__label"
+      data-active={audience === "humans"}
+      aria-hidden="true"
+      onClick={() => { if (audience !== "humans") setAudience("humans"); }}
+    >For humans</span>
     <button
       type="button"
       className="lp-audience-switch"
@@ -199,6 +221,11 @@ export function AudienceSelector() {
         <span className="lp-audience-switch__thumb" />
       </span>
     </button>
-    <span className="lp-audience-selector__label" data-active={audience === "agents"}>For agents</span>
+    <span
+      className="lp-audience-selector__label"
+      data-active={audience === "agents"}
+      aria-hidden="true"
+      onClick={() => { if (audience !== "agents") setAudience("agents"); }}
+    >For agents</span>
   </div>;
 }

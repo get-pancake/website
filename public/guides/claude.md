@@ -70,8 +70,8 @@ wrong, offer to fix it in the Brain, and change it only after they say yes.
 
 ## Step 5 · First Play
 
-Ask the user who they want to reach and what those people are doing right now that makes them ready
-to buy. Example: "We make SaaS launch videos. Find US product marketers posting about an upcoming
+Ask the user who they want to reach and what those people are doing right now that makes them a
+fit. Example: "We make SaaS launch videos. Find US product marketers posting about an upcoming
 release."
 
 Build the Play with them. Show the plan and the credit cost before you run anything, and run it only
@@ -81,8 +81,8 @@ after a clear yes. New leads arrive every morning after that.
 
 - Read the workspace before you answer. Ask before you change anything.
 - Show the credit cost of any search before you start it.
-- Adding a lead to a campaign starts real outreach from the user's own account. Never do it without
-  an explicit yes for that lead.
+- Adding a lead to a sequence (the `campaign_*` tools, e.g. `campaign_add_lead`) starts real
+  outreach from the user's own account. Never do it without an explicit yes for that lead.
 - Use the user's words and the Brain's voice when you edit a message.
 
 ## Prompts the user can reuse

@@ -12,7 +12,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
   status: "approved",
   category: "Consultants & advisors",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "corporate training companies",
@@ -51,7 +51,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
           { name: "Jessamyn Clarke", role: "CRO", company: "Trevanion Cloud", kind: "hiring", signal: "Sales trainer role" },
           { name: "Rahul Menon", role: "Head of Sales", company: "Drumlin Pay", kind: "stack", signal: "Highspot in job posts" },
           { name: "Colleen Brady", role: "VP Sales", company: "Silverfen", kind: "keyword", signal: "Posted on sales ramp" },
-          { name: "Mason Trujillo", role: "Enablement Lead", company: "Kilbride", kind: "competitor", signal: "Liked a Corbray post" },
+          { name: "Mason Trujillo", role: "Enablement Lead", company: "Kilbride", kind: "competitor", signal: "Engaged with Corbray" },
         ],
         featured: {
           why: "Norvale Systems is a 1,400-person US software company hiring a sales enablement manager. Warren runs sales and owns the hire.",
@@ -59,7 +59,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Warren, thanks for connecting. I run sales training, mainly new-rep onboarding. What does a new rep’s first month look like on your team?",
+          "Hi Warren, I run sales training, mainly new-rep onboarding. What does a new rep’s first month look like on your team?",
       },
       {
         kind: "keyword",
@@ -75,8 +75,8 @@ export const corporateTrainingCompanies: VerticalConfig = {
         leads: [
           { name: "Lauren Pickard", role: "Head of L&D", company: "Meadowmark", kind: "keyword", signal: "Posted on training" },
           { name: "Omari Jefferson", role: "VP Talent", company: "Halverson Mutual", kind: "keyword", signal: "Posted on upskilling" },
-          { name: "Marit Tierney", role: "L&D Director", company: "Stallard Retail", kind: "influencer", signal: "Liked an Arbuckle post" },
-          { name: "Tomasz Wierzbicki", role: "VP People", company: "Vantmoor Energy", kind: "competitor", signal: "Liked a Foxmere post" },
+          { name: "Marit Tierney", role: "L&D Director", company: "Stallard Retail", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Tomasz Wierzbicki", role: "VP People", company: "Vantmoor Energy", kind: "competitor", signal: "Engaged with Foxmere" },
           { name: "Keiko Asano", role: "CHRO", company: "Ashby Savings Bank", kind: "hiring", signal: "L&D manager role open" },
         ],
         featured: {
@@ -110,7 +110,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Cedric, glad we’re connected. We build online courses with in-house learning teams. Which course has sat on your list the longest?",
+          "Hi Cedric, we build online courses with in-house learning teams. Which course has sat on your list the longest?",
       },
     ],
   },
@@ -162,7 +162,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
     },
     {
       q: "Can our whole team use it?",
-      a: "Yes. Seats are unlimited. Outreach sends from one teammate’s account per workspace, so pick the name your buyers should see.",
+      a: "Yes. Teammates are free. Each Play sends from one teammate’s account or rotates across up to ten, so pick the names your buyers should see.",
     },
   ],
 

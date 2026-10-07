@@ -8,7 +8,7 @@ export const ppcAgencies: VerticalConfig = {
   status: "approved",
   category: "Marketing & creative agencies",
   evidence: "seo-bet",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "PPC agencies",
@@ -47,7 +47,7 @@ export const ppcAgencies: VerticalConfig = {
           { name: "Emeka Hollins", role: "VP Marketing", company: "Clovermoor", kind: "hiring", signal: "PPC specialist role open" },
           { name: "Luz Carranza", role: "E-commerce Lead", company: "Kibblecrest", kind: "keyword", signal: "Posted about rising CAC" },
           { name: "Graham Whitlock", role: "Growth Director", company: "Marblecove", kind: "stack", signal: "Google Ads in job posts" },
-          { name: "Anika Sorensen", role: "CMO", company: "Wickfern Candle Co.", kind: "competitor", signal: "Liked a Ridgebid post" },
+          { name: "Anika Sorensen", role: "CMO", company: "Wickfern Candle Co.", kind: "competitor", signal: "Engaged with Ridgebid" },
         ],
         featured: {
           why: "Brackenhue is a 60-person US e-commerce brand with a paid media manager role open. Talia heads growth there.",
@@ -55,7 +55,7 @@ export const ppcAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Talia, thanks for accepting. I live inside ad accounts, so I’m always curious what’s working for other brands. Which channel carries the most weight for you right now?",
+          "Hi Talia, I live inside ad accounts, so I’m always curious what’s working for other brands. Which channel carries the most weight for you right now?",
       },
       {
         kind: "keyword",
@@ -70,7 +70,7 @@ export const ppcAgencies: VerticalConfig = {
         leads: [
           { name: "Dante Echols", role: "VP Marketing", company: "Fernwick Apparel", kind: "keyword", signal: "Posted about Meta CAC" },
           { name: "Naomi Vrabel", role: "Head of Growth", company: "Spindlecove", kind: "keyword", signal: "Posted about PMax" },
-          { name: "Darius Oyenuga", role: "Performance Lead", company: "Oatmoss", kind: "influencer", signal: "Liked a Vance post" },
+          { name: "Darius Oyenuga", role: "Performance Lead", company: "Oatmoss", kind: "influencer", signal: "Engaged with a post" },
           { name: "Petra Soderquist", role: "CMO", company: "Quillmere Home", kind: "influencer", signal: "Commented on a post" },
           { name: "Jamal Prescott", role: "CEO", company: "Indigrove Denim", kind: "hiring", signal: "Growth marketing role" },
         ],
@@ -97,7 +97,7 @@ export const ppcAgencies: VerticalConfig = {
           { name: "Monique Treadwell", role: "Demand Gen Director", company: "Quorvia", kind: "stack", signal: "Google Ads in job posts" },
           { name: "Stefan Rendell", role: "Head of Growth", company: "Stratavine", kind: "stack", signal: "Google Ads in job posts" },
           { name: "Adaeze Obiora", role: "VP Marketing", company: "Kilnworth", kind: "hiring", signal: "Demand gen role open" },
-          { name: "Colin Maheswaran", role: "Marketing Director", company: "Brightkeel", kind: "own_brand", signal: "Liked a Brennick post" },
+          { name: "Colin Maheswaran", role: "Marketing Director", company: "Brightkeel", kind: "own_brand", signal: "Engaged with Brennick" },
           { name: "Sasha Petrakis", role: "Growth Lead", company: "Tessary", kind: "keyword", signal: "Posted on paid pipeline" },
         ],
         featured: {
@@ -106,7 +106,7 @@ export const ppcAgencies: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Monique, nice to connect. I manage B2B ad accounts. Where does most of your budget go these days, search or social?",
+          "Hi Monique, I manage B2B ad accounts. Where does most of your budget go these days, search or social?",
       },
     ],
   },

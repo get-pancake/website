@@ -49,7 +49,10 @@ export function LpAgentLab() {
     <div className="lp-agent-lab__stage">
       <div className="lp-agent-captcha" data-moves={moves}>
         <div className="lp-agent-captcha__header">
-          <h2 className="lp-agent-captcha__title">Prove you’re not human</h2>
+          {/* Not a heading (2026-10-07): the humans view ships this section hidden, and an
+              H2 "Prove you're not human" opened the homepage outline for crawlers. A div,
+              not a <p>: agent-lab.css styles `.lp-agent-captcha__header p` as the task line. */}
+          <div className="lp-agent-captcha__title">Prove you’re not human</div>
           <p id="agent-puzzle-task">Turn every tile green.</p>
         </div>
         <div className="lp-agent-captcha__grid" role="group" aria-label="Turn every tile green" aria-describedby="agent-puzzle-task">

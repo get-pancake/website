@@ -10,7 +10,7 @@ export const consultants: VerticalConfig = {
   status: "approved",
   category: "Consultants & advisors",
   evidence: "paying",
-  updated: "2026-09-30",
+  updated: "2026-10-07",
 
   name: {
     plural: "consultants",
@@ -47,7 +47,7 @@ export const consultants: VerticalConfig = {
           { name: "Lorraine Ogunbiyi", role: "COO", company: "Quarrystone", kind: "keyword", signal: "Posted on scaling pains" },
           { name: "Wesley Abernethy", role: "VP Operations", company: "Brightkiln", kind: "keyword", signal: "Posted on bottlenecks" },
           { name: "Farah Qureshi", role: "COO", company: "Fenwright Care", kind: "hiring", signal: "Operations manager role" },
-          { name: "Declan Ruzicka", role: "Chief of Staff", company: "Hobnail Works", kind: "influencer", signal: "Liked an Ambler post" },
+          { name: "Declan Ruzicka", role: "Chief of Staff", company: "Hobnail Works", kind: "influencer", signal: "Engaged with a post" },
           { name: "Imani Rowe", role: "Founder & CEO", company: "Clayridge", kind: "hiring", signal: "Program manager role" },
         ],
         featured: {
@@ -81,7 +81,7 @@ export const consultants: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Kwabena, good to be connected. I set up product analytics for startups, and every team swears by a different number. Which one do you check first each morning?",
+          "Hi Kwabena, I set up product analytics for startups, and every team swears by a different number. Which one do you check first each morning?",
       },
       {
         kind: "own_brand",
@@ -96,10 +96,10 @@ export const consultants: VerticalConfig = {
         ],
         leads: [
           { name: "Benedict Oduya", role: "Founder & CEO", company: "Graniteleaf", kind: "own_brand", signal: "Commented on a post" },
-          { name: "Priscilla Yuen", role: "CEO", company: "Shoalworks", kind: "own_brand", signal: "Liked a Halloran post" },
+          { name: "Priscilla Yuen", role: "CEO", company: "Shoalworks", kind: "own_brand", signal: "Engaged with Halloran" },
           { name: "Mateo Galarza", role: "Head of Revenue", company: "Coldspire", kind: "keyword", signal: "Posted on usage pricing" },
-          { name: "Hollis Vandermeer", role: "CRO", company: "Moorbeck", kind: "influencer", signal: "Liked a Kovac post" },
-          { name: "Yara Nassif", role: "COO", company: "Lanternfield", kind: "competitor", signal: "Liked a Marrowby post" },
+          { name: "Hollis Vandermeer", role: "CRO", company: "Moorbeck", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Yara Nassif", role: "COO", company: "Lanternfield", kind: "competitor", signal: "Engaged with Marrowby" },
         ],
         featured: {
           why: "Graniteleaf is a 60-person US B2B software company. Benedict is the CEO and commented on your pricing post this week.",
@@ -147,7 +147,7 @@ export const consultants: VerticalConfig = {
   faq: [
     {
       q: "I run a one-person practice. Is this too much?",
-      a: "No. New leads arrive each morning, and you pick which ones join your campaign. Approve three a week or thirty.",
+      a: "No. New leads arrive each morning, and you pick which ones join a sequence. Approve three a week or thirty.",
     },
     {
       q: "Won’t outreach hurt a reputation built on referrals?",

@@ -10,7 +10,7 @@ export const fractionalCmos: VerticalConfig = {
   status: "approved",
   category: "Consultants & advisors",
   evidence: "seo-bet",
-  updated: "2026-09-30",
+  updated: "2026-10-07",
 
   name: {
     plural: "fractional CMOs",
@@ -47,7 +47,7 @@ export const fractionalCmos: VerticalConfig = {
           { name: "Oluwaseun Bakare", role: "Founder & CEO", company: "Ledgerpine", kind: "hiring", signal: "Head of Marketing role" },
           { name: "Hailey Strand", role: "Co-founder", company: "Wrackham", kind: "hiring", signal: "VP Marketing role open" },
           { name: "Nikhil Sastry", role: "CEO", company: "Brambleway", kind: "keyword", signal: "Asked for a marketer" },
-          { name: "Serena Whitlow", role: "COO", company: "Inkhollow", kind: "competitor", signal: "Liked an Oxlip post" },
+          { name: "Serena Whitlow", role: "COO", company: "Inkhollow", kind: "competitor", signal: "Engaged with Oxlip" },
           { name: "Diego Rinaldi", role: "Founder", company: "Tinplate Labs", kind: "hiring", signal: "Marketing Director role" },
         ],
         featured: {
@@ -56,7 +56,7 @@ export const fractionalCmos: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Oluwaseun, glad we’re connected. As a fractional CMO, I spend a lot of time on how startups find their first channel. Which one has brought you the most customers so far?",
+          "Hi Oluwaseun, as a fractional CMO, I spend a lot of time on how startups find their first channel. Which one has brought you the most customers so far?",
       },
       {
         kind: "own_brand",
@@ -69,10 +69,10 @@ export const fractionalCmos: VerticalConfig = {
           { kind: "influencer", items: ["Marguerite Abiola", "Idris Callander"] },
         ],
         leads: [
-          { name: "Tobias Engstrom", role: "Co-founder & CEO", company: "Glintmoor", kind: "own_brand", signal: "Liked a Castaneda post" },
+          { name: "Tobias Engstrom", role: "Co-founder & CEO", company: "Glintmoor", kind: "own_brand", signal: "Engaged with a post" },
           { name: "Adaora Ikwuemesi", role: "Founder", company: "Kettlerock", kind: "own_brand", signal: "Commented on a post" },
           { name: "Wren Haverford", role: "CEO", company: "Sableport", kind: "keyword", signal: "Posted on positioning" },
-          { name: "Jasper Nettlefold", role: "Head of Growth", company: "Mintwhistle", kind: "influencer", signal: "Liked an Abiola post" },
+          { name: "Jasper Nettlefold", role: "Head of Growth", company: "Mintwhistle", kind: "influencer", signal: "Engaged with a post" },
           { name: "Noor Qadri", role: "Co-founder", company: "Kelpgate", kind: "keyword", signal: "Posted about messaging" },
         ],
         featured: {

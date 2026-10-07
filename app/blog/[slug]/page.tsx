@@ -9,8 +9,10 @@ import { LpCta } from "@/components/sections/landing-v3/LpCta";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
+import { articleAuthor, BLOG_FEED_ALTERNATE, isTeamByline } from "@/lib/blog-meta";
 import { formatPostDate, getAllPosts, getPostBySlug, type PostMeta } from "@/lib/posts";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { OG_IMAGE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 import "../blog.css";
 
@@ -35,7 +37,6 @@ export async function generateStaticParams() {
 
 const SITE = SITE_ORIGIN;
 const ORG_ID = `${SITE}/#organization`;
-const OG_IMAGE = "/og-image.png";
 const TITLE_SUFFIX = " · Pancake";
 /** Google truncates SERP titles around 60 characters. */
 const TITLE_BUDGET = 60;
@@ -50,33 +51,51 @@ function serpTitle(meta: PostMeta): string {
   return branded.length <= TITLE_BUDGET ? branded : meta.title;
 }
 
+/** Words a reader reads: code, image and link targets and markdown syntax out. */
+function readingMinutes(markdown: string): number {
+  const words = markdown
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\]\([^)]*\)/g, "]")
+    .split(/\s+/)
+    .filter((w) => /[A-Za-z0-9]/.test(w)).length;
+  return Math.max(1, Math.round(words / 230));
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) return {};
   const url = `${SITE}/blog/${slug}`;
   const title = serpTitle(post.meta);
+  // Slack and Discord show twitter:label/data pairs under the unfurl
+  // (2026-10-07, audit 8.6). The "Written by" row only for a team byline
+  // (isTeamByline): the others are unconfirmed (audit 1.15).
+  const unfurl: Record<string, string> = {
+    "twitter:label1": "Reading time",
+    "twitter:data1": `${readingMinutes(post.content)} min read`,
+  };
+  if (isTeamByline(post.meta.author)) {
+    unfurl["twitter:label2"] = "Written by";
+    unfurl["twitter:data2"] = post.meta.author;
+  }
   return {
     title: { absolute: title },
     description: post.meta.description,
-    alternates: { canonical: url },
-    openGraph: {
-      type: "article",
-      url,
+    alternates: { canonical: url, types: BLOG_FEED_ALTERNATE },
+    // Share card via lib/social-meta.ts (2026-10-07, audit 8.1/8.4): every
+    // post still shares the homepage card, so its alt is that card's text.
+    ...social({
+      path: `/blog/${slug}`,
       title,
       description: post.meta.description,
-      publishedTime: post.meta.date,
-      modifiedTime: post.meta.last_updated,
-      authors: post.meta.author ? [post.meta.author] : undefined,
-      siteName: "Pancake",
-      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Pancake" }],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description: post.meta.description,
-      images: [OG_IMAGE],
-    },
+      article: {
+        publishedTime: post.meta.date,
+        modifiedTime: post.meta.last_updated,
+        authors: post.meta.author ? [post.meta.author] : undefined,
+      },
+    }),
+    other: unfurl,
   };
 }
 
@@ -124,9 +143,10 @@ export default async function BlogPost({ params }: Props) {
     image: `${SITE}${OG_IMAGE}`,
     datePublished: meta.date,
     dateModified: meta.last_updated || meta.date,
-    // No named author on a few posts: credit the organization, never an
-    // empty Person.
-    author: meta.author ? { "@type": "Person", name: meta.author } : pancakeOrg,
+    // Team bylines get a Person with /careers and their public profiles
+    // (2026-10-07, audit 6.3). No byline or a company byline credits the
+    // organization, never an empty Person.
+    author: articleAuthor(meta.author) ?? pancakeOrg,
     publisher: pancakeOrg,
     mainEntityOfPage: {
       "@type": "WebPage",

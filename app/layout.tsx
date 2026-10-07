@@ -13,8 +13,10 @@ import {
   META_BROWSER_PIXEL_ID,
   PANCAKE_ANALYTICS_INGEST_ORIGIN,
 } from "@/lib/analytics/vendor-config";
+import { SUPPORT_EMAIL, SUPPORT_PATH } from "@/lib/contact";
 import { SITE_DESCRIPTION } from "@/lib/copy";
 import { PRODUCTION_SITE_HOSTS, SITE_HOST, SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
 
 /**
  * Lato — Slack's UI typeface (SIL Open Font License, served via next/font/google).
@@ -105,29 +107,22 @@ const geistSans = localFont({
 // Default title/OG for routes that set none: the homepage H1, since "AI GTM team"
 // retired with the launch positioning (2026-10-07). The homepage sets its own
 // <title>: "Pancake".
+// 2026-10-07 (audit 6.13): the fallback uses the homepage's og:title punctuation
+// ("Pancake — …", HOME_SOCIAL_TITLE) so a share reads the same from any URL; it
+// said "Pancake: …" here until then.
 // Description = SITE_DESCRIPTION (lib/copy.ts), the homepage hero lede; its
 // "grow your AI search visibility" clause went on 2026-09-30 (AI SEO retired).
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_ORIGIN),
-  title: "Pancake: You run your company. We bring you customers.",
+  title: HOME_SOCIAL_TITLE,
   description: SITE_DESCRIPTION,
-  // No `alternates.canonical` and no `openGraph.url` here: both would be
-  // inherited by every route that doesn't set its own, and a canonical that
-  // points at the homepage tells Google the page is a duplicate of `/` (it hid
-  // /pricing until 2026-09-24). Each indexable page sets its own canonical.
-  openGraph: {
-    type: "website",
-    title: "Pancake: You run your company. We bring you customers.",
-    description: SITE_DESCRIPTION,
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "You run your company. We bring you customers." }],
-    siteName: "Pancake",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Pancake: You run your company. We bring you customers.",
-    description: SITE_DESCRIPTION,
-    images: ["/og-image.png"],
-  },
+  // No `alternates.canonical` and no `openGraph.url` here (social() gets no
+  // path): both would be inherited by every route that doesn't set its own,
+  // and a canonical that points at the homepage tells Google the page is a
+  // duplicate of `/` (it hid /pricing until 2026-09-24). Each indexable page
+  // sets its own canonical. twitter:site/creator, og:locale and the image alt
+  // come from lib/social-meta.ts (2026-10-07, audit 8.1).
+  ...social({ title: HOME_SOCIAL_TITLE, description: SITE_DESCRIPTION }),
 };
 
 // Organization JSON-LD — injected on every page via root layout.
@@ -136,16 +131,34 @@ export const metadata: Metadata = {
 // copy used to live in <body> — merged here so crawlers see one story).
 // sameAs = union of the two former lists, minus the stale trypancake.ai
 // domain; LinkedIn slug matches what the Footer actually links to (get-pancake).
+// 2026-10-07 (audit 7.6): legalName, founders and the support contact tell
+// crawlers which "Pancake" this is (PancakeSwap, Pancake POS and another MCP
+// server share the name); alternateName adds the domain, like the WebSite node.
+// description (SITE_DESCRIPTION) and foundingDate are unchanged: both wait on
+// the founder (D10, D20).
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   "@id": `${SITE_ORIGIN}/#organization`,
   name: "Pancake",
-  alternateName: "Pancake AI",
+  legalName: "Basalt AI Inc.",
+  alternateName: ["Pancake AI", SITE_HOST],
   url: SITE_ORIGIN,
   logo: `${SITE_ORIGIN}/pancake-mark.png`,
   description: SITE_DESCRIPTION,
   foundingDate: "2024",
+  // Titles as /careers lists them (TEAM in app/careers/page.tsx).
+  founder: [
+    { "@type": "Person", name: "Guillaume Marquis", jobTitle: "Co-founder & CEO" },
+    { "@type": "Person", name: "François de Fitte", jobTitle: "Co-founder & COO" },
+  ],
+  email: SUPPORT_EMAIL,
+  contactPoint: {
+    "@type": "ContactPoint",
+    contactType: "customer support",
+    email: SUPPORT_EMAIL,
+    url: `${SITE_ORIGIN}${SUPPORT_PATH}`,
+  },
   address: {
     "@type": "PostalAddress",
     streetAddress: "535 Mission St",

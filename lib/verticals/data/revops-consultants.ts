@@ -10,7 +10,7 @@ export const revopsConsultants: VerticalConfig = {
   status: "approved",
   category: "Sales, GTM & recruiting",
   evidence: "seo-bet",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "RevOps consultants",
@@ -49,7 +49,7 @@ export const revopsConsultants: VerticalConfig = {
           { name: "Omar Tahboub", role: "Head of RevOps", company: "Quoinbridge", kind: "keyword", signal: "Posted on HubSpot" },
           { name: "Felicia Sandoval", role: "Head of Marketing", company: "Newelstone", kind: "hiring", signal: "HubSpot admin role" },
           { name: "Declan Moreau", role: "COO", company: "Scupper Freight", kind: "keyword", signal: "Posted on lead routing" },
-          { name: "Sunita Rao", role: "CRO", company: "Corbelworks", kind: "competitor", signal: "Liked an Ironbark post" },
+          { name: "Sunita Rao", role: "CRO", company: "Corbelworks", kind: "competitor", signal: "Engaged with Ironbark" },
         ],
         featured: {
           why: "Wainsford Supply is a 140-person US B2B company. Its open sales roles name HubSpot, and Gretchen runs the sales team.",
@@ -57,7 +57,7 @@ export const revopsConsultants: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Gretchen, nice to connect. I help sales teams set up their CRM, and every team reads its pipeline differently. Which report do you look at first on Monday?",
+          "Hi Gretchen, I help sales teams set up their CRM, and every team reads its pipeline differently. Which report do you look at first on Monday?",
       },
       {
         kind: "hiring",
@@ -82,7 +82,7 @@ export const revopsConsultants: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Terrence, thanks for the connection. I spend my days untangling messy CRM setups. Which field in yours does nobody trust?",
+          "Hi Terrence, I spend my days untangling messy CRM setups. Which field in yours does nobody trust?",
       },
       {
         kind: "keyword",
@@ -97,7 +97,7 @@ export const revopsConsultants: VerticalConfig = {
         leads: [
           { name: "Bianca Morales", role: "VP Sales", company: "Brailwick", kind: "keyword", signal: "Posted on forecasting" },
           { name: "Hamid Karimi", role: "CRO", company: "Sheave Data", kind: "keyword", signal: "Posted on a CRM move" },
-          { name: "Joanna Pruitt", role: "Head of Sales", company: "Coamingdale", kind: "influencer", signal: "Liked an Oakes post" },
+          { name: "Joanna Pruitt", role: "Head of Sales", company: "Coamingdale", kind: "influencer", signal: "Engaged with a post" },
           { name: "Vikram Sethi", role: "RevOps Lead", company: "Cleatwise", kind: "hiring", signal: "RevOps role posted" },
           { name: "Camille Dufresne", role: "COO", company: "Taffwell", kind: "keyword", signal: "Posted on pipeline" },
         ],
@@ -160,7 +160,7 @@ export const revopsConsultants: VerticalConfig = {
     },
     {
       q: "Can one workspace cover HubSpot and Salesforce clients?",
-      a: "Yes. Stack matches any tool you list, so one workspace can watch both. If your two offers differ, a second $99 workspace keeps the messages apart.",
+      a: "Yes. Stack matches any tool you list. If the two offers need different messages, give each its own Play in the same workspace, on the same $99 plan.",
     },
   ],
 

@@ -33,9 +33,12 @@ export function LpHero() {
       </div>
       <div className="lp-hero-inner">
         <div className="lp-perspective"><AudienceSelector /></div>
-        <h1 id="lp-hero-title" className="lp-hero-title lp-display">
+        {/* A div since 2026-10-07: the grid the human and agent copies overlay
+            in. The H1 (id lp-hero-title, which aria-labelledby above names) is
+            the human copy inside it — AudienceHeadline in LpAudience.tsx. */}
+        <div className="lp-hero-title lp-display">
           <AudienceHeadline />
-        </h1>
+        </div>
         <div className="lp-hero-col lp-hero-col--human">
           {/* The hero lede = the Google description line (SITE_DESCRIPTION,
               lib/copy.ts): founder-sensitive, 2026-09-30 AI SEO retired. */}

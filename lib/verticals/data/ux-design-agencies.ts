@@ -9,7 +9,7 @@ export const uxDesignAgencies: VerticalConfig = {
   status: "approved",
   category: "Marketing & creative agencies",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "UX design agencies",
@@ -55,7 +55,7 @@ export const uxDesignAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Sana, good to be connected. We’re a UX studio, and onboarding is the flow we study most. Which product do you think gets it right?",
+          "Hi Sana, we’re a UX studio, and onboarding is the flow we study most. Which product do you think gets it right?",
       },
       {
         kind: "keyword",
@@ -71,7 +71,7 @@ export const uxDesignAgencies: VerticalConfig = {
           { name: "Maeve Donnelly", role: "Head of Product", company: "Wayfold", kind: "keyword", signal: "Posted about drop-off" },
           { name: "Chidi Ekwueme", role: "VP Product", company: "Loamcast", kind: "keyword", signal: "Posted on activation" },
           { name: "Solveig Lindqvist", role: "Product Director", company: "Bellwort", kind: "stack", signal: "Pendo in job posts" },
-          { name: "Rajiv Subramani", role: "CPO", company: "Siskin Cloud", kind: "influencer", signal: "Liked a Lund post" },
+          { name: "Rajiv Subramani", role: "CPO", company: "Siskin Cloud", kind: "influencer", signal: "Engaged with a Lund post" },
           { name: "Tessa Marchbanks", role: "Head of Growth", company: "Hatchwick", kind: "keyword", signal: "Posted on time to value" },
         ],
         featured: {
@@ -93,11 +93,11 @@ export const uxDesignAgencies: VerticalConfig = {
           { kind: "keyword", items: ["dashboard redesign", "user research"] },
         ],
         leads: [
-          { name: "Pieter Achterberg", role: "CPO", company: "Beamline", kind: "competitor", signal: "Liked a Crosshatch post" },
+          { name: "Pieter Achterberg", role: "CPO", company: "Beamline", kind: "competitor", signal: "Engaged with a post" },
           { name: "Ifeoma Ebube", role: "VP Product", company: "Bunting Labs", kind: "competitor", signal: "Commented on a post" },
           { name: "Ander Irigoyen", role: "Head of Design", company: "Oakhurst Cloud", kind: "hiring", signal: "UX researcher role" },
           { name: "Emiko Morimoto", role: "Head of Product", company: "Spokewise", kind: "keyword", signal: "Posted on a redesign" },
-          { name: "Carter Blakely", role: "CTO", company: "Velvetrun", kind: "competitor", signal: "Liked a Gouache post" },
+          { name: "Carter Blakely", role: "CTO", company: "Velvetrun", kind: "competitor", signal: "Engaged with Gouache" },
         ],
         featured: {
           why: "Beamline is a 150-person US B2B SaaS company. Pieter runs product and liked a Crosshatch UX post on dashboard redesigns.",
@@ -148,7 +148,7 @@ export const uxDesignAgencies: VerticalConfig = {
     },
     {
       q: "We book up for months. Can we stop outreach?",
-      a: "Yes. Pause the campaign when the studio is full and resume it when you have room.",
+      a: "Yes. Pause the Play when the studio is full and resume it when you have room.",
     },
     {
       q: "Our projects start at $50k. Can it skip tiny teams?",

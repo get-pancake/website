@@ -5,6 +5,7 @@ import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { DemoHero } from "@/components/sections/demo/DemoHero";
 import { FOOTER, META } from "@/components/sections/demo/demo-copy";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/demo.css";
 import "@/app/_styles/ai-sales-call.css";
@@ -33,20 +34,9 @@ export const metadata: Metadata = {
   description: META.description,
   robots: { index: false, follow: false },
   alternates: { canonical: `${SITE_ORIGIN}/demo` },
-  openGraph: {
-    type: "website",
-    url: `${SITE_ORIGIN}/demo`,
-    title: META.ogTitle,
-    description: META.description,
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: META.ogTitle }],
-    siteName: "Pancake",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: META.ogTitle,
-    description: META.description,
-    images: ["/og-image.png"],
-  },
+  // Share card via lib/social-meta.ts (2026-10-07, audit 8.1/8.4): the
+  // homepage card, so its alt is the text in that image, not "Book a demo".
+  ...social({ path: "/demo", title: META.ogTitle, description: META.description }),
 };
 
 export default function DemoPage() {

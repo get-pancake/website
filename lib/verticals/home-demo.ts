@@ -37,8 +37,8 @@ export const HOME_DEMO: DemoSource = {
         leads: [
           { name: "Tamsin Okafor", role: "Director of PMM", company: "Quillfern", kind: "keyword", signal: "Posted about a release" },
           { name: "Wes Pomeroy", role: "VP Marketing", company: "Stackhollow", kind: "keyword", signal: "Posted on launch day" },
-          { name: "Imani Coldwell", role: "CMO", company: "Ferngate", kind: "influencer", signal: "Liked an Ellwood post" },
-          { name: "Anders Forsythe", role: "PMM Lead", company: "Loomwise", kind: "competitor", signal: "Liked a Bramble post" },
+          { name: "Imani Coldwell", role: "CMO", company: "Ferngate", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Anders Forsythe", role: "PMM Lead", company: "Loomwise", kind: "competitor", signal: "Engaged with Bramble" },
           { name: "Rosa Hartigan", role: "Founder & CEO", company: "Cindermoor", kind: "keyword", signal: "Posted a product demo" },
         ],
         featured: {
@@ -60,11 +60,11 @@ export const HOME_DEMO: DemoSource = {
           { kind: "influencer", items: ["Tovah Ellwood", "Owen Pascoe"] },
         ],
         leads: [
-          { name: "Nate Trevino", role: "Head of Content", company: "Quorra Labs", kind: "competitor", signal: "Liked a Bramble post" },
-          { name: "Chloe Abelard", role: "Brand Director", company: "Hexfield", kind: "competitor", signal: "Liked a Ferrow post" },
+          { name: "Nate Trevino", role: "Head of Content", company: "Quorra Labs", kind: "competitor", signal: "Engaged with Bramble" },
+          { name: "Chloe Abelard", role: "Brand Director", company: "Hexfield", kind: "competitor", signal: "Engaged with Ferrow" },
           { name: "Omar Tessaro", role: "VP Marketing", company: "Gridwell", kind: "keyword", signal: "Posted a customer story" },
-          { name: "Bea Soriano", role: "CMO", company: "Cloudnook", kind: "influencer", signal: "Liked a Pascoe post" },
-          { name: "Jonah Stoddard", role: "Content Lead", company: "Signalry", kind: "competitor", signal: "Liked a Bramble post" },
+          { name: "Bea Soriano", role: "CMO", company: "Cloudnook", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Jonah Stoddard", role: "Content Lead", company: "Signalry", kind: "competitor", signal: "Engaged with Bramble" },
         ],
         featured: {
           why: "Quorra Labs is a 90-person US SaaS company. Nate leads content and liked a Bramble Reels post about explainer videos.",
@@ -96,8 +96,11 @@ export const HOME_DEMO: DemoSource = {
           confidence: 88,
           seniority: "VP",
         },
+        // 2026-10-07 (audit 1.3): "nice to connect" told the invite step. A hiring lead has no
+        // sighting, so the message can't cite the job post (validate.ts CT-08, "Written in your
+        // Brain voice" under it): it opens on what the studio does instead.
         message:
-          "Hi Elena, nice to connect. When your team ships a feature, who makes the launch video?",
+          "Hi Elena, we make launch videos for SaaS teams. When your team ships a feature, who makes the video?",
       },
     ],
   },

@@ -18,7 +18,10 @@
 //                 Industries → page, URLs resolve. Hub: ItemList = the approved pages.
 //   3. Lints      BANNED (validate.ts) over the rendered <main> text minus LpNav and LpFooter
 //                 (FAQ answers keep their negation allowance; LpPricing's lines are
-//                 allow-listed only when VX_PRICING_MODE = "homepage"), lowercase "pancake".
+//                 allow-listed only when VX_PRICING_MODE = "homepage"), lowercase "pancake";
+//                 and, with no allowance, CAMPAIGN ("Play" / "sequence", never "campaign") and
+//                 WORKSPACE_SPLIT (a second audience is a second Play, never a second $99
+//                 workspace: audit 1.4, 2026-10-07).
 //   4. DOM        ≤1,400 elements in <main> (the nav's Industries panel not counted: it is the
 //                 founder's site-wide addition and grows with the registry), ≤650 in
 //                 .vx-demo__card, exactly one <h1>, and
@@ -58,7 +61,7 @@ const EXPECTED_PAGES = 40;
 /* ── registry + copy (TS via jiti) ─────────────────────────────────────────── */
 const jiti = req("jiti")(join(root, "index.js"), { alias: { "@": root }, interopDefault: true, cache: false });
 const { ALL_VERTICALS } = jiti("./lib/verticals/data/index.ts");
-const { BANNED } = jiti("./lib/verticals/validate.ts");
+const { BANNED, CAMPAIGN, WORKSPACE_SPLIT } = jiti("./lib/verticals/validate.ts");
 const COPY = jiti("./components/sections/verticals/vx-copy.ts");
 const approved = ALL_VERTICALS.filter((v) => v.status === "approved");
 
@@ -163,8 +166,17 @@ const NEGATION = /^(No\b|Not\b|Never\b|There[’']?s no\b|There is no\b|Pancake 
 const sentences = (s) => s.split(/(?<=[.!?])\s+/);
 const shingles = new Map();
 
+/** Rules with no allowance (not even in FAQ answers or homepage pricing lines). */
+const STRICT = [
+  [CAMPAIGN, "campaign: say Play or sequence"],
+  [WORKSPACE_SPLIT, "one company split across $99 workspaces"],
+];
+
 function lintText(where, blocks, faqAnswers, pricingLines) {
   const allow = new Set(COPY.VX_PRICING_MODE === "homepage" ? pricingLines : []);
+  for (const b of [...blocks, ...faqAnswers]) {
+    for (const [re, label] of STRICT) if (re.test(b)) fail("lints", where, `banned (${label}): "${b.slice(0, 140)}"`);
+  }
   for (const b of blocks) {
     if (allow.has(b)) continue;
     for (const [re, label] of BANNED) if (re.test(b)) fail("lints", where, `banned (${label}): "${b.slice(0, 140)}"`);

@@ -163,8 +163,10 @@ function F2Stage() {
     <div className="lp-feat-stage lp-feat-stage--f2" aria-hidden="true">
       <div className="lp-feat-f2">
         {/* a generic social post (no platform chrome since 2026-09-29: no connection degree,
-            no reaction bubbles, no brand blue): icon layer = the site's baked SVG, inlined so
-            the globe / action icons animate */}
+            no reaction bubbles, no brand blue; since 2026-10-07 no globe and no repost / send
+            icons either, features.css hides them, so the action row is a like and a comment
+            with their counts): icon layer = the site's baked SVG, inlined so the action icons
+            animate */}
         <div className="lp-f2-post">
           <svg
             className="lp-f2-posticons"
@@ -178,8 +180,11 @@ function F2Stage() {
             <p className="lp-f2-name">
               Sarah Velasquez
             </p>
-            <p className="lp-f2-headline">Principal Design Engineer @ Shift | Ex-Apple Design</p>
-            <p className="lp-f2-time">3h •</p>
+            {/* 2026-10-07: a plain role (was "Principal Design Engineer @ Shift | Ex-Apple
+                Design", a real brand in an invented profile, in the platform's headline format) */}
+            <p className="lp-f2-headline">Design lead at Shift</p>
+            {/* the "•" led to the globe, hidden since 2026-10-07 */}
+            <p className="lp-f2-time">3h</p>
           </div>
           {/* typed by revealing this very run (clip staircase + caret, lp-feat-timelines.ts) */}
           <p className="lp-f2-body">We’re launching on Product Hunt in 21 days 🚀</p>
@@ -197,11 +202,10 @@ function F2Stage() {
               <Skel w="136.8px" />
             </span>
           </div>
-          {/* the final counts are the in-flow text; the timeline stacks the ticking digits over them */}
+          {/* the final counts are the in-flow text; the timeline stacks the ticking digits over them.
+              Like and comment only: the repost and send counts left with their icons (2026-10-07) */}
           <span className="lp-f2-count" style={{ left: "32.4px" }}><span className="lp-f2-n lp-f2-n--final">33</span></span>
           <span className="lp-f2-count" style={{ left: "79.8px" }}><span className="lp-f2-n lp-f2-n--final">5</span></span>
-          <span className="lp-f2-count" style={{ left: "119.2px" }}><span className="lp-f2-n lp-f2-n--final">5</span></span>
-          <span className="lp-f2-count" style={{ left: "158.6px" }}><span className="lp-f2-n lp-f2-n--final">5</span></span>
         </div>
 
         {/* the draft card in its rainbow ring (see lp-feat-art.ts for the ring's construction) */}
@@ -222,9 +226,12 @@ function F2Stage() {
               <span className="lp-f2-eyebrow-sent">Message sent</span>
               <span className="lp-f2-eyebrow-draft">Draft ready</span>
             </p>
+            {/* 2026-10-07: the message asks about her launch instead of pitching (was "We make SaaS
+                launch videos people understand in seconds. Want an idea for yours?"), matching the
+                card's copy. Shorter, so it may wrap to four of the card's five lines. */}
             <p className="lp-f2-msg">
-              Hey Sarah, saw you’re launching on Product Hunt in 21 days. We make SaaS launch videos people
-              understand in seconds. Want an idea for yours?
+              Hey Sarah, saw you’re launching on Product Hunt in 21 days. How will you show it on launch
+              day, a video or screenshots?
             </p>
           </div>
         </div>
@@ -404,7 +411,13 @@ function F5Stage() {
   );
 }
 
-/* ── f4 · reply-rate chart, What worked, Brain updated ── */
+/* ── f4 · a Play's replies, Brain learned, Brain updated ──
+   2026-10-07: the card sells what the app does. No "+56% reply rate vs last
+   period" (an invented lift) and no green arrow: the chart is one Play's
+   replies, week by week, the per-Play stat the app shows. "What worked"
+   (opening, length, ask: the app learns no message patterns) became "Brain
+   learned" with ICP lessons from lead reviews, and the brain card points to
+   the next search. */
 
 function F4Stage() {
   return (
@@ -412,10 +425,9 @@ function F4Stage() {
       <div className="lp-feat-f4">
         <div className="lp-f4-card lp-f4-hair lp-f4-graph">
           <div className="lp-f4-stat">
-            <span className="lp-f4-pct">+56%</span>
-            <img className="lp-f4-arrow" src="/lp/lp-f4-arrow.svg" alt="" width={17} height={17} loading="lazy" decoding="async" />
+            <span className="lp-f4-pct">12</span>
           </div>
-          <p className="lp-f4-vs">reply rate vs last period</p>
+          <p className="lp-f4-vs">Replies · Founders about to launch</p>
           <div className="lp-f4-bars">
             {Array.from({ length: 12 }, (_, i) => (
               <span key={i} className="lp-f4-bar" />
@@ -430,11 +442,11 @@ function F4Stage() {
         </div>
 
         <div className="lp-f4-card lp-f4-hair lp-f4-worked">
-          <p className="lp-f4-ctitle">What worked</p>
+          <p className="lp-f4-ctitle">Brain learned</p>
           <div className="lp-f4-chips">
-            <span className="lp-f4-chip">Lead with launch timing</span>
-            <span className="lp-f4-chip">Shorter intros</span>
-            <span className="lp-f4-chip">Offer one idea</span>
+            <span className="lp-f4-chip">Founders, not marketers</span>
+            <span className="lp-f4-chip">Seed to Series A</span>
+            <span className="lp-f4-chip">US only</span>
           </div>
         </div>
 
@@ -448,7 +460,7 @@ function F4Stage() {
           />
           <div className="lp-f4-card lp-f4-braincard">
             <p className="lp-f4-ctitle">Brain updated</p>
-            <p className="lp-f4-brainsub">Winning patterns saved for the next campaign.</p>
+            <p className="lp-f4-brainsub">Your next search starts from it.</p>
           </div>
         </div>
       </div>

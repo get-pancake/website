@@ -11,6 +11,10 @@ import { CursorMark, HermesMark, OpenClawMark } from "./LpAgentMarks";
 // page (pancake-cmo, PAN-862) pins this exact sentence — change both together, including the
 // install.md host when NEXT_PUBLIC_SITE_ORIGIN moves the site (pancake-cmo MCP_INSTALL_DOC_URL).
 const instruction = `Set up Pancake by reading ${SITE_ORIGIN}/install.md and following its instructions.`;
+// The terminal shows the same sentence with a break opportunity before the file name (2026-10-07):
+// a narrow phone wrapped it as "…/install.m" + "d and following…". It now wraps after the host's
+// slash, never inside "install.md". Visible text and the copied string are unchanged.
+const [instructionLead, instructionTail] = instruction.split("install.md");
 
 export function LpAgentStart() {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
@@ -50,7 +54,7 @@ export function LpAgentStart() {
       </ul>
     </div>
     <div className="lp-agent-terminal" data-copy-state={status}>
-      <code ref={code} className="lp-agent-terminal__code">{instruction}</code>
+      <code ref={code} className="lp-agent-terminal__code">{instructionLead}<wbr />install.md{instructionTail}</code>
       <button
         type="button"
         className="lp-agent-terminal__copy"

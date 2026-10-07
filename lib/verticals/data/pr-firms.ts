@@ -8,7 +8,7 @@ export const prFirms: VerticalConfig = {
   status: "approved",
   category: "Marketing & creative agencies",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "PR firms",
@@ -54,7 +54,7 @@ export const prFirms: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Harriet, thanks for the connection. We’re a tech PR firm, so I keep a running list of the outlets people want most. Which one would you most like to land in?",
+          "Hi Harriet, we’re a tech PR firm, so I keep a running list of the outlets people want most. Which one would you most like to land in?",
       },
       {
         kind: "keyword",
@@ -69,9 +69,9 @@ export const prFirms: VerticalConfig = {
         leads: [
           { name: "Kojo Amankwah", role: "Founder & CEO", company: "Parcelwise", kind: "keyword", signal: "Asked how to get press" },
           { name: "Lucia Benedetti", role: "Co-founder", company: "Quartzline", kind: "keyword", signal: "Posted on founder story" },
-          { name: "Rohan Iyengar", role: "CEO", company: "Meridel", kind: "competitor", signal: "Liked a Wickline post" },
+          { name: "Rohan Iyengar", role: "CEO", company: "Meridel", kind: "competitor", signal: "Engaged with Wickline" },
           { name: "Josephine Kurtz", role: "Founder", company: "Quillstone", kind: "keyword", signal: "Posted about coverage" },
-          { name: "Byron Achebe", role: "Co-founder", company: "Kindling Robotics", kind: "influencer", signal: "Liked a Khalidi post" },
+          { name: "Byron Achebe", role: "Co-founder", company: "Kindling Robotics", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Parcelwise is a 40-person US logistics software company. Kojo founded it and asked in a post this week how startups get press.",
@@ -93,7 +93,7 @@ export const prFirms: VerticalConfig = {
         ],
         leads: [
           { name: "Toni Sutherland", role: "Head of Comms", company: "Veritrail", kind: "influencer", signal: "Commented on a post" },
-          { name: "Garrett Oberlin", role: "VP Comms", company: "Weyburn Health", kind: "influencer", signal: "Liked an Esterhaus post" },
+          { name: "Garrett Oberlin", role: "VP Comms", company: "Weyburn Health", kind: "influencer", signal: "Engaged with a post" },
           { name: "Anjali Raman", role: "Comms Director", company: "Beaconrise", kind: "keyword", signal: "Posted on pitching press" },
           { name: "Emilio Zavala", role: "Head of Brand", company: "Sablecrest", kind: "hiring", signal: "Comms lead role open" },
           { name: "Efua Ansah", role: "Director of Comms", company: "Northgale", kind: "influencer", signal: "Commented on a post" },

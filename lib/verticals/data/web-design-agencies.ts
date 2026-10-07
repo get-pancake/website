@@ -9,7 +9,7 @@ export const webDesignAgencies: VerticalConfig = {
   status: "approved",
   category: "Marketing & creative agencies",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "web design agencies",
@@ -48,7 +48,7 @@ export const webDesignAgencies: VerticalConfig = {
           { name: "Bashir Sadeghi", role: "VP Marketing", company: "Lodgepole Labs", kind: "hiring", signal: "Web designer role" },
           { name: "Delphine Roux", role: "Brand Manager", company: "Quiltline", kind: "keyword", signal: "Posted on a redesign" },
           { name: "Evan Grabowski", role: "Growth Lead", company: "Cairnwell", kind: "stack", signal: "Webflow in job posts" },
-          { name: "Mariana Esposito", role: "Marketing Lead", company: "Plinthly", kind: "competitor", signal: "Liked a Pixelmoor post" },
+          { name: "Mariana Esposito", role: "Marketing Lead", company: "Plinthly", kind: "competitor", signal: "Engaged with Pixelmoor" },
         ],
         featured: {
           why: "Joanna heads marketing at Tillwright, a 110-person US B2B software company with a Webflow developer role open.",
@@ -56,7 +56,7 @@ export const webDesignAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Joanna, thanks for connecting. I run a web studio, so I’m forever looking at other companies’ sites. Which page on yours would you rebuild first?",
+          "Hi Joanna, I run a web studio, so I’m forever looking at other companies’ sites. Which page on yours would you rebuild first?",
       },
       {
         kind: "keyword",
@@ -71,7 +71,7 @@ export const webDesignAgencies: VerticalConfig = {
         leads: [
           { name: "Ravi Chandrasekar", role: "VP Marketing", company: "Larkhaven", kind: "keyword", signal: "Posted about a new site" },
           { name: "Adeline Nkosi", role: "Founder & CEO", company: "Birchlight", kind: "keyword", signal: "Posted “new website”" },
-          { name: "Wyatt Pennock", role: "Growth Marketer", company: "Lumkin", kind: "influencer", signal: "Liked a Ruskin post" },
+          { name: "Wyatt Pennock", role: "Growth Marketer", company: "Lumkin", kind: "influencer", signal: "Engaged with a post" },
           { name: "Leilani Nakoa", role: "Head of Marketing", company: "Greywick", kind: "hiring", signal: "Web developer role" },
           { name: "Simone Gallagher", role: "Brand Manager", company: "Vesperline", kind: "keyword", signal: "Posted on migration" },
         ],
@@ -106,7 +106,7 @@ export const webDesignAgencies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Terrence, happy to be connected. I rebuild websites, and who owns the site varies a lot between teams. Who updates yours day to day, marketing or engineering?",
+          "Hi Terrence, I rebuild websites, and who owns the site varies a lot between teams. Who updates yours day to day, marketing or engineering?",
       },
     ],
   },

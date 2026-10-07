@@ -8,7 +8,7 @@ export const developerTools: VerticalConfig = {
   status: "approved",
   category: "Startups & solo founders",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "devtools startups",
@@ -47,7 +47,7 @@ export const developerTools: VerticalConfig = {
           { name: "Obinna Egwu", role: "Head of Platform", company: "Pinecask", kind: "stack", signal: "CircleCI in job posts" },
           { name: "Magdalena Wojcik", role: "Eng Manager", company: "Quillfeather", kind: "keyword", signal: "Posted on flaky tests" },
           { name: "Cyrus Farahani", role: "CTO", company: "Driftmark", kind: "hiring", signal: "Build engineer role" },
-          { name: "Makana Palakiko", role: "Staff Engineer", company: "Wickstone", kind: "competitor", signal: "Liked a Relaywright post" },
+          { name: "Makana Palakiko", role: "Staff Engineer", company: "Wickstone", kind: "competitor", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Waybright is a 340-person US logistics software company whose job posts name Jenkins. Signe leads engineering there.",
@@ -71,9 +71,9 @@ export const developerTools: VerticalConfig = {
         leads: [
           { name: "Chidinma Uzor", role: "Head of AI", company: "Loomtide", kind: "keyword", signal: "Posted about LLM costs" },
           { name: "Viktor Lazarev", role: "AI Engineer", company: "Lumenkeel", kind: "keyword", signal: "Posted on rate limits" },
-          { name: "Soo-ah Baek", role: "ML Engineer", company: "Runnelwood", kind: "influencer", signal: "Liked a Kallio post" },
+          { name: "Soo-ah Baek", role: "ML Engineer", company: "Runnelwood", kind: "influencer", signal: "Engaged with a post" },
           { name: "Wendell Bratton", role: "CTO", company: "Mossbank", kind: "stack", signal: "OpenAI API in job posts" },
-          { name: "Ximena Sepulveda", role: "Eng Manager", company: "Mintwater", kind: "competitor", signal: "Liked a Throttlebay post" },
+          { name: "Ximena Sepulveda", role: "Eng Manager", company: "Mintwater", kind: "competitor", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Loomtide, a 90-person US startup, builds on LLMs. Chidinma leads AI and posted this week about rising LLM costs.",
@@ -99,7 +99,7 @@ export const developerTools: VerticalConfig = {
           { name: "Nadira Hussain", role: "Head of Infra", company: "Millrace", kind: "hiring", signal: "Platform engineer role" },
           { name: "Marlon Espinoza", role: "Platform Lead", company: "Arcwright", kind: "stack", signal: "Terraform in job posts" },
           { name: "Evangeline Tran", role: "Eng Manager", company: "Spoolhaven", kind: "keyword", signal: "Posted on golden paths" },
-          { name: "Rowan Blackstock", role: "Tech Lead", company: "Kindlewood", kind: "influencer", signal: "Liked a Vashenko post" },
+          { name: "Rowan Blackstock", role: "Tech Lead", company: "Kindlewood", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Oxbowline, a 450-person US fintech, has two platform engineer roles open. Quentin is its VP of Engineering.",
@@ -107,7 +107,7 @@ export const developerTools: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Quentin, glad we’re connected. We build internal developer platforms. How long does a new engineer take to ship a first change?",
+          "Hi Quentin, we build internal developer platforms. How long does a new engineer take to ship a first change?",
       },
     ],
   },
@@ -148,7 +148,7 @@ export const developerTools: VerticalConfig = {
   faq: [
     {
       q: "Developers ignore sales outreach. Will this work?",
-      a: "Pancake reaches the roles you pick, like engineering managers or heads of platform. It connects without a pitch. When an engineer posted about the problem, the message starts from that post.",
+      a: "Pancake reaches the roles you pick, like engineering managers or heads of platform. It opens without a pitch. When an engineer posted about the problem, the message starts from that post.",
     },
     {
       q: "We’re open source. Can it find our GitHub users?",
@@ -160,7 +160,7 @@ export const developerTools: VerticalConfig = {
     },
     {
       q: "Can each founder send from their own account?",
-      a: "Not from one workspace. Each workspace has one sender, so pick the founder whose profile engineers trust.",
+      a: "Yes. Connect each founder’s account and choose who sends for each Play. A Play can also rotate across up to ten accounts, and each lead keeps one sender.",
     },
   ],
 

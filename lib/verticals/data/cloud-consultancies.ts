@@ -13,7 +13,7 @@ export const cloudConsultancies: VerticalConfig = {
   status: "approved",
   category: "IT, cloud & security",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "cloud consultancies",
@@ -52,7 +52,7 @@ export const cloudConsultancies: VerticalConfig = {
           { name: "Oksana Bilyk", role: "IT Director", company: "Ollerton Savings", kind: "stack", signal: "vSphere in job posts" },
           { name: "Tejas Wadhwa", role: "CIO", company: "Glenhaven Health", kind: "keyword", signal: "VMware licensing post" },
           { name: "Selma Idrissi", role: "Head of IT", company: "Tamsworth", kind: "hiring", signal: "Cloud architect role" },
-          { name: "Rhett Galloway", role: "CTO", company: "Wendham", kind: "competitor", signal: "Liked a Skyfold post" },
+          { name: "Rhett Galloway", role: "CTO", company: "Wendham", kind: "competitor", signal: "Engaged with Skyfold" },
         ],
         featured: {
           why: "Brantmoor Mutual, a 600-person US insurer, asks for VMware skills in its job posts. Gustavo is VP of IT there.",
@@ -60,7 +60,7 @@ export const cloudConsultancies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Gustavo, good to be connected. My team moves on-prem servers to the cloud. What’s the next big infrastructure decision on your plate?",
+          "Hi Gustavo, my team moves on-prem servers to the cloud. What’s the next big infrastructure decision on your plate?",
       },
       {
         kind: "hiring",
@@ -78,7 +78,7 @@ export const cloudConsultancies: VerticalConfig = {
           { name: "Conrad Vishnevsky", role: "VP Engineering", company: "Quenby", kind: "hiring", signal: "SRE role open" },
           { name: "Florence Ogundipe", role: "CTO", company: "Kessock", kind: "stack", signal: "Terraform in job posts" },
           { name: "Dario Montesano", role: "Eng Director", company: "Brisbeck Labs", kind: "keyword", signal: "Posted about on-call" },
-          { name: "Shondra Pressley", role: "CTO", company: "Wexcombe", kind: "influencer", signal: "Liked a Ferrier post" },
+          { name: "Shondra Pressley", role: "CTO", company: "Wexcombe", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Xiomara heads the platform team at Tarlton Health, a 320-person US health-tech company. Its DevOps engineer role is open.",
@@ -86,7 +86,7 @@ export const cloudConsultancies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Xiomara, thanks for accepting. We run DevOps as a service, mostly infrastructure as code and on-call cover. How does your team split its time between new work and upkeep?",
+          "Hi Xiomara, we run DevOps as a service, mostly infrastructure as code and on-call cover. How does your team split its time between new work and upkeep?",
       },
       {
         kind: "keyword",
@@ -102,8 +102,8 @@ export const cloudConsultancies: VerticalConfig = {
         leads: [
           { name: "Navid Esfandiari", role: "CTO", company: "Sprywell", kind: "keyword", signal: "Posted on cloud costs" },
           { name: "Justyna Kowal", role: "VP Engineering", company: "Ulvern", kind: "keyword", signal: "Posted about AWS bill" },
-          { name: "Hemant Sabharwal", role: "CTO", company: "Fallowfield", kind: "influencer", signal: "Liked a Sarangi post" },
-          { name: "Annika Klug", role: "Head of IT", company: "Wellsby", kind: "competitor", signal: "Liked a Vantora post" },
+          { name: "Hemant Sabharwal", role: "CTO", company: "Fallowfield", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Annika Klug", role: "Head of IT", company: "Wellsby", kind: "competitor", signal: "Engaged with Vantora" },
           { name: "Bolanle Fashola", role: "CFO", company: "Ternbury", kind: "hiring", signal: "FinOps analyst role" },
         ],
         featured: {
@@ -165,7 +165,7 @@ export const cloudConsultancies: VerticalConfig = {
     },
     {
       q: "We sell migrations, DevOps and FinOps. Can one workspace do all three?",
-      a: "Yes, with one ICP and one campaign across them. To pitch each offer to a different buyer, run one workspace per offer, each on its own $99 plan.",
+      a: "Yes. Give each offer its own Play, with its own targeting and messages. All three share one Brain and one $99 plan.",
     },
   ],
 

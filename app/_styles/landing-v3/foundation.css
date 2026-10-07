@@ -176,7 +176,7 @@ html:has(main.lp) {
      jumps and anchor overshoot; `auto` pins the real size after first
      render). */
   .lp-banner {
-    contain-intrinsic-size: auto 840px;
+    contain-intrinsic-size: auto 704px; /* 361×672/370 card + 48 padding at 393 (2026-10-07: card shortened) */
   }
   .lp-feat {
     contain-intrinsic-size: auto 2890px; /* rev2 band is taller */

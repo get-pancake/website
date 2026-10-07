@@ -11,7 +11,7 @@ export const shopifyAgencies: VerticalConfig = {
   status: "approved",
   category: "Tech & build agencies",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "Shopify agencies",
@@ -49,7 +49,7 @@ export const shopifyAgencies: VerticalConfig = {
           { name: "Camila Restrepo", role: "Head of E-commerce", company: "Tidelark", kind: "stack", signal: "Shopify in job posts" },
           { name: "Dominic Pellegrino", role: "Founder & CEO", company: "Saltbarrow", kind: "stack", signal: "Shopify in job posts" },
           { name: "Jada Covington", role: "E-commerce Director", company: "Brinely", kind: "hiring", signal: "Shopify developer role" },
-          { name: "Hana Tomczak", role: "Head of Digital", company: "Goldwren", kind: "competitor", signal: "Liked a Brineworks post" },
+          { name: "Hana Tomczak", role: "Head of Digital", company: "Goldwren", kind: "competitor", signal: "Engaged with a post" },
           { name: "Rowan Aldridge", role: "VP E-commerce", company: "Cindercove", kind: "keyword", signal: "Posted on a Plus move" },
         ],
         featured: {
@@ -58,7 +58,7 @@ export const shopifyAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Camila, glad to connect. I build online stores, so checkouts are a bit of an obsession. Which store do you think has the best one?",
+          "Hi Camila, I build online stores, so checkouts are a bit of an obsession. Which store do you think has the best one?",
       },
       {
         kind: "hiring",
@@ -74,8 +74,8 @@ export const shopifyAgencies: VerticalConfig = {
           { name: "Priyanka Thakore", role: "Founder & CEO", company: "Hearthquill", kind: "hiring", signal: "Shopify dev role open" },
           { name: "Elliot Summerfield", role: "E-commerce Manager", company: "Larchly", kind: "hiring", signal: "Theme developer role" },
           { name: "Noor Bakhtiari", role: "Head of E-commerce", company: "Birchfold", kind: "stack", signal: "Shopify in job posts" },
-          { name: "Wendell Prudhomme", role: "COO", company: "Fennerby", kind: "influencer", signal: "Liked an Ashdown post" },
-          { name: "Leilani Mahoe", role: "Director of Digital", company: "Dewmarrow", kind: "influencer", signal: "Liked a Pritchett post" },
+          { name: "Wendell Prudhomme", role: "COO", company: "Fennerby", kind: "influencer", signal: "Engaged with a post" },
+          { name: "Leilani Mahoe", role: "Director of Digital", company: "Dewmarrow", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Hearthquill is a 45-person US home goods brand hiring a Shopify developer. Priyanka is the founder and CEO.",
@@ -83,7 +83,7 @@ export const shopifyAgencies: VerticalConfig = {
           seniority: "Founder",
         },
         message:
-          "Hi Priyanka, thanks for accepting. Store development is what my team does all week, so I hear a lot of wish lists. If you could fix one thing on your store tomorrow, what would it be?",
+          "Hi Priyanka, store development is what my team does all week, so I hear a lot of wish lists. If you could fix one thing on your store tomorrow, what would it be?",
       },
       {
         kind: "keyword",
@@ -100,7 +100,7 @@ export const shopifyAgencies: VerticalConfig = {
           { name: "Meredith Calder", role: "E-commerce Lead", company: "Sedgewren", kind: "keyword", signal: "Posted on conversion" },
           { name: "Anwar Mansour", role: "VP Digital", company: "Veldhaven", kind: "stack", signal: "Magento in job posts" },
           { name: "Sloane Tannenbaum", role: "CMO", company: "Larkfen", kind: "stack", signal: "Magento in job posts" },
-          { name: "Joaquin Beltrán", role: "Founder", company: "Pinewhistle", kind: "competitor", signal: "Liked a Brasshold post" },
+          { name: "Joaquin Beltrán", role: "Founder", company: "Pinewhistle", kind: "competitor", signal: "Engaged with Brasshold" },
         ],
         featured: {
           why: "Mossbright is a 60-person US skincare brand. Sebastián leads e-commerce and posted this week about replatforming the store.",

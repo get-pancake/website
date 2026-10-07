@@ -14,7 +14,17 @@
 // #1037): step 01 ends on "where to find them" (was "where to show up"), step
 // 02 talks Plays + lead approval + outreach (was "gets you found on Google and
 // ChatGPT"), and the step 02 Agents list swaps its Content / AI search rows
-// for Plays / Messages (S2_ROWS in lp-step-data.ts).
+// for Plays / Messages (S2_ROWS in lp-step-data.ts). 2026-10-07: step 02
+// says each Play searches every night for people who fit (it named an
+// intent the product can't see, an overclaim validate.ts bans), and its
+// checklist learns from every review, not every reply (the brain learns from
+// the leads you approve or reject; reply signals are deferred, pancake-cmo
+// ADR 0043).
+// 2026-10-07 (founder): step 03 keeps its title, its body describes what
+// Pancake does after the first message (follows up, reads the reply, answers
+// a yes with your calendar link, hands back the rest) instead of promising a
+// qualified meeting, and the calendar chips say "Booked", not "Closed":
+// Pancake can't know a deal closed.
 
 import { LpStepAnim } from "./LpStepAnim";
 import type { StepVariant } from "./lp-step-timelines";
@@ -44,16 +54,17 @@ const STEPS: Step[] = [
   {
     num: "02",
     title: "Agents start working.",
-    body: "Your Plays find the people ready to buy. You approve each one. Pancake writes to them under your name.",
+    body: "Each Play searches every night for people who fit. You approve each one. Pancake writes to them under your name.",
     variant: "s2",
-    alt: "Animation: an Agents list with Pipeline (24 warm leads), Signals (48 detected), Plays (3 active), Replies (12 received), Messages (72 sent). The Pipeline agent opens its checklist by itself and works through it: monitor buying signals, find people ready to buy, enrich every prospect, score leads for ICP fit, write outreach in your voice, follow-up automatically. Each item loads, then ticks.",
+    // lists S2_ROWS and S2_ITEMS (lp-step-data.ts) in order: keep in sync
+    alt: "Animation: an Agents list with Pipeline (24 warm leads), Signals (48 detected), Plays (3 active), Replies (12 received), Messages (72 sent). The Pipeline agent opens its checklist by itself and works through it: monitor buying signals, find people who fit your ICP, enrich every prospect, score leads for ICP fit, write outreach in your voice, follow up automatically. Each item loads, then ticks.",
   },
   {
     num: "03",
     title: "Pancake gets you the meeting.\nYou close it.",
-    body: "Pancake handles the follow-up and keeps every warm conversation moving until a qualified meeting lands on your calendar.",
+    body: "Pancake follows up until they answer, then reads the reply. A yes gets your calendar link, sent from your account. Every other answer comes back to you.",
     variant: "s3",
-    alt: "Animation: a calendar week in October 2026 fills up day by day with booked meetings — Samantha M., Julien Aubert, Martin Torres and Studio P, Lumen Collective, Fernhollow Studio, a Martin C. follow-up — past meetings marked closed or follow-up as the days go by.",
+    alt: "Animation: a calendar week in October 2026 fills up day by day with meetings — Samantha M., Julien Aubert, Martin Torres and Studio P, Lumen Collective, Fernhollow Studio, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",
   },
 ];
 

@@ -25,11 +25,6 @@ export function LpBanner() {
         <p className="lp-title-section lp-banner__title lp-banner__title--right">
           Selling didn’t.
         </p>
-        <p className="lp-banner__body">
-          Your brain sets the watchlist: the phrases buyers type when they’re
-          ready, your competitors’ pages, the voices your market follows. Live
-          conversations, not a stale database.
-        </p>
       </div>
     </section>
   );

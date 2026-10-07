@@ -16,6 +16,7 @@ import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/home-demo.css";
 
@@ -51,27 +52,21 @@ export const metadata: Metadata = {
      only the third clause changed: "grow your AI search visibility" became
      "reach out in your voice". The sentence now lives once, as
      SITE_DESCRIPTION in lib/copy.ts, shared by the hero lede, this metadata,
-     the JSON-LD below and the root layout. Change it only with the founder. */
+     the JSON-LD below and the root layout. Change it only with the founder.
+     2026-10-07: the og/twitter blocks come from lib/social-meta.ts (adds
+     twitter:site, og:locale and the image alt on both cards, audit 8.1); the
+     og/twitter title is the same "Pancake — …" line, now HOME_SOCIAL_TITLE,
+     which the root layout's fallback uses too (audit 6.13). */
   title: "Pancake",
   description: SITE_DESCRIPTION,
   alternates: { canonical: SITE_ORIGIN },
-  openGraph: {
-    type: "website",
-    url: SITE_ORIGIN,
-    title: "Pancake — You run your company. We bring you customers.",
-    description: SITE_DESCRIPTION,
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "You run your company. We bring you customers." }],
-    siteName: "Pancake",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Pancake — You run your company. We bring you customers.",
-    description: SITE_DESCRIPTION,
-    images: ["/og-image.png"],
-  },
+  ...social({ path: "", title: HOME_SOCIAL_TITLE, description: SITE_DESCRIPTION }),
 };
 
 // SoftwareApplication JSON-LD — homepage only (Organization is in root layout).
+// featureList (2026-10-07, audit 6.3): what one plan does, in facts an assistant
+// can quote. "Up to 10 sending accounts per Play" waits on D7 (pancake-cmo
+// PR #1220 would price extra accounts), like the comparison pages.
 const softwareApplicationJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
@@ -82,6 +77,15 @@ const softwareApplicationJsonLd = {
   operatingSystem: "Web",
   url: SITE_ORIGIN,
   description: SITE_DESCRIPTION,
+  featureList: [
+    "Plays built from one sentence",
+    "A new lead search every night, up to 50 leads per search",
+    "A reason on every lead",
+    "You approve every lead before anyone is contacted",
+    "Personal messages you can edit",
+    "New leads in Slack and a morning email",
+    "MCP server for Claude, Claude Code and Codex",
+  ],
   offers: {
     "@type": "Offer",
     url: `${SITE_ORIGIN}/pricing`,
@@ -106,9 +110,12 @@ const softwareApplicationJsonLd = {
   },
 };
 
-export default function Home({ searchParams }: { searchParams: { audience?: string } }) {
+// Static since 2026-10-07: no searchParams prop (reading ?audience here made
+// every request a server render, never cached on the CDN). LpAudience reads
+// ?audience=agents on the client once the page has loaded.
+export default function Home() {
   return (
-    <LpAudience initialAudience={searchParams.audience === "agents" ? "agents" : "humans"}>
+    <LpAudience>
       {/* SoftwareApplication JSON-LD — homepage only */}
       <script
         type="application/ld+json"

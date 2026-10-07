@@ -12,7 +12,7 @@ export const hrTechStartups: VerticalConfig = {
   status: "approved",
   category: "Vertical software",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "HR tech startups",
@@ -58,7 +58,7 @@ export const hrTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Tamika, happy to be connected. My team makes HR software for People teams. What’s the one report you still build by hand?",
+          "Hi Tamika, my team makes HR software for People teams. What’s the one report you still build by hand?",
       },
       {
         kind: "keyword",
@@ -73,7 +73,7 @@ export const hrTechStartups: VerticalConfig = {
         leads: [
           { name: "Denise Wilburn", role: "CHRO", company: "Larkmead Hotels", kind: "keyword", signal: "Hotel turnover post" },
           { name: "Rashad Coleman", role: "VP People", company: "Elmstead Inns", kind: "keyword", signal: "Stay interviews post" },
-          { name: "Lourdes Figueroa", role: "HR Director", company: "Harbison Hotels", kind: "influencer", signal: "Liked a Taggart post" },
+          { name: "Lourdes Figueroa", role: "HR Director", company: "Harbison Hotels", kind: "influencer", signal: "Engaged with a post" },
           { name: "Martin Esterly", role: "Head of People", company: "Ashbury Stays", kind: "hiring", signal: "HRBP role open" },
           { name: "Naledi Dube", role: "CHRO", company: "Southmere Dining", kind: "keyword", signal: "Posted on retention" },
         ],
@@ -108,7 +108,7 @@ export const hrTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Anand, glad we’re connected. We build a tool that cleans up HR data. How confident are you in your headcount numbers today?",
+          "Hi Anand, we build a tool that cleans up HR data. How confident are you in your headcount numbers today?",
       },
     ],
   },

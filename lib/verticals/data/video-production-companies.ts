@@ -9,7 +9,7 @@ export const videoProductionCompanies: VerticalConfig = {
   status: "approved",
   category: "Marketing & creative agencies",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "video production companies",
@@ -47,7 +47,7 @@ export const videoProductionCompanies: VerticalConfig = {
           { name: "Kirsten Vang", role: "CMO", company: "Gripwell Robotics", kind: "keyword", signal: "Posted on a trade show" },
           { name: "Karim Bensaid", role: "VP Marketing", company: "Axlebright", kind: "hiring", signal: "PMM role open" },
           { name: "Noelle Carrington", role: "Content Lead", company: "Torquelane", kind: "keyword", signal: "Posted on launch video" },
-          { name: "Nikhil Vora", role: "Founder & CEO", company: "Palletry", kind: "competitor", signal: "Liked a Framewell post" },
+          { name: "Nikhil Vora", role: "Founder & CEO", company: "Palletry", kind: "competitor", signal: "Engaged with Framewell" },
         ],
         featured: {
           why: "Servotide is an 80-person US robotics company. Desmond leads product marketing and posted this week about an upcoming launch.",
@@ -80,7 +80,7 @@ export const videoProductionCompanies: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Georgia, glad we’re connected. We make videos for B2B tech companies, and I watch far too many of everyone else’s. Which one has stuck with you lately?",
+          "Hi Georgia, we make videos for B2B tech companies, and I watch far too many of everyone else’s. Which one has stuck with you lately?",
       },
       {
         kind: "influencer",
@@ -94,10 +94,10 @@ export const videoProductionCompanies: VerticalConfig = {
         ],
         leads: [
           { name: "Soren Lindahl", role: "CMO", company: "Ironhedge Cloud", kind: "influencer", signal: "Commented on a post" },
-          { name: "Lakshmi Kesavan", role: "VP Marketing", company: "Vantlow", kind: "influencer", signal: "Liked an Adeyemi post" },
+          { name: "Lakshmi Kesavan", role: "VP Marketing", company: "Vantlow", kind: "influencer", signal: "Engaged with a post" },
           { name: "Felix Ogunleye", role: "CMO", company: "Quantbrook", kind: "keyword", signal: "Posted on a brand film" },
-          { name: "Beth Wasilewski", role: "Brand Director", company: "Kelpwater", kind: "competitor", signal: "Liked a Matchcut post" },
-          { name: "Luca Ferrandi", role: "Head of Marketing", company: "Windlass", kind: "influencer", signal: "Liked an Orr post" },
+          { name: "Beth Wasilewski", role: "Brand Director", company: "Kelpwater", kind: "competitor", signal: "Engaged with Matchcut" },
+          { name: "Luca Ferrandi", role: "Head of Marketing", company: "Windlass", kind: "influencer", signal: "Engaged with an Orr post" },
         ],
         featured: {
           why: "Ironhedge Cloud is a 300-person US infrastructure software company. Soren is CMO and commented on a Tess Orr post about brand films.",

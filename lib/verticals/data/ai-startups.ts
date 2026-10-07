@@ -12,7 +12,7 @@ export const aiStartups: VerticalConfig = {
   status: "approved",
   category: "Startups & solo founders",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "AI startups",
@@ -74,7 +74,7 @@ export const aiStartups: VerticalConfig = {
           { name: "Madhuri Iyer", role: "VP Claims", company: "Grayhaven Mutual", kind: "keyword", signal: "Posted on AI pilots" },
           { name: "Jonas Pelletier", role: "Claims Director", company: "Northmere", kind: "keyword", signal: "Claims backlog post" },
           { name: "Hye-jin Seo", role: "COO", company: "Juneberry Insurance", kind: "hiring", signal: "Claims examiner role" },
-          { name: "Siobhan Carvell", role: "Head of Claims", company: "Stillbrook", kind: "influencer", signal: "Liked a Draycott post" },
+          { name: "Siobhan Carvell", role: "Head of Claims", company: "Stillbrook", kind: "influencer", signal: "Engaged with a post" },
           { name: "Efraín Montalvo", role: "Claims Manager", company: "Otterbay", kind: "hiring", signal: "Claims processor roles" },
         ],
         featured: {
@@ -97,7 +97,7 @@ export const aiStartups: VerticalConfig = {
         ],
         leads: [
           { name: "Marta Engebretsen", role: "VP Operations", company: "Lorwick", kind: "competitor", signal: "Commented on a post" },
-          { name: "Reggie Whitsett", role: "COO", company: "Wickersham Foods", kind: "competitor", signal: "Liked a Scanlith post" },
+          { name: "Reggie Whitsett", role: "COO", company: "Wickersham Foods", kind: "competitor", signal: "Engaged with Scanlith" },
           { name: "Duncan Arbuthnot", role: "VP Finance", company: "Tellico", kind: "stack", signal: "Kofax in job posts" },
           { name: "Latoya Brisbin", role: "Automation Lead", company: "Quarrow", kind: "stack", signal: "UiPath in job posts" },
           { name: "Paulina Wróbel", role: "Controller", company: "Fenmore Paper", kind: "keyword", signal: "Posted on data entry" },

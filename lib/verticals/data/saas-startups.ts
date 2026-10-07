@@ -12,7 +12,7 @@ export const saasStartups: VerticalConfig = {
   status: "approved",
   category: "Startups & solo founders",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "SaaS startups",
@@ -48,10 +48,10 @@ export const saasStartups: VerticalConfig = {
         ],
         leads: [
           { name: "Jolene Kaczmarek", role: "Head of Support", company: "Pantrywell", kind: "competitor", signal: "Commented on a post" },
-          { name: "Andrés Solórzano", role: "VP Support", company: "Stayloft", kind: "competitor", signal: "Liked a Ticketmoor post" },
+          { name: "Andrés Solórzano", role: "VP Support", company: "Stayloft", kind: "competitor", signal: "Engaged with a post" },
           { name: "Kendra Bellamy", role: "Head of CX", company: "Petalpost", kind: "keyword", signal: "Ticket backlog post" },
           { name: "Vivek Anantharaman", role: "COO", company: "Tuckbox Meals", kind: "hiring", signal: "Support ops role open" },
-          { name: "Colleen Mulcahy", role: "Support Director", company: "Kindlewick", kind: "influencer", signal: "Liked an Obuya post" },
+          { name: "Colleen Mulcahy", role: "Support Director", company: "Kindlewick", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Pantrywell is a 240-person US grocery delivery company. Jolene leads support and commented on a Tixwell post about ticket routing.",
@@ -84,7 +84,7 @@ export const saasStartups: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Paz, great to be connected. I work on helpdesk software. How many tickets does your team handle on a busy day?",
+          "Hi Paz, I work on helpdesk software. How many tickets does your team handle on a busy day?",
       },
       {
         kind: "keyword",
@@ -101,7 +101,7 @@ export const saasStartups: VerticalConfig = {
           { name: "Brody Kessinger", role: "Head of CS", company: "Waypost", kind: "keyword", signal: "Posted on onboarding" },
           { name: "Rasmus Kjeldsen", role: "COO", company: "Kelvinly", kind: "hiring", signal: "Implementation role" },
           { name: "Lupita Carbajal", role: "Director of CS", company: "Datawren", kind: "hiring", signal: "Onboarding role open" },
-          { name: "Garrison Tully", role: "Founder & CEO", company: "Bellcourt", kind: "influencer", signal: "Liked a Marchand post" },
+          { name: "Garrison Tully", role: "Founder & CEO", company: "Bellcourt", kind: "influencer", signal: "Engaged with a post" },
         ],
         featured: {
           why: "Ferrule is a 120-person US B2B software company. Nia runs customer success and posted this week about churn in the first 90 days.",
@@ -154,7 +154,7 @@ export const saasStartups: VerticalConfig = {
     },
     {
       q: "We’re self-serve, not demo-led. Does that work?",
-      a: "Yes. Set your campaign objective to “Share your app”. Leads who reply with interest get your signup link, not a booking link.",
+      a: "Yes. Set the sequence objective to “Share your app”. Leads who reply with interest get your signup link, not a booking link.",
     },
     {
       q: "Won’t I reach my competitor’s happy customers?",

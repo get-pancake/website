@@ -10,13 +10,21 @@ import {
   SUPPORT_GMAIL_URL,
 } from "@/lib/contact";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { social } from "@/lib/social-meta";
 import { TRIAL_DAYS } from "@/lib/trial";
 import "@/app/_styles/landing-v2.css";
 
+const TITLE = "Support — Pancake";
+const DESCRIPTION =
+  "Contact Pancake for product, account, billing, privacy, and connection support.";
+
 export const metadata: Metadata = {
-  title: "Support — Pancake",
-  description: "Contact Pancake for product, account, billing, privacy, and connection support.",
+  title: TITLE,
+  description: DESCRIPTION,
   alternates: { canonical: `${SITE_ORIGIN}/support` },
+  // Its own share card (2026-10-07, audit 8.2): it shared as the homepage,
+  // with the homepage title and no og:url.
+  ...social({ path: "/support", title: TITLE, description: DESCRIPTION }),
 };
 
 export default function SupportPage() {

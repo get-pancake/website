@@ -11,7 +11,7 @@ export const solarCompanies: VerticalConfig = {
   status: "approved",
   category: "Energy & industry",
   evidence: "founder",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "commercial solar companies",
@@ -50,7 +50,7 @@ export const solarCompanies: VerticalConfig = {
           { name: "Hector Zamarripa", role: "Plant Manager", company: "Drayburn", kind: "keyword", signal: "Posted on rate hikes" },
           { name: "Deepa Krishnamurthy", role: "Facilities Director", company: "Hensworth", kind: "hiring", signal: "Facilities manager role" },
           { name: "Curtis Blanchard", role: "Chief Engineer", company: "Morrowfield", kind: "stack", signal: "Metasys in job posts" },
-          { name: "Yesenia Portillo", role: "CFO", company: "Galeworth", kind: "competitor", signal: "Liked an Ampridge post" },
+          { name: "Yesenia Portillo", role: "CFO", company: "Galeworth", kind: "competitor", signal: "Engaged with Ampridge" },
         ],
         featured: {
           why: "Cobbwell is a 420-person US plastics manufacturer. Marisa runs its facilities and posted this week about rising energy costs.",
@@ -97,9 +97,9 @@ export const solarCompanies: VerticalConfig = {
         ],
         leads: [
           { name: "Bernadette Fogarty", role: "CFO", company: "Harlowe Creamery", kind: "influencer", signal: "Commented on a post" },
-          { name: "Juan Medina", role: "VP Finance", company: "Pickwell Foods", kind: "influencer", signal: "Liked a Mehra post" },
+          { name: "Juan Medina", role: "VP Finance", company: "Pickwell Foods", kind: "influencer", signal: "Engaged with a post" },
           { name: "Thanh Pham", role: "Controller", company: "Oatcastle Mills", kind: "keyword", signal: "Posted about PPAs" },
-          { name: "Rhonda Beckwith", role: "CFO", company: "Brinecraft", kind: "competitor", signal: "Liked a Sunquarry post" },
+          { name: "Rhonda Beckwith", role: "CFO", company: "Brinecraft", kind: "competitor", signal: "Engaged with Sunquarry" },
           { name: "Arturo Salgado", role: "Treasurer", company: "Tallgrain Foods", kind: "influencer", signal: "Commented on a post" },
         ],
         featured: {

@@ -9,7 +9,7 @@ export const martechStartups: VerticalConfig = {
   status: "approved",
   category: "Startups & solo founders",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "martech startups",
@@ -72,7 +72,7 @@ export const martechStartups: VerticalConfig = {
           { name: "Sabine Thorvaldsen", role: "Marketing Director", company: "Quelltide", kind: "stack", signal: "Marketo in job posts" },
           { name: "Darnell Swinton", role: "CMO", company: "Northwold", kind: "stack", signal: "Pardot in job posts" },
           { name: "Noemi Carrasco", role: "Demand Gen Lead", company: "Glassreed", kind: "keyword", signal: "Marketo migration post" },
-          { name: "Crispin Yates", role: "VP Marketing", company: "Fairlock", kind: "competitor", signal: "Liked a Funnelwick post" },
+          { name: "Crispin Yates", role: "VP Marketing", company: "Fairlock", kind: "competitor", signal: "Engaged with a post" },
           { name: "Ayesha Rangwala", role: "Growth Manager", company: "Merriton", kind: "hiring", signal: "Automation lead role" },
         ],
         featured: {
@@ -81,7 +81,7 @@ export const martechStartups: VerticalConfig = {
           seniority: "Director",
         },
         message:
-          "Hi Sabine, good to connect. I work on marketing automation software. Which campaign takes your team the longest to build?",
+          "Hi Sabine, I work on marketing automation software. Which nurture flow takes your team the longest to build?",
       },
       {
         kind: "influencer",
@@ -95,10 +95,10 @@ export const martechStartups: VerticalConfig = {
         ],
         leads: [
           { name: "Dashiell Crane", role: "Head of Growth", company: "Thimbleway", kind: "influencer", signal: "Commented on a post" },
-          { name: "Zainab Olatunji", role: "Growth Lead", company: "Saltbrook", kind: "influencer", signal: "Liked a Dunleavy post" },
+          { name: "Zainab Olatunji", role: "Growth Lead", company: "Saltbrook", kind: "influencer", signal: "Engaged with a post" },
           { name: "Gustavo Pimentel", role: "VP Growth", company: "Sunmere", kind: "keyword", signal: "Posted on attribution" },
           { name: "Phoebe Lanning", role: "Analytics Lead", company: "Ospreyline", kind: "keyword", signal: "Posted about MMM" },
-          { name: "Lamar Radcliffe", role: "CMO", company: "Canterbrook", kind: "competitor", signal: "Liked a Tallyloop post" },
+          { name: "Lamar Radcliffe", role: "CMO", company: "Canterbrook", kind: "competitor", signal: "Engaged with Tallyloop" },
         ],
         featured: {
           why: "Dashiell leads growth at Thimbleway, a 150-person US ecommerce software company. He commented on a Vesna Dykstra post about attribution.",

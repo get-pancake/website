@@ -4,10 +4,13 @@
 // are enforced by validateVerticals() (chars) and scripts/verticals-budget.mjs (px,
 // real fonts). Only server components import this module and lib/verticals/*.
 // No string here may name the outreach platform or its tools (founder 2026-09-23: PLATFORM in
-// validate.ts, an error): say "from your own account", "profile", "invite", "people posting
-// about …", "fans of …'s posts" instead.
+// validate.ts, an error): say "from your own account", "profile", "people posting about …",
+// "fans of …'s posts" instead. No platform steps either (SEQUENCE: no invite, no "nice to
+// connect"), and "Play" or "sequence", never "campaign" (CAMPAIGN, 2026-10-07).
 
-/** The six executable signal kinds (product signal-copy.ts). No others exist. */
+/** The six signal kinds of the app's Signals page (product signal-copy.ts), the ones a /for page
+ *  shows as cards. Plays also find leads by funding, lookalikes, one post's reactions and role
+ *  match (public/llms.txt lists all eight ways); those are not signal kinds here. */
 export type SignalKind = "keyword" | "competitor" | "influencer" | "own_brand" | "hiring" | "stack";
 
 /** draft = built + reachable, noindex, off the sitemap and the production hub. */

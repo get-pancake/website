@@ -12,7 +12,7 @@ export const retailTechStartups: VerticalConfig = {
   status: "approved",
   category: "Vertical software",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "retail tech startups",
@@ -49,7 +49,7 @@ export const retailTechStartups: VerticalConfig = {
           { name: "Whitney Caldwell", role: "VP Insights", company: "Toastwell", kind: "hiring", signal: "Insights manager role" },
           { name: "Grant Ellingson", role: "Head of Insights", company: "Dalbey Foods", kind: "hiring", signal: "Shopper insights role" },
           { name: "Jae-won Hwang", role: "Brand Director", company: "Moxie Mill", kind: "keyword", signal: "Posted about research" },
-          { name: "Rochelle Dumas", role: "CMO", company: "Lunetta Beauty", kind: "competitor", signal: "Liked a Panelwise post" },
+          { name: "Rochelle Dumas", role: "CMO", company: "Lunetta Beauty", kind: "competitor", signal: "Engaged with Panelwise" },
           { name: "Colby Rasmussen", role: "Insights Lead", company: "Wagley Pet Co", kind: "hiring", signal: "Insights analyst role" },
         ],
         featured: {
@@ -58,7 +58,7 @@ export const retailTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Whitney, nice to be connected. We run shopper research, usually one-on-one interviews. What would you most like to learn about your shoppers?",
+          "Hi Whitney, we run shopper research, usually one-on-one interviews. What would you most like to learn about your shoppers?",
       },
       {
         kind: "stack",
@@ -83,7 +83,7 @@ export const retailTechStartups: VerticalConfig = {
           seniority: "VP",
         },
         message:
-          "Hi Aditi, happy to be connected. We build software that catches errors in product listings. How do bad listings usually come to your attention?",
+          "Hi Aditi, we build software that catches errors in product listings. How do bad listings usually come to your attention?",
       },
       {
         kind: "keyword",
@@ -98,7 +98,7 @@ export const retailTechStartups: VerticalConfig = {
         leads: [
           { name: "Simone Laurent", role: "VP E-commerce", company: "Heddle & Twill", kind: "keyword", signal: "Posted about returns" },
           { name: "Spencer Hollingsworth", role: "Head of Digital", company: "Stitchwell", kind: "keyword", signal: "Posted on return costs" },
-          { name: "Layla Haddad", role: "Director of CX", company: "Solenne", kind: "influencer", signal: "Liked a Quenneville post" },
+          { name: "Layla Haddad", role: "Director of CX", company: "Solenne", kind: "influencer", signal: "Engaged with a post" },
           { name: "Mallory Finch", role: "Head of DTC", company: "Bobbin & Hem", kind: "hiring", signal: "Returns analyst role" },
           { name: "Olufemi Bankole", role: "COO", company: "Marigold Knit", kind: "keyword", signal: "Posted about sizing" },
         ],

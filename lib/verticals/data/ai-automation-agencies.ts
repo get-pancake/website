@@ -12,7 +12,7 @@ export const aiAutomationAgencies: VerticalConfig = {
   status: "approved",
   category: "Tech & build agencies",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "AI automation agencies",
@@ -50,7 +50,7 @@ export const aiAutomationAgencies: VerticalConfig = {
           { name: "Devon Pruett", role: "COO", company: "Tolland", kind: "hiring", signal: "Admin assistant role" },
           { name: "Renata Szczepanik", role: "Operations Manager", company: "Pinfold", kind: "hiring", signal: "2 data entry roles open" },
           { name: "Harold Nakashima", role: "Finance Director", company: "Wexmoor", kind: "keyword", signal: "Posted on spreadsheets" },
-          { name: "Moira Coulter", role: "VP Operations", company: "Sturbridge", kind: "competitor", signal: "Liked a Gearloft post" },
+          { name: "Moira Coulter", role: "VP Operations", company: "Sturbridge", kind: "competitor", signal: "Engaged with Gearloft" },
         ],
         featured: {
           why: "Harrowgate is a 180-person US commercial property manager with a data entry clerk role open. Marisol runs operations and owns that team.",
@@ -58,7 +58,7 @@ export const aiAutomationAgencies: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Marisol, thanks for connecting. We automate admin work, so I’m always hunting down the tasks teams still do by hand. Which one eats the most hours on your side?",
+          "Hi Marisol, we automate admin work, so I’m always hunting down the tasks teams still do by hand. Which one eats the most hours on your side?",
       },
       {
         kind: "stack",
@@ -83,7 +83,7 @@ export const aiAutomationAgencies: VerticalConfig = {
           seniority: "C-level",
         },
         message:
-          "Hi Georgina, happy to be connected. I rebuild automation workflows with AI, so I hear a lot about brittle ones. Which workflow do you wish ran itself?",
+          "Hi Georgina, I rebuild automation workflows with AI, so I hear a lot about brittle ones. Which workflow do you wish ran itself?",
       },
       {
         kind: "keyword",
@@ -97,7 +97,7 @@ export const aiAutomationAgencies: VerticalConfig = {
         ],
         leads: [
           { name: "Fatima Ghorbani", role: "COO", company: "Quinlan Hart", kind: "keyword", signal: "Posted on onboarding" },
-          { name: "Brent Vandermolen", role: "COO", company: "Lockridge", kind: "influencer", signal: "Liked a Montaño post" },
+          { name: "Brent Vandermolen", role: "COO", company: "Lockridge", kind: "influencer", signal: "Engaged with a post" },
           { name: "Lorna Quigley", role: "Managing Partner", company: "Stanbury", kind: "keyword", signal: "Posted on manual work" },
           { name: "Ekow Danquah", role: "VP Operations", company: "Kettleby", kind: "influencer", signal: "Commented on a post" },
           { name: "Ezekiel Hargrove", role: "COO", company: "Gatwood", kind: "hiring", signal: "Ops coordinator role" },

@@ -12,7 +12,7 @@ export const sustainabilityConsultants: VerticalConfig = {
   status: "approved",
   category: "Energy & industry",
   evidence: "trials",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "sustainability consultants",
@@ -76,7 +76,7 @@ export const sustainabilityConsultants: VerticalConfig = {
           { name: "Mitchell Garza", role: "VP Operations", company: "Tupelo Brands", kind: "hiring", signal: "ESG analyst role open" },
           { name: "Frances Adebowale", role: "CFO", company: "Whinstead", kind: "keyword", signal: "Posted on net zero" },
           { name: "Reid Halloway", role: "General Counsel", company: "Buckthorn", kind: "hiring", signal: "Sustainability head role" },
-          { name: "Anika Bhatt", role: "COO", company: "Dunlin Apparel", kind: "competitor", signal: "Liked a Greyfield post" },
+          { name: "Anika Bhatt", role: "COO", company: "Dunlin Apparel", kind: "competitor", signal: "Engaged with Greyfield" },
         ],
         featured: {
           why: "Tidebrook, a 520-person US packaging company, is hiring a sustainability manager. Aaliyah runs operations as COO.",

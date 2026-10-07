@@ -203,14 +203,22 @@ export const S2_ROW_TOP = (i: number) => 169 + 56 * i;
 export const S2_HEADER_DY = 74.75 - 169;
 
 export type S2Item = { label: string; top: number; done?: boolean; muted?: boolean };
+/** The Pipeline checklist. Labels are no longer the composition's verbatim:
+    2026-10-07, item 2 became "Find people who fit your ICP" (it claimed an
+    intent the product can't see, an overclaim validate.ts bans; same width
+    as "Write outreach in your voice"), "Follow-up automatically" the verb
+    "Follow up automatically", and "Learn from every reply" became "Learn
+    from every review" (the brain learns from lead approvals and rejections;
+    reply signals are deferred, pancake-cmo ADR 0043). Tops, order and states
+    unchanged. The alt text in LpSteps.tsx lists these items: keep in sync. */
 export const S2_ITEMS: S2Item[] = [
   { label: "Monitor buying signals", top: 146.75, done: true },
-  { label: "Find people ready to buy", top: 194.75, done: true },
+  { label: "Find people who fit your ICP", top: 194.75, done: true },
   { label: "Enrich every prospect", top: 242.75, done: true },
   { label: "Score leads for ICP fit", top: 298.75 }, // static: 48-tall slot, py 12 → same centre as a 32 row at 298.75
   { label: "Write outreach in your voice", top: 354.75 },
-  { label: "Follow-up automatically", top: 402.75, muted: true }, // static SVG: #9A818F
-  { label: "Learn from every reply", top: 450.75, muted: true }, // static SVG: #9A818F (off-canvas)
+  { label: "Follow up automatically", top: 402.75, muted: true }, // static SVG: #9A818F
+  { label: "Learn from every review", top: 450.75, muted: true }, // static SVG: #9A818F (off-canvas)
 ];
 export const S2_CHECK_D = "M6 12.4615C7.96737 13.3592 9.90629 15.1306 11.0165 18C12.0904 13.1066 14.3706 9.29236 18 6";
 /** items processed in order; item 6 sits off-canvas */
@@ -242,15 +250,17 @@ export type S3Chip = {
   color: "purple" | "yellow" | "green" | "blue";
   lines: string[];
   pop: number;
-  outcome: "closed" | "follow";
+  /** the badge stamped once the meeting is past: "Booked" (2026-10-07, was
+      "Closed": Pancake can't know a deal closed) or "→ follow-up" */
+  outcome: "booked" | "follow";
 };
 export const S3_CHIPS: S3Chip[] = [
-  { id: "sam-m", day: 0, x: 24, top: 203, h: 24, color: "blue", lines: ["Samantha M ..."], pop: 0.55, outcome: "closed" },
+  { id: "sam-m", day: 0, x: 24, top: 203, h: 24, color: "blue", lines: ["Samantha M ..."], pop: 0.55, outcome: "booked" },
   { id: "jul-mon", day: 0, x: 24, top: 315, h: 24, color: "yellow", lines: ["Julien Aubert"], pop: 0.85, outcome: "follow" },
-  { id: "martin", day: 1, x: 120, top: 175, h: 52, color: "purple", lines: ["Martin Torres", "& Studio P"], pop: 1.15, outcome: "closed" },
-  { id: "lumen", day: 1, x: 120, top: 259, h: 52, color: "green", lines: ["Lumen", "Collective"], pop: 1.85, outcome: "closed" },
-  { id: "fern", day: 3, x: 312, top: 203, h: 52, color: "purple", lines: ["Fernhollow", "Studio"], pop: 2.15, outcome: "closed" },
+  { id: "martin", day: 1, x: 120, top: 175, h: 52, color: "purple", lines: ["Martin Torres", "& Studio P"], pop: 1.15, outcome: "booked" },
+  { id: "lumen", day: 1, x: 120, top: 259, h: 52, color: "green", lines: ["Lumen", "Collective"], pop: 1.85, outcome: "booked" },
+  { id: "fern", day: 3, x: 312, top: 203, h: 52, color: "purple", lines: ["Fernhollow", "Studio"], pop: 2.15, outcome: "booked" },
   { id: "sam", day: 2, x: 216, top: 317, h: 52, color: "blue", lines: ["Samantha ..."], pop: 2.45, outcome: "follow" },
-  { id: "jul-wed", day: 2, x: 216, top: 175, h: 52, color: "yellow", lines: ["Julien Aubert"], pop: 2.95, outcome: "closed" },
-  { id: "martc", day: 3, x: 312, top: 259, h: 52, color: "yellow", lines: ["Martin C.", "Follow-up"], pop: 3.95, outcome: "closed" },
+  { id: "jul-wed", day: 2, x: 216, top: 175, h: 52, color: "yellow", lines: ["Julien Aubert"], pop: 2.95, outcome: "booked" },
+  { id: "martc", day: 3, x: 312, top: 259, h: 52, color: "yellow", lines: ["Martin C.", "Follow-up"], pop: 3.95, outcome: "booked" },
 ];

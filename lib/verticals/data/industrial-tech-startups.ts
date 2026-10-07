@@ -14,7 +14,7 @@ export const industrialTechStartups: VerticalConfig = {
   status: "approved",
   category: "Energy & industry",
   evidence: "paying",
-  updated: "2026-09-22",
+  updated: "2026-10-07",
 
   name: {
     plural: "industrial tech startups",
@@ -53,7 +53,7 @@ export const industrialTechStartups: VerticalConfig = {
           { name: "Kurt Vandersloot", role: "Plant Manager", company: "Quenchfield", kind: "stack", signal: "AVEVA PI in job posts" },
           { name: "Chukwudi Nwankwo", role: "Reliability Lead", company: "Ladlecraft", kind: "hiring", signal: "Reliability role open" },
           { name: "Stacy Brennecke", role: "Maintenance Lead", company: "Sintermoor", kind: "keyword", signal: "Posted on downtime" },
-          { name: "Ilya Sorokin", role: "COO", company: "Anvilmark", kind: "competitor", signal: "Liked a Brakewell post" },
+          { name: "Ilya Sorokin", role: "COO", company: "Anvilmark", kind: "competitor", signal: "Engaged with Brakewell" },
         ],
         featured: {
           why: "Billetworks is a 900-person US metals manufacturer whose job posts name OSIsoft PI. Graciela runs operations.",
@@ -86,7 +86,7 @@ export const industrialTechStartups: VerticalConfig = {
           seniority: "Head",
         },
         message:
-          "Hi Ramona, glad to connect. We build software that flags failing equipment early. What eats most of your maintenance hours?",
+          "Hi Ramona, we build software that flags failing equipment early. What eats most of your maintenance hours?",
       },
       {
         kind: "keyword",
@@ -103,7 +103,7 @@ export const industrialTechStartups: VerticalConfig = {
           { name: "Clint Haberman", role: "Controls Manager", company: "Quirewood", kind: "keyword", signal: "Posted on OT security" },
           { name: "Esi Owusu", role: "IT Director", company: "Swarfield", kind: "keyword", signal: "Posted on IEC 62443" },
           { name: "Bogdan Petrescu", role: "VP Manufacturing", company: "Tubewright", kind: "influencer", signal: "Commented on a post" },
-          { name: "Tracy Gundlach", role: "CISO", company: "Rivetry", kind: "competitor", signal: "Liked a Fenwarden post" },
+          { name: "Tracy Gundlach", role: "CISO", company: "Rivetry", kind: "competitor", signal: "Engaged with a post" },
           { name: "Hiroshi Tanabe", role: "Plant Manager", company: "Crankmoor", kind: "hiring", signal: "OT security role open" },
         ],
         featured: {

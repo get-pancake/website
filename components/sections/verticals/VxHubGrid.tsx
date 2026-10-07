@@ -5,7 +5,7 @@ import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import { hubGroups, verticalPath } from "@/lib/verticals";
 
 /**
- * /for hub (spec §3): the head ("Industries" · "Pick your industry." as the
+ * /for hub (spec §3): the head ("Industries" · "Find customers in your industry." as the
  * page's H1 at H2 scale · lede) and one group per category in
  * VerticalCategory order. Cards are cream links (name + the vertical's own
  * hubLine + arrow), equal heights per row, hover fill only. Visibility:
