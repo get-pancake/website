@@ -29,6 +29,12 @@
   padding-bottom: 0;
   padding-top: 0;
 }
+/* "Works in Claude and Codex. See how →" under the demo's foot, on its text
+   edge (.vx-col); its look is the shared .lp-textlink (pricing.css). Moved
+   here from pricing.css on 2026-10-09 (phase 0) so the demo package owns it. */
+.lp-tour .lp-tour__claude {
+  margin-top: 24px;
+}
 
 @media (max-width: 1024px) {
   /* LpSteps pads 112 here; the 96 rhythm can't be met without touching it — 112 it is */

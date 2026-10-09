@@ -1,5 +1,7 @@
-import { AudienceHeadline, AudienceSelector } from "./LpAudience";
+import { AudienceSelector } from "./LpAudience";
+import { AudienceHeadline } from "./LpAudienceHeadline";
 import { LpAgentStart } from "./LpAgentStart";
+import { LpHeroAgentArt } from "./LpHeroAgentArt";
 import { LpArcCanvas } from "@/components/sections/landing-v3/LpArcCanvas";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
@@ -21,6 +23,9 @@ export function LpHero() {
     <section className="lp-hero" aria-labelledby="lp-hero-title">
       <LpViewportVar />
       <div className="lp-hero-art" aria-hidden="true">
+        {/* agents view art slot (V2 4911:1461, owner agents-view): renders
+            nothing in the humans view — see LpHeroAgentArt.tsx */}
+        <LpHeroAgentArt />
         <div className="lp-anim-canvas lp-anim-canvas--hero">
           <LpPancakes variant="hero" />
         </div>
@@ -35,7 +40,7 @@ export function LpHero() {
         <div className="lp-perspective"><AudienceSelector /></div>
         {/* A div since 2026-10-07: the grid the human and agent copies overlay
             in. The H1 (id lp-hero-title, which aria-labelledby above names) is
-            the human copy inside it — AudienceHeadline in LpAudience.tsx. */}
+            the human copy inside it — AudienceHeadline in LpAudienceHeadline.tsx. */}
         <div className="lp-hero-title lp-display">
           <AudienceHeadline />
         </div>

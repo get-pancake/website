@@ -1,0 +1,102 @@
+/* Deep-dive stage harness (/lp-dev/stages, dev/preview only). The frame mimics the carousel
+   shell's stage card (blue-band dive.css): --lp-dive-stage-bg, r15.887, the V2 card shadow,
+   overflow hidden; the scene box is the `lp-dive-scene` size container the stories query
+   (lp-dive-stages.ts). Nothing here ships on the homepage. */
+.lp-devstages {
+  background: var(--lp-sky);
+  min-height: 100vh;
+  padding: 32px;
+}
+.lp-devstages * {
+  font-family: var(--lp-font-sans);
+}
+.lp-devstages__head h1 {
+  font-size: var(--lp-text-xlg);
+  font-weight: 600;
+  margin: 0 0 4px;
+}
+.lp-devstages__head p {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  margin: 0 0 24px;
+}
+.lp-devstages__list {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.lp-devstages__story h2 {
+  align-items: baseline;
+  display: flex;
+  font-size: var(--lp-text-lg);
+  font-weight: 600;
+  gap: 12px;
+  margin: 0 0 12px;
+}
+.lp-devstages__story h2 span {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 400;
+}
+.lp-devstages__row {
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+}
+.lp-devstages__frame {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lp-devstages__frame[data-state="error"] .lp-devstages__fit {
+  outline: 2px solid var(--lp-red-30);
+}
+.lp-devstages__fit {
+  background: var(--lp-dive-stage-bg);
+  border-radius: calc(15.887px * var(--lp-fit, 1));
+  box-shadow: 0 2.648px 41.307px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  position: relative;
+}
+.lp-devstages__scene {
+  container: lp-dive-scene / size;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: scale(var(--lp-fit, 1));
+  transform-origin: 0 0;
+}
+.lp-devstages__meta {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-xsm);
+}
+.lp-devstages__bar {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: var(--lp-text-xsm);
+  gap: 6px;
+}
+.lp-devstages__bar button {
+  background: var(--lp-surface);
+  border: 0;
+  border-radius: var(--lp-r-xsm);
+  box-shadow: inset 0 0 0 1px var(--lp-stroke);
+  color: var(--lp-text);
+  cursor: pointer;
+  font-size: var(--lp-text-xsm);
+  padding: 4px 8px;
+}
+.lp-devstages__bar button:focus-visible,
+.lp-devstages__bar input:focus-visible {
+  outline: 2px solid var(--lp-text);
+  outline-offset: 2px;
+}
+.lp-devstages__bar input[type="range"] {
+  width: 160px;
+}
+.lp-devstages__bar output {
+  color: var(--lp-subtle-text);
+  font-variant-numeric: tabular-nums;
+}

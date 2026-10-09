@@ -195,7 +195,7 @@ function buildF1(root: HTMLElement): BuiltFeat {
     unscaled px) — hence LpFeatAnim builds when the card first touches the
     viewport, i.e. laid out. */
 type Glyph = { right: number; top: number; bottom: number };
-function measureGlyphs(el: HTMLElement): Glyph[] {
+export function measureGlyphs(el: HTMLElement): Glyph[] {
   const box = el.getBoundingClientRect();
   const s = el.offsetWidth ? box.width / el.offsetWidth : 1; // --lp-fit and any ancestor scale
   const glyphs: Glyph[] = [];
@@ -457,7 +457,7 @@ function buildF2(root: HTMLElement): BuiltFeat {
    The "+56%" count and its arrow stay (founder 2026-10-08, reverting the
    2026-10-07 audit's plain reply count). */
 let txtPluginRegistered = false;
-function registerTxtPlugin() {
+export function registerTxtPlugin() {
   if (txtPluginRegistered) return;
   txtPluginRegistered = true;
   // seek-safe text swap: a zero-duration tween renders ratio 1 at/after its position, 0 before it — no callbacks

@@ -42,12 +42,17 @@ export function LpCta({
   body = CTA_BODY,
   buttons,
   note,
+  sky = false,
 }: {
   title?: string;
   body?: readonly [string, string] | string;
   buttons?: ReactNode;
   note?: string;
+  /** homepage only (V2 4911:739, owner blue-band): the blue sky + cloud transition from the
+      deep dive and the r24 card. Phase 0: accepted, renders the production CTA unchanged. */
+  sky?: boolean;
 } = {}) {
+  void sky;
   return (
     <section className="lp-cta">
       <div className="lp-cta__card">

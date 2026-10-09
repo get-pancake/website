@@ -2,9 +2,10 @@ import type { Metadata, Viewport } from "next";
 
 import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
 import { LpBanner } from "@/components/sections/landing-v3/LpBanner";
+import { LpBento } from "@/components/sections/landing-v3/LpBento";
 import { LpCta } from "@/components/sections/landing-v3/LpCta";
-import { LpDemoTour } from "@/components/sections/landing-v3/LpDemoTour";
-import { LpFeatures } from "@/components/sections/landing-v3/LpFeatures";
+import { LpDemo } from "@/components/sections/landing-v3/LpDemo";
+import { LpDive } from "@/components/sections/landing-v3/LpDive";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
@@ -14,7 +15,12 @@ import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
+import {
+  AGENT_CARD_BODY,
+  AGENT_CARD_BODY_PLACEHOLDER,
+} from "@/components/sections/landing-v3/lp-agents-wall-data";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
+import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
@@ -127,16 +133,25 @@ export default function Home() {
       {/* Frees off-screen sections' animation GPU surfaces — the iPhone
           WebContent OOM guard (see LpAnimFreeze.tsx) */}
       <LpAnimFreeze />
+      {/* V2 Figma replication (fr8NgOCTUxsEbrMEJA3YKu 4911:346, 2026-10-09) page order. Every
+          section is a DIRECT <section> child of main.lp: the agents view hides all of them but
+          the hero and the lab (audience.css, integrator rule). */}
       <LpNav />
       <LpHero />
-      <LpMarquee />
-      {/* the /for product demo (founder 2026-09-23): after the logos, before the steps */}
-      <LpDemoTour />
-      <LpAgentLab />
+      {/* the demo window, right under the hero (V2 red note: swapped with the logos) */}
+      <LpDemo />
+      {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
+      <LpMarquee labelled />
+      <LpAgentLab
+        cardBody={SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY}
+      />
       <LpSteps />
       <LpBanner />
-      <LpFeatures />
-      <LpCta />
+      {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
+      <LpDive />
+      <LpCta sky />
+      {/* testimonials / KPI bento (V2 4911:762): renders only with final entries in production */}
+      <LpBento />
       <LpPricing />
       <LpFooter />
       {/* LpModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}

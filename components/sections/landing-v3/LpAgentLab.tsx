@@ -5,8 +5,13 @@ import { FiCheck, FiInfo, FiPause, FiPlay, FiRotateCcw } from "react-icons/fi";
 import { AGENT_PUZZLE_INITIAL, greenTiles, moveAgentPuzzle, pairedTile } from "@/lib/agent-puzzle";
 import { useAudience } from "./LpAudience";
 import { LpAgentTerminalStream } from "./LpAgentTerminalStream";
+import type { AgentCardBody } from "./lp-agents-wall-data";
 
-export function LpAgentLab() {
+/** `cardBody` (V2 code-wall card 4964:4098, owner agents-view): what the card holds, decided by
+    the server page through the SHOW_PLACEHOLDERS gate. Phase 0: accepted, the production lab
+    renders unchanged. */
+export function LpAgentLab({ cardBody }: { cardBody?: AgentCardBody } = {}) {
+  void cardBody;
   const { audience } = useAudience();
   const active = audience === "agents";
   const [paused, setPaused] = useState(false);

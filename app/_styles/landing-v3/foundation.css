@@ -6,6 +6,13 @@
 
 /* Shared with the browser chrome of the inverse hero. */
 :root { --lp-brand-plum: #2c002a; }
+/* V2 agents view (Figma 4911:1461, 2026-10-09): its page is brand blue-40,
+   and html/body (iOS status-bar band, overscroll) are outside .lp — so the
+   one literal lives here and both names alias it (never two literals). */
+:root {
+  --lp-brand-blue: #4660e7;
+  --lp-agents-bg: var(--lp-brand-blue); /* = --lp-blue-40: agents view html/body chrome */
+}
 
 .lp {
   /* core tokens / brand-colors */
@@ -24,7 +31,7 @@
   --lp-blue-10: #d9e9ff;
   --lp-blue-20: #b0cbff;
   --lp-blue-30: #6a8fff;
-  --lp-blue-40: #4660e7;
+  --lp-blue-40: var(--lp-brand-blue); /* #4660e7 */
   --lp-green-10: #ceead5;
   --lp-green-20: #68cea7;
   --lp-green-30: #037d48;
@@ -106,13 +113,17 @@
   --lp-r-xlg: 32px;
   --lp-r-2xlg: 48px;
 
-  /* Signals switch, Figma 4389:781: track 40×24, thumb 20×20. */
-  --lp-switch-width: 40px;
-  --lp-switch-height: 24px;
-  --lp-switch-thumb: 20px;
+  /* Audience switch, Figma V2 4939:3523 (State=Off, 2026-10-09): track
+     64×28 r14 (Figma r100 clamps to h/2), knob 39×24 r12, inset 2; the track
+     paints --lp-blue-30 (#6a8fff) in V2. Was the Signals switch 4389:781
+     (40×24, 20×20 thumb). Only consumer: audience.css. */
+  --lp-switch-width: 64px;
+  --lp-switch-height: 28px;
+  --lp-switch-thumb-width: 39px;
+  --lp-switch-thumb-height: 24px;
   --lp-switch-inset: 2px;
-  --lp-switch-radius: 45px;
-  --lp-switch-thumb-radius: 36px;
+  --lp-switch-radius: 14px;
+  --lp-switch-thumb-radius: 12px;
 
   /* fonts. Display face = Aeonik Condensed Pro TRIAL (CoType trial,
      downloaded 2026-08-28 at Tristan's direction — license to settle before
@@ -124,6 +135,47 @@
   --lp-font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   --lp-font-aeonik: var(--font-aeonik), system-ui, -apple-system, sans-serif;
   --lp-font-cond: var(--font-aeonik-condensed), var(--font-aeonik), system-ui, -apple-system, sans-serif;
+  /* V2 agents view face (Geist Mono). No site-wide font in app/layout.tsx
+     (2026-10-09 decision): the agents-view package loads it homepage-only.
+     A custom property resolves where it is declared (.lp): if the face comes
+     from a next/font class, that class must sit on main.lp or above — or
+     redeclare this token on the component root that carries the class. */
+  --lp-font-mono: var(--font-geist-mono, "Geist Mono"), ui-monospace, "SF Mono", monospace;
+
+  /* ── V2 Figma replication tokens (2026-10-09, phase 0) ── */
+  /* Tinted pill: every V2 tinted node is #f8e5d4 with a Geist Medium (500)
+     label — nav Sign in 4939:2634, hero Book a demo 4939:2630, demo pills
+     4939:2795 / 4939:2787, CTA Book a demo 4939:3995. Applied to ALL
+     .lp-btn--tinted below (decision 2026-10-09, flagged in the PR; was the
+     mobile artboard's #f5e5d6 / 600). */
+  --lp-tinted-surface: #f8e5d4;
+
+  /* Blue band (blue-band package): the sky behind banner → deep dive → CTA
+     (Figma blue-10), and the deep-dive stage card (#fafaf8, the fill of every
+     storyboard frame — painted by the carousel SHELL only; stories paint
+     nothing behind their scene). */
+  --lp-sky: var(--lp-blue-10);
+  --lp-dive-stage-bg: #fafaf8;
+
+  /* Claude-desktop mock palette — ONE set, shared by the demo window's
+     "Claude & Codex" view (demo-scroll) and the deep-dive "Run it from Claude
+     or Codex" story (story-claude). Foreign-UI colours, measured on Figma
+     4964:2575 / 3930 / 3981. Its serif comes from lp-claude-font.ts (scoped
+     by class on the mock's root, not a token here). */
+  --lp-claude-bg: var(--lp-dive-stage-bg); /* #fafaf8 app surface */
+  --lp-claude-ink: #0b0b0b; /* sans text, plus-icon stroke */
+  --lp-claude-ink-64: rgba(11, 11, 11, 0.64); /* Project / Manual */
+  --lp-claude-ink-48: rgba(11, 11, 11, 0.48); /* Chat (off), High, Connecting…, placeholders */
+  --lp-claude-ink-16: rgba(11, 11, 11, 0.16); /* composer hairline */
+  --lp-claude-ink-08: rgba(11, 11, 11, 0.08); /* pill hairline, card footer rule */
+  --lp-claude-ink-04: rgba(11, 11, 11, 0.04); /* mode track, neutral chips */
+  --lp-claude-serif-ink: #000; /* serif reply / result lines (Figma: pure black) */
+  --lp-claude-spark: #e8704e; /* the Claude asterisk (Figma value; brand file says #d97757) */
+  --lp-claude-send: #d55b35; /* send button */
+  --lp-claude-bubble: #f0f0ef; /* user bubble */
+  --lp-claude-card: var(--lp-ink-0); /* composer card, Cowork pill, plan card */
+  --lp-claude-plug: rgba(0, 0, 0, 0.32); /* connector / tool glyph */
+  --lp-claude-codex: #26241e; /* Codex mark ink (Figma cube fill, kept as the mark's ink) */
 }
 
 /* ── base ── */
@@ -142,8 +194,16 @@ html:has(main.lp) {
 /* All widths since 2026-08-31: desktop Safari also evicts composited
    layers (H1 vanish recurrence) — skipping offscreen sections frees the
    budget everywhere. Estimates per breakpoint below. */
+/* V2 (2026-10-09): .lp-dive (deep-dive carousel, replaces .lp-feat) and
+   .lp-bento join. .lp-feat stays while LpFeatures can still render (LpDive
+   renders it until the carousel lands). Paint containment clips at the
+   section box whatever overflow says: anything that must travel outside
+   its section (cloud parallax, spinning art) needs room inside the box or
+   the section must leave this list. */
 .lp-banner,
-.lp-feat {
+.lp-feat,
+.lp-dive,
+.lp-bento {
   content-visibility: auto;
 }
 /* NOT the ring arts any more (.lp-cta, .lp-price-art — dropped 2026-09-02).
@@ -169,6 +229,23 @@ html:has(main.lp) {
   .lp-cta {
     contain-intrinsic-size: auto 624px;
   }
+  /* V2 desktop heights (Figma 4939:3388 dive 894, 4911:762 bento 1448);
+     tablet values per the blue-band / bento specs — all re-measured in
+     phase N at 1654/1440/1024/768/393. */
+  .lp-dive {
+    contain-intrinsic-size: auto 894px;
+  }
+  .lp-bento {
+    contain-intrinsic-size: auto 1448px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  .lp-dive {
+    contain-intrinsic-size: auto 1143px;
+  }
+  .lp-bento {
+    contain-intrinsic-size: auto 2182px;
+  }
 }
 @media (max-width: 767px) {
   /* Per-section estimates within ~2% of the rendered heights at 393 (sweep
@@ -183,6 +260,15 @@ html:has(main.lp) {
   }
   .lp-cta {
     contain-intrinsic-size: auto 860px;
+  }
+  /* V2 phone estimates (no V2 phone frame; re-measure in phase N): dive =
+     the 400×520 phone stage box at (393 − 32)/400 + the tab list; bento =
+     its spec's swipe-rail height. */
+  .lp-dive {
+    contain-intrinsic-size: auto 1107px;
+  }
+  .lp-bento {
+    contain-intrinsic-size: auto 625px;
   }
 }
 /* iOS Safari paints the status-bar / Dynamic-Island band with the BODY's
@@ -286,14 +372,17 @@ body:has(main.lp) {
   box-shadow: inset 0 0 0 1px var(--lp-inverted-surface);
   color: var(--lp-text);
 }
-/* Tinted twin — the mobile hero "Book a call" pill (Figma mobile node
-   4389:8180, 134×48 hug): flat pale-cream fill #f5e5d6 (no token — the fill
-   exists nowhere else in the file), plum label, no border. The recipe is
-   media-free like its siblings; its only trigger is hidden ≥768 (hero.css). */
+/* Tinted twin — flat pale-cream fill, plum label, no border. V2
+   (2026-10-09): every tinted pill the designer draws (nav Sign in, hero and
+   CTA Book a demo, demo-window pills) is --lp-tinted-surface #f8e5d4 with a
+   Geist Medium (500) label — applied site-wide (decision 2026-10-09, flagged
+   in the PR). Was the mobile hero "Book a call" pill (Figma mobile node
+   4389:8180): #f5e5d6 with the 600 label. */
 .lp .lp-btn--tinted,
 .lp a.lp-btn--tinted {
-  background: #f5e5d6;
+  background: var(--lp-tinted-surface);
   color: var(--lp-text);
+  font-weight: 500;
 }
 
 /* ── Figma-exact button corners ──

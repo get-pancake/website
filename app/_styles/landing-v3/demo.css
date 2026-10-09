@@ -1,0 +1,12 @@
+/* Demo — owner: demo-scroll package (V2 Figma replication, file
+   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346). Created empty by the integrator
+   (phase 0, 2026-10-09).
+   Homepage demo window section (LpDemo, Figma V2 4939:2645 + hero-scroll
+   storyboard 4940:4919/4920/4981): the app window, its Pancake / Claude &
+   Codex views and pills, the scroll-linked assembly and the .lp-hs-hero hook
+   rule. Not to be confused with app/_styles/verticals/demo.css (the /for
+   demo) or app/_styles/demo.css (the /demo page).
+   CLASS BLOCK = .lp-demowin (root section.lp-demowin, children
+   .lp-demowin__*; caret .lp-demowin__caret is the freeze member). Never a
+   bare .lp-demo selector: /demo's <main> is .lp.lp-demo and this manifest
+   ships on /demo too (integrator, phase 0). */

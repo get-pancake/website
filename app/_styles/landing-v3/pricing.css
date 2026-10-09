@@ -149,8 +149,9 @@
 /* ── Quiet text links (2026-10-07): a line of body copy, underlined, never a
    pill. Under the pricing card's Start free (above: Start free stays the
    card's one CTA) and under the homepage demo tour (LpDemoTour: "Works in
-   Claude and Codex. See how →"; its spacing is the last rule here, the
-   tour's own file being demo-tour.css). (0,2,0): beats `.lp a`. ── */
+   Claude and Codex. See how →"; its spacing rule moved to demo-tour.css on
+   2026-10-09). Shared recipe (features, demo tour, pricing, guide,
+   VxPromptRows): keep it here. (0,2,0): beats `.lp a`. ── */
 .lp .lp-textlink {
   color: var(--lp-text);
   font-family: var(--lp-font-sans);
@@ -169,10 +170,6 @@
   border-radius: 2px;
   outline: 2px solid var(--lp-text);
   outline-offset: 3px;
-}
-/* under the demo's foot, on its text edge (.vx-col) */
-.lp-tour .lp-tour__claude {
-  margin-top: 24px;
 }
 
 /* ≤1024: recompose to flow — cream section, art becomes a full-width flow image

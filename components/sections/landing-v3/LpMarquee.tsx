@@ -49,7 +49,10 @@ function markStyle(logo: CustomerLogo): CSSProperties {
 // Each copy translates by its own width, including its leading gap.
 const COPY_COUNT = 4;
 
-export function LpMarquee() {
+/** `labelled` (homepage, V2 4911:371 "Trusted by many", owner logos-steps): phase 0 accepts the
+    prop and renders the production band unchanged; /demo, /pricing and /for keep the bare strip. */
+export function LpMarquee({ labelled = false }: { labelled?: boolean } = {}) {
+  void labelled;
   return (
     <section className="lp-marquee" aria-label="Customers">
       <div className="lp-marquee__band">

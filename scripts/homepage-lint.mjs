@@ -55,6 +55,33 @@ const FILES = [
   // Viktor lede are decided.
   "components/sections/landing-v3/LpNav.tsx",
   "components/sections/compare/compare-copy.ts",
+  // V2 Figma replication (2026-10-09): every new homepage copy file, created as stubs in
+  // phase 0 so the list never points at a missing file (readFileSync would throw).
+  // demo window (demo-scroll)
+  "components/sections/landing-v3/LpDemo.tsx",
+  "components/sections/landing-v3/lp-demo-data.ts",
+  // customers band + steps (logos-steps)
+  "components/sections/landing-v3/LpMarquee.tsx",
+  "components/sections/landing-v3/lp-steps-content.ts",
+  // deep-dive carousel shell (blue-band) and its four stories
+  "components/sections/landing-v3/LpDive.tsx",
+  "components/sections/landing-v3/lp-dive-data.ts",
+  "components/sections/landing-v3/LpStorySources.tsx",
+  "components/sections/landing-v3/lp-story-sources-data.ts",
+  "components/sections/landing-v3/LpStoryMessage.tsx",
+  "components/sections/landing-v3/lp-story-message-data.ts",
+  "components/sections/landing-v3/LpStoryLearns.tsx",
+  "components/sections/landing-v3/lp-story-learns-data.ts",
+  "components/sections/landing-v3/LpStoryClaude.tsx",
+  "components/sections/landing-v3/lp-story-claude-data.ts",
+  // testimonials / KPI bento (bento); its placeholder module stays out on purpose
+  "components/sections/landing-v3/LpBento.tsx",
+  "components/sections/landing-v3/lp-bento-data.ts",
+  // agents view (agents-view)
+  "components/sections/landing-v3/LpAudienceHeadline.tsx",
+  "components/sections/landing-v3/LpAgentStart.tsx",
+  "components/sections/landing-v3/LpAgentPrompt.tsx",
+  "components/sections/landing-v3/lp-agents-wall-data.ts",
 ];
 
 /* ── rules ─────────────────────────────────────────────────────────────────── */
