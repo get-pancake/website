@@ -12,7 +12,7 @@ This file carries the facts of https://pancake.ai/pricing for AI agents. The pag
 - Price: $99 a month per workspace.
 - Your whole team included.
 - As many Plays and leads as you want.
-- Warm leads every morning.
+- Warm leads that keep coming.
 - A personal message for each lead, in your voice.
 - You approve every lead. You stay in control.
 - Free trial: 3 days. Signup starts without a card. A credit card is required to start the trial.

@@ -27,7 +27,7 @@ import { TRIAL_LABEL } from "@/lib/trial";
 const CHECKLIST = [
   "Everything included.",
   "As many Plays and leads as you want.",
-  "Warm leads every morning.",
+  "Warm leads that keep coming.",
   // \u00a0 keeps "customers a month." together when a narrow phone wraps it.
   "Built to land 2 to 3 customers\u00a0a\u00a0month.",
   "A personal message for each lead.",

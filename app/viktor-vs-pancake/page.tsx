@@ -47,7 +47,7 @@ const config: GtmComparisonConfig = {
     { feature: "Core job", competitor: { text: "General AI employee across company functions", mark: "yes" }, pancake: { text: "GTM platform that finds buyers and starts conversations", mark: "yes" } },
     { feature: "Primary interface", competitor: { text: "Slack and Microsoft Teams", mark: "yes" }, pancake: { text: "Pancake app, Slack, email, and Claude, Claude Code or Codex via MCP", mark: "yes" } },
     { feature: "Tool breadth", competitor: { text: "3,200+ advertised integrations", mark: "yes" }, pancake: { text: "Focused on GTM" } },
-    { feature: "Recurring work", competitor: { text: "Scheduled tasks and proactive suggestions", mark: "yes" }, pancake: { text: "New leads every morning, each with why they fit", mark: "yes" } },
+    { feature: "Recurring work", competitor: { text: "Scheduled tasks and proactive suggestions", mark: "yes" }, pancake: { text: "New leads that keep coming, each with why they fit", mark: "yes" } },
     { feature: "GTM Brain", competitor: { text: "Shared company memory" }, pancake: { text: "Ideal customer, personas, competitors, messaging, and voice, researched from your website", mark: "yes" } },
     { feature: "Outreach", competitor: { text: "Can manage workflows across connected tools" }, pancake: { text: "A warm-up, then up to three messages under your name", mark: "yes" } },
     { feature: "Public starting price", competitor: { text: "$50/month after free credits", mark: "yes" }, pancake: { text: "$99/month per workspace, one plan", mark: "yes" } },

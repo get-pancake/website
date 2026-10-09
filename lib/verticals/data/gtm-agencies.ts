@@ -25,7 +25,7 @@ export const gtmAgencies: VerticalConfig = {
 
   hero: {
     title: "Find founders hiring SDRs to build outbound.",
-    lede: "Pancake reads sales job posts, the tools they name and comments on GTM creators’ posts. Your own pipeline fills every morning.",
+    lede: "Pancake reads sales job posts, the tools they name and comments on GTM creators’ posts. Your own pipeline keeps filling.",
   },
 
   workspace: { name: "Quillon Outbound", sender: "Reuben Castile" },

@@ -235,9 +235,9 @@ export const STEP_ASK = {
       more: { label: "More ideas: example Plays", href: PLAYS_PATH },
     },
     {
-      title: "Every morning",
+      title: "When new leads come in",
       prompts: [
-        { id: "prompt-morning", text: "Show me the leads that came in since yesterday, best fit first, with the reason for each one." },
+        { id: "prompt-morning", text: "Show me the new leads, best fit first, with the reason for each one." },
         { id: "prompt-daily", text: "Find me [10] new leads today. Stay under [500] credits and tell me what you spent." },
       ],
     },
@@ -308,7 +308,7 @@ export const FAQ = {
 export const FINAL = {
   // a new Play's first search starts as soon as it exists (2026-10-07), then on the Play's schedule
   title: "Your first search runs right away",
-  body: `Start your ${TRIAL_LABEL}, connect Claude, create one Play. New leads every morning.`,
+  body: `Start your ${TRIAL_LABEL}, connect Claude, create one Play. New leads keep coming.`,
   cta: "Start free",
   note: `Code ${PROMO_CODE} · 20% off for a year`,
 } as const;

@@ -145,7 +145,7 @@ export const eventAgencies: VerticalConfig = {
   faq: [
     {
       q: "Can I keep leads in my city or state?",
-      a: "Yes, with a trade-off. Leads are sourced across the US, then checked against the region named in your Brain. A narrower region means fewer leads each morning.",
+      a: "Yes, with a trade-off. Leads are sourced across the US, then checked against the region named in your Brain. A narrower region means fewer leads per search.",
     },
     {
       q: "Do you find weddings or private clients?",

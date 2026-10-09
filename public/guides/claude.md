@@ -75,7 +75,7 @@ fit. Example: "We make SaaS launch videos. Find US product marketers posting abo
 release."
 
 Build the Play with them. Show the plan and the credit cost before you run anything, and run it only
-after a clear yes. New leads arrive every morning after that.
+after a clear yes. New leads keep arriving after that.
 
 More ideas: [example Plays](https://pancake.ai/plays)
 

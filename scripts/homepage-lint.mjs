@@ -182,7 +182,7 @@ for (const file of files) {
  * compare pages, the homepage's structured data, the Plays and /for FAQs, the pricing copy and
  * the agent-facing text files) are read line by line, comments included, since agents read
  * them as facts. */
-const FREQUENCY = /\bevery ?night\b|\beach night\b|\bnightly\b/i;
+const FREQUENCY = /\bevery ?night\b|\beach night\b|\bnightly\b|\b(?:leads?|pipeline|buyers?|contacts?)\b[^.!?\n]{0,70}\b(?:every|each) (?:morning|day)\b|\b(?:every|each) (?:morning|day)\b[^.!?\n]{0,70}\b(?:leads?|Pancake|buyers?)\b|\bleads? (?:land|arrive)s? daily\b|\bdaily leads\b/i;
 const FREQUENCY_FILES = named.length ? [] : [
   ...readdirSync(join(ROOT, "app")).filter((d) => d.endsWith("-vs-pancake")).map((d) => `app/${d}/page.tsx`),
   "app/page.tsx", "lib/copy.ts", "components/sections/plays/plays-copy.ts",

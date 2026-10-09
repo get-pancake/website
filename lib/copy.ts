@@ -259,7 +259,7 @@ export const pricingV2 = {
       (pancake-cmo PR #1220). */
   value: [
     { rest: "As many Plays and leads as you want" },
-    { rest: "Warm leads every morning" },
+    { rest: "Warm leads that keep coming" },
     { lead: "Built to land", figure: "2 to 3", rest: "customers a month" },
     { rest: "A personal message for each lead, in your voice" },
     { rest: "You approve every lead. You stay in control." },

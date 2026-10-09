@@ -39,7 +39,7 @@ const config: GtmComparisonConfig = {
   pancakeBody: "A GTM platform that goes from who you want to reach to the first conversation. Every lead arrives with one line on why they fit. Pancake writes each one a personal message from that reason, in your voice.",
   pancakeChoose: "Choose it when you want Plays that keep searching, at one price.",
   verdictTitle: "Origami bills by credit. Pancake is one price.",
-  verdictLede: "Origami is strong at live-web research, contact data, and content. Pancake is built for founders who want new leads every morning and conversations started from their own account.",
+  verdictLede: "Origami is strong at live-web research, contact data, and content. Pancake is built for founders who want new leads found for them and conversations started from their own account.",
   competitorBestFit: "Origami is the better fit when your team wants natural-language live-web research, prospect lists with verified contact data, email and social sequences, and drafted posts, paid for in credits.",
   differencesLede: "Both products read the market and run what you approve. They differ in how you pay for it.",
   differences: [
@@ -84,7 +84,7 @@ const config: GtmComparisonConfig = {
     { feature: "Public starting price", competitor: { text: "$49/month, 4,000 credits", mark: "yes" }, pancake: { text: "$99/month per workspace, one plan", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Teams that want live-web lists, contact data, and content" }, pancake: { text: "Founders who want leads and conversations, not lists" } },
   ],
-  closingTitle: "Start every morning with new leads.",
+  closingTitle: "Let Pancake find your next leads.",
   closingLede: "Tell Pancake who you want to reach. It builds a Play to find them, and every lead arrives with why they fit.",
   faqs: [
     { q: "What is the main difference between Origami and Pancake?", a: "Origami is strong at live-web research, prospect lists, and enrichment, and it runs the plays you approve. Pancake runs Plays that keep searching on their own. You tell it who you want to reach, it builds a Play to find them, and you approve every lead before anyone is contacted." },

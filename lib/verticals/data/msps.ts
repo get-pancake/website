@@ -153,7 +153,7 @@ export const msps: VerticalConfig = {
     },
     {
       q: "Can I keep leads inside my service area?",
-      a: "Yes, with a trade-off. Leads are sourced across the US, then checked against the area named in your Brain. A single metro means fewer leads each morning.",
+      a: "Yes, with a trade-off. Leads are sourced across the US, then checked against the area named in your Brain. A single metro means fewer leads per search.",
     },
     {
       q: "MSPs post help desk jobs too. Will I get my rivals?",

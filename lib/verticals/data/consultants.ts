@@ -147,7 +147,7 @@ export const consultants: VerticalConfig = {
   faq: [
     {
       q: "I run a one-person practice. Is this too much?",
-      a: "No. New leads arrive each morning, and you pick which ones join a sequence. Approve three a week or thirty.",
+      a: "No. New leads keep arriving, and you pick which ones join a sequence. Approve three a week or thirty.",
     },
     {
       q: "Won’t outreach hurt a reputation built on referrals?",
