@@ -30,7 +30,7 @@
  * phone, CRM, website visitors), as in a "What doesn't Pancake do?" answer.
  */
 import { createRequire } from "node:module";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { dirname, join, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -176,6 +176,22 @@ for (const file of files) {
       hits.push(`${relative(ROOT, file)}:${line}  ${label} ("${probe.match(re)?.[0]}"): "${text.slice(0, 160)}"`);
     }
   }
+}
+/* Founder 2026-10-09: a fixed frequency ("every night", "nightly") is never said of Pancake.
+ * BANNED carries the rule for the files above; these other files that describe Pancake (the
+ * compare pages, the homepage's structured data, the Plays and /for FAQs, the pricing copy and
+ * the agent-facing text files) are read line by line, comments included, since agents read
+ * them as facts. */
+const FREQUENCY = /\bevery ?night\b|\beach night\b|\bnightly\b|\b(?:leads?|pipeline|buyers?|contacts?)\b[^.!?\n]{0,70}\b(?:every|each) (?:morning|day)\b|\b(?:every|each) (?:morning|day)\b[^.!?\n]{0,70}\b(?:leads?|Pancake|buyers?)\b|\bleads? (?:land|arrive)s? daily\b|\bdaily leads\b/i;
+const FREQUENCY_FILES = named.length ? [] : [
+  ...readdirSync(join(ROOT, "app")).filter((d) => d.endsWith("-vs-pancake")).map((d) => `app/${d}/page.tsx`),
+  "app/page.tsx", "lib/copy.ts", "components/sections/plays/plays-copy.ts",
+  "components/sections/verticals/vx-copy.ts", "public/llms.txt", "public/pricing.md",
+];
+for (const f of FREQUENCY_FILES) {
+  readFileSync(join(ROOT, f), "utf8").split("\n").forEach((text, i) => {
+    if (FREQUENCY.test(text)) hits.push(`${f}:${i + 1}  fixed frequency ("${text.match(FREQUENCY)[0]}"): "${text.trim().slice(0, 160)}"`);
+  });
 }
 for (const h of hits) console.log(`ERROR  ${h}`);
 console.log(`homepage-lint: ${files.length} file(s), ${count} string(s), ${hits.length} error(s)`);

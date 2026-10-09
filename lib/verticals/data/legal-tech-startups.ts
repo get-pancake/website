@@ -161,7 +161,7 @@ export const legalTechStartups: VerticalConfig = {
     },
     {
       q: "Can I target one state?",
-      a: "Yes, with a trade-off. Leads are sourced across the US, then checked against the state named in your Brain. One state means fewer leads each morning.",
+      a: "Yes, with a trade-off. Leads are sourced across the US, then checked against the state named in your Brain. One state means fewer leads per search.",
     },
   ],
 

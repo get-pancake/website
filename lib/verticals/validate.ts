@@ -40,6 +40,9 @@ export const BANNED: [RegExp, string][] = [
   [/@Pancake\b|\bask Pancake in Slack\b|\bSlack (chat|DMs?)\b/i, "Slack chat"],
   [/\bpublish(es|ing)? to WordPress\b|\bWordPress (site|plugin|publishing)\b/i, "WordPress publishing"],
   [/\bsolar leads\b/i, "solar leads"],
+  // Founder 2026-10-09: each Play runs on the schedule the customer picks (daily, weekdays,
+  // weekly or chosen days). The frequency is not a selling point, so copy never names one ("every night", or "every morning" / "every day" said of leads).
+  [/\bevery ?night\b|\beach night\b|\bnightly\b|\b(?:leads?|pipeline|buyers?|contacts?)\b[^.!?\n]{0,70}\b(?:every|each) (?:morning|day)\b|\b(?:every|each) (?:morning|day)\b[^.!?\n]{0,70}\b(?:leads?|Pancake|buyers?)\b|\bleads? (?:land|arrive)s? daily\b|\bdaily leads\b/i, "fixed frequency"],
   [/\bhiring (their|its|a) first\b/i, "Hiring can't see first hires"],
   [/\b\d+\+|\bhiring (at least |more than |over )?\d+\b|\b(at least|more than|over) \d+ (open )?(roles|jobs|openings|positions|hires)\b/i, "job-count threshold"],
   [/\b(already shopping|ready to buy|in-market|looking to buy|actively (looking|searching))\b/i, "intent overclaim"],

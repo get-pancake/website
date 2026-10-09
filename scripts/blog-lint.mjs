@@ -67,6 +67,8 @@ const PANCAKE_CLAIMS = [
   // Retired with the October 2026 launch (founder 2026-10-06): Pancake is where
   // GTM runs ("your agent decides, Pancake runs it"), not an "AI GTM team".
   [/\bAI (?:GTM|go-to-market) teams?\b/i, "\"AI GTM team\" retired 2026-10-07 (say what Pancake does: it finds buyers and starts the conversation)", "error"],
+  // Founder 2026-10-09: the customer picks each Play's schedule; copy never names a frequency.
+  [/\bevery ?night\b|\beach night\b|\bnightly\b|\b(?:leads?|pipeline|buyers?|contacts?)\b[^.!?\n]{0,70}\b(?:every|each) (?:morning|day)\b|\b(?:every|each) (?:morning|day)\b[^.!?\n]{0,70}\b(?:leads?|Pancake|buyers?)\b|\bleads? (?:land|arrive)s? daily\b|\bdaily leads\b/i, "fixed frequency (the customer picks each Play's schedule)", "error"],
 ];
 const NEGATION = /\b(not|isn[’']t|doesn[’']t|don[’']t|no longer|never|without|instead of|unlike|rather than|no)\b/i;
 const NAMES_PANCAKE = /\bPancake\b/;

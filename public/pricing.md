@@ -12,7 +12,7 @@ This file carries the facts of https://pancake.ai/pricing for AI agents. The pag
 - Price: $99 a month per workspace.
 - Your whole team included.
 - As many Plays and leads as you want.
-- Warm leads every morning.
+- Warm leads that keep coming.
 - A personal message for each lead, in your voice.
 - You approve every lead. You stay in control.
 - Free trial: 3 days. Signup starts without a card. A credit card is required to start the trial.
@@ -29,7 +29,7 @@ A workspace is one company. Its plan covers the Brain, every Play, your whole te
 ## Everything in the $99
 
 - Your Brain, built from your website
-- A fresh search every night, on your schedule
+- Fresh searches on your schedule
 - An ICP check and a reason on every lead
 - A warm-up, then up to three messages
 - Replies stop the sequence and get sorted
@@ -74,7 +74,7 @@ No. Lead data and the ICP check are in the plan. Claude, Claude Code and Codex c
 
 ### Is there a limit on leads?
 
-Each Play search keeps up to 50 new leads, and every Play searches again each night.
+Each Play search keeps up to 50 new leads, and you run as many Plays as you want.
 
 ### Can I use Pancake from my AI agent?
 

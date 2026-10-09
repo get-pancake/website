@@ -31,7 +31,7 @@ import { VxDemo } from "@/components/sections/verticals/VxDemo";
 import { HOME_DEMO } from "@/lib/verticals/home-demo";
 
 const TOUR_SUMMARY =
-  "Product demo: Tell Pancake who to reach. It builds the Play. Leads arrive each morning with why they fit. You approve each lead, then Pancake writes a personal message for every lead.";
+  "Product demo: Tell Pancake who to reach. It builds the Play. Leads arrive with why they fit. You approve each lead, then Pancake writes a personal message for every lead.";
 
 export function LpDemoTour() {
   return (

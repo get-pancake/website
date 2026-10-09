@@ -72,7 +72,7 @@ export const WHAT = {
   h2: "Pancake finds the people who fit",
   paragraphs: [
     "Pancake reads your website and builds your GTM Brain: who buys from you, what to say to them, where to find them.",
-    "Plays use that Brain. You tell Pancake who you want to reach, it builds the search with you, and you run it. Every night Pancake searches again, so new leads wait for you each morning. Each one comes with one line on why it fits.",
+    "Plays use that Brain. You tell Pancake who you want to reach, it builds the search with you, and you run it. The Play keeps searching on its own, and each new lead comes with one line on why it fits.",
     "You approve every lead before anyone hears from you. Pancake writes a personal message from that reason, in your voice, and sends it from your own account. A reply stops the sequence.",
   ],
   /** The public/llms.txt list, in the same count (the site said "six" in places, llms.txt eight). */
@@ -235,9 +235,9 @@ export const STEP_ASK = {
       more: { label: "More ideas: example Plays", href: PLAYS_PATH },
     },
     {
-      title: "Every morning",
+      title: "When new leads come in",
       prompts: [
-        { id: "prompt-morning", text: "Show me the leads that came in since yesterday, best fit first, with the reason for each one." },
+        { id: "prompt-morning", text: "Show me the new leads, best fit first, with the reason for each one." },
         { id: "prompt-daily", text: "Find me [10] new leads today. Stay under [500] credits and tell me what you spent." },
       ],
     },
@@ -306,9 +306,9 @@ export const FAQ = {
 } as const;
 
 export const FINAL = {
-  // a new Play's first search starts as soon as it exists (2026-10-07), then every night
+  // a new Play's first search starts as soon as it exists (2026-10-07), then on the Play's schedule
   title: "Your first search runs right away",
-  body: `Start your ${TRIAL_LABEL}, connect Claude, create one Play. New leads every morning.`,
+  body: `Start your ${TRIAL_LABEL}, connect Claude, create one Play. New leads keep coming.`,
   cta: "Start free",
   note: `Code ${PROMO_CODE} · 20% off for a year`,
 } as const;

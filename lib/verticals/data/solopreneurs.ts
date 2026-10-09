@@ -19,9 +19,9 @@ export const solopreneurs: VerticalConfig = {
     badge: "For solopreneurs",
   },
 
-  meta: { seoTitle: "Pancake for Solopreneurs: B2B Leads Every Morning" },
+  meta: { seoTitle: "Pancake for Solopreneurs: B2B Buyers Without a Sales Team" },
 
-  hubLine: "Find B2B buyers each morning without a sales team.",
+  hubLine: "Find B2B buyers without a sales team.",
 
   hero: {
     title: "Find B2B buyers who react to your build-in-public posts.",
@@ -145,7 +145,7 @@ export const solopreneurs: VerticalConfig = {
 
   faq: [
     {
-      q: "I can’t review leads every day. What happens?",
+      q: "What if I don’t get to my leads for a few days?",
       a: "New leads wait until you get to them. Pancake never contacts a lead you haven’t approved. Approving one from Slack takes a click.",
     },
     {

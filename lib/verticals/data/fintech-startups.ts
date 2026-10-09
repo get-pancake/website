@@ -26,7 +26,7 @@ export const fintechStartups: VerticalConfig = {
 
   hero: {
     title: "Find controllers whose AP teams need another clerk.",
-    lede: "Finance job posts that name SAP Concur, controllers posting about month-end close. Each morning, Pancake brings you the CFO who signs.",
+    lede: "Finance job posts that name SAP Concur, controllers posting about month-end close. Pancake brings you the CFO who signs.",
   },
 
   workspace: { name: "Settleworth", sender: "Adrian Mowbray" },

@@ -23,7 +23,7 @@ export const marketingAgencies: VerticalConfig = {
 
   hero: {
     title: "Find B2B founders crowdsourcing their next agency.",
-    lede: "Pancake reads “looking for an agency” posts, marketing job posts and rivals’ comment threads. Every morning, meet who holds the brief.",
+    lede: "Pancake reads “looking for an agency” posts, marketing job posts and rivals’ comment threads. Meet who holds the brief.",
   },
 
   workspace: { name: "Ybarra Growth", sender: "Carmen Ybarra" },

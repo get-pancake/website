@@ -22,7 +22,7 @@ export const HOME_DEMO: DemoSource = {
 
   demo: {
     /** The homepage demo section's visually hidden H2 (LpDemoTour): the tabs are its visible head. */
-    h2: "One prompt in. Leads every morning.",
+    h2: "One prompt in. Leads keep coming.",
     prompts: [
       {
         kind: "keyword",

@@ -160,7 +160,7 @@ export const industrialTechStartups: VerticalConfig = {
     },
     {
       q: "Our sales cycles run nine months. What’s the point?",
-      a: "Pancake fills the top of that cycle with new plant contacts each morning. The pilot and the contract stay with your team.",
+      a: "Pancake fills the top of that cycle with new plant contacts. The pilot and the contract stay with your team.",
     },
     {
       q: "Can it find plants that run the system we replace?",

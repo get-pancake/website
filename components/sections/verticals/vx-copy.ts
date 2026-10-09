@@ -239,7 +239,7 @@ export const VX_FAQ = {
     },
     {
       q: "How many leads will I get?",
-      a: "As many as you want. Each Play search keeps up to 50 new leads, you run as many Plays as you need, and Pancake searches again every night.",
+      a: "As many as you want. Each Play search keeps up to 50 new leads, and you run as many Plays as you need.",
     },
     {
       q: "What does it cost?",
@@ -269,7 +269,7 @@ export const VX_CTA_BODY: [string, string] = [
 /** The /for pricing checklist: the same six lines on every /for page and the hub. The fifth line
  *  was the AI SEO article until 2026-09-30; it now matches the homepage's Plays line. */
 export const VX_PRICING_CHECKLIST: readonly string[] = [
-  "Warm leads every morning.",
+  "Warm leads that keep coming.",
   "Every lead comes with its reason.",
   "Outreach from your own account.",
   "You approve every lead first.",

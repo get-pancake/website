@@ -15,7 +15,7 @@
 // 02 talks Plays + lead approval + outreach (was "gets you found on Google and
 // ChatGPT"), and the step 02 Agents list swaps its Content / AI search rows
 // for Plays / Messages (S2_ROWS in lp-step-data.ts). 2026-10-07: step 02
-// says each Play searches every night for people who fit (it named an
+// says each Play keeps searching for people who fit (it named an
 // intent the product can't see, an overclaim validate.ts bans), and its
 // checklist learns from every review, not every reply (the brain learns from
 // the leads you approve or reject; reply signals are deferred, pancake-cmo
@@ -54,7 +54,7 @@ const STEPS: Step[] = [
   {
     num: "02",
     title: "Agents start working.",
-    body: "Each Play searches every night for people who fit. You approve each one. Pancake writes to them under your name.",
+    body: "Each Play keeps searching for people who fit. You approve each one. Pancake writes to them under your name.",
     variant: "s2",
     // lists S2_ROWS and S2_ITEMS (lp-step-data.ts) in order: keep in sync
     alt: "Animation: an Agents list with Pipeline (24 warm leads), Signals (48 detected), Plays (3 active), Replies (12 received), Messages (72 sent). The Pipeline agent opens its checklist by itself and works through it: monitor buying signals, find people who fit your ICP, enrich every prospect, score leads for ICP fit, write outreach in your voice, follow up automatically. Each item loads, then ticks.",

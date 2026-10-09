@@ -35,10 +35,10 @@ const config: GtmComparisonConfig = {
   heroSummary: "Unify gives sales reps data, signals, sequences and a dialer, billed per seat with credits. Pancake runs Plays that find your buyers and writes to the ones you approve, for $99 a month per workspace.",
   competitorBody: "An outbound platform for SDRs, AEs and sales leaders. Reps build lists from 1.1B+ people and 40+ data sources, then run multi-channel sequences from one chat.",
   competitorChoose: "Choose it when reps need data, email and a dialer in one place.",
-  pancakeBody: "Tell Pancake who to reach. It builds a Play that searches every night. Every lead arrives with why it fits, and you approve each one before Pancake writes to them under your name.",
+  pancakeBody: "Tell Pancake who to reach. It builds a Play that keeps searching on its own. Every lead arrives with why it fits, and you approve each one before Pancake writes to them under your name.",
   pancakeChoose: "Choose it when you do your own sales and want one price for the team.",
   verdictTitle: "Unify equips sales reps. Pancake runs the Play.",
-  verdictLede: "Unify is the stronger toolkit once you have reps, mailboxes and a CRM. Pancake fits founders who do their own sales and want buyers found every night.",
+  verdictLede: "Unify is the stronger toolkit once you have reps, mailboxes and a CRM. Pancake fits founders who do their own sales and want their buyers found for them.",
   competitorBestFit: "Unify is the better fit when several reps need contact data, email sequences, a dialer and HubSpot or Salesforce sync, and each rep works from their own seat.",
   differencesLede: "Both find people to talk to. They differ in who runs the work and how you pay.",
   differences: [
@@ -51,7 +51,7 @@ const config: GtmComparisonConfig = {
     {
       n: "02",
       title: "Rep platform versus a Play that runs",
-      body: "Unify gives each rep a chat to build lists, research accounts and write sequences. Tell Pancake who to reach, and it builds a Play. The Play searches again every night.",
+      body: "Unify gives each rep a chat to build lists, research accounts and write sequences. Tell Pancake who to reach, and it builds a Play. The Play keeps searching on its own.",
       angle: "Unify speeds up your reps. Pancake does the searching.",
     },
     {
@@ -77,7 +77,7 @@ const config: GtmComparisonConfig = {
     { feature: "Core job", competitor: { text: "Outbound platform for sales reps", mark: "yes" }, pancake: { text: "Plays that find buyers and start the conversation", mark: "yes" } },
     { feature: "Pricing", competitor: { text: "Free, then $20 or $60 per seat a month, plus credits" }, pancake: { text: "$99 a month per workspace", mark: "yes" } },
     { feature: "Seats", competitor: { text: "Paid per seat; Free plan up to 3 seats" }, pancake: { text: "Whole team included", mark: "yes" } },
-    { feature: "Contact data", competitor: { text: "1.1B+ people, 65M+ companies, 40+ sources", mark: "yes" }, pancake: { text: "A nightly search for people who fit your ICP", mark: "yes" } },
+    { feature: "Contact data", competitor: { text: "1.1B+ people, 65M+ companies, 40+ sources", mark: "yes" }, pancake: { text: "A search that keeps finding people who fit your ICP", mark: "yes" } },
     { feature: "Lead context", competitor: { text: "Signals, account research and AI copy", mark: "yes" }, pancake: { text: "One line on why each lead fits", mark: "yes" } },
     { feature: "Outreach", competitor: { text: "Email, call and social steps in one sequence", mark: "yes" }, pancake: { text: "Direct messages under your name, from the accounts you send from", mark: "yes" } },
     { feature: "Email and calling", competitor: { text: "Managed mailboxes and a dialer", mark: "yes" }, pancake: { text: "No email, no calls", mark: "no" } },
@@ -87,7 +87,7 @@ const config: GtmComparisonConfig = {
     { feature: "Best for", competitor: { text: "Sales teams with reps, mailboxes and a CRM" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
   ],
   closingTitle: "One workspace. One price. The whole team.",
-  closingLede: "Tell Pancake who to reach. It builds the Play, searches every night and writes to the leads you approve.",
+  closingLede: "Tell Pancake who to reach. It builds the Play, keeps searching and writes to the leads you approve.",
   faqs: [
     { q: "What is the main difference between Unify and Pancake?", a: "Unify is an outbound platform that sales reps operate, priced per seat. Pancake runs Plays: it finds the people who fit and writes to the ones you approve. It costs $99 a month per workspace." },
     { q: "How does pricing compare?", a: "As of October 2026, Unify has a Free plan, Base at $20 and Pro at $60 per seat a month, and custom Business plans. Each comes with credits. Pancake is $99 a month per workspace." },
