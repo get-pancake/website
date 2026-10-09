@@ -16,7 +16,7 @@ Vercel takes a website built in any editor, puts it online and keeps it running.
 
 Pancake researches a company from its website and builds a GTM Brain: what it sells, its ideal customers, personas, competitors, messaging and voice. Every Play starts from that Brain, so the customer never re-explains the business.
 
-A Play is one GTM idea turned into a search that runs. The customer tells Pancake who to reach in one sentence, from their agent or in the app. Pancake asks what it needs to know, then builds the Play: who to find, how to find them, and how many leads per search (up to 50). Customers run as many Plays as they want, one per audience. Every night each Play searches again, so new leads are waiting every morning.
+A Play is one GTM idea turned into a search that runs. The customer tells Pancake who to reach in one sentence, from their agent or in the app. Pancake asks what it needs to know, then builds the Play: who to find, how to find them, and how many leads per search (up to 50). Customers run as many Plays as they want, one per audience. Each Play keeps running on the schedule the customer picks, so new leads keep arriving.
 
 A Play can find:
 
@@ -82,7 +82,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Claude Tag vs Pancake](https://pancake.ai/claude-tag-vs-pancake) — ambient general teammate vs focused autonomous GTM execution
 - [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain behind every Play
 - [Lemlist vs Pancake](https://pancake.ai/lemlist-vs-pancake) — a sales-engagement platform your team operates vs Plays that find buyers and start conversations for you
-- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — on-demand live-web searches and plays billed in credits vs Plays that search every night and start the conversation
+- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — on-demand live-web searches and plays billed in credits vs Plays that keep searching and start the conversation
 - [Unify vs Pancake](https://pancake.ai/unify-vs-pancake) — an outbound platform for sales reps, priced per seat plus credits, vs Plays that find buyers for $99 a month per workspace
 - [Octave vs Pancake](https://pancake.ai/octave-vs-pancake) — a context layer that feeds your GTM tools and agents vs Plays that find buyers and start the conversation
 - [Alta vs Pancake](https://pancake.ai/alta-vs-pancake) — named AI agents for outbound, inbound and calls, sold by custom quote, vs self-serve Plays for $99 a month per workspace

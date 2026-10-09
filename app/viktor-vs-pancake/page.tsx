@@ -33,7 +33,7 @@ const config: GtmComparisonConfig = {
   pancakeBody: "A GTM platform for founders and small B2B companies. Its Plays find leads eight ways, and every lead arrives with why they fit. Once you approve a lead, Pancake opens the conversation from your own account.",
   pancakeChoose: "Choose it when the job is bringing in customers.",
   verdictTitle: "Choose Viktor for breadth. Choose Pancake for GTM depth.",
-  verdictLede: "Both products do real work on a schedule. The question is whether you need a general AI employee or Plays that work on your pipeline every night.",
+  verdictLede: "Both products do real work on a schedule. The question is whether you need a general AI employee or Plays that keep working on your pipeline.",
   competitorBestFit: "Viktor is the stronger fit when a team wants one shared AI employee inside Slack or Teams to handle varied work across finance, engineering, operations, reporting, and marketing through a broad integration catalog.",
   differencesLede: "Viktor spreads one AI employee across the whole company. Pancake puts every Play on one outcome: customers.",
   differences: [
@@ -57,7 +57,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Add your website. Tell Pancake who you want to reach. It finds them and starts the conversations.",
   faqs: [
     { q: "What is the main difference between Viktor and Pancake?", a: "Viktor is a broad AI employee that works across company functions from Slack or Teams. Pancake is a GTM platform: it builds a Play for each audience you sell to, brings you leads with why they fit, and opens conversations from your own account." },
-    { q: "Does Viktor work without prompting?", a: "Yes. Viktor supports scheduled tasks and proactive automations, so it is not prompt-only. Pancake works without prompting too: it searches every night and has new leads waiting each morning, each with why they fit." },
+    { q: "Does Viktor work without prompting?", a: "Yes. Viktor supports scheduled tasks and proactive automations, so it is not prompt-only. Pancake works without prompting too: each Play keeps searching on its own, and every new lead arrives with why it fits." },
     { q: "Which product has more integrations?", a: "Viktor advertises more than 3,200 integrations and wins on breadth. Pancake connects where GTM happens: your own accounts for outreach, Slack for lead approvals, and Claude, Claude Code or Codex through its MCP server." },
     { q: "Which is better for outreach?", a: "Pancake. Finding buyers and starting conversations is its core work, and every Play draws on the same Brain. Viktor fits better when outreach is a small part of a company-wide workload." },
     { q: "How does pricing compare?", a: "At the time of review, Viktor advertised paid plans from $50 per month after free credits. Pancake starts with a 3-day free trial (card required), then costs $99 a month per workspace. Confirm Viktor's current limits before buying." },

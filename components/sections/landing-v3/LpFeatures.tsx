@@ -53,7 +53,7 @@ const FEATURES: Feature[] = [
   // alternating: f5 left, f1 right, f2 left, f4 right.
   // 2026-10-07 copy pass (titles kept except f4): f5 carries the ads line
   // ("Tell Pancake who to reach. It builds the Play.") and sells the
-  // clarifying questions + the nightly search; f1 lists every way a Play finds
+  // clarifying questions + the search that keeps running; f1 lists every way a Play finds
   // people (funding and lookalikes included: they are in the app, and what
   // the app does can be pitched, founder 2026-10-07) and the ICP check; f2
   // opens with the lead's signal (a post, an open role, a new tool), sells the
@@ -76,7 +76,7 @@ const FEATURES: Feature[] = [
   {
     side: "left",
     title: "Ask for the people \nyou want",
-    body: "Tell Pancake who to reach. It builds the Play: who, how to find them, how many. It asks what it needs, searches every night and says why each lead fits.",
+    body: "Tell Pancake who to reach. It builds the Play: who, how to find them, how many. It asks what it needs, keeps searching and says why each lead fits.",
     more: { href: PLAYS_PATH, label: "See example Plays" },
     variant: "f5",
     alt: "Animation: in the Pancake Agent, the request Find US SaaS founders with a launch coming up is typed and sent; Pancake plans a Play called Founders about to launch (who: early-stage SaaS founders in the US, found through the people engaging with launch posts, 25 leads per search), it is created and switches from Draft to Active, its Discover, Enrich and Qualify steps complete, and 25 new leads arrive, the first three each with a line on why they fit: the search that surfaced them, then the requirement they meet, such as Commented on a launch post, Seed-stage SaaS.",

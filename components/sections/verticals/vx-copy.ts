@@ -239,7 +239,7 @@ export const VX_FAQ = {
     },
     {
       q: "How many leads will I get?",
-      a: "As many as you want. Each Play search keeps up to 50 new leads, you run as many Plays as you need, and Pancake searches again every night.",
+      a: "As many as you want. Each Play search keeps up to 50 new leads, and you run as many Plays as you need.",
     },
     {
       q: "What does it cost?",

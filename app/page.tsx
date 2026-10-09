@@ -79,7 +79,7 @@ const softwareApplicationJsonLd = {
   description: SITE_DESCRIPTION,
   featureList: [
     "Plays built from one sentence",
-    "A new lead search every night, up to 50 leads per search",
+    "Searches that run on your schedule, up to 50 leads per search",
     "A reason on every lead",
     "You approve every lead before anyone is contacted",
     "Personal messages you can edit",

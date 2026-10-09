@@ -40,6 +40,9 @@ export const BANNED: [RegExp, string][] = [
   [/@Pancake\b|\bask Pancake in Slack\b|\bSlack (chat|DMs?)\b/i, "Slack chat"],
   [/\bpublish(es|ing)? to WordPress\b|\bWordPress (site|plugin|publishing)\b/i, "WordPress publishing"],
   [/\bsolar leads\b/i, "solar leads"],
+  // Founder 2026-10-09: each Play runs on the schedule the customer picks (daily, weekdays,
+  // weekly or chosen days). The frequency is not a selling point, so copy never names one.
+  [/\bevery ?night\b|\beach night\b|\bnightly\b/i, "fixed frequency"],
   [/\bhiring (their|its|a) first\b/i, "Hiring can't see first hires"],
   [/\b\d+\+|\bhiring (at least |more than |over )?\d+\b|\b(at least|more than|over) \d+ (open )?(roles|jobs|openings|positions|hires)\b/i, "job-count threshold"],
   [/\b(already shopping|ready to buy|in-market|looking to buy|actively (looking|searching))\b/i, "intent overclaim"],

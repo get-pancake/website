@@ -254,8 +254,8 @@ export const pricingV2 = {
       (founder 2026-10-04: "how can you guarantee customers?" kept coming
       back, and the Terms promise no results). `lead` sits before the
       figure so the number stays bold mid-line. No lead count (founder
-      2026-10-05): Plays make leads as many as you want, and the nightly run
-      has them waiting every morning. Revisit if credit enforcement ships
+      2026-10-05): Plays make leads as many as you want, and the scheduled runs
+      keep them coming. Revisit if credit enforcement ships
       (pancake-cmo PR #1220). */
   value: [
     { rest: "As many Plays and leads as you want" },
@@ -269,7 +269,7 @@ export const pricingV2 = {
   /** "Everything in the $99." — the /pricing section under the plan map
       (PlanIncluded.tsx), added 2026-10-07: the card sells outcomes and left
       out what competitors charge extra for. Every line is in pancake-cmo
-      (Brain from the website, nightly Play schedules, AI ICP check with a
+      (Brain from the website, per-Play schedules, AI ICP check with a
       reason, warm-up + up to 3 steps, reply detection that stops the
       sequence, Slack posts + the 08:30 digest, the MCP server).
       Not listed until the PR #1220 pricing decision: work-email lookup and
@@ -279,7 +279,7 @@ export const pricingV2 = {
     title: `Everything in the $${MONTHLY_DOLLARS}.`,
     items: [
       "Your Brain, built from your website",
-      "A fresh search every night, on your schedule",
+      "Fresh searches on your schedule",
       "An ICP check and a reason on every lead",
       "A warm-up, then up to three messages",
       "Replies stop the sequence and get sorted",
@@ -358,7 +358,7 @@ export const pricingPlan = {
  *   confirmed 2026-09-18). The trial paywall shows the leads already found.
  * - Cancel before the trial ends and nothing is charged (app billing copy);
  *   access runs to the end of the paid period (/support, Terms §4).
- * - One search keeps 1-50 leads (`leadLimit`); Plays search again each night.
+ * - One search keeps 1-50 leads (`leadLimit`); each Play runs on the schedule the customer picks.
  * - Promotion codes apply to the monthly payments after the trial
  *   (`TRIAL_PROMOTION_NOTE`, `allow_promotion_codes`).
  * Not answered until the founder decides: refunds and an annual plan, how
@@ -386,7 +386,7 @@ export const pricingFaq = {
     },
     {
       q: "Is there a limit on leads?",
-      a: "Each Play search keeps up to 50 new leads, and every Play searches again each night.",
+      a: "Each Play search keeps up to 50 new leads, and you run as many Plays as you want.",
     },
     {
       q: "Can I use Pancake from my AI agent?",

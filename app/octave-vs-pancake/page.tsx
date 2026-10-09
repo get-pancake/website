@@ -35,7 +35,7 @@ const config: GtmComparisonConfig = {
   heroSummary: "Octave models your positioning and buyers, then feeds that context to your tools and agents. Pancake runs Plays that find your buyers and writes to the ones you approve, from your own accounts.",
   competitorBody: "A context layer for B2B go-to-market teams. Its context graph holds segments, personas, buyer problems and differentiation. Its Intelligence Engine learns from buyer conversations, market shifts and competitor signals.",
   competitorChoose: "Choose it when many teams and agents need one source of truth.",
-  pancakeBody: "Pancake reads your website and builds a Brain of your buyers, competitors and voice. Each Play uses it to find people every night and write each one a personal message.",
+  pancakeBody: "Pancake reads your website and builds a Brain of your buyers, competitors and voice. Each Play uses it to find people and write each one a personal message.",
   pancakeChoose: "Choose it when you want that context turned into conversations.",
   verdictTitle: "Octave informs your stack. Pancake runs the Play.",
   verdictLede: "Octave is the deeper context system for teams with sales, marketing and RevOps. Pancake fits founders who want buyers found and messaged without wiring tools together.",
@@ -45,7 +45,7 @@ const config: GtmComparisonConfig = {
     {
       n: "01",
       title: "Context versus a Play that runs",
-      body: "Octave supplies context to the tools and agents you choose, through MCP, an API and a CLI. Tell Pancake who to reach, and it builds a Play that searches every night.",
+      body: "Octave supplies context to the tools and agents you choose, through MCP, an API and a CLI. Tell Pancake who to reach, and it builds a Play that keeps searching on its own.",
       angle: "One sharpens your tools. The other reaches your buyers.",
     },
     {
@@ -94,7 +94,7 @@ const config: GtmComparisonConfig = {
     { q: "How does pricing compare?", a: "As of October 2026, Octave charges a platform fee plus usage credits. Octave Ultra starts at $1,500 a month, billed annually. Pancake is $99 a month per workspace." },
     { q: "What does Octave do that Pancake doesn't?", a: "Octave learns from buyer conversations and connects to Salesforce, HubSpot, Gong and Clay. It also offers SSO, role-based access and a data warehouse connector. Pancake doesn't do these." },
     { q: "Do both work in Claude?", a: "Yes. Octave offers MCP, an API, a CLI and a Claude Code plugin. Pancake connects to Claude, Claude Code and Codex with a browser sign-in. You create Plays and review leads from the agent." },
-    { q: "What is a Play?", a: "A Play is how Pancake finds one audience. Tell it who to reach in one sentence. It asks what it needs, then searches every night and keeps up to 50 new leads per search." },
+    { q: "What is a Play?", a: "A Play is how Pancake finds one audience. Tell it who to reach in one sentence. It asks what it needs, then searches again on your schedule, keeping up to 50 new leads per search." },
     { q: "Who should choose Pancake over Octave?", a: "Founders who do their own sales, and small B2B teams without a GTM engineer. Pancake builds the Brain from your website, finds the people who fit and writes to the leads you approve." },
   ],
   related: [

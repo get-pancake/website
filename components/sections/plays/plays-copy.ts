@@ -139,7 +139,7 @@ export const PLAYS_FAQ = {
   items: [
     {
       q: "What is a Play?",
-      a: "A saved search for one audience. Tell Pancake who to reach in one sentence. It plans who to find, how to find them and how many, then searches again every night.",
+      a: "A saved search for one audience. Tell Pancake who to reach in one sentence. It plans who to find, how to find them and how many, then keeps searching on your schedule.",
     },
     {
       q: "Do I need to know what to run?",
@@ -147,7 +147,7 @@ export const PLAYS_FAQ = {
     },
     {
       q: "How many leads does a Play find?",
-      a: "Each search keeps up to 50 new leads. Every Play searches again each night.",
+      a: "Each search keeps up to 50 new leads, and you run as many Plays as you want.",
     },
     {
       q: "Do I approve leads before anyone is contacted?",

@@ -21,8 +21,8 @@ import { TRIAL_LABEL } from "@/lib/trial";
    2026-10-05: "now that there are Plays you can have as many leads as you
    want"): a Play search keeps up to 50 leads, Plays are unlimited, and
    credits run in shadow mode, so nothing caps them. Revisit if credit
-   enforcement ships (pancake-cmo PR #1220). The nightly run is why leads
-   wait every morning. Same lines in pricingV2.value (lib/copy.ts), the /for
+   enforcement ships (pancake-cmo PR #1220). The scheduled runs are why new
+   leads keep coming. Same lines in pricingV2.value (lib/copy.ts), the /for
    checklist, the app's checkout card and the Brain page. */
 const CHECKLIST = [
   "Everything included.",
