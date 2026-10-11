@@ -3,9 +3,13 @@
 import type { gsap } from "@/lib/gsap";
 
 /**
- * The play-once driver behind the homepage's animated mock UIs: the four
- * feature cards (LpFeatAnim) and the three step cards (LpStepAnim). One
- * seek-safe GSAP timeline per card, built on the card's stage.
+ * The play-once driver behind the homepage's animated mock UIs: the three
+ * step cards (LpStepAnim). One seek-safe GSAP timeline per card, built on the
+ * card's stage. It was written for the four feature cards (LpFeatAnim), which
+ * the V2 deep-dive carousel replaced (2026-10-11): the carousel driver
+ * (lp-dive-carousel.ts) reuses this file's constants and helpers for its
+ * first start, so the two surfaces keep one contract. "Feature cards" below
+ * is that history; `restIsEnd: true` stays supported for the next such card.
  *
  * Founder 2026-09-30: "les motions apparaissent de manière molle… quand tu
  * scrolles rapidement tu fais face à beaucoup de vides… il faut que l'écran
@@ -57,10 +61,10 @@ import type { gsap } from "@/lib/gsap";
  */
 
 type Timeline = gsap.core.Timeline;
-/** the window QA registries: feature cards, step cards, and the deep-dive carousel's stories
+/** the window QA registries: step cards, and the deep-dive carousel's stories
     (window.__lpStory.<id>, registered by the carousel shell lp-dive-carousel.ts and the
-    /lp-dev/stages harness; V2 replication 2026-10-09) */
-export type PlayOnceRegistry = "__lpFeat" | "__lpStep" | "__lpStory";
+    /lp-dev/stages harness; V2 replication 2026-10-09). "__lpFeat" left with the feature cards. */
+export type PlayOnceRegistry = "__lpStep" | "__lpStory";
 /** cue: the timeline time of the card's first scene (0 = its first frame) */
 type Built = { tl: Timeline; cleanup: () => void; cue?: number };
 export type PlayOnceRuntime = {

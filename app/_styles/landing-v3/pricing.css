@@ -148,10 +148,11 @@
 
 /* ── Quiet text links (2026-10-07): a line of body copy, underlined, never a
    pill. Under the pricing card's Start free (above: Start free stays the
-   card's one CTA) and under the homepage demo tour (LpDemoTour: "Works in
-   Claude and Codex. See how →"; its spacing rule moved to demo-tour.css on
-   2026-10-09). Shared recipe (features, demo tour, pricing, guide,
-   VxPromptRows): keep it here. (0,2,0): beats `.lp a`. ── */
+   card's one CTA). Shared recipe (pricing, the deep-dive carousel's "See
+   how →", the Claude guide, VxPromptRows): keep it here. The homepage demo
+   tour's "Works in Claude and Codex. See how →" line left with the tour
+   (2026-10-09: the V2 demo window's chip links /guides/claude instead).
+   (0,2,0): beats `.lp a`. ── */
 .lp .lp-textlink {
   color: var(--lp-text);
   font-family: var(--lp-font-sans);

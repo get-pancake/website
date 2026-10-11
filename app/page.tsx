@@ -24,7 +24,6 @@ import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
-import "@/app/_styles/home-demo.css";
 
 /**
  * Landing v3 — 1:1 replication of the Figma "Pancake-Design" desktop artboard

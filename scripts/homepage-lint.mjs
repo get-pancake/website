@@ -45,7 +45,6 @@ const { BANNED, CAMPAIGN, ORIGAMI_TAGLINE, PLATFORM, SEQUENCE } = jiti("./lib/ve
 const FILES = [
   "components/sections/landing-v3/LpSteps.tsx",
   "components/sections/landing-v3/lp-step-data.ts",
-  "components/sections/landing-v3/LpFeatures.tsx",
   "components/sections/landing-v3/LpBanner.tsx",
   "components/sections/landing-v3/LpCta.tsx",
   "components/sections/landing-v3/LpPricing.tsx",
@@ -55,8 +54,9 @@ const FILES = [
   // Viktor lede are decided.
   "components/sections/landing-v3/LpNav.tsx",
   "components/sections/compare/compare-copy.ts",
-  // V2 Figma replication (2026-10-09): every new homepage copy file, created as stubs in
-  // phase 0 so the list never points at a missing file (readFileSync would throw).
+  // V2 Figma replication (2026-10-09): every new homepage copy file (the list must never point
+  // at a missing file: readFileSync would throw). The feature cards' LpFeatures.tsx left with
+  // the cards (2026-10-11).
   // demo window (demo-scroll)
   "components/sections/landing-v3/LpDemo.tsx",
   "components/sections/landing-v3/lp-demo-data.ts",
@@ -82,6 +82,8 @@ const FILES = [
   "components/sections/landing-v3/LpAgentStart.tsx",
   "components/sections/landing-v3/LpAgentPrompt.tsx",
   "components/sections/landing-v3/lp-agents-wall-data.ts",
+  "components/sections/landing-v3/LpAgentLab.tsx", // section aria-label, transcript list label
+  "components/sections/landing-v3/LpAgentCaptcha.tsx", // the puzzle's strings (moved out of LpAgentLab)
 ];
 
 /* ── rules ─────────────────────────────────────────────────────────────────── */
@@ -97,9 +99,8 @@ const OFF_FOR = {
 /** Text a rule may not read (names of other products). */
 const ALLOW = [
   [/\bco-?pilots?\b/i, /\bGitHub Copilot\b/g],
-  // the f4 animation's alt describes its mock chart, "+56% reply rate vs last period", which
-  // the founder kept (2026-10-08); the rate rule still reads every other line of copy
-  [OFF_FOR.rates[0], /\ba reply rate 56% up versus last period\b/g],
+  // (the f4 "+56% reply rate" alt allowance went with the feature cards, 2026-10-11: the V2
+  // "Pancake learns" story shows approved shares, no rate figure)
 ];
 /** Rules a negated sentence may cross (the product's boundaries, said as boundaries). */
 const NEGATABLE = new Set(["email outreach", "phone lookup / calls", "CRM sync/export", "website visitors", "local/consumer leads"]);

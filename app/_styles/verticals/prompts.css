@@ -1,8 +1,8 @@
 /* ── "Example prompts" (VxPromptRows) — the demo's three prompts as rows ────
-   Shared by the /for hero (VxHero) and the homepage's demo section
-   (LpDemoTour); moved out of hero.css 2026-09-23 unchanged. What depends on
-   the context stays with the context: the label's margin-top and the /for
-   fold tier (hero.css), the homepage spacing (landing-v3/demo-tour.css).
+   The /for hero's rows (VxHero); moved out of hero.css 2026-09-23 unchanged,
+   when the homepage's demo tour shared them (that tour left 2026-10-09 for
+   the V2 demo window). What depends on the context stays with the context:
+   the label's margin-top and the /for fold tier (hero.css).
    The caps label, then one row per prompt. */
 .lp-vx .vx-hero__label {
   color: var(--lp-subtle-text);

@@ -1,5 +1,0 @@
-/* Homepage only (app/page.tsx imports it after landing-v3.css). EMPTY since 2026-10-09:
-   the homepage demo is the V2 demo window (LpDemo, landing-v3/demo.css, in the manifest), not
-   the /for demo tour (LpDemoTour + verticals/{foundation,demo}.css + landing-v3/demo-tour.css),
-   so the homepage no longer ships the /for demo's CSS. Kept as an empty file until the
-   integrator drops its import from app/page.tsx (demo-scroll shared request), then delete it. */
