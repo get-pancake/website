@@ -1,19 +1,26 @@
 /* Story Message — owner: story-message package (V2 Figma replication, file
    fr8NgOCTUxsEbrMEJA3YKu frame 4911:346).
    Deep-dive story 2, "A personal message for every lead" (LpStoryMessage,
-   Figma 4964:1469/1471/1729/1821/1899). Scene geometry on the 752x489 design
-   box and the 400x520 phone box; paints nothing behind the scene (the shell
-   paints --lp-dive-stage-bg).
+   Figma 4964:1469/1471/1729, then the interim tail 4964:1821/1899). Scene
+   geometry on the 752x489 design box and the 400x520 phone box; paints
+   nothing behind the scene (the shell paints --lp-dive-stage-bg).
 
-   REST = the END picture (f5, the accounts world): every conversation layer
-   below is the conversation's last state (sent, ring gone, "Thursday?"),
-   hidden; lp-story-message-timeline.ts sets frame 0 and plays f1 → f5.
-   Production f2's recipe (features.css .lp-f2-*, drawn there at 0.9) at
-   Figma's native units: the post is native 404×190 scaled per pose, the draft
-   card is 376 wide at Figma's 29px line pitch with the Send button. Fonts:
-   the post is the Inter fallback stack (as .lp-f2-post; Inter isn't loaded),
-   the message Aeonik Condensed, every other run Geist (Figma's Aeonik Fono →
-   Geist Sans, founder 2026-09-09). */
+   Two blocks:
+   1. THE CONVERSATION — frames 1–3, final. Production f2's recipe
+      (features.css .lp-f2-*, drawn there at 0.9) at Figma's native units: the
+      post is native 404×190 scaled per pose, the draft card is 376 wide at
+      Figma's 29px line pitch with the Send button. Every rule here is the
+      element's geometry at frame 3 (the 4-line card); the timeline
+      (lp-story-message-timeline.ts) sets frame 0 and plays to it.
+   2. INTERIM — frames 4–5, which the designer marked WIP on 2026-10-11: the
+      corrected word, the sent state, the accounts world, and the REST state
+      (the stage rests on the tail's last picture, so the conversation is
+      hidden at rest). A new design for those frames replaces that block with
+      lp-story-message-tail.ts — nothing in block 1.
+
+   Fonts: the post is the Inter fallback stack (as .lp-f2-post; Inter isn't
+   loaded), the message Aeonik Condensed, every other run Geist (Figma's
+   Aeonik Fono → Geist Sans, founder 2026-09-09). */
 
 .lp-sm {
   inset: 0;
@@ -26,23 +33,27 @@
   font-family: var(--lp-font-sans);
 }
 
-/* ══ the conversation (f1–f4) ══ */
+/* ══ 1 · the conversation (frames 1–3) ══ */
 .lp-sm-convo {
   inset: 0;
-  opacity: 0;
   position: absolute;
-  visibility: hidden;
 }
 
-/* the post — native 404×190; rest = pose B (Figma .621658 at 234, 82.704).
-   Pose A (f1, 1.170614 at 139.535, 133.104) is the timeline's
+/* the post — native 404×190; here pose B (Figma .621658 at 234, 82.704).
+   Pose A (frame 1, 1.170614 at 139.535, 133.104) is the timeline's
    (lp-story-message-data.ts SM_POSE). Neutral greys, page-scoped literals
-   (= production .lp-f2-post ÷ 0.9). */
+   (= production .lp-f2-post ÷ 0.9).
+   --b: 0 = pose A, 1 = pose B (the timeline tweens it with the move). Figma
+   lays the component out again at each instance scale — at .62 its text
+   boxes round to whole pixels — so some rows and icons sit up to 1.15 native
+   px apart between the two instances (4964:1557 vs 4964:1651). Every
+   `* var(--b)` term below is that difference, pose B − pose A. */
 .lp-sm-post {
+  --b: 1;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 16px;
   box-shadow: inset 0 0 0 1px #e8e6e3;
-  height: 190px;
+  height: calc(190.32px - 0.32px * var(--b));
   left: 234px;
   position: absolute;
   top: 82.704px;
@@ -62,12 +73,16 @@
   top: 0;
   width: 404.444px; /* the 0.9-unit icon art (364×171) at native size */
 }
+/* each icon's extra shift at pose B, in the art's units (lp-story-message-art.ts) */
+.lpsm-pi-b {
+  transform: translate(calc(var(--dx) * var(--b) * 1px), calc(var(--dy) * var(--b) * 1px));
+}
 .lp-sm .lp-sm-avatar {
   border-radius: 50%;
   height: 48px;
   left: 16px;
   position: absolute;
-  top: 16.64px;
+  top: calc(16.64px - 0.12px * var(--b));
   width: 48px;
 }
 .lp-sm-meta {
@@ -91,11 +106,15 @@
   font-size: 12px;
   letter-spacing: 0.367px;
   line-height: 14.52px;
+  position: relative;
+  top: calc(0.605px * var(--b));
 }
 .lp-sm-time {
   color: #666666;
   font-size: 11px;
   line-height: 13.67px;
+  position: relative;
+  top: calc(0.562px * var(--b));
 }
 .lp-sm-body {
   color: #191919;
@@ -104,7 +123,7 @@
   letter-spacing: 0.344px;
   line-height: 29.4px;
   position: absolute;
-  top: 77.28px;
+  top: calc(77.28px - 0.24px * var(--b));
   white-space: nowrap;
   width: 372px;
 }
@@ -125,7 +144,7 @@
   gap: 8px;
   left: 16px;
   position: absolute;
-  top: 122.32px;
+  top: calc(122.32px - 0.324px * var(--b));
 }
 .lp-sm-skelgrp {
   display: flex;
@@ -145,7 +164,7 @@
   left: 0;
   position: absolute;
   top: 0;
-  /* at rest the sheen has passed (the timeline sweeps it once) */
+  /* the sheen has passed (the timeline sweeps it once) */
   transform: translateX(345px);
   width: 100px;
 }
@@ -154,9 +173,11 @@
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
+  /* --l = its left at pose A, --lb = the shift at pose B (LpStoryMessage.tsx) */
+  left: calc(var(--l) * 1px + var(--lb) * var(--b) * 1px);
   line-height: 14.52px;
   position: absolute;
-  top: 159.06px;
+  top: calc(159.06px - 0.3px * var(--b));
 }
 .lp-sm-count .lp-sm-n {
   left: 0;
@@ -175,7 +196,7 @@
 
 /* the draft card in its rainbow ring. .lp-sm-draftpos places the group per
    layout (phone: scaled), .lp-sm-draftgrp is the 405-wide ring box the
-   timeline moves (rest = the 4-line pose: card 165.621, 163.517). */
+   timeline moves (here the 4-line pose: card 165.621, 163.517). */
 .lp-sm-draftpos {
   height: 284px;
   left: 152.473px;
@@ -191,14 +212,14 @@
   top: 0;
   width: 405px;
 }
+/* the ring's box; its art is injected by the timeline while the story plays
+   (lp-story-message-art.ts), so it is empty in the page HTML */
 .lp-sm-ring {
   height: 284px;
   left: 0;
-  opacity: 0; /* rest: f4 onward, the ring is gone */
   overflow: visible;
   position: absolute;
   top: 0;
-  visibility: hidden;
   width: 405px;
 }
 .lp-sm-draft {
@@ -215,8 +236,7 @@
   top: 14.5px;
   width: 376px;
 }
-/* DRAFTING (green, Figma) while Pancake writes; MESSAGE SENT once sent — the
-   in-flow text is the sent state (the picture), DRAFTING is stacked on it */
+/* DRAFTING (green, Figma) while Pancake writes */
 .lp-sm-eyebrow {
   color: var(--lp-green-30);
   flex: none;
@@ -229,12 +249,8 @@
   text-transform: uppercase;
   white-space: nowrap;
 }
-.lp-sm-eb-sent {
-  display: inline-block;
-}
 .lp-sm-eb-draft {
   left: 0;
-  opacity: 0;
   position: absolute;
   top: 0;
 }
@@ -252,12 +268,6 @@
 }
 .lp-sm .lp-sm-msg span {
   font-family: inherit;
-}
-.lp-sm-fix-old {
-  display: none; /* rest = corrected */
-}
-.lp-sm-fix-new {
-  color: var(--lp-red-30);
 }
 /* Send — 338×46, Figma r14.4 corner smoothing .75 (scripts/squircle-path.mjs
    338 46 14.4 0.75); the asymmetric padding puts the label 3.2px left of centre */
@@ -281,11 +291,52 @@
   width: 338px;
 }
 
-/* ══ the accounts world (f5) = the rest picture ══
-   .lp-sm-cam is the camera (the timeline pulls it back from 1.6 to 1 about
-   the main card's centre). Every account is one block — sender name over its
-   lead rows — placed at its header's top-left and scaled by k (Figma draws the
-   five satellites as the main card's block, scaled; no card, no effect). */
+/* phones: the 400×520 box (decision 2026-10-09), recomposed — pose A .9
+   centred (SM_POSE.phone), pose B .7 above the card, the draft group at .92
+   with its card centred (message ≈18.7px on a 393 phone) */
+@container lp-dive-scene (max-width: 599px) {
+  .lp-sm-post {
+    left: 58.6px;
+    top: 88px;
+    transform: scale(0.7);
+  }
+  .lp-sm-draftpos {
+    left: 14.944px;
+    top: 173.293px;
+    transform: scale(0.92);
+  }
+}
+
+/* ══ 2 · INTERIM — frames 4–5 (designer WIP since 2026-10-11) ══
+   Built from the 2026-10-09 storyboard so the story has an ending; swapped
+   with lp-story-message-tail.ts when the designer finishes. Not pixel-chased. */
+
+/* the REST state: the stage rests on the tail's last picture (the accounts
+   world), so the conversation is hidden, in its sent state */
+.lp-sm-convo {
+  opacity: 0;
+  visibility: hidden;
+}
+.lp-sm-eb-draft {
+  opacity: 0; /* MESSAGE SENT has replaced it */
+}
+/* MESSAGE SENT — the in-flow eyebrow text at rest; DRAFTING is stacked on it */
+.lp-sm-eb-sent {
+  display: inline-block;
+}
+/* the last word: as Pancake wrote it (gone at rest), and corrected by hand */
+.lp-sm-fix-old {
+  display: none;
+}
+.lp-sm-fix-new {
+  color: var(--lp-red-30);
+}
+
+/* the accounts world (frame 5). .lp-sm-cam is the camera (the timeline pulls
+   it back from 1.6 to 1 about the main card's centre). Every account is one
+   block — sender name over its lead rows — placed at its header's top-left
+   and scaled by k (Figma draws the five satellites as the main card's block,
+   scaled; no card, no effect). */
 .lp-sm-world {
   inset: 0;
   position: absolute;
@@ -408,23 +459,10 @@
 .lp-sm-chip[data-kind="hiring"] { --k-bg: #fff2e8; --k-fg: #a84b00; --k-ring: #f6d3b5; }
 .lp-sm-chip[data-kind="stack"] { --k-bg: #ecfbf8; --k-fg: #0f766e; --k-ring: #bfe8e0; }
 
-/* ══ phones: the 400×520 box (decision 2026-10-09), recomposed ══
-   Conversation: pose A .9 centred, pose B .7 above the card, the draft group
-   at .92 with its card centred (message ≈18.7px on a 393 phone). World: the
-   main card narrows to 374.4 (rows under the sender name, no 68.8 indent) and
-   sits centred at scale 1; the satellites move around it (SM_SATELLITES
-   .phone in lp-story-message-data.ts). */
+/* phones: the main card narrows to 374.4 (rows under the sender name, no
+   68.8 indent) and sits centred at scale 1; the satellites move around it
+   (SM_SATELLITES .phone in lp-story-message-data.ts) */
 @container lp-dive-scene (max-width: 599px) {
-  .lp-sm-post {
-    left: 58.6px;
-    top: 88px;
-    transform: scale(0.7);
-  }
-  .lp-sm-draftpos {
-    left: 14.944px;
-    top: 173.293px;
-    transform: scale(0.92);
-  }
   .lp-sm-cam {
     transform-origin: 200px 260px;
   }
