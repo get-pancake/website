@@ -93,6 +93,9 @@ function buildS1(root: HTMLElement): BuiltStep {
   const srows = $$(".lp-s1-srow");
   const rows = $$(".lp-s1-row");
   const skels = $$(".lp-s1-skel");
+  // the five hub names (V2 "Labels in 2nd level dots"), in S1_HUBS order
+  const hlabels = $$(".lp-s1-hlabel");
+  if (hlabels.length !== S1_HUBS.length) throw new Error("lp-step: s1 hub labels out of sync");
 
   // the graph in the composition's build order (lp-step-data.ts s1Graph):
   // hub edge, hub dot, leaf edges/dots, sub-branches — regroup per hub
@@ -161,6 +164,7 @@ function buildS1(root: HTMLElement): BuiltStep {
   tl.set(allEdges, { strokeDashoffset: undraw, opacity: 1 }, 0);
   tl.set(graph, { x: 0, y: 0, scale: 1, opacity: 1 }, 0);
   tl.set(clabel, { opacity: 0, y: 0 }, 0);
+  tl.set(hlabels, { opacity: 0, y: 0 }, 0);
   tl.set(ui, { opacity: 1 }, 0);
 
   /* Pace (2026-09-30, founder: "tout plus dynamique"): the same beats, no
@@ -206,6 +210,13 @@ function buildS1(root: HTMLElement): BuiltStep {
     const t0 = tB + 0.2 + i * 0.1;
     tl.to(hubEdges[i], { strokeDashoffset: 0, duration: 0.42, ease: "power2.inOut" }, t0);
     tl.fromTo(hubDots[i], { scale: 0 }, { scale: 1, duration: 0.6, ease: "elastic.out(1, 0.5)" }, t0 + 0.29);
+    // its name rises in as the pop settles (≈2.1 – 2.8 s, all in before the glide)
+    tl.fromTo(
+      hlabels[i],
+      { opacity: 0, y: 4 },
+      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false },
+      t0 + 0.45,
+    );
     const nMain = h.leaves.length;
     const base = tB + 0.55 + i * 0.11;
     leafEdges[i].forEach((e, k) => {
@@ -220,6 +231,8 @@ function buildS1(root: HTMLElement): BuiltStep {
   const tG = tB + 1.6;
   tl.to(graph, { x: -130.5, y: 42.08, scale: 0.55, duration: 0.75, ease: "power3.inOut" }, tG);
   tl.to(clabel, { opacity: 0, duration: 0.26, ease: "power2.in" }, tG);
+  // the hub names leave with the centre label (at 0.55 they would be 5.5px, under the panel)
+  tl.to(hlabels, { opacity: 0, duration: 0.26, ease: "power2.in" }, tG);
   tl.to([center, ...softDots], { opacity: 0.45, duration: 0.6, ease: "power2.inOut" }, tG + 0.08);
   tl.to(softEdges, { opacity: 0.45, duration: 0.6, ease: "power2.inOut" }, tG + 0.08);
 
@@ -261,6 +274,14 @@ function buildS1(root: HTMLElement): BuiltStep {
   tl.to([center, ...softDots], { opacity: 1, duration: 0.45, ease: "power2.inOut" }, tX + 0.15);
   tl.to(softEdges, { opacity: 1, duration: 0.45, ease: "power2.inOut" }, tX + 0.15);
   tl.fromTo(clabel, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out" }, tX + 0.49);
+  // and the hub names, in hub order (the last lands before the timeline ends: the held
+  // picture is V2's labelled graph)
+  tl.fromTo(
+    hlabels,
+    { opacity: 0, y: 4 },
+    { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", stagger: 0.04, immediateRender: false },
+    tX + 0.49,
+  );
   /* hold from ~6.2: the static illustration */
 
   // the invisible UI and panel go back to their frame-0 poses during the hold

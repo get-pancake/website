@@ -2,7 +2,11 @@
    Page bg #fbf6f1 shows through (no own bg). The rainbow art SVG
    (1654×1417) is anchored at page y0 = nav top → top:-120px here; it
    stays 1654 centered at every viewport (side-crop below 1654 is the
-   correct behavior — the page clips overflow-x). */
+   correct behavior — the page clips overflow-x).
+   The HOMEPAGE hero is V2 (4911:355, 1654×657, 2026-10-09): every rule for
+   it is scoped to .lp-hero--home (block "Homepage hero" below). The unscoped
+   rules are V1 and stay for /agents (AgHero reuses .lp-hero, .lp-hero-inner,
+   .lp-hero-title and .lp-hero-col with this geometry). */
 
 .lp-hero {
   /* Artboard height 758, compressing on short windows so the bottom-anchored
@@ -33,6 +37,16 @@
   .lp-hero-art {
     transition: none;
   }
+}
+/* Homepage hero — Figma V2 4911:355 (1654×657). The designer cut the hero
+   101px (758 → 657) so the demo window (V2 4939:2645) starts at page y777
+   and its scroll-linked assembly (demo-scroll) can begin in the first
+   screen; the rings did not move (4911:356 = V1 4257:4907). One height
+   whenever it fits (window ≥ 777 tall: nav 120 + 657); shorter windows take
+   the ladder below (the 760–776 homepage tier, then the shared ≤759 and
+   ≤639 tiers, which win by order over this rule). */
+.lp-hero--home {
+  --lp-hero-h: 657px;
 }
 .lp-hero-art {
   /* The export includes an invisible page-colored arc reaching y1417 that
@@ -146,6 +160,19 @@
     transform-origin: 50% 100%;
   }
 }
+/* Homepage tier: the homepage stops fitting nav + 657 at 776 tall, 17px
+   before the shared tier starts — same values as the shared ≤759 tier
+   (which then takes over: equal specificity on the height, and the inner
+   rule below is bounded to ≥760 so the ≤639 tier's .66 still wins). */
+@media (min-width: 1025px) and (min-height: 760px) and (max-height: 776px) {
+  .lp-hero--home {
+    --lp-hero-h: max(500px, calc(var(--lp-svh, 100svh) - 120px));
+  }
+  .lp-hero--home .lp-hero-inner {
+    transform: scale(0.84) translateZ(0);
+    transform-origin: 50% 100%;
+  }
+}
 @media (min-width: 1025px) and (max-height: 639px) {
   .lp-hero {
     --lp-hero-h: max(380px, calc(var(--lp-svh, 100svh) - 120px));
@@ -184,6 +211,77 @@
   }
 }
 
+/* ── Homepage hero text block — Figma V2 4911:355 ──────────────────────
+   H1 "Frame 180" 4911:364 (259, 518, 656×160) and the right column "Frame
+   181" 4911:366 (1027, 474, 368×196: toggle row 28, gap 24, lede 72, gap
+   24, buttons 48), both bottom-anchored. V2 draws them at bottom offsets
+   99 / 107; the homepage keeps the founder's 36px drop (2026-09-01 "baisse
+   un peu le bloc h1/h2/cta": the green band ran too close to the "You"),
+   so 63 / 71 — the V2 composition 36px lower (decision 2026-10-09; V2's
+   bands clear the "Y" by ~17px at 99, ~53px here). Both blocks are
+   transform-free (left offsets instead of translateX(-50%)): the demo
+   window's hero-scroll drifts them through .lp-hs-hero (translate/opacity),
+   and a scroll driver that writes `transform` would otherwise erase the
+   centring. */
+.lp-hero--home .lp-hero-title {
+  bottom: 63px; /* V2 99 − 36 */
+  left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
+  transform: none;
+}
+.lp-hero--home .lp-hero-aside {
+  align-items: flex-start;
+  bottom: 71px; /* V2 107 − 36 */
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* Figma itemSpacing 24 */
+  left: calc(50% + 200px); /* left edge 1027 at 1654 (column centre x1211) */
+  position: absolute;
+  width: 368px;
+}
+/* The swap cell: the human column (lede + buttons) and the agent column
+   overlay in one grid area; the human one sizes it in both views
+   (audience.css hides it with visibility, never display). Bottom-aligned,
+   like the bottom-anchored V1 columns were. 368 = the lede column (Figma
+   4911:367), the width both columns had in production at every width (the
+   agent column used to copy the human column's measured width). */
+.lp-hero--home .lp-hero-swap {
+  display: grid;
+  max-width: 368px;
+  width: 100%;
+}
+.lp-hero--home .lp-hero-swap > .lp-hero-col {
+  align-self: end;
+  grid-area: 1 / 1;
+  position: static;
+  transform: none;
+}
+@media (max-width: 1200px) {
+  .lp-hero--home .lp-hero-title {
+    left: 48px;
+  }
+  .lp-hero--home .lp-hero-aside {
+    left: auto;
+    right: 48px;
+  }
+}
+/* Art clip at the hero's bottom (≥1025). The section is positioned
+   (isolation), so its art paints over the static demo section that now
+   starts at 777, and the art's invisible page-coloured ring would cover the
+   window's top 101px. Visible ink over a full 20s rotation ends by y740 at
+   1654 (40 phases measured), so nothing visible is cut on a ≥777 window.
+   Beats the ≥1655 px clip (0,2,0 > 0,1,0). ≤1024 keeps the proportional
+   38.04% (flow layouts). */
+@media (min-width: 1025px) {
+  .lp-hero--home .lp-hero-art {
+    clip-path: inset(0 0 calc(100% - 120px - var(--lp-hero-h)) 0);
+  }
+}
+@media (min-width: 1025px) and (max-height: 639px) {
+  .lp-hero--home .lp-hero-art {
+    clip-path: inset(0 0 calc(100% - 180px - var(--lp-hero-h)) 0); /* art top −180 there */
+  }
+}
+
 /* ≤1024: recompose — single flow column under the scaled rainbow */
 @media (max-width: 1024px) {
   .lp-hero {
@@ -209,6 +307,20 @@
   }
   .lp-hero-title {
     font-size: clamp(40px, 6.4vw, 62px);
+  }
+  /* Homepage (Figma has desktop only; proposal): the aside dissolves into
+     the inner flex column so the toggle row leads the stacked block,
+     left-aligned on the text column (x48 tablet, x32 phone) — V2 makes it
+     the block's topmost element on its column's left edge, and a single
+     column has one left edge. Then the H1, then the swap cell (lede +
+     buttons). The block stays bottom-anchored on phones, so it grows upward
+     by the row + one gap. V2's own column order (H1 → toggle → lede) is
+     one rule away: drop the `order`. */
+  .lp-hero--home .lp-hero-aside {
+    display: contents;
+  }
+  .lp-hero--home .lp-audience-selector {
+    order: -1;
   }
 }
 

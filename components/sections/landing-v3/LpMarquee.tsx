@@ -49,29 +49,41 @@ function markStyle(logo: CustomerLogo): CSSProperties {
 // Each copy translates by its own width, including its leading gap.
 const COPY_COUNT = 4;
 
-/** `labelled` (homepage, V2 4911:371 "Trusted by many", owner logos-steps): phase 0 accepts the
-    prop and renders the production band unchanged; /demo, /pricing and /for keep the bare strip. */
+/** The homepage's line above the strip (Figma V2 4962:847, red note "swapped position /
+    'Trusted by many'", 2026-10-09): Geist Medium 13.333/16 in the subtle text colour. */
+const LABEL = "Trusted by many";
+
+/**
+ * `labelled` (homepage only, Figma V2 4911:371): the strip moves under the demo window and
+ * gains the "Trusted by many" line, in a vertical frame (pad 8, gap 8, label 16 + slot 90 =
+ * 130). Opt-in: /demo (DemoTrustBand), /pricing (PricingLogos) and /for (VxPage) keep the
+ * bare strip. The `.lp-marquee__slot` wrapper is rendered for every consumer: it is the pause
+ * button's containing block (its top: 50% stays the logo row's centre whether or not a label
+ * sits above) and an unlabelled slot is a plain relative block, so their layout is unchanged.
+ */
 export function LpMarquee({ labelled = false }: { labelled?: boolean } = {}) {
-  void labelled;
   return (
-    <section className="lp-marquee" aria-label="Customers">
-      <div className="lp-marquee__band">
-        <div aria-hidden="true" className="lp-marquee__track">
-          {Array.from({ length: COPY_COUNT }, (_, copy) => (
-            <div className="lp-marquee__seq" key={copy}>
-              {LOGOS.map((logo) => (
-                <div className="lp-marquee__item" key={logo.name}>
-                  <div className="lp-marquee__mark">
-                    <span className="lp-marquee__logo" style={markStyle(logo)} />
+    <section className={labelled ? "lp-marquee lp-marquee--labelled" : "lp-marquee"} aria-label="Customers">
+      {labelled && <p className="lp-marquee__label">{LABEL}</p>}
+      <div className="lp-marquee__slot">
+        <div className="lp-marquee__band">
+          <div aria-hidden="true" className="lp-marquee__track">
+            {Array.from({ length: COPY_COUNT }, (_, copy) => (
+              <div className="lp-marquee__seq" key={copy}>
+                {LOGOS.map((logo) => (
+                  <div className="lp-marquee__item" key={logo.name}>
+                    <div className="lp-marquee__mark">
+                      <span className="lp-marquee__logo" style={markStyle(logo)} />
+                    </div>
+                    {logo.yc && <span className="lp-marquee__yc" />}
                   </div>
-                  {logo.yc && <span className="lp-marquee__yc" />}
-                </div>
-              ))}
-            </div>
-          ))}
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
+        <LpMarqueePause />
       </div>
-      <LpMarqueePause />
       <ul className="lp-sr-only">
         {LOGOS.map((logo) => (
           <li key={logo.name}>{logo.name}{logo.yc ? " — Y Combinator" : ""}</li>

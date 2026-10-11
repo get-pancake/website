@@ -44,11 +44,15 @@ export function LpStepAnim({
   variant,
   alt,
   className,
+  placeholder = false,
 }: {
   variant: StepVariant;
   /** what the animation shows — the only copy a screen reader gets */
   alt: string;
   className?: string;
+  /** a dev/preview-only slot entry (lp-steps-content.ts status "placeholder"): marked
+      data-placeholder, decided by the server component (VERCEL_ENV is server-only) */
+  placeholder?: boolean;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
 
@@ -68,7 +72,7 @@ export function LpStepAnim({
   }, [variant]);
 
   return (
-    <div ref={hostRef} className={className} role="img" aria-label={alt}>
+    <div ref={hostRef} className={className} role="img" aria-label={alt} data-placeholder={placeholder ? "" : undefined}>
       <LpStepStage variant={variant} />
     </div>
   );

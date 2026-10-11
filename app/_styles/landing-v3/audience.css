@@ -9,7 +9,12 @@
    - audience-agents.css (imported right after this file): the agents theme,
      the agent headline (LpAudienceHeadline.tsx) and the agent column's
      contents (LpAgentStart.tsx) — owner agents-view. */
-:root { --lp-audience-fade-duration: 240ms; }
+:root {
+  --lp-audience-fade-duration: 240ms;
+  /* on :root (not .lp): the view-transition pseudo-elements below hang off
+     <html> and read it too */
+  --lp-audience-ease: cubic-bezier(.22, 1, .36, 1);
+}
 
 /* One short crossfade includes the live artwork, navigation and page palette.
    Only snapshots animate; the original page geometry and clocks stay intact. */
@@ -20,8 +25,15 @@ html:has(.lp-audience-page)::view-transition-new(root) {
   animation-duration: var(--lp-audience-fade-duration);
   animation-timing-function: ease-out;
 }
-/* The switch keeps its ordinary live thumb slide; it never crossfades. */
-html:has(.lp-audience-page)::view-transition-group(lp-audience-switch) { animation: none; }
+/* The switch keeps its ordinary live thumb slide; it never crossfades. Its
+   group glides (V2, 2026-10-09): the agents look sets the labels in a wider
+   mono face, so the switch box can move a few px between the views — it
+   slides there on the toggle's own curve instead of snapping. A no-op when
+   both views put it on the same pixel. */
+html:has(.lp-audience-page)::view-transition-group(lp-audience-switch) {
+  animation-duration: var(--lp-audience-fade-duration);
+  animation-timing-function: var(--lp-audience-ease);
+}
 html:has(.lp-audience-page)::view-transition-old(lp-audience-switch) { display: none; }
 html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation: none; mix-blend-mode: normal; }
 
@@ -33,11 +45,8 @@ html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation
   --lp-space-8: 32px;
   --lp-space-12: 48px;
   --lp-line: 1px;
-  --lp-audience-ease: cubic-bezier(.22, 1, .36, 1);
 }
 .lp-sr-only { position: absolute; width: var(--lp-line); height: var(--lp-line); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-.lp-perspective { position: absolute; top: calc(var(--lp-audience-top) - var(--lp-space-4)); left: var(--lp-audience-center); transform: translate(-50%, -100%); visibility: hidden; z-index: 2; }
-.lp-perspective[data-ready="true"] { visibility: visible; }
 /* The human headline remains the layout reference. The agent's single
    terminal line sits inside it without moving the selector or CTA. Since
    2026-10-07 the human copy is the page's <h1> (the wrapper is a div), so the
@@ -48,31 +57,111 @@ html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation
 .lp-hero-title__copy { grid-area: 1 / 1; margin: 0; font: inherit; letter-spacing: inherit; }
 .lp-hero-title__copy[aria-hidden="true"] { visibility: hidden; }
 
-/* Keep the original human column's horizontal bounds. The terminal centers
-   on the headline on desktop, and stays below it on stacked layouts. (The
-   column's contents — LpAgentStart — are styled in audience-agents.css.) */
+/* The human and agent columns overlay in the hero's swap cell (hero.css
+   .lp-hero-swap, V2 2026-10-09): the human column stays laid out (hidden) in
+   the agents view and sizes the cell, so the toggle above never moves. (The
+   agent column's contents — LpAgentStart — are styled in
+   audience-agents.css.) */
 .lp-hero-col--agent { display: none; }
-.lp-hero-inner:not([data-title-ready="true"]) .lp-hero-col--agent { visibility: hidden; }
 [data-audience="agents"] .lp-hero-col--human { visibility: hidden; }
-[data-audience="agents"] .lp-hero-col--agent { display: block; position: absolute; top: var(--lp-hero-col-top); left: var(--lp-hero-col-left); right: auto; bottom: auto; width: var(--lp-hero-col-width); height: var(--lp-hero-col-height); transform: none; }
+[data-audience="agents"] .lp-hero-col--agent { display: flex; }
+/* Interim, until agents-view restyles LpAgentStart to V2 (friends row UNDER
+   the install box): its ≥1025 absolute "friends" row (bottom: 100%) would
+   float up into the toggle row now that the toggle sits on top of the
+   column. In flow it stacks above the terminal inside the cell. */
 @media (min-width: 1025px) {
-  [data-audience="agents"] .lp-hero-col--agent { top: var(--lp-agent-terminal-center); height: auto; transform: translateY(-50%); }
+  .lp-hero--home .lp-agent-friends { position: static; }
 }
-.lp-audience-selector { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--lp-space-2); color: var(--lp-text); font-size: var(--lp-text-sm); white-space: nowrap; }
-/* The labels are click targets too (2026-10-07), each as tall as the switch's
-   44px hit area; aria-hidden in the markup, the switch stays the one control. */
-.lp-audience-selector__label { display: flex; align-items: center; min-height: calc(var(--lp-space-12) - var(--lp-space-1)); opacity: .65; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
-.lp-audience-selector__label:first-child { justify-content: flex-end; text-align: right; }
-.lp-audience-selector__label[data-active="true"] { opacity: 1; cursor: default; }
-/* The transparent hit area is larger than the exact Figma artwork: at least
-   44px, and never narrower than the track (V2 track 64px wide, 2026-10-09
-   tokens; the selector itself is rebuilt by nav-hero). */
-.lp-audience-switch { view-transition-name: lp-audience-switch; display: grid; place-items: center; width: max(calc(var(--lp-space-12) - var(--lp-space-1)), var(--lp-switch-width)); height: calc(var(--lp-space-12) - var(--lp-space-1)); padding: 0; border: 0; background: transparent; border-radius: var(--lp-r-sm); cursor: pointer; touch-action: manipulation; }
-.lp-audience-switch:focus-visible { outline: calc(2 * var(--lp-line)) solid var(--lp-purple-30); outline-offset: var(--lp-space-1); }
-.lp-audience-switch__track { display: block; position: relative; width: var(--lp-switch-width); height: var(--lp-switch-height); border-radius: var(--lp-switch-radius); background: var(--lp-blue-40); transition: background-color .25s var(--lp-audience-ease); }
-.lp-audience-switch__thumb { position: absolute; top: var(--lp-switch-inset); left: var(--lp-switch-inset); width: var(--lp-switch-thumb-width); height: var(--lp-switch-thumb-height); border-radius: var(--lp-switch-thumb-radius); background: var(--lp-ink-0); transition: transform .25s var(--lp-audience-ease); }
-.lp-audience-switch[aria-checked="true"] .lp-audience-switch__track { background: var(--lp-green-20); }
-.lp-audience-switch[aria-checked="true"] .lp-audience-switch__thumb { transform: translateX(calc(var(--lp-switch-width) - var(--lp-switch-thumb-width) - 2 * var(--lp-switch-inset))); }
+
+/* ── Audience toggle — Figma V2 4939:3521 (row: H, gap 8, align centre) and
+   4939:3523 (Toggle – Switch, State=Off): 64×28 blue-30 stadium track, 39×24
+   white pill knob inset 2, no stroke, no shadow; labels Geist 13.333/150%,
+   plum, active Bold / inactive Medium, no opacity dim. The "On" knob sits at
+   x23 (component set 4911:1448) → translate 21px. The agents look of the
+   same nodes (V2 4939:3726: square, outlined, mono) is audience-agents.css. */
+.lp-audience-selector {
+  align-items: center;
+  color: var(--lp-text);
+  display: flex;
+  flex: none;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  gap: var(--lp-space-2);
+  height: var(--lp-switch-height);
+  letter-spacing: 0;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.lp-audience-selector__label {
+  -webkit-tap-highlight-color: transparent;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  font-weight: 500;
+  position: relative;
+  touch-action: manipulation;
+  user-select: none;
+}
+.lp-audience-selector__label[data-active="true"] { cursor: default; font-weight: 700; }
+/* Each label reserves its BOLD width (a zero-height ghost of its own copy),
+   so the weight swap on toggle never shifts the switch: "For humans" boxes
+   at Figma's 76 → the switch lands on x1111 at 1654 in both states. */
+.lp-audience-selector__label::after {
+  content: attr(data-label);
+  font-weight: 700;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+  visibility: hidden;
+}
+/* 44px-tall touch targets without growing the 28px row (production's labels
+   were 44px boxes). */
+.lp-audience-selector__label::before { content: ""; inset: -12px -4px; position: absolute; }
+.lp-audience-switch {
+  background: transparent;
+  border: 0;
+  border-radius: var(--lp-switch-radius);
+  cursor: pointer;
+  display: block;
+  flex: none;
+  height: var(--lp-switch-height);
+  padding: 0;
+  position: relative;
+  touch-action: manipulation;
+  view-transition-name: lp-audience-switch;
+  width: var(--lp-switch-width);
+}
+/* 72×44 hit area around the 64×28 track */
+.lp-audience-switch::before { content: ""; inset: -8px -4px; position: absolute; }
+/* --lp-text, not purple-30: purple-30 on the cream page is about 2.4:1
+   (WCAG 1.4.11), the reason nav.css moved the tinted pills' ring too; it
+   turns cream in the agents view. */
+.lp-audience-switch:focus-visible { outline: calc(2 * var(--lp-line)) solid var(--lp-text); outline-offset: var(--lp-space-1); }
+.lp-audience-switch__track {
+  background: var(--lp-blue-30);
+  border-radius: var(--lp-switch-radius);
+  inset: 0;
+  position: absolute;
+  transition:
+    background-color .25s var(--lp-audience-ease),
+    border-radius .25s var(--lp-audience-ease),
+    box-shadow .25s var(--lp-audience-ease);
+}
+.lp-audience-switch__thumb {
+  background: var(--lp-ink-0);
+  border-radius: var(--lp-switch-thumb-radius);
+  height: var(--lp-switch-thumb-height);
+  left: var(--lp-switch-inset);
+  position: absolute;
+  top: var(--lp-switch-inset);
+  transition:
+    transform .25s var(--lp-audience-ease),
+    border-radius .25s var(--lp-audience-ease);
+  width: var(--lp-switch-thumb-width);
+}
+.lp-audience-switch[aria-checked="true"] .lp-audience-switch__thumb {
+  transform: translateX(calc(var(--lp-switch-width) - var(--lp-switch-thumb-width) - 2 * var(--lp-switch-inset)));
+}
 
 /* ── INTEGRATOR-OWNED (V2 replication, 2026-10-09): the agents view hides
    every human section. Keep all original sections mounted so their motion

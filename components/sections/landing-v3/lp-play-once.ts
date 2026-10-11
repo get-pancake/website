@@ -57,6 +57,10 @@ import type { gsap } from "@/lib/gsap";
  */
 
 type Timeline = gsap.core.Timeline;
+/** the window QA registries: feature cards, step cards, and the deep-dive carousel's stories
+    (window.__lpStory.<id>, registered by the carousel shell lp-dive-carousel.ts and the
+    /lp-dev/stages harness; V2 replication 2026-10-09) */
+export type PlayOnceRegistry = "__lpFeat" | "__lpStep" | "__lpStory";
 /** cue: the timeline time of the card's first scene (0 = its first frame) */
 type Built = { tl: Timeline; cleanup: () => void; cue?: number };
 export type PlayOnceRuntime = {
@@ -76,7 +80,7 @@ export type PlayOnceOptions = {
   /** the server-rendered stage is the end picture (true) or the first frame (false) */
   restIsEnd: boolean;
   /** QA hook: window[registry][key] = the timeline (seek it to any moment) */
-  qa: { registry: "__lpFeat" | "__lpStep"; key: string };
+  qa: { registry: PlayOnceRegistry; key: string };
   /** content-visibility:auto ancestor: prepare when IT nears the viewport
       (a skipped subtree reports no intersections), build once it renders */
   layoutRoot?: HTMLElement | null;
@@ -84,19 +88,22 @@ export type PlayOnceOptions = {
   speed?: number;
 };
 
+/* The timing constants and the scroll/build helpers below are exported for the deep-dive
+   carousel (lp-dive-carousel.ts), which plays its first item by this same contract: one
+   implementation of "prepare, cue, play at the focus line, picture on fly-by". */
 /** px per ms: faster than this when a card arrives = flying past it */
-const FAST_SCROLL = 2.5;
+export const FAST_SCROLL = 2.5;
 /** prepare this far ahead of the viewport, above and below */
-const PREPARE_MARGIN = "100% 0px 100% 0px";
+export const PREPARE_MARGIN = "100% 0px 100% 0px";
 /** switch to the first scene this far below the fold (unseen) */
-const CUE_MARGIN = "0px 0px 15% 0px";
+export const CUE_MARGIN = "0px 0px 15% 0px";
 /** play once the card's top is above this share of the viewport height */
-const FOCUS_MARGIN = "0px 0px -40% 0px"; // the top 60 %
+export const FOCUS_MARGIN = "0px 0px -40% 0px"; // the top 60 %
 /** half the card on screen this long, short of the focus line (scrolling stopped): play */
-const DWELL_MS = 1000;
-const DWELL_MIN_RATIO = 0.5;
+export const DWELL_MS = 1000;
+export const DWELL_MIN_RATIO = 0.5;
 /** leaving through the top unfinished: the rest of the build-up plays in this long */
-const RUSH_S = 0.35;
+export const RUSH_S = 0.35;
 
 /* ── scroll speed: recent scroll positions (one passive listener) ── */
 const samples: { t: number; y: number }[] = [];
@@ -106,7 +113,7 @@ const onScroll = () => {
   samples.push({ t, y: window.scrollY });
   while (samples.length > 2 && t - samples[0].t > 500) samples.shift();
 };
-function trackScroll(): () => void {
+export function trackScroll(): () => void {
   if (speedUsers++ === 0) window.addEventListener("scroll", onScroll, { passive: true });
   return () => {
     if (--speedUsers === 0) {
@@ -117,7 +124,7 @@ function trackScroll(): () => void {
 }
 /** px per ms over the last 150 ms; Infinity for a jump (one scroll event of
     half a viewport or more: a flick, Page Down, an anchor); 0 when idle */
-function scrollSpeed(): number {
+export function scrollSpeed(): number {
   const now = performance.now();
   const n = samples.length;
   if (!n || now - samples[n - 1].t > 150) return 0;
@@ -140,7 +147,7 @@ function pump() {
   if (buildQueue.length) requestAnimationFrame(pump);
   else pumping = false;
 }
-function enqueueBuild(run: () => void) {
+export function enqueueBuild(run: () => void) {
   buildQueue.push(run);
   if (!pumping) {
     pumping = true;

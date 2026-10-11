@@ -1,5 +1,9 @@
-// lib/verticals/home-demo.ts — the homepage's product demo (LpDemoTour, founder 2026-09-23: "blown
-// away by this part, should probably be on the normal landing page"). SERVER ONLY, like the configs.
+// lib/verticals/home-demo.ts — the homepage's product demo data (founder 2026-09-23: "blown away by
+// this part, should probably be on the normal landing page"). SERVER ONLY, like the configs.
+// Since the V2 Figma replication (2026-10-09) the homepage shows ONE moment of it, outside VxDemo:
+// the demo window (components/sections/landing-v3/LpDemo.tsx) renders prompt 0's request, reply and
+// Play card (Pancake view and Claude & Codex view). The other two prompts stay here, validated with
+// the 40 /for configs, so the data keeps its three-signal story and its uniqueness checks.
 //
 // Not a /for page: no slug, not in the registry, the sitemap, the hub or the nav. It is a DemoSource
 // (the demo fields of a VerticalConfig) and passes the same rules: lib/verticals/index.ts hands it
@@ -21,7 +25,7 @@ export const HOME_DEMO: DemoSource = {
   workspace: { name: "Studio Pelican", sender: "Astrid Norling" },
 
   demo: {
-    /** The homepage demo section's visually hidden H2 (LpDemoTour): the tabs are its visible head. */
+    /** The homepage demo section's visually hidden H2 (LpDemo): the window is its visible head. */
     h2: "One prompt in. Leads keep coming.",
     prompts: [
       {

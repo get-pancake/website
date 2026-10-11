@@ -4,4 +4,427 @@
    Deep-dive story 1, "Sources you can trust" (LpStorySources, Figma
    4964:1287/1294/1311). Scene geometry on the 752x489 design box (desktop)
    and the 400x520 phone box; paints nothing behind the scene (the shell
-   paints the stage). */
+   paints the stage).
+
+   Every number is stage px from the Figma relativeTransforms (spec
+   story-sources §3). The markup rests on the END picture (the white
+   property card); the timeline (lp-story-sources-timeline.ts) sets frame 0.
+   Traps: T1 `.lp p { margin:0 }` would kill the sub's margin (compound
+   selectors below); T2 the font is stated on every node; T3 the bold run is
+   the <b> only; T4 desktop chip widths are pinned (Figma's widths); T5 the
+   card is a plain radius (cornerSmoothing 0: never in a squircle group);
+   T6 the table ring is an inset shadow (no flow space). No will-change, no
+   infinite keyframes: the stage is GSAP-only and plays once. */
+
+.lp-src {
+  /* the demo's app palette (app/_styles/verticals/demo.css), re-declared:
+     theirs is scoped to .lp-vx .vx-stage */
+  --app-muted: #f5f3f2;
+  --app-muted-fg: #70676f;
+  --app-tertiary: #756d74;
+  --app-border: #ece9e7;
+  --app-hiring-bg: #fff2e8;
+  --app-hiring-fg: #a84b00;
+  --app-hiring-ring: #f6d3b5;
+  --app-stack-bg: #ecfbf8;
+  --app-stack-fg: #0f766e;
+  --app-stack-ring: #bfe8e0;
+  --app-sh-card: 0 8px 24px -4px color-mix(in srgb, var(--lp-ink-100) 6%, transparent),
+    0 1px 2px color-mix(in srgb, var(--lp-ink-100) 3%, transparent);
+  /* Figma's card is #d9d9d9 (a new shape's default fill); every sibling
+     story puts its UI on white — decision §6: white. One-token swap. */
+  --lp-src-card-bg: var(--lp-surface);
+  /* the preview-only source circles (Figma: #d9d9d9 + black wires) */
+  --lp-src-db-bg: var(--lp-surface);
+  color: var(--lp-ink-100);
+  inset: 0;
+  position: absolute;
+}
+.lp-src * {
+  font-family: var(--lp-font-sans);
+}
+.lp-src svg {
+  display: block;
+  max-width: none;
+}
+
+/* ── scene A: the Leads page (frame 1 = the demo's Leads pane) ── */
+.lp-src-leads {
+  inset: 0;
+  opacity: 0; /* rest = the end picture: the dolly pushed through it */
+  position: absolute;
+  transform-origin: 165.114px 193.728px;
+  visibility: hidden;
+}
+.lp-src-page {
+  left: 116px;
+  position: absolute;
+  top: 130.405px;
+  width: 526px;
+}
+.lp-src .lp-src-title {
+  font-family: var(--lp-font-aeonik);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.27px;
+  line-height: 24px;
+}
+.lp-src .lp-src-sub {
+  color: var(--app-muted-fg);
+  font-size: 11px;
+  line-height: 15px;
+  margin-top: 2px;
+}
+.lp-src-table {
+  background: var(--lp-surface);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
+  margin-top: 8px;
+}
+.lp-src-row {
+  align-content: center;
+  align-items: center;
+  border-bottom: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
+  column-gap: 10px;
+  display: grid;
+  font-size: 12px;
+  grid-template-columns: 30px 190px minmax(0, 1fr);
+  grid-template-rows: auto auto;
+  height: 48px;
+  line-height: 1.45;
+  padding: 0 10px 0 12px;
+  row-gap: 1px;
+}
+.lp-src-row:last-child {
+  border-bottom: 0;
+}
+.lp-src-row:first-child {
+  border-radius: 10px 10px 0 0;
+}
+/* the picked lead (demo: color-mix(--app-muted 75%, transparent)); a plain
+   rgba so the timeline can tween it */
+.lp-src-row[data-selected] {
+  background-color: rgba(245, 243, 242, 0.75);
+}
+.lp-src-av {
+  align-items: center;
+  background: var(--app-muted);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-ink-100) 8%, transparent);
+  display: flex;
+  font-size: 10px;
+  font-weight: 500;
+  grid-area: 1 / 1 / 3 / 2;
+  height: 30px;
+  justify-content: center;
+  width: 30px;
+}
+.lp-src-name {
+  color: color-mix(in srgb, var(--lp-ink-100) 90%, transparent);
+  font-size: 12px;
+  font-weight: 500;
+  grid-area: 1 / 2;
+  justify-self: start;
+  line-height: 17px;
+  white-space: nowrap;
+}
+.lp-src-role,
+.lp-src-detail {
+  color: var(--app-tertiary);
+  font-size: 11px;
+  line-height: 15px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-src-role {
+  grid-area: 2 / 2;
+}
+.lp-src-detail {
+  color: var(--app-muted-fg);
+  font-size: 10.5px;
+  grid-area: 2 / 3;
+}
+.lp-src-chip {
+  align-items: center;
+  align-self: start;
+  background: var(--k-bg);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--k-ring);
+  color: var(--k-fg);
+  display: inline-flex;
+  font-size: 10.5px;
+  font-weight: 500;
+  grid-area: 1 / 3;
+  height: 19px;
+  line-height: 13px;
+  padding: 0 7px;
+  white-space: nowrap;
+  width: fit-content;
+}
+.lp-src-chip[data-kind="hiring"] {
+  --k-bg: var(--app-hiring-bg);
+  --k-fg: var(--app-hiring-fg);
+  --k-ring: var(--app-hiring-ring);
+}
+.lp-src-chip[data-kind="stack"] {
+  --k-bg: var(--app-stack-bg);
+  --k-fg: var(--app-stack-fg);
+  --k-ring: var(--app-stack-ring);
+}
+/* the demo's pointer; tip at (240.4, 225.7) */
+.lp-src-cursor {
+  color: var(--lp-ink-100);
+  filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--lp-ink-100) 25%, transparent));
+  height: 22px;
+  left: 238.9px;
+  position: absolute;
+  top: 224.2px;
+  width: 18px;
+}
+.lp-src-cursor svg {
+  transform-origin: 2px 2px;
+}
+
+/* ── scene C: the property card (frame 3, the end picture) ── */
+.lp-src-card {
+  background: var(--lp-src-card-bg);
+  border-radius: 38px;
+  height: 409.022px;
+  left: 102.133px;
+  position: absolute;
+  top: 50.351px;
+  width: 543.598px;
+}
+.lp-src-props {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  left: 160px;
+  position: absolute;
+  top: 91.322px;
+  width: 432px;
+}
+/* every row centred: Figma's rows 3–5 sit 1.585 px lower (auto-layout
+   counter-axis MAX), evened out by decision §6 */
+.lp-src-prop {
+  align-items: center;
+  display: flex;
+  gap: 32px;
+  height: 24.174px;
+}
+.lp-src-k {
+  color: var(--lp-ink-80);
+  flex: none;
+  font-size: 17.0335px;
+  font-weight: 400;
+  height: 21px;
+  line-height: 20.44px;
+  white-space: nowrap;
+  width: 100px;
+}
+.lp-src-v {
+  align-items: center;
+  display: flex;
+  gap: 5px;
+  height: 24.174px;
+}
+.lp-src-tick {
+  color: var(--lp-green-30);
+  flex: none;
+  height: 24.174px;
+  width: 24.174px;
+}
+.lp-src-tick svg {
+  height: 100%;
+  width: 100%;
+}
+.lp-src-val {
+  font-size: 17.0335px;
+  font-weight: 500;
+  height: 21px;
+  line-height: 20.44px;
+  white-space: nowrap;
+}
+.lp-src-val b {
+  font-weight: 700;
+}
+.lp-src-tags {
+  align-items: center;
+  display: flex;
+  gap: 32px;
+  height: 56px;
+  left: 160px;
+  position: absolute;
+  top: 364.752px;
+  width: 432px;
+}
+.lp-src-chips {
+  align-content: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  width: 300px;
+}
+/* every source a lead can come from; only the one that found this lead is
+   highlighted (decision §6) — the others sit quiet in the app's muted fill */
+.lp-src-tag {
+  background-color: var(--app-muted);
+  border-radius: var(--lp-r-2xsm);
+  color: var(--lp-ink-80);
+  font-size: 12px;
+  font-weight: 500;
+  height: 24px;
+  line-height: 16px;
+  padding: 4px 8px;
+  text-align: center;
+  white-space: nowrap;
+  width: var(--w, auto);
+}
+.lp-src-tag[data-matched] {
+  background-color: var(--lp-pink-10);
+  color: var(--lp-ink-100);
+}
+
+/* ── "potential source DBs ?" — preview-only placeholders (data-placeholder),
+   Figma Ellipse 109–113 + Vector 344–348; generic glyphs, no logos ── */
+.lp-src-db {
+  background: var(--lp-src-db-bg);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px var(--app-border);
+  height: 70.711px;
+  position: absolute;
+  width: 70.711px;
+}
+.lp-src .lp-src-glyph {
+  fill: none;
+  position: absolute;
+  stroke: var(--lp-ink-80);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.75;
+}
+.lp-src .lp-src-wires {
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+}
+.lp-src-wires path {
+  fill: none;
+  stroke: var(--lp-ink-100);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+
+/* ── phones: recomposed on the 400×520 box (decision §5; --lp-fit =
+   (W − 32) / 400), not the desktop stage crop-shrunk. Same story, same
+   times: the Leads page with the demo's phone row (chip on the right, no
+   detail line, no pointer: row 0 presses instead), then the card with 16 px
+   properties and "Tags" above its chips. No source circles. ── */
+@container lp-dive-scene (max-width: 599px) {
+  .lp-src-leads {
+    transform-origin: 75px 219.7px;
+  }
+  .lp-src-page {
+    left: 20px;
+    top: 149px;
+    width: 360px;
+  }
+  .lp-src .lp-src-title {
+    font-size: 20px;
+    letter-spacing: -0.3px;
+    line-height: 26px;
+  }
+  .lp-src .lp-src-sub {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .lp-src-table {
+    margin-top: 10px;
+  }
+  .lp-src-row {
+    column-gap: 12px;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    height: 56px;
+    padding: 0 14px;
+  }
+  .lp-src-av {
+    font-size: 11px;
+    height: 32px;
+    width: 32px;
+  }
+  .lp-src-name {
+    font-size: 13.5px;
+    line-height: 19px;
+  }
+  .lp-src-role {
+    font-size: 12px;
+    line-height: 16px;
+  }
+  .lp-src-chip {
+    align-self: center;
+    font-size: 11.5px;
+    grid-area: 1 / 3 / 3 / 4;
+    height: 22px;
+    line-height: 14px;
+    padding: 0 8px;
+  }
+  .lp-src-detail,
+  .lp-src-cursor,
+  .lp-src-dbs,
+  .lp-src .lp-src-wires {
+    display: none;
+  }
+  .lp-src-card {
+    border-radius: 30px;
+    height: 424px;
+    left: 14px;
+    top: 48px;
+    width: 372px;
+  }
+  .lp-src-props {
+    gap: 12px;
+    left: 38px;
+    top: 82px;
+    width: 324px;
+  }
+  .lp-src-prop {
+    gap: 12px;
+    height: 24px;
+  }
+  .lp-src-k,
+  .lp-src-val {
+    font-size: 16px;
+    height: 20px;
+    line-height: 20px;
+  }
+  .lp-src-v {
+    height: 24px;
+  }
+  .lp-src-tick {
+    height: 24px;
+    width: 24px;
+  }
+  .lp-src-tags {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+    height: auto;
+    left: 38px;
+    top: 348px;
+    width: 324px;
+  }
+  .lp-src-chips {
+    width: 324px;
+  }
+  .lp-src-tag {
+    font-size: 13px;
+    height: 26px;
+    line-height: 18px;
+    padding: 4px 9px;
+    width: auto;
+  }
+}

@@ -1,7 +1,159 @@
 /* Sky — owner: blue-band package (V2 Figma replication, file
-   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346). Created empty by the integrator
-   (phase 0, 2026-10-09).
-   The blue band's sky (Figma V2 4911:534 → 4939:3388 → 4911:739): .lp-sky-
-   cloud recipe and sizes, .lp-banner--sky and .lp-cta--sky backgrounds, and
-   the cloud parallax (founder addendum 2026-10-09). Imported after cta.css
-   so its modifiers win ties with the base banner/CTA rules. */
+   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346, 2026-10-09).
+   The blue band's sky (Figma V2 4911:534 → 4939:3388 → 4911:739): the light
+   blue (--lp-sky = blue-10) starts under a cream blob in the banner's gutters
+   (red note "Blue background for next section starts here"), carries the deep
+   dive, and ends on the CTA's cream hill (red note "Transition from previous
+   section"). The clouds drift on scroll at their own speeds (founder addendum
+   2026-10-09, lp-sky-parallax.ts). Imported after cta.css so its modifiers win
+   ties with the base banner/CTA rules.
+
+   Both cream shapes are the same Figma blob (a copied rainbow-ring vector,
+   relativeTransform −90°), exported in section coordinates and stretched to
+   the section box (preserveAspectRatio none): exact at 1654, the edge keeps
+   its share of the height elsewhere. STATIC — the 20 s spin both carry in the
+   prototype is inherited from the ring they were copied from (decision §5). */
+
+.lp-banner--sky {
+  background: url("/lp/lp-sky-banner-top.svg") 0 0 / 100% 100% no-repeat, var(--lp-sky);
+}
+.lp-cta--sky {
+  background: url("/lp/lp-sky-cta-hill.svg") 0 0 / 100% 100% no-repeat, var(--lp-sky);
+}
+/* the card and its clouds share one 1296 frame (clouds are card-relative) */
+.lp-cta--sky .lp-cta__frame {
+  max-width: 1296px;
+  position: relative;
+  width: 100%;
+}
+/* V2 4911:740: r48 → r24 at every width (homepage only, decision §5; phones
+   were r32). 0,2,0 beats cta.css's ≤767 rule. */
+.lp-cta--sky .lp-cta__card {
+  border-radius: var(--lp-r-lg);
+}
+
+/* ── clouds: one white shape, three cuts (Figma vectorPaths, #fff) ──
+   Spans with a background, not <img>: foundation's `.lp img { display:block }`
+   would beat a single-class hide.
+   Parallax: lp-sky-parallax.ts writes --lp-sky-d (section centre − viewport
+   centre, px) on each cloud; the cloud moves by d × k. k > 0 = faster than the
+   page (nearer), k < 0 = slower (farther). d = 0 is the Figma pose, and with
+   no driver (reduced motion, no JS) the var is unset: the artboard. */
+.lp-sky-cloud {
+  --lp-sky-k: 0;
+  /* travel bounds (a cloud that must stay clear of a title or of its box edge
+     narrows them; the clamp only bites while the section is far from centre) */
+  --lp-sky-up: -140px;
+  --lp-sky-down: 140px;
+  background: no-repeat 0 0 / 100% 100%;
+  display: block;
+  pointer-events: none;
+  position: absolute;
+  transform: translate3d(
+    0,
+    clamp(var(--lp-sky-up), calc(var(--lp-sky-d, 0) * var(--lp-sky-k) * 1px), var(--lp-sky-down)),
+    0
+  );
+}
+.lp-sky-cloud--a {
+  background-image: url("/lp/lp-sky-cloud-a.svg");
+  height: 69.013px;
+  width: 201.77px;
+}
+.lp-sky-cloud--b {
+  background-image: url("/lp/lp-sky-cloud-b.svg");
+  height: 53.032px;
+  width: 155.047px;
+}
+.lp-sky-cloud--c {
+  aspect-ratio: 320.934 / 103.107;
+  background-image: url("/lp/lp-sky-cloud-c.svg");
+}
+
+/* Depth layers (the critic's reading of the artboard): the big cloud behind
+   the stage card (dive C) and the one behind the CTA card (CTA B) are far,
+   slower than the page; the heading clouds are mid — A (the larger) a little
+   faster than the page, B (the smaller) a little slower; the cloud over the
+   CTA card (CTA A) is near, the fastest. Over a 1000px viewport the heading
+   clouds travel ±~60–110px against the title while on screen.
+   Paint containment (.lp-dive is content-visibility:auto): A rides lower than
+   rest while the section enters and rises past rest only once it is above
+   the viewport; B (|k| < .09) and C (mid-section) never reach the box edge
+   while they can be seen. */
+.lp-dive > .lp-sky-cloud--a {
+  --lp-sky-k: 0.12;
+  --lp-sky-up: -96px; /* never past the section's top edge (paint containment) */
+  right: -81.922px; /* section x 1534.152 at 1654 */
+  top: 98.534px;
+}
+.lp-dive > .lp-sky-cloud--b {
+  --lp-sky-k: -0.06;
+  --lp-sky-up: -88px;
+  left: -56.078px;
+  top: 90.977px;
+}
+/* stage-relative (616.914, 101.393) of 752×489, 320.934 wide: rides the card */
+.lp-dive-stagewrap > .lp-sky-cloud--c {
+  --lp-sky-k: -0.1;
+  left: 82.0364%;
+  top: 20.7348%;
+  width: 42.6774%;
+}
+/* card-relative (Figma: A x −138.996 y 30.494 over the card, B x 1262.457 y 77.484 behind it) */
+.lp-cta__frame > .lp-sky-cloud--a {
+  --lp-sky-k: 0.1;
+  left: -138.996px;
+  top: 30.494px;
+}
+.lp-cta__frame > .lp-sky-cloud--b {
+  --lp-sky-k: -0.08;
+  right: -121.504px;
+  top: 77.484px;
+}
+
+/* ≤1024 the title fills most of the width (57px down to 768, two lines on
+   phones), so the heading clouds move into the padding band above it, at 0.6
+   scale, both on the fast side (a slow one would rise out of its box while the
+   section enters) and allowed to sink at most 10px: never into the title,
+   which starts at 72 (tablets) / 64 (phones) */
+@media (max-width: 1024px) {
+  .lp-dive > .lp-sky-cloud--a,
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-down: 10px;
+    --lp-sky-up: -8px;
+  }
+  .lp-dive > .lp-sky-cloud--a {
+    --lp-sky-k: 0.06;
+    height: 41.408px;
+    right: -49.153px;
+    top: 10px;
+    width: 121.062px;
+  }
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-k: 0.03;
+    height: 31.819px;
+    left: -33.647px;
+    top: 14px;
+    width: 93.028px;
+  }
+}
+/* phones: lighter — the far clouds go, the CTA's near one at 0.6 scale and
+   half the travel */
+@media (max-width: 767px) {
+  .lp-dive-stagewrap > .lp-sky-cloud--c,
+  .lp-cta__frame > .lp-sky-cloud--b {
+    display: none;
+  }
+  .lp-cta__frame > .lp-sky-cloud--a {
+    --lp-sky-k: 0.05;
+    height: 41.408px;
+    left: -40px;
+    top: -20px;
+    width: 121.062px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-sky-cloud {
+    transform: none;
+  }
+}

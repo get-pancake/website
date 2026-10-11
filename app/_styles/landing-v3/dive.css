@@ -1,7 +1,446 @@
 /* Dive — owner: blue-band package (V2 Figma replication, file
-   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346). Created empty by the integrator
-   (phase 0, 2026-10-09).
-   Deep-dive carousel shell (LpDive, Figma V2 4939:3388): section, tab list,
-   progress bar, the 752x489 stage card (painted --lp-dive-stage-bg), phone
-   400x520 stage box, pause control. The four stories' scenes are
-   story-<name>.css. */
+   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346, 2026-10-09).
+   Deep-dive carousel shell (LpDive, Figma V2 4939:3388 "How Pancake finds
+   customers"): section, tab list, progress bar, the 752x489 stage card
+   (painted --lp-dive-stage-bg), the phone 400x520 stage box, the pause
+   control. The four stories' scenes are story-<name>.css; the clouds and
+   their parallax depths are sky.css.
+
+   Artboard (≥1341), section 1654×894, all px from Figma:
+     section  fill blue-10, padding 80/16, gap 32, centred column
+     heading  1296×213 frame, title at (128, 72) 1040 wide, centred
+     row      1296×489: list (80, 17.5) 272 wide · gap 112 · stage (464, −0.42) 752×489 · 80
+     tab      padding 24/0, gap 8 (the body's padding-top, so it folds with it), bottom
+              hairline 1px ink@10% CENTER-aligned (straddles the edge, no flow space)
+     title    Geist 19.2/29 — 600 active, 500 otherwise (Figma "150%" lays lines at 29)
+     body     Geist 13.333/20 400, active item only; at most 4 lines (lp-dive-data.ts)
+     bar      2px rainbow segment on the active hairline, 138.61 of 272 drawn = p .509596
+     stage    r15.887, shadow 0 2.648 41.307 ink 8%, overflow clip, #fafaf8
+   The list is anchored at its top (17.5) and grows downward when an item opens:
+   titles above the active one never move. */
+
+.lp-dive {
+  align-items: center;
+  background: var(--lp-sky);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 80px 16px;
+  position: relative;
+}
+.lp-dive-head {
+  height: 213px;
+  max-width: 100%;
+  position: relative;
+  width: 1296px;
+}
+.lp-dive-title {
+  color: var(--lp-text);
+  left: 128px;
+  margin: 0;
+  position: absolute;
+  text-align: center;
+  top: 72px;
+  width: 1040px;
+}
+.lp-dive-row {
+  height: 489px;
+  max-width: 100%;
+  position: relative;
+  width: 1296px;
+}
+
+/* ── tab list ── */
+.lp-dive-list {
+  left: 80px;
+  position: absolute;
+  top: 17.5px;
+  width: 272px;
+}
+.lp-dive-tabs {
+  display: flex;
+  flex-direction: column;
+}
+.lp .lp-dive-tab {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-sizing: border-box;
+  color: var(--lp-text);
+  cursor: default; /* no JS: nothing to pick */
+  display: flex;
+  flex-direction: column;
+  font: inherit;
+  margin: 0;
+  padding: 24px 0;
+  position: relative;
+  text-align: left;
+  width: 100%;
+}
+/* no hover effect (founder rule: no hover dim) — the pointer only */
+.lp-dive-row[data-ready] .lp-dive-tab {
+  cursor: pointer;
+}
+.lp-dive-tab::after {
+  background: var(--lp-ink-tr-10);
+  bottom: -0.5px;
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+.lp-dive-tab:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--lp-text);
+  outline-offset: 4px;
+}
+.lp-dive-tab__title {
+  display: block;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  font-weight: 500;
+  line-height: 29px;
+  transition: font-weight 0.2s ease;
+  white-space: pre-line; /* "A personal message for" / "every lead" (Figma U+2028) */
+}
+.lp-dive-tab[aria-selected="true"] .lp-dive-tab__title {
+  font-weight: 600;
+}
+/* the body folds with the item: grid rows 0fr ↔ 1fr (0.4 s, GSAP power2.inOut);
+   the 8px title gap is the body's padding, inside the clip, so it folds too */
+.lp-dive-tab__fold {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+.lp-dive-tab[aria-selected="true"] .lp-dive-tab__fold {
+  grid-template-rows: 1fr;
+}
+.lp-dive-tab__clip {
+  display: block;
+  min-height: 0;
+  overflow: hidden;
+}
+.lp-dive-tab__body {
+  display: block;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  font-weight: 400;
+  line-height: 20px;
+  padding-top: 8px;
+}
+/* progress: one 272×2 strip, hard-stop rainbow in the drawn proportions
+   (orange 0–27.08 · pink –58.26 · purple –121.46 · blue –138.61 of 138.61),
+   scaled by --lp-dive-p; centred on the hairline (box = bottom −1 … +1).
+   Rest pose (no JS, reduced motion) = the Figma frame: p .509596. */
+.lp-dive-tab__bar {
+  background: linear-gradient(
+    90deg,
+    var(--lp-yellow-30) 0 19.537%,
+    var(--lp-pink-30) 0 42.032%,
+    var(--lp-purple-30) 0 87.627%,
+    var(--lp-blue-30) 0
+  );
+  bottom: -1px;
+  height: 2px;
+  left: 0;
+  position: absolute;
+  transform: scaleX(var(--lp-dive-p, 0.509596));
+  transform-origin: 0 50%;
+  width: 100%;
+  z-index: 1;
+}
+.lp-dive-tab:not([aria-selected="true"]):not([data-bar-out]) .lp-dive-tab__bar {
+  visibility: hidden;
+}
+
+/* an item's link (item 4 "See how →" /guides/claude): under the list, folding
+   open with its item (a link can't live inside the tab button) */
+.lp-dive-more {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+.lp-dive-more[data-on] {
+  grid-template-rows: 1fr;
+}
+.lp-dive-more:not([data-on]) {
+  visibility: hidden; /* folded: out of the tab order */
+}
+.lp-dive-more__clip {
+  display: block;
+  margin-inline: -6px; /* room for the focus ring inside the clip */
+  min-height: 0;
+  overflow: hidden;
+}
+.lp-dive-more__inner {
+  display: block;
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+  padding: 10px 6px 2px; /* folded with it: the padding is inside the clip */
+}
+.lp .lp-dive-more__link {
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+}
+
+/* ── stage card ── */
+.lp-dive-stagewrap {
+  height: 489px;
+  left: 464px;
+  position: absolute;
+  top: -0.42px;
+  width: 752px;
+}
+.lp-dive-stage {
+  background: var(--lp-dive-stage-bg);
+  border-radius: 15.887px;
+  box-shadow: 0 2.648px 41.307px rgba(0, 0, 0, 0.08);
+  container-type: inline-size; /* the trig fallback of --lp-fit (≤1340) */
+  inset: 0;
+  overflow: hidden;
+  position: absolute;
+}
+/* the panel can't draw its own ring (the card clips it): the card does */
+.lp-dive-stage:has(> .lp-dive-panel:focus-visible) {
+  outline: 2px solid var(--lp-text);
+  outline-offset: 4px;
+}
+.lp-dive-panel {
+  inset: 0;
+  outline: none;
+  position: absolute;
+}
+.lp-dive-panel[data-state="idle"] {
+  opacity: 0;
+  visibility: hidden;
+}
+/* The scene box: the stories' design box at design size, scaled as pixels
+   (--lp-fit = card width / box width, measured by the driver; never zoom).
+   A size container the stories query (lp-dive-stages.ts contract):
+   desktop 752×489, phones 400×520. */
+.lp-dive-scene {
+  color: var(--lp-text);
+  container: lp-dive-scene / size;
+  font-family: var(--lp-font-sans);
+  font-size: 16px;
+  height: 489px;
+  left: 0;
+  line-height: 1.5;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  /* ≥1341 the card is the fixed 752 box: the pre-hydration value is exactly 1 */
+  transform: scale(var(--lp-fit, 1));
+  transform-origin: 0 0;
+  user-select: none;
+  -webkit-user-select: none;
+  width: 752px;
+}
+/* the kit's layered `* { font-family }` outranks inheritance; a story's own
+   rules (story-<name>.css, imported later) win ties with this default */
+.lp-dive-scene * {
+  font-family: var(--lp-font-sans);
+}
+.lp-dive-scene img,
+.lp-dive-scene svg {
+  display: block;
+  max-width: none;
+}
+
+/* ── pause (WCAG 2.2.2) — keyboard only: visually hidden until focused, and
+   kept on screen while it holds the carousel (demo .vx-ctrl recipe) ── */
+.lp-dive-ctrl {
+  bottom: 12px;
+  position: absolute;
+  right: 12px;
+  z-index: 1; /* over the card */
+}
+.lp .lp-dive-ctrl__btn {
+  align-items: center;
+  background: var(--lp-surface);
+  border: 0;
+  border-radius: var(--lp-r-sm);
+  box-shadow: inset 0 0 0 1px var(--lp-ink-tr-10);
+  color: var(--lp-text);
+  cursor: pointer;
+  display: inline-flex;
+  height: 44px;
+  justify-content: center;
+  padding: 0;
+  width: 44px;
+}
+.lp-dive-ctrl__btn:focus-visible {
+  outline: 2px solid var(--lp-text);
+  outline-offset: 2px;
+}
+.lp-dive-ctrl__btn::before {
+  background: currentColor;
+  content: "";
+  height: 16px;
+  -webkit-mask: var(--lp-dive-ico) center / contain no-repeat;
+  mask: var(--lp-dive-ico) center / contain no-repeat;
+  width: 16px;
+}
+.lp-dive-ctrl__btn[data-ico="pause"] {
+  --lp-dive-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.7' stroke-linecap='round' fill='none'%3E%3Cpath d='M8.25 5.25v13.5m7.5-13.5v13.5'/%3E%3C/svg%3E");
+}
+.lp-dive-ctrl__btn[data-ico="play"] {
+  --lp-dive-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M7.5 4.8v14.4L18.9 12z'/%3E%3C/svg%3E");
+}
+.lp-dive-ctrl__btn:not(:focus-visible):not([aria-pressed="true"]) {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+/* nothing to pause without the driver, or under reduced motion */
+.lp-dive-row:not([data-ready]) .lp-dive-ctrl,
+.lp-dive-row[data-reduced] .lp-dive-ctrl {
+  visibility: hidden;
+}
+
+/* ── responsive (Figma has the desktop artboard only; breakpoints = the
+   site's 1340 / 1024 / 767) ── */
+
+/* 1025–1340: two columns, fluid — the stage takes what the list leaves
+   (1280: 752 wide; 1100: ≈623, fit .83) */
+@media (max-width: 1340px) {
+  .lp-dive-head {
+    height: auto;
+    padding: 72px 64px;
+  }
+  .lp-dive-title {
+    position: static;
+    width: auto;
+  }
+  .lp-dive-row {
+    align-items: flex-start;
+    display: flex;
+    gap: clamp(48px, 7vw, 112px);
+    height: auto;
+    justify-content: center;
+    padding: 0 48px;
+  }
+  .lp-dive-list {
+    flex: 0 0 272px;
+    position: static;
+  }
+  .lp-dive-stagewrap {
+    aspect-ratio: 752 / 489;
+    flex: 1 1 0;
+    height: auto;
+    left: auto;
+    max-width: 752px;
+    min-width: 0;
+    position: relative;
+    top: auto;
+    width: auto;
+  }
+  /* fluid card: iOS WebKit mis-resolves container units inside trig
+     (LpFitVars), so the scene waits for the driver's measurement
+     (data-lp-fit, written with --lp-fit) — the trig quotient stays the value
+     fallback for engines that get it right. `inherit`, not `visible`: an idle
+     panel's hidden scene must stay hidden. */
+  .lp-dive-scene {
+    transform: scale(var(--lp-fit, tan(atan2(100cqw, 752px))));
+    visibility: hidden;
+  }
+  .lp-dive-stage[data-lp-fit] .lp-dive-scene {
+    visibility: inherit;
+  }
+}
+
+/* 768–1024: stacked — the stage first, the list under it at the stage's width */
+@media (max-width: 1024px) {
+  .lp-dive {
+    padding: 72px 16px;
+  }
+  .lp-dive-head {
+    padding: 0 32px;
+  }
+  .lp-dive-row {
+    align-items: center;
+    flex-direction: column;
+    gap: 24px;
+    padding: 0 16px;
+  }
+  .lp-dive-stagewrap {
+    flex: none;
+    order: 0;
+    width: min(752px, 100%);
+  }
+  .lp-dive-list {
+    flex: none;
+    order: 1;
+    width: min(752px, 100%);
+  }
+  .lp-dive-tab__title {
+    white-space: normal; /* no designed break on the wide list */
+  }
+}
+
+/* ≤767: phones — heading = the production mobile section headline
+   (Condensed 35.559 / 41, −3%), list under the stage at full width. The stage
+   keeps the 752×489 box down to 600 (×0.76 at 600) */
+@media (max-width: 767px) {
+  .lp-dive {
+    gap: 32px;
+    padding: 64px 16px;
+  }
+  .lp-dive-head {
+    padding: 0;
+  }
+  .lp-dive-title {
+    font-size: 35.559px;
+    letter-spacing: -1.067px;
+    line-height: 41px;
+    margin-inline: auto;
+    max-width: 306px;
+  }
+  .lp-dive-row {
+    gap: 16px;
+    padding: 0;
+  }
+  .lp-dive-stagewrap {
+    width: 100%;
+  }
+  .lp-dive-list {
+    width: 100%;
+  }
+  .lp .lp-dive-tab {
+    padding: 20px 0;
+  }
+  .lp-dive-tab__body {
+    font-size: var(--lp-text-md);
+    line-height: 24px;
+  }
+  .lp-dive-ctrl {
+    bottom: 8px;
+    right: 8px;
+  }
+}
+/* ≤599: the 400×520 phone box (decision 2026-10-09 §5), W − 32 wide
+   (fit = (W − 32) / 400) — the driver's PHONE_MQ matches this */
+@media (max-width: 599px) {
+  .lp-dive-stagewrap {
+    aspect-ratio: 400 / 520;
+  }
+  .lp-dive-scene {
+    height: 520px;
+    transform: scale(var(--lp-fit, tan(atan2(100cqw, 400px))));
+    width: 400px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-dive-tab__title,
+  .lp-dive-tab__fold,
+  .lp-dive-more {
+    transition: none;
+  }
+}

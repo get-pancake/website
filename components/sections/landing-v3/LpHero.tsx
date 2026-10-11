@@ -11,16 +11,31 @@ import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { SITE_DESCRIPTION } from "@/lib/copy";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
-// Landing v3 — Hero (Figma node 4257:4906, 1654×758).
-// The rainbow art (animated per-arc pancakes group, anim.css) lives in a
-// 1654×1417 canvas anchored at PAGE top-left (it covers the nav band + hero);
-// the section overflows it above via top:-120px. The 2622×1478 pancakes
-// container sits at (-435, -61.65) in that canvas (hero-frame center
-// (876, 557.35) per Figma node 4257:4907, +120px nav offset). hero.css keeps
-// sizing/clip on .lp-hero-art exactly as it did for the old <img>.
+// Landing v3 — Hero (Figma V2 node 4911:355, 1654×657; was V1 4257:4906,
+// 1654×758). The rainbow art (animated per-arc pancakes group, anim.css)
+// lives in a 1654×1417 canvas anchored at PAGE top-left (it covers the nav
+// band + hero); the section overflows it above via top:-120px. The 2622×1478
+// pancakes container sits at (-435, -61.65) in that canvas (hero-frame
+// center (876, 557.35) per Figma node 4257:4907 = V2 4911:356, +120px nav
+// offset: the rings did not move in V2). hero.css keeps sizing/clip on
+// .lp-hero-art exactly as it did for the old <img>.
+//
+// V2 (designer red note, 2026-10-09: "Humans/Agents toggle position and
+// look"): the toggle heads the right column (4911:366 "Frame 181": toggle
+// row, lede, buttons; gap 24), in flow — no JS measuring, no overlay. The
+// human and agent columns overlay in ONE grid cell (.lp-hero-swap) that the
+// human column sizes (it stays laid out, visibility:hidden, in the agents
+// view), so the toggle sits on the same pixel in both views. DOM order =
+// H1, switch, lede, buttons (tab order switch → Start free → Book a demo);
+// ≤1024 the aside dissolves (display:contents) and the toggle leads the
+// stacked block. `lp-hero--home` scopes every homepage geometry change:
+// /agents (AgHero) reuses the unscoped hero classes with V1 geometry.
+// `lp-hs-hero` marks the two copy blocks the demo window's hero-scroll
+// assembly drifts and fades (demo-scroll package; translate/opacity only —
+// hero.css keeps both blocks transform-free on the homepage for it).
 export function LpHero() {
   return (
-    <section className="lp-hero" aria-labelledby="lp-hero-title">
+    <section className="lp-hero lp-hero--home" aria-labelledby="lp-hero-title">
       <LpViewportVar />
       <div className="lp-hero-art" aria-hidden="true">
         {/* agents view art slot (V2 4911:1461, owner agents-view): renders
@@ -37,35 +52,41 @@ export function LpHero() {
         <LpRainbowGL variant="hero" />
       </div>
       <div className="lp-hero-inner">
-        <div className="lp-perspective"><AudienceSelector /></div>
         {/* A div since 2026-10-07: the grid the human and agent copies overlay
             in. The H1 (id lp-hero-title, which aria-labelledby above names) is
             the human copy inside it — AudienceHeadline in LpAudienceHeadline.tsx. */}
-        <div className="lp-hero-title lp-display">
+        <div className="lp-hero-title lp-display lp-hs-hero">
           <AudienceHeadline />
         </div>
-        <div className="lp-hero-col lp-hero-col--human">
-          {/* The hero lede = the Google description line (SITE_DESCRIPTION,
-              lib/copy.ts): founder-sensitive, 2026-09-30 AI SEO retired. */}
-          <p className="lp-hero-lede">{SITE_DESCRIPTION}</p>
-          <div className="lp-hero-btns">
-            <LpFxLink href={APP_ORIGIN} data-analytics-id="app_hero">
-              Start free
-            </LpFxLink>
-            {/* A same-tab link to /demo (François, 2026-09-16; it opened the
-                Calendly sheet before), keeping the allow-listed call_hero id.
-                All widths (founder 2026-09-01) — the desktop artboard draws
-                one CTA, deliberately overridden. */}
-            <LpFxLink
-              href={DEMO_PAGE_PATH}
-              className="lp-btn--tinted lp-btn--demo lp-hero-call"
-              data-analytics-id="call_hero"
-            >
-              Book a demo
-            </LpFxLink>
+        {/* V2 4911:366 "Frame 181": toggle row, then the swap cell (lede +
+            buttons for humans, the install command for agents). */}
+        <div className="lp-hero-aside lp-hs-hero">
+          <AudienceSelector />
+          <div className="lp-hero-swap">
+            <div className="lp-hero-col lp-hero-col--human">
+              {/* The hero lede = the Google description line (SITE_DESCRIPTION,
+                  lib/copy.ts): founder-sensitive, 2026-09-30 AI SEO retired. */}
+              <p className="lp-hero-lede">{SITE_DESCRIPTION}</p>
+              <div className="lp-hero-btns">
+                <LpFxLink href={APP_ORIGIN} data-analytics-id="app_hero">
+                  Start free
+                </LpFxLink>
+                {/* A same-tab link to /demo (François, 2026-09-16; it opened the
+                    Calendly sheet before), keeping the allow-listed call_hero id.
+                    All widths (founder 2026-09-01) — the desktop artboard draws
+                    one CTA, deliberately overridden. */}
+                <LpFxLink
+                  href={DEMO_PAGE_PATH}
+                  className="lp-btn--tinted lp-btn--demo lp-hero-call"
+                  data-analytics-id="call_hero"
+                >
+                  Book a demo
+                </LpFxLink>
+              </div>
+            </div>
+            <div className="lp-hero-col lp-hero-col--agent"><LpAgentStart /></div>
           </div>
         </div>
-        <div className="lp-hero-col lp-hero-col--agent"><LpAgentStart /></div>
       </div>
     </section>
   );

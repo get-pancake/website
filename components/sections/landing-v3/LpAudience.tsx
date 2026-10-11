@@ -100,58 +100,22 @@ export function LpAudience({ children }: { children: ReactNode }) {
   );
 }
 
+/** The audience toggle — Figma V2 4939:3521 (row) / 4939:3523 (switch).
+    In flow since V2 (designer red note 2026-10-09, "Humans/Agents toggle
+    position and look"): it heads the hero's right column, server-rendered in
+    place — no measuring, no overlay, no ready-gating. The active label is
+    bold (700), the inactive one medium (500); each label reserves its bold
+    width through `data-label` (audience.css ghost), so a weight swap never
+    moves the switch. */
 export function AudienceSelector() {
   const { audience, setAudience } = useAudience();
-  const selectorRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const selector = selectorRef.current;
-    const placement = selector?.parentElement;
-    const inner = placement?.closest<HTMLElement>(".lp-hero-inner");
-    const heading = inner?.querySelector<HTMLElement>(".lp-hero-title");
-    const humanColumn = inner?.querySelector<HTMLElement>(".lp-hero-col--human");
-    if (!selector || !placement || !inner || !heading || !humanColumn) return;
-    // Anchor to the original headline without changing its markup or flow.
-    // Divide out the hero's existing short-window scale so both stay aligned.
-    const position = () => {
-      const box = inner.getBoundingClientRect();
-      const title = heading.getBoundingClientRect();
-      const column = humanColumn.getBoundingClientRect();
-      const scale = box.width / inner.offsetWidth || 1;
-      // offsetWidth rounds fractional mobile widths; retain that precision
-      // when mapping the original column's bounds into the overlay.
-      const columnScale = box.width / parseFloat(getComputedStyle(inner).width) || 1;
-      const gutter = parseFloat(getComputedStyle(inner).getPropertyValue("--lp-space-8"));
-      const gap = parseFloat(getComputedStyle(inner).getPropertyValue("--lp-space-4"));
-      const half = selector.offsetWidth / 2;
-      const edge = Math.min(gutter, Math.max(0, inner.offsetWidth / 2 - half));
-      const center = Math.max(half + edge, Math.min((title.right - box.left) / scale - gap, inner.offsetWidth - half - edge));
-      placement.style.setProperty("--lp-audience-center", `${center}px`);
-      placement.style.setProperty("--lp-audience-top", `${(title.top - box.top) / scale}px`);
-      // Preserve the original column's horizontal alignment. On desktop,
-      // center the terminal itself on the headline; phones keep the stacked
-      // column. The hidden human content continues to define page geometry.
-      inner.style.setProperty("--lp-agent-terminal-center", `${(title.top + title.height / 2 - box.top) / columnScale}px`);
-      inner.style.setProperty("--lp-hero-col-top", `${(column.top - box.top) / columnScale}px`);
-      inner.style.setProperty("--lp-hero-col-left", `${(column.left - box.left) / columnScale}px`);
-      inner.style.setProperty("--lp-hero-col-width", `${column.width / columnScale}px`);
-      inner.style.setProperty("--lp-hero-col-height", `${column.height / columnScale}px`);
-      inner.dataset.titleReady = "true";
-      placement.dataset.ready = "true";
-    };
-    const observer = new ResizeObserver(position);
-    observer.observe(inner);
-    observer.observe(heading);
-    observer.observe(humanColumn);
-    observer.observe(selector);
-    position();
-    return () => observer.disconnect();
-  }, []);
   // The labels are click targets too (2026-10-07: tapping "For agents" did
   // nothing). They stay aria-hidden: the switch is the one control screen
   // readers and keyboards get, so there are never three controls for one state.
-  return <div ref={selectorRef} className="lp-audience-selector">
+  return <div className="lp-audience-selector">
     <span
       className="lp-audience-selector__label"
+      data-label="For humans"
       data-active={audience === "humans"}
       aria-hidden="true"
       onClick={() => { if (audience !== "humans") setAudience("humans"); }}
@@ -170,6 +134,7 @@ export function AudienceSelector() {
     </button>
     <span
       className="lp-audience-selector__label"
+      data-label="For agents"
       data-active={audience === "agents"}
       aria-hidden="true"
       onClick={() => { if (audience !== "agents") setAudience("agents"); }}

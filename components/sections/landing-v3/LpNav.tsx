@@ -3,25 +3,28 @@ import type { CSSProperties, ReactNode } from "react";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNavMenu, type LpNavItem } from "@/components/sections/landing-v3/LpNavMenu";
 import { LpNavScroll } from "@/components/sections/landing-v3/LpNavScroll";
-import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { navGroups, verticalPath } from "@/lib/verticals";
 import type { VerticalCategory } from "@/lib/verticals/types";
 
 /**
- * Landing v3 — Nav (Figma node 4257:4894, 1654×120).
+ * Landing v3 — Nav (Figma node 4257:4894, 1654×120; V2 4911:347 for the CTA
+ * pair, 2026-10-09).
  * Logo left edge 179px, links dead-center, dark CTA right-anchored at the
  * same 179px margin (= the 1296 content grid's side margin at 1654).
  * Link targets are provisional (not specified in Figma) — flagged in the PR.
  * 2026-10-07: "Pricing" (/pricing) replaces the artboard's "Company" (/#why,
- * the 10x banner, not a company page; About lives in the footer), and a plain
- * "Sign in" text link to the app sits before the pills (≥1025px only; the
- * phone sheet carries it below). Returning customers had no way in but
- * "Start free". Its signin_nav id stays out of the acquisition allow-list.
- * CTA pair (founder 2026-09-03): "Start free" then "Book a demo", the
- * hero's order, on every surface — the artboard bar drew one pill.
- * ≤767px (Figma mobile node 4389:8182): logo + burger only — links and the
- * pill move into LpNavMenu's sheet; the pill keeps its app_nav id there.
+ * the 10x banner, not a company page; About lives in the footer). Returning
+ * customers had no way in but "Start free", so "Sign in" joined the bar; its
+ * signin_nav id stays out of the acquisition allow-list (no app_cta_clicked).
+ * CTA pair, Figma V2 4911:347 (designer red note, 2026-10-09: "Sign in
+ * instead of Book a demo"): [Sign in, tinted 73×38] 8 [Start free, dark
+ * 110×38], the primary last, right edge on the 179px margin. "Book a demo"
+ * (call_nav) left the bar for that pill: it stays in the hero, the final CTA
+ * and the phone sheet. Production labels win over V2's ("Start free", not
+ * "Get started free"; founder 2026-09-03: "button keep same sizes").
+ * ≤767px (Figma mobile node 4389:8182): logo + Start free + burger — the
+ * links, Sign in and Book a demo live in LpNavMenu's sheet.
  *
  * Menus (founder 2026-10-07, "inspire-toi de la compet pour rendre accessible
  * les pages que t'as créées"): /plays, /compare and the Claude guide were
@@ -77,27 +80,23 @@ export function LpNav() {
         </LpNavDisclosure>
       </nav>
       <div className="lp-nav-ctas">
-        <a className="lp-nav-signin" href={APP_ORIGIN} data-analytics-id="signin_nav">
+        {/* Figma V2 4939:2634: the tinted sm pill (73×38, nav.css). Hidden
+            ≤767 — the phone bar has room for one pill; the sheet carries
+            Sign in as a link. */}
+        <LpFxLink
+          href={APP_ORIGIN}
+          size="sm"
+          className="lp-btn--tinted lp-nav-signin"
+          data-analytics-id="signin_nav"
+        >
           Sign in
-        </a>
+        </LpFxLink>
         <LpFxLink
           href={APP_ORIGIN}
           size="sm"
           data-analytics-id="app_nav"
         >
           Start free
-        </LpFxLink>
-        {/* A same-tab link to /demo on every page, like the sheet's pill
-            (François, 2026-09-16: the "Book a demo" buttons lead to the demo
-            page; the Calendly dialog is no longer mounted). Hidden ≤767
-            (nav.css) — the bar has room for one pill, the sheet carries both. */}
-        <LpFxLink
-          href={DEMO_PAGE_PATH}
-          size="sm"
-          className="lp-btn--tinted lp-btn--demo"
-          data-analytics-id="call_nav"
-        >
-          Book a demo
         </LpFxLink>
       </div>
       <LpNavMenu product={PRODUCT_MENU} resources={RESOURCES_MENU} />

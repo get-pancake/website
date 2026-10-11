@@ -8,7 +8,49 @@
   overflow: hidden;
   padding-block: var(--lp-space-8);
   color: var(--lp-ink-100);
-  position: relative; /* the pause button's anchor */
+  position: relative;
+}
+
+/* the pause button's containing block (LpMarquee renders it for every
+   consumer): its top: 50% stays the logo row's centre whether or not a label
+   sits above the strip. Unlabelled, it is a plain block around the band, so
+   /demo, /pricing and /for lay out exactly as before. */
+.lp-marquee__slot {
+  position: relative;
+}
+
+/* Homepage variant — Figma V2 4911:371 (red note "swapped position /
+   'Trusted by many'", 2026-10-09): a vertical auto-layout, pad 8, gap 8,
+   centred, under the demo window. Label 16 + slot 90 = 130 (Figma 129.58:
+   its slot is the pasted 89.58px placeholder image; rounded so every section
+   below stays on whole pixels). */
+.lp-marquee--labelled {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);           /* 8 */
+  padding-block: var(--lp-space-2); /* 8 (the bare strip keeps 32) */
+}
+.lp-marquee__label {
+  color: var(--lp-subtle-text);     /* Figma variable subtle-text #85687c */
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);     /* Figma variable app/body-sm 13.333 */
+  font-weight: 500;                 /* Geist Medium */
+  letter-spacing: 0;
+  line-height: 16px;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+}
+/* the artboard's strip slot: the real 44px logo row centred in it, 23px above
+   and below (Figma's placeholder glyphs centre at frame y75-77 of 32-122).
+   min-height, not height: the reduced-motion fallback wraps the logos onto
+   two rows and the slot grows with them. */
+.lp-marquee--labelled .lp-marquee__slot {
+  align-content: center;
+  display: grid;
+  min-height: calc(var(--lp-customer-logo-row-height) * var(--lp-marquee-scale) + 46px);
+  width: 100%;
 }
 
 .lp-marquee__band {

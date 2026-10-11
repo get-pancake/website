@@ -1,0 +1,787 @@
+"use client";
+
+import type { gsap } from "@/lib/gsap";
+
+import type { DiveItemId, DiveStageEntry } from "./lp-dive-stages";
+import {
+  CUE_MARGIN,
+  DWELL_MIN_RATIO,
+  DWELL_MS,
+  FAST_SCROLL,
+  FOCUS_MARGIN,
+  PREPARE_MARGIN,
+  enqueueBuild,
+  scrollSpeed,
+  trackScroll,
+  type PlayOnceRuntime,
+} from "./lp-play-once";
+
+/**
+ * The deep-dive carousel's driver (V2 Figma 4939:3388, red note 4964:1644: "a clickable but
+ * autoplaying vertical carousel"). Owner: blue-band package. LpDive renders every tab and every
+ * panel on the server (item 1 active, each stage showing its END picture — the story's rest
+ * markup); LpDiveCarousel mounts this on the row. It owns, from then on, the DOM state the
+ * server rendered: aria-selected / tabindex on the tabs, data-state on the panels, the folds,
+ * the progress bar, the pause control. React never re-renders that subtree.
+ *
+ * Playback, item by item: the active story plays its timeline from its cue to its end, holds the
+ * end picture 2.0 s, then the next item takes over (4 → 1). One master GSAP timeline per turn
+ * scrubs the story's timeline AND the progress bar (linear over (duration − cue) + hold — critic
+ * C10), so pausing stops both together and the bar always tells the truth.
+ *
+ * - First start = lp-play-once's contract (its constants and helpers, exported for this):
+ *   prepare a viewport ahead (fetch GSAP + the four builders, build item 1 first, the rest one
+ *   per frame), switch item 1 unseen to its cue as the stage comes within 15 % below the fold,
+ *   play once the stage's top crosses 60 % of the viewport (or after a 1 s dwell with half of it
+ *   on screen); flying past keeps the picture. Already on screen in its picture when the code
+ *   arrives (reload mid-page, an anchor): never rewound — its bar runs over the hold, then item 2.
+ * - Runs only while ≥ 50 % of the stage is on screen (decision 2026-10-09 §5), the tab is
+ *   visible, and the visitor has not pressed Pause; otherwise everything pauses where it is and
+ *   resumes from there (never restarted, never rewound on screen).
+ * - A click / arrow key selects an item at once: the outgoing panel keeps its frame and fades
+ *   out (0.32 s), the incoming one is set to its cue while still hidden, fades in and plays; the
+ *   bodies fold (CSS grid rows, 0.4 s) and the titles change weight (CSS). Autoplay continues.
+ * - Keyboard focus in the tab list (focus-visible) holds the ADVANCE, not the story: the selected
+ *   item plays to its end picture and waits there until focus leaves. A hovering mouse holds
+ *   nothing — founder 2026-09-22 on the demo ("read as blocked while people looked at it").
+ * - Pause (WCAG 2.2.2): a toggle shown on keyboard focus or while it holds the carousel.
+ * - Reduced motion: no GSAP fetched, no autoplay; tabs swap the panels' end pictures instantly
+ *   and the bar rests at the Figma pose. Lifting it mid-visit starts the hold-then-advance run.
+ * - Layout: the scene box is the desktop 752×489 design box, or the phone 400×520 box ≤599
+ *   (decision §5), scaled as pixels (--lp-fit = stage width / box width; never zoom). Crossing
+ *   599 rebuilds the stories (their builders read the layout at build time).
+ *
+ * Freeze: GSAP only, self-gated (it pauses off screen), so not an LpAnimFreeze member.
+ * QA: window.__lpDive = { timelines, select(i), pause(), play(), pose(i, p), state() };
+ * every built story timeline is also window.__lpStory.<id> (lp-play-once's registry key).
+ */
+
+type Timeline = gsap.core.Timeline;
+type Tween = gsap.core.Tween;
+type Ctx = gsap.Context;
+type Gsap = PlayOnceRuntime["gsap"];
+
+/* The four loaders mirror DIVE_STAGES[id].load in lp-dive-stages.ts (fixed after phase 0, so
+   the module and export names below are fixed too). Importing the registry here instead would
+   pull the four server Stage components and their data into this client chunk. */
+const LOADERS = {
+  sources: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-sources-timeline")]).then(
+      ([{ gsap: g }, { buildStorySources }]) => ({ gsap: g, build: buildStorySources }),
+    ),
+  message: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-message-timeline")]).then(
+      ([{ gsap: g }, { buildStoryMessage }]) => ({ gsap: g, build: buildStoryMessage }),
+    ),
+  learns: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-learns-timeline")]).then(
+      ([{ gsap: g }, { buildStoryLearns }]) => ({ gsap: g, build: buildStoryLearns }),
+    ),
+  claude: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-claude-timeline")]).then(
+      ([{ gsap: g }, { buildStoryClaude }]) => ({ gsap: g, build: buildStoryClaude }),
+    ),
+} satisfies Record<DiveItemId, DiveStageEntry["load"]>;
+
+/** the scene design boxes (= DIVE_STAGE_BOX in lp-dive-stages.ts) */
+const BOX_WIDTH = { desktop: 752, phone: 400 } as const;
+type Layout = keyof typeof BOX_WIDTH;
+/* The phone box from 599 down (dive.css): wider, the 400 box would be blown up past ×1.4 (×1.84
+   at 767) while the 752 box still reads at ×0.76 — the two cross at ~580. The stories follow
+   the box, never the viewport (data-lp-layout + their `lp-dive-scene` container queries). */
+const PHONE_MQ = "(max-width: 599px)";
+/** the bar's drawn length in Figma (4939:3439 …: 138.61 of 272), its rest pose */
+export const DIVE_REST_P = 0.509596;
+/** the cross-fade between two stages and the outgoing bar's fade (s) */
+const FADE_S = 0.32;
+const BAR_OUT_S = 0.15;
+
+type Item = {
+  id: DiveItemId;
+  tab: HTMLElement;
+  fold: HTMLElement | null;
+  bar: HTMLElement;
+  panel: HTMLElement;
+  scene: HTMLElement;
+  more: HTMLElement | null;
+  hold: number;
+  runtime?: PlayOnceRuntime;
+  ctx?: Ctx;
+  tl?: Timeline;
+  cue: number;
+  cleanup?: () => void;
+  failed: boolean;
+  queued: boolean;
+};
+
+export type DiveCarouselOptions = {
+  /** s an item without a playable timeline keeps its picture before advancing */
+  fallback: number;
+};
+
+type QaWindow = Window & {
+  __lpDive?: Record<string, unknown>;
+  __lpStory?: Record<string, Timeline>;
+};
+
+export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () => void {
+  const section = row.closest<HTMLElement>("section") ?? row;
+  const tablist = row.querySelector<HTMLElement>('[role="tablist"]');
+  const stage = row.querySelector<HTMLElement>(".lp-dive-stage");
+  const pauseBtn = row.querySelector<HTMLButtonElement>(".lp-dive-ctrl__btn");
+  if (!tablist || !stage) return () => {};
+
+  const items: Item[] = Array.from(tablist.querySelectorAll<HTMLElement>('[role="tab"]')).flatMap((tab) => {
+    const id = tab.dataset.id as DiveItemId | undefined;
+    const panel = id ? row.querySelector<HTMLElement>(`#lp-dive-panel-${id}`) : null;
+    const scene = panel?.querySelector<HTMLElement>(".lp-dive-scene");
+    const bar = tab.querySelector<HTMLElement>(".lp-dive-tab__bar");
+    if (!id || !(id in LOADERS) || !panel || !scene || !bar) return [];
+    return [
+      {
+        id,
+        tab,
+        fold: tab.querySelector<HTMLElement>(".lp-dive-tab__fold"),
+        bar,
+        panel,
+        scene,
+        more: row.querySelector<HTMLElement>(`.lp-dive-more[data-for="${id}"]`),
+        hold: Number(tab.dataset.hold) || 2,
+        cue: 0,
+        failed: false,
+        queued: false,
+      },
+    ];
+  });
+  if (!items.length) return () => {};
+  const n = items.length;
+
+  const motionMq = matchMedia("(prefers-reduced-motion: reduce)");
+  const phoneMq = matchMedia(PHONE_MQ);
+  const untrack = trackScroll();
+
+  let active = Math.max(0, items.findIndex((it) => it.tab.getAttribute("aria-selected") === "true"));
+  let layout: Layout = phoneMq.matches ? "phone" : "desktop";
+  let disposed = false;
+  let g: Gsap | undefined; // GSAP, once the first story chunk arrived
+  let loading = false;
+  let master: Timeline | null = null;
+  let fades: Tween[] = [];
+  /** the carousel has started: its first play, or a visitor's pick */
+  let engaged = false;
+  /** before engaging, item 1: its server picture (rest) or its cue, set unseen (cued) */
+  let phase: "rest" | "cued" = "rest";
+  let pendingAdvance = false;
+  let held = false; // keyboard focus in the tab list: no advance
+  let userPaused = false;
+  let posed = false; // QA freeze (pose): nothing starts until select/play
+  let docHidden = document.hidden;
+  let near = false; // stage on screen or within 15 % below the fold
+  let visible = false;
+  let focused = false; // stage top above 60 % of the viewport height
+  let ratio = 0;
+  let dwell = 0;
+
+  const isReduced = () => motionMq.matches;
+  const dev = process.env.NODE_ENV !== "production";
+
+  /* ── layout + fit ── */
+  const applyLayout = () => {
+    for (const it of items) it.scene.dataset.lpLayout = layout;
+  };
+  applyLayout();
+  const ro = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const box = entry.contentBoxSize?.[0];
+      const width = box ? box.inlineSize : entry.contentRect.width;
+      if (!(width > 0)) continue;
+      stage.style.setProperty("--lp-fit", String(width / BOX_WIDTH[layout]));
+      stage.dataset.lpFit = "";
+    }
+  });
+  ro.observe(stage);
+
+  /* ── no layout shift: on the in-flow layouts (≤1340: two fluid columns, or stacked) the
+     list's height is part of the page, and items open bodies of 1–4 lines (+ item 4's link).
+     Reserve the tallest open item, so an advance never moves what is below the carousel. ── */
+  const list = row.querySelector<HTMLElement>(".lp-dive-list");
+  let listWidth = 0;
+  const reserveListHeight = () => {
+    if (!list) return;
+    if (getComputedStyle(list).position !== "static") {
+      list.style.removeProperty("min-height"); // ≥1341: absolute in the fixed 489 row
+      return;
+    }
+    // each tab without its fold (title + padding: whatever the fold's animation state)
+    let base = 0;
+    let open = 0;
+    for (const it of items) {
+      const fold = it.fold?.getBoundingClientRect().height ?? 0;
+      base += it.tab.getBoundingClientRect().height - fold;
+      const body = it.fold?.querySelector<HTMLElement>(".lp-dive-tab__body")?.getBoundingClientRect().height ?? 0;
+      const more = it.more?.querySelector<HTMLElement>(".lp-dive-more__inner")?.getBoundingClientRect().height ?? 0;
+      open = Math.max(open, body + more);
+    }
+    list.style.minHeight = `${Math.ceil(base + open)}px`;
+  };
+  const listRo = new ResizeObserver((entries) => {
+    const width = entries[entries.length - 1].contentRect.width;
+    if (width === listWidth) return; // folds animating: only a width change rewraps
+    listWidth = width;
+    reserveListHeight();
+  });
+  if (list) listRo.observe(list);
+  void (document as Document & { fonts?: FontFaceSet }).fonts?.ready.then(() => {
+    if (!disposed) reserveListHeight();
+  });
+
+  /* ── QA registry ── */
+  const w = window as QaWindow;
+  const registerStory = (it: Item) => {
+    if (it.tl) w.__lpStory = { ...w.__lpStory, [it.id]: it.tl };
+  };
+  const unregisterStory = (it: Item) => {
+    const reg = w.__lpStory;
+    if (reg && it.tl && reg[it.id] === it.tl) delete reg[it.id];
+  };
+
+  /* ── builds ── */
+  // a content-visibility:auto section that skips its subtree gives the stories no geometry
+  const laidOut = (it: Item) => {
+    const el = it.scene as HTMLElement & {
+      checkVisibility?: (opts: { contentVisibilityAuto: boolean }) => boolean;
+    };
+    if (typeof el.checkVisibility === "function") return el.checkVisibility({ contentVisibilityAuto: true });
+    return near || visible;
+  };
+  const storyRoot = (it: Item) => it.scene.querySelector<HTMLElement>("[data-lp-story]");
+  const build = (it: Item): boolean => {
+    if (it.tl) return true;
+    if (disposed || it.failed || !it.runtime || !laidOut(it)) return false;
+    const root = storyRoot(it);
+    if (!root) {
+      it.failed = true;
+      return false;
+    }
+    const { gsap: G, build: buildStory } = it.runtime;
+    const ctx = G.context(() => {
+      try {
+        const built = buildStory(root);
+        built.tl.pause();
+        it.tl = built.tl;
+        it.cleanup = built.cleanup;
+        it.cue = Math.min(Math.max(built.cue ?? 0, 0), built.tl.duration());
+        // the server picture (restIsEnd): unseen for idle panels, identical for the active one
+        built.tl.progress(1, true);
+      } catch (err) {
+        it.failed = true;
+        it.tl = undefined;
+        if (dev) console.error(`lp-dive: the ${it.id} story failed to build`, err);
+      }
+    }, root);
+    if (it.failed) {
+      ctx.revert(); // a half-run builder leaves the server markup as it was
+      it.cleanup?.();
+      it.cleanup = undefined;
+      return false;
+    }
+    it.ctx = ctx;
+    registerStory(it);
+    return true;
+  };
+  const unbuild = (it: Item) => {
+    unregisterStory(it);
+    it.ctx?.revert();
+    it.cleanup?.();
+    it.ctx = undefined;
+    it.cleanup = undefined;
+    it.tl = undefined;
+    it.cue = 0;
+  };
+  const afterActiveBuild = () => {
+    if (engaged && !master && !posed && g && !isReduced()) startTurn("end");
+    else decide();
+  };
+  const requestBuilds = () => {
+    if (disposed) return;
+    const first = items[active];
+    if (!first.tl && build(first)) afterActiveBuild();
+    for (const it of items) {
+      if (it.tl || it.failed || it.queued || !it.runtime) continue;
+      it.queued = true;
+      enqueueBuild(() => {
+        it.queued = false;
+        if (build(it) && it === items[active]) afterActiveBuild();
+      });
+    }
+  };
+  const loadRuntimes = () => {
+    if (loading || disposed || isReduced()) return;
+    loading = true;
+    const fonts = (document as Document & { fonts?: FontFaceSet }).fonts?.ready.catch(() => undefined);
+    void Promise.all(
+      items.map((it) =>
+        LOADERS[it.id]()
+          .then((rt) => {
+            it.runtime = rt;
+          })
+          .catch((err) => {
+            it.failed = true;
+            if (dev) console.error(`lp-dive: the ${it.id} story failed to load`, err);
+          }),
+      ),
+    )
+      .then(() => fonts) // measure text on the real faces (story-claude §5.3)
+      .then(() => {
+        if (disposed) return;
+        const rt = items.find((it) => it.runtime)?.runtime;
+        if (!rt) return;
+        g = rt.gsap;
+        requestBuilds();
+        decide();
+      });
+  };
+
+  /* ── the bar ── */
+  const setBar = (it: Item, p: number | null) => {
+    if (p === null) it.bar.style.removeProperty("--lp-dive-p");
+    else it.bar.style.setProperty("--lp-dive-p", String(p));
+  };
+  const barNow = (it: Item) => {
+    const v = parseFloat(it.bar.style.getPropertyValue("--lp-dive-p"));
+    return Number.isFinite(v) ? v : DIVE_REST_P;
+  };
+
+  /* ── a turn: the active item's story + its bar, on one master timeline ── */
+  const killMaster = () => {
+    master?.kill();
+    master = null;
+  };
+  /** cue: play from the cue · from: carry on from where the (cued) timeline is · end: the item
+      shows its end picture and its bar runs over the hold only (never rewound on screen) */
+  const startTurn = (mode: "cue" | "from" | "end") => {
+    killMaster();
+    pendingAdvance = false;
+    const G = g;
+    if (!G || isReduced()) return;
+    const it = items[active];
+    const tl = it.tl;
+    const playable = !!tl && tl.duration() - it.cue > 0.01;
+    let from = 0;
+    let buildS = 0;
+    let p0: number;
+    let barS: number;
+    if (tl && playable && mode !== "end") {
+      from = mode === "cue" ? it.cue : Math.min(Math.max(tl.time(), it.cue), tl.duration());
+      buildS = tl.duration() - from;
+      // the bar is linear over (duration − cue) + hold: start it where the timeline already is
+      p0 = (from - it.cue) / (tl.duration() - it.cue + it.hold);
+      barS = buildS + it.hold;
+    } else {
+      tl?.progress(1, true);
+      p0 = mode === "end" ? barNow(it) : 0;
+      barS = playable ? it.hold : o.fallback;
+    }
+    const m = G.timeline({ paused: true, onComplete: onTurnEnd });
+    if (tl && buildS > 0) m.add(tl.tweenFromTo(from, tl.duration(), { ease: "none" }), 0);
+    m.fromTo(it.bar, { "--lp-dive-p": p0 }, { "--lp-dive-p": 1, duration: Math.max(0.05, barS), ease: "none" }, 0);
+    master = m;
+    sync();
+  };
+  const onTurnEnd = () => {
+    if (held) pendingAdvance = true;
+    else select((active + 1) % n, "auto");
+  };
+  /** play the turn while the carousel may run; pause it, where it is, otherwise */
+  const sync = () => {
+    const run =
+      !!master && engaged && !posed && !userPaused && !docHidden && !isReduced() && visible && ratio >= DWELL_MIN_RATIO - 0.001;
+    row.toggleAttribute("data-run", run);
+    if (!master) return;
+    if (run) master.play();
+    else master.pause();
+  };
+
+  /* ── switching ── */
+  const settleFades = () => {
+    const pending = fades;
+    fades = [];
+    for (const t of pending) t.progress(1); // runs their onComplete: the outgoing panel goes idle
+  };
+  const paintTabs = () => {
+    items.forEach((it, i) => {
+      const on = i === active;
+      it.tab.setAttribute("aria-selected", String(on));
+      it.tab.tabIndex = on ? 0 : -1;
+      if (on) it.fold?.removeAttribute("aria-hidden");
+      else it.fold?.setAttribute("aria-hidden", "true");
+      it.more?.toggleAttribute("data-on", on);
+    });
+  };
+  const select = (next: number, how: "auto" | "user" | "pose") => {
+    if (disposed || next === active || next < 0 || next >= n) return;
+    const prev = items[active];
+    const inc = items[next];
+    killMaster();
+    settleFades();
+    pendingAdvance = false;
+    active = next;
+    paintTabs();
+    if (how === "user") {
+      engaged = true;
+      posed = false;
+    }
+    if (inc.runtime && !inc.tl) build(inc); // picked before its queued build ran
+    const G = g;
+    const animate = !!G && !isReduced() && how !== "pose";
+    if (animate && G) {
+      const playable = !!inc.tl && inc.tl.duration() - inc.cue > 0.01;
+      if (playable) inc.tl?.pause(inc.cue); // unseen: the panel is still idle
+      setBar(inc, 0);
+      prev.panel.dataset.state = "leaving";
+      inc.panel.dataset.state = "active";
+      prev.tab.dataset.barOut = "";
+      fades = [
+        G.fromTo(inc.panel, { opacity: 0 }, { opacity: 1, duration: FADE_S, ease: "power1.out", clearProps: "opacity" }),
+        G.to(prev.panel, {
+          opacity: 0,
+          duration: FADE_S,
+          ease: "power1.out",
+          onComplete: () => {
+            prev.panel.dataset.state = "idle";
+            prev.panel.style.removeProperty("opacity");
+            prev.tl?.progress(1, true); // unseen: back to its picture
+          },
+        }),
+        G.to(prev.bar, {
+          opacity: 0,
+          duration: BAR_OUT_S,
+          onComplete: () => {
+            delete prev.tab.dataset.barOut;
+            prev.bar.style.removeProperty("opacity");
+            setBar(prev, null);
+          },
+        }),
+      ];
+      startTurn(playable ? "cue" : "end");
+    } else {
+      prev.panel.dataset.state = "idle";
+      inc.panel.dataset.state = "active";
+      prev.tl?.progress(1, true);
+      inc.tl?.progress(1, true);
+      setBar(prev, null);
+      setBar(inc, null);
+      delete prev.tab.dataset.barOut;
+      if (G && !isReduced() && how !== "pose") startTurn("end");
+    }
+    sync();
+  };
+
+  /* ── first start (lp-play-once's contract) ── */
+  const toCue = () => {
+    const it = items[active];
+    if (!it.tl) return;
+    it.tl.pause(it.cue);
+    setBar(it, 0);
+    phase = "cued";
+  };
+  const toRest = () => {
+    const it = items[active];
+    it.tl?.progress(1, true);
+    setBar(it, null);
+    phase = "rest";
+  };
+  const engage = () => {
+    if (engaged || posed) return;
+    engaged = true;
+    startTurn(phase === "cued" ? "from" : "end");
+  };
+  const armDwell = () => {
+    clearTimeout(dwell);
+    dwell = window.setTimeout(() => {
+      dwell = 0;
+      if (engaged || disposed || isReduced() || !visible || ratio < DWELL_MIN_RATIO) return;
+      if (scrollSpeed() > FAST_SCROLL) armDwell();
+      else engage();
+    }, DWELL_MS);
+  };
+  const decide = () => {
+    if (disposed) return;
+    if (isReduced() || posed) return sync();
+    if (engaged) return sync();
+    const it = items[active];
+    if (!g || (!it.tl && !it.failed)) return; // the server picture stands until the code is in
+    clearTimeout(dwell);
+    dwell = 0;
+    const fast = scrollSpeed() > FAST_SCROLL;
+    if (phase === "rest" && near && !visible && !fast && it.tl) toCue(); // below the fold, unseen
+    if (phase === "cued" && !near) return toRest(); // went away before reaching it: unseen
+    if (!visible) return;
+    if (fast) {
+      if (phase === "cued") toRest(); // flying past: the picture
+      return armDwell(); // and start once the scroll settles on it
+    }
+    if (focused) return engage();
+    if (ratio >= DWELL_MIN_RATIO) armDwell();
+  };
+
+  /* ── observers ── */
+  const last = (entries: IntersectionObserverEntry[]) => entries[entries.length - 1];
+  const prepareIo = new IntersectionObserver(
+    (entries) => {
+      if (last(entries).isIntersecting) loadRuntimes();
+    },
+    { rootMargin: PREPARE_MARGIN },
+  );
+  prepareIo.observe(section);
+  const cueIo = new IntersectionObserver(
+    (entries) => {
+      near = last(entries).isIntersecting;
+      if (near) {
+        loadRuntimes();
+        requestBuilds();
+      }
+      decide();
+    },
+    { rootMargin: CUE_MARGIN },
+  );
+  cueIo.observe(stage);
+  const focusIo = new IntersectionObserver(
+    (entries) => {
+      focused = last(entries).isIntersecting;
+      decide();
+    },
+    { rootMargin: FOCUS_MARGIN },
+  );
+  focusIo.observe(stage);
+  const viewIo = new IntersectionObserver(
+    (entries) => {
+      const e = last(entries);
+      visible = e.isIntersecting;
+      ratio = visible ? e.intersectionRatio : 0;
+      if (visible) requestBuilds();
+      decide();
+    },
+    { threshold: [0, 0.25, DWELL_MIN_RATIO, 0.75, 1] },
+  );
+  viewIo.observe(stage);
+  const onRendered = (e: Event) => {
+    if ((e as Event & { skipped?: boolean }).skipped === false) requestBuilds();
+  };
+  section.addEventListener("contentvisibilityautostatechange", onRendered);
+
+  /* ── input ── */
+  const tabIndexOf = (target: EventTarget | null) => {
+    const tab = target instanceof Element ? target.closest('[role="tab"]') : null;
+    return tab ? items.findIndex((it) => it.tab === tab) : -1;
+  };
+  const onClick = (e: MouseEvent) => {
+    const i = tabIndexOf(e.target);
+    if (i >= 0) select(i, "user"); // the active tab: no-op
+  };
+  const onKey = (e: KeyboardEvent) => {
+    const i = tabIndexOf(e.target);
+    if (i < 0) return;
+    let next: number;
+    switch (e.key) {
+      case "ArrowDown":
+      case "ArrowRight":
+        next = (i + 1) % n;
+        break;
+      case "ArrowUp":
+      case "ArrowLeft":
+        next = (i - 1 + n) % n;
+        break;
+      case "Home":
+        next = 0;
+        break;
+      case "End":
+        next = n - 1;
+        break;
+      default:
+        return;
+    }
+    e.preventDefault();
+    items[next].tab.focus();
+    select(next, "user");
+  };
+  const focusVisible = (el: Element) => {
+    try {
+      return el.matches(":focus-visible");
+    } catch {
+      return false;
+    }
+  };
+  const onFocusIn = (e: FocusEvent) => {
+    if (e.target instanceof Element && focusVisible(e.target)) held = true;
+  };
+  const onFocusOut = (e: FocusEvent) => {
+    if (e.relatedTarget instanceof Node && tablist.contains(e.relatedTarget)) return;
+    held = false;
+    if (pendingAdvance) {
+      pendingAdvance = false;
+      select((active + 1) % n, "auto");
+    }
+  };
+  tablist.addEventListener("click", onClick);
+  tablist.addEventListener("keydown", onKey);
+  tablist.addEventListener("focusin", onFocusIn);
+  tablist.addEventListener("focusout", onFocusOut);
+
+  const paintPause = () => {
+    if (!pauseBtn) return;
+    pauseBtn.setAttribute("aria-pressed", String(userPaused));
+    pauseBtn.dataset.ico = userPaused ? "play" : "pause";
+  };
+  const onPause = () => {
+    userPaused = !userPaused;
+    paintPause();
+    if (!userPaused) {
+      // Play: the visitor asked to watch
+      posed = false;
+      if (!engaged) {
+        engaged = true;
+        startTurn(phase === "cued" ? "from" : "end");
+      } else if (!master) startTurn("end");
+    }
+    sync();
+  };
+  pauseBtn?.addEventListener("click", onPause);
+
+  const onVisibility = () => {
+    docHidden = document.hidden;
+    sync();
+  };
+  document.addEventListener("visibilitychange", onVisibility);
+
+  const onMotion = () => {
+    if (isReduced()) {
+      killMaster();
+      settleFades();
+      for (const it of items) {
+        it.tl?.progress(1, true);
+        setBar(it, null);
+      }
+      phase = "rest";
+      row.setAttribute("data-reduced", "");
+    } else {
+      row.removeAttribute("data-reduced");
+      if (!g) loadRuntimes();
+      else if (engaged) startTurn("end");
+      else decide();
+    }
+    sync();
+  };
+  motionMq.addEventListener("change", onMotion);
+
+  const onLayout = () => {
+    const next: Layout = phoneMq.matches ? "phone" : "desktop";
+    if (next === layout) return;
+    layout = next;
+    applyLayout();
+    // the builders read the layout at build time: rebuild every story on the new box
+    killMaster();
+    settleFades();
+    for (const it of items) unbuild(it);
+    if (engaged) {
+      // the active one comes back on its picture and finishes its turn over the hold
+      setBar(items[active], 0);
+    } else {
+      toRest();
+    }
+    requestBuilds();
+  };
+  phoneMq.addEventListener("change", onLayout);
+
+  /* ── QA ── */
+  w.__lpDive = {
+    get timelines() {
+      return Object.fromEntries(items.map((it) => [it.id, it.tl]));
+    },
+    get active() {
+      return items[active].id;
+    },
+    select: (i: number) => select(i, "user"),
+    pause: () => {
+      if (!userPaused) onPause();
+    },
+    play: () => {
+      if (userPaused) onPause();
+      else if (posed) {
+        posed = false;
+        engaged = true;
+        startTurn("end");
+      }
+    },
+    /** freeze the artboard pose: item i active on its end picture, its bar at p (Figma: pose(0, DIVE_REST_P)) */
+    pose: (i: number, p: number = DIVE_REST_P) => {
+      posed = true;
+      killMaster();
+      settleFades();
+      select(i, "pose");
+      for (const it of items) it.tl?.progress(1, true);
+      setBar(items[active], p);
+      sync();
+    },
+    state: () => ({
+      active: items[active].id,
+      engaged,
+      phase,
+      posed,
+      userPaused,
+      held,
+      visible,
+      ratio,
+      running: !!master && master.isActive(),
+      progress: master ? master.progress() : null,
+      built: items.filter((it) => it.tl).map((it) => it.id),
+    }),
+  };
+
+  if (isReduced()) row.setAttribute("data-reduced", "");
+  row.setAttribute("data-ready", "");
+  paintPause();
+
+  return () => {
+    disposed = true;
+    clearTimeout(dwell);
+    prepareIo.disconnect();
+    cueIo.disconnect();
+    focusIo.disconnect();
+    viewIo.disconnect();
+    ro.disconnect();
+    listRo.disconnect();
+    list?.style.removeProperty("min-height");
+    untrack();
+    section.removeEventListener("contentvisibilityautostatechange", onRendered);
+    tablist.removeEventListener("click", onClick);
+    tablist.removeEventListener("keydown", onKey);
+    tablist.removeEventListener("focusin", onFocusIn);
+    tablist.removeEventListener("focusout", onFocusOut);
+    pauseBtn?.removeEventListener("click", onPause);
+    document.removeEventListener("visibilitychange", onVisibility);
+    motionMq.removeEventListener("change", onMotion);
+    phoneMq.removeEventListener("change", onLayout);
+    killMaster();
+    for (const t of fades) t.kill();
+    fades = [];
+    for (const it of items) unbuild(it);
+    // back to the server state (a remount — HMR — reads it again)
+    active = 0;
+    paintTabs();
+    items.forEach((it, i) => {
+      it.panel.dataset.state = i === 0 ? "active" : "idle";
+      it.panel.style.removeProperty("opacity");
+      it.bar.style.removeProperty("opacity");
+      delete it.tab.dataset.barOut;
+      setBar(it, null);
+      delete it.scene.dataset.lpLayout;
+    });
+    delete stage.dataset.lpFit;
+    stage.style.removeProperty("--lp-fit");
+    row.removeAttribute("data-ready");
+    row.removeAttribute("data-reduced");
+    row.removeAttribute("data-run");
+    if (w.__lpDive) delete w.__lpDive;
+  };
+}

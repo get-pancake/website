@@ -23,11 +23,21 @@ export type S1Hub = {
   leaves: S1Leaf[];
   /** [edgeX1, edgeY1, edgeX2, edgeY2, dotX, dotY] — second-level branches */
   sub?: [number, number, number, number, number, number][];
+  /** the hub's name, painted over the graph (Figma V2 4962:839–845, red note "Labels in 2nd
+      level dots", 2026-10-09): Geist SemiBold 10/16 in the text colour. `cx` = the Figma
+      text box's centre x (the label is centred on it, so browser text widths never shift
+      it); `top` = the box's y + ~1, pixel-calibrated (Chromium/WebKit draw Geist 10/16 a
+      pixel above Figma's raster; Firefox lands 1px lower, as with the centre label).
+      Figma boxes: Competitors 133,113.969 60×16 · ICPs 283.543,116.969 22×16 ·
+      Outreach 92.352,241.097 45×16 · Influencers 350.977,202.42 55×16 ·
+      Market Research 222,328.342 82×16. */
+  label: { text: string; cx: number; top: number };
 };
 
 export const S1_HUBS: S1Hub[] = [
   {
     fill: "#BA8BFF",
+    label: { text: "Competitors", cx: 163, top: 115 },
     dot: [179.883, 142.425],
     e: [179, 142.92],
     leaves: [
@@ -43,6 +53,7 @@ export const S1_HUBS: S1Hub[] = [
   },
   {
     fill: "#68CEA7",
+    label: { text: "ICPs", cx: 294.543, top: 118 },
     dot: [292.691, 148.425],
     e: [292, 148.42],
     leaves: [
@@ -57,6 +68,7 @@ export const S1_HUBS: S1Hub[] = [
   },
   {
     fill: "#FF7AA0",
+    label: { text: "Outreach", cx: 114.852, top: 242 },
     dot: [159.719, 249.097],
     e: [161, 248.42],
     leaves: [
@@ -77,6 +89,7 @@ export const S1_HUBS: S1Hub[] = [
   },
   {
     fill: "#FFBD7A",
+    label: { text: "Influencers", cx: 378.477, top: 204 },
     dot: [354.938, 231.066],
     e: [355, 231.92],
     leaves: [
@@ -92,6 +105,7 @@ export const S1_HUBS: S1Hub[] = [
   {
     fill: "#6EBBFF",
     blue: true,
+    label: { text: "Market Research", cx: 263, top: 330 },
     dot: [291, 315],
     e: [289.5, 313.5],
     leaves: [

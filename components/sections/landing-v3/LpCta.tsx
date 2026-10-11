@@ -48,67 +48,78 @@ export function LpCta({
   body?: readonly [string, string] | string;
   buttons?: ReactNode;
   note?: string;
-  /** homepage only (V2 4911:739, owner blue-band): the blue sky + cloud transition from the
-      deep dive and the r24 card. Phase 0: accepted, renders the production CTA unchanged. */
+  /** homepage only (V2 4911:739 "Transition from previous section", owner blue-band): the
+      blue sky of the deep dive ending on a cream hill, two clouds around the card, and the
+      card's r24. Off (the default), every other surface renders exactly as before. */
   sky?: boolean;
 } = {}) {
-  void sky;
+  const card = (
+    <div className="lp-cta__card">
+      <div aria-hidden="true" className="lp-cta__art lp-cta__art--left">
+        <div className="lp-anim-canvas lp-anim-canvas--cta-left">
+          <LpPancakes variant="ctaLeft" />
+        </div>
+        {/* desktop rotation on one WebGL canvas per sliver (LpRainbowGL) */}
+        <LpRainbowGL variant="ctaLeft" />
+      </div>
+      <div aria-hidden="true" className="lp-cta__art lp-cta__art--right">
+        <div className="lp-anim-canvas lp-anim-canvas--cta-right">
+          <LpPancakes variant="ctaRight" />
+        </div>
+        <LpRainbowGL variant="ctaRight" />
+      </div>
+      <div className="lp-cta__content">
+        <div className="lp-cta__text">
+          <h2 className="lp-title-card lp-cta__title">{title}</h2>
+          <p className="lp-cta__body">
+            {typeof body === "string" ? (
+              body
+            ) : (
+              <>
+                {body[0]}
+                <br />
+                {body[1]}
+              </>
+            )}
+          </p>
+        </div>
+        {buttons ? (
+          <div className="lp-cta__btns">{buttons}</div>
+        ) : (
+          <div className="lp-cta__btns">
+            {/* Primary first, secondary second — the hero's order on every
+                surface (founder 2026-09-03). */}
+            <LpFxLink href={APP_ORIGIN} data-analytics-id="app_final">
+              Start free
+            </LpFxLink>
+            {/* A same-tab link to /demo (François, 2026-09-16; it opened the
+                Calendly sheet before), keeping the call_final id.
+                Tinted skin — same as the hero's Book a demo (founder
+                2026-09-01: "bouton book a call différent que dans hero");
+                the outline variant is retired here. */}
+            <LpFxLink
+              href={DEMO_PAGE_PATH}
+              className="lp-btn--tinted lp-btn--demo"
+              data-analytics-id="call_final"
+            >
+              Book a demo
+            </LpFxLink>
+          </div>
+        )}
+        {note ? <p className="lp-cta__note">{note}</p> : null}
+      </div>
+    </div>
+  );
+  if (!sky) return <section className="lp-cta">{card}</section>;
+  /* DOM order = paint order: cloud B sits behind the card's right edge, cloud A over its
+     top-left corner (Figma 4939:3972 / 4939:3456). Both drift on scroll (LpSkyParallax,
+     mounted by LpDive, finds them by class; sky.css holds their depths). */
   return (
-    <section className="lp-cta">
-      <div className="lp-cta__card">
-        <div aria-hidden="true" className="lp-cta__art lp-cta__art--left">
-          <div className="lp-anim-canvas lp-anim-canvas--cta-left">
-            <LpPancakes variant="ctaLeft" />
-          </div>
-          {/* desktop rotation on one WebGL canvas per sliver (LpRainbowGL) */}
-          <LpRainbowGL variant="ctaLeft" />
-        </div>
-        <div aria-hidden="true" className="lp-cta__art lp-cta__art--right">
-          <div className="lp-anim-canvas lp-anim-canvas--cta-right">
-            <LpPancakes variant="ctaRight" />
-          </div>
-          <LpRainbowGL variant="ctaRight" />
-        </div>
-        <div className="lp-cta__content">
-          <div className="lp-cta__text">
-            <h2 className="lp-title-card lp-cta__title">{title}</h2>
-            <p className="lp-cta__body">
-              {typeof body === "string" ? (
-                body
-              ) : (
-                <>
-                  {body[0]}
-                  <br />
-                  {body[1]}
-                </>
-              )}
-            </p>
-          </div>
-          {buttons ? (
-            <div className="lp-cta__btns">{buttons}</div>
-          ) : (
-            <div className="lp-cta__btns">
-              {/* Primary first, secondary second — the hero's order on every
-                  surface (founder 2026-09-03). */}
-              <LpFxLink href={APP_ORIGIN} data-analytics-id="app_final">
-                Start free
-              </LpFxLink>
-              {/* A same-tab link to /demo (François, 2026-09-16; it opened the
-                  Calendly sheet before), keeping the call_final id.
-                  Tinted skin — same as the hero's Book a demo (founder
-                  2026-09-01: "bouton book a call différent que dans hero");
-                  the outline variant is retired here. */}
-              <LpFxLink
-                href={DEMO_PAGE_PATH}
-                className="lp-btn--tinted lp-btn--demo"
-                data-analytics-id="call_final"
-              >
-                Book a demo
-              </LpFxLink>
-            </div>
-          )}
-          {note ? <p className="lp-cta__note">{note}</p> : null}
-        </div>
+    <section className="lp-cta lp-cta--sky">
+      <div className="lp-cta__frame">
+        <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--b" />
+        {card}
+        <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--a" />
       </div>
     </section>
   );

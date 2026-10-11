@@ -1,0 +1,87 @@
+"use client";
+
+/**
+ * Agents view scroll assembly — "the same logic" as the humans hero scroll (decision 2026-10-09
+ * §8; agents-view spec §6.1). Owner: agents-view package.
+ *
+ * Same range as the humans demo window (lp-demo-timeline.ts HS_START_FROM_BOTTOM / HS_END_FROM_TOP,
+ * copied here so the two packages stay decoupled): ONE progress p, 0 when the wall section's top
+ * sits 299.42 px above the viewport's bottom (state 01: 656.58 on a 956-tall window) → 1 when it
+ * reaches 141 px from the top (state 03). No pin: the section moves with the page.
+ *
+ * The driver writes p as custom properties and CSS draws every pose from them (agent-lab.css
+ * "scroll assembly", audience-agents.css for the hero copy) — two or three style writes a frame:
+ *   --lp-as       on the section: the card frame extends from its 690×74 prompt box to 690×562
+ *                 (clip + travelling bottom edge), linear over the whole range;
+ *   --lp-as-rows  on the section: wall rows printed, 4 → 79 (one 18 px row per step, 75 steps);
+ *   --lp-as-hero  on each `.lp-hs-hero` (nav-hero's hook): the hero copy drifts 25.54 px·p and
+ *                 fades out between p .5481 and .85, as on the humans side. Its own variable:
+ *                 the humans driver (lp-demo-scroll.ts) writes --lp-hs-hero on the same elements.
+ * Lock: once p reaches 1 (or the page arrives past it) the section gets `data-as-done` and the
+ * card and wall stay assembled for the visit — never rewind on screen. The hero copy keeps
+ * following the scroll (scrolling back shows it again), as on the humans side.
+ *
+ * Plain passive scroll + one rAF (no GSAP, nothing lazy to fetch): mounted only in the agents view
+ * on desktop windows (≥1025 × ≥640) with motion allowed; everywhere else nothing is written and
+ * CSS shows the rest picture, state 03 (= the V2 artboard).
+ */
+
+/** The humans hero scroll's range (lp-demo-timeline.ts). */
+const START_FROM_BOTTOM = 299.42;
+const END_FROM_TOP = 141;
+/** Wall rows printed at state 01 and the rows added over the range (V2 wraps to 79 rows). */
+export const AS_FIRST_ROWS = 4;
+export const AS_ROWS = 75;
+/** Where the effect runs (the same gate as the humans demo window's hero scroll). */
+export const AS_MEDIA = "(min-width: 1025px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)";
+
+export function mountAgentsAssembly(section: HTMLElement): () => void {
+  const heroes = Array.from(document.querySelectorAll<HTMLElement>(".lp-hs-hero"));
+  let raf = 0;
+  let lastP = "";
+  let lastRows = -1;
+  let lastHero = "";
+
+  const update = () => {
+    raf = 0;
+    const startTop = window.innerHeight - START_FROM_BOTTOM;
+    const top = section.getBoundingClientRect().top;
+    const p = Math.min(1, Math.max(0, (startTop - top) / (startTop - END_FROM_TOP)));
+    if (p >= 1) section.setAttribute("data-as-done", "");
+    if (!section.hasAttribute("data-as-done")) {
+      const v = p.toFixed(4);
+      if (v !== lastP) {
+        lastP = v;
+        section.style.setProperty("--lp-as", v);
+      }
+      const rows = AS_FIRST_ROWS + Math.floor(AS_ROWS * p);
+      if (rows !== lastRows) {
+        lastRows = rows;
+        section.style.setProperty("--lp-as-rows", String(rows));
+      }
+    }
+    const h = p.toFixed(4);
+    if (h !== lastHero) {
+      lastHero = h;
+      for (const hero of heroes) hero.style.setProperty("--lp-as-hero", h);
+    }
+  };
+  const schedule = () => {
+    if (!raf) raf = requestAnimationFrame(update);
+  };
+
+  section.setAttribute("data-as", "js");
+  update(); // synchronous: the first picture is right (inside the switch's View Transition commit)
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule, { passive: true });
+
+  return () => {
+    cancelAnimationFrame(raf);
+    window.removeEventListener("scroll", schedule);
+    window.removeEventListener("resize", schedule);
+    section.removeAttribute("data-as");
+    section.style.removeProperty("--lp-as");
+    section.style.removeProperty("--lp-as-rows");
+    for (const hero of heroes) hero.style.removeProperty("--lp-as-hero");
+  };
+}

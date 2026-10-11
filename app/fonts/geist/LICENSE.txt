@@ -1,8 +1,13 @@
-Geist Sans — Copyright (c) 2023 Vercel, Inc., in collaboration with basement.studio
+Geist Sans and Geist Mono — Copyright (c) 2023 Vercel, Inc., in collaboration with basement.studio
 (Geist font project, https://github.com/vercel/geist-font).
 
 Geist-Variable-latin.woff2 is Geist 1.401, the variable "wght" 100–900 face,
 subset to the latin range. Modified only by subsetting.
+
+GeistMono-Variable-latin.woff2 is its sibling Geist Mono, the variable "wght"
+100–900 face, subset to the latin range (the same build as Next.js's bundled
+geist-mono-latin.woff2). Modified only by subsetting. Used by the homepage's
+agents view (2026-10-09).
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
 This license is copied below, and is also available with a FAQ at:

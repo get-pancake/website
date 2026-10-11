@@ -105,6 +105,15 @@
   position: relative;
   width: 464px;
 }
+/* a designer still filling a step's art slot (lp-steps-content.ts StepArt
+   kind "image": 464×426 at design size, contain-fit — the 2026-09-02
+   /public/how/step-*.svg precedent), so a tablet or phone card never crops it */
+.lp-steps__media--image img {
+  display: block;
+  height: 100%;
+  object-fit: contain;
+  width: 100%;
+}
 /* The step animations live here since 2026-09-07 (LpStepAnim.tsx — DOM +
    CSS + GSAP, the same treatment as the feature cards; rules at the end of
    this file). The card is the composition's 464×426 frame and keeps clipping
@@ -441,6 +450,24 @@
   top: 225px;
   white-space: nowrap;
   width: 200px;
+}
+/* hub labels — Figma V2 4962:839–845 (red note "Labels in 2nd level dots",
+   2026-10-09): Geist SemiBold 10/16 in the text colour, centred on the Figma
+   box's centre x through a zero-width flex box (browser text widths differ
+   from Figma's by < 1px, so the centre is what must match). Hidden at rest =
+   the composition's frame 0; the timeline shows them with their hubs. */
+.lp-s1-hlabel {
+  color: var(--lp-text);
+  display: flex;
+  font-size: 10px; /* Figma literal (no kit size: --lp-text-xsm is 11.108) */
+  font-weight: 600;
+  justify-content: center;
+  letter-spacing: 0;
+  line-height: 16px;
+  opacity: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 0;
 }
 .lp-s1-bping {
   background: radial-gradient(circle, rgba(110, 187, 255, 0.55) 0%, rgba(110, 187, 255, 0) 70%);
