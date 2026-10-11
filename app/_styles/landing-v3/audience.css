@@ -65,13 +65,6 @@ html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation
 .lp-hero-col--agent { display: none; }
 [data-audience="agents"] .lp-hero-col--human { visibility: hidden; }
 [data-audience="agents"] .lp-hero-col--agent { display: flex; }
-/* Interim, until agents-view restyles LpAgentStart to V2 (friends row UNDER
-   the install box): its ≥1025 absolute "friends" row (bottom: 100%) would
-   float up into the toggle row now that the toggle sits on top of the
-   column. In flow it stacks above the terminal inside the cell. */
-@media (min-width: 1025px) {
-  .lp-hero--home .lp-agent-friends { position: static; }
-}
 
 /* ── Audience toggle — Figma V2 4939:3521 (row: H, gap 8, align centre) and
    4939:3523 (Toggle – Switch, State=Off): 64×28 blue-30 stadium track, 39×24
