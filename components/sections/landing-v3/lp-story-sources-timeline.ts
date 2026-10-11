@@ -7,14 +7,13 @@ import type { BuiltStory, DiveStageLayout } from "./lp-dive-stages";
  * stage root (Figma 4964:1287 / 1294 / 1311). Owner: story-sources package. Contract: lp-dive-stages.ts and
  * code-map §6.2 — frame 0 via gsap.set (the caller's gsap.context reverts it), sets and tweens
  * only (no callbacks, no randomness), progress(1) = the server markup, `cue` = the first composed
- * scene. Reached only through DIVE_STAGES.sources.load() and the carousel driver's own loader
- * (lazy chunk).
+ * scene. Reached only through DIVE_LOADERS.sources (lp-dive-loaders.ts, lazy chunk).
  *
- * No "use client" on purpose (2026-10-09): the registry is imported by server components (LpDive,
- * the dev harness) and dynamically imports this module, and Next makes every "use client" module
- * the server graph reaches an EAGER client entry — it shipped this builder inside app/page.js.
- * Without the directive it is a plain module: fetched only when the carousel approaches with
- * motion allowed, never under reduced motion (verified on :3002).
+ * No "use client" on purpose (2026-10-09): Next makes every "use client" module a server graph
+ * reaches, even through an import(), an EAGER client entry — this builder shipped inside
+ * app/page.js while the loaders sat in the server registry (they are in the client-only
+ * lp-dive-loaders.ts since 2026-10-11). As a plain module it is fetched only when the carousel
+ * approaches with motion allowed, never under reduced motion (verified on :3002).
  *
  * Designer note 4964:1650: "Leads show up / Dolly zoom into one / Lead properties get listed with
  * green ticks / (potential source DBs ?)". Times (s), spec story-sources §7 + decisions §6:

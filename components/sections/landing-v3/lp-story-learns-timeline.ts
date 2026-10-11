@@ -1,9 +1,10 @@
-"use client";
-
+// No "use client" on purpose (phase N, 2026-10-11, as the three other story timelines): this
+// module is reached only through the client loaders (lp-dive-loaders.ts), and a "use client"
+// module that a server graph ever reaches again would ship eagerly in the homepage bundle.
 import { gsap } from "@/lib/gsap";
 
 import type { BuiltStory, DiveStageLayout } from "./lp-dive-stages";
-import { registerTxtPlugin } from "./lp-feat-timelines";
+import { registerTxtPlugin } from "./lp-gsap-txt";
 import { LEARNS } from "./lp-story-learns-data";
 
 /**
@@ -11,7 +12,7 @@ import { LEARNS } from "./lp-story-learns-data";
  * stage root (Figma 4964:2021 / 2404 / 2448 / 2490 / 4052). Owner: story-learns package. Contract: lp-dive-stages.ts and
  * code-map §6.2 — frame 0 via gsap.set (the caller's gsap.context reverts it), sets and tweens
  * only (no callbacks, no randomness), progress(1) = the server markup, `cue` = the first composed
- * scene. Reached only through a lazy load() (DIVE_STAGES.learns, the shell's mirror of it).
+ * scene. Reached only through its lazy loader (DIVE_LOADERS.learns, lp-dive-loaders.ts).
  *
  * The storyboard has no prototype or motion data: the beats below are derived from its frames
  * and the designer's motion arrows in frame 4 (never rendered). Times in seconds:

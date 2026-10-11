@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-import { DIVE_STAGES, type DiveItemId } from "@/components/sections/landing-v3/lp-dive-stages";
+import { DIVE_LOADERS } from "@/components/sections/landing-v3/lp-dive-loaders";
+import type { DiveItemId } from "@/components/sections/landing-v3/lp-dive-stages";
 import type { gsap } from "@/lib/gsap";
 
 type Timeline = gsap.core.Timeline;
@@ -36,6 +37,12 @@ function makeHandle(frame: FrameRef, onChange: () => void): Handle {
   let ctx: Ctx | null = null;
   let cleanup: (() => void) | null = null;
   let building: Promise<boolean> | null = null;
+  /* bumped by rest(): a build whose code was still loading when the frame went back to rest must
+     not build after all. React StrictMode runs the mount effect twice in dev (mount, cleanup,
+     mount): without this, the first pass's build landed after its own cleanup, was never
+     reverted, and the second pass built on a stage already at frame 0 — a builder that reads
+     its colours from the rest markup (sources' matched tag) then read the wrong ones. */
+  let generation = 0;
   const setState = (s: string) => {
     frame.el.dataset.state = s;
     onChange();
@@ -54,8 +61,10 @@ function makeHandle(frame: FrameRef, onChange: () => void): Handle {
           console.error(`lp-dev/stages: ${frame.key} renders no [data-lp-story] root`);
           return false;
         }
+        const mine = generation;
         try {
-          const { gsap: g, build } = await DIVE_STAGES[frame.id].load();
+          const { gsap: g, build } = await DIVE_LOADERS[frame.id]();
+          if (mine !== generation) return false;
           ctx = g.context(() => {
             const built = build(root);
             handle.tl = built.tl;
@@ -101,6 +110,7 @@ function makeHandle(frame: FrameRef, onChange: () => void): Handle {
     },
     /** back to the server markup (the rest picture): revert every set the builder made */
     rest() {
+      generation += 1;
       ctx?.revert();
       cleanup?.();
       ctx = null;
@@ -180,7 +190,7 @@ export function StageHarness({
       const id = frameEl.dataset.story as DiveItemId;
       const layout = frameEl.dataset.layout ?? "desktop";
       const mount = frameEl.querySelector<HTMLElement>("[data-controls]");
-      if (!mount || !(id in DIVE_STAGES)) return [];
+      if (!mount || !(id in DIVE_LOADERS)) return [];
       const frame: FrameRef = { key: `${id}:${layout}`, id, layout, el: frameEl, mount };
       return [{ frame, handle: makeHandle(frame, bump) }];
     });

@@ -2,7 +2,8 @@
 
 import type { gsap } from "@/lib/gsap";
 
-import type { DiveItemId, DiveStageEntry } from "./lp-dive-stages";
+import { DIVE_LOADERS } from "./lp-dive-loaders";
+import type { DiveItemId } from "./lp-dive-stages";
 import {
   CUE_MARGIN,
   DWELL_MIN_RATIO,
@@ -61,27 +62,10 @@ type Tween = gsap.core.Tween;
 type Ctx = gsap.Context;
 type Gsap = PlayOnceRuntime["gsap"];
 
-/* The four loaders mirror DIVE_STAGES[id].load in lp-dive-stages.ts (fixed after phase 0, so
-   the module and export names below are fixed too). Importing the registry here instead would
-   pull the four server Stage components and their data into this client chunk. */
-const LOADERS = {
-  sources: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-sources-timeline")]).then(
-      ([{ gsap: g }, { buildStorySources }]) => ({ gsap: g, build: buildStorySources }),
-    ),
-  message: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-message-timeline")]).then(
-      ([{ gsap: g }, { buildStoryMessage }]) => ({ gsap: g, build: buildStoryMessage }),
-    ),
-  learns: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-learns-timeline")]).then(
-      ([{ gsap: g }, { buildStoryLearns }]) => ({ gsap: g, build: buildStoryLearns }),
-    ),
-  claude: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-claude-timeline")]).then(
-      ([{ gsap: g }, { buildStoryClaude }]) => ({ gsap: g, build: buildStoryClaude }),
-    ),
-} satisfies Record<DiveItemId, DiveStageEntry["load"]>;
+/* The stories' loaders live in lp-dive-loaders.ts (client only). Never import the registry
+   (lp-dive-stages.ts) at runtime here: it would pull the four server Stage components and their
+   data into this client chunk. */
+const LOADERS = DIVE_LOADERS;
 
 /** the scene design boxes (= DIVE_STAGE_BOX in lp-dive-stages.ts) */
 const BOX_WIDTH = { desktop: 752, phone: 400 } as const;

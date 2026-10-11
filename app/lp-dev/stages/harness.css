@@ -7,7 +7,14 @@
   min-height: 100vh;
   padding: 32px;
 }
-.lp-devstages * {
+/* The harness chrome only. A `.lp-devstages *` rule restated the face on every element of every
+   stage and beat what the stories inherit from their own roots (the Claude serif, the condensed
+   titles): the harness then drew other glyphs than the homepage (blue-band, phase N 2026-10-11). */
+.lp-devstages__head,
+.lp-devstages__story > h2,
+.lp-devstages__meta,
+.lp-devstages__bar,
+.lp-devstages__bar :is(button, input, output) {
   font-family: var(--lp-font-sans);
 }
 .lp-devstages__head h1 {

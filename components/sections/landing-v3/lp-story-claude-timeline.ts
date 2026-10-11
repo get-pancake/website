@@ -1,8 +1,9 @@
-// No "use client" on purpose: lp-dive-stages.ts (imported by the SERVER LpDive) reaches this
-// module through its load() import(); a "use client" module reached from the server graph
-// becomes a client ENTRY of app/page and ships eagerly in the homepage bundle (seen in the dev
-// page chunk's flight-client-entry list, 2026-10-09). Without it, it stays a lazy chunk of the
-// client carousel / harness import() only. Browser-only code runs inside build() alone.
+// No "use client" on purpose: a "use client" module that a server graph reaches, even through
+// an import(), becomes a client ENTRY of app/page and ships eagerly in the homepage bundle (seen
+// in the dev page chunk's flight-client-entry list, 2026-10-09, when the loaders sat in the
+// server registry). The loaders now live in the client-only lp-dive-loaders.ts, so this is a
+// lazy chunk of the carousel / harness import() only; keep it directive-free. Browser-only code
+// runs inside build() alone.
 import { gsap } from "@/lib/gsap";
 
 import type { BuiltStory } from "./lp-dive-stages";
@@ -12,7 +13,7 @@ import type { BuiltStory } from "./lp-dive-stages";
  * stage root (Figma 4964:2575 / 3930 / 3981). Owner: story-claude package. Contract: lp-dive-stages.ts and
  * code-map §6.2 — frame 0 via gsap.set (the caller's gsap.context reverts it), sets and tweens
  * only (no callbacks, no randomness), progress(1) = the server markup, `cue` = the first composed
- * scene. Reached only through DIVE_STAGES.claude.load() (lazy chunk).
+ * scene. Reached only through DIVE_LOADERS.claude (lp-dive-loaders.ts, lazy chunk).
  *
  * The story (storyboard 01 → 02 → 03; times for the production copy, 69 prompt glyphs):
  *   0      cue: Claude's home, the composer empty (send at .5)
@@ -48,10 +49,9 @@ import type { BuiltStory } from "./lp-dive-stages";
  * measured (Geist, the site's text face, is loaded with the page).
  */
 
-/* Typing helpers — COPIED from lp-feat-timelines.ts (measureGlyphs, HIDDEN_CLIP, clipTo), not
-   imported: that module is "use client", and importing it from here (a module the server
-   registry reaches) would make it a client entry of the homepage, i.e. the frozen feature
-   builders in the first bundle. Move them to one shared module when LpFeatures is deleted. */
+/* Typing helpers — COPIED from production's lp-feat-timelines.ts (measureGlyphs, HIDDEN_CLIP,
+   clipTo; that file went with the feature cards, 2026-10-11). story-message carries its own
+   copy with an exact-scale fix, so the two are not merged. */
 type Glyph = { right: number; top: number; bottom: number };
 /** each glyph's right edge and line box, in the element's own unscaled px (Range rects) */
 function measureGlyphs(el: HTMLElement): Glyph[] {
