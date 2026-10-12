@@ -22,7 +22,7 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
  *          move); the home eases away; the SAME bar glides down and becomes the dock
  *   WORK   the research: three tool calls, one at a time (spinner + what Pancake is doing,
  *          0.55 s, then a check and what came back, its number ticking up)
- *   FOUND  the leads it found: five faces pop, the count ticks to 12
+ *   FOUND  the leads it found: five faces pop, the count ticks up (25, the Play's weekly pace)
  *   PLAY   the research folds away (the faces move up with it) and the Play rises: its name,
  *          then its five rows one after the other (who, company, signal, pace, steps), then
  *          the card grows and the button comes
