@@ -1,30 +1,57 @@
 /* Story Message — owner: story-message package (V2 Figma replication, file
-   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346).
-   Deep-dive story 2, "A personal message for every lead" (LpStoryMessage,
-   Figma 4964:1469/1471/1729, then the interim tail 4964:1821/1899). Scene
-   geometry on the 752x489 design box and the 400x520 phone box; paints
-   nothing behind the scene (the shell paints --lp-dive-stage-bg).
+   fr8NgOCTUxsEbrMEJA3YKu). Deep-dive story 2, "A personal message for every
+   lead" (LpStoryMessage), the designer's finished storyboard of 2026-10-12:
+   Figma 4964:1469 (a lead's post, wired to her card), 4964:1471 (her card,
+   wired to the message being drafted), 4964:1729 (more conversations, nearer
+   and further), 5061:1002 (the view pulls back; the sending account's name),
+   5061:1091 (the account's leads and where each stands), 5061:1209 (more
+   accounts, out of focus: the REST picture).
 
-   Two blocks:
-   1. THE CONVERSATION — frames 1–3, final. Production f2's recipe
-      (features.css .lp-f2-*, drawn there at 0.9) at Figma's native units: the
-      post is native 404×190 scaled per pose, the draft card is 376 wide at
-      Figma's 29px line pitch with the Send button. Every rule here is the
-      element's geometry at frame 3 (the 4-line card); the timeline
-      (lp-story-message-timeline.ts) sets frame 0 and plays to it.
-   2. INTERIM — frames 4–5, which the designer marked WIP on 2026-10-11: the
-      corrected word, the sent state, the accounts world, and the REST state
-      (the stage rests on the tail's last picture, so the conversation is
-      hidden at rest). A new design for those frames replaces that block with
-      lp-story-message-tail.ts — nothing in block 1.
+   Scene geometry on the 752x489 design box; paints nothing behind the scene
+   (the shell paints --lp-dive-stage-bg). The markup rests on frame 6; the
+   timeline (lp-story-message-timeline.ts, then lp-story-message-tail.ts)
+   sets frame 0 and plays to it.
 
+   Three blocks:
+   1. THE POST — production f2's neutral post (features.css .lp-f2-*, drawn
+      there at 0.9) at Figma's native units, scaled as one instance.
+   2. THE TALK — the conversations: a lead card, a wire, the message card, and
+      for an answered one a second wire and the reply card. ONE component
+      drawn at four depths (Figma scales it: 1.5, 1, 0.682, 0.356).
+   3. THE ACCOUNTS — a sender's name over three lead rows; ONE block drawn at
+      seven scales. The rest picture.
+
+   How the cards land on Figma's pixels (the idiom of steps.css "How it
+   works", same designer vocabulary):
+   - Figma draws a card's 0.5px stroke INSIDE its box and counts it in the
+     layout. Here a card's box is its FILL (Figma's box inset by 0.5) and the
+     stroke is a 0.5px OUTSIDE spread, never an inset one (WebKit drops
+     sub-pixel inset shadows). So every card box sits on whole local pixels,
+     and its container's transform carries the fraction: `--x` / `--y` are the
+     Figma box's own origin, and the transform adds the half pixel.
+   - A wire is a 1px box on whole local pixels, moved by half a pixel with a
+     transform (a browser snaps a box's `left` to the pixel grid).
+   - Figma rounds a line box to whole px (13/150% → 20, 16/130% → 21,
+     11/150% → 17): those are the line-heights here.
+   - Text tops are Figma's y plus a fraction of a pixel. Every engine puts a
+     text's baseline on a whole pixel of its own box, each rounding its own
+     way, and Figma's export snaps too: the fraction is the one where the ink
+     lands within about half a pixel of Figma's in Chromium, WebKit and
+     Firefox at the frames the text shows in (a quarter-pixel sweep:
+     artifacts pw/smsg2-sweep.mjs + work/story-message-v2/sweep*.py). Change
+     a `top` by re-running the sweep, not by eye.
    Fonts: the post is the Inter fallback stack (as .lp-f2-post; Inter isn't
-   loaded), the message Aeonik Condensed, every other run Geist (Figma's
-   Aeonik Fono → Geist Sans, founder 2026-09-09). */
+   loaded); everything else is Geist, which is what the designer draws.
+   Figma's Aeonik Fono (initials, eyebrows) is Geist 500: Fono is a code face
+   only (founder 2026-09-09; steps.css does the same).
+   No will-change, no infinite keyframes: GSAP-only, plays once. */
 
 .lp-sm {
+  --sm-line: #e2e2e2; /* the storyboards' hairline (no kit token has it: ink-50 is #ddcfcd) */
+  --sm-shadow: 0 4px 32px rgba(48, 0, 44, 0.08); /* Figma drop shadow #30002c 8%, 0/4, blur 32 */
+  color: var(--lp-ink-100);
   inset: 0;
-  overflow: hidden; /* the world bleeds past every edge; the shell's card clips too */
+  overflow: hidden; /* both worlds bleed past the edges; the shell's card clips too */
   position: absolute;
 }
 /* the kit's `* { font-family }` (style.css) outranks inheritance */
@@ -32,32 +59,25 @@
 .lp-sm * {
   font-family: var(--lp-font-sans);
 }
-
-/* ══ 1 · the conversation (frames 1–3) ══ */
-.lp-sm-convo {
-  inset: 0;
-  position: absolute;
+.lp-sm p {
+  margin: 0;
 }
 
-/* the post — native 404×190; here pose B (Figma .621658 at 234, 82.704).
-   Pose A (frame 1, 1.170614 at 139.535, 133.104) is the timeline's
-   (lp-story-message-data.ts SM_POSE). Neutral greys, page-scoped literals
-   (= production .lp-f2-post ÷ 0.9).
-   --b: 0 = pose A, 1 = pose B (the timeline tweens it with the move). Figma
-   lays the component out again at each instance scale — at .62 its text
-   boxes round to whole pixels — so some rows and icons sit up to 1.15 native
-   px apart between the two instances (4964:1557 vs 4964:1651). Every
-   `* var(--b)` term below is that difference, pose B − pose A. */
+/* ══ 1 · the post (frame 1, Figma 5061:814) ══
+   Native 404×190, drawn at Figma's instance scale 1.170614 from (139.695,
+   86.785). Neutral greys, page-scoped literals (= production .lp-f2-post ÷
+   0.9). The shadow is Figma's 0/4/32 in stage px, divided by the scale. */
 .lp-sm-post {
-  --b: 1;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 16px;
-  box-shadow: inset 0 0 0 1px #e8e6e3;
-  height: calc(190.32px - 0.32px * var(--b));
-  left: 234px;
+  box-shadow:
+    inset 0 0 0 1px #e8e6e3,
+    0 3.417px 27.336px rgba(48, 0, 44, 0.08);
+  height: 190.32px;
+  left: 139.695px;
   position: absolute;
-  top: 82.704px;
-  transform: scale(0.621658);
+  top: 86.785px;
+  transform: scale(1.170614);
   transform-origin: 0 0;
   width: 404px;
 }
@@ -73,16 +93,12 @@
   top: 0;
   width: 404.444px; /* the 0.9-unit icon art (364×171) at native size */
 }
-/* each icon's extra shift at pose B, in the art's units (lp-story-message-art.ts) */
-.lpsm-pi-b {
-  transform: translate(calc(var(--dx) * var(--b) * 1px), calc(var(--dy) * var(--b) * 1px));
-}
 .lp-sm .lp-sm-avatar {
   border-radius: 50%;
   height: 48px;
   left: 16px;
   position: absolute;
-  top: calc(16.64px - 0.12px * var(--b));
+  top: 16.64px;
   width: 48px;
 }
 .lp-sm-meta {
@@ -94,7 +110,7 @@
   top: 16px;
   white-space: nowrap;
 }
-.lp-sm-name {
+.lp-sm-author {
   color: #191919;
   font-size: 14px;
   font-weight: 700;
@@ -106,15 +122,11 @@
   font-size: 12px;
   letter-spacing: 0.367px;
   line-height: 14.52px;
-  position: relative;
-  top: calc(0.605px * var(--b));
 }
 .lp-sm-time {
   color: #666666;
   font-size: 11px;
   line-height: 13.67px;
-  position: relative;
-  top: calc(0.562px * var(--b));
 }
 .lp-sm-body {
   color: #191919;
@@ -123,12 +135,12 @@
   letter-spacing: 0.344px;
   line-height: 29.4px;
   position: absolute;
-  top: calc(77.28px - 0.24px * var(--b));
+  top: 77.28px;
   white-space: nowrap;
   width: 372px;
 }
-/* the typing caret rides the glyph edges of its run (2px, the line's height;
-   positioned by the timeline; = .lp-f2-caret) */
+/* a typing caret rides the glyph edges of its run (positioned by the timeline,
+   which also gives it the line's height) */
 .lp-sm-caret {
   background: currentColor;
   display: block;
@@ -139,12 +151,15 @@
   top: 0;
   width: 2px;
 }
+.lp-sm-caret--msg {
+  width: 1.5px; /* the message's: steps.css .lp-s3-caret */
+}
 .lp-sm-skel {
   display: flex;
   gap: 8px;
   left: 16px;
   position: absolute;
-  top: calc(122.32px - 0.324px * var(--b));
+  top: 122.32px;
 }
 .lp-sm-skelgrp {
   display: flex;
@@ -173,11 +188,10 @@
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
-  /* --l = its left at pose A, --lb = the shift at pose B (LpStoryMessage.tsx) */
-  left: calc(var(--l) * 1px + var(--lb) * var(--b) * 1px);
+  left: calc(var(--l) * 1px); /* LpStoryMessage.tsx COUNT_LEFT */
   line-height: 14.52px;
   position: absolute;
-  top: calc(159.06px - 0.3px * var(--b));
+  top: 159.06px;
 }
 .lp-sm-count .lp-sm-n {
   left: 0;
@@ -194,289 +208,335 @@
   opacity: 1;
 }
 
-/* the draft card in its rainbow ring. .lp-sm-draftpos places the group per
-   layout (phone: scaled), .lp-sm-draftgrp is the 405-wide ring box the
-   timeline moves (here the 4-line pose: card 165.621, 163.517). */
-.lp-sm-draftpos {
-  height: 284px;
-  left: 152.473px;
-  position: absolute;
-  top: 149.017px;
-  transform-origin: 0 0;
-  width: 405px;
-}
-.lp-sm-draftgrp {
-  height: 284px;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 405px;
-}
-/* the ring's box; its art is injected by the timeline while the story plays
-   (lp-story-message-art.ts), so it is empty in the page HTML */
-.lp-sm-ring {
-  height: 284px;
-  left: 0;
-  overflow: visible;
-  position: absolute;
-  top: 0;
-  width: 405px;
-}
-.lp-sm-draft {
-  background: var(--lp-ink-0);
-  border-radius: 25.2px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 19.304px;
-  height: 255.217px; /* 139.217 + 29 × 4 lines */
-  left: 13.148px;
-  padding: 19.304px;
-  position: absolute;
-  top: 14.5px;
-  width: 376px;
-}
-/* DRAFTING (green, Figma) while Pancake writes */
-.lp-sm-eyebrow {
-  color: var(--lp-green-30);
-  flex: none;
-  font-size: 10.7246px;
-  font-weight: 500;
-  height: 16px;
-  letter-spacing: 1.0725px;
-  line-height: 16px;
-  position: relative;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.lp-sm-eb-draft {
-  left: 0;
-  position: absolute;
-  top: 0;
-}
-.lp-sm .lp-sm-msg {
-  color: var(--lp-ink-100);
-  flex: none;
-  font-family: var(--lp-font-cond);
-  font-size: 22.5217px;
-  font-weight: 500;
-  letter-spacing: -0.2252px;
-  /* Figma's text boxes are exactly 29/line (130% of 22.52 rounds there) */
-  line-height: 29px;
-  position: relative;
-  width: 337.391px;
-}
-.lp-sm .lp-sm-msg span {
-  font-family: inherit;
-}
-/* Send — 338×46, Figma r14.4 corner smoothing .75 (scripts/squircle-path.mjs
-   338 46 14.4 0.75); the asymmetric padding puts the label 3.2px left of centre */
-.lp-sm-send {
-  align-items: center;
-  background: var(--lp-ink-100);
-  bottom: 19.304px;
-  box-sizing: border-box;
-  clip-path: path("M 315 0 c 8.027 0 12.041 0 15.109 1.555 a 14.4 14.4 0 0 1 6.335 6.335 c 1.555 3.069 1.555 7.082 1.555 15.109 L 338 23 c 0 8.027 0 12.041 -1.555 15.109 a 14.4 14.4 0 0 1 -6.335 6.335 c -3.069 1.555 -7.082 1.555 -15.109 1.555 L 23 46 c -8.027 0 -12.041 0 -15.109 -1.555 a 14.4 14.4 0 0 1 -6.335 -6.335 c -1.555 -3.069 -1.555 -7.082 -1.555 -15.109 L 0 23 c 0 -8.027 0 -12.041 1.555 -15.109 a 14.4 14.4 0 0 1 6.335 -6.335 c 3.069 -1.555 7.082 -1.555 15.109 -1.555 Z");
-  color: var(--lp-ink-20);
-  display: flex;
-  font-size: 14.4px;
-  font-weight: 600;
-  height: 46px;
-  justify-content: center;
-  left: 19.304px;
-  line-height: 21.6px;
-  padding: 9.652px 16.087px 9.652px 9.652px;
-  position: absolute;
-  white-space: nowrap;
-  width: 338px;
-}
-
-/* phones: the 400×520 box (decision 2026-10-09), recomposed — pose A .9
-   centred (SM_POSE.phone), pose B .7 above the card, the draft group at .92
-   with its card centred (message ≈18.7px on a 393 phone) */
-@container lp-dive-scene (max-width: 599px) {
-  .lp-sm-post {
-    left: 58.6px;
-    top: 88px;
-    transform: scale(0.7);
-  }
-  .lp-sm-draftpos {
-    left: 14.944px;
-    top: 173.293px;
-    transform: scale(0.92);
-  }
-}
-
-/* ══ 2 · INTERIM — frames 4–5 (designer WIP since 2026-10-11) ══
-   Built from the 2026-10-09 storyboard so the story has an ending; swapped
-   with lp-story-message-tail.ts when the designer finishes. Not pixel-chased. */
-
-/* the REST state: the stage rests on the tail's last picture (the accounts
-   world), so the conversation is hidden, in its sent state */
-.lp-sm-convo {
+/* ══ 2 · the talk (frames 1–4) ══
+   Hidden at rest: the stage rests on the accounts (block 3). */
+.lp-sm-talk {
+  inset: 0;
   opacity: 0;
+  position: absolute;
   visibility: hidden;
 }
-.lp-sm-eb-draft {
-  opacity: 0; /* MESSAGE SENT has replaced it */
+/* the camera of frames 3 → 4 (the timeline pulls it back to SM_POSE.pullBack;
+   its transform-origin is set there too). Scale 1 = frame 3. */
+.lp-sm-world {
+  inset: 0;
+  position: absolute;
 }
-/* MESSAGE SENT — the in-flow eyebrow text at rest; DRAFTING is stacked on it */
-.lp-sm-eb-sent {
-  display: inline-block;
-}
-/* the last word: as Pancake wrote it (gone at rest), and corrected by hand */
-.lp-sm-fix-old {
-  display: none;
-}
-.lp-sm-fix-new {
-  color: var(--lp-red-30);
+/* one conversation, in its own px (1 = the size frames 1–2 draw it at):
+   --x / --y = its lead card's Figma box in frame 3, --s its depth. Local
+   origin = that box's FILL, hence the half pixel. */
+.lp-sm-convo {
+  height: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transform: translate(calc((var(--x) + 0.5 * var(--s)) * 1px), calc((var(--y) + 0.5 * var(--s)) * 1px)) scale(var(--s));
+  transform-origin: 0 0;
+  width: 359px;
 }
 
-/* the accounts world (frame 5). .lp-sm-cam is the camera (the timeline pulls
-   it back from 1.6 to 1 about the main card's centre). Every account is one
-   block — sender name over its lead rows — placed at its header's top-left
-   and scaled by k (Figma draws the five satellites as the main card's block,
-   scaled; no card, no effect). */
-.lp-sm-world {
+/* shared atoms: a card, an avatar, a name, a company over a role, an eyebrow */
+.lp-sm-card {
+  background: var(--lp-ink-0);
+  border-radius: 11.5px; /* Figma 12 on the stroke's outer edge */
+  box-shadow:
+    0 0 0 0.5px var(--sm-line),
+    var(--sm-shadow);
+  left: 0;
+  position: absolute;
+  width: 359px;
+}
+.lp-sm-convo .lp-sm-card {
+  opacity: var(--dim);
+}
+.lp-sm-av {
+  align-items: center;
+  background: #f5f3f2;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.5px #ebe6e8;
+  color: var(--lp-ink-100);
+  display: flex;
+  font-size: 12.07px;
+  font-weight: 500;
+  height: 32px;
+  justify-content: center;
+  left: 16px;
+  letter-spacing: 1.207px;
+  line-height: 18px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 17px;
+  width: 32px;
+}
+.lp-sm-name {
+  color: var(--lp-ink-100);
+  font-size: 13px;
+  font-weight: 500;
+  left: 64px;
+  line-height: 20px;
+  position: absolute;
+  top: 23.875px; /* Figma 23 + 0.875 */
+  white-space: nowrap;
+}
+.lp-sm-co {
+  color: var(--lp-ink-70);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 17px;
+  position: absolute;
+  right: 16px;
+  text-align: right;
+  top: 15.5px; /* Figma 16 − 0.5 */
+  white-space: nowrap;
+}
+.lp-sm-co b {
+  display: block;
+  font-weight: 500;
+}
+.lp-sm-eb {
+  color: var(--lp-ink-70);
+  font-size: 10.72px;
+  font-weight: 500;
+  left: 16px;
+  letter-spacing: 1.072px;
+  line-height: 16px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 16.125px; /* Figma 16 + 0.125 */
+  white-space: nowrap;
+}
+.lp-sm .lp-sm-text {
+  color: var(--lp-ink-100);
+  font-size: 16px;
+  letter-spacing: -0.16px;
+  line-height: 21px;
+  position: absolute;
+}
+
+/* wires: 1px, centred on the cards (local x 179–180 = Figma's 179.5–180.5).
+   Local y = Figma's − 0.5: whole pixels in the CSS, the half by transform (a
+   browser snaps a box's `top` to the pixel grid). The dashed ones: Figma's
+   "2 / 2" renders with a 3.8px period that starts 1.2px above the line
+   (measured on the frame, steps.css .lp-s3-conn--1). */
+.lp-sm-wire {
+  background: var(--lp-ink-50);
+  height: 38px;
+  left: 179px;
+  opacity: var(--wire);
+  position: absolute;
+  transform: translateY(0.5px);
+  transform-origin: 50% 0;
+  width: 1px;
+}
+.lp-sm-wire--dash {
+  background: repeating-linear-gradient(to bottom, var(--lp-ink-50) -1.2px 0.7px, transparent 0.7px 2.6px);
+}
+/* frame 1: from the post's bottom edge to her card (Figma 5061:879); gone at rest */
+.lp-sm-wire--post {
+  opacity: 0;
+  top: -39px;
+}
+.lp-sm-wire--msg {
+  top: 66px;
+}
+.lp-sm-wire--reply {
+  top: 232px;
+}
+
+/* the lead card: Figma 360×67 */
+.lp-sm-lead {
+  height: 66px;
+  top: 0;
+}
+/* the message card: Figma 360×128 at +105 (three lines of 21) */
+.lp-sm-msg {
+  height: 127px;
+  top: 105px;
+}
+/* "Sent" (green) at rest; "Drafting..." is stacked on it and waits (the
+   timeline shows it while Pancake types) */
+.lp-sm-eb-sent {
+  color: var(--lp-green-30);
+}
+.lp-sm-eb-draft {
+  opacity: 0;
+}
+.lp-sm .lp-sm-msg .lp-sm-text {
+  font-weight: 400; /* a sent message is history: regular (Figma 5061:923) */
+  left: 16px;
+  top: 47.5px; /* Figma 48 − 0.5 */
+  width: 327px;
+}
+/* the one Pancake types: medium while it is the draft, and it stays so */
+.lp-sm .lp-sm-msg[data-state="typed"] .lp-sm-text {
+  font-weight: 500;
+  top: 48.25px; /* Figma 48 + 0.25 */
+}
+/* the reply card: Figma 360×100 at +271 */
+.lp-sm-reply {
+  height: 99px;
+  top: 271px;
+}
+.lp-sm-reply .lp-sm-av {
+  top: 33.5px;
+}
+.lp-sm-reply .lp-sm-eb {
+  left: 64px;
+  top: 16.5px; /* Figma 16.5 */
+}
+.lp-sm .lp-sm-reply .lp-sm-text {
+  font-weight: 400;
+  left: 64px;
+  top: 40px; /* Figma 40.5 − 0.5 */
+  width: 279px;
+}
+
+/* Per-depth corrections. Figma does not scale ONE drawing: it lays each
+   conversation out again at its own scale, where text boxes round to whole
+   px (at 0.682 a 17px line is 11px = 16.13; at 0.356 a 21px line is 7px =
+   19.69), so cards hug a little shorter and what they hold sits up to 2
+   local px away. A browser places boxes and baselines on whole LOCAL pixels
+   inside a scaled box, so each correction is the nearest whole pixel
+   (frame 3's own numbers, in the conversation's px). The story's own
+   conversation is drawn at 1 and needs none. */
+.lp-sm-convo[data-convo="next"] .lp-sm-lead {
+  height: 65px; /* Figma 99.5 / 1.5 − 1 = 65.33 */
+}
+.lp-sm-convo[data-convo="next"] .lp-sm-name {
+  top: 22.625px;
+}
+.lp-sm-convo[data-convo="answered"] .lp-sm-lead {
+  height: 65px; /* 44.504 / 0.682 − 1 = 64.26 */
+}
+.lp-sm-convo[data-convo="answered"] .lp-sm-lead .lp-sm-av {
+  top: 16px;
+}
+.lp-sm-convo[data-convo="answered"] .lp-sm-co {
+  line-height: 16.13px;
+}
+.lp-sm-convo[data-convo="answered"] .lp-sm-msg {
+  height: 125px; /* 86.415 / 0.682 − 1 = 125.72, from 105.64 */
+  top: 106px;
+}
+.lp-sm .lp-sm-convo[data-convo="answered"] .lp-sm-msg .lp-sm-text {
+  line-height: 20.53px;
+}
+.lp-sm .lp-sm-convo[data-convo="answered"] .lp-sm-reply .lp-sm-text {
+  top: 41px;
+}
+.lp-sm-convo[data-convo="far"] .lp-sm-msg {
+  height: 124px; /* 44.422 / 0.356 − 1 = 123.94, from 106.53 */
+  top: 106px;
+}
+.lp-sm .lp-sm-convo[data-convo="far"] .lp-sm-msg .lp-sm-text {
+  line-height: 19.69px;
+  top: 49.5px;
+}
+.lp-sm-convo[data-convo="far"] .lp-sm-reply .lp-sm-eb {
+  top: 17.5px;
+}
+.lp-sm .lp-sm-convo[data-convo="far"] .lp-sm-reply .lp-sm-text {
+  line-height: 19.69px;
+  top: 42px;
+}
+
+/* ══ 3 · the accounts (frames 4–6) = the rest picture (frame 6) ══
+   .lp-sm-cam is the camera: scale 1 = frame 6; frame 5 is 500 / 312 closer
+   about this point (the story's block keeps its centre; SM_POSE.camF5). */
+.lp-sm-accts {
   inset: 0;
   position: absolute;
 }
 .lp-sm-cam {
   inset: 0;
   position: absolute;
-  transform-origin: 385.378px 256.157px; /* the main card's centre */
+  transform-origin: 376.426px 227.723px;
 }
+/* one account, in its own px (1 = frame 5's size): --x = its rows' left edge,
+   --y = its name's top, --k its scale, in frame 6. Local origin = the first
+   row's FILL corner on x and the name's top on y, plus the half pixel.
+   --blur is Figma's layer-blur radius in stage px: CSS blurs by a standard
+   deviation (half of it), in the block's own px (÷ k). */
 .lp-sm-acct {
+  --z: 0;
+  filter: blur(calc(var(--blur) / 2 / var(--k) * 1px));
   height: 0;
-  left: calc(var(--x) * 1px);
-  position: absolute;
-  top: calc(var(--y) * 1px);
-  transform: scale(var(--k));
-  transform-origin: 0 0;
-  width: 0;
-}
-.lp-sm .lp-sm-acct-h {
-  color: #000; /* Figma's literal; no token (--lp-terminal-bg means the terminal) */
-  font-size: 25.393px;
-  font-weight: 500;
   left: 0;
-  letter-spacing: 2.5393px;
-  line-height: 38.09px;
+  opacity: var(--dim);
   position: absolute;
-  text-transform: uppercase;
   top: 0;
-  white-space: nowrap;
-}
-.lp-sm-acctcard {
-  background: var(--lp-ink-0);
-  border-radius: var(--lp-r-m);
-  box-shadow: 0 4px 69.1px rgba(0, 0, 0, 0.25);
-  height: 280.771px;
-  left: 135.82px;
-  position: absolute;
-  top: 115.772px;
-  width: 499.117px;
-}
-
-/* a lead row: a DOM rebuild of V2's raster (the homepage demo's row, at the
-   raster's own positions), design units 370.5×48 drawn at .78833; the demo's
-   app palette re-declared here (it is scoped to .lp-vx .vx-stage) */
-.lp-sm-lead {
-  --k-bg: #f5f3f2;
-  --k-fg: #70676f;
-  --k-ring: #ece9e7;
-  background: var(--lp-ink-0);
-  height: 48px;
-  left: 68.828px;
-  position: absolute;
-  top: calc(60.747px + var(--n) * 54.774px);
-  transform: scale(0.78833);
+  transform: translate(calc((var(--x) + 0.5 * var(--k)) * 1px), calc((var(--y) + 0.5 * var(--k)) * 1px)) scale(var(--k));
   transform-origin: 0 0;
-  width: 370.5px;
+  width: 499px;
 }
-.lp-sm-lead > * {
+/* --z: Figma lays the story's block out again at frame 6's scale, where its
+   text boxes round shorter (11/150% → 10 for 10.3), so its rows hug 65.05
+   instead of 67 and what they centre sits higher. 1 = frame 6 (rest), 0 =
+   frame 5; the timeline tweens it with the camera. The six blocks around it
+   keep 67 (Figma: 67.09 at each of their scales). */
+.lp-sm-acct[data-acct="main"] {
+  --z: 1;
+  filter: none;
+}
+.lp-sm .lp-sm-sender {
+  color: var(--lp-ink-100);
+  font-size: 24px;
+  font-weight: 500;
+  left: -1px; /* centred on Figma's 249.5 of 500 */
+  letter-spacing: -0.24px;
+  line-height: 31px;
   position: absolute;
+  text-align: center;
+  top: -0.75px; /* Figma 0 − 0.5 − 0.25 */
+  white-space: nowrap;
+  width: 500px;
+}
+.lp-sm-sender span {
+  display: inline-block;
+}
+/* a lead row: Figma 500×67, 75 apart, the first 59 under the name's top */
+.lp-sm-row {
+  height: calc(66px - 2px * var(--z));
+  top: calc(59px + var(--n) * 75px);
+  width: 499px;
+}
+.lp-sm-row .lp-sm-av {
+  top: calc(17px - 1px * var(--z));
+}
+.lp-sm-row .lp-sm-name {
+  top: calc(23.875px - 1.35px * var(--z));
+}
+.lp-sm-row .lp-sm-co {
+  line-height: calc(17px - 0.974px * var(--z));
+  top: calc(15.5px - 0.5px * var(--z));
+}
+.lp-sm-status {
+  color: var(--lp-green-30);
+  font-size: 11px;
+  font-weight: 500;
+  left: 209px;
+  line-height: 17px;
+  position: absolute;
+  top: calc(24px - 1.25px * var(--z)); /* Figma 25 − 0.5 − 0.5 */
   white-space: nowrap;
 }
-.lp-sm-av {
-  align-items: center;
-  background: #f5f3f2;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px rgba(44, 0, 42, 0.08);
-  color: var(--lp-ink-100);
-  display: flex;
-  font-size: 10px;
-  font-weight: 500;
-  height: 30px;
-  justify-content: center;
-  left: 8.5px;
-  line-height: 13px;
-  top: 9px;
-  width: 30px;
+.lp-sm-status[data-status="waiting"] {
+  color: var(--lp-orange-30);
 }
-.lp-sm-lname {
-  color: rgba(44, 0, 42, 0.9);
-  font-size: 12px;
-  font-weight: 500;
-  left: 51px;
-  line-height: 17px;
-  top: 7px;
-}
-.lp-sm-lrole {
-  color: #756d74;
-  font-size: 11px;
-  left: 51px;
-  line-height: 15px;
-  top: 26px;
-}
-.lp-sm-chip {
-  align-items: center;
-  background: var(--k-bg);
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px var(--k-ring);
-  color: var(--k-fg);
-  display: inline-flex;
-  font-size: 10.5px;
-  font-weight: 500;
-  height: 19px;
-  left: 265.5px;
-  line-height: 13px;
-  padding: 0 7px;
-  top: 6px;
-}
-.lp-sm-ldetail {
-  color: #70676f;
-  font-size: 10.5px;
-  left: 265px;
-  line-height: 15px;
-  top: 26px;
-}
-/* the demo's chip tones (verticals/demo.css --app-<kind>-*) */
-.lp-sm-chip[data-kind="keyword"] { --k-bg: #f4f8ff; --k-fg: #3f6faf; --k-ring: #cbdcf5; }
-.lp-sm-chip[data-kind="competitor"] { --k-bg: #ffeaf0; --k-fg: #b52e59; --k-ring: #f3c5d2; }
-.lp-sm-chip[data-kind="influencer"] { --k-bg: #f3faef; --k-fg: #387a61; --k-ring: #c9dfd3; }
-.lp-sm-chip[data-kind="own_brand"] { --k-bg: #f5f0ff; --k-fg: #6b3fb0; --k-ring: #d8c9f2; }
-.lp-sm-chip[data-kind="hiring"] { --k-bg: #fff2e8; --k-fg: #a84b00; --k-ring: #f6d3b5; }
-.lp-sm-chip[data-kind="stack"] { --k-bg: #ecfbf8; --k-fg: #0f766e; --k-ring: #bfe8e0; }
 
-/* phones: the main card narrows to 374.4 (rows under the sender name, no
-   68.8 indent) and sits centred at scale 1; the satellites move around it
-   (SM_SATELLITES .phone in lp-story-message-data.ts) */
+/* phones' own box, 400×520 (lp-dive-stages.ts; shown nowhere since decision
+   2026-10-11 F3: phones show the 752×489 scene scaled). No recomposition was
+   drawn for it: the same scene at 0.78, centred, the box cropping its sides
+   (the post, the story's conversation and the account's rows all fit). */
 @container lp-dive-scene (max-width: 599px) {
-  .lp-sm-cam {
-    transform-origin: 200px 260px;
-  }
-  .lp-sm-acct {
-    left: calc(var(--xp) * 1px);
-    top: calc(var(--yp) * 1px);
-    transform: scale(var(--kp));
-  }
-  .lp-sm-acctcard {
-    left: 12.782px;
-    top: 119.615px;
-    width: 374.436px;
-  }
-  .lp-sm-lead {
-    left: 0;
+  .lp-sm {
+    height: 489px;
+    inset: auto;
+    left: 50%;
+    margin: -244.5px 0 0 -376px;
+    overflow: visible;
+    top: 50%;
+    transform: scale(0.78);
+    width: 752px;
   }
 }

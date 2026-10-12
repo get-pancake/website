@@ -1,207 +1,239 @@
-import type { SignalKind } from "@/lib/verticals/types";
-
 /**
- * Deep-dive story "A personal message for every lead" — its copy and data (Figma V2 storyboard
- * 4964:1469 / 1471 / 1729 / 1821 / 1899). Owner: story-message package.
- * In scripts/homepage-lint.mjs FILES: every string here is linted. Nothing here is a placeholder
- * (no `status: "placeholder"` entries), so the stage renders the same in production and preview.
+ * Deep-dive story "A personal message for every lead" — its copy, data and stage geometry.
+ * Figma V2 storyboard, as the designer finished it on 2026-10-12 (six frames, 752×489):
  *
- * Two halves, on purpose (designer note 2026-10-11: the storyboard's last two frames are WIP):
- * - SM_STORY / SM_POSE — frames 1–3, FINAL: the post, then Pancake's draft in its rainbow ring.
- * - SM_TAIL and everything under "INTERIM" — frames 4–5: the manual correction, Send, the
- *   sent state and the zoom-out onto more accounts, built from the 2026-10-09 storyboard.
- *   When the designer finishes those frames, this half, lp-story-message-tail.ts, the SmTail*
- *   components in LpStoryMessage.tsx and the INTERIM block of story-message.css are what
- *   changes; nothing above the marker should need to.
+ *   f1  4964:1469   a lead's post, wired to her lead card
+ *   f2  4964:1471   the post is gone: her card, wired to the message Pancake drafts for her
+ *   f3  4964:1729   more conversations around, nearer and further (one drafting, two answered)
+ *   f4  5061:1002   the view pulls back: they all belong to one sending account
+ *   f5  5061:1091   that account's leads, each with where it stands
+ *   f6  5061:1209   the view pulls back again: more accounts, out of focus  (= the REST picture)
  *
- * STORY_MESSAGE_ALT is fixed (lp-dive-stages.ts imports it): what the animation shows, the only
- * copy a screen reader gets (the shell's host aria-label).
+ * Owner: story-message package. In scripts/homepage-lint.mjs FILES: every string here is linted.
+ * Nothing here is a placeholder (no `status: "placeholder"` entries), so the stage renders the
+ * same in production and preview. STORY_MESSAGE_ALT is fixed (lp-dive-stages.ts imports it):
+ * what the animation shows, the only copy a screen reader gets (the shell's host aria-label).
  *
- * Copy decisions (V2 replication, decisions 2026-10-09 §6, flagged in the PR):
- * - The coherent Studio Pelican story (spec C3) instead of V2's "Third no-show this week…" /
- *   "Pelican sends reminders patients actually open": Studio Pelican, the homepage's one
- *   fictional customer, makes SaaS launch videos (lib/verticals/home-demo.ts), so the post is a
- *   launch and the message asks how she'll show it. Same layout as V2: one-line post, a 4-line
- *   draft whose last word is corrected by hand ("Friday?" → "Thursday?").
- * - "Hey Sarah" (the post's author; V2 inherited "Hey Anna", fixed in production 2026-09-03).
- * - The post keeps production's neutral chrome: no connection degree, no reaction bubbles, no
- *   brand blue, the plain role "Design lead at Shift" (2026-09-29 / 2026-10-07).
- * - INTERIM: the accounts are labelled with sender NAMES, not V2's mike@studiopelican.com:
- *   Pancake sends from the customer's own social accounts, never email. Astrid Norling is
- *   Studio Pelican's sender in home-demo.ts; the other five are invented (unused in the repo,
- *   2026-10-09) and web-checked before launch: one standard search per name found no person
- *   of that exact name (not exhaustive). The name the second satellite had at first turned out
- *   to be a real executive's, hence "Runa Halvick" (2026-10-12): check any new name the same
- *   way. Lead rows: a DOM rebuild of V2's raster placeholder (one screenshot pasted 18 times),
- *   filled with the homepage demo's fictional leads (copied from home-demo.ts, which
- *   validate.ts checks; that file is server-only). Sarah's row is the lead the story wrote to.
+ * Copy decisions — the storyboard's strings are the designer's fillers ("Anna Lellman" on every
+ * card, mike@studiopelican.com), replaced under decisions 2026-10-09 §6 and the page's truth rules:
+ * - ONE company, the homepage's: Studio Pelican makes SaaS launch videos
+ *   (lib/verticals/home-demo.ts). The post is a launch, the message asks how she will show it.
+ *   Every other lead, message and company is home-demo.ts's, verbatim (validate.ts checks that
+ *   file; it is server-only, hence the copies). The lead who answers is Tamsin Okafor, with the
+ *   reply step 03 of "How it works" already shows (lp-step-data.ts S3_THREAD): one story.
+ * - "Hey Sarah" — the message greets the post's author (the storyboard's post and message are
+ *   both "Anna"; before that it greeted the wrong person, fixed in production 2026-09-03).
+ * - No network mark next to a name (the storyboard draws one), no connection degree, no
+ *   reaction bubbles, no brand blue on the post, the plain role "Design lead at Shift"
+ *   (2026-09-29 / 2026-10-07: the network is never named or drawn).
+ * - Accounts are labelled with sender NAMES, not the storyboard's mailbox addresses: Pancake
+ *   sends from the customer's own social accounts, never email. Astrid Norling is Studio
+ *   Pelican's sender in home-demo.ts; the six others are invented, unused in the repo and
+ *   web-checked (one standard search per name found no person of that exact name; not
+ *   exhaustive — check any new name the same way).
+ * - "Waiting for a reply" for the storyboard's "Waiting response" (grammar). "Reached out" and
+ *   "Booked" are the storyboard's ("Booked" is also the calendar's badge in step 03).
  */
 
-/* ══ frames 1–3 (final) ══════════════════════════════════════════════════════════════════ */
+/* ══ the cast ════════════════════════════════════════════════════════════════════════════ */
+
+/** a lead as her card shows her: initials in the disc, name, then company over role */
+export type SmLead = { name: string; initials: string; company: string; role: string };
+
+// the homepage demo's leads (name, role, company copied verbatim from lib/verticals/home-demo.ts)
+const L = {
+  // the story's own lead: the post's author (production f2's fictional author since 2026-09-03)
+  sarah: { name: "Sarah Velasquez", initials: "SV", company: "Shift", role: "Design lead" },
+  tamsin: { name: "Tamsin Okafor", initials: "TO", company: "Quillfern", role: "Director of PMM" },
+  wes: { name: "Wes Pomeroy", initials: "WP", company: "Stackhollow", role: "VP Marketing" },
+  imani: { name: "Imani Coldwell", initials: "IC", company: "Ferngate", role: "CMO" },
+  anders: { name: "Anders Forsythe", initials: "AF", company: "Loomwise", role: "PMM Lead" },
+  rosa: { name: "Rosa Hartigan", initials: "RH", company: "Cindermoor", role: "Founder & CEO" },
+  nate: { name: "Nate Trevino", initials: "NT", company: "Quorra Labs", role: "Head of Content" },
+  chloe: { name: "Chloe Abelard", initials: "CA", company: "Hexfield", role: "Brand Director" },
+  omar: { name: "Omar Tessaro", initials: "OT", company: "Gridwell", role: "VP Marketing" },
+  bea: { name: "Bea Soriano", initials: "BS", company: "Cloudnook", role: "CMO" },
+  jonah: { name: "Jonah Stoddard", initials: "JS", company: "Signalry", role: "Content Lead" },
+  elena: { name: "Elena Marchetti", initials: "EM", company: "Harborlane", role: "VP Marketing" },
+  leopold: { name: "Leopold Fairbairn", initials: "LF", company: "Parcelry", role: "CMO" },
+  ruth: { name: "Ruth Adeyinka", initials: "RA", company: "Brimstack", role: "Head of Growth" },
+  lucian: { name: "Lucian Ashcombe", initials: "LA", company: "Oakhatch", role: "PMM Director" },
+  nell: { name: "Nell Lowenthal", initials: "NL", company: "Tallowby", role: "VP Marketing" },
+} as const satisfies Record<string, SmLead>;
+
+/* ══ frames 1–4 · the post and the conversations ═════════════════════════════════════════ */
+
+export type SmPost = {
+  author: string;
+  headline: string;
+  time: string;
+  body: string;
+  /** like, comment, repost, send */
+  counts: readonly [number, number, number, number];
+};
+
+/** One conversation: a lead's card, wired to the message Pancake writes her, wired to her
+    answer when she has answered. `place` = where it sits in frame 3 (stage px: the top-left of
+    its lead card's Figma box) and how near (`s`: 1 = the size it is drawn at alone in frames
+    1–2). `dim` / `wire` = the opacity Figma gives its cards and its wires there. */
+export type SmConvo = {
+  id: "lead" | "next" | "answered" | "far";
+  lead: SmLead;
+  /** three lines at 327px, as every message card of the storyboard */
+  message: string;
+  /** "typed" = Pancake types it on screen (it shows "Drafting…", then "Sent"); "sent" = it is
+      already sent when the conversation comes into view */
+  state: "typed" | "sent";
+  /** two lines at 279px */
+  reply?: string;
+  place: { x: number; y: number; s: number };
+  dim: number;
+  wire: number;
+};
+
+export type SmStatus = "reached" | "booked" | "waiting";
+export type SmAccountRow = { lead: SmLead; status: SmStatus };
+/** One sending account: its sender over three of its leads. `place` = where the block sits in
+    frame 6, the rest picture (stage px: its rows' left edge, its header's top) and its scale
+    (k: 1 = frame 5's size); `dim` = its opacity, `blur` = Figma's layer blur radius, in stage
+    px (CSS blurs by half of it: Figma's radius is two standard deviations). */
+export type SmAccount = {
+  id: string;
+  sender: string;
+  rows: readonly [SmAccountRow, SmAccountRow, SmAccountRow];
+  place: { x: number; y: number; k: number };
+  dim: number;
+  blur: number;
+};
 
 export type SmStory = {
-  post: {
-    author: string;
-    headline: string;
-    time: string;
-    body: string;
-    /** like, comment, repost, send */
-    counts: readonly [number, number, number, number];
-  };
-  draft: {
-    eyebrow: string;
-    /** the message up to its last word, ending in a space */
-    text: string;
-    /** the last word as Pancake writes it (the tail corrects it by hand) */
-    lastWord: string;
-    send: string;
-  };
+  post: SmPost;
+  labels: { drafting: string; sent: string; status: Record<SmStatus, string> };
+  /** in paint order, bottom → top (Figma 4964:1729): the two answered ones, the story's lead,
+      then the one being drafted in front */
+  convos: readonly SmConvo[];
+  /** in paint order, bottom → top (Figma 5061:1209); the first is the story's own account */
+  accounts: readonly SmAccount[];
 };
+
+/** the three leads of an account block, with the storyboard's three states in its order */
+const rows = (a: SmLead, b: SmLead, c: SmLead): SmAccount["rows"] => [
+  { lead: a, status: "reached" },
+  { lead: b, status: "booked" },
+  { lead: c, status: "waiting" },
+];
 
 export const SM_STORY: SmStory = {
   post: {
-    author: "Sarah Velasquez",
+    author: L.sarah.name,
     headline: "Design lead at Shift",
     time: "3h •",
     body: "Launch day is next week...",
     counts: [34, 5, 5, 5],
   },
-  draft: {
-    eyebrow: "Drafting",
-    text: "Hey Sarah, saw your launch is next week. How will you show it, a video or screenshots? Free for a quick call ",
-    lastWord: "Friday?",
-    send: "Send",
+  labels: {
+    drafting: "Drafting...",
+    sent: "Sent",
+    status: { reached: "Reached out", booked: "Booked", waiting: "Waiting for a reply" },
   },
-};
-
-/* Geometry the CSS can't express (stage px; the 752×489 desktop box and the 400×520 phone box).
-   story-message.css holds the REST pose of every element; the builder reads the post's rest
-   pose (B) from the computed style and its pose A from here. Kept in data, not computed at
-   render (doctrine: no layout math in components). */
-export type SmPose = {
-  /** the post at pose A (frame 1): its top-left and scale */
-  postA: { left: number; top: number; scale: number };
-};
-
-export const SM_POSE: Record<"desktop" | "phone", SmPose> = {
-  // Figma 4964:1557: 1.170614 at (139.535, 133.104), centred; pose B (CSS) .621658 at (234, 82.704)
-  desktop: { postA: { left: 139.535, top: 133.104, scale: 1.170614 } },
-  // recomposed for 400×520: pose A .9 centred (363.6×171); pose B (CSS) .7 at (58.6, 88)
-  phone: { postA: { left: 18.2, top: 174.5, scale: 0.9 } },
-};
-
-/* ══ INTERIM — frames 4–5 (designer WIP since 2026-10-11) ════════════════════════════════ */
-
-export type SmLead = { name: string; role: string; company: string; kind: SignalKind; signal: string };
-export type SmAccount = { sender: string; leads: readonly SmLead[] };
-
-export type SmTail = {
-  /** the eyebrow once the message is sent (replaces draft.eyebrow) */
-  sentEyebrow: string;
-  /** the last word as the member corrects it by hand, in red (replaces draft.lastWord) */
-  correctedWord: string;
-  accounts: {
-    main: SmAccount;
-    /** S1 top-right, S2 left, S3 top (far), S4 bottom-right, S5 bottom-left (Figma 4964:1899) */
-    satellites: readonly [SmAccount, SmAccount, SmAccount, SmAccount, SmAccount];
-  };
-};
-
-/** the app's chip label per signal kind (copied from components/sections/verticals/vx-copy.ts
-    SIGNAL_LABEL — the demo's rows say the same) */
-export const SM_KIND_LABEL: Record<SignalKind, string> = {
-  keyword: "Keyword",
-  competitor: "Competitor",
-  influencer: "Influencer",
-  own_brand: "Own brand",
-  hiring: "Hiring",
-  stack: "Stack",
-};
-
-// the homepage demo's leads (copied verbatim from lib/verticals/home-demo.ts)
-const L = {
-  tamsin: { name: "Tamsin Okafor", role: "Director of PMM", company: "Quillfern", kind: "keyword", signal: "Posted about a release" },
-  wes: { name: "Wes Pomeroy", role: "VP Marketing", company: "Stackhollow", kind: "keyword", signal: "Posted on launch day" },
-  imani: { name: "Imani Coldwell", role: "CMO", company: "Ferngate", kind: "influencer", signal: "Engaged with a post" },
-  anders: { name: "Anders Forsythe", role: "PMM Lead", company: "Loomwise", kind: "competitor", signal: "Engaged with Bramble" },
-  rosa: { name: "Rosa Hartigan", role: "Founder & CEO", company: "Cindermoor", kind: "keyword", signal: "Posted a product demo" },
-  nate: { name: "Nate Trevino", role: "Head of Content", company: "Quorra Labs", kind: "competitor", signal: "Engaged with Bramble" },
-  chloe: { name: "Chloe Abelard", role: "Brand Director", company: "Hexfield", kind: "competitor", signal: "Engaged with Ferrow" },
-  omar: { name: "Omar Tessaro", role: "VP Marketing", company: "Gridwell", kind: "keyword", signal: "Posted a customer story" },
-  bea: { name: "Bea Soriano", role: "CMO", company: "Cloudnook", kind: "influencer", signal: "Engaged with a post" },
-  jonah: { name: "Jonah Stoddard", role: "Content Lead", company: "Signalry", kind: "competitor", signal: "Engaged with Bramble" },
-  elena: { name: "Elena Marchetti", role: "VP Marketing", company: "Harborlane", kind: "hiring", signal: "PMM role open" },
-  leopold: { name: "Leopold Fairbairn", role: "CMO", company: "Parcelry", kind: "hiring", signal: "Head of PMM role" },
-  ruth: { name: "Ruth Adeyinka", role: "Head of Growth", company: "Brimstack", kind: "stack", signal: "Wistia in job posts" },
-  lucian: { name: "Lucian Ashcombe", role: "PMM Director", company: "Oakhatch", kind: "hiring", signal: "PMM role open" },
-  nell: { name: "Nell Lowenthal", role: "VP Marketing", company: "Tallowby", kind: "keyword", signal: "Posted release notes" },
-} as const satisfies Record<string, SmLead>;
-
-export const SM_TAIL: SmTail = {
-  sentEyebrow: "Message sent",
-  correctedWord: "Thursday?",
-  accounts: {
-    main: {
-      sender: "Astrid Norling",
-      leads: [
-        { name: "Sarah Velasquez", role: "Design lead", company: "Shift", kind: "keyword", signal: "Posted about a launch" },
-        L.ruth, // V2's row, verbatim
-        L.tamsin,
-      ],
+  convos: [
+    {
+      // Figma 5061:933 / 919 / 924 — right, further away, answered
+      id: "answered",
+      lead: L.tamsin,
+      state: "sent",
+      message:
+        "Hi Tamsin, saw you teased a release at Quillfern this week. How will you show it on launch day, a video or screenshots?",
+      reply: "Hey, sounds interesting. I’m free Thursday 3pm!",
+      place: { x: 563.676, y: 97.945, s: 0.681942 },
+      dim: 0.5,
+      wire: 0.8,
     },
-    satellites: [
-      { sender: "Theo Marchand", leads: [L.wes, L.imani, L.anders] },
-      { sender: "Runa Halvick", leads: [L.nate, L.chloe, L.omar] },
-      { sender: "Dario Pellegrin", leads: [L.bea, L.jonah, L.rosa] },
-      { sender: "Hana Morrow", leads: [L.elena, L.leopold, L.lucian] },
-      // its rows 2 and 3 sit at or past the stage's bottom edge (desktop); two repeats of the far
-      // account's leads fill them (15 demo leads for 18 rows)
-      { sender: "Felix Okoro", leads: [L.nell, L.bea, L.jonah] },
-    ],
-  },
+    {
+      // Figma 5061:990 / 976 / 981 — below, far away, answered (it runs off the stage's bottom edge)
+      id: "far",
+      lead: L.elena,
+      state: "sent",
+      message: "Hi Elena, we make launch videos for SaaS teams. When your team ships a feature, who makes the video?",
+      reply: "Nobody owns video yet. Can you send an example?",
+      place: { x: 415.426, y: 419.945, s: 0.355553 },
+      dim: 0.5,
+      wire: 0.8,
+    },
+    {
+      // Figma 5061:950 / 945 — frames 1–2's conversation, moved aside in frame 3
+      id: "lead",
+      lead: L.sarah,
+      state: "typed",
+      message:
+        "Hey Sarah, saw your launch is next week. How will you show it, a video or screenshots? Free for a call Thursday?",
+      place: { x: -55.574, y: 97.945, s: 1 },
+      dim: 0.6,
+      wire: 1,
+    },
+    {
+      // Figma 5061:966 / 961 — the next one, in front (1.5×), being drafted
+      id: "next",
+      lead: L.nate,
+      state: "typed",
+      message:
+        "Hi Nate, saw you liked Bramble Reels’ post on explainer videos. Is video on Quorra Labs’ content plan this year?",
+      place: { x: 106.426, y: 70.945, s: 1.5 },
+      dim: 1,
+      wire: 1,
+    },
+  ],
+  accounts: [
+    // Figma Group 88 5061:1396 — the story's account: the three conversations just seen
+    {
+      id: "main",
+      sender: "Astrid Norling",
+      rows: rows(L.sarah, L.tamsin, L.nate),
+      place: { x: 220.426, y: 159, k: 0.624 },
+      dim: 1,
+      blur: 0,
+    },
+    // Group 89 5061:1397 — top-left
+    { id: "s1", sender: "Theo Marchand", rows: rows(L.wes, L.imani, L.anders), place: { x: -21.574, y: 60.744, k: 0.356 }, dim: 1, blur: 2 },
+    // Group 93 5061:1401 — top, far
+    { id: "s2", sender: "Runa Halvick", rows: rows(L.rosa, L.chloe, L.omar), place: { x: 383.426, y: 4, k: 0.324 }, dim: 0.2, blur: 2 },
+    // Group 94 5061:1411 — the furthest (84px wide; nothing of it can be read). The demo has 13
+    // leads left for these 18 rows: this block's three and the last block's last two are repeats
+    { id: "s3", sender: "Dario Pellegrin", rows: rows(L.bea, L.jonah, L.elena), place: { x: 188.426, y: 81, k: 0.168 }, dim: 0.2, blur: 1.037 },
+    // Group 91 5061:1399 — bottom-right
+    { id: "s4", sender: "Hana Morrow", rows: rows(L.elena, L.leopold, L.ruth), place: { x: 449.426, y: 361, k: 0.528 }, dim: 0.32, blur: 2 },
+    // Group 90 5061:1398 — bottom-left
+    { id: "s5", sender: "Felix Okoro", rows: rows(L.lucian, L.nell, L.bea), place: { x: -75.574, y: 295, k: 0.528 }, dim: 0.2, blur: 2 },
+    // Group 92 5061:1400 — right
+    { id: "s6", sender: "Juno Farraby", rows: rows(L.jonah, L.wes, L.imani), place: { x: 572.426, y: 144, k: 0.528 }, dim: 0.4, blur: 2 },
+  ],
 };
 
-/** "Ruth Adeyinka" → "RA" */
-export const smInitials = (name: string) =>
-  name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0]!.toUpperCase())
-    .join("");
+/* ══ geometry the timeline needs (stage px on the 752×489 box; the CSS holds every rest pose) ══
+   Kept in data, not computed at render (doctrine: no layout math in components). */
+export const SM_POSE = {
+  /** the story's conversation (its lead card's Figma box) under the post in frame 1 (5061:801)
+      and alone in frame 2 (5061:908); its frame-3 place is its `place` above */
+  leadF1: { x: 196.426, y: 347.785 },
+  leadF2: { x: 196.426, y: 127.945 },
+  /** frame 3 → frame 4: the view pulls back by Figma's 308.95 / 540, about this stage point
+      (a fit over the thirteen card and wire origins of 4964:1729 and 5061:1002; the residual is
+      0.02px). Four decimals: GSAP writes four. */
+  pullBack: { scale: 0.5721, origin: "376.8px 259.98px" },
+  /** the account's name in frame 4 (5061:1085): its left edge and top. In frame 5 it is centred
+      over the rows, 22.32px lower (5061:1169) — the CSS pose. */
+  headF4: { left: 220.426, dy: -22.32 },
+  /** where the name's centre sits in frame 5 (stage px): 237.426 + 277 / 2 */
+  headF5Centre: 375.926,
+  /** frame 5 → frame 6: the accounts are drawn at frame 6's size (the rest picture); frame 5 is
+      the camera 500 / 312 closer, about the point story-message.css gives it */
+  camF5: 1.6026,
+} as const;
 
-/** what the tail's timeline needs per layout: the conversation's exit origin (the 4-line draft
-    card's centre, "x y" stage px) and the camera's start scale (the main account card nearly
-    fills the stage, so the white draft card hands over to it in one pull-back) */
-export const SM_TAIL_POSE: Record<"desktop" | "phone", { convoOrigin: string; camFrom: number }> = {
-  desktop: { convoOrigin: "353.621px 291.126px", camFrom: 1.6 },
-  phone: { convoOrigin: "200px 304px", camFrom: 1.6 },
-};
-
-/** where an account block sits: its header's top-left and its scale (k = header size / 25.393,
-    Figma 4964:1899) */
-export type SmBlockPlace = { x: number; y: number; k: number };
-/** the main card's block sits at card + (41.18, 42.076), unscaled, in both layouts */
-export const SM_MAIN_PLACE: SmBlockPlace = { x: 41.18, y: 42.076, k: 1 };
-/** the five satellites; `phone` = the 400×520 recomposition */
-export const SM_SATELLITES: readonly { desktop: SmBlockPlace; phone: SmBlockPlace }[] = [
-  // S1 top-right (Group 83 4964:1989)
-  { desktop: { x: 462.652, y: 73.882, k: 0.68956 }, phone: { x: 196, y: 40, k: 0.68956 } },
-  // S2 left (Group 84 4964:1990)
-  { desktop: { x: -139.504, y: 102.196, k: 0.981727 }, phone: { x: -150, y: 418, k: 0.981727 } },
-  // S3 top, far (Group 85 4964:1995)
-  { desktop: { x: 204.691, y: -16.982, k: 0.366361 }, phone: { x: 70, y: 12, k: 0.366361 } },
-  // S4 bottom-right (4964:1978 + rows 1976/1979/1980) — its header passes under the main card
-  { desktop: { x: 409.008, y: 365.983, k: 0.626 }, phone: { x: 214, y: 420, k: 0.626 } },
-  // S5 bottom-left (4964:2003 + rows 2000/2001/2002)
-  { desktop: { x: 2.496, y: 404.012, k: 0.626 }, phone: { x: -120, y: 30, k: 0.626 } },
-];
-/** paint order, bottom → top (Figma): S4, S5, S1, S2, S3, then the main card */
-export const SM_SATELLITE_ORDER = [3, 4, 0, 1, 2] as const;
-
-/* ══ the scene's text alternative (frames 1–5; its second sentence describes the tail) ════ */
+/* ══ the scene's text alternative ════════════════════════════════════════════════════════ */
 
 export const STORY_MESSAGE_ALT: string =
   "Animation: Sarah Velasquez, a design lead at Shift, posts that her launch day is next week. " +
-  "Pancake drafts her a personal reply, it is corrected by hand from Friday to Thursday and sent, " +
-  "then the view pulls back to more sending accounts, each working its own leads.";
+  "Pancake drafts her a personal message and sends it, while other leads get their own and one answers. " +
+  "The view pulls back to the sending account’s leads, one reached out to, one booked, one waiting for a reply, " +
+  "then to more sending accounts, each working its own leads.";

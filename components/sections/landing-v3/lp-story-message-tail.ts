@@ -2,32 +2,36 @@
 // server registry can reach becomes an eager client entry of the homepage).
 import { gsap } from "@/lib/gsap";
 
-import type { DiveStageLayout } from "./lp-dive-stages";
-import { SM_TAIL_POSE } from "./lp-story-message-data";
+import { SM_POSE, SM_STORY, type SmConvo } from "./lp-story-message-data";
 
 /**
- * Deep-dive story "A personal message for every lead" — the TAIL of its timeline: storyboard
- * frames 4 and 5 (Figma 4964:1821 "Manual correction then send", 4964:1899 "ZOOM OUT TO SHOW
- * MORE ACCOUNTS"). Owner: story-message package.
+ * Deep-dive story "A personal message for every lead" — the second half of its timeline:
+ * storyboard frames 3 to 6 (Figma 4964:1729, 5061:1002, 5061:1091, 5061:1209), the designer's
+ * ending since 2026-10-12. It replaces the interim tail (a hand correction, Send, "Message
+ * sent", a zoom-out onto account cards) that stood in while those frames were marked WIP.
+ * Owner: story-message package.
  *
- * INTERIM. On 2026-10-11 the designer marked these two frames WIP (the red box 5024:10646 at
- * the bottom of the column). What plays here is the 2026-10-09 storyboard as specced (decision
- * §6: manual correction, then Send, then MESSAGE SENT, then the zoom-out), kept so the story
- * has an ending; it is not pixel-chased. It is ISOLATED so the final design can replace it:
+ *   C · f3   the view trucks right: the story's conversation slides aside and dims, the next
+ *            one arrives in front (1.5×) and Pancake starts typing it, two answered ones show
+ *            further away. Every conversation moves by the same truck, times its depth.
+ *   D · f4   the view pulls back (Figma: ×0.5721 about one point); the sending account's name
+ *            lands over the conversations. The next message is still being typed.
+ *   E · f5   that message is sent; the conversations leave, the name centres, and the
+ *            account's three leads rise under it, each with where it stands.
+ *   F · f6   the view pulls back again (×0.624): six more accounts, out of focus, around it.
+ *            The end = the server markup (the rest picture).
  *
- *   this file                     the beats after frame 3 (labels f4, f5)
- *   LpStoryMessage.tsx            SmTailSentEyebrow, SmTailLastWord, SmTailWorld
- *   lp-story-message-data.ts      everything under "INTERIM" (SM_TAIL, SM_TAIL_POSE, satellites)
- *   story-message.css             the block under "INTERIM"
+ * No prototype or motion data exists in the file (the storyboard is six stills): the moves are
+ * derived from the frames, in the vocabulary of the first half and of lp-step-timelines.ts
+ * (rise 0.4 power3.out, wire 0.22 power2.out, camera moves power3.inOut, Pancake's 12 ms a
+ * glyph). Every beat is a named constant in SM_TAIL_T.
  *
- * The contract with the core timeline (lp-story-message-timeline.ts), which owns frames 1–3:
- * 1. `prepareSmTail(root, kit)` runs BEFORE the core measures the message. It puts the
- *    tail-owned elements in their frame-0 state — in particular the message's last word shows
- *    as Pancake writes it — and measures the corrected state it will need.
- * 2. The core builds frames 1–3, then calls `tail.add({ tl, tTyped, typed, caret })` once: the
- *    tail appends its beats after `tTyped` (the moment Pancake's last glyph landed; the core
- *    takes its caret off at +0.40 and releases the clip at +0.45) and returns nothing. The
- *    timeline's end must be the server markup (the rest picture), whatever the tail shows.
+ * The contract with the core timeline (lp-story-message-timeline.ts), which owns frames 1–2:
+ * 1. `prepareSmTail(root, kit)` runs BEFORE the core builds anything. It puts what this half
+ *    owns in its frame-0 state (the other conversations away and hidden, the accounts hidden,
+ *    the camera at frame 5's scale) and measures what it will type.
+ * 2. The core builds frames 1–2 up to "Sent", then calls `tail.add({ tl, tSent, lead })` once:
+ *    this half appends its beats (labels f3 … f6) after `tSent`.
  * Same rules as the core: gsap.set for frame 0 (the caller's gsap.context reverts it), sets and
  * tweens only, no callbacks, no randomness, no DOM left behind.
  */
@@ -36,149 +40,197 @@ import { SM_TAIL_POSE } from "./lp-story-message-data";
 export type SmGlyph = { ch: string; right: number; top: number; bottom: number };
 /** a typing caret: its element and the run's offset inside the caret's positioned parent */
 export type SmCaret = { el: HTMLElement; ox: number; oy: number };
+/** a typed run's schedule: each glyph's moment, and the moment after the last one */
+export type SmTyped = { times: number[]; end: number };
 
-/** the core's typing helpers, handed over so the tail types exactly like it */
-export type SmTailKit = {
-  layout: DiveStageLayout;
+/** the core's helpers, handed over so this half types and measures exactly like it */
+export type SmKit = {
+  $: <T extends Element = HTMLElement>(sel: string) => T;
+  $$: <T extends Element = HTMLElement>(sel: string) => T[];
   measure: (el: HTMLElement) => SmGlyph[];
-  clipTo: (g: SmGlyph) => string;
   hiddenClip: string;
+  /** a caret for a message run (created in the run's card; the core's cleanup removes it) */
+  messageCaret: (run: HTMLElement) => SmCaret;
+  /** types a message from `t` at Pancake's pace (on the core's timeline) */
+  typeMessage: (t: number, run: HTMLElement, caret: SmCaret, glyphs: SmGlyph[]) => SmTyped;
+  /** at `t` the caret leaves and the run paints like any paragraph again */
+  typeDone: (run: HTMLElement, caret: SmCaret, t: number) => void;
+  /** after a message's last glyph: when its caret leaves, when it reads "Sent" (the core's SM_T) */
+  pace: { caretOff: number; sentAfter: number };
+  /** a message card's two stacked eyebrows */
+  eyebrows: (card: HTMLElement) => { draft: HTMLElement; sent: HTMLElement };
+  /** at `t` "Drafting..." gives way to "Sent" */
+  markSent: (card: HTMLElement, t: number) => void;
+  /** a conversation's place as GSAP's x / y (its Figma box + the half pixel of its fill) */
+  at: (p: { x: number; y: number }, s: number) => { x: number; y: number };
 };
 export type SmTailHandoff = {
   tl: gsap.core.Timeline;
-  /** the moment Pancake's last glyph landed */
-  tTyped: number;
-  /** the message's glyphs as Pancake typed them (the last word in its written state) */
-  typed: SmGlyph[];
-  /** the message's caret (the core's; off again by the time the tail starts) */
-  caret: SmCaret;
+  /** the moment the story's message reads "Sent" */
+  tSent: number;
+  /** the story's conversation and its cards */
+  lead: { convo: HTMLElement; cards: HTMLElement[] };
 };
 
-/** every beat of the tail, in seconds (founder pace knob) */
+/** every beat of this half, in seconds (founder pace knob) */
 export const SM_TAIL_T = {
-  ringOut: 0.5, // after the typing ends: the ring hands the card over
-  fixCaret: 0.7, // the member's caret appears after the last word
-  backspace: 0.95,
-  backspaceStep: 0.05,
-  swapAfter: 0.05, // after the last backspace
-  retypeAfter: 0.05,
-  retypeStep: 0.07, // human pace, ~6× slower than Pancake's 12 ms
-  caretOff: 0.22, // after the retyped word's last letter (f4 follows)
-  sendAfter: 0.3, // the press, after the last letter
-  sentAfter: 0.06, // DRAFTING leaves, MESSAGE SENT lands 0.06 later
-  zoomAfter: 0.5, // after MESSAGE SENT lands
+  /** C — after the story's message reads "Sent" */
+  truckAfter: 0.3,
+  truck: 0.8,
+  /** the others fade in over the first part of the truck */
+  othersIn: 0.5,
+  /** Pancake starts the next message this long into the truck */
+  nextType: 0.55,
+  f3After: 0.05,
+  /** D — the hold on frame 3, then the pull-back */
+  pullAfter: 0.3,
+  pull: 1,
+  /** the account's name lands this long into the pull-back */
+  head: 0.5,
+  headIn: 0.4,
+  f4After: 0.05,
+  /** E — the next message reads "Sent" no sooner than this after frame 4 … */
+  nextSentAfter: 0.15,
+  /** … and the conversations leave this long after it does */
+  listAfter: 0.55,
+  talkOut: 0.3,
+  headMove: 0.6,
+  rows: 0.2,
+  rowStagger: 0.08,
+  rowIn: 0.4,
+  f5After: 0.05,
+  /** F — the hold on frame 5, then the pull-back onto more accounts */
+  zoomAfter: 0.5,
   zoom: 1.2,
+  /** the accounts around it start fading in this long into the zoom, and land WITH it: their
+      layers and the camera's are then given back in one repaint, once nothing moves */
+  othersAfter: 0.25,
+  /** stage px each of them settles by while it fades in */
+  othersDrift: 6,
 } as const;
 
-const count = (el: Element) => Array.from(el.textContent || "").length;
-
-export function prepareSmTail(root: HTMLElement, kit: SmTailKit) {
-  const $ = <T extends Element = HTMLElement>(sel: string): T => {
-    const el = root.querySelector<T>(sel);
-    if (!el) throw new Error(`lp-story-message tail: missing ${sel}`);
-    return el;
-  };
-  const pose = SM_TAIL_POSE[kit.layout];
-  const convo = $(".lp-sm-convo");
+export function prepareSmTail(root: HTMLElement, kit: SmKit) {
+  const { $, $$ } = kit;
+  const T = SM_TAIL_T;
+  const talk = $(".lp-sm-talk");
   const world = $(".lp-sm-world");
   const cam = $(".lp-sm-cam");
-  const ring = $<SVGSVGElement>(".lp-sm-ring");
-  const msg = $(".lp-sm-msg");
-  const fixOld = $(".lp-sm-fix-old");
-  const fixNew = $(".lp-sm-fix-new");
-  const ebDraft = $(".lp-sm-eb-draft");
-  const ebSent = $(".lp-sm-eb-sent");
-  const send = $(".lp-sm-send");
+  const main = $('.lp-sm-acct[data-acct="main"]');
+  const sender = $('.lp-sm-acct[data-acct="main"] .lp-sm-sender');
+  const senderName = $('.lp-sm-acct[data-acct="main"] .lp-sm-sender span');
+  const rows = $$('.lp-sm-acct[data-acct="main"] .lp-sm-row');
+  const others = SM_STORY.accounts
+    .filter((a) => a.id !== "main")
+    .map((a) => ({ el: $(`.lp-sm-acct[data-acct="${a.id}"]`), dim: a.dim, y: a.place.y + 0.5 * a.place.k }));
 
-  /* The message in its corrected state (the rest markup: "…Thursday?"), measured first; then
-     the state Pancake writes ("…Friday?"), which is frame 0 and what the core measures. The
-     measure skips the hidden word, so each array is the visible run only. */
-  gsap.set(fixOld, { display: "none" });
-  gsap.set(fixNew, { display: "inline" });
-  const corrected = kit.measure(msg);
-  gsap.set(fixOld, { display: "inline" });
-  gsap.set(fixNew, { display: "none" });
-  const nOld = count(fixOld);
-  const nNew = count(fixNew);
+  const convoOf = (id: SmConvo["id"]) => {
+    const data = SM_STORY.convos.find((c) => c.id === id);
+    if (!data) throw new Error(`lp-story-message tail: no conversation "${id}"`);
+    return { data, el: $(`.lp-sm-convo[data-convo="${id}"]`) };
+  };
+  const leadData = convoOf("lead").data;
+  const next = convoOf("next");
+  const around = [next, convoOf("answered"), convoOf("far")];
+  /* the truck of frames 2 → 3, per unit of depth: what the story's conversation moves by */
+  const truck = { x: SM_POSE.leadF2.x - leadData.place.x, y: SM_POSE.leadF2.y - leadData.place.y };
+  const away = (c: (typeof around)[number]) => {
+    const p = kit.at(c.data.place, c.data.place.s);
+    return { x: p.x + truck.x * c.data.place.s, y: p.y + truck.y * c.data.place.s };
+  };
 
-  /* frame 0 of what the tail owns */
-  gsap.set(convo, { scale: 1, transformOrigin: pose.convoOrigin });
-  gsap.set(world, { autoAlpha: 0 });
-  gsap.set(cam, { scale: pose.camFrom });
-  gsap.set(ebSent, { opacity: 0 });
-  gsap.set(send, { scale: 1 });
+  /* ── frame 0 of what this half owns ── */
+  gsap.set(world, { scale: 1, transformOrigin: SM_POSE.pullBack.origin });
+  around.forEach((c) => gsap.set(c.el, { ...away(c), autoAlpha: 0 }));
+  const nextCard = next.el.querySelector<HTMLElement>(".lp-sm-msg");
+  const nextRun = next.el.querySelector<HTMLElement>(".lp-sm-msg .lp-sm-text");
+  if (!nextCard || !nextRun) throw new Error("lp-story-message tail: the next conversation has no message");
+  // it is a draft until Pancake has typed it
+  const nextEb = kit.eyebrows(nextCard);
+  gsap.set(nextEb.draft, { opacity: 1 });
+  gsap.set(nextEb.sent, { opacity: 0 });
+  const nextCaret = kit.messageCaret(nextRun);
+  const nextGlyphs = kit.measure(nextRun);
+  if (!nextGlyphs.length) throw new Error("lp-story-message tail: nothing to type (is the stage laid out?)");
+  gsap.set(nextRun, { clipPath: kit.hiddenClip });
+
+  // the accounts: the camera at frame 5 (the story's block at its own size), everything unseen
+  gsap.set(cam, { scale: SM_POSE.camF5 });
+  gsap.set(main, { "--z": 0 });
+  gsap.set(rows, { autoAlpha: 0 });
+  others.forEach((o) => gsap.set(o.el, { autoAlpha: 0 }));
+  /* the account's name in frame 4: left-aligned on the conversations, higher than in frame 5.
+     Its frame-5 place is the CSS (centred over the rows); the offset to frame 4's left edge
+     depends on the name's width, so it is read from the laid-out text. Stage px per screen px
+     = the root's own scale (--lp-fit and the phone box's). */
+  const rootBox = root.getBoundingClientRect();
+  const unit = root.offsetWidth ? rootBox.width / root.offsetWidth : 1;
+  const nameLeft = (senderName.getBoundingClientRect().left - rootBox.left) / unit;
+  const headF4 = { x: SM_POSE.headF4.left - nameLeft, y: SM_POSE.headF4.dy };
+  gsap.set(sender, { ...headF4, opacity: 0 });
 
   return {
-    add({ tl, tTyped, typed, caret }: SmTailHandoff) {
-      const T = SM_TAIL_T;
-      const nText = typed.length - nOld;
-      if (nText < 1 || corrected.length !== nText + nNew) {
-        throw new Error("lp-story-message tail: the written and corrected messages don't line up");
-      }
-      const caretAt = (x: number, g: SmGlyph, t: number, extra: gsap.TweenVars = {}) =>
-        tl.set(caret.el, { x: caret.ox + x, y: caret.oy + g.top, height: g.bottom - g.top, ...extra }, t);
+    add({ tl, tSent, lead }: SmTailHandoff) {
+      /* — C · frame 3: the truck. One move for every conversation, times its depth — */
+      const tTruck = tSent + T.truckAfter;
+      const move = { duration: T.truck, ease: "power3.inOut" };
+      tl.to(lead.convo, { ...kit.at(leadData.place, leadData.place.s), ...move }, tTruck);
+      tl.to(lead.cards, { opacity: leadData.dim, ...move }, tTruck);
+      around.forEach((c) => {
+        tl.to(c.el, { ...kit.at(c.data.place, c.data.place.s), ...move }, tTruck);
+        tl.to(c.el, { autoAlpha: 1, duration: T.othersIn, ease: "power1.out" }, tTruck);
+      });
+      const typed = kit.typeMessage(tTruck + T.nextType, nextRun, nextCaret, nextGlyphs);
+      const tF3 = tTruck + T.truck + T.f3After;
+      tl.addLabel("f3", tF3);
 
-      /* — frame 4 · the hand-over: the ring goes, a member corrects the last word, Send — */
-      tl.to(ring, { autoAlpha: 0, duration: 0.35, ease: "power2.out" }, tTyped + T.ringOut);
-      const last = typed[typed.length - 1];
-      const tFix = tTyped + T.fixCaret;
-      tl.set(msg, { clipPath: kit.clipTo(last) }, tFix); // the same picture as clip "none"
-      caretAt(last.right + 1, last, tFix, { opacity: 1 });
-      // backspace: the caret sits at the left edge of the glyph just deleted
-      const leftEdge = (gs: SmGlyph[], j: number) =>
-        j > 0 && Math.abs(gs[j].top - gs[j - 1].top) < 1 ? { x: gs[j - 1].right + 1, g: gs[j - 1] } : { x: 0, g: gs[j] };
-      let t = tTyped + T.backspace;
-      for (let k = 1; k <= nOld; k++) {
-        const j = typed.length - k; // the glyph removed at this step
-        tl.set(msg, { clipPath: j > 0 ? kit.clipTo(typed[j - 1]) : kit.hiddenClip }, t);
-        const e = leftEdge(typed, j);
-        caretAt(e.x, e.g, t);
-        t += T.backspaceStep;
-      }
-      // swap the run to its corrected state (same text up to here; the new word is red)
-      t += T.swapAfter - T.backspaceStep;
-      tl.set(fixOld, { display: "none" }, t);
-      tl.set(fixNew, { display: "inline" }, t);
-      tl.set(msg, { clipPath: kit.clipTo(corrected[nText - 1]) }, t);
-      t += T.retypeAfter;
-      for (let k = 0; k < nNew; k++) {
-        const g = corrected[nText + k];
-        tl.set(msg, { clipPath: kit.clipTo(g) }, t);
-        caretAt(g.right + 1, g, t);
-        t += T.retypeStep;
-      }
-      const tRetyped = t - T.retypeStep; // the last letter's moment
-      // the member's caret leaves the field as they reach for Send
-      tl.set(caret.el, { opacity: 0 }, tRetyped + T.caretOff);
-      tl.set(msg, { clipPath: "none" }, tRetyped + T.caretOff + 0.01);
-      tl.addLabel("f4", tRetyped + T.caretOff + 0.02);
-      const tSend = tRetyped + T.sendAfter;
-      tl.to(
-        send,
-        {
-          keyframes: [
-            { scale: 0.96, duration: 0.09, ease: "power2.out" },
-            { scale: 1, duration: 0.3, ease: "back.out(2)" },
-          ],
-        },
-        tSend,
-      );
-      const tSent = tSend + T.sentAfter;
-      tl.to(ebDraft, { y: -6, opacity: 0, duration: 0.18, ease: "power2.in" }, tSent);
+      /* — D · frame 4: the pull-back, and the sending account's name — */
+      const tPull = tF3 + T.pullAfter;
+      tl.to(world, { scale: SM_POSE.pullBack.scale, duration: T.pull, ease: "power3.inOut" }, tPull);
       tl.fromTo(
-        ebSent,
-        { y: 6, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.32, ease: "back.out(1.6)", immediateRender: false },
-        tSent + 0.06,
+        sender,
+        { opacity: 0, y: headF4.y + 8 },
+        { opacity: 1, y: headF4.y, duration: T.headIn, ease: "power3.out", immediateRender: false },
+        tPull + T.head,
       );
+      const tF4 = tPull + T.pull + T.f4After;
+      tl.addLabel("f4", tF4);
 
-      /* — frame 5 · zoom out to more accounts: the card hands over to the account's card, the
-         camera pulls back to the artboard (the end picture = the server markup) — */
-      const tZoom = tSent + 0.06 + T.zoomAfter;
-      tl.to(convo, { scale: 0.85, autoAlpha: 0, duration: 0.35, ease: "power2.in" }, tZoom);
-      tl.to(world, { autoAlpha: 1, duration: 0.35, ease: "power1.out" }, tZoom);
-      tl.to(cam, { scale: 1, duration: T.zoom, ease: "power3.inOut" }, tZoom);
-      tl.addLabel("f5", tZoom + T.zoom);
+      /* — E · frame 5: the next message is sent (never before frame 4's picture, which shows it
+           as a draft), the conversations leave, the account's leads rise under its name — */
+      const tNextSent = Math.max(typed.end + kit.pace.sentAfter, tF4 + T.nextSentAfter);
+      kit.typeDone(nextRun, nextCaret, tNextSent - (kit.pace.sentAfter - kit.pace.caretOff));
+      kit.markSent(nextCard, tNextSent);
+      const tList = tNextSent + T.listAfter;
+      tl.to(talk, { autoAlpha: 0, duration: T.talkOut, ease: "power2.in" }, tList);
+      tl.to(sender, { x: 0, y: 0, duration: T.headMove, ease: "power3.inOut" }, tList);
+      tl.fromTo(
+        rows,
+        { autoAlpha: 0, y: 12 },
+        { autoAlpha: 1, y: 0, duration: T.rowIn, ease: "power3.out", stagger: T.rowStagger, immediateRender: false },
+        tList + T.rows,
+      );
+      const tRowsIn = tList + T.rows + T.rowStagger * Math.max(0, rows.length - 1) + T.rowIn;
+      const tF5 = Math.max(tRowsIn, tList + T.headMove) + T.f5After;
+      tl.addLabel("f5", tF5);
+
+      /* — F · frame 6: the view pulls back onto more accounts = the end (the server markup) — */
+      const tZoom = tF5 + T.zoomAfter;
+      const zoom = { duration: T.zoom, ease: "power3.inOut" };
+      tl.to(cam, { scale: 1, ...zoom }, tZoom);
+      tl.to(main, { "--z": 1, ...zoom }, tZoom);
+      /* the accounts around it fade in as they come into view. Each also settles by a few px:
+         a transform tween puts the block on its own layer while it fades (GSAP's 3D during a
+         tween), so its blur is the compositor's. Without it every step of the fade repainted
+         six blurred blocks into the camera's layer: 180–270 ms frames in WebKit, measured. */
+      others.forEach((o) =>
+        tl.fromTo(
+          o.el,
+          { autoAlpha: 0, y: o.y + T.othersDrift },
+          { autoAlpha: o.dim, y: o.y, duration: T.zoom - T.othersAfter, ease: "power1.out", immediateRender: false },
+          tZoom + T.othersAfter,
+        ),
+      );
+      tl.addLabel("f6", tZoom + T.zoom);
       tl.to({}, { duration: 0.001 }, tZoom + T.zoom);
     },
   };
