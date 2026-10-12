@@ -34,12 +34,15 @@
 // Accessibility: the mock is one role="img" per view with a sentence label; the head is
 // aria-hidden (the label covers it). The chip is a real link, so it sits outside the img. The
 // stage is data-nosnippet (the mock's text is not quotable); the sr-only summary says what it shows.
+// On phones (no pills) the player drops the stage's tabpanel role and hides the chip from
+// assistive tech: the card is a picture there.
 
 import { VX_DEMO } from "@/components/sections/verticals/vx-copy";
 import { buildDemoModel } from "@/lib/verticals/demo-model";
 import { HOME_DEMO } from "@/lib/verticals/home-demo";
 import { lpClaudeSerif } from "./lp-claude-font";
 import { LP_DEMO } from "./lp-demo-data";
+import { HS_PRE_SCRIPT } from "./lp-demo-prescript";
 import { LpDemoPlayer } from "./LpDemoPlayer";
 
 const P = LP_DEMO.pancake;
@@ -331,6 +334,10 @@ export function LpDemo() {
         claude={<ClaudeView prompt={prompt} />}
       />
       <noscript dangerouslySetInnerHTML={{ __html: NOSCRIPT_CSS }} />
+      {/* the hero scroll's pose before its driver loads (lp-demo-prescript.ts): runs during the
+          parse, writes one custom property through a constructed stylesheet (no DOM mutation,
+          so hydration is untouched), and is stopped by the player once the driver has mounted */}
+      <script dangerouslySetInnerHTML={{ __html: HS_PRE_SCRIPT }} />
     </section>
   );
 }

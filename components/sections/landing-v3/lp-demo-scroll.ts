@@ -17,17 +17,27 @@
 // this section is display:none, is never touched.
 //
 // `data-hs="js"` on the section hands the poses over from demo.css' pre-script layer (a CSS
-// scroll-driven animation of the same variable where supported, else the static state 01) in
-// the same frame as the first write. Lock (`data-hs-done`, set by the player): the section's
-// variable stops being written and CSS shows state 03 for good; the hero copy keeps following
-// the scroll.
+// scroll-driven animation of the same variable where supported, else lp-demo-prescript.ts'
+// `--lp-hs-pre`) in the same frame as the first write. Lock (`data-hs-done`, set by the
+// player): the section's variable stops being written and CSS shows state 03 for good; the hero
+// copy keeps following the scroll.
+//
+// Tall windows (> 1102 px): the storyboard's start would sit at a negative scroll position, so
+// the page would load part-assembled (and the headline dimmed above ~1905 px). `clamp()` pins
+// the start to scroll 0: p = 0 at the top of the page at any height (verifier DT-2 / M-04).
+//
+// `data-hs-out` on each `.lp-hs-hero` from p ≥ HS_HERO_OUT (.85, the end of its fade): demo.css
+// turns it into `visibility: hidden`, so the faded "Start free" / "Book a demo" / toggle are no
+// longer hit-testable or tab stops in the blank band above the assembled window (DT-1). It
+// follows the scroll like the copy itself: scrolling back up brings the copy, and its links, back.
 
 import { ScrollTrigger } from "@/lib/gsap";
-import { HS_END_FROM_TOP, HS_START_FROM_BOTTOM } from "./lp-demo-timeline";
+import { HS_END_FROM_TOP, HS_HERO_OUT, HS_START_FROM_BOTTOM } from "./lp-demo-timeline";
 
 export function mountHeroScroll(section: HTMLElement, onProgress: (p: number) => void): () => void {
   const heroes = Array.from(document.querySelectorAll<HTMLElement>(".lp-hs-hero"));
   let last = "";
+  let out = false;
 
   const write = (p: number) => {
     const v = p.toFixed(4);
@@ -35,12 +45,16 @@ export function mountHeroScroll(section: HTMLElement, onProgress: (p: number) =>
     last = v;
     if (!section.hasAttribute("data-hs-done")) section.style.setProperty("--lp-hs", v);
     for (const h of heroes) h.style.setProperty("--lp-hs-hero", v);
+    if ((p >= HS_HERO_OUT) !== out) {
+      out = !out;
+      for (const h of heroes) h.toggleAttribute("data-hs-out", out);
+    }
     onProgress(p);
   };
 
   const st = ScrollTrigger.create({
     trigger: section,
-    start: `top bottom-=${HS_START_FROM_BOTTOM}`,
+    start: `clamp(top bottom-=${HS_START_FROM_BOTTOM})`,
     end: `top ${HS_END_FROM_TOP}px`,
     onUpdate: (self) => write(self.progress),
     onRefresh: (self) => write(self.progress),
@@ -69,6 +83,9 @@ export function mountHeroScroll(section: HTMLElement, onProgress: (p: number) =>
     st.kill();
     section.removeAttribute("data-hs");
     section.style.removeProperty("--lp-hs");
-    for (const h of heroes) h.style.removeProperty("--lp-hs-hero");
+    for (const h of heroes) {
+      h.style.removeProperty("--lp-hs-hero");
+      h.removeAttribute("data-hs-out");
+    }
   };
 }

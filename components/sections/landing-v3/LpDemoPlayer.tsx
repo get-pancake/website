@@ -16,15 +16,21 @@
 // spinner only turns then).
 //
 // First start:
-//   · the hero scroll assembles the window (desktop ≥1025 × ≥640 tall, motion allowed): when it
-//     completes (p = 1: the WINDOW's top at 141 px = the section's top at HS_END_FROM_TOP, 26 px
-//     of inset above it), or at load if the page is already past it;
-//   · otherwise (phones, tablets, short windows, Firefox-free of nothing — every engine runs the
-//     assembly through ScrollTrigger): once the window's top crosses 60 % of the viewport, or
-//     after 1 s with half of it on screen (lp-play-once's rule).
+//   · the hero scroll assembles the window (HS_QUERY: desktop ≥1025 wide, 640 – 1449 tall,
+//     motion allowed): when it completes (p = 1: the WINDOW's top at 141 px = the section's top
+//     at HS_END_FROM_TOP, 26 px of inset above it), or at load if the page is already past it;
+//     or, for a visitor who STOPS mid-assembly (verifier M-01): past the storyboard's state 02
+//     (p ≥ HS_DWELL_FROM, .55) with half of the window on screen and HS_DWELL_MS without a scroll,
+//     the window finishes assembling by itself (data-hs-ease: a HS_EASE_MS CSS ease from the
+//     pose it stopped in), locks, then the demo starts;
+//   · otherwise (phones, tablets, short windows, and windows ≥1450 px tall, where the whole
+//     window sits in the first viewport and is drawn assembled): once the window's top crosses
+//     60 % of the viewport, or after 1 s with half of it on screen (lp-play-once's rule).
+//   Every engine runs the assembly through ScrollTrigger (lp-demo-scroll.ts, lazy).
 //   A pill click starts it at once. Nothing autoplays on a half-built window.
-// Lock: data-hs-done on the section — the first start, a pill click or keyboard focus in the
-// stage. The window then stays assembled for the visit (never disassembled by scrolling back).
+// Lock: data-hs-done on the section — the first start, the dwell above, a pill click or keyboard
+// focus in the stage. The window then stays assembled for the visit (never disassembled by
+// scrolling back).
 //
 // Reduced motion (or ?still): no clock and no GSAP download; the Pancake view is its rest
 // picture (the V2 design), the Claude view its end picture; the pills switch views instantly.
@@ -35,7 +41,9 @@
 // order (the card is a picture there). PHONE_SOLO (decision §9 F2): no pills and no Claude &
 // Codex view on phones, so the Pancake view plays ONCE and holds its end picture (nothing
 // rewinds on screen, no loop), and a visitor who shrinks the window on the Claude view is
-// brought back to the Pancake view.
+// brought back to the Pancake view. With no pills the stage is not a tab panel there: its
+// role, tab stop and label are dropped (state `solo`, React-owned), and the chip paragraph is
+// aria-hidden (the mock's role="img" label describes the card) — verifiers M5 / TA-05.
 //
 // SSR / first client render = Pancake view at rest (frame 0 = the server markup, no class set).
 // Per-frame work writes ONLY: .is-on / .is-off / .is-sw / .is-press classes, the cursor
@@ -48,7 +56,12 @@ import {
   DWELL,
   END,
   frameAt,
+  HS_DWELL_FROM,
+  HS_DWELL_MS,
+  HS_EASE_MS,
   HS_END_FROM_TOP,
+  HS_PRE_STOP,
+  HS_QUERY,
   PHONE_BOX_W,
   PHONE_QUERY,
   PHONE_SOLO,
@@ -58,8 +71,14 @@ import {
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-/** The hero scroll runs here only (demo.css uses the same query). */
-const HS_QUERY = "(min-width: 1025px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)";
+/** Stop the pre-script (lp-demo-prescript.ts): idempotent, a no-op when it never ran. */
+function stopHeroScrollPre() {
+  try {
+    (window as unknown as Record<string, (() => void) | undefined>)[HS_PRE_STOP]?.();
+  } catch {
+    /* nothing to stop */
+  }
+}
 
 interface ViewCache {
   el: HTMLElement;
@@ -121,6 +140,8 @@ export function LpDemoPlayer({
 }) {
   const [view, setView] = useState<ViewState>({ v: 0, n: 0 });
   const [paused, setPaused] = useState(false);
+  /** Phones with PHONE_SOLO (set after mount): no pills, so the stage is not a tab panel. */
+  const [solo, setSolo] = useState(false);
 
   const cardRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -438,6 +459,44 @@ export function LpDemoPlayer({
       sync();
     };
 
+    /** the hero scroll owns the first start, unless it is off here or failed to load */
+    let hsFailed = false;
+    const byScroll = () => mqHs.matches && !still && !hsFailed;
+
+    /* a visitor who stops mid-assembly (M-01): past state 02, half of the window on screen and
+       HS_DWELL_MS without a scroll → the window eases to state 03 from the pose it stopped in
+       (demo.css [data-hs-ease]; the lock hands the poses to CSS in the same frame), then the
+       demo starts. Scrolling on meanwhile is harmless: the section is locked. */
+    let hsP = 0;
+    let hsIdle = 0;
+    let hsEase = 0;
+    const finishHs = () => {
+      if (x.started || disposed || !byScroll()) return;
+      // already assembled without a start (keyboard focus in the stage locked it): just start
+      const locked = section.hasAttribute("data-hs-done");
+      if (!locked && hsP < HS_DWELL_FROM) return;
+      const r = stage.getBoundingClientRect();
+      const vh = window.innerHeight;
+      // 0 while the section is display:none (the agents view)
+      const share = (Math.min(r.bottom, vh) - Math.max(r.top, 0)) / Math.max(1, Math.min(r.height, vh));
+      if (share < 0.5) return;
+      if (locked) {
+        start();
+        return;
+      }
+      section.setAttribute("data-hs-ease", "");
+      lock();
+      hsEase = window.setTimeout(() => {
+        section.removeAttribute("data-hs-ease");
+        start();
+      }, HS_EASE_MS + 20);
+    };
+    /** (re)start the idle countdown: every scroll step, and when the stage shows again */
+    const armHs = () => {
+      window.clearTimeout(hsIdle);
+      if (!x.started && byScroll()) hsIdle = window.setTimeout(finishHs, HS_DWELL_MS);
+    };
+
     const setReduced = () => {
       const reduced = still || mqReduce.matches;
       x.reduced = reduced;
@@ -476,6 +535,8 @@ export function LpDemoPlayer({
         section.toggleAttribute("data-inview", e.isIntersecting);
         x.inView = e.isIntersecting && e.intersectionRect.height / denom >= 0.35;
         sync();
+        // under the hero scroll: the stage showed up without a scroll (back from the agents view)
+        if (e.isIntersecting) armHs();
       },
       { threshold: thresholds },
     );
@@ -485,9 +546,6 @@ export function LpDemoPlayer({
        1 s with half of it on screen (lp-play-once's FOCUS_MARGIN / DWELL_MS) */
     const win = card.querySelector<HTMLElement>(".lp-demowin__win");
     let dwell = 0;
-    /** the hero scroll owns the first start, unless it is off here or failed to load */
-    let hsFailed = false;
-    const byScroll = () => mqHs.matches && !still && !hsFailed;
     const focusObs = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting) && !byScroll()) start();
@@ -522,20 +580,38 @@ export function LpDemoPlayer({
           loadingHs = false;
           if (disposed) return;
           unmountHs = mod.mountHeroScroll(section, (p) => {
+            hsP = p;
             // not while the section is display:none (the agents view): its range is meaningless there
             if (p >= 1 && section.getClientRects().length > 0) start();
+            else armHs();
           });
+          // the driver writes the poses now: the pre-script (lp-demo-prescript.ts) is done
+          stopHeroScrollPre();
         })
         .catch(() => {
           // no driver: show the assembled window, start by the 60 % rule
           loadingHs = false;
           hsFailed = true;
           lock();
+          stopHeroScrollPre();
         });
     };
+    // no hero scroll here (phones, tablets, short or very tall windows, reduced motion, ?still)
+    if (still || !mqHs.matches) stopHeroScrollPre();
     mountHs();
     const onHsChange = () => {
-      if (mqHs.matches) mountHs();
+      if (mqHs.matches) {
+        mountHs();
+        return;
+      }
+      // the window left the hero scroll's range before its first start (resized past 1449 px
+      // tall, under 1025 wide…): CSS shows it assembled; let the 60 % rule look again
+      if (!x.started && win && !x.reduced) {
+        focusObs.unobserve(win);
+        focusObs.observe(win);
+        halfObs.unobserve(win);
+        halfObs.observe(win);
+      }
     };
     mqHs.addEventListener("change", onHsChange);
 
@@ -576,6 +652,7 @@ export function LpDemoPlayer({
     /* phones: the card is a design box scaled as pixels. The measured scale replaces the CSS
        trig quotient (same value; engines without trig, or that mis-resolve it, get it here). */
     const mqPhone = window.matchMedia(PHONE_QUERY);
+    const chip = card.querySelector<HTMLElement>(".lp-demowin__chip");
     const chipLink = card.querySelector<HTMLElement>(".lp-demowin__agent");
     const writeFit = () => {
       if (!mqPhone.matches) return;
@@ -585,15 +662,20 @@ export function LpDemoPlayer({
     const setPhone = () => {
       const phone = mqPhone.matches;
       x.solo = phone && PHONE_SOLO;
+      // no pills: the stage drops its tabpanel role, tab stop and label (render below)
+      setSolo(x.solo);
       x.pos.clear();
       if (phone) {
         writeFit();
-        // a picture at this size (pointer-events: none in demo.css): not a tab stop either.
-        // The guide stays linked from the deep dive and the footer.
+        // a picture at this size (pointer-events: none in demo.css): not a tab stop either, and
+        // not a link nobody can tap for assistive tech (the mock's role="img" label describes
+        // the card). The guide stays linked from the deep dive, the nav and the footer.
         chipLink?.setAttribute("tabindex", "-1");
+        chip?.setAttribute("aria-hidden", "true");
       } else {
         stage.style.removeProperty("--lp-demowin-fit");
         chipLink?.removeAttribute("tabindex");
+        chip?.removeAttribute("aria-hidden");
       }
       if (x.solo && x.view === 1) {
         // the Claude view is not rendered on phones: back to the Pancake view, armed while hidden
@@ -667,6 +749,8 @@ export function LpDemoPlayer({
             hs: section.getAttribute("data-hs"),
             hsDone: section.hasAttribute("data-hs-done"),
             hsDriver: unmountHs !== null,
+            hsP,
+            hsEase: section.hasAttribute("data-hs-ease"),
           };
         },
       };
@@ -676,6 +760,9 @@ export function LpDemoPlayer({
       disposed = true;
       stop();
       window.clearTimeout(dwell);
+      window.clearTimeout(hsIdle);
+      window.clearTimeout(hsEase);
+      section.removeAttribute("data-hs-ease");
       vis.disconnect();
       focusObs.disconnect();
       halfObs.disconnect();
@@ -686,6 +773,7 @@ export function LpDemoPlayer({
       mqPhone.removeEventListener("change", setPhone);
       stage.style.removeProperty("--lp-demowin-fit");
       chipLink?.removeAttribute("tabindex");
+      chip?.removeAttribute("aria-hidden");
       document.removeEventListener("visibilitychange", onVis);
       card.removeEventListener("focusin", onFocusIn);
       card.removeEventListener("focusout", onFocusOut);
@@ -703,9 +791,9 @@ export function LpDemoPlayer({
       <div
         className="lp-demowin__stage"
         id="lp-demowin-panel"
-        role="tabpanel"
-        tabIndex={0}
-        aria-labelledby={`lp-demowin-tab-${v}`}
+        role={solo ? undefined : "tabpanel"}
+        tabIndex={solo ? undefined : 0}
+        aria-labelledby={solo ? undefined : `lp-demowin-tab-${v}`}
         data-nosnippet=""
         ref={stageRef}
       >
