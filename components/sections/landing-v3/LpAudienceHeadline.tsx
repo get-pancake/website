@@ -111,7 +111,9 @@ export function AudienceHeadline() {
 
   return <>
     <h1 id="lp-hero-title" className="lp-hero-title__copy" aria-hidden={agents}>
-      Deploy GTM ideas in seconds
+      {/* one line on desktop and tablets, two on phones (founder 2026-10-13): the break only
+          exists at ≤767 (hero.css) */}
+      Deploy GTM ideas <br className="lp-hero-title__br" />in seconds
     </h1>
     <span
       className="lp-hero-title__copy lp-hero-title__copy--agent"

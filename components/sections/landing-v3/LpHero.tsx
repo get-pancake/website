@@ -73,7 +73,18 @@ export function LpHero() {
             <div className="lp-hero-col lp-hero-col--human">
               {/* The hero lede = the Google description line (SITE_DESCRIPTION,
                   lib/copy.ts): founder-sensitive, 2026-09-30 AI SEO retired. */}
-              <p className="lp-hero-lede">{SITE_DESCRIPTION}</p>
+              {/* "go-to-market" never breaks at a hyphen (it did at 375 wide: "go-to-" / "market.") */}
+              <p className="lp-hero-lede">
+                {SITE_DESCRIPTION.split(/(go-to-market)/).map((part, i) =>
+                  part === "go-to-market" ? (
+                    <span key={i} className="lp-hero-nobr">
+                      {part}
+                    </span>
+                  ) : (
+                    part
+                  ),
+                )}
+              </p>
               <div className="lp-hero-btns">
                 <LpFxLink href={APP_ORIGIN} data-analytics-id="app_hero">
                   Start free

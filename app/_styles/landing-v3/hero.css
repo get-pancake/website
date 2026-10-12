@@ -250,11 +250,14 @@
     position: relative;
   }
 }
-/* phones: one line inside the 32 px gutters (the artboard's 35.559 from 466 wide up) */
+/* Phones keep TWO lines at the artboard's size (35.559 at 402: founder 2026-10-13,
+   "yes two lines on phones"): one line would have to drop to 30 px there, and the
+   H1 / lede ratio with it (1.9 against the artboard's 2.2). The break is in the
+   markup and only exists here. */
+.lp-hero-title__br { display: none; }
+.lp-hero-nobr { white-space: nowrap; }
 @media (max-width: 767px) {
-  .lp-hero--home #lp-hero-title {
-    font-size: min(35.559px, calc((100vw - 64px) / 11.3));
-  }
+  .lp-hero-title__br { display: inline; }
 }
 .lp-hero--home .lp-hero-aside {
   align-items: flex-start;
