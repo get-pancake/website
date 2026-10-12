@@ -214,14 +214,15 @@
    otherwise erase the centring. The humans view no longer moves them
    (2026-10-12: the hero copy stays put while the window grows). */
 .lp-hero--home .lp-hero-title {
-  bottom: 99px; /* V2's own (founder 2026-10-13: "respecter les proportions du figma"; the 2026-09-01 36 px drop is gone) */
+  bottom: 63px; /* V2 99 − 36 (the founder's 2026-09-01 drop; raised to 99 for a few hours on 2026-10-13, a misreading of "les proportions du figma": he meant the H1 / H2 sizes) */
   /* The copy block is 1214 wide, centred (220 → 1434 at 1654): the one-line H1
      at the designer's 69.014 (775) + 71 + the 368 column. V2 drew it on the
      demo window's edges (259 → 1395, 1136 wide), which one line does not fit;
      founder 2026-10-13: "the block with h1 / h2 has to be centered for sure
      but it seems you're not taking enough space". Not wider (the nav's 1296
      was tried): further left the H1's first letter sits under the rainbow's
-     left arm, see --lp-hero-lift. 32 px gutters under 1278 wide. */
+     left arm at its lowest turn, and the art would have to be lifted off the
+     designer's place. 32 px gutters under 1278 wide. */
   left: max(32px, calc(50% - 607px));
   transform: none;
 }
@@ -241,8 +242,8 @@
     /* V2 sets the H1's first line level with the lede and its second with the
        buttons. The one line keeps the first of the two: it is centred on the
        lede (founder 2026-10-13: "l'alignement du h1 avec le h2"), whose centre
-       is 203 px above the hero's bottom (107 + the 48 buttons + 24 + half of
-       its two lines). The shared box is bottom-anchored at 99, hence 104 minus
+       is 167 px above the hero's bottom (71 + the 48 buttons + 24 + half of
+       its two lines). The shared box is bottom-anchored at 63, hence 104 minus
        half the line. Moved with `bottom` on the H1 itself, never a transform
        (the agents assembly translates the shared box) and never the box's own
        `bottom` (the agents headline sits in it). */
@@ -261,7 +262,7 @@
 }
 .lp-hero--home .lp-hero-aside {
   align-items: flex-start;
-  bottom: 107px; /* V2's own (as the H1 above) */
+  bottom: 71px; /* V2 107 − 36 */
   display: flex;
   flex-direction: column;
   gap: 24px; /* Figma itemSpacing 24 */
@@ -319,14 +320,9 @@
    transform and art top 0,2,0 vs 0,1,0). */
 @media (min-width: 1025px) {
   .lp-hero.lp-hero--home {
-    /* lift0 = the decision's lift; the copy's scale below is still made of it.
-       The art itself is always lifted 34 px, the most lift0 reaches (2026-10-13):
-       the one-line H1 starts 39 px further left than V2's (220 at 1654) and, at
-       V2's own height again, 46 px higher than the lowered block was, under the
-       rainbow's left arm at its lowest turn. 34 px keeps the two 36 px apart on
-       tall windows and more on short ones (measured over the loop). */
+    /* lift0 = the decision's lift; the copy's scale below is made of it. */
     --lp-hero-lift0: clamp(0px, (873px - var(--lp-svh, 100svh)) * 0.3, 34px);
-    --lp-hero-lift: max(34px, var(--lp-hero-lift0));
+    --lp-hero-lift: var(--lp-hero-lift0);
     --lp-hero-h: clamp(
       380px,
       max(var(--lp-svh, 100svh) - 216px, min(544px, var(--lp-svh, 100svh) - 120px)),
