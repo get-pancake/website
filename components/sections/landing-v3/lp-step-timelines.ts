@@ -40,8 +40,10 @@ function measureRightEdges(el: HTMLElement): number[] {
 }
 
 /* Multi-line typing helpers — COPIED from production's lp-feat-timelines.ts (measureGlyphs,
-   HIDDEN_CLIP, clipTo; that file left with the feature cards, 2026-10-11 — the deep-dive
-   stories carry their own copies), so the steps chunk imports no other timeline module. */
+   clipTo; that file left with the feature cards, 2026-10-11 — the deep-dive stories carry
+   their own copies), so the steps chunk imports no other timeline module. clipTo differs
+   from the original since 2026-10-12: one unit, see `px` below. (The hidden rest clip is
+   steps.css's .lp-s3-msg-text; no timeline sets it.) */
 type Glyph = { ch: string; right: number; top: number; bottom: number };
 /** each character's right edge and line box, in the element's own unscaled px (Range rects) */
 function measureGlyphs(el: HTMLElement): Glyph[] {
@@ -69,10 +71,20 @@ function measureGlyphs(el: HTMLElement): Glyph[] {
   }
   return glyphs;
 }
-const HIDDEN_CLIP = "polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0)";
-/** everything above the glyph's line, and its line up to the glyph's right edge */
-const clipTo = (g: Glyph) =>
-  `polygon(0 0, 100% 0, 100% ${g.top.toFixed(3)}px, ${g.right.toFixed(3)}px ${g.top.toFixed(3)}px, ${g.right.toFixed(3)}px ${g.bottom.toFixed(3)}px, 0 ${g.bottom.toFixed(3)}px)`;
+/** A px length in the one form GSAP's CSSPlugin takes at face value. It reads a value's unit
+    as whatever follows `String(parseFloat(value))`, so "21.000px" carries the unit ".000px",
+    and a `%` next to the browser's own px serialisation is a mismatch too; every mismatch on
+    a non-zero number appends a probe div and measures it (a forced layout). Step 03's typing
+    staircase is one set per glyph (119), all initialised in the ONE tick of a fast-forward
+    (leaving the card unfinished): 412 probes, a tick of 90 ms on a fast Mac and 350 – 560 ms
+    at CPU ×4 (verify M-03, 2026-10-12; `_convertToUnit` = 84 of 99 ms). So: px everywhere,
+    no trailing zeros — the same picture, 0 probes. Do not go back to `toFixed()` + "px" or
+    to `%` in a string a timeline sets (artifacts pw/lsf-clipcost.mjs counts the probes). */
+const px = (n: number) => `${+n.toFixed(3)}px`;
+/** everything above the glyph's line, and its line up to the glyph's right edge; `w` is the
+    element's own width (what `100%` was) */
+const clipTo = (g: Glyph, w: number) =>
+  `polygon(0px 0px, ${px(w)} 0px, ${px(w)} ${px(g.top)}, ${px(g.right)} ${px(g.top)}, ${px(g.right)} ${px(g.bottom)}, 0px ${px(g.bottom)})`;
 
 /**
  * The three "Pancake fills your pipeline" step animations as GSAP timelines.
@@ -220,7 +232,7 @@ function buildS1(root: HTMLElement): BuiltStep {
   typedEdges.forEach((acc, i) => {
     t += 0.03 + (S1_JIT[i] ?? 0) / 3;
     const right = Math.max(0, typedWidth - acc);
-    tl.set(typed, { clipPath: "inset(0 " + right.toFixed(3) + "px 0 0)" }, t);
+    tl.set(typed, { clipPath: `inset(0px ${px(right)} 0px 0px)` }, t); // one unit: see `px`
     tl.set(caret, { x: +acc.toFixed(3) }, t);
     if (i === 0) tl.set(ph, { opacity: 0 }, t);
   });
@@ -634,9 +646,11 @@ function buildS3(root: HTMLElement): BuiltStep {
   const f2Glyph = Math.min(glyphs.length - 1, lastLineStart + 2); // three glyphs into the last line
   let t: number = T.type;
   let tF2: number = T.type;
+  // the text block's own width, in the px the glyphs are measured in (measureGlyphs' scale)
+  const msgW = msg.offsetWidth;
   tl.set(caret, { x: 0, y: glyphs[0].top, opacity: 1 }, T.type - 0.25);
   glyphs.forEach((g, i) => {
-    tl.set(msg, { clipPath: clipTo(g) }, t);
+    tl.set(msg, { clipPath: clipTo(g, msgW) }, t);
     tl.set(caret, { x: +g.right.toFixed(3), y: +g.top.toFixed(3) }, t);
     if (i === f2Glyph) tF2 = t;
     const next = glyphs[i + 1]?.ch ?? "";

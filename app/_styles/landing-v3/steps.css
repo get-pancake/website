@@ -587,7 +587,10 @@
    Hairlines: Figma's 0.5px #e2e2e2 strokes are an OUTSIDE 0.5px box-shadow
    spread (the .lp-s3-card idiom; never an inset one — WebKit drops
    sub-pixel inset shadows); rules between rows are 0.5px borders, which
-   every engine snaps to one device pixel instead of rounding away.
+   every engine snaps to one device pixel instead of rounding away. One
+   exception, on 1x screens only: the chat's boxes, which sit on whole
+   pixels, draw the ring as one pixel at half strength (see the @media block
+   after .lp-s2-hover; verify DT-4).
    Aeonik Fono in Figma (avatar initials, eyebrows) is Geist 500 here:
    Fono is a code face only (founder 2026-09-09). ══ */
 .lp-step-stage {
@@ -969,6 +972,32 @@
   position: absolute;
   top: -7.5px;
   width: 362px;
+}
+/* 1x screens (verify DT-4, 2026-10-12). The chat's boxes (the two cards of f1, the question
+   card and its option discs) sit on whole CSS pixels, so their 0.5px ring is half a device
+   pixel OUTSIDE a pixel-aligned box. Chromium paints it as a half-covered pixel on every
+   side (= Figma). WebKit and Firefox snap the ring's rectangle to the pixel grid instead:
+   its left and top edges round away, the right and bottom ones take a full pixel, and the
+   boxes read lopsided (the f1 cards have no drop shadow, so their missing sides had
+   nothing at all). Up to 1.5 dppx the ring is therefore ONE whole pixel at half strength:
+   the same ink as half a pixel at full strength, and nothing left for an engine to round.
+   Above 1.5 dppx half a CSS pixel is a whole device pixel and the rules above stand. This
+   block must stay AFTER those rules (same specificity). Only for boxes at whole pixels:
+   the tables, thread cards and the bar carry a half pixel in their position, where a
+   whole-pixel ring would smear over two pixels. */
+@media (max-resolution: 1.5dppx), (-webkit-max-device-pixel-ratio: 1.5) {
+  @supports (color: color-mix(in srgb, red 50%, transparent)) {
+    .lp-s2-worked,
+    .lp-s2-answer,
+    .lp-s2-opt-n {
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--lp-sx-line) 50%, transparent);
+    }
+    .lp-s2-q {
+      box-shadow:
+        0 0 0 1px color-mix(in srgb, var(--lp-sx-line) 50%, transparent),
+        var(--lp-sx-shadow);
+    }
+  }
 }
 /* f4: "Your Play takes shape here" */
 .lp-s2-draft {
