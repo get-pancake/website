@@ -154,14 +154,14 @@ export function s1Graph(): { edges: S1Edge[]; dots: S1Dot[] } {
   return { edges, dots };
 }
 
-/** per-key jitter of the typing of "studio-pelican.com" — its glyph edges are
+/** per-key jitter of the typing of "acme.com" — its glyph edges are
     measured from the live text in lp-step-timelines.ts (the Fono advance table
     that used to live here broke the moment the mocks moved to Geist Sans) */
 export const S1_JIT = [0, 0.02, -0.01, 0.03, 0, -0.02, 0.04, 0, 0.01, -0.01, 0.05, 0, 0.02, -0.02, 0.03, 0, 0.01, 0];
 
 /** the market-profile rows that resolve out of the skeletons */
 export const S1_ROWS = [
-  { top: 230, name: "Company", sub: "Studio Pelican" },
+  { top: 230, name: "Company", sub: "Acme" },
   { top: 298, name: "Offering", sub: "SaaS launch videos" },
   { top: 366, name: "Ideal clients", sub: "B2B SaaS teams" },
 ];
@@ -176,7 +176,7 @@ export const S1_SKELETON_TOPS = [230, 286, 342];
 
    COPY: the storyboard's sample strings come from a real session in the live app (what look
    like real people's names and titles, a platform icon after every name, a message from
-   another story, typos). The strings below are the homepage's own invented Studio Pelican
+   another story, typos). The strings below are the homepage's own invented Acme
    story instead (sender Astrid Norling; the leads of lib/verticals/home-demo.ts, validated
    by validate.ts), each measured to keep Figma's line counts. No platform icon is drawn.
    The storyboard's verbatim strings, one by one: specs/updates/steps-how-it-works.md §9.2.
@@ -297,7 +297,7 @@ export const S3_THREAD = {
   /** two lines at 279px */
   reply: "Hey, sounds interesting. I’m free Thursday 3pm!",
   meet: "Meet",
-  meetTitle: "Tamsin X Studio Pelican",
+  meetTitle: "Tamsin X Acme",
   /** "3.30pm" is the storyboard's own form, kept verbatim */
   meetWhen: "Thursday 3pm – 3.30pm • 30 min",
   meetWho: "Tamsin Okafor, Astrid Norling",

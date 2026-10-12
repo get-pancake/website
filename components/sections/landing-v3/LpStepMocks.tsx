@@ -42,7 +42,7 @@ function S1Stage() {
         <div className="lp-s1-input">
           <span className="lp-s1-ph">example.com</span>
           {/* revealed glyph by glyph with a clip inset (advance widths in lp-step-data.ts) */}
-          <span className="lp-s1-typed">studio-pelican.com</span>
+          <span className="lp-s1-typed">acme.com</span>
           <i className="lp-s1-caret" />
         </div>
         <div className="lp-s1-btn">
@@ -78,7 +78,7 @@ function S1Stage() {
         </div>
         <i className="lp-s1-bping" />
         <i className="lp-s1-center" />
-        <p className="lp-s1-clabel">Studio Pelican</p>
+        <p className="lp-s1-clabel">Acme</p>
         {/* the five hubs' names (Figma V2 4962:839–845, "Labels in 2nd level dots",
             2026-10-09): last in the graph, so they paint over its edges and dots as in
             Figma, and they ride its glide/scale transform; hidden at rest (frame 0) */}

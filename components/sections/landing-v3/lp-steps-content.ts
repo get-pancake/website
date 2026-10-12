@@ -32,7 +32,7 @@
  *   03 gains an intro in front of its calendar (a lead, the message drafted and sent, her
  *   reply, the meeting). Bodies, and step 03's title, stay production's: V2 still shows V1
  *   strings there ("ready to buy", "found on Google and ChatGPT"), which are not deltas and
- *   break the truth rules. The mocks' strings are the homepage's invented Studio Pelican
+ *   break the truth rules. The mocks' strings are the homepage's invented Acme
  *   story, not the storyboard's sample copy (lp-step-data.ts).
  *
  * The art slot (unchanged mechanism). Each row's `art` lists candidates in priority order;
@@ -84,7 +84,7 @@ export const STEPS: readonly StepContent[] = [
     body: "From your website, Pancake learns who buys from you, what to say, and where to find them. Always up to date.",
     art: [{ kind: "anim", variant: "s1", status: "final" }],
     // names S1_HUBS[].label (lp-step-data.ts) in hub order: keep in sync
-    alt: "Animation: a website address is typed and researched; from the Studio Pelican node a knowledge graph blooms, its five branches labeled Competitors, ICPs, Outreach, Influencers and Market Research, then a market profile fills in: Company, Offering, Ideal clients.",
+    alt: "Animation: a website address is typed and researched; from the Acme node a knowledge graph blooms, its five branches labeled Competitors, ICPs, Outreach, Influencers and Market Research, then a market profile fills in: Company, Offering, Ideal clients.",
   },
   {
     num: "02",
@@ -101,6 +101,6 @@ export const STEPS: readonly StepContent[] = [
     body: "Pancake follows up until they answer, then reads the reply. A yes gets your calendar link, sent from your account. Every other answer comes back to you.",
     art: [{ kind: "anim", variant: "s3", status: "final" }],
     // retells S3_THREAD, then lists S3_CHIPS (lp-step-data.ts): keep in sync
-    alt: "Animation: from the selected leads, Pancake drafts a message to Tamsin Okafor at Quillfern and it is sent. She answers that she is free Thursday at 3pm, and the meeting appears: Tamsin and Studio Pelican, Thursday 3pm. Then a calendar week in October 2026 fills up day by day with meetings — Samantha M., Julien Aubert, Martin Torres and Studio P, Lumen Collective, Fernhollow Studio, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",
+    alt: "Animation: from the selected leads, Pancake drafts a message to Tamsin Okafor at Quillfern and it is sent. She answers that she is free Thursday at 3pm, and the meeting appears: Tamsin and Acme, Thursday 3pm. Then a calendar week in October 2026 fills up day by day with meetings — Samantha M., Julien Aubert, Martin Torres and Studio P, Lumen Collective, Fernhollow Studio, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",
   },
 ];

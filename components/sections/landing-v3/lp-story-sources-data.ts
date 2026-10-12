@@ -11,7 +11,7 @@ import type { ContentStatus } from "@/lib/placeholders";
  * are gated by the server parent, never by this module.
  *
  * What the designer's frames carry and this file does NOT (truth rules):
- *   - the people and companies of a real workspace → the homepage demo's invented Studio Pelican
+ *   - the people and companies of a real workspace → the homepage demo's invented Acme
  *     leads (lib/verticals/home-demo.ts), Elena Marchetti picked;
  *   - a platform's mark after each name and its name on a panel row → a neutral tile, and the
  *     row reads "Profile" → "View" (founder 2026-09-23, PR #305 wording);

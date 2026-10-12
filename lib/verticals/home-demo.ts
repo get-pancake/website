@@ -11,7 +11,8 @@
 // against all 40 pages, and the build fails on a banned claim, a platform name, a non-US place.
 // scripts/verticals-budget.mjs measures its strings with the demo's pixel budgets ("homepage").
 //
-// Story: Studio Pelican, the homepage's own fictional customer (LpSteps types studio-pelican.com
+// Story: Acme (named Studio Pelican until 2026-10-13; founder: "remove studio pelican from
+// everywhere and call the company acme"), the homepage's own fictional customer (LpSteps types acme.com
 // and its Brain reads "SaaS launch videos" for "B2B SaaS teams"; the deep-dive stories show its
 // leads and messages), so the page reads as one company from the demo to the carousel. One workspace per demo
 // (the rail, "Sends as", Slack), so three prompts from one business, three different signals:
@@ -22,7 +23,7 @@
 import type { DemoSource } from "./types";
 
 export const HOME_DEMO: DemoSource = {
-  workspace: { name: "Studio Pelican", sender: "Astrid Norling" },
+  workspace: { name: "Acme", sender: "Astrid Norling" },
 
   demo: {
     /** The homepage demo section's visually hidden H2 (LpDemo): the window is its visible head. */

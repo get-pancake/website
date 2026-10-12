@@ -15,8 +15,8 @@
  * what the animation shows, the only copy a screen reader gets (the shell's host aria-label).
  *
  * Copy decisions — the storyboard's strings are the designer's fillers ("Anna Lellman" on every
- * card, mike@studiopelican.com), replaced under decisions 2026-10-09 §6 and the page's truth rules:
- * - ONE company, the homepage's: Studio Pelican makes SaaS launch videos
+ * card, mike@acme.com), replaced under decisions 2026-10-09 §6 and the page's truth rules:
+ * - ONE company, the homepage's: Acme makes SaaS launch videos
  *   (lib/verticals/home-demo.ts). The post is a launch, the message asks how she will show it.
  *   Every other lead, message and company is home-demo.ts's, verbatim (validate.ts checks that
  *   file; it is server-only, hence the copies). The lead who answers is Tamsin Okafor, with the
@@ -28,7 +28,7 @@
  *   (2026-09-29 / 2026-10-07: the network is never named or drawn).
  * - Accounts are labelled with sender NAMES, not the storyboard's mailbox addresses: Pancake
  *   sends from the customer's own social accounts, never email. Astrid Norling is Studio
- *   Pelican's sender in home-demo.ts; the six others are invented, unused in the repo and
+ *   Acme's sender in home-demo.ts; the six others are invented, unused in the repo and
  *   web-checked (one standard search per name found no person of that exact name; not
  *   exhaustive — check any new name the same way).
  * - "Waiting for a reply" for the storyboard's "Waiting response" (grammar). "Reached out" and
