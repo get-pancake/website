@@ -215,6 +215,9 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
     opacity: calc(1 - clamp(0, (var(--lp-as-hero, 0) - 0.5481) / 0.3019, 1));
     translate: 0 calc(25.54px * var(--lp-as-hero, 0));
   }
+  /* faded out (p ≥ .85, lp-agents-scroll.ts data-as-out): out of hit-testing and the tab order
+     too, as the humans copy is (demo.css data-hs-out). Scrolling back up brings it back. */
+  .lp-audience-page[data-audience="agents"] .lp-hs-hero[data-as-out] { visibility: hidden; }
 }
 
 /* ── toggle, agents look — Figma 4939:3726 (nav-hero §4.2 handoff) ──────────

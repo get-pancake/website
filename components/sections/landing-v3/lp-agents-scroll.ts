@@ -17,6 +17,10 @@
  *   --lp-as-hero  on each `.lp-hs-hero` (nav-hero's hook): the hero copy drifts 25.54 px·p and
  *                 fades out between p .5481 and .85, as on the humans side. Its own variable:
  *                 the humans driver (lp-demo-scroll.ts) writes --lp-hs-hero on the same elements.
+ *   data-as-out   on each `.lp-hs-hero` from p ≥ .85 (the end of that fade): audience-agents.css
+ *                 turns it into `visibility: hidden`, so the faded "Copy instruction" button and
+ *                 the toggle are no longer hit-testable or tab stops (the humans side's
+ *                 `data-hs-out`, verifier DT-1). Scrolling back up brings them back.
  * Lock: once p reaches 1 (or the page arrives past it) the section gets `data-as-done` and the
  * card and wall stay assembled for the visit — never rewind on screen. The hero copy keeps
  * following the scroll (scrolling back shows it again), as on the humans side.
@@ -32,7 +36,9 @@ const END_FROM_TOP = 141;
 /** Wall rows printed at state 01 and the rows added over the range (V2 wraps to 79 rows). */
 export const AS_FIRST_ROWS = 4;
 export const AS_ROWS = 75;
-/** Where the effect runs (the same gate as the humans demo window's hero scroll). */
+/** The hero copy has faded out from here (.5481 + .3019), as HS_HERO_OUT on the humans side. */
+const HERO_OUT = 0.85;
+/** Where the effect runs (the humans hero scroll's gate before its 2026-10-12 height ceiling). */
 export const AS_MEDIA = "(min-width: 1025px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)";
 
 export function mountAgentsAssembly(section: HTMLElement): () => void {
@@ -41,6 +47,7 @@ export function mountAgentsAssembly(section: HTMLElement): () => void {
   let lastP = "";
   let lastRows = -1;
   let lastHero = "";
+  let out = false;
 
   const update = () => {
     raf = 0;
@@ -65,6 +72,10 @@ export function mountAgentsAssembly(section: HTMLElement): () => void {
       lastHero = h;
       for (const hero of heroes) hero.style.setProperty("--lp-as-hero", h);
     }
+    if ((p >= HERO_OUT) !== out) {
+      out = !out;
+      for (const hero of heroes) hero.toggleAttribute("data-as-out", out);
+    }
   };
   const schedule = () => {
     if (!raf) raf = requestAnimationFrame(update);
@@ -82,6 +93,9 @@ export function mountAgentsAssembly(section: HTMLElement): () => void {
     section.removeAttribute("data-as");
     section.style.removeProperty("--lp-as");
     section.style.removeProperty("--lp-as-rows");
-    for (const hero of heroes) hero.style.removeProperty("--lp-as-hero");
+    for (const hero of heroes) {
+      hero.style.removeProperty("--lp-as-hero");
+      hero.removeAttribute("data-as-out");
+    }
   };
 }
