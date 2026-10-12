@@ -112,7 +112,8 @@ export function LpCta({
   );
   if (!sky) return <section className="lp-cta">{card}</section>;
   /* DOM order = paint order: cloud B sits behind the card's right edge, cloud A over its
-     top-left corner (Figma 4939:3972 / 4939:3456). Both drift on scroll (LpSkyParallax,
+     top-left corner (Figma 4939:3972 / 4939:3456). Phones show A only, over the card's
+     top-right corner (mobile artboard 5061:702). Both drift on scroll (LpSkyParallax,
      mounted by LpDive, finds them by class; sky.css holds their depths). */
   return (
     <section className="lp-cta lp-cta--sky">

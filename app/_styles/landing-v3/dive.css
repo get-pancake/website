@@ -469,7 +469,9 @@
 @media (max-width: 767px) {
   .lp-dive {
     gap: 32px;
-    padding: 64px 16px;
+    /* + --lp-sky-room: the room sky.css opens above the section for the
+       phone cloud that sits over the banner (0 when it sets none) */
+    padding: calc(64px + var(--lp-sky-room, 0px)) 16px 64px;
   }
   .lp-dive-head {
     padding: 0;
@@ -541,7 +543,9 @@
        foundation.css's carousel estimates while the stack is on (0,2,0). */
     contain-intrinsic-size: auto max(1839px, calc(1040px + 230vw));
     gap: 20px;
-    padding: 59.6px 0 11.8px;
+    /* 59.6 above the title, + the cloud room sky.css opens over the banner
+       (--lp-sky-room, taken back by its negative margin) */
+    padding: calc(59.6px + var(--lp-sky-room, 0px)) 0 11.8px;
   }
   .lp-dive[data-lp-phone="stack"] .lp-dive-row {
     align-items: stretch;

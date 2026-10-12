@@ -42,8 +42,10 @@
  * section box. The depth signs keep every cloud inside its box while it can be seen: the two
  * heading clouds (top 91–99 of the section) are fast (k > 0), so they sit LOWER than rest while
  * the section enters and only rise past rest once they are above the viewport; the far cloud C
- * sits mid-section with ±~110 px of room both ways. On tablets and phones the heading pair is
- * clamped inside the band above the title (sky.css).
+ * sits mid-section with ±~110 px of room both ways. On tablets the heading pair is clamped
+ * inside the band above the title. On phones cloud A rests over the banner card, above the
+ * section's own top edge (mobile artboard 5061:696): sky.css starts the section's box 72 px
+ * higher there (`--lp-sky-room`, a transparent band) and clamps A inside that room.
  */
 
 const CLOUD = ".lp-sky-cloud";

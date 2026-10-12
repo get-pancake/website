@@ -24,6 +24,8 @@ import { DIVE_STAGES } from "./lp-dive-stages";
  * on the CTA's cream hill (LpCta sky): heading, a 1296×489 row = tab list (left, 272) + the
  * 752×489 stage card (right), three clouds — A and B at the page edges by the heading, C
  * behind the card's right edge — that drift at their own speeds on scroll (LpSkyParallax).
+ * Phones (mobile artboard 5061:696 / 5061:699): A rests over the banner card's bottom-right
+ * corner, B off the left edge beside the title, C is hidden (sky.css, the phone block).
  *
  * Server markup = the rest picture (no JS, reduced motion, before hydration): item 1 selected,
  * its body open and its bar at the Figma pose; each stage panel holds its story's END picture
@@ -156,7 +158,8 @@ export function LpDive() {
           </div>
         </div>
       </LpDiveCarousel>
-      {/* heading clouds, after the content (Figma paint order: they are the last children) */}
+      {/* heading clouds, after the content (Figma paint order: they are the last children; on
+          the mobile artboard too, where A paints over the banner card) */}
       <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--a" />
       <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--b" />
       <LpSkyParallax />
