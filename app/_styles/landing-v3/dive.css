@@ -190,7 +190,10 @@
   line-height: 20px;
   padding: 10px 6px 2px; /* folded with it: the padding is inside the clip */
 }
-.lp .lp-dive-more__link {
+/* the body's 13.333 / 20. (0,3,0): pricing.css's shared `.lp .lp-textlink`
+   (16 / 24) comes later in the manifest and won the tie against the first
+   pass's (0,2,0) rule, so the link drew larger than the copy above it */
+.lp .lp-dive-more .lp-dive-more__link {
   font-size: var(--lp-text-sm);
   line-height: 20px;
 }

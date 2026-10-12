@@ -213,12 +213,16 @@ html:has(main.lp) {
    jumps never move by more than ~2% (`auto` pins the real size after the
    first render). contain-intrinsic-size sizes the CONTENT box: the section's
    own padding adds on top, so every value below is "rendered height minus
-   vertical padding". Re-measured 2026-10-11 (phase N of the V2 replication)
-   at 1920 / 1654 / 1440 / 1280 / 1199 / 1100 / 1025 / 1024 / 900 / 768 /
-   767 / 700 / 600 / 599 / 430 / 393 / 360 with
+   vertical padding". Re-measured 2026-10-12 (second pass of the V2
+   replication) at 1654 / 1440 / 1024 / 768 / 402 / 393 with
    artifacts/landing-v2-figma/pw/integrate-measure.mjs: every skipped
-   section is within 2.3% of its rendered height at every one of them.
-   Re-run it whenever one of these sections changes height. */
+   section is within 2% of its rendered height at every one of them.
+   Re-run it whenever one of these sections changes height.
+   Two estimates live with their section, because they depend on what it
+   renders: the bento's in bento.css (`.lp > .lp-bento`: production shows a
+   partial set, previews all seven cards, and LpBento passes the grid height
+   it computed) and the phone deep dive's in dive.css
+   (`.lp-dive[data-lp-phone="stack"]`: four stacked items). */
 @media (min-width: 768px) {
   /* the banner card is as wide as the page minus its 16px gutters, capped at
      1622, and 721/1622 as tall: 721 (≥1654), 625.9 (1440), 441 (1024),
@@ -233,25 +237,12 @@ html:has(main.lp) {
   .lp-dive {
     contain-intrinsic-size: auto 734px;
   }
-  /* bento, V2 4911:762: no section padding (it sits on .lp-bento__inner) */
-  .lp-bento {
-    contain-intrinsic-size: auto 1448px;
-  }
-}
-@media (min-width: 1025px) and (max-width: 1199px) {
-  /* the composed bento grid scales with the frame here: 1272.2 (1025) →
-     1447 (1199) = 307 + 1141 × (W − 64) / 1136 */
-  .lp-bento {
-    contain-intrinsic-size: auto calc(242.7px + 100.44vw);
-  }
 }
 @media (min-width: 768px) and (max-width: 1024px) {
-  /* stacked: list above the stage. 974.6 (768) … 1005.8 (900–1024), padding 2×72 */
+  /* stacked: list above the stage. 970.6 (768) … 1001.8 (900–1024), padding
+     2×72 (4 px less since 2026-10-12: item 4's link is the body's 13.333 / 20) */
   .lp-dive {
-    contain-intrinsic-size: auto 990px;
-  }
-  .lp-bento {
-    contain-intrinsic-size: auto 2182px;
+    contain-intrinsic-size: auto 986px;
   }
 }
 @media (max-width: 767px) {
@@ -263,13 +254,14 @@ html:has(main.lp) {
   .lp-cta {
     contain-intrinsic-size: auto 860px; /* inert, see above */
   }
-  /* 600–767: the desktop 752×489 scene, stacked under the list:
+  /* The two phone .lp-dive values below serve the CAROUSEL position of the
+     phone switch only (DIVE_PHONE_LAYOUT = "carousel", lp-dive-data.ts). The
+     default since 2026-10-12 is the designer's stack, whose own estimate in
+     dive.css outranks them.
+     600–767: the desktop 752×489 scene, stacked under the list:
      867.3 (600) → 975.9 (767); padding 2×64 */
   .lp-dive {
     contain-intrinsic-size: auto calc(477px + 65vw);
-  }
-  .lp-bento {
-    contain-intrinsic-size: auto 625px; /* the swipe rail */
   }
 }
 @media (max-width: 599px) {
