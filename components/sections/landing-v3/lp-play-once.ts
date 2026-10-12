@@ -32,6 +32,8 @@ import type { gsap } from "@/lib/gsap";
  *   Builds queue one per frame, so phones never take one long task. Until
  *   then, and while it waits far away, the card is the server-rendered
  *   picture (restIsEnd — the feature cards) or its own first frame (steps).
+ *   On phones this waits for the visitor's first input while the page rests
+ *   untouched at its top (`whenTouched` below): nothing is fetched at load.
  * - CUE below the fold: as the card comes within 15 % of a viewport of the
  *   fold, it switches — unseen — to its FIRST SCENE (the builder's `cue`: a
  *   composed frame, never empty — the Signals card with its toggles off, the
@@ -145,6 +147,44 @@ export function scrollSpeed(): number {
     }
   }
   return Math.abs(window.scrollY - ref.y) / Math.max(150, now - ref.t);
+}
+
+/* ── phones: nothing is fetched "a viewport ahead" while the page rests untouched at its top ──
+   Verifier M3 (2026-10-12). V2's shorter phone demo card moved step 01 up, inside the prepare
+   margin of tall phone viewports (412 × 823, the Lighthouse / PSI mobile viewport; 393 × 852;
+   402 × 874): GSAP and the steps chunk were fetched and the timeline built at load, with no
+   scroll, where production waits for the first one. So on phones the one-viewport-ahead prepare
+   waits for the visitor's first input (a scroll, a touch, a key). A card that is on screen or
+   within the cue margin at load still prepares at once, and so does a page that loads scrolled
+   (reload mid-page, an anchor): this only removes the fetch nobody asked for yet. */
+const PHONE_QUERY = "(max-width: 767px)";
+const FIRST_INPUT = ["scroll", "touchstart", "pointerdown", "keydown", "wheel"] as const;
+let touched = false;
+const waiting = new Set<() => void>();
+const onFirstInput = () => {
+  touched = true;
+  for (const type of FIRST_INPUT) window.removeEventListener(type, onFirstInput);
+  const runs = Array.from(waiting);
+  waiting.clear();
+  for (const run of runs) run();
+};
+/** Runs `run` now, or at the first input when a phone page still rests untouched at its top.
+    Returns the cancel. */
+function whenTouched(run: () => void): () => void {
+  if (touched || window.scrollY > 0 || !matchMedia(PHONE_QUERY).matches) {
+    run();
+    return () => {};
+  }
+  if (waiting.size === 0) {
+    for (const type of FIRST_INPUT) window.addEventListener(type, onFirstInput, { passive: true });
+  }
+  waiting.add(run);
+  return () => {
+    waiting.delete(run);
+    if (waiting.size === 0 && !touched) {
+      for (const type of FIRST_INPUT) window.removeEventListener(type, onFirstInput);
+    }
+  };
 }
 
 /* ── builds: one per animation frame, so four cards never make one long task ── */
@@ -344,9 +384,18 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   };
 
   const last = (entries: IntersectionObserverEntry[]) => entries[entries.length - 1];
+  // a viewport ahead: on a phone page still untouched at its top this waits for the first input
+  let ahead = false;
+  let cancelAhead = () => {};
   const nearIo = new IntersectionObserver(
     (entries) => {
-      if (last(entries).isIntersecting) prepare();
+      ahead = last(entries).isIntersecting;
+      cancelAhead();
+      cancelAhead = ahead
+        ? whenTouched(() => {
+            if (ahead && !disposed) prepare();
+          })
+        : () => {};
     },
     { rootMargin: PREPARE_MARGIN },
   );
@@ -406,6 +455,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   return () => {
     disposed = true;
     clearTimeout(dwell);
+    cancelAhead();
     nearIo.disconnect();
     cueIo.disconnect();
     focusIo.disconnect();
