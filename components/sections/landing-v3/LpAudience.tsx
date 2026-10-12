@@ -16,6 +16,19 @@ export const useAudience = () => useContext(AudienceContext);
 // agents-view). This file keeps the provider and AudienceSelector (owner
 // nav-hero).
 
+/** The cut between the views: the hero fades up from this opacity over this
+    long once the other view is committed (see setAudience). */
+const AUDIENCE_CUT_FROM = 0.4;
+const AUDIENCE_CUT_MS = 180;
+
+/** The selector's "the click is taken" state, ahead of the commit. */
+const setPending = (page: HTMLElement | null, value: Audience | null) => {
+  page?.querySelectorAll<HTMLElement>(".lp-audience-selector").forEach(selector => {
+    if (value) selector.setAttribute("data-pending", value);
+    else selector.removeAttribute("data-pending");
+  });
+};
+
 const audienceFromUrl = (): Audience =>
   new URL(window.location.href).searchParams.get("audience") === "agents" ? "agents" : "humans";
 
@@ -30,8 +43,8 @@ export function LpAudience({ children }: { children: ReactNode }) {
   const [audience, setRenderedAudience] = useState<Audience>("humans");
   const desiredAudience = useRef<Audience>("humans");
   const committedAudience = useRef<Audience>("humans");
-  const activeTransition = useRef<ViewTransition | null>(null);
   const request = useRef(0);
+  const main = useRef<HTMLElement>(null);
   const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
@@ -42,9 +55,10 @@ export function LpAudience({ children }: { children: ReactNode }) {
       committedAudience.current = desiredAudience.current = arrived;
       setRenderedAudience(arrived);
     }
+    const page = main.current;
     const onPopState = () => {
       request.current += 1;
-      activeTransition.current?.skipTransition();
+      setPending(page, null);
       const current = audienceFromUrl();
       committedAudience.current = desiredAudience.current = current;
       setRenderedAudience(current);
@@ -53,46 +67,64 @@ export function LpAudience({ children }: { children: ReactNode }) {
     return () => {
       window.removeEventListener("popstate", onPopState);
       request.current += 1;
-      activeTransition.current?.skipTransition();
+      setPending(page, null);
     };
   }, []);
 
+  /* The switch answers first, the page follows (founder 2026-10-12: "the
+     untoggle from agents > human is slow … like there is a lag"). The View
+     Transition this replaced froze the page for 80–160 ms while the browser
+     captured both views (the humans view is the heavier one to render), then
+     crossfaded for 240 ms: about 400 ms before the other view was readable.
+     Now: (1) data-pending on the selector slides the thumb on the very next
+     frame (audience.css; a transform transition, so the compositor keeps it
+     moving while the main thread renders the other view; on the selector, not
+     on <main>, so that frame restyles one row and not the page: on <main> it
+     cost WebKit about 45 ms); (2) the view is committed
+     right after that frame, with no snapshot and no crossfade; (3) the hero
+     fades up from a little under full opacity so the cut is not hard. */
   const setAudience = useCallback((update: AudienceUpdate) => {
     const value = typeof update === "function" ? update(desiredAudience.current) : update;
     desiredAudience.current = value;
     const id = ++request.current;
-    activeTransition.current?.skipTransition();
+    const page = main.current;
     const url = new URL(window.location.href);
     if (value === "agents") url.searchParams.set("audience", "agents");
     else url.searchParams.delete("audience");
     // a section anchor (#how-it-works, #pricing) points at a section the
     // other view may hide: the switched URL carries none
     url.hash = "";
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const commit = () => {
       if (request.current !== id) return;
+      const changed = committedAudience.current !== value;
       committedAudience.current = value;
       flushSync(() => {
         setRenderedAudience(value);
         if (url.href !== window.location.href) window.history.pushState(null, "", url);
         setAnnouncement(value === "agents" ? "For agents selected." : "For humans selected.");
       });
+      setPending(page, null);
+      if (changed && !reduced) {
+        page?.querySelector<HTMLElement>(".lp-hero")?.animate(
+          [{ opacity: AUDIENCE_CUT_FROM }, { opacity: 1 }],
+          { duration: AUDIENCE_CUT_MS, easing: "cubic-bezier(.22, 1, .36, 1)" },
+        );
+      }
     };
-    if (!document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reduced || !page) {
       commit();
       return;
     }
-    // Commit in the capture callback without waiting for animation frames.
-    // View Transitions suppress rendering during capture, so waiting for a
-    // redraw here postponed the response until the old 80ms timeout expired.
-    const transition = document.startViewTransition(commit);
-    activeTransition.current = transition;
-    const clear = () => { if (activeTransition.current === transition) activeTransition.current = null; };
-    void transition.ready.catch(() => {}); // A rapid toggle may skip its predecessor.
-    void transition.finished.then(clear, clear);
+    setPending(page, value);
+    // one painted frame for the thumb, then the commit (a timeout after the
+    // frame callback runs right after that frame's paint, sooner than a
+    // second animation frame would)
+    requestAnimationFrame(() => { setTimeout(commit, 0); });
   }, []);
   return (
     <AudienceContext.Provider value={{ audience, setAudience }}>
-      <main id="main-content" className="lp lp-audience-page" data-audience={audience}>
+      <main ref={main} id="main-content" className="lp lp-audience-page" data-audience={audience}>
         <span className="lp-sr-only" role="status">{announcement}</span>
         {children}
       </main>

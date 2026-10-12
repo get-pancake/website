@@ -222,8 +222,9 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 
 /* ── toggle, agents look — Figma 4939:3726 (nav-hero §4.2 handoff) ──────────
    Labels Geist Mono 500 / 700 (80 wide each), switch 64×28 with a 1 px white ring inside, square
-   39×24 knob. The mono labels move the switch box 1111 → 1115: its view-transition group glides
-   there (audience.css). The row stays at nav-hero's y — the human column sizes the cell. */
+   39×24 knob. The mono labels move the switch box 1111 → 1115 with the view (no view transition
+   since 2026-10-12: the switch answers first, audience.css). The row stays at nav-hero's y — the
+   human column sizes the cell. */
 [data-audience="agents"] .lp-audience-selector,
 [data-audience="agents"] .lp-audience-selector * { font-family: var(--lp-font-mono); }
 [data-audience="agents"] .lp-audience-selector { color: var(--lp-ink-0); }

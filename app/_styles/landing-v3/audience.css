@@ -1,6 +1,6 @@
 /* Audience foundation: the original landing and its inverse hero.
    Ownership (V2 Figma replication, 2026-10-09 phase 0 split, code-map §12.3-1):
-   - this file: view transitions, spacing tokens, the title grid, the agent
+   - this file: spacing tokens, the title grid, the agent
      column's PLACEMENT in the hero, and the audience selector/switch — owner
      nav-hero;
    - the section-hiding rule of the agents view (marked below) — owner
@@ -10,32 +10,11 @@
      the agent headline (LpAudienceHeadline.tsx) and the agent column's
      contents (LpAgentStart.tsx) — owner agents-view. */
 :root {
-  --lp-audience-fade-duration: 240ms;
-  /* on :root (not .lp): the view-transition pseudo-elements below hang off
-     <html> and read it too */
+  /* the hero's fade-up after a switch (LpAudience.tsx AUDIENCE_CUT_MS); the
+     agent headline waits this long before it types (audience-agents.css) */
+  --lp-audience-fade-duration: 180ms;
   --lp-audience-ease: cubic-bezier(.22, 1, .36, 1);
 }
-
-/* One short crossfade includes the live artwork, navigation and page palette.
-   Only snapshots animate; the original page geometry and clocks stay intact. */
-html:has(.lp-audience-page)::view-transition { pointer-events: none; }
-html:has(.lp-audience-page)::view-transition-group(root) { animation: none; }
-html:has(.lp-audience-page)::view-transition-old(root),
-html:has(.lp-audience-page)::view-transition-new(root) {
-  animation-duration: var(--lp-audience-fade-duration);
-  animation-timing-function: ease-out;
-}
-/* The switch keeps its ordinary live thumb slide; it never crossfades. Its
-   group glides (V2, 2026-10-09): the agents look sets the labels in a wider
-   mono face, so the switch box can move a few px between the views — it
-   slides there on the toggle's own curve instead of snapping. A no-op when
-   both views put it on the same pixel. */
-html:has(.lp-audience-page)::view-transition-group(lp-audience-switch) {
-  animation-duration: var(--lp-audience-fade-duration);
-  animation-timing-function: var(--lp-audience-ease);
-}
-html:has(.lp-audience-page)::view-transition-old(lp-audience-switch) { display: none; }
-html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation: none; mix-blend-mode: normal; }
 
 .lp {
   --lp-space-1: 4px;
@@ -121,7 +100,6 @@ html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation
   padding: 0;
   position: relative;
   touch-action: manipulation;
-  view-transition-name: lp-audience-switch;
   width: var(--lp-switch-width);
 }
 /* 72×44 hit area around the 64×28 track */
@@ -155,6 +133,19 @@ html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation
 .lp-audience-switch[aria-checked="true"] .lp-audience-switch__thumb {
   transform: translateX(calc(var(--lp-switch-width) - var(--lp-switch-thumb-width) - 2 * var(--lp-switch-inset)));
 }
+/* The switch answers before the page does (2026-10-12, LpAudience.tsx):
+   data-pending is set on the selector at the click, one frame ahead of the
+   view's commit, and moves the thumb and the bold label at once. Only the
+   slide and the weight: the look of the other view (square, outlined) arrives
+   with it. One class more specific than the aria-checked rule above. */
+.lp-audience-selector[data-pending="agents"] .lp-audience-switch .lp-audience-switch__thumb {
+  transform: translateX(calc(var(--lp-switch-width) - var(--lp-switch-thumb-width) - 2 * var(--lp-switch-inset)));
+}
+.lp-audience-selector[data-pending="humans"] .lp-audience-switch .lp-audience-switch__thumb { transform: none; }
+.lp-audience-selector[data-pending="agents"] .lp-audience-selector__label[data-label="For agents"],
+.lp-audience-selector[data-pending="humans"] .lp-audience-selector__label[data-label="For humans"] { font-weight: 700; }
+.lp-audience-selector[data-pending="agents"] .lp-audience-selector__label[data-label="For humans"],
+.lp-audience-selector[data-pending="humans"] .lp-audience-selector__label[data-label="For agents"] { font-weight: 500; }
 
 /* ── INTEGRATOR-OWNED (V2 replication, 2026-10-09): the agents view hides
    every human section. Keep all original sections mounted so their motion
@@ -166,7 +157,5 @@ html:has(.lp-audience-page)::view-transition-new(lp-audience-switch) { animation
 .lp-audience-page[data-audience="agents"] > .lp-foot { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
-  html:has(.lp-audience-page)::view-transition-old(root),
-  html:has(.lp-audience-page)::view-transition-new(root) { animation: none; }
   .lp-audience-switch__track, .lp-audience-switch__thumb { transition: none; }
 }
