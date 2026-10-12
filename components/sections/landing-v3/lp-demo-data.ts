@@ -57,11 +57,12 @@ export const LP_DEMO = {
     work: [
       { label: "Reading your Brain", result: "" },
       { label: "Searching funding news", count: 148, result: "rounds" },
-      { label: "Qualifying each founder", count: 12, result: "fit" },
+      { label: "Qualifying each founder", count: 25, result: "fit" },
     ],
     /** What the research found (the count ticks up), with the leads' initials (invented; no
-     *  name is shown). */
-    found: 12,
+     *  name is shown). The same number as the Play's pace below: a first search that fills
+     *  its week (founder 2026-10-13: "12 leads found est bizarre si tu en run 25 par semaine"). */
+    found: 25,
     foundLabel: "leads found",
     leads: ["MR", "JL", "AS", "KD", "TN"],
     /** The Play that keeps them coming: the app's own slots (who, how it finds them, how many,
@@ -81,7 +82,7 @@ export const LP_DEMO = {
     /** Pancake's last word once the Play is live: what happens from here. */
     after: "It’s live. I’ll find new ones each week and reach out in your voice.",
     /** role="img" label of the view. */
-    aria: "Product demo. A web design agency types a request: We design websites for startups. Find founders who just raised a seed round. Pancake reads its Brain, searches funding news and qualifies each founder: 12 leads found. It proposes a Play to keep them coming: who, which companies, the signal, 25 new leads a week, then find, qualify, reach out. One click deploys it. Pancake confirms it is live and will reach out in the agency’s voice.",
+    aria: "Product demo. A web design agency types a request: We design websites for startups. Find founders who just raised a seed round. Pancake reads its Brain, searches funding news and qualifies each founder: 25 leads found. It proposes a Play to keep them coming: who, which companies, the signal, 25 new leads a week, then find, qualify, reach out. One click deploys it. Pancake confirms it is live and will reach out in the agency’s voice.",
   },
 
   claude: {
