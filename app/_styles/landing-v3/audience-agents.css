@@ -230,6 +230,11 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 [data-audience="agents"] .lp-audience-selector { color: var(--lp-ink-0); }
 [data-audience="agents"] .lp-audience-selector__label { font-weight: 500; letter-spacing: 0; }
 [data-audience="agents"] .lp-audience-selector__label[data-active="true"] { font-weight: 700; }
+/* The switch stays on the very pixel it has in the humans view: there the left
+   label's box is 76 wide (Geist bold); the mono bold is 80, which moved the
+   switch 4 px to the right. Same 76 box here, the mono set 0.4 px tighter so
+   it fits. */
+[data-audience="agents"] .lp-audience-selector__label[data-label="For humans"] { letter-spacing: -0.4px; width: 76px; }
 [data-audience="agents"] :is(.lp-audience-switch, .lp-audience-switch__track, .lp-audience-switch__thumb) { border-radius: 0; }
 [data-audience="agents"] .lp-audience-switch__track {
   background: transparent;

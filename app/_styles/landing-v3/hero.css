@@ -214,59 +214,38 @@
    otherwise erase the centring. The humans view no longer moves them
    (2026-10-12: the hero copy stays put while the window grows). */
 .lp-hero--home .lp-hero-title {
-  bottom: 63px; /* V2 99 − 36 (the founder's 2026-09-01 drop; raised to 99 for a few hours on 2026-10-13, a misreading of "les proportions du figma": he meant the H1 / H2 sizes) */
-  /* The copy block is 1214 wide, centred (220 → 1434 at 1654): the one-line H1
-     at the designer's 69.014 (775) + 71 + the 368 column. V2 drew it on the
-     demo window's edges (259 → 1395, 1136 wide), which one line does not fit;
-     founder 2026-10-13: "the block with h1 / h2 has to be centered for sure
-     but it seems you're not taking enough space". Not wider (the nav's 1296
-     was tried): further left the H1's first letter sits under the rainbow's
-     left arm at its lowest turn, and the art would have to be lifted off the
-     designer's place. 32 px gutters under 1278 wide. */
-  left: max(32px, calc(50% - 607px));
+  bottom: 63px; /* V2 99 − 36 */
+  left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
   transform: none;
 }
-/* The humans H1 is ONE line (founder 2026-10-13: "h1 in one line"). "Deploy GTM
-   ideas in seconds" is 11.23 × its font size wide at −0.03em tracking (measured,
-   Chromium): 775 px at the designer's 69.014. Under 1278 wide the block narrows
-   with the page and the H1 follows, keeping at least 64 px before the column.
-   11.3, not 11.23: half a percent of slack for the other engines' text widths.
-   A longer H1 needs a new measure.
-   On the H1 itself, not on .lp-hero-title: the agents headline shares that box. */
-@media (min-width: 1025px) {
+/* The humans H1 since 2026-10-13: "Deploy GTM ideas / that bring you customers",
+   two lines at V2's place and size, as the H1 before it (founder: "in 2 lines,
+   same placement as in the figma, same as when it was the previous h1"). Its
+   second line is 9.6 × the font size wide (663 px at 69.014; the previous one
+   was 643): 105 px before the right column from 1201 wide up. Where the
+   layout gets tight it is the only thing that gives, so the line never runs
+   into the column (48 px kept, 1025 to about 1050 wide) nor into the phone's
+   32 px gutter (35.0 instead of 35.56 at 402, less under 360). On the H1
+   itself: the agents headline shares .lp-hero-title's box and size. */
+@media (min-width: 1025px) and (max-width: 1200px) {
   .lp-hero--home #lp-hero-title {
-    --lp-h1-fs: min(69.014px, calc((min(1214px, 100vw - 64px) - 432px) / 11.3));
-    font-size: var(--lp-h1-fs);
-    letter-spacing: -0.03em;
-    line-height: 1.16;
-    /* V2 sets the H1's first line level with the lede and its second with the
-       buttons. The one line keeps the first of the two: it is centred on the
-       lede (founder 2026-10-13: "l'alignement du h1 avec le h2"), whose centre
-       is 167 px above the hero's bottom (71 + the 48 buttons + 24 + half of
-       its two lines). The shared box is bottom-anchored at 63, hence 104 minus
-       half the line. Moved with `bottom` on the H1 itself, never a transform
-       (the agents assembly translates the shared box) and never the box's own
-       `bottom` (the agents headline sits in it). */
-    bottom: calc(104px - 0.58 * var(--lp-h1-fs));
-    position: relative;
+    font-size: min(clamp(52px, 5.4vw, 69.014px), calc((100vw - 512px) / 9.65));
   }
 }
-/* Phones keep TWO lines at the artboard's size (35.559 at 402: founder 2026-10-13,
-   "yes two lines on phones"): one line would have to drop to 30 px there, and the
-   H1 / lede ratio with it (1.9 against the artboard's 2.2). The break is in the
-   markup and only exists here. */
-.lp-hero-title__br { display: none; }
-.lp-hero-nobr { white-space: nowrap; }
 @media (max-width: 767px) {
-  .lp-hero-title__br { display: inline; }
+  .lp-hero--home #lp-hero-title {
+    font-size: min(clamp(30px, 8.846vw, 35.559px), calc((100vw - 64px) / 9.65));
+  }
 }
+/* "go-to-market" in the lede never breaks at a hyphen (LpHero.tsx) */
+.lp-hero-nobr { white-space: nowrap; }
 .lp-hero--home .lp-hero-aside {
   align-items: flex-start;
   bottom: 71px; /* V2 107 − 36 */
   display: flex;
   flex-direction: column;
   gap: 24px; /* Figma itemSpacing 24 */
-  right: max(32px, calc(50% - 607px)); /* the block's right edge: 1434 at 1654 */
+  left: calc(50% + 200px); /* left edge 1027 at 1654 (column centre x1211) */
   position: absolute;
   width: 368px;
 }
@@ -287,8 +266,25 @@
   position: static;
   transform: none;
 }
-/* (no ≤1200 tier for the homepage: the max() above already gives the nav's
-   32 px gutters under 1360) */
+/* ONE geometry for the two views (founder 2026-10-13: "structure has to be
+   symetrical on the agent page, toggle should be in the exact same place").
+   The human column sizes the cell in both views. The agent column is taller
+   than it since the lede went down to two lines (142 against 120): instead of
+   pushing the toggle up 22 px, it starts on the lede's own line and hangs
+   lower. */
+.lp-hero--home .lp-hero-swap > .lp-hero-col--agent {
+  align-self: start;
+  height: 0;
+}
+@media (max-width: 1200px) {
+  .lp-hero--home .lp-hero-title {
+    left: 48px;
+  }
+  .lp-hero--home .lp-hero-aside {
+    left: auto;
+    right: 48px;
+  }
+}
 /* ── Homepage first screen (≥1025) — founder 2026-10-12, _decisions §10 ──
    "The designer page is built so that the top of this product footage
    appears in the hero 100vh": the demo window's top bar peeks at the bottom
@@ -320,9 +316,7 @@
    transform and art top 0,2,0 vs 0,1,0). */
 @media (min-width: 1025px) {
   .lp-hero.lp-hero--home {
-    /* lift0 = the decision's lift; the copy's scale below is made of it. */
-    --lp-hero-lift0: clamp(0px, (873px - var(--lp-svh, 100svh)) * 0.3, 34px);
-    --lp-hero-lift: var(--lp-hero-lift0);
+    --lp-hero-lift: clamp(0px, (873px - var(--lp-svh, 100svh)) * 0.3, 34px);
     --lp-hero-h: clamp(
       380px,
       max(var(--lp-svh, 100svh) - 216px, min(544px, var(--lp-svh, 100svh) - 120px)),
@@ -366,7 +360,6 @@
 @media (min-width: 1025px) and (max-height: 639px) {
   .lp-hero.lp-hero--home {
     --lp-hero-lift: 60px;
-    --lp-hero-lift0: 60px;
   }
 }
 /* a unitless ratio of two lengths: tan(atan2(a, b)) = a / b (the idiom of
@@ -377,7 +370,7 @@
     .lp-hero.lp-hero--home {
       --lp-hero-s: clamp(
         0.66,
-        tan(atan2(var(--lp-hero-h) - 358px + var(--lp-hero-lift0), 299px)),
+        tan(atan2(var(--lp-hero-h) - 358px + var(--lp-hero-lift), 299px)),
         1
       );
     }
