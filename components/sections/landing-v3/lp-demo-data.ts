@@ -24,20 +24,23 @@ export const LP_DEMO = {
   pancake: {
     newChat: "New chat",
     /* Founder 2026-10-12: "suggested Plays rather than the three actions", copy closer to what
-       Pancake does, and "not more complex and not more words than the current one" (this view
-       reads about 90 words, the one before about 130). The hero says "Deploy GTM ideas in
-       seconds": the window shows one being deployed. Not the app's own strings on purpose
-       ("the UI does not need to be iso with the product"). */
+       Pancake does. The hero says "Deploy GTM ideas in seconds": the window shows one being
+       deployed. Not the app's own strings on purpose ("the UI does not need to be iso with the
+       product"), but the app's LOGIC (his second pass, 2026-10-13: "il faut reprendre la logique
+       pour coller à celle de l'app tout en gardant la simplicité"): Pancake researches, leads
+       are found, THEN the Play is deployed, and Pancake says what happens next. The subtitle
+       "Type it. Pancake runs it." is gone (same pass). */
     title: "What’s your next GTM idea?",
-    sub: "Type it. Pancake runs it.",
     placeholder: "Find people who…",
     /* The story (founder 2026-10-12: "something for a web design agency", invented from what
        the app does, "no need that what you write on motion comes from an IRL play"): an agency
        goes after startups that just raised. Funding, hiring and keyword are real Pancake
        signals. No person or company is named: the leads are five pairs of initials. */
-    /** What is typed in the chat bar (short: the first part goes fast). The Claude & Codex view
-     *  keeps the production request until it is redrawn. */
-    request: "Find startups that just raised a seed round.",
+    /** What is typed in the chat bar: what the company does, then who to find (founder
+     *  2026-10-13: "the logic where you explain what you do was good in the designer's
+     *  version", whose request read "We make SaaS launch videos. Find…"). The Claude & Codex
+     *  view keeps the production request until it is redrawn. */
+    request: "We design websites for startups. Find founders who just raised a seed round.",
     ideasLabel: "Suggested Plays",
     /** Three Plays, three signals, for the same agency. */
     ideas: [
@@ -49,31 +52,36 @@ export const LP_DEMO = {
     /** A real link to /guides/claude (decision 2026-10-09 §3): the humans view's route to the
      *  guide, which the tour's "Works in Claude and Codex. See how →" link carried before. */
     chipCta: "Use Pancake with Claude or Codex",
-    /** The Play card. Its three rows are the work Pancake does while it builds a Play: each
-     *  shows `doing` with a spinner, then its value with a check (the app fills its own
-     *  numbered slots the same way). */
+    /** The research: three tool calls, one at a time (spinner, then a check and what came
+     *  back). `count` ticks up from 0. */
+    work: [
+      { label: "Reading your Brain", result: "" },
+      { label: "Searching funding news", count: 148, result: "rounds" },
+      { label: "Qualifying each founder", count: 12, result: "fit" },
+    ],
+    /** What the research found (the count ticks up), with the leads' initials (invented; no
+     *  name is shown). */
+    found: 12,
+    foundLabel: "leads found",
+    leads: ["MR", "JL", "AS", "KD", "TN"],
+    /** The Play that keeps them coming: the app's own slots (who, how it finds them, how many,
+     *  how often) and the steps it runs, then one button. */
     play: {
       kicker: "Play",
       name: "Startups after a seed round",
       draft: "Draft",
       live: "Live",
-      rows: [
-        { key: "Who", doing: "Reading your Brain" },
-        { key: "Signal", doing: "Checking funding news" },
-        { key: "Then", doing: "Planning outreach" },
-      ],
-      who: "Founders, Heads of Marketing",
-      signal: ["Seed round", "Raised this month"],
-      steps: ["Find", "Qualify", "Reach out"],
-      /** The first leads' initials (invented; no name is shown). */
-      leads: ["MR", "JL", "AS", "KD", "TN"],
+      who: { key: "Who", value: "Founders, Heads of Marketing" },
+      company: { key: "Company", value: "B2B startups, 10 to 50 people" },
+      signal: { key: "Signal", value: ["Seed round", "Raised this month"] },
+      pace: { key: "Pace", value: "25 new leads a week" },
+      then: { key: "Then", value: ["Find", "Qualify", "Reach out"] },
       deploy: "Deploy Play",
-      /** After the click: the first search's leads arrive (the count ticks up to `found`). */
-      found: 12,
-      foundLabel: "leads found",
     },
+    /** Pancake's last word once the Play is live: what happens from here. */
+    after: "It’s live. I’ll find new ones each week and reach out in your voice.",
     /** role="img" label of the view. */
-    aria: "Product demo. A web design agency types a request: Find startups that just raised a seed round. Pancake builds a Play from it: who to find, the signal to watch, and what happens next. One click deploys it and its first leads arrive.",
+    aria: "Product demo. A web design agency types a request: We design websites for startups. Find founders who just raised a seed round. Pancake reads its Brain, searches funding news and qualifies each founder: 12 leads found. It proposes a Play to keep them coming: who, which companies, the signal, 25 new leads a week, then find, qualify, reach out. One click deploys it. Pancake confirms it is live and will reach out in the agency’s voice.",
   },
 
   claude: {

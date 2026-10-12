@@ -167,14 +167,15 @@
 .lp-demowin__view--pancake {
   --pk-col: 487px;
   --pk-x: calc(50% - 244px); /* the designer centres the column on 567.5 */
-  --pk-title-top: 106.13px;
+  /* V2 has the title at 106.13 with a subtitle under it; without the subtitle
+     (founder 2026-10-13) the title sits the same 34.5 px above the chat bar */
+  --pk-title-top: 130px;
   --pk-bar-top: 206.6px;
   --pk-bar-h: 121px;
   --pk-ideas-top: 362.9px;
   --pk-chip-top: 551.2px;
-  --pk-bubble-top: 112px;
-  --pk-card-top: 162px;
-  --pk-dock-top: 520px;
+  --pk-thread-top: 92px;
+  --pk-dock-top: 542px;
   --pk-dock-h: 48px;
 }
 .lp-demowin__win {
@@ -224,7 +225,6 @@
   letter-spacing: -0.56px; /* −2 % */
   line-height: 42px;
 }
-.lp-demowin__sub { color: var(--lp-subtle-text); font-size: var(--lp-text-md); line-height: 24px; }
 
 /* the chat bar (V2 composer 4939:2724, 487×121 at 206.6): ONE element from the
    home to the dock. The timeline tweens its top and height; everything in it
@@ -356,38 +356,104 @@
 .lp-demowin__badge-claude { fill: var(--lp-demowin-claude-mark); }
 .lp-demowin__badge-codex { fill: var(--lp-text); }
 
-/* ── the thread: the sent request, then the Play card (hidden at home) ── */
+/* ── the thread (hidden at home): ONE column in flow — the request, the
+   research, the leads it found, the Play, Pancake's last word. In flow so
+   that when the research folds away the rest moves up with it, and the Play's
+   own height (its button comes, then goes) moves what is under it. ── */
+.lp-demowin__thread {
+  display: flex;
+  flex-direction: column;
+  left: var(--pk-x);
+  position: absolute;
+  top: var(--pk-thread-top);
+  width: var(--pk-col);
+}
+.lp-demowin__thread > * { opacity: 0; visibility: hidden; }
 .lp-demowin__bubble {
+  align-self: flex-end;
   background: var(--lp-ink-100);
   border-radius: 12px;
   color: var(--lp-surface);
   font-size: 14px;
   line-height: 20px;
-  max-width: calc(var(--pk-col) * 0.85);
-  opacity: 0;
+  max-width: 88%;
   padding: 8px 12px;
-  position: absolute;
-  right: calc(100% - var(--pk-x) - var(--pk-col));
-  top: var(--pk-bubble-top);
-  visibility: hidden;
-  white-space: nowrap;
+  text-wrap: pretty;
 }
+/* the research: three tool calls, a state mark, what Pancake is doing and,
+   on the right, what came back */
+.lp .lp-demowin__work { margin-top: 12px; overflow: hidden; }
+.lp-demowin__work li {
+  align-items: center;
+  column-gap: 10px;
+  display: grid;
+  font-size: 13px;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  height: 28px;
+  line-height: 18px;
+}
+.lp-demowin__work-l { color: var(--lp-ink-90); }
+.lp-demowin__work-r { color: var(--lp-demowin-muted-fg); font-variant-numeric: tabular-nums; }
+.lp-demowin__work-r b { color: var(--lp-text); font-weight: 600; }
+/* a state mark: a ring that turns while Pancake works, then a check */
+.lp-demowin__st { display: grid; height: 18px; place-items: center; width: 18px; }
+.lp-demowin__st > * { grid-area: 1 / 1; }
+.lp-demowin__st-spin {
+  border: 1.5px solid var(--lp-ink-40);
+  border-radius: 50%;
+  border-top-color: var(--lp-ink-90);
+  height: 14px;
+  width: 14px;
+}
+.lp-demowin__card[data-run] .lp-demowin__st-spin { animation: lp-demowin-spin 0.7s linear infinite; }
+.lp-demowin__st-ok {
+  --ico: 10px;
+  --ico-c: var(--lp-surface);
+  align-items: center;
+  background: var(--lp-demowin-green-fg);
+  border-radius: 50%;
+  display: flex;
+  height: 16px;
+  justify-content: center;
+  width: 16px;
+}
+/* what the research found: the leads' faces and their number */
+.lp .lp-demowin__found { align-items: center; display: flex; gap: 12px; height: 32px; margin-top: 10px; }
+.lp-demowin__avs { display: flex; }
+.lp-demowin__av {
+  align-items: center;
+  background: var(--av, var(--lp-yellow-20));
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--lp-surface);
+  display: flex;
+  font-size: 9.5px;
+  font-weight: 600;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+.lp-demowin__av + .lp-demowin__av { margin-left: -4px; }
+.lp-demowin__av:nth-child(1) { --av: var(--lp-yellow-20); }
+.lp-demowin__av:nth-child(2) { --av: var(--lp-pink-20); }
+.lp-demowin__av:nth-child(3) { --av: var(--lp-purple-20); }
+.lp-demowin__av:nth-child(4) { --av: var(--lp-blue-20); }
+.lp-demowin__av:nth-child(5) { --av: var(--lp-green-10); }
+.lp-demowin__count { font-size: 14px; font-weight: 500; line-height: 20px; }
+.lp-demowin__count b { font-variant-numeric: tabular-nums; font-weight: 600; }
+
 /* the Play card: the chat bar's own material (white, hairline, soft shadow),
-   one tile, one name, three rows, one button. The only flourish is the
-   outline that draws when it goes Live. */
+   one tile, one name, five rows, one button. The only flourish is the
+   outline that draws when it goes Live. The wrapper carries that outline:
+   the card itself clips (its height is tweened when the button comes and
+   goes). */
+.lp-demowin__playw { margin-top: 12px; position: relative; }
 .lp-demowin__playc {
   background: var(--lp-surface);
   border-radius: var(--lp-r-m);
   box-shadow: inset 0 0 0 0.5px var(--lp-stroke), var(--lp-demowin-shadow-input);
-  left: var(--pk-x);
-  opacity: 0;
   overflow: hidden;
-  position: absolute;
-  top: var(--pk-card-top);
-  visibility: hidden;
-  width: var(--pk-col);
 }
-.lp-demowin__play-in { padding: 18px 20px 20px; }
+.lp-demowin__play-in { padding: 16px 20px 18px; }
 .lp-demowin__play-head { align-items: center; column-gap: 12px; display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; }
 .lp-demowin__tile {
   --ico: 18px;
@@ -410,20 +476,17 @@
   line-height: 14px;
   text-transform: uppercase;
 }
-.lp-demowin__play-title { display: grid; grid-column: 2; min-width: 0; }
-.lp-demowin__play-title > * { grid-area: 1 / 1; }
 .lp-demowin__play-name {
   font-family: var(--lp-font-aeonik);
   font-size: 17px;
   font-weight: 600;
+  grid-column: 2;
   letter-spacing: -0.2px;
   line-height: 22px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-/* the name is not known yet: a quiet bar holds its place */
-.lp-demowin__play-skel { align-self: center; background: var(--lp-ink-30); border-radius: 5px; height: 10px; opacity: 0; width: 62%; }
 .lp-demowin__badge-st { display: grid; grid-column: 3; grid-row: 1 / 3; }
 .lp-demowin__badge-st > span {
   border-radius: 999px;
@@ -443,60 +506,35 @@
   color: var(--lp-demowin-green-fg);
   display: flex;
   gap: 5px;
+  opacity: 0;
+  visibility: hidden;
 }
 .lp-demowin__badge-st > [data-s="live"]::before { background: currentColor; border-radius: 50%; content: ""; height: 5px; width: 5px; }
 
-.lp-demowin__rows { margin-top: 14px; }
+.lp-demowin__rows { margin-top: 12px; }
 .lp-demowin__rows li {
   align-items: center;
   border-top: 1px solid color-mix(in srgb, var(--lp-stroke) 45%, transparent);
   column-gap: 10px;
   display: grid;
   font-size: 13px;
-  grid-template-columns: 18px 58px minmax(0, 1fr);
-  height: 42px;
+  grid-template-columns: 18px 64px minmax(0, 1fr);
+  height: 36px;
   line-height: 18px;
 }
-/* the row's state: a ring that turns while Pancake works, then a check */
-.lp-demowin__st { display: grid; height: 18px; place-items: center; width: 18px; }
-.lp-demowin__st > * { grid-area: 1 / 1; }
-.lp-demowin__st-idle { border: 1.5px solid var(--lp-ink-40); border-radius: 50%; height: 14px; width: 14px; }
-.lp-demowin__st-spin {
-  border: 1.5px solid var(--lp-ink-40);
-  border-radius: 50%;
-  border-top-color: var(--lp-ink-90);
-  height: 14px;
-  opacity: 0;
-  width: 14px;
-}
-.lp-demowin__card[data-run] .lp-demowin__st-spin { animation: lp-demowin-spin 0.7s linear infinite; }
-.lp-demowin__st-ok {
-  --ico: 10px;
-  --ico-c: var(--lp-surface);
-  align-items: center;
-  background: var(--lp-demowin-green-fg);
-  border-radius: 50%;
-  display: flex;
-  height: 16px;
-  justify-content: center;
-  opacity: 0;
-  width: 16px;
-}
 .lp-demowin__k { color: var(--lp-demowin-muted-fg); }
-.lp-demowin__val { display: grid; min-width: 0; }
-.lp-demowin__val > * { align-self: center; grid-area: 1 / 1; min-width: 0; }
-.lp-demowin__doing { color: var(--lp-ink-70); opacity: 0; }
-.lp-demowin__done {
+.lp-demowin__val {
   align-items: center;
   display: flex;
   font-weight: 500;
   gap: 6px;
+  min-width: 0;
   overflow: hidden;
   white-space: nowrap;
 }
 /* shared with the Claude plan card (its base values stay) */
 .lp-demowin__v { align-items: flex-start; display: flex; flex-wrap: wrap; gap: 2px 6px; min-width: 0; text-wrap: pretty; }
-/* a keyword (the app's own blue chip) and a step */
+/* a signal (the app's own blue chip) and a step */
 .lp-demowin__kw,
 .lp-demowin__step {
   border-radius: 999px;
@@ -510,9 +548,9 @@
 .lp-demowin__step { background: var(--lp-surface-2); box-shadow: inset 0 0 0 1px var(--lp-subtle-stroke); }
 .lp-demowin__arrow { --ico: 12px; --ico-c: var(--lp-ink-60); display: flex; flex: none; }
 
-/* the foot: the button, then (same place) the first leads */
-.lp-demowin__foot { display: grid; padding-top: 16px; }
-.lp-demowin__foot > * { grid-area: 1 / 1; }
+/* the foot: the one button (it comes when the Play is drawn and leaves once
+   it is deployed; the card's height follows) */
+.lp-demowin__foot { padding-top: 14px; }
 .lp-demowin__go {
   --ico: 11px;
   align-items: center;
@@ -540,43 +578,24 @@
 }
 .lp-demowin__go > span { position: relative; }
 .lp-demowin__go::before { position: relative; z-index: 1; }
-.lp-demowin__found { align-items: center; display: flex; gap: 12px; height: 40px; opacity: 0; visibility: hidden; }
-.lp-demowin__avs { display: flex; }
-.lp-demowin__av {
-  align-items: center;
-  background: var(--av, var(--lp-yellow-20));
-  border-radius: 50%;
-  box-shadow: 0 0 0 2px var(--lp-surface);
-  display: flex;
-  font-size: 9.5px;
-  font-weight: 600;
-  height: 28px;
-  justify-content: center;
-  width: 28px;
-}
-.lp-demowin__av + .lp-demowin__av { margin-left: -4px; }
-.lp-demowin__av:nth-child(1) { --av: var(--lp-yellow-20); }
-.lp-demowin__av:nth-child(2) { --av: var(--lp-pink-20); }
-.lp-demowin__av:nth-child(3) { --av: var(--lp-purple-20); }
-.lp-demowin__av:nth-child(4) { --av: var(--lp-blue-20); }
-.lp-demowin__av:nth-child(5) { --av: var(--lp-green-10); }
-.lp-demowin__count { font-size: 14px; font-weight: 500; line-height: 20px; }
-.lp-demowin__count b { font-variant-numeric: tabular-nums; font-weight: 600; }
 
-/* the Live outline: one rounded rectangle on the card's own radius + 5, drawn
-   clockwise (the brand's four colours); the timeline sizes its viewBox to
-   the card and tweens the dash */
+/* the Live outline: one rounded rectangle 5 px outside the card, drawn
+   clockwise (the brand's four colours). The timeline gives it the card's
+   final size (its viewBox) and tweens the dash. */
 .lp-demowin__ring {
-  height: 0;
-  left: 0;
+  height: calc(100% + 10px);
+  left: -5px;
   opacity: 0;
   overflow: visible;
   pointer-events: none;
   position: absolute;
-  top: 0;
-  width: 0;
+  top: -5px;
+  width: calc(100% + 10px);
 }
 .lp-demowin__ring rect { fill: none; stroke-dasharray: 1; stroke-dashoffset: 1; stroke-linecap: round; stroke-width: 1.5; }
+
+/* Pancake's last word, once the Play is live */
+.lp .lp-demowin__after { font-size: 14px; line-height: 20px; margin-top: 14px; text-wrap: pretty; }
 
 /* the cursor is moved by the timeline here: no CSS easing under it */
 .lp-demowin__view--pancake .lp-demowin__cursor,
@@ -1036,13 +1055,12 @@
      gets shorter (its bottom edge stays), and the thread sits in the middle of the card. */
   .lp-demowin__view--pancake {
     --pk-x: 29.18px;
-    --pk-title-top: 220.03px;
+    --pk-title-top: 244px; /* the artboard's 220.03 with a subtitle; alone, 24 lower */
     --pk-bar-top: 882.56px;
     --pk-bar-h: 123.12px;
     --pk-ideas-top: 362.86px;
     --pk-chip-top: 553.5px;
-    --pk-bubble-top: 318px;
-    --pk-card-top: 370px;
+    --pk-thread-top: 250px;
     --pk-dock-top: 957.68px;
     --pk-dock-h: 48px;
   }

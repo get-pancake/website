@@ -89,28 +89,34 @@ function Cursor() {
 
 type Prompt = ReturnType<typeof buildDemoModel>["prompts"][number];
 
-/** One row of the Play card: what Pancake is doing (spinner), then what it decided (check). */
-function PlayRow({ k, doing, children }: { k: string; doing: string; children: ReactNode }) {
+/** A state mark: a ring that turns while Pancake works, then a check. */
+function Mark3() {
+  return (
+    <span className="lp-demowin__st">
+      <i className="lp-demowin__st-spin" />
+      <i className="lp-demowin__st-ok" data-ico="check" />
+    </span>
+  );
+}
+
+/** One row of the Play card: a check, its key, its value. */
+function PlayRow({ k, children }: { k: string; children: ReactNode }) {
   return (
     <li>
       <span className="lp-demowin__st">
-        <i className="lp-demowin__st-idle" />
-        <i className="lp-demowin__st-spin" />
         <i className="lp-demowin__st-ok" data-ico="check" />
       </span>
       <span className="lp-demowin__k">{k}</span>
-      <span className="lp-demowin__val">
-        <span className="lp-demowin__doing">{doing}</span>
-        <span className="lp-demowin__done">{children}</span>
-      </span>
+      <span className="lp-demowin__val">{children}</span>
     </li>
   );
 }
 
 /** The scene's markup is its REST picture (the home: title, empty chat bar, three suggested
  *  Plays, chip) plus every later element in its hidden state (demo.css); the timeline
- *  (lp-demo-pancake-timeline.ts, lazy) plays the one take over it. Everything is placed against
- *  the window. */
+ *  (lp-demo-pancake-timeline.ts, lazy) plays the one take over it. The thread is ONE column in
+ *  flow (request, research, leads found, the Play, Pancake's last word): what comes next pushes
+ *  nothing, and when the research folds away the rest moves up with it. */
 function PancakeView() {
   const K = P.play;
   return (
@@ -128,7 +134,6 @@ function PancakeView() {
         {/* home */}
         <div className="lp-demowin__intro">
           <p className="lp-demowin__title">{P.title}</p>
-          <p className="lp-demowin__sub">{P.sub}</p>
         </div>
         <div className="lp-demowin__ideas">
           <p className="lp-demowin__label">{P.ideasLabel}</p>
@@ -142,74 +147,89 @@ function PancakeView() {
           </ul>
         </div>
 
-        {/* the thread: the sent request, then the Play */}
-        <p className="lp-demowin__bubble">{P.request}</p>
-        <div className="lp-demowin__playc">
-          <div className="lp-demowin__play-in">
-            <div className="lp-demowin__play-head">
-              <span className="lp-demowin__tile" data-ico="layers" />
-              <span className="lp-demowin__kicker">{K.kicker}</span>
-              <span className="lp-demowin__play-title">
-                <i className="lp-demowin__play-skel" />
-                <span className="lp-demowin__play-name">{K.name}</span>
-              </span>
-              <span className="lp-demowin__badge-st">
-                <span data-s="draft">{K.draft}</span>
-                <span data-s="live">{K.live}</span>
-              </span>
-            </div>
-            <ul className="lp-demowin__rows">
-              <PlayRow k={K.rows[0].key} doing={K.rows[0].doing}>
-                {K.who}
-              </PlayRow>
-              <PlayRow k={K.rows[1].key} doing={K.rows[1].doing}>
-                {K.signal.map((w) => (
-                  <span key={w} className="lp-demowin__kw">
-                    {w}
+        {/* the thread */}
+        <div className="lp-demowin__thread">
+          <p className="lp-demowin__bubble">{P.request}</p>
+          {/* the research: three tool calls, then what they found */}
+          <ul className="lp-demowin__work">
+            {P.work.map((w) => (
+              <li key={w.label}>
+                <Mark3 />
+                <span className="lp-demowin__work-l">{w.label}</span>
+                <span className="lp-demowin__work-r">
+                  {"count" in w && <b>{w.count}</b>} {w.result}
+                </span>
+              </li>
+            ))}
+          </ul>
+          <p className="lp-demowin__found">
+            <span className="lp-demowin__avs">
+              {P.leads.map((initials) => (
+                <span key={initials} className="lp-demowin__av">
+                  {initials}
+                </span>
+              ))}
+            </span>
+            <span className="lp-demowin__count">
+              <b>{P.found}</b> {P.foundLabel}
+            </span>
+          </p>
+          {/* the Play that keeps them coming, and its Live outline (drawn by the timeline) */}
+          <div className="lp-demowin__playw">
+            <div className="lp-demowin__playc">
+              <div className="lp-demowin__play-in">
+                <div className="lp-demowin__play-head">
+                  <span className="lp-demowin__tile" data-ico="layers" />
+                  <span className="lp-demowin__kicker">{K.kicker}</span>
+                  <span className="lp-demowin__play-name">{K.name}</span>
+                  <span className="lp-demowin__badge-st">
+                    <span data-s="draft">{K.draft}</span>
+                    <span data-s="live">{K.live}</span>
                   </span>
-                ))}
-              </PlayRow>
-              <PlayRow k={K.rows[2].key} doing={K.rows[2].doing}>
-                {K.steps.map((step, i) => (
-                  <Fragment key={step}>
-                    {i > 0 && <i className="lp-demowin__arrow" data-ico="right" />}
-                    <span className="lp-demowin__step">{step}</span>
-                  </Fragment>
-                ))}
-              </PlayRow>
-            </ul>
-            <div className="lp-demowin__foot">
-              <span className="lp-demowin__go" data-ico="play">
-                <i className="lp-demowin__go-fill" />
-                <span>{K.deploy}</span>
-              </span>
-              <p className="lp-demowin__found">
-                <span className="lp-demowin__avs">
-                  {K.leads.map((initials) => (
-                    <span key={initials} className="lp-demowin__av">
-                      {initials}
-                    </span>
-                  ))}
-                </span>
-                <span className="lp-demowin__count">
-                  <b>{K.found}</b> {K.foundLabel}
-                </span>
-              </p>
+                </div>
+                <ul className="lp-demowin__rows">
+                  <PlayRow k={K.who.key}>{K.who.value}</PlayRow>
+                  <PlayRow k={K.company.key}>{K.company.value}</PlayRow>
+                  <PlayRow k={K.signal.key}>
+                    {K.signal.value.map((w) => (
+                      <span key={w} className="lp-demowin__kw">
+                        {w}
+                      </span>
+                    ))}
+                  </PlayRow>
+                  <PlayRow k={K.pace.key}>{K.pace.value}</PlayRow>
+                  <PlayRow k={K.then.key}>
+                    {K.then.value.map((step, i) => (
+                      <Fragment key={step}>
+                        {i > 0 && <i className="lp-demowin__arrow" data-ico="right" />}
+                        <span className="lp-demowin__step">{step}</span>
+                      </Fragment>
+                    ))}
+                  </PlayRow>
+                </ul>
+                <div className="lp-demowin__foot">
+                  <span className="lp-demowin__go" data-ico="play">
+                    <i className="lp-demowin__go-fill" />
+                    <span>{K.deploy}</span>
+                  </span>
+                </div>
+              </div>
             </div>
+            <svg className="lp-demowin__ring" aria-hidden="true" focusable="false" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="lp-demowin-ring" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stopColor="var(--lp-blue-30)" />
+                  <stop offset="0.35" stopColor="var(--lp-purple-30)" />
+                  <stop offset="0.7" stopColor="var(--lp-pink-30)" />
+                  <stop offset="1" stopColor="var(--lp-yellow-30)" />
+                </linearGradient>
+              </defs>
+              <rect pathLength={1} stroke="url(#lp-demowin-ring)" />
+            </svg>
           </div>
+          {/* Pancake's last word: what happens from here */}
+          <p className="lp-demowin__after">{P.after}</p>
         </div>
-        {/* the Live outline (sized and drawn by the timeline) */}
-        <svg className="lp-demowin__ring" aria-hidden="true" focusable="false">
-          <defs>
-            <linearGradient id="lp-demowin-ring" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stopColor="var(--lp-blue-30)" />
-              <stop offset="0.35" stopColor="var(--lp-purple-30)" />
-              <stop offset="0.7" stopColor="var(--lp-pink-30)" />
-              <stop offset="1" stopColor="var(--lp-yellow-30)" />
-            </linearGradient>
-          </defs>
-          <rect pathLength={1} stroke="url(#lp-demowin-ring)" />
-        </svg>
 
         {/* the chat bar: ONE element, from the home to the dock */}
         <div className="lp-demowin__bar">
