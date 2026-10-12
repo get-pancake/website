@@ -347,7 +347,8 @@
   inset: 0;
   max-width: none;
   object-fit: cover;
-  object-position: 73% 50%; /* engines without container units: the desktop tiles' crop */
+  object-position: 73% 50%; /* engines without container units: the Praxis tile's crop; the Kinro
+     one then sits 10 points right of its 63.1 %, every face still in the tile */
   position: absolute;
   width: 100%;
 }
@@ -359,7 +360,7 @@
        burned-in name title out), or centres on `centre` when it is too
        narrow for that; never past the frame's right edge;
      - a near-square tile (≥ 0.935: wide enough for the title AND the faces
-       of the Praxis cut) starts at `wide`;
+       of either cut, Praxis from x 56 and Kinro from x 50) starts at `wide`;
      - a tile wider than the film shows the full width, centred. */
 @supports (width: 1cqh) {
   .lp-bento__poster,
@@ -386,8 +387,8 @@
 }
 /* A soft plum veil behind the white wordmark. Not in Figma: the artboard's
    stills are dark where its mark sits, real footage is not (the Praxis cut
-   has a white lamp there). Over the poster and the preview, under the
-   controls; it fades out above the faces. */
+   has a white lamp there, the Kinro cut a pale wall). Over the poster and
+   the preview, under the controls; it fades out above the faces. */
 .lp-bento__media::after {
   background: linear-gradient(to bottom, color-mix(in srgb, var(--lp-ink-100) 34%, transparent), transparent);
   content: "";

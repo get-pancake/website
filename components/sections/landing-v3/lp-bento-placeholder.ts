@@ -4,13 +4,16 @@ import { join } from "node:path";
 import type { BentoPlaceholderImage } from "@/components/sections/landing-v3/lp-bento-data";
 
 /**
- * Stand-in images for the bento's placeholder cards (owner: bento package). Today: the two INTERIM
- * stills of Pierre-Alexandre Kamienny (Kinro), taken from the merged testimonial compilation while
- * his individual cut is not on disk (artifacts/landing-v2-figma/assets/bento-real/, files prefixed
- * INTERIM-). They are layout stand-ins, soft at 2x, and must never be fetchable from pancake.ai:
- * they live outside public/, in ./bento-placeholder/, and are read from disk at render time and
- * inlined as data URIs, the way components/sections/home/HomeUGCWall.tsx reads public/ugc at
- * build time.
+ * Stand-in images for the bento's placeholder cards (owner: bento package): a still that fills a
+ * card while the customer's real asset is not on disk. A stand-in is a layout aid and must never
+ * be fetchable from pancake.ai: it lives outside public/, in ./bento-placeholder/<name>.webp, and
+ * is read from disk at render time and inlined as a data URI, the way
+ * components/sections/home/HomeUGCWall.tsx reads public/ugc at build time.
+ *
+ * None today: all seven cards are final since 2026-10-12 (the Kinro stills that used this are
+ * gone, and the folder with them). The loader stays so the next card that has to wait is one
+ * file and one data entry (lp-bento-data.ts: `{ placeholder: "<name>" }` on a card whose status
+ * is "placeholder").
  *
  * Only LpBento calls this, and only for a placeholder card, which renders only when
  * SHOW_PLACEHOLDERS (dev, Vercel preview: lib/placeholders.ts). A production build never reads

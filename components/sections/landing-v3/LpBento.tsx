@@ -23,11 +23,12 @@ import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
  * 5024:10543). Owner: bento package. Between the CTA and pricing, a DIRECT <section
  * class="lp-bento"> child of main.lp, so the agents view hides it with every other section.
  *
- * Content: the Kinro and Praxis testimonials (lp-bento-data.ts). Gating (lib/placeholders.ts):
- * production renders only "final" cards, so it may hold a partial set; dev / preview fill the
- * other slots with their placeholders (marked data-placeholder). Null when nothing is left, and
- * in production while BENTO_LIVE (lp-bento-data.ts) is off. `placeholders` and `live` are
- * injectable for tests (scripts/placeholder-gate.test.mjs renders the set that goes live).
+ * Content: the Kinro and Praxis testimonials (lp-bento-data.ts), all seven cards final since
+ * 2026-10-12. Gating (lib/placeholders.ts): production renders only "final" cards, so it may hold
+ * a partial set; dev / preview fill the other slots with their placeholders (marked
+ * data-placeholder; none today). Null when nothing is left, and in production while BENTO_LIVE
+ * (lp-bento-data.ts) is off. `placeholders` and `live` are injectable for tests
+ * (scripts/placeholder-gate.test.mjs renders the set that goes live).
  *
  * Layout (all numbers come from resolveBento, CSS in bento.css, every card metric in `--u`):
  *   - all seven cards: the artboard. Desktop 4 × 3 on the 1136 column (`--u` = 1 px at ≥ 1200,

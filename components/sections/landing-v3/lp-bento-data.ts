@@ -6,14 +6,15 @@
  * Content (founder 2026-10-11, decisions §9): the Kinro and Praxis testimonials, the two
  * INDIVIDUAL cuts, never the merged compilation. Quotes are verbatim whole sentences; the numbers
  * are the customers' own. Evidence, frames and timings: artifacts/landing-v2-figma/assets/
- * bento-real/manifest.json and impl/bento-real-assets.md.
+ * bento-real/manifest.json (Praxis), manifest-kinro.json (Kinro), impl/bento-real-assets.md and
+ * impl/bento-real-assets-kinro.md.
  *
  * Seven slots. Each lists its candidate cards with `status` from lib/placeholders.ts:
  *   - "final": real content whose asset is in public/. Always renders, wins its slot.
- *   - "placeholder": a stand-in that renders in dev and on Vercel previews only. Today these are
- *     the two Kinro cards that need Pierre's individual cut (his video tile and his portrait):
- *     they show INTERIM stills taken from the merged compilation, which never get a public URL
- *     (lp-bento-placeholder.ts inlines them).
+ *   - "placeholder": a stand-in that renders in dev and on Vercel previews only (marked
+ *     data-placeholder). NONE today: since 2026-10-12 all seven cards are final. The mechanism
+ *     stays for the next card that has to wait for its asset: a stand-in image never gets a
+ *     public URL (lp-bento-placeholder.ts inlines it from ./bento-placeholder/).
  * Production renders ONLY final cards, so it may hold a partial set: resolveBento() lays the cards
  * it has out cleanly (rows on desktop, the artboard's two-column stack below) and returns null
  * only when no card is left. With all seven it is the designer's artboard, desktop and phone.
@@ -23,8 +24,9 @@
  *   - the film with its sound: the individual cut as H.264 + AAC mp4 (4:3, 960 wide, about
  *     1.2 Mbps, faststart) plus a 640 variant. Fetched ONLY when the visitor opens the sound view;
  *   - the tile's muted preview: a separate video-only cut of about 10 s that loops (480 wide for
- *     phones and small tiles, 720 for large ones, each well under 600 kB). The tile never plays the
- *     film itself (it weighs megabytes; founder precedent 2026-09-07);
+ *     small tiles, 720 for large ones, each under 600 kB: scripts/placeholder-gate.test.mjs holds
+ *     that line). The tile never plays the film itself (it weighs megabytes; founder precedent
+ *     2026-09-07);
  *   - captions for the sound view (WebVTT), and the poster = the full frame (same geometry as the
  *     film and the preview, so one crop serves all three).
  */
@@ -44,13 +46,12 @@ export const BENTO_VIDEO_LABELS = {
 
 /**
  * One switch for the founder: false keeps the whole section out of production whatever its
- * entries say (dev and Vercel previews still show it). OFF since 2026-10-12 (verifier TA-03):
- * the public launch is 13 Oct 2026, the testimonial film is scheduled for 15 Oct, and the
- * customers' OK for this use (pull quote, portrait and figures on the homepage) is not on
- * file yet. Set it to true once the founder has given the date and the OK: production then
- * renders the final cards (five today), nothing else changes.
+ * entries say (dev and Vercel previews still show it). ON since 2026-10-12 (founder: "yes push
+ * Kinro, it's fine and publish testimonials available"): production renders the final cards, all
+ * seven today (the Kinro and Praxis films, quotes and figures, the designer's artboard). It was
+ * off for a few hours that day (verifier TA-03) while the films' early release was his to decide.
  */
-export const BENTO_LIVE = false;
+export const BENTO_LIVE = true;
 
 export type BentoSlotId = "videoLg" | "quoteA" | "kpiA" | "kpiB" | "kpiC" | "quoteB" | "videoSm";
 /** The artboard's reading order (row by row on desktop): the DOM order of a full set. */
@@ -67,8 +68,13 @@ export type BentoLogo = { name: string; src: string; ratio: number; body: readon
 /** Letter-body height of a card logo, desktop px (bento spec §4.4: the V2 marks measure 16–18). */
 export const BENTO_LOGO_BODY = 17;
 
-/** Stand-in images kept out of public/ (components/sections/landing-v3/bento-placeholder/). */
-export type BentoPlaceholderImage = "kinro-pierre-interim-poster-1000w" | "kinro-pierre-interim-portrait-640";
+/**
+ * A stand-in image for a "placeholder" card, kept out of public/: the base name of a .webp in
+ * components/sections/landing-v3/bento-placeholder/ (lp-bento-placeholder.ts inlines it, dev and
+ * previews only). No card uses one today, and the folder is gone with the last stand-in: create
+ * it again with the file.
+ */
+export type BentoPlaceholderImage = string;
 
 /** A portrait: a public file, or a stand-in that never gets a public URL. */
 export type BentoPhoto = { src: string } | { placeholder: BentoPlaceholderImage };
@@ -104,9 +110,10 @@ export type BentoFilm = {
   mp4Small?: string;
   /**
    * The tile's muted preview: a short cut of the film WITHOUT an audio track, looped. Never the
-   * film itself (megabytes for a tile a few hundred px wide). `mp4` serves phones and small tiles,
-   * `mp4Large` a tile drawn taller than LpBentoVideo's LARGE_TILE. Same frame geometry as the
-   * poster, first and last frames on a picture cut (the loop reads as one more cut).
+   * film itself (megabytes for a tile a few hundred px wide). `mp4` serves small tiles, `mp4Large`
+   * a tile drawn taller than LpBentoVideo's LARGE_TILE (on a phone: only the stack's large tile,
+   * LARGE_TILE_PHONE). Same frame geometry as the poster, first and last frames on a picture cut
+   * (the loop reads as one more cut).
    */
   preview: { mp4: string; mp4Large?: string };
   /**
@@ -126,7 +133,7 @@ type CardBase = {
 
 export type BentoVideoCard = CardBase & {
   kind: "video";
-  /** Absent: a still tile (an interim poster while the film is not on disk). */
+  /** Absent: a still tile (a stand-in poster while the film is not on disk). */
   film?: BentoFilm;
   poster: BentoPoster;
   focus: BentoFocus;
@@ -178,19 +185,46 @@ const DIANA = { name: "Diana Khramina", role: "CEO", company: "Praxis" };
 const PIERRE = { name: "Pierre-Alexandre Kamienny", role: "CEO", company: "Kinro" };
 
 const BENTO_ENTRIES: BentoEntries = {
-  /* Kinro, Pierre's individual cut ("Pierre Testimonial 12.mov"): NOT on disk yet (the download
-     stalled), so this stays a placeholder: an interim still from the merged compilation, no film.
-     To finish: bento-real-assets.md §10, then `film`, a public poster, its own `focus`, "final". */
+  /* Kinro, Pierre's individual cut ("Pierre Testimonial 12.mov", the cut locked on 2026-09-22;
+     48.2 s, 4:3). He is on screen from frame 0. His name title is burned in at x 54–790 of 1440,
+     from 3.567 to 8.367 s: a portrait tile can neither hide it nor show it whole (it sees 806 px
+     of the 1440), hence the two choices below.
+     `focus` (manifest-kinro.json): his face in the tile in nine shots out of ten, the lamp out
+     from under the logo. 63.1 % in the 560 × 750 tile and its phone twin, 62.2 % in a 272 × 375
+     one. Poster = frame 96 (3.2 s), before the title.
+     Preview (founder 2026-10-12: "start the preview at 8.4s"): frames 251–539 of the film,
+     8.367–18.000 s, from the FIRST FRAME WITHOUT THE TITLE to the jump cut of the long front shot
+     (front, close profile, front), video only, 259 kB and 483 kB against 4.7 and 7.4 MB for the
+     film. The tile never shows the title; with sound the film plays from 0.
+     Captions: the cut's nine sentences in 29 lines, timed by forced alignment on the film's own
+     audio. As for Praxis the wording was checked by machine (three recognisers, alignment scores,
+     the acoustic model's raw reading), NOT by a human listen. Six sentences are word for word
+     the checked transcript of the merged compilation; one exists only in this cut ("Nurturing
+     the data…", 24.9 s); two follow this cut's audio where it reads otherwise than that
+     transcript ("of other top partners", 42.2 s, there "of all the top partners"; "don't need
+     to download", 35.8 s, there "you don't need"):
+     artifacts/landing-v2-figma/impl/bento-kinro.md. */
   videoLg: [
     {
-      status: "placeholder",
+      status: "final",
       kind: "video",
       logo: KINRO,
-      poster: { placeholder: "kinro-pierre-interim-poster-1000w", width: 1000, height: 750 },
-      focus: { keepLeft: 250, centre: 530, wideLeft: 0 }, // centres the interim still (56.8 % in the 560 × 750 tile)
+      film: {
+        mp4: "/lp/bento/kinro-pierre-960.mp4",
+        mp4Small: "/lp/bento/kinro-pierre-640.mp4",
+        preview: { mp4: "/lp/bento/kinro-pierre-preview-480.mp4", mp4Large: "/lp/bento/kinro-pierre-preview-720.mp4" },
+        captions: { src: "/lp/bento/kinro-pierre.en.vtt", srcLang: "en", label: "English" },
+      },
+      poster: {
+        src: "/lp/bento/kinro-pierre-poster-500w.webp",
+        srcSet: "/lp/bento/kinro-pierre-poster-500w.webp 500w, /lp/bento/kinro-pierre-poster-1000w.webp 1000w, /lp/bento/kinro-pierre-poster-1440w.webp 1440w",
+        width: 1440,
+        height: 1080,
+      },
+      focus: { keepLeft: 400, centre: 800, wideLeft: 50 },
       title: "Pierre-Alexandre Kamienny, CEO at Kinro",
-      description: "Pierre-Alexandre Kamienny, CEO at Kinro, in his customer story.",
-      source: "Interim still, merged compilation frame 177. Replace with the Kinro individual cut.",
+      description: "Pierre-Alexandre Kamienny, CEO at Kinro, tells how he uses Pancake.",
+      source: "Pierre Testimonial 12.mov, transcoded 2026-10-12 (manifest-kinro.json); poster = frame 96.",
     },
   ],
   /* Diana, on camera, lips in sync (compilation 31.53–34.43 s; her cut about 36.2–39.6 s). */
@@ -218,22 +252,24 @@ const BENTO_ENTRIES: BentoEntries = {
   kpiB: [
     { status: "final", kind: "kpi", logo: PRAXIS, value: "10+", label: "meetings booked a week", source: "Diana Khramina, message to Tristan 2026-09-18 (reference in the spec, see the comment above), repeated on camera in her cut." },
   ],
-  /* Pierre on camera: "Pancake helped me book 15 meetings last week" (compilation 61.68–63.72 s).
-     One week, as he says it. Re-check on his individual cut when it lands. */
+  /* Pierre on camera: "Pancake helped me book 15 meetings last week" (his cut 39.57–41.52 s, the
+     same sentence and the same audio as the merged compilation's 61.68–63.72 s; side-angle
+     camera, lips in sync up to "meetings"). One week, as he says it. */
   kpiC: [
-    { status: "final", kind: "kpi", logo: KINRO, value: "15", label: "meetings booked in a week", source: "Pierre-Alexandre Kamienny on camera, merged compilation sentence 14." },
+    { status: "final", kind: "kpi", logo: KINRO, value: "15", label: "meetings booked in a week", source: "Pierre-Alexandre Kamienny on camera, Kinro individual cut and merged compilation sentence 14 (manifest-kinro.json)." },
   ],
-  /* Pierre, on camera, lips in sync (compilation 28.45–31.33 s). The quote is final copy; the card
-     stays a placeholder for its portrait, an interim crop of the compilation (soft at 2x). */
+  /* Pierre, alone on screen, lips in sync over the whole sentence (his cut 14.93–17.80 s; the
+     merged compilation 28.45–31.33 s). Portrait: a crop of frame 92 of his own cut, 430 px
+     native, so soft at 2x (founder 2026-10-12: accepted). */
   quoteB: [
     {
-      status: "placeholder",
+      status: "final",
       kind: "quote",
       logo: KINRO,
       quote: "I’m running all of my GTM in Codex using Pancake.",
       person: PIERRE,
-      photo: { placeholder: "kinro-pierre-interim-portrait-640" },
-      source: "Checked compilation transcript sentence 7. Portrait: interim, redo from the Kinro individual cut.",
+      photo: { src: "/lp/bento/kinro-pierre-portrait-640.webp" },
+      source: "Kinro individual cut (Pierre Testimonial 12.mov), checked compilation transcript sentence 7; portrait = frame 92 of the cut.",
     },
   ],
   /* Praxis, Diana's individual cut, founder-validated 2026-09-29 (58.2 s, 4:3). Her name title is

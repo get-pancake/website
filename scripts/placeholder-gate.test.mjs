@@ -11,18 +11,22 @@
  *
  *   production  no element is marked data-placeholder, no section is an empty shell, every step
  *               row has its art (LpSteps throws otherwise), the deep dive has one tab and one
- *               panel per item. The bento renders its FINAL cards and nothing else (a partial set
- *               since 2026-10-12), or nothing at all when no card is final or BENTO_LIVE is off
- *               (as it is since the final pass of 2026-10-12). The set that goes live when the
- *               switch is turned on is rendered and checked either way: one card per slot holding
- *               a final entry, no stand-in image, no placeholder customer;
+ *               panel per item. The bento renders its FINAL cards and nothing else, or nothing at
+ *               all when no card is final or BENTO_LIVE is off (as it is since the final pass of
+ *               2026-10-12). The set that goes live when the switch is turned on is rendered and
+ *               checked either way: one card per slot holding a final entry, no stand-in image,
+ *               no placeholder customer. Since the Kinro cut landed (2026-10-12) every slot holds
+ *               a final card: the live set is then the designer's full artboard, and a preview
+ *               shows exactly that set;
  *   preview     the same sections still render, and the placeholders that exist are marked.
  *   both        the bento's server markup can play nothing (its <video> elements are created by
  *               the client, in view and muted, or in the sound dialog after a click); every
  *               subset of the bento's seven slots lays out without a hole; every film has its
- *               muted preview clip (under 600 kB) and its captions track, and every bento file
- *               the markup or the data names exists under public/; the sources story rests on
- *               the zoom only when a data-source node renders.
+ *               muted preview clip (under 600 kB) and its captions track; every bento file the
+ *               markup or the data names exists under public/, and public/lp/bento/ holds no
+ *               file the bento does not name (an unreleased film must not sit there unused); a
+ *               stand-in image exists only for a placeholder card that names it; the sources
+ *               story rests on the zoom only when a data-source node renders.
  *
  * It renders with react-dom/server through jiti + sucrase (both already installed: jiti is what
  * homepage-lint.mjs uses, sucrase comes with tailwindcss), outside Next: "use client" modules
@@ -30,7 +34,7 @@
  */
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { existsSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { test } from "node:test";
@@ -135,6 +139,12 @@ function renderAll() {
     // slots holding a final card (what production shows while BENTO_LIVE is on), slots holding any card
     bentoFinalSlots: bentoCards.filter(({ card }) => card.status === "final").map((c) => c.id),
     bentoAllSlots: bentoCards.map((c) => c.id),
+    bentoSlotCount: BENTO_SLOT_IDS.length,
+    // stand-in images (kept out of public/, inlined on previews) that a card names
+    bentoStandIns: bentoCards.flatMap(({ card }) => {
+      const still = card.kind === "video" ? card.poster : card.kind === "quote" ? card.photo : null;
+      return still && "placeholder" in still ? [{ name: still.placeholder, status: card.status }] : [];
+    }),
     // people who appear on stand-in cards only: their name must never reach production
     bentoPlaceholderOnlyNames: names(bentoCards.filter(({ card }) => card.status === "placeholder")).filter((n) => !finalNames.includes(n)),
     bentoSubsets: { checked: Math.max(0, subsets - 1), problems: subsetProblems },
@@ -213,6 +223,9 @@ function runTests() {
       assert.equal(count(live, "data:image"), 0, "a stand-in image reached the live set");
       assert.ok(!/interim/i.test(live), "an interim asset reached the live set");
       for (const name of out.bentoPlaceholderOnlyNames) assert.ok(!live.includes(name), `${name} is on placeholder cards only`);
+      // every slot holds a final card: the live set is the designer's artboard, not a fallback row layout
+      if (out.bentoFinalSlots.length === out.bentoSlotCount) assert.equal(count(live, 'data-layout="full"'), 1, "seven final cards must render the full artboard");
+      else assert.equal(count(live, 'data-layout="full"'), 0, "a partial set must not claim the full artboard");
       // the sources story: its hub renders final nodes only, and it rests on the zoom only with a node
       assert.equal(withClass(s.storySources, "lp-src-node"), out.sourcesNodes.final);
       assert.equal(count(s.storySources, 'data-end="sources"'), out.sourcesNodes.final > 0 ? 1 : 0);
@@ -242,9 +255,14 @@ function runTests() {
     assert.ok(count(preview.sections.LpBento, "<li ") > 0);
     // a placeholder that renders is marked, so a reviewer (and this test) can tell it from final content
     assert.ok(marked(preview) >= marked(production));
-    if (!production.bentoResolved) assert.ok(count(preview.sections.LpBento, "data-placeholder") > 0);
     assert.deepEqual(slotsOf(preview.sections.LpBento), [...preview.bentoAllSlots].sort(), "a preview fills every slot that has a card");
+    // one mark per stand-in card, none on a final one. With no final card at all, a preview is all stand-ins
     assert.equal(count(preview.sections.LpBento, "data-placeholder"), preview.bentoAllSlots.length - preview.bentoFinalSlots.length);
+    // no stand-in card left (all seven are final since 2026-10-12): a preview shows exactly the set
+    // that goes live with BENTO_LIVE, so what is reviewed on a preview is what production will render
+    if (preview.bentoFinalSlots.length === preview.bentoAllSlots.length) {
+      assert.equal(preview.sections.LpBento, production.bentoLiveHtml, "with every card final, the preview and the live set must be the same markup");
+    }
     // the sources story ends on the zoom, every node drawn
     assert.equal(withClass(preview.sections.storySources, "lp-src-node"), preview.sourcesNodes.all);
     assert.equal(count(preview.sections.storySources, 'data-end="sources"'), preview.sourcesNodes.all > 0 ? 1 : 0);
@@ -282,6 +300,27 @@ function runTests() {
       if (existsSync(onDisk(film.captions.src))) assert.match(readFileSync(onDisk(film.captions.src), "utf8"), /^WEBVTT/, `${film.captions.src} is not a WebVTT file`);
     }
     for (const url of named) assert.ok(existsSync(onDisk(url)), `${url} is named by the bento but missing from public/`);
+    // nothing published without a use: every file in public/lp/bento/ is one the bento names
+    // (a film that no card lists would still be downloadable from pancake.ai)
+    for (const file of readdirSync(onDisk("/lp/bento")).filter((f) => !f.startsWith("."))) {
+      assert.ok(named.has(`/lp/bento/${file}`), `public/lp/bento/${file} is not named by any bento card: remove it or list it`);
+    }
+    // no public file is a stand-in
+    for (const url of named) assert.ok(!/interim|placeholder/i.test(url), `${url}: a stand-in must never be a public file`);
+  });
+
+  test("a stand-in image exists only for a placeholder card that names it", () => {
+    // stand-ins live outside public/ (lp-bento-placeholder.ts inlines them on previews); only a
+    // "placeholder" card may name one, and a file no card names is dead weight in the repository
+    const dir = join(ROOT, "components", "sections", "landing-v3", "bento-placeholder");
+    const files = existsSync(dir) ? readdirSync(dir).filter((f) => !f.startsWith(".")) : [];
+    for (const { name, status } of preview.bentoStandIns) {
+      assert.equal(status, "placeholder", `a final card shows the stand-in image "${name}"`);
+      assert.ok(files.includes(`${name}.webp`), `the stand-in ${name}.webp is named by a card but missing from bento-placeholder/`);
+    }
+    const wanted = new Set(preview.bentoStandIns.map(({ name }) => `${name}.webp`));
+    for (const file of files) assert.ok(wanted.has(file), `bento-placeholder/${file} is not named by any card: remove it`);
+    assert.deepEqual(production.bentoStandIns, preview.bentoStandIns, "the data is the same in both builds");
   });
 }
 

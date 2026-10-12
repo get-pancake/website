@@ -15,9 +15,10 @@ import { flushSync } from "react-dom";
  *      created over it; nothing is fetched until play(). At ≥ 60 % of the tile on screen (or 60 %
  *      of the viewport filled by it), tab visible, not paused by the visitor: it plays, fades in
  *      over the poster once it really plays, and loops. Below that, tab hidden, section hidden
- *      (agents view) or the film open: it pauses and keeps its frame. A play / pause button stops
- *      it (WCAG 2.2.2). It can never make a sound: the file has no audio, and the element is
- *      muted in markup and again before every play().
+ *      (agents view) or a film open (this tile's or the other one's: nothing moves behind the
+ *      scrim while a testimonial speaks): it pauses and keeps its frame. A play / pause button
+ *      stops it (WCAG 2.2.2). It can never make a sound: the file has no audio, and the element
+ *      is muted in markup and again before every play().
  *      Reduced motion: no autoplay, the button starts as "Play preview" and nothing is fetched
  *      before it is pressed. Save-Data, prefers-reduced-data or a media error: the poster only.
  *   2. The FILM WITH SOUND, on demand only: `film.mp4`. The tile itself is a button ("Watch with
@@ -51,8 +52,18 @@ type Props = {
  *  "in view" — the same focus rule as the marquee and the play-once cards' 60 % line. */
 const IN_VIEW = 0.6;
 /** A tile drawn taller than this (device px, capped at 2x) plays the larger preview encode;
- *  smaller tiles and phones play the light one. */
+ *  smaller tiles play the light one. */
 const LARGE_TILE = 520;
+/** Phones (≤ 767) play the light encode, except in a tile taller than this in CSS px: the stack's
+ *  large tile (495 at 402 wide, 439 at 360), where the light clip's 360 lines would be stretched
+ *  4 × on a 3x screen and the picture goes soft the moment it replaces the poster. The small tile
+ *  (248 at 402) and a 320-wide phone's large one (386) stay light. */
+const LARGE_TILE_PHONE = 400;
+/** Fired on `document` when a tile's film opens or closes, so the OTHER tile's preview follows
+ *  (two films share the section since the Kinro cut landed). */
+const FILM_EVENT = "lp-bento-film";
+/** A bento film is open in its dialog, whichever tile it belongs to. */
+const anyFilmOpen = () => document.querySelector(".lp-bento__dialog[open]") !== null;
 
 export function LpBentoVideo({ film, filmPoster, title, labels, style, children }: Props) {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -79,11 +90,14 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
   const inViewRef = useRef(false);
   const filmOpenRef = useRef(false);
 
-  /** Play or pause the preview to match: in view, tab visible, not paused, the film closed. */
+  /** Play or pause the preview to match: in view, tab visible, not paused, no film open. */
   const sync = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
-    const want = inViewRef.current && !pausedRef.current && !filmOpenRef.current && document.visibilityState === "visible";
+    // filmOpenRef: this tile's film is about to open (set before showModal, so the preview stops
+    // first); anyFilmOpen: the other tile's film is open
+    const want =
+      inViewRef.current && !pausedRef.current && !filmOpenRef.current && !anyFilmOpen() && document.visibilityState === "visible";
     if (want && v.paused) {
       v.muted = true; // React sets the property, but autoplay policies read it at play()
       const p = v.play();
@@ -107,7 +121,8 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
     if (root && film.preview.mp4Large) {
       const phone = matchMedia("(max-width: 767px)").matches;
       const drawn = root.clientHeight * Math.min(window.devicePixelRatio || 1, 2);
-      setSrc(!phone && drawn > LARGE_TILE ? film.preview.mp4Large : film.preview.mp4);
+      const large = phone ? root.clientHeight > LARGE_TILE_PHONE : drawn > LARGE_TILE;
+      setSrc(large ? film.preview.mp4Large : film.preview.mp4);
     }
     setAttached(true);
   }, [film.preview.mp4, film.preview.mp4Large]);
@@ -159,10 +174,12 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
     if (!reduce) near.observe(root); // reduced motion fetches nothing until the visitor presses Play
     focus.observe(root);
     document.addEventListener("visibilitychange", sync);
+    document.addEventListener(FILM_EVENT, sync);
     return () => {
       near.disconnect();
       focus.disconnect();
       document.removeEventListener("visibilitychange", sync);
+      document.removeEventListener(FILM_EVENT, sync);
       stop();
     };
   }, [attach, sync, stop, film.mp4Small]);
@@ -194,6 +211,7 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
     filmOpenRef.current = false;
     setFilmOpen(false);
     sync();
+    document.dispatchEvent(new Event(FILM_EVENT)); // the other tile's preview may play again
   };
 
   /** Open the film with its sound. Everything happens inside the click, so the browser lets it play. */
@@ -209,6 +227,7 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
       closed();
       return;
     }
+    document.dispatchEvent(new Event(FILM_EVENT)); // the other tile's preview steps aside too
     // focus the box, not the Close button: a ring on the ✕ the instant the dialog opens reads as
     // a glitch (the booking sheet's rule, LpModals); Tab goes to Close, then to the film's controls
     boxRef.current?.focus();
