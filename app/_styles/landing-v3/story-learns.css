@@ -1,42 +1,44 @@
 /* Story Learns — owner: story-learns package (V2 Figma replication, file
-   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346).
-   Deep-dive story 3, "Pancake learns from what wins" (LpStoryLearns, Figma
-   storyboard 4964:2021 / 2404 / 2448 / 2490 / 4052). Geometry on the 752×489
-   design box (Figma frame 2 = the master boxes, exact floats read with
-   use_figma) and the 400×520 phone box (container query below); the shell
-   scales the box as pixels and paints --lp-dive-stage-bg behind it.
+   fr8NgOCTUxsEbrMEJA3YKu, page 4197:9774).
+   Deep-dive story 3, "Pancake learns from what wins" (LpStoryLearns): the
+   storyboard of 2026-10-12, frames 5061:1443 / 5335 / 5399 / 5459 / 5509,
+   which replaces the Plays-list story built on 2026-10-09 (its frames were
+   deleted from the file). Geometry on the 752×489 design box, exact floats
+   read with use_figma; the shell scales the box as pixels and paints
+   --lp-dive-stage-bg behind it.
 
-   Type: the storyboard's own scaled sizes (14.385 / 28.77 / 35.448px) on px
-   line boxes (Figma's 17 / 35 / 43). Nudges measured against the Figma
-   renders (ink centroids, ≤0.25px off after the nudge): Figma paints Geist
-   ~1px lower than Chromium at equal box tops → row padding 17/15 (+1), the
-   title and month labels +0.75 (inside the window where Chromium's
-   baseline snap lands on Figma's pixel row), "Brain" −0.5.
+   Two layers under one camera (lp-story-learns-timeline.ts moves them as
+   one sheet):
+   - .lp-sl-chart, at the stage's scale: the chart card of frames 1-2
+     (production's old "learns" chart, here at its Figma master size).
+   - .lp-sl-notes, at the END picture's scale (frame 5 = frame 3 × 1.68919):
+     the heading, the three checked lines, the status line. Rest = frame 5 =
+     this layer with no transform; the chart is hidden.
 
-   Paints (decision 2026-10-09 §6): column 3 was drawn in wireframe paints
-   (pure black, #737373, Figma's default #d9d9d9 disc); mapped to brand: ink
-   text, ink-80 for the unlabeled share, green-30 Strong, a white disc in a
-   hand-drawn rainbow ring. Weak keeps the storyboard's amber #ae6115 (the
-   app paints Weak in its warning tone; no brand ramp has an amber text
-   colour, yellow-40 fails contrast on white).
+   Type: Figma's Aeonik Fono (the chart's caption and week labels) is Geist
+   here — Fono is a code face only (founder 2026-09-09), as on production's
+   card. The list's text is #000 in Figma (the tool's default) next to an
+   ink heading: it takes the ink (decision 2026-10-09 §6, paints mapped to
+   brand).
 
-   Rest = the END picture (.lp-sl-cards); the scene layers are hidden until
-   the timeline shows them. No CSS animation here (nothing joins the freeze
-   system), no will-change. */
+   Baselines: tops marked "calibrated" put each run's baseline on Figma's
+   pixel row in Blink, WebKit and Gecko (the three place a baseline at
+   different fractions of the line box, then round it to a whole pixel;
+   measured with a zero-size inline probe, story-learns-v2 report).
+
+   Icons: every engine paints an <svg> box on whole pixels. Each icon box
+   sits on a whole stage pixel and its drawing (a <g>) carries the
+   fraction, so the marks land on Figma's sub-pixel places at any --lp-fit.
+
+   No CSS animation here (nothing joins the freeze system), no will-change. */
 
 .lp-sl {
-  --lp-sl-ink: var(--lp-ink-100);
-  --lp-sl-muted: var(--lp-ink-80);
-  --lp-sl-strong: var(--lp-green-30);
-  --lp-sl-weak: #ae6115;
-  --lp-sl-row: var(--lp-ink-0);
-  --lp-sl-disc: var(--lp-ink-0);
-  color: var(--lp-sl-ink);
+  color: var(--lp-ink-100);
   font-family: var(--lp-font-sans);
   font-size: 16px;
   inset: 0;
   line-height: 1.5;
-  overflow: hidden; /* Figma clipsContent: losers leave through the right edge, the disc is cut */
+  overflow: hidden; /* Figma clipsContent: the heading is cut by the stage's top edge in frames 4-5 */
   pointer-events: none;
   position: absolute;
 }
@@ -48,326 +50,244 @@
 .lp-sl svg {
   display: block;
   max-width: none;
+  overflow: visible;
 }
 
-/* ── the scene (hidden at rest; the timeline's frame 0 shows it) ── */
-.lp-sl-scene,
-.lp-sl-back,
-.lp-sl-axis,
-.lp-sl-strip,
-.lp-sl-front {
+/* ── the camera's two layers ── */
+.lp-sl-chart,
+.lp-sl-notes {
   inset: 0;
   position: absolute;
+  transform-origin: 0 0;
 }
-.lp-sl-scene {
+/* rest = frame 5: the camera has left the chart above the stage */
+.lp-sl-chart {
   visibility: hidden;
 }
-/* back layer = title + the two rows that slide away; it recedes about the
-   centre of the list block (title top 63.248 → last row bottom 362) */
-.lp-sl-back {
-  transform-origin: 383.684px 212.52px;
+
+/* ── the chart card (frames 1-2, 5061:5373): 500×272 at 126, 109 ── */
+.lp-sl-graph {
+  background: var(--lp-ink-0);
+  border-radius: 24px;
+  height: 272px;
+  left: 126px;
+  position: absolute;
+  top: 109px;
+  width: 500px;
+}
+/* its 0.5px INSIDE stroke: a 1px border on a double-size ::after scaled by
+   one half (the sources story's ring, story-sources.css T9). An inset
+   box-shadow thinner than a pixel is dropped by Gecko and drawn a full
+   pixel by WebKit. */
+.lp-sl-graph::after {
+  border: 1px solid var(--lp-ink-40);
+  border-radius: 48px;
+  box-sizing: border-box;
+  content: "";
+  height: 200%;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform: scale(0.5);
+  transform-origin: 0 0;
+  width: 200%;
+}
+/* figure + arrow: Figma's row at 150, 138 (gap 8). The trial Aeonik has no
+   "%" (nor "+", "!"): Figma and the browser each draw it from a fallback
+   face (here next/font's metric-adjusted Arial), so that one glyph and the
+   arrow that follows it sit a few px from the frame until the licensed
+   font is in. The digits keep their own widths (the face has no tabular
+   figures): the arrow follows the count, as on production's card. */
+.lp-sl-stat {
+  align-items: flex-start;
+  display: flex;
+  gap: 8px;
+  left: 24px;
+  position: absolute;
+  top: 29px;
+}
+.lp-sl .lp-sl-pct {
+  color: var(--lp-green-30);
+  font-family: var(--lp-font-cond);
+  font-size: 46.08px;
+  font-weight: 500;
+  letter-spacing: -0.4608px; /* −1% */
+  line-height: 32px; /* Figma trims the box to the cap height: 32 */
+  white-space: nowrap;
+}
+.lp-sl-arrow {
+  color: var(--lp-green-30);
+  flex: none;
+  height: 18.765px;
+  width: 18.765px;
+}
+.lp-sl .lp-sl-vs {
+  color: var(--lp-ink-70);
+  font-size: 13.333px;
+  font-weight: 500;
+  left: 24.5px;
+  letter-spacing: 1.3333px; /* 10% */
+  line-height: 20px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 75px; /* calibrated: Figma 74.5, baseline 198.58 */
+  white-space: nowrap;
+}
+/* the plot: twelve bars 16 wide on 451×145, feet on y 338.5, three a week in
+   the week's colour; an SVG (geometry from the data), so the bars keep
+   their fractional places: box 150, 193, drawing 150.5, 193.5 */
+.lp-sl-bars {
+  height: 145px;
+  left: 24px;
+  position: absolute;
+  top: 84px;
+  width: 451px;
+}
+.lp-sl-bars g {
+  transform: translate(0.5px, 0.5px);
+}
+.lp-sl-bar {
+  fill: var(--lp-yellow-30);
+}
+.lp-sl-bar:nth-child(n + 4) {
+  fill: var(--lp-pink-30);
+}
+.lp-sl-bar:nth-child(n + 7) {
+  fill: var(--lp-purple-30);
+}
+.lp-sl-bar:nth-child(n + 10) {
+  fill: var(--lp-blue-40);
+}
+.lp-sl-weeks {
+  display: flex;
+  left: 24.5px;
+  position: absolute;
+  top: 241.3px; /* calibrated: Figma 241.5, baseline 363.44 */
+  width: 451px;
+}
+.lp-sl .lp-sl-weeks span {
+  color: var(--lp-ink-70);
+  flex: 1;
+  font-size: 11.108px;
+  line-height: 18px;
+  text-align: center;
+  white-space: nowrap;
 }
 
+/* ── the notes (frames 3-5), at frame 5's scale ── */
 .lp-sl .lp-sl-title {
+  color: var(--lp-ink-100);
   font-family: var(--lp-font-cond);
-  font-size: 28.77px;
-  font-weight: 600;
-  left: 89.684px;
-  letter-spacing: -0.8631px; /* −3% */
+  font-size: 60.811px;
+  font-weight: 500;
+  left: 126px;
+  letter-spacing: -0.60811px; /* −1% */
+  line-height: 79px;
+  position: absolute;
+  top: -36px;
+  white-space: nowrap;
+}
+/* three lines at pitch 62.027 (a 35 row + 27.027), each a 33.784 check and
+   its text 13.514 to the right */
+.lp-sl-item {
+  height: 35px;
+  left: 129.379px;
+  position: absolute;
+  white-space: nowrap;
+}
+.lp-sl-item--0 {
+  top: 80.132px;
+}
+.lp-sl-item--1 {
+  top: 142.159px;
+}
+.lp-sl-item--2 {
+  top: 204.186px;
+}
+.lp-sl-check {
+  color: var(--lp-green-30);
+  height: 33.7838px;
+  left: -0.379px; /* box x 129 */
+  position: absolute;
+  width: 33.7838px;
+}
+/* box y 80 / 142 / 204; the drawing at 129.379, 80.740 / 142.768 / 204.794 */
+.lp-sl-item--0 .lp-sl-check {
+  top: -0.132px;
+}
+.lp-sl-item--1 .lp-sl-check {
+  top: -0.159px;
+}
+.lp-sl-item--2 .lp-sl-check {
+  top: -0.186px;
+}
+.lp-sl-item--0 .lp-sl-check g {
+  transform: translate(0.379px, 0.74px);
+}
+.lp-sl-item--1 .lp-sl-check g {
+  transform: translate(0.379px, 0.768px);
+}
+.lp-sl-item--2 .lp-sl-check g {
+  transform: translate(0.379px, 0.794px);
+}
+.lp-sl .lp-sl-line,
+.lp-sl .lp-sl-doing,
+.lp-sl .lp-sl-done {
+  color: var(--lp-ink-100);
+  font-size: 27.027px;
+  font-weight: 400;
+  left: 47.297px; /* x 176.676 */
+  letter-spacing: -0.27027px; /* −1% */
   line-height: 35px;
   position: absolute;
-  top: 63.998px; /* 63.248 + 0.75 (Chromium snaps the baseline: +0.5…+1.0 land on Figma's row, +1.5 one below) */
+  top: 0;
   white-space: nowrap;
 }
-
-/* rows: 588×49 at pitch 62, white, r16 (plain radius), no stroke */
-.lp-sl-row {
-  align-items: center;
-  background: var(--lp-sl-row);
-  border-radius: 16px;
-  display: flex;
-  font-size: 14.385px;
-  font-weight: 400;
-  gap: 31px;
-  height: 49px;
-  left: 89.684px;
-  line-height: 17px;
-  padding: 17px 16px 15px;
-  position: absolute;
-  white-space: nowrap;
-  width: 588px;
+.lp-sl .lp-sl-line {
+  top: -0.3px; /* calibrated: baselines 107 / 169 / 231 in the three engines */
 }
-.lp-sl-row--0 {
-  top: 127px;
-}
-.lp-sl-row--1 {
-  top: 189px;
-}
-.lp-sl-row--2 {
-  top: 251px;
-}
-.lp-sl-row--3 {
-  top: 313px;
-}
-.lp-sl .lp-sl-name {
-  flex: 1 1 0;
-  font-weight: 500;
-  min-width: 0;
-}
-.lp-sl-meta {
-  display: flex;
-  flex: none;
-  gap: 31px;
-}
-.lp-sl-rate {
-  display: flex;
-  gap: 7px;
-}
-/* Figma rounds auto-width text boxes to whole px; the label box is the
-   rounded advance of "Approved" (Chromium 63.23) */
-.lp-sl-rlabel {
-  width: 63px;
-}
-/* the share: a fixed box (width from the data, tweened by the timeline) so
-   ticking digits never move the row; left-aligned, overflow visible */
-.lp-sl-val {
-  color: var(--lp-sl-ink);
-}
-.lp-sl-row[data-tone="strong"] .lp-sl-val {
-  color: var(--lp-sl-strong);
-}
-.lp-sl-row[data-tone="weak"] .lp-sl-val {
-  color: var(--lp-sl-weak);
-}
-.lp-sl-row[data-tone="none"] .lp-sl-val {
-  color: var(--lp-sl-muted);
-}
+/* the status line: the avatar and, in one place, its two texts */
 .lp-sl-status {
-  text-align: right;
-  width: 60px;
-}
-
-/* the month axis: one line, a strip of ticks and labels that the timeline
-   slides two months left (k = −1…4 → sep…feb; majors at m0 + p·k, minors
-   153.675 after each major: the designer's placement, not centred) */
-.lp-sl-axis {
-  --lp-sl-m0: 74.688px;
-  --lp-sl-p: 319.855px;
-  --lp-sl-minor: 153.675px;
-}
-.lp-sl-line {
-  background: var(--lp-sl-ink);
-  height: 1px;
-  left: -12px;
+  height: 35px;
+  left: 129.379px;
   position: absolute;
-  top: 422.537px; /* centred on y 423.037 */
-  width: 776px;
+  top: 338.578px;
 }
-.lp-sl-tick {
-  background: var(--lp-sl-ink);
+.lp-sl-avatar {
+  height: 33.7838px;
+  left: -0.379px; /* box 129, 338 */
   position: absolute;
-  width: 1px;
+  top: -0.578px;
+  width: 33.7838px;
 }
-.lp-sl-tick--major {
-  height: 16.734px;
-  left: calc(var(--lp-sl-m0) + var(--lp-sl-p) * var(--k) - 0.5px);
-  top: 414.419px;
+.lp-sl-avatar g {
+  transform: translate(0.379px, 0.578px); /* drawing 129.379, 338.578 */
 }
-.lp-sl-tick--minor {
-  height: 8.122px;
-  left: calc(var(--lp-sl-m0) + var(--lp-sl-p) * var(--k) + var(--lp-sl-minor) - 0.5px);
-  top: 418.725px;
+/* rest = frame 5: "Brain updated!" (Medium); "Updating Brain..." is frame 4 */
+.lp-sl .lp-sl-doing {
+  opacity: 0;
+  visibility: hidden;
 }
-.lp-sl .lp-sl-month {
-  font-size: 14.385px;
-  left: calc(var(--lp-sl-m0) + var(--lp-sl-p) * var(--k) + var(--dx));
-  letter-spacing: -0.43155px; /* −3% */
-  line-height: 17px;
-  position: absolute;
-  top: 444.903px; /* 444.153 + 0.75 */
-  white-space: nowrap;
-}
-
-/* the brain (frame 4): a white disc Ø217.453, top 356.854 — only its top
-   132.146px are ever on stage — in a hand-drawn rainbow ring (the image
-   sits 12px outside the disc box) */
-.lp-sl-disc {
-  background: var(--lp-sl-disc);
-  border-radius: 50%;
-  height: 217.453px;
-  left: 277.723px;
-  position: absolute;
-  top: 356.854px;
-  width: 217.453px;
-}
-.lp-sl-discring {
-  background: no-repeat 0 0 / 100% 100%; /* image set by the timeline's frame 0 */
-  height: 241.453px;
-  left: -12px;
-  position: absolute;
-  top: -12px;
-  width: 241.453px;
-}
-.lp-sl .lp-sl-brainlabel {
-  font-size: 35.448px;
+.lp-sl .lp-sl-done {
   font-weight: 500;
-  left: 340.684px;
-  line-height: 43px;
-  position: absolute;
-  top: 406.021px; /* 406.521 − 0.5 */
-  transform-origin: 45.766px 59.059px; /* the disc centre: label and disc gulp as one */
-  white-space: nowrap;
 }
 
-/* ── END picture E: production f4's "Brain learned" + "Brain updated" pair
-   at 1:1 (rules COPIED from features.css .lp-f4-*, frozen, re-prefixed),
-   centred on the list/brain axis x 383.684 and vertically on the stage ── */
-.lp-sl-cards {
-  height: 216.6px;
-  left: 146.184px;
-  position: absolute;
-  top: 136.2px;
-  width: 475px;
-}
-.lp-sl-card {
-  background: var(--lp-ink-0);
-  border-radius: 21.6px;
-  position: absolute;
-}
-.lp-sl-hair {
-  box-shadow: inset 0 0 0 0.45px var(--lp-ink-40); /* 0.45px Figma hairline */
-}
-.lp-sl-worked {
-  height: 92.1px;
-  left: 12.91px;
-  padding: 14.85px;
-  top: 0;
-  width: 450px;
-}
-.lp-sl .lp-sl-ctitle {
-  color: var(--lp-ink-100);
-  font-family: var(--lp-font-cond);
-  font-size: 22.52px;
-  font-weight: 500;
-  letter-spacing: -0.2252px;
-  line-height: 1.3;
-  white-space: nowrap;
-}
-.lp-sl-chips {
-  display: flex;
-  gap: 7.2px;
-  margin-top: 7.2px;
-}
-.lp-sl .lp-sl-chip {
-  background: var(--lp-ink-tr-5);
-  border-radius: 7.2px;
-  box-shadow: inset 0 0 0 0.45px var(--lp-ink-50);
-  color: var(--lp-ink-100);
-  display: flex;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 1.6;
-  padding: 3.6px 7.2px;
-  white-space: nowrap;
-}
-/* "Brain updated" wrapped in the rainbow ring (ring box 475×105, 111.6
-   below the worked card's top as in production; card at 12.01/16.2) */
-.lp-sl-bgroup {
-  height: 105px;
-  left: 0;
-  position: absolute;
-  top: 111.6px;
-  width: 475px;
-}
-.lp-sl-ring {
-  height: 105px;
-  left: 0;
-  position: absolute;
-  top: 0;
-  width: 475px;
-}
-.lp-sl-braincard {
-  height: 73.8px;
-  left: 12.01px;
-  padding: 12.9px 14.4px;
-  top: 16.2px;
-  width: 450.9px;
-}
-.lp-sl .lp-sl-brainsub {
-  color: var(--lp-ink-100);
-  font-size: 12px;
-  line-height: 1.6;
-  white-space: nowrap;
-}
-
-/* ── phones: the 400×520 box (decision 2026-10-09). The 752 design scaled as
-   pixels would set the row text at ~6.8px on a 390 screen, so the scene is
-   recomposed (fit = (W − 32)/400 → ~12.9px): same type, motion and tokens;
-   rows 352×68 on two lines (name / share + label), pitch 80; the axis at
-   160px a month; the brain on the box's axis x 200; E at 0.8. ── */
+/* ── the 400×520 phone box (lp-dive-stages.ts). Phones show the DESKTOP
+   scene scaled (decision 2026-10-11 F3), so this box is dormant; the new
+   storyboard has no recomposition for it: the 752 scene, scaled to the
+   box's width and centred in its height. The scene is not clipped to its
+   own band there (the card clips): the heading, which the 752 stage cuts
+   in frames 4-5, shows whole above it. ── */
 @container lp-dive-scene (max-width: 599px) {
-  .lp-sl-back {
-    transform-origin: 200px 218px; /* list block 32 → 404 */
-  }
-  .lp-sl .lp-sl-title {
-    left: 24px;
-    top: 32.75px; /* 32 + 0.75 */
-  }
-  .lp-sl-row {
-    display: block;
-    height: 68px;
-    left: 24px;
-    padding: 15px 16px 13px; /* 14/14 + the 1px Geist nudge */
-    width: 352px;
-  }
-  .lp-sl-row--0 {
-    top: 96px;
-  }
-  .lp-sl-row--1 {
-    top: 176px;
-  }
-  .lp-sl-row--2 {
-    top: 256px;
-  }
-  .lp-sl-row--3 {
-    top: 336px;
-  }
-  .lp-sl-meta {
-    justify-content: space-between;
-    margin-top: 6px;
-  }
-  .lp-sl-axis {
-    --lp-sl-m0: 40px;
-    --lp-sl-p: 160px;
-    --lp-sl-minor: 76.8375px;
-  }
-  .lp-sl-line {
-    top: 451.5px;
-    width: 424px;
-  }
-  .lp-sl-tick--major {
-    top: 443.382px;
-  }
-  .lp-sl-tick--minor {
-    top: 447.688px;
-  }
-  .lp-sl .lp-sl-month {
-    left: calc(var(--lp-sl-m0) + var(--lp-sl-p) * var(--k));
-    top: 473.866px; /* 473.116 + 0.75 */
-    transform: translateX(-50%);
-  }
-  .lp-sl-disc {
-    left: 91.274px;
-    top: 387.854px;
-  }
-  .lp-sl .lp-sl-brainlabel {
-    left: 154.234px;
-    top: 437.021px;
-  }
-  .lp-sl-cards {
-    left: 10px;
-    top: 173.36px;
-    transform: scale(0.8);
+  .lp-sl {
+    height: 489px;
+    inset: auto;
+    left: 0;
+    overflow: visible;
+    top: 129.947px; /* (520 − 489 × 400 / 752) / 2 */
+    transform: scale(0.531915); /* 400 / 752 */
     transform-origin: 0 0;
+    width: 752px;
   }
 }

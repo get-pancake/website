@@ -19,7 +19,24 @@
    and the harness's `.lp-devstages *` outrank inheritance), so selectors are
    `.lp-sc .lp-sc-x` (0,2,0). The camera's zoom and origin are CSS vars the
    builder reads (lp-story-claude-timeline.ts). Nothing loops: no freeze
-   member, no will-change (the camera is the whole 752x489 scene for .75s). */
+   member, no will-change (the camera is the whole 752x489 scene for .75s).
+
+   Baselines (2026-10-12): the three engines put a line's baseline at
+   different fractions of its box (Literata 18.871/28: top + 22 in Blink,
+   + 22.19 in WebKit, + 22.5 in Gecko; the greeting: + 34 / 34.7 / 34.5) and
+   each then rounds it to a whole pixel. The tops marked "all engines" are
+   chosen so that every engine rounds to Figma's own pixel row with room to
+   spare (measured with a zero-size inline probe, story-claude-v2 report);
+   the earlier values were tuned on Blink alone and left Gecko's result line,
+   WebKit's and Gecko's greeting and Blink's follow-up line one pixel off.
+
+   Icons (2026-10-12): every engine paints an <svg> box on whole pixels, so a
+   mark at a fractional left/top landed up to half a pixel off its Figma
+   place (and by another amount at each --lp-fit). Each icon box now sits on
+   a whole stage pixel and its drawing carries the fraction, as a translate
+   in the icon's own user units ("box x, y" + "drawing x, y" below). Boxes
+   with a background (card, pills, bubble) keep their Figma numbers: they
+   paint on the pixel grid, crisp, like any UI. */
 
 .lp-sc {
   /* frame 01 is Claude at native x.873403, frames 02-03 at x1.17940: the
@@ -73,11 +90,14 @@
 }
 .lp-sc .lp-sc-spark {
   color: var(--lp-claude-spark);
-  height: 33.95px;
-  left: 0;
+  height: 33.9468px;
+  left: -0.41px; /* box 181, 146 */
   position: absolute;
-  top: 4.27px; /* 146.72 */
-  width: 33.95px;
+  top: 3.55px;
+  width: 33.9468px;
+}
+.lp-sc .lp-sc-spark path {
+  transform: translate(0.4591px, 0.8187px); /* drawing 181.406, 146.724 (x 38.3872 / 33.9468) */
 }
 .lp-sc .lp-sc-greet {
   color: var(--lp-claude-ink);
@@ -88,21 +108,47 @@
   letter-spacing: -0.26px;
   line-height: 41px;
   position: absolute;
-  top: 0; /* calibrated: 142.45 (Figma 143.20) */
+  top: -0.55px; /* calibrated, all engines: 141.90 (Figma 143.20), baseline 176 */
   white-space: nowrap;
 }
 .lp-sc .lp-sc-composer {
+  --lp-sc-ring: var(--lp-claude-ink-16);
+  --lp-sc-ring-r: 12.228px;
+  --lp-sc-ring-w: 0.4367;
   background: var(--lp-claude-card);
   border-radius: 12.228px;
-  /* hairline OUTSIDE (spread shadow, never a border) + the card shadow */
-  box-shadow:
-    0 0 0 0.4367px var(--lp-claude-ink-16),
-    0 3.494px 41.923px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3.494px 41.923px rgba(0, 0, 0, 0.08); /* the card shadow; its hairline is the ring below */
   height: 99.57px;
   left: 96.51px;
   position: absolute;
   top: 214.77px;
   width: 558.98px;
+}
+/* Hairlines (2026-10-12): Figma's OUTSIDE strokes thinner than a pixel
+   (composer .4367, Cowork pill .8734) were spread box-shadows. Gecko paints
+   no shadow spread under a pixel (both edges were missing in Firefox) and
+   WebKit rounds it up to a full one. Each is now a ring: a 1px border on an
+   oversized ::after, scaled down by the stroke's width, hung that width
+   outside the box (the sources story's technique, story-sources.css T9).
+   Set --lp-sc-ring (paint), --lp-sc-ring-w (width, a number) and
+   --lp-sc-ring-r (the box's own radius). */
+.lp-sc .lp-sc-composer::after,
+.lp-sc .lp-sc-mode-on::after {
+  border: 1px solid var(--lp-sc-ring);
+  border-radius: calc((var(--lp-sc-ring-r) + 1px * var(--lp-sc-ring-w)) / var(--lp-sc-ring-w));
+  box-sizing: border-box;
+  content: "";
+  height: calc((100% + 2px * var(--lp-sc-ring-w)) / var(--lp-sc-ring-w));
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  /* the step outside is part of the transform, not a left/top: Gecko rounds
+     a transformed box's own offset to whole pixels and drew the ring a
+     pixel down and right */
+  transform: translate(calc(-1px * var(--lp-sc-ring-w)), calc(-1px * var(--lp-sc-ring-w))) scale(var(--lp-sc-ring-w));
+  transform-origin: 0 0;
+  width: calc((100% + 2px * var(--lp-sc-ring-w)) / var(--lp-sc-ring-w));
 }
 .lp-sc .lp-sc-prompt {
   color: var(--lp-claude-ink);
@@ -142,10 +188,13 @@
 }
 .lp-sc .lp-sc-plus {
   color: var(--lp-claude-ink);
-  height: 17.47px;
-  left: 13.98px;
-  top: 68.12px;
-  width: 17.47px;
+  height: 17.4681px;
+  left: 13.49px; /* box 110, 282 */
+  top: 67.23px;
+  width: 17.4681px;
+}
+.lp-sc .lp-sc-plus path {
+  transform: translate(0.488px, 0.893px); /* drawing 110.488, 282.893 */
 }
 .lp-sc .lp-sc-mode {
   background: var(--lp-claude-ink-04);
@@ -161,9 +210,11 @@
   top: 4.78px;
 }
 .lp-sc .lp-sc-mode-on {
+  --lp-sc-ring: var(--lp-claude-ink-08);
+  --lp-sc-ring-r: 5.24px;
+  --lp-sc-ring-w: 0.8734;
   background: var(--lp-claude-card);
   border-radius: 5.24px;
-  box-shadow: 0 0 0 0.8734px var(--lp-claude-ink-08);
   height: 20.96px;
   left: 45.42px;
   top: 1.75px;
@@ -193,10 +244,13 @@
   width: 27.08px;
 }
 .lp-sc .lp-sc-send svg {
-  height: 13.97px;
-  left: 6.55px;
-  top: 6.55px;
-  width: 13.97px;
+  height: 13.9744px;
+  left: 5.76px; /* box 625, 284 */
+  top: 5.91px;
+  width: 13.9744px;
+}
+.lp-sc .lp-sc-send path {
+  transform: translate(0.793px, 0.64px); /* drawing 625.793, 284.64 */
 }
 .lp-sc .lp-sc-below {
   height: 31.47px;
@@ -264,14 +318,14 @@
   font-family: var(--lp-sc-serif);
 }
 .lp-sc .lp-sc-reply {
-  top: 164.56px; /* calibrated: Figma 165.81 */
+  top: 164.7px; /* calibrated, all engines: Figma 165.81, baseline 187 */
 }
 .lp-sc .lp-sc-result {
   font-weight: 700;
-  top: 202.24px; /* calibrated: Figma 203.24 */
+  top: 201.8px; /* calibrated, all engines: Figma 203.24, baseline 224 */
 }
 .lp-sc .lp-sc-more {
-  top: 238.93px; /* calibrated: Figma 240.68 */
+  top: 239.7px; /* calibrated, all engines: Figma 240.68, baseline 262 */
 }
 /* a preview-only line (data-placeholder): a dashed underline on its words */
 .lp-sc .lp-sc-more[data-placeholder] .lp-sc-w {
@@ -291,11 +345,14 @@
 }
 .lp-sc .lp-sc-plug {
   color: var(--lp-claude-plug);
-  height: 28.87px;
-  left: 0;
+  height: 28.8671px;
+  left: 0; /* box 122, 219 */
   position: absolute;
-  top: 0;
-  width: 28.87px;
+  top: -0.25px;
+  width: 28.8671px;
+}
+.lp-sc .lp-sc-plug path {
+  transform: translate(0, 0.249px); /* drawing 122, 219.249 */
 }
 /* one shimmer sweep (the builder moves background-position 100% → 0%); at
    rest the 100% position paints Figma's flat ink-48 */
@@ -331,19 +388,27 @@
 }
 .lp-sc .lp-sc-codex {
   color: var(--lp-claude-codex);
-  height: 33.06px;
-  left: 613.63px;
+  height: 33.065px;
+  left: 613px; /* box 613, 429 */
   position: absolute;
-  top: 429.2px; /* the cube's box, centred on the Claude mark's y (445.73) */
-  width: 33.06px;
+  top: 429px;
+  width: 33.065px;
+}
+.lp-sc .lp-sc-codex path {
+  /* drawing 613.633, 429.197: the cube's box, centred on the Claude mark's y
+     (445.73); x 24 / 33.065 */
+  transform: translate(0.4595px, 0.143px);
 }
 .lp-sc .lp-sc-claude {
   color: var(--lp-claude-spark);
-  height: 38.39px;
-  left: 678.89px;
+  height: 38.3872px;
+  left: 678px; /* box 678, 426 */
   position: absolute;
-  top: 426.53px;
-  width: 38.39px;
+  top: 426px;
+  width: 38.3872px;
+}
+.lp-sc .lp-sc-claude path {
+  transform: translate(0.895px, 0.529px); /* drawing 678.895, 426.529 */
 }
 
 /* ── phones: the 400x520 scene box (lp-dive-stages.ts), recomposed ── */
@@ -351,6 +416,15 @@
   .lp-sc {
     --lp-sc-cam-s: 1; /* no camera zoom: both scenes share one type size */
     --lp-sc-cam-o: 200px 238px;
+  }
+  /* whole-pixel boxes here: no fraction to carry */
+  .lp-sc .lp-sc-spark path,
+  .lp-sc .lp-sc-plus path,
+  .lp-sc .lp-sc-send path,
+  .lp-sc .lp-sc-plug path,
+  .lp-sc .lp-sc-codex path,
+  .lp-sc .lp-sc-claude path {
+    transform: none;
   }
   .lp-sc .lp-sc-hello {
     align-items: center;
@@ -375,10 +449,10 @@
     position: static;
   }
   .lp-sc .lp-sc-composer {
+    --lp-sc-ring-r: 12px;
+    --lp-sc-ring-w: 0.5;
     border-radius: 12px;
-    box-shadow:
-      0 0 0 0.5px var(--lp-claude-ink-16),
-      0 4px 42px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 42px rgba(0, 0, 0, 0.08);
     height: auto;
     left: 20px;
     padding: 16px 16px 12px;
@@ -435,9 +509,10 @@
     width: auto;
   }
   .lp-sc .lp-sc-mode-on {
+    --lp-sc-ring-r: 6px;
+    --lp-sc-ring-w: 1;
     align-items: center;
     border-radius: 6px;
-    box-shadow: 0 0 0 1px var(--lp-claude-ink-08);
     display: flex;
     height: 24px;
     padding: 4px 9px;

@@ -1,110 +1,90 @@
-import type { CSSProperties } from "react";
-
 import type { DiveStageProps } from "./lp-dive-stages";
-import { SL_CARD_RING } from "./lp-story-learns-art";
-import { LEARNS, LEARNS_STATUS, type LearnsRow } from "./lp-story-learns-data";
+import { SL_ARROW, SL_AVATAR, SL_CHECK } from "./lp-story-learns-art";
+import { LEARNS } from "./lp-story-learns-data";
 
 /**
- * Deep-dive story "Pancake learns from what wins" — the stage markup (Figma 4964:2021 / 2404 / 2448 / 2490 / 4052).
- * Owner: story-learns package. Contract: lp-dive-stages.ts (server-safe, one root with
- * data-lp-story="learns" + aria-hidden, rest markup = the END picture, paints nothing behind
- * the scene; geometry in app/_styles/landing-v3/story-learns.css).
+ * Deep-dive story "Pancake learns from what wins" — the stage markup (Figma storyboard of
+ * 2026-10-12: 5061:1443 / 5335 / 5399 / 5459 / 5509). Owner: story-learns package. Contract:
+ * lp-dive-stages.ts (server-safe, one root with data-lp-story="learns" + aria-hidden, rest markup
+ * = the END picture, paints nothing behind the scene; geometry in
+ * app/_styles/landing-v3/story-learns.css).
  *
- * Two layers:
- * - `.lp-sl-scene`: the Plays list, its month axis and the brain disc, as drawn two months on
- *   (Figma frame 2: final shares, tones and labels). Hidden at rest (CSS); the timeline shows it
- *   for the build-up and hides it again before the end.
- * - `.lp-sl-cards`: the END picture E ("Brain learned" + "Brain updated" in its rainbow ring),
- *   visible at rest. Figma's frame 5 is empty: E is production f4's pair of cards (the
- *   reference image 4964:4094 and ring 4964:4097 placed beside the column), markup and rules
- *   COPIED from LpFeatMocks.tsx F4Stage / features.css .lp-f4-* (frozen) as .lp-sl-*.
+ * One camera, two layers that the timeline moves as one (lp-story-learns-timeline.ts):
+ * - `.lp-sl-chart`: the chart card (frames 1-2), drawn at the stage's own scale. Hidden at rest
+ *   (by then the camera has left it above the stage).
+ * - `.lp-sl-notes`: the heading, the three checked lines and the status line, drawn at the END
+ *   picture's scale (frame 5 = the chart's scale x 1.68919), so the picture a visitor rests on
+ *   is plain layout with no transform. Frame 3 is this layer scaled back down.
+ * The status line holds both of its texts in one place; "Updating Brain..." is hidden at rest.
  *
- * Paint order = Figma's frame 4: disc, back layer (title + the two rows that slide away), axis,
- * front layer (the two winners), "Brain" label, cards. The rows' order in the data is the list's
- * order; rows 1 and 3 sit in the back layer so the winners can lift above them.
- *
- * The card ring's SVG ids (lpsl-*) are document-unique: render this stage once per page.
+ * Icons are inline (the rest picture needs no request): each in a viewBox of its own stage size,
+ * its drawing in a <g> the stylesheet nudges by the box's sub-pixel remainder.
  */
 
-function Row({ row, i }: { row: LearnsRow; i: number }) {
-  return (
-    <div className={`lp-sl-row lp-sl-row--${i}`} data-tone={row.tone}>
-      <p className="lp-sl-name">{row.name}</p>
-      <span className="lp-sl-meta">
-        <span className="lp-sl-rate">
-          <span className="lp-sl-rlabel">{LEARNS.rateLabel}</span>
-          <span className="lp-sl-val" style={{ width: row.valueWidth }}>
-            {`${row.end}%`}
-          </span>
-        </span>
-        <span className="lp-sl-status">{LEARNS_STATUS[row.tone]}</span>
-      </span>
-    </div>
-  );
-}
+const AV = SL_AVATAR.size;
+const CK = SL_CHECK.size;
+const AR = SL_ARROW.size;
+const PLOT = LEARNS.plot;
 
 export function LpStoryLearnsStage({ placeholders }: DiveStageProps) {
-  const rows = LEARNS.rows;
   return (
     <div data-lp-story="learns" className="lp-sl" data-placeholders={placeholders || undefined} aria-hidden="true">
-      <div className="lp-sl-scene">
-        <div className="lp-sl-disc">
-          {/* the ring image (public/lp/story-learns/brain-ring.svg) is attached by the builder:
-              the rest picture never shows the disc, so reduced motion and no-JS never fetch it */}
-          <span className="lp-sl-discring" />
-        </div>
-        <div className="lp-sl-back">
-          <p className="lp-sl-title">{LEARNS.title}</p>
-          <Row row={rows[1]} i={1} />
-          <Row row={rows[3]} i={3} />
-        </div>
-        <div className="lp-sl-axis">
-          <span className="lp-sl-line" />
-          <div className="lp-sl-strip">
-            {LEARNS.months.map((m, j) => {
-              const k = { "--k": j - 1 } as CSSProperties;
-              return (
-                <span key={m.label} className="lp-sl-mark">
-                  <i className="lp-sl-tick lp-sl-tick--major" style={k} />
-                  <i className="lp-sl-tick lp-sl-tick--minor" style={k} />
-                  <span className="lp-sl-month" style={{ ...k, "--dx": `${m.dx}px` } as CSSProperties}>
-                    {m.label}
-                  </span>
-                </span>
-              );
-            })}
+      <div className="lp-sl-chart">
+        <div className="lp-sl-graph">
+          <div className="lp-sl-stat">
+            <span className="lp-sl-pct">{`${LEARNS.share.end}%`}</span>
+            <svg className="lp-sl-arrow" viewBox={`0 0 ${AR} ${AR}`} fill="none" focusable="false">
+              <path d={SL_ARROW.d} fill="currentColor" />
+            </svg>
           </div>
-        </div>
-        <div className="lp-sl-front">
-          <Row row={rows[0]} i={0} />
-          <Row row={rows[2]} i={2} />
-        </div>
-        <p className="lp-sl-brainlabel">{LEARNS.brainLabel}</p>
-      </div>
-
-      <div className="lp-sl-cards">
-        <div className="lp-sl-card lp-sl-hair lp-sl-worked">
-          <p className="lp-sl-ctitle">{LEARNS.learnedTitle}</p>
-          <div className="lp-sl-chips">
-            {LEARNS.learned.map((chip) => (
-              <span key={chip} className="lp-sl-chip">
-                {chip}
-              </span>
+          <p className="lp-sl-vs">{LEARNS.shareLabel}</p>
+          {/* an SVG plot, not twelve boxes: its bars sit at fractional places (x 150.5 + 39.545·i,
+              feet on y 338.5), which boxes would round to the pixel grid, unevenly */}
+          <svg className="lp-sl-bars" viewBox={`0 0 ${PLOT.width} ${PLOT.height}`} fill="none" focusable="false">
+            <g>
+              {LEARNS.bars.map((height, i) => (
+                <rect
+                  key={i}
+                  className="lp-sl-bar"
+                  x={LEARNS.barX[i]}
+                  y={PLOT.height - height}
+                  width={PLOT.barWidth}
+                  height={height}
+                  rx={PLOT.barRadius}
+                />
+              ))}
+            </g>
+          </svg>
+          <div className="lp-sl-weeks">
+            {LEARNS.weeks.map((week) => (
+              <span key={week}>{week}</span>
             ))}
           </div>
         </div>
-        <div className="lp-sl-bgroup">
-          <svg
-            className="lp-sl-ring"
-            viewBox="0 0 475 105"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            dangerouslySetInnerHTML={{ __html: SL_CARD_RING }}
-          />
-          <div className="lp-sl-card lp-sl-braincard">
-            <p className="lp-sl-ctitle">{LEARNS.updatedTitle}</p>
-            <p className="lp-sl-brainsub">{LEARNS.updatedSub}</p>
+      </div>
+
+      <div className="lp-sl-notes">
+        <p className="lp-sl-title">{LEARNS.learnedTitle}</p>
+        {LEARNS.learned.map((line, i) => (
+          <div key={line} className={`lp-sl-item lp-sl-item--${i}`}>
+            <svg className="lp-sl-check" viewBox={`0 0 ${CK} ${CK}`} fill="none" focusable="false">
+              <g>
+                <path d={SL_CHECK.d} fill="currentColor" transform={`scale(${SL_CHECK.scale})`} />
+              </g>
+            </svg>
+            <span className="lp-sl-line">{line}</span>
           </div>
+        ))}
+        <div className="lp-sl-status">
+          <svg className="lp-sl-avatar" viewBox={`0 0 ${AV} ${AV}`} fill="none" focusable="false">
+            <g>
+              {SL_AVATAR.shapes.map((shape, i) => (
+                <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
+              ))}
+            </g>
+          </svg>
+          <span className="lp-sl-doing">{LEARNS.updating}</span>
+          <span className="lp-sl-done">{LEARNS.updated}</span>
         </div>
       </div>
     </div>

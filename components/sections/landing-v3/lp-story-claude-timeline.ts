@@ -212,9 +212,16 @@ export function buildStoryClaude(root: HTMLElement): BuiltStory {
      chat sheds its (identity) transforms, so no text rests in a transformed layer ── */
   step([chat, bubble, result], { y: 0, scale: 1, clearProps: "transform" }, LAST + 0.25 - STEP);
 
+  // Dispose (the caller reverts its gsap.context first, then calls this): the caret goes, and so
+  // does the empty style="" that gsap's revert leaves on everything it set — the server markup
+  // has none, and "dispose restores the DOM" is then true to the attribute.
+  const touched = [home, chat, hello, composer, below, prompt, send, bubble, status, conn, result, ...words];
   return {
     tl,
-    cleanup: () => caret.remove(),
+    cleanup: () => {
+      caret.remove();
+      for (const el of touched) if (el.getAttribute("style") === "") el.removeAttribute("style");
+    },
     cue: 0,
   };
 }
