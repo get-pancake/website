@@ -12,13 +12,17 @@
  *   production  no element is marked data-placeholder, no section is an empty shell, every step
  *               row has its art (LpSteps throws otherwise), the deep dive has one tab and one
  *               panel per item. The bento renders its FINAL cards and nothing else (a partial set
- *               since 2026-10-12; nothing at all when no card is final or BENTO_LIVE is off): one
- *               card per slot holding a final entry, no stand-in image, no placeholder customer;
+ *               since 2026-10-12), or nothing at all when no card is final or BENTO_LIVE is off
+ *               (as it is since the final pass of 2026-10-12). The set that goes live when the
+ *               switch is turned on is rendered and checked either way: one card per slot holding
+ *               a final entry, no stand-in image, no placeholder customer;
  *   preview     the same sections still render, and the placeholders that exist are marked.
  *   both        the bento's server markup can play nothing (its <video> elements are created by
  *               the client, in view and muted, or in the sound dialog after a click); every
- *               subset of the bento's seven slots lays out without a hole; the sources story
- *               rests on the zoom only when a data-source node renders.
+ *               subset of the bento's seven slots lays out without a hole; every film has its
+ *               muted preview clip (under 600 kB) and its captions track, and every bento file
+ *               the markup or the data names exists under public/; the sources story rests on
+ *               the zoom only when a data-source node renders.
  *
  * It renders with react-dom/server through jiti + sucrase (both already installed: jiti is what
  * homepage-lint.mjs uses, sucrase comes with tailwindcss), outside Next: "use client" modules
@@ -26,6 +30,7 @@
  */
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
+import { existsSync, readFileSync, statSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 import { test } from "node:test";
@@ -123,6 +128,10 @@ function renderAll() {
     agentCardBody: SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY,
     bentoResolved: bentoNow !== null,
     bentoLive: BENTO_LIVE,
+    // the set production shows once BENTO_LIVE is on, whatever the switch says today
+    bentoLiveHtml: html(v3("LpBento.tsx").LpBento, { placeholders: false, live: true }),
+    // every film a card lists (final or stand-in): the public files the client will ask for
+    bentoFilms: bentoCards.flatMap(({ id, card }) => (card.kind === "video" && card.film ? [{ id, ...card.film }] : [])),
     // slots holding a final card (what production shows while BENTO_LIVE is on), slots holding any card
     bentoFinalSlots: bentoCards.filter(({ card }) => card.status === "final").map((c) => c.id),
     bentoAllSlots: bentoCards.map((c) => c.id),
@@ -187,18 +196,23 @@ function runTests() {
 
     test(`${label} renders no empty shell`, () => {
       const s = out.sections;
-      // the bento: its final cards and nothing else; nothing at all without one (or with BENTO_LIVE off)
-      if (out.bentoResolved) {
-        assert.ok(out.bentoLive, "BENTO_LIVE is off: production must not render the bento");
-        assert.deepEqual(slotsOf(s.LpBento), [...out.bentoFinalSlots].sort(), "production renders exactly the slots holding a final card");
-        assert.equal(count(s.LpBento, "<li "), out.bentoFinalSlots.length);
+      // the bento: nothing while BENTO_LIVE is off or no card is final; else exactly the live set
+      const live = out.bentoLiveHtml;
+      if (out.bentoLive && out.bentoFinalSlots.length) {
+        assert.ok(out.bentoResolved, "BENTO_LIVE is on and a card is final: production must render the bento");
+        assert.equal(s.LpBento, live, "production must render the live set");
       } else {
-        assert.equal(s.LpBento, "", "the bento must render nothing without a final card");
+        assert.ok(!out.bentoResolved, "BENTO_LIVE is off (or no card is final): production must not resolve the bento");
+        assert.equal(s.LpBento, "", "the bento must render nothing while BENTO_LIVE is off or without a final card");
       }
+      // the live set (what the switch turns on): its final cards and nothing else
+      assert.deepEqual(slotsOf(live), [...out.bentoFinalSlots].sort(), "the live set holds exactly the slots with a final card");
+      assert.equal(count(live, "<li "), out.bentoFinalSlots.length);
+      assert.equal(count(live, "data-placeholder"), 0, "the live set renders a placeholder");
       // no stand-in media (they are inlined data URIs, preview only) and no stand-in customer
-      assert.equal(count(s.LpBento, "data:image"), 0, "a stand-in image reached production");
-      assert.ok(!/interim/i.test(s.LpBento), "an interim asset reached production");
-      for (const name of out.bentoPlaceholderOnlyNames) assert.ok(!s.LpBento.includes(name), `${name} is on placeholder cards only`);
+      assert.equal(count(live, "data:image"), 0, "a stand-in image reached the live set");
+      assert.ok(!/interim/i.test(live), "an interim asset reached the live set");
+      for (const name of out.bentoPlaceholderOnlyNames) assert.ok(!live.includes(name), `${name} is on placeholder cards only`);
       // the sources story: its hub renders final nodes only, and it rests on the zoom only with a node
       assert.equal(withClass(s.storySources, "lp-src-node"), out.sourcesNodes.final);
       assert.equal(count(s.storySources, 'data-end="sources"'), out.sourcesNodes.final > 0 ? 1 : 0);
@@ -237,8 +251,7 @@ function runTests() {
   });
 
   test("the bento's server markup can play nothing", () => {
-    for (const [label, out] of [["production", production], ["preview", preview]]) {
-      const html = out.sections.LpBento;
+    for (const [label, html] of [["production", production.sections.LpBento], ["the live set", production.bentoLiveHtml], ["preview", preview.sections.LpBento]]) {
       assert.equal(count(html, "<video"), 0, `${label}: a <video> in the server markup (the client creates it, in view, muted)`);
       assert.equal(count(html, "autoplay"), 0, `${label}: autoplay in the server markup`);
       assert.ok(!/<dialog[^>]* open/.test(html), `${label}: the sound dialog is open in the server markup`);
@@ -248,6 +261,27 @@ function runTests() {
   test("every subset of the bento's slots lays out without a hole", () => {
     assert.ok(production.bentoSubsets.checked > 0, "no subset was checked (a slot has no card at all)");
     assert.deepEqual(production.bentoSubsets.problems, []);
+  });
+
+  test("every bento file exists under public/, and every film has a light preview and captions", () => {
+    const onDisk = (url) => join(ROOT, "public", url.replace(/^\//, ""));
+    // files the markup names (posters, portraits, logos: src, srcset, CSS url())
+    const named = new Set();
+    for (const html of [production.bentoLiveHtml, preview.sections.LpBento]) {
+      for (const m of html.matchAll(/\/(?:lp\/bento|logos\/customers)\/[\w.@-]+\.(?:webp|png|svg|jpg|mp4|vtt)/g)) named.add(m[0]);
+    }
+    assert.ok(named.size > 0, "the bento names no public file at all");
+    // files only the client asks for (the server markup holds no <video> and no <track>)
+    for (const film of preview.bentoFilms) {
+      assert.ok(film.preview?.mp4, `${film.id}: a film needs its muted preview clip (the tile never plays the film)`);
+      assert.ok(film.captions?.src, `${film.id}: a film needs a captions track (WCAG 1.2.2)`);
+      for (const url of [film.mp4, film.mp4Small, film.preview.mp4, film.preview.mp4Large, film.captions.src]) if (url) named.add(url);
+      for (const url of [film.preview.mp4, film.preview.mp4Large]) {
+        if (url && existsSync(onDisk(url))) assert.ok(statSync(onDisk(url)).size < 600_000, `${url}: a preview clip stays under 600 kB`);
+      }
+      if (existsSync(onDisk(film.captions.src))) assert.match(readFileSync(onDisk(film.captions.src), "utf8"), /^WEBVTT/, `${film.captions.src} is not a WebVTT file`);
+    }
+    for (const url of named) assert.ok(existsSync(onDisk(url)), `${url} is named by the bento but missing from public/`);
   });
 }
 

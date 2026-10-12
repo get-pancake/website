@@ -44,10 +44,13 @@ export const BENTO_VIDEO_LABELS = {
 
 /**
  * One switch for the founder: false keeps the whole section out of production whatever its
- * entries say (dev and previews still show it). The public launch is 13 Oct 2026 and the
- * testimonial film is scheduled for 15 Oct: flip it if the section must wait for the film.
+ * entries say (dev and Vercel previews still show it). OFF since 2026-10-12 (verifier TA-03):
+ * the public launch is 13 Oct 2026, the testimonial film is scheduled for 15 Oct, and the
+ * customers' OK for this use (pull quote, portrait and figures on the homepage) is not on
+ * file yet. Set it to true once the founder has given the date and the OK: production then
+ * renders the final cards (five today), nothing else changes.
  */
-export const BENTO_LIVE = true;
+export const BENTO_LIVE = false;
 
 export type BentoSlotId = "videoLg" | "quoteA" | "kpiA" | "kpiB" | "kpiC" | "quoteB" | "videoSm";
 /** The artboard's reading order (row by row on desktop): the DOM order of a full set. */
@@ -384,10 +387,15 @@ export type BentoResolved = {
  * placeholder fills it only when `showPlaceholders` (dev / preview, lib/placeholders.ts); an empty
  * slot is simply left out and the remaining cards are laid out again. Null when no card is left,
  * or in production while BENTO_LIVE is off. Server components only (pass SHOW_PLACEHOLDERS).
- * `entries` is injectable for tests.
+ * `entries` and `live` are injectable for tests (`live: true` = the set production shows once
+ * the switch is on).
  */
-export function resolveBento(showPlaceholders: boolean, entries: BentoEntries = BENTO_ENTRIES): BentoResolved | null {
-  if (!showPlaceholders && !BENTO_LIVE) return null;
+export function resolveBento(
+  showPlaceholders: boolean,
+  entries: BentoEntries = BENTO_ENTRIES,
+  live: boolean = BENTO_LIVE,
+): BentoResolved | null {
+  if (!showPlaceholders && !live) return null;
   const picked = new Map<BentoSlotId, BentoCard>();
   for (const id of BENTO_SLOT_IDS) {
     const pool: readonly BentoCard[] = entries[id];
