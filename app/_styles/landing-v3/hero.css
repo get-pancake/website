@@ -215,23 +215,39 @@
    (2026-10-12: the hero copy stays put while the window grows). */
 .lp-hero--home .lp-hero-title {
   bottom: 63px; /* V2 99 − 36 */
-  left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
+  /* The copy block is the NAV's width, centred: its left edge is the logo's
+     (179 at 1654), its right edge the "Start free" pill's (1475): 1296 wide,
+     32 px gutters under 1360. V2 drew it on the demo window's edges (259 →
+     1395, 1136 wide); founder 2026-10-13, once the H1 was one line: "the block
+     with h1 / h2 has to be centered for sure but it seems you're not taking
+     enough space". */
+  left: max(32px, calc(50% - 648px));
   transform: none;
 }
 /* The humans H1 is ONE line (founder 2026-10-13: "h1 in one line"). "Deploy GTM
    ideas in seconds" is 11.23 × its font size wide at −0.03em tracking (measured,
-   Chromium). At the designer's 69.014 that is 775 px: 7 px MORE than the 768
-   between the two columns' left edges (259 → 1027), so it ran into the toggle
-   and the lede. The copy block is the demo window's width (1136): the size is
-   the one that gives 1136 = H1 712 + a 56 px gap + the 368 column, 63 px, from
-   1232 wide up; under that the columns close in (48 px gutters) and the H1
-   follows, down to 1025. 11.3, not 11.23: half a percent of slack for the
-   other engines' text widths. A longer H1 needs a new measure.
+   Chromium): 775 px at the designer's 69.014, which the nav-wide block holds
+   with room to spare (1296 − 775 − the 368 column = 153 between them). Under
+   1360 wide the block narrows with the page and the H1 follows, keeping at
+   least 80 px before the column. 11.3, not 11.23: half a percent of slack for
+   the other engines' text widths. A longer H1 needs a new measure.
    On the H1 itself, not on .lp-hero-title: the agents headline shares that box. */
 @media (min-width: 1025px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(63.01px, calc((100vw - 520px) / 11.3));
+    --lp-h1-fs: min(69.014px, calc((min(1296px, 100vw - 64px) - 448px) / 11.3));
+    font-size: var(--lp-h1-fs);
     letter-spacing: -0.03em;
+    line-height: 1.16;
+    /* One line is half the height of the right column (toggle, lede, buttons:
+       172 px, bottom at 71), and the box is bottom-anchored at 63: left there
+       it sat on the buttons' row with the rest of the column floating above it
+       (founder 2026-10-13: "it's badly positioned"). The designer's two lines
+       were as tall as that column and centred on it: the one line is centred
+       on it too. Moved with `bottom` on the H1 itself, never a transform (the
+       agents assembly translates the shared box) and never the box's own
+       `bottom` (the agents headline sits in it). */
+    bottom: calc(8px + (172px - 1.16 * var(--lp-h1-fs)) / 2);
+    position: relative;
   }
 }
 /* phones: one line inside the 32 px gutters (the artboard's 35.559 from 466 wide up) */
@@ -246,7 +262,7 @@
   display: flex;
   flex-direction: column;
   gap: 24px; /* Figma itemSpacing 24 */
-  left: calc(50% + 200px); /* left edge 1027 at 1654 (column centre x1211) */
+  right: max(32px, calc(50% - 648px)); /* right edge on the nav's: 1475 at 1654 */
   position: absolute;
   width: 368px;
 }
@@ -267,15 +283,8 @@
   position: static;
   transform: none;
 }
-@media (max-width: 1200px) {
-  .lp-hero--home .lp-hero-title {
-    left: 48px;
-  }
-  .lp-hero--home .lp-hero-aside {
-    left: auto;
-    right: 48px;
-  }
-}
+/* (no ≤1200 tier for the homepage: the max() above already gives the nav's
+   32 px gutters under 1360) */
 /* ── Homepage first screen (≥1025) — founder 2026-10-12, _decisions §10 ──
    "The designer page is built so that the top of this product footage
    appears in the hero 100vh": the demo window's top bar peeks at the bottom
@@ -307,7 +316,14 @@
    transform and art top 0,2,0 vs 0,1,0). */
 @media (min-width: 1025px) {
   .lp-hero.lp-hero--home {
-    --lp-hero-lift: clamp(0px, (873px - var(--lp-svh, 100svh)) * 0.3, 34px);
+    /* lift0 = the decision's lift; the copy's scale below is still made of it.
+       The art itself is never lifted less than 22 px (2026-10-13): the copy
+       block is the nav's width now, so the one-line H1 starts 80 px further
+       left (179 at 1654), under the rainbow's left arm, which came within
+       19 px of the "D" at its lowest turn on tall windows. 22 px up keeps it
+       40 px away at every height (measured over the loop). */
+    --lp-hero-lift0: clamp(0px, (873px - var(--lp-svh, 100svh)) * 0.3, 34px);
+    --lp-hero-lift: max(22px, var(--lp-hero-lift0));
     --lp-hero-h: clamp(
       380px,
       max(var(--lp-svh, 100svh) - 216px, min(544px, var(--lp-svh, 100svh) - 120px)),
@@ -351,6 +367,7 @@
 @media (min-width: 1025px) and (max-height: 639px) {
   .lp-hero.lp-hero--home {
     --lp-hero-lift: 60px;
+    --lp-hero-lift0: 60px;
   }
 }
 /* a unitless ratio of two lengths: tan(atan2(a, b)) = a / b (the idiom of
@@ -361,7 +378,7 @@
     .lp-hero.lp-hero--home {
       --lp-hero-s: clamp(
         0.66,
-        tan(atan2(var(--lp-hero-h) - 358px + var(--lp-hero-lift), 299px)),
+        tan(atan2(var(--lp-hero-h) - 358px + var(--lp-hero-lift0), 299px)),
         1
       );
     }
