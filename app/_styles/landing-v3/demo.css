@@ -2,10 +2,12 @@
    fr8NgOCTUxsEbrMEJA3YKu frame 4911:346). Created empty by the integrator
    (phase 0, 2026-10-09).
    Homepage demo window section (LpDemo, Figma V2 4939:2645 + hero-scroll
-   storyboard 4940:4919/4920/4981): the app window, its Pancake / Claude &
-   Codex views and pills, the scroll-linked assembly and the .lp-hs-hero hook
-   rule. Not to be confused with app/_styles/verticals/demo.css (the /for
-   demo) or app/_styles/demo.css (the /demo page).
+   storyboard 4940:4919/4920/4981 and frame "4" 5024:8353): the app window,
+   its Pancake / Claude & Codex views and pills, the scroll-linked assembly
+   and the .lp-hs-hero hook rule; on phones the portrait phone-shaped card of
+   the mobile artboard (5024:9506). Not to be confused with
+   app/_styles/verticals/demo.css (the /for demo) or app/_styles/demo.css
+   (the /demo page).
    CLASS BLOCK = .lp-demowin (root section.lp-demowin, children
    .lp-demowin__*; caret .lp-demowin__caret is the freeze member). Never a
    bare .lp-demo selector: /demo's <main> is .lp.lp-demo and this manifest
@@ -41,7 +43,10 @@
   --lp-demowin-claude-mark: #d97757; /* the chip's Claude badge (raster 4939:2774, official) */
   --lp-demowin-shadow: 0 4px 62.4px rgba(0, 0, 0, 0.08); /* window DROP_SHADOW 0,4 blur 62.4, 8 % black */
   --lp-demowin-shadow-input: 0 8px 32px rgba(0, 0, 0, 0.08); /* composer 4939:2724 */
-  padding-bottom: 60px; /* V2: pills bottom → section bottom (767 = 647 + 24 + 36 + 60) */
+  /* V2 2026-10-11: the window starts 26 px under the hero (4939:2736 at section y 26);
+     pills bottom → section bottom 60 (793 = 26 + 647 + 24 + 36 + 60) */
+  padding-bottom: 60px;
+  padding-top: 26px;
   /* positioned: paints over the hero art's (clipped) overflow, like a later sibling should */
   position: relative;
 }
@@ -328,76 +333,79 @@
 .lp-demowin__badge-claude { fill: var(--lp-demowin-claude-mark); }
 .lp-demowin__badge-codex { fill: var(--lp-text); }
 
-/* ── the conversation (production's Play tab at the window's type scale:
-   16 / 13.333 / 11.108), bottom-anchored over the docked input ── */
+/* ── the conversation = production's Play pane at PRODUCTION'S OWN metrics
+   (verticals/demo.css .vx-bubble / .vx-answer / .vx-prop / .vx-play__* /
+   .vx-composer / .vx-send, value for value), placed as storyboard frame "4"
+   (5024:8353, "Same as today") draws it: the thread's top at window y 185.57,
+   the input 40.5 px under the Play card (y 465.07), one block mid-window.
+   The 616 column is centred (the frame's 11.5 px right shift is the pasted
+   screenshot's uneven crop); colours are production's tokens, never the
+   raster's. The thread is 239 px tall (bubble 52 · reply 35 · card 138). ── */
 .lp-demowin__log {
-  bottom: 101px; /* 24 + the 65 dock + 12 */
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  justify-content: flex-end;
+  gap: 7px;
   left: 0;
   margin-inline: auto;
-  overflow: hidden;
   position: absolute;
   right: 0;
-  top: 80px;
-  width: min(487px, calc(100% - 32px));
+  top: 185.57px;
+  width: min(616px, calc(100% - 32px));
 }
 .lp-demowin__bubble {
   align-self: flex-end;
   background: var(--lp-ink-100);
-  border-radius: var(--lp-r-m);
+  border-radius: 12px;
   color: var(--lp-surface);
-  font-size: var(--lp-text-md);
-  line-height: 24px;
+  font-size: 13px;
+  line-height: 19px;
   max-width: 85%;
-  padding: 10px 14px;
+  padding: 7px 10px;
   text-wrap: pretty;
 }
 .lp-demowin__reply {
-  border-radius: var(--lp-r-sm);
-  box-shadow: inset 0 0 0 0.5px var(--lp-stroke);
-  font-size: var(--lp-text-md);
-  line-height: 24px;
-  padding: 10px 14px;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--lp-demowin-border);
+  font-size: 13px;
+  line-height: 19px;
+  padding: 8px 10px;
   text-wrap: pretty;
 }
 /* the Play card (app plays/play-draft-panel.tsx): pale pink, indented, a 2 px
    pink rule inside it, "NEW PLAY" + Draft → Created, Who / How, one button */
 .lp-demowin__play {
   background: var(--lp-demowin-pink-bg);
-  border-radius: var(--lp-r-m);
+  border-radius: 10px;
   margin-left: 24px;
-  padding: 12px 14px 14px 26px;
+  padding: 9px 11px 10px 20px;
   position: relative;
 }
 .lp-demowin__play::before {
   background: var(--lp-pink-30);
   border-radius: 2px;
-  bottom: 12px;
+  bottom: 10px;
   content: "";
-  left: 14px;
+  left: 12px;
   position: absolute;
-  top: 12px;
+  top: 10px;
   width: 2px;
 }
 .lp-demowin__play-top { align-items: center; display: flex; gap: 8px; justify-content: space-between; }
 .lp-demowin__kicker {
   color: var(--lp-demowin-pink-dark);
-  font-size: var(--lp-text-xsm);
+  font-size: 9px;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  line-height: 16px;
+  letter-spacing: 0.72px;
+  line-height: 12px;
   text-transform: uppercase;
 }
 .lp-demowin__status > [data-s] {
   border-radius: 999px;
-  font-size: var(--lp-text-xsm);
+  font-size: 10px;
   font-weight: 500;
   justify-self: end;
-  line-height: 18px;
-  padding: 0 8px;
+  line-height: 16px;
+  padding: 0 6px;
   white-space: nowrap;
 }
 .lp-demowin__status > [data-s="before"] { background: var(--lp-surface); box-shadow: inset 0 0 0 1px var(--lp-demowin-border); color: var(--lp-demowin-muted-fg); }
@@ -406,79 +414,101 @@
   box-shadow: inset 0 0 0 1px var(--lp-demowin-green-ring);
   color: var(--lp-demowin-green-fg);
 }
-.lp .lp-demowin__play-name { font-size: var(--lp-text-md); font-weight: 600; line-height: 24px; margin-top: 4px; }
-.lp-demowin__rows { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+.lp .lp-demowin__play-name { font-size: 12.5px; font-weight: 600; line-height: 17px; margin-top: 3px; text-wrap: pretty; }
+.lp-demowin__rows { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
 .lp-demowin__rows li {
-  --ico: 14px;
+  --ico: 12px;
   --ico-c: var(--lp-demowin-green-fg);
   align-items: start;
-  column-gap: 8px;
+  column-gap: 6px;
   display: grid;
-  font-size: var(--lp-text-sm);
-  grid-template-columns: 16px 120px minmax(0, 1fr);
-  line-height: 20px;
+  font-size: 11px;
+  grid-template-columns: 12px 96px minmax(0, 1fr);
+  line-height: 15px;
 }
-.lp-demowin__rows li::before { margin: 3px 1px 0; }
+.lp-demowin__rows li::before { margin: 1.5px 0 0; }
 .lp-demowin__k { color: var(--lp-demowin-muted-fg); }
+/* shared with the Claude plan card (its base values stay) */
 .lp-demowin__v { align-items: flex-start; display: flex; flex-wrap: wrap; gap: 2px 6px; min-width: 0; text-wrap: pretty; }
+.lp-demowin__rows .lp-demowin__v { color: color-mix(in srgb, var(--lp-ink-100) 86%, transparent); gap: 3px 5px; }
 .lp-demowin__chipk {
+  align-items: center;
   background: var(--lp-demowin-key-bg);
   border-radius: 999px;
   box-shadow: inset 0 0 0 1px var(--lp-demowin-key-ring);
   color: var(--lp-demowin-key-fg);
+  display: inline-flex;
   flex: none;
-  font-size: var(--lp-text-xsm);
+  font-size: 10.5px;
   font-weight: 500;
-  line-height: 20px;
-  padding: 0 8px;
+  height: 19px;
+  line-height: 13px;
+  margin-top: -2px;
+  padding: 0 7px;
   white-space: nowrap;
 }
-.lp .lp-demowin__foot { margin-top: 12px; }
+.lp .lp-demowin__foot { margin-top: 9px; }
 .lp-demowin__go {
-  --ico: 14px;
+  --ico: 12px;
   align-items: center;
-  background: var(--lp-demowin-send);
-  border-radius: var(--lp-r-xsm);
+  background: var(--lp-ink-100);
+  border-radius: 8px;
+  box-shadow: 0 1px 1px color-mix(in srgb, var(--lp-ink-100) 3%, transparent), 0 3px 6px -3px color-mix(in srgb, var(--lp-ink-100) 4.3%, transparent);
   color: var(--lp-surface);
   display: flex;
-  font-size: var(--lp-text-sm);
+  font-size: 11px;
   font-weight: 500;
-  gap: 6px;
-  height: 36px;
+  gap: 5px;
+  height: 28px;
   justify-content: center;
+  letter-spacing: 0.22px;
   white-space: nowrap;
 }
 .lp-demowin__ready {
-  --ico: 16px;
+  --ico: 14px;
   --ico-c: var(--lp-demowin-green-fg);
-  align-items: center;
+  align-items: flex-start;
   display: flex;
-  font-size: var(--lp-text-sm);
+  font-size: 11px;
   font-weight: 500;
-  gap: 8px;
-  line-height: 20px;
-  min-height: 36px;
+  gap: 6px;
+  line-height: 15px;
   text-wrap: pretty;
 }
-/* the docked input: 487×65 at window bottom − 24 */
+/* the input under the conversation (production's .vx-composer: 616×38, r 10,
+   1 px ring) with production's round send (.vx-send: 26, ink-100, arrow 13) */
 .lp-demowin__dock {
   align-items: center;
   background: var(--lp-surface);
-  border-radius: var(--lp-r-m);
-  bottom: 24px;
-  box-shadow: inset 0 0 0 0.5px var(--lp-stroke), var(--lp-demowin-shadow-input);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--lp-demowin-border);
   display: flex;
-  gap: 12px;
-  height: 65px;
+  gap: 8px;
+  height: 38px;
   justify-content: space-between;
   left: 0;
   margin-inline: auto;
-  padding: 0 16.5px;
+  padding: 0 5px 0 11px;
   position: absolute;
   right: 0;
-  width: min(487px, calc(100% - 32px));
+  top: 465.07px;
+  width: min(616px, calc(100% - 32px));
 }
+/* the base placeholder rule is the Claude dock's too */
 .lp-demowin__ph { color: var(--lp-subtle-text); font-size: var(--lp-text-md); line-height: 24px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lp-demowin__dock .lp-demowin__ph { color: var(--lp-demowin-muted-fg); font-size: 11.5px; line-height: 16.675px; }
+.lp-demowin__dsend {
+  --ico: 13px;
+  --ico-c: var(--lp-surface);
+  align-items: center;
+  background: var(--lp-ink-100);
+  border-radius: 50%;
+  display: flex;
+  flex: none;
+  height: 26px;
+  justify-content: center;
+  width: 26px;
+}
 
 /* ══ Claude & Codex view (FLAGGED: no final design) ══════════════════════════
    The deep-dive "Run it from Claude or Codex" frame 4964:2575 is this very
@@ -785,8 +815,10 @@
 /* ══ hero scroll — storyboard 4940:4919 (01) → 4920 (02) → 4981 (03) ══════════
    Desktop only (≥1025 × ≥640 tall, motion allowed). One progress p = --lp-hs
    (section) / --lp-hs-hero (each hero copy block, nav-hero's .lp-hs-hero hook),
-   written by ScrollTrigger (lp-demo-scroll.ts, decision §3) over "section top
-   at 100vh − 299.42" → "at 141". Keyframes (all linear, spec §6.2):
+   written by ScrollTrigger (lp-demo-scroll.ts, decision §3) over "the WINDOW's
+   top at 100vh − 299.42" → "at 141" (the storyboard's poses; the section's top
+   is the 26 px inset above it: V2 4939:2645, so the range reads 325.42 / 115
+   from the section). Keyframes (all linear, spec §6.2):
      window  scale .4956 → 1 (02: .77208), opacity 0 until p .3355 → 1 (02: .32),
              about its bottom edge
      head    −28.13 px until p .5481 (02), → 0 at 03
@@ -820,7 +852,7 @@
   @media (min-width: 1025px) and (min-height: 640px) and (prefers-reduced-motion: no-preference) {
     .lp-audience-page:not([data-audience="agents"]) > .lp-demowin:not([data-hs]):not([data-hs-done]) {
       animation: lp-demowin-hs linear both;
-      animation-range: cover 299.42px cover calc(100vh - 141px);
+      animation-range: cover 325.42px cover calc(100vh - 115px); /* = lp-demo-timeline.ts HS_START_FROM_BOTTOM / HS_END_FROM_TOP */
       animation-timeline: view();
     }
   }
@@ -835,7 +867,9 @@
   to { --lp-hs: 1; }
 }
 
-/* ══ tablets 768–1024: the desktop window, 48 px gutters, no scroll assembly ══ */
+/* ══ tablets 768–1024: the desktop window, 48 px gutters, no scroll assembly ══
+   (the 26 px inset above the window stays; the 616 conversation column and
+   its two `top` values hold: the window is 647 tall and ≥ 672 wide) */
 @media (max-width: 1024px) {
   .lp-demowin { padding-bottom: 56px; }
   .lp-demowin__stage { width: calc(100% - 96px); }
@@ -844,59 +878,138 @@
   .lp .lp-demowin__chip { justify-self: center; margin-left: 0; }
 }
 
-/* ══ phones ≤767: full-width window (16 px gutters), content height ══════════ */
+/* ══ phones ≤767 — the mobile artboard's card (5024:8631 → 5024:9506) ═════════
+   The Pancake view recomposed as a portrait, phone-shaped card: no top chrome,
+   the wordmark centred, cards with their bodies, the agent question and chip
+   on one row, the composer docked at the bottom, r 36. Figma draws it at
+   218 × 428 with every inner metric = the desktop metric × 0.399025, so it is
+   built as a FIXED DESIGN BOX of 546.33 × 1072.61 "du" (= desktop px: 28 px
+   title, 16 px prompt, 487 px column) and scaled AS PIXELS to the card's
+   on-screen width (transform, never zoom; no will-change: nothing is promoted).
+   All px inside the box are du. Figma px ÷ 0.399025 = du.
+   F1 (decision §9): the size is ONE custom property, --lp-demowin-phone-w.
+   F2: no pills and no Claude & Codex view on phones (card[data-phone-solo],
+   LpDemoPlayer PHONE_SOLO); the rules for a two-view phone card stay below. */
 @media (max-width: 767px) {
-  .lp-demowin { padding: 0 16px 40px; }
+  .lp-demowin {
+    /* F1 — the card's width on screen. The artboard: 218 of 402 (type lands at
+       5.3 – 11.2 px, a product picture in a phone frame). The legible
+       alternative is the content width: calc(100vw - 32px) (type × 1.7). */
+    --lp-demowin-phone-w: calc(218 / 402 * 100vw);
+    /* the card's top edge shows this far above the fold (artboard: top 857 on the 874 frame) */
+    --lp-demowin-phone-peek: 17px;
+    margin-top: calc(-1 * var(--lp-demowin-phone-peek));
+    overflow-x: clip; /* the du box before an engine without trig is measured (LpDemoPlayer) */
+    padding: 0;
+  }
+  /* card bottom → "Trusted by many" = 78.7 (5024:8948; 74.885 + the logos' 3.811) */
+  .lp-demowin__card { padding-bottom: 74.885px; }
+  .lp-demowin__card:not([data-phone-solo]) { padding-bottom: 22.885px; } /* pills 16 + 36 under the card */
+  .lp-demowin__card[data-phone-solo] .lp-demowin__tabs,
+  .lp-demowin__card[data-phone-solo] .lp-demowin__view--claude { display: none; }
   .lp-demowin__tabs { margin-top: 16px; }
-  .lp-demowin__stage { min-height: 600px; width: 100%; }
-  .lp-demowin__view { height: auto; }
-  .lp-demowin__view--pancake { grid-template-rows: 56px auto auto auto minmax(24px, 1fr); }
-  .lp-demowin__top { height: 56px; }
-  .lp-demowin__side { left: 16px; top: 18px; }
-  .lp-demowin__logo { left: 48px; top: 17px; }
-  .lp-demowin__new { right: 16px; top: 18px; }
-  .lp-demowin__head { margin-left: 0; padding-top: 32px; }
-  .lp-demowin__title { font-size: 24px; line-height: 36px; }
-  .lp-demowin__sub { font-size: 14px; line-height: 21px; }
-  .lp-demowin__composer { margin-top: 24px; }
-  .lp-demowin__start { margin-left: 0; padding-top: 24px; }
-  .lp-demowin__gs { min-height: 0; padding: 16.5px 12px; }
-  .lp-demowin__gs-b { display: none; }
-  .lp .lp-demowin__chip { align-items: center; flex-direction: column; gap: 6px; padding-top: 24px; }
-  .lp-demowin__log { bottom: 81px; top: 72px; } /* dock 57 + 24 */
-  .lp-demowin__dock { bottom: 16px; height: 57px; width: calc(100% - 32px); }
+
+  /* the card on screen, and the du box in it */
+  .lp-demowin__stage {
+    aspect-ratio: 546.33 / 1072.61; /* 218 / 428 */
+    display: block;
+    position: relative;
+    width: var(--lp-demowin-phone-w);
+  }
+  .lp-demowin__stage:focus-visible { border-radius: calc(var(--lp-demowin-phone-w) * 0.16514); } /* 90.22 / 546.33 */
+  .lp-demowin__view {
+    height: 1072.61px;
+    left: 0;
+    pointer-events: none; /* a picture at this size: nothing in it is a tap target */
+    position: absolute;
+    top: 0;
+    /* --lp-demowin-fit: the player's measurement; the trig quotient is the same value before it */
+    transform: scale(var(--lp-demowin-fit, tan(atan2(var(--lp-demowin-phone-w), 546.33px))));
+    transform-origin: 0 0;
+    width: 546.33px;
+  }
+  /* Figma: r 36 (smoothing .6), stroke .2 inside, shadow 0 1.596 24.899 8 % — in du the desktop
+     window's own hairline and shadow, so only the radius changes */
+  .lp-demowin__win,
+  .lp-demowin__cwin { border-radius: 90.22px; }
+
+  /* Gecko drops an inset ring thinner than a device pixel, and 0.5 du is ≈ 0.2 px here: the
+     card's edge, the three cards and the composer would lose their hairline (Firefox for
+     Android). There the ring is half a SCREEN px at 40 % of the stroke: the same weight. */
+  @supports (-moz-appearance: none) {
+    .lp-demowin__view {
+      --lp-demowin-hair: inset 0 0 0 calc(0.5px / var(--lp-demowin-fit, tan(atan2(var(--lp-demowin-phone-w), 546.33px))))
+        color-mix(in srgb, var(--lp-stroke) 40%, transparent);
+    }
+    .lp-demowin__win { box-shadow: var(--lp-demowin-hair), var(--lp-demowin-shadow); }
+    .lp-demowin__gs { box-shadow: var(--lp-demowin-hair); }
+    .lp-demowin__composer { box-shadow: var(--lp-demowin-hair), var(--lp-demowin-shadow-input); }
+  }
+
+  /* rest picture (du): wordmark 57.27 · title 220.03 · subtitle 262.03 · Get started 362.86 ·
+     cards 394.87 · agent row 553.5 · composer 882.56 – 1005.68 · 66.93 under it */
+  .lp-demowin__view--pancake { grid-template-rows: 220.03px auto auto auto minmax(0, 1fr); }
+  .lp-demowin__top { height: 220.03px; }
+  .lp-demowin__side,
+  .lp-demowin__new { display: none; }
+  .lp-demowin__logo { height: 34.6px; left: calc(50% - 44.195px); top: 57.27px; width: 88.39px; } /* × 1.5393 */
+  /* static: the composer leaves the head's flow and docks against the box */
+  .lp-demowin__head { padding-top: 0; position: static; }
+  .lp-demowin__composer {
+    bottom: 66.93px;
+    justify-content: space-between;
+    left: 29.18px;
+    margin-top: 0;
+    min-height: 123.12px;
+    position: absolute;
+    width: 487px;
+  }
+  .lp-demowin__start { padding-top: 76.83px; width: 487px; } /* 286.03 → 362.86 */
+  /* the agent row = the desktop row × 1.2226 (raster 5024:9534 is image 16 at that scale),
+     question and chip on one line, the question's left edge on the "Get started" label */
+  .lp .lp-demowin__chip { gap: 12.59px; justify-self: start; margin-left: 35.25px; padding-top: 61.6px; }
+  .lp-demowin__ask { font-size: 13.449px; line-height: 17.12px; width: 140.11px; }
+  .lp .lp-demowin__agent {
+    box-shadow: 0 1.22px 7.34px rgba(44, 0, 42, 0.06);
+    font-size: 13.907px;
+    height: 35.7px;
+    line-height: 17.12px;
+    padding-left: 5.26px;
+    width: 302.84px;
+  }
+  .lp-demowin__badges { margin-right: 11.25px; }
+  .lp-demowin__badge { height: 24.82px; width: 24.82px; }
+  .lp-demowin__badge + .lp-demowin__badge { margin-left: -4.89px; }
+  .lp-demowin__badge svg { height: 13.45px; width: 13.45px; }
+
+  /* once the request is sent: production's phone pane (verticals/demo.css @container vxstage
+     ≤559: 12.5 / 18 bubbles, 11.5 / 16 rows, no card indent, no cursor) on the card's 487
+     column. The input takes the composer's place (same left, same bottom edge) and the thread
+     sits on it, 12 above, as a chat does. */
+  .lp-demowin__log {
+    bottom: 116.93px; /* 66.93 + the 38 input + 12 */
+    justify-content: flex-end;
+    left: 29.18px;
+    margin-inline: 0;
+    overflow: hidden;
+    right: auto;
+    top: 120px;
+    width: 487px;
+  }
+  .lp-demowin__dock { bottom: 66.93px; left: 29.18px; margin-inline: 0; right: auto; top: auto; width: 487px; }
   .lp-demowin__bubble,
-  .lp-demowin__reply { font-size: 14px; line-height: 21px; }
-  .lp-demowin__play { margin-left: 12px; }
-  /* the key over its value: a 96 px key column left the values ~80 px wide at 320 */
-  .lp-demowin__rows li { grid-template-columns: 14px minmax(0, 1fr); }
-  .lp-demowin__rows .lp-demowin__v { grid-column: 2; }
-  .lp-demowin__bubble { max-width: 90%; }
-  .lp-demowin__go { font-size: 12.5px; }
-  .lp-demowin__home { padding-top: 88px; }
-  .lp .lp-demowin__greet { font-size: 26px; gap: 4px; height: 33px; line-height: 33px; }
-  .lp-demowin__greet-spark { height: 28px; width: 28px; }
-  .lp-demowin__ccomposer { margin-top: 24px; }
-  .lp-demowin__clog { bottom: 84px; gap: 10px; top: 20px; }
-  .lp-demowin__cdock { bottom: 16px; height: 56px; }
-  .lp-demowin__cbubble { font-size: 14px; line-height: 21px; padding: 10px 14px; }
-  .lp .lp-demowin__csay { font-size: 16px; }
-  .lp-demowin__tool { font-size: 14px; line-height: 21px; }
-  .lp-demowin__plug { --ico: 20px; height: 20px; }
-  .lp-demowin__plan { padding: 12px 14px; }
-  .lp-demowin__plan-rows li { grid-template-columns: minmax(0, 1fr); }
-  .lp-demowin__cbubble { max-width: 90%; }
-}
-/* the stage holds both conversations' end pictures (bottom-anchored logs) at
-   every phone width; narrower columns wrap more lines (measured 320–767) */
-@media (max-width: 392px) {
-  .lp-demowin__stage { min-height: 650px; }
-}
-@media (max-width: 374px) {
-  .lp-demowin__stage { min-height: 670px; }
-}
-@media (max-width: 359px) {
-  .lp-demowin__stage { min-height: 700px; }
+  .lp-demowin__reply { font-size: 12.5px; line-height: 18px; }
+  .lp-demowin__play { margin-left: 0; }
+  .lp-demowin__rows li { font-size: 11.5px; grid-template-columns: 12px 102px minmax(0, 1fr); line-height: 16px; }
+  .lp-demowin__view--pancake .lp-demowin__cursor { display: none; }
+
+  /* Claude & Codex view in the du box — only when the pills are kept on phones (PHONE_SOLO
+     off): same anchors as the Pancake card, not a drawn design */
+  .lp-demowin__home { padding-top: 205px; }
+  .lp-demowin__ccomposer,
+  .lp .lp-demowin__below { width: 487px; }
+  .lp-demowin__clog { bottom: 142.93px; left: 29.18px; margin-inline: 0; right: auto; top: 120px; width: 487px; } /* 66.93 + 64 + 12 */
+  .lp-demowin__cdock { bottom: 66.93px; left: 29.18px; margin-inline: 0; right: auto; width: 487px; }
   .lp-demowin__effort { display: none; }
 }
 
@@ -905,12 +1018,16 @@
   .lp-demowin__win,
   .lp-demowin__app { display: block; }
   .lp-demowin__start { margin-top: 263.6px; }
+  @media (max-width: 767px) {
+    .lp-demowin__start { margin-top: 66px; } /* the head's two lines */
+  }
 }
 
 /* ── icon masks (data-ico) ── */
 .lp-demowin [data-ico="sidebar"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='black' stroke-width='1.66667' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15.8333 2.5H4.16667C3.24619 2.5 2.5 3.24619 2.5 4.16667V15.8333C2.5 16.7538 3.24619 17.5 4.16667 17.5H15.8333C16.7538 17.5 17.5 16.7538 17.5 15.8333V4.16667C17.5 3.24619 16.7538 2.5 15.8333 2.5Z'/%3E%3Cpath d='M7.5 2.5V17.5'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="new-chat"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='black' stroke-width='1.33333' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2.05973 11.6727C2.11692 11.4129 2.09509 11.142 1.99707 10.8947C1.31491 9.47932 1.15457 7.86851 1.54433 6.34644C1.93409 4.82438 2.8489 3.48888 4.12736 2.57558C5.40582 1.66227 6.96577 1.22986 8.53199 1.35462C10.0982 1.47938 11.57 2.1533 12.6878 3.25748C13.8055 4.36167 14.4974 5.82515 14.6413 7.38972C14.7851 8.95429 14.3718 10.5194 13.4742 11.8089C12.5766 13.0985 11.2524 14.0295 9.73516 14.4378C8.21798 14.8462 6.60532 14.7055 5.18173 14.0407C4.94808 13.952 4.69421 13.9307 4.44906 13.9794L2.17373 14.6447C2.06397 14.6738 1.94859 14.6744 1.83853 14.6465C1.72847 14.6185 1.62738 14.5629 1.54484 14.4849C1.46231 14.4069 1.40106 14.3091 1.36692 14.2008C1.33277 14.0925 1.32685 13.9773 1.34973 13.866L2.05973 11.6727Z'/%3E%3Cpath d='M5.33594 8H10.6693M8 5.33335V10.6667'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="send"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13.1768 15.2842'%3E%3Cpath d='M7.42188 0C7.4219 2.88652 9.61864 5.44101 13.1768 7.02246L12.5 8.5459C10.5761 7.69081 9.17319 6.69987 7.98535 5.21875C7.8769 5.08351 7.35251 3.85392 7.25195 3.71387L7.1123 3.77051C7.11516 3.78317 7.42186 5.14347 7.42188 5.64551V15.2842H5.75488V5.64551C5.7549 5.14424 6.06067 3.7873 6.06445 3.77051L5.9248 3.71387C5.82425 3.85392 5.29986 5.08351 5.19141 5.21875C4.0036 6.69979 2.60064 7.69084 0.676758 8.5459L0 7.02246C3.55824 5.44102 5.75486 2.88658 5.75488 0H7.42188Z'/%3E%3C/svg%3E"); }
+.lp-demowin [data-ico="up"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M12 19V5.5M6.5 11 12 5.5l5.5 5.5'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="plus"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17.4681 17.4681' fill='none' stroke='black' stroke-width='1.09175' stroke-linecap='round'%3E%3Cpath d='M3.05368 8.73358H14.4079M8.7308 3.05646V14.4107'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="arrow-up"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13.9744 13.9744' fill='none' stroke='black' stroke-width='0.873403' stroke-linecap='round' stroke-linejoin='bevel'%3E%3Cpath d='M6.9878 12.2276V1.74672M11.7915 6.55043L6.9878 1.74672L2.18408 6.55043'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="plug"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28.8671 28.8671' fill='none' stroke='black' stroke-width='2.40559' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.4475 22.8532C20.1285 22.8532 19.8226 22.7264 19.597 22.5009C19.3715 22.2753 19.2447 21.9694 19.2447 21.6504V19.2448C19.2447 18.6068 19.4982 17.9949 19.9493 17.5438C20.4005 17.0926 21.0123 16.8392 21.6503 16.8392H24.0559C24.6939 16.8392 25.3058 17.0926 25.7569 17.5438C26.2081 17.9949 26.4615 18.6068 26.4615 19.2448V21.6504C26.4615 21.9694 26.3348 22.2753 26.1092 22.5009C25.8837 22.7264 25.5777 22.8532 25.2587 22.8532H20.4475Z'/%3E%3Cpath d='M20.4475 25.2588V22.8532M25.2587 25.2588V22.8532M3.60839 6.01402V3.60842M8.41958 6.01402V3.60842'/%3E%3Cpath d='M22.8531 16.8392V7.81821C22.8531 6.70171 22.4096 5.63093 21.6201 4.84144C20.8306 4.05195 19.7599 3.60842 18.6434 3.60842C17.5268 3.60842 16.4561 4.05195 15.6666 4.84144C14.8771 5.63093 14.4336 6.70171 14.4336 7.81821V21.049C14.4336 22.1655 13.99 23.2363 13.2005 24.0257C12.4111 24.8152 11.3403 25.2588 10.2238 25.2588C9.10727 25.2588 8.03649 24.8152 7.247 24.0257C6.45751 23.2363 6.01398 22.1655 6.01398 21.049V12.028'/%3E%3Cpath d='M4.81119 12.028C4.17318 12.028 3.56131 11.7746 3.11018 11.3234C2.65904 10.8723 2.40559 10.2604 2.40559 9.62241V7.21681C2.40559 6.89781 2.53232 6.59188 2.75788 6.36631C2.98345 6.14074 3.28939 6.01402 3.60839 6.01402H8.41958C8.73858 6.01402 9.04452 6.14074 9.27008 6.36631C9.49565 6.59188 9.62237 6.89781 9.62237 7.21681V9.62241C9.62237 10.2604 9.36893 10.8723 8.91779 11.3234C8.46666 11.7746 7.85478 12.028 7.21678 12.028H4.81119Z'/%3E%3C/svg%3E"); }

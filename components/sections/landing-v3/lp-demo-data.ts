@@ -7,7 +7,9 @@
  * agent chip and the pills (the raster chip 4939:2774 reads "Prefer your own agent?" / "Use
  * Pancake with Claude or Codex"). The request, the reply and the Play card come from the
  * production demo data (lib/verticals/home-demo.ts prompt 0 + vx-copy.ts, both checked by
- * lib/verticals/validate.ts) and are passed in by LpDemo.tsx, not repeated here. The Claude view
+ * lib/verticals/validate.ts) and are passed in by LpDemo.tsx, not repeated here: the Pancake
+ * conversation is production's Play pane at production's own metrics (storyboard frame "4"
+ * 5024:8353, "Same as today"), so no string of it is new. The Claude view
  * has no final design (flagged): its controls are the deep-dive Claude frame's (4964:2575), its
  * run is new copy, and its tool titles are the MCP server's own (pancake-cmo
  * packages/mcp/src/plays-tools.ts).

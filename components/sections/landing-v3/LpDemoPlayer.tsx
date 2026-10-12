@@ -17,7 +17,8 @@
 //
 // First start:
 //   · the hero scroll assembles the window (desktop ≥1025 × ≥640 tall, motion allowed): when it
-//     completes (p = 1: the section's top at 141 px), or at load if the page is already past it;
+//     completes (p = 1: the WINDOW's top at 141 px = the section's top at HS_END_FROM_TOP, 26 px
+//     of inset above it), or at load if the page is already past it;
 //   · otherwise (phones, tablets, short windows, Firefox-free of nothing — every engine runs the
 //     assembly through ScrollTrigger): once the window's top crosses 60 % of the viewport, or
 //     after 1 s with half of it on screen (lp-play-once's rule).
@@ -28,13 +29,32 @@
 // Reduced motion (or ?still): no clock and no GSAP download; the Pancake view is its rest
 // picture (the V2 design), the Claude view its end picture; the pills switch views instantly.
 //
+// Phones (≤767, the mobile artboard's card 5024:9506): the Pancake view is a fixed design box
+// scaled as pixels (demo.css); the island writes the measured scale (--lp-demowin-fit on the
+// stage; CSS has the same quotient as a trig fallback) and takes the chip link out of the tab
+// order (the card is a picture there). PHONE_SOLO (decision §9 F2): no pills and no Claude &
+// Codex view on phones, so the Pancake view plays ONCE and holds its end picture (nothing
+// rewinds on screen, no loop), and a visitor who shrinks the window on the Claude view is
+// brought back to the Pancake view.
+//
 // SSR / first client render = Pancake view at rest (frame 0 = the server markup, no class set).
 // Per-frame work writes ONLY: .is-on / .is-off / .is-sw / .is-press classes, the cursor
 // transform, and --p on the active pill's fill. React-owned attributes are never mutated.
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { flushSync } from "react-dom";
-import { CURSOR_ENTRY, DWELL, END, frameAt, type LpDemoFrame, type LpDemoView } from "./lp-demo-timeline";
+import {
+  CURSOR_ENTRY,
+  DWELL,
+  END,
+  frameAt,
+  HS_END_FROM_TOP,
+  PHONE_BOX_W,
+  PHONE_QUERY,
+  PHONE_SOLO,
+  type LpDemoFrame,
+  type LpDemoView,
+} from "./lp-demo-timeline";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -65,6 +85,10 @@ interface Ctl {
   paused: boolean;
   reduced: boolean;
   focusHold: boolean;
+  /** Phones with PHONE_SOLO: one view, played once. */
+  solo: boolean;
+  /** The solo view reached its dwell: it holds its end picture (the clock is off). */
+  soloDone: boolean;
   /** QA seek: the clock is off until play(). */
   seeking: boolean;
   /** A view switch is waiting for React's commit: the clock must not tick the old view. */
@@ -114,6 +138,8 @@ export function LpDemoPlayer({
     paused: false,
     reduced: false,
     focusHold: false,
+    solo: false,
+    soloDone: false,
     seeking: false,
     pending: false,
     fill: null,
@@ -272,7 +298,16 @@ export function LpDemoPlayer({
 
   const willRun = useCallback(() => {
     const x = ctl.current;
-    return x.started && !x.reduced && !x.paused && !x.hidden && !x.seeking && x.inView && (x.oneShot || !x.focusHold);
+    return (
+      x.started &&
+      !x.reduced &&
+      !x.paused &&
+      !x.hidden &&
+      !x.seeking &&
+      x.inView &&
+      !(x.solo && x.soloDone) &&
+      (x.oneShot || !x.focusHold)
+    );
   }, []);
 
   const sync = useCallback(() => {
@@ -296,9 +331,11 @@ export function LpDemoPlayer({
   advanceRef.current = () => {
     const x = ctl.current;
     x.oneShot = false;
-    if (x.focusHold) {
-      // held by keyboard focus: keep this view's end picture; it moves on once the hold ends
+    if (x.focusHold || x.solo) {
+      // held by keyboard focus: keep this view's end picture; it moves on once the hold ends.
+      // Solo (phones): the one view played once and rests on its end picture for good.
       x.t = DWELL[x.view];
+      if (x.solo) x.soloDone = true;
       setFills();
       sync();
       return;
@@ -479,7 +516,7 @@ export function LpDemoPlayer({
       if (unmountHs || loadingHs || disposed || still || !mqHs.matches) return;
       loadingHs = true;
       // already past the end (reload mid-page, an anchor): no assembly for the window
-      if (section.getBoundingClientRect().top <= 141) start();
+      if (section.getBoundingClientRect().top <= HS_END_FROM_TOP) start();
       Promise.all([import("@/lib/gsap"), import("./lp-demo-scroll")])
         .then(([, mod]) => {
           loadingHs = false;
@@ -536,7 +573,46 @@ export function LpDemoPlayer({
     card.addEventListener("focusin", onFocusIn);
     card.addEventListener("focusout", onFocusOut);
 
-    const ro = new ResizeObserver(() => x.pos.clear());
+    /* phones: the card is a design box scaled as pixels. The measured scale replaces the CSS
+       trig quotient (same value; engines without trig, or that mis-resolve it, get it here). */
+    const mqPhone = window.matchMedia(PHONE_QUERY);
+    const chipLink = card.querySelector<HTMLElement>(".lp-demowin__agent");
+    const writeFit = () => {
+      if (!mqPhone.matches) return;
+      const w = stage.getBoundingClientRect().width;
+      if (w > 0) stage.style.setProperty("--lp-demowin-fit", (w / PHONE_BOX_W).toFixed(6));
+    };
+    const setPhone = () => {
+      const phone = mqPhone.matches;
+      x.solo = phone && PHONE_SOLO;
+      x.pos.clear();
+      if (phone) {
+        writeFit();
+        // a picture at this size (pointer-events: none in demo.css): not a tab stop either.
+        // The guide stays linked from the deep dive and the footer.
+        chipLink?.setAttribute("tabindex", "-1");
+      } else {
+        stage.style.removeProperty("--lp-demowin-fit");
+        chipLink?.removeAttribute("tabindex");
+      }
+      if (x.solo && x.view === 1) {
+        // the Claude view is not rendered on phones: back to the Pancake view, armed while hidden
+        stop();
+        x.oneShot = false;
+        x.t = 0;
+        go(0);
+        return;
+      }
+      if (!x.solo) x.soloDone = false;
+      sync();
+    };
+    setPhone();
+    mqPhone.addEventListener("change", setPhone);
+
+    const ro = new ResizeObserver(() => {
+      x.pos.clear();
+      writeFit();
+    });
     ro.observe(stage);
 
     /* QA hooks: ?lpqa, or any non-production build */
@@ -607,6 +683,9 @@ export function LpDemoPlayer({
       unmountHs?.();
       mqReduce.removeEventListener("change", setReduced);
       mqHs.removeEventListener("change", onHsChange);
+      mqPhone.removeEventListener("change", setPhone);
+      stage.style.removeProperty("--lp-demowin-fit");
+      chipLink?.removeAttribute("tabindex");
       document.removeEventListener("visibilitychange", onVis);
       card.removeEventListener("focusin", onFocusIn);
       card.removeEventListener("focusout", onFocusOut);
@@ -620,7 +699,7 @@ export function LpDemoPlayer({
 
   const v = view.v;
   return (
-    <div className="lp-demowin__card" data-view={v} ref={cardRef}>
+    <div className="lp-demowin__card" data-view={v} data-phone-solo={PHONE_SOLO ? "" : undefined} ref={cardRef}>
       <div
         className="lp-demowin__stage"
         id="lp-demowin-panel"

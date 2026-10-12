@@ -4,9 +4,10 @@
 //
 // Two views play in turn in ONE app window:
 //   0 Pancake        — the V2 picture (empty state, the request already typed) is frame 0 and the
-//                      server markup; the request is sent, the production Play moment replays
-//                      (bubble, reply, Play card, the cursor presses "Create play and run search",
-//                      Created), then holds.
+//                      server markup; the request is sent, the production Play moment replays at
+//                      production's own metrics, as storyboard frame "4" (5024:8353, "Same as
+//                      today") draws it (bubble, reply, Play card, the cursor presses "Create play
+//                      and run search", Created), then holds.
 //   1 Claude & Codex — the same request in a Claude-desktop mock: Claude plans the Play through
 //                      Pancake's MCP tools, asks before creating it ("Allow once"), creates it and
 //                      runs its first search.
@@ -216,7 +217,28 @@ export const finalFrame = (view: LpDemoView) => frameAt(view, END[view]);
    One progress p (0 = state 01, 1 = state 03) over the scroll range below; CSS turns it into the
    poses (demo.css "hero scroll"): window scale .4956 → 1 and opacity 0 (until p .3355) → 1, head
    −28.13 px until p .5481, pills fade in after p .5481, hero copy drifts 25.54 px·p and fades
-   out between p .5481 and .85. Range: the section's top from 299.42 px above the viewport's
-   bottom (01: 656.58 on a 956-tall window) to 141 px from its top (03). */
-export const HS_START_FROM_BOTTOM = 299.42;
-export const HS_END_FROM_TOP = 141;
+   out between p .5481 and .85.
+   Range: the WINDOW's top from 299.42 px above the viewport's bottom (01: 656.58 on a 956-tall
+   window) to 141 px from its top (03). The storyboard measures from the window; since V2's
+   2026-10-11 update the section's top sits HS_WINDOW_INSET above it (4939:2645 is 793 tall, the
+   window at section y 26), and the driver's trigger is the section, so the two constants below
+   are the storyboard's numbers shifted by that inset. demo.css mirrors them (padding-top and
+   the pre-script animation-range). */
+/** The air above the window inside the section (demo.css `.lp-demowin { padding-top }`, ≥768). */
+export const HS_WINDOW_INSET = 26;
+/** p = 0: the section's top this far above the viewport's bottom (the window's: 299.42). */
+export const HS_START_FROM_BOTTOM = 299.42 + HS_WINDOW_INSET; // 325.42
+/** p = 1: the section's top this far under the viewport's top (the window's: 141). */
+export const HS_END_FROM_TOP = 141 - HS_WINDOW_INSET; // 115
+
+/* ── phones ≤767: the mobile artboard's card (5024:8631 → 5024:9506) ─────────────────────────
+   The Pancake view is a fixed design box scaled as pixels (demo.css "phones"). */
+/** The phone layout's media query (demo.css uses the same breakpoint). */
+export const PHONE_QUERY = "(max-width: 767px)";
+/** The design box's width in du (218 px ÷ 0.399025); demo.css `.lp-demowin__view { width }`. */
+export const PHONE_BOX_W = 546.33;
+/** F2 (decision §9, 2026-10-11): on phones the artboard draws ONE card and no pills, so the
+ *  Pancake view plays once and holds its end picture, and the Claude & Codex view is never
+ *  shown there. `false` brings the pills and the two-view loop back on phones (the card gets
+ *  no `data-phone-solo`; demo.css keeps the rules for it). */
+export const PHONE_SOLO = true;

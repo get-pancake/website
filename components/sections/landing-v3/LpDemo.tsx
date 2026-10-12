@@ -1,13 +1,15 @@
 // LpDemo — the homepage demo window (V2 Figma 4939:2645, window 4939:2736 / clean copy 4963:848,
-// pills 4939:2784) and its hero scroll (storyboard 4940:4919 → 4920 → 4981). SERVER component.
-// Owner: demo-scroll package. Spec: scratchpad specs/demo-scroll.md + _decisions.md §3.
+// pills 4939:2784) and its hero scroll (storyboard 4940:4919 → 4920 → 4981 → "4" 5024:8353).
+// SERVER component. Owner: demo-scroll package. Specs: specs/demo-scroll.md,
+// specs/updates/hero-scroll-4.md, specs/updates/mobile-402.md §5.3, _decisions.md §3 + §9.
 //
 // V2 red note: "keep plays, remove others / pancake view vs claude view of the same example".
 // So ONE app window (the live app's new home: sidebar icon, wordmark, New chat; "Ready when you
 // are"; the request already typed in the composer; Get started + 3 cards; the "Use Pancake with
 // Claude or Codex" chip) over two pills, Pancake / Claude & Codex, that autoplay between:
-//   · the Pancake view — the request is sent and production's Play moment replays at the window's
-//     type scale (bubble, reply, Play card, "Create play and run search", Created);
+//   · the Pancake view — the request is sent and production's Play moment replays at
+//     production's own metrics, placed as storyboard frame "4" (5024:8353, "Same as today") draws
+//     it (bubble, reply, Play card, "Create play and run search", Created);
 //   · the Claude & Codex view — the same request in a Claude-desktop mock (no final design:
 //     flagged), Claude plans the Play through Pancake's MCP tools, asks ("Allow once"), creates
 //     it and runs its first search.
@@ -24,6 +26,10 @@
 // row): during the hero scroll the window scales from 0.4956 about its bottom edge while the head
 // stays full size above it. A direct <section> child of main.lp: the agents view hides it with
 // every human section (audience.css). Class block `lp-demowin` (`lp-demo` is /demo's <main>).
+//
+// Phones (≤767): the SAME markup is recomposed by demo.css as the mobile artboard's portrait
+// card (5024:9506: no top chrome, centred wordmark, composer docked at the bottom), a fixed
+// design box scaled as pixels; no pills and no Claude & Codex view there (decision §9 F1 / F2).
 //
 // Accessibility: the mock is one role="img" per view with a sentence label; the head is
 // aria-hidden (the label covers it). The chip is a real link, so it sits outside the img. The
@@ -105,7 +111,8 @@ function PancakeView({ prompt, aria }: { prompt: ReturnType<typeof buildDemoMode
             </ul>
           </div>
 
-          {/* the conversation once the request is sent: production's Play tab (VxDemo BriefPane) */}
+          {/* the conversation once the request is sent: production's Play tab (VxDemo BriefPane),
+              same elements and metrics (storyboard frame "4": "Same as today") */}
           <div className="lp-demowin__log">
             <p className="lp-demowin__bubble" data-cue="p.send">
               {prompt.text}
@@ -145,10 +152,11 @@ function PancakeView({ prompt, aria }: { prompt: ReturnType<typeof buildDemoMode
               </p>
             </div>
           </div>
-          {/* the input docks under the conversation once the request is sent */}
+          {/* the input under the conversation once the request is sent: production's .vx-composer
+              with its round send (.vx-send, arrow-up) */}
           <div className="lp-demowin__dock" data-cue="p.send">
             <span className="lp-demowin__ph">{VX_DEMO.app.chat.placeholder}</span>
-            <span className="lp-demowin__send" data-ico="send" />
+            <span className="lp-demowin__dsend" data-ico="up" />
           </div>
           <Cursor />
         </div>

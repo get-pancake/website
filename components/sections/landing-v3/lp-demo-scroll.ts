@@ -6,8 +6,10 @@
 // bundle (PR #283) and phones / tablets / reduced motion never fetch it.
 //
 // ScrollTrigger maps the scroll to ONE progress p (0 = state 01, 1 = state 03) over the range
-// "section top at 100vh − 299.42px" → "section top at 141px" (no pin: the section moves with the
-// page). The driver writes p as a custom property and CSS draws every pose from it (demo.css
+// "the WINDOW's top at 100vh − 299.42px" → "the window's top at 141px" (no pin: the section moves
+// with the page). The trigger is the section, whose top is the 26 px inset above the window (V2
+// 4939:2645), so the two constants carry that shift (lp-demo-timeline.ts: 325.42 / 115). The
+// driver writes p as a custom property and CSS draws every pose from it (demo.css
 // "hero scroll"): `--lp-hs` on the section (window scale / opacity, head offset, pills) and
 // `--lp-hs-hero` on each `.lp-hs-hero` (the hero copy's drift and fade, hero package hook) — two
 // or three style writes a frame, no transform strings to fight the hero's own transforms. The
