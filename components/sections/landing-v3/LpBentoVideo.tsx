@@ -8,30 +8,33 @@ import { flushSync } from "react-dom";
  * placeholder logic here: LpBento (server) decides what renders and passes the poster <img> as
  * children.
  *
- * Two things, never mixed:
- *   1. The MUTED PREVIEW, in the tile. Rest picture = the poster (server markup, lazy). One
- *      viewport out, a muted <video preload="none"> is created over it; nothing is fetched until
- *      play(). At ≥ 60 % of the tile on screen (or 60 % of the viewport filled by it), tab visible,
- *      not paused by the visitor: it plays from `previewStart` (the speaker's first frame, past the
- *      intro B-roll), fades in over the poster once it really plays, and loops back to
- *      `previewStart`. Below that, tab hidden, section hidden (agents view) or the film open: it
- *      pauses and keeps its frame. A play / pause button stops it (WCAG 2.2.2). It can never make
- *      a sound: the element is muted in markup and again before every play().
+ * Two things, never mixed, and two different files:
+ *   1. The MUTED PREVIEW, in the tile: `film.preview`, a cut of about 10 s with NO audio track, a
+ *      few hundred kB. Never the film (megabytes: verify/motion.md M-02). Rest picture = the
+ *      poster (server markup, lazy). One viewport out, a muted <video preload="none" loop> is
+ *      created over it; nothing is fetched until play(). At ≥ 60 % of the tile on screen (or 60 %
+ *      of the viewport filled by it), tab visible, not paused by the visitor: it plays, fades in
+ *      over the poster once it really plays, and loops. Below that, tab hidden, section hidden
+ *      (agents view) or the film open: it pauses and keeps its frame. A play / pause button stops
+ *      it (WCAG 2.2.2). It can never make a sound: the file has no audio, and the element is
+ *      muted in markup and again before every play().
  *      Reduced motion: no autoplay, the button starts as "Play preview" and nothing is fetched
  *      before it is pressed. Save-Data, prefers-reduced-data or a media error: the poster only.
- *   2. The FILM WITH SOUND, on demand only. The tile itself is a button ("Watch with sound", a
- *      pill at its bottom-left): it opens a native modal <dialog> with the whole frame, the
- *      browser's own controls (play, seek, volume, full screen) and the sound on. The <video
- *      controls> exists only while the dialog is open; Esc, the Close button or a click on the
- *      scrim closes it and stops it; focus returns to the tile.
+ *   2. The FILM WITH SOUND, on demand only: `film.mp4`. The tile itself is a button ("Watch with
+ *      sound", a pill at its bottom-left): it opens a native modal <dialog> with the whole frame,
+ *      the browser's own controls (play, seek, volume, captions, full screen), the sound on and
+ *      its captions showing (WCAG 1.2.2: a film cannot be listed without them, see BentoFilm).
+ *      The <video controls> exists only while the dialog is open, so the film is not fetched
+ *      before that click; Esc, the Close button or a click on the scrim closes it and stops it;
+ *      focus returns to the tile. A visitor who asked to save data gets the lighter encode.
  * Self-gated, so it is not an LpAnimFreeze member: nothing runs off screen.
  */
 type Props = {
   film: {
     mp4: string;
     mp4Small?: string;
-    previewStart: number;
-    captions?: { src: string; srcLang: string; label: string };
+    preview: { mp4: string; mp4Large?: string };
+    captions: { src: string; srcLang: string; label: string };
   };
   /** the sound view's poster (the largest still): no black box while the film loads */
   filmPoster?: string;
@@ -47,8 +50,8 @@ type Props = {
 /** The share of the tile (or of the viewport, for a tile taller than 1 / 0.6 of it) that counts as
  *  "in view" — the same focus rule as the marquee and the play-once cards' 60 % line. */
 const IN_VIEW = 0.6;
-/** A tile drawn taller than this (device px, capped at 2x) previews the full encode; smaller
- *  tiles and phones preview the light one. */
+/** A tile drawn taller than this (device px, capped at 2x) plays the larger preview encode;
+ *  smaller tiles and phones play the light one. */
 const LARGE_TILE = 520;
 
 export function LpBentoVideo({ film, filmPoster, title, labels, style, children }: Props) {
@@ -66,14 +69,15 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
   /** JS is up and <dialog> exists: the film can open */
   const [canOpen, setCanOpen] = useState(false);
   const [paused, setPaused] = useState(false);
-  const [src, setSrc] = useState(film.mp4Small ?? film.mp4);
+  const [src, setSrc] = useState(film.preview.mp4);
+  /** the sound view's encode: the film, or its lighter cut for a visitor who asked to save data */
+  const [filmSrc, setFilmSrc] = useState(film.mp4);
   /** the dialog is open: its <video controls> is mounted */
   const [filmOpen, setFilmOpen] = useState(false);
 
   const pausedRef = useRef(false);
   const inViewRef = useRef(false);
   const filmOpenRef = useRef(false);
-  const start = film.previewStart;
 
   /** Play or pause the preview to match: in view, tab visible, not paused, the film closed. */
   const sync = useCallback(() => {
@@ -100,13 +104,13 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
   /** Mount the preview with the encode that fits the tile as it is drawn now. */
   const attach = useCallback(() => {
     const root = rootRef.current;
-    if (root && film.mp4Small) {
+    if (root && film.preview.mp4Large) {
       const phone = matchMedia("(max-width: 767px)").matches;
       const drawn = root.clientHeight * Math.min(window.devicePixelRatio || 1, 2);
-      setSrc(!phone && drawn > LARGE_TILE ? film.mp4 : film.mp4Small);
+      setSrc(!phone && drawn > LARGE_TILE ? film.preview.mp4Large : film.preview.mp4);
     }
     setAttached(true);
-  }, [film.mp4, film.mp4Small]);
+  }, [film.preview.mp4, film.preview.mp4Large]);
 
   /** whatever is mounted when the observers go (unmount, a prop change) stops */
   const stop = useCallback(() => {
@@ -121,7 +125,11 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
     setCanOpen(typeof HTMLDialogElement !== "undefined" && typeof HTMLDialogElement.prototype.showModal === "function");
     if (typeof IntersectionObserver === "undefined") return;
     const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-    if (conn?.saveData || matchMedia("(prefers-reduced-data: reduce)").matches) return; // poster, and the film on demand
+    if (conn?.saveData || matchMedia("(prefers-reduced-data: reduce)").matches) {
+      // the poster only, and the film on demand in its lighter encode
+      if (film.mp4Small) setFilmSrc(film.mp4Small);
+      return;
+    }
 
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     pausedRef.current = reduce;
@@ -157,7 +165,7 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
       document.removeEventListener("visibilitychange", sync);
       stop();
     };
-  }, [attach, sync, stop]);
+  }, [attach, sync, stop, film.mp4Small]);
 
   // a freshly attached preview: start it if it is already wanted
   useEffect(() => {
@@ -165,7 +173,8 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
   }, [attached, sync]);
 
   /** The preview shows a moving frame: let it cover the poster. On `playing`, and on `timeupdate`
-   *  too: WebKit fires no `playing` when play() came before the load and a start-time seek. */
+   *  too, as a safety net: WebKit fired no `playing` when play() came before the load and a seek
+   *  (the build that played the film from a start time). */
   const reveal = (e: SyntheticEvent<HTMLVideoElement>) => {
     const v = e.currentTarget;
     if (!v.paused && !v.seeking && v.readyState >= 2) setShown(true);
@@ -220,23 +229,15 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
               if (node) node.defaultMuted = node.muted = true;
             }}
             className="lp-bento__video"
-            // a media fragment: the first frame decoded is the preview's, not the film's intro
-            src={`${src}#t=${start}`}
+            src={src}
             muted
+            loop
             playsInline
             preload="none"
             disablePictureInPicture
             disableRemotePlayback
             aria-hidden="true"
             tabIndex={-1}
-            onLoadedMetadata={(e) => {
-              const v = e.currentTarget;
-              if (v.currentTime < start - 0.25) v.currentTime = start; // engines that ignore the fragment
-            }}
-            onEnded={(e) => {
-              e.currentTarget.currentTime = start; // loop to the preview's start, never to the intro
-              sync();
-            }}
             onPlaying={reveal}
             onTimeUpdate={reveal}
             onError={() => {
@@ -294,10 +295,9 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
                 </svg>
               </button>
             </div>
-            {/* captions: a <track> only once a transcript was checked by ear (lp-bento-data.ts) */}
-            {/* eslint-disable-next-line jsx-a11y/media-has-caption -- no verified transcript of this cut yet; the track mounts as soon as the data carries one */}
-            <video ref={filmRef} className="lp-bento__film" src={film.mp4} poster={filmPoster} controls controlsList="nodownload" playsInline preload="none">
-              {film.captions && <track kind="captions" src={film.captions.src} srcLang={film.captions.srcLang} label={film.captions.label} default />}
+            {/* captions show from the start (`default`); the browser's own control turns them off */}
+            <video ref={filmRef} className="lp-bento__film" src={filmSrc} poster={filmPoster} controls controlsList="nodownload" playsInline preload="none">
+              <track kind="captions" src={film.captions.src} srcLang={film.captions.srcLang} label={film.captions.label} default />
             </video>
           </div>
         )}

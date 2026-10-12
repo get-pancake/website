@@ -19,9 +19,14 @@
  * only when no card is left. With all seven it is the designer's artboard, desktop and phone.
  *
  * How a card becomes final: put its asset in public/lp/bento/, set status "final", keep `source`.
- * Videos: the individual cut as H.264 + AAC mp4 (4:3, 960 wide, about 1.2 Mbps, faststart) plus a
- * 640 variant, keyframes at the preview start and at the poster frame, poster = the full frame
- * (same geometry as the film, so one crop serves both). Recipe: impl/bento-real-assets.md §10.
+ * Videos, three things per film (recipes: artifacts/landing-v2-figma/assets/bento-real/tools/):
+ *   - the film with its sound: the individual cut as H.264 + AAC mp4 (4:3, 960 wide, about
+ *     1.2 Mbps, faststart) plus a 640 variant. Fetched ONLY when the visitor opens the sound view;
+ *   - the tile's muted preview: a separate video-only cut of about 10 s that loops (480 wide for
+ *     phones and small tiles, 720 for large ones, each well under 600 kB). The tile never plays the
+ *     film itself (it weighs megabytes; founder precedent 2026-09-07);
+ *   - captions for the sound view (WebVTT), and the poster = the full frame (same geometry as the
+ *     film and the preview, so one crop serves all three).
  */
 import type { ContentStatus } from "@/lib/placeholders";
 
@@ -90,14 +95,23 @@ export type BentoPoster = {
 export type BentoFocus = { keepLeft: number; centre: number; wideLeft: number };
 
 export type BentoFilm = {
-  /** the film with its sound: the dialog's source, and the preview of a tile drawn large */
+  /** the film with its sound: the dialog's source, fetched only once the visitor opens it */
   mp4: string;
-  /** a lighter encode for the muted preview of small tiles and phones */
+  /** a lighter encode of the same film, for a visitor who asked to save data */
   mp4Small?: string;
-  /** seconds: where the muted preview starts and loops back to (the speaker's first frame) */
-  previewStart: number;
-  /** WebVTT captions for the sound view. Only a transcript checked by ear. */
-  captions?: { src: string; srcLang: string; label: string };
+  /**
+   * The tile's muted preview: a short cut of the film WITHOUT an audio track, looped. Never the
+   * film itself (megabytes for a tile a few hundred px wide). `mp4` serves phones and small tiles,
+   * `mp4Large` a tile drawn taller than LpBentoVideo's LARGE_TILE. Same frame geometry as the
+   * poster, first and last frames on a picture cut (the loop reads as one more cut).
+   */
+  preview: { mp4: string; mp4Large?: string };
+  /**
+   * WebVTT captions for the sound view. REQUIRED: a film with sound and no captions fails WCAG
+   * 1.2.2 (level A), so a film cannot be listed without them. The film's words, checked against
+   * its own audio, never an unchecked machine transcript.
+   */
+  captions: { src: string; srcLang: string; label: string };
 };
 
 type CardBase = {
@@ -131,7 +145,8 @@ export type BentoKpiCard = CardBase & {
   kind: "kpi";
   /** The customer's own figure, ≤ 6 glyphs. */
   value: string;
-  /** What it counts, one line (it may run 16 px into the left padding, never wraps). */
+  /** What it counts. One line where it fits; a longer one wraps to two inside the card's content
+   *  box and lifts the value by a line, as the designer's component does (bento.css). */
   label: string;
 };
 
@@ -218,17 +233,28 @@ const BENTO_ENTRIES: BentoEntries = {
       source: "Checked compilation transcript sentence 7. Portrait: interim, redo from the Kinro individual cut.",
     },
   ],
-  /* Praxis, Diana's individual cut, founder-validated 2026-09-29 (58.2 s, 4:3). 0–3.67 s is intro
-     B-roll without her: the muted preview starts on her first frame (a keyframe). Her name title is
-     burned in at x 60–475 of 1440 (4.2–9.07 s) and her face stays within x 501–1064: hence `focus`.
-     No captions track: the draft VTT (assets/bento-real/captions/) holds five sentences that exist
-     only in this cut and were never checked by ear. */
+  /* Praxis, Diana's individual cut, founder-validated 2026-09-29 (58.2 s, 4:3). Her name title is
+     burned in at x 60–475 of 1440 (4.2–9.07 s) and her face stays within x 501–1064 from 3.667 s
+     on: hence `focus`.
+     Preview: 3.667–13.433 s of the film (the first shot a portrait tile frames well, to the end of
+     the side angle; 0–2.57 s is intro B-roll without her, 2.57–3.67 s a shot whose face a portrait
+     tile cuts), video only, 301 kB and 569 kB against 5.6 and 8.8 MB for the film.
+     Captions: the cut's 41 lines, timed by forced alignment on the film's own audio. The wording
+     was checked by machine (three recognisers, alignment scores, the acoustic model's raw
+     reading), NOT by a human listen, and one clause ("We just joined Y Combinator", 13.5 s) is
+     kept for meaning where the audio alone reads otherwise:
+     artifacts/landing-v2-figma/impl/bento-fixes.md. */
   videoSm: [
     {
       status: "final",
       kind: "video",
       logo: PRAXIS,
-      film: { mp4: "/lp/bento/praxis-diana-960.mp4", mp4Small: "/lp/bento/praxis-diana-640.mp4", previewStart: 3.667 },
+      film: {
+        mp4: "/lp/bento/praxis-diana-960.mp4",
+        mp4Small: "/lp/bento/praxis-diana-640.mp4",
+        preview: { mp4: "/lp/bento/praxis-diana-preview-480.mp4", mp4Large: "/lp/bento/praxis-diana-preview-720.mp4" },
+        captions: { src: "/lp/bento/praxis-diana.en.vtt", srcLang: "en", label: "English" },
+      },
       poster: {
         src: "/lp/bento/praxis-diana-poster-500w.webp",
         srcSet: "/lp/bento/praxis-diana-poster-500w.webp 500w, /lp/bento/praxis-diana-poster-1000w.webp 1000w, /lp/bento/praxis-diana-poster-1440w.webp 1440w",

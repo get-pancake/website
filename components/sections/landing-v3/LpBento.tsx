@@ -120,15 +120,17 @@ const FULL_TILE = { videoLg: [560, 750], videoSm: [272, 375] } as const;
 /**
  * Poster `sizes`. The poster is cover-fitted, so it is drawn as wide as the tile or as the
  * tile's height × the film's aspect, whichever is larger. Phones: a share of the 560-unit
- * column (the viewport minus its gutters); above: desktop px (tablet tiles are within a few px).
+ * column (the viewport minus its gutters) up to 592 wide, where the stack stops growing
+ * (bento.css --lp-bento-stack-max: 560 + the two 16 gutters), then that width in px; above:
+ * desktop px (tablet tiles are within a few px).
  */
 function posterSizes({ id, card, row, flow }: BentoPlaced, full: boolean): string {
   if (card.kind !== "video") return "100vw";
   const aspect = card.poster.width / card.poster.height;
   const drawn = (width: number, height: number) => Math.max(width, height * aspect);
   const [width, height] = full || !row ? FULL_TILE[id === "videoLg" ? "videoLg" : "videoSm"] : [row.span * 80 + (row.span - 1) * 16, row.height];
-  const phone = drawn(flow.span === 2 ? 560 : 272, flow.height) / 560;
-  return `(max-width: 767px) ${Math.ceil(phone * 100)}vw, ${Math.ceil(drawn(width, height))}px`;
+  const stack = drawn(flow.span === 2 ? 560 : 272, flow.height);
+  return `(max-width: 592px) ${Math.ceil((stack / 560) * 100)}vw, (max-width: 767px) ${Math.ceil(stack)}px, ${Math.ceil(drawn(width, height))}px`;
 }
 
 function VideoTile({ card, sizes }: { card: BentoVideoCard; sizes: string }) {
@@ -221,15 +223,14 @@ function Portrait({ photo }: { photo: BentoPhoto }) {
 
 /**
  * A customer's wordmark as an alpha mask in the card's ink, sized by its letter body like the
- * marquee's (so Praxis and Kinro read at one size), with the marquee's YC badge sitting on the
- * letter body's top, right of the wordmark.
+ * marquee's (so Praxis and Kinro read at one size), with the marquee's YC badge right of the
+ * wordmark, its top on the wordmark's top (inside the card's padding line).
  */
 function Logo({ logo }: { logo: BentoLogo }) {
   const height = BENTO_LOGO_BODY / (logo.body[1] - logo.body[0]);
   const box = {
     "--lp-bento-logo-w": round(height * logo.ratio),
     "--lp-bento-logo-h": round(height),
-    "--lp-bento-logo-cap": round(height * logo.body[0]),
   } as CSSProperties;
   const mask = { WebkitMaskImage: `url(${logo.src})`, maskImage: `url(${logo.src})` } as CSSProperties;
   return (

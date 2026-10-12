@@ -15,7 +15,8 @@
    Every card metric is `calc(N * var(--u))`: --u = 1px at ≥ 1200 (the
    frame is 1136), frame / 1136 at 1025–1199 (the composed grid scales,
    never crops), 1px on tablets (recomposed in two columns), frame / 560 on
-   phones (the mobile artboard = the desktop cards × 370 / 560, restacked).
+   phones (the mobile artboard = the desktop cards × 370 / 560, restacked),
+   never above 1px: the stack stops growing at its 560 design width.
 
    Layouts (lp-bento-data.ts resolveBento decides, the markup carries it):
      data-layout="full"  all seven cards = the artboard (grid areas);
@@ -31,6 +32,11 @@
      face) is named before the OS font, so those symbols are the same on
      every OS until the licensed cut is in */
   --lp-bento-cond: var(--font-aeonik-condensed), var(--font-aeonik), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  /* The widest the ≤ 767 stack is drawn: the 560 it is scaled from, so its
+     cards never outgrow the desktop design (593–767 wide: small tablets,
+     phones in landscape). ONE switch: `100vw` gives the uncapped scale back
+     (the posters' `sizes` in LpBento.tsx assume the cap: its 592 tier). */
+  --lp-bento-stack-max: 560px;
 }
 /* Its skipped-height estimate. The section knows its own layout (a partial
    set is shorter than the artboard), so the server passes the grid's height
@@ -53,8 +59,10 @@
 }
 @media (max-width: 767px) {
   .lp > .lp-bento {
-    /* 81 + 41 + 41 + stack + 56; the stack's rows are in --u, its gaps 8px */
-    contain-intrinsic-size: auto calc(219px + var(--lp-bento-flow-u, 2234) * (100vw - 32px) / 560 + var(--lp-bento-flow-gaps, 4) * 8px);
+    /* 81 + 41 + 41 + stack + 56; the stack's rows are in --u (the frame / 560,
+       the frame being the column or --lp-bento-stack-max), its gaps 8px */
+    contain-intrinsic-size: auto
+      calc(219px + var(--lp-bento-flow-u, 2234) * min(100vw - 32px, var(--lp-bento-stack-max)) / 560 + var(--lp-bento-flow-gaps, 4) * 8px);
   }
 }
 
@@ -151,8 +159,10 @@
 /* ── logos: the customer's wordmark (public/logos/customers) as an alpha mask
    in the card's ink, in a box sized by its letter body (17 u, the marquee's
    recipe), anchored at the 48,48 content corner like the V2 marks. The YC
-   badge is the marquee's: a square sitting on the letter body's top, right
-   of the wordmark (12 / 4 px at the marquee's 14 px body → 14.571 / 4.857). ── */
+   badge is the marquee's square, right of the wordmark (12 / 4 px at the
+   marquee's 14 px body → 14.571 / 4.857). Its top is the wordmark's top:
+   the marquee hangs it above the letter body, which here would poke 6 px
+   above the card's 48 padding line. ── */
 .lp-bento__logo {
   color: var(--lp-text);
   display: block;
@@ -176,10 +186,10 @@
 }
 .lp-bento__yc {
   background: url("/logos/customers/yc.svg") center / contain no-repeat;
-  bottom: calc(100% - var(--lp-bento-logo-cap) * var(--u));
   height: calc(14.571 * var(--u));
   left: calc(100% + 4.857 * var(--u));
   position: absolute;
+  top: 0;
   width: calc(14.571 * var(--u));
 }
 .lp-bento__card--video .lp-bento__logo {
@@ -289,9 +299,11 @@
    Figma's leadingTrim CAP_HEIGHT: Aeonik Condensed's typo metrics (asc 930,
    desc −230, cap 700 / 1000) put the cap top on the box top and the
    baseline on its bottom at line-height 0.7 (box 40.135; descenders hang).
-   The label never wraps (a second line would lift the value off the
-   artboard's row): right-aligned, a long one runs into the left padding
-   ("meetings booked in a week" by 15.6 px of the 48). */
+   The label is the component's: FILL width, height HUG (4962:810,
+   textAutoResize HEIGHT), right-aligned, the block pinned to the bottom. A
+   label longer than the 176 box wraps inside it and lifts the value by one
+   line (19.2 u); it never runs into the 48 padding. Balanced, so the second
+   line is not one orphan word ("meetings booked / in a week"). */
 .lp .lp-bento__kpi { /* .lp: outranks `.lp p { margin: 0 }` */
   align-items: flex-end;
   display: flex;
@@ -312,7 +324,8 @@
 }
 .lp-bento__label {
   display: block;
-  white-space: nowrap;
+  max-width: 100%;
+  text-wrap: balance;
 }
 
 /* ── video tiles (Figma 4939:4676 / 4962:408) ──
@@ -662,7 +675,8 @@ body:has(.lp-bento__dialog[open]) {
    (10.571), row gap 8 px literal. Title top = the CTA card's bottom + 137
    (its 56 padding + 81), title → cards 41, bottom 56. Section at 402 with
    seven cards: 81 + 41 + 41 + 1508.04 + 56 = 1727. The video controls keep
-   their px size. */
+   their px size. Wider than 592 the stack keeps its 560 design width,
+   centred (--lp-bento-stack-max): --u stays ≤ 1px. */
 @media (max-width: 767px) {
   .lp-bento__inner {
     padding: 81px 16px 56px;
@@ -676,17 +690,17 @@ body:has(.lp-bento__dialog[open]) {
     width: auto;
   }
   .lp-bento__frame {
-    max-width: none;
+    max-width: var(--lp-bento-stack-max);
   }
   .lp-bento__grid {
-    --u: calc(100cqw / 560);
+    --u: calc(100cqw / 560); /* ≤ 1px: the frame is capped */
     column-gap: calc(16 * var(--u));
     grid-template-columns: repeat(2, minmax(0, 1fr));
     row-gap: 8px;
   }
   @supports not (width: 1cqw) {
     .lp-bento__grid {
-      --u: calc((100vw - 32px) / 560);
+      --u: calc(min(100vw - 32px, var(--lp-bento-stack-max)) / 560);
     }
   }
   .lp-bento__grid > .lp-bento__card {
