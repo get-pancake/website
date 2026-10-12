@@ -40,11 +40,17 @@
 /* ── clouds: one white shape, three cuts (Figma vectorPaths, #fff) ──
    Spans with a background, not <img>: foundation's `.lp img { display:block }`
    would beat a single-class hide.
-   Parallax: lp-sky-parallax.ts writes --lp-sky-d (section centre − viewport
-   centre, px) on each cloud; the cloud moves by d × k. k > 0 = faster than the
-   page (nearer), k < 0 = slower (farther). d = 0 is the Figma pose, and with
-   no driver (reduced motion, no JS) the var is unset: the artboard. */
+   Parallax: lp-sky-parallax.ts writes --lp-sky-d (anchor − viewport centre,
+   px) on each cloud; the cloud moves by d × k. k > 0 = faster than the page
+   (nearer), k < 0 = slower (farther). d = 0 is the Figma pose, and with no
+   driver (reduced motion, no JS) the var is unset: the artboard.
+   --lp-sky-anchor picks the anchor the driver measures from: `section` = the
+   section's centre (the artboard is one picture: all its clouds rest
+   together), `own` = the cloud's own resting centre (it rests in the middle
+   of the screen) — for clouds with little room in a tall section, which
+   would otherwise sit on their clamp. */
 .lp-sky-cloud {
+  --lp-sky-anchor: section;
   --lp-sky-k: 0;
   /* travel bounds (a cloud that must stay clear of a title or of its box edge
      narrows them; the clamp only bites while the section is far from centre) */
@@ -120,7 +126,8 @@
    phones), so the heading clouds move into the padding band above it, at 0.6
    scale, both on the fast side (a slow one would rise out of its box while the
    section enters) and allowed to sink at most 10px: never into the title,
-   which starts at 72 (tablets) / 64 (phones) */
+   which starts at 72 (tablets) / 59.6 (phones). These depths and bounds are
+   the phones' base; tablets retune the pair in the next block. */
 @media (max-width: 1024px) {
   .lp-dive > .lp-sky-cloud--a,
   .lp-dive > .lp-sky-cloud--b {
@@ -140,6 +147,33 @@
     left: -33.647px;
     top: 14px;
     width: 93.028px;
+  }
+}
+/* 768–1024: the section is 1130 tall (stage over the list), so its centre is
+   half a screen under the heading: measured from it the pair reached its
+   clamp before it came on screen and stayed there (pinned 67–96 % of the time
+   it was visible). Here each drifts around its OWN place (--lp-sky-anchor),
+   k = px per px the cloud is from the middle of the screen (±400–610 on a
+   tablet): A ±10–15, B ±7–11, at two speeds. Both sit a little lower so the
+   band has room both ways: up to the section's top edge (paint containment),
+   down to the title's box (72; at 768 A overlaps its last letter by 20 px
+   across). */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .lp-dive > .lp-sky-cloud--a,
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-anchor: own;
+  }
+  .lp-dive > .lp-sky-cloud--a {
+    --lp-sky-down: 13px;
+    --lp-sky-k: 0.026;
+    --lp-sky-up: -17px;
+    top: 17px;
+  }
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-down: 18px;
+    --lp-sky-k: 0.018;
+    --lp-sky-up: -18px;
+    top: 18px;
   }
 }
 /* ── phones (≤767) ── */
@@ -183,11 +217,13 @@
     display: block;
   }
   /* Kept light: the far clouds go (dive C behind the stage, CTA B behind the
-     card), the three near ones are 0.6 scale. On phones a cloud drifts
-     around ITS OWN place (the driver measures each cloud against the
-     viewport centre there: the stacked dive is two screens tall, its centre
+     card), the three near ones are 0.6 scale. On phones every cloud drifts
+     around ITS OWN place (the stacked dive is two screens tall, its centre
      says nothing about the heading), so k is px of drift per px the cloud is
      from the middle of the screen: ±437 at 874 tall. */
+  .lp-sky-cloud {
+    --lp-sky-anchor: own;
+  }
   .lp-dive-stagewrap > .lp-sky-cloud--c,
   .lp-cta__frame > .lp-sky-cloud--b {
     display: none;

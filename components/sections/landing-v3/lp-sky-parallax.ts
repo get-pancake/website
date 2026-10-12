@@ -17,15 +17,18 @@
  * CSS, and a write never restyles more than the cloud itself (a property on the section would
  * restyle its whole subtree).
  *
- * The anchor:
- * - desktop and tablets (≥768): the SECTION's centre. The rest pose — the Figma artboard
- *   position — is exactly the moment the section's centre crosses the viewport's centre, for
- *   all of its clouds at once (the artboard is one picture).
- * - phones (≤767): each CLOUD's own resting centre. The stacked deep dive is more than two
- *   screens tall there, so its centre is a screen away from the heading clouds: measured
- *   against it they would sit on their clamp the whole time they can be seen. Around its own
- *   place a cloud is at rest in the middle of the screen and drifts a few px either side
- *   (sky.css keeps the phone depths small). A cloud more than a screen away is left alone.
+ * The anchor — sky.css picks it per cloud with `--lp-sky-anchor` (`section`, the default, or
+ * `own`), so the tuning stays in one file:
+ * - `section`: the SECTION's centre. The rest pose — the Figma artboard position — is exactly
+ *   the moment the section's centre crosses the viewport's centre, for all of its clouds at
+ *   once (the artboard is one picture). Desktop, and every cloud that has room to travel.
+ * - `own`: the CLOUD's own resting centre — where the section is tall and the cloud's room is
+ *   small: every cloud on phones (≤767: the stacked deep dive is more than two screens tall, its
+ *   centre is a screen away from the heading clouds) and the heading pair on tablets (768–1024:
+ *   the section is 1130 tall and the pair has ±17 px in the band over the title). Measured
+ *   against the section's centre they sat on their clamp for most of the time they could be
+ *   seen. Around its own place a cloud is at rest in the middle of the screen and drifts a few
+ *   px either side (small depths in sky.css). A cloud more than a screen away is left alone.
  *
  * Phones without clouds: sky.css has ONE switch (decision 2026-10-11 §9 F4) that can remove
  * them at ≤767. A cloud without a box is skipped, and a section with none attaches no listener.
@@ -39,15 +42,15 @@
  * section box. The depth signs keep every cloud inside its box while it can be seen: the two
  * heading clouds (top 91–99 of the section) are fast (k > 0), so they sit LOWER than rest while
  * the section enters and only rise past rest once they are above the viewport; the far cloud C
- * sits mid-section with ±~110 px of room both ways. On phones the heading pair is clamped
- * inside the band above the title (sky.css).
+ * sits mid-section with ±~110 px of room both ways. On tablets and phones the heading pair is
+ * clamped inside the band above the title (sky.css).
  */
 
 const CLOUD = ".lp-sky-cloud";
 /** start a frame or two before a section's clouds can show */
 const MARGIN = "25% 0px 25% 0px";
-/** the phone anchor (sky.css's ≤767 block) */
-const PHONE_MQ = "(max-width: 767px)";
+/** sky.css: which point a cloud's distance is measured from ("own" | "section") */
+const ANCHOR_VAR = "--lp-sky-anchor";
 
 /** layout position in the page (transforms ignored: the parallax's own translate never feeds back) */
 const pageTop = (el: HTMLElement) => {
@@ -69,10 +72,11 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
   if (!groups.size) return () => {};
 
   const motionMq = matchMedia("(prefers-reduced-motion: reduce)");
-  const phoneMq = matchMedia(PHONE_MQ);
   const onScreen = new Set<HTMLElement>();
   const lastD = new Map<HTMLElement, number>();
-  /** phones: each cloud's resting centre from its section's top; null = no box (hidden) */
+  /** per cloud, read once per layout: does it drift around its own place? (sky.css) */
+  const ownAnchor = new Map<HTMLElement, boolean>();
+  /** own anchor: the cloud's resting centre from its section's top; null = no box (hidden) */
   const own = new Map<HTMLElement, number | null>();
   let raf = 0;
   let listening = false;
@@ -85,6 +89,14 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
       if (!found) found = (groups.get(section) ?? []).some(rendered);
     });
     return found;
+  };
+  const usesOwn = (cloud: HTMLElement) => {
+    let v = ownAnchor.get(cloud);
+    if (v === undefined) {
+      v = getComputedStyle(cloud).getPropertyValue(ANCHOR_VAR).trim() === "own";
+      ownAnchor.set(cloud, v);
+    }
+    return v;
   };
   const ownOffset = (cloud: HTMLElement, section: HTMLElement) => {
     let v = own.get(cloud);
@@ -99,7 +111,6 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
     raf = 0;
     if (disposed || motionMq.matches) return;
     const vh = window.innerHeight;
-    const phone = phoneMq.matches;
     // read everything, then write
     const writes: [HTMLElement, number][] = [];
     onScreen.forEach((section) => {
@@ -108,7 +119,7 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
       const centre = r.top + r.height / 2 - vh / 2;
       for (const cloud of groups.get(section) ?? []) {
         let d = centre;
-        if (phone) {
+        if (usesOwn(cloud)) {
           const offset = ownOffset(cloud, section);
           if (offset === null) continue;
           d = r.top + offset - vh / 2;
@@ -127,7 +138,11 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
     if (!raf && !disposed) raf = requestAnimationFrame(update);
   };
   const onResize = () => {
-    own.clear(); // the clouds' places (and whether they have one) follow the layout
+    // the clouds' places, whether they have one, and their anchor all follow the layout
+    // (sky.css's 1024 and 767 blocks): every cloud gets its distance again on the next frame
+    own.clear();
+    ownAnchor.clear();
+    lastD.clear();
     refresh();
   };
   const listen = (on: boolean) => {
@@ -172,13 +187,6 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
     }
   };
   motionMq.addEventListener("change", onMotion);
-  // crossing 767 changes the anchor: every cloud gets its new distance on the next frame
-  const onPhone = () => {
-    own.clear();
-    lastD.clear();
-    refresh();
-  };
-  phoneMq.addEventListener("change", onPhone);
 
   return () => {
     disposed = true;
@@ -187,7 +195,6 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
     listen(false);
     window.removeEventListener("resize", onResize);
     motionMq.removeEventListener("change", onMotion);
-    phoneMq.removeEventListener("change", onPhone);
     rest();
   };
 }

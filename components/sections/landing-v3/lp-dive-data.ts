@@ -29,8 +29,10 @@ export type DiveItem = {
       artboard keeps it; the tablet list reflows) */
   title: string;
   body: string;
-  /** one quiet text link under the body, shown while the item is active (always, in the phone stack) */
-  more?: { href: string; label: string };
+  /** one quiet text link under the body, shown while the item is active (always, in the phone
+      stack). `name` = its accessible name: where the link goes, read out of context (a links
+      list, a tab stop). It starts with the visible label (WCAG 2.5.3 Label in Name). */
+  more?: { href: string; label: string; name: string };
   /** s on the end picture before advancing (decision: one global 2.0 s) */
   hold?: number;
   status: ContentStatus;
@@ -79,10 +81,10 @@ export const DIVE_ITEMS: readonly DiveItem[] = [
     id: "claude",
     title: "Run it from Claude or Codex",
     body: "Connect Pancake to Claude or Codex with a browser sign-in. Build Plays, review leads and edit messages from the chat you already use.",
-    more: { href: GUIDE_PATH, label: "See how" },
+    more: { href: GUIDE_PATH, label: "See how", name: "See how to run Pancake from Claude or Codex" },
     status: "final",
   },
 ];
 
-/** the keyboard Pause control (WCAG 2.2.2: the carousel moves on its own for more than 5 s) */
+/** the Pause control (WCAG 2.2.2: the carousel moves on its own for more than 5 s) */
 export const DIVE_PAUSE_LABEL = "Pause the carousel";

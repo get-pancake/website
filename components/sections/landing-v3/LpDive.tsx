@@ -92,8 +92,10 @@ export function LpDive() {
               );
             })}
           </div>
-          {/* an item's quiet link sits under the list (a link can't live inside a tab),
-              shown while its item is active; in the phone stack, under its item's body */}
+          {/* an item's quiet link comes after the list in the DOM (a link can't live inside a
+              tab) and is drawn inside its item, under the body, while the item is active
+              (dive.css); in the phone stack, under its item's body. Its name says where it
+              goes ("See how" alone means nothing in a links list). */}
           {items.map((item, i) =>
             item.more ? (
               <p
@@ -106,7 +108,7 @@ export function LpDive() {
               >
                 <span className="lp-dive-more__clip">
                   <span className="lp-dive-more__inner">
-                    <a className="lp-textlink lp-dive-more__link" href={item.more.href}>
+                    <a className="lp-textlink lp-dive-more__link" href={item.more.href} aria-label={item.more.name}>
                       {item.more.label}
                       <span aria-hidden="true"> →</span>
                     </a>
@@ -117,9 +119,10 @@ export function LpDive() {
           )}
         </div>
         <div className="lp-dive-stagewrap">
-          {/* WCAG 2.2.2: the carousel moves on its own — keyboard Pause, shown on focus or
-              while it holds the carousel (the demo's .vx-ctrl recipe). The driver sets
-              aria-pressed and the icon. */}
+          {/* WCAG 2.2.2: the carousel moves on its own — Pause, under the card's bottom-right
+              corner: shown on keyboard focus, while it holds the carousel, while a pointer is
+              over the stage, always on touch screens (dive.css). The driver sets aria-pressed
+              and the icon. */}
           <div className="lp-dive-ctrl">
             <button
               type="button"

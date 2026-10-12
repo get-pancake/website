@@ -15,9 +15,12 @@
      title    Geist 19.2/29 — 600 active, 500 otherwise (Figma "150%" lays lines at 29)
      body     Geist 13.333/20 400, active item only; at most 4 lines (lp-dive-data.ts)
      bar      2px rainbow segment on the active hairline, 138.61 of 272 drawn = p .509596
-     stage    r15.887, shadow 0 2.648 41.307 ink 8%, overflow clip, #fafaf8
+     stage    r15.887, shadow 0 2.648 41.307 ink 8% (built 0 3: see .lp-dive-stage),
+              overflow clip, #fafaf8
    The list is anchored at its top (17.5) and grows downward when an item opens:
    titles above the active one never move.
+   Not in Figma: item 4's "See how →" (inside its item, over its hairline) and
+   the Pause control (under the card's bottom-right corner, never on a picture).
 
    Phones (≤767; mobile artboard 5024:8914, decision 2026-10-11 §9 F3): the
    same markup as four STACKED items, all open — see "the phone stack" at the
@@ -58,6 +61,10 @@
 
 /* ── tab list ── */
 .lp-dive-list {
+  /* a tab's block padding, and what an item's link row adds under its body
+     (8 + the link's 20 line + the padding the tab hands over to it) */
+  --lp-dive-pad: 24px;
+  --lp-dive-more: calc(28px + var(--lp-dive-pad));
   left: 80px;
   position: absolute;
   top: 17.5px;
@@ -79,7 +86,7 @@
   flex-direction: column;
   font: inherit;
   margin: 0;
-  padding: 24px 0;
+  padding: var(--lp-dive-pad, 24px) 0;
   position: relative;
   text-align: left;
   width: 100%;
@@ -165,8 +172,29 @@
   visibility: hidden;
 }
 
-/* an item's link (item 4 "See how →" /guides/claude): under the list, folding
-   open with its item (a link can't live inside the tab button) */
+/* an item's link (item 4 "See how →" /guides/claude): a row after the tab
+   list in the DOM (a link can't live inside a tab), folding open with its
+   item — and drawn INSIDE it: body · 8 · link · 24 · hairline. While its item
+   is selected the tab hands its bottom padding over to the row (which ends
+   with the same 24), and the tab's hairline and progress bar ride down by the
+   row's height, so the link never reads as a line under the list. Every
+   piece moves on the fold's own curve: at any moment of the 0.4 s the link is
+   at least 8 under the body and the hairline closes the item. */
+.lp-dive-tab[data-more] {
+  transition: padding-bottom 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+.lp-dive-tab[data-more]::after,
+.lp-dive-tab[data-more] .lp-dive-tab__bar {
+  transition: translate 0.4s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+/* (0,3,0): over `.lp .lp-dive-tab`'s padding at every width */
+.lp-dive-tab[data-more][aria-selected="true"] {
+  padding-bottom: 0;
+}
+.lp-dive-tab[data-more][aria-selected="true"]::after,
+.lp-dive-tab[data-more][aria-selected="true"] .lp-dive-tab__bar {
+  translate: 0 var(--lp-dive-more, 52px);
+}
 .lp-dive-more {
   display: grid;
   grid-template-rows: 0fr;
@@ -188,14 +216,27 @@
   display: block;
   font-size: var(--lp-text-sm);
   line-height: 20px;
-  padding: 10px 6px 2px; /* folded with it: the padding is inside the clip */
+  /* folded with it: the padding is inside the clip. = --lp-dive-more tall */
+  padding: 8px 6px var(--lp-dive-pad, 24px);
 }
 /* the body's 13.333 / 20. (0,3,0): pricing.css's shared `.lp .lp-textlink`
    (16 / 24) comes later in the manifest and won the tie against the first
    pass's (0,2,0) rule, so the link drew larger than the copy above it */
 .lp .lp-dive-more .lp-dive-more__link {
+  display: inline-block;
   font-size: var(--lp-text-sm);
   line-height: 20px;
+  position: relative;
+}
+/* its tap target on touch screens: 44 tall (8 over the line, 16 under — the
+   row's own padding, inside its clip) without growing the link's box, so the
+   focus ring stays on the words */
+@media (hover: none), (pointer: coarse) {
+  .lp-dive-more__link::after {
+    content: "";
+    inset: -8px 0 -16px;
+    position: absolute;
+  }
 }
 
 /* ── stage card ── */
@@ -209,7 +250,11 @@
 .lp-dive-stage {
   background: var(--lp-dive-stage-bg);
   border-radius: 15.887px;
-  box-shadow: 0 2.648px 41.307px rgba(0, 0, 0, 0.08);
+  /* Figma: 0 2.648 41.307. The y offset is a whole pixel on purpose: WebKit
+     tiles a blurred shadow, and with a fractional offset it left a 42 × 1 px
+     seam of unblurred shadow off the card's right edge (17 / 255 on the sky
+     at DPR 1). 0.35 px of offset on a 41 px blur is not visible. */
+  box-shadow: 0 3px 41.307px rgba(0, 0, 0, 0.08);
   container-type: inline-size; /* the trig fallback of --lp-fit (≤1340) */
   inset: 0;
   overflow: hidden;
@@ -262,13 +307,25 @@
   max-width: none;
 }
 
-/* ── pause (WCAG 2.2.2) — keyboard only: visually hidden until focused, and
-   kept on screen while it holds the carousel (demo .vx-ctrl recipe) ── */
+/* ── pause (WCAG 2.2.2: the carousel moves on its own) — a control every
+   input can reach. Not drawn by the designer, so it stays OFF the pictures:
+   under the card's bottom-right corner, on the sky (inside the section's 80
+   bottom padding: paint containment). It shows
+   - on keyboard focus,
+   - while it holds the carousel (pressed),
+   - while a pointer is over the stage or over the control itself — a mouse
+     at rest on the stage still holds nothing (founder 2026-09-22 on the
+     demo), it only brings up the button that does,
+   - always where nothing can hover (touch).
+   Hidden = transparent, never unclickable: a pointer that reaches its place
+   brings it up first. The box above the button is the pointer's bridge from
+   the card to it. ── */
 .lp-dive-ctrl {
-  bottom: 12px;
+  padding-top: 12px;
   position: absolute;
-  right: 12px;
-  z-index: 1; /* over the card */
+  right: 0;
+  top: 100%;
+  z-index: 1;
 }
 .lp .lp-dive-ctrl__btn {
   align-items: center;
@@ -278,11 +335,23 @@
   box-shadow: inset 0 0 0 1px var(--lp-ink-tr-10);
   color: var(--lp-text);
   cursor: pointer;
-  display: inline-flex;
+  display: flex;
   height: 44px;
   justify-content: center;
+  opacity: 0;
   padding: 0;
+  transition: opacity 0.16s ease-out;
   width: 44px;
+}
+.lp-dive-ctrl__btn:focus-visible,
+.lp-dive-ctrl__btn[aria-pressed="true"],
+.lp-dive-stagewrap:hover .lp-dive-ctrl__btn {
+  opacity: 1;
+}
+@media (hover: none), (pointer: coarse) {
+  .lp .lp-dive-ctrl__btn {
+    opacity: 1;
+  }
 }
 .lp-dive-ctrl__btn:focus-visible {
   outline: 2px solid var(--lp-text);
@@ -301,14 +370,6 @@
 }
 .lp-dive-ctrl__btn[data-ico="play"] {
   --lp-dive-ico: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M7.5 4.8v14.4L18.9 12z'/%3E%3C/svg%3E");
-}
-.lp-dive-ctrl__btn:not(:focus-visible):not([aria-pressed="true"]) {
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
 }
 /* nothing to pause without the driver, or under reduced motion */
 .lp-dive-row:not([data-ready]) .lp-dive-ctrl,
@@ -378,7 +439,7 @@
   .lp-dive-row {
     align-items: center;
     flex-direction: column;
-    gap: 24px;
+    gap: 32px; /* 24 until 2026-10-12: + room for the Pause control, below */
     padding: 0 16px;
   }
   .lp-dive-stagewrap {
@@ -393,6 +454,12 @@
   }
   .lp-dive-tab__title {
     white-space: normal; /* no designed break on the wide list */
+  }
+  /* the list starts 32 under the card and its first title 24 lower: the
+     button sits in that 56 band (6 · 44 · 6), at the right end — the titles
+     are on the left */
+  .lp-dive-ctrl {
+    padding-top: 6px;
   }
 }
 
@@ -422,18 +489,17 @@
     width: 100%;
   }
   .lp-dive-list {
+    --lp-dive-pad: 20px;
     width: 100%;
-  }
-  .lp .lp-dive-tab {
-    padding: 20px 0;
   }
   .lp-dive-tab__body {
     font-size: var(--lp-text-md);
     line-height: 24px;
   }
+  /* (phone switch on "carousel" only — the stack has no control) the band
+     under the card is 16 + 20 here: flush under it */
   .lp-dive-ctrl {
-    bottom: 8px;
-    right: 8px;
+    padding-top: 0;
   }
 }
 /* ≤599, phone switch on "carousel" only: the 400×520 phone box (decision
@@ -462,7 +528,8 @@
    column ordered by --lp-dive-i (LpDive): tab 3i · link 3i+1 · panel 3i+2.
    The stage card moves from .lp-dive-stage to each .lp-dive-panel: the
    DESKTOP 752×489 scene scaled by (W − 48) / 752 (0.4707 at 402), radius and
-   shadow scaled with it (7.479 · 0 1.246 19.445 at 402). The driver
+   shadow scaled with it (7.479 · 0 1.246 19.445 at 402; the offset is
+   rounded to a whole pixel, see the panel rule). The driver
    (lp-dive-carousel.ts, stack mode) measures each card (--lp-fit on the
    panel) and plays each story once (lp-play-once). */
 @media (max-width: 767px) {
@@ -541,14 +608,17 @@
   .lp-dive[data-lp-phone="stack"] .lp-dive-more__inner {
     padding: 8px 6px 24px;
   }
-  /* the body's size (0,3,0: pricing.css's later `.lp .lp-textlink` is 16/24);
-     the padding only grows the touch target (36 tall), the row stays 20 */
+  /* the body's size (0,3,0: pricing.css's later `.lp .lp-textlink` is 16/24).
+     The row stays 20; its tap target is 44 tall at every phone width,
+     whatever the pointer says (the base rule's ::after: 8 + 20 + 16) */
   .lp-dive[data-lp-phone="stack"] .lp-dive-more__link {
-    display: inline-block;
     font-size: var(--lp-text-sm);
     line-height: 20px;
-    margin-block: -8px;
-    padding-block: 8px;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-more__link::after {
+    content: "";
+    inset: -8px 0 -16px;
+    position: absolute;
   }
   /* the stage card, one per item */
   .lp-dive[data-lp-phone="stack"] .lp-dive-panel {
@@ -556,6 +626,11 @@
     background: var(--lp-dive-stage-bg);
     border-radius: calc((100vw - 48px) * 15.887 / 752);
     box-shadow: 0 calc((100vw - 48px) * 2.648 / 752) calc((100vw - 48px) * 41.307 / 752) rgba(0, 0, 0, 0.08);
+    /* the same shadow on a whole-pixel offset (1 at 402; .lp-dive-stage has
+       the reason): WebKit left a 6 px seam at each side at DPR 3. Engines
+       without round() keep the line above. */
+    box-shadow: 0 round(calc((100vw - 48px) * 2.648 / 752), 1px) calc((100vw - 48px) * 41.307 / 752)
+      rgba(0, 0, 0, 0.08);
     flex: none;
     inset: auto;
     margin-top: 16px;
@@ -575,9 +650,13 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .lp-dive-tab[data-more],
+  .lp-dive-tab[data-more]::after,
+  .lp-dive-tab[data-more] .lp-dive-tab__bar,
   .lp-dive-tab__title,
   .lp-dive-tab__fold,
-  .lp-dive-more {
+  .lp-dive-more,
+  .lp .lp-dive-ctrl__btn {
     transition: none;
   }
 }

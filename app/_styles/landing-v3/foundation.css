@@ -213,7 +213,7 @@ html:has(main.lp) {
    jumps never move by more than ~2% (`auto` pins the real size after the
    first render). contain-intrinsic-size sizes the CONTENT box: the section's
    own padding adds on top, so every value below is "rendered height minus
-   vertical padding". Re-measured 2026-10-12 (second pass of the V2
+   vertical padding". Re-measured 2026-10-12 (final pass of the V2
    replication) at 1654 / 1440 / 1024 / 768 / 402 / 393 with
    artifacts/landing-v2-figma/pw/integrate-measure.mjs: every skipped
    section is within 2% of its rendered height at every one of them.
@@ -239,10 +239,11 @@ html:has(main.lp) {
   }
 }
 @media (min-width: 768px) and (max-width: 1024px) {
-  /* stacked: list above the stage. 970.6 (768) … 1001.8 (900–1024), padding
-     2×72 (4 px less since 2026-10-12: item 4's link is the body's 13.333 / 20) */
+  /* stacked: list above the stage. 974.6 (768) … 1005.8 (900–1024), padding
+     2×72 (final pass 2026-10-12: +8 for the Pause control's band between the
+     stage and the list, −4 for item 4's link row) */
   .lp-dive {
-    contain-intrinsic-size: auto 986px;
+    contain-intrinsic-size: auto 990px;
   }
 }
 @media (max-width: 767px) {

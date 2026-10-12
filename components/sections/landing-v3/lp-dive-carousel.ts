@@ -46,7 +46,10 @@ import {
  * - Keyboard focus in the tab list (focus-visible) holds the ADVANCE, not the story: the selected
  *   item plays to its end picture and waits there until focus leaves. A hovering mouse holds
  *   nothing — founder 2026-09-22 on the demo ("read as blocked while people looked at it").
- * - Pause (WCAG 2.2.2): a toggle shown on keyboard focus or while it holds the carousel.
+ * - Pause (WCAG 2.2.2): a toggle every input can reach, under the card's bottom-right corner —
+ *   shown on keyboard focus, while it holds the carousel, while a pointer is over the stage,
+ *   and always on touch screens (dive.css; it is the only thing a mouse or a finger can stop
+ *   the carousel with).
  * - Reduced motion: no GSAP fetched, no autoplay; tabs swap the panels' end pictures instantly
  *   and the bar rests at the Figma pose. Lifting it mid-visit starts the hold-then-advance run.
  * - Layout: the scene box is the desktop 752×489 design box, or the phone 400×520 box ≤599
@@ -94,6 +97,8 @@ const FADE_S = 0.32;
 const BAR_OUT_S = 0.15;
 /** the stack's widths (dive.css's stack block) */
 const STACK_MQ = "(max-width: 767px)";
+/** where the tab list is in the page's flow (dive.css: two fluid columns, then stacked) */
+const FLOW_MQ = "(max-width: 1340px)";
 
 /* QA: where the V2 artboard freezes a story when that is not its end picture. Item 1 is drawn
    mid-play (4939:3388): its bar at DIVE_REST_P and its stage 5024:8462 = a copy of the Sources
@@ -231,15 +236,20 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
       list.style.removeProperty("min-height"); // ≥1341: absolute in the fixed 489 row
       return;
     }
-    // each tab without its fold (title + padding: whatever the fold's animation state)
+    // each tab closed (title + its two paddings), whatever its animation state: without its
+    // fold, and with the bottom padding a selected item with a link hands over to the link's
+    // row (dive.css; the paddings are symmetric, so the top one is the one at rest)
     let base = 0;
     let open = 0;
     for (const it of items) {
       const fold = it.fold?.getBoundingClientRect().height ?? 0;
-      base += it.tab.getBoundingClientRect().height - fold;
+      const cs = getComputedStyle(it.tab);
+      const pad = parseFloat(cs.paddingTop) || 0;
+      base += it.tab.getBoundingClientRect().height - fold - (parseFloat(cs.paddingBottom) || 0) + pad;
       const body = it.fold?.querySelector<HTMLElement>(".lp-dive-tab__body")?.getBoundingClientRect().height ?? 0;
+      // the link's row ends with the padding its tab gave up: it adds its height minus that
       const more = it.more?.querySelector<HTMLElement>(".lp-dive-more__inner")?.getBoundingClientRect().height ?? 0;
-      open = Math.max(open, body + more);
+      open = Math.max(open, body + (more ? more - pad : 0));
     }
     list.style.minHeight = `${Math.ceil(base + open)}px`;
   };
@@ -250,6 +260,12 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     reserveListHeight();
   });
   if (list) listRo.observe(list);
+  /* 1340 ↔ 1341 the list keeps its 272 px and only changes mode (absolute in the fixed row ↔
+     in flow, dive.css): the width guard above sees nothing, so a live resize across it left the
+     in-flow list unreserved (the page under the carousel jumped at item 4) or a stale
+     min-height on the absolute one. */
+  const flowMq = matchMedia(FLOW_MQ);
+  flowMq.addEventListener("change", reserveListHeight);
   void (document as Document & { fonts?: FontFaceSet }).fonts?.ready.then(() => {
     if (!disposed) reserveListHeight();
   });
@@ -780,6 +796,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     viewIo.disconnect();
     ro.disconnect();
     listRo.disconnect();
+    flowMq.removeEventListener("change", reserveListHeight);
     list?.style.removeProperty("min-height");
     untrack();
     section.removeEventListener("contentvisibilityautostatechange", onRendered);
