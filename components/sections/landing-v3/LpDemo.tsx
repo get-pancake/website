@@ -9,27 +9,22 @@
 // visitor scrolls to it (lp-demo-scroll.ts, demo.css "the one scroll effect").
 //
 // V2 red note: "keep plays, remove others / pancake view vs claude view of the same example".
-// So ONE app window (the live app's new home: sidebar icon, wordmark, New chat; "Ready when you
-// are"; the request already typed in the composer; Get started + 3 cards; the "Use Pancake with
-// Claude or Codex" chip) over two pills, Pancake / Claude & Codex, that autoplay between:
-//   · the Pancake view — the request is sent and production's Play moment replays at
-//     production's own metrics, placed as storyboard frame "4" (5024:8353, "Same as today") draws
-//     it (bubble, reply, Play card, "Create play and run search", Created);
-//   · the Claude & Codex view — the same request in a Claude-desktop mock (no final design:
-//     flagged), Claude plans the Play through Pancake's MCP tools, asks ("Allow once"), creates
-//     it and runs its first search.
+// So ONE app window over two pills, Pancake / Claude & Codex, that autoplay between:
+//   · the Pancake view — redrawn on 2026-10-12 (founder brief: suggested Plays instead of the
+//     three actions, shorter and more relevant copy, one fluid take with no cut): the home
+//     (title, empty chat bar, three suggested Plays, the "Use Pancake with Claude or Codex"
+//     chip), the request typed and sent, the Play card building itself row by row, the click on
+//     "Deploy Play", the card going Live and its first leads. ONE GSAP timeline
+//     (lp-demo-pancake-timeline.ts, lazy) over markup that is the REST picture (the home);
+//   · the Claude & Codex view — the production request in a Claude-desktop mock (no final
+//     design: flagged), still on the class cues of lp-demo-timeline.ts ([data-cue] shows from
+//     its time, [data-uncue] hides, [data-swap] flips, [data-press] scales, [data-cursor] is a
+//     cursor target). To be redrawn next.
 // It replaces LpDemoTour (the /for demo's four tabs). The /for pages keep VxDemo untouched.
 //
-// Markup = every state at once, revealed by the island (LpDemoPlayer) through the cue ids of
-// lp-demo-timeline.ts: [data-cue] shows from its time (.is-on), [data-uncue] hides from it
-// (.is-off), [data-swap] flips [data-s=before|after] (.is-sw), [data-press] scales .96
-// (.is-press), [data-cursor] is a cursor target. The server markup is the Pancake view's REST
-// picture (= V2): no JS, reduced motion and the first screen all show it.
-//
-// Layout (demo.css): the window and the head (title, subtitle, composer) are SIBLINGS in one grid
-// (the window spans every row through subgrid, the head sits in row 2 over the window's empty
-// row). A direct <section> child of main.lp: the agents view hides it with every human section
-// (audience.css). Class block `lp-demowin` (`lp-demo` is /demo's <main>).
+// Layout (demo.css): everything in the Pancake view is placed against the window (--pk-*
+// coordinates). A direct <section> child of main.lp: the agents view hides it with every human
+// section (audience.css). Class block `lp-demowin` (`lp-demo` is /demo's <main>).
 //
 // Phones (≤767): the SAME markup is recomposed by demo.css as the mobile artboard's portrait
 // card (5024:9506: no top chrome, centred wordmark, composer docked at the bottom), a fixed
@@ -40,6 +35,8 @@
 // stage is data-nosnippet (the mock's text is not quotable); the sr-only summary says what it shows.
 // On phones (no pills) the player drops the stage's tabpanel role and hides the chip from
 // assistive tech: the card is a picture there.
+
+import { Fragment, type ReactNode } from "react";
 
 import { VX_DEMO } from "@/components/sections/verticals/vx-copy";
 import { buildDemoModel } from "@/lib/verticals/demo-model";
@@ -90,116 +87,160 @@ function Cursor() {
 
 /* ─── Pancake view ─────────────────────────────────────────────────────────── */
 
-function PancakeView({ prompt, aria }: { prompt: ReturnType<typeof buildDemoModel>["prompts"][number]; aria: string }) {
-  return (
-    <>
-      <div className="lp-demowin__win">
-        {/* the mock (role="img"): its rows sit on the window's subgrid; the conversation, the dock
-            and the cursor are positioned against the window */}
-        <div className="lp-demowin__app" role="img" aria-label={aria}>
-          <div className="lp-demowin__top">
-            <span className="lp-demowin__side" data-ico="sidebar" />
-            {/* eslint-disable-next-line @next/next/no-img-element -- the window's own 57×22 wordmark (Figma 4939:2763), decorative */}
-            <img className="lp-demowin__logo" src="/lp/lp-demo-wordmark.svg" alt="" width={57.42} height={22.48} />
-            <span className="lp-demowin__new" data-ico="new-chat">
-              {P.newChat}
-            </span>
-          </div>
-          <div className="lp-demowin__start" data-uncue="p.send">
-            <p className="lp-demowin__label">{P.getStarted}</p>
-            <ul className="lp-demowin__cards">
-              {P.cards.map((c) => (
-                <li key={c.title} className="lp-demowin__gs">
-                  <span className="lp-demowin__gs-t">{c.title}</span>
-                  <span className="lp-demowin__gs-b">{c.body}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+type Prompt = ReturnType<typeof buildDemoModel>["prompts"][number];
 
-          {/* the conversation once the request is sent: production's Play tab (VxDemo BriefPane),
-              same elements and metrics (storyboard frame "4": "Same as today") */}
-          <div className="lp-demowin__log">
-            <p className="lp-demowin__bubble" data-cue="p.send">
-              {prompt.text}
-            </p>
-            <p className="lp-demowin__reply" data-cue="p.reply">
-              {prompt.reply}
-            </p>
-            <div className="lp-demowin__play" data-cue="p.prop">
-              <p className="lp-demowin__play-top">
-                <span className="lp-demowin__kicker">{PLAY.kicker}</span>
-                <span className="lp-demowin__status lp-demowin__swap" data-swap="p.approved">
-                  <span data-s="before">{PLAY.draft}</span>
-                  <span data-s="after">{PLAY.created}</span>
-                </span>
-              </p>
-              <p className="lp-demowin__play-name">{prompt.play.name}</p>
-              <ul className="lp-demowin__rows">
-                <li data-cue="p.row0" data-ico="check">
-                  <span className="lp-demowin__k">{PLAY.who}</span>
-                  <span className="lp-demowin__v">{prompt.play.who}</span>
-                </li>
-                <li data-cue="p.row1" data-ico="check">
-                  <span className="lp-demowin__k">{PLAY.how}</span>
-                  <span className="lp-demowin__v">
-                    <span className="lp-demowin__chipk">{prompt.play.how.label}</span>
-                    <span>{prompt.play.how.text}</span>
+/** One row of the Play card: what Pancake is doing (spinner), then what it decided (check). */
+function PlayRow({ k, doing, children }: { k: string; doing: string; children: ReactNode }) {
+  return (
+    <li>
+      <span className="lp-demowin__st">
+        <i className="lp-demowin__st-idle" />
+        <i className="lp-demowin__st-spin" />
+        <i className="lp-demowin__st-ok" data-ico="check" />
+      </span>
+      <span className="lp-demowin__k">{k}</span>
+      <span className="lp-demowin__val">
+        <span className="lp-demowin__doing">{doing}</span>
+        <span className="lp-demowin__done">{children}</span>
+      </span>
+    </li>
+  );
+}
+
+/** The scene's markup is its REST picture (the home: title, empty chat bar, three suggested
+ *  Plays, chip) plus every later element in its hidden state (demo.css); the timeline
+ *  (lp-demo-pancake-timeline.ts, lazy) plays the one take over it. Everything is placed against
+ *  the window. */
+function PancakeView() {
+  const K = P.play;
+  return (
+    <div className="lp-demowin__win">
+      <div className="lp-demowin__app" role="img" aria-label={P.aria}>
+        <div className="lp-demowin__top">
+          <span className="lp-demowin__side" data-ico="sidebar" />
+          {/* eslint-disable-next-line @next/next/no-img-element -- the window's own 57×22 wordmark (Figma 4939:2763), decorative */}
+          <img className="lp-demowin__logo" src="/lp/lp-demo-wordmark.svg" alt="" width={57.42} height={22.48} />
+          <span className="lp-demowin__new" data-ico="new-chat">
+            {P.newChat}
+          </span>
+        </div>
+
+        {/* home */}
+        <div className="lp-demowin__intro">
+          <p className="lp-demowin__title">{P.title}</p>
+          <p className="lp-demowin__sub">{P.sub}</p>
+        </div>
+        <div className="lp-demowin__ideas">
+          <p className="lp-demowin__label">{P.ideasLabel}</p>
+          <ul className="lp-demowin__cards">
+            {P.ideas.map((idea) => (
+              <li key={idea.kind} className="lp-demowin__idea" data-kind={idea.kind}>
+                <span className="lp-demowin__idea-tag">{idea.tag}</span>
+                <span className="lp-demowin__idea-t">{idea.title}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* the thread: the sent request, then the Play */}
+        <p className="lp-demowin__bubble">{P.request}</p>
+        <div className="lp-demowin__playc">
+          <div className="lp-demowin__play-in">
+            <div className="lp-demowin__play-head">
+              <span className="lp-demowin__tile" data-ico="layers" />
+              <span className="lp-demowin__kicker">{K.kicker}</span>
+              <span className="lp-demowin__play-title">
+                <i className="lp-demowin__play-skel" />
+                <span className="lp-demowin__play-name">{K.name}</span>
+              </span>
+              <span className="lp-demowin__badge-st">
+                <span data-s="draft">{K.draft}</span>
+                <span data-s="live">{K.live}</span>
+              </span>
+            </div>
+            <ul className="lp-demowin__rows">
+              <PlayRow k={K.rows[0].key} doing={K.rows[0].doing}>
+                {K.who}
+              </PlayRow>
+              <PlayRow k={K.rows[1].key} doing={K.rows[1].doing}>
+                {K.signal.map((w) => (
+                  <span key={w} className="lp-demowin__kw">
+                    {w}
                   </span>
-                </li>
-              </ul>
-              <p className="lp-demowin__foot lp-demowin__swap" data-swap="p.approved" data-cue="p.foot">
-                <span className="lp-demowin__go" data-s="before" data-ico="search" data-press="p.go" data-cursor="p.go">
-                  {PLAY.create}
+                ))}
+              </PlayRow>
+              <PlayRow k={K.rows[2].key} doing={K.rows[2].doing}>
+                {K.steps.map((step, i) => (
+                  <Fragment key={step}>
+                    {i > 0 && <i className="lp-demowin__arrow" data-ico="right" />}
+                    <span className="lp-demowin__step">{step}</span>
+                  </Fragment>
+                ))}
+              </PlayRow>
+            </ul>
+            <div className="lp-demowin__foot">
+              <span className="lp-demowin__go" data-ico="play">
+                <i className="lp-demowin__go-fill" />
+                <span>{K.deploy}</span>
+              </span>
+              <p className="lp-demowin__found">
+                <span className="lp-demowin__avs">
+                  {K.leads.map((initials) => (
+                    <span key={initials} className="lp-demowin__av">
+                      {initials}
+                    </span>
+                  ))}
                 </span>
-                <span className="lp-demowin__ready" data-s="after" data-ico="check-circle">
-                  {PLAY.ready}
+                <span className="lp-demowin__count">
+                  <b>{K.found}</b> {K.foundLabel}
                 </span>
               </p>
             </div>
           </div>
-          {/* the input under the conversation once the request is sent: production's .vx-composer
-              with its round send (.vx-send, arrow-up) */}
-          <div className="lp-demowin__dock" data-cue="p.send">
-            <span className="lp-demowin__ph">{VX_DEMO.app.chat.placeholder}</span>
-            <span className="lp-demowin__dsend" data-ico="up" />
-          </div>
-          <Cursor />
         </div>
+        {/* the Live outline (sized and drawn by the timeline) */}
+        <svg className="lp-demowin__ring" aria-hidden="true" focusable="false">
+          <defs>
+            <linearGradient id="lp-demowin-ring" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="var(--lp-blue-30)" />
+              <stop offset="0.35" stopColor="var(--lp-purple-30)" />
+              <stop offset="0.7" stopColor="var(--lp-pink-30)" />
+              <stop offset="1" stopColor="var(--lp-yellow-30)" />
+            </linearGradient>
+          </defs>
+          <rect pathLength={1} stroke="url(#lp-demowin-ring)" />
+        </svg>
 
-        {/* the agent chip (Figma raster 4939:2774, rebuilt in DOM): a real link to the guide.
-            TODO(analytics): no click id yet — a new CTA id needs the founder + a GTM trigger. */}
-        <p className="lp-demowin__chip" data-uncue="p.send">
-          <span className="lp-demowin__ask">{P.chipAsk}</span>
-          <a className="lp-demowin__agent" href="/guides/claude">
-            <span className="lp-demowin__badges" aria-hidden="true">
-              <span className="lp-demowin__badge">
-                <Mark id="spark" className="lp-demowin__badge-claude" />
-              </span>
-              <span className="lp-demowin__badge">
-                <Mark id="openai" className="lp-demowin__badge-codex" />
-              </span>
-            </span>
-            {P.chipCta}
-          </a>
-        </p>
-      </div>
-
-      {/* the head (title, subtitle, composer): OVER the window, a sibling in its grid row; it
-          leaves as one block when the request is sent */}
-      <div className="lp-demowin__head" aria-hidden="true" data-uncue="p.send">
-        <p className="lp-demowin__title">{P.title}</p>
-        <p className="lp-demowin__sub">{P.sub}</p>
-        <div className="lp-demowin__composer">
-          <p className="lp-demowin__prompt">
-            {prompt.text}
-            <span className="lp-demowin__caret" />
-          </p>
+        {/* the chat bar: ONE element, from the home to the dock */}
+        <div className="lp-demowin__bar">
+          <p className="lp-demowin__bar-ph">{P.placeholder}</p>
+          <p className="lp-demowin__bar-text">{P.request}</p>
+          <p className="lp-demowin__bar-ask">{VX_DEMO.app.chat.placeholder}</p>
+          <span className="lp-demowin__caret" />
           {/* Figma 4939:2726: #30002c, not a token (2 levels off ink-100) */}
-          <span className="lp-demowin__send lp-demowin__send--hero" data-ico="send" data-press="p.send" />
+          <span className="lp-demowin__send" data-ico="send" />
         </div>
+        <Cursor />
       </div>
-    </>
+
+      {/* the agent chip (Figma raster 4939:2774, rebuilt in DOM): a real link to the guide, so
+          it sits outside the role="img" mock.
+          TODO(analytics): no click id yet — a new CTA id needs the founder + a GTM trigger. */}
+      <p className="lp-demowin__chip">
+        <span className="lp-demowin__ask">{P.chipAsk}</span>
+        <a className="lp-demowin__agent" href="/guides/claude">
+          <span className="lp-demowin__badges" aria-hidden="true">
+            <span className="lp-demowin__badge">
+              <Mark id="spark" className="lp-demowin__badge-claude" />
+            </span>
+            <span className="lp-demowin__badge">
+              <Mark id="openai" className="lp-demowin__badge-codex" />
+            </span>
+          </span>
+          {P.chipCta}
+        </a>
+      </p>
+    </div>
   );
 }
 
@@ -218,7 +259,7 @@ function ToolRow({ cue, done, label }: { cue: string; done: string; label: strin
   );
 }
 
-function ClaudeView({ prompt }: { prompt: ReturnType<typeof buildDemoModel>["prompts"][number] }) {
+function ClaudeView({ prompt }: { prompt: Prompt }) {
   return (
     // lpClaudeSerif.variable defines --lp-font-claude-serif here (Literata, homepage-only module)
     <div className={`lp-demowin__cwin ${lpClaudeSerif.variable}`}>
@@ -321,7 +362,6 @@ export function LpDemo() {
   // The homepage shows HOME_DEMO's first request only (the other two stay validated with the
   // 40 /for configs, lib/verticals/home-demo.ts).
   const prompt = m.prompts[0];
-  const aria = VX_DEMO.paneAria.brief.replace("{prompt}", prompt.text);
   return (
     <section className="lp-demowin" id="lp-demowin" aria-labelledby="lp-demowin-title">
       <h2 id="lp-demowin-title" className="lp-sr-only">
@@ -333,7 +373,7 @@ export function LpDemo() {
         pills={[LP_DEMO.pills[0], LP_DEMO.pills[1]]}
         tablist={LP_DEMO.tablist}
         pause={VX_DEMO.controls.pause}
-        pancake={<PancakeView prompt={prompt} aria={aria} />}
+        pancake={<PancakeView />}
         claude={<ClaudeView prompt={prompt} />}
       />
       <noscript dangerouslySetInnerHTML={{ __html: NOSCRIPT_CSS }} />

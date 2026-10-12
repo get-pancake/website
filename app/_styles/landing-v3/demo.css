@@ -133,7 +133,7 @@
   width: 1.5px;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .lp-demowin[data-inview]:not([data-lp-offstage]) .lp-demowin__card[data-view="0"] .lp-demowin__head:not(.is-off) .lp-demowin__caret,
+  .lp-demowin[data-inview]:not([data-lp-offstage]) .lp-demowin__card[data-view="0"] .lp-demowin__view--pancake:not([data-live]) .lp-demowin__caret,
   .lp-demowin[data-inview]:not([data-lp-offstage]) .lp-demowin__card[data-view="1"] .lp-demowin__home:not(.is-off) .lp-demowin__caret {
     animation-duration: 1.06s;
     animation-iteration-count: infinite;
@@ -145,16 +145,37 @@
   50% { opacity: 0; }
 }
 
-/* ══ Pancake view — V2 4939:2736 / 4963:848 ═════════════════════════════════
-   One grid: [bar 64][head][Get started][chip][1fr]. The window spans every
-   row (subgrid) and the head (title, subtitle, composer) sits in row 2 OVER
-   the window's empty row — a sibling of the window: it is aria-hidden (the
-   mock's role="img" label covers it) and leaves as one block when the
-   request is sent. */
+/* ══ Pancake view (window V2 4939:2736; the scene redrawn 2026-10-12) ═══════
+   Founder brief: suggested Plays instead of the three actions, copy closer to
+   what Pancake does, a few tool calls, then a Play card that shows what
+   Pancake does when it builds a Play, "très design et graphique", in ONE
+   fluid take ("pas besoin de coupure de plans"), and not more words than
+   before. The designer's home is kept: his window, bar, centred 487 column,
+   title, chat bar, three cards and chip, at his coordinates.
+   Everything is placed against the window (window-local px, in the --pk-*
+   properties below so the phone box can move them) and
+   lp-demo-pancake-timeline.ts plays one GSAP timeline over it:
+     home     title · chat bar (empty) · three suggested Plays · chip
+     type     the request types into the chat bar
+     send     it lifts into the thread; the SAME bar glides down to the dock
+     build    the Play card rises; its three rows work (spinner + what
+              Pancake is doing), then resolve (check + value)
+     deploy   the cursor clicks; the button fills, the card goes Live, its
+              outline draws, the first leads arrive
+   This stylesheet is the REST picture (home) and each element's hidden
+   state; the timeline owns every change. */
 .lp-demowin__view--pancake {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: 64px auto auto auto minmax(0, 1fr);
+  --pk-col: 487px;
+  --pk-x: calc(50% - 244px); /* the designer centres the column on 567.5 */
+  --pk-title-top: 106.13px;
+  --pk-bar-top: 206.6px;
+  --pk-bar-h: 121px;
+  --pk-ideas-top: 362.9px;
+  --pk-chip-top: 551.2px;
+  --pk-bubble-top: 112px;
+  --pk-card-top: 162px;
+  --pk-dock-top: 520px;
+  --pk-dock-h: 48px;
 }
 .lp-demowin__win {
   background: var(--lp-surface);
@@ -162,27 +183,15 @@
   /* 0.5 inside stroke as an inset shadow (sub-1px, house rule) */
   box-shadow: inset 0 0 0 0.5px var(--lp-stroke), var(--lp-demowin-shadow);
   color: var(--lp-text);
-  display: grid;
-  grid-area: 1 / 1 / -1 / -1;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: subgrid;
+  height: 100%;
   min-width: 0;
   overflow: hidden;
   position: relative;
 }
-/* the mock (role="img"): rows 1–3 of the window; it is NOT positioned, so the
-   conversation, the dock and the cursor sit against the window */
-.lp-demowin__app {
-  display: grid;
-  grid-column: 1;
-  grid-row: 1 / 4;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: subgrid;
-  min-width: 0;
-}
+.lp-demowin__app { inset: 0; position: absolute; }
 
 /* bar (no band, no divider): sidebar 22,22 · wordmark 60.5,18 · New chat right 24 */
-.lp-demowin__top { grid-row: 1; height: 64px; position: relative; }
+.lp-demowin__top { height: 64px; position: relative; }
 .lp-demowin__side { --ico: 20px; display: block; left: 22px; position: absolute; top: 22px; }
 .lp-demowin__side::before { display: block; }
 .lp-demowin__logo { height: 22.48px; left: 60.5px; position: absolute; top: 18px; width: 57.42px; }
@@ -199,20 +208,13 @@
   top: 22px; /* glyphs centred on y32, icon 24–40 */
 }
 
-/* head: title 106.13 · subtitle 148.13 · composer 206.6 (487×121) */
-.lp-demowin__head {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  grid-area: 2 / 1;
-  /* Figma centres the head and Get started on 567.5, the window on 568: the
-     −1 px margin moves the centred column 0.5 px left */
-  margin-left: -1px;
-  min-width: 0;
-  padding-top: 42.13px; /* 64 + 42.13 = 106.13 */
-  pointer-events: none; /* decorative (aria-hidden): the window under it stays the target */
-  position: relative;
-  z-index: 2;
+/* home: title 106.13 · subtitle 148.13 */
+.lp-demowin__intro {
+  left: var(--pk-x);
+  position: absolute;
+  text-align: center;
+  top: var(--pk-title-top);
+  width: var(--pk-col);
 }
 .lp-demowin__title {
   color: var(--lp-text);
@@ -221,59 +223,90 @@
   font-weight: 600;
   letter-spacing: -0.56px; /* −2 % */
   line-height: 42px;
-  text-align: center;
 }
-.lp-demowin__sub { color: var(--lp-subtle-text); font-size: var(--lp-text-md); line-height: 24px; text-align: center; }
-.lp-demowin__composer {
-  align-items: flex-end;
+.lp-demowin__sub { color: var(--lp-subtle-text); font-size: var(--lp-text-md); line-height: 24px; }
+
+/* the chat bar (V2 composer 4939:2724, 487×121 at 206.6): ONE element from the
+   home to the dock. The timeline tweens its top and height; everything in it
+   is anchored to its edges. */
+.lp-demowin__bar {
   background: var(--lp-surface);
   border-radius: var(--lp-r-m);
   box-shadow: inset 0 0 0 0.5px var(--lp-stroke), var(--lp-demowin-shadow-input);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 34.47px; /* 172.13 → 206.6 */
-  min-height: 121px; /* 16.5 + 48 + 8 + 32 + 16.5 */
-  padding: 16.5px; /* the 0.5 stroke is in Figma's layout */
-  width: min(487px, calc(100% - 32px));
+  height: var(--pk-bar-h);
+  left: var(--pk-x);
+  position: absolute;
+  top: var(--pk-bar-top);
+  width: var(--pk-col);
+  z-index: 2;
 }
-.lp-demowin__prompt { align-self: stretch; color: var(--lp-text); font-size: var(--lp-text-md); line-height: 24px; text-align: left; }
+.lp-demowin__bar > p {
+  font-size: var(--lp-text-md);
+  left: 16.5px;
+  line-height: 24px;
+  position: absolute;
+  right: 56px;
+  top: 16.5px;
+}
+.lp-demowin__bar-ph { color: var(--lp-ink-70); }
+/* the request: laid out, clipped to nothing until it types (clip-path staircase) */
+.lp-demowin__bar-text { clip-path: polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0); color: var(--lp-text); }
+/* the dock's own placeholder: centred in the docked bar, hidden at home */
+.lp .lp-demowin__bar-ask {
+  color: var(--lp-demowin-muted-fg);
+  font-size: 14px;
+  margin-top: -12px;
+  opacity: 0;
+  top: 50%;
+  visibility: hidden;
+}
+.lp-demowin__bar .lp-demowin__caret { left: 16.5px; margin: 0; position: absolute; top: 19px; }
 .lp-demowin__send {
   --ico-c: var(--lp-surface);
   background: var(--lp-demowin-send);
   border-radius: var(--lp-r-xsm);
+  bottom: 8px;
   display: block;
-  flex: none;
   height: 32px;
-  position: relative;
+  opacity: 0.4; /* nothing typed yet */
+  position: absolute;
+  right: 8px;
   width: 32px;
 }
 .lp-demowin__send::before { height: 15.28px; left: 9.5px; position: absolute; top: 8.5px; width: 13.18px; }
 
-/* Get started: label 362.9 (x cards + 8) · cards 394.9, 3 × 157×97, gap 8 */
-.lp-demowin__start {
-  grid-row: 3;
-  justify-self: center;
-  margin-left: -1px; /* centre 567.5, as the head */
-  min-width: 0;
-  padding-top: 35.3px;
-  width: min(487px, calc(100% - 32px));
-}
+/* suggested Plays: label 362.9 (x cards + 8) · cards 394.9, 3 × 157×97, gap 8 */
+.lp-demowin__ideas { left: var(--pk-x); position: absolute; top: var(--pk-ideas-top); width: var(--pk-col); }
 .lp-demowin__label { font-size: var(--lp-text-sm); font-weight: 500; line-height: 20px; padding-left: 8px; }
 .lp-demowin__cards { display: grid; gap: 8px; grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 12px; }
-.lp-demowin__gs {
+.lp-demowin__idea {
   background: var(--lp-surface);
   border-radius: var(--lp-r-m);
   box-shadow: inset 0 0 0 0.5px var(--lp-stroke);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   min-height: 97px;
   min-width: 0;
   padding: 16.5px;
 }
-.lp-demowin__gs-t { font-size: var(--lp-text-sm); font-weight: 500; line-height: 20px; }
-.lp-demowin__gs-b { color: var(--lp-subtle-text); font-size: var(--lp-text-sm); line-height: 20px; }
+/* the signal: a dot in its colour and one word */
+.lp-demowin__idea-tag {
+  align-items: center;
+  color: var(--lp-subtle-text);
+  display: flex;
+  font-size: 10.5px;
+  font-weight: 500;
+  gap: 6px;
+  letter-spacing: 0.4px;
+  line-height: 14px;
+  text-transform: uppercase;
+}
+.lp-demowin__idea-tag::before { background: var(--dot, var(--lp-blue-30)); border-radius: 50%; content: ""; flex: none; height: 6px; width: 6px; }
+.lp-demowin__idea[data-kind="funding"] { --dot: var(--lp-green-20); }
+.lp-demowin__idea[data-kind="hiring"] { --dot: var(--lp-yellow-40); }
+.lp-demowin__idea[data-kind="keyword"] { --dot: var(--lp-blue-30); }
+.lp-demowin__idea-t { font-size: var(--lp-text-sm); font-weight: 500; line-height: 20px; text-wrap: balance; }
 
 /* the agent chip (raster 4939:2774 rebuilt in DOM, measured on the 3x export):
    row left at window centre − 168.6 (the designer's 17.7 px right of centre),
@@ -281,14 +314,11 @@
 /* .lp prefix: `.lp p { margin: 0 }` (0,1,1) would win over a single class */
 .lp .lp-demowin__chip {
   align-items: center;
-  align-self: start;
   display: flex;
   gap: 10.3px;
-  grid-column: 1;
-  grid-row: 4;
-  justify-self: start;
-  margin-left: calc(50% - 168.6px);
-  padding-top: 59.3px; /* 491.9 → 551.2 */
+  left: calc(50% - 168.6px);
+  position: absolute;
+  top: var(--pk-chip-top);
 }
 /* the raster's own font differs from Geist: sizes calibrated to its ink widths, boxes pinned to
    Figma's (ask 399.4–514.0, pill 524.3–772.0) so the pill never drifts with the metrics */
@@ -326,182 +356,234 @@
 .lp-demowin__badge-claude { fill: var(--lp-demowin-claude-mark); }
 .lp-demowin__badge-codex { fill: var(--lp-text); }
 
-/* ── the conversation = production's Play pane at PRODUCTION'S OWN metrics
-   (verticals/demo.css .vx-bubble / .vx-answer / .vx-prop / .vx-play__* /
-   .vx-composer / .vx-send, value for value), placed as storyboard frame "4"
-   (5024:8353, "Same as today") draws it: the thread's top at window y 185.57,
-   the input 40.5 px under the Play card (y 465.07), one block mid-window.
-   The 616 column is centred (the frame's 11.5 px right shift is the pasted
-   screenshot's uneven crop); colours are production's tokens, never the
-   raster's. The thread is 239 px tall (bubble 52 · reply 35 · card 138). ── */
-.lp-demowin__log {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  left: 0;
-  margin-inline: auto;
-  position: absolute;
-  right: 0;
-  top: 185.57px;
-  width: min(616px, calc(100% - 32px));
-}
+/* ── the thread: the sent request, then the Play card (hidden at home) ── */
 .lp-demowin__bubble {
-  align-self: flex-end;
   background: var(--lp-ink-100);
   border-radius: 12px;
   color: var(--lp-surface);
-  font-size: 13px;
-  line-height: 19px;
-  max-width: 85%;
-  padding: 7px 10px;
-  text-wrap: pretty;
-}
-.lp-demowin__reply {
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 1px var(--lp-demowin-border);
-  font-size: 13px;
-  line-height: 19px;
-  padding: 8px 10px;
-  text-wrap: pretty;
-}
-/* the Play card (app plays/play-draft-panel.tsx): pale pink, indented, a 2 px
-   pink rule inside it, "NEW PLAY" + Draft → Created, Who / How, one button */
-.lp-demowin__play {
-  background: var(--lp-demowin-pink-bg);
-  border-radius: 10px;
-  margin-left: 24px;
-  padding: 9px 11px 10px 20px;
-  position: relative;
-}
-.lp-demowin__play::before {
-  background: var(--lp-pink-30);
-  border-radius: 2px;
-  bottom: 10px;
-  content: "";
-  left: 12px;
+  font-size: 14px;
+  line-height: 20px;
+  max-width: calc(var(--pk-col) * 0.85);
+  opacity: 0;
+  padding: 8px 12px;
   position: absolute;
-  top: 10px;
-  width: 2px;
-}
-.lp-demowin__play-top { align-items: center; display: flex; gap: 8px; justify-content: space-between; }
-.lp-demowin__kicker {
-  color: var(--lp-demowin-pink-dark);
-  font-size: 9px;
-  font-weight: 600;
-  letter-spacing: 0.72px;
-  line-height: 12px;
-  text-transform: uppercase;
-}
-.lp-demowin__status > [data-s] {
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 500;
-  justify-self: end;
-  line-height: 16px;
-  padding: 0 6px;
+  right: calc(100% - var(--pk-x) - var(--pk-col));
+  top: var(--pk-bubble-top);
+  visibility: hidden;
   white-space: nowrap;
 }
-.lp-demowin__status > [data-s="before"] { background: var(--lp-surface); box-shadow: inset 0 0 0 1px var(--lp-demowin-border); color: var(--lp-demowin-muted-fg); }
-.lp-demowin__status > [data-s="after"] {
+/* the Play card: the chat bar's own material (white, hairline, soft shadow),
+   one tile, one name, three rows, one button. The only flourish is the
+   outline that draws when it goes Live. */
+.lp-demowin__playc {
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-m);
+  box-shadow: inset 0 0 0 0.5px var(--lp-stroke), var(--lp-demowin-shadow-input);
+  left: var(--pk-x);
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  top: var(--pk-card-top);
+  visibility: hidden;
+  width: var(--pk-col);
+}
+.lp-demowin__play-in { padding: 18px 20px 20px; }
+.lp-demowin__play-head { align-items: center; column-gap: 12px; display: grid; grid-template-columns: 36px minmax(0, 1fr) auto; }
+.lp-demowin__tile {
+  --ico: 18px;
+  --ico-c: var(--lp-demowin-pink-dark);
+  align-items: center;
+  background: var(--lp-demowin-pink-bg);
+  border-radius: 10px;
+  display: flex;
+  grid-row: 1 / 3;
+  height: 36px;
+  justify-content: center;
+  width: 36px;
+}
+.lp-demowin__kicker {
+  color: var(--lp-demowin-pink-dark);
+  font-size: 10px;
+  font-weight: 600;
+  grid-column: 2;
+  letter-spacing: 0.8px;
+  line-height: 14px;
+  text-transform: uppercase;
+}
+.lp-demowin__play-title { display: grid; grid-column: 2; min-width: 0; }
+.lp-demowin__play-title > * { grid-area: 1 / 1; }
+.lp-demowin__play-name {
+  font-family: var(--lp-font-aeonik);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  line-height: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+/* the name is not known yet: a quiet bar holds its place */
+.lp-demowin__play-skel { align-self: center; background: var(--lp-ink-30); border-radius: 5px; height: 10px; opacity: 0; width: 62%; }
+.lp-demowin__badge-st { display: grid; grid-column: 3; grid-row: 1 / 3; }
+.lp-demowin__badge-st > span {
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 500;
+  grid-area: 1 / 1;
+  justify-self: end;
+  line-height: 20px;
+  padding: 0 8px;
+  white-space: nowrap;
+}
+.lp-demowin__badge-st > [data-s="draft"] { box-shadow: inset 0 0 0 1px var(--lp-demowin-border); color: var(--lp-demowin-muted-fg); }
+.lp-demowin__badge-st > [data-s="live"] {
+  align-items: center;
   background: var(--lp-demowin-green-bg);
   box-shadow: inset 0 0 0 1px var(--lp-demowin-green-ring);
   color: var(--lp-demowin-green-fg);
-}
-.lp .lp-demowin__play-name { font-size: 12.5px; font-weight: 600; line-height: 17px; margin-top: 3px; text-wrap: pretty; }
-.lp-demowin__rows { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-.lp-demowin__rows li {
-  --ico: 12px;
-  --ico-c: var(--lp-demowin-green-fg);
-  align-items: start;
-  column-gap: 6px;
-  display: grid;
-  font-size: 11px;
-  grid-template-columns: 12px 96px minmax(0, 1fr);
-  line-height: 15px;
-}
-.lp-demowin__rows li::before { margin: 1.5px 0 0; }
-.lp-demowin__k { color: var(--lp-demowin-muted-fg); }
-/* shared with the Claude plan card (its base values stay) */
-.lp-demowin__v { align-items: flex-start; display: flex; flex-wrap: wrap; gap: 2px 6px; min-width: 0; text-wrap: pretty; }
-.lp-demowin__rows .lp-demowin__v { color: color-mix(in srgb, var(--lp-ink-100) 86%, transparent); gap: 3px 5px; }
-.lp-demowin__chipk {
-  align-items: center;
-  background: var(--lp-demowin-key-bg);
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px var(--lp-demowin-key-ring);
-  color: var(--lp-demowin-key-fg);
-  display: inline-flex;
-  flex: none;
-  font-size: 10.5px;
-  font-weight: 500;
-  height: 19px;
-  line-height: 13px;
-  margin-top: -2px;
-  padding: 0 7px;
-  white-space: nowrap;
-}
-.lp .lp-demowin__foot { margin-top: 9px; }
-.lp-demowin__go {
-  --ico: 12px;
-  align-items: center;
-  background: var(--lp-ink-100);
-  border-radius: 8px;
-  box-shadow: 0 1px 1px color-mix(in srgb, var(--lp-ink-100) 3%, transparent), 0 3px 6px -3px color-mix(in srgb, var(--lp-ink-100) 4.3%, transparent);
-  color: var(--lp-surface);
   display: flex;
-  font-size: 11px;
-  font-weight: 500;
   gap: 5px;
-  height: 28px;
-  justify-content: center;
-  letter-spacing: 0.22px;
-  white-space: nowrap;
 }
-.lp-demowin__ready {
-  --ico: 14px;
-  --ico-c: var(--lp-demowin-green-fg);
-  align-items: flex-start;
-  display: flex;
-  font-size: 11px;
-  font-weight: 500;
-  gap: 6px;
-  line-height: 15px;
-  text-wrap: pretty;
-}
-/* the input under the conversation (production's .vx-composer: 616×38, r 10,
-   1 px ring) with production's round send (.vx-send: 26, ink-100, arrow 13) */
-.lp-demowin__dock {
+.lp-demowin__badge-st > [data-s="live"]::before { background: currentColor; border-radius: 50%; content: ""; height: 5px; width: 5px; }
+
+.lp-demowin__rows { margin-top: 14px; }
+.lp-demowin__rows li {
   align-items: center;
-  background: var(--lp-surface);
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 1px var(--lp-demowin-border);
-  display: flex;
-  gap: 8px;
-  height: 38px;
-  justify-content: space-between;
-  left: 0;
-  margin-inline: auto;
-  padding: 0 5px 0 11px;
-  position: absolute;
-  right: 0;
-  top: 465.07px;
-  width: min(616px, calc(100% - 32px));
+  border-top: 1px solid color-mix(in srgb, var(--lp-stroke) 45%, transparent);
+  column-gap: 10px;
+  display: grid;
+  font-size: 13px;
+  grid-template-columns: 18px 58px minmax(0, 1fr);
+  height: 42px;
+  line-height: 18px;
 }
-/* the base placeholder rule is the Claude dock's too */
-.lp-demowin__ph { color: var(--lp-subtle-text); font-size: var(--lp-text-md); line-height: 24px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lp-demowin__dock .lp-demowin__ph { color: var(--lp-demowin-muted-fg); font-size: 11.5px; line-height: 16.675px; }
-.lp-demowin__dsend {
-  --ico: 13px;
+/* the row's state: a ring that turns while Pancake works, then a check */
+.lp-demowin__st { display: grid; height: 18px; place-items: center; width: 18px; }
+.lp-demowin__st > * { grid-area: 1 / 1; }
+.lp-demowin__st-idle { border: 1.5px solid var(--lp-ink-40); border-radius: 50%; height: 14px; width: 14px; }
+.lp-demowin__st-spin {
+  border: 1.5px solid var(--lp-ink-40);
+  border-radius: 50%;
+  border-top-color: var(--lp-ink-90);
+  height: 14px;
+  opacity: 0;
+  width: 14px;
+}
+.lp-demowin__card[data-run] .lp-demowin__st-spin { animation: lp-demowin-spin 0.7s linear infinite; }
+.lp-demowin__st-ok {
+  --ico: 10px;
   --ico-c: var(--lp-surface);
   align-items: center;
-  background: var(--lp-ink-100);
+  background: var(--lp-demowin-green-fg);
   border-radius: 50%;
   display: flex;
-  flex: none;
-  height: 26px;
+  height: 16px;
   justify-content: center;
-  width: 26px;
+  opacity: 0;
+  width: 16px;
 }
+.lp-demowin__k { color: var(--lp-demowin-muted-fg); }
+.lp-demowin__val { display: grid; min-width: 0; }
+.lp-demowin__val > * { align-self: center; grid-area: 1 / 1; min-width: 0; }
+.lp-demowin__doing { color: var(--lp-ink-70); opacity: 0; }
+.lp-demowin__done {
+  align-items: center;
+  display: flex;
+  font-weight: 500;
+  gap: 6px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+/* shared with the Claude plan card (its base values stay) */
+.lp-demowin__v { align-items: flex-start; display: flex; flex-wrap: wrap; gap: 2px 6px; min-width: 0; text-wrap: pretty; }
+/* a keyword (the app's own blue chip) and a step */
+.lp-demowin__kw,
+.lp-demowin__step {
+  border-radius: 999px;
+  flex: none;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 22px;
+  padding: 0 9px;
+}
+.lp-demowin__kw { background: var(--lp-demowin-key-bg); box-shadow: inset 0 0 0 1px var(--lp-demowin-key-ring); color: var(--lp-demowin-key-fg); }
+.lp-demowin__step { background: var(--lp-surface-2); box-shadow: inset 0 0 0 1px var(--lp-subtle-stroke); }
+.lp-demowin__arrow { --ico: 12px; --ico-c: var(--lp-ink-60); display: flex; flex: none; }
+
+/* the foot: the button, then (same place) the first leads */
+.lp-demowin__foot { display: grid; padding-top: 16px; }
+.lp-demowin__foot > * { grid-area: 1 / 1; }
+.lp-demowin__go {
+  --ico: 11px;
+  align-items: center;
+  background: var(--lp-demowin-send);
+  border-radius: 10px;
+  color: var(--lp-surface);
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  gap: 8px;
+  height: 40px;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  white-space: nowrap;
+}
+/* the click's answer: a lighter band fills the button from the left */
+.lp-demowin__go-fill {
+  background: linear-gradient(90deg, var(--lp-purple-40), var(--lp-pink-40));
+  inset: 0;
+  opacity: 0.55;
+  position: absolute;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+}
+.lp-demowin__go > span { position: relative; }
+.lp-demowin__go::before { position: relative; z-index: 1; }
+.lp-demowin__found { align-items: center; display: flex; gap: 12px; height: 40px; opacity: 0; visibility: hidden; }
+.lp-demowin__avs { display: flex; }
+.lp-demowin__av {
+  align-items: center;
+  background: var(--av, var(--lp-yellow-20));
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--lp-surface);
+  display: flex;
+  font-size: 9.5px;
+  font-weight: 600;
+  height: 28px;
+  justify-content: center;
+  width: 28px;
+}
+.lp-demowin__av + .lp-demowin__av { margin-left: -4px; }
+.lp-demowin__av:nth-child(1) { --av: var(--lp-yellow-20); }
+.lp-demowin__av:nth-child(2) { --av: var(--lp-pink-20); }
+.lp-demowin__av:nth-child(3) { --av: var(--lp-purple-20); }
+.lp-demowin__av:nth-child(4) { --av: var(--lp-blue-20); }
+.lp-demowin__av:nth-child(5) { --av: var(--lp-green-10); }
+.lp-demowin__count { font-size: 14px; font-weight: 500; line-height: 20px; }
+.lp-demowin__count b { font-variant-numeric: tabular-nums; font-weight: 600; }
+
+/* the Live outline: one rounded rectangle on the card's own radius + 5, drawn
+   clockwise (the brand's four colours); the timeline sizes its viewBox to
+   the card and tweens the dash */
+.lp-demowin__ring {
+  height: 0;
+  left: 0;
+  opacity: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 0;
+}
+.lp-demowin__ring rect { fill: none; stroke-dasharray: 1; stroke-dashoffset: 1; stroke-linecap: round; stroke-width: 1.5; }
+
+/* the cursor is moved by the timeline here: no CSS easing under it */
+.lp-demowin__view--pancake .lp-demowin__cursor,
+.lp-demowin__view--pancake .lp-demowin__cursor svg { transition: none; }
+
+/* the base placeholder rule is the Claude dock's */
+.lp-demowin__ph { color: var(--lp-subtle-text); font-size: var(--lp-text-md); line-height: 24px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ══ Claude & Codex view (FLAGGED: no final design) ══════════════════════════
    The deep-dive "Run it from Claude or Codex" frame 4964:2575 is this very
@@ -857,8 +939,9 @@
       --lp-demowin-chair: inset 0 0 0 1px color-mix(in srgb, var(--lp-claude-ink-16) 50%, transparent);
     }
     .lp-demowin__win { box-shadow: var(--lp-demowin-hair), var(--lp-demowin-shadow); }
-    .lp-demowin__gs { box-shadow: var(--lp-demowin-hair); }
-    .lp-demowin__composer { box-shadow: var(--lp-demowin-hair), var(--lp-demowin-shadow-input); }
+    .lp-demowin__idea { box-shadow: var(--lp-demowin-hair); }
+    .lp-demowin__bar,
+    .lp-demowin__playc { box-shadow: var(--lp-demowin-hair), var(--lp-demowin-shadow-input); }
     /* the Claude & Codex view's three cards (same 0.5 px rings) */
     .lp-demowin__ccomposer,
     .lp-demowin__cdock { box-shadow: var(--lp-demowin-chair), 0 4px 48px rgba(0, 0, 0, 0.08); }
@@ -942,32 +1025,34 @@
         color-mix(in srgb, var(--lp-stroke) 40%, transparent);
     }
     .lp-demowin__win { box-shadow: var(--lp-demowin-hair), var(--lp-demowin-shadow); }
-    .lp-demowin__gs { box-shadow: var(--lp-demowin-hair); }
-    .lp-demowin__composer { box-shadow: var(--lp-demowin-hair), var(--lp-demowin-shadow-input); }
+    .lp-demowin__idea { box-shadow: var(--lp-demowin-hair); }
+    .lp-demowin__bar,
+    .lp-demowin__playc { box-shadow: var(--lp-demowin-hair), var(--lp-demowin-shadow-input); }
   }
 
-  /* rest picture (du): wordmark 57.27 · title 220.03 · subtitle 262.03 · Get started 362.86 ·
-     cards 394.87 · agent row 553.5 · composer 882.56 – 1005.68 · 66.93 under it */
-  .lp-demowin__view--pancake { grid-template-rows: 220.03px auto auto auto minmax(0, 1fr); }
+  /* rest picture (du): wordmark 57.27 · title 220.03 · subtitle 262.03 · label 362.86 ·
+     cards 394.87 · agent row 553.5 · chat bar 882.56 – 1005.68 · 66.93 under it.
+     The chat bar is docked from the start on the artboard: once the request is sent it only
+     gets shorter (its bottom edge stays), and the thread sits in the middle of the card. */
+  .lp-demowin__view--pancake {
+    --pk-x: 29.18px;
+    --pk-title-top: 220.03px;
+    --pk-bar-top: 882.56px;
+    --pk-bar-h: 123.12px;
+    --pk-ideas-top: 362.86px;
+    --pk-chip-top: 553.5px;
+    --pk-bubble-top: 318px;
+    --pk-card-top: 370px;
+    --pk-dock-top: 957.68px;
+    --pk-dock-h: 48px;
+  }
   .lp-demowin__top { height: 220.03px; }
   .lp-demowin__side,
   .lp-demowin__new { display: none; }
   .lp-demowin__logo { height: 34.6px; left: calc(50% - 44.195px); top: 57.27px; width: 88.39px; } /* × 1.5393 */
-  /* static: the composer leaves the head's flow and docks against the box */
-  .lp-demowin__head { padding-top: 0; position: static; }
-  .lp-demowin__composer {
-    bottom: 66.93px;
-    justify-content: space-between;
-    left: 29.18px;
-    margin-top: 0;
-    min-height: 123.12px;
-    position: absolute;
-    width: 487px;
-  }
-  .lp-demowin__start { padding-top: 76.83px; width: 487px; } /* 286.03 → 362.86 */
   /* the agent row = the desktop row × 1.2226 (raster 5024:9534 is image 16 at that scale),
-     question and chip on one line, the question's left edge on the "Get started" label */
-  .lp .lp-demowin__chip { gap: 12.59px; justify-self: start; margin-left: 35.25px; padding-top: 61.6px; }
+     question and chip on one line, the question's left edge on the label */
+  .lp .lp-demowin__chip { gap: 12.59px; left: 35.25px; }
   .lp-demowin__ask { font-size: 13.449px; line-height: 17.12px; width: 140.11px; }
   .lp .lp-demowin__agent {
     box-shadow: 0 1.22px 7.34px rgba(44, 0, 42, 0.06);
@@ -981,26 +1066,7 @@
   .lp-demowin__badge { height: 24.82px; width: 24.82px; }
   .lp-demowin__badge + .lp-demowin__badge { margin-left: -4.89px; }
   .lp-demowin__badge svg { height: 13.45px; width: 13.45px; }
-
-  /* once the request is sent: production's phone pane (verticals/demo.css @container vxstage
-     ≤559: 12.5 / 18 bubbles, 11.5 / 16 rows, no card indent, no cursor) on the card's 487
-     column. The input takes the composer's place (same left, same bottom edge) and the thread
-     sits on it, 12 above, as a chat does. */
-  .lp-demowin__log {
-    bottom: 116.93px; /* 66.93 + the 38 input + 12 */
-    justify-content: flex-end;
-    left: 29.18px;
-    margin-inline: 0;
-    overflow: hidden;
-    right: auto;
-    top: 120px;
-    width: 487px;
-  }
-  .lp-demowin__dock { bottom: 66.93px; left: 29.18px; margin-inline: 0; right: auto; top: auto; width: 487px; }
-  .lp-demowin__bubble,
-  .lp-demowin__reply { font-size: 12.5px; line-height: 18px; }
-  .lp-demowin__play { margin-left: 0; }
-  .lp-demowin__rows li { font-size: 11.5px; grid-template-columns: 12px 102px minmax(0, 1fr); line-height: 16px; }
+  /* no cursor on the phone card: the button answers on its own */
   .lp-demowin__view--pancake .lp-demowin__cursor { display: none; }
 
   /* Claude & Codex view in the du box — only when the pills are kept on phones (PHONE_SOLO
@@ -1011,16 +1077,6 @@
   .lp-demowin__clog { bottom: 142.93px; left: 29.18px; margin-inline: 0; right: auto; top: 120px; width: 487px; } /* 66.93 + 64 + 12 */
   .lp-demowin__cdock { bottom: 66.93px; left: 29.18px; margin-inline: 0; right: auto; width: 487px; }
   .lp-demowin__effort { display: none; }
-}
-
-/* no subgrid (Chromium < 117): the head keeps its row, the window flows */
-@supports not (grid-template-rows: subgrid) {
-  .lp-demowin__win,
-  .lp-demowin__app { display: block; }
-  .lp-demowin__start { margin-top: 263.6px; }
-  @media (max-width: 767px) {
-    .lp-demowin__start { margin-top: 66px; } /* the head's two lines */
-  }
 }
 
 /* ── icon masks (data-ico) ── */
@@ -1036,3 +1092,5 @@
 .lp-demowin [data-ico="check"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="search"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Ccircle cx='10.5' cy='10.5' r='6'/%3E%3Cpath d='m15 15 5 5'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="check-circle"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M12 2.5a9.5 9.5 0 1 1 0 19 9.5 9.5 0 0 1 0-19zm4.4 5.9-6 6-2.7-2.7-1.6 1.6 4.3 4.3 7.6-7.6z'/%3E%3C/svg%3E"); }
+.lp-demowin [data-ico="layers"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m12 3 9 5-9 5-9-5 9-5Z'/%3E%3Cpath d='m3 12.5 9 5 9-5'/%3E%3Cpath d='m3 17 9 5 9-5'/%3E%3C/svg%3E"); }
+.lp-demowin [data-ico="right"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h13M13 6.5l5.5 5.5-5.5 5.5'/%3E%3C/svg%3E"); }

@@ -3,37 +3,29 @@
 // the client island (LpDemoPlayer) and safe anywhere.
 //
 // Two views play in turn in ONE app window:
-//   0 Pancake        — the V2 picture (empty state, the request already typed) is frame 0 and the
-//                      server markup; the request is sent, the production Play moment replays at
-//                      production's own metrics, as storyboard frame "4" (5024:8353, "Same as
-//                      today") draws it (bubble, reply, Play card, the cursor presses "Create play
-//                      and run search", Created), then holds.
-//   1 Claude & Codex — the same request in a Claude-desktop mock: Claude plans the Play through
-//                      Pancake's MCP tools, asks before creating it ("Allow once"), creates it and
-//                      runs its first search.
+//   0 Pancake        — since 2026-10-12 a GSAP timeline of its own (lp-demo-pancake-timeline.ts,
+//                      seeked by the player): it has NO cues here, and its length is the
+//                      timeline's. END[0] / DWELL[0] below are unused placeholders.
+//   1 Claude & Codex — the production request in a Claude-desktop mock: Claude plans the Play
+//                      through Pancake's MCP tools, asks before creating it ("Allow once"),
+//                      creates it and runs its first search. Still on the class cues below.
 // `frameAt(view, t)` says WHICH ids are on at `t` ms of the view (CSS owns how they look):
 //   on → [data-cue]  revealed in place (.is-on)      — and [data-uncue] hidden from then (.is-off)
 //   sw → [data-swap] children [data-s=before|after]  (.is-sw)
 //   press → [data-press] scaled .96 while pressed     (.is-press)
 //   cursor → glides between [data-cursor] targets
-// Frame 0 of each view is its rest picture; END is its end picture (no cursor). The player holds
+// Frame 0 of a view is its rest picture; END is its end picture (no cursor). The player holds
 // the end picture until DWELL, then crossfades to the other view.
 
 export type LpDemoView = 0 | 1;
 
-/** Extra time (ms) the Pancake view rests on the designer's picture ("Ready when you are", the
- *  three cards, the chip link) before the request is sent. 0 = production's beat: the send lands
- *  1.02 s after the demo starts and 1.02 s after each return from the Claude & Codex view.
- *  ONE constant, a founder decision (verifier DT-5): 1480 holds the picture 2.5 s. Every Pancake
- *  cue, press, cursor move, END[0] and DWELL[0] shift with it; the conversation's own timing
- *  ("same as today") and the Claude & Codex view do not change. */
-export const REST_HOLD = 0;
+/** Last cue of each view (ms). At t ≥ END the frame is the end picture. [0] is unused: the
+ *  Pancake view's length is its GSAP timeline's (LpDemoPlayer endOf). */
+export const END: readonly [number, number] = [0, 6400];
 
-/** Last cue of each view (ms). At t ≥ END the frame is the end picture. */
-export const END: readonly [number, number] = [5520 + REST_HOLD, 6400];
-
-/** Autoplay dwell per view (ms): the run + a ~2.2 s hold on the end picture, then the other view. */
-export const DWELL: readonly [number, number] = [7720 + REST_HOLD, 8600];
+/** Autoplay dwell per view (ms): the run + a ~2.2 s hold on the end picture, then the other
+ *  view. [0] is unused (LpDemoPlayer dwellOf). */
+export const DWELL: readonly [number, number] = [0, 8600];
 
 /** Where the cursor enters from, as a fraction of the window (just under its bottom edge: the
  *  window clips it, so it slides in from the edge). Production's CURSOR_ENTRY. */
@@ -50,26 +42,9 @@ interface ViewCues {
   presses: { target: string; t0: number; t1: number }[];
 }
 
-/* Pancake: production's Play tab (lib/verticals/demo-timeline.ts tab 0) minus the typing — the
-   request is already typed in the designer's rest picture — so every beat moved −3980 ms
-   (then + REST_HOLD: `h`). */
 const SEND = 1020;
-const h = (ms: number) => ms + REST_HOLD;
-const PANCAKE: ViewCues = {
-  on: [
-    ["p.send", h(SEND)], // head, Get started, cards and the chip leave; the docked input and the bubble arrive
-    ["p.reply", h(1520)],
-    ["p.prop", h(2020)],
-    ["p.row0", h(2020)],
-    ["p.row1", h(2370)],
-    ["p.foot", h(2720)],
-  ],
-  sw: [["p.approved", h(4040)]],
-  presses: [
-    { target: "p.send", t0: h(900), t1: h(SEND) },
-    { target: "p.go", t0: h(3920), t1: h(4040) },
-  ],
-};
+/* Pancake: no cues (a GSAP timeline since 2026-10-12, lp-demo-pancake-timeline.ts). */
+const PANCAKE: ViewCues = { on: [], sw: [], presses: [] };
 
 /* Claude & Codex (no final design: flagged). Tool titles are the MCP server's own
    (pancake-cmo packages/mcp/src/plays-tools.ts: plays_plan / plays_create / plays_run). */
@@ -117,15 +92,7 @@ interface CursorPlan {
 const DRIFT = [28, 28] as const;
 
 const CURSOR: Record<LpDemoView, CursorPlan> = {
-  0: {
-    show: h(3220),
-    hide: END[0],
-    moves: [
-      { to: "p.go", t0: h(3220), t1: h(3920) },
-      { to: "p.go", t0: h(4100), t1: h(4400), d: DRIFT },
-    ],
-    clicks: [{ t0: h(3920), t1: h(4040) }],
-  },
+  0: { show: Infinity, hide: Infinity, moves: [], clicks: [] },
   1: {
     show: 3770,
     hide: 5300,

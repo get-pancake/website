@@ -7,8 +7,15 @@
 //
 // Views: 0 Pancake, 1 Claude & Codex, stacked in one grid cell (zero CLS); the incoming view
 // fades in on top (240 ms) while the outgoing one stays under it, then hides; a view is re-armed
-// to its first frame only while hidden (never rewound on screen). Loop: Pancake (DWELL 7720) →
-// Claude & Codex (8600) → … while the clock runs.
+// to its first frame only while hidden (never rewound on screen). Loop: Pancake (its run + a
+// 2.2 s hold, about 9.2 s) → Claude & Codex (8600) → … while the clock runs.
+//
+// Two engines under one clock (ms since the view started):
+//   · Pancake (since 2026-10-12): ONE GSAP timeline, seeked every frame
+//     (lp-demo-pancake-timeline.ts). GSAP and the builder are a lazy chunk, fetched on the
+//     visitor's first input or at the first start; until it is built the view is its rest
+//     picture and the clock waits. Its length is the timeline's own.
+//   · Claude & Codex: the class cues of lp-demo-timeline.ts (frameAt), as before.
 //
 // The clock runs while: started, ≥35 % of the stage on screen (of the viewport for a taller
 // stage), the tab visible, not paused, motion allowed, no keyboard focus held in the pills or on
@@ -45,6 +52,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { flushSync } from "react-dom";
+import type { BuiltDemo } from "./lp-demo-pancake-timeline";
 import { mountWindowGrow } from "./lp-demo-scroll";
 import {
   CURSOR_ENTRY,
@@ -59,6 +67,11 @@ import {
 } from "./lp-demo-timeline";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
+
+/** How long a view rests on its end picture before the other one comes (ms). */
+const HOLD_MS = 2200;
+/** The Pancake view's stay when its timeline could not be fetched: its rest picture, then on. */
+const REST_ONLY_MS = 3000;
 
 interface ViewCache {
   el: HTMLElement;
@@ -100,7 +113,23 @@ interface Ctl {
   sig: [string, string];
   views: [ViewCache | null, ViewCache | null];
   pos: Map<string, { x: number; y: number }>;
+  /** The Pancake view's GSAP timeline (lazy: GSAP + lp-demo-pancake-timeline), null until built. */
+  pk: { tl: BuiltDemo["tl"]; dispose: () => void } | null;
+  /** Its modules, kept to rebuild it after the stage's size changes. */
+  pkMods: { gsap: typeof import("@/lib/gsap").gsap; build: (view: HTMLElement) => BuiltDemo } | null;
+  pkLoading: boolean;
+  /** The code could not be fetched: the view keeps its rest picture. */
+  pkFailed: boolean;
+  /** The geometry it measured is stale: rebuilt before the view next starts from its first frame. */
+  pkDirty: boolean;
+  /** The Pancake run's length (ms): the timeline's own, once built. */
+  end0: number;
 }
+
+/** Last moment of a view's run (ms): the Pancake timeline's duration, the Claude cue table's END. */
+const endOf = (x: Ctl, v: LpDemoView) => (v === 0 ? x.end0 : END[1]);
+/** The run + the hold on its end picture. */
+const dwellOf = (x: Ctl, v: LpDemoView) => (v === 0 ? x.end0 + HOLD_MS : DWELL[1]);
 
 type ViewState = { v: LpDemoView; n: number };
 
@@ -149,6 +178,12 @@ export function LpDemoPlayer({
     sig: ["", ""],
     views: [null, null],
     pos: new Map(),
+    pk: null,
+    pkMods: null,
+    pkLoading: false,
+    pkFailed: false,
+    pkDirty: false,
+    end0: REST_ONLY_MS,
   });
 
   /* ── DOM helpers ─────────────────────────────────────────────────────────── */
@@ -237,6 +272,17 @@ export function LpDemoPlayer({
     [cache, targetPos],
   );
 
+  /** The Pancake view at `t` ms: its timeline is seeked (the rest picture until it is built).
+   *  data-live (t > 0) stops the chat bar's resting caret blink. */
+  const renderPancake = useCallback((t: number) => {
+    const x = ctl.current;
+    const el = cardRef.current?.querySelector<HTMLElement>('[data-v="0"]');
+    if (x.pk) x.pk.tl.time(Math.min(Math.max(t, 0), x.end0) / 1000);
+    el?.toggleAttribute("data-live", !!x.pk && t > 0);
+  }, []);
+  /** (Re)build the Pancake timeline (set on mount). */
+  const rebuildRef = useRef<() => void>(() => {});
+
   /** The pills' fills: the active one shows the dwell's progress once started; full (the CSS
    *  default) under reduced motion or pause; empty while the first start waits. */
   const setFills = useCallback(() => {
@@ -255,7 +301,7 @@ export function LpDemoPlayer({
         f.style.removeProperty("--p");
         return;
       }
-      const p = x.started ? Math.max(0, Math.min(1, x.t / DWELL[x.view])) : 0;
+      const p = x.started ? Math.max(0, Math.min(1, x.t / dwellOf(x, x.view))) : 0;
       f.style.setProperty("--p", p.toFixed(4));
     });
   }, []);
@@ -285,15 +331,16 @@ export function LpDemoPlayer({
       x.frames++;
       x.t += Math.min(Math.max(0, now - x.last), 100);
       x.last = now;
-      if (x.t >= DWELL[x.view]) {
+      if (x.t >= dwellOf(x, x.view)) {
         advanceRef.current();
         return;
       }
-      applyTo(x.view, frameAt(x.view, x.t));
+      if (x.view === 0) renderPancake(x.t);
+      else applyTo(1, frameAt(1, x.t));
       setFills();
       x.raf = requestAnimationFrame(tick);
     },
-    [applyTo, setFills],
+    [applyTo, renderPancake, setFills],
   );
 
   const willRun = useCallback(() => {
@@ -306,7 +353,9 @@ export function LpDemoPlayer({
       !x.seeking &&
       x.inView &&
       !(x.solo && x.soloDone) &&
-      (x.oneShot || !x.focusHold)
+      (x.oneShot || !x.focusHold) &&
+      // the Pancake view waits for its timeline (or plays its rest picture if it never comes)
+      (x.view !== 0 || !!x.pk || x.pkFailed)
     );
   }, []);
 
@@ -334,7 +383,7 @@ export function LpDemoPlayer({
     if (x.focusHold || x.solo) {
       // held by keyboard focus: keep this view's end picture; it moves on once the hold ends.
       // Solo (phones): the one view played once and rests on its end picture for good.
-      x.t = DWELL[x.view];
+      x.t = dwellOf(x, x.view);
       if (x.solo) x.soloDone = true;
       setFills();
       sync();
@@ -353,7 +402,13 @@ export function LpDemoPlayer({
     x.pending = false;
     x.view = view.v;
     card.setAttribute("data-snap", "");
-    applyTo(view.v, frameAt(view.v, x.t), true);
+    if (view.v === 0) {
+      // hidden until now: the moment to take a new measure of a resized stage
+      if (x.pkDirty && x.t === 0) rebuildRef.current();
+      renderPancake(x.t);
+    } else {
+      applyTo(1, frameAt(1, x.t), true);
+    }
     void card.offsetHeight; // commit the snapped state before transitions come back
     card.removeAttribute("data-snap");
     setFills();
@@ -375,7 +430,7 @@ export function LpDemoPlayer({
       x.fill = null;
       if (x.reduced || x.paused) {
         x.oneShot = false;
-        x.t = x.reduced && v === 1 ? END[1] : x.paused ? END[v] : 0;
+        x.t = x.reduced && v === 1 ? END[1] : x.paused ? endOf(x, v) : 0;
       } else {
         x.oneShot = true;
         x.t = 0;
@@ -424,9 +479,73 @@ export function LpDemoPlayer({
     const grow = mountWindowGrow(section, card);
     if (still) grow.lock();
 
+    /* the Pancake view's timeline: GSAP + its builder, fetched on the visitor's first input or
+       at the first start, whichever comes first (nothing at load: phones rest untouched). Built
+       on the laid-out view once the fonts are in (it measures the request's glyphs). */
+    const view0 = card.querySelector<HTMLElement>('[data-v="0"]');
+    const buildPk = () => {
+      const mods = x.pkMods;
+      if (!mods || !view0 || disposed) return;
+      if (view0.getClientRects().length === 0) {
+        x.pkDirty = true; // not rendered (the agents view hides the section): at the next arm
+        return;
+      }
+      x.pk?.dispose();
+      x.pk = null;
+      const out: { b: BuiltDemo | null } = { b: null };
+      const ctx = mods.gsap.context(() => {
+        out.b = mods.build(view0);
+      });
+      const b = out.b;
+      if (!b) {
+        ctx.revert();
+        return;
+      }
+      x.pk = {
+        tl: b.tl,
+        dispose: () => {
+          ctx.revert();
+          b.cleanup();
+        },
+      };
+      x.pkDirty = false;
+      x.end0 = b.tl.duration() * 1000;
+      if (x.view === 0) renderPancake(x.reduced ? 0 : x.t);
+      setFills();
+      sync();
+    };
+    rebuildRef.current = buildPk;
+    const ensurePk = () => {
+      if (x.pkMods) {
+        if (!x.pk) buildPk();
+        return;
+      }
+      if (x.pkLoading || x.pkFailed || x.reduced || disposed) return;
+      x.pkLoading = true;
+      Promise.all([import("@/lib/gsap"), import("./lp-demo-pancake-timeline"), document.fonts ? document.fonts.ready : null])
+        .then(([g, m]) => {
+          x.pkLoading = false;
+          if (disposed) return;
+          x.pkMods = { gsap: g.gsap, build: m.buildDemoPancake };
+          buildPk();
+        })
+        .catch(() => {
+          x.pkLoading = false;
+          x.pkFailed = true;
+          sync();
+        });
+    };
+    const INPUTS = ["scroll", "pointermove", "pointerdown", "touchstart", "keydown"] as const;
+    const onFirstInput = () => {
+      for (const type of INPUTS) window.removeEventListener(type, onFirstInput);
+      ensurePk();
+    };
+    for (const type of INPUTS) window.addEventListener(type, onFirstInput, { passive: true });
+
     const start = () => {
       if (x.started || disposed) return;
       x.started = true;
+      ensurePk();
       setFills();
       sync();
     };
@@ -442,7 +561,7 @@ export function LpDemoPlayer({
         // Pancake = its rest picture (the V2 design), Claude = its end picture
         x.t = x.view === 1 ? END[1] : 0;
         card.setAttribute("data-snap", "");
-        applyTo(0, frameAt(0, 0), true);
+        renderPancake(0);
         applyTo(1, frameAt(1, END[1]), true);
         void card.offsetHeight;
         card.removeAttribute("data-snap");
@@ -450,6 +569,7 @@ export function LpDemoPlayer({
         // motion allowed again: hold the current view's picture, then carry on
         x.t = x.view === 1 ? END[1] : 0;
         applyTo(1, frameAt(1, x.view === 1 ? END[1] : 0), true);
+        ensurePk();
       }
       setFills();
       sync();
@@ -573,10 +693,24 @@ export function LpDemoPlayer({
     setPhone();
     mqPhone.addEventListener("change", setPhone);
 
+    /* a new stage width: the Claude cursor targets and the Pancake timeline measured the old one.
+       The timeline is rebuilt once the size settles, at once if the view is at rest or hidden,
+       else when it next starts from its first frame (never mid-run). */
+    let stageW = stage.getBoundingClientRect().width;
+    let resized = 0;
     const ro = new ResizeObserver(() => {
       x.pos.clear();
       writeFit();
+      const w = stage.offsetWidth;
+      if (Math.abs(w - stageW) < 0.5) return;
+      stageW = w;
+      x.pkDirty = true;
+      window.clearTimeout(resized);
+      resized = window.setTimeout(() => {
+        if (x.pkDirty && x.pkMods && (x.view !== 0 || x.t === 0 || x.reduced)) buildPk();
+      }, 200);
     });
+    stageW = stage.offsetWidth;
     ro.observe(stage);
 
     /* QA hooks: ?lpqa, or any non-production build */
@@ -589,6 +723,7 @@ export function LpDemoPlayer({
         x.oneShot = false;
         x.started = true;
         grow.lock(); // captures are compared with the full-size designs
+        ensurePk();
         x.t = ms;
         flushSync(() => go(v));
         // same view: the layout effect re-applies (new nonce)
@@ -599,7 +734,7 @@ export function LpDemoPlayer({
         /** The rest picture (frame 0). */
         rest: (v: LpDemoView) => seek(v, 0),
         /** The end picture. */
-        final: (v: LpDemoView) => seek(v, END[v]),
+        final: (v: LpDemoView) => seek(v, endOf(x, v)),
         /** Autoplay from the current view's first frame. */
         play() {
           x.seeking = false;
@@ -629,6 +764,9 @@ export function LpDemoPlayer({
             seeking: x.seeking,
             running: x.raf !== 0,
             frames: x.frames,
+            /** the Pancake timeline: built, and its run's length (ms) */
+            pk: !!x.pk,
+            end: Math.round(endOf(x, x.view)),
             /** the grow effect: { g, done } (lp-demo-scroll.ts) */
             grow: grow.state(),
           };
@@ -640,6 +778,11 @@ export function LpDemoPlayer({
       disposed = true;
       stop();
       window.clearTimeout(dwell);
+      window.clearTimeout(resized);
+      for (const type of INPUTS) window.removeEventListener(type, onFirstInput);
+      x.pk?.dispose();
+      x.pk = null;
+      view0?.removeAttribute("data-live");
       vis.disconnect();
       focusObs.disconnect();
       halfObs.disconnect();
