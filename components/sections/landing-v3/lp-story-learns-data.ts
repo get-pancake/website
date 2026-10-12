@@ -12,12 +12,10 @@
  * pre-audit sample copy: a chart reading "56% vs last period", then "What worked" with "Lead with
  * no-shows / Shorter intros / Asking for Thursdays", then "Updating Brain..." and "Brain
  * updated!". Pancake learns who fits from the leads you approve or reject; it learns no message
- * pattern and no reply rate. The designer's layout is kept and each string that says otherwise
- * takes the equivalent already decided:
- * - chart label "vs last period" → "leads approved". An unlabeled "56%" with an up arrow "vs last
- *   period" is the reply-rate lift of the old card with the noun dropped (homepage-lint bans the
- *   "+56%" form, decision 2026-10-09 §6 bans reply-rate figures here). The figure is now the share
- *   of reviewed leads that got a thumbs-up, the one share the app shows (decision §6 b).
+ * pattern. The designer's layout is kept:
+ * - the chart is as drawn, "56%" and "vs last period". The founder kept this chart on production's
+ *   card on 2026-10-08 (reverting the 2026-10-07 audit's plain count), so it is not relabelled
+ *   here either ("leads approved", 2026-10-12, was mine and is gone).
  * - "What worked" + three message lessons → "Brain learned" + the three audience lessons of
  *   production's card (truth pass 2026-10-07: "the app learns no message patterns").
  * "Updating Brain..." and "Brain updated!" are true as drawn.
@@ -26,8 +24,8 @@
 export const LEARNS = {
   /** the chart: where the count starts, what it shows at Figma frame 1 and where it lands, in % */
   share: { start: 0, frame1: 26, end: 56 },
-  /** under the figure, set in caps by the CSS (Figma: "vs last period") */
-  shareLabel: "leads approved",
+  /** under the figure, set in caps by the CSS (as drawn) */
+  shareLabel: "vs last period",
   /** twelve bars, three a week, on a 451×145 plot: heights in px (Figma frame 2) and left
       edges (16 wide, spread edge to edge: (451 − 16) / 11 apart) */
   bars: [40, 48, 40, 47, 68, 76, 85, 69, 101, 76, 118, 145],
@@ -44,4 +42,4 @@ export const LEARNS = {
 } as const;
 
 export const STORY_LEARNS_ALT: string =
-  "Animation: a chart of leads approved, week by week over four weeks. Its bars grow and the figure climbs to 56%. The view moves down to a Brain learned list with three checked lines: Founders, not marketers, Seed to Series A and US only. It closes in on the list while Pancake updates the Brain, then reads Brain updated.";
+  "Animation: a chart grows week by week over four weeks. Its bars rise and the figure climbs to 56% versus last period. The view moves down to a Brain learned list with three checked lines: Founders, not marketers, Seed to Series A and US only. It closes in on the list while Pancake updates the Brain, then reads Brain updated.";
