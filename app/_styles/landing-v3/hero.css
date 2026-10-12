@@ -314,8 +314,9 @@
      the block's topmost element on its column's left edge, and a single
      column has one left edge. Then the H1, then the swap cell (lede +
      buttons). The block stays bottom-anchored on phones, so it grows upward
-     by the row + one gap. V2's own column order (H1 → toggle → lede) is
-     one rule away: drop the `order`. */
+     by the row + one gap (the ≤767 block takes the same 51px off the top
+     padding, so the block's minimum height stays production's). V2's own
+     column order (H1 → toggle → lede) is one rule away: drop the `order`. */
   .lp-hero--home .lp-hero-aside {
     display: contents;
   }
@@ -378,6 +379,22 @@
   .lp-hero-inner {
     gap: 23px;
     padding: 61.44vw 32px 64px;
+  }
+  /* Homepage: the audience toggle row is IN FLOW above the H1 (V2; the
+     ≤1024 block above), so the row and its gap (28 + 23 = 51px) come out of
+     the art zone — the H1 keeps the artboard's 61.44vw line and the row
+     takes the band production's out-of-flow toggle sat in (its box ended
+     16px above the H1). Left inside the padding, those 51px made the
+     block's minimum taller than the first screen on iPhone Safari (393×659:
+     CTAs 16.5px above the fold instead of the constant 64, the demo card's
+     17px peek below it; verify/mobile.md M1, 2026-10-12). Both audiences
+     (the swap cell holds either column). Arc ink to the row over a full
+     rotation (40 phases, short Safari viewports): ≥15px at 320, ≥23px at
+     360, ≥25px at 375, ≥32px from 390 — production's right-aligned 44px
+     toggle box had 0 / 8 / 11 / 17. /agents (AgHero) has no row and keeps
+     the full 61.44vw. */
+  .lp-hero--home .lp-hero-inner {
+    padding-top: calc(61.44vw - var(--lp-switch-height) - 23px);
   }
   .lp-hero-col {
     gap: 23px;
