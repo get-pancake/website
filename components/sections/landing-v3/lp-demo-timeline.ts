@@ -227,8 +227,8 @@ export const finalFrame = (view: LpDemoView) => frameAt(view, END[view]);
    The window is assembled from the first frame. On desktop the card (window + pills) grows from
    GROW_FROM to 1 about its top centre, linked to the scroll: g = 0 → 1 while the window's top
    travels from where it sits at the top of the page (the fold at most: on a first load its top
-   bar peeks 70 px above the fold) up to GROW_END_AT of the viewport height. At 1 it locks for the
-   visit. lp-demo-scroll.ts writes g as --lp-demowin-grow on the card; demo.css turns it into the
+   bar peeks 70 px above the fold) up to GROW_END_AT of the viewport height, and back
+   when the visitor scrolls up. lp-demo-scroll.ts writes g as --lp-demowin-grow on the card; demo.css turns it into the
    card's scale. */
 /** The card's scale at g = 0 (demo.css repeats it: `0.94 + 0.06 * g`). */
 export const GROW_FROM = 0.94;

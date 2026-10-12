@@ -23,7 +23,8 @@
 //
 // The window itself is assembled and opaque from the first frame (founder 2026-10-12). Its one
 // scroll effect, desktop only, is lp-demo-scroll.ts: the card grows from .94 to 1 while the
-// visitor scrolls to it, then locks. It is independent of the clock: mounted here, nothing else.
+// visitor scrolls to it and goes back when they scroll up. It is independent of the clock:
+// mounted here, nothing else.
 //
 // Reduced motion (or ?still): no clock; the Pancake view is its rest picture (the V2 design),
 // the Claude view its end picture; the pills switch views instantly.
@@ -419,7 +420,7 @@ export function LpDemoPlayer({
     const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     let disposed = false;
 
-    /* the one scroll effect (desktop, motion allowed): the card grows from .94 to 1, then locks */
+    /* the one scroll effect (desktop, motion allowed): the card's size follows the scroll, .94 ↔ 1 */
     const grow = mountWindowGrow(section, card);
     if (still) grow.lock();
 

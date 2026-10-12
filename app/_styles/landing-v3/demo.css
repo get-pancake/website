@@ -817,10 +817,11 @@
    g = --lp-demowin-grow, 0 → 1 while the window's top travels from where it
    sits at the top of the page (the fold at most) up to 35 % of the viewport
    height; written on the card by lp-demo-scroll.ts (passive scroll + one
-   rAF). Unset = 0 = the first paint, before any script. At 1 it locks
-   (data-grow-done on the section: the rule stops applying, nothing is left on
-   the card) and never shrinks back. No will-change: the card is repainted at
-   each scale, never promoted to a layer (doctrine: none on large layers).
+   rAF). Unset = 0 = the first paint, before any script. It follows the scroll
+   both ways: scrolling back up brings the window back to .94 (founder
+   2026-10-12). data-grow-done on the section (captures only: `?still`, the QA
+   seek) switches the rule off. No will-change: the card is repainted at each
+   scale, never promoted to a layer (doctrine: none on large layers).
    Scale 1 everywhere else: phones, tablets, reduced motion, windows from
    1450 px tall (the whole window sits in the first viewport) and no JS
    (<noscript>, LpDemo.tsx). The query is lp-demo-timeline.ts GROW_QUERY. */

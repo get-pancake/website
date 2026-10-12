@@ -1,9 +1,10 @@
 "use client";
 
 // lp-demo-scroll.ts — the demo window's one scroll effect (founder 2026-10-12, _decisions §10):
-// the card (window + pills) grows from .94 to 1 about its top centre while the visitor scrolls.
-// It replaces the hero-scroll assembly (storyboard 01 → 02 → 03): the window is there, assembled
-// and opaque, from the first frame.
+// the card (window + pills) grows from .94 to 1 about its top centre while the visitor scrolls
+// down, and goes back to .94 when they scroll back up ("when I scroll back up it should go back
+// to initial size"). It replaces the hero-scroll assembly (storyboard 01 → 02 → 03): the window
+// is there, assembled and opaque, from the first frame.
 //
 // ONE progress g, written as `--lp-demowin-grow` on the card; demo.css turns it into the card's
 // scale (`0.94 + 0.06 * g`, transform-origin 50% 0: the top edge never moves, so the peek at the
@@ -11,27 +12,29 @@
 // paint. The property is registered non-inheriting (demo.css): a write restyles the card alone.
 //   g = 0  the window's top where it sits at the top of the page, the fold at most
 //          (so a fresh load always starts at .94, whatever the window height);
-//   g = 1  the window's top at GROW_END_AT (35 %) of the viewport height.
-// At 1 it LOCKS for the visit: `data-grow-done` on the section, the property removed, every
-// listener and observer gone. Never shrinks back on screen; a fresh page load starts again.
-// Anything else that ends the effect is final too: the window leaving GROW_QUERY (resized under
-// 1025 wide or over 1449 tall, reduced motion turned on) or scrolled away through the top.
+//   g = 1  the window's top at GROW_END_AT (35 %) of the viewport height, and above it.
+// g follows the scroll both ways for the whole visit: nothing locks. Outside GROW_QUERY (under
+// 1025 wide, over 1449 tall, reduced motion) the property is cleared and demo.css draws the card
+// at 1; the effect comes back if the window enters the query again.
 //
-// Cost: a passive scroll listener + one rAF per frame, one rect read and at most one style write
-// (a custom property that only feeds the card's `scale`: no layout, no subtree restyle). Nothing
-// runs while the card is off screen (IntersectionObserver), nor after the lock. No will-change,
-// no GSAP.
+// Cost: a passive scroll listener + one rAF per frame while the card is on screen, one rect read
+// and at most one style write (a custom property that only feeds the card's `scale`: no layout,
+// no subtree restyle; no write while the value stands still, so none above the 35 % line).
+// Nothing runs while the card is off screen (IntersectionObserver). No will-change, no GSAP.
 //
 // A page that opens already scrolled (a reload mid-page, an anchor): the first paint is the
 // server's .94, so the first value eases in over GROW_SETTLE_MS (`data-grow-settle`, one-shot)
-// instead of jumping; a card that is already above the viewport locks at once, unseen.
+// instead of jumping; a card that is already above the viewport takes its 1 at once, unseen.
+//
+// lock() is for captures only (`?still`, the QA seek): the card at 1, `data-grow-done` on the
+// section, every listener and observer gone.
 
 import { GROW_END_AT, GROW_QUERY, GROW_SETTLE_MS } from "./lp-demo-timeline";
 
 export interface WindowGrow {
-  /** Lock at scale 1 now (QA, and the player's cleanup path). */
+  /** Freeze at scale 1 for good (captures: `?still`, the QA seek). */
   lock: () => void;
-  /** { g, done }: the last value written and whether the effect has locked. */
+  /** { g, done }: the last value written and whether lock() froze the effect. */
   state: () => { g: number; done: boolean };
   destroy: () => void;
 }
@@ -40,6 +43,7 @@ export function mountWindowGrow(section: HTMLElement, card: HTMLElement): Window
   const mq = window.matchMedia(GROW_QUERY);
   let done = false;
   let live = false;
+  let onScreen = false;
   let raf = 0;
   let settle = 0;
   let last = "";
@@ -51,7 +55,7 @@ export function mountWindowGrow(section: HTMLElement, card: HTMLElement): Window
     if (!raf && !done) raf = requestAnimationFrame(update);
   };
   const attach = () => {
-    if (live || done) return;
+    if (live || done || !mq.matches) return;
     live = true;
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule, { passive: true });
@@ -73,17 +77,24 @@ export function mountWindowGrow(section: HTMLElement, card: HTMLElement): Window
     if (raf) cancelAnimationFrame(raf);
     raf = 0;
   };
+  const clear = () => {
+    last = "";
+    card.style.removeProperty("--lp-demowin-grow");
+  };
 
   const lock = () => {
     if (done) return;
     done = true;
     g = 1;
+    window.clearTimeout(settle);
+    settle = 0;
+    section.removeAttribute("data-grow-settle");
     detach();
     io?.disconnect();
     io = null;
     mq.removeEventListener("change", onQuery);
     section.setAttribute("data-grow-done", "");
-    card.style.removeProperty("--lp-demowin-grow");
+    clear();
   };
 
   /** g from the card's place on screen; null while the section is not rendered (agents view). */
@@ -99,16 +110,9 @@ export function mountWindowGrow(section: HTMLElement, card: HTMLElement): Window
 
   function update() {
     raf = 0;
-    if (done) return;
+    if (done || !mq.matches) return;
     const v = measure();
-    if (v === null) return;
-    if (v >= 1) {
-      // still easing in from the first paint: the timer below locks when it lands
-      if (settle) write(1);
-      else lock();
-      return;
-    }
-    write(v);
+    if (v !== null) write(v);
   }
   const write = (v: number) => {
     g = v;
@@ -119,44 +123,46 @@ export function mountWindowGrow(section: HTMLElement, card: HTMLElement): Window
   };
 
   function onQuery() {
-    if (!mq.matches) lock();
+    if (mq.matches) {
+      // back in the query (a resize, motion allowed again): take the scroll's value at once
+      update();
+      if (onScreen) attach();
+    } else {
+      // phones, tablets, very tall windows, reduced motion: demo.css draws the card at 1
+      detach();
+      g = 1;
+      clear();
+    }
   }
 
+  mq.addEventListener("change", onQuery);
   if (!mq.matches) {
-    // phones, tablets, very tall windows, reduced motion: demo.css draws the window at 1
-    lock();
+    g = 1;
   } else {
-    mq.addEventListener("change", onQuery);
     const first = measure();
     if (first !== null && first > 0) {
-      const r = card.getBoundingClientRect();
-      if (r.bottom <= 0) {
-        lock(); // opened below the window: it is at 1 before anyone scrolls back to it
+      if (card.getBoundingClientRect().bottom <= 0) {
+        write(first); // opened below the window: it is at 1 before anyone scrolls back to it
       } else {
         section.setAttribute("data-grow-settle", "");
         write(first);
         settle = window.setTimeout(() => {
           settle = 0;
           section.removeAttribute("data-grow-settle");
-          if (!done) update();
+          update();
         }, GROW_SETTLE_MS + 40);
       }
     }
-    if (!done) {
-      io = new IntersectionObserver((entries) => {
-        const e = entries[entries.length - 1];
-        if (e.isIntersecting) {
-          attach();
-          schedule();
-        } else {
-          // left the screen: through the top = past the end, it locks; else nothing to run
-          if (card.getClientRects().length > 0 && card.getBoundingClientRect().bottom <= 0) lock();
-          else detach();
-        }
-      });
-      io.observe(card);
-    }
   }
+  io = new IntersectionObserver((entries) => {
+    onScreen = entries[entries.length - 1].isIntersecting;
+    // the value where it enters and where it leaves (1 above the screen, its rest value below),
+    // so it never comes back on screen with a stale size
+    update();
+    if (onScreen) attach();
+    else detach();
+  });
+  io.observe(card);
 
   return {
     lock,
