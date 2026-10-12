@@ -8,17 +8,13 @@
  * STORY_LEARNS_ALT is fixed (lp-dive-stages.ts imports it): what the animation shows, the only
  * copy a screen reader gets (the shell's host aria-label).
  *
- * Truth. The storyboard is production's old "learns" card redrawn for the stage, with its
- * pre-audit sample copy: a chart reading "56% vs last period", then "What worked" with "Lead with
- * no-shows / Shorter intros / Asking for Thursdays", then "Updating Brain..." and "Brain
- * updated!". Pancake learns who fits from the leads you approve or reject; it learns no message
- * pattern. The designer's layout is kept:
- * - the chart is as drawn, "56%" and "vs last period". The founder kept this chart on production's
- *   card on 2026-10-08 (reverting the 2026-10-07 audit's plain count), so it is not relabelled
- *   here either ("leads approved", 2026-10-12, was mine and is gone).
- * - "What worked" + three message lessons → "Brain learned" + the three audience lessons of
- *   production's card (truth pass 2026-10-07: "the app learns no message patterns").
- * "Updating Brain..." and "Brain updated!" are true as drawn.
+ * As drawn (founder 2026-10-12). The storyboard is production's old "learns" card redrawn for the
+ * stage: a chart reading "56% vs last period", then "What worked" with "Lead with no-shows /
+ * Shorter intros / Asking for Thursdays", then "Updating Brain..." and "Brain updated!". Every
+ * string is the designer's. A first build relabelled the chart "leads approved" and the list
+ * "Brain learned" with audience lessons (the 2026-10-07 truth pass's wording); the founder asked
+ * for the designer's version: he had kept this chart on production on 2026-10-08, and "what
+ * worked is good".
  */
 
 export const LEARNS = {
@@ -32,14 +28,13 @@ export const LEARNS = {
   barX: [0, 39.545, 79.091, 118.636, 158.182, 197.727, 237.273, 276.818, 316.364, 355.909, 395.455, 435],
   plot: { width: 451, height: 145, barWidth: 16, barRadius: 4 },
   weeks: ["Week 1", "Week 2", "Week 3", "Week 4"],
-  /** the list under the chart (Figma: "What worked") */
-  learnedTitle: "Brain learned",
-  /** (Figma: "Lead with no-shows", "Shorter intros", "Asking for Thursdays") */
-  learned: ["Founders, not marketers", "Seed to Series A", "US only"],
+  /** the list under the chart, as drawn */
+  learnedTitle: "What worked",
+  learned: ["Lead with no-shows", "Shorter intros", "Asking for Thursdays"],
   /** the status line, while Pancake writes the lessons to the Brain, then once it has */
   updating: "Updating Brain...",
   updated: "Brain updated!",
 } as const;
 
 export const STORY_LEARNS_ALT: string =
-  "Animation: a chart grows week by week over four weeks. Its bars rise and the figure climbs to 56% versus last period. The view moves down to a Brain learned list with three checked lines: Founders, not marketers, Seed to Series A and US only. It closes in on the list while Pancake updates the Brain, then reads Brain updated.";
+  "Animation: a chart grows week by week over four weeks. Its bars rise and the figure climbs to 56% versus last period. The view moves down to a What worked list with three checked lines: Lead with no-shows, Shorter intros and Asking for Thursdays. It closes in on the list while Pancake updates the Brain, then reads Brain updated.";
