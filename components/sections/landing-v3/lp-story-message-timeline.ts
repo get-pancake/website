@@ -22,7 +22,8 @@ import { prepareSmTail, type SmCaret, type SmGlyph } from "./lp-story-message-ta
  *
  * THIS FILE = frames 1–3, final: A the post rises at pose A and types (label f1) → B it
  * shrinks to the top, the draft card rises in its rainbow ring and Pancake types the message,
- * the card growing a line at a time (f2 mid line 2, f3 fully written).
+ * the card growing a line at a time, each step a moment ahead of the caret (f2 mid line 2,
+ * f3 fully written).
  * THE TAIL = frames 4–5, interim (the designer marked them WIP on 2026-10-11): the manual
  * correction, Send, MESSAGE SENT and the zoom-out live in lp-story-message-tail.ts, which
  * appends its beats (labels f4, f5) after ours. See that file for the hand-over contract.
@@ -64,6 +65,13 @@ export const SM_T = {
   msgType: 3.7,
   /** a line of growth (card, group and ring together) */
   grow: 0.22,
+  /** the growth starts this long BEFORE the new line's first glyph: the Send button, which
+      rides the card's bottom edge, sits where that line goes, and a step started on the glyph
+      left "s|" under the button for two to three frames at each wrap (measured 7 px of overlap).
+      At 0.1 s the card has made 24 of its 29 px when the glyph lands (power2.out is a cubic):
+      16.7 px of air against 21.3 at rest, no contact. `grow` here would keep the full 21.3 px,
+      with the card opening a line early. */
+  growLead: 0.1,
   /** after the typing ends (caret off at +0.40, clip released at +0.45) */
   f3After: 0.46,
 } as const;
@@ -406,14 +414,21 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
       SM_T.eyebrowIn,
     );
     const msgRun = typeIn(SM_T.msgType, msg, msgCaret, typed, PANCAKE_MS, (c, n) => (c === "." && n === " " ? 0.06 : c === "," ? 0.035 : 0));
-    // the card grows a line as the caret reaches it (the Send button rides its bottom edge)
+    // f2: mid line 2 (Figma: "…sends rem|"), the ring complete, the card still two lines
+    const firstOfLine3 = typed.findIndex((g) => lineOf(g) >= 2);
+    const f2Glyph = Math.min(54, (firstOfLine3 > 0 ? firstOfLine3 : typed.length) - 1);
+    const tF2 = Math.max(msgRun.times[f2Glyph], tRingDrawn) + 0.001;
+    tl.addLabel("f2", tF2);
+    // the card grows a line just ahead of the caret reaching it (SM_T.growLead: the Send button
+    // rides its bottom edge and must be out of the new line's way) — always after frame 2's
+    // picture, which is the two-line card in its whole ring
     let handedOver = false;
     let shown = FIRST_LINES;
     typed.forEach((g, i) => {
       const line = lineOf(g);
       if (i === 0 || line < FIRST_LINES || line === lineOf(typed[i - 1])) return;
       const lines = line + 1;
-      const at = msgRun.times[i];
+      const at = Math.max(msgRun.times[i] - SM_T.growLead, tF2 + 0.001);
       const grow = { duration: SM_T.grow, ease: "power2.out" };
       tl.to(draftgrp, { y: groupY(lines), ...grow }, at);
       tl.to(card, { height: cardH(lines), autoRound: false, ...grow }, at);
@@ -436,10 +451,6 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
         tl.set(ring2.g, { display: "none" }, tSwap + SM_T.grow + 0.15);
       }
     });
-    // f2: mid line 2 (Figma: "…sends rem|"), the ring complete, the card still two lines
-    const firstOfLine3 = typed.findIndex((g) => lineOf(g) >= 2);
-    const f2Glyph = Math.min(54, (firstOfLine3 > 0 ? firstOfLine3 : typed.length) - 1);
-    tl.addLabel("f2", Math.max(msgRun.times[f2Glyph], tRingDrawn) + 0.001);
     const tTyped = msgRun.end;
     typeDone(msg, msgCaret, tTyped);
     tl.addLabel("f3", tTyped + SM_T.f3After);

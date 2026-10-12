@@ -29,8 +29,11 @@ import type { SignalKind } from "@/lib/verticals/types";
  * - INTERIM: the accounts are labelled with sender NAMES, not V2's mike@studiopelican.com:
  *   Pancake sends from the customer's own social accounts, never email. Astrid Norling is
  *   Studio Pelican's sender in home-demo.ts; the other five are invented (unused in the repo,
- *   2026-10-09). Lead rows: a DOM rebuild of V2's raster placeholder (one screenshot pasted 18
- *   times), filled with the homepage demo's fictional leads (copied from home-demo.ts, which
+ *   2026-10-09) and web-checked before launch: one standard search per name found no person
+ *   of that exact name (not exhaustive). The name the second satellite had at first turned out
+ *   to be a real executive's, hence "Runa Halvick" (2026-10-12): check any new name the same
+ *   way. Lead rows: a DOM rebuild of V2's raster placeholder (one screenshot pasted 18 times),
+ *   filled with the homepage demo's fictional leads (copied from home-demo.ts, which
  *   validate.ts checks; that file is server-only). Sarah's row is the lead the story wrote to.
  */
 
@@ -148,7 +151,7 @@ export const SM_TAIL: SmTail = {
     },
     satellites: [
       { sender: "Theo Marchand", leads: [L.wes, L.imani, L.anders] },
-      { sender: "Priya Venkat", leads: [L.nate, L.chloe, L.omar] },
+      { sender: "Runa Halvick", leads: [L.nate, L.chloe, L.omar] },
       { sender: "Dario Pellegrin", leads: [L.bea, L.jonah, L.rosa] },
       { sender: "Hana Morrow", leads: [L.elena, L.leopold, L.lucian] },
       // its rows 2 and 3 sit at or past the stage's bottom edge (desktop); two repeats of the far
