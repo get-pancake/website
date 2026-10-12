@@ -2,7 +2,7 @@
 
 Sources of truth:
 - V1 artboard: Figma `Pancake-Design`, page `└-> Desktop` (node `4197-9774`), frame `hero` (`4257:4893`, 1654×9632). Extracted 2026-08-28.
-- **V2 (2026-10-09, updated by the designer 2026-10-11):** Figma `fr8NgOCTUxsEbrMEJA3YKu`, frame `4911:346` (1654 wide), its red notes ("Deltas"), the hero-scroll and deep-dive storyboards, the agents view `4911:1461`. Only the red-noted deltas come from V2: production copy and founder decisions win everywhere else. Specs, decisions and the per-package reports live in `artifacts/landing-v2-figma/` (`specs/_decisions.md` is binding).
+- **V2 (2026-10-09, updated by the designer 2026-10-11):** Figma `fr8NgOCTUxsEbrMEJA3YKu`, desktop frame `4911:346` (1654 wide), mobile frame `5024:8631` (402 wide), the red notes ("Deltas"), the hero-scroll, "How it works" and deep-dive storyboards, the agents view `4911:1461`. Only the red-noted deltas, the storyboards and the mobile pieces come from V2: production copy and founder decisions win everywhere else. Specs, decisions and the per-package reports live in `artifacts/landing-v2-figma/` (`specs/_decisions.md` is binding, §9 = the 2026-10-11 amendments).
 
 ## Structure
 
@@ -15,9 +15,9 @@ Sources of truth:
 | Placeholder gate | `lib/placeholders.ts` (`SHOW_PLACEHOLDERS`, `ContentStatus`, `visibleEntries`) |
 | Stage harness (dev / preview only) | `app/lp-dev/stages/` → `/lp-dev/stages` |
 
-## The homepage since V2 (2026-10-09)
+## The homepage since V2 (2026-10-09; second pass 2026-10-12)
 
-Page order (`app/page.tsx`): `LpNav` · `LpHero` · `LpDemo` · `LpMarquee labelled` · `LpAgentLab` (agents view only) · `LpSteps` · `LpBanner` (sky) · `LpDive` · `LpCta sky` · `LpBento` · `LpPricing` · `LpFooter`. At 1654 with motion the page is 8560 tall on a preview (nav 120, hero 657, demo 767, logos 130, steps 1773, banner 753, dive 894, CTA 624, bento 1448, pricing 890, footer 504) and 7112 in production, where the bento does not render yet.
+Page order (`app/page.tsx`): `LpNav` · `LpHero` · `LpDemo` · `LpMarquee labelled` · `LpAgentLab` (agents view only) · `LpSteps` · `LpBanner` (sky) · `LpDive` · `LpCta sky` · `LpBento` · `LpPricing` · `LpFooter`. At 1654 with motion the page is 8586 tall on a preview (nav 120, hero 657, demo 793, logos 130, steps 1773, banner 753, dive 894, CTA 624, bento 1448, pricing 890, footer 504: every section starts on V2's y) and 8195 in production, where the bento holds five cards (1057). At 402 a preview is 11148 tall.
 
 Every section is a **direct `<section>` child of `main.lp`**: the agents view (`?audience=agents`) hides all of them except `.lp-hero` and `.lp-agent-lab` (one rule in `audience.css`, integrator-owned). A new section that is not a direct child stays visible there.
 
@@ -26,10 +26,10 @@ Two CSS block names are taken: `lp-demo` is `/demo`'s main (the homepage demo is
 ### Placeholder gating: one mechanism
 
 `lib/placeholders.ts`: `SHOW_PLACEHOLDERS` is true in dev and on Vercel previews, false in production. Data entries carry `status: "final" | "placeholder"`.
-- Read it in **server components only** (`VERCEL_ENV` is not in client bundles); pass a boolean or filtered data down. Readers today: `app/page.tsx` (agents card body), `LpSteps`, `LpDive` (it passes `placeholders` to every story Stage), `LpBento`, the harness page.
-- Production renders no placeholder and no empty shell: a slot or section with no final entry returns null (`LpBento`), and a step row with no final art throws at build (`LpSteps`).
-- What is placeholder today: the whole bento (seven cards), the "source DB" circles of the sources story, one line each in the learns and claude stories. Everything a placeholder renders is marked `data-placeholder`.
-- Guard: `node --test scripts/placeholder-gate.test.mjs` server-renders the gated sections as a production build and as a preview build and checks both. Not in `prebuild`.
+- Read it in **server components only** (`VERCEL_ENV` is not in client bundles); pass a boolean or filtered data down. Readers today: `app/page.tsx` (agents card body), `LpSteps` (it passes `showPlaceholders` to `LpStepAnim`), `LpDive` (it passes `placeholders` to every story Stage), `LpBento`, the harness page.
+- Production renders no placeholder and no empty shell: a slot with no final entry is left out, a section with no final entry returns null, and a step row with no final art throws at build (`LpSteps`). **The bento renders a partial set in production** (its final cards, laid out again).
+- What is placeholder today: two bento cards (Kinro's video tile and Pierre's quote card, waiting for his individual cut), the data-source hub of the sources story (so production ends that story one frame earlier), the "reply rate" figure on step 02's Play cards, one line each in the learns and claude stories. Everything a placeholder renders is marked `data-placeholder`.
+- Guard: `node --test scripts/placeholder-gate.test.mjs` server-renders the gated sections as a production build and as a preview build and checks both (the bento's final slots, no stand-in image or stand-in customer in production, no `<video>` in server markup, every subset of the seven slots lays out, the sources story's two endings). Not in `prebuild`.
 
 ### Nav and hero (V2 `4911:347`, `4911:355`)
 
@@ -38,47 +38,63 @@ Two CSS block names are taken: `lp-demo` is `/demo`'s main (the homepage demo is
 - Homepage hero rules are scoped to `.lp-hero--home` (`/agents`' AgHero reuses the unscoped classes). The hero is 657 tall on windows ≥777; the art is clipped at the hero bottom (≥1025) so the page-coloured ring never covers the demo. H1 bottom 63 and right column bottom 71: V2's composition with the founder's 2026-09-01 36 px drop kept.
 - The right column `.lp-hero-aside` is the audience toggle row, then `.lp-hero-swap`: one grid cell where the human column and the agent column overlay. The human column sizes the cell (`visibility: hidden` in the agents view), so the toggle sits on the same pixel in both views; the agent column must stay no taller. No JS measuring. ≤1024 the toggle row leads the stacked block, left-aligned.
 - `.lp-hs-hero` marks the H1 and the aside for the demo's hero-scroll drift; both are transform-free (left offsets). Keep them free of their own `translate`, `opacity` and transitions at ≥1025. `<LpHeroAgentArt />` is the first child of `.lp-hero-art`.
+- Phones: the demo card overlaps the hero's last 17 px (`--lp-demowin-phone-peek` in `demo.css`). Keep that strip free of hero content.
 
-### Demo window and hero scroll (V2 `4939:2645`; storyboard `4940:4919 → 4920 → 4981`)
+### Demo window and hero scroll (V2 `4939:2645`; storyboard `4940:4919 → 4920 → 4981 → "4" 5024:8353`; phones `5024:9506`)
 
-- `LpDemo.tsx` (server) renders ONE app window right under the hero: the live app's home (bar, "Ready when you are", the request already typed, Get started, and the chip "Use Pancake with Claude or Codex", a real link to `/guides/claude`). Two pills, Pancake / Claude & Codex, autoplay between two views of the same request: Pancake replays production's Play moment; Claude & Codex is a Claude-desktop mock (**no final design yet**).
-- Copy: `lp-demo-data.ts` (linted). The request, reply and Play card come from `lib/verticals/home-demo.ts` prompt 0 + `vx-copy.ts` (validated by the build). Cue tables: `lp-demo-timeline.ts` (pure). The one client island is `LpDemoPlayer.tsx`: a rAF clock that runs only while started, ≥35 % on screen, the tab visible, not paused and motion allowed; a keyboard-only Pause (WCAG 2.2.2); QA hook `window.__lpDemo` (non-production builds or `?lpqa`).
-- Hero scroll (desktop ≥1025 × ≥640, motion allowed): `lp-demo-scroll.ts` (lazy, GSAP ScrollTrigger) maps "section top at 100vh − 299.42 → at 141" to one progress, written as `--lp-hs` on the section and `--lp-hs-hero` on the hero's two blocks; `demo.css` draws every pose (window scale .4956 → 1 and fade, head settling 28 px, pills fading in, hero copy drifting 25.5 px and fading). A CSS scroll-driven animation of the same variable draws the first paint where supported; `<noscript>` forces the assembled state. The window locks assembled (`data-hs-done`) and never disassembles on scroll-up. Phones, tablets and reduced motion get the assembled window and never fetch GSAP.
+- `LpDemo.tsx` (server) renders ONE app window under the hero, 26 px below it (section 793 = 26 + 647 + 24 + 36 + 60): the live app's home (bar, "Ready when you are", the request already typed, Get started, and the chip "Use Pancake with Claude or Codex", a real link to `/guides/claude`). Two pills, Pancake / Claude & Codex, autoplay between two views of the same request. Pancake replays production's Play moment at **production's own metrics** (`verticals/demo.css` values, 616 column), placed as storyboard frame 4 draws it: thread top at window y 185.57, input at 465.07, centred. Claude & Codex is a Claude-desktop mock (**no final design yet**).
+- Copy: `lp-demo-data.ts` (linted). The request, reply and Play card come from `lib/verticals/home-demo.ts` prompt 0 + `vx-copy.ts` (validated by the build). Cue tables and constants: `lp-demo-timeline.ts` (pure). The one client island is `LpDemoPlayer.tsx`: a rAF clock that runs only while started, ≥35 % on screen, the tab visible, not paused and motion allowed; a keyboard-only Pause (WCAG 2.2.2); QA hook `window.__lpDemo` (non-production builds or `?lpqa`).
+- Hero scroll (desktop ≥1025 × ≥640, motion allowed): `lp-demo-scroll.ts` (lazy, GSAP ScrollTrigger) maps "the WINDOW's top at 100vh − 299.42 → at 141" to one progress. The trigger is the section, 26 px above the window, so the constants are `HS_START_FROM_BOTTOM` 325.42 and `HS_END_FROM_TOP` 115 (`HS_WINDOW_INSET` 26); `demo.css` repeats them in `padding-top` and in the pre-script `animation-range`. Change the three together. The progress is written as `--lp-hs` on the section and `--lp-hs-hero` on the hero's two blocks; `demo.css` draws every pose (window scale .4956 → 1 and fade, head settling 28 px, pills fading in, hero copy drifting 25.5 px and fading). A CSS scroll-driven animation of the same variable draws the first paint where supported; `<noscript>` forces the assembled state. The window locks assembled (`data-hs-done`) and never disassembles on scroll-up. Phones, tablets and reduced motion get the assembled window and never fetch GSAP.
+- Phones (≤767): the same markup is recomposed as a portrait, phone-shaped card. It is a fixed design box of 546.33 × 1072.61 du (du = desktop px = Figma px ÷ 0.399025) scaled as pixels: `transform: scale(var(--lp-demowin-fit, tan(atan2(var(--lp-demowin-phone-w), 546.33px))))`, never `zoom`, no `will-change`. Every px inside the phone block of `demo.css` is a du. Two switches: `--lp-demowin-phone-w` is the card's width on screen (`calc(218 / 402 * 100vw)`; the legible alternative is `calc(100vw - 32px)`), and `PHONE_SOLO` (`lp-demo-timeline.ts`) hides the pills and the Claude & Codex view, so the Pancake view plays once and holds its end picture. The card is a picture there: `pointer-events: none`, the chip link out of the tab order. Firefox gets its own hairline rule (Gecko drops rings under a device pixel).
+- `.lp-demowin` must stay out of the `content-visibility` list: its observers have to fire before it is on screen. The card's bottom padding on phones (74.885) depends on the labelled marquee's 3.811 top padding.
 - The Claude serif is Literata, `lp-claude-font.ts` (next/font/google, one variable woff2, `preload: false`, homepage only), shared with the claude story; one palette `--lp-claude-*`.
 
-### Customers band and steps (V2 `4911:371`, `4911:373`)
+### Customers band and steps (V2 `4911:371`, `4911:373`; storyboards `5016:4214 → 5022:6230`, `5022:6116 → 5022:6080`)
 
 - `<LpMarquee labelled />` puts "Trusted by many" above the real logo strip, 130 px tall, right under the demo. `labelled` is opt-in: `/demo`, `/pricing` and `/for` keep the bare strip, pixel-identical. V2's grey tech-logo strip is the V1 placeholder and is never built.
 - Step 01's graph names its five hubs (`S1_HUBS[].label` in `lp-step-data.ts`, `.lp-s1-hlabel`); the centre label stays "Studio Pelican".
+- Step 02 and step 03's intro are the designer's "How it works" storyboards (2026-10-11). Step 02: chat request → one question → the Play takes shape → Leads table → select all → the Play card (8.95 s, `S2_T`). Step 03: selected leads → a message typed and sent → her reply → the meeting, then the calendar as before, nested at `S3_CAL_RATE` 1.25 (10.7 s, `S3_T`). QA labels: `window.__lpStep.s2.seek("f1" … "f8")`, `.s3.seek("f1" … "f5" | "cal")`.
+- The mocks' strings are the Studio Pelican story, all in `lp-step-data.ts` (linted, with `LpStepMocks.tsx`); the storyboard's sample names and its platform icon are not used. `S2_PLAYS[].figures[].status` gates the "reply rate" figure (preview only until the founder's yes).
+- Text `top` values in the storyboard block of `steps.css` come from a three-engine sweep (`artifacts/…/pw/ls2-sweep.sh`): re-run it, do not nudge by eye. The Leads view's x and the selection bar's y carry their half pixel as a transform.
 - Copy and art of the three rows live in `lp-steps-content.ts`. Each row's `art` is a priority list of candidates (`anim` | `image` 464×426 | `empty`), each with a `status`; `LpSteps` shows the first one the gate allows. To preview new art without shipping it, add it first with `status: "placeholder"` and keep the final entry after it.
+- Phones (≤767): the labelled logos band is 82 px (pad 3.811, gap 16, slot 42.67) and the steps start 96 px under it (mobile artboard `5024:8948`, `5024:8706`).
 
-### Blue band and the deep-dive carousel (V2 `4911:534 → 4939:3388 → 4911:739`)
+### Blue band and the deep dive (V2 `4911:534 → 4939:3388 → 4911:739`; phones `5024:8914`, `5024:10542`)
 
 - The sky (`--lp-sky`) starts under a cream blob in the banner's gutters (`LpBanner`, `sky` default), carries "How Pancake finds customers" (`LpDive`) and ends on the CTA's cream hill (`<LpCta sky />`, homepage only: every other CTA surface is unchanged, r48 on cream). Sky rules: `sky.css`.
 - Clouds (`.lp-sky-cloud`) drift on scroll at their own depth: `lp-sky-parallax.ts` via `LpSkyParallax`, one passive rAF listener gated by an IntersectionObserver, one variable per cloud, depths and bounds in `sky.css`. Reduced motion = the artboard pose. `.lp-dive` is `content-visibility: auto`, so the heading clouds' travel is clamped inside the section box.
-- `LpDive` server-renders every tab, body and stage (each story's END picture). `lp-dive-carousel.ts` (via `LpDiveCarousel`) plays one turn per item on a master GSAP timeline: story cue → end, then a 2.0 s hold, the bar linear over both. First start follows `lp-play-once.ts`'s contract (prepared a viewport ahead, cued unseen, played at the 60 % focus line or after a 1 s dwell). It runs only while ≥50 % of the stage is on screen, never rewinds on screen, holds the advance under keyboard focus, has a keyboard Pause, and in reduced motion fetches nothing and swaps end pictures. No hover pause (founder precedent 2026-09-22 on the demo).
-- Scene boxes: desktop 752×489, phone 400×520 at ≤599, scaled as pixels by `--lp-fit` (never `zoom`). Stories switch on the `lp-dive-scene` size container; builders read `data-lp-layout`.
+- `LpDive` server-renders every tab, body and stage (each story's END picture). Desktop and tablets: `lp-dive-carousel.ts` (via `LpDiveCarousel`, entry `mountDive`) plays one turn per item on a master GSAP timeline: story cue → end, then a 2.0 s hold, the bar linear over both. First start follows `lp-play-once.ts`'s contract (prepared a viewport ahead, cued unseen, played at the 60 % focus line or after a 1 s dwell). It runs only while ≥50 % of the stage is on screen, never rewinds on screen, holds the advance under keyboard focus, has a keyboard Pause, and in reduced motion fetches nothing and swaps end pictures. No hover pause (founder precedent 2026-09-22 on the demo). The tabs are `<div role="tab">` (so they can become plain text on phones); Enter and Space are handled by the driver.
+- **Phones (≤767, decisions §9 F3).** `DIVE_PHONE_LAYOUT` (`lp-dive-data.ts`, written on the section as `data-lp-phone`) is `"stack"`: `dive.css` re-lays the SAME markup out as four stacked items, all open (wrappers `display: contents`, order from `--lp-dive-i`: tab 3i, link 3i+1, panel 3i+2), each panel becoming its own stage card with the desktop scene at (W − 48) / 752. `mountDive` then runs `mountDiveStack` instead of the carousel: every stage is an `lp-play-once` card (`restIsEnd`, registry `__lpStory`), the tab semantics are dropped (four `role="heading"` titles, `aria-owns` for the reading order) and restored when the width crosses 767. `"carousel"` restores the 2026-10-09 phone build.
+- Scene boxes: 752 × 489 everywhere, scaled as pixels by `--lp-fit` (never `zoom`). The 400 × 520 phone recompositions (stories' `@container lp-dive-scene (max-width: 599px)` rules, builders' `data-lp-layout="phone"` branches) are only reached with `DIVE_PHONE_LAYOUT = "carousel"` and in `/lp-dev/stages?layout=phone`. Do not delete them until the founder confirms F3.
+- Phone sky: `lp-sky-banner-top-phone.svg` and `lp-sky-cta-hill-phone.svg` are the artboard's curves, anchored to the cards (banner card top + 524, CTA card top + 270 / 288); CTA card r32 (24 on desktop and tablets). Clouds stay on phones behind ONE switch (`sky.css`, ≤767: `.lp-sky-cloud { display: block }` ↔ `none`); there the parallax driver measures each cloud against its own resting place (the stacked section is two screens tall) and attaches no listener when no cloud has a box.
 - Registry: `lp-dive-stages.ts` (Stage + alt, imported by the server `LpDive`) and `lp-dive-loaders.ts` (the lazy loaders, **client only**). A story is `LpStory<Name>.tsx` (server-safe, one root `[data-lp-story]`, rest markup = end picture), `lp-story-<name>-timeline.ts` (`buildStory<Name>(root) → { tl, cleanup, cue }`), `lp-story-<name>-data.ts` (linted copy, `STORY_<NAME>_ALT`), optional `-art.ts`, `story-<name>.css`.
 - Bundle rule: a timeline module carries **no `"use client"`** and imports no `"use client"` module other than `@/lib/gsap`, and the registry holds no loader. Next turns every `"use client"` module a server graph reaches, even through `import()`, into an eager entry of the page: GSAP and the builders shipped in the homepage's first bundle until the loaders moved out (2026-10-11).
 - Builder rules (GSAP 3.15): sets and tweens only, no callbacks, no randomness; `tl.progress(1)` pixel-matches the server markup; `cue` is never an empty frame. `gsap.context().revert()` replays zero-duration tweens last, in an engine-dependent order (Firefox differs): use 1 ms tweens for instant changes, or restore the rest markup in `cleanup()`. Dispose order is `ctx.revert()` then `cleanup()`. Typing reveals the real text with a clip-path staircase, never per-character spans. The `txt` plugin is `lp-gsap-txt.ts`.
-- QA: `window.__lpDive` (`timelines`, `select`, `pause`, `play`, `pose(i, p)`, `state()`), `window.__lpStory.<id>`, and `/lp-dev/stages` (dev and previews only, `notFound()` in production, noindex, not in the sitemap): every stage in both boxes with play / seek / end / rest controls; `?story=`, `&t=<s>|end`, `&layout=desktop|phone`, `&placeholders=0`, `&fit=`.
+- QA: `window.__lpDive` (`mode` = `"carousel"` | `"stack"`, `timelines`, `select`, `pause`, `play`, `state()`, `pose(i, p, at)`: item i frozen with its bar at p and its story at `at`, seconds, a label or `"end"`; `pose(0)` is the V2 artboard, bar .509596 and Sources on frame 3), `window.__lpStory.<id>`, and `/lp-dev/stages` (dev and previews only, `notFound()` in production, noindex, not in the sitemap): every stage in both boxes with play / seek / end / rest controls; `?story=`, `&t=<s>|end`, `&layout=desktop|phone`, `&placeholders=0`, `&fit=`.
 
 The four stories:
 
 | Item | What plays | Notes |
 |---|---|---|
-| sources, "Sources you can trust" (`4964:1287…`) | Leads land, the pointer clicks Elena Marchetti, a dolly zoom into her row, her property card with green ticks, the tags, "Hiring" lights up. 5.15 s (5.82 s with the preview-only source circles) | The rows duplicate `home-demo.ts` prompt 2: keep in sync. Generic glyphs, no platform logos |
+| sources, "Sources you can trust" (`4964:1287 / 5024:7457 / 5024:7601 / 5024:8172`, storyboard of 2026-10-11) | A Leads table, the hand clicks Elena Marchetti's row, her details panel opens over the dimmed table, the camera zooms ×3.89 into "Why they fit" and six data-source discs wire into it | **Two endings.** Every hub node is `status: "placeholder"`, so production ends on the open panel (`data-end="details"`, 2.59 s) and previews on the zoom (`data-end="sources"`, 4.85 s); a node set to `"final"` lights the zoom up in production. No platform name or mark, no third-party logo (generic glyphs), no counted source claim. Rows mirror `home-demo.ts`: keep in sync. Labels `f1` to `f4`. Each element clears its inline transform when it lands (Firefox text snapping); the camera is never cleared (`--src-cam-s` 3.8908 is the scale GSAP leaves inline). Strokes under 1 px are scaled `::after` rings |
 | message, "A personal message for every lead" (`4964:1469 / 1471 / 1729`) | The post, then Pancake's draft typed in its rainbow ring; then manual correction, Send, MESSAGE SENT, zoom-out. 9.25 s | Frames 1–3 are final. Frames 4–5 are an INTERIM, isolated in `lp-story-message-tail.ts`, the `SmTail*` components and the "INTERIM" halves of the data and CSS. The art module is generated (`artifacts/…/work/story-message/gen-art.mjs`): never hand-edit |
 | learns, "Pancake learns from what wins" (`4964:2021…`) | Plays with their "Approved" share and the app's Strong / Weak thresholds, then "Brain learned" + "Brain updated". 7.75 s | No reply-rate figure. The end picture is not in Figma (frame 5 is empty). Mask ids `lpsl-*`: render the Stage once per page |
 | claude, "Run it from Claude or Codex" (`4964:2575…`) | Claude's home, the prompt typed, the send with a ×1.35 dolly, the reply, "Connecting...", "11 leads found". 5.05 s | Codex + Claude marks, never Cursor (it can't connect yet). The prompt targets the US. The follow-up line is preview-only |
 
-### Bento, "Take it from them" (V2 `4911:762`)
+### Bento, "Take it from them" (V2 `4911:762`, mobile `5024:10543`)
 
-`LpBento.tsx` (server), between the CTA and pricing. Seven fixed slots in `lp-bento-data.ts` (videoLg, quoteA, kpiA, kpiB, kpiC, quoteB, videoSm); `resolveBento(SHOW_PLACEHOLDERS)`: a final card wins its slot, a placeholder fills it only in dev and on previews, one empty slot hides the whole section. **Production renders nothing until all seven are final**, so production still goes CTA → pricing.
-- The V2 stand-ins (Klarna and Fleet marks, invented people and counts, licensed creator clips) are lint-compliant and must never ship. Their media never gets a pancake.ai URL: the marks are inline SVG (`lp-bento-marks.tsx`), the portraits sit outside `public/` (`bento-placeholder/`) and are inlined as data URIs by `lp-bento-placeholder.ts` (server-only).
-- Layout: every card metric is `calc(N * var(--u))` (1 px at ≥1200, frame / 1136 at 1025–1199); tablets two columns; phones a swipe rail whose snap is armed on the first touch (`LpBentoRail`: WebKit lands a snap container first laid out mid page-scroll on a random card). Portraits are static.
-- Video tiles (`LpBentoVideo`): poster at rest, the `<video>` created a viewport ahead, muted loop only while ≥60 % in view, a play / pause button; reduced motion shows the poster and fetches nothing until Play is pressed. They gate themselves (not freeze members).
-- A real card: `status: "final"` + `source` (its provenance); logo `{ kind: "mask", src: "/logos/customers/<file>", … }`; photos and posters in `public/lp/bento/`.
+`LpBento.tsx` (server), between the CTA and pricing. Content: the Kinro and Praxis testimonials (founder 2026-10-11), the two individual cuts, never the merged compilation. Seven slots in `lp-bento-data.ts` (videoLg, quoteA, kpiA, kpiB, kpiC, quoteB, videoSm), each card `status: "final" | "placeholder"`.
+
+- **Gating.** `resolveBento(SHOW_PLACEHOLDERS)`: a final card wins its slot, a placeholder fills it in dev and previews only, an empty slot is left out. **Production renders a partial set** (today five cards: the Praxis film, Diana's quote, three KPI cards) and nothing only when no final card exists. `BENTO_LIVE = false` keeps the section out of production whatever its entries say.
+- **Placeholders today:** Kinro's video tile and Pierre's quote card, which wait for his individual cut. Their stills are interim crops of the compilation; they sit outside `public/` (`bento-placeholder/`) and are inlined as data URIs by `lp-bento-placeholder.ts` (server-only), so they never get a pancake.ai URL.
+- **Layout.** Every card metric is `calc(N * var(--u))`. Seven cards (`data-layout="full"`) = the artboard: 4 × 3 on the 1136 column (`--u` 1 px at ≥1200, frame / 1136 at 1025–1199), two columns on tablets, the mobile artboard's two-column stack on phones (`--u` = frame / 560). A partial set (`data-layout="rows"`): rows on 12 columns picked by the server from `ROW_SHAPES`, and the same stack below 1025 with a lone narrow card widened (`data-solo`). All spans, orders and heights are written inline by the server; CSS guesses nothing.
+- **Logos** are the marquee's artwork as alpha masks, sized by letter body (`BENTO_LOGO_BODY`), with the marquee's YC badge.
+- **Video tiles (`LpBentoVideo`).** Two separate things. The muted preview: poster at rest, a `<video preload="none">` created a viewport ahead, playing muted from `previewStart` only while ≥60 % in view, looping back to `previewStart`, with a pause / play disc; reduced motion fetches nothing until Play. The film with sound: the tile is a button ("Watch with sound") that opens a native modal `<dialog>` with the full frame and the browser's controls; its `<video controls>` exists only while the dialog is open. Nothing ever plays with sound without a click. The tiles gate themselves (not freeze members).
+- **Crop.** The films are 4:3, the tiles mostly portrait. Each film carries `focus` (`keepLeft`, `centre`, `wideLeft`, in poster px); `bento.css` turns it into `object-position` with container units, the same for the poster and the preview, so nothing shifts when the preview fades in.
+- **Captions.** `film.captions` mounts a `<track>`. Fill it only with a transcript checked by ear (none today: WCAG 1.2.2 gap).
+- **KPI figures** are the customers' own, each with its `source`. `bentoKpiClaims()` hands the "value label" pairs to `scripts/homepage-lint.mjs`, which checks them against `BENTO_KPI_ALLOW`, a sourced allow-list: a new figure fails the build until a human adds it there with its source.
+- **Finishing Kinro.** Transcode his cut as the Praxis one (`artifacts/landing-v2-figma/impl/bento-real-assets.md` §10), put the mp4s, poster and portrait in `public/lp/bento/`, give the video card its `film`, `poster` and `focus`, set both cards to `"final"`, and delete `bento-placeholder/`.
+- **QA.** `node --test scripts/placeholder-gate.test.mjs`; `artifacts/landing-v2-figma/pw/bento2-geom.mjs`, `bento2-video.mjs`, `bento2-shot.mjs`, `bento2-diff.py`; the production set on the dev page: `artifacts/…/impl/integrate-pass2-tools/prod-bento-measure.mjs`.
 
 ### Agents view (V2 `4911:1461`)
 
@@ -92,29 +108,33 @@ The four stories:
 
 ### content-visibility, freeze, fit
 
-- `content-visibility: auto` on `.lp-banner, .lp-dive, .lp-bento`. `contain-intrinsic-size` sizes the CONTENT box (padding adds on top); the estimates in `foundation.css` were re-measured 2026-10-11 and sit within 2.3 % of the rendered height at 17 widths. Re-run `artifacts/landing-v2-figma/pw/integrate-measure.mjs` whenever one of these sections changes height.
-- Freeze (`LpAnimFreeze.tsx` + `anim.css`): stages `.lp-banner__card`, `.lp-marquee`, `.lp-demowin`; members the ring spins, bubbles, `.lp-marquee__seq`, `.lp-demowin__caret`. An infinite CSS loop joins both lists and both off-stage blocks, or gates itself: the demo's tool-row spinner turns only under `[data-run]`, the agents cursor has its own in-view gate, the bento videos and every GSAP timeline gate themselves.
-- `LpFitVars` targets are unchanged: the dive stage and the step cards write their own `--lp-fit`.
+- `content-visibility: auto` on `.lp-banner, .lp-dive, .lp-bento` (never `.lp-demowin`, `.lp-cta` or the pricing art). `contain-intrinsic-size` sizes the CONTENT box (padding adds on top). The estimates sit in `foundation.css`, except two that depend on what the section renders and live with it: the bento's in `bento.css` (`.lp > .lp-bento`, from the grid height `LpBento` computes for the set it renders) and the phone deep-dive stack's in `dive.css`. Re-measured 2026-10-12: within 1.4 % of the rendered height at 1654 / 1440 / 1024 / 768 / 402 / 393 in Chromium (preview set and production set), and at 1654 / 768 / 402 in WebKit and Firefox. Re-run `artifacts/landing-v2-figma/pw/integrate-measure.mjs` whenever one of these sections changes height.
+- Freeze (`LpAnimFreeze.tsx` + `anim.css`): stages `.lp-banner__card`, `.lp-marquee`, `.lp-demowin`; members the ring spins, bubbles, `.lp-marquee__seq`, `.lp-demowin__caret`. An infinite CSS loop joins both lists and both off-stage blocks, or gates itself: the demo's tool-row spinner turns only under `[data-run]`, the agents cursor has its own in-view gate, the bento previews and every GSAP timeline gate themselves. The second pass added no CSS loop.
+- `LpFitVars` targets are unchanged: the dive stages, the step cards and the phone demo card write their own fit variable.
+- Firefox drops an inset `box-shadow` thinner than a device pixel. The sources story and the phone demo card draw their hairlines another way; `.lp-chip`, `.lp-mockcard`, the desktop demo window and the learns story still use sub-pixel inset rings: look at a new one in Firefox before relying on it.
 
 ### Decisions to confirm with the founder
 
-1. Tinted pills are `#f8e5d4` / 500 everywhere (hero and CTA "Book a demo", `/for`, `/plays`, `/compare`, 404, `/agents`).
-2. Hero: the 36 px drop is kept (H1 63 / aside 71) against V2's 99 / 107.
-3. Nav: Sign in replaces Book a demo in the bar, so `call_nav` now fires from the phone sheet only. ≤1024 the toggle sits above the H1.
-4. Demo: the Claude & Codex view has no final design (Literata, "Opus 5 · High"); the chip is the humans view's only link to `/guides/claude` and has no analytics id; the "Works in Claude and Codex. See how →" line under the demo is gone.
-5. Steps: the graph says "Influencers" (V2 verbatim) while carousel item 1 says "experts"; the hub labels are about 8 px on phones.
-6. Blue band: parallax depths (dive +0.12 / −0.06 / −0.10, CTA +0.10 / −0.08; phones half), no hover pause, CTA radius 24 on the homepage only, the "See example Plays" body link dropped (nav and footer link `/plays`).
-7. Stories: only "Hiring" is highlighted and the card shows Elena's own signal (sources); the Send button and the manual correction are back, against the 2026-09-03 no-Send rule, and the sender names (Theo Marchand, Priya Venkat, Dario Pellegrin, Hana Morrow, Felix Okoro) still need the web check (message); "Approved" shares instead of V2's reply rates, and an end picture that is not in Figma (learns); "…in the US" instead of "…in Germany", and "Opus 5" will age (claude).
-8. Bento: hidden in production until seven real cards exist.
-9. Agents view: Cursor is still in "friends with" although it can't connect yet; the card body is the production puzzle; `@chenglou/pretext` has no importer left (removing it is a package change); the ⌘K note is not built; `/agents` could 301 to `/?audience=agents`.
-10. The trial Aeonik faces have no `? ! ' " : ; & @ # % ( )`: those glyphs draw in the fallback face until the licensed files land.
-11. No new analytics id anywhere (the demo chip and the bento carry none).
+1. **Bento timing.** Production now shows five real cards (the Praxis film, Diana's quote and portrait, three customer figures). The launch is 13 Oct, the testimonial film is dated 15 Oct. `BENTO_LIVE = false` holds the section back in production. Also: Diana's title ("CEO at Praxis", as the film's lower third), no captions yet, the partial layout is ours (the designer drew seven cards), "%" and "+" draw in Geist, the film names a third party and dates itself when opened with sound.
+2. Tinted pills are `#f8e5d4` / 500 everywhere (hero and CTA "Book a demo", `/for`, `/plays`, `/compare`, 404, `/agents`).
+3. Hero: the 36 px drop is kept (H1 63 / aside 71) against V2's 99 / 107.
+4. Nav: Sign in replaces Book a demo in the bar, so `call_nav` now fires from the phone sheet only. ≤1024 the toggle sits above the H1.
+5. Demo, desktop: the Pancake conversation is today's production demo at its own size, centred, with the input right under it (frame 4); the Claude & Codex view has no final design; the chip is the humans view's only link to `/guides/claude` and has no analytics id.
+6. Demo, phones: the designer's small card (218 px on a 402 screen, type at 5 to 11 px: a picture of the product, not a UI), no pills and no Claude & Codex view, the conversation at the bottom of the card once sent. Switches: `--lp-demowin-phone-w`, `PHONE_SOLO`.
+7. Steps: step 02's title is V2's, its body production's (it no longer mirrors the new animation); "reply rate" on the Play cards is preview only; the storyboard's lead names looked real and were replaced by the Studio Pelican cast; step 03 now runs 10.7 s and its calendar does not show the meeting just booked; "3.30pm" as drawn; the graph says "Influencers" while carousel item 1 says "experts".
+8. Blue band: parallax depths (dive +0.12 / −0.06 / −0.10, CTA +0.10 / −0.08), no hover pause, CTA radius 24 on desktop and tablets and 32 on phones (homepage only), phone deep dive = four stacked items (switch `DIVE_PHONE_LAYOUT`), clouds kept on phones (switch in `sky.css`), "See how →" on phones sits where the artboard draws nothing (item 4 is 28 px taller).
+9. Stories: sources ends on the open panel in production (the hub, its six glyphs and its "Data sources" label are preview only: which sources, which words, is "40+" a number we stand behind); the Send button and the manual correction are back, against the 2026-09-03 no-Send rule, and the sender names still need the web check (message); "Approved" shares instead of V2's reply rates, and an end picture that is not in Figma (learns); "…in the US" and "Opus 5" will age (claude).
+10. Agents view: Cursor is still in "friends with" although it can't connect yet; the card body is the production puzzle; `@chenglou/pretext` has no importer left (removing it is a package change); the ⌘K note is not built; `/agents` could 301 to `/?audience=agents`.
+11. The trial Aeonik faces have no `? ! ' " : ; & @ # % + ( )`: those glyphs draw in the fallback face until the licensed files land (the bento names Geist before the OS font for them).
+12. No new analytics id anywhere (the demo chip, the bento and "Watch with sound" carry none).
 
-### Designer WIP and what the next pass builds (Figma state 2026-10-11)
+### Designer WIP and what is left (Figma state 2026-10-11, build of 2026-10-12)
 
 Marked WIP by the designer, so today's build is an interim: the agents view, the "Pancake learns from what wins" and "Run it from Claude or Codex" storyboards, the message story's frames 4–5, the Claude & Codex demo view.
 
-Delivered on 2026-10-11 and **not built yet** (`artifacts/landing-v2-figma/specs/updates/`, decisions §9): the demo section at 793 with storyboard frame 4; steps 02 and 03 ("How it works" storyboards); the new sources storyboard; the bento with the real Kinro and Praxis testimonials; the mobile artboard `5024:8631` (phone-shaped demo card, stacked deep dive, CTA r32, stacked bento).
+Built on 2026-10-12 from the 2026-10-11 delivery (`artifacts/landing-v2-figma/specs/updates/`, decisions §9): the demo section at 793 with storyboard frame 4, steps 02 and 03, the new sources storyboard, the bento with the real testimonials, and the mobile artboard's five pieces (phone-shaped demo card, stacked deep dive, phone sky and CTA r32, stacked bento, logos and steps rhythm).
+
+Left: Kinro's film and portrait (his cut is not on disk), captions for the Praxis film, the sources hub's real content, the founder's yes on the "reply rate" figure, real-device checks (iPhone: the 0.5 px hairlines, the `tan(atan2())` pre-hydration scales, the film's dialog). Not drawn, so unchanged: tablets, the phone toggle row, the phone step art, pricing, the footer.
 
 ## Why some tokens differ from `tokens.css`
 
@@ -219,21 +239,22 @@ back during a fidelity pass:
   as DOM + CSS + GSAP (founder: no 500 KB–1 MB video downloads, vector-crisp at
   every DPR; "réplique parfaitement les
   animations"). `LpStepAnim.tsx` drives them through `lp-play-once.ts` (see
-  "Playback" below; plays once, holds the last frame = the brain / the Agents
-  view / the filled week, reduced motion = that frame);
+  "Playback" below; plays once, holds the last frame = the brain / the Play
+  card / the filled week, reduced motion = that frame);
   `LpStepMocks.tsx` is the mocks' markup, `steps.css` (bottom) their geometry,
-  `lp-step-timelines.ts` the three timelines ported tween for tween from the
-  pancake-studio compositions (`shorts/brain-research-loop`,
-  `pipeline-checklist-loop`, `meetings-calendar-loop` — the storyboards the
-  mp4s were rendered from; the pipeline cut runs at 4/3 speed inside a paused
-  master exactly like its wrapper), `lp-step-data.ts` their numbers. Unlike the
+  `lp-step-timelines.ts` the three timelines: step 01 and step 03's calendar
+  ported tween for tween from the pancake-studio compositions
+  (`shorts/brain-research-loop`, `meetings-calendar-loop` — the storyboards
+  the mp4s were rendered from); step 02 and step 03's intro built from the
+  designer's 2026-10-11 "How it works" storyboards (see "Customers band and
+  steps" above), `lp-step-data.ts` their numbers. Unlike the
   deep-dive stories (rest = end picture), the rest markup IS the composition's
   frame 0 (the poster the
   video showed), so the server-rendered card is already the right still. The
   464×426 stage scales AS PIXELS with the card (`--lp-fit`, ResizeObserver +
   trig fallback) and the card keeps clipping at its radius, as it clipped the
-  video. QA hook: `window.__lpStep[s1..s3]` = the timelines (seek + screenshot,
-  compare with the composition renders; s2's time is the 11.2 s master's).
+  video. QA hook: `window.__lpStep[s1..s3]` = the timelines (seek a time or a
+  storyboard label + screenshot).
   The storyboard mp4s + posters and `LpLoopVideo.tsx` are gone; the SVG
   illustrations (`/public/how/step-*.svg`) stay as the designer's stills.
 - Playback (2026-09-30, founder: "les motions apparaissent de manière molle…
@@ -257,11 +278,11 @@ back during a fidelity pass:
   `lp-logo-strip-tile.png`, ~34 px/s leftward, blend moved to the track).
 - Testimonials ("Take it from them", Figma 4257:5006): removed from the
   homepage 2026-09-28 (founder: old content — 8 fictional authors/tweets
-  from the AI-org pitch). The V2 bento (`LpBento`, 2026-10-09) now sits
-  between the CTA and pricing, but production renders it only once all seven
-  slots hold real, founder-approved content: until then production still goes
-  CTA → pricing. Its V2 placeholders (Klarna, invented people and numbers)
-  show in dev and on previews only, and must never ship.
+  from the AI-org pitch). The V2 bento (`LpBento`) sits between the CTA and
+  pricing since 2026-10-09; since 2026-10-12 it holds the real Kinro and
+  Praxis testimonials and production shows the cards that are final (see
+  "Bento" above). The V2 stand-ins (Klarna, invented people and numbers)
+  are gone from the code.
 - "How Pancake finds customers" was four stacked feature cards (f5 Plays, f1
   signals, f2 message, f4 brain: `LpFeatures`, `LpFeatAnim`, `LpFeatMocks`,
   `lp-feat-timelines.ts`, `lp-feat-art.ts`, `features.css`) until 2026-10-11.
