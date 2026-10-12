@@ -585,6 +585,7 @@
 .lp-demowin__ring {
   height: calc(100% + 10px);
   left: -5px;
+  max-width: none; /* the kit caps media at 100 %: the outline is 10 px wider than the card */
   opacity: 0;
   overflow: visible;
   pointer-events: none;
