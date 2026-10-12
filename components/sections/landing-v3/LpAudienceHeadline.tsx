@@ -111,7 +111,7 @@ export function AudienceHeadline() {
 
   return <>
     <h1 id="lp-hero-title" className="lp-hero-title__copy" aria-hidden={agents}>
-      You run your company<span className="lp-sr-only">.</span> <br />We bring you customers<span className="lp-sr-only">.</span>
+      Agentic infrastructure <br />to run your go-to-market
     </h1>
     <span
       className="lp-hero-title__copy lp-hero-title__copy--agent"
