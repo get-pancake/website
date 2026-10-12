@@ -114,8 +114,10 @@ export const asciiColumns = (rows: readonly string[]) => rows.reduce((max, row) 
 
 /** Draws `rows` into `g` (CSS px, origin = the grid's top-left), one cell every `advance` px. The
  *  caller sets the transform (DPR) and fillStyle. Each glyph's origin is its cell's left edge at
- *  the line top (Figma's ascender line). */
-export function drawAsciiArc(g: CanvasRenderingContext2D, rows: readonly string[], advance: number) {
+ *  the line top (Figma's ascender line). `firstRow` is the grid row `rows[0]` belongs to, so the
+ *  animated art (LpHeroAgentArt) can redraw only the rows that changed: every glyph stays inside
+ *  its own 11 px line. */
+export function drawAsciiArc(g: CanvasRenderingContext2D, rows: readonly string[], advance: number, firstRow = 0) {
   const rect = (x: number, y: number, x0: number, y0: number, x1: number, y1: number) =>
     g.rect(x + x0 * U, y + y0 * U, (x1 - x0) * U, (y1 - y0) * U);
   // a bar of width w and length l (font units) centred on (cx, cy) px, rotated deg
@@ -136,7 +138,7 @@ export function drawAsciiArc(g: CanvasRenderingContext2D, rows: readonly string[
   };
   g.beginPath();
   rows.forEach((line, r) => {
-    const y = r * ASCII_PITCH;
+    const y = (firstRow + r) * ASCII_PITCH;
     for (let col = 0; col < line.length; col++) {
       const ch = line[col];
       if (ch === " ") continue;
