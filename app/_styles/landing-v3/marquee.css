@@ -110,16 +110,11 @@
   mask-position: center;
 }
 
-/* Pause (2026-10-07, WCAG 2.2.2): a pointer resting on the band, or the
-   pause button (LpMarqueePause → data-paused on the strip). The button sits
-   outside the band, so hovering or focusing it never pauses the loop on its
-   own and "Play" always means play. Independent of anim.css's off-stage
-   freeze: both only ever pause. */
-@media (hover: hover) {
-  .lp-marquee__band:hover .lp-marquee__seq {
-    animation-play-state: paused;
-  }
-}
+/* Pause (2026-10-07, WCAG 2.2.2): the pause button (LpMarqueePause →
+   data-paused on the strip) stops the loop. A pointer resting on the band no
+   longer stops it (founder 2026-10-12: "a slowdown and not a complete stop"):
+   LpMarqueePause eases the copies' playback rate down while it is there.
+   Independent of anim.css's off-stage freeze: both only ever pause. */
 .lp-marquee[data-paused] .lp-marquee__seq {
   animation-play-state: paused;
 }
