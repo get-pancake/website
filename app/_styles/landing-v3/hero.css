@@ -218,6 +218,28 @@
   left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
   transform: none;
 }
+/* The humans H1 is ONE line (founder 2026-10-13: "h1 in one line"). "Deploy GTM
+   ideas in seconds" is 11.23 × its font size wide at −0.03em tracking (measured,
+   Chromium). At the designer's 69.014 that is 775 px: 7 px MORE than the 768
+   between the two columns' left edges (259 → 1027), so it ran into the toggle
+   and the lede. The copy block is the demo window's width (1136): the size is
+   the one that gives 1136 = H1 712 + a 56 px gap + the 368 column, 63 px, from
+   1232 wide up; under that the columns close in (48 px gutters) and the H1
+   follows, down to 1025. 11.3, not 11.23: half a percent of slack for the
+   other engines' text widths. A longer H1 needs a new measure.
+   On the H1 itself, not on .lp-hero-title: the agents headline shares that box. */
+@media (min-width: 1025px) {
+  .lp-hero--home #lp-hero-title {
+    font-size: min(63.01px, calc((100vw - 520px) / 11.3));
+    letter-spacing: -0.03em;
+  }
+}
+/* phones: one line inside the 32 px gutters (the artboard's 35.559 from 466 wide up) */
+@media (max-width: 767px) {
+  .lp-hero--home #lp-hero-title {
+    font-size: min(35.559px, calc((100vw - 64px) / 11.3));
+  }
+}
 .lp-hero--home .lp-hero-aside {
   align-items: flex-start;
   bottom: 71px; /* V2 107 − 36 */
