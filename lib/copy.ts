@@ -9,11 +9,12 @@ import { TRIAL_LABEL, TRIAL_NOTICE } from "@/lib/trial";
  * 2026-09-30: AI SEO retired from the product (pancake-cmo PR #1037), so the
  * third clause "grow your AI search visibility" became "reach out in your
  * voice". Founder-sensitive: change only with the founder's sign-off.
- * 2026-10-12: the founder's own new lede, with the H1 "Agentic infrastructure
- * to run your go-to-market" (LpAudienceHeadline.tsx).
+ * 2026-10-12: the founder's own new lede, with the H1 "Deploy GTM ideas in
+ * seconds" (LpAudienceHeadline.tsx). His second pass that day: the first was
+ * H1 "Agentic infrastructure to run your go-to-market" over a longer lede.
  */
 export const SITE_DESCRIPTION =
-  "Deploy GTM ideas in seconds. Pancake gives you and your agent the data and tools to find people showing buying signals and start the conversation.";
+  "Pancake gives your agent the brain, the data and the tools to run your go-to-market.";
 
 export const hero = {
   /** H1 line 1 (break before autonomous) */
