@@ -1,41 +1,64 @@
 /* Story Sources — owner: story-sources package (V2 Figma replication, file
-   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346). Created empty by the integrator
-   (phase 0, 2026-10-09).
-   Deep-dive story 1, "Sources you can trust" (LpStorySources, Figma
-   4964:1287/1294/1311). Scene geometry on the 752x489 design box (desktop)
-   and the 400x520 phone box; paints nothing behind the scene (the shell
-   paints the stage).
+   fr8NgOCTUxsEbrMEJA3YKu). Deep-dive story 1, "Sources you can trust"
+   (LpStorySources), storyboard of 2026-10-11: Figma 4964:1287 "Leads show up",
+   5024:7457 "Click on one", 5024:7601 "Lead details open", 5024:8172 "Zoom
+   into 'Why they fit' with top data sources appearing".
+   Spec: specs/updates/sources-v2.md.
 
-   Every number is stage px from the Figma relativeTransforms (spec
-   story-sources §3). The markup rests on the END picture (the white
-   property card); the timeline (lp-story-sources-timeline.ts) sets frame 0.
-   Traps: T1 `.lp p { margin:0 }` would kill the sub's margin (compound
-   selectors below); T2 the font is stated on every node; T3 the bold run is
-   the <b> only; T4 desktop chip widths are pinned (Figma's widths); T5 the
-   card is a plain radius (cornerSmoothing 0: never in a squircle group);
-   T6 the table ring is an inset shadow (no flow space). No will-change, no
-   infinite keyframes: the stage is GSAP-only and plays once. */
+   Scene geometry on the 752x489 design box (desktop; phones show the same box
+   scaled, decision 2026-10-11 F3) and the derived 400x520 phone composition
+   kept behind the layout switch (`@container lp-dive-scene (max-width: 599px)`).
+   Paints nothing behind the scene (the shell paints the stage). Every number
+   is stage px from the Figma relativeTransforms.
+
+   The markup rests on the END picture, named by the root's data-end:
+   "sources" (the camera zoomed on "Why they fit", the hub over the left) or
+   "details" (the open panel over the dimmed table: no hub node renders, which
+   is production today). The timeline (lp-story-sources-timeline.ts) sets
+   frame 0.
+
+   Traps:
+   T1 `.lp p { margin: 0 }` and the shell's `.lp-dive-scene * { font-family }`
+      / `.lp-dive-scene svg { display: block }` tie with single-class rules:
+      every p, font and inline-svg rule below uses a compound selector.
+   T2 Hairlines are a 1px box scaled scaleY(0.5), centred on the edge: a
+      0.5px border rounds to 0 or 1 by engine and DPR.
+   T3 The 0.5px OUTSIDE strokes of the table and the panel are a spread
+      shadow (no layout space), on the element that also clips its rows.
+   T4 Radius 12 / 10 / 4 are plain radii: never in a squircle group.
+   T5 The wires' caps animate their `r` attribute, never a transform.
+   T6 `.lp-src-prole` is white-space: pre: the two spaces after "@" are drawn.
+   T7 Rest hides the cursor here; the builder shows it. The phone composition
+      has none (display: none): the builder skips it by layout.
+   T8 `--src-cam-s` is read by the builder: one source for both compositions.
+   T9 Inside strokes thinner than 1px are scaled ::after rings (see .lp-src-cb).
+   No will-change, no infinite keyframes: the stage is GSAP-only, plays once. */
 
 .lp-src {
-  /* the demo's app palette (app/_styles/verticals/demo.css), re-declared:
-     theirs is scoped to .lp-vx .vx-stage */
-  --app-muted: #f5f3f2;
-  --app-muted-fg: #70676f;
-  --app-tertiary: #756d74;
-  --app-border: #ece9e7;
-  --app-hiring-bg: #fff2e8;
-  --app-hiring-fg: #a84b00;
-  --app-hiring-ring: #f6d3b5;
-  --app-stack-bg: #ecfbf8;
-  --app-stack-fg: #0f766e;
-  --app-stack-ring: #bfe8e0;
-  --app-sh-card: 0 8px 24px -4px color-mix(in srgb, var(--lp-ink-100) 6%, transparent),
-    0 1px 2px color-mix(in srgb, var(--lp-ink-100) 3%, transparent);
-  /* Figma's card is #d9d9d9 (a new shape's default fill); every sibling
-     story puts its UI on white — decision §6: white. One-token swap. */
-  --lp-src-card-bg: var(--lp-surface);
-  /* the preview-only source circles (Figma: #d9d9d9 + black wires) */
-  --lp-src-db-bg: var(--lp-surface);
+  --src-line: #e2e2e2; /* table and panel hairlines (Figma 0.5px) */
+  --src-head-bg: #f8f7f7; /* table header row */
+  --src-av-bg: #f5f3f2; /* avatar fill */
+  --src-av-ring: #ebe6e8; /* avatar 0.5px inside stroke */
+  /* the designer sets initials in Aeonik Fono; the 2026-09-09 rule keeps Fono
+     for code. One token swaps them to var(--lp-font-sans). */
+  --src-av-font: var(--lp-font-fono);
+  --src-muted-fg: #756d74; /* property-grid labels and icons (the demo's --app-tertiary) */
+  /* the "Find email" chip: the app's blue tone (the demo's --app-keyword-*) */
+  --src-find-bg: #f4f8ff;
+  --src-find-fg: #3f6faf;
+  --src-find-ring: #cbdcf5;
+  --src-shadow: 0 4px 32px rgba(48, 0, 44, 0.08); /* Figma #30002c 8% */
+  --src-hover: rgba(0, 0, 0, 0.04);
+  --src-disc: #231e20; /* the data-source discs (the ground of the designer's logos) */
+  --src-glyph: var(--lp-ink-20);
+  --src-wire: #969696;
+  /* the camera of scene D: frame 4's panel is frame 3's x3.890777 (1603 / 412)
+     about this point. Four decimals: the builder leaves this scale inline at
+     the end and GSAP writes four, so rest and end are the same matrix
+     (0.01px from the Figma figure at the far corner). */
+  --src-cam-x: 327.176px;
+  --src-cam-y: 219.203px;
+  --src-cam-s: 3.8908;
   color: var(--lp-ink-100);
   inset: 0;
   position: absolute;
@@ -47,263 +70,452 @@
   display: block;
   max-width: none;
 }
-
-/* ── scene A: the Leads page (frame 1 = the demo's Leads pane) ── */
+.lp-src-cam {
+  inset: 0;
+  position: absolute;
+  transform-origin: var(--src-cam-x) var(--src-cam-y);
+}
 .lp-src-leads {
   inset: 0;
-  opacity: 0; /* rest = the end picture: the dolly pushed through it */
   position: absolute;
-  transform-origin: 165.114px 193.728px;
-  visibility: hidden;
-}
-.lp-src-page {
-  left: 116px;
-  position: absolute;
-  top: 130.405px;
-  width: 526px;
-}
-.lp-src .lp-src-title {
-  font-family: var(--lp-font-aeonik);
-  font-size: 18px;
-  font-weight: 700;
-  letter-spacing: -0.27px;
-  line-height: 24px;
-}
-.lp-src .lp-src-sub {
-  color: var(--app-muted-fg);
-  font-size: 11px;
-  line-height: 15px;
-  margin-top: 2px;
-}
-.lp-src-table {
-  background: var(--lp-surface);
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 1px var(--app-border), var(--app-sh-card);
-  margin-top: 8px;
-}
-.lp-src-row {
-  align-content: center;
-  align-items: center;
-  border-bottom: 1px solid color-mix(in srgb, var(--app-border) 70%, transparent);
-  column-gap: 10px;
-  display: grid;
-  font-size: 12px;
-  grid-template-columns: 30px 190px minmax(0, 1fr);
-  grid-template-rows: auto auto;
-  height: 48px;
-  line-height: 1.45;
-  padding: 0 10px 0 12px;
-  row-gap: 1px;
-}
-.lp-src-row:last-child {
-  border-bottom: 0;
-}
-.lp-src-row:first-child {
-  border-radius: 10px 10px 0 0;
-}
-/* the picked lead (demo: color-mix(--app-muted 75%, transparent)); a plain
-   rgba so the timeline can tween it */
-.lp-src-row[data-selected] {
-  background-color: rgba(245, 243, 242, 0.75);
-}
-.lp-src-av {
-  align-items: center;
-  background: var(--app-muted);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-ink-100) 8%, transparent);
-  display: flex;
-  font-size: 10px;
-  font-weight: 500;
-  grid-area: 1 / 1 / 3 / 2;
-  height: 30px;
-  justify-content: center;
-  width: 30px;
-}
-.lp-src-name {
-  color: color-mix(in srgb, var(--lp-ink-100) 90%, transparent);
-  font-size: 12px;
-  font-weight: 500;
-  grid-area: 1 / 2;
-  justify-self: start;
-  line-height: 17px;
-  white-space: nowrap;
-}
-.lp-src-role,
-.lp-src-detail {
-  color: var(--app-tertiary);
-  font-size: 11px;
-  line-height: 15px;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.lp-src-role {
-  grid-area: 2 / 2;
-}
-.lp-src-detail {
-  color: var(--app-muted-fg);
-  font-size: 10.5px;
-  grid-area: 2 / 3;
-}
-.lp-src-chip {
-  align-items: center;
-  align-self: start;
-  background: var(--k-bg);
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px var(--k-ring);
-  color: var(--k-fg);
-  display: inline-flex;
-  font-size: 10.5px;
-  font-weight: 500;
-  grid-area: 1 / 3;
-  height: 19px;
-  line-height: 13px;
-  padding: 0 7px;
-  white-space: nowrap;
-  width: fit-content;
-}
-.lp-src-chip[data-kind="hiring"] {
-  --k-bg: var(--app-hiring-bg);
-  --k-fg: var(--app-hiring-fg);
-  --k-ring: var(--app-hiring-ring);
-}
-.lp-src-chip[data-kind="stack"] {
-  --k-bg: var(--app-stack-bg);
-  --k-fg: var(--app-stack-fg);
-  --k-ring: var(--app-stack-ring);
-}
-/* the demo's pointer; tip at (240.4, 225.7) */
-.lp-src-cursor {
-  color: var(--lp-ink-100);
-  filter: drop-shadow(0 2px 3px color-mix(in srgb, var(--lp-ink-100) 25%, transparent));
-  height: 22px;
-  left: 238.9px;
-  position: absolute;
-  top: 224.2px;
-  width: 18px;
-}
-.lp-src-cursor svg {
-  transform-origin: 2px 2px;
 }
 
-/* ── scene C: the property card (frame 3, the end picture) ── */
-.lp-src-card {
-  background: var(--lp-src-card-bg);
-  border-radius: 38px;
-  height: 409.022px;
-  left: 102.133px;
+/* ── scene A: the Leads page (frame 1, 4964:1287) ── */
+.lp-src .lp-src-title {
+  font-family: var(--lp-font-aeonik);
+  font-size: 21px;
+  font-weight: 700;
+  left: 62px;
+  letter-spacing: 0;
+  line-height: 25px;
   position: absolute;
-  top: 50.351px;
-  width: 543.598px;
+  top: 86.543px;
+  white-space: nowrap;
 }
-.lp-src-props {
+/* 744 wide from x 62: it runs off the stage's right and bottom edges, as drawn */
+.lp-src-table {
+  background: var(--lp-surface);
+  border-radius: 12px;
+  box-shadow: 0 0 0 0.5px var(--src-line), var(--src-shadow);
+  left: 62px;
+  overflow: hidden;
+  position: absolute;
+  top: 131.758px;
+  width: 744px;
+}
+.lp-src-th,
+.lp-src-row {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  padding: 8px 12px;
+  position: relative;
+}
+.lp-src-th {
+  background: var(--src-head-bg);
+  height: 32px;
+}
+/* production cells never wrap, so every row is 48 (Figma's row 3 is 56 only
+   because its company name wraps) */
+.lp-src-row {
+  height: 48px;
+}
+.lp-src-row::before {
+  background: var(--src-line);
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: -0.25px;
+  transform: scaleY(0.5);
+  transform-origin: 0 0;
+}
+.lp-src-cb {
+  --src-ring: var(--lp-ink-70);
+  --src-ring-w: 0.667;
+  background: var(--lp-surface);
+  border-radius: 4px;
+  flex: none;
+  height: 16px;
+  width: 16px;
+}
+/* T9: an INSIDE stroke thinner than 1px (Figma 0.5 / 0.667 / 0.757) is a 1px
+   border on an oversized ::after scaled down by its width. Gecko drops a
+   sub-pixel inset box-shadow (checkboxes, the chip and the outline button
+   lost their edge in Firefox), and a fractional border snaps to 0 or 1 device
+   px. Same idea as the hairlines (T2). Set --src-ring and --src-ring-w. */
+.lp-src-cb,
+.lp-src-av,
+.lp-src-find,
+.lp-src-btn--line {
+  position: relative;
+}
+.lp-src-cb::after,
+.lp-src-av::after,
+.lp-src-find::after,
+.lp-src-btn--line::after {
+  border: 1px solid var(--src-ring);
+  border-radius: inherit;
+  box-sizing: border-box;
+  content: "";
+  height: calc(100% / var(--src-ring-w));
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  transform: scale(var(--src-ring-w));
+  transform-origin: 0 0;
+  width: calc(100% / var(--src-ring-w));
+}
+.lp-src-cb::after {
+  border-radius: 5.997px; /* 4 / 0.667 */
+}
+.lp-src-btn--line::after {
+  border-radius: 20px; /* 10 / 0.5 */
+}
+.lp-src-h {
+  color: var(--lp-ink-80);
+  flex: 1 1 0;
+  font-size: 10px;
+  letter-spacing: 1px;
+  line-height: 15px;
+  min-width: 0;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.lp-src-h--lead,
+.lp-src-lead {
+  flex: 0 0 231px;
+}
+.lp-src-lead {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+}
+.lp-src-av {
+  --src-ring: var(--src-av-ring);
+  --src-ring-w: 0.5;
+  align-items: center;
+  background: var(--src-av-bg);
+  border-radius: 50%;
+  display: flex;
+  flex: none;
+  font-size: 12.065px;
+  font-weight: 500;
+  height: 32px;
+  justify-content: center;
+  letter-spacing: 1.2065px;
+  line-height: 18px;
+  text-indent: 1.2065px; /* the tracking trails the last letter: keep the pair centred */
+  text-transform: uppercase;
+  width: 32px;
+}
+.lp-src .lp-src-av {
+  font-family: var(--src-av-font);
+}
+.lp-src-who {
+  align-items: center;
+  display: flex;
+  gap: 4px;
+}
+.lp-src-name {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+.lp-src-link {
+  flex: none;
+  height: 16px;
+  width: 16px;
+}
+.lp-src-link-bg {
+  fill: var(--lp-blue-40);
+}
+.lp-src-link-fg {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.15;
+}
+.lp-src-c {
+  color: var(--lp-ink-70);
+  flex: 1 1 0;
+  font-size: 13px;
+  line-height: 20px;
+  min-width: 0;
+  white-space: nowrap;
+}
+
+/* ── scene B: the hand (frame 2, 5024:7457). Hidden at rest; the builder
+   brings it in and takes it out ── */
+.lp-src-cursor {
+  height: 30px;
+  left: 203px;
+  opacity: 0;
+  position: absolute;
+  top: 228.758px;
+  visibility: hidden;
+  width: 30px;
+}
+.lp-src-cursor svg {
+  filter: drop-shadow(0 1.5px 3px rgba(0, 0, 0, 0.24));
+  overflow: visible;
+  transform-origin: 9.5px 3px; /* the fingertip: the click presses about it */
+}
+
+/* ── scene C: the lead's details (frame 3, 5024:7601) ── */
+.lp-src-panel {
+  background: var(--lp-surface);
+  border-radius: 12px;
+  box-shadow: 0 0 0 0.5px var(--src-line), var(--src-shadow);
+  height: 472px;
+  left: 332px;
+  overflow: hidden;
+  position: absolute;
+  top: 8.08px;
+  width: 412px;
+}
+.lp-src-phead {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  height: 48px;
+  left: 16px;
+  position: absolute;
+  top: 16px;
+  width: 380px;
+}
+.lp-src-av--lg {
+  height: 48px;
+  width: 48px;
+}
+.lp-src-pwho {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  left: 160px;
-  position: absolute;
-  top: 91.322px;
-  width: 432px;
+  gap: 4px;
 }
-/* every row centred: Figma's rows 3–5 sit 1.585 px lower (auto-layout
-   counter-axis MAX), evened out by decision §6 */
+.lp-src-prole {
+  color: var(--lp-ink-70);
+  font-size: 11px;
+  line-height: 17px;
+  white-space: pre;
+}
+.lp-src-prole b {
+  color: var(--lp-ink-100);
+  font-weight: 400;
+}
+.lp-src-rule {
+  background: var(--src-line);
+  height: 1px;
+  left: 16px;
+  position: absolute;
+  transform: scaleY(0.5);
+  transform-origin: 0 0;
+  width: 380px;
+}
+.lp-src-rule--1 {
+  top: 80px; /* 88.33 - 8.08 - 0.25 */
+}
+.lp-src-rule--2 {
+  top: 194.255px; /* 202.585 - 8.08 - 0.25 */
+}
+/* the property grid: Figma pastes a raster of the app's lead sheet (image 43,
+   1248x216 at x0.378496); rebuilt as DOM. Origin G = stage (348, 104.58). */
+.lp-src-grid {
+  height: 81.755px;
+  left: 16px;
+  position: absolute;
+  top: 96.5px;
+  width: 380px;
+}
 .lp-src-prop {
   align-items: center;
   display: flex;
-  gap: 32px;
-  height: 24.174px;
-}
-.lp-src-k {
-  color: var(--lp-ink-80);
-  flex: none;
-  font-size: 17.0335px;
-  font-weight: 400;
-  height: 21px;
-  line-height: 20.44px;
-  white-space: nowrap;
-  width: 100px;
-}
-.lp-src-v {
-  align-items: center;
-  display: flex;
-  gap: 5px;
-  height: 24.174px;
-}
-.lp-src-tick {
-  color: var(--lp-green-30);
-  flex: none;
-  height: 24.174px;
-  width: 24.174px;
-}
-.lp-src-tick svg {
-  height: 100%;
-  width: 100%;
-}
-.lp-src-val {
-  font-size: 17.0335px;
-  font-weight: 500;
-  height: 21px;
-  line-height: 20.44px;
-  white-space: nowrap;
-}
-.lp-src-val b {
-  font-weight: 700;
-}
-.lp-src-tags {
-  align-items: center;
-  display: flex;
-  gap: 32px;
-  height: 56px;
-  left: 160px;
+  font-size: 9.4624px; /* the app's 12.5px */
+  height: 14px;
+  line-height: 14px;
   position: absolute;
-  top: 364.752px;
-  width: 432px;
-}
-.lp-src-chips {
-  align-content: flex-start;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  width: 300px;
-}
-/* every source a lead can come from; only the one that found this lead is
-   highlighted (decision §6) — the others sit quiet in the app's muted fill */
-.lp-src-tag {
-  background-color: var(--app-muted);
-  border-radius: var(--lp-r-2xsm);
-  color: var(--lp-ink-80);
-  font-size: 12px;
-  font-weight: 500;
-  height: 24px;
-  line-height: 16px;
-  padding: 4px 8px;
-  text-align: center;
   white-space: nowrap;
-  width: var(--w, auto);
 }
-.lp-src-tag[data-matched] {
-  background-color: var(--lp-pink-10);
-  color: var(--lp-ink-100);
+.lp-src-prop[data-row="1"] {
+  top: 11.92px; /* text centre 18.92 */
+}
+.lp-src-prop[data-row="2"] {
+  top: 39.18px; /* text centre 46.18 */
+}
+.lp-src-prop[data-row="3"] {
+  top: 60.56px; /* text centre 67.56 */
+}
+.lp-src-prop[data-col="1"] {
+  left: 6.06px;
+}
+/* Figma's raster puts this column at 258.14 and cuts its chip at the panel
+   edge (a scaling slip): 17.94 left, so the chip ends on the content edge */
+.lp-src-prop[data-col="2"] {
+  left: 240.2px;
+}
+.lp-src .lp-src-pico {
+  color: var(--src-muted-fg);
+  fill: none;
+  flex: none;
+  height: 9.08px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.9;
+  width: 9.08px;
+}
+.lp-src-pk {
+  color: var(--src-muted-fg);
+  margin-left: 6.06px;
+  width: 63.58px;
+}
+.lp-src-pv {
+  color: color-mix(in srgb, var(--lp-ink-100) 90%, transparent);
+}
+.lp-src-pv--2l {
+  line-height: 13.7px;
+  white-space: normal;
+  width: 150px;
+}
+.lp-src .lp-src-pv svg {
+  display: inline-block;
+  fill: none;
+  height: 8px;
+  margin-left: 2.6px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.2;
+  vertical-align: -0.8px;
+  width: 8px;
+}
+.lp-src-find {
+  --src-ring: var(--src-find-ring);
+  --src-ring-w: 0.757;
+  align-items: center;
+  background: var(--src-find-bg);
+  border-radius: 999px;
+  color: var(--src-find-fg);
+  display: inline-flex;
+  font-size: 8.327px;
+  font-weight: 500;
+  gap: 3.03px;
+  height: 15.14px;
+  line-height: 10.6px;
+  padding: 0 4.54px;
+}
+.lp-src .lp-src-find svg {
+  fill: none;
+  flex: none;
+  height: 9.08px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 2.6;
+  width: 9.08px;
+}
+.lp-src-why {
+  left: 16px;
+  position: absolute;
+  top: 210.755px; /* 218.835 - 8.08 */
+  width: 380px;
+}
+.lp-src .lp-src-why-k {
+  color: var(--lp-ink-80);
+  font-size: 10px;
+  letter-spacing: 1px;
+  line-height: 15px;
+  text-transform: uppercase;
+}
+.lp-src .lp-src-why-h {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  margin-top: 16px;
+  white-space: nowrap;
+}
+.lp-src .lp-src-why-p {
+  font-size: 11px;
+  line-height: 17px;
+  margin-top: 8px;
+}
+.lp-src-acts {
+  display: flex;
+  gap: 8px;
+  left: 16px;
+  position: absolute;
+  top: 420px; /* 428.08 - 8.08: pinned 16 above the panel's bottom edge */
+}
+.lp-src-btn {
+  align-items: center;
+  border-radius: 10px;
+  display: flex;
+  font-size: 13.333px;
+  height: 36px;
+  line-height: 20px;
+  padding: 8px;
+  white-space: nowrap;
+}
+.lp-src-btn span {
+  padding: 0 4px;
+}
+.lp-src-btn--ink {
+  background: var(--lp-ink-100);
+  color: var(--lp-ink-20);
+  font-weight: 600;
+  width: 152px;
+}
+.lp-src .lp-src-btn--ink svg {
+  fill: currentColor;
+  flex: none;
+  height: 20px;
+  padding: 3.3335px;
+  width: 20px;
+}
+.lp-src-btn--line {
+  --src-ring: var(--lp-ink-50);
+  --src-ring-w: 0.5;
+  font-weight: 500;
+  width: 75px;
 }
 
-/* ── "potential source DBs ?" — preview-only placeholders (data-placeholder),
-   Figma Ellipse 109–113 + Vector 344–348; generic glyphs, no logos ── */
-.lp-src-db {
-  background: var(--lp-src-db-bg);
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px var(--app-border);
-  height: 70.711px;
+/* ── scene D: the data-source hub (frame 4, 5024:8172). Outside the camera ── */
+.lp-src-hub,
+.lp-src-hubart {
+  inset: 0;
   position: absolute;
-  width: 70.711px;
 }
+.lp-src-node {
+  background: var(--src-disc);
+  border-radius: 50%;
+  overflow: hidden;
+  position: absolute;
+}
+.lp-src .lp-src-node img {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+/* a generic source glyph: 44% of its disc, centred */
 .lp-src .lp-src-glyph {
   fill: none;
+  height: 44%;
+  left: 28%;
   position: absolute;
-  stroke: var(--lp-ink-80);
+  stroke: var(--src-glyph);
   stroke-linecap: round;
   stroke-linejoin: round;
   stroke-width: 1.75;
+  top: 28%;
+  width: 44%;
+}
+.lp-src-dot {
+  border-radius: 50%;
+  position: absolute;
 }
 .lp-src .lp-src-wires {
   inset: 0;
@@ -313,118 +525,103 @@
 }
 .lp-src-wires path {
   fill: none;
-  stroke: var(--lp-ink-100);
-  stroke-linecap: round;
-  stroke-linejoin: round;
+  stroke: var(--src-wire);
   stroke-width: 2;
 }
+.lp-src-wires circle {
+  fill: var(--src-wire);
+}
+/* Figma connectors: lines and start caps multiply over the discs and the panel */
+.lp-src-wires > g > * {
+  mix-blend-mode: multiply;
+}
+/* Figma: six overlapping multiplied end caps = one near-black dot */
+.lp-src-wires .lp-src-hubdot {
+  fill: #0b0a0a;
+  mix-blend-mode: normal;
+}
+/* Figma's label hugs its text at (123.094, 21.232), 104 wide: centred on that
+   box, so another string stays over the hub's axis */
+.lp-src .lp-src-hublabel {
+  font-size: 13px;
+  left: 123.094px;
+  line-height: 20px;
+  position: absolute;
+  text-align: center;
+  top: 21.232px;
+  white-space: nowrap;
+  width: 104px;
+}
 
-/* ── phones: recomposed on the 400×520 box (decision §5; --lp-fit =
-   (W − 32) / 400), not the desktop stage crop-shrunk. Same story, same
-   times: the Leads page with the demo's phone row (chip on the right, no
-   detail line, no pointer: row 0 presses instead), then the card with 16 px
-   properties and "Tags" above its chips. No source circles. ── */
-@container lp-dive-scene (max-width: 599px) {
-  .lp-src-leads {
-    transform-origin: 75px 219.7px;
+/* ── rest = the END picture ── */
+.lp-src[data-end="details"] .lp-src-leads {
+  opacity: 0.5;
+}
+.lp-src[data-end="sources"] .lp-src-cam {
+  transform: scale(var(--src-cam-s));
+}
+.lp-src[data-end="sources"] .lp-src-leads {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* phones showing the desktop box scaled (decision 2026-10-11 F3): no blend
+   pass over the wires (the grey is the same on the stage's near-white) */
+@media (max-width: 767px) {
+  .lp-src-wires > g > * {
+    mix-blend-mode: normal;
   }
-  .lp-src-page {
-    left: 20px;
-    top: 149px;
-    width: 360px;
+}
+
+/* ── the derived 400x520 phone composition (sources-v2 §9, case A), behind
+   the shell's layout switch: the Leads page from the top-left, the panel as a
+   bottom sheet, the camera x2, the hub art at half size ── */
+@container lp-dive-scene (max-width: 599px) {
+  .lp-src {
+    --src-cam-x: -170px;
+    --src-cam-y: 298.51px;
+    --src-cam-s: 2;
   }
   .lp-src .lp-src-title {
-    font-size: 20px;
-    letter-spacing: -0.3px;
-    line-height: 26px;
-  }
-  .lp-src .lp-src-sub {
-    font-size: 12px;
-    line-height: 16px;
+    left: 20px;
+    top: 36px;
   }
   .lp-src-table {
-    margin-top: 10px;
+    left: 20px;
+    top: 80px;
   }
-  .lp-src-row {
-    column-gap: 12px;
-    grid-template-columns: 32px minmax(0, 1fr) auto;
-    height: 56px;
-    padding: 0 14px;
-  }
-  .lp-src-av {
-    font-size: 11px;
-    height: 32px;
-    width: 32px;
-  }
-  .lp-src-name {
-    font-size: 13.5px;
-    line-height: 19px;
-  }
-  .lp-src-role {
-    font-size: 12px;
-    line-height: 16px;
-  }
-  .lp-src-chip {
-    align-self: center;
-    font-size: 11.5px;
-    grid-area: 1 / 3 / 3 / 4;
-    height: 22px;
-    line-height: 14px;
-    padding: 0 8px;
-  }
-  .lp-src-detail,
-  .lp-src-cursor,
-  .lp-src-dbs,
-  .lp-src .lp-src-wires {
+  .lp-src-cursor {
     display: none;
   }
-  .lp-src-card {
-    border-radius: 30px;
-    height: 424px;
-    left: 14px;
-    top: 48px;
-    width: 372px;
+  .lp-src-panel {
+    left: 10px;
+    top: 56px;
+    width: 380px;
   }
-  .lp-src-props {
-    gap: 12px;
-    left: 38px;
-    top: 82px;
-    width: 324px;
+  .lp-src-phead,
+  .lp-src-rule,
+  .lp-src-grid,
+  .lp-src-why {
+    width: 348px;
   }
-  .lp-src-prop {
-    gap: 12px;
-    height: 24px;
+  .lp-src-prop[data-col="2"] {
+    left: 208.2px; /* the chip ends on 348 */
   }
-  .lp-src-k,
-  .lp-src-val {
-    font-size: 16px;
-    height: 20px;
-    line-height: 20px;
+  .lp-src-pv--2l {
+    width: 112px;
   }
-  .lp-src-v {
-    height: 24px;
+  .lp-src-hubart {
+    transform: translate(17.7px, 126.615px) scale(0.5); /* hub point (213.2, 250) */
+    transform-origin: 0 0;
   }
-  .lp-src-tick {
-    height: 24px;
-    width: 24px;
+  .lp-src-wires path {
+    stroke-width: 3; /* 1.5px drawn */
   }
-  .lp-src-tags {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
-    height: auto;
-    left: 38px;
-    top: 348px;
-    width: 324px;
+  .lp-src-wires > g > * {
+    mix-blend-mode: normal;
   }
-  .lp-src-chips {
-    width: 324px;
-  }
-  .lp-src-tag {
-    font-size: 13px;
-    height: 26px;
-    line-height: 18px;
-    padding: 4px 9px;
-    width: auto;
+  .lp-src .lp-src-hublabel {
+    left: 54.85px; /* the same 104 box: centred on x 106.85 */
+    top: 122.4px;
   }
 }
