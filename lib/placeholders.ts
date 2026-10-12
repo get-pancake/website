@@ -1,9 +1,11 @@
 /**
  * Fillable placeholder content — the V2 Figma replication's ONE gate (decision 2026-10-09):
- * V2 "Content (still tbd)" slots, the bento's fake brands and KPIs, draft story lines, the
- * agents card's preview body. Dev and Vercel preview builds only. Production never renders a
- * placeholder entry: the slot or section returns null until real ("final") content lands in its
- * data file. Precedent: components/sections/home/HomeUGCWall.tsx (same expression).
+ * the bento's stand-in cards (interim stills while a customer's own cut is not on disk), the
+ * sources story's data-source discs, a figure waiting for the founder's yes, draft story lines,
+ * the agents card's preview body. Dev and Vercel preview builds only. Production never renders a
+ * placeholder entry: a slot returns null until real ("final") content lands in its data file,
+ * and a section with several slots lays out the final ones it has (the bento) or returns null
+ * when it has none. Precedent: components/sections/home/HomeUGCWall.tsx (same expression).
  *
  * Server components only. VERCEL_ENV is not exposed to client bundles (no NEXT_PUBLIC_ prefix),
  * so a client island would read `false` on a preview and disagree with the server HTML: decide in

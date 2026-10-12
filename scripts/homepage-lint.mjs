@@ -26,6 +26,8 @@
  *     guarantees, "instant" and leads "in minutes" are not). "GitHub Copilot" names a client.
  *   - ORIGAMI_TAGLINE from validate.ts (never echo "not a stale database").
  *   - EXTRA: the old domain, and "AI GTM team" as what Pancake is.
+ *   - BENTO KPI: every KPI card of lp-bento-data.ts, as "value label", must be on BENTO_KPI_ALLOW,
+ *     a sourced allow-list of customer-stated figures (default run only).
  * A sentence that opens on a negation ("It doesn't …", "No …") may name a boundary (email,
  * phone, CRM, website visitors), as in a "What doesn't Pancake do?" answer.
  */
@@ -63,6 +65,7 @@ const FILES = [
   // customers band + steps (logos-steps)
   "components/sections/landing-v3/LpMarquee.tsx",
   "components/sections/landing-v3/lp-steps-content.ts",
+  "components/sections/landing-v3/LpStepMocks.tsx", // the step mocks' markup: stops a string written straight into it
   // deep-dive carousel shell (blue-band) and its four stories
   "components/sections/landing-v3/LpDive.tsx",
   "components/sections/landing-v3/lp-dive-data.ts",
@@ -220,6 +223,36 @@ for (const f of FREQUENCY_FILES) {
   readFileSync(join(ROOT, f), "utf8").split("\n").forEach((text, i) => {
     if (FREQUENCY.test(text)) hits.push(`${f}:${i + 1}  fixed frequency ("${text.match(FREQUENCY)[0]}"): "${text.trim().slice(0, 160)}"`);
   });
+}
+/* Bento KPI cards (V2 4911:762, decisions §9): customer-stated figures. A figure such as "10%+" is
+ * code-like to the string reader above and its label sits in another string, so no rule ever sees
+ * the pair. They are checked here instead: every KPI card of lp-bento-data.ts, as "value label",
+ * must be on this list, each with its source. Anything else fails until a human adds it here.
+ * These are the customers' own results, attributed by their logo, never a claim about what Pancake
+ * delivers: the "rate claim" and "job-count threshold" (\d+\+) rules still apply everywhere else.
+ * Sources: artifacts/landing-v2-figma/specs/updates/_bento-real-testimonials.md (founder 2026-10-11),
+ * which also holds the message's wording and link: this repository is public, so neither is here. */
+const BENTO_KPI_ALLOW = new Map([
+  // Praxis: Diana Khramina's own figure. Stated in a message to Tristan on 2026-09-18 and on
+  // camera in her testimonial (Praxis individual cut): "my reply rate is above 10% on most of
+  // campaigns I'm running".
+  ["10%+ reply rate", "Praxis, Diana Khramina"],
+  // Praxis: same message, and the next sentence of the same film: "So it helped me to book at
+  // least 10 meetings per week".
+  ["10+ meetings booked a week", "Praxis, Diana Khramina"],
+  // Kinro: Pierre-Alexandre Kamienny on camera, "Pancake helped me book 15 meetings last week"
+  // (merged compilation 61.68–63.72 s). One week, as he says it.
+  ["15 meetings booked in a week", "Kinro, Pierre-Alexandre Kamienny"],
+]);
+if (!named.length) {
+  const { bentoKpiClaims } = jiti("./components/sections/landing-v3/lp-bento-data.ts");
+  for (const claim of bentoKpiClaims()) {
+    count++;
+    if (dump) console.log(`components/sections/landing-v3/lp-bento-data.ts  (KPI pair)  ${claim}`);
+    if (!BENTO_KPI_ALLOW.has(claim)) {
+      hits.push(`components/sections/landing-v3/lp-bento-data.ts  bento KPI not on the allow-list ("${claim}"): add it to BENTO_KPI_ALLOW with its source`);
+    }
+  }
 }
 for (const h of hits) console.log(`ERROR  ${h}`);
 console.log(`homepage-lint: ${files.length} file(s), ${count} string(s), ${hits.length} error(s)`);

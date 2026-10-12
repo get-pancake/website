@@ -149,7 +149,9 @@ export default function Home() {
       {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
       <LpDive />
       <LpCta sky />
-      {/* testimonials / KPI bento (V2 4911:762): renders only with final entries in production */}
+      {/* testimonials / KPI bento (V2 4911:762): production renders its final cards only (a
+          partial set today), previews fill the gaps with marked stand-ins; BENTO_LIVE in
+          lp-bento-data.ts holds the whole section back in production */}
       <LpBento />
       <LpPricing />
       <LpFooter />

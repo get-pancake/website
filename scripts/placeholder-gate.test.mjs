@@ -9,10 +9,16 @@
  * sections twice, in child processes whose environment is a production build's
  * (NODE_ENV=production, no VERCEL_ENV) and a preview build's (VERCEL_ENV=preview), and checks:
  *
- *   production  no element is marked data-placeholder, no section is an empty shell (the bento
- *               renders nothing at all until its entries are final), every step row has its art
- *               (LpSteps throws otherwise), the deep dive has one tab and one panel per item;
+ *   production  no element is marked data-placeholder, no section is an empty shell, every step
+ *               row has its art (LpSteps throws otherwise), the deep dive has one tab and one
+ *               panel per item. The bento renders its FINAL cards and nothing else (a partial set
+ *               since 2026-10-12; nothing at all when no card is final or BENTO_LIVE is off): one
+ *               card per slot holding a final entry, no stand-in image, no placeholder customer;
  *   preview     the same sections still render, and the placeholders that exist are marked.
+ *   both        the bento's server markup can play nothing (its <video> elements are created by
+ *               the client, in view and muted, or in the sound dialog after a click); every
+ *               subset of the bento's seven slots lays out without a hole; the sources story
+ *               rests on the zoom only when a data-source node renders.
  *
  * It renders with react-dom/server through jiti + sucrase (both already installed: jiti is what
  * homepage-lint.mjs uses, sucrase comes with tailwindcss), outside Next: "use client" modules
@@ -63,16 +69,67 @@ function renderAll() {
 
   const { SHOW_PLACEHOLDERS } = jiti("./lib/placeholders.ts");
   const { AGENT_CARD_BODY, AGENT_CARD_BODY_PLACEHOLDER } = v3("lp-agents-wall-data.ts");
-  const { resolveBento } = v3("lp-bento-data.ts");
+  const { resolveBento, BENTO_SLOT_IDS, BENTO_LIVE } = v3("lp-bento-data.ts");
   const { DIVE_ITEMS } = v3("lp-dive-data.ts");
   const { STEPS } = v3("lp-steps-content.ts");
+  const { STORY_SOURCES } = v3("lp-story-sources-data.ts");
   const stage = (file, name) => html(v3(file)[name], { placeholders: SHOW_PLACEHOLDERS });
+
+  // the bento as data: which slots this build shows, and which cards are stand-ins
+  const bentoAll = resolveBento(true);
+  const bentoNow = resolveBento(SHOW_PLACEHOLDERS);
+  const bentoCards = bentoAll ? bentoAll.cards : [];
+  const names = (cards) => [...new Set(cards.flatMap(({ card }) => (card.kind === "quote" ? [card.person.name] : [])))];
+  const finalNames = names(bentoCards.filter(({ card }) => card.status === "final"));
+
+  // every subset of the seven slots (each filled with its card, as final) must lay out: the
+  // two-column stack ends on whole rows, and each desktop row fills 12 columns or is one centred card
+  const subsetProblems = [];
+  const cardOf = Object.fromEntries(bentoCards.map((c) => [c.id, { ...c.card, status: "final" }]));
+  const subsets = bentoCards.length === BENTO_SLOT_IDS.length ? 1 << BENTO_SLOT_IDS.length : 0;
+  for (let mask = 1; mask < subsets; mask++) {
+    const ids = BENTO_SLOT_IDS.filter((_, i) => mask & (1 << i));
+    const out = resolveBento(true, Object.fromEntries(BENTO_SLOT_IDS.map((id) => [id, ids.includes(id) ? [cardOf[id]] : []])));
+    const bad = (why) => subsetProblems.push(`${ids.join("+")}: ${why}`);
+    if (!out) { bad("resolves to nothing"); continue; }
+    if ([...out.cards.map((c) => c.id)].sort().join() !== [...ids].sort().join()) bad("a card went missing");
+    if (out.full !== (ids.length === BENTO_SLOT_IDS.length)) bad("wrong layout kind");
+    let col = 0;
+    for (const c of [...out.cards].sort((a, b) => a.flow.order - b.flow.order)) {
+      if (c.flow.span === 2) { if (col !== 0) bad("a wide card after a lone narrow one"); } else col = (col + 1) % 2;
+    }
+    if (col !== 0) bad("the stack ends on half a row");
+    if (!(out.size.flowU > 0 && out.size.tabletPx > 0 && out.size.gridU > 0)) bad("no height for the estimate");
+    if (out.full) continue;
+    let used = 0;
+    let height = null;
+    for (const c of out.cards) {
+      if (!c.row) { bad(`${c.id} has no row`); break; }
+      if (used === 0) {
+        height = c.row.height;
+        if (c.row.start) { if (c.row.start - 1 !== (12 - c.row.span) / 2) bad("a lone card is not centred"); continue; }
+      }
+      if (c.row.height !== height) bad("two heights in one row");
+      used += c.row.span;
+      if (used > 12) bad("a row overflows");
+      if (used === 12) used = 0;
+    }
+    if (used !== 0) bad(`a row is left open (${used}/12)`);
+  }
 
   return {
     showPlaceholders: SHOW_PLACEHOLDERS,
     // what app/page.tsx hands LpAgentLab
     agentCardBody: SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY,
-    bentoResolved: resolveBento(SHOW_PLACEHOLDERS) !== null,
+    bentoResolved: bentoNow !== null,
+    bentoLive: BENTO_LIVE,
+    // slots holding a final card (what production shows while BENTO_LIVE is on), slots holding any card
+    bentoFinalSlots: bentoCards.filter(({ card }) => card.status === "final").map((c) => c.id),
+    bentoAllSlots: bentoCards.map((c) => c.id),
+    // people who appear on stand-in cards only: their name must never reach production
+    bentoPlaceholderOnlyNames: names(bentoCards.filter(({ card }) => card.status === "placeholder")).filter((n) => !finalNames.includes(n)),
+    bentoSubsets: { checked: Math.max(0, subsets - 1), problems: subsetProblems },
+    sourcesNodes: { final: STORY_SOURCES.hub.nodes.filter((n) => n.status === "final").length, all: STORY_SOURCES.hub.nodes.length },
     diveItems: DIVE_ITEMS.map((item) => item.status),
     steps: STEPS.length,
     sections: {
@@ -107,6 +164,7 @@ const count = (html, needle) => html.split(needle).length - 1;
 /** elements carrying exactly this class (not its --modifier or __child) */
 const withClass = (html, name) => (html.match(new RegExp(`class="(?:[^"]* )?${name}(?: [^"]*)?"`, "g")) ?? []).length;
 const marked = (out) => Object.values(out.sections).reduce((n, html) => n + count(html, "data-placeholder"), 0);
+const slotsOf = (html) => [...html.matchAll(/data-slot="(\w+)"/g)].map((m) => m[1]).sort();
 
 function runTests() {
   const production = render(undefined);
@@ -129,9 +187,23 @@ function runTests() {
 
     test(`${label} renders no empty shell`, () => {
       const s = out.sections;
-      // the bento: nothing at all until resolveBento() has a card for every slot it lays out
-      if (out.bentoResolved) assert.ok(count(s.LpBento, "<li ") > 0, "the bento section has no card");
-      else assert.equal(s.LpBento, "", "the bento must render nothing while its entries are placeholders");
+      // the bento: its final cards and nothing else; nothing at all without one (or with BENTO_LIVE off)
+      if (out.bentoResolved) {
+        assert.ok(out.bentoLive, "BENTO_LIVE is off: production must not render the bento");
+        assert.deepEqual(slotsOf(s.LpBento), [...out.bentoFinalSlots].sort(), "production renders exactly the slots holding a final card");
+        assert.equal(count(s.LpBento, "<li "), out.bentoFinalSlots.length);
+      } else {
+        assert.equal(s.LpBento, "", "the bento must render nothing without a final card");
+      }
+      // no stand-in media (they are inlined data URIs, preview only) and no stand-in customer
+      assert.equal(count(s.LpBento, "data:image"), 0, "a stand-in image reached production");
+      assert.ok(!/interim/i.test(s.LpBento), "an interim asset reached production");
+      for (const name of out.bentoPlaceholderOnlyNames) assert.ok(!s.LpBento.includes(name), `${name} is on placeholder cards only`);
+      // the sources story: its hub renders final nodes only, and it rests on the zoom only with a node
+      assert.equal(withClass(s.storySources, "lp-src-node"), out.sourcesNodes.final);
+      assert.equal(count(s.storySources, 'data-end="sources"'), out.sourcesNodes.final > 0 ? 1 : 0);
+      assert.equal(count(s.storySources, 'data-end="details"'), out.sourcesNodes.final > 0 ? 0 : 1);
+      if (out.sourcesNodes.final === 0) assert.equal(withClass(s.storySources, "lp-src-hub"), 0, "an empty hub shell");
       // the steps: one art card per row (LpSteps throws on a row without final art)
       assert.equal(count(s.LpSteps, "data-lp-slot="), out.steps);
       assert.equal(withClass(s.LpSteps, "lp-steps__media"), out.steps);
@@ -157,6 +229,25 @@ function runTests() {
     // a placeholder that renders is marked, so a reviewer (and this test) can tell it from final content
     assert.ok(marked(preview) >= marked(production));
     if (!production.bentoResolved) assert.ok(count(preview.sections.LpBento, "data-placeholder") > 0);
+    assert.deepEqual(slotsOf(preview.sections.LpBento), [...preview.bentoAllSlots].sort(), "a preview fills every slot that has a card");
+    assert.equal(count(preview.sections.LpBento, "data-placeholder"), preview.bentoAllSlots.length - preview.bentoFinalSlots.length);
+    // the sources story ends on the zoom, every node drawn
+    assert.equal(withClass(preview.sections.storySources, "lp-src-node"), preview.sourcesNodes.all);
+    assert.equal(count(preview.sections.storySources, 'data-end="sources"'), preview.sourcesNodes.all > 0 ? 1 : 0);
+  });
+
+  test("the bento's server markup can play nothing", () => {
+    for (const [label, out] of [["production", production], ["preview", preview]]) {
+      const html = out.sections.LpBento;
+      assert.equal(count(html, "<video"), 0, `${label}: a <video> in the server markup (the client creates it, in view, muted)`);
+      assert.equal(count(html, "autoplay"), 0, `${label}: autoplay in the server markup`);
+      assert.ok(!/<dialog[^>]* open/.test(html), `${label}: the sound dialog is open in the server markup`);
+    }
+  });
+
+  test("every subset of the bento's slots lays out without a hole", () => {
+    assert.ok(production.bentoSubsets.checked > 0, "no subset was checked (a slot has no card at all)");
+    assert.deepEqual(production.bentoSubsets.problems, []);
   });
 }
 
