@@ -30,9 +30,16 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
 // ≤1024 the aside dissolves (display:contents) and the toggle leads the
 // stacked block. `lp-hero--home` scopes every homepage geometry change:
 // /agents (AgHero) reuses the unscoped hero classes with V1 geometry.
-// `lp-hs-hero` marks the two copy blocks the demo window's hero-scroll
-// assembly drifts and fades (demo-scroll package; translate/opacity only —
-// hero.css keeps both blocks transform-free on the homepage for it).
+// `lp-hs-hero` marks the two copy blocks the AGENTS view's scroll assembly
+// drifts and fades (lp-agents-scroll.ts, audience-agents.css;
+// translate/opacity only — hero.css keeps both blocks transform-free on the
+// homepage for it). The humans view no longer moves them (2026-10-12).
+//
+// First screen (founder 2026-10-12, _decisions §10): on desktop the hero's
+// height follows the window's so the demo window's top bar peeks 70px above
+// the fold, the art lifts a little on short windows and the copy block
+// (.lp-hero-inner) scales about its bottom centre — all CSS, hero.css
+// "Homepage first screen"; nothing here measures anything.
 export function LpHero() {
   return (
     <section className="lp-hero lp-hero--home" aria-labelledby="lp-hero-title">

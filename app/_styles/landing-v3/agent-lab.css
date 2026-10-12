@@ -91,7 +91,7 @@
 }
 
 /* ── scroll assembly (lp-agents-scroll.ts: desktop ≥1025 × ≥640, motion allowed) ──────────────
-   01 → 03 over the humans hero-scroll range: the card frame extends from its 74-tall prompt box
+   01 → 03 over the driver's range: the card frame extends from its 74-tall prompt box
    to its full height (clip + travelling bottom edge, linear), the wall prints one 18 px row per
    step from 4 to 79 rows. data-as="js" = the driver is attached; data-as-done = locked assembled
    for the visit. Anywhere else: no rule applies → state 03, the V2 artboard. */

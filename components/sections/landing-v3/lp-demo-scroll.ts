@@ -1,91 +1,174 @@
 "use client";
 
-// lp-demo-scroll.ts — the hero scroll driver (storyboard 4940:4919 → 4920 → 4981, decision
-// 2026-10-09 §3: scroll-linked with GSAP ScrollTrigger, every browser). LAZY: LpDemoPlayer
-// imports it with `import()` on desktop with motion allowed only, so GSAP stays out of the first
-// bundle (PR #283) and phones / tablets / reduced motion never fetch it.
+// lp-demo-scroll.ts — the demo window's one scroll effect (founder 2026-10-12, _decisions §10):
+// the card (window + pills) grows from .94 to 1 about its top centre while the visitor scrolls.
+// It replaces the hero-scroll assembly (storyboard 01 → 02 → 03): the window is there, assembled
+// and opaque, from the first frame.
 //
-// ScrollTrigger maps the scroll to ONE progress p (0 = state 01, 1 = state 03) over the range
-// "the WINDOW's top at 100vh − 299.42px" → "the window's top at 141px" (no pin: the section moves
-// with the page). The trigger is the section, whose top is the 26 px inset above the window (V2
-// 4939:2645), so the two constants carry that shift (lp-demo-timeline.ts: 325.42 / 115). The
-// driver writes p as a custom property and CSS draws every pose from it (demo.css
-// "hero scroll"): `--lp-hs` on the section (window scale / opacity, head offset, pills) and
-// `--lp-hs-hero` on each `.lp-hs-hero` (the hero copy's drift and fade, hero package hook) — two
-// or three style writes a frame, no transform strings to fight the hero's own transforms. The
-// hero copy only reads its variable in the humans view (demo.css), so the agents view, where
-// this section is display:none, is never touched.
+// ONE progress g, written as `--lp-demowin-grow` on the card; demo.css turns it into the card's
+// scale (`0.94 + 0.06 * g`, transform-origin 50% 0: the top edge never moves, so the peek at the
+// bottom of the first screen is the static window's own top). Unset = 0 = the server's first
+// paint. The property is registered non-inheriting (demo.css): a write restyles the card alone.
+//   g = 0  the window's top where it sits at the top of the page, the fold at most
+//          (so a fresh load always starts at .94, whatever the window height);
+//   g = 1  the window's top at GROW_END_AT (35 %) of the viewport height.
+// At 1 it LOCKS for the visit: `data-grow-done` on the section, the property removed, every
+// listener and observer gone. Never shrinks back on screen; a fresh page load starts again.
+// Anything else that ends the effect is final too: the window leaving GROW_QUERY (resized under
+// 1025 wide or over 1449 tall, reduced motion turned on) or scrolled away through the top.
 //
-// `data-hs="js"` on the section hands the poses over from demo.css' pre-script layer (a CSS
-// scroll-driven animation of the same variable where supported, else lp-demo-prescript.ts'
-// `--lp-hs-pre`) in the same frame as the first write. Lock (`data-hs-done`, set by the
-// player): the section's variable stops being written and CSS shows state 03 for good; the hero
-// copy keeps following the scroll.
+// Cost: a passive scroll listener + one rAF per frame, one rect read and at most one style write
+// (a custom property that only feeds the card's `scale`: no layout, no subtree restyle). Nothing
+// runs while the card is off screen (IntersectionObserver), nor after the lock. No will-change,
+// no GSAP.
 //
-// Tall windows (> 1102 px): the storyboard's start would sit at a negative scroll position, so
-// the page would load part-assembled (and the headline dimmed above ~1905 px). `clamp()` pins
-// the start to scroll 0: p = 0 at the top of the page at any height (verifier DT-2 / M-04).
-//
-// `data-hs-out` on each `.lp-hs-hero` from p ≥ HS_HERO_OUT (.85, the end of its fade): demo.css
-// turns it into `visibility: hidden`, so the faded "Start free" / "Book a demo" / toggle are no
-// longer hit-testable or tab stops in the blank band above the assembled window (DT-1). It
-// follows the scroll like the copy itself: scrolling back up brings the copy, and its links, back.
+// A page that opens already scrolled (a reload mid-page, an anchor): the first paint is the
+// server's .94, so the first value eases in over GROW_SETTLE_MS (`data-grow-settle`, one-shot)
+// instead of jumping; a card that is already above the viewport locks at once, unseen.
 
-import { ScrollTrigger } from "@/lib/gsap";
-import { HS_END_FROM_TOP, HS_HERO_OUT, HS_START_FROM_BOTTOM } from "./lp-demo-timeline";
+import { GROW_END_AT, GROW_QUERY, GROW_SETTLE_MS } from "./lp-demo-timeline";
 
-export function mountHeroScroll(section: HTMLElement, onProgress: (p: number) => void): () => void {
-  const heroes = Array.from(document.querySelectorAll<HTMLElement>(".lp-hs-hero"));
+export interface WindowGrow {
+  /** Lock at scale 1 now (QA, and the player's cleanup path). */
+  lock: () => void;
+  /** { g, done }: the last value written and whether the effect has locked. */
+  state: () => { g: number; done: boolean };
+  destroy: () => void;
+}
+
+export function mountWindowGrow(section: HTMLElement, card: HTMLElement): WindowGrow {
+  const mq = window.matchMedia(GROW_QUERY);
+  let done = false;
+  let live = false;
+  let raf = 0;
+  let settle = 0;
   let last = "";
-  let out = false;
+  let g = 0;
+  let io: IntersectionObserver | null = null;
+  let ro: ResizeObserver | null = null;
 
-  const write = (p: number) => {
-    const v = p.toFixed(4);
-    if (v === last) return;
-    last = v;
-    if (!section.hasAttribute("data-hs-done")) section.style.setProperty("--lp-hs", v);
-    for (const h of heroes) h.style.setProperty("--lp-hs-hero", v);
-    if ((p >= HS_HERO_OUT) !== out) {
-      out = !out;
-      for (const h of heroes) h.toggleAttribute("data-hs-out", out);
+  const schedule = () => {
+    if (!raf && !done) raf = requestAnimationFrame(update);
+  };
+  const attach = () => {
+    if (live || done) return;
+    live = true;
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule, { passive: true });
+    // the hero above glides to its new height after a resize settles (hero.css, 450 ms): the
+    // window moves with it without any scroll or resize event
+    const hero = document.querySelector(".lp-hero");
+    if (hero && typeof ResizeObserver !== "undefined") {
+      ro = new ResizeObserver(schedule);
+      ro.observe(hero);
     }
-    onProgress(p);
+  };
+  const detach = () => {
+    if (!live) return;
+    live = false;
+    window.removeEventListener("scroll", schedule);
+    window.removeEventListener("resize", schedule);
+    ro?.disconnect();
+    ro = null;
+    if (raf) cancelAnimationFrame(raf);
+    raf = 0;
   };
 
-  const st = ScrollTrigger.create({
-    trigger: section,
-    start: `clamp(top bottom-=${HS_START_FROM_BOTTOM})`,
-    end: `top ${HS_END_FROM_TOP}px`,
-    onUpdate: (self) => write(self.progress),
-    onRefresh: (self) => write(self.progress),
-  });
-  section.setAttribute("data-hs", "js");
-  write(st.progress);
+  const lock = () => {
+    if (done) return;
+    done = true;
+    g = 1;
+    detach();
+    io?.disconnect();
+    io = null;
+    mq.removeEventListener("change", onQuery);
+    section.setAttribute("data-grow-done", "");
+    card.style.removeProperty("--lp-demowin-grow");
+  };
 
-  // the audience switch shows / hides this section (display): re-measure the range
-  const main = section.parentElement;
-  const mo = new MutationObserver(() => ScrollTrigger.refresh());
-  if (main) mo.observe(main, { attributes: true, attributeFilter: ["data-audience"] });
-  // the hero above can change height without a window resize (its 450 ms glide after
-  // LpViewportVar settles, the short-window ladder): re-measure once it has settled
-  let settle = 0;
-  const ro = new ResizeObserver(() => {
-    window.clearTimeout(settle);
-    settle = window.setTimeout(() => ScrollTrigger.refresh(), 200);
-  });
-  const hero = document.querySelector(".lp-hero");
-  if (hero) ro.observe(hero);
+  /** g from the card's place on screen; null while the section is not rendered (agents view). */
+  const measure = (): number | null => {
+    if (card.getClientRects().length === 0) return null;
+    const top = card.getBoundingClientRect().top;
+    const vh = window.innerHeight;
+    const start = Math.min(vh, top + window.scrollY);
+    const end = vh * GROW_END_AT;
+    if (start - end < 1) return 1;
+    return Math.min(1, Math.max(0, (start - top) / (start - end)));
+  };
 
-  return () => {
-    window.clearTimeout(settle);
-    ro.disconnect();
-    mo.disconnect();
-    st.kill();
-    section.removeAttribute("data-hs");
-    section.style.removeProperty("--lp-hs");
-    for (const h of heroes) {
-      h.style.removeProperty("--lp-hs-hero");
-      h.removeAttribute("data-hs-out");
+  function update() {
+    raf = 0;
+    if (done) return;
+    const v = measure();
+    if (v === null) return;
+    if (v >= 1) {
+      // still easing in from the first paint: the timer below locks when it lands
+      if (settle) write(1);
+      else lock();
+      return;
     }
+    write(v);
+  }
+  const write = (v: number) => {
+    g = v;
+    const s = v.toFixed(4);
+    if (s === last) return;
+    last = s;
+    card.style.setProperty("--lp-demowin-grow", s);
+  };
+
+  function onQuery() {
+    if (!mq.matches) lock();
+  }
+
+  if (!mq.matches) {
+    // phones, tablets, very tall windows, reduced motion: demo.css draws the window at 1
+    lock();
+  } else {
+    mq.addEventListener("change", onQuery);
+    const first = measure();
+    if (first !== null && first > 0) {
+      const r = card.getBoundingClientRect();
+      if (r.bottom <= 0) {
+        lock(); // opened below the window: it is at 1 before anyone scrolls back to it
+      } else {
+        section.setAttribute("data-grow-settle", "");
+        write(first);
+        settle = window.setTimeout(() => {
+          settle = 0;
+          section.removeAttribute("data-grow-settle");
+          if (!done) update();
+        }, GROW_SETTLE_MS + 40);
+      }
+    }
+    if (!done) {
+      io = new IntersectionObserver((entries) => {
+        const e = entries[entries.length - 1];
+        if (e.isIntersecting) {
+          attach();
+          schedule();
+        } else {
+          // left the screen: through the top = past the end, it locks; else nothing to run
+          if (card.getClientRects().length > 0 && card.getBoundingClientRect().bottom <= 0) lock();
+          else detach();
+        }
+      });
+      io.observe(card);
+    }
+  }
+
+  return {
+    lock,
+    state: () => ({ g: +g.toFixed(4), done }),
+    destroy: () => {
+      window.clearTimeout(settle);
+      detach();
+      io?.disconnect();
+      mq.removeEventListener("change", onQuery);
+      section.removeAttribute("data-grow-settle");
+      section.removeAttribute("data-grow-done");
+      card.style.removeProperty("--lp-demowin-grow");
+    },
   };
 }

@@ -23,7 +23,7 @@ export type LpDemoView = 0 | 1;
 
 /** Extra time (ms) the Pancake view rests on the designer's picture ("Ready when you are", the
  *  three cards, the chip link) before the request is sent. 0 = production's beat: the send lands
- *  1.02 s after the window assembles and 1.02 s after each return from the Claude & Codex view.
+ *  1.02 s after the demo starts and 1.02 s after each return from the Claude & Codex view.
  *  ONE constant, a founder decision (verifier DT-5): 1480 holds the picture 2.5 s. Every Pancake
  *  cue, press, cursor move, END[0] and DWELL[0] shift with it; the conversation's own timing
  *  ("same as today") and the Claude & Codex view do not change. */
@@ -51,7 +51,7 @@ interface ViewCues {
 }
 
 /* Pancake: production's Play tab (lib/verticals/demo-timeline.ts tab 0) minus the typing — the
-   request is the hero scroll's persistent element, already typed — so every beat moved −3980 ms
+   request is already typed in the designer's rest picture — so every beat moved −3980 ms
    (then + REST_HOLD: `h`). */
 const SEND = 1020;
 const h = (ms: number) => ms + REST_HOLD;
@@ -223,46 +223,25 @@ export const restFrame = (view: LpDemoView) => frameAt(view, 0);
 /** The end picture (reduced motion shows the Claude view this way). */
 export const finalFrame = (view: LpDemoView) => frameAt(view, END[view]);
 
-/* ── hero scroll (storyboard 4940:4919 → 4920 → 4981, spec §6) ───────────────────────────────
-   One progress p (0 = state 01, 1 = state 03) over the scroll range below; CSS turns it into the
-   poses (demo.css "hero scroll"): window scale .4956 → 1 and opacity 0 (until p .3355) → 1, head
-   −28.13 px until p .5481, pills fade in after p .5481, hero copy drifts 25.54 px·p and fades
-   out between p .5481 and .85.
-   Range: the WINDOW's top from 299.42 px above the viewport's bottom (01: 656.58 on a 956-tall
-   window) to 141 px from its top (03). The storyboard measures from the window; since V2's
-   2026-10-11 update the section's top sits HS_WINDOW_INSET above it (4939:2645 is 793 tall, the
-   window at section y 26), and the driver's trigger is the section, so the two constants below
-   are the storyboard's numbers shifted by that inset. demo.css mirrors them (padding-top and
-   the pre-script animation-range). */
-/** The air above the window inside the section (demo.css `.lp-demowin { padding-top }`, ≥768). */
-export const HS_WINDOW_INSET = 26;
-/** p = 0: the section's top this far above the viewport's bottom (the window's: 299.42). */
-export const HS_START_FROM_BOTTOM = 299.42 + HS_WINDOW_INSET; // 325.42
-/** p = 1: the section's top this far under the viewport's top (the window's: 141). */
-export const HS_END_FROM_TOP = 141 - HS_WINDOW_INSET; // 115
-/* Tall windows (nothing is drawn for them; the section's top is at 777 = nav 120 + hero 657):
-   · taller than 1102 px the range would start at a negative scroll position, so the page would
-     load part-assembled: the start is CLAMPED to scroll 0 (lp-demo-scroll.ts `clamp()`, the
-     pre-script's `max(0, …)`), p = 0 at the top of the page at any height;
-   · from HS_MAX_HEIGHT + 1 = 1450 px the whole window (777 + 26 + 647) sits in the first
-     viewport: no assembly there, the window is drawn assembled and starts by the 60 % rule. */
-/** The tallest viewport the assembly runs in (px). demo.css repeats it in its media queries. */
-export const HS_MAX_HEIGHT = 1449;
-/** Where the hero scroll runs (demo.css uses the same query; the player, the pre-script). */
-export const HS_QUERY = `(min-width: 1025px) and (min-height: 640px) and (max-height: ${HS_MAX_HEIGHT}px) and (prefers-reduced-motion: no-preference)`;
-/** The hero copy has faded out from here (.5481 + .3019): it leaves hit-testing and the tab
- *  order too (`data-hs-out` on each `.lp-hs-hero`, demo.css `visibility: hidden`). */
-export const HS_HERO_OUT = 0.85;
-/** A visitor who stops scrolling mid-assembly: past the storyboard's state 02, with at least
- *  half of the window on screen, after HS_DWELL_MS without a scroll, the window finishes
- *  assembling by itself in HS_EASE_MS (demo.css `[data-hs-ease]`), locks and the demo starts.
- *  0.55 sits just above state 02 (p .5481; the QA scroll for it, 429 px at 956 tall, is .5484):
- *  the designer's own in-between frame stays a pose the page can rest in. */
-export const HS_DWELL_FROM = 0.55;
-export const HS_DWELL_MS = 800;
-export const HS_EASE_MS = 300;
-/** The global the player calls to stop the pre-script (lp-demo-prescript.ts). */
-export const HS_PRE_STOP = "__lpHsPre";
+/* ── the one scroll effect: the window grows a little (founder 2026-10-12, _decisions §10) ────
+   The window is assembled from the first frame. On desktop the card (window + pills) grows from
+   GROW_FROM to 1 about its top centre, linked to the scroll: g = 0 → 1 while the window's top
+   travels from where it sits at the top of the page (the fold at most: on a first load its top
+   bar peeks 70 px above the fold) up to GROW_END_AT of the viewport height. At 1 it locks for the
+   visit. lp-demo-scroll.ts writes g as --lp-demowin-grow on the card; demo.css turns it into the
+   card's scale. */
+/** The card's scale at g = 0 (demo.css repeats it: `0.94 + 0.06 * g`). */
+export const GROW_FROM = 0.94;
+/** g = 1 when the window's top reaches this share of the viewport height. */
+export const GROW_END_AT = 0.35;
+/** The tallest viewport the effect runs in (px). From 1450 the whole window (hero 777 + 26 +
+ *  647) sits in the first viewport: it is drawn at 1. demo.css repeats it in its media query. */
+export const GROW_MAX_HEIGHT = 1449;
+/** Where the effect runs (demo.css uses the same query). */
+export const GROW_QUERY = `(min-width: 1025px) and (max-height: ${GROW_MAX_HEIGHT}px) and (prefers-reduced-motion: no-preference)`;
+/** A page that opens already scrolled: the first value eases in over this long (ms; demo.css
+ *  `[data-grow-settle]` transition, 300 ms). */
+export const GROW_SETTLE_MS = 300;
 
 /* ── phones ≤767: the mobile artboard's card (5024:8631 → 5024:9506) ─────────────────────────
    The Pancake view is a fixed design box scaled as pixels (demo.css "phones"). */

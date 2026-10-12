@@ -15,25 +15,18 @@
 // the chip link. It pauses in place otherwise. data-run on the card mirrors it (the Claude tool
 // spinner only turns then).
 //
-// First start:
-//   · the hero scroll assembles the window (HS_QUERY: desktop ≥1025 wide, 640 – 1449 tall,
-//     motion allowed): when it completes (p = 1: the WINDOW's top at 141 px = the section's top
-//     at HS_END_FROM_TOP, 26 px of inset above it), or at load if the page is already past it;
-//     or, for a visitor who STOPS mid-assembly (verifier M-01): past the storyboard's state 02
-//     (p ≥ HS_DWELL_FROM, .55) with half of the window on screen and HS_DWELL_MS without a scroll,
-//     the window finishes assembling by itself (data-hs-ease: a HS_EASE_MS CSS ease from the
-//     pose it stopped in), locks, then the demo starts;
-//   · otherwise (phones, tablets, short windows, and windows ≥1450 px tall, where the whole
-//     window sits in the first viewport and is drawn assembled): once the window's top crosses
-//     60 % of the viewport, or after 1 s with half of it on screen (lp-play-once's rule).
-//   Every engine runs the assembly through ScrollTrigger (lp-demo-scroll.ts, lazy).
-//   A pill click starts it at once. Nothing autoplays on a half-built window.
-// Lock: data-hs-done on the section — the first start, the dwell above, a pill click or keyboard
-// focus in the stage. The window then stays assembled for the visit (never disassembled by
-// scrolling back).
+// First start, ONE rule at every width (lp-play-once's rule, the page's "play at the focus
+// line"): once the window's top crosses 60 % of the viewport, or after 1 s with half of the
+// window on screen. A pill click starts it at once. On a desktop first screen only the window's
+// top bar shows (70 px above the fold), so the demo waits for the visitor to scroll to it; on
+// windows tall enough to show half of it at load it starts after the 1 s.
 //
-// Reduced motion (or ?still): no clock and no GSAP download; the Pancake view is its rest
-// picture (the V2 design), the Claude view its end picture; the pills switch views instantly.
+// The window itself is assembled and opaque from the first frame (founder 2026-10-12). Its one
+// scroll effect, desktop only, is lp-demo-scroll.ts: the card grows from .94 to 1 while the
+// visitor scrolls to it, then locks. It is independent of the clock: mounted here, nothing else.
+//
+// Reduced motion (or ?still): no clock; the Pancake view is its rest picture (the V2 design),
+// the Claude view its end picture; the pills switch views instantly.
 //
 // Phones (≤767, the mobile artboard's card 5024:9506): the Pancake view is a fixed design box
 // scaled as pixels (demo.css); the island writes the measured scale (--lp-demowin-fit on the
@@ -51,17 +44,12 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 import { flushSync } from "react-dom";
+import { mountWindowGrow } from "./lp-demo-scroll";
 import {
   CURSOR_ENTRY,
   DWELL,
   END,
   frameAt,
-  HS_DWELL_FROM,
-  HS_DWELL_MS,
-  HS_EASE_MS,
-  HS_END_FROM_TOP,
-  HS_PRE_STOP,
-  HS_QUERY,
   PHONE_BOX_W,
   PHONE_QUERY,
   PHONE_SOLO,
@@ -70,15 +58,6 @@ import {
 } from "./lp-demo-timeline";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
-
-/** Stop the pre-script (lp-demo-prescript.ts): idempotent, a no-op when it never ran. */
-function stopHeroScrollPre() {
-  try {
-    (window as unknown as Record<string, (() => void) | undefined>)[HS_PRE_STOP]?.();
-  } catch {
-    /* nothing to stop */
-  }
-}
 
 interface ViewCache {
   el: HTMLElement;
@@ -148,7 +127,6 @@ export function LpDemoPlayer({
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const fillRefs = useRef<(HTMLElement | null)[]>([]);
   const nonce = useRef(0);
-  const lockRef = useRef<() => void>(() => {});
   const ctl = useRef<Ctl>({
     view: 0,
     t: 0,
@@ -391,7 +369,6 @@ export function LpDemoPlayer({
     (v: LpDemoView) => {
       const x = ctl.current;
       stop();
-      lockRef.current();
       x.started = true;
       x.seeking = false;
       x.fill = null;
@@ -428,7 +405,7 @@ export function LpDemoPlayer({
     sync();
   };
 
-  /* ── mount: media queries, observers, gates, the hero scroll, QA hooks ───── */
+  /* ── mount: media queries, observers, the first start, the grow effect, QA hooks ───── */
 
   useEffect(() => {
     const x = ctl.current;
@@ -440,61 +417,17 @@ export function LpDemoPlayer({
 
     const still = /[?&]still\b/.test(window.location.search);
     const mqReduce = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const mqHs = window.matchMedia(HS_QUERY);
     let disposed = false;
 
-    /* lock: the window stays assembled (state 03) for the rest of the visit */
-    const lock = () => {
-      if (section.hasAttribute("data-hs-done")) return;
-      section.setAttribute("data-hs-done", "");
-      section.style.removeProperty("--lp-hs");
-    };
-    lockRef.current = lock;
+    /* the one scroll effect (desktop, motion allowed): the card grows from .94 to 1, then locks */
+    const grow = mountWindowGrow(section, card);
+    if (still) grow.lock();
 
     const start = () => {
       if (x.started || disposed) return;
       x.started = true;
-      lock();
       setFills();
       sync();
-    };
-
-    /** the hero scroll owns the first start, unless it is off here or failed to load */
-    let hsFailed = false;
-    const byScroll = () => mqHs.matches && !still && !hsFailed;
-
-    /* a visitor who stops mid-assembly (M-01): past state 02, half of the window on screen and
-       HS_DWELL_MS without a scroll → the window eases to state 03 from the pose it stopped in
-       (demo.css [data-hs-ease]; the lock hands the poses to CSS in the same frame), then the
-       demo starts. Scrolling on meanwhile is harmless: the section is locked. */
-    let hsP = 0;
-    let hsIdle = 0;
-    let hsEase = 0;
-    const finishHs = () => {
-      if (x.started || disposed || !byScroll()) return;
-      // already assembled without a start (keyboard focus in the stage locked it): just start
-      const locked = section.hasAttribute("data-hs-done");
-      if (!locked && hsP < HS_DWELL_FROM) return;
-      const r = stage.getBoundingClientRect();
-      const vh = window.innerHeight;
-      // 0 while the section is display:none (the agents view)
-      const share = (Math.min(r.bottom, vh) - Math.max(r.top, 0)) / Math.max(1, Math.min(r.height, vh));
-      if (share < 0.5) return;
-      if (locked) {
-        start();
-        return;
-      }
-      section.setAttribute("data-hs-ease", "");
-      lock();
-      hsEase = window.setTimeout(() => {
-        section.removeAttribute("data-hs-ease");
-        start();
-      }, HS_EASE_MS + 20);
-    };
-    /** (re)start the idle countdown: every scroll step, and when the stage shows again */
-    const armHs = () => {
-      window.clearTimeout(hsIdle);
-      if (!x.started && byScroll()) hsIdle = window.setTimeout(finishHs, HS_DWELL_MS);
     };
 
     const setReduced = () => {
@@ -505,7 +438,6 @@ export function LpDemoPlayer({
       if (reduced) {
         x.oneShot = false;
         x.started = true;
-        lock();
         // Pancake = its rest picture (the V2 design), Claude = its end picture
         x.t = x.view === 1 ? END[1] : 0;
         card.setAttribute("data-snap", "");
@@ -535,20 +467,18 @@ export function LpDemoPlayer({
         section.toggleAttribute("data-inview", e.isIntersecting);
         x.inView = e.isIntersecting && e.intersectionRect.height / denom >= 0.35;
         sync();
-        // under the hero scroll: the stage showed up without a scroll (back from the agents view)
-        if (e.isIntersecting) armHs();
       },
       { threshold: thresholds },
     );
     vis.observe(stage);
 
-    /* first start without the hero scroll: the window's top crosses 60 % of the viewport, or
-       1 s with half of it on screen (lp-play-once's FOCUS_MARGIN / DWELL_MS) */
+    /* first start: the window's top crosses 60 % of the viewport, or 1 s with half of it on
+       screen (lp-play-once's FOCUS_MARGIN / DWELL_MS) */
     const win = card.querySelector<HTMLElement>(".lp-demowin__win");
     let dwell = 0;
     const focusObs = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting) && !byScroll()) start();
+        if (entries.some((e) => e.isIntersecting)) start();
       },
       { rootMargin: "0px 0px -40% 0px", threshold: 0 },
     );
@@ -558,7 +488,7 @@ export function LpDemoPlayer({
         const vh = e.rootBounds?.height ?? window.innerHeight;
         const share = e.intersectionRect.height / Math.max(1, Math.min(e.boundingClientRect.height, vh));
         window.clearTimeout(dwell);
-        if (e.isIntersecting && share >= 0.5 && !byScroll()) dwell = window.setTimeout(start, 1000);
+        if (e.isIntersecting && share >= 0.5) dwell = window.setTimeout(start, 1000);
       },
       { threshold: [0, 0.25, 0.5, 0.75, 1] },
     );
@@ -566,54 +496,6 @@ export function LpDemoPlayer({
       focusObs.observe(win);
       halfObs.observe(win);
     }
-
-    /* the hero scroll (desktop, motion allowed): GSAP ScrollTrigger, lazy */
-    let unmountHs: (() => void) | null = null;
-    let loadingHs = false;
-    const mountHs = () => {
-      if (unmountHs || loadingHs || disposed || still || !mqHs.matches) return;
-      loadingHs = true;
-      // already past the end (reload mid-page, an anchor): no assembly for the window
-      if (section.getBoundingClientRect().top <= HS_END_FROM_TOP) start();
-      Promise.all([import("@/lib/gsap"), import("./lp-demo-scroll")])
-        .then(([, mod]) => {
-          loadingHs = false;
-          if (disposed) return;
-          unmountHs = mod.mountHeroScroll(section, (p) => {
-            hsP = p;
-            // not while the section is display:none (the agents view): its range is meaningless there
-            if (p >= 1 && section.getClientRects().length > 0) start();
-            else armHs();
-          });
-          // the driver writes the poses now: the pre-script (lp-demo-prescript.ts) is done
-          stopHeroScrollPre();
-        })
-        .catch(() => {
-          // no driver: show the assembled window, start by the 60 % rule
-          loadingHs = false;
-          hsFailed = true;
-          lock();
-          stopHeroScrollPre();
-        });
-    };
-    // no hero scroll here (phones, tablets, short or very tall windows, reduced motion, ?still)
-    if (still || !mqHs.matches) stopHeroScrollPre();
-    mountHs();
-    const onHsChange = () => {
-      if (mqHs.matches) {
-        mountHs();
-        return;
-      }
-      // the window left the hero scroll's range before its first start (resized past 1449 px
-      // tall, under 1025 wide…): CSS shows it assembled; let the 60 % rule look again
-      if (!x.started && win && !x.reduced) {
-        focusObs.unobserve(win);
-        focusObs.observe(win);
-        halfObs.unobserve(win);
-        halfObs.observe(win);
-      }
-    };
-    mqHs.addEventListener("change", onHsChange);
 
     /* the tab's visibility */
     const onVis = () => {
@@ -623,13 +505,12 @@ export function LpDemoPlayer({
     x.hidden = document.hidden;
     document.addEventListener("visibilitychange", onVis);
 
-    /* keyboard focus: in the stage it locks the assembly; in the pills or on the chip link it
-       holds the clock (WCAG 2.2.2 — Pause is the control, and what is focused must not vanish) */
+    /* keyboard focus in the pills or on the chip link holds the clock (WCAG 2.2.2 — Pause is the
+       control, and what is focused must not vanish) */
     const holdZones = () => [card.querySelector(".lp-demowin__pills"), card.querySelector(".lp-demowin__agent")];
     const onFocusIn = (e: FocusEvent) => {
       const t = e.target as HTMLElement | null;
       if (!t) return;
-      if (stage.contains(t)) lock();
       let visible = false;
       try {
         visible = t.matches(":focus-visible");
@@ -706,7 +587,7 @@ export function LpDemoPlayer({
         x.seeking = true;
         x.oneShot = false;
         x.started = true;
-        lock();
+        grow.lock(); // captures are compared with the full-size designs
         x.t = ms;
         flushSync(() => go(v));
         // same view: the layout effect re-applies (new nonce)
@@ -724,7 +605,7 @@ export function LpDemoPlayer({
           x.paused = false;
           setPaused(false);
           x.started = true;
-          lock();
+          grow.lock();
           x.t = 0;
           flushSync(() => go(x.view));
         },
@@ -733,7 +614,8 @@ export function LpDemoPlayer({
           x.fill = r;
           setFills();
         },
-        lock,
+        /** The grow effect at its end: the card at scale 1, locked (for full-size captures). */
+        lock: grow.lock,
         state() {
           return {
             view: x.view,
@@ -746,11 +628,8 @@ export function LpDemoPlayer({
             seeking: x.seeking,
             running: x.raf !== 0,
             frames: x.frames,
-            hs: section.getAttribute("data-hs"),
-            hsDone: section.hasAttribute("data-hs-done"),
-            hsDriver: unmountHs !== null,
-            hsP,
-            hsEase: section.hasAttribute("data-hs-ease"),
+            /** the grow effect: { g, done } (lp-demo-scroll.ts) */
+            grow: grow.state(),
           };
         },
       };
@@ -760,16 +639,12 @@ export function LpDemoPlayer({
       disposed = true;
       stop();
       window.clearTimeout(dwell);
-      window.clearTimeout(hsIdle);
-      window.clearTimeout(hsEase);
-      section.removeAttribute("data-hs-ease");
       vis.disconnect();
       focusObs.disconnect();
       halfObs.disconnect();
       ro.disconnect();
-      unmountHs?.();
+      grow.destroy();
       mqReduce.removeEventListener("change", setReduced);
-      mqHs.removeEventListener("change", onHsChange);
       mqPhone.removeEventListener("change", setPhone);
       stage.style.removeProperty("--lp-demowin-fit");
       chipLink?.removeAttribute("tabindex");

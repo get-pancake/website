@@ -40,11 +40,10 @@
 }
 /* Homepage hero — Figma V2 4911:355 (1654×657). The designer cut the hero
    101px (758 → 657) so the demo window (V2 4939:2645) starts at page y777
-   and its scroll-linked assembly (demo-scroll) can begin in the first
-   screen; the rings did not move (4911:356 = V1 4257:4907). One height
-   whenever it fits (window ≥ 777 tall: nav 120 + 657); shorter windows take
-   the ladder below (the 760–776 homepage tier, then the shared ≤759 and
-   ≤639 tiers, which win by order over this rule). */
+   and its top bar shows at the bottom of the first screen; the rings did
+   not move (4911:356 = V1 4257:4907). This is the value phones and tablets
+   carry (unused there: ≤1024 the hero is `height: auto`); on desktop the
+   block "Homepage first screen" below sets the height from the window's. */
 .lp-hero--home {
   --lp-hero-h: 657px;
 }
@@ -144,7 +143,10 @@
    just crops shorter. MUST live after the .lp-hero-inner base rule: its
    unconditional translateZ(0) would override these at equal specificity.
    Tiers flip on live viewport height (discrete, no per-frame reflow); the
-   height itself uses the frozen measure. */
+   height itself uses the frozen measure.
+   These tiers are /agents' (AgHero, the unscoped .lp-hero). The HOMEPAGE has
+   its own continuous rule ("Homepage first screen" below), one class more
+   specific, so none of the three declarations here reaches it. */
 /* (2026-09-01: a 760–877px-tall art-lift band briefly lived here to keep the
    rotating rings off the raised headline — removed same day, founder word:
    the desktop rainbow stays EXACTLY the post-fluidification state of
@@ -156,19 +158,6 @@
     --lp-hero-h: max(500px, calc(var(--lp-svh, 100svh) - 120px));
   }
   .lp-hero-inner {
-    transform: scale(0.84) translateZ(0);
-    transform-origin: 50% 100%;
-  }
-}
-/* Homepage tier: the homepage stops fitting nav + 657 at 776 tall, 17px
-   before the shared tier starts — same values as the shared ≤759 tier
-   (which then takes over: equal specificity on the height, and the inner
-   rule below is bounded to ≥760 so the ≤639 tier's .66 still wins). */
-@media (min-width: 1025px) and (min-height: 760px) and (max-height: 776px) {
-  .lp-hero--home {
-    --lp-hero-h: max(500px, calc(var(--lp-svh, 100svh) - 120px));
-  }
-  .lp-hero--home .lp-hero-inner {
     transform: scale(0.84) translateZ(0);
     transform-origin: 50% 100%;
   }
@@ -219,10 +208,11 @@
    un peu le bloc h1/h2/cta": the green band ran too close to the "You"),
    so 63 / 71 — the V2 composition 36px lower (decision 2026-10-09; V2's
    bands clear the "Y" by ~17px at 99, ~53px here). Both blocks are
-   transform-free (left offsets instead of translateX(-50%)): the demo
-   window's hero-scroll drifts them through .lp-hs-hero (translate/opacity),
-   and a scroll driver that writes `transform` would otherwise erase the
-   centring. */
+   transform-free (left offsets instead of translateX(-50%)): the agents
+   view's scroll assembly drifts them through .lp-hs-hero (translate/opacity,
+   audience-agents.css), and a scroll driver that writes `transform` would
+   otherwise erase the centring. The humans view no longer moves them
+   (2026-10-12: the hero copy stays put while the window grows). */
 .lp-hero--home .lp-hero-title {
   bottom: 63px; /* V2 99 − 36 */
   left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
@@ -264,21 +254,113 @@
     right: 48px;
   }
 }
-/* Art clip at the hero's bottom (≥1025). The section is positioned
-   (isolation), so its art paints over the static demo section that now
-   starts at 777, and the art's invisible page-coloured ring would cover the
-   window's top 101px. Visible ink over a full 20s rotation ends by y740 at
-   1654 (40 phases measured), so nothing visible is cut on a ≥777 window.
-   Beats the ≥1655 px clip (0,2,0 > 0,1,0). ≤1024 keeps the proportional
-   38.04% (flow layouts). */
+/* ── Homepage first screen (≥1025) — founder 2026-10-12, _decisions §10 ──
+   "The designer page is built so that the top of this product footage
+   appears in the hero 100vh": the demo window's top bar peeks at the bottom
+   of the first screen on every desktop window height. The window sits 26px
+   under the hero (demo.css), so the hero stops 96px above the fold: 26 of
+   inset + 70 of window. With svh = the frozen viewport height (--lp-svh):
+
+     H    = clamp(380, max(svh − 216, min(544, svh − 120)), 657)
+            ≥ 873 tall   657        the designer's hero; more of the window
+                                    shows as the window gets taller
+            760 – 873    svh − 216  hero bottom at svh − 96: the 96px peek
+            664 – 760    544        the peek tapers from 96 to 0
+            < 664        svh − 120  no peek; copy and CTAs stay above the fold
+                                    (down to the 380 floor, a 500px window)
+     LIFT = clamp(0, (873 − svh) × 0.3, 34), and 60 at ≤ 639 tall (the /agents
+            tier's own −180): the art rises a little on short windows
+     s    = clamp(0.66, (H − 358 + LIFT) / 299, 1): the copy block's scale
+            about its bottom centre (1 from an 873-tall window up, where
+            the hero reaches the designer's 657)
+
+   Together the constants keep the rotating rainbow at least 42px off the
+   headline at every height, over the whole 20s loop (measured:
+   impl/first-screen-peek.md; the decision's first divisor, 286, let it
+   dip to 31.6px around 855 tall). Continuous, so
+   nothing snaps at a tier edge (the 639 lift aside); every term eases with
+   the hero's own 450ms glide when the frozen height lands.
+   Specificity: one class more than the /agents tiers above, so the homepage
+   wins at every height whatever the order (height 0,2,0 vs 0,1,0; copy
+   transform and art top 0,2,0 vs 0,1,0). */
 @media (min-width: 1025px) {
+  .lp-hero.lp-hero--home {
+    --lp-hero-lift: clamp(0px, (873px - var(--lp-svh, 100svh)) * 0.3, 34px);
+    --lp-hero-h: clamp(
+      380px,
+      max(var(--lp-svh, 100svh) - 216px, min(544px, var(--lp-svh, 100svh) - 120px)),
+      657px
+    );
+    /* engines without CSS trig (Safari < 15.4, Chromium < 111, Firefox <
+       108) cannot divide two lengths: three safe steps, each the smallest
+       value the formula takes in its band, so the copy is never larger */
+    --lp-hero-s: 1;
+  }
+  .lp-hero--home .lp-hero-inner {
+    transform: scale(var(--lp-hero-s)) translateZ(0);
+    transform-origin: 50% 100%;
+  }
+  /* The art lifts with the short windows; its clip follows the hero's
+     bottom. The section is positioned (isolation), so its art would paint
+     over the demo section under it, and the art's invisible page-coloured
+     ring would cover the window's top. Visible ink over a full rotation ends
+     by y741 at 1654, y633 at 1440, y568 at 1280 (minus LIFT): nothing
+     visible is cut at ≤ 1512 wide (measured down to 620 tall). From 1654
+     wide, on windows shorter than ~820, the lowest tail is cut by the hero's
+     bottom line at the screen's left edge for part of the loop (17px wide at
+     1654×800, 44px at 1654×760: impl/first-screen-peek.md). Beats the ≥1655
+     px clip (0,2,0 > 0,1,0). ≤1024 keeps the proportional 38.04% (flow
+     layouts). */
   .lp-hero--home .lp-hero-art {
-    clip-path: inset(0 0 calc(100% - 120px - var(--lp-hero-h)) 0);
+    clip-path: inset(0 0 calc(100% - 120px - var(--lp-hero-lift) - var(--lp-hero-h)) 0);
+    top: calc(-120px - var(--lp-hero-lift));
+  }
+}
+@media (min-width: 1025px) and (max-height: 872px) {
+  .lp-hero.lp-hero--home {
+    --lp-hero-s: 0.73;
+  }
+}
+@media (min-width: 1025px) and (max-height: 663px) {
+  .lp-hero.lp-hero--home {
+    --lp-hero-s: 0.66;
   }
 }
 @media (min-width: 1025px) and (max-height: 639px) {
+  .lp-hero.lp-hero--home {
+    --lp-hero-lift: 60px;
+  }
+}
+/* a unitless ratio of two lengths: tan(atan2(a, b)) = a / b (the idiom of
+   the fit scales, anim.css). After the steps above: same specificity, so
+   it wins wherever the engine can compute it. */
+@supports (transform: scale(tan(atan2(1px, 1px)))) {
+  @media (min-width: 1025px) {
+    .lp-hero.lp-hero--home {
+      --lp-hero-s: clamp(
+        0.66,
+        tan(atan2(var(--lp-hero-h) - 358px + var(--lp-hero-lift), 299px)),
+        1
+      );
+    }
+  }
+}
+/* the clip eases with the lift and the height it is made of (same curve,
+   same time: the three stay on one line during the glide) */
+@media (min-width: 1025px) and (prefers-reduced-motion: no-preference) {
   .lp-hero--home .lp-hero-art {
-    clip-path: inset(0 0 calc(100% - 180px - var(--lp-hero-h)) 0); /* art top −180 there */
+    transition:
+      top 450ms cubic-bezier(0.22, 1, 0.36, 1),
+      clip-path 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+/* the top-of-file reduced-motion block predates the base .lp-hero-inner and
+   .lp-hero-art rules in the cascade: restated here, so the copy's scale and
+   the art's lift land at once there */
+@media (min-width: 1025px) and (prefers-reduced-motion: reduce) {
+  .lp-hero--home .lp-hero-inner,
+  .lp-hero--home .lp-hero-art {
+    transition: none;
   }
 }
 

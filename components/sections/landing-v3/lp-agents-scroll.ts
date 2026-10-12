@@ -1,11 +1,11 @@
 "use client";
 
 /**
- * Agents view scroll assembly — "the same logic" as the humans hero scroll (decision 2026-10-09
- * §8; agents-view spec §6.1). Owner: agents-view package.
+ * Agents view scroll assembly (decision 2026-10-09 §8; agents-view spec §6.1). Owner: agents-view
+ * package. The humans view had the same assembly until 2026-10-12; its window now only grows
+ * (lp-demo-scroll.ts, _decisions.md §10), so the range lives here alone.
  *
- * Same range as the humans demo window (lp-demo-timeline.ts HS_START_FROM_BOTTOM / HS_END_FROM_TOP,
- * copied here so the two packages stay decoupled): ONE progress p, 0 when the wall section's top
+ * ONE progress p, 0 when the wall section's top
  * sits 299.42 px above the viewport's bottom (state 01: 656.58 on a 956-tall window) → 1 when it
  * reaches 141 px from the top (state 03). No pin: the section moves with the page.
  *
@@ -15,30 +15,29 @@
  *                 (clip + travelling bottom edge), linear over the whole range;
  *   --lp-as-rows  on the section: wall rows printed, 4 → 79 (one 18 px row per step, 75 steps);
  *   --lp-as-hero  on each `.lp-hs-hero` (nav-hero's hook): the hero copy drifts 25.54 px·p and
- *                 fades out between p .5481 and .85, as on the humans side. Its own variable:
- *                 the humans driver (lp-demo-scroll.ts) writes --lp-hs-hero on the same elements.
+ *                 fades out between p .5481 and .85.
  *   data-as-out   on each `.lp-hs-hero` from p ≥ .85 (the end of that fade): audience-agents.css
  *                 turns it into `visibility: hidden`, so the faded "Copy instruction" button and
- *                 the toggle are no longer hit-testable or tab stops (the humans side's
- *                 `data-hs-out`, verifier DT-1). Scrolling back up brings them back.
+ *                 the toggle are no longer hit-testable or tab stops (verifier DT-1). Scrolling
+ *                 back up brings them back.
  * Lock: once p reaches 1 (or the page arrives past it) the section gets `data-as-done` and the
  * card and wall stay assembled for the visit — never rewind on screen. The hero copy keeps
- * following the scroll (scrolling back shows it again), as on the humans side.
+ * following the scroll (scrolling back shows it again).
  *
  * Plain passive scroll + one rAF (no GSAP, nothing lazy to fetch): mounted only in the agents view
  * on desktop windows (≥1025 × ≥640) with motion allowed; everywhere else nothing is written and
  * CSS shows the rest picture, state 03 (= the V2 artboard).
  */
 
-/** The humans hero scroll's range (lp-demo-timeline.ts). */
+/** The assembly's range (the humans hero scroll's, until that one was retired on 2026-10-12). */
 const START_FROM_BOTTOM = 299.42;
 const END_FROM_TOP = 141;
 /** Wall rows printed at state 01 and the rows added over the range (V2 wraps to 79 rows). */
 export const AS_FIRST_ROWS = 4;
 export const AS_ROWS = 75;
-/** The hero copy has faded out from here (.5481 + .3019), as HS_HERO_OUT on the humans side. */
+/** The hero copy has faded out from here (.5481 + .3019). */
 const HERO_OUT = 0.85;
-/** Where the effect runs (the humans hero scroll's gate before its 2026-10-12 height ceiling). */
+/** Where the effect runs: desktop windows, 640 tall or more, no height ceiling. */
 export const AS_MEDIA = "(min-width: 1025px) and (min-height: 640px) and (prefers-reduced-motion: no-preference)";
 
 export function mountAgentsAssembly(section: HTMLElement): () => void {

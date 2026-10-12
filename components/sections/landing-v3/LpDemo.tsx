@@ -1,7 +1,12 @@
 // LpDemo — the homepage demo window (V2 Figma 4939:2645, window 4939:2736 / clean copy 4963:848,
-// pills 4939:2784) and its hero scroll (storyboard 4940:4919 → 4920 → 4981 → "4" 5024:8353).
+// pills 4939:2784; the conversation as storyboard frame "4" 5024:8353 draws it).
 // SERVER component. Owner: demo-scroll package. Specs: specs/demo-scroll.md,
-// specs/updates/hero-scroll-4.md, specs/updates/mobile-402.md §5.3, _decisions.md §3 + §9.
+// specs/updates/hero-scroll-4.md, specs/updates/mobile-402.md §5.3, _decisions.md §3 + §9 + §10.
+//
+// The window is assembled and opaque from the first frame (founder 2026-10-12, §10: the
+// storyboard's scroll assembly 01 → 02 → 03 is gone). On desktop its top bar peeks at the bottom
+// of the first screen (hero.css sizes the hero for it) and the card grows from .94 to 1 as the
+// visitor scrolls to it (lp-demo-scroll.ts, demo.css "the one scroll effect").
 //
 // V2 red note: "keep plays, remove others / pancake view vs claude view of the same example".
 // So ONE app window (the live app's new home: sidebar icon, wordmark, New chat; "Ready when you
@@ -19,13 +24,12 @@
 // lp-demo-timeline.ts: [data-cue] shows from its time (.is-on), [data-uncue] hides from it
 // (.is-off), [data-swap] flips [data-s=before|after] (.is-sw), [data-press] scales .96
 // (.is-press), [data-cursor] is a cursor target. The server markup is the Pancake view's REST
-// picture (= V2): no JS, reduced motion and the scroll assembly all show it.
+// picture (= V2): no JS, reduced motion and the first screen all show it.
 //
 // Layout (demo.css): the window and the head (title, subtitle, composer) are SIBLINGS in one grid
 // (the window spans every row through subgrid, the head sits in row 2 over the window's empty
-// row): during the hero scroll the window scales from 0.4956 about its bottom edge while the head
-// stays full size above it. A direct <section> child of main.lp: the agents view hides it with
-// every human section (audience.css). Class block `lp-demowin` (`lp-demo` is /demo's <main>).
+// row). A direct <section> child of main.lp: the agents view hides it with every human section
+// (audience.css). Class block `lp-demowin` (`lp-demo` is /demo's <main>).
 //
 // Phones (≤767): the SAME markup is recomposed by demo.css as the mobile artboard's portrait
 // card (5024:9506: no top chrome, centred wordmark, composer docked at the bottom), a fixed
@@ -42,7 +46,6 @@ import { buildDemoModel } from "@/lib/verticals/demo-model";
 import { HOME_DEMO } from "@/lib/verticals/home-demo";
 import { lpClaudeSerif } from "./lp-claude-font";
 import { LP_DEMO } from "./lp-demo-data";
-import { HS_PRE_SCRIPT } from "./lp-demo-prescript";
 import { LpDemoPlayer } from "./LpDemoPlayer";
 
 const P = LP_DEMO.pancake;
@@ -182,8 +185,8 @@ function PancakeView({ prompt, aria }: { prompt: ReturnType<typeof buildDemoMode
         </p>
       </div>
 
-      {/* the head (title, subtitle, composer): the hero scroll's persistent element, OVER the
-          window (a sibling in its grid row), so the window can scale while it stays full size */}
+      {/* the head (title, subtitle, composer): OVER the window, a sibling in its grid row; it
+          leaves as one block when the request is sent */}
       <div className="lp-demowin__head" aria-hidden="true" data-uncue="p.send">
         <p className="lp-demowin__title">{P.title}</p>
         <p className="lp-demowin__sub">{P.sub}</p>
@@ -309,9 +312,9 @@ function ClaudeView({ prompt }: { prompt: ReturnType<typeof buildDemoModel>["pro
 
 /* ─── section ──────────────────────────────────────────────────────────────── */
 
-/** No JS: the assembly's pre-script pose (demo.css) must not hide the window. */
-const NOSCRIPT_CSS =
-  "<style>.lp-demowin{--lp-hs:1!important;animation:none!important}</style>";
+/** No JS: nothing will ever grow the card, so it is drawn at its full size (demo.css starts
+ *  it at .94 on desktop and lp-demo-scroll.ts takes it to 1). */
+const NOSCRIPT_CSS = "<style>.lp-demowin .lp-demowin__card{scale:none!important}</style>";
 
 export function LpDemo() {
   const m = buildDemoModel(HOME_DEMO);
@@ -334,10 +337,6 @@ export function LpDemo() {
         claude={<ClaudeView prompt={prompt} />}
       />
       <noscript dangerouslySetInnerHTML={{ __html: NOSCRIPT_CSS }} />
-      {/* the hero scroll's pose before its driver loads (lp-demo-prescript.ts): runs during the
-          parse, writes one custom property through a constructed stylesheet (no DOM mutation,
-          so hydration is untouched), and is stopped by the player once the driver has mounted */}
-      <script dangerouslySetInnerHTML={{ __html: HS_PRE_SCRIPT }} />
     </section>
   );
 }

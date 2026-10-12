@@ -216,7 +216,7 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
     translate: 0 calc(25.54px * var(--lp-as-hero, 0));
   }
   /* faded out (p ≥ .85, lp-agents-scroll.ts data-as-out): out of hit-testing and the tab order
-     too, as the humans copy is (demo.css data-hs-out). Scrolling back up brings it back. */
+     too. Scrolling back up brings it back. */
   .lp-audience-page[data-audience="agents"] .lp-hs-hero[data-as-out] { visibility: hidden; }
 }
 
