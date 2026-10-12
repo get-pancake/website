@@ -5,12 +5,14 @@ import { gsap } from "@/lib/gsap";
 import {
   S1_HUBS,
   S1_JIT,
-  S2_HEADER_DY,
-  S2_ITEMS,
-  S2_PROC,
+  S2_CHAT,
+  S2_DRAFT,
   S3_CHIPS,
   S3_DAY_W,
   S3_NUM_DX,
+  S3_THREAD,
+  SX_LEADS_F5,
+  SX_LEADS_ROW_IN,
 } from "./lp-step-data";
 
 /** right edge of every glyph of `el`'s text, in the element's own unscaled px
@@ -37,17 +39,58 @@ function measureRightEdges(el: HTMLElement): number[] {
   return edges;
 }
 
+/* Multi-line typing helpers — COPIED from production's lp-feat-timelines.ts (measureGlyphs,
+   HIDDEN_CLIP, clipTo; that file left with the feature cards, 2026-10-11 — the deep-dive
+   stories carry their own copies), so the steps chunk imports no other timeline module. */
+type Glyph = { ch: string; right: number; top: number; bottom: number };
+/** each character's right edge and line box, in the element's own unscaled px (Range rects) */
+function measureGlyphs(el: HTMLElement): Glyph[] {
+  const box = el.getBoundingClientRect();
+  const s = el.offsetWidth ? box.width / el.offsetWidth : 1; // --lp-fit and any ancestor scale
+  const glyphs: Glyph[] = [];
+  const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+  const range = document.createRange();
+  let node: Node | null;
+  while ((node = walker.nextNode())) {
+    const text = (node as Text).data;
+    let i = 0;
+    for (const ch of text) {
+      range.setStart(node, i);
+      range.setEnd(node, i + ch.length);
+      const r = range.getBoundingClientRect();
+      i += ch.length;
+      const prev = glyphs[glyphs.length - 1];
+      if (r.width === 0 && prev) {
+        glyphs.push({ ...prev, ch }); // a collapsed space: nothing new shows
+        continue;
+      }
+      glyphs.push({ ch, right: (r.right - box.left) / s, top: (r.top - box.top) / s, bottom: (r.bottom - box.top) / s });
+    }
+  }
+  return glyphs;
+}
+const HIDDEN_CLIP = "polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0)";
+/** everything above the glyph's line, and its line up to the glyph's right edge */
+const clipTo = (g: Glyph) =>
+  `polygon(0 0, 100% 0, 100% ${g.top.toFixed(3)}px, ${g.right.toFixed(3)}px ${g.top.toFixed(3)}px, ${g.right.toFixed(3)}px ${g.bottom.toFixed(3)}px, 0 ${g.bottom.toFixed(3)}px)`;
+
 /**
- * The three "Pancake fills your pipeline" step animations as GSAP timelines —
- * the choreography of pancake-studio shorts/brain-research-loop,
- * pipeline-checklist-loop and meetings-calendar-loop (the compositions the
+ * The three "Pancake fills your pipeline" step animations as GSAP timelines.
+ * s1 and s3's calendar are the choreography of pancake-studio
+ * shorts/brain-research-loop and meetings-calendar-loop (the compositions the
  * mp4s were rendered from), ported tween for tween onto the same markup and
- * CSS (LpStepMocks.tsx / steps.css), paced tighter on 2026-09-30 (see each
- * builder's "Pace" note). Each timeline is built paused on its stage root a
- * viewport ahead of the card; lp-play-once.ts owns playback (as the card
- * arrives → play once → hold the last frame). Every builder is
+ * CSS (LpStepMocks.tsx / steps.css) and paced tighter on 2026-09-30. s2 and
+ * s3's intro come from the designer's "How it works" storyboards (Figma page
+ * 4197:9774, 2026-10-11: frames 5016:4214 → 5022:6230 and 5022:6116 →
+ * 5022:6080); the storyboards carry no prototype motion, so their timings are
+ * derived (specs/updates/steps-how-it-works.md §6, §8) and every beat is a
+ * named constant (S2_T, S3_T). Each timeline is built paused on its stage
+ * root a viewport ahead of the card; lp-play-once.ts owns playback (as the
+ * card arrives → play once → hold the last frame). Every builder is
  * seek-safe: sets and tweens only, no callbacks, no randomness. Frame 0 of
- * every timeline equals the markup's rest state (the poster the video had).
+ * every timeline equals the markup's rest state. s2 and s3 carry labels at
+ * the storyboard's pictures (f1 … f8, f1 … f5 and `cal`): QA seeks them
+ * through window.__lpStep.s2 / .s3.
  */
 
 export type StepVariant = "s1" | "s2" | "s3";
@@ -302,187 +345,365 @@ function buildS1(root: HTMLElement): BuiltStep {
   return { tl, cleanup: () => {}, cue: 0 };
 }
 
-/* ── step 02 · Agents start working (pipeline-checklist-loop, 11.2 s) ──
-   the 15 s cut (list holds, two avatars blink → the agent opens Pipeline by
-   itself → the card morphs into the checklist → every item is processed in
-   turn: the blue card lifts over the row with its spinner, works, the row
-   ticks → fold back to the Agents view, held) runs at 4/3 speed inside a
-   paused master, exactly like the composition's wrapper: every number below
-   is in the cut's own seconds, the master is what the site plays (11.2 s). */
+/* ── step 02 · Say who you want, Pancake builds the Play (Figma storyboard, ≈ 8.95 s) ──
+   f1 the chat request and its answer (the poster) → the thread scrolls, one
+   question arrives (f2) → the hand picks "1-50 employees" (f3) → the chat
+   gives way to the draft, "Your Play takes shape here", whose slots are
+   decided one by one (f4) → the Leads table fills row by row (f5) → the hand
+   ticks the header checkbox, every row follows, the selection bar rises (f6)
+   → the hand goes to "Add 13 to sequence" (f7) and clicks → the Play card,
+   its sparkline drawing in (f8), held as the last image (= V2's art card
+   5024:8277). Seconds of the timeline; the labels are the storyboard's
+   pictures. Pace knobs: every hold is the gap between two entries. */
+const S2_T = {
+  scroll: 0.45,
+  question: 0.62,
+  questionItems: 0.74,
+  f2: 1.45,
+  hand1: 1.6,
+  hover: 1.86,
+  f3: 2.05,
+  click1: 2.2,
+  chatOut: 2.5,
+  draftHead: 2.68,
+  draftCard: 2.74,
+  thinking: 2.8,
+  slots: [3.0, 3.22, 3.44],
+  f4: 3.95,
+  draftOut: 4.35,
+  leadsIn: 4.52,
+  rowsIn: 4.62,
+  f5: 5.12,
+  pan: 5.14,
+  hand2: 5.62,
+  click2: 6.08,
+  ticks: 6.14,
+  bar: 6.22,
+  f6: 6.7,
+  hand3: 6.9,
+  f7: 7.45,
+  click3: 7.55,
+  leadsOut: 7.8,
+  play1: 7.96,
+  play2: 8.04,
+  spark: 8.2,
+  f8: 8.75,
+  end: 8.95,
+} as const;
+/** the hand's top-left at its three pictures (Figma instance boxes; its fingertip is 9.3, 3
+    further in: steps.css .lp-sx-hand) */
+const S2_HAND = {
+  f3: { x: 122.53, y: 159.86 }, // on option 1
+  f6: { x: 101.5, y: 137.75 }, // on the header checkbox
+  f7: { x: 251.5, y: 368.53 }, // on "Add 13 to sequence"
+} as const;
+/** where the hand comes from, relative to the pose it eases onto (buildS1's pointer: lower right) */
+const HAND_FROM = { x: 110, y: 96 };
+
 function buildS2(root: HTMLElement): BuiltStep {
   const { $, $$ } = query(root);
-  const arows = $$(".lp-s2-arow");
-  const eyeGroups = arows.map((r) => Array.from(r.querySelectorAll<SVGGElement>(".lp-s2-eye")));
-  const prow = arows[0];
-  const otherRows = arows.slice(1);
-  const pill = $(".lp-s2-pill");
-  const chev = $(".lp-s2-chev");
-  const title = $(".lp-s2-title");
-  const cardrect = $<SVGRectElement>(".lp-s2-cardrect");
-  const crowEls = $$(".lp-s2-crow"); // 7 rows (the last one off-canvas)
-  const cbOn = crowEls.map((r) => r.querySelector<HTMLElement>(".lp-s2-cb-on")!);
-  const checks = crowEls.map((r) => r.querySelector<SVGPathElement>(".lp-s2-cb-on path")!);
-  const labels = crowEls.map((r) => r.querySelector<HTMLElement>(".lp-s2-lbl")!);
-  const strikes = crowEls.map((r) => r.querySelector<HTMLElement>(".lp-s2-strike")!);
-  const hl = $(".lp-s2-hl");
-  const hlbls = $$(".lp-s2-hlbl");
-  const spin = $(".lp-s2-spin");
-  const procLabels = S2_PROC.filter((k) => !S2_ITEMS[k].muted).map((k) => labels[k]); // muted ones keep their CSS colour
-  // the travelling card's top for row k: centred on the row's checkbox (row.top + 16 = centre; card centre 29.2)
-  const HL_TOP = (k: number) => S2_ITEMS[k].top + 16 - 29.2;
-  // check-mark draw lengths, measured once at setup
-  const lens = checks.map((p) => {
-    const L = p.getTotalLength();
-    p.style.strokeDasharray = String(L);
-    p.style.strokeDashoffset = String(L);
-    return L;
-  });
+  const T = S2_T;
+  const bg = $(".lp-sx-bg");
+  const chat = $(".lp-s2-chat");
+  const question = $(".lp-s2-q");
+  const qItems = $$(".lp-s2-q-item");
+  const hover = $(".lp-s2-hover");
+  const hand = $(".lp-sx-hand");
+  const draft = $(".lp-s2-draft");
+  const draftHead = $(".lp-s2-draft-head");
+  const draftCard = $(".lp-s2-draft-card");
+  const thinking = $(".lp-s2-thinking");
+  const slots = $$(".lp-s2-slot").map((el) => ({
+    undecided: el.querySelector<HTMLElement>(".lp-s2-slot-u")!,
+    value: el.querySelector<HTMLElement>(".lp-s2-slot-v"),
+    ok: el.querySelector<HTMLElement>(".lp-s2-slot-ok"),
+  }));
+  const decided = slots.filter((sl) => sl.value && sl.ok);
+  if (slots.length !== S2_DRAFT.slots.length || decided.length !== T.slots.length) {
+    throw new Error("lp-step: s2 draft slots out of sync");
+  }
+  const leads = $(".lp-sx-leads");
+  const rows = $$(".lp-sx-row");
+  if (rows.length !== SX_LEADS_ROW_IN.length) throw new Error("lp-step: s2 lead rows out of sync");
+  const ticks = $$(".lp-sx-cb-on"); // the header's, then one per row
+  const bar = $(".lp-s2-bar");
+  const add = $(".lp-s2-bar-add");
+  const plays = $$(".lp-s2-play");
+  const spark = $<SVGPathElement>(".lp-s2-play-spark path");
+  // the ground's second colour is the token's, read once (the chat's is steps.css's rest)
+  const white = getComputedStyle(root).getPropertyValue("--lp-ink-0").trim() || "#ffffff";
+  // rest poses that carry a half pixel as a transform (steps.css .lp-sx-leads, .lp-s2-bar)
+  const leadsX = Number(gsap.getProperty(leads, "x")) || 0;
+  const barY = Number(gsap.getProperty(bar, "y")) || 0;
 
-  // the highlighted item in its "flat" (plain row) pose: scale 1/1.1 about its centre + the 7.32px x-offset
-  // puts its checkbox at (93,302.75) and its label at x=129 — the same box as the other rows.
-  const HL_FLAT = { scale: 1 / 1.1, x: 7.32, y: -0.45 };
-  const HL_BG_OFF = "rgba(217,233,255,0)";
-  const HL_BD_OFF = "rgba(176,203,255,0)";
-  const HL_SH_OFF = "0px 0px 0px rgba(44,0,42,0)";
-  const HL_SH_ON = "0px 8px 22px rgba(44,0,42,0.10)";
-
-  const master = gsap.timeline({ paused: true });
-  const tl = gsap.timeline(); // the cut; NOT paused — a paused child would not follow its parent's seeks
-
-  // initial poses (t = 0 must equal t = 14)
-  tl.set(hl, { ...HL_FLAT, top: HL_TOP(0), backgroundColor: HL_BG_OFF, borderColor: HL_BD_OFF, boxShadow: HL_SH_OFF, opacity: 0 }, 0);
-  tl.set(hlbls, { opacity: 0 }, 0);
-  tl.set(spin, { opacity: 0, rotation: 0 }, 0);
-  tl.set(cbOn, { scale: 0 }, 0);
-  tl.set(strikes, { scaleX: 0 }, 0);
-  tl.set(procLabels, { color: "#2c002a" }, 0);
-
-  /* Pace (2026-09-30, founder: "tout plus dynamique"): the opening hold is
-     one blink (the agent opens Pipeline at 0.8 s of the cut, was 2.0), every
-     item works 0.45 s (was 0.62; the held "Score leads for ICP fit" 1.0 s,
-     was 1.5), and the fold-back follows the last item — 9.1 s on the master
-     (was 11.2). Cut seconds below; O = the opening's shift. */
-  const O = -1.2;
-  /* — Phase 1 · the list holds; an avatar blinks (0 – 0.8 s) — */
-  const blink = (eyes: SVGGElement[], t: number) =>
-    tl.to(eyes, { scaleY: 0.08, transformOrigin: "50% 50%", duration: 0.09, yoyo: true, repeat: 1, ease: "sine.inOut" }, t);
-  blink(eyeGroups[3], 0.3);
-
-  /* — Phase 2 · the agent opens Pipeline by itself: the pill lights, the row settles, no cursor (0.8 – 1.7 s) — */
-  tl.fromTo(pill, { opacity: 0, scale: 0.96 }, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, 2.0 + O);
-  blink(eyeGroups[0], 2.25 + O);
-  tl.to(prow, { scale: 0.94, duration: 0.14, ease: "power2.in" }, 2.45 + O);
-  tl.to(prow, { scale: 1, duration: 0.32, ease: "back.out(1.6)" }, 2.59 + O);
-
-  /* — Phase 3 · the card morphs into the Pipeline view (1.7 – 2.45 s), the checklist fills it from 2.15 — */
-  tl.to(pill, { opacity: 0, duration: 0.25, ease: "power2.in" }, 2.9 + O);
-  tl.to(title, { opacity: 0, y: -8, duration: 0.3, ease: "power2.in" }, 2.9 + O);
-  tl.to(otherRows, { opacity: 0, y: 8, duration: 0.3, ease: "power2.in", stagger: 0.05 }, 2.9 + O);
-  tl.fromTo(
-    cardrect,
-    { attr: { y: 101, height: 356 } },
-    { attr: { y: 50.75, height: 456.5 }, duration: 0.6, ease: "power3.inOut", immediateRender: false },
-    3.05 + O,
-  );
-  tl.to(prow, { y: S2_HEADER_DY, duration: 0.6, ease: "power3.inOut" }, 3.05 + O);
-  tl.fromTo(chev, { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, 3.5 + O);
-  tl.fromTo(
-    crowEls,
-    { opacity: 0, y: 10 },
-    { opacity: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.085, immediateRender: false },
-    3.35 + O,
-  );
-
-  /* — Phase 4 · each item is processed in turn (3.2 – ~10.3 s):
-       the blue card lifts over the row with its spinner, works, then the row ticks and the card moves on.
-       Item 3 ("Score leads for ICP fit") is held longer — that frame is the static step-2 illustration. — */
-  const LIFT = 0.32;
-  const DONE = 0.26;
-  const GAP = 0.06;
-  const WORK = (k: number) => (k === 3 ? 1.0 : 0.45);
-  let t = 4.4 + O;
-  S2_PROC.forEach((k) => {
-    // place the card on this row (it is invisible at this moment) and show this item's label
-    tl.set(hl, { top: HL_TOP(k), ...HL_FLAT, backgroundColor: HL_BG_OFF, borderColor: HL_BD_OFF, boxShadow: HL_SH_OFF, opacity: 0 }, t);
-    tl.set(hlbls[k], { opacity: 1 }, t); // one tween per label: shown here, hidden once the item is done
-    tl.set(spin, { rotation: 0 }, t);
-    // lift: fade in + grow + turn blue (the fill goes opaque fast, then the row underneath is hidden — no ghost)
-    tl.to(hl, { opacity: 1, duration: 0.1, ease: "power2.out" }, t);
-    tl.to(hl, { scale: 1, x: 0, y: 0, duration: LIFT + 0.2, ease: "back.out(1.5)" }, t);
-    tl.to(hl, { backgroundColor: "#d9e9ff", borderColor: "#b0cbff", duration: 0.1, ease: "power2.out" }, t);
-    tl.to(hl, { boxShadow: HL_SH_ON, duration: LIFT, ease: "power2.out" }, t);
-    tl.set(crowEls[k], { opacity: 0 }, t + 0.08);
-    tl.to(spin, { opacity: 1, duration: 0.2, ease: "power2.out" }, t + 0.12);
-    const work = WORK(k);
-    tl.to(spin, { rotation: 360 * (work + LIFT) * 1.05, duration: work + LIFT, ease: "none" }, t + 0.12);
-    // done: spinner out, card drops + fades while the row underneath ticks
-    const td = t + LIFT + work;
-    tl.to(spin, { opacity: 0, duration: 0.14, ease: "power2.in" }, td);
-    tl.to(
-      hl,
-      { scale: HL_FLAT.scale, x: HL_FLAT.x, y: HL_FLAT.y, backgroundColor: HL_BG_OFF, borderColor: HL_BD_OFF, boxShadow: HL_SH_OFF, opacity: 0, duration: DONE, ease: "power3.in" },
-      td,
+  const tl = gsap.timeline({ paused: true });
+  /** the hand's click, as buildS1's pointer */
+  const click = (t: number) => {
+    tl.to(hand, { scale: 0.88, duration: 0.08, ease: "power2.in" }, t);
+    tl.to(hand, { scale: 1, duration: 0.26, ease: "back.out(1.6)" }, t + 0.08);
+  };
+  /** the hand eases in from the lower right onto a pose */
+  const handIn = (pose: { x: number; y: number }, t: number) =>
+    tl.fromTo(
+      hand,
+      { x: pose.x + HAND_FROM.x, y: pose.y + HAND_FROM.y, autoAlpha: 0 },
+      { x: pose.x, y: pose.y, autoAlpha: 1, duration: 0.38, ease: "power3.out", immediateRender: false },
+      t,
     );
-    tl.set(hlbls[k], { opacity: 0 }, td + DONE);
-    tl.set(crowEls[k], { opacity: 1 }, td); // the row resurfaces as the card drops, and ticks
-    tl.to(cbOn[k], { scale: 1, duration: 0.35, ease: "back.out(1.6)" }, td + 0.1);
-    tl.to(checks[k], { strokeDashoffset: 0, duration: 0.25, ease: "power2.out" }, td + 0.2);
-    if (!S2_ITEMS[k].muted) tl.to(labels[k], { color: "#9a818f", duration: 0.25, ease: "power1.out" }, td + 0.15);
-    tl.to(strikes[k], { scaleX: 1, duration: 0.3, ease: "power2.out" }, td + 0.2);
-    t = td + DONE + GAP;
+
+  tl.addLabel("f1", 0);
+
+  /* — f1 → f2 · the thread scrolls up, the question card arrives and fills — */
+  tl.to(chat, { y: S2_CHAT.scrollY, duration: 0.6, ease: "power3.inOut" }, T.scroll);
+  tl.fromTo(
+    question,
+    { autoAlpha: 0, y: 14 },
+    { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out", immediateRender: false },
+    T.question,
+  );
+  tl.fromTo(
+    qItems,
+    { opacity: 0, y: 6 },
+    { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", stagger: 0.045, immediateRender: false },
+    T.questionItems,
+  );
+  tl.addLabel("f2", T.f2);
+
+  /* — f3 · the hand lands on option 1 (its hover plate lights), then clicks — */
+  handIn(S2_HAND.f3, T.hand1);
+  tl.fromTo(hover, { opacity: 0 }, { opacity: 1, duration: 0.12, ease: "power1.out", immediateRender: false }, T.hover);
+  tl.addLabel("f3", T.f3);
+  click(T.click1);
+  tl.to(hover, { backgroundColor: "rgba(0,0,0,0.08)", duration: 0.1, ease: "power1.out" }, T.click1);
+  tl.to(hover, { backgroundColor: "rgba(0,0,0,0.04)", duration: 0.25, ease: "power1.out" }, T.click1 + 0.1);
+
+  /* — f4 · the chat leaves, the ground turns white, the draft takes shape — */
+  tl.to(chat, { autoAlpha: 0, y: S2_CHAT.scrollY - 10, duration: 0.26, ease: "power2.in" }, T.chatOut);
+  tl.to(hand, { autoAlpha: 0, y: S2_HAND.f3.y - 10, duration: 0.26, ease: "power2.in" }, T.chatOut);
+  tl.to(bg, { backgroundColor: white, duration: 0.3, ease: "power1.inOut" }, T.chatOut);
+  const rise = { autoAlpha: 1, y: 0, duration: 0.38, ease: "power3.out", immediateRender: false };
+  tl.fromTo(draftHead, { autoAlpha: 0, y: 10 }, rise, T.draftHead);
+  tl.fromTo(draftCard, { autoAlpha: 0, y: 10 }, rise, T.draftCard);
+  tl.fromTo(thinking, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: "power1.out", immediateRender: false }, T.thinking);
+  // "thinking": two soft pulses, the first back at full strength exactly on f4 (no loop)
+  const pulse = (T.f4 - (T.thinking + 0.3)) / 2;
+  tl.to(thinking, { opacity: 0.45, duration: pulse, ease: "sine.inOut", yoyo: true, repeat: 3 }, T.thinking + 0.3);
+  decided.forEach((sl, k) => {
+    const t = T.slots[k];
+    tl.to(sl.undecided, { opacity: 0, duration: 0.12, ease: "power1.in" }, t);
+    tl.fromTo(sl.value, { opacity: 0, x: 6 }, { opacity: 1, x: 0, duration: 0.26, ease: "power3.out", immediateRender: false }, t);
+    tl.fromTo(sl.ok, { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(1.6)", immediateRender: false }, t);
   });
-  /* ≈ 10.3 s */
+  tl.addLabel("f4", T.f4);
 
-  /* — Phase 5 · fold back to the Agents list (F – F + 1), then the Agents view holds as the last image — */
-  const F = t;
-  tl.to(crowEls.slice().reverse(), { opacity: 0, y: -10, duration: 0.26, ease: "power2.in", stagger: 0.04 }, F + 0.05);
-  // reset the ticked items while they are invisible
-  tl.set(cbOn, { scale: 0 }, F + 0.7);
-  tl.set(strikes, { scaleX: 0 }, F + 0.7);
-  tl.set(procLabels, { color: "#2c002a" }, F + 0.7);
-  tl.set(checks, { strokeDashoffset: (i: number) => lens[i] }, F + 0.7);
-  tl.set(spin, { opacity: 0, rotation: 0 }, F + 0.7);
-  tl.set(hl, { top: HL_TOP(0), ...HL_FLAT, backgroundColor: HL_BG_OFF, borderColor: HL_BD_OFF, boxShadow: HL_SH_OFF, opacity: 0 }, F + 0.7);
-  tl.set(hlbls, { opacity: 0 }, F + 0.7);
-
-  tl.to(chev, { opacity: 0, y: 4, duration: 0.2, ease: "power2.in" }, F + 0.35);
+  /* — f5 · the draft leaves, the Leads table comes in at its frame-5 pose, row by row — */
+  tl.to(draft, { autoAlpha: 0, y: -10, duration: 0.26, ease: "power2.in" }, T.draftOut);
+  const f5 = { x: leadsX + SX_LEADS_F5.x, y: SX_LEADS_F5.y };
   tl.fromTo(
-    cardrect,
-    { attr: { y: 50.75, height: 456.5 } },
-    { attr: { y: 101, height: 356 }, duration: 0.45, ease: "power3.inOut", immediateRender: false },
-    F + 0.45,
+    leads,
+    { autoAlpha: 0, ...f5 },
+    { autoAlpha: 1, ...f5, duration: 0.3, ease: "power2.out", immediateRender: false },
+    T.leadsIn,
   );
-  tl.to(prow, { y: 0, duration: 0.45, ease: "power3.inOut" }, F + 0.45);
-  tl.fromTo(title, { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.35, ease: "power3.out", immediateRender: false }, F + 0.75);
-  // the four other agent rows return beneath the landing Pipeline row (last settles before 14 s)
+  rows.forEach((row, i) => {
+    tl.fromTo(row, { opacity: 0 }, { opacity: 1, duration: 0.5, ease: "none", immediateRender: false }, T.rowsIn + SX_LEADS_ROW_IN[i]);
+  });
+  tl.addLabel("f5", T.f5);
+
+  /* — f6 · the table settles, the hand ticks the header checkbox, every row follows, the bar rises — */
+  tl.to(leads, { x: leadsX, y: 0, duration: 0.6, ease: "power2.inOut" }, T.pan);
+  handIn(S2_HAND.f6, T.hand2);
+  click(T.click2);
   tl.fromTo(
-    otherRows,
-    { opacity: 0, y: 10 },
-    { opacity: 1, y: 0, duration: 0.32, ease: "power3.out", stagger: 0.085, immediateRender: false },
-    F + 0.63,
+    ticks,
+    { scale: 0 },
+    { scale: 1, duration: 0.25, ease: "back.out(1.6)", stagger: 0.03, immediateRender: false },
+    T.ticks,
   );
-  blink(eyeGroups[2], F + 1.25); // a blink during the closing hold; eyes are open again 0.18 s later
+  tl.fromTo(
+    bar,
+    { autoAlpha: 0, y: barY + 16, scale: 0.96 },
+    { autoAlpha: 1, y: barY, scale: 1, duration: 0.4, ease: "back.out(1.4)", immediateRender: false },
+    T.bar,
+  );
+  tl.addLabel("f6", T.f6);
 
-  /* The site seeks and plays `master`; the child's timeScale maps the master's
-     time into the cut (cut time = master time × 4/3), so every seek stays
-     deterministic. The master ends in the closing hold, once the last blink
-     is done (F + 1.6 of the cut; the mp4 padded to 11.2 s). */
-  master.add(tl, 0);
-  tl.timeScale(1 / 0.75);
-  master.set({}, {}, (F + 1.6) * 0.75);
+  /* — f7 · the hand goes to "Add 13 to sequence" and clicks — */
+  tl.to(hand, { x: S2_HAND.f7.x, y: S2_HAND.f7.y, duration: 0.5, ease: "power3.inOut" }, T.hand3);
+  tl.addLabel("f7", T.f7);
+  click(T.click3);
+  tl.to(add, { scale: 0.96, duration: 0.09, ease: "power2.in" }, T.click3);
+  tl.to(add, { scale: 1, duration: 0.3, ease: "back.out(1.6)" }, T.click3 + 0.09);
 
-  return { tl: master, cleanup: () => {}, cue: 0 };
+  /* — f8 · the table, the bar and the hand leave; the Play cards rise, the sparkline draws in — */
+  tl.to([leads, hand], { autoAlpha: 0, duration: 0.26, ease: "power2.in" }, T.leadsOut);
+  tl.to(bar, { autoAlpha: 0, y: barY + 10, duration: 0.26, ease: "power2.in" }, T.leadsOut);
+  [T.play1, T.play2].forEach((t, i) => {
+    tl.fromTo(
+      plays[i],
+      { autoAlpha: 0, y: 14 },
+      { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out", immediateRender: false },
+      t,
+    );
+  });
+  tl.to(spark, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, T.spark);
+  tl.addLabel("f8", T.f8);
+  tl.set({}, {}, T.end); // the Play card holds
+
+  return { tl, cleanup: () => {}, cue: 0 };
 }
 
-/* ── step 03 · Pancake gets you the meeting (meetings-calendar-loop, 7 s) ──
+/* ── step 03 · Pancake gets you the meeting (Figma storyboard intro + meetings-calendar-loop) ──
+   f1 the selected leads (the poster) → one lead, and a message Pancake drafts
+   for her, typed (f2 = three glyphs into its last line) → sent (f3) → the
+   thread scrolls, she answers (f4) → the meeting (f5) → the thread leaves,
+   the cream card shows and today's calendar plays, unchanged, as the end
+   (`cal`): the filled week holds = production's end picture (V2 art card
+   5022:6046). ≈ 10.7 s with the default message: 7.3 s of intro, then the
+   calendar's 4.26 s at S3_CAL_RATE. Typing times depend on the message's
+   glyphs, so the later beats are offsets from the moment it is sent. */
+const S3_T = {
+  leadsOut: 0.45,
+  lead: 0.62,
+  conn1: 0.82,
+  message: 0.9,
+  type: 1.3,
+  /** after the last glyph */
+  caretOff: 0.25,
+  sentAfter: 0.35,
+  f3After: 0.65,
+  /** after f3 (the message is sent) */
+  scroll1: 0.4,
+  conn2: 0.65,
+  reply: 0.75,
+  f4: 1.25,
+  scroll2: 1.85,
+  conn3: 2.1,
+  meet: 2.2,
+  f5: 2.7,
+  threadOut: 3.4,
+  calendarIn: 3.6,
+  cal: 3.8,
+} as const;
+/** Pancake's typing pace (the deep dive's message story): 12 ms a glyph, a breath after a
+    sentence end and after a comma */
+const S3_TYPE = { glyph: 0.012, sentence: 0.06, comma: 0.035 } as const;
+/** how fast the calendar plays inside the master (its own seconds are unchanged) */
+const S3_CAL_RATE = 1.25;
+
+function buildS3(root: HTMLElement): BuiltStep {
+  const { $, $$ } = query(root);
+  const T = S3_T;
+  const bg = $(".lp-sx-bg");
+  const leads = $(".lp-sx-leads");
+  const thread = $(".lp-s3-thread");
+  const leadCard = $(".lp-s3-lead");
+  const conns = $$(".lp-s3-conn");
+  const msgCard = $(".lp-s3-msg");
+  const ebDraft = $(".lp-s3-eb-draft");
+  const ebSent = $(".lp-s3-eb-sent");
+  const msg = $(".lp-s3-msg-text");
+  const caret = $(".lp-s3-caret");
+  const replyCard = $(".lp-s3-reply");
+  const meetCard = $(".lp-s3-meet");
+  const calendar = $(".lp-s3-card");
+  if (conns.length !== 3) throw new Error("lp-step: s3 connectors out of sync");
+
+  // the ground's second colour is the token's, read once (never a second name for #fafaf8)
+  const threadBg = getComputedStyle(root).getPropertyValue("--lp-dive-stage-bg").trim() || "#fafaf8";
+  // the message's glyph edges, measured from the live text (weight 500, its typing face)
+  const glyphs = measureGlyphs(msg);
+  if (!glyphs.length) throw new Error("lp-step: s3 message has no glyphs");
+
+  const tl = gsap.timeline({ paused: true });
+  const rise = { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out", immediateRender: false };
+  const grow = { scaleY: 1, duration: 0.22, ease: "power2.out", immediateRender: false };
+
+  tl.addLabel("f1", 0);
+
+  /* — f1 → f2 · the table leaves, the ground turns to the thread's; the lead, then her message card — */
+  tl.to(leads, { autoAlpha: 0, y: -8, duration: 0.26, ease: "power2.in" }, T.leadsOut);
+  tl.to(bg, { backgroundColor: threadBg, duration: 0.3, ease: "power1.inOut" }, T.leadsOut);
+  tl.fromTo(leadCard, { autoAlpha: 0, y: 12 }, rise, T.lead);
+  tl.fromTo(conns[0], { scaleY: 0 }, grow, T.conn1);
+  tl.fromTo(msgCard, { autoAlpha: 0, y: 12 }, rise, T.message);
+
+  /* — the message types: a clip staircase over the real text, the caret on the glyph edges — */
+  const lastTop = glyphs[glyphs.length - 1].top;
+  const lastLineStart = glyphs.findIndex((g) => Math.abs(g.top - lastTop) < 1);
+  const f2Glyph = Math.min(glyphs.length - 1, lastLineStart + 2); // three glyphs into the last line
+  let t: number = T.type;
+  let tF2: number = T.type;
+  tl.set(caret, { x: 0, y: glyphs[0].top, opacity: 1 }, T.type - 0.25);
+  glyphs.forEach((g, i) => {
+    tl.set(msg, { clipPath: clipTo(g) }, t);
+    tl.set(caret, { x: +g.right.toFixed(3), y: +g.top.toFixed(3) }, t);
+    if (i === f2Glyph) tF2 = t;
+    const next = glyphs[i + 1]?.ch ?? "";
+    t += S3_TYPE.glyph + (g.ch === "," ? S3_TYPE.comma : g.ch === "." && next === " " ? S3_TYPE.sentence : 0);
+  });
+  tl.addLabel("f2", tF2 + 0.001);
+  const tE = t;
+  tl.set(caret, { opacity: 0 }, tE + T.caretOff);
+  tl.set(msg, { clipPath: "none" }, tE + T.caretOff); // the text paints like any paragraph again
+
+  /* — f3 · sent — */
+  tl.to(ebDraft, { opacity: 0, y: -4, duration: 0.15, ease: "power2.in" }, tE + T.sentAfter);
+  tl.fromTo(
+    ebSent,
+    { opacity: 0, y: 4 },
+    { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", immediateRender: false },
+    tE + T.sentAfter,
+  );
+  const tS = tE + T.f3After;
+  tl.addLabel("f3", tS);
+
+  /* — f4 · the thread scrolls (the sent message becomes history: regular weight), she answers — */
+  const [pose4, pose5] = S3_THREAD.scroll;
+  tl.to(thread, { x: pose4.x, y: pose4.y, duration: 0.6, ease: "power3.inOut" }, tS + T.scroll1);
+  tl.to(msg, { fontWeight: 400, duration: 0.6, ease: "none" }, tS + T.scroll1);
+  tl.fromTo(conns[1], { scaleY: 0 }, grow, tS + T.conn2);
+  tl.fromTo(replyCard, { autoAlpha: 0, y: 12 }, rise, tS + T.reply);
+  tl.addLabel("f4", tS + T.f4);
+
+  /* — f5 · it scrolls again, the meeting appears — */
+  tl.to(thread, { x: pose5.x, y: pose5.y, duration: 0.6, ease: "power3.inOut" }, tS + T.scroll2);
+  tl.fromTo(conns[2], { scaleY: 0 }, grow, tS + T.conn3);
+  tl.fromTo(meetCard, { autoAlpha: 0, y: 12 }, rise, tS + T.meet);
+  tl.addLabel("f5", tS + T.f5);
+
+  /* — the thread leaves, its ground with it (the cream card shows), and the calendar comes in
+       on its own frame 0: the empty week, Mon 19 in the circle — */
+  tl.to(thread, { autoAlpha: 0, y: pose5.y - 10, duration: 0.28, ease: "power2.in" }, tS + T.threadOut);
+  tl.to(bg, { opacity: 0, duration: 0.3, ease: "power1.inOut" }, tS + T.threadOut);
+  tl.fromTo(
+    calendar,
+    { autoAlpha: 0, y: 12 },
+    { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out", immediateRender: false },
+    tS + T.calendarIn,
+  );
+
+  /* — today's calendar, unchanged: a child of the master (NOT paused — a paused child would
+       not follow its parent's seeks), played at S3_CAL_RATE — */
+  const cal = buildCalendar(root);
+  tl.add(cal, tS + T.cal);
+  cal.timeScale(S3_CAL_RATE);
+  tl.addLabel("cal", tS + T.cal);
+
+  return { tl, cleanup: () => {}, cue: 0 };
+}
+
+/* ── step 03's calendar (meetings-calendar-loop, 7 s) — the choreography production
+   shipped as the whole of step 03 until 2026-10-11, tween for tween ──
    0 – 0.5 empty week · Mon / Tue / Wed / Thu 1.1 s each: chips pop in, the
    day circle hops and the numbers slide in / out of it, outcomes stamp the
    past meetings · the marker settles on Thu 22 and the filled week holds.
    Pace (2026-09-30, founder: "tout plus dynamique"): the composition's
    seconds (S3_CHIPS, the T_ beats) map through `at` — the first meeting
    pops at 0.2 s (was 0.55), each day lasts 0.83 s (was 1.1), the week is
-   full at ~4.1 s (was ~5.7). Tween lengths are unchanged. */
-function buildS3(root: HTMLElement): BuiltStep {
+   full at ~4.1 s (was ~5.7). Tween lengths are unchanged. Its closing pad is
+   0.8 s (was 1.2 as a stand-alone card: the last badge lands at T_FRI + 0.7). */
+function buildCalendar(root: HTMLElement): gsap.core.Timeline {
   const { $, $$ } = query(root);
   const circle = $(".lp-s3-circle");
   const days = $$(".lp-s3-day").map((d) => ({
@@ -498,7 +719,7 @@ function buildS3(root: HTMLElement): BuiltStep {
     badge: chipEls[i].querySelector<HTMLElement>(".lp-s3-badge")!,
   }));
 
-  const tl = gsap.timeline({ paused: true });
+  const tl = gsap.timeline();
   const at = (t: number) => 0.2 + (t - 0.55) * 0.75;
 
   // chips: tiny -> full (elastic), fully invisible at frame 0
@@ -565,9 +786,9 @@ function buildS3(root: HTMLElement): BuiltStep {
     T_FRI,
   );
   byDay(3).forEach((c, k) => outcome(c, T_FRI + 0.15 + k * 0.15));
-  tl.set({}, {}, T_FRI + 1.2); // hold once the last badge has landed (the composition padded to 7 s)
+  tl.set({}, {}, T_FRI + 0.8); // hold once the last badge has landed
 
-  return { tl, cleanup: () => {}, cue: 0 };
+  return tl;
 }
 
 const BUILDERS: Record<StepVariant, (root: HTMLElement) => BuiltStep> = {

@@ -9,10 +9,10 @@
 // ("Pancake fills your pipeline.", was "Pancake sells it") is his words verbatim —
 // not the artboard's (V2 4911:373 still shows V1's "While You Run your Business," /
 // "Pancake Sells it": not a delta, production wins).
-// The steps' copy, alt text and art slots live in lp-steps-content.ts (2026-10-09,
-// Figma V2: rows 02 and 03 are "Content (still tbd)" — each row is an explicit,
-// data-driven slot that keeps production's shipped content until the designer's
-// lands; the copy history is there).
+// The steps' copy, alt text and art slots live in lp-steps-content.ts (2026-10-09: each
+// row's art is an explicit, data-driven slot; the copy history is there). 2026-10-11: the
+// designer delivered rows 02 and 03 ("How it works" storyboards) — step 02 is a new
+// animation under a new title, step 03 gains an intro in front of its calendar.
 
 import { SHOW_PLACEHOLDERS, visibleEntries } from "@/lib/placeholders";
 
@@ -30,7 +30,13 @@ function StepArtSlot({ step }: { step: StepContent }) {
   const placeholder = art.status === "placeholder" ? "" : undefined;
   if (art.kind === "anim") {
     return (
-      <LpStepAnim className="lp-steps__media" variant={art.variant} alt={step.alt} placeholder={art.status === "placeholder"} />
+      <LpStepAnim
+        className="lp-steps__media"
+        variant={art.variant}
+        alt={step.alt}
+        placeholder={art.status === "placeholder"}
+        showPlaceholders={SHOW_PLACEHOLDERS}
+      />
     );
   }
   if (art.kind === "image") {
@@ -40,7 +46,7 @@ function StepArtSlot({ step }: { step: StepContent }) {
       </div>
     );
   }
-  // the V2 artboard's empty card (dev + preview only: kind "empty" is placeholder by type)
+  // an empty card (dev + preview only: kind "empty" is placeholder by type)
   return <div className="lp-steps__media" aria-hidden="true" data-placeholder="" />;
 }
 

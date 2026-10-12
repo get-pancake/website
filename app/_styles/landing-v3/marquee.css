@@ -176,6 +176,17 @@
     --lp-marquee-scale: var(--lp-customer-logo-mobile-scale);
     --lp-customer-logo-duration: var(--lp-customer-logo-mobile-duration);
   }
+  /* Homepage variant on phones — the designer's mobile artboard (Figma 5024:8948,
+     2026-10-11): pad 3.811, gap 16, strip slot 42.67 → 3.811 + 16 + 16 + 42.67 + 3.811 =
+     82.29 (the desktop recipe gave 123.39). The 37.4px logo row is centred in the slot.
+     min-height, not height: the reduced-motion fallback wraps the logos onto several rows. */
+  .lp-marquee--labelled {
+    gap: var(--lp-space-4); /* 16 */
+    padding-block: 3.811px;
+  }
+  .lp-marquee--labelled .lp-marquee__slot {
+    min-height: 42.67px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

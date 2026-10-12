@@ -171,8 +171,10 @@
      the desktop wrapper p-16 + org padding would double it (cards 338 instead
      of 370, extra line-wraps in titles/bodies). Org carries the only inset. */
   .lp-steps {
-    /* artboard: marquee frame ends y801.9, steps frame starts y860 → 58px */
-    padding: 58px 0 0;
+    /* mobile artboard 5024:8631 (2026-10-11): the logos frame (5024:8948) ends at y1442.18
+       and the steps frame (5024:8706) starts at y1538.29 → 96 (the V1 artboard had 58,
+       with the logos above the demo) */
+    padding: 96px 0 0;
   }
   .lp-steps__org {
     gap: 48px;
@@ -246,16 +248,18 @@
 }
 
 /* ══ In-page step animations (2026-09-07) — LpStepAnim.tsx / LpStepMocks.tsx /
-   lp-step-timelines.ts / lp-step-data.ts. The stage is the composition's
-   464×426 design frame (pancake-studio shorts/brain-research-loop,
-   pipeline-checklist-loop, meetings-calendar-loop rendered it at 2.3276× =
-   the 1080×992 mp4s these replace; every value below is the composition's)
-   and scales AS PIXELS with the media card: --lp-fit = card width / 464,
-   set by LpStepAnim's ResizeObserver, the trig quotient being the
-   pre-hydration fallback (iOS mis-resolves it, LpFitVars.tsx — one wrong
-   first frame, self-corrected). Rest state = the composition's FRAME 0 (the
-   poster the mp4 showed): the animation-only layers start invisible here and
-   the timeline takes over from that exact picture. ══ */
+   lp-step-timelines.ts / lp-step-data.ts. The stage is a 464×426 design
+   frame: for step 01 and step 03's calendar, the pancake-studio compositions'
+   (shorts/brain-research-loop, meetings-calendar-loop, which rendered it at
+   2.3276× = the 1080×992 mp4s these replaced; every value is the
+   composition's); for step 02 and step 03's intro, the designer's "How it
+   works" storyboard frames (Figma, 2026-10-11; every value is the frame's).
+   It scales AS PIXELS with the media card: --lp-fit = card width / 464, set
+   by LpStepAnim's ResizeObserver, the trig quotient being the pre-hydration
+   fallback (iOS mis-resolves it, LpFitVars.tsx — one wrong first frame,
+   self-corrected). Rest state = each animation's FRAME 0 (the empty URL
+   input, the chat request, the selected leads): the animation-only layers
+   start invisible here and the timeline takes over from that exact picture. ══ */
 .lp-steps__media {
   container-type: inline-size;
 }
@@ -271,9 +275,11 @@
   position: absolute;
   /* the scaled stage sits vertically centred: a tablet row stretches the
      media card to its text card's height (426 exactly on the desktop
-     artboard), and the composition's canvas IS the card cream, so the
-     extra height reads as margin above and below the picture — like the
-     illustrations' contain-fit did — never as a crop. Above 1360 the card
+     artboard), and the stage's ground continues above and below it (the
+     card cream for steps 01 and 03's calendar; .lp-sx-bg, which overshoots
+     the stage, for the storyboard stages), so the extra height reads as
+     margin above and below the picture — like the illustrations'
+     contain-fit did — never as a crop. Above 1360 the card
      is the fixed 464 box, so the pre-hydration fallback is exactly 1 and the
      server-rendered poster shows at once. */
   top: calc(50% - 213px * var(--lp-fit, 1));
@@ -563,230 +569,983 @@
   white-space: nowrap;
 }
 
-/* ── step 02 · the Agents list and the Pipeline checklist (design 4631:2529) ── */
-.lp-step-stage--s2 > * {
-  position: absolute;
+/* ══ Steps 02 and 03 — the designer's "How it works" storyboards (Figma page
+   4197:9774, 2026-10-11; spec artifacts specs/updates/steps-how-it-works.md).
+   Every box below is a Figma frame box in the 464×426 stage's own px;
+   fractions are Figma's. Figma rounds a line box to whole px (13/150% →
+   20, 16/130% → 21, 11/150% → 17, 21/120% → 25…): those are the
+   line-heights here, so multi-line text and the cards that hug it keep
+   Figma's heights. TEXT Y: every text's `top` is its Figma y plus a
+   fraction of a pixel ("Figma n + d" in the comments). At 1x each engine
+   snaps a text baseline to a whole pixel, each its own way (Chromium lands
+   a pixel above WebKit on half of them), and a quarter-pixel sweep of every
+   text in Chromium, WebKit and Firefox against the Figma frames
+   (artifacts pw/ls2-sweep.sh + .py) gave, per text, the offset where the
+   ink lands on Figma's row in all three — or in Chromium and WebKit when
+   Firefox, which rasters ~1px lower, cannot join. Change a `top` here by
+   re-running the sweep, not by eye.
+   Hairlines: Figma's 0.5px #e2e2e2 strokes are an OUTSIDE 0.5px box-shadow
+   spread (the .lp-s3-card idiom; never an inset one — WebKit drops
+   sub-pixel inset shadows); rules between rows are 0.5px borders, which
+   every engine snaps to one device pixel instead of rounding away.
+   Aeonik Fono in Figma (avatar initials, eyebrows) is Geist 500 here:
+   Fono is a code face only (founder 2026-09-09). ══ */
+.lp-step-stage {
+  --lp-sx-line: #e2e2e2; /* the storyboards' hairline (no kit token has it: ink-50 is #ddcfcd) */
+  --lp-sx-shadow: 0 4px 32px rgba(48, 0, 44, 0.08); /* Figma drop shadow #30002c 8%, 0/4, blur 32 */
 }
-/* card body: an SVG rect so its y/height tween while the radius + stroke stay true */
-.lp-s2-cardsvg {
-  height: 426px;
+/* the stage's ground, which the timeline recolours (chat #fafaf8 ↔ white) and, in
+   step 03, fades away so the cream card shows under the calendar. It overshoots the
+   stage by its own height above and below: a tablet row stretches the media card
+   around the centred stage, and the card clips. */
+.lp-sx-bg {
+  bottom: -426px;
   left: 0;
-  overflow: visible;
-  top: 0;
-  width: 464px;
-}
-.lp-s2-cardrect {
-  fill: var(--lp-ink-0);
-  stroke: var(--lp-ink-50);
-  stroke-width: 0.5;
-}
-.lp-s2-title {
-  color: var(--lp-ink-100);
-  font-family: var(--lp-font-cond);
-  font-size: 23.303px;
-  font-weight: 600;
-  height: 28px;
-  left: 93px;
-  line-height: 1.2;
-  top: 125px;
-  white-space: nowrap;
-  width: 279px;
-}
-.lp-s2-rows,
-.lp-s2-items {
-  height: 426px;
-  left: 0;
-  top: 0;
-  width: 464px;
-}
-/* agent rows (frame 1 geometry) */
-.lp-s2-arow {
-  height: 40px;
-  left: 93px;
   position: absolute;
-  transform-origin: 50% 50%;
-  width: 279px;
+  right: 0;
+  top: -426px;
 }
-.lp-s2-arow > * {
-  position: absolute;
+.lp-step-stage--s2 .lp-sx-bg {
+  background-color: var(--lp-dive-stage-bg);
 }
-.lp-s2-face {
-  height: 32px;
-  left: 0;
-  top: 4px;
-  width: 32px;
+.lp-step-stage--s3 .lp-sx-bg {
+  background-color: var(--lp-ink-0);
 }
-.lp-s2-face svg {
-  height: 32px;
-  overflow: visible;
-  width: 32px;
-}
-.lp-s2-txt {
+
+/* ── shared atoms ── */
+/* avatar: 32 disc, the lead's initials */
+.lp-sx-av {
   align-items: center;
-  display: flex;
-  font-size: 16px;
-  gap: 8px;
-  height: 24px;
-  left: 44px;
-  line-height: 24px;
-  top: 8px;
-  white-space: nowrap;
-}
-.lp-s2-name {
+  background: #f5f3f2;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.5px #ebe6e8;
   color: var(--lp-ink-100);
+  display: flex;
+  font-size: 12.07px;
   font-weight: 500;
-}
-.lp-s2-count {
-  color: var(--lp-ink-70);
-  font-weight: 400;
-}
-.lp-s2-pill {
-  background: var(--lp-ink-20);
-  border-radius: 15px;
-  height: 50px;
-  left: -10px;
-  opacity: 0;
-  top: -5px;
-  width: 298.8px;
-}
-.lp-s2-chev {
-  height: 13px;
-  left: 266.5px;
-  opacity: 0;
-  top: 13.5px;
-  width: 8.5px;
-}
-.lp-s2-chev svg {
-  height: 13px;
-  overflow: visible;
-  width: 8.5px;
-}
-/* checklist rows (frame 3 geometry) */
-.lp-s2-crow {
   height: 32px;
-  left: 93px;
-  opacity: 0;
+  justify-content: center;
+  letter-spacing: 1.207px;
+  line-height: 18px;
   position: absolute;
-  width: 279px;
+  text-transform: uppercase;
+  width: 32px;
 }
-.lp-s2-crow > * {
+/* checkbox: the outlined box (an SVG rect: a 0.667px inside stroke stays true at every
+   DPR), and the ticked one stacked on it — scaled in by the timeline */
+.lp-sx-cb {
+  height: 16px;
   position: absolute;
+  width: 16px;
 }
-.lp-s2-cb {
-  height: 24px;
+.lp-sx-cb-off {
+  height: 16px;
   left: 0;
-  top: 4px;
-  width: 24px;
-}
-.lp-s2-cb-off {
-  background: var(--lp-ink-0);
-  border: 1px solid var(--lp-ink-70);
-  border-radius: 6px;
-  inset: 0;
   position: absolute;
+  top: 0;
+  width: 16px;
 }
-.lp-s2-cb-on {
-  background: var(--lp-green-30);
-  border-radius: 6px;
-  inset: 0;
+.lp-sx-cb-off rect {
+  fill: var(--lp-ink-0);
+  stroke: var(--lp-ink-70);
+  stroke-width: 0.6667;
+}
+.lp-sx-cb-on {
+  background: var(--lp-ink-100);
+  border-radius: 4px;
+  height: 16px;
+  left: 0;
   position: absolute;
+  top: 0;
   transform: scale(0);
   transform-origin: 50% 50%;
+  width: 16px;
 }
-.lp-s2-cb-on svg {
-  height: 24px;
-  overflow: visible;
-  width: 24px;
+.lp-sx-cb-on svg {
+  height: 16px;
+  width: 16px;
 }
-.lp-s2-cb-on path {
+.lp-sx-cb-on path {
   fill: none;
   stroke: var(--lp-ink-20);
   stroke-linejoin: bevel;
-  stroke-width: 2;
+  stroke-width: 2; /* in the 24 viewBox = 1.333 in the 16 box */
 }
-.lp-s2-lbl {
-  color: var(--lp-ink-100);
-  display: inline-block;
-  font-size: 16px;
-  font-weight: 400;
-  height: 24px;
-  left: 36px;
-  line-height: 24px;
-  top: 4px;
-  white-space: nowrap;
-}
-.lp-s2-lbl--muted {
-  color: var(--lp-ink-70);
-}
-.lp-s2-strike {
-  background: var(--lp-ink-70);
-  height: 0.8px;
+/* the pointing hand: placed by its top-left (the Figma instance box), clicks about its fingertip */
+.lp-sx-hand {
+  height: 33px;
   left: 0;
+  opacity: 0;
   position: absolute;
-  top: 12.9px;
-  transform: scaleX(0);
-  transform-origin: 0 50%;
-  width: 100%;
-}
-/* 1× displays: WebKit pixel-snaps the 0.8px strike box to ZERO height (every
-   checklist row sits on a .75 fraction — top and bottom edges round to the
-   same device row; Firefox/Chromium round it up to a pixel). Retina paints
-   the 0.8px exactly like the render, so only 1× gets the full pixel. */
-@media (max-resolution: 1.49dppx), (-webkit-max-device-pixel-ratio: 1.49) {
-  .lp-s2-strike {
-    height: 1px;
-  }
-}
-/* the highlighted item — final geometry from the static SVG (4631:2747) */
-.lp-s2-hl {
-  background: var(--lp-blue-10);
-  border: 1.1px solid var(--lp-blue-20);
-  border-radius: 16px;
-  height: 58.4px;
-  left: 55px;
-  opacity: 0;
-  top: 286px;
-  transform-origin: 50% 50%;
-  width: 354.9px;
-}
-.lp-s2-hl > * {
-  position: absolute;
-}
-.lp-s2-hcb {
-  background: var(--lp-ink-0);
-  border: 1.1px solid var(--lp-ink-70);
-  border-radius: 6.6px;
-  height: 26.4px;
-  left: 14.9px;
-  top: 14.9px;
-  width: 26.4px;
-}
-.lp-s2-hlbl {
-  color: var(--lp-ink-100);
-  font-size: 17.6px;
-  font-weight: 500;
-  height: 26.4px;
-  left: 54.5px;
-  line-height: 26.4px;
-  opacity: 0;
-  top: 14.9px;
-  white-space: nowrap;
-}
-.lp-s2-spin {
-  height: 24px;
-  left: 313.8px;
-  opacity: 0;
-  top: 16.1px;
-  transform-origin: 50% 50%;
-  width: 24px;
-}
-.lp-s2-spin svg {
-  height: 24px;
-  overflow: visible;
-  width: 24px;
+  top: 0;
+  transform-origin: 9.3px 3px;
+  visibility: hidden;
+  width: 31px;
 }
 
-/* ── step 03 · the calendar week: 479×350 card, r20.7, 0.5px stroke ── */
+/* the Leads view at its frame-6 pose (step 02 f6/f7, step 03 f1): Figma x 89.5, y 82.86;
+   the table runs past the card's right and bottom edges on purpose. The half pixel of its
+   x is a transform, not layout: at 1x a browser snaps a box's `left` to the pixel grid,
+   and the table edge and the seven checkboxes would sit half a pixel off Figma's; a
+   translated box keeps its half-covered columns. (The timeline reads this x as the rest
+   pose.) */
+.lp-sx-leads {
+  height: 365px;
+  left: 89px;
+  position: absolute;
+  top: 82.86px;
+  transform: translateX(0.5px);
+  width: 548px;
+}
+.lp-sx-leads-title {
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-aeonik);
+  font-size: 21px;
+  font-weight: 700;
+  left: 0;
+  line-height: 25px;
+  position: absolute;
+  top: 0.125px; /* Figma 0 + 0.125 */
+  white-space: nowrap;
+}
+.lp-sx-table {
+  background: var(--lp-ink-0);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  height: 320px;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: 44.89px;
+  width: 548px;
+}
+.lp-sx-thead {
+  background: #f8f7f7;
+  height: 32px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 548px;
+}
+.lp-sx-thead .lp-sx-cb {
+  left: 12px;
+  top: 8px;
+}
+.lp-sx-th {
+  color: var(--lp-ink-80);
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  line-height: 15px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 8px; /* Figma 8.5 − 0.5 */
+  white-space: nowrap;
+}
+.lp-sx-th--lead {
+  left: 44px;
+}
+.lp-sx-th--pos {
+  left: 291px;
+}
+.lp-sx-row {
+  height: 48px;
+  left: 0;
+  position: absolute;
+  width: 548px;
+}
+/* the rule above each row: the table's, not the row's (in frame 5 the rows fade in over
+   full-strength rules). Figma draws it as the last half pixel before the row
+   (y 31.5–32, 79.5–80, 127.5–128…). */
+.lp-sx-rule {
+  border-top: 0.5px solid var(--lp-sx-line);
+  height: 0;
+  left: 0;
+  margin-top: -0.5px;
+  position: absolute;
+  width: 100%;
+}
+.lp-sx-row .lp-sx-cb {
+  left: 12px;
+  top: 16px;
+}
+.lp-sx-row .lp-sx-av {
+  left: 44px;
+  top: 8px;
+}
+.lp-sx-name,
+.lp-sx-pos {
+  font-size: 13px;
+  line-height: 20px;
+  position: absolute;
+  top: 15px; /* Figma 14 + 1 */
+  white-space: nowrap;
+}
+.lp-sx-name {
+  color: var(--lp-ink-100);
+  font-weight: 500;
+  left: 92px;
+}
+.lp-sx-pos {
+  color: var(--lp-ink-70);
+  font-weight: 400;
+  left: 291px;
+}
+/* step 03's first frame: every checkbox already ticked */
+.lp-sx-leads--selected .lp-sx-cb-on {
+  transform: none;
+}
+
+/* ── step 02 · chat → question → Play draft → leads → Play card ── */
+/* in step 02 the Leads view waits hidden, its rows too (they fade in one by one) */
+.lp-step-stage--s2 .lp-sx-leads {
+  opacity: 0;
+  visibility: hidden;
+}
+.lp-step-stage--s2 .lp-sx-row {
+  opacity: 0;
+}
+/* f1 (rest): the thread — it scrolls as one */
+.lp-s2-chat {
+  height: 426px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 464px;
+}
+.lp-s2-bubble {
+  background: #30002c; /* the mocks' button plum (as .lp-s1-btn), not ink-100 */
+  border-radius: 12px; /* frames 2–3 (frame 1 still draws 8) */
+  color: var(--lp-ink-0);
+  font-size: 13px;
+  font-weight: 400;
+  height: 32px;
+  line-height: 16px;
+  min-width: 277px; /* Figma's box for this string (the browser's text is 0.8px narrower) */
+  padding: 8.6px 12px 7.4px; /* Figma 8 / 12; text y: Figma 8 + 0.6 */
+  position: absolute;
+  right: 51.47px; /* hugs its text; right edge at 412.53 */
+  top: 115px;
+  white-space: nowrap;
+}
+.lp-s2-worked,
+.lp-s2-answer {
+  background: var(--lp-ink-0);
+  border-radius: 12px;
+  box-shadow: 0 0 0 0.5px var(--lp-sx-line);
+  color: var(--lp-ink-100);
+  font-size: 13px;
+  font-weight: 400;
+  left: 51px;
+  position: absolute;
+  width: 362px;
+}
+.lp-s2-worked {
+  height: 32px;
+  top: 171px;
+}
+.lp-s2-worked span {
+  left: 12px;
+  line-height: 16px;
+  position: absolute;
+  top: 8.6px; /* Figma 8 + 0.6 */
+  white-space: nowrap;
+}
+.lp-s2-worked svg {
+  height: 16px;
+  left: 338px;
+  position: absolute;
+  top: 8px;
+  width: 16px;
+}
+.lp-s2-worked path {
+  stroke: var(--lp-ink-70);
+}
+.lp-s2-answer {
+  height: 76px;
+  line-height: 20px;
+  padding: 8.6px 12px 7.4px; /* Figma 8 / 12; text y: Figma 8 + 0.6 */
+  top: 213px;
+}
+/* f2: the question card, the thread's next item (24 under the answer; 8 wider each side) */
+.lp-s2-q {
+  background: var(--lp-ink-0);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  height: 308px;
+  left: 43px;
+  opacity: 0;
+  position: absolute;
+  top: 313px;
+  visibility: hidden;
+  width: 378px;
+}
+.lp-s2-q-item {
+  left: 16px;
+  opacity: 0;
+  position: absolute;
+  width: 346px;
+}
+.lp-s2-q-head {
+  height: 20px;
+  top: 16px;
+}
+.lp-s2-q-head svg {
+  height: 16px;
+  left: 0;
+  position: absolute;
+  top: 2px;
+  width: 16px;
+}
+.lp-s2-q-head g,
+.lp-s2-opt-n g {
+  stroke: var(--lp-ink-70);
+}
+.lp-s2-q-head span {
+  color: var(--lp-ink-70);
+  font-size: 13.333px;
+  font-weight: 400;
+  left: 24px;
+  line-height: 20px;
+  position: absolute;
+  top: 0.5px; /* Figma 0 + 0.5 */
+  white-space: nowrap;
+}
+.lp-s2-q-text {
+  color: var(--lp-ink-100);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  top: 52.6px; /* Figma 52 + 0.6 */
+  white-space: nowrap;
+}
+.lp-s2-opt {
+  height: 28px;
+}
+.lp-s2-opt-n {
+  align-items: center;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.5px var(--lp-sx-line);
+  color: var(--lp-ink-80);
+  display: flex;
+  font-size: 13px;
+  font-weight: 400;
+  height: 28px;
+  justify-content: center;
+  left: 0;
+  line-height: 20px;
+  position: absolute;
+  top: 0;
+  width: 28px;
+}
+.lp-s2-opt-n svg {
+  height: 12px;
+  width: 12px;
+}
+.lp-s2-opt-l {
+  color: var(--lp-ink-100);
+  font-size: 13px;
+  font-weight: 400;
+  left: 36px;
+  line-height: 20px;
+  position: absolute;
+  top: 4.5px; /* Figma 4 + 0.5 */
+  white-space: nowrap;
+}
+.lp-s2-opt--own .lp-s2-opt-l {
+  color: var(--lp-ink-70);
+}
+/* f3: the hover plate under option 1 (8 inside the card's edges, 7.5 above and below the row) */
+.lp-s2-hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 8px;
+  height: 43px;
+  left: -8px;
+  opacity: 0;
+  position: absolute;
+  top: -7.5px;
+  width: 362px;
+}
+/* f4: "Your Play takes shape here" */
+.lp-s2-draft {
+  height: 426px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 464px;
+}
+.lp-s2-draft-head {
+  height: 48px;
+  left: 62.5px;
+  opacity: 0;
+  position: absolute;
+  top: 43.86px;
+  visibility: hidden;
+  width: 400px;
+}
+.lp-s2-tile {
+  background: #ffd5e1; /* Figma literal (between pink-10 and pink-20) */
+  border-radius: 12px;
+  height: 48px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 48px;
+}
+.lp-s2-tile svg {
+  height: 24px;
+  left: 12px;
+  position: absolute;
+  top: 11.67px;
+  width: 24px;
+}
+.lp-s2-tile g {
+  stroke: var(--lp-pink-40);
+}
+.lp-s2-eyebrow {
+  color: var(--lp-ink-80);
+  font-size: 10px;
+  font-weight: 400;
+  left: 69px;
+  letter-spacing: 1px;
+  line-height: 15px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 1.75px; /* Figma 2 − 0.25 */
+  white-space: nowrap;
+}
+.lp-s2-draft-title {
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-aeonik);
+  font-size: 21px;
+  font-weight: 700;
+  left: 69px;
+  line-height: 25px;
+  position: absolute;
+  top: 21.125px; /* Figma 21 + 0.125 */
+  white-space: nowrap;
+}
+.lp-s2-draft-card {
+  background: var(--lp-ink-0);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  height: 224px;
+  left: 62.5px;
+  opacity: 0;
+  position: absolute;
+  top: 123.53px;
+  visibility: hidden;
+  width: 548px; /* cut by the card at 464 */
+}
+.lp-s2-slot {
+  height: 24px;
+  left: 16px;
+  position: absolute;
+  width: 516px;
+}
+.lp-s2-slot-rule {
+  border-top: 0.5px solid var(--lp-sx-line);
+  height: 0;
+  left: 0;
+  position: absolute;
+  top: -16px;
+  width: 516px;
+}
+/* a slot's disc: its number while undecided; the green check scales in over it */
+.lp-s2-slot-n,
+.lp-s2-slot-ok {
+  border-radius: 50%;
+  height: 24px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 24px;
+}
+.lp-s2-slot-n {
+  align-items: center;
+  background: #f5f3f2;
+  color: var(--lp-ink-70);
+  display: flex;
+  font-size: 11px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 24px;
+}
+.lp-s2-slot-ok {
+  background: var(--lp-green-10);
+  transform: scale(0);
+  transform-origin: 50% 50%;
+}
+.lp-s2-slot-ok svg {
+  height: 16px;
+  left: 4px;
+  position: absolute;
+  top: 4px;
+  width: 16px;
+}
+.lp-s2-slot-ok path {
+  stroke: var(--lp-green-30);
+}
+.lp-s2-slot-l,
+.lp-s2-slot-u,
+.lp-s2-slot-v {
+  font-size: 13.333px;
+  font-weight: 400;
+  line-height: 20px;
+  position: absolute;
+  top: 2.125px; /* Figma 2 + 0.125 */
+  white-space: nowrap;
+}
+.lp-s2-slot-l {
+  color: var(--lp-ink-70);
+  left: 40px;
+}
+.lp-s2-slot-u {
+  color: var(--lp-ink-70);
+  left: 220px;
+}
+.lp-s2-slot-v {
+  color: var(--lp-ink-100);
+  left: 220px;
+  opacity: 0;
+}
+.lp-s2-thinking {
+  color: var(--lp-ink-70);
+  font-size: 13.333px;
+  font-weight: 400;
+  left: 62.5px;
+  line-height: 20px;
+  opacity: 0;
+  position: absolute;
+  top: 379.7px; /* Figma 379.2 + 0.5 */
+  visibility: hidden;
+  white-space: nowrap;
+}
+/* f6: the selection bar — stage-fixed (not part of the panned Leads view), over the table */
+/* (Figma box 69.5, 341, 325 × 53 with an INSIDE 0.5 stroke counted in the layout: the fill
+   is that box inset by 0.5 — x 70, y 341.5 — and the stroke the outside spread, as the
+   thread cards of step 03. The half pixel of its y is a transform, like the Leads view's
+   x: the pill and its white button keep Figma's half-covered top and bottom rows at 1x.
+   The timeline reads this y as the rest pose.) */
+.lp-s2-bar {
+  background: var(--lp-ink-100);
+  border-radius: 99px;
+  box-shadow: 0 0 0 0.5px var(--lp-sx-line);
+  height: 52px;
+  left: 70px;
+  opacity: 0;
+  position: absolute;
+  top: 341px;
+  transform: translateY(0.5px);
+  transform-origin: 50% 50%;
+  visibility: hidden;
+  width: 324px;
+}
+.lp-s2-bar-count {
+  color: var(--lp-ink-0);
+  font-size: 13.333px;
+  font-weight: 500;
+  left: 20px;
+  line-height: 20px;
+  position: absolute;
+  top: 15.75px; /* Figma 16 − 0.25 */
+  white-space: nowrap;
+}
+.lp-s2-bar-add {
+  background: var(--lp-ink-0);
+  border-radius: 999px;
+  height: 36px;
+  left: 107px;
+  position: absolute;
+  top: 8px;
+  transform-origin: 50% 50%;
+  width: 169px;
+}
+.lp-s2-bar-add svg {
+  fill: var(--lp-ink-100);
+  height: 20px;
+  left: 8px;
+  position: absolute;
+  top: 8px;
+  width: 20px;
+}
+.lp-s2-bar-add span {
+  color: var(--lp-ink-100);
+  font-size: 13.333px;
+  font-weight: 600;
+  left: 32px;
+  line-height: 20px;
+  position: absolute;
+  top: 7.75px; /* Figma 8 − 0.25 */
+  white-space: nowrap;
+}
+.lp-s2-bar-x {
+  fill: var(--lp-ink-0);
+  height: 20px;
+  left: 288px;
+  position: absolute;
+  top: 16px;
+  width: 20px;
+}
+/* f8, the end picture: the product's Play card rebuilt in DOM (Figma pastes a 2x app
+   screenshot twice). Values are the app's own CSS (pancake-cmo play-card.tsx,
+   play-status.tsx), each checked against the raster; the literals below are the app's,
+   not the landing kit's. Card 337×293.5 border-box at (60, 68.5); children are placed
+   from its padding box, so every offset is the border-box one minus the 1px border. */
+.lp-s2-plays {
+  height: 426px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 464px;
+}
+.lp-s2-play {
+  background: var(--lp-ink-0);
+  border: 1px solid #ece9e7;
+  border-radius: 16px;
+  box-shadow:
+    0 8px 24px -4px rgba(44, 0, 42, 0.06),
+    0 1px 2px rgba(44, 0, 42, 0.03);
+  height: 293.5px;
+  left: 60px;
+  opacity: 0;
+  position: absolute;
+  top: 68.5px;
+  visibility: hidden;
+  width: 337px;
+}
+.lp-s2-play + .lp-s2-play {
+  left: 413.64px; /* 16.64 after the first; the card cuts it at 464 */
+}
+.lp-s2-play-pill {
+  align-items: center;
+  background: #f3faef;
+  border: 1px solid #c9dfd3;
+  border-radius: 999px;
+  color: #387a61;
+  display: flex;
+  font-size: 11px;
+  font-weight: 500;
+  gap: 6px;
+  height: 22px;
+  left: 20px;
+  line-height: 16px;
+  padding: 0 5px 0 7px;
+  position: absolute;
+  top: 20px;
+  white-space: nowrap;
+}
+.lp-s2-play-pill svg {
+  fill: currentColor;
+  flex: none;
+  height: 10px;
+  width: 10px;
+}
+.lp-s2-play-pill .lp-s2-play-caret {
+  opacity: 0.7;
+}
+.lp-s2-play-name {
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-aeonik);
+  font-size: 17px;
+  font-weight: 700;
+  left: 20px;
+  letter-spacing: -0.255px;
+  line-height: 22px;
+  position: absolute;
+  top: 58.25px; /* 58 + 0.25 */
+  width: 295px;
+}
+.lp-s2-play-sum,
+.lp-s2-play-lbl {
+  color: #70676f; /* the app's muted text */
+}
+.lp-s2-play-sum {
+  font-size: 12.5px;
+  font-weight: 400;
+  left: 20px;
+  line-height: 18px;
+  position: absolute;
+  top: 106.25px; /* 106 + 0.25 */
+  width: 295px;
+}
+.lp-s2-play-figs {
+  display: flex;
+  gap: 24px;
+  left: 20px;
+  position: absolute;
+  top: 158px;
+}
+.lp-s2-play-fig {
+  display: flex;
+  flex-direction: column;
+}
+.lp-s2-play-val {
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-aeonik);
+  font-size: 22px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  letter-spacing: -0.44px;
+  line-height: 28px;
+  white-space: nowrap;
+}
+/* a figure with no number yet ("—"): the app's display face has no em dash, so its dash
+   falls back to the body face, bold — 18px wide, 2.7 thick in the raster */
+.lp-s2-play-val--none {
+  font-family: var(--lp-font-sans);
+  position: relative;
+  top: -1px; /* it sits on the display face's baseline */
+}
+.lp-s2-play-lbl {
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 16.5px;
+  white-space: nowrap;
+}
+.lp-s2-play-spark {
+  height: 28px;
+  left: 227px;
+  overflow: visible;
+  position: absolute;
+  top: 174.5px;
+  width: 88px;
+}
+.lp-s2-play-spark path {
+  stroke: var(--lp-purple-30);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.75;
+}
+.lp-s2-play-rule {
+  background: rgba(236, 233, 231, 0.7);
+  height: 1px;
+  left: 0;
+  position: absolute;
+  top: 222.5px;
+  width: 335px;
+}
+.lp-s2-play-btn {
+  align-items: center;
+  background: var(--lp-ink-100);
+  border-radius: 10px; /* measured on the 2x raster (the spec read 8 from the app's source) */
+  box-shadow:
+    0 4px 10px rgba(44, 0, 42, 0.2),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  color: var(--lp-ink-0);
+  display: flex;
+  font-size: 12.5px;
+  font-weight: 500;
+  gap: 6px;
+  height: 36px;
+  justify-content: center;
+  left: 16px;
+  line-height: 18px;
+  position: absolute;
+  top: 239.5px;
+  white-space: nowrap;
+  width: 303px;
+}
+.lp-s2-play-btn span {
+  position: relative;
+  top: -0.25px; /* centred − 0.25 */
+}
+.lp-s2-play-btn svg {
+  fill: currentColor;
+  flex: none;
+  height: 14px;
+  width: 14px;
+}
+
+/* ── step 03 · the intro: the selected leads (rest, above), then the thread — one lead, the
+   message drafted and sent, her reply, the meeting. Thread-local px = frame 5018:4344's;
+   the timeline scrolls the thread to frames 4 and 5. Each card and connector waits hidden. ── */
+.lp-s3-thread {
+  height: 626px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 464px;
+}
+.lp-s3-tcard {
+  background: var(--lp-ink-0);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  left: 52.5px;
+  opacity: 0;
+  position: absolute;
+  visibility: hidden;
+  width: 359px;
+}
+/* Figma's thread cards (360 wide at x 52) and the selection bar draw their 0.5 stroke INSIDE
+   and count it in the layout (content starts 16.5 in). Here the box is the fill — Figma's
+   box inset by 0.5 — and the stroke is the outside spread, so it lands where Figma's is and
+   the content sits 16 in. Tops below = Figma y + 0.5, heights = Figma − 1. */
+.lp-s3-lead {
+  height: 66px;
+  top: 84.86px;
+}
+.lp-s3-lead .lp-sx-av {
+  left: 16px;
+  top: 17px;
+}
+.lp-s3-lead-name {
+  color: var(--lp-ink-100);
+  font-size: 13px;
+  font-weight: 500;
+  left: 64px;
+  line-height: 20px;
+  position: absolute;
+  top: 23.875px; /* Figma 23 + 0.875 */
+  white-space: nowrap;
+}
+.lp-s3-lead-co {
+  color: var(--lp-ink-70);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 17px;
+  position: absolute;
+  right: 16px;
+  text-align: right;
+  top: 15.75px; /* Figma 16 − 0.25 */
+  white-space: nowrap;
+}
+.lp-s3-lead-co b {
+  display: block;
+  font-weight: 500;
+}
+/* connectors: 1px, centred on the cards (x 231.5–232.5: the half pixel is a transform so
+   the line keeps Figma's two half-strength columns instead of snapping to one); they draw
+   downwards (the timeline's scaleY). The first is dashed: Figma's "2 / 2" renders with a
+   3.8px period that starts 1.2px above the line (measured on the frame). */
+.lp-s3-conn {
+  background: var(--lp-ink-50);
+  height: 38px;
+  left: 231px;
+  position: absolute;
+  transform: translateX(0.5px) scaleY(0);
+  transform-origin: 50% 0;
+  width: 1px;
+}
+.lp-s3-conn--1 {
+  background: repeating-linear-gradient(to bottom, var(--lp-ink-50) -1.2px 0.7px, transparent 0.7px 2.6px);
+  top: 151.36px;
+}
+.lp-s3-conn--2 {
+  top: 317.36px;
+}
+.lp-s3-conn--3 {
+  top: 455.36px; /* stops 4px above the meeting card, as drawn */
+}
+.lp-s3-eyebrow {
+  color: var(--lp-ink-70);
+  font-size: 10.72px;
+  font-weight: 500;
+  left: 16px;
+  letter-spacing: 1.072px;
+  line-height: 16px;
+  position: absolute;
+  text-transform: uppercase;
+  top: 16.125px; /* Figma 16 + 0.125 */
+  white-space: nowrap;
+}
+.lp-s3-msg {
+  height: 127px;
+  top: 189.86px;
+}
+.lp-s3-eb-sent {
+  color: var(--lp-green-30);
+  opacity: 0;
+}
+.lp-s3-msg-text,
+.lp-s3-reply-text,
+.lp-s3-meet-title {
+  color: var(--lp-ink-100);
+  font-size: 16px;
+  letter-spacing: -0.16px;
+  line-height: 21px;
+  position: absolute;
+}
+/* typed in by the timeline: fully clipped at rest, weight 500 while it is the draft
+   (400 once it is history, frames 4–5) */
+.lp-s3-msg-text {
+  clip-path: polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0);
+  font-weight: 500;
+  left: 16px;
+  top: 47.75px; /* Figma 48 − 0.25 */
+  width: 327px;
+}
+.lp-s3-caret {
+  background: var(--lp-ink-100);
+  height: 20.8px;
+  left: 16px;
+  opacity: 0;
+  position: absolute;
+  top: 47.75px; /* the message's */
+  width: 1.5px;
+}
+.lp-s3-reply {
+  height: 99px;
+  top: 355.86px;
+}
+.lp-s3-reply .lp-sx-av {
+  left: 16px;
+  top: 33.5px;
+}
+.lp-s3-reply .lp-s3-eyebrow {
+  left: 64px;
+  top: 16.5px; /* Figma 16.5 */
+}
+.lp-s3-reply-text {
+  font-weight: 400;
+  left: 64px;
+  top: 40px; /* Figma 40.5 − 0.5 */
+  width: 279px;
+}
+.lp-s3-meet {
+  height: 127px;
+  top: 497.86px;
+}
+.lp-s3-meet .lp-s3-eb-meet {
+  color: var(--lp-purple-40);
+  top: 15.5px; /* Figma 16 − 0.5 */
+}
+.lp-s3-meet-title {
+  font-weight: 500;
+  left: 16px;
+  top: 48px; /* Figma 48 */
+  white-space: nowrap;
+}
+.lp-s3-meet-when,
+.lp-s3-meet-who {
+  font-size: 13px;
+  font-weight: 400;
+  left: 16px;
+  letter-spacing: -0.13px;
+  line-height: 17px;
+  position: absolute;
+  white-space: nowrap;
+}
+.lp-s3-meet-when {
+  color: var(--lp-ink-100);
+  top: 76.25px; /* Figma 77 − 0.75 */
+}
+.lp-s3-meet-who {
+  color: var(--lp-ink-70);
+  top: 93.25px; /* Figma 94 − 0.75 */
+}
+
+/* ── step 03 · the calendar week: 479×350 card, r20.7, 0.5px stroke. Hidden at rest
+   since 2026-10-11: the storyboard intro plays first, then the timeline brings the
+   calendar in on its own frame 0 (nothing else in this block changed). ── */
 .lp-s3-card {
   background: var(--lp-ink-0);
   border-radius: 20.7135px;
@@ -795,9 +1554,11 @@
     0 10px 28px rgba(44, 0, 42, 0.06);
   height: 350px;
   left: 47px;
+  opacity: 0;
   overflow: hidden;
   position: absolute;
   top: 38px;
+  visibility: hidden;
   width: 479px;
 }
 .lp-s3-title {

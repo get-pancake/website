@@ -16,20 +16,19 @@ const loadAnimation = (variant: StepVariant): Promise<PlayOnceRuntime> =>
 
 /**
  * A "Pancake fills your pipeline" media card that animates its mock UI in
- * place — DOM + CSS + one GSAP timeline per step (lp-step-timelines.ts),
- * replacing the three storyboard mp4s of the same compositions (founder
- * 2026-09-07: the same treatment as the four feature cards — no 0.5–1.3 MB
- * video downloads, vector-crisp at every DPR, the animations replicated
- * exactly).
+ * place — DOM + CSS + one GSAP timeline per step (lp-step-timelines.ts).
+ * It replaced the three storyboard mp4s (founder 2026-09-07: no 0.5–1.3 MB
+ * video downloads, vector-crisp at every DPR); since 2026-10-11 step 02 and
+ * step 03's intro are the designer's "How it works" storyboards.
  *
- * Playback is lp-play-once.ts, shared with the feature cards (2026-09-30:
- * prepared a viewport ahead, played as the card arrives, the picture when
- * the visitor flies past, finished when they scroll away; once, then the
- * last frame holds — the brain, the Agents view, the filled calendar).
- * Unlike the feature cards, the markup's rest state IS the composition's
- * frame 0 (what the video's poster showed: never blank), so the
- * server-rendered card is already the right still and nothing flashes at
- * hydration; if the build ever throws, that still stands ("static").
+ * Playback is lp-play-once.ts (2026-09-30: prepared a viewport ahead,
+ * played as the card arrives, the picture when the visitor flies past,
+ * finished when they scroll away; once, then the last frame holds — the
+ * brain, the Play card, the filled calendar). The markup's rest state IS
+ * each animation's frame 0 (the empty input, the chat request, the selected
+ * leads: never blank), so the server-rendered card is already the right
+ * still and nothing flashes at hydration; if the build ever throws, that
+ * still stands ("static").
  *
  * Geometry: the stage is the 464×426 media card at design size and scales as
  * pixels with the card (--lp-fit = card width / 464, via ResizeObserver).
@@ -45,6 +44,7 @@ export function LpStepAnim({
   alt,
   className,
   placeholder = false,
+  showPlaceholders = false,
 }: {
   variant: StepVariant;
   /** what the animation shows — the only copy a screen reader gets */
@@ -53,6 +53,10 @@ export function LpStepAnim({
   /** a dev/preview-only slot entry (lp-steps-content.ts status "placeholder"): marked
       data-placeholder, decided by the server component (VERCEL_ENV is server-only) */
   placeholder?: boolean;
+  /** lib/placeholders SHOW_PLACEHOLDERS, from the server component too: whether the mock
+      may draw its own "placeholder" details (lp-step-data.ts, e.g. a Play-card figure that
+      waits for the founder's yes) */
+  showPlaceholders?: boolean;
 }) {
   const hostRef = useRef<HTMLDivElement>(null);
 
@@ -73,7 +77,7 @@ export function LpStepAnim({
 
   return (
     <div ref={hostRef} className={className} role="img" aria-label={alt} data-placeholder={placeholder ? "" : undefined}>
-      <LpStepStage variant={variant} />
+      <LpStepStage variant={variant} placeholders={showPlaceholders} />
     </div>
   );
 }
