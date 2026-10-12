@@ -10,12 +10,11 @@
 // to its first frame only while hidden (never rewound on screen). Loop: Pancake (its run + a
 // 2.2 s hold, about 9.2 s) → Claude & Codex (8600) → … while the clock runs.
 //
-// Two engines under one clock (ms since the view started):
-//   · Pancake (since 2026-10-12): ONE GSAP timeline, seeked every frame
-//     (lp-demo-pancake-timeline.ts). GSAP and the builder are a lazy chunk, fetched on the
-//     visitor's first input or at the first start; until it is built the view is its rest
-//     picture and the clock waits. Its length is the timeline's own.
-//   · Claude & Codex: the class cues of lp-demo-timeline.ts (frameAt), as before.
+// One clock (ms since the view started), two GSAP timelines, each seeked every frame:
+// lp-demo-pancake-timeline.ts and lp-demo-claude-timeline.ts. GSAP and the two builders are a
+// lazy chunk, fetched on the visitor's first input or at the first start; until a view's
+// timeline is built the view is its rest picture and the clock waits. A run's length is its
+// timeline's own.
 //
 // The clock runs while: started, ≥35 % of the stage on screen (of the viewport for a taller
 // stage), the tab visible, not paused, motion allowed, no keyboard focus held in the pills or on
@@ -54,36 +53,14 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Keyboar
 import { flushSync } from "react-dom";
 import type { BuiltDemo } from "./lp-demo-pancake-timeline";
 import { mountWindowGrow } from "./lp-demo-scroll";
-import {
-  CURSOR_ENTRY,
-  DWELL,
-  END,
-  frameAt,
-  PHONE_BOX_W,
-  PHONE_QUERY,
-  PHONE_SOLO,
-  type LpDemoFrame,
-  type LpDemoView,
-} from "./lp-demo-timeline";
+import { PHONE_BOX_W, PHONE_QUERY, PHONE_SOLO, type LpDemoView } from "./lp-demo-timeline";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
 /** How long a view rests on its end picture before the other one comes (ms). */
 const HOLD_MS = 2200;
-/** The Pancake view's stay when its timeline could not be fetched: its rest picture, then on. */
+/** A view's stay when the timelines could not be fetched: its rest picture, then on. */
 const REST_ONLY_MS = 3000;
-
-interface ViewCache {
-  el: HTMLElement;
-  /** The window the cursor rides in (its offsetParent). */
-  win: HTMLElement;
-  cursor: HTMLElement | null;
-  cues: HTMLElement[];
-  uncues: HTMLElement[];
-  swaps: HTMLElement[];
-  presses: HTMLElement[];
-  targets: HTMLElement[];
-}
 
 interface Ctl {
   view: LpDemoView;
@@ -110,26 +87,25 @@ interface Ctl {
   raf: number;
   last: number;
   frames: number;
-  sig: [string, string];
-  views: [ViewCache | null, ViewCache | null];
-  pos: Map<string, { x: number; y: number }>;
-  /** The Pancake view's GSAP timeline (lazy: GSAP + lp-demo-pancake-timeline), null until built. */
-  pk: { tl: BuiltDemo["tl"]; dispose: () => void } | null;
-  /** Its modules, kept to rebuild it after the stage's size changes. */
-  pkMods: { gsap: typeof import("@/lib/gsap").gsap; build: (view: HTMLElement) => BuiltDemo } | null;
-  pkLoading: boolean;
-  /** The code could not be fetched: the view keeps its rest picture. */
-  pkFailed: boolean;
-  /** The geometry it measured is stale: rebuilt before the view next starts from its first frame. */
-  pkDirty: boolean;
-  /** The Pancake run's length (ms): the timeline's own, once built. */
-  end0: number;
+  /** Each view's GSAP timeline (lazy: GSAP + its builder), null until built. */
+  tls: [Built | null, Built | null];
+  /** The modules, kept to rebuild a timeline after the stage's size changes. */
+  mods: { gsap: typeof import("@/lib/gsap").gsap; build: [Builder, Builder] } | null;
+  loading: boolean;
+  /** The code could not be fetched: the views keep their rest pictures. */
+  failed: boolean;
+  /** The geometry a timeline measured is stale: rebuilt before its view next starts from its first frame. */
+  dirty: [boolean, boolean];
+  /** Each run's length (ms): the timeline's own, once built. */
+  ends: [number, number];
 }
+type Built = { tl: BuiltDemo["tl"]; dispose: () => void };
+type Builder = (view: HTMLElement) => BuiltDemo;
 
-/** Last moment of a view's run (ms): the Pancake timeline's duration, the Claude cue table's END. */
-const endOf = (x: Ctl, v: LpDemoView) => (v === 0 ? x.end0 : END[1]);
+/** Last moment of a view's run (ms): its timeline's duration. */
+const endOf = (x: Ctl, v: LpDemoView) => x.ends[v];
 /** The run + the hold on its end picture. */
-const dwellOf = (x: Ctl, v: LpDemoView) => (v === 0 ? x.end0 + HOLD_MS : DWELL[1]);
+const dwellOf = (x: Ctl, v: LpDemoView) => x.ends[v] + HOLD_MS;
 
 type ViewState = { v: LpDemoView; n: number };
 
@@ -175,113 +151,31 @@ export function LpDemoPlayer({
     raf: 0,
     last: 0,
     frames: 0,
-    sig: ["", ""],
-    views: [null, null],
-    pos: new Map(),
-    pk: null,
-    pkMods: null,
-    pkLoading: false,
-    pkFailed: false,
-    pkDirty: false,
-    end0: REST_ONLY_MS,
+    tls: [null, null],
+    mods: null,
+    loading: false,
+    failed: false,
+    dirty: [false, false],
+    ends: [REST_ONLY_MS, REST_ONLY_MS],
   });
 
   /* ── DOM helpers ─────────────────────────────────────────────────────────── */
 
-  const cache = useCallback((v: LpDemoView): ViewCache | null => {
-    const x = ctl.current;
-    const hit = x.views[v];
-    if (hit) return hit;
-    const el = cardRef.current?.querySelector<HTMLElement>(`[data-v="${v}"]`);
-    const win = el?.querySelector<HTMLElement>(v === 0 ? ".lp-demowin__win" : ".lp-demowin__cwin");
-    if (!el || !win) return null;
-    const q = (s: string) => Array.from(el.querySelectorAll<HTMLElement>(s));
-    const c: ViewCache = {
-      el,
-      win,
-      cursor: win.querySelector<HTMLElement>(".lp-demowin__cursor"),
-      cues: q("[data-cue]"),
-      uncues: q("[data-uncue]"),
-      swaps: q("[data-swap]"),
-      presses: q("[data-press]"),
-      targets: q("[data-cursor]"),
-    };
-    x.views[v] = c;
-    return c;
-  }, []);
+  const viewEl = useCallback((v: LpDemoView) => cardRef.current?.querySelector<HTMLElement>(`[data-v="${v}"]`) ?? null, []);
 
-  /** A cursor target's centre in its window, from layout offsets (transforms ignored). */
-  const targetPos = useCallback(
-    (v: LpDemoView, id: string): { x: number; y: number } | null => {
+  /** View `v` at `t` ms: its timeline is seeked (the rest picture until it is built).
+   *  data-live (t > 0) stops the composer's resting caret blink. */
+  const render = useCallback(
+    (v: LpDemoView, t: number) => {
       const x = ctl.current;
-      const key = `${v}:${id}`;
-      const hit = x.pos.get(key);
-      if (hit) return hit;
-      const c = cache(v);
-      const el = c?.targets.find((e) => e.dataset.cursor === id);
-      if (!c || !el) return null;
-      let left = 0;
-      let top = 0;
-      let n: HTMLElement | null = el;
-      while (n && n !== c.win) {
-        left += n.offsetLeft;
-        top += n.offsetTop;
-        n = n.offsetParent as HTMLElement | null;
-      }
-      if (n !== c.win) return null;
-      const out = { x: left + el.offsetWidth * 0.5, y: top + el.offsetHeight * 0.55 };
-      x.pos.set(key, out);
-      return out;
+      const built = x.tls[v];
+      if (built) built.tl.time(Math.min(Math.max(t, 0), x.ends[v]) / 1000);
+      viewEl(v)?.toggleAttribute("data-live", !!built && t > 0);
     },
-    [cache],
+    [viewEl],
   );
-
-  /** Write one frame of view `v` into the DOM (class state diffed by frame.sig unless forced). */
-  const applyTo = useCallback(
-    (v: LpDemoView, f: LpDemoFrame, force = false) => {
-      const x = ctl.current;
-      const c = cache(v);
-      if (!c) return;
-      if (force || f.sig !== x.sig[v]) {
-        const on = new Set(f.on);
-        const sw = new Set(f.sw);
-        for (const e of c.cues) e.classList.toggle("is-on", on.has(e.dataset.cue ?? ""));
-        for (const e of c.uncues) e.classList.toggle("is-off", on.has(e.dataset.uncue ?? ""));
-        for (const e of c.swaps) e.classList.toggle("is-sw", sw.has(e.dataset.swap ?? ""));
-        for (const e of c.presses) e.classList.toggle("is-press", f.press === e.dataset.press);
-        x.sig[v] = f.sig;
-      }
-      const cur = c.cursor;
-      if (!cur) return;
-      const k = f.cursor;
-      const a = k.from ? targetPos(v, k.from) : null;
-      const b = k.to ? targetPos(v, k.to) : null;
-      if (!k.visible || (k.to && !b)) {
-        cur.classList.remove("is-on", "is-click");
-        return;
-      }
-      const entry = { x: c.win.clientWidth * CURSOR_ENTRY.x, y: c.win.clientHeight * CURSOR_ENTRY.y };
-      const from = a ? { x: a.x + k.fromD[0], y: a.y + k.fromD[1] } : entry;
-      const to = b ? { x: b.x + k.toD[0], y: b.y + k.toD[1] } : from;
-      const px = from.x + (to.x - from.x) * k.k;
-      const py = from.y + (to.y - from.y) * k.k;
-      cur.style.transform = `translate3d(${px.toFixed(1)}px, ${py.toFixed(1)}px, 0)`;
-      cur.classList.add("is-on");
-      cur.classList.toggle("is-click", k.click);
-    },
-    [cache, targetPos],
-  );
-
-  /** The Pancake view at `t` ms: its timeline is seeked (the rest picture until it is built).
-   *  data-live (t > 0) stops the chat bar's resting caret blink. */
-  const renderPancake = useCallback((t: number) => {
-    const x = ctl.current;
-    const el = cardRef.current?.querySelector<HTMLElement>('[data-v="0"]');
-    if (x.pk) x.pk.tl.time(Math.min(Math.max(t, 0), x.end0) / 1000);
-    el?.toggleAttribute("data-live", !!x.pk && t > 0);
-  }, []);
-  /** (Re)build the Pancake timeline (set on mount). */
-  const rebuildRef = useRef<() => void>(() => {});
+  /** (Re)build a view's timeline (set on mount). */
+  const rebuildRef = useRef<(v: LpDemoView) => void>(() => {});
 
   /** The pills' fills: the active one shows the dwell's progress once started; full (the CSS
    *  default) under reduced motion or pause; empty while the first start waits. */
@@ -335,12 +229,11 @@ export function LpDemoPlayer({
         advanceRef.current();
         return;
       }
-      if (x.view === 0) renderPancake(x.t);
-      else applyTo(1, frameAt(1, x.t));
+      render(x.view, x.t);
       setFills();
       x.raf = requestAnimationFrame(tick);
     },
-    [applyTo, renderPancake, setFills],
+    [render, setFills],
   );
 
   const willRun = useCallback(() => {
@@ -354,8 +247,8 @@ export function LpDemoPlayer({
       x.inView &&
       !(x.solo && x.soloDone) &&
       (x.oneShot || !x.focusHold) &&
-      // the Pancake view waits for its timeline (or plays its rest picture if it never comes)
-      (x.view !== 0 || !!x.pk || x.pkFailed)
+      // a view waits for its timeline (or shows its rest picture if the code never comes)
+      (!!x.tls[x.view] || x.failed)
     );
   }, []);
 
@@ -402,13 +295,9 @@ export function LpDemoPlayer({
     x.pending = false;
     x.view = view.v;
     card.setAttribute("data-snap", "");
-    if (view.v === 0) {
-      // hidden until now: the moment to take a new measure of a resized stage
-      if (x.pkDirty && x.t === 0) rebuildRef.current();
-      renderPancake(x.t);
-    } else {
-      applyTo(1, frameAt(1, x.t), true);
-    }
+    // hidden until now: the moment to take a new measure of a resized stage
+    if (x.dirty[view.v] && x.t === 0) rebuildRef.current(view.v);
+    render(view.v, x.t);
     void card.offsetHeight; // commit the snapped state before transitions come back
     card.removeAttribute("data-snap");
     setFills();
@@ -430,7 +319,7 @@ export function LpDemoPlayer({
       x.fill = null;
       if (x.reduced || x.paused) {
         x.oneShot = false;
-        x.t = x.reduced && v === 1 ? END[1] : x.paused ? endOf(x, v) : 0;
+        x.t = x.paused && !x.reduced ? endOf(x, v) : 0;
       } else {
         x.oneShot = true;
         x.t = 0;
@@ -479,73 +368,80 @@ export function LpDemoPlayer({
     const grow = mountWindowGrow(section, card);
     if (still) grow.lock();
 
-    /* the Pancake view's timeline: GSAP + its builder, fetched on the visitor's first input or
-       at the first start, whichever comes first (nothing at load: phones rest untouched). Built
-       on the laid-out view once the fonts are in (it measures the request's glyphs). */
-    const view0 = card.querySelector<HTMLElement>('[data-v="0"]');
-    const buildPk = () => {
-      const mods = x.pkMods;
-      if (!mods || !view0 || disposed) return;
-      if (view0.getClientRects().length === 0) {
-        x.pkDirty = true; // not rendered (the agents view hides the section): at the next arm
+    /* the two timelines: GSAP + the builders, fetched on the visitor's first input or at the
+       first start, whichever comes first (nothing at load: phones rest untouched). Each is built
+       on its laid-out view once the fonts are in (it measures the request's glyphs). */
+    const build = (v: LpDemoView) => {
+      const mods = x.mods;
+      const el = viewEl(v);
+      if (!mods || !el || disposed) return;
+      if (el.getClientRects().length === 0) {
+        x.dirty[v] = true; // not rendered (the agents view, the Claude view on phones): at the next arm
         return;
       }
-      x.pk?.dispose();
-      x.pk = null;
+      x.tls[v]?.dispose();
+      x.tls[v] = null;
       const out: { b: BuiltDemo | null } = { b: null };
       const ctx = mods.gsap.context(() => {
-        out.b = mods.build(view0);
+        out.b = mods.build[v](el);
       });
       const b = out.b;
       if (!b) {
         ctx.revert();
         return;
       }
-      x.pk = {
+      x.tls[v] = {
         tl: b.tl,
         dispose: () => {
           ctx.revert();
           b.cleanup();
         },
       };
-      x.pkDirty = false;
-      x.end0 = b.tl.duration() * 1000;
-      if (x.view === 0) renderPancake(x.reduced ? 0 : x.t);
+      x.dirty[v] = false;
+      x.ends[v] = b.tl.duration() * 1000;
+      render(v, x.reduced || x.view !== v ? 0 : x.t);
       setFills();
       sync();
     };
-    rebuildRef.current = buildPk;
-    const ensurePk = () => {
-      if (x.pkMods) {
-        if (!x.pk) buildPk();
+    rebuildRef.current = build;
+    const ensure = () => {
+      if (x.mods) {
+        if (!x.tls[0]) build(0);
+        if (!x.tls[1]) build(1);
         return;
       }
-      if (x.pkLoading || x.pkFailed || x.reduced || disposed) return;
-      x.pkLoading = true;
-      Promise.all([import("@/lib/gsap"), import("./lp-demo-pancake-timeline"), document.fonts ? document.fonts.ready : null])
-        .then(([g, m]) => {
-          x.pkLoading = false;
+      if (x.loading || x.failed || x.reduced || disposed) return;
+      x.loading = true;
+      Promise.all([
+        import("@/lib/gsap"),
+        import("./lp-demo-pancake-timeline"),
+        import("./lp-demo-claude-timeline"),
+        document.fonts ? document.fonts.ready : null,
+      ])
+        .then(([g, pancake, claude]) => {
+          x.loading = false;
           if (disposed) return;
-          x.pkMods = { gsap: g.gsap, build: m.buildDemoPancake };
-          buildPk();
+          x.mods = { gsap: g.gsap, build: [pancake.buildDemoPancake, claude.buildDemoClaude] };
+          build(0);
+          build(1);
         })
         .catch(() => {
-          x.pkLoading = false;
-          x.pkFailed = true;
+          x.loading = false;
+          x.failed = true;
           sync();
         });
     };
     const INPUTS = ["scroll", "pointermove", "pointerdown", "touchstart", "keydown"] as const;
     const onFirstInput = () => {
       for (const type of INPUTS) window.removeEventListener(type, onFirstInput);
-      ensurePk();
+      ensure();
     };
     for (const type of INPUTS) window.addEventListener(type, onFirstInput, { passive: true });
 
     const start = () => {
       if (x.started || disposed) return;
       x.started = true;
-      ensurePk();
+      ensure();
       setFills();
       sync();
     };
@@ -556,20 +452,16 @@ export function LpDemoPlayer({
       card.toggleAttribute("data-reduced", reduced);
       stop();
       if (reduced) {
+        // no motion: each view is its rest picture, the pills switch them at once
         x.oneShot = false;
         x.started = true;
-        // Pancake = its rest picture (the V2 design), Claude = its end picture
-        x.t = x.view === 1 ? END[1] : 0;
-        card.setAttribute("data-snap", "");
-        renderPancake(0);
-        applyTo(1, frameAt(1, END[1]), true);
-        void card.offsetHeight;
-        card.removeAttribute("data-snap");
+        x.t = 0;
+        render(0, 0);
+        render(1, 0);
       } else if (x.started) {
-        // motion allowed again: hold the current view's picture, then carry on
-        x.t = x.view === 1 ? END[1] : 0;
-        applyTo(1, frameAt(1, x.view === 1 ? END[1] : 0), true);
-        ensurePk();
+        // motion allowed again: the current view starts over
+        x.t = 0;
+        ensure();
       }
       setFills();
       sync();
@@ -666,7 +558,6 @@ export function LpDemoPlayer({
       x.solo = phone && PHONE_SOLO;
       // no pills: the stage drops its tabpanel role, tab stop and label (render below)
       setSolo(x.solo);
-      x.pos.clear();
       if (phone) {
         writeFit();
         // a picture at this size (pointer-events: none in demo.css): not a tab stop either, and
@@ -693,21 +584,23 @@ export function LpDemoPlayer({
     setPhone();
     mqPhone.addEventListener("change", setPhone);
 
-    /* a new stage width: the Claude cursor targets and the Pancake timeline measured the old one.
-       The timeline is rebuilt once the size settles, at once if the view is at rest or hidden,
-       else when it next starts from its first frame (never mid-run). */
+    /* a new stage width: the timelines measured the old one. Each is rebuilt once the size
+       settles, at once if its view is at rest or hidden, else when it next starts from its first
+       frame (never mid-run). */
     let stageW = stage.getBoundingClientRect().width;
     let resized = 0;
     const ro = new ResizeObserver(() => {
-      x.pos.clear();
       writeFit();
       const w = stage.offsetWidth;
       if (Math.abs(w - stageW) < 0.5) return;
       stageW = w;
-      x.pkDirty = true;
+      x.dirty = [true, true];
       window.clearTimeout(resized);
       resized = window.setTimeout(() => {
-        if (x.pkDirty && x.pkMods && (x.view !== 0 || x.t === 0 || x.reduced)) buildPk();
+        if (!x.mods) return;
+        for (const v of [0, 1] as const) {
+          if (x.dirty[v] && (x.view !== v || x.t === 0 || x.reduced)) build(v);
+        }
       }, 200);
     });
     stageW = stage.offsetWidth;
@@ -723,7 +616,7 @@ export function LpDemoPlayer({
         x.oneShot = false;
         x.started = true;
         grow.lock(); // captures are compared with the full-size designs
-        ensurePk();
+        ensure();
         x.t = ms;
         flushSync(() => go(v));
         // same view: the layout effect re-applies (new nonce)
@@ -764,8 +657,9 @@ export function LpDemoPlayer({
             seeking: x.seeking,
             running: x.raf !== 0,
             frames: x.frames,
-            /** the Pancake timeline: built, and its run's length (ms) */
-            pk: !!x.pk,
+            /** the timelines: built (Pancake, Claude), and the current run's length (ms) */
+            pk: !!x.tls[0],
+            ck: !!x.tls[1],
             end: Math.round(endOf(x, x.view)),
             /** the grow effect: { g, done } (lp-demo-scroll.ts) */
             grow: grow.state(),
@@ -780,9 +674,11 @@ export function LpDemoPlayer({
       window.clearTimeout(dwell);
       window.clearTimeout(resized);
       for (const type of INPUTS) window.removeEventListener(type, onFirstInput);
-      x.pk?.dispose();
-      x.pk = null;
-      view0?.removeAttribute("data-live");
+      for (const v of [0, 1] as const) {
+        x.tls[v]?.dispose();
+        x.tls[v] = null;
+        viewEl(v)?.removeAttribute("data-live");
+      }
       vis.disconnect();
       focusObs.disconnect();
       halfObs.disconnect();

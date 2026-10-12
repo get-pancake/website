@@ -36,11 +36,11 @@ export const LP_DEMO = {
        the app does, "no need that what you write on motion comes from an IRL play"): an agency
        goes after startups that just raised. Funding, hiring and keyword are real Pancake
        signals. No person or company is named: the leads are five pairs of initials. */
-    /** What is typed in the chat bar: what the company does, then who to find (founder
-     *  2026-10-13: "the logic where you explain what you do was good in the designer's
-     *  version", whose request read "We make SaaS launch videos. Find…"). The Claude & Codex
-     *  view keeps the production request until it is redrawn. */
-    request: "We design websites for startups. Find founders who just raised a seed round.",
+    /** What is typed in the chat bar: two signals at once, and nothing about what the company
+     *  does (founder 2026-10-13: "faut pas rappeler ce qu'on fait dans le chat, car le brain est
+     *  censé le savoir… un prompt qui n'est pas que find companies that just raised mais qui ne
+     *  rappelle pas du contexte induit"). Both views type the same request. */
+    request: "Find founders who just raised a seed round and are hiring a marketing lead.",
     ideasLabel: "Suggested Plays",
     /** Three Plays, three signals, for the same agency. */
     ideas: [
@@ -57,7 +57,7 @@ export const LP_DEMO = {
     work: [
       { label: "Reading your Brain", result: "" },
       { label: "Searching funding news", count: 148, result: "rounds" },
-      { label: "Qualifying each founder", count: 25, result: "fit" },
+      { label: "Checking who is hiring", count: 25, result: "fit" },
     ],
     /** What the research found (the count ticks up), with the leads' initials (invented; no
      *  name is shown). The same number as the Play's pace below: a first search that fills
@@ -69,12 +69,12 @@ export const LP_DEMO = {
      *  how often) and the steps it runs, then one button. */
     play: {
       kicker: "Play",
-      name: "Startups after a seed round",
+      name: "Funded startups hiring marketing",
       draft: "Draft",
       live: "Live",
       who: { key: "Who", value: "Founders, Heads of Marketing" },
       company: { key: "Company", value: "B2B startups, 10 to 50 people" },
-      signal: { key: "Signal", value: ["Seed round", "Raised this month"] },
+      signal: { key: "Signal", value: ["Seed round", "Hiring marketing"] },
       pace: { key: "Pace", value: "25 new leads a week" },
       then: { key: "Then", value: ["Find", "Qualify", "Reach out"] },
       deploy: "Deploy Play",
@@ -82,23 +82,39 @@ export const LP_DEMO = {
     /** Pancake's last word once the Play is live: what happens from here. */
     after: "It’s live. I’ll find new ones each week and reach out in your voice.",
     /** role="img" label of the view. */
-    aria: "Product demo. A web design agency types a request: We design websites for startups. Find founders who just raised a seed round. Pancake reads its Brain, searches funding news and qualifies each founder: 25 leads found. It proposes a Play to keep them coming: who, which companies, the signal, 25 new leads a week, then find, qualify, reach out. One click deploys it. Pancake confirms it is live and will reach out in the agency’s voice.",
+    aria: "Product demo. A web design agency types a request: Find founders who just raised a seed round and are hiring a marketing lead. Pancake reads its Brain, searches funding news and checks who is hiring: 25 leads found. It proposes a Play to keep them coming: who, which companies, the signal, 25 new leads a week, then find, qualify, reach out. One click deploys it. Pancake confirms it is live and will reach out in the agency’s voice.",
   },
 
+  /* The Claude & Codex view, redrawn 2026-10-13 (founder: "passe au motion sur claude en
+     utilisant les UIs claude comme dans la motion design video product hunt, tout en restant
+     simple: petit connecteur, qq tool calls, plays… on reste simple mais on donne le waouh").
+     Same request, same logic as the Pancake view (research, leads, the Play, deploy), in
+     Claude's own interface as the launch film drew it: a connector chip in the composer, one
+     card per tool call under the Pancake mark, the permission prompt, then the Play goes Live. */
   claude: {
     /** role="img" label of the Claude view. */
-    aria: "The same request in Claude. Claude plans the Play with Pancake, asks before creating it, then creates it and runs its first search.",
+    aria: "The same request in Claude, with the Pancake connector. Claude reads the Brain, searches funding news and checks who is hiring through Pancake: 25 founders fit. It shows the Play, asks for permission to deploy it, then confirms the Play is live on Pancake.",
     /** Deep-dive Claude frame 4964:3910. */
     greeting: "Let’s flip some pancakes",
-    modes: ["Chat", "Cowork"],
+    placeholder: "How can I help you today?",
+    /** The connector chip in the composer. */
+    connector: "Pancake",
     model: "Opus 5",
-    effort: "High",
-    below: ["Project", "Manual"],
-    placeholder: "Reply to Claude…",
-    say: "I’ll set this up as a Play in Pancake.",
-    tools: { plan: "Plan a new Play", create: "Create a saved Play", run: "Run a saved Play" },
-    ask: "Create it and run its first search?",
+    /** The docked composer once the request is sent. */
+    reply: "Reply to Claude…",
+    say: "I’ll run this through Pancake.",
+    /** One card per tool call: what it is doing, then what came back (`count` ticks up). */
+    tools: [
+      { title: "Read GTM Brain", doing: "Reading…", done: "Done" },
+      { title: "Search funding news", doing: "Searching…", count: 148, done: "rounds" },
+      { title: "Check who is hiring", doing: "Searching…", count: 25, done: "fit" },
+    ],
+    found: "25 founders fit. Here’s a Play to keep them coming.",
+    /** Claude's own permission prompt before a tool that changes something. */
+    ask: { lead: "Claude wants to use", tool: "Deploy Play", from: "from", app: "Pancake" },
+    always: "Always allow",
     allow: "Allow once",
-    done: "Done. Your play is ready. Its first search is running.",
+    deploy: { title: "Deploy Play", doing: "Deploying…", done: "Live" },
+    done: "Your Play is live on Pancake.",
   },
 } as const;

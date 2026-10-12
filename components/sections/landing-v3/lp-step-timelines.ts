@@ -121,7 +121,7 @@ function query(root: HTMLElement) {
 }
 
 /* ── step 01 · Add your website (brain-research-loop, 9.2 s) ──
-   opens on the EMPTY INPUT: one caret blink → "studio-pelican.com" types →
+   opens on the EMPTY INPUT: one caret blink → "acme.com" types →
    the pointer eases in and clicks Start research → input + button dissolve,
    the brain node pops (~2.4 s), the graph blooms hub by hub → the graph glides
    left and shrinks, the market-profile panel fades in with shimmering
@@ -227,7 +227,7 @@ function buildS1(root: HTMLElement): BuiltStep {
      brain pops at ~1.6 s (was 2.43), the held brain returns at ~6.2 s (was
      ~8.5). */
 
-  /* — 1 · typing "studio-pelican.com" from 0.2 s (30 ms a key, a third of the old jitter) — */
+  /* — 1 · typing "acme.com" from 0.2 s (30 ms a key, a third of the old jitter) — */
   let t = 0.2;
   typedEdges.forEach((acc, i) => {
     t += 0.03 + (S1_JIT[i] ?? 0) / 3;

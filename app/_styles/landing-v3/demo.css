@@ -134,7 +134,7 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   .lp-demowin[data-inview]:not([data-lp-offstage]) .lp-demowin__card[data-view="0"] .lp-demowin__view--pancake:not([data-live]) .lp-demowin__caret,
-  .lp-demowin[data-inview]:not([data-lp-offstage]) .lp-demowin__card[data-view="1"] .lp-demowin__home:not(.is-off) .lp-demowin__caret {
+  .lp-demowin[data-inview]:not([data-lp-offstage]) .lp-demowin__card[data-view="1"] .lp-demowin__view--claude:not([data-live]) .lp-demowin__caret {
     animation-duration: 1.06s;
     animation-iteration-count: infinite;
     animation-name: lp-demowin-caret;
@@ -598,39 +598,49 @@
 /* Pancake's last word, once the Play is live */
 .lp .lp-demowin__after { font-size: 14px; line-height: 20px; margin-top: 14px; text-wrap: pretty; }
 
-/* the cursor is moved by the timeline here: no CSS easing under it */
-.lp-demowin__view--pancake .lp-demowin__cursor,
-.lp-demowin__view--pancake .lp-demowin__cursor svg { transition: none; }
+/* the cursor is moved by the timelines: no CSS easing under it */
+.lp-demowin__view .lp-demowin__cursor,
+.lp-demowin__view .lp-demowin__cursor svg { transition: none; }
 
 /* the base placeholder rule is the Claude dock's */
 .lp-demowin__ph { color: var(--lp-subtle-text); font-size: var(--lp-text-md); line-height: 24px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* ══ Claude & Codex view (FLAGGED: no final design) ══════════════════════════
-   The deep-dive "Run it from Claude or Codex" frame 4964:2575 is this very
-   window at 752/1136 (r 15.887 × 1.5106 = 24, shadow 2.648/41.3 → 4/62.4);
-   its type ×1.145 (16 / 13.974) to sit at the Pancake view's scale. Palette:
-   --lp-claude-* (foundation.css, shared with story-claude); serif: Literata
-   (lp-claude-font.ts, --lp-font-claude-serif on .lp-demowin__cwin). */
-.lp-demowin__view--claude { display: grid; grid-template-columns: minmax(0, 1fr); }
+/* ══ Claude & Codex view (redrawn 2026-10-13) ════════════════════════════════
+   Founder: "passe au motion sur claude en utilisant les UIs claude comme dans
+   la motion design video product hunt, tout en restant simple: petit
+   connecteur, qq tool calls, plays… on reste simple mais on donne le waouh".
+   Claude's interface as the launch film drew it (ph-motion-film claude2.mjs:
+   the composer with its connector chip, the user bubble, the serif answer,
+   one white card per tool call under the Pancake mark) and the permission
+   prompt of the Claude release video, on this window's own Claude palette
+   (--lp-claude-*, foundation.css; serif: Literata, lp-claude-font.ts).
+   Same construction as the Pancake view: everything is placed against the
+   window (--ck-* below), the markup is the REST picture (Claude's home) plus
+   every later element hidden, and lp-demo-claude-timeline.ts plays one take:
+   type, send (the composer becomes the dock), three tool calls, the Play,
+   the permission prompt, Live. */
+.lp-demowin__view--claude {
+  --ck-col: 600px;
+  --ck-x: calc(50% - 300px);
+  --ck-greet-top: 124.1px;
+  --ck-bar-top: 206.6px; /* the Pancake chat bar's own line */
+  --ck-bar-h: 116px;
+  --ck-thread-top: 72px;
+  /* the docked composer keeps its two rows (the placeholder, then the controls), as Claude's does */
+  --ck-dock-top: 531px;
+  --ck-dock-h: 90px;
+}
 .lp-demowin__cwin {
   background: var(--lp-claude-bg);
   border-radius: var(--lp-r-lg);
   box-shadow: var(--lp-demowin-shadow);
   color: var(--lp-claude-ink);
-  grid-area: 1 / 1;
+  height: 100%;
   min-width: 0;
   overflow: hidden;
   position: relative;
 }
-.lp-demowin__capp { display: block; height: 100%; }
-.lp-demowin__home {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  inset: 0;
-  padding-top: 124.1px; /* greeting row top */
-  position: absolute;
-}
+.lp-demowin__capp { inset: 0; position: absolute; }
 .lp .lp-demowin__greet {
   align-items: center;
   color: var(--lp-claude-ink);
@@ -641,61 +651,74 @@
   gap: 6.9px;
   height: 47px;
   justify-content: center;
+  left: 0;
   letter-spacing: -0.3px;
   line-height: 47px;
+  position: absolute;
+  right: 0;
+  top: var(--ck-greet-top);
   white-space: nowrap;
 }
 .lp-demowin__greet-spark { fill: var(--lp-claude-spark); flex: none; height: 38.9px; width: 38.9px; }
-.lp-demowin__ccomposer {
+
+/* the composer: ONE element from the home to the dock (its top and height are
+   tweened; everything in it is anchored to its edges) */
+.lp-demowin__cbar {
   background: var(--lp-claude-card);
-  border-radius: 14px;
+  border-radius: 16px;
   box-shadow: inset 0 0 0 0.5px var(--lp-claude-ink-16), 0 4px 48px rgba(0, 0, 0, 0.08);
-  flex: none;
-  margin-top: 35.5px; /* 171.1 → 206.6, aligned with the Pancake composer */
-  min-height: 114.5px;
-  padding: 16px 19.5px 50.5px; /* 16 + 48 + 50.5 = 114.5 */
-  position: relative;
-  width: min(640px, calc(100% - 32px));
+  height: var(--ck-bar-h);
+  left: var(--ck-x);
+  position: absolute;
+  top: var(--ck-bar-top);
+  width: var(--ck-col);
+  z-index: 2;
 }
-.lp-demowin__cprompt { color: var(--lp-claude-ink); font-size: var(--lp-text-md); line-height: 24px; }
-.lp-demowin__ctrls {
+.lp-demowin__cbar > p:not(.lp-demowin__cctrls) {
+  font-size: var(--lp-text-md);
+  left: 18px;
+  line-height: 24px;
+  position: absolute;
+  right: 18px;
+  top: 15px;
+}
+.lp-demowin__cbar-ph,
+.lp-demowin__cbar-ask { color: var(--lp-claude-ink-48); }
+.lp-demowin__cbar-text { clip-path: polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0); color: var(--lp-claude-ink); }
+/* the dock's own placeholder: beside the controls, hidden at home */
+.lp .lp-demowin__cbar-ask { opacity: 0; visibility: hidden; }
+.lp-demowin__cbar .lp-demowin__caret { background: var(--lp-claude-ink); left: 18px; margin: 0; position: absolute; top: 17.5px; }
+.lp .lp-demowin__cctrls {
   align-items: center;
-  bottom: 11.5px;
+  bottom: 10px;
   display: flex;
   font-size: 13px;
-  height: 30.9px;
-  left: 14.9px;
+  gap: 8px;
+  height: 32px;
+  left: 12px;
   line-height: 18px;
   position: absolute;
-  right: 11.4px;
+  right: 10px;
 }
-.lp-demowin__plus { --ico: 19.5px; display: block; flex: none; }
-.lp-demowin__plus::before { display: block; }
-.lp-demowin__modes {
+.lp-demowin__plus { --ico: 19px; align-items: center; display: flex; flex: none; height: 32px; justify-content: center; width: 28px; }
+/* the connector chip (the film's .conn): the Pancake mark, its name, a green
+   dot = connected */
+.lp-demowin__conn {
   align-items: center;
   background: var(--lp-claude-ink-04);
   border-radius: var(--lp-r-xsm);
-  color: var(--lp-claude-ink-48);
+  box-shadow: inset 0 0 0 1px var(--lp-claude-ink-08);
   display: flex;
   flex: none;
-  gap: 11.2px;
-  height: 27.5px;
-  margin-left: 14.8px;
-  padding: 0 1.8px 0 11.5px;
+  font-size: 12.5px;
+  font-weight: 500;
+  gap: 6px;
+  height: 28px;
+  padding: 0 10px 0 6px;
 }
-.lp-demowin__modes .is-cur {
-  align-items: center;
-  background: var(--lp-claude-card);
-  border-radius: 6px;
-  box-shadow: inset 0 0 0 1px var(--lp-claude-ink-08);
-  color: var(--lp-claude-ink);
-  display: flex;
-  height: 24px;
-  justify-content: center;
-  width: 66.4px;
-}
-.lp-demowin__model { color: var(--lp-claude-ink); margin-left: auto; white-space: nowrap; }
-.lp-demowin__effort { color: var(--lp-claude-ink-48); margin-left: 4px; }
+.lp-demowin__conn-mark { display: block; flex: none; height: 18px; width: 18px; }
+.lp-demowin__conn i { background: #1fae6b; border-radius: 50%; display: block; height: 6px; width: 6px; }
+.lp-demowin__model { color: var(--lp-claude-ink); margin-left: auto; padding-right: 6px; white-space: nowrap; }
 .lp-demowin__csend {
   --ico: 16px;
   --ico-c: var(--lp-surface);
@@ -704,148 +727,132 @@
   border-radius: var(--lp-r-xsm);
   display: flex;
   flex: none;
-  height: 30.9px;
+  height: 32px;
   justify-content: center;
-  margin-left: 31px;
-  width: 30.9px;
-}
-.lp-demowin__csend--off { margin-left: 0; opacity: 0.5; }
-.lp .lp-demowin__below {
-  color: var(--lp-claude-ink-64);
-  display: flex;
-  font-size: 13px;
-  gap: 13.5px;
-  line-height: 18px;
-  margin-top: 7.2px; /* composer bottom 321.1 → 328.3 (composer-relative 123.7) */
-  padding-left: 19.5px;
-  width: min(640px, calc(100% - 32px));
+  opacity: 0.45; /* nothing typed yet */
+  width: 32px;
 }
 /* Claude + Codex marks, bottom-right (asterisk right 40 / bottom 27.5) */
 .lp-demowin__marks { align-items: center; bottom: 27.5px; display: flex; gap: 36.6px; position: absolute; right: 40px; }
 .lp-demowin__mark-codex { fill: var(--lp-claude-codex); height: 37.8px; width: 37.8px; }
 .lp-demowin__mark-claude { fill: var(--lp-claude-spark); height: 43.5px; width: 43.5px; }
 
-/* the run: column 640, bottom-anchored over the 64-tall dock (+16) */
-.lp-demowin__clog {
-  bottom: 104px;
+/* the thread (hidden at home): one column in flow, as the Pancake view's */
+.lp-demowin__cthread {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  justify-content: flex-end;
-  left: 0;
-  margin-inline: auto;
-  overflow: hidden;
+  left: var(--ck-x);
   position: absolute;
-  right: 0;
-  top: 32px;
-  width: min(640px, calc(100% - 32px));
+  top: var(--ck-thread-top);
+  width: var(--ck-col);
 }
+.lp-demowin__cthread > * { opacity: 0; visibility: hidden; }
 .lp-demowin__cbubble {
   align-self: flex-end;
   background: var(--lp-claude-bubble);
-  border-radius: 14px;
+  border-radius: 12px;
   color: var(--lp-claude-ink);
-  font-size: var(--lp-text-md);
-  line-height: 24px;
-  max-width: 80%;
-  padding: 12px 16px;
+  font-size: 15px;
+  line-height: 22px;
+  max-width: 440px;
+  padding: 9px 14px;
   text-wrap: pretty;
 }
+/* Claude's answer: the serif, streamed a word at a time */
 .lp .lp-demowin__csay {
   color: var(--lp-claude-serif-ink);
   font-family: var(--lp-font-claude-serif, Georgia), Georgia, serif;
-  font-size: 17px;
-  font-weight: 400;
-  line-height: 1.55;
-  text-wrap: pretty;
+  font-size: 16.5px;
+  line-height: 26px;
+  margin-top: 14px;
 }
-.lp-demowin__tool {
+/* one white card per tool call: the Pancake mark (the only coloured mark), the
+   tool, and on the right what it is doing, then what came back */
+.lp .lp-demowin__ctools { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; overflow: hidden; }
+.lp-demowin__ctool {
   align-items: center;
-  color: var(--lp-claude-ink-48);
-  display: flex;
-  font-size: var(--lp-text-md);
-  gap: 8px;
-  line-height: 24px;
-}
-.lp-demowin__plug { --ico: 24px; --ico-c: var(--lp-claude-plug); display: block; flex: none; height: 24px; }
-.lp-demowin__plug::before { display: block; }
-.lp-demowin__toolst { flex: none; height: 14px; place-items: center; width: 14px; }
-.lp-demowin__spin {
-  border: 1.5px solid var(--lp-claude-ink-16);
-  border-radius: 50%;
-  border-top-color: var(--lp-claude-ink-48);
-  height: 12px;
-  width: 12px;
-}
-/* turns only while the clock runs (data-run) and its row is running (≤ 600 ms
-   a row): JS-gated, so it is not a freeze member */
-.lp-demowin__card[data-run] .lp-demowin__toolst:not(.is-sw) > .lp-demowin__spin {
-  animation: lp-demowin-spin 0.7s linear infinite;
-}
-@keyframes lp-demowin-spin {
-  to { transform: rotate(360deg); }
-}
-.lp-demowin__tick { --ico: 14px; --ico-c: var(--lp-claude-ink-48); display: block; height: 14px; }
-.lp-demowin__tick::before { display: block; }
-.lp-demowin__plan {
   background: var(--lp-claude-card);
-  border-radius: 14px;
-  box-shadow: inset 0 0 0 0.5px var(--lp-claude-ink-16);
-  padding: 16px 18px;
-}
-.lp-demowin__plan-name { font-size: var(--lp-text-md); font-weight: 600; line-height: 24px; }
-.lp-demowin__plan-rows { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
-.lp-demowin__plan-rows li {
-  column-gap: 8px;
-  display: grid;
-  font-size: var(--lp-text-sm);
-  grid-template-columns: 120px minmax(0, 1fr);
-  line-height: 20px;
-}
-.lp-demowin__plan-k { color: var(--lp-claude-ink-48); }
-.lp-demowin__plan-chip {
-  background: var(--lp-claude-ink-04);
-  border-radius: 6px;
-  flex: none;
-  font-size: var(--lp-text-xsm);
-  line-height: 20px;
-  padding: 0 6px;
-  white-space: nowrap;
-}
-.lp-demowin__plan-foot { border-top: 0.5px solid var(--lp-claude-ink-08); margin-top: 12px; padding-top: 12px; }
-.lp-demowin__askrow { align-items: flex-start; display: flex; flex-direction: column; gap: 8px; }
-.lp-demowin__askq { color: var(--lp-claude-ink-64); font-size: var(--lp-text-sm); line-height: 20px; }
-.lp-demowin__allow {
-  align-items: center;
-  background: var(--lp-claude-ink);
-  border-radius: var(--lp-r-xsm);
-  color: var(--lp-surface);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--lp-claude-ink-08);
   display: flex;
-  font-size: var(--lp-text-sm);
+  font-size: 13px;
   font-weight: 500;
-  height: 30px;
+  gap: 8px;
+  height: 38px;
+  line-height: 18px;
+  padding: 0 12px;
+}
+.lp-demowin__ctool-mark { display: block; flex: none; height: 16px; width: 16px; }
+.lp-demowin__ctool-r { color: var(--lp-claude-ink-48); display: grid; font-size: 12px; font-weight: 400; margin-left: auto; text-align: right; }
+.lp-demowin__ctool-r > * { grid-area: 1 / 1; white-space: nowrap; }
+.lp-demowin__ctool-done b { color: var(--lp-claude-ink); font-variant-numeric: tabular-nums; font-weight: 600; }
+.lp-demowin__ctool[data-deploy] .lp-demowin__ctool-done { align-items: center; color: var(--lp-demowin-green-fg); display: flex; font-weight: 500; gap: 5px; justify-content: flex-end; }
+.lp-demowin__ctool[data-deploy] .lp-demowin__ctool-done::before { background: currentColor; border-radius: 50%; content: ""; height: 5px; width: 5px; }
+
+/* the Play, in Claude's own interface (founder 2026-10-13: "should not be the
+   pancake look and feel"): a white result card like the tool calls', the
+   Pancake mark, the Play's name, its status on the right, and three rows in
+   Claude's neutral type. No tile, no blue chips, no rainbow outline. */
+.lp-demowin__cplay {
+  background: var(--lp-claude-card);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--lp-claude-ink-08);
+  margin-top: 12px;
+  padding: 0 14px;
+}
+.lp .lp-demowin__cplay-h { align-items: center; display: flex; font-size: 13.5px; gap: 8px; height: 44px; line-height: 18px; }
+.lp-demowin__cplay-k { color: var(--lp-claude-ink-48); }
+.lp-demowin__cplay-n { font-weight: 600; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.lp-demowin__cplay-st { display: grid; flex: none; font-size: 12px; margin-left: auto; }
+.lp-demowin__cplay-st > span { grid-area: 1 / 1; justify-self: end; white-space: nowrap; }
+.lp-demowin__cplay-st > [data-s="draft"] { color: var(--lp-claude-ink-48); }
+.lp-demowin__cplay-st > [data-s="live"] { align-items: center; color: var(--lp-demowin-green-fg); display: flex; font-weight: 500; gap: 5px; opacity: 0; visibility: hidden; }
+.lp-demowin__cplay-st > [data-s="live"]::before { background: currentColor; border-radius: 50%; content: ""; height: 5px; width: 5px; }
+.lp-demowin__cplay-rows li {
+  align-items: center;
+  border-top: 1px solid var(--lp-claude-ink-08);
+  column-gap: 12px;
+  display: grid;
+  font-size: 13px;
+  grid-template-columns: 56px minmax(0, 1fr);
+  height: 36px;
+  line-height: 18px;
+}
+.lp-demowin__cplay-key { color: var(--lp-claude-ink-48); }
+.lp-demowin__cplay-v { align-items: center; display: flex; gap: 6px; min-width: 0; white-space: nowrap; }
+.lp-demowin__cplay-chip { background: var(--lp-claude-ink-04); border-radius: 6px; flex: none; font-size: 12px; line-height: 22px; padding: 0 8px; }
+
+/* Claude's permission prompt (the release video's card): the sentence, then
+   "Always allow" and the dark "Allow once" */
+.lp-demowin__perm {
+  align-items: center;
+  background: var(--lp-claude-card);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px var(--lp-claude-ink-08), 0 4px 24px rgba(0, 0, 0, 0.06);
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  overflow: hidden;
+}
+.lp .lp-demowin__perm-t { flex: 1; font-size: 13.5px; line-height: 20px; min-width: 0; padding: 14px 0 14px 16px; }
+.lp-demowin__perm-t b { font-weight: 600; }
+.lp .lp-demowin__perm-b { display: flex; flex: none; gap: 8px; padding-right: 12px; }
+.lp-demowin__perm-btn {
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px var(--lp-claude-ink-16);
+  display: block;
+  font-size: 12.5px;
+  font-weight: 500;
+  line-height: 30px;
   padding: 0 12px;
   white-space: nowrap;
 }
-.lp-demowin__calls { display: flex; flex-direction: column; gap: 4px; }
-.lp-demowin__cdock {
-  align-items: center;
-  background: var(--lp-claude-card);
-  border-radius: 14px;
-  bottom: 24px;
-  box-shadow: inset 0 0 0 0.5px var(--lp-claude-ink-16), 0 4px 48px rgba(0, 0, 0, 0.08);
-  display: flex;
-  gap: 12px;
-  height: 64px;
-  justify-content: space-between;
-  left: 0;
-  margin-inline: auto;
-  padding: 0 11.4px 0 19.5px;
-  position: absolute;
-  right: 0;
-  width: min(640px, calc(100% - 32px));
+.lp-demowin__perm-btn--go { background: var(--lp-ink-100); box-shadow: none; color: var(--lp-surface); }
+.lp .lp-demowin__ctools--deploy { margin-top: 12px; }
+
+@keyframes lp-demowin-spin {
+  to { transform: rotate(1turn); }
 }
-.lp-demowin__cdock .lp-demowin__ph { color: var(--lp-claude-ink-48); }
 
 /* ══ pills (V2 4939:2784): 129 fixed + 132 hug, gap 8, 24 under the window ══
    z-index 1 = the views' own level, later in the tree: the pills paint OVER the
@@ -963,9 +970,7 @@
     .lp-demowin__bar,
     .lp-demowin__playc { box-shadow: var(--lp-demowin-hair), var(--lp-demowin-shadow-input); }
     /* the Claude & Codex view's three cards (same 0.5 px rings) */
-    .lp-demowin__ccomposer,
-    .lp-demowin__cdock { box-shadow: var(--lp-demowin-chair), 0 4px 48px rgba(0, 0, 0, 0.08); }
-    .lp-demowin__plan { box-shadow: var(--lp-demowin-chair); }
+    .lp-demowin__cbar { box-shadow: var(--lp-demowin-chair), 0 4px 48px rgba(0, 0, 0, 0.08); }
   }
 }
 
@@ -1088,14 +1093,8 @@
   /* no cursor on the phone card: the button answers on its own */
   .lp-demowin__view--pancake .lp-demowin__cursor { display: none; }
 
-  /* Claude & Codex view in the du box — only when the pills are kept on phones (PHONE_SOLO
-     off): same anchors as the Pancake card, not a drawn design */
-  .lp-demowin__home { padding-top: 205px; }
-  .lp-demowin__ccomposer,
-  .lp .lp-demowin__below { width: 487px; }
-  .lp-demowin__clog { bottom: 142.93px; left: 29.18px; margin-inline: 0; right: auto; top: 120px; width: 487px; } /* 66.93 + 64 + 12 */
-  .lp-demowin__cdock { bottom: 66.93px; left: 29.18px; margin-inline: 0; right: auto; width: 487px; }
-  .lp-demowin__effort { display: none; }
+  /* (the Claude & Codex view is not shown on phones: card[data-phone-solo]) */
+
 }
 
 /* ── icon masks (data-ico) ── */

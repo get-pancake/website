@@ -16,10 +16,10 @@
 //     chip), the request typed and sent, the Play card building itself row by row, the click on
 //     "Deploy Play", the card going Live and its first leads. ONE GSAP timeline
 //     (lp-demo-pancake-timeline.ts, lazy) over markup that is the REST picture (the home);
-//   · the Claude & Codex view — the production request in a Claude-desktop mock (no final
-//     design: flagged), still on the class cues of lp-demo-timeline.ts ([data-cue] shows from
-//     its time, [data-uncue] hides, [data-swap] flips, [data-press] scales, [data-cursor] is a
-//     cursor target). To be redrawn next.
+//   · the Claude & Codex view — redrawn on 2026-10-13: the same request and the same logic in
+//     Claude's own interface, as the launch film drew it (the Pancake connector chip in the
+//     composer, one card per tool call under the Pancake mark, the Play, Claude's permission
+//     prompt, Live). Its own GSAP timeline (lp-demo-claude-timeline.ts, lazy).
 // It replaces LpDemoTour (the /for demo's four tabs). The /for pages keep VxDemo untouched.
 //
 // Layout (demo.css): everything in the Pancake view is placed against the window (--pk-*
@@ -39,15 +39,14 @@
 import { Fragment, type ReactNode } from "react";
 
 import { VX_DEMO } from "@/components/sections/verticals/vx-copy";
-import { buildDemoModel } from "@/lib/verticals/demo-model";
 import { HOME_DEMO } from "@/lib/verticals/home-demo";
 import { lpClaudeSerif } from "./lp-claude-font";
 import { LP_DEMO } from "./lp-demo-data";
+import { SL_AVATAR } from "./lp-story-learns-art";
 import { LpDemoPlayer } from "./LpDemoPlayer";
 
 const P = LP_DEMO.pancake;
 const C = LP_DEMO.claude;
-const PLAY = VX_DEMO.app.chat.play;
 
 /** Shared glyphs, defined once (each is drawn 2–3 times: greeting, corner marks, chip badges). */
 function Symbols() {
@@ -86,8 +85,6 @@ function Cursor() {
 }
 
 /* ─── Pancake view ─────────────────────────────────────────────────────────── */
-
-type Prompt = ReturnType<typeof buildDemoModel>["prompts"][number];
 
 /** A state mark: a ring that turns while Pancake works, then a check. */
 function Mark3() {
@@ -264,100 +261,140 @@ function PancakeView() {
   );
 }
 
-/* ─── Claude & Codex view (FLAGGED: no final design) ───────────────────────── */
+/* ─── Claude & Codex view ──────────────────────────────────────────────────── */
 
-function ToolRow({ cue, done, label }: { cue: string; done: string; label: string }) {
+/** The Pancake mark, full colour (the only coloured mark in the Claude view). */
+function PancakeMark({ className }: { className: string }) {
   return (
-    <p className="lp-demowin__tool" data-cue={cue}>
-      <span className="lp-demowin__plug" data-ico="plug" />
-      <span>{label}</span>
-      <span className="lp-demowin__toolst lp-demowin__swap" data-swap={done}>
-        <span className="lp-demowin__spin" data-s="before" />
-        <span className="lp-demowin__tick" data-s="after" data-ico="check" />
-      </span>
+    <svg className={className} viewBox={`0 0 ${SL_AVATAR.size} ${SL_AVATAR.size}`} aria-hidden="true" focusable="false">
+      {SL_AVATAR.shapes.map((shape, i) => (
+        <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
+      ))}
+    </svg>
+  );
+}
+
+/** Claude's answer: one span a word, so it can stream in. */
+function Say({ line, text }: { line: number; text: string }) {
+  return (
+    <p className="lp-demowin__csay" data-line={line}>
+      {text.split(" ").map((word, i) => (
+        <Fragment key={i}>
+          {i > 0 && " "}
+          <span className="lp-demowin__w">{word}</span>
+        </Fragment>
+      ))}
     </p>
   );
 }
 
-function ClaudeView({ prompt }: { prompt: Prompt }) {
+/** One tool call, its own card: the Pancake mark, the tool, and on the right what it is doing,
+ *  then what came back. */
+function ToolCard({ tool, deploy }: { tool: { title: string; doing: string; done: string; count?: number }; deploy?: boolean }) {
+  return (
+    <li className="lp-demowin__ctool" data-deploy={deploy ? "" : undefined}>
+      <PancakeMark className="lp-demowin__ctool-mark" />
+      <span className="lp-demowin__ctool-t">{tool.title}</span>
+      <span className="lp-demowin__ctool-r">
+        <span className="lp-demowin__ctool-doing">{tool.doing}</span>
+        <span className="lp-demowin__ctool-done">
+          {tool.count !== undefined && <b>{tool.count}</b>} {tool.done}
+        </span>
+      </span>
+    </li>
+  );
+}
+
+/** Same request and same logic as the Pancake view, in Claude's interface (as the launch film
+ *  drew it). Markup = the REST picture (Claude's home, the connector chip in the composer) plus
+ *  every later element hidden; lp-demo-claude-timeline.ts plays the take over it. */
+function ClaudeView() {
+  const K = P.play;
   return (
     // lpClaudeSerif.variable defines --lp-font-claude-serif here (Literata, homepage-only module)
     <div className={`lp-demowin__cwin ${lpClaudeSerif.variable}`}>
       <div className="lp-demowin__capp" role="img" aria-label={C.aria}>
-        {/* rest picture: the greeting, the composer with the same request, Project / Manual */}
-        <div className="lp-demowin__home" data-uncue="c.send">
-          <p className="lp-demowin__greet">
-            <Mark id="spark" className="lp-demowin__greet-spark" />
-            {C.greeting}
-          </p>
-          <div className="lp-demowin__ccomposer">
-            <p className="lp-demowin__cprompt">
-              {prompt.text}
-              <span className="lp-demowin__caret" />
-            </p>
-            <p className="lp-demowin__ctrls">
-              <span className="lp-demowin__plus" data-ico="plus" />
-              <span className="lp-demowin__modes">
-                <span>{C.modes[0]}</span>
-                <span className="is-cur">{C.modes[1]}</span>
-              </span>
-              <span className="lp-demowin__model">
-                {C.model} <span className="lp-demowin__effort">{C.effort}</span>
-              </span>
-              <span className="lp-demowin__csend" data-ico="arrow-up" data-press="c.send" />
-            </p>
-          </div>
-          <p className="lp-demowin__below">
-            <span>{C.below[0]}</span>
-            <span>{C.below[1]}</span>
-          </p>
-        </div>
+        <p className="lp-demowin__greet">
+          <Mark id="spark" className="lp-demowin__greet-spark" />
+          {C.greeting}
+        </p>
 
-        {/* the run */}
-        <div className="lp-demowin__clog">
-          <p className="lp-demowin__cbubble" data-cue="c.send">
-            {prompt.text}
-          </p>
-          <p className="lp-demowin__csay" data-cue="c.say">
-            {C.say}
-          </p>
-          <ToolRow cue="c.t1" done="c.t1done" label={C.tools.plan} />
-          <div className="lp-demowin__plan" data-cue="c.plan">
-            <p className="lp-demowin__plan-name">{prompt.play.name}</p>
-            <ul className="lp-demowin__plan-rows">
+        {/* the thread */}
+        <div className="lp-demowin__cthread">
+          <p className="lp-demowin__cbubble">{P.request}</p>
+          <Say line={1} text={C.say} />
+          <ul className="lp-demowin__ctools">
+            {C.tools.map((tool) => (
+              <ToolCard key={tool.title} tool={tool} />
+            ))}
+          </ul>
+          <Say line={2} text={C.found} />
+          {/* the Play, in Claude's own interface (founder 2026-10-13: "in claude the play should
+              stay in a kind of claude ui, should not be the pancake look and feel"): a result
+              card like the tool calls', its rows in Claude's neutral type */}
+          <div className="lp-demowin__cplay">
+            <p className="lp-demowin__cplay-h">
+              <PancakeMark className="lp-demowin__ctool-mark" />
+              <span className="lp-demowin__cplay-k">{K.kicker}</span>
+              <span className="lp-demowin__cplay-n">{K.name}</span>
+              <span className="lp-demowin__cplay-st">
+                <span data-s="draft">{K.draft}</span>
+                <span data-s="live">{K.live}</span>
+              </span>
+            </p>
+            <ul className="lp-demowin__cplay-rows">
               <li>
-                <span className="lp-demowin__plan-k">{PLAY.who}</span>
-                <span>{prompt.play.who}</span>
+                <span className="lp-demowin__cplay-key">{K.who.key}</span>
+                <span className="lp-demowin__cplay-v">{K.who.value}</span>
               </li>
               <li>
-                <span className="lp-demowin__plan-k">{PLAY.how}</span>
-                <span className="lp-demowin__v">
-                  <span className="lp-demowin__plan-chip">{prompt.play.how.label}</span>
-                  <span>{prompt.play.how.text}</span>
+                <span className="lp-demowin__cplay-key">{K.signal.key}</span>
+                <span className="lp-demowin__cplay-v">
+                  {K.signal.value.map((w) => (
+                    <span key={w} className="lp-demowin__cplay-chip">
+                      {w}
+                    </span>
+                  ))}
                 </span>
+              </li>
+              <li>
+                <span className="lp-demowin__cplay-key">{K.pace.key}</span>
+                <span className="lp-demowin__cplay-v">{K.pace.value}</span>
               </li>
             </ul>
-            {/* the approval (the guide: "run it only after a clear yes"), then the two tool calls */}
-            <div className="lp-demowin__plan-foot lp-demowin__swap" data-swap="c.allowed" data-cue="c.ask">
-              <div className="lp-demowin__askrow" data-s="before">
-                <p className="lp-demowin__askq">{C.ask}</p>
-                <span className="lp-demowin__allow" data-press="c.allow" data-cursor="c.allow">
-                  {C.allow}
-                </span>
-              </div>
-              <div className="lp-demowin__calls" data-s="after">
-                <ToolRow cue="c.t2" done="c.t2done" label={C.tools.create} />
-                <ToolRow cue="c.t3" done="c.t3done" label={C.tools.run} />
-              </div>
-            </div>
           </div>
-          <p className="lp-demowin__csay" data-cue="c.done">
-            {C.done}
-          </p>
+          {/* Claude's permission prompt, then the call it allowed */}
+          <div className="lp-demowin__perm">
+            <p className="lp-demowin__perm-t">
+              {C.ask.lead} <b>{C.ask.tool}</b> {C.ask.from} <b>{C.ask.app}</b>
+            </p>
+            <p className="lp-demowin__perm-b">
+              <span className="lp-demowin__perm-btn">{C.always}</span>
+              <span className="lp-demowin__perm-btn lp-demowin__perm-btn--go">{C.allow}</span>
+            </p>
+          </div>
+          <ul className="lp-demowin__ctools lp-demowin__ctools--deploy">
+            <ToolCard tool={C.deploy} deploy />
+          </ul>
+          <Say line={3} text={C.done} />
         </div>
-        <div className="lp-demowin__cdock" data-cue="c.send">
-          <span className="lp-demowin__ph">{C.placeholder}</span>
-          <span className="lp-demowin__csend lp-demowin__csend--off" data-ico="arrow-up" />
+
+        {/* the composer: ONE element, from the home to the dock */}
+        <div className="lp-demowin__cbar">
+          <p className="lp-demowin__cbar-ph">{C.placeholder}</p>
+          <p className="lp-demowin__cbar-text">{P.request}</p>
+          <p className="lp-demowin__cbar-ask">{C.reply}</p>
+          <span className="lp-demowin__caret" />
+          <p className="lp-demowin__cctrls">
+            <span className="lp-demowin__plus" data-ico="plus" />
+            <span className="lp-demowin__conn">
+              <PancakeMark className="lp-demowin__conn-mark" />
+              {C.connector}
+              <i />
+            </span>
+            <span className="lp-demowin__model">{C.model}</span>
+            <span className="lp-demowin__csend" data-ico="arrow-up" />
+          </p>
         </div>
 
         {/* Claude + Codex marks, bottom-right (the Figma frames draw Cursor's cube: replaced) */}
@@ -378,10 +415,6 @@ function ClaudeView({ prompt }: { prompt: Prompt }) {
 const NOSCRIPT_CSS = "<style>.lp-demowin .lp-demowin__card{scale:none!important}</style>";
 
 export function LpDemo() {
-  const m = buildDemoModel(HOME_DEMO);
-  // The homepage shows HOME_DEMO's first request only (the other two stay validated with the
-  // 40 /for configs, lib/verticals/home-demo.ts).
-  const prompt = m.prompts[0];
   return (
     <section className="lp-demowin" id="lp-demowin" aria-labelledby="lp-demowin-title">
       <h2 id="lp-demowin-title" className="lp-sr-only">
@@ -394,7 +427,7 @@ export function LpDemo() {
         tablist={LP_DEMO.tablist}
         pause={VX_DEMO.controls.pause}
         pancake={<PancakeView />}
-        claude={<ClaudeView prompt={prompt} />}
+        claude={<ClaudeView />}
       />
       <noscript dangerouslySetInnerHTML={{ __html: NOSCRIPT_CSS }} />
     </section>

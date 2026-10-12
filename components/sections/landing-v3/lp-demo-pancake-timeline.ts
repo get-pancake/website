@@ -46,9 +46,9 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
 export type BuiltDemo = { tl: gsap.core.Timeline; cleanup: () => void };
 
 /* Typing helpers: the clip-path staircase of the stories (lp-story-claude-timeline.ts). */
-type Glyph = { right: number; top: number; bottom: number };
+export type Glyph = { right: number; top: number; bottom: number };
 /** each glyph's right edge and line box, in the element's own unscaled px (Range rects) */
-function measureGlyphs(el: HTMLElement): Glyph[] {
+export function measureGlyphs(el: HTMLElement): Glyph[] {
   const box = el.getBoundingClientRect();
   const s = el.offsetWidth ? box.width / el.offsetWidth : 1; // the card's scale, the phone fit
   const glyphs: Glyph[] = [];
@@ -76,8 +76,8 @@ function measureGlyphs(el: HTMLElement): Glyph[] {
   }
   return glyphs;
 }
-const HIDDEN_CLIP = "polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0)";
-const clipTo = (g: Glyph) =>
+export const HIDDEN_CLIP = "polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0)";
+export const clipTo = (g: Glyph) =>
   `polygon(0 0, 100% 0, 100% ${g.top}px, ${g.right}px ${g.top}px, ${g.right}px ${g.bottom}px, 0 ${g.bottom}px)`;
 
 /** typing: first glyph, then one every 38 ms (a pace one can read), and a held beat before send */
@@ -85,7 +85,7 @@ const T0 = 0.4;
 const DT = 0.038;
 const TYPED_HOLD = 0.45;
 /** an "instant" step: 1 ms (a tween, so gsap.context reverts it in time order) */
-const STEP = 0.001;
+export const STEP = 0.001;
 /** one tool call: how long Pancake "works" on it, and the beat to the next one */
 const WORK = 0.55;
 const WORK_BEAT = 0.64;
