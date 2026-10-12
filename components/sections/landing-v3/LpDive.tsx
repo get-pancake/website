@@ -1,8 +1,17 @@
+import type { CSSProperties } from "react";
+
 import { SHOW_PLACEHOLDERS, visibleEntries } from "@/lib/placeholders";
 
 import { LpDiveCarousel } from "./LpDiveCarousel";
 import { LpSkyParallax } from "./LpSkyParallax";
-import { DIVE_FALLBACK_S, DIVE_HOLD_S, DIVE_ITEMS, DIVE_PAUSE_LABEL, DIVE_TITLE } from "./lp-dive-data";
+import {
+  DIVE_FALLBACK_S,
+  DIVE_HOLD_S,
+  DIVE_ITEMS,
+  DIVE_PAUSE_LABEL,
+  DIVE_PHONE_LAYOUT,
+  DIVE_TITLE,
+} from "./lp-dive-data";
 import { DIVE_STAGES } from "./lp-dive-stages";
 
 /**
@@ -22,14 +31,24 @@ import { DIVE_STAGES } from "./lp-dive-stages";
  * in the HTML (the collapsed ones folded, not removed). The tabs follow the APG vertical tabs
  * pattern (automatic activation, roving tabindex); LpDiveCarousel + lp-dive-carousel.ts run it.
  *
- * Copy: lp-dive-data.ts (homepage-lint FILES). CSS: dive.css (section, tabs, bar, stage) and
- * sky.css (clouds, parallax depths, the banner and CTA skies).
+ * Phones (≤767, mobile artboard 5024:8914, decision §9 F3; switch DIVE_PHONE_LAYOUT): the SAME
+ * markup re-laid out by dive.css as four stacked items — title, body, its own stage card — all
+ * open, no bar, no pause control. `--lp-dive-i` (the item's index, on its tab, its link and
+ * its panel) gives the stack its order: tab, link, panel, next tab… The driver then drops the
+ * tab semantics there (four headings with pictures) and plays each stage once on its own.
+ * The tabs are <div role="tab"> (not <button>) for that reason: without its role a div is
+ * plain text, a button would stay a button that does nothing.
+ *
+ * Copy: lp-dive-data.ts (homepage-lint FILES). CSS: dive.css (section, tabs, bar, stage, the
+ * phone stack) and sky.css (clouds, parallax depths, the banner and CTA skies).
  */
+const at = (i: number) => ({ "--lp-dive-i": i }) as CSSProperties;
+
 export function LpDive() {
   const items = visibleEntries(DIVE_ITEMS);
   if (!items.length) return null;
   return (
-    <section className="lp-dive" aria-labelledby="lp-dive-title">
+    <section className="lp-dive" aria-labelledby="lp-dive-title" data-lp-phone={DIVE_PHONE_LAYOUT}>
       <div className="lp-dive-head">
         <h2 id="lp-dive-title" className="lp-title-section lp-dive-title">
           {DIVE_TITLE}
@@ -41,9 +60,8 @@ export function LpDive() {
             {items.map((item, i) => {
               const on = i === 0;
               return (
-                <button
+                <div
                   key={item.id}
-                  type="button"
                   role="tab"
                   id={`lp-dive-tab-${item.id}`}
                   className="lp-dive-tab"
@@ -54,6 +72,8 @@ export function LpDive() {
                   tabIndex={on ? 0 : -1}
                   data-id={item.id}
                   data-hold={item.hold ?? DIVE_HOLD_S}
+                  data-more={item.more ? "" : undefined}
+                  style={at(i)}
                 >
                   <span id={`lp-dive-tab-${item.id}-t`} className="lp-dive-tab__title">
                     {item.title}
@@ -68,15 +88,22 @@ export function LpDive() {
                     </span>
                   </span>
                   <span className="lp-dive-tab__bar" aria-hidden="true" />
-                </button>
+                </div>
               );
             })}
           </div>
-          {/* an item's quiet link sits under the list (a link can't live inside a tab button),
-              shown while its item is active */}
+          {/* an item's quiet link sits under the list (a link can't live inside a tab),
+              shown while its item is active; in the phone stack, under its item's body */}
           {items.map((item, i) =>
             item.more ? (
-              <p key={item.id} className="lp-dive-more" data-for={item.id} data-on={i === 0 ? "" : undefined}>
+              <p
+                key={item.id}
+                id={`lp-dive-more-${item.id}`}
+                className="lp-dive-more"
+                data-for={item.id}
+                data-on={i === 0 ? "" : undefined}
+                style={at(i)}
+              >
                 <span className="lp-dive-more__clip">
                   <span className="lp-dive-more__inner">
                     <a className="lp-textlink lp-dive-more__link" href={item.more.href}>
@@ -115,6 +142,7 @@ export function LpDive() {
                   aria-labelledby={`lp-dive-tab-${item.id}`}
                   tabIndex={0}
                   data-state={i === 0 ? "active" : "idle"}
+                  style={at(i)}
                 >
                   <div className="lp-dive-scene" role="img" aria-label={alt || item.title.replace("\n", " ")}>
                     <Stage placeholders={SHOW_PLACEHOLDERS} />

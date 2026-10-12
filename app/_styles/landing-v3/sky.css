@@ -12,7 +12,12 @@
    relativeTransform −90°), exported in section coordinates and stretched to
    the section box (preserveAspectRatio none): exact at 1654, the edge keeps
    its share of the height elsewhere. STATIC — the 20 s spin both carry in the
-   prototype is inherited from the ring they were copied from (decision §5). */
+   prototype is inherited from the ring they were copied from (decision §5).
+
+   Phones (≤767, mobile artboard 5024:8631, decision 2026-10-11 §9): the two
+   edges are the artboard's own curves (5024:10542), anchored to the cards;
+   the CTA card is r32 again (F5); the clouds stay, lighter, behind ONE switch
+   (F4) — see "phones" at the end of this file. */
 
 .lp-banner--sky {
   background: url("/lp/lp-sky-banner-top.svg") 0 0 / 100% 100% no-repeat, var(--lp-sky);
@@ -137,15 +142,69 @@
     width: 93.028px;
   }
 }
-/* phones: lighter — the far clouds go, the CTA's near one at 0.6 scale and
-   half the travel */
+/* ── phones (≤767) ── */
 @media (max-width: 767px) {
+  /* The sky's two edges, as the mobile artboard draws them (5024:10542
+     "Subtract": the cream bulging down into the blue behind the banner card,
+     the cream hill rising behind the CTA card). Only the two 16px gutters
+     show them; each is the artboard's exact curve in a 402-wide strip
+     (lp-sky-*-phone.svg, stretched to the width), anchored to its CARD so it
+     keeps its place against the art: banner card top + 523.8 (left) / 521.9
+     (right), 11–14px above "Selling didn't."; CTA card top + 287.6 (left) /
+     270.9 (right). The gradient under each strip overlaps it by half a pixel
+     (no hairline at fractional widths). */
+  .lp-banner--sky {
+    /* the card is aspect-locked 370:672 (banner.css): its art scales with
+       --lp-sky-u = 1px at 402 */
+    --lp-sky-u: calc((100vw - 32px) / 370);
+    background:
+      url("/lp/lp-sky-banner-top-phone.svg") 0 calc(24px + 499.589 * var(--lp-sky-u)) / 100% calc(40 * var(--lp-sky-u)) no-repeat,
+      linear-gradient(to bottom, transparent calc(24px + 539 * var(--lp-sky-u)), var(--lp-sky) 0);
+  }
+  .lp-cta--sky {
+    /* the card's 224px inset is fixed px on phones (cta.css): fixed offsets
+       from the section top (56 = its padding) */
+    background:
+      url("/lp/lp-sky-cta-hill-phone.svg") 0 calc(56px + 264.411px) / 100% 44px no-repeat,
+      linear-gradient(to bottom, var(--lp-sky) calc(56px + 265px), transparent 0);
+  }
+  /* F5: the mobile artboard's CTA card (5024:9150) is r32, like production's
+     phone card and the banner card above it; r24 is the desktop drawing */
+  .lp-cta--sky .lp-cta__card {
+    border-radius: var(--lp-r-xlg);
+  }
+
+  /* ── THE PHONE CLOUD SWITCH (decision 2026-10-11 §9 F4) ──
+     The mobile artboard draws no cloud; the founder keeps them on phones
+     until the designer confirms (he may have forgotten them). `block` = kept;
+     `none` = the artboard: no cloud on phones, and no parallax listener
+     either (lp-sky-parallax.ts skips clouds that have no box). */
+  .lp-sky-cloud {
+    display: block;
+  }
+  /* Kept light: the far clouds go (dive C behind the stage, CTA B behind the
+     card), the three near ones are 0.6 scale. On phones a cloud drifts
+     around ITS OWN place (the driver measures each cloud against the
+     viewport centre there: the stacked dive is two screens tall, its centre
+     says nothing about the heading), so k is px of drift per px the cloud is
+     from the middle of the screen: ±437 at 874 tall. */
   .lp-dive-stagewrap > .lp-sky-cloud--c,
   .lp-cta__frame > .lp-sky-cloud--b {
     display: none;
   }
+  /* the heading pair, in the 59.6 band over the title: A the faster; both
+     stay inside the section box (paint containment) and off the title */
+  .lp-dive > .lp-sky-cloud--a {
+    --lp-sky-k: 0.022;
+  }
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-k: 0.012;
+  }
+  /* over the CTA card's top-left corner, half the desktop depth */
   .lp-cta__frame > .lp-sky-cloud--a {
     --lp-sky-k: 0.05;
+    --lp-sky-down: 24px;
+    --lp-sky-up: -24px;
     height: 41.408px;
     left: -40px;
     top: -20px;

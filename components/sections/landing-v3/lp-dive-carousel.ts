@@ -12,6 +12,7 @@ import {
   FOCUS_MARGIN,
   PREPARE_MARGIN,
   enqueueBuild,
+  mountPlayOnce,
   scrollSpeed,
   trackScroll,
   type PlayOnceRuntime,
@@ -52,9 +53,21 @@ import {
  *   (decision §5), scaled as pixels (--lp-fit = stage width / box width; never zoom). Crossing
  *   599 rebuilds the stories (their builders read the layout at build time).
  *
+ * Phones (≤767) with the stack switch on (the section's data-lp-phone="stack", lp-dive-data.ts
+ * DIVE_PHONE_LAYOUT; mobile artboard 5024:8914, decision 2026-10-11 §9 F3): no carousel. `mountDive`
+ * — what LpDiveCarousel mounts — runs `mountDiveStack` there instead: dive.css lays the same
+ * markup out as four stacked items, each over its own stage card (the desktop scene, scaled),
+ * and every stage is an independent lp-play-once card (prepared a viewport ahead, cued below
+ * the fold, played once at the focus line, resting on its end picture, never rewound on
+ * screen; reduced motion fetches nothing). The tab semantics are dropped while it lasts: four
+ * headings with their copy and pictures. Crossing 767 disposes one driver and mounts the other
+ * (each restores the server state on its way out).
+ *
  * Freeze: GSAP only, self-gated (it pauses off screen), so not an LpAnimFreeze member.
- * QA: window.__lpDive = { timelines, select(i), pause(), play(), pose(i, p), state() };
+ * QA: window.__lpDive = { mode, timelines, select(i), pause(), play(), pose(i, p, at), state() };
  * every built story timeline is also window.__lpStory.<id> (lp-play-once's registry key).
+ * `pose(0)` is the V2 artboard: item 1, its bar at p = .509596 and the Sources story on its
+ * frame 3 (ARTBOARD_AT); `at` = seconds, a timeline label, or "end".
  */
 
 type Timeline = gsap.core.Timeline;
@@ -79,6 +92,28 @@ export const DIVE_REST_P = 0.509596;
 /** the cross-fade between two stages and the outgoing bar's fade (s) */
 const FADE_S = 0.32;
 const BAR_OUT_S = 0.15;
+/** the stack's widths (dive.css's stack block) */
+const STACK_MQ = "(max-width: 767px)";
+
+/* QA: where the V2 artboard freezes a story when that is not its end picture. Item 1 is drawn
+   mid-play (4939:3388): its bar at DIVE_REST_P and its stage 5024:8462 = a copy of the Sources
+   storyboard's frame 3 "Lead details open" (5024:7601), which the timeline holds from 2.59 s
+   (sources-v2 §8.1, QA seek 2.60). A timeline label of that name wins over the seconds. */
+const ARTBOARD_AT: Partial<Record<DiveItemId, { label: string; s: number }>> = {
+  sources: { label: "f3", s: 2.6 },
+};
+/** QA: freeze a story at `at` — seconds, a label, "end"; nothing = its artboard frame (or its end) */
+function seekStory(tl: Timeline, id: DiveItemId, at?: number | string) {
+  const end = tl.duration();
+  let t = end;
+  if (typeof at === "number") t = at;
+  else if (typeof at === "string") t = at === "end" ? end : (tl.labels[at] ?? end);
+  else {
+    const frame = ARTBOARD_AT[id];
+    if (frame) t = tl.labels[frame.label] ?? frame.s;
+  }
+  tl.pause(Math.min(Math.max(t, 0), end), true);
+}
 
 type Item = {
   id: DiveItemId;
@@ -582,6 +617,10 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
       case "End":
         next = n - 1;
         break;
+      case "Enter":
+      case " ":
+        next = i; // a div tab has no native activation (and Space must not scroll the page)
+        break;
       default:
         return;
     }
@@ -679,6 +718,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
 
   /* ── QA ── */
   w.__lpDive = {
+    mode: "carousel",
     get timelines() {
       return Object.fromEntries(items.map((it) => [it.id, it.tl]));
     },
@@ -697,17 +737,22 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
         startTurn("end");
       }
     },
-    /** freeze the artboard pose: item i active on its end picture, its bar at p (Figma: pose(0, DIVE_REST_P)) */
-    pose: (i: number, p: number = DIVE_REST_P) => {
+    /** freeze a pose: item i active, its bar at p, its story at `at` (seconds, a label, "end";
+        nothing = its artboard frame, else its end picture). pose(0) = the V2 artboard:
+        item 1, the bar at DIVE_REST_P, the Sources story on its frame 3 (ARTBOARD_AT). */
+    pose: (i: number, p: number = DIVE_REST_P, at?: number | string) => {
       posed = true;
       killMaster();
       settleFades();
       select(i, "pose");
       for (const it of items) it.tl?.progress(1, true);
-      setBar(items[active], p);
+      const it = items[active];
+      if (it.tl) seekStory(it.tl, it.id, at);
+      setBar(it, p);
       sync();
     },
     state: () => ({
+      mode: "carousel",
       active: items[active].id,
       engaged,
       phase,
@@ -767,5 +812,116 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     row.removeAttribute("data-reduced");
     row.removeAttribute("data-run");
     if (w.__lpDive) delete w.__lpDive;
+  };
+}
+
+/**
+ * Phones, stack switch on: the four items stacked (dive.css), each stage its own play-once
+ * card. No carousel state: nothing is selected, nothing advances, nothing needs a pause.
+ */
+function mountDiveStack(row: HTMLElement): () => void {
+  const section = row.closest<HTMLElement>("section") ?? row;
+  const w = window as QaWindow;
+
+  /* Semantics: a phone screen reader meets four headings, each with its copy and its picture,
+     not a tab list whose panels are all open. Every attribute touched goes back on dispose (the
+     carousel driver reads the server state when it mounts). */
+  const undo: (() => void)[] = [];
+  const attr = (el: Element | null | undefined, name: string, value: string | null) => {
+    if (!el) return;
+    const before = el.getAttribute(name);
+    if (value === null) el.removeAttribute(name);
+    else el.setAttribute(name, value);
+    undo.push(() => {
+      if (before === null) el.removeAttribute(name);
+      else el.setAttribute(name, before);
+    });
+  };
+  const strip = (el: Element | null | undefined, names: string[]) => names.forEach((name) => attr(el, name, null));
+
+  strip(row.querySelector(".lp-dive-tabs"), ["role", "aria-orientation", "aria-labelledby"]);
+  const cards: { id: DiveItemId; panel: HTMLElement }[] = [];
+  const stops: (() => void)[] = [];
+  row.querySelectorAll<HTMLElement>(".lp-dive-tab").forEach((tab) => {
+    const id = tab.dataset.id as DiveItemId | undefined;
+    const title = tab.querySelector(".lp-dive-tab__title");
+    strip(tab, ["role", "aria-controls", "aria-selected", "aria-labelledby", "aria-describedby", "tabindex"]);
+    attr(title, "role", "heading");
+    attr(title, "aria-level", "3");
+    strip(tab.querySelector(".lp-dive-tab__fold"), ["aria-hidden"]);
+    const panel = id ? row.querySelector<HTMLElement>(`#lp-dive-panel-${id}`) : null;
+    if (!id || !panel) return;
+    strip(panel, ["role", "aria-labelledby", "tabindex"]);
+    // reading order = the order on screen (CSS `order` only moves the boxes): each item owns
+    // its link and its picture, after its heading and copy
+    const more = row.querySelector<HTMLElement>(`#lp-dive-more-${id}`);
+    attr(tab, "aria-owns", more ? `${more.id} ${panel.id}` : panel.id);
+    const scene = panel.querySelector<HTMLElement>(".lp-dive-scene");
+    const root = scene?.querySelector<HTMLElement>("[data-lp-story]");
+    if (!(id in LOADERS) || !scene || !root) return; // the server picture stands
+    attr(scene, "data-lp-layout", "desktop"); // the desktop scene, scaled (never the 400×520 box)
+    cards.push({ id, panel });
+    stops.push(
+      mountPlayOnce({
+        host: panel,
+        stage: root,
+        designWidth: BOX_WIDTH.desktop,
+        load: LOADERS[id],
+        restIsEnd: true,
+        qa: { registry: "__lpStory", key: id },
+        layoutRoot: section, // content-visibility: auto (foundation.css)
+      }),
+    );
+  });
+  attr(row, "data-stack", "");
+
+  const timelines = () => Object.fromEntries(cards.map(({ id }) => [id, w.__lpStory?.[id]]));
+  w.__lpDive = {
+    mode: "stack",
+    get timelines() {
+      return timelines();
+    },
+    // no carousel on phones: nothing to select, pause or resume
+    select: () => {},
+    pause: () => {},
+    play: () => {},
+    /** freeze item i's story at `at` (seconds, a label, "end"; nothing = its artboard frame) */
+    pose: (i: number, _p?: number, at?: number | string) => {
+      const card = cards[i];
+      const tl = card && w.__lpStory?.[card.id];
+      if (tl) seekStory(tl, card.id, at);
+    },
+    state: () => ({
+      mode: "stack",
+      built: cards.filter(({ id }) => w.__lpStory?.[id]).map(({ id }) => id),
+      anim: Object.fromEntries(cards.map(({ id, panel }) => [id, panel.dataset.lpAnim ?? null])),
+    }),
+  };
+
+  return () => {
+    for (const stop of stops) stop();
+    for (let i = undo.length - 1; i >= 0; i--) undo[i]();
+    if (w.__lpDive?.mode === "stack") delete w.__lpDive;
+  };
+}
+
+/**
+ * What LpDiveCarousel mounts: the carousel, or — phones with the stack switch on — the stack.
+ * One driver at a time; crossing 767 swaps them (each leaves the server state behind).
+ */
+export function mountDive(row: HTMLElement, o: DiveCarouselOptions): () => void {
+  const section = row.closest<HTMLElement>("section") ?? row;
+  if (section.dataset.lpPhone !== "stack") return mountDiveCarousel(row, o);
+  const mq = matchMedia(STACK_MQ);
+  let dispose: () => void = () => {};
+  const mount = () => {
+    dispose();
+    dispose = mq.matches ? mountDiveStack(row) : mountDiveCarousel(row, o);
+  };
+  mount();
+  mq.addEventListener("change", mount);
+  return () => {
+    mq.removeEventListener("change", mount);
+    dispose();
   };
 }

@@ -10,13 +10,25 @@
  * passive, rAF-throttled scroll listener for the whole page; it runs only while at least one
  * cloud section is on screen (IntersectionObserver), and writes ONE custom property per cloud:
  *
- *   --lp-sky-d = (section centre − viewport centre) in px, rounded to 0.5
+ *   --lp-sky-d = (anchor − viewport centre) in px, rounded to 0.5
  *
  * sky.css turns that into `translate3d(0, d × k, 0)` with the cloud's depth factor `--lp-sky-k`
- * (k > 0: faster than the page, nearer; k < 0: slower, farther; halved on phones), clamped.
- * So the rest pose — the Figma artboard position — is exactly the moment the section's centre
- * crosses the viewport's centre, the tuning lives in CSS, and a write never restyles more than
- * the cloud itself (a property on the section would restyle its whole subtree).
+ * (k > 0: faster than the page, nearer; k < 0: slower, farther), clamped. The tuning lives in
+ * CSS, and a write never restyles more than the cloud itself (a property on the section would
+ * restyle its whole subtree).
+ *
+ * The anchor:
+ * - desktop and tablets (≥768): the SECTION's centre. The rest pose — the Figma artboard
+ *   position — is exactly the moment the section's centre crosses the viewport's centre, for
+ *   all of its clouds at once (the artboard is one picture).
+ * - phones (≤767): each CLOUD's own resting centre. The stacked deep dive is more than two
+ *   screens tall there, so its centre is a screen away from the heading clouds: measured
+ *   against it they would sit on their clamp the whole time they can be seen. Around its own
+ *   place a cloud is at rest in the middle of the screen and drifts a few px either side
+ *   (sky.css keeps the phone depths small). A cloud more than a screen away is left alone.
+ *
+ * Phones without clouds: sky.css has ONE switch (decision 2026-10-11 §9 F4) that can remove
+ * them at ≤767. A cloud without a box is skipped, and a section with none attaches no listener.
  *
  * No GSAP (clouds must not pull the animation chunk), translate only (no top/left), no
  * will-change. Reduced motion: no listener, the property is removed and sky.css pins
@@ -27,12 +39,22 @@
  * section box. The depth signs keep every cloud inside its box while it can be seen: the two
  * heading clouds (top 91–99 of the section) are fast (k > 0), so they sit LOWER than rest while
  * the section enters and only rise past rest once they are above the viewport; the far cloud C
- * sits mid-section with ±~110 px of room both ways.
+ * sits mid-section with ±~110 px of room both ways. On phones the heading pair is clamped
+ * inside the band above the title (sky.css).
  */
 
 const CLOUD = ".lp-sky-cloud";
 /** start a frame or two before a section's clouds can show */
 const MARGIN = "25% 0px 25% 0px";
+/** the phone anchor (sky.css's ≤767 block) */
+const PHONE_MQ = "(max-width: 767px)";
+
+/** layout position in the page (transforms ignored: the parallax's own translate never feeds back) */
+const pageTop = (el: HTMLElement) => {
+  let y = 0;
+  for (let node: HTMLElement | null = el; node; node = node.offsetParent as HTMLElement | null) y += node.offsetTop;
+  return y;
+};
 
 export function mountSkyParallax(scope: ParentNode = document): () => void {
   const clouds = Array.from(scope.querySelectorAll<HTMLElement>(CLOUD));
@@ -47,45 +69,84 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
   if (!groups.size) return () => {};
 
   const motionMq = matchMedia("(prefers-reduced-motion: reduce)");
+  const phoneMq = matchMedia(PHONE_MQ);
   const onScreen = new Set<HTMLElement>();
   const lastD = new Map<HTMLElement, number>();
+  /** phones: each cloud's resting centre from its section's top; null = no box (hidden) */
+  const own = new Map<HTMLElement, number | null>();
   let raf = 0;
   let listening = false;
   let disposed = false;
+
+  const rendered = (cloud: HTMLElement) => cloud.offsetParent !== null; // absolute: null only without a box
+  const anyRendered = () => {
+    let found = false;
+    onScreen.forEach((section) => {
+      if (!found) found = (groups.get(section) ?? []).some(rendered);
+    });
+    return found;
+  };
+  const ownOffset = (cloud: HTMLElement, section: HTMLElement) => {
+    let v = own.get(cloud);
+    if (v === undefined) {
+      v = rendered(cloud) ? pageTop(cloud) - pageTop(section) + cloud.offsetHeight / 2 : null;
+      own.set(cloud, v);
+    }
+    return v;
+  };
 
   const update = () => {
     raf = 0;
     if (disposed || motionMq.matches) return;
     const vh = window.innerHeight;
+    const phone = phoneMq.matches;
+    // read everything, then write
+    const writes: [HTMLElement, number][] = [];
     onScreen.forEach((section) => {
       const r = section.getBoundingClientRect();
       if (!r.height) return; // display:none (the agents view hides the band)
-      const d = Math.round((r.top + r.height / 2 - vh / 2) * 2) / 2;
-      if (lastD.get(section) === d) return;
-      lastD.set(section, d);
-      const value = String(d);
-      for (const cloud of groups.get(section) ?? []) cloud.style.setProperty("--lp-sky-d", value);
+      const centre = r.top + r.height / 2 - vh / 2;
+      for (const cloud of groups.get(section) ?? []) {
+        let d = centre;
+        if (phone) {
+          const offset = ownOffset(cloud, section);
+          if (offset === null) continue;
+          d = r.top + offset - vh / 2;
+          if (Math.abs(d) > vh) continue; // a screen away: it keeps its last pose, unseen
+        }
+        d = Math.round(d * 2) / 2;
+        if (lastD.get(cloud) !== d) writes.push([cloud, d]);
+      }
     });
+    for (const [cloud, d] of writes) {
+      lastD.set(cloud, d);
+      cloud.style.setProperty("--lp-sky-d", String(d));
+    }
   };
   const schedule = () => {
     if (!raf && !disposed) raf = requestAnimationFrame(update);
   };
+  const onResize = () => {
+    own.clear(); // the clouds' places (and whether they have one) follow the layout
+    refresh();
+  };
   const listen = (on: boolean) => {
     if (on === listening) return;
     listening = on;
-    if (on) {
-      window.addEventListener("scroll", schedule, { passive: true });
-      window.addEventListener("resize", schedule, { passive: true });
-    } else {
-      window.removeEventListener("scroll", schedule);
-      window.removeEventListener("resize", schedule);
-    }
+    if (on) window.addEventListener("scroll", schedule, { passive: true });
+    else window.removeEventListener("scroll", schedule);
   };
   const rest = () => {
     groups.forEach((list) => {
       for (const cloud of list) cloud.style.removeProperty("--lp-sky-d");
     });
     lastD.clear();
+  };
+  /** listen while a section with at least one drawn cloud is near the screen, motion allowed */
+  const refresh = () => {
+    const on = !motionMq.matches && onScreen.size > 0 && anyRendered();
+    listen(on);
+    if (on) schedule();
   };
 
   const io = new IntersectionObserver(
@@ -95,30 +156,38 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
         if (e.isIntersecting) onScreen.add(section);
         else onScreen.delete(section);
       }
-      listen(onScreen.size > 0 && !motionMq.matches);
-      schedule();
+      refresh();
     },
     { rootMargin: MARGIN },
   );
   groups.forEach((_, section) => io.observe(section));
+  window.addEventListener("resize", onResize, { passive: true });
 
   const onMotion = () => {
     if (motionMq.matches) {
       listen(false);
       rest();
     } else {
-      listen(onScreen.size > 0);
-      schedule();
+      refresh();
     }
   };
   motionMq.addEventListener("change", onMotion);
+  // crossing 767 changes the anchor: every cloud gets its new distance on the next frame
+  const onPhone = () => {
+    own.clear();
+    lastD.clear();
+    refresh();
+  };
+  phoneMq.addEventListener("change", onPhone);
 
   return () => {
     disposed = true;
     if (raf) cancelAnimationFrame(raf);
     io.disconnect();
     listen(false);
+    window.removeEventListener("resize", onResize);
     motionMq.removeEventListener("change", onMotion);
+    phoneMq.removeEventListener("change", onPhone);
     rest();
   };
 }

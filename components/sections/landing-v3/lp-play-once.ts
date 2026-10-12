@@ -9,7 +9,10 @@ import type { gsap } from "@/lib/gsap";
  * the V2 deep-dive carousel replaced (2026-10-11): the carousel driver
  * (lp-dive-carousel.ts) reuses this file's constants and helpers for its
  * first start, so the two surfaces keep one contract. "Feature cards" below
- * is that history; `restIsEnd: true` stays supported for the next such card.
+ * is that history. `restIsEnd: true` (the server picture is the END picture)
+ * is what the deep dive's PHONE STACK uses since 2026-10-12: on phones the
+ * four stories are four cards of this driver (lp-dive-carousel.ts
+ * mountDiveStack; designWidth 752, registry "__lpStory").
  *
  * Founder 2026-09-30: "les motions apparaissent de manière molle… quand tu
  * scrolles rapidement tu fais face à beaucoup de vides… il faut que l'écran
@@ -61,9 +64,10 @@ import type { gsap } from "@/lib/gsap";
  */
 
 type Timeline = gsap.core.Timeline;
-/** the window QA registries: step cards, and the deep-dive carousel's stories
-    (window.__lpStory.<id>, registered by the carousel shell lp-dive-carousel.ts and the
-    /lp-dev/stages harness; V2 replication 2026-10-09). "__lpFeat" left with the feature cards. */
+/** the window QA registries: step cards, and the deep-dive stories (window.__lpStory.<id>:
+    registered by the carousel shell lp-dive-carousel.ts, by this driver for the phone stack,
+    and by the /lp-dev/stages harness; V2 replication 2026-10-09). "__lpFeat" left with the
+    feature cards. */
 export type PlayOnceRegistry = "__lpStep" | "__lpStory";
 /** cue: the timeline time of the card's first scene (0 = its first frame) */
 type Built = { tl: Timeline; cleanup: () => void; cue?: number };
@@ -77,7 +81,7 @@ export type PlayOnceOptions = {
   host: HTMLElement;
   /** the timeline's root */
   stage: HTMLElement;
-  /** the stage's design width in px (560 feature zone, 464 step card) */
+  /** the stage's design width in px (464 step card, 752 deep-dive scene on phones) */
   designWidth: number;
   /** fetches GSAP + the card's builder (kept out of the initial bundle, PR #283) */
   load: () => Promise<PlayOnceRuntime>;

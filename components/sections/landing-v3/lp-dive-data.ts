@@ -25,10 +25,11 @@ import type { DiveItemId } from "./lp-dive-stages";
 
 export type DiveItem = {
   id: DiveItemId;
-  /** "\n" = the designed line break (two-column layouts only; stacked layouts reflow) */
+  /** "\n" = the designed line break (the two-column layouts and the phone stack, where the
+      artboard keeps it; the tablet list reflows) */
   title: string;
   body: string;
-  /** one quiet text link under the body, shown while the item is active */
+  /** one quiet text link under the body, shown while the item is active (always, in the phone stack) */
   more?: { href: string; label: string };
   /** s on the end picture before advancing (decision: one global 2.0 s) */
   hold?: number;
@@ -37,6 +38,17 @@ export type DiveItem = {
 
 /** the section heading (production copy, = V2 4939:3390) */
 export const DIVE_TITLE = "How Pancake finds customers";
+
+/**
+ * THE PHONE SWITCH (≤767; decision 2026-10-11 §9 F3, mobile artboard 5024:8914).
+ * - "stack" (the designer's artboard): the four items stacked, all open, no carousel UI; each
+ *   item's stage is the DESKTOP 752×489 scene scaled to the column, played once on its own
+ *   (lp-play-once) when the visitor reaches it.
+ * - "carousel" (the 2026-10-09 phone build): one stage over the tab list, the 400×520 phone
+ *   recompositions of the four stories from 599 down. Still in the code, this constant away.
+ * LpDive writes it on the section (data-lp-phone); dive.css and lp-dive-carousel.ts key off it.
+ */
+export const DIVE_PHONE_LAYOUT: "stack" | "carousel" = "stack";
 
 /** s each item holds its end picture before the carousel advances (critic C10: one global hold) */
 export const DIVE_HOLD_S = 2;

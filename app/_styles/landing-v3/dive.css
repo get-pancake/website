@@ -17,7 +17,13 @@
      bar      2px rainbow segment on the active hairline, 138.61 of 272 drawn = p .509596
      stage    r15.887, shadow 0 2.648 41.307 ink 8%, overflow clip, #fafaf8
    The list is anchored at its top (17.5) and grows downward when an item opens:
-   titles above the active one never move. */
+   titles above the active one never move.
+
+   Phones (≤767; mobile artboard 5024:8914, decision 2026-10-11 §9 F3): the
+   same markup as four STACKED items, all open — see "the phone stack" at the
+   end of this file. Keyed on the section's data-lp-phone="stack"
+   (lp-dive-data.ts DIVE_PHONE_LAYOUT); "carousel" keeps the 2026-10-09 phone
+   carousel (one stage, the 400×520 recompositions ≤599). */
 
 .lp-dive {
   align-items: center;
@@ -78,9 +84,12 @@
   text-align: left;
   width: 100%;
 }
-/* no hover effect (founder rule: no hover dim) — the pointer only */
+/* no hover effect (founder rule: no hover dim) — the pointer only. The tab is
+   a div (LpDive): like the button it replaced, a press never selects its text */
 .lp-dive-row[data-ready] .lp-dive-tab {
   cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .lp-dive-tab::after {
   background: var(--lp-ink-tr-10);
@@ -424,16 +433,141 @@
     right: 8px;
   }
 }
-/* ≤599: the 400×520 phone box (decision 2026-10-09 §5), W − 32 wide
-   (fit = (W − 32) / 400) — the driver's PHONE_MQ matches this */
+/* ≤599, phone switch on "carousel" only: the 400×520 phone box (decision
+   2026-10-09 §5), W − 32 wide (fit = (W − 32) / 400) — the driver's PHONE_MQ
+   matches this. With the stack (below) the stories keep their desktop scene. */
 @media (max-width: 599px) {
-  .lp-dive-stagewrap {
+  .lp-dive:not([data-lp-phone="stack"]) .lp-dive-stagewrap {
     aspect-ratio: 400 / 520;
   }
-  .lp-dive-scene {
+  .lp-dive:not([data-lp-phone="stack"]) .lp-dive-scene {
     height: 520px;
     transform: scale(var(--lp-fit, tan(atan2(100cqw, 400px))));
     width: 400px;
+  }
+}
+
+/* ── the phone stack (≤767, data-lp-phone="stack") ── mobile artboard
+   5024:8631: title 5024:9149, list 5024:8914 (402 × 1833.78, padding 24).
+   Four items, all open, each = text block (padding 24/0, title 19.2/29 600,
+   8, body 13.333/20) · 16 · its own stage card. 64 between a stage and the
+   next item, a 0.5px ink-50 hairline centred in that gap. No tab state: no
+   weight change, no fold, no bar, no pause control.
+     rhythm at 402: banner card +83.59 (24 + 59.59) title 82 · 20 · list ·
+     11.8 + the CTA's 56 → last stage to the CTA card 91.81
+   One DOM: the wrappers dissolve (display: contents) and the row becomes one
+   column ordered by --lp-dive-i (LpDive): tab 3i · link 3i+1 · panel 3i+2.
+   The stage card moves from .lp-dive-stage to each .lp-dive-panel: the
+   DESKTOP 752×489 scene scaled by (W − 48) / 752 (0.4707 at 402), radius and
+   shadow scaled with it (7.479 · 0 1.246 19.445 at 402). The driver
+   (lp-dive-carousel.ts, stack mode) measures each card (--lp-fit on the
+   panel) and plays each story once (lp-play-once). */
+@media (max-width: 767px) {
+  .lp-dive[data-lp-phone="stack"] {
+    /* content box = title 82 + 20 + list; the list = 48 + three 64 gaps +
+       four (text block + 16 + stage (W − 48) × 489/752). Measured: 1839.4
+       (320) · 1854.5 (360) · 1940.3 (393) · 1963.7 (402) · 2016.5 (430) ·
+       2398.7 (600) · 2833.1 (767) → within ±1.8% from 320 to 767. Replaces
+       foundation.css's carousel estimates while the stack is on (0,2,0). */
+    contain-intrinsic-size: auto max(1839px, calc(1040px + 230vw));
+    gap: 20px;
+    padding: 59.6px 0 11.8px;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-row {
+    align-items: stretch;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    padding: 24px;
+    width: 100%;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-list,
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tabs,
+  .lp-dive[data-lp-phone="stack"] .lp-dive-stagewrap,
+  .lp-dive[data-lp-phone="stack"] .lp-dive-stage {
+    display: contents;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-ctrl,
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tab__bar {
+    display: none;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tab {
+    cursor: auto;
+    order: calc(var(--lp-dive-i, 0) * 3);
+    padding: 24px 0;
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  /* the next item starts 64 under the stage above it, a hairline half-way */
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tab:not(:first-child) {
+    margin-top: 64px;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tab::after {
+    content: none;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tab:not(:first-child)::before {
+    border-top: 0.5px solid var(--lp-ink-50);
+    content: "";
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: -32px;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tab__title {
+    font-weight: 600;
+    white-space: pre-line; /* "A personal message for" / "every lead", as drawn */
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tab__fold {
+    grid-template-rows: 1fr;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tab__body {
+    font-size: var(--lp-text-sm);
+    line-height: 20px;
+  }
+  /* item 4's "See how →": its own row under the body (8), inside the text
+     block — the tab gives up its bottom 24 to it */
+  .lp-dive[data-lp-phone="stack"] .lp-dive-tab[data-more] {
+    padding-bottom: 0;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-more {
+    grid-template-rows: 1fr;
+    margin: 0;
+    order: calc(var(--lp-dive-i, 0) * 3 + 1);
+    visibility: visible;
+  }
+  .lp-dive[data-lp-phone="stack"] .lp-dive-more__inner {
+    padding: 8px 6px 24px;
+  }
+  /* the body's size (0,3,0: pricing.css's later `.lp .lp-textlink` is 16/24);
+     the padding only grows the touch target (36 tall), the row stays 20 */
+  .lp-dive[data-lp-phone="stack"] .lp-dive-more__link {
+    display: inline-block;
+    font-size: var(--lp-text-sm);
+    line-height: 20px;
+    margin-block: -8px;
+    padding-block: 8px;
+  }
+  /* the stage card, one per item */
+  .lp-dive[data-lp-phone="stack"] .lp-dive-panel {
+    aspect-ratio: 752 / 489;
+    background: var(--lp-dive-stage-bg);
+    border-radius: calc((100vw - 48px) * 15.887 / 752);
+    box-shadow: 0 calc((100vw - 48px) * 2.648 / 752) calc((100vw - 48px) * 41.307 / 752) rgba(0, 0, 0, 0.08);
+    flex: none;
+    inset: auto;
+    margin-top: 16px;
+    opacity: 1;
+    order: calc(var(--lp-dive-i, 0) * 3 + 2);
+    overflow: hidden;
+    position: relative;
+    visibility: visible;
+  }
+  /* The card is exactly W − 48 wide, so the scale before the driver measures
+     it (--lp-fit on the panel) needs no container unit — the iOS trig bug
+     (LpFitVars) is about cqw — and the four pictures show without JS. */
+  .lp-dive[data-lp-phone="stack"] .lp-dive-scene {
+    transform: scale(var(--lp-fit, tan(atan2(100vw - 48px, 752px))));
+    visibility: inherit;
   }
 }
 
