@@ -1,53 +1,58 @@
 import type { CSSProperties } from "react";
 
-import { LpBentoRail } from "@/components/sections/landing-v3/LpBentoRail";
 import { LpBentoVideo } from "@/components/sections/landing-v3/LpBentoVideo";
 import {
   BENTO_LIST_LABEL,
-  BENTO_SLOT_IDS,
+  BENTO_LOGO_BODY,
   BENTO_TITLE,
   BENTO_VIDEO_LABELS,
   resolveBento,
-  type BentoCard,
   type BentoKpiCard,
   type BentoLogo,
   type BentoPhoto,
+  type BentoPlaced,
+  type BentoPoster,
   type BentoQuoteCard,
-  type BentoSlotId,
   type BentoVideoCard,
 } from "@/components/sections/landing-v3/lp-bento-data";
-import { BentoMark } from "@/components/sections/landing-v3/lp-bento-marks";
-import { placeholderPortraitSrc } from "@/components/sections/landing-v3/lp-bento-placeholder";
+import { placeholderImageSrc } from "@/components/sections/landing-v3/lp-bento-placeholder";
 import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 
 /**
- * Testimonials / KPI bento (V2 Figma 4911:762 "Frame 168", 1654 × 1448). Owner: bento package.
- * Between the CTA and pricing (decision 2026-10-09 page order), a DIRECT <section class="lp-bento">
- * child of main.lp, so the agents view hides it with every other section (audience.css).
+ * Testimonials / KPI bento (V2 Figma 4911:762 "Frame 168", 1654 × 1448; mobile artboard
+ * 5024:10543). Owner: bento package. Between the CTA and pricing, a DIRECT <section
+ * class="lp-bento"> child of main.lp, so the agents view hides it with every other section.
  *
- * Gating (lib/placeholders.ts, decision §7): production renders the section only once every slot of
- * lp-bento-data.ts holds a "final" card, else null; dev / preview fill the empty slots with the V2
- * placeholders (marked data-placeholder). `placeholders` is injectable for tests only.
+ * Content: the Kinro and Praxis testimonials (lp-bento-data.ts). Gating (lib/placeholders.ts):
+ * production renders only "final" cards, so it may hold a partial set; dev / preview fill the
+ * other slots with their placeholders (marked data-placeholder). Null when nothing is left.
+ * `placeholders` is injectable for tests.
  *
- * Desktop = the artboard: title, then a 4 × 3 grid of seven cards on the 1136 column (cols 272,
- * rows 369 / 365 / 375, gaps 16), every card metric in `--u` (1 px at ≥ 1200, the column / 1136
- * below, so 1025–1199 scales the composed grid, never crops it). Tablet: two columns. Phones: a
- * horizontal swipe rail of equal-height cards (founder precedent 2026-08-31), its scroll snap armed
- * on the first touch by LpBentoRail (a WebKit trap, see there). CSS: bento.css.
+ * Layout (all numbers come from resolveBento, CSS in bento.css, every card metric in `--u`):
+ *   - all seven cards: the artboard. Desktop 4 × 3 on the 1136 column (`--u` = 1 px at ≥ 1200,
+ *     the column / 1136 at 1025–1199), tablets two columns, phones the mobile artboard's
+ *     two-column stack (`--u` = the column / 560);
+ *   - a partial set: rows on a 12-column desktop grid (data-layout="rows", spans from the server),
+ *     the same two-column stack below 1025 with a lone narrow card widened (data-solo).
  *
- * Motion: the video tiles only (LpBentoVideo, self-gated). The two portrait blobs are STATIC
- * (decision §7: the 20 s spin on them is the copied ring vector's, not designed for faces).
- * "View story" (explorations 4962:565 / 4962:675) is not built: no story pages exist.
- * Analytics: no new ids (no link surface here).
+ * Motion: the video tiles only (LpBentoVideo, self-gated: a MUTED preview in view, the film with
+ * sound in a dialog on demand). The portrait blobs are static (decision §7).
+ * Analytics: no new ids (no link surface here; founder approval + a GTM trigger first).
  */
 export function LpBento({ placeholders = SHOW_PLACEHOLDERS }: { placeholders?: boolean } = {}) {
-  const layout = resolveBento(placeholders);
-  if (!layout) return null;
+  const bento = resolveBento(placeholders);
+  if (!bento) return null;
+  // the grid's height in each layout, for the content-visibility estimate (bento.css)
+  const size = {
+    "--lp-bento-grid-u": bento.size.gridU,
+    "--lp-bento-tablet-px": bento.size.tabletPx,
+    "--lp-bento-flow-u": bento.size.flowU,
+    "--lp-bento-flow-gaps": bento.size.flowGaps,
+  } as CSSProperties;
   return (
-    <section className="lp-bento" aria-labelledby="lp-bento-title">
+    <section className="lp-bento" aria-labelledby="lp-bento-title" style={size}>
       {/* the paddings live on this wrapper, not the section: the section is content-visibility:auto
-          (foundation.css), whose contain-intrinsic-size estimate is the CONTENT box, so it states
-          the whole height (1448 / 2182 / 625) only with a padding-free section */}
+          (foundation.css), whose contain-intrinsic-size estimate is the CONTENT box */}
       <div className="lp-bento__inner">
         {/* the portrait blob (Figma 4939:4700 path ÷ its 310.59 × 313.19 bbox; 4939:4710 is the same
             shape × 0.82859), in bbox units so one clip serves every size */}
@@ -60,29 +65,36 @@ export function LpBento({ placeholders = SHOW_PLACEHOLDERS }: { placeholders?: b
           {BENTO_TITLE}
         </h2>
         <div className="lp-bento__frame">
-          {/* tabIndex: the list is a scroll rail on phones; keyboard users scroll it from here */}
-          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex -- a scrollable region must be focusable (WCAG 2.1.1) */}
-          <ul className="lp-bento__grid" role="list" aria-label={BENTO_LIST_LABEL} tabIndex={0}>
-            {BENTO_SLOT_IDS.map((id) => (
-              <BentoSlot key={id} id={id} card={layout[id]} />
+          <ul className="lp-bento__grid" role="list" aria-label={BENTO_LIST_LABEL} data-layout={bento.full ? "full" : "rows"}>
+            {bento.cards.map((placed) => (
+              <BentoSlot key={placed.id} placed={placed} full={bento.full} />
             ))}
           </ul>
-          <LpBentoRail />
         </div>
       </div>
     </section>
   );
 }
 
-function BentoSlot({ id, card }: { id: BentoSlotId; card: BentoCard }) {
+function BentoSlot({ placed, full }: { placed: BentoPlaced; full: boolean }) {
+  const { id, card, row, flow } = placed;
   const attrs = {
     "data-slot": id,
     "data-placeholder": card.status === "placeholder" ? "" : undefined,
+    "data-solo": flow.solo ? "" : undefined,
+    style: {
+      "--lp-bento-flow-order": flow.order,
+      "--lp-bento-flow-span": flow.span,
+      "--lp-bento-flow-h": flow.height,
+      "--lp-bento-span": row?.span,
+      "--lp-bento-start": row?.start,
+      "--lp-bento-row": row?.height,
+    } as CSSProperties,
   };
   if (card.kind === "video") {
     return (
       <li className="lp-bento__card lp-bento__card--video" {...attrs}>
-        <VideoTile id={id} card={card} />
+        <VideoTile card={card} sizes={posterSizes(placed, full)} />
       </li>
     );
   }
@@ -100,25 +112,66 @@ function BentoSlot({ id, card }: { id: BentoSlotId; card: BentoCard }) {
   );
 }
 
-/** Poster `sizes`: the poster is cover-fitted, so the drawn width is the tile's width (portrait
- *  tiles narrower than the art) or its height × the art's aspect (the phone rail's 9:16 tiles). */
-const POSTER_SIZES: Partial<Record<BentoSlotId, string>> = {
-  videoLg: "(max-width: 767px) 275px, (max-width: 1024px) 480px, 560px",
-  videoSm: "(max-width: 767px) 280px, (max-width: 1024px) 480px, 272px",
-};
+const round = (n: number, digits = 2) => Number(n.toFixed(digits));
 
-function VideoTile({ id, card }: { id: BentoSlotId; card: BentoVideoCard }) {
+/** The artboard's video tiles, desktop px. */
+const FULL_TILE = { videoLg: [560, 750], videoSm: [272, 375] } as const;
+
+/**
+ * Poster `sizes`. The poster is cover-fitted, so it is drawn as wide as the tile or as the
+ * tile's height × the film's aspect, whichever is larger. Phones: a share of the 560-unit
+ * column (the viewport minus its gutters); above: desktop px (tablet tiles are within a few px).
+ */
+function posterSizes({ id, card, row, flow }: BentoPlaced, full: boolean): string {
+  if (card.kind !== "video") return "100vw";
+  const aspect = card.poster.width / card.poster.height;
+  const drawn = (width: number, height: number) => Math.max(width, height * aspect);
+  const [width, height] = full || !row ? FULL_TILE[id === "videoLg" ? "videoLg" : "videoSm"] : [row.span * 80 + (row.span - 1) * 16, row.height];
+  const phone = drawn(flow.span === 2 ? 560 : 272, flow.height) / 560;
+  return `(max-width: 767px) ${Math.ceil(phone * 100)}vw, ${Math.ceil(drawn(width, height))}px`;
+}
+
+function VideoTile({ card, sizes }: { card: BentoVideoCard; sizes: string }) {
+  const { poster, focus, film } = card;
+  // the crop of a landscape film in this tile, as shares of the frame's height (bento.css)
+  const crop = {
+    "--lp-bento-keep": round(focus.keepLeft / poster.height, 5),
+    "--lp-bento-centre": round(focus.centre / poster.height, 5),
+    "--lp-bento-wide": round(focus.wideLeft / poster.height, 5),
+  } as CSSProperties;
+  const still = <Poster poster={poster} sizes={sizes} />;
   return (
     <>
-      <LpBentoVideo
-        mp4={card.video.mp4}
-        webm={card.video.webm}
-        poster={{ ...card.poster, sizes: POSTER_SIZES[id] ?? "100vw" }}
-        labels={BENTO_VIDEO_LABELS}
-      />
+      {film ? (
+        <LpBentoVideo film={film} filmPoster={"srcSet" in poster ? largest(poster.srcSet) : undefined} title={card.title} labels={BENTO_VIDEO_LABELS} style={crop}>
+          {still}
+        </LpBentoVideo>
+      ) : (
+        <div className="lp-bento__media" style={crop}>
+          {still}
+        </div>
+      )}
       <Logo logo={card.logo} />
       <p className="lp-sr-only">{card.description}</p>
     </>
+  );
+}
+
+/** The last (largest) candidate of a `w`-descriptor srcset. */
+const largest = (srcSet: string) => srcSet.split(",").pop()?.trim().split(/\s+/)[0];
+
+/** A tile's rest picture: the film's poster frame, lazy, cover-fitted and cropped by bento.css. */
+function Poster({ poster, sizes }: { poster: BentoPoster; sizes: string }) {
+  const { width, height } = poster;
+  if ("placeholder" in poster) {
+    const src = placeholderImageSrc(poster.placeholder);
+    if (!src) return null;
+    // eslint-disable-next-line @next/next/no-img-element -- a data-URI stand-in can't go through next/image
+    return <img className="lp-bento__poster" src={src} width={width} height={height} alt="" loading="lazy" decoding="async" />;
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element -- art-directed poster, srcset by hand
+    <img className="lp-bento__poster" src={poster.src} srcSet={poster.srcSet} sizes={sizes} width={width} height={height} alt="" loading="lazy" decoding="async" />
   );
 }
 
@@ -158,21 +211,31 @@ function KpiCard({ card }: { card: BentoKpiCard }) {
  *  a square photo), clipped by the blob path; the card clips the bleed. Decorative: the caption
  *  names the person. */
 function Portrait({ photo }: { photo: BentoPhoto }) {
-  const src = "placeholder" in photo ? placeholderPortraitSrc(photo.placeholder) : photo.src;
+  const src = "placeholder" in photo ? placeholderImageSrc(photo.placeholder) : photo.src;
   if (!src) return <span className="lp-bento__portrait" aria-hidden="true" />;
   return (
-    // eslint-disable-next-line @next/next/no-img-element -- clipped by an SVG path; the data-URI placeholders can't go through next/image
-    <img className="lp-bento__portrait" src={src} alt="" width={400} height={400} decoding="async" aria-hidden="true" />
+    // eslint-disable-next-line @next/next/no-img-element -- clipped by an SVG path; a data-URI stand-in can't go through next/image
+    <img className="lp-bento__portrait" src={src} alt="" width={640} height={640} loading="lazy" decoding="async" aria-hidden="true" />
   );
 }
 
+/**
+ * A customer's wordmark as an alpha mask in the card's ink, sized by its letter body like the
+ * marquee's (so Praxis and Kinro read at one size), with the marquee's YC badge sitting on the
+ * letter body's top, right of the wordmark.
+ */
 function Logo({ logo }: { logo: BentoLogo }) {
-  if (logo.kind === "mark") return <BentoMark mark={logo.mark} name={logo.name} />;
-  const style = {
-    "--lp-bento-logo-w": logo.width,
-    "--lp-bento-logo-h": logo.height,
-    WebkitMaskImage: `url(${logo.src})`,
-    maskImage: `url(${logo.src})`,
+  const height = BENTO_LOGO_BODY / (logo.body[1] - logo.body[0]);
+  const box = {
+    "--lp-bento-logo-w": round(height * logo.ratio),
+    "--lp-bento-logo-h": round(height),
+    "--lp-bento-logo-cap": round(height * logo.body[0]),
   } as CSSProperties;
-  return <span className="lp-bento__logo lp-bento__logo--mask" role="img" aria-label={logo.name} style={style} />;
+  const mask = { WebkitMaskImage: `url(${logo.src})`, maskImage: `url(${logo.src})` } as CSSProperties;
+  return (
+    <span className="lp-bento__logo" data-yc={logo.yc ? "" : undefined} style={box}>
+      <span className="lp-bento__logo-art" role="img" aria-label={logo.yc ? `${logo.name} (Y Combinator)` : logo.name} style={mask} />
+      {logo.yc && <span className="lp-bento__yc" aria-hidden="true" />}
+    </span>
+  );
 }

@@ -1,10 +1,11 @@
 /* Bento — owner: bento package (V2 Figma replication, file
-   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346). Created empty by the integrator
-   (phase 0, 2026-10-09).
+   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346; mobile artboard 5024:8631).
    Testimonials / KPI bento (LpBento, Figma V2 4911:762 "Frame 168",
-   1654 × 1448): section, cards, KPI type, portrait blobs (static), video
-   tiles, phone swipe rail. The section renders only with final entries in
-   production (lib/placeholders.ts).
+   1654 × 1448; mobile 5024:10543 + seven frames): section, cards, customer
+   logos, KPI type, portrait blobs (static), video tiles and their sound
+   dialog. Content: the Kinro and Praxis testimonials (lp-bento-data.ts).
+   Production renders only final cards (lib/placeholders.ts), so every
+   layout below also holds a partial set.
 
    Geometry (section-relative, Figma): title line box 259,93.34 1136×68.80;
    grid 259,242.58 → 1395,1383.58 = 4 cols 272 / gap 16, rows 369 / 365 /
@@ -13,11 +14,50 @@
    shadow, no hover (Figma has no reactions; founder: no hover dim).
    Every card metric is `calc(N * var(--u))`: --u = 1px at ≥ 1200 (the
    frame is 1136), frame / 1136 at 1025–1199 (the composed grid scales,
-   never crops), 1px again on tablets and phones (recomposed). */
+   never crops), 1px on tablets (recomposed in two columns), frame / 560 on
+   phones (the mobile artboard = the desktop cards × 370 / 560, restacked).
+
+   Layouts (lp-bento-data.ts resolveBento decides, the markup carries it):
+     data-layout="full"  all seven cards = the artboard (grid areas);
+     data-layout="rows"  a partial set = rows on 12 columns, each card's span,
+                         centred start and row height set inline by the server;
+     the two-column stack (phones always, tablets with a partial set): order,
+     span and height set inline per card (--lp-bento-flow-*). */
 
 /* The section itself carries no padding: it is content-visibility:auto
-   (foundation.css) and contain-intrinsic-size sizes the content box, so the
-   1448 / 2182 / 625 estimates hold only for a padding-free section. */
+   (foundation.css) and contain-intrinsic-size sizes the content box. */
+.lp-bento {
+  /* the trial cuts of Aeonik have no % + ’ glyphs: Geist (the page's reading
+     face) is named before the OS font, so those symbols are the same on
+     every OS until the licensed cut is in */
+  --lp-bento-cond: var(--font-aeonik-condensed), var(--font-aeonik), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+}
+/* Its skipped-height estimate. The section knows its own layout (a partial
+   set is shorter than the artboard), so the server passes the grid's height
+   (LpBento: --lp-bento-grid-u / -tablet-px / -flow-u / -flow-gaps) and the
+   chrome is added here. `.lp >` outranks foundation.css's older per-width
+   values. 307 = 93.34 + 68.80 + 80.44 + 64.42 (title, margins, paddings). */
+.lp > .lp-bento {
+  contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1141) * 1px);
+}
+@media (min-width: 1025px) and (max-width: 1199px) {
+  .lp > .lp-bento {
+    contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1141) * (100vw - 64px) / 1136);
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  .lp > .lp-bento {
+    /* 72 + 68.80 + 56 + grid + 72 */
+    contain-intrinsic-size: auto calc(268.8px + var(--lp-bento-tablet-px, 1913) * 1px);
+  }
+}
+@media (max-width: 767px) {
+  .lp > .lp-bento {
+    /* 81 + 41 + 41 + stack + 56; the stack's rows are in --u, its gaps 8px */
+    contain-intrinsic-size: auto calc(219px + var(--lp-bento-flow-u, 2234) * (100vw - 32px) / 560 + var(--lp-bento-flow-gaps, 4) * 8px);
+  }
+}
+
 .lp-bento__inner {
   align-items: center;
   display: flex;
@@ -49,12 +89,6 @@
   --u: calc(100cqw / 1136);
   display: grid;
   gap: calc(16 * var(--u));
-  grid-template-areas:
-    "vl vl qa qa"
-    "vl vl ka kb"
-    "kc qb qb vs";
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(375 * var(--u));
   list-style: none;
   margin: 0;
   padding: 0;
@@ -66,21 +100,44 @@
     --u: 1px;
   }
 }
-.lp-bento__grid:focus-visible {
-  outline: 2px solid var(--lp-text);
-  outline-offset: 4px;
+
+/* ── ≥ 768, all seven cards: the artboard ── */
+@media (min-width: 768px) {
+  .lp-bento__grid[data-layout="full"] {
+    grid-template-areas:
+      "vl vl qa qa"
+      "vl vl ka kb"
+      "kc qb qb vs";
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(375 * var(--u));
+  }
+  .lp-bento__grid[data-layout="full"] > [data-slot="videoLg"] { grid-area: vl; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="quoteA"] { grid-area: qa; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="kpiA"] { grid-area: ka; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="kpiB"] { grid-area: kb; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="kpiC"] { grid-area: kc; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="quoteB"] { grid-area: qb; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="videoSm"] { grid-area: vs; }
 }
-.lp-bento__card[data-slot="videoLg"] { grid-area: vl; }
-.lp-bento__card[data-slot="quoteA"] { grid-area: qa; }
-.lp-bento__card[data-slot="kpiA"] { grid-area: ka; }
-.lp-bento__card[data-slot="kpiB"] { grid-area: kb; }
-.lp-bento__card[data-slot="kpiC"] { grid-area: kc; }
-.lp-bento__card[data-slot="quoteB"] { grid-area: qb; }
-.lp-bento__card[data-slot="videoSm"] { grid-area: vs; }
+
+/* ── ≥ 1025, a partial set: rows on 12 columns ──
+   3 columns = the artboard's 272 card, 6 = its 560 card, 4 = a third of the
+   frame (368). The server picks the rows (ROW_SHAPES in lp-bento-data.ts)
+   and writes each card's span, a centred row's first column and the row's
+   height; the DOM order is the reading order, so nothing is reordered. */
+@media (min-width: 1025px) {
+  .lp-bento__grid[data-layout="rows"] {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .lp-bento__grid[data-layout="rows"] > .lp-bento__card {
+    grid-column: var(--lp-bento-start, auto) / span var(--lp-bento-span, 12);
+    min-height: calc(var(--lp-bento-row, 369) * var(--u));
+  }
+}
 
 .lp-bento__card {
   background: var(--lp-card-cream);
-  border-radius: var(--lp-r-lg);
+  border-radius: calc(24 * var(--u)); /* --lp-r-lg at --u = 1px; the phone artboard scales it (15.857) */
   display: flex;
   flex-direction: column;
   isolation: isolate; /* the blob / column / media z-indexes stay inside the card */
@@ -91,37 +148,43 @@
   position: relative;
 }
 
-/* ── logos: exact Figma boxes, painted in the card's ink ── */
+/* ── logos: the customer's wordmark (public/logos/customers) as an alpha mask
+   in the card's ink, in a box sized by its letter body (17 u, the marquee's
+   recipe), anchored at the 48,48 content corner like the V2 marks. The YC
+   badge is the marquee's: a square sitting on the letter body's top, right
+   of the wordmark (12 / 4 px at the marquee's 14 px body → 14.571 / 4.857). ── */
 .lp-bento__logo {
   color: var(--lp-text);
   display: block;
   flex: none;
-  overflow: visible;
+  height: calc(var(--lp-bento-logo-h) * var(--u));
   position: relative;
+  width: calc(var(--lp-bento-logo-w) * var(--u));
   z-index: 1;
 }
-.lp-bento__logo[data-logo="fleet"] {
-  height: calc(27.6 * var(--u));
-  width: calc(61.05 * var(--u));
-}
-.lp-bento__logo[data-logo="klarna"] {
-  height: calc(21.8468 * var(--u));
-  width: calc(81.6671 * var(--u));
-}
-/* a real customer's artwork (public/logos/customers) as an alpha mask */
-.lp-bento__logo--mask {
+.lp-bento__logo-art {
   background: currentColor;
-  height: calc(var(--lp-bento-logo-h) * var(--u));
+  display: block;
+  height: 100%;
   -webkit-mask-position: center;
   mask-position: center;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-size: contain;
   mask-size: contain;
-  width: calc(var(--lp-bento-logo-w) * var(--u));
+  width: 100%;
+}
+.lp-bento__yc {
+  background: url("/logos/customers/yc.svg") center / contain no-repeat;
+  bottom: calc(100% - var(--lp-bento-logo-cap) * var(--u));
+  height: calc(14.571 * var(--u));
+  left: calc(100% + 4.857 * var(--u));
+  position: absolute;
+  width: calc(14.571 * var(--u));
 }
 .lp-bento__card--video .lp-bento__logo {
   color: var(--lp-ink-0);
+  pointer-events: none; /* the tile under it is one button */
 }
 
 /* ── quote cards (Figma 4939:4695 / 4939:4705) ──
@@ -139,6 +202,7 @@
   z-index: 1;
 }
 .lp-bento__card--quote .lp-bento__col {
+  max-width: 100%;
   width: calc(335 * var(--u));
 }
 .lp-bento__foot {
@@ -152,15 +216,14 @@
 }
 .lp .lp-bento__quote p {
   color: var(--lp-text);
-  font-family: var(--lp-font-cond);
+  font-family: var(--lp-bento-cond);
   font-size: calc(27.648 * var(--u)); /* marketing/title-sm */
   font-weight: 500;
   letter-spacing: -0.02em; /* −0.553px */
   line-height: 1.2; /* 33.18 */
-  /* Figma wraps a line once it plus a space would pass the 335 box (V2:
-     "We went from “we should" / "really…", where CSS keeps "really" on line
-     1 at 332.9 px): the wrap width loses 0.25em on the ragged side only, so
-     the aligned edge stays on the column edge. */
+  /* Figma wraps a line once it plus a space would pass the 335 box: the wrap
+     width loses 0.25em on the ragged side only, so the aligned edge stays on
+     the column edge. */
   padding-inline-end: 0.25em;
 }
 .lp-bento__card[data-slot="quoteB"] .lp-bento__quote p {
@@ -179,15 +242,19 @@
   font-weight: 600;
 }
 /* quoteB: the column hugs the right edge (Figma primary MAX: card-rel x =
-   560 − 48 − 335 = 177), items and text right-aligned (counter MAX). */
+   560 − 48 − 335 = 177), items and text right-aligned (counter MAX). Its
+   badge stays inside the column: the wordmark moves left by the badge. */
 .lp-bento__card[data-slot="quoteB"] .lp-bento__col {
   align-items: flex-end;
   margin-left: auto;
   text-align: right;
 }
+.lp-bento__card[data-slot="quoteB"] .lp-bento__logo[data-yc] {
+  margin-right: calc(19.428 * var(--u));
+}
 
 /* portraits: the Figma bbox, the photo cover-fitted into it (= FILL of the
-   400² photo), clipped by the blob path. STATIC (decision 2026-10-09 §7).
+   square photo), clipped by the blob path. STATIC (decision 2026-10-09 §7).
    Green-20 is the Figma base fill under the photo (shows while decoding). */
 .lp-bento__portrait {
   -webkit-clip-path: url(#lp-bento-blob);
@@ -199,9 +266,12 @@
   pointer-events: none;
   position: absolute;
 }
+/* quoteA's blob hugs the top-RIGHT corner: in the 560 card, left 340.47 =
+   560 + 91.06 − 310.59. Right-anchored, so a wider card (tablets, a partial
+   row) keeps it in its corner and the extra width is air beside the text. */
 .lp-bento__card[data-slot="quoteA"] .lp-bento__portrait {
   height: calc(313.19 * var(--u));
-  left: calc(340.47 * var(--u));
+  right: calc(-91.06 * var(--u));
   top: calc(-39.76 * var(--u)); /* bleeds 39.76 above, 91.06 past the right edge */
   width: calc(310.59 * var(--u));
   z-index: 0;
@@ -218,8 +288,12 @@
    Logo top; [value + 16 + label] at the bottom, right-aligned. The value is
    Figma's leadingTrim CAP_HEIGHT: Aeonik Condensed's typo metrics (asc 930,
    desc −230, cap 700 / 1000) put the cap top on the box top and the
-   baseline on its bottom at line-height 0.7 (box 40.135; descenders hang). */
+   baseline on its bottom at line-height 0.7 (box 40.135; descenders hang).
+   The label never wraps (a second line would lift the value off the
+   artboard's row): right-aligned, a long one runs into the left padding
+   ("meetings booked in a week" by 15.6 px of the 48). */
 .lp .lp-bento__kpi { /* .lp: outranks `.lp p { margin: 0 }` */
+  align-items: flex-end;
   display: flex;
   flex-direction: column;
   gap: calc(16 * var(--u));
@@ -229,7 +303,7 @@
 .lp-bento__value {
   color: var(--lp-text);
   display: block;
-  font-family: var(--lp-font-cond);
+  font-family: var(--lp-bento-cond);
   font-size: calc(57.336 * var(--u)); /* marketing/title-lg */
   font-weight: 500;
   letter-spacing: -0.02em; /* −1.1467px */
@@ -238,14 +312,16 @@
 }
 .lp-bento__label {
   display: block;
+  white-space: nowrap;
 }
 
 /* ── video tiles (Figma 4939:4676 / 4962:408) ──
    The media covers the whole card under the padding box; the logo (white)
-   sits at the 48,48 content corner. The poster is the rest picture; the clip
-   fades in over it once it plays (LpBentoVideo). */
+   sits at the 48,48 content corner. The poster is the rest picture; the
+   muted preview fades in over it once it plays (LpBentoVideo). */
 .lp-bento__media {
   border-radius: inherit;
+  container: lp-bento-media / size; /* the crop below reads the tile's own size */
   inset: 0;
   overflow: hidden;
   position: absolute;
@@ -258,8 +334,54 @@
   inset: 0;
   max-width: none;
   object-fit: cover;
+  object-position: 73% 50%; /* engines without container units: the desktop tiles' crop */
   position: absolute;
   width: 100%;
+}
+/* The films are landscape 4:3, the tiles mostly portrait: cover shows the
+   full height and a band of the width, and the band is chosen per film
+   (lp-bento-data.ts BentoFocus, as shares of the frame's height). The image
+   is 133.33cqh wide, so its left offset is −(left edge share) × 100cqh:
+     - a portrait tile keeps `keep` at its left edge (every face in, a
+       burned-in name title out), or centres on `centre` when it is too
+       narrow for that; never past the frame's right edge;
+     - a near-square tile (≥ 0.935: wide enough for the title AND the faces
+       of the Praxis cut) starts at `wide`;
+     - a tile wider than the film shows the full width, centred. */
+@supports (width: 1cqh) {
+  .lp-bento__poster,
+  .lp-bento__video {
+    object-position:
+      max(
+        calc(100cqw - 133.3334cqh),
+        min(calc(var(--lp-bento-keep, 0.25) * -100cqh), calc(50cqw - var(--lp-bento-centre, 0.6667) * 100cqh))
+      )
+      50%;
+  }
+}
+@container lp-bento-media (min-aspect-ratio: 935 / 1000) {
+  .lp-bento__poster,
+  .lp-bento__video {
+    object-position: calc(var(--lp-bento-wide, 0) * -100cqh) 50%;
+  }
+}
+@container lp-bento-media (min-aspect-ratio: 4 / 3) {
+  .lp-bento__poster,
+  .lp-bento__video {
+    object-position: 50% 50%;
+  }
+}
+/* A soft plum veil behind the white wordmark. Not in Figma: the artboard's
+   stills are dark where its mark sits, real footage is not (the Praxis cut
+   has a white lamp there). Over the poster and the preview, under the
+   controls; it fades out above the faces. */
+.lp-bento__media::after {
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--lp-ink-100) 34%, transparent), transparent);
+  content: "";
+  height: 34%;
+  inset: 0 0 auto;
+  pointer-events: none;
+  position: absolute;
 }
 .lp-bento__video {
   opacity: 0;
@@ -268,8 +390,78 @@
 .lp-bento__media[data-playing] .lp-bento__video {
   opacity: 1;
 }
-/* play / pause (WCAG 2.2.2), the marquee pause recipe: a 28px cream disc
-   with a hairline, 44px hit area. Not in Figma (accessibility). */
+
+/* "Watch with sound": the whole tile is the button that opens the film in
+   the dialog; the pill at its bottom-left is the visible label (the pause
+   recipe: cream, hairline, 28 high). Not in Figma: a testimonial needs its
+   sound on demand (founder brief 2026-10-11). */
+.lp .lp-bento__open {
+  background: none;
+  border: 0;
+  border-radius: inherit;
+  cursor: pointer;
+  display: block;
+  inset: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
+}
+.lp .lp-bento__open[hidden] {
+  display: none;
+}
+.lp .lp-bento__open:focus-visible {
+  /* a cream band then the --lp-text ring, inside the tile (the card clips):
+     visible on any picture */
+  box-shadow: inset 0 0 0 2px var(--lp-page-bg);
+  outline: 2px solid var(--lp-text);
+  outline-offset: -4px;
+}
+.lp-bento__sound {
+  align-items: center;
+  background: var(--lp-page-bg);
+  border-radius: 14px;
+  bottom: 16px;
+  box-shadow: inset 0 0 0 1px var(--lp-stroke);
+  color: var(--lp-ink-100);
+  display: flex;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm); /* 13.333 */
+  font-weight: 500;
+  gap: 6px;
+  height: 28px;
+  left: 16px;
+  letter-spacing: 0;
+  line-height: 1;
+  padding: 0 12px 0 9px;
+  position: absolute;
+  white-space: nowrap;
+}
+.lp-bento__sound svg {
+  fill: currentColor;
+  flex: none;
+}
+.lp-bento__sound-wave {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.3;
+}
+/* a narrow tile (the phone stack's 180, a 272 card at 1025) has no room for
+   the words beside the pause disc: the pill becomes a 28px disc; the
+   button's accessible name still says it */
+@container lp-bento-media (max-width: 239px) {
+  .lp-bento__sound {
+    justify-content: center;
+    padding: 0;
+    width: 28px;
+  }
+  .lp-bento__sound-label {
+    display: none;
+  }
+}
+
+/* play / pause of the muted preview (WCAG 2.2.2), the marquee pause recipe:
+   a 28px cream disc with a hairline, 44px hit area. Not in Figma. */
 .lp .lp-bento__pause {
   align-items: center;
   background: var(--lp-page-bg);
@@ -314,9 +506,121 @@
   }
 }
 
+/* ── the film with sound: a native modal <dialog> (top layer) ──
+   The dialog itself is the scrim (the booking sheet's plum, deeper for a
+   film) and scrolls if the viewport is shorter than the film; the box is as
+   wide as a 4:3 film that fits the viewport, 960 at most (the encode). The
+   closed dialog keeps the UA's display:none. */
+.lp .lp-bento__dialog {
+  background: color-mix(in srgb, var(--lp-text) 82%, transparent);
+  border: 0;
+  box-sizing: border-box;
+  color: var(--lp-ink-0);
+  height: 100%;
+  inset: 0;
+  margin: 0;
+  max-height: none;
+  max-width: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px;
+  position: fixed;
+  width: 100%;
+}
+.lp .lp-bento__dialog[open] {
+  display: grid;
+  /* one shrinkable column: the box's max-width: 100% then means the viewport's, not its own 960 */
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+}
+.lp-bento__dialog::backdrop {
+  background: transparent;
+}
+/* The page under the open film stays put: WebKit and Gecko chain the wheel
+   through a dialog that has nothing to scroll. The booking sheet's lock
+   (modal.css body.modal-open), keyed on the open dialog itself, so there is
+   no class to leak onto another route. */
+body:has(.lp-bento__dialog[open]) {
+  overflow: hidden;
+}
+.lp-bento__dialog-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 100%;
+  /* 116 = 2 × 20 padding + the 36 bar + the 12 gap + 28 of air */
+  width: min(960px, calc((100vh - 116px) * 4 / 3));
+}
+@supports (height: 100dvh) {
+  .lp-bento__dialog-box {
+    width: min(960px, calc((100dvh - 116px) * 4 / 3));
+  }
+}
+/* the box takes focus on open (tabIndex -1): a container, not a control, so no ring */
+.lp-bento__dialog-box:focus,
+.lp-bento__dialog-box:focus-visible {
+  outline: none;
+}
+.lp-bento__dialog-bar {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+.lp .lp-bento__dialog-title {
+  font-family: var(--lp-font-sans);
+  font-size: 16px; /* marketing/body-md */
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+.lp .lp-bento__close {
+  background: color-mix(in srgb, var(--lp-ink-0) 16%, transparent);
+  border: 0;
+  border-radius: 50%;
+  color: var(--lp-ink-0);
+  cursor: pointer;
+  display: grid;
+  flex: none;
+  height: 36px;
+  padding: 0;
+  place-items: center;
+  position: relative;
+  width: 36px;
+}
+.lp .lp-bento__close::after {
+  content: "";
+  inset: -4px;
+  position: absolute;
+}
+.lp .lp-bento__close svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+.lp .lp-bento__close:focus-visible {
+  outline: 2px solid var(--lp-ink-0); /* on the plum scrim the --lp-text ring would not show */
+  outline-offset: 2px;
+}
+.lp-bento__film {
+  aspect-ratio: 4 / 3;
+  background: var(--lp-ink-100);
+  border-radius: 16px;
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
 /* ── 1025–1199: the desktop grid in a narrower frame ──
    Same composition, --u = frame / 1136 (≥ 0.846 at 1025): cards, type,
    paddings and blobs scale together. Title and section paddings stay. */
+
+/* ── the two-column stack ──
+   The mobile artboard's order and boxes (5024:10550 … 10601): vl / ka kb /
+   qa / kc vs / qb, wide cards on both columns. With cards missing, the
+   rest keep that order, narrow cards pair up and one left alone takes the
+   row (data-solo; the server decides, CSS does not guess). */
 
 /* ── tablet 768–1024: two columns ── */
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -329,6 +633,9 @@
   .lp-bento__grid {
     --u: 1px;
     gap: 16px;
+  }
+  /* all seven: the quotes full width, the large video beside two KPI cards */
+  .lp-bento__grid[data-layout="full"] {
     grid-template-areas:
       "qa qa"
       "vl ka"
@@ -338,95 +645,64 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: 369px 365px 365px 375px 375px;
   }
-  /* full-width quote cards: quoteA's blob keeps hugging the top-RIGHT
-     corner (desktop right edge 340.47 + 310.59 = 560 + 91.06), quoteB's the
-     top-left; the extra width becomes air between the blob and the text */
-  .lp-bento__card[data-slot="quoteA"] .lp-bento__portrait {
-    left: auto;
-    right: calc(-91.06 * var(--u));
+  /* a partial set: the stack */
+  .lp-bento__grid[data-layout="rows"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lp-bento__grid[data-layout="rows"] > .lp-bento__card {
+    grid-area: auto;
+    grid-column: auto / span var(--lp-bento-flow-span, 1);
+    min-height: calc(var(--lp-bento-flow-h, 369) * var(--u));
+    order: var(--lp-bento-flow-order, 0);
   }
 }
 
-/* ── phones ≤ 767: a horizontal swipe rail ──
-   Founder precedent (2026-08-31, the old testimonials): smaller cards,
-   horizontal swipe instead of a tall stack. Same DOM; equal-height cards
-   (440), widths by kind (video 9:16 = 248, quote 322 so the next card
-   peeks, KPI 200), interleaved order. Section 56 + 41 + 32 + 440 + 56 = 625. */
+/* ── phones ≤ 767: the mobile artboard's stack (5024:10543) ──
+   The desktop cards × (frame / 560) = × 370 / 560 at 402, column gap 16 u
+   (10.571), row gap 8 px literal. Title top = the CTA card's bottom + 137
+   (its 56 padding + 81), title → cards 41, bottom 56. Section at 402 with
+   seven cards: 81 + 41 + 41 + 1508.04 + 56 = 1727. The video controls keep
+   their px size. */
 @media (max-width: 767px) {
   .lp-bento__inner {
-    padding: 56px 0;
+    padding: 81px 16px 56px;
   }
   .lp-bento__title {
     /* the production phone section title (Condensed 35.559 / 41, −3%) */
     font-size: 35.559px;
     letter-spacing: -1.0668px;
     line-height: 41px;
-    margin: 0 16px 32px;
+    margin: 0 0 41px;
     width: auto;
   }
   .lp-bento__frame {
     max-width: none;
   }
   .lp-bento__grid {
-    --u: 1px;
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    padding-inline: 16px;
-    scroll-padding-inline: 16px;
-    scrollbar-width: none;
+    --u: calc(100cqw / 560);
+    column-gap: calc(16 * var(--u));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 8px;
   }
-  /* snapping is armed on the first touch (LpBentoRail): WebKit lands a
-     snap container laid out mid page-scroll on a random card */
-  .lp-bento__grid[data-snap] {
-    scroll-snap-type: x mandatory;
+  @supports not (width: 1cqw) {
+    .lp-bento__grid {
+      --u: calc((100vw - 32px) / 560);
+    }
   }
-  .lp-bento__grid::-webkit-scrollbar {
-    display: none;
-  }
-  .lp-bento__grid:focus-visible {
-    outline-offset: -2px;
-  }
-  .lp-bento__card {
-    flex: none;
-    height: 440px;
-    padding: 24px;
-    scroll-snap-align: start;
-  }
-  .lp-bento__card--video { width: 248px; }
-  .lp-bento__card--quote { width: 322px; }
-  .lp-bento__card--kpi { width: 200px; }
-  .lp-bento__card[data-slot="videoLg"] { order: 1; }
-  .lp-bento__card[data-slot="quoteA"] { order: 2; }
-  .lp-bento__card[data-slot="kpiA"] { order: 3; }
-  .lp-bento__card[data-slot="videoSm"] { order: 4; }
-  .lp-bento__card[data-slot="quoteB"] { order: 5; }
-  .lp-bento__card[data-slot="kpiB"] { order: 6; }
-  .lp-bento__card[data-slot="kpiC"] { order: 7; }
-
-  .lp-bento__card--quote .lp-bento__col {
-    width: 100%;
-  }
-  .lp .lp-bento__quote p {
-    font-size: var(--lp-text-xlg); /* 23.04 */
-  }
-  /* blobs at 0.6: box, offsets and photo scale in one place */
-  .lp-bento__portrait {
-    --u: 0.6px;
-  }
-  .lp-bento__card[data-slot="quoteA"] .lp-bento__portrait {
-    left: auto;
-    right: calc(-91.06 * var(--u));
-  }
-  .lp .lp-bento__kpi {
-    gap: 12px;
-  }
-  .lp-bento__value {
-    font-size: 48px; /* cap box 33.6 */
+  .lp-bento__grid > .lp-bento__card {
+    grid-column: auto / span var(--lp-bento-flow-span, 1);
+    min-height: calc(var(--lp-bento-flow-h, 369) * var(--u));
+    order: var(--lp-bento-flow-order, 0);
   }
   .lp .lp-bento__pause {
     bottom: 12px;
     right: 12px;
+  }
+  .lp-bento__sound {
+    bottom: 12px;
+    left: 12px;
+  }
+  .lp .lp-bento__dialog {
+    padding: 16px;
   }
 }
