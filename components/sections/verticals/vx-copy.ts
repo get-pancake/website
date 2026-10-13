@@ -240,7 +240,7 @@ export const VX_FAQ = {
     },
     {
       q: "How many leads will I get?",
-      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} qualified leads a month on ${formatCredits(BASE_LEVEL.credits)} credits, more on a higher level. Each one is checked against your ICP and comes with why it fits. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
+      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} qualified leads a month on ${formatCredits(BASE_LEVEL.credits)} credits, more on a higher level. Each one is matched to your ICP by your Brain. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
     },
     {
       q: "What does it cost?",

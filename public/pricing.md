@@ -25,23 +25,23 @@ Need more credits or a custom setup? Talk to sales: https://pancake.ai/demo
 
 What you get, at every level:
 
-- Leads that fit, each with the reason why.
+- Your GTM Brain, built from your website.
+- 12 data providers included.
+- Leads matched to your ICP.
 - A personal message for each lead.
-- Sent from your own account.
 - You approve every lead first.
-- Replies stop the sequence and get sorted.
 - Your whole team. No seats to pay.
 
 Free trial: 7 days and 15,000 credits (about 30 to 150 leads), the same at every level. Signup starts without a card. A credit card is required to start the trial.
 
-## What one lead is
+## What goes into one lead
 
-Not names. Buyers with a reason to talk. Pancake researches every lead with 12 data providers, checks it against your ICP and writes to it in your voice.
+Leads matched to your business, not to a filter. Your GTM Brain, 12 data providers and outreach in your voice work on every lead. All in the plan.
 
-- Found where buyers show up: funding, open roles, a company's tools, posts and who reacts to them.
-- Checked against your ICP: Pancake reads each person and company, and keeps the ones that fit.
-- The reason, in one line: every lead arrives with why it fits, so you know before you approve.
-- A personal message, ready: written from that reason, in your voice, and sent from your own account.
+- Your GTM Brain: Pancake reads your website and learns your ICP, your personas, your competitors and your voice. Every search and message starts from that context, and it learns from each lead you approve or pass.
+- 12 data providers, included: Dealroom, TheirStack, Coresignal and nine more, in one plan. No contract to sign, no API key, no data bill on the side.
+- Live buying signals: funding rounds, open roles, tech stacks, posts and who reacts to them. A Play keeps searching on your schedule, so new leads keep coming.
+- Outreach from your account: a personal message for each lead, in your voice, sent from your own account once you approve the lead. A reply stops the sequence.
 
 ## What customers say
 
@@ -54,7 +54,7 @@ Not names. Buyers with a reason to talk. Pancake researches every lead with 12 d
 
 ### How many leads will I get?
 
-About 120 to 600 qualified leads a month on 60,000 credits, and twice that at each level up. Each one is checked against your ICP and comes with why it fits and a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.
+About 120 to 600 qualified leads a month on 60,000 credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 12 providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.
 
 ### How does the free trial work?
 

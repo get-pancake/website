@@ -1,13 +1,15 @@
 import { pricingLead as c } from "@/lib/copy";
 
 /**
- * /pricing — "Not names. Buyers with a reason to talk.": what one lead is,
- * right under the plan, so the price is read against a researched buyer and
- * not a line in a list. The four things every lead comes with on the left;
- * on the right an example lead as the customer receives it (who, the signal,
- * why they fit, the message written for them). Stacked below 1024px
- * (app/pricing/pricing.css). Server-rendered, zero JS.
- * Copy and fact sources: `pricingLead` in lib/copy.ts.
+ * /pricing — "Leads matched to your business, not to a filter.": what goes
+ * into one lead, right under the plan, so the price is read against a
+ * researched buyer and not a line in a list. On the left the four things
+ * that work on every lead (the GTM Brain, the data providers, the signals,
+ * the outreach); on the right an example lead as the customer receives it:
+ * who, the signals found and the provider behind each, the Brain's context,
+ * the message. Stacked below 1024px (app/pricing/pricing.css).
+ * Server-rendered, zero JS. Copy and fact sources: `pricingLead` in
+ * lib/copy.ts.
  */
 export function PricingLead() {
   const e = c.example;
@@ -22,19 +24,14 @@ export function PricingLead() {
         </header>
 
         <div className="lv2-lead-grid">
-          <ol className="lv2-lead-points">
-            {c.points.map((point, i) => (
+          <ul className="lv2-lead-points">
+            {c.points.map((point) => (
               <li key={point.title} className="lv2-lead-point">
-                <span className="lv2-lead-point-num" aria-hidden="true">
-                  {i + 1}
-                </span>
-                <div>
-                  <h3 className="lv2-lead-point-title">{point.title}</h3>
-                  <p className="lv2-lead-point-body">{point.body}</p>
-                </div>
+                <h3 className="lv2-lead-point-title">{point.title}</h3>
+                <p className="lv2-lead-point-body">{point.body}</p>
               </li>
             ))}
-          </ol>
+          </ul>
 
           <figure className="lv2-lead-card">
             <figcaption className="lv2-lead-card-kicker">{e.kicker}</figcaption>
@@ -46,13 +43,21 @@ export function PricingLead() {
                 <p className="lv2-lead-name">{e.name}</p>
                 <p className="lv2-lead-role">{e.role}</p>
               </div>
-              <span className="badge lv2-lead-signal" data-variant="brand-alt-2">
-                {e.signal}
-              </span>
             </div>
             <div className="lv2-lead-block">
-              <p className="lv2-lead-label">{e.whyLabel}</p>
-              <p className="lv2-lead-text">{e.why}</p>
+              <p className="lv2-lead-label">{e.signalsLabel}</p>
+              <ul className="lv2-lead-signals">
+                {e.signals.map((signal) => (
+                  <li key={signal.text}>
+                    <span>{signal.text}</span>
+                    <span className="badge">{signal.source}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="lv2-lead-block">
+              <p className="lv2-lead-label">{e.brainLabel}</p>
+              <p className="lv2-lead-text">{e.brain}</p>
             </div>
             <div className="lv2-lead-block lv2-lead-block--message">
               <p className="lv2-lead-label">{e.messageLabel}</p>

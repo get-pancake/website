@@ -284,18 +284,20 @@ export const pricingV2 = {
   save: (percent: number) => `Save ${percent}% per credit`,
   /** Intro to the value list: the same list whatever the level. */
   includedIntro: "What you get, at every level:",
-  /** The six things a customer receives, in the order they arrive: leads
-      with their reason, a message, sent from their account once they approve
-      the lead, replies handled, for the whole team. Each holds on one line in
-      the card's three columns. Rollover and the rest of the credit mechanics
-      are in the levels table and the questions, not here. Reading a message
-      before it sends is optional, so never "approvals on messages". */
+  /** The six things a customer has at every level: their GTM Brain, the
+      data, leads matched to their ICP, a message for each, the approval, the
+      whole team. Each holds on one line in the card's three columns. "Why
+      they fit" is not a selling line (founder 2026-10-13: "stop making 'the
+      reason' such a power argument"). Rollover and the rest of the credit
+      mechanics are in the levels table and the questions, not here. Reading
+      a message before it sends is optional, so never "approvals on
+      messages". */
   value: [
-    { rest: "Leads that fit, each with the reason why." },
+    { rest: "Your GTM Brain, built from your website." },
+    { rest: "12 data providers included." },
+    { rest: "Leads matched to your ICP." },
     { rest: "A personal message for each lead." },
-    { rest: "Sent from your own account." },
     { rest: "You approve every lead first." },
-    { rest: "Replies stop the sequence and get sorted." },
     { rest: "Your whole team. No seats to pay." },
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot): the trial is
@@ -308,40 +310,52 @@ export const pricingV2 = {
 } as const;
 
 /**
- * "Not names. Buyers with a reason to talk." — what ONE lead is, before any
- * count of them (PricingLead.tsx). Founder 2026-10-13: say that it is "pas
- * que des leads mais vraiment des trucs de ouf ultra précis", "car sinon ça
- * fait cher juste le lead". Four things every lead comes with, beside an
- * example lead drawn as a card.
- * Facts: the ways a Play finds people and the ICP check with a reason on
- * every lead are the app's (pancake-cmo; /plays lists the ways); "12 data
- * providers" is the homepage's own label (lp-story-sources-data.ts hub,
- * founder 2026-10-13: the providers in the product's job toolkit); a message
- * is written from why the lead fits and sent from the customer's account
- * once they approve the lead. Job changes and news are NOT signals.
- * The example is the homepage's cast, word for word (Tamsin Okafor of
- * Quillfern: lp-story-sources-data.ts `detail`, lp-step-data.ts): an invented
- * lead of an invented seller, labelled as an example. Keep them in step.
+ * "Leads matched to your business, not to a filter." — what goes into ONE
+ * lead, before any count of them (PricingLead.tsx). Founder 2026-10-13: say
+ * that it is "pas que des leads mais vraiment des trucs de ouf ultra précis",
+ * "car sinon ça fait cher juste le lead"; then, on a first version built on
+ * "why they fit": "talk gtm brain (context etc), talk data providers … stop
+ * making 'the reason' such a power argument while I am not sure it's the
+ * case". So the four things are the homepage's own triad (the brain, the
+ * data, the tools) plus the signals, each said as what the buyer gets, and
+ * "why they fit" is not a claim anywhere on the page.
+ * Facts:
+ * - GTM Brain: built from the customer's website; it holds their ICP,
+ *   personas, competitors, messaging and voice, every Play starts from it,
+ *   and it learns from the leads they approve or pass (not from replies:
+ *   lp-steps-content.ts).
+ * - "12 data providers" is the homepage's own label (lp-story-sources-data.ts
+ *   hub, founder 2026-10-13: the providers in the product's job toolkit);
+ *   the three named here are the ones behind funding, open roles and people
+ *   data. No contract or API key on the customer's side.
+ * - Signals: the ways a Play finds people (/plays). Job changes and news are
+ *   NOT among them.
+ * - Outreach: a personal message per lead in the customer's voice, sent from
+ *   their own account once they approve the lead; a reply stops the sequence.
+ * The example is the homepage's cast (Tamsin Okafor of Quillfern, a lead of
+ * the invented seller Acme, which designs websites for startups;
+ * lp-story-sources-data.ts gives Dealroom for the seed round and TheirStack
+ * for the open role), labelled as one lead. Keep them in step.
  */
 export const pricingLead = {
-  title: "Not names. Buyers with a reason to talk.",
-  lede: "Pancake researches every lead with 12 data providers, checks it against your ICP and writes to it in your voice.",
+  title: "Leads matched to your business, not to a filter.",
+  lede: "Your GTM Brain, 12 data providers and outreach in your voice work on every lead. All in the plan.",
   points: [
     {
-      title: "Found where buyers show up",
-      body: "Funding, open roles, a company’s tools, posts and who reacts to them.",
+      title: "Your GTM Brain",
+      body: "Pancake reads your website and learns your ICP, your personas, your competitors and your voice. Every search and message starts from that context, and it learns from each lead you approve or pass.",
     },
     {
-      title: "Checked against your ICP",
-      body: "Pancake reads each person and company, and keeps the ones that fit.",
+      title: "12 data providers, included",
+      body: "Dealroom, TheirStack, Coresignal and nine more, in one plan. No contract to sign, no API key, no data bill on the side.",
     },
     {
-      title: "The reason, in one line",
-      body: "Every lead arrives with why it fits, so you know before you approve.",
+      title: "Live buying signals",
+      body: "Funding rounds, open roles, tech stacks, posts and who reacts to them. A Play keeps searching on your schedule, so new leads keep coming.",
     },
     {
-      title: "A personal message, ready",
-      body: "Written from that reason, in your voice, and sent from your own account.",
+      title: "Outreach from your account",
+      body: "A personal message for each lead, in your voice, sent from your own account once you approve the lead. A reply stops the sequence.",
     },
   ],
   example: {
@@ -349,10 +363,14 @@ export const pricingLead = {
     initials: "TO",
     name: "Tamsin Okafor",
     role: "Founder & CEO, Quillfern",
-    signal: "Just raised",
-    whyLabel: "Why they fit",
-    why: "Quillfern raised a seed round this month and is hiring a marketing lead. Tamsin is its founder.",
-    messageLabel: "The message, written from that reason",
+    signalsLabel: "Signals found",
+    signals: [
+      { text: "Raised a seed round this month", source: "Dealroom" },
+      { text: "Hiring a marketing lead", source: "TheirStack" },
+    ],
+    brainLabel: "Matched by your GTM Brain",
+    brain: "You design websites for startups that just raised.",
+    messageLabel: "Message, in your voice",
     message: "Hi Tamsin, congrats on Quillfern’s seed round. Want a new website live before your marketing lead starts?",
   },
 } as const;
@@ -470,7 +488,7 @@ export const pricingFaq = {
   items: [
     {
       q: "How many leads will I get?",
-      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} qualified leads a month on ${formatCredits(BASE_LEVEL.credits)} credits, and twice that at each level up. Each one is checked against your ICP and comes with why it fits and a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
+      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} qualified leads a month on ${formatCredits(BASE_LEVEL.credits)} credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 12 providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
     },
     {
       q: "How does the free trial work?",
