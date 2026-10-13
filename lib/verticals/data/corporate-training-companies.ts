@@ -162,7 +162,7 @@ export const corporateTrainingCompanies: VerticalConfig = {
     },
     {
       q: "Can our whole team use it?",
-      a: "Yes. Teammates are free. Each Play sends from one teammate’s account or rotates across up to ten, so pick the names your buyers should see.",
+      a: "Yes, and teammates are free. Each Play sends from one teammate’s account or rotates across up to ten, so pick the names your buyers should see. One sending account is in the plan, and each extra one is $39 a month.",
     },
   ],
 

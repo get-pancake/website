@@ -1,92 +1,116 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { FiCheck, FiInfo, FiPause, FiPlay, FiRotateCcw } from "react-icons/fi";
-import { AGENT_PUZZLE_INITIAL, greenTiles, moveAgentPuzzle, pairedTile } from "@/lib/agent-puzzle";
-import { useAudience } from "./LpAudience";
-import { LpAgentTerminalStream } from "./LpAgentTerminalStream";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 
-export function LpAgentLab() {
+import { useAudience } from "./LpAudience";
+import { LpAgentCaptcha } from "./LpAgentCaptcha";
+import { LpAgentPrompt } from "./LpAgentPrompt";
+import { AS_MEDIA, mountAgentsAssembly } from "./lp-agents-scroll";
+import { AGENT_WALL_TEXT, type AgentCardBody } from "./lp-agents-wall-data";
+
+/**
+ * The agents view's code wall — Figma V2 4939:3457 (section 777 → 2064 at 1654): a still wall of
+ * white pseudocode (4939:3760, Andale Mono 16/18 in a 1136 column) under a centred blue card with a
+ * 1 px white outline (4964:4098, 690×562) whose head repeats the install prompt. Replaces
+ * production's black terminal stream (LpAgentTerminalStream, retired) and its CAPTCHA card; the
+ * puzzle now fills the card's body (decision 2026-10-09 §8, never an empty card in production).
+ * Owner: agents-view package; styles in agent-lab.css.
+ *
+ * Kept from production: `section.lp-agent-lab#agent-playground` (the integrator's agents-view hide
+ * rule shows `.lp-agent-lab` and the anchor stays), hidden from assistive tech outside the view.
+ * The wall and card render once the view has been shown (and stay): the humans HTML carries no
+ * hidden pseudocode — the agents view is client-only anyway (LpAudience reads the URL on mount).
+ *
+ * Motion (lp-agents-scroll.ts, desktop with motion allowed): the wall prints and the card extends
+ * on scroll, then locks assembled. Reduced motion, tablets, phones and short windows: the rest
+ * picture (state 03 = the V2 artboard).
+ *
+ * `cardBody` comes from the server page through the SHOW_PLACEHOLDERS gate (app/page.tsx).
+ */
+export function LpAgentLab({ cardBody }: { cardBody?: AgentCardBody } = {}) {
   const { audience } = useAudience();
   const active = audience === "agents";
-  const [paused, setPaused] = useState(false);
-  const [board, setBoard] = useState(AGENT_PUZZLE_INITIAL);
-  const [moves, setMoves] = useState(0);
-  const [attempts, setAttempts] = useState(0);
-  const [preview, setPreview] = useState<number | null>(null);
-  const [changed, setChanged] = useState<number | null>(null);
-  const [hint, setHint] = useState(false);
-  const [message, setMessage] = useState("");
-  const moveTimer = useRef<ReturnType<typeof setTimeout>>();
-  const lit = greenTiles(board);
+  const section = useRef<HTMLElement>(null);
+  const [seen, setSeen] = useState(false);
+  // render the wall the first time the view shows, in the same commit (the switch's snapshot)
+  if (active && !seen) setSeen(true);
 
-  useEffect(() => () => clearTimeout(moveTimer.current), []);
+  // Scroll assembly: mounted in the commit that shows the view, so the View Transition's new
+  // snapshot already holds the scroll pose; follows the desktop/motion gate live.
+  useLayoutEffect(() => {
+    const el = section.current;
+    if (!active || !el) return;
+    const gate = matchMedia(AS_MEDIA);
+    let unmount: (() => void) | null = null;
+    const sync = () => {
+      if (gate.matches && !unmount) unmount = mountAgentsAssembly(el);
+      else if (!gate.matches && unmount) {
+        unmount();
+        unmount = null;
+      }
+    };
+    sync();
+    gate.addEventListener("change", sync);
+    return () => {
+      gate.removeEventListener("change", sync);
+      unmount?.();
+    };
+  }, [active]);
 
-  const move = (tile: number) => {
-    clearTimeout(moveTimer.current);
-    const next = moveAgentPuzzle(board, tile);
-    setBoard(next);
-    setMoves(value => value + 1);
-    setChanged(tile);
-    setHint(false);
-    setMessage("");
-    moveTimer.current = setTimeout(() => setChanged(null), 300);
-  };
+  const body = cardBody ?? { kind: "captcha", status: "final" };
 
-  const reset = () => {
-    clearTimeout(moveTimer.current);
-    setBoard(AGENT_PUZZLE_INITIAL);
-    setMoves(0);
-    setAttempts(0);
-    setChanged(null);
-    setPreview(null);
-    setHint(false);
-    setMessage("");
-  };
-
-  return <section className="lp-agent-lab" id="agent-playground" aria-label="Agent playground" aria-hidden={!active}>
-    <LpAgentTerminalStream active={active} paused={paused} />
-    <div className="lp-agent-lab__stage">
-      <div className="lp-agent-captcha" data-moves={moves}>
-        <div className="lp-agent-captcha__header">
-          {/* Not a heading (2026-10-07): the humans view ships this section hidden, and an
-              H2 "Prove you're not human" opened the homepage outline for crawlers. A div,
-              not a <p>: agent-lab.css styles `.lp-agent-captcha__header p` as the task line. */}
-          <div className="lp-agent-captcha__title">Prove you’re not human</div>
-          <p id="agent-puzzle-task">Turn every tile green.</p>
-        </div>
-        <div className="lp-agent-captcha__grid" role="group" aria-label="Turn every tile green" aria-describedby="agent-puzzle-task">
-          {Array.from({ length: 9 }, (_, tile) => {
-            const on = Boolean(board & (1 << tile));
-            const highlighted = preview !== null && (tile === preview || tile === pairedTile(preview));
-            const updated = changed !== null && (tile === changed || tile === pairedTile(changed));
-            return <button
-              key={tile} type="button" className="lp-agent-captcha__tile"
-              aria-label={`Tile ${tile + 1}, ${on ? "green" : "unlit"}`} aria-pressed={on}
-              data-on={on} data-preview={highlighted} data-changed={updated}
-              onClick={() => move(tile)}
-              onPointerEnter={event => { if (event.pointerType !== "touch") setPreview(tile); }}
-              onPointerLeave={() => setPreview(null)}
-              onFocus={() => setPreview(tile)} onBlur={() => setPreview(null)}
-            >
-              <span className="lp-agent-captcha__tile-mark" key={updated ? `${tile}-${moves}` : tile}>
-                {on ? <FiCheck aria-hidden="true" /> : <span className="lp-agent-captcha__unlit" aria-hidden="true" />}
-              </span>
-            </button>;
-          })}
-        </div>
-        <div className="lp-agent-captcha__footer">
-          <div className="lp-agent-captcha__tools">
-            <button type="button" onClick={reset} aria-label="Reset puzzle" title="Reset puzzle"><FiRotateCcw aria-hidden="true" /></button>
-            <button type="button" onClick={() => { setHint(value => !value); setMessage(hint ? "" : "No solution."); }} aria-label="About this puzzle" aria-pressed={hint} title="Every move flips two tiles. Nine green is impossible."><FiInfo aria-hidden="true" /></button>
-            <button className="lp-agent-captcha__pause" onClick={() => setPaused(value => !value)} aria-pressed={paused} aria-label={paused ? "Resume terminal animation" : "Pause terminal animation"} title={paused ? "Resume terminal animation" : "Pause terminal animation"} type="button">
-              {paused ? <FiPlay aria-hidden="true" /> : <FiPause aria-hidden="true" />}
-            </button>
+  return <section
+    ref={section}
+    className="lp-agent-lab lp-agents-wall"
+    id="agent-playground"
+    aria-label="Set up Pancake with your agent"
+    aria-hidden={!active}
+  >
+    {seen && <>
+      <div className="lp-agents-wall__code" aria-hidden="true">{AGENT_WALL_TEXT}</div>
+      {/* the section colour over the rows not yet printed (scroll assembly only) */}
+      <div className="lp-agents-wall__cover" aria-hidden="true" />
+      <div className="lp-agents-wall__slot">
+        <div className="lp-agents-wall__card" data-body={body.kind}>
+          <LpAgentPrompt variant="card" />
+          <div className="lp-agents-wall__body" {...(body.status === "placeholder" ? { "data-placeholder": "" } : {})}>
+            {body.kind === "captcha" ? <LpAgentCaptcha /> : <AgentTranscript lines={body.lines} />}
           </div>
-          <p className="lp-agent-captcha__feedback" role="status" aria-live="polite" aria-atomic="true">{message || <><span>{lit}</span><span aria-hidden="true"> / 9</span><span className="lp-sr-only"> of 9 green</span></>}</p>
-          <button className="lp-agent-captcha__verify" type="button" onClick={() => { setHint(false); setAttempts(value => value + 1); setMessage(attempts === 0 ? "Human detected." : "Still human."); }}>Verify</button>
         </div>
+        {/* the card's bottom hairline: it travels with the frame while the card assembles */}
+        <div className="lp-agents-wall__edge" aria-hidden="true" />
       </div>
-    </div>
+    </>}
   </section>;
+}
+
+/** Preview-only body (AGENT_CARD_TRANSCRIPT_DRAFT): the agent's install session prints one line
+ *  every 280 ms once the assembled card is half in view; reduced motion shows every line. */
+function AgentTranscript({ lines }: { lines: Extract<AgentCardBody, { kind: "transcript" }>["lines"] }) {
+  const log = useRef<HTMLOListElement>(null);
+  const [print, setPrint] = useState(false);
+  useEffect(() => {
+    const el = log.current;
+    const wall = el?.closest(".lp-agents-wall");
+    if (!el || !wall || print) return;
+    let inView = false;
+    // after the scroll assembly has locked, or wherever it does not run
+    const check = () => {
+      if (inView && (wall.hasAttribute("data-as-done") || !wall.hasAttribute("data-as"))) setPrint(true);
+    };
+    const io = new IntersectionObserver((entries) => {
+      inView = entries.some((e) => e.isIntersecting);
+      check();
+    }, { threshold: 0.5 });
+    const mo = new MutationObserver(check);
+    io.observe(el);
+    mo.observe(wall, { attributes: true, attributeFilter: ["data-as", "data-as-done"] });
+    return () => {
+      io.disconnect();
+      mo.disconnect();
+    };
+  }, [print]);
+  return <ol ref={log} className="lp-agents-wall__log" data-print={print} aria-label="Illustrative install session">
+    {lines.map((line, i) => <li key={i} data-kind={line.kind} style={{ "--i": i } as CSSProperties}>{line.text}</li>)}
+  </ol>;
 }

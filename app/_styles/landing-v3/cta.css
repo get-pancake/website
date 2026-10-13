@@ -117,6 +117,18 @@
     border-radius: var(--lp-r-xlg);
     padding: 224px 30px;
   }
+  /* The body's lines are too long for the card here. Each sentence is one
+     block (LpCta's .lp-cta__s), so the break falls between two sentences
+     instead of one word before the end ("…It builds the / Play." at 402;
+     mobile pass 2026-10-12); a sentence wider than the card (320) wraps
+     inside its own block, balanced. */
+  .lp-cta__body {
+    text-wrap: balance;
+  }
+  .lp-cta__s {
+    display: inline-block;
+    max-width: 100%;
+  }
   .lp-cta__card .lp-cta__art--left {
     aspect-ratio: 560 / 432;
     height: auto;

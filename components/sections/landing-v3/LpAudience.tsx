@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import { flushSync } from "react-dom";
 
 export type Audience = "humans" | "agents";
@@ -11,63 +11,23 @@ const AudienceContext = createContext<{ audience: Audience; setAudience: (value:
 });
 export const useAudience = () => useContext(AudienceContext);
 
-// The agent is the reader, named outright: the line says what IT gets, not
-// what it gives its human (founder 2026-09-07: "on comprend pas que c'est
-// l'agent qui devient meilleur" — the previous "give your human gtm
-// superpowers" made the human the one who improved). Plural + comma per
-// François 2026-09-08: "@agents, get gtm superpowers".
-const agentHeadline = "@agents, get gtm superpowers";
-// Typing bursts: each word types at a steady pace and every space is a short
-// pause, the last glyph landing at the end of --lp-type-duration — derived
-// from the string, so a copy change keeps the terminal rhythm. Each
-// proportional glyph is revealed at its actual width, so the cursor stays
-// attached to Aeonik Fono's text.
-const glyphProgress = (() => {
-  const steps: number[] = [];
-  let t = 0;
-  for (const letter of agentHeadline) {
-    t += letter === " " ? 0.12 : 0.04;
-    steps.push(t);
-  }
-  return steps.map(step => step / t);
-})();
+// AudienceHeadline (the human H1 + the agent typing line) moved to
+// LpAudienceHeadline.tsx on 2026-10-09 (V2 replication phase 0: owner
+// agents-view). This file keeps the provider and AudienceSelector (owner
+// nav-hero).
 
-/** The H1 is the human headline alone (2026-10-07): LpHero's wrapper is a
-    div that keeps the grid both copies overlay in, so crawlers no longer read
-    "…customers > @agents, get gtm superpowers" (plus its 28 glyph spans) as
-    the page's H1, and the two lines read as sentences (sr-only periods; the
-    artboard has none). The agent line stays a span; in the agents view, where
-    the human H1 is aria-hidden, it takes the heading role for screen readers. */
-export function AudienceHeadline() {
-  const { audience } = useAudience();
-  const [fontReady, setFontReady] = useState(false);
-  useEffect(() => {
-    let mounted = true;
-    // Wait for the font metrics and their layout to settle before revealing
-    // the first glyph. The complete accessible heading is already present.
-    void document.fonts.ready.then(() => { if (mounted) setFontReady(true); });
-    return () => { mounted = false; };
-  }, []);
-  return <>
-    <h1 id="lp-hero-title" className="lp-hero-title__copy" aria-hidden={audience === "agents"}>
-      You run your company<span className="lp-sr-only">.</span> <br />We bring you customers<span className="lp-sr-only">.</span>
-    </h1>
-    <span
-      className="lp-hero-title__copy lp-hero-title__copy--agent"
-      aria-hidden={audience === "humans"}
-      role={audience === "agents" ? "heading" : undefined}
-      aria-level={audience === "agents" ? 1 : undefined}
-    >
-      <span className="lp-sr-only">{`> ${agentHeadline}`}</span>
-      <span className="lp-agent-headline" data-font-ready={fontReady} aria-hidden="true">
-        <span className="lp-agent-headline__text"><span className="lp-agent-headline__prompt">{"> "}</span>{Array.from(agentHeadline, (letter, index) =>
-          <span key={index} className="lp-agent-headline__glyph" style={{ "--lp-glyph-progress": glyphProgress[index] } as CSSProperties}>{letter}</span>
-        )}</span>
-        <span className="lp-agent-headline__cursor" />
-      </span>
-    </span>
-  </>;
-}
+/** The cut between the views: the hero fades up from this opacity over this
+    long once the other view is committed (see setAudience). */
+const AUDIENCE_CUT_FROM = 0.4;
+const AUDIENCE_CUT_MS = 180;
+
+/** The selector's "the click is taken" state, ahead of the commit. */
+const setPending = (page: HTMLElement | null, value: Audience | null) => {
+  page?.querySelectorAll<HTMLElement>(".lp-audience-selector").forEach(selector => {
+    if (value) selector.setAttribute("data-pending", value);
+    else selector.removeAttribute("data-pending");
+  });
+};
 
 const audienceFromUrl = (): Audience =>
   new URL(window.location.href).searchParams.get("audience") === "agents" ? "agents" : "humans";
@@ -83,8 +43,8 @@ export function LpAudience({ children }: { children: ReactNode }) {
   const [audience, setRenderedAudience] = useState<Audience>("humans");
   const desiredAudience = useRef<Audience>("humans");
   const committedAudience = useRef<Audience>("humans");
-  const activeTransition = useRef<ViewTransition | null>(null);
   const request = useRef(0);
+  const main = useRef<HTMLElement>(null);
   const [announcement, setAnnouncement] = useState("");
 
   useEffect(() => {
@@ -95,9 +55,10 @@ export function LpAudience({ children }: { children: ReactNode }) {
       committedAudience.current = desiredAudience.current = arrived;
       setRenderedAudience(arrived);
     }
+    const page = main.current;
     const onPopState = () => {
       request.current += 1;
-      activeTransition.current?.skipTransition();
+      setPending(page, null);
       const current = audienceFromUrl();
       committedAudience.current = desiredAudience.current = current;
       setRenderedAudience(current);
@@ -106,46 +67,64 @@ export function LpAudience({ children }: { children: ReactNode }) {
     return () => {
       window.removeEventListener("popstate", onPopState);
       request.current += 1;
-      activeTransition.current?.skipTransition();
+      setPending(page, null);
     };
   }, []);
 
+  /* The switch answers first, the page follows (founder 2026-10-12: "the
+     untoggle from agents > human is slow … like there is a lag"). The View
+     Transition this replaced froze the page for 80–160 ms while the browser
+     captured both views (the humans view is the heavier one to render), then
+     crossfaded for 240 ms: about 400 ms before the other view was readable.
+     Now: (1) data-pending on the selector slides the thumb on the very next
+     frame (audience.css; a transform transition, so the compositor keeps it
+     moving while the main thread renders the other view; on the selector, not
+     on <main>, so that frame restyles one row and not the page: on <main> it
+     cost WebKit about 45 ms); (2) the view is committed
+     right after that frame, with no snapshot and no crossfade; (3) the hero
+     fades up from a little under full opacity so the cut is not hard. */
   const setAudience = useCallback((update: AudienceUpdate) => {
     const value = typeof update === "function" ? update(desiredAudience.current) : update;
     desiredAudience.current = value;
     const id = ++request.current;
-    activeTransition.current?.skipTransition();
+    const page = main.current;
     const url = new URL(window.location.href);
     if (value === "agents") url.searchParams.set("audience", "agents");
     else url.searchParams.delete("audience");
     // a section anchor (#how-it-works, #pricing) points at a section the
     // other view may hide: the switched URL carries none
     url.hash = "";
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const commit = () => {
       if (request.current !== id) return;
+      const changed = committedAudience.current !== value;
       committedAudience.current = value;
       flushSync(() => {
         setRenderedAudience(value);
         if (url.href !== window.location.href) window.history.pushState(null, "", url);
         setAnnouncement(value === "agents" ? "For agents selected." : "For humans selected.");
       });
+      setPending(page, null);
+      if (changed && !reduced) {
+        page?.querySelector<HTMLElement>(".lp-hero")?.animate(
+          [{ opacity: AUDIENCE_CUT_FROM }, { opacity: 1 }],
+          { duration: AUDIENCE_CUT_MS, easing: "cubic-bezier(.22, 1, .36, 1)" },
+        );
+      }
     };
-    if (!document.startViewTransition || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    if (reduced || !page) {
       commit();
       return;
     }
-    // Commit in the capture callback without waiting for animation frames.
-    // View Transitions suppress rendering during capture, so waiting for a
-    // redraw here postponed the response until the old 80ms timeout expired.
-    const transition = document.startViewTransition(commit);
-    activeTransition.current = transition;
-    const clear = () => { if (activeTransition.current === transition) activeTransition.current = null; };
-    void transition.ready.catch(() => {}); // A rapid toggle may skip its predecessor.
-    void transition.finished.then(clear, clear);
+    setPending(page, value);
+    // one painted frame for the thumb, then the commit (a timeout after the
+    // frame callback runs right after that frame's paint, sooner than a
+    // second animation frame would)
+    requestAnimationFrame(() => { setTimeout(commit, 0); });
   }, []);
   return (
     <AudienceContext.Provider value={{ audience, setAudience }}>
-      <main id="main-content" className="lp lp-audience-page" data-audience={audience}>
+      <main ref={main} id="main-content" className="lp lp-audience-page" data-audience={audience}>
         <span className="lp-sr-only" role="status">{announcement}</span>
         {children}
       </main>
@@ -153,58 +132,22 @@ export function LpAudience({ children }: { children: ReactNode }) {
   );
 }
 
+/** The audience toggle — Figma V2 4939:3521 (row) / 4939:3523 (switch).
+    In flow since V2 (designer red note 2026-10-09, "Humans/Agents toggle
+    position and look"): it heads the hero's right column, server-rendered in
+    place — no measuring, no overlay, no ready-gating. The active label is
+    bold (700), the inactive one medium (500); each label reserves its bold
+    width through `data-label` (audience.css ghost), so a weight swap never
+    moves the switch. */
 export function AudienceSelector() {
   const { audience, setAudience } = useAudience();
-  const selectorRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const selector = selectorRef.current;
-    const placement = selector?.parentElement;
-    const inner = placement?.closest<HTMLElement>(".lp-hero-inner");
-    const heading = inner?.querySelector<HTMLElement>(".lp-hero-title");
-    const humanColumn = inner?.querySelector<HTMLElement>(".lp-hero-col--human");
-    if (!selector || !placement || !inner || !heading || !humanColumn) return;
-    // Anchor to the original headline without changing its markup or flow.
-    // Divide out the hero's existing short-window scale so both stay aligned.
-    const position = () => {
-      const box = inner.getBoundingClientRect();
-      const title = heading.getBoundingClientRect();
-      const column = humanColumn.getBoundingClientRect();
-      const scale = box.width / inner.offsetWidth || 1;
-      // offsetWidth rounds fractional mobile widths; retain that precision
-      // when mapping the original column's bounds into the overlay.
-      const columnScale = box.width / parseFloat(getComputedStyle(inner).width) || 1;
-      const gutter = parseFloat(getComputedStyle(inner).getPropertyValue("--lp-space-8"));
-      const gap = parseFloat(getComputedStyle(inner).getPropertyValue("--lp-space-4"));
-      const half = selector.offsetWidth / 2;
-      const edge = Math.min(gutter, Math.max(0, inner.offsetWidth / 2 - half));
-      const center = Math.max(half + edge, Math.min((title.right - box.left) / scale - gap, inner.offsetWidth - half - edge));
-      placement.style.setProperty("--lp-audience-center", `${center}px`);
-      placement.style.setProperty("--lp-audience-top", `${(title.top - box.top) / scale}px`);
-      // Preserve the original column's horizontal alignment. On desktop,
-      // center the terminal itself on the headline; phones keep the stacked
-      // column. The hidden human content continues to define page geometry.
-      inner.style.setProperty("--lp-agent-terminal-center", `${(title.top + title.height / 2 - box.top) / columnScale}px`);
-      inner.style.setProperty("--lp-hero-col-top", `${(column.top - box.top) / columnScale}px`);
-      inner.style.setProperty("--lp-hero-col-left", `${(column.left - box.left) / columnScale}px`);
-      inner.style.setProperty("--lp-hero-col-width", `${column.width / columnScale}px`);
-      inner.style.setProperty("--lp-hero-col-height", `${column.height / columnScale}px`);
-      inner.dataset.titleReady = "true";
-      placement.dataset.ready = "true";
-    };
-    const observer = new ResizeObserver(position);
-    observer.observe(inner);
-    observer.observe(heading);
-    observer.observe(humanColumn);
-    observer.observe(selector);
-    position();
-    return () => observer.disconnect();
-  }, []);
   // The labels are click targets too (2026-10-07: tapping "For agents" did
   // nothing). They stay aria-hidden: the switch is the one control screen
   // readers and keyboards get, so there are never three controls for one state.
-  return <div ref={selectorRef} className="lp-audience-selector">
+  return <div className="lp-audience-selector">
     <span
       className="lp-audience-selector__label"
+      data-label="For humans"
       data-active={audience === "humans"}
       aria-hidden="true"
       onClick={() => { if (audience !== "humans") setAudience("humans"); }}
@@ -223,6 +166,7 @@ export function AudienceSelector() {
     </button>
     <span
       className="lp-audience-selector__label"
+      data-label="For agents"
       data-active={audience === "agents"}
       aria-hidden="true"
       onClick={() => { if (audience !== "agents") setAudience("agents"); }}

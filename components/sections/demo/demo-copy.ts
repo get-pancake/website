@@ -1,6 +1,6 @@
 /**
- * /demo — every visible string. The hero block is VERBATIM from the brain
- * landing (founder copy, brain.getpancake.ai, PR #295) and the card strings
+ * /demo — every visible string. The hero block is the homepage's hero
+ * (2026-10-13; it was the brain landing's, PR #295, until then) and the card strings
  * are the founder's 2026-09-15 brief; new strings (errors, busy line,
  * support line, the step-2 card and the progress text of the 2026-09-16
  * two-step split) follow .claude/skills/landing-voice. 2026-09-16, booking
@@ -20,14 +20,22 @@ export const META = {
   description: "See Pancake run your go-to-market. Two quick steps, then book your demo.",
 } as const;
 
-/** VERBATIM from the brain hero (ref app_page.tsx) — never edit. */
+/**
+ * The homepage's hero, word for word, since 2026-10-13 (founder, launch audit: "solve … /demo
+ * wording (Now in early access)"): the H1 on its two lines and the lede (= SITE_DESCRIPTION in
+ * lib/copy.ts; kept in three parts here so "go-to-market" never breaks). Until then this block
+ * was the Brain landing's hero, verbatim: "Now in early access", "Put your GTM on / full
+ * autopilot", "Pancake lets your Claude or ChatGPT run your go-to-market…". Pancake is live,
+ * "autopilot" left the positioning, and the page every "Book a demo" opens said neither. No
+ * eyebrow: the founder's "no kicker badge" (2026-10-13). When the homepage H1 or lede changes,
+ * change this block too.
+ */
 export const HERO = {
-  eyebrow: "Now in early access",
-  titleLine1: "Put your GTM on",
-  titleLine2: "full autopilot",
-  ledeBefore: "Pancake lets your Claude or ChatGPT run your ",
+  titleLine1: "Deploy GTM ideas",
+  titleLine2: "that bring you customers",
+  ledeBefore: "Pancake gives your agent the brain, the data and the tools to run your ",
   ledeNowrap: "go-to-market",
-  ledeAfter: ". Find people ready to buy and start outreach campaigns from the same conversation.",
+  ledeAfter: ".",
 } as const;
 
 export const TRUST = { before: "Trusted by dozens of ", ycAlt: "YC", after: " companies" } as const;

@@ -33,7 +33,7 @@ export const COMPARE_META = {
   title: "Pancake Compared: Origami, Unify, Octave, Alta and More",
   ogTitle: "Pancake compared",
   description:
-    "Pancake compared with Origami, Unify, Octave, Alta, Lemlist, Gojiberry, Viktor, Claude Tag, OpenClaw and Paperclip, read from each product’s public pages.",
+    "Pancake compared with Origami, Unify, Octave, Alta, Lemlist and Gojiberry, read from each product’s public pages.",
   /** = the comparison pages' BreadcrumbList (Pancake > Comparisons > X vs Pancake). */
   crumbs: { home: "Pancake", page: "Comparisons" },
 };

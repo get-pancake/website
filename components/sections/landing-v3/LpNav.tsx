@@ -1,27 +1,31 @@
 import type { CSSProperties, ReactNode } from "react";
 
+import { GUIDE_PATH } from "@/components/sections/guide-claude/guide-copy";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNavMenu, type LpNavItem } from "@/components/sections/landing-v3/LpNavMenu";
 import { LpNavScroll } from "@/components/sections/landing-v3/LpNavScroll";
-import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { navGroups, verticalPath } from "@/lib/verticals";
 import type { VerticalCategory } from "@/lib/verticals/types";
 
 /**
- * Landing v3 — Nav (Figma node 4257:4894, 1654×120).
+ * Landing v3 — Nav (Figma node 4257:4894, 1654×120; V2 4911:347 for the CTA
+ * pair, 2026-10-09).
  * Logo left edge 179px, links dead-center, dark CTA right-anchored at the
  * same 179px margin (= the 1296 content grid's side margin at 1654).
  * Link targets are provisional (not specified in Figma) — flagged in the PR.
  * 2026-10-07: "Pricing" (/pricing) replaces the artboard's "Company" (/#why,
- * the 10x banner, not a company page; About lives in the footer), and a plain
- * "Sign in" text link to the app sits before the pills (≥1025px only; the
- * phone sheet carries it below). Returning customers had no way in but
- * "Start free". Its signin_nav id stays out of the acquisition allow-list.
- * CTA pair (founder 2026-09-03): "Start free" then "Book a demo", the
- * hero's order, on every surface — the artboard bar drew one pill.
- * ≤767px (Figma mobile node 4389:8182): logo + burger only — links and the
- * pill move into LpNavMenu's sheet; the pill keeps its app_nav id there.
+ * the 10x banner, not a company page; About lives in the footer). Returning
+ * customers had no way in but "Start free", so "Sign in" joined the bar; its
+ * signin_nav id stays out of the acquisition allow-list (no app_cta_clicked).
+ * CTA pair, Figma V2 4911:347 (designer red note, 2026-10-09: "Sign in
+ * instead of Book a demo"): [Sign in, tinted 73×38] 8 [Start free, dark
+ * 110×38], the primary last, right edge on the 179px margin. "Book a demo"
+ * (call_nav) left the bar for that pill: it stays in the hero, the final CTA
+ * and the phone sheet. Production labels win over V2's ("Start free", not
+ * "Get started free"; founder 2026-09-03: "button keep same sizes").
+ * ≤767px (Figma mobile node 4389:8182): logo + Start free + burger — the
+ * links, Sign in and Book a demo live in LpNavMenu's sheet.
  *
  * Menus (founder 2026-10-07, "inspire-toi de la compet pour rendre accessible
  * les pages que t'as créées"): /plays, /compare and the Claude guide were
@@ -77,27 +81,23 @@ export function LpNav() {
         </LpNavDisclosure>
       </nav>
       <div className="lp-nav-ctas">
-        <a className="lp-nav-signin" href={APP_ORIGIN} data-analytics-id="signin_nav">
+        {/* Figma V2 4939:2634: the tinted sm pill (73×38, nav.css). Hidden
+            ≤767 — the phone bar has room for one pill; the sheet carries
+            Sign in as a link. */}
+        <LpFxLink
+          href={APP_ORIGIN}
+          size="sm"
+          className="lp-btn--tinted lp-nav-signin"
+          data-analytics-id="signin_nav"
+        >
           Sign in
-        </a>
+        </LpFxLink>
         <LpFxLink
           href={APP_ORIGIN}
           size="sm"
           data-analytics-id="app_nav"
         >
           Start free
-        </LpFxLink>
-        {/* A same-tab link to /demo on every page, like the sheet's pill
-            (François, 2026-09-16: the "Book a demo" buttons lead to the demo
-            page; the Calendly dialog is no longer mounted). Hidden ≤767
-            (nav.css) — the bar has room for one pill, the sheet carries both. */}
-        <LpFxLink
-          href={DEMO_PAGE_PATH}
-          size="sm"
-          className="lp-btn--tinted lp-btn--demo"
-          data-analytics-id="call_nav"
-        >
-          Book a demo
         </LpFxLink>
       </div>
       <LpNavMenu product={PRODUCT_MENU} resources={RESOURCES_MENU} />
@@ -107,45 +107,23 @@ export function LpNav() {
 }
 
 /**
- * The two compact menus (2026-10-07). Labels ≤ 3 words, one-line
- * descriptions ≤ 8 words (landing voice), each written from what its page
- * says. "Claude and Codex" is the guide's "Pancake in Claude and Codex",
- * shortened to the label budget inside the Product menu.
+ * The two compact menus (2026-10-07). Labels ≤ 3 words (landing voice).
+ * "Claude and Codex" is the guide's "Pancake in Claude and Codex", shortened
+ * to the label budget inside the Product menu. Titles only since 2026-10-13
+ * (founder: "not sure there is a need for title + subtitle here each time -
+ * same for the product menu"): each row carried a one-line description under
+ * its label until then.
  */
 const PRODUCT_MENU: LpNavItem[] = [
-  {
-    label: "How it works",
-    href: "/#how-it-works",
-    description: "Three steps from your website to outreach.",
-  },
-  {
-    label: "Example Plays",
-    href: "/plays",
-    description: "Start from an example, or write your own.",
-  },
-  {
-    label: "Claude and Codex",
-    href: "/guides/claude",
-    description: "Connect Pancake to Claude, Claude Code or Codex.",
-  },
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "Example Plays", href: "/plays" },
+  { label: "Claude and Codex", href: GUIDE_PATH },
 ];
 
 const RESOURCES_MENU: LpNavItem[] = [
-  {
-    label: "Blog",
-    href: "/blog",
-    description: "Guides and notes on finding B2B customers.",
-  },
-  {
-    label: "Compare",
-    href: "/compare",
-    description: "Pancake side by side with other tools.",
-  },
-  {
-    label: "Support",
-    href: "/support",
-    description: "Help with your account, billing and setup.",
-  },
+  { label: "Blog", href: "/blog" },
+  { label: "Compare", href: "/compare" },
+  { label: "Support", href: "/support" },
 ];
 
 /**
@@ -197,15 +175,14 @@ function LpNavDisclosure({
   );
 }
 
-/** A compact menu: one row per page, label over a one-line description. */
+/** A compact menu: one row per page, its label alone. */
 function LpNavMenuList({ items }: { items: LpNavItem[] }) {
   return (
     <ul className="lp-nav-dd__list">
       {items.map((item) => (
         <li key={item.href}>
           <a className="lp-nav-dd__item" href={item.href}>
-            <span className="lp-nav-dd__label">{item.label}</span>
-            <span className="lp-nav-dd__desc">{item.description}</span>
+            {item.label}
           </a>
         </li>
       ))}

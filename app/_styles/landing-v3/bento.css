@@ -1,0 +1,682 @@
+/* Bento — owner: bento package (V2 Figma replication, file
+   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346; mobile artboard 5024:8631).
+   Testimonials / KPI bento (LpBento, Figma V2 4911:762 "Frame 168",
+   1654 × 1448; mobile 5024:10543 + seven frames): section, cards, customer
+   logos, KPI type, portrait blobs (static), video tiles and their sound
+   dialog. Content: the Kinro and Praxis testimonials (lp-bento-data.ts).
+   Production renders only final cards (lib/placeholders.ts), so every
+   layout below also holds a partial set.
+
+   Geometry (section-relative, Figma): title line box 259,93.34 1136×68.80;
+   grid 259,242.58 → 1395,1383.58 = 4 cols 272 / gap 16, rows 369 / 365 /
+   375 / gap 16; bottom padding 64.42 (sum 1448). Cards #fffbf6 (surface-2),
+   r24 (smoothing .8 ≈ plain radius), padding 48, clip, no stroke, no
+   shadow, no hover (Figma has no reactions; founder: no hover dim).
+   Every card metric is `calc(N * var(--u))`: --u = 1px at ≥ 1200 (the
+   frame is 1136), frame / 1136 at 1025–1199 (the composed grid scales,
+   never crops), 1px on tablets (recomposed in two columns), frame / 560 on
+   phones (the mobile artboard = the desktop cards × 370 / 560, restacked),
+   never above 1px: the stack stops growing at its 560 design width.
+
+   Layouts (lp-bento-data.ts resolveBento decides, the markup carries it):
+     data-layout="full"  all seven cards = the artboard (grid areas);
+     data-layout="rows"  a partial set = rows on 12 columns, each card's span,
+                         centred start and row height set inline by the server;
+     the two-column stack (phones always, tablets with a partial set): order,
+     span and height set inline per card (--lp-bento-flow-*). */
+
+/* The section itself carries no padding: it is content-visibility:auto
+   (foundation.css) and contain-intrinsic-size sizes the content box. */
+.lp-bento {
+  /* the trial cuts of Aeonik have no % + ’ glyphs: Geist (the page's reading
+     face) is named before the OS font, so those symbols are the same on
+     every OS until the licensed cut is in */
+  --lp-bento-cond: var(--font-aeonik-condensed), var(--font-aeonik), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  /* The widest the ≤ 767 stack is drawn: the 560 it is scaled from, so its
+     cards never outgrow the desktop design (593–767 wide: small tablets,
+     phones in landscape). ONE switch: `100vw` gives the uncapped scale back
+     (the posters' `sizes` in LpBento.tsx assume the cap: its 592 tier). */
+  --lp-bento-stack-max: 560px;
+}
+/* Its skipped-height estimate. The section knows its own layout (a partial
+   set is shorter than the artboard), so the server passes the grid's height
+   (LpBento: --lp-bento-grid-u / -tablet-px / -flow-u / -flow-gaps) and the
+   chrome is added here. `.lp >` outranks foundation.css's older per-width
+   values. 307 = 93.34 + 68.80 + 80.44 + 64.42 (title, margins, paddings). */
+.lp > .lp-bento {
+  contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1141) * 1px);
+}
+@media (min-width: 1025px) and (max-width: 1199px) {
+  .lp > .lp-bento {
+    contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1141) * (100vw - 64px) / 1136);
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  .lp > .lp-bento {
+    /* 72 + 68.80 + 56 + grid + 72. The full grid is the desktop one scaled to the frame
+       (100vw − 48): its height is in --u. A partial set stacks in px. One of the two is 0. */
+    contain-intrinsic-size: auto
+      calc(268.8px + var(--lp-bento-tablet-px, 0) * 1px + var(--lp-bento-tablet-u, 1141) * (100vw - 48px) / 1136);
+  }
+}
+@media (max-width: 767px) {
+  .lp > .lp-bento {
+    /* 81 + 41 + 41 + stack + 56; the stack's rows are in --u (the frame / 560,
+       the frame being the column or --lp-bento-stack-max), its gaps 8px */
+    contain-intrinsic-size: auto
+      calc(219px + var(--lp-bento-flow-u, 2972) * min(100vw - 32px, var(--lp-bento-stack-max)) / 560 + var(--lp-bento-flow-gaps, 6) * 8px);
+  }
+}
+
+.lp-bento__inner {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  padding: 93.34px 32px 64.42px; /* title top 93.34; grid bottom → section end 64.42 */
+}
+/* the clip-path's <svg>: out of flow, not display:none (Gecko drops clip
+   references into an undisplayed <svg>) */
+.lp-bento__defs {
+  height: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+}
+.lp-bento__title {
+  /* + .lp-title-section: 57.336 / 1.2 (68.80) / −1.7201px, Condensed 600 */
+  color: var(--lp-text);
+  margin: 0 0 80.44px; /* 93.34 + 68.80 + 80.44 = grid at 242.58 */
+  max-width: 100%;
+  text-align: center;
+  width: 1136px;
+}
+.lp-bento__frame {
+  container-type: inline-size;
+  max-width: 1136px;
+  width: 100%;
+}
+.lp-bento__grid {
+  --u: calc(100cqw / 1136);
+  display: grid;
+  gap: calc(16 * var(--u));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* engines without container units: the desktop metrics (the frame is
+   1136 wherever the 4-column grid shows at ≥ 1200) */
+@supports not (width: 1cqw) {
+  .lp-bento__grid {
+    --u: 1px;
+  }
+}
+
+/* ── ≥ 768, all seven cards: the artboard ──
+   The designer's seven cards and three rows, nothing more (founder
+   2026-10-13: "stick to the 7 placeholders that the designer set"). WHICH
+   customer sits in which card is chosen so that no two cards of one company
+   touch (lp-bento-data.ts BENTO_SLOT_IDS has the map). Tablets draw this
+   same grid, scaled to the frame. */
+@media (min-width: 768px) {
+  .lp-bento__grid[data-layout="full"] {
+    grid-template-areas:
+      "vl vl qa qa"
+      "vl vl ka kb"
+      "kc qb qb vs";
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(375 * var(--u));
+  }
+  .lp-bento__grid[data-layout="full"] > [data-slot="videoLg"] { grid-area: vl; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="quoteA"] { grid-area: qa; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="kpiA"] { grid-area: ka; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="kpiB"] { grid-area: kb; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="kpiC"] { grid-area: kc; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="quoteB"] { grid-area: qb; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="videoSm"] { grid-area: vs; }
+}
+
+/* ── ≥ 1025, a partial set: rows on 12 columns ──
+   3 columns = the artboard's 272 card, 6 = its 560 card, 4 = a third of the
+   frame (368). The server picks the rows (ROW_SHAPES in lp-bento-data.ts)
+   and writes each card's span, a centred row's first column and the row's
+   height; the DOM order is the reading order, so nothing is reordered. */
+@media (min-width: 1025px) {
+  .lp-bento__grid[data-layout="rows"] {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  .lp-bento__grid[data-layout="rows"] > .lp-bento__card {
+    grid-column: var(--lp-bento-start, auto) / span var(--lp-bento-span, 12);
+    min-height: calc(var(--lp-bento-row, 369) * var(--u));
+  }
+}
+
+.lp-bento__card {
+  background: var(--lp-card-cream);
+  border-radius: calc(24 * var(--u)); /* --lp-r-lg at --u = 1px; the phone artboard scales it (15.857) */
+  display: flex;
+  flex-direction: column;
+  isolation: isolate; /* the blob / column / media z-indexes stay inside the card */
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  padding: calc(48 * var(--u));
+  position: relative;
+}
+
+/* ── logos: the customer's wordmark (public/logos/customers) as an alpha mask
+   in the card's ink, in a box sized by its letter body (17 u, the marquee's
+   recipe), anchored at the 48,48 content corner like the V2 marks. The YC
+   badge is the marquee's square, right of the wordmark (12 / 4 px at the
+   marquee's 14 px body → 14.571 / 4.857). Its top is the wordmark's top:
+   the marquee hangs it above the letter body, which here would poke 6 px
+   above the card's 48 padding line. ── */
+.lp-bento__logo {
+  color: var(--lp-text);
+  display: block;
+  flex: none;
+  height: calc(var(--lp-bento-logo-h) * var(--u));
+  position: relative;
+  width: calc(var(--lp-bento-logo-w) * var(--u));
+  z-index: 1;
+}
+.lp-bento__logo-art {
+  background: currentColor;
+  display: block;
+  height: 100%;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  width: 100%;
+}
+.lp-bento__yc {
+  background: url("/logos/customers/yc.svg") center / contain no-repeat;
+  height: calc(14.571 * var(--u));
+  left: calc(100% + 4.857 * var(--u));
+  position: absolute;
+  top: 0;
+  width: calc(14.571 * var(--u));
+}
+.lp-bento__card--video .lp-bento__logo {
+  color: var(--lp-ink-0);
+  pointer-events: none; /* the tile under it is one button */
+}
+
+/* ── quote cards (Figma 4939:4695 / 4939:4705) ──
+   Text column 335 × FILL at the content box; logo pinned top, [quote + 22 +
+   attribution] pinned bottom (the hidden "Rectangle 343" spacer = auto
+   margin). The column sits above quoteA's blob (Figma paints the blob
+   first) and below quoteB's (painted last). */
+.lp-bento__col {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  margin: 0;
+  min-height: 0;
+  position: relative;
+  z-index: 1;
+}
+.lp-bento__card--quote .lp-bento__col {
+  max-width: 100%;
+  width: calc(335 * var(--u));
+}
+.lp-bento__foot {
+  display: flex;
+  flex-direction: column;
+  gap: calc(22 * var(--u));
+  margin-top: auto;
+}
+.lp-bento__quote {
+  margin: 0;
+}
+.lp .lp-bento__quote p {
+  color: var(--lp-text);
+  font-family: var(--lp-bento-cond);
+  font-size: calc(27.648 * var(--u)); /* marketing/title-sm */
+  font-weight: 500;
+  letter-spacing: -0.02em; /* −0.553px */
+  line-height: 1.2; /* 33.18 */
+  /* Figma wraps a line once it plus a space would pass the 335 box: the wrap
+     width loses 0.25em on the ragged side only, so the aligned edge stays on
+     the column edge. */
+  padding-inline-end: 0.25em;
+}
+.lp-bento__card[data-slot="quoteB"] .lp-bento__quote p {
+  padding-inline: 0.25em 0;
+}
+.lp-bento__nowrap {
+  white-space: nowrap;
+}
+.lp-bento__by,
+.lp-bento__label {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: calc(16 * var(--u)); /* marketing/body-md */
+  font-weight: 400;
+  letter-spacing: -0.03em; /* −0.48px */
+  line-height: 1.2; /* 19.2 */
+}
+.lp-bento__by b {
+  font-weight: 600;
+}
+/* quoteA: a first line longer than about 290 u runs under the blob (whose left edge is at 340
+   where the quote starts; founder 2026-10-13, on Vector Legal's quote: "it's covering the
+   picture"). The quote wraps 45 u earlier, clear of the photo. */
+.lp .lp-bento__card[data-slot="quoteA"] .lp-bento__quote p {
+  max-width: calc(290 * var(--u));
+}
+/* quoteB: the column hugs the right edge (Figma primary MAX: card-rel x =
+   560 − 48 − 335 = 177), items and text right-aligned (counter MAX). Its
+   badge stays inside the column: the wordmark moves left by the badge. */
+.lp-bento__card[data-slot="quoteB"] .lp-bento__col {
+  align-items: flex-end;
+  margin-left: auto;
+  text-align: right;
+}
+.lp-bento__card[data-slot="quoteB"] .lp-bento__logo[data-yc] {
+  margin-right: calc(19.428 * var(--u));
+}
+
+/* portraits: the Figma bbox, the photo cover-fitted into it (= FILL of the
+   square photo), clipped by the blob path. STATIC (decision 2026-10-09 §7).
+   Green-20 is the Figma base fill under the photo (shows while decoding). */
+.lp-bento__portrait {
+  -webkit-clip-path: url(#lp-bento-blob);
+  clip-path: url(#lp-bento-blob);
+  background: var(--lp-green-20);
+  display: block;
+  max-width: none;
+  object-fit: cover;
+  pointer-events: none;
+  position: absolute;
+}
+/* quoteA's blob hugs the top-RIGHT corner: in the 560 card, left 340.47 =
+   560 + 91.06 − 310.59. Right-anchored, so a wider card (tablets, a partial
+   row) keeps it in its corner and the extra width is air beside the text. */
+.lp-bento__card[data-slot="quoteA"] .lp-bento__portrait {
+  height: calc(313.19 * var(--u));
+  right: calc(-91.06 * var(--u));
+  top: calc(-39.76 * var(--u)); /* bleeds 39.76 above, 91.06 past the right edge */
+  width: calc(310.59 * var(--u));
+  z-index: 0;
+}
+.lp-bento__card[data-slot="quoteB"] .lp-bento__portrait {
+  height: calc(259.51 * var(--u));
+  left: calc(-26.41 * var(--u));
+  top: calc(-37.9 * var(--u)); /* bleeds 26.41 left, 37.9 above */
+  width: calc(257.35 * var(--u));
+  z-index: 2;
+}
+
+/* ── KPI cards (Figma 4962:805 / 4962:798 / 4941:5080) ──
+   Logo top; [value + 16 + label] at the bottom, right-aligned. The value is
+   Figma's leadingTrim CAP_HEIGHT: Aeonik Condensed's typo metrics (asc 930,
+   desc −230, cap 700 / 1000) put the cap top on the box top and the
+   baseline on its bottom at line-height 0.7 (box 40.135; descenders hang).
+   The label is the component's: FILL width, height HUG (4962:810,
+   textAutoResize HEIGHT), right-aligned, the block pinned to the bottom. A
+   label longer than the 176 box wraps inside it and lifts the value by one
+   line (19.2 u); it never runs into the 48 padding. Balanced, so the second
+   line is not one orphan word ("meetings booked / in a week"). */
+.lp .lp-bento__kpi { /* .lp: outranks `.lp p { margin: 0 }` */
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: calc(16 * var(--u));
+  margin-top: auto;
+  text-align: right;
+}
+.lp-bento__value {
+  color: var(--lp-text);
+  display: block;
+  font-family: var(--lp-bento-cond);
+  font-size: calc(57.336 * var(--u)); /* marketing/title-lg */
+  font-weight: 500;
+  letter-spacing: -0.02em; /* −1.1467px */
+  line-height: 0.7;
+  white-space: nowrap;
+}
+.lp-bento__label {
+  display: block;
+  max-width: 100%;
+  text-wrap: balance;
+}
+
+/* ── video tiles (Figma 4939:4676 / 4962:408) ──
+   The media covers the whole card under the padding box; the logo (white)
+   sits at the 48,48 content corner. The poster is the rest picture; the
+   muted preview fades in over it once it plays (LpBentoVideo). */
+.lp-bento__media {
+  border-radius: inherit;
+  container: lp-bento-media / size; /* the crop below reads the tile's own size */
+  inset: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: 0;
+}
+.lp-bento__poster,
+.lp-bento__video {
+  border-radius: inherit; /* WebKit: a <video> layer escapes an ancestor's rounded clip */
+  height: 100%;
+  inset: 0;
+  max-width: none;
+  object-fit: cover;
+  object-position: 73% 50%; /* engines without container units: the Praxis tile's crop; the Kinro
+     one then sits 10 points right of its 63.1 %, every face still in the tile */
+  position: absolute;
+  width: 100%;
+}
+/* The films are landscape 4:3, the tiles mostly portrait: cover shows the
+   full height and a band of the width, and the band is chosen per film
+   (lp-bento-data.ts BentoFocus, as shares of the frame's height). The image
+   is 133.33cqh wide, so its left offset is −(left edge share) × 100cqh:
+     - a portrait tile keeps `keep` at its left edge (every face in, a
+       burned-in name title out), or centres on `centre` when it is too
+       narrow for that; never past the frame's right edge;
+     - a near-square tile (≥ 0.935: wide enough for the title AND the faces
+       of either cut, Praxis from x 56 and Kinro from x 50) starts at `wide`;
+     - a tile wider than the film shows the full width, centred. */
+@supports (width: 1cqh) {
+  .lp-bento__poster,
+  .lp-bento__video {
+    object-position:
+      max(
+        calc(100cqw - 133.3334cqh),
+        min(calc(var(--lp-bento-keep, 0.25) * -100cqh), calc(50cqw - var(--lp-bento-centre, 0.6667) * 100cqh))
+      )
+      50%;
+  }
+}
+@container lp-bento-media (min-aspect-ratio: 935 / 1000) {
+  .lp-bento__poster,
+  .lp-bento__video {
+    object-position: calc(var(--lp-bento-wide, 0) * -100cqh) 50%;
+  }
+}
+@container lp-bento-media (min-aspect-ratio: 4 / 3) {
+  .lp-bento__poster,
+  .lp-bento__video {
+    object-position: 50% 50%;
+  }
+}
+/* A portrait tile's own preview (LpBentoVideo PORTRAIT_TILE): the cut is already cropped to
+   the window above (from `keep`, 806 of the frame's 1440), so it is simply centred. After the
+   three rules above and one attribute heavier: it wins in every tile it plays in. */
+.lp-bento__video[data-crop="portrait"] {
+  object-position: 50% 50%;
+}
+/* A soft plum veil behind the white wordmark. Not in Figma: the artboard's
+   stills are dark where its mark sits, real footage is not (the Praxis cut
+   has a white lamp there, the Kinro cut a pale wall). Over the poster and
+   the preview, under the controls; it fades out above the faces. */
+.lp-bento__media::after {
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--lp-ink-100) 34%, transparent), transparent);
+  content: "";
+  height: 34%;
+  inset: 0 0 auto;
+  pointer-events: none;
+  position: absolute;
+}
+.lp-bento__video {
+  opacity: 0;
+  transition: opacity 300ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.lp-bento__media[data-playing] .lp-bento__video {
+  opacity: 1;
+}
+
+/* The whole tile is the button that opens the film in the player; a small
+   play disc at its bottom-left is the visible sign. Until 2026-10-13 a
+   "Watch with sound" pill stood there, with a pause disc for the silent
+   preview at the bottom-right: the founder asked for one play button and
+   nothing else. Not in Figma. */
+.lp .lp-bento__open {
+  background: none;
+  border: 0;
+  border-radius: inherit;
+  cursor: pointer;
+  display: block;
+  inset: 0;
+  padding: 0;
+  position: absolute;
+  z-index: 1;
+}
+.lp .lp-bento__open[hidden] {
+  display: none;
+}
+.lp .lp-bento__open:focus-visible {
+  /* a cream band then the --lp-text ring, inside the tile (the card clips):
+     visible on any picture */
+  box-shadow: inset 0 0 0 2px var(--lp-page-bg);
+  outline: 2px solid var(--lp-text);
+  outline-offset: -4px;
+}
+.lp-bento__play {
+  align-items: center;
+  background: var(--lp-page-bg);
+  border-radius: 50%;
+  bottom: 16px;
+  box-shadow:
+    inset 0 0 0 1px var(--lp-stroke),
+    0 2px 10px rgba(44, 0, 42, 0.16);
+  color: var(--lp-ink-100);
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  left: 16px;
+  position: absolute;
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 40px;
+}
+.lp-bento__play svg {
+  fill: currentColor;
+  flex: none;
+  margin-left: 1px; /* the triangle's weight sits left of its box: optical centre */
+}
+@media (hover: hover) {
+  .lp .lp-bento__open:hover .lp-bento__play {
+    transform: scale(1.08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-bento__play {
+    transition: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-bento__video {
+    transition: none;
+  }
+}
+
+/* ── the film with sound: a native modal <dialog> (top layer) ──
+   The dialog itself is the scrim (the booking sheet's plum, deeper for a
+   film) and scrolls if the viewport is shorter than the film; the box is as
+   wide as a 4:3 film that fits the viewport, 960 at most (the encode). The
+   closed dialog keeps the UA's display:none. */
+.lp .lp-bento__dialog {
+  background: color-mix(in srgb, var(--lp-text) 82%, transparent);
+  border: 0;
+  box-sizing: border-box;
+  color: var(--lp-ink-0);
+  height: 100%;
+  inset: 0;
+  margin: 0;
+  max-height: none;
+  max-width: none;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px;
+  position: fixed;
+  width: 100%;
+}
+.lp .lp-bento__dialog[open] {
+  display: grid;
+  /* one shrinkable column: the box's max-width: 100% then means the viewport's, not its own 960 */
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+}
+.lp-bento__dialog::backdrop {
+  background: transparent;
+}
+/* The page under the open film stays put: WebKit and Gecko chain the wheel
+   through a dialog that has nothing to scroll. The booking sheet's lock
+   (modal.css body.modal-open), keyed on the open dialog itself, so there is
+   no class to leak onto another route. */
+body:has(.lp-bento__dialog[open]) {
+  overflow: hidden;
+}
+.lp-bento__dialog-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 100%;
+  /* 116 = 2 × 20 padding + the 36 bar + the 12 gap + 28 of air */
+  width: min(960px, calc((100vh - 116px) * 4 / 3));
+}
+@supports (height: 100dvh) {
+  .lp-bento__dialog-box {
+    width: min(960px, calc((100dvh - 116px) * 4 / 3));
+  }
+}
+/* the box takes focus on open (tabIndex -1): a container, not a control, so no ring */
+.lp-bento__dialog-box:focus,
+.lp-bento__dialog-box:focus-visible {
+  outline: none;
+}
+.lp-bento__dialog-bar {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+.lp .lp-bento__dialog-title {
+  font-family: var(--lp-font-sans);
+  font-size: 16px; /* marketing/body-md */
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+.lp .lp-bento__close {
+  background: color-mix(in srgb, var(--lp-ink-0) 16%, transparent);
+  border: 0;
+  border-radius: 50%;
+  color: var(--lp-ink-0);
+  cursor: pointer;
+  display: grid;
+  flex: none;
+  height: 36px;
+  padding: 0;
+  place-items: center;
+  position: relative;
+  width: 36px;
+}
+.lp .lp-bento__close::after {
+  content: "";
+  inset: -4px;
+  position: absolute;
+}
+.lp .lp-bento__close svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.5;
+}
+.lp .lp-bento__close:focus-visible {
+  outline: 2px solid var(--lp-ink-0); /* on the plum scrim the --lp-text ring would not show */
+  outline-offset: 2px;
+}
+.lp-bento__film {
+  aspect-ratio: 4 / 3;
+  background: var(--lp-ink-100);
+  border-radius: 16px;
+  display: block;
+  height: auto;
+  width: 100%;
+}
+
+/* ── 1025–1199: the desktop grid in a narrower frame ──
+   Same composition, --u = frame / 1136 (≥ 0.846 at 1025): cards, type,
+   paddings and blobs scale together. Title and section paddings stay. */
+
+/* ── the two-column stack ──
+   The mobile artboard's order and boxes (5024:10550 … 10601): vl / ka kb /
+   qa / kc vs / qb, wide cards on both columns. With cards missing, the
+   rest keep that order, narrow cards pair up and one left alone takes the
+   row (data-solo; the server decides, CSS does not guess). */
+
+/* ── tablet 768–1024: two columns ── */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .lp-bento__inner {
+    padding: 72px 24px; /* the CTA's ≤ 1024 rhythm */
+  }
+  .lp-bento__title {
+    margin-bottom: 56px;
+  }
+  /* all seven: the artboard's grid above, scaled to the frame (--u = the frame / 1136, about 0.63
+     at 768: the phone stack draws the cards at 0.66). A two-column tablet layout stacked a
+     Praxis quote on a Praxis figure and the two Praxis figures on each other. */
+  .lp-bento__grid[data-layout="rows"] {
+    --u: 1px;
+    gap: 16px;
+  }
+  /* a partial set: the stack */
+  .lp-bento__grid[data-layout="rows"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lp-bento__grid[data-layout="rows"] > .lp-bento__card {
+    grid-area: auto;
+    grid-column: auto / span var(--lp-bento-flow-span, 1);
+    min-height: calc(var(--lp-bento-flow-h, 369) * var(--u));
+    order: var(--lp-bento-flow-order, 0);
+  }
+}
+
+/* ── phones ≤ 767: the mobile artboard's stack (5024:10543) ──
+   The desktop cards × (frame / 560) = × 370 / 560 at 402, column gap 16 u
+   (10.571), row gap 8 px literal. Title top = the CTA card's bottom + 137
+   (its 56 padding + 81), title → cards 41, bottom 56. Section at 402 with
+   seven cards: 81 + 41 + 41 + 1508.04 + 56 = 1727. The video controls keep
+   their px size. Wider than 592 the stack keeps its 560 design width,
+   centred (--lp-bento-stack-max): --u stays ≤ 1px. */
+@media (max-width: 767px) {
+  .lp-bento__inner {
+    padding: 81px 16px 56px;
+  }
+  .lp-bento__title {
+    /* the production phone section title (Condensed 35.559 / 41, −3%) */
+    font-size: 35.559px;
+    letter-spacing: -1.0668px;
+    line-height: 41px;
+    margin: 0 0 41px;
+    width: auto;
+  }
+  .lp-bento__frame {
+    max-width: var(--lp-bento-stack-max);
+  }
+  .lp-bento__grid {
+    --u: calc(100cqw / 560); /* ≤ 1px: the frame is capped */
+    column-gap: calc(16 * var(--u));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 8px;
+  }
+  @supports not (width: 1cqw) {
+    .lp-bento__grid {
+      --u: calc(min(100vw - 32px, var(--lp-bento-stack-max)) / 560);
+    }
+  }
+  .lp-bento__grid > .lp-bento__card {
+    grid-column: auto / span var(--lp-bento-flow-span, 1);
+    min-height: calc(var(--lp-bento-flow-h, 369) * var(--u));
+    order: var(--lp-bento-flow-order, 0);
+  }
+  .lp-bento__play {
+    bottom: 12px;
+    left: 12px;
+  }
+  .lp .lp-bento__dialog {
+    padding: 16px;
+  }
+}

@@ -1,5 +1,9 @@
-// lib/verticals/home-demo.ts — the homepage's product demo (LpDemoTour, founder 2026-09-23: "blown
-// away by this part, should probably be on the normal landing page"). SERVER ONLY, like the configs.
+// lib/verticals/home-demo.ts — the homepage's product demo data (founder 2026-09-23: "blown away by
+// this part, should probably be on the normal landing page"). SERVER ONLY, like the configs.
+// Since the V2 Figma replication (2026-10-09) the homepage shows ONE moment of it, outside VxDemo:
+// the demo window (components/sections/landing-v3/LpDemo.tsx) renders prompt 0's request, reply and
+// Play card (Pancake view and Claude & Codex view). The other two prompts stay here, validated with
+// the 40 /for configs, so the data keeps its three-signal story and its uniqueness checks.
 //
 // Not a /for page: no slug, not in the registry, the sitemap, the hub or the nav. It is a DemoSource
 // (the demo fields of a VerticalConfig) and passes the same rules: lib/verticals/index.ts hands it
@@ -7,9 +11,10 @@
 // against all 40 pages, and the build fails on a banned claim, a platform name, a non-US place.
 // scripts/verticals-budget.mjs measures its strings with the demo's pixel budgets ("homepage").
 //
-// Story: Studio Pelican, the homepage's own fictional customer (LpSteps types studio-pelican.com
-// and its Brain reads "SaaS launch videos" for "B2B SaaS teams"; LpFeatures' Plays card targets its
-// buyers), so the page reads as one company from the demo to the features. One workspace per demo
+// Story: Acme (named Studio Pelican until 2026-10-13; founder: "remove studio pelican from
+// everywhere and call the company acme"), the homepage's own fictional customer (LpSteps types acme.com
+// and its Brain reads "SaaS launch videos" for "B2B SaaS teams"; the deep-dive stories show its
+// leads and messages), so the page reads as one company from the demo to the carousel. One workspace per demo
 // (the rail, "Sends as", Slack), so three prompts from one business, three different signals:
 // people posting about a launch (Keyword), people engaging with rival studios (Competitor),
 // companies hiring for the launch team (Hiring). US targets only (outreach is in English).
@@ -18,10 +23,10 @@
 import type { DemoSource } from "./types";
 
 export const HOME_DEMO: DemoSource = {
-  workspace: { name: "Studio Pelican", sender: "Astrid Norling" },
+  workspace: { name: "Acme", sender: "Astrid Norling" },
 
   demo: {
-    /** The homepage demo section's visually hidden H2 (LpDemoTour): the tabs are its visible head. */
+    /** The homepage demo section's visually hidden H2 (LpDemo): the window is its visible head. */
     h2: "One prompt in. Leads keep coming.",
     prompts: [
       {

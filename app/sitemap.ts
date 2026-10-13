@@ -55,11 +55,12 @@ function newestPostDate(): Date {
 const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "", updated: "2026-10-07", priority: 1.0 },
   { path: "/pricing", updated: "2026-10-07", priority: 0.8 },
-  { path: "/careers", updated: "2026-09-30", priority: 0.5 },
-  { path: "/privacy", updated: "2026-09-18", priority: 0.3 },
+  { path: "/careers", updated: "2026-10-13", priority: 0.5 },
+  { path: "/privacy", updated: "2026-10-13", priority: 0.3 },
   { path: "/terms", updated: "2026-09-18", priority: 0.3 },
   { path: "/support", updated: "2026-09-18", priority: 0.3 },
-  { path: "/guides/claude", updated: "2026-10-07", priority: 0.7 },
+  // the guide the site links; its twin with the campaign offer (/guides/claude) is noindex
+  { path: "/claude", updated: "2026-10-13", priority: 0.7 },
   // example Plays (audit plan 3.7), new on 2026-10-07
   { path: PLAYS_PATH, updated: newest("2026-10-07", maxUpdated()), priority: 0.7 },
   // the comparisons hub (2026-10-07): every comparison page below links back to it

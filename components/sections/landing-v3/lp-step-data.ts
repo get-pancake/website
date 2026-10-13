@@ -1,10 +1,14 @@
-/* Data for the three "Pancake fills your pipeline" step animations — every
-   number and string verbatim from the pancake-studio compositions the mp4s
-   were rendered from (shorts/brain-research-loop, pipeline-checklist-loop,
-   meetings-calendar-loop, 464×426 design frames). Shared by the markup
-   (LpStepMocks.tsx, which lays the rest state = the composition's frame 0) and
+/* Data for the three "Pancake fills your pipeline" step animations, 464×426
+   design frames. Step 01 and step 03's calendar: every number and string
+   verbatim from the pancake-studio compositions the mp4s were rendered from
+   (shorts/brain-research-loop, meetings-calendar-loop). Step 02 and step 03's
+   intro: the designer's "How it works" storyboards (Figma, 2026-10-11), which
+   replaced the pipeline-checklist-loop composition. Shared by the markup
+   (LpStepMocks.tsx, which lays the rest state = each animation's frame 0) and
    the timelines (lp-step-timelines.ts), so both walk the same lists in the
    same order. */
+
+import type { ContentStatus } from "@/lib/placeholders";
 
 /* ── step 01 · the knowledge graph (coordinates from the designer's
    step-1-brain.svg, hub by hub, as the composition builds them) ── */
@@ -23,11 +27,21 @@ export type S1Hub = {
   leaves: S1Leaf[];
   /** [edgeX1, edgeY1, edgeX2, edgeY2, dotX, dotY] — second-level branches */
   sub?: [number, number, number, number, number, number][];
+  /** the hub's name, painted over the graph (Figma V2 4962:839–845, red note "Labels in 2nd
+      level dots", 2026-10-09): Geist SemiBold 10/16 in the text colour. `cx` = the Figma
+      text box's centre x (the label is centred on it, so browser text widths never shift
+      it); `top` = the box's y + ~1, pixel-calibrated (Chromium/WebKit draw Geist 10/16 a
+      pixel above Figma's raster; Firefox lands 1px lower, as with the centre label).
+      Figma boxes: Competitors 133,113.969 60×16 · ICPs 283.543,116.969 22×16 ·
+      Outreach 92.352,241.097 45×16 · Influencers 350.977,202.42 55×16 ·
+      Market Research 222,328.342 82×16. */
+  label: { text: string; cx: number; top: number };
 };
 
 export const S1_HUBS: S1Hub[] = [
   {
     fill: "#BA8BFF",
+    label: { text: "Competitors", cx: 163, top: 115 },
     dot: [179.883, 142.425],
     e: [179, 142.92],
     leaves: [
@@ -43,6 +57,7 @@ export const S1_HUBS: S1Hub[] = [
   },
   {
     fill: "#68CEA7",
+    label: { text: "ICPs", cx: 294.543, top: 118 },
     dot: [292.691, 148.425],
     e: [292, 148.42],
     leaves: [
@@ -57,6 +72,7 @@ export const S1_HUBS: S1Hub[] = [
   },
   {
     fill: "#FF7AA0",
+    label: { text: "Outreach", cx: 114.852, top: 242 },
     dot: [159.719, 249.097],
     e: [161, 248.42],
     leaves: [
@@ -77,6 +93,7 @@ export const S1_HUBS: S1Hub[] = [
   },
   {
     fill: "#FFBD7A",
+    label: { text: "Influencers", cx: 378.477, top: 204 },
     dot: [354.938, 231.066],
     e: [355, 231.92],
     leaves: [
@@ -92,6 +109,7 @@ export const S1_HUBS: S1Hub[] = [
   {
     fill: "#6EBBFF",
     blue: true,
+    label: { text: "Market Research", cx: 263, top: 330 },
     dot: [291, 315],
     e: [289.5, 313.5],
     leaves: [
@@ -136,93 +154,177 @@ export function s1Graph(): { edges: S1Edge[]; dots: S1Dot[] } {
   return { edges, dots };
 }
 
-/** per-key jitter of the typing of "studio-pelican.com" — its glyph edges are
+/** per-key jitter of the typing of "acme.com" — its glyph edges are
     measured from the live text in lp-step-timelines.ts (the Fono advance table
     that used to live here broke the moment the mocks moved to Geist Sans) */
 export const S1_JIT = [0, 0.02, -0.01, 0.03, 0, -0.02, 0.04, 0, 0.01, -0.01, 0.05, 0, 0.02, -0.02, 0.03, 0, 0.01, 0];
 
 /** the market-profile rows that resolve out of the skeletons */
 export const S1_ROWS = [
-  { top: 230, name: "Company", sub: "Studio Pelican" },
-  { top: 298, name: "Offering", sub: "SaaS launch videos" },
-  { top: 366, name: "Ideal clients", sub: "B2B SaaS teams" },
+  { top: 230, name: "Company", sub: "Acme" },
+  { top: 298, name: "Offering", sub: "Websites for startups" },
+  { top: 366, name: "Ideal clients", sub: "Funded B2B startups" },
 ];
 export const S1_SKELETON_TOPS = [230, 286, 342];
 
-/* ── step 02 · the Agents list and the Pipeline checklist (ctx-B-pipeline +
-   step-2-pipeline.svg) ── */
+/* ── steps 02 and 03 · the "How it works" storyboards (Figma page 4197:9774, delivered
+   2026-10-11; red notes 4964:1637 "Deltas: New" and 4964:1640 "Deltas: New intro before
+   calendar"). Step 02 = frames 5016:4214 → 5022:4850 → 5022:4979 → 5016:4238 → 5022:5248 →
+   5022:5381 → 5022:5590 → 5022:6230; step 03's intro = 5022:6116 → 5018:4344 → 5022:4757 →
+   5022:4781 → 5022:6080, then today's calendar. Geometry lives in steps.css, at the frames'
+   own 464×426 coordinates.
 
-type Shape = { w: number; h: number; d: string };
-export const S2_BLOB =
-  "M17.2921 32C22.2317 32 26.1815 28.4173 28.887 24.7957C30.7441 22.3098 31.8448 19.1712 31.8732 15.6551C31.9435 6.98067 25.048 7.95594e-07 16.6345 7.95594e-07C8.22089 7.95594e-07 1.06633 6.14557 0.189371 15.6551C-0.342812 21.4254 2.32096 24.5575 5.32758 27.1278C8.31366 29.6806 13.1412 32 17.2921 32Z";
-// pancake "sides" / "top" shapes, each in its own box (w,h) placed inside the 22.4 mask box at (4.8,4.8)
-const SIDES_FLAT: Shape = { w: 22.4, h: 14.9333, d: "M12.1045 14.9333C15.5622 14.9333 18.3271 13.2614 20.2209 11.5713C21.5208 10.4112 22.2913 8.94656 22.3113 7.30571C22.3604 3.25765 17.5336 -4.4041e-07 11.6441 -4.4041e-07C5.75462 -4.4041e-07 0.746432 2.86793 0.13256 7.30571C-0.239969 9.99852 1.62467 11.4602 3.7293 12.6597C5.81956 13.851 9.19885 14.9333 12.1045 14.9333Z" };
-const TOP_FLAT: Shape = { w: 21, h: 11.2, d: "M11.3479 11.2C14.5896 11.2 17.1816 9.94607 18.9571 8.6785C20.1758 7.80843 20.8981 6.70992 20.9168 5.47928C20.9629 2.44324 16.4378 2.43651e-07 10.9164 2.43651e-07C5.39496 2.43651e-07 0.69978 2.15095 0.124275 5.47928C-0.224971 7.49889 1.52313 8.59512 3.49622 9.49475C5.45584 10.3882 8.62392 11.2 11.3479 11.2Z" };
-const SIDES_TALL: Shape = { w: 22.4, h: 17.7333, d: "M12.1045 17.7333C15.5622 17.7333 18.3271 15.7479 20.2209 13.741C21.5208 12.3634 22.2913 10.624 22.3113 8.67553C22.3604 3.86846 17.5336 4.66573e-07 11.6441 4.66573e-07C5.75462 4.66573e-07 0.746432 3.40567 0.13256 8.67553C-0.239969 11.8732 1.62467 13.6089 3.7293 15.0333C5.81956 16.448 9.19885 17.7333 12.1045 17.7333Z" };
-const TOP_TALL: Shape = { w: 21, h: 14.9333, d: "M11.3479 14.9333C14.5896 14.9333 17.1816 13.2614 18.9571 11.5713C20.1758 10.4112 20.8981 8.94656 20.9168 7.30571C20.9629 3.25765 16.4378 -2.14412e-07 10.9164 -2.14412e-07C5.39496 -2.14412e-07 0.69978 2.86793 0.124275 7.30571C-0.224971 9.99852 1.52313 11.4602 3.49622 12.6597C5.45584 13.851 8.62392 14.9333 11.3479 14.9333Z" };
-const SIDES_LEAN: Shape = { w: 22.4, h: 17.7333, d: "M10.3361 17.1482C12.5847 17.1482 16.0917 17.1982 18.2696 15.8552C20.9299 14.2147 22.2798 11.5282 22.3048 9.12794C22.3541 4.40577 17.9235 -1.15237e-07 12.0264 -1.15237e-07C9.33379 -1.15237e-07 6.2594 0.565498 4.26957 1.81631C1.90146 3.30492 0.0973683 5.27985 0.0973683 8.43309C0.0973874 13.5322 3.53149 17.1482 10.3361 17.1482Z" };
-const TOP_LEAN: Shape = { w: 21, h: 14.9333, d: "M9.69006 14.4406C11.7982 14.4406 15.086 14.4827 17.1277 13.3517C19.6217 11.9703 20.8873 9.70793 20.9108 7.68669C20.9569 3.71012 16.8033 -1.27466e-07 11.2748 -1.27466e-07C8.75042 -1.27466e-07 5.86818 0.476209 4.00272 1.52952C1.78261 2.78309 0.0912828 4.44619 0.0912828 7.10155C0.0913007 11.3955 3.31077 14.4406 9.69006 14.4406Z" };
-const SIDES_AI: Shape = { w: 22.4, h: 17.7333, d: "M10.9002 17.7333C14.3635 17.7333 18.3206 15.3924 20.2175 13.4307C21.5195 12.0842 22.2912 10.3842 22.3111 8.47964C22.3604 3.78111 17.5259 -5.25725e-07 11.6271 -5.25725e-07C8.93376 -5.25725e-07 6.45749 0.92406 4.4671 2.16861C2.09832 3.64976 0.0973958 5.34218 0.0973958 8.47964C0.0974149 13.5532 5.28502 17.7333 10.9002 17.7333Z" };
-const TOP_AI: Shape = { w: 21, h: 14.9333, d: "M10.219 14.9333C13.4657 14.9333 17.1756 12.962 18.9539 11.3101C20.1745 10.1762 20.898 8.74456 20.9167 7.14075C20.9628 3.18409 16.4306 2.5052e-07 10.9004 2.5052e-07C8.3754 2.5052e-07 6.05389 0.778156 4.18791 1.8262C1.96717 3.07349 0.0913086 4.49868 0.0913086 7.14075C0.0913265 11.4132 4.95471 14.9333 10.219 14.9333Z" };
+   COPY: the storyboard's sample strings come from a real session in the live app (what look
+   like real people's names and titles, a platform icon after every name, a message from
+   another story, typos). The strings below are the homepage's own invented Acme
+   story instead (sender Astrid Norling; the leads of lib/verticals/home-demo.ts, validated
+   by validate.ts), each measured to keep Figma's line counts. No platform icon is drawn.
+   The storyboard's verbatim strings, one by one: specs/updates/steps-how-it-works.md §9.2.
+   Every string of both mocks lives HERE (this file is in scripts/homepage-lint.mjs FILES;
+   LpStepMocks.tsx only maps it). A field must never be named after a code key the lint
+   skips (role, kind, variant, tone, icon, path, url, id, key, type…): hence `position`.
+   The two alt texts in lp-steps-content.ts retell these strings: keep in sync. ── */
 
-export type S2Eye = { x: number; y: number; w: number; h: number; rot: number };
-export type S2Row = {
-  name: string;
-  count: string;
-  blob: string;
-  sides: Shape;
-  sidesFill: string;
-  sidesOpacity?: number;
-  top: Shape;
-  topFill: string;
-  py: number;
-  eyes: [S2Eye, S2Eye];
+/** a checkbox's tick in a 24 box (Figma draws the same curve × 2/3 in its 16 box) */
+export const SX_CHECK_D = "M6 12.4615C7.96737 13.3592 9.90629 15.1306 11.0165 18C12.0904 13.1066 14.3706 9.29236 18 6";
+
+export type SxLead = { name: string; position: string; initials: string };
+/** the Leads table (step 02 frames 5–7, step 03 frame 1): six rows, the sixth cut by the card.
+    Figma shows "AL" on every avatar (a placeholder): each lead carries its own initials.
+    The positions are the Play's (2026-10-13: "Founders and marketing leads" of funded startups;
+    two of them were product marketers, the launch-video story's cast). */
+export const SX_LEADS: readonly SxLead[] = [
+  { name: "Tamsin Okafor", position: "Founder & CEO", initials: "TO" },
+  { name: "Wes Pomeroy", position: "VP Marketing", initials: "WP" },
+  { name: "Imani Coldwell", position: "CMO", initials: "IC" },
+  { name: "Anders Forsythe", position: "Co-founder", initials: "AF" },
+  { name: "Rosa Hartigan", position: "Founder & CEO", initials: "RH" },
+  { name: "Elena Marchetti", position: "VP Marketing", initials: "EM" },
+];
+export const SX_LEADS_COPY = { title: "Leads", lead: "Lead", position: "Position" };
+/** the table's pose in step 02 frame 5, relative to its resting pose (frame 6 = step 03
+    frame 1 = steps.css .lp-sx-leads): Figma draws it 27px further left and 3.78px lower */
+export const SX_LEADS_F5 = { x: -27, y: 3.78 };
+/** when each row starts its 0.5 s linear fade, in seconds after the first: at the f5 label
+    (0.5 s in) the rows read 1 / .8 / .6 / .4 / .32 / .16, Figma's frame 5 exactly */
+export const SX_LEADS_ROW_IN = [0, 0.1, 0.2, 0.3, 0.34, 0.42];
+
+/* ── step 02 · say who you want → one question → a Play takes shape → leads → the Play ── */
+
+export const S2_CHAT = {
+  /** the composer's placeholder, the hero demo's (lp-demo-data.ts) */
+  placeholder: "Find people who…",
+  prompt: "Find founders who just raised a seed round",
+  /** what the worked row reads while Pancake works, one line per step (founder 2026-10-13:
+      "those interactions should be animated"); it settles on `worked`, the storyboard's line */
+  working: [
+    "Reading your Brain…",
+    "Reading your Plays…",
+    "Searching funding news…",
+    "Checking seed rounds…",
+    "Counting the founders…",
+  ],
+  worked: "Worked across 5 steps",
+  /** three lines at 338px (Figma's count) */
+  answer:
+    "Happy to set that up: founders of B2B startups in the United States that just raised. One thing decides who qualifies: the size of the company.",
+  /** the thread's scroll between frames 1 and 2 */
+  scrollY: -250.14,
 };
+export const S2_QUESTION = {
+  head: "Question",
+  text: "What size of companies?",
+  /** Figma repeats "1-50 employees" on the second row (a copy-paste): the app's own second
+      option is "51-500 employees" */
+  options: ["1-50 employees", "51-500 employees", "500+", "Any size"],
+  own: "Write your own...",
+  /** the option the hand picks (frame 3) */
+  picked: 0,
+};
+export type S2Slot = { label: string; /** null = not decided yet (a numbered grey disc) */ value: string | null };
+export const S2_DRAFT = {
+  eyebrow: "New Play",
+  title: "Your Play takes shape here",
+  undecided: "Not decided yet",
+  /** the app's four slots (pancake-cmo play-draft.ts SLOT_LABEL: Who · How we find them ·
+      At most · When). Figma's fourth row repeats "Who" with a check next to "Not decided
+      yet" (a copy-paste): it is "When", undecided. */
+  slots: [
+    { label: "Who", value: "Founders and marketing leads" },
+    { label: "How we find them", value: "A seed round, raised this month" },
+    { label: "At most", value: "25" },
+    { label: "When", value: null },
+  ] as readonly S2Slot[],
+  thinking: "Pancake is reading your brain and your Plays...",
+};
+export const S2_BAR = { selected: "13 selected", add: "Add 13 to sequence" };
 
-/** Five agent rows: blob tint, pancake parts + their offsets inside the 22.4
-    mask box, eye boxes (Figma left/top/w/h + rotation). Names/counts are no
-    longer the composition's verbatim: 2026-09-30, AI SEO retired, so
-    "Content · 3 articles live" became "Plays · 3 active" and "AI search ·
-    4 mentions" became "Messages · 72 sent" (shapes, eyes and offsets
-    unchanged). The alt text in LpSteps.tsx lists these rows: keep in sync. */
-export const S2_ROWS: S2Row[] = [
-  { name: "Pipeline", count: "24 warm leads", blob: "#FFE9D1", sides: SIDES_FLAT, sidesFill: "#FFDBB5", top: TOP_FLAT, topFill: "#FFBD7A", py: 3.73,
-    eyes: [{ x: 12.8, y: 8.32, w: 4.438, h: 6.104, rot: 85.05 }, { x: 20.56, y: 8.0, w: 3.472, h: 4.776, rot: 85.05 }] },
-  { name: "Signals", count: "48 detected", blob: "#EFDDF1", sides: SIDES_TALL, sidesFill: "#DEC3F5", top: TOP_TALL, topFill: "#BA8BFF", py: 1.87,
-    eyes: [{ x: 11.17, y: 10.78, w: 4.438, h: 6.104, rot: 85.05 }, { x: 18.93, y: 10.46, w: 3.472, h: 4.776, rot: 85.05 }] },
-  { name: "Plays", count: "3 active", blob: "#FFD9DA", sides: SIDES_LEAN, sidesFill: "#FFBBC7", top: TOP_LEAN, topFill: "#FF7AA0", py: 1.87,
-    eyes: [{ x: 11.41, y: 10.65, w: 3.971, h: 5.792, rot: 89.88 }, { x: 20.8, y: 11.2, w: 3.107, h: 4.532, rot: 89.88 }] },
-  { name: "Replies", count: "12 received", blob: "#CEEAD5", sides: SIDES_LEAN, sidesFill: "#68CEA7", sidesOpacity: 0.32, top: TOP_LEAN, topFill: "#68CEA7", py: 1.87,
-    eyes: [{ x: 16.48, y: 11.2, w: 4.259, h: 5.916, rot: -86.98 }, { x: 9.6, y: 11.88, w: 3.332, h: 4.629, rot: -86.98 }] },
-  { name: "Messages", count: "72 sent", blob: "#BCDBFF", sides: SIDES_AI, sidesFill: "#92C5FF", top: TOP_AI, topFill: "#57A5FF", py: 1.87,
-    eyes: [{ x: 11.24, y: 10.35, w: 4.315, h: 5.953, rot: 93.6 }, { x: 19.05, y: 11.11, w: 3.376, h: 4.658, rot: 93.6 }] },
+/** a figure of the Play card. `status` is the homepage's one content gate (lib/placeholders):
+    "final" ships, "placeholder" renders on dev and Vercel previews only. */
+export type S2Figure = { value: string; label: string; status: ContentStatus };
+export type S2Play = { state: string; name: string; summary: string; figures: readonly S2Figure[]; review: string };
+/** The two Play cards of the end picture (Figma 5022:6230 = V2 art card 5024:8277 pastes ONE
+    app screenshot twice; rebuilt in DOM from the product's own card). Card 2 only shows its
+    first 50px.
+    The "reply rate" figure (value "—", no rate is claimed) is drawn by the designer and is
+    the app's own label, but a rate label on the homepage needs the founder's yes
+    (specs/updates/v2-desktop-diff.md §6.3 / §7.3): it is a "placeholder" until then, i.e.
+    visible on dev and previews, absent in production. His yes = change its status to "final". */
+export const S2_PLAYS: readonly [S2Play, S2Play] = [
+  {
+    state: "Active",
+    /* two lines, as the card is drawn (the hero demo's Play, said in full) */
+    name: "Funded startups hiring a marketing lead",
+    summary: "Find Founder, CEO, Head of Marketing, and 2 more profiles at startups that just raised…",
+    figures: [
+      { value: "13", label: "leads found", status: "final" },
+      { value: "—", label: "reply rate", status: "placeholder" },
+    ],
+    review: "Review 13 leads",
+  },
+  {
+    state: "Active",
+    name: "Startups posting about a rebrand",
+    summary: "Find Founder, Head of Brand, and 3 more profiles at companies planning a rebrand…",
+    figures: [
+      { value: "24", label: "leads found", status: "final" },
+      { value: "—", label: "reply rate", status: "placeholder" },
+    ],
+    review: "Review 24 leads",
+  },
 ];
-/** frame-1 row boxes (h 40, gap 16) */
-export const S2_ROW_TOP = (i: number) => 169 + 56 * i;
-/** Pipeline row → frame-3 header row (pt 4) */
-export const S2_HEADER_DY = 74.75 - 169;
+/** the Play card's sparkline in its 88×28 box (the app's polyline: flat, then up). `len` is a
+    fixed 3-decimal string (75.4 + √(12.6² + 22²)), the S1Edge.len rule: it is server-rendered
+    into the dash array, so it is never computed with Math.hypot at render. */
+export const S2_SPARK = { d: "M0 25H75.4L88 3", len: "100.753" };
 
-export type S2Item = { label: string; top: number; done?: boolean; muted?: boolean };
-/** The Pipeline checklist. Labels are no longer the composition's verbatim:
-    2026-10-07, item 2 became "Find people who fit your ICP" (it claimed an
-    intent the product can't see, an overclaim validate.ts bans; same width
-    as "Write outreach in your voice"), "Follow-up automatically" the verb
-    "Follow up automatically", and "Learn from every reply" became "Learn
-    from every review" (the brain learns from lead approvals and rejections;
-    reply signals are deferred, pancake-cmo ADR 0043). Tops, order and states
-    unchanged. The alt text in LpSteps.tsx lists these items: keep in sync. */
-export const S2_ITEMS: S2Item[] = [
-  { label: "Monitor buying signals", top: 146.75, done: true },
-  { label: "Find people who fit your ICP", top: 194.75, done: true },
-  { label: "Enrich every prospect", top: 242.75, done: true },
-  { label: "Score leads for ICP fit", top: 298.75 }, // static: 48-tall slot, py 12 → same centre as a 32 row at 298.75
-  { label: "Write outreach in your voice", top: 354.75 },
-  { label: "Follow up automatically", top: 402.75, muted: true }, // static SVG: #9A818F
-  { label: "Learn from every review", top: 450.75, muted: true }, // static SVG: #9A818F (off-canvas)
-];
-export const S2_CHECK_D = "M6 12.4615C7.96737 13.3592 9.90629 15.1306 11.0165 18C12.0904 13.1066 14.3706 9.29236 18 6";
-/** items processed in order; item 6 sits off-canvas */
-export const S2_PROC = [0, 1, 2, 3, 4, 5];
+/* ── step 03 · the intro before the calendar: one lead, a message, her reply, the meeting ── */
+
+export const S3_THREAD = {
+  lead: { name: "Tamsin Okafor", initials: "TO", company: "Quillfern", position: "Founder & CEO" },
+  drafting: "Drafting...",
+  sent: "Sent",
+  /** Acme designs websites for funded startups, and the Play is the hero demo's (founders who
+      just raised a seed round and are hiring a marketing lead; founder 2026-10-13, "on topic"):
+      the message names both signals, then the offer. Three lines at 327px, at weight 500 (the
+      draft) and 400 (once it is history). The deep dive's message story shows the same message
+      (lp-story-message-data.ts, the "answered" conversation): keep in sync. */
+  message:
+    "Hi Tamsin, congrats on Quillfern’s seed round. Want a new website live before your marketing lead starts?",
+  replyFrom: "Tamsin Okafor",
+  /** two lines at 279px */
+  reply: "Hey, sounds interesting. I’m free Thursday 3pm!",
+  meet: "Meet",
+  meetTitle: "Tamsin X Acme",
+  /** "3.30pm" is the storyboard's own form, kept verbatim */
+  meetWhen: "Thursday 3pm – 3.30pm • 30 min",
+  meetWho: "Tamsin Okafor, Astrid Norling",
+  /** the thread's pose at frames 4 and 5 (Figma: x 52 → 52.75, y −96.5 then −246.5) */
+  scroll: [
+    { x: 0.75, y: -96.5 },
+    { x: 0.75, y: -246.5 },
+  ],
+};
 
 /* ── step 03 · the calendar week (ctx-C-calendar + step-3-calendar.svg;
    Mon 19 – Fri 23 = the real October 2026 work week, corrected 2026-09-03) ── */
@@ -254,12 +356,18 @@ export type S3Chip = {
       "Closed": Pancake can't know a deal closed) or "→ follow-up" */
   outcome: "booked" | "follow";
 };
+/** the chip the thread's Meet card turns into (founder 2026-10-13: "better animated", no cut
+    between the thread and the calendar): it is in the week from the calendar's first frame,
+    and the other meetings pop around it. */
+export const S3_LANDED = "tamsin";
 export const S3_CHIPS: S3Chip[] = [
   { id: "sam-m", day: 0, x: 24, top: 203, h: 24, color: "blue", lines: ["Samantha M ..."], pop: 0.55, outcome: "booked" },
   { id: "jul-mon", day: 0, x: 24, top: 315, h: 24, color: "yellow", lines: ["Julien Aubert"], pop: 0.85, outcome: "follow" },
-  { id: "martin", day: 1, x: 120, top: 175, h: 52, color: "purple", lines: ["Martin Torres", "& Studio P"], pop: 1.15, outcome: "booked" },
+  { id: "martin", day: 1, x: 120, top: 175, h: 52, color: "purple", lines: ["Martin Torres", "& Acme"], pop: 1.15, outcome: "booked" },
   { id: "lumen", day: 1, x: 120, top: 259, h: 52, color: "green", lines: ["Lumen", "Collective"], pop: 1.85, outcome: "booked" },
-  { id: "fern", day: 3, x: 312, top: 203, h: 52, color: "purple", lines: ["Fernhollow", "Studio"], pop: 2.15, outcome: "booked" },
+  /* the meeting of the thread: its card lands here and becomes this chip (S3_LANDED). It was
+     "Fernhollow Studio", same box, popping at 2.15 like the others. */
+  { id: "tamsin", day: 3, x: 312, top: 203, h: 52, color: "purple", lines: ["Tamsin Okafor", "& Acme"], pop: 2.15, outcome: "booked" },
   { id: "sam", day: 2, x: 216, top: 317, h: 52, color: "blue", lines: ["Samantha ..."], pop: 2.45, outcome: "follow" },
   { id: "jul-wed", day: 2, x: 216, top: 175, h: 52, color: "yellow", lines: ["Julien Aubert"], pop: 2.95, outcome: "booked" },
   { id: "martc", day: 3, x: 312, top: 259, h: 52, color: "yellow", lines: ["Martin C.", "Follow-up"], pop: 3.95, outcome: "booked" },

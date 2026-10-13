@@ -3,7 +3,10 @@
 // Glued under the hero (founder 2026-09-22, Origami-style): no visible section head — a
 // full-bleed hairline, the horizontal tab bar and the full-width app window. The prompts are
 // the hero's "Example prompts" rows (VxPromptRows in VxHero); the island listens to them.
-// The homepage renders it too (LpDemoTour, `headless`, fed by lib/verticals/home-demo.ts).
+// The homepage rendered it too until 2026-10-09 (LpDemoTour, `headless`, fed by
+// lib/verticals/home-demo.ts); its demo is now the V2 demo window (landing-v3 LpDemo), which
+// reads the same validated data. `headless` / `gate="window"` have no caller left and stay
+// harmless: the defaults keep the /for HTML identical.
 //
 // Renders every product surface for all three example prompts
 // (stacked in one grid cell per slot, so heights are fixed from first paint with no JS
@@ -423,8 +426,8 @@ function SlackWindow({ m, lazyAvatar }: { m: DemoModel; lazyAvatar: boolean }) {
 /* ─── section ──────────────────────────────────────────────────────────────── */
 
 /**
- * `headless`: the demo sits inside a section that already has its visible head (the homepage's
- * LpDemoTour: eyebrow, H2 = demo.h2, lede, prompt rows) — no hidden H2, no own accessible name
+ * `headless`: the demo sits inside a section that already has its visible head (it was the
+ * homepage's LpDemoTour until 2026-10-09; no caller today) — no hidden H2, no own accessible name
  * (the band is a plain part of that section, not a second landmark with the same title).
  * `gate`: what the first autoplay start waits for (VxDemoPlayer). "composer" (the /for pages:
  * the demo sits right under the hero) or "window" (the homepage: ≥768 it starts once 35% of the

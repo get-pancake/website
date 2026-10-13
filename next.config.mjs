@@ -58,6 +58,11 @@ const nextConfig = {
       { source: "/ai-gtm-report", destination: "/", statusCode: 301 },
       // The report's first address (d4d95bf); straight to "/" so it never chains.
       { source: "/report", destination: "/", statusCode: 301 },
+      // The Human X booth screen (Basalt era: OpenClaw headline, a waitlist QR).
+      // Nothing linked it and nothing on it was current; the page is gone
+      // (founder 2026-10-13) and its address, which printed material may
+      // still carry, lands on the homepage.
+      { source: "/booth", destination: "/", statusCode: 301 },
       // From the Search Console "Not found (404)" export (2026-09-24,
       // raw/getpancake-ai-search-console-404-2026-09-24.csv):
       // the privacy page's old address…
@@ -92,9 +97,14 @@ const nextConfig = {
       { source: "/faq", destination: "/pricing", permanent: false },
       { source: "/help", destination: "/support", statusCode: 301 },
       { source: "/security", destination: "/privacy", permanent: false },
-      { source: "/guides", destination: "/guides/claude", statusCode: 301 },
-      { source: "/mcp", destination: "/guides/claude", statusCode: 301 },
+      { source: "/guides", destination: "/claude", statusCode: 301 },
+      { source: "/mcp", destination: "/claude", statusCode: 301 },
       { source: "/how-it-works", destination: "/#how-it-works", statusCode: 301 },
+      // The app's "Contact sales" (credit plan, pancake-cmo PR #1220:
+      // ENTERPRISE_CONTACT_URL = pancake.ai/contact-sales) answered 404. /demo
+      // takes sales conversations today, and /pricing's "Talk to sales" goes
+      // there too. Temporary until sales has a page of its own.
+      { source: "/contact-sales", destination: "/demo", permanent: false },
       // Temporary, like /signup: the app's sign-up route may change.
       { source: "/sign-up", destination: APP_ORIGIN, permanent: false },
       // The affiliate program lives on Dub; temporary in case it moves in-house.

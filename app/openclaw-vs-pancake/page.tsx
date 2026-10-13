@@ -38,7 +38,7 @@ const config: GtmComparisonConfig = {
     { n: "02", title: "You configure the expertise", body: "With OpenClaw, you write or install the instructions, skills, schedules, integrations, and policies. Pancake arrives with the GTM playbook built in. You describe who you want to reach in plain English, and Pancake builds the Play with you.", angle: "Maximum control versus an opinionated operating system." },
     { n: "03", title: "General memory versus a GTM Brain", body: "OpenClaw workspaces can persist instructions and memory files. Pancake researches your ideal customer, personas, competitors, messaging, and voice from your website. Every new Play starts from that memory.", angle: "A flexible workspace versus a purpose-built knowledge graph." },
     { n: "04", title: "OpenClaw wins on extensibility", body: "OpenClaw supports multiple model providers, agent runtimes, messaging channels, plugins, and custom code. Pancake is built for go-to-market, and you can run it all from Claude, Claude Code or Codex.", angle: "Choose OpenClaw when the unique workflow is the point." },
-    { n: "05", title: "Free software still has an operating cost", body: "OpenClaw is open source, but hosting, model usage, data providers, maintenance, debugging, and your time remain. Pancake is $99 a month per workspace, everything included, with no model or hosting bills on top.", angle: "Compare total ownership cost with the cost of a finished outcome." },
+    { n: "05", title: "Free software still has an operating cost", body: "OpenClaw is open source, but hosting, model usage, data providers, maintenance, debugging, and your time remain. Pancake starts at $99 a month per workspace, with no model or hosting bills on top: your monthly credits pay for the lead data.", angle: "Compare total ownership cost with the cost of a finished outcome." },
   ],
   rows: [
     { feature: "Product layer", competitor: { text: "Open-source agent runtime", mark: "yes" }, pancake: { text: "Ready-to-run GTM platform", mark: "yes" } },
@@ -47,7 +47,7 @@ const config: GtmComparisonConfig = {
     { feature: "GTM Brain", competitor: { text: "General workspace instructions and memory" }, pancake: { text: "Ideal customer, personas, competitors, messaging, and voice", mark: "yes" } },
     { feature: "Outbound", competitor: { text: "You build or install the outreach workflow" }, pancake: { text: "Eight ways to find leads, outreach from your own account", mark: "yes" } },
     { feature: "Infrastructure ownership", competitor: { text: "Self-hosted and developer-controlled", mark: "yes" }, pancake: { text: "Managed by Pancake" } },
-    { feature: "Pricing", competitor: { text: "Open source plus hosting, models, data, and labor" }, pancake: { text: "$99/month per workspace, nothing to host", mark: "yes" } },
+    { feature: "Pricing", competitor: { text: "Open source plus hosting, models, data, and labor" }, pancake: { text: "From $99/month per workspace, nothing to host", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Developers building custom agent systems" }, pancake: { text: "Small companies that need customers without a GTM team" } },
   ],
   closingTitle: "Skip the agent infrastructure project.",
@@ -55,7 +55,7 @@ const config: GtmComparisonConfig = {
   faqs: [
     { q: "What is the main difference between OpenClaw and Pancake?", a: "OpenClaw is open-source agent infrastructure that a technical user configures and maintains. Pancake is a GTM platform you use, not a system you build: it already knows how to build a Play, find the leads, and open conversations from your own account." },
     { q: "Is Pancake managed OpenClaw hosting?", a: "No. Pancake is a GTM platform, not an OpenClaw hosting service. The infrastructure is Pancake's job. You approve every lead." },
-    { q: "Is OpenClaw free?", a: "The software is open source. Running it still creates hosting, model, data-provider, maintenance, and engineering costs. Pancake folds all of that into one price: $99 a month per workspace." },
+    { q: "Is OpenClaw free?", a: "The software is open source. Running it still creates hosting, model, data-provider, maintenance, and engineering costs. Pancake folds all of that into one plan, from $99 a month per workspace." },
     { q: "Which gives me more control?", a: "OpenClaw. It is the better choice when you need to select runtimes, modify agent code, self-host, or build use cases outside GTM. Pancake leaves the GTM decisions with you: you choose who to reach and approve every lead." },
     { q: "Can I use both?", a: "Yes. A developer can run custom internal agents on OpenClaw while using Pancake for managed GTM. The systems solve different layers of the problem." },
   ],

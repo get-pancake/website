@@ -41,7 +41,7 @@ const config: GtmComparisonConfig = {
     { n: "02", title: "Channel context versus a GTM Brain", body: "Claude learns from the channels and data sources an administrator permits. Pancake researches your company from your website and keeps a Brain of your ideal customer, personas, competitors, messaging, and voice. Every new Play starts from it.", angle: "Workplace context versus purpose-built market memory." },
     { n: "03", title: "Delegated tasks versus Plays that find buyers", body: "Claude Tag handles tagged and planned tasks and can proactively follow up. Pancake runs Plays: each search discovers, enriches, and qualifies leads. Every lead arrives with one line on why they fit.", angle: "The unit of work is a task. The unit of value is a Play." },
     { n: "04", title: "Claude Tag wins on collaborative breadth", body: "Claude Tag is strong when many team members need the same Claude across coding, support, metrics, research, and internal work, with administrator permissions and spend controls. Pancake is built for go-to-market, so it sits next to that collaboration layer instead of replacing it.", angle: "Choose the general teammate when the whole team shares the workload." },
-    { n: "05", title: "Different buying models", body: "Claude Tag is available in beta to eligible Claude Enterprise and Team customers and uses organization spend controls. Pancake is a standalone subscription: $99 a month per workspace, everything included, no seats.", angle: "An extension of a Claude workspace versus a complete GTM subscription." },
+    { n: "05", title: "Different buying models", body: "Claude Tag is available in beta to eligible Claude Enterprise and Team customers and uses organization spend controls. Pancake is a standalone subscription: from $99 a month per workspace, with monthly credits for lead searches and no seats.", angle: "An extension of a Claude workspace versus a complete GTM subscription." },
   ],
   rows: [
     { feature: "Core job", competitor: { text: "Shared Claude teammate for broad work", mark: "yes" }, pancake: { text: "GTM platform for customer acquisition", mark: "yes" } },
@@ -50,7 +50,7 @@ const config: GtmComparisonConfig = {
     { feature: "Memory", competitor: { text: "Permitted channel and tool context", mark: "yes" }, pancake: { text: "A Brain researched from your website; every Play starts from it", mark: "yes" } },
     { feature: "Breadth", competitor: { text: "Engineering, support, analytics, research, and more", mark: "yes" }, pancake: { text: "Focused on GTM" } },
     { feature: "Outbound system", competitor: { text: "Can complete delegated workflows" }, pancake: { text: "A warm-up, then up to three messages under your name", mark: "yes" } },
-    { feature: "Availability", competitor: { text: "Beta for eligible Enterprise and Team customers" }, pancake: { text: "$99/month per workspace, 3-day free trial", mark: "yes" } },
+    { feature: "Availability", competitor: { text: "Beta for eligible Enterprise and Team customers" }, pancake: { text: "From $99/month per workspace, 7-day free trial", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Teams that want Claude across many jobs" }, pancake: { text: "Small B2B companies that need pipeline" } },
   ],
   closingTitle: "Give your go-to-market its own Plays.",
@@ -58,7 +58,7 @@ const config: GtmComparisonConfig = {
   faqs: [
     { q: "What is the main difference between Claude Tag and Pancake?", a: "Claude Tag is a shared Claude teammate in Slack for broad collaborative work. Pancake is a GTM platform: you tell it who you want to reach, it builds a Play to find them, and it starts conversations from your own account." },
     { q: "Does Claude Tag work proactively?", a: "Yes. Anthropic says ambient behavior can proactively surface relevant information and follow up on unresolved work. Pancake is proactive on GTM: its Plays keep searching on their own and post each new lead to Slack for your approval." },
-    { q: "Is Pancake cheaper than Claude Tag?", a: "They are sold differently, so a percentage comparison would be misleading. Claude Tag is attached to eligible Claude Enterprise and Team plans with spend controls. Pancake has a 3-day free trial (card required), then one price: $99 a month per workspace." },
+    { q: "Is Pancake cheaper than Claude Tag?", a: "They are sold differently, so a percentage comparison would be misleading. Claude Tag is attached to eligible Claude Enterprise and Team plans with spend controls. Pancake has a 7-day free trial (card required), then starts at $99 a month per workspace, with monthly credits for lead searches." },
     { q: "Which is better for a small company without a GTM team?", a: "Pancake. Its jobs and Brain are built around winning customers, so you don't design the workflow yourself. You describe who you want to reach in plain English, and Pancake builds the Play with you. Claude Tag is stronger when an existing team wants a flexible Claude collaborator across many functions." },
     { q: "Can I use both?", a: "Yes. Claude Tag covers internal work in Slack while Pancake runs your go-to-market. You can also run Pancake from Claude, Claude Code or Codex through its MCP server: create and run Plays, review leads, add them to sequences, and edit their messages." },
   ],

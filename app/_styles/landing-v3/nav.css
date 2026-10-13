@@ -91,10 +91,11 @@
   padding-block: 10px; /* 40px tap target, no visual change */
 }
 
-/* CTAs: the primary + secondary pair (founder 2026-09-03, hero order), sm
-   skins from .lp-btn[data-size="sm"]; right-anchored and centered in the
-   bar — calc(50% − 19px) == the artboard's top 41 at 120 tall, and keeps
-   the pills centered when the scrolled bar compresses to 72. */
+/* CTAs (Figma V2 4939:2638 "Frame 271", H gap 8): [Sign in tinted 73×38]
+   [Start free dark 110×38], sm skins from .lp-btn[data-size="sm"];
+   right-anchored and centered in the bar — calc(50% − 19px) == the
+   artboard's top 41 at 120 tall, and keeps the pills centered when the
+   scrolled bar compresses to 72. */
 .lp-nav-ctas {
   display: flex;
   gap: 8px;
@@ -102,23 +103,23 @@
   right: max(32px, calc(50% - 648px));
   top: calc(50% - 19px);
 }
-/* "Sign in" (2026-10-07): a plain text link before the pills, set like the
-   centre links; 9px block padding makes it exactly the sm pill's 38px, so
-   the row keeps its height and the pills don't move. ≥1025 only: from 768
-   to 1024 the bar is already tight, and phones get it in the sheet. */
-.lp-nav-signin {
-  display: none;
-}
-@media (min-width: 1025px) {
-  .lp .lp-nav-signin {
-    color: var(--lp-text);
-    display: block;
-    font-size: var(--lp-text-sm);
-    font-weight: 500;
-    letter-spacing: 0.1333px;
-    line-height: 1.5;
-    margin-right: 8px;
-    padding-block: 9px;
+/* "Sign in" (Figma V2 4939:2634, designer red note 2026-10-09: "Sign in
+   instead of Book a demo"): the tinted sm pill, hug 15 + 43 + 15 = 73 × 38,
+   r9 s0.75. Its skin is the shared tinted recipe (foundation.css
+   .lp-btn--tinted: --lp-tinted-surface #f8e5d4, Geist 500 13.333 — the V2
+   nav node exactly). ≥768 the exact squircle (node scripts/squircle-path.mjs
+   73 38 9 0.75), like every sm pill; ≤767 it leaves the bar (block below)
+   and the phone sheet keeps its "Sign in" link. (0,3,0): beats
+   foundation's .lp-btn[data-size="sm"] 110×38 and loses to the agents
+   look's [data-audience="agents"] .lp-nav a.lp-nav-signin (0,3,1). */
+@media (min-width: 768px) {
+  @supports (clip-path: path("M 0 0 Z")) {
+    .lp-nav-ctas .lp-nav-signin[data-size="sm"] {
+      clip-path: path("M 57.25 0 c 6.32 0 9.48 0 11.75 1.517 a 9 9 0 0 1 2.483 2.483 c 1.517 2.27 1.517 5.43 1.517 11.75 L 73 22.25 c 0 6.32 0 9.48 -1.517 11.75 a 9 9 0 0 1 -2.483 2.483 c -2.27 1.517 -5.43 1.517 -11.75 1.517 L 15.75 38 c -6.32 0 -9.48 0 -11.75 -1.517 a 9 9 0 0 1 -2.483 -2.483 c -1.517 -2.27 -1.517 -5.43 -1.517 -11.75 L 0 15.75 c 0 -6.32 0 -9.48 1.517 -11.75 a 9 9 0 0 1 2.483 -2.483 c 2.27 -1.517 5.43 -1.517 11.75 -1.517 Z");
+      height: 38px;
+      padding-inline: 15px;
+      width: 73px;
+    }
   }
 }
 
@@ -128,11 +129,12 @@
   }
 }
 
-/* Focus ring on the tinted "Book a demo" pill (2026-10-07, WCAG 1.4.11):
-   foundation's purple-30 ring is 2.07:1 on the #f5e5d6 fill. --lp-text is
-   plum there (15:1) and turns cream in the agents view, where the pill is
-   dark plum — so the ring stays visible in both. Every tinted pill (nav,
-   hero, CTA, /for hero, /agents) loads this sheet via landing-v3.css. The
+/* Focus ring on the tinted pills (2026-10-07, WCAG 1.4.11): foundation's
+   purple-30 ring is about 2.1:1 on the --lp-tinted-surface fill (#f8e5d4).
+   --lp-text is plum there (15:1) and turns cream in the agents view, where
+   the pill is dark — so the ring stays visible in both. Every tinted pill
+   (nav Sign in, hero, CTA, /for hero, /agents) loads this sheet via
+   landing-v3.css. The
    cream "Start free" pill in the phone sheet gets the same plum ring
    (purple-30 on cream is about 2.4:1); the sheet's outline pill sits on plum
    and keeps purple-30. /demo's outline pills have their own ring (demo.css). */
@@ -178,8 +180,9 @@
     margin-left: auto;
     position: static;
   }
-  /* one pill fits next to the burger — the secondary lives in the sheet */
-  .lp-nav-ctas .lp-btn--demo {
+  /* one pill fits next to the burger — Sign in lives in the sheet. (0,3,0)
+     beats .lp-btn's inline-flex; the ≥768 squircle never applies here. */
+  .lp .lp-nav-ctas .lp-nav-signin {
     display: none;
   }
   /* compact .is-scrolled rules live in the mobile-only sticky block up top */
@@ -343,6 +346,19 @@
   box-shadow: inset 0 0 0 1px var(--lp-text-on-inverted);
   color: var(--lp-text-on-inverted);
 }
+/* Under 350 the two pills (135 + 12 + 135) are wider than the sheet's 270px
+   row and stacked, the bar then covering a quarter of a 568-tall screen:
+   there they share the row instead. */
+@media (max-width: 349px) {
+  .lp-nav-menu-ctas {
+    flex-wrap: nowrap;
+  }
+  .lp .lp-nav-menu-ctas .lp-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 12px;
+  }
+}
 
 /* Scoped scroll lock — same belt-and-braces shape as body.modal-open. */
 body.menu-open:has(main.lp) {
@@ -372,31 +388,23 @@ body.menu-open:has(main.lp) {
   z-index: 60;
 }
 /* Narrow desktops: the links + the pills no longer fit dead-centre (the row
-   ran under "Start free" at 768) → centre the row in the free span between
+   ran under the pills at 768) → centre the row in the free span between
    the logo and the pills instead; the Industries panel stays centred on the
    page. Both edges are fixed offsets, so one shift per band holds across it:
-   (logo right 147 + pills left W − 260) / 2 − W / 2 ≈ −56 at 768–1024, and
-   with "Sign in" (pills left W − 319) ≈ −86 at 1025–1180. 2026-10-07: two
-   carets and "Resources" (was "Blog") widened the row by ~65px; dead-centre
-   it ran under "Sign in" below ~1090 and came within 19px of "Start free"
-   at 901, so the 768–900 shift now reaches 1024, 1025–1180 gets its own,
-   and 768–900 tightens the gap to 16 (21–22px clear of the logo and the
-   pills at 768, measured). */
+   (logo right 147 + pills left W − 223) / 2 − W / 2 = −38 at 768–1024
+   (V2 pair, 2026-10-09: Sign in 73 + 8 + Start free 110 = 191 wide; it was
+   −56 with Start free + Book a demo, and −86 at 1025–1180 with the text
+   "Sign in" — that band is gone, dead-centre clears the 191 pair from 1025
+   up). 768–900 tightens the gap to 16. */
 @media (min-width: 768px) and (max-width: 1024px) {
   .lp-nav-links {
-    --lp-nav-shift: -56px;
+    --lp-nav-shift: -38px;
     left: calc(50% + var(--lp-nav-shift));
   }
 }
 @media (min-width: 768px) and (max-width: 900px) {
   .lp-nav-links {
     gap: 16px;
-  }
-}
-@media (min-width: 1025px) and (max-width: 1180px) {
-  .lp-nav-links {
-    --lp-nav-shift: -86px;
-    left: calc(50% + var(--lp-nav-shift));
   }
 }
 /* Caret button: a 14×24 box centred on the 10px caret, 3px clear of the
@@ -506,17 +514,19 @@ body.menu-open:has(main.lp) {
   outline-offset: 0; /* 2px clear of the heading hairline above the first link */
 }
 
-/* Compact panel (Product, Resources — 2026-10-07, the Unify / Octave
-   dropdown): one row per page, label over a one-line description, sized to
-   its longest line. It hangs from its own entry (position: relative), left
-   edge pulled in 20px so the labels line up with the entry's text (1px
-   border + 7px card padding + 12px row padding). */
+/* Compact panel (Product, Resources — 2026-10-07): one row per page, its
+   label alone since 2026-10-13 (founder: no title + subtitle on each row),
+   sized to its longest label and never narrower than 176px, so three short
+   words do not make a sliver of a card. It hangs from its own entry
+   (position: relative), left edge pulled in 20px so the labels line up with
+   the entry's text (1px border + 7px card padding + 12px row padding). */
 .lp-nav-dd--menu {
   position: relative;
 }
 .lp-nav-dd--menu .lp-nav-dd__panel {
   left: -20px;
   max-width: calc(100vw - 64px);
+  min-width: 176px;
   width: max-content;
 }
 .lp-nav-dd--menu .lp-nav-dd__card {
@@ -534,21 +544,12 @@ body.menu-open:has(main.lp) {
 .lp .lp-nav-dd__item {
   border-radius: var(--lp-r-xsm);
   color: var(--lp-text);
-  display: grid;
-  gap: 2px;
-  letter-spacing: 0.1333px;
-  padding: 8px 12px;
-}
-.lp-nav-dd__label {
+  display: block;
   font-size: var(--lp-text-sm);
   font-weight: 500;
+  letter-spacing: 0.1333px;
   line-height: 20px;
-}
-.lp-nav-dd__desc {
-  color: var(--lp-subtle-text);
-  font-size: var(--lp-text-sm);
-  font-weight: 400;
-  line-height: 18px;
+  padding: 8px 12px;
 }
 @media (hover: hover) {
   .lp .lp-nav-dd__item:hover {
@@ -700,14 +701,12 @@ body.menu-open:has(main.lp) {
 @media (pointer: coarse) {
   .lp-nav-links > a,
   .lp .lp-nav-dd__trigger,
-  .lp .lp-nav-menu-btn,
-  .lp .lp-nav-signin {
+  .lp .lp-nav-menu-btn {
     position: relative;
   }
   .lp-nav-links > a::after,
   .lp .lp-nav-dd__trigger::after,
   .lp .lp-nav-menu-btn::after,
-  .lp .lp-nav-signin::after,
   .lp .lp-nav-ctas .lp-btn::after {
     content: "";
     inset: min(0px, calc(50% - 22px));
@@ -724,14 +723,19 @@ body.menu-open:has(main.lp) {
   }
 }
 /* ≥768 the pills are clipped by their Figma squircle (foundation.css), and a
-   clip-path clips hit-testing too: same sm path (110×38) plus two strips
-   outside the box, y −3→0 and 38→41, where the pill paints nothing — so
-   the pixels are the squircle's and the ::after slop stays tappable.
-   Regenerate with the foundation path (scripts/squircle-path.mjs 110 38 9 0.75). */
+   clip-path clips hit-testing too: same sm path (110×38; Sign in 73×38)
+   plus two strips outside the box, y −3→0 and 38→41, where the pill paints
+   nothing — so the pixels are the squircle's and the ::after slop stays
+   tappable. Regenerate with the foundation path (scripts/squircle-path.mjs
+   110 38 9 0.75 / 73 38 9 0.75). Sign in comes after the 110 rule: equal
+   specificity, so order decides. */
 @media (pointer: coarse) and (min-width: 768px) {
   @supports (clip-path: path("M 0 0 Z")) {
     .lp .lp-nav-ctas .lp-btn[data-size="sm"] {
       clip-path: path("M 94.25 0 c 6.32 0 9.48 0 11.75 1.517 a 9 9 0 0 1 2.483 2.483 c 1.517 2.27 1.517 5.43 1.517 11.75 L 110 22.25 c 0 6.32 0 9.48 -1.517 11.75 a 9 9 0 0 1 -2.483 2.483 c -2.27 1.517 -5.43 1.517 -11.75 1.517 L 15.75 38 c -6.32 0 -9.48 0 -11.75 -1.517 a 9 9 0 0 1 -2.483 -2.483 c -1.517 -2.27 -1.517 -5.43 -1.517 -11.75 L 0 15.75 c 0 -6.32 0 -9.48 1.517 -11.75 a 9 9 0 0 1 2.483 -2.483 c 2.27 -1.517 5.43 -1.517 11.75 -1.517 Z M 0 -3 H 110 V 0 H 0 Z M 0 38 H 110 V 41 H 0 Z");
+    }
+    .lp .lp-nav-ctas .lp-nav-signin[data-size="sm"] {
+      clip-path: path("M 57.25 0 c 6.32 0 9.48 0 11.75 1.517 a 9 9 0 0 1 2.483 2.483 c 1.517 2.27 1.517 5.43 1.517 11.75 L 73 22.25 c 0 6.32 0 9.48 -1.517 11.75 a 9 9 0 0 1 -2.483 2.483 c -2.27 1.517 -5.43 1.517 -11.75 1.517 L 15.75 38 c -6.32 0 -9.48 0 -11.75 -1.517 a 9 9 0 0 1 -2.483 -2.483 c -1.517 -2.27 -1.517 -5.43 -1.517 -11.75 L 0 15.75 c 0 -6.32 0 -9.48 1.517 -11.75 a 9 9 0 0 1 2.483 -2.483 c 2.27 -1.517 5.43 -1.517 11.75 -1.517 Z M 0 -3 H 73 V 0 H 0 Z M 0 38 H 73 V 41 H 0 Z");
     }
   }
 }

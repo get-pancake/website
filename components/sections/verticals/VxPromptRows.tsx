@@ -9,7 +9,7 @@ const PROMPTS_MORE = "See all example Plays";
 
 /**
  * "Example prompts": the demo's three prompts as rows, right above the demo. On /for pages they
- * close the hero (VxHero); on the homepage they sit under the demo section's head (LpDemoTour).
+ * close the hero (VxHero). (The homepage's demo tour showed them too until 2026-10-09.)
  * SERVER component, zero JS: each row is a real link to #vx-demo (crawlable, works without JS);
  * the demo island (VxDemoPlayer) takes the clicks over (document listener on [data-vx-prompt]),
  * plays that prompt from the Brief tab and marks the row it is showing (data-active +
@@ -18,7 +18,7 @@ const PROMPTS_MORE = "See all example Plays";
  *
  * Styles: app/_styles/verticals/prompts.css (the label keeps its historical `vx-hero__label`
  * class so the /for HTML did not change when the rows moved out of VxHero; its margin-top
- * belongs to the context: hero.css / landing-v3/demo-tour.css).
+ * belongs to the context: hero.css).
  *
  * `label="hidden"` (the homepage, whose lede already says "pick one of its prompts"): no visible
  * caps label; the list keeps the same accessible name through aria-label.

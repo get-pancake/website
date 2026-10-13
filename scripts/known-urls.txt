@@ -172,3 +172,6 @@
 /unify-vs-pancake
 /octave-vs-pancake
 /alta-vs-pancake
+/claude
+/contact-sales
+/booth

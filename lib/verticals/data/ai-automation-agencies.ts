@@ -158,7 +158,7 @@ export const aiAutomationAgencies: VerticalConfig = {
     },
     {
       q: "My offer changes every month. Can Pancake keep up?",
-      a: "Yes. Edit the ICP in your Brain any time. The next morning’s leads follow the new version.",
+      a: "Yes. Edit the ICP in your Brain any time. The next search follows the new version.",
     },
     {
       q: "Can it find leaders asking where to start with AI?",

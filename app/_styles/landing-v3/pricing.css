@@ -69,7 +69,7 @@
   width: 528px;
 }
 .lp-price-amount {
-  font-family: var(--lp-font-cond);
+  font-family: var(--lp-font-cond-x); /* the 900 cut lives in the on-demand face */
   font-size: 143.34px;
   font-weight: 900;
   letter-spacing: -4.3002px;
@@ -129,11 +129,13 @@
   position: absolute;
   top: 462.99px;
 }
+/* One line since 2026-10-13: the note names the trial's credits ("15,000
+   free credits, valid for 7 days"), wider than the 203px CTA it sat under. */
 .lp-price-note {
   left: max(32px, calc(50% - 568px));
   position: absolute;
   top: 550.99px;
-  width: 203px;
+  white-space: nowrap;
 }
 /* the route to /pricing (2026-10-07): one text line under the note (its 24px
    line + 12), still on the cream. At this x the art's first band starts near
@@ -148,9 +150,11 @@
 
 /* ── Quiet text links (2026-10-07): a line of body copy, underlined, never a
    pill. Under the pricing card's Start free (above: Start free stays the
-   card's one CTA) and under the homepage demo tour (LpDemoTour: "Works in
-   Claude and Codex. See how →"; its spacing is the last rule here, the
-   tour's own file being demo-tour.css). (0,2,0): beats `.lp a`. ── */
+   card's one CTA). Shared recipe (pricing, the deep-dive carousel's "See
+   how →", the Claude guide, VxPromptRows): keep it here. The homepage demo
+   tour's "Works in Claude and Codex. See how →" line left with the tour
+   (2026-10-09: the V2 demo window's chip links /guides/claude instead).
+   (0,2,0): beats `.lp a`. ── */
 .lp .lp-textlink {
   color: var(--lp-text);
   font-family: var(--lp-font-sans);
@@ -170,9 +174,18 @@
   outline: 2px solid var(--lp-text);
   outline-offset: 3px;
 }
-/* under the demo's foot, on its text edge (.vx-col) */
-.lp-tour .lp-tour__claude {
-  margin-top: 24px;
+/* Touch: the link's box is 21px tall (under the pricing card's Start free).
+   12px more above and below make a 45px target without moving the text.
+   The deep dive's "See how →" sets its own (dive.css, higher specificity). */
+@media (pointer: coarse) {
+  .lp .lp-textlink {
+    position: relative;
+  }
+  .lp .lp-textlink::after {
+    content: "";
+    inset: -12px 0;
+    position: absolute;
+  }
 }
 
 /* ≤1024: recompose to flow — cream section, art becomes a full-width flow image

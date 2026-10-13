@@ -1,0 +1,294 @@
+/* Sky — owner: blue-band package (V2 Figma replication, file
+   fr8NgOCTUxsEbrMEJA3YKu frame 4911:346, 2026-10-09).
+   The blue band's sky (Figma V2 4911:534 → 4939:3388 → 4911:739): the light
+   blue (--lp-sky = blue-10) starts under a cream blob in the banner's gutters
+   (red note "Blue background for next section starts here"), carries the deep
+   dive, and ends on the CTA's cream hill (red note "Transition from previous
+   section"). The clouds drift on scroll at their own speeds (founder addendum
+   2026-10-09, lp-sky-parallax.ts). Imported after cta.css so its modifiers win
+   ties with the base banner/CTA rules.
+
+   Both cream shapes are the same Figma blob (a copied rainbow-ring vector,
+   relativeTransform −90°), exported in section coordinates and stretched to
+   the section box (preserveAspectRatio none): exact at 1654, the edge keeps
+   its share of the height elsewhere. STATIC — the 20 s spin both carry in the
+   prototype is inherited from the ring they were copied from (decision §5).
+
+   Phones (≤767, mobile artboard 5024:8631, decision 2026-10-11 §9): the two
+   edges are the artboard's own curves (5024:10542), anchored to the cards;
+   the CTA card is r32 again (F5); the clouds are the three the designer added
+   to the artboard on 2026-10-12, with a light parallax, behind ONE switch
+   (F4) — see "phones" at the end of this file. */
+
+.lp-banner--sky {
+  background: url("/lp/lp-sky-banner-top.svg") 0 0 / 100% 100% no-repeat, var(--lp-sky);
+}
+.lp-cta--sky {
+  background: url("/lp/lp-sky-cta-hill.svg") 0 0 / 100% 100% no-repeat, var(--lp-sky);
+}
+/* the card and its clouds share one 1296 frame (clouds are card-relative) */
+.lp-cta--sky .lp-cta__frame {
+  max-width: 1296px;
+  position: relative;
+  width: 100%;
+}
+/* V2 4911:740: r48 → r24 at every width (homepage only, decision §5; phones
+   were r32). 0,2,0 beats cta.css's ≤767 rule. */
+.lp-cta--sky .lp-cta__card {
+  border-radius: var(--lp-r-lg);
+}
+
+/* ── clouds: one white shape, three cuts (Figma vectorPaths, #fff) ──
+   Spans with a background, not <img>: foundation's `.lp img { display:block }`
+   would beat a single-class hide.
+   Parallax: lp-sky-parallax.ts writes --lp-sky-d (anchor − viewport centre,
+   px) on each cloud; the cloud moves by d × k. k > 0 = faster than the page
+   (nearer), k < 0 = slower (farther). d = 0 is the Figma pose, and with no
+   driver (reduced motion, no JS) the var is unset: the artboard.
+   --lp-sky-anchor picks the anchor the driver measures from: `section` = the
+   section's centre (the artboard is one picture: all its clouds rest
+   together), `own` = the cloud's own resting centre (it rests in the middle
+   of the screen) — for clouds with little room in a tall section, which
+   would otherwise sit on their clamp. */
+.lp-sky-cloud {
+  --lp-sky-anchor: section;
+  --lp-sky-k: 0;
+  /* travel bounds (a cloud that must stay clear of a title or of its box edge
+     narrows them; the clamp only bites while the section is far from centre) */
+  --lp-sky-up: -140px;
+  --lp-sky-down: 140px;
+  background: no-repeat 0 0 / 100% 100%;
+  display: block;
+  pointer-events: none;
+  position: absolute;
+  transform: translate3d(
+    0,
+    clamp(var(--lp-sky-up), calc(var(--lp-sky-d, 0) * var(--lp-sky-k) * 1px), var(--lp-sky-down)),
+    0
+  );
+}
+.lp-sky-cloud--a {
+  background-image: url("/lp/lp-sky-cloud-a.svg");
+  height: 69.013px;
+  width: 201.77px;
+}
+.lp-sky-cloud--b {
+  background-image: url("/lp/lp-sky-cloud-b.svg");
+  height: 53.032px;
+  width: 155.047px;
+}
+.lp-sky-cloud--c {
+  aspect-ratio: 320.934 / 103.107;
+  background-image: url("/lp/lp-sky-cloud-c.svg");
+}
+
+/* Depth layers (the critic's reading of the artboard): the big cloud behind
+   the stage card (dive C) and the one behind the CTA card (CTA B) are far,
+   slower than the page; the heading clouds are mid — A (the larger) a little
+   faster than the page, B (the smaller) a little slower; the cloud over the
+   CTA card (CTA A) is near, the fastest. Over a 1000px viewport the heading
+   clouds travel ±~60–110px against the title while on screen.
+   Paint containment (.lp-dive is content-visibility:auto): A rides lower than
+   rest while the section enters and rises past rest only once it is above
+   the viewport; B (|k| < .09) and C (mid-section) never reach the box edge
+   while they can be seen. */
+.lp-dive > .lp-sky-cloud--a {
+  --lp-sky-k: 0.12;
+  --lp-sky-up: -96px; /* never past the section's top edge (paint containment) */
+  right: -81.922px; /* section x 1534.152 at 1654 */
+  top: 98.534px;
+}
+.lp-dive > .lp-sky-cloud--b {
+  --lp-sky-k: -0.06;
+  --lp-sky-up: -88px;
+  left: -56.078px;
+  top: 90.977px;
+}
+/* stage-relative (616.914, 101.393) of 752×489, 320.934 wide: rides the card */
+.lp-dive-stagewrap > .lp-sky-cloud--c {
+  --lp-sky-k: -0.1;
+  left: 82.0364%;
+  top: 20.7348%;
+  width: 42.6774%;
+}
+/* card-relative (Figma: A x −138.996 y 30.494 over the card, B x 1262.457 y 77.484 behind it) */
+.lp-cta__frame > .lp-sky-cloud--a {
+  --lp-sky-k: 0.1;
+  left: -138.996px;
+  top: 30.494px;
+}
+.lp-cta__frame > .lp-sky-cloud--b {
+  --lp-sky-k: -0.08;
+  right: -121.504px;
+  top: 77.484px;
+}
+
+/* ≤1024 the title fills most of the width (57px down to 768, two lines on
+   phones), so the heading clouds move into the padding band above it, at 0.6
+   scale, both on the fast side (a slow one would rise out of its box while the
+   section enters) and allowed to sink at most 10px: never into the title,
+   which starts at 72. Tablets retune the pair in the next block; phones
+   place it as the mobile artboard draws it (the ≤767 block at the end). */
+@media (max-width: 1024px) {
+  .lp-dive > .lp-sky-cloud--a,
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-down: 10px;
+    --lp-sky-up: -8px;
+  }
+  .lp-dive > .lp-sky-cloud--a {
+    --lp-sky-k: 0.06;
+    height: 41.408px;
+    right: -49.153px;
+    top: 10px;
+    width: 121.062px;
+  }
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-k: 0.03;
+    height: 31.819px;
+    left: -33.647px;
+    top: 14px;
+    width: 93.028px;
+  }
+}
+/* 768–1024: the section is 1130 tall (stage over the list), so its centre is
+   half a screen under the heading: measured from it the pair reached its
+   clamp before it came on screen and stayed there (pinned 67–96 % of the time
+   it was visible). Here each drifts around its OWN place (--lp-sky-anchor),
+   k = px per px the cloud is from the middle of the screen (±400–610 on a
+   tablet): A ±10–15, B ±7–11, at two speeds. Both sit a little lower so the
+   band has room both ways: up to the section's top edge (paint containment),
+   down to the title's box (72; at 768 A overlaps its last letter by 20 px
+   across). */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .lp-dive > .lp-sky-cloud--a,
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-anchor: own;
+  }
+  .lp-dive > .lp-sky-cloud--a {
+    --lp-sky-down: 13px;
+    --lp-sky-k: 0.026;
+    --lp-sky-up: -17px;
+    top: 17px;
+  }
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-down: 18px;
+    --lp-sky-k: 0.018;
+    --lp-sky-up: -18px;
+    top: 18px;
+  }
+}
+/* ── phones (≤767) ── */
+@media (max-width: 767px) {
+  /* The sky's two edges, as the mobile artboard draws them (5024:10542
+     "Subtract": the cream bulging down into the blue behind the banner card,
+     the cream hill rising behind the CTA card). Only the two 16px gutters
+     show them; each is the artboard's exact curve in a 402-wide strip
+     (lp-sky-*-phone.svg, stretched to the width), anchored to its CARD so it
+     keeps its place against the art: banner card top + 523.8 (left) / 521.9
+     (right), 11–14px above "Selling didn't."; CTA card top + 287.6 (left) /
+     270.9 (right). The gradient under each strip overlaps it by half a pixel
+     (no hairline at fractional widths). */
+  .lp-banner--sky {
+    /* the card is aspect-locked 370:672 (banner.css): its art scales with
+       --lp-sky-u = 1px at 402 */
+    --lp-sky-u: calc((100vw - 32px) / 370);
+    background:
+      url("/lp/lp-sky-banner-top-phone.svg") 0 calc(24px + 499.589 * var(--lp-sky-u)) / 100% calc(40 * var(--lp-sky-u)) no-repeat,
+      linear-gradient(to bottom, transparent calc(24px + 539 * var(--lp-sky-u)), var(--lp-sky) 0);
+  }
+  .lp-cta--sky {
+    /* the card's 224px inset is fixed px on phones (cta.css): fixed offsets
+       from the section top (56 = its padding) */
+    background:
+      url("/lp/lp-sky-cta-hill-phone.svg") 0 calc(56px + 264.411px) / 100% 44px no-repeat,
+      linear-gradient(to bottom, var(--lp-sky) calc(56px + 265px), transparent 0);
+  }
+  /* F5: the mobile artboard's CTA card (5024:9150) is r32, like production's
+     phone card and the banner card above it; r24 is the desktop drawing */
+  .lp-cta--sky .lp-cta__card {
+    border-radius: var(--lp-r-xlg);
+  }
+
+  /* ── THE PHONE CLOUD SWITCH (decision 2026-10-11 §9 F4) ──
+     `block` = the clouds the designer added to the mobile artboard on
+     2026-10-12 (below); `none` = no cloud on phones, and no parallax
+     listener either (lp-sky-parallax.ts skips clouds that have no box). */
+  .lp-sky-cloud {
+    display: block;
+  }
+  /* The mobile artboard's three clouds (5024:8631, added 2026-10-12, the
+     frame's three topmost layers: in front of everything). They are the
+     desktop's dive A, dive B and CTA A (same vector names, same shape), so
+     the same three spans; the two far clouds (dive C behind the stage, CTA B
+     behind the card) are not drawn and stay hidden.
+       5061:696  201.77 × 69.013 at (302, 4437)   → dive A
+       5061:699  120.23 × 41.123 at (−61, 4603)   → dive B (0.7754 of B)
+       5061:702  201.77 × 69.013 at (285, 6586)   → CTA A
+     Sizes are the artboard's px. Each cloud is anchored to the corner it
+     touches, so it follows that corner at every phone width (the banner card
+     scales with --lp-sky-u, and its bottom-right corner with it):
+       A  over the banner card's bottom-right corner: 100px in from the right
+          edge, its top 35.411 above the card's bottom (= 59.411 above this
+          section's top edge), its bottom 50 above the title;
+       B  off the left edge beside the title's second line: 59.23px showing,
+          47 under the title's top (106.589 under the section's top edge);
+       CTA A  over the CTA card's top-right corner: 101px on the card, its
+          top 26.411 under the card's top.
+     On phones every cloud drifts around ITS OWN place (the stacked dive is
+     two screens tall, its centre says nothing about the heading), so k is px
+     of drift per px the cloud is from the middle of the screen: ±437 at 874
+     tall → A ±9.6 (clamped −8), B ±5.2, CTA A ±21.9. Three speeds. */
+  .lp-sky-cloud {
+    --lp-sky-anchor: own;
+  }
+  .lp-dive-stagewrap > .lp-sky-cloud--c,
+  .lp-cta__frame > .lp-sky-cloud--b {
+    display: none;
+  }
+  /* Room for cloud A above the section. .lp-dive is content-visibility: auto
+     (foundation.css): paint containment clips at its padding box, and A
+     starts 59.4px above it, over the banner. So on phones the section's box
+     starts --lp-sky-room higher (negative margin, the same amount added to
+     its top padding in dive.css: nothing moves on the page, its height
+     estimate is unchanged) and that band is transparent: the banner shows
+     through, the cloud paints over the banner card. The blue starts 12px
+     inside the banner's own blue padding (24), so no seam at fractional
+     heights. 72 = 59.411 + the 8 of upward drift + slack. */
+  .lp-dive {
+    --lp-sky-room: 72px;
+    background: linear-gradient(to bottom, transparent calc(var(--lp-sky-room) - 12px), var(--lp-sky) 0);
+    margin-top: calc(-1 * var(--lp-sky-room));
+  }
+  .lp-dive > .lp-sky-cloud--a {
+    --lp-sky-down: 10px;
+    --lp-sky-k: 0.022;
+    --lp-sky-up: -8px; /* stays inside --lp-sky-room */
+    height: 69.013px;
+    right: -101.77px; /* artboard x 302 of 402 */
+    top: calc(var(--lp-sky-room) - 59.411px);
+    width: 201.77px;
+  }
+  .lp-dive > .lp-sky-cloud--b {
+    --lp-sky-down: 10px;
+    --lp-sky-k: 0.012;
+    --lp-sky-up: -8px;
+    height: 41.123px;
+    left: -61px;
+    top: calc(var(--lp-sky-room) + 106.589px);
+    width: 120.23px;
+  }
+  /* card-relative (269, 26.411) of the 370-wide card, at the desktop size */
+  .lp-cta__frame > .lp-sky-cloud--a {
+    --lp-sky-k: 0.05;
+    --lp-sky-down: 24px;
+    --lp-sky-up: -24px;
+    left: auto;
+    right: -100.77px;
+    top: 26.411px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-sky-cloud {
+    transform: none;
+  }
+}

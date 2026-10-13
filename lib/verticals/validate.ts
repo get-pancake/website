@@ -42,7 +42,7 @@ export const BANNED: [RegExp, string][] = [
   [/\bsolar leads\b/i, "solar leads"],
   // Founder 2026-10-09: each Play runs on the schedule the customer picks (daily, weekdays,
   // weekly or chosen days). The frequency is not a selling point, so copy never names one ("every night", or "every morning" / "every day" said of leads).
-  [/\bevery ?night\b|\beach night\b|\bnightly\b|\b(?:leads?|pipeline|buyers?|contacts?)\b[^.!?\n]{0,70}\b(?:every|each) (?:morning|day)\b|\b(?:every|each) (?:morning|day)\b[^.!?\n]{0,70}\b(?:leads?|Pancake|buyers?)\b|\bleads? (?:land|arrive)s? daily\b|\bdaily leads\b/i, "fixed frequency"],
+  [/\bevery ?night\b|\beach night\b|\bnightly\b|\b(?:leads?|pipeline|buyers?|contacts?)\b[^.!?\n]{0,70}\b(?:every|each) (?:morning|day)\b|\b(?:every|each) (?:morning|day)\b[^.!?\n]{0,70}\b(?:leads?|Pancake|buyers?)\b|\bleads? (?:land|arrive)s? daily\b|\bdaily leads\b|\bmorning(?:’|')?s? leads\b|\bleads? (?:land|arrive)s? by \d|\bwake up to\b[^.!?\n]{0,30}\bleads?\b/i, "fixed frequency"],
   [/\bhiring (their|its|a) first\b/i, "Hiring can't see first hires"],
   [/\b\d+\+|\bhiring (at least |more than |over )?\d+\b|\b(at least|more than|over) \d+ (open )?(roles|jobs|openings|positions|hires)\b/i, "job-count threshold"],
   [/\b(already shopping|ready to buy|in-market|looking to buy|actively (looking|searching))\b/i, "intent overclaim"],

@@ -6,6 +6,13 @@
 
 /* Shared with the browser chrome of the inverse hero. */
 :root { --lp-brand-plum: #2c002a; }
+/* V2 agents view (Figma 4911:1461, 2026-10-09): its page is brand blue-40,
+   and html/body (iOS status-bar band, overscroll) are outside .lp — so the
+   one literal lives here and both names alias it (never two literals). */
+:root {
+  --lp-brand-blue: #4660e7;
+  --lp-agents-bg: var(--lp-brand-blue); /* = --lp-blue-40: agents view html/body chrome */
+}
 
 .lp {
   /* core tokens / brand-colors */
@@ -24,7 +31,7 @@
   --lp-blue-10: #d9e9ff;
   --lp-blue-20: #b0cbff;
   --lp-blue-30: #6a8fff;
-  --lp-blue-40: #4660e7;
+  --lp-blue-40: var(--lp-brand-blue); /* #4660e7 */
   --lp-green-10: #ceead5;
   --lp-green-20: #68cea7;
   --lp-green-30: #037d48;
@@ -56,14 +63,6 @@
   --lp-ink-tr-20: rgba(44, 0, 42, 0.2);
   --lp-ink-tr-10: rgba(44, 0, 42, 0.1);
   --lp-ink-tr-5: rgba(44, 0, 42, 0.05);
-
-  /* Agent hero: exact RGB negatives (255 − each channel) of the five
-     original rainbow tokens, kept explicit for every canvas/browser engine. */
-  --lp-yellow-30-negative: #004285;
-  --lp-pink-30-negative: #00855f;
-  --lp-purple-30-negative: #457400;
-  --lp-blue-40-negative: #b99f18;
-  --lp-green-20-negative: #973158;
 
   /* semantic (collection "colors") */
   --lp-text: var(--lp-ink-100);
@@ -106,13 +105,17 @@
   --lp-r-xlg: 32px;
   --lp-r-2xlg: 48px;
 
-  /* Signals switch, Figma 4389:781: track 40×24, thumb 20×20. */
-  --lp-switch-width: 40px;
-  --lp-switch-height: 24px;
-  --lp-switch-thumb: 20px;
+  /* Audience switch, Figma V2 4939:3523 (State=Off, 2026-10-09): track
+     64×28 r14 (Figma r100 clamps to h/2), knob 39×24 r12, inset 2; the track
+     paints --lp-blue-30 (#6a8fff) in V2. Was the Signals switch 4389:781
+     (40×24, 20×20 thumb). Only consumer: audience.css. */
+  --lp-switch-width: 64px;
+  --lp-switch-height: 28px;
+  --lp-switch-thumb-width: 39px;
+  --lp-switch-thumb-height: 24px;
   --lp-switch-inset: 2px;
-  --lp-switch-radius: 45px;
-  --lp-switch-thumb-radius: 36px;
+  --lp-switch-radius: 14px;
+  --lp-switch-thumb-radius: 12px;
 
   /* fonts. Display face = Aeonik Condensed Pro TRIAL (CoType trial,
      downloaded 2026-08-28 at Tristan's direction — license to settle before
@@ -124,6 +127,50 @@
   --lp-font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   --lp-font-aeonik: var(--font-aeonik), system-ui, -apple-system, sans-serif;
   --lp-font-cond: var(--font-aeonik-condensed), var(--font-aeonik), system-ui, -apple-system, sans-serif;
+  /* The condensed face's 700 / 900 cuts: declared apart in app/layout.tsx so
+     they are not preloaded with the first screen's 400 / 500 / 600 (2026-10-13).
+     Use it on every rule that sets one of those weights in the condensed face. */
+  --lp-font-cond-x: var(--font-aeonik-condensed-x), var(--font-aeonik-condensed), var(--font-aeonik), system-ui, -apple-system, sans-serif;
+  /* V2 agents view face (Geist Mono). No site-wide font in app/layout.tsx
+     (2026-10-09 decision): the face is the literal @font-face "Geist Mono"
+     of audience-agents.css (app/fonts/geist/), fetched only when the agents
+     view renders or the toggle is hovered — never by a humans visitor. */
+  --lp-font-mono: "Geist Mono", ui-monospace, "SF Mono", monospace;
+
+  /* ── V2 Figma replication tokens (2026-10-09, phase 0) ── */
+  /* Tinted pill: every V2 tinted node is #f8e5d4 with a Geist Medium (500)
+     label — nav Sign in 4939:2634, hero Book a demo 4939:2630, demo pills
+     4939:2795 / 4939:2787, CTA Book a demo 4939:3995. Applied to ALL
+     .lp-btn--tinted below (decision 2026-10-09, flagged in the PR; was the
+     mobile artboard's #f5e5d6 / 600). */
+  --lp-tinted-surface: #f8e5d4;
+
+  /* Blue band (blue-band package): the sky behind banner → deep dive → CTA
+     (Figma blue-10), and the deep-dive stage card (#fafaf8, the fill of every
+     storyboard frame — painted by the carousel SHELL only; stories paint
+     nothing behind their scene). */
+  --lp-sky: var(--lp-blue-10);
+  --lp-dive-stage-bg: #fafaf8;
+
+  /* Claude-desktop mock palette — ONE set, shared by the demo window's
+     "Claude & Codex" view (demo-scroll) and the deep-dive "Run it from Claude
+     or Codex" story (story-claude). Foreign-UI colours, measured on Figma
+     4964:2575 / 3930 / 3981. Its serif comes from lp-claude-font.ts (scoped
+     by class on the mock's root, not a token here). */
+  --lp-claude-bg: var(--lp-dive-stage-bg); /* #fafaf8 app surface */
+  --lp-claude-ink: #0b0b0b; /* sans text, plus-icon stroke */
+  --lp-claude-ink-64: rgba(11, 11, 11, 0.64); /* Project / Manual */
+  --lp-claude-ink-48: rgba(11, 11, 11, 0.48); /* Chat (off), High, Connecting…, placeholders */
+  --lp-claude-ink-16: rgba(11, 11, 11, 0.16); /* composer hairline */
+  --lp-claude-ink-08: rgba(11, 11, 11, 0.08); /* pill hairline, card footer rule */
+  --lp-claude-ink-04: rgba(11, 11, 11, 0.04); /* mode track, neutral chips */
+  --lp-claude-serif-ink: #000; /* serif reply / result lines (Figma: pure black) */
+  --lp-claude-spark: #e8704e; /* the Claude asterisk (Figma value; brand file says #d97757) */
+  --lp-claude-send: #d55b35; /* send button */
+  --lp-claude-bubble: #f0f0ef; /* user bubble */
+  --lp-claude-card: var(--lp-ink-0); /* composer card, Cowork pill, plan card */
+  --lp-claude-plug: rgba(0, 0, 0, 0.32); /* connector / tool glyph */
+  --lp-claude-codex: #26241e; /* Codex mark ink (Figma cube fill, kept as the mark's ink) */
 }
 
 /* ── base ── */
@@ -142,8 +189,15 @@ html:has(main.lp) {
 /* All widths since 2026-08-31: desktop Safari also evicts composited
    layers (H1 vanish recurrence) — skipping offscreen sections frees the
    budget everywhere. Estimates per breakpoint below. */
+/* V2 (2026-10-09): .lp-dive (the deep-dive carousel, which replaced the
+   feature cards' .lp-feat on 2026-10-11) and .lp-bento joined. Paint
+   containment clips at the section box whatever overflow says: anything
+   that must travel outside its section (cloud parallax, spinning art) needs
+   room inside the box or the section must leave this list (the dive's
+   heading clouds are clamped inside it, sky.css --lp-sky-up). */
 .lp-banner,
-.lp-feat {
+.lp-dive,
+.lp-bento {
   content-visibility: auto;
 }
 /* NOT the ring arts any more (.lp-cta, .lp-price-art — dropped 2026-09-02).
@@ -159,30 +213,67 @@ html:has(main.lp) {
    containment clips at the element box whatever overflow says, and the
    pricing SECTION's box cut the rotating rings flat once per loop (founder
    2026-08-31) — which is why the art, not the section, was ever listed. */
+/* Estimates of each skipped section's height, so the scrollbar and anchor
+   jumps never move by more than ~2% (`auto` pins the real size after the
+   first render). contain-intrinsic-size sizes the CONTENT box: the section's
+   own padding adds on top, so every value below is "rendered height minus
+   vertical padding". Re-measured 2026-10-12 (final pass of the V2
+   replication) at 1654 / 1440 / 1024 / 768 / 402 / 393 with
+   artifacts/landing-v2-figma/pw/integrate-measure.mjs: every skipped
+   section is within 2% of its rendered height at every one of them.
+   Re-run it whenever one of these sections changes height.
+   Two estimates live with their section, because they depend on what it
+   renders: the bento's in bento.css (`.lp > .lp-bento`: production shows a
+   partial set, previews all seven cards, and LpBento passes the grid height
+   it computed) and the phone deep dive's in dive.css
+   (`.lp-dive[data-lp-phone="stack"]`: four stacked items). */
 @media (min-width: 768px) {
+  /* the banner card is as wide as the page minus its 16px gutters, capped at
+     1622, and 721/1622 as tall: 721 (≥1654), 625.9 (1440), 441 (1024),
+     327.2 (768). The flat 753 this replaces was +119% at 768. */
   .lp-banner {
-    contain-intrinsic-size: auto 753px;
-  }
-  .lp-feat {
-    contain-intrinsic-size: auto 2969px;
+    contain-intrinsic-size: auto min(721px, calc((100vw - 32px) * 721 / 1622));
   }
   .lp-cta {
-    contain-intrinsic-size: auto 624px;
+    contain-intrinsic-size: auto 624px; /* inert since 2026-09-02 (.lp-cta left the list above); kept as history */
+  }
+  /* deep-dive carousel, V2 4939:3388: 894 rendered − 2×80 padding */
+  .lp-dive {
+    contain-intrinsic-size: auto 734px;
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* stacked: list above the stage. 974.6 (768) … 1005.8 (900–1024), padding
+     2×72 (final pass 2026-10-12: +8 for the Pause control's band between the
+     stage and the list, −4 for item 4's link row) */
+  .lp-dive {
+    contain-intrinsic-size: auto 990px;
   }
 }
 @media (max-width: 767px) {
-  /* Per-section estimates within ~2% of the rendered heights at 393 (sweep
-     2026-08-31: a flat 1000px was −1824px off for .lp-feat → scrollbar
-     jumps and anchor overshoot; `auto` pins the real size after first
-     render). */
+  /* the banner card is 672/370 as tall as it is wide: 655.6 at 393,
+     1334.9 at 767 (the flat 704 this replaces was −46% there) */
   .lp-banner {
-    contain-intrinsic-size: auto 704px; /* 361×672/370 card + 48 padding at 393 (2026-10-07: card shortened) */
-  }
-  .lp-feat {
-    contain-intrinsic-size: auto 2890px; /* rev2 band is taller */
+    contain-intrinsic-size: auto calc((100vw - 32px) * 672 / 370);
   }
   .lp-cta {
-    contain-intrinsic-size: auto 860px;
+    contain-intrinsic-size: auto 860px; /* inert, see above */
+  }
+  /* The two phone .lp-dive values below serve the CAROUSEL position of the
+     phone switch only (DIVE_PHONE_LAYOUT = "carousel", lp-dive-data.ts). The
+     default since 2026-10-12 is the designer's stack, whose own estimate in
+     dive.css outranks them.
+     600–767: the desktop 752×489 scene, stacked under the list:
+     867.3 (600) → 975.9 (767); padding 2×64 */
+  .lp-dive {
+    contain-intrinsic-size: auto calc(477px + 65vw);
+  }
+}
+@media (max-width: 599px) {
+  /* the 400×520 phone scene at (W − 32)/400 under the list: 972.4 (360),
+     991.3 (393), 1039.4 (430), 1235.1 (599) */
+  .lp-dive {
+    contain-intrinsic-size: auto calc(130vw + 480.4px);
   }
 }
 /* iOS Safari paints the status-bar / Dynamic-Island band with the BODY's
@@ -286,14 +377,17 @@ body:has(main.lp) {
   box-shadow: inset 0 0 0 1px var(--lp-inverted-surface);
   color: var(--lp-text);
 }
-/* Tinted twin — the mobile hero "Book a call" pill (Figma mobile node
-   4389:8180, 134×48 hug): flat pale-cream fill #f5e5d6 (no token — the fill
-   exists nowhere else in the file), plum label, no border. The recipe is
-   media-free like its siblings; its only trigger is hidden ≥768 (hero.css). */
+/* Tinted twin — flat pale-cream fill, plum label, no border. V2
+   (2026-10-09): every tinted pill the designer draws (nav Sign in, hero and
+   CTA Book a demo, demo-window pills) is --lp-tinted-surface #f8e5d4 with a
+   Geist Medium (500) label — applied site-wide (decision 2026-10-09, flagged
+   in the PR). Was the mobile hero "Book a call" pill (Figma mobile node
+   4389:8180): #f5e5d6 with the 600 label. */
 .lp .lp-btn--tinted,
 .lp a.lp-btn--tinted {
-  background: #f5e5d6;
+  background: var(--lp-tinted-surface);
   color: var(--lp-text);
+  font-weight: 500;
 }
 
 /* ── Figma-exact button corners ──
@@ -400,6 +494,20 @@ body:has(main.lp) {
   transform: translate(-50%, -50%) scale(0);
   transition: transform 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
   will-change: transform;
+}
+/* Once the circle has covered the pill, the pill itself takes the flood's
+   colour (--lp-fx-fill, set by LpFxButton on enter). The circle and the pill
+   are clipped as two layers, so the plum base showed through the antialiased
+   edge of the clip: a dark line on the four corners of a flooded pill
+   (founder 2026-10-12: "buttons are not perfectly filling when hovering, see
+   the 4 squares"). The 0.5 s delay is the flood's own time; leaving drops
+   the class, so the plum is back at once under the retracting circle. */
+@media (prefers-reduced-motion: no-preference) {
+  .lp .lp-btn.is-fx,
+  .lp a.lp-btn.is-fx {
+    background-color: var(--lp-fx-fill, var(--lp-yellow-30));
+    transition: background-color 0s linear 0.5s;
+  }
 }
 .lp-btn-label {
   display: inline-block;

@@ -44,6 +44,16 @@ export type RoadmapComment = {
   createdAt: string;
 };
 
+/**
+ * Anonymous posting: new ideas and comments from visitors with no account. Paused for the
+ * 2026-10-13 launch (founder, 2026-10-13, on the audit's "anonymous posting open, spam risk on
+ * launch day"): a post showed on the public board the moment it was sent, guarded only by a
+ * honeypot and a per-IP rate limit. Votes stay open (a number, no text), and signed-in admins
+ * still post and comment. The two POST routes enforce it; the board and the page only stop
+ * offering what the routes would refuse. Set it back to true to reopen.
+ */
+export const ROADMAP_POSTING_OPEN = false;
+
 export const TAGS: RoadmapTag[] = ["squads", "core-features", "integrations"];
 export const STATUSES: RoadmapStatus[] = [
   "open",

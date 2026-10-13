@@ -155,7 +155,7 @@ export const recruitingAgencies: VerticalConfig = {
     },
     {
       q: "Can I run two desks, like tech and finance?",
-      a: "Yes. Give each desk its own Play, with its own targeting, messages and sending accounts. One workspace, one $99 plan.",
+      a: "Yes. Give each desk its own Play, with its own targeting, messages and sending accounts, in one workspace on one plan. One sending account is included, and each extra one is $39 a month.",
     },
   ],
 

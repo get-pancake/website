@@ -2,12 +2,13 @@ import type { Metadata, Viewport } from "next";
 
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { OG_IMAGE } from "@/lib/social-meta";
 
 // Alta facts read on 2026-10-07 from altahq.com and altahq.com/plans (audit plan 3.10).
 // Re-check both pages before moving FACTS_REVIEWED, and again within 90 days.
 // Alta lists the professional network among its channels; this page never names it.
 const title = "Alta vs Pancake: Named AI Agents vs Founder-Run Plays";
-const description = "Compare Alta and Pancake: named AI agents for outbound, inbound and calls, sold by custom quote, versus Plays you run for $99 a month per workspace.";
+const description = "Compare Alta and Pancake: named AI agents for outbound, inbound and calls, sold by custom quote, versus Plays you run from $99 a month per workspace.";
 
 // Status-bar zone matches the lp cream, as every comparison page. Same value as the
 // comparisonViewport export the landing-audit-fixes template adds; switch to it once that lands.
@@ -22,10 +23,10 @@ export const metadata: Metadata = {
     url: `${SITE_ORIGIN}/alta-vs-pancake`,
     title,
     description,
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Alta vs Pancake" }],
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Alta vs Pancake" }],
     siteName: "Pancake",
   },
-  twitter: { card: "summary_large_image", title, description, images: ["/og-image.png"] },
+  twitter: { card: "summary_large_image", title, description, images: [OG_IMAGE] },
 };
 
 const config: GtmComparisonConfig = {
@@ -33,7 +34,7 @@ const config: GtmComparisonConfig = {
   competitor: "Alta",
   competitorInitial: "A",
   heroLede: "Named AI agents for revenue teams versus Plays a founder runs.",
-  heroSummary: "Alta sells three AI agents for outbound, inbound and growth, priced by custom quote. Pancake runs Plays that find your buyers and writes to the ones you approve, for $99 a month per workspace.",
+  heroSummary: "Alta sells three AI agents for outbound, inbound and growth, priced by custom quote. Pancake runs Plays that find your buyers and writes to the ones you approve, from $99 a month per workspace.",
   competitorBody: "An AI platform for go-to-market teams with three named agents. Katie runs outbound, Alex qualifies inbound leads by AI call and chat, and Luna finds signals and lookalikes across 50+ data sources.",
   competitorChoose: "Choose it when a revenue team needs outbound, inbound and calls covered.",
   pancakeBody: "Tell Pancake who to reach, and it builds a Play that keeps searching on its own. You approve every lead, and Pancake writes to each one under your name.",
@@ -52,7 +53,7 @@ const config: GtmComparisonConfig = {
     {
       n: "02",
       title: "A custom quote versus a public price",
-      body: "As of October 2026, Alta publishes no prices. You fill in a form and get a custom quote, with onboarding included. Pancake is $99 a month per workspace, with a 3-day free trial.",
+      body: "As of October 2026, Alta publishes no prices. You fill in a form and get a custom quote, with onboarding included. Pancake starts at $99 a month per workspace, with a 7-day free trial.",
       angle: "Know the price before the first call.",
     },
     {
@@ -76,7 +77,7 @@ const config: GtmComparisonConfig = {
   ],
   rows: [
     { feature: "Core job", competitor: { text: "AI agents for outbound, inbound and growth", mark: "yes" }, pancake: { text: "Plays that find buyers and start the conversation", mark: "yes" } },
-    { feature: "How you buy", competitor: { text: "Custom quote after a form" }, pancake: { text: "$99 a month per workspace, self-serve", mark: "yes" } },
+    { feature: "How you buy", competitor: { text: "Custom quote after a form" }, pancake: { text: "From $99 a month per workspace, self-serve", mark: "yes" } },
     { feature: "Onboarding", competitor: { text: "White-glove onboarding included", mark: "yes" }, pancake: { text: "Sign up and describe who to reach", mark: "yes" } },
     { feature: "Data", competitor: { text: "50+ sources: CRM, intent, job posts, news, product usage", mark: "yes" }, pancake: { text: "Searches by hiring, funding, tech used, lookalikes and more", mark: "yes" } },
     { feature: "Outreach", competitor: { text: "Email, calls, SMS, WhatsApp and more", mark: "yes" }, pancake: { text: "Direct messages under your name, from the accounts you send from", mark: "yes" } },
@@ -88,10 +89,10 @@ const config: GtmComparisonConfig = {
   closingTitle: "Start your first Play today.",
   closingLede: "Tell Pancake who to reach. It builds the Play, finds the people who fit and writes to the ones you approve.",
   faqs: [
-    { q: "What is the main difference between Alta and Pancake?", a: "Alta sells three AI agents for outbound, inbound and growth, by custom quote. Pancake runs Plays that find your buyers and write to the leads you approve, for $99 a month per workspace." },
+    { q: "What is the main difference between Alta and Pancake?", a: "Alta sells three AI agents for outbound, inbound and growth, by custom quote. Pancake runs Plays that find your buyers and write to the leads you approve, from $99 a month per workspace." },
     { q: "How much does Alta cost?", a: "As of October 2026, Alta publishes no prices. Its plans page asks for your team size and goals, then sends a custom quote. It says you pay for what you use." },
     { q: "What does Alta do that Pancake doesn't?", a: "Inbound qualification, AI calls, email, SMS and WhatsApp outreach, CRM integrations and white-glove onboarding. Pancake doesn't do these. It finds people who fit and messages them from your own accounts." },
-    { q: "Is there a free trial?", a: "Alta's site offers a demo and a custom quote. Pancake has a 3-day free trial, and a card is required to start it." },
+    { q: "Is there a free trial?", a: "Alta's site offers a demo and a custom quote. Pancake has a 7-day free trial with 15,000 credits, and a card is required to start it." },
     { q: "Who should choose Pancake over Alta?", a: "Founders who do their own sales, and small B2B teams without inbound volume to qualify. Tell Pancake who to reach and approve the leads that fit. Pancake writes to them under your name." },
     { q: "Can I run Pancake from Claude?", a: "Yes. Pancake connects to Claude, Claude Code and Codex with a browser sign-in. You create Plays, review leads and edit messages from the agent, on the same Brain as the app." },
   ],

@@ -26,6 +26,8 @@
  *     guarantees, "instant" and leads "in minutes" are not). "GitHub Copilot" names a client.
  *   - ORIGAMI_TAGLINE from validate.ts (never echo "not a stale database").
  *   - EXTRA: the old domain, and "AI GTM team" as what Pancake is.
+ *   - BENTO KPI: every KPI card of lp-bento-data.ts, as "value label", must be on BENTO_KPI_ALLOW,
+ *     a sourced allow-list of customer-stated figures (default run only).
  * A sentence that opens on a negation ("It doesn't …", "No …") may name a boundary (email,
  * phone, CRM, website visitors), as in a "What doesn't Pancake do?" answer.
  */
@@ -45,7 +47,6 @@ const { BANNED, CAMPAIGN, ORIGAMI_TAGLINE, PLATFORM, SEQUENCE } = jiti("./lib/ve
 const FILES = [
   "components/sections/landing-v3/LpSteps.tsx",
   "components/sections/landing-v3/lp-step-data.ts",
-  "components/sections/landing-v3/LpFeatures.tsx",
   "components/sections/landing-v3/LpBanner.tsx",
   "components/sections/landing-v3/LpCta.tsx",
   "components/sections/landing-v3/LpPricing.tsx",
@@ -55,6 +56,37 @@ const FILES = [
   // Viktor lede are decided.
   "components/sections/landing-v3/LpNav.tsx",
   "components/sections/compare/compare-copy.ts",
+  // V2 Figma replication (2026-10-09): every new homepage copy file (the list must never point
+  // at a missing file: readFileSync would throw). The feature cards' LpFeatures.tsx left with
+  // the cards (2026-10-11).
+  // demo window (demo-scroll)
+  "components/sections/landing-v3/LpDemo.tsx",
+  "components/sections/landing-v3/lp-demo-data.ts",
+  // customers band + steps (logos-steps)
+  "components/sections/landing-v3/LpMarquee.tsx",
+  "components/sections/landing-v3/lp-steps-content.ts",
+  "components/sections/landing-v3/LpStepMocks.tsx", // the step mocks' markup: stops a string written straight into it
+  // deep-dive carousel shell (blue-band) and its four stories
+  "components/sections/landing-v3/LpDive.tsx",
+  "components/sections/landing-v3/lp-dive-data.ts",
+  "components/sections/landing-v3/LpStorySources.tsx",
+  "components/sections/landing-v3/lp-story-sources-data.ts",
+  "components/sections/landing-v3/LpStoryMessage.tsx",
+  "components/sections/landing-v3/lp-story-message-data.ts",
+  "components/sections/landing-v3/LpStoryLearns.tsx",
+  "components/sections/landing-v3/lp-story-learns-data.ts",
+  "components/sections/landing-v3/LpStoryClaude.tsx",
+  "components/sections/landing-v3/lp-story-claude-data.ts",
+  // testimonials / KPI bento (bento); its placeholder module stays out on purpose
+  "components/sections/landing-v3/LpBento.tsx",
+  "components/sections/landing-v3/lp-bento-data.ts",
+  // agents view (agents-view)
+  "components/sections/landing-v3/LpAudienceHeadline.tsx",
+  "components/sections/landing-v3/LpAgentStart.tsx",
+  "components/sections/landing-v3/LpAgentPrompt.tsx",
+  "components/sections/landing-v3/lp-agents-wall-data.ts",
+  "components/sections/landing-v3/LpAgentLab.tsx", // section aria-label, transcript list label
+  "components/sections/landing-v3/LpAgentCaptcha.tsx", // the puzzle's strings (moved out of LpAgentLab)
 ];
 
 /* ── rules ─────────────────────────────────────────────────────────────────── */
@@ -70,9 +102,8 @@ const OFF_FOR = {
 /** Text a rule may not read (names of other products). */
 const ALLOW = [
   [/\bco-?pilots?\b/i, /\bGitHub Copilot\b/g],
-  // the f4 animation's alt describes its mock chart, "+56% reply rate vs last period", which
-  // the founder kept (2026-10-08); the rate rule still reads every other line of copy
-  [OFF_FOR.rates[0], /\ba reply rate 56% up versus last period\b/g],
+  // (the f4 "+56% reply rate" alt allowance went with the feature cards, 2026-10-11: the V2
+  // "Pancake learns" story shows approved shares, no rate figure)
 ];
 /** Rules a negated sentence may cross (the product's boundaries, said as boundaries). */
 const NEGATABLE = new Set(["email outreach", "phone lookup / calls", "CRM sync/export", "website visitors", "local/consumer leads"]);
@@ -182,7 +213,7 @@ for (const file of files) {
  * compare pages, the homepage's structured data, the Plays and /for FAQs, the pricing copy and
  * the agent-facing text files) are read line by line, comments included, since agents read
  * them as facts. */
-const FREQUENCY = /\bevery ?night\b|\beach night\b|\bnightly\b|\b(?:leads?|pipeline|buyers?|contacts?)\b[^.!?\n]{0,70}\b(?:every|each) (?:morning|day)\b|\b(?:every|each) (?:morning|day)\b[^.!?\n]{0,70}\b(?:leads?|Pancake|buyers?)\b|\bleads? (?:land|arrive)s? daily\b|\bdaily leads\b/i;
+const FREQUENCY = /\bevery ?night\b|\beach night\b|\bnightly\b|\b(?:leads?|pipeline|buyers?|contacts?)\b[^.!?\n]{0,70}\b(?:every|each) (?:morning|day)\b|\b(?:every|each) (?:morning|day)\b[^.!?\n]{0,70}\b(?:leads?|Pancake|buyers?)\b|\bleads? (?:land|arrive)s? daily\b|\bdaily leads\b|\bmorning(?:’|')?s? leads\b|\bleads? (?:land|arrive)s? by \d|\bwake up to\b[^.!?\n]{0,30}\bleads?\b/i;
 const FREQUENCY_FILES = named.length ? [] : [
   ...readdirSync(join(ROOT, "app")).filter((d) => d.endsWith("-vs-pancake")).map((d) => `app/${d}/page.tsx`),
   "app/page.tsx", "lib/copy.ts", "components/sections/plays/plays-copy.ts",
@@ -192,6 +223,39 @@ for (const f of FREQUENCY_FILES) {
   readFileSync(join(ROOT, f), "utf8").split("\n").forEach((text, i) => {
     if (FREQUENCY.test(text)) hits.push(`${f}:${i + 1}  fixed frequency ("${text.match(FREQUENCY)[0]}"): "${text.trim().slice(0, 160)}"`);
   });
+}
+/* Bento KPI cards (V2 4911:762, decisions §9): customer-stated figures. A figure such as "10%+" is
+ * code-like to the string reader above and its label sits in another string, so no rule ever sees
+ * the pair. They are checked here instead: every KPI card of lp-bento-data.ts, as "value label",
+ * must be on this list, each with its source. Anything else fails until a human adds it here.
+ * These are the customers' own results, attributed by their logo, never a claim about what Pancake
+ * delivers: the "rate claim" and "job-count threshold" (\d+\+) rules still apply everywhere else.
+ * Sources: artifacts/landing-v2-figma/specs/updates/_bento-real-testimonials.md (founder 2026-10-11),
+ * which also holds the message's wording and link: this repository is public, so neither is here. */
+const BENTO_KPI_ALLOW = new Map([
+  // Praxis: Diana Khramina's own figure. Stated in a message to Tristan on 2026-09-18 and on
+  // camera in her testimonial (Praxis individual cut): "my reply rate is above 10% on most of
+  // campaigns I'm running".
+  ["10%+ reply rate", "Praxis, Diana Khramina"],
+  // Praxis: same message, and the next sentence of the same film: "So it helped me to book at
+  // least 10 meetings per week".
+  ["10+ meetings booked a week", "Praxis, Diana Khramina"],
+  // Kinro: Pierre-Alexandre Kamienny on camera, "Pancake helped me book 15 meetings last week"
+  // (merged compilation 61.68–63.72 s). One week, as he says it.
+  ["15 meetings booked in a week", "Kinro, Pierre-Alexandre Kamienny"],
+  // Vector Legal: its Head of GTM's written statement, relayed by the founder on 2026-10-13 ("$50K
+  // in pipeline in 7 days from outreach on high-intent signals"). No other record in this repository.
+  ["$50K in pipeline in 7 days", "Vector Legal, relayed by the founder"],
+]);
+if (!named.length) {
+  const { bentoKpiClaims } = jiti("./components/sections/landing-v3/lp-bento-data.ts");
+  for (const claim of bentoKpiClaims()) {
+    count++;
+    if (dump) console.log(`components/sections/landing-v3/lp-bento-data.ts  (KPI pair)  ${claim}`);
+    if (!BENTO_KPI_ALLOW.has(claim)) {
+      hits.push(`components/sections/landing-v3/lp-bento-data.ts  bento KPI not on the allow-list ("${claim}"): add it to BENTO_KPI_ALLOW with its source`);
+    }
+  }
 }
 for (const h of hits) console.log(`ERROR  ${h}`);
 console.log(`homepage-lint: ${files.length} file(s), ${count} string(s), ${hits.length} error(s)`);

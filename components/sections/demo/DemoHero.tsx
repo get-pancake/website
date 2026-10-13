@@ -14,10 +14,9 @@ export function DemoHero() {
       <div className="demo-hero__content">
         <div className="demo-left">
           <div className="demo-pitch">
-            <p className="demo-eyebrow">{HERO.eyebrow}</p>
             {/* The space before <br/> keeps the two lines apart in the text
-                crawlers and assistants read ("…GTM on full autopilot", not
-                "onfull"); the copy itself is locked (demo-copy.ts). */}
+                crawlers and assistants read ("…ideas that bring…", not
+                "ideasthat"); the copy is the homepage hero's (demo-copy.ts). */}
             <h1 id="demo-title" className="lp-display demo-title">
               {HERO.titleLine1}{" "}
               <br />

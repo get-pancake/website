@@ -7,7 +7,7 @@ publishedAt: "2026-07-06"
 updatedAt: "2026-09-24"
 author: "François de Fitte"
 tags: ["autonomous company", "AI cofounder", "Kompany", "comparison", "open source"]
-last_updated: "2026-10-07"
+last_updated: "2026-10-13"
 related:
   - "pancake-vs-paperclip"
   - "best-autonomous-company-platform-2026"
@@ -16,13 +16,13 @@ faq:
   - question: "Can Kompany replace Pancake for an existing business?"
     answer: "Only if you build the prospecting workflow yourself. Kompany is a general engine that executes directives on your own infrastructure. Pancake ships that workflow ready to use: buying signals, new leads and outreach from your own account."
   - question: "Is Kompany free to use?"
-    answer: "Kompany is open-source and self-hosted, so the software itself is free. You pay your LLM provider (Anthropic, OpenAI and others) for what your agents consume. Pancake costs $99 a month per workspace, with no usage billing."
+    answer: "Kompany is open-source and self-hosted, so the software itself is free. You pay your LLM provider (Anthropic, OpenAI and others) for what your agents consume. Pancake starts at $99 a month per workspace, with no model bill on top."
   - question: "Does Kompany work for non-technical founders?"
     answer: "Kompany requires Python 3.11+, a supported LLM API key and comfort with CLI tools, so it suits technical users. Pancake needs no engineering: you add your website, then approve leads in the app or from Slack."
   - question: "What is the Nova experiment?"
     answer: "Nova is a public proof-of-concept by the Kompany team: an AI voice operating a real business (Swedexpress) with a publicly audited daily ledger. Every decision, expense and dollar earned is published."
   - question: "Is Pancake open source?"
-    answer: "No. Pancake is hosted, so there's nothing to install, no API key and no model bill: you add your website and its agents start finding buyers. Kompany's code is open, so developers can inspect its routing logic, change its approval gates and swap LLM backends."
+    answer: "No. Pancake is hosted, so there's nothing to install, no API key and no model bill: you add your website and it starts finding buyers. Kompany's code is open, so developers can inspect its routing logic, change its approval gates and swap LLM backends."
 ---
 
 Kompany and Pancake both come up when founders look for AI that does real work inside a business. The overlap ends there. Kompany is an open-source engine: you give it a directive from the command line, and AI agents build and run a new venture around it. [Pancake](/) is a hosted GTM platform for a company that already exists. It finds people showing buying signals and runs outreach to them.
@@ -33,7 +33,7 @@ Here's what each one does.
 
 ## TL;DR
 
-Kompany is an open-source CLI tool. It gives a project an AI CEO, a routing layer and specialist agents, runs on your own LLM subscription, and builds AI-native ventures from a one-line directive. Pancake is a hosted product for founders and small B2B companies. Its agents watch for buying signals, bring you leads and run outreach from your own account. Kompany is for builders starting from zero. Pancake is for companies that already have something to sell.
+Kompany is an open-source CLI tool. It gives a project an AI CEO, a routing layer and specialist agents, runs on your own LLM subscription, and builds AI-native ventures from a one-line directive. Pancake is a hosted product for founders and small B2B companies. It watches for buying signals, brings you leads and runs outreach from your own account. Kompany is for builders starting from zero. Pancake is for companies that already have something to sell.
 
 ## What is Kompany?
 
@@ -51,11 +51,11 @@ Kompany is open-source, self-hosted and developer-native. It's infrastructure yo
 
 Pancake is built for the part of a business that brings in customers: go-to-market. Setup is adding your website. Pancake reads it and builds its GTM Brain, a shared memory of your positioning, ideal customers, offers, proof and objections, and it keeps adding to that memory as it learns what works.
 
-The agents then watch buying signals. Some point to people: those posting about a keyword you pick, or engaging with a competitor's posts, an influencer your buyers follow, or your own posts. Others point to companies: those hiring for roles that match your buyer, and those whose job posts name a tool you replace.
+Pancake then watches buying signals. Some point to people: those posting about a keyword you pick, or engaging with a competitor's posts, an influencer your buyers follow, or your own posts. Others point to companies: those hiring for roles that match your buyer, and those whose job posts name a tool you replace.
 
 Each search brings new leads, with the signal behind each one. You approve them in the app or from Slack. Outreach runs under your name: a light warm-up, then up to three messages. The opening message asks one light question tied to the signal instead of pitching. You can read and edit any message before it goes out.
 
-If you already work in Claude, ChatGPT or Codex, Pancake meets you there. Its MCP server lets you create and run Plays, review leads and edit their messages mid-chat. Pricing is [$99/month per workspace](/pricing), with everything included and no usage billing.
+If you already work in Claude, ChatGPT or Codex, Pancake meets you there. Its MCP server lets you create and run Plays, review leads and edit their messages mid-chat. Pricing starts at [$99/month per workspace](/pricing), with no seats and no model bill on top.
 
 ## Head-to-Head Comparison
 
@@ -65,9 +65,9 @@ If you already work in Claude, ChatGPT or Codex, Pancake meets you there. Its MC
 | **Setup** | Add your website; Pancake builds its GTM Brain from it | CLI install, BYOK (bring your own API key) |
 | **What it runs** | Plays, buying-signal monitoring, new leads, outreach | AI-native projects and ventures from directives |
 | **Infrastructure required** | None (hosted) | Python 3.11+, LLM subscription |
-| **Execution layer** | Pancake's own GTM agents, also reachable from Claude, ChatGPT or Codex through MCP | Claude Code CLI / Codex CLI / opencode |
+| **Execution layer** | Pancake itself, also reachable from Claude, ChatGPT or Codex through MCP | Claude Code CLI / Codex CLI / opencode |
 | **Approval model** | You approve every lead | Approval gates for irreversible actions |
-| **Pricing** | $99/month per workspace, everything included | Open-source / self-hosted (LLM costs only) |
+| **Pricing** | From $99/month per workspace; one plan, monthly credits | Open-source / self-hosted (LLM costs only) |
 | **Source** | Closed (hosted) | Open-source |
 | **Best for** | More buyer conversations for an existing product | Building and running an AI-native venture |
 
@@ -77,7 +77,7 @@ Kompany and Pancake sit at different points on the company lifecycle.
 
 Kompany is for the build phase. You have a directive — a business idea, a project, a venture — and you want AI to execute it from scratch. The AI CEO creates the project structure, agents execute research and build work, and the ledger tracks every decision. The model assumes you're starting from a blank slate and want AI to construct the operation.
 
-Pancake belongs to the selling phase. You already have a product, a website that explains it and a buyer you can describe. Its agents find more of those buyers and open the conversation.
+Pancake belongs to the selling phase. You already have a product, a website that explains it and a buyer you can describe. Pancake finds more of those buyers and opens the conversation.
 
 The typical Kompany user is a solo developer or technical founder who wants to spin up an AI-native business as quickly as possible, with full transparency into what the AI is doing and why, on their own infrastructure.
 
@@ -105,7 +105,7 @@ Pancake is the right tool when:
 - You sell to businesses, and your buyers are active on social media
 - You want leads, each with the reason it was picked
 - You don't want to manage infrastructure, API keys or LLM subscriptions
-- You'd rather pay one flat monthly price than meter usage
+- You'd rather pay one monthly price than a separate LLM bill
 
 If the goal is finding buyers for an existing product, Pancake is the managed option. If the goal is to build and run an AI-native venture from zero, Kompany is the more relevant architecture.
 
@@ -113,7 +113,7 @@ If the goal is finding buyers for an existing product, Pancake is the managed op
 
 Kompany's open-source model is a deliberate design choice. It means developers can inspect the routing logic, modify the approval gates, swap in different LLM backends, and self-host everything. That's valuable for teams that want full stack control or are building on top of the engine.
 
-Pancake takes the opposite route. It is hosted and priced flat, so there is no stack to run and no LLM bill to watch. The trade-off is the one every hosted product makes: the agents run on Pancake's side, not on your servers. Paperclip AI is another self-hosted option founders weigh in this space; see [Pancake vs Paperclip AI](/blog/pancake-vs-paperclip) for that comparison.
+Pancake takes the opposite route. It is hosted, with one monthly plan, so there is no stack to run and no LLM bill to watch. The trade-off is the one every hosted product makes: the work runs on Pancake's side, not on your servers. Paperclip AI is another self-hosted option founders weigh in this space; see [Pancake vs Paperclip AI](/blog/pancake-vs-paperclip) for that comparison.
 
 Neither approach is wrong. They reflect different buyer priorities.
 

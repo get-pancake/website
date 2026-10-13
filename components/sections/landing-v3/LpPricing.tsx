@@ -2,7 +2,8 @@ import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
-import { TRIAL_LABEL } from "@/lib/trial";
+import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
+import { TRIAL_OFFER } from "@/lib/trial";
 
 /**
  * Landing v3 — Pricing (Figma node 4257:5083, 1654×890, bg #000).
@@ -11,27 +12,38 @@ import { TRIAL_LABEL } from "@/lib/trial";
  * black-on-black against the footer, so the section clips it safely.
  */
 
-/* Six lines, so the layout holds. AI SEO retired 2026-09-30 (pancake-cmo PR
-   #1037): the articles and Google/ChatGPT lines became Plays + messages, and
-   the control line names leads only (message review is optional, so never
-   "approvals on messages"). No spend cap (founder 2026-09-19): flat plan,
-   nothing to cap. The customers line states what Pancake is built for, not
-   a promise (founder 2026-10-04: prospects kept asking how we can guarantee
-   customers; the Terms promise no results). No lead count (founder
-   2026-10-05: "now that there are Plays you can have as many leads as you
-   want"): a Play search keeps up to 50 leads, Plays are unlimited, and
-   credits run in shadow mode, so nothing caps them. Revisit if credit
-   enforcement ships (pancake-cmo PR #1220). The scheduled runs are why new
-   leads keep coming. Same lines in pricingV2.value (lib/copy.ts), the /for
-   checklist, the app's checkout card and the Brain page. */
+/* Six lines, so the layout holds. The card shows the plan's first level
+   (lib/pricing.ts BASE_LEVEL); /pricing has the picker for the others.
+   2026-10-13, the credit plan (pancake-cmo PR #1220). Every line says what
+   the buyer gets, never how the plan is built (founder, same day, on a first
+   draft that listed credits, Plays and seats: "not all fully value oriented
+   for the user"):
+   1. the outcome first: what Pancake is built for, not a promise (founder
+      2026-10-04: prospects kept asking how we can guarantee customers; the
+      Terms promise no results);
+   2. what the price buys and what a lead is worth: the credits, and that
+      every lead is checked against your ICP (a researched buyer, not a
+      name). No estimate of leads beside the price (founder 2026-10-13: "ça
+      fait poser des questions"; "sinon ça fait cher juste le lead"): it is
+      on /pricing, after the section that says what one lead is. "…and leads
+      as you want" left with the flat plan;
+   3. rollover, said as the month it saves (up to one month of credits is
+      kept at renewal; /pricing has the detail);
+   4. Plays, said as the freedom they give: creating and testing a Play is
+      free in the app, only a search uses credits;
+   5. and 6. the message and the control line, unchanged in substance: you
+      approve every lead before anyone is contacted (message review is
+      optional, so never "approvals on messages").
+   No spend cap (founder 2026-09-19). Same facts in pricingV2.value
+   (lib/copy.ts) and the /for checklist. */
 const CHECKLIST = [
-  "Everything included.",
-  "As many Plays and leads as you want.",
-  "Warm leads that keep coming.",
-  // \u00a0 keeps "customers a month." together when a narrow phone wraps it.
+  // \u00a0 keeps the last two words together when a narrow phone wraps the line.
   "Built to land 2 to 3 customers\u00a0a\u00a0month.",
-  "A personal message for each lead.",
-  "You approve every lead.",
+  `${formatCredits(BASE_LEVEL.credits)} credits a month. Every lead checked against your\u00a0ICP.`,
+  "Slow month? Unused credits roll\u00a0over.",
+  "Try any GTM idea. Building a Play is\u00a0free.",
+  "A personal message for each lead, in your\u00a0voice.",
+  "You approve every lead before anyone is\u00a0contacted.",
 ];
 
 /**
@@ -47,9 +59,11 @@ export function LpPricing({ checklist = CHECKLIST }: { checklist?: readonly stri
           <div className="lp-price-price">
             {/* Founder copy (2026-09-03): "$99/month" replaces the artboard's
                 "99 USD" + "per month, flat" — the number keeps the display
-                size, "/month" rides the old per-line style inline. */}
+                size, "/month" rides the old per-line style inline.
+                2026-10-13: "From" in the same per-line style, because the
+                plan has higher levels of monthly credits. */}
             <p className="lp-price-amount">
-              $99
+              <span className="lp-price-per lp-price-from">From </span>${BASE_LEVEL.dollars}
               <span className="lp-price-per">/month</span>
             </p>
           </div>
@@ -74,13 +88,13 @@ export function LpPricing({ checklist = CHECKLIST }: { checklist?: readonly stri
             Start free
           </LpFxLink>
         </div>
-        <p className="lp-price-note">{TRIAL_LABEL}</p>
+        <p className="lp-price-note">{TRIAL_OFFER}</p>
         {/* The route to /pricing (2026-10-07: the homepage linked it from the
             footer only). A text link, not a pill, so Start free stays this
             card's one CTA. */}
         <p className="lp-price-more">
           <a className="lp-textlink" href="/pricing">
-            See what one plan covers<span aria-hidden="true"> →</span>
+            See how credits work<span aria-hidden="true"> →</span>
           </a>
         </p>
       </div>

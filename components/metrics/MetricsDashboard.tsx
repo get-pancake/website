@@ -1,5 +1,8 @@
 "use client";
 
+// The kit stylesheet rides with the components that use it (2026-10-13): it left
+// app/layout.tsx so routes without kit markup stop downloading its 98 KB.
+import "@/app/_styles/components.css";
 import { useMemo, useState } from "react";
 import type { Metrics, Point } from "@/lib/metrics";
 

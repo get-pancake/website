@@ -334,12 +334,17 @@
     animation-name: none;
     will-change: auto;
   }
+  /* V2 demo window composer caret (demo-scroll, 2026-10-09): .lp-demowin stage */
+  [data-lp-offstage] .lp-demowin__caret {
+    animation-name: none;
+  }
 }
 @media (min-width: 768px) {
   [data-lp-offstage] .lp-anim-spin--cw,
   [data-lp-offstage] .lp-anim-spin--ccw,
   [data-lp-offstage] .lp-anim-bubble,
-  [data-lp-offstage] .lp-marquee__seq {
+  [data-lp-offstage] .lp-marquee__seq,
+  [data-lp-offstage] .lp-demowin__caret {
     animation-play-state: paused;
   }
 }
@@ -442,7 +447,8 @@
   .lp-anim-spin--cw,
   .lp-anim-spin--ccw,
   .lp-anim-fill.lp-anim-pop,
-  .lp-anim-bubble {
+  .lp-anim-bubble,
+  .lp-demowin__caret {
     animation: none;
   }
 }

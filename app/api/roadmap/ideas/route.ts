@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { isRoadmapTag } from "@/components/sections/roadmap/roadmap-data";
+import { ROADMAP_POSTING_OPEN, isRoadmapTag } from "@/components/sections/roadmap/roadmap-data";
+import { isAdmin } from "@/lib/auth/admin";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { mapIdeaRow } from "@/lib/roadmap/ideas";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
@@ -18,6 +19,11 @@ const IDEA_SELECT = "id, title, description, tag, status, author_name, vote_coun
  * Writes go through the service-role client (anon role has no insert rights).
  */
 export async function POST(request: Request) {
+  // Paused for visitors (ROADMAP_POSTING_OPEN); a signed-in admin still posts. Checked first, so
+  // a paused board answers 403 whatever the backend's state.
+  if (!ROADMAP_POSTING_OPEN && !(await isAdmin())) {
+    return NextResponse.json({ error: "New ideas are paused for now. You can still vote." }, { status: 403 });
+  }
   if (!isServiceConfigured()) {
     return NextResponse.json({ error: "Roadmap backend is not configured." }, { status: 503 });
   }

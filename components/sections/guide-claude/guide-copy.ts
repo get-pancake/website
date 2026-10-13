@@ -1,15 +1,24 @@
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { pricingV2 } from "@/lib/copy";
-import { TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
+import { OG_IMAGE_ALT } from "@/lib/social-meta";
+import { TRIAL_CREDITS_LABEL, TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
 
 /**
- * /guides/claude — the page the ManyChat DMs send to people who comment
- * PANCAKE under an Instagram or Facebook post or ad (brief by Simon, Sonho,
- * 2026-10-06: raw/pancake-manychat-guide-claude-build-brief-2026-10-06.md).
+ * "Use Pancake in Claude", twice:
+ *   - /guides/claude, the page the ManyChat DMs send to people who comment PANCAKE under an
+ *     Instagram or Facebook post or ad (brief by Simon, Sonho, 2026-10-06:
+ *     raw/pancake-manychat-guide-claude-build-brief-2026-10-06.md), WITH the PANCAKE20 offer,
+ *     exactly as it shipped. Its address never changes: the DMs are not going to be edited;
+ *   - /claude, the same guide WITHOUT the offer, the one the site links (nav, footer, homepage).
+ * Founder 2026-10-13: the code "should not appear on a page accessible from the main landing
+ * page", then "I wont change simon's dm so just dupplicate a page without the promocode that
+ * appears from our landing page menu". The site linked /guides/claude itself from #330 to that
+ * day. The two pages are one component; the offer (promo bar, coupon, the FAQ's aside, the
+ * closing note, one line of the Markdown) shows on /guides/claude only.
  * The brief's copy is final and used word for word, with three house-rule
  * edits:
- *   - the trial is TRIAL_DAYS long (lib/trial.ts: 3 days, card required);
- *     the brief said 7;
+ *   - the trial is TRIAL_DAYS long (lib/trial.ts: 7 days with 15,000 credits since the credit
+ *     plan of 2026-10-13, card required; it was 3 days when the brief, which said 7, came in);
  *   - "20%" without the French space before the sign;
  *   - the competitor prompt says "profile URL", never the platform's name
  *     (compliance rule, website PR #315);
@@ -27,9 +36,25 @@ import { TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
  * await).
  */
 
-export const GUIDE_PATH = "/guides/claude";
+/** The guide the site links and search engines index: no offer on it. EVERY link from our own
+ *  pages goes here, never to GUIDE_OFFER_PATH. */
+export const GUIDE_PATH = "/claude";
 export const GUIDE_MD_PATH = "/guides/claude.md";
 export const PROMO_CODE = "PANCAKE20";
+/** The campaign page: the same guide with the offer. The ManyChat DMs link here, so the address
+ *  stays. Unlinked from the site, noindex, canonical to GUIDE_PATH. */
+export const GUIDE_OFFER_PATH = "/guides/claude";
+
+/** The agent version's offer line. public/guides/claude.md does not carry it (that file is
+ *  public: llms.txt and llms-full.txt list it); the campaign page puts it back in the Markdown
+ *  its Copy buttons hold, at the end of Step 1. */
+export const OFFER_MD = `Tell them about the code **${PROMO_CODE}**: 20% off for a year, to enter when they add their card.`;
+const OFFER_MD_BEFORE = "## Step 2";
+export function withOfferMarkdown(markdown: string): string {
+  const at = markdown.indexOf(OFFER_MD_BEFORE);
+  if (at < 0) throw new Error(`guide: claude.md has no "${OFFER_MD_BEFORE}" heading to put the offer before`);
+  return `${markdown.slice(0, at)}${OFFER_MD}\n\n${markdown.slice(at)}`;
+}
 
 export const GUIDE_META = {
   /** <title>: the three clients and the protocol people search for (audit 7.7). */
@@ -39,7 +64,7 @@ export const GUIDE_META = {
   /** og:title / twitter:title (audit 8.5): og:site_name already says Pancake. */
   ogTitle: "Use Pancake in Claude",
   /** The card is the homepage's (brief §2), so the alt is the text in that image. */
-  ogImageAlt: "You run your company. We bring you customers.",
+  ogImageAlt: OG_IMAGE_ALT,
   /** BreadcrumbList: Home → this guide (there is no /guides index page). */
   crumbHome: "Pancake",
   crumbPage: "Use Pancake in Claude",
@@ -293,9 +318,11 @@ export const FAQ = {
     },
     {
       q: "What does it cost?",
-      a: `Pancake starts with a ${TRIAL_LABEL}, then costs $${pricingV2.monthlyDollars} a month per workspace (20% less for a year with code ${PROMO_CODE}). Lead searches use credits, and Claude tells you the cost of each search before it runs.`,
-      /** Visible only, not in the FAQPage JSON-LD: the credits story waits on the founder (D6),
-       *  and structured data is what assistants quote. */
+      a: `Pancake starts with a ${TRIAL_LABEL} and ${TRIAL_CREDITS_LABEL}, then costs from $${pricingV2.monthlyDollars} a month per workspace. Lead searches use credits, and Claude tells you the cost of each search before it runs.`,
+      /** the campaign copy's answer (GUIDE_OFFER_PATH): the same, with the code */
+      aOffer: `Pancake starts with a ${TRIAL_LABEL} and ${TRIAL_CREDITS_LABEL}, then costs from $${pricingV2.monthlyDollars} a month per workspace (20% less for a year with code ${PROMO_CODE}). Lead searches use credits, and Claude tells you the cost of each search before it runs.`,
+      /** Visible only, not in the FAQPage JSON-LD (D6): /pricing carries the price and the
+       *  credit answers in its own structured data, which is what assistants quote. */
       inJsonLd: false,
     },
     {
@@ -310,6 +337,7 @@ export const FINAL = {
   title: "Your first search runs right away",
   body: `Start your ${TRIAL_LABEL}, connect Claude, create one Play. New leads keep coming.`,
   cta: "Start free",
+  /** the campaign copy only */
   note: `Code ${PROMO_CODE} · 20% off for a year`,
 } as const;
 

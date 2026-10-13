@@ -143,9 +143,10 @@ Never edit `LpMarquee.tsx`.
    visitors; "Play" and "sequence", never "campaign"; no draft mode or
    per-message approval (reading and editing messages is optional); no AI
    SEO for Pancake (articles, AI search, Google / ChatGPT rankings or
-   citations, GEO / AEO: `AI_SEO`, no negation allowance); leads arrive each
-   morning; $99/month flat; 3-day
-   trial with a card (`lib/trial.ts`). `BANNED` in validate.ts is the gate;
+   citations, GEO / AEO: `AI_SEO`, no negation allowance); from $99/month
+   with monthly credits (`lib/pricing.ts`; never "flat" or "as many leads
+   as you want"); 7-day trial with 15,000 credits and a card
+   (`lib/trial.ts`). `BANNED` in validate.ts is the gate;
    FAQ answers may negate ("No. …").
 2. **Tokens only** in `app/_styles/verticals/` — lp tokens + `color-mix()`.
    The only literals allowed are custom properties in `demo.css` (the app's
@@ -260,40 +261,22 @@ Never edit `LpMarquee.tsx`.
   typing). The Related section's eyebrow is "Industries" (the breadcrumb
   left it). `name.badge` is no longer rendered (kept in the schema).
 
-## The demo on the homepage (2026-09-23)
+## The demo on the homepage
 
-Founder decision, relaying the team ("blown away by this part, should probably be on the
-normal landing page"): the same demo, in its own homepage section, `LpDemoTour`
-(`components/sections/landing-v3/`), right after the customer logos. No fork: `VxDemo headless`
-+ the one `VxDemoPlayer` island. **Just the four tabs** (founder 2026-09-24, on the preview:
-"remove this part but only keep the 4 tabs"): no eyebrow, visible H2, lede or example-prompt
-rows on the homepage; autoplay walks the three prompts on its own.
+The homepage no longer renders VxDemo (2026-10-09): its demo is the V2 demo window, `LpDemo`
+(landing-v3, see that README). `lib/verticals/home-demo.ts` stays the validated data source of
+its request, reply and Play card: `validateVerticals(all, { homepage: HOME_DEMO })`
+(lib/verticals/index.ts) still fails a production build on it like on a config, and
+`verticals-budget.mjs homepage` still measures it against the /for demo's pixel budgets, so the
+data stays safe to show in VxDemo again.
 
-| Piece | Where |
-|---|---|
-| Data | `lib/verticals/home-demo.ts` — `HOME_DEMO: DemoSource` (= `Pick<VerticalConfig, "workspace" \| "demo">`): Studio Pelican, the homepage's own fictional customer (LpSteps, LpFeatures), three prompts from one business (Keyword, Competitor, Hiring), US targets; every name invented (no on-page disclaimer since 2026-09-24). Not in the registry, the sitemap, the hub or the nav |
-| Rules | `validateVerticals(all, { homepage: HOME_DEMO })` (lib/verticals/index.ts): the demo, workspace, lint and PLATFORM rules, in the same uniqueness pools as the 40 configs (people, companies, workspaces, message closings / openers) — a production build fails on it like on a config. `verticals-budget.mjs` measures it as `homepage` |
-| Section | `LpDemoTour.tsx`: `<section class="lp-vx lp-tour">` — a visually hidden H2 (`HOME_DEMO.demo.h2`, for screen readers and the outline) + `VxDemo headless gate="window"` (≥768 the first start waits for 35% of the app window instead of the composer; phones keep the composer rule). `.lp-vx` sits on the section only, so no /for rule reaches another homepage section |
-| CSS | `app/_styles/home-demo.css` (imported by `app/page.tsx` after `landing-v3.css`) → `verticals/{foundation,demo}.css` + `landing-v3/demo-tour.css` (the section's place in the homepage rhythm: 160 / 112 / 96 visible gaps from the logos to the tab bar and from the foot to LpSteps' kicker, LpSteps untouched; no full-bleed cream stripe or hairlines — every other homepage surface is a rounded card; the tab rail is the demo's only line) |
-| Agents view | hidden with every other human section (`audience.css`: direct `<section>` children of the page except the hero and the lab); `display: none` never intersects, so the island's clock stays stopped |
-
-Shared-file changes this needed, /for output unchanged (computed styles of the rows, tabs and
-stage diffed old vs new CSS at 7 window sizes × 2 pages, focus ring included: identical):
-the prompt rows moved from `hero.css` to `prompts.css` (the label's margin-top and the fold
-tier's list gap stay in hero.css, the tier now `.vx-hero .vx-hp-list`); demo.css's short-window
-tier (48px bar) is scoped to `.vx-hero + .vx-demo` (the homepage demo is far below the fold);
-the Slack mascot `<img>` is `loading="lazy"` on the homepage only (`headless`: an eager img
-makes React hoist a `<link rel=preload>` for it into the head, outside the demo section); the
-/for pages keep the eager img and its preload, so their server HTML is byte-identical to
-before this PR.
-
-Critic pass (2026-09-24), shared with /for at runtime, /for HTML unchanged: `VxPromptRows`
-takes `label` (default `"visible"`) and `VxDemo` / `VxDemoPlayer` take `gate` (default
-`"composer"`); the card carries `data-run` while the clock ticks, and the Outreach "Writing…"
-spinner runs only on the active Outreach pane of a running card (it used to match the hidden
-pane of any armed card and cost ~60 style recalcs a second for the rest of a visit scrolled past
-the demo); a prompt-row tap whose band is taller than the viewport scrolls just far enough to
-show the Brief composer 12px above the bottom edge (320×568 typed below the fold).
+What the 2026-09-23 homepage tour left behind in the shared files, all default-preserving (the
+/for HTML is unchanged): `VxDemo` / `VxDemoPlayer` take `headless` and `gate` (default
+`"composer"`), `VxPromptRows` takes `label` (default `"visible"`); the prompt rows live in
+`prompts.css`; demo.css's short-window tier (48px bar) is scoped to `.vx-hero + .vx-demo`. The
+card carries `data-run` while the clock ticks, and the Outreach "Writing…" spinner runs only on
+the active Outreach pane of a running card. None of the three props has a caller today; remove
+them only together with a /for HTML diff.
 
 ## QA
 

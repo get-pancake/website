@@ -69,7 +69,10 @@ function useFxCircle(
       if (e.pointerType === "touch") return;
       c.style.transition = "none";
       place(e);
-      c.style.background = FILLS[count++ % 3]!;
+      const fill = FILLS[count++ % 3]!;
+      c.style.background = fill;
+      // the pill takes this colour once the circle covers it (foundation.css `.lp-btn.is-fx`)
+      host.style.setProperty("--lp-fx-fill", fill);
       void c.offsetWidth; // commit the repositioned, unscaled circle before animating
       c.style.transition = "";
       c.style.transform = "translate(-50%,-50%) scale(1)";

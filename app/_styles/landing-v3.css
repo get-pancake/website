@@ -1,17 +1,28 @@
 /* Landing v3 — pixel replication of Figma "Pancake-Design" node 4197-9774 (frame 4257:4893).
    Import manifest only — rules live in landing-v3/. Deliberately unlayered so it
-   beats the @layer'd kit, same strategy as landing-v2.css. Scoped to .lp. */
+   beats the @layer'd kit, same strategy as landing-v2.css. Scoped to .lp.
+   V2 replication (Figma fr8NgOCTUxsEbrMEJA3YKu 4911:346, 2026-10-09): new section
+   files sit before anim.css (it restates responsive widths and imports last of the
+   sections); audience-agents.css right after audience.css (the agents view wins). */
 @import "./landing-v3/foundation.css";
 @import "./landing-v3/nav.css";
 @import "./landing-v3/hero.css";
+@import "./landing-v3/demo.css";
 @import "./landing-v3/marquee.css";
 @import "./landing-v3/steps.css";
 @import "./landing-v3/banner.css";
-@import "./landing-v3/features.css";
+@import "./landing-v3/dive.css";
+@import "./landing-v3/story-sources.css";
+@import "./landing-v3/story-message.css";
+@import "./landing-v3/story-learns.css";
+@import "./landing-v3/story-claude.css";
 @import "./landing-v3/cta.css";
+@import "./landing-v3/sky.css";
+@import "./landing-v3/bento.css";
 @import "./landing-v3/pricing.css";
 @import "./landing-v3/footer.css";
 @import "./landing-v3/modal.css";
 @import "./landing-v3/anim.css";
 @import "./landing-v3/audience.css";
+@import "./landing-v3/audience-agents.css";
 @import "./landing-v3/agent-lab.css";

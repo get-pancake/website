@@ -4,6 +4,7 @@ import { PlaysPage } from "@/components/sections/plays/PlaysPage";
 import { PLAYS_META } from "@/components/sections/plays/plays-copy";
 import { playsDescription } from "@/components/sections/plays/plays-data";
 import { PLAYS_URL } from "@/components/sections/plays/plays-jsonld";
+import { OG_IMAGE } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 import "./plays.css";
 
@@ -31,7 +32,7 @@ export function generateMetadata(): Metadata {
       title: PLAYS_META.ogTitle,
       description,
       // the shared homepage card, so the alt is the text in that image
-      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: PLAYS_META.ogImageAlt }],
+      images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: PLAYS_META.ogImageAlt }],
       siteName: "Pancake",
       locale: "en_US",
     },
@@ -41,7 +42,7 @@ export function generateMetadata(): Metadata {
       creator: PLAYS_META.xHandle,
       title: PLAYS_META.ogTitle,
       description,
-      images: [{ url: "/og-image.png", alt: PLAYS_META.ogImageAlt }],
+      images: [{ url: OG_IMAGE, alt: PLAYS_META.ogImageAlt }],
     },
   };
 }

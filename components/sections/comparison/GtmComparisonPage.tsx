@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/Badge";
 import { H2, H3 } from "@/components/ui/Headings";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
+import "@/app/_styles/components.css";
 import "@/app/_styles/landing-v3.css";
 import "./comparison.css";
 
@@ -205,7 +206,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
               {/* 2026-10-07: "SOC 2 compliant" removed (no report on file, audit D2). Restore it
                   only with a /security page that backs it. */}
               <ul className="vvp-hero__badges">
-                <li className="vvp-hero__badge"><LuSparkles aria-hidden /> $99 a month per workspace</li>
+                <li className="vvp-hero__badge"><LuSparkles aria-hidden /> From $99 a month per workspace</li>
                 <li className="vvp-hero__badge"><LuCreditCard aria-hidden /> No extra seats to hire</li>
                 <li className="vvp-hero__badge"><LuUserCheck aria-hidden /> You approve every lead</li>
                 <li className="vvp-hero__badge"><LuLock aria-hidden /> Private by default</li>
@@ -309,7 +310,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
               <CtaPair placement="final" />
               {/* each phrase stays whole on phones (393px left "lead" alone on line 2) */}
               <p className="home-landing-closing-cta__note">
-                <span className="vvp-nowrap">$99 a month per workspace&nbsp;•</span>{" "}
+                <span className="vvp-nowrap">From $99 a month per workspace&nbsp;•</span>{" "}
                 <span className="vvp-nowrap">You approve every lead</span>
               </p>
               {/* 2026-10-07 (founder: make the comparison pages reachable, as Unify, Origami,

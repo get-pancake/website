@@ -34,6 +34,10 @@ import { useEffect } from "react";
 const STAGES = [
   ".lp-banner__card",
   ".lp-marquee",
+  // V2 demo window (demo-scroll, 2026-10-09): its composer caret blink is the section's only
+  // infinite CSS loop. Block `lp-demowin`, NOT `lp-demo` (that is /demo's main.lp.lp-demo, and
+  // landing-v3.css ships on /demo)
+  ".lp-demowin",
 ].join(", ");
 
 /** Animated members inside a stage (mirror of the anim.css offstage block).
@@ -41,7 +45,7 @@ const STAGES = [
     composite a transform animation on a frame wider than its 4096-device-px
     prerender cap (marquee.css). */
 const MEMBERS =
-  ".lp-anim-spin--cw, .lp-anim-spin--ccw, .lp-anim-bubble, .lp-marquee__seq";
+  ".lp-anim-spin--cw, .lp-anim-spin--ccw, .lp-anim-bubble, .lp-marquee__seq, .lp-demowin__caret";
 
 export function LpAnimFreeze() {
   useEffect(() => {

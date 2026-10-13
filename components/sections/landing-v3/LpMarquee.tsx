@@ -5,9 +5,8 @@ import { LpMarqueePause } from "@/components/sections/landing-v3/LpMarqueePause"
 /** Customer logos in the founder's order. The brain landing is the source
  * for the plum masks, optical sizing and continuous leftward scroll.
  * Artwork and provenance: public/logos/customers/README.md.
- * 2026-10-07: the loop pauses while a pointer rests on the band, and a small
- * pause button (LpMarqueePause, outside the band so it never pauses itself)
- * stops it for keyboard and touch users (WCAG 2.2.2).
+ * 2026-10-12: a pointer resting on the band slows the loop instead of stopping
+ * it (LpMarqueePause). 2026-10-13: the pause button is gone (founder).
  */
 type CustomerLogo = {
   name: string;
@@ -28,6 +27,9 @@ const LOGOS: CustomerLogo[] = [
   { name: "Alpic", file: "alpic.svg", ratio: 266.246 / 52.146, body: [0.14, 0.86] },
   { name: "Praxis", file: "praxis.png", ratio: 1392 / 370, body: [0.24, 0.755], yc: true },
   { name: "Kinro", file: "kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75], yc: true },
+  // Vector Legal (vectorlegal.com, YC W26), founder 2026-10-13. Their header lockup, composed:
+  // the site has no wordmark file (public/logos/customers/README.md); body = the capital V.
+  { name: "Vector Legal", file: "vector-legal.png", ratio: 1111 / 151, body: [0.079, 0.795], yc: true },
   { name: "Covera", file: "covera.png", ratio: 188 / 40, body: [0.32, 0.995], yc: true },
   { name: "Spacefill", file: "spacefill.svg", ratio: 192 / 33, body: [0.2411, 0.7591] },
   { name: "Kardinal", file: "kardinal.svg", ratio: 152 / 24, body: [0.23, 0.83] },
@@ -49,26 +51,41 @@ function markStyle(logo: CustomerLogo): CSSProperties {
 // Each copy translates by its own width, including its leading gap.
 const COPY_COUNT = 4;
 
-export function LpMarquee() {
+/** The homepage's line above the strip (Figma V2 4962:847, red note "swapped position /
+    'Trusted by many'", 2026-10-09): Geist Medium 13.333/16 in the subtle text colour. */
+const LABEL = "Trusted by many";
+
+/**
+ * `labelled` (homepage only, Figma V2 4911:371): the strip moves under the demo window and
+ * gains the "Trusted by many" line, in a vertical frame (pad 8, gap 8, label 16 + slot 90 =
+ * 130). Opt-in: /demo (DemoTrustBand), /pricing (PricingLogos) and /for (VxPage) keep the
+ * bare strip. The `.lp-marquee__slot` wrapper is rendered for every consumer: it is the pause
+ * button's containing block (its top: 50% stays the logo row's centre whether or not a label
+ * sits above) and an unlabelled slot is a plain relative block, so their layout is unchanged.
+ */
+export function LpMarquee({ labelled = false }: { labelled?: boolean } = {}) {
   return (
-    <section className="lp-marquee" aria-label="Customers">
-      <div className="lp-marquee__band">
-        <div aria-hidden="true" className="lp-marquee__track">
-          {Array.from({ length: COPY_COUNT }, (_, copy) => (
-            <div className="lp-marquee__seq" key={copy}>
-              {LOGOS.map((logo) => (
-                <div className="lp-marquee__item" key={logo.name}>
-                  <div className="lp-marquee__mark">
-                    <span className="lp-marquee__logo" style={markStyle(logo)} />
+    <section className={labelled ? "lp-marquee lp-marquee--labelled" : "lp-marquee"} aria-label="Customers">
+      {labelled && <p className="lp-marquee__label">{LABEL}</p>}
+      <div className="lp-marquee__slot">
+        <div className="lp-marquee__band">
+          <div aria-hidden="true" className="lp-marquee__track">
+            {Array.from({ length: COPY_COUNT }, (_, copy) => (
+              <div className="lp-marquee__seq" key={copy}>
+                {LOGOS.map((logo) => (
+                  <div className="lp-marquee__item" key={logo.name}>
+                    <div className="lp-marquee__mark">
+                      <span className="lp-marquee__logo" style={markStyle(logo)} />
+                    </div>
+                    {logo.yc && <span className="lp-marquee__yc" />}
                   </div>
-                  {logo.yc && <span className="lp-marquee__yc" />}
-                </div>
-              ))}
-            </div>
-          ))}
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
+        <LpMarqueePause />
       </div>
-      <LpMarqueePause />
       <ul className="lp-sr-only">
         {LOGOS.map((logo) => (
           <li key={logo.name}>{logo.name}{logo.yc ? " — Y Combinator" : ""}</li>

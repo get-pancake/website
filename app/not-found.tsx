@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 
 const WAYS_BACK = [
   { name: "Home", href: "/", line: "Tell Pancake who to reach. It builds the Play." },
-  { name: "Pricing", href: "/pricing", line: "$99 a month per workspace." },
+  { name: "Pricing", href: "/pricing", line: "From $99 a month per workspace." },
   { name: "Industries", href: "/for", line: "Pancake for your industry, with example Plays." },
   { name: "Example Plays", href: PLAYS_PATH, line: "Start from an example, or write your own." },
   { name: "Blog", href: "/blog", line: "Guides and comparisons for founders who sell." },

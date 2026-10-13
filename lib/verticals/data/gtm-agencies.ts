@@ -2,7 +2,7 @@
 // Every person, company, rival agency, creator and workspace below is invented.
 // Caveat (brief): Pancake overlaps the reader's own service, so the page leads with
 // "fill your own pipeline" and puts clients second. One workspace and one sending
-// account per client ($99 each); no multi-client dashboard, no custom sequences, no email.
+// account per client (from $99 each); no multi-client dashboard, no custom sequences, no email.
 import type { VerticalConfig } from "../types";
 
 export const gtmAgencies: VerticalConfig = {
@@ -138,7 +138,7 @@ export const gtmAgencies: VerticalConfig = {
       {
         kind: "competitor",
         title: "Followers of rival agencies",
-        body: "Founders who like or comment on a rival agency’s posts show up in your morning leads.",
+        body: "Founders who like or comment on a rival agency’s posts show up in your leads.",
         watching: ["Pipeforge Growth", "Meridell Demand"],
       },
     ],
@@ -147,7 +147,7 @@ export const gtmAgencies: VerticalConfig = {
   faq: [
     {
       q: "Can I run Pancake for my clients?",
-      a: "Yes. Open one workspace per client at $99 a month each. Each client gets its own Brain and needs its own account to send from.",
+      a: "Yes. Open one workspace per client, from $99 a month each. Each client gets its own Brain and needs its own account to send from.",
     },
     {
       q: "Isn’t Pancake a rival to my agency?",

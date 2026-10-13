@@ -2,13 +2,55 @@
    Solid plum alpha masks, optically aligned wordmarks, 48px gaps and a
    seamless leftward loop with 10% edge fades. Animate each copy rather
    than one oversized track; LpAnimFreeze releases off-screen animation.
-   The duration accounts for eleven logos to preserve the reference's speed. */
+   The duration accounts for twelve logos to preserve the reference's speed. */
 .lp-marquee {
   --lp-marquee-scale: 1;
   overflow: hidden;
   padding-block: var(--lp-space-8);
   color: var(--lp-ink-100);
-  position: relative; /* the pause button's anchor */
+  position: relative;
+}
+
+/* the pause button's containing block (LpMarquee renders it for every
+   consumer): its top: 50% stays the logo row's centre whether or not a label
+   sits above the strip. Unlabelled, it is a plain block around the band, so
+   /demo, /pricing and /for lay out exactly as before. */
+.lp-marquee__slot {
+  position: relative;
+}
+
+/* Homepage variant — Figma V2 4911:371 (red note "swapped position /
+   'Trusted by many'", 2026-10-09): a vertical auto-layout, pad 8, gap 8,
+   centred, under the demo window. Label 16 + slot 90 = 130 (Figma 129.58:
+   its slot is the pasted 89.58px placeholder image; rounded so every section
+   below stays on whole pixels). */
+.lp-marquee--labelled {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);           /* 8 */
+  padding-block: var(--lp-space-2); /* 8 (the bare strip keeps 32) */
+}
+.lp-marquee__label {
+  color: var(--lp-subtle-text);     /* Figma variable subtle-text #85687c */
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);     /* Figma variable app/body-sm 13.333 */
+  font-weight: 500;                 /* Geist Medium */
+  letter-spacing: 0;
+  line-height: 16px;
+  margin: 0;
+  text-align: center;
+  white-space: nowrap;
+}
+/* the artboard's strip slot: the real 44px logo row centred in it, 23px above
+   and below (Figma's placeholder glyphs centre at frame y75-77 of 32-122).
+   min-height, not height: the reduced-motion fallback wraps the logos onto
+   two rows and the slot grows with them. */
+.lp-marquee--labelled .lp-marquee__slot {
+  align-content: center;
+  display: grid;
+  min-height: calc(var(--lp-customer-logo-row-height) * var(--lp-marquee-scale) + 46px);
+  width: 100%;
 }
 
 .lp-marquee__band {
@@ -68,61 +110,9 @@
   mask-position: center;
 }
 
-/* Pause (2026-10-07, WCAG 2.2.2): a pointer resting on the band, or the
-   pause button (LpMarqueePause → data-paused on the strip). The button sits
-   outside the band, so hovering or focusing it never pauses the loop on its
-   own and "Play" always means play. Independent of anim.css's off-stage
-   freeze: both only ever pause. */
-@media (hover: hover) {
-  .lp-marquee__band:hover .lp-marquee__seq {
-    animation-play-state: paused;
-  }
-}
-.lp-marquee[data-paused] .lp-marquee__seq {
-  animation-play-state: paused;
-}
-/* Minimal control until the designer styles it: a 28px cream disc with a
-   hairline at the strip's right end, over the band's faded edge (the 10%
-   mask), so it covers no visible logo; 44px hit area via ::after. */
-.lp .lp-marquee__pause {
-  align-items: center;
-  background: var(--lp-page-bg);
-  border: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px var(--lp-stroke);
-  color: var(--lp-ink-80);
-  cursor: pointer;
-  display: flex;
-  height: 28px;
-  justify-content: center;
-  padding: 0;
-  position: absolute;
-  right: var(--lp-space-2);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-}
-/* hidden until LpMarqueePause sees the strip move (a frozen row has none) */
-.lp .lp-marquee__pause[hidden] {
-  display: none;
-}
-.lp .lp-marquee__pause::after {
-  content: "";
-  inset: -8px;
-  position: absolute;
-}
-.lp .lp-marquee__pause svg {
-  fill: currentColor;
-}
-.lp .lp-marquee__pause:focus-visible {
-  outline: 2px solid var(--lp-text);
-  outline-offset: 2px;
-}
-@media (hover: hover) {
-  .lp .lp-marquee__pause:hover {
-    color: var(--lp-ink-100);
-  }
-}
+/* No pause button since 2026-10-13 (founder). A pointer resting on the band
+   slows the loop (LpMarqueePause eases the copies' playback rate); anim.css's
+   off-stage freeze and reduced motion are unchanged. */
 
 @keyframes lp-marquee-scroll {
   from { transform: translateX(0); }
@@ -133,6 +123,17 @@
   .lp-marquee {
     --lp-marquee-scale: var(--lp-customer-logo-mobile-scale);
     --lp-customer-logo-duration: var(--lp-customer-logo-mobile-duration);
+  }
+  /* Homepage variant on phones — the designer's mobile artboard (Figma 5024:8948,
+     2026-10-11): pad 3.811, gap 16, strip slot 42.67 → 3.811 + 16 + 16 + 42.67 + 3.811 =
+     82.29 (the desktop recipe gave 123.39). The 37.4px logo row is centred in the slot.
+     min-height, not height: the reduced-motion fallback wraps the logos onto several rows. */
+  .lp-marquee--labelled {
+    gap: var(--lp-space-4); /* 16 */
+    padding-block: 3.811px;
+  }
+  .lp-marquee--labelled .lp-marquee__slot {
+    min-height: 42.67px;
   }
 }
 
@@ -148,5 +149,4 @@
     padding-inline: var(--lp-space-8);
   }
   .lp-marquee__seq + .lp-marquee__seq { display: none; }
-  .lp .lp-marquee__pause { display: none; }
 }

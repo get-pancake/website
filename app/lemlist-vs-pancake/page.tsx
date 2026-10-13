@@ -75,7 +75,7 @@ const config: GtmComparisonConfig = {
     { feature: "Outbound channels", competitor: { text: "Email, social steps, calls, WhatsApp, and SMS", mark: "yes" }, pancake: { text: "Direct messages under your name, from several of your own accounts" } },
     { feature: "Deliverability tooling", competitor: { text: "Dedicated hub and lemwarm", mark: "yes" }, pancake: { text: "—" } },
     { feature: "Shared GTM Brain", competitor: { text: "Campaign and lead context" }, pancake: { text: "Your ideal customer, competitors, and voice, researched from your website", mark: "yes" } },
-    { feature: "Pricing model", competitor: { text: "Tiered plans; cost depends on plan and team needs" }, pancake: { text: "$99/month per workspace, no tiers, no seats", mark: "yes" } },
+    { feature: "Pricing model", competitor: { text: "Tiered plans; cost depends on plan and team needs" }, pancake: { text: "From $99/month per workspace, one plan, no seats", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Sales teams and agencies wanting control" }, pancake: { text: "Founders wanting GTM operated for them" } },
   ],
   closingTitle: "Stop staffing the platform. Start running GTM.",
@@ -85,7 +85,7 @@ const config: GtmComparisonConfig = {
     { q: "Is Lemlist better for email deliverability?", a: "Lemlist has the more specialized deliverability toolkit, including lemwarm and a dedicated deliverability hub. It is the stronger choice when a team needs hands-on control over high-volume outbound infrastructure." },
     { q: "Which product supports more outbound channels?", a: "Lemlist publicly supports a broader set of outbound channels, including email, social, calls, WhatsApp, and SMS. Pancake sends direct messages under your name, each one written from why the lead fits. A reply stops the sequence." },
     { q: "Does Pancake replace a sales team?", a: "Pancake lets founders and lean teams run GTM without hiring an SDR or sales-operations team. It finds the buyers and opens the conversations. You approve every lead, set the direction, and handle the conversations that need you." },
-    { q: "How does pricing compare?", a: "Lemlist uses tiered plans whose current price and included channels depend on the package and team needs. Pancake has one plan with no tiers: $99 a month per workspace, after a 3-day free trial (card required). Check Lemlist's pricing page for current limits before deciding." },
+    { q: "How does pricing compare?", a: "Lemlist uses tiered plans whose current price and included channels depend on the package and team needs. Pancake has one plan with every feature: from $99 a month per workspace, by monthly credits, after a 7-day free trial (card required). Check Lemlist's pricing page for current limits before deciding." },
     { q: "Can Lemlist and Pancake work together?", a: "They can run side by side. A sales team can keep Lemlist for email sequencing and deliverability while Pancake runs Plays and opens conversations from the founder's own account." },
   ],
   related: [

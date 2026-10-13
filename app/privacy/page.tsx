@@ -28,7 +28,13 @@ export const metadata: Metadata = {
 };
 
 /* Content note: the "Google User Data" section is part of our Google OAuth
-   verification — edit it only with that process in mind. */
+   verification — edit it only with that process in mind.
+   2026-10-13 (launch audit): wording only. "to act as a cofounder" and "our AI
+   cofounder" (the V1 product's name for itself) now say Pancake, and "SEO plans"
+   left the Agent Connector list (AI SEO retired 2026-09-30). The scopes and the
+   three "How we …" statements are untouched. OPEN: pancake-cmo's code no longer
+   names the Gmail, Drive, Docs, Sheets, Calendar or Contacts scopes; whether the
+   list should shrink is a question for whoever owns the Google verification. */
 
 export default function PrivacyPolicyPage() {
   return (
@@ -36,7 +42,7 @@ export default function PrivacyPolicyPage() {
       <LpNav />
       <section className="lp-legal" aria-labelledby="privacy-heading">
         <article className="lp-legal__body">
-          <p className="lp-legal__updated">Last updated: September 18, 2026</p>
+          <p className="lp-legal__updated">Last updated: October 13, 2026</p>
           <h1 id="privacy-heading">Privacy Policy</h1>
 
           <p>
@@ -80,7 +86,7 @@ export default function PrivacyPolicyPage() {
               <strong>Agent Connector Data (if applicable):</strong> tool requests from the
               AI client you connect, the Pancake workspace records needed to answer them, and
               metadata about the connection. This may include your GTM Brain, business-contact
-              lead records, signal settings, SEO plans, run history, and feedback.
+              lead records, signal settings, run history, and feedback.
             </li>
             <li>
               <strong>Demo Request Data (if applicable):</strong> your answers to our demo form,
@@ -189,7 +195,7 @@ export default function PrivacyPolicyPage() {
 
           <h2>8. Google User Data</h2>
           <p>
-            Pancake integrates with Google Workspace to act as a cofounder for our users. With
+            Pancake integrates with Google Workspace to work on behalf of our users. With
             your explicit consent, Pancake requests access to the following Google OAuth scopes:
           </p>
           <ul>
@@ -228,7 +234,7 @@ export default function PrivacyPolicyPage() {
           <h3>How we use Google user data</h3>
           <p>
             Google user data is used <strong>solely to provide and improve the user-facing
-            features of Pancake</strong> — specifically, to let our AI cofounder read, draft,
+            features of Pancake</strong> — specifically, to let Pancake read, draft,
             schedule, and edit on your behalf in response to your instructions. Google user
             data is not used for any other purpose.
           </p>

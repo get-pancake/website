@@ -1,26 +1,120 @@
-/* An agent-only terminal, with a deliberately familiar, compact CAPTCHA.
-   Colors, type and geometry use the active v3 palette and token scale. */
-.lp-agent-lab {
-  --lp-lab-card-width: calc(var(--lp-space-12) * 7);
-  position: relative;
-  display: none;
-  isolation: isolate;
-  overflow: hidden;
-  min-height: 100svh;
-  background: var(--lp-terminal-bg);
-  color: var(--lp-page-bg);
-  font-family: var(--lp-font-fono);
-}
-/* the kit's layered `* { font-family }` hits every descendant directly and beats
-   inheritance — the lab is the terminal world, so every element states Fono */
-.lp-agent-lab * { font-family: var(--lp-font-fono); }
+/* Agents view code wall (LpAgentLab.tsx) — owner: agents-view package. Figma V2 4939:3457: the
+   section right under the hero (page 777 → the frame's end 2064 at 1654), a still wall of white
+   pseudocode (4939:3760: Andale Mono 16/18, 1136 column, wall-local top 12) cut by the section's
+   bottom, under a centred 690×562 blue card with a 1 px white outline (4964:4098, wall-local top
+   135) whose head repeats the install prompt and whose body holds production's puzzle. Replaces
+   production's black terminal stream + CAPTCHA (2026-10-09). The section keeps .lp-agent-lab: the
+   integrator's agents-view hide rule (audience.css) shows it. */
+.lp-agent-lab { display: none; }
 .lp-audience-page[data-audience="agents"] > .lp-agent-lab { display: block; }
-.lp-agent-stream { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; font-family: var(--lp-font-fono); font-size: var(--lp-text-lg); }
-.lp-agent-stream__canvas { display: block; width: 100%; height: 100%; }
-.lp-agent-lab__stage { position: relative; z-index: 1; display: grid; place-items: center; min-height: 100svh; padding: var(--lp-space-12) var(--lp-space-8); pointer-events: none; }
-.lp-agent-captcha { width: min(100%, var(--lp-lab-card-width)); padding: var(--lp-space-1); background: var(--lp-page-bg); color: var(--lp-ink-100); border-radius: var(--lp-r-xsm); box-shadow: 0 var(--lp-space-4) var(--lp-space-12) color-mix(in srgb, var(--lp-terminal-bg) 50%, transparent); pointer-events: auto; }
+
+.lp-agents-wall {
+  background: var(--lp-blue-40);
+  color: var(--lp-ink-0);
+  height: 1287px;
+  isolation: isolate;
+  overflow: hidden; /* the wall is cut by the section, as Figma's frame cuts it */
+  position: relative;
+}
+/* the kit's layered `* { font-family }` beats inheritance: every element states its face */
+.lp-agents-wall * { font-family: var(--lp-font-mono); }
+/* Andale Mono is a macOS system font, never served (Monotype licence): elsewhere Geist Mono takes
+   the same 0.6 em grid, so the wall wraps identically (decorative, aria-hidden). */
+.lp-agents-wall .lp-agents-wall__code {
+  font-family: "Andale Mono", var(--lp-font-mono);
+  font-kerning: none;
+  font-size: 16px;
+  font-variant-ligatures: none;
+  left: 0;
+  letter-spacing: 0;
+  line-height: 18px; /* Figma AUTO for 16 px Andale */
+  margin-inline: auto;
+  overflow-wrap: anywhere;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 12px;
+  user-select: none;
+  white-space: pre-wrap;
+  width: min(1136px, calc(100% - 96px));
+}
+/* the section colour over the rows not printed yet — scroll assembly only (below) */
+.lp-agents-wall__cover {
+  background: var(--lp-blue-40);
+  display: none;
+  height: 1350px;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: calc(12px + 4 * 18px); /* under row 3: state 01 shows rows 0–3 */
+  z-index: 1;
+}
+.lp-agents-wall__slot {
+  left: 0;
+  margin-inline: auto;
+  position: absolute;
+  right: 0;
+  top: 135px;
+  width: min(690px, calc(100% - 96px));
+  z-index: 2;
+}
+/* The card: fill (masks the wall) + top/left/right hairlines; the bottom hairline is the edge
+   layer, which travels during the assembly. Head row (LpAgentPrompt card: 17 px = hairline + 16
+   pad; text 616×40, copy 32 at x641) = 74 tall, then the body. 690/562 at rest; a taller body
+   (phones) grows it (an aspect-ratio box never shrinks below its content). */
+.lp-agents-wall__card {
+  aspect-ratio: 690 / 562;
+  background: var(--lp-blue-40);
+  box-shadow:
+    inset 0 var(--lp-line) 0 var(--lp-ink-0),
+    inset var(--lp-line) 0 0 var(--lp-ink-0),
+    inset calc(-1 * var(--lp-line)) 0 0 var(--lp-ink-0);
+  display: flex;
+  flex-direction: column;
+}
+.lp-agents-wall__edge {
+  border-bottom: var(--lp-line) solid var(--lp-ink-0);
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+.lp-agent-prompt--card { padding: 17px; }
+/* flex-basis auto (not flex: 1's 0): the body's content is the card's content minimum, so a puzzle
+   taller than the 690/562 box (phones) grows the card instead of overflowing it */
+.lp-agents-wall__body {
+  align-items: center;
+  display: grid;
+  flex: 1 0 auto;
+  justify-items: center;
+  padding: 0 17px 17px;
+}
+
+/* ── scroll assembly (lp-agents-scroll.ts: desktop ≥1025 × ≥640, motion allowed) ──────────────
+   01 → 03 over the driver's range: the card frame extends from its 74-tall prompt box
+   to its full height (clip + travelling bottom edge, linear), the wall prints one 18 px row per
+   step from 4 to 79 rows. data-as="js" = the driver is attached; data-as-done = locked assembled
+   for the visit. Anywhere else: no rule applies → state 03, the V2 artboard. */
+@media (min-width: 1025px) and (min-height: 640px) and (prefers-reduced-motion: no-preference) {
+  .lp-agents-wall[data-as="js"]:not([data-as-done]) .lp-agents-wall__cover {
+    display: block;
+    translate: 0 calc((var(--lp-as-rows, 79) - 4) * 18px);
+  }
+  .lp-agents-wall[data-as="js"]:not([data-as-done]) .lp-agents-wall__card {
+    clip-path: inset(0 0 calc((1 - var(--lp-as, 1)) * (100% - 74px)) 0);
+  }
+  .lp-agents-wall[data-as="js"]:not([data-as-done]) .lp-agents-wall__edge {
+    translate: 0 calc((var(--lp-as, 1) - 1) * (100% - 74px));
+  }
+}
+
+/* ── card body: production's puzzle (LpAgentCaptcha.tsx), look unchanged ─────────────────────
+   A deliberately familiar, compact CAPTCHA; 300 wide (was 336) so it sits in the card's 488-tall
+   body with even air (≈ 449 tall), and flat like everything in the V2 agents frame (its black-
+   terminal drop shadow spilled over the card's outline). */
+.lp-agent-captcha { width: min(100%, 300px); padding: var(--lp-space-1); background: var(--lp-page-bg); color: var(--lp-ink-100); border-radius: var(--lp-r-xsm); }
 .lp-agent-captcha__header { padding: var(--lp-space-4) var(--lp-space-4) var(--lp-space-3); background: var(--lp-blue-40); color: var(--lp-ink-0); border-radius: var(--lp-r-2xsm) var(--lp-r-2xsm) 0 0; }
-.lp-agent-captcha__title { margin: 0; font-family: var(--lp-font-fono); font-size: var(--lp-text-lg); line-height: 1.5; white-space: nowrap; }
+.lp-agent-captcha__title { margin: 0; font-size: var(--lp-text-lg); line-height: 1.5; white-space: nowrap; }
 .lp-agent-captcha__header p { margin: var(--lp-space-1) 0 0; font-size: var(--lp-text-sm); line-height: 1.5; white-space: nowrap; }
 .lp-agent-captcha__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: calc(var(--lp-line) * 2); margin-top: var(--lp-space-1); }
 .lp-agent-captcha__tile { display: grid; place-items: center; aspect-ratio: 1; border: 0; border-radius: 0; background: var(--lp-purple-20); color: var(--lp-ink-100); cursor: pointer; padding: 0; touch-action: manipulation; transition: background-color .14s ease-out; }
@@ -40,13 +134,50 @@
 .lp-agent-captcha__verify { min-height: calc(var(--lp-space-12) - var(--lp-space-1)); margin-right: var(--lp-space-1); padding: var(--lp-space-2) var(--lp-space-4); border: 0; border-radius: var(--lp-r-2xsm); background: var(--lp-blue-40); color: var(--lp-ink-0); cursor: pointer; font: inherit; font-size: var(--lp-text-sm); transition: opacity .16s ease-out, transform .16s ease-out; }
 .lp-agent-captcha__verify:hover { opacity: .88; }
 .lp-agent-captcha__verify:active { transform: scale(.97); }
-.lp-agent-lab button:focus-visible { outline: calc(var(--lp-line) * 2) solid var(--lp-ink-100); outline-offset: calc(var(--lp-line) * -4); }
-.lp-agent-captcha__verify:focus-visible { outline-color: var(--lp-ink-0); }
-@media (max-width: 767px) {
-  .lp-agent-stream { font-size: var(--lp-text-md); }
-  .lp-agent-lab__stage { padding: var(--lp-space-12) var(--lp-space-4); }
+.lp-agent-captcha button:focus-visible { outline: calc(var(--lp-line) * 2) solid var(--lp-ink-100); outline-offset: calc(var(--lp-line) * -4); }
+.lp-agent-captcha .lp-agent-captcha__verify:focus-visible { outline-color: var(--lp-ink-0); }
+
+/* ── card body draft: the install session (preview only, AGENT_CARD_TRANSCRIPT_DRAFT) ── */
+.lp-agents-wall__card[data-body="transcript"] .lp-agents-wall__body { align-items: start; justify-items: stretch; }
+.lp-agents-wall__log { display: flex; flex-direction: column; font-size: var(--lp-text-sm); gap: 8px; line-height: 20px; list-style: none; margin: 0; padding: 0; }
+.lp-agents-wall__log li { overflow-wrap: anywhere; }
+.lp-agents-wall__log li[data-kind="out"] { opacity: 0.72; }
+.lp-agents-wall__log[data-print="false"] li { visibility: hidden; }
+.lp-agents-wall__log[data-print="true"] li { animation: lp-agents-line 1ms steps(1, start) calc(var(--i) * 280ms) both; }
+@keyframes lp-agents-line { from { visibility: hidden; } to { visibility: visible; } }
+
+/* ── tablets 768–1024 / phones ≤767 (Figma has desktop only; recomposed, no assembly) ── */
+@media (max-width: 1024px) {
+  .lp-agents-wall { height: 960px; }
+  .lp-agents-wall__slot { top: 96px; }
 }
+/* Phones: the card is nearly as wide as the screen, so the wall has no sides left to show behind
+   it. The four lines that peeked above the card and the three below read as a display bug, one
+   of them cut in half by the card's edge (a tester's screenshot, 2026-10-13). So the wall is
+   recomposed in flow there: the card first, then the wall under it, which starts and ends on a
+   whole line (14 rows of 15 px). */
+@media (max-width: 767px) {
+  /* the view's own show rule (display: block, top of this file) outranks a bare class */
+  .lp-audience-page[data-audience="agents"] > .lp-agents-wall { display: flex; flex-direction: column; }
+  .lp-agents-wall { height: auto; padding-top: 32px; }
+  .lp-agents-wall__slot { order: 1; position: relative; top: auto; width: calc(100% - 32px); }
+  .lp-agents-wall .lp-agents-wall__code {
+    font-size: var(--lp-text-sm);
+    line-height: 15px;
+    margin-top: 20px;
+    max-height: calc(14 * 15px);
+    order: 2;
+    overflow: hidden;
+    position: static;
+    width: calc(100% - 32px);
+  }
+}
+/* the title line fits the card's narrowest puzzle (254 at 320) */
+@media (max-width: 359px) {
+  .lp-agent-captcha__title { font-size: var(--lp-text-md); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .lp-agent-captcha__tools .lp-agent-captcha__pause { display: none; }
   .lp-agent-lab *, .lp-agent-lab *::before, .lp-agent-lab *::after { animation: none !important; transition: none !important; }
+  .lp-agents-wall__log li { visibility: visible !important; }
 }

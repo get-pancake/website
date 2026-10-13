@@ -1,72 +1,29 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { SiClaude, SiOpenai } from "react-icons/si";
-import { SITE_ORIGIN } from "@/lib/site-config.mjs";
-import { CursorMark, HermesMark, OpenClawMark } from "./LpAgentMarks";
+import { LpAgentPrompt } from "./LpAgentPrompt";
+import { ClaudeMark, CodexMark, HermesMark, OpenClawMark } from "./LpAgentMarks";
 
-// The instruction names the outcome and the URL, not a tool: an agent with a shell will curl it, one
-// with a fetch tool will fetch it, and a chat assistant will open it. A `curl` one-liner made
-// shell-less assistants stop at "I can't run commands" (2026-09-10). The app's Workspace › AI access
-// page (pancake-cmo, PAN-862) pins this exact sentence — change both together, including the
-// install.md host when NEXT_PUBLIC_SITE_ORIGIN moves the site (pancake-cmo MCP_INSTALL_DOC_URL).
-const instruction = `Set up Pancake by reading ${SITE_ORIGIN}/install.md and following its instructions.`;
-// The terminal shows the same sentence with a break opportunity before the file name (2026-10-07):
-// a narrow phone wrapped it as "…/install.m" + "d and following…". It now wraps after the host's
-// slash, never inside "install.md". Visible text and the copied string are unchanged.
-const [instructionLead, instructionTail] = instruction.split("install.md");
-
+/**
+ * The agents view's hero column (Figma V2 4939:3725 under the toggle): the install box
+ * (4939:3751, LpAgentPrompt) then the "friends with" row UNDER it (4940:4756; production had it
+ * above the black terminal). Production label "friends with" (founder #289; V2 draws "Friends
+ * with") and production's marks (V2 draws three marks twice), minus Cursor since 2026-10-13
+ * (launch audit): the guide, install.md and llms.txt all say "Cursor can't connect yet", so
+ * its mark does not sit under "friends with" until it can. Owner: agents-view package;
+ * styles in audience-agents.css. The column must stay no taller than the human column (lede +
+ * buttons) it overlays in the hero's swap cell — 142 vs 144 at desktop — so the toggle never moves.
+ */
 export function LpAgentStart() {
-  const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
-  const reset = useRef<ReturnType<typeof setTimeout>>();
-  const code = useRef<HTMLElement>(null);
-
-  useEffect(() => () => clearTimeout(reset.current), []);
-
-  const copy = async () => {
-    clearTimeout(reset.current);
-    try {
-      await navigator.clipboard.writeText(instruction);
-      setStatus("copied");
-      reset.current = setTimeout(() => setStatus("idle"), 2400);
-    } catch {
-      // Keep a useful manual path when clipboard permission is unavailable.
-      if (code.current) {
-        const range = document.createRange();
-        range.selectNodeContents(code.current);
-        const selection = window.getSelection();
-        selection?.removeAllRanges();
-        selection?.addRange(range);
-      }
-      setStatus("error");
-    }
-  };
-
   return <div className="lp-agent-start" role="group" aria-label="Set up Pancake">
+    <LpAgentPrompt variant="hero" />
     <div className="lp-agent-friends">
       <span>friends with</span>
       <ul aria-label="Agent logos">
-        <li title="Claude Code"><SiClaude role="img" aria-label="Claude Code" focusable="false" /></li>
-        <li title="Codex"><SiOpenai role="img" aria-label="Codex" focusable="false" /></li>
-        <li title="Cursor"><CursorMark /></li>
+        <li title="Claude Code"><ClaudeMark /></li>
+        <li title="Codex"><CodexMark /></li>
         <li title="Hermes"><HermesMark /></li>
         <li title="OpenClaw"><OpenClawMark /></li>
       </ul>
     </div>
-    <div className="lp-agent-terminal" data-copy-state={status}>
-      <code ref={code} className="lp-agent-terminal__code">{instructionLead}<wbr />install.md{instructionTail}</code>
-      <button
-        type="button"
-        className="lp-agent-terminal__copy"
-        aria-label={status === "copied" ? "Instruction copied" : "Copy instruction"}
-        onClick={copy}
-      >
-        {status === "copied" ? <svg key="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6" /></svg>
-          : <svg key="copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2" /><path d="M15 4H6a2 2 0 0 0-2 2v9" /></svg>}
-      </button>
-    </div>
-    <p className={status === "error" ? "lp-agent-start__error" : "lp-sr-only"} role="status" aria-live="polite">
-      {status === "error" ? "Select the instruction and copy it." : status === "copied" ? "Instruction copied." : ""}
-    </p>
   </div>;
 }

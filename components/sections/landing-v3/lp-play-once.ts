@@ -3,9 +3,16 @@
 import type { gsap } from "@/lib/gsap";
 
 /**
- * The play-once driver behind the homepage's animated mock UIs: the four
- * feature cards (LpFeatAnim) and the three step cards (LpStepAnim). One
- * seek-safe GSAP timeline per card, built on the card's stage.
+ * The play-once driver behind the homepage's animated mock UIs: the three
+ * step cards (LpStepAnim). One seek-safe GSAP timeline per card, built on the
+ * card's stage. It was written for the four feature cards (LpFeatAnim), which
+ * the V2 deep-dive carousel replaced (2026-10-11): the carousel driver
+ * (lp-dive-carousel.ts) reuses this file's constants and helpers for its
+ * first start, so the two surfaces keep one contract. "Feature cards" below
+ * is that history. `restIsEnd: true` (the server picture is the END picture)
+ * is what the deep dive's PHONE STACK uses since 2026-10-12: on phones the
+ * four stories are four cards of this driver (lp-dive-carousel.ts
+ * mountDiveStack; designWidth 752, registry "__lpStory").
  *
  * Founder 2026-09-30: "les motions apparaissent de manière molle… quand tu
  * scrolles rapidement tu fais face à beaucoup de vides… il faut que l'écran
@@ -25,6 +32,8 @@ import type { gsap } from "@/lib/gsap";
  *   Builds queue one per frame, so phones never take one long task. Until
  *   then, and while it waits far away, the card is the server-rendered
  *   picture (restIsEnd — the feature cards) or its own first frame (steps).
+ *   On phones this waits for the visitor's first input while the page rests
+ *   untouched at its top (`whenTouched` below): nothing is fetched at load.
  * - CUE below the fold: as the card comes within 15 % of a viewport of the
  *   fold, it switches — unseen — to its FIRST SCENE (the builder's `cue`: a
  *   composed frame, never empty — the Signals card with its toggles off, the
@@ -45,6 +54,14 @@ import type { gsap } from "@/lib/gsap";
  *   resting picture (reload mid-page, an anchor, the code arriving late,
  *   scrolling back up into it) keeps it. Reduced motion keeps it too,
  *   without downloading any animation code.
+ * - TOUCH SCREENS, STOPPING ON A CARD (2026-10-13): a thumb flick is the normal way to scroll
+ *   there and it flies past whole sections (two flicks cross the three steps: measured in the
+ *   iOS simulator), so most cards only ever showed their picture and a first-time reader
+ *   took the page for a set of stills (founder: "they are not animated which is a bug").
+ *   When the scroll comes to rest on a card whose build-up was skipped or cut short, three
+ *   quarters of it in view, the card clears for an instant and plays from its first scene.
+ *   Once it has played through at its own pace it is done for good, as everywhere else.
+ *   Mouse and trackpad keep the rules above unchanged.
  * - prefers-reduced-motion = the picture; lifting it mid-visit lets a card
  *   that has not finished play its build-up (the steps rest on their first
  *   frame, so they still need the timeline to show their picture).
@@ -57,6 +74,11 @@ import type { gsap } from "@/lib/gsap";
  */
 
 type Timeline = gsap.core.Timeline;
+/** the window QA registries: step cards, and the deep-dive stories (window.__lpStory.<id>:
+    registered by the carousel shell lp-dive-carousel.ts, by this driver for the phone stack,
+    and by the /lp-dev/stages harness; V2 replication 2026-10-09). "__lpFeat" left with the
+    feature cards. */
+export type PlayOnceRegistry = "__lpStep" | "__lpStory";
 /** cue: the timeline time of the card's first scene (0 = its first frame) */
 type Built = { tl: Timeline; cleanup: () => void; cue?: number };
 export type PlayOnceRuntime = {
@@ -69,14 +91,14 @@ export type PlayOnceOptions = {
   host: HTMLElement;
   /** the timeline's root */
   stage: HTMLElement;
-  /** the stage's design width in px (560 feature zone, 464 step card) */
+  /** the stage's design width in px (464 step card, 752 deep-dive scene on phones) */
   designWidth: number;
   /** fetches GSAP + the card's builder (kept out of the initial bundle, PR #283) */
   load: () => Promise<PlayOnceRuntime>;
   /** the server-rendered stage is the end picture (true) or the first frame (false) */
   restIsEnd: boolean;
   /** QA hook: window[registry][key] = the timeline (seek it to any moment) */
-  qa: { registry: "__lpFeat" | "__lpStep"; key: string };
+  qa: { registry: PlayOnceRegistry; key: string };
   /** content-visibility:auto ancestor: prepare when IT nears the viewport
       (a skipped subtree reports no intersections), build once it renders */
   layoutRoot?: HTMLElement | null;
@@ -84,40 +106,61 @@ export type PlayOnceOptions = {
   speed?: number;
 };
 
+/* The timing constants and the scroll/build helpers below are exported for the deep-dive
+   carousel (lp-dive-carousel.ts), which plays its first item by this same contract: one
+   implementation of "prepare, cue, play at the focus line, picture on fly-by". */
 /** px per ms: faster than this when a card arrives = flying past it */
-const FAST_SCROLL = 2.5;
+export const FAST_SCROLL = 2.5;
 /** prepare this far ahead of the viewport, above and below */
-const PREPARE_MARGIN = "100% 0px 100% 0px";
+export const PREPARE_MARGIN = "100% 0px 100% 0px";
 /** switch to the first scene this far below the fold (unseen) */
-const CUE_MARGIN = "0px 0px 15% 0px";
+export const CUE_MARGIN = "0px 0px 15% 0px";
 /** play once the card's top is above this share of the viewport height */
-const FOCUS_MARGIN = "0px 0px -40% 0px"; // the top 60 %
+export const FOCUS_MARGIN = "0px 0px -40% 0px"; // the top 60 %
 /** half the card on screen this long, short of the focus line (scrolling stopped): play */
-const DWELL_MS = 1000;
-const DWELL_MIN_RATIO = 0.5;
+export const DWELL_MS = 1000;
+export const DWELL_MIN_RATIO = 0.5;
 /** leaving through the top unfinished: the rest of the build-up plays in this long */
-const RUSH_S = 0.35;
+export const RUSH_S = 0.35;
 
 /* ── scroll speed: recent scroll positions (one passive listener) ── */
 const samples: { t: number; y: number }[] = [];
 let speedUsers = 0;
+/** touch screens: the scroll has come to rest when no scroll event came for this long (ms) */
+const SETTLE_MS = 160;
+/** where the "stopping on a card" rule applies: touch is the main pointer */
+const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
+/** share of a card (of the viewport, for a taller card) that must show when the scroll rests */
+const SETTLE_MIN_SHARE = 0.75;
+const settleSubs = new Set<() => void>();
+let settleTimer = 0;
+const onSettled = () => {
+  settleTimer = 0;
+  for (const run of Array.from(settleSubs)) run();
+};
 const onScroll = () => {
   const t = performance.now();
   samples.push({ t, y: window.scrollY });
   while (samples.length > 2 && t - samples[0].t > 500) samples.shift();
+  if (settleSubs.size) {
+    window.clearTimeout(settleTimer);
+    settleTimer = window.setTimeout(onSettled, SETTLE_MS);
+  }
 };
-function trackScroll(): () => void {
+export function trackScroll(): () => void {
   if (speedUsers++ === 0) window.addEventListener("scroll", onScroll, { passive: true });
   return () => {
     if (--speedUsers === 0) {
       window.removeEventListener("scroll", onScroll);
       samples.length = 0;
+      window.clearTimeout(settleTimer);
+      settleTimer = 0;
     }
   };
 }
 /** px per ms over the last 150 ms; Infinity for a jump (one scroll event of
     half a viewport or more: a flick, Page Down, an anchor); 0 when idle */
-function scrollSpeed(): number {
+export function scrollSpeed(): number {
   const now = performance.now();
   const n = samples.length;
   if (!n || now - samples[n - 1].t > 150) return 0;
@@ -132,6 +175,44 @@ function scrollSpeed(): number {
   return Math.abs(window.scrollY - ref.y) / Math.max(150, now - ref.t);
 }
 
+/* ── phones: nothing is fetched "a viewport ahead" while the page rests untouched at its top ──
+   Verifier M3 (2026-10-12). V2's shorter phone demo card moved step 01 up, inside the prepare
+   margin of tall phone viewports (412 × 823, the Lighthouse / PSI mobile viewport; 393 × 852;
+   402 × 874): GSAP and the steps chunk were fetched and the timeline built at load, with no
+   scroll, where production waits for the first one. So on phones the one-viewport-ahead prepare
+   waits for the visitor's first input (a scroll, a touch, a key). A card that is on screen or
+   within the cue margin at load still prepares at once, and so does a page that loads scrolled
+   (reload mid-page, an anchor): this only removes the fetch nobody asked for yet. */
+const PHONE_QUERY = "(max-width: 767px)";
+const FIRST_INPUT = ["scroll", "touchstart", "pointerdown", "keydown", "wheel"] as const;
+let touched = false;
+const waiting = new Set<() => void>();
+const onFirstInput = () => {
+  touched = true;
+  for (const type of FIRST_INPUT) window.removeEventListener(type, onFirstInput);
+  const runs = Array.from(waiting);
+  waiting.clear();
+  for (const run of runs) run();
+};
+/** Runs `run` now, or at the first input when a phone page still rests untouched at its top.
+    Returns the cancel. */
+function whenTouched(run: () => void): () => void {
+  if (touched || window.scrollY > 0 || !matchMedia(PHONE_QUERY).matches) {
+    run();
+    return () => {};
+  }
+  if (waiting.size === 0) {
+    for (const type of FIRST_INPUT) window.addEventListener(type, onFirstInput, { passive: true });
+  }
+  waiting.add(run);
+  return () => {
+    waiting.delete(run);
+    if (waiting.size === 0 && !touched) {
+      for (const type of FIRST_INPUT) window.removeEventListener(type, onFirstInput);
+    }
+  };
+}
+
 /* ── builds: one per animation frame, so four cards never make one long task ── */
 const buildQueue: (() => void)[] = [];
 let pumping = false;
@@ -140,7 +221,7 @@ function pump() {
   if (buildQueue.length) requestAnimationFrame(pump);
   else pumping = false;
 }
-function enqueueBuild(run: () => void) {
+export function enqueueBuild(run: () => void) {
   buildQueue.push(run);
   if (!pumping) {
     pumping = true;
@@ -175,6 +256,13 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   let phase: "rest" | "cued" | "playing" | "done" = "rest";
   let cue = 0;
   let dwell = 0;
+  /** the build-up ran to its end at its own pace, in front of the visitor: done for good */
+  let seen = false;
+  /** this run was skipped to the picture (finish) or fast-forwarded (rush) */
+  let cut = false;
+  /** the stage is clearing before a replay (touch screens) */
+  let replaying = false;
+  const touchMq = matchMedia(TOUCH_QUERY);
   let loading = false;
   let queued = false;
   let runtime: PlayOnceRuntime | undefined;
@@ -212,12 +300,14 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   };
   const play = () => {
     if (!tl) return;
+    cut = false;
     tl.play();
     phase = "playing";
     host.dataset.lpAnim = "playing";
   };
   const finish = () => {
     if (!tl) return;
+    cut = true;
     tl.progress(1);
     phase = "done";
     host.dataset.lpAnim = "done";
@@ -226,8 +316,45 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   const rush = () => {
     if (!tl || phase !== "playing" || motionMq.matches || !tl.isActive()) return;
     const left = tl.duration() - tl.time();
-    if (left > 0) tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
+    if (left > 0) {
+      cut = true;
+      tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
+    }
   };
+  /* Touch screens: the scroll has come to rest on a card that only ever showed its picture
+     (flown past, built late, or fast-forwarded on the way out). The stage clears for an
+     instant, so the picture is never swapped for the first scene in plain sight, and the
+     build-up plays from its first scene. */
+  const replay = () => {
+    if (!tl) return;
+    replaying = true;
+    const start = () => {
+      replaying = false;
+      if (disposed || !tl || motionMq.matches) return;
+      tl.timeScale(o.speed && o.speed !== 1 ? o.speed : 1);
+      tl.pause(cue);
+      play();
+    };
+    if (typeof stage.animate !== "function") return start();
+    const out = stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, easing: "linear", fill: "forwards" });
+    const next = () => {
+      start();
+      out.cancel();
+      if (!disposed) stage.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: "linear" });
+    };
+    out.finished.then(next, next);
+  };
+  const onSettle = () => {
+    if (disposed || !tl || seen || replaying || phase !== "done" || motionMq.matches || !touchMq.matches) return;
+    const r = host.getBoundingClientRect();
+    const vh = window.innerHeight;
+    if (!(r.height > 0 && r.width > 0)) return;
+    const share = (Math.min(r.bottom, vh) - Math.max(r.top, 0)) / Math.min(r.height, vh);
+    // well in view: most of it, and its top not cut (the part a build-up starts in)
+    if (share < SETTLE_MIN_SHARE || r.top < -0.1 * r.height) return;
+    replay();
+  };
+  settleSubs.add(onSettle);
 
   const decide = () => {
     if (!tl || disposed) return;
@@ -277,6 +404,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
         tl.eventCallback("onComplete", () => {
           phase = "done";
           host.dataset.lpAnim = "done";
+          if (!cut) seen = true;
         });
         if (motionMq.matches) {
           tl.progress(1, true);
@@ -329,9 +457,18 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   };
 
   const last = (entries: IntersectionObserverEntry[]) => entries[entries.length - 1];
+  // a viewport ahead: on a phone page still untouched at its top this waits for the first input
+  let ahead = false;
+  let cancelAhead = () => {};
   const nearIo = new IntersectionObserver(
     (entries) => {
-      if (last(entries).isIntersecting) prepare();
+      ahead = last(entries).isIntersecting;
+      cancelAhead();
+      cancelAhead = ahead
+        ? whenTouched(() => {
+            if (ahead && !disposed) prepare();
+          })
+        : () => {};
     },
     { rootMargin: PREPARE_MARGIN },
   );
@@ -391,6 +528,8 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   return () => {
     disposed = true;
     clearTimeout(dwell);
+    settleSubs.delete(onSettle);
+    cancelAhead();
     nearIo.disconnect();
     cueIo.disconnect();
     focusIo.disconnect();

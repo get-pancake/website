@@ -6,7 +6,7 @@ import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 
 /**
  * /compare head + cards: the /for hub's grid (VxHubGrid, hub.css), read-only reuse. The head is
- * the eyebrow, the H1 at H2 scale and the lede; then one group per COMPARE_GROUPS label, each a
+ * the eyebrow, the H1 at H2 scale and the lede; then one group per COMPARE_HUB_GROUPS label, each a
  * grid of cream link cards (3 / 2 / 1 columns, equal heights, the whole card is the link). A card
  * reads its page's H1 ("Origami vs Pancake") and that page's own hero lede. Server, zero JS:
  * every link is in the HTML for crawlers.

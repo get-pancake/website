@@ -11,10 +11,15 @@ import { LpBottleneck } from "@/components/sections/landing-v3/LpBottleneck";
  * previous hand-built art stack (union bottle + CSS bubble cohort + drop +
  * the ≤767 dome/bottle/31-bubble composition) was replaced wholesale; its
  * dormant CSS stays in banner.css until a cleanup pass.
+ *
+ * V2 (Figma fr8NgOCTUxsEbrMEJA3YKu 4911:534, red note "Blue background for next section starts
+ * here", 2026-10-09, blue-band package): `sky` (the default — the homepage is the only user)
+ * paints the wrapper light blue under a cream blob (lp-banner--sky, sky.css), so the blue band
+ * of the deep dive starts in the banner's gutters. The card is unchanged.
  */
-export function LpBanner() {
+export function LpBanner({ sky = true }: { sky?: boolean } = {}) {
   return (
-    <section id="why" className="lp-banner">
+    <section id="why" className={sky ? "lp-banner lp-banner--sky" : "lp-banner"}>
       <div className="lp-banner__card">
         <LpBottleneck />
         <h2 className="lp-title-section lp-banner__title lp-banner__title--left">

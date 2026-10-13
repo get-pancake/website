@@ -29,7 +29,7 @@ export const viewport: Viewport = { themeColor: "#fbf6f1" };
 export const metadata: Metadata = {
   // Tab title is EXACTLY "Pancake" on the landings (founder rule, app/page.tsx);
   // the value prop rides on og/twitter titles. metadataBase is set in the
-  // root layout, so /og-image.png resolves.
+  // root layout, so the shared card (OG_IMAGE) resolves.
   title: META.title,
   description: META.description,
   robots: { index: false, follow: false },
