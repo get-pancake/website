@@ -20,7 +20,8 @@
  * link tree, and drops this header's "No Compare column (D13)" note. The
  * column reads compare-data.ts (the hub's own list), so a page added to the
  * "GTM tools" group shows up here too; the "AI agents" pages (Claude Tag,
- * Viktor, OpenClaw, Paperclip) are one click away on /compare.
+ * Viktor, OpenClaw, Paperclip) are live but listed nowhere since 2026-10-13
+ * (founder: not competitors any more; COMPARE_HUB_GROUPS in compare-data.ts).
  * footer.css lays the columns out in flow (no fixed height), so a longer list
  * or another column never overflows. Social is unchanged ("LinkedIn" label:
  * open founder decision D23).

@@ -12,7 +12,7 @@ import { LpNav } from "@/components/sections/landing-v3/LpNav";
  * like the /for hub from the /for kit (.lp-vx: text edge, section rhythm, VxHead, hub cards,
  * Related rows) and the homepage's nav, CTA card and footer:
  *
- *   Nav → Head (H1 + lede) → cards by group (GTM tools, AI agents) → the GTM "alternatives"
+ *   Nav → Head (H1 + lede) → cards by group (GTM tools; see COMPARE_HUB_GROUPS) → the GTM "alternatives"
  *   guides → CTA card (homepage copy and ids, app_final / call_final, as on /for) → Footer
  *
  * No new CTA ids, so nothing to allow-list in lib/analytics/data-layer.ts. Every section is a

@@ -107,45 +107,23 @@ export function LpNav() {
 }
 
 /**
- * The two compact menus (2026-10-07). Labels ≤ 3 words, one-line
- * descriptions ≤ 8 words (landing voice), each written from what its page
- * says. "Claude and Codex" is the guide's "Pancake in Claude and Codex",
- * shortened to the label budget inside the Product menu.
+ * The two compact menus (2026-10-07). Labels ≤ 3 words (landing voice).
+ * "Claude and Codex" is the guide's "Pancake in Claude and Codex", shortened
+ * to the label budget inside the Product menu. Titles only since 2026-10-13
+ * (founder: "not sure there is a need for title + subtitle here each time -
+ * same for the product menu"): each row carried a one-line description under
+ * its label until then.
  */
 const PRODUCT_MENU: LpNavItem[] = [
-  {
-    label: "How it works",
-    href: "/#how-it-works",
-    description: "Three steps from your website to outreach.",
-  },
-  {
-    label: "Example Plays",
-    href: "/plays",
-    description: "Start from an example, or write your own.",
-  },
-  {
-    label: "Claude and Codex",
-    href: GUIDE_PATH,
-    description: "Connect Pancake to Claude, Claude Code or Codex.",
-  },
+  { label: "How it works", href: "/#how-it-works" },
+  { label: "Example Plays", href: "/plays" },
+  { label: "Claude and Codex", href: GUIDE_PATH },
 ];
 
 const RESOURCES_MENU: LpNavItem[] = [
-  {
-    label: "Blog",
-    href: "/blog",
-    description: "Guides and notes on finding B2B customers.",
-  },
-  {
-    label: "Compare",
-    href: "/compare",
-    description: "Pancake side by side with other tools.",
-  },
-  {
-    label: "Support",
-    href: "/support",
-    description: "Help with your account, billing and setup.",
-  },
+  { label: "Blog", href: "/blog" },
+  { label: "Compare", href: "/compare" },
+  { label: "Support", href: "/support" },
 ];
 
 /**
@@ -197,15 +175,14 @@ function LpNavDisclosure({
   );
 }
 
-/** A compact menu: one row per page, label over a one-line description. */
+/** A compact menu: one row per page, its label alone. */
 function LpNavMenuList({ items }: { items: LpNavItem[] }) {
   return (
     <ul className="lp-nav-dd__list">
       {items.map((item) => (
         <li key={item.href}>
           <a className="lp-nav-dd__item" href={item.href}>
-            <span className="lp-nav-dd__label">{item.label}</span>
-            <span className="lp-nav-dd__desc">{item.description}</span>
+            {item.label}
           </a>
         </li>
       ))}

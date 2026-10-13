@@ -15,9 +15,20 @@
 
 export const COMPARE_PATH = "/compare";
 
-/** Hub group order. Labels stay <= 3 words (landing voice). */
+/** Every group a comparison page can belong to. Labels stay <= 3 words (landing voice). */
 export const COMPARE_GROUPS = ["GTM tools", "AI agents"] as const;
 export type CompareGroup = (typeof COMPARE_GROUPS)[number];
+
+/**
+ * The groups the site shows, in hub order: the /compare cards, its ItemList and the footer's
+ * Compare column. "AI agents" left the hub on 2026-10-13 (founder: "I would not display this
+ * (while keeping pages active) - not competitors anymore!"): since the launch positioning,
+ * Claude, OpenClaw and the other agents are what a founder runs Pancake FROM, not what Pancake
+ * is weighed against. The four pages stay live, indexable and in the sitemap, keep their entry
+ * below (GtmComparisonPage's build check reads it) and still link each other; nothing on the
+ * site lists them any more. To show a group again, add its label here.
+ */
+export const COMPARE_HUB_GROUPS: readonly CompareGroup[] = ["GTM tools"];
 
 export type CompareEntry = {
   /** The page's route segment = its GtmComparisonConfig.slug. */
@@ -38,7 +49,7 @@ export const COMPARISONS: readonly CompareEntry[] = [
   { slug: "alta-vs-pancake", competitor: "Alta", group: "GTM tools", line: "Named AI agents for revenue teams versus Plays a founder runs." },
   { slug: "lemlist-vs-pancake", competitor: "Lemlist", group: "GTM tools", line: "A sales platform your team operates versus Plays that run for you." },
   { slug: "gojiberry-vs-pancake", competitor: "Gojiberry", group: "GTM tools", line: "A focused outreach agent versus a full GTM platform." },
-  // general agents and agent runtimes
+  // general agents and agent runtimes: live pages, off the hub (COMPARE_HUB_GROUPS)
   { slug: "claude-tag-vs-pancake", competitor: "Claude Tag", group: "AI agents", line: "A shared AI teammate versus a GTM platform that finds your buyers." },
   { slug: "viktor-vs-pancake", competitor: "Viktor", group: "AI agents", line: "A general AI employee versus a GTM platform built to bring you customers." },
   { slug: "openclaw-vs-pancake", competitor: "OpenClaw", group: "AI agents", line: "An agent runtime you assemble versus Plays that run for you." },
@@ -68,9 +79,9 @@ export const comparePath = (c: CompareEntry) => `/${c.slug}`;
 export const compareName = (c: CompareEntry) => `${c.competitor} vs Pancake`;
 export const compareEntry = (slug: string) => COMPARISONS.find((c) => c.slug === slug);
 
-/** The hub's groups, in COMPARE_GROUPS order; an empty group is dropped. */
+/** The hub's groups, in COMPARE_HUB_GROUPS order; an empty group is dropped. */
 export function compareGroups(): { group: CompareGroup; items: CompareEntry[] }[] {
-  return COMPARE_GROUPS.map((group) => ({ group, items: COMPARISONS.filter((c) => c.group === group) })).filter(
+  return COMPARE_HUB_GROUPS.map((group) => ({ group, items: COMPARISONS.filter((c) => c.group === group) })).filter(
     (g) => g.items.length > 0,
   );
 }

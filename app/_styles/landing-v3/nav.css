@@ -514,17 +514,19 @@ body.menu-open:has(main.lp) {
   outline-offset: 0; /* 2px clear of the heading hairline above the first link */
 }
 
-/* Compact panel (Product, Resources — 2026-10-07, the Unify / Octave
-   dropdown): one row per page, label over a one-line description, sized to
-   its longest line. It hangs from its own entry (position: relative), left
-   edge pulled in 20px so the labels line up with the entry's text (1px
-   border + 7px card padding + 12px row padding). */
+/* Compact panel (Product, Resources — 2026-10-07): one row per page, its
+   label alone since 2026-10-13 (founder: no title + subtitle on each row),
+   sized to its longest label and never narrower than 176px, so three short
+   words do not make a sliver of a card. It hangs from its own entry
+   (position: relative), left edge pulled in 20px so the labels line up with
+   the entry's text (1px border + 7px card padding + 12px row padding). */
 .lp-nav-dd--menu {
   position: relative;
 }
 .lp-nav-dd--menu .lp-nav-dd__panel {
   left: -20px;
   max-width: calc(100vw - 64px);
+  min-width: 176px;
   width: max-content;
 }
 .lp-nav-dd--menu .lp-nav-dd__card {
@@ -542,21 +544,12 @@ body.menu-open:has(main.lp) {
 .lp .lp-nav-dd__item {
   border-radius: var(--lp-r-xsm);
   color: var(--lp-text);
-  display: grid;
-  gap: 2px;
-  letter-spacing: 0.1333px;
-  padding: 8px 12px;
-}
-.lp-nav-dd__label {
+  display: block;
   font-size: var(--lp-text-sm);
   font-weight: 500;
+  letter-spacing: 0.1333px;
   line-height: 20px;
-}
-.lp-nav-dd__desc {
-  color: var(--lp-subtle-text);
-  font-size: var(--lp-text-sm);
-  font-weight: 400;
-  line-height: 18px;
+  padding: 8px 12px;
 }
 @media (hover: hover) {
   .lp .lp-nav-dd__item:hover {

@@ -8,11 +8,9 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /** One page in a nav menu (LpNav's PRODUCT_MENU / RESOURCES_MENU). */
 export type LpNavItem = {
-  /** ≤ 3 words. */
+  /** ≤ 3 words. The desktop panels and the phone sheet both show it alone. */
   label: string;
   href: string;
-  /** One line, ≤ 8 words. The desktop panels show it; the phone sheet doesn't. */
-  description: string;
 };
 
 /**
