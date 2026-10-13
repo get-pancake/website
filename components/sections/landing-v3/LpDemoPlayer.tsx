@@ -14,7 +14,10 @@
 // lp-demo-pancake-timeline.ts and lp-demo-claude-timeline.ts. GSAP and the two builders are a
 // lazy chunk, fetched on the visitor's first input or at the first start; until a view's
 // timeline is built the view is its rest picture and the clock waits. A run's length is its
-// timeline's own.
+// timeline's own. Each view is built in tasks of its own, in idle time and in slices
+// (lp-play-once's queue): the showing one first, the other after the page's cards, or as it is
+// armed if it is picked before its turn (2026-10-13; the import's continuation built both back
+// to back).
 //
 // The clock runs while: started, ≥35 % of the stage on screen (of the viewport for a taller
 // stage), the tab visible, not paused, motion allowed, no keyboard focus held in the pills or on
@@ -56,6 +59,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Keyboar
 import { flushSync } from "react-dom";
 import type { BuiltDemo } from "./lp-demo-pancake-timeline";
 import { mountWindowGrow } from "./lp-demo-scroll";
+import { enqueueBuild, startBuild, type BuildRun } from "./lp-play-once";
 import { PHONE_BOX_W, PHONE_QUERY, PHONE_SOLO, type LpDemoView } from "./lp-demo-timeline";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
@@ -92,8 +96,9 @@ interface Ctl {
   frames: number;
   /** Each view's GSAP timeline (lazy: GSAP + its builder), null until built. */
   tls: [Built | null, Built | null];
-  /** The modules, kept to rebuild a timeline after the stage's size changes. */
-  mods: { gsap: typeof import("@/lib/gsap").gsap; build: [Builder, Builder] } | null;
+  /** The modules, kept to rebuild a timeline after the stage's size changes. `steps`: the same
+   *  builders in slices (lp-play-once's startBuild). */
+  mods: { gsap: typeof import("@/lib/gsap").gsap; build: [Builder, Builder]; steps: [Slicer, Slicer] } | null;
   loading: boolean;
   /** The code could not be fetched: the views keep their rest pictures. */
   failed: boolean;
@@ -104,6 +109,7 @@ interface Ctl {
 }
 type Built = { tl: BuiltDemo["tl"]; dispose: () => void };
 type Builder = (view: HTMLElement) => BuiltDemo;
+type Slicer = (view: HTMLElement) => Generator<void, BuiltDemo, void>;
 
 /** Last moment of a view's run (ms): its timeline's duration. */
 const endOf = (x: Ctl, v: LpDemoView) => x.ends[v];
@@ -298,8 +304,9 @@ export function LpDemoPlayer({
     x.pending = false;
     x.view = view.v;
     card.setAttribute("data-snap", "");
-    // hidden until now: the moment to take a new measure of a resized stage
-    if (x.dirty[view.v] && x.t === 0) rebuildRef.current(view.v);
+    // hidden until now: the moment to take a new measure of a resized stage, or to build a view
+    // that is armed before its idle slot came
+    if ((x.dirty[view.v] || !x.tls[view.v]) && x.t === 0) rebuildRef.current(view.v);
     render(view.v, x.t);
     void card.offsetHeight; // commit the snapped state before transitions come back
     card.removeAttribute("data-snap");
@@ -373,31 +380,47 @@ export function LpDemoPlayer({
 
     /* the two timelines: GSAP + the builders, fetched on the visitor's first input or at the
        first start, whichever comes first (nothing at load: phones rest untouched). Each is built
-       on its laid-out view once the fonts are in (it measures the request's glyphs). */
-    const build = (v: LpDemoView) => {
+       on its laid-out view once the fonts are in (it measures the request's glyphs).
+       A build runs in slices (lp-play-once's startBuild; `through`: all of it at once). A view
+       rests on its first frame, which is what its builder's sets write (in ONE slice: the
+       builders' headers), so a build can pause between two slices on screen. Returns whether
+       slices are left. */
+    const runs: [BuildRun | null, BuildRun | null] = [null, null];
+    const build = (v: LpDemoView, through = true): boolean => {
       const mods = x.mods;
       const el = viewEl(v);
-      if (!mods || !el || disposed) return;
+      if (!mods || !el || disposed) return false;
       if (el.getClientRects().length === 0) {
         x.dirty[v] = true; // not rendered (the agents view, the Claude view on phones): at the next arm
-        return;
+        return false;
       }
-      x.tls[v]?.dispose();
-      x.tls[v] = null;
-      const out: { b: BuiltDemo | null } = { b: null };
-      const ctx = mods.gsap.context(() => {
-        out.b = mods.build[v](el);
-      });
-      const b = out.b;
-      if (!b) {
-        ctx.revert();
-        return;
+      let run = runs[v];
+      if (!run) {
+        x.tls[v]?.dispose();
+        x.tls[v] = null;
+        run = runs[v] = startBuild({ gsap: mods.gsap, build: mods.build[v], steps: mods.steps[v] }, el, false);
       }
+      let b: BuiltDemo | undefined;
+      try {
+        b = run.next(through);
+      } catch {
+        // the view keeps its rest picture, as when the code cannot be fetched
+        runs[v] = null;
+        run.ctx.revert();
+        run.cleanup();
+        x.failed = true;
+        sync();
+        return false;
+      }
+      if (!b) return true;
+      runs[v] = null;
+      const { ctx } = run;
+      const { cleanup } = b;
       x.tls[v] = {
         tl: b.tl,
         dispose: () => {
           ctx.revert();
-          b.cleanup();
+          cleanup();
         },
       };
       x.dirty[v] = false;
@@ -405,14 +428,53 @@ export function LpDemoPlayer({
       render(v, x.reduced || x.view !== v ? 0 : x.t);
       setFills();
       sync();
+      return false;
     };
-    rebuildRef.current = build;
-    const ensure = () => {
-      if (x.mods) {
-        if (!x.tls[0]) build(0);
-        if (!x.tls[1]) build(1);
-        return;
+    /** A build under way measured a layout that is gone: back to the markup (it is finished
+     *  first, the builder's cleanup comes with what it returns). */
+    const abort = (v: LpDemoView) => {
+      const run = runs[v];
+      if (!run) return;
+      runs[v] = null;
+      try {
+        run.next(true);
+      } catch {
+        // half built: the revert is all there is
       }
+      run.ctx.revert();
+      run.cleanup();
+    };
+    const rebuild = (v: LpDemoView) => {
+      if (x.dirty[v]) abort(v);
+      build(v);
+    };
+    rebuildRef.current = rebuild;
+    /* Each view is built in tasks of its own, in idle time (2026-10-13, the bug check's S1: the
+       import's continuation built both views back to back in the task that had just evaluated
+       the chunks, 455 ms at the first swipe on a mid-range phone). lp-play-once's queue: idle
+       slots (one comes within 150 ms), in page order. The view that is showing has the stage's
+       place, so it goes before the page's cards and the clock never waits long (the opening
+       screen holds longer than that before anything moves); the other view has no place and
+       comes after them: it is not needed before the first run ends, and a view that is armed
+       before its turn is built as it is armed (the layout effect above). */
+    const queued: [boolean, boolean] = [false, false];
+    const unqueue: [() => void, () => void] = [() => {}, () => {}];
+    const want = () => {
+      for (const v of [0, 1] as const) {
+        if (x.tls[v] || queued[v]) continue;
+        queued[v] = true;
+        unqueue[v] = enqueueBuild(
+          () => {
+            const more = !x.tls[v] && build(v, false);
+            if (!more) queued[v] = false;
+            return more;
+          },
+          v === x.view ? stage : null,
+        );
+      }
+    };
+    const ensure = () => {
+      if (x.mods) return want();
       if (x.loading || x.failed || x.reduced || disposed) return;
       x.loading = true;
       Promise.all([
@@ -424,9 +486,12 @@ export function LpDemoPlayer({
         .then(([g, pancake, claude]) => {
           x.loading = false;
           if (disposed) return;
-          x.mods = { gsap: g.gsap, build: [pancake.buildDemoPancake, claude.buildDemoClaude] };
-          build(0);
-          build(1);
+          x.mods = {
+            gsap: g.gsap,
+            build: [pancake.buildDemoPancake, claude.buildDemoClaude],
+            steps: [pancake.buildDemoPancakeSteps, claude.buildDemoClaudeSteps],
+          };
+          want();
         })
         .catch(() => {
           x.loading = false;
@@ -608,6 +673,9 @@ export function LpDemoPlayer({
       if (Math.abs(w - stageW) < 0.5) return;
       stageW = w;
       x.dirty = [true, true];
+      // a build under way measured the old width: it starts over with the pass below
+      abort(0);
+      abort(1);
       window.clearTimeout(resized);
       resized = window.setTimeout(() => {
         if (!x.mods) return;
@@ -630,6 +698,7 @@ export function LpDemoPlayer({
         x.started = true;
         grow.lock(); // captures are compared with the full-size designs
         ensure();
+        if (!x.tls[v]) build(v); // a seek does not wait for the view's idle slot
         x.t = ms;
         flushSync(() => go(v));
         // same view: the layout effect re-applies (new nonce)
@@ -688,6 +757,8 @@ export function LpDemoPlayer({
       window.clearTimeout(resized);
       for (const type of INPUTS) window.removeEventListener(type, onFirstInput);
       for (const v of [0, 1] as const) {
+        unqueue[v]();
+        abort(v);
         x.tls[v]?.dispose();
         x.tls[v] = null;
         viewEl(v)?.removeAttribute("data-live");
