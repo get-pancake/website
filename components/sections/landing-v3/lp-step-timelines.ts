@@ -669,13 +669,14 @@ function buildS3(root: HTMLElement): BuiltStep {
   tl.set(caret, { opacity: 0 }, tE + T.caretOff);
   tl.set(msg, { clipPath: "none" }, tE + T.caretOff); // the text paints like any paragraph again
 
-  /* — f3 · sent — */
-  tl.to(ebDraft, { opacity: 0, y: -4, duration: 0.15, ease: "power2.in" }, tE + T.sentAfter);
+  /* — f3 · sent: one label leaves, then the other comes (they share the same spot, so a
+     crossfade drew the two words on top of each other) — */
+  tl.to(ebDraft, { opacity: 0, y: -4, duration: 0.13, ease: "power2.in" }, tE + T.sentAfter);
   tl.fromTo(
     ebSent,
     { opacity: 0, y: 4 },
-    { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", immediateRender: false },
-    tE + T.sentAfter,
+    { opacity: 1, y: 0, duration: 0.17, ease: "power2.out", immediateRender: false },
+    tE + T.sentAfter + 0.13,
   );
   const tS = tE + T.f3After;
   tl.addLabel("f3", tS);
