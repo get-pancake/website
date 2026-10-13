@@ -346,6 +346,19 @@
   box-shadow: inset 0 0 0 1px var(--lp-text-on-inverted);
   color: var(--lp-text-on-inverted);
 }
+/* Under 350 the two pills (135 + 12 + 135) are wider than the sheet's 270px
+   row and stacked, the bar then covering a quarter of a 568-tall screen:
+   there they share the row instead. */
+@media (max-width: 349px) {
+  .lp-nav-menu-ctas {
+    flex-wrap: nowrap;
+  }
+  .lp .lp-nav-menu-ctas .lp-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding-inline: 12px;
+  }
+}
 
 /* Scoped scroll lock — same belt-and-braces shape as body.modal-open. */
 body.menu-open:has(main.lp) {

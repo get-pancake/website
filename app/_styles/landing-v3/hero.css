@@ -512,6 +512,29 @@
   .lp-hero-col {
     gap: 23px;
   }
+  /* Short phones (iPhone SE class: Safari's first screen is 375×548). The
+     block above is then taller than the screen and the fold cut the two
+     buttons (their bottom at 574; mobile pass 2026-10-12). --lp-hero-tuck is
+     how far the buttons must rise to clear the fold by 16px, capped at 45:
+     61.44vw + 352 is their bottom with a three-line lede, the tallest case.
+     It is 0 on the usual first screens (402×700, 393×659, 390×664, 375×629,
+     360×640), which do not change. The arc rises by 24/45 of it with the copy
+     (same distance between the two; its apex keeps 24px under the bar) and
+     the three gaps give the rest (23 → 16 at the cap). Frozen svh: nothing
+     moves when Safari's toolbar collapses. Both audiences. */
+  .lp-hero--home {
+    --lp-hero-tuck: clamp(0px, calc(61.44vw + 368px - var(--lp-svh, 100svh)), 45px);
+  }
+  .lp-hero--home .lp-hero-art {
+    top: calc(0.3vw - var(--lp-hero-tuck) * 24 / 45);
+  }
+  .lp-hero--home .lp-hero-inner {
+    gap: calc(23px - var(--lp-hero-tuck) * 7 / 45);
+    padding-top: calc(61.44vw - var(--lp-switch-height) - 23px - var(--lp-hero-tuck) * 24 / 45);
+  }
+  .lp-hero--home .lp-hero-col {
+    gap: calc(23px - var(--lp-hero-tuck) * 7 / 45);
+  }
   .lp-hero-title {
     /* 8.846vw = 35.559px at the 402 artboard; the 30px floor keeps line 2
        ("We bring you customers", 332px at full size) inside a 320 viewport

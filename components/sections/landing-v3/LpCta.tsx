@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { Fragment, type ReactNode } from "react";
 
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
@@ -37,6 +37,18 @@ const CTA_BODY: readonly [string, string] = [
   "From $99 a month per workspace. Your whole team included.",
 ];
 
+/* One span per sentence, the text and its spaces unchanged. On phones each is
+   an inline-block (cta.css, the ≤767 block): a line too long for the card
+   breaks between two sentences, not one word before the end of the first
+   ("…It builds the / Play." at 402). */
+const sentences = (line: string) =>
+  (line.match(/\S.*?(?:[.!?](?=\s|$)|$)/g) ?? [line]).map((sentence, i) => (
+    <Fragment key={i}>
+      {i > 0 ? " " : null}
+      <span className="lp-cta__s">{sentence}</span>
+    </Fragment>
+  ));
+
 export function LpCta({
   title = CTA_TITLE,
   body = CTA_BODY,
@@ -73,12 +85,12 @@ export function LpCta({
           <h2 className="lp-title-card lp-cta__title">{title}</h2>
           <p className="lp-cta__body">
             {typeof body === "string" ? (
-              body
+              sentences(body)
             ) : (
               <>
-                {body[0]}
+                {sentences(body[0])}
                 <br />
-                {body[1]}
+                {sentences(body[1])}
               </>
             )}
           </p>
