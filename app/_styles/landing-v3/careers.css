@@ -342,9 +342,16 @@
     margin-bottom: -12px;
     padding-block: 16px 12px;
   }
+  /* The link chips ("LinkedIn", "X") keep the 34px of the chips beside them:
+     padding grew the painted chip to 44px. An invisible ::after carries the
+     hit area instead (34 + 2 × 5). */
   a.lp-crs-fact {
-    margin-block: -7px;
-    padding-block: 12px;
+    position: relative;
+  }
+  a.lp-crs-fact::after {
+    content: "";
+    inset: -5px 0;
+    position: absolute;
   }
   .lp-crs-note__text a {
     display: inline-block;

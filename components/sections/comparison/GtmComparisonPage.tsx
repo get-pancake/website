@@ -220,7 +220,9 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
             <div className="vvp-hero__cards">
               <article className="vvp-pcard vvp-pcard--viktor">
                 <span className="vvp-pcard__icon" aria-hidden>{config.competitorInitial}</span>
-                <H3 className="heading vvp-pcard__title">{config.competitor}</H3>
+                {/* H2, not H3: the two cards sit right under the H1, and the outline must not
+                    skip a level. data-level keeps the kit's H3 size and tracking. */}
+                <H2 data-level="3" className="heading vvp-pcard__title">{config.competitor}</H2>
                 <p className="vvp-pcard__body">{config.competitorBody}</p>
                 <p className="vvp-pcard__choose">{config.competitorChoose}</p>
               </article>
@@ -229,7 +231,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
                   {/* eslint-disable-next-line @next/next/no-img-element -- raster brand mark */}
                   <img src="/pancake-mark.png" alt="" width={48} height={48} />
                 </span>
-                <H3 className="heading vvp-pcard__title">Pancake</H3>
+                <H2 data-level="3" className="heading vvp-pcard__title">Pancake</H2>
                 <p className="vvp-pcard__body">{config.pancakeBody}</p>
                 <p className="vvp-pcard__choose">{config.pancakeChoose}</p>
               </article>

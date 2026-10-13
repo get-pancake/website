@@ -108,11 +108,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
    wider than the 760px measure on phones, so each one gets a scrolling box.
    `node` (the hast node react-markdown passes) must not reach the DOM. */
 type TableProps = ComponentPropsWithoutRef<"table"> & { node?: unknown };
+type ImageProps = ComponentPropsWithoutRef<"img"> & { node?: unknown };
+
+/* The intrinsic size of each image the posts embed (`![alt](/file)`), so the browser keeps
+   its box before the file arrives: with no dimensions, the photo that opens "The next
+   unicorns…" pushed the whole post down when it loaded. blog.css keeps the images fluid
+   (max-width 100%, height auto). Add a line with each new image; one missing here renders as
+   before, without a reserved box. */
+const MARKDOWN_IMAGE_SIZES = new Map<string, { width: number; height: number }>([
+  ["/blog-founders.webp", { width: 1200, height: 671 }],
+]);
+
 const markdownComponents: Components = {
   table: ({ node: _node, ...props }: TableProps) => (
     <div className="lp-blog-tablewrap">
       <table {...props} />
     </div>
+  ),
+  img: ({ node: _node, src, alt, ...props }: ImageProps) => (
+    // eslint-disable-next-line @next/next/no-img-element -- markdown image, sized from the map above
+    <img {...props} {...MARKDOWN_IMAGE_SIZES.get(src ?? "")} src={src} alt={alt ?? ""} decoding="async" />
   ),
 };
 
