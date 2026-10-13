@@ -259,8 +259,13 @@
     /*
      * Home landing below hero — Figma `428:14366` (`-> V0.3`), desktop vs 1920px canvas.
      * Section titles use ~45.23px; ledes ~24px; centered heading block width 752px.
+     *
+     * 2026-10-13: the divisor was 1000, which yields 72.37px, not the 45.23px above. Nothing
+     * drawn changes: `h2.heading` overrides this size on every H2 that carries the
+     * section-title class, and its one real reader, the comparison pages' H1, keeps its
+     * drawn size in components/sections/comparison/comparison.css.
      */
-    --font-size-home-landing-section-title: calc(4523 * var(--font-size-base) / 1000);
+    --font-size-home-landing-section-title: calc(4523 * var(--font-size-base) / 1600);
     --line-height-home-landing-section-title: 52px;
     /* Phones: the fixed 45.23px H2 wrapped long titles to 5-6 lines with
        single-word lines at 320 (mobile review 2026-07-07). */
