@@ -1,5 +1,5 @@
 /**
- * PostHog latest-touch attribution (bug check 2026-10-13, H1).
+ * PostHog first-touch and latest-touch attribution (bug check 2026-10-13, H1 and H2).
  *
  *   node --test scripts/posthog-touch.test.mjs
  *
@@ -22,6 +22,7 @@ import * as siteConfig from "../lib/site-config.mjs";
 const { ATTRIBUTION_KEYS, isExternalReferrer, resolvePostHogTouch, TOUCH_KEYS } = posthogTouch;
 
 const AD_URL = "https://pancake.ai/?utm_source=linkedin&utm_medium=paid&utm_campaign=q4&li_fat_id=L1";
+const RETARGETING_URL = "https://pancake.ai/?utm_source=facebook&utm_campaign=retargeting&fbclid=FB1";
 
 /** The super properties a browser holds after `touch` was applied the way the component applies it. */
 function store(stored, touch) {
@@ -34,9 +35,10 @@ function store(stored, touch) {
   return next;
 }
 
-/** One more page: the latest touch stays, nothing is nulled on the person, no landing event. */
+/** One more page: nothing to store, nothing nulled on the person, no landing event. */
 function assertQuiet(touch, message) {
   assert.equal(touch.isNewTouch, false, message);
+  assert.equal(touch.initial, null, message);
   assert.equal(touch.latest, null, message);
   assert.deepEqual(touch.person.set, {}, message);
   assert.equal(touch.landingEvent, null, message);
@@ -124,17 +126,44 @@ test("the second page of a visit keeps the campaign and is not a landing (H1)", 
   assert.equal(stored.pancake_latest_landing_url, AD_URL);
 });
 
+test("an ad after a direct first visit updates the latest touch, never the first (H2)", () => {
+  let stored = store({}, resolvePostHogTouch({ url: "https://pancake.ai/", referrer: "", stored: {} }));
+  stored = store(stored, resolvePostHogTouch({ url: "https://pancake.ai/pricing", referrer: "https://pancake.ai/", stored }));
+  assert.deepEqual(stored, {
+    pancake_initial_landing_url: "https://pancake.ai/",
+    pancake_latest_landing_url: "https://pancake.ai/",
+  });
+
+  const touch = resolvePostHogTouch({ url: RETARGETING_URL, referrer: "https://l.facebook.com/", stored });
+  assert.equal(touch.isNewTouch, true);
+  assert.equal(touch.initial, null);
+  assert.equal(touch.latest.pancake_latest_utm_source, "facebook");
+  assert.equal(touch.latest.pancake_latest_fbclid, "FB1");
+  // The person receives the first touch as the browser stored it: the direct visit, nothing from the ad.
+  assert.deepEqual(touch.person.setOnce, { pancake_initial_landing_url: "https://pancake.ai/" });
+  assert.equal(touch.landingEvent.utm_campaign, "retargeting");
+
+  stored = store(stored, touch);
+  assert.deepEqual(
+    Object.keys(stored).filter((key) => key.startsWith("pancake_initial_")),
+    ["pancake_initial_landing_url"],
+  );
+  assert.equal(stored.pancake_latest_referrer, "https://l.facebook.com/");
+});
+
 test("a later campaign replaces the latest touch whole", () => {
   let stored = store({}, resolvePostHogTouch({ url: AD_URL, referrer: "https://www.linkedin.com/", stored: {} }));
   const touch = resolvePostHogTouch({ url: "https://pancake.ai/pricing?gclid=G1", referrer: "", stored });
   stored = store(stored, touch);
 
+  assert.equal(touch.initial, null);
   assert.deepEqual(touch.latest, {
     pancake_latest_gclid: "G1",
     pancake_latest_landing_url: "https://pancake.ai/pricing?gclid=G1",
   });
   assert.equal(touch.person.set.pancake_latest_utm_source, null);
   assert.equal(touch.person.set.pancake_latest_referrer, null);
+  assert.equal(touch.person.setOnce.pancake_initial_utm_source, "linkedin");
   assert.equal("pancake_latest_utm_source" in stored, false);
   assert.equal(stored.pancake_initial_utm_source, "linkedin");
 });
@@ -363,12 +392,7 @@ test("the component: an ad click, then Pricing, keeps the campaign and sends one
     "capture $pageview",
     "capture marketing_landing_viewed",
   ]);
-  assert.deepEqual(await browser.load("https://pancake.ai/pricing", AD_URL), [
-    "init",
-    "register_once pancake_initial_landing_url",
-    "setPersonProperties",
-    "capture $pageview",
-  ]);
+  assert.deepEqual(await browser.load("https://pancake.ai/pricing", AD_URL), ["init", "setPersonProperties", "capture $pageview"]);
 
   assert.deepEqual(browser.pick(browser.superProperties, "pancake_latest_"), latest);
   assert.deepEqual(browser.pick(browser.person, "pancake_latest_utm_"), {
@@ -387,4 +411,43 @@ test("the component: an ad click, then Pricing, keeps the campaign and sends one
   assert.equal(pricing.$current_url, "https://pancake.ai/pricing");
   assert.equal(pricing.pancake_latest_utm_source, "linkedin");
   assert.equal(pricing.pancake_initial_utm_campaign, "q4");
+});
+
+test("the component: a direct visit, Pricing, then a retargeting ad a week later (H2)", async () => {
+  const browser = makeBrowser();
+
+  assert.deepEqual(await browser.load("https://pancake.ai/"), [
+    "init",
+    "register_once pancake_initial_landing_url",
+    "unregister pancake_latest_*",
+    "register pancake_latest_landing_url",
+    "setPersonProperties",
+    "capture $pageview",
+  ]);
+  assert.deepEqual(await browser.load("https://pancake.ai/pricing", "https://pancake.ai/"), [
+    "init",
+    "setPersonProperties",
+    "capture $pageview",
+  ]);
+
+  assert.deepEqual(await browser.load(RETARGETING_URL, "https://l.facebook.com/"), [
+    "init",
+    "unregister pancake_latest_*",
+    "register pancake_latest_utm_source,pancake_latest_utm_campaign,pancake_latest_fbclid,pancake_latest_landing_url,pancake_latest_referrer",
+    "setPersonProperties",
+    "capture $pageview",
+    "capture marketing_landing_viewed",
+  ]);
+
+  // First touch: the direct visit, whole. The ad is the latest touch only.
+  assert.deepEqual(browser.pick(browser.superProperties, "pancake_initial_"), { pancake_initial_landing_url: "https://pancake.ai/" });
+  assert.deepEqual(browser.pick(browser.person, "pancake_initial_"), { pancake_initial_landing_url: "https://pancake.ai/" });
+  assert.equal(browser.person.pancake_latest_utm_source, "facebook");
+  assert.equal(browser.person.pancake_latest_utm_campaign, "retargeting");
+  assert.equal(browser.person.pancake_latest_fbclid, "FB1");
+  assert.equal(browser.person.pancake_latest_referrer, "https://l.facebook.com/");
+  assert.deepEqual(
+    browser.events.map((event) => event.name),
+    ["$pageview", "$pageview", "$pageview", "marketing_landing_viewed"],
+  );
 });
