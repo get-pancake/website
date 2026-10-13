@@ -110,56 +110,9 @@
   mask-position: center;
 }
 
-/* Pause (2026-10-07, WCAG 2.2.2): the pause button (LpMarqueePause →
-   data-paused on the strip) stops the loop. A pointer resting on the band no
-   longer stops it (founder 2026-10-12: "a slowdown and not a complete stop"):
-   LpMarqueePause eases the copies' playback rate down while it is there.
-   Independent of anim.css's off-stage freeze: both only ever pause. */
-.lp-marquee[data-paused] .lp-marquee__seq {
-  animation-play-state: paused;
-}
-/* Minimal control until the designer styles it: a 28px cream disc with a
-   hairline at the strip's right end, over the band's faded edge (the 10%
-   mask), so it covers no visible logo; 44px hit area via ::after. */
-.lp .lp-marquee__pause {
-  align-items: center;
-  background: var(--lp-page-bg);
-  border: 0;
-  border-radius: 50%;
-  box-shadow: inset 0 0 0 1px var(--lp-stroke);
-  color: var(--lp-ink-80);
-  cursor: pointer;
-  display: flex;
-  height: 28px;
-  justify-content: center;
-  padding: 0;
-  position: absolute;
-  right: var(--lp-space-2);
-  top: 50%;
-  transform: translateY(-50%);
-  width: 28px;
-}
-/* hidden until LpMarqueePause sees the strip move (a frozen row has none) */
-.lp .lp-marquee__pause[hidden] {
-  display: none;
-}
-.lp .lp-marquee__pause::after {
-  content: "";
-  inset: -8px;
-  position: absolute;
-}
-.lp .lp-marquee__pause svg {
-  fill: currentColor;
-}
-.lp .lp-marquee__pause:focus-visible {
-  outline: 2px solid var(--lp-text);
-  outline-offset: 2px;
-}
-@media (hover: hover) {
-  .lp .lp-marquee__pause:hover {
-    color: var(--lp-ink-100);
-  }
-}
+/* No pause button since 2026-10-13 (founder). A pointer resting on the band
+   slows the loop (LpMarqueePause eases the copies' playback rate); anim.css's
+   off-stage freeze and reduced motion are unchanged. */
 
 @keyframes lp-marquee-scroll {
   from { transform: translateX(0); }
@@ -196,5 +149,4 @@
     padding-inline: var(--lp-space-8);
   }
   .lp-marquee__seq + .lp-marquee__seq { display: none; }
-  .lp .lp-marquee__pause { display: none; }
 }

@@ -5,9 +5,8 @@ import { LpMarqueePause } from "@/components/sections/landing-v3/LpMarqueePause"
 /** Customer logos in the founder's order. The brain landing is the source
  * for the plum masks, optical sizing and continuous leftward scroll.
  * Artwork and provenance: public/logos/customers/README.md.
- * 2026-10-07: a small pause button (LpMarqueePause, outside the band) stops
- * the loop for every input (WCAG 2.2.2). 2026-10-12: a pointer resting on the
- * band slows the loop instead of stopping it (LpMarqueePause).
+ * 2026-10-12: a pointer resting on the band slows the loop instead of stopping
+ * it (LpMarqueePause). 2026-10-13: the pause button is gone (founder).
  */
 type CustomerLogo = {
   name: string;

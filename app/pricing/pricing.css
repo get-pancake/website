@@ -51,11 +51,6 @@
 .lv2-pricing-logos .lp-marquee__seq + .lp-marquee__seq {
   display: none;
 }
-/* No motion, no control: LpMarqueePause already stays hidden on a strip
-   that doesn't animate; this keeps it gone even before its effect runs. */
-.lp .lv2-pricing-logos .lp-marquee__pause {
-  display: none;
-}
 /* Phones: the marquee's 48px gap left two logos a row (six rows). A
    tighter gap still clears the YC mark (spacing-lg + spacing-sm wide). */
 @media (max-width: 767px) {
