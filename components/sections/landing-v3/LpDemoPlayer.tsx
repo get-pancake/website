@@ -660,7 +660,22 @@ export function LpDemoPlayer({
       sync();
     };
     setPhone();
-    mqPhone.addEventListener("change", setPhone);
+    /* The breakpoint flips (a tablet turned, a window dragged across 767): the running view was
+       measured on the other layout, its chat bar's place is written in px, and until 2026-10-13
+       it kept that geometry to the end of its run (the bug check's L1). The view that shows is
+       rebuilt at once on the new layout and starts over from its first frame; the hidden one is
+       rebuilt by the resize pass below. */
+    const onPhoneChange = () => {
+      setPhone();
+      if (!x.mods || !x.tls[x.view] || x.pending || x.seeking) return;
+      stop();
+      x.t = 0;
+      card.setAttribute("data-snap", "");
+      build(x.view);
+      void card.offsetHeight; // commit the snapped state before transitions come back
+      card.removeAttribute("data-snap");
+    };
+    mqPhone.addEventListener("change", onPhoneChange);
 
     /* a new stage width: the timelines measured the old one. Each is rebuilt once the size
        settles, at once if its view is at rest or hidden, else when it next starts from its first
@@ -769,7 +784,7 @@ export function LpDemoPlayer({
       ro.disconnect();
       grow.destroy();
       mqReduce.removeEventListener("change", setReduced);
-      mqPhone.removeEventListener("change", setPhone);
+      mqPhone.removeEventListener("change", onPhoneChange);
       stage.style.removeProperty("--lp-demowin-fit");
       chipLink?.removeAttribute("tabindex");
       chip?.removeAttribute("aria-hidden");
