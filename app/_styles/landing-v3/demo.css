@@ -1015,10 +1015,19 @@
    LpDemoPlayer PHONE_SOLO); the rules for a two-view phone card stay below. */
 @media (max-width: 767px) {
   .lp-demowin {
-    /* F1 — the card's width on screen. The artboard: 218 of 402 (type lands at
-       5.3 – 11.2 px, a product picture in a phone frame). The legible
-       alternative is the content width: calc(100vw - 32px) (type × 1.7). */
-    --lp-demowin-phone-w: calc(218 / 402 * 100vw);
+    /* F1 — the card's width on screen. The artboard draws 218 of 402: type lands
+       at 5.3 – 11.2 px, a product picture in a phone frame. Founder, on his
+       phone, 2026-10-12: "find this hard to read". So the card takes the
+       content width: type × 1.7 (9 – 19 px; the thread 8.8 – 9.5), and never
+       wider than the box itself (546.33: du at 1:1 from 578 up, centred).
+       The artboard's value is calc(218 / 402 * 100vw). */
+    --lp-demowin-phone-w: min(100vw - 32px, 546.33px);
+    /* The box's height in du. The artboard's 1072.61 (218 × 428) would be 726px
+       tall at this width, more than a phone screen under the bar. 212.61 du of
+       the empty band between the content and the chat bar come out (271 du at
+       rest, 300 once the Play is live): 860 du, 582px at 402, and the chat bar
+       keeps its 66.93 du from the bottom edge. */
+    --lp-demowin-phone-h: 860;
     /* the card's top edge shows this far above the fold (artboard: top 857 on the 874 frame) */
     --lp-demowin-phone-peek: 17px;
     margin-top: calc(-1 * var(--lp-demowin-phone-peek));
@@ -1034,14 +1043,14 @@
 
   /* the card on screen, and the du box in it */
   .lp-demowin__stage {
-    aspect-ratio: 546.33 / 1072.61; /* 218 / 428 */
+    aspect-ratio: 546.33 / var(--lp-demowin-phone-h);
     display: block;
     position: relative;
     width: var(--lp-demowin-phone-w);
   }
-  .lp-demowin__stage:focus-visible { border-radius: calc(var(--lp-demowin-phone-w) * 0.16514); } /* 90.22 / 546.33 */
+  .lp-demowin__stage:focus-visible { border-radius: 36px; }
   .lp-demowin__view {
-    height: 1072.61px;
+    height: calc(var(--lp-demowin-phone-h) * 1px);
     left: 0;
     pointer-events: none; /* a picture at this size: nothing in it is a tap target */
     position: absolute;
@@ -1052,9 +1061,12 @@
     width: 546.33px;
   }
   /* Figma: r 36 (smoothing .6), stroke .2 inside, shadow 0 1.596 24.899 8 % — in du the desktop
-     window's own hairline and shadow, so only the radius changes */
+     window's own hairline and shadow, so only the radius changes. The radius stays the
+     artboard's 36 SCREEN px at the content width (90.22 du there would be 61px: a pill). */
   .lp-demowin__win,
-  .lp-demowin__cwin { border-radius: 90.22px; }
+  .lp-demowin__cwin {
+    border-radius: calc(36px / var(--lp-demowin-fit, tan(atan2(var(--lp-demowin-phone-w), 546.33px))));
+  }
 
   /* Gecko draws no inset ring thinner than 1 px in the element's own units (0.5 du here, at
      any pixel ratio: see the desktop rule above): the card's edge, the three cards and the
@@ -1072,18 +1084,20 @@
   }
 
   /* rest picture (du): wordmark 57.27 · title 220.03 · subtitle 262.03 · label 362.86 ·
-     cards 394.87 · agent row 553.5 · chat bar 882.56 – 1005.68 · 66.93 under it.
+     cards 394.87 · agent row 553.5 · chat bar 669.95 – 793.07 · 66.93 under it (the artboard:
+     882.56 – 1005.68 in its 1072.61 box). The two tops are --lp-demowin-phone-h − 190.05 and
+     − 114.93, written as plain px: the timeline reads them with parseFloat, a calc() is NaN.
      The chat bar is docked from the start on the artboard: once the request is sent it only
      gets shorter (its bottom edge stays), and the thread sits in the middle of the card. */
   .lp-demowin__view--pancake {
     --pk-x: 29.18px;
     --pk-title-top: 244px; /* the artboard's 220.03 with a subtitle; alone, 24 lower */
-    --pk-bar-top: 882.56px;
+    --pk-bar-top: 669.95px;
     --pk-bar-h: 123.12px;
     --pk-ideas-top: 362.86px;
     --pk-chip-top: 553.5px;
     --pk-thread-top: 250px;
-    --pk-dock-top: 957.68px;
+    --pk-dock-top: 745.07px;
     --pk-dock-h: 48px;
   }
   .lp-demowin__top { height: 220.03px; }
