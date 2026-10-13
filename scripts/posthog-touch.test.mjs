@@ -1,5 +1,5 @@
 /**
- * PostHog first-touch and latest-touch attribution (bug check 2026-10-13, H1 and H2).
+ * PostHog first-touch and latest-touch attribution (bug check 2026-10-13, H1, H2 and L7).
  *
  *   node --test scripts/posthog-touch.test.mjs
  *
@@ -35,13 +35,9 @@ function store(stored, touch) {
   return next;
 }
 
-/** One more page: nothing to store, nothing nulled on the person, no landing event. */
+/** One more page: nothing to store, nothing to set on the person, no landing event. */
 function assertQuiet(touch, message) {
-  assert.equal(touch.isNewTouch, false, message);
-  assert.equal(touch.initial, null, message);
-  assert.equal(touch.latest, null, message);
-  assert.deepEqual(touch.person.set, {}, message);
-  assert.equal(touch.landingEvent, null, message);
+  assert.deepEqual(touch, { isNewTouch: false, initial: null, latest: null, person: null, landingEvent: null }, message);
 }
 
 /* ── the pure module ─────────────────────────────────────────────────────── */
@@ -72,16 +68,13 @@ test("the property names sent to PostHog are the ones dashboards already use", (
   assert.deepEqual(Object.keys(touch.person.set), TOUCH_KEYS.map((key) => `pancake_latest_${key}`));
 });
 
-test("a first direct visit stores its landing page as both touches and is not a landing", () => {
+test("a first direct visit stores its landing page as both touches and announces nothing", () => {
   const touch = resolvePostHogTouch({ url: "https://pancake.ai/", referrer: "", stored: {} });
   assert.deepEqual(touch, {
     isNewTouch: false,
     initial: { pancake_initial_landing_url: "https://pancake.ai/" },
     latest: { pancake_latest_landing_url: "https://pancake.ai/" },
-    person: {
-      set: { ...Object.fromEntries(TOUCH_KEYS.map((key) => [`pancake_latest_${key}`, null])), pancake_latest_landing_url: "https://pancake.ai/" },
-      setOnce: { pancake_initial_landing_url: "https://pancake.ai/" },
-    },
+    person: null,
     landingEvent: null,
   });
 });
@@ -392,7 +385,7 @@ test("the component: an ad click, then Pricing, keeps the campaign and sends one
     "capture $pageview",
     "capture marketing_landing_viewed",
   ]);
-  assert.deepEqual(await browser.load("https://pancake.ai/pricing", AD_URL), ["init", "setPersonProperties", "capture $pageview"]);
+  assert.deepEqual(await browser.load("https://pancake.ai/pricing", AD_URL), ["init", "capture $pageview"]);
 
   assert.deepEqual(browser.pick(browser.superProperties, "pancake_latest_"), latest);
   assert.deepEqual(browser.pick(browser.person, "pancake_latest_utm_"), {
@@ -421,14 +414,11 @@ test("the component: a direct visit, Pricing, then a retargeting ad a week later
     "register_once pancake_initial_landing_url",
     "unregister pancake_latest_*",
     "register pancake_latest_landing_url",
-    "setPersonProperties",
     "capture $pageview",
   ]);
-  assert.deepEqual(await browser.load("https://pancake.ai/pricing", "https://pancake.ai/"), [
-    "init",
-    "setPersonProperties",
-    "capture $pageview",
-  ]);
+  assert.deepEqual(await browser.load("https://pancake.ai/pricing", "https://pancake.ai/"), ["init", "capture $pageview"]);
+  // No person property is set for a visitor no campaign and no outside page has brought.
+  assert.deepEqual(browser.person, {});
 
   assert.deepEqual(await browser.load(RETARGETING_URL, "https://l.facebook.com/"), [
     "init",

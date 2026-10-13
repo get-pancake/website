@@ -105,7 +105,7 @@ function PostHogAttributionEffects() {
     // Most links on the site are full page loads, so this runs on most pages of
     // a visit. lib/analytics/posthog-touch.mjs decides what the load is: a new
     // touch (a campaign or click id in the address, or a referrer outside
-    // Pancake) or one more page, which leaves the stored touches alone.
+    // Pancake) or one more page, which leaves the stored touches and the person alone.
     const load = { url: window.location.href, referrer: document.referrer };
     let touch: PostHogTouch | null = null;
 
@@ -116,7 +116,7 @@ function PostHogAttributionEffects() {
         clearLatestTouchSuperProperties(posthog);
         posthog.register(touch.latest);
       }
-      posthog.setPersonProperties(touch.person.set, touch.person.setOnce);
+      if (touch.person) posthog.setPersonProperties(touch.person.set, touch.person.setOnce);
     });
 
     capturePageView();
