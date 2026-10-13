@@ -127,6 +127,10 @@
   --lp-font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   --lp-font-aeonik: var(--font-aeonik), system-ui, -apple-system, sans-serif;
   --lp-font-cond: var(--font-aeonik-condensed), var(--font-aeonik), system-ui, -apple-system, sans-serif;
+  /* The condensed face's 700 / 900 cuts: declared apart in app/layout.tsx so
+     they are not preloaded with the first screen's 400 / 500 / 600 (2026-10-13).
+     Use it on every rule that sets one of those weights in the condensed face. */
+  --lp-font-cond-x: var(--font-aeonik-condensed-x), var(--font-aeonik-condensed), var(--font-aeonik), system-ui, -apple-system, sans-serif;
   /* V2 agents view face (Geist Mono). No site-wide font in app/layout.tsx
      (2026-10-09 decision): the face is the literal @font-face "Geist Mono"
      of audience-agents.css (app/fonts/geist/), fetched only when the agents

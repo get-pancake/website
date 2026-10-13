@@ -69,7 +69,7 @@
   width: 528px;
 }
 .lp-price-amount {
-  font-family: var(--lp-font-cond);
+  font-family: var(--lp-font-cond-x); /* the 900 cut lives in the on-demand face */
   font-size: 143.34px;
   font-weight: 900;
   letter-spacing: -4.3002px;

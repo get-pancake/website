@@ -79,16 +79,38 @@ const aeonikFono = localFont({
 // 2026-08-28 at Tristan's direction). Upright cuts only — the artboard never
 // italicizes the condensed face. Consumed via --lp-font-cond in
 // app/_styles/landing-v3/foundation.css.
+// Two declarations since 2026-10-13 (Lighthouse pass on PR #333): next/font
+// preloads every cut of a face, and a computed-style census of every route
+// found the condensed face rendered in 600 on each first screen, 500 on the
+// kickers below it, 400 and 900 on the pricing section's "$99" and "/month"
+// alone, and 700 nowhere. The Bold and Black cuts were 44 KB of preloaded
+// OTF ahead of the first paint on every visit; they now load when a rule
+// asks for them, through --lp-font-cond-x (foundation.css). The Regular cut
+// stays first in BOTH lists: next/font derives the size-adjusted fallback
+// face from it, and the trial font draws its punctuation from that fallback
+// — a different first file moved every "+", "’" and "(" by a fraction of a
+// pixel and rewrapped titles on /blog.
 const aeonikCondensed = localFont({
   src: [
     { path: "./fonts/aeonik-condensed/AeonikCondensedProTRIAL-Regular.otf", weight: "400", style: "normal" },
     { path: "./fonts/aeonik-condensed/AeonikCondensedProTRIAL-Medium.otf", weight: "500", style: "normal" },
     { path: "./fonts/aeonik-condensed/AeonikCondensedProTRIAL-SemiBold.otf", weight: "600", style: "normal" },
-    { path: "./fonts/aeonik-condensed/AeonikCondensedProTRIAL-Bold.otf", weight: "700", style: "normal" },
-    { path: "./fonts/aeonik-condensed/AeonikCondensedProTRIAL-Black.otf", weight: "900", style: "normal" },
   ],
   variable: "--font-aeonik-condensed",
   display: "swap",
+});
+
+// The display cuts (see above): fetched on demand, never preloaded. Regular
+// is listed only for the fallback metrics; its file is the one above.
+const aeonikCondensedDisplay = localFont({
+  src: [
+    { path: "./fonts/aeonik-condensed/AeonikCondensedProTRIAL-Regular.otf", weight: "400", style: "normal" },
+    { path: "./fonts/aeonik-condensed/AeonikCondensedProTRIAL-Bold.otf", weight: "700", style: "normal" },
+    { path: "./fonts/aeonik-condensed/AeonikCondensedProTRIAL-Black.otf", weight: "900", style: "normal" },
+  ],
+  variable: "--font-aeonik-condensed-x",
+  display: "swap",
+  preload: false,
 });
 
 // Geist Sans (Vercel, SIL OFL 1.1) — the reading face since 2026-09-09
@@ -219,7 +241,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${aeonik.variable} ${aeonikFono.variable} ${aeonikCondensed.variable} ${geistSans.variable} ${lato.variable}`}
+      className={`${aeonik.variable} ${aeonikFono.variable} ${aeonikCondensed.variable} ${aeonikCondensedDisplay.variable} ${geistSans.variable} ${lato.variable}`}
     >
       <head>
         <meta
