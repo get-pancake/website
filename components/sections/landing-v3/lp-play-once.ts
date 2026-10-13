@@ -54,6 +54,14 @@ import type { gsap } from "@/lib/gsap";
  *   designer's picture) and never restarts.
  * - FLYING PAST (> 2.5 px/ms, or a jump of half a viewport) shows the
  *   picture instead of a build-up nobody would see.
+ * - ARRIVING is not flying past (2026-10-13, the bug check's M1): "Product"
+ *   in the nav scrolls to the steps with a fast smooth scroll, the cards read
+ *   that speed as a fly-by, jumped to their picture and never played. A link
+ *   that scrolls to an anchor announces where it lands (LpNavScroll, the
+ *   `lp:arrive` event): the cards that will be on screen there are cued on
+ *   the way and play once the scroll has landed, by the rules above. Cards
+ *   passed on the way still show their picture, and a scroll the visitor
+ *   makes is read as before.
  * - LEAVING THROUGH THE TOP while unfinished fast-forwards it to the picture
  *   (~0.35 s): the part still on screen is the card's lower half, which the
  *   build-ups fill last. Gone after it played: it finishes, so a visitor who
@@ -146,11 +154,29 @@ const SETTLE_MS = 160;
 const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
 /** share of a card (of the viewport, for a taller card) that must show when the scroll rests */
 const SETTLE_MIN_SHARE = 0.75;
-const settleSubs = new Set<() => void>();
+const settleSubs = new Set<(landed: boolean) => void>();
 let settleTimer = 0;
+/* A scroll to an anchor is under way (LpNavScroll announces it before it scrolls): the scroll
+   position it will land on. Cards that will be on screen there are arriving, not flown past. */
+const ARRIVE_EVENT = "lp:arrive"; // = LpNavScroll.tsx
+/** the announced scroll starts a frame later: it has this long to send its first scroll event (ms) */
+const ARRIVE_GRACE_MS = 400;
+let arrival: { y: number } | null = null;
 const onSettled = () => {
   settleTimer = 0;
-  for (const run of Array.from(settleSubs)) run();
+  const landed = arrival !== null;
+  arrival = null;
+  for (const run of Array.from(settleSubs)) run(landed);
+};
+const onArrive = (e: Event) => {
+  const target = (e as CustomEvent<unknown>).detail;
+  if (!(target instanceof Element) || !settleSubs.size) return;
+  const margin = parseFloat(getComputedStyle(target).scrollMarginTop) || 0;
+  const max = document.documentElement.scrollHeight - window.innerHeight;
+  arrival = { y: Math.min(Math.max(target.getBoundingClientRect().top + window.scrollY - margin, 0), Math.max(max, 0)) };
+  // a link to where the page already is scrolls nothing: the arrival ends by itself
+  window.clearTimeout(settleTimer);
+  settleTimer = window.setTimeout(onSettled, ARRIVE_GRACE_MS);
 };
 /* builds under way that must not be seen half-done (mountPlayOnce `approach`, the carousel's):
    told of every scroll */
@@ -171,13 +197,18 @@ const onScroll = () => {
   }
 };
 export function trackScroll(): () => void {
-  if (speedUsers++ === 0) window.addEventListener("scroll", onScroll, { passive: true });
+  if (speedUsers++ === 0) {
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener(ARRIVE_EVENT, onArrive);
+  }
   return () => {
     if (--speedUsers === 0) {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener(ARRIVE_EVENT, onArrive);
       samples.length = 0;
       window.clearTimeout(settleTimer);
       settleTimer = 0;
+      arrival = null;
     }
   };
 }
@@ -592,7 +623,9 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     };
     out.finished.then(next, next);
   };
-  const onSettle = () => {
+  const onSettle = (landed: boolean) => {
+    // a scroll to an anchor has landed: the cards it brought on screen play by the usual rules
+    if (landed) decide();
     if (disposed || !tl || seen || replaying || phase !== "done" || motionMq.matches || !touchMq.matches) return;
     const r = host.getBoundingClientRect();
     const vh = window.innerHeight;
@@ -604,6 +637,15 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   };
   settleSubs.add(onSettle);
 
+  /* A scroll to an anchor is under way and this card will be on screen (or within the cue
+     margin) where it lands: it is arriving, whatever the speed. */
+  const arriving = () => {
+    if (!arrival) return false;
+    const r = host.getBoundingClientRect();
+    const top = r.top + window.scrollY - arrival.y;
+    return r.height > 0 && top < window.innerHeight * 1.15 && top + r.height > 0;
+  };
+
   const decide = () => {
     if (!tl || disposed) return;
     clearTimeout(dwell);
@@ -614,7 +656,8 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       return;
     }
     if (phase === "done") return;
-    const fast = scrollSpeed() > FAST_SCROLL;
+    const landing = arriving();
+    const fast = !landing && scrollSpeed() > FAST_SCROLL;
     if (phase === "rest") {
       if (!near) return; // far away: keep resting
       // flying past, or already showing its picture on screen (built late,
@@ -624,6 +667,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     }
     if (phase === "cued") {
       if (!near) return toRest(); // went away before reaching it: unseen
+      if (landing) return; // on its way: it plays once the scroll has landed (onSettle)
       if (focused) return fast ? finish() : play();
       if (visible && ratio >= DWELL_MIN_RATIO) {
         // half on screen but short of the focus line: a visitor who stopped

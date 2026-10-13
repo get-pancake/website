@@ -39,13 +39,19 @@ function undecoratedSearch(params: URLSearchParams): string {
  * decorates the hrefs, so copied links keep the click id until the
  * LeadJourney setting limits decoration to the app.
  *
- * 2026-10-13 (the bug check's M2). A link with no query of its own is a
- * same-page link whatever this page's query is: on /?utm_source=… or
+ * 2026-10-13 (the bug check's M2 and M1). A link with no query of its own is
+ * a same-page link whatever this page's query is: on /?utm_source=… or
  * /?gclid=… "Product" reloaded the whole page (a second pageview, the
  * campaign gone from the address bar), and in the agents view
  * (?audience=agents) it reloaded into the humans view. It now scrolls in
- * place and the address keeps the page's query.
+ * place and the address keeps the page's query. And the scroll is announced
+ * before it starts (`lp:arrive`, the target as detail): the homepage's
+ * animated cards read a fast scroll as a visitor flying past and showed
+ * their finished picture; told where the page will land, they play once it
+ * is there (lp-play-once.ts, which listens; nothing else does).
  */
+/** = lp-play-once.ts ARRIVE_EVENT (not imported: this component is on every page) */
+const ARRIVE_EVENT = "lp:arrive";
 export function LpNavScroll() {
   useEffect(() => {
     const nav = document.querySelector<HTMLElement>(".lp-nav");
@@ -96,6 +102,7 @@ export function LpNavScroll() {
         window.dispatchEvent(new HashChangeEvent("hashchange", { oldURL, newURL: window.location.href }));
       }
       const keyboard = e.detail === 0;
+      if (!reduceMotion.matches) window.dispatchEvent(new CustomEvent(ARRIVE_EVENT, { detail: target }));
       requestAnimationFrame(() => {
         target.scrollIntoView({ behavior: reduceMotion.matches ? "auto" : "smooth", block: "start" });
         if (!keyboard) return;
