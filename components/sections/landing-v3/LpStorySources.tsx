@@ -87,7 +87,7 @@ function HubNode({ node }: { node: StorySourcesHubNode }) {
       data-placeholder={node.status === "placeholder" ? "" : undefined}
       style={{ left: `${node.x}px`, top: `${node.y}px`, width: `${node.size}px`, height: `${node.size}px` }}
     >
-      {/* the vendor's own file, unmodified (public/lp/story-sources/README.md). Decorative here:
+      {/* the vendor's own file, unmodified (docs/public-assets/lp/story-sources/README.md). Decorative here:
           the scene is aria-hidden and the name is written under the disc */}
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src={node.logo} alt="" width="64" height="64" loading="lazy" decoding="async" draggable={false} />
