@@ -10,9 +10,14 @@
    `* { font-family }` beats inheritance). Tokens only: lp ramps + color-mix. */
 
 .lp-guide {
-  --gd-promo-h: 48px;
+  /* the promo bar is the campaign copy's (/guides/claude/pancake20): no bar, no offset */
+  --gd-promo-h: 0px;
   --gd-card-r: var(--lp-r-xlg);
   --gd-tap: 44px;
+}
+
+.lp-guide--offer {
+  --gd-promo-h: 48px;
 }
 
 /* ── promo bar: sticky above everything, plum ── */

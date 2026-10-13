@@ -19,8 +19,6 @@ Ask the user if they already have a Pancake account. If not, send them to https:
 click **Start free** (3-day free trial) and add their website. Pancake builds their GTM Brain from
 it in a few minutes. Wait until they confirm.
 
-Tell them about the code **PANCAKE20**: 20% off for a year, to enter when they add their card.
-
 ## Step 2 · Connect
 
 ### If you are Claude Code

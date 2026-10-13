@@ -12,8 +12,9 @@ import "@/app/_styles/verticals.css";
 import "@/app/_styles/guide-claude.css";
 
 /**
- * /guides/claude — "Use Pancake in Claude", where the ManyChat DMs send people who comment
- * PANCAKE under a post or an ad. Static. Its agent twin, public/guides/claude.md, is served at
+ * /guides/claude — "Use Pancake in Claude", the guide the site links (nav, footer, homepage).
+ * No offer on it since 2026-10-13: the ManyChat campaign's PANCAKE20 lives on its copy,
+ * ./pancake20. Static. Its agent twin, public/guides/claude.md, is served at
  * /guides/claude.md as text/markdown and read here at build time, so both "Copy" buttons hold
  * the whole file inline (no fetch on click: the Instagram in-app browser would block the copy).
  * 2026-10-07 (audit 7.7, 8.5): the head announces that twin (<link rel="alternate"
