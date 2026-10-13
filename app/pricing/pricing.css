@@ -166,12 +166,50 @@
     height: 10.5rem;
   }
 }
+/* Phones: the stack gets a cell of its own beside the price, instead of
+   lying over the info column at a fixed offset. Pinned by a margin it covered
+   "/ month per workspace" wherever that line fitted beside the price (375,
+   390, 414 and 430px wide), the saving badge at 480px, and the picker's last
+   pills once the stack was four or five pancakes tall (launch audit,
+   2026-10-13). The info column dissolves (display: contents) so the picker,
+   the price and the CTAs become rows of the card's own grid; the price wraps
+   inside its column and nothing can run under the stack. */
 @media (max-width: 639px) {
+  .lv2-pricing-page .lv2-price-card {
+    column-gap: 0.75rem;
+    grid-template-areas:
+      "picker picker"
+      "now mascot"
+      "actions actions"
+      "perks perks";
+    grid-template-columns: minmax(0, 1fr) auto;
+    /* the info column's own gap, now between the card's rows */
+    row-gap: 1.25rem;
+  }
+  .lv2-pricing-page .lv2-price-info {
+    display: contents;
+  }
+  .lv2-pricing-page .lv2-credit-picker {
+    grid-area: picker;
+  }
+  .lv2-pricing-page .lv2-price-now {
+    grid-area: now;
+    min-width: 0;
+  }
+  .lv2-pricing-page .lv2-price-actions {
+    grid-area: actions;
+  }
   .lv2-pricing-page .lv2-price-mascot {
-    margin-top: 6.5rem;
+    align-self: end;
+    grid-area: mascot;
+    margin-top: 0;
   }
   .lv2-pricing-page .lv2-price-mascot .pancake-stack__svg {
     height: 7.75rem;
+  }
+  /* the card's larger gap above the perks, kept */
+  .lv2-pricing-page .lv2-price-perks {
+    margin-top: 0.5rem;
   }
   .lv2-pricing-page .lv2-price-perks .lv2-price-value-list {
     grid-template-columns: minmax(0, 1fr);
@@ -307,9 +345,6 @@
   .lv2-pricing-page .lv2-price-cycle,
   .lv2-pricing-page .lv2-price-sub {
     font-size: 1rem;
-  }
-  .lv2-pricing-page .lv2-price-mascot {
-    margin-top: 6rem;
   }
   .lv2-pricing-page .lv2-price-mascot .pancake-stack__svg {
     height: 6rem;
