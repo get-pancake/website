@@ -91,9 +91,9 @@ More ideas: [example Plays](https://pancake.ai/plays)
 - I sell [what you sell] to [who you sell to]. Build me a Pancake Play that finds [the people you want] who [what they are doing right now]. Show me the plan and what it will cost before you run it.
 - Track [profile URL of a competitor or an expert]. I want the people who engage with their posts.
 - Show me the leads that came in since yesterday, best fit first, with the reason for each one.
-- Find me [10] new leads today. Stay under [500] credits and tell me what you spent.
+- Find me [10] new leads today. Stay under [3,000] credits and tell me what you spent.
 - Show me the message Pancake wrote for [name]. Make it shorter and open on their post.
 - Pass on [name]: [why they are not a fit].
 - Pancake has suggestions for my Brain. Show me what would change, then apply the ones I accept.
 
-Full guide: https://pancake.ai/guides/claude
+Full guide: https://pancake.ai/claude

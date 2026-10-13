@@ -62,7 +62,7 @@ After the trial, the plan renews monthly on the card the customer added. Canceli
 
 ## Product boundaries
 
-Pancake finds a company's buyers and starts the conversation, from the customer's own accounts. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. It does not send outreach by email, sync leads to a CRM, identify website visitors, look up phone numbers or make calls. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on October 7, 2026 to match the current product.
+Pancake finds a company's buyers and starts the conversation, from the customer's own accounts. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. It does not send outreach by email, sync leads to a CRM, identify website visitors, look up phone numbers or make calls. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on October 13, 2026 to match the current product.
 
 ## Key pages
 
@@ -89,7 +89,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Octave vs Pancake](https://pancake.ai/octave-vs-pancake) — a context layer that feeds your GTM tools and agents vs Plays that find buyers and start the conversation
 - [Alta vs Pancake](https://pancake.ai/alta-vs-pancake) — named AI agents for outbound, inbound and calls, sold by custom quote, vs self-serve Plays from $99 a month per workspace
 - [OpenClaw vs Pancake](https://pancake.ai/openclaw-vs-pancake) — an open-source agent runtime you configure vs a managed GTM platform
-- [Paperclips vs Pancake](https://pancake.ai/pancake-vs-paperclips) — a self-hosted control plane for AI companies vs a managed GTM platform
+- [Paperclip vs Pancake](https://pancake.ai/pancake-vs-paperclips) — a self-hosted control plane for AI companies vs a managed GTM platform
 
 ## Industries
 
@@ -242,4 +242,4 @@ The rest of the blog archive, mostly on topics outside the product (see Product 
 
 ---
 
-Last updated: October 7, 2026
+Last updated: October 13, 2026

@@ -263,7 +263,7 @@ export const STEP_ASK = {
       title: "When new leads come in",
       prompts: [
         { id: "prompt-morning", text: "Show me the new leads, best fit first, with the reason for each one." },
-        { id: "prompt-daily", text: "Find me [10] new leads today. Stay under [500] credits and tell me what you spent." },
+        { id: "prompt-daily", text: "Find me [10] new leads today. Stay under [3,000] credits and tell me what you spent." },
       ],
     },
     {
