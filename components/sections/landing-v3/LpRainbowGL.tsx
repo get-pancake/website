@@ -60,7 +60,8 @@ import { useEffect, useRef } from "react";
  *     allocated (~640 MB), a first frame drawn — inside the hydration task,
  *     three of them for arts that then shrank to 1×1 a frame later. A
  *     context now exists only once its canvas comes within the observer
- *     margin, and the observer watches the CANVAS (the hero's visible
+ *     margin (the WARM one since 2026-10-13, see "Scroll" below), and the
+ *     observer watches the CANVAS (the hero's visible
  *     61.96% band), not the un-clipped art: the hero stopped drawing ~760px
  *     late and pricing + both slivers drew concurrently for 584px of scroll.
  *  4. Off-stage the drawing buffer shrank to 1×1 at once and re-allocated
@@ -85,6 +86,33 @@ import { useEffect, useRef } from "react";
  *  7. `powerPreference: "low-power"` could put the context on the other GPU
  *     of a dual-GPU MacBook Pro, forcing a per-frame surface copy; six
  *     flat-colour meshes need no hint.
+ *
+ * Scroll (2026-10-13, founder: smoother, "en gardant l'exact même rendu").
+ * Measured in Chromium on the real GPU (M4, Metal), first scroll: every time
+ * an art came within its margin the page waited on the GPU process inside
+ * the IntersectionObserver callback (context creation, the renderer string
+ * and LINK_STATUS, which blocks until the program is linked: 5–15 ms), then
+ * again in the first frame, both slivers of the closing band in the same
+ * two tasks (22 ms). What changed, the numbered points above untouched:
+ *  - Ahead of need (WARM_MARGIN, every width now) the context is opened in
+ *    idle time, never in the observer callback, and its link is not waited
+ *    for: with KHR_parallel_shader_compile the driver links on its own
+ *    threads and COMPLETION_STATUS_KHR is polled once a frame; LINK_STATUS is
+ *    read only after it says done. An engine without the extension (Firefox
+ *    on macOS) waits for the link in that same idle task. Desktop then draws
+ *    its one frame ahead as before; phones stop at the ready context (their
+ *    loop margin is the buffer's, see 4) and so no longer open one inside
+ *    the 75 % callback.
+ *  - One geometry build ahead of need per display frame, page-wide.
+ *  - An art that is already here (the hero at load, a page opened on it, a
+ *    fling that outruns the preparation) opens and links synchronously in
+ *    the observer callback, exactly as before: its first frame must not wait.
+ *  Not changed, and still paid mid-scroll: the drawing buffer. Allocating a
+ *  5.8–6.9 Mpx 4×MSAA buffer keeps the GPU process busy 40 ms (100 on the
+ *  live site) the first time it is drawn into, as soon as another context is
+ *  made current. It cannot move to load time (3), has to be released off
+ *  stage (4), and waiting for a pause in the scroll would bring back the
+ *  ring-less section a fast scroll used to meet (WARM_MARGIN).
  */
 
 type Variant = "hero" | "pricing" | "ctaLeft" | "ctaRight";
@@ -108,8 +136,10 @@ const SHRINK_DELAY_MS = 1000; // off-stage grace before the drawing buffer is re
 // Desktop: one frame is drawn this far ahead of the loop's margin, so a fast
 // scroll never meets the art's section before its first frame (2026-09-30:
 // pricing showed its black band, title unreadable, for two frames). Phones
-// already run the loop from 75 %.
+// already run the loop from 75 %. Every width since 2026-10-13: this is where
+// the context is opened, in idle time (see "Scroll" in the header).
 const WARM_MARGIN = "100% 0%";
+const IDLE_TIMEOUT_MS = 150; // a context opened ahead waits for idle time this long at most
 const ANNULUS_SEGMENTS = 180; // inner edge of the colour pass (chord error 0.4px at r 1200, under the next ring)
 const GOVERNOR_WINDOW_MS = 2000;
 const GOVERNOR_MIN_FRAMES = 24; // < 12 fps sustained …
@@ -180,6 +210,44 @@ const declareOff = () => {
 };
 
 const SOFTWARE_GL = /swiftshader|llvmpipe|softpipe|software|basic render|warp\b|mesa offscreen/i;
+
+/** The GPU's name, for the software check above. Blink and WebKit mask
+    RENDERER ("WebKit WebGL"), so the unmasked value comes from
+    WEBGL_debug_renderer_info there. Gecko answers RENDERER itself with the
+    real (sanitised) name since Firefox 92 and prints a warning on every page
+    that asks for the extension ("deprecated in Firefox and will be removed.
+    Please use RENDERER"): asked plainly there (2026-10-13). Never throws: no
+    extension, or a getParameter that fails (a privacy add-on), is an unknown
+    renderer, and the frame-budget governor still decides. */
+const isGecko = () => typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("-moz-appearance", "none");
+const rendererOf = (gl: WebGL2RenderingContext): string => {
+  try {
+    const dbg = isGecko() ? null : gl.getExtension("WEBGL_debug_renderer_info");
+    return String(gl.getParameter(dbg ? dbg.UNMASKED_RENDERER_WEBGL : gl.RENDERER) ?? "");
+  } catch {
+    return "";
+  }
+};
+
+/** Idle time, or IDLE_TIMEOUT_MS at the latest: where a context is opened
+    ahead of need, out of the observer callback and out of the frame. Safari
+    has no requestIdleCallback: a timer task of its own there. Returns the
+    cancel. */
+const whenIdle = (fn: () => void): (() => void) => {
+  if (typeof window.requestIdleCallback === "function") {
+    const id = window.requestIdleCallback(fn, { timeout: IDLE_TIMEOUT_MS });
+    return () => window.cancelIdleCallback(id);
+  }
+  const id = window.setTimeout(fn, 0);
+  return () => window.clearTimeout(id);
+};
+
+/** One geometry build ahead of need per display frame, page-wide (the
+    timestamp every callback of a frame receives): the two slivers of the
+    closing band come within the warm margin together, and their two builds
+    in one frame (DOM reads, a buffer allocation, the mesh uploads, twice)
+    were a 22 ms task. */
+let aheadBuildFrame = -1;
 
 /** Ring outline → one flattened polygon PER SUBPATH. The LpPancakes rings
     are annuli: a hand-drawn outer contour plus an inner circle drawn with
@@ -469,6 +537,11 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
     let canvas: HTMLCanvasElement = reactCanvas;
     let gl: WebGL2RenderingContext | null = null;
     let prog: WebGLProgram | null = null;
+    // KHR_parallel_shader_compile, asked for when the context is opened ahead
+    let parallel: { COMPLETION_STATUS_KHR: number } | null = null;
+    let ready = false; // the program is linked, bound, its uniforms located: frames can draw
+    let cancelOpen: (() => void) | null = null; // a context opening waiting for idle time
+    let pollRaf = 0; // a link under way, polled once a frame
     let uM: WebGLUniformLocation | null = null;
     let uC: WebGLUniformLocation | null = null;
     let rings: Ring[] = [];
@@ -480,6 +553,7 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
     let dpr = 1;
     let raf = 0;
     let near = false; // within the observer margin → the loop runs
+    let inWarm = false; // within the warm margin → the context is prepared
     let warm = false; // one frame requested ahead of that margin (desktop)
     let live = false; // [data-lp-gl] is on: the canvas is the render
     let disposed = false;
@@ -517,7 +591,14 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       rings = [];
     };
 
-    const initGL = (): boolean => {
+    /** A context, and the two shaders sent to compile and link. Nothing is
+        read back from the link here (finishGL does that). `ahead` of need,
+        the driver links on its own threads while the page goes on
+        (KHR_parallel_shader_compile, enabled before the shaders are sent). */
+    const openGL = (ahead: boolean): boolean => {
+      ready = false;
+      parallel = null;
+      prog = null;
       gl = canvas.getContext("webgl2", {
         antialias: true,
         alpha: true,
@@ -530,11 +611,8 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
         failIfMajorPerformanceCaveat: true,
       });
       if (!gl || gl.isContextLost()) return false;
-      if (governed) {
-        const dbg = gl.getExtension("WEBGL_debug_renderer_info");
-        const renderer = String(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
-        if (SOFTWARE_GL.test(renderer)) return false;
-      }
+      if (governed && SOFTWARE_GL.test(rendererOf(gl))) return false;
+      if (ahead) parallel = gl.getExtension("KHR_parallel_shader_compile");
       const sh = (type: number, src: string) => {
         const h = gl!.createShader(type)!;
         gl!.shaderSource(h, src);
@@ -545,6 +623,21 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS));
       gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS));
       gl.linkProgram(prog);
+      // no frame follows that would send these commands: send them now, or
+      // the link only starts with the first status query
+      if (parallel) gl.flush();
+      return true;
+    };
+    /** The link is over (well or not). Only a parallel link can still be
+        running: this never blocks. */
+    const linkDone = (): boolean =>
+      !parallel || !gl || !prog || gl.getProgramParameter(prog, parallel.COMPLETION_STATUS_KHR) !== false;
+    /** The link's verdict, then the program bound and its uniforms located.
+        Blocks until the link is done: after linkDone() said so that is one
+        short round trip; without it (the art is already here) it is the wait
+        this renderer always had. */
+    const finishGL = (): boolean => {
+      if (!gl || !prog) return false;
       // one synchronous status query (a link failure covers compile
       // failures) — in Gecko every value-returning GL call is a sync IPC
       if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return false;
@@ -556,7 +649,21 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       gl.enable(gl.STENCIL_TEST);
       gl.disable(gl.CULL_FACE);
       art.removeAttribute("data-lp-gl-off");
+      ready = true;
       return true;
+    };
+    const cancelPrepare = () => {
+      cancelOpen?.();
+      cancelOpen = null;
+      if (pollRaf) cancelAnimationFrame(pollRaf);
+      pollRaf = 0;
+    };
+    /** Context to drawable program in one go, for an art that is already
+        here: whatever is missing is opened now and the link is waited for,
+        as before 2026-10-13. */
+    const initGL = (): boolean => {
+      cancelPrepare();
+      return (gl && prog ? true : openGL(false)) && finishGL();
     };
 
     /** Geometry + sizing from the live DOM. False = not ready yet, retry. */
@@ -710,15 +817,25 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
 
     const easeOut = (x: number) => 1 - (1 - x) * (1 - x);
 
-    const frame = () => {
+    const frame = (ts?: number) => {
       raf = 0;
       // ahead = the single frame drawn before the loop's margin: the static
       // pose (cycle 0, pop done), exactly what the loop's first frame draws
       const ahead = !near;
-      if (disposed || lost || off || (ahead && !warm) || document.hidden || !gl) return;
-      if (!rings.length && !build()) {
-        raf = requestAnimationFrame(frame); // LpFitVars not there yet — retry
-        return;
+      if (disposed || lost || off || (ahead && !warm) || document.hidden || !gl || !ready) return;
+      if (!rings.length) {
+        if (ahead && ts !== undefined) {
+          // another art built ahead in this display frame: next one
+          if (aheadBuildFrame === ts) {
+            raf = requestAnimationFrame(frame);
+            return;
+          }
+          aheadBuildFrame = ts;
+        }
+        if (!build()) {
+          raf = requestAnimationFrame(frame); // LpFitVars not there yet — retry
+          return;
+        }
       }
       const now = performance.now();
       // ≤ 60 draws/s (see header, 2); the phase clock keeps running
@@ -832,10 +949,15 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       }
       if (raf || disposed || lost || off) return;
       if (reduced.matches || !near || document.hidden) return;
-      if (!gl && !initGL()) {
-        // no usable WebGL2 — the static artboard stays, for every art
-        declareOff();
-        return;
+      if (!ready) {
+        // the art is here before its context was prepared (the hero at load,
+        // a page opened on it, a fling): no idle time to wait for
+        if (gl?.isContextLost()) return; // the loss event is on its way: onLost recovers
+        if (!initGL()) {
+          // no usable WebGL2 — the static artboard stays, for every art
+          declareOff();
+          return;
+        }
       }
       if (live && canvas.width === 1) {
         // back on stage: restore the drawing buffer (was released off-stage);
@@ -853,43 +975,88 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       raf = 0;
       warm = false;
     };
-    // Desktop, within a viewport of the art: create the context and draw the
-    // static pose once, so the canvas is the render before the section shows.
+    // Within a viewport of the art: a context ready to draw, prepared without
+    // the page waiting for it (prepare, below). Desktop then draws the static
+    // pose once, so the canvas is the render before the section shows.
     // No boot pop for an art drawn unseen (it would replay on the loop's
     // first frames); the buffer is released like the loop's, off stage.
+    // Phones stop at the context: their loop, and its buffer, start at 75 %.
     const warmUp = () => {
-      if (phone || near || raf || disposed || lost || off) return;
+      if (near || raf || disposed || lost || off) return;
       if (reduced.matches || document.hidden) return;
       if (live && canvas.width !== 1) return; // it already holds its frame
-      if (!gl && !initGL()) {
-        declareOff();
+      if (!ready) {
+        prepare(); // comes back here once the program is linked
         return;
       }
+      if (phone) return;
       if (live) rings = []; // the buffer was released off stage: rebuild
       if (!popT0) popT0 = performance.now() - POP_MS;
       warm = true;
       raf = requestAnimationFrame(frame);
     };
-    const warmIo = phone
-      ? null
-      : new IntersectionObserver(
-          (entries) => {
-            if (entries.some((e) => e.isIntersecting)) {
-              warmUp();
-              return;
-            }
-            if (near) return;
-            clearTimeout(shrinkTimer);
-            shrinkTimer = window.setTimeout(() => {
-              if (near || disposed) return;
-              if (gl && live && canvas.width !== 1) {
-                canvas.width = 1;
-                canvas.height = 1;
-              }
-            }, SHRINK_DELAY_MS);
-          },
-          { rootMargin: WARM_MARGIN },
-        );
+    /** The link, polled once a frame until the driver is done with it. */
+    const poll = () => {
+      pollRaf = 0;
+      // reduced motion: finishGL would hide the artboard for a frame that never comes
+      if (disposed || lost || off || ready || reduced.matches) return;
+      if (!gl || !prog || gl.isContextLost()) return;
+      if (!linkDone()) {
+        pollRaf = requestAnimationFrame(poll);
+        return;
+      }
+      if (!finishGL()) {
+        declareOff();
+        return;
+      }
+      if (inWarm) warmUp();
+    };
+    /** Ahead of need: the context in idle time (see whenIdle), its link not
+        waited for (see poll). start() takes over, synchronously, if the art
+        gets here first. */
+    const prepare = () => {
+      if (cancelOpen || pollRaf) return; // on its way
+      if (gl && prog) {
+        pollRaf = requestAnimationFrame(poll); // opened earlier, its link not read yet
+        return;
+      }
+      cancelOpen = whenIdle(() => {
+        cancelOpen = null;
+        if (disposed || lost || off || near || !inWarm) return;
+        if (reduced.matches || document.hidden) return;
+        if (!openGL(true)) {
+          declareOff();
+          return;
+        }
+        // an engine without the parallel link (Firefox on macOS): the wait
+        // for it is paid here, in idle time, not in a frame
+        if (parallel) pollRaf = requestAnimationFrame(poll);
+        else poll();
+      });
+    };
+    const warmIo = new IntersectionObserver(
+      (entries) => {
+        inWarm = entries.some((e) => e.isIntersecting);
+        if (inWarm) {
+          warmUp();
+          return;
+        }
+        // gone before idle time came: nothing to open (a link under way finishes)
+        cancelOpen?.();
+        cancelOpen = null;
+        // phones: the loop's observer alone decides when the buffer goes
+        if (phone || near) return;
+        clearTimeout(shrinkTimer);
+        shrinkTimer = window.setTimeout(() => {
+          if (near || disposed) return;
+          if (gl && live && canvas.width !== 1) {
+            canvas.width = 1;
+            canvas.height = 1;
+          }
+        }, SHRINK_DELAY_MS);
+      },
+      { rootMargin: WARM_MARGIN },
+    );
     const restoreDom = () => {
       stop();
       live = false;
@@ -901,6 +1068,7 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       off = true;
       clearTimeout(shrinkTimer);
       clearTimeout(recoverTimer);
+      cancelPrepare();
       restoreDom();
       dropMeshes();
       if (canvas.width !== 1) {
@@ -970,6 +1138,9 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       lost = true;
       meshes = new Map(); // GPU objects died with the context
       rings = [];
+      cancelPrepare();
+      prog = null;
+      ready = false;
       restoreDom();
       scheduleRecover();
     };
@@ -985,13 +1156,13 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       c.addEventListener("webglcontextlost", onLost);
       c.addEventListener("webglcontextrestored", onRestored);
       io.observe(c);
-      warmIo?.observe(c);
+      warmIo.observe(c);
     };
     const unlisten = (c: HTMLCanvasElement) => {
       c.removeEventListener("webglcontextlost", onLost);
       c.removeEventListener("webglcontextrestored", onRestored);
       io.unobserve(c);
-      warmIo?.unobserve(c);
+      warmIo.unobserve(c);
     };
     const scheduleRecover = () => {
       clearTimeout(recoverTimer);
@@ -1054,7 +1225,7 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       off = true;
     }
     // the context is created lazily, when the canvas first comes within
-    // the observer margin (the hero: on the first delivery after mount)
+    // an observer margin (the hero: on the first delivery after mount)
     listen(canvas);
     ro.observe(art);
     dprMq.addEventListener("change", onDpr);
@@ -1071,7 +1242,8 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
       clearTimeout(shrinkTimer);
       clearTimeout(recoverTimer);
       io.disconnect();
-      warmIo?.disconnect();
+      warmIo.disconnect();
+      cancelPrepare();
       ro.disconnect();
       dprMq.removeEventListener("change", onDpr);
       reduced.removeEventListener("change", onMedia);

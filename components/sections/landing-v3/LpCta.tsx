@@ -49,6 +49,11 @@ const sentences = (line: string) =>
     </Fragment>
   ));
 
+/* No JS: no canvas will ever draw the two rainbows and nothing sets
+   [data-lp-gl-off], so the static rings are shown (anim.css hides them until a
+   script decides). One class more specific than that rule. 2026-10-13. */
+const NOSCRIPT_CSS = "<style>.lp-cta__card .lp-cta__art .lp-anim-box{visibility:visible}</style>";
+
 export function LpCta({
   title = CTA_TITLE,
   body = CTA_BODY,
@@ -79,6 +84,8 @@ export function LpCta({
           <LpPancakes variant="ctaRight" />
         </div>
         <LpRainbowGL variant="ctaRight" />
+        {/* inside an art wrapper: out of the card's flex flow */}
+        <noscript dangerouslySetInnerHTML={{ __html: NOSCRIPT_CSS }} />
       </div>
       <div className="lp-cta__content">
         <div className="lp-cta__text">
