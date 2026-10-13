@@ -11,6 +11,7 @@ import { PLAYS_CTA } from "@/components/sections/plays/plays-copy";
 import { playGroups, playsDescription } from "@/components/sections/plays/plays-data";
 import { playsJsonLd } from "@/components/sections/plays/plays-jsonld";
 import { VX_PRICING_CHECKLIST, VX_PRICING_MODE } from "@/components/sections/verticals/vx-copy";
+import { serializeJsonLd } from "@/lib/json-ld";
 
 /**
  * /plays — example Plays (audit plan 3.7, 2026-10-07; Origami has /flows, Unify /product/plays).
@@ -31,7 +32,7 @@ export function PlaysPage() {
     <main className="lp lp-vx lp-vx-plays">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(playsJsonLd(groups, playsDescription())) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(playsJsonLd(groups, playsDescription())) }}
       />
       {/* --lp-fit for the CTA slivers + pricing art (iOS cqw-in-trig workaround) */}
       <LpFitVars />

@@ -28,6 +28,7 @@ import { PricingLogos } from "@/components/sections/pricing/PricingLogos";
 import { PricingProof } from "@/components/sections/pricing/PricingProof";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { pricingFaq, pricingV2 } from "@/lib/copy";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, formatCredits, type CreditLevel } from "@/lib/pricing";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
@@ -144,11 +145,11 @@ export default function PricingPage() {
     <main id="main-content" className="lp">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(softwareJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
       />
       <LpNav />
       {/* The picked level is shared by the card and the closing band's Start

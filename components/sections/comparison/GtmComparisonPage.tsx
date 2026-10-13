@@ -17,6 +17,7 @@ import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { Badge } from "@/components/ui/Badge";
 import { H2, H3 } from "@/components/ui/Headings";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/components.css";
 import "@/app/_styles/landing-v3.css";
@@ -183,7 +184,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
     // The landing chrome (LpNav + LpFooter, landing-v3.css) around the kit-built body.
     // comparison.css keeps landing-v3's unlayered base out of .vvp-body.
     <main id="main-content" className="lp">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
 
       <LpNav />
 

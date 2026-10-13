@@ -5,6 +5,7 @@ import { LpCta } from "@/components/sections/landing-v3/LpCta";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
+import { serializeJsonLd } from "@/lib/json-ld";
 
 /**
  * /compare — every comparison page in one place (2026-10-07; Alta links a /compare hub from its
@@ -22,7 +23,7 @@ export function ComparePage() {
   return (
     // No id here: the skip link's #main-content target is the head section, past the nav.
     <main className="lp lp-vx lp-vx-compare">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(compareJsonLd()) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(compareJsonLd()) }} />
       {/* --lp-fit for the CTA slivers (iOS cqw-in-trig workaround) */}
       <LpFitVars />
       <LpNav />

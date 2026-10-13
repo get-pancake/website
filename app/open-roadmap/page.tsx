@@ -24,6 +24,7 @@ import { RoadmapBoard } from "@/components/sections/roadmap/RoadmapBoard";
 import { ROADMAP_POSTING_OPEN, STATUS_META } from "@/components/sections/roadmap/roadmap-data";
 import { Badge } from "@/components/ui/Badge";
 import { isAdmin } from "@/lib/auth/admin";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { getIdeas, isPublicIdea } from "@/lib/roadmap/ideas";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
@@ -87,7 +88,7 @@ export default async function OpenRoadmapPage() {
     <main id="main-content" className="lp roadmap-page min-h-screen">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(roadmapJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(roadmapJsonLd) }}
       />
 
       <LpNav />

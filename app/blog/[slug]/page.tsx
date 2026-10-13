@@ -10,6 +10,7 @@ import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { articleAuthor, BLOG_FEED_ALTERNATE, isTeamByline } from "@/lib/blog-meta";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { formatPostDate, getAllPosts, getPostBySlug, type PostMeta } from "@/lib/posts";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { OG_IMAGE, social } from "@/lib/social-meta";
@@ -186,16 +187,16 @@ export default async function BlogPost({ params }: Props) {
       {/* JSON-LD structured data */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       {faqJsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
         />
       )}
 
