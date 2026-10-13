@@ -1,6 +1,6 @@
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { pricingV2 } from "@/lib/copy";
-import { TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
+import { TRIAL_CREDITS_LABEL, TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
 
 /**
  * "Use Pancake in Claude", twice:
@@ -16,8 +16,8 @@ import { TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
  * closing note, one line of the Markdown) shows on /guides/claude only.
  * The brief's copy is final and used word for word, with three house-rule
  * edits:
- *   - the trial is TRIAL_DAYS long (lib/trial.ts: 3 days, card required);
- *     the brief said 7;
+ *   - the trial is TRIAL_DAYS long (lib/trial.ts: 7 days with 15,000 credits since the credit
+ *     plan of 2026-10-13, card required; it was 3 days when the brief, which said 7, came in);
  *   - "20%" without the French space before the sign;
  *   - the competitor prompt says "profile URL", never the platform's name
  *     (compliance rule, website PR #315);
@@ -317,11 +317,11 @@ export const FAQ = {
     },
     {
       q: "What does it cost?",
-      a: `Pancake starts with a ${TRIAL_LABEL}, then costs $${pricingV2.monthlyDollars} a month per workspace. Lead searches use credits, and Claude tells you the cost of each search before it runs.`,
+      a: `Pancake starts with a ${TRIAL_LABEL} and ${TRIAL_CREDITS_LABEL}, then costs from $${pricingV2.monthlyDollars} a month per workspace. Lead searches use credits, and Claude tells you the cost of each search before it runs.`,
       /** the campaign copy's answer (GUIDE_OFFER_PATH): the same, with the code */
-      aOffer: `Pancake starts with a ${TRIAL_LABEL}, then costs $${pricingV2.monthlyDollars} a month per workspace (20% less for a year with code ${PROMO_CODE}). Lead searches use credits, and Claude tells you the cost of each search before it runs.`,
-      /** Visible only, not in the FAQPage JSON-LD: the credits story waits on the founder (D6),
-       *  and structured data is what assistants quote. */
+      aOffer: `Pancake starts with a ${TRIAL_LABEL} and ${TRIAL_CREDITS_LABEL}, then costs from $${pricingV2.monthlyDollars} a month per workspace (20% less for a year with code ${PROMO_CODE}). Lead searches use credits, and Claude tells you the cost of each search before it runs.`,
+      /** Visible only, not in the FAQPage JSON-LD (D6): /pricing carries the price and the
+       *  credit answers in its own structured data, which is what assistants quote. */
       inJsonLd: false,
     },
     {

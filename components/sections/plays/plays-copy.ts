@@ -4,8 +4,8 @@
 //
 // Copy rules this file follows (audit plan 3.7, 2026-10-07): the outreach platform is never
 // named and its steps are never listed (validate.ts PLATFORM / SEQUENCE); "Play" and
-// "sequence", never "campaign"; "You approve every lead"; the price is "$99 a month per
-// workspace"; nothing promises results; no email outreach, CRM sync, website visitors, phone
+// "sequence", never "campaign"; "You approve every lead"; the price is "from $99 a month per
+// workspace" (the credit plan, lib/pricing.ts); nothing promises results; no email outreach, CRM sync, website visitors, phone
 // lookup or calls; landing-voice budgets (headline ≤ 8 words, body ≤ 35 words).
 // "More ways" (2026-10-07, founder: anything that exists in the app's code can be pitched, even
 // if it is not switched on — D27): funding rounds, lookalikes, role match, web evidence and one
@@ -147,7 +147,7 @@ export const PLAYS_FAQ = {
     },
     {
       q: "How many leads does a Play find?",
-      a: "Each search keeps up to 50 new leads, and you run as many Plays as you want.",
+      a: "Each search keeps up to 50 new leads. Create as many Plays as you want: a search uses credits from your plan.",
     },
     {
       q: "Do I approve leads before anyone is contacted?",
@@ -170,12 +170,12 @@ export const PLAYS_FAQ = {
 
 /* ─── closing CTA card (LpCta props; the pricing card keeps the /for checklist) ─ */
 
-/** "$99 a month per workspace" (never "flat": buyers read it as covering a second workspace,
- *  2026-10-06). The first search starts when the Play is created (pancake-cmo PAN-1574), so
+/** "From $99 a month per workspace": the entry price of the credit plan (2026-10-13,
+ *  lib/pricing.ts). "per workspace" since 2026-10-06: a second company is a second workspace. The first search starts when the Play is created (pancake-cmo PAN-1574), so
  *  "runs right away" replaces "First leads arrive tomorrow morning" (audit plan §5). */
 export const PLAYS_CTA = {
   title: "Write your first Play.",
-  body: ["$99 a month per workspace.", "Your first search runs right away."] as [string, string],
+  body: ["From $99 a month per workspace.", "Your first search runs right away."] as [string, string],
 };
 
 /* ─── titles / meta ─────────────────────────────────────────────────────────── */

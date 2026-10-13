@@ -2,7 +2,7 @@
 
 > Pancake is the Vercel for GTM: one place to deploy, host and run go-to-market agents. AI agents like Claude and Codex can plan a company's GTM but can't run it. They have no data to find people, no way to reach them and no memory of the business. Pancake is that missing piece. Your agent decides. Pancake runs it.
 
-Pancake works from Claude, Claude Code, Codex and other MCP clients with browser sign-in, and from its own web app. It costs $99 a month per workspace, with as many Plays and leads as you want.
+Pancake works from Claude, Claude Code, Codex and other MCP clients with browser sign-in, and from its own web app. It starts at $99 a month per workspace, with 60,000 credits for lead searches.
 
 ## The Vercel for GTM
 
@@ -47,7 +47,9 @@ Pancake is for founders who do their own sales, small B2B teams, agencies and GT
 
 ## Pricing
 
-$99 a month per workspace, with as many Plays and leads as you want. A workspace is one company. Its plan covers the Brain, every Play, the whole team and the accounts the customer sends from. A second company or brand is a second workspace at the same price. The free trial lasts 3 days, and a credit card is required to start it.
+One plan, from $99 a month per workspace. The customer picks the monthly credits: 60,000 for $99, 120,000 for $189, 240,000 for $359, 480,000 for $679 or 960,000 for $1,299. Every level is the same product. Credits pay for two things: the research a search does to find and check leads, and each work email found (50 credits). Building and testing Plays, messages, replies and teammates use no credits. Pancake shows an estimate before every search. Unused credits roll over, up to one month of credits. When credits run out, searches pause: there is no overage and no automatic top-up.
+
+A workspace is one company. Its plan covers the Brain, every Play, the whole team and one sending account; each extra sending account is $39 a month. A second company or brand is a second workspace with its own plan. The free trial lasts 7 days and comes with 15,000 credits, and a credit card is required to start it.
 
 After the trial, the plan renews monthly on the card the customer added. Canceling before the trial ends costs nothing; after that, access continues until the end of the current billing period. No charge per teammate.
 
@@ -65,7 +67,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 ## Key pages
 
 - [Homepage](https://pancake.ai/) — what Pancake does, how it works, and pricing
-- [Pricing](https://pancake.ai/pricing) — $99 a month per workspace, with as many Plays and leads as you want
+- [Pricing](https://pancake.ai/pricing) — one plan, from $99 a month per workspace with 60,000 credits; what credits pay for and the billing answers
 - [Example Plays](https://pancake.ai/plays) — 120 example Plays for 40 kinds of B2B business, grouped by how each Play finds people, plus funding, lookalikes, role match, web evidence and reactions to one post
 - [Use Pancake in Claude](https://pancake.ai/claude) — connect Pancake to Claude, Claude Code or Codex over MCP, with prompts
 - [Use Pancake in Claude, as Markdown](https://pancake.ai/guides/claude.md) — the same guide written for an agent to follow
@@ -82,10 +84,10 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Claude Tag vs Pancake](https://pancake.ai/claude-tag-vs-pancake) — ambient general teammate vs focused autonomous GTM execution
 - [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain behind every Play
 - [Lemlist vs Pancake](https://pancake.ai/lemlist-vs-pancake) — a sales-engagement platform your team operates vs Plays that find buyers and start conversations for you
-- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — on-demand live-web searches and plays billed in credits vs Plays that keep searching and start the conversation
-- [Unify vs Pancake](https://pancake.ai/unify-vs-pancake) — an outbound platform for sales reps, priced per seat plus credits, vs Plays that find buyers for $99 a month per workspace
+- [Origami vs Pancake](https://pancake.ai/origami-vs-pancake) — live-web research and lists on demand vs Plays that keep searching and start the conversation
+- [Unify vs Pancake](https://pancake.ai/unify-vs-pancake) — an outbound platform for sales reps, priced per seat plus credits, vs Plays that find buyers from $99 a month per workspace
 - [Octave vs Pancake](https://pancake.ai/octave-vs-pancake) — a context layer that feeds your GTM tools and agents vs Plays that find buyers and start the conversation
-- [Alta vs Pancake](https://pancake.ai/alta-vs-pancake) — named AI agents for outbound, inbound and calls, sold by custom quote, vs self-serve Plays for $99 a month per workspace
+- [Alta vs Pancake](https://pancake.ai/alta-vs-pancake) — named AI agents for outbound, inbound and calls, sold by custom quote, vs self-serve Plays from $99 a month per workspace
 - [OpenClaw vs Pancake](https://pancake.ai/openclaw-vs-pancake) — an open-source agent runtime you configure vs a managed GTM platform
 - [Paperclips vs Pancake](https://pancake.ai/pancake-vs-paperclips) — a self-hosted control plane for AI companies vs a managed GTM platform
 

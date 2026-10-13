@@ -149,7 +149,7 @@ export const marketingAgencies: VerticalConfig = {
     },
     {
       q: "We have ten retainer clients. One account or ten?",
-      a: "Ten workspaces, $99 each, under one login. Each client gets its own Brain, leads and sending account.",
+      a: "Ten workspaces, from $99 each, under one login. Each client gets its own Brain, leads and sending account.",
     },
     {
       q: "Won’t I get the agencies pitching in the comments?",

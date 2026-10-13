@@ -1,6 +1,7 @@
 /** Locked marketing copy — do not change without explicit approval */
 
-import { TRIAL_LABEL, TRIAL_NOTICE } from "@/lib/trial";
+import { BASE_LEVEL, EXTRA_SENDER_DOLLARS, TOP_LEVEL, WORK_EMAIL_CREDITS, formatCredits } from "@/lib/pricing";
+import { TRIAL_CREDITS_LABEL, TRIAL_DAYS, TRIAL_NOTICE } from "@/lib/trial";
 
 /**
  * The site description: the homepage hero lede, which is also the Google
@@ -204,86 +205,112 @@ export const talkToHuman = {
   subtitle: "Let's put your company on autopilot",
 } as const;
 
-/** The plan price in dollars, the one number every pricing line reads. */
-const MONTHLY_DOLLARS = 99;
-
 /**
- * Pricing V2 — the GTM landing's model (founder call 2026-08-06): one flat
- * subscription, no token packs, no tiers. Okara-style single plan.
- * 2026-10-07: the V1 `pricing` object ($49 + token packs, "$100 in free
- * credits") and its unmounted components were deleted, so a revert can't
- * bring that offer back (one already did, 2026-09-02).
- * public/pricing.md mirrors this block, pricingPlan and pricingFaq for
- * agents: change it in the same commit. One line is left out of the .md on
- * purpose: "Built to land 2 to 3 customers a month" (open founder decision
- * D4b; add it there if he keeps it).
+ * Pricing V3 — one plan, five levels of monthly credits (2026-10-13, launch
+ * of pancake-cmo PR #1220, ADR 0078). It replaces the flat plan of 2026-08-06
+ * ("$99, everything included, as many leads as you want"): leads are no
+ * longer unmetered, the trial is 7 days with 15,000 credits, and an extra
+ * sending account is a paid licence. The numbers live in lib/pricing.ts and
+ * lib/trial.ts; this block is the words.
+ *
+ * How it is said (founder brief 2026-10-13: "radically simple"):
+ * - "One plan": every level is the same product. Only the monthly credits
+ *   change, so the page never says tier, package or pack.
+ * - Credits pay for two things, a search's research and each work email
+ *   found. Everything else is included. Same sentence as the app's Usage page
+ *   (`apps/frontend/src/features/credits/copy.ts`).
+ * - Never a dollar value for a credit and never a count of leads a level
+ *   "buys": a search is charged the research it did, and the app shows the
+ *   estimate before it runs. The trial is how a buyer measures it.
+ * - No spend cap (founder 2026-09-19). "Searches pause" is the whole rule
+ *   when credits run out: no overage and no automatic top-up exist.
+ * - The platform is never named (François 2026-09-23): "sending account",
+ *   never the network.
+ * public/pricing.md mirrors this block for agents: change it in the same
+ * commit.
  */
 export const pricingV2 = {
-  monthlyDollars: MONTHLY_DOLLARS,
+  /** The first level's price: what every "from $99" line reads. */
+  monthlyDollars: BASE_LEVEL.dollars,
   currency: "USD" as const,
   currencySymbol: "$",
-  /** Okara's shape, value instead of a feature inventory (founder, 2026-08-19):
-      plain header, the price, an access line, then what a month buys, with
-      the figures up front.
-      2026-10-07: the /pricing H1 names the brand and the price, the same unit
-      as the title tag. It read "Simple, transparent pricing", the homepage
-      H2 word for word (LpPricing.tsx keeps that line). Still a plain header. */
-  title: `Pancake pricing: $${MONTHLY_DOLLARS} a month per workspace`,
-  blurb: "One plan, everything included. No hidden fees, no surprises.",
-  /** "per workspace", not "flat" (2026-10-06): a customer read the $99 as
-      possibly covering a second workspace. Billing is per workspace in the
+  /** The H1 names the brand and the entry price, like the title tag
+      (2026-10-07). The lede makes the one claim: one plan, one choice. */
+  title: `Pancake pricing: from $${BASE_LEVEL.dollars} a month`,
+  blurb: "One plan for your whole team. You only choose how many credits you get each month.",
+  /** "per workspace", not "flat" (2026-10-06): billing is per workspace in the
       app (pancake-cmo `subscribe-additional-workspace.ts`). */
   perMonth: "/ month per workspace",
-  /** The line under the price (Okara: "Full agent suite access").
-      2026-10-07: it read "Everything included", which repeated the lede
-      right above it. Teammates are a plain included feature in the app
-      (`workspace_seats`, no quota). */
-  access: "Your whole team included",
-  /** Intro to the value list. It read "What a month gets you:" until the
-      leads line dropped its count (2026-10-05). */
-  includedIntro: "What you get:",
-  /** The value lines — figure first. The lead and customer ranges are the
-      founder's own (2026-08-19).
-      No spend cap here (founder 2026-09-19): the plan is flat, there is no
-      variable spend to cap, and a prospect read the old "hard spend cap" as
-      LLM API costs on top of the $99.
-      AI SEO retired 2026-09-30 (pancake-cmo PR #1037): the "30 articles,
-      ranking on Google and cited by ChatGPT" line is gone, and the control
-      line names leads only. You approve every lead before anyone is
-      contacted; reading or editing a message before it sends is optional, so
-      never write "approvals on messages". Kept in step with the
-      homepage CHECKLIST (LpPricing.tsx).
-      The customers line says what Pancake is built for, never a promise
-      (founder 2026-10-04: "how can you guarantee customers?" kept coming
-      back, and the Terms promise no results). `lead` sits before the
-      figure so the number stays bold mid-line. No lead count (founder
-      2026-10-05): Plays make leads as many as you want, and the scheduled runs
-      keep them coming. Revisit if credit enforcement ships
-      (pancake-cmo PR #1220). */
+  /** The picker's label and the line under the price. */
+  pickerLabel: "Monthly credits",
+  creditsLine: "credits a month",
+  /** Shown from the second level up. The figure is the app's own. */
+  save: (percent: number) => `Save ${percent}% per credit`,
+  /** Intro to the value list: the same list whatever the level. */
+  includedIntro: "What you get, at every level:",
+  /** The value lines: what the buyer gets, never how the plan is built
+      (founder 2026-10-13, on a first draft that listed credits, Plays and
+      seats: "not all fully value oriented for the user"). The scheduled
+      searches keep leads coming; rollover is the month it saves; a Play is
+      the idea it lets you try (creating and testing one is free, only a
+      search uses credits); you approve every lead before anyone is contacted
+      (reading a message before it sends is optional, so never "approvals on
+      messages"); seats are the bill you don't get.
+      Gone with the flat plan: "…and leads as you want" (searches use
+      credits) and, here only, "Built to land 2 to 3 customers a month": it
+      described the $99 month, and this list is the same at every level. The
+      homepage card, which shows the first level, opens on it
+      (LpPricing.tsx). */
   value: [
-    { rest: "As many Plays and leads as you want" },
-    { rest: "Warm leads that keep coming" },
-    { lead: "Built to land", figure: "2 to 3", rest: "customers a month" },
-    { rest: "A personal message for each lead, in your voice" },
-    { rest: "You approve every lead. You stay in control." },
+    { rest: "Warm leads that keep coming." },
+    { rest: "Slow month? Unused credits roll over." },
+    { rest: "Try any GTM idea. Building a Play is free." },
+    { rest: "A personal message for each lead, in your voice." },
+    { rest: "You approve every lead before anyone is contacted." },
+    { rest: "Your whole team, with no seats to pay." },
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot). */
   fine: TRIAL_NOTICE,
-  /** "Everything in the $99." — the /pricing section under the plan map
-      (PlanIncluded.tsx), added 2026-10-07: the card sells outcomes and left
-      out what competitors charge extra for. Every line is in pancake-cmo
-      (Brain from the website, per-Play schedules, AI ICP check with a
-      reason, warm-up + up to 3 steps, reply detection that stops the
-      sequence, Slack posts + the 08:30 digest, the MCP server).
-      Not listed until the PR #1220 pricing decision: work-email lookup and
-      up to 10 sending accounts per Play (#1220 would bill both). The FAQ in
-      pricingPlan already answers the accounts question. */
+  /** Above the largest level, sales quotes (the app's "Need more credits or a
+      custom setup? Contact sales"). No Enterprise feature list exists, so the
+      line promises none. */
+  enterprise: { text: "Need more credits or a custom setup?", cta: "Talk to sales" },
+} as const;
+
+/**
+ * "Credits find your leads. Everything else is included." — the /pricing
+ * section under the card
+ * (CreditsExplained.tsx). Every line is in pancake-cmo PR #1220:
+ * - a production search is charged the research it did (it reserves credits
+ *   while it runs, the rest comes back) and the app shows an estimate before
+ *   it starts (`run-credit-estimate.ts`);
+ * - a work email found is 50 credits, once; none found, nothing charged;
+ * - creating, writing and testing a Play are free ("Creating and testing
+ *   Plays is free"), and nothing else is in the task catalogue: the Brain,
+ *   the sequence, reply handling, Slack and the digest, the MCP server.
+ * The included list is the former "Everything in the $99." minus the two
+ * lines a search now pays for (the searches themselves and the ICP check).
+ */
+export const pricingCredits = {
+  title: "Credits find your leads. Everything else is included.",
+  lede: "A search uses credits. So does a work email. Nothing else does.",
+  uses: [
+    {
+      name: "A search",
+      cost: "Varies. You see it first.",
+      body: "Pancake finds people and checks each one against your ICP. A narrow audience takes more research. Credits a search doesn't use come back.",
+    },
+    {
+      name: "A work email",
+      cost: `${WORK_EMAIL_CREDITS} credits`,
+      body: "Charged only when Pancake finds one. No email, no credits.",
+    },
+  ],
   included: {
-    title: `Everything in the $${MONTHLY_DOLLARS}.`,
+    title: "What never uses a credit",
     items: [
+      "Building and testing your Plays",
       "Your Brain, built from your website",
-      "Fresh searches on your schedule",
-      "An ICP check and a reason on every lead",
       "A warm-up, then up to three messages",
       "Replies stop the sequence and get sorted",
       "New leads in Slack and an 08:30 email",
@@ -293,35 +320,76 @@ export const pricingV2 = {
 } as const;
 
 /**
- * What one plan covers — the /pricing section under the card (PlanMap.tsx),
- * written 2026-10-06 after a customer email: "Does $99 include a second
- * workspace and second LinkedIn account? … We have two separate ICPs."
- * Every line is checked against pancake-cmo main (2026-10-06):
- * - One plan per workspace: a second workspace is its own subscription at the
- *   same price, charged off-session to the card on file, no trial
- *   (`billing/commands/subscribe-additional-workspace.ts`).
- * - Teammates: `workspace_seats` is a plain included feature, no quota.
- * - Sending accounts: no billing gate on connecting more; a sequence sends
- *   from ONE account or rotates across a group of 1-10
- *   (`ROUND_ROBIN_POOL_MAX_SENDERS`). If the $39 sender licence of the 09-24
- *   pricing spec ships, rewrite the accounts answer first.
+ * "No surprise bills." — why the credit plan is a fair deal, in four facts
+ * (PricingFacts.tsx). Sources, all pancake-cmo PR #1220:
+ * - the estimate before a search (`expectedCostLine`);
+ * - rollover: at each renewal the balance keeps up to twice the monthly
+ *   credits (`capNote`), i.e. one month of unused credits on top of the new
+ *   month's;
+ * - out of credits, chargeable work pauses; packs and auto top-up were
+ *   removed (ADR 0078 §10), so nothing is billed beyond the plan;
+ * - the per-credit saving grows to 18% at the largest level.
+ */
+export const pricingFacts = {
+  title: "No surprise bills.",
+  items: [
+    {
+      title: "You see the cost first.",
+      body: "Pancake shows an estimate before every search.",
+    },
+    {
+      title: "A slow month isn't lost.",
+      body: "Unused credits roll over. Your balance holds up to two months of them.",
+    },
+    {
+      title: "Never billed beyond your plan.",
+      body: "Run out, and searches pause. No overage, no automatic top-up.",
+    },
+    {
+      title: "More credits cost less.",
+      body: `Up to ${TOP_LEVEL.savePercent}% less per credit at the higher levels.`,
+    },
+  ],
+  /** AgentMail's line from the homepage testimonials (lp-bento-data.ts
+      quoteC, the founder's shortened wording of 2026-10-13): keep the two
+      in step. */
+  quote: {
+    text: "One Pancake Play replaced all our inbound tools.",
+    name: "Adi Singh",
+    role: "Co-founder, AgentMail",
+  },
+} as const;
+
+/**
+ * What one plan covers — the /pricing section with the workspace drawing
+ * (PlanMap.tsx), written 2026-10-06 after a customer email ("Does $99 include
+ * a second workspace and second LinkedIn account?") and rewritten for the
+ * credit plan on 2026-10-13. Checked against pancake-cmo PR #1220:
+ * - One plan per workspace: a second workspace is its own subscription,
+ *   charged off-session to the card on file, no trial, on the first level
+ *   (`subscribe-additional-workspace.ts`; the member moves up from Billing).
+ * - Credits: one balance per workspace, shared by every Play and teammate.
+ * - Teammates: unlimited users at every level.
+ * - Sending accounts: ONE is included; each extra is a $39/month licence
+ *   (`EXTRA_SENDER_LICENCE_PRICE`). It was "at no extra cost" until
+ *   2026-10-13. A sequence still sends from one account or rotates across a
+ *   group of 1-10 (`ROUND_ROBIN_POOL_MAX_SENDERS`). The drawing shows one
+ *   account so it stays the "from $99" workspace.
  * - Two audiences: a Play owns its targeting, copied from the Brain then
  *   edited per Play (ADR 0075); the Brain stays shared.
- * The platform is never named (François 2026-09-23): "accounts you send
- * from", never LinkedIn.
  */
 export const pricingPlan = {
   title: "One plan per workspace.",
-  lede: "A workspace is one company. Its plan covers the Brain, every Play, your whole team and the accounts you send from.",
+  lede: "A workspace is one company. Its plan covers the Brain, every Play and your whole team. They share one balance of credits.",
   workspace: "Your workspace",
-  price: `${pricingV2.currencySymbol}${pricingV2.monthlyDollars} / month`,
+  price: `From ${pricingV2.currencySymbol}${pricingV2.monthlyDollars} / month`,
   brain: {
     name: "Brain",
     body: "What Pancake knows about your company and how you sell. Every Play uses it.",
   },
   plays: [
     { name: "Agency owners", senders: ["Sarah"] },
-    { name: "Marketing leads", senders: ["Sarah", "Tom"] },
+    { name: "Marketing leads", senders: ["Sarah"] },
   ],
   playKicker: "Play",
   playMeta: "Its own audience and messages",
@@ -330,16 +398,16 @@ export const pricingPlan = {
   team: { members: ["Sarah", "Tom", "Maya"], body: "Invite your whole team at no extra cost." },
   another: {
     name: "Another company?",
-    body: `That's a second workspace, with its own Brain and its own ${pricingV2.currencySymbol}${pricingV2.monthlyDollars} plan.`,
+    body: "That's a second workspace, with its own Brain, its own plan and its own credits.",
   },
   faq: [
     {
       q: "I sell to two audiences. One workspace or two?",
-      a: "One. Give each audience its own Play, with its own targeting, messages and accounts. Both Plays share the Brain.",
+      a: "One. Give each audience its own Play, with its own targeting and messages. Both Plays share the Brain and the credits.",
     },
     {
       q: "Can I send from more than one account?",
-      a: "Yes, at no extra cost. Each Play sends from one account or rotates across up to ten.",
+      a: `Yes. One sending account is included. Each extra account is $${EXTRA_SENDER_DOLLARS} a month. A Play sends from one account or rotates across up to ten.`,
     },
     {
       q: "Do I pay per teammate?",
@@ -347,53 +415,76 @@ export const pricingPlan = {
     },
     {
       q: "When do I need a second workspace?",
-      a: `When you run a second company or brand. It gets its own Brain and its own ${pricingV2.currencySymbol}${pricingV2.monthlyDollars} plan, charged to the same card from day one, without a second trial.`,
+      a: "When you run a second company or brand. It gets its own Brain, plan and credits, charged to the same card from day one, without a second trial.",
     },
   ],
 } as const;
 
 /**
- * "Billing questions." — the /pricing section under "Everything in the $99."
- * (BillingFaq.tsx), added 2026-10-07 from the questions buyers sent
- * (2026-09-18 and 2026-09-19 threads). Its answers join pricingPlan.faq in
- * the page's FAQPage JSON-LD. Sources:
- * - Signup starts without a card; the card starts the trial (lib/trial.ts,
- *   confirmed 2026-09-18). The trial paywall shows the leads already found.
- * - Cancel before the trial ends and nothing is charged (app billing copy);
- *   access runs to the end of the paid period (/support, Terms §4).
- * - One search keeps 1-50 leads (`leadLimit`); each Play runs on the schedule the customer picks.
+ * "Billing questions." — the last /pricing section (BillingFaq.tsx). Its
+ * answers join pricingPlan.faq in the page's FAQPage JSON-LD. Sources
+ * (pancake-cmo PR #1220 unless said):
+ * - Signup starts without a card; the card starts the trial (lib/trial.ts).
+ *   The trial paywall shows the leads already found.
+ * - Conversion: the level picked is charged at the trial's end; unused trial
+ *   credits expire then (`trialExpiryNote`). Cancel before and nothing is
+ *   charged.
+ * - Leads per credit: no figure exists to quote (see pricingV2). A search
+ *   keeps 1-50 leads (`leadLimit`).
+ * - Rollover: carry min(unused, monthly credits) at renewal, cap 2x.
+ * - Out of credits: searches pause; an upgrade keeps every unused credit and
+ *   starts a new month today; "Start a new monthly cycle" is offered once the
+ *   balance cannot pay for the next operation (`package.restart`).
+ * - Changes: a larger level starts today, a smaller one at the next renewal
+ *   (`change.description`).
+ * - Cancel: access and credits run to the end of the paid period (/support,
+ *   Terms §4).
  * - Promotion codes apply to the monthly payments after the trial
  *   (`TRIAL_PROMOTION_NOTE`, `allow_promotion_codes`).
- * Not answered until the founder decides: refunds and an annual plan, how
- * credits are explained, and what the trial includes (AGENTS.md: trial
- * feature access is not confirmed).
+ * Not answered until the founder decides: refunds and an annual plan.
  */
 export const pricingFaq = {
   title: "Billing questions.",
   items: [
     {
+      q: "What do credits pay for?",
+      a: `Two things: the research a search does to find and check your leads, and each work email found, at ${WORK_EMAIL_CREDITS} credits. Building and testing Plays is free.`,
+    },
+    {
+      q: "How many leads do I get for my credits?",
+      a: "It depends on who you look for: a narrow audience takes more research per lead. Pancake shows an estimate before every search, and the trial lets you measure it on your own audience.",
+    },
+    {
+      q: "Do unused credits roll over?",
+      a: `Yes. At each renewal you keep what is left, up to one month of credits. On ${formatCredits(BASE_LEVEL.credits)} credits a month, your balance holds up to ${formatCredits(BASE_LEVEL.credits * 2)}.`,
+    },
+    {
+      q: "What happens when I run out of credits?",
+      a: "Searches pause, and your Brain, Plays and leads stay. You are never billed extra. Move up a level and keep what is left, or start your next month early.",
+    },
+    {
+      q: "Can I change my monthly credits?",
+      a: "Yes. More credits start today, and you keep the ones you have. Fewer credits start at your next renewal.",
+    },
+    {
       q: "How does the free trial work?",
-      a: `Sign up free. Pancake reads your website, builds your Brain and shows the first leads it found. Add a card to start the ${TRIAL_LABEL}.`,
+      a: `Sign up free. Pancake reads your website, builds your Brain and shows the first leads it found. Add a card to start the trial: ${TRIAL_DAYS} days and ${TRIAL_CREDITS_LABEL}.`,
     },
     {
       q: "What happens when the trial ends?",
-      a: `Your plan starts at ${pricingV2.currencySymbol}${pricingV2.monthlyDollars} a month per workspace, on the card you added. Cancel before the trial ends and you pay nothing.`,
+      a: "Your plan starts on the card you added, with the monthly credits you picked. Unused trial credits end with the trial. Cancel before it ends and you pay nothing.",
     },
     {
       q: "Can I cancel anytime?",
-      a: "Yes. There is no long-term commitment. You keep access to the end of the billing period you paid for.",
+      a: "Yes. There is no long-term commitment. You keep access and your credits to the end of the billing period you paid for.",
     },
     {
       q: "Do I need my own data tools or API keys?",
-      a: "No. Lead data and the ICP check are in the plan. Claude, Claude Code and Codex connect with a browser sign-in, no API key.",
-    },
-    {
-      q: "Is there a limit on leads?",
-      a: "Each Play search keeps up to 50 new leads, and you run as many Plays as you want.",
+      a: "No. Your credits pay for the lead data and the ICP check. Claude, Claude Code and Codex connect with a browser sign-in, no API key.",
     },
     {
       q: "Can I use Pancake from my AI agent?",
-      a: "Yes, on the same plan. Claude, Claude Code and Codex use the same Brain, Plays and leads as the app.",
+      a: "Yes, on the same plan. Claude, Claude Code and Codex use the same Brain, Plays, leads and credits as the app.",
     },
     {
       q: "Have a code?",

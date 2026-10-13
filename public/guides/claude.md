@@ -16,7 +16,7 @@ first prompts with them. Follow the section that matches the client you are runn
 ## Step 1 · Check the account
 
 Ask the user if they already have a Pancake account. If not, send them to https://pancake.ai to
-click **Start free** (3-day free trial) and add their website. Pancake builds their GTM Brain from
+click **Start free** (7-day free trial with 15,000 credits) and add their website. Pancake builds their GTM Brain from
 it in a few minutes. Wait until they confirm.
 
 ## Step 2 · Connect

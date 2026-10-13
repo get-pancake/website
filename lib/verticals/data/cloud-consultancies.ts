@@ -165,7 +165,7 @@ export const cloudConsultancies: VerticalConfig = {
     },
     {
       q: "We sell migrations, DevOps and FinOps. Can one workspace do all three?",
-      a: "Yes. Give each offer its own Play, with its own targeting and messages. All three share one Brain and one $99 plan.",
+      a: "Yes. Give each offer its own Play, with its own targeting and messages. All three share one Brain, one plan and its credits.",
     },
   ],
 

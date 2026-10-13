@@ -20,6 +20,7 @@ import {
   AGENT_CARD_BODY_PLACEHOLDER,
 } from "@/components/sections/landing-v3/lp-agents-wall-data";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
+import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
 import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
@@ -70,8 +71,10 @@ export const metadata: Metadata = {
 
 // SoftwareApplication JSON-LD — homepage only (Organization is in root layout).
 // featureList (2026-10-07, audit 6.3): what one plan does, in facts an assistant
-// can quote. "Up to 10 sending accounts per Play" waits on D7 (pancake-cmo
-// PR #1220 would price extra accounts), like the comparison pages.
+// can quote. No sending-account count: one account is in the plan and each
+// extra one is a paid licence (lib/pricing.ts), which /pricing explains.
+// offers (2026-10-13, the credit plan): the range of the five levels of
+// monthly credits, from lib/pricing.ts; /pricing lists each one.
 const softwareApplicationJsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
@@ -92,17 +95,13 @@ const softwareApplicationJsonLd = {
     "MCP server for Claude, Claude Code and Codex",
   ],
   offers: {
-    "@type": "Offer",
+    "@type": "AggregateOffer",
     url: `${SITE_ORIGIN}/pricing`,
-    price: String(pricingV2.monthlyDollars),
+    description: `One plan per workspace, billed monthly, from ${formatCredits(BASE_LEVEL.credits)} to ${formatCredits(TOP_LEVEL.credits)} credits a month.`,
+    lowPrice: String(BASE_LEVEL.dollars),
+    highPrice: String(TOP_LEVEL.dollars),
+    offerCount: CREDIT_LEVELS.length,
     priceCurrency: pricingV2.currency,
-    priceSpecification: {
-      "@type": "UnitPriceSpecification",
-      price: String(pricingV2.monthlyDollars),
-      priceCurrency: pricingV2.currency,
-      billingDuration: "P1M",
-      unitText: "MONTH",
-    },
     availability: "https://schema.org/InStock",
   },
   // @id ties this node to the root layout's Organization; name + url stay

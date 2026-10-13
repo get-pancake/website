@@ -143,9 +143,10 @@ Never edit `LpMarquee.tsx`.
    visitors; "Play" and "sequence", never "campaign"; no draft mode or
    per-message approval (reading and editing messages is optional); no AI
    SEO for Pancake (articles, AI search, Google / ChatGPT rankings or
-   citations, GEO / AEO: `AI_SEO`, no negation allowance); leads arrive each
-   morning; $99/month flat; 3-day
-   trial with a card (`lib/trial.ts`). `BANNED` in validate.ts is the gate;
+   citations, GEO / AEO: `AI_SEO`, no negation allowance); from $99/month
+   with monthly credits (`lib/pricing.ts`; never "flat" or "as many leads
+   as you want"); 7-day trial with 15,000 credits and a card
+   (`lib/trial.ts`). `BANNED` in validate.ts is the gate;
    FAQ answers may negate ("No. …").
 2. **Tokens only** in `app/_styles/verticals/` — lp tokens + `color-mix()`.
    The only literals allowed are custom properties in `demo.css` (the app's

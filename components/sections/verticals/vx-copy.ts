@@ -12,7 +12,8 @@
 // says "campaign" (validate.ts CAMPAIGN).
 // In the repo, import TRIAL_LABEL from "@/lib/trial" instead of the local constant below.
 
-import { TRIAL_LABEL } from "@/lib/trial";
+import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
+import { TRIAL_CREDITS_LABEL, TRIAL_LABEL } from "@/lib/trial";
 import type { SignalKind, VerticalConfig } from "@/lib/verticals/types";
 
 
@@ -239,11 +240,11 @@ export const VX_FAQ = {
     },
     {
       q: "How many leads will I get?",
-      a: "As many as you want. Each Play search keeps up to 50 new leads, and you run as many Plays as you need.",
+      a: "Each Play search keeps up to 50 new leads. How many searches you run depends on your credits, and Pancake shows an estimate before each one.",
     },
     {
       q: "What does it cost?",
-      a: `$99 a month per workspace, with unlimited seats. The ${TRIAL_LABEL} needs a card.`,
+      a: `From $${BASE_LEVEL.dollars} a month per workspace, with ${formatCredits(BASE_LEVEL.credits)} credits and unlimited seats. The ${TRIAL_LABEL} comes with ${TRIAL_CREDITS_LABEL} and needs a card.`,
     },
   ],
 };
@@ -263,18 +264,20 @@ export const VX_RELATED = {
  *  price unit and what is not billed. */
 export const VX_CTA_BODY: [string, string] = [
   "Tell Pancake who to reach. It builds the Play.",
-  "$99 a month per workspace. Your whole team included.",
+  "From $99 a month per workspace. Your whole team included.",
 ];
 
-/** The /for pricing checklist: the same six lines on every /for page and the hub. The fifth line
- *  was the AI SEO article until 2026-09-30; it now matches the homepage's Plays line. */
+/** The /for pricing checklist: the same six lines on every /for page and the hub. 2026-10-13,
+ *  the credit plan: the first and fifth lines are the homepage card's (what the credits do, and
+ *  the month rollover saves), in place of "As many Plays and leads as you want." (searches use
+ *  credits now); seats are said as the bill you don't get. Each line is what the buyer gets. */
 export const VX_PRICING_CHECKLIST: readonly string[] = [
-  "Warm leads that keep coming.",
+  `${formatCredits(BASE_LEVEL.credits)} credits a month to keep warm leads\u00a0coming.`,
   "Every lead comes with its reason.",
   "Outreach from your own account.",
   "You approve every lead first.",
-  "As many Plays and leads as you want.",
-  "Unlimited seats.",
+  "Slow month? Unused credits roll\u00a0over.",
+  "Your whole team, with no seats to\u00a0pay.",
 ];
 
 /* ─── /for hub ──────────────────────────────────────────────────────────────── */

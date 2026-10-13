@@ -95,6 +95,11 @@ const nextConfig = {
       { source: "/guides", destination: "/claude", statusCode: 301 },
       { source: "/mcp", destination: "/claude", statusCode: 301 },
       { source: "/how-it-works", destination: "/#how-it-works", statusCode: 301 },
+      // The app's "Contact sales" (credit plan, pancake-cmo PR #1220:
+      // ENTERPRISE_CONTACT_URL = pancake.ai/contact-sales) answered 404. /demo
+      // takes sales conversations today, and /pricing's "Talk to sales" goes
+      // there too. Temporary until sales has a page of its own.
+      { source: "/contact-sales", destination: "/demo", permanent: false },
       // Temporary, like /signup: the app's sign-up route may change.
       { source: "/sign-up", destination: APP_ORIGIN, permanent: false },
       // The affiliate program lives on Dub; temporary in case it moves in-house.

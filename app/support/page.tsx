@@ -11,7 +11,7 @@ import {
 } from "@/lib/contact";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
-import { TRIAL_DAYS } from "@/lib/trial";
+import { TRIAL_CREDITS_LABEL, TRIAL_DAYS } from "@/lib/trial";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/landing-v3/legal.css";
 
@@ -58,7 +58,8 @@ export default function SupportPage() {
           <h2>Free trial</h2>
           <p>
             You can begin signup without a credit card. Pancake offers a {TRIAL_DAYS}-day
-            free trial, and a credit card is required to start the trial.
+            free trial with {TRIAL_CREDITS_LABEL}, and a credit card is required to start the
+            trial.
           </p>
 
           <h2>Billing, cancellations, and refunds</h2>

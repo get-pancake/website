@@ -32,7 +32,7 @@ export type CompareEntry = {
 /** Page order within each group. */
 export const COMPARISONS: readonly CompareEntry[] = [
   // the GTM products buyers weigh Pancake against (audit plan 3.10)
-  { slug: "origami-vs-pancake", competitor: "Origami", group: "GTM tools", line: "Plays billed in credits versus Plays at one price." },
+  { slug: "origami-vs-pancake", competitor: "Origami", group: "GTM tools", line: "Lists on demand versus Plays that keep searching." },
   { slug: "unify-vs-pancake", competitor: "Unify", group: "GTM tools", line: "A sales platform priced per seat versus one plan per workspace." },
   { slug: "octave-vs-pancake", competitor: "Octave", group: "GTM tools", line: "A context layer for your GTM stack versus Plays that reach people." },
   { slug: "alta-vs-pancake", competitor: "Alta", group: "GTM tools", line: "Named AI agents for revenue teams versus Plays a founder runs." },

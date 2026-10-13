@@ -24,17 +24,17 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
  * body may be one sentence instead of two lines.
  */
 const CTA_TITLE = "Try Pancake now";
-/* "Pancake can’t overspend." retired (founder 2026-09-19): the plan is flat,
-   so the cost-certainty line says that instead.
+/* "Pancake can’t overspend." retired (founder 2026-09-19); the line after it
+   named the flat price until the credit plan (2026-10-13), and now gives the
+   entry price ("From": lib/pricing.ts has the higher levels).
    2026-10-07 (founder): "Every lead arrives with its conversation attached."
    cut as filler. Like every competitor's closing band, line one restates the
    promise (the approved ads line) and line two says what the price is per
    (as /pricing since #326) plus what is NOT billed: teammates are free. The
-   10-sending-accounts line waits on the app's pricing PR (#1220). The /for
-   pages pass the same two lines (VX_CTA_BODY). */
+   /for pages pass the same two lines (VX_CTA_BODY). */
 const CTA_BODY: readonly [string, string] = [
   "Tell Pancake who to reach. It builds the Play.",
-  "$99 a month per workspace. Your whole team included.",
+  "From $99 a month per workspace. Your whole team included.",
 ];
 
 export function LpCta({

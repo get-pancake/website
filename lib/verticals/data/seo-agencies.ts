@@ -149,7 +149,7 @@ export const seoAgencies: VerticalConfig = {
     },
     {
       q: "We serve SaaS and e-commerce. Can one setup cover both?",
-      a: "Yes. Run one Play per market, each with its own targeting and messages. Both share your Brain and one $99 plan.",
+      a: "Yes. Run one Play per market, each with its own targeting and messages. Both share your Brain, one plan and its credits.",
     },
     {
       q: "I sell GEO. Can it find people worried about ChatGPT answers?",

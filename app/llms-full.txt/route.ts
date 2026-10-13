@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-import { pricingPlan } from "@/lib/copy";
+import { pricingFaq, pricingPlan } from "@/lib/copy";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
@@ -12,7 +12,7 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
  *   - public/llms.txt          → /llms.txt
  *   - public/install.md        → /install.md
  *   - public/guides/claude.md  → /guides/claude.md
- *   - pricingPlan.faq (lib/copy.ts), the answers /pricing shows
+ *   - pricingFaq and pricingPlan.faq (lib/copy.ts), the answers /pricing shows
  */
 export const dynamic = "force-static";
 
@@ -26,7 +26,7 @@ export function GET() {
     "# Pricing questions",
     "",
     pricingPlan.lede,
-    ...pricingPlan.faq.flatMap((item) => ["", `## ${item.q}`, "", item.a]),
+    ...[...pricingFaq.items, ...pricingPlan.faq].flatMap((item) => ["", `## ${item.q}`, "", item.a]),
   ].join("\n");
 
   const body = [

@@ -9,13 +9,16 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
 
 // 2026-10-07: origami.chat now recommends plays and runs the ones you approve ("Origami gets
-// customers for you"), so the "suggestions vs Plays that run" framing is gone. The angle is the
-// one its pages show: Origami estimates each play in credits (about 100 for 20 accounts
-// researched and emails verified); Pancake is one price per workspace and a Play searches again
-// on the schedule the customer picks. Whether an approved Origami play repeats on its own is not on its site, so this
+// customers for you"), so the "suggestions vs Plays that run" framing is gone.
+// 2026-10-13: "credits versus one price" is gone too, because Pancake bills in credits since
+// the credit plan (pancake-cmo PR #1220, lib/pricing.ts). The angle is what a search leaves you
+// with: Origami researches the live web and builds lists on demand; a Pancake Play searches
+// again on the schedule the customer picks and opens the conversation. The two credits are
+// different units, so the page never sets the numbers side by side as if they were one.
+// Whether an approved Origami play repeats on its own is not on its site, so this
 // page never claims it doesn't. Title and verdict await the founder's sign-off.
-const title = "Origami vs Pancake: Plays in Credits vs One Price";
-const description = "Compare Origami and Pancake: live-web plays billed in credits versus Plays that keep searching for $99 a month per workspace.";
+const title = "Origami vs Pancake: Lists on Demand vs Plays That Keep Searching";
+const description = "Compare Origami and Pancake: live-web research and lists on demand versus Plays that keep searching and open the conversation, from $99 a month per workspace.";
 
 export const viewport = comparisonViewport;
 
@@ -32,21 +35,21 @@ const config: GtmComparisonConfig = {
   slug: "origami-vs-pancake",
   competitor: "Origami",
   competitorInitial: "O",
-  heroLede: "Plays billed in credits versus Plays at one price.",
-  heroSummary: "Origami searches the live web, recommends plays from your website, and runs the ones you approve, priced in credits. Pancake runs Plays that keep finding your buyers, tells you why each one fits, and opens the conversations from your own account.",
+  heroLede: "Lists on demand versus Plays that keep searching.",
+  heroSummary: "Origami searches the live web, recommends plays from your website, and runs the ones you approve. Pancake runs Plays that keep finding your buyers, tells you why each one fits, and opens the conversations from your own account.",
   competitorBody: "A GTM product that searches 50+ live sources, builds and enriches lists, and recommends plays from your website. Approve a play and Origami runs it, with email and social sequences and, on Pro and up, drafted posts.",
   competitorChoose: "Choose it when you want flexible live-web research and lists on demand.",
   pancakeBody: "A GTM platform that goes from who you want to reach to the first conversation. Every lead arrives with one line on why they fit. Pancake writes each one a personal message from that reason, in your voice.",
-  pancakeChoose: "Choose it when you want Plays that keep searching, at one price.",
-  verdictTitle: "Origami bills by credit. Pancake is one price.",
+  pancakeChoose: "Choose it when you want Plays that keep searching and start the conversation.",
+  verdictTitle: "Origami builds the list. Pancake keeps the search running.",
   verdictLede: "Origami is strong at live-web research, contact data, and content. Pancake is built for founders who want new leads found for them and conversations started from their own account.",
-  competitorBestFit: "Origami is the better fit when your team wants natural-language live-web research, prospect lists with verified contact data, email and social sequences, and drafted posts, paid for in credits.",
-  differencesLede: "Both products read the market and run what you approve. They differ in how you pay for it.",
+  competitorBestFit: "Origami is the better fit when your team wants natural-language live-web research, prospect lists with verified contact data, email and social sequences, and drafted posts.",
+  differencesLede: "Both products read the market, run what you approve and bill in credits. They differ in what a search leaves you with.",
   differences: [
     {
       n: "01",
-      title: "Credits per play versus one price",
-      body: "Origami prices each play in credits: about 100 to research 20 accounts and verify their emails. A Pancake Play keeps searching and qualifies each lead, within $99 a month per workspace.",
+      title: "What a credit pays for",
+      body: "Origami prices each play in credits: about 100 to research 20 accounts and verify their emails. Pancake's credits pay for the research a search does and each work email found. Building and testing a Play is free.",
       angle: "A list is a start. A Play keeps finding new people.",
     },
     {
@@ -69,8 +72,8 @@ const config: GtmComparisonConfig = {
     },
     {
       n: "05",
-      title: "Credits versus one price per workspace",
-      body: "Origami starts free, then $49 a month for 4,000 credits, five email senders and one social sender, with extra social senders at $10 a month. Pancake is $99 a month per workspace, everything included.",
+      title: "Two credit plans, two entry prices",
+      body: "Origami starts free, then $49 a month for 4,000 credits, five email senders and one social sender, with extra social senders at $10 a month. Pancake starts at $99 a month per workspace with 60,000 credits, your whole team and one sending account. A credit is a different unit in each product.",
       angle: "Pay for research capacity or pay for GTM that keeps moving.",
     },
   ],
@@ -81,7 +84,7 @@ const config: GtmComparisonConfig = {
     { feature: "Content", competitor: { text: "Drafts posts and visuals on Pro and up", mark: "yes" }, pancake: { text: "Focused on outbound" } },
     { feature: "Outbound", competitor: { text: "Included multichannel sequencer", mark: "yes" }, pancake: { text: "A personal message for every lead, from your own account", mark: "yes" } },
     { feature: "Shared GTM Brain", competitor: { text: "Research and workflow context" }, pancake: { text: "Built from your website; every Play starts from it", mark: "yes" } },
-    { feature: "Public starting price", competitor: { text: "$49/month, 4,000 credits", mark: "yes" }, pancake: { text: "$99/month per workspace, one plan", mark: "yes" } },
+    { feature: "Public starting price", competitor: { text: "$49/month, 4,000 credits", mark: "yes" }, pancake: { text: "$99/month, 60,000 credits", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Teams that want live-web lists, contact data, and content" }, pancake: { text: "Founders who want leads and conversations, not lists" } },
   ],
   closingTitle: "Let Pancake find your next leads.",
@@ -91,8 +94,8 @@ const config: GtmComparisonConfig = {
     { q: "Does Origami create content?", a: "Yes, on Pro and up. Its Content mode drafts a post and a branded visual for your review. Pancake doesn't create content: it finds your buyers and starts the conversation." },
     { q: "Does Origami run outbound?", a: "Origami includes a multichannel sequencer, so it can support outbound execution after a list is created. Pancake ties outreach to the lead: each one arrives with one line on why they fit, and its personal message is written from that reason. A reply stops the sequence." },
     { q: "Which is better for prospect research?", a: "Origami may be the better fit for teams that primarily want natural-language searches across many live sources, data waterfalls, and flexible list building. Pancake is the better fit when you want a Play that keeps searching and starts each conversation for you." },
-    { q: "How does pricing compare?", a: "As of October 2026, Origami starts free, then $49, $129 or $399 a month by credits and senders. Pancake's price does not move with how much you search: $99 a month per workspace, everything included. Check Origami's current pricing and limits before purchasing." },
-    { q: "Who should choose Pancake instead of Origami?", a: "Choose Pancake when you want a Play for each audience you sell to, a reason on every lead, conversations started from your own account, and one price per workspace." },
+    { q: "How does pricing compare?", a: "As of October 2026, Origami starts free, then $49, $129 or $399 a month by credits and senders. Pancake starts at $99 a month per workspace with 60,000 credits, and unused credits roll over. A credit is a different unit in each product, so compare what each plan covers before purchasing." },
+    { q: "Who should choose Pancake instead of Origami?", a: "Choose Pancake when you want a Play for each audience you sell to, a reason on every lead, conversations started from your own account, and your whole team on one plan." },
   ],
   related: [
     { href: "/gojiberry-vs-pancake", label: "Gojiberry vs Pancake" },

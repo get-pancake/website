@@ -5,8 +5,8 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 // Unify facts read on 2026-10-07 from unifygtm.com and unifygtm.com/pricing (audit plan 3.10).
 // Re-check both pages before moving FACTS_REVIEWED, and again within 90 days.
-const title = "Unify vs Pancake: Per-Seat Pricing vs $99 per Workspace";
-const description = "Compare Unify and Pancake: an outbound platform priced per seat plus credits, versus Plays that find your buyers for $99 a month per workspace.";
+const title = "Unify vs Pancake: Per-Seat Pricing vs One Plan per Workspace";
+const description = "Compare Unify and Pancake: an outbound platform priced per seat plus credits, versus Plays that find your buyers from $99 a month per workspace.";
 
 // Status-bar zone matches the lp cream, as every comparison page. Same value as the
 // comparisonViewport export the landing-audit-fixes template adds; switch to it once that lands.
@@ -32,11 +32,11 @@ const config: GtmComparisonConfig = {
   competitor: "Unify",
   competitorInitial: "U",
   heroLede: "A sales platform priced per seat versus one plan per workspace.",
-  heroSummary: "Unify gives sales reps data, signals, sequences and a dialer, billed per seat with credits. Pancake runs Plays that find your buyers and writes to the ones you approve, for $99 a month per workspace.",
+  heroSummary: "Unify gives sales reps data, signals, sequences and a dialer, billed per seat with credits. Pancake runs Plays that find your buyers and writes to the ones you approve, from $99 a month per workspace.",
   competitorBody: "An outbound platform for SDRs, AEs and sales leaders. Reps build lists from 1.1B+ people and 40+ data sources, then run multi-channel sequences from one chat.",
   competitorChoose: "Choose it when reps need data, email and a dialer in one place.",
   pancakeBody: "Tell Pancake who to reach. It builds a Play that keeps searching on its own. Every lead arrives with why it fits, and you approve each one before Pancake writes to them under your name.",
-  pancakeChoose: "Choose it when you do your own sales and want one price for the team.",
+  pancakeChoose: "Choose it when you do your own sales and want one plan for the whole team.",
   verdictTitle: "Unify equips sales reps. Pancake runs the Play.",
   verdictLede: "Unify is the stronger toolkit once you have reps, mailboxes and a CRM. Pancake fits founders who do their own sales and want their buyers found for them.",
   competitorBestFit: "Unify is the better fit when several reps need contact data, email sequences, a dialer and HubSpot or Salesforce sync, and each rep works from their own seat.",
@@ -45,7 +45,7 @@ const config: GtmComparisonConfig = {
     {
       n: "01",
       title: "Per seat versus per workspace",
-      body: "As of October 2026, Unify's Base plan is $20 per seat a month and Pro is $60, each with credits per seat. Pancake is $99 a month per workspace. Your whole team is included.",
+      body: "As of October 2026, Unify's Base plan is $20 per seat a month and Pro is $60, each with credits per seat. Pancake starts at $99 a month per workspace, with credits your whole team shares.",
       angle: "Add a teammate and the Pancake price stays the same.",
     },
     {
@@ -75,7 +75,7 @@ const config: GtmComparisonConfig = {
   ],
   rows: [
     { feature: "Core job", competitor: { text: "Outbound platform for sales reps", mark: "yes" }, pancake: { text: "Plays that find buyers and start the conversation", mark: "yes" } },
-    { feature: "Pricing", competitor: { text: "Free, then $20 or $60 per seat a month, plus credits" }, pancake: { text: "$99 a month per workspace", mark: "yes" } },
+    { feature: "Pricing", competitor: { text: "Free, then $20 or $60 per seat a month, plus credits" }, pancake: { text: "From $99 a month per workspace, credits shared by the team", mark: "yes" } },
     { feature: "Seats", competitor: { text: "Paid per seat; Free plan up to 3 seats" }, pancake: { text: "Whole team included", mark: "yes" } },
     { feature: "Contact data", competitor: { text: "1.1B+ people, 65M+ companies, 40+ sources", mark: "yes" }, pancake: { text: "A search that keeps finding people who fit your ICP", mark: "yes" } },
     { feature: "Lead context", competitor: { text: "Signals, account research and AI copy", mark: "yes" }, pancake: { text: "One line on why each lead fits", mark: "yes" } },
@@ -83,16 +83,16 @@ const config: GtmComparisonConfig = {
     { feature: "Email and calling", competitor: { text: "Managed mailboxes and a dialer", mark: "yes" }, pancake: { text: "No email, no calls", mark: "no" } },
     { feature: "CRM sync", competitor: { text: "HubSpot and Salesforce: read-only on Pro, read-write on Business", mark: "yes" }, pancake: { text: "No CRM sync", mark: "no" } },
     { feature: "AI agents", competitor: { text: "Bulk APIs to analyze data in Claude or Codex", mark: "yes" }, pancake: { text: "Run Plays from Claude, Claude Code or Codex", mark: "yes" } },
-    { feature: "Free trial", competitor: { text: "Free plan; 14-day Pro trial, no card", mark: "yes" }, pancake: { text: "3-day free trial, card required", mark: "yes" } },
+    { feature: "Free trial", competitor: { text: "Free plan; 14-day Pro trial, no card", mark: "yes" }, pancake: { text: "7-day free trial, card required", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Sales teams with reps, mailboxes and a CRM" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
   ],
   closingTitle: "One workspace. One price. The whole team.",
   closingLede: "Tell Pancake who to reach. It builds the Play, keeps searching and writes to the leads you approve.",
   faqs: [
-    { q: "What is the main difference between Unify and Pancake?", a: "Unify is an outbound platform that sales reps operate, priced per seat. Pancake runs Plays: it finds the people who fit and writes to the ones you approve. It costs $99 a month per workspace." },
-    { q: "How does pricing compare?", a: "As of October 2026, Unify has a Free plan, Base at $20 and Pro at $60 per seat a month, and custom Business plans. Each comes with credits. Pancake is $99 a month per workspace." },
+    { q: "What is the main difference between Unify and Pancake?", a: "Unify is an outbound platform that sales reps operate, priced per seat. Pancake runs Plays: it finds the people who fit and writes to the ones you approve. It starts at $99 a month per workspace." },
+    { q: "How does pricing compare?", a: "As of October 2026, Unify has a Free plan, Base at $20 and Pro at $60 per seat a month, and custom Business plans. Each comes with credits. Pancake starts at $99 a month per workspace, with 60,000 credits your whole team shares." },
     { q: "What does Unify do that Pancake doesn't?", a: "Email sequences with managed mailboxes, a dialer, phone enrichment, and HubSpot or Salesforce sync. Its Business plan adds website intent and product signals. Pancake doesn't do these." },
-    { q: "Does Pancake charge per seat?", a: "No. Pancake is $99 a month per workspace, and your whole team is included. A second company is a second workspace at the same price." },
+    { q: "Does Pancake charge per seat?", a: "No. Pancake starts at $99 a month per workspace, and your whole team is included. A second company is a second workspace with its own plan." },
     { q: "Can I run Pancake from Claude or Codex?", a: "Yes. Claude, Claude Code and Codex connect with a browser sign-in, no API key. You create Plays, review leads and edit messages from the agent. Unify offers bulk export APIs for analysis in Claude or Codex." },
     { q: "Who should choose Pancake over Unify?", a: "Founders who do their own sales, and small B2B teams without reps or a mailbox stack. Tell Pancake who to reach and approve the leads that fit. Pancake writes to them under your name." },
   ],

@@ -129,11 +129,13 @@
   position: absolute;
   top: 462.99px;
 }
+/* One line since 2026-10-13: the note names the trial's credits ("15,000
+   free credits, valid for 7 days"), wider than the 203px CTA it sat under. */
 .lp-price-note {
   left: max(32px, calc(50% - 568px));
   position: absolute;
   top: 550.99px;
-  width: 203px;
+  white-space: nowrap;
 }
 /* the route to /pricing (2026-10-07): one text line under the note (its 24px
    line + 12), still on the cream. At this x the art's first band starts near

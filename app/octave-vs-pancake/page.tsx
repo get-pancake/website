@@ -6,7 +6,7 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 // Octave facts read on 2026-10-07 from octavehq.com and octavehq.com/pricing (audit plan 3.10).
 // Re-check both pages before moving FACTS_REVIEWED, and again within 90 days.
 const title = "Octave vs Pancake: Context Layer vs Plays That Run";
-const description = "Compare Octave and Pancake: a GTM context layer from $1,500 a month, billed annually, versus Plays that find your buyers for $99 a month per workspace.";
+const description = "Compare Octave and Pancake: a GTM context layer from $1,500 a month, billed annually, versus Plays that find your buyers from $99 a month per workspace.";
 
 // Status-bar zone matches the lp cream, as every comparison page. Same value as the
 // comparisonViewport export the landing-audit-fixes template adds; switch to it once that lands.
@@ -56,8 +56,8 @@ const config: GtmComparisonConfig = {
     },
     {
       n: "03",
-      title: "$1,500 a month versus $99 per workspace",
-      body: "As of October 2026, Octave Ultra starts at $1,500 a month, billed annually, plus usage credits. Pancake is $99 a month per workspace.",
+      title: "From $1,500 a month versus from $99",
+      body: "As of October 2026, Octave Ultra starts at $1,500 a month, billed annually, plus usage credits. Pancake starts at $99 a month per workspace, with 60,000 credits included.",
       angle: "Both include your whole team.",
     },
     {
@@ -83,15 +83,15 @@ const config: GtmComparisonConfig = {
     { feature: "Integrations", competitor: { text: "Salesforce, HubSpot, Gong, Clay and more", mark: "yes" }, pancake: { text: "No CRM sync", mark: "no" } },
     { feature: "Team", competitor: { text: "Unlimited users", mark: "yes" }, pancake: { text: "Whole team included", mark: "yes" } },
     { feature: "Admin and support", competitor: { text: "SSO, role-based access, dedicated CSM", mark: "yes" }, pancake: { text: "No SSO or dedicated CSM", mark: "no" } },
-    { feature: "Pricing", competitor: { text: "From $1,500/month billed annually, plus credits" }, pancake: { text: "$99 a month per workspace", mark: "yes" } },
-    { feature: "Getting started", competitor: { text: "A two-week trial, built with Octave's team" }, pancake: { text: "Self-serve; 3-day free trial, card required", mark: "yes" } },
+    { feature: "Pricing", competitor: { text: "From $1,500/month billed annually, plus credits" }, pancake: { text: "From $99 a month per workspace, credits included", mark: "yes" } },
+    { feature: "Getting started", competitor: { text: "A two-week trial, built with Octave's team" }, pancake: { text: "Self-serve; 7-day free trial, card required", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Teams across sales, marketing and RevOps" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
   ],
   closingTitle: "Turn your context into conversations.",
   closingLede: "Tell Pancake who to reach. It builds the Play from your Brain and writes to every lead you approve.",
   faqs: [
     { q: "What is the main difference between Octave and Pancake?", a: "Octave is a context layer: it models your positioning and buyers and feeds that to your tools and agents. Pancake runs Plays that find your buyers and write to the ones you approve." },
-    { q: "How does pricing compare?", a: "As of October 2026, Octave charges a platform fee plus usage credits. Octave Ultra starts at $1,500 a month, billed annually. Pancake is $99 a month per workspace." },
+    { q: "How does pricing compare?", a: "As of October 2026, Octave charges a platform fee plus usage credits. Octave Ultra starts at $1,500 a month, billed annually. Pancake starts at $99 a month per workspace, with 60,000 credits included." },
     { q: "What does Octave do that Pancake doesn't?", a: "Octave learns from buyer conversations and connects to Salesforce, HubSpot, Gong and Clay. It also offers SSO, role-based access and a data warehouse connector. Pancake doesn't do these." },
     { q: "Do both work in Claude?", a: "Yes. Octave offers MCP, an API, a CLI and a Claude Code plugin. Pancake connects to Claude, Claude Code and Codex with a browser sign-in. You create Plays and review leads from the agent." },
     { q: "What is a Play?", a: "A Play is how Pancake finds one audience. Tell it who to reach in one sentence. It asks what it needs, then searches again on your schedule, keeping up to 50 new leads per search." },

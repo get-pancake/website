@@ -160,7 +160,7 @@ export const revopsConsultants: VerticalConfig = {
     },
     {
       q: "Can one workspace cover HubSpot and Salesforce clients?",
-      a: "Yes. Stack matches any tool you list. If the two offers need different messages, give each its own Play in the same workspace, on the same $99 plan.",
+      a: "Yes. Stack matches any tool you list. If the two offers need different messages, give each its own Play in the same workspace, on the same plan.",
     },
   ],
 

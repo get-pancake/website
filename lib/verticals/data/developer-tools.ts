@@ -160,7 +160,7 @@ export const developerTools: VerticalConfig = {
     },
     {
       q: "Can each founder send from their own account?",
-      a: "Yes. Connect each founder’s account and choose who sends for each Play. A Play can also rotate across up to ten accounts, and each lead keeps one sender.",
+      a: "Yes. Connect each founder’s account and choose who sends for each Play, or rotate a Play across up to ten accounts. One sending account is in the plan, and each extra one is $39 a month.",
     },
   ],
 
