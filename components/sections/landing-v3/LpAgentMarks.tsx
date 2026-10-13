@@ -1,4 +1,6 @@
-import { useId } from "react";
+"use client";
+
+import { useEffect, useId, useState } from "react";
 import { getImageProps } from "next/image";
 
 // Monochrome brand marks for the agents view's "friends with" row (LpAgentStart). V2 (Figma
@@ -38,11 +40,39 @@ const hermesPortrait = getImageProps({
   quality: 90,
 }).props.src;
 
-/** Hermes — production mark (24 cell, 20 px). */
+/** Hermes — production mark (24 cell, 20 px).
+ *  The portrait is the first screen's only bitmap (36 KB): an SVG <image> inside a <mask> is
+ *  fetched with the page even while the agents view is hidden, and Lighthouse counted it
+ *  against the homepage's LCP (2026-10-13). Its href is set once the page is idle — at once
+ *  when the agents view is on, or the moment it switches on — so the first paint no longer
+ *  waits behind it. */
 export function HermesMark() {
   const id = useId();
   const maskId = `${id}-hermes-mask`;
   const filterId = `${id}-hermes-ink`;
+  const [href, setHref] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const load = () => setHref(hermesPortrait);
+    const root = document.querySelector("[data-audience]");
+    if (root?.getAttribute("data-audience") === "agents") {
+      load();
+      return;
+    }
+    const watch = root
+      ? new MutationObserver(() => {
+          if (root.getAttribute("data-audience") === "agents") load();
+        })
+      : null;
+    if (root) watch?.observe(root, { attributes: true, attributeFilter: ["data-audience"] });
+    const idle = "requestIdleCallback" in window;
+    const handle = idle ? window.requestIdleCallback(load, { timeout: 2500 }) : window.setTimeout(load, 1500);
+    return () => {
+      watch?.disconnect();
+      if (idle) window.cancelIdleCallback(handle);
+      else window.clearTimeout(handle);
+    };
+  }, []);
 
   return <svg viewBox="0 0 1772 1799" role="img" aria-label="Hermes" focusable="false" data-mark="hermes">
     <defs>
@@ -53,7 +83,7 @@ export function HermesMark() {
       {/* Inset beyond the frame's resampled edge, which otherwise leaves a
           white hairline when the optimized portrait is reduced to icon size. */}
       <mask id={maskId} maskUnits="userSpaceOnUse" x="32" y="35" width="1708" height="1729" style={{ maskType: "alpha" }}>
-        <image href={hermesPortrait} width="1772" height="1799" filter={`url(#${filterId})`} />
+        <image href={href} width="1772" height="1799" filter={`url(#${filterId})`} />
       </mask>
     </defs>
     <rect width="1772" height="1799" fill="currentColor" mask={`url(#${maskId})`} />
