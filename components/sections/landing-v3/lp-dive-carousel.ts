@@ -105,7 +105,7 @@ const FLOW_MQ = "(max-width: 1340px)";
    storyboard's frame 3 "Lead details open" (5024:7601), which the timeline holds from 2.59 s
    (sources-v2 §8.1, QA seek 2.60). A timeline label of that name wins over the seconds. */
 const ARTBOARD_AT: Partial<Record<DiveItemId, { label: string; s: number }>> = {
-  sources: { label: "f3", s: 2.6 },
+  sources: { label: "f3", s: 4.8 },
 };
 /** QA: freeze a story at `at` — seconds, a label, "end"; nothing = its artboard frame (or its end) */
 function seekStory(tl: Timeline, id: DiveItemId, at?: number | string) {

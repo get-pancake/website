@@ -1,10 +1,14 @@
-import type { StorySourcesGlyph, StorySourcesPropId } from "./lp-story-sources-data";
+import type { StorySourcesPropId } from "./lp-story-sources-data";
 
 /**
  * Deep-dive story "Sources you can trust" — vector art for the stage (owner: story-sources).
  * Path data only, no copy (no strings a reader sees), so this file is not in homepage-lint.
  * Storyboard of 2026-10-11 (Figma 4964:1287 / 5024:7457 / 5024:7601 / 5024:8172,
  * specs/updates/sources-v2.md §4, §10.5).
+ *
+ * The hub's discs carry NO art from here: each shows its data provider's own mark, an unmodified
+ * file under public/lp/story-sources/ (a trademark is never redrawn as path data). The generic
+ * source glyphs this file held until 2026-10-13 went with the placeholder discs.
  */
 
 /** The hand cursor (Figma instance 5024:7594 "State=Hand", 30×30 box). `shape` is drawn at
@@ -47,24 +51,4 @@ export const STORY_SOURCES_ICONS: Record<StorySourcesPropId | "search" | "out", 
   search: "M4.5 10.5a6 6 0 1 0 12 0a6 6 0 1 0-12 0zM15 15l5 5",
   /** "View": an arrow out of a box */
   out: "M14 4h6v6M20 4l-8.5 8.5M18 13.5V19a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5.5",
-};
-
-/** Generic source glyphs for the hub's discs (24 grid, stroke only, round caps; drawn for this
-    stage). Truth gate: never a platform or data-provider mark (decision 2026-10-11 §9: the
-    designer's "placeholder logos" are built as these). */
-export const STORY_SOURCES_GLYPHS: Record<StorySourcesGlyph, string> = {
-  /** a post: a card with text lines */
-  post: "M6 4h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zM8 9h8M8 12.5h8M8 16h5",
-  /** an open role: a briefcase */
-  briefcase:
-    "M5 7.5h14a2 2 0 0 1 2 2V18a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9.5a2 2 0 0 1 2-2zM9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5M3 13h18",
-  /** a tech stack: three layers */
-  stack: "M12 3.5 3.5 8 12 12.5 20.5 8zM3.5 12 12 16.5 20.5 12M3.5 16 12 20.5 20.5 16",
-  /** funding: a coin */
-  coin: "M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM14.5 9.25c-.45-.8-1.35-1.25-2.5-1.25-1.4 0-2.5.75-2.5 1.9 0 2.6 5 1.4 5 4.2 0 1.15-1.1 1.9-2.5 1.9-1.15 0-2.05-.45-2.5-1.25M12 6.5V8M12 16v1.5",
-  /** the web: a globe */
-  globe: "M12 3a9 9 0 1 0 0 18a9 9 0 1 0 0-18zM3 12h18M12 3c2.4 2.5 3.6 5.5 3.6 9s-1.2 6.5-3.6 9c-2.4-2.5-3.6-5.5-3.6-9S9.6 5.5 12 3z",
-  /** people like your customers: two heads */
-  people:
-    "M5.75 7.75a3.25 3.25 0 1 0 6.5 0a3.25 3.25 0 1 0-6.5 0zM3 19.5c.6-3.2 2.9-5 6-5s5.4 1.8 6 5M15.5 4.9a3.25 3.25 0 0 1 0 5.9M17.6 14.9c1.8.6 3 2.1 3.4 4.6",
 };

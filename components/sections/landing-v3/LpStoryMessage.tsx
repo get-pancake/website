@@ -16,8 +16,9 @@ import { SM_STORY, type SmAccount, type SmConvo, type SmLead } from "./lp-story-
  * - the talk (frames 1–4): a lead's post (production f2's neutral post, at Figma's instance
  *   scale), her lead card, the message Pancake drafts for her, then three more conversations
  *   at other depths. Hidden at rest, in its last state (both typed messages sent);
- * - the accounts (frames 4–6): the sending account's name over three of its leads, then six
- *   more accounts out of focus around it. This is the rest picture (frame 6).
+ * - the accounts (frames 4–6): the sending account's title over three of its leads (the leads
+ *   of three of those conversations), then six more accounts out of focus around it. This is
+ *   the rest picture (frame 6).
  * No placeholder-only element: production and preview render the same picture.
  */
 
@@ -36,12 +37,12 @@ function Avatar({ lead }: { lead: SmLead }) {
   return <span className="lp-sm-av">{lead.initials}</span>;
 }
 
-/** company over role, right-aligned (Figma: one text box, two weights) */
+/** company over position, right-aligned (Figma: one text box, two weights) */
 function Company({ lead }: { lead: SmLead }) {
   return (
     <span className="lp-sm-co">
       <b>{lead.company}</b>
-      {lead.role}
+      {lead.position}
     </span>
   );
 }
@@ -83,16 +84,19 @@ function Convo({ convo }: { convo: SmConvo }) {
   );
 }
 
-/** One sending account: its sender's name, centred over three of its leads, each with where it
-    stands. Placed and scaled from its rows' left edge and its name's top. */
+/** One sending account: its title ("<sender>’s account"), centred over three of its leads, each
+    with where it stands. Placed and scaled from its rows' left edge and its title's top. A row
+    is a lead card made wider for the status: same avatar, name and company at the same places,
+    which is what lets the timeline turn the conversations' lead cards into the story's rows. */
 function Account({ account }: { account: SmAccount }) {
-  const { status } = SM_STORY.labels;
+  const { status, account: accountOf } = SM_STORY.labels;
   const { place } = account;
   const style: Vars = { "--x": place.x, "--y": place.y, "--k": place.k, "--dim": account.dim, "--blur": account.blur };
   return (
     <div className="lp-sm-acct" data-acct={account.id} style={style}>
       <p className="lp-sm-sender">
-        <span>{account.sender}</span>
+        {/* one string, one text node: "<sender>’s account" */}
+        <span>{`${account.sender}${accountOf}`}</span>
       </p>
       {account.rows.map(({ lead, status: s }, n) => (
         <div key={n} className="lp-sm-card lp-sm-row" style={{ "--n": n } as Vars}>

@@ -1,7 +1,7 @@
 /**
  * Fillable placeholder content — the V2 Figma replication's ONE gate (decision 2026-10-09):
  * the bento's stand-in cards (interim stills while a customer's own cut is not on disk), the
- * sources story's data-source discs, a figure waiting for the founder's yes, draft story lines,
+ * sources story's data-source discs (until 2026-10-13: named providers since), a figure waiting for the founder's yes, draft story lines,
  * the agents card's preview body. Dev and Vercel preview builds only. Production never renders a
  * placeholder entry: a slot returns null until real ("final") content lands in its data file,
  * and a section with several slots lays out the final ones it has (the bento) or returns null

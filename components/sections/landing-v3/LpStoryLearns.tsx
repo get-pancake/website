@@ -32,7 +32,7 @@ export function LpStoryLearnsStage({ placeholders }: DiveStageProps) {
       <div className="lp-sl-chart">
         <div className="lp-sl-graph">
           <div className="lp-sl-stat">
-            <span className="lp-sl-pct">{`${LEARNS.share.end}%`}</span>
+            <span className="lp-sl-pct">{`${LEARNS.sharePrefix}${LEARNS.share.end}%`}</span>
             <svg className="lp-sl-arrow" viewBox={`0 0 ${AR} ${AR}`} fill="none" focusable="false">
               <path d={SL_ARROW.d} fill="currentColor" />
             </svg>

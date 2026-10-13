@@ -26,10 +26,13 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
  * About 10 s. Easing and rules as the Pancake view's.
  */
 
-/** typing: first glyph, then one every 30 ms, and a held beat before send */
-const T0 = 0.4;
-const DT = 0.03;
-const TYPED_HOLD = 0.4;
+/* The opening: Claude's home holds 0.8 s, then the request is typed as a person types (38 ms a
+   key, the Pancake view's pace) and stays 0.45 s before it is sent. It was 0.4 s / 30 ms / 0.4 s
+   until 2026-10-13 (founder, on the other view and on the step cards: a prompt "written much
+   too fast", an opening that "goes by too fast"). */
+const T0 = 0.8;
+const DT = 0.038;
+const TYPED_HOLD = 0.45;
 /** Claude's answer: one word every 45 ms */
 const WORD = 0.045;
 /** one tool call: how long it "works", and the beat to the next one */

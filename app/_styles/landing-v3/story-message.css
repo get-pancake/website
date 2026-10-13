@@ -3,7 +3,7 @@
    lead" (LpStoryMessage), the designer's finished storyboard of 2026-10-12:
    Figma 4964:1469 (a lead's post, wired to her card), 4964:1471 (her card,
    wired to the message being drafted), 4964:1729 (more conversations, nearer
-   and further), 5061:1002 (the view pulls back; the sending account's name),
+   and further), 5061:1002 (the view pulls back; the sending account's title),
    5061:1091 (the account's leads and where each stands), 5061:1209 (more
    accounts, out of focus: the REST picture).
 
@@ -18,8 +18,8 @@
    2. THE TALK — the conversations: a lead card, a wire, the message card, and
       for an answered one a second wire and the reply card. ONE component
       drawn at four depths (Figma scales it: 1.5, 1, 0.682, 0.356).
-   3. THE ACCOUNTS — a sender's name over three lead rows; ONE block drawn at
-      seven scales. The rest picture.
+   3. THE ACCOUNTS — a sending account's title ("<sender>’s account") over
+      three lead rows; ONE block drawn at seven scales. The rest picture.
 
    How the cards land on Figma's pixels (the idiom of steps.css "How it
    works", same designer vocabulary):
@@ -453,8 +453,8 @@
   transform-origin: 376.426px 227.723px;
 }
 /* one account, in its own px (1 = frame 5's size): --x = its rows' left edge,
-   --y = its name's top, --k its scale, in frame 6. Local origin = the first
-   row's FILL corner on x and the name's top on y, plus the half pixel.
+   --y = its title's top, --k its scale, in frame 6. Local origin = the first
+   row's FILL corner on x and the title's top on y, plus the half pixel.
    --blur is Figma's layer-blur radius in stage px: CSS blurs by a standard
    deviation (half of it), in the block's own px (÷ k). */
 .lp-sm-acct {
@@ -494,21 +494,28 @@
 .lp-sm-sender span {
   display: inline-block;
 }
-/* a lead row: Figma 500×67, 75 apart, the first 59 under the name's top */
+/* a lead row: Figma 500×67, 75 apart, the first 59 under the title's top. A row
+   is a lead card made 140 wider for the status: the avatar, the name and the
+   company sit where .lp-sm-lead has them, so the timeline can stand a row on a
+   conversation's lead card and take it to its slot (lp-story-message-tail.ts,
+   beat E). --trim, --av-up, --name-up, --co-up and --co-tight are that
+   hand-over's: the px a depth draws its lead card shorter, its avatar, name
+   and company higher, its company's lines tighter (the "per-depth
+   corrections" above, read from the layout by the timeline); all 0 at rest. */
 .lp-sm-row {
-  height: calc(66px - 2px * var(--z));
+  height: calc(66px - 2px * var(--z) - 1px * var(--trim, 0));
   top: calc(59px + var(--n) * 75px);
   width: 499px;
 }
 .lp-sm-row .lp-sm-av {
-  top: calc(17px - 1px * var(--z));
+  top: calc(17px - 1px * var(--z) - 1px * var(--av-up, 0));
 }
 .lp-sm-row .lp-sm-name {
-  top: calc(23.875px - 1.35px * var(--z));
+  top: calc(23.875px - 1.35px * var(--z) - 1px * var(--name-up, 0));
 }
 .lp-sm-row .lp-sm-co {
-  line-height: calc(17px - 0.974px * var(--z));
-  top: calc(15.5px - 0.5px * var(--z));
+  line-height: calc(17px - 0.974px * var(--z) - 1px * var(--co-tight, 0));
+  top: calc(15.5px - 0.5px * var(--z) - 1px * var(--co-up, 0));
 }
 .lp-sm-status {
   color: var(--lp-green-30);

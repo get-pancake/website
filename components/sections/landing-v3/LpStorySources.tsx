@@ -1,6 +1,7 @@
+import type { CSSProperties } from "react";
+
 import type { DiveStageProps } from "./lp-dive-stages";
 import {
-  STORY_SOURCES_GLYPHS,
   STORY_SOURCES_HAND,
   STORY_SOURCES_ICONS,
   STORY_SOURCES_PLUS,
@@ -19,14 +20,20 @@ import { STORY_SOURCES, type StorySourcesHubNode, type StorySourcesProp } from "
  *
  * Layers, back to front:
  *   .lp-src-cam      the camera (scene D scales it ×3.89 about a point by "Why they fit")
- *     .lp-src-leads  scenes A/B: the Leads page (title, table) and the hand cursor
+ *     .lp-src-leads  scenes A/B: the Leads page (title, table) and the hand cursor (with the
+ *                    pulse its click leaves under the fingertip)
  *     .lp-src-panel  scene C: the picked lead's details
- *   .lp-src-hub      scene D: the data-source discs, their wires, the colour dots, the label.
- *                    NOT inside the camera. Rendered only when a hub node renders.
+ *   .lp-src-hub      scene D: the data providers' discs (each vendor's own mark on a white
+ *                    disc), their wires, the colour dots, each provider's name under its disc,
+ *                    the label. NOT inside the camera. Rendered only when a hub node renders.
+ *     .lp-src-hubart   discs, dots, wires (the phone composition scales this layer ×0.5)
+ *     .lp-src-names    the providers' names, OUTSIDE the scaled art so they keep their size:
+ *                      each is placed from its disc's centre, top and bottom (--nx/--nt/--nb,
+ *                      desktop stage px; the stylesheet maps them for each composition)
  *
  * `data-end` names the END picture this build rests on: "sources" (the zoom with the hub) when
  * at least one hub node renders, else "details" (the open panel over the dimmed table). Every
- * hub node is a placeholder today (lp-story-sources-data.ts), so production rests on "details".
+ * hub node is final (lp-story-sources-data.ts), so production rests on "sources".
  * Mock controls are spans: nothing here is focusable.
  */
 
@@ -80,13 +87,31 @@ function HubNode({ node }: { node: StorySourcesHubNode }) {
       data-placeholder={node.status === "placeholder" ? "" : undefined}
       style={{ left: `${node.x}px`, top: `${node.y}px`, width: `${node.size}px`, height: `${node.size}px` }}
     >
-      {node.logo ? (
-        // a square file under /lp/story-sources/: a stage mock, not content (the scene is aria-hidden)
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={node.logo} alt="" />
-      ) : node.glyph ? (
-        <Icon className="lp-src-glyph" d={STORY_SOURCES_GLYPHS[node.glyph]} />
-      ) : null}
+      {/* the vendor's own file, unmodified (public/lp/story-sources/README.md). Decorative here:
+          the scene is aria-hidden and the name is written under the disc */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={node.logo} alt="" width="64" height="64" loading="lazy" decoding="async" draggable={false} />
+    </span>
+  );
+}
+
+/** A provider's name, under its disc (above it with `nameAbove`). The three numbers are desktop
+    stage px, unitless. */
+function HubName({ node }: { node: StorySourcesHubNode }) {
+  const place = {
+    "--nx": f3(node.x + node.size / 2),
+    "--nt": f3(node.y),
+    "--nb": f3(node.y + node.size),
+  } as CSSProperties;
+  return (
+    <span
+      className="lp-src-nname"
+      data-node={node.id}
+      data-above={node.nameAbove ? "" : undefined}
+      data-placeholder={node.status === "placeholder" ? "" : undefined}
+      style={place}
+    >
+      {node.name}
     </span>
   );
 }
@@ -123,13 +148,15 @@ export function LpStorySourcesStage({ placeholders }: DiveStageProps) {
                     <LinkTile />
                   </span>
                 </span>
-                <span className="lp-src-c">{row.role}</span>
+                <span className="lp-src-c">{row.position}</span>
                 <span className="lp-src-c">{row.company}</span>
                 <span className="lp-src-c">{row.why}</span>
               </div>
             ))}
           </div>
           <span className="lp-src-cursor">
+            {/* the click's pulse, under the fingertip */}
+            <span className="lp-src-pulse" />
             <svg width="30" height="30" viewBox="0 0 30 30">
               <path
                 transform="translate(3 3)"
@@ -151,7 +178,7 @@ export function LpStorySourcesStage({ placeholders }: DiveStageProps) {
               <span className="lp-src-name">{detail.name}</span>
               {/* two spaces after "@", as drawn (white-space: pre) */}
               <span className="lp-src-prole">
-                {`${detail.role} @  `}
+                {`${detail.position} @  `}
                 <b>{detail.company}</b>
               </span>
             </span>
@@ -219,6 +246,11 @@ export function LpStorySourcesStage({ placeholders }: DiveStageProps) {
             </svg>
             {over.map((node) => (
               <HubNode key={node.id} node={node} />
+            ))}
+          </div>
+          <div className="lp-src-names">
+            {nodes.map((node) => (
+              <HubName key={node.id} node={node} />
             ))}
           </div>
           {label && (

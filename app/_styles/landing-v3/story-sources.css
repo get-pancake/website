@@ -12,10 +12,15 @@
    is stage px from the Figma relativeTransforms.
 
    The markup rests on the END picture, named by the root's data-end:
-   "sources" (the camera zoomed on "Why they fit", the hub over the left) or
-   "details" (the open panel over the dimmed table: no hub node renders, which
-   is production today). The timeline (lp-story-sources-timeline.ts) sets
-   frame 0.
+   "sources" (the camera zoomed on "Why they fit", the hub over the left:
+   production, every hub node is final) or "details" (the open panel over the
+   dimmed table, when no hub node renders). The timeline
+   (lp-story-sources-timeline.ts) sets frame 0.
+
+   Departures from the Figma frames, each for legibility (founder 2026-10-13,
+   "crystal clear"): Position and Company are narrower so "Why they fit" shows
+   whole; the hand rests right of the lead's name, not on it; the hub's discs
+   are white with each provider's own mark and its name by it.
 
    Traps:
    T1 `.lp p { margin: 0 }` and the shell's `.lp-dive-scene * { font-family }`
@@ -28,10 +33,16 @@
    T4 Radius 12 / 10 / 4 are plain radii: never in a squircle group.
    T5 The wires' caps animate their `r` attribute, never a transform.
    T6 `.lp-src-prole` is white-space: pre: the two spaces after "@" are drawn.
-   T7 Rest hides the cursor here; the builder shows it. The phone composition
-      has none (display: none): the builder skips it by layout.
+   T7 Rest hides the cursor here (and the click's pulse inside it); the
+      builder shows it. The phone composition has none (display: none): the
+      builder skips it by layout.
    T8 `--src-cam-s` is read by the builder: one source for both compositions.
    T9 Inside strokes thinner than 1px are scaled ::after rings (see .lp-src-cb).
+   T10 A provider's mark is the vendor's file in an <img>, sized only (50% of
+       its disc, object-fit: contain): no filter, no blend, no mask, no tint.
+       The wires' multiply never reaches it (the caps sit on the disc's edge).
+   T11 The providers' names live outside .lp-src-hubart: the phone composition
+       scales the art x0.5 and the names must keep their own size.
    No will-change, no infinite keyframes: the stage is GSAP-only, plays once. */
 
 .lp-src {
@@ -49,8 +60,11 @@
   --src-find-ring: #cbdcf5;
   --src-shadow: 0 4px 32px rgba(48, 0, 44, 0.08); /* Figma #30002c 8% */
   --src-hover: rgba(0, 0, 0, 0.04);
-  --src-disc: #231e20; /* the data-source discs (the ground of the designer's logos) */
-  --src-glyph: var(--lp-ink-20);
+  /* the data providers' discs: white, as the app's vendor chip, so each vendor's
+     mark shows unmodified in its own colours (public/lp/story-sources/README.md) */
+  --src-disc: #fff;
+  --src-disc-ring: rgba(48, 0, 44, 0.12);
+  --src-disc-shadow: 0 3px 14px rgba(48, 0, 44, 0.1);
   --src-wire: #969696;
   /* the camera of scene D: frame 4's panel is frame 3's x3.890777 (1603 / 412)
      about this point. Four decimals: the builder leaves this scale inline at
@@ -188,6 +202,18 @@
 .lp-src-lead {
   flex: 0 0 231px;
 }
+/* Position and Company are as wide as their longest cell needs, so the column
+   the story is about, "Why they fit", shows WHOLE before the stage's right
+   edge (Figma's three equal 136 columns cut every reason mid-word). The table
+   itself still runs off the edge, as drawn */
+.lp-src-th > .lp-src-h:nth-child(3),
+.lp-src-row > .lp-src-c:nth-child(3) {
+  flex: 0 0 116px;
+}
+.lp-src-th > .lp-src-h:nth-child(4),
+.lp-src-row > .lp-src-c:nth-child(4) {
+  flex: 0 0 96px;
+}
 .lp-src-lead {
   align-items: center;
   display: flex;
@@ -251,9 +277,11 @@
 
 /* ── scene B: the hand (frame 2, 5024:7457). Hidden at rest; the builder
    brings it in and takes it out ── */
+/* Figma rests the hand at x 203, over the lead's name; 71 further right it
+   points at the same row and hides nothing the viewer has to read */
 .lp-src-cursor {
   height: 30px;
-  left: 203px;
+  left: 274px;
   opacity: 0;
   position: absolute;
   top: 228.758px;
@@ -263,7 +291,21 @@
 .lp-src-cursor svg {
   filter: drop-shadow(0 1.5px 3px rgba(0, 0, 0, 0.24));
   overflow: visible;
+  position: relative; /* over the pulse */
   transform-origin: 9.5px 3px; /* the fingertip: the click presses about it */
+}
+/* the click's pulse: a 36px disc centred on the fingertip (9.5, 3), under the
+   hand. The builder grows and fades it; hidden with the cursor at rest */
+.lp-src-pulse {
+  background: rgba(44, 0, 42, 0.2);
+  border-radius: 50%;
+  height: 36px;
+  left: -8.5px;
+  opacity: 0;
+  position: absolute;
+  top: -15px;
+  visibility: hidden;
+  width: 36px;
 }
 
 /* ── scene C: the lead's details (frame 3, 5024:7601) ── */
@@ -488,30 +530,51 @@
   inset: 0;
   position: absolute;
 }
+/* a data provider: its mark on a white disc with a hairline (T3: a spread
+   shadow) and a soft shadow, as the app's vendor chip */
 .lp-src-node {
   background: var(--src-disc);
   border-radius: 50%;
-  overflow: hidden;
+  box-shadow: 0 0 0 0.5px var(--src-disc-ring), var(--src-disc-shadow);
   position: absolute;
 }
+/* the vendor's own file at half the disc's width, centred, whole (contain):
+   never cropped, never tinted */
 .lp-src .lp-src-node img {
   display: block;
-  height: 100%;
-  object-fit: cover;
-  width: 100%;
-}
-/* a generic source glyph: 44% of its disc, centred */
-.lp-src .lp-src-glyph {
-  fill: none;
-  height: 44%;
-  left: 28%;
+  height: 50%;
+  left: 25%;
+  max-width: none;
+  object-fit: contain;
   position: absolute;
-  stroke: var(--src-glyph);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.75;
-  top: 28%;
-  width: 44%;
+  top: 25%;
+  width: 50%;
+}
+/* each provider's name, centred under its disc. Outside .lp-src-hubart so the
+   phone composition's x0.5 never shrinks the text. --nx / --nt / --nb = the
+   disc's centre x, top and bottom in desktop stage px (LpStorySources) */
+.lp-src-names {
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+.lp-src-nname {
+  --src-name-w: 120px; /* a box wider than any name, centred on the disc */
+  color: var(--lp-ink-100);
+  font-size: 12px;
+  font-weight: 500;
+  left: calc(var(--nx) * 1px - var(--src-name-w) / 2);
+  letter-spacing: 0;
+  line-height: 16px;
+  position: absolute;
+  text-align: center;
+  top: calc(var(--nb) * 1px + 5px);
+  white-space: nowrap;
+  width: var(--src-name-w);
+}
+/* above its disc: the name's box ends 5 over the disc's top */
+.lp-src-nname[data-above] {
+  top: calc(var(--nt) * 1px - 21px);
 }
 .lp-src-dot {
   border-radius: 50%;
@@ -541,21 +604,26 @@
   mix-blend-mode: normal;
 }
 /* Figma's label hugs its text at (123.094, 21.232), 104 wide: centred on that
-   box, so another string stays over the hub's axis */
+   box's axis (x 175.094) whatever the string's width ("12 data providers" is
+   wider than the box: a fixed 104 would let it run off to the right only) */
 .lp-src .lp-src-hublabel {
   font-size: 13px;
-  left: 123.094px;
+  left: 175.094px;
   line-height: 20px;
   position: absolute;
   text-align: center;
   top: 21.232px;
+  transform: translateX(-50%);
   white-space: nowrap;
-  width: 104px;
 }
 
 /* ── rest = the END picture ── */
 .lp-src[data-end="details"] .lp-src-leads {
   opacity: 0.5;
+}
+/* the open lead's row stays selected under its panel (the builder's ROW.selected) */
+.lp-src[data-end="details"] .lp-src-row[data-picked] {
+  background: rgba(0, 0, 0, 0.06);
 }
 .lp-src[data-end="sources"] .lp-src-cam {
   transform: scale(var(--src-cam-s));
@@ -620,8 +688,30 @@
   .lp-src-wires > g > * {
     mix-blend-mode: normal;
   }
+  /* 16 higher than first derived (122.4): the top disc's name sits between */
   .lp-src .lp-src-hublabel {
-    left: 54.85px; /* the same 104 box: centred on x 106.85 */
-    top: 122.4px;
+    left: 106.85px; /* the same axis as the 104 box it was drawn in */
+    top: 106.4px;
+  }
+  /* the names follow the half-size art (its translate + x0.5) at a readable
+     size of their own. Half-size discs leave less room than the desktop's:
+     the top disc's name goes above it too, and the name under the left disc
+     moves 14 left, clear of the small disc below it */
+  .lp-src-nname {
+    font-size: 10px;
+    left: calc(17.7px + var(--nx) * 0.5px - var(--src-name-w) / 2);
+    line-height: 12px;
+    top: calc(126.615px + var(--nb) * 0.5px + 3px);
+  }
+  .lp-src-nname:is([data-above], [data-node="e119"]) {
+    top: calc(126.615px + var(--nt) * 0.5px - 15px);
+  }
+  .lp-src-nname[data-node="e117"] {
+    left: calc(3.7px + var(--nx) * 0.5px - var(--src-name-w) / 2);
+  }
+  /* the Lead column gives 31 to Position, so its cells show whole at 400 */
+  .lp-src-h--lead,
+  .lp-src-lead {
+    flex-basis: 200px;
   }
 }

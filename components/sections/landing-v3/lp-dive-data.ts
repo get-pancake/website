@@ -10,9 +10,14 @@ import type { DiveItemId } from "./lp-dive-stages";
  * comes from its story data module (STORY_<NAME>_ALT), not from here.
  *
  * Copy (decision 2026-10-09 §5):
- * - sources: V2's body with "experts" for "influencers" (the product term, production's signal
- *   list 2026-10-07).
- * - message: not in Figma → production f2 body (founder-approved 2026-10-07).
+ * - sources: until 2026-10-13 V2's body with "experts" for "influencers" ("Choose the keywords,
+ *   competitors, experts, hiring activity, and tech stacks that matter. Pancake finds matching
+ *   buyers and keeps the source attached."). Since then it names what its story now shows
+ *   (founder: "use our most known data providers"): three of the six providers the product
+ *   itself names to its users (pancake-cmo apps/frontend vendor-logo.tsx), in their spelling.
+ * - message: not in Figma → production f2 body (founder-approved 2026-10-07), with one example
+ *   changed on 2026-10-13: its third signal read "a new tool", which no conversation of the
+ *   reworked story shows (a post, an open role, a seed round, a rebrand). Now "a funding round".
  * - learns: not in Figma → production f4 body.
  * - claude: not in Figma → the story-claude line, plus "See how →" to the Claude guide (the
  *   crawlable route the demo tour's "Works in Claude and Codex" link used to carry).
@@ -62,13 +67,13 @@ export const DIVE_ITEMS: readonly DiveItem[] = [
   {
     id: "sources",
     title: "Sources you can trust",
-    body: "Choose the keywords, competitors, experts, hiring activity, and tech stacks that matter. Pancake finds matching buyers and keeps the source attached.",
+    body: "Pancake reads funding rounds, open roles and tech stacks from Dealroom, TheirStack, Wappalyzer and more. Every lead shows why it fits and where that came from.",
     status: "final",
   },
   {
     id: "message",
     title: "A personal message for\nevery lead",
-    body: "Pancake opens with their signal: a post, an open role, a new tool. Each sequence has its own language and tone. Edit any draft before it sends.",
+    body: "Pancake opens with their signal: a post, an open role, a funding round. Each sequence has its own language and tone. Edit any draft before it sends.",
     status: "final",
   },
   {

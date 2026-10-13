@@ -19,17 +19,19 @@ import { LEARNS } from "./lp-story-learns-data";
  * in the vocabulary of production's old "learns" card (bars from the baseline, a ticking count,
  * a card that slides in, a status that swaps). Times in seconds (T below):
  *
- *   0      cue: the chart card, its figure at 0%, no bar yet
- *   A 0.35–1.57  the bars grow from the baseline: weeks 1-2 one after another, a short beat,
+ *   0      cue: the chart card, its figure at +0%, no bar yet; it waits 0.6 s
+ *   A 0.60–1.82  the bars grow from the baseline: weeks 1-2 one after another, a short beat,
  *          then weeks 3-4; the figure ticks up with them and its arrow pops
- *                                                   → Figma frame 1 at 1.05, frame 2 at 1.60
- *   B 2.05–3.27  the view moves down 262: the chart leaves through the top while the heading
- *          slides in and the three lines check off one after another     → frame 3 at 3.30
- *   C 3.60–4.50  the camera closes in ×1.68919 on the list; the avatar pops and
- *          "Updating Brain..." appears                                   → frame 4 at 4.60
- *     4.75–5.35  the avatar pulses twice while the Brain updates
- *   D 5.40–6.15  "Updating Brain..." gives way to "Brain updated!"        → frame 5 = the end
- *          (6.15 s) = the server markup
+ *                                                   → Figma frame 1 at 1.30, frame 2 at 1.85
+ *          the finished chart holds 1.2 s
+ *   B 3.05–4.35  the view moves down 262: the chart leaves through the top while the heading
+ *          slides in and the three lines check off, 0.2 s apart          → frame 3 at 4.40
+ *          the list holds 0.8 s
+ *   C 5.20–6.10  the camera closes in ×1.68919 on the list; the avatar pops and
+ *          "Updating Brain..." appears                                   → frame 4 at 6.20
+ *     6.35–6.95  the avatar pulses twice while the Brain updates
+ *   D 7.00–7.90  "Updating Brain..." gives way to "Brain updated!"        → frame 5 = the end
+ *          (7.9 s) = the server markup
  * The five frames are timeline labels too: f1 … f5 (the shell's pose() and the harness take them).
  *
  * The camera. The chart layer is drawn at the stage's scale, the notes layer at the end
@@ -78,30 +80,36 @@ const BAR = {
   step: 0.06,
 } as const;
 
+/* Pace (founder 2026-10-13: an opening that leaves before the eye is on it tells nothing, and
+   every beat has to be readable): the chart waits 0.6 s on its empty frame, the finished chart
+   holds 1.2 s before the view moves, the lessons land 0.2 s apart and hold 0.8 s before the
+   close-up, "Brain updated!" stays 0.7 s. 7.9 s in all (6.15 before). The frames' pictures are
+   unchanged: only the time between them. */
 const T = {
-  bars: 0.35, // A: the first bar leaves the baseline
-  arrow: 0.5, // the figure's arrow pops as the count starts to climb
-  count: 0.45, // the count's first tick
-  f1: 1.05, // Figma frame 1: bars 1-6 have just landed (0.35 + 5 × 0.06 + 0.4)
-  countEnd: 1.57, // the count lands with the last bar (f1 + 2 × 0.06 + 0.4)
-  f2: 1.6, // Figma frame 2
-  scroll: 2.05, // B: the view moves down
-  title: 2.3, // the heading slides in
-  lines: 2.5, // the first line comes in
-  lineStep: 0.12, // one line after another
+  bars: 0.6, // A: the first bar leaves the baseline
+  arrow: 0.75, // the figure's arrow pops as the count starts to climb
+  count: 0.7, // the count's first tick
+  f1: 1.3, // Figma frame 1: bars 1-6 have just landed (bars + 5 × 0.06 + 0.4)
+  countEnd: 1.82, // the count lands with the last bar (f1 + 2 × 0.06 + 0.4)
+  f2: 1.85, // Figma frame 2
+  scroll: 3.05, // B: the view moves down
+  title: 3.3, // the heading slides in
+  lines: 3.5, // the first line comes in
+  lineStep: 0.2, // one line after another
   check: 0.08, // a line's check pops this long after the line starts
-  f3: 3.3, // Figma frame 3
-  zoom: 3.6, // C: the camera closes in
-  avatar: 4.1, // the avatar pops
-  doing: 4.2, // "Updating Brain..." appears
-  f4: 4.6, // Figma frame 4
-  pulse1: 4.75, // the avatar pulses twice while the Brain updates
-  pulse2: 5.05,
-  done: 5.4, // D: "Updating Brain..." leaves
-  updated: 5.58, // "Brain updated!" lands once it has gone
-  end: 6.15, // Figma frame 5 = the server markup
+  f3: 4.4, // Figma frame 3
+  zoom: 5.2, // C: the camera closes in
+  avatar: 5.7, // the avatar pops
+  doing: 5.8, // "Updating Brain..." appears
+  f4: 6.2, // Figma frame 4
+  pulse1: 6.35, // the avatar pulses twice while the Brain updates
+  pulse2: 6.65,
+  done: 7.0, // D: "Updating Brain..." leaves
+  updated: 7.18, // "Brain updated!" lands once it has gone
+  end: 7.9, // Figma frame 5 = the server markup
 } as const;
-
+/** the figure's sign (lp-story-learns-data.ts): every tick of the count carries it */
+const SIGN = LEARNS.sharePrefix;
 const DUR = {
   scroll: 0.75,
   zoom: 0.9,
@@ -155,7 +163,7 @@ export function buildStoryLearns(root: HTMLElement): BuiltStory {
   /* ── frame 0 = cue: the chart card, 0%, no bar; the notes a move below, unseen ── */
   gsap.set(chart, { autoAlpha: 1, ...POSE.chart });
   gsap.set(notes, { ...POSE.notes });
-  gsap.set(pct, { txt: `${LEARNS.share.start}%` });
+  gsap.set(pct, { txt: `${SIGN}${LEARNS.share.start}%` });
   gsap.set(arrow, { autoAlpha: 0, scale: 0.4, transformOrigin: "50% 50%" });
   gsap.set(bars, { attr: { y: FLOOR, height: 0 } });
   // distances inside the notes layer are in its own px: ×Z of a stage px until the close-up
@@ -188,11 +196,11 @@ export function buildStoryLearns(root: HTMLElement): BuiltStory {
   // frame), then production's curve to the end figure: brisk ticks, soft landing
   const { start: n0, frame1: n1, end: n2 } = LEARNS.share;
   for (let n = n0 + 1; n <= n1; n++) {
-    tl.set(pct, { txt: `${n}%` }, T.count + ((T.f1 - COUNT_LEAD - T.count) * (n - n0)) / (n1 - n0));
+    tl.set(pct, { txt: `${SIGN}${n}%` }, T.count + ((T.f1 - COUNT_LEAD - T.count) * (n - n0)) / (n1 - n0));
   }
   for (let n = n1 + 1; n <= n2; n++) {
     const p = 1 - Math.pow(1 - (n - n1) / (n2 - n1), 1 / 1.6);
-    tl.set(pct, { txt: `${n}%` }, T.f1 + COUNT_LEAD + (T.countEnd - T.f1 - COUNT_LEAD) * p);
+    tl.set(pct, { txt: `${SIGN}${n}%` }, T.f1 + COUNT_LEAD + (T.countEnd - T.f1 - COUNT_LEAD) * p);
   }
 
   /* ── B · the view moves down to the list ── */

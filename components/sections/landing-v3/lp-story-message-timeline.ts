@@ -17,17 +17,26 @@ import { prepareSmTail, type SmCaret, type SmGlyph, type SmKit, type SmTyped } f
  * 1471 / 1729, 5061:1002 / 1091 / 1209). Owner: story-message package. Contract:
  * lp-dive-stages.ts and code-map §6.2 — frame 0 via gsap.set (the caller's gsap.context reverts
  * it), sets and tweens only (no callbacks, no randomness), progress(1) = the server markup,
- * `cue` = the first composed scene. Reached only through DIVE_LOADERS.message
+ * `cue` = the first composed scene (here frame 0). Reached only through DIVE_LOADERS.message
  * (lp-dive-loaders.ts, lazy).
  *
  * THIS FILE = frames 1–2:
- *   A · f1   the post rises and types (production f2's beats, unchanged), a wire drops from it
- *            and the author's lead card rises under it.
+ *   A · f1   the take OPENS on the post, composed: its card, its author, a caret where the text
+ *            will come (frame 0 = the cue; the stage is never empty). She types it at a
+ *            person's pace, the post gets its reactions, then a wire drops from it and her lead
+ *            card rises under it: the post is the signal, she is the lead. f1 holds.
  *   B · f2   the post leaves, her card travels to the top, a wire grows from it and the message
  *            card rises: Pancake types her message (f2 = three glyphs into its last line), then
- *            "Drafting..." gives way to "Sent".
+ *            "Drafting..." leaves and "Sent" comes. The sent message holds before the view moves.
  * lp-story-message-tail.ts = frames 3–6 (more conversations, the sending account, its leads,
  * more accounts): it appends its beats after ours. See that file for the hand-over contract.
+ *
+ * Pace (the founder's notes of 2026-10-13 on other animations of the page, applied here: an
+ * opening "passe trop vite, on comprend pas le cheminement"; a prompt typed by a person "is
+ * written much too fast"): the opening picture holds before a key is pressed; a person types
+ * at 36 ms a key or slower; Pancake may draft fast (12 ms a glyph), but a finished message
+ * stands still for about a second before anything moves; two labels that share a spot never
+ * cross-fade (one leaves, then the other comes).
  *
  * Production f2's machinery (lp-feat-timelines.ts buildF2), copied: the typed runs are
  * revealed with a clip staircase over the real text + a caret riding the glyph edges (no
@@ -36,39 +45,45 @@ import { prepareSmTail, type SmCaret, type SmGlyph, type SmKit, type SmTyped } f
  * is fine — the talk rests hidden).
  */
 
-/** every beat time of frames 1–2, in timeline seconds (founder pace knob; the tail has its own) */
+/** Every beat of frames 1–2, in seconds (founder pace knob; the tail has its own). The typed
+    runs take as long as their glyphs do, so each group counts from the moment before it. */
 export const SM_T = {
-  postIn: 0,
-  avatar: 0.15,
-  meta: 0.22,
-  globe: 0.35,
-  cue: 0.75,
-  bodyType: 0.8,
-  skel: 1.35,
-  sheen: 1.8,
-  row: 1.85,
-  likes: 2.1,
-  others: 2.2,
-  /** her lead card: the wire drops from the post, the card rises under it */
-  postWire: 2.15,
-  lead: 2.25,
-  f1: 2.8,
-  /** B — the post leaves, her card travels up, the message card comes */
-  postOut: 2.85,
-  leadUp: 2.95,
-  leadUpDur: 0.6,
-  msgWire: 3.45,
-  msgCard: 3.5,
-  msgType: 3.85,
-  /** after the message's last glyph: the caret leaves, then "Drafting..." gives way to "Sent" */
+  /** A — the take opens on the post without its text. The caret blinks once, then she types */
+  blinkOff: 0.28,
+  blinkOn: 0.5,
+  bodyType: 0.7,
+  /** after the post's last key: it is published (the rest of its text, its actions, its counts) */
+  skel: 0.1,
+  row: 0.15,
+  likes: 0.25,
+  likesFor: 0.4,
+  others: 0.32,
+  othersFor: 0.28,
+  sheen: 0.35,
+  bodyCaretOff: 0.4,
+  /** … then Pancake picks it up: the wire drops from the post, her lead card rises under it */
+  postWire: 0.65,
+  lead: 0.72,
+  f1: 1.15,
+  /** B — after f1: its hold, then the post leaves, her card travels up, the message card comes */
+  postOut: 0.4,
+  leadUp: 0.5,
+  leadUpDur: 0.55,
+  msgWire: 0.95,
+  msgCard: 1,
+  msgType: 1.3,
+  /** after a message's last glyph: the caret leaves, then "Drafting..." leaves (draftOut) and
+      only then "Sent" comes (sentIn) — they share one spot */
   caretOff: 0.25,
-  sentAfter: 0.35,
-  /** how long the "Sent" eyebrow takes to land (the tail starts counting after it) */
-  sentIn: 0.26,
+  sentAfter: 0.4,
+  draftOut: 0.13,
+  sentIn: 0.17,
 } as const;
 
 const PANCAKE = { glyph: 0.012, sentence: 0.06, comma: 0.035 } as const; // per message glyph (lp-step-timelines S3_TYPE)
-const POST_MS = 0.02; // per post glyph (+50 ms after ".")
+/** a person typing her post: never faster than 36 ms a key (lp-step-timelines S2_OPEN.key),
+    each key a little later by a fixed pattern (no randomness: the timeline is seeked) */
+const POST = { key: 0.036, late: [0.002, 0.008, 0, 0.012, 0.004, 0, 0.006, 0.002, 0.01, 0.004] } as const;
 
 // copied from lp-feat-timelines.ts (query, HIDDEN_CLIP, clipTo)
 function query(root: HTMLElement) {
@@ -132,20 +147,25 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
      inconsistent for ties, so SpiderMonkey reverts tied sets in another order than V8/JSC and
      leaves frame-0 inline styles behind (measured on this stage's first build). Snapshot every
      element's style attribute before the first set; cleanup — which runs after the revert —
-     restores them verbatim, so a rebuild starts from the rest markup in every engine. (The
-     post's SVG icon groups keep the identity `transform` attribute GSAP's revert leaves.) */
-  const snapshot = Array.from(root.querySelectorAll<Element>("*"), (el) => ({ el, style: el.getAttribute("style") }));
+     restores them verbatim, so a rebuild starts from the rest markup in every engine. The same
+     for the two attributes GSAP writes on the post's SVG icon groups and its revert leaves
+     (an identity `transform` and `data-svg-origin`). */
+  const KEPT = ["style", "transform", "data-svg-origin"] as const;
+  const snapshot = Array.from(root.querySelectorAll<Element>("*"), (el) => ({ el, was: KEPT.map((name) => el.getAttribute(name)) }));
   const cleanup = () => {
     created.forEach((n) => n.parentNode?.removeChild(n));
     created.length = 0;
-    snapshot.forEach(({ el, style }) => {
-      // read before removing: WebKit serialises a script-touched inline style lazily, and a
-      // removal that comes before the read leaves style="" behind (measured: 35 elements)
-      const now = el.getAttribute("style");
-      if (style === null) {
-        if (now !== null) el.removeAttribute("style");
-      } else if (now !== style) el.setAttribute("style", style);
-    });
+    snapshot.forEach(({ el, was }) =>
+      KEPT.forEach((name, i) => {
+        // read before removing: WebKit serialises a script-touched inline style lazily, and a
+        // removal that comes before the read leaves style="" behind (measured: 35 elements)
+        const now = el.getAttribute(name);
+        const then = was[i];
+        if (then === null) {
+          if (now !== null) el.removeAttribute(name);
+        } else if (now !== then) el.setAttribute(name, then);
+      }),
+    );
   };
 
   try {
@@ -188,27 +208,28 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
     };
     const caretAt = (c: SmCaret, x: number, g: SmGlyph, t: number, extra: gsap.TweenVars = {}) =>
       tl.set(c.el, { x: c.ox + x, y: c.oy + g.top, height: g.bottom - g.top, ...extra }, t);
-    // types a run from t: the caret sits at the line start, then rides each glyph's right edge;
-    // returns each glyph's time and the moment after the last glyph
+    // types a run from t: the caret rides each glyph's right edge; `step` = the time one glyph
+    // takes (glyph, the next one, its index). Returns each glyph's time and the moment after
+    // the last glyph. The caret must already stand at the line start (caretAt).
     const typeIn = (
       t: number,
       el: HTMLElement,
       caret: SmCaret,
       glyphs: SmGlyph[],
-      base: number,
-      pause: (c: string, n: string) => number,
+      step: (c: string, n: string, i: number) => number,
     ): SmTyped => {
       const times: number[] = [];
-      caretAt(caret, 0, glyphs[0], t - 0.25, { opacity: 1 });
       glyphs.forEach((g, i) => {
         times.push(t);
         tl.set(el, { clipPath: clipTo(g) }, t);
         caretAt(caret, g.right + 1, g, t);
-        t += base + pause(g.ch, glyphs[i + 1]?.ch ?? "");
+        t += step(g.ch, glyphs[i + 1]?.ch ?? "", i);
       });
       return { times, end: t };
     };
-    const messagePause = (c: string, n: string) => (c === "." && n === " " ? PANCAKE.sentence : c === "," ? PANCAKE.comma : 0);
+    // Pancake: a breath after a sentence's end and after a comma
+    const messageStep = (c: string, n: string) =>
+      PANCAKE.glyph + ((c === "." || c === "?" || c === "!") && n === " " ? PANCAKE.sentence : c === "," ? PANCAKE.comma : 0);
     const eyebrows = (card: HTMLElement) => {
       const draft = card.querySelector<HTMLElement>(".lp-sm-eb-draft");
       const sent = card.querySelector<HTMLElement>(".lp-sm-eb-sent");
@@ -227,16 +248,27 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
         gsap.set(c.el, { opacity: 0 });
         return c;
       },
-      typeMessage: (t, run, caret, glyphs) => typeIn(t, run, caret, glyphs, PANCAKE.glyph, messagePause),
+      typeMessage: (t, run, caret, glyphs) => {
+        caretAt(caret, 0, glyphs[0], t - 0.25, { opacity: 1 }); // the caret first, at the line start
+        return typeIn(t, run, caret, glyphs, messageStep);
+      },
       typeDone: (run, caret, t) => {
         tl.set(caret.el, { opacity: 0 }, t);
         tl.set(run, { clipPath: "none" }, t); // the run paints like any paragraph again
       },
       eyebrows,
+      // one label leaves, then the other comes: they share one spot, and a cross-fade drew the
+      // two words on top of each other (the same fix as step 03, lp-step-timelines.ts)
       markSent: (card, t) => {
         const eb = eyebrows(card);
-        tl.to(eb.draft, { opacity: 0, y: -4, duration: 0.15, ease: "power2.in" }, t);
-        tl.fromTo(eb.sent, { opacity: 0, y: 4 }, { opacity: 1, y: 0, duration: T.sentIn, ease: "power2.out", immediateRender: false }, t);
+        tl.to(eb.draft, { opacity: 0, y: -4, duration: T.draftOut, ease: "power2.in" }, t);
+        tl.fromTo(
+          eb.sent,
+          { opacity: 0, y: 4 },
+          { opacity: 1, y: 0, duration: T.sentIn, ease: "power2.out", immediateRender: false },
+          t + T.draftOut,
+        );
+        return t + T.draftOut + T.sentIn;
       },
       pace: { caretOff: T.caretOff, sentAfter: T.sentAfter },
       // a conversation's local origin is its lead card's FILL: Figma's box plus the 0.5 stroke
@@ -284,22 +316,28 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
       }
     };
 
-    /* ── frame 0 ── */
-    const avatar = $(".lp-sm-avatar");
-    const author = $(".lp-sm-author");
-    const headline = $(".lp-sm-headline");
-    const time = $(".lp-sm-time");
-    const globe = $("#lpsm-pi-globe");
+    /* ── frame 0 = the cue: the post in place with its author, a caret where its text will
+       come. Nothing is typed yet, nothing has reacted to it, no lead card under it ── */
     const bars = $$(".lp-sm-skelgrp i");
+    // one sheen per bar: the bars' lefts inside the 345-wide skeleton row, the sheen 100 wide
+    const sheens = $$(".lp-sm-skelgrp i b");
+    const SKEL_LEFT = [0, 18, 97, 115, 175, 193];
+    if (sheens.length !== SKEL_LEFT.length) throw new Error("lp-story-message: the post's skeleton is out of sync");
     const rowEls: Element[] = [];
     ["#lpsm-pi-like", "#lpsm-pi-comment", "#lpsm-pi-repost", "#lpsm-pi-send"].forEach((s, i) => rowEls.push($(s), counts[i]));
     const f1 = kit.at(SM_POSE.leadF1, 1);
     const f2 = kit.at(SM_POSE.leadF2, 1);
     gsap.set(talk, { autoAlpha: 1 });
-    gsap.set(post, { autoAlpha: 0 });
-    gsap.set([avatar, author, headline, time, globe, ...bars, ...rowEls], { opacity: 0 });
+    /* The post's own parts wait in their START pose, set here, and are played with plain `to`
+       tweens, one per element. They were staggered fromTo's whose from-vars also carried the
+       bars' transform-origin: after a jump back from the end into the bars' build-up, the bars
+       scaled about another origin (measured: seek 0 → 11.5 → 2.2 against 0 → 2.2). A pose
+       set at frame 0 is the same start whichever way the playhead comes. */
+    gsap.set(bars, { scaleX: 0.6, autoAlpha: 0, transformOrigin: "0 50%" });
+    gsap.set(sheens, { x: (i: number) => -100 - SKEL_LEFT[i] });
+    gsap.set(rowEls, { y: 8, autoAlpha: 0 });
     gsap.set([body, msg], { clipPath: HIDDEN_CLIP });
-    gsap.set(bodyCaret.el, { opacity: 0 });
+    gsap.set(bodyCaret.el, { x: bodyCaret.ox, y: bodyCaret.oy + bodyGlyphs[0].top, height: bodyGlyphs[0].bottom - bodyGlyphs[0].top, opacity: 1 });
     // her conversation waits under the post: the card unseen, at full strength when it comes
     // (its rest opacity is frame 3's, dimmed), the message still a draft
     gsap.set(convo, { x: f1.x, y: f1.y });
@@ -313,72 +351,51 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
     const rise = { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out", immediateRender: false };
     const grow = { scaleY: 1, duration: 0.22, ease: "power2.out", immediateRender: false };
 
-    /* — A · the post rises, its author lands, its text types; her lead card comes under it — */
-    tl.fromTo(post, { y: 28, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: "power3.out" }, T.postIn);
-    tl.fromTo(
-      avatar,
-      { scale: 0.6, autoAlpha: 0 },
-      { scale: 1, autoAlpha: 1, duration: 0.45, ease: "back.out(1.6)", immediateRender: false },
-      T.avatar,
+    /* — A · the opening picture holds (the caret blinks once), then she types her post — */
+    tl.set(bodyCaret.el, { opacity: 0 }, T.blinkOff);
+    tl.set(bodyCaret.el, { opacity: 1 }, T.blinkOn);
+    const bodyRun = typeIn(T.bodyType, body, bodyCaret, bodyGlyphs, (_c, _n, i) => POST.key + POST.late[i % POST.late.length]);
+    const tPosted = bodyRun.end;
+    tl.set(bodyCaret.el, { opacity: 0 }, tPosted + T.bodyCaretOff);
+    tl.set(body, { clipPath: "none" }, tPosted + T.bodyCaretOff + 0.05); // the run paints exactly like the static site
+    /* … it is published: the rest of its text, its action row, the counts ticking up … */
+    bars.forEach((bar, i) =>
+      tl.to(bar, { scaleX: 1, autoAlpha: 1, duration: 0.35, ease: "power3.out" }, tPosted + T.skel + i * 0.05),
     );
-    tl.fromTo(
-      [author, headline, time],
-      { y: 10, autoAlpha: 0 },
-      { y: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out", stagger: 0.06, immediateRender: false },
-      T.meta,
+    // one sheen sweep across the six bars
+    sheens.forEach((b, i) => tl.to(b, { x: 345 - SKEL_LEFT[i], duration: 0.6, ease: "power1.inOut" }, tPosted + T.sheen));
+    rowEls.forEach((el, i) =>
+      tl.to(el, { y: 0, autoAlpha: 1, duration: 0.35, ease: "power3.out" }, tPosted + T.row + i * 0.05),
     );
-    tl.fromTo(
-      globe,
-      { y: 10, autoAlpha: 0 },
-      { y: 0, autoAlpha: 1, duration: 0.4, ease: "power3.out", immediateRender: false },
-      T.globe,
-    );
-    const bodyRun = typeIn(T.bodyType, body, bodyCaret, bodyGlyphs, POST_MS, (c) => (c === "." ? 0.05 : 0));
-    tl.set(bodyCaret.el, { opacity: 0 }, bodyRun.end + 0.4);
-    tl.set(body, { clipPath: "none" }, bodyRun.end + 0.45); // the run paints exactly like the static site
-    tl.fromTo(
-      bars,
-      { scaleX: 0.6, autoAlpha: 0, transformOrigin: "0 50%" },
-      { scaleX: 1, autoAlpha: 1, duration: 0.35, ease: "power3.out", stagger: 0.05, immediateRender: false },
-      T.skel,
-    );
-    // one sheen sweep: bar lefts inside the 345-wide skeleton row, sheen 100 wide
-    const SKEL_LEFT = [0, 18, 97, 115, 175, 193];
-    $$(".lp-sm-skelgrp i b").forEach((b, i) =>
-      tl.fromTo(b, { x: -100 - SKEL_LEFT[i] }, { x: 345 - SKEL_LEFT[i], duration: 0.6, ease: "power1.inOut" }, T.sheen),
-    );
-    tl.fromTo(
-      rowEls,
-      { y: 8, autoAlpha: 0 },
-      { y: 0, autoAlpha: 1, duration: 0.35, ease: "power3.out", stagger: 0.05, immediateRender: false },
-      T.row,
-    );
-    tick(counters[0], T.likes, 0.6);
-    counters.slice(1).forEach((c, i) => tick(c, T.others + i * 0.08, 0.4));
-    tl.fromTo(postWire, { scaleY: 0 }, grow, T.postWire);
-    tl.fromTo(leadCard, { autoAlpha: 0, y: 12 }, rise, T.lead);
-    tl.addLabel("f1", T.f1);
+    tick(counters[0], tPosted + T.likes, T.likesFor);
+    counters.slice(1).forEach((c, i) => tick(c, tPosted + T.others + i * 0.06, T.othersFor));
+    /* … and Pancake picks it up: the wire drops from the post, her lead card rises under it */
+    tl.fromTo(postWire, { scaleY: 0 }, grow, tPosted + T.postWire);
+    tl.fromTo(leadCard, { autoAlpha: 0, y: 12 }, rise, tPosted + T.lead);
+    const tF1 = tPosted + T.f1;
+    tl.addLabel("f1", tF1);
 
-    /* — B · the post leaves, her card travels to the top, the message card rises, Pancake types — */
-    tl.to(post, { y: -24, autoAlpha: 0, duration: 0.3, ease: "power2.in" }, T.postOut);
-    tl.to(postWire, { opacity: 0, duration: 0.2, ease: "power2.in" }, T.postOut);
-    tl.to(convo, { x: f2.x, y: f2.y, duration: T.leadUpDur, ease: "power3.inOut" }, T.leadUp);
-    tl.fromTo(msgWire, { scaleY: 0 }, grow, T.msgWire);
-    tl.fromTo(msgCard, { autoAlpha: 0, y: 12 }, rise, T.msgCard);
-    const msgRun = kit.typeMessage(T.msgType, msg, msgCaret, typed);
+    /* — B · f1 holds; the post leaves, her card travels to the top, the message card rises,
+         Pancake types — */
+    tl.to(post, { y: -24, autoAlpha: 0, duration: 0.3, ease: "power2.in" }, tF1 + T.postOut);
+    tl.to(postWire, { opacity: 0, duration: 0.2, ease: "power2.in" }, tF1 + T.postOut);
+    tl.to(convo, { x: f2.x, y: f2.y, duration: T.leadUpDur, ease: "power3.inOut" }, tF1 + T.leadUp);
+    tl.fromTo(msgWire, { scaleY: 0 }, grow, tF1 + T.msgWire);
+    tl.fromTo(msgCard, { autoAlpha: 0, y: 12 }, rise, tF1 + T.msgCard);
+    const msgRun = kit.typeMessage(tF1 + T.msgType, msg, msgCaret, typed);
     // f2: three glyphs into the last line (Figma: "…actually / ope|")
     const lastTop = typed[typed.length - 1].top;
     const lastLineStart = typed.findIndex((g) => Math.abs(g.top - lastTop) < 1);
     const f2Glyph = Math.min(typed.length - 1, lastLineStart + 2);
     tl.addLabel("f2", msgRun.times[f2Glyph] + 0.001);
     kit.typeDone(msg, msgCaret, msgRun.end + T.caretOff);
-    const tSent = msgRun.end + T.sentAfter;
-    kit.markSent(msgCard, tSent);
+    const tSent = kit.markSent(msgCard, msgRun.end + T.sentAfter);
 
     /* — frames 3–6 · more conversations, the sending account, its leads, more accounts — */
-    tail.add({ tl, tSent: tSent + T.sentIn, lead: { convo, cards: [leadCard, msgCard] } });
+    tail.add({ tl, tSent, lead: { convo, cards: [leadCard, msgCard] } });
 
-    // first scene: the post in place (author, avatar, time), its text not typed yet
-    return { tl, cue: T.cue };
+    // the first scene is frame 0 itself: the post in place (author, avatar, time), its text
+    // not typed yet
+    return { tl, cue: 0 };
   }
 }
