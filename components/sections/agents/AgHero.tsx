@@ -22,7 +22,7 @@ import { HERO } from "./ag-copy";
  */
 export function AgHero() {
   return (
-    <section className="lp-hero ag-hero" aria-labelledby="ag-hero-title">
+    <section id="main-content" tabIndex={-1} className="lp-hero ag-hero" aria-labelledby="ag-hero-title">
       <LpViewportVar />
       <div className="lp-hero-art" aria-hidden="true">
         <div className="lp-anim-canvas lp-anim-canvas--hero">

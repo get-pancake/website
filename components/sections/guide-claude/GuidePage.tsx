@@ -30,6 +30,7 @@ import {
 } from "@/components/sections/guide-claude/guide-copy";
 import { VxHead } from "@/components/sections/verticals/VxHead";
 import { vxNoWidow } from "@/components/sections/verticals/vx-text";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
@@ -58,7 +59,7 @@ export function GuidePage({ markdown, offer = false }: { markdown: string; offer
     <main className={"lp lp-vx lp-guide" + (offer ? " lp-guide--offer" : "")}>
       {/* the campaign page is noindex and canonical to the guide: the structured data is the guide's */}
       {offer ? null : (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(guideJsonLd()) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(guideJsonLd()) }} />
       )}
       <LpFitVars />
       {offer ? <PromoBar /> : null}
@@ -92,7 +93,8 @@ function guideJsonLd() {
         name: GUIDE_META.ogTitle,
         description: GUIDE_META.description,
         inLanguage: "en-US",
-        isPartOf: { "@type": "WebSite", name: "Pancake", url: SITE_ORIGIN },
+        // @id = the root layout's WebSite node, as on the comparison pages
+        isPartOf: { "@type": "WebSite", "@id": `${SITE_ORIGIN}/#website`, name: "Pancake", url: SITE_ORIGIN },
         breadcrumb: { "@id": `${url}#breadcrumb` },
       },
       {

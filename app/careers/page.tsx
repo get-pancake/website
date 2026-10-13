@@ -108,11 +108,13 @@ const APPLY_EMAIL = "guillaume@pancake.ai";
 
 export default function CareersPage() {
   return (
-    <main id="main-content" className="lp">
+    // No id here: the skip link's #main-content target is the first section past the nav, so
+    // the next Tab reaches the page's content instead of the logo.
+    <main className="lp">
       <LpNav />
 
       {/* Hero + quick facts */}
-      <section className="lp-crs-hero" aria-labelledby="careers-heading">
+      <section id="main-content" tabIndex={-1} className="lp-crs-hero" aria-labelledby="careers-heading">
         <div className="lp-content lp-crs-hero__inner">
           {/* 2026-10-07: was "Build the autonomous GTM team." — the retired
               "GTM team" pitch (#325); the H1 says what the team builds.

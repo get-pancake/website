@@ -17,6 +17,7 @@ import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { Badge } from "@/components/ui/Badge";
 import { H2, H3 } from "@/components/ui/Headings";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
 import "@/app/_styles/components.css";
 import "@/app/_styles/landing-v3.css";
@@ -28,12 +29,14 @@ import "./comparison.css";
 //   2026-10-07: site audit. The V1 "Take it from them" posts, the "GTM team" pitch and the
 //   unverified "SOC 2 compliant" badge are gone; "per workspace" pricing; the landing nav and
 //   footer (LpNav/LpFooter) replace HomeNav and the shared Footer.
+//   2026-10-13: the credit plan. Every page says "from $99 a month", the 7-day trial and its
+//   15,000 credits (#333).
 // - FACTS_REVIEWED: when the competitor facts (features, prices) were last checked.
 //   Shown under Sources. Move it only after re-checking every competitor's public pages.
 //   2026-10-07: all seven re-checked on the vendors' own pages (Origami's plans moved to
 //   $49 / $129 / $399, and it now runs the plays you approve).
 //   REMINDER: re-check by 2027-01-05 (90 days), then move this date again.
-const PAGE_MODIFIED = "2026-10-07";
+const PAGE_MODIFIED = "2026-10-13";
 const FACTS_REVIEWED = "October 7, 2026";
 
 /** Status-bar zone matches the landing cream (the Dynamic Island fix every main.lp page carries). */
@@ -181,14 +184,15 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
 
   return (
     // The landing chrome (LpNav + LpFooter, landing-v3.css) around the kit-built body.
-    // comparison.css keeps landing-v3's unlayered base out of .vvp-body.
-    <main id="main-content" className="lp">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+    // comparison.css keeps landing-v3's unlayered base out of .vvp-body. No id here: the skip
+    // link's #main-content target is the hero section, past the nav.
+    <main className="lp">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
 
       <LpNav />
 
       <div className="vvp-body">
-        <section className="home-landing-section" aria-labelledby="vvp-hero-heading">
+        <section id="main-content" tabIndex={-1} className="home-landing-section" aria-labelledby="vvp-hero-heading">
           <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
             <header className="home-landing-section__header">
               <h1 id="vvp-hero-heading" className="heading home-landing-section__title vvp-hero__title text-center">
@@ -216,7 +220,9 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
             <div className="vvp-hero__cards">
               <article className="vvp-pcard vvp-pcard--viktor">
                 <span className="vvp-pcard__icon" aria-hidden>{config.competitorInitial}</span>
-                <H3 className="heading vvp-pcard__title">{config.competitor}</H3>
+                {/* H2, not H3: the two cards sit right under the H1, and the outline must not
+                    skip a level. data-level keeps the kit's H3 size and tracking. */}
+                <H2 data-level="3" className="heading vvp-pcard__title">{config.competitor}</H2>
                 <p className="vvp-pcard__body">{config.competitorBody}</p>
                 <p className="vvp-pcard__choose">{config.competitorChoose}</p>
               </article>
@@ -225,7 +231,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
                   {/* eslint-disable-next-line @next/next/no-img-element -- raster brand mark */}
                   <img src="/pancake-mark.png" alt="" width={48} height={48} />
                 </span>
-                <H3 className="heading vvp-pcard__title">Pancake</H3>
+                <H2 data-level="3" className="heading vvp-pcard__title">Pancake</H2>
                 <p className="vvp-pcard__body">{config.pancakeBody}</p>
                 <p className="vvp-pcard__choose">{config.pancakeChoose}</p>
               </article>

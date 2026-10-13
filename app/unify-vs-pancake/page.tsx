@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
-import { OG_IMAGE } from "@/lib/social-meta";
+import { social } from "@/lib/social-meta";
 
 // Unify facts read on 2026-10-07 from unifygtm.com and unifygtm.com/pricing (audit plan 3.10).
 // Re-check both pages before moving FACTS_REVIEWED, and again within 90 days.
@@ -17,15 +17,10 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: `${SITE_ORIGIN}/unify-vs-pancake` },
-  openGraph: {
-    type: "website",
-    url: `${SITE_ORIGIN}/unify-vs-pancake`,
-    title,
-    description,
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Unify vs Pancake" }],
-    siteName: "Pancake",
-  },
-  twitter: { card: "summary_large_image", title, description, images: [OG_IMAGE] },
+  // Share card via lib/social-meta.ts, like the older comparison pages: the shared
+  // homepage card, so the alt is its printed text, not this page's name, and the
+  // X account rides along.
+  ...social({ path: "/unify-vs-pancake", title, description }),
 };
 
 const config: GtmComparisonConfig = {

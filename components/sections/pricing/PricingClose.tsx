@@ -1,13 +1,14 @@
 import { COMPARE_PATH } from "@/components/sections/compare/compare-data";
 import { FxPillLink } from "@/components/sections/landing/FxPill";
+import { StartFreeOnLevel } from "@/components/sections/pricing/PricingLevel";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { pricingClose as c } from "@/lib/copy";
-import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
  * /pricing — the closing band: the trial as what it is, the page's two CTAs
  * again (same analytics ids as the card: one page, one pair), and the way to
- * the comparison pages. The page used to end on its last answer.
+ * the comparison pages. The page used to end on its last answer. Start free
+ * opens the app on the level picked in the card (PricingLevel.tsx).
  * Copy: `pricingClose` in lib/copy.ts.
  */
 export function PricingClose() {
@@ -22,9 +23,7 @@ export function PricingClose() {
         </div>
         <div className="lv2-close-actions">
           <div className="lv2-button-group">
-            <FxPillLink href={APP_ORIGIN} data-analytics-id="app_pricing_page">
-              Start free
-            </FxPillLink>
+            <StartFreeOnLevel data-analytics-id="app_pricing_page">Start free</StartFreeOnLevel>
             <FxPillLink variant="outline" href={DEMO_PAGE_PATH} data-analytics-id="call_pricing_page">
               Book a demo
             </FxPillLink>

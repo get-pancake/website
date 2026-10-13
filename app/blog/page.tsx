@@ -34,10 +34,12 @@ export default function BlogIndex() {
   const posts = getAllPosts();
 
   return (
-    <main id="main-content" className="lp">
+    // No id here: the skip link's #main-content target is the first section past the nav, so
+    // the next Tab reaches the page's content instead of the logo.
+    <main className="lp">
       <LpNav />
 
-      <section className="lp-blog-hero" aria-labelledby="blog-heading">
+      <section id="main-content" tabIndex={-1} className="lp-blog-hero" aria-labelledby="blog-heading">
         <div className="lp-content lp-blog-hero__inner">
           {/* "Blog" alone said nothing to search or AI engines (2026-10-07,
               audit 6.6); the <title> stays "Blog · Pancake". */}

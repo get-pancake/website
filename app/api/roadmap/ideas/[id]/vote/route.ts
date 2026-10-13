@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { hasApprovedOrigin } from "@/lib/request-origin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isServiceConfigured } from "@/lib/supabase/env";
 
@@ -10,7 +11,9 @@ export const runtime = "nodejs";
  * Anonymous voting with per-browser dedup. The client sends a stable
  * `voterToken` (a random id kept in localStorage); the cast_vote / remove_vote
  * RPCs enforce one vote per (idea, token) and keep ideas.vote_count atomic.
- * Per-IP rate limit blunts token-cycling bots.
+ * Per-IP rate limit blunts token-cycling bots. The token is whatever the caller
+ * sends, so the origin allow-list (lib/request-origin.ts) at least keeps another
+ * site from voting through a visitor's browser.
  */
 async function readToken(request: Request): Promise<string | null> {
   try {
@@ -37,6 +40,9 @@ export async function DELETE(request: Request, { params }: { params: { id: strin
 }
 
 async function mutateVote(request: Request, ideaId: string, fn: "cast_vote" | "remove_vote") {
+  if (!hasApprovedOrigin(request)) {
+    return NextResponse.json({ error: "Request not allowed." }, { status: 403 });
+  }
   if (!isServiceConfigured()) {
     return NextResponse.json({ error: "Roadmap backend is not configured." }, { status: 503 });
   }

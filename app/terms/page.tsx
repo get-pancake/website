@@ -30,9 +30,11 @@ export const metadata: Metadata = {
 
 export default function TermsOfServicePage() {
   return (
-    <main id="main-content" className="lp">
+    // No id here: the skip link's #main-content target is the first section past the nav, so
+    // the next Tab reaches the page's content instead of the logo.
+    <main className="lp">
       <LpNav />
-      <section className="lp-legal" aria-labelledby="terms-heading">
+      <section id="main-content" tabIndex={-1} className="lp-legal" aria-labelledby="terms-heading">
         <article className="lp-legal__body">
           <p className="lp-legal__updated">Last updated: September 18, 2026</p>
           <h1 id="terms-heading">Terms of Service</h1>

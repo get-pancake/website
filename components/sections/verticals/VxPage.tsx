@@ -17,6 +17,7 @@ import {
   VX_PRICING_MODE,
 } from "@/components/sections/verticals/vx-copy";
 import { verticalJsonLd } from "@/components/sections/verticals/vx-jsonld";
+import { serializeJsonLd } from "@/lib/json-ld";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
 /**
@@ -35,7 +36,7 @@ export function VxPage({ v }: { v: VerticalConfig }) {
     <main className="lp lp-vx">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(verticalJsonLd(v)) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(verticalJsonLd(v)) }}
       />
       {/* --lp-fit for the CTA slivers + pricing art (iOS cqw-in-trig workaround); the hero has
           no art any more, so its .lp-hero-art target simply matches nothing */}

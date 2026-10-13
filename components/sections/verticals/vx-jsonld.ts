@@ -13,7 +13,8 @@ import { SITE_URL, verticalUrl } from "@/lib/verticals";
 import type { VerticalConfig } from "@/lib/verticals/types";
 
 const HUB_URL = `${SITE_URL}/for`;
-const WEBSITE = { "@type": "WebSite", name: "Pancake", url: SITE_URL } as const;
+// @id = the root layout's WebSite node: a reference to it, not a second, anonymous website.
+const WEBSITE = { "@type": "WebSite", "@id": `${SITE_URL}/#website`, name: "Pancake", url: SITE_URL } as const;
 
 function crumbs(items: { name: string; url: string }[], id: string) {
   return {

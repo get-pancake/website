@@ -10,6 +10,7 @@ import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { articleAuthor, BLOG_FEED_ALTERNATE, isTeamByline } from "@/lib/blog-meta";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { formatPostDate, getAllPosts, getPostBySlug, type PostMeta } from "@/lib/posts";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { OG_IMAGE, social } from "@/lib/social-meta";
@@ -34,6 +35,10 @@ interface Props {
 export async function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
 }
+
+// Only the posts above exist. An unknown slug gets the static 404 page straight away, as on
+// /for/[vertical]; rendered on demand, it answered 404 with an empty document until scripts ran.
+export const dynamicParams = false;
 
 const SITE = SITE_ORIGIN;
 const ORG_ID = `${SITE}/#organization`;
@@ -103,11 +108,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
    wider than the 760px measure on phones, so each one gets a scrolling box.
    `node` (the hast node react-markdown passes) must not reach the DOM. */
 type TableProps = ComponentPropsWithoutRef<"table"> & { node?: unknown };
+type ImageProps = ComponentPropsWithoutRef<"img"> & { node?: unknown };
+
+/* The intrinsic size of each image the posts embed (`![alt](/file)`), so the browser keeps
+   its box before the file arrives: with no dimensions, the photo that opens "The next
+   unicorns…" pushed the whole post down when it loaded. blog.css keeps the images fluid
+   (max-width 100%, height auto). Add a line with each new image; one missing here renders as
+   before, without a reserved box. */
+const MARKDOWN_IMAGE_SIZES = new Map<string, { width: number; height: number }>([
+  ["/blog-founders.webp", { width: 1200, height: 671 }],
+]);
+
 const markdownComponents: Components = {
   table: ({ node: _node, ...props }: TableProps) => (
     <div className="lp-blog-tablewrap">
       <table {...props} />
     </div>
+  ),
+  img: ({ node: _node, src, alt, ...props }: ImageProps) => (
+    // eslint-disable-next-line @next/next/no-img-element -- markdown image, sized from the map above
+    <img {...props} {...MARKDOWN_IMAGE_SIZES.get(src ?? "")} src={src} alt={alt ?? ""} decoding="async" />
   ),
 };
 
@@ -182,20 +202,22 @@ export default async function BlogPost({ params }: Props) {
       : null;
 
   return (
-    <main id="main-content" className="lp">
+    // No id here: the skip link's #main-content target is the first section past the nav, so
+    // the next Tab reaches the page's content instead of the logo.
+    <main className="lp">
       {/* JSON-LD structured data */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(articleJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       {faqJsonLd && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
         />
       )}
 
@@ -205,7 +227,7 @@ export default async function BlogPost({ params }: Props) {
       <LpAnimFreeze />
       <LpNav />
 
-      <article>
+      <article id="main-content" tabIndex={-1}>
         <header className="lp-blog-hero">
           <div className="lp-content lp-blog-hero__inner">
             <a className="lp-blog-back" href="/blog">

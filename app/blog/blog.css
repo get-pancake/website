@@ -162,6 +162,17 @@
   margin: 20px 0;
   padding-left: 24px;
 }
+/* the kit reset strips list markers (reset.css); prose lists need them, as on
+   the legal pages. They sit in the 24px indent above. */
+.lp-blog-prose ul {
+  list-style: disc;
+}
+.lp-blog-prose ol {
+  list-style: decimal;
+}
+.lp-blog-prose ul ul {
+  list-style: circle;
+}
 .lp-blog-prose li {
   margin: 6px 0;
 }

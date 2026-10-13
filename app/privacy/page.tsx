@@ -38,9 +38,11 @@ export const metadata: Metadata = {
 
 export default function PrivacyPolicyPage() {
   return (
-    <main id="main-content" className="lp">
+    // No id here: the skip link's #main-content target is the first section past the nav, so
+    // the next Tab reaches the page's content instead of the logo.
+    <main className="lp">
       <LpNav />
-      <section className="lp-legal" aria-labelledby="privacy-heading">
+      <section id="main-content" tabIndex={-1} className="lp-legal" aria-labelledby="privacy-heading">
         <article className="lp-legal__body">
           <p className="lp-legal__updated">Last updated: October 13, 2026</p>
           <h1 id="privacy-heading">Privacy Policy</h1>

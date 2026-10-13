@@ -12,7 +12,8 @@ import {
   type DemoRequestResponse,
 } from "@/lib/demo-request";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
-import { isProductionSiteHost, SITE_ORIGIN } from "@/lib/site-config.mjs";
+import { approvedHost, hasApprovedOrigin } from "@/lib/request-origin";
+import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 export const runtime = "nodejs";
 
@@ -20,8 +21,8 @@ export const runtime = "nodejs";
  * /demo qualification form delivery (founder brief, 2026-09-15).
  *
  * Guards, each with one job:
- *   1. origin allow-list = the CSRF check. A script can forge `Origin`, so
- *      it is not a bot guard.
+ *   1. origin allow-list (lib/request-origin.ts) = the CSRF check. A script
+ *      can forge `Origin`, so it is not a bot guard.
  *   2. honeypot `nickname` + the per-IP rate limit = the spam guards (the
  *      waitlist's honeypot is named `website`, a real field here).
  *   3. server-side validation (lib/demo-request.ts, shared with the form).
@@ -53,7 +54,6 @@ const GLOBAL_LIMIT = { max: 600, windowMs: 10 * 60 * 1000 };
 const AIRTABLE_TABLE_ID_RE = /^tbl[a-zA-Z0-9]{14}$/;
 const AIRTABLE_MERGE_FIELD = "Submission ID";
 const FALLBACK_PAGE_URL = `${SITE_ORIGIN}/demo`;
-const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
 const ATTRIBUTION_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 type Lead = DemoRequest & {
@@ -66,58 +66,6 @@ type DeliveryResult = "sent" | "failed" | "skipped";
 type AirtableCfg = { token: string; baseId: string; tableId: string };
 type AirtableWriteResponse = { records?: Array<{ id?: unknown }> };
 type AirtableErrorResponse = { error?: { type?: unknown } };
-
-// Copied from app/api/waitlist/route.ts; extract to lib/request-origin.ts
-// when a third caller appears.
-function configuredHostname(value: string | undefined) {
-  const candidate = value?.trim();
-  if (!candidate) return undefined;
-
-  try {
-    return new URL(candidate.includes("://") ? candidate : `https://${candidate}`).hostname;
-  } catch {
-    return undefined;
-  }
-}
-
-const VERCEL_HOSTS = new Set(
-  [process.env.VERCEL_URL, process.env.VERCEL_BRANCH_URL, process.env.VERCEL_PROJECT_PRODUCTION_URL]
-    .map(configuredHostname)
-    .filter((hostname): hostname is string => Boolean(hostname)),
-);
-
-/**
- * "production" for the website's hosts on both domains (getpancake.ai and pancake.ai, apex and www;
- * lib/site-config.mjs) and this deployment's Vercel hosts, "local" for localhost outside production,
- * null otherwise.
- */
-function approvedHost(hostname: string): "production" | "local" | null {
-  const host = hostname.toLowerCase();
-  if (isProductionSiteHost(host) || VERCEL_HOSTS.has(host)) return "production";
-  if (process.env.NODE_ENV !== "production" && LOCAL_HOSTS.has(host)) return "local";
-  return null;
-}
-
-function hasApprovedOrigin(request: Request) {
-  const rawOrigin = request.headers.get("origin")?.trim();
-  const rawHost = request.headers.get("host")?.trim().toLowerCase();
-  if (!rawOrigin || !rawHost || rawHost.includes(",")) return false;
-
-  try {
-    const origin = new URL(rawOrigin);
-    const kind = approvedHost(origin.hostname);
-
-    return (
-      kind !== null &&
-      !origin.username &&
-      !origin.password &&
-      origin.host.toLowerCase() === rawHost &&
-      (origin.protocol === "https:" || (kind === "local" && origin.protocol === "http:"))
-    );
-  } catch {
-    return false;
-  }
-}
 
 /** The `aid` of the pancake_attribution cookie, parsed like the waitlist route; never throws. */
 function readAttributionId(request: NextRequest): string | undefined {

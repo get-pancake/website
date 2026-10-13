@@ -120,3 +120,10 @@
   outline: 2px solid #fff;
   outline-offset: 2px;
 }
+
+/* Its target is the first section past the nav (tabindex -1), so the next Tab
+   reaches the page's first control. A container, not a control: no ring around
+   the whole section. */
+#main-content:focus {
+  outline: none;
+}

@@ -205,7 +205,7 @@ export function RoadmapBoard({
     setSelectedId(idea.id);
   }
 
-  const defaultTag: RoadmapTag = activeTab === "all" ? "squads" : activeTab;
+  const defaultTag: RoadmapTag = activeTab === "all" ? "core-features" : activeTab;
 
   const filteredIdeas = useMemo(() => {
     return ideas

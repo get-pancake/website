@@ -65,6 +65,9 @@ export function IdeaDetailModal({
 
   const [comments, setComments] = useState<RoadmapComment[]>([]);
   const [loading, setLoading] = useState(false);
+  // Shown where the list is: visitors have no comment form while posting is paused, so an
+  // error printed only there read as "No comments yet."
+  const [loadFailed, setLoadFailed] = useState(false);
   const [body, setBody] = useState("");
   const [authorName, setAuthorName] = useState("");
   const [website, setWebsite] = useState(""); // honeypot
@@ -81,6 +84,7 @@ export function IdeaDetailModal({
     }
     let cancelled = false;
     setLoading(true);
+    setLoadFailed(false);
     setError(null);
     setBody("");
     setAuthorName("");
@@ -90,7 +94,7 @@ export function IdeaDetailModal({
         if (!cancelled) setComments((d.comments as RoadmapComment[]) ?? []);
       })
       .catch(() => {
-        if (!cancelled) setError("Couldn't load comments.");
+        if (!cancelled) setLoadFailed(true);
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -203,6 +207,10 @@ export function IdeaDetailModal({
 
           {loading ? (
             <p className="roadmap-comments__empty">Loading…</p>
+          ) : loadFailed ? (
+            <p className="roadmap-form__error" role="alert">
+              {"Couldn't load comments."}
+            </p>
           ) : comments.length === 0 ? (
             <p className="roadmap-comments__empty">{canComment ? "No comments yet. Start the discussion." : "No comments yet."}</p>
           ) : (
