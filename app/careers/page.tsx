@@ -25,7 +25,7 @@ export const viewport: Viewport = { themeColor: "#fbf6f1" };
 export const metadata: Metadata = {
   title: "Careers — Pancake",
   description:
-    "Pancake is four people in San Francisco building the AI agents that bring small businesses customers. See open roles, meet the team, or send a note.",
+    "Pancake is four people in San Francisco building the platform founders and their AI agents use to run go-to-market. See open roles, meet the team, or send a note.",
   alternates: { canonical: `${SITE_ORIGIN}/careers` },
   // Its own share card (2026-10-07, audit 8.2): it shared as the homepage, with
   // the homepage title and no og:url. The image stays the shared homepage card.
@@ -111,14 +111,19 @@ export default function CareersPage() {
       <section className="lp-crs-hero" aria-labelledby="careers-heading">
         <div className="lp-content lp-crs-hero__inner">
           {/* 2026-10-07: was "Build the autonomous GTM team." — the retired
-              "GTM team" pitch (#325); the H1 says what the team builds. */}
+              "GTM team" pitch (#325); the H1 says what the team builds.
+              2026-10-13 (founder: "more linked to our positioning", the homepage's H1 and
+              lede and the launch's "Vercel for GTM"): it said "Help founders find their
+              customers." / "Pancake's agents find warm leads for small businesses and
+              start the conversation." Pancake is not a set of agents any more: it is
+              what a founder and their own agent run go-to-market with. */}
           <h1 id="careers-heading" className="lp-crs-hero__title lp-title-section">
-            Help founders find their customers.
+            Help founders turn GTM ideas into customers.
           </h1>
           <p className="lp-crs-lede lp-crs-hero__lede">
-            Pancake&rsquo;s agents find warm leads for small businesses and start the
-            conversation. We are four people in San Francisco, and every hire shapes the
-            company.
+            Pancake gives founders and their AI agents the brain, the data and the tools
+            to run go-to-market. We are four people in San Francisco, and every hire
+            shapes the company.
           </p>
           <ul className="lp-crs-facts" aria-label="Company facts">
             {FACTS.map((fact) => (

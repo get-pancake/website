@@ -80,7 +80,7 @@ export const LP_DEMO = {
       deploy: "Deploy Play",
     },
     /** Pancake's last word once the Play is live: what happens from here. */
-    after: "It’s live and runs daily. I’ll reach out in your voice.",
+    after: "It’s live and runs daily. Messages go out in your voice.",
     /** role="img" label of the view. */
     aria: "Product demo. A web design agency types a request: Find founders who just raised a seed round and are hiring a marketing lead. Pancake reads its Brain, searches funding news and checks who is hiring: 25 leads found. It proposes a Play to keep them coming: who, which companies, the signal, 25 new leads a week, then find, qualify, reach out. One click deploys it. Pancake confirms it is live and will reach out in the agency’s voice.",
   },
