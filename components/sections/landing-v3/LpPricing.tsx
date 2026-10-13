@@ -2,7 +2,7 @@ import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
-import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
+import { BASE_LEVEL, formatCredits, leadsEstimateLabel } from "@/lib/pricing";
 import { TRIAL_OFFER } from "@/lib/trial";
 
 /**
@@ -21,10 +21,10 @@ import { TRIAL_OFFER } from "@/lib/trial";
    1. the outcome first: what Pancake is built for, not a promise (founder
       2026-10-04: prospects kept asking how we can guarantee customers; the
       Terms promise no results);
-   2. what the credits do, in his own words ("Warm leads that keep coming",
-      2026-10-05): the scheduled searches are why leads keep coming, and they
-      are what uses credits now. "…and leads as you want" left with the flat
-      plan;
+   2. what the credits get you: an ESTIMATE of leads a month, always "about"
+      and a range (lib/pricing.ts CREDITS_PER_LEAD; founder 2026-10-13: "we
+      have to give an estimate of what credits give you"). "…and leads as you
+      want" left with the flat plan;
    3. rollover, said as the month it saves (up to one month of credits is
       kept at renewal; /pricing has the detail);
    4. Plays, said as the freedom they give: creating and testing a Play is
@@ -37,7 +37,7 @@ import { TRIAL_OFFER } from "@/lib/trial";
 const CHECKLIST = [
   // \u00a0 keeps the last two words together when a narrow phone wraps the line.
   "Built to land 2 to 3 customers\u00a0a\u00a0month.",
-  `${formatCredits(BASE_LEVEL.credits)} credits a month to keep warm leads\u00a0coming.`,
+  `About ${leadsEstimateLabel(BASE_LEVEL.credits)} warm leads a month, on ${formatCredits(BASE_LEVEL.credits)}\u00a0credits.`,
   "Slow month? Unused credits roll\u00a0over.",
   "Try any GTM idea. Building a Play is\u00a0free.",
   "A personal message for each lead, in your\u00a0voice.",

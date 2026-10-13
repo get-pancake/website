@@ -38,6 +38,34 @@ export const WORK_EMAIL_CREDITS = 50;
 /** One sending account is in every level; each extra one is a monthly licence. */
 export const EXTRA_SENDER_DOLLARS = 39;
 
+/**
+ * What a lead takes in research credits, for the estimate the pricing page
+ * prints ("about 120 to 600 leads" on 60,000 credits). Founder 2026-10-13:
+ * "we have to give an estimate of what credits give you somewhere".
+ * Source: the capacity scenarios of pancake-cmo ADR 0078 (amendment of
+ * 2026-10-12, PR #1220), which plan on $0.10 to $0.50 of research per
+ * delivered lead, i.e. 100 to 500 credits. They are PLANNING figures, not a
+ * measurement: the app's own history shows cheaper searches (a broad persona
+ * search) and dearer ones (a search that reads funding news, seeded at about
+ * 1,000 credits per qualified lead in `estimate-lead-finding-pipelines.ts`).
+ * So the page always says "about", gives a range, and adds that a narrow
+ * audience costs more. Replace both numbers with the fleet's measured range
+ * when engineering has it; nothing else needs to change.
+ */
+export const CREDITS_PER_LEAD = { low: 100, high: 500 } as const;
+
+/** The estimate for a number of credits: fewest leads (dearest research) to
+ *  most (cheapest), research only. A work email is 50 credits more. */
+export const leadsEstimate = (credits: number) => ({
+  low: Math.floor(credits / CREDITS_PER_LEAD.high),
+  high: Math.floor(credits / CREDITS_PER_LEAD.low),
+});
+/** "120 to 600" */
+export const leadsEstimateLabel = (credits: number) => {
+  const { low, high } = leadsEstimate(credits);
+  return `${low.toLocaleString("en-US")} to ${high.toLocaleString("en-US")}`;
+};
+
 /** "60,000": always en-US, so the server and the browser print the same. */
 export const formatCredits = (credits: number) => credits.toLocaleString("en-US");
 /** "60k": the picker's short label on narrow screens. */

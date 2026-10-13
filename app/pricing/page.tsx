@@ -1,10 +1,12 @@
 /**
  * Pricing V3 — one plan, five levels of monthly credits (2026-10-13, the
  * launch of pancake-cmo PR #1220; the flat $99 plan of 2026-08-06 is gone).
- * The page, top to bottom: the plan card (the "Monthly credits" picker, the
- * pancake stack that grows with it, what every level includes) and the
- * customer logos; "Credits find your leads." as a price list; "One plan per
- * workspace."; "No surprise bills."; "Billing questions."; the closing band.
+ * The page, top to bottom, each block about what the buyer gets: the plan
+ * card (the "Monthly credits" picker, the price, an estimate of leads a
+ * month, the pancake stack that grows with it, what every level includes),
+ * the customer logos, "Take it from them" (customers' own results), "More
+ * credits, more leads." (every level side by side), the questions buyers
+ * ask, the closing band.
  * The pricing body rides the landing skin (.lv2) inside the sitewide chrome
  * (LpNav + LpFooter in main.lp, 2026-10-07); app/pricing/pricing.css keeps
  * it whole inside .lp. Book a demo links to /demo (2026-09-16).
@@ -16,15 +18,14 @@ import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { PriceGroups } from "@/components/sections/landing/PriceGroups";
 import { BillingFaq } from "@/components/sections/pricing/BillingFaq";
-import { CreditsExplained } from "@/components/sections/pricing/CreditsExplained";
 import { PlanCard } from "@/components/sections/pricing/PlanCard";
-import { PlanMap } from "@/components/sections/pricing/PlanMap";
 import { PricingClose } from "@/components/sections/pricing/PricingClose";
-import { PricingFacts } from "@/components/sections/pricing/PricingFacts";
+import { PricingLevels } from "@/components/sections/pricing/PricingLevels";
 import { PricingLogos } from "@/components/sections/pricing/PricingLogos";
+import { PricingProof } from "@/components/sections/pricing/PricingProof";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
-import { pricingFaq, pricingPlan, pricingV2 } from "@/lib/copy";
-import { BASE_LEVEL, CREDIT_LEVELS, formatCredits, type CreditLevel } from "@/lib/pricing";
+import { pricingFaq, pricingV2 } from "@/lib/copy";
+import { BASE_LEVEL, CREDIT_LEVELS, formatCredits, leadsEstimateLabel, type CreditLevel } from "@/lib/pricing";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
 import { TRIAL_DAYS, TRIAL_NOTICE } from "@/lib/trial";
@@ -34,7 +35,7 @@ import "@/app/_styles/landing-v2.css";
 import "./pricing.css";
 
 /* "from": the first level's price. "per workspace" since 2026-10-06, the
-   unit the plan is billed on (see pricingPlan). The description says what
+   unit the plan is billed on. The description says what
    the price buys and the one choice a buyer makes. */
 const DESCRIPTION = `Pancake starts at ${pricingV2.currencySymbol}${BASE_LEVEL.dollars} a month per workspace, with ${formatCredits(BASE_LEVEL.credits)} credits and your whole team included. One plan: you pick your monthly credits. Unused credits roll over.`;
 
@@ -122,13 +123,19 @@ const SAVE_LABELS = Object.fromEntries(
   ]),
 ) as Partial<Record<CreditLevel["key"], string>>;
 
-/* FAQPage JSON-LD — the Billing and PlanMap answers, verbatim, so search
-   engines and assistants quote the credit, per-workspace and billing rules
+/* What each level gets you ("About 120 to 600 leads a month"): the estimate
+   of lib/pricing.ts, as plain strings for the client card. */
+const LEADS_LABELS = Object.fromEntries(
+  CREDIT_LEVELS.map((level) => [level.key, pricingV2.leadsLine(leadsEstimateLabel(level.credits))]),
+) as Record<CreditLevel["key"], string>;
+
+/* FAQPage JSON-LD — the billing answers, verbatim, so search engines and
+   assistants quote the leads estimate, the trial and the billing rules
    instead of guessing them. */
 const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
-  mainEntity: [...pricingFaq.items, ...pricingPlan.faq].map((item) => ({
+  mainEntity: pricingFaq.items.map((item) => ({
     "@type": "Question",
     name: item.q,
     acceptedAnswer: { "@type": "Answer", text: item.a },
@@ -171,8 +178,10 @@ export default function PricingPage() {
             <div className="lv2-price-plan">
               <PlanCard
                 pickerLabel={pricingV2.pickerLabel}
+                pickerHint={pricingV2.pickerHint}
                 perMonth={pricingV2.perMonth}
                 creditsLine={pricingV2.creditsLine}
+                leadsLabels={LEADS_LABELS}
                 saveLabels={SAVE_LABELS}
                 demoHref={DEMO_PAGE_PATH}
                 fine={pricingV2.fine}
@@ -194,14 +203,12 @@ export default function PricingPage() {
             <PricingLogos />
           </div>
         </section>
-        <CreditsExplained />
-        {/* What one plan covers — workspace, Plays, accounts, team (2026-10-06,
-            after a customer asked whether it includes a second workspace and
-            a second sending account). */}
-        <PlanMap />
-        {/* After the map, so the grounds alternate: pink, white, cream, white,
-            cream, pink. */}
-        <PricingFacts />
+        {/* What customers got, then every level by what it gets you, then
+            the questions buyers ask (founder 2026-10-13: "user centric, value
+            oriented, see what your customer gets"). The sections that
+            explained the credit mechanics and drew the workspace are gone. */}
+        <PricingProof />
+        <PricingLevels />
         <BillingFaq />
         <PricingClose />
       </div>

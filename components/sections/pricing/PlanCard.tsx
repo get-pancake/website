@@ -36,16 +36,22 @@ import {
  */
 export function PlanCard({
   pickerLabel,
+  pickerHint,
   perMonth,
   creditsLine,
+  leadsLabels,
   saveLabels,
   demoHref,
   fine,
   children,
 }: {
   pickerLabel: string;
+  /** "Start on any level. Change anytime.", on the label's line. */
+  pickerHint: string;
   perMonth: string;
   creditsLine: string;
+  /** "About 120 to 600 leads a month" per level key: what the level gets you. */
+  leadsLabels: Record<CreditLevel["key"], string>;
   /** "Save 4.5% per credit" per level key; absent for the first level. */
   saveLabels: Partial<Record<CreditLevel["key"], string>>;
   demoHref: string;
@@ -65,7 +71,10 @@ export function PlanCard({
     <div className="lv2-price-card">
       <div className="lv2-price-info">
         <fieldset className="lv2-credit-picker">
-          <legend className="lv2-credit-picker-label">{pickerLabel}</legend>
+          <legend className="lv2-credit-picker-label">
+            <span>{pickerLabel}</span>
+            <span className="lv2-credit-picker-hint">{pickerHint}</span>
+          </legend>
           <div className="lv2-credit-options">
             {CREDIT_LEVELS.map((l) => (
               <label key={l.key} className="lv2-credit-option">
@@ -93,6 +102,8 @@ export function PlanCard({
             <span className="lv2-price-amount">{formatDollars(level.dollars)}</span>
             <span className="lv2-price-cycle">{perMonth}</span>
           </p>
+          {/* What the level gets you, before what it is made of. */}
+          <p className="lv2-price-leads">{leadsLabels[level.key]}</p>
           <p className="lv2-price-sub">
             <span>
               <strong className="lv2-price-credits">{formatCredits(level.credits)}</strong> {creditsLine}

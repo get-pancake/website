@@ -41,7 +41,8 @@ Source: pancake-cmo PR #1220 (ADR 0078, `packages/backend/billing/src/domain/pac
 
 - **One plan, five levels of monthly credits**: 60,000 for $99, 120,000 for $189, 240,000 for $359, 480,000 for $679, 960,000 for $1,299, per workspace, billed monthly. Every level is the same product. Say "from $99 a month", never "flat", "no tiers" or "everything included".
 - **Credits pay for two things**: the research a search does, and each work email found (50 credits). Building and testing Plays, messages, replies and teammates use no credits. Never write "as many leads as you want" or "unlimited leads": a search uses credits.
-- **Never a dollar value for a credit, and never a count of leads a level "buys".** The app shows an estimate before a search runs; say that.
+- **Never a dollar value for a credit.** Leads per credit is an ESTIMATE only: always "about", always the range built from `CREDITS_PER_LEAD` in `lib/pricing.ts` ("about 120 to 600 leads a month" on 60,000 credits), never a figure retyped by hand and never a promise. Those two numbers are planning figures from pancake-cmo ADR 0078, to be replaced by the measured range when engineering has it. Add that a narrow audience costs more and that the app shows the real estimate before a search runs.
+- **A pricing page says what the buyer gets** (leads, messages, replies, customers' own results), then what a level gets them. It does not explain how credits work beyond one line (founder, 2026-10-13: "you're being soooo conceptual and answering things no one asks").
 - Unused credits roll over, up to one month of credits. Out of credits, searches pause: no overage and no automatic top-up. Still no "spend cap" wording (founder, 2026-09-19).
 - One sending account is in the plan; each extra one is $39 a month. Teammates are free and unlimited.
 - The free trial lasts **7 days** and comes with **15,000 credits**, the same at every level.

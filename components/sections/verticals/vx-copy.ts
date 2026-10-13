@@ -12,7 +12,7 @@
 // says "campaign" (validate.ts CAMPAIGN).
 // In the repo, import TRIAL_LABEL from "@/lib/trial" instead of the local constant below.
 
-import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
+import { BASE_LEVEL, formatCredits, leadsEstimateLabel } from "@/lib/pricing";
 import { TRIAL_CREDITS_LABEL, TRIAL_LABEL } from "@/lib/trial";
 import type { SignalKind, VerticalConfig } from "@/lib/verticals/types";
 
@@ -240,7 +240,7 @@ export const VX_FAQ = {
     },
     {
       q: "How many leads will I get?",
-      a: "Each Play search keeps up to 50 new leads. How many searches you run depends on your credits, and Pancake shows an estimate before a search runs.",
+      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} a month on ${formatCredits(BASE_LEVEL.credits)} credits, more on a higher level. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
     },
     {
       q: "What does it cost?",
@@ -272,7 +272,7 @@ export const VX_CTA_BODY: [string, string] = [
  *  the month rollover saves), in place of "As many Plays and leads as you want." (searches use
  *  credits now); seats are said as the bill you don't get. Each line is what the buyer gets. */
 export const VX_PRICING_CHECKLIST: readonly string[] = [
-  `${formatCredits(BASE_LEVEL.credits)} credits a month to keep warm leads\u00a0coming.`,
+  `About ${leadsEstimateLabel(BASE_LEVEL.credits)} warm leads a month, on ${formatCredits(BASE_LEVEL.credits)}\u00a0credits.`,
   "Every lead comes with its reason.",
   "Outreach from your own account.",
   "You approve every lead first.",
