@@ -86,7 +86,7 @@ const config: GtmComparisonConfig = {
     { feature: "Free trial", competitor: { text: "Free plan; 14-day Pro trial, no card", mark: "yes" }, pancake: { text: "7-day free trial, card required", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Sales teams with reps, mailboxes and a CRM" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
   ],
-  closingTitle: "One workspace. One price. The whole team.",
+  closingTitle: "One workspace. One plan. The whole team.",
   closingLede: "Tell Pancake who to reach. It builds the Play, keeps searching and writes to the leads you approve.",
   faqs: [
     { q: "What is the main difference between Unify and Pancake?", a: "Unify is an outbound platform that sales reps operate, priced per seat. Pancake runs Plays: it finds the people who fit and writes to the ones you approve. It starts at $99 a month per workspace." },
