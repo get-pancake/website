@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import posthog from "posthog-js";
+import type { PostHog } from "posthog-js";
 
 import {
   isAcquisitionEventName,
@@ -37,6 +37,31 @@ const latestTouchKeys = [...attributionKeys, "landing_url", "referrer"] as const
 let initialized = false;
 let lastCapturedPageUrl: string | null = null;
 
+// posthog-js (60 KB compressed, 188 KB to parse) loads on demand since 2026-10-13
+// (Lighthouse pass on PR #333): imported statically, it shipped in the first
+// chunks of every page — preview builds included, where this component never
+// renders — ahead of the first paint. Every call below queues until the library
+// has arrived, then runs in the order it was made, so nothing captured in the
+// meantime (an early CTA click, the first page view) is lost or reordered.
+let client: PostHog | null = null;
+let loading: Promise<PostHog> | null = null;
+const pending: Array<(ph: PostHog) => void> = [];
+
+function withPostHog(job: (ph: PostHog) => void) {
+  if (client) {
+    job(client);
+    return;
+  }
+  pending.push(job);
+  if (!loading) {
+    loading = import("posthog-js").then((mod) => {
+      client = mod.default;
+      for (const queued of pending.splice(0)) queued(client);
+      return client;
+    });
+  }
+}
+
 export function PostHogAttribution() {
   return (
     <Suspense fallback={null}>
@@ -54,7 +79,7 @@ function PostHogAttributionEffects() {
     if (!isApprovedProductionHost()) return;
     if (initialized) return;
 
-    posthog.init(POSTHOG_KEY, {
+    withPostHog((posthog) => posthog.init(POSTHOG_KEY, {
       api_host: POSTHOG_HOST,
       ui_host: POSTHOG_UI_HOST,
       person_profiles: "identified_only",
@@ -84,7 +109,7 @@ function PostHogAttributionEffects() {
           $set_once: sanitizePostHogProperties(event.$set_once),
         };
       },
-    });
+    }));
     initialized = true;
 
     const attribution = readAttribution();
@@ -98,25 +123,29 @@ function PostHogAttributionEffects() {
       ...context,
     });
 
-    posthog.register_once(initialAttribution);
-    clearLatestTouchSuperProperties();
-    posthog.register(latestAttribution);
-    posthog.setPersonProperties(
-      {
-        ...emptyLatestTouchProperties(),
-        ...latestAttribution,
-      },
-      initialAttribution,
-    );
+    withPostHog((posthog) => {
+      posthog.register_once(initialAttribution);
+      clearLatestTouchSuperProperties(posthog);
+      posthog.register(latestAttribution);
+      posthog.setPersonProperties(
+        {
+          ...emptyLatestTouchProperties(),
+          ...latestAttribution,
+        },
+        initialAttribution,
+      );
+    });
 
     capturePageView();
 
     if (Object.keys(attribution).length > 0 || document.referrer) {
-      posthog.capture("marketing_landing_viewed", {
-        $current_url: context.landing_url,
-        ...attribution,
-        ...context,
-      });
+      withPostHog((posthog) =>
+        posthog.capture("marketing_landing_viewed", {
+          $current_url: context.landing_url,
+          ...attribution,
+          ...context,
+        }),
+      );
     }
   }, []);
 
@@ -132,7 +161,7 @@ function PostHogAttributionEffects() {
       const eventName = rawEvent.detail.event;
       if (!isAcquisitionEventName(eventName)) return;
 
-      posthog.capture(eventName, cleanAcquisitionProperties(rawEvent.detail));
+      withPostHog((posthog) => posthog.capture(eventName, cleanAcquisitionProperties(rawEvent.detail)));
     };
 
     window.addEventListener(PANCAKE_ACQUISITION_EVENT, captureAcquisitionEvent);
@@ -169,7 +198,7 @@ function prefixKeys(prefix: string, values: Record<string, string>) {
   );
 }
 
-function clearLatestTouchSuperProperties() {
+function clearLatestTouchSuperProperties(posthog: PostHog) {
   for (const key of latestTouchKeys) {
     posthog.unregister(`pancake_latest_${key}`);
   }
@@ -187,11 +216,13 @@ function capturePageView() {
   if (lastCapturedPageUrl === pageUrl) return;
   lastCapturedPageUrl = pageUrl;
 
-  posthog.capture("$pageview", {
-    $current_url: pageUrl,
-    ...readAttribution(),
-    ...readContext(),
-  });
+  withPostHog((posthog) =>
+    posthog.capture("$pageview", {
+      $current_url: pageUrl,
+      ...readAttribution(),
+      ...readContext(),
+    }),
+  );
 }
 
 /** Both domains, apex and www: `cross_subdomain_cookie` scopes PostHog's cookie to the one visited. */
