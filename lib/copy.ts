@@ -234,18 +234,17 @@ export const pricingV2 = {
   monthlyDollars: BASE_LEVEL.dollars,
   currency: "USD" as const,
   currencySymbol: "$",
-  /** The page's top. The kicker keeps the brand and "pricing" inside the H1
-      (the 2026-10-07 audit wanted them there, like the title tag); the
-      headline is the deal in two short sentences: the entry price, and that
-      you only move up once Pancake pays for itself. It read "Pancake pricing:
-      from $99 a month" until the founder's "this has to be improved"
-      (2026-10-13). The lede: what stays the same, and the three things that
-      make the credits safe to buy (your pick, rollover, change anytime). */
-  kicker: "Pancake pricing",
-  /** Two sentences, one per line from 768px (they flow as one on a phone). */
-  titleLines: [`Start at $${BASE_LEVEL.dollars}.`, "Scale when it works."],
-  blurb:
-    "One plan, the whole product, your whole team. Pick your monthly credits, keep the ones you don't use, and change them anytime.",
+  /** The page's top: the deal in two short sentences on ONE line (the entry
+      price, and that you only move up once Pancake pays for itself), then a
+      lede that also holds on one line on a desktop. Founder 2026-10-13, on
+      two earlier tries: "this has to be improved" (it read "Pancake pricing:
+      from $99 a month"), then "so many empty space and useless retour à la
+      ligne" and "remove this pancake pricing stuff" (a badge above a
+      two-line headline). `srTitle` is read by screen readers and search
+      engines only, so the H1 still names the brand and the page. */
+  srTitle: "Pancake pricing:",
+  title: `Start at $${BASE_LEVEL.dollars}. Scale when it works.`,
+  blurb: "One plan, the whole product, your whole team. Pick your monthly credits, keep what you don't use, change anytime.",
   /** "per workspace", not "flat" (2026-10-06): billing is per workspace in the
       app (pancake-cmo `subscribe-additional-workspace.ts`). */
   perMonth: "/ month per workspace",
@@ -270,12 +269,13 @@ export const pricingV2 = {
       homepage card, which shows the first level, opens on it
       (LpPricing.tsx). */
   value: [
+    // Each line holds on one line in the card's three columns: no wrap.
     { rest: "Warm leads that keep coming." },
     { rest: "Slow month? Unused credits roll over." },
     { rest: "Try any GTM idea. Building a Play is free." },
-    { rest: "A personal message for each lead, in your voice." },
-    { rest: "You approve every lead before anyone is contacted." },
-    { rest: "Your whole team, with no seats to pay." },
+    { rest: "A personal message for each lead." },
+    { rest: "You approve every lead first." },
+    { rest: "Your whole team. No seats to pay." },
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot). */
   fine: TRIAL_NOTICE,
@@ -300,29 +300,27 @@ export const pricingV2 = {
  * lines a search now pays for (the searches themselves and the ICP check).
  */
 export const pricingCredits = {
-  title: "Credits find your leads. Everything else is included.",
+  /** One line on a desktop (it read "…Everything else is included." and
+      wrapped to three in a side column). */
+  title: "Credits find your leads. The rest is included.",
   lede: "A search uses credits. So does a work email. Nothing else does.",
-  /** The price list, in two groups: a name, one line, and what it costs on
-      the right. A search has no fixed price (it is charged the research it
-      did), so its cost reads as what the buyer gets instead: the estimate. */
-  uses: {
-    label: "Uses credits",
-    rows: [
-      {
-        name: "A search",
-        body: "Pancake finds people and checks each one against your ICP. Credits it doesn't use come back.",
-        cost: "Estimate first",
-      },
-      {
-        name: "A work email",
-        body: "Only when Pancake finds one. No email, no credits.",
-        cost: `${WORK_EMAIL_CREDITS} credits`,
-      },
-    ],
-  },
+  /** Two cards side by side: a name, what it costs, one or two sentences. A
+      search has no fixed price (it is charged the research it did), so its
+      cost reads as what the buyer gets instead: the estimate. */
+  uses: [
+    {
+      name: "A search",
+      cost: "You see the estimate first",
+      body: "Pancake finds people and checks each one against your ICP. Credits a search doesn't use come back.",
+    },
+    {
+      name: "A work email",
+      cost: `${WORK_EMAIL_CREDITS} credits`,
+      body: "Only when Pancake finds one. No email, no credits.",
+    },
+  ],
   included: {
-    label: "Never uses a credit",
-    cost: "Free",
+    label: "Never uses a credit:",
     items: [
       "Building and testing your Plays",
       "Your Brain, built from your website",
@@ -473,7 +471,6 @@ export const pricingPlan = {
  */
 export const pricingFaq = {
   title: "Billing questions.",
-  lede: "Credits, the trial, and changing or cancelling your plan.",
   more: { text: "Another question?", cta: "Ask support" },
   items: [
     {

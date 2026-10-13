@@ -1,6 +1,6 @@
 # Pancake pricing: from $99 a month
 
-> Start at $99. Scale when it works. One plan, the whole product, your whole team. Pick your monthly credits, keep the ones you don't use, and change them anytime. 15,000 free credits, valid for 7 days. Credit card required to start the trial.
+> Start at $99. Scale when it works. One plan, the whole product, your whole team. Pick your monthly credits, keep what you don't use, change anytime. 15,000 free credits, valid for 7 days. Credit card required to start the trial.
 
 This file carries the facts of https://pancake.ai/pricing for AI agents. The page is the source of truth.
 
@@ -26,17 +26,17 @@ What you get, at every level:
 - Warm leads that keep coming.
 - Slow month? Unused credits roll over.
 - Try any GTM idea. Building a Play is free.
-- A personal message for each lead, in your voice.
-- You approve every lead before anyone is contacted.
-- Your whole team, with no seats to pay.
+- A personal message for each lead.
+- You approve every lead first.
+- Your whole team. No seats to pay.
 
 Free trial: 7 days and 15,000 credits, the same at every level. Signup starts without a card. A credit card is required to start the trial.
 
-## Credits find your leads. Everything else is included.
+## Credits find your leads. The rest is included.
 
 A search uses credits. So does a work email. Nothing else does.
 
-- A search: you see an estimate first. Pancake finds people and checks each one against your ICP. Credits it doesn't use come back.
+- A search: you see the estimate first. Pancake finds people and checks each one against your ICP. Credits a search doesn't use come back.
 - A work email: 50 credits. Only when Pancake finds one. No email, no credits.
 
 Never uses a credit (free):

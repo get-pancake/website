@@ -159,13 +159,11 @@ export default function PricingPage() {
         >
           <div className="lv2-container">
             <header className="lv2-section-header">
-              {/* The kicker is part of the H1, so the heading still reads
-                  "Pancake pricing …" to search engines and screen readers. */}
-              <h1 id="lv2-pricing-page-title" className="lv2-pricing-title">
-                <span className="badge lv2-pricing-kicker">{pricingV2.kicker}</span>{" "}
-                <span className="lv2-section-title lv2-pricing-headline">
-                  <span>{pricingV2.titleLines[0]}</span> <span>{pricingV2.titleLines[1]}</span>
-                </span>
+              {/* The first words are for search engines and screen readers
+                  only: the heading still reads "Pancake pricing: …". */}
+              <h1 id="lv2-pricing-page-title" className="lv2-section-title lv2-pricing-headline">
+                <span className="lp-sr-only">{pricingV2.srTitle} </span>
+                {pricingV2.title}
               </h1>
               <p className="lv2-section-lede">{pricingV2.blurb}</p>
             </header>

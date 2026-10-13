@@ -12,15 +12,17 @@
   margin-top: -0.5rem;
 }
 
-/* ── Logo row under the card (PricingLogos.tsx) ──
-   The homepage marquee, frozen: one copy, wrapped, left-aligned like the
-   copy above it, no edge fades (the reduced-motion recipe of marquee.css,
-   at every width). */
+/* ── Logos under the card (PricingLogos.tsx) ──
+   The homepage marquee as it is: one moving row with its edge fades (a mask,
+   so the pink ground shows through), slower under a pointer, wrapped and
+   still for reduced motion (marquee.css). Only the label and the spacing are
+   set here. It was frozen into two rows until 2026-10-13 (founder: "this =>
+   carousel"). */
 .lv2-pricing-logos {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  margin-top: clamp(2.5rem, 6vh, 4rem);
+  gap: 0.5rem;
+  margin-top: clamp(2rem, 5vh, 3rem);
 }
 .lv2-pricing-logos .lv2-pricing-logos-label {
   font-size: 1rem;
@@ -28,69 +30,39 @@
   color: var(--subtle-text);
 }
 .lv2-pricing-logos .lp-marquee {
-  overflow: visible;
-  padding-block: 0;
-}
-.lv2-pricing-logos .lp-marquee__band {
-  overflow: visible;
-  -webkit-mask-image: none;
-  mask-image: none;
-}
-.lv2-pricing-logos .lp-marquee__track {
-  width: auto;
-}
-.lv2-pricing-logos .lp-marquee__seq {
-  animation: none;
-  will-change: auto;
-  flex: 1;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  padding-inline: 0;
-  row-gap: 1rem;
-}
-.lv2-pricing-logos .lp-marquee__seq + .lp-marquee__seq {
-  display: none;
-}
-/* Phones: the marquee's 48px gap left two logos a row (six rows). A
-   tighter gap still clears the YC mark (spacing-lg + spacing-sm wide). */
-@media (max-width: 767px) {
-  .lv2-pricing-logos .lp-marquee__seq {
-    column-gap: 1.5rem;
-    row-gap: 0.75rem;
-  }
+  padding-block: 0.5rem;
 }
 
 /* ── The page's top ──
-   A kit badge for the kicker, then the headline at hero size (the section
-   titles below stay at theirs) and a lede large enough to be read as the
-   second line of the offer, not as a caption. */
-.lv2-pricing-page .lv2-pricing-title {
-  align-items: flex-start;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin: 0;
-}
-.lv2-pricing-page .lv2-pricing-headline {
-  font-size: clamp(2.5rem, 5.6vw, 4.5rem);
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-/* One sentence a line once both fit; on a phone they flow together. */
-@media (min-width: 768px) {
-  .lv2-pricing-page .lv2-pricing-headline span {
-    display: block;
-  }
+   The headline and the lede each hold on ONE line from 1024px (founder
+   2026-10-13: "so many empty space and useless retour à la ligne"): the type
+   follows the viewport so "Start at $99. Scale when it works." fits the
+   container at every desktop width, and the header is as wide as the card
+   under it. The band's top padding is halved so the card starts on the first
+   screen. On a phone both wrap as any text does. */
+.lv2-pricing-page.lv2s {
+  padding-top: clamp(2.5rem, 6vh, 4rem);
 }
 .lv2-pricing-page .lv2-section-header {
-  gap: 1.5rem;
-  max-width: 56rem;
+  gap: 1rem;
+  margin-bottom: clamp(1.75rem, 4vh, 2.5rem);
+  max-width: none;
+}
+.lv2-pricing-page .lv2-pricing-headline {
+  font-size: clamp(2.25rem, 4.3vw, 3.75rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
 }
 .lv2-pricing-page .lv2-section-header .lv2-section-lede {
   color: var(--text);
-  font-size: clamp(1.125rem, 1.6vw, 1.375rem);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
   line-height: 1.45;
-  max-width: 40rem;
+}
+@media (min-width: 1024px) {
+  .lv2-pricing-page .lv2-pricing-headline,
+  .lv2-pricing-page .lv2-section-header .lv2-section-lede {
+    white-space: nowrap;
+  }
 }
 
 /* ── The plan card (PlanCard.tsx) ──
@@ -110,7 +82,7 @@
   grid-template-areas:
     "info mascot"
     "perks perks";
-  grid-template-columns: minmax(0, 1fr) minmax(0, 23rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 20rem);
   max-width: none;
   width: 100%;
 }
@@ -134,27 +106,24 @@
   margin-top: 0;
 }
 
-/* The stack: bottom-anchored in its panel, so a new pancake slides in at the
-   foot and the others rise. The SVG keeps its own ratio (330 × 460); its
-   height is set here so the panel never depends on a percentage height. */
+/* The stack sits straight on the card, bottom-anchored, so a new pancake
+   slides in at the foot and the others rise; no panel behind it (a single
+   pancake in a tall cream box read as an empty frame). The SVG keeps its own
+   ratio (330 × 460); its height is set here so nothing depends on a
+   percentage height. */
 .lv2-pricing-page .lv2-price-mascot {
   align-items: flex-end;
-  background: var(--palette-chrome-20);
-  border-radius: 20px;
-  corner-shape: round;
   display: flex;
   grid-area: mascot;
   justify-content: center;
-  min-height: 21rem;
-  overflow: hidden;
-  padding: 1.25rem 1rem 0.5rem;
 }
 .lv2-pricing-page .lv2-price-mascot .pancake-stack__svg {
-  height: clamp(17rem, 24vw, 19.5rem);
+  height: clamp(16rem, 23vw, 19rem);
   width: auto;
 }
 
-/* What every level includes: the card's check-mark list, three columns. */
+/* What every level includes: the card's check-mark list in three columns,
+   each as wide as its longest line, so no line wraps on a desktop. */
 .lv2-pricing-page .lv2-price-perks {
   border-top: 1px solid color-mix(in srgb, var(--palette-chrome-100) 10%, transparent);
   grid-area: perks;
@@ -166,36 +135,48 @@
 .lv2-pricing-page .lv2-price-perks .lv2-price-value-list {
   display: grid;
   gap: 0.75rem clamp(1.5rem, 3vw, 2.5rem);
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+/* three columns only once the three longest lines fit side by side */
+@media (min-width: 1200px) {
+  .lv2-pricing-page .lv2-price-perks .lv2-price-value-list {
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+  }
+}
+/* Below 1024px the card is one column and the stack moves beside the price:
+   same grid cell as the info column, pinned to its right edge at the price's
+   height, growing upward as the level rises. No band of its own, so no blank
+   space above a single pancake. It never takes a tap from the picker. */
 @media (max-width: 1023px) {
   .lv2-pricing-page .lv2-price-card {
     grid-template-areas:
-      "mascot"
       "info"
       "perks";
     grid-template-columns: minmax(0, 1fr);
   }
   .lv2-pricing-page .lv2-price-mascot {
-    min-height: 0;
-    padding-top: 1rem;
+    align-self: start;
+    grid-area: info;
+    justify-self: end;
+    margin-top: 6.25rem;
+    pointer-events: none;
   }
   .lv2-pricing-page .lv2-price-mascot .pancake-stack__svg {
-    height: 12.5rem;
-  }
-  .lv2-pricing-page .lv2-price-perks .lv2-price-value-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    height: 10.5rem;
   }
 }
 @media (max-width: 639px) {
+  .lv2-pricing-page .lv2-price-mascot {
+    margin-top: 6.5rem;
+  }
   .lv2-pricing-page .lv2-price-mascot .pancake-stack__svg {
-    height: 10.5rem;
+    height: 7.75rem;
   }
   .lv2-pricing-page .lv2-price-perks .lv2-price-value-list {
     grid-template-columns: minmax(0, 1fr);
   }
 }
-
 /* "Monthly credits": five radios drawn as one segmented row. The radio
    itself covers its segment, invisible, so the whole segment is the target
    (44px tall) and the keyboard keeps the native arrow-key behaviour. */
@@ -290,6 +271,7 @@
   font-size: clamp(3.5rem, 6vw, 4.75rem);
   font-variant-numeric: tabular-nums;
 }
+
 .lv2-pricing-page .lv2-price-sub {
   align-items: center;
   display: flex;
@@ -302,6 +284,24 @@
   color: var(--text);
   font-variant-numeric: tabular-nums;
   font-weight: 700;
+}
+
+/* small phones: "$1,299", its two lines and the stack share the card's
+   width, so each gives a little */
+@media (max-width: 400px) {
+  .lv2-pricing-page .lv2-price-amount {
+    font-size: 3rem;
+  }
+  .lv2-pricing-page .lv2-price-cycle,
+  .lv2-pricing-page .lv2-price-sub {
+    font-size: 1rem;
+  }
+  .lv2-pricing-page .lv2-price-mascot {
+    margin-top: 6rem;
+  }
+  .lv2-pricing-page .lv2-price-mascot .pancake-stack__svg {
+    height: 6rem;
+  }
 }
 
 /* "Need more credits or a custom setup?  Talk to sales →": a dashed bar
@@ -331,78 +331,85 @@
 }
 
 /* ── "Credits find your leads." (CreditsExplained.tsx) ──
-   The heading on the left, the price list on the right: two groups under a
-   kit badge, each row a name (and one line) with its cost at the right. */
-.lv2-credits .lv2-credits-grid {
-  align-items: start;
+   Across the container: the heading on one line, two cards of equal height,
+   then what never uses a credit as a three-column check list. */
+.lv2-credits .lv2-section-header {
+  max-width: none;
+}
+.lv2-credits .lv2-credits-uses {
   display: grid;
-  gap: clamp(2rem, 5vw, 4.5rem);
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 1rem;
+  grid-template-columns: minmax(0, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.lv2-credits .lv2-credits-grid .lv2-section-header {
-  margin-bottom: 0;
-}
-@media (max-width: 1023px) {
-  .lv2-credits .lv2-credits-grid {
-    grid-template-columns: minmax(0, 1fr);
+@media (min-width: 768px) {
+  .lv2-credits .lv2-credits-uses {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-.lv2-credits .lv2-credits-panel {
+.lv2-credits .lv2-credits-use {
   background: var(--alt-surface);
-  border-radius: 28px;
+  border-radius: 24px;
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--palette-chrome-100) 8%, transparent);
   corner-shape: round;
   display: flex;
   flex-direction: column;
-  gap: clamp(1.5rem, 3vw, 2rem);
-  padding: clamp(1.25rem, 3vw, 2rem);
+  gap: 0.375rem;
+  padding: clamp(1.5rem, 3vw, 2rem);
 }
-.lv2-credits .lv2-credits-label {
-  display: flex;
-  font-size: inherit;
-  margin: 0;
+.lv2-credits .lv2-credits-use-name {
+  color: var(--palette-pink-40);
+  font-size: 0.875rem;
+  font-weight: 600;
 }
-.lv2-credits .lv2-credits-rows {
-  list-style: none;
-  margin: 0.5rem 0 0;
-  padding: 0;
+.lv2-credits .lv2-credits-use-cost {
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
 }
-.lv2-credits .lv2-credits-row {
-  align-items: baseline;
+.lv2-credits .lv2-credits-use-body {
+  color: var(--subtle-text);
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  margin-top: 0.375rem;
+  text-wrap: pretty;
+}
+.lv2-credits .lv2-credits-included {
   border-top: 1px solid color-mix(in srgb, var(--palette-chrome-100) 10%, transparent);
   display: flex;
-  gap: 1.5rem;
-  justify-content: space-between;
-  padding: 0.875rem 0;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: clamp(2rem, 5vh, 3rem);
+  padding-top: clamp(1.5rem, 3vw, 2rem);
 }
-.lv2-credits .lv2-credits-row:first-child {
-  border-top: 0;
-}
-.lv2-credits .lv2-credits-row:last-child {
-  padding-bottom: 0;
-}
-.lv2-credits .lv2-credits-row-name {
-  font-size: 1.0625rem;
-  font-weight: 600;
-  line-height: 1.35;
-  text-wrap: pretty;
-}
-.lv2-credits .lv2-credits-row-body {
-  color: var(--subtle-text);
+.lv2-credits .lv2-credits-included-title {
   font-size: 1rem;
-  line-height: 1.5;
-  margin-top: 0.125rem;
-  text-wrap: pretty;
+  font-weight: 600;
 }
-.lv2-credits .lv2-credits-row-cost {
-  flex: none;
-  font-size: 1.0625rem;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  white-space: nowrap;
+.lv2-credits .lv2-credits-included-list {
+  display: grid;
+  gap: 0.75rem clamp(1.5rem, 3vw, 2.5rem);
+  grid-template-columns: minmax(0, 1fr);
 }
-.lv2-credits .lv2-credits-row-cost[data-free] {
-  color: var(--positive-text);
+@media (min-width: 640px) {
+  .lv2-credits .lv2-credits-included-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1200px) {
+  .lv2-credits .lv2-credits-included-list {
+    grid-template-columns: repeat(3, auto);
+    justify-content: space-between;
+  }
+}
+
+/* ── "One plan per workspace." (PlanMap.tsx) ──
+   Its lede holds on one line on a desktop, like the headers above it. */
+.lv2-plan .lv2-section-header {
+  max-width: none;
 }
 
 /* ── "No surprise bills." (PricingFacts.tsx) ──
@@ -497,21 +504,16 @@
 }
 
 /* ── "Billing questions." (BillingFaq.tsx) ──
-   The heading on the left, the questions on the right as native <details>
-   on rules; a plus that turns to a cross when its answer is open. */
-.lv2-billing .lv2-billing-grid {
-  align-items: start;
-  display: grid;
-  gap: clamp(2rem, 5vw, 4.5rem);
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
-}
-.lv2-billing .lv2-billing-grid .lv2-section-header {
-  margin-bottom: 0;
-}
-@media (max-width: 1023px) {
-  .lv2-billing .lv2-billing-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
+   The heading and the way to support on one line, then the questions as
+   native <details> on rules, two columns across the container; a plus that
+   turns to a cross when its answer is open. */
+.lv2-billing .lv2-billing-head {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  justify-content: space-between;
+  margin-bottom: clamp(1.75rem, 4vh, 2.5rem);
 }
 .lv2-billing .lv2-billing-more {
   font-size: 1rem;
@@ -522,6 +524,24 @@
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+.lv2-billing .lv2-faq {
+  align-items: start;
+  display: grid;
+  gap: 0 clamp(2rem, 5vw, 4.5rem);
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 900px) {
+  .lv2-billing .lv2-faq {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+/* stacked on a phone, the second column continues the first: one rule
+   between them, not two */
+@media (max-width: 899px) {
+  .lv2-billing .lv2-faq-col + .lv2-faq-col .lv2-faq-item:first-child {
+    border-top: 0;
+  }
 }
 .lv2-billing .lv2-faq-item {
   border-top: 1px solid color-mix(in srgb, var(--palette-chrome-100) 12%, transparent);
