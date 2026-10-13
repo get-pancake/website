@@ -19,7 +19,7 @@
    never above 1px: the stack stops growing at its 560 design width.
 
    Layouts (lp-bento-data.ts resolveBento decides, the markup carries it):
-     data-layout="full"  all nine cards = the full grid (grid areas);
+     data-layout="full"  all seven cards = the artboard (grid areas);
      data-layout="rows"  a partial set = rows on 12 columns, each card's span,
                          centred start and row height set inline by the server;
      the two-column stack (phones always, tablets with a partial set): order,
@@ -44,11 +44,11 @@
    chrome is added here. `.lp >` outranks foundation.css's older per-width
    values. 307 = 93.34 + 68.80 + 80.44 + 64.42 (title, margins, paddings). */
 .lp > .lp-bento {
-  contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1526) * 1px);
+  contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1141) * 1px);
 }
 @media (min-width: 1025px) and (max-width: 1199px) {
   .lp > .lp-bento {
-    contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1526) * (100vw - 64px) / 1136);
+    contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1141) * (100vw - 64px) / 1136);
   }
 }
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -56,7 +56,7 @@
     /* 72 + 68.80 + 56 + grid + 72. The full grid is the desktop one scaled to the frame
        (100vw − 48): its height is in --u. A partial set stacks in px. One of the two is 0. */
     contain-intrinsic-size: auto
-      calc(268.8px + var(--lp-bento-tablet-px, 0) * 1px + var(--lp-bento-tablet-u, 1526) * (100vw - 48px) / 1136);
+      calc(268.8px + var(--lp-bento-tablet-px, 0) * 1px + var(--lp-bento-tablet-u, 1141) * (100vw - 48px) / 1136);
   }
 }
 @media (max-width: 767px) {
@@ -111,29 +111,23 @@
   }
 }
 
-/* ── ≥ 768, all nine cards: the full grid ──
-   The artboard draws seven (vl vl qa qa / vl vl ka kb / kc qb qb vs on four
-   columns). With two more quotes (founder 2026-10-13) the cards sit on its
-   12 columns (80 + 16: 3 = its 272 card, 6 = its 560 card), each at the
-   size it is drawn at, and placed so that NO TWO CARDS OF ONE COMPANY TOUCH
-   (founder 2026-10-13; lp-bento-data.ts BENTO_SLOT_IDS has the map): the
-   tall Kinro film beside Praxis's and AgentMail's quotes; a Praxis figure,
-   Vector Legal's quote, the other Praxis figure; Kinro's quote, the Praxis
-   film, Kinro's figure. Tablets draw the same grid, scaled. Not in the Figma. */
+/* ── ≥ 768, all seven cards: the artboard ──
+   The designer's seven cards and three rows, nothing more (founder
+   2026-10-13: "stick to the 7 placeholders that the designer set"). WHICH
+   customer sits in which card is chosen so that no two cards of one company
+   touch (lp-bento-data.ts BENTO_SLOT_IDS has the map). Tablets draw this
+   same grid, scaled to the frame. */
 @media (min-width: 768px) {
   .lp-bento__grid[data-layout="full"] {
     grid-template-areas:
-      "vl vl vl vl vl vl qa qa qa qa qa qa"
-      "vl vl vl vl vl vl qc qc qc qc qc qc"
-      "ka ka ka qd qd qd qd qd qd kb kb kb"
-      "qb qb qb qb qb qb vs vs vs kc kc kc";
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(369 * var(--u)) calc(375 * var(--u));
+      "vl vl qa qa"
+      "vl vl ka kb"
+      "kc qb qb vs";
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(375 * var(--u));
   }
   .lp-bento__grid[data-layout="full"] > [data-slot="videoLg"] { grid-area: vl; }
   .lp-bento__grid[data-layout="full"] > [data-slot="quoteA"] { grid-area: qa; }
-  .lp-bento__grid[data-layout="full"] > [data-slot="quoteC"] { grid-area: qc; }
-  .lp-bento__grid[data-layout="full"] > [data-slot="quoteD"] { grid-area: qd; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiA"] { grid-area: ka; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiB"] { grid-area: kb; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiC"] { grid-area: kc; }
@@ -249,7 +243,7 @@
      the column edge. */
   padding-inline-end: 0.25em;
 }
-.lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__quote p {
+.lp-bento__card[data-slot="quoteB"] .lp-bento__quote p {
   padding-inline: 0.25em 0;
 }
 .lp-bento__nowrap {
@@ -267,24 +261,21 @@
 .lp-bento__by b {
   font-weight: 600;
 }
-/* quoteD: its first line is longer than quoteA's and ran under the blob (whose left edge is
-   at 340 where the quote starts; founder 2026-10-13: "it's covering the picture"). The quote
-   wraps 45 u earlier, clear of the photo. */
-.lp .lp-bento__card[data-slot="quoteD"] .lp-bento__quote p {
+/* quoteA: a first line longer than about 290 u runs under the blob (whose left edge is at 340
+   where the quote starts; founder 2026-10-13, on Vector Legal's quote: "it's covering the
+   picture"). The quote wraps 45 u earlier, clear of the photo. */
+.lp .lp-bento__card[data-slot="quoteA"] .lp-bento__quote p {
   max-width: calc(290 * var(--u));
 }
 /* quoteB: the column hugs the right edge (Figma primary MAX: card-rel x =
    560 − 48 − 335 = 177), items and text right-aligned (counter MAX). Its
-   badge stays inside the column: the wordmark moves left by the badge.
-   quoteC is quoteB's composition (it sits under quoteA, whose blob is on
-   the other side); quoteD is quoteA's (it sits beside quoteB: the two
-   blobs take the row's outer corners). */
-.lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__col {
+   badge stays inside the column: the wordmark moves left by the badge. */
+.lp-bento__card[data-slot="quoteB"] .lp-bento__col {
   align-items: flex-end;
   margin-left: auto;
   text-align: right;
 }
-.lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__logo[data-yc] {
+.lp-bento__card[data-slot="quoteB"] .lp-bento__logo[data-yc] {
   margin-right: calc(19.428 * var(--u));
 }
 
@@ -304,14 +295,14 @@
 /* quoteA's blob hugs the top-RIGHT corner: in the 560 card, left 340.47 =
    560 + 91.06 − 310.59. Right-anchored, so a wider card (tablets, a partial
    row) keeps it in its corner and the extra width is air beside the text. */
-.lp-bento__card:is([data-slot="quoteA"], [data-slot="quoteD"]) .lp-bento__portrait {
+.lp-bento__card[data-slot="quoteA"] .lp-bento__portrait {
   height: calc(313.19 * var(--u));
   right: calc(-91.06 * var(--u));
   top: calc(-39.76 * var(--u)); /* bleeds 39.76 above, 91.06 past the right edge */
   width: calc(310.59 * var(--u));
   z-index: 0;
 }
-.lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__portrait {
+.lp-bento__card[data-slot="quoteB"] .lp-bento__portrait {
   height: calc(259.51 * var(--u));
   left: calc(-26.41 * var(--u));
   top: calc(-37.9 * var(--u)); /* bleeds 26.41 left, 37.9 above */
@@ -675,7 +666,7 @@ body:has(.lp-bento__dialog[open]) {
   .lp-bento__title {
     margin-bottom: 56px;
   }
-  /* all nine: the 12-column grid above, scaled to the frame (--u = the frame / 1136, about 0.63
+  /* all seven: the artboard's grid above, scaled to the frame (--u = the frame / 1136, about 0.63
      at 768: the phone stack draws the cards at 0.66). A two-column tablet layout stacked a
      Praxis quote on a Praxis figure and the two Praxis figures on each other. */
   .lp-bento__grid[data-layout="rows"] {

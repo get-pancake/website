@@ -21,7 +21,7 @@
  *   preview     the same sections still render, and the placeholders that exist are marked.
  *   both        the bento's server markup can play nothing (its <video> elements are created by
  *               the client, in view and muted, or in the sound dialog after a click); every
- *               subset of the bento's nine slots lays out without a hole; every film has its
+ *               subset of the bento's seven slots lays out without a hole; every film has its
  *               muted preview clip (under 600 kB) and its captions track; every bento file the
  *               markup or the data names exists under public/, and public/lp/bento/ holds no
  *               file the bento does not name (an unreleased film must not sit there unused); a
@@ -91,7 +91,7 @@ function renderAll() {
   const names = (cards) => [...new Set(cards.flatMap(({ card }) => (card.kind === "quote" ? [card.person.name] : [])))];
   const finalNames = names(bentoCards.filter(({ card }) => card.status === "final"));
 
-  // every subset of the nine slots (each filled with its card, as final) must lay out: the
+  // every subset of the seven slots (each filled with its card, as final) must lay out: the
   // two-column stack ends on whole rows, and each desktop row fills 12 columns or is one centred card
   const subsetProblems = [];
   const cardOf = Object.fromEntries(bentoCards.map((c) => [c.id, { ...c.card, status: "final" }]));

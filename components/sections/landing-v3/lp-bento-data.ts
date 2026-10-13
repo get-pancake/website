@@ -3,15 +3,23 @@
  * 5024:10543 + seven frames). Owner: bento package. In scripts/homepage-lint.mjs FILES: every
  * string here is linted.
  *
- * Content (founder 2026-10-11, decisions §9): the Kinro and Praxis testimonials, the two
- * INDIVIDUAL cuts, never the merged compilation. Their quotes are verbatim whole sentences; the
- * numbers are the customers' own. Since 2026-10-13 two written quotes the founder supplied:
- * AgentMail's (quoteC), which he asked to shorten, so it is NOT verbatim, and Vector Legal's
- * (quoteD), as he gave it. Evidence, frames and timings: artifacts/landing-v2-figma/assets/
- * bento-real/manifest.json (Praxis), manifest-kinro.json (Kinro), impl/bento-real-assets.md and
- * impl/bento-real-assets-kinro.md.
+ * Content: SEVEN cards, the seven the designer drew, no more (founder 2026-10-13: "we should be
+ * able to stick to the 7 placeholders that the designer set"; for a few hours that day the
+ * section had eight, then nine cards and a fourth row). Four customers share them:
+ *   - Kinro (Pierre-Alexandre Kamienny, CEO): the large film, one figure;
+ *   - Praxis (Diana Khramina, CEO): the small film, two figures;
+ *   - Vector Legal and AgentMail: one written quote each, supplied by the founder that day.
+ * The films are the two INDIVIDUAL cuts, never the merged compilation; the numbers are the
+ * customers' own; the two written quotes were shortened at the founder's request (NOT verbatim).
+ * Left out to stay at seven: the two on-camera quote cards, "I cancelled all my subscriptions
+ * and I’m using Pancake for three of them." (Diana) and "I’m running all of my GTM in Codex
+ * using Pancake." (Pierre). Both people still speak in their films. To bring one back, put it
+ * in a quote slot in place of a written quote (git history has the entries and the portraits:
+ * commit 9770bda) and check the neighbours rule below. Evidence, frames and timings:
+ * artifacts/landing-v2-figma/assets/bento-real/manifest.json (Praxis), manifest-kinro.json
+ * (Kinro), impl/bento-real-assets.md and impl/bento-real-assets-kinro.md.
  *
- * Nine slots. Each lists its candidate cards with `status` from lib/placeholders.ts:
+ * Seven slots. Each lists its candidate cards with `status` from lib/placeholders.ts:
  *   - "final": real content whose asset is in public/. Always renders, wins its slot.
  *   - "placeholder": a stand-in that renders in dev and on Vercel previews only (marked
  *     data-placeholder). NONE today: every card is final. The mechanism
@@ -19,8 +27,7 @@
  *     public URL (lp-bento-placeholder.ts inlines it from ./bento-placeholder/).
  * Production renders ONLY final cards, so it may hold a partial set: resolveBento() lays the cards
  * it has out cleanly (rows on desktop, the artboard's two-column stack below) and returns null
- * only when no card is left. With all nine it is the full grid: the designer's seven-card
- * artboard with two more quotes (see BENTO_SLOT_IDS).
+ * only when no card is left. With all seven it is the designer's artboard, desktop and phone.
  *
  * How a card becomes final: put its asset in public/lp/bento/, set status "final", keep `source`.
  * Videos, three things per film (recipes: artifacts/landing-v2-figma/assets/bento-real/tools/):
@@ -56,27 +63,25 @@ export const BENTO_VIDEO_LABELS = {
  */
 export const BENTO_LIVE = true;
 
-export type BentoSlotId = "videoLg" | "quoteA" | "quoteC" | "kpiA" | "kpiB" | "kpiC" | "videoSm" | "quoteB" | "quoteD";
+export type BentoSlotId = "videoLg" | "quoteA" | "kpiA" | "kpiB" | "kpiC" | "quoteB" | "videoSm";
 /**
- * The reading order (row by row on desktop): the DOM order of a full set.
- * The artboard draws seven cards on a 4-column grid: vl vl qa qa / vl vl ka kb / kc qb qb vs.
- * Two more quotes (founder 2026-10-13: quoteC "add Adi from AgentMail", then quoteD "let's add
- * a testimonial here also", Vector Legal) make a fourth row. The full grid is on the artboard's
- * 12 columns (3 = its 272 card, 6 = its 560 card) and every card keeps the size it is drawn at.
+ * The artboard's reading order (row by row on desktop): the DOM order of a full set.
+ *   vl vl qa qa
+ *   vl vl ka kb
+ *   kc qb qb vs
  *
  * NO TWO CARDS OF ONE COMPANY TOUCH, side by side or one above the other (founder 2026-10-13, on
  * two Praxis figures next to each other: "we have to reshuffle so that the same company does not
- * appear back to back"). Praxis has four of the nine cards and Kinro three, so few grids allow
- * it; this one does (K = Kinro, P = Praxis, A = AgentMail, V = Vector Legal):
- *   vl ×6 (two rows tall)  K | qa ×6  P
- *                            | qc ×6  A
- *   ka ×3  P | qd ×6  V | kb ×3  P          a quote between the two Praxis figures
- *   qb ×6  K | vs ×3  P | kc ×3  K          Kinro's quote, the Praxis film, Kinro's figure
- * The artboard itself put the two Praxis figures side by side. Before moving a card or adding
- * one, check every neighbour again (the same rule holds in FLOW_ORDER, the phone stack).
- * NOT in the Figma: the designer has to confirm or redraw it.
+ * appear back to back"). What sits where (K = Kinro, P = Praxis, V = Vector Legal, A = AgentMail):
+ *   vl K  K  | qa V  V
+ *   vl K  K  | ka P  | kb K
+ *   kc P  | qb A  A  | vs P
+ * Every pair that shares an edge is two different companies. The artboard's own filling (Praxis
+ * in qa, ka and kb) was not. Before moving a card or changing one's company, check the eleven
+ * pairs again: vl-qa, vl-ka, qa-ka, qa-kb, ka-kb, vl-kc, vl-qb, ka-qb, kb-vs, kc-qb, qb-vs. The
+ * phone stack has the same rule (FLOW_ORDER).
  */
-export const BENTO_SLOT_IDS: readonly BentoSlotId[] = ["videoLg", "quoteA", "quoteC", "kpiA", "quoteD", "kpiB", "quoteB", "videoSm", "kpiC"];
+export const BENTO_SLOT_IDS: readonly BentoSlotId[] = ["videoLg", "quoteA", "kpiA", "kpiB", "kpiC", "quoteB", "videoSm"];
 
 /**
  * A customer's wordmark from public/logos/customers (the marquee's artwork), painted as an alpha
@@ -202,8 +207,6 @@ type BentoSlotCard = {
   kpiB: BentoKpiCard;
   kpiC: BentoKpiCard;
   quoteB: BentoQuoteCard;
-  quoteC: BentoQuoteCard;
-  quoteD: BentoQuoteCard;
   videoSm: BentoVideoCard;
 };
 type BentoEntries = { [K in BentoSlotId]: readonly BentoSlotCard[K][] };
@@ -214,10 +217,8 @@ type BentoEntries = { [K in BentoSlotId]: readonly BentoSlotCard[K][] };
 const PRAXIS: BentoLogo = { name: "Praxis", src: "/logos/customers/praxis.png", ratio: 1392 / 370, body: [0.24, 0.755], yc: true };
 const KINRO: BentoLogo = { name: "Kinro", src: "/logos/customers/kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75], yc: true };
 
-/* Names and titles exactly as the films' lower thirds show them ("Diana Khramina / CEO, PRAXIS",
-   "Pierre-Alexandre Kamienny / CEO, KINRO"); the company in the logo's spelling. */
-const DIANA = { name: "Diana Khramina", role: "CEO", company: "Praxis" };
-const PIERRE = { name: "Pierre-Alexandre Kamienny", role: "CEO", company: "Kinro" };
+/* The films' people, exactly as their lower thirds show them: "Diana Khramina / CEO, PRAXIS",
+   "Pierre-Alexandre Kamienny / CEO, KINRO" (the films' titles and descriptions below). */
 /* AgentMail: the marquee's wordmark and numbers (LpMarquee.tsx). The founder named him "Adi from
    AgentMail"; surname and title are Y Combinator's company page (Adi Singh, listed as a founder),
    not his own word: to be confirmed with him. */
@@ -281,42 +282,14 @@ const BENTO_ENTRIES: BentoEntries = {
       source: "Pierre Testimonial 12.mov, transcoded 2026-10-12 (manifest-kinro.json); poster = frame 96.",
     },
   ],
-  /* Diana, on camera, lips in sync (compilation 31.53–34.43 s; her cut about 36.2–39.6 s). */
-  quoteA: [
-    {
-      status: "final",
-      kind: "quote",
-      logo: PRAXIS,
-      quote: "I cancelled all my subscriptions and I’m using Pancake for three of them.",
-      person: DIANA,
-      photo: { src: "/lp/bento/praxis-diana-portrait-640.webp" },
-      source: "Praxis individual cut (Testimonial Diana - 4 x1.09.mov), checked compilation transcript sentence 8; portrait = frame 524 of the cut.",
-    },
-  ],
-  /* AgentMail, a WRITTEN quote the founder supplied on 2026-10-13 and asked to shorten ("simplify
-     quote", then "no longer than" Pierre's 49 characters). His two sentences, in full: "One
-     Pancake Play turns the people engaging with our posts into leads and reaches out to them. It
-     replaced every tools we had to run inbound campaigns." The card keeps the second one's claim.
-     An edited quote under a real name: the founder gets Adi's yes on this wording.
-     Portrait: the 512 px headshot he sent (soft at 2x in the 257 u blob, like Pierre's). */
-  quoteC: [
-    {
-      status: "final",
-      kind: "quote",
-      logo: AGENTMAIL,
-      quote: "One Pancake Play replaced all our inbound tools.",
-      person: ADI,
-      photo: { src: "/lp/bento/agentmail-adi-portrait-512.webp" },
-      source: "Written quote and headshot supplied by the founder on 2026-10-13; shortened at his request (the original is in the comment above).",
-    },
-  ],
   /* Vector Legal, a WRITTEN quote the founder supplied on 2026-10-13 ("let's add a testimonial
      here also + logo in the carousel"): "$50K in pipeline in 7 days from outreach on high-intent
      signals". Three lines of it ran under her photo, and he asked to "synthetize or improve":
      the card drops "outreach on" and keeps the figure, the time and the signals, on two lines.
      NOT verbatim any more. The figure is hers, relayed by him: no other record of it is in the
-     repository. Portrait: the 800 px photo he sent. */
-  quoteD: [
+     repository. Portrait: the 800 px photo he sent. This slot's blob is top right: the quote
+     wraps before it (bento.css). */
+  quoteA: [
     {
       status: "final",
       kind: "quote",
@@ -333,31 +306,36 @@ const BENTO_ENTRIES: BentoEntries = {
      (artifacts/landing-v2-figma/specs/updates/_bento-real-testimonials.md), kept out of this
      public repository on purpose. Founder 2026-10-11: her figures, in the designer's big-number
      format. The three KPI pairs go to scripts/homepage-lint.mjs as whole strings (bentoKpiClaims
-     below), to be checked against its explicit, sourced allow-list. */
+     below), to be checked against its explicit, sourced allow-list.
+     Her two figures are in kpiA and kpiC, which never touch; Kinro's is between them in kpiB
+     (the neighbours rule, BENTO_SLOT_IDS). */
   kpiA: [
     { status: "final", kind: "kpi", logo: PRAXIS, value: "10%+", label: "reply rate", source: "Diana Khramina, message to Tristan 2026-09-18 (reference in the spec, see the comment above), repeated on camera in her cut." },
-  ],
-  kpiB: [
-    { status: "final", kind: "kpi", logo: PRAXIS, value: "10+", label: "meetings booked a week", source: "Diana Khramina, message to Tristan 2026-09-18 (reference in the spec, see the comment above), repeated on camera in her cut." },
   ],
   /* Pierre on camera: "Pancake helped me book 15 meetings last week" (his cut 39.57–41.52 s, the
      same sentence and the same audio as the merged compilation's 61.68–63.72 s; side-angle
      camera, lips in sync up to "meetings"). One week, as he says it. */
-  kpiC: [
+  kpiB: [
     { status: "final", kind: "kpi", logo: KINRO, value: "15", label: "meetings booked in a week", source: "Pierre-Alexandre Kamienny on camera, Kinro individual cut and merged compilation sentence 14 (manifest-kinro.json)." },
   ],
-  /* Pierre, alone on screen, lips in sync over the whole sentence (his cut 14.93–17.80 s; the
-     merged compilation 28.45–31.33 s). Portrait: a crop of frame 92 of his own cut, 430 px
-     native, so soft at 2x (founder 2026-10-12: accepted). */
+  kpiC: [
+    { status: "final", kind: "kpi", logo: PRAXIS, value: "10+", label: "meetings booked a week", source: "Diana Khramina, message to Tristan 2026-09-18 (reference in the spec, see the comment above), repeated on camera in her cut." },
+  ],
+  /* AgentMail, a WRITTEN quote the founder supplied on 2026-10-13 and asked to shorten ("simplify
+     quote", then "no longer than" 49 characters). His two sentences, in full: "One Pancake Play
+     turns the people engaging with our posts into leads and reaches out to them. It replaced
+     every tools we had to run inbound campaigns." The card keeps the second one's claim.
+     An edited quote under a real name: the founder gets Adi's yes on this wording.
+     Portrait: the 512 px headshot he sent (soft at 2x in the 257 u blob). */
   quoteB: [
     {
       status: "final",
       kind: "quote",
-      logo: KINRO,
-      quote: "I’m running all of my GTM in Codex using Pancake.",
-      person: PIERRE,
-      photo: { src: "/lp/bento/kinro-pierre-portrait-640.webp" },
-      source: "Kinro individual cut (Pierre Testimonial 12.mov), checked compilation transcript sentence 7; portrait = frame 92 of the cut.",
+      logo: AGENTMAIL,
+      quote: "One Pancake Play replaced all our inbound tools.",
+      person: ADI,
+      photo: { src: "/lp/bento/agentmail-adi-portrait-512.webp" },
+      source: "Written quote and headshot supplied by the founder on 2026-10-13; shortened at his request (the original is in the comment above).",
     },
   ],
   /* Praxis, Diana's individual cut, founder-validated 2026-09-29 (58.2 s, 4:3). Her name title is
@@ -403,17 +381,16 @@ const BENTO_ENTRIES: BentoEntries = {
  * order and boxes, in desktop px (`--u` scales them). Wide cards take both columns.
  */
 /* The same rule in the stack: no two cards of one company in a row or in two rows that follow
-   each other. Only ONE narrow card is Kinro's and three are Praxis's, so only one pair of narrow
-   cards can exist (a Praxis figure beside Kinro's): the second Praxis figure and the Praxis film
-   each take a row of their own (FLOW_SOLO_*). K P K P A (P|K) V P: */
-const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "quoteA", "quoteB", "kpiB", "quoteC", "kpiA", "kpiC", "quoteD", "videoSm"];
+   each other. The mobile artboard's order (vl / ka kb / qa / kc vs / qb) would put a Praxis
+   figure beside the Praxis film. Three of the four narrow cards are Praxis's, so only ONE pair
+   of narrow cards can exist (a Praxis figure beside Kinro's): the other Praxis figure and the
+   Praxis film each take a row of their own (FLOW_SOLO_*).  K · P · V · (P|K) · A · P: */
+const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "kpiC", "quoteA", "kpiA", "kpiB", "quoteB", "videoSm"];
 const FLOW_BOX: Record<BentoSlotId, { wide: boolean; height: number }> = {
   videoLg: { wide: true, height: 750 },
   kpiA: { wide: false, height: 365 },
   kpiB: { wide: false, height: 365 },
   quoteA: { wide: true, height: 369 },
-  quoteC: { wide: true, height: 369 },
-  quoteD: { wide: true, height: 369 },
   kpiC: { wide: false, height: 375 },
   videoSm: { wide: false, height: 375 },
   quoteB: { wide: true, height: 375 },
@@ -424,12 +401,12 @@ const FLOW_SOLO_HEIGHT = 369;
 const FLOW_SOLO_KPI_HEIGHT = 250;
 /** Desktop gap between cards, and between the tablet rows (px at `--u` = 1). */
 const GAP = 16;
-/** The full grid: rows 369 / 365 / 369 / 375. Tablets draw the same grid, scaled (a two-column
+/** The artboard's grid: rows 369 / 365 / 375. Tablets draw the same grid, scaled (a two-column
  *  tablet layout cannot keep one company's cards apart), so its height there is in `--u` too. */
-const FULL_GRID_U = 369 + 365 + 369 + 375 + 3 * GAP;
+const FULL_GRID_U = 369 + 365 + 375 + 2 * GAP;
 
 type Kind = "V" | "Q" | "K";
-const KIND: Record<BentoSlotId, Kind> = { videoLg: "V", videoSm: "V", quoteA: "Q", quoteB: "Q", quoteC: "Q", quoteD: "Q", kpiA: "K", kpiB: "K", kpiC: "K" };
+const KIND: Record<BentoSlotId, Kind> = { videoLg: "V", videoSm: "V", quoteA: "Q", quoteB: "Q", kpiA: "K", kpiB: "K", kpiC: "K" };
 
 /**
  * Rows a PARTIAL set may form on the desktop grid (12 columns: 3 = the artboard's 272 card,
@@ -458,12 +435,10 @@ const ROW_SHAPES: Record<string, { order: readonly Kind[]; spans: readonly numbe
   "0,1,0": { order: ["Q"], spans: [12], height: 369, cost: 5 }, // full width: the text left, the blob in its corner
   "0,0,1": { order: ["K"], spans: [4], start: 5, height: 365, cost: 6 },
 };
-/** Rows worth a nudge: the designer's own, and a customer's film next to their quote. */
+/** Rows worth a nudge: the designer's own. */
 const ROW_FAVOURITES: readonly (readonly BentoSlotId[])[] = [
   ["quoteA", "kpiA", "kpiB"],
   ["kpiC", "quoteB", "videoSm"],
-  ["videoSm", "quoteA"],
-  ["videoLg", "quoteB"],
 ];
 
 type Row = { ids: BentoSlotId[]; shape: (typeof ROW_SHAPES)[string]; cost: number };
@@ -479,7 +454,7 @@ function rowOf(ids: readonly BentoSlotId[]): Row | null {
   return { ids: ordered, shape, cost: shape.cost + 0.25 - (favourite ? 0.1 : 0) };
 }
 
-/** The cheapest way to split the cards into rows (≤ 8 cards: at most 4140 partitions). */
+/** The cheapest way to split the cards into rows (≤ 6 cards: at most 203 partitions). */
 function bestRows(ids: readonly BentoSlotId[]): Row[] {
   if (ids.length === 0) return [];
   const [first, ...rest] = ids;

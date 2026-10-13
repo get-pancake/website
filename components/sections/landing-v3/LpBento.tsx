@@ -23,18 +23,18 @@ import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
  * 5024:10543). Owner: bento package. Between the CTA and pricing, a DIRECT <section
  * class="lp-bento"> child of main.lp, so the agents view hides it with every other section.
  *
- * Content: the Kinro and Praxis testimonials, AgentMail's and Vector Legal's quotes
- * (lp-bento-data.ts), all nine cards final. Gating (lib/placeholders.ts): production renders only "final" cards, so it may hold
+ * Content: the designer's seven cards, shared by four customers (Kinro, Praxis, Vector Legal,
+ * AgentMail: lp-bento-data.ts), all final. Gating (lib/placeholders.ts): production renders only "final" cards, so it may hold
  * a partial set; dev / preview fill the other slots with their placeholders (marked
  * data-placeholder; none today). Null when nothing is left, and in production while BENTO_LIVE
  * (lp-bento-data.ts) is off. `placeholders` and `live` are injectable for tests
  * (scripts/placeholder-gate.test.mjs renders the set that goes live).
  *
  * Layout (all numbers come from resolveBento, CSS in bento.css, every card metric in `--u`):
- *   - all nine cards: the full grid. Four rows on the 1136 column's 12 columns (`--u` = 1 px at
- *     ≥ 1200, the column / 1136 below, tablets included), phones the mobile artboard's two-column
- *     stack (`--u` = the column / 560). The artboard draws seven cards; the grid for nine, and the
- *     rule that no two cards of one company touch, are in lp-bento-data.ts BENTO_SLOT_IDS;
+ *   - all seven cards: the artboard. Desktop 4 × 3 on the 1136 column (`--u` = 1 px at ≥ 1200,
+ *     the column / 1136 below, tablets included), phones the two-column stack (`--u` = the
+ *     column / 560). Which customer sits in which card, and the stack's order, follow one rule:
+ *     no two cards of one company touch (lp-bento-data.ts BENTO_SLOT_IDS, FLOW_ORDER);
  *   - a partial set: rows on a 12-column desktop grid (data-layout="rows", spans from the server),
  *     the same two-column stack below 1025 with a lone narrow card widened (data-solo).
  *
