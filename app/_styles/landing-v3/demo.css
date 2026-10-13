@@ -788,6 +788,7 @@
 .lp-demowin__ctool-done b { color: var(--lp-claude-ink); font-variant-numeric: tabular-nums; font-weight: 600; }
 .lp-demowin__ctool[data-deploy] .lp-demowin__ctool-done { align-items: center; color: var(--lp-demowin-green-fg); display: flex; font-weight: 500; gap: 5px; justify-content: flex-end; }
 .lp-demowin__ctool[data-deploy] .lp-demowin__ctool-done::before { background: currentColor; border-radius: 50%; content: ""; height: 5px; width: 5px; }
+.lp-demowin__ctool-note { color: var(--lp-claude-ink-48); font-weight: 400; }
 
 /* the Play, in Claude's own interface (founder 2026-10-13: "should not be the
    pancake look and feel"): a white result card like the tool calls', the
@@ -849,6 +850,21 @@
 }
 .lp-demowin__perm-btn--go { background: var(--lp-ink-100); box-shadow: none; color: var(--lp-surface); }
 .lp .lp-demowin__ctools--deploy { margin-top: 12px; }
+
+/* rest = END (the deep dive's stage, LpStoryClaude): the scene's last picture
+   in plain CSS, for the markup before and after its timeline. The same picture
+   as the timeline's last frame: change the two together. */
+.lp-demowin__cwin[data-rest="end"] .lp-demowin__greet,
+.lp-demowin__cwin[data-rest="end"] .lp-demowin__cbar-ph,
+.lp-demowin__cwin[data-rest="end"] .lp-demowin__cbar .lp-demowin__caret,
+.lp-demowin__cwin[data-rest="end"] .lp-demowin__ctool-doing,
+.lp-demowin__cwin[data-rest="end"] .lp-demowin__cplay-st > [data-s="draft"] { visibility: hidden; }
+.lp-demowin__cwin[data-rest="end"] .lp-demowin__cbar { height: var(--ck-dock-h); top: var(--ck-dock-top); }
+.lp-demowin__cwin[data-rest="end"] .lp-demowin__cthread > *,
+.lp .lp-demowin__cwin[data-rest="end"] .lp-demowin__cbar-ask,
+.lp-demowin__cwin[data-rest="end"] .lp-demowin__cplay-st > [data-s="live"] { opacity: 1; visibility: visible; }
+.lp .lp-demowin__cwin[data-rest="end"] .lp-demowin__ctools:not(.lp-demowin__ctools--deploy),
+.lp-demowin__cwin[data-rest="end"] .lp-demowin__perm { display: none; }
 
 @keyframes lp-demowin-spin {
   to { transform: rotate(1turn); }

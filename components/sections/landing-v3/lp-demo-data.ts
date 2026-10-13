@@ -75,12 +75,12 @@ export const LP_DEMO = {
       who: { key: "Who", value: "Founders, Heads of Marketing" },
       company: { key: "Company", value: "B2B startups, 10 to 50 people" },
       signal: { key: "Signal", value: ["Seed round", "Hiring marketing"] },
-      pace: { key: "Pace", value: "25 new leads a week" },
+      pace: { key: "Pace", value: "Runs daily, 25 leads a week" },
       then: { key: "Then", value: ["Find", "Qualify", "Reach out"] },
       deploy: "Deploy Play",
     },
     /** Pancake's last word once the Play is live: what happens from here. */
-    after: "It’s live. I’ll find new ones each week and reach out in your voice.",
+    after: "It’s live and runs daily. I’ll reach out in your voice.",
     /** role="img" label of the view. */
     aria: "Product demo. A web design agency types a request: Find founders who just raised a seed round and are hiring a marketing lead. Pancake reads its Brain, searches funding news and checks who is hiring: 25 leads found. It proposes a Play to keep them coming: who, which companies, the signal, 25 new leads a week, then find, qualify, reach out. One click deploys it. Pancake confirms it is live and will reach out in the agency’s voice.",
   },
@@ -99,7 +99,7 @@ export const LP_DEMO = {
     placeholder: "How can I help you today?",
     /** The connector chip in the composer. */
     connector: "Pancake",
-    model: "Opus 5",
+    model: "Opus 5.5",
     /** The docked composer once the request is sent. */
     reply: "Reply to Claude…",
     say: "I’ll run this through Pancake.",
@@ -114,7 +114,9 @@ export const LP_DEMO = {
     ask: { lead: "Claude wants to use", tool: "Deploy Play", from: "from", app: "Pancake" },
     always: "Always allow",
     allow: "Allow once",
-    deploy: { title: "Deploy Play", doing: "Deploying…", done: "Live" },
+    /** `note`: what "Live" means for a Play, it keeps running (founder 2026-10-13: "something
+     *  like running daily next to the deploy, to show the recurring thing about a play"). */
+    deploy: { title: "Deploy Play", doing: "Deploying…", done: "Live", note: "running daily" },
     done: "Your Play is live on Pancake.",
   },
 } as const;

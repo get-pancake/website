@@ -143,7 +143,7 @@ export const SM_STORY: SmStory = {
       lead: L.tamsin,
       state: "sent",
       message:
-        "Hi Tamsin, saw you teased a release at Quillfern this week. How will you show it on launch day, a video or screenshots?",
+        "Hi Tamsin, saw you teased a release at Quillfern this week. Will the website be ready for launch day, or still to do?",
       reply: "Hey, sounds interesting. I’m free Thursday 3pm!",
       place: { x: 563.676, y: 97.945, s: 0.681942 },
       dim: 0.5,
@@ -154,8 +154,8 @@ export const SM_STORY: SmStory = {
       id: "far",
       lead: L.elena,
       state: "sent",
-      message: "Hi Elena, we make launch videos for SaaS teams. When your team ships a feature, who makes the video?",
-      reply: "Nobody owns video yet. Can you send an example?",
+      message: "Hi Elena, we design websites for SaaS teams. When your team ships a feature, who updates the site?",
+      reply: "Nobody owns it yet. Can you send an example?",
       place: { x: 415.426, y: 419.945, s: 0.355553 },
       dim: 0.5,
       wire: 0.8,
@@ -166,7 +166,7 @@ export const SM_STORY: SmStory = {
       lead: L.sarah,
       state: "typed",
       message:
-        "Hey Sarah, saw your launch is next week. How will you show it, a video or screenshots? Free for a call Thursday?",
+        "Hey Sarah, saw your launch is next week. Is the website ready for it, or still to do? Free for a call Thursday?",
       place: { x: -55.574, y: 97.945, s: 1 },
       dim: 0.6,
       wire: 1,
@@ -177,7 +177,7 @@ export const SM_STORY: SmStory = {
       lead: L.nate,
       state: "typed",
       message:
-        "Hi Nate, saw you liked Bramble Reels’ post on explainer videos. Is video on Quorra Labs’ content plan this year?",
+        "Hi Nate, saw you liked Bramble Reels’ post on landing pages. Is a new site on Quorra Labs’ plan this year?",
       place: { x: 106.426, y: 70.945, s: 1.5 },
       dim: 1,
       wire: 1,

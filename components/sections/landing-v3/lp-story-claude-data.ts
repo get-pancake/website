@@ -1,48 +1,49 @@
-import type { ContentStatus } from "@/lib/placeholders";
+import type { ClaudeScript } from "./LpClaudeScene";
 
 /**
- * Deep-dive story "Run it from Claude or Codex" — its copy and data (Figma 4964:2575 / 3930 / 3981). Owner: story-claude package.
- * In scripts/homepage-lint.mjs FILES: every string here is linted. Entries that may only show in
- * dev/preview carry `status: "placeholder"` (lib/placeholders.ts ContentStatus) and are gated by
- * the server parent, never by this module.
+ * Deep-dive story "Run it from Claude or Codex" — its script. In scripts/homepage-lint.mjs FILES:
+ * every string here is linted.
+ *
+ * Redrawn 2026-10-13 (founder: "adjust wherever claude / codex is mentioned with the new
+ * storyboard we just designed… should not be necessarily the same but reuse components"): the
+ * demo window under the hero builds and deploys a Play from Claude; this story shows the other
+ * half of the item's promise ("Build Plays, review leads and edit messages from the chat you
+ * already use"): the week's leads reviewed and approved from Claude. Same components
+ * (LpClaudeScene: connector chip, tool-call cards, a result card, the permission prompt), same
+ * timeline builder, another script. It replaces the 2026-10-09 story ("Create a Play…",
+ * "Connecting...", "11 leads found").
  *
  * Truth (public/llms.txt, /guides/claude): Claude, Claude Code and Codex connect to Pancake over
- * MCP with a browser sign-in; from the chat you create and run Plays and review leads. Cursor
- * can't connect yet, so the corner pair is Codex + Claude (Figma drew Cursor's cube, 4964:4029).
- * No time claim anywhere near this stage: "Connecting..." → "11 leads found" takes about a second
- * in the animation, an illustration only.
+ * MCP with a browser sign-in; from the chat you create and run Plays and review leads. No person
+ * or company is named: the three leads are initials and what made them fit (the homepage's three
+ * suggested Plays: a seed round, a marketing hire, a rebrand).
  *
  * STORY_CLAUDE_ALT is fixed (lp-dive-stages.ts imports it): what the animation shows, the only
  * copy a screen reader gets (the shell's host aria-label).
  */
-
-export const STORY_CLAUDE = {
-  /** Claude's home greeting (a food pun: lowercase "pancakes" is not the brand) */
-  greeting: "Let’s flip some pancakes",
-  /** typed in the composer, then the user bubble. Figma: "…in Germany" — the /for truth rule
-      NON_US (outreach language can't be changed, lib/verticals/validate.ts) forbids it
-      (decision 2026-10-09 §6) */
-  prompt: "Create a Play to find heads of growth at B2B SaaS companies in the US",
-  /** composer chrome (Claude UI). A model label ages: swap it here when Claude's UI moves on */
-  modeOff: "Chat",
-  modeOn: "Cowork",
-  model: "Opus 5",
-  effort: "High",
-  below: ["Project", "Manual"],
-  /** Claude's answer, streamed word by word (one em dash, as drawn) */
-  reply: "Absolutely — let me use Pancake for that",
-  /** the connector row while the Pancake tool runs (three ASCII dots, as in Figma) */
-  status: "Connecting...",
-  /** the tool's result (true: a Play search keeps up to 50 leads, reviewable from the agent) */
-  result: "11 leads found",
-  /** Claude's follow-up line. V2's frame 3 repeats the reply here (a stand-in), so the line is a
-      proposal until the founder approves it (Q3): preview/dev only, production ends on
-      "11 leads found". */
-  followUp: {
-    text: "Each comes with a line on why they fit. Want to review them?",
-    status: "placeholder" as ContentStatus,
+export const STORY_CLAUDE: ClaudeScript = {
+  request: "Show me this week’s best leads.",
+  say: "Pulling them from Pancake.",
+  tools: [
+    { title: "Read Plays", doing: "Reading…", count: 3, done: "live" },
+    { title: "Read leads", doing: "Reading…", count: 25, done: "new" },
+  ],
+  found: "Three stand out. Each says why it fits.",
+  card: {
+    kicker: "Leads",
+    title: "This week’s best fits",
+    before: "To review",
+    after: "Approved",
+    rows: [
+      { key: "MR", value: "Founder, raised a seed round" },
+      { key: "JL", value: "CEO, hiring a marketing lead" },
+      { key: "AS", value: "Founder, posted about a rebrand" },
+    ],
   },
-} as const;
+  ask: { lead: "Claude wants to use", tool: "Approve leads", from: "from", app: "Pancake" },
+  action: { title: "Approve leads", doing: "Approving…", count: 3, done: "approved" },
+  done: "Done. Pancake reaches out in your voice.",
+};
 
 export const STORY_CLAUDE_ALT: string =
-  "Animation: in Claude, the request “Create a Play to find heads of growth at B2B SaaS companies in the US” is typed and sent. Claude answers “Absolutely, let me use Pancake for that”, connects to Pancake and reports 11 leads found.";
+  "Animation: in Claude, with the Pancake connector, the request “Show me this week’s best leads” is typed and sent. Claude reads the Plays and the leads through Pancake and shows the three best fits, each with why it fits. It asks for permission to approve them, approves them, and confirms that Pancake reaches out in your voice.";

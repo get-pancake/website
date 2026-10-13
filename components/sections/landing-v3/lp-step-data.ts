@@ -162,8 +162,8 @@ export const S1_JIT = [0, 0.02, -0.01, 0.03, 0, -0.02, 0.04, 0, 0.01, -0.01, 0.0
 /** the market-profile rows that resolve out of the skeletons */
 export const S1_ROWS = [
   { top: 230, name: "Company", sub: "Acme" },
-  { top: 298, name: "Offering", sub: "SaaS launch videos" },
-  { top: 366, name: "Ideal clients", sub: "B2B SaaS teams" },
+  { top: 298, name: "Offering", sub: "Websites for startups" },
+  { top: 366, name: "Ideal clients", sub: "Funded B2B startups" },
 ];
 export const S1_SKELETON_TOPS = [230, 286, 342];
 
@@ -290,9 +290,10 @@ export const S3_THREAD = {
   lead: { name: "Tamsin Okafor", initials: "TO", company: "Quillfern", position: "Director of PMM" },
   drafting: "Drafting...",
   sent: "Sent",
-  /** the validated home-demo.ts message for Tamsin, verbatim; three lines at 327px */
+  /** Acme designs websites (2026-10-13; it made launch videos before): the message asks about the
+      site, not a video. Three lines at 327px */
   message:
-    "Hi Tamsin, saw you teased a release at Quillfern this week. How will you show it on launch day, a video or screenshots?",
+    "Hi Tamsin, saw you teased a release at Quillfern this week. Will the website be ready for launch day, or still to do?",
   replyFrom: "Tamsin Okafor",
   /** two lines at 279px */
   reply: "Hey, sounds interesting. I’m free Thursday 3pm!",
@@ -341,7 +342,7 @@ export type S3Chip = {
 export const S3_CHIPS: S3Chip[] = [
   { id: "sam-m", day: 0, x: 24, top: 203, h: 24, color: "blue", lines: ["Samantha M ..."], pop: 0.55, outcome: "booked" },
   { id: "jul-mon", day: 0, x: 24, top: 315, h: 24, color: "yellow", lines: ["Julien Aubert"], pop: 0.85, outcome: "follow" },
-  { id: "martin", day: 1, x: 120, top: 175, h: 52, color: "purple", lines: ["Martin Torres", "& Studio P"], pop: 1.15, outcome: "booked" },
+  { id: "martin", day: 1, x: 120, top: 175, h: 52, color: "purple", lines: ["Martin Torres", "& Acme"], pop: 1.15, outcome: "booked" },
   { id: "lumen", day: 1, x: 120, top: 259, h: 52, color: "green", lines: ["Lumen", "Collective"], pop: 1.85, outcome: "booked" },
   { id: "fern", day: 3, x: 312, top: 203, h: 52, color: "purple", lines: ["Fernhollow", "Studio"], pop: 2.15, outcome: "booked" },
   { id: "sam", day: 2, x: 216, top: 317, h: 52, color: "blue", lines: ["Samantha ..."], pop: 2.45, outcome: "follow" },

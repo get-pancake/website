@@ -278,6 +278,7 @@ export function buildDemoClaude(view: HTMLElement): BuiltDemo {
   const LIVE = ALLOWED + 0.2 + 0.6;
   tl.to(deploy.doing, { autoAlpha: 0, duration: 0.1, ease: "power1.in" }, LIVE);
   tl.to(deploy.done, { autoAlpha: 1, duration: 0.25, ease: "power1.out" }, LIVE + 0.06);
+  if (deploy.num) tick(deploy.num, deploy.to, LIVE + 0.06);
   tl.to(badgeDraft, { autoAlpha: 0, duration: 0.12, ease: "power1.in" }, LIVE);
   tl.to(badgeLive, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2)" }, LIVE + 0.05);
   const END = stream(says[2], LIVE + 0.45);
