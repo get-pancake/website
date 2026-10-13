@@ -181,6 +181,24 @@ const declareOff = () => {
 
 const SOFTWARE_GL = /swiftshader|llvmpipe|softpipe|software|basic render|warp\b|mesa offscreen/i;
 
+/** The GPU's name, for the software check above. Blink and WebKit mask
+    RENDERER ("WebKit WebGL"), so the unmasked value comes from
+    WEBGL_debug_renderer_info there. Gecko answers RENDERER itself with the
+    real (sanitised) name since Firefox 92 and prints a warning on every page
+    that asks for the extension ("deprecated in Firefox and will be removed.
+    Please use RENDERER"): asked plainly there (2026-10-13). Never throws: no
+    extension, or a getParameter that fails (a privacy add-on), is an unknown
+    renderer, and the frame-budget governor still decides. */
+const isGecko = () => typeof CSS !== "undefined" && typeof CSS.supports === "function" && CSS.supports("-moz-appearance", "none");
+const rendererOf = (gl: WebGL2RenderingContext): string => {
+  try {
+    const dbg = isGecko() ? null : gl.getExtension("WEBGL_debug_renderer_info");
+    return String(gl.getParameter(dbg ? dbg.UNMASKED_RENDERER_WEBGL : gl.RENDERER) ?? "");
+  } catch {
+    return "";
+  }
+};
+
 /** Ring outline → one flattened polygon PER SUBPATH. The LpPancakes rings
     are annuli: a hand-drawn outer contour plus an inner circle drawn with
     an `A` arc, two subpaths in one `d`; the fill rule then combines them
@@ -530,11 +548,7 @@ export function LpRainbowGL({ variant }: { variant: Variant }) {
         failIfMajorPerformanceCaveat: true,
       });
       if (!gl || gl.isContextLost()) return false;
-      if (governed) {
-        const dbg = gl.getExtension("WEBGL_debug_renderer_info");
-        const renderer = String(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
-        if (SOFTWARE_GL.test(renderer)) return false;
-      }
+      if (governed && SOFTWARE_GL.test(rendererOf(gl))) return false;
       const sh = (type: number, src: string) => {
         const h = gl!.createShader(type)!;
         gl!.shaderSource(h, src);
