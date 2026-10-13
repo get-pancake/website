@@ -358,6 +358,9 @@ export const pricingFacts = {
     name: "Adi Singh",
     role: "Co-founder, AgentMail",
   },
+  /** To /compare: the prices of the tools a buyer weighs Pancake against are
+      on those pages, dated and sourced, not repeated here. */
+  compare: "See Pancake next to the tools you compare it with",
 } as const;
 
 /**

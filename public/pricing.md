@@ -55,6 +55,8 @@ What never uses a credit:
 - Never billed beyond your plan. Run out, and searches pause. No overage, no automatic top-up.
 - More credits cost less. Up to 18% less per credit at the higher levels.
 
+See Pancake next to the tools you compare it with: https://pancake.ai/compare
+
 ## One plan per workspace
 
 A workspace is one company. Its plan covers the Brain, every Play and your whole team. They share one balance of credits.

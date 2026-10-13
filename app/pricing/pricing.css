@@ -318,6 +318,16 @@
   font-size: 1rem;
   margin-top: 0.75rem;
 }
+.lv2-facts .lv2-facts-more {
+  font-size: 1rem;
+  margin-top: 1.5rem;
+}
+.lv2-facts .lv2-facts-more a {
+  color: var(--text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 
 /* ── "Billing questions." (BillingFaq.tsx) ──
    PlanMap's answer list, two columns from 1024px; below, landing-v2.css
