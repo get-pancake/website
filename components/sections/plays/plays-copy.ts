@@ -12,6 +12,7 @@
 // post's reactions are in pancake-cmo's lead finders (Dealroom/Coresignal, Ocean.io, Coresignal
 // personas, Linkup, post reactors) but no /for prompt uses them yet, so they get their own set.
 
+import { OG_IMAGE_ALT } from "@/lib/social-meta";
 import type { SignalKind } from "@/lib/verticals/types";
 
 export const PLAYS_PATH = "/plays";
@@ -187,8 +188,8 @@ export const PLAYS_META = {
    *  "kinds of B2B business", not "industries": several audiences are roles (2026-10-07). */
   description: (n: number, m: number) =>
     `${n} example Plays for ${m} kinds of B2B business, sorted by how Pancake finds people. Pick one, or tell Pancake who to reach in your own words.`,
-  /** Every page on /og-image.png describes the text in that image (audit plan 8.4). */
-  ogImageAlt: "You run your company. We bring you customers.",
+  /** Every page on the shared card describes the text in that image (audit plan 8.4). */
+  ogImageAlt: OG_IMAGE_ALT,
   /** The X account the footer and the Organization sameAs link to. */
   xHandle: "@getpancake_ai",
   crumbs: { home: "Home", page: "Example Plays" },

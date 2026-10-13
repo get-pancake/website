@@ -52,8 +52,9 @@ export const metadata: Metadata = {
      month" — wrong positioning, wrong price). Known trade-off: with a
      one-word <title>, Google may build its own title from other signals
      (it showed "Pancake's AI" once); the og/twitter titles carry the full
-     "Pancake — You run your company. We bring you customers." and the
-     WebSite JSON-LD (root layout) carries the site name + "Pancake AI".
+     "Pancake — <the hero H1>" (HOME_SOCIAL_TITLE; the launch H1 since
+     2026-10-13) and the WebSite JSON-LD (root layout) carries the site
+     name + "Pancake AI".
      2026-09-30: AI SEO retired from the product (pancake-cmo PR #1037), so
      only the third clause changed: "grow your AI search visibility" became
      "reach out in your voice". The sentence now lives once, as

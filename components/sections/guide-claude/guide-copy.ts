@@ -1,5 +1,6 @@
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { pricingV2 } from "@/lib/copy";
+import { OG_IMAGE_ALT } from "@/lib/social-meta";
 import { TRIAL_CREDITS_LABEL, TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
 
 /**
@@ -63,7 +64,7 @@ export const GUIDE_META = {
   /** og:title / twitter:title (audit 8.5): og:site_name already says Pancake. */
   ogTitle: "Use Pancake in Claude",
   /** The card is the homepage's (brief §2), so the alt is the text in that image. */
-  ogImageAlt: "You run your company. We bring you customers.",
+  ogImageAlt: OG_IMAGE_ALT,
   /** BreadcrumbList: Home → this guide (there is no /guides index page). */
   crumbHome: "Pancake",
   crumbPage: "Use Pancake in Claude",
