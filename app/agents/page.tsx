@@ -47,7 +47,8 @@ export const metadata: Metadata = {
 
 export default function AgentsLanding() {
   return (
-    <main id="main-content" className="lp lp-agents">
+    // No id here: the skip link's #main-content target is the hero (AgHero), past the nav.
+    <main className="lp lp-agents">
       {/* --lp-fit for the hero art + CTA slivers (the LpFitVars targets) */}
       <LpFitVars />
       <LpNav />

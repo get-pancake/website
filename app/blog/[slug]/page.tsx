@@ -187,7 +187,9 @@ export default async function BlogPost({ params }: Props) {
       : null;
 
   return (
-    <main id="main-content" className="lp">
+    // No id here: the skip link's #main-content target is the first section past the nav, so
+    // the next Tab reaches the page's content instead of the logo.
+    <main className="lp">
       {/* JSON-LD structured data */}
       <script
         type="application/ld+json"
@@ -210,7 +212,7 @@ export default async function BlogPost({ params }: Props) {
       <LpAnimFreeze />
       <LpNav />
 
-      <article>
+      <article id="main-content" tabIndex={-1}>
         <header className="lp-blog-hero">
           <div className="lp-content lp-blog-hero__inner">
             <a className="lp-blog-back" href="/blog">

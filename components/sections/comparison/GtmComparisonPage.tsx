@@ -184,14 +184,15 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
 
   return (
     // The landing chrome (LpNav + LpFooter, landing-v3.css) around the kit-built body.
-    // comparison.css keeps landing-v3's unlayered base out of .vvp-body.
-    <main id="main-content" className="lp">
+    // comparison.css keeps landing-v3's unlayered base out of .vvp-body. No id here: the skip
+    // link's #main-content target is the hero section, past the nav.
+    <main className="lp">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
 
       <LpNav />
 
       <div className="vvp-body">
-        <section className="home-landing-section" aria-labelledby="vvp-hero-heading">
+        <section id="main-content" tabIndex={-1} className="home-landing-section" aria-labelledby="vvp-hero-heading">
           <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
             <header className="home-landing-section__header">
               <h1 id="vvp-hero-heading" className="heading home-landing-section__title vvp-hero__title text-center">

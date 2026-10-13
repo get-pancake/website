@@ -88,7 +88,9 @@ export default async function OpenRoadmapPage() {
   };
 
   return (
-    <main id="main-content" className="lp roadmap-page min-h-screen">
+    // No id here: the skip link's #main-content target is the first section past the nav, so
+    // the next Tab reaches the page's content instead of the logo.
+    <main className="lp roadmap-page min-h-screen">
       {unavailable ? null : (
         <script
           type="application/ld+json"
@@ -99,7 +101,12 @@ export default async function OpenRoadmapPage() {
       <LpNav />
 
       {/* Hero */}
-      <section className="lp-kit home-landing-section roadmap-hero" aria-labelledby="roadmap-hero-heading">
+      <section
+        id="main-content"
+        tabIndex={-1}
+        className="lp-kit home-landing-section roadmap-hero"
+        aria-labelledby="roadmap-hero-heading"
+      >
         <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
           <header className="home-landing-section__header">
             <Badge variant="brand-alt-1">Open roadmap</Badge>

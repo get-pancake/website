@@ -142,7 +142,9 @@ const faqJsonLd = {
 
 export default function PricingPage() {
   return (
-    <main id="main-content" className="lp">
+    // No id here: the skip link's #main-content target is the first section past the nav, so
+    // the next Tab reaches the page's content instead of the logo.
+    <main className="lp">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(softwareJsonLd) }}
@@ -162,6 +164,8 @@ export default function PricingPage() {
             includes across the bottom. CTA pair runs Start free → Book a demo
             like the nav (founder 2026-09-03: primary first, everywhere). */}
         <section
+          id="main-content"
+          tabIndex={-1}
           className="lv2s lv2s--brand lv2-pricing-page"
           aria-labelledby="lv2-pricing-page-title"
         >
