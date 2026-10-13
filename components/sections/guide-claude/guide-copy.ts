@@ -42,7 +42,8 @@ export const GUIDE_PATH = "/claude";
 export const GUIDE_MD_PATH = "/guides/claude.md";
 export const PROMO_CODE = "PANCAKE20";
 /** The campaign page: the same guide with the offer. The ManyChat DMs link here, so the address
- *  stays. Unlinked from the site, noindex, canonical to GUIDE_PATH. */
+ *  stays. Unlinked from the site and noindex (no cross-canonical since 2026-10-13: the two
+ *  signals contradicted each other). */
 export const GUIDE_OFFER_PATH = "/guides/claude";
 
 /** The agent version's offer line. public/guides/claude.md does not carry it (that file is

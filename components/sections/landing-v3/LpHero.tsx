@@ -42,7 +42,7 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
 // "Homepage first screen"; nothing here measures anything.
 export function LpHero() {
   return (
-    <section className="lp-hero lp-hero--home" aria-labelledby="lp-hero-title">
+    <section id="main-content" tabIndex={-1} className="lp-hero lp-hero--home" aria-labelledby="lp-hero-title">
       <LpViewportVar />
       <div className="lp-hero-art" aria-hidden="true">
         {/* agents view art slot (V2 4911:1461, owner agents-view): renders

@@ -114,10 +114,11 @@ them; add one only if GA4 should see them.
 
 ### Waitlist events (retired from the landing 2026-08-24)
 
-The events below remain implemented in `lib/analytics/data-layer.ts` and the
-`/api/waitlist` route, but no landing CTA opens the waitlist modal anymore, so they no
-longer fire from `/` or `/pricing`. The route has had no caller on the site since the
-`/ai-gtm-report` scanner retired on 2026-09-30 (it now 301s to `/`).
+The events below remain implemented in `lib/analytics/data-layer.ts`, but no landing CTA
+opens the waitlist modal anymore, so they no longer fire from `/` or `/pricing`. The
+`/api/waitlist` route had no caller on the site since the `/ai-gtm-report` scanner retired
+on 2026-09-30, and answers `410 Gone` since 2026-10-13: the description of its server side
+below is history.
 
 All waitlist events use `form_id=landing_waitlist` and `lead_type=waitlist`.
 
