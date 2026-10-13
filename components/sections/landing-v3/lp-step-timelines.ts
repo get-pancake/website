@@ -11,6 +11,7 @@ import {
   S2_DRAFT,
   S3_CHIPS,
   S3_DAY_W,
+  S3_LANDED,
   S3_NUM_DX,
   S3_THREAD,
   SX_LEADS_F5,
@@ -577,20 +578,27 @@ function buildS2(root: HTMLElement): BuiltStep {
 }
 
 /* ── step 03 · Pancake gets you the meeting (Figma storyboard intro + meetings-calendar-loop) ──
-   f1 the selected leads (the poster) → one lead, and a message Pancake drafts
-   for her, typed (f2 = three glyphs into its last line) → sent (f3) → the
-   thread scrolls, she answers (f4) → the meeting (f5) → the thread leaves,
-   the cream card shows and today's calendar plays, unchanged, as the end
-   (`cal`): the filled week holds = production's end picture (V2 art card
-   5022:6046). ≈ 10.7 s with the default message: 7.3 s of intro, then the
-   calendar's 4.26 s at S3_CAL_RATE. Typing times depend on the message's
-   glyphs, so the later beats are offsets from the moment it is sent. */
+   f1 the selected leads (the poster), of which one stays lit → that lead, and
+   a message Pancake drafts for her, typed (f2 = three glyphs into its last
+   line) → sent (f3) → the thread scrolls, she answers (f4) → the meeting
+   (f5) → the thread leaves but the meeting does not: its card shrinks into
+   Thursday's slot of the week as the calendar comes in and becomes the
+   week's first chip (founder 2026-10-13, "better animated": this was a cut,
+   and the meeting was nowhere in the calendar) → today's calendar plays
+   around it as the end (`cal`): the filled week holds = production's end
+   picture (V2 art card 5022:6046, one chip renamed). ≈ 11.3 s with the
+   default message: 7.9 s of intro, then the calendar's 4.26 s at
+   S3_CAL_RATE. Typing times depend on the message's glyphs, so the later
+   beats are offsets from the moment it is sent. One ground throughout, the
+   card's cream (steps.css .lp-sx-bg). */
 const S3_T = {
-  leadsOut: 0.45,
-  lead: 0.62,
-  conn1: 0.82,
-  message: 0.9,
-  type: 1.3,
+  /** the other rows step back: of the selection, this lead */
+  pick: 0.25,
+  leadsOut: 0.6,
+  lead: 0.77,
+  conn1: 0.97,
+  message: 1.05,
+  type: 1.45,
   /** after the last glyph */
   caretOff: 0.25,
   sentAfter: 0.35,
@@ -605,8 +613,12 @@ const S3_T = {
   meet: 2.2,
   f5: 2.7,
   threadOut: 3.4,
-  calendarIn: 3.6,
-  cal: 3.8,
+  /** after threadOut: the calendar comes in under the meeting card, which flies to its slot */
+  calendarIn: 0.2,
+  fly: 0.16,
+  flyFor: 0.55,
+  /** after threadOut: the calendar's own timeline starts once the meeting has landed */
+  cal: 0.8,
 } as const;
 /** Pancake's typing pace (the deep dive's message story): 12 ms a glyph, a breath after a
     sentence end and after a comma */
@@ -617,8 +629,8 @@ const S3_CAL_RATE = 1.25;
 function buildS3(root: HTMLElement): BuiltStep {
   const { $, $$ } = query(root);
   const T = S3_T;
-  const bg = $(".lp-sx-bg");
   const leads = $(".lp-sx-leads");
+  const rows = $$(".lp-sx-leads .lp-sx-row");
   const thread = $(".lp-s3-thread");
   const leadCard = $(".lp-s3-lead");
   const conns = $$(".lp-s3-conn");
@@ -630,7 +642,9 @@ function buildS3(root: HTMLElement): BuiltStep {
   const replyCard = $(".lp-s3-reply");
   const meetCard = $(".lp-s3-meet");
   const calendar = $(".lp-s3-card");
+  const landed = $$(".lp-s3-chip")[S3_CHIPS.findIndex((c) => c.id === S3_LANDED)];
   if (conns.length !== 3) throw new Error("lp-step: s3 connectors out of sync");
+  if (!landed) throw new Error("lp-step: s3 has no chip for the meeting");
 
   // the message's glyph edges, measured from the live text (weight 500, its typing face)
   const glyphs = measureGlyphs(msg);
@@ -642,7 +656,9 @@ function buildS3(root: HTMLElement): BuiltStep {
 
   tl.addLabel("f1", 0);
 
-  /* — f1 → f2 · the table leaves; the lead, then her message card (same cream ground) — */
+  /* — f1 → f2 · of the selected leads, the first stays lit; then the table leaves and she
+       comes back as a card, her message under it (same cream ground) — */
+  tl.to(rows.slice(1), { opacity: 0.3, duration: 0.28, ease: "power1.out", stagger: 0.03 }, T.pick);
   tl.to(leads, { autoAlpha: 0, y: -8, duration: 0.26, ease: "power2.in" }, T.leadsOut);
   tl.fromTo(leadCard, { autoAlpha: 0, y: 12 }, rise, T.lead);
   tl.fromTo(conns[0], { scaleY: 0 }, grow, T.conn1);
@@ -695,23 +711,91 @@ function buildS3(root: HTMLElement): BuiltStep {
   tl.fromTo(meetCard, { autoAlpha: 0, y: 12 }, rise, tS + T.meet);
   tl.addLabel("f5", tS + T.f5);
 
-  /* — the thread leaves, its ground with it (the cream card shows), and the calendar comes in
-       on its own frame 0: the empty week, Mon 19 in the circle — */
-  tl.to(thread, { autoAlpha: 0, y: pose5.y - 10, duration: 0.28, ease: "power2.in" }, tS + T.threadOut);
-  tl.to(bg, { opacity: 0, duration: 0.3, ease: "power1.inOut" }, tS + T.threadOut);
+  /* — the thread leaves, the meeting stays: its card empties, shrinks into Thursday's slot of
+       the week while the calendar comes in under it (on its own frame 0: the empty week, Mon 19
+       in the circle), and the chip takes over on the frame it lands. Both boxes are measured
+       at rest, in the stage's own px (the stage is scaled by --lp-fit; a chip rests at
+       scale 0.3 about its centre, which a centre-based measure ignores). — */
+  const tO = tS + T.threadOut;
+  const origin = thread.getBoundingClientRect();
+  const k = thread.offsetWidth ? origin.width / thread.offsetWidth : 1;
+  const corner = (el: HTMLElement) => {
+    const r = el.getBoundingClientRect();
+    return {
+      x: (r.left + r.width / 2 - origin.left) / k - el.offsetWidth / 2,
+      y: (r.top + r.height / 2 - origin.top) / k - el.offsetHeight / 2,
+    };
+  };
+  const meetAt = corner(meetCard);
+  const chipAt = corner(landed);
+  const chipBg = getComputedStyle(landed).backgroundColor;
+  const tFly = tO + T.fly;
+  const tLand = tFly + T.flyFor;
+
+  // out fast, so the calendar's lines never show through the thread's (no dissolve of text on text)
+  tl.to([leadCard, msgCard, replyCard, ...conns], { autoAlpha: 0, duration: 0.2, ease: "power1.out" }, tO);
+  tl.to(Array.from(meetCard.children), { opacity: 0, duration: 0.14, ease: "power1.in" }, tO);
   tl.fromTo(
     calendar,
     { autoAlpha: 0, y: 12 },
     { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out", immediateRender: false },
-    tS + T.calendarIn,
+    tO + T.calendarIn,
+  );
+  // x / y are the card's own, on top of the thread's pose (the thread is at pose5 by now)
+  tl.to(
+    meetCard,
+    {
+      x: chipAt.x - meetAt.x - pose5.x,
+      y: chipAt.y - meetAt.y - pose5.y,
+      width: landed.offsetWidth,
+      height: landed.offsetHeight,
+      borderRadius: 4,
+      backgroundColor: chipBg,
+      duration: T.flyFor,
+      ease: "power3.inOut",
+    },
+    tFly,
+  );
+  // the card's hairline and its soft shadow go as it turns into a chip (same string shape both ways)
+  tl.fromTo(
+    meetCard,
+    { boxShadow: "0px 0px 0px 0.5px rgba(226,226,226,1), 0px 4px 32px 0px rgba(48,0,44,0.08)" },
+    {
+      boxShadow: "0px 0px 0px 0.5px rgba(226,226,226,0), 0px 4px 32px 0px rgba(48,0,44,0)",
+      duration: T.flyFor * 0.7,
+      ease: "power1.in",
+      immediateRender: false,
+    },
+    tFly,
+  );
+  // landed: the chip is the same box, same colour; its bar and name come in, and it settles
+  tl.to(thread, { autoAlpha: 0, duration: 0.001 }, tLand);
+  tl.fromTo(landed, { autoAlpha: 0, scale: 1 }, { autoAlpha: 1, scale: 1, duration: 0.001, immediateRender: false }, tLand);
+  tl.fromTo(
+    [landed.querySelector(".lp-s3-bar"), landed.querySelector(".lp-s3-ctxt")],
+    { opacity: 0 },
+    { opacity: 1, duration: 0.22, ease: "power1.out", immediateRender: false },
+    tLand,
+  );
+  tl.to(
+    landed,
+    {
+      keyframes: [
+        { scale: 1.07, duration: 0.12, ease: "power2.out" },
+        { scale: 1, duration: 0.3, ease: "back.out(2.4)" },
+      ],
+      ease: "none",
+    },
+    tLand + 0.002,
   );
 
-  /* — today's calendar, unchanged: a child of the master (NOT paused — a paused child would
-       not follow its parent's seeks), played at S3_CAL_RATE — */
-  const cal = buildCalendar(root);
-  tl.add(cal, tS + T.cal);
+  /* — today's calendar: a child of the master (NOT paused — a paused child would not follow
+       its parent's seeks), played at S3_CAL_RATE. The meeting's chip is already in the week,
+       so the calendar does not pop it. — */
+  const cal = buildCalendar(root, S3_LANDED);
+  tl.add(cal, tO + T.cal);
   cal.timeScale(S3_CAL_RATE);
-  tl.addLabel("cal", tS + T.cal);
+  tl.addLabel("cal", tO + T.cal);
 
   return { tl, cleanup: () => {}, cue: 0 };
 }
@@ -726,7 +810,7 @@ function buildS3(root: HTMLElement): BuiltStep {
    pops at 0.2 s (was 0.55), each day lasts 0.83 s (was 1.1), the week is
    full at ~4.1 s (was ~5.7). Tween lengths are unchanged. Its closing pad is
    0.8 s (was 1.2 as a stand-alone card: the last badge lands at T_FRI + 0.7). */
-function buildCalendar(root: HTMLElement): gsap.core.Timeline {
+function buildCalendar(root: HTMLElement, already?: string): gsap.core.Timeline {
   const { $, $$ } = query(root);
   const circle = $(".lp-s3-circle");
   const days = $$(".lp-s3-day").map((d) => ({
@@ -745,8 +829,9 @@ function buildCalendar(root: HTMLElement): gsap.core.Timeline {
   const tl = gsap.timeline();
   const at = (t: number) => 0.2 + (t - 0.55) * 0.75;
 
-  // chips: tiny -> full (elastic), fully invisible at frame 0
+  // chips: tiny -> full (elastic), fully invisible at frame 0 (`already`: the caller put it there)
   chips.forEach((c) => {
+    if (c.id === already) return;
     tl.fromTo(c.el, { scale: 0.3 }, { scale: 1, duration: 0.6, ease: "elastic.out(1, 0.55)" }, at(c.pop));
     tl.fromTo(c.el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.14, ease: "power1.out" }, at(c.pop));
   });

@@ -101,6 +101,6 @@ export const STEPS: readonly StepContent[] = [
     body: "Pancake follows up until they answer, then reads the reply. A yes gets your calendar link, sent from your account. Every other answer comes back to you.",
     art: [{ kind: "anim", variant: "s3", status: "final" }],
     // retells S3_THREAD, then lists S3_CHIPS (lp-step-data.ts): keep in sync
-    alt: "Animation: from the selected leads, Pancake drafts a message to Tamsin Okafor at Quillfern and it is sent. She answers that she is free Thursday at 3pm, and the meeting appears: Tamsin and Acme, Thursday 3pm. Then a calendar week in October 2026 fills up day by day with meetings — Samantha M., Julien Aubert, Martin Torres and Studio P, Lumen Collective, Fernhollow Studio, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",
+    alt: "Animation: from the selected leads, Pancake drafts a message to Tamsin Okafor, founder of Quillfern, about her seed round and a new website, and it is sent. She answers that she is free Thursday at 3pm, and the meeting appears: Tamsin and Acme, Thursday 3pm. The meeting lands on Thursday in a calendar week of October 2026, which then fills up day by day with more meetings — Samantha M., Julien Aubert, Martin Torres and Acme, Lumen Collective, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",
   },
 ];

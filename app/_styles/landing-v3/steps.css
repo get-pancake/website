@@ -598,7 +598,7 @@
   --lp-sx-shadow: 0 4px 32px rgba(48, 0, 44, 0.08); /* Figma drop shadow #30002c 8%, 0/4, blur 32 */
 }
 /* the stage's ground (the card cream since 2026-10-13: the timelines no longer recolour
-   it; in step 03 it still fades away under the calendar, cream on cream). It overshoots the
+   or fade it). It overshoots the
    stage by its own height above and below: a tablet row stretches the media card
    around the centred stage, and the card clips. */
 .lp-sx-bg {
@@ -1402,6 +1402,9 @@
   position: absolute;
   top: 0;
   width: 464px;
+  /* above the calendar and its chips (z 4–7): at the end the Meet card flies from here into
+     Thursday's slot while the calendar fades in under it (lp-step-timelines.ts buildS3) */
+  z-index: 8;
 }
 .lp-s3-tcard {
   background: var(--lp-ink-0);

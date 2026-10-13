@@ -44,10 +44,11 @@ export type SmLead = { name: string; initials: string; company: string; role: st
 const L = {
   // the story's own lead: the post's author (production f2's fictional author since 2026-09-03)
   sarah: { name: "Sarah Velasquez", initials: "SV", company: "Shift", role: "Design lead" },
-  tamsin: { name: "Tamsin Okafor", initials: "TO", company: "Quillfern", role: "Director of PMM" },
+  // since 2026-10-13 her role and message are step 03's (lp-step-data.ts S3_THREAD), not home-demo.ts's
+  tamsin: { name: "Tamsin Okafor", initials: "TO", company: "Quillfern", role: "Founder & CEO" },
   wes: { name: "Wes Pomeroy", initials: "WP", company: "Stackhollow", role: "VP Marketing" },
   imani: { name: "Imani Coldwell", initials: "IC", company: "Ferngate", role: "CMO" },
-  anders: { name: "Anders Forsythe", initials: "AF", company: "Loomwise", role: "PMM Lead" },
+  anders: { name: "Anders Forsythe", initials: "AF", company: "Loomwise", role: "Co-founder" },
   rosa: { name: "Rosa Hartigan", initials: "RH", company: "Cindermoor", role: "Founder & CEO" },
   nate: { name: "Nate Trevino", initials: "NT", company: "Quorra Labs", role: "Head of Content" },
   chloe: { name: "Chloe Abelard", initials: "CA", company: "Hexfield", role: "Brand Director" },
@@ -143,7 +144,7 @@ export const SM_STORY: SmStory = {
       lead: L.tamsin,
       state: "sent",
       message:
-        "Hi Tamsin, saw you teased a release at Quillfern this week. Will the website be ready for launch day, or still to do?",
+        "Hi Tamsin, congrats on Quillfern’s seed round. Want a new website live before your marketing lead starts?",
       reply: "Hey, sounds interesting. I’m free Thursday 3pm!",
       place: { x: 563.676, y: 97.945, s: 0.681942 },
       dim: 0.5,

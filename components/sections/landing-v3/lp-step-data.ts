@@ -190,12 +190,14 @@ export const SX_CHECK_D = "M6 12.4615C7.96737 13.3592 9.90629 15.1306 11.0165 18
 
 export type SxLead = { name: string; position: string; initials: string };
 /** the Leads table (step 02 frames 5–7, step 03 frame 1): six rows, the sixth cut by the card.
-    Figma shows "AL" on every avatar (a placeholder): each lead carries its own initials. */
+    Figma shows "AL" on every avatar (a placeholder): each lead carries its own initials.
+    The positions are the Play's (2026-10-13: "Founders and marketing leads" of funded startups;
+    two of them were product marketers, the launch-video story's cast). */
 export const SX_LEADS: readonly SxLead[] = [
-  { name: "Tamsin Okafor", position: "Director of PMM", initials: "TO" },
+  { name: "Tamsin Okafor", position: "Founder & CEO", initials: "TO" },
   { name: "Wes Pomeroy", position: "VP Marketing", initials: "WP" },
   { name: "Imani Coldwell", position: "CMO", initials: "IC" },
-  { name: "Anders Forsythe", position: "PMM Lead", initials: "AF" },
+  { name: "Anders Forsythe", position: "Co-founder", initials: "AF" },
   { name: "Rosa Hartigan", position: "Founder & CEO", initials: "RH" },
   { name: "Elena Marchetti", position: "VP Marketing", initials: "EM" },
 ];
@@ -288,13 +290,16 @@ export const S2_SPARK = { d: "M0 25H75.4L88 3", len: "100.753" };
 /* ── step 03 · the intro before the calendar: one lead, a message, her reply, the meeting ── */
 
 export const S3_THREAD = {
-  lead: { name: "Tamsin Okafor", initials: "TO", company: "Quillfern", position: "Director of PMM" },
+  lead: { name: "Tamsin Okafor", initials: "TO", company: "Quillfern", position: "Founder & CEO" },
   drafting: "Drafting...",
   sent: "Sent",
-  /** Acme designs websites (2026-10-13; it made launch videos before): the message asks about the
-      site, not a video. Three lines at 327px */
+  /** Acme designs websites for funded startups, and the Play is the hero demo's (founders who
+      just raised a seed round and are hiring a marketing lead; founder 2026-10-13, "on topic"):
+      the message names both signals, then the offer. Three lines at 327px, at weight 500 (the
+      draft) and 400 (once it is history). The deep dive's message story shows the same message
+      (lp-story-message-data.ts, the "answered" conversation): keep in sync. */
   message:
-    "Hi Tamsin, saw you teased a release at Quillfern this week. Will the website be ready for launch day, or still to do?",
+    "Hi Tamsin, congrats on Quillfern’s seed round. Want a new website live before your marketing lead starts?",
   replyFrom: "Tamsin Okafor",
   /** two lines at 279px */
   reply: "Hey, sounds interesting. I’m free Thursday 3pm!",
@@ -340,12 +345,18 @@ export type S3Chip = {
       "Closed": Pancake can't know a deal closed) or "→ follow-up" */
   outcome: "booked" | "follow";
 };
+/** the chip the thread's Meet card turns into (founder 2026-10-13: "better animated", no cut
+    between the thread and the calendar): it is in the week from the calendar's first frame,
+    and the other meetings pop around it. */
+export const S3_LANDED = "tamsin";
 export const S3_CHIPS: S3Chip[] = [
   { id: "sam-m", day: 0, x: 24, top: 203, h: 24, color: "blue", lines: ["Samantha M ..."], pop: 0.55, outcome: "booked" },
   { id: "jul-mon", day: 0, x: 24, top: 315, h: 24, color: "yellow", lines: ["Julien Aubert"], pop: 0.85, outcome: "follow" },
   { id: "martin", day: 1, x: 120, top: 175, h: 52, color: "purple", lines: ["Martin Torres", "& Acme"], pop: 1.15, outcome: "booked" },
   { id: "lumen", day: 1, x: 120, top: 259, h: 52, color: "green", lines: ["Lumen", "Collective"], pop: 1.85, outcome: "booked" },
-  { id: "fern", day: 3, x: 312, top: 203, h: 52, color: "purple", lines: ["Fernhollow", "Studio"], pop: 2.15, outcome: "booked" },
+  /* the meeting of the thread: its card lands here and becomes this chip (S3_LANDED). It was
+     "Fernhollow Studio", same box, popping at 2.15 like the others. */
+  { id: "tamsin", day: 3, x: 312, top: 203, h: 52, color: "purple", lines: ["Tamsin Okafor", "& Acme"], pop: 2.15, outcome: "booked" },
   { id: "sam", day: 2, x: 216, top: 317, h: 52, color: "blue", lines: ["Samantha ..."], pop: 2.45, outcome: "follow" },
   { id: "jul-wed", day: 2, x: 216, top: 175, h: 52, color: "yellow", lines: ["Julien Aubert"], pop: 2.95, outcome: "booked" },
   { id: "martc", day: 3, x: 312, top: 259, h: 52, color: "yellow", lines: ["Martin C.", "Follow-up"], pop: 3.95, outcome: "booked" },
