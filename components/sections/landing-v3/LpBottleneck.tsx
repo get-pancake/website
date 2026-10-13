@@ -158,6 +158,27 @@ const forgetStylesOnResize = (anim: AnimationItem) => {
   };
 };
 
+/** The pixel ratio the players draw at (capped: the files are pure vector, 2× reads clean). */
+const playerDpr = () => Math.min(window.devicePixelRatio || 1, 2);
+
+/** A player keeps the pixel ratio it was created with (renderConfig.dpr, read by every resize).
+    Private field, hence the guard: a lottie-web without it keeps its own ratio. */
+const setPlayerDpr = (anim: AnimationItem | null, dpr: number) => {
+  const config = (anim as unknown as { renderer?: { renderConfig?: { dpr?: unknown } } } | null)?.renderer?.renderConfig;
+  if (config && typeof config.dpr === "number") config.dpr = dpr;
+};
+
+/** True when a host's canvas is not the host's size × the pixel ratio, which is how lottie-web
+    sizes it. No canvas yet (the player's file has not loaded) is not stale: there is nothing to
+    resize, and the player sizes its canvas itself when it builds it. */
+const staleCanvas = (host: HTMLElement, dpr: number) => {
+  const canvas = host.querySelector("canvas");
+  return (
+    !!canvas &&
+    (canvas.width !== Math.trunc(host.offsetWidth * dpr) || canvas.height !== Math.trunc(host.offsetHeight * dpr))
+  );
+};
+
 export function LpBottleneck() {
   const holderRef = useRef<HTMLDivElement>(null);
   const hostARef = useRef<HTMLDivElement>(null);
@@ -185,6 +206,7 @@ export function LpBottleneck() {
     let introReady = false; // renderer up (DOMLoaded)
     let dropReady = false;
     let orientation: Orientation = phone.matches ? "v" : "h";
+    let fitTimer = 0;
 
     const teardown = () => {
       intro?.destroy();
@@ -219,7 +241,37 @@ export function LpBottleneck() {
       hostC.style.top = `${oy + crop.y * scale}px`;
       hostC.style.width = `${crop.w * scale}px`;
       hostC.style.height = `${crop.h * scale}px`;
+      setPlayerDpr(drop, playerDpr());
       drop?.resize();
+    };
+
+    /** The full-size players follow the card and the screen too (2026-10-13). The observer
+        used to resize the drop alone: the intro and the still kept the buffer they were created
+        with, so after a window grew the bottle was a 1736×772 drawing stretched over 1618×719
+        CSS px on a retina screen, soft beside the sharp drop; a move to a screen of another
+        pixel ratio did the same. resize() redraws the frame a player is on, so the still —
+        drawn once, never played — gets its one picture back at the new size (forgetStylesOnResize
+        is on all three players). The intro and the still are touched only when their buffer is
+        really off, and only once the size has settled: the still is 45 layers (see header), a
+        window being dragged would redraw it on every tick. Until then their canvases are
+        stretched by CSS, as before. */
+    const refit = () => {
+      fitTimer = 0;
+      if (disposed) return;
+      const dpr = playerDpr();
+      if (intro && staleCanvas(hostA, dpr)) {
+        setPlayerDpr(intro, dpr);
+        intro.resize();
+      }
+      if (still && staleCanvas(hostB, dpr)) {
+        setPlayerDpr(still, dpr);
+        still.resize();
+      }
+      placeDrop(); // a new pixel ratio reaches the drop here (one small layer: cheap)
+    };
+    const scheduleRefit = () => {
+      clearTimeout(fitTimer);
+      fitTimer = window.setTimeout(refit, 120);
     };
 
     const create = () => {
@@ -232,7 +284,7 @@ export function LpBottleneck() {
         rendererSettings: {
           preserveAspectRatio: "xMidYMid slice",
           clearCanvas: true,
-          dpr: Math.min(window.devicePixelRatio || 1, 2),
+          dpr: playerDpr(),
         },
       };
       // autoplay OFF: the intro starts only once the card is actually on
@@ -370,8 +422,20 @@ export function LpBottleneck() {
       { threshold: 0.35 },
     );
     ioPlay.observe(holder);
-    const ro = new ResizeObserver(() => placeDrop());
+    const ro = new ResizeObserver(() => {
+      placeDrop(); // the drop stays on the bottle's lip while the card moves
+      scheduleRefit();
+    });
     ro.observe(holder);
+    // zoom / another monitor: the buffers follow devicePixelRatio (as LpRainbowGL's do)
+    let dprMq = matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+    const onDpr = () => {
+      dprMq.removeEventListener("change", onDpr);
+      dprMq = matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`);
+      dprMq.addEventListener("change", onDpr);
+      scheduleRefit();
+    };
+    dprMq.addEventListener("change", onDpr);
 
     const onMedia = () => {
       if (reduced.matches) {
@@ -390,9 +454,11 @@ export function LpBottleneck() {
 
     return () => {
       disposed = true;
+      clearTimeout(fitTimer);
       io.disconnect();
       ioPlay.disconnect();
       ro.disconnect();
+      dprMq.removeEventListener("change", onDpr);
       phone.removeEventListener("change", onMedia);
       reduced.removeEventListener("change", onMedia);
       document.removeEventListener("visibilitychange", onVisibility);
