@@ -31,10 +31,10 @@ import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
  * (scripts/placeholder-gate.test.mjs renders the set that goes live).
  *
  * Layout (all numbers come from resolveBento, CSS in bento.css, every card metric in `--u`):
- *   - all nine cards: the full grid. Desktop four rows on the 1136 column's 12 columns (`--u` =
- *     1 px at ≥ 1200, the column / 1136 at 1025–1199), tablets two columns, phones the mobile
- *     artboard's two-column stack (`--u` = the column / 560). The artboard draws seven cards; the
- *     grid for nine is lp-bento-data.ts BENTO_SLOT_IDS;
+ *   - all nine cards: the full grid. Four rows on the 1136 column's 12 columns (`--u` = 1 px at
+ *     ≥ 1200, the column / 1136 below, tablets included), phones the mobile artboard's two-column
+ *     stack (`--u` = the column / 560). The artboard draws seven cards; the grid for nine, and the
+ *     rule that no two cards of one company touch, are in lp-bento-data.ts BENTO_SLOT_IDS;
  *   - a partial set: rows on a 12-column desktop grid (data-layout="rows", spans from the server),
  *     the same two-column stack below 1025 with a lone narrow card widened (data-solo).
  *
@@ -49,6 +49,7 @@ export function LpBento({ placeholders = SHOW_PLACEHOLDERS, live }: { placeholde
   const size = {
     "--lp-bento-grid-u": bento.size.gridU,
     "--lp-bento-tablet-px": bento.size.tabletPx,
+    "--lp-bento-tablet-u": bento.size.tabletU,
     "--lp-bento-flow-u": bento.size.flowU,
     "--lp-bento-flow-gaps": bento.size.flowGaps,
   } as CSSProperties;

@@ -44,17 +44,19 @@
    chrome is added here. `.lp >` outranks foundation.css's older per-width
    values. 307 = 93.34 + 68.80 + 80.44 + 64.42 (title, margins, paddings). */
 .lp > .lp-bento {
-  contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1522) * 1px);
+  contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1526) * 1px);
 }
 @media (min-width: 1025px) and (max-width: 1199px) {
   .lp > .lp-bento {
-    contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1522) * (100vw - 64px) / 1136);
+    contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1526) * (100vw - 64px) / 1136);
   }
 }
 @media (min-width: 768px) and (max-width: 1024px) {
   .lp > .lp-bento {
-    /* 72 + 68.80 + 56 + grid + 72 */
-    contain-intrinsic-size: auto calc(268.8px + var(--lp-bento-tablet-px, 2683) * 1px);
+    /* 72 + 68.80 + 56 + grid + 72. The full grid is the desktop one scaled to the frame
+       (100vw − 48): its height is in --u. A partial set stacks in px. One of the two is 0. */
+    contain-intrinsic-size: auto
+      calc(268.8px + var(--lp-bento-tablet-px, 0) * 1px + var(--lp-bento-tablet-u, 1526) * (100vw - 48px) / 1136);
   }
 }
 @media (max-width: 767px) {
@@ -113,17 +115,20 @@
    The artboard draws seven (vl vl qa qa / vl vl ka kb / kc qb qb vs on four
    columns). With two more quotes (founder 2026-10-13) the cards sit on its
    12 columns (80 + 16: 3 = its 272 card, 6 = its 560 card), each at the
-   size it is drawn at: the tall film beside two quotes, the three figures
-   and the small film in a row, two quotes side by side. Not in the Figma. */
+   size it is drawn at, and placed so that NO TWO CARDS OF ONE COMPANY TOUCH
+   (founder 2026-10-13; lp-bento-data.ts BENTO_SLOT_IDS has the map): the
+   tall Kinro film beside Praxis's and AgentMail's quotes; a Praxis figure,
+   Vector Legal's quote, the other Praxis figure; Kinro's quote, the Praxis
+   film, Kinro's figure. Tablets draw the same grid, scaled. Not in the Figma. */
 @media (min-width: 768px) {
   .lp-bento__grid[data-layout="full"] {
     grid-template-areas:
       "vl vl vl vl vl vl qa qa qa qa qa qa"
       "vl vl vl vl vl vl qc qc qc qc qc qc"
-      "ka ka ka kb kb kb kc kc kc vs vs vs"
-      "qb qb qb qb qb qb qd qd qd qd qd qd";
+      "ka ka ka qd qd qd qd qd qd kb kb kb"
+      "qb qb qb qb qb qb vs vs vs kc kc kc";
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(375 * var(--u)) calc(369 * var(--u));
+    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(369 * var(--u)) calc(375 * var(--u));
   }
   .lp-bento__grid[data-layout="full"] > [data-slot="videoLg"] { grid-area: vl; }
   .lp-bento__grid[data-layout="full"] > [data-slot="quoteA"] { grid-area: qa; }
@@ -670,22 +675,12 @@ body:has(.lp-bento__dialog[open]) {
   .lp-bento__title {
     margin-bottom: 56px;
   }
-  .lp-bento__grid {
+  /* all nine: the 12-column grid above, scaled to the frame (--u = the frame / 1136, about 0.63
+     at 768: the phone stack draws the cards at 0.66). A two-column tablet layout stacked a
+     Praxis quote on a Praxis figure and the two Praxis figures on each other. */
+  .lp-bento__grid[data-layout="rows"] {
     --u: 1px;
     gap: 16px;
-  }
-  /* all nine: the quotes full width, the large video beside two KPI cards */
-  .lp-bento__grid[data-layout="full"] {
-    grid-template-areas:
-      "qa qa"
-      "vl ka"
-      "vl kb"
-      "qc qc"
-      "kc vs"
-      "qb qb"
-      "qd qd";
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: 369px 365px 365px 369px 375px 375px 369px;
   }
   /* a partial set: the stack */
   .lp-bento__grid[data-layout="rows"] {

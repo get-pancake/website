@@ -108,7 +108,8 @@ function renderAll() {
       if (c.flow.span === 2) { if (col !== 0) bad("a wide card after a lone narrow one"); } else col = (col + 1) % 2;
     }
     if (col !== 0) bad("the stack ends on half a row");
-    if (!(out.size.flowU > 0 && out.size.tabletPx > 0 && out.size.gridU > 0)) bad("no height for the estimate");
+    // tablets: a full set is the scaled grid (tabletU), a partial one stacks in px (tabletPx)
+    if (!(out.size.flowU > 0 && (out.size.tabletPx > 0) !== (out.size.tabletU > 0) && out.size.gridU > 0)) bad("no height for the estimate");
     if (out.full) continue;
     let used = 0;
     let height = null;

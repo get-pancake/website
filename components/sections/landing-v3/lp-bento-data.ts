@@ -62,14 +62,21 @@ export type BentoSlotId = "videoLg" | "quoteA" | "quoteC" | "kpiA" | "kpiB" | "k
  * The artboard draws seven cards on a 4-column grid: vl vl qa qa / vl vl ka kb / kc qb qb vs.
  * Two more quotes (founder 2026-10-13: quoteC "add Adi from AgentMail", then quoteD "let's add
  * a testimonial here also", Vector Legal) make a fourth row. The full grid is on the artboard's
- * 12 columns (3 = its 272 card, 6 = its 560 card) and every card keeps the size it is drawn at:
- *   vl ×6 (two rows tall) | qa ×6
- *                         | qc ×6      AgentMail's quote, where the two figures were
- *   ka ×3 | kb ×3 | kc ×3 | vs ×3     the three figures and the small film (ROW_SHAPES "1,0,3")
- *   qb ×6 | qd ×6                      two quotes, their blobs in the outer corners ("0,2,0")
+ * 12 columns (3 = its 272 card, 6 = its 560 card) and every card keeps the size it is drawn at.
+ *
+ * NO TWO CARDS OF ONE COMPANY TOUCH, side by side or one above the other (founder 2026-10-13, on
+ * two Praxis figures next to each other: "we have to reshuffle so that the same company does not
+ * appear back to back"). Praxis has four of the nine cards and Kinro three, so few grids allow
+ * it; this one does (K = Kinro, P = Praxis, A = AgentMail, V = Vector Legal):
+ *   vl ×6 (two rows tall)  K | qa ×6  P
+ *                            | qc ×6  A
+ *   ka ×3  P | qd ×6  V | kb ×3  P          a quote between the two Praxis figures
+ *   qb ×6  K | vs ×3  P | kc ×3  K          Kinro's quote, the Praxis film, Kinro's figure
+ * The artboard itself put the two Praxis figures side by side. Before moving a card or adding
+ * one, check every neighbour again (the same rule holds in FLOW_ORDER, the phone stack).
  * NOT in the Figma: the designer has to confirm or redraw it.
  */
-export const BENTO_SLOT_IDS: readonly BentoSlotId[] = ["videoLg", "quoteA", "quoteC", "kpiA", "kpiB", "kpiC", "videoSm", "quoteB", "quoteD"];
+export const BENTO_SLOT_IDS: readonly BentoSlotId[] = ["videoLg", "quoteA", "quoteC", "kpiA", "quoteD", "kpiB", "quoteB", "videoSm", "kpiC"];
 
 /**
  * A customer's wordmark from public/logos/customers (the marquee's artwork), painted as an alpha
@@ -395,9 +402,11 @@ const BENTO_ENTRIES: BentoEntries = {
  * The two-column stack (phones at every set; tablets with a partial set): the mobile artboard's
  * order and boxes, in desktop px (`--u` scales them). Wide cards take both columns.
  */
-/* quoteC goes right under the large film and quoteD closes the stack: the four quotes alternate
-   their blob's side (left, right, left, right). */
-const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "quoteC", "kpiA", "kpiB", "quoteA", "kpiC", "videoSm", "quoteB", "quoteD"];
+/* The same rule in the stack: no two cards of one company in a row or in two rows that follow
+   each other. Only ONE narrow card is Kinro's and three are Praxis's, so only one pair of narrow
+   cards can exist (a Praxis figure beside Kinro's): the second Praxis figure and the Praxis film
+   each take a row of their own (FLOW_SOLO_*). K P K P A (P|K) V P: */
+const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "quoteA", "quoteB", "kpiB", "quoteC", "kpiA", "kpiC", "quoteD", "videoSm"];
 const FLOW_BOX: Record<BentoSlotId, { wide: boolean; height: number }> = {
   videoLg: { wide: true, height: 750 },
   kpiA: { wide: false, height: 365 },
@@ -409,13 +418,15 @@ const FLOW_BOX: Record<BentoSlotId, { wide: boolean; height: number }> = {
   videoSm: { wide: false, height: 375 },
   quoteB: { wide: true, height: 375 },
 };
-/** A narrow card left alone on its row takes both columns at a wide card's height. */
+/** A narrow card left alone on its row takes both columns at a wide card's height; a figure
+ *  alone needs less (its logo and its number: 250 keeps the card a band, not an empty box). */
 const FLOW_SOLO_HEIGHT = 369;
+const FLOW_SOLO_KPI_HEIGHT = 250;
 /** Desktop gap between cards, and between the tablet rows (px at `--u` = 1). */
 const GAP = 16;
-/** The full grid: rows 369 / 365 / 375 / 369 (desktop), and the tablet's seven rows. */
-const FULL_GRID_U = 369 + 365 + 375 + 369 + 3 * GAP;
-const FULL_TABLET_PX = 369 + 365 + 365 + 369 + 375 + 375 + 369 + 6 * GAP;
+/** The full grid: rows 369 / 365 / 369 / 375. Tablets draw the same grid, scaled (a two-column
+ *  tablet layout cannot keep one company's cards apart), so its height there is in `--u` too. */
+const FULL_GRID_U = 369 + 365 + 369 + 375 + 3 * GAP;
 
 type Kind = "V" | "Q" | "K";
 const KIND: Record<BentoSlotId, Kind> = { videoLg: "V", videoSm: "V", quoteA: "Q", quoteB: "Q", quoteC: "Q", quoteD: "Q", kpiA: "K", kpiB: "K", kpiC: "K" };
@@ -499,8 +510,9 @@ export type BentoResolved = {
   /** In DOM order: the reading order on desktop. */
   cards: BentoPlaced[];
   /** Grid heights for the section's content-visibility estimate (bento.css): the desktop grid in
-   *  `--u`, the tablet grid in px, the phone stack in `--u` plus its count of 8 px row gaps. */
-  size: { gridU: number; tabletPx: number; flowU: number; flowGaps: number };
+   *  `--u`; on tablets the full grid in `--u` (tabletU) or a partial set's stack in px (tabletPx),
+   *  the other being 0; the phone stack in `--u` plus its count of 8 px row gaps. */
+  size: { gridU: number; tabletPx: number; tabletU: number; flowU: number; flowGaps: number };
 };
 
 /**
@@ -543,8 +555,9 @@ export function resolveBento(
       flowRows.push(Math.max(box.height, FLOW_BOX[next].height));
       i++;
     } else {
-      flow.set(id, { order: i + 1, span: 2, height: FLOW_SOLO_HEIGHT, solo: true });
-      flowRows.push(FLOW_SOLO_HEIGHT);
+      const height = KIND[id] === "K" ? FLOW_SOLO_KPI_HEIGHT : FLOW_SOLO_HEIGHT;
+      flow.set(id, { order: i + 1, span: 2, height, solo: true });
+      flowRows.push(height);
     }
   }
   const flowU = flowRows.reduce((sum, h) => sum + h, 0);
@@ -561,7 +574,7 @@ export function resolveBento(
     return {
       full,
       cards: BENTO_SLOT_IDS.map((id) => place(id)),
-      size: { gridU: FULL_GRID_U, tabletPx: FULL_TABLET_PX, flowU, flowGaps },
+      size: { gridU: FULL_GRID_U, tabletPx: 0, tabletU: FULL_GRID_U, flowU, flowGaps },
     };
   }
 
@@ -572,7 +585,7 @@ export function resolveBento(
     ids.map((id, i) => place(id, { span: shape.spans[i], start: i === 0 ? shape.start : undefined, height: shape.height })),
   );
   const gridU = rows.reduce((sum, { shape }) => sum + shape.height, 0) + GAP * (rows.length - 1);
-  return { full, cards, size: { gridU, tabletPx: flowU + GAP * flowGaps, flowU, flowGaps } };
+  return { full, cards, size: { gridU, tabletPx: flowU + GAP * flowGaps, tabletU: 0, flowU, flowGaps } };
 }
 
 /**
