@@ -42,9 +42,11 @@ function undecoratedSearch(params: URLSearchParams): string {
  * 2026-10-13 (the bug check's M2 and M1). A link with no query of its own is
  * a same-page link whatever this page's query is: on /?utm_source=… or
  * /?gclid=… "Product" reloaded the whole page (a second pageview, the
- * campaign gone from the address bar), and in the agents view
- * (?audience=agents) it reloaded into the humans view. It now scrolls in
- * place and the address keeps the page's query. And the scroll is announced
+ * campaign gone from the address bar). It now scrolls in place and the
+ * address keeps the page's query. One exception, kept on purpose: in the
+ * agents view (?audience=agents) the steps section is hidden, so a link to
+ * it still loads the humans view, the only one that has it (a click that
+ * did nothing was worse than a reload). And the scroll is announced
  * before it starts (`lp:arrive`, the target as detail): the homepage's
  * animated cards read a fast scroll as a visitor flying past and showed
  * their finished picture; told where the page will land, they play once it
@@ -92,6 +94,9 @@ export function LpNavScroll() {
       }
       const target = id ? document.getElementById(id) : null;
       if (!target) return;
+      // No box: this view hides the section (the homepage's agents view has no
+      // steps). Let the browser follow the link to the view that shows it.
+      if (target.getClientRects().length === 0) return;
 
       e.preventDefault();
       const oldURL = window.location.href;
