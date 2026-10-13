@@ -427,10 +427,11 @@
   opacity: 1;
 }
 
-/* "Watch with sound": the whole tile is the button that opens the film in
-   the dialog; the pill at its bottom-left is the visible label (the pause
-   recipe: cream, hairline, 28 high). Not in Figma: a testimonial needs its
-   sound on demand (founder brief 2026-10-11). */
+/* The whole tile is the button that opens the film in the player; a small
+   play disc at its bottom-left is the visible sign. Until 2026-10-13 a
+   "Watch with sound" pill stood there, with a pause disc for the silent
+   preview at the bottom-right: the founder asked for one play button and
+   nothing else. Not in Figma. */
 .lp .lp-bento__open {
   background: none;
   border: 0;
@@ -452,88 +453,36 @@
   outline: 2px solid var(--lp-text);
   outline-offset: -4px;
 }
-.lp-bento__sound {
+.lp-bento__play {
   align-items: center;
   background: var(--lp-page-bg);
-  border-radius: 14px;
-  bottom: 16px;
-  box-shadow: inset 0 0 0 1px var(--lp-stroke);
-  color: var(--lp-ink-100);
-  display: flex;
-  font-family: var(--lp-font-sans);
-  font-size: var(--lp-text-sm); /* 13.333 */
-  font-weight: 500;
-  gap: 6px;
-  height: 28px;
-  left: 16px;
-  letter-spacing: 0;
-  line-height: 1;
-  padding: 0 12px 0 9px;
-  position: absolute;
-  white-space: nowrap;
-}
-.lp-bento__sound svg {
-  fill: currentColor;
-  flex: none;
-}
-.lp-bento__sound-wave {
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-width: 1.3;
-}
-/* a narrow tile (the phone stack's 180, a 272 card at 1025) has no room for
-   the words beside the pause disc: the pill becomes a 28px disc; the
-   button's accessible name still says it */
-@container lp-bento-media (max-width: 239px) {
-  .lp-bento__sound {
-    justify-content: center;
-    padding: 0;
-    width: 28px;
-  }
-  .lp-bento__sound-label {
-    display: none;
-  }
-}
-
-/* play / pause of the muted preview (WCAG 2.2.2), the marquee pause recipe:
-   a 28px cream disc with a hairline, 44px hit area. Not in Figma. */
-.lp .lp-bento__pause {
-  align-items: center;
-  background: var(--lp-page-bg);
-  border: 0;
   border-radius: 50%;
   bottom: 16px;
-  box-shadow: inset 0 0 0 1px var(--lp-stroke);
-  color: var(--lp-ink-80);
-  cursor: pointer;
+  box-shadow:
+    inset 0 0 0 1px var(--lp-stroke),
+    0 2px 10px rgba(44, 0, 42, 0.16);
+  color: var(--lp-ink-100);
   display: flex;
-  height: 28px;
+  height: 40px;
   justify-content: center;
-  padding: 0;
+  left: 16px;
   position: absolute;
-  right: 16px;
-  width: 28px;
-  z-index: 2;
+  transition: transform 160ms cubic-bezier(0.22, 1, 0.36, 1);
+  width: 40px;
 }
-.lp .lp-bento__pause[hidden] {
-  display: none;
-}
-.lp .lp-bento__pause::after {
-  content: "";
-  inset: -8px;
-  position: absolute;
-}
-.lp .lp-bento__pause svg {
+.lp-bento__play svg {
   fill: currentColor;
-}
-.lp .lp-bento__pause:focus-visible {
-  outline: 2px solid var(--lp-text); /* decision §0: --lp-text rings everywhere */
-  outline-offset: 2px;
+  flex: none;
+  margin-left: 1px; /* the triangle's weight sits left of its box: optical centre */
 }
 @media (hover: hover) {
-  .lp .lp-bento__pause:hover {
-    color: var(--lp-ink-100);
+  .lp .lp-bento__open:hover .lp-bento__play {
+    transform: scale(1.08);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-bento__play {
+    transition: none;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -723,11 +672,7 @@ body:has(.lp-bento__dialog[open]) {
     min-height: calc(var(--lp-bento-flow-h, 369) * var(--u));
     order: var(--lp-bento-flow-order, 0);
   }
-  .lp .lp-bento__pause {
-    bottom: 12px;
-    right: 12px;
-  }
-  .lp-bento__sound {
+  .lp-bento__play {
     bottom: 12px;
     left: 12px;
   }

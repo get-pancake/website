@@ -48,12 +48,13 @@ import type { ContentStatus } from "@/lib/placeholders";
 export const BENTO_TITLE = "Take it from them";
 /** The card list's accessible name. */
 export const BENTO_LIST_LABEL = "Customer stories";
-/** The video tiles' controls. `pause` / `play` drive the muted preview (WCAG 2.2.2); `sound`
- *  opens the film with sound, on demand only; `close` leaves it. */
+/** The video tiles' two controls: `open` names the tile, which is one button that opens the film
+ *  in the player (its visible sign is a small play disc); `close` leaves the player. Until
+ *  2026-10-13 the tile also had a "Watch with sound" pill and a pause button for the silent
+ *  preview: the founder asked for both to go ("enlève le watch with sound … retire le bouton
+ *  pause"). */
 export const BENTO_VIDEO_LABELS = {
-  pause: "Pause preview",
-  play: "Play preview",
-  sound: "Watch with sound",
+  open: "Play video",
   close: "Close video",
 } as const;
 

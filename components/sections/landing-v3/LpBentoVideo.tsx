@@ -16,13 +16,15 @@ import { flushSync } from "react-dom";
  *      of the viewport filled by it), tab visible, not paused by the visitor: it plays, fades in
  *      over the poster once it really plays, and loops. Below that, tab hidden, section hidden
  *      (agents view) or a film open (this tile's or the other one's: nothing moves behind the
- *      scrim while a testimonial speaks): it pauses and keeps its frame. A play / pause button
- *      stops it (WCAG 2.2.2). It can never make a sound: the file has no audio, and the element
- *      is muted in markup and again before every play().
- *      Reduced motion: no autoplay, the button starts as "Play preview" and nothing is fetched
- *      before it is pressed. Save-Data, prefers-reduced-data or a media error: the poster only.
- *   2. The FILM WITH SOUND, on demand only: `film.mp4`. The tile itself is a button ("Watch with
- *      sound", a pill at its bottom-left): it opens a native modal <dialog> with the whole frame,
+ *      scrim while a testimonial speaks): it pauses and keeps its frame. It can never make a
+ *      sound: the file has no audio, and the element is muted in markup and again before every
+ *      play(). It has NO pause control since 2026-10-13 (founder: "retire le bouton pause"): a
+ *      visitor who has not asked for reduced motion cannot stop it, which falls short of WCAG
+ *      2.2.2; it does stop off screen, in a hidden tab and behind an open film.
+ *      Reduced motion, Save-Data, prefers-reduced-data or a media error: the poster only, and
+ *      no preview file is fetched.
+ *   2. The FILM WITH SOUND, on demand only: `film.mp4`. The tile itself is a button (a small play
+ *      disc at its bottom-left is its visible sign): it opens a native modal <dialog> with the whole frame,
  *      the browser's own controls (play, seek, volume, captions, full screen), the sound on and
  *      its captions showing (WCAG 1.2.2: a film cannot be listed without them, see BentoFilm).
  *      The <video controls> exists only while the dialog is open, so the film is not fetched
@@ -41,7 +43,7 @@ type Props = {
   filmPoster?: string;
   /** who speaks: names the dialog and the tile's button */
   title: string;
-  labels: { pause: string; play: string; sound: string; close: string };
+  labels: { open: string; close: string };
   /** the crop custom properties (bento.css reads them on the poster and the preview) */
   style?: CSSProperties;
   /** the poster <img> */
@@ -83,11 +85,8 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
   const [attached, setAttached] = useState(false);
   /** the preview has played at least one frame: it now covers the poster */
   const [shown, setShown] = useState(false);
-  /** JS is up and the preview may play: its play / pause control is shown */
-  const [previewable, setPreviewable] = useState(false);
   /** JS is up and <dialog> exists: the film can open */
   const [canOpen, setCanOpen] = useState(false);
-  const [paused, setPaused] = useState(false);
   const [src, setSrc] = useState(film.preview.mp4);
   /** the mounted preview is the portrait crop (its own framing: centred) */
   const [portrait, setPortrait] = useState(false);
@@ -96,11 +95,12 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
   /** the dialog is open: its <video controls> is mounted */
   const [filmOpen, setFilmOpen] = useState(false);
 
+  /** the preview must not play: the visitor asked for reduced motion, or the browser refused */
   const pausedRef = useRef(false);
   const inViewRef = useRef(false);
   const filmOpenRef = useRef(false);
 
-  /** Play or pause the preview to match: in view, tab visible, not paused, no film open. */
+  /** Play or pause the preview to match: in view, tab visible, allowed to play, no film open. */
   const sync = useCallback(() => {
     const v = videoRef.current;
     if (!v) return;
@@ -113,11 +113,8 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
       const p = v.play();
       if (p) {
         p.catch((err: unknown) => {
-          // refused (iOS Low Power Mode): same as a visitor pause
-          if (err instanceof DOMException && err.name === "NotAllowedError") {
-            pausedRef.current = true;
-            setPaused(true);
-          }
+          // refused (iOS Low Power Mode): the poster stands, and nothing asks again
+          if (err instanceof DOMException && err.name === "NotAllowedError") pausedRef.current = true;
         });
       }
     } else if (!want && !v.paused) {
@@ -164,8 +161,6 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
 
     const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
     pausedRef.current = reduce;
-    setPaused(reduce);
-    setPreviewable(true);
 
     const near = new IntersectionObserver(
       (entries) => {
@@ -187,7 +182,7 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
       },
       { threshold: [0, 0.25, 0.5, IN_VIEW, 0.75, 1] },
     );
-    if (!reduce) near.observe(root); // reduced motion fetches nothing until the visitor presses Play
+    if (!reduce) near.observe(root); // reduced motion fetches no preview: the poster stands
     focus.observe(root);
     document.addEventListener("visibilitychange", sync);
     document.addEventListener(FILM_EVENT, sync);
@@ -211,14 +206,6 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
   const reveal = (e: SyntheticEvent<HTMLVideoElement>) => {
     const v = e.currentTarget;
     if (!v.paused && !v.seeking && v.readyState >= 2) setShown(true);
-  };
-
-  const toggle = () => {
-    const next = !pausedRef.current;
-    pausedRef.current = next;
-    setPaused(next);
-    if (!next && !attached) attach(); // Play pressed before the preview was created
-    sync();
   };
 
   /** The dialog closed (Esc, the Close button, the scrim): stop the film, release it, resume the preview. */
@@ -276,39 +263,23 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
             tabIndex={-1}
             onPlaying={reveal}
             onTimeUpdate={reveal}
-            onError={() => {
-              setPreviewable(false);
-              setShown(false);
-            }}
+            onError={() => setShown(false)}
           />
         )}
-        {/* the whole tile opens the film; the pill is its visible label */}
+        {/* the whole tile opens the film in the player; the play disc is its visible sign */}
         <button
           type="button"
           className="lp-bento__open"
           hidden={!canOpen}
           aria-haspopup="dialog"
-          aria-label={`${labels.sound}: ${title}`}
+          aria-label={`${labels.open}: ${title}`}
           onClick={openFilm}
         >
-          <span className="lp-bento__sound" aria-hidden="true">
-            <svg viewBox="0 0 14 14" width="14" height="14" focusable="false">
-              <path d="M1.5 5.2h2.2L7 2.4v9.2L3.7 8.8H1.5z" />
-              <path className="lp-bento__sound-wave" d="M9.2 4.9a3 3 0 0 1 0 4.2M10.9 3.2a5.4 5.4 0 0 1 0 7.6" />
+          <span className="lp-bento__play" aria-hidden="true">
+            <svg viewBox="0 0 12 12" width="14" height="14" focusable="false">
+              <path d="M3.4 1.6v8.8L10.6 6z" />
             </svg>
-            <span className="lp-bento__sound-label">{labels.sound}</span>
           </span>
-        </button>
-        <button
-          type="button"
-          className="lp-bento__pause"
-          hidden={!previewable}
-          aria-label={paused ? labels.play : labels.pause}
-          onClick={toggle}
-        >
-          <svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false">
-            {paused ? <path d="M3 1.5v9l7.5-4.5z" /> : <path d="M2.5 1.5h2.5v9H2.5zM7 1.5h2.5v9H7z" />}
-          </svg>
         </button>
       </div>
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- a click on the scrim closes; the keyboard has Esc (native) and the Close button */}
