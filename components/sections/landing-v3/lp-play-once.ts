@@ -54,6 +54,14 @@ import type { gsap } from "@/lib/gsap";
  *   resting picture (reload mid-page, an anchor, the code arriving late,
  *   scrolling back up into it) keeps it. Reduced motion keeps it too,
  *   without downloading any animation code.
+ * - TOUCH SCREENS, STOPPING ON A CARD (2026-10-13): a thumb flick is the normal way to scroll
+ *   there and it flies past whole sections (two flicks cross the three steps: measured in the
+ *   iOS simulator), so most cards only ever showed their picture and a first-time reader
+ *   took the page for a set of stills (founder: "they are not animated which is a bug").
+ *   When the scroll comes to rest on a card whose build-up was skipped or cut short, three
+ *   quarters of it in view, the card clears for an instant and plays from its first scene.
+ *   Once it has played through at its own pace it is done for good, as everywhere else.
+ *   Mouse and trackpad keep the rules above unchanged.
  * - prefers-reduced-motion = the picture; lifting it mid-visit lets a card
  *   that has not finished play its build-up (the steps rest on their first
  *   frame, so they still need the timeline to show their picture).
@@ -118,10 +126,26 @@ export const RUSH_S = 0.35;
 /* ── scroll speed: recent scroll positions (one passive listener) ── */
 const samples: { t: number; y: number }[] = [];
 let speedUsers = 0;
+/** touch screens: the scroll has come to rest when no scroll event came for this long (ms) */
+const SETTLE_MS = 160;
+/** where the "stopping on a card" rule applies: touch is the main pointer */
+const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
+/** share of a card (of the viewport, for a taller card) that must show when the scroll rests */
+const SETTLE_MIN_SHARE = 0.75;
+const settleSubs = new Set<() => void>();
+let settleTimer = 0;
+const onSettled = () => {
+  settleTimer = 0;
+  for (const run of Array.from(settleSubs)) run();
+};
 const onScroll = () => {
   const t = performance.now();
   samples.push({ t, y: window.scrollY });
   while (samples.length > 2 && t - samples[0].t > 500) samples.shift();
+  if (settleSubs.size) {
+    window.clearTimeout(settleTimer);
+    settleTimer = window.setTimeout(onSettled, SETTLE_MS);
+  }
 };
 export function trackScroll(): () => void {
   if (speedUsers++ === 0) window.addEventListener("scroll", onScroll, { passive: true });
@@ -129,6 +153,8 @@ export function trackScroll(): () => void {
     if (--speedUsers === 0) {
       window.removeEventListener("scroll", onScroll);
       samples.length = 0;
+      window.clearTimeout(settleTimer);
+      settleTimer = 0;
     }
   };
 }
@@ -230,6 +256,13 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   let phase: "rest" | "cued" | "playing" | "done" = "rest";
   let cue = 0;
   let dwell = 0;
+  /** the build-up ran to its end at its own pace, in front of the visitor: done for good */
+  let seen = false;
+  /** this run was skipped to the picture (finish) or fast-forwarded (rush) */
+  let cut = false;
+  /** the stage is clearing before a replay (touch screens) */
+  let replaying = false;
+  const touchMq = matchMedia(TOUCH_QUERY);
   let loading = false;
   let queued = false;
   let runtime: PlayOnceRuntime | undefined;
@@ -267,12 +300,14 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   };
   const play = () => {
     if (!tl) return;
+    cut = false;
     tl.play();
     phase = "playing";
     host.dataset.lpAnim = "playing";
   };
   const finish = () => {
     if (!tl) return;
+    cut = true;
     tl.progress(1);
     phase = "done";
     host.dataset.lpAnim = "done";
@@ -281,8 +316,45 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   const rush = () => {
     if (!tl || phase !== "playing" || motionMq.matches || !tl.isActive()) return;
     const left = tl.duration() - tl.time();
-    if (left > 0) tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
+    if (left > 0) {
+      cut = true;
+      tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
+    }
   };
+  /* Touch screens: the scroll has come to rest on a card that only ever showed its picture
+     (flown past, built late, or fast-forwarded on the way out). The stage clears for an
+     instant, so the picture is never swapped for the first scene in plain sight, and the
+     build-up plays from its first scene. */
+  const replay = () => {
+    if (!tl) return;
+    replaying = true;
+    const start = () => {
+      replaying = false;
+      if (disposed || !tl || motionMq.matches) return;
+      tl.timeScale(o.speed && o.speed !== 1 ? o.speed : 1);
+      tl.pause(cue);
+      play();
+    };
+    if (typeof stage.animate !== "function") return start();
+    const out = stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, easing: "linear", fill: "forwards" });
+    const next = () => {
+      start();
+      out.cancel();
+      if (!disposed) stage.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: "linear" });
+    };
+    out.finished.then(next, next);
+  };
+  const onSettle = () => {
+    if (disposed || !tl || seen || replaying || phase !== "done" || motionMq.matches || !touchMq.matches) return;
+    const r = host.getBoundingClientRect();
+    const vh = window.innerHeight;
+    if (!(r.height > 0 && r.width > 0)) return;
+    const share = (Math.min(r.bottom, vh) - Math.max(r.top, 0)) / Math.min(r.height, vh);
+    // well in view: most of it, and its top not cut (the part a build-up starts in)
+    if (share < SETTLE_MIN_SHARE || r.top < -0.1 * r.height) return;
+    replay();
+  };
+  settleSubs.add(onSettle);
 
   const decide = () => {
     if (!tl || disposed) return;
@@ -332,6 +404,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
         tl.eventCallback("onComplete", () => {
           phase = "done";
           host.dataset.lpAnim = "done";
+          if (!cut) seen = true;
         });
         if (motionMq.matches) {
           tl.progress(1, true);
@@ -455,6 +528,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   return () => {
     disposed = true;
     clearTimeout(dwell);
+    settleSubs.delete(onSettle);
     cancelAhead();
     nearIo.disconnect();
     cueIo.disconnect();

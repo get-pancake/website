@@ -37,8 +37,9 @@ export const GROW_SETTLE_MS = 300;
 export const PHONE_QUERY = "(max-width: 767px)";
 /** The design box's width in du (218 px ÷ 0.399025); demo.css `.lp-demowin__view { width }`. */
 export const PHONE_BOX_W = 546.33;
-/** F2 (decision §9, 2026-10-11): on phones the artboard draws ONE card and no pills, so the
- *  Pancake view plays once and holds its end picture, and the Claude & Codex view is never
- *  shown there. `false` brings the pills and the two-view loop back on phones (the card gets
- *  no `data-phone-solo`; demo.css keeps the rules for it). */
-export const PHONE_SOLO = true;
+/** Phones play both views in turn under the two pills, as desktop does (founder 2026-10-13,
+ *  "yes as on desktop": with one view the card played once and stood still, and Claude & Codex
+ *  were first named at the bottom of the page). `true` is F2 (decision §9, 2026-10-11, the
+ *  artboard's ONE card and no pills): the card gets `data-phone-solo`, the Pancake view plays
+ *  once, holds its end picture, and is re-armed when its stage has left the screen. */
+export const PHONE_SOLO = false;

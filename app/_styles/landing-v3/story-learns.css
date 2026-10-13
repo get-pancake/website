@@ -64,6 +64,13 @@
 .lp-sl-chart {
   visibility: hidden;
 }
+/* The close-up 44 px lower than frame 5 draws it, so the heading "What worked" is whole
+   (frame 5 cuts it through its letters; founder 2026-10-13). = CLOSE_DROP in
+   lp-story-learns-timeline.ts, whose earlier poses take the 44 back. */
+.lp-sl-notes {
+  bottom: -44px;
+  top: 44px;
+}
 
 /* ── the chart card (frames 1-2, 5061:5373): 500×272 at 126, 109 ── */
 .lp-sl-graph {

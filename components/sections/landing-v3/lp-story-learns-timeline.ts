@@ -51,15 +51,23 @@ const SCROLL = 262;
     Solved from the frames: the heading sits at (126, 198.25) in frame 3 and (126, -36) in frame
     5, so the notes layer in frame 3 is x 126·(1 − 1/Z), y 198.25 + 36/Z, scale 1/Z; the chart in
     frames 4-5 is x 126·(1 − Z), y −36 − Z·(198.25 + 262), scale Z (off stage by then). */
+/** The close-up sits this much lower than the designer's frame 5, stage px. Frame 5 cuts the
+    heading "What worked" through its letters (its top is 36 above the stage): a first-time
+    reader took it for a display bug, and the founder asked for the fix (2026-10-13). 44 brings
+    the whole heading in with 8 px of air. It is the notes layer's own offset (story-learns.css
+    `.lp-sl-notes { top }`, the two must match), so the rest picture moves with it; frames 1-3
+    are unchanged (the poses below take it back) and the camera ends 44 lower. */
+const CLOSE_DROP = 44;
+
 const POSE = {
   /** frames 1-2: the chart at rest, the notes a move below */
   chart: { x: 0, y: 0, scale: 1 },
-  notes: { x: 51.408, y: 219.562 + SCROLL, scale: 1 / Z },
+  notes: { x: 51.408, y: 219.562 - CLOSE_DROP + SCROLL, scale: 1 / Z },
   /** frame 3 */
   listChart: { x: 0, y: -SCROLL, scale: 1 },
-  listNotes: { x: 51.408, y: 219.562, scale: 1 / Z },
+  listNotes: { x: 51.408, y: 219.562 - CLOSE_DROP, scale: 1 / Z },
   /** frames 4-5: the close-up (the notes layer is the identity) */
-  closeChart: { x: -86.838, y: -813.45, scale: Z },
+  closeChart: { x: -86.838, y: -813.45 + CLOSE_DROP, scale: Z },
   closeNotes: { x: 0, y: 0, scale: 1 },
 } as const;
 

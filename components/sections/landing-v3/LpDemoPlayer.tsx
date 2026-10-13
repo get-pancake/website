@@ -38,12 +38,12 @@
 // Phones (≤767, the mobile artboard's card 5024:9506): the Pancake view is a fixed design box
 // scaled as pixels (demo.css); the island writes the measured scale (--lp-demowin-fit on the
 // stage; CSS has the same quotient as a trig fallback) and takes the chip link out of the tab
-// order (the card is a picture there). PHONE_SOLO (decision §9 F2): no pills and no Claude &
-// Codex view on phones, so the Pancake view plays once and holds its end picture (nothing
-// rewinds on screen, no loop) for as long as any of the stage shows. Once the stage has left
-// the screen it is re-armed, so it plays again each time the visitor comes back to it (a
-// first-time reader on a phone, 2026-10-13: "normal que ces parties ne soient pas dynamiques
-// en navigation mobile ?"). A visitor who shrinks the window on the Claude view is
+// order (the card is a picture there). Since 2026-10-13 both views play in turn there too,
+// under the pills (founder: "yes as on desktop"); the Claude view has its own portrait
+// geometry in demo.css. PHONE_SOLO = true is the earlier one-view card (decision §9 F2): no
+// pills and no Claude & Codex view, the Pancake view plays once and holds its end picture
+// (nothing rewinds on screen) for as long as any of the stage shows, and is re-armed once the
+// stage has left the screen; a visitor who shrinks the window on the Claude view is then
 // brought back to the Pancake view. With no pills the stage is not a tab panel there: its
 // role, tab stop and label are dropped (state `solo`, React-owned), and the chip paragraph is
 // aria-hidden (the mock's role="img" label describes the card) — verifiers M5 / TA-05.

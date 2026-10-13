@@ -1123,7 +1123,23 @@
   /* no cursor on the phone card: the button answers on its own */
   .lp-demowin__view--pancake .lp-demowin__cursor { display: none; }
 
-  /* (the Claude & Codex view is not shown on phones: card[data-phone-solo]) */
+  /* The Claude & Codex view on phones (2026-10-13, founder: "yes as on desktop"; until then the
+     card had one view there, card[data-phone-solo]). The same scene in the portrait box: its
+     column is the Pancake view's (487.97 du from 29.18), the greeting sits on the Pancake
+     title's line, the composer under it at the desktop's distance (82.5), the thread starts
+     150 down (centred between the top edge and the dock), and the dock keeps the Pancake chat bar's 66.93 du from the bottom edge
+     (860 − 66.93 − 90). Plain px: the timeline reads the bar's and the dock's tops with
+     parseFloat, a calc() is NaN. Scoped to the card: the deep dive's story embeds this scene
+     with a geometry of its own (story-claude.css), which a bare class here would override
+     between 600 and 767. */
+  .lp-demowin__card .lp-demowin__view--claude {
+    --ck-col: 487.97px;
+    --ck-x: 29.18px;
+    --ck-greet-top: 244px;
+    --ck-bar-top: 326.5px;
+    --ck-thread-top: 150px;
+    --ck-dock-top: 703.07px;
+  }
 
 }
 
