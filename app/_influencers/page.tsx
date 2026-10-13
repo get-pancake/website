@@ -25,6 +25,7 @@ import { InfluencersTiers } from "@/components/sections/influencers/InfluencersT
 import { Footer } from "@/components/shared/Footer";
 import { Badge } from "@/components/ui/Badge";
 import { H2, H3 } from "@/components/ui/Headings";
+import "@/app/_styles/components.css";
 
 export const metadata: Metadata = {
   title: "Influencer Program — Post a Pancake, get cash or tokens · Pancake",

@@ -26,6 +26,7 @@ import { isAdmin } from "@/lib/auth/admin";
 import { getIdeas, isPublicIdea } from "@/lib/roadmap/ideas";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
+import "@/app/_styles/components.css";
 import "@/app/_styles/landing-v3.css";
 import "./roadmap-lp.css";
 

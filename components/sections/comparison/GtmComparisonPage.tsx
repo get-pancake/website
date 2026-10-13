@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/Badge";
 import { H2, H3 } from "@/components/ui/Headings";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
+import "@/app/_styles/components.css";
 import "@/app/_styles/landing-v3.css";
 import "./comparison.css";
 

@@ -15,6 +15,7 @@ import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { AdminSignOut } from "@/components/sections/roadmap/AdminSignOut";
 import { Badge } from "@/components/ui/Badge";
 import { getAdminSession, isAdminAuthConfigured } from "@/lib/auth/admin";
+import "@/app/_styles/components.css";
 import "@/app/_styles/landing-v3.css";
 import "../roadmap-lp.css";
 

@@ -2,8 +2,12 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Lato } from "next/font/google";
 import "./globals.css";
-import "./_styles/components.css";
-import "./_styles/home-ugc.css";
+// components.css (the design kit, 98 KB) and home-ugc.css left this file on
+// 2026-10-13: a CSS-coverage pass over every route found the kit used only by
+// /pricing, /open-roadmap and the comparison pages, and the UGC sheet by none,
+// yet both were render-blocking on every visit. They now ride with the pages
+// and components that use them (components/ui/*, FxPill, GtmComparisonPage,
+// the roadmap and pricing pages, HomeUGCWall).
 import { AnalyticsEvents } from "@/components/analytics/AnalyticsEvents";
 import { MetaPixelEvents } from "@/components/analytics/MetaPixelEvents";
 import { PostHogAttribution } from "@/components/analytics/PostHogAttribution";

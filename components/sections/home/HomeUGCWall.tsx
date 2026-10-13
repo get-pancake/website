@@ -1,9 +1,9 @@
 /**
  * "Founders on camera" — UGC video wall. A horizontally scrollable row of
  * vertical 9:16 clips of founders talking about the work they handed off to
- * Pancake. Styles live in `app/_styles/home-ugc.css` (imported globally from
- * `app/layout.tsx` — NOT from this file, matching the repo convention where
- * layout.tsx owns global CSS imports).
+ * Pancake. Styles live in `app/_styles/home-ugc.css`, imported below (since
+ * 2026-10-13; app/layout.tsx used to load it on every route, where nothing
+ * rendered this wall).
  *
  * Content pipeline (zero-config drop-in — contract in `public/ugc/README.md`):
  *   - At build/render time we read `public/ugc/*.mp4` from the filesystem.
@@ -24,6 +24,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { HomeUGCMarquee } from "@/components/sections/home/HomeUGCMarquee";
+import "@/app/_styles/home-ugc.css";
 
 
 /* ────────────────────────── Filesystem contract ────────────────────────── */

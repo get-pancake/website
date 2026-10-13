@@ -27,6 +27,7 @@ import { BASE_LEVEL, CREDIT_LEVELS, formatCredits, type CreditLevel } from "@/li
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
 import { TRIAL_DAYS, TRIAL_NOTICE } from "@/lib/trial";
+import "@/app/_styles/components.css";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/landing-v2.css";
 import "./pricing.css";
