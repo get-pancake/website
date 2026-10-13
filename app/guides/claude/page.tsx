@@ -3,14 +3,8 @@ import path from "node:path";
 
 import type { Metadata, Viewport } from "next";
 
-import {
-  GUIDE_META,
-  GUIDE_OFFER_PATH,
-  GUIDE_PATH,
-  withOfferMarkdown,
-} from "@/components/sections/guide-claude/guide-copy";
+import { GUIDE_META, GUIDE_OFFER_PATH, withOfferMarkdown } from "@/components/sections/guide-claude/guide-copy";
 import { GuidePage } from "@/components/sections/guide-claude/GuidePage";
-import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { OG_IMAGE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/verticals.css";
@@ -24,7 +18,9 @@ import "@/app/_styles/guide-claude.css";
  * #321, at the address the DMs carry: those are not going to be edited (founder 2026-10-13).
  * Nothing on the site links here any more (its twin without the offer, /claude, is the one the
  * nav, the footer and the homepage link), and search engines are told to skip it: noindex,
- * canonical to /claude, absent from the sitemap and llms.txt. Static.
+ * absent from the sitemap and llms.txt. No canonical (2026-10-13): one pointing at /claude
+ * said "index that page instead" next to "do not index", two signals that contradict each
+ * other, and the root layout sets none to inherit. Static.
  */
 
 export const dynamic = "force-static";
@@ -35,7 +31,6 @@ export const viewport: Viewport = { themeColor: "#fbf6f1" };
 export const metadata: Metadata = {
   title: GUIDE_META.title,
   description: GUIDE_META.description,
-  alternates: { canonical: `${SITE_ORIGIN}${GUIDE_PATH}` },
   robots: { index: false, follow: true },
   // the homepage card (brief §2), so the alt describes that image
   ...social({

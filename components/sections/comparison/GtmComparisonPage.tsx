@@ -29,12 +29,14 @@ import "./comparison.css";
 //   2026-10-07: site audit. The V1 "Take it from them" posts, the "GTM team" pitch and the
 //   unverified "SOC 2 compliant" badge are gone; "per workspace" pricing; the landing nav and
 //   footer (LpNav/LpFooter) replace HomeNav and the shared Footer.
+//   2026-10-13: the credit plan. Every page says "from $99 a month", the 7-day trial and its
+//   15,000 credits (#333).
 // - FACTS_REVIEWED: when the competitor facts (features, prices) were last checked.
 //   Shown under Sources. Move it only after re-checking every competitor's public pages.
 //   2026-10-07: all seven re-checked on the vendors' own pages (Origami's plans moved to
 //   $49 / $129 / $399, and it now runs the plays you approve).
 //   REMINDER: re-check by 2027-01-05 (90 days), then move this date again.
-const PAGE_MODIFIED = "2026-10-07";
+const PAGE_MODIFIED = "2026-10-13";
 const FACTS_REVIEWED = "October 7, 2026";
 
 /** Status-bar zone matches the landing cream (the Dynamic Island fix every main.lp page carries). */

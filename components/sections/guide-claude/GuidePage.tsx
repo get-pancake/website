@@ -93,7 +93,8 @@ function guideJsonLd() {
         name: GUIDE_META.ogTitle,
         description: GUIDE_META.description,
         inLanguage: "en-US",
-        isPartOf: { "@type": "WebSite", name: "Pancake", url: SITE_ORIGIN },
+        // @id = the root layout's WebSite node, as on the comparison pages
+        isPartOf: { "@type": "WebSite", "@id": `${SITE_ORIGIN}/#website`, name: "Pancake", url: SITE_ORIGIN },
         breadcrumb: { "@id": `${url}#breadcrumb` },
       },
       {

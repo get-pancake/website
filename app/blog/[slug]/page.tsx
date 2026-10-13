@@ -36,6 +36,10 @@ export async function generateStaticParams() {
   return getAllPosts().map((p) => ({ slug: p.slug }));
 }
 
+// Only the posts above exist. An unknown slug gets the static 404 page straight away, as on
+// /for/[vertical]; rendered on demand, it answered 404 with an empty document until scripts ran.
+export const dynamicParams = false;
+
 const SITE = SITE_ORIGIN;
 const ORG_ID = `${SITE}/#organization`;
 const TITLE_SUFFIX = " · Pancake";
