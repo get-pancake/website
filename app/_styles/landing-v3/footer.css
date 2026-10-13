@@ -203,7 +203,7 @@
      labels wrapped at 320, which threw the two columns' rows out of step.
      The left column takes its labels' width, the right one the rest; under
      360 the labels drop to 13.333 so both still fit (128 + 12 + 120 in 272
-     at 320). The 44px tap height is the padding's and is unchanged. */
+     at 320), on the same 24px line so each keeps its 44px tap height. */
   @media (max-width: 374px) {
     .lp-foot-cols {
       column-gap: 12px;
@@ -213,6 +213,7 @@
   @media (max-width: 359px) {
     .lp-foot-col:not([data-col="social"]) .lp-foot-links a {
       font-size: var(--lp-text-sm);
+      line-height: 24px;
     }
   }
   .lp-foot-col[data-col="social"] {
