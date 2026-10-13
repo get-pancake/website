@@ -172,3 +172,4 @@
 /unify-vs-pancake
 /octave-vs-pancake
 /alta-vs-pancake
+/guides/claude/pancake20
