@@ -1,7 +1,7 @@
 // No "use client" on purpose: reached only through DIVE_LOADERS.claude (lp-dive-loaders.ts), so
 // it stays a lazy chunk of the carousel / harness import(). Browser-only code runs inside
 // build() alone.
-import { buildDemoClaude } from "./lp-demo-claude-timeline";
+import { buildDemoClaudeSteps } from "./lp-demo-claude-timeline";
 import type { BuiltStory } from "./lp-dive-stages";
 
 /**
@@ -16,13 +16,30 @@ import type { BuiltStory } from "./lp-dive-stages";
  * caller has reverted its gsap.context. In between, the timeline owns the picture: its last
  * frame is the same picture as the END markup, its first (`cue: 0`) is Claude's home with the
  * composer empty, a composed scene.
+ *
+ * In slices (2026-10-13): `buildStoryClaudeSteps` hands on the demo builder's own slices
+ * (lp-demo-claude-timeline.ts); `buildStoryClaude` runs them to the end in one go.
  */
 export function buildStoryClaude(root: HTMLElement): BuiltStory {
+  const steps = buildStoryClaudeSteps(root);
+  for (;;) {
+    const step = steps.next();
+    if (step.done) return step.value;
+  }
+}
+
+export function* buildStoryClaudeSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const view = root.querySelector<HTMLElement>(".lp-sc-view");
   const win = root.querySelector<HTMLElement>(".lp-demowin__cwin");
   if (!view || !win) throw new Error("story-claude: the scene is missing");
   win.removeAttribute("data-rest");
-  const built = buildDemoClaude(view);
+  const slices = buildDemoClaudeSteps(view);
+  let slice = slices.next();
+  while (!slice.done) {
+    yield;
+    slice = slices.next();
+  }
+  const built = slice.value;
   return {
     tl: built.tl,
     cue: 0,

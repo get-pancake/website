@@ -138,7 +138,20 @@ function measureRun(el: HTMLElement): SmGlyph[] {
   return glyphs;
 }
 
+/** The builder in one go. In slices (2026-10-13): `buildStoryMessageSteps`, which the carousel
+    and the phone stack spread over idle slots (lp-play-once's startBuild). It yields only once
+    everything is measured (the carets' places, the three typed runs, the rows: the long first
+    slice): from there the frame-0 sets are written at once, no tween writes before it is
+    rendered (every fromTo below says immediateRender: false), and nothing reads the layout. */
 export function buildStoryMessage(root: HTMLElement): BuiltStory {
+  const steps = buildStoryMessageSteps(root);
+  for (;;) {
+    const step = steps.next();
+    if (step.done) return step.value;
+  }
+}
+
+export function* buildStoryMessageSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const { $, $$ } = query(root);
   const created: Node[] = [];
 
@@ -169,7 +182,13 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
   };
 
   try {
-    return { ...assemble(), cleanup };
+    const slices = assemble();
+    let slice = slices.next();
+    while (!slice.done) {
+      yield;
+      slice = slices.next();
+    }
+    return { ...slice.value, cleanup };
   } catch (err) {
     // a half-run build must not leave the carets or the digits behind: the shell only gets a
     // cleanup from a build that returned
@@ -177,7 +196,7 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
     throw err;
   }
 
-  function assemble(): Omit<BuiltStory, "cleanup"> {
+  function* assemble(): Generator<void, Omit<BuiltStory, "cleanup">, void> {
     const tl = gsap.timeline({ paused: true });
     const T = SM_T;
 
@@ -307,6 +326,7 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
     };
     const counts = $$(".lp-sm-count");
     const counters = counts.map(mkCounter);
+    yield; // everything is measured: nothing below reads the layout
     // ticking counter: tick times on a quad-out curve (fast first, settling into the final number)
     const tick = ({ ns, max }: { ns: HTMLElement[]; max: number }, t0: number, dur: number) => {
       for (let k = 1; k <= max; k++) {
@@ -336,6 +356,7 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
     gsap.set(bars, { scaleX: 0.6, autoAlpha: 0, transformOrigin: "0 50%" });
     gsap.set(sheens, { x: (i: number) => -100 - SKEL_LEFT[i] });
     gsap.set(rowEls, { y: 8, autoAlpha: 0 });
+    yield;
     gsap.set([body, msg], { clipPath: HIDDEN_CLIP });
     gsap.set(bodyCaret.el, { x: bodyCaret.ox, y: bodyCaret.oy + bodyGlyphs[0].top, height: bodyGlyphs[0].bottom - bodyGlyphs[0].top, opacity: 1 });
     // her conversation waits under the post: the card unseen, at full strength when it comes
@@ -350,6 +371,7 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
 
     const rise = { autoAlpha: 1, y: 0, duration: 0.4, ease: "power3.out", immediateRender: false };
     const grow = { scaleY: 1, duration: 0.22, ease: "power2.out", immediateRender: false };
+    yield;
 
     /* — A · the opening picture holds (the caret blinks once), then she types her post — */
     tl.set(bodyCaret.el, { opacity: 0 }, T.blinkOff);
@@ -374,6 +396,7 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
     tl.fromTo(leadCard, { autoAlpha: 0, y: 12 }, rise, tPosted + T.lead);
     const tF1 = tPosted + T.f1;
     tl.addLabel("f1", tF1);
+    yield;
 
     /* — B · f1 holds; the post leaves, her card travels to the top, the message card rises,
          Pancake types — */
@@ -390,6 +413,7 @@ export function buildStoryMessage(root: HTMLElement): BuiltStory {
     tl.addLabel("f2", msgRun.times[f2Glyph] + 0.001);
     kit.typeDone(msg, msgCaret, msgRun.end + T.caretOff);
     const tSent = kit.markSent(msgCard, msgRun.end + T.sentAfter);
+    yield;
 
     /* — frames 3–6 · more conversations, the sending account, its leads, more accounts — */
     tail.add({ tl, tSent, lead: { convo, cards: [leadCard, msgCard] } });

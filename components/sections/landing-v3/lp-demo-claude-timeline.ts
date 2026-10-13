@@ -24,6 +24,13 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
  *   LIVE   the prompt folds into the call it allowed ("Deploying…" → "Live"), the Play's status
  *          goes from Draft to Live, Claude confirms
  * About 10 s. Easing and rules as the Pancake view's.
+ *
+ * In slices (2026-10-13), as the Pancake view's builder and by the same two rules: the
+ * generator `buildDemoClaudeSteps` yields only after the geometry block, so everything it
+ * measures is read on the untouched home layout, and never inside the frame-0 block, which
+ * lands in one frame; `buildDemoClaude` runs it to its end in one go. In the claude story the
+ * scene is not its resting picture while it builds (the story rests on its END picture and
+ * this builder sets the home): that is the story's driver's business (lp-play-once `away`).
  */
 
 /* The opening: Claude's home holds 0.8 s, then the request is typed as a person types (38 ms a
@@ -42,6 +49,14 @@ const WORK_BEAT = 0.58;
 const CURSOR_FROM = { x: 0.72, y: 1.04 } as const;
 
 export function buildDemoClaude(view: HTMLElement): BuiltDemo {
+  const steps = buildDemoClaudeSteps(view);
+  for (;;) {
+    const step = steps.next();
+    if (step.done) return step.value;
+  }
+}
+
+export function* buildDemoClaudeSteps(view: HTMLElement): Generator<void, BuiltDemo, void> {
   const $ = <T extends Element = HTMLElement>(sel: string): T => {
     const el = view.querySelector<T>(sel);
     if (!el) throw new Error(`demo-claude: ${sel} missing`);
@@ -129,6 +144,7 @@ export function buildDemoClaude(view: HTMLElement): BuiltDemo {
   const ey = app.offsetHeight * CURSOR_FROM.y;
 
   registerTxtPlugin();
+  yield; // the geometry is read: nothing below measures the layout
 
   const tl = gsap.timeline({ paused: true });
   const step = (targets: gsap.TweenTarget, vars: gsap.TweenVars, t: number) =>
@@ -174,6 +190,7 @@ export function buildDemoClaude(view: HTMLElement): BuiltDemo {
   gsap.set(deployBox, { autoAlpha: 1, height: 0, marginTop: 0 });
   if (cursor) gsap.set(cursor, { x: ex, y: ey, opacity: 0 });
   if (cursorArrow) gsap.set(cursorArrow, { scale: 1, transformOrigin: "2px 2px" });
+  yield; // frame 0 is set, in one slice
 
   /* ── 1 · the request types into the composer ── */
   step(barPh, { autoAlpha: 0 }, T0 - STEP);
@@ -207,6 +224,7 @@ export function buildDemoClaude(view: HTMLElement): BuiltDemo {
   tl.to(greet, { autoAlpha: 0, y: -10, duration: 0.2, ease: "power2.in" }, SEND);
   tl.to(bar, { top: dockTop, height: dockH, duration: 0.62, ease: "power3.inOut" }, SEND + 0.04);
   tl.to(barAsk, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, SEND + 0.5);
+  yield;
 
   /* ── 3 · Claude answers, then one card per tool call ── */
   const SAY = SEND + 0.6;
@@ -237,6 +255,8 @@ export function buildDemoClaude(view: HTMLElement): BuiltDemo {
     tl.to(r, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, t);
     drawn = t + 0.3;
   });
+
+  yield;
 
   /* ── 5 · Claude asks before it changes anything; the cursor allows it ── */
   const ASK = drawn + 0.2;
