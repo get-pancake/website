@@ -26,9 +26,10 @@ function undecoratedSearch(params: URLSearchParams): string {
  * in-page anchor became a full reload (a second pageview in every analytics
  * tool) instead of a scroll. One click listener on window, mounted on every
  * page that carries the nav: a plain left click on a link to this pathname
- * (and this query, ignoring the tracker's param) with a hash whose target
- * exists → smooth scroll there (scroll-margin respected), the clean URL in
- * the address bar (replaceState, without the link's click id), a synthetic
+ * (with no query of its own, or this page's, ignoring the tracker's param)
+ * with a hash whose target exists → smooth scroll there (scroll-margin
+ * respected), the clean URL in the address bar (replaceState: this page's
+ * query, without the link's click id), a synthetic
  * hashchange for listeners that rely on it (the /guides/claude tabs), and on
  * a keyboard activation focus moves to the target like a native fragment
  * jump. Window + bubble phase on purpose: it runs LAST, so a link another
@@ -37,6 +38,13 @@ function undecoratedSearch(params: URLSearchParams): string {
  * the sheet by then, and the scroll still waits a frame. The tracker still
  * decorates the hrefs, so copied links keep the click id until the
  * LeadJourney setting limits decoration to the app.
+ *
+ * 2026-10-13 (the bug check's M2). A link with no query of its own is a
+ * same-page link whatever this page's query is: on /?utm_source=… or
+ * /?gclid=… "Product" reloaded the whole page (a second pageview, the
+ * campaign gone from the address bar), and in the agents view
+ * (?audience=agents) it reloaded into the humans view. It now scrolls in
+ * place and the address keeps the page's query.
  */
 export function LpNavScroll() {
   useEffect(() => {
@@ -67,7 +75,9 @@ export function LpNavScroll() {
       const url = new URL(link.href, window.location.href);
       const here = new URL(window.location.href);
       if (url.origin !== here.origin || url.pathname !== here.pathname) return;
-      if (undecoratedSearch(url.searchParams) !== undecoratedSearch(here.searchParams)) return;
+      // its own query, if it has one, must be this page's: another query is another page
+      const query = undecoratedSearch(url.searchParams);
+      if (query && query !== undecoratedSearch(here.searchParams)) return;
       let id = "";
       try {
         id = decodeURIComponent(url.hash.slice(1));
