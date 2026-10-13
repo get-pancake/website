@@ -218,7 +218,7 @@ type BentoEntries = { [K in BentoSlotId]: readonly BentoSlotCard[K][] };
 
 /* ── the customers ────────────────────────────────────────────────────────────────────────── */
 
-/* All four are in the marquee with the YC badge (public/logos/customers/README.md). */
+/* All four are in the marquee with the YC badge (docs/public-assets/logos/customers/README.md). */
 const PRAXIS: BentoLogo = { name: "Praxis", src: "/logos/customers/praxis.png", ratio: 1392 / 370, body: [0.24, 0.755], yc: true };
 const KINRO: BentoLogo = { name: "Kinro", src: "/logos/customers/kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75], yc: true };
 
