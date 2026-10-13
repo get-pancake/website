@@ -1,10 +1,11 @@
 "use client";
 
 import { MotionConfig } from "framer-motion";
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 
 import { FxPillLink } from "@/components/sections/landing/FxPill";
 import { PancakeStack } from "@/components/sections/pricing/PancakeStack";
+import { isLevelKey, usePricingLevel } from "@/components/sections/pricing/PricingLevel";
 import {
   BASE_LEVEL,
   CREDIT_LEVELS,
@@ -27,11 +28,12 @@ import {
  * The "Monthly credits" picker (five radios drawn as one segmented row) sets
  * the price, the credits line, the stack and where Start free goes: the app
  * opens onboarding on the chosen level (lib/pricing.ts `appHrefForLevel`).
- * The server HTML is the first level ($99, 60,000 credits, one pancake), so
- * the page reads right before hydration and without JavaScript. The browser
- * can hold another radio by then (Firefox restores the form on a reload, a
- * visitor can tap a level before hydration), and the highlight follows that
- * radio: on mount the level is read back from it. Native radios
+ * The level lives in PricingLevel.tsx, which the closing band's Start free
+ * reads too. The server HTML is the first level ($99, 60,000 credits, one
+ * pancake), so the page reads right before hydration and without JavaScript.
+ * The browser can hold another radio by then (Firefox restores the form on a
+ * reload, a visitor can tap a level before hydration), and the highlight
+ * follows that radio: on mount the level is read back from it. Native radios
  * give arrow-key selection for free. The short labels ("60k") replace the
  * long ones on narrow screens in CSS; each radio carries its full name for
  * screen readers. The stack is decoration (aria-hidden) and stands still for
@@ -58,15 +60,14 @@ export function PlanCard({
   fine: string;
   children: ReactNode;
 }) {
-  const [key, setKey] = useState<CreditLevel["key"]>(BASE_LEVEL.key);
+  const { level: key, setLevel: setKey } = usePricingLevel();
   const picker = useRef<HTMLFieldSetElement>(null);
   // Hydration keeps the radio the browser has checked; start from it, or the
   // price and Start free stay on the first level under another highlighted pill.
   useEffect(() => {
     const checked = picker.current?.querySelector<HTMLInputElement>("input:checked")?.value;
-    const restored = CREDIT_LEVELS.find((l) => l.key === checked);
-    if (restored) setKey(restored.key);
-  }, []);
+    if (checked && isLevelKey(checked)) setKey(checked);
+  }, [setKey]);
   const index = Math.max(
     0,
     CREDIT_LEVELS.findIndex((l) => l.key === key),

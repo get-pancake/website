@@ -22,6 +22,7 @@ import { BillingFaq } from "@/components/sections/pricing/BillingFaq";
 import { PlanCard } from "@/components/sections/pricing/PlanCard";
 import { PricingClose } from "@/components/sections/pricing/PricingClose";
 import { PricingLead } from "@/components/sections/pricing/PricingLead";
+import { PricingLevelProvider } from "@/components/sections/pricing/PricingLevel";
 import { PricingLevels } from "@/components/sections/pricing/PricingLevels";
 import { PricingLogos } from "@/components/sections/pricing/PricingLogos";
 import { PricingProof } from "@/components/sections/pricing/PricingProof";
@@ -150,6 +151,9 @@ export default function PricingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
       <LpNav />
+      {/* The picked level is shared by the card and the closing band's Start
+          free (PricingLevel.tsx). */}
+      <PricingLevelProvider>
       <div className="lv2">
         {/* The plan: one wide card on the brand band, composed like the V1
             pricing hero. The picker and the price on the left, the pancake
@@ -209,6 +213,7 @@ export default function PricingPage() {
         <BillingFaq />
         <PricingClose />
       </div>
+      </PricingLevelProvider>
       <LpFooter />
       {/* LandingModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}
     </main>

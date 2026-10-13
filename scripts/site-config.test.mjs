@@ -117,7 +117,7 @@ test("the environment reaches the module and next.config.mjs redirects", () => {
     const config = await import("./lib/site-config.mjs");
     const next = (await import("./next.config.mjs")).default;
     const redirects = await next.redirects();
-    const toApp = redirects.filter((r) => ["/signup", "/login", "/signin", "/sign-in"].includes(r.source));
+    const toApp = redirects.filter((r) => ["/signup", "/sign-up", "/login", "/signin", "/sign-in"].includes(r.source));
     console.log(JSON.stringify({
       site: config.SITE_ORIGIN, host: config.SITE_HOST, app: config.APP_ORIGIN,
       ingest: config.ANALYTICS_INGEST_ORIGIN, posthog: config.POSTHOG_ORIGIN,
@@ -138,8 +138,9 @@ test("the environment reaches the module and next.config.mjs redirects", () => {
     app: "https://app.pancake.ai",
     ingest: "https://beta-api.pancake.ai",
     posthog: "https://e.pancake.ai",
-    destinations: ["https://app.pancake.ai"],
-    count: 4,
+    // /signup and /sign-up keep the level a buyer picked (?package=tier_N): the app's /signup reads it.
+    destinations: ["https://app.pancake.ai/signup", "https://app.pancake.ai"],
+    count: 5,
   });
   assert.deepEqual(
     run({
@@ -154,8 +155,8 @@ test("the environment reaches the module and next.config.mjs redirects", () => {
       app: "https://app.getpancake.ai",
       ingest: "https://beta-api.getpancake.ai",
       posthog: "https://e.getpancake.ai",
-      destinations: ["https://app.getpancake.ai"],
-      count: 4,
+      destinations: ["https://app.getpancake.ai/signup", "https://app.getpancake.ai"],
+      count: 5,
     },
   );
 });
