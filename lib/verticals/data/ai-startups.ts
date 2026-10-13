@@ -159,7 +159,7 @@ export const aiStartups: VerticalConfig = {
     },
     {
       q: "Can it find companies with a fresh AI budget?",
-      a: "No. There is no funding or budget signal. Pancake finds teams hiring for manual work and leaders posting about AI pilots.",
+      a: "There is no budget signal. A Play can find recently funded companies, teams hiring for manual work and leaders posting about AI pilots.",
     },
   ],
 

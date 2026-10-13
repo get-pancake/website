@@ -1,6 +1,7 @@
 // lib/verticals/data/fractional-cfos.ts — SEO bet (adjacent: a churned FP&A software + CFO service).
 // Merged in: outsourced CFOs / part-time finance leaders.
-// Caveat (brief): no revenue, funding or financial data, never "companies that just raised".
+// Caveat (brief): no revenue or financial data. Funding is a Play signal since 2026-10-07
+// (validate.ts BANNED note), so the FAQ says recently funded companies can be found (2026-10-13).
 // Stack = accounting tools named in the company's job posts (company-level, OR): no "why" or
 // message cites one specific post. US wording only ("board deck", not "board pack").
 // Every person, company, expert and workspace below is invented.
@@ -151,7 +152,7 @@ export const fractionalCfos: VerticalConfig = {
     },
     {
       q: "Can it find companies that raised a round?",
-      a: "No. Pancake doesn’t see funding or financials. It finds finance job posts and founders posting about runway or board prep.",
+      a: "Yes, a Play can find recently funded companies. Pancake doesn’t see their financials. It also finds finance job posts and founders posting about runway or board prep.",
     },
     {
       q: "Can I pause outreach during close week?",
