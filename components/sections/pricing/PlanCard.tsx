@@ -39,7 +39,6 @@ export function PlanCard({
   pickerHint,
   perMonth,
   creditsLine,
-  leadsLabels,
   saveLabels,
   demoHref,
   fine,
@@ -50,8 +49,6 @@ export function PlanCard({
   pickerHint: string;
   perMonth: string;
   creditsLine: string;
-  /** "About 120 to 600 leads a month" per level key: what the level gets you. */
-  leadsLabels: Record<CreditLevel["key"], string>;
   /** "Save 4.5% per credit" per level key; absent for the first level. */
   saveLabels: Partial<Record<CreditLevel["key"], string>>;
   demoHref: string;
@@ -102,8 +99,6 @@ export function PlanCard({
             <span className="lv2-price-amount">{formatDollars(level.dollars)}</span>
             <span className="lv2-price-cycle">{perMonth}</span>
           </p>
-          {/* What the level gets you, before what it is made of. */}
-          <p className="lv2-price-leads">{leadsLabels[level.key]}</p>
           <p className="lv2-price-sub">
             <span>
               <strong className="lv2-price-credits">{formatCredits(level.credits)}</strong> {creditsLine}

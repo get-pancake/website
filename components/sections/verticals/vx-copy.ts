@@ -240,7 +240,7 @@ export const VX_FAQ = {
     },
     {
       q: "How many leads will I get?",
-      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} a month on ${formatCredits(BASE_LEVEL.credits)} credits, more on a higher level. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
+      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} qualified leads a month on ${formatCredits(BASE_LEVEL.credits)} credits, more on a higher level. Each one is checked against your ICP and comes with why it fits. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
     },
     {
       q: "What does it cost?",
@@ -272,7 +272,7 @@ export const VX_CTA_BODY: [string, string] = [
  *  the month rollover saves), in place of "As many Plays and leads as you want." (searches use
  *  credits now); seats are said as the bill you don't get. Each line is what the buyer gets. */
 export const VX_PRICING_CHECKLIST: readonly string[] = [
-  `About ${leadsEstimateLabel(BASE_LEVEL.credits)} warm leads a month, on ${formatCredits(BASE_LEVEL.credits)}\u00a0credits.`,
+  `${formatCredits(BASE_LEVEL.credits)} credits a month to keep warm leads\u00a0coming.`,
   "Every lead comes with its reason.",
   "Outreach from your own account.",
   "You approve every lead first.",

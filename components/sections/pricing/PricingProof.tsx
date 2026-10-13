@@ -12,7 +12,7 @@ import { pricingProof as p } from "@/lib/copy";
  */
 export function PricingProof() {
   return (
-    <section className="lv2s lv2s--surface lv2-proof" aria-labelledby="lv2-proof-title">
+    <section className="lv2s lv2-proof" aria-labelledby="lv2-proof-title">
       <div className="lv2-container">
         <header className="lv2-section-header">
           <h2 id="lv2-proof-title" className="lv2-section-title">

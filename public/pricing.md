@@ -11,7 +11,7 @@ This file carries the facts of https://pancake.ai/pricing for AI agents. The pag
 
 One plan, per workspace, billed monthly. Every level is the same product. Only the monthly credits change. Start on any level and change anytime.
 
-| Leads a month (estimate) | Monthly credits | Price per month | Saving per credit |
+| Qualified leads a month (estimate) | Monthly credits | Price per month | Saving per credit |
 | --- | --- | --- | --- |
 | About 120 to 600 | 60,000 | $99 | |
 | About 240 to 1,200 | 120,000 | $189 | 4.5% |
@@ -19,7 +19,7 @@ One plan, per workspace, billed monthly. Every level is the same product. Only t
 | About 960 to 4,800 | 480,000 | $679 | 14.3% |
 | About 1,920 to 9,600 | 960,000 | $1,299 | 18% |
 
-The leads figures are estimates. A lead takes about 100 to 500 credits of research. A narrow audience costs more, and Pancake shows the real estimate before a search runs. A work email is 50 credits more, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.
+The leads figures are estimates. A lead as described below takes about 100 to 500 credits of research. A narrow audience costs more, and Pancake shows the real estimate before a search runs. A work email is 50 credits more, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.
 
 Need more credits or a custom setup? Talk to sales: https://pancake.ai/demo
 
@@ -34,6 +34,15 @@ What you get, at every level:
 
 Free trial: 7 days and 15,000 credits (about 30 to 150 leads), the same at every level. Signup starts without a card. A credit card is required to start the trial.
 
+## What one lead is
+
+Not names. Buyers with a reason to talk. Pancake researches every lead with 12 data providers, checks it against your ICP and writes to it in your voice.
+
+- Found where buyers show up: funding, open roles, a company's tools, posts and who reacts to them.
+- Checked against your ICP: Pancake reads each person and company, and keeps the ones that fit.
+- The reason, in one line: every lead arrives with why it fits, so you know before you approve.
+- A personal message, ready: written from that reason, in your voice, and sent from your own account.
+
 ## What customers say
 
 - Kinro (Pierre-Alexandre Kamienny, CEO): 15 meetings booked in a week.
@@ -45,7 +54,7 @@ Free trial: 7 days and 15,000 credits (about 30 to 150 leads), the same at every
 
 ### How many leads will I get?
 
-About 120 to 600 a month on 60,000 credits, and twice that at each level up. A lead takes about 100 to 500 credits of research, more for a narrow audience. It is an estimate: Pancake shows the real one before a search runs.
+About 120 to 600 qualified leads a month on 60,000 credits, and twice that at each level up. Each one is checked against your ICP and comes with why it fits and a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.
 
 ### How does the free trial work?
 

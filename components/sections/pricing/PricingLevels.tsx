@@ -11,7 +11,7 @@ import { CREDIT_LEVELS, formatCredits, formatDollars, leadsEstimateLabel } from 
  */
 export function PricingLevels() {
   return (
-    <section className="lv2s lv2-levels" aria-labelledby="lv2-levels-title">
+    <section className="lv2s lv2s--surface lv2-levels" aria-labelledby="lv2-levels-title">
       <div className="lv2-container">
         <header className="lv2-section-header">
           <h2 id="lv2-levels-title" className="lv2-section-title">

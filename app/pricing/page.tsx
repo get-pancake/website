@@ -2,10 +2,11 @@
  * Pricing V3 — one plan, five levels of monthly credits (2026-10-13, the
  * launch of pancake-cmo PR #1220; the flat $99 plan of 2026-08-06 is gone).
  * The page, top to bottom, each block about what the buyer gets: the plan
- * card (the "Monthly credits" picker, the price, an estimate of leads a
- * month, the pancake stack that grows with it, what every level includes),
- * the customer logos, "Take it from them" (customers' own results), "More
- * credits, more leads." (every level side by side), the questions buyers
+ * card (the "Monthly credits" picker, the price, the pancake stack that grows
+ * with it, what every level includes), the customer logos, what one lead is
+ * (an example lead beside the four things it comes with), "Take it from
+ * them" (customers' own results), "More credits, more leads." (every level
+ * side by side, with the estimate of qualified leads), the questions buyers
  * ask, the closing band.
  * The pricing body rides the landing skin (.lv2) inside the sitewide chrome
  * (LpNav + LpFooter in main.lp, 2026-10-07); app/pricing/pricing.css keeps
@@ -20,12 +21,13 @@ import { PriceGroups } from "@/components/sections/landing/PriceGroups";
 import { BillingFaq } from "@/components/sections/pricing/BillingFaq";
 import { PlanCard } from "@/components/sections/pricing/PlanCard";
 import { PricingClose } from "@/components/sections/pricing/PricingClose";
+import { PricingLead } from "@/components/sections/pricing/PricingLead";
 import { PricingLevels } from "@/components/sections/pricing/PricingLevels";
 import { PricingLogos } from "@/components/sections/pricing/PricingLogos";
 import { PricingProof } from "@/components/sections/pricing/PricingProof";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { pricingFaq, pricingV2 } from "@/lib/copy";
-import { BASE_LEVEL, CREDIT_LEVELS, formatCredits, leadsEstimateLabel, type CreditLevel } from "@/lib/pricing";
+import { BASE_LEVEL, CREDIT_LEVELS, formatCredits, type CreditLevel } from "@/lib/pricing";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { social } from "@/lib/social-meta";
 import { TRIAL_DAYS, TRIAL_NOTICE } from "@/lib/trial";
@@ -123,12 +125,6 @@ const SAVE_LABELS = Object.fromEntries(
   ]),
 ) as Partial<Record<CreditLevel["key"], string>>;
 
-/* What each level gets you ("About 120 to 600 leads a month"): the estimate
-   of lib/pricing.ts, as plain strings for the client card. */
-const LEADS_LABELS = Object.fromEntries(
-  CREDIT_LEVELS.map((level) => [level.key, pricingV2.leadsLine(leadsEstimateLabel(level.credits))]),
-) as Record<CreditLevel["key"], string>;
-
 /* FAQPage JSON-LD — the billing answers, verbatim, so search engines and
    assistants quote the leads estimate, the trial and the billing rules
    instead of guessing them. */
@@ -181,7 +177,6 @@ export default function PricingPage() {
                 pickerHint={pricingV2.pickerHint}
                 perMonth={pricingV2.perMonth}
                 creditsLine={pricingV2.creditsLine}
-                leadsLabels={LEADS_LABELS}
                 saveLabels={SAVE_LABELS}
                 demoHref={DEMO_PAGE_PATH}
                 fine={pricingV2.fine}
@@ -203,10 +198,12 @@ export default function PricingPage() {
             <PricingLogos />
           </div>
         </section>
-        {/* What customers got, then every level by what it gets you, then
-            the questions buyers ask (founder 2026-10-13: "user centric, value
-            oriented, see what your customer gets"). The sections that
+        {/* What ONE lead is (so the price is read against a researched buyer,
+            not a name), what customers got, every level by what it gets you,
+            then the questions buyers ask (founder 2026-10-13: "user centric,
+            value oriented, see what your customer gets"). The sections that
             explained the credit mechanics and drew the workspace are gone. */}
+        <PricingLead />
         <PricingProof />
         <PricingLevels />
         <BillingFaq />
