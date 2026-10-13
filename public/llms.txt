@@ -47,7 +47,7 @@ Pancake is for founders who do their own sales, small B2B teams, agencies and GT
 
 ## Pricing
 
-One plan, from $99 a month per workspace. The customer picks the monthly credits: 60,000 for $99, 120,000 for $189, 240,000 for $359, 480,000 for $679 or 960,000 for $1,299. Every level is the same product. Credits pay for two things: the research a search does to find and check leads, and each work email found (50 credits). Building and testing Plays, messages, replies and teammates use no credits. Pancake shows an estimate before every search. Unused credits roll over, up to one month of credits. When credits run out, searches pause: there is no overage and no automatic top-up.
+One plan, from $99 a month per workspace. The customer picks the monthly credits: 60,000 for $99, 120,000 for $189, 240,000 for $359, 480,000 for $679 or 960,000 for $1,299. Every level is the same product. Credits pay for two things: the research a search does to find and check leads, and each work email found (50 credits). Building and testing Plays, messages, replies and teammates use no credits. Pancake shows an estimate before a search runs. Unused credits roll over, up to one month of credits. When credits run out, searches pause: there is no overage and no automatic top-up.
 
 A workspace is one company. Its plan covers the Brain, every Play, the whole team and one sending account; each extra sending account is $39 a month. A second company or brand is a second workspace with its own plan. The free trial lasts 7 days and comes with 15,000 credits, and a credit card is required to start it.
 

@@ -240,7 +240,7 @@ export const VX_FAQ = {
     },
     {
       q: "How many leads will I get?",
-      a: "Each Play search keeps up to 50 new leads. How many searches you run depends on your credits, and Pancake shows an estimate before each one.",
+      a: "Each Play search keeps up to 50 new leads. How many searches you run depends on your credits, and Pancake shows an estimate before a search runs.",
     },
     {
       q: "What does it cost?",

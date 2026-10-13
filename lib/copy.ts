@@ -335,7 +335,7 @@ export const pricingFacts = {
   items: [
     {
       title: "You see the cost first.",
-      body: "Pancake shows an estimate before every search.",
+      body: "Pancake shows an estimate before a search runs.",
     },
     {
       title: "A slow month isn't lost.",
@@ -452,7 +452,7 @@ export const pricingFaq = {
     },
     {
       q: "How many leads do I get for my credits?",
-      a: "It depends on who you look for: a narrow audience takes more research per lead. Pancake shows an estimate before every search, and the trial lets you measure it on your own audience.",
+      a: "It depends on who you look for: a narrow audience takes more research per lead. Pancake shows an estimate before a search runs, and the trial lets you measure it on your own audience.",
     },
     {
       q: "Do unused credits roll over?",

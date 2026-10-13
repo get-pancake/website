@@ -50,7 +50,7 @@ What never uses a credit:
 
 ## No surprise bills
 
-- You see the cost first. Pancake shows an estimate before every search.
+- You see the cost first. Pancake shows an estimate before a search runs.
 - A slow month isn't lost. Unused credits roll over. Your balance holds up to two months of them.
 - Never billed beyond your plan. Run out, and searches pause. No overage, no automatic top-up.
 - More credits cost less. Up to 18% less per credit at the higher levels.
@@ -90,7 +90,7 @@ Two things: the research a search does to find and check your leads, and each wo
 
 ### How many leads do I get for my credits?
 
-It depends on who you look for: a narrow audience takes more research per lead. Pancake shows an estimate before every search, and the trial lets you measure it on your own audience.
+It depends on who you look for: a narrow audience takes more research per lead. Pancake shows an estimate before a search runs, and the trial lets you measure it on your own audience.
 
 ### Do unused credits roll over?
 
