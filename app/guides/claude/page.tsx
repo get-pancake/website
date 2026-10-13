@@ -3,7 +3,12 @@ import path from "node:path";
 
 import type { Metadata, Viewport } from "next";
 
-import { GUIDE_MD_PATH, GUIDE_META, GUIDE_PATH } from "@/components/sections/guide-claude/guide-copy";
+import {
+  GUIDE_META,
+  GUIDE_OFFER_PATH,
+  GUIDE_PATH,
+  withOfferMarkdown,
+} from "@/components/sections/guide-claude/guide-copy";
 import { GuidePage } from "@/components/sections/guide-claude/GuidePage";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { OG_IMAGE, social } from "@/lib/social-meta";
@@ -12,15 +17,14 @@ import "@/app/_styles/verticals.css";
 import "@/app/_styles/guide-claude.css";
 
 /**
- * /guides/claude — "Use Pancake in Claude", the guide the site links (nav, footer, homepage).
- * No offer on it since 2026-10-13: the ManyChat campaign's PANCAKE20 lives on its copy,
- * ./pancake20. Static. Its agent twin, public/guides/claude.md, is served at
- * /guides/claude.md as text/markdown and read here at build time, so both "Copy" buttons hold
- * the whole file inline (no fetch on click: the Instagram in-app browser would block the copy).
- * 2026-10-07 (audit 7.7, 8.5): the head announces that twin (<link rel="alternate"
- * type="text/markdown">), the title names Claude Code, Codex and MCP, and the share card gets its
- * own og:title and a twitter:image:alt. The image stays the homepage card (brief §2).
- * The og/twitter blocks come from lib/social-meta.ts (audit 8.1: twitter:site, og:locale).
+ * /guides/claude — the CAMPAIGN page: where the ManyChat DMs send people who comment PANCAKE
+ * under a post or an ad (brief by Simon, Sonho, 2026-10-06). "Use Pancake in Claude" with the
+ * PANCAKE20 offer: the promo bar, the hero coupon, the code in the FAQ and under the closing
+ * button, and one line of the Markdown its Copy buttons hold. Exactly the page that shipped with
+ * #321, at the address the DMs carry: those are not going to be edited (founder 2026-10-13).
+ * Nothing on the site links here any more (its twin without the offer, /claude, is the one the
+ * nav, the footer and the homepage link), and search engines are told to skip it: noindex,
+ * canonical to /claude, absent from the sitemap and llms.txt. Static.
  */
 
 export const dynamic = "force-static";
@@ -28,22 +32,21 @@ export const dynamic = "force-static";
 // as /for and the homepage: iOS paints the island band from body (foundation.css)
 export const viewport: Viewport = { themeColor: "#fbf6f1" };
 
-const url = `${SITE_ORIGIN}${GUIDE_PATH}`;
-
 export const metadata: Metadata = {
   title: GUIDE_META.title,
   description: GUIDE_META.description,
-  alternates: { canonical: url, types: { "text/markdown": `${SITE_ORIGIN}${GUIDE_MD_PATH}` } },
+  alternates: { canonical: `${SITE_ORIGIN}${GUIDE_PATH}` },
+  robots: { index: false, follow: true },
   // the homepage card (brief §2), so the alt describes that image
   ...social({
-    path: GUIDE_PATH,
+    path: GUIDE_OFFER_PATH,
     title: GUIDE_META.ogTitle,
     description: GUIDE_META.description,
     image: { url: OG_IMAGE, alt: GUIDE_META.ogImageAlt },
   }),
 };
 
-export default function GuideClaudePage() {
+export default function GuideClaudeCampaignPage() {
   const markdown = readFileSync(path.join(process.cwd(), "public/guides/claude.md"), "utf8");
-  return <GuidePage markdown={markdown} />;
+  return <GuidePage markdown={withOfferMarkdown(markdown)} offer />;
 }

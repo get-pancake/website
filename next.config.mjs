@@ -92,8 +92,8 @@ const nextConfig = {
       { source: "/faq", destination: "/pricing", permanent: false },
       { source: "/help", destination: "/support", statusCode: 301 },
       { source: "/security", destination: "/privacy", permanent: false },
-      { source: "/guides", destination: "/guides/claude", statusCode: 301 },
-      { source: "/mcp", destination: "/guides/claude", statusCode: 301 },
+      { source: "/guides", destination: "/claude", statusCode: 301 },
+      { source: "/mcp", destination: "/claude", statusCode: 301 },
       { source: "/how-it-works", destination: "/#how-it-works", statusCode: 301 },
       // Temporary, like /signup: the app's sign-up route may change.
       { source: "/sign-up", destination: APP_ORIGIN, permanent: false },

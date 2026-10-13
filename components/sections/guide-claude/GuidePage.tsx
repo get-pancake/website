@@ -15,7 +15,6 @@ import {
   FINAL,
   GUIDE_MD_PATH,
   GUIDE_META,
-  GUIDE_OFFER_PATH,
   GUIDE_PATH,
   HERO,
   LOGO_SRC,
@@ -34,11 +33,11 @@ import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
- * /guides/claude — "Use Pancake in Claude", the site's guide — and, with `offer`, its campaign
- * copy /guides/claude/pancake20, the destination of the ManyChat DMs (most visitors: a phone,
- * inside Instagram's in-app browser). `offer` adds the PANCAKE20 pieces and nothing else: the
- * promo bar, the hero coupon, the code in the FAQ's cost answer and the closing note. Without
- * it the page prints no code anywhere (founder 2026-10-13). Built on the /for page kit
+ * "Use Pancake in Claude": /claude, the guide the site links, and, with `offer`, /guides/claude,
+ * the destination of the ManyChat DMs (most visitors: a phone, inside Instagram's in-app
+ * browser). `offer` adds the PANCAKE20 pieces and nothing else: the promo bar, the hero coupon,
+ * the code in the FAQ's cost answer and the closing note. Without it the page prints no code
+ * anywhere (founder 2026-10-13; the two addresses: guide-copy.ts). Built on the /for page kit
  * (.lp-vx: text edge, section rhythm, VxHead, the FAQ accordion) plus the homepage's nav,
  * CTA card and footer; the guide's own pieces (promo bar, coupon, copy blocks, client tabs,
  * the .md card) live in app/_styles/guide-claude.css.
@@ -57,11 +56,10 @@ export function GuidePage({ markdown, offer = false }: { markdown: string; offer
   const preview = markdown.split("\n").slice(0, 9).join("\n");
   return (
     <main className={"lp lp-vx lp-guide" + (offer ? " lp-guide--offer" : "")}>
-      {/* the campaign copy is noindex and canonical to the guide: the structured data is the guide's */}
+      {/* the campaign page is noindex and canonical to the guide: the structured data is the guide's */}
       {offer ? null : (
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(guideJsonLd()) }} />
       )}
-      {offer ? null : <script dangerouslySetInnerHTML={{ __html: OFFER_BRIDGE_JS }} />}
       <LpFitVars />
       {offer ? <PromoBar /> : null}
       <LpNav />
@@ -115,28 +113,6 @@ function guideJsonLd() {
     ],
   };
 }
-
-/**
- * The bridge for the DMs already sent: they link to /guides/claude, which showed the offer until
- * 2026-10-13. A visitor who ENTERS the site on the guide from Instagram, Facebook or Messenger
- * (their in-app browsers, or their link shims as the referrer), or with a campaign tag in the URL,
- * is sent to the campaign copy before anything paints, query and hash kept (the tabs, utm_*).
- * Never for someone who came from the site itself: an inline script does not run on a client-side
- * navigation, and a full load from our own pages is skipped by its referrer. Remove once every
- * campaign link points at GUIDE_OFFER_PATH.
- */
-const OFFER_BRIDGE_JS = `(function () {
-  try {
-    var here = window.location, from = "";
-    try { from = document.referrer ? new URL(document.referrer).hostname : ""; } catch (e) {}
-    if (from === here.hostname) return; // came from the site itself
-    var social = /(^|\\.)(instagram\\.com|facebook\\.com|messenger\\.com|m\\.me|fb\\.me|manychat\\.com)$/i.test(from);
-    var inApp = /Instagram|FBAN|FBAV|FB_IAB|FBIOS|Messenger/i.test(navigator.userAgent || "");
-    var tagged = /[?&](code|offer)=/i.test(here.search) ||
-      /[?&]utm_(source|medium)=[^&]*(manychat|instagram|facebook|messenger|meta|social|\\big\\b|\\bfb\\b|\\bdm\\b)/i.test(here.search);
-    if (social || inApp || tagged) here.replace(${JSON.stringify(GUIDE_OFFER_PATH)} + here.search + here.hash);
-  } catch (e) {}
-})();`;
 
 function PromoBar() {
   return (

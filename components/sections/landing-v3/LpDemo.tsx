@@ -38,6 +38,7 @@
 
 import { Fragment, type ReactNode } from "react";
 
+import { GUIDE_PATH } from "@/components/sections/guide-claude/guide-copy";
 import { VX_DEMO } from "@/components/sections/verticals/vx-copy";
 import { HOME_DEMO } from "@/lib/verticals/home-demo";
 import { ClaudeMark, Cursor, LpClaudeScene, type ClaudeScript } from "./LpClaudeScene";
@@ -208,7 +209,7 @@ function PancakeView() {
           TODO(analytics): no click id yet — a new CTA id needs the founder + a GTM trigger. */}
       <p className="lp-demowin__chip">
         <span className="lp-demowin__ask">{P.chipAsk}</span>
-        <a className="lp-demowin__agent" href="/guides/claude">
+        <a className="lp-demowin__agent" href={GUIDE_PATH}>
           <span className="lp-demowin__badges" aria-hidden="true">
             <span className="lp-demowin__badge">
               <ClaudeMark id="spark" className="lp-demowin__badge-claude" />

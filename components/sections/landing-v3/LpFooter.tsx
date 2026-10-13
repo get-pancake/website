@@ -27,6 +27,7 @@
  */
 
 import { COMPARE_PATH, COMPARISONS, compareName, comparePath } from "@/components/sections/compare/compare-data";
+import { GUIDE_PATH } from "@/components/sections/guide-claude/guide-copy";
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { SUPPORT_PATH } from "@/lib/contact";
@@ -43,7 +44,7 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       { label: "Example Plays", href: PLAYS_PATH },
       { label: "Pricing", href: "/pricing" },
       { label: "Industries", href: "/for" },
-      { label: "Pancake in Claude", href: "/guides/claude" },
+      { label: "Pancake in Claude", href: GUIDE_PATH },
       { label: "Sign in", href: APP_ORIGIN, analyticsId: "signin_footer" },
     ],
   },
@@ -54,7 +55,7 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       { label: "Blog", href: "/blog" },
       { label: "Comparisons", href: COMPARE_PATH },
       { label: "Support", href: SUPPORT_PATH },
-      { label: "Connect your agent", href: "/guides/claude#setup" },
+      { label: "Connect your agent", href: `${GUIDE_PATH}#setup` },
     ],
   },
   {

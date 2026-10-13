@@ -1,5 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 
+import { GUIDE_PATH } from "@/components/sections/guide-claude/guide-copy";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNavMenu, type LpNavItem } from "@/components/sections/landing-v3/LpNavMenu";
 import { LpNavScroll } from "@/components/sections/landing-v3/LpNavScroll";
@@ -124,7 +125,7 @@ const PRODUCT_MENU: LpNavItem[] = [
   },
   {
     label: "Claude and Codex",
-    href: "/guides/claude",
+    href: GUIDE_PATH,
     description: "Connect Pancake to Claude, Claude Code or Codex.",
   },
 ];

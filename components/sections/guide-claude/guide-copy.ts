@@ -3,14 +3,17 @@ import { pricingV2 } from "@/lib/copy";
 import { TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
 
 /**
- * /guides/claude — "Use Pancake in Claude", the site's guide (nav, footer, homepage) — and its
- * campaign copy /guides/claude/pancake20, the page the ManyChat DMs send to people who comment
- * PANCAKE under an Instagram or Facebook post or ad (brief by Simon, Sonho,
- * 2026-10-06: raw/pancake-manychat-guide-claude-build-brief-2026-10-06.md).
- * The two pages are one component; the PANCAKE20 offer (promo bar, coupon, the FAQ's aside, the
- * closing note, one line of the Markdown) shows on the campaign copy only (founder 2026-10-13:
- * the code "should not appear on a page accessible from the main landing page"). It was on
- * /guides/claude itself until then, which the site started linking with #330.
+ * "Use Pancake in Claude", twice:
+ *   - /guides/claude, the page the ManyChat DMs send to people who comment PANCAKE under an
+ *     Instagram or Facebook post or ad (brief by Simon, Sonho, 2026-10-06:
+ *     raw/pancake-manychat-guide-claude-build-brief-2026-10-06.md), WITH the PANCAKE20 offer,
+ *     exactly as it shipped. Its address never changes: the DMs are not going to be edited;
+ *   - /claude, the same guide WITHOUT the offer, the one the site links (nav, footer, homepage).
+ * Founder 2026-10-13: the code "should not appear on a page accessible from the main landing
+ * page", then "I wont change simon's dm so just dupplicate a page without the promocode that
+ * appears from our landing page menu". The site linked /guides/claude itself from #330 to that
+ * day. The two pages are one component; the offer (promo bar, coupon, the FAQ's aside, the
+ * closing note, one line of the Markdown) shows on /guides/claude only.
  * The brief's copy is final and used word for word, with three house-rule
  * edits:
  *   - the trial is TRIAL_DAYS long (lib/trial.ts: 3 days, card required);
@@ -32,12 +35,14 @@ import { TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
  * await).
  */
 
-export const GUIDE_PATH = "/guides/claude";
+/** The guide the site links and search engines index: no offer on it. EVERY link from our own
+ *  pages goes here, never to GUIDE_OFFER_PATH. */
+export const GUIDE_PATH = "/claude";
 export const GUIDE_MD_PATH = "/guides/claude.md";
 export const PROMO_CODE = "PANCAKE20";
-/** The campaign copy of the guide: same page, with the offer. Unlinked, noindex, canonical to
- *  GUIDE_PATH. Give THIS link to a campaign that promises the code. */
-export const GUIDE_OFFER_PATH = "/guides/claude/pancake20";
+/** The campaign page: the same guide with the offer. The ManyChat DMs link here, so the address
+ *  stays. Unlinked from the site, noindex, canonical to GUIDE_PATH. */
+export const GUIDE_OFFER_PATH = "/guides/claude";
 
 /** The agent version's offer line. public/guides/claude.md does not carry it (that file is
  *  public: llms.txt and llms-full.txt list it); the campaign page puts it back in the Markdown
