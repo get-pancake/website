@@ -1,6 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
 
-import { GUIDE_PATH } from "@/components/sections/guide-claude/guide-copy";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNavMenu, type LpNavItem } from "@/components/sections/landing-v3/LpNavMenu";
 import { LpNavScroll } from "@/components/sections/landing-v3/LpNavScroll";
@@ -28,29 +27,29 @@ import type { VerticalCategory } from "@/lib/verticals/types";
  * links, Sign in and Book a demo live in LpNavMenu's sheet.
  *
  * Menus (founder 2026-10-07, "inspire-toi de la compet pour rendre accessible
- * les pages que t'as créées"): /plays, /compare and the Claude guide were
- * linked from nowhere but the sitemap. Like Unify and Octave, the bar reads
- * Product ▾ · Industries ▾ · Pricing · Resources ▾; "Blog" moved into
- * Resources, and "Resources" links to /blog. PRODUCT_MENU and RESOURCES_MENU
- * are the one source: the phone sheet gets them as props. No changelog
- * (founder 2026-10-08: a dated feed needs an entry every release) and so no
- * release bar above the nav either; a launch-day bar can come back here.
+ * les pages que t'as créées"): the bar reads Product · Industries ▾ ·
+ * Pricing · Resources ▾. RESOURCES_MENU is the one source: the phone sheet
+ * gets it as a prop. No changelog (founder 2026-10-08: a dated feed needs an
+ * entry every release) and so no release bar above the nav either; a
+ * launch-day bar can come back here.
+ * 2026-10-13 (founder: "Enleve les sous elements au hover de la navbar
+ * Product, ils servent a rien", "Pas de hover + click sur les autres!"):
+ * Product is a plain link again, to the homepage's steps; /plays and the
+ * Claude guide stay linked from the footer. Industries and Resources open on
+ * a click, never on hover.
  *
  * Every ▾ entry is the same disclosure (LpNavDisclosure, born as "Industries",
- * founder 2026-09-22, "do like Origami"): a plain link to the entry's main
- * page, then a caret button that discloses a panel. Server-rendered, so every
- * menu link is in the HTML of every page that carries the nav (crawlable).
- * The panel is a disclosure (not a menu): LpNavMenu's effect — the nav's
- * client island — opens it on a settled hover or on the caret (click / Enter
- * / Space) and closes it on Escape, pointer leave (after a grace), focus
- * leaving, a press outside, or another entry opening (one open at a time);
- * data-open / data-closing on .lp-nav-dd drive nav.css. Closed =
- * visibility:hidden, so its links are out of the Tab order: Tab goes
- * Product → caret → Industries → caret → Pricing → Resources → caret.
- * Touch (hover:none): Product and Resources keep their caret (a tap opens
- * the panel, a tap outside closes it) because their link targets don't list
- * the other pages; Industries drops it, its link is the hub that lists every
- * vertical.
+ * founder 2026-09-22, "do like Origami"): one button, the label and its
+ * caret, that discloses a panel. Server-rendered, so every menu link is in
+ * the HTML of every page that carries the nav (crawlable); each entry's main
+ * page is a row of its panel ("All industries", "Blog"). The panel is a
+ * disclosure (not a menu): LpNavMenu's effect — the nav's client island —
+ * opens it on the button (click / tap / Enter / Space) and closes it on the
+ * button again, Escape, focus moving out, a press outside, or the other
+ * entry opening (one open at a time); data-open / data-closing on .lp-nav-dd
+ * drive nav.css. Closed = visibility:hidden, so its links are out of the Tab
+ * order: Tab goes Product → Industries → Pricing → Resources. Mouse and
+ * touch behave the same.
  */
 export function LpNav() {
   return (
@@ -59,24 +58,10 @@ export function LpNav() {
         <img alt="" src="/lp/lp-nav-logo.svg" width={114.956} height={56} />
       </a>
       <nav className="lp-nav-links" aria-label="Primary">
-        <LpNavDisclosure
-          name="product"
-          label="Product"
-          href="/#how-it-works"
-          toggleLabel="Show product pages"
-          className="lp-nav-dd--menu"
-        >
-          <LpNavMenuList items={PRODUCT_MENU} />
-        </LpNavDisclosure>
+        <a href="/#how-it-works">Product</a>
         <LpNavIndustries />
         <a href="/pricing">Pricing</a>
-        <LpNavDisclosure
-          name="resources"
-          label="Resources"
-          href="/blog"
-          toggleLabel="Show resources"
-          className="lp-nav-dd--menu"
-        >
+        <LpNavDisclosure name="resources" label="Resources" className="lp-nav-dd--menu">
           <LpNavMenuList items={RESOURCES_MENU} />
         </LpNavDisclosure>
       </nav>
@@ -100,26 +85,18 @@ export function LpNav() {
           Start free
         </LpFxLink>
       </div>
-      <LpNavMenu product={PRODUCT_MENU} resources={RESOURCES_MENU} />
+      <LpNavMenu resources={RESOURCES_MENU} />
       <LpNavScroll />
     </header>
   );
 }
 
 /**
- * The two compact menus (2026-10-07). Labels ≤ 3 words (landing voice).
- * "Claude and Codex" is the guide's "Pancake in Claude and Codex", shortened
- * to the label budget inside the Product menu. Titles only since 2026-10-13
- * (founder: "not sure there is a need for title + subtitle here each time -
- * same for the product menu"): each row carried a one-line description under
+ * The compact menu (2026-10-07). Labels ≤ 3 words (landing voice). Titles
+ * only since 2026-10-13 (founder: "not sure there is a need for title +
+ * subtitle here each time"): each row carried a one-line description under
  * its label until then.
  */
-const PRODUCT_MENU: LpNavItem[] = [
-  { label: "How it works", href: "/#how-it-works" },
-  { label: "Example Plays", href: "/plays" },
-  { label: "Claude and Codex", href: GUIDE_PATH },
-];
-
 const RESOURCES_MENU: LpNavItem[] = [
   { label: "Blog", href: "/blog" },
   { label: "Compare", href: "/compare" },
@@ -127,15 +104,12 @@ const RESOURCES_MENU: LpNavItem[] = [
 ];
 
 /**
- * One ▾ entry: the link to the entry's main page (works without JS and on
- * touch), the caret button that owns the panel (aria-expanded, driven by
- * LpNavMenu's effect), and the panel. `name` keys the panel id.
+ * One ▾ entry: the button (label + caret) that owns the panel (aria-expanded,
+ * driven by LpNavMenu's effect), and the panel. `name` keys the panel id.
  */
 function LpNavDisclosure({
   name,
   label,
-  href,
-  toggleLabel,
   className,
   panelClassName,
   cardClassName,
@@ -143,8 +117,6 @@ function LpNavDisclosure({
 }: {
   name: string;
   label: string;
-  href: string;
-  toggleLabel: string;
   className?: string;
   panelClassName?: string;
   cardClassName?: string;
@@ -154,16 +126,8 @@ function LpNavDisclosure({
   const cx = (base: string, extra?: string) => (extra ? `${base} ${extra}` : base);
   return (
     <div className={cx("lp-nav-dd", className)}>
-      <a className="lp-nav-dd__trigger" href={href}>
+      <button type="button" className="lp-nav-dd__trigger" aria-expanded="false" aria-controls={panelId}>
         {label}
-      </a>
-      <button
-        type="button"
-        className="lp-nav-dd__toggle"
-        aria-expanded="false"
-        aria-controls={panelId}
-        aria-label={toggleLabel}
-      >
         <svg className="lp-nav-dd__caret" viewBox="0 0 10 10" width="10" height="10" aria-hidden="true" focusable="false">
           <path d="M2 3.75 5 6.75l3-3" />
         </svg>
@@ -214,7 +178,7 @@ void everyCategoryPlaced;
 const catId = (category: string) =>
   `lp-nav-ind-cat-${category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}`;
 
-/** The Industries entry: hub link + caret toggle + the category grid panel. */
+/** The Industries entry: the button + the category grid panel (its foot links the hub). */
 function LpNavIndustries() {
   const groups = navGroups();
   const cells = NAV_COLUMNS.flatMap((column, c) =>
@@ -231,21 +195,11 @@ function LpNavIndustries() {
     }),
   );
   // No approved vertical yet: a plain link to the hub, no caret, no panel.
-  if (!cells.length) {
-    return (
-      <div className="lp-nav-dd lp-nav-ind">
-        <a className="lp-nav-dd__trigger" href="/for">
-          Industries
-        </a>
-      </div>
-    );
-  }
+  if (!cells.length) return <a href="/for">Industries</a>;
   return (
     <LpNavDisclosure
       name="ind"
       label="Industries"
-      href="/for"
-      toggleLabel="Show industries"
       className="lp-nav-ind"
       panelClassName="lp-nav-ind__panel"
       cardClassName="lp-nav-ind__card"

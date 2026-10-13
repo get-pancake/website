@@ -267,11 +267,11 @@
   outline-offset: 2px;
 }
 /* Links: display face like the section titles, cream, left-justified,
-   ≥44px tap rows. Same groups/labels/hrefs as the desktop bar (2026-10-07):
-   Product and Resources as labelled lists, the single links (Industries ·
+   ≥44px tap rows. Same entries/labels/hrefs as the desktop bar (2026-10-07):
+   Resources as a labelled list, the single links (Product · Industries ·
    Pricing, Sign in) as label-less groups, a cream hairline between groups.
-   Ten links no longer fit at the 39.8px face, so rows step down to 27.6px
-   (--lp-text-2xlg, still the condensed display face, 49px tall rows). */
+   Rows sit at 27.6px (--lp-text-2xlg, still the condensed display face,
+   49px tall rows): the list outgrew the 39.8px face. */
 .lp-nav-menu nav {
   display: flex;
   flex: none;
@@ -365,19 +365,19 @@ body.menu-open:has(main.lp) {
   overflow: hidden;
 }
 
-/* ── ▾ entries: Product, Industries, Resources ───────────────────────────
-   One disclosure, three entries (born as "Industries", founder 2026-09-22,
-   "do like Origami"; Product and Resources joined it 2026-10-07, "inspire-toi
-   de la compet"): a link to the entry's main page + a caret button that
-   discloses a panel. Server HTML (all links crawlable). Open state is
-   JS-driven (LpNavMenu's wireDisclosure): [data-open] while open,
-   [data-closing] during the 200ms fade — every open selector below keys on
-   those, never on :hover / :focus-within. One panel open at a time. Hidden
-   ≤767 with the links row — the phone sheet lists the same pages. The link
-   + caret keep the Industries trigger's exact footprint (text, 5px, 10px
-   caret). .lp-nav-dd* is the shared disclosure; .lp-nav-ind* is the
-   Industries grid panel; .lp-nav-dd--menu is the compact Product /
-   Resources panel. */
+/* ── ▾ entries: Industries, Resources ────────────────────────────────────
+   One disclosure, two entries (born as "Industries", founder 2026-09-22,
+   "do like Origami"; Resources joined it 2026-10-07, "inspire-toi de la
+   compet"; Product had a panel too until 2026-10-13): one button, the label
+   and its caret, that discloses a panel on a click. Server HTML (all links
+   crawlable). Open state is JS-driven (LpNavMenu's wireDisclosure):
+   [data-open] while open, [data-closing] during the 200ms fade — every open
+   selector below keys on those, never on :hover / :focus-within (founder
+   2026-10-13: "Pas de hover"). One panel open at a time. Hidden ≤767 with
+   the links row — the phone sheet lists the same pages. The button keeps
+   the footprint the link + caret pair had (text, 5px, 10px caret).
+   .lp-nav-dd* is the shared disclosure; .lp-nav-ind* is the Industries grid
+   panel; .lp-nav-dd--menu is the compact Resources panel. */
 .lp-nav-dd {
   display: flex;
 }
@@ -407,44 +407,26 @@ body.menu-open:has(main.lp) {
     gap: 16px;
   }
 }
-/* Caret button: a 14×24 box centred on the 10px caret, 3px clear of the
-   link so its focus ring never touches the last letter; margins 3 / −2 keep
-   the footprint at 5px gap + 10px caret. The ::after stretches the hit
-   area to 40×40, from the link's edge into the gap after the entry (the
-   inset follows the row's gap). Focus ring = the browser default, like the
-   plain links. */
-.lp .lp-nav-dd__toggle {
-  align-self: center;
+/* The entry's button: the plain links' text (same face, same 40px tap
+   height through the 10px block padding), 5px, the 10px caret. Focus ring =
+   the browser default, like the plain links. */
+.lp .lp-nav-dd__trigger {
+  align-items: center;
   appearance: none;
   background: none;
   border: 0;
   border-radius: 0;
   color: var(--lp-text);
   cursor: pointer;
-  display: grid;
+  display: flex;
   font: inherit;
-  height: 24px;
-  margin: 0 -2px 0 3px;
-  padding: 0;
-  place-items: center;
-  position: relative;
-  width: 14px;
-}
-.lp-nav-dd__toggle::after {
-  content: "";
-  inset: -8px -23px -8px -3px;
-  position: absolute;
-}
-@media (max-width: 1024px) {
-  .lp-nav-dd__toggle::after {
-    inset: -8px -22px -8px -4px;
-  }
-}
-/* 16px gap: 14px to the next entry → a 32×40 area */
-@media (min-width: 768px) and (max-width: 900px) {
-  .lp-nav-dd__toggle::after {
-    inset: -8px -14px -8px -4px;
-  }
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  gap: 5px;
+  letter-spacing: 0.1333px;
+  line-height: 1.5;
+  margin: 0;
+  padding: 10px 0;
 }
 .lp-nav-dd__caret {
   fill: none;
@@ -455,14 +437,13 @@ body.menu-open:has(main.lp) {
   stroke-width: 1.5;
   transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
 }
-/* Shared panel: hangs 20px under the row's centre line, a transparent top
-   band bridging the pointer from the link to the card, a 4px rise + fade
-   in. --lp-dd-x places it horizontally (each panel kind sets its own). */
+/* Shared panel: its card hangs 38px under the row's centre line (18px
+   under the entry), a 4px rise + fade in. --lp-dd-x places it horizontally
+   (each panel kind sets its own). */
 .lp-nav-dd__panel {
   opacity: 0;
-  padding-top: 18px;
   position: absolute;
-  top: calc(50% + 20px);
+  top: calc(50% + 38px);
   transform: translate(var(--lp-dd-x, 0), -4px);
   transition:
     opacity 160ms ease-out,
@@ -507,14 +488,14 @@ body.menu-open:has(main.lp) {
   overscroll-behavior: contain;
   white-space: normal;
 }
-/* Custom ring inside the panels only; the entry links and the carets keep
-   the browser default their siblings get. */
+/* Custom ring inside the panels only; the entry buttons keep the browser
+   default their sibling links get. */
 .lp .lp-nav-dd__panel a:focus-visible {
   outline: 2px solid var(--lp-ink-100);
   outline-offset: 0; /* 2px clear of the heading hairline above the first link */
 }
 
-/* Compact panel (Product, Resources — 2026-10-07): one row per page, its
+/* Compact panel (Resources — 2026-10-07): one row per page, its
    label alone since 2026-10-13 (founder: no title + subtitle on each row),
    sized to its longest label and never narrower than 176px, so three short
    words do not make a sliver of a card. It hangs from its own entry
@@ -556,11 +537,6 @@ body.menu-open:has(main.lp) {
     background: var(--lp-surface);
   }
 }
-/* Touch: the caret stays (a tap opens the panel, a tap outside closes it):
-   the entry links lead to one page each, the panel lists the others. Its
-   target is the ::after slop (40×40, 32×40 at 768–900), 44 tall on coarse
-   pointers (block below). */
-
 /* Industries panel: centred on the page and as wide as the bar's frame
    (logo left edge → pills right edge). It hangs from .lp-nav-links (its
    translate makes it the containing block); the x offset undoes the row's
@@ -677,14 +653,6 @@ body.menu-open:has(main.lp) {
     grid-row: var(--lp-ind-row-sm);
   }
 }
-/* Touch: no caret, no panel — "Industries" is a plain link to the hub
-   (which lists every vertical). Product / Resources keep theirs (above). */
-@media (hover: none) {
-  .lp .lp-nav-ind .lp-nav-dd__toggle,
-  .lp .lp-nav-ind__panel {
-    display: none;
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   .lp-nav-dd__panel,
   .lp-nav-dd[data-open] .lp-nav-dd__panel,
@@ -711,10 +679,6 @@ body.menu-open:has(main.lp) {
     content: "";
     inset: min(0px, calc(50% - 22px));
     position: absolute;
-  }
-  .lp-nav-dd__toggle::after {
-    bottom: -10px;
-    top: -10px;
   }
   /* The pill's own overflow:hidden would clip the slop; its FX layer and
      label clip themselves, so nothing else can spill out. */
