@@ -360,7 +360,7 @@ function buildS1(root: HTMLElement): BuiltStep {
   return { tl, cleanup: () => {}, cue: 0 };
 }
 
-/* ── step 02 · Say who you want, Pancake builds the Play (Figma storyboard, ≈ 8.95 s) ──
+/* ── step 02 · Say who you want, Pancake builds the Play (Figma storyboard, ≈ 10.6 s) ──
    f1 the chat request and its answer (the poster) → the thread scrolls, one
    question arrives (f2) → the hand picks "1-50 employees" (f3) → the chat
    gives way to the draft, "Your Play takes shape here", whose slots are
@@ -369,41 +369,47 @@ function buildS1(root: HTMLElement): BuiltStep {
    → the hand goes to "Add 13 to sequence" (f7) and clicks → the Play card,
    its sparkline drawing in (f8), held as the last image (= V2's art card
    5024:8277). Seconds of the timeline; the labels are the storyboard's
-   pictures. Pace knobs: every hold is the gap between two entries. */
+   pictures. Pace knobs: every hold is the gap between two entries.
+   The opening picture HOLDS 1.8 s (founder 2026-10-13: "l'écran de base
+   passe trop vite, on comprend pas le cheminement"; it was 0.45 s). The card
+   starts playing when its top crosses 60 % of the viewport, its lower part
+   still below the fold: the request and its answer were gone before the eye
+   had reached them, so nothing told where the path starts. The question
+   also waits a second for its reader before the hand comes. */
 const S2_T = {
-  scroll: 0.45,
-  question: 0.62,
-  questionItems: 0.74,
-  f2: 1.45,
-  hand1: 1.6,
-  hover: 1.86,
-  f3: 2.05,
-  click1: 2.2,
-  chatOut: 2.5,
-  draftHead: 2.68,
-  draftCard: 2.74,
-  thinking: 2.8,
-  slots: [3.0, 3.22, 3.44],
-  f4: 3.95,
-  draftOut: 4.35,
-  leadsIn: 4.52,
-  rowsIn: 4.62,
-  f5: 5.12,
-  pan: 5.14,
-  hand2: 5.62,
-  click2: 6.08,
-  ticks: 6.14,
-  bar: 6.22,
-  f6: 6.7,
-  hand3: 6.9,
-  f7: 7.45,
-  click3: 7.55,
-  leadsOut: 7.8,
-  play1: 7.96,
-  play2: 8.04,
-  spark: 8.2,
-  f8: 8.75,
-  end: 8.95,
+  scroll: 1.8,
+  question: 1.97,
+  questionItems: 2.09,
+  f2: 2.8,
+  hand1: 3.15,
+  hover: 3.41,
+  f3: 3.6,
+  click1: 3.75,
+  chatOut: 4.15,
+  draftHead: 4.33,
+  draftCard: 4.39,
+  thinking: 4.45,
+  slots: [4.65, 4.87, 5.09],
+  f4: 5.6,
+  draftOut: 6.0,
+  leadsIn: 6.17,
+  rowsIn: 6.27,
+  f5: 6.77,
+  pan: 6.79,
+  hand2: 7.27,
+  click2: 7.73,
+  ticks: 7.79,
+  bar: 7.87,
+  f6: 8.35,
+  hand3: 8.55,
+  f7: 9.1,
+  click3: 9.2,
+  leadsOut: 9.45,
+  play1: 9.61,
+  play2: 9.69,
+  spark: 9.85,
+  f8: 10.4,
+  end: 10.6,
 } as const;
 /** the hand's top-left at its three pictures (Figma instance boxes; its fingertip is 9.3, 3
     further in: steps.css .lp-sx-hand) */
@@ -586,19 +592,20 @@ function buildS2(root: HTMLElement): BuiltStep {
    week's first chip (founder 2026-10-13, "better animated": this was a cut,
    and the meeting was nowhere in the calendar) → today's calendar plays
    around it as the end (`cal`): the filled week holds = production's end
-   picture (V2 art card 5022:6046, one chip renamed). ≈ 11.3 s with the
-   default message: 7.9 s of intro, then the calendar's 4.26 s at
-   S3_CAL_RATE. Typing times depend on the message's glyphs, so the later
+   picture (V2 art card 5022:6046, one chip renamed). ≈ 12.4 s with the
+   default message: 9.2 s of intro, then the calendar's 4.26 s at
+   S3_CAL_RATE. The opening picture holds 1.3 s before anything moves (same
+   founder note as step 02: it left after 0.45 s, before the eye was on it). Typing times depend on the message's glyphs, so the later
    beats are offsets from the moment it is sent. One ground throughout, the
    card's cream (steps.css .lp-sx-bg). */
 const S3_T = {
   /** the other rows step back: of the selection, this lead */
-  pick: 0.25,
-  leadsOut: 0.6,
-  lead: 0.77,
-  conn1: 0.97,
-  message: 1.05,
-  type: 1.45,
+  pick: 1.3,
+  leadsOut: 2.0,
+  lead: 2.12,
+  conn1: 2.42,
+  message: 2.5,
+  type: 2.9,
   /** after the last glyph */
   caretOff: 0.25,
   sentAfter: 0.35,
@@ -625,6 +632,9 @@ const S3_T = {
 const S3_TYPE = { glyph: 0.012, sentence: 0.06, comma: 0.035 } as const;
 /** how fast the calendar plays inside the master (its own seconds are unchanged) */
 const S3_CAL_RATE = 1.25;
+/** the first lead's row sits this far below her card's place (table 82.86 + 44.89 + row 32,
+    against the card's 84.86; steps.css) */
+const S3_ROW_DY = 75;
 
 function buildS3(root: HTMLElement): BuiltStep {
   const { $, $$ } = query(root);
@@ -660,7 +670,13 @@ function buildS3(root: HTMLElement): BuiltStep {
        comes back as a card, her message under it (same cream ground) — */
   tl.to(rows.slice(1), { opacity: 0.3, duration: 0.28, ease: "power1.out", stagger: 0.03 }, T.pick);
   tl.to(leads, { autoAlpha: 0, y: -8, duration: 0.26, ease: "power2.in" }, T.leadsOut);
-  tl.fromTo(leadCard, { autoAlpha: 0, y: 12 }, rise, T.lead);
+  // her card comes up from where her row was (S3_ROW_DY): the row turns into the card
+  tl.fromTo(
+    leadCard,
+    { autoAlpha: 0, y: S3_ROW_DY },
+    { autoAlpha: 1, y: 0, duration: 0.5, ease: "power3.out", immediateRender: false },
+    T.lead,
+  );
   tl.fromTo(conns[0], { scaleY: 0 }, grow, T.conn1);
   tl.fromTo(msgCard, { autoAlpha: 0, y: 12 }, rise, T.message);
 
