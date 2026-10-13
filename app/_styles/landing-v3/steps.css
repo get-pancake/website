@@ -811,7 +811,9 @@
 .lp-step-stage--s2 .lp-sx-row {
   opacity: 0;
 }
-/* f1 (rest): the thread — it scrolls as one */
+/* the thread: it scrolls as one. At rest it is empty (the request, the worked row and the
+   answer wait hidden: the timeline plays the exchange, founder 2026-10-13) and the composer
+   below is the picture, as step 01 rests on its empty input. */
 .lp-s2-chat {
   height: 426px;
   left: 0;
@@ -833,6 +835,70 @@
   right: 51.47px; /* hugs its text; right edge at 412.53 */
   top: 115px;
   white-space: nowrap;
+}
+.lp-s2-bubble,
+.lp-s2-worked,
+.lp-s2-answer {
+  opacity: 0;
+  visibility: hidden;
+}
+/* the composer: the thread's column (51 → 413), a 48 bar centred on the 426 stage at rest;
+   the timeline glides it down to 350 once the request is sent. The storyboard's card skin. */
+.lp-s2-composer {
+  background: var(--lp-ink-0);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  height: 48px;
+  left: 51px;
+  position: absolute;
+  top: 189px;
+  width: 362px;
+}
+.lp-s2-composer span {
+  font-size: 13px;
+  font-weight: 400;
+  left: 14px;
+  line-height: 16px;
+  position: absolute;
+  top: 16.6px; /* the bubble's text offset: Figma y + 0.6 */
+  white-space: nowrap;
+}
+.lp-s2-ph {
+  color: var(--lp-ink-70);
+}
+/* the typed request: hidden at rest by a full right inset (the .lp-s1-typed idiom) */
+.lp-s2-typed {
+  clip-path: inset(0 100% 0 0);
+  color: var(--lp-ink-100);
+}
+.lp-s2-caret {
+  background: var(--lp-ink-100);
+  height: 18px;
+  left: 13.25px;
+  position: absolute;
+  top: 15px;
+  width: 1.5px;
+}
+.lp-s2-send {
+  background: #30002c; /* the bubble's plum */
+  border-radius: 50%;
+  height: 28px;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 28px;
+}
+.lp-s2-send svg {
+  height: 14px;
+  left: 7px;
+  position: absolute;
+  top: 7px;
+  width: 14px;
+}
+.lp-s2-send path {
+  stroke: var(--lp-ink-0);
 }
 .lp-s2-worked,
 .lp-s2-answer {
@@ -872,6 +938,11 @@
   line-height: 20px;
   padding: 8.6px 12px 7.4px; /* Figma 8 / 12; text y: Figma 8 + 0.6 */
   top: 213px;
+}
+/* the answer's text: written in by the timeline (fully clipped at rest, the .lp-s3-msg-text idiom) */
+.lp-s2-answer-t {
+  clip-path: polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0);
+  display: block;
 }
 /* f2: the question card, the thread's next item (24 under the answer; 8 wider each side) */
 .lp-s2-q {

@@ -183,12 +183,16 @@ function S2Stage({ placeholders }: { placeholders: boolean }) {
       <div className="lp-s2-chat">
         <p className="lp-s2-bubble">{S2_CHAT.prompt}</p>
         <div className="lp-s2-worked">
-          <span>{S2_CHAT.worked}</span>
+          {/* reads the steps of S2_CHAT.working while Pancake works, then this line */}
+          <span className="lp-s2-worked-l">{S2_CHAT.worked}</span>
           <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 7L8 11L12 7" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
-        <p className="lp-s2-answer">{S2_CHAT.answer}</p>
+        {/* the text writes itself word by word (a clip over the real text) */}
+        <p className="lp-s2-answer">
+          <span className="lp-s2-answer-t">{S2_CHAT.answer}</span>
+        </p>
 
         <div className="lp-s2-q">
           <div className="lp-s2-q-item lp-s2-q-head">
@@ -222,6 +226,20 @@ function S2Stage({ placeholders }: { placeholders: boolean }) {
             <span className="lp-s2-opt-l">{q.own}</span>
           </div>
         </div>
+      </div>
+
+      {/* the composer (rest: empty, centred, as step 01 rests on its empty input). The request
+          is typed here and sent, then it glides down under the thread and leaves when the
+          question card takes its place. Outside .lp-s2-chat: the thread scrolls without it. */}
+      <div className="lp-s2-composer">
+        <span className="lp-s2-ph">{S2_CHAT.placeholder}</span>
+        <span className="lp-s2-typed">{S2_CHAT.prompt}</span>
+        <i className="lp-s2-caret" />
+        <i className="lp-s2-send">
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 11.5V2.5M3.25 6.25 7 2.5l3.75 3.75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </i>
       </div>
 
       {/* frame 4: "Your Play takes shape here" — every slot starts undecided (its numbered

@@ -360,57 +360,85 @@ function buildS1(root: HTMLElement): BuiltStep {
   return { tl, cleanup: () => {}, cue: 0 };
 }
 
-/* ── step 02 · Say who you want, Pancake builds the Play (Figma storyboard, ≈ 10.6 s) ──
-   f1 the chat request and its answer (the poster) → the thread scrolls, one
-   question arrives (f2) → the hand picks "1-50 employees" (f3) → the chat
-   gives way to the draft, "Your Play takes shape here", whose slots are
-   decided one by one (f4) → the Leads table fills row by row (f5) → the hand
-   ticks the header checkbox, every row follows, the selection bar rises (f6)
-   → the hand goes to "Add 13 to sequence" (f7) and clicks → the Play card,
-   its sparkline drawing in (f8), held as the last image (= V2's art card
-   5024:8277). Seconds of the timeline; the labels are the storyboard's
-   pictures. Pace knobs: every hold is the gap between two entries.
-   The opening picture HOLDS 1.8 s (founder 2026-10-13: "l'écran de base
-   passe trop vite, on comprend pas le cheminement"; it was 0.45 s). The card
-   starts playing when its top crosses 60 % of the viewport, its lower part
-   still below the fold: the request and its answer were gone before the eye
-   had reached them, so nothing told where the path starts. The question
-   also waits a second for its reader before the hand comes. */
-const S2_T = {
-  scroll: 1.8,
-  question: 1.97,
-  questionItems: 2.09,
-  f2: 2.8,
-  hand1: 3.15,
-  hover: 3.41,
-  f3: 3.6,
-  click1: 3.75,
-  chatOut: 4.15,
-  draftHead: 4.33,
-  draftCard: 4.39,
-  thinking: 4.45,
-  slots: [4.65, 4.87, 5.09],
-  f4: 5.6,
-  draftOut: 6.0,
-  leadsIn: 6.17,
-  rowsIn: 6.27,
-  f5: 6.77,
-  pan: 6.79,
-  hand2: 7.27,
-  click2: 7.73,
-  ticks: 7.79,
-  bar: 7.87,
-  f6: 8.35,
-  hand3: 8.55,
-  f7: 9.1,
-  click3: 9.2,
-  leadsOut: 9.45,
-  play1: 9.61,
-  play2: 9.69,
-  spark: 9.85,
-  f8: 10.4,
-  end: 10.6,
+/* ── step 02 · Say who you want, Pancake builds the Play (Figma storyboard, ≈ 14 s) ──
+   The opening exchange PLAYS (founder 2026-10-13: "those interactions should
+   be animated"; before that it was a still picture, then a still picture
+   held longer): the request is typed in the composer and sent, it joins the
+   thread while the composer glides down, the worked row reads Pancake's
+   steps one by one and settles on "Worked across 5 steps", the answer writes
+   itself word by word = the storyboard's f1 (the label sits there). Rest =
+   the empty composer, as step 01 rests on its empty input.
+   Then the storyboard: the thread scrolls, one question arrives (f2) → the
+   hand picks "1-50 employees" (f3) → the chat gives way to the draft, "Your
+   Play takes shape here", whose slots are decided one by one (f4) → the
+   Leads table fills row by row (f5) → the hand ticks the header checkbox,
+   every row follows, the selection bar rises (f6) → the hand goes to "Add 13
+   to sequence" (f7) and clicks → the Play card, its sparkline drawing in
+   (f8), held as the last image (= V2's art card 5024:8277).
+   S2_OPEN paces the exchange (its length follows the request's glyphs and
+   the answer's words); S2_T counts from the moment the answer is complete.
+   Pace knobs: every hold is the gap between two entries. */
+const S2_OPEN = {
+  type: 0.5,
+  /** a person typing (the hero demo's pace is 38 ms) */
+  key: 0.036,
+  /** after the last key: the send button is pressed */
+  send: 0.25,
+  /** after the press: the request is in the thread, the composer glides down */
+  sent: 0.12,
+  /** after it is sent: the worked row comes in on its first line */
+  work: 0.45,
+  /** each line of S2_CHAT.working */
+  step: 0.24,
+  /** after the row settles: the answer card */
+  answer: 0.14,
+  /** each word of the answer */
+  word: 0.034,
+  /** the composer's travel, from the middle of the stage to under the thread (top 189 → 350) */
+  dockY: 161,
 } as const;
+/** after the opening exchange (f1). The answer has just been written: it holds 1 s. */
+const S2_T = {
+  scroll: 1.0,
+  question: 1.17,
+  questionItems: 1.29,
+  f2: 2.0,
+  hand1: 2.35,
+  hover: 2.61,
+  f3: 2.8,
+  click1: 2.95,
+  chatOut: 3.35,
+  draftHead: 3.53,
+  draftCard: 3.59,
+  thinking: 3.65,
+  slots: [3.85, 4.07, 4.29],
+  f4: 4.8,
+  draftOut: 5.2,
+  leadsIn: 5.37,
+  rowsIn: 5.47,
+  f5: 5.97,
+  pan: 5.99,
+  hand2: 6.47,
+  click2: 6.93,
+  ticks: 6.99,
+  bar: 7.07,
+  f6: 7.55,
+  hand3: 7.75,
+  f7: 8.3,
+  click3: 8.4,
+  leadsOut: 8.65,
+  play1: 8.81,
+  play2: 8.89,
+  spark: 9.05,
+  f8: 9.6,
+  end: 9.8,
+} as const;
+type S2Times = { [K in keyof typeof S2_T]: (typeof S2_T)[K] extends readonly number[] ? readonly number[] : number };
+/** S2_T on the master's clock: every entry moved by the opening's length */
+const s2Times = (by: number): S2Times =>
+  Object.fromEntries(
+    Object.entries(S2_T).map(([k, v]) => [k, typeof v === "number" ? v + by : v.map((n) => n + by)]),
+  ) as unknown as S2Times;
 /** the hand's top-left at its three pictures (Figma instance boxes; its fingertip is 9.3, 3
     further in: steps.css .lp-sx-hand) */
 const S2_HAND = {
@@ -423,9 +451,19 @@ const HAND_FROM = { x: 110, y: 96 };
 
 function buildS2(root: HTMLElement): BuiltStep {
   const { $, $$ } = query(root);
-  const T = S2_T;
-  const bg = $(".lp-sx-bg");
+  const O = S2_OPEN;
   const chat = $(".lp-s2-chat");
+  const composer = $(".lp-s2-composer");
+  const ph = $(".lp-s2-ph");
+  const typed = $(".lp-s2-typed");
+  const caret = $(".lp-s2-caret");
+  const send = $(".lp-s2-send");
+  const bubble = $(".lp-s2-bubble");
+  const worked = $(".lp-s2-worked");
+  const workedLabel = $(".lp-s2-worked-l");
+  const chevron = $<SVGElement>(".lp-s2-worked svg");
+  const answer = $(".lp-s2-answer");
+  const answerText = $(".lp-s2-answer-t");
   const question = $(".lp-s2-q");
   const qItems = $$(".lp-s2-q-item");
   const hover = $(".lp-s2-hover");
@@ -440,7 +478,7 @@ function buildS2(root: HTMLElement): BuiltStep {
     ok: el.querySelector<HTMLElement>(".lp-s2-slot-ok"),
   }));
   const decided = slots.filter((sl) => sl.value && sl.ok);
-  if (slots.length !== S2_DRAFT.slots.length || decided.length !== T.slots.length) {
+  if (slots.length !== S2_DRAFT.slots.length || decided.length !== S2_T.slots.length) {
     throw new Error("lp-step: s2 draft slots out of sync");
   }
   const leads = $(".lp-sx-leads");
@@ -453,10 +491,18 @@ function buildS2(root: HTMLElement): BuiltStep {
   const spark = $<SVGPathElement>(".lp-s2-play-spark path");
   const found = plays[0]?.querySelector<HTMLElement>(".lp-s2-play-val") ?? null;
   const foundTo = found ? Number(found.textContent) || 0 : 0;
-  if (found && foundTo) {
-    registerTxtPlugin();
-    gsap.set(found, { txt: "0" });
-  }
+  registerTxtPlugin();
+  if (found && foundTo) gsap.set(found, { txt: "0" });
+  // the worked row starts on Pancake's first step, its chevron waits for the last
+  gsap.set(workedLabel, { txt: S2_CHAT.working[0] });
+  gsap.set(chevron, { opacity: 0 });
+  // the request's glyph edges (one line) and the answer's words, measured from the live text
+  const keys = measureRightEdges(typed);
+  const typedW = keys[keys.length - 1] ?? 0;
+  const glyphs = measureGlyphs(answerText);
+  const words = glyphs.filter((g, i) => g.ch !== " " && (glyphs[i + 1]?.ch ?? " ") === " ");
+  const answerW = answerText.offsetWidth;
+  if (!keys.length || !words.length) throw new Error("lp-step: s2 has no text to type");
   // rest poses that carry a half pixel as a transform (steps.css .lp-sx-leads, .lp-s2-bar)
   const leadsX = Number(gsap.getProperty(leads, "x")) || 0;
   const barY = Number(gsap.getProperty(bar, "y")) || 0;
@@ -476,10 +522,63 @@ function buildS2(root: HTMLElement): BuiltStep {
       t,
     );
 
-  tl.addLabel("f1", 0);
+  /* — the opening exchange · the request is typed in the composer… — */
+  let t: number = O.type;
+  keys.forEach((edge, i) => {
+    t += O.key;
+    tl.set(typed, { clipPath: `inset(0px ${px(Math.max(0, typedW - edge))} 0px 0px)` }, t); // one unit: see `px`
+    tl.set(caret, { x: +edge.toFixed(3) }, t);
+    if (i === 0) tl.set(ph, { opacity: 0 }, t);
+  });
+  /* …sent (the button is pressed): it joins the thread while the composer glides down under it… */
+  const tSend = t + O.send;
+  tl.to(send, { scale: 0.86, duration: 0.08, ease: "power2.in" }, tSend);
+  tl.to(send, { scale: 1, duration: 0.28, ease: "back.out(1.8)" }, tSend + 0.08);
+  const tSent = tSend + O.sent;
+  tl.set(typed, { clipPath: `inset(0px ${px(typedW)} 0px 0px)` }, tSent);
+  tl.set(caret, { opacity: 0 }, tSent);
+  tl.set(ph, { opacity: 1 }, tSent);
+  tl.fromTo(
+    bubble,
+    { autoAlpha: 0, y: 56 },
+    { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out", immediateRender: false },
+    tSent,
+  );
+  tl.to(composer, { y: O.dockY, duration: 0.55, ease: "power3.inOut" }, tSent);
+  /* …Pancake works: the row reads its steps one by one, then settles… */
+  const tWork = tSent + O.work;
+  tl.fromTo(
+    worked,
+    { autoAlpha: 0, y: 8 },
+    { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out", immediateRender: false },
+    tWork,
+  );
+  S2_CHAT.working.slice(1).forEach((line, i) => {
+    tl.to(workedLabel, { txt: line, duration: 0.001, ease: "none" }, tWork + (i + 1) * O.step);
+  });
+  const tWorked = tWork + S2_CHAT.working.length * O.step;
+  tl.to(workedLabel, { txt: S2_CHAT.worked, duration: 0.001, ease: "none" }, tWorked);
+  tl.to(chevron, { opacity: 1, duration: 0.2, ease: "power1.out" }, tWorked);
+  /* …and answers, word by word (a clip staircase over the real text) = the storyboard's f1 */
+  const tAnswer = tWorked + O.answer;
+  tl.fromTo(
+    answer,
+    { autoAlpha: 0, y: 8 },
+    { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out", immediateRender: false },
+    tAnswer,
+  );
+  t = tAnswer + 0.12;
+  words.forEach((g) => {
+    tl.set(answerText, { clipPath: clipTo(g, answerW) }, t);
+    t += O.word;
+  });
+  tl.set(answerText, { clipPath: "none" }, t); // the text paints like any paragraph again
+  const T = s2Times(t);
+  tl.addLabel("f1", t);
 
-  /* — f1 → f2 · the thread scrolls up, the question card arrives and fills — */
+  /* — f1 → f2 · the thread scrolls up, the composer leaves, the question card takes its place — */
   tl.to(chat, { y: S2_CHAT.scrollY, duration: 0.6, ease: "power3.inOut" }, T.scroll);
+  tl.to(composer, { autoAlpha: 0, y: O.dockY + 10, duration: 0.24, ease: "power2.in" }, T.scroll);
   tl.fromTo(
     question,
     { autoAlpha: 0, y: 14 },
