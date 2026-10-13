@@ -105,7 +105,20 @@ function query(root: HTMLElement) {
   };
 }
 
+/** The builder in one go. In slices (2026-10-13): `buildStorySourcesSteps`, which the carousel
+    and the phone stack spread over idle slots (lp-play-once's startBuild). It may yield after
+    any block: its frame-0 sets are written at once, its tweens write nothing until they are
+    rendered, and the only things it reads after its first write (the wires' lengths, the
+    stylesheet's camera scale) depend on nothing it writes. */
 export function buildStorySources(root: HTMLElement): BuiltStory {
+  const steps = buildStorySourcesSteps(root);
+  for (;;) {
+    const step = steps.next();
+    if (step.done) return step.value;
+  }
+}
+
+export function* buildStorySourcesSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const phone = layoutOf(root) === "phone";
   const hubOn = root.dataset.end === "sources";
   const { $, $$ } = query(root);
@@ -130,13 +143,17 @@ export function buildStorySources(root: HTMLElement): BuiltStory {
   // progress(1) before it plays), so its zoom stays a 2D matrix and the text stays crisp
   if (hubOn) gsap.set(cam, { scale: 1, force3D: false });
   gsap.set(table, { autoAlpha: 0, y: 8 });
+  yield;
   gsap.set(rows, { autoAlpha: 0, y: 6 });
+  yield;
   gsap.set(picked, { backgroundColor: ROW.none });
   if (cursor) gsap.set(cursor, { autoAlpha: 0, x: 96, y: 78 });
   if (pulse) gsap.set(pulse, { autoAlpha: 0, scale: 0.2 });
   gsap.set(panel, { autoAlpha: 0, x: phone ? 0 : 40, y: phone ? 60 : 0 });
+  yield;
   gsap.set([...parts, ...rules], { autoAlpha: 0 });
   gsap.set(parts, { y: 6 });
+  yield;
 
   const tl = gsap.timeline({ paused: true });
 
@@ -201,6 +218,7 @@ export function buildStorySources(root: HTMLElement): BuiltStory {
   /* QA labels = the storyboard's frames (the shell's artboard pose seeks "f3", the frame the V2
      and mobile artboards draw in the carousel; a label past the end clamps to the end) */
   tl.addLabel("f1", T.f1).addLabel("f2", T.f2).addLabel("f3", T.f3);
+  yield;
 
   /* ── scene D: zoom into "Why they fit"; the data providers appear one by one (only when a
      hub node renders) ── */
@@ -222,7 +240,9 @@ export function buildStorySources(root: HTMLElement): BuiltStory {
     const camScale = parseFloat(getComputedStyle(root).getPropertyValue("--src-cam-s")) || 1;
 
     gsap.set(nodes, { autoAlpha: 0, scale: 0.6 });
+    yield;
     gsap.set(dots, { autoAlpha: 0, scale: 0 });
+    yield;
     sources.forEach(({ name, cap, path, len }) => {
       if (name) gsap.set(name, { autoAlpha: 0, y: 4 });
       // opacity 0: a zero-length dash would still paint a speck at the path's start
@@ -231,6 +251,7 @@ export function buildStorySources(root: HTMLElement): BuiltStory {
     });
     gsap.set(hubdot, { attr: { r: 0 } });
     if (label) gsap.set(label, { autoAlpha: 0, y: 4 });
+    yield;
 
     // one move: the camera, while the Leads page clears out of its way
     tl.to(cam, { scale: camScale, duration: T.zoomS, ease: "power2.inOut" }, T.zoom);

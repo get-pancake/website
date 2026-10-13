@@ -5,6 +5,7 @@ import type { gsap } from "@/lib/gsap";
 import { DIVE_LOADERS } from "./lp-dive-loaders";
 import type { DiveItemId } from "./lp-dive-stages";
 import {
+  AWAY_VIEWPORTS,
   CUE_MARGIN,
   DWELL_MIN_RATIO,
   DWELL_MS,
@@ -12,9 +13,15 @@ import {
   FOCUS_MARGIN,
   PREPARE_MARGIN,
   enqueueBuild,
+  holdRendered,
   mountPlayOnce,
+  onEveryScroll,
   scrollSpeed,
+  startBuild,
   trackScroll,
+  warmSkippedSections,
+  whenInput,
+  type BuildRun,
   type PlayOnceRuntime,
 } from "./lp-play-once";
 
@@ -32,8 +39,11 @@ import {
  * C10), so pausing stops both together and the bar always tells the truth.
  *
  * - First start = lp-play-once's contract (its constants and helpers, exported for this):
- *   prepare a viewport ahead (fetch GSAP + the four builders, build item 1 first, the rest one
- *   per frame), switch item 1 unseen to its cue as the stage comes within 15 % below the fold,
+ *   prepare ahead of time (fetch GSAP + the four builders from the visitor's first input, or a
+ *   viewport ahead; build the four in idle time, one per slot, item 1 first, the section
+ *   rendered ahead in a slot of its own while it still skips its rendering: lp-play-once's
+ *   queue, 2026-10-13; item 1 at once when the stage is on screen or within the cue margin),
+ *   switch item 1 unseen to its cue as the stage comes within 15 % below the fold,
  *   play once the stage's top crosses 60 % of the viewport (or after a 1 s dwell with half of it
  *   on screen); flying past keeps the picture. Already on screen in its picture when the code
  *   arrives (reload mid-page, an anchor): never rewound — its bar runs over the hold, then item 2.
@@ -133,6 +143,8 @@ type Item = {
   more: HTMLElement | null;
   hold: number;
   runtime?: PlayOnceRuntime;
+  /** its build, while it is under way (lp-play-once's startBuild) */
+  run?: BuildRun;
   ctx?: Ctx;
   tl?: Timeline;
   cue: number;
@@ -186,6 +198,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
   const motionMq = matchMedia("(prefers-reduced-motion: reduce)");
   const phoneMq = matchMedia(PHONE_MQ);
   const untrack = trackScroll();
+  const unwarm = warmSkippedSections();
 
   let active = Math.max(0, items.findIndex((it) => it.tab.getAttribute("aria-selected") === "true"));
   let layout: Layout = phoneMq.matches ? "phone" : "desktop";
@@ -225,6 +238,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
       stage.style.setProperty("--lp-fit", String(width / BOX_WIDTH[layout]));
       stage.dataset.lpFit = "";
     }
+    stageAt = null;
   });
   ro.observe(stage);
 
@@ -293,42 +307,67 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     return near || visible;
   };
   const storyRoot = (it: Item) => it.scene.querySelector<HTMLElement>("[data-lp-story]");
-  const build = (it: Item): boolean => {
-    if (it.tl) return true;
-    if (disposed || it.failed || !it.runtime || !laidOut(it)) return false;
+  /* A story is built in slices over idle slots (lp-play-once's startBuild: the builder, then the
+     timeline taken to its end = the server picture, unseen for idle panels, identical for the
+     active one). Under construction it is not that picture, so its build pauses between slices
+     only where nobody can see it: in a panel that is not showing, or while the stage is
+     AWAY_VIEWPORTS away from the screen (where the stage was when last measured, against the
+     scroll position: no layout read). Otherwise it is built in one piece, as it always was. */
+  let stageAt: { top: number; bottom: number } | null = null;
+  const away = () => {
+    if (!stageAt) {
+      const r = stage.getBoundingClientRect();
+      stageAt = { top: r.top + window.scrollY, bottom: r.bottom + window.scrollY };
+    }
+    const vh = window.innerHeight;
+    const y = window.scrollY;
+    return stageAt.top - y > vh * (1 + AWAY_VIEWPORTS) || stageAt.bottom - y < -vh * AWAY_VIEWPORTS;
+  };
+  const unseen = (it: Item) => it.panel.dataset.state === "idle" || away();
+  /** One slice of an item's build, or all that is left with `through`. "built" once it has its
+      timeline, "more" while slices are left, "stop" when it cannot be built now. */
+  const advance = (it: Item, through: boolean): "built" | "more" | "stop" => {
+    if (it.tl) return "built";
+    if (disposed || it.failed || !it.runtime || !laidOut(it)) return "stop";
     const root = storyRoot(it);
     if (!root) {
       it.failed = true;
-      return false;
+      return "stop";
     }
-    const { gsap: G, build: buildStory } = it.runtime;
-    const ctx = G.context(() => {
-      try {
-        const built = buildStory(root);
-        built.tl.pause();
-        it.tl = built.tl;
-        it.cleanup = built.cleanup;
-        it.cue = Math.min(Math.max(built.cue ?? 0, 0), built.tl.duration());
-        // the server picture (restIsEnd): unseen for idle panels, identical for the active one
-        built.tl.progress(1, true);
-      } catch (err) {
-        it.failed = true;
-        it.tl = undefined;
-        if (dev) console.error(`lp-dive: the ${it.id} story failed to build`, err);
-      }
-    }, root);
-    if (it.failed) {
-      ctx.revert(); // a half-run builder leaves the server markup as it was
-      it.cleanup?.();
-      it.cleanup = undefined;
-      return false;
+    try {
+      it.run ??= startBuild(it.runtime, root, true);
+      const built = it.run.next(through || !unseen(it));
+      if (!built) return "more";
+      it.tl = built.tl;
+      it.cleanup = built.cleanup;
+      it.cue = Math.min(Math.max(built.cue ?? 0, 0), built.tl.duration());
+    } catch (err) {
+      it.failed = true;
+      it.tl = undefined;
+      it.run?.ctx.revert(); // a half-run builder leaves the server markup as it was
+      it.run?.cleanup();
+      it.run = undefined;
+      if (dev) console.error(`lp-dive: the ${it.id} story failed to build`, err);
+      return "stop";
     }
-    it.ctx = ctx;
+    it.ctx = it.run.ctx;
+    it.run = undefined;
     registerStory(it);
-    return true;
+    return "built";
   };
+  const build = (it: Item): boolean => advance(it, true) === "built";
   const unbuild = (it: Item) => {
     unregisterStory(it);
+    if (it.run) {
+      // under way: finished first, the builder's cleanup comes with what it returns
+      try {
+        it.cleanup = it.run.next(true)?.cleanup;
+      } catch {
+        // half built: the revert below is all there is
+      }
+      it.ctx = it.run.ctx;
+      it.run = undefined;
+    }
     it.ctx?.revert();
     it.cleanup?.();
     it.ctx = undefined;
@@ -340,19 +379,55 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     if (engaged && !master && !posed && g && !isReduced()) startTurn("end");
     else decide();
   };
+  /* The section skips its rendering while it is far away (content-visibility: auto), so the
+     stories cannot be measured: it is rendered ahead of time in an idle slot of its own
+     (lp-play-once's holdRendered) and kept rendered until the four are built. Asked once: a
+     section that cannot be held (it is not below the screen) renders by itself as it nears. */
+  let askedSection = false;
+  let releaseSection: (() => void) | null = null;
+  const renderSection = () => {
+    if (askedSection) return;
+    askedSection = true;
+    enqueueBuild(() => {
+      if (disposed) return;
+      releaseSection = holdRendered(section);
+      if (releaseSection) requestBuilds();
+    }, section);
+  };
+  const settleSection = () => {
+    if (!releaseSection || !items.every((it) => it.tl || it.failed)) return;
+    releaseSection();
+    releaseSection = null;
+  };
   const requestBuilds = () => {
     if (disposed) return;
     const first = items[active];
-    if (!first.tl && build(first)) afterActiveBuild();
+    if (first.runtime && !first.tl && !first.failed && !laidOut(first)) return renderSection();
+    // on screen or within the cue margin: the active story at once; the others, and the active
+    // one while the stage is still away, take an idle slot each
+    if (!first.tl && (near || visible) && build(first)) afterActiveBuild();
     for (const it of items) {
       if (it.tl || it.failed || it.queued || !it.runtime) continue;
       it.queued = true;
       enqueueBuild(() => {
+        // (built at once in the meantime, the stage having come near: nothing left to do)
+        const state = it.tl ? "stop" : advance(it, false);
+        if (state === "more") return true;
         it.queued = false;
-        if (build(it) && it === items[active]) afterActiveBuild();
-      });
+        if (state === "built" && it === items[active]) afterActiveBuild();
+        settleSection();
+      }, it.panel);
     }
+    settleSection();
   };
+  // a story under way that a scroll brings near the screen is finished at once (`unseen`)
+  const unwatch = onEveryScroll(() => {
+    for (const it of items) {
+      if (!it.run || unseen(it)) continue;
+      if (build(it) && it === items[active]) afterActiveBuild();
+      settleSection();
+    }
+  });
   const loadRuntimes = () => {
     if (loading || disposed || isReduced()) return;
     loading = true;
@@ -572,6 +647,9 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     { rootMargin: PREPARE_MARGIN },
   );
   prepareIo.observe(section);
+  // ahead of time: from the visitor's first input, wherever the carousel is on the page
+  // (reduced motion fetches nothing: loadRuntimes)
+  const cancelEager = whenInput(loadRuntimes);
   const cueIo = new IntersectionObserver(
     (entries) => {
       near = last(entries).isIntersecting;
@@ -725,6 +803,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     const next: Layout = phoneMq.matches ? "phone" : "desktop";
     if (next === layout) return;
     layout = next;
+    stageAt = null;
     applyLayout();
     // the builders read the layout at build time: rebuild every story on the new box
     killMaster();
@@ -798,6 +877,11 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
   return () => {
     disposed = true;
     clearTimeout(dwell);
+    cancelEager();
+    unwatch();
+    releaseSection?.();
+    releaseSection = null;
+    unwarm();
     prepareIo.disconnect();
     cueIo.disconnect();
     focusIo.disconnect();
