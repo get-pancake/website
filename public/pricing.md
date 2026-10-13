@@ -1,6 +1,6 @@
 # Pancake pricing: from $99 a month
 
-> One plan for your whole team. You only choose how many credits you get each month. 15,000 free credits, valid for 7 days. Credit card required to start the trial.
+> Start at $99. Scale when it works. One plan, the whole product, your whole team. Pick your monthly credits, keep the ones you don't use, and change them anytime. 15,000 free credits, valid for 7 days. Credit card required to start the trial.
 
 This file carries the facts of https://pancake.ai/pricing for AI agents. The page is the source of truth.
 
@@ -36,10 +36,10 @@ Free trial: 7 days and 15,000 credits, the same at every level. Signup starts wi
 
 A search uses credits. So does a work email. Nothing else does.
 
-- A search: the cost varies, and you see it first. Pancake finds people and checks each one against your ICP. A narrow audience takes more research. Credits a search doesn't use come back.
-- A work email: 50 credits. Charged only when Pancake finds one. No email, no credits.
+- A search: you see an estimate first. Pancake finds people and checks each one against your ICP. Credits it doesn't use come back.
+- A work email: 50 credits. Only when Pancake finds one. No email, no credits.
 
-What never uses a credit:
+Never uses a credit (free):
 
 - Building and testing your Plays
 - Your Brain, built from your website

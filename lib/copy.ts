@@ -1,7 +1,7 @@
 /** Locked marketing copy — do not change without explicit approval */
 
 import { BASE_LEVEL, EXTRA_SENDER_DOLLARS, TOP_LEVEL, WORK_EMAIL_CREDITS, formatCredits } from "@/lib/pricing";
-import { TRIAL_CREDITS_LABEL, TRIAL_DAYS, TRIAL_NOTICE } from "@/lib/trial";
+import { TRIAL_CREDITS_LABEL, TRIAL_DAYS, TRIAL_FREE_CREDITS_LABEL, TRIAL_NOTICE } from "@/lib/trial";
 
 /**
  * The site description: the homepage hero lede, which is also the Google
@@ -234,10 +234,18 @@ export const pricingV2 = {
   monthlyDollars: BASE_LEVEL.dollars,
   currency: "USD" as const,
   currencySymbol: "$",
-  /** The H1 names the brand and the entry price, like the title tag
-      (2026-10-07). The lede makes the one claim: one plan, one choice. */
-  title: `Pancake pricing: from $${BASE_LEVEL.dollars} a month`,
-  blurb: "One plan for your whole team. You only choose how many credits you get each month.",
+  /** The page's top. The kicker keeps the brand and "pricing" inside the H1
+      (the 2026-10-07 audit wanted them there, like the title tag); the
+      headline is the deal in two short sentences: the entry price, and that
+      you only move up once Pancake pays for itself. It read "Pancake pricing:
+      from $99 a month" until the founder's "this has to be improved"
+      (2026-10-13). The lede: what stays the same, and the three things that
+      make the credits safe to buy (your pick, rollover, change anytime). */
+  kicker: "Pancake pricing",
+  /** Two sentences, one per line from 768px (they flow as one on a phone). */
+  titleLines: [`Start at $${BASE_LEVEL.dollars}.`, "Scale when it works."],
+  blurb:
+    "One plan, the whole product, your whole team. Pick your monthly credits, keep the ones you don't use, and change them anytime.",
   /** "per workspace", not "flat" (2026-10-06): billing is per workspace in the
       app (pancake-cmo `subscribe-additional-workspace.ts`). */
   perMonth: "/ month per workspace",
@@ -294,20 +302,27 @@ export const pricingV2 = {
 export const pricingCredits = {
   title: "Credits find your leads. Everything else is included.",
   lede: "A search uses credits. So does a work email. Nothing else does.",
-  uses: [
-    {
-      name: "A search",
-      cost: "Varies. You see it first.",
-      body: "Pancake finds people and checks each one against your ICP. A narrow audience takes more research. Credits a search doesn't use come back.",
-    },
-    {
-      name: "A work email",
-      cost: `${WORK_EMAIL_CREDITS} credits`,
-      body: "Charged only when Pancake finds one. No email, no credits.",
-    },
-  ],
+  /** The price list, in two groups: a name, one line, and what it costs on
+      the right. A search has no fixed price (it is charged the research it
+      did), so its cost reads as what the buyer gets instead: the estimate. */
+  uses: {
+    label: "Uses credits",
+    rows: [
+      {
+        name: "A search",
+        body: "Pancake finds people and checks each one against your ICP. Credits it doesn't use come back.",
+        cost: "Estimate first",
+      },
+      {
+        name: "A work email",
+        body: "Only when Pancake finds one. No email, no credits.",
+        cost: `${WORK_EMAIL_CREDITS} credits`,
+      },
+    ],
+  },
   included: {
-    title: "What never uses a credit",
+    label: "Never uses a credit",
+    cost: "Free",
     items: [
       "Building and testing your Plays",
       "Your Brain, built from your website",
@@ -357,9 +372,19 @@ export const pricingFacts = {
     text: "One Pancake Play replaced all our inbound tools.",
     name: "Adi Singh",
     role: "Co-founder, AgentMail",
+    company: "AgentMail",
   },
-  /** To /compare: the prices of the tools a buyer weighs Pancake against are
-      on those pages, dated and sourced, not repeated here. */
+} as const;
+
+/**
+ * The closing band of /pricing (PricingClose.tsx): the trial said as what it
+ * is, the page's two CTAs again, and the way to /compare. The prices of the
+ * tools a buyer weighs Pancake against are on those pages, dated and sourced,
+ * not repeated here.
+ */
+export const pricingClose = {
+  title: `Start with ${TRIAL_FREE_CREDITS_LABEL}.`,
+  body: `Valid for ${TRIAL_DAYS} days. Cancel before the trial ends and you pay nothing.`,
   compare: "See Pancake next to the tools you compare it with",
 } as const;
 
@@ -448,6 +473,8 @@ export const pricingPlan = {
  */
 export const pricingFaq = {
   title: "Billing questions.",
+  lede: "Credits, the trial, and changing or cancelling your plan.",
+  more: { text: "Another question?", cta: "Ask support" },
   items: [
     {
       q: "What do credits pay for?",

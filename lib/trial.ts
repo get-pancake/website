@@ -12,6 +12,7 @@ export const TRIAL_LABEL = `${TRIAL_DAYS}-day free trial`;
 export const TRIAL_CREDITS_LABEL = `${TRIAL_CREDITS.toLocaleString("en-US")} credits`;
 /** The trial said as what it is: a credit allowance with a deadline, never
  *  seven days of unlimited searches (pricing spec 2026-09-24, §5). */
-export const TRIAL_OFFER = `${TRIAL_CREDITS.toLocaleString("en-US")} free credits, valid for ${TRIAL_DAYS} days`;
+export const TRIAL_FREE_CREDITS_LABEL = `${TRIAL_CREDITS.toLocaleString("en-US")} free credits`;
+export const TRIAL_OFFER = `${TRIAL_FREE_CREDITS_LABEL}, valid for ${TRIAL_DAYS} days`;
 export const TRIAL_CARD_REQUIREMENT = "Credit card required to start the trial";
 export const TRIAL_NOTICE = `${TRIAL_OFFER}. ${TRIAL_CARD_REQUIREMENT}.`;

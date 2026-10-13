@@ -1,9 +1,10 @@
 /**
  * Pricing V3 — one plan, five levels of monthly credits (2026-10-13, the
  * launch of pancake-cmo PR #1220; the flat $99 plan of 2026-08-06 is gone).
- * The page, top to bottom: the plan card with its "Monthly credits" picker
- * and the customer logos; "Credits find your leads."; "One plan per
- * workspace."; "No surprise bills."; "Billing questions.".
+ * The page, top to bottom: the plan card (the "Monthly credits" picker, the
+ * pancake stack that grows with it, what every level includes) and the
+ * customer logos; "Credits find your leads." as a price list; "One plan per
+ * workspace."; "No surprise bills."; "Billing questions."; the closing band.
  * The pricing body rides the landing skin (.lv2) inside the sitewide chrome
  * (LpNav + LpFooter in main.lp, 2026-10-07); app/pricing/pricing.css keeps
  * it whole inside .lp. Book a demo links to /demo (2026-09-16).
@@ -16,9 +17,9 @@ import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { PriceGroups } from "@/components/sections/landing/PriceGroups";
 import { BillingFaq } from "@/components/sections/pricing/BillingFaq";
 import { CreditsExplained } from "@/components/sections/pricing/CreditsExplained";
-import { PancakeStack } from "@/components/sections/pricing/PancakeStack";
 import { PlanCard } from "@/components/sections/pricing/PlanCard";
 import { PlanMap } from "@/components/sections/pricing/PlanMap";
+import { PricingClose } from "@/components/sections/pricing/PricingClose";
 import { PricingFacts } from "@/components/sections/pricing/PricingFacts";
 import { PricingLogos } from "@/components/sections/pricing/PricingLogos";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
@@ -147,47 +148,48 @@ export default function PricingPage() {
       />
       <LpNav />
       <div className="lv2">
-        {/* Same composition as the homepage pricing fold — brand band, card,
-            pancake-stack mascot — so "See full pricing" doesn't land on a
-            barer page than the teaser it came from (mobile QA 2026-08-26).
-            CTA pair runs Start free → Book a demo like the nav
-            (founder 2026-09-03: primary first, everywhere). */}
+        {/* The plan: one wide card on the brand band, composed like the V1
+            pricing hero. The picker and the price on the left, the pancake
+            stack growing with the level on the right, what every level
+            includes across the bottom. CTA pair runs Start free → Book a demo
+            like the nav (founder 2026-09-03: primary first, everywhere). */}
         <section
           className="lv2s lv2s--brand lv2-pricing-page"
           aria-labelledby="lv2-pricing-page-title"
         >
           <div className="lv2-container">
             <header className="lv2-section-header">
-              <h1 id="lv2-pricing-page-title" className="lv2-section-title">
-                {pricingV2.title}
+              {/* The kicker is part of the H1, so the heading still reads
+                  "Pancake pricing …" to search engines and screen readers. */}
+              <h1 id="lv2-pricing-page-title" className="lv2-pricing-title">
+                <span className="badge lv2-pricing-kicker">{pricingV2.kicker}</span>{" "}
+                <span className="lv2-section-title lv2-pricing-headline">
+                  <span>{pricingV2.titleLines[0]}</span> <span>{pricingV2.titleLines[1]}</span>
+                </span>
               </h1>
               <p className="lv2-section-lede">{pricingV2.blurb}</p>
             </header>
 
-            <div className="lv2-price-fold">
-              <div className="lv2-price-plan">
-                <PlanCard
-                  pickerLabel={pricingV2.pickerLabel}
-                  perMonth={pricingV2.perMonth}
-                  creditsLine={pricingV2.creditsLine}
-                  saveLabels={SAVE_LABELS}
-                  demoHref={DEMO_PAGE_PATH}
-                  fine={pricingV2.fine}
-                >
-                  <PriceGroups />
-                </PlanCard>
-                {/* Above the largest level, sales quotes: a line, not a second
-                    card, so the page keeps one plan. */}
-                <p className="lv2-price-enterprise">
-                  {pricingV2.enterprise.text}{" "}
-                  <a href={DEMO_PAGE_PATH}>
-                    {pricingV2.enterprise.cta}
-                  </a>
-                </p>
-              </div>
-              <div className="lv2-price-decor" aria-hidden="true">
-                <PancakeStack count={3} />
-              </div>
+            <div className="lv2-price-plan">
+              <PlanCard
+                pickerLabel={pricingV2.pickerLabel}
+                perMonth={pricingV2.perMonth}
+                creditsLine={pricingV2.creditsLine}
+                saveLabels={SAVE_LABELS}
+                demoHref={DEMO_PAGE_PATH}
+                fine={pricingV2.fine}
+              >
+                <PriceGroups />
+              </PlanCard>
+              {/* Above the largest level, sales quotes: a bar under the card,
+                  not a second card, so the page keeps one plan. */}
+              <p className="lv2-price-enterprise">
+                <span>{pricingV2.enterprise.text}</span>
+                <a href={DEMO_PAGE_PATH}>
+                  {pricingV2.enterprise.cta}
+                  <span aria-hidden="true"> →</span>
+                </a>
+              </p>
             </div>
 
             {/* Proof next to the price (2026-10-07): the homepage logos. */}
@@ -200,9 +202,10 @@ export default function PricingPage() {
             a second sending account). */}
         <PlanMap />
         {/* After the map, so the grounds alternate: pink, white, cream, white,
-            cream. */}
+            cream, pink. */}
         <PricingFacts />
         <BillingFaq />
+        <PricingClose />
       </div>
       <LpFooter />
       {/* LandingModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}

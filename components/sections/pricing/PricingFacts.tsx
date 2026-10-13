@@ -1,12 +1,12 @@
-import { COMPARE_PATH } from "@/components/sections/compare/compare-data";
 import { pricingFacts as f } from "@/lib/copy";
 
 /**
  * /pricing — "No surprise bills.": the four facts that make the credit plan a
  * fair deal (the estimate first, rollover, the pause at zero, the saving at
- * higher levels), then one customer line and the way to the comparison
- * pages. Four columns from 1024px, two from 640px (app/pricing/pricing.css).
- * Server-rendered, zero JS.
+ * higher levels) on one rule each, then one customer line on a plum panel
+ * with the customer's wordmark (the marquee's file, painted as a mask in the
+ * panel's ink). Four columns from 1024px, two from 640px
+ * (app/pricing/pricing.css). Server-rendered, zero JS.
  * Copy and fact sources: `pricingFacts` in lib/copy.ts.
  */
 export function PricingFacts() {
@@ -31,15 +31,12 @@ export function PricingFacts() {
             <p>“{f.quote.text}”</p>
           </blockquote>
           <figcaption>
-            {f.quote.name}, {f.quote.role}
+            <span className="lv2-facts-quote-who">
+              {f.quote.name}, {f.quote.role}
+            </span>
+            <span className="lv2-facts-quote-logo" role="img" aria-label={f.quote.company} />
           </figcaption>
         </figure>
-        <p className="lv2-facts-more">
-          <a href={COMPARE_PATH}>
-            {f.compare}
-            <span aria-hidden="true"> →</span>
-          </a>
-        </p>
       </div>
     </section>
   );
