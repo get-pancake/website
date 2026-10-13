@@ -38,12 +38,18 @@ const ERROR_COPY: Record<string, string> = {
 export default async function RoadmapAdminPage({
   searchParams,
 }: {
-  searchParams: { error?: string };
+  searchParams: { error?: string | string[] };
 }) {
   const session = getAdminSession();
   const configured = isAdminAuthConfigured();
   const errorKey = searchParams.error;
-  const error = errorKey ? ERROR_COPY[errorKey] ?? "Sign-in failed. Please try again." : null;
+  // Own keys only: ?error=__proto__ or ?error=toString read Object.prototype, and React then
+  // threw on a non-string child (a 500).
+  const error = errorKey
+    ? typeof errorKey === "string" && Object.hasOwn(ERROR_COPY, errorKey)
+      ? ERROR_COPY[errorKey]
+      : "Sign-in failed. Please try again."
+    : null;
 
   return (
     // Same chrome as the board (LpNav + LpFooter in main.lp, 2026-10-07).

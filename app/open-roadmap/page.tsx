@@ -5,7 +5,8 @@
  * while ROADMAP_POSTING_OPEN (roadmap-data.ts; paused since the 2026-10-13 launch);
  * allow-listed admins (Google sign-in) can delete. Data comes from Supabase
  * when configured, falling back to static seed (read-only) otherwise so the
- * page always renders. Mutations run through server API routes so the
+ * page always renders; production shows "unavailable" instead of the seed
+ * (lib/roadmap/ideas.ts). Mutations run through server API routes so the
  * service-role key never reaches the browser.
  *
  * 2026-10-07: noindex (follow) until the board holds Plays-era ideas — it
@@ -67,6 +68,8 @@ export default async function OpenRoadmapPage() {
   // isPublicIdea); admins still see every idea so they can edit or delete it.
   const ideas = admin ? allIdeas : allIdeas.filter(isPublicIdea);
   const backendEnabled = source === "supabase";
+  // Production could not read the board: a plain notice, no board and no JSON-LD.
+  const unavailable = source === "unavailable";
 
   // ItemList JSON-LD built from the live list so it can't drift from the page.
   const roadmapJsonLd = {
@@ -86,10 +89,12 @@ export default async function OpenRoadmapPage() {
 
   return (
     <main id="main-content" className="lp roadmap-page min-h-screen">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(roadmapJsonLd) }}
-      />
+      {unavailable ? null : (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(roadmapJsonLd) }}
+        />
+      )}
 
       <LpNav />
 
@@ -115,12 +120,18 @@ export default async function OpenRoadmapPage() {
           <h2 id="roadmap-board-heading" className="sr-only">
             Roadmap ideas
           </h2>
-          <RoadmapBoard
-            initialIdeas={ideas}
-            backendEnabled={backendEnabled}
-            isAdmin={admin}
-            truncated={truncated}
-          />
+          {unavailable ? (
+            <p className="roadmap-empty" role="status">
+              The roadmap is unavailable right now. Please try again later.
+            </p>
+          ) : (
+            <RoadmapBoard
+              initialIdeas={ideas}
+              backendEnabled={backendEnabled}
+              isAdmin={admin}
+              truncated={truncated}
+            />
+          )}
         </div>
       </section>
 

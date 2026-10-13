@@ -18,7 +18,10 @@ export type RoadmapStatus =
   | "shipped"
   | "wont-do";
 
-/** Tab = tag. `all` is the catch-all view, not a real tag on an idea. */
+/** Tab = tag. `all` is the catch-all view, not a real tag on an idea.
+ *  "squads" was the old product's category. It left the tabs and the create form on
+ *  2026-10-13; rows stored with it are still valid (the table's check constraint lists
+ *  it), show under All and read "Other". */
 export type RoadmapTag = "squads" | "core-features" | "integrations";
 
 export type RoadmapTab = "all" | RoadmapTag;
@@ -54,7 +57,8 @@ export type RoadmapComment = {
  */
 export const ROADMAP_POSTING_OPEN = false;
 
-export const TAGS: RoadmapTag[] = ["squads", "core-features", "integrations"];
+/** The categories a new idea can take (the create form and the POST route's check). */
+export const TAGS: RoadmapTag[] = ["core-features", "integrations"];
 export const STATUSES: RoadmapStatus[] = [
   "open",
   "planned",
@@ -66,14 +70,13 @@ export const STATUSES: RoadmapStatus[] = [
 /** Top-level tabs, in display order. Drives nav + filtering. */
 export const ROADMAP_TABS: { id: RoadmapTab; label: string }[] = [
   { id: "all", label: "All" },
-  { id: "squads", label: "Squads" },
   { id: "core-features", label: "Core features" },
   { id: "integrations", label: "Integrations" },
 ];
 
 /** Per-tag display label, used on cards, the tag pill, and the create form. */
 export const TAG_LABELS: Record<RoadmapTag, string> = {
-  squads: "Squads",
+  squads: "Other",
   "core-features": "Core features",
   integrations: "Integrations",
 };

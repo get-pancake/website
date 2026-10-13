@@ -4837,7 +4837,9 @@
     padding-bottom: calc(2 * var(--spacing-xl));
   }
 
-  .roadmap-hero__title {
+  /* h1.: the kit's `h1.heading` (0,1,1) set the header-01 size over this rule's own, so the
+     headline was 64px on phones (five lines) and clipped at 320px. */
+  h1.roadmap-hero__title {
     margin: 0;
     font-weight: var(--font-semibold);
     /* Bigger than the lede, smaller than the full-page hero title. */

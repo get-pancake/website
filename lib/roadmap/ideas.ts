@@ -52,23 +52,36 @@ export function isPublicIdea(idea: RoadmapIdea): boolean {
 
 export type IdeasResult = {
   ideas: RoadmapIdea[];
-  /** Where the data came from — drives the "preview mode" notice + UI gating. */
-  source: "supabase" | "seed";
+  /** Where the data came from — drives the "preview mode" notice + UI gating.
+   *  "unavailable": production could not read the board; the page says so. */
+  source: "supabase" | "seed" | "unavailable";
   /** True when the fetch hit FETCH_LIMIT (more rows exist than were returned). */
   truncated: boolean;
 };
 
 /**
- * Fetch ideas for the page. Falls back to the static seed (read-only) whenever
- * Supabase isn't configured or the query fails, so the page always renders.
+ * No live rows. Development and previews keep the static seed (read-only), so
+ * the page renders without a database. Production does not: the seed is two
+ * made-up ideas under a "Preview mode: connect Supabase…" note, and votes cast
+ * on them were dropped without a word (bug check 2026-10-13, M16). VERCEL_ENV
+ * is read per request (the page is force-dynamic) and is unset off Vercel.
+ */
+function withoutBackend(): IdeasResult {
+  return process.env.VERCEL_ENV === "production"
+    ? { ideas: [], source: "unavailable", truncated: false }
+    : { ideas: SEED_IDEAS, source: "seed", truncated: false };
+}
+
+/**
+ * Fetch ideas for the page. Whenever Supabase isn't configured or the query
+ * fails, falls back to the static seed in development and previews and to
+ * "unavailable" in production (see withoutBackend).
  */
 export async function getIdeas(): Promise<IdeasResult> {
-  if (!isBackendConfigured()) {
-    return { ideas: SEED_IDEAS, source: "seed", truncated: false };
-  }
+  if (!isBackendConfigured()) return withoutBackend();
 
   const supabase = createSupabaseServerClient();
-  if (!supabase) return { ideas: SEED_IDEAS, source: "seed", truncated: false };
+  if (!supabase) return withoutBackend();
 
   // Cap the fetch so the client (which filters/searches/sorts in-memory) stays
   // bounded. The board paginates this set with a "Show more" control. If the
@@ -92,9 +105,7 @@ export async function getIdeas(): Promise<IdeasResult> {
   }
 
   const data = res.data as IdeaRow[] | null;
-  if (res.error || !data) {
-    return { ideas: SEED_IDEAS, source: "seed", truncated: false };
-  }
+  if (res.error || !data) return withoutBackend();
 
   return {
     ideas: (data as IdeaRow[]).map(mapIdeaRow),
