@@ -94,7 +94,7 @@ const config: GtmComparisonConfig = {
     { q: "How does pricing compare?", a: "As of October 2026, Unify has a Free plan, Base at $20 and Pro at $60 per seat a month, and custom Business plans. Each comes with credits. Pancake starts at $99 a month per workspace, with 60,000 credits your whole team shares." },
     { q: "What does Unify do that Pancake doesn't?", a: "Email sequences with managed mailboxes, a dialer, phone enrichment, and HubSpot or Salesforce sync. Its Business plan adds website intent and product signals. Pancake doesn't do these." },
     { q: "Does Pancake charge per seat?", a: "No. Pancake starts at $99 a month per workspace, and your whole team is included. A second company is a second workspace with its own plan." },
-    { q: "Can I run Pancake from Claude or Codex?", a: "Yes. Claude, Claude Code and Codex connect with a browser sign-in, no API key. You create Plays, review leads and edit messages from the agent. Unify offers bulk export APIs for analysis in Claude or Codex." },
+    { q: "Can I run Pancake from Claude or Codex?", a: "Yes. Claude, Claude Code, ChatGPT and Codex connect with a browser sign-in, no API key. You create Plays, review leads and edit messages from the agent. Unify offers bulk export APIs for analysis in Claude or Codex." },
     { q: "Who should choose Pancake over Unify?", a: "Founders who do their own sales, and small B2B teams without reps or a mailbox stack. Tell Pancake who to reach and approve the leads that fit. Pancake writes to them under your name." },
   ],
   related: [

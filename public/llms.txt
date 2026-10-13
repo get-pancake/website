@@ -2,7 +2,7 @@
 
 > Pancake is the Vercel for GTM: one place to deploy, host and run go-to-market agents. AI agents like Claude and Codex can plan a company's GTM but can't run it. They have no data to find people, no way to reach them and no memory of the business. Pancake is that missing piece. Your agent decides. Pancake runs it.
 
-Pancake works from Claude, Claude Code, Codex and other MCP clients with browser sign-in, and from its own web app. It starts at $99 a month per workspace, with 60,000 credits for lead searches.
+Pancake works from Claude, Claude Code, ChatGPT, Codex and other MCP clients with browser sign-in, and from its own web app. It starts at $99 a month per workspace, with 60,000 credits for lead searches.
 
 ## The Vercel for GTM
 
@@ -39,7 +39,7 @@ New leads also arrive in Slack, where the customer can approve or pass, and a mo
 
 ## From your AI agent
 
-Claude (web, desktop and mobile), Claude Code and Codex connect with a browser sign-in. There is no API key. Other MCP clients work when they support browser OAuth with a client ID metadata document: https://pancake.ai/install.md lists them. Cursor can't connect yet. From the agent, customers create and run Plays, review leads, add them to sequences and edit their messages, on the same Brain and the same leads as the app. Adding a lead to a sequence starts real outreach from the customer's own account. In the web app, the same work happens in a chat with the Pancake Agent.
+Claude (web, desktop and mobile), Claude Code, ChatGPT and Codex connect with a browser sign-in. There is no API key. Other MCP clients work when they support browser OAuth with a client ID metadata document: https://pancake.ai/install.md lists them. Cursor can't connect yet. From the agent, customers create and run Plays, review leads, add them to sequences and edit their messages, on the same Brain and the same leads as the app. Adding a lead to a sequence starts real outreach from the customer's own account. In the web app, the same work happens in a chat with the Pancake Agent.
 
 ## Who it is for
 

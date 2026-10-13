@@ -154,7 +154,7 @@ export const aiAutomationAgencies: VerticalConfig = {
     },
     {
       q: "I build in Claude all day. Can Pancake run from there?",
-      a: "Yes. Pancake connects to Claude Code and Codex over MCP. Review leads and edit your Brain from there.",
+      a: "Yes. Pancake connects to Claude, Claude Code, ChatGPT and Codex over MCP. Review leads and edit your Brain from there.",
     },
     {
       q: "My offer changes every month. Can Pancake keep up?",

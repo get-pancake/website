@@ -93,7 +93,7 @@ const softwareApplicationJsonLd = {
     "You approve every lead before anyone is contacted",
     "Personal messages you can edit",
     "New leads in Slack and a morning email",
-    "MCP server for Claude, Claude Code and Codex",
+    "MCP server for Claude, Claude Code, ChatGPT and Codex",
   ],
   offers: {
     "@type": "AggregateOffer",

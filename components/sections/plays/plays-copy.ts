@@ -160,7 +160,7 @@ export const PLAYS_FAQ = {
     },
     {
       q: "Can I start a Play from Claude or Codex?",
-      a: "Yes. Connect Pancake to Claude, Claude Code or Codex with a browser sign-in, no API key. Ask for a Play in the chat, and Pancake builds it.",
+      a: "Yes. Connect Pancake to Claude, Claude Code, ChatGPT or Codex with a browser sign-in, no API key. Ask for a Play in the chat, and Pancake builds it.",
     },
     {
       q: "What doesn’t Pancake do?",

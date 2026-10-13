@@ -94,11 +94,11 @@ No. Give each audience its own Play, with its own targeting and messages, on the
 
 ### Do I need my own data tools or API keys?
 
-No. Your credits pay for the lead data and the ICP check. Claude, Claude Code and Codex connect with a browser sign-in, no API key.
+No. Your credits pay for the lead data and the ICP check. Claude, Claude Code, ChatGPT and Codex connect with a browser sign-in, no API key.
 
 ### Can I use Pancake from Claude or Codex?
 
-Yes, on the same plan. Claude, Claude Code and Codex use the same Plays, leads and credits as the app.
+Yes, on the same plan. Claude, Claude Code, ChatGPT and Codex use the same Plays, leads and credits as the app.
 
 ### Have a code?
 

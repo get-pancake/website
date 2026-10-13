@@ -94,7 +94,7 @@ const config: GtmComparisonConfig = {
     { q: "What does Alta do that Pancake doesn't?", a: "Inbound qualification, AI calls, email, SMS and WhatsApp outreach, CRM integrations and white-glove onboarding. Pancake doesn't do these. It finds people who fit and messages them from your own accounts." },
     { q: "Is there a free trial?", a: "Alta's site offers a demo and a custom quote. Pancake has a 7-day free trial with 15,000 credits, and a card is required to start it." },
     { q: "Who should choose Pancake over Alta?", a: "Founders who do their own sales, and small B2B teams without inbound volume to qualify. Tell Pancake who to reach and approve the leads that fit. Pancake writes to them under your name." },
-    { q: "Can I run Pancake from Claude?", a: "Yes. Pancake connects to Claude, Claude Code and Codex with a browser sign-in. You create Plays, review leads and edit messages from the agent, on the same Brain as the app." },
+    { q: "Can I run Pancake from Claude?", a: "Yes. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in. You create Plays, review leads and edit messages from the agent, on the same Brain as the app." },
   ],
   related: [
     { href: "/blog/alta-alternatives", label: "Alta alternatives" },
