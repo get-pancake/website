@@ -5,17 +5,20 @@
  *
  * Content: SEVEN cards, the seven the designer drew, no more (founder 2026-10-13: "we should be
  * able to stick to the 7 placeholders that the designer set"; for a few hours that day the
- * section had eight, then nine cards and a fourth row). Four customers share them:
- *   - Kinro (Pierre-Alexandre Kamienny, CEO): the large film, one figure;
- *   - Praxis (Diana Khramina, CEO): the small film, two figures;
- *   - Vector Legal and AgentMail: one written quote each, supplied by the founder that day.
+ * section had eight, then nine cards and a fourth row). His conditions for the mix, same day:
+ * "2 videos + this testimonial [Pierre's quote] should be kept … and make sure every company
+ * appears at least once". Four customers share the seven cards:
+ *   - Praxis (Diana Khramina, CEO): the LARGE film, one figure;
+ *   - Kinro (Pierre-Alexandre Kamienny, CEO): the small film, his quote, one figure;
+ *   - Vector Legal: one figure; AgentMail: one written quote.
  * The films are the two INDIVIDUAL cuts, never the merged compilation; the numbers are the
- * customers' own; the two written quotes were shortened at the founder's request (NOT verbatim).
- * Left out to stay at seven: the two on-camera quote cards, "I cancelled all my subscriptions
- * and I’m using Pancake for three of them." (Diana) and "I’m running all of my GTM in Codex
- * using Pancake." (Pierre). Both people still speak in their films. To bring one back, put it
- * in a quote slot in place of a written quote (git history has the entries and the portraits:
- * commit 9770bda) and check the neighbours rule below. Evidence, frames and timings:
+ * customers' own; AgentMail's written quote was shortened at the founder's request.
+ * Why Praxis's film is the large one: both quote slots touch the large tile, so Pierre's quote
+ * can only stay if the large film is not Kinro's (the neighbours rule, BENTO_SLOT_IDS).
+ * Left out to stay at seven: Diana's on-camera quote ("I cancelled all my subscriptions and I’m
+ * using Pancake for three of them."), her second figure ("10+ meetings booked a week") and
+ * Vector Legal's quote CARD with its portrait (its figure is the card now). Git history has the
+ * entries and the portraits (commits 9770bda, 584b77d). Evidence, frames and timings:
  * artifacts/landing-v2-figma/assets/bento-real/manifest.json (Praxis), manifest-kinro.json
  * (Kinro), impl/bento-real-assets.md and impl/bento-real-assets-kinro.md.
  *
@@ -73,11 +76,12 @@ export type BentoSlotId = "videoLg" | "quoteA" | "kpiA" | "kpiB" | "kpiC" | "quo
  * NO TWO CARDS OF ONE COMPANY TOUCH, side by side or one above the other (founder 2026-10-13, on
  * two Praxis figures next to each other: "we have to reshuffle so that the same company does not
  * appear back to back"). What sits where (K = Kinro, P = Praxis, V = Vector Legal, A = AgentMail):
- *   vl K  K  | qa V  V
- *   vl K  K  | ka P  | kb K
- *   kc P  | qb A  A  | vs P
- * Every pair that shares an edge is two different companies. The artboard's own filling (Praxis
- * in qa, ka and kb) was not. Before moving a card or changing one's company, check the eleven
+ *   vl P  P  | qa K  K
+ *   vl P  P  | ka V  | kb P
+ *   kc K  | qb A  A  | vs K
+ * Every pair that shares an edge is two different companies (kb is one column away from vl). The
+ * artboard's own filling (Praxis in qa, ka and kb) was not. With Kinro's film in vl, Pierre's
+ * quote would touch it from either quote slot: hence Praxis's film there. Before moving a card or changing one's company, check the eleven
  * pairs again: vl-qa, vl-ka, qa-ka, qa-kb, ka-kb, vl-kc, vl-qb, ka-qb, kb-vs, kc-qb, qb-vs. The
  * phone stack has the same rule (FLOW_ORDER).
  */
@@ -217,18 +221,17 @@ type BentoEntries = { [K in BentoSlotId]: readonly BentoSlotCard[K][] };
 const PRAXIS: BentoLogo = { name: "Praxis", src: "/logos/customers/praxis.png", ratio: 1392 / 370, body: [0.24, 0.755], yc: true };
 const KINRO: BentoLogo = { name: "Kinro", src: "/logos/customers/kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75], yc: true };
 
-/* The films' people, exactly as their lower thirds show them: "Diana Khramina / CEO, PRAXIS",
-   "Pierre-Alexandre Kamienny / CEO, KINRO" (the films' titles and descriptions below). */
+/* Names and titles exactly as the films' lower thirds show them ("Diana Khramina / CEO, PRAXIS",
+   "Pierre-Alexandre Kamienny / CEO, KINRO"); the company in the logo's spelling. */
+const PIERRE = { name: "Pierre-Alexandre Kamienny", role: "CEO", company: "Kinro" };
 /* AgentMail: the marquee's wordmark and numbers (LpMarquee.tsx). The founder named him "Adi from
    AgentMail"; surname and title are Y Combinator's company page (Adi Singh, listed as a founder),
    not his own word: to be confirmed with him. */
 const AGENTMAIL: BentoLogo = { name: "AgentMail", src: "/logos/customers/agentmail.svg", ratio: 1986 / 363, body: [0.2, 0.78], yc: true };
 const ADI = { name: "Adi Singh", role: "Co-founder", company: "AgentMail" };
-/* Vector Legal (YC W26): the marquee's composed lockup and numbers. The founder gave her first
-   name and title only ("Aurelie, Head of GTM & Partnerships"), then cut the title so the line
-   fits ("just put Head of GTM"). Surname and the accent on her name are his to confirm. */
+/* Vector Legal (YC W26): the marquee's composed lockup and numbers. Its figure came from
+   "Aurelie, Head of GTM" (the founder's words, first name only); a figure card names no person. */
 const VECTOR_LEGAL: BentoLogo = { name: "Vector Legal", src: "/logos/customers/vector-legal.png", ratio: 1111 / 151, body: [0.079, 0.795], yc: true };
-const AURELIE = { name: "Aurelie", role: "Head of GTM", company: "Vector Legal" };
 
 const BENTO_ENTRIES: BentoEntries = {
   /* Kinro, Pierre's individual cut ("Pierre Testimonial 12.mov", the cut locked on 2026-09-22;
@@ -242,8 +245,8 @@ const BENTO_ENTRIES: BentoEntries = {
      face, not the side angle"): frames 445–740 of the film, 14.833–24.700 s, the long FRONT shot
      from its first frame to its third jump cut. Until then it ran 8.367–18.000 s (founder
      2026-10-12, "start the preview at 8.4s"), which held five seconds of a close profile. Video
-     only, 182 and 343 kB (landscape), 408 and 844 kB (the portrait crops) against 4.7 and 7.4 MB
-     for the film. The tile never shows the title; with sound the film plays from 0.
+     only, 182 and 343 kB (landscape), 408 kB (the portrait crop) against 4.7 and 7.4 MB for the
+     film. The tile never shows the title; with sound the film plays from 0.
      Captions: the cut's nine sentences in 29 lines, timed by forced alignment on the film's own
      audio. As for Praxis the wording was checked by machine (three recognisers, alignment scores,
      the acoustic model's raw reading), NOT by a human listen. Six sentences are word for word
@@ -252,7 +255,7 @@ const BENTO_ENTRIES: BentoEntries = {
      transcript ("of other top partners", 42.2 s, there "of all the top partners"; "don't need
      to download", 35.8 s, there "you don't need"):
      artifacts/landing-v2-figma/impl/bento-kinro.md. */
-  videoLg: [
+  videoSm: [
     {
       status: "final",
       kind: "video",
@@ -261,12 +264,13 @@ const BENTO_ENTRIES: BentoEntries = {
         mp4: "/lp/bento/kinro-pierre-960.mp4",
         mp4Small: "/lp/bento/kinro-pierre-640.mp4",
         /* portrait: the same frames, cropped 806 × 1080 from x 400 (= focus.keepLeft, the window
-           of the 560 × 750 tile), at 538 × 720 and 806 × 1080 (recipe:
-           artifacts/…/bento-real/tools/encode-preview-portrait-mp4.sh). */
+           of a portrait tile), at 538 × 720 (recipe: artifacts/…/bento-real/tools/
+           encode-preview-portrait-mp4.sh). Since 2026-10-13 this film is in the SMALL tile; the
+           806 × 1080 encode it had for the large one is out of public/. */
         preview: {
           mp4: "/lp/bento/kinro-pierre-preview-480.mp4",
           mp4Large: "/lp/bento/kinro-pierre-preview-720.mp4",
-          portrait: { mp4: "/lp/bento/kinro-pierre-preview-portrait-720.mp4", mp4Hi: "/lp/bento/kinro-pierre-preview-portrait-1080.mp4" },
+          portrait: { mp4: "/lp/bento/kinro-pierre-preview-portrait-720.mp4" },
         },
         captions: { src: "/lp/bento/kinro-pierre.en.vtt", srcLang: "en", label: "English" },
       },
@@ -282,44 +286,44 @@ const BENTO_ENTRIES: BentoEntries = {
       source: "Pierre Testimonial 12.mov, transcoded 2026-10-12 (manifest-kinro.json); poster = frame 96.",
     },
   ],
-  /* Vector Legal, a WRITTEN quote the founder supplied on 2026-10-13 ("let's add a testimonial
-     here also + logo in the carousel"): "$50K in pipeline in 7 days from outreach on high-intent
-     signals". Three lines of it ran under her photo, and he asked to "synthetize or improve":
-     the card drops "outreach on" and keeps the figure, the time and the signals, on two lines.
-     NOT verbatim any more. The figure is hers, relayed by him: no other record of it is in the
-     repository. Portrait: the 800 px photo he sent. This slot's blob is top right: the quote
-     wraps before it (bento.css). */
+  /* Pierre, alone on screen, lips in sync over the whole sentence (his cut 14.93–17.80 s; the
+     merged compilation 28.45–31.33 s). The founder, 2026-10-13: "this testimonial should be
+     kept". Portrait: a crop of frame 92 of his own cut, 430 px native, so soft at 2x (founder
+     2026-10-12: accepted). */
   quoteA: [
     {
       status: "final",
       kind: "quote",
-      logo: VECTOR_LEGAL,
-      quote: "$50K in pipeline in 7 days from high-intent signals.",
-      person: AURELIE,
-      photo: { src: "/lp/bento/vector-legal-aurelie-portrait-640.webp" },
-      source: "Written quote and photo supplied by the founder on 2026-10-13; shortened at his request (the original is in the comment above).",
+      logo: KINRO,
+      quote: "I’m running all of my GTM in Codex using Pancake.",
+      person: PIERRE,
+      photo: { src: "/lp/bento/kinro-pierre-portrait-640.webp" },
+      source: "Kinro individual cut (Pierre Testimonial 12.mov), checked compilation transcript sentence 7; portrait = frame 92 of the cut.",
     },
   ],
-  /* Diana Khramina's own figures: a message to Tristan on 2026-09-18, and the same two on camera
-     in her cut ("my reply rate is above 10% on most of campaigns I'm running. So it helped me to
+  /* Vector Legal's figure. The founder supplied it on 2026-10-13 as a written quote from
+     "Aurelie, Head of GTM & Partnerships": "$50K in pipeline in 7 days from outreach on
+     high-intent signals". As a figure card it keeps the number and the time, in her words. No
+     other record of it is in the repository (scripts/homepage-lint.mjs BENTO_KPI_ALLOW). */
+  kpiA: [
+    { status: "final", kind: "kpi", logo: VECTOR_LEGAL, value: "$50K", label: "in pipeline in 7 days", source: "Vector Legal, written statement relayed by the founder on 2026-10-13 (the full sentence is in the comment above)." },
+  ],
+  /* Diana Khramina's own figure: a message to Tristan on 2026-09-18, and the same on camera in
+     her cut ("my reply rate is above 10% on most of campaigns I'm running. So it helped me to
      book at least 10 meetings per week"). The message's wording and link are in the spec
      (artifacts/landing-v2-figma/specs/updates/_bento-real-testimonials.md), kept out of this
      public repository on purpose. Founder 2026-10-11: her figures, in the designer's big-number
-     format. The three KPI pairs go to scripts/homepage-lint.mjs as whole strings (bentoKpiClaims
-     below), to be checked against its explicit, sourced allow-list.
-     Her two figures are in kpiA and kpiC, which never touch; Kinro's is between them in kpiB
-     (the neighbours rule, BENTO_SLOT_IDS). */
-  kpiA: [
+     format. Every KPI pair goes to scripts/homepage-lint.mjs as a whole string (bentoKpiClaims
+     below), to be checked against its explicit, sourced allow-list. Her second figure ("10+
+     meetings booked a week") is left out: seven cards. */
+  kpiB: [
     { status: "final", kind: "kpi", logo: PRAXIS, value: "10%+", label: "reply rate", source: "Diana Khramina, message to Tristan 2026-09-18 (reference in the spec, see the comment above), repeated on camera in her cut." },
   ],
   /* Pierre on camera: "Pancake helped me book 15 meetings last week" (his cut 39.57–41.52 s, the
      same sentence and the same audio as the merged compilation's 61.68–63.72 s; side-angle
      camera, lips in sync up to "meetings"). One week, as he says it. */
-  kpiB: [
-    { status: "final", kind: "kpi", logo: KINRO, value: "15", label: "meetings booked in a week", source: "Pierre-Alexandre Kamienny on camera, Kinro individual cut and merged compilation sentence 14 (manifest-kinro.json)." },
-  ],
   kpiC: [
-    { status: "final", kind: "kpi", logo: PRAXIS, value: "10+", label: "meetings booked a week", source: "Diana Khramina, message to Tristan 2026-09-18 (reference in the spec, see the comment above), repeated on camera in her cut." },
+    { status: "final", kind: "kpi", logo: KINRO, value: "15", label: "meetings booked in a week", source: "Pierre-Alexandre Kamienny on camera, Kinro individual cut and merged compilation sentence 14 (manifest-kinro.json)." },
   ],
   /* AgentMail, a WRITTEN quote the founder supplied on 2026-10-13 and asked to shorten ("simplify
      quote", then "no longer than" 49 characters). His two sentences, in full: "One Pancake Play
@@ -341,15 +345,16 @@ const BENTO_ENTRIES: BentoEntries = {
   /* Praxis, Diana's individual cut, founder-validated 2026-09-29 (58.2 s, 4:3). Her name title is
      burned in at x 60–475 of 1440 (4.2–9.07 s) and her face stays within x 501–1064 from 3.667 s
      on: hence `focus`.
-     Preview: 3.667–13.433 s of the film (the first shot a portrait tile frames well, to the end of
-     the side angle; 0–2.57 s is intro B-roll without her, 2.57–3.67 s a shot whose face a portrait
-     tile cuts), video only, 301 kB and 569 kB against 5.6 and 8.8 MB for the film.
+     Preview (2026-10-13, the founder's note on Kinro's applied here: "a few seconds where he is
+     face to face, not the side angle"): frames 403–641, 13.43–21.40 s, three FRONT shots in a
+     row. Until then 3.667–13.433 s, which ended on four seconds of a side angle. Video only,
+     276 and 545 kB (landscape), 584 kB (the portrait crop) against 5.6 and 8.8 MB for the film.
      Captions: the cut's 41 lines, timed by forced alignment on the film's own audio. The wording
      was checked by machine (three recognisers, alignment scores, the acoustic model's raw
      reading), NOT by a human listen, and one clause ("We just joined Y Combinator", 13.5 s) is
      kept for meaning where the audio alone reads otherwise:
      artifacts/landing-v2-figma/impl/bento-fixes.md. */
-  videoSm: [
+  videoLg: [
     {
       status: "final",
       kind: "video",
@@ -357,7 +362,15 @@ const BENTO_ENTRIES: BentoEntries = {
       film: {
         mp4: "/lp/bento/praxis-diana-960.mp4",
         mp4Small: "/lp/bento/praxis-diana-640.mp4",
-        preview: { mp4: "/lp/bento/praxis-diana-preview-480.mp4", mp4Large: "/lp/bento/praxis-diana-preview-720.mp4" },
+        /* portrait: the same frames cropped 538 × 720 from x 320 of the 960 web encode (=
+           focus.keepLeft 480 of 1440), the window of the large tile. Cut from the web encode, not
+           the master ("Testimonial Diana - 4 x1.09.mov" is not on disk): softer than Kinro's was.
+           Recipe: artifacts/…/bento-real/tools/encode-preview-from-web-mp4.sh. */
+        preview: {
+          mp4: "/lp/bento/praxis-diana-preview-480.mp4",
+          mp4Large: "/lp/bento/praxis-diana-preview-720.mp4",
+          portrait: { mp4: "/lp/bento/praxis-diana-preview-portrait-720.mp4" },
+        },
         captions: { src: "/lp/bento/praxis-diana.en.vtt", srcLang: "en", label: "English" },
       },
       poster: {
@@ -381,11 +394,11 @@ const BENTO_ENTRIES: BentoEntries = {
  * order and boxes, in desktop px (`--u` scales them). Wide cards take both columns.
  */
 /* The same rule in the stack: no two cards of one company in a row or in two rows that follow
-   each other. The mobile artboard's order (vl / ka kb / qa / kc vs / qb) would put a Praxis
-   figure beside the Praxis film. Three of the four narrow cards are Praxis's, so only ONE pair
-   of narrow cards can exist (a Praxis figure beside Kinro's): the other Praxis figure and the
-   Praxis film each take a row of their own (FLOW_SOLO_*).  K · P · V · (P|K) · A · P: */
-const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "kpiC", "quoteA", "kpiA", "kpiB", "quoteB", "videoSm"];
+   each other. The mobile artboard's order (vl / ka kb / qa / kc vs / qb) would put Kinro's
+   figure beside Kinro's film, under Kinro's quote. This order is the artboard's reading order:
+   the first two figures pair up (Vector Legal | Praxis), Kinro's figure and Kinro's film each
+   take a row of their own (FLOW_SOLO_*).  P · K · (V|P) · K · A · K: */
+const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "quoteA", "kpiA", "kpiB", "kpiC", "quoteB", "videoSm"];
 const FLOW_BOX: Record<BentoSlotId, { wide: boolean; height: number }> = {
   videoLg: { wide: true, height: 750 },
   kpiA: { wide: false, height: 365 },
