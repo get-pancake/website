@@ -1,5 +1,8 @@
 # Customer wordmarks
 
+> About the files in `public/logos/customers/`. This note lived in that folder until
+> 2026-10-13, where it was served on the site; it moved here so it stays in the repository only.
+
 Added September 15, 2026 for the founder-requested carousel below the homepage hero.
 
 The visual reference is [brain.getpancake.ai](https://brain.getpancake.ai/): solid plum (`--lp-ink-100`), alpha masks, 14px optical letter bodies, 48px gaps, 0.85 mobile scale, continuous linear leftward movement, and 10% edge fades. The twelve-logo sequence is approximately 2049.0px on desktop and 1820.9px on mobile (eleven logos: 1857.2 / 1657.9, before Vector Legal on October 13, 2026: a 143.8px mark and its 48px gap). Its 59.7s / 43.7s durations preserve the reference's approximately 34.3 / 41.7px per second. Reduced motion displays all twelve marks in a static wrapping row.

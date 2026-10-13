@@ -59,7 +59,7 @@ Scope: `/demo`, a contact-sales page in the ElevenLabs layout (François, 2026-0
 
 - [x] Add Hyperspell, AgentMail, Fleet, Requesty, Alpic, Praxis, Kinro, Covera, Spacefill, and Kardinal directly below the homepage hero, in that order.
 - [x] Match brain.getpancake.ai's plum alpha masks, optical logo sizing, continuous leftward motion, spacing, and edge fades.
-- [x] Source real wordmarks from the current brain project and official company websites; record provenance under `public/logos/customers/README.md`.
+- [x] Source real wordmarks from the current brain project and official company websites; record provenance under `docs/public-assets/logos/customers/README.md` (moved out of `public/` on 2026-10-13: it was served on the site).
 - [x] Keep a single accessible customer list and a static wrapping layout for reduced-motion preferences.
 - [x] Add small orange YC marks as 12px superscripts at the top-right of Hyperspell, AgentMail, Praxis, Kinro, and Covera; verify four affiliations against official YC profiles and include Praxis on Tristan's explicit confirmation.
 - [x] Verify desktop/mobile layout and overflow in Codex Browser; keep four sequences for uninterrupted 4K coverage.
