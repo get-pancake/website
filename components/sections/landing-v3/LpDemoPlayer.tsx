@@ -452,7 +452,7 @@ export function LpDemoPlayer({
     /* Each view is built in tasks of its own, in idle time (2026-10-13, the bug check's S1: the
        import's continuation built both views back to back in the task that had just evaluated
        the chunks, 455 ms at the first swipe on a mid-range phone). lp-play-once's queue: idle
-       slots (one comes within 150 ms), in page order. The view that is showing has the stage's
+       slots (one comes within 50 ms), in page order. The view that is showing has the stage's
        place, so it goes before the page's cards and the clock never waits long (the opening
        screen holds longer than that before anything moves); the other view has no place and
        comes after them: it is not needed before the first run ends, and a view that is armed
