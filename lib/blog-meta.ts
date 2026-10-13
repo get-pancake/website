@@ -81,8 +81,11 @@ export function articleAuthor(byline: string | undefined) {
 
 /**
  * True when every name behind a byline is on /careers (TEAM_AUTHORS). The
- * Slack unfurl's "Written by" row shows only those (2026-10-07): the other
- * bylines (audit 1.15) wait on François's confirmation.
+ * Slack unfurl's "Written by" row shows only those (2026-10-07). The other
+ * bylines (audit 1.15): six were names the content bot made up ("François
+ * Lanthier Nadeau", "François Courtois") and read "Pancake Team" since the
+ * 2026-10-13 launch audit; one stays, "Theophile Cousin", signed on purpose
+ * in May (commit 94cd34e6) by someone no longer on /careers.
  */
 export function isTeamByline(byline: string | undefined): byline is string {
   if (!byline) return false;
