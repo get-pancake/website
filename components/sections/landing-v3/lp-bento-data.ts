@@ -5,12 +5,13 @@
  *
  * Content (founder 2026-10-11, decisions §9): the Kinro and Praxis testimonials, the two
  * INDIVIDUAL cuts, never the merged compilation. Their quotes are verbatim whole sentences; the
- * numbers are the customers' own. Since 2026-10-13 an eighth card: AgentMail's written quote
- * (quoteC), which the founder supplied and asked to shorten, so it is NOT verbatim. Evidence, frames and timings: artifacts/landing-v2-figma/assets/
+ * numbers are the customers' own. Since 2026-10-13 two written quotes the founder supplied:
+ * AgentMail's (quoteC), which he asked to shorten, so it is NOT verbatim, and Vector Legal's
+ * (quoteD), as he gave it. Evidence, frames and timings: artifacts/landing-v2-figma/assets/
  * bento-real/manifest.json (Praxis), manifest-kinro.json (Kinro), impl/bento-real-assets.md and
  * impl/bento-real-assets-kinro.md.
  *
- * Eight slots. Each lists its candidate cards with `status` from lib/placeholders.ts:
+ * Nine slots. Each lists its candidate cards with `status` from lib/placeholders.ts:
  *   - "final": real content whose asset is in public/. Always renders, wins its slot.
  *   - "placeholder": a stand-in that renders in dev and on Vercel previews only (marked
  *     data-placeholder). NONE today: every card is final. The mechanism
@@ -18,8 +19,8 @@
  *     public URL (lp-bento-placeholder.ts inlines it from ./bento-placeholder/).
  * Production renders ONLY final cards, so it may hold a partial set: resolveBento() lays the cards
  * it has out cleanly (rows on desktop, the artboard's two-column stack below) and returns null
- * only when no card is left. With all eight it is the full grid: the designer's seven-card
- * artboard re-laid for one more quote (see BENTO_SLOT_IDS).
+ * only when no card is left. With all nine it is the full grid: the designer's seven-card
+ * artboard with two more quotes (see BENTO_SLOT_IDS).
  *
  * How a card becomes final: put its asset in public/lp/bento/, set status "final", keep `source`.
  * Videos, three things per film (recipes: artifacts/landing-v2-figma/assets/bento-real/tools/):
@@ -55,20 +56,20 @@ export const BENTO_VIDEO_LABELS = {
  */
 export const BENTO_LIVE = true;
 
-export type BentoSlotId = "videoLg" | "quoteA" | "quoteC" | "kpiA" | "kpiB" | "kpiC" | "quoteB" | "videoSm";
+export type BentoSlotId = "videoLg" | "quoteA" | "quoteC" | "kpiA" | "kpiB" | "kpiC" | "videoSm" | "quoteB" | "quoteD";
 /**
  * The reading order (row by row on desktop): the DOM order of a full set.
  * The artboard draws seven cards on a 4-column grid: vl vl qa qa / vl vl ka kb / kc qb qb vs.
- * An eighth (quoteC, founder 2026-10-13: "add Adi from AgentMail") does not fit it: the cards
- * make 14 cells of 4. The full grid is the same cards on the artboard's 12 columns, in rows the
- * artboard or ROW_SHAPES already hold:
+ * Two more quotes (founder 2026-10-13: quoteC "add Adi from AgentMail", then quoteD "let's add
+ * a testimonial here also", Vector Legal) make a fourth row. The full grid is on the artboard's
+ * 12 columns (3 = its 272 card, 6 = its 560 card) and every card keeps the size it is drawn at:
  *   vl ×6 (two rows tall) | qa ×6
- *                         | qc ×6      the new quote, under Praxis's
- *   ka ×4 | kb ×4 | kc ×4              three figures across (ROW_SHAPES "0,0,3")
- *   qb ×6 | vs ×6                      a quote beside a film (ROW_SHAPES "1,1,0")
+ *                         | qc ×6      AgentMail's quote, where the two figures were
+ *   ka ×3 | kb ×3 | kc ×3 | vs ×3     the three figures and the small film (ROW_SHAPES "1,0,3")
+ *   qb ×6 | qd ×6                      two quotes, their blobs in the outer corners ("0,2,0")
  * NOT in the Figma: the designer has to confirm or redraw it.
  */
-export const BENTO_SLOT_IDS: readonly BentoSlotId[] = ["videoLg", "quoteA", "quoteC", "kpiA", "kpiB", "kpiC", "quoteB", "videoSm"];
+export const BENTO_SLOT_IDS: readonly BentoSlotId[] = ["videoLg", "quoteA", "quoteC", "kpiA", "kpiB", "kpiC", "videoSm", "quoteB", "quoteD"];
 
 /**
  * A customer's wordmark from public/logos/customers (the marquee's artwork), painted as an alpha
@@ -195,13 +196,14 @@ type BentoSlotCard = {
   kpiC: BentoKpiCard;
   quoteB: BentoQuoteCard;
   quoteC: BentoQuoteCard;
+  quoteD: BentoQuoteCard;
   videoSm: BentoVideoCard;
 };
 type BentoEntries = { [K in BentoSlotId]: readonly BentoSlotCard[K][] };
 
 /* ── the customers ────────────────────────────────────────────────────────────────────────── */
 
-/* All three are in the marquee with the YC badge (public/logos/customers/README.md). */
+/* All four are in the marquee with the YC badge (public/logos/customers/README.md). */
 const PRAXIS: BentoLogo = { name: "Praxis", src: "/logos/customers/praxis.png", ratio: 1392 / 370, body: [0.24, 0.755], yc: true };
 const KINRO: BentoLogo = { name: "Kinro", src: "/logos/customers/kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75], yc: true };
 
@@ -214,6 +216,11 @@ const PIERRE = { name: "Pierre-Alexandre Kamienny", role: "CEO", company: "Kinro
    not his own word: to be confirmed with him. */
 const AGENTMAIL: BentoLogo = { name: "AgentMail", src: "/logos/customers/agentmail.svg", ratio: 1986 / 363, body: [0.2, 0.78], yc: true };
 const ADI = { name: "Adi Singh", role: "Co-founder", company: "AgentMail" };
+/* Vector Legal (YC W26): the marquee's composed lockup and numbers. The founder gave her first
+   name and title only ("Aurelie, Head of GTM & Partnerships"), then cut the title so the line
+   fits ("just put Head of GTM"). Surname and the accent on her name are his to confirm. */
+const VECTOR_LEGAL: BentoLogo = { name: "Vector Legal", src: "/logos/customers/vector-legal.png", ratio: 1111 / 151, body: [0.079, 0.795], yc: true };
+const AURELIE = { name: "Aurelie", role: "Head of GTM", company: "Vector Legal" };
 
 const BENTO_ENTRIES: BentoEntries = {
   /* Kinro, Pierre's individual cut ("Pierre Testimonial 12.mov", the cut locked on 2026-09-22;
@@ -296,6 +303,23 @@ const BENTO_ENTRIES: BentoEntries = {
       source: "Written quote and headshot supplied by the founder on 2026-10-13; shortened at his request (the original is in the comment above).",
     },
   ],
+  /* Vector Legal, a WRITTEN quote the founder supplied on 2026-10-13 ("let's add a testimonial
+     here also + logo in the carousel"): "$50K in pipeline in 7 days from outreach on high-intent
+     signals". Three lines of it ran under her photo, and he asked to "synthetize or improve":
+     the card drops "outreach on" and keeps the figure, the time and the signals, on two lines.
+     NOT verbatim any more. The figure is hers, relayed by him: no other record of it is in the
+     repository. Portrait: the 800 px photo he sent. */
+  quoteD: [
+    {
+      status: "final",
+      kind: "quote",
+      logo: VECTOR_LEGAL,
+      quote: "$50K in pipeline in 7 days from high-intent signals.",
+      person: AURELIE,
+      photo: { src: "/lp/bento/vector-legal-aurelie-portrait-640.webp" },
+      source: "Written quote and photo supplied by the founder on 2026-10-13; shortened at his request (the original is in the comment above).",
+    },
+  ],
   /* Diana Khramina's own figures: a message to Tristan on 2026-09-18, and the same two on camera
      in her cut ("my reply rate is above 10% on most of campaigns I'm running. So it helped me to
      book at least 10 meetings per week"). The message's wording and link are in the spec
@@ -371,15 +395,16 @@ const BENTO_ENTRIES: BentoEntries = {
  * The two-column stack (phones at every set; tablets with a partial set): the mobile artboard's
  * order and boxes, in desktop px (`--u` scales them). Wide cards take both columns.
  */
-/* quoteC goes right under the large film: the three quotes then alternate their blob's side
-   (left, right, left) and no two follow each other. */
-const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "quoteC", "kpiA", "kpiB", "quoteA", "kpiC", "videoSm", "quoteB"];
+/* quoteC goes right under the large film and quoteD closes the stack: the four quotes alternate
+   their blob's side (left, right, left, right). */
+const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "quoteC", "kpiA", "kpiB", "quoteA", "kpiC", "videoSm", "quoteB", "quoteD"];
 const FLOW_BOX: Record<BentoSlotId, { wide: boolean; height: number }> = {
   videoLg: { wide: true, height: 750 },
   kpiA: { wide: false, height: 365 },
   kpiB: { wide: false, height: 365 },
   quoteA: { wide: true, height: 369 },
   quoteC: { wide: true, height: 369 },
+  quoteD: { wide: true, height: 369 },
   kpiC: { wide: false, height: 375 },
   videoSm: { wide: false, height: 375 },
   quoteB: { wide: true, height: 375 },
@@ -388,12 +413,12 @@ const FLOW_BOX: Record<BentoSlotId, { wide: boolean; height: number }> = {
 const FLOW_SOLO_HEIGHT = 369;
 /** Desktop gap between cards, and between the tablet rows (px at `--u` = 1). */
 const GAP = 16;
-/** The full grid: rows 369 / 365 / 365 / 375 (desktop), and the tablet's six rows. */
-const FULL_GRID_U = 369 + 365 + 365 + 375 + 3 * GAP;
-const FULL_TABLET_PX = 369 + 365 + 365 + 369 + 375 + 375 + 5 * GAP;
+/** The full grid: rows 369 / 365 / 375 / 369 (desktop), and the tablet's seven rows. */
+const FULL_GRID_U = 369 + 365 + 375 + 369 + 3 * GAP;
+const FULL_TABLET_PX = 369 + 365 + 365 + 369 + 375 + 375 + 369 + 6 * GAP;
 
 type Kind = "V" | "Q" | "K";
-const KIND: Record<BentoSlotId, Kind> = { videoLg: "V", videoSm: "V", quoteA: "Q", quoteB: "Q", quoteC: "Q", kpiA: "K", kpiB: "K", kpiC: "K" };
+const KIND: Record<BentoSlotId, Kind> = { videoLg: "V", videoSm: "V", quoteA: "Q", quoteB: "Q", quoteC: "Q", quoteD: "Q", kpiA: "K", kpiB: "K", kpiC: "K" };
 
 /**
  * Rows a PARTIAL set may form on the desktop grid (12 columns: 3 = the artboard's 272 card,
@@ -443,7 +468,7 @@ function rowOf(ids: readonly BentoSlotId[]): Row | null {
   return { ids: ordered, shape, cost: shape.cost + 0.25 - (favourite ? 0.1 : 0) };
 }
 
-/** The cheapest way to split the cards into rows (≤ 7 cards: at most 877 partitions). */
+/** The cheapest way to split the cards into rows (≤ 8 cards: at most 4140 partitions). */
 function bestRows(ids: readonly BentoSlotId[]): Row[] {
   if (ids.length === 0) return [];
   const [first, ...rest] = ids;

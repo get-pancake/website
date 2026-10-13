@@ -19,7 +19,7 @@
    never above 1px: the stack stops growing at its 560 design width.
 
    Layouts (lp-bento-data.ts resolveBento decides, the markup carries it):
-     data-layout="full"  all eight cards = the full grid (grid areas);
+     data-layout="full"  all nine cards = the full grid (grid areas);
      data-layout="rows"  a partial set = rows on 12 columns, each card's span,
                          centred start and row height set inline by the server;
      the two-column stack (phones always, tablets with a partial set): order,
@@ -54,7 +54,7 @@
 @media (min-width: 768px) and (max-width: 1024px) {
   .lp > .lp-bento {
     /* 72 + 68.80 + 56 + grid + 72 */
-    contain-intrinsic-size: auto calc(268.8px + var(--lp-bento-tablet-px, 2298) * 1px);
+    contain-intrinsic-size: auto calc(268.8px + var(--lp-bento-tablet-px, 2683) * 1px);
   }
 }
 @media (max-width: 767px) {
@@ -62,7 +62,7 @@
     /* 81 + 41 + 41 + stack + 56; the stack's rows are in --u (the frame / 560,
        the frame being the column or --lp-bento-stack-max), its gaps 8px */
     contain-intrinsic-size: auto
-      calc(219px + var(--lp-bento-flow-u, 2603) * min(100vw - 32px, var(--lp-bento-stack-max)) / 560 + var(--lp-bento-flow-gaps, 5) * 8px);
+      calc(219px + var(--lp-bento-flow-u, 2972) * min(100vw - 32px, var(--lp-bento-stack-max)) / 560 + var(--lp-bento-flow-gaps, 6) * 8px);
   }
 }
 
@@ -109,26 +109,26 @@
   }
 }
 
-/* ── ≥ 768, all eight cards: the full grid ──
+/* ── ≥ 768, all nine cards: the full grid ──
    The artboard draws seven (vl vl qa qa / vl vl ka kb / kc qb qb vs on four
-   columns). An eighth quote does not fit four columns (14 cells), so the
-   same cards sit on the artboard's 12 columns (80 + 16: 3 = its 272 card,
-   4 = 368, 6 = its 560 card), in rows it or ROW_SHAPES already hold: the
-   tall film beside two quotes, the three figures across, a quote beside the
-   small film. Founder 2026-10-13; not in the Figma. */
+   columns). With two more quotes (founder 2026-10-13) the cards sit on its
+   12 columns (80 + 16: 3 = its 272 card, 6 = its 560 card), each at the
+   size it is drawn at: the tall film beside two quotes, the three figures
+   and the small film in a row, two quotes side by side. Not in the Figma. */
 @media (min-width: 768px) {
   .lp-bento__grid[data-layout="full"] {
     grid-template-areas:
       "vl vl vl vl vl vl qa qa qa qa qa qa"
       "vl vl vl vl vl vl qc qc qc qc qc qc"
-      "ka ka ka ka kb kb kb kb kc kc kc kc"
-      "qb qb qb qb qb qb vs vs vs vs vs vs";
+      "ka ka ka kb kb kb kc kc kc vs vs vs"
+      "qb qb qb qb qb qb qd qd qd qd qd qd";
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(365 * var(--u)) calc(375 * var(--u));
+    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(375 * var(--u)) calc(369 * var(--u));
   }
   .lp-bento__grid[data-layout="full"] > [data-slot="videoLg"] { grid-area: vl; }
   .lp-bento__grid[data-layout="full"] > [data-slot="quoteA"] { grid-area: qa; }
   .lp-bento__grid[data-layout="full"] > [data-slot="quoteC"] { grid-area: qc; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="quoteD"] { grid-area: qd; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiA"] { grid-area: ka; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiB"] { grid-area: kb; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiC"] { grid-area: kc; }
@@ -247,6 +247,9 @@
 .lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__quote p {
   padding-inline: 0.25em 0;
 }
+.lp-bento__nowrap {
+  white-space: nowrap;
+}
 .lp-bento__by,
 .lp-bento__label {
   color: var(--lp-subtle-text);
@@ -259,11 +262,18 @@
 .lp-bento__by b {
   font-weight: 600;
 }
+/* quoteD: its first line is longer than quoteA's and ran under the blob (whose left edge is
+   at 340 where the quote starts; founder 2026-10-13: "it's covering the picture"). The quote
+   wraps 45 u earlier, clear of the photo. */
+.lp .lp-bento__card[data-slot="quoteD"] .lp-bento__quote p {
+  max-width: calc(290 * var(--u));
+}
 /* quoteB: the column hugs the right edge (Figma primary MAX: card-rel x =
    560 − 48 − 335 = 177), items and text right-aligned (counter MAX). Its
    badge stays inside the column: the wordmark moves left by the badge.
-   quoteC (the eighth card) is quoteB's composition: it sits under quoteA,
-   whose blob is on the other side. */
+   quoteC is quoteB's composition (it sits under quoteA, whose blob is on
+   the other side); quoteD is quoteA's (it sits beside quoteB: the two
+   blobs take the row's outer corners). */
 .lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__col {
   align-items: flex-end;
   margin-left: auto;
@@ -289,7 +299,7 @@
 /* quoteA's blob hugs the top-RIGHT corner: in the 560 card, left 340.47 =
    560 + 91.06 − 310.59. Right-anchored, so a wider card (tablets, a partial
    row) keeps it in its corner and the extra width is air beside the text. */
-.lp-bento__card[data-slot="quoteA"] .lp-bento__portrait {
+.lp-bento__card:is([data-slot="quoteA"], [data-slot="quoteD"]) .lp-bento__portrait {
   height: calc(313.19 * var(--u));
   right: calc(-91.06 * var(--u));
   top: calc(-39.76 * var(--u)); /* bleeds 39.76 above, 91.06 past the right edge */
@@ -664,7 +674,7 @@ body:has(.lp-bento__dialog[open]) {
     --u: 1px;
     gap: 16px;
   }
-  /* all eight: the quotes full width, the large video beside two KPI cards */
+  /* all nine: the quotes full width, the large video beside two KPI cards */
   .lp-bento__grid[data-layout="full"] {
     grid-template-areas:
       "qa qa"
@@ -672,9 +682,10 @@ body:has(.lp-bento__dialog[open]) {
       "vl kb"
       "qc qc"
       "kc vs"
-      "qb qb";
+      "qb qb"
+      "qd qd";
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: 369px 365px 365px 369px 375px 375px;
+    grid-template-rows: 369px 365px 365px 369px 375px 375px 369px;
   }
   /* a partial set: the stack */
   .lp-bento__grid[data-layout="rows"] {

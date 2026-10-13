@@ -27,6 +27,9 @@ const LOGOS: CustomerLogo[] = [
   { name: "Alpic", file: "alpic.svg", ratio: 266.246 / 52.146, body: [0.14, 0.86] },
   { name: "Praxis", file: "praxis.png", ratio: 1392 / 370, body: [0.24, 0.755], yc: true },
   { name: "Kinro", file: "kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75], yc: true },
+  // Vector Legal (vectorlegal.com, YC W26), founder 2026-10-13. Their header lockup, composed:
+  // the site has no wordmark file (public/logos/customers/README.md); body = the capital V.
+  { name: "Vector Legal", file: "vector-legal.png", ratio: 1111 / 151, body: [0.079, 0.795], yc: true },
   { name: "Covera", file: "covera.png", ratio: 188 / 40, body: [0.32, 0.995], yc: true },
   { name: "Spacefill", file: "spacefill.svg", ratio: 192 / 33, body: [0.2411, 0.7591] },
   { name: "Kardinal", file: "kardinal.svg", ratio: 152 / 24, body: [0.23, 0.83] },
