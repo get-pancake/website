@@ -380,6 +380,7 @@ export function* buildStoryMessageSteps(root: HTMLElement): Generator<void, Buil
     const tPosted = bodyRun.end;
     tl.set(bodyCaret.el, { opacity: 0 }, tPosted + T.bodyCaretOff);
     tl.set(body, { clipPath: "none" }, tPosted + T.bodyCaretOff + 0.05); // the run paints exactly like the static site
+    yield;
     /* … it is published: the rest of its text, its action row, the counts ticking up … */
     bars.forEach((bar, i) =>
       tl.to(bar, { scaleX: 1, autoAlpha: 1, duration: 0.35, ease: "power3.out" }, tPosted + T.skel + i * 0.05),
@@ -405,6 +406,7 @@ export function* buildStoryMessageSteps(root: HTMLElement): Generator<void, Buil
     tl.to(convo, { x: f2.x, y: f2.y, duration: T.leadUpDur, ease: "power3.inOut" }, tF1 + T.leadUp);
     tl.fromTo(msgWire, { scaleY: 0 }, grow, tF1 + T.msgWire);
     tl.fromTo(msgCard, { autoAlpha: 0, y: 12 }, rise, tF1 + T.msgCard);
+    yield;
     const msgRun = kit.typeMessage(tF1 + T.msgType, msg, msgCaret, typed);
     // f2: three glyphs into the last line (Figma: "…actually / ope|")
     const lastTop = typed[typed.length - 1].top;
@@ -416,7 +418,8 @@ export function* buildStoryMessageSteps(root: HTMLElement): Generator<void, Buil
     yield;
 
     /* — frames 3–6 · more conversations, the sending account, its leads, more accounts — */
-    tail.add({ tl, tSent, lead: { convo, cards: [leadCard, msgCard] } });
+    const rest = tail.add({ tl, tSent, lead: { convo, cards: [leadCard, msgCard] } });
+    while (!rest.next().done) yield;
 
     // the first scene is frame 0 itself: the post in place (author, avatar, time), its text
     // not typed yet

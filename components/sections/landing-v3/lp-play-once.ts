@@ -36,8 +36,8 @@ import type { gsap } from "@/lib/gsap";
  *   four in a row for the stories on phones). Now, from the visitor's first
  *   input, every card on the page is prepared in page order during idle time
  *   (requestIdleCallback with a timeout; Safari: a task of its own after the
- *   frame), one build per idle slot, and a section that skips its rendering
- *   is rendered ahead in a slot of its own (`holdRendered`). A card that
+ *   frame), a slice of a build per idle slot, and a section that skips its
+ *   rendering is rendered ahead in a slot of its own (`holdRendered`). A card that
  *   comes within a viewport before its turn is prepared by the same queue,
  *   as before (on phones still only after the first input, `whenTouched`:
  *   nothing is fetched while the page rests untouched at its top), and a
@@ -278,8 +278,10 @@ function whenTouched(run: () => void): () => void {
 
 /* ── idle time ── */
 /** an idle slot comes within this long, or the work runs anyway: a build can wait for a quiet
-    moment, it cannot starve (ms) */
-const IDLE_TIMEOUT_MS = 150;
+    moment, it cannot starve. Short on purpose: on a main thread that never idles (a slow device
+    with a story playing on screen) the queue must still be done before its work is needed, or
+    the build lands whole where it is needed, as it did before (ms) */
+const IDLE_TIMEOUT_MS = 50;
 type IdleDeadline = { didTimeout: boolean; timeRemaining: () => number };
 type IdleWindow = Window & {
   requestIdleCallback?: (run: (deadline: IdleDeadline) => void, options?: { timeout: number }) => number;
@@ -321,10 +323,11 @@ function idleSlot(run: (deadline?: IdleDeadline) => void, timeout = IDLE_TIMEOUT
 type Job = { run: () => boolean | void; at: Element | null };
 const jobs: Job[] = [];
 let pumpAsked = false;
-/** the most one slot works before it hands back, however long the browser says it is idle (ms) */
-const SLOT_MS = 10;
-/** a slot the browser gave no idle time for (the timeout, or Safari): this much work (ms) */
-const FORCED_SLOT_MS = 5;
+/** the most one slot works before it hands back, however long the browser says it is idle: about
+    one slice of a build (SLICE_MS), so a slot is a short task even when what it runs is not (ms) */
+const SLOT_MS = 4;
+/** a slot the browser gave no idle time for (the timeout, or Safari): two slices (ms) */
+const FORCED_SLOT_MS = 8;
 function pump(deadline?: IdleDeadline) {
   pumpAsked = false;
   const t0 = performance.now();
