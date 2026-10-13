@@ -65,7 +65,11 @@ const FACTS: Fact[] = [
   { label: "4 people", tone: "purple" },
   { label: "San Francisco, CA", tone: "yellow" },
   { label: "$5M seed", tone: "green" },
-  { label: "Founded 2026", tone: "pink" },
+  // 2024 = the company (Basalt AI Inc., which became Pancake): the year the Organization
+  // structured data carries (app/layout.tsx foundingDate) and the "two years" of the founders'
+  // own post. It read "Founded 2026", the year of the Pancake name, until the 2026-10-13 launch
+  // audit: two founding years on one site. Keep the two in step.
+  { label: "Founded 2024", tone: "pink" },
   { label: "LinkedIn", tone: "blue", href: "https://www.linkedin.com/company/get-pancake" },
   { label: "X", tone: "orange", href: "https://x.com/getpancake_ai" },
 ];

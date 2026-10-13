@@ -160,8 +160,8 @@ export const metadata: Metadata = {
 // 2026-10-07 (audit 7.6): legalName, founders and the support contact tell
 // crawlers which "Pancake" this is (PancakeSwap, Pancake POS and another MCP
 // server share the name); alternateName adds the domain, like the WebSite node.
-// description (SITE_DESCRIPTION) and foundingDate are unchanged: both wait on
-// the founder (D10, D20).
+// description = SITE_DESCRIPTION. foundingDate is the company's (Basalt AI Inc.,
+// 2024); /careers prints the same year since 2026-10-13 (it said 2026).
 const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
