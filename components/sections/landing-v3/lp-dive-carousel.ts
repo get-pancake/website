@@ -43,8 +43,11 @@ import {
  * - A click / arrow key selects an item at once: the outgoing panel keeps its frame and fades
  *   out (0.32 s), the incoming one is set to its cue while still hidden, fades in and plays; the
  *   bodies fold (CSS grid rows, 0.4 s) and the titles change weight (CSS). Autoplay continues.
- * - Keyboard focus in the tab list (focus-visible) holds the ADVANCE, not the story: the selected
- *   item plays to its end picture and waits there until focus leaves. A hovering mouse holds
+ * - Keyboard focus (focus-visible) on a tab, on the selected item's link or on the stage holds
+ *   the ADVANCE, not the story: the selected item plays to its end picture and waits there
+ *   until focus leaves the row or goes to Pause. Until 2026-10-13 only the tab list held it:
+ *   Tab from the fourth item to its "See how" link advanced the carousel, which hid the link
+ *   under the focus and dropped it to <body> (the bug check's M14). A hovering mouse holds
  *   nothing — founder 2026-09-22 on the demo ("read as blocked while people looked at it").
  * - Pause (WCAG 2.2.2): a toggle every input can reach, under the card's bottom-right corner —
  *   shown on keyboard focus, while it holds the carousel, while a pointer is over the stage,
@@ -196,7 +199,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
   /** before engaging, item 1: its server picture (rest) or its cue, set unseen (cued) */
   let phase: "rest" | "cued" = "rest";
   let pendingAdvance = false;
-  let held = false; // keyboard focus in the tab list: no advance
+  let held = false; // keyboard focus on a tab, the link or the stage: no advance
   let userPaused = false;
   let posed = false; // QA freeze (pose): nothing starts until select/play
   let docHidden = document.hidden;
@@ -651,11 +654,16 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
       return false;
     }
   };
+  /* what holds the advance under keyboard focus: everything in the row but Pause (the tabs, the
+     selected item's link, which sits outside the tab list, and the stage). An advance would
+     hide the link or the panel that has the focus. */
+  const holdsAdvance = (el: EventTarget | null): el is Element =>
+    el instanceof Element && row.contains(el) && !pauseBtn?.contains(el);
   const onFocusIn = (e: FocusEvent) => {
-    if (e.target instanceof Element && focusVisible(e.target)) held = true;
+    if (holdsAdvance(e.target) && focusVisible(e.target)) held = true;
   };
   const onFocusOut = (e: FocusEvent) => {
-    if (e.relatedTarget instanceof Node && tablist.contains(e.relatedTarget)) return;
+    if (holdsAdvance(e.relatedTarget)) return;
     held = false;
     if (pendingAdvance) {
       pendingAdvance = false;
@@ -664,8 +672,8 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
   };
   tablist.addEventListener("click", onClick);
   tablist.addEventListener("keydown", onKey);
-  tablist.addEventListener("focusin", onFocusIn);
-  tablist.addEventListener("focusout", onFocusOut);
+  row.addEventListener("focusin", onFocusIn);
+  row.addEventListener("focusout", onFocusOut);
 
   const paintPause = () => {
     if (!pauseBtn) return;
@@ -802,8 +810,8 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     section.removeEventListener("contentvisibilityautostatechange", onRendered);
     tablist.removeEventListener("click", onClick);
     tablist.removeEventListener("keydown", onKey);
-    tablist.removeEventListener("focusin", onFocusIn);
-    tablist.removeEventListener("focusout", onFocusOut);
+    row.removeEventListener("focusin", onFocusIn);
+    row.removeEventListener("focusout", onFocusOut);
     pauseBtn?.removeEventListener("click", onPause);
     document.removeEventListener("visibilitychange", onVisibility);
     motionMq.removeEventListener("change", onMotion);
