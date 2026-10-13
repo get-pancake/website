@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import type { RoadmapComment } from "@/components/sections/roadmap/roadmap-data";
+import { ROADMAP_POSTING_OPEN, type RoadmapComment } from "@/components/sections/roadmap/roadmap-data";
+import { isAdmin } from "@/lib/auth/admin";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isServiceConfigured } from "@/lib/supabase/env";
@@ -54,6 +55,11 @@ export async function GET(_request: Request, { params }: { params: { id: string 
  * rate limit + validation. Writes via the service-role client.
  */
 export async function POST(request: Request, { params }: { params: { id: string } }) {
+  // Paused for visitors (ROADMAP_POSTING_OPEN); a signed-in admin still comments. Checked first, so
+  // a paused board answers 403 whatever the backend's state.
+  if (!ROADMAP_POSTING_OPEN && !(await isAdmin())) {
+    return NextResponse.json({ error: "Comments are paused for now. You can still vote." }, { status: 403 });
+  }
   if (!isServiceConfigured()) {
     return NextResponse.json({ error: "Roadmap backend is not configured." }, { status: 503 });
   }

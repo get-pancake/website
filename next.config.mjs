@@ -58,6 +58,11 @@ const nextConfig = {
       { source: "/ai-gtm-report", destination: "/", statusCode: 301 },
       // The report's first address (d4d95bf); straight to "/" so it never chains.
       { source: "/report", destination: "/", statusCode: 301 },
+      // The Human X booth screen (Basalt era: OpenClaw headline, a waitlist QR).
+      // Nothing linked it and nothing on it was current; the page is gone
+      // (founder 2026-10-13) and its address, which printed material may
+      // still carry, lands on the homepage.
+      { source: "/booth", destination: "/", statusCode: 301 },
       // From the Search Console "Not found (404)" export (2026-09-24,
       // raw/getpancake-ai-search-console-404-2026-09-24.csv):
       // the privacy page's old address…

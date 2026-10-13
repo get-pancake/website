@@ -174,3 +174,4 @@
 /alta-vs-pancake
 /claude
 /contact-sales
+/booth

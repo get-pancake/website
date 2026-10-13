@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { CreateIdeaModal } from "@/components/sections/roadmap/CreateIdeaModal";
 import { IdeaDetailModal } from "@/components/sections/roadmap/IdeaDetailModal";
 import {
+  ROADMAP_POSTING_OPEN,
   ROADMAP_TABS,
   STATUS_META,
   TAG_LABELS,
@@ -78,6 +79,8 @@ export function RoadmapBoard({
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [votedIds, setVotedIds] = useState<string[]>([]);
   const [createOpen, setCreateOpen] = useState(false);
+  // Visitors can post and comment only while ROADMAP_POSTING_OPEN; admins always can.
+  const canPost = ROADMAP_POSTING_OPEN || isAdmin;
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
   const [notice, setNotice] = useState<string | null>(null);
@@ -260,9 +263,11 @@ export function RoadmapBoard({
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <Button type="button" className="roadmap-share" onClick={() => setCreateOpen(true)}>
-          + Share an idea
-        </Button>
+        {canPost ? (
+          <Button type="button" className="roadmap-share" onClick={() => setCreateOpen(true)}>
+            + Share an idea
+          </Button>
+        ) : null}
       </div>
 
       {notice ? (
@@ -347,6 +352,7 @@ export function RoadmapBoard({
         idea={selectedIdea}
         voted={selectedIdea ? votedIds.includes(selectedIdea.id) : false}
         canDelete={isAdmin}
+        canComment={canPost}
         onVote={() => selectedIdea && toggleVote(selectedIdea)}
         onDelete={() => selectedIdea && deleteIdea(selectedIdea)}
         onClose={() => setSelectedId(null)}

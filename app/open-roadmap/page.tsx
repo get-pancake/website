@@ -1,7 +1,8 @@
 /**
  * /open-roadmap — Pancake's public community roadmap.
  *
- * Public read for everyone; anyone can post an idea (honeypot + rate-limited);
+ * Public read for everyone; anyone can post an idea (honeypot + rate-limited)
+ * while ROADMAP_POSTING_OPEN (roadmap-data.ts; paused since the 2026-10-13 launch);
  * allow-listed admins (Google sign-in) can delete. Data comes from Supabase
  * when configured, falling back to static seed (read-only) otherwise so the
  * page always renders. Mutations run through server API routes so the
@@ -20,7 +21,7 @@ import { HOME_PAGE_CONTAINER_CLASS } from "@/components/sections/home/home-layou
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { RoadmapBoard } from "@/components/sections/roadmap/RoadmapBoard";
-import { STATUS_META } from "@/components/sections/roadmap/roadmap-data";
+import { ROADMAP_POSTING_OPEN, STATUS_META } from "@/components/sections/roadmap/roadmap-data";
 import { Badge } from "@/components/ui/Badge";
 import { isAdmin } from "@/lib/auth/admin";
 import { getIdeas, isPublicIdea } from "@/lib/roadmap/ideas";
@@ -42,8 +43,10 @@ export const viewport: Viewport = { themeColor: "#fbf6f1" };
    roadmap's future is decided (D14): the board still showed V1 "squads" ideas and
    spam. "squads" left the descriptions too (the V1 product), and the card's alt is
    the text printed in the shared homepage image (audit 8.4). */
-const DESCRIPTION =
-  "Upvote the features and integrations you want, post your own ideas, and see what's planned, in progress and shipped.";
+const DESCRIPTION = ROADMAP_POSTING_OPEN
+  ? "Upvote the features and integrations you want, post your own ideas, and see what's planned, in progress and shipped."
+  : // visitor posting is paused (ROADMAP_POSTING_OPEN): the description promises only what the board does
+    "Upvote the features and integrations you want, and see what's planned, in progress and shipped.";
 
 export const metadata: Metadata = {
   title: "Open roadmap: Vote on what Pancake builds next · Pancake",
@@ -120,7 +123,8 @@ export default async function OpenRoadmapPage() {
         </div>
       </section>
 
-      {/* Closing CTA */}
+      {/* Closing CTA: an invitation to post, so it goes while visitor posting is paused */}
+      {ROADMAP_POSTING_OPEN ? (
       <section className="lp-kit home-landing-section" aria-labelledby="roadmap-closing-heading">
         <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner home-landing-section__inner--closing`}>
           <h2 id="roadmap-closing-heading" className="heading home-landing-section__closing-title text-center">
@@ -141,6 +145,7 @@ export default async function OpenRoadmapPage() {
           </div>
         </div>
       </section>
+      ) : null}
 
       <LpFooter />
     </main>

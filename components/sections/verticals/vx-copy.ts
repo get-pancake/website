@@ -73,7 +73,7 @@ export const VX_DEMO = {
   tablistAria: "Pancake, step by step",
   tabs: [
     { key: "brief", num: "01", label: "Play", title: "Tell Pancake who to reach.", body: "It builds the Play and runs its first search." },
-    { key: "leads", num: "02", label: "Leads", title: "Wake up to warm leads.", body: "New leads land by 8:30 AM, each with the reason it fits." },
+    { key: "leads", num: "02", label: "Leads", title: "Warm leads keep coming.", body: "Every lead shows why it fits." },
     { key: "outreach", num: "03", label: "Sequence", title: "A personal message for every lead.", body: "Pancake warms up each lead, then writes as you." },
     { key: "slack", num: "04", label: "Slack", title: "Approve from Slack.", body: "New leads post to your channel. Approve or reject in one click." },
   ],

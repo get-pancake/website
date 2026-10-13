@@ -17,6 +17,8 @@ type Props = {
   idea: RoadmapIdea | null;
   voted: boolean;
   canDelete: boolean;
+  /** False while visitor posting is paused (ROADMAP_POSTING_OPEN): the list shows, the form doesn't. */
+  canComment: boolean;
   onVote: () => void;
   onDelete: () => void;
   onClose: () => void;
@@ -53,6 +55,7 @@ export function IdeaDetailModal({
   idea,
   voted,
   canDelete,
+  canComment,
   onVote,
   onDelete,
   onClose,
@@ -201,7 +204,7 @@ export function IdeaDetailModal({
           {loading ? (
             <p className="roadmap-comments__empty">Loading…</p>
           ) : comments.length === 0 ? (
-            <p className="roadmap-comments__empty">No comments yet. Start the discussion.</p>
+            <p className="roadmap-comments__empty">{canComment ? "No comments yet. Start the discussion." : "No comments yet."}</p>
           ) : (
             <ul className="roadmap-comments__list">
               {comments.map((c) => (
@@ -227,6 +230,7 @@ export function IdeaDetailModal({
             </ul>
           )}
 
+          {canComment ? (
           <form className="roadmap-comment-form" onSubmit={submitComment}>
             <textarea
               className="textarea roadmap-comment-form__body"
@@ -270,6 +274,7 @@ export function IdeaDetailModal({
               </p>
             ) : null}
           </form>
+          ) : null}
         </section>
       </div>
     </div>

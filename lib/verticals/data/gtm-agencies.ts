@@ -138,7 +138,7 @@ export const gtmAgencies: VerticalConfig = {
       {
         kind: "competitor",
         title: "Followers of rival agencies",
-        body: "Founders who like or comment on a rival agency’s posts show up in your morning leads.",
+        body: "Founders who like or comment on a rival agency’s posts show up in your leads.",
         watching: ["Pipeforge Growth", "Meridell Demand"],
       },
     ],
