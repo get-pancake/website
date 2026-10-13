@@ -310,8 +310,9 @@ export const pricingV2 = {
  * "Take it from them" — the proof under the plan card (PricingProof.tsx): what
  * customers got, in their own figures and words. The same four as the
  * homepage's testimonials, whose file holds each one's source and the
- * founder's sign-off (components/sections/landing-v3/lp-bento-data.ts: kpiC,
- * kpiB, quoteD, quoteC): keep the two in step. The title is the homepage's
+ * founder's sign-off (components/sections/landing-v3/lp-bento-data.ts, the
+ * Kinro "15" and Praxis "10+" figures and the Vector Legal and AgentMail
+ * quotes): keep the two in step. The title is the homepage's
  * (BENTO_TITLE). `logo` is the marquee's file in public/logos/customers, with
  * its width / height.
  */
@@ -358,7 +359,7 @@ export const pricingProof = {
 export const pricingLevels = {
   title: "More credits, more leads.",
   lede: `A lead takes about ${CREDITS_PER_LEAD.low} to ${CREDITS_PER_LEAD.high} credits of research. A narrow audience costs more, and Pancake shows the real estimate before a search runs.`,
-  columns: { credits: "Monthly credits", leads: "Leads a month", price: "Price" },
+  columns: { credits: "Monthly credits", leads: "Leads a month", price: "Price", saving: "Saving" },
   leads: (range: string) => `About ${range}`,
   perMonth: "/ month",
   note: `A work email is ${WORK_EMAIL_CREDITS} credits more, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.`,

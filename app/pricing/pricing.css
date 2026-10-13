@@ -481,9 +481,20 @@
 .lv2-levels .lv2-levels-price strong {
   font-weight: 700;
 }
-.lv2-levels .lv2-levels-price .badge {
-  margin-left: 0.75rem;
-  vertical-align: 0.1em;
+.lv2-levels .lv2-levels-price {
+  white-space: nowrap;
+}
+/* the saving's own column: every badge starts on the same line, and the
+   cell is only as wide as the longest one */
+.lv2-levels .lv2-levels-table .lv2-levels-save {
+  padding-right: 0;
+  white-space: nowrap;
+  width: 1%;
+}
+/* every badge as wide as the longest, so both edges line up */
+.lv2-levels .lv2-levels-save .badge {
+  display: flex;
+  justify-content: center;
 }
 .lv2-levels .lv2-levels-note {
   color: var(--subtle-text);
@@ -525,7 +536,7 @@
   .lv2-levels .lv2-levels-price {
     text-align: right;
   }
-  .lv2-levels .lv2-levels-price .badge {
+  .lv2-levels .lv2-levels-table .lv2-levels-save {
     display: none;
   }
 }
