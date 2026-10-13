@@ -2,6 +2,8 @@
 
 import { gsap } from "@/lib/gsap";
 
+import { registerTxtPlugin } from "./lp-gsap-txt";
+
 import {
   S1_HUBS,
   S1_JIT,
@@ -442,8 +444,12 @@ function buildS2(root: HTMLElement): BuiltStep {
   const add = $(".lp-s2-bar-add");
   const plays = $$(".lp-s2-play");
   const spark = $<SVGPathElement>(".lp-s2-play-spark path");
-  // the ground's second colour is the token's, read once (the chat's is steps.css's rest)
-  const white = getComputedStyle(root).getPropertyValue("--lp-ink-0").trim() || "#ffffff";
+  const found = plays[0]?.querySelector<HTMLElement>(".lp-s2-play-val") ?? null;
+  const foundTo = found ? Number(found.textContent) || 0 : 0;
+  if (found && foundTo) {
+    registerTxtPlugin();
+    gsap.set(found, { txt: "0" });
+  }
   // rest poses that carry a half pixel as a transform (steps.css .lp-sx-leads, .lp-s2-bar)
   const leadsX = Number(gsap.getProperty(leads, "x")) || 0;
   const barY = Number(gsap.getProperty(bar, "y")) || 0;
@@ -489,10 +495,9 @@ function buildS2(root: HTMLElement): BuiltStep {
   tl.to(hover, { backgroundColor: "rgba(0,0,0,0.08)", duration: 0.1, ease: "power1.out" }, T.click1);
   tl.to(hover, { backgroundColor: "rgba(0,0,0,0.04)", duration: 0.25, ease: "power1.out" }, T.click1 + 0.1);
 
-  /* — f4 · the chat leaves, the ground turns white, the draft takes shape — */
+  /* — f4 · the chat leaves, the draft takes shape (the ground stays the card's cream) — */
   tl.to(chat, { autoAlpha: 0, y: S2_CHAT.scrollY - 10, duration: 0.26, ease: "power2.in" }, T.chatOut);
   tl.to(hand, { autoAlpha: 0, y: S2_HAND.f3.y - 10, duration: 0.26, ease: "power2.in" }, T.chatOut);
-  tl.to(bg, { backgroundColor: white, duration: 0.3, ease: "power1.inOut" }, T.chatOut);
   const rise = { autoAlpha: 1, y: 0, duration: 0.38, ease: "power3.out", immediateRender: false };
   tl.fromTo(draftHead, { autoAlpha: 0, y: 10 }, rise, T.draftHead);
   tl.fromTo(draftCard, { autoAlpha: 0, y: 10 }, rise, T.draftCard);
@@ -559,6 +564,12 @@ function buildS2(root: HTMLElement): BuiltStep {
     );
   });
   tl.to(spark, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, T.spark);
+  // the first Play's leads count up as its card lands (the figure is the markup's own)
+  if (found) {
+    for (let i = 1; i <= 6; i++) {
+      tl.to(found, { txt: String(Math.round((foundTo * i) / 6)), duration: 0.001, ease: "none" }, T.play1 + 0.12 + (i - 1) * 0.07);
+    }
+  }
   tl.addLabel("f8", T.f8);
   tl.set({}, {}, T.end); // the Play card holds
 
@@ -621,8 +632,6 @@ function buildS3(root: HTMLElement): BuiltStep {
   const calendar = $(".lp-s3-card");
   if (conns.length !== 3) throw new Error("lp-step: s3 connectors out of sync");
 
-  // the ground's second colour is the token's, read once (never a second name for #fafaf8)
-  const threadBg = getComputedStyle(root).getPropertyValue("--lp-dive-stage-bg").trim() || "#fafaf8";
   // the message's glyph edges, measured from the live text (weight 500, its typing face)
   const glyphs = measureGlyphs(msg);
   if (!glyphs.length) throw new Error("lp-step: s3 message has no glyphs");
@@ -633,9 +642,8 @@ function buildS3(root: HTMLElement): BuiltStep {
 
   tl.addLabel("f1", 0);
 
-  /* — f1 → f2 · the table leaves, the ground turns to the thread's; the lead, then her message card — */
+  /* — f1 → f2 · the table leaves; the lead, then her message card (same cream ground) — */
   tl.to(leads, { autoAlpha: 0, y: -8, duration: 0.26, ease: "power2.in" }, T.leadsOut);
-  tl.to(bg, { backgroundColor: threadBg, duration: 0.3, ease: "power1.inOut" }, T.leadsOut);
   tl.fromTo(leadCard, { autoAlpha: 0, y: 12 }, rise, T.lead);
   tl.fromTo(conns[0], { scaleY: 0 }, grow, T.conn1);
   tl.fromTo(msgCard, { autoAlpha: 0, y: 12 }, rise, T.message);

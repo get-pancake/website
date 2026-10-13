@@ -210,11 +210,11 @@ export const SX_LEADS_ROW_IN = [0, 0.1, 0.2, 0.3, 0.34, 0.42];
 /* ── step 02 · say who you want → one question → a Play takes shape → leads → the Play ── */
 
 export const S2_CHAT = {
-  prompt: "Find people who match our target persona",
+  prompt: "Find founders who just raised a seed round",
   worked: "Worked across 5 steps",
   /** three lines at 338px (Figma's count) */
   answer:
-    "Happy to set that up: product marketers at B2B SaaS companies in the United States. One thing decides who qualifies: the size of the company.",
+    "Happy to set that up: founders of B2B startups in the United States that just raised. One thing decides who qualifies: the size of the company.",
   /** the thread's scroll between frames 1 and 2 */
   scrollY: -250.14,
 };
@@ -237,8 +237,8 @@ export const S2_DRAFT = {
       At most · When). Figma's fourth row repeats "Who" with a check next to "Not decided
       yet" (a copy-paste): it is "When", undecided. */
   slots: [
-    { label: "Who", value: "Product marketers at US SaaS startups" },
-    { label: "How we find them", value: "Matching your ideal customer" },
+    { label: "Who", value: "Founders and marketing leads" },
+    { label: "How we find them", value: "A seed round, raised this month" },
     { label: "At most", value: "25" },
     { label: "When", value: null },
   ] as readonly S2Slot[],
@@ -260,8 +260,9 @@ export type S2Play = { state: string; name: string; summary: string; figures: re
 export const S2_PLAYS: readonly [S2Play, S2Play] = [
   {
     state: "Active",
-    name: "Product marketers at US SaaS startups",
-    summary: "Find Product Marketing Manager, Director of PMM, and 5 more profiles at companies in Software…",
+    /* two lines, as the card is drawn (the hero demo's Play, said in full) */
+    name: "Funded startups hiring a marketing lead",
+    summary: "Find Founder, CEO, Head of Marketing, and 2 more profiles at startups that just raised…",
     figures: [
       { value: "13", label: "leads found", status: "final" },
       { value: "—", label: "reply rate", status: "placeholder" },
@@ -270,8 +271,8 @@ export const S2_PLAYS: readonly [S2Play, S2Play] = [
   },
   {
     state: "Active",
-    name: "SaaS companies hiring a product marketer",
-    summary: "Find VP Marketing, Head of Growth, and 3 more profiles at companies in Software…",
+    name: "Startups posting about a rebrand",
+    summary: "Find Founder, Head of Brand, and 3 more profiles at companies planning a rebrand…",
     figures: [
       { value: "24", label: "leads found", status: "final" },
       { value: "—", label: "reply rate", status: "placeholder" },

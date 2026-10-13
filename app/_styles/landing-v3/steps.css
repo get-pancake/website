@@ -597,8 +597,8 @@
   --lp-sx-line: #e2e2e2; /* the storyboards' hairline (no kit token has it: ink-50 is #ddcfcd) */
   --lp-sx-shadow: 0 4px 32px rgba(48, 0, 44, 0.08); /* Figma drop shadow #30002c 8%, 0/4, blur 32 */
 }
-/* the stage's ground, which the timeline recolours (chat #fafaf8 ↔ white) and, in
-   step 03, fades away so the cream card shows under the calendar. It overshoots the
+/* the stage's ground (the card cream since 2026-10-13: the timelines no longer recolour
+   it; in step 03 it still fades away under the calendar, cream on cream). It overshoots the
    stage by its own height above and below: a tablet row stretches the media card
    around the centred stage, and the card clips. */
 .lp-sx-bg {
@@ -608,11 +608,12 @@
   right: 0;
   top: -426px;
 }
-.lp-step-stage--s2 .lp-sx-bg {
-  background-color: var(--lp-dive-stage-bg);
-}
+/* One ground for the whole take, the card's own cream (founder 2026-10-13: "background
+   should be in the right color cream"). The storyboards changed it from scene to scene
+   (the chat's #fafaf8, then white), which also read as a cut. */
+.lp-step-stage--s2 .lp-sx-bg,
 .lp-step-stage--s3 .lp-sx-bg {
-  background-color: var(--lp-ink-0);
+  background-color: var(--lp-card-cream);
 }
 
 /* ── shared atoms ── */
