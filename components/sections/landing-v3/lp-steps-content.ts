@@ -25,6 +25,13 @@
  *   "Labels in 2nd level dots", S1_HUBS[].label) and its alt says so. Rows 02 and 03 carried
  *   the red note "Content (still tbd)" then (empty art cards, V1 copy): production kept its
  *   shipped copy and animations, and each row's art became an explicit slot (below).
+ * - 2026-10-13 (a first-time reader's review, forwarded by the founder: "Comment tu définis un
+ *   Play ? Important d'être explicite en quelques mots, c'est très central", and "Run it from
+ *   Claude or Codex: très important, je le mentionnerais plus haut"): step 02's body opens on
+ *   what a Play is, in the H1's words (a GTM idea, put to work), and names Claude and Codex as
+ *   places to start one, where until then the page first named them in its last story. The
+ *   three facts it carried stay: it keeps searching, you approve each lead, Pancake writes
+ *   under your name.
  * - 2026-10-11 (Figma V2, "How it works" storyboards; the notes now read "Deltas: New" and
  *   "Deltas: New intro before calendar"): the designer delivered both rows. Step 02 has a new
  *   title, "Say who you want. / Pancake builds the Play." (V2 4911:480), and a new animation
@@ -90,7 +97,7 @@ export const STEPS: readonly StepContent[] = [
     num: "02",
     // V2 4911:480 (2026-10-11); "\n" = its desktop break, phones wrap it to three lines
     title: "Say who you want.\nPancake builds the Play.",
-    body: "Each Play keeps searching for people who fit. You approve each one. Pancake writes to them under your name.",
+    body: "A Play is one GTM idea put to work: it keeps searching for people who fit. Start one in Pancake, Claude or Codex. You approve each lead, then Pancake writes to them under your name.",
     art: [{ kind: "anim", variant: "s2", status: "final" }],
     // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
     alt: "Animation: in the Pancake chat, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, answers, and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",

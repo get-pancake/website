@@ -587,9 +587,19 @@
     right: 0;
     top: -32px;
   }
+  /* One line wherever it fits: "A personal message for every lead" needs 317 px and has 327 at
+     375. The artboard keeps the desktop column's break, which made it the only title of the four
+     on two lines (a tester, 2026-10-13: "ce serait cool que le sous-titre tienne en 1 ligne").
+     Narrower phones keep the drawn break. */
   .lp-dive[data-lp-phone="stack"] .lp-dive-tab__title {
     font-weight: 600;
-    white-space: pre-line; /* "A personal message for" / "every lead", as drawn */
+    text-wrap: balance;
+    white-space: normal;
+  }
+  @media (max-width: 374px) {
+    .lp-dive[data-lp-phone="stack"] .lp-dive-tab__title {
+      white-space: pre-line; /* "A personal message for" / "every lead", as drawn */
+    }
   }
   .lp-dive[data-lp-phone="stack"] .lp-dive-tab__fold {
     grid-template-rows: 1fr;

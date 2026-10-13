@@ -151,10 +151,26 @@
   .lp-agents-wall { height: 960px; }
   .lp-agents-wall__slot { top: 96px; }
 }
+/* Phones: the card is nearly as wide as the screen, so the wall has no sides left to show behind
+   it. The four lines that peeked above the card and the three below read as a display bug, one
+   of them cut in half by the card's edge (a tester's screenshot, 2026-10-13). So the wall is
+   recomposed in flow there: the card first, then the wall under it, which starts and ends on a
+   whole line (14 rows of 15 px). */
 @media (max-width: 767px) {
-  .lp-agents-wall { height: 720px; }
-  .lp-agents-wall .lp-agents-wall__code { font-size: var(--lp-text-sm); line-height: 15px; width: calc(100% - 32px); }
-  .lp-agents-wall__slot { top: 64px; width: calc(100% - 32px); }
+  /* the view's own show rule (display: block, top of this file) outranks a bare class */
+  .lp-audience-page[data-audience="agents"] > .lp-agents-wall { display: flex; flex-direction: column; }
+  .lp-agents-wall { height: auto; padding-top: 32px; }
+  .lp-agents-wall__slot { order: 1; position: relative; top: auto; width: calc(100% - 32px); }
+  .lp-agents-wall .lp-agents-wall__code {
+    font-size: var(--lp-text-sm);
+    line-height: 15px;
+    margin-top: 20px;
+    max-height: calc(14 * 15px);
+    order: 2;
+    overflow: hidden;
+    position: static;
+    width: calc(100% - 32px);
+  }
 }
 /* the title line fits the card's narrowest puzzle (254 at 320) */
 @media (max-width: 359px) {

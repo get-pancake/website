@@ -39,8 +39,11 @@
 // scaled as pixels (demo.css); the island writes the measured scale (--lp-demowin-fit on the
 // stage; CSS has the same quotient as a trig fallback) and takes the chip link out of the tab
 // order (the card is a picture there). PHONE_SOLO (decision §9 F2): no pills and no Claude &
-// Codex view on phones, so the Pancake view plays ONCE and holds its end picture (nothing
-// rewinds on screen, no loop), and a visitor who shrinks the window on the Claude view is
+// Codex view on phones, so the Pancake view plays once and holds its end picture (nothing
+// rewinds on screen, no loop) for as long as any of the stage shows. Once the stage has left
+// the screen it is re-armed, so it plays again each time the visitor comes back to it (a
+// first-time reader on a phone, 2026-10-13: "normal que ces parties ne soient pas dynamiques
+// en navigation mobile ?"). A visitor who shrinks the window on the Claude view is
 // brought back to the Pancake view. With no pills the stage is not a tab panel there: its
 // role, tab stop and label are dropped (state `solo`, React-owned), and the chip paragraph is
 // aria-hidden (the mock's role="img" label describes the card) — verifiers M5 / TA-05.
@@ -479,6 +482,16 @@ export function LpDemoPlayer({
         const denom = Math.max(1, Math.min(h, vh));
         section.toggleAttribute("data-inview", e.isIntersecting);
         x.inView = e.isIntersecting && e.intersectionRect.height / denom >= 0.35;
+        // Phones (solo): once its take is over and the whole stage has left the screen, the view
+        // is re-armed to its first frame, hidden as every re-arm is. A visitor who scrolls back
+        // to it sees it play again instead of finding a still for the rest of the visit.
+        if (!e.isIntersecting && x.solo && x.soloDone && !x.reduced && !x.seeking) {
+          x.soloDone = false;
+          x.t = 0;
+          if (x.dirty[0]) rebuildRef.current(0);
+          render(0, 0);
+          setFills();
+        }
         sync();
       },
       { threshold: thresholds },
