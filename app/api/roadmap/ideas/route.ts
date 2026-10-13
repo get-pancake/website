@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { ROADMAP_POSTING_OPEN, isRoadmapTag } from "@/components/sections/roadmap/roadmap-data";
 import { isAdmin } from "@/lib/auth/admin";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { hasApprovedOrigin } from "@/lib/request-origin";
 import { mapIdeaRow } from "@/lib/roadmap/ideas";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isServiceConfigured } from "@/lib/supabase/env";
@@ -13,12 +14,16 @@ const IDEA_SELECT = "id, title, description, tag, status, author_name, vote_coun
 
 /**
  * Create an idea. Open to anyone (no login), guarded by:
- *   1. a honeypot field (`website`) — bots fill it, humans never see it
- *   2. a per-IP rate limit (5 / 10 min)
- *   3. server-side validation
+ *   1. the origin allow-list (lib/request-origin.ts), like every roadmap write
+ *   2. a honeypot field (`website`) — bots fill it, humans never see it
+ *   3. a per-IP rate limit (5 / 10 min)
+ *   4. server-side validation
  * Writes go through the service-role client (anon role has no insert rights).
  */
 export async function POST(request: Request) {
+  if (!hasApprovedOrigin(request)) {
+    return NextResponse.json({ error: "Request not allowed." }, { status: 403 });
+  }
   // Paused for visitors (ROADMAP_POSTING_OPEN); a signed-in admin still posts. Checked first, so
   // a paused board answers 403 whatever the backend's state.
   if (!ROADMAP_POSTING_OPEN && !(await isAdmin())) {
