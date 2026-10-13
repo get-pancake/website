@@ -34,7 +34,7 @@ type Props = {
   film: {
     mp4: string;
     mp4Small?: string;
-    preview: { mp4: string; mp4Large?: string };
+    preview: { mp4: string; mp4Large?: string; portrait?: { mp4: string; mp4Hi?: string } };
     captions: { src: string; srcLang: string; label: string };
   };
   /** the sound view's poster (the largest still): no black box while the film loads */
@@ -59,6 +59,14 @@ const LARGE_TILE = 520;
  *  4 × on a 3x screen and the picture goes soft the moment it replaces the poster. The small tile
  *  (248 at 402) and a 320-wide phone's large one (386) stay light. */
 const LARGE_TILE_PHONE = 400;
+/** A tile narrower than this (width / height) plays the film's PORTRAIT preview when it has one:
+ *  the cut cropped to the window such a tile shows (806 × 1080 of the frame, 0.746), so the tile
+ *  gets every pixel of the file instead of the middle of a landscape one (the Kinro tile was soft:
+ *  403 × 540 video px over a 560 × 750 card). Centred in the tile (bento.css [data-crop]). */
+const PORTRAIT_TILE = 0.8;
+/** …and its full-resolution encode on a desktop tile drawn taller than this (device px, capped at
+ *  2x): a 750 px tile on a 2x screen. Phones keep the lighter one. */
+const PORTRAIT_HI_TILE = 900;
 /** Fired on `document` when a tile's film opens or closes, so the OTHER tile's preview follows
  *  (two films share the section since the Kinro cut landed). */
 const FILM_EVENT = "lp-bento-film";
@@ -81,6 +89,8 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
   const [canOpen, setCanOpen] = useState(false);
   const [paused, setPaused] = useState(false);
   const [src, setSrc] = useState(film.preview.mp4);
+  /** the mounted preview is the portrait crop (its own framing: centred) */
+  const [portrait, setPortrait] = useState(false);
   /** the sound view's encode: the film, or its lighter cut for a visitor who asked to save data */
   const [filmSrc, setFilmSrc] = useState(film.mp4);
   /** the dialog is open: its <video controls> is mounted */
@@ -118,14 +128,20 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
   /** Mount the preview with the encode that fits the tile as it is drawn now. */
   const attach = useCallback(() => {
     const root = rootRef.current;
-    if (root && film.preview.mp4Large) {
+    const crop = film.preview.portrait;
+    if (root && root.clientHeight > 0) {
       const phone = matchMedia("(max-width: 767px)").matches;
       const drawn = root.clientHeight * Math.min(window.devicePixelRatio || 1, 2);
-      const large = phone ? root.clientHeight > LARGE_TILE_PHONE : drawn > LARGE_TILE;
-      setSrc(large ? film.preview.mp4Large : film.preview.mp4);
+      if (crop && root.clientWidth / root.clientHeight < PORTRAIT_TILE) {
+        setSrc(!phone && crop.mp4Hi && drawn > PORTRAIT_HI_TILE ? crop.mp4Hi : crop.mp4);
+        setPortrait(true);
+      } else if (film.preview.mp4Large) {
+        const large = phone ? root.clientHeight > LARGE_TILE_PHONE : drawn > LARGE_TILE;
+        setSrc(large ? film.preview.mp4Large : film.preview.mp4);
+      }
     }
     setAttached(true);
-  }, [film.preview.mp4, film.preview.mp4Large]);
+  }, [film.preview.mp4, film.preview.mp4Large, film.preview.portrait]);
 
   /** whatever is mounted when the observers go (unmount, a prop change) stops */
   const stop = useCallback(() => {
@@ -248,6 +264,7 @@ export function LpBentoVideo({ film, filmPoster, title, labels, style, children 
               if (node) node.defaultMuted = node.muted = true;
             }}
             className="lp-bento__video"
+            data-crop={portrait ? "portrait" : undefined}
             src={src}
             muted
             loop

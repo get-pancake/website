@@ -23,17 +23,18 @@ import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
  * 5024:10543). Owner: bento package. Between the CTA and pricing, a DIRECT <section
  * class="lp-bento"> child of main.lp, so the agents view hides it with every other section.
  *
- * Content: the Kinro and Praxis testimonials (lp-bento-data.ts), all seven cards final since
- * 2026-10-12. Gating (lib/placeholders.ts): production renders only "final" cards, so it may hold
+ * Content: the Kinro and Praxis testimonials and AgentMail's quote (lp-bento-data.ts), all eight
+ * cards final. Gating (lib/placeholders.ts): production renders only "final" cards, so it may hold
  * a partial set; dev / preview fill the other slots with their placeholders (marked
  * data-placeholder; none today). Null when nothing is left, and in production while BENTO_LIVE
  * (lp-bento-data.ts) is off. `placeholders` and `live` are injectable for tests
  * (scripts/placeholder-gate.test.mjs renders the set that goes live).
  *
  * Layout (all numbers come from resolveBento, CSS in bento.css, every card metric in `--u`):
- *   - all seven cards: the artboard. Desktop 4 × 3 on the 1136 column (`--u` = 1 px at ≥ 1200,
- *     the column / 1136 at 1025–1199), tablets two columns, phones the mobile artboard's
- *     two-column stack (`--u` = the column / 560);
+ *   - all eight cards: the full grid. Desktop four rows on the 1136 column's 12 columns (`--u` =
+ *     1 px at ≥ 1200, the column / 1136 at 1025–1199), tablets two columns, phones the mobile
+ *     artboard's two-column stack (`--u` = the column / 560). The artboard draws seven cards; the
+ *     grid for eight is lp-bento-data.ts BENTO_SLOT_IDS;
  *   - a partial set: rows on a 12-column desktop grid (data-layout="rows", spans from the server),
  *     the same two-column stack below 1025 with a lone narrow card widened (data-solo).
  *
@@ -116,8 +117,8 @@ function BentoSlot({ placed, full }: { placed: BentoPlaced; full: boolean }) {
 
 const round = (n: number, digits = 2) => Number(n.toFixed(digits));
 
-/** The artboard's video tiles, desktop px. */
-const FULL_TILE = { videoLg: [560, 750], videoSm: [272, 375] } as const;
+/** The full grid's video tiles, desktop px (the small one is 6 columns wide since the eighth card). */
+const FULL_TILE = { videoLg: [560, 750], videoSm: [560, 375] } as const;
 
 /**
  * Poster `sizes`. The poster is cover-fitted, so it is drawn as wide as the tile or as the

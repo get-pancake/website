@@ -19,7 +19,7 @@
    never above 1px: the stack stops growing at its 560 design width.
 
    Layouts (lp-bento-data.ts resolveBento decides, the markup carries it):
-     data-layout="full"  all seven cards = the artboard (grid areas);
+     data-layout="full"  all eight cards = the full grid (grid areas);
      data-layout="rows"  a partial set = rows on 12 columns, each card's span,
                          centred start and row height set inline by the server;
      the two-column stack (phones always, tablets with a partial set): order,
@@ -44,17 +44,17 @@
    chrome is added here. `.lp >` outranks foundation.css's older per-width
    values. 307 = 93.34 + 68.80 + 80.44 + 64.42 (title, margins, paddings). */
 .lp > .lp-bento {
-  contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1141) * 1px);
+  contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1522) * 1px);
 }
 @media (min-width: 1025px) and (max-width: 1199px) {
   .lp > .lp-bento {
-    contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1141) * (100vw - 64px) / 1136);
+    contain-intrinsic-size: auto calc(307px + var(--lp-bento-grid-u, 1522) * (100vw - 64px) / 1136);
   }
 }
 @media (min-width: 768px) and (max-width: 1024px) {
   .lp > .lp-bento {
     /* 72 + 68.80 + 56 + grid + 72 */
-    contain-intrinsic-size: auto calc(268.8px + var(--lp-bento-tablet-px, 1913) * 1px);
+    contain-intrinsic-size: auto calc(268.8px + var(--lp-bento-tablet-px, 2298) * 1px);
   }
 }
 @media (max-width: 767px) {
@@ -62,7 +62,7 @@
     /* 81 + 41 + 41 + stack + 56; the stack's rows are in --u (the frame / 560,
        the frame being the column or --lp-bento-stack-max), its gaps 8px */
     contain-intrinsic-size: auto
-      calc(219px + var(--lp-bento-flow-u, 2234) * min(100vw - 32px, var(--lp-bento-stack-max)) / 560 + var(--lp-bento-flow-gaps, 4) * 8px);
+      calc(219px + var(--lp-bento-flow-u, 2603) * min(100vw - 32px, var(--lp-bento-stack-max)) / 560 + var(--lp-bento-flow-gaps, 5) * 8px);
   }
 }
 
@@ -109,18 +109,26 @@
   }
 }
 
-/* ── ≥ 768, all seven cards: the artboard ── */
+/* ── ≥ 768, all eight cards: the full grid ──
+   The artboard draws seven (vl vl qa qa / vl vl ka kb / kc qb qb vs on four
+   columns). An eighth quote does not fit four columns (14 cells), so the
+   same cards sit on the artboard's 12 columns (80 + 16: 3 = its 272 card,
+   4 = 368, 6 = its 560 card), in rows it or ROW_SHAPES already hold: the
+   tall film beside two quotes, the three figures across, a quote beside the
+   small film. Founder 2026-10-13; not in the Figma. */
 @media (min-width: 768px) {
   .lp-bento__grid[data-layout="full"] {
     grid-template-areas:
-      "vl vl qa qa"
-      "vl vl ka kb"
-      "kc qb qb vs";
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(375 * var(--u));
+      "vl vl vl vl vl vl qa qa qa qa qa qa"
+      "vl vl vl vl vl vl qc qc qc qc qc qc"
+      "ka ka ka ka kb kb kb kb kc kc kc kc"
+      "qb qb qb qb qb qb vs vs vs vs vs vs";
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: calc(369 * var(--u)) calc(365 * var(--u)) calc(365 * var(--u)) calc(375 * var(--u));
   }
   .lp-bento__grid[data-layout="full"] > [data-slot="videoLg"] { grid-area: vl; }
   .lp-bento__grid[data-layout="full"] > [data-slot="quoteA"] { grid-area: qa; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="quoteC"] { grid-area: qc; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiA"] { grid-area: ka; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiB"] { grid-area: kb; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiC"] { grid-area: kc; }
@@ -236,7 +244,7 @@
      the column edge. */
   padding-inline-end: 0.25em;
 }
-.lp-bento__card[data-slot="quoteB"] .lp-bento__quote p {
+.lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__quote p {
   padding-inline: 0.25em 0;
 }
 .lp-bento__by,
@@ -253,13 +261,15 @@
 }
 /* quoteB: the column hugs the right edge (Figma primary MAX: card-rel x =
    560 − 48 − 335 = 177), items and text right-aligned (counter MAX). Its
-   badge stays inside the column: the wordmark moves left by the badge. */
-.lp-bento__card[data-slot="quoteB"] .lp-bento__col {
+   badge stays inside the column: the wordmark moves left by the badge.
+   quoteC (the eighth card) is quoteB's composition: it sits under quoteA,
+   whose blob is on the other side. */
+.lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__col {
   align-items: flex-end;
   margin-left: auto;
   text-align: right;
 }
-.lp-bento__card[data-slot="quoteB"] .lp-bento__logo[data-yc] {
+.lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__logo[data-yc] {
   margin-right: calc(19.428 * var(--u));
 }
 
@@ -286,7 +296,7 @@
   width: calc(310.59 * var(--u));
   z-index: 0;
 }
-.lp-bento__card[data-slot="quoteB"] .lp-bento__portrait {
+.lp-bento__card:is([data-slot="quoteB"], [data-slot="quoteC"]) .lp-bento__portrait {
   height: calc(259.51 * var(--u));
   left: calc(-26.41 * var(--u));
   top: calc(-37.9 * var(--u)); /* bleeds 26.41 left, 37.9 above */
@@ -384,6 +394,12 @@
   .lp-bento__video {
     object-position: 50% 50%;
   }
+}
+/* A portrait tile's own preview (LpBentoVideo PORTRAIT_TILE): the cut is already cropped to
+   the window above (from `keep`, 806 of the frame's 1440), so it is simply centred. After the
+   three rules above and one attribute heavier: it wins in every tile it plays in. */
+.lp-bento__video[data-crop="portrait"] {
+  object-position: 50% 50%;
 }
 /* A soft plum veil behind the white wordmark. Not in Figma: the artboard's
    stills are dark where its mark sits, real footage is not (the Praxis cut
@@ -648,16 +664,17 @@ body:has(.lp-bento__dialog[open]) {
     --u: 1px;
     gap: 16px;
   }
-  /* all seven: the quotes full width, the large video beside two KPI cards */
+  /* all eight: the quotes full width, the large video beside two KPI cards */
   .lp-bento__grid[data-layout="full"] {
     grid-template-areas:
       "qa qa"
       "vl ka"
       "vl kb"
-      "qb qb"
-      "kc vs";
+      "qc qc"
+      "kc vs"
+      "qb qb";
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: 369px 365px 365px 375px 375px;
+    grid-template-rows: 369px 365px 365px 369px 375px 375px;
   }
   /* a partial set: the stack */
   .lp-bento__grid[data-layout="rows"] {

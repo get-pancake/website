@@ -21,7 +21,7 @@
  *   preview     the same sections still render, and the placeholders that exist are marked.
  *   both        the bento's server markup can play nothing (its <video> elements are created by
  *               the client, in view and muted, or in the sound dialog after a click); every
- *               subset of the bento's seven slots lays out without a hole; every film has its
+ *               subset of the bento's eight slots lays out without a hole; every film has its
  *               muted preview clip (under 600 kB) and its captions track; every bento file the
  *               markup or the data names exists under public/, and public/lp/bento/ holds no
  *               file the bento does not name (an unreleased film must not sit there unused); a
@@ -91,7 +91,7 @@ function renderAll() {
   const names = (cards) => [...new Set(cards.flatMap(({ card }) => (card.kind === "quote" ? [card.person.name] : [])))];
   const finalNames = names(bentoCards.filter(({ card }) => card.status === "final"));
 
-  // every subset of the seven slots (each filled with its card, as final) must lay out: the
+  // every subset of the eight slots (each filled with its card, as final) must lay out: the
   // two-column stack ends on whole rows, and each desktop row fills 12 columns or is one centred card
   const subsetProblems = [];
   const cardOf = Object.fromEntries(bentoCards.map((c) => [c.id, { ...c.card, status: "final" }]));
@@ -224,7 +224,7 @@ function runTests() {
       assert.ok(!/interim/i.test(live), "an interim asset reached the live set");
       for (const name of out.bentoPlaceholderOnlyNames) assert.ok(!live.includes(name), `${name} is on placeholder cards only`);
       // every slot holds a final card: the live set is the designer's artboard, not a fallback row layout
-      if (out.bentoFinalSlots.length === out.bentoSlotCount) assert.equal(count(live, 'data-layout="full"'), 1, "seven final cards must render the full artboard");
+      if (out.bentoFinalSlots.length === out.bentoSlotCount) assert.equal(count(live, 'data-layout="full"'), 1, "a full set of final cards must render the full grid");
       else assert.equal(count(live, 'data-layout="full"'), 0, "a partial set must not claim the full artboard");
       // the sources story: its hub renders final nodes only, and it rests on the zoom only with a node
       assert.equal(withClass(s.storySources, "lp-src-node"), out.sourcesNodes.final);
@@ -258,7 +258,7 @@ function runTests() {
     assert.deepEqual(slotsOf(preview.sections.LpBento), [...preview.bentoAllSlots].sort(), "a preview fills every slot that has a card");
     // one mark per stand-in card, none on a final one. With no final card at all, a preview is all stand-ins
     assert.equal(count(preview.sections.LpBento, "data-placeholder"), preview.bentoAllSlots.length - preview.bentoFinalSlots.length);
-    // no stand-in card left (all seven are final since 2026-10-12): a preview shows exactly the set
+    // no stand-in card left (every card is final): a preview shows exactly the set
     // that goes live with BENTO_LIVE, so what is reviewed on a preview is what production will render
     if (preview.bentoFinalSlots.length === preview.bentoAllSlots.length) {
       assert.equal(preview.sections.LpBento, production.bentoLiveHtml, "with every card final, the preview and the live set must be the same markup");
@@ -293,10 +293,14 @@ function runTests() {
     for (const film of preview.bentoFilms) {
       assert.ok(film.preview?.mp4, `${film.id}: a film needs its muted preview clip (the tile never plays the film)`);
       assert.ok(film.captions?.src, `${film.id}: a film needs a captions track (WCAG 1.2.2)`);
-      for (const url of [film.mp4, film.mp4Small, film.preview.mp4, film.preview.mp4Large, film.captions.src]) if (url) named.add(url);
-      for (const url of [film.preview.mp4, film.preview.mp4Large]) {
+      const crop = film.preview.portrait;
+      for (const url of [film.mp4, film.mp4Small, film.preview.mp4, film.preview.mp4Large, crop?.mp4, crop?.mp4Hi, film.captions.src]) if (url) named.add(url);
+      for (const url of [film.preview.mp4, film.preview.mp4Large, crop?.mp4]) {
         if (url && existsSync(onDisk(url))) assert.ok(statSync(onDisk(url)).size < 600_000, `${url}: a preview clip stays under 600 kB`);
       }
+      // the portrait crop at the film's own resolution: only a large desktop tile on a 2x screen
+      // fetches it (LpBentoVideo PORTRAIT_HI_TILE), never a phone
+      if (crop?.mp4Hi && existsSync(onDisk(crop.mp4Hi))) assert.ok(statSync(onDisk(crop.mp4Hi)).size < 1_000_000, `${crop.mp4Hi}: the high-resolution preview stays under 1 MB`);
       if (existsSync(onDisk(film.captions.src))) assert.match(readFileSync(onDisk(film.captions.src), "utf8"), /^WEBVTT/, `${film.captions.src} is not a WebVTT file`);
     }
     for (const url of named) assert.ok(existsSync(onDisk(url)), `${url} is named by the bento but missing from public/`);
