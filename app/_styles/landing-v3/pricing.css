@@ -31,7 +31,30 @@
      overdrawn by the footer background; nav (40) and modals stay above */
   z-index: 1;
 }
+/* The art's ground until the art is drawn (2026-10-13). The cream the text
+   sits on is the rainbow's own cream disc: one drawing, and that drawing waits
+   for a script (the WebGL canvas, or the static rings under [data-lp-gl-off],
+   anim.css). Until then the block was black under dark text: 0.2 s on fast
+   wifi, 0.7 s on a 4G phone profile, 3 s on a slow connection, for good
+   without JavaScript (pancake.ai/#pricing, measured). So the wrapper paints a
+   plain cream disc itself, from the first paint: a gradient, nothing to
+   rasterise (the rings stay unpainted until they are needed, as anim.css
+   wants). It is a circle of r 1220 about the rings' common centre
+   (560.1, -421.95 on the 1654×1039 canvas, hence the percentages: the box
+   keeps that aspect at every width, so the ellipse stays that circle). The
+   five colour rings turn about that centre and the outermost, the yellow one,
+   never comes closer to it than 1236.1 at any angle of the loop (each ring
+   covers the next one's hole, see LpPancakes): the disc is under opaque ink
+   on every frame, so the finished picture is the same pixel for pixel. All
+   the text lies inside it (farthest corner, the checklist's: 1190). It ends
+   at y 798, above the section's bottom edge, so nothing of it reaches the
+   footer (LpPricing's note about an opaque backing). */
 .lp-price-art {
+  background-image: radial-gradient(
+    ellipse 73.7606% 117.4206% at 33.8634% -40.6112%,
+    #fbf6f1 99.9%,
+    rgb(251 246 241 / 0) 100%
+  );
   height: auto;
   left: 50%;
   pointer-events: none;
@@ -193,7 +216,9 @@
    art wrapper gets a black ground: the canvas's cream top paints over it,
    the band's underside reads black exactly like the desktop composition, and
    that black hands off seamlessly to the black footer (the wrapper's bottom
-   edge is a black-on-black cut). */
+   edge is a black-on-black cut). The cream disc above (.lp-price-art) stays
+   over that black ground: before the art is drawn the wrapper already shows
+   the cream top, not a black box under the text (2026-10-13). */
 @media (max-width: 1024px) {
   .lp-price {
     background: #fbf6f1;
@@ -243,7 +268,7 @@
     margin-top: 8px;
   }
   .lp-price-art {
-    background: #000;
+    background-color: #000;
     height: auto;
     margin-top: 32px;
     position: static;
