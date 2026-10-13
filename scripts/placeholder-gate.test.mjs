@@ -301,7 +301,8 @@ function runTests() {
       }
       // the portrait crop at the film's own resolution: only a large desktop tile on a 2x screen
       // fetches it (LpBentoVideo PORTRAIT_HI_TILE), never a phone
-      if (crop?.mp4Hi && existsSync(onDisk(crop.mp4Hi))) assert.ok(statSync(onDisk(crop.mp4Hi)).size < 1_000_000, `${crop.mp4Hi}: the high-resolution preview stays under 1 MB`);
+      // (1.6 MB since 2026-10-13: the founder asked for a sharper Praxis tile; 8 s of 806 × 1080)
+      if (crop?.mp4Hi && existsSync(onDisk(crop.mp4Hi))) assert.ok(statSync(onDisk(crop.mp4Hi)).size < 1_600_000, `${crop.mp4Hi}: the high-resolution preview stays under 1.6 MB`);
       if (existsSync(onDisk(film.captions.src))) assert.match(readFileSync(onDisk(film.captions.src), "utf8"), /^WEBVTT/, `${film.captions.src} is not a WebVTT file`);
     }
     for (const url of named) assert.ok(existsSync(onDisk(url)), `${url} is named by the bento but missing from public/`);

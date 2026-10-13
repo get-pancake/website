@@ -363,14 +363,18 @@ const BENTO_ENTRIES: BentoEntries = {
       film: {
         mp4: "/lp/bento/praxis-diana-960.mp4",
         mp4Small: "/lp/bento/praxis-diana-640.mp4",
-        /* portrait: the same frames cropped 538 × 720 from x 320 of the 960 web encode (=
-           focus.keepLeft 480 of 1440), the window of the large tile. Cut from the web encode, not
-           the master ("Testimonial Diana - 4 x1.09.mov" is not on disk): softer than Kinro's was.
-           Recipe: artifacts/…/bento-real/tools/encode-preview-from-web-mp4.sh. */
+        /* All four previews are cut from the MASTER ("Testimonial Diana - 4 x1.09.mov",
+           1440 × 1080) since 2026-10-13 (founder: "put the diana video preview in higher
+           quality"); until then they were second-generation cuts of the 960 web encode, and the
+           large tile on a 2x screen stretched 720 lines over 1500. portrait: the frame's 806 px
+           from x 480 (= focus.keepLeft), the window of the large tile, at 538 × 720 and, for a
+           2x screen, at the master's own 806 × 1080 (`mp4Hi`).
+           Recipes: artifacts/…/bento-real/tools/encode-preview-portrait-mp4.sh (portrait) and
+           encode-preview-mp4.sh (landscape), frames 403–641. */
         preview: {
           mp4: "/lp/bento/praxis-diana-preview-480.mp4",
           mp4Large: "/lp/bento/praxis-diana-preview-720.mp4",
-          portrait: { mp4: "/lp/bento/praxis-diana-preview-portrait-720.mp4" },
+          portrait: { mp4: "/lp/bento/praxis-diana-preview-portrait-720.mp4", mp4Hi: "/lp/bento/praxis-diana-preview-portrait-1080.mp4" },
         },
         captions: { src: "/lp/bento/praxis-diana.en.vtt", srcLang: "en", label: "English" },
       },
