@@ -133,6 +133,31 @@ const cropToDrop = (data: LottieData, o: Orientation): LottieData | null => {
   return { ...data, w: crop.w, h: crop.h, layers: [copy] };
 };
 
+/**
+ * The black drop (founder 2026-10-13: "got a black drop in the bottle but don't manage to
+ * reproduce"). lottie-web 5.13's canvas renderer remembers the fill and stroke styles it last
+ * set (CVContextData) and skips one it believes is still applied. resize() gives the canvas a
+ * new size, which resets the real context to black, but not that memory: the next shape painted
+ * in the remembered colour comes out black. The drop player paints ONE colour, so after any
+ * resize of the card (a window resize, a rotation, a scrollbar appearing) its blue drop was
+ * black until the page was reloaded.
+ * The renderer's own reset() is the first thing its resize does: make it forget what it believes
+ * is applied, so the next fill sets the style again. Private fields, hence the guards: a
+ * lottie-web without them leaves this a no-op.
+ */
+const forgetStylesOnResize = (anim: AnimationItem) => {
+  type ContextData = { reset?: () => void } & Record<string, unknown>;
+  const data = (anim as unknown as { renderer?: { contextData?: ContextData } }).renderer?.contextData;
+  if (!data || typeof data.reset !== "function" || !("appliedFillStyle" in data)) return;
+  const reset = data.reset.bind(data);
+  data.reset = () => {
+    reset();
+    for (const key of ["appliedFillStyle", "appliedStrokeStyle", "appliedLineWidth", "appliedLineCap", "appliedLineJoin", "appliedMiterLimit"]) {
+      if (key in data) data[key] = "";
+    }
+  };
+};
+
 export function LpBottleneck() {
   const holderRef = useRef<HTMLDivElement>(null);
   const hostARef = useRef<HTMLDivElement>(null);
@@ -223,6 +248,7 @@ export function LpBottleneck() {
         path: src.intro,
       });
       intro.setSubframe(false);
+      forgetStylesOnResize(intro);
       intro.addEventListener("DOMLoaded", () => {
         if (disposed) return;
         introReady = true;
@@ -248,6 +274,7 @@ export function LpBottleneck() {
               autoplay: false,
               animationData: { ...data, layers: data.layers.filter((l) => l.ty !== 1) },
             });
+            forgetStylesOnResize(still);
             still.addEventListener("DOMLoaded", () => {
               if (!disposed) still?.goToAndStop(0, true);
             });
@@ -263,6 +290,7 @@ export function LpBottleneck() {
             animationData: cropped ?? data,
           });
           drop.setSubframe(false);
+          forgetStylesOnResize(drop);
           drop.addEventListener("DOMLoaded", () => {
             if (disposed) return;
             dropReady = true;
