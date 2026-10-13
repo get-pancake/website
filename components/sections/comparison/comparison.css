@@ -42,14 +42,15 @@
    and the title keeps its drawn size here, 1.6 being the ratio between the two; dropping it
    to 45px, the size of the H2s below, is a design call. At 72px on the title's fixed 52px
    line, a title that wraps (Claude Tag, OpenClaw, Paperclip, Gojiberry and Origami, from 641
-   to about 765px wide) overlapped itself. A relative line height spaces the lines, and the
-   negative block margin gives the difference back, so a one-line title keeps the 52px box it
-   has had and nothing under it moves. Phones keep 36/42 and 30/36, which fit. */
+   to about 765px wide) overlapped itself. The line grows by one spacing step above and below
+   (52 + 2 × 16 = 84px, 1.16) and the block margin gives the two steps back: whole pixels, so
+   a one-line title is drawn exactly where it was and nothing under it moves. Phones keep
+   36/42 and 30/36, which fit. */
 @media (min-width: 640.02px) {
   .lp .vvp-hero__title {
     font-size: calc(var(--font-size-home-landing-section-title) * 1.6);
-    line-height: 1.15;
-    margin-block: calc((var(--line-height-home-landing-section-title) - 1.15em) / 2);
+    line-height: calc(var(--line-height-home-landing-section-title) + 2 * var(--spacing-xl));
+    margin-block: calc(-1 * var(--spacing-xl));
   }
 }
 
