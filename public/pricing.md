@@ -47,7 +47,7 @@ Not names. Buyers with a reason to talk. Pancake researches every lead with 12 d
 
 - Kinro (Pierre-Alexandre Kamienny, CEO): 15 meetings booked in a week.
 - Praxis (Diana Khramina, CEO): 10+ meetings booked a week.
-- Vector Legal (Aurelie, Head of GTM): "$50K in pipeline in 7 days from high-intent signals."
+- Vector Legal (Aurelie, Head of GTM): $50K in pipeline in 7 days.
 - AgentMail (Adi Singh, Co-founder): "One Pancake Play replaced all our inbound tools."
 
 ## Billing questions

@@ -524,11 +524,13 @@
   letter-spacing: -0.03em;
   line-height: 1;
 }
+/* sized so "meetings booked in a week" holds on one line in a quarter-width
+   card */
 .lv2-proof .lv2-proof-label {
-  font-size: 1.125rem;
+  font-size: 1.0625rem;
   font-weight: 600;
+  letter-spacing: -0.01em;
   line-height: 1.3;
-  text-wrap: balance;
 }
 .lv2-proof .lv2-proof-quote {
   margin: 0;

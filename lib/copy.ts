@@ -358,12 +358,14 @@ export const pricingLead = {
 } as const;
 
 /**
- * "Take it from them" — the proof under the plan card (PricingProof.tsx): what
- * customers got, in their own figures and words. The same four as the
- * homepage's testimonials, whose file holds each one's source and the
- * founder's sign-off (components/sections/landing-v3/lp-bento-data.ts, the
- * Kinro "15" and Praxis "10+" figures and the Vector Legal and AgentMail
- * quotes): keep the two in step. The title is the homepage's
+ * "Take it from them" — what customers got, in their own figures and words
+ * (PricingProof.tsx). Each is a customer's own statement, sourced in the
+ * homepage testimonials' file (components/sections/landing-v3/
+ * lp-bento-data.ts and its allow-list in scripts/homepage-lint.mjs): Kinro's
+ * "15", Vector Legal's "$50K" and AgentMail's quote as the homepage shows
+ * them; Praxis's "10+ meetings booked a week" is Diana Khramina's second
+ * figure, which left the homepage's seven cards for room, not for doubt
+ * (her message of 2026-09-18 and her film). The title is the homepage's
  * (BENTO_TITLE). `logo` is the marquee's file in public/logos/customers, with
  * its width / height.
  */
@@ -385,7 +387,9 @@ export const pricingProof = {
       logo: { file: "praxis.png", ratio: 1392 / 370 },
     },
     {
-      quote: "$50K in pipeline in 7 days from high-intent signals.",
+      // a figure card, as on the homepage since 2026-10-13 (it was her quote)
+      figure: "$50K",
+      label: "in pipeline in 7 days",
       who: "Aurelie, Head of GTM",
       company: "Vector Legal",
       logo: { file: "vector-legal.png", ratio: 1111 / 151 },
