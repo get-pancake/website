@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 
 import { GtmComparisonPage, type GtmComparisonConfig } from "@/components/sections/comparison/GtmComparisonPage";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
-import { OG_IMAGE } from "@/lib/social-meta";
+import { social } from "@/lib/social-meta";
 
 // Unify facts read on 2026-10-07 from unifygtm.com and unifygtm.com/pricing (audit plan 3.10).
 // Re-check both pages before moving FACTS_REVIEWED, and again within 90 days.
@@ -17,15 +17,10 @@ export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: `${SITE_ORIGIN}/unify-vs-pancake` },
-  openGraph: {
-    type: "website",
-    url: `${SITE_ORIGIN}/unify-vs-pancake`,
-    title,
-    description,
-    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: "Unify vs Pancake" }],
-    siteName: "Pancake",
-  },
-  twitter: { card: "summary_large_image", title, description, images: [OG_IMAGE] },
+  // Share card via lib/social-meta.ts, like the older comparison pages: the shared
+  // homepage card, so the alt is its printed text, not this page's name, and the
+  // X account rides along.
+  ...social({ path: "/unify-vs-pancake", title, description }),
 };
 
 const config: GtmComparisonConfig = {
@@ -94,7 +89,7 @@ const config: GtmComparisonConfig = {
     { q: "How does pricing compare?", a: "As of October 2026, Unify has a Free plan, Base at $20 and Pro at $60 per seat a month, and custom Business plans. Each comes with credits. Pancake starts at $99 a month per workspace, with 60,000 credits your whole team shares." },
     { q: "What does Unify do that Pancake doesn't?", a: "Email sequences with managed mailboxes, a dialer, phone enrichment, and HubSpot or Salesforce sync. Its Business plan adds website intent and product signals. Pancake doesn't do these." },
     { q: "Does Pancake charge per seat?", a: "No. Pancake starts at $99 a month per workspace, and your whole team is included. A second company is a second workspace with its own plan." },
-    { q: "Can I run Pancake from Claude or Codex?", a: "Yes. Claude, Claude Code and Codex connect with a browser sign-in, no API key. You create Plays, review leads and edit messages from the agent. Unify offers bulk export APIs for analysis in Claude or Codex." },
+    { q: "Can I run Pancake from Claude or Codex?", a: "Yes. Claude, Claude Code, ChatGPT and Codex connect with a browser sign-in, no API key. You create Plays, review leads and edit messages from the agent. Unify offers bulk export APIs for analysis in Claude or Codex." },
     { q: "Who should choose Pancake over Unify?", a: "Founders who do their own sales, and small B2B teams without reps or a mailbox stack. Tell Pancake who to reach and approve the leads that fit. Pancake writes to them under your name." },
   ],
   related: [

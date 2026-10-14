@@ -129,7 +129,7 @@ export type AcquisitionEventPayloads = {
   guide_claude_tab: { tab_id: GuideClaudeTabId };
 };
 
-export const GUIDE_CLAUDE_TAB_IDS = ["claude", "claude-code", "codex", "other"] as const;
+export const GUIDE_CLAUDE_TAB_IDS = ["claude", "claude-code", "chatgpt", "codex", "other"] as const;
 export type GuideClaudeTabId = (typeof GUIDE_CLAUDE_TAB_IDS)[number];
 const GUIDE_CLAUDE_TAB_ID_SET = new Set<string>(GUIDE_CLAUDE_TAB_IDS);
 /** Block ids are fixed slugs in the page source (guide-copy.ts), never user text. */

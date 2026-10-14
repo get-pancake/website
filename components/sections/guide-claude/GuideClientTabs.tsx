@@ -16,8 +16,8 @@ const isTabId = (tabs: readonly GuideTab[], value: string): value is ClientTabId
   tabs.some((t) => t.id === value);
 
 /**
- * Step 02's client tabs (Claude · Claude Code · Codex · Other agents). The selected tab lives
- * in the URL hash (#claude, #claude-code, #codex, #other) so a DM can link straight to one;
+ * Step 02's client tabs (Claude · Claude Code · ChatGPT · Codex · Other agents). The selected tab lives
+ * in the URL hash (#claude, #claude-code, #chatgpt, #codex, #other) so a DM can link straight to one;
  * the hash is the tab button's own id, so the browser also scrolls to step 02 on arrival.
  * WAI-ARIA tabs: arrow keys / Home / End move between tabs, every panel is in the server
  * HTML (inactive ones `hidden`), Claude is the default.
@@ -29,7 +29,17 @@ export function GuideClientTabs({ tabs, label }: { tabs: readonly GuideTab[]; la
   useEffect(() => {
     const sync = () => {
       const hash = window.location.hash.slice(1);
-      if (isTabId(tabs, hash)) setActive(hash);
+      if (!isTabId(tabs, hash)) return;
+      setActive(hash);
+      // On phones the bar scrolls sideways: a tab opened by its link (#chatgpt, #codex) must
+      // not arrive cut at the bar's edge. Only the bar moves, never the page.
+      const button = buttons.current.get(hash);
+      const bar = button?.parentElement;
+      if (!button || !bar) return;
+      const tab = button.getBoundingClientRect();
+      const box = bar.getBoundingClientRect();
+      if (tab.left < box.left) bar.scrollLeft -= box.left - tab.left;
+      else if (tab.right > box.right) bar.scrollLeft += tab.right - box.right;
     };
     sync();
     window.addEventListener("hashchange", sync);

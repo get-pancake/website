@@ -1,5 +1,9 @@
 # UGC clips — drop-in contract for the "Founders on camera" wall
-1. Drop vertical MP4s here: `public/ugc/<slug>.mp4` (H.264 + AAC).
+
+> About the files in `public/ugc/`. This note lived in that folder until 2026-10-13, where it
+> was served on the site; it moved here so it stays in the repository only.
+
+1. Drop vertical MP4s in `public/ugc/`: `public/ugc/<slug>.mp4` (H.264 + AAC).
 2. Format: 9:16 portrait, 720x1280 recommended, 45-120s per clip.
 3. Optional caption sidecar: `<slug>.json` — same basename, next to the mp4.
 4. Sidecar shape: `{ "name": "Ada L.", "handle": "@ada", "quote": "Pancake runs my ops." }` (all fields optional).

@@ -51,31 +51,35 @@ function newestPostDate(): Date {
  *
  * /plays reads part of its content from data, so its entry takes the newer of the page's own
  * date and that data's (2026-10-07): it shows every approved /for prompt verbatim (maxUpdated).
+ *
+ * 2026-10-13 (the launch, #333): the homepage and /pricing were rebuilt, /support gained the
+ * credit plan's billing answers, the comparisons hub dropped its "AI agents" group and the ten
+ * comparison pages took the credit plan's prices and the 7-day trial (PAGE_MODIFIED moved too).
  */
 const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
-  { path: "", updated: "2026-10-07", priority: 1.0 },
-  { path: "/pricing", updated: "2026-10-07", priority: 0.8 },
+  { path: "", updated: "2026-10-13", priority: 1.0 },
+  { path: "/pricing", updated: "2026-10-13", priority: 0.8 },
   { path: "/careers", updated: "2026-10-13", priority: 0.5 },
   { path: "/privacy", updated: "2026-10-13", priority: 0.3 },
   { path: "/terms", updated: "2026-09-18", priority: 0.3 },
-  { path: "/support", updated: "2026-09-18", priority: 0.3 },
+  { path: "/support", updated: "2026-10-13", priority: 0.3 },
   // the guide the site links; its twin with the campaign offer (/guides/claude) is noindex
   { path: "/claude", updated: "2026-10-13", priority: 0.7 },
   // example Plays (audit plan 3.7), new on 2026-10-07
   { path: PLAYS_PATH, updated: newest("2026-10-07", maxUpdated()), priority: 0.7 },
   // the comparisons hub (2026-10-07): every comparison page below links back to it
-  { path: COMPARE_PATH, updated: "2026-10-07", priority: 0.7 },
-  { path: "/viktor-vs-pancake", updated: "2026-10-07", priority: 0.8 },
-  { path: "/claude-tag-vs-pancake", updated: "2026-10-07", priority: 0.8 },
-  { path: "/gojiberry-vs-pancake", updated: "2026-10-07", priority: 0.8 },
-  { path: "/lemlist-vs-pancake", updated: "2026-10-07", priority: 0.8 },
-  { path: "/origami-vs-pancake", updated: "2026-10-07", priority: 0.8 },
+  { path: COMPARE_PATH, updated: "2026-10-13", priority: 0.7 },
+  { path: "/viktor-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/claude-tag-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/gojiberry-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/lemlist-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/origami-vs-pancake", updated: "2026-10-13", priority: 0.8 },
   // the GTM competitors buyers compare (audit plan 3.10), new on 2026-10-07
-  { path: "/unify-vs-pancake", updated: "2026-10-07", priority: 0.8 },
-  { path: "/octave-vs-pancake", updated: "2026-10-07", priority: 0.8 },
-  { path: "/alta-vs-pancake", updated: "2026-10-07", priority: 0.8 },
-  { path: "/openclaw-vs-pancake", updated: "2026-10-07", priority: 0.8 },
-  { path: "/pancake-vs-paperclips", updated: "2026-10-07", priority: 0.8 },
+  { path: "/unify-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/octave-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/alta-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/openclaw-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/pancake-vs-paperclips", updated: "2026-10-13", priority: 0.8 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

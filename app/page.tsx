@@ -20,6 +20,7 @@ import {
   AGENT_CARD_BODY_PLACEHOLDER,
 } from "@/components/sections/landing-v3/lp-agents-wall-data";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
 import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
@@ -93,7 +94,7 @@ const softwareApplicationJsonLd = {
     "You approve every lead before anyone is contacted",
     "Personal messages you can edit",
     "New leads in Slack and a morning email",
-    "MCP server for Claude, Claude Code and Codex",
+    "MCP server for Claude, Claude Code, ChatGPT and Codex",
   ],
   offers: {
     "@type": "AggregateOffer",
@@ -124,7 +125,7 @@ export default function Home() {
       {/* SoftwareApplication JSON-LD — homepage only */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(softwareApplicationJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(softwareApplicationJsonLd) }}
       />
       {/* Serves every section's art canvas — the --lp-fit scale var
           (iOS WebKit cqw-in-trig workaround, see LpFitVars.tsx) */}

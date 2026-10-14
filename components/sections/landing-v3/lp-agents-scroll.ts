@@ -24,6 +24,15 @@
  * card and wall stay assembled for the visit — never rewind on screen. The hero copy keeps
  * following the scroll (scrolling back shows it again).
  *
+ * Tall windows (2026-10-13): the range needs 636 px of scroll under a 956-tall window and the
+ * agents page is 2,064 px tall, so from about 1,430 px of window height the wall's top stops
+ * short of the 141 px line, p never reached 1 and the card stayed clipped for good (seen at
+ * 1600×1700: stuck at 78 %). The card and the wall now end their range where the page ends: their
+ * end line is the 141 px line, or the section's top once the page is scrolled to its bottom when
+ * that is lower — so they are assembled exactly when there is nothing left to scroll (at once on
+ * a window the page fits in). Any window the 141 px line can be reached in runs as before. The
+ * hero copy keeps the full range.
+ *
  * Plain passive scroll + one rAF (no GSAP, nothing lazy to fetch): mounted only in the agents view
  * on desktop windows (≥1025 × ≥640) with motion allowed; everywhere else nothing is written and
  * CSS shows the rest picture, state 03 (= the V2 artboard).
@@ -53,14 +62,20 @@ export function mountAgentsAssembly(section: HTMLElement): () => void {
     const startTop = window.innerHeight - START_FROM_BOTTOM;
     const top = section.getBoundingClientRect().top;
     const p = Math.min(1, Math.max(0, (startTop - top) / (startTop - END_FROM_TOP)));
-    if (p >= 1) section.setAttribute("data-as-done", "");
+    // the card and the wall: the same range, ended where the page ends when the 141 px line is
+    // out of reach (see the header, tall windows). `room` = what is left to scroll, a pixel of
+    // slack for fractional scroll positions
+    const room = document.documentElement.scrollHeight - window.innerHeight - window.scrollY;
+    const span = startTop - Math.max(END_FROM_TOP, top - Math.max(0, room));
+    const wall = room <= 1 || span <= 0 ? 1 : Math.min(1, Math.max(0, (startTop - top) / span));
+    if (wall >= 1) section.setAttribute("data-as-done", "");
     if (!section.hasAttribute("data-as-done")) {
-      const v = p.toFixed(4);
+      const v = wall.toFixed(4);
       if (v !== lastP) {
         lastP = v;
         section.style.setProperty("--lp-as", v);
       }
-      const rows = AS_FIRST_ROWS + Math.floor(AS_ROWS * p);
+      const rows = AS_FIRST_ROWS + Math.floor(AS_ROWS * wall);
       if (rows !== lastRows) {
         lastRows = rows;
         section.style.setProperty("--lp-as-rows", String(rows));

@@ -9,7 +9,29 @@ This is the operational source of truth for tracking on the Pancake v2 landing p
 
 A new waitlist record is the only primary conversion that can be measured today. A booked meeting will become a primary conversion only after a signed Calendly webhook proves that the booking genuinely exists. Opening the scheduler, loading it, or clicking its fallback link is not a booked conversion.
 
-As of this document:
+### Status check: October 13, 2026
+
+What was verified on 2026-10-13, and how. Where a line further down disagrees with this block, this block wins.
+
+- **Live web container, read at its published version 10** (`GTM-P3Z79WKD`):
+  - its page-load trigger accepts Page Hostname `^(www\.)?(get)?pancake\.ai$`, so it fires on both domains, apex and www;
+  - the Google tag `G-6KWBYRZSDX` sends to the server container at `https://gtm.pancake.ai`;
+  - it has triggers for `app_cta_clicked` and for the scheduler events;
+  - it carries a LinkedIn Insight tag with partner ID `9238938` plus conversion `29569610`, an X pixel and a Reddit pixel.
+- **Server container endpoint, requested once:** `https://gtm.pancake.ai/healthy` answered 200.
+- **Website code, read at commit `df3c5e9` (the live commit):**
+  - the site, the app, the analytics ingest, PostHog and LeadJourney are on `pancake.ai` (`lib/site-config.mjs`); PostHog captures through `https://e.pancake.ai`;
+  - in a production deployment, the tags the code loads itself (the GTM loader, Meta, PostHog) run only on `pancake.ai`, `www.pancake.ai`, `getpancake.ai` and `www.getpancake.ai` (`PRODUCTION_SITE_HOSTS`);
+  - the Meta browser pixel is `3496980123812649` (`lib/analytics/vendor-config.ts`), not `1427782115875153`.
+- **Not verified on that day:** the draft state of either GTM workspace, the server container's tags and triggers, GA4 receipt, the hostname rule of any trigger other than the page-load one, which pixel the container's Reddit tag carries and whether it is paused, and whether the ownership and Traffic Permissions statements this document makes about Meta dataset `1427782115875153` hold for `3496980123812649`.
+
+Open on 2026-10-13:
+
+- **OPEN: LinkedIn is loaded under two partner IDs.** `app/layout.tsx` (lines 318-326 at commit `df3c5e9`) loads a direct LinkedIn Insight tag with partner ID `9710642` (`LINKEDIN_INSIGHT_PARTNER_ID` in `lib/analytics/vendor-config.ts`), next to the GTM tag "LinkedIn - Page Visit" with partner ID `9238938`, which fires on every production page load. What is known (2026-10-13): `9710642` is the tag of the agency that runs the LinkedIn ads. They asked for it on 2026-09-10 to build a retargeting audience and confirmed it was installed on 2026-09-15. `9238938` is the earlier tag of Pancake's own ad account (vendor table below). The GTM conversion tag "LinkedIn - v2 Waitlist Lead - 29569610" fires on `lead_submitted`, which no page sends since the waitlist was retired. Still to decide, in GTM: pause the two GTM LinkedIn tags, so the Insight script loads once.
+- **The scheduler events cannot fire today.** The dialogs that emit `scheduler_opened`, `scheduler_loaded` and `scheduler_fallback_clicked` (`components/sections/landing-v3/LpModals.tsx` and `components/sections/landing/LandingModals.tsx`) have not been mounted by any page since 2026-09-16, when every "Book a demo" link started going to `/demo` (the comments in `app/page.tsx`, `app/agents/page.tsx` and `app/pricing/page.tsx`). The events are still defined in `lib/analytics/data-layer.ts` and the container still has triggers for them.
+- **OPEN: Meta counts browser-history changes as page views.** Meta's pixel sends a `PageView` on history state changes by default (Meta's single-page-application guide). The site changes the address without changing page in three places: `LpAudience.tsx` (`pushState` on the audience toggle), `LpNavScroll.tsx` and `GuideClientTabs.tsx` (`replaceState` on in-page links and tabs). Each can add a `PageView` to the explicit one in `app/layout.tsx`. `fbq.disablePushState = true` would stop them, and with them the `PageView` Meta sends today on the site's client-side navigations (`next/link`): `/pricing` to `/demo` (the "Book a demo" pills of the plan card and of the closing section), `/terms` to `/pricing` and `/privacy`, `/support` to `/terms` and `/privacy`, and the links between the comparison pages and `/compare`. The flag is not set. Make those links plain anchors first, as the rest of the site, then set it.
+
+As of this document (the August 2026 state, kept for history):
 
 - The implementation is on branch `codex/ads-tracking-v2`, rebased from the current landing-page repository.
 - Both Google Tag Manager changes are drafts and are **not published**: web workspace `6` has 28 modifications, and server workspace `7` has 1 modification.
@@ -56,7 +78,8 @@ Every acquisition event has `schema_version=1` and includes:
 ### App CTA event (added 2026-08-24)
 
 The landing waitlist was retired on 2026-08-24: every former waitlist pill is
-now a direct link to `https://app.getpancake.ai` labeled "Get started". Those
+now a direct link to the app labeled "Get started" (`https://app.pancake.ai`
+since the domain move, `APP_ORIGIN` in `lib/site-config.mjs`). Those
 links emit one allow-listed micro event so the funnel stays measurable:
 
 | Event | Tier | Exact firing rule | Event-specific fields |
@@ -68,13 +91,12 @@ Approved app CTA IDs are `app_nav`, `app_hero`, `app_lead_finding`,
 /guides/claude page) `app_guide_claude_hero` and `app_guide_claude_final`, and
 (2026-10-07, the /plays page) `app_plays_hero`.
 
-**GTM action required:** the published container has no trigger for
-`app_cta_clicked` yet, and the `lead_form_*`/`lead_submitted` events below can
-no longer fire from the landing (the waitlist modal has no remaining trigger).
-Add a Custom Event trigger for `app_cta_clicked` and decide deliberately what
-replaces `lead_submitted` as the paid-platform conversion (the in-app signup is
-the natural successor). PostHog already captures the new event via
-`PANCAKE_ACQUISITION_EVENT` with no changes.
+**GTM trigger (checked 2026-10-13):** the live web container, version 10, has a
+trigger for `app_cta_clicked`. The `lead_form_*`/`lead_submitted` events below
+can no longer fire from the landing (the waitlist modal has no remaining
+trigger). Still to decide deliberately: what replaces `lead_submitted` as the
+paid-platform conversion (the in-app signup is the natural successor). PostHog
+captures `app_cta_clicked` via `PANCAKE_ACQUISITION_EVENT`.
 
 ### /guides/claude engagement events (added 2026-10-06)
 
@@ -85,17 +107,18 @@ Start free links use `app_cta_clicked` above.
 | Event | Tier | Exact firing rule | Event-specific fields |
 | --- | --- | --- | --- |
 | `guide_claude_copy` | Diagnostic | A Copy button's clipboard write succeeded | `block_id` (a fixed slug from `guide-copy.ts`, e.g. `promo-code`, `hero-setup-md`, `prompt-first-play`) |
-| `guide_claude_tab` | Diagnostic | The visitor picks a client tab in step 02 | `tab_id` (`claude`, `claude-code`, `codex`, `other`) |
+| `guide_claude_tab` | Diagnostic | The visitor picks a client tab in step 02 | `tab_id` (`claude`, `claude-code`, `chatgpt`, `codex`, `other`) |
 
 PostHog captures both via `PANCAKE_ACQUISITION_EVENT`. GTM has no trigger for
 them; add one only if GA4 should see them.
 
 ### Waitlist events (retired from the landing 2026-08-24)
 
-The events below remain implemented in `lib/analytics/data-layer.ts` and the
-`/api/waitlist` route, but no landing CTA opens the waitlist modal anymore, so they no
-longer fire from `/` or `/pricing`. The route has had no caller on the site since the
-`/ai-gtm-report` scanner retired on 2026-09-30 (it now 301s to `/`).
+The events below remain implemented in `lib/analytics/data-layer.ts`, but no landing CTA
+opens the waitlist modal anymore, so they no longer fire from `/` or `/pricing`. The
+`/api/waitlist` route had no caller on the site since the `/ai-gtm-report` scanner retired
+on 2026-09-30, and answers `410 Gone` since 2026-10-13: the description of its server side
+below is history.
 
 All waitlist events use `form_id=landing_waitlist` and `lead_type=waitlist`.
 
@@ -118,6 +141,8 @@ Approved waitlist CTA IDs are:
 - `waitlist_pricing_page`
 
 ### Scheduler events
+
+**Not firing today (2026-10-13):** the scheduler dialogs that emit the three browser events below have not been mounted by any page since 2026-09-16 (see the status check at the top). The table is the contract they followed, and the one the live container's triggers still expect.
 
 All scheduler events use `scheduler_id=d3zd-2yc-x2s` — the Calendly qualification/routing form. Two required questions route each visitor to the correct meeting type; direct event links would bypass qualification.
 
@@ -143,6 +168,24 @@ The first-party attribution cookie keeps an opaque attribution ID and an allow-l
 
 The production website code is configured to send PostHog manual page views and the allow-listed acquisition events. On the landing integration, autocapture, page-leave capture, heatmaps, performance capture, and session recording are disabled. Referrers are reduced to their origin, and arbitrary URL parameters are removed.
 
+### PostHog first touch and latest touch (fixed 2026-10-13)
+
+Most links on the site are full page loads, so `components/analytics/PostHogAttribution.tsx` starts again on most pages of a visit. `lib/analytics/posthog-touch.mjs` decides what one load is; `scripts/posthog-touch.test.mjs` covers it.
+
+A load is a **new touch** when its address carries one of the campaign or click identifiers listed above, or when its referrer is outside Pancake: not on `pancake.ai`, `getpancake.ai` or one of their subdomains (`www.`, `app.`, `brain.`).
+
+| Load | `pancake_initial_*` | `pancake_latest_*` | Person properties | `marketing_landing_viewed` |
+| --- | --- | --- | --- | --- |
+| New touch | Written once, whole, and only when no first landing URL is stored yet | Replaced whole | Latest touch set, the keys it lacks nulled; first touch set once, as the browser stored it | Sent once |
+| The first load PostHog sees in a browser, when it is not a new touch (a direct visit) | The landing URL alone | The landing URL alone | The same two landing URLs | Not sent |
+| Any other load (a second page, a direct return) | Untouched | Untouched | Nothing new: the stored first touch is sent again as set-once | Not sent |
+
+- One of Pancake's own hosts is never stored as a touch's referrer.
+- Every load still sends one `$pageview`, with that page's own address and referrer.
+- A reload of an address that still carries its identifiers is a new touch again: same values, one more `marketing_landing_viewed`.
+- `person_profiles` is `identified_only`, but `setPersonProperties` still runs on every page load, which turns person processing on for anonymous visitors and sends a `$set` per load. Left as it was on 2026-10-13: calling it only on a new touch would stop profiling direct-only visitors and change person-property breakdowns and cohorts, a decision for whoever owns the PostHog dashboards (the change exists as commit `fcfea9a` on branch `fix/bug-check-analytics`).
+- Before this fix every page load replaced the latest touch and set person properties, `marketing_landing_viewed` was sent on every load that had a referrer (the site's own pages included), and the first touch was filled key by key across visits. Data captured before 2026-10-13 is not repaired.
+
 For the landing waitlist (`Source=landing-v2`) only, the waitlist API normalizes email for duplicate lookup and performs an email-keyed Airtable upsert. Before the write, it creates a stable opaque `lead.<64 lowercase hex characters>` ID using HMAC-SHA256 over the normalized email and the server-only `ANALYTICS_EVENT_ID_SECRET`. The secret is mandatory, must contain at least 32 characters, and must remain stable across deployments. The browser receives only the opaque digest; no email address, Airtable record ID, secret, or free-form field is placed in the data layer.
 
 Each valid `landing-v2` landing-waitlist browser attempt chain generates one UUID and reuses it after a failed request. The initial upsert atomically persists that UUID, the event ID, and `waitlist-v2`. Only a landing-waitlist row with the expected version/event pair is eligible for advertising-delivery recovery, and only a request with the matching UUID may recover the browser conversion. `gtm-report` email-gate submissions are outside this advertising ledger and must not emit or recover a waitlist ad conversion. Legacy rows have no version and are never backfilled.
@@ -163,12 +206,12 @@ Delivery timestamps are deliberately omitted from every upsert, so a concurrent/
 
 | Vendor or surface | Owner | Known identifiers and intended behavior |
 | --- | --- | --- |
-| GTM web container | GTM | Account `6360623272`; container `255346716`; public ID `GTM-P3Z79WKD`; workspace `6` has 28 unpublished modifications |
-| GTM server container | GTM / existing server endpoint | Container `255385456`; public ID `GTM-PRNN2DZS`; workspace `7` has 1 unpublished modification; GA transport endpoint `https://gtm.getpancake.ai` |
+| GTM web container | GTM | Account `6360623272`; container `255346716`; public ID `GTM-P3Z79WKD`; live version 10 on 2026-10-13 (workspace `6` had 28 unpublished modifications in August 2026) |
+| GTM server container | GTM / existing server endpoint | Container `255385456`; public ID `GTM-PRNN2DZS`; workspace `7` had 1 unpublished modification in August 2026; GA transport endpoint `https://gtm.pancake.ai` (answered 200 on `/healthy` on 2026-10-13) |
 | Google Analytics 4 | Two unpublished GTM drafts | Measurement ID `G-6KWBYRZSDX`; the web and server drafts together are configured to forward the explicit page view and all v2 acquisition events after production deployment and coordinated publication; `lead_submitted` key-event designation remains pending GA Editor access |
-| PostHog | Website code | EU Cloud project `Pancake-v1`, project ID `170554`; direct sanitized capture through `e.getpancake.ai` |
-| Meta | Base pixel in website code; browser Lead mapping in GTM; server Lead delivery inside the verified waitlist API | Pancake-owned website dataset/pixel `1427782115875153`; Traffic Permissions allow `getpancake.ai` plus subdomains; Pancake ad account `538746742816593`; direct initial `PageView` remains; browser and CAPI waitlist `Lead` must share the same opaque `event_id` |
-| LinkedIn | GTM only | Ad account `545060035`; company page `104917696`; partner ID `9238938`; event-specific waitlist conversion `29569610` named `v2_waitlist_lead_submitted` |
+| PostHog | Website code | EU Cloud project `Pancake-v1`, project ID `170554`; direct sanitized capture through `e.pancake.ai` (`POSTHOG_ORIGIN` in `lib/site-config.mjs`) |
+| Meta | Base pixel in website code; browser Lead mapping in GTM; server Lead delivery inside the verified waitlist API | The website code uses browser pixel `3496980123812649` (`META_BROWSER_PIXEL_ID` in `lib/analytics/vendor-config.ts`). In August 2026 this row named the Pancake-owned dataset/pixel `1427782115875153`, whose Traffic Permissions allowed `getpancake.ai` plus subdomains; whether both hold for `3496980123812649` and for `pancake.ai` was not verified on 2026-10-13. Pancake ad account `538746742816593`; direct initial `PageView` remains; browser and CAPI waitlist `Lead` must share the same opaque `event_id` |
+| LinkedIn | Direct Insight tag in `app/layout.tsx`, partner ID `9710642` (the ads agency's, since 2026-09-10), plus the earlier GTM tag below. **OPEN (2026-10-13):** pause the GTM one | Ad account `545060035`; company page `104917696`; partner ID `9238938`; event-specific waitlist conversion `29569610` named `v2_waitlist_lead_submitted` |
 | X Ads | GTM only | Ads account `18ce55v07al`; profile `@getpancake_ai`; website source `rehvg`; Lead event `rehvk`, full event ID `tw-rehvg-rehvk` |
 | Reddit | Tracking disabled until Pancake has a dedicated account and pixel | Business Manager `Pancake`, Business ID `53c537e5-7d98-4d2d-b641-1375882f0935`, now has website `https://getpancake.ai`, verified by a UI success toast; it still exposes only `BasaltAI Main Ad Account` and its paused pixel `a2_hvwir7k3hfy1`, which are not approved for Pancake tracking |
 | Google Ads | Existing Pancake account; no v2 GTM conversion tag yet | Authoritative customer ID `606-248-5603`; administrator access verified; historical campaigns and conversion goals exist, and all observed campaigns are paused. Audit and reuse the existing account before adding any v2 measurement. Unused duplicate shell `339-764-4166` is not approved for use |
@@ -177,7 +220,7 @@ Delivery timestamps are deliberately omitted from every upsert, so a concurrent/
 Steady-state ownership is deliberate:
 
 - GTM and Meta base code remain in the root layout.
-- Direct LinkedIn and Reddit code are removed from the new website code so they cannot double-fire with GTM.
+- Direct LinkedIn and Reddit code are removed from the new website code so they cannot double-fire with GTM. **OPEN (2026-10-13):** this no longer holds for LinkedIn, see the status check at the top.
 - GA4 has no separate direct `gtag` installation.
 - PostHog remains direct because it is product analytics, not a GTM advertising tag.
 
@@ -211,7 +254,7 @@ The website code clears every optional mapped field on every data-layer push. Th
 
 ### Triggers
 
-- `Production page load`, requiring Page Hostname regex `^(www\.)?getpancake\.ai$`.
+- `Production page load`, requiring Page Hostname regex `^(www\.)?(get)?pancake\.ai$` (live container, version 10, read 2026-10-13; it was `^(www\.)?getpancake\.ai$` before the domain move).
 
 - `v2 acquisition events`, custom-event regex:
 
@@ -221,7 +264,7 @@ The website code clears every optional mapped field on every data-layer push. Th
 
   `lead_submitted`
 
-  It also requires Page Hostname regex `^(www\.)?getpancake\.ai$`.
+  It also requires Page Hostname regex `^(www\.)?getpancake\.ai$` (August 2026; not re-read on 2026-10-13).
 
 - The legacy `Custom events` trigger remains attached to the GA event-forwarding tag and currently matches:
 
@@ -233,7 +276,7 @@ The website code clears every optional mapped field on every data-layer push. Th
 
 - `Google Tag G-6KWBYRZSDX`
   - Is configured to fire on Initialization / All Pages when the web draft is published with the production code.
-  - Sets `server_container_url=https://gtm.getpancake.ai`.
+  - Sets `server_container_url=https://gtm.pancake.ai` (live container, version 10, read 2026-10-13).
   - Sets `send_page_view=false`.
 - `Forward events to GA4`
   - Is configured to send event name `{{Event}}` to `G-6KWBYRZSDX` after the code is deployed to production and the web GTM draft is published.
@@ -251,9 +294,9 @@ The website code clears every optional mapped field on every data-layer push. Th
 
 ### Host gating already present in the draft and code
 
-Paid-media base and conversion tags require an exact production hostname: `getpancake.ai` or `www.getpancake.ai`. They do not fire on localhost, Vercel preview domains, or unrelated subdomains. The LinkedIn and X base tags use `Production page load`; the LinkedIn, X, and paused Meta Lead tags use the hostname-constrained `v2 waitlist lead submitted` trigger.
+Paid-media base and conversion tags require an exact production hostname. Since the domain move the page-load trigger accepts `pancake.ai`, `www.pancake.ai`, `getpancake.ai` and `www.getpancake.ai` (read 2026-10-13); the hostname rule of the conversion trigger was not re-read. They do not fire on localhost, Vercel preview domains, or unrelated subdomains. The LinkedIn and X base tags use `Production page load`; the LinkedIn, X, and paused Meta Lead tags use the hostname-constrained `v2 waitlist lead submitted` trigger.
 
-Website code independently limits direct Meta and PostHog to a Vercel production deployment and checks the exact runtime hostname. The React funnel is unusable without JavaScript, so unguardable GTM and Meta `noscript` fallbacks are intentionally omitted rather than letting a generated production Vercel hostname create vendor requests.
+Website code independently limits direct Meta and PostHog to a Vercel production deployment and checks the exact runtime hostname against `PRODUCTION_SITE_HOSTS` in `lib/site-config.mjs`: both domains, apex and www. The React funnel is unusable without JavaScript, so unguardable GTM and Meta `noscript` fallbacks are intentionally omitted rather than letting a generated production Vercel hostname create vendor requests.
 
 Setting `PANCAKE_ANALYTICS_DEBUG=1` on a non-production deployment enables GTM for Tag Assistant; it does not enable direct Meta or PostHog. Server CAPI can additionally send to Meta **Test Events only** when a test-event code, the explicit CAPI feature flag, matching pixel credentials, and the other Meta gates are all separately present. Because the paid browser tags are hostname-gated in GTM, preview validation cannot send LinkedIn, X, Reddit, or Meta production browser events.
 
@@ -263,7 +306,7 @@ Do not remove either layer of gating. The deployment-environment check and the r
 
 GA4 delivery is a two-container pipeline:
 
-`website dataLayer -> GTM-P3Z79WKD web container -> gtm.getpancake.ai -> GTM-PRNN2DZS server container -> GA4`
+`website dataLayer -> GTM-P3Z79WKD web container -> gtm.pancake.ai -> GTM-PRNN2DZS server container -> GA4`
 
 A direct audit of server container `GTM-PRNN2DZS`—container `255385456`, workspace `7`—found 0 draft changes before this fix and one tag:
 
@@ -319,8 +362,8 @@ Once GA access exists:
 
 Keep the Meta waitlist tag paused until every item below is true:
 
-1. The canonical Pancake Website dataset/pixel `1427782115875153` is selected everywhere.
-2. Meta dataset Traffic Permissions allow `getpancake.ai` and its subdomains. Retire the old scheduler domain permission with its native tracking settings during the backend cutover.
+1. One canonical Pancake Website dataset/pixel is selected everywhere. The browser bootstrap uses `3496980123812649` (`lib/analytics/vendor-config.ts`), and the CAPI module refuses any other server pixel; this gate named `1427782115875153` in August 2026.
+2. Meta dataset Traffic Permissions allow `pancake.ai` and `getpancake.ai` and their subdomains (verified for `getpancake.ai` and dataset `1427782115875153` in August 2026, not re-verified since the domain move). Retire the old scheduler domain permission with its native tracking settings during the backend cutover.
 3. Business Portfolio admin or developer access has been granted, and a **new** CAPI token has been generated specifically for the owned Pancake dataset. Do not reuse a token from an old or unrelated dataset.
 4. Production `META_PIXEL_ID` is explicitly configured to the same ID used by the browser bootstrap, the new token is installed securely, and `META_CAPI_LEAD_MATCHING_ENABLED=true` is intentionally set.
 5. Meta Test Events shows one browser `Lead` and one server `Lead` with the same stable `lead.<64 lowercase hex characters>` event ID.
@@ -328,7 +371,7 @@ Keep the Meta waitlist tag paused until every item below is true:
 7. The trigger is limited to a genuinely new `lead_submitted` on a production hostname.
 8. The business has approved the advertising-data basis for sending hashed email and attribution identifiers, given the explicit decision not to install a CMP in this release.
 
-There is no public browser-to-CAPI endpoint. After an origin-checked, rate-limited waitlist request produces a new eligible Airtable row—or an exact persisted submission retry finds its server delivery timestamp blank—the waitlist API calls a server-only Meta module. That module sends only `Lead`, preserves the original Airtable submission time on retry, sanitizes the source URL, hashes normalized email and the optional attribution ID, and refuses delivery unless the server pixel exactly matches the browser pixel. Live delivery additionally requires both a Vercel production deployment and an exact request hostname of `getpancake.ai` or `www.getpancake.ai`; any noncanonical host is allowed only into Meta Test Events with all explicit test gates enabled. CAPI is currently blocked because the required Business Portfolio role and new token do not yet exist. Keep both the feature flag disabled and the GTM browser Lead tag paused; enabling only the browser copy would silently create browser-only conversions.
+There is no public browser-to-CAPI endpoint. After an origin-checked, rate-limited waitlist request produces a new eligible Airtable row—or an exact persisted submission retry finds its server delivery timestamp blank—the waitlist API calls a server-only Meta module. That module sends only `Lead`, preserves the original Airtable submission time on retry, sanitizes the source URL, hashes normalized email and the optional attribution ID, and refuses delivery unless the server pixel exactly matches the browser pixel. Live delivery additionally requires both a Vercel production deployment and an exact request hostname among `PRODUCTION_SITE_HOSTS` (`pancake.ai`, `www.pancake.ai`, `getpancake.ai`, `www.getpancake.ai`); any noncanonical host is allowed only into Meta Test Events with all explicit test gates enabled. CAPI is currently blocked because the required Business Portfolio role and new token do not yet exist. Keep both the feature flag disabled and the GTM browser Lead tag paused; enabling only the browser copy would silently create browser-only conversions.
 
 ## Validation matrix
 
@@ -381,7 +424,7 @@ Tag Assistant's popup could not establish its live preview connection inside Cod
 
 ### Meta
 
-The Pancake Website dataset/pixel `1427782115875153` is owned by Pancake. CAPI token generation still requires the appropriate Business Portfolio role. Keep server delivery disabled and the GTM Meta Lead tag paused until a new token exists and the activation gates pass.
+The Pancake Website dataset/pixel `1427782115875153` is owned by Pancake (August 2026). The website code now uses pixel `3496980123812649`; its ownership was not verified on 2026-10-13. CAPI token generation still requires the appropriate Business Portfolio role. Keep server delivery disabled and the GTM Meta Lead tag paused until a new token exists and the activation gates pass.
 
 ### Reddit
 

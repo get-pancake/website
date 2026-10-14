@@ -14,6 +14,7 @@ import {
   VX_PRICING_MODE,
 } from "@/components/sections/verticals/vx-copy";
 import { hubJsonLd } from "@/components/sections/verticals/vx-jsonld";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { social } from "@/lib/social-meta";
 import { SITE_URL, approvedVerticals } from "@/lib/verticals";
 import "@/app/_styles/landing-v3.css";
@@ -50,7 +51,7 @@ export default function IndustriesHub() {
     <main className="lp lp-vx lp-vx-hub">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(hubJsonLd(approvedVerticals())) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(hubJsonLd(approvedVerticals())) }}
       />
       <LpFitVars />
       <LpNav />

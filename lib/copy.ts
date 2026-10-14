@@ -528,11 +528,11 @@ export const pricingFaq = {
     },
     {
       q: "Do I need my own data tools or API keys?",
-      a: "No. Your credits pay for the lead data and the ICP check. Claude, Claude Code and Codex connect with a browser sign-in, no API key.",
+      a: "No. Your credits pay for the lead data and the ICP check. Claude, Claude Code, ChatGPT and Codex connect with a browser sign-in, no API key.",
     },
     {
       q: "Can I use Pancake from Claude or Codex?",
-      a: "Yes, on the same plan. Claude, Claude Code and Codex use the same Plays, leads and credits as the app.",
+      a: "Yes, on the same plan. Claude, Claude Code, ChatGPT and Codex use the same Plays, leads and credits as the app.",
     },
     {
       q: "Have a code?",

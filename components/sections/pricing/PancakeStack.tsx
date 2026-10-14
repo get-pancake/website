@@ -106,7 +106,7 @@ export function PancakeStack({ count }: { count: 1 | 2 | 3 | 4 | 5 }) {
       width={VIEWBOX_W}
       height={VIEWBOX_H_CROPPED}
       role="img"
-      aria-label={`stack of ${count} pancakes`}
+      aria-label={`stack of ${count} ${count === 1 ? "pancake" : "pancakes"}`}
     >
       {/* Soft ground shadow — FIXED in the bottom-anchored model; sits
           just below the (also fixed) bottom pancake. */}

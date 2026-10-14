@@ -61,7 +61,7 @@
   --src-shadow: 0 4px 32px rgba(48, 0, 44, 0.08); /* Figma #30002c 8% */
   --src-hover: rgba(0, 0, 0, 0.04);
   /* the data providers' discs: white, as the app's vendor chip, so each vendor's
-     mark shows unmodified in its own colours (public/lp/story-sources/README.md) */
+     mark shows unmodified in its own colours (docs/public-assets/lp/story-sources/README.md) */
   --src-disc: #fff;
   --src-disc-ring: rgba(48, 0, 44, 0.12);
   --src-disc-shadow: 0 3px 14px rgba(48, 0, 44, 0.1);

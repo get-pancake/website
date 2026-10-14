@@ -30,6 +30,7 @@ import {
 } from "@/components/sections/guide-claude/guide-copy";
 import { VxHead } from "@/components/sections/verticals/VxHead";
 import { vxNoWidow } from "@/components/sections/verticals/vx-text";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
@@ -58,7 +59,7 @@ export function GuidePage({ markdown, offer = false }: { markdown: string; offer
     <main className={"lp lp-vx lp-guide" + (offer ? " lp-guide--offer" : "")}>
       {/* the campaign page is noindex and canonical to the guide: the structured data is the guide's */}
       {offer ? null : (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(guideJsonLd()) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(guideJsonLd()) }} />
       )}
       <LpFitVars />
       {offer ? <PromoBar /> : null}
@@ -92,7 +93,8 @@ function guideJsonLd() {
         name: GUIDE_META.ogTitle,
         description: GUIDE_META.description,
         inLanguage: "en-US",
-        isPartOf: { "@type": "WebSite", name: "Pancake", url: SITE_ORIGIN },
+        // @id = the root layout's WebSite node, as on the comparison pages
+        isPartOf: { "@type": "WebSite", "@id": `${SITE_ORIGIN}/#website`, name: "Pancake", url: SITE_ORIGIN },
         breadcrumb: { "@id": `${url}#breadcrumb` },
       },
       {
@@ -344,6 +346,40 @@ function StepConnect() {
           <code>{c.claudeCode.after.code}</code>
           {c.claudeCode.after.after}
         </p>
+      </>
+    ),
+    chatgpt: (
+      <>
+        <p className="gd-caption">{c.chatgpt.caption}</p>
+        <ol className="gd-list">
+          <li>
+            {c.chatgpt.steps.open.before}
+            <strong>{c.chatgpt.steps.open.strong}</strong>
+            {c.chatgpt.steps.open.mid}
+            <strong>{c.chatgpt.steps.open.strong2}</strong>
+            {c.chatgpt.steps.open.after}
+          </li>
+          <li>
+            {c.chatgpt.steps.name.before}
+            <code>{c.chatgpt.steps.name.code}</code>
+            {c.chatgpt.steps.name.after}
+            <CopyBlock id="chatgpt-url" text={c.chatgpt.url} />
+          </li>
+          <li>
+            {c.chatgpt.steps.create.before}
+            <strong>{c.chatgpt.steps.create.strong}</strong>
+            {c.chatgpt.steps.create.mid}
+            <strong>{c.chatgpt.steps.create.strong2}</strong>
+            {c.chatgpt.steps.create.after}
+          </li>
+          <li>
+            {c.chatgpt.steps.check.before}
+            <code>{c.chatgpt.steps.check.code}</code>
+            {c.chatgpt.steps.check.after}
+            <CopyBlock id="chatgpt-check" text={c.chatgpt.checkPrompt} />
+          </li>
+        </ol>
+        <p>{c.chatgpt.after}</p>
       </>
     ),
     codex: (

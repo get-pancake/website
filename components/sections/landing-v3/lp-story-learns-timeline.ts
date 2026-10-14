@@ -143,7 +143,19 @@ function query(root: HTMLElement) {
   };
 }
 
+/** The builder in one go. In slices (2026-10-13): `buildStoryLearnsSteps`, which the carousel
+    and the phone stack spread over idle slots (lp-play-once's startBuild). It may yield
+    anywhere: it reads nothing from the layout, its frame-0 sets are written at once and its
+    tweens write nothing until they are rendered. */
 export function buildStoryLearns(root: HTMLElement): BuiltStory {
+  const steps = buildStoryLearnsSteps(root);
+  for (;;) {
+    const step = steps.next();
+    if (step.done) return step.value;
+  }
+}
+
+export function* buildStoryLearnsSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   registerTxtPlugin();
   const { $, $$ } = query(root);
 
@@ -174,6 +186,7 @@ export function buildStoryLearns(root: HTMLElement): BuiltStory {
   gsap.set(pct, { txt: `${SIGN}${LEARNS.share.start}%` });
   gsap.set(arrow, { autoAlpha: 0, scale: 0.4, transformOrigin: "50% 50%" });
   gsap.set(bars, { attr: { y: FLOOR, height: 0 } });
+  yield;
   // distances inside the notes layer are in its own px: ×Z of a stage px until the close-up
   gsap.set(title, { autoAlpha: 0, y: RISE.title * Z });
   items.forEach((item, i) => gsap.set(item, { autoAlpha: 0, y: RISE.line * Z + ROW_SETTLE * i }));
@@ -181,6 +194,7 @@ export function buildStoryLearns(root: HTMLElement): BuiltStory {
   gsap.set(avatar, { autoAlpha: 0, scale: 0.4, transformOrigin: "50% 50%" });
   gsap.set(doing, { autoAlpha: 0, y: 6 });
   gsap.set(done, { autoAlpha: 0, y: 6 });
+  yield;
 
   const tl = gsap.timeline({ paused: true });
 
@@ -210,6 +224,8 @@ export function buildStoryLearns(root: HTMLElement): BuiltStory {
     const p = 1 - Math.pow(1 - (n - n1) / (n2 - n1), 1 / 1.6);
     tl.set(pct, { txt: `${SIGN}${n}%` }, T.f1 + COUNT_LEAD + (T.countEnd - T.f1 - COUNT_LEAD) * p);
   }
+
+  yield;
 
   /* ── B · the view moves down to the list ── */
   tl.to(chart, { ...POSE.listChart, duration: DUR.scroll, ease: "power3.inOut" }, T.scroll);

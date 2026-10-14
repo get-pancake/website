@@ -50,6 +50,18 @@ You cannot add a connector yourself. Walk the user through it, one step at a tim
 3. A Pancake window opens: pick the workspace and approve.
 4. Open a new chat, paste this file again, and go to step 3.
 
+### If you are ChatGPT
+
+You cannot add a connection yourself. Walk the user through it, one step at a time:
+
+1. On chatgpt.com, open **Plugins**, click **+**, then **Add custom MCP server**.
+2. Name: `Pancake`. Server URL: `https://app.pancake.ai/api/mcp`. Authentication: **OAuth**.
+3. Accept the warning, click **Create as a plugin**, then install it.
+4. When ChatGPT asks to sign in to Pancake: pick the workspace and approve.
+5. Open a new chat, type `@Pancake`, paste this file again, and go to step 4.
+
+Custom MCP servers depend on the user's ChatGPT plan and workspace settings. If the option is missing, say so and offer Claude or Codex.
+
 ### Any other agent
 
 Follow https://pancake.ai/install.md. It covers the clients that support Pancake's sign-in.
@@ -91,9 +103,9 @@ More ideas: [example Plays](https://pancake.ai/plays)
 - I sell [what you sell] to [who you sell to]. Build me a Pancake Play that finds [the people you want] who [what they are doing right now]. Show me the plan and what it will cost before you run it.
 - Track [profile URL of a competitor or an expert]. I want the people who engage with their posts.
 - Show me the leads that came in since yesterday, best fit first, with the reason for each one.
-- Find me [10] new leads today. Stay under [500] credits and tell me what you spent.
+- Find me [10] new leads today. Stay under [3,000] credits and tell me what you spent.
 - Show me the message Pancake wrote for [name]. Make it shorter and open on their post.
 - Pass on [name]: [why they are not a fit].
 - Pancake has suggestions for my Brain. Show me what would change, then apply the ones I accept.
 
-Full guide: https://pancake.ai/guides/claude
+Full guide: https://pancake.ai/claude

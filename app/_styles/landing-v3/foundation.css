@@ -200,6 +200,26 @@ html:has(main.lp) {
 .lp-bento {
   content-visibility: auto;
 }
+/* 2026-10-13 (the bug check's S4). The rule above is right at load, but each
+   of these sections was then styled, laid out and painted for the first time
+   in the very frame it neared the screen (87 and 48 ms mid-scroll on a
+   mid-range phone), and the animated cards inside could not be measured, so
+   could not be built, before that frame. After the visitor's first input,
+   lp-play-once.ts (holdRendered) puts [data-lp-ahead] on a section that is
+   still skipped and below the screen, in an idle slot: its styles and layout
+   are computed there. The attribute comes off in the same task (the banner,
+   the bento) or once the section's cards are built (the stories), and the
+   section is `auto` again: skipped while far away, as before.
+   `contain` is the containment `auto` applies to a section it renders
+   (layout, style, paint), so the section paints exactly as it does under the
+   rule above: same clip at its box, same stacking, same containing block.
+   This list = the list above = SKIPPED_SECTIONS in lp-play-once.ts. */
+.lp-banner[data-lp-ahead],
+.lp-dive[data-lp-ahead],
+.lp-bento[data-lp-ahead] {
+  contain: layout style paint;
+  content-visibility: visible;
+}
 /* NOT the ring arts any more (.lp-cta, .lp-price-art — dropped 2026-09-02).
    They were here for the six/ten huge composited spin layers each subtree
    held; the rotation is now one WebGL canvas per art (LpRainbowGL) and the

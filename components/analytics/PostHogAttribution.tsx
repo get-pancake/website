@@ -8,31 +8,21 @@ import {
   isAcquisitionEventName,
   PANCAKE_ACQUISITION_EVENT,
 } from "@/lib/analytics/data-layer";
+import {
+  cleanLandingUrl,
+  cleanReferrer,
+  INITIAL_TOUCH_PREFIX,
+  LATEST_TOUCH_PREFIX,
+  readAttribution,
+  resolvePostHogTouch,
+  TOUCH_KEYS,
+  type PostHogTouch,
+} from "@/lib/analytics/posthog-touch.mjs";
 import { isProductionSiteHost, POSTHOG_ORIGIN } from "@/lib/site-config.mjs";
 
 const POSTHOG_KEY = "phc_zPxWVjFcxYkbR7VnfdFkxvWdaGNChzVa2Yjmwe5PSrey";
 const POSTHOG_HOST = POSTHOG_ORIGIN;
 const POSTHOG_UI_HOST = "https://eu.posthog.com";
-
-const attributionKeys = [
-  "utm_source",
-  "utm_medium",
-  "utm_campaign",
-  "utm_content",
-  "utm_term",
-  "utm_id",
-  "fbclid",
-  "gclid",
-  "gbraid",
-  "wbraid",
-  "li_fat_id",
-  "msclkid",
-  "rdt_cid",
-  "ttclid",
-  "twclid",
-] as const;
-
-const latestTouchKeys = [...attributionKeys, "landing_url", "referrer"] as const;
 
 let initialized = false;
 let lastCapturedPageUrl: string | null = null;
@@ -112,41 +102,28 @@ function PostHogAttributionEffects() {
     }));
     initialized = true;
 
-    const attribution = readAttribution();
-    const context = readContext();
-    const initialAttribution = prefixKeys("pancake_initial_", {
-      ...attribution,
-      ...context,
-    });
-    const latestAttribution = prefixKeys("pancake_latest_", {
-      ...attribution,
-      ...context,
-    });
+    // Most links on the site are full page loads, so this runs on most pages of
+    // a visit. lib/analytics/posthog-touch.mjs decides what the load is: a new
+    // touch (a campaign or click id in the address, or a referrer outside
+    // Pancake) or one more page, which leaves the stored touches alone.
+    const load = { url: window.location.href, referrer: document.referrer };
+    let touch: PostHogTouch | null = null;
 
     withPostHog((posthog) => {
-      posthog.register_once(initialAttribution);
-      clearLatestTouchSuperProperties(posthog);
-      posthog.register(latestAttribution);
-      posthog.setPersonProperties(
-        {
-          ...emptyLatestTouchProperties(),
-          ...latestAttribution,
-        },
-        initialAttribution,
-      );
+      touch = resolvePostHogTouch({ ...load, stored: readStoredTouches(posthog) });
+      if (touch.initial) posthog.register_once(touch.initial);
+      if (touch.latest) {
+        clearLatestTouchSuperProperties(posthog);
+        posthog.register(touch.latest);
+      }
+      posthog.setPersonProperties(touch.person.set, touch.person.setOnce);
     });
 
     capturePageView();
 
-    if (Object.keys(attribution).length > 0 || document.referrer) {
-      withPostHog((posthog) =>
-        posthog.capture("marketing_landing_viewed", {
-          $current_url: context.landing_url,
-          ...attribution,
-          ...context,
-        }),
-      );
-    }
+    withPostHog((posthog) => {
+      if (touch?.landingEvent) posthog.capture("marketing_landing_viewed", touch.landingEvent);
+    });
   }, []);
 
   useEffect(() => {
@@ -171,16 +148,6 @@ function PostHogAttributionEffects() {
   return null;
 }
 
-function readAttribution() {
-  const params = new URLSearchParams(window.location.search);
-  const attribution: Record<string, string> = {};
-  for (const key of attributionKeys) {
-    const value = params.get(key);
-    if (value) attribution[key] = value.slice(0, 500);
-  }
-  return attribution;
-}
-
 function readContext() {
   const context: Record<string, string> = {
     landing_url: cleanLandingUrl(window.location.href),
@@ -192,22 +159,16 @@ function readContext() {
   return context;
 }
 
-function prefixKeys(prefix: string, values: Record<string, string>) {
-  return Object.fromEntries(
-    Object.entries(values).map(([key, value]) => [`${prefix}${key}`, value]),
-  );
+/** The first and latest touch PostHog already holds for this browser. */
+function readStoredTouches(posthog: PostHog) {
+  const names = TOUCH_KEYS.flatMap((key) => [`${INITIAL_TOUCH_PREFIX}${key}`, `${LATEST_TOUCH_PREFIX}${key}`]);
+  return Object.fromEntries(names.map((name) => [name, posthog.get_property(name)]));
 }
 
 function clearLatestTouchSuperProperties(posthog: PostHog) {
-  for (const key of latestTouchKeys) {
-    posthog.unregister(`pancake_latest_${key}`);
+  for (const key of TOUCH_KEYS) {
+    posthog.unregister(`${LATEST_TOUCH_PREFIX}${key}`);
   }
-}
-
-function emptyLatestTouchProperties() {
-  return Object.fromEntries(
-    latestTouchKeys.map((key) => [`pancake_latest_${key}`, null]),
-  );
 }
 
 function capturePageView() {
@@ -219,7 +180,7 @@ function capturePageView() {
   withPostHog((posthog) =>
     posthog.capture("$pageview", {
       $current_url: pageUrl,
-      ...readAttribution(),
+      ...readAttribution(window.location.search),
       ...readContext(),
     }),
   );
@@ -228,35 +189,6 @@ function capturePageView() {
 /** Both domains, apex and www: `cross_subdomain_cookie` scopes PostHog's cookie to the one visited. */
 function isApprovedProductionHost() {
   return isProductionSiteHost(window.location.hostname);
-}
-
-function cleanLandingUrl(value: string) {
-  try {
-    const sourceUrl = new URL(value);
-    const cleanUrl = new URL(sourceUrl.toString());
-    cleanUrl.search = "";
-    cleanUrl.hash = "";
-
-    for (const [key, parameterValue] of Array.from(sourceUrl.searchParams.entries())) {
-      if (attributionKeys.includes(key as (typeof attributionKeys)[number])) {
-        cleanUrl.searchParams.append(key, parameterValue.slice(0, 500));
-      }
-    }
-
-    return cleanUrl.toString();
-  } catch {
-    return "";
-  }
-}
-
-function cleanReferrer(value: string) {
-  try {
-    const referrer = new URL(value);
-    if (referrer.protocol !== "https:" && referrer.protocol !== "http:") return "";
-    return `${referrer.protocol}//${referrer.host}/`;
-  } catch {
-    return "";
-  }
 }
 
 function sanitizePostHogProperties<T extends Record<string, unknown> | undefined>(properties: T): T {

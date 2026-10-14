@@ -25,6 +25,7 @@ import { InfluencersTiers } from "@/components/sections/influencers/InfluencersT
 import { Footer } from "@/components/shared/Footer";
 import { Badge } from "@/components/ui/Badge";
 import { H2, H3 } from "@/components/ui/Headings";
+import { serializeJsonLd } from "@/lib/json-ld";
 import "@/app/_styles/components.css";
 
 export const metadata: Metadata = {
@@ -92,7 +93,7 @@ export default function InfluencersPage() {
     <main id="main-content" className="influencers-page min-h-screen">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(influencerProgramJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(influencerProgramJsonLd) }}
       />
 
       <HomeNav />

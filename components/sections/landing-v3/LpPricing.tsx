@@ -46,6 +46,11 @@ const CHECKLIST = [
   "You approve every lead before anyone is\u00a0contacted.",
 ];
 
+/** No JS: no canvas will ever draw the rainbow and nothing sets [data-lp-gl-off],
+ *  so the static rings are shown (anim.css hides them until a script decides).
+ *  One class more specific than that rule. 2026-10-13. */
+const NOSCRIPT_CSS = "<style>.lp-price .lp-price-art .lp-anim-box{visibility:visible}</style>";
+
 /**
  * Optional `checklist` (the /for pages, spec §2.10): omitted, the homepage
  * CHECKLIST above renders unchanged.
@@ -104,7 +109,9 @@ export function LpPricing({ checklist = CHECKLIST }: { checklist?: readonly stri
       {/* NOTE: no opaque backing may live in this canvas — the art overlaps
           the footer by design (arcs sweep over its black), so anything
           opaque here covers the footer's logo (learned 2026-09-01: a black
-          "floor" div blanked the Pancake logo). */}
+          "floor" div blanked the Pancake logo). The wrapper's cream disc
+          (pricing.css, 2026-10-13) stays above the section's bottom edge
+          and under the rings' ink. */}
       <div className="lp-price-art" aria-hidden="true">
         <div className="lp-anim-canvas lp-anim-canvas--pricing">
           <LpPancakes variant="pricing" />
@@ -112,6 +119,7 @@ export function LpPricing({ checklist = CHECKLIST }: { checklist?: readonly stri
         {/* desktop rotation on one WebGL canvas (LpRainbowGL.tsx); the DOM
             rings above stay as the static fallback */}
         <LpRainbowGL variant="pricing" />
+        <noscript dangerouslySetInnerHTML={{ __html: NOSCRIPT_CSS }} />
       </div>
     </section>
   );

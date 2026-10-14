@@ -72,7 +72,7 @@ const config: GtmComparisonConfig = {
     { feature: "Core job", competitor: { text: "Equip teams to build and manage outbound", mark: "yes" }, pancake: { text: "Finds buyers and opens conversations for you", mark: "yes" } },
     { feature: "Operating model", competitor: { text: "Sales reps or operators run campaigns" }, pancake: { text: "Plays keep searching on their own; you approve every lead", mark: "yes" } },
     { feature: "Prospect data", competitor: { text: "Large B2B database and enrichment", mark: "yes" }, pancake: { text: "Eight ways a Play finds leads, each with why they fit", mark: "yes" } },
-    { feature: "Outbound channels", competitor: { text: "Email, social steps, calls, WhatsApp, and SMS", mark: "yes" }, pancake: { text: "Direct messages under your name, from several of your own accounts" } },
+    { feature: "Outbound channels", competitor: { text: "Email, social steps, calls, WhatsApp, and SMS", mark: "yes" }, pancake: { text: "Direct messages under your name, from the accounts you send from" } },
     { feature: "Deliverability tooling", competitor: { text: "Dedicated hub and lemwarm", mark: "yes" }, pancake: { text: "—" } },
     { feature: "Shared GTM Brain", competitor: { text: "Campaign and lead context" }, pancake: { text: "Your ideal customer, competitors, and voice, researched from your website", mark: "yes" } },
     { feature: "Pricing model", competitor: { text: "Tiered plans; cost depends on plan and team needs" }, pancake: { text: "From $99/month per workspace, one plan, no seats", mark: "yes" } },

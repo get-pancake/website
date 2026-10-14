@@ -144,7 +144,7 @@ export const prFirms: VerticalConfig = {
   faq: [
     {
       q: "Can you tell me which startups raised money?",
-      a: "No. There’s no funding signal. Pancake reads public posts, engagement and job posts, so you see who talks about press, not who raised.",
+      a: "Yes, a Play can find recently funded companies. Pancake also reads public posts, engagement and job posts, so you see who talks about press.",
     },
     {
       q: "Will it pitch journalists for me?",

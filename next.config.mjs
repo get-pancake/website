@@ -35,7 +35,9 @@ const nextConfig = {
       // llms.txt (and possibly LLM answers built from it) link /signup;
       // the route never existed — send those visitors to the real signup.
       // APP_ORIGIN is lib/site-config.mjs (NEXT_PUBLIC_APP_ORIGIN, read at build).
-      { source: "/signup", destination: APP_ORIGIN, permanent: false },
+      // The app's /signup, not its bare origin: Next forwards the query, and
+      // the app's own redirect from "/" drops ?package=tier_N (lib/pricing.ts).
+      { source: "/signup", destination: `${APP_ORIGIN}/signup`, permanent: false },
       // /get-started was the V1 signup page (autonomous agents across engineering
       // and ops, an unverified "500+ founders"), orphaned and noindex since
       // 2026-09-24. Retired 2026-10-07: old links go to the real signup.
@@ -106,7 +108,7 @@ const nextConfig = {
       // there too. Temporary until sales has a page of its own.
       { source: "/contact-sales", destination: "/demo", permanent: false },
       // Temporary, like /signup: the app's sign-up route may change.
-      { source: "/sign-up", destination: APP_ORIGIN, permanent: false },
+      { source: "/sign-up", destination: `${APP_ORIGIN}/signup`, permanent: false },
       // The affiliate program lives on Dub; temporary in case it moves in-house.
       { source: "/affiliate", destination: "https://partners.dub.co/pancake-ai", permanent: false },
       { source: "/affiliates", destination: "https://partners.dub.co/pancake-ai", permanent: false },

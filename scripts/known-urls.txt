@@ -175,3 +175,11 @@
 /claude
 /contact-sales
 /booth
+# Files and feeds, not pages (2026-10-13): what assistants, feed readers and search engines fetch.
+/sitemap.xml
+/blog/rss.xml
+/llms.txt
+/llms-full.txt
+/install.md
+/pricing.md
+/guides/claude.md

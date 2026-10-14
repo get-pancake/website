@@ -124,7 +124,8 @@ export function LpAudience({ children }: { children: ReactNode }) {
   }, []);
   return (
     <AudienceContext.Provider value={{ audience, setAudience }}>
-      <main ref={main} id="main-content" className="lp lp-audience-page" data-audience={audience}>
+      {/* No id here: the skip link's #main-content target is the hero (LpHero), past the nav. */}
+      <main ref={main} className="lp lp-audience-page" data-audience={audience}>
         <span className="lp-sr-only" role="status">{announcement}</span>
         {children}
       </main>

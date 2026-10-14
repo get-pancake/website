@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { ROADMAP_POSTING_OPEN, type RoadmapComment } from "@/components/sections/roadmap/roadmap-data";
 import { isAdmin } from "@/lib/auth/admin";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
+import { hasApprovedOrigin } from "@/lib/request-origin";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 import { isServiceConfigured } from "@/lib/supabase/env";
 
@@ -51,10 +52,14 @@ export async function GET(_request: Request, { params }: { params: { id: string 
 }
 
 /**
- * Post a comment. Open to anyone (no login), guarded by a honeypot + per-IP
- * rate limit + validation. Writes via the service-role client.
+ * Post a comment. Open to anyone (no login), guarded by the origin allow-list
+ * + a honeypot + per-IP rate limit + validation. Writes via the service-role
+ * client.
  */
 export async function POST(request: Request, { params }: { params: { id: string } }) {
+  if (!hasApprovedOrigin(request)) {
+    return NextResponse.json({ error: "Request not allowed." }, { status: 403 });
+  }
   // Paused for visitors (ROADMAP_POSTING_OPEN); a signed-in admin still comments. Checked first, so
   // a paused board answers 403 whatever the backend's state.
   if (!ROADMAP_POSTING_OPEN && !(await isAdmin())) {

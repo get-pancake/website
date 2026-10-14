@@ -19,6 +19,7 @@ import {
 } from "@/lib/analytics/vendor-config";
 import { SUPPORT_EMAIL, SUPPORT_PATH } from "@/lib/contact";
 import { SITE_DESCRIPTION } from "@/lib/copy";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { PRODUCTION_SITE_HOSTS, SITE_HOST, SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
 
@@ -293,11 +294,11 @@ fbq('track', 'PageView');})();`,
         {/* Organization + WebSite JSON-LD — present on every page */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationJsonLd) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(webSiteJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(webSiteJsonLd) }}
         />
       </head>
       {/* Body styles (margin: 0; background-color: var(--surface); color:

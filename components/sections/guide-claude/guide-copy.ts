@@ -42,7 +42,8 @@ export const GUIDE_PATH = "/claude";
 export const GUIDE_MD_PATH = "/guides/claude.md";
 export const PROMO_CODE = "PANCAKE20";
 /** The campaign page: the same guide with the offer. The ManyChat DMs link here, so the address
- *  stays. Unlinked from the site, noindex, canonical to GUIDE_PATH. */
+ *  stays. Unlinked from the site and noindex (no cross-canonical since 2026-10-13: the two
+ *  signals contradicted each other). */
 export const GUIDE_OFFER_PATH = "/guides/claude";
 
 /** The agent version's offer line. public/guides/claude.md does not carry it (that file is
@@ -57,10 +58,10 @@ export function withOfferMarkdown(markdown: string): string {
 }
 
 export const GUIDE_META = {
-  /** <title>: the three clients and the protocol people search for (audit 7.7). */
-  title: "Use Pancake in Claude, Claude Code or Codex (MCP)",
+  /** <title>: the clients and the protocol people search for (audit 7.7; ChatGPT since 2026-10-13). */
+  title: "Use Pancake in Claude, ChatGPT, Claude Code or Codex (MCP)",
   description:
-    "Connect Pancake to Claude, Claude Code or Codex in five minutes. Ask for warm leads, build Plays and edit any message from one chat. No API key.",
+    "Connect Pancake to Claude, ChatGPT, Claude Code or Codex in five minutes. Ask for warm leads, build Plays and edit any message from one chat. No API key.",
   /** og:title / twitter:title (audit 8.5): og:site_name already says Pancake. */
   ogTitle: "Use Pancake in Claude",
   /** The card is the homepage's (brief §2), so the alt is the text in that image. */
@@ -157,7 +158,7 @@ export const STEP_ACCOUNT = {
 export const MCP_URL = "https://app.pancake.ai/api/mcp";
 const SETUP_LINE = "Set up Pancake by reading https://pancake.ai/install.md and following its instructions";
 
-export type ClientTabId = "claude" | "claude-code" | "codex" | "other";
+export type ClientTabId = "claude" | "claude-code" | "chatgpt" | "codex" | "other";
 
 export const STEP_CONNECT = {
   num: "02",
@@ -166,6 +167,7 @@ export const STEP_CONNECT = {
   tabs: [
     { id: "claude", label: "Claude", logo: "claude" },
     { id: "claude-code", label: "Claude Code", logo: "claude" },
+    { id: "chatgpt", label: "ChatGPT", logo: "openai" },
     { id: "codex", label: "Codex", logo: "openai" },
     { id: "other", label: "Other agents", logo: "mcp" },
   ] as const satisfies readonly { id: ClientTabId; label: string; logo: "claude" | "openai" | "mcp" }[],
@@ -188,6 +190,29 @@ export const STEP_CONNECT = {
     manualIntro: "Claude Code adds the server and asks you to sign in. To do it by hand:",
     manual: `claude mcp add --transport http --scope user pancake ${MCP_URL}`,
     after: { before: "Then type ", code: "/mcp", after: ", select Pancake and sign in." },
+  },
+  // 2026-10-13 (founder: ChatGPT works with Pancake). The steps are OpenAI's own for a custom
+  // MCP server (developers.openai.com, "Add custom MCP server"); ChatGPT signs in with a client
+  // ID metadata document, which Pancake's sign-in supports. Whether the option shows depends on
+  // the visitor's ChatGPT plan and workspace, hence the last line.
+  chatgpt: {
+    caption: "chatgpt.com, on the web",
+    steps: {
+      open: { before: "In ChatGPT, open ", strong: "Plugins", mid: ", click + and pick ", strong2: "Add custom MCP server", after: "." },
+      name: { before: "Name it ", code: "Pancake", after: " and paste this as the server URL:" },
+      create: {
+        before: "Choose ",
+        strong: "OAuth",
+        mid: ", accept the warning and click ",
+        strong2: "Create as a plugin",
+        after: ". Sign in to Pancake when ChatGPT asks: pick your workspace and approve.",
+      },
+      check: { before: "Install the plugin. In a new chat, type ", code: "@Pancake", after: " and check the connection:" },
+    },
+    url: MCP_URL,
+    checkPrompt: "What's in my Pancake Brain? Answer in five lines.",
+    after:
+      "If ChatGPT answers with your company, you're connected. Custom servers depend on your ChatGPT plan and workspace settings. If the option is missing, use Claude or Codex.",
   },
   codex: {
     intro: "Paste this line into Codex:",
@@ -263,7 +288,7 @@ export const STEP_ASK = {
       title: "When new leads come in",
       prompts: [
         { id: "prompt-morning", text: "Show me the new leads, best fit first, with the reason for each one." },
-        { id: "prompt-daily", text: "Find me [10] new leads today. Stay under [500] credits and tell me what you spent." },
+        { id: "prompt-daily", text: "Find me [10] new leads today. Stay under [3,000] credits and tell me what you spent." },
       ],
     },
     {

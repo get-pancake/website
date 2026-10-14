@@ -538,6 +538,10 @@ export function VxDemoPlayer({
       // Play: the visitor asked to watch — no hover hold, no first-start gate
       x.hover = false;
       x.gate = false;
+      // A tab chosen while paused switched autoplay off (userGo) and rests on its final frame:
+      // Play carries on from there, or the button read "playing" over a still demo. Reduced
+      // motion stays on final frames.
+      if (!x.reduced) x.autoplay = true;
     }
     setPaused(x.paused);
     setRail();

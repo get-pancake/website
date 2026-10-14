@@ -387,7 +387,13 @@
    nothing. Laid out (the renderer reads their geometry), not painted.
    The hero keeps its server-rendered artboard: first paint must show the
    rainbow. [data-lp-gl-off] = no usable WebGL / context lost / reduced
-   motion / kill switch → the artboard shows. */
+   motion / kill switch → the artboard shows.
+   2026-10-13: both attributes come from a script, so until one ran the
+   pricing text sat on the section's black. Two things cover that without
+   painting a ring early: the pricing wrapper draws the art's cream disc as a
+   gradient from the first paint (pricing.css, .lp-price-art), and a visitor
+   without JavaScript, who never gets a canvas, gets the artboard from a
+   <noscript> style (LpPricing, LpCta). */
 .lp-cta__art .lp-anim-box,
 .lp-price-art .lp-anim-box {
   visibility: hidden;

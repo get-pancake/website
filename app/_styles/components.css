@@ -4837,7 +4837,9 @@
     padding-bottom: calc(2 * var(--spacing-xl));
   }
 
-  .roadmap-hero__title {
+  /* h1.: the kit's `h1.heading` (0,1,1) set the header-01 size over this rule's own, so the
+     headline was 64px on phones (five lines) and clipped at 320px. */
+  h1.roadmap-hero__title {
     margin: 0;
     font-weight: var(--font-semibold);
     /* Bigger than the lede, smaller than the full-page hero title. */
@@ -6138,8 +6140,10 @@
     color: var(--subtle-text);
   }
 
+  /* pink-40 alone is 3.19:1 on the card's pink-10; the /for kit's darker pink
+     (--vx-competitor-fg: 74% pink-40 on ink) is 4.75:1 */
   .vvp-pcard--pancake .vvp-pcard__choose {
-    color: var(--palette-pink-40);
+    color: color-mix(in srgb, var(--palette-pink-40) 74%, var(--text));
   }
 
   @media (max-width: 900px) {

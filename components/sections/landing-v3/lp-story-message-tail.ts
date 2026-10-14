@@ -49,7 +49,8 @@ import { SM_POSE, SM_STORY, type SmConvo } from "./lp-story-message-data";
  *    owns in its frame-0 state (the other conversations away and hidden, the accounts hidden,
  *    the camera at frame 5's scale) and measures what it will type and where the rows stand.
  * 2. The core builds frames 1–2 up to "Sent", then calls `tail.add({ tl, tSent, lead })` once:
- *    this half appends its beats (labels f3 … f6) after `tSent`.
+ *    this half appends its beats (labels f3 … f6) after `tSent` (a generator since 2026-10-13:
+ *    the core runs it to its end, pausing where it yields).
  * Same rules as the core: gsap.set for frame 0 (the caller's gsap.context reverts it), sets and
  * tweens only, no callbacks, no randomness, no DOM left behind.
  */
@@ -257,7 +258,10 @@ export function prepareSmTail(root: HTMLElement, kit: SmKit) {
   });
 
   return {
-    add({ tl, tSent, lead }: SmTailHandoff) {
+    /* a generator since 2026-10-13: it yields between its blocks, so the build can be spread over
+       idle slots (lp-play-once's startBuild). It only creates tweens: nothing here reads the
+       layout or writes before the timeline is rendered. */
+    *add({ tl, tSent, lead }: SmTailHandoff): Generator<void, void, void> {
       /* — C · frame 3: the truck. One move for every conversation, times its depth; the one in
            front comes from off the stage — */
       const tTruck = tSent + T.truckAfter;
@@ -270,6 +274,7 @@ export function prepareSmTail(root: HTMLElement, kit: SmKit) {
       });
       tl.set(next.el, { autoAlpha: 1 }, tTruck);
       tl.to(next.el, { ...kit.at(next.data.place, next.data.place.s), ...move }, tTruck);
+      yield;
       const typed = kit.typeMessage(tTruck + T.nextType, nextRun, nextCaret, nextGlyphs);
       // f3: three glyphs into the last line, the storyboard's own moment (as f2)
       const lastTop = nextGlyphs[nextGlyphs.length - 1].top;
@@ -278,6 +283,7 @@ export function prepareSmTail(root: HTMLElement, kit: SmKit) {
       tl.addLabel("f3", tF3);
       kit.typeDone(nextRun, nextCaret, typed.end + kit.pace.caretOff);
       const tNextSent = kit.markSent(nextCard, typed.end + kit.pace.sentAfter);
+      yield;
 
       /* — D · frame 4: the pull-back, and the sending account's title — */
       const tPull = tNextSent + T.pullAfter;

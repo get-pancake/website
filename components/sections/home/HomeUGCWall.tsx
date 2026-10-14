@@ -5,7 +5,7 @@
  * 2026-10-13; app/layout.tsx used to load it on every route, where nothing
  * rendered this wall).
  *
- * Content pipeline (zero-config drop-in — contract in `public/ugc/README.md`):
+ * Content pipeline (zero-config drop-in — contract in `docs/public-assets/ugc/README.md`):
  *   - At build/render time we read `public/ugc/*.mp4` from the filesystem.
  *     Each clip may ship an optional sidecar `<basename>.json`
  *     ({ name, handle, quote }) that powers the caption overlay.

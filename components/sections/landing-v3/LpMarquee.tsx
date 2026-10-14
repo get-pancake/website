@@ -4,7 +4,7 @@ import { LpMarqueePause } from "@/components/sections/landing-v3/LpMarqueePause"
 
 /** Customer logos in the founder's order. The brain landing is the source
  * for the plum masks, optical sizing and continuous leftward scroll.
- * Artwork and provenance: public/logos/customers/README.md.
+ * Artwork and provenance: docs/public-assets/logos/customers/README.md.
  * 2026-10-12: a pointer resting on the band slows the loop instead of stopping
  * it (LpMarqueePause). 2026-10-13: the pause button is gone (founder).
  */
@@ -28,7 +28,7 @@ const LOGOS: CustomerLogo[] = [
   { name: "Praxis", file: "praxis.png", ratio: 1392 / 370, body: [0.24, 0.755], yc: true },
   { name: "Kinro", file: "kinro.svg", ratio: 1308 / 356, body: [0.25, 0.75], yc: true },
   // Vector Legal (vectorlegal.com, YC W26), founder 2026-10-13. Their header lockup, composed:
-  // the site has no wordmark file (public/logos/customers/README.md); body = the capital V.
+  // the site has no wordmark file (docs/public-assets/logos/customers/README.md); body = the capital V.
   { name: "Vector Legal", file: "vector-legal.png", ratio: 1111 / 151, body: [0.079, 0.795], yc: true },
   { name: "Covera", file: "covera.png", ratio: 188 / 40, body: [0.32, 0.995], yc: true },
   { name: "Spacefill", file: "spacefill.svg", ratio: 192 / 33, body: [0.2411, 0.7591] },

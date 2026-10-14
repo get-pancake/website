@@ -41,6 +41,16 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
  * GSAP traps avoided as in lp-story-claude-timeline.ts: every instant change is a 1 ms tween
  * (`step`), never a zero-duration set (gsap.context's revert replays those last, in an order
  * that differs per engine), and every property the timeline touches has a frame-0 gsap.set.
+ *
+ * In slices (2026-10-13, the bug check's S1): the builder is a generator, `buildDemoPancakeSteps`,
+ * that the player runs over idle slots (lp-play-once's startBuild) instead of one long task at
+ * the visitor's first input; `buildDemoPancake` runs it to its end in one go. It yields only
+ * AFTER the geometry block: everything it reads from the layout is read before the first
+ * yield, on the untouched rest layout, so a frame or a GSAP tick between two slices changes
+ * nothing it measures. And never INSIDE the frame-0 block: the sets write what the markup
+ * shows, but an element GSAP has given an inline transform is rasterised a hair differently
+ * (the placeholder sits a device pixel lower, measured), and that one step must land in one
+ * frame, as it always has. The tweens write nothing until the player seeks them.
  */
 
 export type BuiltDemo = { tl: gsap.core.Timeline; cleanup: () => void };
@@ -96,6 +106,14 @@ const CARD_R = 16;
 const CURSOR_FROM = { x: 0.78, y: 1.04 } as const;
 
 export function buildDemoPancake(view: HTMLElement): BuiltDemo {
+  const steps = buildDemoPancakeSteps(view);
+  for (;;) {
+    const step = steps.next();
+    if (step.done) return step.value;
+  }
+}
+
+export function* buildDemoPancakeSteps(view: HTMLElement): Generator<void, BuiltDemo, void> {
   const $ = <T extends Element = HTMLElement>(sel: string): T => {
     const el = view.querySelector<T>(sel);
     if (!el) throw new Error(`demo-pancake: ${sel} missing`);
@@ -203,6 +221,7 @@ export function buildDemoPancake(view: HTMLElement): BuiltDemo {
 
   const foundTo = Number(count.textContent) || 0;
   registerTxtPlugin();
+  yield; // the geometry is read: nothing below measures the layout
 
   const tl = gsap.timeline({ paused: true });
   // an instant change as a 1 ms tween, not a zero-duration set (see the header)
@@ -250,6 +269,7 @@ export function buildDemoPancake(view: HTMLElement): BuiltDemo {
   gsap.set(after, { autoAlpha: 0, y: 6 });
   if (cursor) gsap.set(cursor, { x: ex, y: ey, opacity: 0 });
   if (cursorArrow) gsap.set(cursorArrow, { scale: 1, transformOrigin: "2px 2px" });
+  yield; // frame 0 is set, in one slice
 
   /* ── 1 · the request types into the chat bar, at a pace one can read ── */
   step(barPh, { autoAlpha: 0 }, T0 - STEP);
@@ -285,6 +305,7 @@ export function buildDemoPancake(view: HTMLElement): BuiltDemo {
   tl.to(chip, { autoAlpha: 0, duration: 0.25, ease: "power2.in" }, SEND);
   tl.to(bar, { top: dockTop, height: dockH, duration: 0.62, ease: "power3.inOut" }, SEND + 0.04);
   tl.to(barAsk, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, SEND + 0.5);
+  yield;
 
   /* ── 3 · the research: three tool calls, one at a time ── */
   const WORK0 = SEND + 0.6;
@@ -322,6 +343,8 @@ export function buildDemoPancake(view: HTMLElement): BuiltDemo {
     tl.to(r.ok, { scale: 1, duration: 0.3, ease: "back.out(2.2)" }, t + 0.04);
     drawn = t + 0.3;
   });
+
+  yield;
 
   /* ── 6 · the card grows, the button comes, the cursor presses it ── */
   const BTN = drawn + 0.15;
