@@ -104,6 +104,9 @@ const ALLOW = [
   [/\bco-?pilots?\b/i, /\bGitHub Copilot\b/g],
   // (the f4 "+56% reply rate" alt allowance went with the feature cards, 2026-10-11: the V2
   // "Pancake learns" story shows approved shares, no rate figure)
+  // the sources story's hub label, the founder's own figure (2026-10-13: "Mets 30+ data provider
+  // sur pancake.ai"); any other "N+" still fails
+  [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b30\+ data providers\b/g],
 ];
 /** Rules a negated sentence may cross (the product's boundaries, said as boundaries). */
 const NEGATABLE = new Set(["email outreach", "phone lookup / calls", "CRM sync/export", "website visitors", "local/consumer leads"]);
