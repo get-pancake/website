@@ -5,6 +5,7 @@ import { LpHeroAgentArt } from "./LpHeroAgentArt";
 import { LpArcCanvas } from "@/components/sections/landing-v3/LpArcCanvas";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
+import { LpProductHunt } from "@/components/sections/landing-v3/LpProductHunt";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { LpViewportVar } from "@/components/sections/landing-v3/LpViewportVar";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
@@ -100,6 +101,8 @@ export function LpHero() {
                 >
                   Book a demo
                 </LpFxLink>
+                {/* out of flow, under the row; hidden until the Product Hunt launch opens */}
+                <LpProductHunt />
               </div>
             </div>
             <div className="lp-hero-col lp-hero-col--agent"><LpAgentStart /></div>
