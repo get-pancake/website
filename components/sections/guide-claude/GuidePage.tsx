@@ -348,6 +348,40 @@ function StepConnect() {
         </p>
       </>
     ),
+    chatgpt: (
+      <>
+        <p className="gd-caption">{c.chatgpt.caption}</p>
+        <ol className="gd-list">
+          <li>
+            {c.chatgpt.steps.open.before}
+            <strong>{c.chatgpt.steps.open.strong}</strong>
+            {c.chatgpt.steps.open.mid}
+            <strong>{c.chatgpt.steps.open.strong2}</strong>
+            {c.chatgpt.steps.open.after}
+          </li>
+          <li>
+            {c.chatgpt.steps.name.before}
+            <code>{c.chatgpt.steps.name.code}</code>
+            {c.chatgpt.steps.name.after}
+            <CopyBlock id="chatgpt-url" text={c.chatgpt.url} />
+          </li>
+          <li>
+            {c.chatgpt.steps.create.before}
+            <strong>{c.chatgpt.steps.create.strong}</strong>
+            {c.chatgpt.steps.create.mid}
+            <strong>{c.chatgpt.steps.create.strong2}</strong>
+            {c.chatgpt.steps.create.after}
+          </li>
+          <li>
+            {c.chatgpt.steps.check.before}
+            <code>{c.chatgpt.steps.check.code}</code>
+            {c.chatgpt.steps.check.after}
+            <CopyBlock id="chatgpt-check" text={c.chatgpt.checkPrompt} />
+          </li>
+        </ol>
+        <p>{c.chatgpt.after}</p>
+      </>
+    ),
     codex: (
       <>
         <p>{c.codex.intro}</p>

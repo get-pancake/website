@@ -50,6 +50,18 @@ You cannot add a connector yourself. Walk the user through it, one step at a tim
 3. A Pancake window opens: pick the workspace and approve.
 4. Open a new chat, paste this file again, and go to step 3.
 
+### If you are ChatGPT
+
+You cannot add a connection yourself. Walk the user through it, one step at a time:
+
+1. On chatgpt.com, open **Plugins**, click **+**, then **Add custom MCP server**.
+2. Name: `Pancake`. Server URL: `https://app.pancake.ai/api/mcp`. Authentication: **OAuth**.
+3. Accept the warning, click **Create as a plugin**, then install it.
+4. When ChatGPT asks to sign in to Pancake: pick the workspace and approve.
+5. Open a new chat, type `@Pancake`, paste this file again, and go to step 4.
+
+Custom MCP servers depend on the user's ChatGPT plan and workspace settings. If the option is missing, say so and offer Claude or Codex.
+
 ### Any other agent
 
 Follow https://pancake.ai/install.md. It covers the clients that support Pancake's sign-in.

@@ -107,7 +107,7 @@ Start free links use `app_cta_clicked` above.
 | Event | Tier | Exact firing rule | Event-specific fields |
 | --- | --- | --- | --- |
 | `guide_claude_copy` | Diagnostic | A Copy button's clipboard write succeeded | `block_id` (a fixed slug from `guide-copy.ts`, e.g. `promo-code`, `hero-setup-md`, `prompt-first-play`) |
-| `guide_claude_tab` | Diagnostic | The visitor picks a client tab in step 02 | `tab_id` (`claude`, `claude-code`, `codex`, `other`) |
+| `guide_claude_tab` | Diagnostic | The visitor picks a client tab in step 02 | `tab_id` (`claude`, `claude-code`, `chatgpt`, `codex`, `other`) |
 
 PostHog captures both via `PANCAKE_ACQUISITION_EVENT`. GTM has no trigger for
 them; add one only if GA4 should see them.
