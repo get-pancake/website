@@ -29,8 +29,9 @@ import type { ContentStatus } from "@/lib/placeholders";
  *     founder then asked for the count ("yes add 12 data providers to the zoom label"): twelve is
  *     the number of data providers wired into the product's job toolkit (pancake-cmo #1616: Apify,
  *     Coresignal, Crustdata, DataForSEO, Dealroom, Exa, Firecrawl, Linkup, Ocean.io, PredictLeads,
- *     TheirStack, Wappalyzer; its thirteenth provider is the model, not a data source). The zoom
- *     draws six of them. If the toolkit's list changes, this number changes with it.
+ *     TheirStack, Wappalyzer; its thirteenth provider is the model, not a data source). Later
+ *     that day he set the figure himself ("Mets 30+ data provider sur pancake.ai"): the label
+ *     reads "30+ data providers". The zoom draws six of the twelve named above.
  *
  * STORY_SOURCES_ALT is fixed (lp-dive-stages.ts imports it): what the animation shows, the only
  * copy a screen reader gets (the shell's host aria-label).
@@ -183,9 +184,9 @@ export const STORY_SOURCES: StorySourcesStory = {
       room for its name: the shortest names go where the next disc is closest (story-sources.css
       places the names; QA measured every name against discs, dots, wires and the panel). A node set back to "placeholder" does not render in
       production, and its wire and its name go with it; with no node left the story ends on the
-      open lead panel. The label carries no count (Figma's does; the lint rejects it). */
+      open lead panel. The label carries the founder's count ("30+", 2026-10-13). */
   hub: {
-    label: { text: "12 data providers", status: "final" },
+    label: { text: "30+ data providers", status: "final" },
     point: { x: 391, y: 246.77 },
     nodes: [
       {

@@ -294,7 +294,7 @@ export const pricingV2 = {
       messages". */
   value: [
     { rest: "Your GTM Brain, built from your website." },
-    { rest: "12 data providers included." },
+    { rest: "30+ data providers included." },
     { rest: "Leads matched to your ICP." },
     { rest: "A personal message for each lead." },
     { rest: "You approve every lead first." },
@@ -324,10 +324,10 @@ export const pricingV2 = {
  *   personas, competitors, messaging and voice, every Play starts from it,
  *   and it learns from the leads they approve or pass (not from replies:
  *   lp-steps-content.ts).
- * - "12 data providers" is the homepage's own label (lp-story-sources-data.ts
- *   hub, founder 2026-10-13: the providers in the product's job toolkit);
- *   the three named here are the ones behind funding, open roles and people
- *   data. No contract or API key on the customer's side.
+ * - "30+ data providers" is the homepage's own label (lp-story-sources-data.ts
+ *   hub; the founder's figure, 2026-10-13: "Mets 30+ data provider sur
+ *   pancake.ai"); the three named here are the ones behind funding, open
+ *   roles and people data. No contract or API key on the customer's side.
  * - Signals: the ways a Play finds people (/plays). Job changes and news are
  *   NOT among them.
  * - Outreach: a personal message per lead in the customer's voice, sent from
@@ -339,15 +339,15 @@ export const pricingV2 = {
  */
 export const pricingLead = {
   title: "Leads matched to your business, not to a filter.",
-  lede: "Your GTM Brain, 12 data providers and outreach in your voice work on every lead. All in the plan.",
+  lede: "Your GTM Brain, 30+ data providers and outreach in your voice work on every lead. All in the plan.",
   points: [
     {
       title: "Your GTM Brain",
       body: "Pancake reads your website and learns your ICP, your personas, your competitors and your voice. Every search and message starts from that context, and it learns from each lead you approve or pass.",
     },
     {
-      title: "12 data providers, included",
-      body: "Dealroom, TheirStack, Coresignal and nine more, in one plan. No contract to sign, no API key, no data bill on the side.",
+      title: "30+ data providers, included",
+      body: "Dealroom, TheirStack, Coresignal and more, in one plan. No contract to sign, no API key, no data bill on the side.",
     },
     {
       title: "Live buying signals",
@@ -488,7 +488,7 @@ export const pricingFaq = {
   items: [
     {
       q: "How many leads will I get?",
-      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} qualified leads a month on ${formatCredits(BASE_LEVEL.credits)} credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 12 providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
+      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} qualified leads a month on ${formatCredits(BASE_LEVEL.credits)} credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 30+ providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
     },
     {
       q: "How does the free trial work?",

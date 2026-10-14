@@ -604,7 +604,7 @@
   mix-blend-mode: normal;
 }
 /* Figma's label hugs its text at (123.094, 21.232), 104 wide: centred on that
-   box's axis (x 175.094) whatever the string's width ("12 data providers" is
+   box's axis (x 175.094) whatever the string's width ("30+ data providers" is
    wider than the box: a fixed 104 would let it run off to the right only) */
 .lp-src .lp-src-hublabel {
   font-size: 13px;
