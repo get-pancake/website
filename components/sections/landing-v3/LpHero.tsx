@@ -101,7 +101,7 @@ export function LpHero() {
                 >
                   Book a demo
                 </LpFxLink>
-                {/* out of flow, under the row; hidden until the Product Hunt launch opens */}
+                {/* out of flow, under the row: #1 Product of the Day on Product Hunt */}
                 <LpProductHunt />
               </div>
             </div>

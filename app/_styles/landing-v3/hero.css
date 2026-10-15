@@ -556,10 +556,10 @@
   }
 }
 
-/* ── Product Hunt badge (launch of 2026-10-14, LpProductHunt.tsx) ────────
+/* ── Product Hunt badge (#1 Product of the Day, 2026-10-14; LpProductHunt.tsx)
    Under the button row and OUT OF FLOW, so the hero keeps every pixel of
-   its geometry when the badge shows at 00:01 Pacific: it hangs in the room
-   the hero already leaves under the buttons. Product Hunt's badge is
+   its geometry with or without it: it hangs in the room the hero already
+   leaves under the buttons. Product Hunt's badge is
    250×54, drawn 44 tall with 71px of room on desktop (96 on tablets). On
    phones the buttons sit 64px above the fold and the demo card's top edge
    shows 17px above it (demo.css --lp-demowin-phone-peek): 47px of room, so
@@ -575,9 +575,6 @@
   left: 0;
   position: absolute;
   top: calc(100% + 14px);
-}
-.lp-hero-ph[hidden] {
-  display: none;
 }
 .lp-hero-ph img {
   display: block;
