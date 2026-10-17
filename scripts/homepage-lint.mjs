@@ -246,9 +246,10 @@ const BENTO_KPI_ALLOW = new Map([
   // Kinro: Pierre-Alexandre Kamienny on camera, "Pancake helped me book 15 meetings last week"
   // (merged compilation 61.68–63.72 s). One week, as he says it.
   ["15 meetings booked in a week", "Kinro, Pierre-Alexandre Kamienny"],
-  // Vector Legal: its Head of GTM's written statement, relayed by the founder on 2026-10-13 ("$50K
-  // in pipeline in 7 days from outreach on high-intent signals"). No other record in this repository.
-  ["$50K in pipeline in 7 days", "Vector Legal, relayed by the founder"],
+  // Vector Legal: its Head of GTM's written statement, relayed by the founder on 2026-10-13
+  // (pipeline in 7 days from outreach on high-intent signals). Without its dollar amount since
+  // 2026-10-17 (founder: no money in this testimonial). No other record in this repository.
+  ["7 days to real pipeline", "Vector Legal, relayed by the founder"],
 ]);
 if (!named.length) {
   const { bentoKpiClaims } = jiti("./components/sections/landing-v3/lp-bento-data.ts");

@@ -303,11 +303,16 @@ const BENTO_ENTRIES: BentoEntries = {
     },
   ],
   /* Vector Legal's figure. The founder supplied it on 2026-10-13 as a written quote from
-     "Aurelie, Head of GTM & Partnerships": "$50K in pipeline in 7 days from outreach on
-     high-intent signals". As a figure card it keeps the number and the time, in her words. No
-     other record of it is in the repository (scripts/homepage-lint.mjs BENTO_KPI_ALLOW). */
+     "Aurelie, Head of GTM & Partnerships": pipeline in 7 days from outreach on high-intent
+     signals, with a dollar amount on that pipeline. The card showed the amount until 2026-10-17
+     (founder: "il faut changer les testimonials de vector legal pour ne pas parler d'argent",
+     then "find a quote that is cool to read and not money oriented" and "quote should still be
+     promotional and bullish"): it keeps her time and her outcome, never a sum. /pricing quotes
+     her with the same claim, "Pancake built our pipeline in 7 days." (lib/copy.ts
+     pricingProof). Her yes on the new wording is the founder's to get. No other record of it
+     is in the repository (scripts/homepage-lint.mjs BENTO_KPI_ALLOW). */
   kpiA: [
-    { status: "final", kind: "kpi", logo: VECTOR_LEGAL, value: "$50K", label: "in pipeline in 7 days", source: "Vector Legal, written statement relayed by the founder on 2026-10-13 (the full sentence is in the comment above)." },
+    { status: "final", kind: "kpi", logo: VECTOR_LEGAL, value: "7 days", label: "to real pipeline", source: "Vector Legal, written statement relayed by the founder on 2026-10-13, without its dollar amount since 2026-10-17 (see the comment above)." },
   ],
   /* Diana Khramina's own figure: a message to Tristan on 2026-09-18, and the same on camera in
      her cut ("my reply rate is above 10% on most of campaigns I'm running. So it helped me to

@@ -380,8 +380,10 @@ export const pricingLead = {
  * (PricingProof.tsx). Each is a customer's own statement, sourced in the
  * homepage testimonials' file (components/sections/landing-v3/
  * lp-bento-data.ts and its allow-list in scripts/homepage-lint.mjs): Kinro's
- * "15", Vector Legal's "$50K" and AgentMail's quote as the homepage shows
- * them; Praxis's "10+ meetings booked a week" is Diana Khramina's second
+ * "15" and AgentMail's quote as the homepage shows them; Vector Legal's
+ * homepage figure ("7 days to real pipeline") said as Aurelie's sentence,
+ * without the dollar amount of her statement (her yes on that wording is the
+ * founder's to get); Praxis's "10+ meetings booked a week" is Diana Khramina's second
  * figure, which left the homepage's seven cards for room, not for doubt
  * (her message of 2026-09-18 and her film). The title is the homepage's
  * (BENTO_TITLE). `logo` is the marquee's file in public/logos/customers, with
@@ -405,9 +407,9 @@ export const pricingProof = {
       logo: { file: "praxis.png", ratio: 1392 / 370 },
     },
     {
-      // a figure card, as on the homepage since 2026-10-13 (it was her quote)
-      figure: "$50K",
-      label: "in pipeline in 7 days",
+      // her quote again since 2026-10-17, without the dollar amount of her statement
+      // (founder: "not money oriented", "still promotional and bullish")
+      quote: "Pancake built our pipeline in 7 days.",
       who: "Aurelie, Head of GTM",
       company: "Vector Legal",
       logo: { file: "vector-legal.png", ratio: 1111 / 151 },
