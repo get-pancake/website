@@ -1,138 +1,128 @@
-import { LpCta } from "@/components/sections/landing-v3/LpCta";
-import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
+import { Fragment, type ReactNode } from "react";
+
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import {
   CONNECT_CLIENTS,
-  CONNECT_FINAL,
-  CONNECT_HERO_PRIMARY,
-  CONNECT_HERO_SETUP,
-  CONNECT_META_SHARED,
-  CONNECT_OTHERS,
-  CONNECT_SETUP,
-  connectAskGroups,
-  connectControlCards,
-  connectFinalBody,
-  connectOtherRows,
+  CONNECT_SHARED,
+  connectOthers,
+  connectPrompts,
   type ConnectClient,
   type ConnectClientId,
+  type Inline,
 } from "@/components/sections/guide-claude/connect-copy";
-import { GuideCopyButton } from "@/components/sections/guide-claude/GuideCopyButton";
-import {
-  ConnectPanel,
-  ControlSection,
-  FaqSection,
-  Step,
-  StepAccount,
-  StepAsk,
-  StepSkills,
-  WhatSection,
-} from "@/components/sections/guide-claude/GuidePage";
+import { CopyBlock, Step } from "@/components/sections/guide-claude/GuidePage";
 import { GuideStartFree } from "@/components/sections/guide-claude/GuideStartFree";
-import { STEP_CONNECT } from "@/components/sections/guide-claude/guide-copy";
 import { VxHead } from "@/components/sections/verticals/VxHead";
-import { VxArrow } from "@/components/sections/verticals/VxRelated";
 import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
- * A connect page (/chatgpt, /codex): the Claude guide narrowed to one AI client, for the footer's
- * Features column (2026-10-17). Same kit and the guide's own sections (GuidePage exports them),
- * so a step, a prompt or a control card changed on /claude changes here too:
+ * A connect page (/chatgpt, /codex), linked from the footer's Features column (2026-10-17). A
+ * how-to, nothing else (founder: "simples et expliquer les guidelines clairement et
+ * efficacement"; connect-copy.ts):
  *
- *   nav → hero (Start free · copy what step 02 needs) → What Pancake does → Set it up (#setup:
- *   01 account, 02 this client's steps, 03 skills on /codex, then Ask) → You stay in charge →
- *   Questions → Other agents → final CTA → footer.
+ *   nav → H1 + one line → Four steps (#setup: the guide's step rows and copy blocks, Start free
+ *   in step 01) → Then ask (five prompts) → Good to know (one-line facts, the other clients)
+ *   → footer.
  *
- * No tabs and no "Copy as Markdown" card: the page is about one client, and the agent version
- * of the guide (/guides/claude.md) stays the guide's. The Start free links keep the guide's
- * analytics ids (app_guide_claude_hero / _final, allow-listed): page_path tells the pages apart.
- * Structured data: WebPage + BreadcrumbList (Home → this page) + FAQPage, as on the guide.
+ * The /for kit and the guide's sheet (.lp-vx, .lp-guide: step rows, copy blocks) plus
+ * verticals/know.css. Client islands: the copy buttons and the Start free pill, which keeps the
+ * guide's allow-listed analytics id (app_guide_claude_hero); page_path tells the pages apart.
+ * Structured data: WebPage + BreadcrumbList (Home → this page) + HowTo (the four steps).
  */
 export function ConnectPage({ id }: { id: ConnectClientId }) {
   const c = CONNECT_CLIENTS[id];
   return (
     <main className="lp lp-vx lp-guide lp-connect">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(connectJsonLd(c)) }} />
-      <LpFitVars />
       <LpNav />
-      <Hero c={c} />
-      <WhatSection />
+      <section id="main-content" tabIndex={-1} className="vx-hero gd-hero" aria-labelledby="gd-hero-title">
+        <div className="vx-col">
+          <h1 id="gd-hero-title" className="vx-hero__title gd-hero__title">
+            {c.h1}
+          </h1>
+          <p className="vx-hero__lede">{vxNoWidow(c.lede)}</p>
+          <p className="vx-hero__lede gd-hero__setup">{CONNECT_SHARED.setup}</p>
+        </div>
+      </section>
       <section id="setup" className="vx-sec gd-setup" aria-labelledby="gd-setup-title">
         <div className="vx-col">
-          <VxHead id="gd-setup-title" eyebrow={CONNECT_SETUP.eyebrow} title={CONNECT_SETUP.h2} />
+          <VxHead id="gd-setup-title" eyebrow={CONNECT_SHARED.steps.eyebrow} title={CONNECT_SHARED.steps.h2} />
           <ol className="gd-steps">
-            <StepAccount />
-            <Step num="02" title={c.connectTitle}>
-              <ConnectPanel id={c.id} />
-              <p className="gd-signin">{STEP_CONNECT.signIn}</p>
-            </Step>
-            {c.skills ? <StepSkills num="03" title={CONNECT_SETUP.skillsTitle} /> : null}
-            <StepAsk num={c.skills ? "04" : "03"} groups={connectAskGroups(c.name)} />
+            {c.steps.map((s, i) => (
+              <Step key={s.title} num={String(i + 1).padStart(2, "0")} title={s.title}>
+                <p>{rich(s.body)}</p>
+                {s.block ? <CopyBlock id={s.block.id} text={s.block.text} code={s.block.code} /> : null}
+                {s.after ? <p>{rich(s.after)}</p> : null}
+                {s.startFree ? (
+                  <p className="cn-start">
+                    <GuideStartFree ctaId="app_guide_claude_hero">{CONNECT_SHARED.startFree}</GuideStartFree>
+                  </p>
+                ) : null}
+              </Step>
+            ))}
           </ol>
         </div>
       </section>
-      <ControlSection cards={connectControlCards(c.name)} />
-      <FaqSection offer={false} items={c.faq} />
-      <OthersSection id={c.id} />
-      <LpCta
-        title={CONNECT_FINAL.title}
-        body={connectFinalBody(c.name)}
-        buttons={<GuideStartFree ctaId="app_guide_claude_final">{CONNECT_FINAL.cta}</GuideStartFree>}
-      />
+      <section className="vx-sec cn-prompts" aria-labelledby="cn-prompts-title">
+        <div className="vx-col">
+          <VxHead id="cn-prompts-title" eyebrow={CONNECT_SHARED.prompts.eyebrow} title={CONNECT_SHARED.prompts.h2} />
+          <div className="cn-prompts__list">
+            <p className="cn-prompts__intro">{CONNECT_SHARED.prompts.intro}</p>
+            {connectPrompts(c.name).map((p) => (
+              <Fragment key={p.id}>
+                <CopyBlock id={p.id} text={p.text} />
+                {p.note ? <p className="gd-prompts__note">{p.note}</p> : null}
+              </Fragment>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="vx-sec cn-know" aria-labelledby="cn-know-title">
+        <div className="vx-col">
+          <VxHead id="cn-know-title" eyebrow={CONNECT_SHARED.know.eyebrow} title={CONNECT_SHARED.know.h2} />
+          <ul className="vx-know">
+            {c.know.map((k, i) => (
+              <li key={i}>
+                {rich(k.text)}
+                {k.block ? <CopyBlock id={k.block.id} text={k.block.text} /> : null}
+              </li>
+            ))}
+          </ul>
+          <p className="cn-others">
+            {CONNECT_SHARED.others.lead}{" "}
+            {connectOthers(c.id).map((o, i) => (
+              <Fragment key={o.href}>
+                {i > 0 ? " · " : null}
+                <a className="lp-textlink" href={o.href}>
+                  {o.label}
+                </a>
+              </Fragment>
+            ))}
+          </p>
+        </div>
+      </section>
       <LpFooter />
     </main>
   );
 }
 
-function Hero({ c }: { c: ConnectClient }) {
-  return (
-    <section id="main-content" tabIndex={-1} className="vx-hero gd-hero" aria-labelledby="gd-hero-title">
-      <div className="vx-col">
-        <h1 id="gd-hero-title" className="vx-hero__title gd-hero__title">
-          {c.hero.title}
-        </h1>
-        <p className="vx-hero__lede">{vxNoWidow(c.hero.lede)}</p>
-        <p className="vx-hero__lede gd-hero__setup">{CONNECT_HERO_SETUP}</p>
-        <div className="lp-hero-btns vx-hero__btns gd-hero__btns">
-          <GuideStartFree ctaId="app_guide_claude_hero">{CONNECT_HERO_PRIMARY}</GuideStartFree>
-          <GuideCopyButton
-            text={c.hero.copy.text}
-            blockId={c.hero.copy.blockId}
-            label={c.hero.copy.label}
-            className="gd-copy--pill"
-          />
-        </div>
-      </div>
-    </section>
+/** Inline copy → text, <strong> (a button or menu name) and <code> (what you type). */
+function rich(parts: Inline[]): ReactNode {
+  return parts.map((p, i) =>
+    typeof p === "string" ? (
+      <Fragment key={i}>{p}</Fragment>
+    ) : "b" in p ? (
+      <strong key={i}>{p.b}</strong>
+    ) : (
+      <code key={i}>{p.code}</code>
+    ),
   );
 }
 
-/** Every other way in (the /for "Related" rows): Claude, the other connect page, other agents. */
-function OthersSection({ id }: { id: ConnectClientId }) {
-  const rows = connectOtherRows(id);
-  // the named clients only: "Also in Claude and Codex."
-  const names = rows.filter((r) => r !== CONNECT_OTHERS.other).map((r) => r.title);
-  return (
-    <section className="vx-sec vx-related" aria-labelledby="gd-others-title">
-      <div className="vx-col">
-        <VxHead id="gd-others-title" eyebrow={CONNECT_OTHERS.eyebrow} title={CONNECT_OTHERS.h2(names)} />
-        <ul className="vx-rel">
-          {rows.map((r) => (
-            <li key={r.href}>
-              <a className="vx-rel__row" href={r.href}>
-                <span className="vx-rel__name lp-display">{r.title}</span>
-                <span className="vx-rel__line">{vxNoWidow(r.line)}</span>
-                <VxArrow className="vx-rel__arrow" />
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </section>
-  );
-}
+const plain = (parts: Inline[]) => parts.map((p) => (typeof p === "string" ? p : "b" in p ? p.b : p.code)).join("");
 
 function connectJsonLd(c: ConnectClient) {
   const url = `${SITE_ORIGIN}${c.path}`;
@@ -148,21 +138,28 @@ function connectJsonLd(c: ConnectClient) {
         inLanguage: "en-US",
         isPartOf: { "@type": "WebSite", "@id": `${SITE_ORIGIN}/#website`, name: "Pancake", url: SITE_ORIGIN },
         breadcrumb: { "@id": `${url}#breadcrumb` },
+        mainEntity: { "@id": `${url}#howto` },
       },
       {
         "@type": "BreadcrumbList",
         "@id": `${url}#breadcrumb`,
         itemListElement: [
-          { "@type": "ListItem", position: 1, name: CONNECT_META_SHARED.crumbHome, item: SITE_ORIGIN },
+          { "@type": "ListItem", position: 1, name: CONNECT_SHARED.crumbHome, item: SITE_ORIGIN },
           { "@type": "ListItem", position: 2, name: c.meta.crumbPage, item: url },
         ],
       },
       {
-        "@type": "FAQPage",
-        "@id": `${url}#faq`,
-        mainEntity: c.faq
-          .filter((f) => f.inJsonLd !== false)
-          .map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
+        "@type": "HowTo",
+        "@id": `${url}#howto`,
+        name: c.h1,
+        description: c.lede,
+        step: c.steps.map((s, i) => ({
+          "@type": "HowToStep",
+          position: i + 1,
+          name: s.title,
+          text: [plain(s.body), s.block?.text, s.after ? plain(s.after) : undefined].filter(Boolean).join(" "),
+          url: `${url}#setup`,
+        })),
       },
     ],
   };

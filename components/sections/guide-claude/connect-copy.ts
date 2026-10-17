@@ -1,121 +1,126 @@
 import {
-  CONTROL,
-  FAQ,
-  FINAL,
   GUIDE_PATH,
   HERO,
   MCP_URL,
   SETUP_LINE,
   STEP_ASK,
-  type ClientTabId,
-  type GuideFaqItem,
-  type GuideMore,
+  STEP_CONNECT,
   type GuidePrompt,
 } from "@/components/sections/guide-claude/guide-copy";
-import { pricingV2 } from "@/lib/copy";
 import { OG_IMAGE_ALT } from "@/lib/social-meta";
-import { TRIAL_CREDITS_LABEL, TRIAL_LABEL } from "@/lib/trial";
 
 /**
  * The "Connect" pages: /chatgpt and /codex, one per AI client the site names besides Claude
  * (founder 2026-10-17: a Features column in the footer "like Gojiberry's", whose connect pages
- * are one per assistant). /claude stays the guide for Claude and Claude Code. A connect page is
- * that guide narrowed to one client (ConnectPage, built from GuidePage's own sections): the
- * client's own steps, no tabs, and the prompts, control cards and FAQ in its name.
+ * are one per assistant). /claude stays the guide for Claude and Claude Code.
  *
- * Truth (checked 2026-10-17 against pancake-cmo and get-pancake/agent-plugins):
- *   - the steps are the guide's (STEP_CONNECT.chatgpt / .codex), unchanged;
- *   - "shows the cost of a search before it starts" is the lead-finding tools' own instruction
- *     ("Tell the user the cost before starting one"), the same for every client;
- *   - adding a lead to a sequence: the enroll tool says "call it only after the member
- *     explicitly asks". The client's own confirm dialog is not claimed: it depends on the
- *     client, so the line says what Pancake tells it;
- *   - Codex signs in on its own from Codex CLI 0.148 (agent-plugins codex/README.md);
- *   - ChatGPT's custom servers depend on the plan and workspace, as the guide says.
+ * Founder, same day, on these pages: "les pages doivent être simples et expliquer les guidelines
+ * clairement et efficacement". So a connect page is a how-to and nothing else: one line on what
+ * you get, four numbered steps, five prompts to start with, a "Good to know" list, the other
+ * clients. No marketing sections (no "What Pancake does", control cards, FAQ or CTA card).
+ *
+ * The steps are the product's own (checked 2026-10-17):
+ *   - ChatGPT: the guide's ChatGPT tab (STEP_CONNECT.chatgpt: OpenAI's custom MCP server flow,
+ *     founder-confirmed 2026-10-13). The app shows no ChatGPT route of its own, and the OpenAI
+ *     directory listing was still a draft (pancake-cmo docs/integrations/
+ *     pancake-marketplace-submissions.md).
+ *   - Codex: the app's terminal route (Settings › Claude & Codex, "Prefer the terminal?":
+ *     RECOMMENDED_MCP_CLIENTS in apps/frontend/src/features/settings/mcp-install-data.ts), plus the
+ *     sign-in from get-pancake/agent-plugins codex/README.md (`codex mcp login pancake`, Codex CLI
+ *     0.148 or newer). The plugin carries the four skills, so there is no skills step. The app's
+ *     paste-one-line route (install.md) is the "no terminal" line under Good to know.
+ *   - "shows the cost of a search before it runs": the lead-finding tools' own instruction; "only
+ *     when you ask": the enroll tool's ("call it only after the member explicitly asks").
  */
 
-export type ConnectClientId = Extract<ClientTabId, "chatgpt" | "codex">;
+export type ConnectClientId = "chatgpt" | "codex";
 
 export const CONNECT_PATHS: Record<ConnectClientId, string> = {
   chatgpt: "/chatgpt",
   codex: "/codex",
 };
 
-type ConnectRow = { title: string; line: string; href: string };
+/** Inline copy: plain text, a <strong> (a button or menu name) or a <code> (what you type). */
+export type Inline = string | { b: string } | { code: string };
+
+export type ConnectStep = {
+  title: string;
+  body: Inline[];
+  /** A copy block under the body: a URL, a command or a prompt. */
+  block?: { id: string; text: string; code?: boolean };
+  /** One line under the block. */
+  after?: Inline[];
+  /** Step 01 carries the Start free pill. */
+  startFree?: boolean;
+};
+
+export type ConnectKnow = { text: Inline[]; block?: { id: string; text: string } };
 
 export type ConnectClient = {
   id: ConnectClientId;
   path: string;
-  /** The client's name, as its maker writes it. */
   name: string;
-  meta: {
-    /** <title>: the client, the protocol people search for, and the outcome. */
-    title: string;
-    description: string;
-    ogTitle: string;
-    /** BreadcrumbList: Home → this page (no /connect index page). */
-    crumbPage: string;
-  };
-  hero: {
-    title: string;
-    lede: string;
-    /** The second hero button copies the one thing step 02 needs. */
-    copy: { label: string; text: string; blockId: string };
-  };
-  /** Step 02's title. */
-  connectTitle: string;
-  /** Step 03 installs the skills (agents with a skills folder: Codex, not ChatGPT). */
-  skills: boolean;
-  faq: GuideFaqItem[];
+  meta: { title: string; description: string; ogTitle: string; crumbPage: string };
+  h1: string;
+  lede: string;
+  steps: ConnectStep[];
+  know: ConnectKnow[];
 };
 
-/* ─── shared pieces, in the client's name ──────────────────────────────────── */
+/* ─── shared ────────────────────────────────────────────────────────────────── */
 
-/** The guide's prompts, with the add-to-sequence note in this client's name. */
-export function connectAskGroups(name: string): { title: string; prompts: GuidePrompt[]; more?: GuideMore }[] {
-  return STEP_ASK.groups.map((g) => ({
-    ...g,
-    prompts: g.prompts.map((p) =>
-      p.id === "prompt-campaign"
-        ? {
-            ...p,
-            note: `Adding a lead to a sequence starts the outreach from your own account. Pancake tells ${name} to do it only when you ask.`,
-          }
-        : p,
-    ),
-  }));
-}
+const ACCOUNT_STEP: ConnectStep = {
+  title: "Create your Pancake account",
+  body: ["Click ", { b: "Start free" }, " and add your website. Pancake builds your Brain in a few minutes."],
+  startFree: true,
+};
 
-/** The guide's four control cards; the credit line names this client. */
-export function connectControlCards(name: string): { title: string; body: string }[] {
-  return CONTROL.cards.map((c) =>
-    c.title === "Every credit." ? { ...c, body: `${name} shows the cost of a search before it starts.` } : c,
+const checkStep = (name: string, body: Inline[]): ConnectStep => ({
+  title: "Check the connection",
+  body,
+  block: { id: `${name.toLowerCase()}-check`, text: STEP_CONNECT.chatgpt.checkPrompt },
+  after: [`If ${name} answers with your company, you're connected.`],
+});
+
+const sharedKnow = (name: string): ConnectKnow[] => [
+  { text: ["No API key. You sign in to Pancake in your browser."] },
+  { text: ["Same Brain, Plays and leads as the app."] },
+  { text: [`${name} shows the cost of a search before it runs.`] },
+  { text: ["Outreach starts only when you add a lead to a sequence."] },
+];
+
+const REMOVE_KNOW: ConnectKnow = {
+  text: ["Remove access anytime in Pancake, under ", { b: "Settings → Claude & Codex" }, "."],
+};
+
+/** Five prompts from the guide, in its order: Brain, first Play, new leads, a message, a sequence. */
+const PROMPT_IDS = ["prompt-brain", "prompt-first-play", "prompt-morning", "prompt-message", "prompt-campaign"];
+
+export function connectPrompts(name: string): GuidePrompt[] {
+  const all: GuidePrompt[] = STEP_ASK.groups.flatMap((g) => [...g.prompts]);
+  return PROMPT_IDS.map((id) => all.find((p) => p.id === id)!).map((p) =>
+    p.id === "prompt-campaign"
+      ? {
+          id: p.id,
+          text: p.text,
+          note: `This starts real outreach from your own account. Pancake tells ${name} to do it only when you ask.`,
+        }
+      : { id: p.id, text: p.text },
   );
 }
 
-/** The guide's FAQ answers that hold for any client, in this client's name. */
-function sharedFaq(name: string): GuideFaqItem[] {
-  return [
-    FAQ.items[0], // "Do I need an API key?"
-    {
-      q: "Is it the same data as the app?",
-      a: `Yes. Same Brain, same Plays, same leads. A lead you approve in ${name} shows as approved in the app, and the other way around.`,
-    },
-    {
-      q: `Can ${name} send messages without me?`,
-      a: `No. Outreach starts only when you add a lead to a sequence. Pancake tells ${name} to do that only when you ask.`,
-    },
-    {
-      q: "What does it cost?",
-      a: `Pancake starts with a ${TRIAL_LABEL} and ${TRIAL_CREDITS_LABEL}, then costs from $${pricingV2.monthlyDollars} a month per workspace. Lead searches use credits, and ${name} tells you the cost of each search before it runs.`,
-      // as on the guide (D6): /pricing carries the price in its own structured data
-      inJsonLd: false,
-    },
-  ];
-}
-
-export const connectFinalBody = (name: string) =>
-  `Start your ${TRIAL_LABEL}, connect ${name}, create one Play. New leads keep coming.`;
+export const CONNECT_SHARED = {
+  /** Hero line under the lede: the guide's. */
+  setup: HERO.setup,
+  startFree: HERO.primary,
+  steps: { eyebrow: "Setup", h2: "Four steps" },
+  prompts: { eyebrow: "Prompts", h2: "Then ask", intro: "Copy one, replace what's in brackets, send." },
+  know: { eyebrow: "Details", h2: "Good to know" },
+  /** The closing line: every other way in. */
+  others: { lead: "Using another AI?", other: { label: "Other agents", href: `${GUIDE_PATH}#setup` } },
+  crumbHome: "Pancake",
+  ogImageAlt: OG_IMAGE_ALT,
+} as const;
 
 /* ─── the two pages ─────────────────────────────────────────────────────────── */
 
@@ -125,25 +130,45 @@ export const CONNECT_CLIENTS: Record<ConnectClientId, ConnectClient> = {
     path: CONNECT_PATHS.chatgpt,
     name: "ChatGPT",
     meta: {
-      title: "Use Pancake in ChatGPT (MCP): find customers from your chat",
+      title: "Connect Pancake to ChatGPT (MCP): four steps, no API key",
       description:
-        "Connect Pancake to ChatGPT in five minutes. Ask for warm leads, build Plays and edit any message from your chat. Browser sign-in, no API key.",
-      ogTitle: "Use Pancake in ChatGPT",
-      crumbPage: "Use Pancake in ChatGPT",
+        "Add Pancake to ChatGPT as a custom MCP server and sign in in your browser. Then ask for leads, build Plays and edit messages from your chat.",
+      ogTitle: "Connect Pancake to ChatGPT",
+      crumbPage: "Connect Pancake to ChatGPT",
     },
-    hero: {
-      title: "Find customers from ChatGPT",
-      lede: "Pancake gives ChatGPT the brain, the data and the tools to run your go-to-market. Ask for leads, build Plays and edit any message in plain English.",
-      copy: { label: "Copy server URL", text: MCP_URL, blockId: "hero-server-url" },
-    },
-    connectTitle: "Connect ChatGPT",
-    skills: false,
-    faq: [
+    h1: "Connect Pancake to ChatGPT",
+    lede: "Ask ChatGPT for leads, build Plays and edit messages, on the same workspace as the app.",
+    steps: [
+      ACCOUNT_STEP,
       {
-        q: "What if ChatGPT has no option for custom servers?",
-        a: "Custom servers depend on your ChatGPT plan and workspace settings. Without them, connect Claude or Codex instead.",
+        title: "Add Pancake to ChatGPT",
+        body: [
+          "On chatgpt.com, open ",
+          { b: "Plugins" },
+          ", click + and pick ",
+          { b: "Add custom MCP server" },
+          ". Name it ",
+          { code: "Pancake" },
+          " and paste this URL:",
+        ],
+        block: { id: "chatgpt-url", text: MCP_URL },
       },
-      ...sharedFaq("ChatGPT"),
+      {
+        title: "Sign in",
+        body: [
+          "Choose ",
+          { b: "OAuth" },
+          ", accept the warning and click ",
+          { b: "Create as a plugin" },
+          ". Sign in to Pancake, pick your workspace and approve.",
+        ],
+      },
+      checkStep("ChatGPT", ["Install the plugin. In a new chat, type ", { code: "@Pancake" }, " and ask:"]),
+    ],
+    know: [
+      ...sharedKnow("ChatGPT"),
+      { text: ["No custom server option? It depends on your ChatGPT plan and workspace. Use Claude or Codex."] },
+      REMOVE_KNOW,
     ],
   },
   codex: {
@@ -151,72 +176,47 @@ export const CONNECT_CLIENTS: Record<ConnectClientId, ConnectClient> = {
     path: CONNECT_PATHS.codex,
     name: "Codex",
     meta: {
-      title: "Use Pancake in Codex (MCP): find customers from Codex",
+      title: "Connect Pancake to Codex (MCP): four steps, no API key",
       description:
-        "Connect Pancake to Codex with one line. Ask for warm leads, build Plays and edit any message from Codex. Browser sign-in, no API key.",
-      ogTitle: "Use Pancake in Codex",
-      crumbPage: "Use Pancake in Codex",
+        "Install the Pancake plugin for Codex and sign in in your browser. Then ask for leads, build Plays and edit messages from Codex.",
+      ogTitle: "Connect Pancake to Codex",
+      crumbPage: "Connect Pancake to Codex",
     },
-    hero: {
-      title: "Find customers from Codex",
-      lede: "Pancake gives Codex the brain, the data and the tools to run your go-to-market. Ask for leads, build Plays and edit any message in plain English.",
-      copy: { label: "Copy setup line", text: SETUP_LINE, blockId: "hero-setup-line" },
-    },
-    connectTitle: "Connect Codex",
-    skills: true,
-    faq: [
+    h1: "Connect Pancake to Codex",
+    lede: "Ask Codex for leads, build Plays and edit messages, on the same workspace as the app.",
+    steps: [
+      ACCOUNT_STEP,
       {
-        q: "Which version of Codex do I need?",
-        a: "Codex CLI 0.148 or newer signs in through your browser. On an older version, update Codex first.",
+        title: "Install the Pancake plugin",
+        body: ["In your terminal, run:"],
+        block: {
+          id: "codex-plugin",
+          text: "codex plugin marketplace add get-pancake/agent-plugins\ncodex plugin add pancake@pancake",
+          code: true,
+        },
+        after: ["It adds the Pancake server and its four skills."],
       },
       {
-        q: "Does Codex get the Pancake skills?",
-        a: "Yes, once you install them in step 03. The Pancake plugin for Codex includes them too.",
+        title: "Sign in",
+        body: ["Run:"],
+        block: { id: "codex-login", text: "codex mcp login pancake", code: true },
+        after: ["Your browser opens. Sign in to Pancake, pick your workspace and approve."],
       },
-      ...sharedFaq("Codex"),
+      checkStep("Codex", ["Start Codex and ask:"]),
+    ],
+    know: [
+      { text: ["Needs Codex CLI 0.148 or newer."] },
+      ...sharedKnow("Codex"),
+      REMOVE_KNOW,
+      { text: ["No terminal? Paste this line into Codex instead:"], block: { id: "codex-line", text: SETUP_LINE } },
     ],
   },
 };
 
-/** Hero setup line and closing card title: the guide's. */
-export const CONNECT_HERO_SETUP = HERO.setup;
-export const CONNECT_HERO_PRIMARY = HERO.primary;
-export const CONNECT_FINAL = { title: FINAL.title, cta: FINAL.cta } as const;
-
-export const CONNECT_SETUP = {
-  eyebrow: "Setup",
-  h2: "Set it up",
-  /** Step 03 on /codex: the guide's title names three kinds of agent; this page is one. */
-  skillsTitle: "Install the skills",
-} as const;
-
-export const CONNECT_META_SHARED = {
-  crumbHome: "Pancake",
-  /** The card is the homepage's, so the alt is the text in that image. */
-  ogImageAlt: OG_IMAGE_ALT,
-} as const;
-
-/** "Other agents": every other way in, so a visitor on the wrong page finds theirs. */
-export const CONNECT_OTHERS = {
-  eyebrow: "Other agents",
-  /** "Also in Claude and Codex." on /chatgpt. */
-  h2: (names: string[]) => `Also in ${names.join(" and ")}.`,
-  claude: { title: "Claude", line: "On the web, the desktop app and your phone, and in Claude Code.", href: GUIDE_PATH },
-  rows: {
-    chatgpt: { title: "ChatGPT", line: "On chatgpt.com, with a browser sign-in.", href: CONNECT_PATHS.chatgpt },
-    codex: { title: "Codex", line: "In Codex CLI, from one setup line.", href: CONNECT_PATHS.codex },
-  } satisfies Record<ConnectClientId, ConnectRow>,
-  other: {
-    title: "Other agents",
-    line: "VS Code, GitHub Copilot CLI, Factory Droid, goose and other clients with browser sign-in.",
-    href: `${GUIDE_PATH}#setup`,
-  },
-} as const;
-
-/** The rows a client's page lists: Claude, the other connect page(s), then everything else. */
-export function connectOtherRows(id: ConnectClientId): ConnectRow[] {
-  const others = (Object.keys(CONNECT_OTHERS.rows) as ConnectClientId[])
+/** The other clients' links, Claude first: "Using another AI? Claude · Codex · Other agents". */
+export function connectOthers(id: ConnectClientId): { label: string; href: string }[] {
+  const rest = (Object.keys(CONNECT_PATHS) as ConnectClientId[])
     .filter((k) => k !== id)
-    .map((k) => CONNECT_OTHERS.rows[k]);
-  return [CONNECT_OTHERS.claude, ...others, CONNECT_OTHERS.other];
+    .map((k) => ({ label: CONNECT_CLIENTS[k].name, href: CONNECT_PATHS[k] }));
+  return [{ label: "Claude", href: GUIDE_PATH }, ...rest, CONNECT_SHARED.others.other];
 }

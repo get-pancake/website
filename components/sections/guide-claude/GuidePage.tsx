@@ -13,9 +13,6 @@ import {
   COUPON,
   FAQ,
   FINAL,
-  type GuideFaqItem,
-  type GuideMore,
-  type GuidePrompt,
   GUIDE_MD_PATH,
   GUIDE_META,
   GUIDE_PATH,
@@ -56,9 +53,8 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
  * Structured data (audit 7.7, 2026-10-07): WebPage + BreadcrumbList (Home → this guide) +
  * FAQPage, the FAQ's Q/As verbatim (the cost answer stays visible-only, see FAQ in guide-copy).
  *
- * The sections are exported (2026-10-17) for the connect pages, /chatgpt and /codex
- * (ConnectPage): one client's steps (ConnectPanel), the prompts, the control cards and the FAQ
- * take their client's copy as props; their defaults are this guide's, so it renders unchanged.
+ * Step and CopyBlock are exported (2026-10-17) for the connect pages, /chatgpt and /codex
+ * (ConnectPage): same step rows, same copy blocks.
  */
 export function GuidePage({ markdown, offer = false }: { markdown: string; offer?: boolean }) {
   const preview = markdown.split("\n").slice(0, 9).join("\n");
@@ -194,7 +190,7 @@ function Coupon() {
   );
 }
 
-export function WhatSection() {
+function WhatSection() {
   return (
     <section className="vx-sec gd-what" aria-labelledby="gd-what-title">
       <div className="vx-col">
@@ -287,7 +283,7 @@ export function Step({ num, title, children }: { num: string; title: string; chi
   );
 }
 
-export function StepAccount() {
+function StepAccount() {
   return (
     <Step num={STEP_ACCOUNT.num} title={STEP_ACCOUNT.title}>
       <ol className="gd-list">
@@ -311,26 +307,6 @@ function StepConnect() {
     openai: <img className="gd-tab__logo" src={LOGO_SRC.openai} alt="" width={18} height={18} />,
     mcp: <McpGlyph />,
   };
-  const tabs: GuideTab[] = c.tabs.map((t) => ({
-    id: t.id,
-    label: t.label,
-    logo: logos[t.logo],
-    panel: <ConnectPanel id={t.id} />,
-  }));
-  return (
-    <Step num={c.num} title={c.title}>
-      <GuideClientTabs tabs={tabs} label={c.tabsLabel} />
-      <p className="gd-signin">{c.signIn}</p>
-    </Step>
-  );
-}
-
-/**
- * One client's connection steps: a tab of step 02 here, and the whole of step 02 on that
- * client's own page (/chatgpt, /codex: ConnectPage), so the two never drift apart.
- */
-export function ConnectPanel({ id }: { id: GuideTab["id"] }) {
-  const c = STEP_CONNECT;
   const panels: Record<GuideTab["id"], ReactNode> = {
     claude: (
       <>
@@ -424,13 +400,19 @@ export function ConnectPanel({ id }: { id: GuideTab["id"] }) {
       </>
     ),
   };
-  return <>{panels[id]}</>;
+  const tabs: GuideTab[] = c.tabs.map((t) => ({ id: t.id, label: t.label, logo: logos[t.logo], panel: panels[t.id] }));
+  return (
+    <Step num={c.num} title={c.title}>
+      <GuideClientTabs tabs={tabs} label={c.tabsLabel} />
+      <p className="gd-signin">{c.signIn}</p>
+    </Step>
+  );
 }
 
-export function StepSkills({ num = STEP_SKILLS.num, title = STEP_SKILLS.title }: { num?: string; title?: string }) {
+function StepSkills() {
   const s = STEP_SKILLS;
   return (
-    <Step num={num} title={title}>
+    <Step num={s.num} title={s.title}>
       <p>{s.intro}</p>
       <CopyBlock id="skills-line" text={s.line} />
       <p>{s.tableIntro}</p>
@@ -459,17 +441,11 @@ export function StepSkills({ num = STEP_SKILLS.num, title = STEP_SKILLS.title }:
   );
 }
 
-export function StepAsk({
-  num = STEP_ASK.num,
-  groups = STEP_ASK.groups,
-}: {
-  num?: string;
-  groups?: readonly { title: string; prompts: readonly GuidePrompt[]; more?: GuideMore }[];
-}) {
+function StepAsk() {
   return (
-    <Step num={num} title={STEP_ASK.title}>
+    <Step num={STEP_ASK.num} title={STEP_ASK.title}>
       <p>{STEP_ASK.intro}</p>
-      {groups.map((g) => (
+      {STEP_ASK.groups.map((g) => (
         <Fragment key={g.title}>
           <div className="gd-prompts">
             <p className="gd-prompts__title">{g.title}</p>
@@ -499,17 +475,13 @@ export function StepAsk({
   );
 }
 
-export function ControlSection({
-  cards = CONTROL.cards,
-}: {
-  cards?: readonly { title: string; body: string }[];
-}) {
+function ControlSection() {
   return (
     <section className="vx-sec gd-control" aria-labelledby="gd-control-title">
       <div className="vx-col">
         <VxHead id="gd-control-title" eyebrow={CONTROL.eyebrow} title={CONTROL.h2} />
         <ul className="gd-control__grid">
-          {cards.map((c) => (
+          {CONTROL.cards.map((c) => (
             <li key={c.title} className="gd-card gd-control__card">
               <h3 className="gd-card__title lp-display">{c.title}</h3>
               <p>{vxNoWidow(c.body)}</p>
@@ -521,13 +493,13 @@ export function ControlSection({
   );
 }
 
-export function FaqSection({ offer, items = FAQ.items }: { offer: boolean; items?: readonly GuideFaqItem[] }) {
+function FaqSection({ offer }: { offer: boolean }) {
   return (
     <section className="vx-sec vx-faq-sec" aria-labelledby="gd-faq-title">
       <div className="vx-col">
         <VxHead id="gd-faq-title" eyebrow={FAQ.eyebrow} title={FAQ.h2} />
         <div className="vx-faq">
-          {items.map((f) => (
+          {FAQ.items.map((f) => (
             <details key={f.q} className="vx-qa">
               <summary>
                 <span className="vx-qa__q">{vxNoWidow(f.q, 16)}</span>
@@ -535,7 +507,7 @@ export function FaqSection({ offer, items = FAQ.items }: { offer: boolean; items
                   <path d="M10 3.5v13M3.5 10h13" />
                 </svg>
               </summary>
-              <p className="vx-qa__a">{vxNoWidow(offer && f.aOffer ? f.aOffer : f.a)}</p>
+              <p className="vx-qa__a">{vxNoWidow(offer && "aOffer" in f ? f.aOffer : f.a)}</p>
             </details>
           ))}
         </div>

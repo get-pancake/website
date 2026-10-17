@@ -248,10 +248,6 @@ export const STEP_SKILLS = {
 
 export type GuidePrompt = { id: string; text: string; lead?: string; note?: string };
 
-/** One Q/A of a guide FAQ (GuidePage's accordion, ConnectPage's too). `aOffer`: the campaign
- *  page's answer; `inJsonLd: false` keeps an answer out of the FAQPage structured data. */
-export type GuideFaqItem = { q: string; a: string; aOffer?: string; inJsonLd?: boolean };
-
 /** A text link closing a prompt group (GuidePage renders it under the group's prompts). */
 export type GuideMore = { label: string; href: string };
 

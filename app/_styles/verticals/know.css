@@ -1,0 +1,38 @@
+/* "Good to know" (2026-10-17): one-line facts in a visible list, not an accordion (founder: pages
+   that "explain the guidelines clearly and efficiently"). Used by the connect pages (/chatgpt,
+   /codex) and the signal pages under /plays. The guide's ways-card hairlines, a pink dot per
+   line. Verticals rules: lp tokens only, every rule `.lp-vx .x`, the font set on each text
+   element (the kit's universal font-family rule beats inheritance). */
+.lp-vx .vx-know {
+  list-style: none;
+  margin: var(--vx-head-gap) 0 0;
+  max-width: 760px;
+  padding: 0;
+}
+.lp-vx .vx-know > li {
+  border-top: 1px solid var(--vx-hair);
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  padding: 14px 0 14px 24px;
+  position: relative;
+  text-wrap: pretty;
+}
+.lp-vx .vx-know > li:last-child {
+  border-bottom: 1px solid var(--vx-hair);
+}
+.lp-vx .vx-know > li::before {
+  background: var(--vx-num);
+  border-radius: 50%;
+  content: "";
+  height: 6px;
+  left: 4px;
+  position: absolute;
+  top: 23px;
+  width: 6px;
+}
+.lp-vx .vx-know strong {
+  font-family: var(--lp-font-sans);
+  font-weight: 600;
+}

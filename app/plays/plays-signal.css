@@ -1,8 +1,9 @@
 /* The signal pages under /plays (components/sections/plays/PlaysSignalPage.tsx, 2026-10-17).
-   Imported AFTER plays.css, whose pieces they reuse (the head, the example cards, the FAQ, the
-   Signals card parts); this sheet adds the /for "Related" rows and the three step cards. Same
-   rules as plays.css: lp tokens + color-mix only, every rule `.lp-vx .x`. */
+   Imported AFTER plays.css, whose pieces they reuse (the head, the example cards, the Signals
+   card parts); this sheet adds the /for "Related" rows, the "Good to know" list and the three
+   step cards. Same rules as plays.css: lp tokens + color-mix only, every rule `.lp-vx .x`. */
 @import "../_styles/verticals/related.css";
+@import "../_styles/verticals/know.css";
 
 /* ── How it works: three cards in a row, the "More ways" card recipe (cream card, kit badge,
    Condensed title, one-sentence body), equal heights; one column from 1024 down ── */
@@ -43,6 +44,11 @@
   font-size: var(--lp-text-md);
   line-height: 24px;
   margin: 20px 0 0;
+}
+
+/* the last section before the footer (no CTA card here): one rhythm gap under it */
+.lp-vx-signal .vx-related {
+  padding-bottom: var(--vx-rhythm);
 }
 
 @media (max-width: 1024px) {

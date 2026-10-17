@@ -4,6 +4,11 @@
 // tech stack. The people signals (posts, engagement) get no page of their own: they would put
 // the outreach platform's mechanics on a page built to rank (validate.ts PLATFORM / SEQUENCE).
 //
+// Founder, same day: the pages must be simple and explain the guidelines clearly and
+// efficiently. So each page says what you get in one line, how to ask for it (three steps),
+// shows example requests, then lists the details in plain sight ("Good to know", no accordion).
+// No CTA card: Start free sits in the head.
+//
 // Truth (pancake-cmo, checked 2026-10-17):
 //   - funding: a `company_first` Play (PAN-997) on Coresignal's dated funding rounds: stages, an
 //     announcement-date window, HQ country / region / city, headcount, optional tools; a record
@@ -19,14 +24,12 @@
 // "fundraising" and "hiring their first" stay out (validate.ts BANNED); the only "N+" is
 // "30+ data providers" (homepage-lint ALLOW). scripts/homepage-lint.mjs reads this file.
 
-import { PLAYS_CTA, PLAYS_PATH, PLAYS_WAYS } from "@/components/sections/plays/plays-copy";
+import { PLAYS_PATH, PLAYS_WAYS } from "@/components/sections/plays/plays-copy";
 import { pricingV2 } from "@/lib/copy";
 import { OG_IMAGE_ALT } from "@/lib/social-meta";
 import type { SignalKind } from "@/lib/verticals/types";
 
 export type SignalPageId = "funding" | "hiring" | "stack";
-
-export type SignalFaq = { q: string; a: string; inJsonLd?: boolean };
 
 export type SignalPage = {
   id: SignalPageId;
@@ -41,8 +44,8 @@ export type SignalPage = {
     | { from: "written"; lede: string; prompts: string[] }
     /** the approved /for prompts of that signal kind, verbatim (plays-data.ts), each linking to its page */
     | { from: "for"; lede: string; kind: SignalKind; label: string };
-  faqTitle: string;
-  faq: SignalFaq[];
+  /** "Good to know": one-line facts the steps don't already say. */
+  know: string[];
   /** Its row in the other pages' "More ways" list. */
   related: { title: string; line: string };
 };
@@ -60,17 +63,7 @@ const APPROVE_STEP = {
   body: "Each lead comes with one line on why it fits. Pancake writes the first message from that line, in your voice.",
 };
 
-const WHO_FAQ: SignalFaq = {
-  q: "Who does Pancake find at each company?",
-  a: "The people you sell to, by role: a founder, a CTO, a head of marketing. You approve each lead before anyone hears from you.",
-};
-
-const COST_FAQ: SignalFaq = {
-  q: "What does it cost?",
-  a: `From $${pricingV2.monthlyDollars} a month per workspace. A search uses credits, and Pancake shows the estimate before it runs.`,
-  // as on the guide (D6): /pricing carries the price in its own structured data
-  inJsonLd: false,
-};
+const COST_KNOW = `From $${pricingV2.monthlyDollars} a month per workspace. A search uses credits, and Pancake shows the estimate first.`;
 
 export const SIGNAL_SHARED = {
   /** The head's eyebrow and the breadcrumb's middle step: the hub. */
@@ -84,10 +77,9 @@ export const SIGNAL_SHARED = {
     /** under the /for examples: back to that group on /plays */
     all: (n: number, label: string) => `All ${n} ${label} examples`,
   },
-  faqEyebrow: "FAQ",
+  know: { eyebrow: "Details", h2: "Good to know" },
   related: { eyebrow: "Example Plays", h2: PLAYS_WAYS.h2 },
   hubRow: { title: "All example Plays", line: "Every example, sorted by how Pancake finds people." },
-  cta: PLAYS_CTA,
 } as const;
 
 /* ─── the three pages ─────────────────────────────────────────────────────── */
@@ -125,13 +117,11 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
         "We design brands. Find marketing heads at New York startups under 50 people that raised a round.",
       ],
     },
-    faqTitle: "Questions about funding Plays.",
-    faq: [
-      { q: "Which rounds can a Play look for?", a: "Seed, Series A or any stage you name. A Play can look for one stage or several." },
-      { q: "How recent is recent?", a: "You pick the window, like the last 90 days. Pancake reads the date each round was announced." },
-      { q: "Can I narrow it down?", a: "Yes. Add a country, a region or a city, a company size, and the tools a company uses." },
-      WHO_FAQ,
-      COST_FAQ,
+    know: [
+      "Any stage you name: seed, Series A or later.",
+      "Add the tools a company uses to narrow the list.",
+      "Rounds come from Coresignal, one of 30+ data providers.",
+      COST_KNOW,
     ],
     related: { title: "Companies with fresh funding", line: "Startups with a recent round, and the people you sell to there." },
   },
@@ -162,13 +152,11 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
       kind: "hiring",
       label: "hiring",
     },
-    faqTitle: "Questions about hiring Plays.",
-    faq: [
-      { q: "Do recruiting agencies count?", a: "No. Pancake keeps companies hiring for themselves and leaves out agencies' job posts." },
-      { q: "How recent are the job posts?", a: "You choose, like posts first seen in the last 30 days. Older posts are left out." },
-      { q: "Where do the job posts come from?", a: "From TheirStack, one of the 30+ data providers Pancake uses." },
-      WHO_FAQ,
-      COST_FAQ,
+    know: [
+      "You choose how recent the job posts must be.",
+      "Staffing agencies' posts are left out.",
+      "Job posts come from TheirStack, one of 30+ data providers.",
+      COST_KNOW,
     ],
     related: { title: "Companies hiring a role", line: "Companies with open job posts for a role you name." },
   },
@@ -202,16 +190,11 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
       kind: "stack",
       label: "tech stack",
     },
-    faqTitle: "Questions about stack Plays.",
-    faq: [
-      {
-        q: "How does Pancake know a company uses a tool?",
-        a: "Its recent job posts ask for it. Pancake reads them through TheirStack, one of its 30+ data providers.",
-      },
-      { q: "What if a tool's name could mean two things?", a: "Pancake doesn't guess. It shows the tools the name could mean, and you pick one." },
-      { q: "Can a Play look for several tools?", a: "Yes. A company fits when its job posts ask for any of them." },
-      WHO_FAQ,
-      COST_FAQ,
+    know: [
+      "Name several tools: a company fits if its posts ask for any of them.",
+      "Staffing agencies' posts are left out.",
+      "Job posts come from TheirStack, one of 30+ data providers.",
+      COST_KNOW,
     ],
     related: { title: "Companies using a tool", line: "Companies whose job posts ask for a tool you name." },
   },

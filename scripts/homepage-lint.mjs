@@ -110,6 +110,9 @@ const ALLOW = [
   // the sources story's hub label, the founder's own figure (2026-10-13: "Mets 30+ data provider
   // sur pancake.ai"); any other "N+" still fails
   [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b30\+ data providers\b/g],
+  // the Codex plugin's install id in /codex's commands (2026-10-17): "pancake@pancake" is a
+  // marketplace qualifier, not an "@Pancake" mention in Slack
+  [BANNED.find(([, label]) => label === "Slack chat")[0], /\bpancake@pancake\b/g],
 ];
 /** Rules a negated sentence may cross (the product's boundaries, said as boundaries). */
 const NEGATABLE = new Set(["email outreach", "phone lookup / calls", "CRM sync/export", "website visitors", "local/consumer leads"]);

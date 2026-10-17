@@ -1,16 +1,17 @@
 import type { Metadata, Viewport } from "next";
 
 import { ConnectPage } from "@/components/sections/guide-claude/ConnectPage";
-import { CONNECT_CLIENTS, CONNECT_META_SHARED } from "@/components/sections/guide-claude/connect-copy";
+import { CONNECT_CLIENTS, CONNECT_SHARED } from "@/components/sections/guide-claude/connect-copy";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { OG_IMAGE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 import "@/app/_styles/verticals.css";
 import "@/app/_styles/guide-claude.css";
+import "@/app/_styles/verticals/know.css";
 
 /**
- * /chatgpt — "Use Pancake in ChatGPT": the Claude guide narrowed to ChatGPT (ConnectPage), linked from
- * the footer's Features column (2026-10-17). Static, indexable, in the sitemap, llms.txt and
+ * /chatgpt — "Connect Pancake to ChatGPT": a short how-to (ConnectPage), linked from the footer's
+ * Features column (2026-10-17). Static, indexable, in the sitemap, llms.txt and
  * scripts/known-urls.txt. The share card is the homepage's, as on /claude.
  */
 
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
     path: client.path,
     title: client.meta.ogTitle,
     description: client.meta.description,
-    image: { url: OG_IMAGE, alt: CONNECT_META_SHARED.ogImageAlt },
+    image: { url: OG_IMAGE, alt: CONNECT_SHARED.ogImageAlt },
   }),
 };
 

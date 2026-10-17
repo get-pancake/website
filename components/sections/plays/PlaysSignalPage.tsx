@@ -1,9 +1,7 @@
-import { LpCta } from "@/components/sections/landing-v3/LpCta";
-import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
-import { ExampleGrid, PlaysPlusIcon } from "@/components/sections/plays/PlaysExamples";
+import { ExampleGrid } from "@/components/sections/plays/PlaysExamples";
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { groupId, playGroups } from "@/components/sections/plays/plays-data";
 import {
@@ -26,34 +24,30 @@ const SIGNAL_VISIBLE = 4;
 
 /**
  * A signal page under /plays (funding, hiring, tech stack; the footer's Features column,
- * 2026-10-17). The /plays kit end to end (.lp-vx: text edge, section rhythm, VxHead, kit
- * badges, the example cards, the FAQ accordion, the /for "Related" rows) with the homepage's
- * nav, CTA card and footer:
+ * 2026-10-17). Simple on purpose (founder: the pages "explain the guidelines clearly and
+ * efficiently"): what you get, how to ask, examples, the details in plain sight. The /plays kit
+ * (.lp-vx: text edge, section rhythm, VxHead, kit badges, the example cards, the /for "Related"
+ * rows) with the homepage's nav and footer:
  *
  *   Nav → Head (H1 + lede, Start free · Book a demo) → How it works (three cards) → Examples
- *   (written ones, or the approved /for prompts of that kind, each linking to its page) → FAQ →
- *   More ways (the other two pages + /plays) → CTA card → Footer
+ *   (written ones, or the approved /for prompts of that kind, each linking to its page) → Good
+ *   to know (verticals/know.css) → More ways (the other two pages + /plays) → Footer
  *
  * Server, zero JS of its own. The head's pills keep /plays's ids (app_plays_hero /
  * call_plays_hero, allow-listed): these pages are part of the /plays family, and page_path
- * tells them apart. Structured data: WebPage + BreadcrumbList (Home → Example Plays → this
- * page) + FAQPage, the FAQ's Q/As verbatim (the cost answer stays visible-only, as on /plays's
- * siblings).
+ * tells them apart. Structured data: WebPage + BreadcrumbList (Home → Example Plays → this page).
  */
 export function PlaysSignalPage({ id }: { id: SignalPageId }) {
   const page = SIGNAL_PAGES[id];
   return (
     <main className="lp lp-vx lp-vx-plays lp-vx-signal">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(signalJsonLd(page)) }} />
-      {/* --lp-fit for the CTA slivers (iOS cqw-in-trig workaround) */}
-      <LpFitVars />
       <LpNav />
       <Head page={page} />
       <Steps page={page} />
       <Examples page={page} />
-      <Faq page={page} />
+      <Know page={page} />
       <MoreWays id={id} />
-      <LpCta title={SIGNAL_SHARED.cta.title} body={SIGNAL_SHARED.cta.body} />
       <LpFooter />
     </main>
   );
@@ -141,23 +135,17 @@ function Examples({ page }: { page: SignalPage }) {
   );
 }
 
-/** The /plays FAQ accordion (native <details>, all closed, every answer in the server HTML). */
-function Faq({ page }: { page: SignalPage }) {
+/** "Good to know": one-line facts in a visible list (verticals/know.css), not an accordion. */
+function Know({ page }: { page: SignalPage }) {
   return (
-    <section className="vx-sec vx-faq-sec" aria-labelledby="pl-faq-title">
+    <section className="vx-sec pl-sig-know-sec" aria-labelledby="pl-know-title">
       <div className="vx-col">
-        <VxHead id="pl-faq-title" eyebrow={SIGNAL_SHARED.faqEyebrow} title={page.faqTitle} />
-        <div className="vx-faq">
-          {page.faq.map((f) => (
-            <details key={f.q} className="vx-qa">
-              <summary>
-                <span className="vx-qa__q">{vxNoWidow(f.q, 16)}</span>
-                <PlaysPlusIcon className="vx-qa__icon" />
-              </summary>
-              <p className="vx-qa__a">{vxNoWidow(f.a)}</p>
-            </details>
+        <VxHead id="pl-know-title" eyebrow={SIGNAL_SHARED.know.eyebrow} title={SIGNAL_SHARED.know.h2} />
+        <ul className="vx-know">
+          {page.know.map((k) => (
+            <li key={k}>{vxNoWidow(k)}</li>
           ))}
-        </div>
+        </ul>
       </div>
     </section>
   );
@@ -219,13 +207,6 @@ function signalJsonLd(page: SignalPage) {
           { "@type": "ListItem", position: 2, name: SIGNAL_SHARED.hub, item: `${SITE_ORIGIN}${PLAYS_PATH}` },
           { "@type": "ListItem", position: 3, name: page.meta.crumb, item: url },
         ],
-      },
-      {
-        "@type": "FAQPage",
-        "@id": `${url}#faq`,
-        mainEntity: page.faq
-          .filter((f) => f.inJsonLd !== false)
-          .map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })),
       },
     ],
   };
