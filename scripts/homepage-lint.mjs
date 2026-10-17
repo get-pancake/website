@@ -51,6 +51,9 @@ const FILES = [
   "components/sections/landing-v3/LpCta.tsx",
   "components/sections/landing-v3/LpPricing.tsx",
   "components/sections/guide-claude/guide-copy.ts",
+  // the footer's Features column (2026-10-17): the connect pages and the signal pages' copy
+  "components/sections/guide-claude/connect-copy.ts",
+  "components/sections/plays/plays-signals.ts",
   // site chrome (2026-10-07): the nav menus and the /compare hub. Not yet
   // LpFooter.tsx or compare-data.ts: both fail today until D23 (the platform label) and the
   // Viktor lede are decided.

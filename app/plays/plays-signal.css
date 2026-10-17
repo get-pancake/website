@@ -1,0 +1,65 @@
+/* The signal pages under /plays (components/sections/plays/PlaysSignalPage.tsx, 2026-10-17).
+   Imported AFTER plays.css, whose pieces they reuse (the head, the example cards, the FAQ, the
+   Signals card parts); this sheet adds the /for "Related" rows and the three step cards. Same
+   rules as plays.css: lp tokens + color-mix only, every rule `.lp-vx .x`. */
+@import "../_styles/verticals/related.css";
+
+/* ── How it works: three cards in a row, the "More ways" card recipe (cream card, kit badge,
+   Condensed title, one-sentence body), equal heights; one column from 1024 down ── */
+.lp-vx .pl-sig-steps {
+  align-items: stretch;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: var(--vx-head-gap) 0 0;
+  padding: 0;
+}
+.lp-vx .pl-sig-step {
+  background: var(--lp-card-cream);
+  border-radius: var(--lp-r-lg);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 24px;
+}
+.lp-vx .pl-sig-step > .vx-badge {
+  align-self: flex-start;
+}
+
+/* ── Examples: written ones are not links (no /for page behind them), so they keep the card's
+   rest look on hover ── */
+.lp-vx .pl-ex--static {
+  margin: 0;
+}
+@media (hover: hover) {
+  .lp-vx .pl-ex--static:hover {
+    box-shadow: inset 0 0 0 1px var(--lp-ink-tr-10);
+  }
+}
+.lp-vx .pl-sig-all {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  margin: 20px 0 0;
+}
+
+@media (max-width: 1024px) {
+  .lp-vx .pl-sig-steps {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-vx .pl-sig-step {
+    padding: 20px;
+  }
+}
+@media (max-width: 767px) {
+  /* cards break out to the card margin, as "More ways" and the Signals grid */
+  .lp-vx .pl-sig-steps {
+    margin-inline: calc(var(--vx-card-m) - var(--vx-edge));
+    row-gap: 12px;
+  }
+  .lp-vx .pl-sig-step {
+    padding: 20px 16px;
+  }
+}

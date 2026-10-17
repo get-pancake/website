@@ -25,11 +25,25 @@
  * footer.css lays the columns out in flow (no fixed height), so a longer list
  * or another column never overflows. Social is unchanged ("LinkedIn" label:
  * open founder decision D23).
+ * 2026-10-17 (founder: a "Features" column "like Gojiberry's", whose column
+ * lists one connect page per assistant and a recently-funded-startups page):
+ * Features = the three connect pages (/claude, /chatgpt, /codex) and the three
+ * signal pages under /plays (funding, hiring, tech stack), every entry a real
+ * page. It takes the Resources column's place: six columns need ~1,050px beside
+ * the brand block and the ≥1200 band leaves 863. Resources' four links all
+ * still have a home: Blog moved to Company, "Comparisons" was a second
+ * "All comparisons" (/compare), "Support" a second "Contact" (/support), and
+ * "Connect your agent" (/claude#setup) is what the connect entries are now.
+ * "Pancake in Claude" left Product for the same reason: it is "Connect Claude".
+ * Labels stay ≤ 153px at 16px ("Gojiberry vs Pancake", the widest), so none
+ * wraps in the phone sheet's 155px columns at 375.
  */
 
 import { COMPARE_PATH, COMPARISONS, compareName, comparePath } from "@/components/sections/compare/compare-data";
+import { CONNECT_PATHS } from "@/components/sections/guide-claude/connect-copy";
 import { GUIDE_PATH } from "@/components/sections/guide-claude/guide-copy";
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
+import { SIGNAL_PAGE_ORDER, SIGNAL_PAGES } from "@/components/sections/plays/plays-signals";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { SUPPORT_PATH } from "@/lib/contact";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
@@ -45,18 +59,19 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       { label: "Example Plays", href: PLAYS_PATH },
       { label: "Pricing", href: "/pricing" },
       { label: "Industries", href: "/for" },
-      { label: "Pancake in Claude", href: GUIDE_PATH },
       { label: "Sign in", href: APP_ORIGIN, analyticsId: "signin_footer" },
     ],
   },
   {
-    id: "resources",
-    title: "Resources",
+    id: "features",
+    title: "Features",
     links: [
-      { label: "Blog", href: "/blog" },
-      { label: "Comparisons", href: COMPARE_PATH },
-      { label: "Support", href: SUPPORT_PATH },
-      { label: "Connect your agent", href: `${GUIDE_PATH}#setup` },
+      // one page per AI client (Claude's is the guide, which covers Claude Code too)
+      { label: "Connect Claude", href: GUIDE_PATH },
+      { label: "Connect ChatGPT", href: CONNECT_PATHS.chatgpt },
+      { label: "Connect Codex", href: CONNECT_PATHS.codex },
+      // one page per way a Play finds companies (plays-signals.ts)
+      ...SIGNAL_PAGE_ORDER.map((id) => ({ label: SIGNAL_PAGES[id].footerLabel, href: SIGNAL_PAGES[id].path })),
     ],
   },
   {
@@ -79,6 +94,7 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       // The team and the company facts live on /careers until /about exists.
       { label: "About", href: "/careers#team" },
       { label: "Careers", href: "/careers" },
+      { label: "Blog", href: "/blog" },
       { label: "Affiliate program", href: "https://partners.dub.co/pancake-ai", external: true },
       // Same tab: /demo (François, 2026-09-16), no longer the Calendly form.
       { label: "Book a demo", href: DEMO_PAGE_PATH },

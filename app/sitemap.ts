@@ -1,6 +1,8 @@
 import type { MetadataRoute } from "next";
 import { COMPARE_PATH } from "@/components/sections/compare/compare-data";
+import { CONNECT_PATHS } from "@/components/sections/guide-claude/connect-copy";
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
+import { SIGNAL_PATHS } from "@/components/sections/plays/plays-signals";
 import { getAllPosts } from "@/lib/posts";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { approvedVerticals, verticalUrl } from "@/lib/verticals";
@@ -55,6 +57,10 @@ function newestPostDate(): Date {
  * 2026-10-13 (the launch, #333): the homepage and /pricing were rebuilt, /support gained the
  * credit plan's billing answers, the comparisons hub dropped its "AI agents" group and the ten
  * comparison pages took the credit plan's prices and the 7-day trial (PAGE_MODIFIED moved too).
+ *
+ * 2026-10-17 (the footer's Features column): /chatgpt and /codex (the guide narrowed to one AI
+ * client) and three signal pages under /plays are new; /claude's control card names the app's
+ * "Claude & Codex" settings page.
  */
 const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "", updated: "2026-10-13", priority: 1.0 },
@@ -64,9 +70,17 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "/terms", updated: "2026-09-18", priority: 0.3 },
   { path: "/support", updated: "2026-10-13", priority: 0.3 },
   // the guide the site links; its twin with the campaign offer (/guides/claude) is noindex
-  { path: "/claude", updated: "2026-10-13", priority: 0.7 },
+  { path: "/claude", updated: "2026-10-17", priority: 0.7 },
+  // one page per AI client besides Claude (connect-copy.ts), new on 2026-10-17
+  { path: CONNECT_PATHS.chatgpt, updated: "2026-10-17", priority: 0.7 },
+  { path: CONNECT_PATHS.codex, updated: "2026-10-17", priority: 0.7 },
   // example Plays (audit plan 3.7), new on 2026-10-07
   { path: PLAYS_PATH, updated: newest("2026-10-07", maxUpdated()), priority: 0.7 },
+  // one page per way a Play finds companies (plays-signals.ts), new on 2026-10-17; the hiring and
+  // tech-stack pages show /for prompts, so they move with that data too
+  { path: SIGNAL_PATHS.funding, updated: "2026-10-17", priority: 0.7 },
+  { path: SIGNAL_PATHS.hiring, updated: newest("2026-10-17", maxUpdated()), priority: 0.7 },
+  { path: SIGNAL_PATHS.stack, updated: newest("2026-10-17", maxUpdated()), priority: 0.7 },
   // the comparisons hub (2026-10-07): every comparison page below links back to it
   { path: COMPARE_PATH, updated: "2026-10-13", priority: 0.7 },
   { path: "/viktor-vs-pancake", updated: "2026-10-13", priority: 0.8 },
