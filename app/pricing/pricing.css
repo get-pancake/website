@@ -522,7 +522,8 @@
 /* ── "Take it from them" (PricingProof.tsx) ──
    Four cards of equal height: a figure and what it counts, or a sentence,
    then who said it and their wordmark at the foot. Four columns from 1100px,
-   two from 640px. */
+   two from 640px, where the two figures sit above the two sentences: the
+   rows share one height so all four cards still match. */
 .lv2-proof .lv2-proof-list {
   display: grid;
   gap: 1rem;
@@ -533,6 +534,7 @@
 }
 @media (min-width: 640px) {
   .lv2-proof .lv2-proof-list {
+    grid-auto-rows: 1fr;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
