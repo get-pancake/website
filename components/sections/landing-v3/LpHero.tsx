@@ -27,7 +27,7 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
 // human and agent columns overlay in ONE grid cell (.lp-hero-swap) that the
 // human column sizes (it stays laid out, visibility:hidden, in the agents
 // view), so the toggle sits on the same pixel in both views. DOM order =
-// H1, switch, lede, buttons (tab order switch → Start free → Book a demo);
+// H1, switch, lede, buttons (tab order switch → Start free → Talk to sales);
 // ≤1024 the aside dissolves (display:contents) and the toggle leads the
 // stacked block. `lp-hero--home` scopes every homepage geometry change:
 // /agents (AgHero) reuses the unscoped hero classes with V1 geometry.
@@ -99,7 +99,7 @@ export function LpHero() {
                   className="lp-btn--tinted lp-btn--demo lp-hero-call"
                   data-analytics-id="call_hero"
                 >
-                  Book a demo
+                  Talk to sales
                 </LpFxLink>
                 {/* out of flow, under the row: #1 Product of the Day on Product Hunt */}
                 <LpProductHunt />

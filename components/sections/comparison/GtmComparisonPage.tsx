@@ -88,7 +88,7 @@ function ComparisonCell({ cell }: { cell: ComparisonCellData }) {
 }
 
 /**
- * The CTA pair, "Start free" then "Book a demo", the hero's order on every surface
+ * The CTA pair, "Start free" then "Talk to sales", the hero's order on every surface
  * (founder 2026-09-03). Each placement has its own allow-listed ids (lib/analytics/data-layer.ts),
  * so comparison clicks don't merge into the homepage hero and final metrics.
  */
@@ -106,7 +106,7 @@ function CtaPair({ placement }: { placement: "hero" | "final" }) {
         className="lp-btn--tinted lp-btn--demo"
         data-analytics-id={placement === "hero" ? "call_compare_hero" : "call_compare_final"}
       >
-        Book a demo
+        Talk to sales
       </LpFxLink>
     </div>
   );
