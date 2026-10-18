@@ -485,7 +485,7 @@ export const pricingClose = {
  * Not answered until the founder decides: refunds and an annual plan.
  */
 export const pricingFaq = {
-  title: "Billing questions.",
+  title: "Self-serve billing questions.",
   more: { text: "Another question?", cta: "Ask support" },
   items: [
     {
