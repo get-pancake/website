@@ -146,6 +146,13 @@
   font-size: var(--lp-text-md);
   line-height: 1.5;
 }
+/* White Glove's "Learn more" (/white-glove): an inline text link, no new row */
+.pricing-plans .pricing-plan__choice a {
+  color: var(--lp-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .pricing-plans .pricing-plan__choice label {
   color: var(--lp-text);
   font-size: var(--lp-text-sm);

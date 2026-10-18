@@ -68,6 +68,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 
 - [Homepage](https://pancake.ai/) — what Pancake does, how it works, and pricing
 - [Pricing](https://pancake.ai/pricing) — one plan, from $99 a month per workspace with 60,000 credits; what credits pay for and the billing answers
+- [White Glove](https://pancake.ai/white-glove) — our team builds your outbound machine and runs it with you: a dedicated GTM engineer, custom GTM Brain setup, unlimited Plays and credits, $3,000 a month ([Markdown](https://pancake.ai/white-glove.md))
 - [Example Plays](https://pancake.ai/plays) — 120 example Plays for 40 kinds of B2B business, grouped by how each Play finds people, plus funding, lookalikes, role match, web evidence and reactions to one post
 - [Use Pancake in Claude](https://pancake.ai/claude) — connect Pancake to Claude, ChatGPT, Claude Code or Codex over MCP, with prompts
 - [Use Pancake in Claude, as Markdown](https://pancake.ai/guides/claude.md) — the same guide written for an agent to follow

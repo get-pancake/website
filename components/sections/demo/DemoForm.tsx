@@ -36,7 +36,7 @@ import {
   type DemoRequestPartial,
 } from "@/lib/demo-request";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
-import { WHITE_GLOVE_DESCRIPTION, WHITE_GLOVE_PRICING_HREF } from "@/lib/white-glove";
+import { WHITE_GLOVE_DESCRIPTION, WHITE_GLOVE_PAGE_HREF } from "@/lib/white-glove";
 import { AiSalesCall } from "./AiSalesCall";
 import { BOOKED, BOOKING, CARD, ERRORS, FIELDS, PROGRESS, STEP2, SUPPORT_HREF } from "./demo-copy";
 import { DemoBooked } from "./DemoBooked";
@@ -246,8 +246,9 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
           <label className="demo-form__label" htmlFor={`${id}-white-glove`}>Are you interested in White Glove?</label>
           <p id={`${id}-white-glove-help`} className="demo-form__help">
             {WHITE_GLOVE_DESCRIPTION}{" "}
-            <a href={WHITE_GLOVE_PRICING_HREF} target="_blank" rel="noopener noreferrer">
-              Learn more here<span className="lp-sr-only"> (opens in a new tab)</span>
+            {/* A new tab, so the answers on this form stay in place. */}
+            <a href={WHITE_GLOVE_PAGE_HREF} target="_blank" rel="noopener noreferrer">
+              Learn more about White Glove<span className="lp-sr-only"> (opens in a new tab)</span>
             </a>
           </p>
           <div className="demo-form__select-wrap"><select id={`${id}-white-glove`} name="whiteGlove" aria-describedby={`${id}-white-glove-help`} className="demo-form__input demo-form__select" required defaultValue="">
