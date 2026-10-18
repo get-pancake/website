@@ -195,14 +195,17 @@ export const AI_CALL = {
   newTab: " (opens in a new tab)",
 } as const;
 
-/** The booked state, once Calendly reports the booking (DemoBooked). title
-    and body are the 2026-09-16 booking brief; again and restart are VERBATIM
-    from the founder's 2026-09-15 brief. */
+/** The same recording is available to self-service and booked visitors. */
+export const DEMO_VIDEO = {
+  title: "Pancake demo",
+  src: "https://www.youtube-nocookie.com/embed/Fk8sqw61NqE?rel=0",
+  href: "https://www.youtube.com/watch?v=Fk8sqw61NqE",
+} as const;
+
+/** The booked state, once Calendly reports the booking (DemoBooked). */
 export const BOOKED = {
   title: "You're booked",
   body: "Check your inbox for the calendar invite.",
-  videoTitle: "Pancake demo",
-  videoSrc: "https://www.youtube-nocookie.com/embed/Fk8sqw61NqE?rel=0",
   again: "To submit updated details, start a new submission below:",
   restart: "Start a new submission",
 } as const;

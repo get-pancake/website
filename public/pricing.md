@@ -1,13 +1,21 @@
 # Pancake pricing: from $99 a month
 
-> Start at $99. Scale when it works. Buyers found for you, a personal message for each, sent from your account. One plan for your whole team. 15,000 free credits, valid for 7 days. Credit card required to start the trial.
+> Start at $99. Scale when it works. Build it yourself with Pancake, or have our team build it for you. Self-serve trial: 15,000 free credits, valid for 7 days. Credit card required to start the trial.
 
 This file carries the facts of https://pancake.ai/pricing for AI agents. The page is the source of truth.
 
 - Start free: https://app.pancake.ai
-- Book a demo: https://pancake.ai/demo
+- Talk to sales: https://pancake.ai/demo
 
-## The plan
+## Pancake self-serve or Pancake White Glove
+
+Pancake self-serve: you build your outbound machine with Pancake. Set up your Brain, create your Plays and run them yourself. Choose your monthly credits, starting at $99 a month per workspace.
+
+Pancake White Glove: our team builds your outbound machine, sets up your Plays and GTM Brain, and gives you unlimited Pancake credits. A GTM engineer works with your team. This is a paid service for companies of any size. Talk to sales: https://pancake.ai/demo
+
+Compare both options: https://pancake.ai/pricing#white-glove
+
+## The self-serve plan
 
 One plan, per workspace, billed monthly. Every level is the same product. Only the monthly credits change. Start on any level and change anytime.
 
