@@ -36,10 +36,12 @@ import {
   type DemoRequestPartial,
 } from "@/lib/demo-request";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
+import { WHITE_GLOVE_DESCRIPTION, WHITE_GLOVE_PRICING_HREF } from "@/lib/white-glove";
 import { AiSalesCall } from "./AiSalesCall";
 import { BOOKED, BOOKING, CARD, ERRORS, FIELDS, PROGRESS, STEP2, SUPPORT_HREF } from "./demo-copy";
 import { DemoBooked } from "./DemoBooked";
 import { DemoBooking } from "./DemoBooking";
+import { DemoVideo } from "./DemoVideo";
 
 /**
  * The qualification form (the Calendly routing form's questions) in two steps
@@ -217,10 +219,13 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
         {selfServe ? "You can get started today. Create your account and build your first Play." :
           "Book a consultation for a company with more than 50 employees, or to explore our paid White Glove program."}
       </p>
-      {selfServe ? <div className="demo-form__actions">
-        <a className="lp-btn" href={APP_ORIGIN}>Start free</a>
-        <a className="demo-form__back demo-form__watch" href="/#lp-demowin">Watch the demo</a>
-        <button className="demo-form__back" type="button" onClick={() => setSelfServe(false)}>Change answers</button>
+      {selfServe ? <div className="demo-self-serve">
+        <h3 className="demo-form__label">Watch the demo</h3>
+        <DemoVideo />
+        <div className="demo-form__actions">
+          <a className="lp-btn" href={APP_ORIGIN}>Start free</a>
+          <button className="demo-form__back" type="button" onClick={() => setSelfServe(false)}>Change answers</button>
+        </div>
       </div> : <form className="demo-form__fields" method="post" onSubmit={(event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
@@ -239,7 +244,12 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
         </div>
         <div className="demo-form__field">
           <label className="demo-form__label" htmlFor={`${id}-white-glove`}>Are you interested in White Glove?</label>
-          <p id={`${id}-white-glove-help`} className="demo-form__help">Paid, hands-on help building and running your go-to-market.</p>
+          <p id={`${id}-white-glove-help`} className="demo-form__help">
+            {WHITE_GLOVE_DESCRIPTION}{" "}
+            <a href={WHITE_GLOVE_PRICING_HREF} target="_blank" rel="noopener noreferrer">
+              Learn more here<span className="lp-sr-only"> (opens in a new tab)</span>
+            </a>
+          </p>
           <div className="demo-form__select-wrap"><select id={`${id}-white-glove`} name="whiteGlove" aria-describedby={`${id}-white-glove-help`} className="demo-form__input demo-form__select" required defaultValue="">
             <option value="" disabled>Choose one</option><option value="yes">Yes</option><option value="no">No</option>
           </select></div>

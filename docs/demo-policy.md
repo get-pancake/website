@@ -8,7 +8,8 @@ François approved retiring group demos on October 18, 2026.
 - Ask company headcount and explicit interest in the paid White Glove program before contact details.
 - White Glove interest takes precedence at every company size.
 - Otherwise only the 51+ employee bucket reaches the enterprise calendar. Exactly 50 belongs to self-service.
-- Everyone else gets Start free, the recorded homepage demo, and support.
+- Everyone else gets Start free, an embedded recorded YouTube demo with a direct YouTube fallback, and support. No contact details are required to watch.
+- Explain White Glove at qualification and link to the self-serve / White Glove comparison at `/pricing#white-glove`. The founder-confirmed offer includes a GTM engineer, Brain and Play setup, and unlimited Pancake credits.
 - The API validates qualification before CRM delivery. A failure, malformed response, or honeypot response cannot open a calendar. Voice answers cannot replace the visitor's qualification choices.
 - Existing signup and onboarding behavior is unchanged.
 
@@ -22,9 +23,9 @@ François explicitly chose to honor the eight already-booked sessions (63 reserv
 No attendee cancellations were sent. Calendar hold recurrences were verified to end after the
 last large group on October 21 and the last regular group on November 10.
 
-Keep historical event IDs and records. The related pancake-cmo change adds `white_glove` to the
-closed analytics/configuration types without relabeling group-demo history. Runtime mapping and
-deployment are separate steps, documented in its Calendly runbook.
+Keep historical event IDs and records. François deferred the Calendly-to-backend tracking
+integration and Terraform activation on October 18, 2026. They are not release gates for the
+website or booking policy. The prepared backend mapping PR remains open with auto-merge disabled.
 
 ## Validation and release gates
 
@@ -44,5 +45,6 @@ The live public Calendly form was tested with 21-50/No (Pancake login), 51+/No (
 inactive-event warning on the external fallback, but actual public submission redirects successfully
 to `https://app.pancake.ai/login`; the warning does not describe the observed public behavior.
 
-The repository requires preview deployment and manual production promotion by Tristan.
-Preparing this branch does not mean the public website has been deployed.
+François explicitly authorized merging and deploying this change, overriding the repository's
+Tristan-only promotion rule for this demo-policy rollout. Verify the deployment and live behavior
+before reporting a change as shipped.

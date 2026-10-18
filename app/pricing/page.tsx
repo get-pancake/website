@@ -20,6 +20,7 @@ import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { PriceGroups } from "@/components/sections/landing/PriceGroups";
 import { BillingFaq } from "@/components/sections/pricing/BillingFaq";
 import { PlanCard } from "@/components/sections/pricing/PlanCard";
+import { PricingApproaches } from "@/components/sections/pricing/PricingApproaches";
 import { PricingClose } from "@/components/sections/pricing/PricingClose";
 import { PricingLead } from "@/components/sections/pricing/PricingLead";
 import { PricingLevelProvider } from "@/components/sections/pricing/PricingLevel";
@@ -41,7 +42,7 @@ import "./pricing.css";
 /* "from": the first level's price. "per workspace" since 2026-10-06, the
    unit the plan is billed on. The description says what
    the price buys and the one choice a buyer makes. */
-const DESCRIPTION = `Pancake starts at ${pricingV2.currencySymbol}${BASE_LEVEL.dollars} a month per workspace, with ${formatCredits(BASE_LEVEL.credits)} credits and your whole team included. One plan: you pick your monthly credits. Unused credits roll over.`;
+const DESCRIPTION = `Pancake self-serve starts at ${pricingV2.currencySymbol}${BASE_LEVEL.dollars} a month per workspace, with ${formatCredits(BASE_LEVEL.credits)} credits and your whole team included. With White Glove, our team builds your outbound machine for you.`;
 
 const TITLE = `Pancake Pricing: from $${BASE_LEVEL.dollars}/month per workspace`;
 const URL = `${SITE_ORIGIN}/pricing`;
@@ -177,10 +178,13 @@ export default function PricingPage() {
                 <span className="lp-sr-only">{pricingV2.srTitle} </span>
                 {pricingV2.title}
               </h1>
-              <p className="lv2-section-lede">{pricingV2.blurb}</p>
+              <p className="lv2-section-lede">Build it yourself with Pancake, or have our team build it for you.</p>
             </header>
 
-            <div className="lv2-price-plan">
+            <PricingApproaches />
+
+            <div id="self-serve" className="lv2-price-plan">
+              <h2 className="lp-display pricing-self-serve-title">Choose your self-serve credits</h2>
               <PlanCard
                 pickerLabel={pricingV2.pickerLabel}
                 pickerHint={pricingV2.pickerHint}

@@ -515,9 +515,6 @@
   border-bottom: var(--demo-chevron-stroke) solid currentColor;
   transform: translateX(25%) rotate(45deg);
 }
-.lp-demo .demo-form__watch::before {
-  content: none;
-}
 @media (hover: hover) {
   .lp-demo .demo-form__back:hover:not([aria-disabled="true"]) {
     text-decoration: underline;
@@ -645,6 +642,17 @@
 /* The kit's dark surface shows for the instant before YouTube paints its
    player (--lp-terminal-bg is the founder's terminal background, not a
    letterbox). */
+.demo-self-serve {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-4);
+  margin-top: var(--lp-space-8);
+}
+.demo-video {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);
+}
 .demo-success__video {
   width: 100%;
   aspect-ratio: 16 / 9;
