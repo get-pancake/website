@@ -219,7 +219,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
       </p>
       {selfServe ? <div className="demo-form__actions">
         <a className="lp-btn" href={APP_ORIGIN}>Start free</a>
-        <a className="demo-form__back" href="/#lp-demowin">Watch the demo</a>
+        <a className="demo-form__back demo-form__watch" href="/#lp-demowin">Watch the demo</a>
         <button className="demo-form__back" type="button" onClick={() => setSelfServe(false)}>Change answers</button>
       </div> : <form className="demo-form__fields" method="post" onSubmit={(event) => {
         event.preventDefault();

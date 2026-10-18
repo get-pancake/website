@@ -63,14 +63,10 @@ export const CARD = {
   helpAfter: ".",
 } as const;
 
-/** Step 2 of the card (qualification). Founder 2026-09-16: "two steps in
-    the form, just like on ElevenLabs" (their step 2 is "Tell us about
-    yourself" with a Back button); the title names the team the three
-    questions are about. `submit` reads "Pick a time" since 2026-09-16
-    (François: "'Request a demo' in step 2 should be called 'Pick a time'"). */
+/** Context collected after company size and White Glove qualification. */
 export const STEP2 = {
-  title: "Tell us about your team",
-  intro: "Three quick answers so we come prepared.",
+  title: "Tell us what you need",
+  intro: "A little context so we come prepared.",
   back: "Back",
   submit: "Pick a time",
 } as const;

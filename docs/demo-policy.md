@@ -32,12 +32,17 @@ Run `node --test scripts/demo-policy.test.cjs`, TypeScript, changed-file lint, a
 Check the self-service, enterprise, and White Glove paths on desktop and mobile before promotion.
 Do not make real bookings or send test leads to production CRM.
 
-At preparation time, the 15 policy tests, TypeScript, changed-file lint, and prebuild checks pass.
-The full local build reached prerendering but ran out of disk space. Browser verification was
-interrupted by loss of the browser connection. Calendly saved the external self-service destination
-and its preview selected it, but its editor still displayed an inactive-event warning on that
-fallback; resolve or verify this independently before calling the routing cutover complete.
-The White Glove prefill question position also needs a live check.
+The 15 policy tests, TypeScript, changed-file lint, and prebuild checks pass. Vercel built the
+preview successfully; the earlier full local build ran out of disk space during prerendering.
+Desktop (1440px) and phone (390px) browser checks confirmed qualification, self-service, the
+enterprise calendar, and the White Glove calendar. No horizontal page overflow was observed.
+The White Glove details screen correctly prefills the preparation question through `a1`, including
+White Glove interest and company size. No test booking was confirmed and local CRM delivery was disabled.
+
+The live public Calendly form was tested with 21-50/No (Pancake login), 51+/No (enterprise),
+51+/Yes (White Glove precedence), and 1-2/Yes (White Glove). Its editor had displayed an
+inactive-event warning on the external fallback, but actual public submission redirects successfully
+to `https://app.pancake.ai/login`; the warning does not describe the observed public behavior.
 
 The repository requires preview deployment and manual production promotion by Tristan.
 Preparing this branch does not mean the public website has been deployed.

@@ -515,6 +515,9 @@
   border-bottom: var(--demo-chevron-stroke) solid currentColor;
   transform: translateX(25%) rotate(45deg);
 }
+.lp-demo .demo-form__watch::before {
+  content: none;
+}
 @media (hover: hover) {
   .lp-demo .demo-form__back:hover:not([aria-disabled="true"]) {
     text-decoration: underline;
