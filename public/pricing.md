@@ -1,19 +1,21 @@
 # Pancake pricing: from $99 a month
 
-> Start at $99. Scale when it works. Build it yourself with Pancake, or have our team build it for you. Self-serve trial: 15,000 free credits, valid for 7 days. Credit card required to start the trial.
+> Start at $99. Scale when it works. Run it yourself, let us build it, or connect your whole GTM stack. Self-serve trial: 15,000 free credits, valid for 7 days. Credit card required to start the trial.
 
 This file carries the facts of https://pancake.ai/pricing for AI agents. The page is the source of truth.
 
 - Start free: https://app.pancake.ai
 - Talk to sales: https://pancake.ai/demo
 
-## Pancake self-serve or Pancake White Glove
+## Self-serve, White Glove and Enterprise
 
 Pancake self-serve: you build your outbound machine with Pancake. Set up your Brain, create your Plays and run them yourself. Choose your monthly credits, starting at $99 a month per workspace.
 
-Pancake White Glove: our team builds your outbound machine, sets up your Plays and GTM Brain, and gives you unlimited Pancake credits. A GTM engineer works with your team. This is a paid service for companies of any size. Talk to sales: https://pancake.ai/demo
+Pancake White Glove: $3,000 per month. Our team builds your outbound machine, sets up your Plays and GTM Brain, and gives you unlimited Pancake credits. A GTM engineer works with your team, with a weekly GTM office hour. Three-month initial commitment, then month to month. This is a paid service for companies of any size. Talk to sales: https://pancake.ai/demo
 
-Compare both options: https://pancake.ai/pricing#white-glove
+Pancake Enterprise: custom pricing. Access all data providers through a single endpoint, add custom GTM Brain connectors, keep your GTM Brain in sync with GitHub, and create custom Plays tailored to your sales motion. Talk to sales: https://pancake.ai/demo
+
+Compare all three options: https://pancake.ai/pricing#white-glove
 
 ## The self-serve plan
 
@@ -58,7 +60,7 @@ Leads matched to your business, not to a filter. Your GTM Brain, 30+ data provid
 - Vector Legal (Aurelie, Head of GTM): "Pancake built our pipeline in 7 days."
 - AgentMail (Adi Singh, Co-founder): "One Pancake Play replaced all our inbound tools."
 
-## Billing questions
+## Self-serve billing questions
 
 ### How many leads will I get?
 
