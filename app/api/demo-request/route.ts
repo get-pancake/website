@@ -1,3 +1,4 @@
+import { demoBookingDestination } from "@/lib/booking";
 import { NextRequest, NextResponse } from "next/server";
 
 import { normalizeAirtableBaseId, normalizeAirtableToken } from "@/lib/airtable-config";
@@ -147,6 +148,7 @@ async function notifySlack(url: string, lead: Lead): Promise<DeliveryResult> {
     `*Name:* ${plainName(lead.firstName)} ${plainName(lead.lastName)}`,
     `*Email:* ${plainEmail(lead.email)}`,
     `*Website:* ${escapeMrkdwn(lead.website)}`,
+    `*White Glove interest:* ${lead.whiteGlove === "yes" ? "Yes" : "No"}`,
     `*Team size:* ${escapeMrkdwn(lead.teamSize)}`,
     `*Has account:* ${lead.hasAccount === "yes" ? "Yes" : "No"}`,
     lead.goal ? `*Goal:* ${escapeMrkdwn(lead.goal)}` : null,
@@ -280,6 +282,11 @@ export async function POST(request: NextRequest) {
     return json({ ok: false, error: "invalid", field: parsed.field, ...(parsed.reason ? { reason: parsed.reason } : {}) }, 400);
   }
 
+  const destination = demoBookingDestination(parsed.value.teamSize, parsed.value.whiteGlove);
+  if (!destination) {
+    return json({ ok: false, error: "ineligible" }, 403);
+  }
+
   // After validation so garbage bodies never consume it; see GLOBAL_LIMIT.
   const perInstance = rateLimit("demo:global", GLOBAL_LIMIT.max, GLOBAL_LIMIT.windowMs);
   if (!perInstance.ok) {
@@ -320,7 +327,7 @@ export async function POST(request: NextRequest) {
       console.info(
         "Demo request accepted without delivery: set SLACK_DEMO_WEBHOOK_URL, AIRTABLE_DEMO_REQUESTS_TABLE_ID or ATTIO_API_KEY",
       );
-      return json({ ok: true, delivered: [] }, 200);
+      return json({ ok: true, delivered: [], destination: destination.key }, 200);
     }
     console.error("Demo request has no delivery configured");
     return json({ ok: false, error: "unavailable" }, 503);
@@ -336,7 +343,7 @@ export async function POST(request: NextRequest) {
   if (slack === "sent") delivered.push("slack");
   if (airtable === "sent") delivered.push("airtable");
   if (attio === "sent") delivered.push("attio");
-  if (delivered.length > 0) return json({ ok: true, delivered }, 200);
+  if (delivered.length > 0) return json({ ok: true, delivered, destination: destination.key }, 200);
 
   console.error("Demo request delivery failed", { slack, airtable, attio });
   return json({ ok: false, error: "unavailable" }, 503);

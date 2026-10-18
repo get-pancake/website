@@ -22,7 +22,7 @@ export type LpNavItem = {
  * left-justified, Escape closes, focus trapped, body scroll locked via
  * body.menu-open (same :has(main.lp) scoping as the modal lock).
  * The bar's "Get started" pill moves in here on mobile and keeps its
- * allow-listed app_nav id; "Book a demo" is a same-tab link to /demo, like
+ * allow-listed app_nav id; "Talk to sales" is a same-tab link to /demo, like
  * the bar's pill (François, 2026-09-16), and keeps its call_nav id.
  * 2026-10-07: the sheet carries the desktop bar's entries — Product,
  * Industries, Pricing, Resources as a labelled list (LpNav's RESOURCES_MENU,
@@ -209,7 +209,7 @@ export function LpNavMenu({ resources }: { resources: LpNavItem[] }) {
             data-analytics-id="call_nav"
             onClick={close}
           >
-            Book a demo
+            Talk to sales
           </LpFxLink>
         </div>
       </div>

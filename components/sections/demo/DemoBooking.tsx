@@ -88,7 +88,7 @@ export function DemoBooking({
   const booked = useRef(false); // calendly.event_scheduled is acted on once
   // The listener is registered once; it calls the latest callback.
   const onBookedRef = useRef(onBooked);
-  const destination = demoBookingDestination(answers.teamSize);
+  const destination = demoBookingDestination(answers.teamSize, answers.whiteGlove);
 
   useEffect(() => { titleRef.current?.focus(); }, []);
   useEffect(() => { onBookedRef.current = onBooked; }, [onBooked]);
@@ -162,6 +162,8 @@ export function DemoBooking({
     }, FRAME_STUCK_MS);
     return () => window.clearTimeout(timer);
   }, [frameSrc]);
+
+  if (!destination) return null;
 
   return (
     <div className="demo-success demo-success--booking">

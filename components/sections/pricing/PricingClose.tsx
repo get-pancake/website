@@ -25,7 +25,7 @@ export function PricingClose() {
           <div className="lv2-button-group">
             <StartFreeOnLevel data-analytics-id="app_pricing_page">Start free</StartFreeOnLevel>
             <FxPillLink variant="outline" href={DEMO_PAGE_PATH} data-analytics-id="call_pricing_page">
-              Book a demo
+              Talk to sales
             </FxPillLink>
           </div>
           <p className="lv2-close-more">

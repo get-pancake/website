@@ -33,7 +33,7 @@ const FILLS = [
  */
 /** The two site-wide CTAs get fixed, different starts (their hashes happen
  *  to collide); any other label hashes into the palette. */
-const FILL_START: Record<string, number> = { "Start free": 0, "Book a demo": 1 };
+const FILL_START: Record<string, number> = { "Start free": 0, "Talk to sales": 1 };
 
 function fillIndexFor(label: string): number {
   if (label in FILL_START) return FILL_START[label]!;

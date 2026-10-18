@@ -16,8 +16,8 @@ import type { DemoBookingDestinationKey } from "@/lib/booking";
 export const META = {
   // Tab title is EXACTLY "Pancake" on the landings (founder rule, app/page.tsx).
   title: "Pancake",
-  ogTitle: "Book a demo with Pancake",
-  description: "See Pancake run your go-to-market. Two quick steps, then book your demo.",
+  ogTitle: "Talk to Pancake sales",
+  description: "See Pancake run your go-to-market. Consultations for companies with more than 50 employees or interest in White Glove.",
 } as const;
 
 /**
@@ -51,8 +51,8 @@ export const TRUST = { before: "Trusted by dozens of ", ycAlt: "YC", after: " co
     Four words: a named exception to landing-voice's 3-word label cap, like
     BOOKED.restart. */
 export const CARD = {
-  title: "Book a demo",
-  intro: "Two quick steps, then pick a time.",
+  title: "Book a consultation",
+  intro: "Share your contact details and what you need help with, then pick a time.",
   submit: "Let's go",
   talk: "Talk to our AI",
   submitting: "Sending…",
@@ -86,7 +86,7 @@ export const FIELDS = {
   lastName: "Last name",
   email: "Work email",
   website: "Company website",
-  teamSize: "Team size",
+  teamSize: "Company size",
   hasAccount: "Do you already have a Pancake account?",
   goal: "What is the #1 thing Pancake can do for you?",
   required: "*",
@@ -111,11 +111,14 @@ export const ERRORS = {
       "Start free" links the app (app_demo_personal_email). */
   emailPersonalVisible: { before: "Use your work email. No work email? ", link: "Start free", after: " instead." },
   website: "Enter a website like acme.com.",
-  teamSize: "Pick a team size.",
+  teamSize: "Pick a company size.",
+  whiteGlove: "Tell us whether you are interested in White Glove.",
   hasAccount: "Tell us if you have a Pancake account.",
   goal: "Pick one of the options.",
   submissionId: "Check the form and try again.",
   invalid: "Check the form and try again.",
+  unavailable: "We could not open the calendar. Please try again.",
+  ineligible: "Consultations are for companies with more than 50 employees or interest in White Glove. You can start using Pancake now.",
   // The route's window is 10 minutes (landing-voice: real numbers).
 } as const;
 
@@ -145,15 +148,13 @@ export const BOOKING = {
   /** once Pancake opened the time picked on the call: slotBefore + calendar + slotAfter */
   slotBefore: "Confirm your ",
   slotAfter: " below. Pancake filled in your details.",
-  /** per lib/booking.ts DEMO_BOOKING_DESTINATIONS key; both group demos read the same */
+  /** per lib/booking.ts DEMO_BOOKING_DESTINATIONS key */
   calendar: {
-    discovery: "discovery call",
     enterprise: "enterprise call",
-    groupDemo: "group demo",
-    largeGroupDemo: "group demo",
+    whiteGlove: "White Glove consultation",
   } satisfies Record<DemoBookingDestinationKey, string>,
   /** the iframe's accessible name (= the retired dialog's frame title) */
-  frameTitle: "Book a demo with Pancake",
+  frameTitle: "Book a consultation with Pancake",
   /** shown only when the frame has not loaded after a beat */
   fallbackBefore: "Calendar not loading? ",
   fallbackLink: "Open it in a new tab",

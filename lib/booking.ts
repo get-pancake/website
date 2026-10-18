@@ -1,4 +1,4 @@
-import type { Goal, HasAccount, TeamSize } from "@/lib/demo-request";
+import { TEAM_SIZES, type Goal, type HasAccount, type TeamSize } from "@/lib/demo-request";
 import { SITE_HOST } from "@/lib/site-config.mjs";
 
 /**
@@ -29,98 +29,40 @@ export const DEMO_BOOKING_URL = "https://calendly.com/d/d3zd-2yc-x2s";
 /** Where every demo-booking CTA on the site points (same tab). */
 export const DEMO_PAGE_PATH = "/demo";
 
-/*
- * The calendars /demo books directly. Mirrors the live Calendly routing form
- * 402887, read 2026-09-16: its routes run in order on the Team size answer
- * only (the account and goal answers never change the calendar), and any
- * other value falls back to the discovery call. Calendly still routes
- * everyone who uses the routing form URL (Loops emails), so both paths must
- * land on the same calendar: any change to Calendly's
- * routes, buckets or event links updates this table, DEMO_BOOKING_ROUTES and
- * lib/demo-request.ts TEAM_SIZES in the same change.
- *
- * The direct event links bypass the routing form by design (founder
- * decision, 2026-09-16). So /demo bookings create no "Calendly Routing Form
- * Submissions" in Attio; the bookings themselves still reach Attio.
+/** Sales consultations: explicit White Glove interest takes precedence over size.
+ * Keep the independent Calendly routing form in sync. Unknown answers never
+ * fall back to an unrestricted calendar. Group event IDs remain in historical analytics only.
  */
-export type DemoBookingDestinationKey = "discovery" | "enterprise" | "groupDemo" | "largeGroupDemo";
-
+export type DemoBookingDestinationKey = "enterprise" | "whiteGlove";
 export type DemoBookingDestination = Readonly<{
   key: DemoBookingDestinationKey;
-  /** the event type's name in Calendly */
   name: string;
-  /** the event type's public link (what the routing form redirects to) */
   url: string;
-  /** the event type's Calendly API URI: the calendar whose open times the
-      voice agent reads (lib/ai-sales.ts booking_event_type).
-      Read 2026-09-16 from Calendly's public booking lookup of `url`. */
   eventTypeUri: string;
-  /** the URL parameter that prefills the optional booking question "Please
-      share anything that will help prepare for our meeting." with the
-      context line (demoBookingContext). Calendly numbers questions by
-      position, disabled ones included: the group demos ask it first (`a1`);
-      the two calls got it on 2026-09-16 (François: add the prep question)
-      as their second question, after a disabled first one (`a2`). Checked
-      live the same day: `a2` fills it on both calls, `a1` does not. */
   answerParam: "a1" | "a2";
 }>;
+export const DEMO_BOOKING_DESTINATIONS: Readonly<Record<DemoBookingDestinationKey, DemoBookingDestination>> = {
+  enterprise: {
+    key: "enterprise",
+    name: "Pancake enterprise discovery call",
+    url: "https://calendly.com/d/dz6m-cfh-bz7/pancake-enterprise-discovery-call",
+    eventTypeUri: "https://api.calendly.com/event_types/e377c789-7c07-4b99-84cd-5a5464b7ce31",
+    answerParam: "a2",
+  },
+  whiteGlove: {
+    key: "whiteGlove",
+    name: "Pancake Whiteglove",
+    url: "https://calendly.com/getpancake/pancake-whiteglove",
+    eventTypeUri: "https://api.calendly.com/event_types/4038695d-6406-483f-b395-533f6a3aee77",
+    answerParam: "a1",
+  },
+};
 
-export const DEMO_BOOKING_DESTINATIONS: Readonly<Record<DemoBookingDestinationKey, DemoBookingDestination>> =
-  Object.freeze({
-    /** 30 min, Round Robin */
-    discovery: Object.freeze({
-      key: "discovery",
-      name: "Pancake discovery call",
-      url: "https://calendly.com/d/d3nb-49j-dv2/pancake-discovery-call",
-      eventTypeUri: "https://api.calendly.com/event_types/023673f1-50f0-4ef7-b225-8d3f90e6d1dc",
-      answerParam: "a2",
-    }),
-    /** 45 min, Collective; set up like the discovery call (2026-09-08) */
-    enterprise: Object.freeze({
-      key: "enterprise",
-      name: "Pancake enterprise discovery call",
-      url: "https://calendly.com/d/dz6m-cfh-bz7/pancake-enterprise-discovery-call",
-      eventTypeUri: "https://api.calendly.com/event_types/e377c789-7c07-4b99-84cd-5a5464b7ce31",
-      answerParam: "a2",
-    }),
-    /** 30 min, Group */
-    groupDemo: Object.freeze({
-      key: "groupDemo",
-      name: "Pancake group demo",
-      url: "https://calendly.com/getpancake/pancake-group-demo",
-      eventTypeUri: "https://api.calendly.com/event_types/c871757a-39d8-4385-aad8-6857c65acd03",
-      answerParam: "a1",
-    }),
-    /** 30 min, Group */
-    largeGroupDemo: Object.freeze({
-      key: "largeGroupDemo",
-      name: "Pancake group demo (L)",
-      url: "https://calendly.com/getpancake/pancake-large-group-demo",
-      eventTypeUri: "https://api.calendly.com/event_types/47de85c5-afaf-432e-8d4f-fb96d06c795a",
-      answerParam: "a1",
-    }),
-  });
-
-/** The routing form's routes, in Calendly's order (first match wins). */
-const DEMO_BOOKING_ROUTES: ReadonlyArray<Readonly<{ teamSize: TeamSize; destination: DemoBookingDestinationKey }>> =
-  Object.freeze([
-    Object.freeze({ teamSize: "21-50", destination: "discovery" }),
-    Object.freeze({ teamSize: "51+", destination: "enterprise" }),
-    Object.freeze({ teamSize: "3-20", destination: "groupDemo" }),
-    Object.freeze({ teamSize: "1-2", destination: "largeGroupDemo" }),
-  ]);
-
-/** Calendly's fallback when no route matches. */
-const DEMO_BOOKING_FALLBACK: DemoBookingDestinationKey = "discovery";
-
-/**
- * The calendar a Team size answer routes to, as the routing form would
- * route it. Takes any string: a value with no route gets the fallback, as in
- * Calendly. Pure.
- */
-export function demoBookingDestination(teamSize: string): DemoBookingDestination {
-  const route = DEMO_BOOKING_ROUTES.find((candidate) => candidate.teamSize === teamSize);
-  return DEMO_BOOKING_DESTINATIONS[route ? route.destination : DEMO_BOOKING_FALLBACK];
+export function demoBookingDestination(teamSize: string, whiteGlove?: string): DemoBookingDestination | null {
+  if (!(TEAM_SIZES as readonly string[]).includes(teamSize)) return null;
+  if (whiteGlove === "yes") return DEMO_BOOKING_DESTINATIONS.whiteGlove;
+  if (teamSize === "51+" && whiteGlove === "no") return DEMO_BOOKING_DESTINATIONS.enterprise;
+  return null;
 }
 
 /** The routing form's Calendly id — the `scheduler_id` on analytics events. */
@@ -204,6 +146,7 @@ export type DemoBookingAnswers = {
   /** normalised (lib/demo-request.ts normalizeWebsite) */
   website: string;
   teamSize: TeamSize;
+  whiteGlove: "yes" | "no";
   hasAccount: HasAccount;
   /** optional question: left out of the context line when empty */
   goal?: Goal | "";
@@ -225,7 +168,7 @@ const HAS_ACCOUNT_TEXT: Record<HasAccount, "Yes" | "No"> = { yes: "Yes", no: "No
  * website rather than cut a URL in half.
  */
 export function demoBookingContext(answers: DemoBookingAnswers): string {
-  const facts = [`Team size: ${answers.teamSize}.`, `Pancake account: ${HAS_ACCOUNT_TEXT[answers.hasAccount]}.`];
+  const facts = [`White Glove interest: ${answers.whiteGlove === "yes" ? "Yes" : "No"}.`, `Team size: ${answers.teamSize}.`, `Pancake account: ${HAS_ACCOUNT_TEXT[answers.hasAccount]}.`];
   if (answers.goal) facts.push(`Goal: ${answers.goal}.`);
   const website = answers.website.trim();
   const line = [...facts, ...(website ? [`Website: ${website}`] : [])].join(" ");
@@ -315,7 +258,9 @@ export function demoBookingEventUrl(answers: DemoBookingAnswers, options: EmbedO
   if (name) params.set("name", name);
   const email = answers.email.trim();
   if (email) params.set("email", email);
-  const { url, answerParam } = demoBookingDestination(answers.teamSize);
+  const destination = demoBookingDestination(answers.teamSize, answers.whiteGlove);
+  if (!destination) return null;
+  const { url, answerParam } = destination;
   params.set(answerParam, demoBookingContext(answers));
   const path = slot ? `${url}/${slot.start}` : url;
   return `${path}?${params.toString().replace(/\+/g, "%20")}`;

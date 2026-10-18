@@ -113,7 +113,7 @@ export function LpCta({
             </LpFxLink>
             {/* A same-tab link to /demo (François, 2026-09-16; it opened the
                 Calendly sheet before), keeping the call_final id.
-                Tinted skin — same as the hero's Book a demo (founder
+                Tinted skin — same as the hero's Talk to sales (founder
                 2026-09-01: "bouton book a call différent que dans hero");
                 the outline variant is retired here. */}
             <LpFxLink
@@ -121,11 +121,11 @@ export function LpCta({
               className="lp-btn--tinted lp-btn--demo"
               data-analytics-id="call_final"
             >
-              Book a demo
+              Talk to sales
             </LpFxLink>
           </div>
         )}
-        {note ? <p className="lp-cta__note">{note}</p> : null}
+        {note ? <p className="lp-cta__note">{note}</p> : <p className="lp-cta__note">Sales consultations for companies with more than 50 employees or interest in White Glove.</p>}
       </div>
     </div>
   );

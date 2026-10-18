@@ -123,7 +123,7 @@ export function PlanCard({
           </p>
         </div>
 
-        {/* Start free → Book a demo, like the nav (founder 2026-09-03: primary
+        {/* Start free → Talk to sales, like the nav (founder 2026-09-03: primary
             first, everywhere). */}
         <div className="lv2-price-actions">
           <div className="lv2-button-group">
@@ -131,7 +131,7 @@ export function PlanCard({
               Start free
             </FxPillLink>
             <FxPillLink variant="outline" href={demoHref} data-analytics-id="call_pricing_page">
-              Book a demo
+              Talk to sales
             </FxPillLink>
           </div>
           <p className="lv2-price-fine">{fine}</p>

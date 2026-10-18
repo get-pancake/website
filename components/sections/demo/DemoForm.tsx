@@ -16,7 +16,7 @@ import {
 } from "@/lib/ai-sales";
 import { pushAcquisitionEvent } from "@/lib/analytics/data-layer";
 import { submissionAttemptForEmail, type BrowserSubmissionAttempt } from "@/lib/analytics/submission-id";
-import { demoBookingSlot, type DemoBookingAnswers, type DemoBookingSlot } from "@/lib/booking";
+import { demoBookingDestination, demoBookingSlot, type DemoBookingAnswers, type DemoBookingSlot } from "@/lib/booking";
 import {
   EMAIL_MAX,
   GOALS,
@@ -25,6 +25,7 @@ import {
   NAME_MAX,
   TEAM_SIZES,
   WEBSITE_MAX,
+  isDemoRequestOk,
   isDemoRequestErrorReason,
   isDemoRequestField,
   parseDemoRequest,
@@ -108,7 +109,7 @@ type Status = "idle" | "submitting" | "error" | "booking" | "booked";
 type Step = 1 | 2;
 type ErrorKind =
   | { code: "field"; field: DemoRequestField; reason?: DemoRequestErrorReason }
-  | { code: "invalid" };
+  | { code: "invalid" | "unavailable" | "ineligible" };
 
 // Cold start + the 5s upstream timeouts (Slack, Airtable and Attio run in
 // parallel), with margin; past that the user
@@ -128,6 +129,7 @@ function controlIdFor(id: string, field: DemoRequestField): string | undefined {
     case "lastName": return `${id}-last-name`;
     case "email": return `${id}-email`;
     case "website": return `${id}-website`;
+    case "whiteGlove": return `${id}-white-glove`;
     case "teamSize": return `${id}-team-size`;
     case "hasAccount": return `${id}-has-account-yes`;
     case "goal": return `${id}-goal`;
@@ -143,6 +145,7 @@ function stepOf(field: DemoRequestField): Step | null {
     case "email":
     case "website":
       return 1;
+    case "whiteGlove":
     case "teamSize":
     case "hasAccount":
     case "goal":
@@ -171,8 +174,7 @@ function fieldMessage(field: DemoRequestField, reason?: DemoRequestErrorReason):
   return reason === "personal_email" ? ERRORS.emailPersonal : ERRORS[field];
 }
 
-// Only the visitor's own input can block the flow: a server-side delivery
-// problem never does (see onSubmit).
+// Validation and delivery failures keep the visitor on the form for retry.
 // A personal email gets a next step on screen (2026-10-07): "Start free"
 // links the app, so a solo founder without a work address isn't stuck.
 // fieldMessage stays a plain string: the voice agent's tool results read it.
@@ -195,10 +197,61 @@ function errorMessage(kind: ErrorKind): ReactNode {
       </>
     );
   }
-  return kind.code === "field" ? fieldMessage(kind.field, kind.reason) : ERRORS.invalid;
+  return kind.code === "field" ? fieldMessage(kind.field, kind.reason) : ERRORS[kind.code];
 }
 
+type Qualification = { teamSize: DemoRequest["teamSize"]; whiteGlove: DemoRequest["whiteGlove"] };
+
 export function DemoForm({ id = "demo-form" }: { id?: string }) {
+  const [qualification, setQualification] = useState<Qualification | null>(null);
+  const [selfServe, setSelfServe] = useState(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => { if (selfServe) heading.current?.focus(); }, [selfServe]);
+  if (qualification) return <QualifiedDemoForm id={id} qualification={qualification} onReset={() => setQualification(null)} />;
+  return (
+    <div id={id} className="demo-form">
+      <h2 id="demo-card-title" className="lp-display demo-card__title" ref={heading} tabIndex={-1}>
+        {selfServe ? "Start using Pancake" : "Find the right next step"}
+      </h2>
+      <p className="demo-card__intro">
+        {selfServe ? "You can get started today. Create your account and build your first Play." :
+          "Book a consultation for a company with more than 50 employees, or to explore our paid White Glove program."}
+      </p>
+      {selfServe ? <div className="demo-form__actions">
+        <a className="lp-btn" href={APP_ORIGIN}>Start free</a>
+        <a className="demo-form__back" href="/#lp-demowin">Watch the demo</a>
+        <button className="demo-form__back" type="button" onClick={() => setSelfServe(false)}>Change answers</button>
+      </div> : <form className="demo-form__fields" method="post" onSubmit={(event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        const teamSize = String(data.get("teamSize")) as Qualification["teamSize"];
+        const whiteGlove = String(data.get("whiteGlove")) as Qualification["whiteGlove"];
+        if (!TEAM_SIZES.includes(teamSize) || !HAS_ACCOUNT.includes(whiteGlove)) return;
+        if (demoBookingDestination(teamSize, whiteGlove)) setQualification({ teamSize, whiteGlove });
+        else setSelfServe(true);
+      }}>
+        <div className="demo-form__field">
+          <label className="demo-form__label" htmlFor={`${id}-company-size`}>How many people work at your company?</label>
+          <div className="demo-form__select-wrap"><select id={`${id}-company-size`} name="teamSize" className="demo-form__input demo-form__select" required defaultValue="">
+            <option value="" disabled>Choose one</option>
+            {TEAM_SIZES.map(size => <option key={size} value={size}>{size}</option>)}
+          </select></div>
+        </div>
+        <div className="demo-form__field">
+          <label className="demo-form__label" htmlFor={`${id}-white-glove`}>Are you interested in White Glove?</label>
+          <p id={`${id}-white-glove-help`} className="demo-form__help">Paid, hands-on help building and running your go-to-market.</p>
+          <div className="demo-form__select-wrap"><select id={`${id}-white-glove`} name="whiteGlove" aria-describedby={`${id}-white-glove-help`} className="demo-form__input demo-form__select" required defaultValue="">
+            <option value="" disabled>Choose one</option><option value="yes">Yes</option><option value="no">No</option>
+          </select></div>
+        </div>
+        <div className="demo-form__actions"><LpFxPill type="submit" className="demo-form__submit">Continue</LpFxPill></div>
+      </form>}
+      <p className="demo-form__help">Need product help? <a href={SUPPORT_HREF}>Visit support</a>.</p>
+    </div>
+  );
+}
+
+function QualifiedDemoForm({ id, qualification, onReset }: { id: string; qualification: Qualification; onReset: () => void }) {
   const [status, setStatus] = useState<Status>("idle");
   const [step, setStep] = useState<Step>(1);
   // Step 1's "Let's go" is a real submit, and a submit attempt makes every
@@ -373,15 +426,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     setStatus("submitting");
     setError(null);
 
-    // The booking is the conversion (founder 2026-09-16: "they're booking
-    // straight with us"), and Calendly records it and feeds Attio. The POST
-    // notifies the team and records the lead (Slack / Airtable / Attio), so
-    // it is best effort: only a
-    // 400 about the visitor's own input stops them. A 403, 429, 5xx
-    // (including "no delivery configured"), timeout or network error still
-    // opens the calendar; the route logs every delivery failure server side
-    // (without form values). QA 2026-09-16: an unconfigured Preview blocked
-    // every visitor from booking.
+    // Only a validated server success may open a calendar.
     let proceed = false;
     let failure: ErrorKind | null = null;
     try {
@@ -404,14 +449,16 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
       } else if (response.status === 400 || response.status === 413) {
         // A proxy error page or a future server field name never reaches ERRORS[…] or the focus map.
         failure = { code: "invalid" };
+      } else if (response.status === 403 && typeof body === "object" && body !== null && "error" in body && body.error === "ineligible") {
+        failure = { code: "ineligible" };
+      } else if (response.ok && isDemoRequestOk(body)) {
+        proceed = demoBookingDestination(value.teamSize, value.whiteGlove)?.key === body.destination;
+        if (!proceed) failure = { code: "ineligible" };
       } else {
-        // 200, or a delivery-side refusal: the calendar opens either way.
-        proceed = true;
+        failure = { code: "unavailable" };
       }
     } catch {
-      // TimeoutError / AbortError from the 15s signal or a network error:
-      // the notification is lost, the booking is not.
-      proceed = true;
+      failure = { code: "unavailable" };
     } finally {
       inFlight.current = false;
     }
@@ -420,8 +467,8 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     // "You're booked" stays.
     if (!mounted.current || statusRef.current === "booked") return null;
     if (proceed) {
-      const { firstName, lastName, email, website, teamSize, hasAccount, goal } = value;
-      const next: DemoBookingAnswers = { firstName, lastName, email, website, teamSize, hasAccount, ...(goal ? { goal } : {}) };
+      const { firstName, lastName, email, website, teamSize, whiteGlove, hasAccount, goal } = value;
+      const next: DemoBookingAnswers = { firstName, lastName, email, website, teamSize, whiteGlove, hasAccount, ...(goal ? { goal } : {}) };
       answersRef.current = next;
       setAnswers(next);
       setSlot(null);
@@ -460,7 +507,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
     if (inFlight.current) {
       return { ok: false, field: "", message: "The form is still sending. Wait a moment, then try once more." };
     }
-    const input = formToolInput(params);
+    const input: Record<string, unknown> = { ...formToolInput(params), ...qualification };
     // The email the form already has wins: the agent never sees it, so any
     // address it sends in its place would be a guess.
     if (call?.known.email) input.email = call.known.email;
@@ -533,6 +580,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
   // The form subtree remounts empty on step 1 (unmounted in the booking and
   // booked states; every control is uncontrolled).
   function restart() {
+    onReset();
     submission.current = null;
     focusFirstOnIdle.current = true;
     setAnswers(null);
@@ -674,24 +722,8 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
               onChangeCapture={() => setStep2Touched(true)}
               onInvalidCapture={() => setStep2Touched(true)}
             >
-              <div className="demo-form__field">
-                <label className="demo-form__label" htmlFor={teamSizeId}>
-                  {FIELDS.teamSize}<span aria-hidden="true">{FIELDS.required}</span>
-                </label>
-                <div className="demo-form__select-wrap">
-                  <select
-                    id={teamSizeId}
-                    className="demo-form__input demo-form__select"
-                    name="teamSize"
-                    required={step === 2}
-                    defaultValue=""
-                    {...invalid("teamSize")}
-                  >
-                    <option value="" disabled>{FIELDS.choose}</option>
-                    {TEAM_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
-                  </select>
-                </div>
-              </div>
+              <input type="hidden" id={teamSizeId} name="teamSize" value={qualification.teamSize} />
+              <input type="hidden" name="whiteGlove" value={qualification.whiteGlove} />
               {/* The fieldset is not a control: it carries the description, both radios the invalid flag. */}
               <fieldset
                 id={hasAccountId}
@@ -752,6 +784,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
                 <LpFxPill type="submit" className="demo-form__submit">
                   {CARD.submit}
                 </LpFxPill>
+                <button type="button" className="demo-form__back" onClick={onReset}>Change answers</button>
                 {AI_SALES_ENABLED ? (
                   <LpFxPill
                     type="button"

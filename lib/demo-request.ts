@@ -7,21 +7,10 @@
  * the routing form would pick, so Calendly does not ask them again.
  */
 
+import type { DemoBookingDestinationKey } from "@/lib/booking";
 import { isPersonalEmail } from "@/lib/personal-email";
 
-/**
- * MUST equal the Calendly routing form's Team size option text, character
- * for character (ASCII hyphen-minus): lib/booking.ts routes /demo on this
- * exact string (DEMO_BOOKING_ROUTES copies the routing form's routes). A
- * value with no route falls back to the discovery call without an error,
- * while Loops emails still go through the routing form itself, so the two
- * paths would book different calendars (the voice agent books
- * what lib/booking.ts routes, like the page). It broke
- * once on 2026-09-16, when the Calendly buckets changed from 1-2 / 3-10 /
- * 11-50 / 51-200 / 201+ to the four below. Any change to Calendly's routes,
- * buckets or event links updates this list and lib/booking.ts in the same
- * change.
- */
+/** Company headcount buckets, shared with the independent Calendly routing form. */
 export const TEAM_SIZES = ["1-2", "3-20", "21-50", "51+"] as const;
 export type TeamSize = (typeof TEAM_SIZES)[number];
 /** Form values; lib/booking.ts writes them as "Yes" / "No" in the booking's answers line. */
@@ -75,6 +64,7 @@ export const DEMO_REQUEST_FIELDS = [
   "email",
   "website",
   "teamSize",
+  "whiteGlove",
   "hasAccount",
   "goal",
   "submissionId",
@@ -87,6 +77,7 @@ export type DemoRequest = {
   email: string;
   website: string;
   teamSize: TeamSize;
+  whiteGlove: HasAccount;
   hasAccount: HasAccount;
   goal?: Goal;
   submissionId?: string;
@@ -98,9 +89,9 @@ export type DemoRequestParse =
   | { ok: true; value: DemoRequest }
   | { ok: false; field: DemoRequestField; reason?: DemoRequestErrorReason };
 export type DemoRequestDelivery = "slack" | "airtable" | "attio";
-export type DemoRequestErrorCode = "invalid" | "forbidden" | "rate_limited" | "unavailable";
+export type DemoRequestErrorCode = "ineligible" | "invalid" | "forbidden" | "rate_limited" | "unavailable";
 export type DemoRequestResponse =
-  | { ok: true; delivered: DemoRequestDelivery[] }
+  | { ok: true; delivered: DemoRequestDelivery[]; destination?: DemoBookingDestinationKey }
   | { ok: false; error: DemoRequestErrorCode; field?: DemoRequestField; reason?: DemoRequestErrorReason };
 
 function isOneOf<const T extends readonly string[]>(list: T, value: unknown): value is T[number] {
@@ -176,6 +167,8 @@ export function parseDemoRequest(input: unknown): DemoRequestParse {
 
   const teamSize = body.teamSize;
   if (!isOneOf(TEAM_SIZES, teamSize)) return { ok: false, field: "teamSize" };
+  const whiteGlove = body.whiteGlove;
+  if (!isOneOf(HAS_ACCOUNT, whiteGlove)) return { ok: false, field: "whiteGlove" };
   const hasAccount = body.hasAccount;
   if (!isOneOf(HAS_ACCOUNT, hasAccount)) return { ok: false, field: "hasAccount" };
 
@@ -200,6 +193,7 @@ export function parseDemoRequest(input: unknown): DemoRequestParse {
       email,
       website,
       teamSize,
+      whiteGlove,
       hasAccount,
       ...(goal ? { goal } : {}),
       ...(submissionId ? { submissionId } : {}),
@@ -228,17 +222,19 @@ export function parsePartialDemoRequest(input: unknown): DemoRequestPartial {
     typeof body.website === "string" && body.website.length <= WEBSITE_MAX ? normalizeWebsite(body.website) : null;
   if (website) partial.website = website;
   if (isOneOf(TEAM_SIZES, body.teamSize)) partial.teamSize = body.teamSize;
+  if (isOneOf(HAS_ACCOUNT, body.whiteGlove)) partial.whiteGlove = body.whiteGlove;
   if (isOneOf(HAS_ACCOUNT, body.hasAccount)) partial.hasAccount = body.hasAccount;
   if (isOneOf(ACCEPTED_GOALS, body.goal)) partial.goal = body.goal;
   return partial;
 }
 
 /** The route's success shape, checked before the form trusts a 2xx. */
-export function isDemoRequestOk(value: unknown): value is { ok: true; delivered: DemoRequestDelivery[] } {
+export function isDemoRequestOk(value: unknown): value is { ok: true; delivered: DemoRequestDelivery[]; destination: DemoBookingDestinationKey } {
   if (typeof value !== "object" || value === null) return false;
-  const body = value as { ok?: unknown; delivered?: unknown };
+  const body = value as { ok?: unknown; delivered?: unknown; destination?: unknown };
   return (
     body.ok === true &&
+    (body.destination === "enterprise" || body.destination === "whiteGlove") &&
     Array.isArray(body.delivered) &&
     body.delivered.every((item) => item === "slack" || item === "airtable" || item === "attio")
   );

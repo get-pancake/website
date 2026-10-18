@@ -170,7 +170,8 @@ export function localTimeLabel(now: Date, timeZone: string): string {
 
 /** The booking values for a complete request. Pure. */
 export function aiSalesBookingVariables(answers: DemoBookingAnswers, meetingNames: AiSalesMeetingNames): AiSalesBookingVariables {
-  const destination = demoBookingDestination(answers.teamSize);
+  const destination = demoBookingDestination(answers.teamSize, answers.whiteGlove);
+  if (!destination) return NO_BOOKING;
   return {
     form_sent: "yes",
     booking_event_type: destination.eventTypeUri,
@@ -210,9 +211,9 @@ export function aiSalesDynamicVariables(
 
 /** The booking answers when every required one is known; null otherwise. */
 export function completeAnswers(known: DemoRequestPartial): DemoBookingAnswers | null {
-  const { firstName, lastName, email, website, teamSize, hasAccount, goal } = known;
-  if (!firstName || !lastName || !email || !website || !teamSize || !hasAccount) return null;
-  return { firstName, lastName, email, website, teamSize, hasAccount, ...(goal ? { goal } : {}) };
+  const { firstName, lastName, email, website, teamSize, whiteGlove, hasAccount, goal } = known;
+  if (!firstName || !lastName || !email || !website || !teamSize || !whiteGlove || !hasAccount) return null;
+  return { firstName, lastName, email, website, teamSize, whiteGlove, hasAccount, ...(goal ? { goal } : {}) };
 }
 
 /**
@@ -271,6 +272,7 @@ export const FORM_TOOL_PARAM: Readonly<Record<DemoRequestField, string>> = {
   email: "email",
   website: "company_website",
   teamSize: "team_size",
+  whiteGlove: "white_glove",
   hasAccount: "has_pancake_account",
   goal: "goal",
   submissionId: "email",

@@ -45,6 +45,7 @@ export type AttioDemoLead = {
   /** normalised, e.g. "https://acme.com/" */
   website: string;
   teamSize: string;
+  whiteGlove: "yes" | "no";
   hasAccount: "yes" | "no";
   goal?: string;
   source: string;
@@ -94,7 +95,7 @@ export function companyDomain(website: string): string | null {
 /** The note on the person, in plain text so no answer can format it. Pure. */
 export function attioNote(lead: AttioDemoLead): { title: string; content: string } {
   const lines = [
-    `Team size: ${lead.teamSize}`,
+    `White Glove interest: ${lead.whiteGlove === "yes" ? "Yes" : "No"}. Team size: ${lead.teamSize}`,
     `Has a Pancake account: ${lead.hasAccount === "yes" ? "Yes" : "No"}`,
     `Main goal: ${lead.goal ?? "Not answered"}`,
     `Company website: ${lead.website}`,
