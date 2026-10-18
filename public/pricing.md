@@ -11,9 +11,9 @@ This file carries the facts of https://pancake.ai/pricing for AI agents. The pag
 
 Pancake self-serve: you build your outbound machine with Pancake. Set up your Brain, create your Plays and run them yourself. Choose your monthly credits, starting at $99 a month per workspace.
 
-Pancake White Glove: $3,000 per month. Our team builds your outbound machine, sets up your Plays and GTM Brain, and gives you unlimited Pancake credits. A GTM engineer works with your team, with a weekly GTM office hour. Three-month initial commitment, then month to month. This is a paid service for companies of any size. Talk to sales: https://pancake.ai/demo
+Pancake White Glove: $3,000 per month. Our team builds your outbound machine and runs it with you: a dedicated GTM engineer, custom GTM Brain setup, unlimited Plays, outreach sequences built for your buyers, unlimited Pancake credits and a weekly GTM office hour. Three-month initial commitment, then month to month. This is a paid service for companies of any size. Details: https://pancake.ai/white-glove. Talk to sales: https://pancake.ai/demo
 
-Pancake Enterprise: custom pricing. Access all data providers through a single endpoint, add custom GTM Brain connectors, keep your GTM Brain in sync with GitHub, and create custom Plays tailored to your sales motion. Talk to sales: https://pancake.ai/demo
+Pancake Enterprise: custom pricing. We build your outbound machine and custom GTM brain: a dedicated GTM engineer, custom GTM Brain setup, unlimited Plays and custom Plays for your sales motion. Access all data providers through a single endpoint, add custom GTM Brain connectors and keep your GTM Brain in sync with GitHub. Talk to sales: https://pancake.ai/demo
 
 Compare all three options: https://pancake.ai/pricing#white-glove
 

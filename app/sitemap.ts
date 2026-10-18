@@ -4,6 +4,7 @@ import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
 import { getAllPosts } from "@/lib/posts";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { approvedVerticals, verticalUrl } from "@/lib/verticals";
+import { WHITE_GLOVE_PAGE_HREF } from "@/lib/white-glove";
 
 /**
  * Parse a frontmatter date, falling back to "now" when missing/unparseable.
@@ -59,6 +60,8 @@ function newestPostDate(): Date {
 const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "", updated: "2026-10-13", priority: 1.0 },
   { path: "/pricing", updated: "2026-10-13", priority: 0.8 },
+  // the White Glove offer page (PAN-2368), new on 2026-10-18
+  { path: WHITE_GLOVE_PAGE_HREF, updated: "2026-10-18", priority: 0.7 },
   { path: "/careers", updated: "2026-10-13", priority: 0.5 },
   { path: "/privacy", updated: "2026-10-13", priority: 0.3 },
   { path: "/terms", updated: "2026-09-18", priority: 0.3 },

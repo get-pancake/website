@@ -4,6 +4,7 @@
 # always ships with a 301 to the closest live page. Add new public URLs here when you ship them.
 /
 /pricing
+/white-glove
 /ai-gtm-report
 /open-roadmap
 /careers
@@ -182,4 +183,5 @@
 /llms-full.txt
 /install.md
 /pricing.md
+/white-glove.md
 /guides/claude.md

@@ -6,7 +6,7 @@ import { isLevelKey, usePricingLevel } from "./PricingLevel";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { BASE_LEVEL, CREDIT_LEVELS, appHrefForLevel, formatCredits, formatDollars } from "@/lib/pricing";
 import { TRIAL_DAYS, TRIAL_FREE_CREDITS_LABEL } from "@/lib/trial";
-import { WHITE_GLOVE_MONTHLY_DOLLARS, WHITE_GLOVE_INITIAL_MONTHS } from "@/lib/white-glove";
+import { WHITE_GLOVE_MONTHLY_DOLLARS, WHITE_GLOVE_INITIAL_MONTHS, WHITE_GLOVE_PAGE_HREF } from "@/lib/white-glove";
 
 function Feature({ children }: { children: ReactNode }) {
   return (
@@ -78,13 +78,14 @@ export function PricingPlans() {
           <p className="pricing-plan__caption">your outbound machine, built by our team</p>
         </div>
         <div className="pricing-plan__choice">
-          <p>We build your outbound machine so your team can focus on closing.</p>
+          <p>We build your outbound machine so your team can focus on closing. <a href={WHITE_GLOVE_PAGE_HREF}>Learn more<span className="lp-sr-only"> about White Glove</span></a></p>
         </div>
         <div className="pricing-plan__features">
           <p className="pricing-plan__intro">Self-serve, plus our team.</p>
           <ul>
-            <Feature>Your GTM engineer</Feature>
-            <Feature>Custom Brain and Plays setup</Feature>
+            <Feature>Dedicated GTM engineer</Feature>
+            <Feature>Custom GTM Brain setup</Feature>
+            <Feature>Unlimited Plays</Feature>
             <Feature>Sequences built for your buyers</Feature>
             <Feature>Unlimited Pancake credits</Feature>
             <Feature>Weekly GTM office hour</Feature>
@@ -102,18 +103,21 @@ export function PricingPlans() {
         </header>
         <div className="pricing-plan__price">
           <p className="pricing-plan__custom lp-display">Custom pricing</p>
-          <p className="pricing-plan__caption">shaped around your team and stack</p>
         </div>
         <div className="pricing-plan__choice">
-          <p>Connect your data and tools with a setup built for your sales motion.</p>
+          {/* The founder's sentence, verbatim (October 18, 2026). */}
+          <p>We build your outbound machine and custom GTM brain</p>
         </div>
         <div className="pricing-plan__features">
           <p className="pricing-plan__intro">Built around your stack.</p>
           <ul>
+            <Feature>Dedicated GTM engineer</Feature>
+            <Feature>Custom GTM Brain setup</Feature>
+            <Feature>Unlimited Plays</Feature>
+            <Feature>Custom Plays for your sales motion</Feature>
             <Feature>All data providers, one endpoint</Feature>
             <Feature>Custom GTM Brain connectors</Feature>
             <Feature>GTM Brain synced with GitHub</Feature>
-            <Feature>Custom Plays for your sales motion</Feature>
           </ul>
         </div>
         <footer className="pricing-plan__action">
