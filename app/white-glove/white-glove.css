@@ -1,14 +1,30 @@
 /* /white-glove only (PAN-2368) — imported by app/white-glove/page.tsx AFTER
    landing-v3.css (the --lp-* token layer, .lp-btn, nav, CTA, footer). Every
    value is a v3 token (foundation.css, audience.css spacing) or a calc of
-   one; the plate colours are the kit's pancake-stack pairs (face = 30,
-   side = 20, as PancakeStack.tsx). Two-class selectors: landing-v3 is
-   unlayered and chunk order across routes is not guaranteed. */
+   one. Two-class selectors: landing-v3 is unlayered and chunk order across
+   routes is not guaranteed.
+
+   Typography is the live site's, read from its implemented rules:
+   - H1 = the homepage H1 (hero.css .lp-hero-title + .lp-display): Aeonik
+     Condensed Pro 600, 69.014px from 1201px wide, clamp(52px, 5.4vw, 69.014px)
+     from 768 to 1200, the 35.559px mobile title token (clamp(30px, 8.846vw,
+     35.559px)) on phones, letter-spacing -0.03em, line-height normal, plum.
+   - Section titles = .lp-title-section: Condensed 600, 57.336 / 1.2 /
+     -1.7201px; phones 35.559 / 41px / -0.03em (steps.css).
+   - The hero lede = the homepage lede: Geist Sans 16 / 1.5, plum.
+   - The ticket total = the homepage price figure (pricing.css
+     .lp-price-amount): the Condensed 900 cut, -0.03em; "/month" in
+     Condensed 400.
+   - Buttons = the homepage hero pair (.lp-btn md + .lp-btn--tinted). */
 
 .lp-wg {
   --wg-width: calc(var(--lp-space-12) * 23); /* 1104, the /pricing column */
   --wg-section-y: calc(var(--lp-space-12) * 2);
   --wg-rule: var(--lp-line) solid var(--lp-ink-tr-10);
+  --wg-h1: 69.014px; /* = hero.css .lp-hero-title */
+  --wg-h1-mobile: clamp(30px, 8.846vw, 35.559px); /* = hero.css ≤767 */
+  --wg-lede-width: calc(var(--lp-space-4) * 23); /* 368, the homepage lede column */
+  --wg-shadow: 0 var(--lp-space-1) var(--lp-space-8) var(--lp-ink-tr-10);
 }
 @media (max-width: 767px) {
   .lp-wg {
@@ -42,10 +58,10 @@
 }
 .lp-wg .wg-title {
   font-family: var(--lp-font-cond);
-  font-size: var(--lp-text-5xlg);
+  font-size: var(--lp-text-6xlg);
   font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1.05;
+  letter-spacing: -1.7201px;
+  line-height: 1.2;
   margin: 0;
   text-wrap: balance;
 }
@@ -57,25 +73,15 @@
 }
 @media (max-width: 767px) {
   .lp-wg .wg-title {
-    font-size: var(--lp-text-4xlg);
+    font-size: 35.559px; /* = steps.css mobile title */
+    letter-spacing: -0.03em;
+    line-height: 41px;
   }
   .lp-wg .wg-lede {
     font-size: var(--lp-text-md);
   }
 }
 
-.lp-wg .wg-badge {
-  align-self: flex-start;
-  background: var(--lp-purple-10);
-  border-radius: var(--lp-r-2xlg);
-  box-shadow: inset 0 0 0 var(--lp-line) var(--lp-purple-20);
-  color: var(--lp-text);
-  font-size: var(--lp-text-sm);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  padding: var(--lp-space-1) var(--lp-space-3);
-  text-transform: uppercase;
-}
 .lp-wg .wg-link {
   color: var(--lp-text);
   font-weight: 600;
@@ -83,249 +89,47 @@
   text-underline-offset: 3px;
 }
 
-/* ── hero ── */
+/* ── hero (WgHero.tsx): the copy left, the order ticket right ── */
 .lp-wg .wg-hero {
-  padding-block: var(--lp-space-12) var(--wg-section-y);
+  padding-block: calc(var(--lp-space-12) + var(--lp-space-4)) var(--wg-section-y);
 }
 .lp-wg .wg-hero__grid {
   align-items: center;
   display: grid;
   gap: var(--lp-space-12);
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
 }
 .lp-wg .wg-hero__copy {
+  align-items: flex-start;
   display: flex;
   flex-direction: column;
-  gap: calc(var(--lp-space-4) + var(--lp-space-2));
+  gap: var(--lp-space-8);
 }
 .lp-wg .wg-hero__title {
-  font-family: var(--lp-font-cond);
-  font-size: clamp(var(--lp-text-5xlg), 6.2vw, calc(var(--lp-text-6xlg) * 1.25));
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  line-height: 0.98;
+  color: var(--lp-text);
+  font-size: var(--wg-h1);
+  letter-spacing: -0.03em;
+  line-height: normal;
   margin: 0;
 }
 .lp-wg .wg-hero__title span {
   display: block;
 }
-/* the payoff line in the brand's pink ink (kit: pink-40 on light grounds) */
-.lp-wg .wg-hero__title span + span {
-  color: var(--lp-pink-40);
-}
 .lp-wg .wg-hero__lede {
-  color: var(--lp-ink-90);
-  font-size: var(--lp-text-xlg);
-  line-height: 1.45;
-  max-width: calc(var(--lp-space-12) * 10);
+  color: var(--lp-text);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  max-width: var(--wg-lede-width);
   text-wrap: pretty;
 }
 .lp-wg .wg-hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--lp-space-3);
-}
-.lp-wg .wg-hero__price {
-  color: var(--lp-ink-90);
-  font-size: var(--lp-text-sm);
-  line-height: 1.5;
-}
-.lp-wg .wg-hero__price strong {
-  color: var(--lp-text);
-  font-weight: 600;
-  margin-right: var(--lp-space-1);
-}
-
-/* ── the machine (WgMachine.tsx) ── */
-.lp-wg .wg-machine {
-  background:
-    radial-gradient(120% 80% at 50% 100%, var(--lp-yellow-10), transparent 60%),
-    var(--lp-card-cream);
-  border-radius: var(--lp-r-xlg);
-  box-shadow: inset 0 0 0 var(--lp-line) var(--lp-subtle-stroke);
-  display: flex;
-  flex-direction: column;
-  gap: var(--lp-space-4);
-  margin: 0;
-  padding: var(--lp-space-8);
-}
-.lp-wg .wg-machine__label {
-  color: var(--lp-subtle-text);
-  font-family: var(--lp-font-fono);
-  font-size: var(--lp-text-sm);
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-.lp-wg .wg-machine__stage {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-}
-.lp-wg .wg-machine__close {
-  align-items: center;
-  background: var(--lp-inverted-surface);
-  border-radius: var(--lp-r-2xlg);
-  color: var(--lp-text-on-inverted);
-  display: inline-flex;
-  font-weight: 600;
   gap: var(--lp-space-2);
-  padding: var(--lp-space-2) var(--lp-space-4);
 }
-.lp-wg .wg-machine__close svg {
-  color: var(--lp-green-20);
-  height: var(--lp-text-lg);
-  width: var(--lp-text-lg);
-}
-/* the dotted lift from the stack to the payoff */
-.lp-wg .wg-machine__flow {
-  border-left: calc(var(--lp-line) * 2) dotted var(--lp-ink-60);
-  height: var(--lp-space-8);
-}
-.lp-wg .wg-machine__build {
-  align-items: center;
-  display: grid;
-  gap: var(--lp-space-3);
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  width: 100%;
-}
-/* the bracket: who builds it, read bottom-to-top along the stack */
-.lp-wg .wg-machine__rail {
-  align-items: center;
-  align-self: stretch;
-  border-block: var(--lp-line) solid var(--lp-ink-50);
-  border-left: var(--lp-line) solid var(--lp-ink-50);
-  border-radius: var(--lp-r-xsm) 0 0 var(--lp-r-xsm);
-  display: flex;
-  width: var(--lp-space-4);
-}
-/* the label sits ON the bracket's spine, the card's cream masking the line */
-.lp-wg .wg-machine__rail span {
-  background: var(--lp-card-cream);
-  color: var(--lp-subtle-text);
-  font-size: var(--lp-text-xsm);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding-block: var(--lp-space-2);
-  rotate: 180deg;
-  text-transform: uppercase;
-  translate: -50% 0;
-  white-space: nowrap;
-  writing-mode: vertical-rl;
-}
-.lp-wg .wg-machine__stack {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: var(--lp-space-3);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.lp-wg .wg-plate {
-  --wg-face: var(--lp-pink-30);
-  --wg-side: var(--lp-pink-20);
-  --wg-shift: 0%;
-  align-items: baseline;
-  background: var(--wg-face);
-  border-radius: var(--lp-r-2xlg);
-  box-shadow: 0 var(--lp-space-2) 0 var(--wg-side);
-  color: var(--lp-text);
-  display: grid;
-  gap: 0 var(--lp-space-3);
-  grid-template-columns: auto minmax(0, 1fr);
-  padding: var(--lp-space-3) calc(var(--lp-space-4) + var(--lp-space-2));
-  translate: var(--wg-shift) 0;
-}
-/* the kit's stack: pink under, purple middle offset, yellow top */
-.lp-wg .wg-plate[data-layer="plays"] {
-  --wg-face: var(--lp-purple-30);
-  --wg-side: var(--lp-purple-20);
-  --wg-shift: 7%;
-}
-.lp-wg .wg-plate[data-layer="sequences"] {
-  --wg-face: var(--lp-yellow-30);
-  --wg-side: var(--lp-yellow-20);
-  --wg-shift: -3%;
-}
-.lp-wg .wg-plate__step {
-  font-family: var(--lp-font-fono);
-  font-size: var(--lp-text-sm);
-  grid-row: span 2;
-  opacity: 0.7;
-}
-.lp-wg .wg-plate__name {
-  font-family: var(--lp-font-cond);
-  font-size: var(--lp-text-2xlg);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-}
-.lp-wg .wg-plate__note {
-  font-size: var(--lp-text-sm);
-  line-height: 1.4;
-}
-.lp-wg .wg-machine__loop {
-  align-items: center;
-  color: var(--lp-ink-90);
-  display: flex;
-  flex-direction: column;
-  font-size: var(--lp-text-xsm);
-  font-weight: 600;
-  gap: var(--lp-space-1);
-  letter-spacing: 0.04em;
-  max-width: calc(var(--lp-space-12) * 1.5);
-  text-align: center;
-  text-transform: uppercase;
-}
-.lp-wg .wg-machine__loop svg {
-  color: var(--lp-purple-40);
-  height: var(--lp-space-8);
-  width: var(--lp-space-8);
-}
-/* the plate the stack stands on */
-.lp-wg .wg-machine__base {
-  border-top: calc(var(--lp-line) * 2) solid var(--lp-ink-100);
-  color: var(--lp-text);
-  font-size: var(--lp-text-sm);
-  font-weight: 600;
-  margin-top: calc(var(--lp-space-4) + var(--lp-space-1));
-  padding-top: var(--lp-space-2);
-  text-align: center;
-  width: 80%;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .lp-wg .wg-plate {
-    animation: wg-settle 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
-    animation-delay: calc(0.15s + var(--wg-i, 0) * 0.14s);
-  }
-  .lp-wg .wg-machine__close,
-  .lp-wg .wg-machine__flow {
-    animation: wg-fade 0.5s ease-out both;
-    animation-delay: 0.7s;
-  }
-}
-@keyframes wg-settle {
-  from {
-    opacity: 0;
-    translate: var(--wg-shift) calc(var(--lp-space-4) * -1.5);
-  }
-  to {
-    opacity: 1;
-    translate: var(--wg-shift) 0;
-  }
-}
-@keyframes wg-fade {
-  from {
-    opacity: 0;
-  }
-}
-
-@media (max-width: 959px) {
-  .lp-wg .wg-hero__grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: var(--lp-space-8);
-  }
-  .lp-wg .wg-hero__lede {
-    font-size: var(--lp-text-lg);
+@media (max-width: 1200px) {
+  .lp-wg .wg-hero__title {
+    font-size: clamp(52px, 5.4vw, var(--wg-h1));
   }
 }
 @media (max-width: 767px) {
@@ -333,27 +137,202 @@
     padding-top: var(--lp-space-8);
   }
   .lp-wg .wg-hero__title {
-    font-size: var(--lp-text-5xlg);
-  }
-  .lp-wg .wg-machine {
-    padding: calc(var(--lp-space-4) + var(--lp-space-1));
-  }
-  .lp-wg .wg-plate__name {
-    font-size: var(--lp-text-xlg);
-  }
-  .lp-wg .wg-machine__build {
-    gap: var(--lp-space-2);
-  }
-  .lp-wg .wg-machine__loop {
-    max-width: var(--lp-space-12);
+    font-size: var(--wg-h1-mobile);
   }
 }
-@media (max-width: 374px) {
-  .lp-wg .wg-hero__title {
+
+/* the ticket: a printed slip, slightly turned */
+.lp-wg .wg-ticket {
+  filter: drop-shadow(var(--wg-shadow));
+  rotate: -1.5deg;
+}
+/* white paper with zig-zag top and bottom edges cut by a mask (the mask
+   reads alpha only; black = keep) */
+.lp-wg .wg-ticket__paper {
+  --wg-tooth: var(--lp-space-4);
+  background: var(--lp-surface);
+  display: flex;
+  flex-direction: column;
+  -webkit-mask:
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--wg-tooth) 51% repeat-x,
+    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--wg-tooth) 51% repeat-x;
+  mask:
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--wg-tooth) 51% repeat-x,
+    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--wg-tooth) 51% repeat-x;
+  padding: calc(var(--lp-space-8) + var(--lp-space-2)) var(--lp-space-8);
+}
+.lp-wg .wg-ticket__head {
+  border-bottom: var(--lp-line) dashed var(--lp-ink-50);
+  color: var(--lp-subtle-text);
+  display: flex;
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  justify-content: space-between;
+  letter-spacing: 0.08em;
+  padding-bottom: var(--lp-space-3);
+  text-transform: uppercase;
+}
+.lp-wg .wg-ticket__head span:first-child {
+  color: var(--lp-text);
+  font-weight: 600;
+}
+.lp-wg .wg-ticket__items {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: var(--lp-space-2) 0 var(--lp-space-4);
+}
+.lp-wg .wg-ticket__item {
+  --wg-tone: var(--lp-pink-30);
+  align-items: baseline;
+  display: grid;
+  gap: var(--lp-space-1) var(--lp-space-3);
+  grid-template-columns: auto minmax(var(--lp-space-4), 1fr) auto;
+  padding-block: var(--lp-space-3);
+}
+.lp-wg .wg-ticket__item + .wg-ticket__item {
+  border-top: var(--lp-line) solid var(--lp-ink-tr-5);
+}
+.lp-wg .wg-ticket__item[data-tone="plays"] { --wg-tone: var(--lp-purple-30); }
+.lp-wg .wg-ticket__item[data-tone="credits"] { --wg-tone: var(--lp-yellow-30); }
+.lp-wg .wg-ticket__item[data-tone="office"] { --wg-tone: var(--lp-green-20); }
+/* the pricing cards' plan-name size (pricing.css h2) */
+.lp-wg .wg-ticket__name {
+  align-items: center;
+  display: inline-flex;
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-2xlg);
+  font-weight: 600;
+  gap: var(--lp-space-2);
+  line-height: 1.15;
+}
+.lp-wg .wg-ticket__name::before {
+  background: var(--wg-tone);
+  border-radius: 50%;
+  content: "";
+  flex: none;
+  height: var(--lp-space-3);
+  width: var(--lp-space-3);
+}
+.lp-wg .wg-ticket__lead {
+  border-bottom: calc(var(--lp-line) * 2) dotted var(--lp-ink-50);
+  translate: 0 calc(var(--lp-space-1) * -1);
+}
+.lp-wg .wg-ticket__value {
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+.lp-wg .wg-ticket__detail {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-sm);
+  grid-column: 1 / -1;
+  line-height: 1.5;
+  padding-left: calc(var(--lp-space-3) + var(--lp-space-2));
+}
+.lp-wg .wg-ticket__total {
+  align-items: baseline;
+  border-top: calc(var(--lp-line) * 2) solid var(--lp-ink-100);
+  display: flex;
+  justify-content: space-between;
+  padding-top: var(--lp-space-4);
+}
+.lp-wg .wg-ticket__total-label {
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.lp-wg .wg-ticket__amount {
+  font-family: var(--lp-font-cond-x);
+  font-size: var(--lp-text-6xlg);
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.lp-wg .wg-ticket__per {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-xlg);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.lp-wg .wg-ticket__foot {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  letter-spacing: 0.06em;
+  margin-top: var(--lp-space-3);
+  text-align: right;
+  text-transform: uppercase;
+}
+/* the ticket settles in once on load; still under reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+  .lp-wg .wg-ticket {
+    animation: wg-ticket-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  }
+}
+@keyframes wg-ticket-in {
+  from {
+    opacity: 0;
+    rotate: -5deg;
+    translate: 0 var(--lp-space-8);
+  }
+}
+@media (max-width: 959px) {
+  .lp-wg .wg-hero__grid {
+    gap: var(--lp-space-12);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-wg .wg-ticket {
+    margin-inline: auto;
+    max-width: calc(var(--lp-space-12) * 11);
+    width: 100%;
+  }
+}
+@media (max-width: 767px) {
+  .lp-wg .wg-ticket {
+    rotate: -1deg;
+  }
+  .lp-wg .wg-ticket__paper {
+    padding: var(--lp-space-8) calc(var(--lp-space-4) + var(--lp-space-1));
+  }
+  .lp-wg .wg-ticket__name {
+    font-size: var(--lp-text-xlg);
+  }
+  .lp-wg .wg-ticket__amount {
+    font-size: var(--lp-text-5xlg);
+  }
+}
+/* narrow phones: no leader, the value may wrap under its right edge */
+@media (max-width: 419px) {
+  .lp-wg .wg-ticket__item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .lp-wg .wg-ticket__lead {
+    display: none;
+  }
+  .lp-wg .wg-ticket__name {
+    font-size: var(--lp-text-lg);
+  }
+  .lp-wg .wg-ticket__value {
+    max-width: 7em;
+    white-space: normal;
+  }
+}
+@media (max-width: 359px) {
+  .lp-wg .wg-ticket__head span:last-child {
+    display: none;
+  }
+  .lp-wg .wg-ticket__amount {
     font-size: var(--lp-text-4xlg);
   }
-  .lp-wg .wg-machine__loop {
-    display: none;
+  .lp-wg .wg-ticket__per {
+    font-size: var(--lp-text-lg);
   }
 }
 
@@ -439,114 +418,6 @@
   }
   .lp-wg .wg-get__item {
     padding-bottom: var(--lp-space-4);
-  }
-}
-
-/* ── how we work together: the plum band ── */
-.lp-wg .wg-how {
-  padding-block: 0 var(--wg-section-y);
-}
-.lp-wg .wg-how__card {
-  background: var(--lp-inverted-surface);
-  border-radius: var(--lp-r-xlg);
-  color: var(--lp-text-on-inverted);
-  display: flex;
-  flex-direction: column;
-  gap: var(--lp-space-12);
-  padding: var(--lp-space-12);
-}
-.lp-wg .wg-head--inverted .wg-lede {
-  color: var(--lp-ink-50);
-}
-.lp-wg .wg-how__steps {
-  display: grid;
-  gap: var(--lp-space-8);
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  position: relative;
-}
-/* the line the three steps sit on */
-.lp-wg .wg-how__steps::before {
-  border-top: var(--lp-line) dashed var(--lp-ink-90);
-  content: "";
-  inset: calc(var(--lp-space-4) - var(--lp-line)) 0 auto var(--lp-space-8);
-  position: absolute;
-}
-.lp-wg .wg-how__step {
-  display: flex;
-  flex-direction: column;
-  gap: calc(var(--lp-space-4) + var(--lp-space-2));
-  position: relative;
-}
-.lp-wg .wg-how__name {
-  align-items: center;
-  display: flex;
-  font-family: var(--lp-font-cond);
-  font-size: var(--lp-text-3xlg);
-  font-weight: 600;
-  gap: var(--lp-space-3);
-  letter-spacing: -0.02em;
-  line-height: 1;
-}
-.lp-wg .wg-how__dot {
-  align-items: center;
-  background: var(--lp-pink-30);
-  border-radius: 50%;
-  box-shadow: 0 0 0 var(--lp-space-1) var(--lp-inverted-surface);
-  color: var(--lp-ink-100);
-  display: inline-flex;
-  flex: none;
-  font-family: var(--lp-font-fono);
-  font-size: var(--lp-text-sm);
-  height: var(--lp-space-8);
-  justify-content: center;
-  letter-spacing: 0;
-  width: var(--lp-space-8);
-}
-.lp-wg .wg-how__step:nth-child(2) .wg-how__dot { background: var(--lp-purple-30); }
-.lp-wg .wg-how__step:nth-child(3) .wg-how__dot { background: var(--lp-yellow-30); }
-.lp-wg .wg-how__roles {
-  display: flex;
-  flex-direction: column;
-  gap: var(--lp-space-3);
-  margin: 0;
-}
-.lp-wg .wg-how__roles div {
-  border-top: var(--lp-line) solid var(--lp-ink-90);
-  display: grid;
-  gap: var(--lp-space-1);
-  padding-top: var(--lp-space-3);
-}
-.lp-wg .wg-how__roles dt {
-  color: var(--lp-ink-50);
-  font-size: var(--lp-text-xsm);
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-.lp-wg .wg-how__roles dd {
-  font-size: var(--lp-text-md);
-  line-height: 1.5;
-  margin: 0;
-}
-@media (max-width: 899px) {
-  .lp-wg .wg-how__card {
-    gap: var(--lp-space-8);
-    padding: var(--lp-space-8) calc(var(--lp-space-4) + var(--lp-space-2));
-  }
-  .lp-wg .wg-how__steps {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  /* vertical on a phone: the line runs down the dots */
-  .lp-wg .wg-how__steps::before {
-    border-left: var(--lp-line) dashed var(--lp-ink-90);
-    border-top: 0;
-    inset: var(--lp-space-8) auto var(--lp-space-8) calc(var(--lp-space-4) - var(--lp-line));
-  }
-  .lp-wg .wg-how__roles {
-    padding-left: calc(var(--lp-space-8) + var(--lp-space-3));
   }
 }
 

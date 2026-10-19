@@ -1,6 +1,6 @@
-# Pancake White Glove: your outbound machine, built and run with you
+# Pancake White Glove: we build your outbound machine
 
-> We build your outbound. You close. Our team builds your outbound machine and runs it with you, so you can focus on closing deals. $3,000 a month. Three-month initial commitment, then month to month.
+> We build your outbound machine. Our team builds your custom GTM Brain and runs your Plays with you: unlimited Plays, unlimited Pancake credits and weekly one-hour office hours with your dedicated GTM engineer. $3,000 a month. Three-month initial commitment, then month to month.
 
 This file carries the facts of https://pancake.ai/white-glove for AI agents. The page is the source of truth. White Glove is also called Pancake Forward Deployed: the same paid service.
 
@@ -9,18 +9,12 @@ This file carries the facts of https://pancake.ai/white-glove for AI agents. The
 
 ## What you get
 
-- Dedicated GTM engineer: one engineer from our team builds your machine and runs it with you.
 - Custom GTM Brain setup: your ICP, personas, competitors and voice, set up for your market.
+- Dedicated GTM engineer: one engineer from our team builds your machine and runs it with you.
 - Unlimited Plays: signal-based Plays that act on funding rounds, open roles, tech stacks and posts.
 - Outreach sequences: messages for each Play, written for your buyers in your voice.
 - Unlimited Pancake credits: every search your Plays run is covered. No credit level to pick.
 - Weekly GTM office hour: one hour every week with our team to review your Plays.
-
-## How we work together
-
-1. Scope. Our team learns your market, your buyers and your goals. You tell us who you sell to.
-2. Build. Our team builds your GTM Brain, Plays and sequences. You review the messages in your voice.
-3. Run. Our team runs the machine with you and meets you every week. You take the conversations and close.
 
 ## Price
 
