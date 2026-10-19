@@ -153,20 +153,77 @@
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.pricing-plans .pricing-plan__choice label {
-  color: var(--lp-text);
-  font-size: var(--lp-text-sm);
+/* the five levels as one segmented control: native radios (arrow keys,
+   one tab stop), drawn as chips in Fono */
+.lp-pricing-page .pricing-levels-picker {
+  border: 0;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
 }
-.pricing-plans select {
-  width: 100%;
-  min-height: var(--lp-space-12);
-  padding-inline: var(--lp-space-3);
-  border: var(--lp-line) solid var(--lp-stroke);
-  border-radius: var(--lp-r-xsm);
-  background: var(--lp-surface);
-  color: var(--lp-text);
-  font: inherit;
+.lp-pricing-page .pricing-levels-picker legend {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  letter-spacing: 0.06em;
+  margin-bottom: var(--lp-space-2);
+  padding: 0;
+  text-transform: uppercase;
+}
+.lp-pricing-page .pricing-levels-picker__track {
+  background: var(--lp-surface-3);
+  border-radius: var(--lp-r-sm);
+  box-shadow: inset 0 0 0 var(--lp-line) var(--lp-ink-40);
+  display: grid;
+  gap: var(--lp-space-1);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  padding: var(--lp-space-1);
+}
+.lp-pricing-page .pricing-levels-picker__option {
   cursor: pointer;
+  position: relative;
+}
+.lp-pricing-page .pricing-levels-picker__option input {
+  cursor: pointer;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+}
+.lp-pricing-page .pricing-levels-picker__option input + span {
+  border-radius: var(--lp-r-xsm);
+  color: var(--lp-ink-90);
+  display: block;
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: 1;
+  padding: var(--lp-space-3) 0;
+  text-align: center;
+  transition: background-color 0.16s ease-out, color 0.16s ease-out;
+}
+.lp-pricing-page .pricing-levels-picker__option:hover input:not(:checked) + span {
+  background: var(--lp-ink-tr-5);
+  color: var(--lp-text);
+}
+.lp-pricing-page .pricing-levels-picker__option input:checked + span {
+  background: var(--lp-inverted-surface);
+  color: var(--lp-text-on-inverted);
+}
+.lp-pricing-page .pricing-levels-picker__option input:focus-visible + span {
+  outline: calc(var(--lp-line) * 2) solid var(--lp-purple-40);
+  outline-offset: var(--lp-line);
+}
+@media (max-width: 359px) {
+  .lp-pricing-page .pricing-levels-picker__option input + span {
+    font-size: var(--lp-text-xsm);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-pricing-page .pricing-levels-picker__option input + span {
+    transition: none;
+  }
 }
 .pricing-plans :focus-visible {
   outline: calc(var(--lp-line) * 2) solid var(--lp-purple-40);

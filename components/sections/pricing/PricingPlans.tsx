@@ -4,7 +4,7 @@ import { useEffect, useRef, type ReactNode } from "react";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { isLevelKey, usePricingLevel } from "./PricingLevel";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
-import { BASE_LEVEL, CREDIT_LEVELS, appHrefForLevel, formatCredits, formatDollars } from "@/lib/pricing";
+import { BASE_LEVEL, CREDIT_LEVELS, appHrefForLevel, formatCredits, formatDollars, shortCredits } from "@/lib/pricing";
 import { TRIAL_DAYS, TRIAL_FREE_CREDITS_LABEL } from "@/lib/trial";
 import { WHITE_GLOVE_MONTHLY_DOLLARS, WHITE_GLOVE_INITIAL_MONTHS, WHITE_GLOVE_PAGE_HREF } from "@/lib/white-glove";
 
@@ -23,11 +23,11 @@ function Feature({ children }: { children: ReactNode }) {
 /** One selector drives the price and every package-aware Start free link. */
 export function PricingPlans() {
   const { level: key, setLevel } = usePricingLevel();
-  const picker = useRef<HTMLSelectElement>(null);
+  const group = useRef<HTMLFieldSetElement>(null);
   const level = CREDIT_LEVELS.find((item) => item.key === key) ?? BASE_LEVEL;
 
   useEffect(() => {
-    const value = picker.current?.value;
+    const value = group.current?.querySelector<HTMLInputElement>("input:checked")?.value;
     if (value && isLevelKey(value)) setLevel(value);
   }, [setLevel]);
 
@@ -42,15 +42,24 @@ export function PricingPlans() {
           <p className="pricing-plan__caption">per workspace, billed monthly</p>
         </div>
         <div className="pricing-plan__choice">
-          <label htmlFor="pricing-monthly-credits">Monthly credits</label>
-          <select
-            ref={picker}
-            id="pricing-monthly-credits"
-            value={key}
-            onChange={(event) => { if (isLevelKey(event.target.value)) setLevel(event.target.value); }}
-          >
-            {CREDIT_LEVELS.map((item) => <option key={item.key} value={item.key}>{formatCredits(item.credits)} credits</option>)}
-          </select>
+          <fieldset ref={group} className="pricing-levels-picker">
+            <legend>Monthly credits</legend>
+            <div className="pricing-levels-picker__track">
+              {CREDIT_LEVELS.map((item) => (
+                <label key={item.key} className="pricing-levels-picker__option">
+                  <input
+                    type="radio"
+                    name="pricing-level"
+                    value={item.key}
+                    checked={item.key === key}
+                    onChange={(event) => { if (isLevelKey(event.target.value)) setLevel(event.target.value); }}
+                  />
+                  <span aria-hidden="true">{shortCredits(item.credits)}</span>
+                  <span className="lp-sr-only">{formatCredits(item.credits)} credits, {formatDollars(item.dollars)} a month</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
         </div>
         <div className="pricing-plan__features">
           <p className="pricing-plan__intro">Your outbound, in your hands.</p>
