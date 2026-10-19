@@ -160,3 +160,56 @@ export const WG_CTA = {
   secondary: "See pricing",
   note: `${WG_PRICE} a month. ${WG_TERM}`,
 };
+
+/* ── Preview only: /white-glove-concepts (founder hero review, after PR347).
+   Delete with that route once a hero is chosen. The H1 is the founder's,
+   verbatim; the four offer items lead with the Custom GTM Brain. ── */
+
+export const WGC_HERO = {
+  title: "We build your outbound machine.",
+  /** the same title in two lines, broken where the homepage H1 breaks */
+  lines: ["We build your", "outbound machine."],
+  lede: "Our team builds your custom GTM Brain and runs your Plays with you, on unlimited credits.",
+  primary: "Talk to sales",
+  secondary: "See pricing",
+  price: `${WG_PRICE}/month`,
+  term: WG_TERM,
+  /** the offer, in this order everywhere */
+  offer: [
+    { key: "brain", qualifier: "Custom", name: "GTM Brain", detail: "Built for your market by our team." },
+    { key: "plays", qualifier: "Unlimited", name: "Plays", detail: "Signal-based, as many as you need." },
+    { key: "credits", qualifier: "Unlimited", name: "Credits", detail: "Every search your Plays run is covered." },
+    { key: "office", qualifier: "Weekly", name: "Office hours", detail: "One hour a week with your dedicated GTM engineer." },
+  ],
+} as const;
+
+/** Concept A's order ticket: what is on it, and how much of it. */
+export const WGC_TICKET = {
+  head: "White Glove",
+  tag: "Built for you",
+  items: [
+    { key: "brain", name: "Custom GTM Brain", value: "Built for you", detail: "Set up for your market by our team." },
+    { key: "plays", name: "Plays", value: "Unlimited", detail: "Signal-based, as many as you need." },
+    { key: "credits", name: "Pancake credits", value: "Unlimited", detail: "Every search your Plays run is covered." },
+    { key: "office", name: "Office hours", value: "1 hour a week", detail: "With your dedicated GTM engineer." },
+  ],
+  total: "Total",
+} as const;
+
+/** Concept B's one sentence, split around the four highlighted terms. */
+export const WGC_SENTENCE = [
+  { text: "We build your " },
+  { mark: "brain", text: "custom GTM Brain" },
+  { text: ", set up " },
+  { mark: "plays", text: "unlimited Plays" },
+  { text: " on " },
+  { mark: "credits", text: "unlimited credits" },
+  { text: ", and meet you for " },
+  { mark: "office", text: "weekly office hours" },
+  { text: " with your dedicated GTM engineer." },
+] as const;
+
+export const WGC_CTA_BODY = "Our team builds your custom GTM Brain and your Plays, and meets you every week.";
+
+/** Custom GTM Brain first, then the order of WG_GET.items. */
+export const WGC_GET_ORDER = [1, 0, 2, 3, 4, 5] as const;

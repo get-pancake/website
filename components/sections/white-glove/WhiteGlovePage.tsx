@@ -1,3 +1,5 @@
+import type { ReactNode } from "react";
+
 import { LpCta } from "@/components/sections/landing-v3/LpCta";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
@@ -28,18 +30,75 @@ function Check() {
 }
 
 const TONES = ["engineer", "brain", "plays", "sequences", "credits", "office"] as const;
+const GET_ORDER = WG_GET.items.map((_, i) => i);
 
-export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
+/**
+ * The defaults render /white-glove as shipped. The props exist for the
+ * preview-only /white-glove-concepts route (hero options, no "How we work
+ * together", Custom GTM Brain first): delete them with that route.
+ */
+export function WhiteGlovePage({
+  jsonLd,
+  hero,
+  showHow = true,
+  getOrder = GET_ORDER,
+  className,
+  preview,
+  ctaBody,
+}: {
+  jsonLd: string[];
+  hero?: ReactNode;
+  showHow?: boolean;
+  ctaBody?: string;
+  /** indexes into WG_GET.items, in display order */
+  getOrder?: readonly number[];
+  className?: string;
+  preview?: ReactNode;
+}) {
   return (
     // No id on main: the skip link's #main-content target is the hero, as on /pricing.
-    <main className="lp lp-wg">
+    <main className={className ? `lp lp-wg ${className}` : "lp lp-wg"}>
       {jsonLd.map((json, i) => (
         <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: json }} />
       ))}
       {/* --lp-fit for the closing card's rainbow slivers */}
       <LpFitVars />
+      {preview}
       <LpNav />
 
+      {hero ?? <ShippedHero />}
+
+      <section className="wg-get" aria-labelledby="wg-get-title">
+        <div className="wg-wrap wg-get__grid">
+          <header className="wg-head">
+            <h2 id="wg-get-title" className="wg-title">{WG_GET.title}</h2>
+            <p className="wg-lede">{WG_GET.lede}</p>
+          </header>
+          <ol className="wg-get__list">
+            {getOrder.map((index, i) => {
+              const item = WG_GET.items[index];
+              return (
+                <li key={item.title} className="wg-get__item" data-tone={TONES[index]}>
+                  <span className="wg-get__num" aria-hidden="true">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className="wg-get__name">{item.title}</h3>
+                  <p className="wg-get__body">{item.body}</p>
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </section>
+
+      {showHow ? <HowWeWork /> : null}
+      <PriceAndQuestions ctaBody={ctaBody} />
+    </main>
+  );
+}
+
+function ShippedHero() {
+  return (
       <section id="main-content" tabIndex={-1} className="wg-hero" aria-labelledby="wg-hero-title">
         <div className="wg-wrap wg-hero__grid">
           <div className="wg-hero__copy">
@@ -63,27 +122,11 @@ export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
           <WgMachine />
         </div>
       </section>
+  );
+}
 
-      <section className="wg-get" aria-labelledby="wg-get-title">
-        <div className="wg-wrap wg-get__grid">
-          <header className="wg-head">
-            <h2 id="wg-get-title" className="wg-title">{WG_GET.title}</h2>
-            <p className="wg-lede">{WG_GET.lede}</p>
-          </header>
-          <ol className="wg-get__list">
-            {WG_GET.items.map((item, i) => (
-              <li key={item.title} className="wg-get__item" data-tone={TONES[i]}>
-                <span className="wg-get__num" aria-hidden="true">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-                <h3 className="wg-get__name">{item.title}</h3>
-                <p className="wg-get__body">{item.body}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
+function HowWeWork() {
+  return (
       <section className="wg-how" aria-labelledby="wg-how-title">
         <div className="wg-wrap">
           <div className="wg-how__card">
@@ -114,7 +157,12 @@ export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
           </div>
         </div>
       </section>
+  );
+}
 
+function PriceAndQuestions({ ctaBody = WG_CTA.body }: { ctaBody?: string }) {
+  return (
+    <>
       <section className="wg-price" aria-labelledby="wg-price-title">
         <div className="wg-wrap">
           <header className="wg-head wg-head--center">
@@ -172,7 +220,7 @@ export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
 
       <LpCta
         title={WG_CTA.title}
-        body={WG_CTA.body}
+        body={ctaBody}
         note={WG_CTA.note}
         buttons={
           <>
@@ -184,6 +232,6 @@ export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
         }
       />
       <LpFooter />
-    </main>
+    </>
   );
 }

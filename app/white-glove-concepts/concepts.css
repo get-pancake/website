@@ -1,0 +1,605 @@
+/* PREVIEW ONLY — /white-glove-concepts (WgConceptHeroes.tsx). Imported after
+   landing-v3.css and white-glove.css; every rule is scoped to .lp-wg--concept
+   so /white-glove is untouched. Delete with the route.
+
+   Typography is the LIVE site's, read from its implemented rules:
+   - H1 = the homepage H1 (hero.css .lp-hero-title + .lp-display): Aeonik
+     Condensed Pro 600, 69.014px from 1201px wide, clamp(52px, 5.4vw, 69.014px)
+     from 768 to 1200, the 35.559px mobile title token (clamp(30px, 8.846vw,
+     35.559px)) on phones, letter-spacing -0.03em (-2.0704px at 69.014),
+     line-height normal, plum.
+   - Section titles = .lp-title-section: Condensed 600, 57.336 / 1.2 /
+     -1.7201px; phones 35.559 / 41px / -0.03em (steps.css).
+   - Lede and body = the homepage lede: Geist Sans 16 / 1.5, plum.
+   - Display figures = the homepage price (pricing.css .lp-price-amount):
+     the Condensed 900 cut (--lp-font-cond-x), -0.03em; its "/month" in
+     Condensed 400.
+   - Buttons = the homepage hero pair (.lp-btn md + .lp-btn--tinted). */
+
+.lp-wg--concept {
+  --wgc-h1: 69.014px; /* = hero.css .lp-hero-title */
+  --wgc-h1-mobile: clamp(30px, 8.846vw, 35.559px); /* = hero.css ≤767 */
+  --wgc-lede-width: calc(var(--lp-space-4) * 23); /* 368, the homepage lede column */
+  --wgc-shadow: 0 var(--lp-space-1) var(--lp-space-8) var(--lp-ink-tr-10);
+}
+
+/* ── shared hero type ── */
+.lp-wg--concept .wgc-title {
+  color: var(--lp-text);
+  font-size: var(--wgc-h1);
+  letter-spacing: -0.03em;
+  line-height: normal;
+  margin: 0;
+}
+.lp-wg--concept .wgc-title span {
+  display: block;
+}
+@media (max-width: 1200px) {
+  .lp-wg--concept .wgc-title {
+    font-size: clamp(52px, 5.4vw, var(--wgc-h1));
+  }
+}
+@media (max-width: 767px) {
+  .lp-wg--concept .wgc-title {
+    font-size: var(--wgc-h1-mobile);
+  }
+}
+.lp-wg--concept .wgc-lede {
+  color: var(--lp-text);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  max-width: var(--wgc-lede-width);
+  text-wrap: pretty;
+}
+.lp-wg--concept .wgc-copy {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-8);
+}
+.lp-wg--concept .wgc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-2);
+}
+.lp-wg--concept .wgc-terms {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-sm);
+  line-height: 1.5;
+  max-width: var(--wgc-lede-width);
+}
+.lp-wg--concept .wgc-terms strong {
+  color: var(--lp-text);
+  font-weight: 600;
+  margin-right: var(--lp-space-1);
+}
+.lp-wg--concept .wgc-hero {
+  padding-block: calc(var(--lp-space-12) + var(--lp-space-4)) var(--wg-section-y);
+}
+.lp-wg--concept .wgc-hero:focus {
+  outline: none;
+}
+@media (max-width: 767px) {
+  .lp-wg--concept .wgc-hero {
+    padding-top: var(--lp-space-8);
+  }
+}
+
+/* the sections below the hero take the homepage section title */
+.lp-wg--concept .wg-title {
+  font-size: var(--lp-text-6xlg);
+  letter-spacing: -1.7201px;
+  line-height: 1.2;
+}
+@media (max-width: 767px) {
+  .lp-wg--concept .wg-title {
+    font-size: 35.559px; /* = steps.css mobile title */
+    letter-spacing: -0.03em;
+    line-height: 41px;
+  }
+}
+
+/* ══ A — Order ticket ══════════════════════════════════════════════════ */
+.lp-wg--concept .wgc-a__grid {
+  align-items: center;
+  display: grid;
+  gap: var(--lp-space-12);
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+}
+.lp-wg--concept .wgc-ticket {
+  filter: drop-shadow(var(--wgc-shadow));
+  rotate: -1.5deg;
+}
+/* a printed slip: white paper, zig-zag top and bottom edges cut by a mask
+   (the mask reads alpha only; black = keep) */
+.lp-wg--concept .wgc-ticket__paper {
+  --wgc-tooth: var(--lp-space-4);
+  background: var(--lp-surface);
+  display: flex;
+  flex-direction: column;
+  -webkit-mask:
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--wgc-tooth) 51% repeat-x,
+    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--wgc-tooth) 51% repeat-x;
+  mask:
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--wgc-tooth) 51% repeat-x,
+    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--wgc-tooth) 51% repeat-x;
+  padding: calc(var(--lp-space-8) + var(--lp-space-2)) var(--lp-space-8);
+}
+.lp-wg--concept .wgc-ticket__head {
+  border-bottom: var(--lp-line) dashed var(--lp-ink-50);
+  color: var(--lp-subtle-text);
+  display: flex;
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  justify-content: space-between;
+  letter-spacing: 0.08em;
+  padding-bottom: var(--lp-space-3);
+  text-transform: uppercase;
+}
+.lp-wg--concept .wgc-ticket__head span:first-child {
+  color: var(--lp-text);
+  font-weight: 600;
+}
+.lp-wg--concept .wgc-ticket__items {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: var(--lp-space-2) 0 var(--lp-space-4);
+}
+.lp-wg--concept .wgc-ticket__item {
+  --wgc-tone: var(--lp-pink-30);
+  align-items: baseline;
+  display: grid;
+  gap: var(--lp-space-1) var(--lp-space-3);
+  grid-template-columns: auto minmax(var(--lp-space-4), 1fr) auto;
+  padding-block: var(--lp-space-3);
+}
+.lp-wg--concept .wgc-ticket__item + .wgc-ticket__item {
+  border-top: var(--lp-line) solid var(--lp-ink-tr-5);
+}
+.lp-wg--concept .wgc-ticket__item[data-tone="plays"] { --wgc-tone: var(--lp-purple-30); }
+.lp-wg--concept .wgc-ticket__item[data-tone="credits"] { --wgc-tone: var(--lp-yellow-30); }
+.lp-wg--concept .wgc-ticket__item[data-tone="office"] { --wgc-tone: var(--lp-green-20); }
+/* the pricing cards' plan-name size (pricing.css h2) */
+.lp-wg--concept .wgc-ticket__name {
+  align-items: center;
+  display: inline-flex;
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-2xlg);
+  font-weight: 600;
+  gap: var(--lp-space-2);
+  line-height: 1.15;
+}
+.lp-wg--concept .wgc-ticket__name::before {
+  background: var(--wgc-tone);
+  border-radius: 50%;
+  content: "";
+  flex: none;
+  height: var(--lp-space-3);
+  width: var(--lp-space-3);
+}
+.lp-wg--concept .wgc-ticket__lead {
+  border-bottom: calc(var(--lp-line) * 2) dotted var(--lp-ink-50);
+  translate: 0 calc(var(--lp-space-1) * -1);
+}
+.lp-wg--concept .wgc-ticket__value {
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  text-align: right;
+  white-space: nowrap;
+}
+.lp-wg--concept .wgc-ticket__detail {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-sm);
+  grid-column: 1 / -1;
+  line-height: 1.5;
+  padding-left: calc(var(--lp-space-3) + var(--lp-space-2));
+}
+.lp-wg--concept .wgc-ticket__total {
+  align-items: baseline;
+  border-top: calc(var(--lp-line) * 2) solid var(--lp-ink-100);
+  display: flex;
+  justify-content: space-between;
+  padding-top: var(--lp-space-4);
+}
+.lp-wg--concept .wgc-ticket__total-label {
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.lp-wg--concept .wgc-ticket__amount {
+  font-family: var(--lp-font-cond-x);
+  font-size: var(--lp-text-6xlg);
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.lp-wg--concept .wgc-ticket__per {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-xlg);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.lp-wg--concept .wgc-ticket__foot {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  letter-spacing: 0.06em;
+  margin-top: var(--lp-space-3);
+  text-align: right;
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lp-wg--concept .wgc-ticket {
+    animation: wgc-ticket-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
+  }
+}
+@keyframes wgc-ticket-in {
+  from {
+    opacity: 0;
+    rotate: -5deg;
+    translate: 0 var(--lp-space-8);
+  }
+}
+@media (max-width: 959px) {
+  .lp-wg--concept .wgc-a__grid {
+    gap: var(--lp-space-12);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-wg--concept .wgc-ticket {
+    margin-inline: auto;
+    max-width: calc(var(--lp-space-12) * 11);
+    width: 100%;
+  }
+}
+@media (max-width: 767px) {
+  .lp-wg--concept .wgc-ticket {
+    rotate: -1deg;
+  }
+  .lp-wg--concept .wgc-ticket__paper {
+    padding: var(--lp-space-8) calc(var(--lp-space-4) + var(--lp-space-1));
+  }
+  .lp-wg--concept .wgc-ticket__name {
+    font-size: var(--lp-text-xlg);
+  }
+  .lp-wg--concept .wgc-ticket__amount {
+    font-size: var(--lp-text-5xlg);
+  }
+}
+/* narrow phones: no leader, the value may wrap under its right edge */
+@media (max-width: 419px) {
+  .lp-wg--concept .wgc-ticket__item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .lp-wg--concept .wgc-ticket__lead {
+    display: none;
+  }
+  .lp-wg--concept .wgc-ticket__name {
+    font-size: var(--lp-text-lg);
+  }
+  .lp-wg--concept .wgc-ticket__value {
+    max-width: 7em;
+    white-space: normal;
+  }
+}
+@media (max-width: 359px) {
+  .lp-wg--concept .wgc-ticket__head span:last-child {
+    display: none;
+  }
+  .lp-wg--concept .wgc-ticket__amount {
+    font-size: var(--lp-text-4xlg);
+  }
+  .lp-wg--concept .wgc-ticket__per {
+    font-size: var(--lp-text-lg);
+  }
+}
+
+/* ══ B — Plum poster ═══════════════════════════════════════════════════ */
+.lp-wg--concept .wgc-b {
+  padding-inline: var(--lp-space-4);
+  padding-top: var(--lp-space-4);
+}
+/* the homepage card grid (1296) on the inverted surface, as the banner card */
+.lp-wg--concept .wgc-b__card {
+  background: var(--lp-inverted-surface);
+  border-radius: var(--lp-r-xlg);
+  color: var(--lp-text-on-inverted);
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--lp-space-8) + var(--lp-space-2));
+  margin-inline: auto;
+  max-width: calc(var(--wg-width) + var(--lp-space-12) * 4);
+  padding: calc(var(--lp-space-12) + var(--lp-space-4)) calc(var(--lp-space-12) + var(--lp-space-8));
+}
+.lp-wg--concept .wgc-b .wgc-title {
+  color: var(--lp-text-on-inverted);
+}
+.lp-wg--concept .wgc-b__sentence {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  max-width: 26em;
+  text-wrap: pretty;
+}
+.lp-wg--concept .wgc-mark {
+  --wgc-tone: var(--lp-pink-20);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background: linear-gradient(var(--wgc-tone), var(--wgc-tone)) no-repeat 0 0 / 100% 100%;
+  border-radius: var(--lp-r-xsm);
+  color: var(--lp-text);
+  font-weight: 500;
+  padding: 0 0.18em;
+}
+.lp-wg--concept .wgc-mark[data-tone="plays"] { --wgc-tone: var(--lp-purple-20); }
+.lp-wg--concept .wgc-mark[data-tone="credits"] { --wgc-tone: var(--lp-yellow-20); }
+.lp-wg--concept .wgc-mark[data-tone="office"] { --wgc-tone: var(--lp-green-20); }
+@media (prefers-reduced-motion: no-preference) {
+  .lp-wg--concept .wgc-mark {
+    animation: wgc-mark-in 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .lp-wg--concept .wgc-mark[data-tone="brain"] { animation-delay: 0.25s; }
+  .lp-wg--concept .wgc-mark[data-tone="plays"] { animation-delay: 0.45s; }
+  .lp-wg--concept .wgc-mark[data-tone="credits"] { animation-delay: 0.65s; }
+  .lp-wg--concept .wgc-mark[data-tone="office"] { animation-delay: 0.85s; }
+}
+@keyframes wgc-mark-in {
+  from {
+    background-size: 0% 100%;
+    color: var(--lp-text-on-inverted);
+  }
+}
+.lp-wg--concept .wgc-b__foot {
+  align-items: flex-end;
+  border-top: var(--lp-line) solid var(--lp-ink-90);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-4) var(--lp-space-8);
+  justify-content: space-between;
+  padding-top: var(--lp-space-8);
+}
+.lp-wg--concept .wgc-b .wgc-terms {
+  color: var(--lp-ink-50);
+  text-align: right;
+}
+.lp-wg--concept .wgc-b .wgc-terms strong {
+  color: var(--lp-text-on-inverted);
+  display: block;
+  font-family: var(--lp-font-cond-x);
+  font-size: var(--lp-text-4xlg);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin: 0;
+}
+/* the outline pill drawn in cream on plum (0,3,1 beats foundation's .lp a.lp-btn--outline) */
+.lp-wg--concept a.lp-btn--outline.wgc-btn--on-plum {
+  box-shadow: inset 0 0 0 var(--lp-line) var(--lp-text-on-inverted);
+  color: var(--lp-text-on-inverted);
+}
+.lp-wg--concept .wgc-b :focus-visible {
+  outline-color: var(--lp-purple-30);
+}
+@media (max-width: 1023px) {
+  .lp-wg--concept .wgc-b__card {
+    padding: var(--lp-space-12) var(--lp-space-8);
+  }
+}
+@media (max-width: 767px) {
+  .lp-wg--concept .wgc-b {
+    padding-inline: var(--lp-space-2);
+    padding-top: var(--lp-space-2);
+  }
+  .lp-wg--concept .wgc-b__card {
+    border-radius: var(--lp-r-lg);
+    gap: var(--lp-space-8);
+    padding: var(--lp-space-8) calc(var(--lp-space-4) + var(--lp-space-1));
+  }
+  .lp-wg--concept .wgc-b__sentence {
+    font-size: var(--lp-text-xlg);
+  }
+  .lp-wg--concept .wgc-b__foot {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .lp-wg--concept .wgc-b .wgc-terms {
+    text-align: left;
+  }
+}
+
+/* ══ C — Type index ════════════════════════════════════════════════════ */
+/* the homepage hero's composition: H1 left, the lede column right, both
+   bottom-aligned */
+.lp-wg--concept .wgc-c__top {
+  align-items: end;
+  display: grid;
+  gap: var(--lp-space-8) var(--lp-space-12);
+  grid-template-columns: minmax(0, 1fr) var(--wgc-lede-width);
+  padding-bottom: var(--lp-space-12);
+}
+.lp-wg--concept .wgc-c__aside {
+  gap: calc(var(--lp-space-4) + var(--lp-space-2));
+}
+.lp-wg--concept .wgc-index {
+  border-top: calc(var(--lp-line) * 2) solid var(--lp-ink-100);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-wg--concept .wgc-index__row {
+  --wgc-tone: var(--lp-pink-10);
+  --wgc-tone-line: var(--lp-pink-20);
+  align-items: center;
+  border-bottom: var(--lp-line) solid var(--lp-ink-tr-10);
+  display: grid;
+  gap: var(--lp-space-2) var(--lp-space-8);
+  grid-template-columns: var(--lp-space-12) minmax(0, 1fr) calc(var(--lp-space-4) * 20);
+  padding-block: calc(var(--lp-space-4) + var(--lp-space-1));
+}
+.lp-wg--concept .wgc-index__row[data-tone="plays"] { --wgc-tone: var(--lp-purple-10); --wgc-tone-line: var(--lp-purple-20); }
+.lp-wg--concept .wgc-index__row[data-tone="credits"] { --wgc-tone: var(--lp-yellow-10); --wgc-tone-line: var(--lp-yellow-20); }
+.lp-wg--concept .wgc-index__row[data-tone="office"] { --wgc-tone: var(--lp-green-10); --wgc-tone-line: var(--lp-green-20); }
+.lp-wg--concept .wgc-index__num {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+}
+.lp-wg--concept .wgc-index__term {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);
+}
+/* the qualifier as a brand badge (kit badge: weak surface + its stroke) */
+.lp-wg--concept .wgc-index__q {
+  background: var(--wgc-tone);
+  border-radius: var(--lp-r-2xlg);
+  box-shadow: inset 0 0 0 var(--lp-line) var(--wgc-tone-line);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding: var(--lp-space-1) var(--lp-space-3);
+  text-transform: uppercase;
+}
+/* the homepage price figure's face: Condensed 900, -0.03em */
+.lp-wg--concept .wgc-index__word {
+  font-family: var(--lp-font-cond-x);
+  font-size: clamp(var(--lp-text-5xlg), 7.2vw, calc(var(--lp-text-6xlg) * 1.8));
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+.lp-wg--concept .wgc-index__detail {
+  color: var(--lp-text);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lp-wg--concept .wgc-index__row {
+    animation: wgc-row-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    animation-delay: calc(0.15s + var(--wgc-i, 0) * 0.1s);
+  }
+}
+@keyframes wgc-row-in {
+  from {
+    opacity: 0;
+    translate: 0 var(--lp-space-4);
+  }
+}
+@media (max-width: 1023px) {
+  .lp-wg--concept .wgc-c__top {
+    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-wg--concept .wgc-index__row {
+    grid-template-columns: var(--lp-space-12) minmax(0, 1fr) calc(var(--lp-space-4) * 16);
+  }
+}
+@media (max-width: 767px) {
+  .lp-wg--concept .wgc-c__top {
+    padding-bottom: var(--lp-space-8);
+  }
+  .lp-wg--concept .wgc-index__row {
+    align-items: start;
+    gap: var(--lp-space-2) var(--lp-space-3);
+    grid-template-columns: var(--lp-space-8) minmax(0, 1fr);
+  }
+  .lp-wg--concept .wgc-index__num {
+    padding-top: var(--lp-space-1);
+  }
+  .lp-wg--concept .wgc-index__word {
+    font-size: clamp(var(--lp-text-4xlg), 12vw, var(--lp-text-6xlg));
+  }
+  .lp-wg--concept .wgc-index__detail {
+    grid-column: 2;
+  }
+}
+
+/* ══ The reviewer's switcher (preview chrome, not a design option) ═════ */
+.lp-wg--concept .wgc-switch {
+  align-items: center;
+  background: var(--lp-inverted-surface);
+  border-radius: var(--lp-r-2xlg);
+  bottom: var(--lp-space-4);
+  box-shadow: var(--wgc-shadow);
+  color: var(--lp-text-on-inverted);
+  display: flex;
+  gap: var(--lp-space-3);
+  left: 50%;
+  padding: var(--lp-space-1) var(--lp-space-1) var(--lp-space-1) var(--lp-space-4);
+  position: fixed;
+  translate: -50% 0;
+  z-index: 1000;
+}
+.lp-wg--concept .wgc-switch__label {
+  color: var(--lp-ink-50);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.lp-wg--concept .wgc-switch ul {
+  display: flex;
+  gap: var(--lp-space-1);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-wg--concept .wgc-switch a {
+  border-radius: var(--lp-r-2xlg);
+  display: block;
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  padding: var(--lp-space-2) var(--lp-space-3);
+  white-space: nowrap;
+}
+.lp-wg--concept .wgc-switch a[aria-current="page"] {
+  background: var(--lp-tinted-surface);
+  color: var(--lp-text);
+}
+.lp-wg--concept .wgc-switch a:focus-visible {
+  outline-color: var(--lp-purple-30);
+}
+.lp-wg--concept .wgc-switch__key {
+  font-weight: 700;
+}
+@media (max-width: 599px) {
+  .lp-wg--concept .wgc-switch {
+    padding-left: var(--lp-space-1);
+  }
+  .lp-wg--concept .wgc-switch__label {
+    display: none;
+  }
+  .lp-wg--concept .wgc-switch a {
+    padding-inline: var(--lp-space-2);
+  }
+}
+/* 320–419: the letters only on screen, the names still read (lp-sr-only's recipe) */
+@media (max-width: 419px) {
+  .lp-wg--concept .wgc-switch__name {
+    clip-path: inset(50%);
+    height: var(--lp-line);
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: var(--lp-line);
+  }
+  .lp-wg--concept .wgc-switch a {
+    min-width: var(--lp-space-12);
+    padding-inline: var(--lp-space-4);
+    text-align: center;
+  }
+  .lp-wg--concept .wgc-switch {
+    gap: var(--lp-space-1);
+  }
+}
