@@ -10,7 +10,7 @@ import {
   type SetStateAction,
 } from "react";
 
-import { FxPillLink } from "@/components/sections/landing/FxPill";
+import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { BASE_LEVEL, CREDIT_LEVELS, appHrefForLevel, type CreditLevel } from "@/lib/pricing";
 
 /**
@@ -41,12 +41,13 @@ export function usePricingLevel(): LevelState {
   return shared ?? { level, setLevel };
 }
 
-/** Start free on the picked level, for a reader outside the plan card. */
+/** Start free on the picked level, for a reader outside the plan card: the
+    homepage's dark pill, which pushes the same app_cta_clicked event. */
 export function StartFreeOnLevel({ children, ...rest }: { children: string; "data-analytics-id": string }) {
   const { level } = usePricingLevel();
   return (
-    <FxPillLink href={appHrefForLevel(level)} {...rest}>
+    <LpFxLink href={appHrefForLevel(level)} {...rest}>
       {children}
-    </FxPillLink>
+    </LpFxLink>
   );
 }

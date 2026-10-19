@@ -1,15 +1,20 @@
+"use client";
+
+import { usePricingLevel } from "./PricingLevel";
 import { pricingLevels as c, pricingV2 } from "@/lib/copy";
 import { CREDIT_LEVELS, formatCredits, formatDollars, leadsEstimateLabel } from "@/lib/pricing";
 
 /**
  * /pricing — "More credits, more leads.": the five levels side by side, each
  * by what it gets you (an estimate of leads a month), its credits and its
- * price. The picker in the plan card shows one level at a time; this shows
- * them all. A table (it is one), restyled as rows; stacked on a phone
- * (app/pricing/pricing.css). Server-rendered, zero JS.
+ * price. The picker in the Self-serve slip shows one level at a time; this
+ * shows them all, with the level picked there marked (the same shared state,
+ * PricingLevel.tsx; the first level in the server HTML). A table (it is one),
+ * restyled as rows; stacked on a phone (app/pricing/pricing.css).
  * Copy: `pricingLevels` in lib/copy.ts. Numbers: lib/pricing.ts.
  */
 export function PricingLevels() {
+  const { level: picked } = usePricingLevel();
   return (
     <section className="lv2s lv2s--surface lv2-levels" aria-labelledby="lv2-levels-title">
       <div className="lv2-container">
@@ -34,9 +39,10 @@ export function PricingLevels() {
           </thead>
           <tbody>
             {CREDIT_LEVELS.map((level) => (
-              <tr key={level.key}>
+              <tr key={level.key} data-picked={level.key === picked ? "" : undefined}>
                 <th scope="row" className="lv2-levels-leads">
                   {c.leads(leadsEstimateLabel(level.credits))}
+                  {level.key === picked ? <span className="lp-sr-only"> (the level picked above)</span> : null}
                 </th>
                 <td className="lv2-levels-credits">{formatCredits(level.credits)}</td>
                 <td className="lv2-levels-price">

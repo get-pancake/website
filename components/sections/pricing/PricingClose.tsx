@@ -1,5 +1,5 @@
 import { COMPARE_PATH } from "@/components/sections/compare/compare-data";
-import { FxPillLink } from "@/components/sections/landing/FxPill";
+import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { StartFreeOnLevel } from "@/components/sections/pricing/PricingLevel";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { pricingClose as c } from "@/lib/copy";
@@ -24,9 +24,9 @@ export function PricingClose() {
         <div className="lv2-close-actions">
           <div className="lv2-button-group">
             <StartFreeOnLevel data-analytics-id="app_pricing_page">Start free</StartFreeOnLevel>
-            <FxPillLink variant="outline" href={DEMO_PAGE_PATH} data-analytics-id="call_pricing_page">
+            <LpFxLink className="lp-btn--tinted lp-btn--demo" href={DEMO_PAGE_PATH} data-analytics-id="call_pricing_page">
               Talk to sales
-            </FxPillLink>
+            </LpFxLink>
           </div>
           <p className="lv2-close-more">
             <a href={COMPARE_PATH}>

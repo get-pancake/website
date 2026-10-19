@@ -2,743 +2,1063 @@
    landing-v2.css (2026-10-07). The page wears the sitewide chrome (LpNav +
    LpFooter inside main.lp) around the lv2 pricing body (div.lv2), so these
    rules keep the lv2 sections whole inside the .lp scope and lay out the
-   sections added since. Two-class selectors throughout: both kits
-   are unlayered, and CSS chunk order across routes is not guaranteed, so
-   nothing here may depend on source order. */
+   sections added since. Two-class selectors at least: both kits are
+   unlayered, and CSS chunk order across routes is not guaranteed, so nothing
+   here may depend on another file's order.
 
-/* ── Logos under the card (PricingLogos.tsx) ──
-   The homepage marquee as it is: one moving row with its edge fades (a mask,
-   so the pink ground shows through), slower under a pointer, wrapped and
-   still for reduced motion (marquee.css). Only the label and the spacing are
-   set here. It was frozen into two rows until 2026-10-13 (founder: "this =>
-   carousel"). */
-.lv2-pricing-logos {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-top: clamp(2rem, 5vh, 3rem);
-}
-.lv2-pricing-logos .lv2-pricing-logos-label {
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--subtle-text);
-}
-.lv2-pricing-logos .lp-marquee {
-  padding-block: 0.5rem;
-}
+   October 2026 redesign (François: "redo the pricing page in a similar
+   design" to the /white-glove order ticket, WgHero.tsx + white-glove.css).
+   The plans are three paper slips; the example lead is a fourth. Type is the
+   live site's, as on /white-glove:
+   - H1 = the homepage H1 (hero.css .lp-hero-title + .lp-display): Aeonik
+     Condensed Pro 600, 69.014px from 1201px wide, clamp(52px, 5.4vw,
+     69.014px) below, the 35.559px mobile title token on phones, -0.03em,
+     line-height normal.
+   - Section titles = .lp-title-section: Condensed 600, 57.336 / 1.2 /
+     -1.7201px; phones 35.559 / 41px / -0.03em (steps.css).
+   - Prices = the homepage price figure (pricing.css .lp-price-amount): the
+     Condensed 900 cut, -0.03em; "/month" in Condensed 400.
+   - Body = Geist Sans; annotations (tags, captions, fine print) = Aeonik
+     Fono, uppercase, as the ticket's head and foot.
+   - Buttons = the homepage pills (.lp-btn, .lp-btn--outline, --tinted). */
 
-/* Compact pricing comparison: Pancake's type, cream and plum, with a
-   narrow three-column grid inspired by the founder's reference. */
 .lp-pricing-page {
-  --pricing-width: calc(var(--lp-space-12) * 23);
+  --pricing-width: calc(var(--lp-space-12) * 23); /* 1104 */
+  --pricing-h1: 69.014px; /* = hero.css .lp-hero-title */
+  --pricing-h1-mobile: clamp(30px, 8.846vw, 35.559px); /* = hero.css ≤767 */
+  --pricing-shadow: 0 var(--lp-space-1) var(--lp-space-8) var(--lp-ink-tr-10);
+  --pricing-shadow-strong: 0 var(--lp-space-2) calc(var(--lp-space-12) - var(--lp-space-4)) var(--lp-ink-tr-20);
+  --pricing-rule: var(--lp-line) solid var(--lp-ink-tr-10);
+  --pricing-tooth: var(--lp-space-4);
 }
-.lp-pricing-page .lv2-pricing-page {
+
+/* ── type and grounds for the whole lv2 body ──
+   landing-v2.css sets `.lv2 * { font-family: Aeonik }`: the live body face is
+   Geist Sans (founder 2026-09-09), so this page reads in it; headings and
+   annotations name their face below. One cream for the page (the lp cream,
+   not lv2's #fff7ec), white for every other section. */
+.lp-pricing-page .lv2 {
   background: var(--lp-page-bg);
-  padding-block: var(--lp-space-4) var(--lp-space-12);
+  color: var(--lp-text);
 }
-.lp-pricing-page .lv2-pricing-page > .lv2-container {
-  max-width: var(--pricing-width);
-  width: calc(100% - var(--lp-space-8));
-  padding: 0;
+.lp-pricing-page .lv2 * {
+  font-family: var(--lp-font-sans);
 }
-.lv2-pricing-page .lv2-section-header {
-  align-items: center;
-  text-align: center;
-  max-width: none;
-  gap: var(--lp-space-4);
-  margin-bottom: var(--lp-space-8);
+/* the page walks cream (plans, lead) → white (proof) → cream (levels) →
+   white (questions) → pink-10 (the closing band, lv2s--brand) */
+.lp-pricing-page .lv2s--surface {
+  background: var(--lp-page-bg);
 }
-.lv2-pricing-page .lv2-pricing-headline {
+.lp-pricing-page .lv2-proof,
+.lp-pricing-page .lv2-billing {
+  background: var(--lp-surface);
+}
+.lp-pricing-page .lv2-section-title {
   font-family: var(--lp-font-cond);
   font-size: var(--lp-text-6xlg);
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  font-weight: 600;
+  letter-spacing: -1.7201px;
+  line-height: 1.2;
 }
-.lv2-pricing-page .lv2-section-header .lv2-section-lede {
+.lp-pricing-page .lv2-section-lede {
   color: var(--lp-ink-90);
   font-size: var(--lp-text-lg);
   line-height: 1.5;
 }
-.pricing-plans {
+@media (max-width: 767px) {
+  .lp-pricing-page .lv2-section-title {
+    font-size: 35.559px; /* = steps.css mobile title */
+    letter-spacing: -0.03em;
+    line-height: 41px;
+  }
+  .lp-pricing-page .lv2-section-lede {
+    font-size: var(--lp-text-md);
+  }
+}
+
+/* ── the page head ── */
+.lp-pricing-page .lv2-pricing-page {
+  background: var(--lp-page-bg);
+  padding-block: calc(var(--lp-space-12) + var(--lp-space-4)) var(--lp-space-12);
+}
+.lp-pricing-page .lv2-pricing-page > .lv2-container {
+  max-width: var(--pricing-width);
+  padding: 0;
+  width: calc(100% - var(--lp-space-8));
+}
+.lp-pricing-page .lv2-pricing-page .lv2-section-header {
+  align-items: center;
+  gap: var(--lp-space-3);
+  margin-bottom: calc(var(--lp-space-12) - var(--lp-space-2));
+  max-width: none;
+  text-align: center;
+}
+.lp-pricing-page .lv2-pricing-page .lv2-pricing-headline {
+  font-family: var(--lp-font-cond);
+  font-size: var(--pricing-h1);
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: normal;
+}
+@media (max-width: 1200px) {
+  .lp-pricing-page .lv2-pricing-page .lv2-pricing-headline {
+    font-size: clamp(52px, 5.4vw, var(--pricing-h1));
+  }
+}
+@media (max-width: 767px) {
+  .lp-pricing-page .lv2-pricing-page {
+    padding-top: var(--lp-space-8);
+  }
+  .lp-pricing-page .lv2-pricing-page .lv2-pricing-headline {
+    font-size: var(--pricing-h1-mobile);
+  }
+}
+
+/* ── Logos under the plans (PricingLogos.tsx) ──
+   The homepage marquee as it is: one moving row with its edge fades,
+   slower under a pointer, wrapped and still for reduced motion
+   (marquee.css). Only the label and the spacing are set here. */
+.lp-pricing-page .lv2-pricing-logos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);
+  margin-top: calc(var(--lp-space-12) + var(--lp-space-4));
+}
+.lp-pricing-page .lv2-pricing-logos .lv2-pricing-logos-label {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.lp-pricing-page .lv2-pricing-logos .lp-marquee {
+  padding-block: var(--lp-space-2);
+}
+
+/* ── The plans (PricingPlans.tsx): three paper slips ──
+   Each slip is one article on five shared rows (subgrid): heading, price,
+   choice, what you get, action. The paper is a ::before with the White
+   Glove ticket's zig-zag mask; the article's drop-shadow follows its cut
+   edges. */
+.lp-pricing-page .pricing-plans {
+  column-gap: calc(var(--lp-space-4) + var(--lp-space-1));
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  border: var(--lp-line) solid var(--lp-subtle-stroke);
-  border-radius: var(--lp-r-lg);
-  overflow: hidden;
-  background: var(--lp-surface);
+  grid-template-rows: repeat(5, auto);
+  /* the plans land under the desktop nav on /pricing#white-glove */
   scroll-margin-top: calc(var(--lp-space-12) * 2);
 }
-.pricing-plans .pricing-plan {
-  display: flex;
-  flex-direction: column;
-  padding: var(--lp-space-8);
+.lp-pricing-page .pricing-plan {
+  color: var(--lp-text);
+  display: grid;
+  filter: drop-shadow(var(--pricing-shadow));
+  grid-row: span 5;
+  grid-template-rows: subgrid;
+  isolation: isolate;
   min-width: 0;
-  color: var(--lp-text);
+  padding: calc(var(--lp-space-8) + var(--lp-space-2)) calc(var(--lp-space-8) - var(--lp-space-1));
+  position: relative;
+  row-gap: 0;
 }
-.pricing-plans .pricing-plan + .pricing-plan {
-  border-left: var(--lp-line) solid var(--lp-subtle-stroke);
-}
-.pricing-plans .pricing-plan--white-glove {
-  background: linear-gradient(155deg, var(--lp-purple-10), var(--lp-surface-2) 48%);
-}
-.pricing-plans .pricing-plan__heading {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--lp-space-2);
-  min-height: var(--lp-space-8);
-  margin-bottom: var(--lp-space-4);
-}
-.pricing-plans h2 {
-  font-size: var(--lp-text-2xlg);
-  line-height: 1.15;
-  margin: 0;
-}
-.pricing-plans .pricing-plan__badge {
-  padding: var(--lp-space-1) var(--lp-space-2);
-  border-radius: var(--lp-r-2xlg);
+.lp-pricing-page .pricing-plan::before {
   background: var(--lp-surface);
-  color: var(--lp-text);
-  font-size: var(--lp-text-xsm);
-  white-space: nowrap;
+  content: "";
+  inset: 0;
+  -webkit-mask:
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--pricing-tooth) 51% repeat-x,
+    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--pricing-tooth) 51% repeat-x;
+  mask:
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--pricing-tooth) 51% repeat-x,
+    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--pricing-tooth) 51% repeat-x;
+  position: absolute;
+  z-index: -1;
 }
-.pricing-plans .pricing-plan__price {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  min-height: calc(var(--lp-space-12) * 2 + var(--lp-space-2));
-  gap: var(--lp-space-2);
-  font-variant-numeric: tabular-nums;
+/* White Glove: the stamp, the filled pill and a deeper shadow; no tint */
+.lp-pricing-page .pricing-plan--white-glove {
+  filter: drop-shadow(var(--pricing-shadow-strong));
 }
-.pricing-plans .pricing-plan__price > p:first-child {
-  display: flex;
-  align-items: baseline;
-  gap: var(--lp-space-1);
-  line-height: 1;
+@supports not (grid-template-rows: subgrid) {
+  .lp-pricing-page .pricing-plan {
+    display: flex;
+    flex-direction: column;
+  }
+  .lp-pricing-page .pricing-plan__features {
+    flex: 1;
+  }
 }
-.pricing-plans .pricing-plan__amount {
-  font-size: var(--lp-text-6xlg);
-  letter-spacing: -0.03em;
-}
-.pricing-plans .pricing-plan__period {
-  font-size: var(--lp-text-xlg);
-  color: var(--lp-ink-80);
-}
-.pricing-plans .pricing-plan__price .pricing-plan__custom {
-  font-size: var(--lp-text-4xlg);
-  min-height: var(--lp-text-6xlg);
-  align-items: center;
-  letter-spacing: -0.03em;
-}
-.pricing-plans .pricing-plan__caption {
-  color: var(--lp-ink-90);
-  font-size: var(--lp-text-sm);
-  line-height: 1.4;
-}
-.pricing-plans .pricing-plan__choice {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: var(--lp-space-2);
-  min-height: calc(var(--lp-space-12) * 2 + var(--lp-space-4) + var(--lp-space-1));
-  padding-block: var(--lp-space-4) calc(var(--lp-space-4) + var(--lp-space-2));
-  color: var(--lp-ink-90);
-  font-size: var(--lp-text-md);
-  line-height: 1.5;
-}
-/* White Glove's "Learn more" (/white-glove): an inline text link, no new row */
-.pricing-plans .pricing-plan__choice a {
-  color: var(--lp-text);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.pricing-plans .pricing-plan__choice label {
-  color: var(--lp-text);
-  font-size: var(--lp-text-sm);
-}
-.pricing-plans select {
-  width: 100%;
-  min-height: var(--lp-space-12);
-  padding-inline: var(--lp-space-3);
-  border: var(--lp-line) solid var(--lp-stroke);
-  border-radius: var(--lp-r-xsm);
-  background: var(--lp-surface);
-  color: var(--lp-text);
-  font: inherit;
-  cursor: pointer;
-}
-.pricing-plans :focus-visible {
+.lp-pricing-page .pricing-plan :focus-visible {
   outline: calc(var(--lp-line) * 2) solid var(--lp-purple-40);
   outline-offset: var(--lp-space-1);
 }
-.pricing-plans .pricing-plan__features {
-  flex: 1;
-  padding-block: var(--lp-space-4) var(--lp-space-8);
-  border-top: var(--lp-line) solid var(--lp-subtle-stroke);
-}
-.pricing-plans .pricing-plan__intro {
-  min-height: calc(var(--lp-space-4) + var(--lp-space-2));
-  color: var(--lp-text);
-  font-size: var(--lp-text-md);
-  line-height: 1.5;
-  margin-bottom: var(--lp-space-4);
-}
-.pricing-plans ul {
+
+/* row 1: the name, and a Fono tag on the right (the ticket's head) */
+.lp-pricing-page .pricing-plan__heading {
+  align-items: center;
+  border-bottom: var(--lp-line) dashed var(--lp-ink-50);
   display: flex;
-  flex-direction: column;
-  gap: var(--lp-space-3);
-  list-style: none;
+  flex-wrap: wrap;
+  gap: var(--lp-space-2);
+  justify-content: space-between;
+  padding-bottom: var(--lp-space-3);
+}
+.lp-pricing-page .pricing-plan__heading h2 {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
   margin: 0;
-  padding: 0;
 }
-.pricing-plans li {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--lp-space-3);
-  color: var(--lp-ink-90);
-  font-size: var(--lp-text-md);
-  line-height: 1.5;
-}
-.pricing-plans li svg {
-  flex: none;
-  width: var(--lp-text-lg);
-  height: var(--lp-text-lg);
-  margin-top: var(--lp-space-1);
-}
-.pricing-plans .pricing-plan__action {
-  display: flex;
-  flex-direction: column;
-  gap: var(--lp-space-4);
-}
-.pricing-plans .pricing-plan__action .lp-btn {
-  width: 100%;
-  min-height: var(--lp-space-12);
-  border-radius: var(--lp-r-2xlg);
-  /* The shared desktop squircle clips to a fixed 136px-wide path. */
-  clip-path: none;
-}
-.pricing-plans .pricing-plan__action p {
+.lp-pricing-page .pricing-plan__tag {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
   font-size: var(--lp-text-xsm);
-  line-height: 1.5;
-  color: var(--lp-ink-90);
-  text-align: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
-@media (min-width: 960px) and (max-width: 1023px) {
-  .pricing-plans .pricing-plan {
-    padding: var(--lp-space-4);
-  }
-  .pricing-plans .pricing-plan__heading {
-    min-height: calc(var(--lp-space-12) + var(--lp-space-4));
-    align-content: flex-start;
-  }
-  .pricing-plans .pricing-plan__amount {
-    font-size: var(--lp-text-5xlg);
-  }
-  .pricing-plans .pricing-plan__price .pricing-plan__custom {
-    font-size: var(--lp-text-3xlg);
-  }
-}
-@media (max-width: 959px) {
-  .pricing-plans .pricing-plan {
-    padding: calc(var(--lp-space-4) + var(--lp-space-2));
-  }
-  .lv2-pricing-page .lv2-pricing-headline {
-    font-size: var(--lp-text-4xlg);
-  }
-  .lv2-pricing-page .lv2-section-header .lv2-section-lede {
-    font-size: var(--lp-text-md);
-  }
-  .pricing-plans {
-    max-width: calc(var(--lp-space-12) * 9);
-    margin-inline: auto;
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .pricing-plans .pricing-plan + .pricing-plan {
-    border-left: 0;
-    border-top: var(--lp-line) solid var(--lp-subtle-stroke);
-  }
-  .pricing-plans .pricing-plan__choice,
-  .pricing-plans .pricing-plan__intro {
-    min-height: 0;
-  }
-}
-@media (max-width: 359px) {
-  .pricing-plans .pricing-plan__amount {
-    font-size: var(--lp-text-5xlg);
-  }
-  .pricing-plans .pricing-plan__price .pricing-plan__custom {
-    font-size: var(--lp-text-3xlg);
-  }
+.lp-pricing-page .pricing-plan__tag--stamp {
+  background: var(--lp-inverted-surface);
+  border-radius: var(--lp-r-2xlg);
+  color: var(--lp-text-on-inverted);
+  font-weight: 600;
+  padding: var(--lp-space-1) calc(var(--lp-space-2) + var(--lp-space-1));
+  rotate: -3deg;
 }
 
-/* ── "Not names. Buyers with a reason to talk." (PricingLead.tsx) ──
-   The four things a lead comes with on the left, an example lead as a card
-   on the right, both as tall as each other. One column below 1024px. */
-.lv2-lead .lv2-section-header {
-  max-width: none;
-}
-.lv2-lead .lv2-lead-grid {
-  align-items: stretch;
-  display: grid;
-  gap: clamp(1.5rem, 4vw, 3.5rem);
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-}
-@media (max-width: 1023px) {
-  .lv2-lead .lv2-lead-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-}
-.lv2-lead .lv2-lead-points {
+/* row 2: the price, in the homepage price figure's face */
+.lp-pricing-page .pricing-plan__price {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
+  gap: var(--lp-space-2);
+  padding-block: calc(var(--lp-space-4) + var(--lp-space-2)) var(--lp-space-4);
 }
-.lv2-lead .lv2-lead-point {
-  border-top: 1px solid color-mix(in srgb, var(--palette-chrome-100) 10%, transparent);
+.lp-pricing-page .pricing-plan__figure {
+  align-items: baseline;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-1);
+}
+.lp-pricing-page .pricing-plan__amount {
+  font-family: var(--lp-font-cond-x);
+  font-size: var(--lp-text-6xlg);
+  font-variant-numeric: tabular-nums;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.lp-pricing-page .pricing-plan__period {
+  color: var(--lp-ink-80);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-xlg);
+  font-weight: 400;
+}
+.lp-pricing-page .pricing-plan__caption {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* row 3: the choice (Self-serve's credits) or the plan in one sentence */
+.lp-pricing-page .pricing-plan__choice {
+  border-top: var(--pricing-rule);
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
-  padding: 1.25rem 0;
+  gap: var(--lp-space-2);
+  padding-block: var(--lp-space-4) calc(var(--lp-space-4) + var(--lp-space-2));
 }
-.lv2-lead .lv2-lead-point:first-child {
-  border-top: 0;
-  padding-top: 0;
-}
-.lv2-lead .lv2-lead-point:last-child {
-  padding-bottom: 0;
-}
-.lv2-lead .lv2-lead-point-title {
-  font-size: clamp(1.25rem, 1.9vw, 1.5rem);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
-}
-.lv2-lead .lv2-lead-point-body {
-  color: var(--subtle-text);
-  font-size: 1.0625rem;
+.lp-pricing-page .pricing-plan__summary {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-md);
   line-height: 1.5;
   text-wrap: pretty;
 }
-.lv2-lead .lv2-lead-card {
-  background: var(--alt-surface);
-  border-radius: 28px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--palette-chrome-100) 8%, transparent);
-  corner-shape: round;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin: 0;
-  padding: clamp(1.5rem, 3vw, 2rem);
-}
-.lv2-lead .lv2-lead-card-kicker {
-  color: var(--palette-pink-40);
-  font-size: 0.875rem;
+.lp-pricing-page .pricing-plan__summary a {
+  color: var(--lp-text);
   font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-underline-offset: 0.25em;
+  white-space: nowrap;
 }
-.lv2-lead .lv2-lead-who {
+.lp-pricing-page .pricing-plan__summary a:hover {
+  text-decoration-color: currentColor;
+}
+
+/* the five levels as one segmented control: native radios (arrow keys,
+   one tab stop), drawn as chips in Fono */
+.lp-pricing-page .pricing-levels-picker {
+  border: 0;
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+.lp-pricing-page .pricing-levels-picker legend {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  letter-spacing: 0.06em;
+  margin-bottom: var(--lp-space-2);
+  padding: 0;
+  text-transform: uppercase;
+}
+.lp-pricing-page .pricing-levels-picker__track {
+  background: var(--lp-surface-3);
+  border-radius: var(--lp-r-sm);
+  box-shadow: inset 0 0 0 var(--lp-line) var(--lp-ink-40);
+  display: grid;
+  gap: var(--lp-space-1);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  padding: var(--lp-space-1);
+}
+.lp-pricing-page .pricing-levels-picker__option {
+  cursor: pointer;
+  position: relative;
+}
+.lp-pricing-page .pricing-levels-picker__option input {
+  cursor: pointer;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+}
+.lp-pricing-page .pricing-levels-picker__option input + span {
+  border-radius: var(--lp-r-xsm);
+  color: var(--lp-ink-90);
+  display: block;
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  line-height: 1;
+  padding: var(--lp-space-3) 0;
+  text-align: center;
+  transition: background-color 0.16s ease-out, color 0.16s ease-out;
+}
+.lp-pricing-page .pricing-levels-picker__option:hover input:not(:checked) + span {
+  background: var(--lp-ink-tr-5);
+  color: var(--lp-text);
+}
+.lp-pricing-page .pricing-levels-picker__option input:checked + span {
+  background: var(--lp-inverted-surface);
+  color: var(--lp-text-on-inverted);
+}
+.lp-pricing-page .pricing-levels-picker__option input:focus-visible + span {
+  outline: calc(var(--lp-line) * 2) solid var(--lp-purple-40);
+  outline-offset: var(--lp-line);
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-pricing-page .pricing-levels-picker__option input + span {
+    transition: none;
+  }
+}
+.lp-pricing-page .pricing-plan__credits {
   align-items: center;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem 0.875rem;
+  font-size: var(--lp-text-md);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  gap: var(--lp-space-1) var(--lp-space-2);
+  line-height: 1.5;
+  margin-top: var(--lp-space-1);
 }
-.lv2-lead .lv2-lead-avatar {
-  align-items: center;
-  background: var(--palette-purple-10);
-  border-radius: 999px;
-  display: flex;
-  flex: none;
-  font-size: 0.9375rem;
-  font-weight: 700;
-  height: 2.75rem;
-  justify-content: center;
-  width: 2.75rem;
+.lp-pricing-page .pricing-plan__save {
+  background: var(--lp-green-10);
+  border-radius: var(--lp-r-2xlg);
+  color: var(--lp-green-40);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: var(--lp-space-1) var(--lp-space-2);
+  text-transform: uppercase;
 }
-.lv2-lead .lv2-lead-name {
-  font-size: 1.125rem;
-  font-weight: 700;
-  line-height: 1.25;
+.lp-pricing-page .pricing-plan__hint {
+  color: var(--lp-ink-80);
+  font-size: var(--lp-text-sm);
+  line-height: 1.5;
 }
-.lv2-lead .lv2-lead-role {
-  color: var(--subtle-text);
-  font-size: 0.9375rem;
-  line-height: 1.4;
+
+/* row 4: what you get, on the homepage pricing card's green check */
+.lp-pricing-page .pricing-plan__features {
+  border-top: var(--lp-line) dashed var(--lp-ink-50);
+  padding-block: var(--lp-space-4) var(--lp-space-8);
 }
-/* the signals: what was found on the left, the provider behind it on the
-   right as a kit badge */
-.lv2-lead .lv2-lead-signals {
+.lp-pricing-page .pricing-plan__intro {
+  color: var(--lp-text);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: var(--lp-space-3);
+}
+.lp-pricing-page .pricing-plan__features ul {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: calc(var(--lp-space-2) + var(--lp-space-1));
   list-style: none;
-  margin: 0.125rem 0 0;
+  margin: 0;
   padding: 0;
 }
-.lv2-lead .lv2-lead-signals li {
-  align-items: center;
+.lp-pricing-page .pricing-plan__features li {
+  align-items: flex-start;
+  color: var(--lp-ink-90);
   display: flex;
-  font-size: 1.0625rem;
-  gap: 0.75rem;
-  justify-content: space-between;
-  line-height: 1.4;
+  font-size: var(--lp-text-md);
+  gap: var(--lp-space-2);
+  line-height: 1.45;
 }
-.lv2-lead .lv2-lead-signals .badge {
+.lp-pricing-page .pricing-plan__features li svg {
+  color: var(--lp-green-30);
   flex: none;
+  height: calc(var(--lp-space-4) + var(--lp-space-1));
+  margin-top: var(--lp-line);
+  width: calc(var(--lp-space-4) + var(--lp-space-1));
 }
-.lv2-lead .lv2-lead-block {
-  border-top: 1px solid color-mix(in srgb, var(--palette-chrome-100) 10%, transparent);
+
+/* row 5: the ticket's total rule, then one pill and its fine print */
+.lp-pricing-page .pricing-plan__action {
+  align-content: start;
+  border-top: calc(var(--lp-line) * 2) solid var(--lp-ink-100);
+  display: grid;
+  gap: var(--lp-space-3);
+  padding-top: calc(var(--lp-space-4) + var(--lp-space-1));
+}
+.lp-pricing-page .pricing-plan__action .lp-btn {
+  border-radius: var(--lp-r-sm);
+  /* the shared desktop squircle clips to a fixed 136px-wide path */
+  clip-path: none;
+  height: auto;
+  min-height: var(--lp-space-12);
+  width: 100%;
+}
+.lp-pricing-page .pricing-plan__action p {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* narrower desktops: the figures step down so "$1,299/month" holds a line */
+@media (min-width: 960px) and (max-width: 1100px) {
+  .lp-pricing-page .pricing-plan {
+    padding-inline: calc(var(--lp-space-4) + var(--lp-space-1));
+  }
+  .lp-pricing-page .pricing-plan__amount {
+    font-size: var(--lp-text-5xlg);
+  }
+  .lp-pricing-page .pricing-plan__heading h2 {
+    font-size: var(--lp-text-2xlg);
+  }
+}
+/* one column: the slips stack, each on its own rows */
+@media (max-width: 959px) {
+  .lp-pricing-page .pricing-plans {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    margin-inline: auto;
+    max-width: calc(var(--lp-space-12) * 10);
+    row-gap: calc(var(--lp-space-8) - var(--lp-space-2));
+  }
+  .lp-pricing-page .pricing-plan {
+    display: flex;
+    flex-direction: column;
+    grid-row: auto;
+  }
+}
+@media (max-width: 767px) {
+  .lp-pricing-page .pricing-plan {
+    padding: var(--lp-space-8) calc(var(--lp-space-4) + var(--lp-space-1));
+  }
+  .lp-pricing-page .pricing-plan__amount {
+    font-size: var(--lp-text-5xlg);
+  }
+}
+@media (max-width: 359px) {
+  .lp-pricing-page .pricing-plan__heading h2 {
+    font-size: var(--lp-text-2xlg);
+  }
+  .lp-pricing-page .pricing-levels-picker__option input + span {
+    font-size: var(--lp-text-xsm);
+  }
+}
+
+/* ── "Leads matched to your business, not to a filter." (PricingLead.tsx) ──
+   The four things a lead comes with on the left, the example lead as a
+   paper slip on the right (the plans' slip, a little turned, as the White
+   Glove ticket). One column below 1024px. */
+.lp-pricing-page .lv2-lead .lv2-section-header {
+  max-width: none;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-grid {
+  align-items: center;
+  display: grid;
+  gap: calc(var(--lp-space-12) + var(--lp-space-4));
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+@media (max-width: 1023px) {
+  .lp-pricing-page .lv2-lead .lv2-lead-grid {
+    gap: var(--lp-space-12);
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.lp-pricing-page .lv2-lead .lv2-lead-points {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
-  padding-top: 1.125rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
-.lv2-lead .lv2-lead-label {
-  color: var(--subtle-text);
-  font-size: 0.875rem;
+.lp-pricing-page .lv2-lead .lv2-lead-point {
+  border-top: var(--pricing-rule);
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-1);
+  padding: calc(var(--lp-space-4) + var(--lp-space-1)) 0;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-point:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-point:last-child {
+  padding-bottom: 0;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-point-title {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-2xlg);
   font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
 }
-.lv2-lead .lv2-lead-text {
-  font-size: 1.0625rem;
+.lp-pricing-page .lv2-lead .lv2-lead-point-body {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-md);
   line-height: 1.5;
   text-wrap: pretty;
 }
-/* the message reads as something written: a tinted bubble under its label */
-.lv2-lead .lv2-lead-block--message .lv2-lead-text {
-  background: var(--surface);
-  border-radius: 16px 16px 16px 4px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--palette-chrome-100) 8%, transparent);
-  margin-top: 0.25rem;
-  padding: 0.875rem 1rem;
+.lp-pricing-page .lv2-lead .lv2-lead-card {
+  display: flex;
+  filter: drop-shadow(var(--pricing-shadow));
+  flex-direction: column;
+  gap: calc(var(--lp-space-4) + var(--lp-space-1));
+  isolation: isolate;
+  margin: 0;
+  padding: calc(var(--lp-space-8) + var(--lp-space-2)) var(--lp-space-8);
+  position: relative;
+  rotate: 1deg;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-card::before {
+  background: var(--lp-surface);
+  content: "";
+  inset: 0;
+  -webkit-mask:
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--pricing-tooth) 51% repeat-x,
+    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--pricing-tooth) 51% repeat-x;
+  mask:
+    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--pricing-tooth) 51% repeat-x,
+    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--pricing-tooth) 51% repeat-x;
+  position: absolute;
+  z-index: -1;
+}
+/* the slip's head */
+.lp-pricing-page .lv2-lead .lv2-lead-card-kicker {
+  border-bottom: var(--lp-line) dashed var(--lp-ink-50);
+  color: var(--lp-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding-bottom: var(--lp-space-3);
+  text-transform: uppercase;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-who {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-3);
+}
+.lp-pricing-page .lv2-lead .lv2-lead-avatar {
+  align-items: center;
+  background: var(--lp-purple-20);
+  border-radius: 50%;
+  display: flex;
+  flex: none;
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  height: calc(var(--lp-space-12) - var(--lp-space-1));
+  justify-content: center;
+  width: calc(var(--lp-space-12) - var(--lp-space-1));
+}
+.lp-pricing-page .lv2-lead .lv2-lead-name {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-2xlg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-role {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-sm);
+  line-height: 1.4;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-block {
+  border-top: var(--lp-line) solid var(--lp-ink-tr-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);
+  padding-top: var(--lp-space-4);
+}
+.lp-pricing-page .lv2-lead .lv2-lead-label {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+/* the signals: what was found, a dotted leader, the provider in Fono */
+.lp-pricing-page .lv2-lead .lv2-lead-signals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-signals li {
+  align-items: baseline;
+  display: grid;
+  font-size: var(--lp-text-md);
+  gap: var(--lp-space-3);
+  grid-template-columns: auto minmax(var(--lp-space-4), 1fr) auto;
+  line-height: 1.4;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-leader {
+  border-bottom: calc(var(--lp-line) * 2) dotted var(--lp-ink-50);
+  translate: 0 calc(var(--lp-space-1) * -1);
+}
+.lp-pricing-page .lv2-lead .lv2-lead-source {
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  white-space: nowrap;
+}
+.lp-pricing-page .lv2-lead .lv2-lead-text {
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+/* the message reads as something written: a cream bubble under its label */
+.lp-pricing-page .lv2-lead .lv2-lead-block--message .lv2-lead-text {
+  background: var(--lp-surface-3);
+  border-radius: var(--lp-r-m) var(--lp-r-m) var(--lp-r-m) var(--lp-r-2xsm);
+  padding: var(--lp-space-3) var(--lp-space-4);
+}
+@media (max-width: 1023px) {
+  .lp-pricing-page .lv2-lead .lv2-lead-card {
+    margin-inline: auto;
+    max-width: calc(var(--lp-space-12) * 11);
+    width: 100%;
+  }
+}
+@media (max-width: 767px) {
+  .lp-pricing-page .lv2-lead .lv2-lead-card {
+    padding: var(--lp-space-8) calc(var(--lp-space-4) + var(--lp-space-1));
+    rotate: 0.5deg;
+  }
+}
+/* narrow phones: the provider drops under the signal, no leader */
+@media (max-width: 419px) {
+  .lp-pricing-page .lv2-lead .lv2-lead-signals li {
+    gap: 0;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-pricing-page .lv2-lead .lv2-lead-leader {
+    display: none;
+  }
+  .lp-pricing-page .lv2-lead .lv2-lead-source {
+    color: var(--lp-subtle-text);
+    font-size: var(--lp-text-xsm);
+  }
 }
 
 /* ── "Take it from them" (PricingProof.tsx) ──
-   Four cards of equal height: a figure and what it counts, or a sentence,
-   then who said it and their wordmark at the foot. Four columns from 1100px,
-   two from 640px, where the two figures sit above the two sentences: the
-   rows share one height so all four cards still match. */
-.lv2-proof .lv2-proof-list {
+   Four cream cards of equal height on the white section: a figure (the
+   price face) and what it counts, or a sentence (the heading face), then
+   who said it and their wordmark at the foot. Four columns from 1100px, two
+   from 640px, where the rows share one height so all four still match. */
+.lp-pricing-page .lv2-proof .lv2-proof-list {
   display: grid;
-  gap: 1rem;
+  gap: var(--lp-space-4);
   grid-template-columns: minmax(0, 1fr);
   list-style: none;
   margin: 0;
   padding: 0;
 }
 @media (min-width: 640px) {
-  .lv2-proof .lv2-proof-list {
+  .lp-pricing-page .lv2-proof .lv2-proof-list {
     grid-auto-rows: 1fr;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @media (min-width: 1100px) {
-  .lv2-proof .lv2-proof-list {
+  .lp-pricing-page .lv2-proof .lv2-proof-list {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
-.lv2-proof .lv2-proof-card {
-  background: var(--alt-surface);
-  border-radius: 24px;
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--palette-chrome-100) 8%, transparent);
-  corner-shape: round;
+.lp-pricing-page .lv2-proof .lv2-proof-card {
+  background: var(--lp-page-bg);
+  border-radius: var(--lp-r-lg);
+  box-shadow: inset 0 0 0 var(--lp-line) var(--lp-ink-tr-5);
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: calc(var(--lp-space-8) - var(--lp-space-1));
   justify-content: space-between;
-  padding: clamp(1.5rem, 2.4vw, 1.75rem);
+  padding: var(--lp-space-8) calc(var(--lp-space-8) - var(--lp-space-2));
 }
-.lv2-proof .lv2-proof-result {
+.lp-pricing-page .lv2-proof .lv2-proof-result {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
+  gap: var(--lp-space-2);
 }
-.lv2-proof .lv2-proof-figure {
-  font-size: clamp(3rem, 5vw, 4rem);
+.lp-pricing-page .lv2-proof .lv2-proof-figure {
+  font-family: var(--lp-font-cond-x);
+  font-size: calc(var(--lp-text-6xlg) * 1.25);
   font-variant-numeric: tabular-nums;
-  font-weight: 700;
+  font-weight: 900;
   letter-spacing: -0.03em;
   line-height: 1;
 }
-/* sized so "meetings booked in a week" holds on one line in a quarter-width
-   card */
-.lv2-proof .lv2-proof-label {
-  font-size: 1.0625rem;
+/* sized so "meetings booked in a week" holds on one line in a quarter-width card */
+.lp-pricing-page .lv2-proof .lv2-proof-label {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-xlg);
   font-weight: 600;
   letter-spacing: -0.01em;
-  line-height: 1.3;
+  line-height: 1.2;
 }
-.lv2-proof .lv2-proof-quote {
+.lp-pricing-page .lv2-proof .lv2-proof-quote {
   margin: 0;
 }
-.lv2-proof .lv2-proof-quote p {
-  font-size: clamp(1.25rem, 1.7vw, 1.4375rem);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.2;
+.lp-pricing-page .lv2-proof .lv2-proof-quote p {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-2xlg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
   text-wrap: balance;
 }
-.lv2-proof .lv2-proof-by {
+.lp-pricing-page .lv2-proof .lv2-proof-by {
+  border-top: var(--lp-line) dashed var(--lp-ink-50);
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--lp-space-2);
+  padding-top: var(--lp-space-4);
 }
-/* the customer's wordmark (public/logos/customers), painted as a mask in the
-   card's ink, like the homepage testimonials */
-.lv2-proof .lv2-proof-logo {
+/* the customer's wordmark (public/logos/customers), painted as a mask in
+   the card's ink, like the homepage testimonials */
+.lp-pricing-page .lv2-proof .lv2-proof-logo {
   background: currentColor;
   display: block;
-  height: 1.25rem;
+  height: calc(var(--lp-space-4) + var(--lp-space-1));
   -webkit-mask: var(--proof-logo) left center / contain no-repeat;
   mask: var(--proof-logo) left center / contain no-repeat;
 }
-.lv2-proof .lv2-proof-who {
-  color: var(--subtle-text);
-  font-size: 0.9375rem;
-  line-height: 1.4;
+.lp-pricing-page .lv2-proof .lv2-proof-who {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-transform: uppercase;
 }
 
 /* ── "More credits, more leads." (PricingLevels.tsx) ──
-   A real table drawn as rows on rules: what the level gets you first (ink,
-   large), then its credits, then its price with the saving. On a phone each
-   row becomes a small block. */
-.lv2-levels .lv2-section-header {
+   A real table drawn as ledger rows: what the level gets you first (the
+   heading face), then its credits (Fono), then its price with the saving.
+   The level picked in the Self-serve slip is marked. On a phone each row
+   becomes a small block. */
+.lp-pricing-page .lv2-levels .lv2-section-header {
   max-width: none;
 }
-.lv2-levels .lv2-levels-table {
+.lp-pricing-page .lv2-levels .lv2-levels-table {
   border-collapse: collapse;
+  border-top: calc(var(--lp-line) * 2) solid var(--lp-ink-100);
   width: 100%;
 }
-.lv2-levels .lv2-levels-table th,
-.lv2-levels .lv2-levels-table td {
-  border-top: 1px solid color-mix(in srgb, var(--palette-chrome-100) 10%, transparent);
-  padding: 1.125rem 1.5rem 1.125rem 0;
+.lp-pricing-page .lv2-levels .lv2-levels-table th,
+.lp-pricing-page .lv2-levels .lv2-levels-table td {
+  border-top: var(--pricing-rule);
+  padding: var(--lp-space-4) var(--lp-space-8) var(--lp-space-4) 0;
   text-align: left;
   vertical-align: baseline;
 }
-.lv2-levels .lv2-levels-table thead th {
+.lp-pricing-page .lv2-levels .lv2-levels-table thead th {
   border-top: 0;
-  color: var(--subtle-text);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  padding-block: 0 0.75rem;
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-xsm);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  padding-block: var(--lp-space-3);
+  text-transform: uppercase;
 }
-.lv2-levels .lv2-levels-table tbody tr:last-child th,
-.lv2-levels .lv2-levels-table tbody tr:last-child td {
-  border-bottom: 1px solid color-mix(in srgb, var(--palette-chrome-100) 10%, transparent);
+.lp-pricing-page .lv2-levels .lv2-levels-table tbody tr:last-child th,
+.lp-pricing-page .lv2-levels .lv2-levels-table tbody tr:last-child td {
+  border-bottom: var(--pricing-rule);
 }
-.lv2-levels .lv2-levels-leads {
-  font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+/* the picked level: a yellow wash and a plum edge, as a highlighter */
+.lp-pricing-page .lv2-levels .lv2-levels-table tbody tr[data-picked] {
+  background: var(--lp-yellow-10);
+  box-shadow: inset calc(var(--lp-line) * 3) 0 0 var(--lp-ink-100);
+}
+/* the first column sits off the edge, so the marked row's wash has room */
+.lp-pricing-page .lv2-levels .lv2-levels-table tbody th,
+.lp-pricing-page .lv2-levels .lv2-levels-table thead th:first-child {
+  padding-left: var(--lp-space-4);
+}
+.lp-pricing-page .lv2-levels .lv2-levels-leads {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-2xlg);
   font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-weight: 600;
+  letter-spacing: -0.02em;
   width: 42%;
 }
-.lv2-levels .lv2-levels-credits {
-  color: var(--subtle-text);
-  font-size: 1.0625rem;
+.lp-pricing-page .lv2-levels .lv2-levels-credits {
+  color: var(--lp-ink-90);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-md);
   font-variant-numeric: tabular-nums;
 }
-.lv2-levels .lv2-levels-price {
-  font-size: 1.0625rem;
+.lp-pricing-page .lv2-levels .lv2-levels-price {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-md);
   font-variant-numeric: tabular-nums;
-}
-.lv2-levels .lv2-levels-price strong {
-  font-weight: 700;
-}
-.lv2-levels .lv2-levels-price {
   white-space: nowrap;
+}
+.lp-pricing-page .lv2-levels .lv2-levels-price strong {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond-x);
+  font-size: var(--lp-text-xlg);
+  font-weight: 900;
+  letter-spacing: -0.02em;
 }
 /* the saving's own column: every badge starts on the same line, and the
    cell is only as wide as the longest one */
-.lv2-levels .lv2-levels-table .lv2-levels-save {
-  padding-right: 0;
+.lp-pricing-page .lv2-levels .lv2-levels-table .lv2-levels-save {
+  padding-right: var(--lp-space-4);
   white-space: nowrap;
   width: 1%;
 }
 /* every badge as wide as the longest, so both edges line up */
-.lv2-levels .lv2-levels-save .badge {
+.lp-pricing-page .lv2-levels .lv2-levels-save .badge {
   display: flex;
   justify-content: center;
 }
-.lv2-levels .lv2-levels-note {
-  color: var(--subtle-text);
-  font-size: 1rem;
+.lp-pricing-page .lv2-levels .lv2-levels-note {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-md);
   line-height: 1.5;
-  margin-top: 1.25rem;
+  margin-top: calc(var(--lp-space-4) + var(--lp-space-1));
 }
 @media (max-width: 639px) {
-  .lv2-levels .lv2-levels-table thead {
+  .lp-pricing-page .lv2-levels .lv2-levels-table thead {
     display: none;
   }
-  .lv2-levels .lv2-levels-table tr {
-    border-top: 1px solid color-mix(in srgb, var(--palette-chrome-100) 10%, transparent);
+  .lp-pricing-page .lv2-levels .lv2-levels-table tr {
+    border-top: var(--pricing-rule);
     display: grid;
-    gap: 0.25rem 1rem;
+    gap: var(--lp-space-1) var(--lp-space-4);
     grid-template-columns: minmax(0, 1fr) auto;
-    padding: 1rem 0;
+    padding: var(--lp-space-4) var(--lp-space-3);
   }
-  .lv2-levels .lv2-levels-table th,
-  .lv2-levels .lv2-levels-table td {
+  .lp-pricing-page .lv2-levels .lv2-levels-table th,
+  .lp-pricing-page .lv2-levels .lv2-levels-table td,
+  .lp-pricing-page .lv2-levels .lv2-levels-table tbody th {
     border: 0;
     padding: 0;
     width: auto;
   }
-  .lv2-levels .lv2-levels-table tbody tr:last-child th,
-  .lv2-levels .lv2-levels-table tbody tr:last-child td {
+  .lp-pricing-page .lv2-levels .lv2-levels-table tbody tr:last-child th,
+  .lp-pricing-page .lv2-levels .lv2-levels-table tbody tr:last-child td {
     border-bottom: 0;
   }
-  .lv2-levels .lv2-levels-leads {
+  .lp-pricing-page .lv2-levels .lv2-levels-leads {
+    font-size: var(--lp-text-xlg);
     grid-column: 1 / -1;
   }
   /* the column headings are hidden on a phone: each figure names its unit */
-  .lv2-levels .lv2-levels-leads::after {
+  .lp-pricing-page .lv2-levels .lv2-levels-leads::after {
     content: " leads";
   }
-  .lv2-levels .lv2-levels-credits::after {
+  .lp-pricing-page .lv2-levels .lv2-levels-credits::after {
     content: " credits";
   }
-  .lv2-levels .lv2-levels-price {
+  .lp-pricing-page .lv2-levels .lv2-levels-credits {
+    font-size: var(--lp-text-sm);
+  }
+  .lp-pricing-page .lv2-levels .lv2-levels-price {
     text-align: right;
   }
-  .lv2-levels .lv2-levels-table .lv2-levels-save {
+  .lp-pricing-page .lv2-levels .lv2-levels-table .lv2-levels-save {
     display: none;
   }
 }
 
-/* ── "Billing questions." (BillingFaq.tsx) ──
+/* ── "Self-serve billing questions." (BillingFaq.tsx) ──
    The heading and the way to support on one line, then the questions as
    native <details> on rules, two columns across the container; a plus that
    turns to a cross when its answer is open. */
-.lv2-billing .lv2-billing-head {
+.lp-pricing-page .lv2-billing .lv2-billing-head {
   align-items: baseline;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 2rem;
+  gap: var(--lp-space-2) var(--lp-space-8);
   justify-content: space-between;
-  margin-bottom: clamp(1.75rem, 4vh, 2.5rem);
+  margin-bottom: calc(var(--lp-space-8) + var(--lp-space-2));
 }
-.lv2-billing .lv2-billing-more {
-  font-size: 1rem;
+.lp-pricing-page .lv2-billing .lv2-billing-more {
+  font-size: var(--lp-text-md);
   line-height: 1.5;
 }
-.lv2-billing .lv2-billing-more a {
-  color: var(--text);
+.lp-pricing-page .lv2-billing .lv2-billing-more a {
+  color: var(--lp-text);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.lv2-billing .lv2-faq {
+.lp-pricing-page .lv2-billing .lv2-faq {
   align-items: start;
   display: grid;
-  gap: 0 clamp(2rem, 5vw, 4.5rem);
+  gap: 0 calc(var(--lp-space-12) + var(--lp-space-4));
   grid-template-columns: minmax(0, 1fr);
 }
 @media (min-width: 900px) {
-  .lv2-billing .lv2-faq {
+  .lp-pricing-page .lv2-billing .lv2-faq {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 /* stacked on a phone, the second column continues the first: one rule
    between them, not two */
 @media (max-width: 899px) {
-  .lv2-billing .lv2-faq-col + .lv2-faq-col .lv2-faq-item:first-child {
+  .lp-pricing-page .lv2-billing .lv2-faq-col + .lv2-faq-col .lv2-faq-item:first-child {
     border-top: 0;
   }
 }
-.lv2-billing .lv2-faq-item {
-  border-top: 1px solid color-mix(in srgb, var(--palette-chrome-100) 12%, transparent);
+.lp-pricing-page .lv2-billing .lv2-faq-item {
+  border-top: var(--pricing-rule);
 }
-.lv2-billing .lv2-faq-item:last-child {
-  border-bottom: 1px solid color-mix(in srgb, var(--palette-chrome-100) 12%, transparent);
+.lp-pricing-page .lv2-billing .lv2-faq-item:last-child {
+  border-bottom: var(--pricing-rule);
 }
-.lv2-billing .lv2-faq-item summary {
+.lp-pricing-page .lv2-billing .lv2-faq-item summary {
   align-items: center;
   cursor: pointer;
   display: flex;
-  font-size: 1.0625rem;
+  font-size: var(--lp-text-lg);
   font-weight: 600;
-  gap: 1.5rem;
+  gap: var(--lp-space-4);
   justify-content: space-between;
   line-height: 1.35;
   list-style: none;
-  padding: 1.25rem 0;
+  padding: calc(var(--lp-space-4) + var(--lp-space-1)) 0;
   text-wrap: pretty;
 }
-.lv2-billing .lv2-faq-item summary::-webkit-details-marker {
+.lp-pricing-page .lv2-billing .lv2-faq-item summary::-webkit-details-marker {
   display: none;
 }
-.lv2-billing .lv2-faq-item summary:focus-visible {
-  border-radius: 4px;
-  outline: 2px solid var(--text);
-  outline-offset: 2px;
+.lp-pricing-page .lv2-billing .lv2-faq-item summary:focus-visible {
+  border-radius: var(--lp-r-2xsm);
+  outline: calc(var(--lp-line) * 2) solid var(--lp-purple-40);
+  outline-offset: var(--lp-space-1);
 }
-.lv2-billing .lv2-faq-icon {
-  background: color-mix(in srgb, var(--palette-chrome-100) 6%, transparent);
-  border-radius: 999px;
+.lp-pricing-page .lv2-billing .lv2-faq-icon {
+  background: var(--lp-ink-tr-5);
+  border-radius: 50%;
   flex: none;
-  height: 1.75rem;
+  height: calc(var(--lp-space-8) - var(--lp-space-1));
   position: relative;
   transition: rotate 0.2s ease-out;
-  width: 1.75rem;
+  width: calc(var(--lp-space-8) - var(--lp-space-1));
 }
-.lv2-billing .lv2-faq-icon::before,
-.lv2-billing .lv2-faq-icon::after {
-  background: var(--text);
-  border-radius: 1px;
+.lp-pricing-page .lv2-billing .lv2-faq-icon::before,
+.lp-pricing-page .lv2-billing .lv2-faq-icon::after {
+  background: var(--lp-text);
   content: "";
-  height: 1.5px;
+  height: calc(var(--lp-line) * 1.5);
   inset: 50% auto auto 50%;
   position: absolute;
   translate: -50% -50%;
-  width: 0.6875rem;
+  width: var(--lp-space-3);
 }
-.lv2-billing .lv2-faq-icon::after {
+.lp-pricing-page .lv2-billing .lv2-faq-icon::after {
   rotate: 90deg;
 }
-.lv2-billing .lv2-faq-item[open] .lv2-faq-icon {
+.lp-pricing-page .lv2-billing .lv2-faq-item[open] .lv2-faq-icon {
   rotate: 45deg;
 }
-.lv2-billing .lv2-faq-answer {
-  color: var(--subtle-text);
-  font-size: 1rem;
+.lp-pricing-page .lv2-billing .lv2-faq-answer {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-md);
   line-height: 1.55;
-  max-width: 40rem;
-  padding: 0 2.5rem 1.375rem 0;
+  max-width: calc(var(--lp-space-12) * 13);
+  padding: 0 calc(var(--lp-space-8) + var(--lp-space-2)) calc(var(--lp-space-4) + var(--lp-space-2)) 0;
   text-wrap: pretty;
 }
+@media (max-width: 767px) {
+  .lp-pricing-page .lv2-billing .lv2-faq-item summary {
+    font-size: var(--lp-text-md);
+  }
+  .lp-pricing-page .lv2-billing .lv2-faq-answer {
+    padding-right: 0;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
-  .lv2-billing .lv2-faq-icon {
+  .lp-pricing-page .lv2-billing .lv2-faq-icon {
     transition: none;
   }
 }
 
 /* ── The closing band (PricingClose.tsx) ──
-   The trial on the left, the CTA pair and the way to /compare on the right;
-   stacked below 900px. */
-.lv2-close .lv2-close-row {
+   The trial on the left, the homepage's pill pair and the way to /compare
+   on the right; stacked below 900px. */
+.lp-pricing-page .lv2-close .lv2-close-row {
   align-items: flex-end;
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem 3rem;
+  gap: var(--lp-space-8) var(--lp-space-12);
   justify-content: space-between;
 }
-.lv2-close .lv2-close-copy {
+.lp-pricing-page .lv2-close .lv2-close-copy {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--lp-space-4);
 }
-.lv2-close .lv2-close-actions {
+.lp-pricing-page .lv2-close .lv2-close-copy .lv2-section-lede {
+  color: var(--lp-text);
+}
+.lp-pricing-page .lv2-close .lv2-close-actions {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--lp-space-4);
 }
-.lv2-close .lv2-close-more {
-  font-size: 1rem;
+.lp-pricing-page .lv2-close .lv2-button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-2);
 }
-.lv2-close .lv2-close-more a {
-  color: var(--text);
+.lp-pricing-page .lv2-close .lv2-close-more {
+  font-size: var(--lp-text-md);
+}
+.lp-pricing-page .lv2-close .lv2-close-more a {
+  color: var(--lp-text);
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 3px;

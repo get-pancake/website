@@ -1,6 +1,8 @@
 /**
  * Three compact offers: self-serve with an inline credit picker, White Glove
- * delivery and Enterprise integrations. Shared credit selection also updates
+ * delivery and Enterprise integrations, printed as three paper slips in the
+ * language of the /white-glove order ticket (October 2026 redesign; styles in
+ * ./pricing.css). Shared credit selection also updates the levels table and
  * the closing signup CTA. Billing figures stay in lib/pricing.ts; service
  * terms in lib/white-glove.ts. PAN-2367, founder reference October 18, 2026.
  */
