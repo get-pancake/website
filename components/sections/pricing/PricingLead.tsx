@@ -7,8 +7,7 @@ import { pricingLead as c } from "@/lib/copy";
  * that work on every lead (the GTM Brain, the data providers, the signals,
  * the outreach); on the right an example lead as the customer receives it:
  * who, the signals found and the provider behind each, the Brain's context,
- * the message, printed as a paper slip like the plans above. Stacked below
- * 1024px (app/pricing/pricing.css).
+ * the message. Stacked below 1024px (app/pricing/pricing.css).
  * Server-rendered, zero JS. Copy and fact sources: `pricingLead` in
  * lib/copy.ts.
  */
@@ -48,13 +47,10 @@ export function PricingLead() {
             <div className="lv2-lead-block">
               <p className="lv2-lead-label">{e.signalsLabel}</p>
               <ul className="lv2-lead-signals">
-                {/* the White Glove ticket's line: what was found, a dotted
-                    leader, the provider behind it */}
                 {e.signals.map((signal) => (
                   <li key={signal.text}>
                     <span>{signal.text}</span>
-                    <span className="lv2-lead-leader" aria-hidden="true" />
-                    <span className="lv2-lead-source">{signal.source}</span>
+                    <span className="badge">{signal.source}</span>
                   </li>
                 ))}
               </ul>
