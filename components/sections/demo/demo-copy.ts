@@ -180,6 +180,7 @@ export const AI_CALL = {
   failed: "We could not connect. Try again, or pick a time on the calendar.",
   /** `failed` and `back` when the call closes onto a form step */
   failedForm: "We could not connect. Try again, or fill in the form.",
+  failedDemo: "We could not connect. Try again, or watch the demo and start free.",
   endCall: "End call",
   /** the mute pill's label: mute while the mic is on, unmute while muted */
   mute: "Mute",
@@ -187,6 +188,7 @@ export const AI_CALL = {
   retry: "Try again",
   back: "Back to the calendar",
   backForm: "Back to the form",
+  backDemo: "Back to the demo",
   /** once the agent opened the picked time on the page (it closes by itself) */
   backSlot: "Confirm your time",
   /** disclosureBefore + privacy link + newTab (visually hidden) */

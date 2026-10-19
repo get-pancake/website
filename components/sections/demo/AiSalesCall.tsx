@@ -155,7 +155,9 @@ function isMicDenied(error: unknown): boolean {
   return name === "NotAllowedError" || name === "PermissionDeniedError";
 }
 
-function statusLine(phase: Phase, muted: boolean, returnsTo: "form" | "calendar"): string {
+type CallReturn = "form" | "calendar" | "demo";
+
+function statusLine(phase: Phase, muted: boolean, returnsTo: CallReturn): string {
   switch (phase) {
     case "connecting":
       return AI_CALL.connecting;
@@ -168,6 +170,7 @@ function statusLine(phase: Phase, muted: boolean, returnsTo: "form" | "calendar"
     case "mic-denied":
       return AI_CALL.micDenied;
     case "failed":
+      if (returnsTo === "demo") return AI_CALL.failedDemo;
       return returnsTo === "form" ? AI_CALL.failedForm : AI_CALL.failed;
   }
 }
@@ -195,8 +198,8 @@ export function AiSalesCall({
   known: DemoRequestPartial;
   /** the request for `known` was already sent (opened from the calendar) */
   sent: boolean;
-  /** what closing the call shows: a form step, or the calendar / booked state */
-  returnsTo: "form" | "calendar";
+  /** what closing the call shows: a form step, calendar, or video demo */
+  returnsTo: CallReturn;
   onFormAnswers: (params: AiSalesFormToolParams) => Promise<AiSalesFormToolResult>;
   /** the agent's chosen time: DemoForm opens it on the page */
   onSlot: (params: AiSalesSlotToolParams) => AiSalesSlotToolResult;
@@ -497,6 +500,7 @@ export function AiSalesCall({
   }, []);
 
   const line = statusLine(phase, muted, returnsTo);
+  const backLabel = handedOff ? AI_CALL.backSlot : returnsTo === "demo" ? AI_CALL.backDemo : returnsTo === "form" ? AI_CALL.backForm : AI_CALL.back;
 
   // One announcement per shown line, never per volume frame. Cleared first:
   // a retry that fails again within the delay sets the same text, which
@@ -645,7 +649,7 @@ export function AiSalesCall({
             </>
           ) : group === "ended" ? (
             <LpFxPill key="back" className="ai-call__back" onClick={backToCalendar}>
-              {handedOff ? AI_CALL.backSlot : returnsTo === "form" ? AI_CALL.backForm : AI_CALL.back}
+              {backLabel}
             </LpFxPill>
           ) : (
             <>
@@ -653,7 +657,7 @@ export function AiSalesCall({
                 {AI_CALL.retry}
               </LpFxPill>
               <LpFxPill key="back" className="lp-btn--outline ai-call__back" onClick={backToCalendar}>
-                {handedOff ? AI_CALL.backSlot : returnsTo === "form" ? AI_CALL.backForm : AI_CALL.back}
+                {backLabel}
               </LpFxPill>
             </>
           )}
