@@ -5,17 +5,17 @@ import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { WHITE_GLOVE_PRICING_HREF } from "@/lib/white-glove";
-import { WgMachine } from "./WgMachine";
-import { WG_CTA, WG_FAQ, WG_GET, WG_HERO, WG_HOW, WG_PRICE, WG_PRICE_PANEL } from "./white-glove-copy";
+import { WgHero } from "./WgHero";
+import { WG_CTA, WG_FAQ, WG_GET, WG_PRICE, WG_PRICE_PANEL } from "./white-glove-copy";
 
 /**
  * /white-glove — the White Glove offer (PAN-2368, offer confirmed October 18,
- * 2026). Sitewide chrome (LpNav, LpCta, LpFooter) around five sections:
- * the hero with the machine drawn as a pancake stack (WgMachine), what the
- * customer gets as a ruled list, who does what in a plum band, the price
- * next to self-serve, then the questions. Server-rendered; the only client
- * code is the shared pill FX and the CTA's rainbow. Styles:
- * app/white-glove/white-glove.css, scoped to .lp-wg. Copy: white-glove-copy.ts.
+ * 2026). Sitewide chrome (LpNav, LpCta, LpFooter) around four sections: the
+ * hero with the offer as an order ticket (WgHero), what the customer gets as
+ * a ruled list, the price next to self-serve, then the questions.
+ * Server-rendered; the only client code is the shared pill FX and the CTA's
+ * rainbow. Styles: app/white-glove/white-glove.css, scoped to .lp-wg. Copy:
+ * white-glove-copy.ts.
  */
 
 function Check() {
@@ -27,8 +27,6 @@ function Check() {
   );
 }
 
-const TONES = ["engineer", "brain", "plays", "sequences", "credits", "office"] as const;
-
 export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
   return (
     // No id on main: the skip link's #main-content target is the hero, as on /pricing.
@@ -39,30 +37,7 @@ export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
       {/* --lp-fit for the closing card's rainbow slivers */}
       <LpFitVars />
       <LpNav />
-
-      <section id="main-content" tabIndex={-1} className="wg-hero" aria-labelledby="wg-hero-title">
-        <div className="wg-wrap wg-hero__grid">
-          <div className="wg-hero__copy">
-            <p className="wg-badge">{WG_HERO.badge}</p>
-            <h1 id="wg-hero-title" className="wg-hero__title">
-              {WG_HERO.title.map((line) => (
-                <span key={line}>{line} </span>
-              ))}
-            </h1>
-            <p className="wg-hero__lede">{WG_HERO.lede}</p>
-            <div className="wg-hero__actions">
-              <LpFxLink href={DEMO_PAGE_PATH}>{WG_HERO.primary}</LpFxLink>
-              <LpFxLink className="lp-btn--outline" href={WHITE_GLOVE_PRICING_HREF}>
-                {WG_HERO.secondary}
-              </LpFxLink>
-            </div>
-            <p className="wg-hero__price">
-              <strong>{WG_HERO.price}</strong> {WG_HERO.term}
-            </p>
-          </div>
-          <WgMachine />
-        </div>
-      </section>
+      <WgHero />
 
       <section className="wg-get" aria-labelledby="wg-get-title">
         <div className="wg-wrap wg-get__grid">
@@ -72,7 +47,7 @@ export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
           </header>
           <ol className="wg-get__list">
             {WG_GET.items.map((item, i) => (
-              <li key={item.title} className="wg-get__item" data-tone={TONES[i]}>
+              <li key={item.title} className="wg-get__item" data-tone={item.tone}>
                 <span className="wg-get__num" aria-hidden="true">
                   {String(i + 1).padStart(2, "0")}
                 </span>
@@ -81,37 +56,6 @@ export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
               </li>
             ))}
           </ol>
-        </div>
-      </section>
-
-      <section className="wg-how" aria-labelledby="wg-how-title">
-        <div className="wg-wrap">
-          <div className="wg-how__card">
-            <header className="wg-head wg-head--inverted">
-              <h2 id="wg-how-title" className="wg-title">{WG_HOW.title}</h2>
-              <p className="wg-lede">{WG_HOW.lede}</p>
-            </header>
-            <ol className="wg-how__steps">
-              {WG_HOW.steps.map((step, i) => (
-                <li key={step.name} className="wg-how__step">
-                  <p className="wg-how__name">
-                    <span className="wg-how__dot" aria-hidden="true">{i + 1}</span>
-                    {step.name}
-                  </p>
-                  <dl className="wg-how__roles">
-                    <div>
-                      <dt>{WG_HOW.us}</dt>
-                      <dd>{step.us}</dd>
-                    </div>
-                    <div>
-                      <dt>{WG_HOW.you}</dt>
-                      <dd>{step.you}</dd>
-                    </div>
-                  </dl>
-                </li>
-              ))}
-            </ol>
-          </div>
         </div>
       </section>
 

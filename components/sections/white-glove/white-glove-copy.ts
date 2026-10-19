@@ -7,7 +7,9 @@ import { WHITE_GLOVE_INITIAL_MONTHS, WHITE_GLOVE_MONTHLY_DOLLARS } from "@/lib/w
  * from lib/white-glove.ts, the self-serve entry price from lib/pricing.ts.
  * Never add guarantees, capacity, sending volume, Slack, SLAs, integration
  * counts, bespoke terms or results here. Enterprise connectors are a separate
- * offer and are only named to tell the two apart.
+ * offer and are only named to tell the two apart. The hero (the order ticket)
+ * is the one François chose on October 18, 2026; its H1 is his, verbatim.
+ * The offer always leads with the Custom GTM Brain.
  */
 
 export const WG_PRICE = formatDollars(WHITE_GLOVE_MONTHLY_DOLLARS);
@@ -15,35 +17,34 @@ export const WG_TERM = `${WHITE_GLOVE_INITIAL_MONTHS}-month initial commitment, 
 const SELF_SERVE_FROM = formatDollars(BASE_LEVEL.dollars);
 
 export const WG_META = {
-  title: "Pancake White Glove: your outbound machine, built and run with you",
-  ogTitle: "Pancake White Glove: we build your outbound. You close.",
-  description: `Our team builds your outbound machine and runs it with you: a dedicated GTM engineer, custom GTM Brain setup, unlimited Plays and unlimited credits. ${WG_PRICE} a month.`,
+  title: "Pancake White Glove: we build your outbound machine",
+  ogTitle: "Pancake White Glove: we build your outbound machine.",
+  description: `Our team builds your outbound machine: your custom GTM Brain, unlimited Plays, unlimited Pancake credits and weekly office hours with a dedicated GTM engineer. ${WG_PRICE} a month.`,
 };
 
 export const WG_HERO = {
-  badge: "White Glove",
-  title: ["We build your outbound.", "You close."],
-  lede: "Our team builds your outbound machine and runs it with you, so you can focus on closing deals.",
+  title: "We build your outbound machine.",
+  /** the same title in two lines, broken where the homepage H1 breaks */
+  lines: ["We build your", "outbound machine."],
+  lede: "Our team builds your custom GTM Brain and runs your Plays with you, on unlimited credits.",
   primary: "Talk to sales",
   // ≤11 characters: the v3 pills keep the artboard's fixed 136px width (foundation.css)
   secondary: "See pricing",
-  price: `${WG_PRICE}/month`,
   term: WG_TERM,
 };
 
-/** The machine, bottom-up: the foundation first, the payoff last. */
-export const WG_MACHINE = {
-  label: "Your outbound machine",
-  // set vertically along the stack: keep it shorter than the three plates
-  engineer: "Your dedicated GTM engineer",
-  officeHour: "Weekly office hour",
-  layers: [
-    { key: "brain", name: "Custom GTM Brain", note: "Your ICP, buyers and voice" },
-    { key: "plays", name: "Unlimited Plays", note: "Signal-based" },
-    { key: "sequences", name: "Outreach sequences", note: "Written for your buyers" },
+/** The hero's order ticket: what is on it, and how much of it. */
+export const WG_TICKET = {
+  head: "White Glove",
+  tag: "Built for you",
+  items: [
+    { key: "brain", name: "Custom GTM Brain", value: "Built for you", detail: "Set up for your market by our team." },
+    { key: "plays", name: "Plays", value: "Unlimited", detail: "Signal-based, as many as you need." },
+    { key: "credits", name: "Pancake credits", value: "Unlimited", detail: "Every search your Plays run is covered." },
+    { key: "office", name: "Office hours", value: "1 hour a week", detail: "With your dedicated GTM engineer." },
   ],
-  close: "You close the deals",
-  credits: "Unlimited Pancake credits",
+  total: "Total",
+  per: "/month",
 } as const;
 
 export const WG_GET = {
@@ -51,52 +52,34 @@ export const WG_GET = {
   lede: "Everything self-serve does, built and run by our team.",
   items: [
     {
-      title: "Dedicated GTM engineer",
-      body: "One engineer from our team builds your machine and runs it with you.",
-    },
-    {
+      tone: "brain",
       title: "Custom GTM Brain setup",
       body: "Your ICP, personas, competitors and voice, set up for your market.",
     },
     {
+      tone: "engineer",
+      title: "Dedicated GTM engineer",
+      body: "One engineer from our team builds your machine and runs it with you.",
+    },
+    {
+      tone: "plays",
       title: "Unlimited Plays",
       body: "Signal-based Plays that act on funding rounds, open roles, tech stacks and posts.",
     },
     {
+      tone: "sequences",
       title: "Outreach sequences",
       body: "Messages for each Play, written for your buyers in your voice.",
     },
     {
+      tone: "credits",
       title: "Unlimited Pancake credits",
       body: "Every search your Plays run is covered. No credit level to pick.",
     },
     {
+      tone: "office",
       title: "Weekly GTM office hour",
       body: "One hour every week with our team to review your Plays.",
-    },
-  ],
-} as const;
-
-export const WG_HOW = {
-  title: "How we work together.",
-  lede: "We do the building. You stay close to the buyers.",
-  us: "Our team",
-  you: "You",
-  steps: [
-    {
-      name: "Scope",
-      us: "Learns your market, your buyers and your goals.",
-      you: "Tell us who you sell to.",
-    },
-    {
-      name: "Build",
-      us: "Builds your GTM Brain, Plays and sequences.",
-      you: "Review the messages in your voice.",
-    },
-    {
-      name: "Run",
-      us: "Runs the machine with you and meets you every week.",
-      you: "Take the conversations and close.",
     },
   ],
 } as const;
@@ -155,7 +138,7 @@ export const WG_FAQ = {
 
 export const WG_CTA = {
   title: "Hand us the build",
-  body: "Our team builds your outbound machine. You focus on closing deals.",
+  body: "Our team builds your custom GTM Brain and your Plays, and meets you every week.",
   primary: "Talk to sales",
   secondary: "See pricing",
   note: `${WG_PRICE} a month. ${WG_TERM}`,
