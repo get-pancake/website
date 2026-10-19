@@ -206,12 +206,32 @@ type Qualification = { teamSize: DemoRequest["teamSize"]; whiteGlove: DemoReques
 
 export function DemoForm({ id = "demo-form" }: { id?: string }) {
   const [qualification, setQualification] = useState<Qualification | null>(null);
-  const [selfServe, setSelfServe] = useState(false);
+  const [selfServe, setSelfServe] = useState<Qualification | null>(null);
+  const [talking, setTalking] = useState(false);
   const heading = useRef<HTMLHeadingElement>(null);
   useEffect(() => { if (selfServe) heading.current?.focus(); }, [selfServe]);
   if (qualification) return <QualifiedDemoForm id={id} qualification={qualification} onReset={() => setQualification(null)} />;
   return (
     <div id={id} className="demo-form">
+      {selfServe && talking ? (
+        <AiSalesCall
+          known={selfServe}
+          sent={false}
+          returnsTo="demo"
+          // This conversation answers product questions. It cannot submit a
+          // sales request or open a calendar from the self-service route.
+          onFormAnswers={async () => ({
+            ok: false,
+            field: "team_size",
+            message: "This visitor is on the self-service demo. Answer their product questions and guide them to Start free. For a sales consultation, they can change their answers to explore paid White Glove or confirm a company with more than 50 employees.",
+          })}
+          onSlot={() => ({
+            ok: false,
+            message: "Booking is unavailable on the self-service demo. Help the visitor get started with Pancake using Start free beside Talk to Juicy.",
+          })}
+          onClose={() => setTalking(false)}
+        />
+      ) : null}
       <h2 id="demo-card-title" className="lp-display demo-card__title" ref={heading} tabIndex={-1}>
         {selfServe ? "Start using Pancake" : "Find the right next step"}
       </h2>
@@ -224,7 +244,18 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
         <DemoVideo />
         <div className="demo-form__actions">
           <a className="lp-btn" href={APP_ORIGIN}>Start free</a>
-          <button className="demo-form__back" type="button" onClick={() => setSelfServe(false)}>Change answers</button>
+          {AI_SALES_ENABLED ? (
+            <LpFxPill
+              type="button"
+              className="lp-btn--outline demo-form__talk"
+              data-ai-sales-trigger=""
+              aria-haspopup="dialog"
+              onClick={() => setTalking(true)}
+            >
+              Talk to Juicy
+            </LpFxPill>
+          ) : null}
+          <button className="demo-form__back" type="button" onClick={() => setSelfServe(null)}>Change answers</button>
         </div>
       </div> : <form className="demo-form__fields" method="post" onSubmit={(event) => {
         event.preventDefault();
@@ -233,7 +264,7 @@ export function DemoForm({ id = "demo-form" }: { id?: string }) {
         const whiteGlove = String(data.get("whiteGlove")) as Qualification["whiteGlove"];
         if (!TEAM_SIZES.includes(teamSize) || !HAS_ACCOUNT.includes(whiteGlove)) return;
         if (demoBookingDestination(teamSize, whiteGlove)) setQualification({ teamSize, whiteGlove });
-        else setSelfServe(true);
+        else setSelfServe({ teamSize, whiteGlove });
       }}>
         <div className="demo-form__field">
           <label className="demo-form__label" htmlFor={`${id}-company-size`}>How many people work at your company?</label>
