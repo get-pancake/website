@@ -1,6 +1,8 @@
 # Infra-first landing: copy brief
 
-Last checked against the product code on 2026-10-21. This brief is the source for the homepage's infra section (`components/sections/landing-v3/LpInfra.tsx`) and for the next iterations of the infra-first landing. The full technical teardown behind it is internal and stays out of this public repository: ask Tristan for it.
+Last checked against the product code on 2026-10-21. This brief is the source for the homepage's infra section (`components/sections/landing-v3/LpInfra.tsx`) and for the next iterations of the infra-first landing.
+
+Since the second version (2026-10-21, founder: "I dont understand anything about the new block"), the homepage says one thing in plain words: "Your agent decides. Pancake does the work.", drawn as your agent (Claude, Codex), one sign-in, Pancake, and four parts (finds your buyers, knows your business, reaches out for you, keeps running). The layers, the Deploy / Host / Run verbs and the figures below are no longer on the page: they stay here as the checked background for later copy. The full technical teardown behind it is internal and stays out of this public repository: ask Tristan for it.
 
 ## The thesis
 
@@ -19,7 +21,7 @@ The same words `public/llms.txt` already publishes.
 | Host | The Play lives on Pancake, with its own targeting, leads, messages and history. |
 | Run | Pancake runs it on the schedule you pick, finds new leads and contacts the ones you approve. |
 
-## The stack, as the homepage shows it
+## The stack (background, not on the page)
 
 | Layer | Line | What it means |
 |---|---|---|
@@ -32,7 +34,7 @@ The same words `public/llms.txt` already publishes.
 | Metering | Usage at cost | Credits are held before any source is paid and settled once at the confirmed cost (1,000 credits per $1). When they run out, work pauses. There is no overage. |
 | Audit | Every call on the record | Every agent call, run and change lands in an activity feed the agent can read back, and every lead carries the reason it fits. |
 
-## The figures on the page
+## The figures (background, not on the page)
 
 Re-count them in the product code before changing any.
 

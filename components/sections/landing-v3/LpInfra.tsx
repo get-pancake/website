@@ -1,120 +1,58 @@
+import { ClaudeMark, CodexMark } from "@/components/sections/landing-v3/LpAgentMarks";
+
 /**
- * Section — "The stack under your agent" (2026-10-21, the infra-first landing).
+ * Section — "Your agent decides. Pancake does the work." (the infra-first landing).
  *
- * The thesis: Claude and Codex are the best agent harnesses there are, and Pancake will not
- * out-build them. Pancake is the infrastructure they run a go-to-market on. Every layer and
- * every figure below was checked against the product code on 2026-10-21; how each figure
- * was counted, what is safe to claim and what is not yet are in
- * docs/infra/infra-landing-brief.md. Re-count a figure there before changing it.
+ * 2026-10-21, second version. The first one (eight infrastructure layers, Deploy / Host / Run,
+ * four figures, a vision line, on a dark card) read as engineering notes: founder, "I dont
+ * understand anything about the new block". This one says one thing and draws it: your agent
+ * on top, it signs in to Pancake, and the four things Pancake does under it. Plain words, one
+ * sentence per part; every claim is in docs/infra/infra-landing-brief.md ("Safe to claim
+ * now") or already on this page (the 30+ data providers of the dive's sources story).
  */
 
-type Layer = { name: string; line: string; body: string };
+type Part = { title: string; body: string };
 
-const LAYERS: readonly Layer[] = [
-  {
-    name: "Agent access",
-    line: "One door for every agent",
-    body: "Claude, ChatGPT and Codex sign in with OAuth, no API keys. Every action is one versioned capability, the same for your agent and the app.",
-  },
-  {
-    name: "Runtime",
-    line: "Searches written as code",
-    body: "A sentence becomes a program. Pancake builds it, tests it on a sample, promotes it and can roll it back. It runs in a sandbox that holds no keys.",
-  },
-  {
-    name: "Durable execution",
-    line: "Runs that outlive the chat",
-    body: "A queue with leases, retries and checkpoints keeps every Play working on its schedule, through deploys and crashes, laptop closed.",
-  },
-  {
-    name: "Data plane",
-    line: "Every source behind one gateway",
-    body: "Each call to a data source is reserved, receipted and settled. A retry replays its receipt instead of paying twice.",
-  },
-  {
-    name: "Memory",
-    line: "The Brain",
-    body: "What you sell, who buys, your voice and your competitors, as typed and versioned memory. Every search and every message reads the approved version.",
-  },
-  {
-    name: "Channels",
-    line: "Your own accounts",
-    body: "Messages go out under your name. Every add is safe to retry, waits 10 minutes so you can undo it, and a reply stops the sequence.",
-  },
-  {
-    name: "Metering",
-    line: "Usage at cost",
-    body: "Credits are held before any source is paid and settled at the confirmed cost. When they run out, work pauses. There is no overage.",
-  },
-  {
-    name: "Audit",
-    line: "Every call on the record",
-    body: "Each agent call, run and change lands in an activity feed your agent can read back, with the reason behind every lead.",
-  },
-];
-
-type Step = { verb: string; body: string };
-
-/** The Vercel analogy in three verbs, in the words llms.txt already publishes. */
-const FLOW: readonly Step[] = [
-  { verb: "Deploy", body: "An idea leaves the conversation with your agent and becomes a Play on Pancake." },
-  { verb: "Host", body: "The Play lives on Pancake, with its own targeting, leads, messages and history." },
-  { verb: "Run", body: "Pancake runs it on the schedule you pick, finds new leads and contacts the ones you approve." },
-];
-
-type Stat = { value: string; label: string };
-
-const STATS: readonly Stat[] = [
-  { value: "95", label: "tools your agent can call" },
-  { value: "150", label: "versioned capabilities behind them" },
-  { value: "0", label: "API keys to paste" },
-  { value: "1", label: "receipt for every paid call" },
+const PARTS: readonly Part[] = [
+  { title: "Finds your buyers", body: "Funding rounds, open roles and tech stacks from 30+ data providers." },
+  { title: "Knows your business", body: "What you sell, who buys and how you talk, learned from your website." },
+  { title: "Reaches out for you", body: "From your own accounts, under your name, once you approve each lead." },
+  { title: "Keeps running", body: "Every Play runs on the schedule you pick, even with your laptop closed." },
 ];
 
 export function LpInfra() {
   return (
     <section id="infra" className="lp-infra" aria-labelledby="lp-infra-title">
-      <div className="lp-infra__card">
-        <div className="lp-infra__head">
-          <p className="lp-infra__eyebrow">The stack under your agent</p>
-          <h2 id="lp-infra-title" className="lp-title-section lp-infra__title">
-            Your agent is the brain. Pancake is the infrastructure it runs your go-to-market on.
+      <div className="lp-infra__org">
+        <header className="lp-infra__head">
+          <p className="lp-infra__kicker">Your agent decides.</p>
+          <h2 id="lp-infra-title" className="lp-infra__title lp-title-section">
+            Pancake does the work.
           </h2>
-          <p className="lp-infra__lede">
-            Claude and Codex are the best agents ever built, and we build on them. Pancake gives them
-            what a chat cannot hold: data to find people, accounts to reach them, a memory of your
-            business, and a runtime that keeps working after the conversation ends.
-          </p>
+        </header>
+        <div className="lp-infra__card">
+          <p className="lp-infra__label">Your agent</p>
+          <ul className="lp-infra__agents">
+            <li className="lp-infra__agent">
+              <span className="lp-infra__mark" aria-hidden="true"><ClaudeMark /></span>
+              Claude
+            </li>
+            <li className="lp-infra__agent">
+              <span className="lp-infra__mark" aria-hidden="true"><CodexMark /></span>
+              Codex
+            </li>
+          </ul>
+          <p className="lp-infra__link">One sign-in. No API keys.</p>
+          <img className="lp-infra__logo" src="/lp/lp-nav-logo.svg" alt="Pancake" width={114.956} height={56} />
+          <ul className="lp-infra__parts">
+            {PARTS.map((part) => (
+              <li key={part.title} className="lp-infra__part">
+                <h3 className="lp-infra__part-title">{part.title}</h3>
+                <p className="lp-infra__part-body">{part.body}</p>
+              </li>
+            ))}
+          </ul>
         </div>
-        <ol className="lp-infra__flow" aria-label="Deploy, host, run">
-          {FLOW.map((step) => (
-            <li key={step.verb} className="lp-infra__step">
-              <span className="lp-infra__verb">{step.verb}</span>
-              <span className="lp-infra__body">{step.body}</span>
-            </li>
-          ))}
-        </ol>
-        <ol className="lp-infra__stack">
-          {LAYERS.map((layer, index) => (
-            <li key={layer.name} className="lp-infra__layer">
-              <span className="lp-infra__num">{String(index + 1).padStart(2, "0")}</span>
-              <span className="lp-infra__name">{layer.name}</span>
-              <span className="lp-infra__line">{layer.line}</span>
-              <span className="lp-infra__body">{layer.body}</span>
-            </li>
-          ))}
-        </ol>
-        <dl className="lp-infra__stats">
-          {STATS.map((stat) => (
-            <div key={stat.label} className="lp-infra__stat">
-              <dt className="lp-infra__value">{stat.value}</dt>
-              <dd className="lp-infra__label">{stat.label}</dd>
-            </div>
-          ))}
-        </dl>
-        <p className="lp-infra__vision">
-          Every company will run its go-to-market through agents. Pancake is where they run it.
-        </p>
       </div>
     </section>
   );

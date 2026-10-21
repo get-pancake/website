@@ -1,197 +1,195 @@
-/* Section — "The stack under your agent" (LpInfra.tsx, the infra-first landing, 2026-10-21).
-   A plum card in the banner's frame (wrapper p-16, card r48), cream type, eight layer tiles and
-   a figures band. Tokens only from foundation.css. */
+/* Section — "Your agent decides. Pancake does the work." (LpInfra.tsx, the infra-first landing,
+   2026-10-21). No Figma frame yet, so it is built from the homepage's own parts: the steps'
+   wrapper, org and centred kicker + title (steps.css), the step card's cream and r30, the
+   mock cards' white fill and 0.4px hairline (.lp-mockcard), the dive's list type. The diagram
+   reads top to bottom: your agent, the sign-in, Pancake, the four things it does. */
 .lp-infra {
   padding: 16px;
 }
-.lp-infra__card {
-  position: relative;
+.lp-infra__org {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  gap: clamp(32px, 4vw, 56px);
-  overflow: hidden;
-  border-radius: 48px;
-  padding: clamp(40px, 6vw, 96px) clamp(20px, 5vw, 80px);
-  background:
-    radial-gradient(120% 80% at 100% 0%, rgba(70, 96, 231, 0.35), transparent 60%),
-    radial-gradient(90% 70% at 0% 100%, rgba(227, 58, 106, 0.28), transparent 60%),
-    var(--lp-ink-100, #2c002a);
-  color: var(--lp-ink-10, #fffbf6);
+  gap: 66px;
+  padding: 128px 32px 0;
 }
+
+/* heading block: the steps' kicker + title */
 .lp-infra__head {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 980px;
+  gap: 8px;
+  max-width: 100%;
+  text-align: center;
+  width: 752px;
 }
-.lp-infra__eyebrow {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--lp-pink-20, #ffbbc7);
+.lp-infra__kicker {
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-cond);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 32px;
 }
 .lp-infra__title {
+  color: var(--lp-text);
+  line-height: 69px;
   margin: 0;
-  color: var(--lp-ink-0, #ffffff);
-  font-size: clamp(36px, 4.6vw, var(--lp-text-6xlg, 57px));
 }
-.lp-infra__lede {
-  margin: 0;
-  max-width: 760px;
-  font-size: clamp(17px, 1.4vw, 20px);
-  line-height: 1.5;
-  color: rgba(255, 247, 236, 0.8);
-}
-.lp-infra__flow {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.lp-infra__step {
+
+/* the diagram card */
+.lp-infra__card {
+  align-items: center;
+  background: var(--lp-card-cream);
+  border-radius: 30px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  border-radius: 24px;
-  padding: 24px;
-  background: var(--lp-ink-10, #fffbf6);
-  color: var(--lp-ink-100, #2c002a);
-}
-.lp-infra__step .lp-infra__body {
-  color: var(--lp-ink-90, #6c4b65);
-}
-.lp-infra__verb {
-  font-family: var(--lp-font-cond);
-  font-size: clamp(36px, 3.4vw, 52px);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -1.2px;
-  color: var(--lp-brand-blue, #4660e7);
-}
-.lp-infra__step:nth-child(2) .lp-infra__verb {
-  color: var(--lp-pink-40, #e33a6a);
-}
-.lp-infra__step:nth-child(3) .lp-infra__verb {
-  color: var(--lp-yellow-40, #f38f43);
-}
-.lp-infra__vision {
-  margin: 0;
-  max-width: 900px;
-  font-family: var(--lp-font-cond);
-  font-size: clamp(28px, 3vw, 44px);
-  font-weight: 600;
-  line-height: 1.15;
-  letter-spacing: -1px;
-  color: var(--lp-ink-0, #ffffff);
-}
-.lp-infra__stack {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.lp-infra__layer {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-height: 100%;
-  border: 1px solid rgba(255, 247, 236, 0.14);
-  border-radius: 24px;
-  padding: 24px;
-  background: rgba(255, 247, 236, 0.06);
-  transition:
-    background 200ms ease,
-    border-color 200ms ease,
-    transform 200ms ease;
-}
-.lp-infra__layer:hover {
-  border-color: rgba(255, 187, 199, 0.5);
-  background: rgba(255, 247, 236, 0.1);
-  transform: translateY(-2px);
-}
-.lp-infra__num {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--lp-yellow-30, #ffbd7a);
-}
-.lp-infra__name {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(255, 247, 236, 0.6);
-}
-.lp-infra__line {
-  font-family: var(--lp-font-cond);
-  font-size: clamp(24px, 2vw, 30px);
-  font-weight: 600;
-  line-height: 1.1;
-  letter-spacing: -0.6px;
-  color: var(--lp-ink-0, #ffffff);
-}
-.lp-infra__body {
-  font-size: 16px;
-  line-height: 1.5;
-  color: rgba(255, 247, 236, 0.78);
-}
-.lp-infra__stats {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0;
-  border-top: 1px solid rgba(255, 247, 236, 0.14);
-  padding-top: clamp(24px, 3vw, 40px);
-}
-.lp-infra__stat {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.lp-infra__value {
-  font-family: var(--lp-font-cond);
-  font-size: clamp(44px, 5vw, 72px);
-  font-weight: 600;
-  line-height: 1;
-  letter-spacing: -1.5px;
-  color: var(--lp-ink-0, #ffffff);
+  max-width: 100%;
+  padding: 48px;
+  width: 1136px;
 }
 .lp-infra__label {
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.4;
-  color: rgba(255, 247, 236, 0.7);
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 20px;
 }
-@media (max-width: 1100px) {
-  .lp-infra__stack,
-  .lp-infra__stats {
+.lp-infra__agents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+.lp-infra__agent {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-m);
+  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
+  color: var(--lp-text);
+  display: flex;
+  font-size: var(--lp-text-lg);
+  font-weight: 500;
+  gap: 10px;
+  line-height: 24px;
+  padding: 12px 20px;
+}
+/* LpAgentMarks' cells: the Claude glyph is 20 in a 24 cell, the OpenAI glyph fills its 24 box */
+.lp-infra__mark {
+  color: var(--lp-ink-100);
+  display: grid;
+  height: 24px;
+  place-items: center;
+  width: 24px;
+}
+.lp-infra__mark svg {
+  display: block;
+  height: 24px;
+  width: 24px;
+}
+.lp-infra__mark svg[data-mark="claude"] {
+  height: 20px;
+  width: 20px;
+}
+/* the sign-in: a hairline down from the agents, its caption, a hairline on to Pancake */
+.lp-infra__link {
+  align-items: center;
+  color: var(--lp-subtle-text);
+  display: flex;
+  flex-direction: column;
+  font-size: var(--lp-text-sm);
+  gap: 8px;
+  line-height: 20px;
+  margin: 12px 0;
+}
+.lp-infra__link::before,
+.lp-infra__link::after {
+  background: var(--lp-ink-tr-20);
+  content: "";
+  height: 28px;
+  width: 1px;
+}
+.lp-infra__logo {
+  display: block;
+  height: 40px;
+  width: auto;
+}
+/* what Pancake does: four white cards; subgrid rows keep every body on one line of sight */
+.lp-infra__parts {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  list-style: none;
+  margin: 32px 0 0;
+  padding: 0;
+  width: 100%;
+}
+.lp-infra__part {
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-lg);
+  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
+  display: grid;
+  grid-row: span 2;
+  grid-template-rows: subgrid;
+  padding: 24px;
+  row-gap: 8px;
+}
+.lp-infra__part-title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  font-weight: 600;
+  line-height: 29px;
+  margin: 0;
+  text-wrap: balance;
+}
+.lp-infra__part-body {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+}
+
+/* ── responsive: the steps' breakpoints ── */
+@media (max-width: 1024px) {
+  .lp-infra__org {
+    gap: 56px;
+    padding: 96px 24px 0;
+  }
+  .lp-infra__card {
+    padding: 40px;
+  }
+  .lp-infra__parts {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-@media (max-width: 900px) {
-  .lp-infra__flow {
-    grid-template-columns: minmax(0, 1fr);
+@media (max-width: 767px) {
+  .lp-infra {
+    padding: 96px 0 0;
   }
-}
-@media (max-width: 640px) {
+  .lp-infra__org {
+    gap: 48px;
+    padding: 16px;
+  }
+  .lp-infra__title {
+    /* the steps title on phones: 35.559 / 41 / -3% */
+    font-size: 35.559px;
+    letter-spacing: -1.0668px;
+    line-height: 41px;
+  }
   .lp-infra__card {
-    border-radius: 32px;
+    padding: 32px 20px 20px;
   }
-  .lp-infra__stack {
+  .lp-infra__agent {
+    font-size: var(--lp-text-md);
+    padding: 10px 16px;
+  }
+  .lp-infra__parts {
+    gap: 12px;
     grid-template-columns: minmax(0, 1fr);
+    margin-top: 24px;
   }
-}
-@media (prefers-reduced-motion: reduce) {
-  .lp-infra__layer {
-    transition: none;
-  }
-  .lp-infra__layer:hover {
-    transform: none;
+  .lp-infra__part {
+    padding: 20px;
   }
 }
