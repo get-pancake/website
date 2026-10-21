@@ -52,6 +52,9 @@ const FILES = [
   "components/sections/landing-v3/LpCta.tsx",
   "components/sections/landing-v3/LpPricing.tsx",
   "components/sections/guide-claude/guide-copy.ts",
+  // the footer's Features column (2026-10-17): the connect pages and the signal pages' copy
+  "components/sections/guide-claude/connect-copy.ts",
+  "components/sections/plays/plays-signals.ts",
   // site chrome (2026-10-07): the nav menus and the /compare hub. Not yet
   // LpFooter.tsx or compare-data.ts: both fail today until D23 (the platform label) and the
   // Viktor lede are decided.
@@ -108,6 +111,9 @@ const ALLOW = [
   // the sources story's hub label, the founder's own figure (2026-10-13: "Mets 30+ data provider
   // sur pancake.ai"); any other "N+" still fails
   [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b30\+ data providers\b/g],
+  // the Codex plugin's install id in /codex's commands (2026-10-17): "pancake@pancake" is a
+  // marketplace qualifier, not an "@Pancake" mention in Slack
+  [BANNED.find(([, label]) => label === "Slack chat")[0], /\bpancake@pancake\b/g],
 ];
 /** Rules a negated sentence may cross (the product's boundaries, said as boundaries). */
 const NEGATABLE = new Set(["email outreach", "phone lookup / calls", "CRM sync/export", "website visitors", "local/consumer leads"]);

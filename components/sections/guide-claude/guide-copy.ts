@@ -156,7 +156,7 @@ export const STEP_ACCOUNT = {
 } as const;
 
 export const MCP_URL = "https://app.pancake.ai/api/mcp";
-const SETUP_LINE = "Set up Pancake by reading https://pancake.ai/install.md and following its instructions";
+export const SETUP_LINE = "Set up Pancake by reading https://pancake.ai/install.md and following its instructions";
 
 export type ClientTabId = "claude" | "claude-code" | "chatgpt" | "codex" | "other";
 
@@ -322,9 +322,10 @@ export const CONTROL = {
     // Fact-checked against pancake-cmo main (2026-10-06): per-AI credit ceilings exist but run in
     // shadow mode, and the per-client Pause switch hides behind the creditsUiEnabled flag (off),
     // so the brief's "own daily and monthly credit ceiling" and "Pause" lines are out; the
-    // settings item is "Claude / Codex", not "MCP → Manage access". Restore them when they ship.
+    // settings item is "Claude & Codex" (workspace-nav.tsx; it read "Claude / Codex" here until
+    // 2026-10-17), not "MCP → Manage access". Restore them when they ship.
     { title: "Every credit.", body: "Claude shows the cost of a search before it starts." },
-    { title: "Every connection.", body: "Remove an AI anytime in Pancake, under Settings\u00a0→ Claude\u00a0/\u00a0Codex." },
+    { title: "Every connection.", body: "Remove an AI anytime in Pancake, under Settings\u00a0→ Claude\u00a0&\u00a0Codex." },
   ],
 } as const;
 

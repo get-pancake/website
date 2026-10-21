@@ -176,6 +176,12 @@
 /claude
 /contact-sales
 /booth
+# The footer's Features column (2026-10-17): connect pages and signal pages.
+/chatgpt
+/codex
+/plays/recently-funded-startups
+/plays/companies-hiring
+/plays/tech-stack
 # Files and feeds, not pages (2026-10-13): what assistants, feed readers and search engines fetch.
 /sitemap.xml
 /blog/rss.xml
