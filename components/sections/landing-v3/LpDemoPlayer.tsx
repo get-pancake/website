@@ -124,6 +124,7 @@ export function LpDemoPlayer({
   pause,
   pancake,
   claude,
+  only,
 }: {
   pills: [string, string];
   tablist: string;
@@ -131,8 +132,12 @@ export function LpDemoPlayer({
   pause: string;
   pancake: ReactNode;
   claude: ReactNode;
+  /** One view only, looping, with no pills: the infra-first homepage (2026-10-21) shows the
+   *  Claude & Codex view alone. The other view stays mounted, hidden, so both builders keep
+   *  their markup. */
+  only?: LpDemoView;
 }) {
-  const [view, setView] = useState<ViewState>({ v: 0, n: 0 });
+  const [view, setView] = useState<ViewState>({ v: only ?? 0, n: 0 });
   const [paused, setPaused] = useState(false);
   /** Phones with PHONE_SOLO (set after mount): no pills, so the stage is not a tab panel. */
   const [solo, setSolo] = useState(false);
@@ -143,7 +148,7 @@ export function LpDemoPlayer({
   const fillRefs = useRef<(HTMLElement | null)[]>([]);
   const nonce = useRef(0);
   const ctl = useRef<Ctl>({
-    view: 0,
+    view: only ?? 0,
     t: 0,
     started: false,
     oneShot: false,
@@ -292,7 +297,7 @@ export function LpDemoPlayer({
       return;
     }
     x.t = 0;
-    go(x.view === 0 ? 1 : 0);
+    go(only ?? (x.view === 0 ? 1 : 0));
   };
 
   /** Enter the view (after React committed data-view): before paint. The incoming view was
@@ -805,9 +810,9 @@ export function LpDemoPlayer({
       <div
         className="lp-demowin__stage"
         id="lp-demowin-panel"
-        role={solo ? undefined : "tabpanel"}
-        tabIndex={solo ? undefined : 0}
-        aria-labelledby={solo ? undefined : `lp-demowin-tab-${v}`}
+        role={solo || only !== undefined ? undefined : "tabpanel"}
+        tabIndex={solo || only !== undefined ? undefined : 0}
+        aria-labelledby={solo || only !== undefined ? undefined : `lp-demowin-tab-${v}`}
         data-nosnippet=""
         ref={stageRef}
       >
@@ -821,6 +826,7 @@ export function LpDemoPlayer({
 
       {/* the pills (V2 4939:2784): a two-view tablist; the fill is the dwell's progress */}
       <div className="lp-demowin__tabs">
+        {only === undefined && (
         <div className="lp-demowin__pills" role="tablist" aria-label={tablist} onKeyDown={onTabKey}>
           {pills.map((label, i) => (
             <button
@@ -848,6 +854,7 @@ export function LpDemoPlayer({
             </button>
           ))}
         </div>
+        )}
         {/* keyboard-only Pause (WCAG 2.2.2: the demo moves on its own for more than 5 s), revealed
             on focus or while it holds the demo paused — production's .vx-ctrl recipe */}
         <span className="lp-demowin__ctrl">

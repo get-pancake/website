@@ -87,8 +87,8 @@ export type StepContent = {
 export const STEPS: readonly StepContent[] = [
   {
     num: "01",
-    title: "Add your website.\nPancake builds your GTM brain.",
-    body: "From your website, Pancake learns who buys from you, what to say, and where to find them. Always up to date.",
+    title: "Add your website.\nYour agent gets a memory.",
+    body: "Pancake reads your website and builds your GTM Brain: who buys from you, what to say and where to find them. One versioned memory that every agent, every search and every message reads.",
     art: [{ kind: "anim", variant: "s1", status: "final" }],
     // names S1_HUBS[].label (lp-step-data.ts) in hub order: keep in sync
     alt: "Animation: a website address is typed and researched; from the Acme node a knowledge graph blooms, its five branches labeled Competitors, ICPs, Outreach, Influencers and Market Research, then a market profile fills in: Company, Offering, Ideal clients.",
@@ -96,16 +96,16 @@ export const STEPS: readonly StepContent[] = [
   {
     num: "02",
     // V2 4911:480 (2026-10-11); "\n" = its desktop break, phones wrap it to three lines
-    title: "Say who you want.\nPancake builds the Play.",
-    body: "A Play is one GTM idea put to work: it keeps searching for people who fit. Start one in Pancake, Claude or Codex. You approve each lead, then Pancake writes to them under your name.",
+    title: "Say who you want.\nPancake deploys the Play.",
+    body: "From Claude, Codex or the Pancake app, one sentence becomes a Play that lives on Pancake and keeps searching on the schedule you pick, laptop closed. You approve each lead before anyone hears from you.",
     art: [{ kind: "anim", variant: "s2", status: "final" }],
     // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
     alt: "Animation: in the Pancake chat, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, answers, and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",
   },
   {
     num: "03",
-    title: "Pancake gets you the meeting.\nYou close it.",
-    body: "Pancake follows up until they answer, then reads the reply. A yes gets your calendar link, sent from your account. Every other answer comes back to you.",
+    title: "Pancake runs the outreach.\nYou close.",
+    body: "Messages go out under your name, from your own accounts, and wait 10 minutes so you can undo them. Follow-ups stop when someone answers, and every reply comes back to you, labeled.",
     art: [{ kind: "anim", variant: "s3", status: "final" }],
     // retells S3_THREAD, then lists S3_CHIPS (lp-step-data.ts): keep in sync
     alt: "Animation: from the selected leads, Pancake drafts a message to Tamsin Okafor, founder of Quillfern, about her seed round and a new website, and it is sent. She answers that she is free Thursday at 3pm, and the meeting appears: Tamsin and Acme, Thursday 3pm. The meeting lands on Thursday in a calendar week of October 2026, which then fills up day by day with more meetings — Samantha M., Julien Aubert, Martin Torres and Acme, Lumen Collective, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",

@@ -55,8 +55,8 @@ export function LpSteps() {
     <section className="lp-steps" id="how-it-works">
       <div className="lp-steps__org">
         <header className="lp-steps__head">
-          <p className="lp-steps__kicker">While you run your business,</p>
-          <h2 className="lp-steps__title lp-title-section">Pancake fills your pipeline.</h2>
+          <p className="lp-steps__kicker">One sentence to your agent,</p>
+          <h2 className="lp-steps__title lp-title-section">Pancake runs the rest.</h2>
         </header>
         <div className="lp-steps__list">
           {STEPS.map((step) => (
