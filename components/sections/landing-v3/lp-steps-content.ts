@@ -88,7 +88,7 @@ export const STEPS: readonly StepContent[] = [
   {
     num: "01",
     title: "Add your website.\nYour agent gets a memory.",
-    body: "Pancake reads your website and builds your GTM Brain: who buys from you, what to say and where to find them. One versioned memory that every agent, every search and every message reads.",
+    body: "Pancake reads your website and learns who buys from you, what to say and where to find them. Your agent, every search and every message read that same Brain.",
     art: [{ kind: "anim", variant: "s1", status: "final" }],
     // names S1_HUBS[].label (lp-step-data.ts) in hub order: keep in sync
     alt: "Animation: a website address is typed and researched; from the Acme node a knowledge graph blooms, its five branches labeled Competitors, ICPs, Outreach, Influencers and Market Research, then a market profile fills in: Company, Offering, Ideal clients.",
@@ -97,7 +97,7 @@ export const STEPS: readonly StepContent[] = [
     num: "02",
     // V2 4911:480 (2026-10-11); "\n" = its desktop break, phones wrap it to three lines
     title: "Say who you want.\nPancake deploys the Play.",
-    body: "From Claude, Codex or the Pancake app, one sentence becomes a Play that lives on Pancake and keeps searching on the schedule you pick, laptop closed. You approve each lead before anyone hears from you.",
+    body: "From Claude, Codex or the app, one sentence becomes a Play. It lives on Pancake and keeps searching on the schedule you pick. You approve each lead before anyone hears from you.",
     art: [{ kind: "anim", variant: "s2", status: "final" }],
     // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
     alt: "Animation: in the Pancake chat, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, answers, and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",

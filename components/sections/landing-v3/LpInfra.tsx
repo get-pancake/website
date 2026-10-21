@@ -1,7 +1,8 @@
 import { ClaudeMark, CodexMark } from "@/components/sections/landing-v3/LpAgentMarks";
 
 /**
- * Section — "Your agent decides. Pancake does the work." (the infra-first landing).
+ * Section — "Your agent decides. Pancake runs it." (the infra-first landing): the launch line,
+ * word for word (Pancake V2 launch material, public/llms.txt).
  *
  * 2026-10-21, second version. The first one (eight infrastructure layers, Deploy / Host / Run,
  * four figures, a vision line, on a dark card) read as engineering notes: founder, "I dont
@@ -14,10 +15,10 @@ import { ClaudeMark, CodexMark } from "@/components/sections/landing-v3/LpAgentM
 type Part = { title: string; body: string };
 
 const PARTS: readonly Part[] = [
-  { title: "Finds your buyers", body: "Funding rounds, open roles and tech stacks from 30+ data providers." },
-  { title: "Knows your business", body: "What you sell, who buys and how you talk, learned from your website." },
-  { title: "Reaches out for you", body: "From your own accounts, under your name, once you approve each lead." },
-  { title: "Keeps running", body: "Every Play runs on the schedule you pick, even with your laptop closed." },
+  { title: "Finds your buyers", body: "30+ data providers: funding, hiring, tech stacks and the people behind them." },
+  { title: "Knows your business", body: "What you sell, who buys and how you talk. It keeps learning from every lead." },
+  { title: "Reaches out for you", body: "Personal messages from your own accounts, to every lead you approve." },
+  { title: "Keeps running", body: "Your Plays live on Pancake and run on your schedule, laptop closed." },
 ];
 
 export function LpInfra() {
@@ -27,7 +28,7 @@ export function LpInfra() {
         <header className="lp-infra__head">
           <p className="lp-infra__kicker">Your agent decides.</p>
           <h2 id="lp-infra-title" className="lp-infra__title lp-title-section">
-            Pancake does the work.
+            Pancake runs it.
           </h2>
         </header>
         <div className="lp-infra__card">

@@ -1,0 +1,528 @@
+/* Section — "Your sentence becomes software." (LpBuild.tsx / LpBuildAnim.tsx, the infra-first
+   landing, 2026-10-21). The steps' wrapper and org, a centred title + one-line lede, a cream r30
+   card holding three white panes (the demo window's hairline and mock-card radius) joined by
+   arrows, then three facts. The markup is the END picture; lp-build-timeline.ts writes frame 0
+   (the states hidden below are the ones the build-up shows on the way). */
+.lp-build {
+  padding: 16px;
+}
+.lp-build__org {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  padding: 128px 32px 0;
+}
+.lp-build__head {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 100%;
+  text-align: center;
+  width: 900px;
+}
+.lp-build__title {
+  color: var(--lp-text);
+  line-height: 69px;
+  margin: 0;
+  text-wrap: balance;
+}
+.lp-build__lede {
+  color: var(--lp-ink-90);
+  font-size: var(--lp-text-lg);
+  line-height: 1.5;
+  max-width: 640px;
+  text-wrap: balance;
+}
+
+/* ── the card: three panes, two arrows ── */
+.lp-build__card {
+  background: var(--lp-card-cream);
+  border-radius: 30px;
+  max-width: 100%;
+  padding: 40px;
+  width: 1136px;
+}
+.lp-build__stage {
+  align-items: stretch;
+  display: grid;
+  gap: 0 8px;
+  grid-template-columns: minmax(0, 0.9fr) 32px minmax(0, 1.25fr) 32px minmax(0, 1fr);
+}
+.lp-build__pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+.lp-build__label {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 20px;
+  padding-left: 4px;
+}
+.lp-build__box {
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-m);
+  box-shadow: inset 0 0 0 0.5px var(--lp-stroke);
+  flex: 1;
+  min-height: 316px;
+  position: relative;
+}
+.lp-build__arrow {
+  align-self: center;
+  color: var(--lp-ink-60);
+  display: grid;
+  padding-top: 32px; /* the panes' label row */
+  place-items: center;
+}
+.lp-build__arrow svg {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5;
+}
+.lp-build__check {
+  fill: none;
+  flex: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+/* pane 1: the ask, in Claude */
+.lp-build__chat {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+.lp-build__bubble {
+  align-self: flex-end;
+  background: var(--lp-ink-30);
+  border-radius: 14px 14px 4px 14px;
+  color: var(--lp-text);
+  font-size: 14px;
+  line-height: 21px;
+  max-width: 94%;
+  padding: 10px 14px;
+}
+/* the tool call, as Claude draws a connector's: a quiet row with its status at the end */
+.lp-build__tool {
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 0.5px var(--lp-ink-40);
+  color: var(--lp-ink-90);
+  display: flex;
+  font-size: 13px;
+  gap: 8px;
+  line-height: 20px;
+  margin-top: 12px;
+  padding: 8px 10px;
+}
+.lp-build__pk {
+  display: block;
+  flex: none;
+  height: 20px;
+  width: 20px;
+}
+.lp-build__tool-name {
+  flex: 1;
+  min-width: 0;
+}
+.lp-build__tool-sep {
+  color: var(--lp-ink-60);
+  margin: 0 6px;
+}
+.lp-build__tool-st {
+  color: var(--lp-green-30);
+  display: grid;
+  flex: none;
+  height: 16px;
+  place-items: center;
+  width: 16px;
+}
+.lp-build__tool-st > * {
+  grid-area: 1 / 1;
+}
+.lp-build__spin {
+  animation: lp-build-spin 0.9s linear infinite;
+  border: 1.5px solid var(--lp-ink-40);
+  border-radius: 50%;
+  border-top-color: var(--lp-ink-90);
+  height: 12px;
+  opacity: 0;
+  visibility: hidden;
+  width: 12px;
+}
+.lp-build__says {
+  display: grid;
+  margin-top: auto;
+  padding-top: 16px;
+}
+.lp-build__say {
+  align-items: flex-start;
+  color: var(--lp-text);
+  display: flex;
+  font-size: 14px;
+  gap: 8px;
+  grid-area: 1 / 1;
+  line-height: 21px;
+}
+.lp-build__say[data-say="working"] {
+  color: var(--lp-ink-80);
+  opacity: 0;
+  visibility: hidden;
+}
+.lp-build__spark {
+  color: var(--lp-claude-spark);
+  display: grid;
+  flex: none;
+  height: 21px;
+  place-items: center;
+  width: 16px;
+}
+.lp-build__spark svg {
+  display: block;
+  height: 16px;
+  width: 16px;
+}
+
+/* pane 2: the program */
+.lp-build__editor {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.lp-build__file {
+  align-items: center;
+  box-shadow: inset 0 -0.5px 0 var(--lp-stroke);
+  color: var(--lp-ink-80);
+  display: flex;
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  gap: 8px;
+  justify-content: space-between;
+  line-height: 18px;
+  padding: 12px 16px;
+}
+.lp-build__ver {
+  background: var(--lp-green-10);
+  border-radius: 6px;
+  color: var(--lp-green-30);
+  font-family: var(--lp-font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  padding: 1px 6px;
+}
+.lp-build__code {
+  color: var(--lp-text);
+  flex: 1;
+  font-family: var(--lp-font-mono);
+  font-size: 13px;
+  line-height: 22px;
+  margin: 0;
+  overflow: hidden;
+  padding: 14px 16px;
+  white-space: pre;
+}
+.lp-build__code code {
+  font: inherit;
+}
+/* the root layout's `* { font-family }` beats inheritance: the code's spans and the file
+   name must take the mono face from their box */
+.lp-build__code *,
+.lp-build__file > span:first-child {
+  font-family: inherit;
+}
+.lp-build__ln {
+  display: block;
+}
+.lp-build__code [data-tok="k"] {
+  color: var(--lp-purple-40);
+}
+.lp-build__code [data-tok="f"] {
+  color: var(--lp-brand-blue);
+}
+.lp-build__code [data-tok="s"] {
+  color: var(--lp-green-30);
+}
+.lp-build__code [data-tok="p"] {
+  color: var(--lp-ink-70);
+}
+.lp-build__status {
+  box-shadow: inset 0 0.5px 0 var(--lp-stroke);
+  display: grid;
+  font-size: 13px;
+  line-height: 20px;
+  padding: 12px 16px;
+}
+.lp-build__st {
+  align-items: center;
+  color: var(--lp-ink-90);
+  display: flex;
+  gap: 8px;
+  grid-area: 1 / 1;
+}
+.lp-build__st[data-st="writing"],
+.lp-build__st[data-st="testing"] {
+  opacity: 0;
+  visibility: hidden;
+}
+.lp-build__st[data-st="done"] {
+  color: var(--lp-green-30);
+  font-weight: 500;
+}
+.lp-build__dot {
+  animation: lp-build-blink 1s ease-in-out infinite;
+  background: var(--lp-purple-30);
+  border-radius: 50%;
+  flex: none;
+  height: 8px;
+  width: 8px;
+}
+.lp-build__dot[data-tone="yellow"] {
+  background: var(--lp-yellow-40);
+}
+
+/* pane 3: the Play, live */
+.lp-build__live {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+}
+.lp-build__live-head {
+  align-items: center;
+  color: var(--lp-green-30);
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 8px;
+  line-height: 20px;
+}
+.lp-build__sched {
+  color: var(--lp-subtle-text);
+  font-weight: 400;
+  margin-left: auto;
+}
+.lp-build__pulse {
+  background: var(--lp-green-30);
+  border-radius: 50%;
+  flex: none;
+  height: 8px;
+  position: relative;
+  width: 8px;
+}
+.lp-build__pulse::after {
+  animation: lp-build-pulse 1.8s ease-out infinite;
+  border: 2px solid var(--lp-green-30);
+  border-radius: 50%;
+  content: "";
+  inset: -4px;
+  opacity: 0;
+  position: absolute;
+}
+.lp-build__count {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+  margin: 16px 0 14px;
+}
+.lp-build__n {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: 48px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+.lp-build__count-l {
+  color: var(--lp-ink-90);
+  font-size: 14px;
+}
+.lp-build__leads {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-build__lead {
+  align-items: center;
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 0.5px var(--lp-ink-40);
+  display: flex;
+  gap: 10px;
+  padding: 8px 10px;
+}
+.lp-build__lead .lp-build__check {
+  color: var(--lp-green-30);
+}
+.lp-build__avatar {
+  border-radius: 50%;
+  color: var(--lp-ink-100);
+  display: grid;
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  height: 28px;
+  place-items: center;
+  width: 28px;
+}
+.lp-build__avatar[data-tone="purple"] {
+  background: var(--lp-purple-20);
+}
+.lp-build__avatar[data-tone="yellow"] {
+  background: var(--lp-yellow-20);
+}
+.lp-build__avatar[data-tone="blue"] {
+  background: var(--lp-blue-20);
+}
+.lp-build__who {
+  color: var(--lp-text);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+  min-width: 0;
+}
+.lp-build__co {
+  color: var(--lp-subtle-text);
+  font-size: 12px;
+  font-weight: 400;
+}
+.lp-build__wait {
+  align-items: center;
+  color: var(--lp-ink-70);
+  display: flex;
+  font-size: 13px;
+  inset: 0;
+  justify-content: center;
+  opacity: 0;
+  position: absolute;
+  visibility: hidden;
+}
+
+/* the three facts */
+.lp-build__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  justify-content: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-build__fact {
+  align-items: center;
+  color: var(--lp-ink-90);
+  display: flex;
+  font-size: var(--lp-text-md);
+  gap: 8px;
+  line-height: 24px;
+}
+.lp-build__fact svg {
+  color: var(--lp-green-30);
+  fill: none;
+  flex: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+@keyframes lp-build-pulse {
+  0% {
+    opacity: 0.6;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.6);
+  }
+}
+@keyframes lp-build-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes lp-build-blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-build__pulse::after,
+  .lp-build__dot,
+  .lp-build__spin {
+    animation: none;
+  }
+}
+
+/* ── responsive: the steps' breakpoints, plus a stacked card below 900 ── */
+@media (max-width: 1024px) {
+  .lp-build__org {
+    gap: 40px;
+    padding: 96px 24px 0;
+  }
+  .lp-build__card {
+    padding: 32px;
+  }
+}
+@media (max-width: 900px) {
+  .lp-build__stage {
+    gap: 8px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-build__box {
+    min-height: 0;
+  }
+  .lp-build__chat {
+    gap: 16px;
+  }
+  .lp-build__live {
+    min-height: 296px;
+  }
+  .lp-build__arrow {
+    padding-top: 0;
+    transform: rotate(90deg);
+  }
+}
+@media (max-width: 767px) {
+  .lp-build {
+    padding: 96px 0 0;
+  }
+  .lp-build__org {
+    gap: 32px;
+    padding: 16px;
+  }
+  .lp-build__title {
+    font-size: 35.559px;
+    letter-spacing: -1.0668px;
+    line-height: 41px;
+  }
+  .lp-build__lede {
+    font-size: var(--lp-text-md);
+  }
+  .lp-build__card {
+    padding: 16px;
+  }
+  .lp-build__code {
+    font-size: 12px;
+    line-height: 20px;
+    padding: 12px 14px;
+  }
+  .lp-build__facts {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
