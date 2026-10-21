@@ -1,0 +1,228 @@
+/* Section — "Your go-to-market waits for you. / On Pancake, it works on its own." (LpWhy.tsx, the
+   infra-first landing, 2026-10-21). The steps' wrapper, org and kicker + title; two equal r30
+   cards on the 1136 column: today (cream, the tabs a founder juggles, four ✕) and on Pancake
+   (white with the demo window's hairline and shadow, a Play that ran on its own, four ✓). */
+.lp-why {
+  padding: 16px;
+}
+.lp-why__org {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 66px;
+  padding: 128px 32px 0;
+}
+.lp-why__head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 100%;
+  text-align: center;
+  width: 752px;
+}
+.lp-why__kicker {
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-cond);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 32px;
+}
+.lp-why__title {
+  color: var(--lp-text);
+  line-height: 69px;
+  margin: 0;
+  text-wrap: balance;
+}
+.lp-why__grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-width: 100%;
+  width: 1136px;
+}
+.lp-why__card {
+  border-radius: 30px;
+  display: grid;
+  gap: 24px;
+  grid-template-rows: auto auto 1fr;
+  padding: 40px;
+}
+.lp-why__card[data-side="today"] {
+  background: var(--lp-card-cream);
+}
+.lp-why__card[data-side="pancake"] {
+  background: var(--lp-surface);
+  box-shadow:
+    inset 0 0 0 0.5px var(--lp-stroke),
+    0 12px 32px var(--lp-ink-tr-5);
+}
+.lp-why__label {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-2xlg);
+  font-weight: 600;
+  letter-spacing: -0.8294px;
+  line-height: 1.15;
+}
+.lp-why__card[data-side="today"] .lp-why__label {
+  color: var(--lp-ink-80);
+}
+
+/* the pictures: one height, so the lists below start level */
+.lp-why__art {
+  border-radius: var(--lp-r-m);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 196px;
+  justify-content: center;
+  padding: 20px;
+}
+.lp-why__card[data-side="today"] .lp-why__art {
+  background: var(--lp-ink-20);
+  box-shadow: inset 0 0 0 0.5px var(--lp-ink-40);
+}
+.lp-why__card[data-side="pancake"] .lp-why__art {
+  background: var(--lp-ink-10);
+  box-shadow: inset 0 0 0 0.5px var(--lp-ink-40);
+}
+.lp-why__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lp-why__tab {
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-xsm);
+  box-shadow: inset 0 0 0 0.5px var(--lp-ink-50);
+  color: var(--lp-ink-80);
+  font-size: 13px;
+  line-height: 20px;
+  padding: 6px 10px;
+}
+.lp-why__tab:last-child {
+  background: none;
+  box-shadow: inset 0 0 0 0.5px var(--lp-ink-60);
+  color: var(--lp-ink-70);
+}
+.lp-why__run-head,
+.lp-why__row {
+  align-items: center;
+  color: var(--lp-text);
+  display: flex;
+  font-size: 13px;
+  gap: 10px;
+  line-height: 20px;
+}
+.lp-why__run-head {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.lp-why__run-sched {
+  color: var(--lp-subtle-text);
+  font-weight: 400;
+  margin-left: auto;
+}
+.lp-why__live {
+  background: var(--lp-green-30);
+  border-radius: 50%;
+  flex: none;
+  height: 8px;
+  width: 8px;
+}
+.lp-why__time {
+  color: var(--lp-subtle-text);
+  flex: none;
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+}
+.lp-why__row-text {
+  flex: 1;
+  min-width: 0;
+}
+.lp-why__note {
+  background: var(--lp-blue-10);
+  border-radius: 6px;
+  color: var(--lp-brand-blue);
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 16px;
+  padding: 2px 8px;
+}
+
+/* the lists */
+.lp-why__list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-why__item {
+  align-items: center;
+  box-shadow: inset 0 -1px 0 var(--lp-ink-tr-10);
+  color: var(--lp-text);
+  display: flex;
+  font-size: var(--lp-text-md);
+  gap: 10px;
+  line-height: 24px;
+  padding: 12px 0;
+}
+.lp-why__item:last-child {
+  box-shadow: none;
+}
+.lp-why__card[data-side="today"] .lp-why__item {
+  color: var(--lp-ink-90);
+}
+.lp-why__glyph {
+  fill: none;
+  flex: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+.lp-why__glyph[data-kind="x"] {
+  color: var(--lp-pink-40);
+}
+.lp-why__glyph[data-kind="check"] {
+  color: var(--lp-green-30);
+}
+
+@media (max-width: 1024px) {
+  .lp-why__org {
+    gap: 56px;
+    padding: 96px 24px 0;
+  }
+  .lp-why__card {
+    padding: 32px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-why {
+    padding: 96px 0 0;
+  }
+  .lp-why__org {
+    gap: 40px;
+    padding: 16px;
+  }
+  .lp-why__title {
+    font-size: 35.559px;
+    letter-spacing: -1.0668px;
+    line-height: 41px;
+  }
+  .lp-why__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-why__card {
+    padding: 24px 20px;
+  }
+  .lp-why__art {
+    height: auto;
+    min-height: 168px;
+  }
+  .lp-why__run-sched {
+    display: none;
+  }
+}

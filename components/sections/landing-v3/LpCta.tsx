@@ -59,12 +59,16 @@ export function LpCta({
   body = CTA_BODY,
   buttons,
   note,
+  setup,
   sky = false,
 }: {
   title?: string;
   body?: readonly [string, string] | string;
   buttons?: ReactNode;
   note?: string;
+  /** one row under the buttons (the infra-first homepage, 2026-10-21: the one-line setup's copy
+      pill, LpSetupPill) */
+  setup?: ReactNode;
   /** homepage only (V2 4911:739 "Transition from previous section", owner blue-band): the
       blue sky of the deep dive ending on a cream hill, two clouds around the card, and the
       card's r24. Off (the default), every other surface renders exactly as before. */
@@ -125,6 +129,7 @@ export function LpCta({
             </LpFxLink>
           </div>
         )}
+        {setup}
         {note ? <p className="lp-cta__note">{note}</p> : <p className="lp-cta__note">Sales consultations for companies with more than 50 employees or interest in White Glove.</p>}
       </div>
     </div>

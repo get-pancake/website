@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   gap: 66px;
-  padding: 128px 32px 112px; /* the page rhythm before the setup band */
+  padding: 128px 32px 0;
 }
 
 /* heading block: the steps' kicker + title */
@@ -119,7 +119,7 @@
 .lp-infra__parts {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
   margin: 32px 0 0;
   padding: 0;
@@ -130,10 +130,16 @@
   border-radius: var(--lp-r-lg);
   box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
   display: grid;
-  grid-row: span 2;
+  grid-row: span 3;
   grid-template-rows: subgrid;
   padding: 24px;
   row-gap: 8px;
+}
+.lp-infra__part-name {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 20px;
 }
 .lp-infra__part-title {
   color: var(--lp-text);
@@ -154,7 +160,7 @@
 @media (max-width: 1024px) {
   .lp-infra__org {
     gap: 56px;
-    padding: 96px 24px 96px;
+    padding: 96px 24px 0;
   }
   .lp-infra__card {
     padding: 40px;
@@ -169,7 +175,7 @@
   }
   .lp-infra__org {
     gap: 48px;
-    padding: 16px 16px 64px;
+    padding: 16px;
   }
   .lp-infra__title {
     /* the steps title on phones: 35.559 / 41 / -3% */

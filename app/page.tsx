@@ -10,10 +10,11 @@ import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
 import { LpBuild } from "@/components/sections/landing-v3/LpBuild";
-import { LpConnect } from "@/components/sections/landing-v3/LpConnect";
+import { LpForAgents } from "@/components/sections/landing-v3/LpForAgents";
 import { LpInfra } from "@/components/sections/landing-v3/LpInfra";
-import { LpPlatform } from "@/components/sections/landing-v3/LpPlatform";
+import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
 import { LpVision } from "@/components/sections/landing-v3/LpVision";
+import { LpWhy } from "@/components/sections/landing-v3/LpWhy";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
 import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
@@ -151,26 +152,28 @@ export default function Home() {
       <LpDemo />
       {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
       <LpMarquee labelled />
-      {/* the infra-first page (2026-10-21, founder: "infra is not just a section but the whole
-          lp"): the thesis drawn (your agent decides, Pancake runs it), the one-line setup, the
-          wow (your sentence becomes software), then the steps */}
+      {/* The infra-first page (2026-10-21), told as every infrastructure page tells it (the outline
+          the founder approved, from Cargo, Landbase, Crustdata, Explorium, Octave, Clay, Apollo
+          and Stripe): the shift, the model (three layers), the steps, how an agent plugs in, build
+          and run, the vision; then the designer's banner, deep dive and CTA (one sky: nothing may
+          sit between those three, sky.css), proof and pricing. The hero's For agents view keeps
+          the one-line install (LpAgentStart), as Cargo's Agent / Human toggle does. */}
+      <LpWhy />
       <LpInfra />
-      <LpConnect />
-      <LpBuild />
       <LpAgentLab
         cardBody={SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY}
       />
       <LpSteps />
-      {/* what makes it infrastructure, said simply; before the banner, whose sky runs on into
-          the deep dive and the CTA (sky.css), so nothing may sit between those three */}
-      <LpPlatform />
-      {/* the vision and what ships next (2026-10-21), as the infra story's last word: here, not
-          after the CTA, where its rainbow would sit right above the pricing art's */}
+      <LpForAgents />
+      <LpBuild />
+      {/* the vision and what ships next: before the banner, not after the CTA, where its rainbow
+          would sit right above the pricing art's */}
       <LpVision />
       <LpBanner />
       {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
       <LpDive />
-      <LpCta sky />
+      {/* the close: the CTA pair, then the one-line setup to copy */}
+      <LpCta sky setup={<LpSetupPill />} />
       {/* testimonials / KPI bento (V2 4911:762): dev and previews show it, gaps filled with
           marked stand-ins. Production renders nothing while BENTO_LIVE (lp-bento-data.ts) is
           off, as it is today (the founder's go on the date and the customers' OK); once on,
