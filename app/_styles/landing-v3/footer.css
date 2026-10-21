@@ -16,7 +16,12 @@
    with a 48px gutter between them: every gap between two columns of text
    reads the same, right-aligned as on the artboard (≈820px of columns, ≈75px
    clear of the brand). The row stacks under 1200, where it would crowd the
-   brand. */
+   brand.
+
+   2026-10-17: Features (connect + signal pages) replaced Resources, so it is
+   still five columns (≈780px: Product, Features, Compare, Company, Social).
+   A sixth column does not fit beside the brand at this rhythm (≈1,050px for
+   an 863px slot): merge a column before adding one. */
 
 /* Founder tweak (2026-08-28): content pulled 48px up toward the pricing
    rings ("rapproche le footer des cercles"), height reduced in step so the
@@ -171,7 +176,7 @@
 }
 
 /* ≤767: compact recompose (2026-08-31, "très long à scroller") — logo row
-   (140px), the link columns two by two (2026-10-07: Product + Resources,
+   (140px), the link columns two by two (Product + Features since 2026-10-17,
    then Compare + Company), Social as a wrapped row, then one
    muted meta line replacing the brand lines + legal. Every link keeps a 44px
    effective tap target: col/social links 24px line + 2×10px padding-block;

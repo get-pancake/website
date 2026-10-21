@@ -726,3 +726,34 @@
   line-height: 20px;
   margin-top: -32px; /* the card's 48px column gap, tightened to 16 */
 }
+
+/* ── connect pages (/chatgpt, /codex: ConnectPage, 2026-10-17): the guide's step rows and copy
+   blocks; these are the few pieces of their own ── */
+.lp-connect p.cn-start {
+  margin-top: 20px;
+}
+.lp-connect .cn-prompts__list {
+  margin-top: var(--vx-head-gap);
+  max-width: 760px;
+}
+.lp-connect p.cn-prompts__intro,
+.lp-connect p.cn-others {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+}
+.lp-connect p.cn-prompts__intro {
+  margin-bottom: 6px;
+}
+.lp-connect .vx-know .gd-block {
+  margin-top: 12px;
+}
+.lp-connect p.cn-others {
+  margin-top: 28px;
+}
+/* the last section before the footer (no CTA card here): one rhythm gap under it */
+.lp-connect .cn-know {
+  padding-bottom: var(--vx-rhythm);
+}
+

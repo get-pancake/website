@@ -52,6 +52,9 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
  *
  * Structured data (audit 7.7, 2026-10-07): WebPage + BreadcrumbList (Home → this guide) +
  * FAQPage, the FAQ's Q/As verbatim (the cost answer stays visible-only, see FAQ in guide-copy).
+ *
+ * Step and CopyBlock are exported (2026-10-17) for the connect pages, /chatgpt and /codex
+ * (ConnectPage): same step rows, same copy blocks.
  */
 export function GuidePage({ markdown, offer = false }: { markdown: string; offer?: boolean }) {
   const preview = markdown.split("\n").slice(0, 9).join("\n");
@@ -266,7 +269,7 @@ function SetupSection({ markdown, preview }: { markdown: string; preview: string
   );
 }
 
-function Step({ num, title, children }: { num: string; title: string; children: ReactNode }) {
+export function Step({ num, title, children }: { num: string; title: string; children: ReactNode }) {
   return (
     <li className="gd-step">
       <h3 className="gd-step__title">
@@ -517,7 +520,7 @@ function FaqSection({ offer }: { offer: boolean }) {
  * One prompt or command with its Copy button. `[bracketed]` parts are highlighted so the
  * reader sees what to replace; the button copies the exact text, brackets included.
  */
-function CopyBlock({ id, text, code = false }: { id: string; text: string; code?: boolean }) {
+export function CopyBlock({ id, text, code = false }: { id: string; text: string; code?: boolean }) {
   const textId = `gd-block-${id}`;
   return (
     <div className="gd-block" data-kind={code ? "code" : "prompt"}>
