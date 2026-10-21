@@ -53,6 +53,15 @@ const LAYERS: readonly Layer[] = [
   },
 ];
 
+type Step = { verb: string; body: string };
+
+/** The Vercel analogy in three verbs, in the words llms.txt already publishes. */
+const FLOW: readonly Step[] = [
+  { verb: "Deploy", body: "An idea leaves the conversation with your agent and becomes a Play on Pancake." },
+  { verb: "Host", body: "The Play lives on Pancake, with its own targeting, leads, messages and history." },
+  { verb: "Run", body: "Pancake runs it on the schedule you pick, finds new leads and contacts the ones you approve." },
+];
+
 type Stat = { value: string; label: string };
 
 const STATS: readonly Stat[] = [
@@ -77,6 +86,14 @@ export function LpInfra() {
             business, and a runtime that keeps working after the conversation ends.
           </p>
         </div>
+        <ol className="lp-infra__flow" aria-label="Deploy, host, run">
+          {FLOW.map((step) => (
+            <li key={step.verb} className="lp-infra__step">
+              <span className="lp-infra__verb">{step.verb}</span>
+              <span className="lp-infra__body">{step.body}</span>
+            </li>
+          ))}
+        </ol>
         <ol className="lp-infra__stack">
           {LAYERS.map((layer, index) => (
             <li key={layer.name} className="lp-infra__layer">
@@ -95,6 +112,9 @@ export function LpInfra() {
             </div>
           ))}
         </dl>
+        <p className="lp-infra__vision">
+          Every company will run its go-to-market through agents. Pancake is where they run it.
+        </p>
       </div>
     </section>
   );

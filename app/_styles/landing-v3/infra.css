@@ -44,6 +44,50 @@
   line-height: 1.5;
   color: rgba(255, 247, 236, 0.8);
 }
+.lp-infra__flow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-infra__step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-radius: 24px;
+  padding: 24px;
+  background: var(--lp-ink-10, #fffbf6);
+  color: var(--lp-ink-100, #2c002a);
+}
+.lp-infra__step .lp-infra__body {
+  color: var(--lp-ink-90, #6c4b65);
+}
+.lp-infra__verb {
+  font-family: var(--lp-font-cond);
+  font-size: clamp(36px, 3.4vw, 52px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -1.2px;
+  color: var(--lp-brand-blue, #4660e7);
+}
+.lp-infra__step:nth-child(2) .lp-infra__verb {
+  color: var(--lp-pink-40, #e33a6a);
+}
+.lp-infra__step:nth-child(3) .lp-infra__verb {
+  color: var(--lp-yellow-40, #f38f43);
+}
+.lp-infra__vision {
+  margin: 0;
+  max-width: 900px;
+  font-family: var(--lp-font-cond);
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -1px;
+  color: var(--lp-ink-0, #ffffff);
+}
 .lp-infra__stack {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -128,6 +172,11 @@
   .lp-infra__stack,
   .lp-infra__stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 900px) {
+  .lp-infra__flow {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 @media (max-width: 640px) {
