@@ -48,6 +48,7 @@ const FILES = [
   "components/sections/landing-v3/LpSteps.tsx",
   "components/sections/landing-v3/lp-step-data.ts",
   "components/sections/landing-v3/LpBanner.tsx",
+  "components/sections/landing-v3/LpInfra.tsx",
   "components/sections/landing-v3/LpCta.tsx",
   "components/sections/landing-v3/LpPricing.tsx",
   "components/sections/guide-claude/guide-copy.ts",

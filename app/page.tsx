@@ -9,6 +9,7 @@ import { LpDive } from "@/components/sections/landing-v3/LpDive";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
+import { LpInfra } from "@/components/sections/landing-v3/LpInfra";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
 import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
@@ -142,6 +143,8 @@ export default function Home() {
       <LpDemo />
       {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
       <LpMarquee labelled />
+      {/* the infra thesis (2026-10-21): the stack under your agent, right after the customers band */}
+      <LpInfra />
       <LpAgentLab
         cardBody={SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY}
       />

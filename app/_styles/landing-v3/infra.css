@@ -1,0 +1,148 @@
+/* Section — "The stack under your agent" (LpInfra.tsx, the infra-first landing, 2026-10-21).
+   A plum card in the banner's frame (wrapper p-16, card r48), cream type, eight layer tiles and
+   a figures band. Tokens only from foundation.css. */
+.lp-infra {
+  padding: 16px;
+}
+.lp-infra__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(32px, 4vw, 56px);
+  overflow: hidden;
+  border-radius: 48px;
+  padding: clamp(40px, 6vw, 96px) clamp(20px, 5vw, 80px);
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(70, 96, 231, 0.35), transparent 60%),
+    radial-gradient(90% 70% at 0% 100%, rgba(227, 58, 106, 0.28), transparent 60%),
+    var(--lp-ink-100, #2c002a);
+  color: var(--lp-ink-10, #fffbf6);
+}
+.lp-infra__head {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 980px;
+}
+.lp-infra__eyebrow {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lp-pink-20, #ffbbc7);
+}
+.lp-infra__title {
+  margin: 0;
+  color: var(--lp-ink-0, #ffffff);
+  font-size: clamp(36px, 4.6vw, var(--lp-text-6xlg, 57px));
+}
+.lp-infra__lede {
+  margin: 0;
+  max-width: 760px;
+  font-size: clamp(17px, 1.4vw, 20px);
+  line-height: 1.5;
+  color: rgba(255, 247, 236, 0.8);
+}
+.lp-infra__stack {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lp-infra__layer {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 100%;
+  border: 1px solid rgba(255, 247, 236, 0.14);
+  border-radius: 24px;
+  padding: 24px;
+  background: rgba(255, 247, 236, 0.06);
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    transform 200ms ease;
+}
+.lp-infra__layer:hover {
+  border-color: rgba(255, 187, 199, 0.5);
+  background: rgba(255, 247, 236, 0.1);
+  transform: translateY(-2px);
+}
+.lp-infra__num {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--lp-yellow-30, #ffbd7a);
+}
+.lp-infra__name {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 247, 236, 0.6);
+}
+.lp-infra__line {
+  font-family: var(--lp-font-cond);
+  font-size: clamp(24px, 2vw, 30px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.6px;
+  color: var(--lp-ink-0, #ffffff);
+}
+.lp-infra__body {
+  font-size: 16px;
+  line-height: 1.5;
+  color: rgba(255, 247, 236, 0.78);
+}
+.lp-infra__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  border-top: 1px solid rgba(255, 247, 236, 0.14);
+  padding-top: clamp(24px, 3vw, 40px);
+}
+.lp-infra__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lp-infra__value {
+  font-family: var(--lp-font-cond);
+  font-size: clamp(44px, 5vw, 72px);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -1.5px;
+  color: var(--lp-ink-0, #ffffff);
+}
+.lp-infra__label {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: rgba(255, 247, 236, 0.7);
+}
+@media (max-width: 1100px) {
+  .lp-infra__stack,
+  .lp-infra__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .lp-infra__card {
+    border-radius: 32px;
+  }
+  .lp-infra__stack {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-infra__layer {
+    transition: none;
+  }
+  .lp-infra__layer:hover {
+    transform: none;
+  }
+}
