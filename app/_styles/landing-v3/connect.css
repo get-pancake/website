@@ -52,7 +52,6 @@
   width: 920px;
 }
 .lp-connect__caret {
-  align-self: start;
   color: var(--lp-ink-60);
   font-family: var(--lp-font-mono);
   font-size: 16px;
@@ -168,6 +167,10 @@
     grid-template-columns: auto minmax(0, 1fr);
     margin-top: 32px;
     padding: 16px;
+  }
+  /* the line wraps here: the caret stays on its first row */
+  .lp-connect__caret {
+    align-self: start;
   }
   .lp-connect__line {
     font-size: 14px;
