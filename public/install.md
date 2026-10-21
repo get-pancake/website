@@ -99,23 +99,39 @@ current help if these labels differ.
 Reuse an existing native connector or MCP entry first. In an app or IDE, prefer
 its MCP/connector settings when available. In the Codex IDE extension, the
 documented path is **gear menu → MCP servers → Add server**, with **Streamable
-HTTP**, the URL above, and **Authenticate** when offered. Restart the extension
-if requested.
+HTTP**, the URL above, and **Authenticate** when offered; if it asks for an
+OAuth client ID or resource, use the values in the command below. Restart the
+extension if requested.
 
-For a local Codex installation, if you have permission to configure it, inspect
-`codex mcp --help` and existing registrations. If no equivalent entry exists:
+Pancake does not support Dynamic Client Registration, so a URL alone fails with
+"Dynamic client registration not supported". Codex needs Pancake's public client
+ID and the resource too. For a local Codex installation, if you have permission
+to configure it, inspect `codex mcp --help` and `codex mcp list` first. If no
+entry for this URL exists:
 
 ```sh
-codex mcp add pancake --url https://app.pancake.ai/api/mcp
+codex mcp add pancake \
+  --url https://app.pancake.ai/api/mcp \
+  --oauth-client-id https://app.pancake.ai/.well-known/mcp-clients/pancake-cli.json \
+  --oauth-resource https://app.pancake.ai/api/mcp
 ```
 
-If sign-in is still needed:
+`codex mcp add` starts the browser sign-in itself. Afterwards, run
+`codex mcp list`. If the **Auth** column for `pancake` reads `OAuth`,
+sign-in is complete: do not run it again. Only if it reads `Not logged in`
+(for example, the user closed the sign-in), run:
 
 ```sh
 codex mcp login pancake
 ```
 
-Use `codex mcp list` to inspect registration. This is not proof of tool access.
+Running `codex mcp add` again under an existing name replaces that entry. Never
+do it for a working entry. If an existing `pancake` entry for this same
+URL fails with "Dynamic client registration not supported", it was added with
+the URL only: run the full command above under the same name to give it the two
+OAuth values, then check `codex mcp list` again.
+
+The **Auth** column shows registration and sign-in, not tool access.
 Preserve other entries and the user's configuration scope. If `pancake` already
 names another server, use an unused name consistently. If the CLI is absent,
 only your execution sandbox lacks file permissions, or the command would affect
