@@ -182,6 +182,7 @@
 /llms.txt
 /llms-full.txt
 /install.md
+/onboarding.md
 /pricing.md
 /white-glove.md
 /guides/claude.md
