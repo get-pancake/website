@@ -3,9 +3,9 @@
  *
  * The thesis: Claude and Codex are the best agent harnesses there are, and Pancake will not
  * out-build them. Pancake is the infrastructure they run a go-to-market on. Every layer and
- * every figure below maps to the product code (pancake-cmo @ e78c042e, main on 2026-10-21);
- * the evidence, the status of each layer and what not to claim yet are in
- * docs/infra/pancake-infra-teardown-2026-10-21.md. Change a figure only with that doc.
+ * every figure below was checked against the product code on 2026-10-21; how each figure
+ * was counted, what is safe to claim and what is not yet are in
+ * docs/infra/infra-landing-brief.md. Re-count a figure there before changing it.
  */
 
 type Layer = { name: string; line: string; body: string };
