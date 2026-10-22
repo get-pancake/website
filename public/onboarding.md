@@ -1,6 +1,6 @@
 # Create your first Pancake Play in your AI app
 
-Version 1.1.0 · `https://pancake.ai/onboarding.md`
+Version 1.2.0 · `https://pancake.ai/onboarding.md`
 
 Help a user continue their Pancake welcome after checkout: connect their AI app,
 understand their business from Pancake, agree one useful first Play, create it
@@ -83,6 +83,18 @@ Resume instead of restarting:
   current revision, returned playbook version, and the supported client value.
   Use `claude_code` for Claude Code, `codex` for Codex, and `other` for Claude
   Chat, ChatGPT, and other hosts; do not invent enum values.
+
+## Before the first Play: connect LinkedIn — highly recommended, optional
+
+Offer this early, after confirming the workspace and acknowledging the handoff, before asking for the first Play's brief. Explain in the user's language: "I highly recommend connecting your LinkedIn account now, so it is ready when you want to contact the people your Play finds. You will sign in securely in your browser. We can also skip this and create your Play now." Connecting is optional: finding leads and creating a Play do not require it. Never promise it will improve lead search or send messages by itself.
+
+1. Read `campaign_list_linkedin_accounts`. If the intended account is already `connected`, acknowledge it and continue without opening a new sign-in. If there are several accounts or the displayed account may belong to a colleague, ask which account the user means; never choose or reconnect someone else's account by assumption.
+2. If they agree to connect, call `campaign_start_linkedin_connect` when available. For a first account, omit arguments. To resume a pending sign-in or reconnect a known account, use that account's `senderId`; use `newSender: true` only if they explicitly want an additional account. Do not ask the user to type an ID. This uses an available LinkedIn licence; if none is available, explain the returned limitation and offer to skip. Never buy a licence for them.
+3. Give the returned `url` as a clickable **Connect LinkedIn** link. Tell them to open it in their own browser, sign in to the LinkedIn account they intend to use, and complete any verification LinkedIn requests there (for example a code, app approval or CAPTCHA). Never request or handle passwords, cookies or verification codes in chat. Treat this temporary link as private: do not put it in analytics, logs, the Brain or a shared document.
+4. Ask them to return to this conversation when finished. Read `campaign_get_sender_status` with the returned `senderId`. Only a `connected` status confirms success; a generated link, an opened browser page, a redirect or the user's "done" alone does not. If it is still connecting, explain that confirmation is pending, wait briefly and check once more; then offer to continue with the Play and check later instead of blocking onboarding.
+5. If the link expired, request another for the same `senderId`. If sign-in or verification fails, help them retry in the browser. If the tool is missing after refreshing discovery once, or reports an unavailable connection flow, point them to [Pancake Settings → LinkedIn accounts](https://app.pancake.ai/workspace/linkedin): select **Connect LinkedIn** (or reconnect the intended account), complete sign-in in the page that opens, then return here. The welcome may keep settings locked: in that case offer to skip and connect after entering the app. Do not bypass the welcome or switch workspaces.
+
+A "skip", "later" or refusal immediately continues the first-Play setup. Do not repeatedly offer it in this conversation or use the welcome's `defer` move: that defers the Play, not LinkedIn. On a resumed welcome, keep the saved brief and first Play, check existing connection state, and respect any known skip; do not restart completed setup just to add this step. A connection does not authorize enrolling leads or editing sequences. Before reconnecting an account already used for outreach, explain that previously queued outreach may resume when it reconnects.
 
 ## 3. Make it personal with the context Pancake already has
 
