@@ -6,12 +6,10 @@
  *
  * The line alone since the same evening: its feature list ("Already live") moved into the deep
  * dive's four stories (founder: "dont say 'already live' just push a simple and strong narrative
- * with the key features in this cloud section").
- * The rainbow is the hero's five ribbon colours as a static sunrise (no WebGL here).
+ * with the key features in this cloud section"). No drawn rainbow either: a concentric sunrise
+ * under the line read as clip art next to the designer's ribbons (founder: "those things are
+ * bad"). The line on plum is the whole section.
  */
-
-/** outer to inner: the hero's ribbon order */
-const ARCS = ["yellow", "pink", "purple", "blue", "green"] as const;
 
 export function LpVision() {
   return (
@@ -23,11 +21,6 @@ export function LpVision() {
           </span>{" "}
           <span className="lp-vision__line lp-vision__accent">Pancake is where they run it.</span>
         </h2>
-        <svg className="lp-vision__arcs" viewBox="0 0 1200 320" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
-          {ARCS.map((tone, i) => (
-            <circle key={tone} data-tone={tone} cx="600" cy="760" r={640 - i * 44} />
-          ))}
-        </svg>
       </div>
     </section>
   );

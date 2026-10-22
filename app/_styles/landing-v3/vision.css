@@ -1,7 +1,7 @@
 /* Section — the vision (LpVision.tsx, the infra-first landing, 2026-10-21). The banner's frame
    (wrapper p-16, card r48) in the brand plum, the vision line in Condensed at display size, its
-   second sentence in the hero's yellow, and the hero's five ribbon colours rising from the card's
-   floor as a static sunrise. */
+   second sentence in the hero's yellow. Nothing else in the card (2026-10-21: the drawn rainbow
+   went, "those things are bad"). */
 .lp-vision {
   padding: 16px 16px 112px; /* the page rhythm before the bottle banner */
 }
@@ -12,11 +12,8 @@
   color: var(--lp-ink-10);
   display: flex;
   flex-direction: column;
-  gap: 56px;
-  isolation: isolate;
   overflow: hidden;
-  padding: 136px 32px 300px;
-  position: relative;
+  padding: 136px 32px;
   text-align: center;
 }
 .lp-vision__title {
@@ -40,39 +37,9 @@
   color: var(--lp-yellow-30);
   margin-top: 0.12em;
 }
-.lp-vision__arcs {
-  bottom: 0;
-  height: 320px;
-  left: 50%;
-  pointer-events: none;
-  position: absolute;
-  transform: translateX(-50%);
-  width: max(100%, 1200px);
-  z-index: -1;
-}
-.lp-vision__arcs circle {
-  fill: none;
-  stroke-width: 44;
-}
-.lp-vision__arcs [data-tone="yellow"] {
-  stroke: var(--lp-yellow-30);
-}
-.lp-vision__arcs [data-tone="pink"] {
-  stroke: var(--lp-pink-30);
-}
-.lp-vision__arcs [data-tone="purple"] {
-  stroke: var(--lp-purple-30);
-}
-.lp-vision__arcs [data-tone="blue"] {
-  stroke: var(--lp-brand-blue);
-}
-.lp-vision__arcs [data-tone="green"] {
-  stroke: var(--lp-green-20);
-}
-
 @media (max-width: 1024px) {
   .lp-vision__card {
-    padding: 112px 24px 260px;
+    padding: 112px 24px;
   }
 }
 @media (max-width: 767px) {
@@ -81,14 +48,9 @@
   }
   .lp-vision__card {
     border-radius: 32px;
-    gap: 40px;
-    padding: 80px 16px 200px;
+    padding: 80px 16px;
   }
   .lp-vision__title {
     font-size: 38px;
-  }
-  .lp-vision__arcs {
-    height: 220px;
-    width: 900px;
   }
 }
