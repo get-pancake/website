@@ -95,7 +95,7 @@ type Timeline = gsap.core.Timeline;
     registered by the carousel shell lp-dive-carousel.ts, by this driver for the phone stack,
     and by the /lp-dev/stages harness; V2 replication 2026-10-09). "__lpFeat" left with the
     feature cards. */
-// __lpBuild: LpBuildAnim; __lpInfra: LpInfraAnim's diagram flow and agents exchange (2026-10-21)
+// __lpBuild: LpBuildAnim; __lpInfra: LpInfraAnim's diagram flow (2026-10-21)
 export type PlayOnceRegistry = "__lpStep" | "__lpStory" | "__lpBuild" | "__lpInfra";
 /** cue: the timeline time of the card's first scene (0 = its first frame) */
 type Built = { tl: Timeline; cleanup: () => void; cue?: number };

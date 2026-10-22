@@ -10,10 +10,8 @@ import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
 import { LpBuild } from "@/components/sections/landing-v3/LpBuild";
-import { LpForAgents } from "@/components/sections/landing-v3/LpForAgents";
 import { LpInfra } from "@/components/sections/landing-v3/LpInfra";
 import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
-import { LpWhy } from "@/components/sections/landing-v3/LpWhy";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
 import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
@@ -151,20 +149,18 @@ export default function Home() {
       <LpDemo />
       {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
       <LpMarquee labelled />
-      {/* The infra-first page (2026-10-21), told as every infrastructure page tells it (the outline
-          the founder approved, from Cargo, Landbase, Crustdata, Explorium, Octave, Clay, Apollo
-          and Stripe): the shift, the model (three layers), the steps, how an agent plugs in, build
-          and run; then the designer's banner, deep dive and CTA (one sky: nothing may
-          sit between those three, sky.css), proof and pricing. The hero's For agents view keeps
-          the one-line install (LpAgentStart), as Cargo's Agent / Human toggle does. */}
-      <LpWhy />
+      {/* The infra-first page (2026-10-21), one story told once (founder: "check the story board
+          it s too long and decousu"): what Pancake is in one picture (your agent decides, Pancake
+          runs it), what "runs it" means (your sentence becomes software), the three steps; then
+          the designer's banner, deep dive and CTA (one sky: nothing may sit between those three,
+          sky.css), proof and pricing. The hero's For agents view keeps the one-line install
+          (LpAgentStart), as Cargo's Agent / Human toggle does. */}
       <LpInfra />
+      <LpBuild />
       <LpAgentLab
         cardBody={SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY}
       />
       <LpSteps />
-      <LpForAgents />
-      <LpBuild />
       <LpBanner />
       {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
       <LpDive />
