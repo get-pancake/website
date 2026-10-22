@@ -9,6 +9,8 @@ import { LpDive } from "@/components/sections/landing-v3/LpDive";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
+import { LpInfra } from "@/components/sections/landing-v3/LpInfra";
+import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
 import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
@@ -24,7 +26,7 @@ import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
 import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
-import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
+import { social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 
 /**
@@ -41,6 +43,10 @@ import "@/app/_styles/landing-v3.css";
    device-tested 2026-09-01). viewport-fit=cover is a portrait no-op there too
    (env(safe-area-inset-top) stays 0 in the browser) — don't re-add it. */
 export const viewport: Viewport = { themeColor: "#fbf6f1" };
+
+/* The infra-first landing (2026-10-21): the homepage's og/twitter title follows its new H1.
+   HOME_SOCIAL_TITLE (lib/social-meta.ts) stays the root layout's fallback for the subpages. */
+const HOME_INFRA_SOCIAL_TITLE = "Pancake — Agentic infrastructure to run your go-to-market";
 
 export const metadata: Metadata = {
   /* Tab title is EXACTLY "Pancake" — founder decision, twice (2026-08-31
@@ -68,7 +74,7 @@ export const metadata: Metadata = {
   title: "Pancake",
   description: SITE_DESCRIPTION,
   alternates: { canonical: SITE_ORIGIN },
-  ...social({ path: "", title: HOME_SOCIAL_TITLE, description: SITE_DESCRIPTION }),
+  ...social({ path: "", title: HOME_INFRA_SOCIAL_TITLE, description: SITE_DESCRIPTION }),
 };
 
 // SoftwareApplication JSON-LD — homepage only (Organization is in root layout).
@@ -142,6 +148,14 @@ export default function Home() {
       <LpDemo />
       {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
       <LpMarquee labelled />
+      {/* The infra-first page (2026-10-21/22): what Pancake gives your agent (the diagram), then
+          the infra vision as the three steps (the Vercel for GTM: deploy, host, run), which meet
+          the designer's banner as they do on main (founder 2026-10-22: "after the 1/2/3 we should
+          see the" banner); then the deep dive and CTA (one sky: nothing may sit between banner,
+          dive and CTA, sky.css), proof and pricing. "Find any buyer you can describe." (the
+          agent-written search shown as code) went the same day: "les gens s en foutent du code".
+          The hero's For agents view keeps the one-line install (LpAgentStart). */}
+      <LpInfra />
       <LpAgentLab
         cardBody={SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY}
       />
@@ -149,7 +163,8 @@ export default function Home() {
       <LpBanner />
       {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
       <LpDive />
-      <LpCta sky />
+      {/* the close: the CTA pair, then the one-line setup to copy */}
+      <LpCta sky setup={<LpSetupPill />} />
       {/* testimonials / KPI bento (V2 4911:762): dev and previews show it, gaps filled with
           marked stand-ins. Production renders nothing while BENTO_LIVE (lp-bento-data.ts) is
           off, as it is today (the founder's go on the date and the customers' OK); once on,

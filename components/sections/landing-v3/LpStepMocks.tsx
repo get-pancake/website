@@ -19,6 +19,8 @@ import {
   s1Graph,
 } from "./lp-step-data";
 import type { StepVariant } from "./lp-step-timelines";
+import { ClaudeMark } from "./LpAgentMarks";
+import { SL_AVATAR } from "./lp-story-learns-art";
 
 /**
  * The three step mock UIs as DOM, with their geometry in steps.css. Step 01
@@ -173,14 +175,34 @@ function SxHand() {
 /* ── step 02 · the chat request → one question → a Play takes shape → the leads, all
    selected and added to the sequence → the Play card ── */
 
+/** the Pancake mark, full colour (the deep dive's avatar art, as LpClaudeScene draws it) */
+function S2PancakeMark({ className }: { className: string }) {
+  return (
+    <svg className={className} viewBox={`0 0 ${SL_AVATAR.size} ${SL_AVATAR.size}`} focusable="false">
+      {SL_AVATAR.shapes.map((shape, i) => (
+        <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
+      ))}
+    </svg>
+  );
+}
+
 function S2Stage({ placeholders }: { placeholders: boolean }) {
   const q = S2_QUESTION;
   return (
     <div className="lp-step-stage lp-step-stage--s2" aria-hidden="true">
       <i className="lp-sx-bg" />
 
-      {/* frames 1–3: the thread scrolls as one; the question card is its next item */}
+      {/* frames 1–3: the thread scrolls as one; the question card is its next item. Since
+          2026-10-21 (the infra-first page, founder: "step 02 starting in Claude") the thread is
+          Claude's, with Pancake connected: its header scrolls away with it when the Play takes
+          shape on Pancake. Geometry unchanged: only the skin and four small marks. */}
       <div className="lp-s2-chat">
+        <p className="lp-s2-claude">
+          <i className="lp-s2-claude-spark">
+            <ClaudeMark />
+          </i>
+          {S2_CHAT.app}
+        </p>
         <p className="lp-s2-bubble">{S2_CHAT.prompt}</p>
         <div className="lp-s2-worked">
           {/* reads the steps of S2_CHAT.working while Pancake works, then this line */}
@@ -188,9 +210,14 @@ function S2Stage({ placeholders }: { placeholders: boolean }) {
           <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 7L8 11L12 7" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
+          {/* after the chevron: the timeline takes the row's FIRST svg as its chevron */}
+          <S2PancakeMark className="lp-s2-worked-pk" />
         </div>
         {/* the text writes itself word by word (a clip over the real text) */}
         <p className="lp-s2-answer">
+          <i className="lp-s2-answer-spark">
+            <ClaudeMark />
+          </i>
           <span className="lp-s2-answer-t">{S2_CHAT.answer}</span>
         </p>
 
@@ -235,6 +262,11 @@ function S2Stage({ placeholders }: { placeholders: boolean }) {
         <span className="lp-s2-ph">{S2_CHAT.placeholder}</span>
         <span className="lp-s2-typed">{S2_CHAT.prompt}</span>
         <i className="lp-s2-caret" />
+        {/* the Pancake connector, on */}
+        <i className="lp-s2-pk">
+          <S2PancakeMark className="lp-s2-pk-mark" />
+          <i className="lp-s2-pk-dot" />
+        </i>
         <i className="lp-s2-send">
           <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M7 11.5V2.5M3.25 6.25 7 2.5l3.75 3.75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

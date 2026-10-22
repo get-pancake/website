@@ -212,8 +212,10 @@ export const SX_LEADS_ROW_IN = [0, 0.1, 0.2, 0.3, 0.34, 0.42];
 /* ── step 02 · say who you want → one question → a Play takes shape → leads → the Play ── */
 
 export const S2_CHAT = {
-  /** the composer's placeholder, the hero demo's (lp-demo-data.ts) */
-  placeholder: "Find people who…",
+  /** the app the request is typed in (2026-10-21: step 02 starts in Claude, Pancake connected) */
+  app: "Claude",
+  /** Claude's own new-chat placeholder (was the hero demo's "Find people who…") */
+  placeholder: "How can I help you today?",
   prompt: "Find founders who just raised a seed round",
   /** what the worked row reads while Pancake works, one line per step (founder 2026-10-13:
       "those interactions should be animated"); it settles on `worked`, the storyboard's line */

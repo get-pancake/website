@@ -45,6 +45,7 @@
 }
 .lp-dive-title {
   color: var(--lp-text);
+  text-wrap: balance; /* "What your agent runs on" (2026-10-21) wraps as two even lines on phones */
   left: 128px;
   margin: 0;
   position: absolute;

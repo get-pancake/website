@@ -265,6 +265,8 @@ export function LpDemo() {
         pause={VX_DEMO.controls.pause}
         pancake={<PancakeView />}
         claude={<LpClaudeScene script={CLAUDE_SCRIPT} chrome={C} label={C.aria} />}
+        // the infra-first homepage (2026-10-21): Claude & Codex only, no Pancake pill
+        only={1}
       />
       <noscript dangerouslySetInnerHTML={{ __html: NOSCRIPT_CSS }} />
     </section>

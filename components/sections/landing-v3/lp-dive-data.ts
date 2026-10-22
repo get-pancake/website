@@ -24,6 +24,16 @@ import type { DiveItemId } from "./lp-dive-stages";
  * The f5 "See example Plays" link is not carried over: the nav (Product) and the footer
  * ("Example Plays") both link /plays.
  *
+ * The infra-first page (2026-10-21, founder: "The cloud part detailing features should stay below
+ * this thing but repurposed for infra! we should keep those clouds but change what we say"): the
+ * same four stories and stages, said as what an agent runs on. Then, the same evening ("dont say
+ * 'already live' just push a simple and strong narrative with the key features in this cloud
+ * section"): four verbs, find, reach, learn, run, carrying the key features — 30+ providers,
+ * lookalikes and work emails on demand (find), your own accounts and leads straight to the CRM
+ * (reach), the Brain (learn), the agent setting everything up (run). Heading "How Pancake gets
+ * you customers" since 2026-10-22 ("What your agent runs on": founder, "not clear"), close to the
+ * designer's original "How Pancake finds customers".
+ *
  * Wrap budget: a body is at most 4 lines at 272px / 13.333px Geist (~170 characters), or the
  * active list (anchored at the row's top 17.5) outgrows the 489 row.
  */
@@ -44,7 +54,7 @@ export type DiveItem = {
 };
 
 /** the section heading (production copy, = V2 4939:3390) */
-export const DIVE_TITLE = "How Pancake finds customers";
+export const DIVE_TITLE = "How Pancake gets you customers";
 
 /**
  * THE PHONE SWITCH (≤767; decision 2026-10-11 §9 F3, mobile artboard 5024:8914).
@@ -66,26 +76,26 @@ export const DIVE_FALLBACK_S = 6;
 export const DIVE_ITEMS: readonly DiveItem[] = [
   {
     id: "sources",
-    title: "Sources you can trust",
-    body: "Pancake reads funding rounds, open roles and tech stacks from Dealroom, TheirStack, Wappalyzer and more. Every lead shows why it fits and where that came from.",
+    title: "Find your buyers",
+    body: "30+ data providers behind one door: funding, hiring, tech stacks and lookalikes of your best customers. Work emails on demand, and every lead shows its source.",
     status: "final",
   },
   {
     id: "message",
-    title: "A personal message for\nevery lead",
-    body: "Pancake opens with their signal: a post, an open role, a funding round. Each sequence has its own language and tone. Edit any draft before it sends.",
+    title: "Reach them from\nyour own accounts",
+    body: "Each message opens on their signal and goes out from your own accounts. Edit any draft first. Leads go straight to HubSpot, Attio, Pipedrive or Close.",
     status: "final",
   },
   {
     id: "learns",
-    title: "Pancake learns from what wins",
-    body: "Approve or reject a lead and your brain learns who fits. Each Play tracks contacts, replies and wins, so you see what works.",
+    title: "Learn what wins",
+    body: "Approve or reject a lead and the Brain learns who fits. Every Play tracks replies and wins, so the next search is sharper.",
     status: "final",
   },
   {
     id: "claude",
-    title: "Run it from Claude or Codex",
-    body: "Connect Pancake to Claude or Codex with a browser sign-in. Build Plays, review leads and edit messages from the chat you already use.",
+    title: "Run it all from your agent",
+    body: "Your agent sets Pancake up from start to finish, then builds Plays, reviews leads and edits messages, right from Claude or Codex.",
     more: { href: GUIDE_PATH, label: "See how", name: "See how to run Pancake from Claude or Codex" },
     status: "final",
   },

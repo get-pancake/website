@@ -85,27 +85,30 @@ export type StepContent = {
 };
 
 export const STEPS: readonly StepContent[] = [
+  /* The infra vision (founder 2026-10-22: "the 3 steps should be replaced by our infra vision !"):
+     The Vercel for GTM as deploy, host, run, told by the designer's three animations in a new
+     order — deploy is step 02's storyboard (the ask in Claude, the Play goes live), host is step
+     01's (the Brain from your website), run is step 03's (the outreach and the replies). */
   {
     num: "01",
-    title: "Add your website.\nPancake builds your GTM brain.",
-    body: "From your website, Pancake learns who buys from you, what to say, and where to find them. Always up to date.",
+    title: "Deploy.\nTell your agent who you want.",
+    body: "Ask in Claude, Codex or the app. Pancake builds the Play, tests the search on real companies and puts it live.",
+    art: [{ kind: "anim", variant: "s2", status: "final" }],
+    // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
+    alt: "Animation: in Claude, with Pancake connected, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, Claude answers and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape on Pancake: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",
+  },
+  {
+    num: "02",
+    title: "Host.\nYour Play lives on Pancake.",
+    body: "Next to your Brain: what you sell, who buys and how you talk, learned from your website. Leads, messages and history stay in one place your agent can read.",
     art: [{ kind: "anim", variant: "s1", status: "final" }],
     // names S1_HUBS[].label (lp-step-data.ts) in hub order: keep in sync
     alt: "Animation: a website address is typed and researched; from the Acme node a knowledge graph blooms, its five branches labeled Competitors, ICPs, Outreach, Influencers and Market Research, then a market profile fills in: Company, Offering, Ideal clients.",
   },
   {
-    num: "02",
-    // V2 4911:480 (2026-10-11); "\n" = its desktop break, phones wrap it to three lines
-    title: "Say who you want.\nPancake builds the Play.",
-    body: "A Play is one GTM idea put to work: it keeps searching for people who fit. Start one in Pancake, Claude or Codex. You approve each lead, then Pancake writes to them under your name.",
-    art: [{ kind: "anim", variant: "s2", status: "final" }],
-    // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
-    alt: "Animation: in the Pancake chat, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, answers, and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",
-  },
-  {
     num: "03",
-    title: "Pancake gets you the meeting.\nYou close it.",
-    body: "Pancake follows up until they answer, then reads the reply. A yes gets your calendar link, sent from your account. Every other answer comes back to you.",
+    title: "Run.\nPancake does the outreach.",
+    body: "On your schedule, laptop closed. It finds new leads, writes from your own accounts and follows up. Every reply comes back to you, labeled.",
     art: [{ kind: "anim", variant: "s3", status: "final" }],
     // retells S3_THREAD, then lists S3_CHIPS (lp-step-data.ts): keep in sync
     alt: "Animation: from the selected leads, Pancake drafts a message to Tamsin Okafor, founder of Quillfern, about her seed round and a new website, and it is sent. She answers that she is free Thursday at 3pm, and the meeting appears: Tamsin and Acme, Thursday 3pm. The meeting lands on Thursday in a calendar week of October 2026, which then fills up day by day with more meetings — Samantha M., Julien Aubert, Martin Torres and Acme, Lumen Collective, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",
