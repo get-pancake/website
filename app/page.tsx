@@ -9,7 +9,6 @@ import { LpDive } from "@/components/sections/landing-v3/LpDive";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
-import { LpBuild } from "@/components/sections/landing-v3/LpBuild";
 import { LpInfra } from "@/components/sections/landing-v3/LpInfra";
 import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
@@ -149,18 +148,17 @@ export default function Home() {
       <LpDemo />
       {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
       <LpMarquee labelled />
-      {/* The infra-first page (2026-10-21/22): what Pancake gives your agent (the diagram), a
-          look under the hood (find any buyer you can describe), then the infra vision as the
-          three steps (the Vercel for GTM: deploy, host, run), which meet the designer's banner
-          as they do on main (founder 2026-10-22: "after the 1/2/3 we should see the" banner);
-          then the deep dive and CTA (one sky: nothing may sit between banner, dive and CTA,
-          sky.css), proof and pricing. The hero's For agents view keeps the one-line install
-          (LpAgentStart). */}
+      {/* The infra-first page (2026-10-21/22): what Pancake gives your agent (the diagram), then
+          the infra vision as the three steps (the Vercel for GTM: deploy, host, run), which meet
+          the designer's banner as they do on main (founder 2026-10-22: "after the 1/2/3 we should
+          see the" banner); then the deep dive and CTA (one sky: nothing may sit between banner,
+          dive and CTA, sky.css), proof and pricing. "Find any buyer you can describe." (the
+          agent-written search shown as code) went the same day: "les gens s en foutent du code".
+          The hero's For agents view keeps the one-line install (LpAgentStart). */}
       <LpInfra />
       <LpAgentLab
         cardBody={SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY}
       />
-      <LpBuild />
       <LpSteps />
       <LpBanner />
       {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}

@@ -148,7 +148,7 @@ function Wire() {
   );
 }
 
-/** The Pancake mark, full colour (as LpBuildAnim's): its three pancakes are the three layers */
+/** The Pancake mark, full colour (as step 02's, LpStepMocks): its three pancakes are the three layers */
 function PancakeMark() {
   return (
     <svg className="lp-infra__pk" viewBox={`0 0 ${SL_AVATAR.size} ${SL_AVATAR.size}`} aria-hidden="true" focusable="false">
