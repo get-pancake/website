@@ -129,6 +129,30 @@
   }
 }
 
+/* Product Hunt badge (LpProductHunt, 2026-10-22): "#1 Product of the Week", first in the CTA
+   group, where V1's nav had its badge. Only from 1280: below that the centred links leave no
+   room, and the hero carries it under its buttons (hero.css). 40 tall, centred on the 38 pills. */
+.lp-nav-ph {
+  display: none;
+}
+@media (min-width: 1280px) {
+  .lp-nav-ph {
+    border-radius: 8px;
+    display: block;
+    margin: -1px 8px 0 0;
+  }
+  .lp-nav-ph img {
+    display: block;
+    height: 40px;
+    max-width: none;
+    width: auto;
+  }
+  .lp-nav-ph:focus-visible {
+    outline: 2px solid var(--lp-text);
+    outline-offset: 2px;
+  }
+}
+
 /* Focus ring on the tinted pills (2026-10-07, WCAG 1.4.11): foundation's
    purple-30 ring is about 2.1:1 on the --lp-tinted-surface fill (#f8e5d4).
    --lp-text is plum there (15:1) and turns cream in the agents view, where

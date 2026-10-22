@@ -582,6 +582,12 @@
   max-width: none;
   width: auto;
 }
+/* ≥1280 the nav bar carries the badge (nav.css, where V1 had it): never both */
+@media (min-width: 1280px) {
+  .lp-hero--home .lp-hero-ph {
+    display: none;
+  }
+}
 .lp-hero-ph:focus-visible {
   outline: 2px solid var(--lp-purple-30);
   outline-offset: 2px;

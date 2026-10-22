@@ -6,6 +6,7 @@ import { LpNavScroll } from "@/components/sections/landing-v3/LpNavScroll";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { navGroups, verticalPath } from "@/lib/verticals";
 import type { VerticalCategory } from "@/lib/verticals/types";
+import { LpProductHunt } from "@/components/sections/landing-v3/LpProductHunt";
 
 /**
  * Landing v3 — Nav (Figma node 4257:4894, 1654×120; V2 4911:347 for the CTA
@@ -66,6 +67,8 @@ export function LpNav() {
         </LpNavDisclosure>
       </nav>
       <div className="lp-nav-ctas">
+        {/* #1 Product of the Week, where V1 had its badge: first on the right (≥1280 only) */}
+        <LpProductHunt placement="nav" />
         {/* Figma V2 4939:2634: the tinted sm pill (73×38, nav.css). Hidden
             ≤767 — the phone bar has room for one pill; the sheet carries
             Sign in as a link. */}
