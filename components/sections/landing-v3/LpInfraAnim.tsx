@@ -14,8 +14,8 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
  * a transform: nothing changes size on screen while it plays.
  *
  *   LpInfraFlow — the diagram card (LpInfra): the agents send, the wire draws down through the
- *                 sign-in, Pancake lights, the branch draws, the brain, the data and the tools
- *                 light up in turn.
+ *                 sign-in, Pancake lights, the brain, the data and the tools light up in turn
+ *                 and the Play switches on.
  */
 
 const loadFlow = (): Promise<PlayOnceRuntime> =>

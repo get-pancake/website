@@ -1,9 +1,14 @@
 /* Section — "Everything your agent needs to sell." (LpInfra.tsx, the infra-first landing,
-   2026-10-21). No Figma frame yet, so it is built from the homepage's own parts: the steps'
-   wrapper, org and centred title (steps.css), the step card's cream and r30, the
-   mock cards' white fill and 0.4px hairline (.lp-mockcard), the dive's list type. The diagram
-   reads top to bottom: your agent, the sign-in, Pancake, the four things it does. */
+   2026-10-21). No Figma frame yet, so it is built from the homepage's own parts and the kit: the
+   steps' wrapper, org and centred title (steps.css), the step card's cream and r30, the mock
+   cards' white fill and 0.4px hairline (.lp-mockcard), the kit's brand cards and badges
+   (_design-kit/card.html, badge.html: weak surface + branded stroke, strong surface under plum
+   text) in the logo's three pancake colours. 2026-10-22 ("make this more beautiful - use design
+   system"): a dotted canvas and grouped nodes after Mobbin's infra diagrams (Cloudflare Workers),
+   Pancake as the hub that holds its layers (Coda). The diagram reads top to bottom: your agent,
+   the sign-in, Pancake and its three layers. */
 .lp-infra {
+  --lp-infra-lift: 0 1px 2px rgba(44, 0, 42, 0.05), 0 12px 32px -16px rgba(44, 0, 42, 0.22);
   padding: 16px;
 }
 .lp-infra__org {
@@ -30,10 +35,13 @@
   text-wrap: balance;
 }
 
-/* the diagram card */
+/* the diagram card: cream, r30, on a dotted canvas */
 .lp-infra__card {
   align-items: center;
-  background: var(--lp-card-cream);
+  background-color: var(--lp-card-cream);
+  background-image: radial-gradient(circle, var(--lp-ink-tr-20) 1px, transparent 1.5px);
+  background-position: center 10px;
+  background-size: 20px 20px;
   border-radius: 30px;
   display: flex;
   flex-direction: column;
@@ -41,35 +49,46 @@
   padding: 48px;
   width: 1136px;
 }
+
+/* your agent: one node, its label and the two agents */
+.lp-infra__agentbar {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke), var(--lp-infra-lift);
+  display: flex;
+  gap: 16px;
+  padding: 8px 8px 8px 20px;
+}
 .lp-infra__label {
   color: var(--lp-subtle-text);
   font-size: var(--lp-text-sm);
   font-weight: 500;
   line-height: 20px;
+  white-space: nowrap;
 }
 .lp-infra__agents {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
+  gap: 8px;
   list-style: none;
-  margin: 12px 0 0;
+  margin: 0;
   padding: 0;
 }
 .lp-infra__agent {
   align-items: center;
-  background: var(--lp-surface);
-  border-radius: var(--lp-r-m);
+  background: var(--lp-ink-10);
+  border-radius: 12px;
   box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
   color: var(--lp-text);
   display: flex;
-  font-size: var(--lp-text-lg);
+  font-size: var(--lp-text-md);
   font-weight: 500;
-  gap: 10px;
+  gap: 8px;
   line-height: 24px;
-  padding: 12px 20px;
+  padding: 8px 16px 8px 12px;
 }
-/* LpAgentMarks' cells: the Claude glyph is 20 in a 24 cell, the OpenAI glyph fills its 24 box */
+/* LpAgentMarks' cells: the Claude glyph is 20 in a 24 cell (in its own spark colour), the OpenAI
+   glyph fills its 24 box */
 .lp-infra__mark {
   color: var(--lp-ink-100);
   display: grid;
@@ -83,31 +102,45 @@
   width: 24px;
 }
 .lp-infra__mark svg[data-mark="claude"] {
+  color: var(--lp-claude-spark);
   height: 20px;
   width: 20px;
 }
-/* the sign-in: a wire down from the agents, its caption, a wire on to Pancake. Each wire is a
+
+/* the sign-in: a wire down from the agents, its pill, a wire on to Pancake. Each wire is a
    hairline (drawn by the flow) and the dot that rides its front (LpInfraAnim). */
 .lp-infra__link {
   align-items: center;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin: 12px 0;
 }
 .lp-infra__link-text {
-  color: var(--lp-subtle-text);
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
+  color: var(--lp-ink-90);
+  display: flex;
   font-size: var(--lp-text-sm);
+  font-weight: 500;
+  gap: 6px;
   line-height: 20px;
+  padding: 6px 14px 6px 10px;
+}
+.lp-infra__link-text svg {
+  fill: none;
+  stroke: var(--lp-green-30);
+  stroke-linecap: round;
+  stroke-width: 1.5;
 }
 .lp-infra__wire {
   display: block;
-  height: 28px;
+  height: 24px;
   position: relative;
   width: 1px;
 }
 .lp-infra__line {
-  background: var(--lp-ink-tr-20);
+  background: var(--lp-ink-tr-40);
   display: block;
   inset: 0;
   position: absolute;
@@ -125,74 +158,109 @@
   visibility: hidden;
   width: 7px;
 }
-/* Pancake to its three layers: a stem, a bar across the three columns' centres (the grid's gap is
-   16, so a column's centre sits (100% - 32px) / 6 from its edge), three drops */
-.lp-infra__branch {
-  height: 32px;
-  margin-top: 12px;
+
+/* Pancake: its name sits on the platform's edge where the wire plugs in (the platform pulls up
+   under the pill by half the pill's height: 32) */
+.lp-infra__brand {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke), var(--lp-infra-lift);
+  display: flex;
+  gap: 8px;
+  padding: 10px 24px 10px 14px;
   position: relative;
-  width: 100%;
+  z-index: 1;
 }
-.lp-infra__branch > span {
-  background: var(--lp-ink-tr-20);
-  position: absolute;
-}
-.lp-infra__branch-stem {
-  height: 16px;
-  left: 50%;
-  top: 0;
-  width: 1px;
-}
-.lp-infra__branch-bar {
-  height: 1px;
-  left: calc((100% - 32px) / 6);
-  right: calc((100% - 32px) / 6);
-  top: 16px;
-}
-.lp-infra__branch-drop {
-  height: 16px;
-  top: 16px;
-  width: 1px;
-}
-.lp-infra__branch-drop[data-col="1"] {
-  left: calc((100% - 32px) / 6);
-}
-.lp-infra__branch-drop[data-col="2"] {
-  left: 50%;
-}
-.lp-infra__branch-drop[data-col="3"] {
-  left: calc(100% - (100% - 32px) / 6);
+.lp-infra__pk {
+  display: block;
+  height: 44px;
+  width: 44px;
 }
 .lp-infra__logo {
   display: block;
-  height: 40px;
+  height: 34px;
   width: auto;
 }
-/* what Pancake does: four white cards; subgrid rows keep every body on one line of sight */
+.lp-infra__stack {
+  background: var(--lp-surface);
+  border-radius: 32px;
+  box-shadow:
+    inset 0 0 0 0.4px var(--lp-subtle-stroke),
+    0 1px 2px rgba(44, 0, 42, 0.04),
+    0 24px 56px -32px rgba(44, 0, 42, 0.28);
+  margin-top: -32px;
+  padding: 52px 16px 16px;
+  width: 100%;
+}
+
+/* the three layers: kit brand cards in the logo's pancake colours (yellow on top, purple, pink
+   under); subgrid rows keep every badge, title and body on one line of sight */
 .lp-infra__parts {
   display: grid;
-  gap: 16px;
+  gap: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
   margin: 0;
   padding: 0;
   width: 100%;
 }
+.lp-infra__part[data-tone="yellow"] {
+  --lp-infra-tone-10: var(--lp-yellow-10);
+  --lp-infra-tone-20: var(--lp-yellow-20);
+  --lp-infra-tone-30: var(--lp-yellow-30);
+}
+.lp-infra__part[data-tone="purple"] {
+  --lp-infra-tone-10: var(--lp-purple-10);
+  --lp-infra-tone-20: var(--lp-purple-20);
+  --lp-infra-tone-30: var(--lp-purple-30);
+}
+.lp-infra__part[data-tone="pink"] {
+  --lp-infra-tone-10: var(--lp-pink-10);
+  --lp-infra-tone-20: var(--lp-pink-20);
+  --lp-infra-tone-30: var(--lp-pink-30);
+}
 .lp-infra__part {
-  background: var(--lp-surface);
+  background: var(--lp-infra-tone-10);
   border-radius: var(--lp-r-lg);
-  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
+  box-shadow: inset 0 0 0 1px var(--lp-infra-tone-20);
   display: grid;
-  grid-row: span 3;
+  grid-row: span 4;
   grid-template-rows: subgrid;
-  padding: 24px;
+  padding: 8px 8px 22px;
   row-gap: 8px;
 }
+/* (0,2,0): beats `.lp p { margin: 0 }` */
+.lp-infra__part > :not(.lp-infra__pic) {
+  margin-inline: 14px;
+}
+.lp-infra__pic {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-m);
+  box-shadow: 0 1px 2px rgba(44, 0, 42, 0.06), 0 0 0 0.4px var(--lp-infra-tone-20);
+  display: flex;
+  height: 136px;
+  justify-content: center;
+  margin-bottom: 8px;
+  overflow: hidden;
+  padding: 14px 16px;
+}
+/* the kit badge (components.css .badge, brand variants), ported: the kit's stylesheet is not
+   loaded on the homepage */
 .lp-infra__part-name {
-  color: var(--lp-subtle-text);
+  background: var(--lp-infra-tone-30);
+  border: 1px solid var(--lp-infra-tone-30);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  corner-shape: squircle;
   font-size: var(--lp-text-sm);
   font-weight: 500;
-  line-height: 20px;
+  justify-self: start;
+  letter-spacing: 0.453px;
+  line-height: 18px;
+  padding: 2px 8px;
+  text-transform: uppercase;
 }
 .lp-infra__part-title {
   color: var(--lp-text);
@@ -209,14 +277,277 @@
   line-height: 1.5;
 }
 
-/* ── responsive: the steps' breakpoints ── */
+/* the brain: what it knows about Acme */
+.lp-infra__memory {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+}
+.lp-infra__mem-row {
+  align-items: baseline;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 52px minmax(0, 1fr);
+  padding: 8px 2px;
+}
+.lp-infra__mem-row + .lp-infra__mem-row {
+  box-shadow: inset 0 1px 0 var(--lp-ink-tr-10);
+}
+.lp-infra__mem-row dt {
+  color: var(--lp-subtle-text);
+  font-size: 12px;
+  line-height: 18px;
+}
+.lp-infra__mem-row dd {
+  color: var(--lp-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 20px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the data: the providers' own marks, half the disc's width on white discs, and the signals */
+.lp-infra__data {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.lp-infra__discs,
+.lp-infra__signals {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-infra__disc {
+  background: var(--lp-surface);
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 0.6px var(--lp-ink-tr-20),
+    0 0 0 2.5px var(--lp-surface),
+    0 4px 10px -4px rgba(44, 0, 42, 0.25);
+  display: grid;
+  flex: none;
+  height: 44px;
+  place-items: center;
+  width: 44px;
+}
+.lp-infra__disc + .lp-infra__disc {
+  margin-left: -8px;
+}
+.lp-infra__disc img {
+  display: block;
+  height: 22px;
+  object-fit: contain;
+  width: 22px;
+}
+.lp-infra__disc--more {
+  background: var(--lp-purple-20);
+  color: var(--lp-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  line-height: 1;
+}
+.lp-infra__signals {
+  gap: 6px;
+}
+.lp-infra__signal {
+  background: var(--lp-purple-10);
+  border-radius: var(--lp-r-xsm);
+  color: var(--lp-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 18px;
+  padding: 3px 8px;
+  white-space: nowrap;
+}
+
+/* the tools: a live Play and the lead it waits on */
+.lp-infra__tools {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+.lp-infra__play {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+.lp-infra__play-icon {
+  background: var(--lp-pink-10);
+  border-radius: var(--lp-r-xsm);
+  display: grid;
+  flex: none;
+  height: 28px;
+  place-items: center;
+  width: 28px;
+}
+.lp-infra__play-icon svg {
+  display: block;
+  fill: var(--lp-pink-40);
+}
+.lp-infra__play-name {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--lp-text);
+  display: -webkit-box;
+  flex: 1;
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 18px;
+  min-width: 0;
+  overflow: hidden;
+}
+.lp-infra__toggle {
+  background: var(--lp-pink-30);
+  border-radius: 999px;
+  display: block;
+  flex: none;
+  height: 18px;
+  position: relative;
+  width: 30px;
+}
+.lp-infra__toggle-knob {
+  background: var(--lp-surface);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(44, 0, 42, 0.25);
+  display: block;
+  height: 14px;
+  left: 2px;
+  position: absolute;
+  top: 2px;
+  transform: translateX(12px);
+  width: 14px;
+}
+.lp-infra__play-meta {
+  align-items: center;
+  color: var(--lp-subtle-text);
+  display: flex;
+  font-size: 12px;
+  gap: 6px;
+  line-height: 16px;
+  padding-left: 36px;
+}
+.lp-infra__live {
+  background: var(--lp-green-20);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lp-green-20) 30%, transparent);
+  display: block;
+  flex: none;
+  height: 6px;
+  width: 6px;
+}
+.lp-infra__lead {
+  align-items: center;
+  box-shadow: inset 0 1px 0 var(--lp-ink-tr-10);
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  padding-top: 10px;
+}
+.lp-infra__lead-avatar {
+  background: var(--lp-pink-20);
+  border-radius: 50%;
+  color: var(--lp-text);
+  display: grid;
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  height: 28px;
+  place-items: center;
+  width: 28px;
+}
+.lp-infra__lead-who {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.lp-infra__lead-name,
+.lp-infra__lead-co {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-infra__lead-name {
+  color: var(--lp-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 17px;
+}
+.lp-infra__lead-co {
+  color: var(--lp-subtle-text);
+  font-size: 12px;
+  line-height: 15px;
+}
+.lp-infra__approve {
+  background: var(--lp-pink-30);
+  border-radius: var(--lp-r-xsm);
+  color: var(--lp-text);
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  padding: 5px 10px;
+}
+
+/* ── responsive: the steps' breakpoints, and one for the cards' pictures ── */
 @media (max-width: 1024px) {
   .lp-infra__org {
     gap: 56px;
     padding: 96px 24px 0;
   }
   .lp-infra__card {
-    padding: 40px;
+    padding: 40px 32px 32px;
+  }
+  .lp-infra__stack {
+    padding: 52px 12px 12px;
+  }
+  /* six discs in a 208 px picture at 960 */
+  .lp-infra__disc {
+    height: 40px;
+    width: 40px;
+  }
+  .lp-infra__disc img {
+    height: 20px;
+    width: 20px;
+  }
+}
+/* under 960 the three pictures no longer fit side by side: one layer per row, the picture left */
+@media (min-width: 768px) and (max-width: 959px) {
+  .lp-infra__parts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-infra__part {
+    align-content: center;
+    column-gap: 20px;
+    grid-row: auto;
+    grid-template-areas: "pic ." "pic name" "pic title" "pic body" "pic .";
+    grid-template-columns: 280px minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto auto 1fr;
+    padding: 8px 24px 8px 8px;
+  }
+  .lp-infra__part > :not(.lp-infra__pic) {
+    margin-inline: 0;
+  }
+  .lp-infra__pic {
+    grid-area: pic;
+    margin-bottom: 0;
+  }
+  .lp-infra__part-name {
+    grid-area: name;
+  }
+  .lp-infra__part-title {
+    grid-area: title;
+  }
+  .lp-infra__part-body {
+    grid-area: body;
   }
 }
 @media (max-width: 767px) {
@@ -234,27 +565,40 @@
     line-height: 41px;
   }
   .lp-infra__card {
-    padding: 32px 20px 20px;
+    background-size: 18px 18px;
+    padding: 24px 12px 12px;
+  }
+  .lp-infra__agentbar {
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px 8px 8px;
   }
   .lp-infra__agent {
-    font-size: var(--lp-text-md);
-    padding: 10px 16px;
+    padding: 8px 14px 8px 10px;
+  }
+  .lp-infra__brand {
+    padding: 8px 20px 8px 12px;
+  }
+  .lp-infra__pk {
+    height: 40px;
+    width: 40px;
+  }
+  .lp-infra__logo {
+    height: 30px;
+  }
+  .lp-infra__stack {
+    border-radius: 26px;
+    margin-top: -28px;
+    padding: 44px 8px 8px;
   }
   .lp-infra__parts {
-    gap: 12px;
+    gap: 8px;
     grid-template-columns: minmax(0, 1fr);
   }
-  .lp-infra__branch {
-    height: 24px;
-  }
-  .lp-infra__branch-stem {
-    height: 24px;
-  }
-  .lp-infra__branch-bar,
-  .lp-infra__branch-drop {
-    display: none;
-  }
   .lp-infra__part {
-    padding: 20px;
+    padding: 8px 8px 20px;
+  }
+  .lp-infra__part > :not(.lp-infra__pic) {
+    margin-inline: 12px;
   }
 }
