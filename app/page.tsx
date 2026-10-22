@@ -13,7 +13,6 @@ import { LpBuild } from "@/components/sections/landing-v3/LpBuild";
 import { LpForAgents } from "@/components/sections/landing-v3/LpForAgents";
 import { LpInfra } from "@/components/sections/landing-v3/LpInfra";
 import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
-import { LpVision } from "@/components/sections/landing-v3/LpVision";
 import { LpWhy } from "@/components/sections/landing-v3/LpWhy";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
@@ -155,7 +154,7 @@ export default function Home() {
       {/* The infra-first page (2026-10-21), told as every infrastructure page tells it (the outline
           the founder approved, from Cargo, Landbase, Crustdata, Explorium, Octave, Clay, Apollo
           and Stripe): the shift, the model (three layers), the steps, how an agent plugs in, build
-          and run, the vision; then the designer's banner, deep dive and CTA (one sky: nothing may
+          and run; then the designer's banner, deep dive and CTA (one sky: nothing may
           sit between those three, sky.css), proof and pricing. The hero's For agents view keeps
           the one-line install (LpAgentStart), as Cargo's Agent / Human toggle does. */}
       <LpWhy />
@@ -166,9 +165,6 @@ export default function Home() {
       <LpSteps />
       <LpForAgents />
       <LpBuild />
-      {/* the vision and what ships next: before the banner, not after the CTA, where its rainbow
-          would sit right above the pricing art's */}
-      <LpVision />
       <LpBanner />
       {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
       <LpDive />
