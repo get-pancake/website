@@ -71,7 +71,9 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "/careers", updated: "2026-10-13", priority: 0.5 },
   { path: "/privacy", updated: "2026-10-13", priority: 0.3 },
   { path: "/terms", updated: "2026-09-18", priority: 0.3 },
-  { path: "/support", updated: "2026-10-13", priority: 0.3 },
+  { path: "/support", updated: "2026-10-21", priority: 0.3 },
+  { path: "/support/attio", updated: "2026-10-21", priority: 0.3 },
+  { path: "/support/hubspot", updated: "2026-10-21", priority: 0.3 },
   // the guide the site links; its twin with the campaign offer (/guides/claude) is noindex
   { path: "/claude", updated: "2026-10-17", priority: 0.7 },
   // one page per AI client besides Claude (connect-copy.ts), new on 2026-10-17
