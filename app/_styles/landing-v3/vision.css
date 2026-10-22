@@ -1,7 +1,7 @@
 /* Section — the vision (LpVision.tsx, the infra-first landing, 2026-10-21). The banner's frame
    (wrapper p-16, card r48) in the brand plum, the vision line in Condensed at display size, its
-   second sentence in the hero's yellow, "Coming next" as outlined pills, and the hero's five
-   ribbon colours rising from the card's floor as a static sunrise. */
+   second sentence in the hero's yellow, and the hero's five ribbon colours rising from the card's
+   floor as a static sunrise. */
 .lp-vision {
   padding: 16px 16px 112px; /* the page rhythm before the bottle banner */
 }
@@ -39,36 +39,6 @@
 .lp-vision__accent {
   color: var(--lp-yellow-30);
   margin-top: 0.12em;
-}
-.lp-vision__next {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  max-width: 900px;
-}
-.lp-vision__label {
-  color: var(--lp-ink-60);
-  font-size: var(--lp-text-sm);
-  font-weight: 500;
-  line-height: 20px;
-}
-.lp-vision__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.lp-vision__chip {
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px var(--lp-ink-90);
-  color: var(--lp-ink-20);
-  font-size: var(--lp-text-md);
-  line-height: 24px;
-  padding: 8px 16px;
 }
 .lp-vision__arcs {
   bottom: 0;
@@ -116,11 +86,6 @@
   }
   .lp-vision__title {
     font-size: 38px;
-  }
-  .lp-vision__chip {
-    font-size: 14px;
-    line-height: 20px;
-    padding: 8px 14px;
   }
   .lp-vision__arcs {
     height: 220px;

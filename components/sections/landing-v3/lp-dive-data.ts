@@ -26,9 +26,12 @@ import type { DiveItemId } from "./lp-dive-stages";
  *
  * The infra-first page (2026-10-21, founder: "The cloud part detailing features should stay below
  * this thing but repurposed for infra! we should keep those clouds but change what we say"): the
- * same four stories and stages, said as what an agent runs on — the data (one door to the
- * providers), the tools (your own accounts), the Brain (it learns, and your agent can read it),
- * and the agent itself. Heading "What your agent runs on".
+ * same four stories and stages, said as what an agent runs on. Then, the same evening ("dont say
+ * 'already live' just push a simple and strong narrative with the key features in this cloud
+ * section"): four verbs, find, reach, learn, run, carrying the key features — 30+ providers,
+ * lookalikes and work emails on demand (find), your own accounts and leads straight to the CRM
+ * (reach), the Brain (learn), the agent setting everything up (run). Heading "What your agent
+ * runs on".
  *
  * Wrap budget: a body is at most 4 lines at 272px / 13.333px Geist (~170 characters), or the
  * active list (anchored at the row's top 17.5) outgrows the 489 row.
@@ -72,26 +75,26 @@ export const DIVE_FALLBACK_S = 6;
 export const DIVE_ITEMS: readonly DiveItem[] = [
   {
     id: "sources",
-    title: "30+ data providers, one door",
-    body: "Funding rounds, open roles and tech stacks from Dealroom, TheirStack, Wappalyzer and more, behind one sign-in. Every lead shows where it came from.",
+    title: "Find your buyers",
+    body: "30+ data providers behind one door: funding, hiring, tech stacks and lookalikes of your best customers. Work emails on demand, and every lead shows its source.",
     status: "final",
   },
   {
     id: "message",
-    title: "Personal messages from\nyour own accounts",
-    body: "Pancake opens with their signal: a post, an open role, a funding round. Messages go out under your name. Edit any draft before it sends.",
+    title: "Reach them from\nyour own accounts",
+    body: "Each message opens on their signal and goes out from your own accounts. Edit any draft first. Leads go straight to HubSpot, Attio, Pipedrive or Close.",
     status: "final",
   },
   {
     id: "learns",
-    title: "The Brain learns\nfrom what wins",
-    body: "Approve or reject a lead and the Brain learns who fits. Every Play tracks contacts, replies and wins, and your agent can read them.",
+    title: "Learn what wins",
+    body: "Approve or reject a lead and the Brain learns who fits. Every Play tracks replies and wins, so the next search is sharper.",
     status: "final",
   },
   {
     id: "claude",
-    title: "Run it from Claude or Codex",
-    body: "Connect Claude or Codex with a browser sign-in. Your agent builds Plays, reviews leads and edits messages on the same workspace as the app.",
+    title: "Run it all from your agent",
+    body: "Your agent sets Pancake up from start to finish, then builds Plays, reviews leads and edits messages, right from Claude or Codex.",
     more: { href: GUIDE_PATH, label: "See how", name: "See how to run Pancake from Claude or Codex" },
     status: "final",
   },
