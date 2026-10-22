@@ -130,10 +130,9 @@ this business. Follow the returned `capabilities.firstPlayLifecycle`:
 
 - **coded:** Pancake prepares and checks the search from the saved brief. Do not
   invent a manual sample-approval step or promise instant results.
-- **planned:** use `plays_plan` as directed by the returned playbook. Keep the
-  returned plan and its supported arguments; do not manufacture a definition.
 - **unknown or unavailable:** explain the returned limitation and use the
-  documented next action. Do not guess which creation API to call.
+  documented next action. Keep the brief and wait or defer setup; never fall back
+  to a legacy Play or guess which creation API to call.
 
 Before creation or launch, show one concrete summary: audience, exclusions, new
 leads per search, first search now or later, recurrence, and the credit estimate
@@ -150,9 +149,10 @@ to do this later, use the documented `defer` move and give the app link.
 ## 5. Create or recover exactly one first Play
 
 After confirmation, use `postboarding_confirm_first_play` with the confirmed
-`briefRevision` and, for a planned workspace, the plan and credit arguments
-required by the live tool schema. Follow the returned playbook; do not substitute
-ordinary Play creation for this welcome operation.
+`briefRevision`. New Plays use the coded lifecycle and its ordinary credit
+authorization. Historical confirmations retain their saved launch for replay.
+Follow the returned playbook; do not substitute ordinary Play creation for this
+welcome operation.
 
 The server owns idempotency. Re-pasting the prompt, opening another chat, or
 retrying must resume this same operation and Play. If a revision conflicts,
