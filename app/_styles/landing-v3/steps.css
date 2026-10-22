@@ -821,10 +821,36 @@
   top: 0;
   width: 464px;
 }
+/* Claude's thread (2026-10-21, step 02 starts in Claude): its header, top left, scrolls with it */
+.lp-s2-claude {
+  align-items: center;
+  color: var(--lp-claude-ink-48);
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 6px;
+  left: 51px;
+  line-height: 16px;
+  position: absolute;
+  top: 28px;
+}
+.lp-s2-claude-spark,
+.lp-s2-answer-spark {
+  color: var(--lp-claude-spark);
+  display: block;
+  height: 16px;
+  width: 16px;
+}
+.lp-s2-claude-spark svg,
+.lp-s2-answer-spark svg {
+  display: block;
+  height: 16px;
+  width: 16px;
+}
 .lp-s2-bubble {
-  background: #30002c; /* the mocks' button plum (as .lp-s1-btn), not ink-100 */
+  background: var(--lp-claude-bubble); /* Claude's user bubble (was the mocks' button plum) */
   border-radius: 12px; /* frames 2–3 (frame 1 still draws 8) */
-  color: var(--lp-ink-0);
+  color: var(--lp-claude-ink);
   font-size: 13px;
   font-weight: 400;
   height: 32px;
@@ -845,11 +871,11 @@
 /* the composer: the thread's column (51 → 413), a 48 bar centred on the 426 stage at rest;
    the timeline glides it down to 350 once the request is sent. The storyboard's card skin. */
 .lp-s2-composer {
-  background: var(--lp-ink-0);
+  background: var(--lp-claude-card); /* Claude's composer (2026-10-21) */
   border-radius: 16px;
   box-shadow:
-    0 0 0 0.5px var(--lp-sx-line),
-    var(--lp-sx-shadow);
+    inset 0 0 0 0.5px var(--lp-claude-ink-16),
+    0 4px 24px rgba(0, 0, 0, 0.06);
   height: 48px;
   left: 51px;
   position: absolute;
@@ -866,12 +892,37 @@
   white-space: nowrap;
 }
 .lp-s2-ph {
-  color: var(--lp-ink-70);
+  color: var(--lp-claude-ink-48);
+}
+/* the Pancake connector, on: its mark and a green dot, left of the send button */
+.lp-s2-pk {
+  display: block;
+  height: 20px;
+  position: absolute;
+  right: 48px;
+  top: 14px;
+  width: 20px;
+}
+.lp-s2-pk-mark {
+  display: block;
+  height: 20px;
+  width: 20px;
+}
+.lp-s2-pk-dot {
+  background: var(--lp-green-30);
+  border-radius: 50%;
+  bottom: 0;
+  box-shadow: 0 0 0 1.5px var(--lp-claude-card);
+  display: block;
+  height: 6px;
+  position: absolute;
+  right: -1px;
+  width: 6px;
 }
 /* the typed request: hidden at rest by a full right inset (the .lp-s1-typed idiom) */
 .lp-s2-typed {
   clip-path: inset(0 100% 0 0);
-  color: var(--lp-ink-100);
+  color: var(--lp-claude-ink);
 }
 .lp-s2-caret {
   background: var(--lp-ink-100);
@@ -882,8 +933,8 @@
   width: 1.5px;
 }
 .lp-s2-send {
-  background: #30002c; /* the bubble's plum */
-  border-radius: 50%;
+  background: var(--lp-claude-send); /* Claude's send button */
+  border-radius: var(--lp-r-xsm);
   height: 28px;
   position: absolute;
   right: 10px;
@@ -916,8 +967,19 @@
   height: 32px;
   top: 171px;
 }
-.lp-s2-worked span {
+/* (0,2,0): above `.lp-s2-worked svg` / `path`, which place and stroke the chevron */
+.lp-s2-worked .lp-s2-worked-pk {
+  height: 16px;
   left: 12px;
+  position: absolute;
+  top: 8px;
+  width: 16px;
+}
+.lp-s2-worked .lp-s2-worked-pk path {
+  stroke: none;
+}
+.lp-s2-worked span {
+  left: 34px;
   line-height: 16px;
   position: absolute;
   top: 8.6px; /* Figma 8 + 0.6 */
@@ -938,6 +1000,17 @@
   line-height: 20px;
   padding: 8.6px 12px 7.4px; /* Figma 8 / 12; text y: Figma 8 + 0.6 */
   top: 213px;
+}
+/* Claude answers on the page itself, its spark beside the text (same box, so the same three lines) */
+.lp-step-stage--s2 .lp-s2-answer {
+  background: transparent;
+  box-shadow: none;
+  color: var(--lp-claude-ink);
+}
+.lp-s2-answer-spark {
+  left: -10px;
+  position: absolute;
+  top: 10.6px;
 }
 /* the answer's text: written in by the timeline (fully clipped at rest, the .lp-s3-msg-text idiom) */
 .lp-s2-answer-t {

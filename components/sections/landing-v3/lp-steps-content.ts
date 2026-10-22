@@ -100,7 +100,7 @@ export const STEPS: readonly StepContent[] = [
     body: "From Claude, Codex or the app, one sentence becomes a Play. It lives on Pancake and keeps searching on the schedule you pick. You approve each lead before anyone hears from you.",
     art: [{ kind: "anim", variant: "s2", status: "final" }],
     // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
-    alt: "Animation: in the Pancake chat, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, answers, and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",
+    alt: "Animation: in Claude, with Pancake connected, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, Claude answers and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape on Pancake: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",
   },
   {
     num: "03",

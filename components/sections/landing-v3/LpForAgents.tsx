@@ -1,4 +1,5 @@
 import { ClaudeMark } from "@/components/sections/landing-v3/LpAgentMarks";
+import { LpAgentsChat } from "@/components/sections/landing-v3/LpInfraAnim";
 import { LpSetupLine } from "@/components/sections/landing-v3/LpSetupLine";
 import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art";
 
@@ -15,6 +16,9 @@ import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art"
  * (§3.1). The example's steps are real tools (plays_create_from_ask, a run, leads_list,
  * campaign_add_lead: an add waits 10 minutes and can be undone, at most 50 per commit, and the
  * tool tells the agent to add only when the member asks, as the prompt does here).
+ *
+ * The exchange plays once (LpAgentsChat, lp-infra-timeline.ts): the ask is there, then each
+ * Pancake action comes in, spins and checks, then Claude answers. The markup is the end picture.
  */
 
 const FACTS = [
@@ -66,7 +70,7 @@ export function LpForAgents() {
             <LpSetupLine id="home-agents-setup" />
           </div>
           {/* one real example, as Claude shows it: the ask, Pancake's actions, the answer */}
-          <figure className="lp-fa__chat">
+          <LpAgentsChat>
             <figcaption className="lp-fa__chat-head">
               <span className="lp-fa__spark" aria-hidden="true">
                 <ClaudeMark />
@@ -83,7 +87,11 @@ export function LpForAgents() {
                     {call.action}
                   </span>
                   {call.result ? <span className="lp-fa__call-result">{call.result}</span> : null}
-                  <Check />
+                  {/* the action's state: a spinner while it runs (the build-up), then the check */}
+                  <span className="lp-fa__st">
+                    <span className="lp-fa__spin" />
+                    <Check />
+                  </span>
                 </li>
               ))}
             </ol>
@@ -101,7 +109,7 @@ export function LpForAgents() {
                 <span className="lp-fa__chip-dot" />
               </span>
             </div>
-          </figure>
+          </LpAgentsChat>
         </div>
       </div>
     </section>

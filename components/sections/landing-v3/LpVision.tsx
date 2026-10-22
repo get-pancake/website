@@ -4,19 +4,20 @@
  * brief, closing the page on the payoff. Founder, same day: "dont underpromise on what we do or
  * will do in the next future - landing page has to be inspirational and give a waou moment".
  *
- * "Coming next" names only work the codebase teardown shows built or rolling out
- * (outputs/pancake-infra-teardown-2026-10-21.md): lookalikes (§3.6, the audience-query engine),
- * leads handed to five CRMs (§3.10, merged 2026-10-20 behind flags; Lightfield left out of the
- * line), agent-run setup (§3.1, ADR 0066's identity-scoped tools), more providers behind the
- * gateway (§3.4, SDKs built for Linkup, Exa, Crustdata, Ocean.io, PredictLeads). Nothing invented.
+ * "Already live" (founder, same evening: "consider coming next as live"): the work the codebase
+ * teardown (outputs/pancake-infra-teardown-2026-10-21.md) shows built or rolling out, presented
+ * as live by his call: lookalikes (§3.6, the audience-query engine), leads handed to the CRMs
+ * (§3.10, merged 2026-10-20 behind flags; Lightfield left out of the line), agent-run setup
+ * (§3.1, ADR 0066's identity-scoped tools), and work emails on demand (§3.5, live: credits held,
+ * charged only when one is found). Nothing invented.
  * The rainbow is the hero's five ribbon colours as a static sunrise (no WebGL here).
  */
 
-const NEXT = [
+const LIVE = [
   "Lookalikes of your best customers",
   "Leads straight to HubSpot, Attio, Pipedrive and Close",
   "Your agent sets up Pancake from start to finish",
-  "More data providers behind the same door",
+  "Work emails on demand",
 ] as const;
 
 /** outer to inner: the hero's ribbon order */
@@ -33,9 +34,9 @@ export function LpVision() {
           <span className="lp-vision__line lp-vision__accent">Pancake is where they run it.</span>
         </h2>
         <div className="lp-vision__next">
-          <p className="lp-vision__label">Coming next</p>
+          <p className="lp-vision__label">Already live</p>
           <ul className="lp-vision__chips">
-            {NEXT.map((item) => (
+            {LIVE.map((item) => (
               <li key={item} className="lp-vision__chip">
                 {item}
               </li>

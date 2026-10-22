@@ -166,6 +166,36 @@
   line-height: 16px;
   padding: 2px 8px;
 }
+.lp-fa__st {
+  display: grid;
+  flex: none;
+  height: 16px;
+  place-items: center;
+  width: 16px;
+}
+.lp-fa__st > * {
+  grid-area: 1 / 1;
+}
+.lp-fa__spin {
+  animation: lp-fa-spin 0.9s linear infinite;
+  border: 1.5px solid var(--lp-ink-40);
+  border-radius: 50%;
+  border-top-color: var(--lp-ink-90);
+  height: 12px;
+  opacity: 0;
+  visibility: hidden;
+  width: 12px;
+}
+@keyframes lp-fa-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-fa__spin {
+    animation: none;
+  }
+}
 .lp-fa__check {
   color: var(--lp-green-30);
   fill: none;

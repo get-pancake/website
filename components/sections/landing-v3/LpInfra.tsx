@@ -1,4 +1,5 @@
 import { ClaudeMark, CodexMark } from "@/components/sections/landing-v3/LpAgentMarks";
+import { LpInfraFlow } from "@/components/sections/landing-v3/LpInfraAnim";
 
 /**
  * Section — "Your agent decides. Pancake runs it." (the infra-first landing): the launch line,
@@ -11,6 +12,10 @@ import { ClaudeMark, CodexMark } from "@/components/sections/landing-v3/LpAgentM
  * read as engineering notes: "I dont understand anything about the new block". Plain words,
  * one sentence per layer; claims in docs/infra/infra-landing-brief.md, the 30+ data providers
  * being the founder's figure (the dive's sources story).
+ *
+ * The card plays once (LpInfraFlow, lp-infra-timeline.ts): the agents send, the wire draws down
+ * through the sign-in, Pancake lights, the branch draws to the three layers and they light up.
+ * The markup below is the finished picture.
  */
 
 type Layer = { name: string; title: string; body: string };
@@ -35,7 +40,7 @@ export function LpInfra() {
             Pancake runs it.
           </h2>
         </header>
-        <div className="lp-infra__card">
+        <LpInfraFlow>
           <p className="lp-infra__label">Your agent</p>
           <ul className="lp-infra__agents">
             <li className="lp-infra__agent">
@@ -47,8 +52,20 @@ export function LpInfra() {
               Codex
             </li>
           </ul>
-          <p className="lp-infra__link">One sign-in. No API keys.</p>
+          <div className="lp-infra__link">
+            <Wire />
+            <p className="lp-infra__link-text">One sign-in. No API keys.</p>
+            <Wire />
+          </div>
           <img className="lp-infra__logo" src="/lp/lp-nav-logo.svg" alt="Pancake" width={114.956} height={56} />
+          {/* Pancake to its three layers: a stem, a bar across the columns' centres, three drops */}
+          <div className="lp-infra__branch" aria-hidden="true">
+            <span className="lp-infra__branch-stem" />
+            <span className="lp-infra__branch-bar" />
+            <span className="lp-infra__branch-drop" data-col="1" />
+            <span className="lp-infra__branch-drop" data-col="2" />
+            <span className="lp-infra__branch-drop" data-col="3" />
+          </div>
           <ul className="lp-infra__parts">
             {LAYERS.map((layer) => (
               <li key={layer.name} className="lp-infra__part">
@@ -58,8 +75,18 @@ export function LpInfra() {
               </li>
             ))}
           </ul>
-        </div>
+        </LpInfraFlow>
       </div>
     </section>
+  );
+}
+
+/** a hairline wire (drawn by the flow) with the dot that rides its front */
+function Wire() {
+  return (
+    <span className="lp-infra__wire" aria-hidden="true">
+      <i className="lp-infra__line" />
+      <i className="lp-infra__dot" />
+    </span>
   );
 }
