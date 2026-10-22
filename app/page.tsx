@@ -149,18 +149,17 @@ export default function Home() {
       <LpDemo />
       {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
       <LpMarquee labelled />
-      {/* The infra-first page (2026-10-21), one story told once (founder: "check the story board
-          it s too long and decousu"): what Pancake is in one picture (your agent decides, Pancake
-          runs it), what "runs it" means (your sentence becomes software), the three steps; then
-          the designer's banner, deep dive and CTA (one sky: nothing may sit between those three,
-          sky.css), proof and pricing. The hero's For agents view keeps the one-line install
-          (LpAgentStart), as Cargo's Agent / Human toggle does. */}
+      {/* The infra-first page (2026-10-21/22): what Pancake gives your agent (the diagram), the
+          infra vision as the three steps (the Vercel for GTM: deploy, host, run), then a look
+          under the hood (find any buyer you can describe); then the designer's banner, deep
+          dive and CTA (one sky: nothing may sit between those three, sky.css), proof and pricing.
+          The hero's For agents view keeps the one-line install (LpAgentStart). */}
       <LpInfra />
-      <LpBuild />
       <LpAgentLab
         cardBody={SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY}
       />
       <LpSteps />
+      <LpBuild />
       <LpBanner />
       {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
       <LpDive />

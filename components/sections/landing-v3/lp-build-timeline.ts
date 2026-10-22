@@ -5,7 +5,7 @@ import { gsap } from "@/lib/gsap";
 import { registerTxtPlugin } from "./lp-gsap-txt";
 
 /**
- * The "Your sentence becomes software." build-up (LpBuildAnim). progress(1) = the server markup
+ * The "Find any buyer you can describe." build-up (LpBuildAnim). progress(1) = the server markup
  * (restIsEnd); `cue` 0 = the first composed scene, never empty: the ask sent, Claude using
  * Pancake, the editor open on "Writing", the run waiting.
  *

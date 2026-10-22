@@ -7,7 +7,7 @@ import { SL_AVATAR } from "./lp-story-learns-art";
 import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
 
 /**
- * The "Your sentence becomes software." card (LpBuild): three panes, one story, left to right —
+ * The "Find any buyer you can describe." card (LpBuild): three panes, one story, left to right —
  * the ask in Claude, the program Pancake writes for it, the Play running live. The markup is the
  * END picture (restIsEnd): no JS, reduced motion and a fly-by all show the finished card. The
  * build-up is one GSAP timeline (lp-build-timeline.ts), played once by lp-play-once.ts at the

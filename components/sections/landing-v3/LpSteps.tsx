@@ -55,10 +55,11 @@ export function LpSteps() {
     <section className="lp-steps" id="how-it-works">
       <div className="lp-steps__org">
         <header className="lp-steps__head">
-          {/* the founder's own wording (2026-09-03): restored on the infra-first page, where the
-              infra block above already says "Your agent decides. Pancake runs it." */}
-          <p className="lp-steps__kicker">While you run your business,</p>
-          <h2 className="lp-steps__title lp-title-section">Pancake fills your pipeline.</h2>
+          {/* the infra vision (founder 2026-10-22: "the 3 steps should be replaced by our infra
+              vision !"): The Vercel for GTM, his Product Hunt tagline, as its three verbs. Until
+              then his own "While you run your business, / Pancake fills your pipeline." */}
+          <p className="lp-steps__kicker">The Vercel for GTM.</p>
+          <h2 className="lp-steps__title lp-title-section">Deploy. Host. Run.</h2>
         </header>
         <div className="lp-steps__list">
           {STEPS.map((step) => (

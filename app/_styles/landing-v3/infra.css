@@ -1,6 +1,6 @@
-/* Section — "Your agent decides. Pancake runs it." (LpInfra.tsx, the infra-first landing,
+/* Section — "Everything your agent needs to sell." (LpInfra.tsx, the infra-first landing,
    2026-10-21). No Figma frame yet, so it is built from the homepage's own parts: the steps'
-   wrapper, org and centred kicker + title (steps.css), the step card's cream and r30, the
+   wrapper, org and centred title (steps.css), the step card's cream and r30, the
    mock cards' white fill and 0.4px hairline (.lp-mockcard), the dive's list type. The diagram
    reads top to bottom: your agent, the sign-in, Pancake, the four things it does. */
 .lp-infra {
@@ -14,26 +14,20 @@
   padding: 128px 32px 0;
 }
 
-/* heading block: the steps' kicker + title */
+/* heading block: the steps' title, alone */
 .lp-infra__head {
   display: flex;
   flex-direction: column;
   gap: 8px;
   max-width: 100%;
   text-align: center;
-  width: 752px;
-}
-.lp-infra__kicker {
-  color: var(--lp-ink-100);
-  font-family: var(--lp-font-cond);
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 32px;
+  width: 1136px; /* "Everything your agent needs to sell." holds on one line */
 }
 .lp-infra__title {
   color: var(--lp-text);
   line-height: 69px;
   margin: 0;
+  text-wrap: balance;
 }
 
 /* the diagram card */

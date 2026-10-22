@@ -2,8 +2,10 @@ import { ClaudeMark, CodexMark } from "@/components/sections/landing-v3/LpAgentM
 import { LpInfraFlow } from "@/components/sections/landing-v3/LpInfraAnim";
 
 /**
- * Section — "Your agent decides. Pancake runs it." (the infra-first landing): the launch line,
- * word for word (Pancake V2 launch material, public/llms.txt).
+ * Section — "Everything your agent needs to sell." (the infra-first landing). Until 2026-10-22
+ * the launch line, "Your agent decides. Pancake runs it." — founder: "doesnt mean anything". The
+ * heading now says what the diagram shows: Pancake gives your agent the brain, the data and the
+ * tools (no kicker: "Connect Claude or Codex." went the same day, founder: "Remove").
  *
  * The page's model (2026-10-21, the infra outline the founder approved: "one sentence, one
  * diagram, three layers", as Apollo's "One system. Three layers." and Cargo's "your agent writes
@@ -35,9 +37,8 @@ export function LpInfra() {
     <section id="infra" className="lp-infra" aria-labelledby="lp-infra-title">
       <div className="lp-infra__org">
         <header className="lp-infra__head">
-          <p className="lp-infra__kicker">Your agent decides.</p>
           <h2 id="lp-infra-title" className="lp-infra__title lp-title-section">
-            Pancake runs it.
+            Everything your agent needs to sell.
           </h2>
         </header>
         <LpInfraFlow>

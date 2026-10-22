@@ -1,4 +1,4 @@
-/* Section — "Your sentence becomes software." (LpBuild.tsx / LpBuildAnim.tsx, the infra-first
+/* Section — "Find any buyer you can describe." (LpBuild.tsx / LpBuildAnim.tsx, the infra-first
    landing, 2026-10-21). The steps' wrapper and org, a centred title + one-line lede, a cream r30
    card holding three white panes (the demo window's hairline and mock-card radius) joined by
    arrows, then three facts. The markup is the END picture; lp-build-timeline.ts writes frame 0
@@ -11,7 +11,7 @@
   display: flex;
   flex-direction: column;
   gap: 48px;
-  padding: 128px 32px 0; /* the steps below open on 128 */
+  padding: 0 32px 112px; /* the steps above end on 128; the page rhythm before the banner */
 }
 .lp-build__head {
   align-items: center;
@@ -471,7 +471,7 @@
 @media (max-width: 1024px) {
   .lp-build__org {
     gap: 40px;
-    padding: 96px 24px 0;
+    padding: 0 24px 96px;
   }
   .lp-build__card {
     padding: 32px;
@@ -502,7 +502,7 @@
   }
   .lp-build__org {
     gap: 32px;
-    padding: 16px;
+    padding: 16px 16px 64px;
   }
   .lp-build__title {
     font-size: 35.559px;

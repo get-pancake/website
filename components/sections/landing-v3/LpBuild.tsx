@@ -1,7 +1,9 @@
 import { LpBuildAnim } from "@/components/sections/landing-v3/LpBuildAnim";
 
 /**
- * Section — "Your sentence becomes software." (the infra-first landing, 2026-10-21).
+ * Section — "Find any buyer you can describe." (the infra-first landing, 2026-10-21). The value,
+ * not the mechanism: 2026-10-22 "Your sentence becomes software." ("not clear"), then "Ask once.
+ * Pancake keeps finding leads." ("ask once is not a value prop").
  *
  * The wow of the page, said simply (founder, same day: "infra does not mean complex"): you ask
  * in one sentence, Pancake writes the search as a program, tests it on a sample, puts it live
@@ -19,10 +21,11 @@ export function LpBuild() {
       <div className="lp-build__org">
         <header className="lp-build__head">
           <h2 id="lp-build-title" className="lp-build__title lp-title-section">
-            Your sentence becomes software.
+            Find any buyer you can describe.
           </h2>
           <p className="lp-build__lede">
-            Pancake writes it, tests it on real companies and keeps it running. You never touch the code.
+            Describe who you want. Pancake writes the search, tests it on real companies and runs it on your schedule. You
+            never touch the code.
           </p>
         </header>
         <LpBuildAnim />

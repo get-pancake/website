@@ -30,8 +30,9 @@ import type { DiveItemId } from "./lp-dive-stages";
  * 'already live' just push a simple and strong narrative with the key features in this cloud
  * section"): four verbs, find, reach, learn, run, carrying the key features — 30+ providers,
  * lookalikes and work emails on demand (find), your own accounts and leads straight to the CRM
- * (reach), the Brain (learn), the agent setting everything up (run). Heading "What your agent
- * runs on".
+ * (reach), the Brain (learn), the agent setting everything up (run). Heading "How Pancake gets
+ * you customers" since 2026-10-22 ("What your agent runs on": founder, "not clear"), close to the
+ * designer's original "How Pancake finds customers".
  *
  * Wrap budget: a body is at most 4 lines at 272px / 13.333px Geist (~170 characters), or the
  * active list (anchored at the row's top 17.5) outgrows the 489 row.
@@ -53,7 +54,7 @@ export type DiveItem = {
 };
 
 /** the section heading (production copy, = V2 4939:3390) */
-export const DIVE_TITLE = "What your agent runs on";
+export const DIVE_TITLE = "How Pancake gets you customers";
 
 /**
  * THE PHONE SWITCH (≤767; decision 2026-10-11 §9 F3, mobile artboard 5024:8914).
