@@ -176,16 +176,14 @@ function PancakeMark() {
 
 function BrainPic() {
   return (
-    <div className="lp-infra__brain">
-      <dl className="lp-infra__memory">
-        {MEMORY.map((row) => (
-          <div key={row.key} className="lp-infra__mem-row">
-            <dt>{row.key}</dt>
-            <dd>{row.value}</dd>
-          </div>
-        ))}
-      </dl>
-    </div>
+    <dl className="lp-infra__memory">
+      {MEMORY.map((row) => (
+        <div key={row.key} className="lp-infra__mem-row">
+          <dt>{row.key}</dt>
+          <dd>{row.value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }
 
