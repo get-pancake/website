@@ -5,17 +5,20 @@
 // Structure mirrors VxDemoPlayer (refs, a rAF clock, IntersectionObserver gates) without its
 // prompt rows, four tabs or Slack. Spec: demo-scroll.md §6.4, §7.
 //
-// Views: 0 Pancake, 1 Claude & Codex, stacked in one grid cell (zero CLS); the incoming view
-// fades in on top (240 ms) while the outgoing one stays under it, then hides; a view is re-armed
-// to its first frame only while hidden (never rewound on screen). Loop: Pancake (its run + a
-// 2.2 s hold, about 9.2 s) → Claude & Codex (8600) → … while the clock runs.
+// Views: any number (`views`, in pill order), stacked in one grid cell (zero CLS); the incoming
+// view (data-on) fades in on top (240 ms) while the outgoing one stays under it, then hides; a
+// view is re-armed to its first frame only while hidden (never rewound on screen). Loop: each
+// view's run + a 2.2 s hold, then the next one, while the clock runs. Since 2026-10-26 the
+// infra-first homepage passes one view per agent app (Claude, ChatGPT…), all of kind "agent";
+// kind "pancake" is the Pancake app's own view.
 //
-// One clock (ms since the view started), two GSAP timelines, each seeked every frame:
-// lp-demo-pancake-timeline.ts and lp-demo-claude-timeline.ts. GSAP and the two builders are a
+// One clock (ms since the view started), one GSAP timeline per view, seeked every frame: kind
+// "pancake" is lp-demo-pancake-timeline.ts, kind "agent" lp-demo-claude-timeline.ts (one builder
+// for every agent app: they share their markup). GSAP and the builders the views need are a
 // lazy chunk, fetched on the visitor's first input or at the first start; until a view's
 // timeline is built the view is its rest picture and the clock waits. A run's length is its
 // timeline's own. Each view is built in tasks of its own, in idle time and in slices
-// (lp-play-once's queue): the showing one first, the other after the page's cards, or as it is
+// (lp-play-once's queue): the showing one first, the others after the page's cards, or as one is
 // armed if it is picked before its turn (2026-10-13; the import's continuation built both back
 // to back).
 //
@@ -60,7 +63,7 @@ import { flushSync } from "react-dom";
 import type { BuiltDemo } from "./lp-demo-pancake-timeline";
 import { mountWindowGrow } from "./lp-demo-scroll";
 import { enqueueBuild, startBuild, type BuildRun } from "./lp-play-once";
-import { PHONE_BOX_W, PHONE_QUERY, PHONE_SOLO, type LpDemoView } from "./lp-demo-timeline";
+import { PHONE_BOX_W, PHONE_QUERY, PHONE_SOLO, type LpDemoKind, type LpDemoView } from "./lp-demo-timeline";
 
 const useIsoLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
@@ -95,17 +98,21 @@ interface Ctl {
   last: number;
   frames: number;
   /** Each view's GSAP timeline (lazy: GSAP + its builder), null until built. */
-  tls: [Built | null, Built | null];
-  /** The modules, kept to rebuild a timeline after the stage's size changes. `steps`: the same
-   *  builders in slices (lp-play-once's startBuild). */
-  mods: { gsap: typeof import("@/lib/gsap").gsap; build: [Builder, Builder]; steps: [Slicer, Slicer] } | null;
+  tls: (Built | null)[];
+  /** The modules, kept to rebuild a timeline after the stage's size changes, by view kind.
+   *  `steps`: the same builders in slices (lp-play-once's startBuild). */
+  mods: {
+    gsap: typeof import("@/lib/gsap").gsap;
+    build: Partial<Record<LpDemoKind, Builder>>;
+    steps: Partial<Record<LpDemoKind, Slicer>>;
+  } | null;
   loading: boolean;
   /** The code could not be fetched: the views keep their rest pictures. */
   failed: boolean;
   /** The geometry a timeline measured is stale: rebuilt before its view next starts from its first frame. */
-  dirty: [boolean, boolean];
+  dirty: boolean[];
   /** Each run's length (ms): the timeline's own, once built. */
-  ends: [number, number];
+  ends: number[];
 }
 type Built = { tl: BuiltDemo["tl"]; dispose: () => void };
 type Builder = (view: HTMLElement) => BuiltDemo;
@@ -118,26 +125,24 @@ const dwellOf = (x: Ctl, v: LpDemoView) => x.ends[v] + HOLD_MS;
 
 type ViewState = { v: LpDemoView; n: number };
 
+/** One view of the window: its pill's label, the builder it takes, its server-rendered scene. */
+export type LpDemoViewDef = { label: string; kind: LpDemoKind; node: ReactNode };
+
 export function LpDemoPlayer({
-  pills,
+  views,
   tablist,
   pause,
-  pancake,
-  claude,
-  only,
 }: {
-  pills: [string, string];
+  /** In pill order. One view: no pills, it loops on its own. */
+  views: readonly LpDemoViewDef[];
   tablist: string;
   /** Its label stays "Pause demo"; aria-pressed says it holds the demo (VxDemoPlayer's pattern). */
   pause: string;
-  pancake: ReactNode;
-  claude: ReactNode;
-  /** One view only, looping, with no pills: the infra-first homepage (2026-10-21) shows the
-   *  Claude & Codex view alone. The other view stays mounted, hidden, so both builders keep
-   *  their markup. */
-  only?: LpDemoView;
 }) {
-  const [view, setView] = useState<ViewState>({ v: only ?? 0, n: 0 });
+  const count = views.length;
+  /** The views' kinds, read by the mount effect (the views never change after the first render). */
+  const kinds = useRef(views.map((d) => d.kind)).current;
+  const [view, setView] = useState<ViewState>({ v: 0, n: 0 });
   const [paused, setPaused] = useState(false);
   /** Phones with PHONE_SOLO (set after mount): no pills, so the stage is not a tab panel. */
   const [solo, setSolo] = useState(false);
@@ -148,7 +153,7 @@ export function LpDemoPlayer({
   const fillRefs = useRef<(HTMLElement | null)[]>([]);
   const nonce = useRef(0);
   const ctl = useRef<Ctl>({
-    view: only ?? 0,
+    view: 0,
     t: 0,
     started: false,
     oneShot: false,
@@ -165,12 +170,12 @@ export function LpDemoPlayer({
     raf: 0,
     last: 0,
     frames: 0,
-    tls: [null, null],
+    tls: views.map(() => null),
     mods: null,
     loading: false,
     failed: false,
-    dirty: [false, false],
-    ends: [REST_ONLY_MS, REST_ONLY_MS],
+    dirty: views.map(() => false),
+    ends: views.map(() => REST_ONLY_MS),
   });
 
   /* ── DOM helpers ─────────────────────────────────────────────────────────── */
@@ -297,7 +302,7 @@ export function LpDemoPlayer({
       return;
     }
     x.t = 0;
-    go(only ?? (x.view === 0 ? 1 : 0));
+    go((x.view + 1) % count);
   };
 
   /** Enter the view (after React committed data-view): before paint. The incoming view was
@@ -324,7 +329,8 @@ export function LpDemoPlayer({
   /* ── user actions ────────────────────────────────────────────────────────── */
 
   /** A pill: that view from its first frame (it plays even under the pills' keyboard focus),
-   *  then autoplay carries on. Reduced motion / paused: its picture (Pancake rest, Claude end). */
+   *  then autoplay carries on. Reduced motion / paused: its picture (the rest picture; paused:
+   *  its end). */
   const pick = useCallback(
     (v: LpDemoView) => {
       const x = ctl.current;
@@ -347,9 +353,10 @@ export function LpDemoPlayer({
   const onTabKey = (e: KeyboardEvent<HTMLDivElement>) => {
     const x = ctl.current;
     let to: LpDemoView | null = null;
-    if (e.key === "ArrowRight" || e.key === "ArrowLeft") to = x.view === 0 ? 1 : 0;
+    if (e.key === "ArrowRight") to = (x.view + 1) % count;
+    else if (e.key === "ArrowLeft") to = (x.view - 1 + count) % count;
     else if (e.key === "Home") to = 0;
-    else if (e.key === "End") to = 1;
+    else if (e.key === "End") to = count - 1;
     if (to === null) return;
     e.preventDefault();
     pick(to);
@@ -390,11 +397,15 @@ export function LpDemoPlayer({
        rests on its first frame, which is what its builder's sets write (in ONE slice: the
        builders' headers), so a build can pause between two slices on screen. Returns whether
        slices are left. */
-    const runs: [BuildRun | null, BuildRun | null] = [null, null];
+    const n = kinds.length;
+    const all = Array.from({ length: n }, (_, v) => v);
+    const runs: (BuildRun | null)[] = all.map(() => null);
     const build = (v: LpDemoView, through = true): boolean => {
       const mods = x.mods;
       const el = viewEl(v);
-      if (!mods || !el || disposed) return false;
+      const builder = mods?.build[kinds[v]];
+      const steps = mods?.steps[kinds[v]];
+      if (!mods || !builder || !steps || !el || disposed) return false;
       if (el.getClientRects().length === 0) {
         x.dirty[v] = true; // not rendered (the agents view, the Claude view on phones): at the next arm
         return false;
@@ -403,7 +414,7 @@ export function LpDemoPlayer({
       if (!run) {
         x.tls[v]?.dispose();
         x.tls[v] = null;
-        run = runs[v] = startBuild({ gsap: mods.gsap, build: mods.build[v], steps: mods.steps[v] }, el, false);
+        run = runs[v] = startBuild({ gsap: mods.gsap, build: builder, steps }, el, false);
       }
       let b: BuiltDemo | undefined;
       try {
@@ -462,10 +473,10 @@ export function LpDemoPlayer({
        screen holds longer than that before anything moves); the other view has no place and
        comes after them: it is not needed before the first run ends, and a view that is armed
        before its turn is built as it is armed (the layout effect above). */
-    const queued: [boolean, boolean] = [false, false];
-    const unqueue: [() => void, () => void] = [() => {}, () => {}];
+    const queued: boolean[] = all.map(() => false);
+    const unqueue: (() => void)[] = all.map(() => () => {});
     const want = () => {
-      for (const v of [0, 1] as const) {
+      for (const v of all) {
         if (x.tls[v] || queued[v]) continue;
         queued[v] = true;
         unqueue[v] = enqueueBuild(
@@ -482,19 +493,20 @@ export function LpDemoPlayer({
       if (x.mods) return want();
       if (x.loading || x.failed || x.reduced || disposed) return;
       x.loading = true;
+      // only the builders the views need (the agent builder brings the Pancake one's helpers)
       Promise.all([
         import("@/lib/gsap"),
-        import("./lp-demo-pancake-timeline"),
-        import("./lp-demo-claude-timeline"),
+        kinds.includes("pancake") ? import("./lp-demo-pancake-timeline") : null,
+        kinds.includes("agent") ? import("./lp-demo-claude-timeline") : null,
         document.fonts ? document.fonts.ready : null,
       ])
-        .then(([g, pancake, claude]) => {
+        .then(([g, pancake, agent]) => {
           x.loading = false;
           if (disposed) return;
           x.mods = {
             gsap: g.gsap,
-            build: [pancake.buildDemoPancake, claude.buildDemoClaude],
-            steps: [pancake.buildDemoPancakeSteps, claude.buildDemoClaudeSteps],
+            build: { pancake: pancake?.buildDemoPancake, agent: agent?.buildDemoClaude },
+            steps: { pancake: pancake?.buildDemoPancakeSteps, agent: agent?.buildDemoClaudeSteps },
           };
           want();
         })
@@ -529,8 +541,7 @@ export function LpDemoPlayer({
         x.oneShot = false;
         x.started = true;
         x.t = 0;
-        render(0, 0);
-        render(1, 0);
+        for (const v of all) render(v, 0);
       } else if (x.started) {
         // motion allowed again: the current view starts over
         x.t = 0;
@@ -569,8 +580,9 @@ export function LpDemoPlayer({
     vis.observe(stage);
 
     /* first start: the window's top crosses 60 % of the viewport, or 1 s with half of it on
-       screen (lp-play-once's FOCUS_MARGIN / DWELL_MS) */
-    const win = card.querySelector<HTMLElement>(".lp-demowin__win");
+       screen (lp-play-once's FOCUS_MARGIN / DWELL_MS). The stage is the window's box whatever
+       the views (it was the Pancake view's .lp-demowin__win, gone with that view on 2026-10-26). */
+    const win = stage;
     let dwell = 0;
     const focusObs = new IntersectionObserver(
       (entries) => {
@@ -653,8 +665,8 @@ export function LpDemoPlayer({
         chipLink?.removeAttribute("tabindex");
         chip?.removeAttribute("aria-hidden");
       }
-      if (x.solo && x.view === 1) {
-        // the Claude view is not rendered on phones: back to the Pancake view, armed while hidden
+      if (x.solo && x.view !== 0) {
+        // solo phones render the first view only: back to it, armed while hidden
         stop();
         x.oneShot = false;
         x.t = 0;
@@ -692,14 +704,13 @@ export function LpDemoPlayer({
       const w = stage.offsetWidth;
       if (Math.abs(w - stageW) < 0.5) return;
       stageW = w;
-      x.dirty = [true, true];
+      x.dirty = all.map(() => true);
       // a build under way measured the old width: it starts over with the pass below
-      abort(0);
-      abort(1);
+      for (const v of all) abort(v);
       window.clearTimeout(resized);
       resized = window.setTimeout(() => {
         if (!x.mods) return;
-        for (const v of [0, 1] as const) {
+        for (const v of all) {
           if (x.dirty[v] && (x.view !== v || x.t === 0 || x.reduced)) build(v);
         }
       }, 200);
@@ -759,9 +770,8 @@ export function LpDemoPlayer({
             seeking: x.seeking,
             running: x.raf !== 0,
             frames: x.frames,
-            /** the timelines: built (Pancake, Claude), and the current run's length (ms) */
-            pk: !!x.tls[0],
-            ck: !!x.tls[1],
+            /** the timelines: built, one per view in pill order, and the current run's length (ms) */
+            built: x.tls.map(Boolean),
             end: Math.round(endOf(x, x.view)),
             /** the grow effect: { g, done } (lp-demo-scroll.ts) */
             grow: grow.state(),
@@ -776,7 +786,7 @@ export function LpDemoPlayer({
       window.clearTimeout(dwell);
       window.clearTimeout(resized);
       for (const type of INPUTS) window.removeEventListener(type, onFirstInput);
-      for (const v of [0, 1] as const) {
+      for (const v of all) {
         unqueue[v]();
         abort(v);
         x.tls[v]?.dispose();
@@ -805,30 +815,32 @@ export function LpDemoPlayer({
   /* ── markup ──────────────────────────────────────────────────────────────── */
 
   const v = view.v;
+  /** pills, and the stage as their tab panel: more than one view, and not a solo phone card */
+  const tabbed = !solo && count > 1;
   return (
     <div className="lp-demowin__card" data-view={v} data-phone-solo={PHONE_SOLO ? "" : undefined} ref={cardRef}>
       <div
         className="lp-demowin__stage"
         id="lp-demowin-panel"
-        role={solo || only !== undefined ? undefined : "tabpanel"}
-        tabIndex={solo || only !== undefined ? undefined : 0}
-        aria-labelledby={solo || only !== undefined ? undefined : `lp-demowin-tab-${v}`}
+        role={tabbed ? "tabpanel" : undefined}
+        tabIndex={tabbed ? 0 : undefined}
+        aria-labelledby={tabbed ? `lp-demowin-tab-${v}` : undefined}
         data-nosnippet=""
         ref={stageRef}
       >
-        <div className="lp-demowin__view lp-demowin__view--pancake" data-v="0">
-          {pancake}
-        </div>
-        <div className="lp-demowin__view lp-demowin__view--claude" data-v="1">
-          {claude}
-        </div>
+        {views.map((d, i) => (
+          <div key={i} className={`lp-demowin__view lp-demowin__view--${d.kind}`} data-v={i} data-on={i === v ? "" : undefined}>
+            {d.node}
+          </div>
+        ))}
       </div>
 
-      {/* the pills (V2 4939:2784): a two-view tablist; the fill is the dwell's progress */}
+      {/* the pills (V2 4939:2784): one per view; the fill is the dwell's progress */}
       <div className="lp-demowin__tabs">
-        {only === undefined && (
+        <div className="lp-demowin__tabs-in">
+        {tabbed && (
         <div className="lp-demowin__pills" role="tablist" aria-label={tablist} onKeyDown={onTabKey}>
-          {pills.map((label, i) => (
+          {views.map(({ label }, i) => (
             <button
               key={label}
               ref={(el) => {
@@ -868,6 +880,7 @@ export function LpDemoPlayer({
             onClick={onPause}
           />
         </span>
+        </div>
       </div>
     </div>
   );
