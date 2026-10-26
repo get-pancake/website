@@ -43,6 +43,21 @@ function usePlayOnce<E extends HTMLElement>(load: () => Promise<PlayOnceRuntime>
 
 export function LpInfraFlow({ children }: { children: ReactNode }) {
   const ref = usePlayOnce<HTMLDivElement>(loadFlow, "diagram", 1040);
+  // The live loops after the build-up (founder 2026-10-26: "Un peu de dynamisme. Un peu de
+  // juice!!!"): infra.css runs them on [data-lp-anim="done"][data-inview], so they stop (and free
+  // their layers) once the card is a screen away, and start again before it comes back.
+  useEffect(() => {
+    const card = ref.current;
+    if (!card || typeof IntersectionObserver === "undefined") return;
+    const io = new IntersectionObserver(([e]) => card.toggleAttribute("data-inview", e.isIntersecting), {
+      rootMargin: "100% 0px",
+    });
+    io.observe(card);
+    return () => {
+      io.disconnect();
+      card.removeAttribute("data-inview");
+    };
+  }, [ref]);
   return (
     <div ref={ref} className="lp-infra__card">
       {children}

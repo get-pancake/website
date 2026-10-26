@@ -5,7 +5,14 @@ import { LpInfraFlow } from "@/components/sections/landing-v3/LpInfraAnim";
 import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art";
 
 /**
- * Section — "Everything your agent needs to sell." (the infra-first landing). Until 2026-10-22
+ * Section — "Give your agent everything it needs to sell." (founder 2026-10-26, verbatim; it was
+ * "Everything your agent needs to sell.", and the same day: "on peut s inspirer un peu de sites
+ * best in class pour mieux faire ressortir cette page genre kicker.run // clay … Un peu de
+ * dynamisme. Un peu de juice!!!", then "use components from mobbin"). After the build-up the
+ * diagram stays alive (infra.css, the live loops): live notes take turns on the canvas (Mobbin:
+ * Plain's and Granola's notifications, kicker.run's activity pills), packets keep flowing into
+ * Pancake, the Play's run fills and its leads come up for approval one after another (Zaro's live
+ * runs, Antimetal's Approve). The infra-first landing's section before that: until 2026-10-22
  * the launch line, "Your agent decides. Pancake runs it." — founder: "doesnt mean anything". The
  * heading now says what the diagram shows: Pancake gives your agent the brain, the data and the
  * tools (no kicker: "Connect Claude or Codex." went the same day, founder: "Remove").
@@ -78,16 +85,47 @@ const PROVIDERS = [
 
 const SIGNALS = ["Funding", "Hiring", "Tech stack"] as const;
 
+/** The leads the Play brings up for approval, in turn: the page's cast (LpStepMocks' leads). */
+const LEADS = [
+  { initials: "TO", name: "Tamsin Okafor", company: "Quillfern" },
+  { initials: "JA", name: "Julien Aubert", company: "Brightloop" },
+  { initials: "SM", name: "Samantha Mills", company: "Northvale" },
+] as const;
+
+/** The live notes around the diagram (Mobbin: Plain's and Granola's stacked notifications,
+ *  kicker.run's activity pills), one at a time: what the Play found, a reply, the Brain learning
+ *  from it. Placed by `at` (infra.css). */
+const TOASTS: readonly { at: string; tone: Tone; title: string; meta: string; initials?: string }[] = [
+  { at: "left", tone: "pink", title: "13 new leads", meta: "Funded startups hiring a marketing lead" },
+  { at: "right", tone: "purple", title: "Tamsin Okafor replied", meta: "Interested, labeled for you", initials: "TO" },
+  { at: "left-low", tone: "yellow", title: "Brain updated", meta: "Learned from Tamsin’s reply" },
+];
+
 export function LpInfra() {
   return (
     <section id="infra" className="lp-infra" aria-labelledby="lp-infra-title">
       <div className="lp-infra__org">
         <header className="lp-infra__head">
           <h2 id="lp-infra-title" className="lp-infra__title lp-title-section">
-            Everything your agent needs to sell.
+            Give your agent everything it needs to sell.
           </h2>
         </header>
         <LpInfraFlow>
+          {/* what Pancake is doing right now: one note at a time on the canvas (wide screens) */}
+          <ul className="lp-infra__toasts" aria-hidden="true">
+            {TOASTS.map((toast) => (
+              <li key={toast.title} className="lp-infra__toast" data-at={toast.at}>
+                <span className="lp-infra__toast-icon" data-tone={toast.tone}>
+                  {toast.initials ?? <PancakeMark />}
+                </span>
+                <span className="lp-infra__toast-text">
+                  <b>{toast.title}</b>
+                  <span>{toast.meta}</span>
+                </span>
+                <span className="lp-infra__toast-time">now</span>
+              </li>
+            ))}
+          </ul>
           <div className="lp-infra__agentbar">
             <p className="lp-infra__label">Your agent</p>
             <ul className="lp-infra__agents">
@@ -153,7 +191,13 @@ function PancakeMark() {
   return (
     <svg className="lp-infra__pk" viewBox={`0 0 ${SL_AVATAR.size} ${SL_AVATAR.size}`} aria-hidden="true" focusable="false">
       {SL_AVATAR.shapes.map((shape, i) => (
-        <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
+        <path
+          key={i}
+          className={i >= SL_AVATAR.shapes.length - 2 ? "lp-infra__pk-eye" : undefined}
+          d={shape.d}
+          fill={shape.fill}
+          opacity={"opacity" in shape ? shape.opacity : undefined}
+        />
       ))}
     </svg>
   );
@@ -212,15 +256,25 @@ function ToolsPic() {
       <p className="lp-infra__play-meta">
         <i className="lp-infra__live" />
         Live · On your schedule
-      </p>
-      <div className="lp-infra__lead">
-        <span className="lp-infra__lead-avatar">TO</span>
-        <span className="lp-infra__lead-who">
-          <span className="lp-infra__lead-name">Tamsin Okafor</span>
-          <span className="lp-infra__lead-co">Quillfern</span>
+        <span className="lp-infra__run">
+          <i />
         </span>
-        <span className="lp-infra__approve">Approve</span>
-      </div>
+      </p>
+      <ul className="lp-infra__leads">
+        {LEADS.map((lead) => (
+          <li key={lead.name} className="lp-infra__lead">
+            <span className="lp-infra__lead-avatar">{lead.initials}</span>
+            <span className="lp-infra__lead-who">
+              <span className="lp-infra__lead-name">{lead.name}</span>
+              <span className="lp-infra__lead-co">{lead.company}</span>
+            </span>
+            <span className="lp-infra__approve">
+              <span className="lp-infra__approve-do">Approve</span>
+              <span className="lp-infra__approve-ok">Approved</span>
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
