@@ -46,24 +46,26 @@ import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art"
  */
 
 type Tone = "yellow" | "purple" | "pink";
+/* The cards' labels: "Context", "Data", "Tools" (founder 2026-10-26: "No 'The'"; they were
+   "The brain", "The data", "The tools"). */
 type Layer = { tone: Tone; name: string; title: string; pic: ComponentType };
 
 const LAYERS: readonly Layer[] = [
   {
     tone: "yellow",
-    name: "The brain",
+    name: "Context",
     title: "Knows your business",
     pic: BrainPic,
   },
   {
     tone: "purple",
-    name: "The data",
+    name: "Data",
     title: "Finds your buyers",
     pic: DataPic,
   },
   {
     tone: "pink",
-    name: "The tools",
+    name: "Tools",
     title: "Runs your Plays",
     pic: ToolsPic,
   },
