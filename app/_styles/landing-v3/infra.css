@@ -109,7 +109,7 @@
 }
 
 /* the sign-in: a wire down from the agents, its pill, a wire on to Pancake. Each wire is a
-   hairline (drawn by the flow) and the dot that rides its front (LpInfraAnim). */
+   hairline the build-up draws (LpInfraAnim). */
 .lp-infra__link {
   align-items: center;
   display: flex;
@@ -145,19 +145,6 @@
   display: block;
   inset: 0;
   position: absolute;
-}
-.lp-infra__dot {
-  background: var(--lp-brand-blue);
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lp-brand-blue) 18%, transparent);
-  display: block;
-  height: 7px;
-  left: -3px;
-  opacity: 0;
-  position: absolute;
-  top: -3.5px;
-  visibility: hidden;
-  width: 7px;
 }
 
 /* Pancake: its name sits on the platform's edge where the wire plugs in (the platform pulls up
@@ -226,7 +213,7 @@
   border-radius: var(--lp-r-lg);
   box-shadow: inset 0 0 0 1px var(--lp-infra-tone-20);
   display: grid;
-  grid-row: span 4;
+  grid-row: span 3;
   grid-template-rows: subgrid;
   padding: 8px 8px 22px;
   row-gap: 8px;
@@ -272,11 +259,6 @@
   margin: 0;
   text-wrap: balance;
 }
-.lp-infra__part-body {
-  color: var(--lp-ink-90);
-  font-size: var(--lp-text-md);
-  line-height: 1.5;
-}
 
 /* the brain: what it knows about Acme */
 .lp-infra__memory {
@@ -318,8 +300,7 @@
   flex-direction: column;
   gap: 14px;
 }
-.lp-infra__discs,
-.lp-infra__signals {
+.lp-infra__discs {
   display: flex;
   list-style: none;
   margin: 0;
@@ -353,19 +334,6 @@
   font-size: var(--lp-text-sm);
   font-weight: 600;
   line-height: 1;
-}
-.lp-infra__signals {
-  gap: 6px;
-}
-.lp-infra__signal {
-  background: var(--lp-purple-10);
-  border-radius: var(--lp-r-xsm);
-  color: var(--lp-text);
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 18px;
-  padding: 3px 8px;
-  white-space: nowrap;
 }
 
 /* the tools: a live Play and the lead it waits on */
@@ -425,24 +393,6 @@
   top: 2px;
   transform: translateX(12px);
   width: 14px;
-}
-.lp-infra__play-meta {
-  align-items: center;
-  color: var(--lp-subtle-text);
-  display: flex;
-  font-size: 12px;
-  gap: 6px;
-  line-height: 16px;
-  padding-left: 36px;
-}
-.lp-infra__live {
-  background: var(--lp-green-20);
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--lp-green-20) 30%, transparent);
-  display: block;
-  flex: none;
-  height: 6px;
-  width: 6px;
 }
 .lp-infra__leads {
   box-shadow: inset 0 1px 0 var(--lp-ink-tr-10);
@@ -508,197 +458,9 @@
 }
 .lp-infra__approve > span { grid-area: 1 / 1; text-align: center; }
 .lp-infra__approve-ok { opacity: 0; }
-/* the Play's current run (Mobbin: Zaro's live agent runs), right of its status */
-.lp-infra__run {
-  background: var(--lp-pink-10);
-  border-radius: 999px;
-  display: block;
-  flex: none;
-  height: 4px;
-  margin-left: auto;
-  overflow: hidden;
-  width: 56px;
-}
-.lp-infra__run i { background: var(--lp-pink-30); display: block; height: 100%; transform: scaleX(0.62); transform-origin: 0 50%; }
 
-/* ── the live notes (Mobbin: Plain's and Granola's stacked notifications, kicker.run's activity
-   pills): one at a time on the canvas, beside the agent's column. Hidden at rest and under 1180
-   (no room beside the column); reduced motion shows the three still. ── */
-.lp-infra__toasts {
-  inset: 0;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  pointer-events: none;
-  position: absolute;
-  z-index: 2;
-}
-.lp-infra__toast {
-  align-items: center;
-  background: var(--lp-surface);
-  border-radius: 14px;
-  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke), 0 12px 30px -14px rgba(44, 0, 42, 0.3);
-  display: flex;
-  gap: 10px;
-  max-width: 290px;
-  opacity: 0;
-  padding: 8px 12px 8px 8px;
-  position: absolute;
-}
-.lp-infra__toast[data-at="left"] { left: 56px; top: 60px; }
-.lp-infra__toast[data-at="right"] { right: 56px; top: 104px; }
-.lp-infra__toast[data-at="left-low"] { left: 104px; top: 146px; }
-.lp-infra__toast-icon {
-  align-items: center;
-  border-radius: 10px;
-  color: var(--lp-text);
-  display: flex;
-  flex: none;
-  font-size: 11px;
-  font-weight: 600;
-  height: 32px;
-  justify-content: center;
-  width: 32px;
-}
-.lp-infra__toast-icon[data-tone="yellow"] { background: var(--lp-yellow-10); }
-.lp-infra__toast-icon[data-tone="purple"] { background: var(--lp-purple-10); }
-.lp-infra__toast-icon[data-tone="pink"] { background: var(--lp-pink-10); }
-.lp-infra__toast-icon svg { display: block; height: 22px; width: 22px; }
-.lp-infra__toast-text { display: flex; flex-direction: column; min-width: 0; }
-.lp-infra__toast-text b { color: var(--lp-text); font-size: var(--lp-text-sm); font-weight: 600; line-height: 18px; }
-.lp-infra__toast-text span { color: var(--lp-subtle-text); font-size: 12px; line-height: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lp-infra__toast-time { align-self: flex-start; color: var(--lp-ink-60); flex: none; font-size: 11px; line-height: 16px; margin-left: 4px; }
-@media (max-width: 1179px) {
-  .lp-infra__toasts { display: none; }
-}
-/* three narrow pictures (960 – 1179): the run bar would push the Play's status onto two lines */
-@media (min-width: 960px) and (max-width: 1179px) {
-  .lp-infra__run { display: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .lp-infra__toast { opacity: 1; }
-}
 
-/* the Pancake mark blinks; its pill pings when a packet lands */
-.lp-infra__pk-eye { transform-box: fill-box; transform-origin: center; }
-.lp-infra__brand::after {
-  border: 2px solid var(--lp-pink-30);
-  border-radius: inherit;
-  content: "";
-  inset: -2px;
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-}
-/* the brain's rows: the row it is learning lights up */
-.lp-infra__mem-row { border-radius: 8px; margin-inline: -6px; padding-inline: 8px; }
 
-/* the cards lift under the pointer (the individual `translate`: the build-up's inline transform stays) */
-@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .lp-infra__part { transition: translate 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s ease; }
-  .lp-infra__part:hover {
-    box-shadow: inset 0 0 0 1px var(--lp-infra-tone-20), 0 18px 34px -20px rgba(44, 0, 42, 0.35);
-    translate: 0 -4px;
-  }
-}
-
-/* ── the live loops (founder 2026-10-26: "Un peu de dynamisme. Un peu de juice!!!"): only once
-   the build-up is done (lp-play-once's data-lp-anim) and while the card is near the screen
-   (data-inview, LpInfraAnim): packets keep flowing down the wire and Pancake pings as each lands,
-   the brain lights the row it learns, the providers bob, the signals pulse, the Play's run fills,
-   leads come up and get approved one after another, the live notes take turns. Opacity and
-   transforms only, apart from three small background fades. ── */
-@media (prefers-reduced-motion: no-preference) {
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__dot { animation: lp-infra-packet 2.4s cubic-bezier(0.45, 0, 0.55, 1) infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__link > .lp-infra__wire:last-child .lp-infra__dot { animation-delay: 0.55s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__brand::after { animation: lp-infra-ping 2.4s ease-out infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__pk-eye { animation: lp-infra-blink 4.8s ease-in-out infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__mem-row { animation: lp-infra-learn 4.8s ease-in-out infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__mem-row:nth-child(2) { animation-delay: 1.6s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__mem-row:nth-child(3) { animation-delay: 3.2s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__disc { animation: lp-infra-bob 2.8s ease-in-out infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__disc:nth-child(2) { animation-delay: -0.4s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__disc:nth-child(3) { animation-delay: -0.8s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__disc:nth-child(4) { animation-delay: -1.2s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__disc:nth-child(5) { animation-delay: -1.6s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__disc:nth-child(6) { animation-delay: -2s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__signal { animation: lp-infra-signal 3.6s ease-in-out infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__signal:nth-child(2) { animation-delay: 1.2s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__signal:nth-child(3) { animation-delay: 2.4s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__run i { animation: lp-infra-run 3.6s ease-in-out infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__lead { animation: lp-infra-lead 7.2s ease-out infinite; opacity: 0; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__approve { animation: lp-infra-approve 7.2s ease-out infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__approve-do { animation: lp-infra-approve-do 7.2s steps(1, end) infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__approve-ok { animation: lp-infra-approve-ok 7.2s steps(1, end) infinite; }
-  /* the first lead is already up when the loop starts: it joins mid-entry, the others follow */
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__lead:nth-child(1),
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__lead:nth-child(1) * { animation-delay: -0.36s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__lead:nth-child(2),
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__lead:nth-child(2) * { animation-delay: 2.04s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__lead:nth-child(3),
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__lead:nth-child(3) * { animation-delay: 4.44s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__toast { animation: lp-infra-toast 9s cubic-bezier(0.2, 0.8, 0.2, 1) infinite; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__toast:nth-child(2) { animation-delay: 3s; }
-  .lp-infra__card[data-lp-anim="done"][data-inview] .lp-infra__toast:nth-child(3) { animation-delay: 6s; }
-}
-@keyframes lp-infra-packet {
-  0% { opacity: 0; transform: translateY(0); visibility: visible; }
-  6% { opacity: 1; visibility: visible; }
-  30% { opacity: 1; transform: translateY(24px); visibility: visible; }
-  36%, 100% { opacity: 0; transform: translateY(24px); visibility: visible; }
-}
-@keyframes lp-infra-ping {
-  0%, 52% { opacity: 0; transform: scale(1); }
-  54% { opacity: 0.55; transform: scale(1); }
-  82%, 100% { opacity: 0; transform: scale(1.14); }
-}
-@keyframes lp-infra-blink {
-  0%, 90%, 100% { transform: scaleY(1); }
-  94% { transform: scaleY(0.12); }
-}
-@keyframes lp-infra-learn {
-  0%, 36%, 100% { background-color: transparent; }
-  8%, 26% { background-color: var(--lp-yellow-10); }
-}
-@keyframes lp-infra-bob {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
-}
-@keyframes lp-infra-signal {
-  0%, 36%, 100% { background-color: var(--lp-purple-10); }
-  10%, 26% { background-color: var(--lp-purple-20); }
-}
-@keyframes lp-infra-run {
-  0% { opacity: 1; transform: scaleX(0); }
-  72% { opacity: 1; transform: scaleX(1); }
-  88%, 100% { opacity: 0; transform: scaleX(1); }
-}
-@keyframes lp-infra-lead {
-  0% { opacity: 0; transform: translateY(10px); }
-  5%, 28% { opacity: 1; transform: translateY(0); }
-  33.333%, 100% { opacity: 0; transform: translateY(-10px); }
-}
-@keyframes lp-infra-approve {
-  0%, 14% { background-color: var(--lp-pink-30); transform: scale(1); }
-  16% { background-color: var(--lp-pink-30); transform: scale(0.92); }
-  18%, 33.333% { background-color: var(--lp-green-10); transform: scale(1); }
-  33.334%, 100% { background-color: var(--lp-pink-30); transform: scale(1); }
-}
-@keyframes lp-infra-approve-do {
-  0% { opacity: 1; }
-  17% { opacity: 0; }
-  33.334% { opacity: 1; }
-}
-@keyframes lp-infra-approve-ok {
-  0% { opacity: 0; }
-  17% { opacity: 1; }
-  33.334% { opacity: 0; }
-}
-@keyframes lp-infra-toast {
-  0% { opacity: 0; transform: translateY(10px) scale(0.96); }
-  4%, 28% { opacity: 1; transform: translateY(0) scale(1); }
-  33.333%, 100% { opacity: 0; transform: translateY(-6px) scale(0.98); }
-}
 
 /* ── responsive: the steps' breakpoints, and one for the cards' pictures ── */
 @media (max-width: 1024px) {
@@ -731,9 +493,9 @@
     align-content: center;
     column-gap: 20px;
     grid-row: auto;
-    grid-template-areas: "pic ." "pic name" "pic title" "pic body" "pic .";
+    grid-template-areas: "pic ." "pic name" "pic title" "pic .";
     grid-template-columns: 280px minmax(0, 1fr);
-    grid-template-rows: 1fr auto auto auto 1fr;
+    grid-template-rows: 1fr auto auto 1fr;
     padding: 8px 24px 8px 8px;
   }
   .lp-infra__part > :not(.lp-infra__pic) {
@@ -748,9 +510,6 @@
   }
   .lp-infra__part-title {
     grid-area: title;
-  }
-  .lp-infra__part-body {
-    grid-area: body;
   }
 }
 @media (max-width: 767px) {

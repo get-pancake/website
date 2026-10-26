@@ -43,19 +43,68 @@ function usePlayOnce<E extends HTMLElement>(load: () => Promise<PlayOnceRuntime>
 
 export function LpInfraFlow({ children }: { children: ReactNode }) {
   const ref = usePlayOnce<HTMLDivElement>(loadFlow, "diagram", 1040);
-  // The live loops after the build-up (founder 2026-10-26: "Un peu de dynamisme. Un peu de
-  // juice!!!"): infra.css runs them on [data-lp-anim="done"][data-inview], so they stop (and free
-  // their layers) once the card is a screen away, and start again before it comes back.
+  // After the build-up only the leads queue moves (buildInfraLoop: a lead comes up, is approved,
+  // the next one comes up; founder 2026-10-26, "nothing should look vibe coded"): built once the
+  // play-once driver marks the card done, played while it is on screen and the tab visible, never
+  // under reduced motion, and dropped (its end picture given back) if the build-up plays again.
   useEffect(() => {
     const card = ref.current;
     if (!card || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver(([e]) => card.toggleAttribute("data-inview", e.isIntersecting), {
-      rootMargin: "100% 0px",
-    });
-    io.observe(card);
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let loop: { tl: { play: () => unknown; pause: () => unknown; kill: () => unknown }; cleanup: () => void } | null = null;
+    let loading = false;
+    let disposed = false;
+    let onScreen = false;
+    const drop = () => {
+      if (!loop) return;
+      loop.tl.kill();
+      loop.cleanup();
+      loop = null;
+    };
+    const sync = () => {
+      if (disposed) return;
+      if (card.dataset.lpAnim !== "done" || reduce.matches) {
+        drop();
+        return;
+      }
+      if (!loop) {
+        if (loading) return;
+        loading = true;
+        import("./lp-infra-timeline")
+          .then(({ buildInfraLoop }) => {
+            loading = false;
+            if (disposed || card.dataset.lpAnim !== "done" || reduce.matches || loop) return;
+            loop = buildInfraLoop(card);
+            sync();
+          })
+          .catch(() => {
+            loading = false;
+          });
+        return;
+      }
+      if (onScreen && !document.hidden) loop.tl.play();
+      else loop.tl.pause();
+    };
+    const watch = new MutationObserver(sync);
+    watch.observe(card, { attributes: true, attributeFilter: ["data-lp-anim"] });
+    const seen = new IntersectionObserver(
+      ([e]) => {
+        onScreen = e.isIntersecting;
+        sync();
+      },
+      { threshold: 0.2 },
+    );
+    seen.observe(card);
+    document.addEventListener("visibilitychange", sync);
+    reduce.addEventListener("change", sync);
+    sync();
     return () => {
-      io.disconnect();
-      card.removeAttribute("data-inview");
+      disposed = true;
+      watch.disconnect();
+      seen.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+      reduce.removeEventListener("change", sync);
+      drop();
     };
   }, [ref]);
   return (

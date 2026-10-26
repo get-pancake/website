@@ -12,10 +12,11 @@ import { gsap } from "@/lib/gsap";
  *   0          cue: the agents, the wires undrawn, Pancake and its three layers dimmed, the
  *              providers' discs not yet in, the Play switched off
  *   0.25       the agents send (a nudge on each chip)
- *   0.45       the wire draws down, a dot rides it; the sign-in pill appears; the second wire
+ *   0.45       the wire draws down; the sign-in pill appears; the second wire
  *   1.25       Pancake lights
  *   1.5        the brain, the data and the tools light up, in reading order: the brain's rows
  *              settle, the providers' discs pop in, the Play switches on and the lead comes up
+ *              (no signal chips and no status line since 2026-10-26: "Trop de texte")
  */
 
 type Built = { tl: gsap.core.Timeline; cleanup: () => void; cue: number };
@@ -48,48 +49,39 @@ function restStyles(touched: Element[]) {
 export function buildInfraFlow(root: HTMLElement): Built {
   const chips = all(root, ".lp-infra__agent");
   const lines = all(root, ".lp-infra__line");
-  const dots = all(root, ".lp-infra__dot");
-  const wires = all(root, ".lp-infra__wire");
-  if (lines.length !== 2 || dots.length !== 2 || wires.length !== 2) throw new Error("infra timeline: two wires expected");
+  if (lines.length !== 2) throw new Error("infra timeline: two wires expected");
   const caption = one(root, ".lp-infra__link-text");
   const brand = one(root, ".lp-infra__brand");
   const parts = all(root, ".lp-infra__part");
   const rows = all(root, ".lp-infra__mem-row");
   const discs = all(root, ".lp-infra__disc");
-  const signals = all(root, ".lp-infra__signal");
   const toggle = one(root, ".lp-infra__toggle");
   const knob = one(root, ".lp-infra__toggle-knob");
-  const meta = one(root, ".lp-infra__play-meta");
   const lead = one(root, ".lp-infra__lead");
 
   const cleanup = restStyles([
     ...chips,
     ...lines,
-    ...dots,
     caption,
     brand,
     ...parts,
     ...rows,
     ...discs,
-    ...signals,
     toggle,
     knob,
-    meta,
     lead,
   ]);
 
   /* ── frame 0 = cue ── */
   gsap.set(lines, { scaleY: 0, transformOrigin: "50% 0%" });
-  gsap.set(dots, { autoAlpha: 0, y: 0 });
   gsap.set(caption, { autoAlpha: 0, y: 4 });
   gsap.set(brand, { autoAlpha: 0.35, scale: 0.94, transformOrigin: "50% 50%" });
   gsap.set(parts, { autoAlpha: 0.4, y: 8 });
   gsap.set(rows, { autoAlpha: 0.3, x: -6 });
   gsap.set(discs, { autoAlpha: 0, scale: 0.6, transformOrigin: "50% 50%" });
-  gsap.set(signals, { autoAlpha: 0.3 });
   gsap.set(toggle, { backgroundColor: TOGGLE_OFF });
   gsap.set(knob, { x: 0 });
-  gsap.set([meta, lead], { autoAlpha: 0.3 });
+  gsap.set(lead, { autoAlpha: 0.3 });
   gsap.set(lead, { y: 4 });
 
   const tl = gsap.timeline({ paused: true });
@@ -97,14 +89,9 @@ export function buildInfraFlow(root: HTMLElement): Built {
   // the agents send
   tl.to(chips, { scale: 1.04, duration: 0.14, ease: "power2.out", stagger: 0.06, yoyo: true, repeat: 1 }, 0.25);
 
-  // the two wires, each drawn with a dot riding its front; the sign-in pill between them
-  wires.forEach((wire, i) => {
-    const t = 0.45 + i * 0.5;
-    const length = wire.offsetHeight || 24;
-    tl.to(lines[i], { scaleY: 1, duration: 0.35, ease: "power2.inOut" }, t);
-    tl.set(dots[i], { autoAlpha: 1 }, t);
-    tl.to(dots[i], { y: length, duration: 0.35, ease: "power2.inOut" }, t);
-    tl.set(dots[i], { autoAlpha: 0 }, t + 0.36);
+  // the two wires draw down (as the sources story draws its wires), the sign-in pill between them
+  lines.forEach((line, i) => {
+    tl.to(line, { scaleY: 1, duration: 0.35, ease: "power2.inOut" }, 0.45 + i * 0.5);
   });
   tl.to(caption, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out" }, 0.75);
 
@@ -115,13 +102,82 @@ export function buildInfraFlow(root: HTMLElement): Built {
   tl.to(parts, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.18 }, 1.5);
   tl.to(rows, { autoAlpha: 1, x: 0, duration: 0.3, ease: "power2.out", stagger: 0.1 }, 1.6);
   tl.to(discs, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2)", stagger: 0.06 }, 1.8);
-  tl.to(signals, { autoAlpha: 1, duration: 0.25, ease: "power1.out", stagger: 0.06 }, 2.05);
 
   // the Play switches on, then the lead it found comes up for approval
   tl.to(knob, { x: 12, duration: 0.25, ease: "power2.inOut" }, 2.1);
   tl.to(toggle, { backgroundColor: TOGGLE_ON, duration: 0.25, ease: "power1.inOut" }, 2.1);
-  tl.to(meta, { autoAlpha: 1, duration: 0.25, ease: "power1.out" }, 2.25);
   tl.to(lead, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" }, 2.4);
 
   return { tl, cleanup, cue: 0 };
+}
+
+/* ── after the build-up: the leads queue ─────────────────────────────────────────────────────────
+   Founder 2026-10-26: "Un peu de dynamisme. Un peu de juice!!!", then on the first passes
+   (ambient loops, floating notes, beams, rings): "Ton animation elle fait molle et tres vibe codee
+   dude", "Peut etre qu il faut faire plus simple comme animation !" and "nothing should look vibe
+   coded / everything should be inspired from our design system OR from a best in class component
+   taken from mobbin". So the diagram rests on its end picture like every animated card of the
+   page, and only the product keeps working where it would: the Play's leads come up for approval
+   one after another (Mobbin: Antimetal's "Needs your decision" cards, Approve → done), 3 s each:
+     0      the lead is up, "Approve" in pink
+     1.2    the press, then a green "Approved"
+     2.3    the lead slides out, the next one comes up with its pink button
+   LpInfraAnim builds it once the build-up is done, plays it while the card is on screen and the
+   tab visible, and never under reduced motion. cleanup() gives back the build-up's end picture. */
+
+/** colours the queue tweens (foundation.css: pink-30, green-10) */
+const PINK_30 = "#ff7aa0";
+const GREEN_10 = "#ceead5";
+/** one lead */
+const BEAT = 3;
+
+export function buildInfraLoop(root: HTMLElement): { tl: gsap.core.Timeline; cleanup: () => void } {
+  const leads = all(root, ".lp-infra__lead");
+  const buttons = leads.map((lead) => ({
+    btn: one(lead, ".lp-infra__approve"),
+    todo: one(lead, ".lp-infra__approve-do"),
+    done: one(lead, ".lp-infra__approve-ok"),
+  }));
+  if (leads.length < 2) throw new Error("infra loop: the queue needs two leads");
+
+  const cleanup = restStyles([...leads, ...buttons.flatMap((b) => [b.btn, b.todo, b.done])]);
+
+  /* the starting picture = the build-up's end: the first lead up with its pink button */
+  gsap.set(leads, { autoAlpha: 0, y: 0 });
+  gsap.set(leads[0], { autoAlpha: 1 });
+  for (const b of buttons) {
+    gsap.set(b.btn, { backgroundColor: PINK_30, scale: 1 });
+    gsap.set(b.todo, { opacity: 1 });
+    gsap.set(b.done, { opacity: 0 });
+  }
+
+  const tl = gsap.timeline({ paused: true, repeat: -1 });
+  leads.forEach((lead, k) => {
+    const t = k * BEAT;
+    const b = buttons[k];
+    tl.to(
+      b.btn,
+      {
+        keyframes: [
+          { scale: 0.92, duration: 0.08, ease: "power2.out" },
+          { scale: 1, duration: 0.3, ease: "back.out(2.4)" },
+        ],
+      },
+      t + 1.2,
+    );
+    tl.to(b.btn, { backgroundColor: GREEN_10, duration: 0.15, ease: "power1.out" }, t + 1.25);
+    tl.to(b.todo, { opacity: 0, duration: 0.1, ease: "none" }, t + 1.25);
+    tl.to(b.done, { opacity: 1, duration: 0.12, ease: "none" }, t + 1.3);
+
+    const n = (k + 1) % leads.length;
+    tl.to(lead, { autoAlpha: 0, y: -8, duration: 0.22, ease: "power2.in" }, t + 2.3);
+    tl.set(buttons[n].btn, { backgroundColor: PINK_30, scale: 1 }, t + 2.3);
+    tl.set(buttons[n].todo, { opacity: 1 }, t + 2.3);
+    tl.set(buttons[n].done, { opacity: 0 }, t + 2.3);
+    tl.fromTo(leads[n], { autoAlpha: 0, y: 8 }, { autoAlpha: 1, y: 0, duration: 0.32, ease: "power3.out", immediateRender: false }, t + 2.42);
+  });
+  // the last lead's full beat before the repeat
+  tl.to({}, { duration: 0.01 }, leads.length * BEAT - 0.01);
+
+  return { tl, cleanup };
 }

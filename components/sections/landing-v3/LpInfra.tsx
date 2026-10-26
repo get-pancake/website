@@ -9,10 +9,15 @@ import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art"
  * "Everything your agent needs to sell.", and the same day: "on peut s inspirer un peu de sites
  * best in class pour mieux faire ressortir cette page genre kicker.run // clay … Un peu de
  * dynamisme. Un peu de juice!!!", then "use components from mobbin"). After the build-up the
- * diagram stays alive (infra.css, the live loops): live notes take turns on the canvas (Mobbin:
- * Plain's and Granola's notifications, kicker.run's activity pills), packets keep flowing into
- * Pancake, the Play's run fills and its leads come up for approval one after another (Zaro's live
- * runs, Antimetal's Approve). The infra-first landing's section before that: until 2026-10-22
+ * diagram rests on its end picture, as every animated card of the page does, and only its leads
+ * keep moving: one comes up, is approved, the next one comes up (buildInfraLoop,
+ * lp-infra-timeline.ts; Mobbin: Antimetal's "Needs your decision" cards). The same day the first
+ * pass's ambient loops, live notes, beams and rings went ("Ton animation elle fait molle et tres
+ * vibe codee dude"; "nothing should look vibe coded / everything should be inspired from our
+ * design system OR from a best in class component taken from mobbin"), and so did the cards'
+ * sentences and the pictures' extra words ("Trop de texte trop de complexité ici !"): a card is
+ * its badge, its title and its picture. The infra-first landing's section before that: until
+ * 2026-10-22
  * the launch line, "Your agent decides. Pancake runs it." — founder: "doesnt mean anything". The
  * heading now says what the diagram shows: Pancake gives your agent the brain, the data and the
  * tools (no kicker: "Connect Claude or Codex." went the same day, founder: "Remove").
@@ -41,28 +46,25 @@ import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art"
  */
 
 type Tone = "yellow" | "purple" | "pink";
-type Layer = { tone: Tone; name: string; title: string; body: string; pic: ComponentType };
+type Layer = { tone: Tone; name: string; title: string; pic: ComponentType };
 
 const LAYERS: readonly Layer[] = [
   {
     tone: "yellow",
     name: "The brain",
     title: "Knows your business",
-    body: "What you sell, who buys and how you talk. It learns from every lead.",
     pic: BrainPic,
   },
   {
     tone: "purple",
     name: "The data",
     title: "Finds your buyers",
-    body: "30+ data providers: funding, hiring, tech stacks and the people behind them.",
     pic: DataPic,
   },
   {
     tone: "pink",
     name: "The tools",
     title: "Runs your Plays",
-    body: "Searches on your schedule and writes from your own accounts to the leads you approve.",
     pic: ToolsPic,
   },
 ];
@@ -83,8 +85,6 @@ const PROVIDERS = [
   { name: "Firecrawl", logo: "/lp/story-sources/firecrawl.png" },
 ] as const;
 
-const SIGNALS = ["Funding", "Hiring", "Tech stack"] as const;
-
 /** The leads the Play brings up for approval, in turn: the page's cast (LpStepMocks' leads). */
 const LEADS = [
   { initials: "TO", name: "Tamsin Okafor", company: "Quillfern" },
@@ -92,14 +92,6 @@ const LEADS = [
   { initials: "SM", name: "Samantha Mills", company: "Northvale" },
 ] as const;
 
-/** The live notes around the diagram (Mobbin: Plain's and Granola's stacked notifications,
- *  kicker.run's activity pills), one at a time: what the Play found, a reply, the Brain learning
- *  from it. Placed by `at` (infra.css). */
-const TOASTS: readonly { at: string; tone: Tone; title: string; meta: string; initials?: string }[] = [
-  { at: "left", tone: "pink", title: "13 new leads", meta: "Funded startups hiring a marketing lead" },
-  { at: "right", tone: "purple", title: "Tamsin Okafor replied", meta: "Interested, labeled for you", initials: "TO" },
-  { at: "left-low", tone: "yellow", title: "Brain updated", meta: "Learned from Tamsin’s reply" },
-];
 
 export function LpInfra() {
   return (
@@ -111,21 +103,6 @@ export function LpInfra() {
           </h2>
         </header>
         <LpInfraFlow>
-          {/* what Pancake is doing right now: one note at a time on the canvas (wide screens) */}
-          <ul className="lp-infra__toasts" aria-hidden="true">
-            {TOASTS.map((toast) => (
-              <li key={toast.title} className="lp-infra__toast" data-at={toast.at}>
-                <span className="lp-infra__toast-icon" data-tone={toast.tone}>
-                  {toast.initials ?? <PancakeMark />}
-                </span>
-                <span className="lp-infra__toast-text">
-                  <b>{toast.title}</b>
-                  <span>{toast.meta}</span>
-                </span>
-                <span className="lp-infra__toast-time">now</span>
-              </li>
-            ))}
-          </ul>
           <div className="lp-infra__agentbar">
             <p className="lp-infra__label">Your agent</p>
             <ul className="lp-infra__agents">
@@ -158,14 +135,13 @@ export function LpInfra() {
           </div>
           <div className="lp-infra__stack">
             <ul className="lp-infra__parts">
-              {LAYERS.map(({ tone, name, title, body, pic: Pic }) => (
+              {LAYERS.map(({ tone, name, title, pic: Pic }) => (
                 <li key={name} className="lp-infra__part" data-tone={tone}>
                   <div className="lp-infra__pic" aria-hidden="true">
                     <Pic />
                   </div>
                   <p className="lp-infra__part-name">{name}</p>
                   <h3 className="lp-infra__part-title">{title}</h3>
-                  <p className="lp-infra__part-body">{body}</p>
                 </li>
               ))}
             </ul>
@@ -176,12 +152,11 @@ export function LpInfra() {
   );
 }
 
-/** a hairline wire (drawn by the flow) with the dot that rides its front */
+/** a hairline wire (drawn by the build-up, as the sources story draws its wires) */
 function Wire() {
   return (
     <span className="lp-infra__wire" aria-hidden="true">
       <i className="lp-infra__line" />
-      <i className="lp-infra__dot" />
     </span>
   );
 }
@@ -191,13 +166,7 @@ function PancakeMark() {
   return (
     <svg className="lp-infra__pk" viewBox={`0 0 ${SL_AVATAR.size} ${SL_AVATAR.size}`} aria-hidden="true" focusable="false">
       {SL_AVATAR.shapes.map((shape, i) => (
-        <path
-          key={i}
-          className={i >= SL_AVATAR.shapes.length - 2 ? "lp-infra__pk-eye" : undefined}
-          d={shape.d}
-          fill={shape.fill}
-          opacity={"opacity" in shape ? shape.opacity : undefined}
-        />
+        <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
       ))}
     </svg>
   );
@@ -205,14 +174,16 @@ function PancakeMark() {
 
 function BrainPic() {
   return (
-    <dl className="lp-infra__memory">
-      {MEMORY.map((row) => (
-        <div key={row.key} className="lp-infra__mem-row">
-          <dt>{row.key}</dt>
-          <dd>{row.value}</dd>
-        </div>
-      ))}
-    </dl>
+    <div className="lp-infra__brain">
+      <dl className="lp-infra__memory">
+        {MEMORY.map((row) => (
+          <div key={row.key} className="lp-infra__mem-row">
+            <dt>{row.key}</dt>
+            <dd>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
   );
 }
 
@@ -227,13 +198,6 @@ function DataPic() {
           </li>
         ))}
         <li className="lp-infra__disc lp-infra__disc--more">30+</li>
-      </ul>
-      <ul className="lp-infra__signals">
-        {SIGNALS.map((signal) => (
-          <li key={signal} className="lp-infra__signal">
-            {signal}
-          </li>
-        ))}
       </ul>
     </div>
   );
@@ -253,13 +217,6 @@ function ToolsPic() {
           <i className="lp-infra__toggle-knob" />
         </span>
       </div>
-      <p className="lp-infra__play-meta">
-        <i className="lp-infra__live" />
-        Live · On your schedule
-        <span className="lp-infra__run">
-          <i />
-        </span>
-      </p>
       <ul className="lp-infra__leads">
         {LEADS.map((lead) => (
           <li key={lead.name} className="lp-infra__lead">
