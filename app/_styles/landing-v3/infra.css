@@ -65,22 +65,14 @@
   z-index: -1;
 }
 
-/* your agent: one node, its label and the two agents */
+/* your agent: one node holding the two agents (no label beside them since 2026-10-27) */
 .lp-infra__agentbar {
   align-items: center;
   background: var(--lp-surface);
   border-radius: 20px;
   box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
   display: flex;
-  gap: 16px;
-  padding: 8px 8px 8px 20px;
-}
-.lp-infra__label {
-  color: var(--lp-subtle-text);
-  font-size: var(--lp-text-sm);
-  font-weight: 500;
-  line-height: 20px;
-  white-space: nowrap;
+  padding: 8px;
 }
 .lp-infra__agents {
   display: flex;
@@ -740,9 +732,7 @@
     background-size: 18px 18px;
   }
   .lp-infra__agentbar {
-    flex-direction: column;
-    gap: 8px;
-    padding: 12px 8px 8px;
+    padding: 6px;
   }
   .lp-infra__agent {
     padding: 8px 14px 8px 10px;

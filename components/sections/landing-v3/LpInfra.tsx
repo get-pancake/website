@@ -196,9 +196,11 @@ export function LpInfra() {
             </header>
             <LpInfraFlow>
               <i className="lp-infra__canvas" aria-hidden="true" />
+              {/* your agent: its two chips, no label beside them (founder 2026-10-27: "Remove 'Your
+                  agent' next to the 2 logos"); the heading says it, the list keeps the name for
+                  screen readers */}
               <div className="lp-infra__agentbar">
-                <p className="lp-infra__label">Your agent</p>
-                <ul className="lp-infra__agents">
+                <ul className="lp-infra__agents" aria-label="Your agent">
                   <li className="lp-infra__agent" data-agent="claude">
                     <span className="lp-infra__mark" aria-hidden="true"><ClaudeMark /></span>
                     Claude
