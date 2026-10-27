@@ -81,7 +81,8 @@
   margin: 0;
   padding: 0;
 }
-.lp-infra__agent {
+.lp-infra__agent,
+.lp-infra__brand-chip {
   align-items: center;
   background: var(--lp-ink-10);
   border-radius: 12px;
@@ -134,33 +135,27 @@
   position: absolute;
 }
 
-/* Pancake: its name sits on the platform's edge where the wire plugs in (the platform pulls up
-   under the pill by half the pill's height: 32) */
+/* Pancake: a node built as your agent's, the same white bar holding one chip (its colour mark and
+   its name), on the platform's edge where the wire plugs in; the platform pulls up under it by
+   half its height (28). Founder 2026-10-27: "Pancake peut etre mieux positionné et unifié avec
+   design de claude codex" (it was the nav's wordmark in a large pill). */
 .lp-infra__brand {
   align-items: center;
   background: var(--lp-surface);
-  border-radius: 999px;
+  border-radius: 20px;
   box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
   display: flex;
-  gap: 8px;
-  padding: 10px 24px 10px 14px;
+  padding: 8px;
   position: relative;
   z-index: 1;
 }
 .lp-infra__pk {
   display: block;
-  height: 44px;
-  width: 44px;
-}
-.lp-infra__logo {
-  display: block;
-  height: 34px;
-  width: auto;
 }
 .lp-infra__stack {
   border-radius: 32px;
-  margin-top: -32px;
-  padding: 52px 16px 16px;
+  margin-top: -28px;
+  padding: 48px 16px 16px;
   position: relative;
   width: 100%;
 }
@@ -248,7 +243,7 @@
   border-radius: var(--lp-r-m);
   box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
   display: flex;
-  height: 136px;
+  height: 168px;
   justify-content: center;
   margin-bottom: 8px;
   overflow: hidden;
@@ -280,7 +275,33 @@
   text-wrap: balance;
 }
 
-/* the brain: what it knows about Acme */
+/* the brain: what it knows about Acme, and its other sections as chips */
+.lp-infra__brain {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.lp-infra__chips {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0 2px;
+}
+/* the kit badge, small, in the Context card's yellow */
+.lp-infra__chip {
+  background: var(--lp-yellow-30);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  corner-shape: squircle;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  line-height: 16px;
+  padding: 2px 7px;
+  text-transform: uppercase;
+}
 .lp-infra__memory {
   display: flex;
   flex-direction: column;
@@ -319,6 +340,27 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+/* the Play's signals, as white pills with a hairline */
+.lp-infra__signals {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-infra__signal {
+  background: var(--lp-surface);
+  border-radius: 999px;
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.16);
+  color: var(--lp-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 .lp-infra__discs {
   display: flex;
@@ -379,7 +421,9 @@
   width: 100%;
 }
 .lp-infra__disc .lp-infra__cake,
-.lp-infra__bit--logo .lp-infra__cake {
+.lp-infra__crm .lp-infra__cake,
+.lp-infra__bit--logo .lp-infra__cake,
+.lp-infra__bit--more .lp-infra__cake {
   filter: drop-shadow(0 0 0.5px rgba(48, 0, 44, 0.2)) drop-shadow(0 3px 8px rgba(48, 0, 44, 0.1));
 }
 
@@ -510,6 +554,32 @@
   padding: 5px 10px;
 }
 .lp-infra__approve > span { grid-area: 1 / 1; text-align: center; }
+/* the CRMs the leads go to: their marks on small pancakes, under the lead */
+.lp-infra__crms {
+  box-shadow: inset 0 1px 0 var(--lp-ink-tr-10);
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 10px 0 0;
+}
+.lp-infra__crm {
+  --lp-pk-front: var(--lp-surface);
+  --lp-pk-back: var(--lp-pink-20);
+  display: grid;
+  height: 28px;
+  place-items: center;
+  position: relative;
+  width: 28px;
+}
+.lp-infra__crm img {
+  display: block;
+  height: 14px;
+  margin-bottom: 2px;
+  object-fit: contain;
+  position: relative;
+  width: 14px;
+}
 .lp-infra__approve-ok { opacity: 0; }
 
 
@@ -572,24 +642,44 @@
   position: relative;
   width: 30px;
 }
-/* the white pieces: the message story's cards (story-message.css: white, a hairline, its soft
-   shadow) */
+/* "30+", the Data card's purple pancake */
+.lp-infra__bit--more {
+  --lp-pk-front: var(--lp-purple-20);
+  --lp-pk-back: var(--lp-purple-30);
+  color: var(--lp-text);
+  display: grid;
+  font-size: 19px;
+  font-weight: 600;
+  height: 60px;
+  line-height: 1;
+  place-items: center;
+  width: 60px;
+}
+.lp-infra__bit--more > span {
+  margin-bottom: 4px;
+  position: relative;
+}
+/* The white pieces: the message story's cards (white, a hairline, its soft shadow) around the very
+   layout of the place each lands on: the same type and gaps, 10 px more on each side, which the
+   landing takes off (buildInfraScroll sets each one's width from its place's). So a piece lands
+   exactly where and as its place reads, and hands over to it without a jump. */
 .lp-infra__bit--row,
-.lp-infra__bit--signal,
-.lp-infra__bit--message,
+.lp-infra__bit--play,
 .lp-infra__bit--lead {
   background: var(--lp-surface);
+  border-radius: 12px;
   box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.12), 0 4px 32px rgba(48, 0, 44, 0.08);
   color: var(--lp-text);
-  white-space: nowrap;
 }
-/* one of the brain's notes, as the Context card lists them */
+/* a brain note: the Context card's row (.lp-infra__mem-row) */
 .lp-infra__bit--row {
   align-items: baseline;
-  border-radius: 12px;
-  display: flex;
-  gap: 12px;
-  padding: 9px 14px;
+  column-gap: 12px;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  padding: 8px 12px;
+  white-space: nowrap;
+  width: 280px;
 }
 .lp-infra__bit-key {
   color: var(--lp-subtle-text);
@@ -600,45 +690,41 @@
   font-size: var(--lp-text-sm);
   font-weight: 500;
   line-height: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-/* a signal, as a white pill */
-.lp-infra__bit--signal {
-  border-radius: 999px;
-  font-size: var(--lp-text-sm);
-  font-weight: 500;
-  line-height: 20px;
-  padding: 7px 16px;
-}
-/* the message the story sends Tamsin: its eyebrow and its first sentence */
-.lp-infra__bit--message {
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 10px 14px 12px;
-  white-space: normal;
-  width: 236px;
-}
-.lp-infra__bit-eb {
-  color: var(--lp-ink-70);
-  font-size: 10.72px;
-  font-weight: 500;
-  letter-spacing: 1.072px;
-  line-height: 16px;
-  text-transform: uppercase;
-}
-.lp-infra__bit-text {
-  font-size: var(--lp-text-sm);
-  line-height: 19px;
-}
-/* Tamsin, waiting for approval (the Tools card's lead) */
-.lp-infra__bit--lead {
+/* the Play: the Tools card's row (.lp-infra__play), its switch's place left for the switch */
+.lp-infra__bit--play {
   align-items: center;
-  border-radius: 14px;
   display: flex;
   gap: 8px;
-  padding: 9px 10px;
-  width: 248px;
+  padding: 8px 10px;
+  width: 280px;
+}
+.lp-infra__bit-gap {
+  flex: none;
+  height: 18px;
+  width: 30px;
+}
+/* Tamsin: the Tools card's lead (.lp-infra__lead) */
+.lp-infra__bit--lead {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  padding: 8px 10px;
+  width: 280px;
+}
+/* a signal: the Data card's pill (.lp-infra__signal), with the cards' shadow */
+.lp-infra__bit--signal {
+  background: var(--lp-surface);
+  border-radius: 999px;
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.16), 0 4px 24px rgba(48, 0, 44, 0.08);
+  color: var(--lp-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  padding: 4px 10px;
+  white-space: nowrap;
 }
 /* the Play's switch, on */
 .lp-infra__bit--toggle {
@@ -658,17 +744,17 @@
   transform: translateX(20px);
   width: 22px;
 }
-/* the kit badge in the Context card's yellow (.lp-infra__part-name), a size up */
+/* a section: the Context card's chip (.lp-infra__chip), the same badge */
 .lp-infra__bit--badge {
   background: var(--lp-yellow-30);
   border-radius: var(--lp-r-sm);
   color: var(--lp-text);
   corner-shape: squircle;
-  font-size: 16px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.55px;
-  line-height: 22px;
-  padding: 5px 11px;
+  letter-spacing: 0.4px;
+  line-height: 16px;
+  padding: 2px 7px;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -696,7 +782,7 @@
     padding: 40px 32px 32px;
   }
   .lp-infra__stack {
-    padding: 52px 12px 12px;
+    padding: 48px 12px 12px;
   }
   /* six discs in a 208 px picture at 960 */
   .lp-infra__disc {
@@ -761,23 +847,17 @@
   .lp-infra__agentbar {
     padding: 6px;
   }
-  .lp-infra__agent {
+  .lp-infra__agent,
+  .lp-infra__brand-chip {
     padding: 8px 14px 8px 10px;
   }
   .lp-infra__brand {
-    padding: 8px 20px 8px 12px;
-  }
-  .lp-infra__pk {
-    height: 40px;
-    width: 40px;
-  }
-  .lp-infra__logo {
-    height: 30px;
+    padding: 6px;
   }
   .lp-infra__stack {
     border-radius: 26px;
-    margin-top: -28px;
-    padding: 44px 8px 8px;
+    margin-top: -26px;
+    padding: 42px 8px 8px;
   }
   .lp-infra__parts {
     gap: 8px;

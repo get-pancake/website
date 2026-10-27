@@ -61,13 +61,13 @@ const LAYERS: readonly Layer[] = [
   {
     tone: "yellow",
     name: "Context",
-    title: "Knows your business",
+    title: "Knows how you sell",
     pic: BrainPic,
   },
   {
     tone: "purple",
     name: "Data",
-    title: "Finds your buyers",
+    title: "Finds who to sell to",
     pic: DataPic,
   },
   {
@@ -95,6 +95,29 @@ const PROVIDERS = [
   { id: "firecrawl", name: "Firecrawl", logo: "/lp/story-sources/firecrawl.png" },
 ] as const;
 
+/** the brain's other sections, as chips under its notes */
+const CONTEXT_CHIPS = ["Personas", "Competitors"] as const;
+
+/** the two signals of the page's Play: Quillfern raised a seed round and is hiring a marketing lead */
+const SIGNALS = [
+  { id: "seed", label: "Raised a seed round" },
+  { id: "hiring", label: "Hiring a marketing lead" },
+] as const;
+
+/** three of the CRMs a workspace connects (the dive names HubSpot, Attio, Pipedrive and Close) */
+const CRMS = [
+  { id: "hubspot", name: "HubSpot", logo: "/lp/vendor-logos/hubspot.svg" },
+  { id: "attio", name: "Attio", logo: "/lp/vendor-logos/attio.svg" },
+  { id: "pipedrive", name: "Pipedrive", logo: "/lp/vendor-logos/pipedrive.svg" },
+] as const;
+
+/** each mark's pancake, the same in the card and on the piece that flies there */
+const SHAPE: Record<string, number> = {
+  ...Object.fromEntries(PROVIDERS.map((p, i) => [p.id, i + 1])),
+  ...Object.fromEntries(CRMS.map((c, i) => [c.id, i + 2])),
+  more: 3,
+};
+
 /** The leads the Play brings up for approval, in turn: the page's cast (LpStepMocks' leads). */
 const LEADS = [
   { initials: "TO", name: "Tamsin Okafor", company: "Quillfern" },
@@ -120,33 +143,36 @@ const LEADS = [
    (--lp-infra-reach-y, LpInfraAnim), so the pieces use the whole screen. `s` is the piece's size, for depth; `r` its tilt (marks are never tilted). Shown
    only in the scroll version. */
 type Bucket = "context" | "data" | "tools";
-type Bit = { to: Bucket; x: number; y: number; s: number; r: number; fill?: string; last?: true } & (
-  | { kind: "logo"; id: string; logo: string }
+type Bit = { to: Bucket; fill: string; x: number; y: number; s: number; r: number; last?: true } & (
+  | { kind: "logo"; logo: string }
   | { kind: "badge" | "signal"; label: string }
   | { kind: "row"; label: string; value: string }
-  | { kind: "message"; label: string; text: string }
-  | { kind: "toggle" | "lead" }
+  | { kind: "more" | "play" | "toggle" | "lead" }
 );
 
+/* Every piece lands on its own place in its brick (data-fill, the same name on both): founder
+   2026-10-27, "mieux flecher chacun de ces elements vers sa place finale dans la card la on n
+   amene pas chaque objet dans sa position finale on triche un peu". */
 const BITS: readonly Bit[] = [
-  { to: "context", kind: "badge", label: "ICP", fill: "buyers", x: -640, y: -95, s: 1.3, r: -8 },
-  { to: "context", kind: "row", label: "Sells", value: "Websites for startups", fill: "sells", x: -470, y: 30, s: 1.05, r: -3 },
-  { to: "context", kind: "badge", label: "Personas", x: -260, y: 160, s: 0.9, r: 6 },
-  { to: "context", kind: "badge", label: "Competitors", x: -480, y: 525, s: 0.85, r: -5 },
-  { to: "context", kind: "row", label: "Voice", value: "Warm and short", fill: "voice", x: -180, y: 530, s: 0.95, r: 4 },
-  { to: "data", kind: "logo", id: "apify", logo: "/lp/story-sources/apify.svg", x: -455, y: -70, s: 1.4, r: 0 },
-  { to: "data", kind: "logo", id: "coresignal", logo: "/lp/story-sources/coresignal.svg", x: 470, y: -60, s: 0.85, r: 0 },
-  { to: "data", kind: "logo", id: "theirstack", logo: "/lp/story-sources/theirstack.svg", x: -60, y: 150, s: 1, r: 0 },
-  { to: "data", kind: "logo", id: "wappalyzer", logo: "/lp/story-sources/wappalyzer.svg", x: -670, y: 360, s: 0.8, r: 0 },
-  { to: "data", kind: "logo", id: "firecrawl", logo: "/lp/story-sources/firecrawl.png", x: 665, y: 300, s: 1.15, r: 0 },
-  { to: "data", kind: "signal", label: "Hiring a marketing lead", x: 480, y: 160, s: 1, r: -3 },
-  { to: "data", kind: "signal", label: "Raised a seed round", x: 90, y: 520, s: 1.05, r: 3 },
-  { to: "tools", kind: "logo", id: "hubspot", logo: "/lp/vendor-logos/hubspot.svg", x: 650, y: -95, s: 1.35, r: 0 },
-  { to: "tools", kind: "logo", id: "attio", logo: "/lp/vendor-logos/attio.svg", x: 290, y: 150, s: 0.95, r: 0 },
-  { to: "tools", kind: "logo", id: "pipedrive", logo: "/lp/vendor-logos/pipedrive.svg", x: 660, y: 430, s: 0.8, r: 0 },
-  { to: "tools", kind: "toggle", fill: "toggle", x: 240, y: -15, s: 1.2, r: 0 },
-  { to: "tools", kind: "message", label: "Sent", text: "Hi Tamsin, congrats on Quillfern\u2019s seed round.", x: 380, y: 540, s: 0.95, r: -2 },
-  { to: "tools", kind: "lead", fill: "lead", last: true, x: 430, y: 40, s: 1, r: -3 },
+  { to: "context", kind: "row", label: "Buyers", value: "Funded founders", fill: "buyers", x: -560, y: -95, s: 1, r: 4 },
+  { to: "context", kind: "row", label: "Sells", value: "Websites for startups", fill: "sells", x: -500, y: 20, s: 1.05, r: -3 },
+  { to: "context", kind: "row", label: "Voice", value: "Warm and short", fill: "voice", x: -330, y: 160, s: 0.95, r: -2 },
+  { to: "context", kind: "badge", label: "Personas", fill: "personas", x: -650, y: 300, s: 2, r: 6 },
+  { to: "context", kind: "badge", label: "Competitors", fill: "competitors", x: -450, y: 560, s: 1.9, r: -5 },
+  { to: "data", kind: "logo", logo: "/lp/story-sources/apify.svg", fill: "apify", x: -420, y: -70, s: 1.35, r: 0 },
+  { to: "data", kind: "logo", logo: "/lp/story-sources/coresignal.svg", fill: "coresignal", x: 470, y: -75, s: 0.85, r: 0 },
+  { to: "data", kind: "logo", logo: "/lp/story-sources/theirstack.svg", fill: "theirstack", x: -230, y: 30, s: 0.8, r: 0 },
+  { to: "data", kind: "logo", logo: "/lp/story-sources/wappalyzer.svg", fill: "wappalyzer", x: 230, y: 25, s: 0.8, r: 0 },
+  { to: "data", kind: "logo", logo: "/lp/story-sources/firecrawl.png", fill: "firecrawl", x: 670, y: 280, s: 1.1, r: 0 },
+  { to: "data", kind: "more", fill: "more", x: -90, y: 150, s: 0.95, r: 0 },
+  { to: "data", kind: "signal", label: "Raised a seed round", fill: "seed", x: -120, y: 560, s: 1.35, r: 3 },
+  { to: "data", kind: "signal", label: "Hiring a marketing lead", fill: "hiring", x: 150, y: 595, s: 1.25, r: -3 },
+  { to: "tools", kind: "logo", logo: "/lp/vendor-logos/hubspot.svg", fill: "hubspot", x: 640, y: -100, s: 1.3, r: 0 },
+  { to: "tools", kind: "logo", logo: "/lp/vendor-logos/attio.svg", fill: "attio", x: 420, y: 10, s: 0.9, r: 0 },
+  { to: "tools", kind: "logo", logo: "/lp/vendor-logos/pipedrive.svg", fill: "pipedrive", x: 680, y: 450, s: 0.8, r: 0 },
+  { to: "tools", kind: "play", fill: "play", x: 500, y: 130, s: 1, r: -2 },
+  { to: "tools", kind: "toggle", fill: "toggle", x: 290, y: 150, s: 1.2, r: 0 },
+  { to: "tools", kind: "lead", fill: "lead", last: true, x: 420, y: 565, s: 1, r: -3 },
 ];
 
 /** the title's half width: a piece's x beyond it follows the window's width */
@@ -218,10 +244,16 @@ export function LpInfra() {
                 <Wire />
               </div>
               {/* Pancake: the platform, its name on the edge where the wire plugs in */}
+              {/* Pancake: a node built as your agent's (founder 2026-10-27: "Pancake peut etre mieux
+                  positionné et unifié avec design de claude codex"), on the platform's edge where
+                  the wire plugs in */}
               <div className="lp-infra__brand">
-                <PancakeMark />
-                {/* eslint-disable-next-line @next/next/no-img-element -- the nav's wordmark SVG */}
-                <img className="lp-infra__logo" src="/lp/lp-nav-logo.svg" alt="Pancake" width={114.956} height={56} />
+                <span className="lp-infra__brand-chip">
+                  <span className="lp-infra__mark" aria-hidden="true">
+                    <PancakeMark />
+                  </span>
+                  Pancake
+                </span>
               </div>
               <div className="lp-infra__stack">
                 <i className="lp-infra__plat" aria-hidden="true" />
@@ -273,18 +305,18 @@ function Pk({ shape }: { shape: number }) {
   );
 }
 
-/** The scroll version's pieces (BITS), hidden elsewhere (infra.css) */
+/** The scroll version's pieces (BITS), hidden elsewhere (infra.css): each the look of the place
+    it lands on */
 function Bits() {
   return (
     <div className="lp-infra__bits" aria-hidden="true">
-      {BITS.map((bit, i) => {
+      {BITS.map((bit) => {
         const xi = Math.max(-TITLE_HALF, Math.min(TITLE_HALF, bit.x));
         const yi = Math.max(BAND_TOP, Math.min(BAND_BOTTOM, bit.y));
-        const fill = bit.kind === "logo" ? bit.id : bit.fill;
         const props = {
           className: `lp-infra__bit lp-infra__bit--${bit.kind}`,
           "data-to": bit.to,
-          "data-fill": fill,
+          "data-fill": bit.fill,
           "data-last": bit.last,
           "data-s": bit.s,
           "data-r": bit.r,
@@ -293,35 +325,43 @@ function Bits() {
         switch (bit.kind) {
           case "logo":
             return (
-              <span key={i} {...props}>
-                <Pk shape={i + 1} />
+              <span key={bit.fill} {...props}>
+                <Pk shape={SHAPE[bit.fill] ?? 1} />
                 {/* eslint-disable-next-line @next/next/no-img-element -- the vendor's own mark, unmodified */}
                 <img src={bit.logo} alt="" width={30} height={30} loading="lazy" decoding="async" />
               </span>
             );
+          case "more":
+            return (
+              <span key={bit.fill} {...props}>
+                <Pk shape={SHAPE.more} />
+                <span>30+</span>
+              </span>
+            );
           case "row":
             return (
-              <span key={i} {...props}>
+              <span key={bit.fill} {...props}>
                 <span className="lp-infra__bit-key">{bit.label}</span>
                 <span className="lp-infra__bit-val">{bit.value}</span>
               </span>
             );
-          case "message":
+          case "play":
             return (
-              <span key={i} {...props}>
-                <span className="lp-infra__bit-eb">{bit.label}</span>
-                <span className="lp-infra__bit-text">{bit.text}</span>
+              <span key={bit.fill} {...props}>
+                <PlayIcon />
+                <span className="lp-infra__play-name">{PLAY_NAME}</span>
+                <i className="lp-infra__bit-gap" />
               </span>
             );
           case "toggle":
             return (
-              <span key={i} {...props}>
+              <span key={bit.fill} {...props}>
                 <i />
               </span>
             );
           case "lead":
             return (
-              <span key={i} {...props}>
+              <span key={bit.fill} {...props}>
                 <LeadFace initials={LEADS[0].initials} />
                 <span className="lp-infra__lead-who">
                   <span className="lp-infra__lead-name">{LEADS[0].name}</span>
@@ -332,7 +372,7 @@ function Bits() {
             );
           default:
             return (
-              <span key={i} {...props}>
+              <span key={bit.fill} {...props}>
                 {bit.label}
               </span>
             );
@@ -374,14 +414,23 @@ function PancakeMark() {
 
 function BrainPic() {
   return (
-    <dl className="lp-infra__memory">
-      {MEMORY.map((row) => (
-        <div key={row.key} className="lp-infra__mem-row" data-fill={row.key.toLowerCase()}>
-          <dt>{row.key}</dt>
-          <dd>{row.value}</dd>
-        </div>
-      ))}
-    </dl>
+    <div className="lp-infra__brain">
+      <dl className="lp-infra__memory">
+        {MEMORY.map((row) => (
+          <div key={row.key} className="lp-infra__mem-row" data-fill={row.key.toLowerCase()}>
+            <dt>{row.key}</dt>
+            <dd>{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+      <ul className="lp-infra__chips">
+        {CONTEXT_CHIPS.map((chip) => (
+          <li key={chip} className="lp-infra__chip" data-fill={chip.toLowerCase()}>
+            {chip}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -391,15 +440,22 @@ function DataPic() {
       <ul className="lp-infra__discs">
         {PROVIDERS.map((provider, i) => (
           <li key={provider.name} className="lp-infra__disc" data-fill={provider.id}>
-            <Pk shape={i + 1} />
+            <Pk shape={SHAPE[provider.id] ?? i + 1} />
             {/* eslint-disable-next-line @next/next/no-img-element -- the vendor's own mark, unmodified */}
             <img src={provider.logo} alt="" width={22} height={22} loading="lazy" decoding="async" />
           </li>
         ))}
         <li className="lp-infra__disc lp-infra__disc--more" data-fill="more">
-          <Pk shape={3} />
+          <Pk shape={SHAPE.more} />
           <span>30+</span>
         </li>
+      </ul>
+      <ul className="lp-infra__signals">
+        {SIGNALS.map((signal) => (
+          <li key={signal.id} className="lp-infra__signal" data-fill={signal.id}>
+            {signal.label}
+          </li>
+        ))}
       </ul>
     </div>
   );
@@ -409,12 +465,8 @@ function ToolsPic() {
   return (
     <div className="lp-infra__tools">
       <div className="lp-infra__play" data-fill="play">
-        <span className="lp-infra__play-icon">
-          <svg viewBox="0 0 16 16" width="16" height="16" focusable="false">
-            <path d="M5.5 3.8v8.4L12 8z" />
-          </svg>
-        </span>
-        <span className="lp-infra__play-name">Funded startups hiring a marketing lead</span>
+        <PlayIcon />
+        <span className="lp-infra__play-name">{PLAY_NAME}</span>
         <span className="lp-infra__toggle" data-fill="toggle">
           <i className="lp-infra__toggle-knob" />
         </span>
@@ -434,6 +486,27 @@ function ToolsPic() {
           </li>
         ))}
       </ul>
+      <ul className="lp-infra__crms">
+        {CRMS.map((crm) => (
+          <li key={crm.id} className="lp-infra__crm" data-fill={crm.id}>
+            <Pk shape={SHAPE[crm.id] ?? 1} />
+            {/* eslint-disable-next-line @next/next/no-img-element -- the vendor's own mark, unmodified */}
+            <img src={crm.logo} alt={crm.name} width={14} height={14} loading="lazy" decoding="async" />
+          </li>
+        ))}
+      </ul>
     </div>
+  );
+}
+
+/** the Play's name and icon, in the card and on its piece */
+const PLAY_NAME = "Funded startups hiring a marketing lead";
+function PlayIcon() {
+  return (
+    <span className="lp-infra__play-icon">
+      <svg viewBox="0 0 16 16" width="16" height="16" focusable="false">
+        <path d="M5.5 3.8v8.4L12 8z" />
+      </svg>
+    </span>
   );
 }

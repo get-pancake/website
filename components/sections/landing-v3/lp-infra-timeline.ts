@@ -119,13 +119,14 @@ export function buildInfraFlow(root: HTMLElement): Built {
       after "Not beautiful, get inspired by top designs" on a scaled-up badge); then each window
       opens: the word shrinks into its badge, the title comes up and the white picture opens from
       its centre, empty;
-   2. then the details of a company's go-to-market pop up all over the screen, in many sizes
-      (LpInfra BITS: the brain's sections and notes, the Play's signals, providers and CRMs on the
-      kit's pancakes, the Play's switch, a message, a lead; Mobbin: Front's and Tines' integration
-      heroes, Antimetal's sizes for depth) and each flies into its brick along a curve, height
-      first and then across, and becomes part of its picture (data-fill): a provider's mark lands
-      and its disc pops in, a note lands and its row settles, the switch lands and the Play
-      switches on, Tamsin lands and comes up for approval;
+   2. then the pieces of a company's go-to-market pop up all over the screen, in many sizes
+      (LpInfra BITS: the brain's notes and sections, the providers' marks and "30+", the Play's
+      signals, the Play, its switch, Tamsin and the CRMs; Mobbin: Front's and Tines' integration
+      heroes, Antimetal's sizes for depth) and each flies along a curve, height first and then
+      across, exactly onto its own place in its brick's picture (data-fill on both), growing or
+      shrinking to that place's size, which then takes over: nothing lands "somewhere in the
+      card" (founder 2026-10-27: "mieux flecher chacun de ces elements vers sa place finale dans
+      la card la on n amene pas chaque objet dans sa position finale on triche un peu");
    3. the canvas comes in, Pancake's platform rises and the bricks close up into it (save.design's
       hero, measured live), Pancake's name comes up and the wire runs from it to your agent.
 
@@ -163,8 +164,8 @@ const WAIT = 0.015;
 const FLIGHT = 0.13;
 /** the windows open from .18, one every .03 */
 const OPEN = { at: 0.18, gap: 0.03, duration: 0.09 } as const;
-/** a filled picture's beat (a disc's pop, a row settling) */
-const FILL = 0.03;
+/** the hand-over from a piece to its place */
+const SWAP = 0.012;
 
 export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; cleanup: () => void } {
   const card = one(stage, ".lp-infra__card");
@@ -176,51 +177,54 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
   const badges = parts.map((part) => one(part, ".lp-infra__part-name"));
   const titles = parts.map((part) => one(part, ".lp-infra__part-title"));
   const bits = all(card, ".lp-infra__bit");
-  const rows = all(card, ".lp-infra__mem-row");
-  const discs = all(card, ".lp-infra__disc");
-  const play = one(card, ".lp-infra__play");
-  const toggle = one(card, ".lp-infra__toggle");
-  const knob = one(card, ".lp-infra__toggle-knob");
-  const leads = one(card, ".lp-infra__leads");
+  // every place in the bricks' pictures, each named after the piece that lands on it
+  const slots = all(card, ".lp-infra__parts [data-fill]");
+  const slotOf = new Map(slots.map((el) => [el.dataset.fill, el]));
   const plat = one(card, ".lp-infra__plat");
   const brand = one(card, ".lp-infra__brand");
   const line = one(card, ".lp-infra__line");
 
-  const cleanup = restStyles([
-    canvas,
-    ...parts,
-    ...pics,
-    ...words,
-    ...badges,
-    ...titles,
-    ...bits,
-    ...rows,
-    ...discs,
-    play,
-    toggle,
-    knob,
-    leads,
-    plat,
-    brand,
-    line,
-  ]);
+  const cleanup = restStyles([canvas, ...parts, ...pics, ...words, ...badges, ...titles, ...bits, ...slots, plat, brand, line]);
 
-  /* ── where the bricks' pictures will be while they fill, measured on the markup (screen px; the
-     card may be scaled to fit the window) ── */
+  /* ── measured on the markup (screen px; the card may be scaled to fit the window) ── */
   const fit = card.getBoundingClientRect().width / card.offsetWidth || 1;
   const apart = BRICK.apart * Math.min(1, card.offsetWidth / 1136);
   const centre = (el: Element) => {
     const r = el.getBoundingClientRect();
     return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   };
-  const holes = parts.map((part, i) => {
-    const pc = centre(part);
-    const ic = centre(pics[i]);
-    return {
-      x: pc.x + (i - 1) * apart * fit + BRICK.scale * (ic.x - pc.x),
-      y: pc.y + BRICK.scale * (ic.y - pc.y),
-    };
+  const centres = parts.map(centre);
+  /** a point of brick i, where it is while the brick fills (a size up, a little apart) */
+  const filling = (i: number, x: number, y: number) => ({
+    x: centres[i].x + (i - 1) * apart * fit + BRICK.scale * (x - centres[i].x),
+    y: centres[i].y + BRICK.scale * (y - centres[i].y),
   });
+  // where each piece lands and how big it is there: centred on its place, at its place's size.
+  // The notes, the Play, Tamsin, the signals and the sections are built as their places (infra.css):
+  // the first three are given their place's width (plus their own extra padding), and all of them
+  // land at the brick's size. The marks, "30+" and the switch are scaled to their place's width.
+  const padX = (el: Element) => {
+    const cs = getComputedStyle(el);
+    return parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
+  };
+  const landings = new Map(
+    bits.map((bit) => {
+      const slot = slotOf.get(bit.dataset.fill);
+      if (!slot) throw new Error(`infra scroll: no place for ${bit.dataset.fill}`);
+      // Tamsin lands on her row (the list's hairline comes with her)
+      const place = slot.querySelector<HTMLElement>(".lp-infra__lead") ?? slot;
+      const i = parts.findIndex((part) => part.contains(slot));
+      if (bit.matches(".lp-infra__bit--row, .lp-infra__bit--play, .lp-infra__bit--lead")) {
+        const borderBox = getComputedStyle(bit).boxSizing === "border-box";
+        gsap.set(bit, { width: place.offsetWidth - padX(place) + (borderBox ? padX(bit) : 0) });
+      }
+      const r = place.getBoundingClientRect();
+      const built = bit.matches(".lp-infra__bit--row, .lp-infra__bit--play, .lp-infra__bit--lead, .lp-infra__bit--signal, .lp-infra__bit--badge");
+      const k = built ? BRICK.scale : (r.width * BRICK.scale) / (bit.offsetWidth * fit);
+      const c = filling(i, r.left + r.width / 2, r.top + r.height / 2);
+      return [bit, { slot, k, x: c.x, y: c.y }];
+    }),
+  );
   // each big word goes into its badge: where the badge is from the word, and how much smaller
   const intos = parts.map((_, i) => {
     const wc = centre(words[i]);
@@ -236,7 +240,7 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
   const shut = `inset(50% 50% 50% 50% round ${round})`;
   const open = `inset(0% 0% 0% 0% round ${round})`;
 
-  /* ── frame 0: the heading and your agent; no brick yet, no detail, no canvas, no Pancake ── */
+  /* ── frame 0: the heading and your agent; no brick yet, no piece, no canvas, no Pancake ── */
   gsap.set(canvas, { autoAlpha: 0 });
   parts.forEach((part, i) => {
     gsap.set(part, { autoAlpha: 0, x: (i - 1) * apart, y: 80, scale: 1.04, transformOrigin: "50% 50%" });
@@ -256,20 +260,15 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
       transformOrigin: "50% 50%",
     });
   }
-  gsap.set(rows, { autoAlpha: 0, x: -6 });
-  gsap.set(discs, { autoAlpha: 0, scale: 0.6, transformOrigin: "50% 50%" });
-  gsap.set(play, { autoAlpha: 0, y: 6 });
-  gsap.set(toggle, { backgroundColor: TOGGLE_OFF });
-  gsap.set(knob, { x: 0 });
-  gsap.set(leads, { autoAlpha: 0, y: 6 });
+  gsap.set(slots, { autoAlpha: 0 });
   gsap.set(plat, { autoAlpha: 0, y: 48 });
   gsap.set(brand, { autoAlpha: 0, y: 10, scale: 0.94, transformOrigin: "50% 50%" });
   gsap.set(line, { scaleY: 0, transformOrigin: "50% 100%" });
 
   const tl = gsap.timeline({ paused: true });
 
-  /* ── 1. the bricks come up, one after another, each word filling its brick; then the windows
-     open: the word goes back into its badge, the title comes up, the picture opens ── */
+  /* ── 1. the bricks come up, one after another, each on its word; then the windows open: the
+     word goes into its badge, the title comes up, the picture opens ── */
   parts.forEach((part, i) => {
     tl.to(part, { autoAlpha: 1, duration: 0.06, ease: "power1.out" }, i * 0.04);
     tl.to(part, { y: 0, scale: BRICK.scale, duration: 0.1, ease: "power3.out" }, i * 0.04);
@@ -283,48 +282,37 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
     tl.to(titles[i], { autoAlpha: 1, y: 0, duration: 0.05, ease: "power2.out" }, t + 0.05);
   });
 
-  /* ── 2. the details pop up and fly into their bricks: nearest first, Tamsin last ── */
-  const landed: Record<Bucket, { fill?: string; at: number }[]> = { context: [], data: [], tools: [] };
-  BUCKETS.forEach((to, b) => {
-    const hole = holes[b];
+  /* ── 2. the pieces pop up and fly each onto its place, growing or shrinking to its size; on
+     arrival the place takes over (it looks the same). Per brick: the Play first (its switch lands
+     in it), the nearest next, Tamsin last ── */
+  BUCKETS.forEach((to) => {
     const flights = bits
       .filter((bit) => bit.dataset.to === to)
       .map((bit) => {
+        const land = landings.get(bit)!;
         const c = centre(bit);
-        return { bit, dx: (hole.x - c.x) / fit, dy: (hole.y - c.y) / fit, s: Number(bit.dataset.s) || 1 };
+        return { bit, land, dx: (land.x - c.x) / fit, dy: (land.y - c.y) / fit, s: Number(bit.dataset.s) || 1 };
       })
-      .sort((p, q) => Number("last" in p.bit.dataset) - Number("last" in q.bit.dataset) || Math.hypot(p.dx, p.dy) - Math.hypot(q.dx, q.dy));
-    flights.forEach(({ bit, dx, dy, s }, k) => {
+      .sort((p, q) => {
+        const rank = (b: HTMLElement) => (b.dataset.fill === "play" ? -1 : "last" in b.dataset ? 1 : 0);
+        return rank(p.bit) - rank(q.bit) || Math.hypot(p.dx, p.dy) - Math.hypot(q.dx, q.dy);
+      });
+    flights.forEach(({ bit, land, dx, dy, s }, k) => {
       const t = WAVE[to].start + k * WAVE[to].gap;
       const go = t + POP + WAIT;
+      const end = go + FLIGHT;
       const odd = k % 2 === 1;
       tl.to(bit, { autoAlpha: 1, scale: s, duration: POP, ease: "back.out(1.7)" }, t);
-      // height first, then across: the curve; a little apart, so they do not all land on one pixel
-      tl.to(bit, { y: dy + (odd ? 6 : -6), duration: FLIGHT, ease: odd ? "power1.out" : "power2.out" }, go);
-      tl.to(bit, { x: dx + ((k % 3) - 1) * 14, duration: FLIGHT, ease: odd ? "power2.in" : "power3.in" }, go);
-      tl.to(bit, { scale: s * 0.4, rotation: 0, duration: FLIGHT, ease: "power1.in" }, go);
-      tl.to(bit, { autoAlpha: 0, duration: FLIGHT * 0.3, ease: "power1.in" }, go + FLIGHT * 0.7);
-      landed[to].push({ fill: bit.dataset.fill, at: go + FLIGHT * 0.82 });
+      // height first, then across, and slowing into the place: the curve, a landing, not a hit
+      tl.to(bit, { y: dy, duration: FLIGHT, ease: odd ? "power2.out" : "power3.out" }, go);
+      tl.to(bit, { x: dx, duration: FLIGHT, ease: odd ? "sine.inOut" : "power2.inOut" }, go);
+      tl.to(bit, { scale: land.k, rotation: 0, duration: FLIGHT, ease: "power2.inOut" }, go);
+      // the hand-over, once the piece sits on its place at its size: the place shows, the piece
+      // goes (only its card's shadow differs)
+      tl.to(land.slot, { autoAlpha: 1, duration: SWAP, ease: "none" }, end);
+      tl.to(bit, { autoAlpha: 0, duration: SWAP, ease: "none" }, end + SWAP * 0.3);
     });
   });
-
-  // each brick's picture fills as its details land: what a detail names (data-fill) comes in with
-  // it, the Play with the brick's first detail, the rest (a row, "30+") with its last
-  for (const el of all(card, ".lp-infra__parts [data-fill]")) {
-    const mine = landed[BUCKETS[parts.findIndex((part) => part.contains(el))]];
-    const hit = mine.find((l) => l.fill === el.dataset.fill);
-    const t = hit ? hit.at : el.dataset.fill === "play" ? mine[0].at : mine[mine.length - 1].at;
-    if (el === toggle) {
-      tl.to(knob, { x: 12, duration: FILL, ease: "power2.inOut" }, t);
-      tl.to(toggle, { backgroundColor: TOGGLE_ON, duration: FILL, ease: "power1.inOut" }, t);
-    } else if (discs.includes(el)) {
-      tl.to(el, { autoAlpha: 1, scale: 1, duration: FILL, ease: "back.out(2)" }, t);
-    } else if (rows.includes(el)) {
-      tl.to(el, { autoAlpha: 1, x: 0, duration: FILL, ease: "power2.out" }, t);
-    } else {
-      tl.to(el, { autoAlpha: 1, y: 0, duration: FILL, ease: "power2.out" }, t);
-    }
-  }
 
   /* ── 3. the canvas comes in, the platform rises, the bricks close up into it; Pancake's name and
      the wire up to your agent ── */
