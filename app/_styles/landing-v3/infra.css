@@ -1,4 +1,4 @@
-/* Section — "Everything your agent needs to sell." (LpInfra.tsx, the infra-first landing,
+/* Section — "Your agent needs 3 things to sell." (LpInfra.tsx, the infra-first landing,
    2026-10-21). No Figma frame yet, so it is built from the homepage's own parts and the kit: the
    steps' wrapper, org and centred title (steps.css), the step card's cream and r30, the mock
    cards' white fill and 0.4px hairline (.lp-mockcard), the kit's brand cards and badges
@@ -11,21 +11,33 @@
   padding: 16px;
 }
 .lp-infra__org {
+  padding: 128px 32px 0;
+}
+.lp-infra__pin {
+  width: 100%;
+}
+.lp-infra__stage {
   align-items: center;
   display: flex;
   flex-direction: column;
   gap: 66px;
-  padding: 128px 32px 0;
 }
 
-/* heading block: the steps' title, alone */
+/* heading block: the steps' title and, under it, the payoff line in the steps' kicker style */
 .lp-infra__head {
   display: flex;
   flex-direction: column;
   gap: 8px;
   max-width: 100%;
   text-align: center;
-  width: 1136px; /* "Everything your agent needs to sell." holds on one line */
+  width: 1136px; /* "Your agent needs 3 things to sell." holds on one line */
+}
+.lp-infra__lede {
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-cond);
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 32px;
 }
 .lp-infra__title {
   color: var(--lp-text);
@@ -46,7 +58,7 @@
   flex-direction: column;
   max-width: 100%;
   padding: 48px;
-  position: relative; /* the live notes are placed against it */
+  position: relative;
   width: 1136px;
 }
 
@@ -170,18 +182,28 @@
   width: auto;
 }
 .lp-infra__stack {
-  background: var(--lp-surface);
   border-radius: 32px;
-  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
   margin-top: -32px;
   padding: 52px 16px 16px;
+  position: relative;
   width: 100%;
+}
+/* the platform's white and hairline, a layer of their own: the scroll version raises it under
+   the three cards as they come in (buildInfraScroll) */
+.lp-infra__plat {
+  background: var(--lp-surface);
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
 }
 
 /* the three layers: kit brand cards in the logo's pancake colours (yellow on top, purple, pink
    under); subgrid rows keep every badge, title and body on one line of sight */
 .lp-infra__parts {
   display: grid;
+  position: relative; /* over the platform's layer */
   gap: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
@@ -456,11 +478,25 @@
 
 
 
+/* ── the scroll version (LpInfraAnim: data-scroll on the section, on desktop layouts tall enough
+   for the stage, motion allowed): the pin is the stage's height plus the scroll it takes; the
+   stage sticks, centred in the window, while the three things come together (buildInfraScroll) ── */
+.lp-infra[data-scroll] .lp-infra__pin {
+  height: calc(var(--lp-infra-stage-h, 820px) + var(--lp-infra-pin-len, 1200px));
+}
+.lp-infra[data-scroll] .lp-infra__stage {
+  gap: 40px;
+  position: sticky;
+  top: var(--lp-infra-top, 24px);
+}
+
 /* ── responsive: the steps' breakpoints, and one for the cards' pictures ── */
 @media (max-width: 1024px) {
   .lp-infra__org {
-    gap: 56px;
     padding: 96px 24px 0;
+  }
+  .lp-infra__stage {
+    gap: 56px;
   }
   .lp-infra__card {
     padding: 40px 32px 32px;
@@ -511,8 +547,10 @@
     padding: 96px 0 0;
   }
   .lp-infra__org {
-    gap: 48px;
     padding: 16px;
+  }
+  .lp-infra__stage {
+    gap: 48px;
   }
   .lp-infra__title {
     /* the steps title on phones: 35.559 / 41 / -3% */

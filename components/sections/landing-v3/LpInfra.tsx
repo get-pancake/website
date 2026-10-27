@@ -5,30 +5,31 @@ import { LpInfraFlow } from "@/components/sections/landing-v3/LpInfraAnim";
 import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art";
 
 /**
- * Section — "Give your agent everything it needs to sell." (founder 2026-10-26, verbatim; it was
- * "Everything your agent needs to sell.", and the same day: "on peut s inspirer un peu de sites
- * best in class pour mieux faire ressortir cette page genre kicker.run // clay … Un peu de
- * dynamisme. Un peu de juice!!!", then "use components from mobbin"). After the build-up the
- * diagram rests on its end picture, as every animated card of the page does, and only its leads
- * keep moving: one comes up, is approved, the next one comes up (buildInfraLoop,
- * lp-infra-timeline.ts; Mobbin: Antimetal's "Needs your decision" cards). The same day the first
- * pass's ambient loops, live notes, beams and rings went ("Ton animation elle fait molle et tres
- * vibe codee dude"; "nothing should look vibe coded / everything should be inspired from our
- * design system OR from a best in class component taken from mobbin"), and so did the cards'
- * sentences and the pictures' extra words ("Trop de texte trop de complexité ici !"): a card is
- * its badge, its title and its picture. The infra-first landing's section before that: until
- * 2026-10-22
- * the launch line, "Your agent decides. Pancake runs it." — founder: "doesnt mean anything". The
- * heading now says what the diagram shows: Pancake gives your agent the brain, the data and the
- * tools (no kicker: "Connect Claude or Codex." went the same day, founder: "Remove").
+ * Section — "Your agent needs 3 things to sell." / "Pancake brings all 3." (founder 2026-10-26:
+ * "Can we do something like Your agent needs 3 things to sell and show that pancake brings all 3
+ * of them when scrolling ? … sometimes it's like some components that are spread in the hero and
+ * end up as components from an UI as the scroll goes", then "The reproduction should be PERFECT,
+ * the flow supersmooth every movement well calibrated"). On wide, tall desktops the stage pins and
+ * the scroll brings the three cards, scattered and tilted, into Pancake's platform; Pancake then
+ * connects to the agent and the line lands (buildInfraScroll, LpInfraAnim). The model is
+ * save.design's scattered cards converging into its workspace, measured live. Elsewhere the card
+ * plays its build-up once, and only its leads move after it (buildInfraLoop; Mobbin: Antimetal's
+ * "Needs your decision" cards).
+ *
+ * The same day, before this: the headings "Give your agent everything it needs to sell." (his)
+ * and "Everything your agent needs to sell."; a first "juice" pass of ambient loops, live notes,
+ * beams and rings, gone on "Ton animation elle fait molle et tres vibe codee dude" and "nothing
+ * should look vibe coded / everything should be inspired from our design system OR from a best in
+ * class component taken from mobbin"; the cards' sentences, gone on "Trop de texte trop de
+ * complexité ici !" (a card is its badge, its title and its picture); the labels are "Context /
+ * Data / Tools" ("No 'The'"); no glowing borders ("Glowing borders look vibe coded").
  *
  * The page's model (2026-10-21, the infra outline the founder approved: "one sentence, one
  * diagram, three layers", as Apollo's "One system. Three layers." and Cargo's "your agent writes
- * it, Cargo runs it"). The three layers are the hero lede's own words: "the brain, the data and
- * the tools". The first version (eight layers, Deploy / Host / Run, four figures on a dark card)
- * read as engineering notes: "I dont understand anything about the new block". Plain words,
- * one sentence per layer; claims in docs/infra/infra-landing-brief.md, the 30+ data providers
- * being the founder's figure (the dive's sources story).
+ * it, Cargo runs it"). The first version (eight layers, Deploy / Host / Run, four figures on a
+ * dark card) read as engineering notes: "I dont understand anything about the new block". Claims
+ * in docs/infra/infra-landing-brief.md, the 30+ data providers being the founder's figure (the
+ * dive's sources story).
  *
  * The look (founder 2026-10-22: "make this more beautiful - use design system - toolkits like
  * mobin and brand assets"): Mobbin's infra diagrams (Cloudflare's dotted canvas and grouped
@@ -40,9 +41,8 @@ import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art"
  * sources story draws them; Dealroom left out until it has a production key), and the Play
  * "Funded startups hiring a marketing lead" with Tamsin Okafor waiting for approval.
  *
- * The card plays once (LpInfraFlow, lp-infra-timeline.ts): the agents send, the wire draws down
- * through the sign-in, Pancake lights, the brain, the data and the tools light up in turn and the
- * Play goes live. The markup below is the finished picture.
+ * The markup below is the finished picture (no JS, reduced motion, the build-up's end, the
+ * scroll's end).
  */
 
 type Tone = "yellow" | "purple" | "pink";
@@ -99,56 +99,65 @@ export function LpInfra() {
   return (
     <section id="infra" className="lp-infra" aria-labelledby="lp-infra-title">
       <div className="lp-infra__org">
-        <header className="lp-infra__head">
-          <h2 id="lp-infra-title" className="lp-infra__title lp-title-section">
-            Give your agent everything it needs to sell.
-          </h2>
-        </header>
-        <LpInfraFlow>
-          <div className="lp-infra__agentbar">
-            <p className="lp-infra__label">Your agent</p>
-            <ul className="lp-infra__agents">
-              <li className="lp-infra__agent" data-agent="claude">
-                <span className="lp-infra__mark" aria-hidden="true"><ClaudeMark /></span>
-                Claude
-              </li>
-              <li className="lp-infra__agent" data-agent="codex">
-                <span className="lp-infra__mark" aria-hidden="true"><CodexMark /></span>
-                Codex
-              </li>
-            </ul>
+        {/* the pin: on wide, tall desktops the stage stays put while the visitor scrolls through it
+            and the three things come together (LpInfraAnim, data-scroll); elsewhere it is a plain
+            block and the card plays its build-up once */}
+        <div className="lp-infra__pin">
+          <div className="lp-infra__stage">
+            <header className="lp-infra__head">
+              <h2 id="lp-infra-title" className="lp-infra__title lp-title-section">
+                Your agent needs 3 things to sell.
+              </h2>
+              <p className="lp-infra__lede">Pancake brings all 3.</p>
+            </header>
+            <LpInfraFlow>
+              <div className="lp-infra__agentbar">
+                <p className="lp-infra__label">Your agent</p>
+                <ul className="lp-infra__agents">
+                  <li className="lp-infra__agent" data-agent="claude">
+                    <span className="lp-infra__mark" aria-hidden="true"><ClaudeMark /></span>
+                    Claude
+                  </li>
+                  <li className="lp-infra__agent" data-agent="codex">
+                    <span className="lp-infra__mark" aria-hidden="true"><CodexMark /></span>
+                    Codex
+                  </li>
+                </ul>
+              </div>
+              <div className="lp-infra__link">
+                <Wire />
+                <p className="lp-infra__link-text">
+                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
+                    <circle cx="5.5" cy="8" r="3" />
+                    <path d="M8.5 8h6M12.5 8v2.5M14.5 8v1.8" />
+                  </svg>
+                  One sign-in. No API keys.
+                </p>
+                <Wire />
+              </div>
+              {/* Pancake: the platform, its name on the edge where the wire plugs in */}
+              <div className="lp-infra__brand">
+                <PancakeMark />
+                {/* eslint-disable-next-line @next/next/no-img-element -- the nav's wordmark SVG */}
+                <img className="lp-infra__logo" src="/lp/lp-nav-logo.svg" alt="Pancake" width={114.956} height={56} />
+              </div>
+              <div className="lp-infra__stack">
+                <i className="lp-infra__plat" aria-hidden="true" />
+                <ul className="lp-infra__parts">
+                  {LAYERS.map(({ tone, name, title, pic: Pic }) => (
+                    <li key={name} className="lp-infra__part" data-tone={tone}>
+                      <div className="lp-infra__pic" aria-hidden="true">
+                        <Pic />
+                      </div>
+                      <p className="lp-infra__part-name">{name}</p>
+                      <h3 className="lp-infra__part-title">{title}</h3>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </LpInfraFlow>
           </div>
-          <div className="lp-infra__link">
-            <Wire />
-            <p className="lp-infra__link-text">
-              <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
-                <circle cx="5.5" cy="8" r="3" />
-                <path d="M8.5 8h6M12.5 8v2.5M14.5 8v1.8" />
-              </svg>
-              One sign-in. No API keys.
-            </p>
-            <Wire />
-          </div>
-          {/* Pancake: the platform, its name on the edge where the wire plugs in */}
-          <div className="lp-infra__brand">
-            <PancakeMark />
-            {/* eslint-disable-next-line @next/next/no-img-element -- the nav's wordmark SVG */}
-            <img className="lp-infra__logo" src="/lp/lp-nav-logo.svg" alt="Pancake" width={114.956} height={56} />
-          </div>
-          <div className="lp-infra__stack">
-            <ul className="lp-infra__parts">
-              {LAYERS.map(({ tone, name, title, pic: Pic }) => (
-                <li key={name} className="lp-infra__part" data-tone={tone}>
-                  <div className="lp-infra__pic" aria-hidden="true">
-                    <Pic />
-                  </div>
-                  <p className="lp-infra__part-name">{name}</p>
-                  <h3 className="lp-infra__part-title">{title}</h3>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </LpInfraFlow>
+        </div>
       </div>
     </section>
   );

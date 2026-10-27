@@ -3,7 +3,10 @@
 import { gsap } from "@/lib/gsap";
 
 /**
- * The infra-first page's diagram build-up (LpInfraAnim.tsx). progress(1) = the server markup
+ * The infra section's timelines (LpInfraAnim.tsx): the build-up played once (below), the scroll
+ * version (buildInfraScroll) and the leads queue (buildInfraLoop).
+ *
+ * The infra-first page's diagram build-up. progress(1) = the server markup
  * (restIsEnd); `cue` 0 = the first composed scene, never empty. Frame 0 is set before the
  * timeline exists, every move is a tween or a set (no callbacks), so both seek either way, and
  * cleanup() restores the rest markup's inline styles.
@@ -109,6 +112,82 @@ export function buildInfraFlow(root: HTMLElement): Built {
   tl.to(lead, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" }, 2.4);
 
   return { tl, cleanup, cue: 0 };
+}
+
+/* ── the scroll version: the three things come together ──────────────────────────────────────────
+   Founder 2026-10-26: "Your agent needs 3 things to sell", "show that pancake brings all 3 of them
+   when scrolling … some components that are spread in the hero and end up as components from an
+   UI as the scroll goes", then "The reproduction should be PERFECT, the flow supersmooth every
+   movement well calibrated". The model is save.design's hero, measured live: the stage pins, a
+   short hold on the scattered pieces, the product's frame rises and fades in, the pieces converge
+   into it, a hold before the pin lets go. Here the pieces ARE the product's parts: the three
+   cards, scattered and tilted around the empty canvas, settle into Pancake's platform; Pancake's
+   name comes up on it, the wire runs from Pancake up to your agent through the sign-in, and the
+   payoff line lands under the heading.
+
+   One timeline of length 1, scrubbed by the scroll (LpInfraAnim smooths the scroll's progress):
+     0     – .10   hold: the cards scattered, no platform, no Pancake, no wire
+     .10   – .40   the platform rises 48 px and fades in
+     .24   – .64   the cards settle into it, left to right (each .30, .05 apart)
+     .60   – .70   Pancake's name
+     .68   – .84   the wire, from Pancake up to the agent: the lower wire, the sign-in, the upper
+     .82   – .90   "Pancake brings all 3."
+     .90   – 1     hold
+   progress(1) = the server markup. Only transforms and opacity. */
+
+/** each card's scattered place, from its slot (px, deg), on the widest card (1136): Context low
+    left, Data high in the middle under the agent, Tools right, tilted apart, so no two paths
+    cross and every card stays inside the canvas (the spread narrows with the card) */
+const SCATTER = [
+  { x: -56, y: -44, rotation: -7, scale: 0.88 },
+  { x: 0, y: -128, rotation: 3, scale: 0.88 },
+  { x: 56, y: -84, rotation: 5, scale: 0.88 },
+] as const;
+
+export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; cleanup: () => void } {
+  const parts = all(stage, ".lp-infra__part");
+  if (parts.length !== SCATTER.length) throw new Error("infra scroll: three cards expected");
+  const plat = one(stage, ".lp-infra__plat");
+  const brand = one(stage, ".lp-infra__brand");
+  const lines = all(stage, ".lp-infra__line");
+  if (lines.length !== 2) throw new Error("infra scroll: two wires expected");
+  const caption = one(stage, ".lp-infra__link-text");
+  const lede = one(stage, ".lp-infra__lede");
+
+  const spread = Math.min(1, one(stage, ".lp-infra__card").offsetWidth / 1136);
+
+  const cleanup = restStyles([...parts, plat, brand, ...lines, caption, lede]);
+
+  /* ── frame 0: the three things, scattered ── */
+  parts.forEach((part, i) => gsap.set(part, { ...SCATTER[i], x: SCATTER[i].x * spread, transformOrigin: "50% 50%" }));
+  gsap.set(plat, { autoAlpha: 0, y: 48 });
+  gsap.set(brand, { autoAlpha: 0, y: 10, scale: 0.94, transformOrigin: "50% 50%" });
+  gsap.set(lines, { scaleY: 0, transformOrigin: "50% 100%" });
+  gsap.set(caption, { autoAlpha: 0, y: 4 });
+  gsap.set(lede, { autoAlpha: 0, y: 12 });
+
+  const tl = gsap.timeline({ paused: true });
+
+  // the platform rises under the cards
+  tl.to(plat, { autoAlpha: 1, duration: 0.24, ease: "power1.out" }, 0.1);
+  tl.to(plat, { y: 0, duration: 0.3, ease: "power3.out" }, 0.1);
+
+  // the cards settle into it
+  parts.forEach((part, i) => {
+    tl.to(part, { x: 0, y: 0, rotation: 0, scale: 1, duration: 0.3, ease: "power3.inOut" }, 0.24 + i * 0.05);
+  });
+
+  // Pancake's name, then the wire up to the agent
+  tl.to(brand, { autoAlpha: 1, y: 0, scale: 1, duration: 0.1, ease: "power3.out" }, 0.6);
+  tl.to(lines[1], { scaleY: 1, duration: 0.08, ease: "power1.inOut" }, 0.68);
+  tl.to(caption, { autoAlpha: 1, y: 0, duration: 0.07, ease: "power2.out" }, 0.73);
+  tl.to(lines[0], { scaleY: 1, duration: 0.08, ease: "power1.inOut" }, 0.76);
+
+  // the payoff, then the hold
+  tl.to(lede, { autoAlpha: 1, y: 0, duration: 0.08, ease: "power3.out" }, 0.82);
+  tl.to({}, { duration: 0.1 }, 0.9);
+
+  return { tl, cleanup };
 }
 
 /* ── after the build-up: the leads queue ─────────────────────────────────────────────────────────
