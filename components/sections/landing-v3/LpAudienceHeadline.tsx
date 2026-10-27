@@ -111,7 +111,7 @@ export function AudienceHeadline() {
 
   return <>
     <h1 id="lp-hero-title" className="lp-hero-title__copy" aria-hidden={agents}>
-      Agentic infrastructure <br />to run your <span className="lp-hero-nobr">go-to-market</span>
+      Infrastructure to run <br />your GTM factory
     </h1>
     <span
       className="lp-hero-title__copy lp-hero-title__copy--agent"

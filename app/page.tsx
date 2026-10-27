@@ -26,7 +26,7 @@ import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
 import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
-import { social } from "@/lib/social-meta";
+import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
 
 /**
@@ -43,10 +43,6 @@ import "@/app/_styles/landing-v3.css";
    device-tested 2026-09-01). viewport-fit=cover is a portrait no-op there too
    (env(safe-area-inset-top) stays 0 in the browser) — don't re-add it. */
 export const viewport: Viewport = { themeColor: "#fbf6f1" };
-
-/* The infra-first landing (2026-10-21): the homepage's og/twitter title follows its new H1.
-   HOME_SOCIAL_TITLE (lib/social-meta.ts) stays the root layout's fallback for the subpages. */
-const HOME_INFRA_SOCIAL_TITLE = "Pancake — Agentic infrastructure to run your go-to-market";
 
 export const metadata: Metadata = {
   /* Tab title is EXACTLY "Pancake" — founder decision, twice (2026-08-31
@@ -74,7 +70,7 @@ export const metadata: Metadata = {
   title: "Pancake",
   description: SITE_DESCRIPTION,
   alternates: { canonical: SITE_ORIGIN },
-  ...social({ path: "", title: HOME_INFRA_SOCIAL_TITLE, description: SITE_DESCRIPTION }),
+  ...social({ path: "", title: HOME_SOCIAL_TITLE, description: SITE_DESCRIPTION }),
 };
 
 // SoftwareApplication JSON-LD — homepage only (Organization is in root layout).
