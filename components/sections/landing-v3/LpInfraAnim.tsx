@@ -7,15 +7,17 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
 /**
  * The infra section's motion (LpInfra.tsx), in two versions:
  *
- *   scroll — desktop layouts tall enough for the whole stage, motion allowed (founder 2026-10-26:
+ *   scroll — desktop layouts (from 1025 wide), motion allowed (founder 2026-10-26:
  *            "show that pancake brings all 3 of them when scrolling", then "the flow supersmooth
  *            every movement well calibrated getting inspired by best in class website"). The
  *            stage pins and the scroll drives buildInfraScroll: the three cards, scattered, settle
  *            into Pancake's platform, which connects to the agent. The model is save.design's
  *            hero, measured live. The scroll's progress is smoothed (an exponential follow, τ
  *            0.15 s, frame-rate independent), so a wheel's notches and a trackpad's flick both
- *            glide, as a scrubbed timeline does on the best scroll-driven pages.
- *   once   — everywhere else (phones, tablets, short windows, reduced motion): the card's
+ *            glide, as a scrubbed timeline does on the best scroll-driven pages. The whole stage
+ *            stays in the window: on a short one (a laptop with its dock and bookmarks bar) the
+ *            card scales down to fit and the heading keeps its size.
+ *   once   — everywhere else (phones, tablets, very short windows, reduced motion): the card's
  *            build-up, played once by lp-play-once.ts like the step cards (prepared ahead, cued
  *            below the fold, played at the focus line, the picture on a fly-by).
  *
@@ -25,12 +27,15 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
  * moves (buildInfraLoop).
  */
 
-/** the scroll version: the desktop layout (infra.css), motion allowed, and the stage must fit */
+/** the scroll version: the desktop layout (infra.css), motion allowed */
 const SCROLL_MQ = "(min-width: 1025px) and (prefers-reduced-motion: no-preference)";
 /** the stage's gap between the heading and the card in the scroll version (infra.css) */
 const SCROLL_GAP = 40;
 /** the least room above and below the pinned stage */
 const SCROLL_MARGIN = 24;
+/** the smallest the card may be scaled to fit a short window: a 1440 × 900 laptop with its dock
+    and bookmarks bar (≈ 700 px of window) gets 0.88; under ≈ 660 px, the build-up instead */
+const MIN_FIT = 0.8;
 /** the scroll the assembly takes: 1.35 windows, within 1050–1500 px */
 const pinLength = (vh: number) => Math.round(Math.min(1500, Math.max(1050, vh * 1.35)));
 /** the smoothing's time constant (s): the picture is 95% caught up with the scroll after 3τ */
@@ -50,8 +55,14 @@ const loadFlow = (): Promise<PlayOnceRuntime> =>
 
 type Parts = { section: HTMLElement; pin: HTMLElement; stage: HTMLElement; head: HTMLElement; card: HTMLElement };
 
-/** the stage's height in the scroll version */
-const stageHeight = ({ head, card }: Parts) => head.offsetHeight + SCROLL_GAP + card.offsetHeight;
+/** The stage in the scroll version: its layout height, and the card's scale so the heading and
+    the whole card fit the window (transforms leave offsetHeight alone: no feedback) */
+const fitOf = ({ head, card }: Parts) => {
+  const headH = head.offsetHeight + SCROLL_GAP;
+  const cardH = card.offsetHeight;
+  const fit = Math.min(1, (window.innerHeight - 2 * SCROLL_MARGIN - headH) / cardH);
+  return { layoutH: headH + cardH, cardH, fit, visualH: headH + cardH * fit };
+};
 
 /** The scroll version: pins the stage (data-scroll), builds buildInfraScroll and keeps the
     timeline on the smoothed scroll progress. Returns its teardown, which gives the markup back. */
@@ -67,12 +78,14 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
   let near = false;
 
   const measure = () => {
-    const h = stageHeight(el);
-    top = Math.max(SCROLL_MARGIN, Math.round((window.innerHeight - h) / 2));
+    const { layoutH, cardH, fit, visualH } = fitOf(el);
+    top = Math.max(SCROLL_MARGIN, Math.round((window.innerHeight - visualH) / 2));
     len = pinLength(window.innerHeight);
-    section.style.setProperty("--lp-infra-stage-h", `${h}px`);
+    section.style.setProperty("--lp-infra-stage-h", `${layoutH}px`);
     section.style.setProperty("--lp-infra-top", `${top}px`);
     section.style.setProperty("--lp-infra-pin-len", `${len}px`);
+    section.style.setProperty("--lp-infra-fit", fit.toFixed(4));
+    section.style.setProperty("--lp-infra-trim", `${Math.round(cardH * (1 - fit))}px`);
     kick();
   };
   // how far the pinned stage has been scrolled through, 0 → 1
@@ -120,7 +133,8 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
 
   const unpin = () => {
     section.removeAttribute("data-scroll");
-    for (const v of ["--lp-infra-stage-h", "--lp-infra-top", "--lp-infra-pin-len"]) section.style.removeProperty(v);
+    for (const v of ["--lp-infra-stage-h", "--lp-infra-top", "--lp-infra-pin-len", "--lp-infra-fit", "--lp-infra-trim"])
+      section.style.removeProperty(v);
   };
   Promise.all([import("@/lib/gsap"), import("./lp-infra-timeline")])
     .then(([, { buildInfraScroll }]) => {
@@ -180,7 +194,7 @@ export function LpInfraFlow({ children }: { children: ReactNode }) {
     let mode: "scroll" | "once" | null = null;
     let current: { dispose: () => void; measure?: () => void } | null = null;
     const evaluate = () => {
-      const next = canPin && mq.matches && window.innerHeight >= stageHeight(el) + 2 * SCROLL_MARGIN ? "scroll" : "once";
+      const next = canPin && mq.matches && fitOf(el).fit >= MIN_FIT ? "scroll" : "once";
       if (next === mode) {
         current?.measure?.();
         return;

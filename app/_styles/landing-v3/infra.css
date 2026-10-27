@@ -478,16 +478,23 @@
 
 
 
-/* ── the scroll version (LpInfraAnim: data-scroll on the section, on desktop layouts tall enough
-   for the stage, motion allowed): the pin is the stage's height plus the scroll it takes; the
-   stage sticks, centred in the window, while the three things come together (buildInfraScroll) ── */
+/* ── the scroll version (LpInfraAnim: data-scroll on the section, on desktop layouts, motion
+   allowed): the pin is the stage's height plus the scroll it takes; the stage sticks, centred in
+   the window, while the three things come together (buildInfraScroll). On a short window the
+   card scales down from its top edge so the whole stage fits (--lp-infra-fit, 0.8 at the least),
+   and the pin gives back the room the scale frees (--lp-infra-trim). ── */
 .lp-infra[data-scroll] .lp-infra__pin {
-  height: calc(var(--lp-infra-stage-h, 820px) + var(--lp-infra-pin-len, 1200px));
+  height: calc(var(--lp-infra-stage-h, 724px) + var(--lp-infra-pin-len, 1200px));
+  margin-bottom: calc(var(--lp-infra-trim, 0px) * -1);
 }
 .lp-infra[data-scroll] .lp-infra__stage {
   gap: 40px;
   position: sticky;
   top: var(--lp-infra-top, 24px);
+}
+.lp-infra[data-scroll] .lp-infra__card {
+  transform: scale(var(--lp-infra-fit, 1));
+  transform-origin: 50% 0;
 }
 
 /* ── responsive: the steps' breakpoints, and one for the cards' pictures ── */
