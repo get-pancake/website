@@ -47,7 +47,7 @@
 .lp-demowin :where(p, ul) { list-style: none; margin: 0; padding: 0; }
 .lp-demowin__defs { height: 0; overflow: hidden; position: absolute; width: 0; }
 
-/* ── stage: the two views in one cell (heights = the taller: zero CLS) ── */
+/* ── stage: the views in one cell (heights = the taller: zero CLS) ── */
 .lp-demowin__card { position: relative; }
 .lp-demowin__stage {
   display: grid;
@@ -65,10 +65,9 @@
   visibility: visible;
   z-index: 1;
 }
-/* the incoming view fades in on top; the outgoing one stays under it for the
-   240 ms, then hides (production's .vx-win recipe: nothing visible is wiped) */
-.lp-demowin__card[data-view="0"] .lp-demowin__view--claude,
-.lp-demowin__card[data-view="1"] .lp-demowin__view--pancake {
+/* the incoming view (data-on) fades in on top; the outgoing one stays under it
+   for the 240 ms, then hides (production's .vx-win recipe: nothing visible is wiped) */
+.lp-demowin__view:not([data-on]) {
   opacity: 0;
   transition: opacity 0s linear 0.24s, visibility 0s linear 0.24s;
   visibility: hidden;
@@ -133,8 +132,7 @@
   width: 1.5px;
 }
 @media (prefers-reduced-motion: no-preference) {
-  .lp-demowin[data-inview]:not([data-lp-offstage]) .lp-demowin__card[data-view="0"] .lp-demowin__view--pancake:not([data-live]) .lp-demowin__caret,
-  .lp-demowin[data-inview]:not([data-lp-offstage]) .lp-demowin__card[data-view="1"] .lp-demowin__view--claude:not([data-live]) .lp-demowin__caret {
+  .lp-demowin[data-inview]:not([data-lp-offstage]) .lp-demowin__view[data-on]:not([data-live]) .lp-demowin__caret {
     animation-duration: 1.06s;
     animation-iteration-count: infinite;
     animation-name: lp-demowin-caret;
@@ -619,6 +617,9 @@
    every later element hidden, and lp-demo-claude-timeline.ts plays one take:
    type, send (the composer becomes the dock), three tool calls, the Play,
    the permission prompt, Live. */
+/* the agent views of the window, and the deep dive's Claude story (LpStoryClaude keeps its own
+   wrapper class; story-claude.css restates the rows it moves) */
+.lp-demowin__view--agent,
 .lp-demowin__view--claude {
   --ck-col: 600px;
   --ck-x: calc(50% - 300px);
@@ -732,10 +733,6 @@
   opacity: 0.45; /* nothing typed yet */
   width: 32px;
 }
-/* Claude + Codex marks, bottom-right (asterisk right 40 / bottom 27.5) */
-.lp-demowin__marks { align-items: center; bottom: 27.5px; display: flex; gap: 36.6px; position: absolute; right: 40px; }
-.lp-demowin__mark-codex { fill: var(--lp-claude-codex); height: 37.8px; width: 37.8px; }
-.lp-demowin__mark-claude { fill: var(--lp-claude-spark); height: 43.5px; width: 43.5px; }
 
 /* the thread (hidden at home): one column in flow, as the Pancake view's */
 .lp-demowin__cthread {
@@ -758,7 +755,9 @@
   padding: 9px 14px;
   text-wrap: pretty;
 }
-/* Claude's answer: the serif, streamed a word at a time */
+/* Claude's answer: the serif, streamed a word at a time. The words are spans:
+   the kit's layered `* { font-family }` beats inheritance, so they state the
+   serif too (until 2026-10-26 they drew in Geist Sans). */
 .lp .lp-demowin__csay {
   color: var(--lp-claude-serif-ink);
   font-family: var(--lp-font-claude-serif, Georgia), Georgia, serif;
@@ -766,6 +765,7 @@
   line-height: 26px;
   margin-top: 14px;
 }
+.lp .lp-demowin__csay * { font-family: var(--lp-font-claude-serif, Georgia), Georgia, serif; }
 /* one white card per tool call: the Pancake mark (the only coloured mark), the
    tool, and on the right what it is doing, then what came back */
 .lp .lp-demowin__ctools { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; overflow: hidden; }
@@ -851,6 +851,69 @@
 .lp-demowin__perm-btn--go { background: var(--lp-ink-100); box-shadow: none; color: var(--lp-surface); }
 .lp .lp-demowin__ctools--deploy { margin-top: 12px; }
 
+/* ══ Codex (2026-10-26) ════════════════════════════════════════════════════
+   Founder: "The demo sub banner should evolve in claude, chatgpt but also
+   grokbot … use mobbin to repro the UIs of each one of those tools", then
+   "i said just claude and codex/chat gpt (pick what should be said)": Codex,
+   the app the page names next to Claude. The same scene and geometry as
+   Claude's (one timeline for both), in Codex's clothes read off Mobbin's web
+   screens. Claude keeps the styles above. The top-left title and the mic exist
+   only where the app draws them (LpClaudeScene). */
+.lp-demowin__ctitle {
+  align-items: center;
+  display: flex;
+  font-size: 17px;
+  gap: 4px;
+  left: 22px;
+  line-height: 24px;
+  position: absolute;
+  top: 16px;
+}
+.lp-demowin__mic { --ico: 18px; align-items: center; display: flex; flex: none; height: 32px; justify-content: center; opacity: 0.7; width: 28px; }
+.lp-demowin__ctitle-mark { --ico: 18px; display: inline-flex; margin-right: 4px; }
+
+/* Codex on the web: white, the system sans, the mark and "Codex" top left
+   (semibold), "What should we code next?", a ringed composer (r 20) with a
+   plain connector chip, tool calls as monospace log lines, "Approve" in black. */
+.lp-demowin__cwin[data-harness="codex"] {
+  --lp-claude-bg: #ffffff;
+  --lp-claude-ink: #0d0d0d;
+  --lp-claude-serif-ink: #0d0d0d;
+  --lp-claude-bubble: #f4f4f4;
+  --lp-claude-send: #0d0d0d;
+}
+/* the kit's layered `* { font-family }` beats inheritance: every element states its face (as
+   agent-lab.css does): the system sans, and the tool calls' log lines in mono */
+.lp-demowin__cwin[data-harness="codex"],
+.lp-demowin__cwin[data-harness="codex"] * { font-family: ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__ctool,
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__ctool * { font-family: var(--lp-font-mono); }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__ctitle { font-size: 15px; font-weight: 600; }
+.lp .lp-demowin__cwin[data-harness="codex"] .lp-demowin__greet { font-family: inherit; font-size: 28px; font-weight: 400; letter-spacing: -0.2px; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__cbar { border-radius: 20px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04); }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__cbar-ph,
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__cbar-ask { color: #8f8f8f; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__conn { background: none; box-shadow: none; font-size: 13px; padding: 0 6px 0 2px; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__mic { margin-left: auto; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__csend { border-radius: 50%; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__cbubble { border-radius: 18px; font-size: 15px; padding: 10px 16px; }
+.lp .lp-demowin__cwin[data-harness="codex"] .lp-demowin__csay { font-family: inherit; font-size: 15.5px; line-height: 25px; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__ctools { gap: 0; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__ctool {
+  background: none;
+  box-shadow: none;
+  color: #5d5d5d;
+  font-size: 12.5px;
+  font-weight: 400;
+  height: 26px;
+  padding: 0 2px;
+}
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__ctool-done b { color: #0d0d0d; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__cplay,
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__perm { border-radius: 14px; box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1); }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__perm-btn { background: #f4f4f4; border-radius: 999px; box-shadow: none; font-size: 13px; line-height: 32px; padding: 0 14px; }
+.lp-demowin__cwin[data-harness="codex"] .lp-demowin__perm-btn--go { background: #0d0d0d; }
+
 /* rest = END (the deep dive's stage, LpStoryClaude): the scene's last picture
    in plain CSS, for the markup before and after its timeline. The same picture
    as the timeline's last frame: change the two together. */
@@ -870,11 +933,12 @@
   to { transform: rotate(1turn); }
 }
 
-/* ══ pills (V2 4939:2784): 129 fixed + 132 hug, gap 8, 24 under the window ══
+/* ══ pills (V2 4939:2784): one per view, 120 at least, gap 8, 24 under the window ══
    z-index 1 = the views' own level, later in the tree: the pills paint OVER the
    window's 62.4 px drop shadow, as Figma layers them (under it they read 1 – 3
    levels darker than #f8e5d4 / #ffdbb5). */
 .lp-demowin__tabs { display: flex; justify-content: center; margin-top: 24px; position: relative; z-index: 1; }
+.lp-demowin__tabs-in { display: flex; position: relative; }
 .lp-demowin__pills { display: flex; gap: 8px; }
 .lp .lp-demowin__pill {
   background: var(--lp-tinted-surface);
@@ -886,12 +950,12 @@
   font-weight: 500;
   height: 36px;
   line-height: 20px;
+  min-width: 120px; /* the V2 pair's 129 / 132 for "Pancake" / "Claude & Codex": short names keep the size */
   overflow: hidden;
   padding: 8px 16px;
   position: relative;
   white-space: nowrap;
 }
-.lp .lp-demowin__pill:first-child { width: 129px; }
 .lp-demowin__pill-l { position: relative; }
 /* the autoplay progress (Rectangle 250, yellow-20): the island writes --p on
    the active pill's fill; no JS / reduced motion / paused = full */
@@ -907,7 +971,7 @@
 .lp-demowin__card:not([data-ready]) .lp-demowin__pill { cursor: default; }
 /* keyboard-only Pause, after the pills (production .vx-ctrl recipe): clipped
    to 1 px until it takes keyboard focus or holds the demo paused (zero CLS) */
-.lp-demowin__ctrl { left: calc(50% + 142.5px); position: absolute; top: 50%; transform: translateY(-50%); }
+.lp-demowin__ctrl { left: calc(100% + 8px); position: absolute; top: 50%; transform: translateY(-50%); }
 .lp .lp-demowin__ctrl-btn {
   --ico: 16px;
   align-items: center;
@@ -996,8 +1060,6 @@
 @media (max-width: 1024px) {
   .lp-demowin { padding-bottom: 56px; }
   .lp-demowin__stage { width: calc(100% - 96px); }
-  /* the marks sit beside the 640 dock only in the wide window */
-  .lp-demowin__marks { display: none; }
   .lp .lp-demowin__chip { justify-self: center; margin-left: 0; }
 }
 
@@ -1038,7 +1100,7 @@
   .lp-demowin__card { padding-bottom: 74.885px; }
   .lp-demowin__card:not([data-phone-solo]) { padding-bottom: 22.885px; } /* pills 16 + 36 under the card */
   .lp-demowin__card[data-phone-solo] .lp-demowin__tabs,
-  .lp-demowin__card[data-phone-solo] .lp-demowin__view--claude { display: none; }
+  .lp-demowin__card[data-phone-solo] .lp-demowin__view--agent { display: none; }
   .lp-demowin__tabs { margin-top: 16px; }
 
   /* the card on screen, and the du box in it */
@@ -1132,7 +1194,7 @@
      parseFloat, a calc() is NaN. Scoped to the card: the deep dive's story embeds this scene
      with a geometry of its own (story-claude.css), which a bare class here would override
      between 600 and 767. */
-  .lp-demowin__card .lp-demowin__view--claude {
+  .lp-demowin__card .lp-demowin__view--agent {
     --ck-col: 487.97px;
     --ck-x: 29.18px;
     --ck-greet-top: 244px;
@@ -1151,6 +1213,8 @@
 .lp-demowin [data-ico="plus"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 17.4681 17.4681' fill='none' stroke='black' stroke-width='1.09175' stroke-linecap='round'%3E%3Cpath d='M3.05368 8.73358H14.4079M8.7308 3.05646V14.4107'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="arrow-up"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 13.9744 13.9744' fill='none' stroke='black' stroke-width='0.873403' stroke-linecap='round' stroke-linejoin='bevel'%3E%3Cpath d='M6.9878 12.2276V1.74672M11.7915 6.55043L6.9878 1.74672L2.18408 6.55043'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="plug"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 28.8671 28.8671' fill='none' stroke='black' stroke-width='2.40559' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.4475 22.8532C20.1285 22.8532 19.8226 22.7264 19.597 22.5009C19.3715 22.2753 19.2447 21.9694 19.2447 21.6504V19.2448C19.2447 18.6068 19.4982 17.9949 19.9493 17.5438C20.4005 17.0926 21.0123 16.8392 21.6503 16.8392H24.0559C24.6939 16.8392 25.3058 17.0926 25.7569 17.5438C26.2081 17.9949 26.4615 18.6068 26.4615 19.2448V21.6504C26.4615 21.9694 26.3348 22.2753 26.1092 22.5009C25.8837 22.7264 25.5777 22.8532 25.2587 22.8532H20.4475Z'/%3E%3Cpath d='M20.4475 25.2588V22.8532M25.2587 25.2588V22.8532M3.60839 6.01402V3.60842M8.41958 6.01402V3.60842'/%3E%3Cpath d='M22.8531 16.8392V7.81821C22.8531 6.70171 22.4096 5.63093 21.6201 4.84144C20.8306 4.05195 19.7599 3.60842 18.6434 3.60842C17.5268 3.60842 16.4561 4.05195 15.6666 4.84144C14.8771 5.63093 14.4336 6.70171 14.4336 7.81821V21.049C14.4336 22.1655 13.99 23.2363 13.2005 24.0257C12.4111 24.8152 11.3403 25.2588 10.2238 25.2588C9.10727 25.2588 8.03649 24.8152 7.247 24.0257C6.45751 23.2363 6.01398 22.1655 6.01398 21.049V12.028'/%3E%3Cpath d='M4.81119 12.028C4.17318 12.028 3.56131 11.7746 3.11018 11.3234C2.65904 10.8723 2.40559 10.2604 2.40559 9.62241V7.21681C2.40559 6.89781 2.53232 6.59188 2.75788 6.36631C2.98345 6.14074 3.28939 6.01402 3.60839 6.01402H8.41958C8.73858 6.01402 9.04452 6.14074 9.27008 6.36631C9.49565 6.59188 9.62237 6.89781 9.62237 7.21681V9.62241C9.62237 10.2604 9.36893 10.8723 8.91779 11.3234C8.46666 11.7746 7.85478 12.028 7.21678 12.028H4.81119Z'/%3E%3C/svg%3E"); }
+.lp-demowin [data-ico="mic"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='9' y='3' width='6' height='12' rx='3'/%3E%3Cpath d='M5 11a7 7 0 0 0 14 0M12 18v3'/%3E%3C/svg%3E"); }
+.lp-demowin [data-ico="codex"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9.5'/%3E%3Cpath d='m8.5 9.5 2.5 2.5-2.5 2.5M13 15h3'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="pause"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.7' stroke-linecap='round' fill='none'%3E%3Cpath d='M8.25 5.25v13.5m7.5-13.5v13.5'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="play"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='black' fill-rule='evenodd'%3E%3Cpath d='M7.5 4.8v14.4L18.9 12z'/%3E%3C/svg%3E"); }
 .lp-demowin [data-ico="check"] { --i: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' fill='none'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E"); }

@@ -1,7 +1,9 @@
 /**
- * Homepage demo window copy (V2 Figma 4939:2645 / clean copy 4963:848): the two pills, the
- * Pancake view, the Claude & Codex view. Owner: demo-scroll package. In scripts/homepage-lint.mjs
- * FILES. SERVER ONLY (LpDemo.tsx renders it; the island receives only the pill labels).
+ * Homepage demo window copy (V2 Figma 4939:2645 / clean copy 4963:848): the pills' tablist, the
+ * Pancake view (its request and Play still feed every agent app's run), the Claude & Codex view
+ * (the run's script and Claude's chrome), and since 2026-10-26 `agents`, one view per agent app.
+ * Owner: demo-scroll package. In scripts/homepage-lint.mjs FILES. SERVER ONLY (LpDemo.tsx renders
+ * it; the island receives the pill labels and the server-rendered scenes).
  *
  * Sources: V2 verbatim for the window chrome, the agent chip and the pills (the raster chip
  * 4939:2774 reads "Prefer your own agent?" / "Use Pancake with Claude or Codex"). The Pancake
@@ -12,14 +14,31 @@
  * run is new copy, and its tool titles are the MCP server's own (pancake-cmo
  * packages/mcp/src/plays-tools.ts).
  */
+/** Claude's own chrome (deep-dive Claude frame 4964:3910): the demo's Claude view and the deep
+ *  dive's Claude story share it. */
+const CLAUDE_CHROME = {
+  harness: "claude",
+  greeting: "Let’s flip some pancakes",
+  placeholder: "How can I help you today?",
+  /** The connector chip in the composer. */
+  connector: "Pancake",
+  model: "Opus 5.5",
+  /** The docked composer once the request is sent. */
+  reply: "Reply to Claude…",
+  always: "Always allow",
+  allow: "Allow once",
+} as const;
+
+const CLAUDE_ARIA =
+  "The same request in Claude, with the Pancake connector. Claude reads the Brain, searches funding news and checks who is hiring through Pancake: 25 founders fit. It shows the Play, asks for permission to deploy it, then confirms the Play is live on Pancake.";
+
 export const LP_DEMO = {
   /** sr-only, after the H2 (HOME_DEMO.demo.h2): what the mock shows, for readers and crawlers
    *  (the stage itself is data-nosnippet). Replaces the tour's TOUR_SUMMARY. */
   summary:
-    "Product demo: type a GTM idea. Pancake builds the Play, and one click deploys it. The same request works from Claude or Codex, through Pancake’s MCP server.",
-  /** The pills under the window: a two-view tablist. */
+    "Product demo: the same GTM request in Claude and in Codex, through Pancake’s MCP server. Pancake reads the Brain, finds 25 founders and deploys a Play that keeps them coming.",
+  /** The pills under the window: one tab per agent app (`agents` below). */
   tablist: "Where you run Pancake",
-  pills: ["Pancake", "Claude & Codex"],
 
   pancake: {
     newChat: "New chat",
@@ -93,15 +112,8 @@ export const LP_DEMO = {
      card per tool call under the Pancake mark, the permission prompt, then the Play goes Live. */
   claude: {
     /** role="img" label of the Claude view. */
-    aria: "The same request in Claude, with the Pancake connector. Claude reads the Brain, searches funding news and checks who is hiring through Pancake: 25 founders fit. It shows the Play, asks for permission to deploy it, then confirms the Play is live on Pancake.",
-    /** Deep-dive Claude frame 4964:3910. */
-    greeting: "Let’s flip some pancakes",
-    placeholder: "How can I help you today?",
-    /** The connector chip in the composer. */
-    connector: "Pancake",
-    model: "Opus 5.5",
-    /** The docked composer once the request is sent. */
-    reply: "Reply to Claude…",
+    aria: CLAUDE_ARIA,
+    ...CLAUDE_CHROME,
     say: "I’ll run this through Pancake.",
     /** One card per tool call: what it is doing, then what came back (`count` ticks up). */
     tools: [
@@ -112,11 +124,49 @@ export const LP_DEMO = {
     found: "25 founders fit. Here’s a Play to keep them coming.",
     /** Claude's own permission prompt before a tool that changes something. */
     ask: { lead: "Claude wants to use", tool: "Deploy Play", from: "from", app: "Pancake" },
-    always: "Always allow",
-    allow: "Allow once",
     /** `note`: what "Live" means for a Play, it keeps running (founder 2026-10-13: "something
      *  like running daily next to the deploy, to show the recurring thing about a play"). */
     deploy: { title: "Deploy Play", doing: "Deploying…", done: "Live", note: "running daily" },
     done: "Your Play is live on Pancake.",
   },
+
+  /* The agent apps the window plays in turn, one pill each (founder 2026-10-26: "The demo sub
+     banner should evolve in claude, chatgpt but also grokbot, Or whatever are the top 3-4-5
+     harnesses most used on the market … use mobbin to repro the UIs of each one of those tools
+     … which will allow us to remove those odd logos"; then, the same day, "let s not put grok",
+     "gemini is overkill dude", and "i said just claude and codex/chat gpt (pick what should be
+     said)"). Claude and Codex: the two the page already names everywhere (the setup line, the
+     diagram, the steps), the two agent harnesses Pancake ships a plugin for, and two of the
+     three Clay names (ChatGPT's custom connectors depend on the plan). Each runs the Claude
+     view's script above (the same request, tool calls, Play and Live) in its own interface:
+     demo.css skins drawn from Mobbin's web screens, and the app's own words below (its home
+     line, composer, permission buttons). `ask` opens the app's permission prompt. */
+  agents: [
+    {
+      harness: "claude",
+      label: "Claude",
+      aria: CLAUDE_ARIA,
+      chrome: CLAUDE_CHROME,
+      ask: "Claude wants to use",
+    },
+    {
+      /* Codex on the web (Mobbin, 2026): the mark and "Codex" top left, "What should we code
+         next?" over a ringed composer, "Ask a question with /plan", the mic and a round send. */
+      harness: "codex",
+      label: "Codex",
+      aria: "The same request in Codex, with the Pancake connector. Codex reads the Brain, searches funding news and checks who is hiring through Pancake: 25 founders fit. It shows the Play, asks for approval to deploy it, then confirms the Play is live on Pancake.",
+      chrome: {
+        harness: "codex",
+        title: "Codex",
+        greeting: "What should we code next?",
+        placeholder: "Ask a question with /plan",
+        connector: "Pancake",
+        model: "",
+        reply: "Ask for follow-up changes",
+        always: "Deny",
+        allow: "Approve",
+      },
+      ask: "Codex wants to use",
+    },
+  ],
 } as const;
