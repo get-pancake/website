@@ -113,10 +113,12 @@ export function buildInfraFlow(root: HTMLElement): Built {
 
    So the scroll tells it in three moves, the bricks first:
    1. the three bricks come up one after another, large and a little apart, under the heading and
-      your agent, each word filling its brick: CONTEXT, DATA, TOOLS (its own badge, scaled up);
-      then each window opens (founder 2026-10-27: "Peut etre que CONTEXT DATA TOOLS doit prendre
-      toute la place au debut dans les encadres puis ouvrir la fenetre ?"): the word shrinks back
-      into its badge, the title comes up and the white picture opens from its centre, empty;
+      your agent, each holding only its word, large: Context, Data, Tools (founder 2026-10-27:
+      "Peut etre que CONTEXT DATA TOOLS doit prendre toute la place au debut dans les encadres
+      puis ouvrir la fenetre ?"; set as the steps' big numerals and Mobbin's Tines values cards,
+      after "Not beautiful, get inspired by top designs" on a scaled-up badge); then each window
+      opens: the word shrinks into its badge, the title comes up and the white picture opens from
+      its centre, empty;
    2. then the details of a company's go-to-market pop up all over the screen, in many sizes
       (LpInfra BITS: the brain's sections and notes, the Play's signals, providers and CRMs on the
       kit's pancakes, the Play's switch, a message, a lead; Mobbin: Front's and Tines' integration
@@ -159,9 +161,7 @@ const WAVE: Record<Bucket, { start: number; gap: number }> = {
 const POP = 0.035;
 const WAIT = 0.015;
 const FLIGHT = 0.13;
-/** the bricks' words: how much of a brick's width the longest one fills, at most ×3; the windows
-    open from .18, one every .03 */
-const WORD = { share: 0.74, max: 3 } as const;
+/** the windows open from .18, one every .03 */
 const OPEN = { at: 0.18, gap: 0.03, duration: 0.09 } as const;
 /** a filled picture's beat (a disc's pop, a row settling) */
 const FILL = 0.03;
@@ -172,7 +172,8 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
   const parts = all(card, ".lp-infra__part");
   if (parts.length !== BUCKETS.length) throw new Error("infra scroll: three bricks expected");
   const pics = parts.map((part) => one(part, ".lp-infra__pic"));
-  const words = parts.map((part) => one(part, ".lp-infra__part-name"));
+  const words = parts.map((part) => one(part, ".lp-infra__part-word"));
+  const badges = parts.map((part) => one(part, ".lp-infra__part-name"));
   const titles = parts.map((part) => one(part, ".lp-infra__part-title"));
   const bits = all(card, ".lp-infra__bit");
   const rows = all(card, ".lp-infra__mem-row");
@@ -190,6 +191,7 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
     ...parts,
     ...pics,
     ...words,
+    ...badges,
     ...titles,
     ...bits,
     ...rows,
@@ -219,12 +221,15 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
       y: pc.y + BRICK.scale * (ic.y - pc.y),
     };
   });
-  // each word, scaled up the same for all three, sits in the middle of its brick
-  const big = Math.min(WORD.max, ...parts.map((part, i) => (WORD.share * part.offsetWidth) / words[i].offsetWidth));
-  const lifts = parts.map((part, i) => {
-    const pc = centre(part);
+  // each big word goes into its badge: where the badge is from the word, and how much smaller
+  const intos = parts.map((_, i) => {
     const wc = centre(words[i]);
-    return { x: (pc.x - wc.x) / fit, y: (pc.y - wc.y) / fit };
+    const bc = centre(badges[i]);
+    return {
+      x: (bc.x - wc.x) / fit,
+      y: (bc.y - wc.y) / fit,
+      scale: badges[i].offsetHeight / Math.max(1, words[i].offsetHeight),
+    };
   });
   // the windows open from their centre, with the pictures' own corners
   const round = getComputedStyle(pics[0]).borderTopLeftRadius || "16px";
@@ -235,7 +240,8 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
   gsap.set(canvas, { autoAlpha: 0 });
   parts.forEach((part, i) => {
     gsap.set(part, { autoAlpha: 0, x: (i - 1) * apart, y: 80, scale: 1.04, transformOrigin: "50% 50%" });
-    gsap.set(words[i], { x: lifts[i].x, y: lifts[i].y, scale: big, transformOrigin: "50% 50%" });
+    gsap.set(words[i], { autoAlpha: 1, transformOrigin: "50% 50%" });
+    gsap.set(badges[i], { autoAlpha: 0, scale: 0.92, transformOrigin: "0% 50%" });
     gsap.set(titles[i], { autoAlpha: 0, y: 8 });
     gsap.set(pics[i], { clipPath: shut });
   });
@@ -268,7 +274,11 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
     tl.to(part, { autoAlpha: 1, duration: 0.06, ease: "power1.out" }, i * 0.04);
     tl.to(part, { y: 0, scale: BRICK.scale, duration: 0.1, ease: "power3.out" }, i * 0.04);
     const t = OPEN.at + i * OPEN.gap;
-    tl.to(words[i], { x: 0, y: 0, scale: 1, duration: OPEN.duration, ease: "power3.inOut" }, t);
+    const into = intos[i];
+    tl.to(words[i], { x: into.x, y: into.y, scale: into.scale, duration: OPEN.duration, ease: "power3.inOut" }, t);
+    // the word is gone before the badge shows: never both at once
+    tl.to(words[i], { autoAlpha: 0, duration: OPEN.duration * 0.35, ease: "power1.in" }, t + OPEN.duration * 0.4);
+    tl.to(badges[i], { autoAlpha: 1, scale: 1, duration: OPEN.duration * 0.3, ease: "power2.out" }, t + OPEN.duration * 0.7);
     tl.to(pics[i], { clipPath: open, duration: OPEN.duration, ease: "power2.out" }, t + 0.015);
     tl.to(titles[i], { autoAlpha: 1, y: 0, duration: 0.05, ease: "power2.out" }, t + 0.05);
   });

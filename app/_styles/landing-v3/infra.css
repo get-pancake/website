@@ -191,16 +191,19 @@
   --lp-infra-tone-10: var(--lp-yellow-10);
   --lp-infra-tone-20: var(--lp-yellow-20);
   --lp-infra-tone-30: var(--lp-yellow-30);
+  --lp-infra-tone-40: var(--lp-yellow-40);
 }
 .lp-infra__part[data-tone="purple"] {
   --lp-infra-tone-10: var(--lp-purple-10);
   --lp-infra-tone-20: var(--lp-purple-20);
   --lp-infra-tone-30: var(--lp-purple-30);
+  --lp-infra-tone-40: var(--lp-purple-40);
 }
 .lp-infra__part[data-tone="pink"] {
   --lp-infra-tone-10: var(--lp-pink-10);
   --lp-infra-tone-20: var(--lp-pink-20);
   --lp-infra-tone-30: var(--lp-pink-30);
+  --lp-infra-tone-40: var(--lp-pink-40);
 }
 .lp-infra__part {
   background: var(--lp-infra-tone-10);
@@ -209,7 +212,31 @@
   grid-row: span 3;
   grid-template-rows: subgrid;
   padding: 8px 8px 22px;
+  position: relative;
   row-gap: 8px;
+}
+/* The scroll version opens each brick on its word alone, large, low on the left, in the brick's
+   deep tone: the steps' big numerals (.lp-steps__num: the display face in purple-, pink- and
+   yellow-40) set as Mobbin's Tines values cards set their words (founder 2026-10-27 on a scaled-up
+   badge: "Not beautiful, get inspired by top designs"). Then the word goes into the badge and the
+   window opens (buildInfraScroll). Hidden everywhere else, and at rest. */
+.lp-infra__part-word {
+  display: none;
+}
+.lp-infra[data-scroll] .lp-infra__part-word {
+  bottom: 18px;
+  color: var(--lp-infra-tone-40);
+  display: block;
+  font-family: var(--lp-font-cond);
+  font-size: 80px; /* the brick's width, near enough: "Context" fills three quarters of it */
+  font-weight: 600;
+  left: 22px;
+  letter-spacing: -2.4px; /* −3%, as the display titles */
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
 }
 /* (0,2,0): beats `.lp p { margin: 0 }` */
 .lp-infra__part > :not(.lp-infra__pic) {

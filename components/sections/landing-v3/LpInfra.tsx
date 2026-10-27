@@ -228,6 +228,10 @@ export function LpInfra() {
                 <ul className="lp-infra__parts">
                   {LAYERS.map(({ tone, name, title, pic: Pic }) => (
                     <li key={name} className="lp-infra__part" data-tone={tone}>
+                      {/* the scroll version opens on this word alone, large (infra.css) */}
+                      <span className="lp-infra__part-word" aria-hidden="true">
+                        {name}
+                      </span>
                       <div className="lp-infra__pic" aria-hidden="true">
                         <Pic />
                       </div>
