@@ -10,9 +10,10 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
  *   scroll — desktop layouts (from 1025 wide), motion allowed (founder 2026-10-26:
  *            "show that pancake brings all 3 of them when scrolling", then "the flow supersmooth
  *            every movement well calibrated getting inspired by best in class website"). The
- *            stage pins and the scroll drives buildInfraScroll: the three cards, scattered, settle
- *            into Pancake's platform, which connects to the agent. The model is save.design's
- *            hero, measured live. The scroll's progress is smoothed (an exponential follow, τ
+ *            stage pins and the scroll drives buildInfraScroll: the pieces of a go-to-market stack,
+ *            all over the page, fly into their bucket (Context, Data, Tools), the buckets settle
+ *            into Pancake's platform, which connects to the agent (founder 2026-10-27: "way more
+ *            juicy and spread accross the page … that go in 3 bucjets and unified in pancake"). The scroll's progress is smoothed (an exponential follow, τ
  *            0.15 s, frame-rate independent), so a wheel's notches and a trackpad's flick both
  *            glide, as a scrubbed timeline does on the best scroll-driven pages. The whole stage
  *            stays in the window: on a short one (a laptop with its dock and bookmarks bar) the
@@ -36,14 +37,19 @@ const SCROLL_MARGIN = 24;
 /** the smallest the card may be scaled to fit a short window: a 1440 × 900 laptop with its dock
     and bookmarks bar (≈ 700 px of window) gets 0.88; under ≈ 660 px, the build-up instead */
 const MIN_FIT = 0.8;
-/** the scroll the assembly takes: 1.35 windows, within 1050–1500 px */
-const pinLength = (vh: number) => Math.round(Math.min(1500, Math.max(1050, vh * 1.35)));
+/** the scroll the stage stays pinned for: 1.6 windows, within 1300–1800 px (three moves: the
+    pieces into their buckets, the buckets into Pancake, Pancake to the agent) */
+const pinLength = (vh: number) => Math.round(Math.min(1800, Math.max(1300, vh * 1.6)));
+/** the timeline starts as the stage's top comes 45% down the window, before the pin, so the
+    pieces move from the first notch on (founder 2026-10-27: "je scroll rien se passe puis d un
+    coup tout se met en place"); it ends where the pin lets go */
+const START = 0.45;
 /** the smoothing's time constant (s): the picture is 95% caught up with the scroll after 3τ */
 const TAU = 0.15;
 /** from here the picture is assembled and the leads queue may run (a little lower to stop it,
     so a visitor resting on the edge does not start and stop it) */
-const ASSEMBLED = 0.9;
-const UNASSEMBLED = 0.85;
+const ASSEMBLED = 0.93;
+const UNASSEMBLED = 0.88;
 
 type QaRegistry = Record<string, Record<string, unknown> | undefined>;
 
@@ -76,6 +82,9 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
   let top = SCROLL_MARGIN;
   let len = pinLength(window.innerHeight);
   let near = false;
+  let layout = "";
+  // the builder, once GSAP and the timelines have loaded
+  let buildScroll: (root: HTMLElement) => typeof built = () => null;
 
   const measure = () => {
     const { layoutH, cardH, fit, visualH } = fitOf(el);
@@ -86,10 +95,28 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
     section.style.setProperty("--lp-infra-pin-len", `${len}px`);
     section.style.setProperty("--lp-infra-fit", fit.toFixed(4));
     section.style.setProperty("--lp-infra-trim", `${Math.round(cardH * (1 - fit))}px`);
+    // how far the pieces beyond the title spread: to the window's edges, in the card's own px;
+    // and above the heading and under the card when the window leaves room there
+    const reach = (window.innerWidth / 2 / fit - 400) / 300;
+    section.style.setProperty("--lp-infra-reach", Math.min(1.8, Math.max(0.35, reach)).toFixed(3));
+    section.style.setProperty("--lp-infra-reach-y", Math.min(2, Math.max(1, 1 + (top - 88) / 110)).toFixed(3));
+    // the timeline is built from the layout: a new layout, a new timeline at the same place
+    const next = `${window.innerWidth}x${window.innerHeight}:${card.offsetWidth}x${cardH}`;
+    if (built && next !== layout) {
+      built.tl.kill();
+      built.cleanup();
+      built = buildScroll(stage);
+      if (built && cur >= 0) built.tl.progress(cur);
+    }
+    layout = next;
     kick();
   };
-  // how far the pinned stage has been scrolled through, 0 → 1
-  const goal = () => Math.min(1, Math.max(0, (top - pin.getBoundingClientRect().top) / len));
+  // how far the visitor has come, 0 → 1: from the stage's top half way up the window to the end
+  // of the pin, linear in the scroll
+  const goal = () => {
+    const from = START * window.innerHeight;
+    return Math.min(1, Math.max(0, (from - pin.getBoundingClientRect().top) / (from - top + len)));
+  };
   const frame = (now: number) => {
     raf = 0;
     if (!built) return;
@@ -133,23 +160,27 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
 
   const unpin = () => {
     section.removeAttribute("data-scroll");
-    for (const v of ["--lp-infra-stage-h", "--lp-infra-top", "--lp-infra-pin-len", "--lp-infra-fit", "--lp-infra-trim"])
+    for (const v of ["--lp-infra-stage-h", "--lp-infra-top", "--lp-infra-pin-len", "--lp-infra-fit", "--lp-infra-trim", "--lp-infra-reach", "--lp-infra-reach-y"])
       section.style.removeProperty(v);
   };
   Promise.all([import("@/lib/gsap"), import("./lp-infra-timeline")])
     .then(([, { buildInfraScroll }]) => {
       if (disposed) return;
-      try {
-        built = buildInfraScroll(stage);
-      } catch (err) {
-        // never a broken section: the markup stands, unpinned
-        unpin();
-        card.dataset.lpAnim = "static";
-        if (process.env.NODE_ENV !== "production") console.error(err);
-        return;
-      }
-      const w = window as unknown as QaRegistry;
-      w.__lpInfra = { ...w.__lpInfra, scroll: built.tl };
+      buildScroll = (root) => {
+        try {
+          const b = buildInfraScroll(root);
+          const w = window as unknown as QaRegistry;
+          w.__lpInfra = { ...w.__lpInfra, scroll: b.tl };
+          return b;
+        } catch (err) {
+          // never a broken section: the markup stands, unpinned
+          unpin();
+          card.dataset.lpAnim = "static";
+          if (process.env.NODE_ENV !== "production") console.error(err);
+          return null;
+        }
+      };
+      built = buildScroll(stage);
       kick();
     })
     .catch(() => {
