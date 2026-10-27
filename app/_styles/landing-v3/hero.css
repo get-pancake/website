@@ -218,23 +218,23 @@
   left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
   transform: none;
 }
-/* The humans H1 since 2026-10-13: "Deploy GTM ideas / that bring you customers",
-   two lines at V2's place and size, as the H1 before it (founder: "in 2 lines,
-   same placement as in the figma, same as when it was the previous h1"). Its
-   second line is 9.6 × the font size wide (663 px at 69.014; the previous one
-   was 643): 105 px before the right column from 1201 wide up. Where the
-   layout gets tight it is the only thing that gives, so the line never runs
-   into the column (48 px kept, 1025 to about 1050 wide) nor into the phone's
-   32 px gutter (35.0 instead of 35.56 at 402, less under 360). On the H1
-   itself: the agents headline shares .lp-hero-title's box and size. */
+/* The humans H1 since 2026-10-27: "Infrastructure to run / your GTM factory"
+   (founder), two lines at V2's place and size, as the H1s before it (2026-10-13:
+   "in 2 lines, same placement as in the figma, same as when it was the previous
+   h1"). Its first line is the longer one, 7.73 × the font size wide (533 px at
+   69.014; "that bring you customers" was 9.6 ×): 235 px before the right column
+   from 1201 wide up. Where the layout gets tight it is the only thing that
+   gives, so the line never runs into the column nor into the phone's 32 px
+   gutter; with this line the designer's clamps decide down to 320 wide. On the
+   H1 itself: the agents headline shares .lp-hero-title's box and size. */
 @media (min-width: 1025px) and (max-width: 1200px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(clamp(52px, 5.4vw, 69.014px), calc((100vw - 512px) / 9.65));
+    font-size: min(clamp(52px, 5.4vw, 69.014px), calc((100vw - 512px) / 7.8));
   }
 }
 @media (max-width: 767px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(clamp(30px, 8.846vw, 35.559px), calc((100vw - 64px) / 9.65));
+    font-size: min(clamp(30px, 8.846vw, 35.559px), calc((100vw - 64px) / 7.8));
   }
 }
 /* "go-to-market" in the lede never breaks at a hyphen (LpHero.tsx) */

@@ -31,8 +31,8 @@ export const META = {
  * change this block too.
  */
 export const HERO = {
-  titleLine1: "Deploy GTM ideas",
-  titleLine2: "that bring you customers",
+  titleLine1: "Infrastructure to run",
+  titleLine2: "your GTM factory",
   ledeBefore: "Pancake gives your agent the brain, the data and the tools to run your ",
   ledeNowrap: "go-to-market",
   ledeAfter: ".",
