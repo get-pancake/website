@@ -10,10 +10,11 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
  *   scroll — desktop layouts (from 1025 wide), motion allowed (founder 2026-10-26:
  *            "show that pancake brings all 3 of them when scrolling", then "the flow supersmooth
  *            every movement well calibrated getting inspired by best in class website"). The
- *            stage pins and the scroll drives buildInfraScroll: the pieces of a go-to-market stack,
- *            all over the page, fly into their bucket (Context, Data, Tools), the buckets settle
- *            into Pancake's platform, which connects to the agent (founder 2026-10-27: "way more
- *            juicy and spread accross the page … that go in 3 bucjets and unified in pancake"). The scroll's progress is smoothed (an exponential follow, τ
+ *            stage pins and the scroll drives buildInfraScroll: the three bricks (Context, Data,
+ *            Tools) come up first, then the details of a go-to-market pop up all over the screen
+ *            and fly into them, then the bricks close up into Pancake's platform, which connects
+ *            to your agent (founder 2026-10-27: "insister sur les 3 briques … les faire arriver
+ *            en premier puis faire arriver les petits details"). The scroll's progress is smoothed (an exponential follow, τ
  *            0.15 s, frame-rate independent), so a wheel's notches and a trackpad's flick both
  *            glide, as a scrubbed timeline does on the best scroll-driven pages. The whole stage
  *            stays in the window: on a short one (a laptop with its dock and bookmarks bar) the
@@ -48,8 +49,8 @@ const START = 0.45;
 const TAU = 0.15;
 /** from here the picture is assembled and the leads queue may run (a little lower to stop it,
     so a visitor resting on the edge does not start and stop it) */
-const ASSEMBLED = 0.93;
-const UNASSEMBLED = 0.88;
+const ASSEMBLED = 0.95;
+const UNASSEMBLED = 0.9;
 
 type QaRegistry = Record<string, Record<string, unknown> | undefined>;
 
@@ -99,7 +100,7 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
     // and above the heading and under the card when the window leaves room there
     const reach = (window.innerWidth / 2 / fit - 400) / 300;
     section.style.setProperty("--lp-infra-reach", Math.min(1.8, Math.max(0.35, reach)).toFixed(3));
-    section.style.setProperty("--lp-infra-reach-y", Math.min(2, Math.max(1, 1 + (top - 88) / 110)).toFixed(3));
+    section.style.setProperty("--lp-infra-reach-y", Math.min(2, Math.max(1, 1 + (top - 110) / 120)).toFixed(3));
     // the timeline is built from the layout: a new layout, a new timeline at the same place
     const next = `${window.innerWidth}x${window.innerHeight}:${card.offsetWidth}x${cardH}`;
     if (built && next !== layout) {

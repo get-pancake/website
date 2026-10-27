@@ -5,18 +5,18 @@ import { LpInfraFlow } from "@/components/sections/landing-v3/LpInfraAnim";
 import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art";
 
 /**
- * Section — "Your agent needs 3 things to sell." / "Pancake brings all 3." (founder 2026-10-26:
+ * Section — "Your agent needs 3 things to sell." (founder 2026-10-26:
  * "Can we do something like Your agent needs 3 things to sell and show that pancake brings all 3
  * of them when scrolling ? … sometimes it's like some components that are spread in the hero and
  * end up as components from an UI as the scroll goes", then "The reproduction should be PERFECT,
  * the flow supersmooth every movement well calibrated"). On desktops the stage pins and the scroll
- * tells it in three moves (buildInfraScroll, LpInfraAnim). The next day, on the first version
- * (the three cards only): "It should be way more juicy and spread accross the page and show
- * they're a bit everywhere maybe show the tools a bit everywhere that go in 3 bucjets and unified
- * in pancake". So: the pieces of a go-to-market stack lie all over the page (BITS: the brain's
- * sections, the data providers, the CRMs, the approval), each flies into its bucket (Context,
- * Data, Tools) and fills it, then the three buckets come together in Pancake's platform, which
- * connects to the agent, and the line lands. The sources: Mobbin's Front and Tines integration
+ * tells it in three moves (buildInfraScroll, LpInfraAnim). The next day: "It should be way more
+ * juicy and spread accross the page and show they're a bit everywhere maybe show the tools a bit
+ * everywhere that go in 3 bucjets and unified in pancake", then "Comment BCP plus insister sur les
+ * 3 briques CONTEXT / DATA / TOOLS ? … quitte a les faire arriver en premier puis faire arriver
+ * les petits details". So: the three bricks (Context, Data, Tools) come up first, large; then the
+ * details of a go-to-market (BITS) pop up all over the screen and fly into their brick; then the
+ * bricks close up into Pancake's platform, which connects to your agent. The sources: Mobbin's Front and Tines integration
  * heroes (white logo discs scattered around a centred heading, Tines on a dotted canvas),
  * Antimetal's discs of several sizes for depth, and save.design's hero (scattered pieces
  * converging into the product, measured live). Elsewhere the card plays its build-up once, and
@@ -129,32 +129,32 @@ type Bit = { to: Bucket; x: number; y: number; s: number; r: number; fill?: stri
 );
 
 const BITS: readonly Bit[] = [
-  { to: "context", kind: "badge", label: "ICP", fill: "buyers", x: -640, y: -150, s: 1.3, r: -8 },
-  { to: "context", kind: "row", label: "Sells", value: "Websites for startups", fill: "sells", x: -500, y: 30, s: 1.1, r: -3 },
-  { to: "context", kind: "badge", label: "Personas", x: -330, y: 150, s: 0.9, r: 6 },
-  { to: "context", kind: "badge", label: "Competitors", x: -620, y: 300, s: 0.85, r: -5 },
-  { to: "context", kind: "row", label: "Voice", value: "Warm and short", fill: "voice", x: -470, y: 540, s: 0.95, r: 4 },
-  { to: "data", kind: "logo", id: "apify", logo: "/lp/story-sources/apify.svg", x: -450, y: -110, s: 1.4, r: 0 },
-  { to: "data", kind: "logo", id: "wappalyzer", logo: "/lp/story-sources/wappalyzer.svg", x: -260, y: 0, s: 0.75, r: 0 },
+  { to: "context", kind: "badge", label: "ICP", fill: "buyers", x: -640, y: -95, s: 1.3, r: -8 },
+  { to: "context", kind: "row", label: "Sells", value: "Websites for startups", fill: "sells", x: -470, y: 30, s: 1.05, r: -3 },
+  { to: "context", kind: "badge", label: "Personas", x: -260, y: 160, s: 0.9, r: 6 },
+  { to: "context", kind: "badge", label: "Competitors", x: -480, y: 525, s: 0.85, r: -5 },
+  { to: "context", kind: "row", label: "Voice", value: "Warm and short", fill: "voice", x: -180, y: 530, s: 0.95, r: 4 },
+  { to: "data", kind: "logo", id: "apify", logo: "/lp/story-sources/apify.svg", x: -455, y: -70, s: 1.4, r: 0 },
   { to: "data", kind: "logo", id: "coresignal", logo: "/lp/story-sources/coresignal.svg", x: 470, y: -60, s: 0.85, r: 0 },
-  { to: "data", kind: "logo", id: "theirstack", logo: "/lp/story-sources/theirstack.svg", x: 640, y: 120, s: 1.1, r: 0 },
-  { to: "data", kind: "logo", id: "firecrawl", logo: "/lp/story-sources/firecrawl.png", x: 660, y: 300, s: 1.25, r: 0 },
-  { to: "data", kind: "signal", label: "Hiring a marketing lead", x: 430, y: 40, s: 1, r: -3 },
-  { to: "data", kind: "signal", label: "Raised a seed round", x: -60, y: 470, s: 1.05, r: 3 },
-  { to: "tools", kind: "logo", id: "hubspot", logo: "/lp/vendor-logos/hubspot.svg", x: 650, y: -130, s: 1.35, r: 0 },
-  { to: "tools", kind: "logo", id: "attio", logo: "/lp/vendor-logos/attio.svg", x: 280, y: 150, s: 0.95, r: 0 },
-  { to: "tools", kind: "logo", id: "pipedrive", logo: "/lp/vendor-logos/pipedrive.svg", x: 650, y: 470, s: 0.8, r: 0 },
-  { to: "tools", kind: "toggle", fill: "toggle", x: 240, y: -20, s: 1.2, r: 0 },
-  { to: "tools", kind: "message", label: "Sent", text: "Hi Tamsin, congrats on Quillfern\u2019s seed round.", x: 150, y: 565, s: 0.95, r: -2 },
-  { to: "tools", kind: "lead", fill: "lead", last: true, x: 430, y: 500, s: 1, r: -3 },
+  { to: "data", kind: "logo", id: "theirstack", logo: "/lp/story-sources/theirstack.svg", x: -60, y: 150, s: 1, r: 0 },
+  { to: "data", kind: "logo", id: "wappalyzer", logo: "/lp/story-sources/wappalyzer.svg", x: -670, y: 360, s: 0.8, r: 0 },
+  { to: "data", kind: "logo", id: "firecrawl", logo: "/lp/story-sources/firecrawl.png", x: 665, y: 300, s: 1.15, r: 0 },
+  { to: "data", kind: "signal", label: "Hiring a marketing lead", x: 480, y: 160, s: 1, r: -3 },
+  { to: "data", kind: "signal", label: "Raised a seed round", x: 90, y: 520, s: 1.05, r: 3 },
+  { to: "tools", kind: "logo", id: "hubspot", logo: "/lp/vendor-logos/hubspot.svg", x: 650, y: -95, s: 1.35, r: 0 },
+  { to: "tools", kind: "logo", id: "attio", logo: "/lp/vendor-logos/attio.svg", x: 290, y: 150, s: 0.95, r: 0 },
+  { to: "tools", kind: "logo", id: "pipedrive", logo: "/lp/vendor-logos/pipedrive.svg", x: 660, y: 430, s: 0.8, r: 0 },
+  { to: "tools", kind: "toggle", fill: "toggle", x: 240, y: -15, s: 1.2, r: 0 },
+  { to: "tools", kind: "message", label: "Sent", text: "Hi Tamsin, congrats on Quillfern\u2019s seed round.", x: 380, y: 540, s: 0.95, r: -2 },
+  { to: "tools", kind: "lead", fill: "lead", last: true, x: 430, y: 40, s: 1, r: -3 },
 ];
 
 /** the title's half width: a piece's x beyond it follows the window's width */
 const TITLE_HALF = 360;
 /** the band around the agent and the buckets: a piece's y above or below it follows the room
     the window leaves above the heading and under the card (--lp-infra-reach-y) */
-const BAND_TOP = -60;
-const BAND_BOTTOM = 460;
+const BAND_TOP = -40;
+const BAND_BOTTOM = 490;
 
 /* The kit's pancakes (_design-kit/pancake.html, `pancake-top-bordered-1…3`: an imperfect round
    seen from above, its back layer showing under it as the pancake's edge). Founder 2026-10-27:
@@ -188,10 +188,11 @@ export function LpInfra() {
         <div className="lp-infra__pin">
           <div className="lp-infra__stage">
             <header className="lp-infra__head">
+              {/* the heading alone: "Pancake brings all 3." went on 2026-10-27 ("Remove the
+                  'Pancake brings all 3.'") */}
               <h2 id="lp-infra-title" className="lp-infra__title lp-title-section">
                 Your agent needs 3 things to sell.
               </h2>
-              <p className="lp-infra__lede">Pancake brings all 3.</p>
             </header>
             <LpInfraFlow>
               <i className="lp-infra__canvas" aria-hidden="true" />
@@ -208,15 +209,10 @@ export function LpInfra() {
                   </li>
                 </ul>
               </div>
+              {/* your agent plugs straight into Pancake (founder 2026-10-27, on the sign-in pill that
+                  sat on this wire: "One sign-in. No API keys. => Remove / Just put the Pancake part
+                  instead") */}
               <div className="lp-infra__link">
-                <Wire />
-                <p className="lp-infra__link-text">
-                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false">
-                    <circle cx="5.5" cy="8" r="3" />
-                    <path d="M8.5 8h6M12.5 8v2.5M14.5 8v1.8" />
-                  </svg>
-                  One sign-in. No API keys.
-                </p>
                 <Wire />
               </div>
               {/* Pancake: the platform, its name on the edge where the wire plugs in */}

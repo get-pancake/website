@@ -6,7 +6,7 @@
    text) in the logo's three pancake colours. 2026-10-22 ("make this more beautiful - use design
    system"): a dotted canvas and grouped nodes after Mobbin's infra diagrams (Cloudflare Workers),
    Pancake as the hub that holds its layers (Coda). The diagram reads top to bottom: your agent,
-   the sign-in, Pancake and its three layers. */
+   the wire into Pancake, and its three layers. */
 .lp-infra {
   padding: 16px;
 }
@@ -23,7 +23,7 @@
   gap: 66px;
 }
 
-/* heading block: the steps' title and, under it, the payoff line in the steps' kicker style */
+/* heading block: the steps' title, alone */
 .lp-infra__head {
   display: flex;
   flex-direction: column;
@@ -31,13 +31,6 @@
   max-width: 100%;
   text-align: center;
   width: 1136px; /* "Your agent needs 3 things to sell." holds on one line */
-}
-.lp-infra__lede {
-  color: var(--lp-ink-100);
-  font-family: var(--lp-font-cond);
-  font-size: 24px;
-  font-weight: 500;
-  line-height: 32px;
 }
 .lp-infra__title {
   color: var(--lp-text);
@@ -129,35 +122,16 @@
   width: 20px;
 }
 
-/* the sign-in: a wire down from the agents, its pill, a wire on to Pancake. Each wire is a
-   hairline the build-up draws (LpInfraAnim). */
+/* the wire from your agent straight into Pancake: a hairline the build-up draws (LpInfraAnim);
+   no pill on it since 2026-10-27 ("One sign-in. No API keys. => Remove") */
 .lp-infra__link {
   align-items: center;
   display: flex;
   flex-direction: column;
 }
-.lp-infra__link-text {
-  align-items: center;
-  background: var(--lp-surface);
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
-  color: var(--lp-ink-90);
-  display: flex;
-  font-size: var(--lp-text-sm);
-  font-weight: 500;
-  gap: 6px;
-  line-height: 20px;
-  padding: 6px 14px 6px 10px;
-}
-.lp-infra__link-text svg {
-  fill: none;
-  stroke: var(--lp-green-30);
-  stroke-linecap: round;
-  stroke-width: 1.5;
-}
 .lp-infra__wire {
   display: block;
-  height: 24px;
+  height: 40px;
   position: relative;
   width: 1px;
 }
@@ -608,7 +582,7 @@
   font-weight: 500;
   line-height: 20px;
 }
-/* a signal, as a pill (the sign-in caption's) */
+/* a signal, as a white pill */
 .lp-infra__bit--signal {
   border-radius: 999px;
   font-size: var(--lp-text-sm);
