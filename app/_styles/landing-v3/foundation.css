@@ -152,9 +152,12 @@
   --lp-sky: var(--lp-blue-10);
   --lp-dive-stage-bg: #fafaf8;
 
-  /* Claude-desktop mock palette — ONE set, shared by the demo window's
-     "Claude & Codex" view (demo-scroll) and the deep-dive "Run it from Claude
-     or Codex" story (story-claude). Foreign-UI colours, measured on Figma
+  /* Claude-desktop mock palette — ONE set, read by the demo window's
+     "Claude & Codex" view (demo.css), the steps' Claude mocks (steps.css),
+     the infra Claude chip (infra.css) and the dive's mcp story's Claude mark
+     (story-mcp.css, --lp-claude-spark); until 2026-10-28 also the deep-dive
+     "Run it from Claude or Codex" story (story-claude, removed). Foreign-UI
+     colours, measured on Figma
      4964:2575 / 3930 / 3981. Its serif comes from lp-claude-font.ts (scoped
      by class on the mock's root, not a token here). */
   --lp-claude-bg: var(--lp-dive-stage-bg); /* #fafaf8 app surface */
@@ -240,8 +243,9 @@ html:has(main.lp) {
    vertical padding". Re-measured 2026-10-12 (final pass of the V2
    replication) at 1654 / 1440 / 1024 / 768 / 402 / 393 with
    artifacts/landing-v2-figma/pw/integrate-measure.mjs: every skipped
-   section is within 2% of its rendered height at every one of them.
-   Re-run it whenever one of these sections changes height.
+   section is within 2% of its rendered height at every one of them. The
+   deep dive's were re-fitted on 2026-10-28 from a 1 px sweep of 320–1340
+   (see each rule). Re-run it whenever one of these sections changes height.
    Two estimates live with their section, because they depend on what it
    renders: the bento's in bento.css (`.lp > .lp-bento`: production shows a
    partial set, previews all seven cards, and LpBento passes the grid height
@@ -257,17 +261,35 @@ html:has(main.lp) {
   .lp-cta {
     contain-intrinsic-size: auto 624px; /* inert since 2026-09-02 (.lp-cta left the list above); kept as history */
   }
-  /* deep-dive carousel, V2 4939:3388: 894 rendered − 2×80 padding */
+  /* deep-dive carousel, V2 4939:3388: 894 rendered − 2×80 padding (also
+     1239–1340, where the stage is 752 wide again) */
   .lp-dive {
     contain-intrinsic-size: auto 734px;
   }
 }
-@media (min-width: 768px) and (max-width: 1024px) {
-  /* stacked: list above the stage. 974.6 (768) … 1005.8 (900–1024), padding
-     2×72 (final pass 2026-10-12: +8 for the Pause control's band between the
-     stage and the list, −4 for item 4's link row) */
+@media (min-width: 1025px) and (max-width: 1340px) {
+  /* two fluid columns: the head (212.8) + 32 + the taller of the list (its
+     reserve, 433 with the 2026-10-28 copy) and the stage ((93vw − 400) wide,
+     489/752 as tall, at most 489). 677.8 (1025–1146) … 733.8 (1239): exact
+     on a 1 px sweep, 2026-10-28 (the flat 734 was +8.3% at 1100) */
   .lp-dive {
-    contain-intrinsic-size: auto 990px;
+    contain-intrinsic-size: auto calc(244.8px + clamp(433px, (93vw - 400px) * 0.65027, 489px));
+  }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* stacked: list above the stage ((100vw − 64) wide up to 752, 489/752 as
+     tall), padding 2×72. 972.2 (795) … 985.8 (816–1024): exact on a 1 px
+     sweep, 2026-10-28 */
+  .lp-dive {
+    contain-intrinsic-size: auto calc(496.8px + min(100vw - 64px, 752px) * 0.65027);
+  }
+}
+@media (min-width: 768px) and (max-width: 794px) {
+  /* up to 794 the heading ("How your agent gets customers") takes two lines,
+     +68.8: 1023.4 (768) … 1040.3 (794). The split moves with the heading's
+     words: re-measure when they change */
+  .lp-dive {
+    contain-intrinsic-size: auto calc(565.6px + (100vw - 64px) * 0.65027);
   }
 }
 @media (max-width: 767px) {

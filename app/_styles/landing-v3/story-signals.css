@@ -1,0 +1,70 @@
+/* Story Signals (2026-10-28) — deep-dive block 2, "Buying signal + enrichment"
+   (LpStorySignals). Founder: "ban UI things from motions and try to abstract
+   things … graphic simple and on brand (you can reuse components)"; this block
+   is the one picture he loves, the old sources story's end hub, nearly
+   verbatim (story-sources.css at 630bb8e, its scene D). Build spec: the design
+   panel's §3.2.
+
+   The parts are the story kit's (story-kit.css: the white disc, the wires and
+   caps, the hub dot, the kicker, the value, the names). This file holds only
+   this story's own pieces and numbers, stage px on the 752x489 design box
+   (phones show the same box scaled: the stack). The markup rests on the END
+   picture; the timeline (lp-story-signals-timeline.ts) sets frame 0.
+
+   Traps: the kit's T1–T5 hold here too (T1: `.lp p { margin: 0 }` and the
+   shell's `.lp-dive-scene * { font-family }` tie with single-class rules, so
+   every selector below is compound). This story's own:
+   T6 Nothing rests transformed: the count label is centred by a box wider
+      than its text (the loved label used translateX(-50%), which the kit's
+      rise transform, .lp-sk-rise, would override), not by a transform.
+   No will-change, no keyframes: the stage is GSAP-only and plays once. */
+
+/* the camera's frame 0 (lp-story-kit.ts skCamera reads --lp-sk-cam-from):
+   the claim at x2 about a point right of it, so it fills the stage (ink x 86
+   to 666, y 127 to 362) and every other piece starts off-frame to the left */
+.lp-sk.lp-ssig {
+  --lp-sk-cam-from: 2;
+}
+.lp-ssig .lp-sk-cam {
+  transform-origin: 732.24px 343.01px;
+}
+
+/* the loved confetti (Figma Ellipse 121–125): flat brand dots, placed and
+   coloured inline from the data */
+.lp-ssig .lp-ssig-dot {
+  border-radius: 50%;
+  position: absolute;
+}
+
+/* "30+ data providers": the loved hub label (13/20, its 104 px box at
+   123.094 / 21.232, centred on that box's axis x 175.094) at twice its size,
+   26/32, its box top at 14 (text 223.72 wide: x 63.23 to 286.95). Centred on
+   the same axis by a 300 px box (T6). In the phone stack (x0.435 at 375) it
+   draws at 11.3 px, the smallest visible type: the kit hides the names there */
+.lp-ssig .lp-ssig-count {
+  color: var(--lp-ink-100);
+  font-size: 26px;
+  font-weight: 400;
+  left: 25.094px; /* 175.094 - 300 / 2 */
+  letter-spacing: 0;
+  line-height: 32px;
+  margin: 0;
+  position: absolute;
+  text-align: center;
+  top: 14px;
+  white-space: nowrap;
+  width: 300px;
+}
+
+/* the claim, right of the hub dot (391, 246.77): the kicker's caps' middle
+   sits on the dot's y and its ink starts 18 px from it (x 409); the value's
+   top is the kicker's + 64, its ink ending at x 699.2 (52.8 px from the edge) */
+.lp-ssig .lp-ssig-k {
+  left: 407.71px;
+  top: 227.11px;
+}
+.lp-ssig .lp-ssig-v {
+  font-size: 72px;
+  left: 407.42px;
+  top: 291.11px;
+}

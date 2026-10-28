@@ -392,7 +392,8 @@
 }
 /* each provider's mark on one of the kit's pancakes (LpInfra Pk; founder 2026-10-27: "des ronds
    imparfaits un peu comme les pancake du design system"): a white face over an edge in the Data
-   card's purple, the sources story's soft shadow under it */
+   card's purple, under it a soft shadow like the one on the dive kit's discs (story-kit.css
+   --sk-disc-shadow; first the sources story's) */
 .lp-infra__disc {
   --lp-pk-front: var(--lp-surface);
   --lp-pk-back: var(--lp-purple-20);
@@ -681,7 +682,8 @@
   margin-bottom: 4px;
   position: relative;
 }
-/* The white pieces: the message story's cards (white, a hairline, its soft shadow) around the very
+/* The white pieces: the old message story's cards (white, a hairline, its soft shadow;
+   story-message.css at 630bb8e, removed 2026-10-28) around the very
    layout of the place each lands on: the same type and gaps, 10 px more on each side, which the
    landing takes off (buildInfraScroll sets each one's width from its place's). So a piece lands
    exactly where and as its place reads, and hands over to it without a jump. */

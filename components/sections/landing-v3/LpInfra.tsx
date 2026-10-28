@@ -2,7 +2,7 @@ import type { CSSProperties, ComponentType } from "react";
 
 import { ClaudeMark, CodexMark } from "@/components/sections/landing-v3/LpAgentMarks";
 import { LpInfraFlow } from "@/components/sections/landing-v3/LpInfraAnim";
-import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art";
+import { PANCAKE_AVATAR } from "@/components/sections/landing-v3/lp-pancake-avatar-art";
 
 /**
  * Section — "Your agent needs 3 things to sell." (founder 2026-10-26:
@@ -46,16 +46,16 @@ import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art"
  * it, Cargo runs it"). The first version (eight layers, Deploy / Host / Run, four figures on a
  * dark card) read as engineering notes: "I dont understand anything about the new block". Claims
  * in docs/infra/infra-landing-brief.md, the 30+ data providers being the founder's figure (the
- * dive's sources story).
+ * dive's signals story, lp-story-signals-data.ts).
  *
  * The look (founder 2026-10-22: "make this more beautiful - use design system - toolkits like
  * mobin and brand assets"): Mobbin's infra diagrams (Cloudflare's grouped nodes, Coda's
  * product-as-hub) drawn with the kit. Each of Pancake's three layers takes the colour of its
  * pancake in the logo (the kit's canonical stack: yellow on top, purple, pink under) as a kit
  * brand card with a kit badge. Each card shows a small
- * picture of what it holds, cast from the page's one story (lp-story-sources-data.ts): Acme's
+ * picture of what it holds, cast from the page's one story (the cast in lp-step-data.ts): Acme's
  * brain, the providers' own marks (unmodified, half the disc's width on a white disc, as the
- * sources story draws them; Dealroom left out until it has a production key), and the Play
+ * dive's signals story draws them: five of its six, as approved on 2026-10-22), and the Play
  * "Funded startups hiring a marketing lead" with Tamsin Okafor waiting for approval.
  *
  * The markup below is the finished picture (no JS, reduced motion, the build-up's end, the
@@ -95,7 +95,8 @@ const MEMORY = [
   { key: "Voice", value: "Warm and short" },
 ] as const;
 
-/** five of the providers the product names to its users (lp-story-sources-data.ts hub); `id`
+/** five of the providers the product names to its users (the same five as the dive's signals
+    story, lp-story-signals-data.ts); `id`
     pairs each disc with its piece in the scroll version */
 const PROVIDERS = [
   { id: "apify", name: "Apify", logo: "/lp/story-sources/apify.svg" },
@@ -144,9 +145,8 @@ const LEADS = [
    prop: the brain's sections (kit badges in the Context card's yellow) and two of its notes, the
    two signals of the page's Play (Quillfern raised a seed round and is hiring a marketing lead),
    the data providers and the CRMs the product names to its users (their own marks on the kit's
-   pancakes; vetted files, public/lp/vendor-logos/README.md), the Play's switch, the message the
-   page's story sends Tamsin (lp-story-message-data.ts, its first sentence) and Tamsin waiting for
-   approval. `fill` names what the piece becomes in its bucket (data-fill in the cards).
+   pancakes; vetted files, docs/public-assets/lp/vendor-logos/README.md), the Play's switch and Tamsin
+   waiting for approval (lp-step-data.ts). `fill` names what the piece becomes in its bucket (data-fill in the cards).
    Places are in the card's own px at full size, from its top edge (y) and its centre (x): `x`
    beyond the title's half width (360) stretches or shrinks with the window's width
    (--lp-infra-reach), `y` beyond the band of the agent and the buckets with its height
@@ -402,7 +402,7 @@ function LeadFace({ initials }: { initials: string }) {
   );
 }
 
-/** a hairline wire (drawn by the build-up, as the sources story draws its wires) */
+/** a hairline wire (drawn by the build-up: scaleY on a 1 px box) */
 function Wire() {
   return (
     <span className="lp-infra__wire" aria-hidden="true">
@@ -416,7 +416,7 @@ function Wire() {
 function PancakeMark() {
   return (
     <svg className="lp-infra__pk" viewBox="3.9 4.9 24 24" aria-hidden="true" focusable="false">
-      {SL_AVATAR.shapes.map((shape, i) => (
+      {PANCAKE_AVATAR.shapes.map((shape, i) => (
         <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
       ))}
     </svg>

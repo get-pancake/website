@@ -1,17 +1,16 @@
-// LpClaudeScene — Claude's interface as a scene (server-safe, no hooks): the pieces of the
-// homepage's two Claude animations, the demo window's Claude & Codex view (LpDemo.tsx) and the
-// deep-dive story "Run it from Claude or Codex" (LpStoryClaude.tsx). Founder 2026-10-13: the
-// story "should not be necessarily the same but reuse components". One markup, one stylesheet
-// (demo.css, "Claude & Codex view": classes lp-demowin__c*, under a .lp-demowin ancestor), one
-// timeline builder (lp-demo-claude-timeline.ts); what differs is the SCRIPT (ClaudeScript).
+// LpClaudeScene — Claude's interface as a scene (server-safe, no hooks): the demo window's
+// Claude & Codex view (LpDemo.tsx). Until 2026-10-28 it also drew the deep-dive story "Run it
+// from Claude or Codex", removed with its story (the dive's mcp story draws its own marks).
+// One markup, one stylesheet (demo.css, "Claude & Codex view": classes lp-demowin__c*, under a
+// .lp-demowin ancestor), one timeline builder (lp-demo-claude-timeline.ts); what differs is the
+// SCRIPT (ClaudeScript).
 //
 // Claude's UI as the launch film drew it (Pancake V2 launch/ph-motion-film claude2.mjs): the
 // greeting, the composer with its Pancake connector chip, the user bubble, the serif answer
 // streamed a word at a time, one white card per tool call under the Pancake mark (the only
 // coloured mark), a result card in Claude's neutral type, Claude's permission prompt.
 //
-// The markup is the scene's HOME (the composer empty) plus every later element hidden; with
-// `rest="end"` demo.css draws the END picture instead (the deep dive rests on its end picture).
+// The markup is the scene's HOME (the composer empty) plus every later element hidden.
 //
 // Since 2026-10-26 the same scene wears Codex too (`chrome.harness`; founder: "use mobbin to repro
 // the UIs of each one of those tools"): data-harness on the root picks the app's skin in demo.css,
@@ -21,7 +20,7 @@
 import { Fragment } from "react";
 
 import { lpClaudeSerif } from "./lp-claude-font";
-import { SL_AVATAR } from "./lp-story-learns-art";
+import { PANCAKE_AVATAR } from "./lp-pancake-avatar-art";
 
 export type ClaudeTool = { title: string; doing: string; done: string; count?: number; note?: string };
 export type ClaudeScript = {
@@ -85,8 +84,8 @@ export function ClaudeMark({ id, className }: { id: keyof typeof MARKS; classNam
 /** The Pancake mark, full colour (the only coloured mark in Claude's interface). */
 export function PancakeMark({ className }: { className: string }) {
   return (
-    <svg className={className} viewBox={`0 0 ${SL_AVATAR.size} ${SL_AVATAR.size}`} aria-hidden="true" focusable="false">
-      {SL_AVATAR.shapes.map((shape, i) => (
+    <svg className={className} viewBox={`0 0 ${PANCAKE_AVATAR.size} ${PANCAKE_AVATAR.size}`} aria-hidden="true" focusable="false">
+      {PANCAKE_AVATAR.shapes.map((shape, i) => (
         <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
       ))}
     </svg>
@@ -140,13 +139,10 @@ function ToolCard({ tool, action }: { tool: ClaudeTool; action?: boolean }) {
 export function LpClaudeScene({
   script,
   chrome,
-  rest = "home",
   label,
 }: {
   script: ClaudeScript;
   chrome: ClaudeChrome;
-  /** "end": the markup shows the scene's last picture (the deep dive's rest) */
-  rest?: "home" | "end";
   /** role="img" label; omit where an ancestor already carries it */
   label?: string;
 }) {
@@ -157,7 +153,6 @@ export function LpClaudeScene({
     <div
       className={`lp-demowin__cwin ${lpClaudeSerif.variable}`}
       data-harness={harness}
-      data-rest={rest === "end" ? "end" : undefined}
     >
       <div className="lp-demowin__capp" role={label ? "img" : undefined} aria-label={label}>
         {chrome.title && (

@@ -798,7 +798,7 @@ const S3_T = {
   /** after threadOut: the calendar's own timeline starts once the meeting has landed */
   cal: 0.8,
 } as const;
-/** Pancake's typing pace (the deep dive's message story): 12 ms a glyph, a breath after a
+/** Pancake's typing pace (the old deep-dive message story's): 12 ms a glyph, a breath after a
     sentence end and after a comma */
 const S3_TYPE = { glyph: 0.012, sentence: 0.06, comma: 0.035 } as const;
 /** how fast the calendar plays inside the master (its own seconds are unchanged) */

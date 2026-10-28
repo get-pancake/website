@@ -1,8 +1,8 @@
 # Infra-first landing: copy brief
 
-Last checked against the product code on 2026-10-21. This brief is the source for the homepage's infra section (`components/sections/landing-v3/LpInfra.tsx`) and for the next iterations of the infra-first landing.
+Last checked against the product code on 2026-10-21 (the tool count re-checked on 2026-10-28). This brief is the source for the homepage's infra section (`components/sections/landing-v3/LpInfra.tsx`) and for the next iterations of the infra-first landing.
 
-Since 2026-10-22 the homepage tells the infra story in plain words, each idea once (founder: "infra is not just a section but the whole lp", "infra does not mean complex", "check the story board it s too long and decousu", and on the slogans: "doesnt mean anything", "not clear", "ask once is not a value prop"): the hero (its For agents view holds the one-line install) and the Claude & Codex demo; the logos; "Everything your agent needs to sell." (`LpInfra`: your agent, one sign-in, then Pancake as one platform holding the brain, the data and the tools; the diagram plays once); the infra vision as the three steps, "The Vercel for GTM. / Deploy. Host. Run." (the designer's animations: deploy = the ask in Claude and the Play going live, host = the Brain from your website, run = the outreach), followed straight by the bottle banner as on main ("after the 1/2/3 we should see the" banner); "How Pancake gets you customers" (the deep dive: find, reach, learn, run, with the key features); the CTA with the setup line to copy; proof and pricing. The layers and figures below are not on the page: they stay here as the checked background. The full technical teardown behind it is internal and stays out of this public repository: ask Tristan for it.
+Since 2026-10-22 the homepage tells the infra story in plain words, each idea once (founder: "infra is not just a section but the whole lp", "infra does not mean complex", "check the story board it s too long and decousu", and on the slogans: "doesnt mean anything", "not clear", "ask once is not a value prop"): the hero (its For agents view holds the one-line install) and the Claude & Codex demo; the logos; "Everything your agent needs to sell." (`LpInfra`: your agent, one sign-in, then Pancake as one platform holding the brain, the data and the tools; the diagram plays once); the infra vision as the three steps, "The Vercel for GTM. / Deploy. Host. Run." (the designer's animations: deploy = the ask in Claude and the Play going live, host = the Brain from your website, run = the outreach), followed straight by the bottle banner as on main ("after the 1/2/3 we should see the" banner); "How your agent gets customers" (the deep dive, since 2026-10-28 four blocks drawn without UI: what to do next from the whole Brain, buying signals and enrichment, where every lead came from, built for Claude and Codex); the CTA with the setup line to copy; proof and pricing. The layers and figures below are not on the page: they stay here as the checked background. The full technical teardown behind it is internal and stays out of this public repository: ask Tristan for it.
 
 ## The thesis
 
@@ -40,7 +40,7 @@ Re-count them in the product code before changing any.
 
 | Figure | Label | How it was counted |
 |---|---|---|
-| 95 | tools your agent can call | MCP tools served to a normal workspace on 2026-10-21. A workspace with CRM export gets 102; 111 are registered in total. |
+| About 100 | tools your agent can call | Recounted on 2026-10-28: 96 to 112 served to a workspace, by its setup (CRM export adds the CRM tools), 116 in the tool catalog. On 2026-10-21: 95, 102 with CRM export, 111 registered. |
 | 150 | versioned capabilities behind them | The product's capability registry. One registry drives both the MCP server and the in-app agent. |
 | 0 | API keys to paste | Agents connect with browser OAuth. No API keys exist for tenants. |
 | 1 | receipt for every paid call | Every call that creates something or spends credits carries a request receipt, and a retry replays it. |
@@ -48,7 +48,7 @@ Re-count them in the product code before changing any.
 ## Safe to claim now
 
 1. Any MCP agent that supports browser OAuth plugs in with a sign-in and no API key.
-2. 95 tools for your agent: the same actions the app uses, from one registry of 150 versioned capabilities.
+2. About 100 tools for your agent: the same actions the app uses, from one registry of 150 versioned capabilities.
 3. Retries never pay twice: every call that creates or spends carries a request receipt.
 4. Runs keep going when the laptop closes: a durable job engine with leases, retries and checkpointed steps.
 5. Every scheduled run leaves one permanent record of what ran, or why it was skipped.
@@ -86,7 +86,7 @@ Read from `public/llms.txt` on main, 2026-10-21.
 | "It does not … look up phone numbers" | Find phone exists on a lead: 500 credits, charged only when a number is found | Decide with product, then drop the line or add the lookup |
 | "Pancake suggests Brain changes they can accept or ignore" | The Brain updates itself from that reason by default, and every change is versioned and shown in Activity | "Pancake updates the Brain from that reason. Every change is versioned and shown in Activity." |
 | "Daily, weekday, weekly or custom schedules" | Main supports all four; other Plays run daily or weekly | "Each Play runs on the schedule you pick" |
-| "About 90 tools", "4 skills" | 95 tools served; 5 skills ship (the tool skill plus 4 playbooks) | "95 tools", "5 skills" |
+| "About 90 tools", "4 skills" | 95 tools served on 2026-10-21; 5 skills ship (the tool skill plus 4 playbooks) | Fixed 2026-10-28: "About 100 tools" (96 to 112 served that day, by workspace setup; the homepage's mcp story, `lp-story-mcp-data.ts`, gives the same range), "5 skills" |
 | A Play can find "companies that look like your best customers" | Not live | Remove until it ships |
 | A Play can find "everyone who reacted to one specific post" | Only Plays that run as code, for admitted workspaces | Keep only with that scope |
 | A Play can find "people posting about topics" | It finds people engaging with topic posts, not the authors | "people engaging with posts about topics you choose" |

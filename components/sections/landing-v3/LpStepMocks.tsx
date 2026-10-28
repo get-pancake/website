@@ -23,7 +23,7 @@ import {
 } from "./lp-step-data";
 import type { StepVariant } from "./lp-step-timelines";
 import { ClaudeMark } from "./LpAgentMarks";
-import { SL_AVATAR } from "./lp-story-learns-art";
+import { PANCAKE_AVATAR } from "./lp-pancake-avatar-art";
 
 /**
  * The step mock UIs as DOM, with their geometry in steps.css. Since
@@ -271,11 +271,11 @@ function S0Stage() {
 /* ── step 02 · the chat request → one question → a Play takes shape → the leads, all
    selected and added to the sequence → the Play card ── */
 
-/** the Pancake mark, full colour (the deep dive's avatar art, as LpClaudeScene draws it) */
+/** the Pancake mark, full colour (lp-pancake-avatar-art.ts, as LpClaudeScene draws it) */
 function S2PancakeMark({ className }: { className: string }) {
   return (
-    <svg className={className} viewBox={`0 0 ${SL_AVATAR.size} ${SL_AVATAR.size}`} focusable="false">
-      {SL_AVATAR.shapes.map((shape, i) => (
+    <svg className={className} viewBox={`0 0 ${PANCAKE_AVATAR.size} ${PANCAKE_AVATAR.size}`} focusable="false">
+      {PANCAKE_AVATAR.shapes.map((shape, i) => (
         <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
       ))}
     </svg>

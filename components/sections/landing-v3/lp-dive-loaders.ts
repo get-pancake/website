@@ -21,36 +21,36 @@ import type { PlayOnceRuntime } from "./lp-play-once";
 export type DiveStageLoader = () => Promise<PlayOnceRuntime>;
 
 export const DIVE_LOADERS: Record<DiveItemId, DiveStageLoader> = {
-  sources: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-sources-timeline")]).then(
-      ([{ gsap }, { buildStorySources, buildStorySourcesSteps }]) => ({
+  context: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-context-timeline")]).then(
+      ([{ gsap }, { buildStoryContext, buildStoryContextSteps }]) => ({
         gsap,
-        build: buildStorySources,
-        steps: buildStorySourcesSteps,
+        build: buildStoryContext,
+        steps: buildStoryContextSteps,
       }),
     ),
-  message: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-message-timeline")]).then(
-      ([{ gsap }, { buildStoryMessage, buildStoryMessageSteps }]) => ({
+  signals: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-signals-timeline")]).then(
+      ([{ gsap }, { buildStorySignals, buildStorySignalsSteps }]) => ({
         gsap,
-        build: buildStoryMessage,
-        steps: buildStoryMessageSteps,
+        build: buildStorySignals,
+        steps: buildStorySignalsSteps,
       }),
     ),
-  learns: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-learns-timeline")]).then(
-      ([{ gsap }, { buildStoryLearns, buildStoryLearnsSteps }]) => ({
+  lineage: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-lineage-timeline")]).then(
+      ([{ gsap }, { buildStoryLineage, buildStoryLineageSteps }]) => ({
         gsap,
-        build: buildStoryLearns,
-        steps: buildStoryLearnsSteps,
+        build: buildStoryLineage,
+        steps: buildStoryLineageSteps,
       }),
     ),
-  claude: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-claude-timeline")]).then(
-      ([{ gsap }, { buildStoryClaude, buildStoryClaudeSteps }]) => ({
+  mcp: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-mcp-timeline")]).then(
+      ([{ gsap }, { buildStoryMcp, buildStoryMcpSteps }]) => ({
         gsap,
-        build: buildStoryClaude,
-        steps: buildStoryClaudeSteps,
+        build: buildStoryMcp,
+        steps: buildStoryMcpSteps,
       }),
     ),
 };

@@ -371,9 +371,9 @@ export function enqueueBuild(run: () => boolean | void, at: Element | null = nul
 
 /* ── a build in slices ──
    One build is a builder (it measures, sets the frame-0 states, creates the tweens), then, for a
-   surface that rests on its END picture, the timeline taken to its end. Both are long (the
-   message story: 154 + 152 ms on a mid-range phone) and both can be cut without changing what
-   is built:
+   surface that rests on its END picture, the timeline taken to its end. Both are long (the old
+   deep-dive message story's took 154 + 152 ms on a mid-range phone) and both can be cut without
+   changing what is built:
    - the builder, where it says so itself (`runtime.steps`: it yields between slices);
    - the end pass, child by child. `tl.progress(1, true)` renders the timeline's children in
      order, each to its own end, and a tween records its start values the first time it

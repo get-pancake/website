@@ -14,8 +14,8 @@
  * run is new copy, and its tool titles are the MCP server's own (pancake-cmo
  * packages/mcp/src/plays-tools.ts).
  */
-/** Claude's own chrome (deep-dive Claude frame 4964:3910): the demo's Claude view and the deep
- *  dive's Claude story share it. */
+/** Claude's own chrome (deep-dive Claude frame 4964:3910): the demo's Claude view (`claude`)
+ *  and its Claude pill (`agents[0]`) use it. */
 const CLAUDE_CHROME = {
   harness: "claude",
   greeting: "Let’s flip some pancakes",

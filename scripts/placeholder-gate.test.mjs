@@ -25,8 +25,8 @@
  *               muted preview clip (under 600 kB) and its captions track; every bento file the
  *               markup or the data names exists under public/, and public/lp/bento/ holds no
  *               file the bento does not name (an unreleased film must not sit there unused); a
- *               stand-in image exists only for a placeholder card that names it; the sources
- *               story rests on the zoom only when a data-source node renders.
+ *               stand-in image exists only for a placeholder card that names it; the signals
+ *               story draws every data provider its data names.
  *
  * It renders with react-dom/server through jiti + sucrase (both already installed: jiti is what
  * homepage-lint.mjs uses, sucrase comes with tailwindcss), outside Next: "use client" modules
@@ -81,7 +81,7 @@ function renderAll() {
   const { resolveBento, BENTO_SLOT_IDS, BENTO_LIVE } = v3("lp-bento-data.ts");
   const { DIVE_ITEMS } = v3("lp-dive-data.ts");
   const { STEPS } = v3("lp-steps-content.ts");
-  const { STORY_SOURCES } = v3("lp-story-sources-data.ts");
+  const { STORY_SIGNALS } = v3("lp-story-signals-data.ts");
   const stage = (file, name) => html(v3(file)[name], { placeholders: SHOW_PLACEHOLDERS });
 
   // the bento as data: which slots this build shows, and which cards are stand-ins
@@ -149,7 +149,7 @@ function renderAll() {
     // people who appear on stand-in cards only: their name must never reach production
     bentoPlaceholderOnlyNames: names(bentoCards.filter(({ card }) => card.status === "placeholder")).filter((n) => !finalNames.includes(n)),
     bentoSubsets: { checked: Math.max(0, subsets - 1), problems: subsetProblems },
-    sourcesNodes: { final: STORY_SOURCES.hub.nodes.filter((n) => n.status === "final").length, all: STORY_SOURCES.hub.nodes.length },
+    signalsNodes: STORY_SIGNALS.nodes.length,
     diveItems: DIVE_ITEMS.map((item) => item.status),
     steps: STEPS.length,
     sections: {
@@ -160,10 +160,10 @@ function renderAll() {
       LpDive: html(v3("LpDive.tsx").LpDive),
       LpCta: html(v3("LpCta.tsx").LpCta, { sky: true }),
       LpBento: html(v3("LpBento.tsx").LpBento),
-      storySources: stage("LpStorySources.tsx", "LpStorySourcesStage"),
-      storyMessage: stage("LpStoryMessage.tsx", "LpStoryMessageStage"),
-      storyLearns: stage("LpStoryLearns.tsx", "LpStoryLearnsStage"),
-      storyClaude: stage("LpStoryClaude.tsx", "LpStoryClaudeStage"),
+      storyContext: stage("LpStoryContext.tsx", "LpStoryContextStage"),
+      storySignals: stage("LpStorySignals.tsx", "LpStorySignalsStage"),
+      storyLineage: stage("LpStoryLineage.tsx", "LpStoryLineageStage"),
+      storyMcp: stage("LpStoryMcp.tsx", "LpStoryMcpStage"),
     },
   };
 }
@@ -227,11 +227,8 @@ function runTests() {
       // every slot holds a final card: the live set is the designer's artboard, not a fallback row layout
       if (out.bentoFinalSlots.length === out.bentoSlotCount) assert.equal(count(live, 'data-layout="full"'), 1, "a full set of final cards must render the full grid");
       else assert.equal(count(live, 'data-layout="full"'), 0, "a partial set must not claim the full artboard");
-      // the sources story: its hub renders final nodes only, and it rests on the zoom only with a node
-      assert.equal(withClass(s.storySources, "lp-src-node"), out.sourcesNodes.final);
-      assert.equal(count(s.storySources, 'data-end="sources"'), out.sourcesNodes.final > 0 ? 1 : 0);
-      assert.equal(count(s.storySources, 'data-end="details"'), out.sourcesNodes.final > 0 ? 0 : 1);
-      if (out.sourcesNodes.final === 0) assert.equal(withClass(s.storySources, "lp-src-hub"), 0, "an empty hub shell");
+      // the signals story draws one disc per data provider its data names
+      assert.equal(withClass(s.storySignals, "lp-sk-disc"), out.signalsNodes);
       // the steps: one art card per row (LpSteps throws on a row without final art)
       assert.equal(count(s.LpSteps, "data-lp-slot="), out.steps);
       assert.equal(withClass(s.LpSteps, "lp-steps__media"), out.steps);
@@ -241,7 +238,7 @@ function runTests() {
       assert.equal(count(s.LpDive, 'role="tab"'), finals);
       assert.equal(count(s.LpDive, 'role="tabpanel"'), finals);
       assert.equal(count(s.LpDive, "data-lp-story="), finals);
-      for (const name of ["LpDemo", "LpMarquee", "LpBanner", "LpCta", "storySources", "storyMessage", "storyLearns", "storyClaude"]) {
+      for (const name of ["LpDemo", "LpMarquee", "LpBanner", "LpCta", "storyContext", "storySignals", "storyLineage", "storyMcp"]) {
         assert.ok(s[name].length > 200, `${name} rendered next to nothing`);
       }
     });
@@ -264,9 +261,8 @@ function runTests() {
     if (preview.bentoFinalSlots.length === preview.bentoAllSlots.length) {
       assert.equal(preview.sections.LpBento, production.bentoLiveHtml, "with every card final, the preview and the live set must be the same markup");
     }
-    // the sources story ends on the zoom, every node drawn
-    assert.equal(withClass(preview.sections.storySources, "lp-src-node"), preview.sourcesNodes.all);
-    assert.equal(count(preview.sections.storySources, 'data-end="sources"'), preview.sourcesNodes.all > 0 ? 1 : 0);
+    // the signals story draws every provider on a preview too
+    assert.equal(withClass(preview.sections.storySignals, "lp-sk-disc"), preview.signalsNodes);
   });
 
   test("the bento's server markup can play nothing", () => {

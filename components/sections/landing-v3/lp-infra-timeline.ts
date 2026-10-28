@@ -92,7 +92,7 @@ export function buildInfraFlow(root: HTMLElement): Built {
   // the agents send
   tl.to(chips, { scale: 1.04, duration: 0.14, ease: "power2.out", stagger: 0.06, yoyo: true, repeat: 1 }, 0.25);
 
-  // the wire draws down into Pancake (as the sources story draws its wires)
+  // the wire draws down into Pancake (scaleY on a 1 px box)
   tl.to(line, { scaleY: 1, duration: 0.45, ease: "power2.inOut" }, 0.45);
 
   // Pancake lights

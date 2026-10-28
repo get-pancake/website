@@ -14,10 +14,11 @@
 @import "./landing-v3/infra.css";
 @import "./landing-v3/setup.css";
 @import "./landing-v3/dive.css";
-@import "./landing-v3/story-sources.css";
-@import "./landing-v3/story-message.css";
-@import "./landing-v3/story-learns.css";
-@import "./landing-v3/story-claude.css";
+@import "./landing-v3/story-kit.css";
+@import "./landing-v3/story-context.css";
+@import "./landing-v3/story-signals.css";
+@import "./landing-v3/story-lineage.css";
+@import "./landing-v3/story-mcp.css";
 @import "./landing-v3/cta.css";
 @import "./landing-v3/sky.css";
 @import "./landing-v3/bento.css";

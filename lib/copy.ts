@@ -327,18 +327,21 @@ export const pricingV2 = {
  *   personas, competitors, messaging and voice, every Play starts from it,
  *   and it learns from the leads they approve or pass (not from replies:
  *   lp-steps-content.ts).
- * - "30+ data providers" is the homepage's own label (lp-story-sources-data.ts
- *   hub; the founder's figure, 2026-10-13: "Mets 30+ data provider sur
+ * - "30+ data providers" is the homepage's own label (lp-story-signals-data.ts,
+ *   the dive's signals story; the founder's figure, 2026-10-13: "Mets 30+ data provider sur
  *   pancake.ai"); the three named here are the ones behind funding, open
- *   roles and people data. No contract or API key on the customer's side.
+ *   roles and people data, as the dive's signals story draws them (Dealroom
+ *   on the seed round's disc). No contract or API key on the customer's side.
  * - Signals: the ways a Play finds people (/plays). Job changes and news are
  *   NOT among them.
  * - Outreach: a personal message per lead in the customer's voice, sent from
  *   their own account once they approve the lead; a reply stops the sequence.
  * The example is the homepage's cast (Tamsin Okafor of Quillfern, a lead of
  * the invented seller Acme, which designs websites for startups;
- * lp-story-sources-data.ts gives Dealroom for the seed round and TheirStack
- * for the open role), labelled as one lead. Keep them in step.
+ * lp-step-data.ts holds the cast; the dive's lineage story traces her open
+ * role to TheirStack, as the badge does; the signals story puts Dealroom on
+ * the funding, as the seed round's badge does), labelled as one lead. Keep
+ * them in step.
  */
 export const pricingLead = {
   title: "Leads matched to your business, not to a filter.",

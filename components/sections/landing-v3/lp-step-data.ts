@@ -347,8 +347,8 @@ export const S3_THREAD = {
   /** Acme designs websites for funded startups, and the Play is the hero demo's (founders who
       just raised a seed round and are hiring a marketing lead; founder 2026-10-13, "on topic"):
       the message names both signals, then the offer. Three lines at 327px, at weight 500 (the
-      draft) and 400 (once it is history). The deep dive's message story shows the same message
-      (lp-story-message-data.ts, the "answered" conversation): keep in sync. */
+      draft) and 400 (once it is history). The deep dive's message story showed the same message
+      until it was removed with its story on 2026-10-28. */
   message:
     "Hi Tamsin, congrats on Quillfern’s seed round. Want a new website live before your marketing lead starts?",
   replyFrom: "Tamsin Okafor",

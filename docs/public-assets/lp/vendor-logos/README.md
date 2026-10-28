@@ -1,5 +1,9 @@
 # Vendor logos
 
+> About the files in `public/lp/vendor-logos/`. This note lived in that folder from 2026-10-27,
+> where the site serves every file; it moved here on 2026-10-28, before it reached production, so
+> it stays in the repository only.
+
 The vendors' own marks, copied unchanged on 2026-10-27 from the product's vetted set
 (get-pancake/pancake-cmo, `apps/frontend/public/vendor-logos/`, whose README records each source
 and brand rule). The homepage's infra section shows them on white discs, as the product does, to
@@ -17,4 +21,6 @@ not Pancake artwork, and imply no endorsement. Never redraw or recolour one.
   wrapped unchanged in an SVG `<image>` (Pipedrive offers its marks as PNG and ICO only).
 
 The other data providers on the page (Apify, TheirStack, Coresignal, Wappalyzer, Firecrawl) live
-in `../story-sources/`.
+in `public/lp/story-sources/`; the infra section and the deep dive's signals and lineage stories
+draw those. The marks in `public/lp/vendor-logos/` are drawn by the infra section only (today
+HubSpot, Attio and Pipedrive; Close, Ocean.io and Linkup are on disk, unused).
