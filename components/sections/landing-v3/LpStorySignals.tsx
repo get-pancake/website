@@ -18,9 +18,8 @@ import { STORY_SIGNALS } from "./lp-story-signals-data";
  * lp-story-signals-timeline.ts. It imports nothing from lp-story-kit.ts: that module pulls GSAP
  * into the server graph (the caps' 5.333 is its SK_CAP_R, written out).
  *
- * Layers, back to front (spec §3.2 z1–z9), all inside .lp-sk-cam (the camera: frame 0 scales it
- * ×2 about a point right of the claim, so everything but the claim starts off-frame to the left
- * and slides in as it pulls back; the providers never pop):
+ * Layers, back to front (spec §3.2 z1–z9), all inside .lp-sk-scene (the scene wrapper, never
+ * transformed; the providers stand from frame 0 and never pop):
  *   .lp-ssig-dot     the five flat confetti dots
  *   .lp-sk-disc      the discs under the wires: each vendor's own mark on a white disc
  *   svg.lp-sk-wires  per provider a <g data-node data-order>: its start cap, then its wire (the
@@ -40,7 +39,7 @@ export function LpStorySignalsStage(_props: DiveStageProps) {
 
   return (
     <div className="lp-sk lp-ssig" data-lp-story="signals" aria-hidden="true">
-      <div className="lp-sk-cam">
+      <div className="lp-sk-scene">
         {dots.map((dot) => (
           <span
             key={dot.color}

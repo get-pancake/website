@@ -2,8 +2,6 @@ import { gsap } from "@/lib/gsap";
 
 import type { BuiltStory } from "./lp-dive-stages";
 import {
-  SK_CAM_END,
-  skCamera,
   skCap,
   skDot,
   skHidePop,
@@ -29,29 +27,23 @@ import {
  * hub (a disc pops, a cap lands, a wire draws into the near-black dot).
  *
  * Founder, on the four blocks: "ban UI things from motions and try to abstract things … graphic
- * simple and on brand (you can reuse components)"; on the opening the kit gives every story, his
- * infra bricks' ask: "prendre toute la place au debut … puis ouvrir la fenetre". Times (s), the T
- * table below:
+ * simple and on brand (you can reuse components)"; and on the claim zoomed to fill the stage and
+ * held 1.8 s (the opening until the same evening): "this is not motion like it's plain text".
+ * Times (s), the T table below:
  *
- *   0.00       cue = f1: "IN THE CHAT / About 100 tools" fills the stage (the camera at ×1.4),
- *              composed at once, never an empty frame. It HOLDS 1.8 s
- *   1.80–3.00  the camera pulls back to ×1 (its variable is cleared at 3.01: plain layout from
- *              there); the Pancake lockup, at rest just under the stage, rises into view with it
- *                                                                              → f2 at 3.00
- *   3.20–3.65  Claude's disc pops
- *   3.40–4.00  its cap lands, then its wire draws from the disc into the point
- *   3.90–4.15  the point lands as that wire arrives (its end − 0.1, the loved hub's timing)
- *                                                                              → f3 at 4.15
- *              the first pair holds 0.65 s
- *   4.80–5.25  Codex's disc pops
- *   5.00–5.60  its cap lands, then its wire draws into the same point          → f4 at 5.60
- *              both agents hold 0.7 s
- *   6.30–6.75  the stem draws from the point into Pancake (the infra hairline's 0.45 s,
- *              lp-infra-timeline.ts)
- *   7.00       f5 = the END = the server markup (the carousel then holds it 2 s)
+ *   0.00       cue = f1: "IN THE CHAT / About 100 tools" and the Pancake lockup, in their END
+ *              places, never an empty frame
+ *   0.30–0.75  Claude's disc pops
+ *   0.50–1.10  its cap lands, then its wire draws from the disc into the point
+ *   1.00–1.25  the point lands as that wire arrives (its end − 0.1, the loved hub's timing)
+ *                                                                              → f2 at 1.25
+ *   1.55–2.00  Codex's disc pops
+ *   1.75–2.35  its cap lands, then its wire draws into the same point          → f3 at 2.35
+ *   2.60–3.05  the stem draws from the point into Pancake (the infra hairline's 0.45 s,
+ *              lp-infra-timeline.ts)                                           → f4 at 3.05
+ *   3.30       f5 = the END = the server markup (the carousel then holds it 2 s)
  *
- * Never moves: the claim (only the camera moves it, once), the lockup (no build, no nudge), the
- * discs once they have popped. The direction is always the agents into Pancake. Nothing loops,
+ * Never moves: the claim, the lockup (no build, no nudge), the discs once they have popped. The direction is always the agents into Pancake. Nothing loops,
  * glows or pulses; no will-change; the root's opacity is never tweened. The discs pop by the
  * kit's variable and let go of it SK_LANDED after they land (skPop); the dots grow by their `r`
  * attribute, never a transform (skCap / skDot).
@@ -59,24 +51,23 @@ import {
 
 /** the take, in seconds (see the table above) */
 const T = {
-  /** the claim, full stage: the cue */
+  /** the claim and the lockup: the cue */
   f1: 0,
-  /** the pull-back has landed (the kit's SK_CAM: held 1.8, pulled back in 1.2) */
-  f2: SK_CAM_END,
   /** Claude's disc pops; its cap lands and its wire starts 0.2 s later */
-  claude: 3.2,
-  claudeWire: 3.4,
-  /** the point lands as Claude's wire arrives: 3.4 + 0.6 − 0.1 */
-  point: 3.9,
-  f3: 4.15,
-  /** Codex, the same two beats 1.6 s later */
-  codex: 4.8,
-  codexWire: 5.0,
-  f4: 5.6,
+  claude: 0.3,
+  claudeWire: 0.5,
+  /** the point lands as Claude's wire arrives: 0.5 + 0.6 − 0.1 */
+  point: 1.0,
+  f2: 1.25,
+  /** Codex, the same two beats 1.25 s later */
+  codex: 1.55,
+  codexWire: 1.75,
+  f3: 2.35,
   /** the stem, from the point into Pancake */
-  stem: 6.3,
-  /** the END: the take's length (the stem lands at 6.75 and holds) */
-  end: 7.0,
+  stem: 2.6,
+  f4: 3.05,
+  /** the END: the take's length (the stem lands at 3.05 and holds) */
+  end: 3.3,
 } as const;
 /** how long a wire draws, s: the kit's 0.6 for the agents' wires, the infra hairline's 0.45 for
     the stem */
@@ -85,8 +76,8 @@ const DRAW = { wire: 0.6, stem: 0.45 } as const;
 /** The builder in one go. In slices: `buildStoryMcpSteps`, which the carousel and the phone
     stack spread over idle slots (lp-play-once's startBuild). It may yield after any block: its
     frame-0 sets are written at once, its tweens write nothing until they are rendered, and the
-    only things it reads after its first write (the wires' lengths, the stylesheet's camera
-    scale) depend on nothing it writes. */
+    only things it reads after its first write (the wires' lengths) depend on nothing it
+    writes. */
 export function buildStoryMcp(root: HTMLElement): BuiltStory {
   const steps = buildStoryMcpSteps(root);
   for (;;) {
@@ -98,7 +89,6 @@ export function buildStoryMcp(root: HTMLElement): BuiltStory {
 export function* buildStoryMcpSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const { $ } = skQuery(root, "mcp");
 
-  const cam = $(".lp-sk-cam");
   // an agent's disc, wire and cap share its data-node (LpStoryMcp); the stem's is "pancake"
   const agent = (id: "claude" | "codex") => ({
     disc: $(`.lp-sk-disc[data-node="${id}"]`),
@@ -120,10 +110,6 @@ export function* buildStoryMcpSteps(root: HTMLElement): Generator<void, BuiltSto
   yield;
 
   const tl = gsap.timeline({ paused: true });
-
-  /* ── the opening: the claim fills the stage, holds, then the camera pulls back and the
-     lockup comes up into view (the kit's camera, the same in all four stories) ── */
-  skCamera(tl, cam);
 
   /* ── Claude: its disc pops, its cap lands, its wire draws into the point, and the point lands
      as the wire arrives ── */

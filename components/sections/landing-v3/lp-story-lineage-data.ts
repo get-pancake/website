@@ -1,7 +1,7 @@
 /**
  * Deep-dive story 3, "Where every lead came from" ("Lead lineage") — its words and its geometry.
  * Owner: story-lineage package (2026-10-28). Contract: lp-dive-stages.ts; the final build spec
- * of 2026-10-28, §3.0 (the shared kit, the camera, the verbs) and §3.3 (this story).
+ * of 2026-10-28, §3.0 (the shared kit and its verbs) and §3.3 (this story).
  *
  * The founder's four blocks for the section (2026-10-28): "Pour les 4 blocs je ferai donc 1/
  * Next best action + Unified GTM context 2/ Buying signal + enrichment 3/ Lead lineage 4/ mcp
@@ -57,7 +57,7 @@ export type StoryLineageTrace = {
 };
 
 export type StoryLineageStory = {
-  /** the claim, as the camera opens on it: a line box's top-left each, stage px. The kicker's
+  /** the claim, in its END place from frame 0: a line box's top-left each, stage px. The kicker's
       ink starts on the stop's left edge (x 287.291); the value's top is the kicker's + 64 */
   kicker: { text: string; x: number; y: number };
   value: { text: string; x: number; y: number };
@@ -101,4 +101,4 @@ export const STORY_LINEAGE: StoryLineageStory = {
 };
 
 export const STORY_LINEAGE_ALT: string =
-  "Animation: the words Which signal, Hiring a marketing lead, fill the view, then the view pulls back and a lead, Tamsin Okafor, appears above them. A line traces back from her to the signal that found her, then on to its source, the TheirStack mark.";
+  "Animation: a lead, Tamsin Okafor, appears above the words Which signal, Hiring a marketing lead. A line traces back from her to the signal that found her, then on to its source, the TheirStack mark.";

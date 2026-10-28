@@ -76,14 +76,14 @@ export type StoryContextPart = {
 };
 
 export type StoryContextStory = {
-  /** the block's claim, filling the stage at frame 0 (the camera's s 1.5) */
+  /** the block's claim, in its END place from frame 0 (the cue) */
   claim: {
     /** spaced caps, 34/40; x, y = its line box's top-left */
     kicker: { text: string; x: number; y: number };
     /** the display face, 60/60, two lines (white-space: pre); y = kicker's y + 64 */
     value: { text: string; x: number; y: number };
   };
-  /** the Brain's centre, a resting piece: present from frame 0, it slides in with the camera */
+  /** the Brain's centre, a resting piece: present from frame 0 */
   center: { x: number; y: number; r: number };
   /** array order = landing order (and paint order) */
   parts: readonly StoryContextPart[];
@@ -124,4 +124,4 @@ export const STORY_CONTEXT: StoryContextStory = {
 /** The whole story, in the order it plays. The stage is aria-hidden: its words are read from
     here only. */
 export const STORY_CONTEXT_ALT: string =
-  "Animation: the words Next best Play, Startups posting about a rebrand, fill the view, then the view pulls back. Beside them, three parts of your Brain appear around one center: Voice, ICPs and Competitors. Their lines join the center, then one line runs from it to the next best Play.";
+  "Animation: beside the words Next best Play, Startups posting about a rebrand, three parts of your Brain appear around one center: Voice, ICPs and Competitors. Their lines join the center, then one line runs from it to the next best Play.";

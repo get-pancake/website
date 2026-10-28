@@ -19,16 +19,6 @@
       rise transform, .lp-sk-rise, would override), not by a transform.
    No will-change, no keyframes: the stage is GSAP-only and plays once. */
 
-/* the camera's frame 0 (lp-story-kit.ts skCamera reads --lp-sk-cam-from):
-   the claim at x2 about a point right of it, so it fills the stage (ink x 86
-   to 666, y 127 to 362) and every other piece starts off-frame to the left */
-.lp-sk.lp-ssig {
-  --lp-sk-cam-from: 2;
-}
-.lp-ssig .lp-sk-cam {
-  transform-origin: 732.24px 343.01px;
-}
-
 /* the loved confetti (Figma Ellipse 121–125): flat brand dots, placed and
    coloured inline from the data */
 .lp-ssig .lp-ssig-dot {

@@ -15,8 +15,7 @@ import { STORY_CONTEXT } from "./lp-story-context-data";
  * aria-hidden (the shell's host carries the ALT), and this markup IS the END picture (rest = end):
  * the server HTML is never a blank card. Nothing is painted behind the scene.
  *
- * Layers, back to front, all inside the kit's camera (.lp-sk-cam: frame 0 scales it ×1.5 so the
- * claim fills the stage; the rest has no transform):
+ * Layers, back to front, all inside the kit's scene wrapper (.lp-sk-scene, never transformed):
  *   svg.lp-sk-wires   z1 the wires: the exit (centre → kicker), then each spoke (dot → centre),
  *                        each in its own <g> (the kit multiplies `> g > *` from 768 px up)
  *                     z2 the Brain's centre (plum, r 20): the steps' .lp-s1-center
@@ -31,7 +30,7 @@ export function LpStoryContextStage(_props: DiveStageProps) {
   const { claim, center, parts, exit, dot } = STORY_CONTEXT;
   return (
     <div className="lp-sk lp-sctx" data-lp-story="context" aria-hidden="true">
-      <div className="lp-sk-cam">
+      <div className="lp-sk-scene">
         <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
           <g>
             <path className="lp-sctx-exit" d={exit.d} />

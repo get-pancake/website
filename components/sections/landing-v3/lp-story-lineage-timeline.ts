@@ -2,7 +2,6 @@ import { gsap } from "@/lib/gsap";
 
 import type { BuiltStory } from "./lp-dive-stages";
 import {
-  skCamera,
   skCap,
   skDot,
   skHidePop,
@@ -28,16 +27,13 @@ import {
  *
  * Contract: lp-dive-stages.ts and code-map §6.2 — frame 0 via gsap.set (the caller's
  * gsap.context reverts it), sets and tweens only (no callbacks, no randomness, no repeat, no
- * timeScale), progress(1) = the server markup, `cue` = the first composed scene: 0, the claim
- * fills the view from the first frame (never an empty one). No "use client": reached only
+ * timeScale), progress(1) = the server markup, `cue` = the first composed scene: 0, the claim in
+ * its END place from the first frame (never an empty one). No "use client": reached only
  * through DIVE_LOADERS.lineage (lp-dive-loaders.ts, a lazy chunk); it imports GSAP, the story
  * kit and types, nothing else (no copy: every word is in the markup).
  *
  * Every verb is the kit's (lp-story-kit.ts), each copied from the loved picture's timeline
  * (lp-story-sources-timeline.ts at 630bb8e) or its sibling's:
- *   the camera     skCamera: the claim at ×1.6 (story-lineage.css), held SK_CAM.hold, pulled
- *                  back in SK_CAM.pull (his approved ×3.89 push, :257, run backwards; his
- *                  "prendre toute la place au debut … puis ouvrir la fenetre")
  *   dot lands      skDot, r 0 → 5.333 in 0.25 s (:289)
  *   rise           skRise, y 8 → 0 in 0.4 s (the old message story's, lp-story-message-timeline.ts:372 at 630bb8e)
  *   wire draw      skWire, strokeDashoffset to 0 (:284-285), here in 0.7 s
@@ -46,49 +42,47 @@ import {
  *   cap            skCap, r 0 → 5.333 in 0.15 s (:283)
  * SVG dots grow by their `r` attribute, never by a transform; what moves (the name, the disc)
  * does it by the kit's variables and lets go of them SK_LANDED after it lands, so the END is the
- * server markup in Gecko too. The camera's variable is cleared at 3.01: from there the scene is
- * plain layout.
+ * server markup in Gecko too. No camera: until the same evening the claim opened zoomed ×1.6 and
+ * held 1.8 s; the founder, on that frame: "this is not motion like it's plain text".
  *
  * Times (s), the T table below (spec §3.3):
  *
- *   0.00–1.80  f1: the claim, "WHICH SIGNAL" over "Hiring a / marketing lead", fills the view
- *              and holds (frame 0 = the cue)
- *   1.80–3.00  the view pulls back (the variable is cleared at 3.01)
- *   2.80–3.05  the lead's dot lands as the camera settles
- *   2.85–3.25  "Tamsin Okafor" rises by it
- *   3.25       f2: the lead is in. It holds to 4.00
- *   4.00–4.70  the line traces from her to the signal
- *   4.60–4.95  the purple stop lands as the line arrives
- *   4.95       f3: the signal that found her. It holds to 5.60
- *   5.60–6.30  the line traces on to the source
- *   6.20–6.65  TheirStack pops as the line arrives; its cap lands 6.30–6.45, where it ended
- *   7.00       f4 = the END (the carousel then holds it 2 s)
+ *   0.00       f1: the claim, "WHICH SIGNAL" over "Hiring a / marketing lead", in its END
+ *              place (frame 0 = the cue)
+ *   0.30–0.55  the lead's dot lands
+ *   0.35–0.75  "Tamsin Okafor" rises by it
+ *   0.75       f2: the lead is in. A beat
+ *   1.00–1.70  the line traces from her to the signal
+ *   1.60–1.95  the purple stop lands as the line arrives
+ *   1.95       f3: the signal that found her. A beat
+ *   2.25–2.95  the line traces on to the source
+ *   2.85–3.30  TheirStack pops as the line arrives; its cap lands 2.95–3.10, where it ended
+ *   3.50       f4 = the END (the carousel then holds it 2 s)
  *
- * Never moves: the type (only the camera moves it, once), the lead and her name once in, the
- * stop and the disc once landed. The line draws once, from her end.
+ * Never moves: the type, the lead and her name once in, the stop and the disc once landed. The line draws once, from her end.
  */
 
 /** the take, in seconds (see the table above) */
 const T = {
   f1: 0,
-  /** the lead's dot, as the camera settles (it lands at SK_CAM_END, 3.00) */
-  dot: 2.8,
-  name: 2.85,
+  /** the lead's dot */
+  dot: 0.3,
+  name: 0.35,
   /** her name has risen: the lead's picture is whole */
-  f2: 3.25,
+  f2: 0.75,
   /** the trace runs from her to the signal … */
-  toSignal: 4.0,
-  /** … and the stop lands 0.1 s before the line arrives (4.70) */
-  stop: 4.6,
+  toSignal: 1.0,
+  /** … and the stop lands 0.1 s before the line arrives (1.70) */
+  stop: 1.6,
   /** the stop has landed */
-  f3: 4.95,
+  f3: 1.95,
   /** the trace runs on to the source … */
-  toSource: 5.6,
-  /** … the disc pops 0.1 s before the line arrives (6.30), the cap lands where it ends */
-  disc: 6.2,
-  cap: 6.3,
-  /** the last landing (the disc drops its transform at 6.66) holds to here */
-  end: 7.0,
+  toSource: 2.25,
+  /** … the disc pops 0.1 s before the line arrives (2.95), the cap lands where it ends */
+  disc: 2.85,
+  cap: 2.95,
+  /** the last landing (the disc lets go of its variable at 3.31) holds to here */
+  end: 3.5,
 } as const;
 /** each half of the trace draws in this long (the kit's 0.6 s, slowed: one line, read as it runs) */
 const DRAW = 0.7;
@@ -105,11 +99,9 @@ export function buildStoryLineage(root: HTMLElement): BuiltStory {
 /** The same builder in slices, which the carousel and the phone stack spread over idle slots
     (lp-play-once's startBuild). It may yield after any block: its frame-0 sets are written at
     once, its tweens write nothing until they are rendered, and what it reads (the stop's
-    radius, the camera's scale in the stylesheet, the wires' lengths) depends on nothing it
-    writes. */
+    radius, the wires' lengths) depends on nothing it writes. */
 export function* buildStoryLineageSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const { $ } = skQuery(root, "lineage");
-  const cam = $(".lp-sk-cam");
   const toSignal = $<SVGPathElement>('.lp-sk-wires path[data-trace="signal"]');
   const toSource = $<SVGPathElement>('.lp-sk-wires path[data-trace="source"]');
   const disc = $(".lp-sk-disc");
@@ -122,9 +114,7 @@ export function* buildStoryLineageSteps(root: HTMLElement): Generator<void, Buil
 
   const tl = gsap.timeline({ paused: true });
 
-  /* ── frame 0: the claim fills the view; every other part waits, unseen ── */
-  skCamera(tl, cam);
-  yield;
+  /* ── frame 0: the claim; every other part waits, unseen ── */
   skHideWire(toSignal);
   skHideWire(toSource);
   yield;
@@ -133,7 +123,7 @@ export function* buildStoryLineageSteps(root: HTMLElement): Generator<void, Buil
   skHidePop(disc);
   yield;
 
-  /* ── the lead comes in as the view settles ── */
+  /* ── the lead comes in ── */
   skDot(tl, dot, T.dot);
   skRise(tl, name, T.name);
 

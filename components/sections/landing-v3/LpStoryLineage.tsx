@@ -18,8 +18,7 @@ import { STORY_LINEAGE } from "./lp-story-lineage-data";
  * timeline's progress(1), nothing painted behind the scene (the shell paints the stage).
  *
  * Layers, back to front (the spec's z order):
- *   .lp-sk-cam                  the camera: frame 0 scales it ×1.6 about the claim
- *                               (story-lineage.css), the pull-back brings it to 1
+ *   .lp-sk-scene                the scene wrapper (the 752×489 box); nothing transforms it
  *     svg.lp-sk-wires[traces]   the trace in two wires, each written from where it draws:
  *                               the lead → the signal, the signal → the source (multiply)
  *     .lp-sk-disc               TheirStack's own mark on a white disc (SkDisc)
@@ -41,7 +40,7 @@ export function LpStoryLineageStage(_props: DiveStageProps) {
 
   return (
     <div className="lp-sk lp-slin" data-lp-story="lineage" aria-hidden="true">
-      <div className="lp-sk-cam">
+      <div className="lp-sk-scene">
         <svg className="lp-sk-wires" data-layer="traces" viewBox="0 0 752 489" width="752" height="489">
           {traces.map((trace) => (
             <g key={trace.id}>

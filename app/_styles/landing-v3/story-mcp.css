@@ -20,24 +20,9 @@
    Traps (with the kit's T1-T5):
    T1 Compound selectors only: `.lp p { margin: 0 }` and the shell's
       `.lp-dive-scene * { font-family }` tie with single-class rules.
-   T2 The camera reads --lp-sk-cam-from from here (lp-story-kit.ts skCamera)
-      and scales about the transform-origin below. Unset (the server markup),
-      the kit's scale() computes to none: the claim rests untransformed.
-   T3 The wordmark is the footer's file sized by its height: no max-width
+   T2 The wordmark is the footer's file sized by its height: no max-width
       (Tailwind's preflight caps imgs at 100%), no shrink in the flex row.
    No will-change, no keyframes: the stage is GSAP-only, plays once. */
-
-/* the cue (frame 0): the claim's ink, x 51.1–528.2 and y 59.3–184.5, fills
-   the stage at ×1.4 about O = (s·C − (376, 244.5)) / (s − 1), C its ink
-   centre: x 42–710, y 157–332, the value 112 px tall. The lockup's top then
-   sits at y′ 493.8, just under the stage, and rises into view with the
-   pull-back */
-.lp-sk.lp-smcp {
-  --lp-sk-cam-from: 1.4;
-}
-.lp-smcp .lp-sk-cam {
-  transform-origin: 73.78px -184.6px;
-}
 
 /* the claim, top left: the kit's kicker (34/40, 3.4 tracking, caps) and its
    value 64 lower, 80/80 in the display face. The value's ink starts on the

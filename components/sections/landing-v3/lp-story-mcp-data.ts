@@ -93,4 +93,4 @@ export const STORY_MCP: StoryMcpStory = {
 /** The whole story. It names Pancake and both agents: the stage is aria-hidden, so they are read
     from here only. */
 export const STORY_MCP_ALT: string =
-  "Animation: the words In the chat, About 100 tools, fill the view, then the view pulls back to the Pancake logo. The marks of Claude and Codex appear one at a time, each with a line into one point, then a single line runs from that point into Pancake.";
+  "Animation: under the words In the chat, About 100 tools, the Pancake logo. The marks of Claude and Codex appear one at a time, each with a line into one point, then a single line runs from that point into Pancake.";

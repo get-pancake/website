@@ -79,7 +79,7 @@ export type StorySignalsDot = {
 
 export type StorySignalsStory = {
   /** the block's claim: the kicker (the kit's spaced caps, 34/40) over the value (the display
-      face, 72/72). The camera opens on it (frame 0, cue) */
+      face, 72/72). In its END place from frame 0 (the cue) */
   claim: { kicker: { text: string }; value: { text: string } };
   /** the count, over the providers (the loved hub label at twice its size) */
   label: { text: string };
@@ -158,4 +158,4 @@ export const STORY_SIGNALS: StorySignalsStory = {
 /** What the animation shows. It names the six providers: the stage is aria-hidden, so their
     names are read from here only. */
 export const STORY_SIGNALS_ALT: string =
-  "Animation: the words Why they fit, Just raised, fill the view, then the view pulls back to six data providers: Dealroom, TheirStack, Wappalyzer, Apify, Firecrawl and Coresignal. A line runs from each into one point beside the words, starting with the two that track funding. Then a label appears: 30+ data providers.";
+  "Animation: beside the words Why they fit, Just raised, six data providers: Dealroom, TheirStack, Wappalyzer, Apify, Firecrawl and Coresignal. A line runs from each into one point beside the words, starting with the two that track funding. Then a label appears: 30+ data providers.";

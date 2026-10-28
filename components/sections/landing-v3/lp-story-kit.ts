@@ -1,8 +1,7 @@
 import { gsap } from "@/lib/gsap";
 
 /**
- * The deep-dive stories' shared motion (2026-10-28): the camera that opens every story and the
- * verbs of the one picture the founder loves (the sources story's end hub: a disc pops, a cap
+ * The deep-dive stories' shared motion (2026-10-28): the verbs of the one picture the founder loves (the sources story's end hub: a disc pops, a cap
  * lands, a wire draws into the near-black dot). Copied from lp-story-sources-timeline.ts at 630bb8e
  * (removed with its story the same day): disc pop :274-276, cap :283, wire :284-285, hub dot :289, the
  * label's rise :268-269. Styles: app/_styles/landing-v3/story-kit.css.
@@ -13,10 +12,14 @@ import { gsap } from "@/lib/gsap";
  * markup. Each verb comes as a pair: `skHide…` writes frame 0 (inside the caller's gsap.context,
  * which reverts it), the verb adds the tweens at a time.
  *
+ * Every story opens on its own END layout with the build-up hidden and moves from its first
+ * fraction of a second. Until the same evening a camera opened each one on its claim zoomed to
+ * fill the stage and held it 1.8 s; the founder, on that frame: "this is not motion like it's
+ * plain text", so the camera is gone.
+ *
  * Nothing moves by GSAP's own transform. SVG dots and caps animate their `r` attribute (a CSS
- * transform-origin on an SVG circle plus GSAP's own origin handling double-shifts it). The
- * camera, a disc's pop and a line's rise tween a CSS variable that story-kit.css reads into a 2D
- * transform, and let go of it SK_LANDED after they land (skLetGo): unset, the transform computes
+ * transform-origin on an SVG circle plus GSAP's own origin handling double-shifts it). A disc's
+ * pop and a line's rise tween a CSS variable that story-kit.css reads into a 2D transform, and let go of it SK_LANDED after they land (skLetGo): unset, the transform computes
  * to none, so the END is the server markup (Gecko snaps text in a transformed box differently).
  * GSAP's x / y / scale go through its transform cache: force3D "auto" writes translate3d while
  * they run, which in Chromium gives the piece a layer of its own and re-rasterises the scene
@@ -31,10 +34,6 @@ type Timeline = gsap.core.Timeline;
 export const SK_CAP_R = 5.333;
 /** a piece lets go of its variable this long after its tween ends */
 export const SK_LANDED = 0.01;
-/** the opening (s): the claim fills the stage and holds, then the camera pulls back */
-export const SK_CAM = { hold: 1.8, pull: 1.2 } as const;
-/** where the pull-back has landed and the variable is cleared: a story's second beat starts here */
-export const SK_CAM_END = SK_CAM.hold + SK_CAM.pull;
 
 /** A story's `$` / `$$`: `$` throws on a missing element, naming the story. */
 export function skQuery(root: HTMLElement, story: string) {
@@ -58,26 +57,6 @@ export function skQuery(root: HTMLElement, story: string) {
  */
 function skLetGo(tl: Timeline, el: Element, prop: string, rest: number, at: number): void {
   tl.to(el, { [prop]: rest, clearProps: prop, duration: 0.001, ease: "none" }, at);
-}
-
-/**
- * The camera, the same in every story: frame 0 = `.lp-sk-cam` at --lp-sk-cam-from (the story's
- * stylesheet, with the transform-origin that puts its claim mid-stage), held SK_CAM.hold, then
- * pulled back to 1 in SK_CAM.pull (power2.inOut: the founder's approved sources push, ×3.89 in
- * 1.1 s, run backwards). SK_LANDED after it lands the variable is let go: from there the scene is
- * plain layout, as the server markup. A backward seek re-renders the fromTo, so the scale comes
- * back.
- */
-export function skCamera(tl: Timeline, cam: HTMLElement): void {
-  const from = parseFloat(getComputedStyle(cam).getPropertyValue("--lp-sk-cam-from")) || 1;
-  gsap.set(cam, { "--lp-sk-cam-s": from });
-  tl.fromTo(
-    cam,
-    { "--lp-sk-cam-s": from },
-    { "--lp-sk-cam-s": 1, duration: SK_CAM.pull, ease: "power2.inOut", immediateRender: false },
-    SK_CAM.hold,
-  );
-  skLetGo(tl, cam, "--lp-sk-cam-s", 1, SK_CAM_END + SK_LANDED);
 }
 
 /* ── a disc pops: fades in 0.18 s while it grows from .6 in 0.45 s. The growth is

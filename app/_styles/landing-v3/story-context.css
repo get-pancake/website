@@ -7,7 +7,7 @@
    The markup rests on the END picture: the claim on the left, the Brain's three
    parts around its plum centre on the right, their spokes, and one wire from
    the centre to the kicker's dot. The timeline (lp-story-context-timeline.ts)
-   sets frame 0: the claim alone, the camera at --lp-sk-cam-from.
+   sets frame 0: the claim and the centre, the rest hidden.
 
    Sources: the steps' Brain graph (step 03 on the page, the s1 motion): the
    centre is its .lp-s1-center (steps.css, 31 px, here r 20); the parts' names
@@ -20,18 +20,6 @@
       single-class rules: every rule below is compound.
    T2 The dots animate their `r` attribute, never a transform.
    No will-change, no keyframes: the stage is GSAP-only and plays once. */
-
-/* the camera (lp-story-kit.ts skCamera): frame 0 = x1.5 about this origin, so
-   the claim's ink (x 51-433, y 159-327) fills the stage, x 89-663 and
-   y 119-371, the value at 90 px. O = (s·C - (376, 244.5)) / (s - 1), C = the
-   claim's ink centre (241.99, 243.34). The centre at x 575 then sits at
-   x' 875, off the stage: it slides in as the view pulls back */
-.lp-sk.lp-sctx {
-  --lp-sk-cam-from: 1.5;
-}
-.lp-sctx .lp-sk-cam {
-  transform-origin: -26.03px 241.02px;
-}
 
 /* the Brain's centre (the steps' plum disc) */
 .lp-sctx .lp-sctx-center {

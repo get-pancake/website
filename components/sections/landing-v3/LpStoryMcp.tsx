@@ -14,8 +14,7 @@ import { STORY_MCP } from "./lp-story-mcp-data";
  * Spec: the design panel's final build spec, §3.4.
  *
  * Layers, back to front (spec §3.4's z order):
- *   .lp-sk-cam            the camera: frame 0 scales the whole scene ×1.4 so the claim fills the
- *                         stage, then pulls back (lp-story-kit.ts skCamera); unset at rest
+ *   .lp-sk-scene          the scene wrapper (the 752×489 box); nothing transforms it
  *     svg.lp-sk-wires     the agents' wires into the point, and the stem from the point into
  *                         Pancake, which ends under the lockup's edge. Each wire's <g> names the
  *                         node it plugs in (data-node: its agent, or "pancake" for the stem)
@@ -52,7 +51,7 @@ export function LpStoryMcpStage(_props: DiveStageProps) {
 
   return (
     <div className="lp-sk lp-smcp" data-lp-story="mcp" aria-hidden="true">
-      <div className="lp-sk-cam">
+      <div className="lp-sk-scene">
         {/* z1: the wires, under Pancake */}
         <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
           {agents.map((agent) => (
