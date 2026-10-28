@@ -55,11 +55,12 @@ export function LpSteps() {
     <section className="lp-steps" id="how-it-works">
       <div className="lp-steps__org">
         <header className="lp-steps__head">
-          {/* the infra vision (founder 2026-10-22: "the 3 steps should be replaced by our infra
-              vision !"): The Vercel for GTM, his Product Hunt tagline, as its three verbs. Until
-              then his own "While you run your business, / Pancake fills your pipeline." */}
-          <p className="lp-steps__kicker">The Vercel for GTM.</p>
-          <h2 className="lp-steps__title lp-title-section">Deploy. Host. Run.</h2>
+          {/* one line over the two tiers (founder 2026-10-27: "Find a better one liner here",
+              for "The Vercel for GTM. / Deploy. Host. Run."): where you work, then his own
+              title of 2026-09-03 ("While you run your business, / Pancake fills your
+              pipeline."), which holds one line where "from the chat you already use." wrapped */}
+          <p className="lp-steps__kicker">From the chat you already use,</p>
+          <h2 className="lp-steps__title lp-title-section">Pancake fills your pipeline.</h2>
         </header>
         <div className="lp-steps__list">
           {STEPS.map((step) => (

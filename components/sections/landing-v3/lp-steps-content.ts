@@ -85,30 +85,31 @@ export type StepContent = {
 };
 
 export const STEPS: readonly StepContent[] = [
-  /* The infra vision (founder 2026-10-22: "the 3 steps should be replaced by our infra vision !"):
-     The Vercel for GTM as deploy, host, run, told by the designer's three animations in a new
-     order — deploy is step 02's storyboard (the ask in Claude, the Play goes live), host is step
-     01's (the Brain from your website), run is step 03's (the outreach and the replies). */
+  /* Founder 2026-10-27: "the 3 parts should be 1/ Connect your agent (claude codex) 2/ Ask
+     anything (= play you want to create) 3/ Un truc genre get better everyday". Three verbs the
+     visitor does, the designer's three animations back in their own order (the Brain from your
+     website, the ask in Claude, the outreach and the replies). "Every day" is out: the homepage
+     lint keeps fixed frequencies off the page (#332), and it gets better with each lead anyway. */
   {
     num: "01",
-    title: "Deploy.\nTell your agent who you want.",
-    body: "Ask in Claude, Codex or the app. Pancake builds the Play, tests the search on real companies and puts it live.",
-    art: [{ kind: "anim", variant: "s2", status: "final" }],
-    // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
-    alt: "Animation: in Claude, with Pancake connected, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, Claude answers and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape on Pancake: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",
-  },
-  {
-    num: "02",
-    title: "Host.\nYour Play lives on Pancake.",
-    body: "Next to your Brain: what you sell, who buys and how you talk, learned from your website. Leads, messages and history stay in one place your agent can read.",
+    title: "Connect your agent.\nPancake learns your business.",
+    body: "Add Pancake to Claude or Codex with one sign-in. It reads your website and learns what you sell, who buys and how you talk.",
     art: [{ kind: "anim", variant: "s1", status: "final" }],
     // names S1_HUBS[].label (lp-step-data.ts) in hub order: keep in sync
     alt: "Animation: a website address is typed and researched; from the Acme node a knowledge graph blooms, its five branches labeled Competitors, ICPs, Outreach, Influencers and Market Research, then a market profile fills in: Company, Offering, Ideal clients.",
   },
   {
+    num: "02",
+    title: "Ask anything.\nPancake turns it into a Play.",
+    body: "Describe the customers you want, in your own words. Pancake finds them, checks they fit and keeps the search running.",
+    art: [{ kind: "anim", variant: "s2", status: "final" }],
+    // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
+    alt: "Animation: in Claude, with Pancake connected, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, Claude answers and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape on Pancake: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",
+  },
+  {
     num: "03",
-    title: "Run.\nPancake does the outreach.",
-    body: "On your schedule, laptop closed. It finds new leads, writes from your own accounts and follows up. Every reply comes back to you, labeled.",
+    title: "Watch it get better.\nEvery lead teaches your Brain.",
+    body: "It writes from your own accounts and follows up. Approve a lead or get a reply, and the next search lands closer to who buys.",
     art: [{ kind: "anim", variant: "s3", status: "final" }],
     // retells S3_THREAD, then lists S3_CHIPS (lp-step-data.ts): keep in sync
     alt: "Animation: from the selected leads, Pancake drafts a message to Tamsin Okafor, founder of Quillfern, about her seed round and a new website, and it is sent. She answers that she is free Thursday at 3pm, and the meeting appears: Tamsin and Acme, Thursday 3pm. The meeting lands on Thursday in a calendar week of October 2026, which then fills up day by day with more meetings — Samantha M., Julien Aubert, Martin Torres and Acme, Lumen Collective, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",
