@@ -15,13 +15,23 @@ import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art"
  * everywhere that go in 3 bucjets and unified in pancake", then "Comment BCP plus insister sur les
  * 3 briques CONTEXT / DATA / TOOLS ? … quitte a les faire arriver en premier puis faire arriver
  * les petits details". So: the three bricks (Context, Data, Tools) come up first, large; then the
- * details of a go-to-market (BITS) pop up all over the screen and fly into their brick; then the
- * bricks close up into Pancake's platform, which connects to your agent. The sources: Mobbin's Front and Tines integration
- * heroes (white logo discs scattered around a centred heading, Tines on a dotted canvas),
- * Antimetal's discs of several sizes for depth, and save.design's hero (scattered pieces
- * converging into the product, measured live). Elsewhere the card plays its build-up once, and
- * only its leads move after it (buildInfraLoop; Mobbin: Antimetal's "Needs your decision"
- * cards).
+ * details of a go-to-market (BITS) pop up all over the screen and fly into their brick; then
+ * Pancake comes up over them, branches down to all three and connects to your agent. The sources:
+ * Mobbin's Front and Tines integration heroes (white logo discs scattered around a centred
+ * heading), Antimetal's discs of several sizes for depth, and save.design's hero (scattered
+ * pieces converging into the product, measured live). Elsewhere the card plays its build-up
+ * once, and only its leads move after it (buildInfraLoop; Mobbin: Antimetal's "Needs your
+ * decision" cards).
+ *
+ * 2026-10-28, on the bricks closing up into a platform as a dotted canvas came in: "Je crois que
+ * je prefere sans le resserrement qui correspond a l arrivee du background avec les points et je
+ * ne veux pas du background point je trouve ca bien que ca occupe plus d espace / J integrerai le
+ * pancake das un truc plus beau et moins vibe coded que dans la version actuelle - check mobbin
+ * in case". So the cards stay as the scroll fills them, a size up and spread over the page, with
+ * no canvas and no platform under them; Pancake is the brand's own lockup on plum (the avatar's
+ * colour mascot, whose three pancakes are the cards' three colours, and the footer's cream
+ * wordmark), the node the three cards hang from: Mobbin's Cartesia "Your code" node, a size up
+ * from the nodes it branches down to, its fork drawn with the wire's hairline.
  *
  * The same day, before this: the headings "Give your agent everything it needs to sell." (his)
  * and "Everything your agent needs to sell."; a first "juice" pass of ambient loops, live notes,
@@ -39,10 +49,10 @@ import { SL_AVATAR } from "@/components/sections/landing-v3/lp-story-learns-art"
  * dive's sources story).
  *
  * The look (founder 2026-10-22: "make this more beautiful - use design system - toolkits like
- * mobin and brand assets"): Mobbin's infra diagrams (Cloudflare's dotted canvas and grouped
- * nodes, Coda's product-as-hub) drawn with the kit. Pancake is one platform holding its three
- * layers, and each layer takes the colour of its pancake in the logo (the kit's canonical stack:
- * yellow on top, purple, pink under) as a kit brand card with a kit badge. Each card shows a small
+ * mobin and brand assets"): Mobbin's infra diagrams (Cloudflare's grouped nodes, Coda's
+ * product-as-hub) drawn with the kit. Each of Pancake's three layers takes the colour of its
+ * pancake in the logo (the kit's canonical stack: yellow on top, purple, pink under) as a kit
+ * brand card with a kit badge. Each card shows a small
  * picture of what it holds, cast from the page's one story (lp-story-sources-data.ts): Acme's
  * brain, the providers' own marks (unmodified, half the disc's width on a white disc, as the
  * sources story draws them; Dealroom left out until it has a production key), and the Play
@@ -221,7 +231,6 @@ export function LpInfra() {
               </h2>
             </header>
             <LpInfraFlow>
-              <i className="lp-infra__canvas" aria-hidden="true" />
               {/* your agent: its two chips, no label beside them (founder 2026-10-27: "Remove 'Your
                   agent' next to the 2 logos"); the heading says it, the list keeps the name for
                   screen readers */}
@@ -243,36 +252,37 @@ export function LpInfra() {
               <div className="lp-infra__link">
                 <Wire />
               </div>
-              {/* Pancake: the platform, its name on the edge where the wire plugs in */}
-              {/* Pancake: a node built as your agent's (founder 2026-10-27: "Pancake peut etre mieux
-                  positionné et unifié avec design de claude codex"), on the platform's edge where
-                  the wire plugs in */}
+              {/* Pancake: the brand's lockup on plum, the avatar's colour mascot and the footer's
+                  cream wordmark (the looped k is drawn, never typed). It was a white bar holding a
+                  chip with the name typed in (2026-10-27: "Pancake peut etre mieux positionné et
+                  unifié avec design de claude codex"), then "plus beau et moins vibe coded" */}
               <div className="lp-infra__brand">
-                <span className="lp-infra__brand-chip">
-                  <span className="lp-infra__mark" aria-hidden="true">
-                    <PancakeMark />
-                  </span>
-                  Pancake
-                </span>
+                <PancakeMark />
+                {/* eslint-disable-next-line @next/next/no-img-element -- the footer's wordmark file, as the nav's */}
+                <img className="lp-infra__wordmark" src="/lp/lp-footer-logo.svg" alt="Pancake" width={239.672} height={116.755} />
               </div>
-              <div className="lp-infra__stack">
-                <i className="lp-infra__plat" aria-hidden="true" />
-                <ul className="lp-infra__parts">
-                  {LAYERS.map(({ tone, name, title, pic: Pic }) => (
-                    <li key={name} className="lp-infra__part" data-tone={tone}>
-                      {/* the scroll version opens on this word alone, large (infra.css) */}
-                      <span className="lp-infra__part-word" aria-hidden="true">
-                        {name}
-                      </span>
-                      <div className="lp-infra__pic" aria-hidden="true">
-                        <Pic />
-                      </div>
-                      <p className="lp-infra__part-name">{name}</p>
-                      <h3 className="lp-infra__part-title">{title}</h3>
-                    </li>
-                  ))}
-                </ul>
+              {/* Pancake branches down to its three cards: a stem, and arms out to the side cards
+                  (Cartesia's fork, in the wire's hairline). Where the cards stack, the stem alone
+                  runs into the first */}
+              <div className="lp-infra__fork" aria-hidden="true">
+                <i className="lp-infra__fork-arms" />
+                <i className="lp-infra__fork-stem" />
               </div>
+              <ul className="lp-infra__parts">
+                {LAYERS.map(({ tone, name, title, pic: Pic }) => (
+                  <li key={name} className="lp-infra__part" data-tone={tone}>
+                    {/* the scroll version opens on this word alone, large (infra.css) */}
+                    <span className="lp-infra__part-word" aria-hidden="true">
+                      {name}
+                    </span>
+                    <div className="lp-infra__pic" aria-hidden="true">
+                      <Pic />
+                    </div>
+                    <p className="lp-infra__part-name">{name}</p>
+                    <h3 className="lp-infra__part-title">{title}</h3>
+                  </li>
+                ))}
+              </ul>
               <Bits />
             </LpInfraFlow>
           </div>
@@ -401,10 +411,11 @@ function Wire() {
   );
 }
 
-/** The Pancake mark, full colour (as step 02's, LpStepMocks): its three pancakes are the three layers */
+/** The Pancake mark, full colour (as step 02's, LpStepMocks): its three pancakes are the three
+    layers. The view box is the avatar's, cropped to the mascot (the avatar keeps room around it) */
 function PancakeMark() {
   return (
-    <svg className="lp-infra__pk" viewBox={`0 0 ${SL_AVATAR.size} ${SL_AVATAR.size}`} aria-hidden="true" focusable="false">
+    <svg className="lp-infra__pk" viewBox="3.9 4.9 24 24" aria-hidden="true" focusable="false">
       {SL_AVATAR.shapes.map((shape, i) => (
         <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
       ))}

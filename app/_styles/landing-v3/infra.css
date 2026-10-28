@@ -4,10 +4,14 @@
    cards' white fill and 0.4px hairline (.lp-mockcard), the kit's brand cards and badges
    (_design-kit/card.html, badge.html: weak surface + branded stroke, strong surface under plum
    text) in the logo's three pancake colours. 2026-10-22 ("make this more beautiful - use design
-   system"): a dotted canvas and grouped nodes after Mobbin's infra diagrams (Cloudflare Workers),
-   Pancake as the hub that holds its layers (Coda). The diagram reads top to bottom: your agent,
-   the wire into Pancake, and its three layers. */
+   system"): grouped nodes after Mobbin's infra diagrams (Cloudflare Workers), Pancake as the hub
+   (Coda). 2026-10-28: no dotted canvas and no platform ("je ne veux pas du background point"),
+   the cards spread a size up, Pancake the brand's lockup on plum that branches down to them
+   (Mobbin: Cartesia's "Your code" node and its fork). The diagram reads top to bottom: your
+   agent, the wire into Pancake, its fork and its three layers. */
 .lp-infra {
+  /* the three cards' gap, in % of their row: the fork's arms are measured from it */
+  --lp-infra-gap: 3.54;
   padding: 16px;
 }
 .lp-infra__org {
@@ -39,30 +43,16 @@
   text-wrap: balance;
 }
 
-/* the diagram card: cream, r30, on a dotted canvas */
+/* the diagram, on the page itself (the cream dotted canvas went on 2026-10-28: "je ne veux pas du
+   background point"): as wide as the three cards spread a size up, 42 apart at 1440 */
 .lp-infra__card {
   align-items: center;
-  border-radius: 30px;
   display: flex;
   flex-direction: column;
-  isolation: isolate; /* the canvas layer sits under the content */
   max-width: 100%;
-  padding: 48px;
+  padding-top: 24px;
   position: relative;
-  width: 1136px;
-}
-/* the cream dotted canvas, a layer of its own: the scroll version brings it in when the three
-   buckets come together (buildInfraScroll) */
-.lp-infra__canvas {
-  background-color: var(--lp-card-cream);
-  background-image: radial-gradient(circle, var(--lp-ink-tr-20) 1px, transparent 1.5px);
-  background-position: center 10px;
-  background-size: 20px 20px;
-  border-radius: inherit;
-  inset: 0;
-  pointer-events: none;
-  position: absolute;
-  z-index: -1;
+  width: 1188px;
 }
 
 /* your agent: one node holding the two agents (no label beside them since 2026-10-27) */
@@ -81,8 +71,7 @@
   margin: 0;
   padding: 0;
 }
-.lp-infra__agent,
-.lp-infra__brand-chip {
+.lp-infra__agent {
   align-items: center;
   background: var(--lp-ink-10);
   border-radius: 12px;
@@ -124,7 +113,7 @@
 }
 .lp-infra__wire {
   display: block;
-  height: 40px;
+  height: 28px;
   position: relative;
   width: 1px;
 }
@@ -135,52 +124,85 @@
   position: absolute;
 }
 
-/* Pancake: a node built as your agent's, the same white bar holding one chip (its colour mark and
-   its name), on the platform's edge where the wire plugs in; the platform pulls up under it by
-   half its height (28). Founder 2026-10-27: "Pancake peut etre mieux positionné et unifié avec
-   design de claude codex" (it was the nav's wordmark in a large pill). */
+/* Pancake: the brand's lockup on plum, the logo kit's avatar (the colour mascot on plum) beside
+   the footer's cream wordmark; a size up from your agent's node, the hub its three cards hang
+   from (Mobbin: Cartesia's "Your code" node). The plum is the nav's primary button's. Founder
+   2026-10-28 on the white bar and chip it was: "J integrerai le pancake das un truc plus beau et
+   moins vibe coded". */
 .lp-infra__brand {
   align-items: center;
-  background: var(--lp-surface);
-  border-radius: 20px;
-  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
+  background: var(--lp-brand-plum);
+  border-radius: 22px;
   display: flex;
-  padding: 8px;
+  gap: 10px;
+  padding: 11px 24px 11px 12px;
   position: relative;
   z-index: 1;
 }
 .lp-infra__pk {
   display: block;
+  height: 48px;
+  width: 48px;
 }
-.lp-infra__stack {
-  border-radius: 32px;
-  margin-top: -28px;
-  padding: 48px 16px 16px;
+.lp-infra__wordmark {
+  display: block;
+  height: 50px;
+  width: auto;
+}
+
+/* Pancake's fork down to its three cards (Cartesia's branches): a stem from the node to the middle
+   card, and arms out and down to the side cards' centres, in the wire's hairline. The side cards'
+   centres are (1 + gap) / 3 of the row from its middle, whatever the row's size up (the row is the
+   diagram's width once scaled): the arms span twice that, plus their 1px border. */
+.lp-infra__fork {
+  height: 48px;
   position: relative;
   width: 100%;
 }
-/* the platform's white and hairline, a layer of their own: the scroll version raises it under
-   the three cards as they come in (buildInfraScroll) */
-.lp-infra__plat {
-  background: var(--lp-surface);
-  border-radius: inherit;
-  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
-  inset: 0;
-  pointer-events: none;
+.lp-infra__fork-stem {
+  background: var(--lp-ink-tr-40);
+  height: 100%;
+  left: calc(50% - 0.5px);
   position: absolute;
+  top: 0;
+  width: 1px;
+}
+.lp-infra__fork-arms {
+  border: 1px solid var(--lp-ink-tr-40);
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+  bottom: 0;
+  height: 28px;
+  inset-inline: 0;
+  margin-inline: auto; /* centred by layout, so its hairlines snap to the pixel */
+  position: absolute;
+  width: calc((100 + var(--lp-infra-gap)) * 2% / 3 + 1px);
 }
 
 /* the three layers: kit brand cards in the logo's pancake colours (yellow on top, purple, pink
-   under); subgrid rows keep every badge, title and body on one line of sight */
+   under); subgrid rows keep every badge, title and body on one line of sight. From 1025 the row
+   is a size up (--lp-infra-zoom, the size the scroll fills the cards at) and spread (founder
+   2026-10-28: "je prefere sans le resserrement … je trouve ca bien que ca occupe plus d
+   espace"): laid out at the diagram's width / zoom, so it is the diagram's width once scaled */
 .lp-infra__parts {
+  --lp-infra-zoom: 1;
+  column-gap: calc(var(--lp-infra-gap) * 1%);
   display: grid;
-  position: relative; /* over the platform's layer */
-  gap: 12px;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
   margin: 0;
   padding: 0;
-  width: 100%;
+  row-gap: 12px;
+  width: calc(100% / var(--lp-infra-zoom));
+}
+@media (min-width: 1025px) {
+  .lp-infra__parts {
+    --lp-infra-zoom: 1.12;
+    /* the room the size up takes under the row (a transform takes none): its 275px cards' 12% */
+    margin-bottom: 33px;
+    transform: scale(var(--lp-infra-zoom));
+    transform-origin: 50% 0;
+  }
 }
 .lp-infra__part[data-tone="yellow"] {
   --lp-infra-tone-10: var(--lp-yellow-10);
@@ -778,12 +800,6 @@
   .lp-infra__stage {
     gap: 56px;
   }
-  .lp-infra__card {
-    padding: 40px 32px 32px;
-  }
-  .lp-infra__stack {
-    padding: 48px 12px 12px;
-  }
   /* six discs in a 208 px picture at 960 */
   .lp-infra__disc {
     height: 40px;
@@ -792,6 +808,15 @@
   .lp-infra__disc img {
     height: 20px;
     width: 20px;
+  }
+}
+/* where the cards stack, Pancake's stem alone runs into the first */
+@media (max-width: 959px) {
+  .lp-infra__fork {
+    height: 32px;
+  }
+  .lp-infra__fork-arms {
+    display: none;
   }
 }
 /* under 960 the three pictures no longer fit side by side: one layer per row, the picture left */
@@ -839,29 +864,29 @@
     line-height: 41px;
   }
   .lp-infra__card {
-    padding: 24px 12px 12px;
-  }
-  .lp-infra__canvas {
-    background-size: 18px 18px;
+    padding-top: 0;
   }
   .lp-infra__agentbar {
     padding: 6px;
   }
-  .lp-infra__agent,
-  .lp-infra__brand-chip {
+  .lp-infra__agent {
     padding: 8px 14px 8px 10px;
   }
   .lp-infra__brand {
-    padding: 6px;
+    border-radius: 20px;
+    gap: 8px;
+    padding: 8px 18px 8px 10px;
   }
-  .lp-infra__stack {
-    border-radius: 26px;
-    margin-top: -26px;
-    padding: 42px 8px 8px;
+  .lp-infra__pk {
+    height: 40px;
+    width: 40px;
+  }
+  .lp-infra__wordmark {
+    height: 42px;
   }
   .lp-infra__parts {
-    gap: 8px;
     grid-template-columns: minmax(0, 1fr);
+    row-gap: 8px;
   }
   .lp-infra__part {
     padding: 8px 8px 20px;

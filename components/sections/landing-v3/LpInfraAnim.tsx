@@ -12,9 +12,10 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
  *            every movement well calibrated getting inspired by best in class website"). The
  *            stage pins and the scroll drives buildInfraScroll: the three bricks (Context, Data,
  *            Tools) come up first, then the details of a go-to-market pop up all over the screen
- *            and fly into them, then the bricks close up into Pancake's platform, which connects
- *            to your agent (founder 2026-10-27: "insister sur les 3 briques … les faire arriver
- *            en premier puis faire arriver les petits details"). The scroll's progress is smoothed (an exponential follow, τ
+ *            and fly into them, then Pancake comes up over them, branches down to all three and
+ *            connects to your agent (founder 2026-10-27: "insister sur les 3 briques … les faire
+ *            arriver en premier puis faire arriver les petits details"; 2026-10-28: no closing
+ *            up, no canvas). The scroll's progress is smoothed (an exponential follow, τ
  *            0.15 s, frame-rate independent), so a wheel's notches and a trackpad's flick both
  *            glide, as a scrubbed timeline does on the best scroll-driven pages. The whole stage
  *            stays in the window: on a short one (a laptop with its dock and bookmarks bar) the
@@ -39,7 +40,7 @@ const SCROLL_MARGIN = 24;
     and bookmarks bar (≈ 700 px of window) gets 0.88; under ≈ 660 px, the build-up instead */
 const MIN_FIT = 0.8;
 /** the scroll the stage stays pinned for: 1.6 windows, within 1300–1800 px (three moves: the
-    pieces into their buckets, the buckets into Pancake, Pancake to the agent) */
+    buckets, the pieces into them, Pancake down to them and up to the agent) */
 const pinLength = (vh: number) => Math.round(Math.min(1800, Math.max(1300, vh * 1.6)));
 /** the timeline starts as the stage's top comes 45% down the window, before the pin, so the
     pieces move from the first notch on (founder 2026-10-27: "je scroll rien se passe puis d un
