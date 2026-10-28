@@ -219,37 +219,37 @@
   transform: none;
   width: auto; /* the H1 sizes it (V1's 656 box held the 69 px lines) */
 }
-/* The humans H1 since 2026-10-27: "Infrastructure to run / your GTM factory"
-   (founder), two lines at V2's place, the left-right layout kept and the H1
-   as big as it can be ("Gardons cette disposition gauche droite et on met le
-   h1 en plus gros tant que c'est possible", same day). Its first line is the
-   longer one, 7.73 × the font size wide at -0.03em, so the left column sets the
-   size: from 1201 wide up it is 768 px from the H1's edge to the right column,
-   and 92 px keeps 56 px between "run" and the column (the 69 px H1 kept 235).
-   1025–1200 the column narrows with the window (the right column is anchored
-   48 px from the right edge): width − 48 − 368 − 48 − 56, over 7.8. Tablets and
-   phones take their text width, 92 px at most. Line height 0.92: the two lines
-   are 169 tall (the 69 px H1 was 160 at normal), so the short-window scale below
-   only needed a little more room. The agents headline shares the box: 146 tall,
-   bottom-aligned in it (audience-agents.css). */
+/* The humans H1 since 2026-10-28: "Infrastructure powering / your GTM factory" (founder:
+   "should be 'Infrastructure powering your GTM factory'?", then "go with this h1"; it was "to
+   run" from 2026-10-27), two lines at V2's place, the left-right layout kept and the H1 as
+   big as it can be ("Gardons cette disposition gauche droite et on met le h1 en plus gros
+   tant que c'est possible", 2026-10-27). Its first line is the longer one, 9.13 × the font
+   size wide at -0.03em ("Infrastructure to run" was 7.73), so the left column sets the size:
+   from 1201 wide up it is 768 px from the H1's edge to the right column, and 77 px keeps 56 px
+   between "powering" and the column. 1025–1200 the column narrows with the window (the right
+   column is anchored 48 px from the right edge): width − 48 − 368 − 48 − 56, over 9.2.
+   Tablets and phones take their text width, 77 px at most. Line height 0.92: the two lines are
+   142 tall (the 69 px H1 was 160 at normal), so the short-window scale below keeps more room
+   than it needs. The agents headline shares the box: 146 tall, bottom-aligned in it
+   (audience-agents.css), so the box is 4 px taller in that view, under the same toggle. */
 .lp-hero--home #lp-hero-title {
-  font-size: 92px;
+  font-size: 77px;
   letter-spacing: -0.03em;
   line-height: 0.92;
 }
 @media (min-width: 1025px) and (max-width: 1200px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(92px, calc((100vw - 520px) / 7.8));
+    font-size: min(77px, calc((100vw - 520px) / 9.2));
   }
 }
 @media (max-width: 1024px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(92px, calc((100vw - 96px) / 7.8));
+    font-size: min(77px, calc((100vw - 96px) / 9.2));
   }
 }
 @media (max-width: 767px) {
   .lp-hero--home #lp-hero-title {
-    font-size: calc((100vw - 64px) / 7.8);
+    font-size: calc((100vw - 64px) / 9.2);
   }
 }
 /* "go-to-market" in the lede never breaks at a hyphen (LpHero.tsx) */

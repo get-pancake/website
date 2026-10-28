@@ -182,6 +182,12 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 @media (max-width: 767px) {
   .lp-agent-headline { font-size: min(28.85px, calc((100vw - 64px) / 11.2)); }
 }
+/* Homepage phones since the "powering" H1 (2026-10-28, hero.css: (100vw − 64px) / 9.2 at line
+   height 0.92): the two rows stay no taller than its box (1.84 × its size, so at most 0.7 ×
+   it), or the stacked block would grow in this view and lift the toggle above it */
+@media (max-width: 767px) {
+  .lp-hero--home .lp-agent-headline { font-size: min(28.85px, calc((100vw - 64px) / 11.2), calc((100vw - 64px) / 9.2 * 0.7)); }
+}
 /* Production typing, two rows: the crossfade (240 ms) first, then 27 glyphs over 1600 ms (letter
    .04, space and line break .12). Cursor 1 rides row 1 and goes out with its last glyph; cursor 2
    takes over at the start of row 2, follows the typing, then blinks — paused off screen
