@@ -200,54 +200,86 @@
   }
 }
 
-/* ── Homepage hero text block — Figma V2 4911:355 ──────────────────────
-   H1 "Frame 180" 4911:364 (259, 518, 656×160) and the right column "Frame
-   181" 4911:366 (1027, 474, 368×196: toggle row 28, gap 24, lede 72, gap
-   24, buttons 48), both bottom-anchored. V2 draws them at bottom offsets
-   99 / 107; the homepage keeps the founder's 36px drop (2026-09-01 "baisse
-   un peu le bloc h1/h2/cta": the green band ran too close to the "You"),
-   so 63 / 71 — the V2 composition 36px lower (decision 2026-10-09; V2's
-   bands clear the "Y" by ~17px at 99, ~53px here). Both blocks are
-   transform-free (left offsets instead of translateX(-50%)): the agents
-   view's scroll assembly drifts them through .lp-hs-hero (translate/opacity,
-   audience-agents.css), and a scroll driver that writes `transform` would
-   otherwise erase the centring. The humans view no longer moves them
-   (2026-10-12: the hero copy stays put while the window grows). */
-.lp-hero--home .lp-hero-title {
-  bottom: 63px; /* V2 99 − 36 */
-  left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
-  transform: none;
+/* ── Homepage hero text block — the big H1 (founder, 2026-10-27) ──────────
+   "let's make the h1 way bigger like it's the trend", "should be in 2 lines",
+   "Maybe write go-to-market": "Infrastructure to run / your go-to-market
+   factory". On desktop it runs from the designer's text column (V2's left
+   edge, 259 at 1654, 152 at 1440) to the nav buttons' right edge, as big as
+   its longer line allows: "your go-to-market factory" is 10.88 × the font
+   size wide at -0.03em (÷ 10.95 keeps a hair of slack), so 111 px from 1440
+   wide up, 150 px at most. On shorter windows it gives way to the rainbow:
+   the rotating rings reach y ≈ 530 over the H1's x range at lift 0 (rings.mjs,
+   2026-10-27), so the H1's top ink stays 24 px under that, which is
+   1.84 × size ≤ H − 493 − ROW + LIFT (H and LIFT: "Homepage first screen"
+   below); 40 px at the least. The lede, the buttons and the toggle sit in one
+   row under it, ROW above the hero's bottom: 32 px, 40 where the Product Hunt
+   badge hangs under the buttons (1025–1279, below). V2 drew them as a 368 px
+   column right of a 69 px H1. Both blocks stay transform-free: the agents view's scroll
+   assembly drifts them through .lp-hs-hero (translate/opacity,
+   audience-agents.css). Tablets and phones keep the flow column (toggle, H1,
+   lede, buttons), the H1 at their full text width. On the H1 itself: the
+   agents headline shares .lp-hero-title's box (audience-agents.css). */
+@media (min-width: 1025px) {
+  .lp-hero.lp-hero--home {
+    --lp-hero-left: max(48px, calc(50vw - 568px));
+    --lp-hero-right: max(32px, calc(50vw - 648px));
+    --lp-hero-row-b: 32px;
+    --lp-hero-h1: clamp(
+      40px,
+      min(
+        calc((100vw - var(--lp-hero-left) - var(--lp-hero-right)) / 10.95),
+        calc((var(--lp-hero-h) - 493px - var(--lp-hero-row-b) + var(--lp-hero-lift)) / 1.84)
+      ),
+      150px
+    );
+  }
+  /* the edges are measured from the page's left: no 1654 frame */
+  .lp-hero--home .lp-hero-inner {
+    max-width: none;
+  }
+  .lp-hero--home .lp-hero-title,
+  .lp-hero--home .lp-hero-aside {
+    left: var(--lp-hero-left);
+    right: var(--lp-hero-right);
+    transform: none;
+    width: auto;
+  }
+  .lp-hero--home .lp-hero-title {
+    bottom: calc(var(--lp-hero-row-b) + 72px); /* the row's 48 + 24 */
+    font-size: var(--lp-hero-h1);
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+  }
 }
-/* The humans H1 since 2026-10-27: "Infrastructure to run / your GTM factory"
-   (founder), two lines at V2's place and size, as the H1s before it (2026-10-13:
-   "in 2 lines, same placement as in the figma, same as when it was the previous
-   h1"). Its first line is the longer one, 7.73 × the font size wide (533 px at
-   69.014; "that bring you customers" was 9.6 ×): 235 px before the right column
-   from 1201 wide up. Where the layout gets tight it is the only thing that
-   gives, so the line never runs into the column nor into the phone's 32 px
-   gutter; with this line the designer's clamps decide down to 320 wide. On the
-   H1 itself: the agents headline shares .lp-hero-title's box and size. */
-@media (min-width: 1025px) and (max-width: 1200px) {
-  .lp-hero--home #lp-hero-title {
-    font-size: min(clamp(52px, 5.4vw, 69.014px), calc((100vw - 512px) / 7.8));
+@media (min-width: 1025px) and (max-width: 1279px) {
+  .lp-hero.lp-hero--home {
+    --lp-hero-row-b: 40px;
+  }
+}
+@media (max-width: 1024px) {
+  .lp-hero--home .lp-hero-title {
+    font-size: calc((100vw - 96px) / 10.95);
+    letter-spacing: -0.03em;
+    line-height: 0.92;
   }
 }
 @media (max-width: 767px) {
-  .lp-hero--home #lp-hero-title {
-    font-size: min(clamp(30px, 8.846vw, 35.559px), calc((100vw - 64px) / 7.8));
+  .lp-hero--home .lp-hero-title {
+    font-size: calc((100vw - 64px) / 10.95);
   }
 }
 /* "go-to-market" in the lede never breaks at a hyphen (LpHero.tsx) */
 .lp-hero-nobr { white-space: nowrap; }
+/* The row under the H1 (≥1025; ≤1024 the aside dissolves, below): the swap
+   cell (the lede and the buttons, or the agents' install line) on the left,
+   the toggle at the right end, on the H1's right edge. */
 .lp-hero--home .lp-hero-aside {
-  align-items: flex-start;
-  bottom: 71px; /* V2 107 − 36 */
+  align-items: center;
+  bottom: var(--lp-hero-row-b, 32px);
   display: flex;
-  flex-direction: column;
-  gap: 24px; /* Figma itemSpacing 24 */
-  left: calc(50% + 200px); /* left edge 1027 at 1654 (column centre x1211) */
+  gap: 32px;
+  justify-content: space-between;
   position: absolute;
-  width: 368px;
 }
 /* The swap cell: the human column (lede + buttons) and the agent column
    overlay in one grid area; the human one sizes it in both views
@@ -276,60 +308,64 @@
   align-self: start;
   height: 0;
 }
-@media (max-width: 1200px) {
-  .lp-hero--home .lp-hero-title {
-    left: 48px;
+/* ≥1025 the cell is the row's left part: the lede and the buttons side by
+   side. The agents' column lays its install box and friends row side by side
+   too, centred on the row with height 0, so the toggle never moves. */
+@media (min-width: 1025px) {
+  .lp-hero--home .lp-hero-swap {
+    max-width: none;
+    order: -1;
+    width: auto;
   }
-  .lp-hero--home .lp-hero-aside {
-    left: auto;
-    right: 48px;
+  .lp-hero--home .lp-hero-col--human {
+    align-items: center;
+    flex-direction: row;
+    gap: 40px;
+  }
+  .lp-hero--home .lp-hero-lede {
+    width: 420px;
+  }
+  /* the agents' mono labels make the row 10 px wider (236 against 226): one
+     box for both views, so the switch keeps its pixel at the row's end */
+  .lp-hero--home .lp-audience-selector {
+    width: 236px;
+  }
+  .lp-hero--home .lp-hero-swap > .lp-hero-col--agent {
+    align-self: center;
+    justify-content: center;
+  }
+  .lp-hero--home .lp-agent-start {
+    align-items: center;
+    flex-direction: row;
+    gap: 24px;
+    width: 740px;
+  }
+  .lp-hero--home .lp-agent-prompt--hero {
+    flex: 1;
   }
 }
-/* ── Homepage first screen (≥1025) — founder 2026-10-12, _decisions §10 ──
-   "The designer page is built so that the top of this product footage
-   appears in the hero 100vh": the demo window's top bar peeks at the bottom
-   of the first screen on every desktop window height. The window sits 26px
-   under the hero (demo.css), so the hero stops 96px above the fold: 26 of
-   inset + 70 of window. With svh = the frozen viewport height (--lp-svh):
+/* ── Homepage first screen (≥1025) ──────────────────────────────────────
+   Since the big H1 (2026-10-27) the hero fills the first screen: the H1 and
+   its row sit at the bottom of the window, and the demo window starts at the
+   fold. Its top bar used to peek above it (founder 2026-10-12, _decisions
+   §10); the big H1 takes that room, and from a 980 px tall window up the hero
+   stops at 860 so the bar shows again. With svh = the frozen viewport height
+   (--lp-svh):
 
-     H    = clamp(380, max(svh − 216, min(544, svh − 120)), 657)
-            ≥ 873 tall   657        the designer's hero; more of the window
-                                    shows as the window gets taller
-            760 – 873    svh − 216  hero bottom at svh − 96: the 96px peek
-            664 – 760    544        the peek tapers from 96 to 0
-            < 664        svh − 120  no peek; copy and CTAs stay above the fold
-                                    (down to the 380 floor, a 500px window)
+     H    = clamp(560, svh − 120, 860)
      LIFT = clamp(0, (873 − svh) × 0.3, 34), and 60 at ≤ 639 tall (the /agents
             tier's own −180): the art rises a little on short windows
-     s    = clamp(0.66, (H − 358 + LIFT) / 299, 1): the copy block's scale
-            about its bottom centre (1 from an 873-tall window up, where
-            the hero reaches the designer's 657)
 
-   Together the constants keep the rotating rainbow at least 42px off the
-   headline at every height, over the whole 20s loop (measured:
-   impl/first-screen-peek.md; the decision's first divisor, 286, let it
-   dip to 31.6px around 855 tall). Continuous, so
-   nothing snaps at a tier edge (the 639 lift aside); every term eases with
-   the hero's own 450ms glide when the frozen height lands.
+   The copy no longer scales: the H1's size follows the window's width.
    Specificity: one class more than the /agents tiers above, so the homepage
-   wins at every height whatever the order (height 0,2,0 vs 0,1,0; copy
-   transform and art top 0,2,0 vs 0,1,0). */
+   wins at every height whatever the order (0,2,0 vs 0,1,0). */
 @media (min-width: 1025px) {
   .lp-hero.lp-hero--home {
     --lp-hero-lift: clamp(0px, (873px - var(--lp-svh, 100svh)) * 0.3, 34px);
-    --lp-hero-h: clamp(
-      380px,
-      max(var(--lp-svh, 100svh) - 216px, min(544px, var(--lp-svh, 100svh) - 120px)),
-      657px
-    );
-    /* engines without CSS trig (Safari < 15.4, Chromium < 111, Firefox <
-       108) cannot divide two lengths: three safe steps, each the smallest
-       value the formula takes in its band, so the copy is never larger */
-    --lp-hero-s: 1;
+    --lp-hero-h: clamp(560px, calc(var(--lp-svh, 100svh) - 120px), 860px);
   }
   .lp-hero--home .lp-hero-inner {
-    transform: scale(var(--lp-hero-s)) translateZ(0);
-    transform-origin: 50% 100%;
+    transform: translateZ(0);
   }
   /* The art lifts with the short windows; its clip follows the hero's
      bottom. The section is positioned (isolation), so its art would paint
@@ -347,33 +383,9 @@
     top: calc(-120px - var(--lp-hero-lift));
   }
 }
-@media (min-width: 1025px) and (max-height: 872px) {
-  .lp-hero.lp-hero--home {
-    --lp-hero-s: 0.73;
-  }
-}
-@media (min-width: 1025px) and (max-height: 663px) {
-  .lp-hero.lp-hero--home {
-    --lp-hero-s: 0.66;
-  }
-}
 @media (min-width: 1025px) and (max-height: 639px) {
   .lp-hero.lp-hero--home {
     --lp-hero-lift: 60px;
-  }
-}
-/* a unitless ratio of two lengths: tan(atan2(a, b)) = a / b (the idiom of
-   the fit scales, anim.css). After the steps above: same specificity, so
-   it wins wherever the engine can compute it. */
-@supports (transform: scale(tan(atan2(1px, 1px)))) {
-  @media (min-width: 1025px) {
-    .lp-hero.lp-hero--home {
-      --lp-hero-s: clamp(
-        0.66,
-        tan(atan2(var(--lp-hero-h) - 358px + var(--lp-hero-lift), 299px)),
-        1
-      );
-    }
   }
 }
 /* the clip eases with the lift and the height it is made of (same curve,
@@ -581,6 +593,17 @@
   height: 44px;
   max-width: none;
   width: auto;
+}
+/* 1025–1279, under the big H1's row: 40 px of room to the hero's bottom (the
+   row's ROW), so the phone size, 32 tall and 8 under the buttons */
+@media (min-width: 1025px) and (max-width: 1279px) {
+  .lp-hero--home .lp-hero-ph {
+    border-radius: 7px;
+    top: calc(100% + 8px);
+  }
+  .lp-hero--home .lp-hero-ph img {
+    height: 32px;
+  }
 }
 /* ≥1280 the nav bar carries the badge (nav.css, where V1 had it): never both */
 @media (min-width: 1280px) {

@@ -32,7 +32,7 @@ export const META = {
  */
 export const HERO = {
   titleLine1: "Infrastructure to run",
-  titleLine2: "your GTM factory",
+  titleLine2: "your go-to-market factory",
   ledeBefore: "Pancake gives your agent the brain, the data and the tools to run your ",
   ledeNowrap: "go-to-market",
   ledeAfter: ".",

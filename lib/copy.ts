@@ -28,7 +28,7 @@ import {
  * seconds" (LpAudienceHeadline.tsx). His second pass that day: the first was
  * H1 "Agentic infrastructure to run your go-to-market" over a longer lede.
  * 2026-10-27: the lede stays under the founder's new H1, "Infrastructure to
- * run your GTM factory".
+ * run your go-to-market factory" ("GTM" until his "Maybe write go-to-market").
  */
 export const SITE_DESCRIPTION =
   "Pancake gives your agent the brain, the data and the tools to run your go-to-market.";

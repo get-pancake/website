@@ -177,6 +177,18 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 @media (max-width: 767px) {
   .lp-agent-headline { font-size: min(28.85px, calc((100vw - 64px) / 11.2)); }
 }
+/* Homepage since the big H1 (2026-10-27, hero.css): the two rows (2.607 em) fill the H1's box,
+   two lines at line-height 0.92 = 1.84 × its size, so 0.705 × the H1's size (83 px at 1440;
+   row 2 is then 7.9 × the H1 wide, well inside its 10.88). */
+@media (min-width: 1025px) {
+  .lp-hero--home .lp-agent-headline { font-size: calc(var(--lp-hero-h1) * 0.705); }
+}
+@media (max-width: 1024px) {
+  .lp-hero--home .lp-agent-headline { font-size: calc((100vw - 96px) / 10.95 * 0.705); }
+}
+@media (max-width: 767px) {
+  .lp-hero--home .lp-agent-headline { font-size: calc((100vw - 64px) / 10.95 * 0.705); }
+}
 /* Production typing, two rows: the crossfade (240 ms) first, then 27 glyphs over 1600 ms (letter
    .04, space and line break .12). Cursor 1 rides row 1 and goes out with its last glyph; cursor 2
    takes over at the start of row 2, follows the typing, then blinks — paused off screen
