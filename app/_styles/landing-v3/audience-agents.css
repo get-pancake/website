@@ -86,6 +86,11 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
   outline-offset: 2px;
 }
 [data-audience="agents"] .lp-nav-menu { --lp-text: var(--lp-ink-100); }
+/* no desktop floating bar in this view (nav.css skips it): pinned sections and in-page jumps
+   leave no room for it */
+@media (min-width: 1025px) {
+  .lp-audience-page[data-audience="agents"] { --lp-nav-reserve: 0px; }
+}
 @media (max-width: 767px) {
   .lp[data-audience="agents"] .lp-nav-menu-btn:focus-visible { outline-color: var(--lp-ink-0); }
   [data-audience="agents"] .lp-nav.is-scrolled {

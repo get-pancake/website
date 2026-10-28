@@ -654,3 +654,9 @@ body:has(main.lp) {
     scroll-margin-top: calc(var(--lp-nav-compact-height, 64px) + 8px);
   }
 }
+/* desktop since the floating bar (2026-10-27, nav.css): clear of the pill */
+@media (min-width: 1025px) {
+  .lp [id] {
+    scroll-margin-top: calc(var(--lp-nav-reserve, 80px) + 16px);
+  }
+}

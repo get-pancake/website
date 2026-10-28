@@ -62,12 +62,19 @@ const loadFlow = (): Promise<PlayOnceRuntime> =>
 
 type Parts = { section: HTMLElement; pin: HTMLElement; stage: HTMLElement; head: HTMLElement; card: HTMLElement };
 
+/** The window top the desktop floating bar takes (nav.css --lp-nav-reserve; 0 under it, and in
+    the agents view, which has no floating bar): the pinned stage fits and centres in the room
+    under it. Read off the section, which inherits the view's value. */
+const navReserve = (section: HTMLElement) =>
+  parseFloat(getComputedStyle(section).getPropertyValue("--lp-nav-reserve")) || 0;
+
 /** The stage in the scroll version: its layout height, and the card's scale so the heading and
-    the whole card fit the window (transforms leave offsetHeight alone: no feedback) */
-const fitOf = ({ head, card }: Parts) => {
+    the whole card fit the window under the bar (transforms leave offsetHeight alone: no feedback) */
+const fitOf = ({ section, head, card }: Parts) => {
   const headH = head.offsetHeight + SCROLL_GAP;
   const cardH = card.offsetHeight;
-  const fit = Math.min(1, (window.innerHeight - 2 * SCROLL_MARGIN - headH) / cardH);
+  const room = window.innerHeight - navReserve(section);
+  const fit = Math.min(1, (room - 2 * SCROLL_MARGIN - headH) / cardH);
   return { layoutH: headH + cardH, cardH, fit, visualH: headH + cardH * fit };
 };
 
@@ -89,7 +96,8 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
 
   const measure = () => {
     const { layoutH, cardH, fit, visualH } = fitOf(el);
-    top = Math.max(SCROLL_MARGIN, Math.round((window.innerHeight - visualH) / 2));
+    const reserve = navReserve(section);
+    top = reserve + Math.max(SCROLL_MARGIN, Math.round((window.innerHeight - reserve - visualH) / 2));
     len = pinLength(window.innerHeight);
     section.style.setProperty("--lp-infra-stage-h", `${layoutH}px`);
     section.style.setProperty("--lp-infra-top", `${top}px`);
