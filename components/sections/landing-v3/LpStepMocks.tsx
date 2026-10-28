@@ -1,7 +1,10 @@
 import {
+  S0_CONNECT,
   S1_HUBS,
+  S1_LEARN,
   S1_ROWS,
   S1_SKELETON_TOPS,
+  S1_VERDICTS,
   S2_BAR,
   S2_CHAT,
   S2_DRAFT,
@@ -23,39 +26,31 @@ import { ClaudeMark } from "./LpAgentMarks";
 import { SL_AVATAR } from "./lp-story-learns-art";
 
 /**
- * The three step mock UIs as DOM, with their geometry in steps.css. Step 01
- * and step 03's calendar are the pancake-studio compositions' markup
- * (shorts/brain-research-loop, meetings-calendar-loop); step 02 and step 03's
- * intro are the designer's "How it works" storyboards (Figma, 2026-10-11:
- * frames 5016:4214 → 5022:6230 and 5022:6116 → 5022:6080). Rest state = each
- * animation's FRAME 0 (the empty URL input, the chat request, the selected
- * leads): every animation-only layer is invisible at rest and driven by
+ * The step mock UIs as DOM, with their geometry in steps.css. Since
+ * 2026-10-27 the steps play s0 (connect Pancake in Claude, built from s2's
+ * pieces), s2 (the designer's "How it works" storyboard, Figma 2026-10-11:
+ * frames 5016:4214 → 5022:6230) and s1 (the brain-research-loop composition's
+ * graph, grown by three leads' verdicts). s3 (the outreach and the
+ * meetings-calendar-loop week) is not on the page now. Rest state = each
+ * animation's FRAME 0 (the empty composer, the young Brain beside its leads):
+ * every animation-only layer is invisible at rest and driven by
  * lp-step-timelines.ts from there. Purely decorative — the host carries the
  * alt text (LpStepAnim.tsx). Every string comes from lp-step-data.ts (linted).
  */
 
-/* ── step 01 · URL input → the knowledge graph → the market profile ── */
+/* ── step 03 (since 2026-10-27, "Watch it get better") · the young Brain beside three leads →
+   their verdicts grow it, hub by hub → "Who fits" resolves → the whole labelled Brain ──
+   The Brain is the brain-research-loop composition's graph (it was step 01, built from the
+   website); the leads are the Leads table's first three. Rest = frame 0: the young Brain
+   (each hub and its first leaf, `rest` in s1Graph) glided left, the three leads unjudged. */
 
 function S1Stage() {
   const { edges, dots } = s1Graph();
   return (
     <div className="lp-step-stage lp-step-stage--s1" aria-hidden="true">
-      <div className="lp-s1-ui">
-        <div className="lp-s1-input">
-          <span className="lp-s1-ph">example.com</span>
-          {/* revealed glyph by glyph with a clip inset (advance widths in lp-step-data.ts) */}
-          <span className="lp-s1-typed">acme.com</span>
-          <i className="lp-s1-caret" />
-        </div>
-        <div className="lp-s1-btn">
-          <span className="lp-s1-btntxt">Start research</span>
-        </div>
-        <i className="lp-s1-ring" />
-        <img className="lp-s1-cursor" src="/lp/lp-s1-cursor.svg" alt="" width={51} height={53} loading="lazy" decoding="async" />
-      </div>
-
       <div className="lp-s1-graph">
-        {/* edges draw in from the hub end: dash = the line's own length, fully offset at rest */}
+        {/* edges draw in from the hub end: dash = the line's own length, fully offset at rest
+            unless the young Brain already has them */}
         <svg className="lp-s1-edges" viewBox="0 0 464 426" xmlns="http://www.w3.org/2000/svg">
           {edges.map((e, i) => (
             <line
@@ -65,7 +60,7 @@ function S1Stage() {
               x2={e.x2}
               y2={e.y2}
               data-len={e.len}
-              style={{ strokeDasharray: e.len, strokeDashoffset: e.len }}
+              style={{ strokeDasharray: e.len, strokeDashoffset: e.rest ? 0 : e.len }}
             />
           ))}
         </svg>
@@ -74,11 +69,13 @@ function S1Stage() {
             <i
               key={i}
               className="lp-s1-dot"
+              data-rest={d.rest ? "" : undefined}
               style={{ left: d.x - d.r, top: d.y - d.r, width: 2 * d.r, height: 2 * d.r, background: d.fill }}
             />
           ))}
         </div>
-        <i className="lp-s1-bping" />
+        {/* the ping a verdict sends through the Brain, from its centre */}
+        <i className="lp-s1-cping" />
         <i className="lp-s1-center" />
         <p className="lp-s1-clabel">Acme</p>
         {/* the five hubs' names (Figma V2 4962:839–845, "Labels in 2nd level dots",
@@ -91,10 +88,25 @@ function S1Stage() {
         ))}
       </div>
 
+      {/* the three leads that come back, each with the verdict the timeline stamps on it */}
+      <div className="lp-s1-leads">
+        {S1_VERDICTS.map((v) => {
+          const l = SX_LEADS[v.lead];
+          return (
+            <div key={l.name} className="lp-s1-lead">
+              <SxAvatar initials={l.initials} />
+              <span className="lp-s1-lead-name">{l.name}</span>
+              <span className="lp-s1-lead-pos">{l.position}</span>
+              <span className={`lp-s1-verdict lp-s1-verdict--${v.kind}`}>{v.label}</span>
+            </div>
+          );
+        })}
+      </div>
+
       <div className="lp-s1-panel">
-        <p className="lp-s1-ptitle">Market profile</p>
-        <p className="lp-s1-psub lp-s1-sub-a">Researching...</p>
-        <p className="lp-s1-psub lp-s1-sub-b">5 insights</p>
+        <p className="lp-s1-ptitle">{S1_LEARN.title}</p>
+        <p className="lp-s1-psub lp-s1-sub-a">{S1_LEARN.learning}</p>
+        <p className="lp-s1-psub lp-s1-sub-b">{S1_LEARN.done}</p>
         {S1_SKELETON_TOPS.map((top) => (
           <div key={top} className="lp-s1-srow" style={{ top }}>
             <i className="lp-s1-skel lp-s1-skel--sq" />
@@ -169,6 +181,90 @@ function SxLeads({ selected = false }: { selected?: boolean }) {
 function SxHand() {
   return (
     <img className="lp-sx-hand" src="/lp/lp-step-hand.svg" alt="" width={31} height={33} loading="lazy" decoding="async" />
+  );
+}
+
+/* ── step 01 (since 2026-10-27, "Connect your agent") · in Claude: the composer's "+" →
+   Connectors → Pancake's sign-in → the connector chip → what Claude can now do ──
+   Step 02's Claude window, piece for piece (its header, composer, connector chip, answer
+   spark, card skin and hand), so step 02 opens exactly where this one ends. Rest = frame 0:
+   the empty composer with its "+". */
+
+function S0Stage() {
+  const c = S0_CONNECT;
+  return (
+    <div className="lp-step-stage lp-step-stage--s0" aria-hidden="true">
+      <i className="lp-sx-bg" />
+      <p className="lp-s2-claude">
+        <i className="lp-s2-claude-spark">
+          <ClaudeMark />
+        </i>
+        {c.app}
+      </p>
+
+      {/* Claude, once Pancake is connected: one line, then what it can now do */}
+      <p className="lp-s0-said">
+        <i className="lp-s2-answer-spark">
+          <ClaudeMark />
+        </i>
+        {c.connected}
+      </p>
+      {c.can.map((row, k) => (
+        <div key={row.text} className={`lp-s0-can lp-s0-can--${row.tone}`} style={{ top: 160 + 40 * k }}>
+          <i className="lp-s0-can-dot" />
+          <span>{row.text}</span>
+        </div>
+      ))}
+
+      <div className="lp-s2-composer lp-s0-composer">
+        <span className="lp-s2-ph">{c.placeholder}</span>
+        {/* the "+" the hand opens; the Pancake chip takes its place once connected */}
+        <i className="lp-s0-plus">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 3.333v9.334M3.333 8h9.334" strokeWidth="1.33333" strokeLinecap="round" />
+          </svg>
+        </i>
+        <i className="lp-s2-pk lp-s0-pk">
+          <S2PancakeMark className="lp-s2-pk-mark" />
+          <i className="lp-s2-pk-dot" />
+        </i>
+        <i className="lp-s0-ring" />
+        <i className="lp-s2-send">
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 11.5V2.5M3.25 6.25 7 2.5l3.75 3.75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </i>
+      </div>
+
+      {/* the Connectors menu, above the composer (step 02's question-card skin) */}
+      <div className="lp-s0-menu">
+        <p className="lp-s0-menu-head">{c.menu}</p>
+        <div className="lp-s0-menu-row lp-s0-menu-row--pk">
+          <S2PancakeMark className="lp-s0-menu-mark" />
+          <span className="lp-s0-menu-l">{c.pancake}</span>
+          <span className="lp-s0-connect">{c.connect}</span>
+        </div>
+        <i className="lp-s0-menu-rule" />
+        <div className="lp-s0-menu-row lp-s0-menu-row--custom">
+          <i className="lp-s0-menu-plus">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 3.333v9.334M3.333 8h9.334" strokeWidth="1.33333" strokeLinecap="round" />
+            </svg>
+          </i>
+          <span className="lp-s0-menu-l">{c.custom}</span>
+        </div>
+      </div>
+
+      {/* Pancake's sign-in, opened by the connector */}
+      <div className="lp-s0-signin">
+        <S2PancakeMark className="lp-s0-signin-mark" />
+        <p className="lp-s0-signin-title">{c.signin.title}</p>
+        <p className="lp-s0-signin-sub">{c.signin.sub}</p>
+        <span className="lp-s0-allow">{c.signin.allow}</span>
+      </div>
+
+      <SxHand />
+    </div>
   );
 }
 
@@ -485,6 +581,7 @@ function S3Stage() {
 }
 
 const STAGES: Record<StepVariant, (props: { placeholders: boolean }) => JSX.Element> = {
+  s0: S0Stage,
   s1: S1Stage,
   s2: S2Stage,
   s3: S3Stage,

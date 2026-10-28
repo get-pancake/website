@@ -127,45 +127,83 @@ export const S1_HUBS: S1Hub[] = [
     (dash array / offset) and re-derived on the client, and Math.hypot is not
     correctly rounded across engines (Node vs Firefox/WebKit differed in the
     last digit → hydration mismatch); sqrt of the sum of squares is. */
-export type S1Edge = { x1: number; y1: number; x2: number; y2: number; len: string; hub: number };
-export type S1Dot = { x: number; y: number; r: number; fill: string; hub: number };
+export type S1Edge = { x1: number; y1: number; x2: number; y2: number; len: string; hub: number; rest: boolean };
+export type S1Dot = { x: number; y: number; r: number; fill: string; hub: number; rest: boolean };
 
 /** The graph flattened in the composition's build order: for each hub its edge
     and dot, then every leaf's edge / dot, then the sub-branches. The markup
-    renders these lists and the timeline consumes them with the same cursors. */
+    renders these lists and the timeline consumes them with the same cursors.
+    `rest`: part of the young Brain the step rests on (each hub and its first
+    S1_REST_LEAVES leaves); the rest grows as the verdicts come in. */
 export function s1Graph(): { edges: S1Edge[]; dots: S1Dot[] } {
   const edges: S1Edge[] = [];
   const dots: S1Dot[] = [];
-  const edge = (hub: number, x1: number, y1: number, x2: number, y2: number) =>
-    edges.push({ x1, y1, x2, y2, len: Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)).toFixed(3), hub });
-  const dot = (hub: number, x: number, y: number, r: number, fill: string) => dots.push({ x, y, r, fill, hub });
+  const edge = (hub: number, rest: boolean, x1: number, y1: number, x2: number, y2: number) =>
+    edges.push({ x1, y1, x2, y2, len: Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)).toFixed(3), hub, rest });
+  const dot = (hub: number, rest: boolean, x: number, y: number, r: number, fill: string) =>
+    dots.push({ x, y, r, fill, hub, rest });
   S1_HUBS.forEach((h, i) => {
-    edge(i, S1_CENTER.x, S1_CENTER.y, h.e[0], h.e[1]);
-    dot(i, h.dot[0], h.dot[1], 6, h.fill);
-    h.leaves.forEach((L) => {
-      if (L[0] !== null) edge(i, h.e[0], h.e[1], L[0], L[1]);
-      if (L.length === 4) dot(i, L[2], L[3], 3, h.fill);
+    edge(i, true, S1_CENTER.x, S1_CENTER.y, h.e[0], h.e[1]);
+    dot(i, true, h.dot[0], h.dot[1], 6, h.fill);
+    h.leaves.forEach((L, k) => {
+      const rest = k < S1_REST_LEAVES;
+      if (L[0] !== null) edge(i, rest, h.e[0], h.e[1], L[0], L[1]);
+      if (L.length === 4) dot(i, rest, L[2], L[3], 3, h.fill);
     });
     h.sub?.forEach((S) => {
-      edge(i, S[0], S[1], S[2], S[3]);
-      dot(i, S[4], S[5], 3, h.fill);
+      edge(i, false, S[0], S[1], S[2], S[3]);
+      dot(i, false, S[4], S[5], 3, h.fill);
     });
   });
   return { edges, dots };
 }
 
-/** per-key jitter of the typing of "acme.com" — its glyph edges are
-    measured from the live text in lp-step-timelines.ts (the Fono advance table
-    that used to live here broke the moment the mocks moved to Geist Sans) */
-export const S1_JIT = [0, 0.02, -0.01, 0.03, 0, -0.02, 0.04, 0, 0.01, -0.01, 0.05, 0, 0.02, -0.02, 0.03, 0, 0.01, 0];
+/* Step 03 since 2026-10-27 ("Watch it get better. / Every lead teaches your Brain."): the same
+   Brain, grown by the leads. It rests young (each hub and its first leaf, glided left as the
+   market profile used to show it) beside three leads; each verdict grows the hubs it teaches;
+   then "Who fits" resolves where the market profile did, and the whole labelled Brain holds. */
 
-/** the market-profile rows that resolve out of the skeletons */
+/** how many of each hub's leaves the young Brain already has */
+export const S1_REST_LEAVES = 1;
+/** the three leads that come back (SX_LEADS indexes), the verdict each gets, and the hubs it
+    grows (S1_HUBS indexes: 0 Competitors, 1 ICPs, 2 Outreach, 3 Influencers, 4 Market Research) */
+export const S1_VERDICTS = [
+  { lead: 0, kind: "approved", label: "Approved", hubs: [1, 4] },
+  { lead: 1, kind: "skip", label: "Not a fit", hubs: [0, 3] },
+  { lead: 2, kind: "replied", label: "Replied", hubs: [2] },
+] as const;
+/** the panel the verdicts fill (where the market profile was) */
+export const S1_LEARN = { title: "Who fits", learning: "Learning…", done: "Updated" };
+/** its rows, resolving out of the skeletons */
 export const S1_ROWS = [
-  { top: 230, name: "Company", sub: "Acme" },
-  { top: 298, name: "Offering", sub: "Websites for startups" },
-  { top: 366, name: "Ideal clients", sub: "Funded B2B startups" },
+  { top: 230, name: "Ideal clients", sub: "Seed-stage founders" },
+  { top: 298, name: "Best signal", sub: "Hiring a marketing lead" },
+  { top: 366, name: "Skip", sub: "Agencies" },
 ];
 export const S1_SKELETON_TOPS = [230, 286, 342];
+
+/* ── step 01 since 2026-10-27 · "Connect your agent. / Now it can sell." — Pancake added to
+   Claude, in step 02's Claude window: the composer's "+", Connectors, Pancake's sign-in, the
+   connector chip (where step 02's composer has it), and what Claude can now do, in the infra
+   section's three tones (Context, Data, Tools). The alt text in lp-steps-content.ts retells
+   these strings: keep in sync. ── */
+export const S0_CONNECT = {
+  app: "Claude",
+  placeholder: "How can I help you today?",
+  menu: "Connectors",
+  pancake: "Pancake",
+  connect: "Connect",
+  custom: "Add custom connector",
+  /** Pancake's sign-in card, opened by the connector */
+  signin: { title: "Connect Pancake to Claude", sub: "Acme workspace", allow: "Allow" },
+  connected: "Pancake is connected. I can now:",
+  /** what Claude can now do (infra.css tones: yellow Context, purple Data, pink Tools) */
+  can: [
+    { tone: "yellow", text: "Read your Brain" },
+    { tone: "purple", text: "Search 30+ data providers" },
+    { tone: "pink", text: "Run Plays and reach out" },
+  ],
+} as const;
 
 /* ── steps 02 and 03 · the "How it works" storyboards (Figma page 4197:9774, delivered
    2026-10-11; red notes 4964:1637 "Deltas: New" and 4964:1640 "Deltas: New intro before

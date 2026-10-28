@@ -55,12 +55,14 @@ export function LpSteps() {
     <section className="lp-steps" id="how-it-works">
       <div className="lp-steps__org">
         <header className="lp-steps__head">
-          {/* one line over the two tiers (founder 2026-10-27: "Find a better one liner here",
-              for "The Vercel for GTM. / Deploy. Host. Run."): where you work, then his own
-              title of 2026-09-03 ("While you run your business, / Pancake fills your
-              pipeline."), which holds one line where "from the chat you already use." wrapped */}
-          <p className="lp-steps__kicker">From the chat you already use,</p>
-          <h2 className="lp-steps__title lp-title-section">Pancake fills your pipeline.</h2>
+          {/* one line over the two tiers (founder 2026-10-27: "Find a better one liner here", for
+              "The Vercel for GTM. / Deploy. Host. Run."; then, on "From the chat you already use,
+              / Pancake fills your pipeline.": "this still sounds a bit like verticalized sdr
+              agent"): the visitor's agent runs the GTM, Pancake is the layer under it. The
+              title holds one line (≈ 28 characters at most: "from the chat you already use."
+              wrapped) */}
+          <p className="lp-steps__kicker">With Pancake underneath,</p>
+          <h2 className="lp-steps__title lp-title-section">Your agent runs your GTM.</h2>
         </header>
         <div className="lp-steps__list">
           {STEPS.map((step) => (

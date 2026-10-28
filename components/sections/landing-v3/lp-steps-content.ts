@@ -86,17 +86,21 @@ export type StepContent = {
 
 export const STEPS: readonly StepContent[] = [
   /* Founder 2026-10-27: "the 3 parts should be 1/ Connect your agent (claude codex) 2/ Ask
-     anything (= play you want to create) 3/ Un truc genre get better everyday". Three verbs the
-     visitor does, the designer's three animations back in their own order (the Brain from your
-     website, the ask in Claude, the outreach and the replies). "Every day" is out: the homepage
-     lint keeps fixed frequencies off the page (#332), and it gets better with each lead anyway. */
+     anything (= play you want to create) 3/ Un truc genre get better everyday", then "Refine a
+     bit the motion for 1 / 2 / 3 reusing when possible components that should be reused,
+     creating the ones that should be recreated so that it makes sense" and "Not sure 'Pancake
+     learns your business' is the right thing after 'Connect your agent'". So: 01 is a new
+     motion built from step 02's Claude window (Pancake connected, what Claude can now do);
+     02 is the designer's storyboard as before; 03 is the brain-research-loop Brain, grown by
+     the leads' verdicts. "Every day" is out: the homepage lint keeps fixed frequencies off the
+     page (#332). */
   {
     num: "01",
-    title: "Connect your agent.\nPancake learns your business.",
-    body: "Add Pancake to Claude or Codex with one sign-in. It reads your website and learns what you sell, who buys and how you talk.",
-    art: [{ kind: "anim", variant: "s1", status: "final" }],
-    // names S1_HUBS[].label (lp-step-data.ts) in hub order: keep in sync
-    alt: "Animation: a website address is typed and researched; from the Acme node a knowledge graph blooms, its five branches labeled Competitors, ICPs, Outreach, Influencers and Market Research, then a market profile fills in: Company, Offering, Ideal clients.",
+    title: "Connect your agent.\nNow it can sell.",
+    body: "One sign-in adds Pancake to Claude or Codex. Your agent gets your Brain, 30+ data providers and the tools to reach out.",
+    art: [{ kind: "anim", variant: "s0", status: "final" }],
+    // retells S0_CONNECT (lp-step-data.ts): keep in sync
+    alt: "Animation: in Claude, the pointer opens Connectors in the composer and connects Pancake, then allows it on Pancake's sign-in card for the Acme workspace. The Pancake connector appears in the composer, and Claude answers: Pancake is connected. I can now: read your Brain, search 30+ data providers, run Plays and reach out.",
   },
   {
     num: "02",
@@ -110,8 +114,8 @@ export const STEPS: readonly StepContent[] = [
     num: "03",
     title: "Watch it get better.\nEvery lead teaches your Brain.",
     body: "It writes from your own accounts and follows up. Approve a lead or get a reply, and the next search lands closer to who buys.",
-    art: [{ kind: "anim", variant: "s3", status: "final" }],
-    // retells S3_THREAD, then lists S3_CHIPS (lp-step-data.ts): keep in sync
-    alt: "Animation: from the selected leads, Pancake drafts a message to Tamsin Okafor, founder of Quillfern, about her seed round and a new website, and it is sent. She answers that she is free Thursday at 3pm, and the meeting appears: Tamsin and Acme, Thursday 3pm. The meeting lands on Thursday in a calendar week of October 2026, which then fills up day by day with more meetings — Samantha M., Julien Aubert, Martin Torres and Acme, Lumen Collective, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",
+    art: [{ kind: "anim", variant: "s1", status: "final" }],
+    // retells S1_VERDICTS, S1_LEARN, S1_ROWS and S1_HUBS[].label (lp-step-data.ts): keep in sync
+    alt: "Animation: a young brain for Acme sits beside three leads. Tamsin Okafor is approved, Wes Pomeroy is marked not a fit and Imani Coldwell replies; each verdict pings the brain and grows new branches. A panel, Who fits, fills in: Ideal clients, seed-stage founders; Best signal, hiring a marketing lead; Skip, agencies. The whole brain stays, its branches labeled Competitors, ICPs, Outreach, Influencers and Market Research.",
   },
 ];
