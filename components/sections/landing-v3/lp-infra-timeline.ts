@@ -139,7 +139,7 @@ export function buildInfraFlow(root: HTMLElement): Built {
       its centre, empty;
    2. then the pieces of a company's go-to-market pop up all over the screen, in many sizes
       (LpInfra BITS: the brain's notes and sections, the providers' marks and "30+", the Play's
-      signals, the Play, its switch, Tamsin and the CRMs; Mobbin: Front's and Tines' integration
+      signals, the Play, its switch, the first lead and the CRMs; Mobbin: Front's and Tines' integration
       heroes, Antimetal's sizes for depth) and each flies along a curve, height first and then
       across, exactly onto its own place in its brick's picture (data-fill on both), growing or
       shrinking to that place's size, which then takes over: nothing lands "somewhere in the
@@ -211,7 +211,7 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
     return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   };
   // where each piece lands and how big it is there: centred on its place, at its place's size.
-  // The notes, the Play, Tamsin, the signals and the sections are built as their places (infra.css):
+  // The notes, the Play, the first lead, the signals and the sections are built as their places (infra.css):
   // the first three are given their place's width (plus their own extra padding), and all of them
   // land at the bricks' size up. The marks, "30+" and the switch are scaled to their place's width.
   const padX = (el: Element) => {
@@ -222,7 +222,7 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
     bits.map((bit) => {
       const slot = slotOf.get(bit.dataset.fill);
       if (!slot) throw new Error(`infra scroll: no place for ${bit.dataset.fill}`);
-      // Tamsin lands on her row (the list's hairline comes with her)
+      // the first lead lands on its row (the list's hairline comes with it)
       const place = slot.querySelector<HTMLElement>(".lp-infra__lead") ?? slot;
       if (bit.matches(".lp-infra__bit--row, .lp-infra__bit--play, .lp-infra__bit--lead")) {
         const borderBox = getComputedStyle(bit).boxSizing === "border-box";
@@ -294,7 +294,7 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
 
   /* ── 2. the pieces pop up and fly each onto its place, growing or shrinking to its size; on
      arrival the place takes over (it looks the same). Per brick: the Play first (its switch lands
-     in it), the nearest next, Tamsin last ── */
+     in it), the nearest next, the first lead last ── */
   BUCKETS.forEach((to) => {
     const flights = bits
       .filter((bit) => bit.dataset.to === to)

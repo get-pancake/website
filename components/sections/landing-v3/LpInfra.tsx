@@ -56,7 +56,8 @@ import { PANCAKE_AVATAR } from "@/components/sections/landing-v3/lp-pancake-avat
  * picture of what it holds, cast from the page's one story (the cast in lp-step-data.ts): Acme's
  * brain, the providers' own marks (unmodified, half the disc's width on a white disc, as the
  * dive's signals story draws them: five of its six, as approved on 2026-10-22), and the Play
- * "Funded startups hiring a marketing lead" with Tamsin Okafor waiting for approval.
+ * that reaches warm accounts, with its leads (a buyer's title over the signal that found them)
+ * waiting for approval.
  *
  * The markup below is the finished picture (no JS, reduced motion, the build-up's end, the
  * scroll's end).
@@ -88,11 +89,13 @@ const LAYERS: readonly Layer[] = [
   },
 ];
 
-/** what the brain knows about Acme, the page's studio that designs websites for startups */
+/** what the context holds, said as what each part is, not as an invented company's notes
+    (founder 2026-10-28: "giving examples like fake names i am not sure it's what talks the
+    most"): the ICP, the voice and the CRM, his "Unified GTM context" */
 const MEMORY = [
-  { key: "Sells", value: "Websites for startups" },
-  { key: "Buyers", value: "Funded founders" },
-  { key: "Voice", value: "Warm and short" },
+  { key: "ICP", value: "Who buys, and why" },
+  { key: "Voice", value: "How you write" },
+  { key: "CRM", value: "Your accounts and deals" },
 ] as const;
 
 /** five of the providers the product names to its users (the same five as the dive's signals
@@ -109,10 +112,11 @@ const PROVIDERS = [
 /** the brain's other sections, as chips under its notes */
 const CONTEXT_CHIPS = ["Personas", "Competitors"] as const;
 
-/** the two signals of the page's Play: Quillfern raised a seed round and is hiring a marketing lead */
+/** what the data finds: the buying signals (as the dive's signals story fans them out) and the
+    enrichment, not one invented lead's two signals */
 const SIGNALS = [
-  { id: "seed", label: "Raised a seed round" },
-  { id: "hiring", label: "Hiring a marketing lead" },
+  { id: "signals", label: "Hiring, funding, site visits" },
+  { id: "emails", label: "Work emails on demand" },
 ] as const;
 
 /** three of the CRMs a workspace connects (the dive names HubSpot, Attio, Pipedrive and Close) */
@@ -129,11 +133,12 @@ const SHAPE: Record<string, number> = {
   more: 3,
 };
 
-/** The leads the Play brings up for approval, in turn: the page's cast (LpStepMocks' leads). */
+/** The leads the Play brings up for approval, in turn: who and why, never an invented person
+    (the buyer's title over the signal that found them) */
 const LEADS = [
-  { initials: "TO", name: "Tamsin Okafor", company: "Quillfern" },
-  { initials: "JA", name: "Julien Aubert", company: "Brightloop" },
-  { initials: "SM", name: "Samantha Mills", company: "Northvale" },
+  { initials: "HS", name: "Head of Sales", signal: "Hiring SDRs" },
+  { initials: "HG", name: "Head of Growth", signal: "Just raised" },
+  { initials: "VM", name: "VP Marketing", signal: "Visited your site" },
 ] as const;
 
 /* The scroll version's pieces: what a company has lying around to run its go-to-market, all over
@@ -142,11 +147,11 @@ const LEADS = [
    differents elements pourraient avoir des tailles differentes", "on est pas oblige de spread que
    des logos partout", "d autres elements … eparpilles un peu partout pour run ton gtm quand t es
    une boite"). Each is a piece of the page's own story or of the design system, never a made-up
-   prop: the brain's sections (kit badges in the Context card's yellow) and two of its notes, the
-   two signals of the page's Play (Quillfern raised a seed round and is hiring a marketing lead),
+   prop: the context's sections (kit badges in the Context card's yellow) and its three rows, the
+   data's signals and enrichment,
    the data providers and the CRMs the product names to its users (their own marks on the kit's
-   pancakes; vetted files, docs/public-assets/lp/vendor-logos/README.md), the Play's switch and Tamsin
-   waiting for approval (lp-step-data.ts). `fill` names what the piece becomes in its bucket (data-fill in the cards).
+   pancakes; vetted files, docs/public-assets/lp/vendor-logos/README.md), the Play's switch and the
+   first lead waiting for approval. `fill` names what the piece becomes in its bucket (data-fill in the cards).
    Places are in the card's own px at full size, from its top edge (y) and its centre (x): `x`
    beyond the title's half width (360) stretches or shrinks with the window's width
    (--lp-infra-reach), `y` beyond the band of the agent and the buckets with its height
@@ -164,9 +169,9 @@ type Bit = { to: Bucket; fill: string; x: number; y: number; s: number; r: numbe
    2026-10-27, "mieux flecher chacun de ces elements vers sa place finale dans la card la on n
    amene pas chaque objet dans sa position finale on triche un peu". */
 const BITS: readonly Bit[] = [
-  { to: "context", kind: "row", label: "Buyers", value: "Funded founders", fill: "buyers", x: -560, y: -95, s: 1, r: 4 },
-  { to: "context", kind: "row", label: "Sells", value: "Websites for startups", fill: "sells", x: -500, y: 20, s: 1.05, r: -3 },
-  { to: "context", kind: "row", label: "Voice", value: "Warm and short", fill: "voice", x: -330, y: 160, s: 0.95, r: -2 },
+  { to: "context", kind: "row", label: "Voice", value: "How you write", fill: "voice", x: -560, y: -95, s: 1, r: 4 },
+  { to: "context", kind: "row", label: "ICP", value: "Who buys, and why", fill: "icp", x: -500, y: 20, s: 1.05, r: -3 },
+  { to: "context", kind: "row", label: "CRM", value: "Your accounts and deals", fill: "crm", x: -330, y: 160, s: 0.95, r: -2 },
   { to: "context", kind: "badge", label: "Personas", fill: "personas", x: -650, y: 300, s: 2, r: 6 },
   { to: "context", kind: "badge", label: "Competitors", fill: "competitors", x: -450, y: 560, s: 1.9, r: -5 },
   { to: "data", kind: "logo", logo: "/lp/story-sources/apify.svg", fill: "apify", x: -420, y: -70, s: 1.35, r: 0 },
@@ -175,8 +180,8 @@ const BITS: readonly Bit[] = [
   { to: "data", kind: "logo", logo: "/lp/story-sources/wappalyzer.svg", fill: "wappalyzer", x: 230, y: 25, s: 0.8, r: 0 },
   { to: "data", kind: "logo", logo: "/lp/story-sources/firecrawl.png", fill: "firecrawl", x: 670, y: 280, s: 1.1, r: 0 },
   { to: "data", kind: "more", fill: "more", x: -90, y: 150, s: 0.95, r: 0 },
-  { to: "data", kind: "signal", label: "Raised a seed round", fill: "seed", x: -120, y: 560, s: 1.35, r: 3 },
-  { to: "data", kind: "signal", label: "Hiring a marketing lead", fill: "hiring", x: 150, y: 595, s: 1.25, r: -3 },
+  { to: "data", kind: "signal", label: "Hiring, funding, site visits", fill: "signals", x: -120, y: 560, s: 1.35, r: 3 },
+  { to: "data", kind: "signal", label: "Work emails on demand", fill: "emails", x: 150, y: 595, s: 1.25, r: -3 },
   { to: "tools", kind: "logo", logo: "/lp/vendor-logos/hubspot.svg", fill: "hubspot", x: 640, y: -100, s: 1.3, r: 0 },
   { to: "tools", kind: "logo", logo: "/lp/vendor-logos/attio.svg", fill: "attio", x: 420, y: 10, s: 0.9, r: 0 },
   { to: "tools", kind: "logo", logo: "/lp/vendor-logos/pipedrive.svg", fill: "pipedrive", x: 680, y: 450, s: 0.8, r: 0 },
@@ -375,7 +380,7 @@ function Bits() {
                 <LeadFace initials={LEADS[0].initials} />
                 <span className="lp-infra__lead-who">
                   <span className="lp-infra__lead-name">{LEADS[0].name}</span>
-                  <span className="lp-infra__lead-co">{LEADS[0].company}</span>
+                  <span className="lp-infra__lead-co">{LEADS[0].signal}</span>
                 </span>
                 <span className="lp-infra__approve">Approve</span>
               </span>
@@ -488,7 +493,7 @@ function ToolsPic() {
             <LeadFace initials={lead.initials} />
             <span className="lp-infra__lead-who">
               <span className="lp-infra__lead-name">{lead.name}</span>
-              <span className="lp-infra__lead-co">{lead.company}</span>
+              <span className="lp-infra__lead-co">{lead.signal}</span>
             </span>
             <span className="lp-infra__approve">
               <span className="lp-infra__approve-do">Approve</span>
@@ -511,7 +516,8 @@ function ToolsPic() {
 }
 
 /** the Play's name and icon, in the card and on its piece */
-const PLAY_NAME = "Funded startups hiring a marketing lead";
+/** the Play's job, not an example Play's name: the deck's sends go to warm accounts, approved by you */
+const PLAY_NAME = "Reach warm accounts";
 function PlayIcon() {
   return (
     <span className="lp-infra__play-icon">
