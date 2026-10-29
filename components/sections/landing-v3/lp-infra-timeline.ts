@@ -51,12 +51,18 @@ function one<E extends Element = HTMLElement>(root: Element, sel: string) {
 /** cleanup(): every element the builder styled gets its rest inline style back */
 function restStyles(touched: Element[]) {
   const styles = touched.map((el) => el.getAttribute("style"));
-  return () =>
+  return () => {
+    // GSAP keeps each element's transform in a cache of its own, which the style attribute does
+    // not reset: clear it first, or the next build's tweens start from this timeline's values (a
+    // rebuild after a resize left the bricks' words at their badge size, the windows shut;
+    // founder 2026-10-28: "on a reduit la taille de context / data / tool ou quoi")
+    gsap.set(touched, { clearProps: "all" });
     touched.forEach((el, i) => {
       const style = styles[i];
       if (style === null) el.removeAttribute("style");
       else el.setAttribute("style", style);
     });
+  };
 }
 
 export function buildInfraFlow(root: HTMLElement): Built {
