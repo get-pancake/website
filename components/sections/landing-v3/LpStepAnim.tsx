@@ -9,6 +9,13 @@ import type { StepVariant } from "./lp-step-timelines";
 /** playback rate of the three steps (1 = the compositions' pace) */
 const STEP_SPEED = 1;
 
+/** The variants whose server markup is their END picture (lp-play-once `restIsEnd`, the deep
+    dive's phone stack contract): reduced motion and a page without script show it, and the
+    driver cues the first frame unseen below the fold before it plays. s4 (step 02 since
+    2026-10-28, Claude and the envelopes it sends): its first frame is Claude alone, so the
+    burst is the picture worth resting on. The others rest on their first frame. */
+const REST_IS_END: Record<StepVariant, boolean> = { s0: false, s1: false, s2: false, s3: false, s4: true };
+
 const loadAnimation = (variant: StepVariant): Promise<PlayOnceRuntime> =>
   Promise.all([import("@/lib/gsap"), import("./lp-step-timelines")]).then(
     ([{ gsap }, { buildStepTimeline }]) => ({ gsap, build: (stage) => buildStepTimeline(variant, stage) }),
@@ -28,7 +35,8 @@ const loadAnimation = (variant: StepVariant): Promise<PlayOnceRuntime> =>
  * each animation's frame 0 (the empty input, the chat request, the selected
  * leads: never blank), so the server-rendered card is already the right
  * still and nothing flashes at hydration; if the build ever throws, that
- * still stands ("static").
+ * still stands ("static"). Since 2026-10-28 one exception, s4 (step 02's
+ * envelope burst): its markup is its END picture (REST_IS_END above).
  *
  * Geometry: the stage is the 464×426 media card at design size and scales as
  * pixels with the card (--lp-fit = card width / 464, via ResizeObserver).
@@ -69,7 +77,7 @@ export function LpStepAnim({
       stage,
       designWidth: 464,
       load: () => loadAnimation(variant),
-      restIsEnd: false,
+      restIsEnd: REST_IS_END[variant],
       qa: { registry: "__lpStep", key: variant },
       speed: STEP_SPEED,
     });

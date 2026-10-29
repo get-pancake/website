@@ -810,6 +810,85 @@
   white-space: nowrap;
 }
 
+/* ── step 02 (since 2026-10-28, "Ask anything.") · Claude, and the envelopes it sends ──
+   LpStepMocks S4Stage, lp-step-data S4_DISC / S4_MAIL, lp-step-timelines buildS4. No UI
+   (founder: "not sure we should show here the UI… plein de petites enveloppes qui partent de
+   claude dans tous les sens dans le carré"). The markup is the END picture, the burst
+   (LpStepAnim REST_IS_END): every envelope on its place, its tilt the only transform.
+   The flight is three CSS variables the timeline tweens (the story kit's way, story-kit.css):
+   --lp-s4-x / --lp-s4-y (px, from its place back to Claude's centre), --lp-s4-s (its scale)
+   and --lp-s4-spin (degrees added to its tilt). Unset, translate and scale are invalid at
+   computed-value time and compute to none, and the spin falls back to 0: at rest the envelope
+   computes translate none, scale none, transform none and rotate = its tilt, exactly as the
+   server markup. GSAP's own x / y / scale would write translate3d mid-tween, which re-rasterises
+   the stage in Chromium for the tween's length (story-kit.css). Paints nothing behind the
+   scene: the card's cream is the ground. No will-change, no keyframes: GSAP-only, plays once. */
+.lp-step-stage--s4 .lp-s4-sprite {
+  height: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+}
+/* an envelope: the mail icon in the brand's ink on a kit pancake; the pancake's shadow is the
+   infra section's (infra.css .lp-infra__cake: a hairline and a soft drop) */
+.lp-step-stage--s4 .lp-s4-mail {
+  color: var(--lp-ink-100);
+  filter: drop-shadow(0 0 0.5px rgba(48, 0, 44, 0.2)) drop-shadow(0 3px 8px rgba(48, 0, 44, 0.1));
+  position: absolute;
+  rotate: calc((var(--r) + var(--lp-s4-spin, 0)) * 1deg);
+  scale: var(--lp-s4-s);
+  translate: calc(var(--lp-s4-x) * 1px) calc(var(--lp-s4-y) * 1px);
+}
+.lp-step-stage--s4 .lp-s4-mail svg {
+  height: 100%;
+  overflow: visible;
+  width: 100%;
+}
+/* the design kit's coloured pancakes (_design-kit/pancake.html: a strong branded face over a
+   lighter rim, pink-30 on pink-20, purple-30 on purple-20, yellow-30 on yellow-20), in the
+   five accent tones of the page (green-20 on green-10, blue-30 on blue-20) */
+.lp-s4-mail[data-tone="yellow"] {
+  --lp-s4-face: var(--lp-yellow-30);
+  --lp-s4-rim: var(--lp-yellow-20);
+}
+.lp-s4-mail[data-tone="purple"] {
+  --lp-s4-face: var(--lp-purple-30);
+  --lp-s4-rim: var(--lp-purple-20);
+}
+.lp-s4-mail[data-tone="pink"] {
+  --lp-s4-face: var(--lp-pink-30);
+  --lp-s4-rim: var(--lp-pink-20);
+}
+.lp-s4-mail[data-tone="green"] {
+  --lp-s4-face: var(--lp-green-20);
+  --lp-s4-rim: var(--lp-green-10);
+}
+.lp-s4-mail[data-tone="blue"] {
+  --lp-s4-face: var(--lp-blue-30);
+  --lp-s4-rim: var(--lp-blue-20);
+}
+/* Claude: the story kit's white disc (story-kit.css .lp-sk-disc: the 0.5px hairline as a
+   spread shadow, the soft shadow), its glyph as the deep dive draws it on a disc
+   (story-mcp.css: 20 of a 24 cell at half the disc, in the spark colour) */
+.lp-step-stage--s4 .lp-s4-disc {
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.12), 0 3px 14px rgba(48, 0, 44, 0.1);
+  position: absolute;
+}
+.lp-step-stage--s4 .lp-s4-claude {
+  color: var(--lp-claude-spark);
+  height: 41.667%;
+  left: 29.167%;
+  position: absolute;
+  top: 29.167%;
+  width: 41.667%;
+}
+.lp-step-stage--s4 .lp-s4-claude svg {
+  height: 100%;
+  width: 100%;
+}
+
 /* ══ Steps 02 and 03 — the designer's "How it works" storyboards (Figma page
    4197:9774, 2026-10-11; spec artifacts specs/updates/steps-how-it-works.md).
    Every box below is a Figma frame box in the 464×426 stage's own px;

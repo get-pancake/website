@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import {
   S0_CONNECT,
   S1_HUBS,
@@ -16,6 +18,8 @@ import {
   S3_RULE_TOPS,
   S3_THREAD,
   S3_TICK_TOPS,
+  S4_DISC,
+  S4_MAIL,
   SX_CHECK_D,
   SX_LEADS,
   SX_LEADS_COPY,
@@ -27,15 +31,18 @@ import { PANCAKE_AVATAR } from "./lp-pancake-avatar-art";
 
 /**
  * The step mock UIs as DOM, with their geometry in steps.css. Since
- * 2026-10-27 the steps play s0 (connect Pancake in Claude, built from s2's
- * pieces), s2 (the designer's "How it works" storyboard, Figma 2026-10-11:
- * frames 5016:4214 → 5022:6230) and s1 (the brain-research-loop composition's
- * graph, grown by three leads' verdicts). s3 (the outreach and the
- * meetings-calendar-loop week) is not on the page now. Rest state = each
+ * 2026-10-28 the steps play s0 (connect Pancake in Claude, built from s2's
+ * pieces), s4 (Claude and the envelopes it sends, no UI) and s1 (the
+ * brain-research-loop composition's graph, grown by three leads' verdicts).
+ * s2 (the designer's "How it works" storyboard, Figma 2026-10-11: frames
+ * 5016:4214 → 5022:6230, step 02 until 2026-10-28) and s3 (the outreach and
+ * the meetings-calendar-loop week) are not on the page now. Rest state = each
  * animation's FRAME 0 (the empty composer, the young Brain beside its leads):
  * every animation-only layer is invisible at rest and driven by
- * lp-step-timelines.ts from there. Purely decorative — the host carries the
- * alt text (LpStepAnim.tsx). Every string comes from lp-step-data.ts (linted).
+ * lp-step-timelines.ts from there. One exception, s4: its markup is its END
+ * picture, the burst (LpStepAnim REST_IS_END), and its timeline sets frame 0.
+ * Purely decorative — the host carries the alt text (LpStepAnim.tsx). Every
+ * string comes from lp-step-data.ts (linted).
  */
 
 /* ── step 03 (since 2026-10-27, "Watch it get better") · the young Brain beside three leads →
@@ -580,11 +587,105 @@ function S3Stage() {
   );
 }
 
+/* ── step 02 (since 2026-10-28, "Ask anything.") · Claude, and the envelopes it sends ──
+   Founder, on the storyboard's end picture: "not sure we should show here the UI but maybe a
+   juicy things showing claude + like plein de petites enveloppes qui partent de claude dans
+   tous les sens dans le carré". The Claude mark on the kit's white disc (LpStoryKit SkDisc's
+   look), and the 24 envelopes of S4_MAIL (lp-step-data.ts): the site's mail icon
+   (AgSuperpowersMocks MailIcon) in the brand's ink on the design kit's coloured pancakes.
+   This markup is the END picture, the burst (LpStepAnim REST_IS_END: reduced motion and a
+   page without script show it); buildS4 sets frame 0, every envelope small and hidden under
+   Claude's disc, and flies each one out to its place. Layers, back to front: the sprite (draws
+   nothing), the envelopes in S4_MAIL's paint order, Claude's disc over all of them. */
+
+/** The design kit's pancakes (_design-kit/pancake.html `pancake-top-bordered-1…3`: an imperfect
+    round seen from above, its back layer showing under it as the rim). COPIED from LpInfra.tsx
+    PK_SHAPES, never imported (that section is its own module): keep the copies in step. */
+const S4_PK = [
+  {
+    back: "M25.9381 48C33.3476 48 39.2723 42.626 43.3305 37.1936C46.1161 33.4647 47.7671 28.7568 47.8098 23.4826C47.9152 10.471 37.572 -4.71682e-06 24.9517 -4.71682e-06C12.3313 -4.71682e-06 1.5995 9.21835 0.284057 23.4826C-0.514219 32.1381 3.48143 36.8362 7.99137 40.6918C12.4705 44.521 19.7118 48 25.9381 48Z",
+    front: "M25.8574 44C32.9581 44 38.6359 39.0738 42.5251 34.0941C45.1946 30.676 46.7768 26.3604 46.8178 21.5257C46.9187 9.59842 37.0065 -6.85743e-06 24.912 -6.85743e-06C12.8175 -6.85743e-06 2.53285 8.45015 1.27222 21.5257C0.507207 29.4599 4.33637 33.7665 8.65839 37.3008C12.9509 40.8109 19.8905 44 25.8574 44Z",
+  },
+  {
+    back: "M23.3576 48C30.7788 48 39.2585 41.6636 43.3231 36.3538C46.1131 32.7091 47.7668 28.1075 47.8095 22.9524C47.9151 10.2346 37.5556 -4.71143e-06 24.9153 -4.71143e-06C19.1438 -4.71143e-06 13.8375 2.50121 9.57236 5.86992C4.4964 9.87906 0.208705 14.46 0.208705 22.9524C0.208746 36.6853 11.325 48 23.3576 48Z",
+    front: "M23.3844 44C30.4964 44 38.6227 38.1916 42.518 33.3243C45.1918 29.9834 46.7765 25.7652 46.8175 21.0397C46.9186 9.38169 36.9908 -9.22488e-06 24.8772 -9.22488e-06C19.3461 -9.22488e-06 14.2609 2.29277 10.1735 5.38075C5.30905 9.0558 1.20001 13.255 1.20001 21.0397C1.20005 33.6282 11.8532 44 23.3844 44Z",
+  },
+  {
+    back: "M22.1484 46.4163C26.967 46.4163 34.482 46.5516 39.1488 42.9163C44.8494 38.4758 47.7422 31.2041 47.7958 24.7072C47.9013 11.9254 38.4073 1.68428e-05 25.7706 1.68428e-05C20.0007 1.68428e-05 13.4127 1.53069 9.1488 4.91634C4.07427 8.94565 0.20837 14.2913 0.20837 22.8264C0.208411 36.6284 7.5672 46.4163 22.1484 46.4163Z",
+    front: "M22.2261 42.5483C26.8439 42.5483 34.0458 42.6723 38.5181 39.34C43.9812 35.2696 46.7534 28.6038 46.8048 22.6483C46.9059 10.9317 37.8075 5.16207e-05 25.6973 5.16207e-05C20.1679 5.16207e-05 13.8544 1.40317 9.76813 4.50668C4.90504 8.20022 1.20022 13.1004 1.20022 20.9243C1.20026 33.5761 8.25243 42.5483 22.2261 42.5483Z",
+  },
+] as const;
+
+function S4Stage() {
+  const d = S4_DISC;
+  return (
+    <div className="lp-step-stage lp-step-stage--s4" aria-hidden="true">
+      {/* drawn once, used by every envelope: the three pancakes (rim, then face, in the
+          envelope's tone) and the mail icon, 0.6 of the pancake on its face's centre (24, 22) */}
+      <svg className="lp-s4-sprite" focusable="false">
+        {S4_PK.map((shape, k) => (
+          <symbol key={k} id={`lp-s4-pk-${k + 1}`} viewBox="0 0 48 48">
+            <path d={shape.back} fill="var(--lp-s4-rim)" />
+            <path d={shape.front} fill="var(--lp-s4-face)" />
+          </symbol>
+        ))}
+        <symbol id="lp-s4-env" viewBox="0 0 48 48">
+          <g
+            transform="translate(9.6 7.6) scale(1.2)"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="3" y="5" width="18" height="14" rx="3" />
+            <path d="M3 8l9 6 9-6" />
+          </g>
+        </symbol>
+      </svg>
+
+      {/* the burst: each envelope on its place at its tilt (--r, degrees; steps.css turns it) */}
+      {S4_MAIL.map((m, i) => (
+        <i
+          key={i}
+          className="lp-s4-mail"
+          data-tone={m.tone}
+          style={
+            {
+              left: m.x - m.size / 2,
+              top: m.y - m.size / 2,
+              width: m.size,
+              height: m.size,
+              "--r": m.tilt,
+            } as CSSProperties
+          }
+        >
+          <svg viewBox="0 0 48 48" focusable="false">
+            <use href={`#lp-s4-pk-${m.shape}`} />
+            <use href="#lp-s4-env" />
+          </svg>
+        </i>
+      ))}
+
+      {/* Claude, over everything: the envelopes leave from under its disc */}
+      <span
+        className="lp-s4-disc"
+        style={{ left: d.x - d.size / 2, top: d.y - d.size / 2, width: d.size, height: d.size }}
+      >
+        <i className="lp-s4-claude">
+          <ClaudeMark />
+        </i>
+      </span>
+    </div>
+  );
+}
+
 const STAGES: Record<StepVariant, (props: { placeholders: boolean }) => JSX.Element> = {
   s0: S0Stage,
   s1: S1Stage,
   s2: S2Stage,
   s3: S3Stage,
+  s4: S4Stage,
 };
 
 /** `placeholders`: lib/placeholders SHOW_PLACEHOLDERS, decided by the server component

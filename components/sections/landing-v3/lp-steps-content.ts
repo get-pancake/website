@@ -59,7 +59,7 @@ import type { StepVariant } from "./lp-step-timelines";
 
 /** One candidate for a step's 464×426 art card. */
 export type StepArt =
-  /** the in-page DOM + CSS + GSAP mock (LpStepAnim; today s1, s2, s3) */
+  /** the in-page DOM + CSS + GSAP mock (LpStepAnim; today s0, s4, s1) */
   | { kind: "anim"; variant: StepVariant; status: ContentStatus }
   /** a designer still at the card's design size (464×426, contain-fit) — for art that
       lands before its animation (the 2026-09-02 /public/how/step-*.svg precedent) */
@@ -102,13 +102,21 @@ export const STEPS: readonly StepContent[] = [
     // retells S0_CONNECT (lp-step-data.ts): keep in sync
     alt: "Animation: in Claude, the pointer opens Connectors in the composer and connects Pancake, then allows it on Pancake's sign-in card for the Acme workspace. The Pancake connector appears in the composer, and Claude answers: Pancake is connected. I can now: read your Brain, search 30+ data providers, run Plays and reach out.",
   },
+  /* Founder 2026-10-28, on step 02's end picture (the Play card "Funded startups hiring a
+     marketing lead · 13 leads found · Review 13 leads"): "not sure we should show here the UI but
+     maybe a juicy things showing claude + like plein de petites enveloppes qui partent de claude
+     dans tous les sens dans le carré". So step 02 plays s4: the Claude mark in the middle, the
+     envelopes bursting out of it. The designer's storyboard (s2) stays in the code, unused; its
+     alt was: "Animation: in Claude, with Pancake connected, the request “Find founders who just
+     raised a seed round” is typed and sent… and the Play card “Funded startups hiring a
+     marketing lead” shows 13 leads found." */
   {
     num: "02",
     title: "Ask anything.\nPancake turns it into a Play.",
     body: "Describe the customers you want, in your own words. Pancake finds them, checks they fit and keeps the search running.",
-    art: [{ kind: "anim", variant: "s2", status: "final" }],
-    // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
-    alt: "Animation: in Claude, with Pancake connected, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, Claude answers and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape on Pancake: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",
+    art: [{ kind: "anim", variant: "s4", status: "final" }],
+    // retells S4_DISC and S4_MAIL (lp-step-data.ts): keep in sync
+    alt: "Animation: the Claude mark sits in the middle, then two dozen small envelopes fly out of it in every direction and land all over the card.",
   },
   {
     num: "03",

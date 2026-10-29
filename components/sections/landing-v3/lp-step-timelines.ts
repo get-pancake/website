@@ -15,6 +15,8 @@ import {
   S3_LANDED,
   S3_NUM_DX,
   S3_THREAD,
+  S4_DISC,
+  S4_MAIL,
   SX_LEADS_F5,
   SX_LEADS_ROW_IN,
 } from "./lp-step-data";
@@ -104,12 +106,14 @@ const clipTo = (g: Glyph, w: number) =>
  * root a viewport ahead of the card; lp-play-once.ts owns playback (as the
  * card arrives → play once → hold the last frame). Every builder is
  * seek-safe: sets and tweens only, no callbacks, no randomness. Frame 0 of
- * every timeline equals the markup's rest state. s2 and s3 carry labels at
- * the storyboard's pictures (f1 … f8, f1 … f5 and `cal`): QA seeks them
- * through window.__lpStep.s2 / .s3.
+ * every timeline equals the markup's rest state, except s4's, whose markup is
+ * its END picture (LpStepAnim REST_IS_END; buildS4 sets its frame 0). s2 and
+ * s3 carry labels at the storyboard's pictures (f1 … f8, f1 … f5 and `cal`):
+ * QA seeks them through window.__lpStep.s2 / .s3. Since 2026-10-28 step 02
+ * plays s4 (Claude and the envelopes it sends) and s2 is unused, as s3.
  */
 
-export type StepVariant = "s0" | "s1" | "s2" | "s3";
+export type StepVariant = "s0" | "s1" | "s2" | "s3" | "s4";
 /** cue: the first scene where the card waits for the visitor (0: the poster) */
 export type BuiltStep = { tl: gsap.core.Timeline; cleanup: () => void; cue: number };
 
@@ -1086,11 +1090,77 @@ function buildCalendar(root: HTMLElement, already?: string): gsap.core.Timeline 
   return tl;
 }
 
+/* ── step 02 (since 2026-10-28) · Ask anything: Claude, and the envelopes it sends (≈ 2.9 s) ──
+   Founder, on the storyboard's end picture (the Play card): "not sure we should show here the UI
+   but maybe a juicy things showing claude + like plein de petites enveloppes qui partent de
+   claude dans tous les sens dans le carré". Frame 0 = Claude's disc alone: every envelope sits
+   under it, small, at its centre. From 0.3 s they leave in three waves, near ring to far ring
+   (S4_MAIL's `at`, 0.05 s apart inside a wave), each straight out from Claude's centre to its
+   place, growing as it goes, unwinding into its tilt, easing out; the last lands at 2.5 s and
+   the burst holds. The markup is that END picture (LpStepAnim REST_IS_END), so the timeline
+   writes frame 0 itself (inside the build's gsap.context, which reverts it) and tweens from it.
+   Nothing moves by GSAP's own transform: each envelope's flight is four CSS variables that
+   steps.css reads into translate / scale / rotate (the story kit's way, lp-story-kit.ts header:
+   GSAP's x / y / scale write translate3d mid-tween, and Chromium re-rasterises the stage for
+   the tween's length). Each envelope lets go of its variables once it has landed, so at rest it
+   computes exactly what the server markup does (translate none, scale none, rotate = its tilt).
+   Never a loop, a glow, a pulse, a ring or a trail. */
+const S4_T = {
+  /** the size an envelope leaves Claude at (all of them fit under the disc there) */
+  from: 0.3,
+  /** the burst holds this long after the last envelope lands */
+  hold: 0.4,
+} as const;
+/** a let-go comes this long after the flight it ends (the story kit's SK_LANDED) */
+const S4_LANDED = 0.01;
+/** the envelopes' variables, all let go at once when it has landed */
+const S4_VARS = ["--lp-s4-x", "--lp-s4-y", "--lp-s4-s", "--lp-s4-spin"] as const;
+
+function buildS4(root: HTMLElement): BuiltStep {
+  const { $$ } = query(root);
+  const mails = $$(".lp-s4-mail");
+  if (mails.length !== S4_MAIL.length) throw new Error("lp-step: s4 envelopes out of sync");
+
+  /* lazy: false — each envelope's let-go starts from where its flight ended, and reads that
+     value when it first renders. The build takes the timeline to its end in one render; a tween
+     that first renders before GSAP's ticker has ticked defers its writes to the end of that
+     render ("lazy"), so the let-go would read the frame-0 value instead and, played, jump back
+     to Claude for the frame its 1 ms falls in. Not lazy, every tween writes as it starts. */
+  const tl = gsap.timeline({ paused: true, defaults: { lazy: false } });
+  let end = 0;
+  mails.forEach((el, i) => {
+    const m = S4_MAIL[i];
+    /* — frame 0: at Claude's centre, small and turned, under its disc — */
+    gsap.set(el, {
+      "--lp-s4-x": S4_DISC.x - m.x,
+      "--lp-s4-y": S4_DISC.y - m.y,
+      "--lp-s4-s": S4_T.from,
+      "--lp-s4-spin": m.spin,
+    });
+    /* — the flight: straight out to its place, easing out; it grows with a little give — */
+    tl.to(el, { "--lp-s4-x": 0, "--lp-s4-y": 0, "--lp-s4-spin": 0, duration: m.dur, ease: "power3.out" }, m.at);
+    tl.to(el, { "--lp-s4-s": 1, duration: m.dur, ease: "back.out(1.4)" }, m.at);
+    /* — landed: it lets go of its variables (a 1 ms tween, not a set: lp-story-kit.ts skLetGo
+       on how gsap.context reverts zero-length tweens in Gecko) — */
+    const landed = m.at + m.dur + S4_LANDED;
+    tl.to(
+      el,
+      { "--lp-s4-x": 0, "--lp-s4-y": 0, "--lp-s4-s": 1, "--lp-s4-spin": 0, clearProps: S4_VARS.join(","), duration: 0.001, ease: "none" },
+      landed,
+    );
+    end = Math.max(end, landed + 0.001);
+  });
+  tl.set({}, {}, end + S4_T.hold); // the burst holds
+
+  return { tl, cleanup: () => {}, cue: 0 };
+}
+
 const BUILDERS: Record<StepVariant, (root: HTMLElement) => BuiltStep> = {
   s0: buildS0,
   s1: buildS1,
   s2: buildS2,
   s3: buildS3,
+  s4: buildS4,
 };
 
 export function buildStepTimeline(variant: StepVariant, root: HTMLElement): BuiltStep {
