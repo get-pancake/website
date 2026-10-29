@@ -226,31 +226,33 @@
    tant que c'est possible", 2026-10-27). Its first line is the longer one, 8.85 × the font
    size wide at -0.03em ("Infrastructure powering" was 9.13, "Infrastructure to run" 7.73), so
    the left column sets the size: from 1201 wide up it is 768 px from the H1's edge to the right
-   column, and 77 px keeps 86 px between "power" and the column (the size and the rules below
-   were set for "powering" and kept). 1025–1200 the column narrows with the window (the right
-   column is anchored 48 px from the right edge): width − 48 − 368 − 48 − 56, over 9.2.
-   Tablets and phones take their text width, 77 px at most. Line height 0.92: the two lines are
-   142 tall (the 69 px H1 was 160 at normal), so the short-window scale below keeps more room
-   than it needs. The agents headline shares the box: 146 tall, bottom-aligned in it
-   (audience-agents.css), so the box is 4 px taller in that view, under the same toggle. */
+   column, and 82 px keeps 40 px between "power" and the column (founder 2026-10-28: "Can we
+   make h1 on hero bigger you know to make it more juicyyy": it was 77 px, 86 px clear; 82 is the
+   most this left-right layout allows). 1025–1200 the column narrows with the window (the right
+   column is anchored 48 px from the right edge): width − 48 − 368 − 48 − 40, over 8.9.
+   Tablets and phones take their text width, 82 px at most. Line height 0.92: the two lines are
+   151 tall (the 69 px H1 was 160 at normal), so the short-window scale below keeps more room
+   than it needs; the rotating rainbow stays 48 px or more off it (rings tool, WebKit, 1201 to
+   1728 wide, 2026-10-28). The agents headline shares the box (146 tall, bottom-aligned in it,
+   audience-agents.css), under the same toggle. */
 .lp-hero--home #lp-hero-title {
-  font-size: 77px;
+  font-size: 82px;
   letter-spacing: -0.03em;
   line-height: 0.92;
 }
 @media (min-width: 1025px) and (max-width: 1200px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(77px, calc((100vw - 520px) / 9.2));
+    font-size: min(82px, calc((100vw - 504px) / 8.9));
   }
 }
 @media (max-width: 1024px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(77px, calc((100vw - 96px) / 9.2));
+    font-size: min(82px, calc((100vw - 96px) / 8.9));
   }
 }
 @media (max-width: 767px) {
   .lp-hero--home #lp-hero-title {
-    font-size: calc((100vw - 64px) / 9.2);
+    font-size: calc((100vw - 64px) / 8.9);
   }
 }
 /* "go-to-market" in the lede never breaks at a hyphen (LpHero.tsx) */
