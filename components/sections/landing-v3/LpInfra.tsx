@@ -1,4 +1,4 @@
-import type { CSSProperties, ComponentType } from "react";
+import type { ComponentType } from "react";
 
 import { ClaudeMark, CodexMark } from "@/components/sections/landing-v3/LpAgentMarks";
 import { LpInfraFlow } from "@/components/sections/landing-v3/LpInfraAnim";
@@ -14,12 +14,11 @@ import { PANCAKE_AVATAR } from "@/components/sections/landing-v3/lp-pancake-avat
  * juicy and spread accross the page and show they're a bit everywhere maybe show the tools a bit
  * everywhere that go in 3 bucjets and unified in pancake", then "Comment BCP plus insister sur les
  * 3 briques CONTEXT / DATA / TOOLS ? … quitte a les faire arriver en premier puis faire arriver
- * les petits details". So: the three bricks (Context, Data, Tools) come up first, large; then the
- * details of a go-to-market (BITS) pop up all over the screen and fly into their brick; then
- * Pancake comes up over them, branches down to all three and connects to your agent. The sources:
- * Mobbin's Front and Tines integration heroes (white logo discs scattered around a centred
- * heading), Antimetal's discs of several sizes for depth, and save.design's hero (scattered
- * pieces converging into the product, measured live). Elsewhere the card plays its build-up
+ * les petits details". So: the three bricks (Context, Data, Tools) come up first, large; then
+ * their contents appear in place (2026-10-28: "je ferais pas arriver tout de tous les cotes mais
+ * je ferai apparaitre tout a l interieur de maniere simple et best practice"; until then they flew
+ * in from all over the page); then Pancake comes up over them and every cable draws at once, down
+ * to the three and up to your agent. Elsewhere the card plays its build-up
  * once, and only its leads move after it (buildInfraLoop; Mobbin: Antimetal's "Needs your
  * decision" cards).
  *
@@ -126,7 +125,7 @@ const CRMS = [
   { id: "pipedrive", name: "Pipedrive", logo: "/lp/vendor-logos/pipedrive.svg" },
 ] as const;
 
-/** each mark's pancake, the same in the card and on the piece that flies there */
+/** each mark's pancake */
 const SHAPE: Record<string, number> = {
   ...Object.fromEntries(PROVIDERS.map((p, i) => [p.id, i + 1])),
   ...Object.fromEntries(CRMS.map((c, i) => [c.id, i + 2])),
@@ -141,61 +140,6 @@ const LEADS = [
   { initials: "VM", name: "VP Marketing", signal: "Visited your site" },
 ] as const;
 
-/* The scroll version's pieces: what a company has lying around to run its go-to-market, all over
-   the page before each flies into its bucket (founder 2026-10-27: "spread accross the page …
-   show they're a bit everywhere … that go in 3 bucjets and unified in pancake", then "Les
-   differents elements pourraient avoir des tailles differentes", "on est pas oblige de spread que
-   des logos partout", "d autres elements … eparpilles un peu partout pour run ton gtm quand t es
-   une boite"). Each is a piece of the page's own story or of the design system, never a made-up
-   prop: the context's sections (kit badges in the Context card's yellow) and its three rows, the
-   data's signals and enrichment,
-   the data providers and the CRMs the product names to its users (their own marks on the kit's
-   pancakes; vetted files, docs/public-assets/lp/vendor-logos/README.md), the Play's switch and the
-   first lead waiting for approval. `fill` names what the piece becomes in its bucket (data-fill in the cards).
-   Places are in the card's own px at full size, from its top edge (y) and its centre (x): `x`
-   beyond the title's half width (360) stretches or shrinks with the window's width
-   (--lp-infra-reach), `y` beyond the band of the agent and the buckets with its height
-   (--lp-infra-reach-y, LpInfraAnim), so the pieces use the whole screen. `s` is the piece's size, for depth; `r` its tilt (marks are never tilted). Shown
-   only in the scroll version. */
-type Bucket = "context" | "data" | "tools";
-type Bit = { to: Bucket; fill: string; x: number; y: number; s: number; r: number; last?: true } & (
-  | { kind: "logo"; logo: string }
-  | { kind: "badge" | "signal"; label: string }
-  | { kind: "row"; label: string; value: string }
-  | { kind: "more" | "play" | "toggle" | "lead" }
-);
-
-/* Every piece lands on its own place in its brick (data-fill, the same name on both): founder
-   2026-10-27, "mieux flecher chacun de ces elements vers sa place finale dans la card la on n
-   amene pas chaque objet dans sa position finale on triche un peu". */
-const BITS: readonly Bit[] = [
-  { to: "context", kind: "row", label: "Voice", value: "How you write", fill: "voice", x: -560, y: -95, s: 1, r: 4 },
-  { to: "context", kind: "row", label: "ICP", value: "Who buys, and why", fill: "icp", x: -500, y: 20, s: 1.05, r: -3 },
-  { to: "context", kind: "row", label: "CRM", value: "Your accounts and deals", fill: "crm", x: -330, y: 160, s: 0.95, r: -2 },
-  { to: "context", kind: "badge", label: "Personas", fill: "personas", x: -650, y: 300, s: 2, r: 6 },
-  { to: "context", kind: "badge", label: "Competitors", fill: "competitors", x: -450, y: 560, s: 1.9, r: -5 },
-  { to: "data", kind: "logo", logo: "/lp/story-sources/apify.svg", fill: "apify", x: -420, y: -70, s: 1.35, r: 0 },
-  { to: "data", kind: "logo", logo: "/lp/story-sources/coresignal.svg", fill: "coresignal", x: 470, y: -75, s: 0.85, r: 0 },
-  { to: "data", kind: "logo", logo: "/lp/story-sources/theirstack.svg", fill: "theirstack", x: -230, y: 30, s: 0.8, r: 0 },
-  { to: "data", kind: "logo", logo: "/lp/story-sources/wappalyzer.svg", fill: "wappalyzer", x: 230, y: 25, s: 0.8, r: 0 },
-  { to: "data", kind: "logo", logo: "/lp/story-sources/firecrawl.png", fill: "firecrawl", x: 670, y: 280, s: 1.1, r: 0 },
-  { to: "data", kind: "more", fill: "more", x: -90, y: 150, s: 0.95, r: 0 },
-  { to: "data", kind: "signal", label: "Hiring, funding, site visits", fill: "signals", x: -120, y: 560, s: 1.35, r: 3 },
-  { to: "data", kind: "signal", label: "Work emails on demand", fill: "emails", x: 150, y: 595, s: 1.25, r: -3 },
-  { to: "tools", kind: "logo", logo: "/lp/vendor-logos/hubspot.svg", fill: "hubspot", x: 640, y: -100, s: 1.3, r: 0 },
-  { to: "tools", kind: "logo", logo: "/lp/vendor-logos/attio.svg", fill: "attio", x: 420, y: 10, s: 0.9, r: 0 },
-  { to: "tools", kind: "logo", logo: "/lp/vendor-logos/pipedrive.svg", fill: "pipedrive", x: 680, y: 450, s: 0.8, r: 0 },
-  { to: "tools", kind: "play", fill: "play", x: 500, y: 130, s: 1, r: -2 },
-  { to: "tools", kind: "toggle", fill: "toggle", x: 290, y: 150, s: 1.2, r: 0 },
-  { to: "tools", kind: "lead", fill: "lead", last: true, x: 420, y: 565, s: 1, r: -3 },
-];
-
-/** the title's half width: a piece's x beyond it follows the window's width */
-const TITLE_HALF = 360;
-/** the band around the agent and the buckets: a piece's y above or below it follows the room
-    the window leaves above the heading and under the card (--lp-infra-reach-y) */
-const BAND_TOP = -40;
-const BAND_BOTTOM = 490;
 
 /* The kit's pancakes (_design-kit/pancake.html, `pancake-top-bordered-1…3`: an imperfect round
    seen from above, its back layer showing under it as the pancake's edge). Founder 2026-10-27:
@@ -288,7 +232,6 @@ export function LpInfra() {
                   </li>
                 ))}
               </ul>
-              <Bits />
             </LpInfraFlow>
           </div>
         </div>
@@ -317,83 +260,6 @@ function Pk({ shape }: { shape: number }) {
     <svg className="lp-infra__cake" viewBox="0 0 48 48" aria-hidden="true" focusable="false">
       <use href={`#lp-infra-pk-${((shape - 1) % PK_SHAPES.length) + 1}`} />
     </svg>
-  );
-}
-
-/** The scroll version's pieces (BITS), hidden elsewhere (infra.css): each the look of the place
-    it lands on */
-function Bits() {
-  return (
-    <div className="lp-infra__bits" aria-hidden="true">
-      {BITS.map((bit) => {
-        const xi = Math.max(-TITLE_HALF, Math.min(TITLE_HALF, bit.x));
-        const yi = Math.max(BAND_TOP, Math.min(BAND_BOTTOM, bit.y));
-        const props = {
-          className: `lp-infra__bit lp-infra__bit--${bit.kind}`,
-          "data-to": bit.to,
-          "data-fill": bit.fill,
-          "data-last": bit.last,
-          "data-s": bit.s,
-          "data-r": bit.r,
-          style: { "--xi": xi, "--xo": bit.x - xi, "--yi": yi, "--yo": bit.y - yi } as CSSProperties,
-        };
-        switch (bit.kind) {
-          case "logo":
-            return (
-              <span key={bit.fill} {...props}>
-                <Pk shape={SHAPE[bit.fill] ?? 1} />
-                {/* eslint-disable-next-line @next/next/no-img-element -- the vendor's own mark, unmodified */}
-                <img src={bit.logo} alt="" width={30} height={30} loading="lazy" decoding="async" />
-              </span>
-            );
-          case "more":
-            return (
-              <span key={bit.fill} {...props}>
-                <Pk shape={SHAPE.more} />
-                <span>30+</span>
-              </span>
-            );
-          case "row":
-            return (
-              <span key={bit.fill} {...props}>
-                <span className="lp-infra__bit-key">{bit.label}</span>
-                <span className="lp-infra__bit-val">{bit.value}</span>
-              </span>
-            );
-          case "play":
-            return (
-              <span key={bit.fill} {...props}>
-                <PlayIcon />
-                <span className="lp-infra__play-name">{PLAY_NAME}</span>
-                <i className="lp-infra__bit-gap" />
-              </span>
-            );
-          case "toggle":
-            return (
-              <span key={bit.fill} {...props}>
-                <i />
-              </span>
-            );
-          case "lead":
-            return (
-              <span key={bit.fill} {...props}>
-                <LeadFace initials={LEADS[0].initials} />
-                <span className="lp-infra__lead-who">
-                  <span className="lp-infra__lead-name">{LEADS[0].name}</span>
-                  <span className="lp-infra__lead-co">{LEADS[0].signal}</span>
-                </span>
-                <span className="lp-infra__approve">Approve</span>
-              </span>
-            );
-          default:
-            return (
-              <span key={bit.fill} {...props}>
-                {bit.label}
-              </span>
-            );
-        }
-      })}
-    </div>
   );
 }
 

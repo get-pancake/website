@@ -11,11 +11,11 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
  *            "show that pancake brings all 3 of them when scrolling", then "the flow supersmooth
  *            every movement well calibrated getting inspired by best in class website"). The
  *            stage pins and the scroll drives buildInfraScroll: the three bricks (Context, Data,
- *            Tools) come up first, then the details of a go-to-market pop up all over the screen
- *            and fly into them, then Pancake comes up over them, branches down to all three and
- *            connects to your agent (founder 2026-10-27: "insister sur les 3 briques … les faire
- *            arriver en premier puis faire arriver les petits details"; 2026-10-28: no closing
- *            up, no canvas). The scroll's progress is smoothed (an exponential follow, τ
+ *            Tools) come up first, then their contents appear in place, then Pancake comes up
+ *            over them and every cable draws at once, down to the three and up to your agent
+ *            (founder 2026-10-27: "insister sur les 3 briques … les faire arriver en premier puis
+ *            faire arriver les petits details"; 2026-10-28: no closing up, no canvas, nothing
+ *            flying in from all sides, the cables together). The scroll's progress is smoothed (an exponential follow, τ
  *            0.15 s, frame-rate independent), so a wheel's notches and a trackpad's flick both
  *            glide, as a scrubbed timeline does on the best scroll-driven pages. The whole stage
  *            stays in the window: on a short one (a laptop with its dock and bookmarks bar) the
@@ -105,11 +105,6 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
     section.style.setProperty("--lp-infra-pin-len", `${len}px`);
     section.style.setProperty("--lp-infra-fit", fit.toFixed(4));
     section.style.setProperty("--lp-infra-trim", `${Math.round(cardH * (1 - fit))}px`);
-    // how far the pieces beyond the title spread: to the window's edges, in the card's own px;
-    // and above the heading and under the card when the window leaves room there
-    const reach = (window.innerWidth / 2 / fit - 400) / 300;
-    section.style.setProperty("--lp-infra-reach", Math.min(1.8, Math.max(0.35, reach)).toFixed(3));
-    section.style.setProperty("--lp-infra-reach-y", Math.min(2, Math.max(1, 1 + (top - 110) / 120)).toFixed(3));
     // the timeline is built from the layout: a new layout, a new timeline at the same place
     const next = `${window.innerWidth}x${window.innerHeight}:${card.offsetWidth}x${cardH}`;
     if (built && next !== layout) {
@@ -170,7 +165,7 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
 
   const unpin = () => {
     section.removeAttribute("data-scroll");
-    for (const v of ["--lp-infra-stage-h", "--lp-infra-top", "--lp-infra-pin-len", "--lp-infra-fit", "--lp-infra-trim", "--lp-infra-reach", "--lp-infra-reach-y"])
+    for (const v of ["--lp-infra-stage-h", "--lp-infra-top", "--lp-infra-pin-len", "--lp-infra-fit", "--lp-infra-trim"])
       section.style.removeProperty(v);
   };
   Promise.all([import("@/lib/gsap"), import("./lp-infra-timeline")])

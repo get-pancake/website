@@ -96,7 +96,8 @@ export const STEPS: readonly StepContent[] = [
      page (#332). */
   {
     num: "01",
-    title: "Connect your agent.\nNow it can sell.",
+    // founder 2026-10-28: "Connect your agent. => Connect Pancake to your agent"
+    title: "Connect Pancake to your agent.\nNow it can sell.",
     body: "One sign-in adds Pancake to Claude or Codex. Your agent gets your Brain, 30+ data providers and the tools to reach out.",
     art: [{ kind: "anim", variant: "s0", status: "final" }],
     // retells S0_CONNECT (lp-step-data.ts): keep in sync

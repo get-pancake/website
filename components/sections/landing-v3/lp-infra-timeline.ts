@@ -4,7 +4,7 @@ import { gsap } from "@/lib/gsap";
 
 /**
  * The infra section's timelines (LpInfraAnim.tsx): the build-up played once (below), the scroll
- * version (buildInfraScroll: the three bricks, their details, Pancake) and the leads queue
+ * version (buildInfraScroll: the three bricks, their contents, Pancake) and the leads queue
  * (buildInfraLoop).
  *
  * The infra-first page's diagram build-up. progress(1) = the server markup
@@ -16,9 +16,10 @@ import { gsap } from "@/lib/gsap";
  *   0          cue: the agents, the wire and the fork undrawn, Pancake and its three layers
  *              dimmed, the providers' discs not yet in, the Play switched off
  *   0.25       the agents send (a nudge on each chip)
- *   0.45       the wire draws down into Pancake (no sign-in pill on it since 2026-10-27)
- *   0.85       Pancake lights
- *   1.05       its fork draws down to the three layers: the stem, then the arms out and down
+ *   0.45       Pancake lights
+ *   0.85       every cable at once (2026-10-28): the wire down from the agents into Pancake (no
+ *              sign-in pill on it since 2026-10-27) and its fork down to the three layers, the
+ *              stem, then the arms out and down
  *   1.3        the brain, the data and the tools light up, in reading order: the brain's rows
  *              settle, the providers' discs pop in, the Play switches on and the lead comes up
  *              (no signal chips and no status line since 2026-10-26: "Trop de texte")
@@ -98,16 +99,16 @@ export function buildInfraFlow(root: HTMLElement): Built {
   // the agents send
   tl.to(chips, { scale: 1.04, duration: 0.14, ease: "power2.out", stagger: 0.06, yoyo: true, repeat: 1 }, 0.25);
 
-  // the wire draws down into Pancake (scaleY on a 1 px box)
-  tl.to(line, { scaleY: 1, duration: 0.45, ease: "power2.inOut" }, 0.45);
-
   // Pancake lights
-  tl.to(brand, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 0.85);
+  tl.to(brand, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 0.45);
 
-  // its fork draws down to the three layers: the stem, the arms out, then down
-  tl.to(stem, { scaleY: 1, duration: 0.3, ease: "power2.inOut" }, 1.05);
-  tl.to(arms, { clipPath: ARMS_BAR, duration: 0.22, ease: "power2.out" }, 1.18);
-  tl.to(arms, { clipPath: ARMS_ALL, duration: 0.12, ease: "power1.out" }, 1.4);
+  // every cable at once (founder 2026-10-28: "Je dessinerai aussi les cables en meme temps"): the
+  // wire from your agent into Pancake (scaleY on a 1 px box) and its fork down to the three
+  // layers, the stem, the arms out, then down
+  tl.to(line, { scaleY: 1, duration: 0.4, ease: "power2.inOut" }, 0.85);
+  tl.to(stem, { scaleY: 1, duration: 0.3, ease: "power2.inOut" }, 0.85);
+  tl.to(arms, { clipPath: ARMS_BAR, duration: 0.22, ease: "power2.out" }, 0.98);
+  tl.to(arms, { clipPath: ARMS_ALL, duration: 0.12, ease: "power1.out" }, 1.2);
 
   // the brain, the data and the tools
   tl.to(parts, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.18 }, 1.3);
@@ -143,50 +144,43 @@ export function buildInfraFlow(root: HTMLElement): Built {
       after "Not beautiful, get inspired by top designs" on a scaled-up badge); then each window
       opens: the word shrinks into its badge, the title comes up and the white picture opens from
       its centre, empty;
-   2. then the pieces of a company's go-to-market pop up all over the screen, in many sizes
-      (LpInfra BITS: the brain's notes and sections, the providers' marks and "30+", the Play's
-      signals, the Play, its switch, the first lead and the CRMs; Mobbin: Front's and Tines' integration
-      heroes, Antimetal's sizes for depth) and each flies along a curve, height first and then
-      across, exactly onto its own place in its brick's picture (data-fill on both), growing or
-      shrinking to that place's size, which then takes over: nothing lands "somewhere in the
-      card" (founder 2026-10-27: "mieux flecher chacun de ces elements vers sa place finale dans
-      la card la on n amene pas chaque objet dans sa position finale on triche un peu");
-   3. Pancake comes up over the bricks, branches down to all three and the wire runs from it up to
-      your agent. The bricks stay where they filled, a size up and spread over the page (founder
-      2026-10-28, on the bricks closing up into a platform as a dotted canvas came in: "je prefere
-      sans le resserrement … je ne veux pas du background point … je trouve ca bien que ca occupe
-      plus d espace").
+   2. then each brick's contents appear in place, top to bottom, once its window is open, and
+      the Play switches on (founder 2026-10-28, on the pieces that flew in from all over the page:
+      "je ferais pas arriver tout de tous les cotes mais je ferai apparaitre tout a l interieur de
+      maniere simple et best practice comme le font les hottest companies");
+   3. Pancake comes up over the bricks, and every cable draws at once: the fork down to the three
+      bricks and the wire up to your agent (founder, the same day: "Je dessinerai aussi les cables
+      en meme temps car pas de raison de faire la partie du haut apres la partie du bas"). The
+      bricks stay where they filled, a size up and spread over the page (founder 2026-10-28, on
+      the bricks closing up into a platform as a dotted canvas came in: "je prefere sans le
+      resserrement … je ne veux pas du background point … je trouve ca bien que ca occupe plus d
+      espace").
 
    One timeline of length 1, scrubbed by the smoothed scroll (LpInfraAnim), which starts it as
    the stage's top comes 45% down the window, before the pin, so something moves from the first
    notch on:
      0     – .18   the bricks come up, each word filling its brick (.1 each, .04 apart)
      .18   – .33   the windows open, left to right (.09 each, .03 apart)
-     .28   – .66   the details pop up and fly in, brick by brick in reading order, overlapping
-     .70   – .76   Pancake comes up
-     .75   – .86   its fork draws down to the bricks: the stem, the arms out, then down
-     .86   – .92   the wire, from Pancake up to the agent
-     .92   – 1     hold
-   progress(1) = the server markup, the details gone into their bricks. Built from the layout
-   (where each piece is and where its brick's picture is): LpInfraAnim builds it again when the
-   window changes. Only transforms, opacity and the fork's clip. */
+     .28   – .55   each brick's contents come up in place, top to bottom, brick by brick
+     .56   – .60   the Play switches on
+     .64   – .70   Pancake comes up
+     .70   – .82   every cable at once: the stem and the wire up together, then the arms out
+                   and down
+     .82   – 1     hold
+   progress(1) = the server markup. Built from the layout (where each word's badge is):
+   LpInfraAnim builds it again when the window changes. Only transforms, opacity, the fork's clip
+   and the switch's colour. */
 
 const BUCKETS = ["context", "data", "tools"] as const;
-type Bucket = (typeof BUCKETS)[number];
-/** when each brick's details pop up: the first one, then one every `gap` */
-const WAVE: Record<Bucket, { start: number; gap: number }> = {
-  context: { start: 0.28, gap: 0.024 },
-  data: { start: 0.32, gap: 0.02 },
-  tools: { start: 0.36, gap: 0.028 },
-};
-/** a detail popping up, waiting, flying in */
-const POP = 0.035;
-const WAIT = 0.015;
-const FLIGHT = 0.13;
 /** the windows open from .18, one every .03 */
 const OPEN = { at: 0.18, gap: 0.03, duration: 0.09 } as const;
-/** the hand-over from a piece to its place */
-const SWAP = 0.012;
+/** each brick's contents: the first at `start`, one more every `gap`, each `duration` long */
+const FILL = { start: 0.28, brick: 0.06, gap: 0.02, duration: 0.07 } as const;
+/** the Play's switch turns on once the Tools brick is full */
+const SWITCH = { at: 0.56, duration: 0.04 } as const;
+/** Pancake, then every cable at once */
+const BRAND = 0.64;
+const CABLES = 0.7;
 
 export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; cleanup: () => void } {
   const card = one(stage, ".lp-infra__card");
@@ -196,16 +190,16 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
   const words = parts.map((part) => one(part, ".lp-infra__part-word"));
   const badges = parts.map((part) => one(part, ".lp-infra__part-name"));
   const titles = parts.map((part) => one(part, ".lp-infra__part-title"));
-  const bits = all(card, ".lp-infra__bit");
-  // every place in the bricks' pictures, each named after the piece that lands on it
-  const slots = all(card, ".lp-infra__parts [data-fill]");
-  const slotOf = new Map(slots.map((el) => [el.dataset.fill, el]));
+  // what each brick's picture holds, top to bottom (the switch comes with its Play)
+  const fills = all(card, ".lp-infra__parts [data-fill]").filter((el) => !el.matches(".lp-infra__toggle"));
+  const toggle = one(card, ".lp-infra__toggle");
+  const knob = one(card, ".lp-infra__toggle-knob");
   const brand = one(card, ".lp-infra__brand");
   const stem = one(card, ".lp-infra__fork-stem");
   const arms = one(card, ".lp-infra__fork-arms");
   const line = one(card, ".lp-infra__line");
 
-  const cleanup = restStyles([...parts, ...pics, ...words, ...badges, ...titles, ...bits, ...slots, brand, stem, arms, line]);
+  const cleanup = restStyles([...parts, ...pics, ...words, ...badges, ...titles, ...fills, toggle, knob, brand, stem, arms, line]);
 
   /* ── measured on the markup (screen px; the card may be scaled to fit the window, and the
      bricks' row is a size up in it, infra.css --lp-infra-zoom). The bricks never move once up:
@@ -216,30 +210,6 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
     const r = el.getBoundingClientRect();
     return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   };
-  // where each piece lands and how big it is there: centred on its place, at its place's size.
-  // The notes, the Play, the first lead, the signals and the sections are built as their places (infra.css):
-  // the first three are given their place's width (plus their own extra padding), and all of them
-  // land at the bricks' size up. The marks, "30+" and the switch are scaled to their place's width.
-  const padX = (el: Element) => {
-    const cs = getComputedStyle(el);
-    return parseFloat(cs.paddingLeft) + parseFloat(cs.paddingRight);
-  };
-  const landings = new Map(
-    bits.map((bit) => {
-      const slot = slotOf.get(bit.dataset.fill);
-      if (!slot) throw new Error(`infra scroll: no place for ${bit.dataset.fill}`);
-      // the first lead lands on its row (the list's hairline comes with it)
-      const place = slot.querySelector<HTMLElement>(".lp-infra__lead") ?? slot;
-      if (bit.matches(".lp-infra__bit--row, .lp-infra__bit--play, .lp-infra__bit--lead")) {
-        const borderBox = getComputedStyle(bit).boxSizing === "border-box";
-        gsap.set(bit, { width: place.offsetWidth - padX(place) + (borderBox ? padX(bit) : 0) });
-      }
-      const built = bit.matches(".lp-infra__bit--row, .lp-infra__bit--play, .lp-infra__bit--lead, .lp-infra__bit--signal, .lp-infra__bit--badge");
-      const k = built ? zoom : place.getBoundingClientRect().width / (bit.offsetWidth * fit);
-      const c = centre(place);
-      return [bit, { slot, k, x: c.x, y: c.y }];
-    }),
-  );
   // each big word goes into its badge: where the badge is from the word (in the brick's own px,
   // under the card's fit and the row's size up), and how much smaller
   const intos = parts.map((_, i) => {
@@ -256,7 +226,7 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
   const shut = `inset(50% 50% 50% 50% round ${round})`;
   const open = `inset(0% 0% 0% 0% round ${round})`;
 
-  /* ── frame 0: the heading and your agent; no brick yet, no piece, no Pancake ── */
+  /* ── frame 0: the heading and your agent; no brick yet, nothing in them, no Pancake ── */
   parts.forEach((part, i) => {
     gsap.set(part, { autoAlpha: 0, y: 80, scale: 0.94, transformOrigin: "50% 50%" });
     gsap.set(words[i], { autoAlpha: 1, transformOrigin: "50% 50%" });
@@ -264,18 +234,9 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
     gsap.set(titles[i], { autoAlpha: 0, y: 8 });
     gsap.set(pics[i], { clipPath: shut });
   });
-  for (const bit of bits) {
-    const s = Number(bit.dataset.s) || 1;
-    gsap.set(bit, {
-      autoAlpha: 0,
-      xPercent: -50,
-      yPercent: -50,
-      scale: s * 0.4,
-      rotation: Number(bit.dataset.r) || 0,
-      transformOrigin: "50% 50%",
-    });
-  }
-  gsap.set(slots, { autoAlpha: 0 });
+  gsap.set(fills, { autoAlpha: 0, y: 10 });
+  gsap.set(toggle, { backgroundColor: TOGGLE_OFF });
+  gsap.set(knob, { x: 0 });
   gsap.set(brand, { autoAlpha: 0, y: 12, scale: 0.92, transformOrigin: "50% 50%" });
   gsap.set(stem, { scaleY: 0, transformOrigin: "50% 0%" });
   gsap.set(arms, { clipPath: ARMS_NONE });
@@ -298,46 +259,27 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
     tl.to(titles[i], { autoAlpha: 1, y: 0, duration: 0.05, ease: "power2.out" }, t + 0.05);
   });
 
-  /* ── 2. the pieces pop up and fly each onto its place, growing or shrinking to its size; on
-     arrival the place takes over (it looks the same). Per brick: the Play first (its switch lands
-     in it), the nearest next, the first lead last ── */
-  BUCKETS.forEach((to) => {
-    const flights = bits
-      .filter((bit) => bit.dataset.to === to)
-      .map((bit) => {
-        const land = landings.get(bit)!;
-        const c = centre(bit);
-        return { bit, land, dx: (land.x - c.x) / fit, dy: (land.y - c.y) / fit, s: Number(bit.dataset.s) || 1 };
-      })
-      .sort((p, q) => {
-        const rank = (b: HTMLElement) => (b.dataset.fill === "play" ? -1 : "last" in b.dataset ? 1 : 0);
-        return rank(p.bit) - rank(q.bit) || Math.hypot(p.dx, p.dy) - Math.hypot(q.dx, q.dy);
+  /* ── 2. each brick's contents come up in place, top to bottom, once its window is open; then
+     the Play switches on ── */
+  parts.forEach((part, i) => {
+    fills
+      .filter((el) => part.contains(el))
+      .forEach((el, k) => {
+        const t = FILL.start + i * FILL.brick + k * FILL.gap;
+        tl.to(el, { autoAlpha: 1, y: 0, duration: FILL.duration, ease: "power3.out" }, t);
       });
-    flights.forEach(({ bit, land, dx, dy, s }, k) => {
-      const t = WAVE[to].start + k * WAVE[to].gap;
-      const go = t + POP + WAIT;
-      const end = go + FLIGHT;
-      const odd = k % 2 === 1;
-      tl.to(bit, { autoAlpha: 1, scale: s, duration: POP, ease: "back.out(1.7)" }, t);
-      // height first, then across, and slowing into the place: the curve, a landing, not a hit
-      tl.to(bit, { y: dy, duration: FLIGHT, ease: odd ? "power2.out" : "power3.out" }, go);
-      tl.to(bit, { x: dx, duration: FLIGHT, ease: odd ? "sine.inOut" : "power2.inOut" }, go);
-      tl.to(bit, { scale: land.k, rotation: 0, duration: FLIGHT, ease: "power2.inOut" }, go);
-      // the hand-over, once the piece sits on its place at its size: the place shows, the piece
-      // goes (only its card's shadow differs)
-      tl.to(land.slot, { autoAlpha: 1, duration: SWAP, ease: "none" }, end);
-      tl.to(bit, { autoAlpha: 0, duration: SWAP, ease: "none" }, end + SWAP * 0.3);
-    });
   });
+  tl.to(knob, { x: 12, duration: SWITCH.duration, ease: "power2.inOut" }, SWITCH.at);
+  tl.to(toggle, { backgroundColor: TOGGLE_ON, duration: SWITCH.duration, ease: "power1.inOut" }, SWITCH.at);
 
-  /* ── 3. Pancake comes up over the bricks, its fork draws down to all three (the stem, the arms
-     out, then down), and the wire runs from it up to your agent ── */
-  tl.to(brand, { autoAlpha: 1, y: 0, scale: 1, duration: 0.06, ease: "back.out(1.6)" }, 0.7);
-  tl.to(stem, { scaleY: 1, duration: 0.06, ease: "power2.inOut" }, 0.75);
-  tl.to(arms, { clipPath: ARMS_BAR, duration: 0.05, ease: "power2.out" }, 0.78);
-  tl.to(arms, { clipPath: ARMS_ALL, duration: 0.03, ease: "power1.out" }, 0.83);
-  tl.to(line, { scaleY: 1, duration: 0.06, ease: "power1.inOut" }, 0.86);
-  tl.to({}, { duration: 0.08 }, 0.92);
+  /* ── 3. Pancake comes up over the bricks, then every cable draws at once: the stem down and the
+     wire up together, the arms out to the side bricks and down ── */
+  tl.to(brand, { autoAlpha: 1, y: 0, scale: 1, duration: 0.06, ease: "back.out(1.6)" }, BRAND);
+  tl.to(stem, { scaleY: 1, duration: 0.06, ease: "power2.inOut" }, CABLES);
+  tl.to(line, { scaleY: 1, duration: 0.06, ease: "power2.inOut" }, CABLES);
+  tl.to(arms, { clipPath: ARMS_BAR, duration: 0.05, ease: "power2.out" }, CABLES + 0.02);
+  tl.to(arms, { clipPath: ARMS_ALL, duration: 0.04, ease: "power1.out" }, CABLES + 0.07);
+  tl.to({}, { duration: 0.18 }, 0.82);
 
   return { tl, cleanup };
 }
