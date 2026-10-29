@@ -124,7 +124,7 @@ export const STEPS: readonly StepContent[] = [
     title: "Watch it get better.\nEvery lead teaches your Brain.",
     body: "It writes from your own accounts and follows up. Approve a lead or get a reply, and the next search lands closer to who buys.",
     art: [{ kind: "anim", variant: "s1", status: "final" }],
-    // retells S1_VERDICTS, S1_LEARN, S1_ROWS and S1_HUBS[].label (lp-step-data.ts): keep in sync
-    alt: "Animation: a young brain for Acme sits beside three leads. Tamsin Okafor is approved, Wes Pomeroy is marked not a fit and Imani Coldwell replies; each verdict pings the brain and grows new branches. A panel, Who fits, fills in: Ideal clients, seed-stage founders; Best signal, hiring a marketing lead; Skip, agencies. The whole brain stays, its branches labeled Competitors, ICPs, Outreach, Influencers and Market Research.",
+    // retells S1_LEADS, S1_VERDICTS, S1_LEARN, S1_ROWS and S1_HUBS[].label (lp-step-data.ts): keep in sync
+    alt: "Animation: a young brain for Acme sits beside three leads. A founder who just raised a seed round is approved, the VP Marketing of a design agency is marked not a fit and a Head of Growth hiring a marketing lead replies; each verdict pings the brain and grows new branches. A panel, Who fits, fills in: Ideal clients, seed-stage founders; Best signal, hiring a marketing lead; Skip, agencies. The whole brain stays, its branches labeled Competitors, ICPs, Outreach, Influencers and Market Research.",
   },
 ];

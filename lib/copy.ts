@@ -337,12 +337,13 @@ export const pricingV2 = {
  *   NOT among them.
  * - Outreach: a personal message per lead in the customer's voice, sent from
  *   their own account once they approve the lead; a reply stops the sequence.
- * The example is the homepage's cast (Tamsin Okafor of Quillfern, a lead of
- * the invented seller Acme, which designs websites for startups;
- * lp-step-data.ts holds the cast; the dive's lineage story traces her open
- * role to TheirStack, as the badge does; the signals story puts Dealroom on
- * the funding, as the seed round's badge does), labelled as one lead. Keep
- * them in step.
+ * The example is one lead of the homepage's invented seller Acme, which
+ * designs websites for startups, named by its role, never by an invented
+ * person's name (founder 2026-10-28, on the page's named leads: "get rid of
+ * those fake people looks cheap af"): step 03's funded founder
+ * (lp-step-data.ts S1_LEADS). Its open role's badge is TheirStack's and its
+ * seed round's Dealroom's, as the dive's signals story draws them. Labelled
+ * as one lead. Keep them in step.
  */
 export const pricingLead = {
   title: "Leads matched to your business, not to a filter.",
@@ -367,9 +368,9 @@ export const pricingLead = {
   ],
   example: {
     kicker: "One lead, as you get it",
-    initials: "TO",
-    name: "Tamsin Okafor",
-    role: "Founder & CEO, Quillfern",
+    initials: "FC",
+    name: "Founder & CEO",
+    role: "Seed-stage startup",
     signalsLabel: "Signals found",
     signals: [
       { text: "Raised a seed round this month", source: "Dealroom" },
@@ -378,7 +379,7 @@ export const pricingLead = {
     brainLabel: "Matched by your GTM Brain",
     brain: "You design websites for startups that just raised.",
     messageLabel: "Message, in your voice",
-    message: "Hi Tamsin, congrats on Quillfern’s seed round. Want a new website live before your marketing lead starts?",
+    message: "Congrats on the seed round. Want a new website live before your marketing lead starts?",
   },
 } as const;
 

@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import {
   S0_CONNECT,
   S1_HUBS,
+  S1_LEADS,
   S1_LEARN,
   S1_ROWS,
   S1_SKELETON_TOPS,
@@ -100,7 +101,7 @@ function S1Stage() {
       {/* the three leads that come back, each with the verdict the timeline stamps on it */}
       <div className="lp-s1-leads">
         {S1_VERDICTS.map((v) => {
-          const l = SX_LEADS[v.lead];
+          const l = S1_LEADS[v.lead];
           return (
             <div key={l.name} className="lp-s1-lead">
               <SxAvatar initials={l.initials} />

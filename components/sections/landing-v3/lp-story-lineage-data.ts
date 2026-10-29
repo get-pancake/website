@@ -23,11 +23,11 @@
  *   - the middle: five leads, grey dots (r 8, the wires' grey) in a column on the stage's centre
  *     line. Each source draws one wire into one lead. Four leads are reached from one side only
  *     and stay grey. The middle one is reached from both, by the CRM's wire and by Dealroom's
- *     (the provider behind funding rounds): her near-black dot (the loved hub dot, at r 12)
- *     covers the grey one and her name sits under it. She is the page's cast, Tamsin Okafor
- *     (Founder & CEO at Quillfern, whose seed round her outreach mentions: lp-step-data.ts
- *     SX_LEADS and S3_THREAD). KEEP IN SYNC if that cast changes. Her two wires make one S
- *     through the column's centre, the line that crosses;
+ *     (the provider behind funding rounds): its near-black dot (the loved hub dot, at r 12)
+ *     covers the grey one and "Found by both" sits under it, what it is, never an invented
+ *     person's name (founder 2026-10-28, on "Tamsin Okafor" there: "get rid of those fake
+ *     people looks cheap af"). Its two wires make one S through the column's centre, the line
+ *     that crosses;
  *   - the wires: the loved formula, one cubic with horizontal handles, c = 0.426667 × the
  *     straight distance between its ends (lp-story-sources-data.ts:89-93 at 630bb8e), written out
  *     here, never computed at render. Each starts on the source's edge that faces the leads (a
@@ -166,8 +166,8 @@ export const STORY_LINEAGE: StoryLineageStory = {
     { x: 376, y: 303, r: 8 },
     { x: 376, y: 361, r: 8 },
   ],
-  found: { lead: 2, r: 12, name: "Tamsin Okafor" },
+  found: { lead: 2, r: 12, name: "Found by both" },
 };
 
 export const STORY_LINEAGE_ALT: string =
-  "Animation: on one side, your data: your CRM, site visits and events. On the other, Pancake data: the providers TheirStack, Apify and Dealroom. Lines run to a column of leads, first from your data, then from Pancake data. One lead is reached from both sides, by your CRM and by Dealroom, and lights up: Tamsin Okafor.";
+  "Animation: on one side, your data: your CRM, site visits and events. On the other, Pancake data: the providers TheirStack, Apify and Dealroom. Lines run to a column of leads, first from your data, then from Pancake data. One lead is reached from both sides, by your CRM and by Dealroom, and lights up: found by both.";

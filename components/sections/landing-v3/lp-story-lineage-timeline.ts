@@ -42,9 +42,9 @@ import { skHideR, skHideRise, skHideWire, skQuery, skRise, skStop, skWire } from
  *   1.20–2.10  then Pancake data's, top to bottom: TheirStack, Apify, then Dealroom, 0.15 s
  *              apart. Dealroom's is the last of all, into the middle lead
  *   1.95       f3: TheirStack's and Apify's wires are in, Dealroom's on its way
- *   2.05–2.40  as it arrives, her near-black dot grows over the grey one
- *   2.20–2.60  "Tamsin Okafor" rises under it
- *   2.61       f4: she is found and named (her name lets go of its variable)
+ *   2.05–2.40  as it arrives, its near-black dot grows over the grey one
+ *   2.20–2.60  "Found by both" rises under it
+ *   2.61       f4: the lead is found and named (its label lets go of its variable)
  *   3.30       f5: the END = the server markup
  *
  * Never moves: the discs, the stops, the names, the group labels and the grey leads. Each wire
