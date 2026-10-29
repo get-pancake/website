@@ -219,14 +219,15 @@
   transform: none;
   width: auto; /* the H1 sizes it (V1's 656 box held the 69 px lines) */
 }
-/* The humans H1 since 2026-10-28: "Infrastructure powering / your GTM factory" (founder:
-   "should be 'Infrastructure powering your GTM factory'?", then "go with this h1"; it was "to
-   run" from 2026-10-27), two lines at V2's place, the left-right layout kept and the H1 as
+/* The humans H1 since 2026-10-28: "Infrastructure to power / your GTM factory" (founder, that
+   evening: "might be better en fait"; before it "Infrastructure powering", after "should be
+   'Infrastructure powering your GTM factory'?" and "go with this h1"; "to run" from 2026-10-27), two lines at V2's place, the left-right layout kept and the H1 as
    big as it can be ("Gardons cette disposition gauche droite et on met le h1 en plus gros
-   tant que c'est possible", 2026-10-27). Its first line is the longer one, 9.13 × the font
-   size wide at -0.03em ("Infrastructure to run" was 7.73), so the left column sets the size:
-   from 1201 wide up it is 768 px from the H1's edge to the right column, and 77 px keeps 56 px
-   between "powering" and the column. 1025–1200 the column narrows with the window (the right
+   tant que c'est possible", 2026-10-27). Its first line is the longer one, 8.85 × the font
+   size wide at -0.03em ("Infrastructure powering" was 9.13, "Infrastructure to run" 7.73), so
+   the left column sets the size: from 1201 wide up it is 768 px from the H1's edge to the right
+   column, and 77 px keeps 86 px between "power" and the column (the size and the rules below
+   were set for "powering" and kept). 1025–1200 the column narrows with the window (the right
    column is anchored 48 px from the right edge): width − 48 − 368 − 48 − 56, over 9.2.
    Tablets and phones take their text width, 77 px at most. Line height 0.92: the two lines are
    142 tall (the 69 px H1 was 160 at normal), so the short-window scale below keeps more room

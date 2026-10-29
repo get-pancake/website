@@ -28,8 +28,9 @@ import {
  * seconds" (LpAudienceHeadline.tsx). His second pass that day: the first was
  * H1 "Agentic infrastructure to run your go-to-market" over a longer lede.
  * 2026-10-27: the lede stays under the founder's new H1, "Infrastructure to
- * run your GTM factory"; "Infrastructure powering your GTM factory" since
- * 2026-10-28 (it also stops echoing this line's "to run your").
+ * run your GTM factory"; "Infrastructure powering your GTM factory" on
+ * 2026-10-28, then "Infrastructure to power your GTM factory" the same evening
+ * (neither echoes this line's "to run your").
  */
 export const SITE_DESCRIPTION =
   "Pancake gives your agent the brain, the data and the tools to run your go-to-market.";
