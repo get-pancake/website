@@ -12,12 +12,14 @@ import type { DiveItemId } from "./lp-dive-stages";
  * The four blocks since 2026-10-28 (founder, on the section then titled "How Pancake gets you
  * customers": "encore tres verticalized agents", then his four primitives): "1/ Next best action
  * + Unified GTM context 2/ Buying signal + enrichment 3/ Lead lineage 4/ mcp first".
- * Each item says what the visitor's agent gets: the Brain read in one call, and suggested Plays
- * that start from what already brought leads (context); signals on hiring for the roles a product
- * replaces, on the tools it works with and on funding, work emails on demand, his "30+ data
- * providers" and one bill for all of them (signals); each lead's signal, Play and sources, and a
- * lead already found coming back with a new signal (lineage); the install for Claude and Codex,
- * its tools, and Plays that keep running on their own schedule (mcp). No platform is named. The
+ * Each item says what the visitor's agent gets, aligned with the founder's four blocks (and, on
+ * 2026-10-28, "not necessarily say what it say but keep things aligned"): the ICP, the voice and
+ * the CRM read in one call, then the next account and the Play (context); signals on hiring,
+ * funding and site visits, work emails on demand, his "30+ data providers" and one bill (signals);
+ * a lead found where the customer's own data and outside signals cross, keeping the signal and the
+ * source that found it (lineage, his "la detection croisee de signaux interne externe"); one
+ * install in Claude, Claude Code, ChatGPT or Codex and about 100 tools (mcp). No platform is
+ * named. The
  * visitor's agent stays the actor (founder, 2026-10-28): Pancake is the layer under it, so no body
  * says "Pancake suggests".
  *
@@ -74,25 +76,25 @@ export const DIVE_ITEMS: readonly DiveItem[] = [
   {
     id: "context",
     title: "Your agent knows\nwhat to do next",
-    body: "It reads your whole Brain in one call: who buys, your voice, your competitors. Suggested Plays start from what already brought you leads.",
+    body: "It reads your ICP, your voice and your CRM in one call, then picks the next account to work and the Play to run.",
     status: "final",
   },
   {
     id: "signals",
     title: "Buying signals, enriched",
-    body: "Find companies hiring for the roles you replace, using the tools you work with, or newly funded. Work emails on demand. 30+ data providers, one bill.",
+    body: "Find companies hiring, newly funded or visiting your site. Work emails on demand. 30+ data providers, one bill.",
     status: "final",
   },
   {
     id: "lineage",
     title: "Where every lead came from",
-    body: "Each lead remembers the signal and the Play that found it. Every fact keeps its source. A lead you already have comes back when it shows a new signal.",
+    body: "Your own data crosses with outside signals, and a lead shows up where both meet. Each lead keeps the signal and the source that found it.",
     status: "final",
   },
   {
     id: "mcp",
     title: "Built for Claude and Codex",
-    body: "Your agent creates Plays and reviews leads with about 100 tools. Plays keep running after the chat ends.",
+    body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent creates Plays and reviews leads with about 100 tools.",
     more: { href: GUIDE_PATH, label: "See how", name: "See how to run Pancake from Claude or Codex" },
     status: "final",
   },

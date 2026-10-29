@@ -1,46 +1,34 @@
 /* Story Lineage — owner: story-lineage package (2026-10-28). Deep-dive story 3,
    "Where every lead came from" (LpStoryLineage), the founder's "3/ Lead
-   lineage", drawn with no UI ("ban UI things from motions and try to abstract
-   things … graphic simple and on brand (you can reuse components)") in the
-   parts of the one picture he loves, the old sources story's end hub: one
-   grey trace runs back from a lead (near-black dot, her name) through a purple
-   signal stop to its source (TheirStack's mark on a white disc). Spec: the
-   final build spec of 2026-10-28, §3.0 and §3.3.
+   lineage", which is also "la detection croisee de signaux interne externe":
+   your data (left) and Pancake data (right) draw wires into a column of
+   leads, and the one reached from both sides is near-black and named. No
+   claim and no UI: the parts of the one picture he loves, the old sources
+   story's end hub, from the story kit.
 
-   Everything shared is the kit's (story-kit.css: the disc, the wires and
-   their cap, the hub dot, the kicker, the value, the camera). This file holds
-   what is this story's only: the value's size, the signal stop's colour and
-   the lead's name. Every box is
-   placed inline from lp-story-lineage-data.ts (stage px, 752x489).
+   Everything shared is the kit's (story-kit.css: the white disc, the wires
+   and their caps, the hub dot, the names and the rise). This file holds what
+   is this story's only: the leads' grey and the group labels' ink. The stops'
+   colours are inline from lp-story-lineage-data.ts (each its brand token), as
+   every box is (stage px, 752x489).
 
    Traps (the kit's T1–T5 hold): every selector is compound (T1: `.lp p
    { margin: 0 }` and the shell's `.lp-dive-scene * { font-family }` tie with
-   single-class rules). The stop is a child of its svg, not of a <g>: the
-   kit's `> g > *` multiply never reaches it, so it paints flat over the wire
-   it ends. Phones (≤767 px) show this 752 scene scaled ×0.435 at 375: the
-   smallest type is the name at 13.9 px. No will-change, no keyframes. */
+   single-class rules). The stops, the leads and her dot are children of the
+   svg, not of a <g>: the kit's `> g > *` multiply never reaches them, so each
+   paints flat and a lead covers the end of its wire. Phones (≤767 px) show
+   this 752 scene scaled (×0.455 at 390): the kit hides every name there and
+   the picture reads without them. No will-change, no keyframes. */
 
-/* the value, two lines in the display face (Mobbin Tines' values, the infra
-   bricks' word): "marketing lead" is 367.05 wide, its ink ends at x 649.4 */
-.lp-slin .lp-slin-v {
-  font-size: 64px;
+/* the leads: dots in the wires' own grey (the kit's --sk-wire), r 8 against
+   the caps' 5.333 so that a lead never reads as a wire's end */
+.lp-slin .lp-slin-lead {
+  fill: var(--sk-wire);
 }
 
-/* the signal stop: the loved purple confetti dot (Ø25.418, purple-30), the
-   colour of the infra section's Data card, where signals sit */
-.lp-slin .lp-slin-stop {
-  fill: var(--lp-purple-30);
-}
-
-/* the lead's name: the loved providers' names' weight (500, .lp-src-nname in
-   story-sources.css at 630bb8e) at 32/40, its caps' middle on her dot's y (100) */
-.lp-slin .lp-slin-name {
-  color: var(--lp-ink-100);
-  font-size: 32px;
-  font-weight: 500;
-  letter-spacing: 0;
-  line-height: 40px;
-  margin: 0;
-  position: absolute;
-  white-space: nowrap;
+/* the two group labels: the kit's name, in the kicker's ink (ink-80, the
+   loved frame's "WHY THEY FIT"), so the column's header sits back from the
+   names under the discs */
+.lp-slin .lp-slin-group {
+  color: var(--lp-ink-80);
 }

@@ -32,8 +32,6 @@
    T3 A vendor's mark is the vendor's file in an <img>, sized only (50% of
       its disc, object-fit: contain): no filter, no blend, no mask, no tint.
    T4 The disc's 0.5px hairline is a spread shadow (no layout space).
-   T5 The Condensed trial cut has letters, digits and spaces only: a value
-      never carries + ’ ( · % !.
    No will-change, no infinite keyframes: the stage is GSAP-only, plays once. */
 
 .lp-sk {
@@ -112,31 +110,6 @@
   .lp-sk-wires > g > * {
     mix-blend-mode: normal;
   }
-}
-
-/* the claim: a spaced-caps kicker ("WHY THEY FIT", 10/15/1px in the loved
-   frame, set here at its zoomed size) over a value in the display face. The
-   data keeps the kicker in sentence case; the caps are this rule's */
-.lp-sk .lp-sk-k {
-  color: var(--lp-ink-80);
-  font-size: 34px;
-  font-weight: 400;
-  letter-spacing: 3.4px;
-  line-height: 40px;
-  margin: 0;
-  position: absolute;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-.lp-sk .lp-sk-v {
-  color: var(--lp-ink-100);
-  font-family: var(--lp-font-cond);
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  margin: 0;
-  position: absolute;
-  white-space: pre;
 }
 
 /* a piece that rises into place (lp-story-kit.ts skRise): --lp-sk-rise px

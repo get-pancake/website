@@ -2,10 +2,12 @@ import { gsap } from "@/lib/gsap";
 
 import type { BuiltStory } from "./lp-dive-stages";
 import {
-  skDot,
+  skCap,
+  skHidePop,
   skHideR,
   skHideRise,
   skHideWire,
+  skPop,
   skQuery,
   skRise,
   skStop,
@@ -13,76 +15,83 @@ import {
 } from "./lp-story-kit";
 
 /**
- * Deep-dive story "context" (block 1: Next best action + Unified GTM context) — its build-up as
- * ONE paused, seek-safe GSAP timeline on the stage root. Spec: the dive panel's final spec §3.0
- * (the kit's verbs) and §3.1 (this story's beats; its opening camera was dropped the same day). Contract: lp-dive-stages.ts —
- * frame 0 via gsap.set (the caller's gsap.context reverts it), sets and tweens only (no
- * callbacks, no randomness, no repeat, no timeScale), progress(1) = the server markup
- * (LpStoryContext.tsx), `cue` = 0: the claim is composed at t = 0, never an empty frame.
- * Reached only through DIVE_LOADERS.context (lp-dive-loaders.ts, lazy chunk); no "use client"
- * on purpose, like every story timeline: a "use client" module the server graph reaches ships
- * eagerly in the homepage bundle. Imports: GSAP, the kit's verbs (lp-story-kit.ts) and types
- * only. What it needs from the data (the parts' radii, the wires' lengths) it reads from the
- * markup.
+ * Deep-dive story "context" (block 1, "Your agent knows what to do next") — its build-up as ONE
+ * paused, seek-safe GSAP timeline on the stage root. The picture (LpStoryContext.tsx, words and
+ * geometry in lp-story-context-data.ts): ICP, Voice and the CRM's mark each draw a grey wire into
+ * one plum centre, and one wire runs from it to one account of a cluster, the next best action.
+ *
+ * Contract: lp-dive-stages.ts — frame 0 via gsap.set (the caller's gsap.context reverts it), sets
+ * and tweens only (no callbacks, no randomness, no repeat, no timeScale), progress(1) = the server
+ * markup, `cue` = 0: frame 0 is composed (the centre and the accounts), never empty. No "use
+ * client" on purpose, like every story timeline: reached only through DIVE_LOADERS.context
+ * (lp-dive-loaders.ts, a lazy chunk). Imports: GSAP, the kit's verbs (lp-story-kit.ts) and types,
+ * nothing else; what it needs from the data (the stops' and the pick's radii, the wires' lengths)
+ * it reads from the markup.
  *
  * The founder's asks it follows: no UI in the motion ("ban UI things from motions and try to
- * abstract things"), and real motion from the first frame (on the claim zoomed to fill the stage
- * and held 1.8 s: "this is not motion like it's plain text"). Every move is one of the kit's
- * verbs, copied from the loved sources hub (draw, land, rise) and played once. Times (s), the T
- * table below:
+ * abstract things"), real motion from the first fraction of a second (on the claim zoomed to fill
+ * the stage and held: "this is not motion like it's plain text"), and no big text ("no UI should
+ * not mean text it should mean abstraction of what our infrastructure does"). Every move is one of
+ * the kit's verbs, copied from the loved sources hub (a stop lands, a disc pops, a cap lands, a
+ * wire draws, a name rises) and played once. Times (s), the T table below:
  *
- *   0.00       f1: frame 0 = the cue. The claim ("NEXT BEST PLAY" over the Play) and the plum
- *              centre, in their END places
- *   0.30–1.15  Voice, ICPs, Competitors land 0.25 s apart (a stop: r 0 → 11); each name rises
- *              (y 6 → 0) 0.1 s after its dot
- *   1.20       f2
- *   1.30–1.95  each spoke draws from its dot into the centre, 0.1 s apart (0.45 s each)
- *   1.95       f3: the Brain stands, a beat
- *   2.25–3.05  the one line out draws from the centre to the kicker (0.8 s)
- *   2.95–3.20  the kicker's dot lands as it arrives (the loved hub dot's timing: 0.1 s before
- *              the wire's end)
- *   3.20       f4
+ *   0.00       f1: frame 0 = the cue: the plum centre and the cluster of accounts, in their END
+ *              places
+ *   0.30–0.95  the inputs land 0.1 s apart: ICP and Voice (a stop: r 0 → 16), then the CRM (its
+ *              disc pops); each label rises (y 6 → 0) 0.08 s after its input
+ *   0.95       f2: the three inputs are in
+ *   0.95–1.50  each input's cap lands and its wire draws into the centre, 0.1 s apart (0.35 s
+ *              each): read in one call
+ *   1.50       f3: every wire is in. A beat
+ *   1.80–2.50  the cap lands on the centre's right edge and the one wire out draws to the
+ *              picked account (0.7 s)
+ *   2.40–2.75  the near-black dot grows over it as the wire arrives (the loved hub dot's timing:
+ *              0.1 s before the wire's end)
+ *   2.50–2.90  "Next best action" rises over it
+ *   2.90       f4: the next best action is named
  *   3.40       f5 = the END = the server markup (the carousel then holds it)
  *
- * Never moves: the type, the centre, and every dot once it has landed. The dots animate their `r` attribute, never a transform; the names rise by the
- * kit's variable and let go of it SK_LANDED after they land (skRise), so no text rests in a
- * transformed layer.
+ * Never moves: the centre and the accounts (frame 0 on), every dot once it has landed. The dots
+ * animate their `r` attribute, never a transform; the disc's pop and the labels' rise go by the
+ * kit's variables and let go of them SK_LANDED after they land (skPop, skRise), so nothing rests
+ * transformed.
  */
 
 /** the take, in seconds (see the table above) */
 const T = {
-  /** frame 0: the claim and the centre */
+  /** frame 0: the centre and the accounts */
   f1: 0,
-  /** each part's dot lands, in the markup's order (Voice, ICPs, Competitors) */
-  parts: [0.3, 0.55, 0.8],
-  /** each part's name rises, 0.1 s after its dot */
-  labels: [0.4, 0.65, 0.9],
+  /** each input lands, in the markup's order (ICP, Voice, CRM) */
+  inputs: [0.3, 0.4, 0.5],
+  /** each label rises, 0.08 s after its input */
+  labels: [0.38, 0.48, 0.58],
   labelRise: 0.3,
-  /** the three parts are in */
-  f2: 1.2,
-  /** each spoke starts to draw from its dot into the centre */
-  spokes: [1.3, 1.4, 1.5],
-  spokeDraw: 0.45,
-  /** the last spoke has landed (1.5 + 0.45): the Brain stands */
-  f3: 1.95,
-  /** the one line out, centre → kicker */
-  exit: 2.25,
-  exitDraw: 0.8,
-  /** the kicker's dot lands */
-  dot: 2.95,
-  f4: 3.2,
+  /** the inputs are in (the CRM disc's pop settles at 0.5 + 0.45) */
+  f2: 0.95,
+  /** each input's cap lands and its wire starts to draw into the centre */
+  wires: [0.95, 1.05, 1.15],
+  wireDraw: 0.35,
+  /** the last wire is in (1.15 + 0.35) */
+  f3: 1.5,
+  /** the one wire out: its cap lands on the centre's edge and it draws to the picked account */
+  exit: 1.8,
+  exitDraw: 0.7,
+  /** the near-black dot grows over the picked account, 0.1 s before the wire arrives (2.5) */
+  pick: 2.4,
+  /** its label rises */
+  pickLabel: 2.5,
+  pickRise: 0.4,
+  /** the label is in (2.5 + 0.4) */
+  f4: 2.9,
   /** f5 = the END */
   end: 3.4,
 } as const;
 
-/** how far a part's name rises as it comes in, stage px */
+/** how far a label rises as it comes in, stage px */
 const LABEL_RISE = 6;
 
 /** The builder in one go. In slices: `buildStoryContextSteps`, which the carousel and the phone
-    stack spread over idle slots (lp-play-once's startBuild). It may yield after any block: its
-    frame-0 sets are written at once, its tweens write nothing until they are rendered, the
-    parts' radii are read before its first write, and the only thing it reads after it (the
-    wires' lengths) depends on nothing it writes. */
+    stack spread over idle slots (lp-play-once's startBuild). */
 export function buildStoryContext(root: HTMLElement): BuiltStory {
   const steps = buildStoryContextSteps(root);
   for (;;) {
@@ -91,47 +100,68 @@ export function buildStoryContext(root: HTMLElement): BuiltStory {
   }
 }
 
+/** It may yield after any block: its frame-0 sets are written at once, its tweens write nothing
+    until they are rendered, the radii are read before its first write, and what it reads after
+    it (the wires' lengths) depends on nothing it writes. */
 export function* buildStoryContextSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const { $, $$ } = skQuery(root, "context");
 
-  // the Brain's parts, in the markup's order; a part's dot, spoke and name share its data-part
-  const parts = $$<SVGCircleElement>(".lp-sctx-part").map((dot) => {
-    const part = dot.dataset.part;
+  // the inputs, in the markup's order (the data's: the wires' <g>); an input's body (a stop or
+  // the disc), wire, cap and label share its data-node
+  const inputs = $$<SVGGElement>('.lp-sk-wires g[data-node]:not([data-node="exit"])').map((g) => {
+    const node = g.dataset.node;
+    const body = $<Element>(`.lp-sctx-stop[data-node="${node}"], .lp-sk-disc[data-node="${node}"]`);
     return {
-      dot,
-      /** its END radius (the markup's), read before frame 0 sets it to 0 */
-      r: Number(dot.getAttribute("r")),
-      spoke: $<SVGPathElement>(`.lp-sctx-spoke[data-part="${part}"]`),
-      label: $(`.lp-sctx-label[data-part="${part}"]`),
+      /** a stop lands by its radius; the disc pops */
+      stop: body instanceof SVGCircleElement ? body : null,
+      body,
+      /** a stop's END radius (the markup's), read before frame 0 sets it to 0 */
+      r: Number(body.getAttribute("r")),
+      wire: $<SVGPathElement>(`.lp-sk-wires g[data-node="${node}"] path`),
+      cap: $<SVGCircleElement>(`.lp-sk-cap[data-node="${node}"]`),
+      label: $(`.lp-sk-name[data-node="${node}"]`),
     };
   });
-  if (parts.length !== T.parts.length) throw new Error("lp-story-context: the parts are out of step with T");
-  const exit = $<SVGPathElement>(".lp-sctx-exit");
-  const kickerDot = $<SVGCircleElement>(".lp-sk-hub");
+  if (inputs.length !== T.inputs.length) throw new Error("lp-story-context: the inputs are out of step with T");
+  const exit = {
+    wire: $<SVGPathElement>('.lp-sk-wires g[data-node="exit"] path'),
+    cap: $<SVGCircleElement>('.lp-sk-cap[data-node="exit"]'),
+  };
+  const pick = $<SVGCircleElement>(".lp-sctx-pick");
+  const pickR = Number(pick.getAttribute("r"));
+  const pickLabel = $('.lp-sk-name[data-node="pick"]');
 
   const tl = gsap.timeline({ paused: true });
 
-  /* ── frame 0 = the cue: the claim and the centre; the parts, their names and the lines wait ── */
-  skHideR([...parts.map(({ dot }) => dot), kickerDot]);
+  /* ── frame 0 = the cue: the centre and the accounts; the inputs, the wires and the pick wait.
+     Each block leaves a composed picture: the END less what is hidden so far ── */
+  skHideR([...inputs.flatMap(({ stop }) => (stop ? [stop] : [])), ...inputs.map(({ cap }) => cap), exit.cap, pick]);
+  skHidePop(inputs.flatMap(({ stop, body }) => (stop ? [] : [body])));
   yield;
-  skHideRise(parts.map(({ label }) => label), LABEL_RISE); // each name hidden, 6 px below its place
+  skHideRise([...inputs.map(({ label }) => label), pickLabel], LABEL_RISE);
   yield;
-  parts.forEach(({ spoke }) => skHideWire(spoke));
-  skHideWire(exit);
+  inputs.forEach(({ wire }) => skHideWire(wire));
+  skHideWire(exit.wire);
   yield;
 
-  /* ── the Brain's three parts land, each named as it lands ── */
-  parts.forEach(({ dot, r, label }, i) => {
-    skStop(tl, dot, r, T.parts[i]);
+  /* ── the inputs land, each named as it lands ── */
+  inputs.forEach(({ stop, body, r, label }, i) => {
+    if (stop) skStop(tl, stop, r, T.inputs[i]);
+    else skPop(tl, body, T.inputs[i]);
     skRise(tl, label, T.labels[i], T.labelRise);
   });
 
-  /* ── their spokes join the centre ── */
-  parts.forEach(({ spoke }, i) => skWire(tl, spoke, T.spokes[i], T.spokeDraw));
+  /* ── each draws its wire into the centre: one call ── */
+  inputs.forEach(({ cap, wire }, i) => {
+    skCap(tl, cap, T.wires[i]);
+    skWire(tl, wire, T.wires[i], T.wireDraw);
+  });
 
-  /* ── one line out, from the centre to the next best Play; its dot lands as it arrives ── */
-  skWire(tl, exit, T.exit, T.exitDraw);
-  skDot(tl, kickerDot, T.dot);
+  /* ── one wire out, to one account; it becomes the next best action ── */
+  skCap(tl, exit.cap, T.exit);
+  skWire(tl, exit.wire, T.exit, T.exitDraw);
+  skStop(tl, pick, pickR, T.pick);
+  skRise(tl, pickLabel, T.pickLabel, T.pickRise);
 
   // the END holds until T.end
   tl.set({}, {}, T.end);

@@ -33,8 +33,8 @@ removed that day, the folder keeps its name):
 - The dive's signals story, "Buying signals, enriched" (`LpStorySignals.tsx`,
   `lp-story-signals-data.ts`): all six, each on a white disc with its name on desktop, on the
   discs the "Sources you can trust" story gave them.
-- The dive's lineage story, "Where every lead came from" (`LpStoryLineage.tsx`): TheirStack only,
-  without its name.
+- The dive's lineage story, "Where every lead came from" (`LpStoryLineage.tsx`): TheirStack,
+  Apify and Dealroom, each on a white disc with its name on desktop (the "Pancake data" side).
 
 | File | Vendor |
 |---|---|

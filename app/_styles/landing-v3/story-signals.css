@@ -1,22 +1,28 @@
 /* Story Signals (2026-10-28) — deep-dive block 2, "Buying signal + enrichment"
    (LpStorySignals). Founder: "ban UI things from motions and try to abstract
-   things … graphic simple and on brand (you can reuse components)"; this block
-   is the one picture he loves, the old sources story's end hub, nearly
-   verbatim (story-sources.css at 630bb8e, its scene D). Build spec: the design
-   panel's §3.2.
+   things … graphic simple and on brand (you can reuse components)", then "no
+   UI should not mean text it should mean abstraction of what our
+   infrastructure does". One left-to-right flow: the six providers of the hub
+   he loves (the old sources story's, story-sources.css at 630bb8e) draw into
+   one near-black point, and four wires fan out of it to four brand-coloured
+   stops. No big text: small labels only.
 
    The parts are the story kit's (story-kit.css: the white disc, the wires and
-   caps, the hub dot, the kicker, the value, the names). This file holds only
-   this story's own pieces and numbers, stage px on the 752x489 design box
+   caps, the hub dot, the names, the rise). This file holds only this story's
+   own pieces: the confetti and the small labels. The outputs' stops are flat
+   brand dots filled inline from the data, the size of the loved purple
+   confetti dot; children of the svg, never of a <g>, so the kit's multiply
+   never reaches them and each covers the end of its wire. Every box is placed
+   inline from lp-story-signals-data.ts, stage px on the 752x489 design box
    (phones show the same box scaled: the stack). The markup rests on the END
    picture; the timeline (lp-story-signals-timeline.ts) sets frame 0.
 
    Traps: the kit's T1–T5 hold here too (T1: `.lp p { margin: 0 }` and the
    shell's `.lp-dive-scene * { font-family }` tie with single-class rules, so
    every selector below is compound). This story's own:
-   T6 Nothing rests transformed: the count label is centred by a box wider
-      than its text (the loved label used translateX(-50%), which the kit's
-      rise transform, .lp-sk-rise, would override), not by a transform.
+   T6 Nothing rests transformed: the labels rise by the kit's variable
+      (.lp-sk-rise), so their own rules set no transform; they are placed by
+      left / top only.
    No will-change, no keyframes: the stage is GSAP-only and plays once. */
 
 /* the loved confetti (Figma Ellipse 121–125): flat brand dots, placed and
@@ -26,35 +32,25 @@
   position: absolute;
 }
 
-/* "30+ data providers": the loved hub label (13/20, its 104 px box at
-   123.094 / 21.232, centred on that box's axis x 175.094) at twice its size,
-   26/32, its box top at 14 (text 223.72 wide: x 63.23 to 286.95). Centred on
-   the same axis by a 300 px box (T6). In the phone stack (x0.435 at 375) it
-   draws at 11.3 px, the smallest visible type: the kit hides the names there */
+/* the small labels: the four outputs right of their stops and "30+ data
+   providers" over the providers, in the kit's name style (.lp-sk-name: 12/16,
+   500, ink-100), left-aligned on their line box's top-left */
+.lp-ssig .lp-ssig-out,
 .lp-ssig .lp-ssig-count {
   color: var(--lp-ink-100);
-  font-size: 26px;
-  font-weight: 400;
-  left: 25.094px; /* 175.094 - 300 / 2 */
+  font-size: 12px;
+  font-weight: 500;
   letter-spacing: 0;
-  line-height: 32px;
+  line-height: 16px;
   margin: 0;
   position: absolute;
-  text-align: center;
-  top: 14px;
   white-space: nowrap;
-  width: 300px;
 }
-
-/* the claim, right of the hub dot (391, 246.77): the kicker's caps' middle
-   sits on the dot's y and its ink starts 18 px from it (x 409); the value's
-   top is the kicker's + 64, its ink ending at x 699.2 (52.8 px from the edge) */
-.lp-ssig .lp-ssig-k {
-  left: 407.71px;
-  top: 227.11px;
-}
-.lp-ssig .lp-ssig-v {
-  font-size: 72px;
-  left: 407.42px;
-  top: 291.11px;
+/* the phone stack keeps the 752 scene at ×0.45: a 12px label would draw at
+   5.5px, as the names (story-kit.css). The picture reads without them */
+@media (max-width: 767px) {
+  .lp-ssig .lp-ssig-out,
+  .lp-ssig .lp-ssig-count {
+    display: none;
+  }
 }

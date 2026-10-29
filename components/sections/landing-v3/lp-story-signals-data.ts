@@ -1,34 +1,67 @@
 /**
  * Deep-dive story "signals" (block 2 of 4, "Buying signal + enrichment"; dive title "Buying
- * signals, enriched") — its copy and data. Founder, 2026-10-28: "Pour les 4 blocs je ferai donc
- * 1/ Next best action + Unified GTM context 2/ Buying signal + enrichment 3/ Lead lineage 4/ mcp
- * first", and on the old four: "ban UI things from motions and try to abstract things … graphic
- * simple and on brand (you can reuse components)". The one picture he loves is the old sources
- * story's END: the hub of white discs with each provider's own mark, grey wires into one
- * near-black dot, the five confetti dots and "WHY THEY FIT" over "Just raised". This block IS
- * that hub, nearly verbatim. Build spec: the design panel's §3.2 (2026-10-28).
+ * signals, enriched") — its copy and its geometry. Founder, 2026-10-28: "Pour les 4 blocs je
+ * ferai donc 1/ Next best action + Unified GTM context 2/ Buying signal + enrichment 3/ Lead
+ * lineage 4/ mcp first", then "ban UI things from motions and try to abstract things … graphic
+ * simple and on brand (you can reuse components)", and on the pictures that followed (a big
+ * kicker over a 60–72 px value): "Still a huge text - no UI should not mean text it should mean
+ * abstraction of what our infrastructure does".
  *
- * Copied from lp-story-sources-data.ts at 630bb8e (removed with its story the same day): the six
- * providers on their discs, every place and size, every wire, the hub point, the confetti, the
- * label's axis and the reveal order. Dealroom keeps its disc (founder, 2026-10-28). The spec's
- * changes (its §4 item 3):
- *   - the zoomed panel's leftovers go (its edge, the "Profile / View" row, the cut-off body
- *     line) and so does the whole leads-table opening: no UI (founder, above);
- *   - "Just raised" moves from a zoomed 13 px UI label to the display face, 72/72, under the
- *     kicker (the kit's value; the visual judge marked a Geist value as fatal);
- *   - the count label doubles to 26/32 and stays at the top: the loved geometry leaves no lower
- *     slot (Wappalyzer's disc is 17 px under it).
+ * So the picture is what the infrastructure does, as ONE left-to-right flow on the 752×489 box,
+ * with no big text:
+ *   LEFT    the sources: the hub he loves from the old sources story (removed 2026-10-28 with
+ *           lp-story-sources-data.ts, 630bb8e), its six providers on white discs with their own
+ *           marks, their names and the flat brand confetti, as one group scaled ×0.9 and moved
+ *           (below) so the flow fits the box with its outputs, "30+ data providers" over it;
+ *   MIDDLE  Pancake's hub: the near-black point where the six wires land;
+ *   RIGHT   what comes out: four short wires fan out of the hub to four brand-coloured stops in
+ *           a column, each with its label to its right: Hiring, Funding, Site visits, Work email
+ *           (the dive's line: "Find companies hiring, newly funded or visiting your site. Work
+ *           emails on demand. 30+ data providers, one bill.", lp-dive-data.ts).
+ * The only words are small labels in the kit's name style (12/16, story-kit.css .lp-sk-name):
+ * the six names, the four outputs and the count. Phones hide all of them (the stack draws the
+ * box at ×0.45): the picture reads without them, six marks into one point, four colours out.
+ * Everything but the confetti keeps 40 px from the box's edges, line boxes included (the
+ * closest: the count's line box 40.7 px from the top, Coresignal's name's 40.6 px from the
+ * bottom).
+ *
+ * The group. Every disc, name and confetti dot is the loved hub's, at the same relative places:
+ * X = 90 + 0.9 · x, Y = 18 + 0.9 · y, sizes × 0.9, from that hub's stage px (Dealroom 58.063 /
+ * 88.794 / Ø100, Apify 132.965 / 188.794 / Ø74.43, Firecrawl 48 / 285.484 / Ø87.727, Wappalyzer
+ * 226.801 / 59.665 / Ø58.258, Coresignal 108.063 / 391.644 / Ø62.117, TheirStack 208.063 /
+ * 334.702 / Ø100; its hub point 391 / 246.77, here 441.9 / 240.093). Why ×0.9: at full size the
+ * group alone is 413 px tall from Wappalyzer's disc to Coresignal's name, 4 px more than the
+ * box's 409 px of room, and the count needs its own line over it. The names keep the kit's
+ * 12 px while the discs close in, so two discs move a few px off the scaled place to keep the
+ * names' clearances (measured in the page font, ink to disc or wire): Coresignal 6 right and 1
+ * down (Firecrawl's name to its disc 7.0 px; the loved picture 6.2, ×0.9 alone 2.5) and
+ * Wappalyzer 7 right and 2 up (its name to Dealroom's wire 14.7 px; loved 14.6, ×0.9 alone
+ * 10.0). The confetti move with the group, so the pink and blue dots no longer cross the left
+ * edge.
+ *
+ * The count, "30+ data providers": centred on the loved label's axis (x 175.094 in the loved
+ * hub, x 247.585 here), its ink 15 px over Wappalyzer's disc and 25 px over Dealroom's name.
+ *
+ * The outputs: a column 145 px right of the hub, 72 px apart, centred on the hub's y; each
+ * label's line box starts 10 px right of its stop's edge, its 16 px line centred on the stop.
+ *
+ * The wires: one cubic each with horizontal handles, c = 0.426667 × the straight distance
+ * between its ends (the loved formula, sources-v2 §4.6), written out here, never computed at
+ * render, each drawn from its source: a provider's from its start cap (r 5.333) on its disc's
+ * right magnet (x + size, y + size / 2) into the hub point; an output's from the hub point, the
+ * near-black dot (r 5.333) being its cap, to its stop's centre, where the stop covers its end.
+ * The loved wires keep their shapes (the formula scales with the group; Wappalyzer's and
+ * Coresignal's follow their discs' few px).
  *
  * Words. "30+ data providers" is the founder's own figure (2026-10-13: "Mets 30+ data provider
  * sur pancake.ai") and the only N+ the lint allows: keep it exactly, in sentence case (the lint's
- * allowance is case-sensitive). "Why they fit" is his approved wording, stored in sentence case:
- * the caps are the kit's text-transform. The value is set in the Condensed trial cut, which has
- * letters, digits and spaces only. The names are the vendors' own spelling: the marks are their
- * trademarks, the unmodified files under public/lp/story-sources/ (see
- * docs/public-assets/lp/story-sources/README.md), never recoloured, redrawn or cropped. No social
- * platform is ever named or drawn here. Why these six: the loved picture's own, six of the data
- * providers the product names to its users (2026-10-13). The two behind a "just raised" lead come
- * first, on the two big discs: Dealroom (funding rounds) and TheirStack (its last-funding date).
+ * allowance is case-sensitive). The four outputs are the dive line's own words. The names are the
+ * vendors' own spelling: the marks are their trademarks, the unmodified files under
+ * public/lp/story-sources/ (see docs/public-assets/lp/story-sources/README.md), never recoloured,
+ * redrawn or cropped. No social platform is ever named or drawn here. Why these six: the loved
+ * picture's own, six of the data providers the product names to its users (2026-10-13). The two
+ * behind a funding signal come first, on the two big discs: Dealroom (funding rounds) and
+ * TheirStack (its last-funding date).
  *
  * In scripts/homepage-lint.mjs FILES: every string here is linted. Copy lives in fields named
  * `text` or `name`; the lint skips code keys, so the marks' files are `logo` and the wires' path
@@ -63,8 +96,8 @@ export type StorySignalsNode = {
   over?: boolean;
   /** start cap: the disc's right magnet (x + size, y + size / 2), stage px */
   cap: { x: number; y: number };
-  /** the wire from the cap to the hub point (391, 246.77): one cubic with horizontal handles,
-      c = 0.426667 × the distance (sources-v2 §4.6; written out, never computed at render) */
+  /** the wire from the cap to the hub point: one cubic with horizontal handles,
+      c = 0.426667 × the distance (written out, never computed at render) */
   d: string;
 };
 
@@ -77,85 +110,128 @@ export type StorySignalsDot = {
   size: number;
 };
 
+/** what comes out of the hub, top to bottom */
+export type StorySignalsOutputId = "hiring" | "funding" | "visits" | "email";
+
+export type StorySignalsOutput = {
+  id: StorySignalsOutputId;
+  /** the signal, in its label right of the stop (the kit's name style); phones hide it */
+  text: string;
+  /** the stop's brand token after `--lp-` (foundation.css) */
+  color: "green-20" | "yellow-30" | "blue-30" | "purple-30";
+  /** the stop's centre, stage px (radius: STORY_SIGNALS.stopR) */
+  x: number;
+  y: number;
+  /** the label's line box, top-left, stage px: 10 px right of the stop's edge, its 16 px line
+      centred on the stop's y */
+  at: { x: number; y: number };
+  /** the wire from the hub point to the stop's centre: one cubic with horizontal handles,
+      c = 0.426667 × the distance (written out, never computed at render) */
+  d: string;
+};
+
 export type StorySignalsStory = {
-  /** the block's claim: the kicker (the kit's spaced caps, 34/40) over the value (the display
-      face, 72/72). In its END place from frame 0 (the cue) */
-  claim: { kicker: { text: string }; value: { text: string } };
-  /** the count, over the providers (the loved hub label at twice its size) */
-  label: { text: string };
-  /** the hub point, stage px: where every wire lands, 18 px left of the kicker's ink */
+  /** the count, over the providers: its line box's top-left, stage px (header: on the loved
+      label's axis, its ink 15 px over Wappalyzer's disc and 25 px over Dealroom's name) */
+  label: { text: string; x: number; y: number };
+  /** the hub point, stage px: where every provider's wire lands and every output's starts */
   point: { x: number; y: number };
-  /** one entry per drawn disc (scripts/placeholder-gate.test.mjs counts them); array order =
-      paint order, the `over` disc after the wires */
+  /** the providers: one entry per drawn disc (scripts/placeholder-gate.test.mjs counts them);
+      array order = paint order, the `over` disc after the wires */
   nodes: readonly StorySignalsNode[];
-  /** the wires' paint order (Figma z-order) */
+  /** the providers' wires' paint order (Figma z-order) */
   wireOrder: readonly StorySignalsNodeId[];
   /** the flat confetti dots (Figma Ellipse 121–125), painted first */
   dots: readonly StorySignalsDot[];
+  /** the four outputs, top to bottom = their draw order */
+  outputs: readonly StorySignalsOutput[];
+  /** the outputs' stops' radius: the loved purple confetti dot's Ø25.418 / 2, as the lineage
+      story's signal stop */
+  stopR: number;
 };
 
 export const STORY_SIGNALS: StorySignalsStory = {
-  claim: {
-    kicker: { text: "Why they fit" },
-    value: { text: "Just raised" },
-  },
-  label: { text: "30+ data providers" },
-  point: { x: 391, y: 246.77 },
-  /** The loved discs, places and sizes unchanged. Which provider sits on which disc is set by
-      room for its name: the shortest names go where the next disc is closest (QA of 2026-10-13
-      measured every name against the discs, dots and wires). All final: nothing here is a
-      placeholder, so production and previews draw the same six. */
+  label: { text: "30+ data providers", x: 194.685, y: 40.698 },
+  point: { x: 441.9, y: 240.093 },
+  /** The loved discs at ×0.9, Coresignal and Wappalyzer a few px off (header). Which provider
+      sits on which disc is set by room for its name: the shortest names go where the next disc
+      is closest (QA of 2026-10-13 measured every name against the discs, dots and wires). All
+      final: nothing here is a placeholder, so production and previews draw the same six. */
   nodes: [
     {
       id: "e115", name: "Apify", logo: "/lp/story-sources/apify.svg",
-      x: 132.965, y: 188.794, size: 74.43, order: 3,
-      cap: { x: 207.395, y: 226.009 },
-      d: "M207.395 226.009C286.232 226.009 312.163 246.77 391 246.77",
+      x: 209.668, y: 187.915, size: 66.987, order: 3,
+      cap: { x: 276.655, y: 221.409 },
+      d: "M276.655 221.409C347.609 221.409 370.946 240.093 441.9 240.093",
     },
     {
       // the first provider behind the funding (its funding rounds)
       id: "e116", name: "Dealroom", logo: "/lp/story-sources/dealroom.svg",
-      x: 58.063, y: 88.794, size: 100, order: 0, nameAbove: true,
-      cap: { x: 158.063, y: 138.794 },
-      d: "M158.063 138.794C267.608 138.794 281.455 246.77 391 246.77",
+      x: 142.257, y: 97.915, size: 90, order: 0, nameAbove: true,
+      cap: { x: 232.257, y: 142.915 },
+      d: "M232.257 142.915C330.847 142.915 343.31 240.093 441.9 240.093",
     },
     {
       id: "e117", name: "Firecrawl", logo: "/lp/story-sources/firecrawl.png",
-      x: 48, y: 285.484, size: 87.727, order: 4,
-      cap: { x: 135.727, y: 329.347 },
-      d: "M135.727 329.347C250.201 329.347 276.526 246.77 391 246.77",
+      x: 133.2, y: 274.936, size: 78.954, order: 4,
+      cap: { x: 212.154, y: 314.413 },
+      d: "M212.154 314.413C315.18 314.413 338.874 240.093 441.9 240.093",
     },
     {
       id: "e119", name: "Wappalyzer", logo: "/lp/story-sources/wappalyzer.svg",
-      x: 226.801, y: 59.665, size: 58.258, order: 2,
-      cap: { x: 285.059, y: 88.794 },
-      d: "M285.059 88.794C366.215 88.794 309.844 246.77 391 246.77",
+      x: 301.121, y: 69.698, size: 52.432, order: 2,
+      cap: { x: 353.553, y: 95.914 },
+      d: "M353.553 95.914C425.7 95.914 369.753 240.093 441.9 240.093",
     },
     {
       id: "e120", name: "Coresignal", logo: "/lp/story-sources/coresignal.svg",
-      x: 108.063, y: 391.644, size: 62.117, order: 5,
-      cap: { x: 170.18, y: 422.702 },
-      d: "M170.18 422.702C290.644 422.702 270.536 246.77 391 246.77",
+      x: 193.257, y: 371.48, size: 55.905, order: 5,
+      cap: { x: 249.162, y: 399.433 },
+      d: "M249.162 399.433C355.86 399.433 335.202 240.093 441.9 240.093",
     },
     {
       // the second provider behind the funding (its last-funding date)
       id: "e118", name: "TheirStack", logo: "/lp/story-sources/theirstack.svg",
-      x: 208.063, y: 334.702, size: 100, order: 1, over: true,
-      cap: { x: 308.063, y: 384.702 },
-      d: "M308.063 384.702C376.734 384.702 322.329 246.77 391 246.77",
+      x: 277.257, y: 319.232, size: 90, order: 1, over: true,
+      cap: { x: 367.257, y: 364.232 },
+      d: "M367.257 364.232C429.061 364.232 380.096 240.093 441.9 240.093",
     },
   ],
   wireOrder: ["e115", "e118", "e120", "e117", "e116", "e119"],
   dots: [
-    { color: "green-20", x: 56.719, y: 213.137, size: 15.765 },
-    { color: "purple-30", x: 214.094, y: 250.352, size: 25.418 },
-    { color: "yellow-30", x: 30.238, y: 417.379, size: 28.18 },
-    { color: "blue-30", x: -5.227, y: 278.754, size: 28.18 },
-    { color: "pink-30", x: -5.227, y: -14.044, size: 40.547 },
+    { color: "green-20", x: 141.047, y: 209.823, size: 14.189 },
+    { color: "purple-30", x: 282.685, y: 243.317, size: 22.876 },
+    { color: "yellow-30", x: 117.214, y: 393.641, size: 25.362 },
+    { color: "blue-30", x: 85.296, y: 268.879, size: 25.362 },
+    { color: "pink-30", x: 85.296, y: 5.36, size: 36.492 },
   ],
+  /** a column 145 px right of the hub, 72 px apart, centred on the hub's y */
+  outputs: [
+    {
+      id: "hiring", text: "Hiring", color: "green-20", x: 586.9, y: 132.093,
+      at: { x: 609.609, y: 124.093 },
+      d: "M441.9 240.093C519.042 240.093 509.758 132.093 586.9 132.093",
+    },
+    {
+      id: "funding", text: "Funding", color: "yellow-30", x: 586.9, y: 204.093,
+      at: { x: 609.609, y: 196.093 },
+      d: "M441.9 240.093C505.645 240.093 523.155 204.093 586.9 204.093",
+    },
+    {
+      id: "visits", text: "Site visits", color: "blue-30", x: 586.9, y: 276.093,
+      at: { x: 609.609, y: 268.093 },
+      d: "M441.9 240.093C505.645 240.093 523.155 276.093 586.9 276.093",
+    },
+    {
+      id: "email", text: "Work email", color: "purple-30", x: 586.9, y: 348.093,
+      at: { x: 609.609, y: 340.093 },
+      d: "M441.9 240.093C519.042 240.093 509.758 348.093 586.9 348.093",
+    },
+  ],
+  stopR: 12.709,
 };
 
-/** What the animation shows. It names the six providers: the stage is aria-hidden, so their
-    names are read from here only. */
+/** What the animation shows. It names the six providers and the four outputs: the stage is
+    aria-hidden, so their names are read from here only. */
 export const STORY_SIGNALS_ALT: string =
-  "Animation: beside the words Why they fit, Just raised, six data providers: Dealroom, TheirStack, Wappalyzer, Apify, Firecrawl and Coresignal. A line runs from each into one point beside the words, starting with the two that track funding. Then a label appears: 30+ data providers.";
+  "Animation: six data providers, Dealroom, TheirStack, Wappalyzer, Apify, Firecrawl and Coresignal, each draw a line into one point. From it, four lines run out to Hiring, Funding, Site visits and Work email. A label reads 30+ data providers.";

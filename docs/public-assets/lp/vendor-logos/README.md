@@ -20,7 +20,8 @@ not Pancake artwork, and imply no endorsement. Never redraw or recolour one.
 - `pipedrive.svg`: Pipedrive's app icon (the white "p" on its green square), a 128 × 128 PNG
   wrapped unchanged in an SVG `<image>` (Pipedrive offers its marks as PNG and ICO only).
 
-The other data providers on the page (Apify, TheirStack, Coresignal, Wappalyzer, Firecrawl) live
-in `public/lp/story-sources/`; the infra section and the deep dive's signals and lineage stories
-draw those. The marks in `public/lp/vendor-logos/` are drawn by the infra section only (today
-HubSpot, Attio and Pipedrive; Close, Ocean.io and Linkup are on disk, unused).
+The data providers on the page (Dealroom, Apify, TheirStack, Coresignal, Wappalyzer, Firecrawl)
+live in `public/lp/story-sources/`; the infra section and the deep dive's signals and lineage
+stories draw those. The marks in `public/lp/vendor-logos/` are drawn by the infra section
+(HubSpot, Attio and Pipedrive) and by the deep dive's context and lineage stories (HubSpot, as the
+CRM); Close, Ocean.io and Linkup are on disk, unused.

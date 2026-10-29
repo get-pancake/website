@@ -286,10 +286,11 @@ html:has(main.lp) {
 }
 @media (min-width: 768px) and (max-width: 794px) {
   /* up to 794 the heading ("How your agent gets customers") takes two lines,
-     +68.8: 1023.4 (768) … 1040.3 (794). The split moves with the heading's
-     words: re-measure when they change */
+     +68.8: 1043.4 (768) … 1057.7 (790), then 1039.0–1040.3 (792–794) as the
+     last body drops a line. The split moves with the heading's words:
+     re-measure when they change */
   .lp-dive {
-    contain-intrinsic-size: auto calc(565.6px + (100vw - 64px) * 0.65027);
+    contain-intrinsic-size: auto calc(585.6px + (100vw - 64px) * 0.65027);
   }
 }
 @media (max-width: 767px) {

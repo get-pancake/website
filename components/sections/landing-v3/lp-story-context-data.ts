@@ -1,127 +1,142 @@
 /**
- * Deep-dive story "context" — block 1 of the four (founder 2026-10-28: "Pour les 4 blocs je ferai
- * donc 1/ Next best action + Unified GTM context 2/ Buying signal + enrichment 3/ Lead lineage
- * 4/ mcp first"), its copy and its geometry. Drawn in the one picture he loves (the old sources
- * story's end hub: grey wires into one near-black dot, "WHY THEY FIT" over "Just raised") with
- * no UI ("ban UI things from motions and try to abstract things … graphic simple and on brand
- * (you can reuse components)"). Build spec: the dive panel's final spec, §3.0 and §3.1.
+ * Deep-dive story "context" — block 1 of the four, "Your agent knows what to do next" (founder
+ * 2026-10-28: "Pour les 4 blocs je ferai donc 1/ Next best action + Unified GTM context 2/ Buying
+ * signal + enrichment 3/ Lead lineage 4/ mcp first"), its words and its geometry.
  *
- * The picture, in words: the claim on the left (the kit's spaced-caps kicker over a value in the
- * display face), and beside it three parts of the workspace's Brain around one plum centre, each
- * with a straight spoke into it; one wire leaves the centre and lands on a near-black dot at the
- * end of the kicker. Three labelled points, one centre, one line, one answer: not a clone of
- * the steps' 42-edge Brain graph, and nothing that reads as an app (no row, panel, cursor or
- * button).
+ * The founder's asks, in order: "ban UI things from motions and try to abstract things we re
+ * talking about being graphic simple and on brand (you can reuse components)"; on the opening
+ * that zoomed the claim to fill the stage: "this is not motion like it's plain text"; on the
+ * pictures that followed (a big kicker over a 60–72 px value): "Still a huge text - no UI should
+ * not mean text it should mean abstraction of what our infrastructure does". So this block draws
+ * what the infrastructure does, with no claim in the picture, in the parts of the one picture he
+ * loves (the old sources hub: white discs carrying each provider's own mark, grey wires drawing
+ * into one near-black dot, flat brand dots, small names under the discs).
  *
- * Where each part comes from:
- *   - the claim: the story kit (story-kit.css .lp-sk-k / .lp-sk-v). "Next best Play" is the
- *     founder's "Next best action" in the product's word; the value is a real Play of the page's
- *     cast, Acme's sibling Play (lp-step-data.ts S2_PLAYS[1], "Startups posting about a rebrand");
- *   - the centre: the steps' Brain centre (step 03 on the page, the `s1` motion: steps.css
- *     .lp-s1-center, a 31 px plum disc), at 40;
- *   - the three parts: that graph's hubs and their names (lp-step-data.ts S1_HUBS: ICPs #68CEA7 =
- *     --lp-green-20, Competitors #BA8BFF = --lp-purple-30); Voice takes the infra Context
- *     card's yellow (LpInfra.tsx LAYERS, tone "yellow"). Their names are its hub label's size
- *     (steps.css .lp-s1-hlabel, 10/16) at ×2.8: 28 px on the spec's 32 px line, each centred on
- *     its dot, in the weight of the family's names (500: the loved hub's names, the lineage
- *     story's lead);
- *   - the spokes: straight, as that graph's edges (steps.css .lp-s1-edges), in the loved
- *     wire's look (the kit's grey 2 px);
- *   - the exit wire: the loved picture's connector, one cubic with horizontal handles,
- *     c = 0.426667 × the straight distance (the formula of lp-story-sources-data.ts:89-93 at
- *     630bb8e, removed with its story the same day); its end dot is the loved hub dot (.lp-src-hubdot);
- *   - Mobbin: Ada "reasoning engine" (8b9d52f3-05d9-47d9-81a2-aad5a6a8fa71, inputs converge into
- *     one node and one line exits) and Duna "Policy Engine" (bfa5af78-e3be-420f-a9fb-23e5a2edda20,
- *     a hub with satellites on short ticks).
+ * The picture, left to right (the END, the rest markup in LpStoryContext.tsx):
+ *   - the inputs, on a gentle arc facing the centre: ICP (a flat stop in --lp-green-20), Voice
+ *     (a flat stop in --lp-yellow-30) and CRM (the kit's white disc carrying the HubSpot mark, the
+ *     unmodified public/lp/vendor-logos/hubspot.svg: docs/public-assets/lp/vendor-logos/README.md);
+ *   - the unified context: one plum centre (--lp-ink-100). Each input draws one grey wire into
+ *     it: the three are read in one call (the dive's body: "It reads your ICP, your voice and your
+ *     CRM in one call, then picks the next account to work and the Play to run.");
+ *   - the accounts: a loose cluster of ten small dots in --lp-ink-60 (the brand's disabled tone:
+ *     the accounts not picked). One wire leaves the centre and lands on one of them, over which a
+ *     near-black dot grows (the kit's hub colour): the next best action.
+ * The only words are four small labels in the kit's name style (story-kit.css .lp-sk-name, 12/16,
+ * 500): ICP, Voice and CRM under their inputs, "Next best action" over the picked account. Phones
+ * hide them, like every kit name: the picture reads without them.
  *
- * Truth (the dive panel's truth table): "Every answer tells your agent what to do next" and
- * "Pancake suggests your next Play, starting from what already brought you leads" (live); the
- * three parts are Brain sections (who buys = ICPs, your voice, your competitors). No CRM, no
- * account-level claim, no platform named or drawn.
+ * Geometry: stage px on the 752×489 design box (the phone stack shows the same box scaled to its
+ * column, ×0.455 at 390 px), every part at least 40 px inside its edges. Every wire is the loved
+ * connector: one cubic with horizontal handles, c = 0.426667 × the straight distance between its
+ * ends (the formula of lp-story-sources-data.ts:89-93 at 630bb8e, as in lp-story-signals-data.ts),
+ * written out here, never computed at render. Each starts on a cap (the kit's .lp-sk-cap,
+ * r 5.333) at its source's right edge and draws from there; an input's wire ends in the centre's
+ * middle, under the plum, and the exit wire in the picked account's middle, under its near-black
+ * dot. The cluster is placed by hand: every two accounts at least 38 px apart (centres), each
+ * about 30 px or more clear of the exit wire's line. Measured in the page's fonts, the whole
+ * picture spans x 86–677 and y 82–419.
  *
- * In scripts/homepage-lint.mjs FILES: every string here is linted, so copy sits only in fields
- * named `text` (never a code key the lint skips: id, key, kind, type, role, tone, icon, path,
- * url, d…). The kicker is kept in sentence case: the caps are the stylesheet's.
- *
- * Geometry: stage px on the 752×489 design box (phones show the same box scaled, ×0.435 at
- * 375 px: labels 12.2, kicker 14.8, value 26.1 px). The type positions were measured in the
- * page's own fonts (the panel's metrics on :3011): the kicker's caps have their optical middle
- * 19.66 under its line box's top, its ink ends at x 356.9; the value's two lines run to x 433.2.
- * Every wire is written out here, never computed at render.
+ * In scripts/homepage-lint.mjs FILES: every string here is linted. Words live in fields named
+ * `name` or `text`; the mark sits under `logo`, the wires under `d`, the tones under `tone` and an
+ * input's shape under `kind`, code keys the lint skips. Never name a copy field after a code key
+ * (id, key, kind, type, role, icon, path, url…).
  *
  * STORY_CONTEXT_ALT is fixed (lp-dive-stages.ts imports it): what the animation shows, the only
- * copy a screen reader gets (the shell's host aria-label).
+ * copy a screen reader gets (the shell's host aria-label). Keep it in step with the picture.
  *
  * Client-safe literals only: no import (the timeline reads what it needs from the markup).
  */
 
-/** a part of the Brain, in its landing order */
-export type StoryContextPartId = "voice" | "icp" | "competitors";
+/** an input, in its landing order */
+export type StoryContextInputId = "icp" | "voice" | "crm";
 
-export type StoryContextPart = {
-  id: StoryContextPartId;
-  /** the brand token after `--lp-` (foundation.css) */
-  tone: "yellow-30" | "green-20" | "purple-30";
-  /** the dot's centre and radius, stage px */
+export type StoryContextInput = {
+  id: StoryContextInputId;
+  /** its label, centred under it */
+  name: string;
+  /** its centre and radius, stage px (a disc's diameter is 2r) */
   x: number;
   y: number;
   r: number;
-  /** the spoke, written from the dot into the centre: the wire draws from its M point */
+  /** its wire's start cap, on its right edge (x + r, y) */
+  cap: { x: number; y: number };
+  /** its wire, from the cap into the centre's middle: it draws from its M point */
   d: string;
-  /** the part's name, centred on the dot's x; `top` = its 32 px line box's top. Voice and ICPs
-      sit above their dots, Competitors under its dot: about 10.6 px of air between ink and
-      dot, and the ICPs ink 21.6 px over its own spoke (the spec's clearances). The ICPs dot
-      sits at x 682, so its name ends 40 px clear of the stage's right edge (the spec's margin) */
-  label: { text: string; top: number };
-};
+} & (
+  | {
+      /** a flat stop in a brand tone (the token after `--lp-`, foundation.css) */
+      kind: "stop";
+      tone: "green-20" | "yellow-30";
+    }
+  | {
+      /** the kit's white disc carrying the vendor's own file, unmodified, at half its width */
+      kind: "disc";
+      logo: string;
+    }
+);
+
+/** an account: a small dot, centre and radius, stage px */
+export type StoryContextAccount = { x: number; y: number; r: number };
 
 export type StoryContextStory = {
-  /** the block's claim, in its END place from frame 0 (the cue) */
-  claim: {
-    /** spaced caps, 34/40; x, y = its line box's top-left */
-    kicker: { text: string; x: number; y: number };
-    /** the display face, 60/60, two lines (white-space: pre); y = kicker's y + 64 */
-    value: { text: string; x: number; y: number };
-  };
-  /** the Brain's centre, a resting piece: present from frame 0 */
+  /** the unified context: the plum centre. A resting piece, present from frame 0 */
   center: { x: number; y: number; r: number };
-  /** array order = landing order (and paint order) */
-  parts: readonly StoryContextPart[];
-  /** the one line out: from the centre to the kicker's dot */
-  exit: { d: string };
-  /** where the exit lands: 18 px past the kicker's ink, on its caps' middle (r = the kit's cap) */
-  dot: { x: number; y: number; r: number };
+  /** array order = landing order = the wires' draw order */
+  inputs: readonly StoryContextInput[];
+  /** the cluster, present from frame 0; paint order */
+  accounts: readonly StoryContextAccount[];
+  /** the next best action: which account (its index in `accounts`), the radius of the near-black
+      dot that grows over it, and its label, centred over that dot */
+  pick: { index: number; r: number; text: string };
+  /** the one wire out: from the cap on the centre's right edge to the picked account's middle */
+  exit: { cap: { x: number; y: number }; d: string };
 };
 
 export const STORY_CONTEXT: StoryContextStory = {
-  claim: {
-    kicker: { text: "Next best Play", x: 48, y: 152 },
-    value: { text: "Startups posting\nabout a rebrand", x: 49, y: 216 },
-  },
-  center: { x: 575, y: 250, r: 20 },
-  parts: [
+  center: { x: 334, y: 234, r: 20 },
+  inputs: [
     {
-      id: "voice", tone: "yellow-30", x: 575, y: 118, r: 11,
-      d: "M575 118V250",
-      label: { text: "Voice", top: 70 },
+      id: "icp", name: "ICP", kind: "stop", tone: "green-20", x: 126, y: 98, r: 16,
+      cap: { x: 142, y: 98 },
+      d: "M142 98C242.389 98 233.611 234 334 234",
     },
     {
-      id: "icp", tone: "green-20", x: 682, y: 250, r: 11,
-      d: "M682 250H575",
-      label: { text: "ICPs", top: 202 },
+      id: "voice", name: "Voice", kind: "stop", tone: "yellow-30", x: 102, y: 234, r: 16,
+      cap: { x: 118, y: 234 },
+      d: "M118 234C210.16 234 241.84 234 334 234",
     },
     {
-      id: "competitors", tone: "purple-30", x: 575, y: 382, r: 11,
-      d: "M575 382V250",
-      label: { text: "Competitors", top: 398 },
+      // the 56 px disc: the HubSpot sprocket drawn at 28 px (the kit's half)
+      id: "crm", name: "CRM", kind: "disc", logo: "/lp/vendor-logos/hubspot.svg", x: 126, y: 370, r: 28,
+      cap: { x: 154, y: 370 },
+      d: "M154 370C250.257 370 237.743 234 334 234",
     },
   ],
-  /** (575, 250) → (375, 171.66): distance 214.796, c = 91.646. 34.4 px clear of the value */
-  exit: { d: "M575 250C483.354 250 466.646 171.66 375 171.66" },
-  dot: { x: 375, y: 171.66, r: 5.333 },
+  accounts: [
+    { x: 588, y: 186, r: 9 },
+    { x: 630, y: 193, r: 9 },
+    { x: 568, y: 226, r: 9 },
+    { x: 608, y: 224, r: 9 },
+    { x: 649, y: 232, r: 9 },
+    { x: 586, y: 262, r: 9 },
+    { x: 628, y: 266, r: 9 },
+    { x: 668, y: 274, r: 9 },
+    { x: 606, y: 302, r: 9 },
+    { x: 648, y: 308, r: 9 },
+  ],
+  /** the cluster's top-left account, where the wire arrives. Its label's line box (y 153–169, the
+      text x 541.8–634.2 in the page's font) is 15 px over the account to its right (top 184) and
+      5 px over the near-black dot (top 174), the kit's gap under a name, mirrored */
+  pick: { index: 0, r: 12, text: "Next best action" },
+  /** (354, 234) → (588, 186): distance 238.872, c = 101.919 */
+  exit: {
+    cap: { x: 354, y: 234 },
+    d: "M354 234C455.919 234 486.081 186 588 186",
+  },
 };
 
-/** The whole story, in the order it plays. The stage is aria-hidden: its words are read from
-    here only. */
+/** What the animation shows, in the order it plays. The stage is aria-hidden: its words are read
+    from here only. */
 export const STORY_CONTEXT_ALT: string =
-  "Animation: beside the words Next best Play, Startups posting about a rebrand, three parts of your Brain appear around one center: Voice, ICPs and Competitors. Their lines join the center, then one line runs from it to the next best Play.";
+  "Animation: your ICP, your voice and your CRM, shown by the HubSpot mark, each draw a line into one center. One line runs from it to one account among many: the next best action.";

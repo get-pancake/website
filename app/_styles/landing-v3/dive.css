@@ -541,12 +541,12 @@
   .lp-dive[data-lp-phone="stack"] {
     /* content box = title 82 + 20 + list; the list = 48 + three 64 gaps +
        four (text block + 16 + stage (W − 48) × 489/752). Measured on a 1 px
-       sweep, 2026-10-28: 1810.4 (320) · 1894.5 (360) · 1884.5 (375) ·
-       1891.3 (393) · 1914.7 (402) · 1987.6 (430) · 2369.7 (600) · 2784.1
-       (767), in 20 px steps as a body gains or loses a line → within ±1.7%
+       sweep, 2026-10-28: 1770.4 (320) · 1854.5 (360) · 1864.5 (375) ·
+       1871.3 (393) · 1894.7 (402) · 1947.6 (430) · 2369.7 (600) · 2764.1
+       (767), in 20 px steps as a body gains or loses a line → within ±0.8%
        from 320 to 767. Replaces foundation.css's carousel estimates while
        the stack is on (0,2,0). */
-    contain-intrinsic-size: auto max(min(calc(1280px + 165vw), 1884px), calc(982px + 230vw));
+    contain-intrinsic-size: auto max(min(calc(1185px + 185vw), 1884px), calc(896px + 245vw));
     gap: 20px;
     /* 59.6 above the title, + the cloud room sky.css opens over the banner
        (--lp-sky-room, taken back by its negative margin) */

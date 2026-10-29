@@ -1,57 +1,53 @@
 /* Story MCP — owner: story-mcp package (2026-10-28). Deep-dive story 4,
    "Built for Claude and Codex" (LpStoryMcp), the founder's fourth block:
-   "4/ mcp first". Spec: the design panel's final build spec, §3.4, whose
-   rendered END and cue pictures this matches.
+   "4/ mcp first". Founder, on the four: "ban UI things from motions and try
+   to abstract things … graphic simple and on brand (you can reuse
+   components)", then, on pictures led by a big kicker over a 60–72 px value:
+   "no UI should not mean text it should mean abstraction of what our
+   infrastructure does". So the picture is a flow, left to right, in the
+   loved hub's parts and with no claim: the agents' marks on white discs, a
+   wire from each into Pancake, then a fan of short wires out of Pancake to
+   six stops in the infra section's three tones.
 
    Built from the story kit (story-kit.css: the white disc, the wires, the
-   cap, the near-black dot, the kicker and the value, the camera), plus two
-   pieces copied from the infra section at a size up: the brand's lockup
-   (infra.css .lp-infra__brand, ×1.25) and the agent chips' glyph cells
-   (.lp-infra__mark, ×2). Every number is stage px on the 752x489 design box.
-   Phones show the same box scaled (the stack, ×0.435 at 375): kicker 14.8 px,
-   value 34.8 px, agent discs 41.7 px, lockup 107x39 with a 27 px wordmark, no
-   other type. Paints nothing behind the scene (the shell paints the stage).
+   cap, the near-black dot, the names, the rise), plus the brand's lockup
+   copied from the infra section at a size up (infra.css .lp-infra__brand,
+   ×1.25) and the agent chips' glyph cells (.lp-infra__mark, ×2). Every box
+   is placed inline from lp-story-mcp-data.ts (stage px on the 752x489 design
+   box); this file holds the look only. Phones show the same box scaled (the
+   stack, ×0.455 at 390): agent discs 43.7 px, lockup 112x41 with a 28 px
+   wordmark, stops 9.1 px across, and no type (the kit hides the names). Paints
+   nothing behind the scene (the shell paints the stage).
 
-   Layers, back to front (LpStoryMcp): the wires (the stem ends under the
-   lockup's edge), the lockup, the discs, the point and the caps (over the
-   discs' edges), the claim. The rest markup is the END picture; the timeline
-   (lp-story-mcp-timeline.ts) sets frame 0.
+   Layers, back to front (LpStoryMcp): the wires, the lockup, the discs, then
+   the caps, the two ports and the stops, then the names and the label. The
+   rest markup is the END picture; the timeline (lp-story-mcp-timeline.ts)
+   sets frame 0.
 
    Traps (with the kit's T1-T5):
    T1 Compound selectors only: `.lp p { margin: 0 }` and the shell's
       `.lp-dive-scene * { font-family }` tie with single-class rules.
    T2 The wordmark is the footer's file sized by its height: no max-width
       (Tailwind's preflight caps imgs at 100%), no shrink in the flex row.
+   T3 The lockup's box is written out (data: brand.w x brand.h, its content's
+      own size) so the ports sit exactly on its edges.
+   T4 The stops are children of their svg, not of a <g>: the kit's
+      `> g > *` multiply never reaches them, so each paints flat over the end
+      of its wire.
    No will-change, no keyframes: the stage is GSAP-only, plays once. */
-
-/* the claim, top left: the kit's kicker (34/40, 3.4 tracking, caps) and its
-   value 64 lower, 80/80 in the display face. The value's ink starts on the
-   kicker's (x 51.1) and ends at 528.2; its foot is 49.5 above Claude's disc */
-.lp-smcp .lp-smcp-k {
-  left: 48px;
-  top: 52px;
-}
-.lp-smcp .lp-smcp-v {
-  font-size: 80px;
-  left: 50.57px;
-  top: 116px;
-}
 
 /* Pancake: the infra section's lockup (plum, the avatar's colour mascot, the
    footer's cream wordmark), ×1.25: radius 22 → 27.5, padding 11/24/11/12 →
    13.75/30/13.75/15, gap 10 → 12.5, mascot 48 → 60, wordmark 50 → 62.5 tall
-   (128.3 wide). 245.8x90 at (196, 300): its middle line is the point's
-   (y 345), the mascot sits at (211, 315), the wordmark at (283.5, 313.75) */
+   (128.3 wide): 245.799x90, placed inline */
 .lp-smcp .lp-smcp-brand {
   align-items: center;
   background: var(--lp-brand-plum);
   border-radius: 27.5px;
   display: flex;
   gap: 12.5px;
-  left: 196px;
   padding: 13.75px 30px 13.75px 15px;
   position: absolute;
-  top: 300px;
 }
 .lp-smcp .lp-smcp-pk {
   flex: none;
@@ -66,22 +62,36 @@
   width: auto;
 }
 
-/* the agents' marks on the kit's 96 px discs: the infra chips' cells ×2, a
-   48 cell centred on the disc (half of it, as a vendor's mark on its disc).
-   The OpenAI glyph fills its box, in ink: 48 at (24, 24). Claude's glyph is
-   20 of its 24 cell, in its spark colour: 40 at (28, 28) */
+/* the agents' marks on the kit's discs (100 px): the infra chips' cells
+   (.lp-infra__mark, 24) at half the disc, centred, as the kit draws a
+   vendor's file on its disc (story-kit.css .lp-sk-disc img: 50% at 25%).
+   The OpenAI glyph fills its box, in ink: 50 at (25, 25). Claude's glyph is
+   20 of its 24 cell, in its spark colour: 41.667 at (29.167, 29.167) */
 .lp-smcp .lp-smcp-glyph {
   color: var(--lp-ink-100);
-  height: 48px;
-  left: 24px;
+  height: 50%;
+  left: 25%;
   position: absolute;
-  top: 24px;
-  width: 48px;
+  top: 25%;
+  width: 50%;
 }
 .lp-smcp .lp-smcp-glyph[data-mark="claude"] {
   color: var(--lp-claude-spark);
-  height: 40px;
-  left: 28px;
-  top: 28px;
-  width: 40px;
+  height: 41.667%;
+  left: 29.167%;
+  top: 29.167%;
+  width: 41.667%;
+}
+
+/* the six stops: flat dots in the infra cards' tones (Context yellow, Data
+   purple, Tools pink: the logo's three pancakes, top to bottom), the loved
+   confetti's flat fills */
+.lp-smcp .lp-smcp-stop[data-tone="yellow-30"] {
+  fill: var(--lp-yellow-30);
+}
+.lp-smcp .lp-smcp-stop[data-tone="purple-30"] {
+  fill: var(--lp-purple-30);
+}
+.lp-smcp .lp-smcp-stop[data-tone="pink-30"] {
+  fill: var(--lp-pink-30);
 }

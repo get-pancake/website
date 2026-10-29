@@ -10,9 +10,9 @@
  *
  * Each glyph keeps its own view box, and the stylesheet sizes it as the infra cells do
  * (infra.css .lp-infra__mark): the Claude glyph is 20 in a 24 cell, the OpenAI glyph fills its
- * 24 box. On the story's 96 px discs the cell is 48 (half the disc, as a vendor's mark on the
- * kit's disc): story-mcp.css. Colours are the infra chips' (--lp-claude-spark, --lp-ink-100),
- * never the paths'.
+ * 24 box. On the story's discs the cell is half the disc, centred (as the kit draws a vendor's
+ * mark on its disc): story-mcp.css. Colours are the infra chips' (--lp-claude-spark,
+ * --lp-ink-100), never the paths'.
  */
 
 export type StoryMcpMarkId = "claude" | "codex";

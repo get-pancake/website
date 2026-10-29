@@ -1,5 +1,7 @@
+import type { CSSProperties, ReactNode } from "react";
+
 import type { DiveStageProps } from "./lp-dive-stages";
-import { SkDisc } from "./LpStoryKit";
+import { SkDisc, skF3 } from "./LpStoryKit";
 import { PANCAKE_AVATAR } from "./lp-pancake-avatar-art";
 import { SMCP_MARKS } from "./lp-story-mcp-art";
 import { STORY_MCP } from "./lp-story-mcp-data";
@@ -11,22 +13,30 @@ import { STORY_MCP } from "./lp-story-mcp-data";
  * aria-hidden, the shell's host carries the ALT; the markup IS the END picture; it paints nothing
  * behind the scene). Copy and geometry: lp-story-mcp-data.ts; the two glyphs: lp-story-mcp-art.ts;
  * styles: story-kit.css (the shared kit) + story-mcp.css; motion: lp-story-mcp-timeline.ts.
- * Spec: the design panel's final build spec, §3.4.
  *
- * Layers, back to front (spec §3.4's z order):
+ * The picture is a flow, left to right, in the loved hub's parts: the agents' marks on white
+ * discs, a wire from each into Pancake's left edge, and a fan of six short wires out of its right
+ * edge to six stops in the infra section's three tones. No claim, no UI.
+ *
+ * Layers, back to front:
  *   .lp-sk-scene          the scene wrapper (the 752×489 box); nothing transforms it
- *     svg.lp-sk-wires     the agents' wires into the point, and the stem from the point into
- *                         Pancake, which ends under the lockup's edge. Each wire's <g> names the
- *                         node it plugs in (data-node: its agent, or "pancake" for the stem)
+ *     svg.lp-sk-wires     the wires: each agent's, from its disc into the in-port, then the
+ *                         fan's six, from the out-port to their stops. Each <g> names the node
+ *                         its wire comes from (data-node: an agent, or "pancake" with the
+ *                         stop's data-order for the fan)
  *     .lp-smcp-brand      Pancake: the infra section's lockup at ×1.25 (LpInfra.tsx PancakeMark,
  *                         the footer's wordmark file; infra.css .lp-infra__brand)
- *     .lp-sk-disc ×2      the agents: Claude's and Codex's glyphs (LpAgentMarks.tsx, copied) on the
- *                         kit's white discs, nothing written beside them
- *     svg.lp-sk-wires     the point (near-black) and the wires' start caps, over the discs' edges.
- *                         The spec paints the point under the discs; it is 80 px clear of them
- *                         (and 39 px clear of the lockup), so one layer carries both dots and the
- *                         picture is the same
- *     .lp-sk-k / .lp-sk-v the claim: "IN THE CHAT" over "About 100 tools"
+ *     .lp-sk-disc ×2      the agents: Claude's and Codex's glyphs (LpAgentMarks.tsx, copied) on
+ *                         the kit's white discs
+ *     svg.lp-sk-wires     over the discs and the lockup: each agent wire's start cap on its
+ *                         disc's edge, the in-port (the near-black dot both agent wires land on,
+ *                         on the lockup's left edge), the out-port (the same dot on its right
+ *                         edge, where the fan's six wires start: the loved hub's dot is the caps
+ *                         of six wires meeting in one point), and the six stops (flat, over their
+ *                         wires' ends)
+ *     .lp-sk-name ×3      the agents' names under their discs and "About 100 tools" over the
+ *                         fan: the kit's name style, risen into place (.lp-sk-rise); phones
+ *                         hide them (story-kit.css), the picture reads without them
  *
  * Every element is in the markup: the timeline hides what comes later (frame 0) and never adds
  * one. Nothing here is focusable, and nothing carries its own accessible name: the root is
@@ -46,35 +56,70 @@ function PancakeMark() {
   );
 }
 
+/** A small label in the kit's name style, centred on x: under the box that ends at `bottom`, or
+    over the one that starts at `top` (`above`). Copied from LpStoryKit.tsx SkName with the kit's
+    rise class added (.lp-sk-rise: the timeline raises it into place); hidden on phones as every
+    .lp-sk-name. */
+function McpName({
+  x,
+  top,
+  bottom,
+  above,
+  node,
+  children,
+}: {
+  x: number;
+  top: number;
+  bottom: number;
+  above?: boolean;
+  node: string;
+  children: ReactNode;
+}) {
+  const place = { "--nx": skF3(x), "--nt": skF3(top), "--nb": skF3(bottom) } as CSSProperties;
+  return (
+    <span className="lp-sk-name lp-sk-rise" data-node={node} data-above={above ? "" : undefined} style={place}>
+      {children}
+    </span>
+  );
+}
+
 export function LpStoryMcpStage(_props: DiveStageProps) {
-  const { kicker, value, point, stem, agents } = STORY_MCP;
+  const { brand, inPort, outPort, agents, tools, label } = STORY_MCP;
+  const box = (x: number, y: number, w: number, h: number) => ({
+    left: `${skF3(x)}px`,
+    top: `${skF3(y)}px`,
+    width: `${skF3(w)}px`,
+    height: `${skF3(h)}px`,
+  });
 
   return (
     <div className="lp-sk lp-smcp" data-lp-story="mcp" aria-hidden="true">
       <div className="lp-sk-scene">
-        {/* z1: the wires, under Pancake */}
+        {/* the wires, under everything: the agents' into Pancake, then the fan out of it */}
         <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
           {agents.map((agent) => (
             <g key={agent.id} data-node={agent.id}>
               <path d={agent.d} />
             </g>
           ))}
-          <g data-node="pancake">
-            <path d={stem.d} />
-          </g>
+          {tools.map((tool, k) => (
+            <g key={k} data-node="pancake" data-order={k}>
+              <path d={tool.d} />
+            </g>
+          ))}
         </svg>
 
-        {/* z2: Pancake, the brand's lockup on plum: the avatar's colour mascot and the footer's
+        {/* Pancake, the brand's lockup on plum: the avatar's colour mascot and the footer's
             cream wordmark (the looped k is drawn, never typed). The img is the infra lockup's,
             eager as there: the infra section above has already fetched the file, so it costs no
             request and never paints late. Its alt is empty: the ALT names Pancake */}
-        <div className="lp-smcp-brand" data-node="pancake">
+        <div className="lp-smcp-brand" data-node="pancake" style={box(brand.x, brand.y, brand.w, brand.h)}>
           <PancakeMark />
           {/* eslint-disable-next-line @next/next/no-img-element -- the footer's wordmark file, as the nav's */}
           <img className="lp-smcp-wordmark" src="/lp/lp-footer-logo.svg" alt="" width={239.672} height={116.755} />
         </div>
 
-        {/* z4: the agents, each mark on a white disc */}
+        {/* the agents, each mark on a white disc */}
         {agents.map((agent) => (
           <SkDisc key={agent.id} x={agent.disc.x} y={agent.disc.y} size={agent.disc.size} node={agent.id}>
             <svg className="lp-smcp-glyph" viewBox={SMCP_MARKS[agent.id].viewBox} fill="currentColor" data-mark={agent.id}>
@@ -83,23 +128,49 @@ export function LpStoryMcpStage(_props: DiveStageProps) {
           </SkDisc>
         ))}
 
-        {/* z3 + z5: the point the wires land on, and each wire's start cap on its disc's edge
-            (r = the kit's SK_CAP_R, written out: lp-story-kit.ts imports the "use client" GSAP
-            module, which a server Stage must never reach) */}
+        {/* over the discs and the lockup: the agents' start caps, the two ports, the stops (r =
+            the kit's SK_CAP_R for caps and ports, written out: lp-story-kit.ts imports the
+            "use client" GSAP module, which a server Stage must never reach) */}
         <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
-          <g>
-            <circle className="lp-sk-hub" cx={point.x} cy={point.y} r="5.333" />
-          </g>
           {agents.map((agent) => (
             <g key={agent.id} data-node={agent.id}>
-              <circle className="lp-sk-cap" cx={agent.cap.x} cy={agent.cap.y} r="5.333" />
+              <circle className="lp-sk-cap" cx={skF3(agent.cap.x)} cy={skF3(agent.cap.y)} r="5.333" />
             </g>
+          ))}
+          <g>
+            <circle className="lp-sk-hub" data-port="in" cx={skF3(inPort.x)} cy={skF3(inPort.y)} r="5.333" />
+          </g>
+          <g>
+            <circle className="lp-sk-hub" data-port="out" cx={skF3(outPort.x)} cy={skF3(outPort.y)} r="5.333" />
+          </g>
+          {tools.map((tool, k) => (
+            <circle
+              key={k}
+              className="lp-smcp-stop"
+              data-tone={tool.tone}
+              data-order={k}
+              cx={skF3(tool.stop.x)}
+              cy={skF3(tool.stop.y)}
+              r={tool.stop.r}
+            />
           ))}
         </svg>
 
-        {/* the claim (z6, z7) */}
-        <p className="lp-sk-k lp-smcp-k">{kicker.text}</p>
-        <p className="lp-sk-v lp-smcp-v">{value.text}</p>
+        {/* the names, under the agents' discs, and the label over the fan */}
+        {agents.map((agent) => (
+          <McpName
+            key={agent.id}
+            node={agent.id}
+            x={agent.disc.x + agent.disc.size / 2}
+            top={agent.disc.y}
+            bottom={agent.disc.y + agent.disc.size}
+          >
+            {agent.name}
+          </McpName>
+        ))}
+        <McpName node="tools" x={label.x} top={label.top} bottom={label.top} above>
+          {label.text}
+        </McpName>
       </div>
     </div>
   );
