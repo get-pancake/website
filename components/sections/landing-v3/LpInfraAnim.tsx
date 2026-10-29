@@ -39,19 +39,23 @@ const SCROLL_MARGIN = 24;
 /** the smallest the card may be scaled to fit a short window: a 1440 × 900 laptop with its dock
     and bookmarks bar (≈ 700 px of window) gets 0.88; under ≈ 660 px, the build-up instead */
 const MIN_FIT = 0.8;
-/** the scroll the stage stays pinned for: 1.6 windows, within 1300–1800 px (three moves: the
-    buckets, the pieces into them, Pancake down to them and up to the agent) */
-const pinLength = (vh: number) => Math.round(Math.min(1800, Math.max(1300, vh * 1.6)));
+/** the scroll the stage stays pinned for: 1.24 windows, within 1000–1400 px (three moves: the
+    bricks, their contents, Pancake and the cables). It ends as the cables land: the pin was
+    1.6 windows with the finished picture held for its last fifth, 270 px of scroll at 1440 × 900
+    where nothing moved (founder 2026-10-28: "Scrolling stays hard after the cables are appeared
+    like some non existing component still load on the scroll"); the moves keep their pace */
+const pinLength = (vh: number) => Math.round(Math.min(1400, Math.max(1000, vh * 1.24)));
 /** the timeline starts as the stage's top comes 45% down the window, before the pin, so the
     pieces move from the first notch on (founder 2026-10-27: "je scroll rien se passe puis d un
     coup tout se met en place"); it ends where the pin lets go */
 const START = 0.45;
 /** the smoothing's time constant (s): the picture is 95% caught up with the scroll after 3τ */
 const TAU = 0.15;
-/** from here the picture is assembled and the leads queue may run (a little lower to stop it,
-    so a visitor resting on the edge does not start and stop it) */
-const ASSEMBLED = 0.95;
-const UNASSEMBLED = 0.9;
+/** from here the picture is assembled (the cables all but down: the timeline ends with them) and
+    the leads queue may run (a little lower to stop it, so a visitor resting on the edge does not
+    start and stop it) */
+const ASSEMBLED = 0.98;
+const UNASSEMBLED = 0.92;
 
 type QaRegistry = Record<string, Record<string, unknown> | undefined>;
 

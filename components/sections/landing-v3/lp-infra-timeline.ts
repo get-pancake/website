@@ -156,7 +156,7 @@ export function buildInfraFlow(root: HTMLElement): Built {
       resserrement … je ne veux pas du background point … je trouve ca bien que ca occupe plus d
       espace").
 
-   One timeline of length 1, scrubbed by the smoothed scroll (LpInfraAnim), which starts it as
+   One timeline, .81 long, scrubbed by the smoothed scroll (LpInfraAnim), which starts it as
    the stage's top comes 45% down the window, before the pin, so something moves from the first
    notch on:
      0     – .18   the bricks come up, each word filling its brick (.1 each, .04 apart)
@@ -164,9 +164,10 @@ export function buildInfraFlow(root: HTMLElement): Built {
      .28   – .55   each brick's contents come up in place, top to bottom, brick by brick
      .56   – .60   the Play switches on
      .64   – .70   Pancake comes up
-     .70   – .82   every cable at once: the stem and the wire up together, then the arms out
+     .70   – .81   every cable at once: the stem and the wire up together, then the arms out
                    and down
-     .82   – 1     hold
+   No hold after the cables: the pin lets go as they land (founder 2026-10-28, on the finished
+   picture held for the pin's last fifth: "Scrolling stays hard after the cables are appeared").
    progress(1) = the server markup. Built from the layout (where each word's badge is):
    LpInfraAnim builds it again when the window changes. Only transforms, opacity, the fork's clip
    and the switch's colour. */
@@ -279,7 +280,6 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
   tl.to(line, { scaleY: 1, duration: 0.06, ease: "power2.inOut" }, CABLES);
   tl.to(arms, { clipPath: ARMS_BAR, duration: 0.05, ease: "power2.out" }, CABLES + 0.02);
   tl.to(arms, { clipPath: ARMS_ALL, duration: 0.04, ease: "power1.out" }, CABLES + 0.07);
-  tl.to({}, { duration: 0.18 }, 0.82);
 
   return { tl, cleanup };
 }
