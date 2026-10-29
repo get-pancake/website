@@ -16,8 +16,10 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
  * own brand suffix (or none, like the homepage's exact "Pancake").
  */
 
-/** The brand X account: the footers' x.com/getpancake_ai link and the Organization sameAs. */
-export const X_HANDLE = "@getpancake_ai";
+/** The brand X account: the footers' x.com/pancakegtm link and the Organization sameAs.
+ *  2026-10-29 (founder): @pancakegtm, the main account since Feb 2025; it replaced
+ *  @getpancake_ai, a separate account opened in Oct 2026. */
+export const X_HANDLE = "@pancakegtm";
 
 /**
  * The shared share card: the homepage's rainbow card, printing the hero H1.
