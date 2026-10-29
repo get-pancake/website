@@ -195,7 +195,7 @@ const organizationJsonLd = {
     addressCountry: "US",
   },
   sameAs: [
-    "https://x.com/getpancake_ai",
+    "https://x.com/pancakegtm",
     "https://www.youtube.com/@trypancake",
     "https://www.linkedin.com/company/get-pancake",
     "https://www.tiktok.com/@getpancake",

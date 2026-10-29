@@ -191,6 +191,6 @@ export const PLAYS_META = {
   /** Every page on the shared card describes the text in that image (audit plan 8.4). */
   ogImageAlt: OG_IMAGE_ALT,
   /** The X account the footer and the Organization sameAs link to. */
-  xHandle: "@getpancake_ai",
+  xHandle: "@pancakegtm",
   crumbs: { home: "Home", page: "Example Plays" },
 };
