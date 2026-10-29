@@ -3,13 +3,15 @@
    2026-10-28), LpStoryContext. No claim and no UI (founder: "no UI should not
    mean text it should mean abstraction of what our infrastructure does"): the
    inputs (ICP, Voice, the CRM's mark) each draw a grey wire into one plum
-   centre, and one wire runs from it to one account of a cluster, the next
-   best action.
+   centre; one line runs from it to one account under a cluster (which
+   account), then on to a Play (which Play), and a loop runs from the Play
+   back into the centre (it remembers what worked: the founder's "un poil de
+   densité informationnelle", the same evening).
 
    Everything shared is the kit's (story-kit.css: the white disc, the wires
    and their caps, the near-black hub colour, the names and their rise). This
-   file holds what is this story's only: the centre's plum and the accounts'
-   tone. Every place is written inline from lp-story-context-data.ts (stage px
+   file holds what is this story's only: the centre's plum, the accounts'
+   tone, the Play's mark and the labels in the kicker's ink. Every place is written inline from lp-story-context-data.ts (stage px
    on the 752x489 design box); the stops' tones are inline from the data too.
    The markup rests on the END picture; the timeline
    (lp-story-context-timeline.ts) sets frame 0: the centre and the accounts,
@@ -32,4 +34,20 @@
    picked one turns into the kit's near-black dot, which grows over it */
 .lp-sctx .lp-sctx-account {
   fill: var(--lp-ink-60);
+}
+
+/* which Play: the stop's tone is inline from the data (--lp-pink-30, the
+   infra card's Tools tone); its play mark is white on the pink. It is a path
+   in the wires' svg, so it also takes off the kit's wire stroke
+   (story-kit.css `.lp-sk-wires path`) */
+.lp-sctx .lp-sctx-play-mark {
+  fill: #fff;
+  stroke: none;
+}
+
+/* the row under the line ("Which account", "Which Play") and the loop's
+   "Remembers what worked": the kit's name in the kicker's ink (ink-80, as
+   the lineage story's group labels), so they sit back from the names */
+.lp-sctx .lp-sctx-head {
+  color: var(--lp-ink-80);
 }
