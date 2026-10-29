@@ -205,28 +205,43 @@ export const S0_CONNECT = {
   ],
 } as const;
 
-/* ── step 02 since 2026-10-28 · "Ask anything. / Pancake turns it into a Play." — Claude, and
-   the envelopes it sends. Founder, on the storyboard's end picture (the Play card "Funded
-   startups hiring a marketing lead"): "not sure we should show here the UI but maybe a juicy
-   things showing claude + like plein de petites enveloppes qui partent de claude dans tous les
-   sens dans le carré". No UI: the Claude mark on the kit's white disc in the middle, and 24
-   envelopes (the site's mail icon on the design kit's coloured pancakes) that burst out of it
-   and land all over the card. The storyboard (s2) stays in the code, unused.
+/* ── step 02 since 2026-10-28 · "Ask anything. / Pancake turns it into a Play." — the ask typed
+   in Claude, the Play it becomes, and the envelopes Claude sends as the ending. Founder, on the
+   storyboard's Play card: "not sure we should show here the UI but maybe a juicy things showing
+   claude + like plein de petites enveloppes qui partent de claude dans tous les sens dans le
+   carré"; on the first take (Claude's disc and the burst alone): "il fallait remettre la phrase
+   dans claude qui cree le play ici", "genre les enveloppes c est que la fin tu vois"; and on its
+   white disc: "Je donnerai au truc blanc la forme du pancake mais juste en 2d", "je ferai occuper
+   une plus grande place au logo dedans quand meme", "et pas sur de l effet d ombre derriere".
+   So three beats on the card's cream, no app window: the request types into a white pill; it
+   runs down a hairline into Claude (the Claude mark, big, on the kit's white pancake face, flat);
+   a second hairline brings up the Play under it and its switch turns on; then the envelopes (the
+   site's mail icon on the design kit's coloured pancakes) burst out of Claude and land all around.
+   One column on the stage's axis: the ask pill, Claude, the Play pill (their boxes: steps.css).
 
-   Written out once, never computed at run time (the timeline is seek-safe: no randomness). The
-   layout came from a seeded blue-noise placement, then frozen: every envelope keeps at least
-   16 px off the stage's edges, 41.9 px off Claude's disc and 27 px off its neighbours; sizes
-   grow with the distance from Claude (depth: the far ones came closest), tilts fan out (left
-   side anticlockwise, right side clockwise), and the five tones keep 172 px between two
-   envelopes of the same tone, the four corners all different.
+   The envelopes are written out once, never computed at run time (the timeline is seek-safe: no
+   randomness). Laid by hand around the column: six over the ask, six under the Play, three on
+   each side of Claude. Every one keeps 16 px off the stage's edges, 18 px off the pills and
+   Claude's face and 32 px off its neighbours, and their spread is centred on Claude (area
+   centroid 231.8, 213.2). Sizes grow with the distance from Claude (depth: the far ones came
+   closest), tilts fan out (left side anticlockwise, right side clockwise), the four corners are
+   four tones and two envelopes of a tone keep 176 px apart.
    Rows are in PAINT order, nearest first (the markup lays them in this order and the timeline
-   walks the same list), so a far, bigger envelope flies over the near ones it passes. They
-   leave in three waves, near ring to far ring: 0.30–0.65 s, 0.80–1.15 s, 1.30–1.65 s, 0.05 s
-   apart inside a wave, each wave in every direction (the ring's envelopes taken three apart
-   around Claude). ── */
+   walks the same list), so a far, bigger envelope flies over the near ones it passes. They leave
+   in three waves, near ring to far ring, 0.2 s apart, 0.03 s apart inside a wave, each wave in
+   every direction (its six taken three apart around Claude). ── */
 
-/** Claude's disc: its centre and diameter, stage px (the kit's white disc, LpStoryKit SkDisc) */
-export const S4_DISC = { x: 232, y: 213, size: 108 } as const;
+/** the request (the hero demo's and the storyboard's, S2_CHAT.prompt) and the Play Pancake turns
+    it into (the storyboard's Play card, S2_PLAYS[0].name). The alt text in lp-steps-content.ts
+    retells both: keep in sync. */
+export const S4_ASK = {
+  request: "Find founders who just raised a seed round",
+  play: "Funded startups hiring a marketing lead",
+} as const;
+/** where the envelopes leave from, stage px: the centroid of Claude's pancake face (its box,
+    steps.css .lp-s4-disc, is 104 × 100.252 centred on 232, 213; the centroid sits 0.42 right of
+    and 0.44 above that centre) */
+export const S4_FROM = { x: 232.4, y: 212.6 } as const;
 /** the design kit's coloured pancakes (face -30, rim -20; green 20 / 10): steps.css */
 export type S4Tone = "yellow" | "purple" | "pink" | "green" | "blue";
 export type S4Mail = {
@@ -240,7 +255,8 @@ export type S4Mail = {
   tone: S4Tone;
   /** the kit's pancake shape (pancake-top-bordered-1…3) */
   shape: 1 | 2 | 3;
-  /** when it leaves Claude, and how long it flies to its place (s) */
+  /** when it leaves Claude, s after the burst starts (lp-step-timelines S4_T), and how long it
+      flies to its place (s) */
   at: number;
   dur: number;
   /** how far it is turned as it leaves, degrees: it unwinds into its tilt on the way */
@@ -248,32 +264,26 @@ export type S4Mail = {
 };
 export const S4_MAIL: readonly S4Mail[] = [
   // the near ring (wave 1)
-  { x: 332, y: 263, size: 30, tilt: 6, tone: "pink", shape: 3, at: 0.5, dur: 0.65, spin: -24 },
-  { x: 136, y: 156, size: 30, tilt: -8, tone: "blue", shape: 2, at: 0.3, dur: 0.65, spin: 24 },
-  { x: 330, y: 159, size: 32, tilt: 9, tone: "blue", shape: 3, at: 0.6, dur: 0.65, spin: -24 },
-  { x: 125, y: 264, size: 34, tilt: -8, tone: "yellow", shape: 2, at: 0.55, dur: 0.65, spin: 24 },
-  { x: 206, y: 70, size: 32, tilt: -4, tone: "green", shape: 2, at: 0.45, dur: 0.65, spin: 24 },
-  { x: 260, y: 357, size: 34, tilt: -4, tone: "purple", shape: 1, at: 0.65, dur: 0.65, spin: 24 },
-  { x: 387, y: 213, size: 36, tilt: 11, tone: "yellow", shape: 3, at: 0.35, dur: 0.65, spin: -24 },
-  { x: 177, y: 358, size: 34, tilt: -4, tone: "green", shape: 3, at: 0.4, dur: 0.65, spin: 24 },
+  { x: 324, y: 240, size: 30, tilt: 10, tone: "purple", shape: 2, at: 0.03, dur: 0.5, spin: -24 },
+  { x: 140, y: 186, size: 30, tilt: -10, tone: "yellow", shape: 2, at: 0, dur: 0.5, spin: 24 },
+  { x: 364, y: 186, size: 34, tilt: 11, tone: "green", shape: 3, at: 0.12, dur: 0.5, spin: -24 },
+  { x: 100, y: 240, size: 34, tilt: -11, tone: "blue", shape: 1, at: 0.15, dur: 0.5, spin: 24 },
+  { x: 272, y: 64, size: 36, tilt: 6, tone: "yellow", shape: 3, at: 0.06, dur: 0.5, spin: -24 },
+  { x: 192, y: 362, size: 36, tilt: -8, tone: "green", shape: 1, at: 0.09, dur: 0.5, spin: 24 },
   // the middle ring (wave 2)
-  { x: 76, y: 208, size: 36, tilt: -13, tone: "pink", shape: 2, at: 1.05, dur: 0.75, spin: 24 },
-  { x: 285, y: 56, size: 38, tilt: 4, tone: "purple", shape: 1, at: 1.1, dur: 0.75, spin: -24 },
-  { x: 362, y: 91, size: 36, tilt: 9, tone: "pink", shape: 1, at: 0.85, dur: 0.75, spin: -24 },
-  { x: 369, y: 331, size: 38, tilt: 11, tone: "green", shape: 2, at: 1, dur: 0.75, spin: -24 },
-  { x: 95, y: 94, size: 40, tilt: -9, tone: "yellow", shape: 3, at: 0.8, dur: 0.75, spin: 24 },
-  { x: 94, y: 334, size: 38, tilt: -8, tone: "blue", shape: 1, at: 0.9, dur: 0.75, spin: 24 },
-  { x: 143, y: 47, size: 40, tilt: -11, tone: "pink", shape: 3, at: 0.95, dur: 0.75, spin: 24 },
-  { x: 323, y: 384, size: 42, tilt: 4, tone: "yellow", shape: 2, at: 1.15, dur: 0.75, spin: -24 },
+  { x: 196, y: 38, size: 38, tilt: -4, tone: "green", shape: 2, at: 0.32, dur: 0.55, spin: 24 },
+  { x: 268, y: 388, size: 38, tilt: 8, tone: "pink", shape: 2, at: 0.35, dur: 0.55, spin: -24 },
+  { x: 120, y: 62, size: 39, tilt: -13, tone: "purple", shape: 1, at: 0.26, dur: 0.55, spin: 24 },
+  { x: 344, y: 364, size: 39, tilt: 11, tone: "blue", shape: 1, at: 0.29, dur: 0.55, spin: -24 },
+  { x: 420, y: 226, size: 39, tilt: 19, tone: "pink", shape: 1, at: 0.23, dur: 0.55, spin: -24 },
+  { x: 44, y: 200, size: 39, tilt: -19, tone: "pink", shape: 3, at: 0.2, dur: 0.55, spin: 24 },
   // the far ring, the biggest (wave 3)
-  { x: 45, y: 278, size: 40, tilt: -18, tone: "purple", shape: 1, at: 1.65, dur: 0.85, spin: 24 },
-  { x: 418, y: 143, size: 42, tilt: 17, tone: "green", shape: 1, at: 1.45, dur: 0.85, spin: -24 },
-  { x: 420, y: 281, size: 44, tilt: 13, tone: "purple", shape: 2, at: 1.6, dur: 0.85, spin: -24 },
-  { x: 43, y: 145, size: 44, tilt: -20, tone: "green", shape: 2, at: 1.4, dur: 0.85, spin: 24 },
-  { x: 418, y: 44, size: 46, tilt: 15, tone: "yellow", shape: 1, at: 1.3, dur: 0.85, spin: -24 },
-  { x: 419, y: 381, size: 48, tilt: 19, tone: "blue", shape: 1, at: 1.35, dur: 0.85, spin: -24 },
-  { x: 45, y: 43, size: 46, tilt: -15, tone: "purple", shape: 3, at: 1.55, dur: 0.85, spin: 24 },
-  { x: 44, y: 385, size: 50, tilt: -17, tone: "pink", shape: 3, at: 1.5, dur: 0.85, spin: 24 },
+  { x: 348, y: 40, size: 41, tilt: 10, tone: "purple", shape: 1, at: 0.46, dur: 0.6, spin: -24 },
+  { x: 116, y: 386, size: 41, tilt: -11, tone: "yellow", shape: 3, at: 0.49, dur: 0.6, spin: 24 },
+  { x: 424, y: 50, size: 46, tilt: 19, tone: "pink", shape: 3, at: 0.52, dur: 0.6, spin: -24 },
+  { x: 40, y: 376, size: 46, tilt: -18, tone: "purple", shape: 2, at: 0.55, dur: 0.6, spin: 24 },
+  { x: 424, y: 384, size: 46, tilt: 18, tone: "yellow", shape: 3, at: 0.43, dur: 0.6, spin: -24 },
+  { x: 40, y: 42, size: 46, tilt: -17, tone: "blue", shape: 2, at: 0.4, dur: 0.6, spin: 24 },
 ];
 
 /* ── steps 02 and 03 · the "How it works" storyboards (Figma page 4197:9774, delivered

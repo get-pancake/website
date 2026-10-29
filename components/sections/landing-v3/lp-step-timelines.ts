@@ -15,7 +15,7 @@ import {
   S3_LANDED,
   S3_NUM_DX,
   S3_THREAD,
-  S4_DISC,
+  S4_FROM,
   S4_MAIL,
   SX_LEADS_F5,
   SX_LEADS_ROW_IN,
@@ -110,7 +110,8 @@ const clipTo = (g: Glyph, w: number) =>
  * its END picture (LpStepAnim REST_IS_END; buildS4 sets its frame 0). s2 and
  * s3 carry labels at the storyboard's pictures (f1 … f8, f1 … f5 and `cal`):
  * QA seeks them through window.__lpStep.s2 / .s3. Since 2026-10-28 step 02
- * plays s4 (Claude and the envelopes it sends) and s2 is unused, as s3.
+ * plays s4 (the ask typed in Claude, the Play it becomes, the envelopes Claude
+ * sends) and s2 is unused, as s3.
  */
 
 export type StepVariant = "s0" | "s1" | "s2" | "s3" | "s4";
@@ -1090,67 +1091,153 @@ function buildCalendar(root: HTMLElement, already?: string): gsap.core.Timeline 
   return tl;
 }
 
-/* ── step 02 (since 2026-10-28) · Ask anything: Claude, and the envelopes it sends (≈ 2.9 s) ──
-   Founder, on the storyboard's end picture (the Play card): "not sure we should show here the UI
-   but maybe a juicy things showing claude + like plein de petites enveloppes qui partent de
-   claude dans tous les sens dans le carré". Frame 0 = Claude's disc alone: every envelope sits
-   under it, small, at its centre. From 0.3 s they leave in three waves, near ring to far ring
-   (S4_MAIL's `at`, 0.05 s apart inside a wave), each straight out from Claude's centre to its
-   place, growing as it goes, unwinding into its tilt, easing out; the last lands at 2.5 s and
-   the burst holds. The markup is that END picture (LpStepAnim REST_IS_END), so the timeline
-   writes frame 0 itself (inside the build's gsap.context, which reverts it) and tweens from it.
-   Nothing moves by GSAP's own transform: each envelope's flight is four CSS variables that
-   steps.css reads into translate / scale / rotate (the story kit's way, lp-story-kit.ts header:
-   GSAP's x / y / scale write translate3d mid-tween, and Chromium re-rasterises the stage for
-   the tween's length). Each envelope lets go of its variables once it has landed, so at rest it
-   computes exactly what the server markup does (translate none, scale none, rotate = its tilt).
-   Never a loop, a glow, a pulse, a ring or a trail. */
+/* ── step 02 (since 2026-10-28) · Ask anything: the ask typed in Claude, the Play it becomes,
+   and the envelopes Claude sends (≈ 4.5 s) ──
+   Founder, on the first take (Claude's disc and the burst alone): "il fallait remettre la phrase
+   dans claude qui cree le play ici", "genre les enveloppes c est que la fin tu vois". Frame 0 =
+   the empty pill with its caret at the start, and Claude under it: never an empty stage. From
+   0.3 s the request types in (S4_T.key a glyph: a clip staircase over the real text, s2's way,
+   and the caret on the glyph edges) → a beat, the caret goes and a hairline runs down from the
+   ask into Claude → Claude's own runs down, the Play comes up under it and its switch turns on
+   (the infra Tools card's: the knob 12 px over, grey to pink, lp-infra-timeline.ts TOGGLE_OFF /
+   TOGGLE_ON) → the ending, the burst: S4_MAIL's envelopes leave from under Claude's face in three
+   waves (`at` counts from S4_T.burst), each straight out from the face's centroid to its place,
+   growing out of nothing as it goes, unwinding into its tilt, easing out. The last lands 1.15 s
+   after the first leaves and the whole picture holds.
+   The markup is that END picture (LpStepAnim REST_IS_END), so the timeline writes frame 0 itself
+   (inside the build's gsap.context, which reverts it) and tweens from it. Nothing moves by GSAP's
+   own transform: every motion is a CSS variable that steps.css reads into translate, scale,
+   rotate, opacity or the text's clip (the story kit's way, lp-story-kit.ts header: GSAP's x / y /
+   scale write translate3d mid-tween, and Chromium re-rasterises the stage for the tween's
+   length), and every piece lets go of its variables once it is done (`s4LetGo`), so at rest it
+   computes exactly what the server markup does. Every change inside the timeline is a tween
+   with a length, never a zero-length set (lp-story-kit.ts skLetGo, on the context's revert
+   order); a key is a 1 ms steps(1) tween, a whole glyph at a time. Never a loop, a glow, a
+   pulse, a ring or a trail. */
 const S4_T = {
-  /** the size an envelope leaves Claude at (all of them fit under the disc there) */
-  from: 0.3,
-  /** the burst holds this long after the last envelope lands */
-  hold: 0.4,
+  /** the first key comes this long after frame 0 */
+  type: 0.3,
+  /** a key: a person typing (the hero demo's 38 ms, s2's 36) */
+  key: 0.034,
+  /** after the last key: the caret goes and the ask runs down into Claude */
+  sent: 0.25,
+  /** a hairline draws down in this long */
+  wire: 0.2,
+  /** after the ask's hairline starts: Claude's starts down to the Play */
+  toPlay: 0.25,
+  /** after Claude's hairline starts: the Play comes up, from `riseY` px below its place */
+  play: 0.08,
+  rise: 0.4,
+  riseY: 10,
+  /** after the Play starts up: its switch turns on, in `flip` (the infra card's 0.25 s) */
+  switch: 0.34,
+  flip: 0.25,
+  /** after the switch starts: the burst (S4_MAIL `at` counts from here) */
+  burst: 0.28,
+  /** the whole picture holds this long after the last envelope lands */
+  hold: 0.45,
 } as const;
-/** a let-go comes this long after the flight it ends (the story kit's SK_LANDED) */
+/** a piece lets go of its variables this long after it is done (the story kit's SK_LANDED) */
 const S4_LANDED = 0.01;
+/** the Play's switch, off and on (lp-infra-timeline.ts TOGGLE_OFF / TOGGLE_ON: ink-50, pink-30) */
+const S4_SWITCH = { off: "#ddcfcd", on: "#ff7aa0" } as const;
+/** the switch's knob travel, px (infra.css .lp-infra__toggle-knob's translateX(12px)) */
+const S4_KNOB = 12;
 /** the envelopes' variables, all let go at once when it has landed */
 const S4_VARS = ["--lp-s4-x", "--lp-s4-y", "--lp-s4-s", "--lp-s4-spin"] as const;
 
+type S4Vars = Record<string, number | string>;
+/** a 1 ms tween to the resting values that then clears them (lp-story-kit.ts skLetGo) */
+function s4LetGo(tl: gsap.core.Timeline, el: Element, rest: S4Vars, at: number) {
+  tl.to(el, { ...rest, clearProps: Object.keys(rest).join(","), duration: 0.001, ease: "none" }, at);
+}
+
 function buildS4(root: HTMLElement): BuiltStep {
-  const { $$ } = query(root);
+  const { $, $$ } = query(root);
+  const text = $(".lp-s4-text");
+  const caret = $(".lp-s4-caret");
+  const wireAsk = $(".lp-s4-wire--ask");
+  const wirePlay = $(".lp-s4-wire--play");
+  const play = $(".lp-s4-play");
+  const toggle = $(".lp-s4-toggle");
+  const knob = $(".lp-s4-knob");
   const mails = $$(".lp-s4-mail");
   if (mails.length !== S4_MAIL.length) throw new Error("lp-step: s4 envelopes out of sync");
+  // the request's glyph edges (one line), measured from the live text
+  const keys = measureRightEdges(text);
+  const typedW = keys[keys.length - 1] ?? 0;
+  if (!keys.length || !(typedW > 0)) throw new Error("lp-step: s4 has no text to type");
+  const T = S4_T;
 
-  /* lazy: false — each envelope's let-go starts from where its flight ended, and reads that
-     value when it first renders. The build takes the timeline to its end in one render; a tween
-     that first renders before GSAP's ticker has ticked defers its writes to the end of that
-     render ("lazy"), so the let-go would read the frame-0 value instead and, played, jump back
-     to Claude for the frame its 1 ms falls in. Not lazy, every tween writes as it starts. */
+  /* lazy: false — every piece's let-go starts from where its motion ended, and reads that value
+     when it first renders. The build takes the timeline to its end in one render; a tween that
+     first renders before GSAP's ticker has ticked defers its writes to the end of that render
+     ("lazy"), so the let-go would read the frame-0 value instead and, played, jump back to it for
+     the frame its 1 ms falls in. Not lazy, every tween writes as it starts. */
   const tl = gsap.timeline({ paused: true, defaults: { lazy: false } });
-  let end = 0;
+
+  /* — frame 0: the empty pill and its caret at the start, Claude; everything else waits — */
+  gsap.set(text, { "--lp-s4-cut": +typedW.toFixed(3) });
+  gsap.set(caret, { "--lp-s4-on": 1, "--lp-s4-caret": 0 });
+  gsap.set([wireAsk, wirePlay], { "--lp-s4-wire": 0 });
+  gsap.set(play, { "--lp-s4-o": 0, "--lp-s4-rise": T.riseY });
+  gsap.set(toggle, { backgroundColor: S4_SWITCH.off });
+  gsap.set(knob, { "--lp-s4-knob": -S4_KNOB });
+
+  /* — the ask types in: the clip opens to each glyph's right edge, the caret follows — */
+  let t: number = T.type;
+  keys.forEach((edge) => {
+    t += T.key;
+    const step = { duration: 0.001, ease: "steps(1)" };
+    tl.to(text, { "--lp-s4-cut": +Math.max(0, typedW - edge).toFixed(3), ...step }, t);
+    tl.to(caret, { "--lp-s4-caret": +edge.toFixed(3), ...step }, t);
+  });
+  s4LetGo(tl, text, { "--lp-s4-cut": 0 }, t + S4_LANDED); // the text paints like any text again
+
+  /* — sent: the caret goes, a hairline runs down from the ask into Claude — */
+  const tSent = t + T.sent;
+  s4LetGo(tl, caret, { "--lp-s4-on": 0, "--lp-s4-caret": 0 }, tSent);
+  const draw = (wire: HTMLElement, at: number) => {
+    tl.to(wire, { "--lp-s4-wire": 1, duration: T.wire, ease: "power2.out" }, at);
+    s4LetGo(tl, wire, { "--lp-s4-wire": 1 }, at + T.wire + S4_LANDED);
+  };
+  draw(wireAsk, tSent);
+
+  /* — Pancake turns it into a Play: Claude's hairline runs down, the Play comes up, switches on — */
+  const tToPlay = tSent + T.toPlay;
+  draw(wirePlay, tToPlay);
+  const tPlay = tToPlay + T.play;
+  tl.to(play, { "--lp-s4-o": 1, duration: 0.25, ease: "power1.out" }, tPlay);
+  tl.to(play, { "--lp-s4-rise": 0, duration: T.rise, ease: "power3.out" }, tPlay);
+  s4LetGo(tl, play, { "--lp-s4-o": 1, "--lp-s4-rise": 0 }, tPlay + T.rise + S4_LANDED);
+  const tSwitch = tPlay + T.switch;
+  tl.to(knob, { "--lp-s4-knob": 0, duration: T.flip, ease: "power2.inOut" }, tSwitch);
+  tl.to(toggle, { backgroundColor: S4_SWITCH.on, duration: T.flip, ease: "power1.inOut" }, tSwitch);
+  s4LetGo(tl, knob, { "--lp-s4-knob": 0 }, tSwitch + T.flip + S4_LANDED);
+  s4LetGo(tl, toggle, { backgroundColor: S4_SWITCH.on }, tSwitch + T.flip + S4_LANDED);
+
+  /* — the ending: the envelopes burst out of Claude, in three waves — */
+  const tBurst = tSwitch + T.burst;
+  let end = tBurst;
   mails.forEach((el, i) => {
     const m = S4_MAIL[i];
-    /* — frame 0: at Claude's centre, small and turned, under its disc — */
+    // frame 0: at the face's centroid, nothing yet, turned (under Claude's face)
     gsap.set(el, {
-      "--lp-s4-x": S4_DISC.x - m.x,
-      "--lp-s4-y": S4_DISC.y - m.y,
-      "--lp-s4-s": S4_T.from,
+      "--lp-s4-x": S4_FROM.x - m.x,
+      "--lp-s4-y": S4_FROM.y - m.y,
+      "--lp-s4-s": 0,
       "--lp-s4-spin": m.spin,
     });
-    /* — the flight: straight out to its place, easing out; it grows with a little give — */
-    tl.to(el, { "--lp-s4-x": 0, "--lp-s4-y": 0, "--lp-s4-spin": 0, duration: m.dur, ease: "power3.out" }, m.at);
-    tl.to(el, { "--lp-s4-s": 1, duration: m.dur, ease: "back.out(1.4)" }, m.at);
-    /* — landed: it lets go of its variables (a 1 ms tween, not a set: lp-story-kit.ts skLetGo
-       on how gsap.context reverts zero-length tweens in Gecko) — */
-    const landed = m.at + m.dur + S4_LANDED;
-    tl.to(
-      el,
-      { "--lp-s4-x": 0, "--lp-s4-y": 0, "--lp-s4-s": 1, "--lp-s4-spin": 0, clearProps: S4_VARS.join(","), duration: 0.001, ease: "none" },
-      landed,
-    );
+    // the flight: straight out to its place, easing out; it grows with a little give
+    const at = tBurst + m.at;
+    tl.to(el, { "--lp-s4-x": 0, "--lp-s4-y": 0, "--lp-s4-spin": 0, duration: m.dur, ease: "power3.out" }, at);
+    tl.to(el, { "--lp-s4-s": 1, duration: m.dur, ease: "back.out(1.4)" }, at);
+    // landed: it lets go of its variables
+    const landed = at + m.dur + S4_LANDED;
+    s4LetGo(tl, el, { [S4_VARS[0]]: 0, [S4_VARS[1]]: 0, [S4_VARS[2]]: 1, [S4_VARS[3]]: 0 }, landed);
     end = Math.max(end, landed + 0.001);
   });
-  tl.set({}, {}, end + S4_T.hold); // the burst holds
+  tl.set({}, {}, end + T.hold); // the whole picture holds
 
   return { tl, cleanup: () => {}, cue: 0 };
 }

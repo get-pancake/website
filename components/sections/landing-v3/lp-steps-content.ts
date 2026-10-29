@@ -116,8 +116,8 @@ export const STEPS: readonly StepContent[] = [
     title: "Ask anything.\nPancake turns it into a Play.",
     body: "Describe the customers you want, in your own words. Pancake finds them, checks they fit and keeps the search running.",
     art: [{ kind: "anim", variant: "s4", status: "final" }],
-    // retells S4_DISC and S4_MAIL (lp-step-data.ts): keep in sync
-    alt: "Animation: the Claude mark sits in the middle, then two dozen small envelopes fly out of it in every direction and land all over the card.",
+    // retells S4_ASK and S4_MAIL (lp-step-data.ts): keep in sync
+    alt: "Animation: in Claude, the request “Find founders who just raised a seed round” is typed. Pancake turns it into a Play, “Funded startups hiring a marketing lead”, which switches on, and a burst of small envelopes flies out of Claude in every direction.",
   },
   {
     num: "03",

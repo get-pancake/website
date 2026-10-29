@@ -810,24 +810,52 @@
   white-space: nowrap;
 }
 
-/* ── step 02 (since 2026-10-28, "Ask anything.") · Claude, and the envelopes it sends ──
-   LpStepMocks S4Stage, lp-step-data S4_DISC / S4_MAIL, lp-step-timelines buildS4. No UI
-   (founder: "not sure we should show here the UI… plein de petites enveloppes qui partent de
-   claude dans tous les sens dans le carré"). The markup is the END picture, the burst
-   (LpStepAnim REST_IS_END): every envelope on its place, its tilt the only transform.
-   The flight is three CSS variables the timeline tweens (the story kit's way, story-kit.css):
-   --lp-s4-x / --lp-s4-y (px, from its place back to Claude's centre), --lp-s4-s (its scale)
-   and --lp-s4-spin (degrees added to its tilt). Unset, translate and scale are invalid at
-   computed-value time and compute to none, and the spin falls back to 0: at rest the envelope
-   computes translate none, scale none, transform none and rotate = its tilt, exactly as the
-   server markup. GSAP's own x / y / scale would write translate3d mid-tween, which re-rasterises
-   the stage in Chromium for the tween's length (story-kit.css). Paints nothing behind the
-   scene: the card's cream is the ground. No will-change, no keyframes: GSAP-only, plays once. */
+/* ── step 02 (since 2026-10-28, "Ask anything.") · the ask typed in Claude, the Play it becomes,
+   the envelopes Claude sends ──
+   LpStepMocks S4Stage, lp-step-data S4_ASK / S4_FROM / S4_MAIL, lp-step-timelines buildS4. No
+   app window: one column on the stage's axis (x 232), centred on the stage (103 → 323): the ask
+   pill (103–147), a hairline, Claude's pancake face (162.874–263.126), a hairline, the Play pill
+   (279–323); the envelopes all around it. The markup is the END picture (LpStepAnim
+   REST_IS_END): the request typed, both hairlines drawn, the Play on, every envelope on its
+   place, its tilt the only transform.
+   Every motion is a CSS variable the timeline tweens and then lets go of (the story kit's way,
+   story-kit.css): --lp-s4-cut (px clipped off the request's right: its typing), --lp-s4-on and
+   --lp-s4-caret (the caret: shown, and its x on the glyph edges), --lp-s4-wire (a hairline's
+   draw, 0 → 1), --lp-s4-o and --lp-s4-rise (the Play coming up), --lp-s4-knob (its switch's
+   knob, px from "on"), and an envelope's flight: --lp-s4-x / --lp-s4-y (px, from its place back
+   to Claude's centre), --lp-s4-s (its scale) and --lp-s4-spin (degrees added to its tilt). Unset,
+   clip-path, translate and scale are invalid at computed-value time and compute to none, opacity
+   to 1 (the caret's falls back to 0, hidden), and the spin to 0: at rest every piece computes
+   exactly what the server markup does. GSAP's own x / y / scale would write translate3d
+   mid-tween, which re-rasterises the stage in Chromium for the tween's length (story-kit.css).
+   Paints nothing behind the scene: the card's cream is the ground. No will-change, no
+   keyframes, no soft shadow behind the white pieces (founder 2026-10-28 on Claude's disc: "pas
+   sur de l effet d ombre derriere"): GSAP-only, plays once. */
 .lp-step-stage--s4 .lp-s4-sprite {
   height: 0;
   overflow: hidden;
   position: absolute;
   width: 0;
+}
+/* the hairlines: the infra wire's (infra.css .lp-infra__line, 1px of ink-tr-40) on the axis,
+   each tucked 1px under the pieces it joins (they paint over it); drawn top down */
+.lp-step-stage--s4 .lp-s4-wire {
+  background: var(--lp-ink-tr-40);
+  left: 231.5px;
+  position: absolute;
+  scale: 1 var(--lp-s4-wire);
+  transform-origin: 50% 0;
+  width: 1px;
+}
+/* the ask's foot (147) down to Claude's face (its top at the axis: 162.9) */
+.lp-step-stage--s4 .lp-s4-wire--ask {
+  height: 18px;
+  top: 146px;
+}
+/* Claude's face (its bottom at the axis: 263.1) down to the Play's head (279) */
+.lp-step-stage--s4 .lp-s4-wire--play {
+  height: 18px;
+  top: 262px;
 }
 /* an envelope: the mail icon in the brand's ink on a kit pancake; the pancake's shadow is the
    infra section's (infra.css .lp-infra__cake: a hairline and a soft drop) */
@@ -867,22 +895,133 @@
   --lp-s4-face: var(--lp-blue-30);
   --lp-s4-rim: var(--lp-blue-20);
 }
-/* Claude: the story kit's white disc (story-kit.css .lp-sk-disc: the 0.5px hairline as a
-   spread shadow, the soft shadow), its glyph as the deep dive draws it on a disc
-   (story-mcp.css: 20 of a 24 cell at half the disc, in the spark colour) */
-.lp-step-stage--s4 .lp-s4-disc {
-  background: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.12), 0 3px 14px rgba(48, 0, 44, 0.1);
+/* the two pills: white on the cream, 44 tall with round ends, the story kit disc's 0.5px
+   hairline as a spread shadow (story-kit.css .lp-sk-disc) and no soft shadow. Their text starts
+   on one line of sight, x 86 (the Play's after its icon) */
+.lp-step-stage--s4 .lp-s4-pill {
+  background: var(--lp-surface);
+  border-radius: 22px;
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.16);
+  height: 44px;
   position: absolute;
+}
+/* the ask: the request, 15px regular on one line, typed from its left (hugged: 22 before it,
+   about 20 after it, centred on the axis) */
+.lp-step-stage--s4 .lp-s4-ask {
+  left: 64px;
+  top: 103px;
+  width: 336px;
+}
+.lp-step-stage--s4 .lp-s4-text {
+  clip-path: inset(0 calc(var(--lp-s4-cut) * 1px) 0 0);
+  color: var(--lp-text);
+  font-size: 15px;
+  font-weight: 400;
+  left: 22px;
+  line-height: 24px;
+  position: absolute;
+  top: 10px;
+  white-space: nowrap;
+}
+/* the caret (s2's .lp-s2-caret: 1.5 × 18 in the ink), on the text's left edge; hidden at rest */
+.lp-step-stage--s4 .lp-s4-caret {
+  background: var(--lp-ink-100);
+  height: 18px;
+  left: 21.25px;
+  opacity: var(--lp-s4-on, 0);
+  position: absolute;
+  top: 13px;
+  translate: calc(var(--lp-s4-caret) * 1px) 0;
+  width: 1.5px;
+}
+/* the Play: the infra Tools card's Play row (infra.css .lp-infra__play, -play-icon, -toggle,
+   -toggle-knob: the pink tile and its play icon, the name, the switch on) set in a pill, the
+   tile and the switch's knob concentric with its round ends (centres 22 in from each end) */
+.lp-step-stage--s4 .lp-s4-play {
+  left: 42px;
+  opacity: var(--lp-s4-o);
+  top: 279px;
+  translate: 0 calc(var(--lp-s4-rise) * 1px);
+  width: 380px;
+}
+.lp-step-stage--s4 .lp-s4-play-icon {
+  background: var(--lp-pink-10);
+  border-radius: var(--lp-r-xsm);
+  height: 28px;
+  left: 8px;
+  position: absolute;
+  top: 8px;
+  width: 28px;
+}
+.lp-step-stage--s4 .lp-s4-play-icon svg {
+  fill: var(--lp-pink-40);
+  height: 16px;
+  left: 6px;
+  position: absolute;
+  top: 6px;
+  width: 16px;
+}
+.lp-step-stage--s4 .lp-s4-play-name {
+  color: var(--lp-text);
+  font-size: 15px;
+  font-weight: 500;
+  left: 44px;
+  line-height: 24px;
+  position: absolute;
+  top: 10px;
+  white-space: nowrap;
+}
+.lp-step-stage--s4 .lp-s4-toggle {
+  background: var(--lp-pink-30);
+  border-radius: 999px;
+  height: 18px;
+  left: 337px;
+  position: absolute;
+  top: 13px;
+  width: 30px;
+}
+.lp-step-stage--s4 .lp-s4-knob {
+  background: var(--lp-surface);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(44, 0, 42, 0.25);
+  height: 14px;
+  left: 14px;
+  position: absolute;
+  top: 2px;
+  translate: calc(var(--lp-s4-knob) * 1px) 0;
+  width: 14px;
+}
+/* Claude: the kit's pancake face alone, white and flat (founder 2026-10-28: "la forme du pancake
+   mais juste en 2d genre le rond blanc imparfait un peu comme on le trouve dans le figma"), no
+   soft shadow ("pas sur de l effet d ombre derriere"), and the mark big on it ("je ferai occuper
+   une plus grande place au logo dedans"): 62 of the face's 104 (59.6 %), centred on the face's
+   centroid (52.42, 49.69 in its box). The face's box: 104 × 100.252 (its view box, 45.644 × 44,
+   so 1 unit = 2.2785 px), centred on 232, 213. Its edge is the pills' hairline, 0.5px outside the
+   white: a 1px stroke (0.439 units) painted under the fill. A 0.5px drop-shadow was the first
+   take: WebKit draws it a third as strong as Chromium, and the face went soft on the cream */
+.lp-step-stage--s4 .lp-s4-disc {
+  height: 100.252px;
+  left: 180px;
+  position: absolute;
+  top: 162.874px;
+  width: 104px;
+}
+.lp-step-stage--s4 .lp-s4-disc > svg {
+  fill: var(--lp-surface);
+  height: 100%;
+  overflow: visible;
+  paint-order: stroke;
+  stroke: rgba(48, 0, 44, 0.16);
+  stroke-width: 0.439px;
+  width: 100%;
 }
 .lp-step-stage--s4 .lp-s4-claude {
   color: var(--lp-claude-spark);
-  height: 41.667%;
-  left: 29.167%;
+  height: 62px;
+  left: 21.42px;
   position: absolute;
-  top: 29.167%;
-  width: 41.667%;
+  top: 18.69px;
+  width: 62px;
 }
 .lp-step-stage--s4 .lp-s4-claude svg {
   height: 100%;

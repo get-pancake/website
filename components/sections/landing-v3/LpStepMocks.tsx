@@ -18,7 +18,7 @@ import {
   S3_RULE_TOPS,
   S3_THREAD,
   S3_TICK_TOPS,
-  S4_DISC,
+  S4_ASK,
   S4_MAIL,
   SX_CHECK_D,
   SX_LEADS,
@@ -32,15 +32,17 @@ import { PANCAKE_AVATAR } from "./lp-pancake-avatar-art";
 /**
  * The step mock UIs as DOM, with their geometry in steps.css. Since
  * 2026-10-28 the steps play s0 (connect Pancake in Claude, built from s2's
- * pieces), s4 (Claude and the envelopes it sends, no UI) and s1 (the
- * brain-research-loop composition's graph, grown by three leads' verdicts).
+ * pieces), s4 (the ask typed in Claude, the Play it becomes and the envelopes
+ * Claude sends, no app window) and s1 (the brain-research-loop composition's
+ * graph, grown by three leads' verdicts).
  * s2 (the designer's "How it works" storyboard, Figma 2026-10-11: frames
  * 5016:4214 → 5022:6230, step 02 until 2026-10-28) and s3 (the outreach and
  * the meetings-calendar-loop week) are not on the page now. Rest state = each
  * animation's FRAME 0 (the empty composer, the young Brain beside its leads):
  * every animation-only layer is invisible at rest and driven by
  * lp-step-timelines.ts from there. One exception, s4: its markup is its END
- * picture, the burst (LpStepAnim REST_IS_END), and its timeline sets frame 0.
+ * picture (the ask, the Play on, the burst: LpStepAnim REST_IS_END), and its
+ * timeline sets frame 0.
  * Purely decorative — the host carries the alt text (LpStepAnim.tsx). Every
  * string comes from lp-step-data.ts (linted).
  */
@@ -587,16 +589,24 @@ function S3Stage() {
   );
 }
 
-/* ── step 02 (since 2026-10-28, "Ask anything.") · Claude, and the envelopes it sends ──
-   Founder, on the storyboard's end picture: "not sure we should show here the UI but maybe a
-   juicy things showing claude + like plein de petites enveloppes qui partent de claude dans
-   tous les sens dans le carré". The Claude mark on the kit's white disc (LpStoryKit SkDisc's
-   look), and the 24 envelopes of S4_MAIL (lp-step-data.ts): the site's mail icon
-   (AgSuperpowersMocks MailIcon) in the brand's ink on the design kit's coloured pancakes.
-   This markup is the END picture, the burst (LpStepAnim REST_IS_END: reduced motion and a
-   page without script show it); buildS4 sets frame 0, every envelope small and hidden under
-   Claude's disc, and flies each one out to its place. Layers, back to front: the sprite (draws
-   nothing), the envelopes in S4_MAIL's paint order, Claude's disc over all of them. */
+/* ── step 02 (since 2026-10-28, "Ask anything.") · the ask typed in Claude → the Play it becomes →
+   the envelopes Claude sends ──
+   Founder, on the storyboard's Play card: "not sure we should show here the UI but maybe a juicy
+   things showing claude + like plein de petites enveloppes qui partent de claude dans tous les
+   sens dans le carré"; on the first take (Claude's disc and the burst alone): "il fallait remettre
+   la phrase dans claude qui cree le play ici", "genre les enveloppes c est que la fin tu vois";
+   on its disc: "la forme du pancake mais juste en 2d", a bigger logo, no shadow behind. One
+   column on the stage's axis, no app window: the request in a white pill (S4_ASK), a hairline
+   into Claude (the Claude mark, big, on the kit's white pancake face, flat: S4_FACE), a hairline
+   down to the Play (the infra Tools card's Play row: LpInfra PlayIcon, .lp-infra__toggle), and
+   the 18 envelopes of S4_MAIL (lp-step-data.ts): the site's mail icon (AgSuperpowersMocks
+   MailIcon) in the brand's ink on the design kit's coloured pancakes.
+   This markup is the END picture (LpStepAnim REST_IS_END: reduced motion and a page without
+   script show it): the request typed, both hairlines drawn, the Play on, every envelope on its
+   place. buildS4 sets frame 0 (the empty pill and its caret beside Claude) and plays the beats
+   from there. Layers, back to front: the sprite (draws nothing), the hairlines, the envelopes in
+   S4_MAIL's paint order (they leave from under Claude and pass under the pills), the ask, the
+   Play, Claude. */
 
 /** The design kit's pancakes (_design-kit/pancake.html `pancake-top-bordered-1…3`: an imperfect
     round seen from above, its back layer showing under it as the rim). COPIED from LpInfra.tsx
@@ -616,8 +626,12 @@ const S4_PK = [
   },
 ] as const;
 
+/** Claude's white pancake: the kit's face alone (pancake-top-bordered-1's front, S4_PK[0]), flat
+    (no rim), its view box cropped to the face's bounds (getBBox: 1.174, 0, 45.644 × 44), so the
+    face fills its box (steps.css .lp-s4-disc) */
+const S4_FACE = { viewBox: "1.174 0 45.644 44", d: S4_PK[0].front } as const;
+
 function S4Stage() {
-  const d = S4_DISC;
   return (
     <div className="lp-step-stage lp-step-stage--s4" aria-hidden="true">
       {/* drawn once, used by every envelope: the three pancakes (rim, then face, in the
@@ -644,6 +658,10 @@ function S4Stage() {
         </symbol>
       </svg>
 
+      {/* the hairlines (the infra wire's): the ask into Claude, Claude down to the Play */}
+      <i className="lp-s4-wire lp-s4-wire--ask" />
+      <i className="lp-s4-wire lp-s4-wire--play" />
+
       {/* the burst: each envelope on its place at its tilt (--r, degrees; steps.css turns it) */}
       {S4_MAIL.map((m, i) => (
         <i
@@ -667,11 +685,30 @@ function S4Stage() {
         </i>
       ))}
 
-      {/* Claude, over everything: the envelopes leave from under its disc */}
-      <span
-        className="lp-s4-disc"
-        style={{ left: d.x - d.size / 2, top: d.y - d.size / 2, width: d.size, height: d.size }}
-      >
+      {/* the ask, typed in Claude: the real text, revealed by a clip (never one span per glyph) */}
+      <div className="lp-s4-pill lp-s4-ask">
+        <span className="lp-s4-text">{S4_ASK.request}</span>
+        <i className="lp-s4-caret" />
+      </div>
+
+      {/* the Play it becomes, switched on */}
+      <div className="lp-s4-pill lp-s4-play">
+        <i className="lp-s4-play-icon">
+          <svg viewBox="0 0 16 16" focusable="false">
+            <path d="M5.5 3.8v8.4L12 8z" />
+          </svg>
+        </i>
+        <span className="lp-s4-play-name">{S4_ASK.play}</span>
+        <i className="lp-s4-toggle">
+          <i className="lp-s4-knob" />
+        </i>
+      </div>
+
+      {/* Claude, over everything: the envelopes leave from under its face */}
+      <span className="lp-s4-disc">
+        <svg viewBox={S4_FACE.viewBox} focusable="false">
+          <path d={S4_FACE.d} />
+        </svg>
         <i className="lp-s4-claude">
           <ClaudeMark />
         </i>

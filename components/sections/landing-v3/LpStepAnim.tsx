@@ -12,8 +12,9 @@ const STEP_SPEED = 1;
 /** The variants whose server markup is their END picture (lp-play-once `restIsEnd`, the deep
     dive's phone stack contract): reduced motion and a page without script show it, and the
     driver cues the first frame unseen below the fold before it plays. s4 (step 02 since
-    2026-10-28, Claude and the envelopes it sends): its first frame is Claude alone, so the
-    burst is the picture worth resting on. The others rest on their first frame. */
+    2026-10-28, the ask typed in Claude, the Play it becomes, the envelopes Claude sends): its
+    first frame is the empty ask beside Claude, so its END (the three beats' end) is the
+    picture worth resting on. The others rest on their first frame. */
 const REST_IS_END: Record<StepVariant, boolean> = { s0: false, s1: false, s2: false, s3: false, s4: true };
 
 const loadAnimation = (variant: StepVariant): Promise<PlayOnceRuntime> =>
@@ -36,7 +37,8 @@ const loadAnimation = (variant: StepVariant): Promise<PlayOnceRuntime> =>
  * leads: never blank), so the server-rendered card is already the right
  * still and nothing flashes at hydration; if the build ever throws, that
  * still stands ("static"). Since 2026-10-28 one exception, s4 (step 02's
- * envelope burst): its markup is its END picture (REST_IS_END above).
+ * ask, Play and envelope burst): its markup is its END picture (REST_IS_END
+ * above).
  *
  * Geometry: the stage is the 464×426 media card at design size and scales as
  * pixels with the card (--lp-fit = card width / 464, via ResizeObserver).
