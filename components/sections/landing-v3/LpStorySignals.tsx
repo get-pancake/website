@@ -18,13 +18,13 @@ import { STORY_SIGNALS } from "./lp-story-signals-data";
  * behind the scene. The parts are the story kit's (LpStoryKit.tsx, story-kit.css); this story's
  * own pieces are app/_styles/landing-v3/story-signals.css, its motion
  * lp-story-signals-timeline.ts. It imports nothing from lp-story-kit.ts: that module pulls GSAP
- * into the server graph (the caps' 5.333 is its SK_CAP_R, written out).
+ * into the server graph (the hub dot's 5.333 is its SK_CAP_R, written out).
  *
  * Layers, back to front, all inside .lp-sk-scene (the scene wrapper, never transformed; the
  * providers stand from frame 0 and never pop):
  *   .lp-ssig-dot      the five flat confetti dots
  *   .lp-sk-disc       the discs under the wires: each vendor's own mark on a white disc
- *   svg.lp-sk-wires   per provider a <g data-node data-order>: its start cap, then its wire (the
+ *   svg.lp-sk-wires   per provider a <g data-node data-order>: its wire, from its disc's edge (the
  *                     timeline draws them in data-order), painted in the data's wireOrder (Figma
  *                     z-order); per output a <g data-out>: its wire out of the hub (multiply, as
  *                     the providers'); the four stops, children of the svg itself so the kit's
@@ -69,7 +69,6 @@ export function LpStorySignalsStage(_props: DiveStageProps) {
         <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
           {wires.map((node) => (
             <g key={node.id} data-node={node.id} data-order={node.order}>
-              <circle className="lp-sk-cap" cx={skF3(node.cap.x)} cy={skF3(node.cap.y)} r="5.333" />
               <path d={node.d} />
             </g>
           ))}

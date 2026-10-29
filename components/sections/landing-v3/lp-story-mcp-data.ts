@@ -10,18 +10,16 @@ import type { StoryMcpMarkId } from "./lp-story-mcp-art";
  * text it should mean abstraction of what our infrastructure does". So the claim is gone and the
  * picture says it: one install puts Pancake under the visitor's agent, and the agent gets
  * Pancake's tools. It is drawn in the parts of the one picture he loves, the old sources story's
- * end hub (white discs with each vendor's own mark, grey cubic wires with round start caps into
- * one near-black dot, flat brand dots, small names under the discs; the signals story,
- * LpStorySignals.tsx, is that picture today).
+ * end hub (white discs with each vendor's own mark, grey cubic wires into one near-black dot,
+ * flat brand dots, small names under the discs; the signals story, LpStorySignals.tsx, is that
+ * picture today).
  *
  * The picture (the END = the server markup, LpStoryMcp.tsx), one flow left to right:
  *   - left, the agents: the marks of Claude and Codex on two white discs, their names under them;
  *   - middle, Pancake: the brand's lockup (the colour mascot and the footer's wordmark on plum).
- *     Each agent's wire runs from its disc into one point on the lockup's left edge: the in-port,
- *     the loved hub's near-black dot;
+ *     Each agent's wire runs from its disc's edge into one point on the lockup's left edge;
  *   - right, what the agent gets: six short wires fan out of one point on the lockup's right edge
- *     (the out-port: their shared start, the same near-black dot, as the loved hub drew the caps of
- *     six wires meeting in one point) to six flat stops in the infra section's three tones, a pair
+ *     to six flat stops in the infra section's three tones, a pair
  *     of each, top to bottom as the logo's pancakes and the infra cards: yellow (Context), purple
  *     (Data), pink (Tools). One small label over the fan: "About 100 tools".
  * The direction is always the agents into Pancake, then Pancake out to its tools. Not in it: a
@@ -46,15 +44,17 @@ import type { StoryMcpMarkId } from "./lp-story-mcp-art";
  *
  * Geometry: stage px on the 752×489 design box, every point ≥ 40 px from its edges (the nearest:
  * the label's line box, its top at 64.197; the discs' left, 72). The lockup is 245.799×90 at
- * (280, 199.5), so its middle line is the stage's (y 244.5) and the two ports sit on its edges on
- * that line. The agents' 100 px discs stand at x 72, their centres 96 above and below that line.
- * The stops are the loved purple confetti dot's size (Ø25.418, as the lineage story's stop), on
- * an ellipse around the out-port (radii 140 across, 172 down) at ±8°, ±41° and ±56°: three
- * pairs. Every wire is one cubic with horizontal handles, c = 0.426667 × the straight distance
- * between its ends (the loved hub's formula, lp-story-sources-data.ts:89-93 at 630bb8e, removed
- * with its story the same day), written out from where it draws, never computed at render: each
- * agent's from its disc's right magnet (its start cap) into the in-port; each of the fan's from
- * the out-port to its stop's centre, which the stop covers.
+ * (280, 199.5), so its middle line is the stage's (y 244.5) and the wires meet its edges on that
+ * line, with no dot on an edge (founder 2026-10-28, on the dots over the discs: "ca fait un peu
+ * vibe coded"). The agents' 100 px discs stand at x 72, their centres 96 above and below that
+ * line. The stops are the loved purple confetti dot's size (Ø25.418, as the lineage story's
+ * stop), on an ellipse around the lockup's right edge point (525.799, 244.5) (radii 140 across,
+ * 172 down) at ±8°, ±41° and ±56°: three pairs. Every wire is one cubic with horizontal
+ * handles, c = 0.426667 × the straight distance between its ends (the loved hub's formula,
+ * lp-story-sources-data.ts:89-93 at 630bb8e, removed with its story the same day), written out
+ * from where it draws, never computed at render: each agent's from its disc's right magnet into
+ * the lockup's left edge; each of the fan's from the lockup's right edge to its stop's centre,
+ * which the stop covers.
  *
  * STORY_MCP_ALT is fixed (lp-dive-stages.ts imports it): what the animation shows, the only copy a
  * screen reader gets (the shell's host aria-label).
@@ -63,17 +63,15 @@ import type { StoryMcpMarkId } from "./lp-story-mcp-art";
  */
 
 export type StoryMcpAgent = {
-  /** the agent's mark (lp-story-mcp-art.ts); its disc, its wire, its cap and its name share it
+  /** the agent's mark (lp-story-mcp-art.ts); its disc, its wire and its name share it
       (data-node) */
   id: StoryMcpMarkId;
   /** the agent's name, under its disc (the kit's name style); phones hide it */
   name: string;
   /** disc top-left and diameter (the kit's white disc, SkDisc) */
   disc: { x: number; y: number; size: number };
-  /** the wire's start cap: the disc's right magnet (x + size, y + size / 2), over the disc's
+  /** the wire, from the disc's right magnet (x + size, y + size / 2) into the lockup's left
       edge */
-  cap: { x: number; y: number };
-  /** the wire, from the cap into the in-port */
   d: string;
 };
 
@@ -82,7 +80,7 @@ export type StoryMcpTool = {
   tone: "yellow-30" | "purple-30" | "pink-30";
   /** the stop's centre and radius, stage px */
   stop: { x: number; y: number; r: number };
-  /** the wire, from the out-port to the stop's centre (the stop covers its end) */
+  /** the wire, from the lockup's right edge to the stop's centre (the stop covers its end) */
   d: string;
 };
 
@@ -90,11 +88,6 @@ export type StoryMcpStory = {
   /** Pancake's lockup: its box, stage px (its content's own size, story-mcp.css: the infra
       lockup ×1.25) */
   brand: { x: number; y: number; w: number; h: number };
-  /** where both agents' wires land: the near-black dot, on the lockup's left edge */
-  inPort: { x: number; y: number };
-  /** where the fan's wires start: their shared start, the same near-black dot, on the lockup's
-      right edge */
-  outPort: { x: number; y: number };
   /** in reveal order: Claude, then Codex */
   agents: readonly [StoryMcpAgent, StoryMcpAgent];
   /** the fan, in reveal order (top to bottom) */
@@ -106,21 +99,17 @@ export type StoryMcpStory = {
 
 export const STORY_MCP: StoryMcpStory = {
   brand: { x: 280, y: 199.5, w: 245.799, h: 90 },
-  inPort: { x: 280, y: 244.5 },
-  outPort: { x: 525.799, y: 244.5 },
   agents: [
     {
       id: "claude",
       name: "Claude",
       disc: { x: 72, y: 98.5, size: 100 },
-      cap: { x: 172, y: 148.5 },
       d: "M172 148.5C233.653 148.5 218.347 244.5 280 244.5",
     },
     {
       id: "codex",
       name: "Codex",
       disc: { x: 72, y: 290.5, size: 100 },
-      cap: { x: 172, y: 340.5 },
       d: "M172 340.5C233.653 340.5 218.347 244.5 280 244.5",
     },
   ],

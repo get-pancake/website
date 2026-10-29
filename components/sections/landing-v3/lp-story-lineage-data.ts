@@ -10,7 +10,7 @@
  * components)"; on a big claim over a value: "Still a huge text - no UI should not mean text it
  * should mean abstraction of what our infrastructure does". So the picture carries no claim and
  * no UI. It is drawn in the parts of the one picture he loves, the old sources story's end hub
- * (white discs with each provider's own mark, grey wires with their caps, the near-black dot,
+ * (white discs with each provider's own mark, grey wires, the near-black dot,
  * flat brand dots, small names under the discs: story-kit.css), laid out as two sides joined
  * through the middle (Mobbin: Customer.io's data pipeline section,
  * 6e31f38b-b744-4dbf-9369-7e7e3205c19a, curved wires from sources on both sides meeting in the
@@ -30,9 +30,10 @@
  *     through the column's centre, the line that crosses;
  *   - the wires: the loved formula, one cubic with horizontal handles, c = 0.426667 × the
  *     straight distance between its ends (lp-story-sources-data.ts:89-93 at 630bb8e), written out
- *     here, never computed at render. Each starts at its source's cap (r 5.333) on the source's
- *     edge that faces the leads (a left source's right edge, a right source's left edge) and ends
- *     at its lead's centre, under the lead's dot. No two wires cross.
+ *     here, never computed at render. Each starts on the source's edge that faces the leads (a
+ *     left source's right edge, a right source's left edge), with no cap dot on it (founder
+ *     2026-10-28, on the dots over the discs: "ca fait un peu vibe coded"), and ends at its
+ *     lead's centre, under the lead's dot. No two wires cross.
  * Clearances, measured in the page's fonts (Chromium and Firefox, 2026-10-28): every disc, dot
  * and line of type is at least 47 px from the stage's edges (ink from x 96 to 667, y 47.5 to
  * 430.7); a wire passes no closer than 12.3 px to a label's ink (Dealroom's wire, to her name)
@@ -49,7 +50,7 @@
  * copy a screen reader gets (the shell's host aria-label). Keep it in step with the picture.
  */
 
-/** one wire, from its source's cap into one lead */
+/** one wire, from its source's edge into one lead */
 export type StoryLineageWire = {
   /** its key in the markup (data-wire) */
   id: string;
@@ -58,7 +59,7 @@ export type StoryLineageWire = {
   /** its draw slot, T.draw[order] in lp-story-lineage-timeline.ts: your data's three first, then
       Pancake data's, the two into the found lead last of each */
   order: number;
-  /** one cubic from the cap (where it draws from) to the lead's centre */
+  /** one cubic from the source's edge (where it draws from) to the lead's centre */
   d: string;
 };
 
@@ -74,8 +75,6 @@ export type StoryLineageSource = {
   x: number;
   y: number;
   r: number;
-  /** its wire's start cap, on its edge that faces the leads */
-  cap: { x: number; y: number };
   wires: readonly StoryLineageWire[];
 };
 
@@ -109,21 +108,21 @@ export const STORY_LINEAGE: StoryLineageStory = {
       sources: [
         {
           id: "crm", name: "CRM", logo: "/lp/vendor-logos/hubspot.svg",
-          x: 124, y: 105, r: 28, cap: { x: 152, y: 105 },
+          x: 124, y: 105, r: 28,
           wires: [
             { id: "crm", to: 2, order: 2, d: "M152 105C264.705 105 263.295 245 376 245" },
           ],
         },
         {
           id: "visits", name: "Site visits", tone: "blue-30",
-          x: 124, y: 245, r: 14.09, cap: { x: 138.09, y: 245 },
+          x: 124, y: 245, r: 14.09,
           wires: [
             { id: "visits", to: 3, order: 1, d: "M138.09 245C242.571 245 271.519 303 376 303" },
           ],
         },
         {
           id: "events", name: "Events", tone: "yellow-30",
-          x: 124, y: 385, r: 14.09, cap: { x: 138.09, y: 385 },
+          x: 124, y: 385, r: 14.09,
           wires: [
             { id: "events", to: 4, order: 0, d: "M138.09 385C240.114 385 273.976 361 376 361" },
           ],
@@ -138,21 +137,21 @@ export const STORY_LINEAGE: StoryLineageStory = {
       sources: [
         {
           id: "theirstack", name: "TheirStack", logo: "/lp/story-sources/theirstack.svg",
-          x: 628, y: 105, r: 28, cap: { x: 600, y: 105 },
+          x: 628, y: 105, r: 28,
           wires: [
             { id: "theirstack", to: 0, order: 3, d: "M600 105C503.88 105 472.12 129 376 129" },
           ],
         },
         {
           id: "apify", name: "Apify", logo: "/lp/story-sources/apify.svg",
-          x: 628, y: 245, r: 28, cap: { x: 600, y: 245 },
+          x: 628, y: 245, r: 28,
           wires: [
             { id: "apify", to: 1, order: 4, d: "M600 245C501.275 245 474.725 187 376 187" },
           ],
         },
         {
           id: "dealroom", name: "Dealroom", logo: "/lp/story-sources/dealroom.svg",
-          x: 628, y: 385, r: 28, cap: { x: 600, y: 385 },
+          x: 628, y: 385, r: 28,
           wires: [
             { id: "dealroom", to: 2, order: 5, d: "M600 385C487.295 385 488.705 245 376 245" },
           ],

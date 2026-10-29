@@ -2,7 +2,6 @@ import { gsap } from "@/lib/gsap";
 
 import type { BuiltStory } from "./lp-dive-stages";
 import {
-  skCap,
   skDot,
   skHideR,
   skHideRise,
@@ -20,7 +19,7 @@ import {
  * should not mean text it should mean abstraction of what our infrastructure does". The picture
  * is one flow (LpStorySignals.tsx): six providers into Pancake's point, four signals out of it.
  * The providers' half moves as the hub he loves did (lp-story-sources-timeline.ts at 630bb8e,
- * scene D): each cap lands and its wire draws into the near-black dot, the two behind the funding
+ * scene D): each wire draws into the near-black dot, the two behind the funding
  * first, then the four others 0.28 s apart; here brisker (0.5 s draws, and the four others start
  * as the second lands instead of 0.9 s later). Then the hub gives out: four wires draw out of it
  * 0.12 s apart, each stop lands as its wire arrives and its label rises; the count rises last.
@@ -36,11 +35,11 @@ import {
  *
  *   0.00       f1: frame 0 = the cue: the six providers with their names and the confetti, in
  *              their END places; no wire, no hub, no output yet
- *   0.30–0.80  Dealroom: its cap lands, its wire draws into the hub point
+ *   0.30–0.80  Dealroom: its wire draws into the hub point
  *   0.55–1.05  TheirStack, the same (the two behind the funding, 0.25 s apart)
  *   0.70–0.95  the hub dot lands as the first wire arrives
  *   1.05       f2: the two wires in
- *   1.05–2.39  Wappalyzer, Apify, Firecrawl, Coresignal: cap and wire each, 0.28 s apart (the
+ *   1.05–2.39  Wappalyzer, Apify, Firecrawl, Coresignal: a wire each, 0.28 s apart (the
  *              loved spacing), the first as TheirStack's wire lands
  *   2.39       f3: every provider's wire in
  *   2.39–3.60  Hiring, Funding, Site visits, Work email: each wire draws out of the hub in
@@ -56,13 +55,13 @@ import {
  *
  * Nothing that rests moves: the discs, the names and the confetti stand from frame 0. The labels
  * rise by the kit's variable, let go SK_LANDED after they land (skRise), so they rest
- * untransformed. The caps, the hub dot and the stops land by their `r` attribute.
+ * untransformed. The hub dot and the stops land by their `r` attribute.
  */
 
 /** the take, in seconds (see the table above) */
 const T = {
   f1: 0,
-  /** each provider's cap and wire, by data-order: the two behind the funding 0.25 s apart, then
+  /** each provider's wire, by data-order: the two behind the funding 0.25 s apart, then
       the four others 0.28 s apart from the moment the second lands (0.55 + 0.5) */
   draw: [0.3, 0.55, 1.05, 1.33, 1.61, 1.89],
   /** the hub dot, 0.1 s before the first wire lands (0.8) */
@@ -110,10 +109,9 @@ export function buildStorySignals(root: HTMLElement): BuiltStory {
 export function* buildStorySignalsSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const { $, $$ } = skQuery(root, "signals");
 
-  // the providers' caps and wires in reveal order (data-order 0…n−1, from the data's `order`)
+  // the providers' wires in reveal order (data-order 0…n−1, from the data's `order`)
   const count = $$(".lp-sk-wires g[data-node][data-order]").length;
   const wires = Array.from({ length: count }, (_, k) => ({
-    cap: $<SVGCircleElement>(`.lp-sk-wires g[data-order="${k}"] .lp-sk-cap`),
     path: $<SVGPathElement>(`.lp-sk-wires g[data-order="${k}"] path`),
   }));
   const hub = $<SVGCircleElement>(".lp-sk-hub");
@@ -132,7 +130,7 @@ export function* buildStorySignalsSteps(root: HTMLElement): Generator<void, Buil
 
   /* ── frame 0 (the markup rests on the end picture). Each block leaves a composed picture, the
      END less what is hidden so far ── */
-  skHideR([hub, ...wires.map((wire) => wire.cap), ...outs.map((out) => out.stop)]);
+  skHideR([hub, ...outs.map((out) => out.stop)]);
   yield;
   wires.forEach((wire) => skHideWire(wire.path));
   outs.forEach((out) => skHideWire(out.path));
@@ -143,9 +141,8 @@ export function* buildStorySignalsSteps(root: HTMLElement): Generator<void, Buil
   const tl = gsap.timeline({ paused: true });
 
   /* ── the providers' wires, one by one into the hub point; the dot lands with the first ── */
-  wires.forEach(({ cap, path }, k) => {
+  wires.forEach(({ path }, k) => {
     const at = T.draw[k] ?? T.draw[T.draw.length - 1] + DRAW_GAP * (k - T.draw.length + 1);
-    skCap(tl, cap, at);
     skWire(tl, path, at, DRAW);
   });
   skDot(tl, hub, T.dot);

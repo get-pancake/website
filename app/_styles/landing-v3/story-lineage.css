@@ -6,8 +6,8 @@
    claim and no UI: the parts of the one picture he loves, the old sources
    story's end hub, from the story kit.
 
-   Everything shared is the kit's (story-kit.css: the white disc, the wires
-   and their caps, the hub dot, the names and the rise). This file holds what
+   Everything shared is the kit's (story-kit.css: the white disc, the wires,
+   the hub dot, the names and the rise). This file holds what
    is this story's only: the leads' grey and the group labels' ink. The stops'
    colours are inline from lp-story-lineage-data.ts (each its brand token), as
    every box is (stage px, 752x489).
@@ -20,8 +20,8 @@
    this 752 scene scaled (×0.455 at 390): the kit hides every name there and
    the picture reads without them. No will-change, no keyframes. */
 
-/* the leads: dots in the wires' own grey (the kit's --sk-wire), r 8 against
-   the caps' 5.333 so that a lead never reads as a wire's end */
+/* the leads: dots in the wires' own grey (the kit's --sk-wire), r 8, where
+   the wires end */
 .lp-slin .lp-slin-lead {
   fill: var(--sk-wire);
 }

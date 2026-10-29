@@ -3,8 +3,10 @@ import { gsap } from "@/lib/gsap";
 /**
  * The deep-dive stories' shared motion (2026-10-28): the verbs of the one picture the founder loves (the sources story's end hub: a disc pops, a cap
  * lands, a wire draws into the near-black dot). Copied from lp-story-sources-timeline.ts at 630bb8e
- * (removed with its story the same day): disc pop :274-276, cap :283, wire :284-285, hub dot :289, the
- * label's rise :268-269. Styles: app/_styles/landing-v3/story-kit.css.
+ * (removed with its story the same day): disc pop :274-276, wire :284-285, hub dot :289, the
+ * label's rise :268-269. Styles: app/_styles/landing-v3/story-kit.css. That picture also landed a
+ * grey cap on each source's edge where its wire starts; the caps went on 2026-10-28 (founder, on
+ * the dots over the stops and discs: "ca fait un peu vibe coded"): a wire meets its node itself.
  *
  * No "use client", like the timelines that import it (lp-dive-stages.ts): reached only through
  * the lazy loaders in lp-dive-loaders.ts. Every helper writes sets and tweens only (no callbacks,
@@ -17,7 +19,7 @@ import { gsap } from "@/lib/gsap";
  * fill the stage and held it 1.8 s; the founder, on that frame: "this is not motion like it's
  * plain text", so the camera is gone.
  *
- * Nothing moves by GSAP's own transform. SVG dots and caps animate their `r` attribute (a CSS
+ * Nothing moves by GSAP's own transform. SVG dots animate their `r` attribute (a CSS
  * transform-origin on an SVG circle plus GSAP's own origin handling double-shifts it). A disc's
  * pop and a line's rise tween a CSS variable that story-kit.css reads into a 2D transform, and let go of it SK_LANDED after they land (skLetGo): unset, the transform computes
  * to none, so the END is the server markup (Gecko snaps text in a transformed box differently).
@@ -30,7 +32,7 @@ import { gsap } from "@/lib/gsap";
 
 type Timeline = gsap.core.Timeline;
 
-/** the wires' cap and hub-dot radius (Figma connector caps) */
+/** the near-black hub dot's radius (the Figma connectors' cap size) */
 export const SK_CAP_R = 5.333;
 /** a piece lets go of its variable this long after its tween ends */
 export const SK_LANDED = 0.01;
@@ -70,13 +72,9 @@ export function skPop(tl: Timeline, el: Element, at: number): void {
   skLetGo(tl, el, "--lp-sk-pop", 1, at + 0.45 + SK_LANDED);
 }
 
-/* ── an SVG circle lands by its radius: a wire's cap, the hub dot, a stop ── */
+/* ── an SVG circle lands by its radius: the hub dot, a stop ── */
 export function skHideR(els: SVGCircleElement | SVGCircleElement[]): void {
   gsap.set(els, { attr: { r: 0 } });
-}
-/** a wire's start cap */
-export function skCap(tl: Timeline, cap: SVGCircleElement, at: number): void {
-  tl.to(cap, { attr: { r: SK_CAP_R }, duration: 0.15, ease: "back.out(2)" }, at);
 }
 /** the near-black dot a wire lands on */
 export function skDot(tl: Timeline, dot: SVGCircleElement, at: number): void {

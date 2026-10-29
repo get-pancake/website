@@ -2,8 +2,6 @@ import { gsap } from "@/lib/gsap";
 
 import type { BuiltStory } from "./lp-dive-stages";
 import {
-  skCap,
-  skDot,
   skHidePop,
   skHideR,
   skHideRise,
@@ -26,8 +24,7 @@ import {
  * No "use client" on purpose (2026-10-09): Next makes every "use client" module a server graph
  * reaches, even through an import(), an EAGER client entry. It imports GSAP and the story kit
  * (lp-story-kit.ts) only: every verb below is the kit's, copied from the loved sources story's end
- * hub (a disc pops, a cap lands, a wire draws into the near-black dot, a flat dot lands, a label
- * rises).
+ * hub (a disc pops, a wire draws, a flat dot lands, a label rises).
  *
  * Founder, on the four blocks: "ban UI things from motions and try to abstract things … graphic
  * simple and on brand (you can reuse components)"; on a still opening: "this is not motion like
@@ -37,15 +34,13 @@ import {
  *
  *   0.00       cue = f1: the Pancake lockup in its END place, alone; never an empty frame
  *   0.30–0.75  Claude's disc pops; its name rises (0.40–0.80)
- *   0.40–1.00  its cap lands, then its wire draws from the disc into the in-port
- *   0.90–1.15  the in-port lands as that wire arrives (its end − 0.1, the loved hub's timing)
+ *   0.40–1.00  its wire draws from the disc's edge into Pancake's left edge
  *                                    → f2 at 1.15: Claude wired in, Codex already on its way
  *   0.90–1.35  Codex's disc pops as Claude's wire lands; its name rises (1.00–1.40)
- *   1.00–1.60  its cap lands, then its wire draws into the same in-port         → f3 at 1.60
- *   1.80–1.95  the out-port, the fan's shared start (the near-black dot), lands on Pancake's right
- *              edge as a start cap does (skCap)
- *   1.80–2.60  the fan: six wires out of it, top to bottom 0.08 s apart, 0.40 s each; each stop
- *              lands as its wire arrives (its end − 0.1), the last at 2.50–2.85  → f4 at 2.85
+ *   1.00–1.60  its wire draws into the same point                              → f3 at 1.60
+ *   1.80–2.60  the fan: six wires out of Pancake's right edge, top to bottom 0.08 s apart,
+ *              0.40 s each; each stop lands as its wire arrives (its end − 0.1), the last at
+ *              2.50–2.85                                                     → f4 at 2.85
  *   2.85–3.25  "About 100 tools" rises over the fan
  *   3.40       f5 = the END = the server markup (the carousel then holds it 2 s)
  *
@@ -53,25 +48,24 @@ import {
  * they have landed. The direction is always the agents into Pancake, then Pancake out to its
  * tools. Nothing loops, glows or pulses; no will-change; the root's opacity is never tweened. The
  * discs pop and the names rise by the kit's variables, each let go SK_LANDED after it lands
- * (skPop, skRise); the caps, the ports and the stops grow by their `r` attribute, never a
- * transform (skCap, skDot, skStop).
+ * (skPop, skRise); the stops grow by their `r` attribute, never a transform (skStop). No dot
+ * lands on an edge (founder 2026-10-28, on the dots over the discs: "ca fait un peu vibe
+ * coded"): the wires meet the discs and the lockup themselves.
  */
 
 /** the take, in seconds (see the table above) */
 const T = {
   /** Pancake alone: the cue */
   f1: 0,
-  /** Claude's disc pops; its name rises, its cap lands and its wire starts 0.1 s later */
+  /** Claude's disc pops; its name rises and its wire starts 0.1 s later */
   claude: 0.3,
   claudeWire: 0.4,
-  /** the in-port lands as Claude's wire arrives: 0.4 + 0.6 − 0.1 */
-  inPort: 0.9,
   f2: 1.15,
   /** Codex, the same beats 0.6 s later */
   codex: 0.9,
   codexWire: 1.0,
   f3: 1.6,
-  /** the fan: its start cap, then its six wires 0.08 s apart (top to bottom) */
+  /** the fan: its six wires 0.08 s apart (top to bottom) */
   fan: 1.8,
   fanGap: 0.08,
   /** the last stop lands: 1.8 + 5 × 0.08 + 0.4 − 0.1 + 0.35 */
@@ -104,17 +98,14 @@ export function buildStoryMcp(root: HTMLElement): BuiltStory {
 export function* buildStoryMcpSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const { $, $$ } = skQuery(root, "mcp");
 
-  // an agent's disc, wire, cap and name share its data-node (LpStoryMcp)
+  // an agent's disc, wire and name share its data-node (LpStoryMcp)
   const agent = (id: "claude" | "codex") => ({
     disc: $(`.lp-sk-disc[data-node="${id}"]`),
     wire: $<SVGPathElement>(`.lp-sk-wires g[data-node="${id}"] > path`),
-    cap: $<SVGCircleElement>(`.lp-sk-wires g[data-node="${id}"] > .lp-sk-cap`),
     name: $(`.lp-sk-name[data-node="${id}"]`),
   });
   const claude = agent("claude");
   const codex = agent("codex");
-  const inPort = $<SVGCircleElement>('.lp-sk-hub[data-port="in"]');
-  const outPort = $<SVGCircleElement>('.lp-sk-hub[data-port="out"]');
   // the fan, in reveal order (data-order 0…n−1, the data's order: top to bottom)
   const count = $$(".lp-sk-wires g[data-order]").length;
   const fan = Array.from({ length: count }, (_, k) => {
@@ -131,31 +122,25 @@ export function* buildStoryMcpSteps(root: HTMLElement): Generator<void, BuiltSto
   [claude.wire, codex.wire, ...fan.map((f) => f.wire)].forEach(skHideWire);
   yield;
   // the discs wait small and unseen, the names and the label below their places, unseen; the
-  // caps, the ports and the stops at r 0
+  // stops at r 0
   skHidePop([claude.disc, codex.disc]);
   skHideRise([claude.name, codex.name, label], RISE.y);
-  skHideR([claude.cap, codex.cap, inPort, outPort, ...fan.map((f) => f.stop)]);
+  skHideR(fan.map((f) => f.stop));
   yield;
 
   const tl = gsap.timeline({ paused: true });
 
-  /* ── Claude: its disc pops and its name rises, its cap lands, its wire draws into the in-port,
-     and the in-port lands as the wire arrives ── */
+  /* ── Claude: its disc pops and its name rises, its wire draws into Pancake ── */
   skPop(tl, claude.disc, T.claude);
   skRise(tl, claude.name, T.claude + RISE.afterPop, RISE.duration);
-  skCap(tl, claude.cap, T.claudeWire);
   skWire(tl, claude.wire, T.claudeWire, DRAW.wire);
-  skDot(tl, inPort, T.inPort);
 
-  /* ── Codex: the same, into the same in-port ── */
+  /* ── Codex: the same, into the same point ── */
   skPop(tl, codex.disc, T.codex);
   skRise(tl, codex.name, T.codex + RISE.afterPop, RISE.duration);
-  skCap(tl, codex.cap, T.codexWire);
   skWire(tl, codex.wire, T.codexWire, DRAW.wire);
 
-  /* ── out of Pancake: the out-port lands as the fan's start cap, then the wires draw one by
-     one, each stop landing as its wire arrives ── */
-  skCap(tl, outPort, T.fan);
+  /* ── out of Pancake: the wires draw one by one, each stop landing as its wire arrives ─ */
   fan.forEach(({ wire, stop, r }, k) => {
     const at = T.fan + T.fanGap * k;
     skWire(tl, wire, at, DRAW.fan);

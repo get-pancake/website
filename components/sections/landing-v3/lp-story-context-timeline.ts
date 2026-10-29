@@ -2,7 +2,6 @@ import { gsap } from "@/lib/gsap";
 
 import type { BuiltStory } from "./lp-dive-stages";
 import {
-  skCap,
   skHidePop,
   skHideR,
   skHideRise,
@@ -19,8 +18,8 @@ import {
  * paused, seek-safe GSAP timeline on the stage root. The picture (LpStoryContext.tsx, words and
  * geometry in lp-story-context-data.ts): ICP, Voice and the CRM's mark each draw a grey wire into
  * one plum centre; one line runs from it to one account under a cluster (which account), then on
- * to a Play (which Play); and a loop runs from the Play back into the centre (it remembers what
- * worked).
+ * to a Play (which Play); and a loop runs from the Play back onto the centre (it remembers what
+ * worked), ending in an open arrowhead.
  *
  * Contract: lp-dive-stages.ts — frame 0 via gsap.set (the caller's gsap.context reverts it), sets
  * and tweens only (no callbacks, no randomness, no repeat, no timeScale), progress(1) = the server
@@ -35,25 +34,26 @@ import {
  * the stage and held: "this is not motion like it's plain text"), no big text ("no UI should not
  * mean text it should mean abstraction of what our infrastructure does"), then a little more to
  * read ("ajouter un poil de densité informationnelle"). Every move is one of the kit's verbs,
- * copied from the loved sources hub (a stop lands, a disc pops, a cap lands, a wire draws, a name
- * rises) and played once. Times (s), the T table below:
+ * copied from the loved sources hub (a stop lands, a disc pops, a wire draws, a name rises) and
+ * played once. No dot lands on a node's edge (founder 2026-10-28: "ca fait un peu vibe coded").
+ * Times (s), the T table below:
  *
  *   0.00       f1: frame 0 = the cue: the plum centre and the accounts, in their END places
  *   0.30–0.95  the inputs land 0.1 s apart: ICP and Voice (a stop: r 0 → 16), then the CRM (its
  *              disc pops); each label rises (y 6 → 0) 0.08 s after its input
  *   0.95       f2: the three inputs are in
- *   0.95–1.50  each input's cap lands and its wire draws into the centre, 0.1 s apart (0.35 s
- *              each): read in one call
+ *   0.95–1.50  each input's wire draws into the centre, 0.1 s apart (0.35 s each): read in one
+ *              call
  *   1.50       f3: every wire is in. A beat
- *   1.65–2.15  the cap lands on the centre's right edge and the line out draws to the picked
- *              account (0.5 s); its near-black dot grows 0.1 s before the line arrives, and
- *              "Which account" rises
- *   2.40–2.85  the cap lands on the near-black dot's right edge and the line runs on to the Play
- *              (0.45 s); the Play's stop lands 0.1 s before it arrives (r 0 → 18), its mark
- *              shows, "Which Play" and the Play's name rise
+ *   1.65–2.15  the line out draws from the centre's edge to the picked account (0.5 s); its
+ *              near-black dot grows 0.1 s before the line arrives, and "Which account" rises
+ *   2.40–2.85  the line runs on from that dot's edge to the Play (0.45 s); the Play's stop lands
+ *              0.1 s before it arrives (r 0 → 18), its mark shows, "Which Play" and the Play's
+ *              name rise
  *   3.25       f4: which account, which Play
- *   3.35–4.05  the cap lands on the Play's top and the loop draws back over the cluster into the
- *              centre (0.7 s); "Remembers what worked" rises as it closes
+ *   3.35–4.05  the loop draws from the Play's top back over the cluster (0.7 s), its arrowhead
+ *              draws as it lands (4.03–4.18) over the centre; "Remembers what worked" rises as
+ *              it closes
  *   4.60       f5 = the END = the server markup (the carousel then holds it)
  *
  * Never moves: the centre and the accounts (frame 0 on), every dot once it has landed. The dots
@@ -73,19 +73,19 @@ const T = {
   labelRise: 0.3,
   /** the inputs are in (the CRM disc's pop settles at 0.5 + 0.45) */
   f2: 0.95,
-  /** each input's cap lands and its wire starts to draw into the centre */
+  /** each input's wire starts to draw into the centre */
   wires: [0.95, 1.05, 1.15],
   wireDraw: 0.35,
   /** the last wire is in (1.15 + 0.35) */
   f3: 1.5,
-  /** the line out: its cap lands on the centre's edge and it draws to the picked account */
+  /** the line out: it draws from the centre's edge to the picked account */
   exit: 1.65,
   exitDraw: 0.5,
   /** the near-black dot grows over the picked account, 0.1 s before the line arrives (2.15) */
   pick: 2.05,
   /** "Which account" rises */
   pickLabel: 2.15,
-  /** the line on: its cap lands on the near-black dot's edge and it draws to the Play */
+  /** the line on: it draws from the near-black dot's edge to the Play */
   play: 2.4,
   playDraw: 0.45,
   /** the Play's stop lands, 0.1 s before the line arrives (2.85); its mark fades in on it */
@@ -97,9 +97,12 @@ const T = {
   rise: 0.35,
   /** which account, which Play (2.96 + 0.35) */
   f4: 3.25,
-  /** the loop: its cap lands on the Play's top and it draws back into the centre */
+  /** the loop: it draws from the Play's top back over the cluster; its arrowhead draws as it
+      lands (0.02 s before its end, 0.15 s long) */
   loop: 3.35,
   loopDraw: 0.7,
+  arrow: 4.03,
+  arrowDraw: 0.15,
   /** "Remembers what worked" rises as the loop closes (4.05) */
   loopLabel: 3.85,
   loopRise: 0.4,
@@ -130,7 +133,7 @@ export function* buildStoryContextSteps(root: HTMLElement): Generator<void, Buil
   const { $, $$ } = skQuery(root, "context");
 
   // the inputs, in the markup's order (the data's: the wires' <g>); an input's body (a stop or
-  // the disc), wire, cap and label share its data-node
+  // the disc), wire and label share its data-node
   const inputs = $$<SVGGElement>(`.lp-sk-wires g[data-node]${NOT_INPUT}`).map((g) => {
     const node = g.dataset.node;
     const body = $<Element>(`.lp-sctx-stop[data-node="${node}"], .lp-sk-disc[data-node="${node}"]`);
@@ -141,29 +144,24 @@ export function* buildStoryContextSteps(root: HTMLElement): Generator<void, Buil
       /** a stop's END radius (the markup's), read before frame 0 sets it to 0 */
       r: Number(body.getAttribute("r")),
       wire: $<SVGPathElement>(`.lp-sk-wires g[data-node="${node}"] path`),
-      cap: $<SVGCircleElement>(`.lp-sk-cap[data-node="${node}"]`),
       label: $(`.lp-sk-name[data-node="${node}"]`),
     };
   });
   if (inputs.length !== T.inputs.length) throw new Error("lp-story-context: the inputs are out of step with T");
-  const exit = {
-    wire: $<SVGPathElement>('.lp-sk-wires g[data-node="exit"] path'),
-    cap: $<SVGCircleElement>('.lp-sk-cap[data-node="exit"]'),
-  };
+  const exitWire = $<SVGPathElement>('.lp-sk-wires g[data-node="exit"] path');
   const pick = $<SVGCircleElement>(".lp-sctx-pick");
   const pickR = Number(pick.getAttribute("r"));
   const pickLabel = $('.lp-sk-name[data-node="pick"]');
   const play = {
     wire: $<SVGPathElement>('.lp-sk-wires g[data-node="play"] path'),
-    cap: $<SVGCircleElement>('.lp-sk-cap[data-node="play"]'),
     stop: $<SVGCircleElement>(".lp-sctx-play"),
     mark: $<SVGPathElement>(".lp-sctx-play-mark"),
     labels: [$('.lp-sk-name[data-node="play"]'), $('.lp-sk-name[data-node="play-name"]')],
   };
   const playR = Number(play.stop.getAttribute("r"));
   const loop = {
-    wire: $<SVGPathElement>('.lp-sk-wires g[data-node="loop"] path'),
-    cap: $<SVGCircleElement>('.lp-sk-cap[data-node="loop"]'),
+    wire: $<SVGPathElement>('.lp-sk-wires g[data-node="loop"] path:not(.lp-sctx-arrow)'),
+    arrow: $<SVGPathElement>(".lp-sctx-arrow"),
     label: $('.lp-sk-name[data-node="loop"]'),
   };
 
@@ -171,24 +169,17 @@ export function* buildStoryContextSteps(root: HTMLElement): Generator<void, Buil
 
   /* ── frame 0 = the cue: the centre and the accounts; the inputs, the wires, the pick, the Play
      and the loop wait. Each block leaves a composed picture: the END less what is hidden so far ── */
-  skHideR([
-    ...inputs.flatMap(({ stop }) => (stop ? [stop] : [])),
-    ...inputs.map(({ cap }) => cap),
-    exit.cap,
-    pick,
-    play.cap,
-    play.stop,
-    loop.cap,
-  ]);
+  skHideR([...inputs.flatMap(({ stop }) => (stop ? [stop] : [])), pick, play.stop]);
   skHidePop(inputs.flatMap(({ stop, body }) => (stop ? [] : [body])));
   gsap.set(play.mark, { opacity: 0 });
   yield;
   skHideRise([...inputs.map(({ label }) => label), pickLabel, ...play.labels, loop.label], LABEL_RISE);
   yield;
   inputs.forEach(({ wire }) => skHideWire(wire));
-  skHideWire(exit.wire);
+  skHideWire(exitWire);
   skHideWire(play.wire);
   skHideWire(loop.wire);
+  skHideWire(loop.arrow);
   yield;
 
   /* ── the inputs land, each named as it lands ── */
@@ -199,27 +190,22 @@ export function* buildStoryContextSteps(root: HTMLElement): Generator<void, Buil
   });
 
   /* ── each draws its wire into the centre: one call ── */
-  inputs.forEach(({ cap, wire }, i) => {
-    skCap(tl, cap, T.wires[i]);
-    skWire(tl, wire, T.wires[i], T.wireDraw);
-  });
+  inputs.forEach(({ wire }, i) => skWire(tl, wire, T.wires[i], T.wireDraw));
 
   /* ── one line out, to one account: which account ── */
-  skCap(tl, exit.cap, T.exit);
-  skWire(tl, exit.wire, T.exit, T.exitDraw);
+  skWire(tl, exitWire, T.exit, T.exitDraw);
   skStop(tl, pick, pickR, T.pick);
   skRise(tl, pickLabel, T.pickLabel, T.rise);
 
   /* ── the line runs on to the Play: which Play ── */
-  skCap(tl, play.cap, T.play);
   skWire(tl, play.wire, T.play, T.playDraw);
   skStop(tl, play.stop, playR, T.playStop);
   tl.to(play.mark, { opacity: 1, duration: T.playMarkFade, ease: "power1.out" }, T.playMark);
   play.labels.forEach((label, i) => skRise(tl, label, T.playLabels[i], T.rise));
 
-  /* ── the loop back into the centre: it remembers what worked ── */
-  skCap(tl, loop.cap, T.loop);
+  /* ── the loop back onto the centre: it remembers what worked ── */
   skWire(tl, loop.wire, T.loop, T.loopDraw);
+  skWire(tl, loop.arrow, T.arrow, T.arrowDraw);
   skRise(tl, loop.label, T.loopLabel, T.loopRise);
 
   // the END holds until T.end

@@ -1,7 +1,7 @@
 import { gsap } from "@/lib/gsap";
 
 import type { BuiltStory } from "./lp-dive-stages";
-import { skCap, skHideR, skHideRise, skHideWire, skQuery, skRise, skStop, skWire } from "./lp-story-kit";
+import { skHideR, skHideRise, skHideWire, skQuery, skRise, skStop, skWire } from "./lp-story-kit";
 
 /**
  * Deep-dive story 3, "Where every lead came from" ("Lead lineage") — its build-up as ONE paused,
@@ -22,8 +22,7 @@ import { skCap, skHideR, skHideRise, skHideWire, skQuery, skRise, skStop, skWire
  *
  * Every verb is the kit's (lp-story-kit.ts), copied from the loved picture's timeline
  * (lp-story-sources-timeline.ts at 630bb8e) or its sibling's:
- *   cap            skCap, r 0 → 5.333 in 0.15 s (:283), as its wire starts
- *   wire draw      skWire, strokeDashoffset to 0 in 0.6 s (:284-285), from its source's cap
+ *   wire draw      skWire, strokeDashoffset to 0 in 0.6 s (:284-285), from its source's edge
  *   her dot        skStop, r 0 → 12 in 0.35 s (the confetti's timing, :264): the near-black
  *                  dot grows over the grey one
  *   rise           skRise, y 8 → 0 in 0.4 s (the old message story's,
@@ -37,7 +36,7 @@ import { skCap, skHideR, skHideRise, skHideWire, skQuery, skRise, skStop, skWire
  *   0.00       f1: frame 0 = the cue: both sides' sources with their names and group labels,
  *              the five grey leads; no wire yet
  *   0.30–1.20  your data reaches out, bottom to top: events, site visits, then the CRM, 0.15 s
- *              apart, each cap landing as its wire starts. The CRM's wire is the last in: it
+ *              apart. The CRM's wire is the last in: it
  *              reaches the middle lead, which stays grey (one side only)
  *   1.20       f2: your data's three wires are in
  *   1.20–2.10  then Pancake data's, top to bottom: TheirStack, Apify, then Dealroom, 0.15 s
@@ -56,8 +55,7 @@ import { skCap, skHideR, skHideRise, skHideWire, skQuery, skRise, skStop, skWire
 const T = {
   f1: 0,
   /** each wire's start, by its data-order (lp-story-lineage-data.ts `order`): your data's three
-      0.15 s apart, then Pancake data's three, the two into the found lead last of each. Its cap
-      lands at the same time */
+      0.15 s apart, then Pancake data's three, the two into the found lead last of each */
   draw: [0.3, 0.45, 0.6, 1.2, 1.35, 1.5],
   /** your data's wires are in (0.6 + DRAW) */
   f2: 1.2,
@@ -93,29 +91,27 @@ export function buildStoryLineage(root: HTMLElement): BuiltStory {
 export function* buildStoryLineageSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const { $, $$ } = skQuery(root, "lineage");
   const wires = $$<SVGPathElement>(".lp-sk-wires path[data-order]");
-  const caps = $$<SVGCircleElement>(".lp-sk-wires .lp-sk-cap[data-order]");
   const dot = $<SVGCircleElement>(".lp-sk-wires .lp-slin-found");
   const name = $(".lp-slin-name");
   // her dot lands on the markup's radius (the END picture's): read before frame 0 writes it
   const dotR = Number(dot.getAttribute("r"));
-  /** a wire's (or its cap's) start, from its slot */
+  /** a wire's start, from its slot */
   const startOf = (el: Element) => {
     const k = Number(el.getAttribute("data-order"));
     return T.draw[k] ?? T.draw[T.draw.length - 1] + DRAW_GAP * (k - T.draw.length + 1);
   };
 
   /* ── frame 0 (the markup rests on the end picture): the sources, their names and the grey
-     leads stay; every wire, cap, her dot and her name wait, unseen ── */
+     leads stay; every wire, her dot and her name wait, unseen ── */
   wires.forEach((wire) => skHideWire(wire));
   yield;
-  skHideR([dot, ...caps]);
+  skHideR(dot);
   skHideRise(name);
   yield;
 
   const tl = gsap.timeline({ paused: true });
 
-  /* ── the wires, your data's then Pancake data's, each from its cap ── */
-  caps.forEach((cap) => skCap(tl, cap, startOf(cap)));
+  /* ── the wires, your data's then Pancake data's, each from its source's edge ── */
   wires.forEach((wire) => skWire(tl, wire, startOf(wire), DRAW));
 
   /* ── the lead both sides reach: her dot, then her name ── */

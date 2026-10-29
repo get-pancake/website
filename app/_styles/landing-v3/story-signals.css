@@ -7,8 +7,8 @@
    one near-black point, and four wires fan out of it to four brand-coloured
    stops. No big text: small labels only.
 
-   The parts are the story kit's (story-kit.css: the white disc, the wires and
-   caps, the hub dot, the names, the rise). This file holds only this story's
+   The parts are the story kit's (story-kit.css: the white disc, the wires,
+   the hub dot, the names, the rise). This file holds only this story's
    own pieces: the confetti and the small labels. The outputs' stops are flat
    brand dots filled inline from the data, the size of the loved purple
    confetti dot; children of the svg, never of a <g>, so the kit's multiply

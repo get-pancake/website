@@ -11,8 +11,10 @@ import { STORY_CONTEXT } from "./lp-story-context-data";
  * it should mean abstraction of what our infrastructure does", then "ajouter un poil de densité
  * informationnelle". So no claim and no UI: the inputs (ICP, Voice, the CRM's mark) each draw a
  * wire into one plum centre; one line runs from it to one account under a cluster (which
- * account), then on to a Play (which Play); and a loop runs from the Play back into the centre
- * (it remembers what worked). Words and geometry:
+ * account), then on to a Play (which Play); and a loop runs from the Play back onto the centre
+ * (it remembers what worked), drawn as the launch film's hand-drawn arrows are: a round-ended
+ * stroke and an open arrowhead. No dot sits on any node's edge: every line meets its node
+ * itself. Words and geometry:
  * lp-story-context-data.ts; look: story-kit.css (the kit) + story-context.css; motion:
  * lp-story-context-timeline.ts.
  *
@@ -20,30 +22,27 @@ import { STORY_CONTEXT } from "./lp-story-context-data";
  * every part is final, so `placeholders` changes nothing), ONE root carrying
  * data-lp-story="context" and aria-hidden (the shell's host carries the ALT), and this markup IS
  * the END picture (rest = end): the server HTML is never a blank card. Nothing is painted behind
- * the scene. It imports nothing from lp-story-kit.ts, which pulls GSAP into the server graph:
- * the caps' 5.333 is its SK_CAP_R, written out.
+ * the scene. It imports nothing from lp-story-kit.ts, which pulls GSAP into the server graph.
  *
  * Layers, back to front, all inside the kit's scene wrapper (.lp-sk-scene, never transformed):
  *   .lp-sk-disc        the CRM: the HubSpot mark on the kit's white disc (SkDisc), under the
- *                      wires like the loved discs, so its cap sits over its edge
+ *                      wires like the loved discs; its wire starts on its edge
  *   svg.lp-sk-wires    the stops (ICP, Voice: flat brand tones);
  *                      each wire in its own <g> (the kit multiplies `> g > *` from 768 px up):
  *                      the inputs' wires into the centre, the exit wire, the Play's wire, the
- *                      loop;
- *                      the plum centre, over the inputs' and the loop's wire ends;
+ *                      loop and its arrowhead (round-ended, story-context.css);
+ *                      the plum centre, over the inputs' wire ends;
  *                      the accounts (--lp-ink-60), over the exit wire's end;
  *                      the near-black dot over the picked account (the kit's hub colour, r 12);
  *                      the Play (a --lp-pink-30 stop and its white play mark), over its wire's
- *                      end;
- *                      the caps, last and outside any <g>: one flat grey dot over each source's
- *                      edge (a stop's, the disc's, the centre's, the picked dot's right edge;
- *                      the Play's top), as the loved caps read over their white discs
+ *                      end and the loop's start
  *   .lp-sk-name        the labels (kit name style, hidden on phones): under each input; under
  *                      the line, "Which account" and "Which Play" (ink-80) and the Play's name;
  *                      over the loop, "Remembers what worked" (ink-80); each rises by the kit's
  *                      variable (.lp-sk-rise)
- * `data-node` ties an input's body, wire, cap and label together ("exit" for the wire out, "pick"
- * for its label, "play" for the Play's wire, cap, stop, mark and labels, "loop" for the loop's);
+ * `data-node` ties an input's body, wire and label together ("exit" for the wire out, "pick" for
+ * its label, "play" for the Play's wire, stop, mark and labels, "loop" for the loop's line,
+ * arrowhead and label);
  * the timeline pairs them by it. Nothing here is focusable.
  */
 
@@ -100,6 +99,7 @@ export function LpStoryContextStage(_props: DiveStageProps) {
           </g>
           <g data-node="loop">
             <path d={loop.d} />
+            <path className="lp-sctx-arrow" d={loop.arrow} />
           </g>
           <circle className="lp-sctx-center" cx={skF3(center.x)} cy={skF3(center.y)} r={skF3(center.r)} />
           {accounts.map((account, i) => (
@@ -115,19 +115,6 @@ export function LpStoryContextStage(_props: DiveStageProps) {
             style={{ fill: `var(--lp-${play.tone})` }}
           />
           <path className="lp-sctx-play-mark" data-node="play" d={play.mark} />
-          {inputs.map((input) => (
-            <circle
-              key={input.id}
-              className="lp-sk-cap"
-              data-node={input.id}
-              cx={skF3(input.cap.x)}
-              cy={skF3(input.cap.y)}
-              r="5.333"
-            />
-          ))}
-          <circle className="lp-sk-cap" data-node="exit" cx={skF3(exit.cap.x)} cy={skF3(exit.cap.y)} r="5.333" />
-          <circle className="lp-sk-cap" data-node="play" cx={skF3(play.cap.x)} cy={skF3(play.cap.y)} r="5.333" />
-          <circle className="lp-sk-cap" data-node="loop" cx={skF3(loop.cap.x)} cy={skF3(loop.cap.y)} r="5.333" />
         </svg>
         {inputs.map((input) => (
           <span key={input.id} className="lp-sk-name lp-sk-rise" data-node={input.id} style={nameAt(input.x, input.y, input.r)}>

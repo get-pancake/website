@@ -47,9 +47,11 @@
  *
  * The wires: one cubic each with horizontal handles, c = 0.426667 × the straight distance
  * between its ends (the loved formula, sources-v2 §4.6), written out here, never computed at
- * render, each drawn from its source: a provider's from its start cap (r 5.333) on its disc's
- * right magnet (x + size, y + size / 2) into the hub point; an output's from the hub point, the
- * near-black dot (r 5.333) being its cap, to its stop's centre, where the stop covers its end.
+ * render, each drawn from its source: a provider's from its disc's right magnet (x + size,
+ * y + size / 2), the edge itself, into the hub point (no cap dot on the edge since 2026-10-28:
+ * the founder, on the dots over the discs, "ca fait un peu vibe coded", and the best diagrams
+ * join a line to its node's edge with nothing on it); an output's from the hub point, the
+ * near-black dot (r 5.333), to its stop's centre, where the stop covers its end.
  * The loved wires keep their shapes (the formula scales with the group; Wappalyzer's and
  * Coresignal's follow their discs' few px).
  *
@@ -94,9 +96,8 @@ export type StorySignalsNode = {
   nameAbove?: boolean;
   /** painted above the wires (Figma z-order: Ellipse 118) */
   over?: boolean;
-  /** start cap: the disc's right magnet (x + size, y + size / 2), stage px */
-  cap: { x: number; y: number };
-  /** the wire from the cap to the hub point: one cubic with horizontal handles,
+  /** the wire from the disc's right magnet (x + size, y + size / 2) to the hub point: one
+      cubic with horizontal handles,
       c = 0.426667 × the distance (written out, never computed at render) */
   d: string;
 };
@@ -161,39 +162,33 @@ export const STORY_SIGNALS: StorySignalsStory = {
     {
       id: "e115", name: "Apify", logo: "/lp/story-sources/apify.svg",
       x: 209.668, y: 187.915, size: 66.987, order: 3,
-      cap: { x: 276.655, y: 221.409 },
       d: "M276.655 221.409C347.609 221.409 370.946 240.093 441.9 240.093",
     },
     {
       // the first provider behind the funding (its funding rounds)
       id: "e116", name: "Dealroom", logo: "/lp/story-sources/dealroom.svg",
       x: 142.257, y: 97.915, size: 90, order: 0, nameAbove: true,
-      cap: { x: 232.257, y: 142.915 },
       d: "M232.257 142.915C330.847 142.915 343.31 240.093 441.9 240.093",
     },
     {
       id: "e117", name: "Firecrawl", logo: "/lp/story-sources/firecrawl.png",
       x: 133.2, y: 274.936, size: 78.954, order: 4,
-      cap: { x: 212.154, y: 314.413 },
       d: "M212.154 314.413C315.18 314.413 338.874 240.093 441.9 240.093",
     },
     {
       id: "e119", name: "Wappalyzer", logo: "/lp/story-sources/wappalyzer.svg",
       x: 301.121, y: 69.698, size: 52.432, order: 2,
-      cap: { x: 353.553, y: 95.914 },
       d: "M353.553 95.914C425.7 95.914 369.753 240.093 441.9 240.093",
     },
     {
       id: "e120", name: "Coresignal", logo: "/lp/story-sources/coresignal.svg",
       x: 193.257, y: 371.48, size: 55.905, order: 5,
-      cap: { x: 249.162, y: 399.433 },
       d: "M249.162 399.433C355.86 399.433 335.202 240.093 441.9 240.093",
     },
     {
       // the second provider behind the funding (its last-funding date)
       id: "e118", name: "TheirStack", logo: "/lp/story-sources/theirstack.svg",
       x: 277.257, y: 319.232, size: 90, order: 1, over: true,
-      cap: { x: 367.257, y: 364.232 },
       d: "M367.257 364.232C429.061 364.232 380.096 240.093 441.9 240.093",
     },
   ],

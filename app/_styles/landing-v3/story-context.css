@@ -5,14 +5,16 @@
    inputs (ICP, Voice, the CRM's mark) each draw a grey wire into one plum
    centre; one line runs from it to one account under a cluster (which
    account), then on to a Play (which Play), and a loop runs from the Play
-   back into the centre (it remembers what worked: the founder's "un poil de
-   densité informationnelle", the same evening).
+   back onto the centre (it remembers what worked: the founder's "un poil de
+   densité informationnelle", the same evening). No dot sits on a node's
+   edge: every line meets its node itself.
 
-   Everything shared is the kit's (story-kit.css: the white disc, the wires
-   and their caps, the near-black hub colour, the names and their rise). This
-   file holds what is this story's only: the centre's plum, the accounts'
-   tone, the Play's mark and the labels in the kicker's ink. Every place is written inline from lp-story-context-data.ts (stage px
-   on the 752x489 design box); the stops' tones are inline from the data too.
+   Everything shared is the kit's (story-kit.css: the white disc, the wires,
+   the near-black hub colour, the names and their rise). This file holds what
+   is this story's only: the centre's plum, the accounts' tone, the Play's
+   mark, the labels in the kicker's ink and the loop's round ends. Every place
+   is written inline from lp-story-context-data.ts (stage px on the 752x489
+   design box); the stops' tones are inline from the data too.
    The markup rests on the END picture; the timeline
    (lp-story-context-timeline.ts) sets frame 0: the centre and the accounts,
    the rest hidden.
@@ -50,4 +52,13 @@
    the lineage story's group labels), so they sit back from the names */
 .lp-sctx .lp-sctx-head {
   color: var(--lp-ink-80);
+}
+
+/* the loop back: the launch film's hand-drawn arrow (founder: "this is on
+   brand"), a round-ended stroke and its open arrowhead, in the kit's wire
+   grey and weight. The network's wires keep their flat ends, which meet
+   their nodes exactly */
+.lp-sctx [data-node="loop"] path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }

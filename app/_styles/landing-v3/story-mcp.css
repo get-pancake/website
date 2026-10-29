@@ -10,7 +10,7 @@
    six stops in the infra section's three tones.
 
    Built from the story kit (story-kit.css: the white disc, the wires, the
-   cap, the near-black dot, the names, the rise), plus the brand's lockup
+   names, the rise), plus the brand's lockup
    copied from the infra section at a size up (infra.css .lp-infra__brand,
    ×1.25) and the agent chips' glyph cells (.lp-infra__mark, ×2). Every box
    is placed inline from lp-story-mcp-data.ts (stage px on the 752x489 design
@@ -20,7 +20,8 @@
    nothing behind the scene (the shell paints the stage).
 
    Layers, back to front (LpStoryMcp): the wires, the lockup, the discs, then
-   the caps, the two ports and the stops, then the names and the label. The
+   the stops, then the names and the label. No dot on an edge: the wires
+   meet the discs and the lockup themselves. The
    rest markup is the END picture; the timeline (lp-story-mcp-timeline.ts)
    sets frame 0.
 

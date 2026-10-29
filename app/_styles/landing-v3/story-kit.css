@@ -28,7 +28,10 @@
    T1 `.lp p { margin: 0 }` and the shell's `.lp-dive-scene * { font-family }`
       / `.lp-dive-scene svg { display: block }` tie with single-class rules:
       every p, font and inline-svg rule below uses a compound selector.
-   T2 Dots and caps animate their `r` attribute, never a transform.
+   T2 Dots animate their `r` attribute, never a transform.
+   T6 No dot on a node's edge (founder 2026-10-28, on the caps the loved
+      picture put where each wire starts: "ca fait un peu vibe coded"): a
+      wire starts on its node's edge and meets it itself.
    T3 A vendor's mark is the vendor's file in an <img>, sized only (50% of
       its disc, object-fit: contain): no filter, no blend, no mask, no tint.
    T4 The disc's 0.5px hairline is a spread shadow (no layout space).
@@ -92,14 +95,12 @@
   stroke: var(--sk-wire);
   stroke-width: 2;
 }
-.lp-sk-wires .lp-sk-cap {
-  fill: var(--sk-wire);
-}
-/* the loved picture's connectors: lines and caps multiply over what they cross */
+/* the loved picture's connectors: lines multiply over what they cross */
 .lp-sk-wires > g > * {
   mix-blend-mode: multiply;
 }
-/* its six overlapping multiplied end caps = one near-black dot */
+/* where the wires meet in the open: one near-black dot (the loved picture's
+   six overlapping multiplied end caps) */
 .lp-sk-wires .lp-sk-hub {
   fill: var(--sk-hub);
   mix-blend-mode: normal;

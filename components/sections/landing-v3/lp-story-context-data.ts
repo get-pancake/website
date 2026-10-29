@@ -27,8 +27,11 @@
  *     account the wire lands on, which turns near-black (the kit's hub colour): which account;
  *     then the line runs on to a Play, a flat --lp-pink-30 stop (the infra card's Tools tone)
  *     carrying a white play mark: which Play, named as the infra card names its Play;
- *   - the loop: one wire from the Play's top back over the cluster into the centre: what the
- *     Play brings back goes into the context, which remembers what worked.
+ *   - the loop: one line from the Play's top back over the cluster onto the centre, drawn as
+ *     the launch film's hand-drawn arrows are (the founder, pointing at one: "this is on brand"):
+ *     one round-ended stroke ending in an open arrowhead. Not the film's little curl: "uniquement
+ *     quand elle fait sens et pas sur que ca soit le cas ici". What the Play brings back goes into
+ *     the context, which remembers what worked.
  * The words are the kit's small names (story-kit.css .lp-sk-name, 12/16, 500): ICP, Voice and
  * CRM under their inputs; under the line, "Which account" and "Which Play" (one row, in the
  * kicker's ink-80 like the lineage story's group labels) and the Play's name under its own;
@@ -39,14 +42,19 @@
  * column, ×0.455 at 390 px), every part at least 40 px inside its edges. Every wire but the loop
  * is the loved connector: one cubic with horizontal handles, c = 0.426667 × the straight distance
  * between its ends (the formula of lp-story-sources-data.ts:89-93 at 630bb8e, as in
- * lp-story-signals-data.ts), written out here, never computed at render. The loop is one cubic
- * with vertical handles (its ends' x, y 46). Each wire starts on a cap (the kit's .lp-sk-cap,
- * r 5.333) on its source's edge (the right edge; the loop's on the Play's top) and draws from
- * there; the inputs' wires and the loop end in the centre's middle, under the plum, the exit
- * wire in the picked account's middle and the Play's wire in the Play's, each under its dot.
+ * lp-story-signals-data.ts), written out here, never computed at render. Each starts on its
+ * source's edge (the right edge) with no dot on it (founder 2026-10-28, on the caps over the
+ * stops: "ca fait un peu vibe coded"; the best diagrams on Mobbin, Harvest's, Apollo's,
+ * OpenPhone's, join a line to its node with nothing on the join) and draws from there; the
+ * inputs' wires end in the centre's middle, under the plum, the exit wire in the picked
+ * account's middle and the Play's wire in the Play's, each under its dot. The loop starts on
+ * the Play's top, under the Play, and is one cubic with vertical handles, (630, 42) and
+ * (290, 62), to its tip 12 px over the centre's top, pointing down (the handles that keep its
+ * top at y 93.7 and the cluster furthest off it). Its arrowhead: two 9 px strokes at 38° either
+ * side of that heading.
  * Placed by hand and checked: every two accounts at least 38 px apart (centres), each at least
- * 38 px off the loop and 44 px over the line out. Measured in the page's fonts, the whole picture
- * spans x 66–693 and y 71–429.
+ * 43 px off the loop (34 px edge to stroke) and 44 px over the line out. Measured in the page's
+ * fonts, the whole picture spans x 66–693 and y 71–429.
  *
  * In scripts/homepage-lint.mjs FILES: every string here is linted. Words live in fields named
  * `name` or `text`; the mark sits under `logo`, the wires under `d`, the tones under `tone` and an
@@ -70,9 +78,8 @@ export type StoryContextInput = {
   x: number;
   y: number;
   r: number;
-  /** its wire's start cap, on its right edge (x + r, y) */
-  cap: { x: number; y: number };
-  /** its wire, from the cap into the centre's middle: it draws from its M point */
+  /** its wire, from its right edge (x + r, y) into the centre's middle: it draws from its M
+      point */
   d: string;
 } & (
   | {
@@ -103,25 +110,24 @@ export type StoryContextStory = {
   /** which account: its index in `accounts`, the radius of the near-black dot that grows over
       it, and its label under the line */
   pick: { index: number; r: number; label: StoryContextLabel };
-  /** the wire out: from the cap on the centre's right edge to the picked account's middle */
-  exit: { cap: { x: number; y: number }; d: string };
+  /** the wire out: from the centre's right edge to the picked account's middle */
+  exit: { d: string };
   /** which Play: a flat stop with a white play mark (`mark`, a path), the line on from the
-      picked account (its cap on the near-black dot's right edge) into the stop's middle, its
-      label under the line and its name under that */
+      picked account (from the near-black dot's right edge) into the stop's middle, its label
+      under the line and its name under that */
   play: {
     x: number;
     y: number;
     r: number;
     tone: "pink-30";
     mark: string;
-    cap: { x: number; y: number };
     d: string;
     label: StoryContextLabel;
     name: StoryContextLabel;
   };
-  /** the loop: from the cap on the Play's top, over the cluster, into the centre's middle; its
-      label over its top */
-  loop: { cap: { x: number; y: number }; d: string; label: StoryContextLabel };
+  /** the loop: from the Play's top, over the cluster, its tip over the centre;
+      its open arrowhead (`arrow`); its label over its top */
+  loop: { d: string; arrow: string; label: StoryContextLabel };
 };
 
 export const STORY_CONTEXT: StoryContextStory = {
@@ -129,18 +135,15 @@ export const STORY_CONTEXT: StoryContextStory = {
   inputs: [
     {
       id: "icp", name: "ICP", kind: "stop", tone: "green-20", x: 126, y: 108, r: 16,
-      cap: { x: 142, y: 108 },
       d: "M142 108C227.759 108 204.241 244 290 244",
     },
     {
       id: "voice", name: "Voice", kind: "stop", tone: "yellow-30", x: 102, y: 244, r: 16,
-      cap: { x: 118, y: 244 },
       d: "M118 244C191.387 244 216.613 244 290 244",
     },
     {
       // the 56 px disc: the HubSpot sprocket drawn at 28 px (the kit's half)
       id: "crm", name: "CRM", kind: "disc", logo: "/lp/vendor-logos/hubspot.svg", x: 126, y: 380, r: 28,
-      cap: { x: 154, y: 380 },
       d: "M154 380C236.062 380 207.938 244 290 244",
     },
   ],
@@ -161,7 +164,6 @@ export const STORY_CONTEXT: StoryContextStory = {
   pick: { index: 9, r: 12, label: { text: "Which account", x: 455, top: 267 } },
   /** (310, 244) → (455, 244): distance 145, c = 61.867 */
   exit: {
-    cap: { x: 310, y: 244 },
     d: "M310 244C371.867 244 393.133 244 455 244",
   },
   /** (467, 244) → (630, 244): distance 163, c = 69.547. The mark: a 12 × 14 triangle whose
@@ -169,17 +171,16 @@ export const STORY_CONTEXT: StoryContextStory = {
   play: {
     x: 630, y: 244, r: 18, tone: "pink-30",
     mark: "M626 237L626 251L638 244Z",
-    cap: { x: 467, y: 244 },
     d: "M467 244C536.547 244 560.453 244 630 244",
     label: { text: "Which Play", x: 630, top: 267 },
     name: { text: "Reach warm accounts", x: 630, top: 283 },
   },
-  /** its top at y 93.17 (t = .5, x 460): the label's line box ends 6 px over it (1 for the
-      stroke, the kit's 5 px gap) */
+  /** its top at y 93.7 (x 462.5): the label's line box ends 6.7 px over it (1 for the stroke,
+      the kit's 5 px gap) */
   loop: {
-    cap: { x: 630, y: 226 },
-    d: "M630 226C630 46 290 46 290 244",
-    label: { text: "Remembers what worked", x: 460, top: 71 },
+    d: "M630 226C630 42 290 62 290 212",
+    arrow: "M295.54 204.91L290 212L284.46 204.91",
+    label: { text: "Remembers what worked", x: 462, top: 71 },
   },
 };
 

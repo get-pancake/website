@@ -18,13 +18,12 @@ import { STORY_LINEAGE } from "./lp-story-lineage-data";
  * part is final, so `placeholders` changes nothing), ONE root with data-lp-story="lineage" and
  * aria-hidden (the shell's host carries the ALT), rest markup = the timeline's progress(1),
  * nothing painted behind the scene (the shell paints the stage). It imports nothing from
- * lp-story-kit.ts, which pulls GSAP into the server graph (the caps' 5.333 is its SK_CAP_R,
- * written out).
+ * lp-story-kit.ts, which pulls GSAP into the server graph.
  *
  * Layers, back to front, inside .lp-sk-scene (the 752×489 box; nothing transforms it):
  *   .lp-sk-disc        the four marks on white discs (SkDisc): CRM, TheirStack, Apify, Dealroom
  *   svg.lp-sk-wires    the two stops (site visits, events), flat, under the wires; per source a
- *                      <g data-node>: its cap, then its wire (both multiply: the kit's
+ *                      <g data-node>: its wires, from its edge (they multiply: the kit's
  *                      `> g > *`); the five grey leads; her near-black dot (.lp-sk-hub) over
  *                      the middle one. The stops, the leads and her dot are the svg's own
  *                      children: no blend, so a lead covers the end of the wire it sits on
@@ -74,14 +73,6 @@ export function LpStoryLineageStage(_props: DiveStageProps) {
           )}
           {sources.map((source) => (
             <g key={source.id} data-node={source.id}>
-              {/* the cap lands with the source's first wire (data-order: that wire's slot) */}
-              <circle
-                className="lp-sk-cap"
-                data-order={Math.min(...source.wires.map((wire) => wire.order))}
-                cx={skF3(source.cap.x)}
-                cy={skF3(source.cap.y)}
-                r="5.333"
-              />
               {source.wires.map((wire) => (
                 <path key={wire.id} data-wire={wire.id} data-order={wire.order} d={wire.d} />
               ))}

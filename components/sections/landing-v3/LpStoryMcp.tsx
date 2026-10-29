@@ -20,20 +20,18 @@ import { STORY_MCP } from "./lp-story-mcp-data";
  *
  * Layers, back to front:
  *   .lp-sk-scene          the scene wrapper (the 752×489 box); nothing transforms it
- *     svg.lp-sk-wires     the wires: each agent's, from its disc into the in-port, then the
- *                         fan's six, from the out-port to their stops. Each <g> names the node
- *                         its wire comes from (data-node: an agent, or "pancake" with the
- *                         stop's data-order for the fan)
+ *     svg.lp-sk-wires     the wires: each agent's, from its disc's edge into the lockup's left
+ *                         edge, then the fan's six, from its right edge to their stops. Each
+ *                         <g> names the node its wire comes from (data-node: an agent, or
+ *                         "pancake" with the stop's data-order for the fan)
  *     .lp-smcp-brand      Pancake: the infra section's lockup at ×1.25 (LpInfra.tsx PancakeMark,
  *                         the footer's wordmark file; infra.css .lp-infra__brand)
  *     .lp-sk-disc ×2      the agents: Claude's and Codex's glyphs (LpAgentMarks.tsx, copied) on
  *                         the kit's white discs
- *     svg.lp-sk-wires     over the discs and the lockup: each agent wire's start cap on its
- *                         disc's edge, the in-port (the near-black dot both agent wires land on,
- *                         on the lockup's left edge), the out-port (the same dot on its right
- *                         edge, where the fan's six wires start: the loved hub's dot is the caps
- *                         of six wires meeting in one point), and the six stops (flat, over their
- *                         wires' ends)
+ *     svg.lp-sk-wires     over the discs and the lockup: the six stops (flat, over their
+ *                         wires' ends). No dot on any edge: the wires meet the discs and the
+ *                         lockup themselves (founder 2026-10-28, on the dots over the discs: "ca
+ *                         fait un peu vibe coded")
  *     .lp-sk-name ×3      the agents' names under their discs and "About 100 tools" over the
  *                         fan: the kit's name style, risen into place (.lp-sk-rise); phones
  *                         hide them (story-kit.css), the picture reads without them
@@ -84,7 +82,7 @@ function McpName({
 }
 
 export function LpStoryMcpStage(_props: DiveStageProps) {
-  const { brand, inPort, outPort, agents, tools, label } = STORY_MCP;
+  const { brand, agents, tools, label } = STORY_MCP;
   const box = (x: number, y: number, w: number, h: number) => ({
     left: `${skF3(x)}px`,
     top: `${skF3(y)}px`,
@@ -128,21 +126,8 @@ export function LpStoryMcpStage(_props: DiveStageProps) {
           </SkDisc>
         ))}
 
-        {/* over the discs and the lockup: the agents' start caps, the two ports, the stops (r =
-            the kit's SK_CAP_R for caps and ports, written out: lp-story-kit.ts imports the
-            "use client" GSAP module, which a server Stage must never reach) */}
+        {/* over the discs and the lockup: the stops, over their wires' ends */}
         <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
-          {agents.map((agent) => (
-            <g key={agent.id} data-node={agent.id}>
-              <circle className="lp-sk-cap" cx={skF3(agent.cap.x)} cy={skF3(agent.cap.y)} r="5.333" />
-            </g>
-          ))}
-          <g>
-            <circle className="lp-sk-hub" data-port="in" cx={skF3(inPort.x)} cy={skF3(inPort.y)} r="5.333" />
-          </g>
-          <g>
-            <circle className="lp-sk-hub" data-port="out" cx={skF3(outPort.x)} cy={skF3(outPort.y)} r="5.333" />
-          </g>
           {tools.map((tool, k) => (
             <circle
               key={k}
