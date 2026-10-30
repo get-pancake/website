@@ -302,7 +302,6 @@ export const pricingV2 = {
     { rest: "30+ data providers included." },
     { rest: "Leads matched to your ICP." },
     { rest: "A personal message for each lead." },
-    { rest: "You approve every lead first." },
     { rest: "Your whole team. No seats to pay." },
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot): the trial is

@@ -31,9 +31,10 @@ import { TRIAL_OFFER } from "@/lib/trial";
       kept at renewal; /pricing has the detail);
    4. Plays, said as the freedom they give: creating and testing a Play is
       free in the app, only a search uses credits;
-   5. and 6. the message and the control line, unchanged in substance: you
-      approve every lead before anyone is contacted (message review is
-      optional, so never "approvals on messages").
+   5. the message line. The control line ("You approve every lead before
+      anyone is contacted") left on 2026-10-30 (founder: "kill this ... it s
+      so borring"); reading a message first stays optional, so never
+      "approvals on messages".
    No spend cap (founder 2026-09-19). Same facts in pricingV2.value
    (lib/copy.ts) and the /for checklist. */
 const CHECKLIST = [
@@ -43,7 +44,6 @@ const CHECKLIST = [
   "Slow month? Unused credits roll\u00a0over.",
   "Try any GTM idea. Building a Play is\u00a0free.",
   "A personal message for each lead, in your\u00a0voice.",
-  "You approve every lead before anyone is\u00a0contacted.",
 ];
 
 /** No JS: no canvas will ever draw the rainbow and nothing sets [data-lp-gl-off],
