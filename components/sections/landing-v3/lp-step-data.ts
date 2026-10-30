@@ -165,15 +165,19 @@ export function s1Graph(): { edges: S1Edge[]; dots: S1Dot[] } {
 
 /** how many of each hub's leaves the young Brain already has */
 export const S1_REST_LEAVES = 1;
-/** the three leads that come back: a role and why it came, never an invented person (founder
-    2026-10-28, on the page's named leads: "get rid of those fake people looks cheap af"), with
-    the role's initials on the avatar as the infra card's leads (LpInfra.tsx LEADS). Each one
-    teaches a row of the panel: the funded founder "Ideal clients", the agency "Skip", the
-    reply "Best signal" (S1_ROWS) */
+/** the three leads that come back: a role at a real startup and why it came, never an invented
+    person (founder 2026-10-28, on the page's named leads: "get rid of those fake people looks
+    cheap af", then "a la place des noms on peut mettre des roles comme GTM @ xyz en mettant des
+    vraies companies un peu comme fait monaco.com": its product shots name real startups; the
+    signals are illustrative, as theirs are). The avatar carries the company's initial. Mastra is
+    the page's one lead: the account block 1 picks, the lead both sides find in the dive's
+    lineage picture and the /pricing example (lib/copy.ts pricingLead). Each one teaches a row of
+    the panel: the funded founder "Ideal clients", the agency "Skip", the reply "Best signal"
+    (S1_ROWS) */
 export const S1_LEADS: readonly SxLead[] = [
-  { name: "Founder & CEO", position: "Just raised a seed", initials: "FC" },
-  { name: "VP Marketing", position: "Design agency", initials: "VM" },
-  { name: "Head of Growth", position: "Hiring a marketing lead", initials: "HG" },
+  { name: "Founder @ Mastra", position: "Just raised a seed", initials: "M" },
+  { name: "Marketing @ Huge", position: "Design agency", initials: "H" },
+  { name: "Growth @ Resend", position: "Hiring a marketing lead", initials: "R" },
 ];
 /** the three leads that come back (S1_LEADS indexes), the verdict each gets, and the hubs it
     grows (S1_HUBS indexes: 0 Competitors, 1 ICPs, 2 Outreach, 3 Influencers, 4 Market Research) */

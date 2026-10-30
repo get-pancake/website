@@ -46,7 +46,8 @@ import {
  *              call
  *   1.50       f3: every wire is in. A beat
  *   1.65–2.15  the line out draws from the centre's edge to the picked account (0.5 s); its
- *              near-black dot grows 0.1 s before the line arrives, and "Which account" rises
+ *              near-black dot grows 0.1 s before the line arrives, "Which account" and its
+ *              name rise
  *   2.40–2.85  the line runs on from that dot's edge to the Play (0.45 s); the Play's stop lands
  *              0.1 s before it arrives (r 0 → 18), its mark shows, "Which Play" and the Play's
  *              name rise
@@ -83,8 +84,8 @@ const T = {
   exitDraw: 0.5,
   /** the near-black dot grows over the picked account, 0.1 s before the line arrives (2.15) */
   pick: 2.05,
-  /** "Which account" rises */
-  pickLabel: 2.15,
+  /** "Which account", then the account's name */
+  pickLabels: [2.15, 2.21],
   /** the line on: it draws from the near-black dot's edge to the Play */
   play: 2.4,
   playDraw: 0.45,
@@ -151,7 +152,7 @@ export function* buildStoryContextSteps(root: HTMLElement): Generator<void, Buil
   const exitWire = $<SVGPathElement>('.lp-sk-wires g[data-node="exit"] path');
   const pick = $<SVGCircleElement>(".lp-sctx-pick");
   const pickR = Number(pick.getAttribute("r"));
-  const pickLabel = $('.lp-sk-name[data-node="pick"]');
+  const pickLabels = [$('.lp-sk-name[data-node="pick"]'), $('.lp-sk-name[data-node="pick-name"]')];
   const play = {
     wire: $<SVGPathElement>('.lp-sk-wires g[data-node="play"] path'),
     stop: $<SVGCircleElement>(".lp-sctx-play"),
@@ -173,7 +174,7 @@ export function* buildStoryContextSteps(root: HTMLElement): Generator<void, Buil
   skHidePop(inputs.flatMap(({ stop, body }) => (stop ? [] : [body])));
   gsap.set(play.mark, { opacity: 0 });
   yield;
-  skHideRise([...inputs.map(({ label }) => label), pickLabel, ...play.labels, loop.label], LABEL_RISE);
+  skHideRise([...inputs.map(({ label }) => label), ...pickLabels, ...play.labels, loop.label], LABEL_RISE);
   yield;
   inputs.forEach(({ wire }) => skHideWire(wire));
   skHideWire(exitWire);
@@ -195,7 +196,7 @@ export function* buildStoryContextSteps(root: HTMLElement): Generator<void, Buil
   /* ── one line out, to one account: which account ── */
   skWire(tl, exitWire, T.exit, T.exitDraw);
   skStop(tl, pick, pickR, T.pick);
-  skRise(tl, pickLabel, T.pickLabel, T.rise);
+  pickLabels.forEach((label, i) => skRise(tl, label, T.pickLabels[i], T.rise));
 
   /* ── the line runs on to the Play: which Play ── */
   skWire(tl, play.wire, T.play, T.playDraw);

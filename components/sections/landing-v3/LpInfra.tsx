@@ -132,12 +132,14 @@ const SHAPE: Record<string, number> = {
   more: 3,
 };
 
-/** The leads the Play brings up for approval, in turn: who and why, never an invented person
-    (the buyer's title over the signal that found them) */
+/** The leads the Play brings up for approval, in turn: who and why, never an invented person:
+    a role at a real startup over the signal that found them, the company's initial on the
+    avatar (founder 2026-10-28: roles at real companies "un peu comme fait monaco.com", whose
+    product shots name real startups; the signals are illustrative, as theirs are) */
 const LEADS = [
-  { initials: "HS", name: "Head of Sales", signal: "Hiring SDRs" },
-  { initials: "HG", name: "Head of Growth", signal: "Just raised" },
-  { initials: "VM", name: "VP Marketing", signal: "Visited your site" },
+  { initials: "V", name: "Sales @ Vapi", signal: "Hiring SDRs" },
+  { initials: "M", name: "Growth @ Mintlify", signal: "Just raised" },
+  { initials: "G", name: "Marketing @ Granola", signal: "Visited your site" },
 ] as const;
 
 

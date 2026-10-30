@@ -43,7 +43,7 @@ import { skHideR, skHideRise, skHideWire, skQuery, skRise, skStop, skWire } from
  *              apart. Dealroom's is the last of all, into the middle lead
  *   1.95       f3: TheirStack's and Apify's wires are in, Dealroom's on its way
  *   2.05–2.40  as it arrives, its near-black dot grows over the grey one
- *   2.20–2.60  "Found by both" rises under it
+ *   2.20–2.60  "Founder @ Mastra" rises under it
  *   2.61       f4: the lead is found and named (its label lets go of its variable)
  *   3.30       f5: the END = the server markup
  *

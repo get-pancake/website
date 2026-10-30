@@ -338,10 +338,11 @@ export const pricingV2 = {
  * - Outreach: a personal message per lead in the customer's voice, sent from
  *   their own account once they approve the lead; a reply stops the sequence.
  * The example is one lead of the homepage's invented seller Acme, which
- * designs websites for startups, named by its role, never by an invented
- * person's name (founder 2026-10-28, on the page's named leads: "get rid of
- * those fake people looks cheap af"): step 03's funded founder
- * (lp-step-data.ts S1_LEADS). Its open role's badge is TheirStack's and its
+ * designs websites for startups: a role at a real startup, never an invented
+ * person's name (founder 2026-10-28: "get rid of those fake people looks
+ * cheap af", then roles at real companies "un peu comme fait monaco.com",
+ * whose product shots name real startups; the signals are illustrative, as
+ * theirs are). It is the page's one lead, Mastra (lp-step-data.ts S1_LEADS). Its open role's badge is TheirStack's and its
  * seed round's Dealroom's, as the dive's signals story draws them. Labelled
  * as one lead. Keep them in step.
  */
@@ -368,9 +369,9 @@ export const pricingLead = {
   ],
   example: {
     kicker: "One lead, as you get it",
-    initials: "FC",
-    name: "Founder & CEO",
-    role: "Seed-stage startup",
+    initials: "M",
+    name: "Founder @ Mastra",
+    role: "AI agent framework",
     signalsLabel: "Signals found",
     signals: [
       { text: "Raised a seed round this month", source: "Dealroom" },
@@ -379,7 +380,7 @@ export const pricingLead = {
     brainLabel: "Matched by your GTM Brain",
     brain: "You design websites for startups that just raised.",
     messageLabel: "Message, in your voice",
-    message: "Congrats on the seed round. Want a new website live before your marketing lead starts?",
+    message: "Congrats on Mastra’s seed round. Want a new website live before your marketing lead starts?",
   },
 } as const;
 

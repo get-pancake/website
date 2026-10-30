@@ -108,8 +108,9 @@ export type StoryContextStory = {
   /** the cluster and the account picked, present from frame 0; paint order */
   accounts: readonly StoryContextAccount[];
   /** which account: its index in `accounts`, the radius of the near-black dot that grows over
-      it, and its label under the line */
-  pick: { index: number; r: number; label: StoryContextLabel };
+      it, its label under the line and its name under that (a real startup, as the Play has
+      its own name) */
+  pick: { index: number; r: number; label: StoryContextLabel; name: StoryContextLabel };
   /** the wire out: from the centre's right edge to the picked account's middle */
   exit: { d: string };
   /** which Play: a flat stop with a white play mark (`mark`, a path), the line on from the
@@ -160,8 +161,13 @@ export const STORY_CONTEXT: StoryContextStory = {
     { x: 455, y: 244, r: 9 },
   ],
   /** the account on the line, under the cluster. Its label shares the Play label's row (18 + 5
-      under the line: the larger dot's gap) */
-  pick: { index: 9, r: 12, label: { text: "Which account", x: 455, top: 267 } },
+      under the line: the larger dot's gap), its name the Play name's. Mastra is the page's one
+      lead (lp-step-data.ts S1_LEADS) */
+  pick: {
+    index: 9, r: 12,
+    label: { text: "Which account", x: 455, top: 267 },
+    name: { text: "Mastra", x: 455, top: 283 },
+  },
   /** (310, 244) → (455, 244): distance 145, c = 61.867 */
   exit: {
     d: "M310 244C371.867 244 393.133 244 455 244",
@@ -187,4 +193,4 @@ export const STORY_CONTEXT: StoryContextStory = {
 /** What the animation shows, in the order it plays. The stage is aria-hidden: its words are read
     from here only. */
 export const STORY_CONTEXT_ALT: string =
-  "Animation: your ICP, your voice and your CRM, shown by the HubSpot mark, each draw a line into one center. One line runs from it to one account among many, which account, then on to which Play: Reach warm accounts. A line loops from the Play back into the center: it remembers what worked.";
+  "Animation: your ICP, your voice and your CRM, shown by the HubSpot mark, each draw a line into one center. One line runs from it to one account among many, which account: Mastra, then on to which Play: Reach warm accounts. A line loops from the Play back into the center: it remembers what worked.";

@@ -24,10 +24,11 @@
  *     line. Each source draws one wire into one lead. Four leads are reached from one side only
  *     and stay grey. The middle one is reached from both, by the CRM's wire and by Dealroom's
  *     (the provider behind funding rounds): its near-black dot (the loved hub dot, at r 12)
- *     covers the grey one and "Found by both" sits under it, what it is, never an invented
- *     person's name (founder 2026-10-28, on "Tamsin Okafor" there: "get rid of those fake
- *     people looks cheap af"). Its two wires make one S through the column's centre, the line
- *     that crosses;
+ *     covers the grey one and its role at a real startup sits under it, "Founder @ Mastra",
+ *     never an invented person's name (founder 2026-10-28, on "Tamsin Okafor" there: "get rid
+ *     of those fake people looks cheap af", then roles at real companies "un peu comme fait
+ *     monaco.com"; Mastra is the page's one lead: lp-step-data.ts S1_LEADS). Its two wires make
+ *     one S through the column's centre, the line that crosses;
  *   - the wires: the loved formula, one cubic with horizontal handles, c = 0.426667 × the
  *     straight distance between its ends (lp-story-sources-data.ts:89-93 at 630bb8e), written out
  *     here, never computed at render. Each starts on the source's edge that faces the leads (a
@@ -166,8 +167,8 @@ export const STORY_LINEAGE: StoryLineageStory = {
     { x: 376, y: 303, r: 8 },
     { x: 376, y: 361, r: 8 },
   ],
-  found: { lead: 2, r: 12, name: "Found by both" },
+  found: { lead: 2, r: 12, name: "Founder @ Mastra" },
 };
 
 export const STORY_LINEAGE_ALT: string =
-  "Animation: on one side, your data: your CRM, site visits and events. On the other, Pancake data: the providers TheirStack, Apify and Dealroom. Lines run to a column of leads, first from your data, then from Pancake data. One lead is reached from both sides, by your CRM and by Dealroom, and lights up: found by both.";
+  "Animation: on one side, your data: your CRM, site visits and events. On the other, Pancake data: the providers TheirStack, Apify and Dealroom. Lines run to a column of leads, first from your data, then from Pancake data. One lead is reached from both sides, by your CRM and by Dealroom, and lights up: the founder of Mastra.";

@@ -40,8 +40,8 @@ import { STORY_CONTEXT } from "./lp-story-context-data";
  *                      the line, "Which account" and "Which Play" (ink-80) and the Play's name;
  *                      over the loop, "Remembers what worked" (ink-80); each rises by the kit's
  *                      variable (.lp-sk-rise)
- * `data-node` ties an input's body, wire and label together ("exit" for the wire out, "pick" for
- * its label, "play" for the Play's wire, stop, mark and labels, "loop" for the loop's line,
+ * `data-node` ties an input's body, wire and label together ("exit" for the wire out, "pick" and
+ * "pick-name" for its labels, "play" for the Play's wire, stop, mark and labels, "loop" for the loop's line,
  * arrowhead and label);
  * the timeline pairs them by it. Nothing here is focusable.
  */
@@ -123,6 +123,9 @@ export function LpStoryContextStage(_props: DiveStageProps) {
         ))}
         <span className="lp-sk-name lp-sk-rise lp-sctx-head" data-node="pick" style={labelAt(pick.label)}>
           {pick.label.text}
+        </span>
+        <span className="lp-sk-name lp-sk-rise" data-node="pick-name" style={labelAt(pick.name)}>
+          {pick.name.text}
         </span>
         <span className="lp-sk-name lp-sk-rise lp-sctx-head" data-node="play" style={labelAt(play.label)}>
           {play.label.text}
