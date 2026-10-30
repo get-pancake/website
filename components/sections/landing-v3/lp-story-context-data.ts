@@ -35,8 +35,11 @@
  * The words are the kit's small names (story-kit.css .lp-sk-name, 12/16, 500): ICP, Voice and
  * CRM under their inputs; under the line, "Which account" and "Which Play" (one row, in the
  * kicker's ink-80 like the lineage story's group labels) and the Play's name under its own;
- * "Remembers what worked" (ink-80) over the loop's top. Phones hide them, like every kit name:
- * the picture reads without them.
+ * "Remembers what worked" (ink-80) over the loop's top. One more lives in the motion only (founder
+ * 2026-10-30, on a thinking beat that resolves into its answer: "very good idea"): "Thinking…"
+ * (ink-80) under the centre while it scans the accounts, gone as the pick lands; hidden at rest
+ * (story-context.css), it is never in the END picture.
+ * Phones hide them, like every kit name: the picture reads without them.
  *
  * Geometry: stage px on the 752×489 design box (the phone stack shows the same box scaled to its
  * column, ×0.455 at 390 px), every part at least 40 px inside its edges. Every wire but the loop
@@ -44,14 +47,15 @@
  * between its ends (the formula of lp-story-sources-data.ts:89-93 at 630bb8e, as in
  * lp-story-signals-data.ts), written out here, never computed at render. Each starts on its
  * source's edge (the right edge) with no dot on it (founder 2026-10-28, on the caps over the
- * stops: "ca fait un peu vibe coded"; the best diagrams on Mobbin, Harvest's, Apollo's,
- * OpenPhone's, join a line to its node with nothing on the join) and draws from there; the
+ * stops: "ca fait un peu vibe coded"; the cleanest product diagrams join a line to its node with
+ * nothing on the join) and draws from there; the
  * inputs' wires end in the centre's middle, under the plum, the exit wire in the picked
  * account's middle and the Play's wire in the Play's, each under its dot. The loop starts on
  * the Play's top, under the Play, and is one cubic with vertical handles, (630, 42) and
  * (290, 62), to its tip 12 px over the centre's top, pointing down (the handles that keep its
  * top at y 93.7 and the cluster furthest off it). Its arrowhead: two 9 px strokes at 38° either
- * side of that heading.
+ * side of that heading. Lengths, for the timeline's table (when a drawing tip reaches its dot):
+ * ICP 215.3, Voice 172, CRM 207.3, the exit 145, the Play's 163, the loop 471.
  * Placed by hand and checked: every two accounts at least 38 px apart (centres), each at least
  * 43 px off the loop (34 px edge to stroke) and 44 px over the line out. Measured in the page's
  * fonts, the whole picture spans x 66–693 and y 71–429.
@@ -107,6 +111,9 @@ export type StoryContextStory = {
   inputs: readonly StoryContextInput[];
   /** the cluster and the account picked, present from frame 0; paint order */
   accounts: readonly StoryContextAccount[];
+  /** the agent thinking: a label under the centre, shown by the motion only while the cluster is
+      scanned. Hidden at rest (story-context.css): never in the END picture */
+  thinking: StoryContextLabel;
   /** which account: its index in `accounts`, the radius of the near-black dot that grows over
       it, its label under the line and its name under that (a real startup, as the Play has
       its own name) */
@@ -160,6 +167,10 @@ export const STORY_CONTEXT: StoryContextStory = {
     { x: 520, y: 188, r: 9 },
     { x: 455, y: 244, r: 9 },
   ],
+  /** in the kit's name place under the centre (its bottom, 264, + the kit's 5 px gap), 2 px
+      under the row of "Which account": the two never rest together, it fades as that one rises.
+      Clear of the CRM wire (21 px at its height) and of the centre's hits (r 24 at most) */
+  thinking: { text: "Thinking…", x: 290, top: 269 },
   /** the account on the line, under the cluster. Its label shares the Play label's row (18 + 5
       under the line: the larger dot's gap), its name the Play name's. Mastra is the page's one
       lead (lp-step-data.ts S1_LEADS) */
@@ -193,4 +204,4 @@ export const STORY_CONTEXT: StoryContextStory = {
 /** What the animation shows, in the order it plays. The stage is aria-hidden: its words are read
     from here only. */
 export const STORY_CONTEXT_ALT: string =
-  "Animation: your ICP, your voice and your CRM, shown by the HubSpot mark, each draw a line into one center. One line runs from it to one account among many, which account: Mastra, then on to which Play: Reach warm accounts. A line loops from the Play back into the center: it remembers what worked.";
+  "Animation: your ICP, your voice and your CRM, shown by the HubSpot mark, each draw a line into one center, which reads them in one call. Thinking, it scans many accounts, then one line runs from it to one of them, which account: Mastra, then on to which Play: Reach warm accounts. A line loops from the Play back into the center: it remembers what worked.";

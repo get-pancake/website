@@ -108,45 +108,10 @@ export function skRise(tl: Timeline, el: Element, at: number, duration = 0.4): v
   skLetGo(tl, el, "--lp-sk-rise", 0, at + duration + SK_LANDED);
 }
 
-/* ── a pulse rides a wire: the data moving through the infrastructure (founder 2026-10-30:
-   make the four stories juicier, graphic and simple; the pattern is a marble riding a tube
-   from machine to machine, drawn flat). A pulse is a copy of its wire's path (.lp-sk-pulse,
-   story-kit.css: round-capped, a little heavier than the wire) that shows one short dash and
-   moves it from the path's start to its end by strokeDashoffset, then hides: it never rests
-   on screen, so the END picture is unchanged. `reverse` runs it from the end back to the
-   start (an answer going back). The hide returns the path's length for the verb ── */
-/** a pulse's length on the wire, stage px */
-export const SK_PULSE_LEN = 9;
-/** how far past either end of its path a pulse starts and stops, stage px: more than its round
-    cap (half the 4 px stroke), so the cap never sits on a node's edge as the pulse sets off or
-    lands (it did for two or three frames: a dot on the node, the thing the founder rejected) */
-export const SK_PULSE_OUT = 4;
-export function skHidePulse(path: SVGPathElement): number {
-  const len = path.getTotalLength();
-  gsap.set(path, {
-    opacity: 0,
-    strokeDasharray: `${SK_PULSE_LEN} ${len + SK_PULSE_LEN + 2 * SK_PULSE_OUT}`,
-    strokeDashoffset: SK_PULSE_LEN + SK_PULSE_OUT,
-  });
-  return len;
-}
-export function skPulse(
-  tl: Timeline,
-  path: SVGPathElement,
-  len: number,
-  at: number,
-  duration = 0.5,
-  reverse = false,
-): void {
-  const from = reverse ? -len - SK_PULSE_OUT : SK_PULSE_LEN + SK_PULSE_OUT;
-  const to = reverse ? SK_PULSE_LEN + SK_PULSE_OUT : -len - SK_PULSE_OUT;
-  tl.to(path, { opacity: 1, duration: 0.001, ease: "none" }, at);
-  tl.fromTo(path, { strokeDashoffset: from }, { strokeDashoffset: to, duration, ease: "power1.inOut", immediateRender: false }, at);
-  tl.to(path, { opacity: 0, duration: 0.001, ease: "none" }, at + duration);
-}
-
-/* ── a dot takes a hit: its radius swells by `k` and settles back (the arrival of a pulse, a
-   pick). By its `r` attribute, like every kit dot; it ends on the radius it started from ── */
+/* ── a dot takes a hit: its radius swells by `k` and settles back (a wire's tip landing on it,
+   a pick). By its `r` attribute, like every kit dot; it ends on the radius it started from.
+   Nothing travels along a drawn wire: the founder found the dashes that rode them "un peu
+   sloppy" (2026-10-30); a wire drawing itself is the only travel ── */
 export function skBump(tl: Timeline, dot: SVGCircleElement, r: number, at: number, k = 1.35): void {
   tl.to(dot, { attr: { r: r * k }, duration: 0.12, ease: "power2.out" }, at);
   tl.to(dot, { attr: { r }, duration: 0.34, ease: "back.out(3)" }, at + 0.12);

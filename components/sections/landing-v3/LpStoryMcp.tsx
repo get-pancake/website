@@ -23,9 +23,7 @@ import { STORY_MCP } from "./lp-story-mcp-data";
  *     svg.lp-sk-wires     the wires: each agent's, from its disc's edge into the lockup's left
  *                         edge, then the fan's six, from its right edge to their stops. Each
  *                         <g> names the node its wire comes from (data-node: an agent, or
- *                         "pancake" with the stop's data-order for the fan) and holds, after
- *                         its wire, the wire's pulse (.lp-sk-pulse, the kit's: a copy of the
- *                         wire's path the timeline rides a short dash along, hidden at rest)
+ *                         "pancake" with the stop's data-order for the fan)
  *     .lp-smcp-brand      Pancake: the infra section's lockup at ×1.25 (LpInfra.tsx PancakeMark,
  *                         the footer's wordmark file; infra.css .lp-infra__brand). The mascot's
  *                         two eyes carry data-eye: the timeline blinks them
@@ -42,7 +40,7 @@ import { STORY_MCP } from "./lp-story-mcp-data";
  *                         reads without them
  *
  * Every element is in the markup: the timeline hides what comes later (frame 0) and never adds
- * one; the pulses and "Thinking…" rest hidden, so the END picture never shows them. Nothing here
+ * one; "Thinking…" rests hidden, so the END picture never shows it. Nothing here
  * is focusable, and nothing carries its own accessible name: the root is aria-hidden and the ALT
  * names Pancake and both agents.
  */
@@ -115,19 +113,16 @@ export function LpStoryMcpStage(_props: DiveStageProps) {
   return (
     <div className="lp-sk lp-smcp" data-lp-story="mcp" aria-hidden="true">
       <div className="lp-sk-scene">
-        {/* the wires, under everything: the agents' into Pancake, then the fan out of it; each
-            with its pulse after it (hidden at rest) */}
+        {/* the wires, under everything: the agents' into Pancake, then the fan out of it */}
         <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
           {agents.map((agent) => (
             <g key={agent.id} data-node={agent.id}>
               <path d={agent.d} />
-              <path className="lp-sk-pulse" d={agent.d} />
             </g>
           ))}
           {tools.map((tool, k) => (
             <g key={k} data-node="pancake" data-order={k}>
               <path d={tool.d} />
-              <path className="lp-sk-pulse" d={tool.d} />
             </g>
           ))}
         </svg>

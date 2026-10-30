@@ -1,5 +1,3 @@
-import type { CSSProperties } from "react";
-
 import type { DiveStageProps } from "./lp-dive-stages";
 import { SkDisc, SkName, skF3 } from "./LpStoryKit";
 import { STORY_SIGNALS } from "./lp-story-signals-data";
@@ -27,21 +25,18 @@ import { STORY_SIGNALS } from "./lp-story-signals-data";
  *   .lp-ssig-dot      the five flat confetti dots
  *   .lp-sk-disc       the discs under the wires: each vendor's own mark on a white disc
  *   svg.lp-sk-wires   per provider a <g data-node data-order>: its wire, from its disc's edge (the
- *                     timeline draws them in data-order), then its pulse (.lp-sk-pulse, a copy of
- *                     the wire's path: the data riding in, in the kit's near-black), painted in
- *                     the data's wireOrder (Figma z-order); per output a <g data-out>: its wire
- *                     out of the hub (multiply, as the providers'), then its pulse in the stop's
- *                     own tone (--lp-sk-pulse inline from the data's color: the signal riding
- *                     out); the four stops, children of the svg itself so the kit's `> g > *`
- *                     multiply never reaches them and each covers the end of its wire and of its
- *                     pulse; then the near-black hub dot over every wire's end and start
+ *                     timeline draws them in data-order), painted in the data's wireOrder (Figma
+ *                     z-order); per output a <g data-out>: its wire out of the hub (multiply, as
+ *                     the providers'); the four stops, children of the svg itself so the kit's
+ *                     `> g > *` multiply never reaches them and each covers the end of its wire;
+ *                     then the near-black hub dot over every wire's end and start
  *   .lp-sk-disc       TheirStack, over the wires (Figma: Ellipse 118 sits above them)
  *   .lp-sk-name       each provider's name, under its disc (Dealroom's above); phones hide them
  *   .lp-ssig-out      each output's label, right of its stop; phones hide them
  *   .lp-ssig-count    "30+ data providers", over the providers; phones hide it
- * The pulses are motion only: hidden at rest (story-kit.css .lp-sk-pulse, opacity 0), shown by
- * the timeline while they ride, so the END picture never holds one. Every box is placed inline
- * from the data (stage px, three decimals at most: skF3). Nothing here is focusable.
+ * Nothing travels on the wires (2026-10-30, founder, on pulses riding them: "pas sur des
+ * signaux qui voyagent ca fait un peu sloppy"). Every box is placed inline from the data (stage
+ * px, three decimals at most: skF3). Nothing here is focusable.
  */
 
 /** a line box's top-left, stage px */
@@ -76,17 +71,11 @@ export function LpStorySignalsStage(_props: DiveStageProps) {
           {wires.map((node) => (
             <g key={node.id} data-node={node.id} data-order={node.order}>
               <path d={node.d} />
-              <path className="lp-sk-pulse" d={node.d} />
             </g>
           ))}
           {outputs.map((output) => (
             <g key={output.id} data-out={output.id}>
               <path d={output.d} />
-              <path
-                className="lp-sk-pulse"
-                d={output.d}
-                style={{ "--lp-sk-pulse": `var(--lp-${output.color})` } as CSSProperties}
-              />
             </g>
           ))}
           {outputs.map((output) => (

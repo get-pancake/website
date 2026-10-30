@@ -10,7 +10,7 @@
    six stops in the infra section's three tones.
 
    Built from the story kit (story-kit.css: the white disc, the wires, the
-   pulses, the names, the rise), plus the brand's lockup
+   names, the rise), plus the brand's lockup
    copied from the infra section at a size up (infra.css .lp-infra__brand,
    ×1.25) and the agent chips' glyph cells (.lp-infra__mark, ×2). Every box
    is placed inline from lp-story-mcp-data.ts (stage px on the 752x489 design
@@ -19,9 +19,8 @@
    wordmark, stops 9.1 px across, and no type (the kit hides the names). Paints
    nothing behind the scene (the shell paints the stage).
 
-   Layers, back to front (LpStoryMcp): the wires (each with its pulse, the
-   kit's .lp-sk-pulse, hidden at rest), the lockup, the discs, then the stops,
-   then the names, the label and "Thinking…". No dot on an edge: the wires
+   Layers, back to front (LpStoryMcp): the wires, the lockup, the discs, then
+   the stops, then the names, the label and "Thinking…". No dot on an edge: the wires
    meet the discs and the lockup themselves. The
    rest markup is the END picture; the timeline (lp-story-mcp-timeline.ts)
    sets frame 0.
@@ -113,7 +112,7 @@
 
 /* Pancake at work: "Thinking…" centred under the lockup, the kit's name in
    ink-80 (phones hide it with every kit name). The motion's only: hidden at
-   rest (T5), the timeline raises it while the requests are in and fades it as
+   rest (T5), the timeline raises it once both agents are wired in and fades it as
    the tools light */
 .lp-smcp .lp-sk-name.lp-smcp-thinking {
   color: var(--lp-ink-80);

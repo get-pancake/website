@@ -1,4 +1,4 @@
-import { Fragment, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
 import { SkDisc, SkName, skF3 } from "./LpStoryKit";
 import type { DiveStageProps } from "./lp-dive-stages";
@@ -10,7 +10,8 @@ import { STORY_LINEAGE } from "./lp-story-lineage-data";
  * which is also "la detection croisee de signaux interne externe": the customer's own data on the
  * left, Pancake's data on the right, wires from both into a column of leads; the one lead reached
  * from both sides is near-black and named, and its two wires are near-black with it: her lineage
- * (2026-10-30, "the match": the one change its motion made to this picture). No claim and no UI:
+ * (2026-10-30, "the match": the one change its motion made to this picture; the founder, that
+ * evening: "j aime bien le noir plus intense entre ledealroom et crm"). No claim and no UI:
  * the parts of the one picture he loves (the old sources story's end hub), from the story kit.
  * Words and geometry: lp-story-lineage-data.ts; look: story-kit.css and story-lineage.css; motion:
  * lp-story-lineage-timeline.ts.
@@ -25,13 +26,11 @@ import { STORY_LINEAGE } from "./lp-story-lineage-data";
  *   .lp-sk-disc        the four marks on white discs (SkDisc): CRM, TheirStack, Apify, Dealroom
  *   svg.lp-sk-wires    the two stops (site visits, events), flat, under the wires; per source a
  *                      <g data-node>: its wire (data-wire, data-order its draw slot, data-to its
- *                      lead), from its edge, then its pulse (.lp-sk-pulse, data-pulse: a copy of
- *                      the wire's d the timeline rides, hidden at rest; both multiply: the kit's
- *                      `> g > *`). The two wires into her lead carry .lp-slin-lineage (near-black
- *                      at rest). Then the five grey leads (data-lead) and her near-black dot
- *                      (.lp-sk-hub) over the middle one. The stops, the leads and her dot are the
- *                      svg's own children: no blend, so a lead covers the end of the wire it sits
- *                      on and swallows the pulse that rides it in
+ *                      lead), from its edge (it multiplies: the kit's `> g > *`). The two wires
+ *                      into her lead carry .lp-slin-lineage (near-black at rest). Then the five
+ *                      grey leads (data-lead) and her near-black dot (.lp-sk-hub) over the middle
+ *                      one. The stops, the leads and her dot are the svg's own children: no
+ *                      blend, so a lead covers the end of the wire it sits on
  *   .lp-sk-name        each source's name under it (SkName), the two group labels over their
  *                      columns, her name under her dot (.lp-sk-rise: the one line that rises in)
  * Every box is placed inline from the data (stage px, three decimals at most: skF3); the
@@ -79,16 +78,14 @@ export function LpStoryLineageStage(_props: DiveStageProps) {
           {sources.map((source) => (
             <g key={source.id} data-node={source.id}>
               {source.wires.map((wire) => (
-                <Fragment key={wire.id}>
-                  <path
-                    className={wire.to === found.lead ? "lp-slin-lineage" : undefined}
-                    data-wire={wire.id}
-                    data-order={wire.order}
-                    data-to={wire.to}
-                    d={wire.d}
-                  />
-                  <path className="lp-sk-pulse" data-pulse={wire.id} d={wire.d} />
-                </Fragment>
+                <path
+                  key={wire.id}
+                  className={wire.to === found.lead ? "lp-slin-lineage" : undefined}
+                  data-wire={wire.id}
+                  data-order={wire.order}
+                  data-to={wire.to}
+                  d={wire.d}
+                />
               ))}
             </g>
           ))}

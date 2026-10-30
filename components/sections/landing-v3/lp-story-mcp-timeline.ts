@@ -3,16 +3,12 @@ import { gsap } from "@/lib/gsap";
 import type { BuiltStory } from "./lp-dive-stages";
 import {
   SK_LANDED,
-  SK_PULSE_LEN,
-  SK_PULSE_OUT,
   skBump,
   skHidePop,
-  skHidePulse,
   skHideR,
   skHideRise,
   skHideWire,
   skPop,
-  skPulse,
   skQuery,
   skRise,
   skWire,
@@ -28,9 +24,9 @@ import {
  *
  * No "use client" on purpose (2026-10-09): Next makes every "use client" module a server graph
  * reaches, even through an import(), an EAGER client entry. It imports GSAP and the story kit
- * (lp-story-kit.ts) only: the verbs are the kit's (a disc pops, a wire draws, a pulse rides a
- * wire, a dot takes a bump, a label rises), plus plain tweens on an SVG attribute (the eyes' `d`),
- * on opacity and on two CSS variables (the kit's --lp-sk-pop, the lockup's --lp-smcp-pop).
+ * (lp-story-kit.ts) only: the verbs are the kit's (a disc pops, a wire draws, a dot takes a bump,
+ * a label rises), plus plain tweens on an SVG attribute (the eyes' `d`), on opacity and on two
+ * CSS variables (the kit's --lp-sk-pop, the lockup's --lp-smcp-pop).
  *
  * Founder, on the four blocks: "ban UI things from motions and try to abstract things … graphic
  * simple and on brand (you can reuse components)"; on a still opening: "this is not motion like
@@ -38,120 +34,80 @@ import {
  * abstraction of what our infrastructure does". Then, 2026-10-30: make the four stories juicier,
  * graphic and simple, with a moment that moves the reader; on this block "the claude and codex
  * part can be very much 10xed"; and "the 4 blocks of the deep dive are the right ones but i am
- * looking for ideas to improve motions": the picture and its END stay as they were, the motion
- * becomes a live system. The patterns: the marble run (a packet rides a tube from machine to
- * machine and each machine sets off the next), status lights switching on in sequence, an
- * agent's thinking beat
- * before its answer lands; and the craft: quick, quick, then hold the climax before the release;
- * follow-through (neighbours settle a beat after); what is not acting steps back.
+ * looking for ideas to improve motions": the picture and its END stay as they were. The same
+ * evening, on short dashes riding the wires: "pas sur des signaux qui voyagent ca fait un peu
+ * sloppy", so nothing travels but a wire drawing itself the first time, and a node reacts as a
+ * wire's drawing tip reaches it. The craft: quick, quick, then hold the climax before the
+ * release; stops switching on in sequence; follow-through (neighbours settle a beat after); what
+ * is not acting steps back.
  *
- * The story, one chain reaction: both agents come online and ask at once, a pulse riding in on
- * each wire behind its drawing tip; Pancake takes it in (its mascot blinks once as the first
- * request lands: the brand's own character, the one emotional beat; "Thinking…" under the lockup
- * while both are in; the climax holds); then it lets go (the lockup pops, six wires shoot out of
- * it top to bottom, a pulse behind each tip, each tool's stop switching on with its bump as its
- * pulse arrives, while the agents step back); "About 100 tools" rises; the answers ride home to
- * both agents, each waking as its answer lands; and a second, faster exchange starts over the
- * first one's end before it all settles on the END. Times (s):
+ * The story, one chain reaction: both agents come online and wire into Pancake; Pancake takes
+ * them in (its mascot blinks once as Claude's wire lands: the brand's own character, the one
+ * emotional beat; "Thinking…" under the lockup as Codex's lands; the climax holds); then it lets
+ * go (the lockup pops, six wires shoot out of it top to bottom and each tool's stop lands with
+ * its bump as its wire's tip arrives, while the agents step back); "About 100 tools" rises; and
+ * the agents wake one after the other, the answer received, before it all settles on the END.
+ * Times (s):
  *
  *   0.00       cue = f1: the Pancake lockup in its END place, alone; never an empty frame
- *   0.30–0.75  Claude's disc pops; its name rises (0.40–0.80); its wire draws 0.40–1.00
- *   0.52–1.10  its request: a pulse rides in behind the drawing tip (at the lockup ≈ 0.99)
- *   0.55–1.00  Codex's disc pops; its name rises (0.65–1.05); its wire draws 0.65–1.15
- *   0.78–1.24  its request, quicker (at the lockup ≈ 1.15): two pulses ride at once
- *   1.10–1.37  Claude's request is in: the mascot blinks (shut 0.07 s, held 0.05 s, open 0.15 s)
- *                                                               → f2 at 1.19: the eyes shut
- *   1.24–1.54  Codex's is in: "Thinking…" rises under the lockup; the climax holds
- *                                                               → f3 at 1.56: the held beat
- *   1.60–2.11  the release: the lockup pops (×1.06, 0.12 s up, 0.38 s down), then lets go
- *   1.62–2.27  the fan: six wires shoot out top to bottom 0.06 s apart (0.32 s each), a pulse
- *              0.05 s behind each tip (0.30 s); each stop switches on with its bump (×1.35) as
- *              its pulse arrives, ≈ 1.92 1.97 2.03 2.09 2.15 2.22, settling by 2.68
- *                                                               → f4 at 2.06: mid-cascade
- *   1.62–1.92  the agents step back to 0.5 (discs, names, wires)
- *   1.92–2.12  "Thinking…" fades as the first stop lights
- *   2.22–2.62  "About 100 tools" rises as the last stop lights
- *   2.32–2.77  the answer to Claude rides home; its wire wakes as it leaves (2.32–2.62), its
- *              disc and name as it nears (2.48–2.68); the disc takes a tiny pop as it lands
- *              (≈ 2.68, ×1.06, let go 3.09)
- *   2.42–2.82  the answer to Codex, the same (wire 2.42–2.72, disc 2.54–2.74, pop ≈ 2.74)
- *   2.86–3.24  the second exchange, quicker: Claude asks again as its answer is home (in
- *              ≈ 3.10), Codex 0.1 s after (in ≈ 3.19)
- *   3.22–3.63  the lockup's small pop (×1.035) as both are in
- *   3.26–4.08  the tools' second wave: a pulse to each stop 0.04 s apart (0.22 s), each stop
- *              bumps (×1.22) as its pulse goes under it, ≈ 3.42 … 3.62
- *   3.64–4.36  the answers home again (0.30 s, 0.28 s), each disc's tiny pop (≈ 3.88, ≈ 3.95)
- *   4.50       f5 = the END = the server markup (the carousel then holds it 2 s)
+ *   0.30–0.75  Claude's disc pops; its name rises (0.40–0.80); its wire draws in 0.40–1.00
+ *   0.55–1.00  Codex's disc pops; its name rises (0.65–1.05); its wire draws in 0.65–1.15
+ *   1.00–1.27  Claude's wire lands: the mascot blinks (shut 0.07 s, held 0.05 s, open 0.15 s)
+ *                                                               → f2 at 1.09: the eyes shut
+ *   1.15–1.45  Codex's lands: "Thinking…" rises under the lockup; the climax holds
+ *                                                               → f3 at 1.46: the held beat
+ *   1.50–2.01  the release: the lockup pops (×1.06, 0.12 s up, 0.38 s down), then lets go
+ *   1.52–2.14  the fan: six wires shoot out top to bottom 0.06 s apart (0.32 s each); each stop
+ *              lands with its bump (×1.35, from r 0) as its wire's tip arrives: 1.84 1.90 1.96
+ *              2.02 2.08 2.14, settling by 2.60                   → f4 at 1.96: mid-cascade
+ *   1.52–1.82  the agents step back to 0.5 (discs, names, wires)
+ *   1.84–2.04  "Thinking…" fades as the first stop lands
+ *   2.14–2.54  "About 100 tools" rises as the last one does
+ *   2.30–2.71  Claude wakes, the answer received: its wire, disc and name back to full (0.25 s),
+ *              its disc's tiny pop (×1.06, 0.1 s up, 0.3 s down, let go 2.71)
+ *   2.42–2.83  Codex wakes, the same (let go 2.83)
+ *   3.00       f5 = the END = the server markup (the carousel then holds it 2 s)
  *
  * Nothing moves by GSAP's own transform. The discs pop and take their tiny pop by the kit's
  * --lp-sk-pop, the lockup by --lp-smcp-pop (story-mcp.css), the names and the labels rise by
- * --lp-sk-rise, each let go SK_LANDED after it lands by a 1 ms tween; the stops grow and bump by
- * their `r` attribute (skBump: from r 0 the first time, which is their landing), the eyes shut by
- * their `d` attribute (shutEye below). A pop only ever grows (never under 1): a disc's or the
- * lockup's edge is where a wire meets it, and a smaller node would open a gap there (no dot on an
- * edge, founder 2026-10-28: "ca fait un peu vibe coded"; so no dip before a pop either: the held
- * beat is the anticipation). Every pulse hides when it lands (skPulse) and every step-back is
- * back to 1 by 2.74, so the END is the markup. Nothing loops, glows or rings; no will-change; the
- * root's opacity is never tweened. The lockup never moves but for its two pops.
+ * --lp-sk-rise, each let go SK_LANDED after it lands by a 1 ms tween; the stops land and bump by
+ * their `r` attribute (skBump from r 0: their landing), the eyes shut by their `d` attribute
+ * (shutEye below). A pop only ever grows (never under 1): a disc's or the lockup's edge is where a
+ * wire meets it, and a smaller node would open a gap there (no dot on an edge, founder
+ * 2026-10-28: "ca fait un peu vibe coded"; so no dip before a pop either: the held beat is the
+ * anticipation). Every step-back is back to 1 by 2.67, so the END is the markup. Nothing loops,
+ * glows or rings; no will-change; the root's opacity is never tweened. The lockup never moves
+ * but for its pop.
  */
 
-/** the take, in seconds (see the table above); the arrivals (≈) are computed from each wire's
-    length (ride below) */
+/** the take, in seconds (see the table above). The blink, "Thinking…" and each stop's landing are
+    not here: each comes as a wire's draw ends (the builder adds them from DRAW) */
 const T = {
   /** Pancake alone: the cue */
   f1: 0,
-  /** Claude's disc pops; its name rises and its wire draws 0.1 s later; its request leaves
-      behind the drawing tip */
+  /** Claude's disc pops; its name rises and its wire draws 0.1 s later */
   claude: 0.3,
-  claudeAsk: 0.52,
-  /** Codex, 0.25 s later and quicker: both requests ride at once */
+  /** Codex, 0.25 s later, its wire quicker */
   codex: 0.55,
-  codexAsk: 0.78,
-  /** Claude's request is in (its pulse's end, 0.52 + 0.58): the blink */
-  blink: 1.1,
-  /** the eyes shut, Codex's request still riding in */
-  f2: 1.19,
-  /** Codex's is in (0.78 + 0.46): "Thinking…" rises; the climax holds */
-  think: 1.24,
-  f3: 1.56,
-  /** the release: the lockup pops; the fan fires 0.02 s later and the agents step back */
-  release: 1.6,
-  fan: 1.62,
-  /** two stops on, the lower pulses still riding */
-  f4: 2.06,
-  /** the answers leave Pancake, Claude's first */
-  claudeAnswer: 2.32,
-  codexAnswer: 2.42,
-  /** the second exchange: each agent asks again as its answer is home */
-  claudeAgain: 2.86,
-  codexAgain: 2.96,
-  /** both are in: the lockup's small pop, then the tools' second wave */
-  again: 3.22,
-  wave: 3.26,
-  /** the answers home again */
-  claudeAnswer2: 3.64,
-  codexAnswer2: 3.72,
-  /** the END: the take's length (the last disc lets go at ≈ 4.36 and holds) */
-  end: 4.5,
+  /** the eyes shut (Claude's wire landed at 1.00) */
+  f2: 1.09,
+  /** the held beat: both wired in, "Thinking…" up (Codex's wire landed at 1.15) */
+  f3: 1.46,
+  /** the release, 0.35 s after Codex's wire lands: the lockup pops; the fan fires 0.02 s later
+      and the agents step back */
+  release: 1.5,
+  fan: 1.52,
+  /** three stops in, three wires still drawing */
+  f4: 1.96,
+  /** the agents wake one after the other, the answer received (the last stop landed at 2.14) */
+  claudeWakes: 2.3,
+  codexWakes: 2.42,
+  /** the END: the take's length (Codex's disc lets go at 2.83 and holds) */
+  end: 3.0,
 } as const;
 /** how long a wire draws, s: Claude's the kit's 0.6, Codex's quicker; the fan's short ones 0.32,
-    0.06 s apart top to bottom, each pulse leaving 0.05 s after its wire (behind its tip, never
-    ahead of it); the second wave's pulses 0.04 s apart */
-const DRAW = { afterPop: 0.1, claude: 0.6, codex: 0.5, fan: 0.32, fanGap: 0.06, fanLag: 0.05, waveGap: 0.04 } as const;
-/** how long a pulse rides, s: the first requests behind their drawing tips, a fan pulse behind
-    its tip, the answers home; the second exchange's quicker */
-const RIDE = {
-  claudeAsk: 0.58,
-  codexAsk: 0.46,
-  fan: 0.3,
-  claudeAnswer: 0.45,
-  codexAnswer: 0.4,
-  claudeAgain: 0.3,
-  codexAgain: 0.28,
-  wave: 0.22,
-  claudeAnswer2: 0.3,
-  codexAnswer2: 0.28,
-} as const;
+    0.06 s apart top to bottom */
+const DRAW = { afterPop: 0.1, claude: 0.6, codex: 0.5, fan: 0.32, fanGap: 0.06 } as const;
 /** a name or a label rises from 8 px below its place in 0.4 s (the kit's skRise, as the signals
     story's count label); "Thinking…" from 5 px in 0.3 s, and fades in 0.2 s */
 const RISE = { y: 8, duration: 0.4, afterPop: 0.1, thinkY: 5, think: 0.3, thinkFade: 0.2 } as const;
@@ -160,19 +116,13 @@ const RISE = { y: 8, duration: 0.4, afterPop: 0.1, thinkY: 5, think: 0.3, thinkF
     travels further) */
 const BLINK = { close: 0.07, hold: 0.05, open: 0.15, shut: 0.14, line: 0.6 } as const;
 /** a pop by a CSS variable: up to its peak, back to 1, never under it. The release ×1.06 in
-    0.12 s + 0.38 s; the second exchange's ×1.035 and a disc's as its answer lands ×1.06, in
-    0.1 s + 0.3 s */
-const POP = { release: 1.06, releaseUp: 0.12, releaseDown: 0.38, again: 1.035, disc: 1.06, up: 0.1, down: 0.3 } as const;
-/** a stop's bump (the kit's skBump): ×1.35 as it switches on from r 0, ×1.22 on the second wave;
-    a pulse goes under a lit stop at its edge plus the dash's round cap (story-kit.css, 4 px) */
-const BUMP = { on: 1.35, wave: 1.22, cap: 2 } as const;
-/** staging: the agents step back to 0.5 in 0.3 s while the tools fire; each wire wakes in 0.3 s
-    as its answer leaves, each disc and name in 0.2 s, reaching full as the answer lands */
-const STAGE = { dim: 0.5, fade: 0.3, wake: 0.2 } as const;
-
-/** how far past its path's ends the kit runs a pulse, stage px (the kit's), for the arrival
-    times that ride below derives */
-const PULSE_OUT = SK_PULSE_OUT;
+    0.12 s + 0.38 s; a disc's as its agent wakes ×1.06, in 0.1 s + 0.3 s */
+const POP = { release: 1.06, releaseUp: 0.12, releaseDown: 0.38, disc: 1.06, up: 0.1, down: 0.3 } as const;
+/** a stop lands by the kit's skBump from r 0: ×1.35 (its default), then settles on its radius */
+const BUMP = 1.35;
+/** staging: the agents step back to 0.5 in 0.3 s while the tools fire, and wake back to full in
+    0.25 s */
+const STAGE = { dim: 0.5, fade: 0.3, wake: 0.25 } as const;
 
 /** numbers in path data (the eyes: absolute coordinates, no exponent) */
 const NUM = /-?\d*\.?\d+/g;
@@ -196,8 +146,8 @@ function shutEye(d: string): string {
 /** The builder in one go. In slices: `buildStoryMcpSteps`, which the carousel and the phone
     stack spread over idle slots (lp-play-once's startBuild). It may yield after any block: its
     frame-0 sets are written at once, its tweens write nothing until they are rendered, and the
-    only things it reads after its first write (the wires' and pulses' lengths) depend on nothing
-    it writes. */
+    only things it reads after its first write (the wires' lengths) depend on nothing it
+    writes. */
 export function buildStoryMcp(root: HTMLElement): BuiltStory {
   const steps = buildStoryMcpSteps(root);
   for (;;) {
@@ -209,11 +159,10 @@ export function buildStoryMcp(root: HTMLElement): BuiltStory {
 export function* buildStoryMcpSteps(root: HTMLElement): Generator<void, BuiltStory, void> {
   const { $, $$ } = skQuery(root, "mcp");
 
-  // an agent's disc, wire, pulse and name share its data-node (LpStoryMcp)
+  // an agent's disc, wire and name share its data-node (LpStoryMcp)
   const agent = (id: "claude" | "codex") => ({
     disc: $(`.lp-sk-disc[data-node="${id}"]`),
-    wire: $<SVGPathElement>(`.lp-sk-wires g[data-node="${id}"] > path:not(.lp-sk-pulse)`),
-    pulse: $<SVGPathElement>(`.lp-sk-wires g[data-node="${id}"] > .lp-sk-pulse`),
+    wire: $<SVGPathElement>(`.lp-sk-wires g[data-node="${id}"] > path`),
     name: $(`.lp-sk-name[data-node="${id}"]`),
   });
   const claude = agent("claude");
@@ -221,11 +170,9 @@ export function* buildStoryMcpSteps(root: HTMLElement): Generator<void, BuiltSto
   // the fan, in reveal order (data-order 0…n−1, the data's order: top to bottom)
   const count = $$(".lp-sk-wires g[data-order]").length;
   const fan = Array.from({ length: count }, (_, k) => {
-    const g = `.lp-sk-wires g[data-order="${k}"]`;
     const stop = $<SVGCircleElement>(`.lp-smcp-stop[data-order="${k}"]`);
     return {
-      wire: $<SVGPathElement>(`${g} > path:not(.lp-sk-pulse)`),
-      pulse: $<SVGPathElement>(`${g} > .lp-sk-pulse`),
+      wire: $<SVGPathElement>(`.lp-sk-wires g[data-order="${k}"] > path`),
       stop,
       // each stop lands on the markup's radius (the END picture's): read before frame 0 writes it
       r: Number(stop.getAttribute("r")),
@@ -243,11 +190,8 @@ export function* buildStoryMcpSteps(root: HTMLElement): Generator<void, BuiltSto
 
   /* ── frame 0 (the markup rests on the END picture). Each block leaves a composed picture, the
      END less what is hidden so far ── */
-  // the wires first: each reads its length before it is dashed away (opacity 0 until it draws);
-  // then the pulses, each hidden with its run's length for the verb
+  // the wires first: each reads its length before it is dashed away (opacity 0 until it draws)
   [claude.wire, codex.wire, ...fan.map((f) => f.wire)].forEach(skHideWire);
-  const run = new Map<SVGPathElement, number>();
-  [claude.pulse, codex.pulse, ...fan.map((f) => f.pulse)].forEach((p) => run.set(p, skHidePulse(p)));
   yield;
   // the discs wait small and unseen, the names and the labels below their places, unseen
   // ("Thinking…" also rests hidden: story-mcp.css); the stops at r 0
@@ -259,17 +203,6 @@ export function* buildStoryMcpSteps(root: HTMLElement): Generator<void, BuiltSto
 
   const tl = gsap.timeline({ paused: true });
 
-  /** A pulse rides its wire from `at` for `d` s (back to the wire's start with `home`); returns
-      when its head is `short` px from the end of its run. The kit's skPulse moves the dash from
-      PULSE_OUT px before the path's start to PULSE_OUT px past its end, len + SK_PULSE_LEN +
-      2 × PULSE_OUT in all, by power1.inOut: this inverts that ease (pure arithmetic on the
-      measured length, so the take stays deterministic) */
-  const ride = (pulse: SVGPathElement, at: number, d: number, home = false, short = 0): number => {
-    const len = run.get(pulse) ?? 0;
-    skPulse(tl, pulse, len, at, d, home);
-    const v = (len + PULSE_OUT - short) / (len + SK_PULSE_LEN + 2 * PULSE_OUT);
-    return at + d * (v < 0.5 ? Math.sqrt(v / 2) : 1 - Math.sqrt((1 - v) / 2));
-  };
   /** An HTML piece pops by a CSS variable (a disc's --lp-sk-pop, the lockup's --lp-smcp-pop): up
       to `peak` and back to 1, from explicit values (a variable the kit has let go reads empty),
       then let go SK_LANDED after it lands by a 1 ms tween, as the kit's skPop lets go (a tween,
@@ -283,66 +216,52 @@ export function* buildStoryMcpSteps(root: HTMLElement): Generator<void, BuiltSto
   const fade = (els: Element[], from: number, to: number, at: number, duration: number) =>
     tl.fromTo(els, { opacity: from }, { opacity: to, duration, ease: "power1.inOut", immediateRender: false }, at);
 
-  /* ── 1. the agents come online and ask at once: each disc pops, its name rises, its wire draws
-     in and its request rides in behind the drawing tip ── */
+  /* ── 1. the agents come online: each disc pops, its name rises, its wire draws into the
+     lockup's left edge. Each wire's tip reaches the lockup as its draw ends ── */
   skPop(tl, claude.disc, T.claude);
   skRise(tl, claude.name, T.claude + RISE.afterPop, RISE.duration);
   skWire(tl, claude.wire, T.claude + DRAW.afterPop, DRAW.claude);
-  ride(claude.pulse, T.claudeAsk, RIDE.claudeAsk);
+  const claudeIn = T.claude + DRAW.afterPop + DRAW.claude;
   skPop(tl, codex.disc, T.codex);
   skRise(tl, codex.name, T.codex + RISE.afterPop, RISE.duration);
   skWire(tl, codex.wire, T.codex + DRAW.afterPop, DRAW.codex);
-  ride(codex.pulse, T.codexAsk, RIDE.codexAsk);
+  const codexIn = T.codex + DRAW.afterPop + DRAW.codex;
 
-  /* ── 2. Pancake takes it in: its mascot blinks as Claude's request lands (the eyes' own paths,
+  /* ── 2. Pancake takes them in: its mascot blinks as Claude's wire lands (the eyes' own paths,
      shut and open again), "Thinking…" rises as Codex's does, and the climax holds ── */
   eyes.forEach(({ eye, open, shut }) => {
-    tl.fromTo(eye, { attr: { d: open } }, { attr: { d: shut }, duration: BLINK.close, ease: "power2.in", immediateRender: false }, T.blink);
+    tl.fromTo(eye, { attr: { d: open } }, { attr: { d: shut }, duration: BLINK.close, ease: "power2.in", immediateRender: false }, claudeIn);
     tl.fromTo(
       eye,
       { attr: { d: shut } },
       { attr: { d: open }, duration: BLINK.open, ease: "power2.out", immediateRender: false },
-      T.blink + BLINK.close + BLINK.hold,
+      claudeIn + BLINK.close + BLINK.hold,
     );
   });
-  skRise(tl, thinking, T.think, RISE.think);
+  skRise(tl, thinking, codexIn, RISE.think);
 
-  /* ── 3. the release: the lockup pops, its six wires shoot out top to bottom with a pulse behind
-     each tip, each stop switches on with its bump as its pulse arrives, and the agents step back.
-     "Thinking…" fades as the first stop lights; "About 100 tools" rises as the last one does ── */
+  /* ── 3. the release: the lockup pops, its six wires shoot out top to bottom, each stop lands
+     with its bump as its wire's tip arrives, and the agents step back. "Thinking…" fades as the
+     first stop lands; "About 100 tools" rises as the last one does ── */
   pop(brand, "--lp-smcp-pop", T.release, POP.release, POP.releaseUp, POP.releaseDown);
   fade([claude.disc, claude.name, claude.wire, codex.disc, codex.name, codex.wire], 1, STAGE.dim, T.fan, STAGE.fade);
-  fan.forEach(({ wire, pulse, stop, r }, k) => {
+  fan.forEach(({ wire, stop, r }, k) => {
     const at = T.fan + DRAW.fanGap * k;
     skWire(tl, wire, at, DRAW.fan);
-    const lands = ride(pulse, at + DRAW.fanLag, RIDE.fan);
-    skBump(tl, stop, r, lands, BUMP.on);
+    const lands = at + DRAW.fan;
+    skBump(tl, stop, r, lands, BUMP);
     if (k === 0) tl.to(thinking, { autoAlpha: 0, duration: RISE.thinkFade, ease: "power1.in" }, lands);
     if (k === fan.length - 1) skRise(tl, label, lands, RISE.duration);
   });
 
-  /* ── 4. the answers ride home: an agent's wire wakes as its answer leaves Pancake, its disc and
-     name as the answer nears, and the disc takes a tiny pop as it lands ── */
-  const answer = (a: typeof claude, at: number, d: number) => {
-    fade([a.wire], STAGE.dim, 1, at, STAGE.fade);
-    const lands = ride(a.pulse, at, d, true);
-    fade([a.disc, a.name], STAGE.dim, 1, lands - STAGE.wake, STAGE.wake);
-    pop(a.disc, "--lp-sk-pop", lands, POP.disc);
+  /* ── 4. the agents wake one after the other, the answer received: wire, disc and name back to
+     full, the disc's tiny pop ── */
+  const wake = (a: typeof claude, at: number) => {
+    fade([a.wire, a.disc, a.name], STAGE.dim, 1, at, STAGE.wake);
+    pop(a.disc, "--lp-sk-pop", at, POP.disc);
   };
-  answer(claude, T.claudeAnswer, RIDE.claudeAnswer);
-  answer(codex, T.codexAnswer, RIDE.codexAnswer);
-
-  /* ── 5. the second exchange, quicker, over the first one's end: each agent asks again as its
-     answer is home, the lockup pops a little as both are in, a second wave runs over the lit
-     stops (each bumps as its pulse goes under it), and the answers ride home again ── */
-  ride(claude.pulse, T.claudeAgain, RIDE.claudeAgain);
-  ride(codex.pulse, T.codexAgain, RIDE.codexAgain);
-  pop(brand, "--lp-smcp-pop", T.again, POP.again);
-  fan.forEach(({ pulse, stop, r }, k) => {
-    skBump(tl, stop, r, ride(pulse, T.wave + DRAW.waveGap * k, RIDE.wave, false, r + BUMP.cap), BUMP.wave);
-  });
-  pop(claude.disc, "--lp-sk-pop", ride(claude.pulse, T.claudeAnswer2, RIDE.claudeAnswer2, true), POP.disc);
-  pop(codex.disc, "--lp-sk-pop", ride(codex.pulse, T.codexAnswer2, RIDE.codexAnswer2, true), POP.disc);
+  wake(claude, T.claudeWakes);
+  wake(codex, T.codexWakes);
 
   // the END holds to the take's length (a set on nothing, as the steps' timelines hold theirs)
   tl.set({}, {}, T.end);

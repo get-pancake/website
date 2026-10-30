@@ -29,8 +29,9 @@ import type { StoryMcpMarkId } from "./lp-story-mcp-art";
  *
  * The motion (2026-10-30, founder: "the claude and codex part can be very much 10xed"; the
  * picture and its END stay, lp-story-mcp-timeline.ts) adds one small label that lives in the
- * motion only: "Thinking…", under the lockup while the agents' requests are in, in the kit's
- * name style at ink-80. Hidden at rest (story-mcp.css), so it is never in the END picture.
+ * motion only: "Thinking…", under the lockup once both agents are wired in and until the tools
+ * land, in the kit's name style at ink-80. Hidden at rest (story-mcp.css), so it is never in the
+ * END picture.
  *
  * In scripts/homepage-lint.mjs FILES: every string here is linted. Copy sits in fields named
  * `text` or `name`; path data sits under `d`, ids under `id` and colours under `tone`, code keys
@@ -46,8 +47,9 @@ import type { StoryMcpMarkId } from "./lp-story-mcp-art";
  *     the second pick open: "just claude and codex/chat gpt (pick what should be said)"). The
  *     OpenAI glyph is Codex's mark (LpAgentMarks.tsx CodexMark); the name under it says which
  *     agent it is. The body names the other clients; the picture draws no other mark.
- *   - The round trip the motion draws (a request into Pancake, its tools, the answer back) is what
- *     a tool call through the install does; no figure rides on it.
+ *   - The order the motion draws (the agents wired into Pancake, its tools lit, then each agent
+ *     waking: the answer received) is what a tool call through the install does; no figure rides
+ *     on it.
  *
  * Geometry: stage px on the 752×489 design box, every point ≥ 40 px from its edges (the nearest:
  * the label's line box, its top at 64.197; the discs' left, 72). The lockup is 245.799×90 at
@@ -102,8 +104,8 @@ export type StoryMcpStory = {
   /** the one label, centred on x (the stops' span): it sits over the line y = `top` (the kit's
       name above a box, 21 px over it), 4 px over the top stop */
   label: { text: string; x: number; top: number };
-  /** Pancake at work, the motion's only label: centred under the lockup, shown while the
-      requests are in, hidden at rest (never in the END picture) */
+  /** Pancake at work, the motion's only label: centred under the lockup, shown once both agents
+      are wired in until the tools land, hidden at rest (never in the END picture) */
   thinking: { text: string };
 };
 
@@ -162,4 +164,4 @@ export const STORY_MCP: StoryMcpStory = {
 /** The whole story. It names Pancake and both agents: the stage is aria-hidden, so they are read
     from here only. */
 export const STORY_MCP_ALT: string =
-  "Animation: the marks of Claude and Codex each draw a line into Pancake and send it a request. From Pancake, lines fan out to its tools, about 100 of them, and the answers travel back to both agents.";
+  "Animation: the marks of Claude and Codex each draw a line into Pancake. From Pancake, lines fan out to its tools, about 100 of them, which light up one by one, then both agents light up again with the answer.";
