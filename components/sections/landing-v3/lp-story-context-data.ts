@@ -169,7 +169,7 @@ export const STORY_CONTEXT: StoryContextStory = {
   ],
   /** in the kit's name place under the centre (its bottom, 264, + the kit's 5 px gap), 2 px
       under the row of "Which account": the two never rest together, it fades as that one rises.
-      Clear of the CRM wire (21 px at its height) and of the centre's hits (r 24 at most) */
+      Clear of the CRM wire (21 px at its height) */
   thinking: { text: "Thinking…", x: 290, top: 269 },
   /** the account on the line, under the cluster. Its label shares the Play label's row (18 + 5
       under the line: the larger dot's gap), its name the Play name's. Mastra is the page's one

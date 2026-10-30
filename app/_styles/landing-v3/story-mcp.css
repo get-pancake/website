@@ -26,13 +26,9 @@
    sets frame 0.
 
    The motion (2026-10-30, founder: "the claude and codex part can be very
-   much 10xed") moves two things of this file's: the lockup takes a pop by
-   --lp-smcp-pop, read below into a 2D scale as the kit's discs read
-   --lp-sk-pop (unset at rest: the declaration is invalid at computed-value
-   time and transform computes to none, so the END is the markup; never
-   GSAP's own scale, whose translate3d makes Chromium re-rasterise the
-   stage). It only ever grows (≥ 1): a smaller lockup would open a gap where
-   the wires meet its edges. And "Thinking…", hidden at rest.
+   much 10xed") adds one thing of this file's: "Thinking…", hidden at rest.
+   The lockup never moves (founder, the same evening: "j aime pas trop les
+   effets de bounce que tu mets a chaque fois"; its pop is gone).
 
    Traps (with the kit's T1-T5):
    T1 Compound selectors only: `.lp p { margin: 0 }` and the shell's
@@ -51,8 +47,7 @@
 /* Pancake: the infra section's lockup (plum, the avatar's colour mascot, the
    footer's cream wordmark), ×1.25: radius 22 → 27.5, padding 11/24/11/12 →
    13.75/30/13.75/15, gap 10 → 12.5, mascot 48 → 60, wordmark 50 → 62.5 tall
-   (128.3 wide): 245.799x90, placed inline. Its pop: --lp-smcp-pop (above),
-   none at rest */
+   (128.3 wide): 245.799x90, placed inline */
 .lp-smcp .lp-smcp-brand {
   align-items: center;
   background: var(--lp-brand-plum);
@@ -61,7 +56,6 @@
   gap: 12.5px;
   padding: 13.75px 30px 13.75px 15px;
   position: absolute;
-  transform: scale(var(--lp-smcp-pop));
 }
 .lp-smcp .lp-smcp-pk {
   flex: none;

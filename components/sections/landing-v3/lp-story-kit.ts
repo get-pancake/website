@@ -62,13 +62,15 @@ function skLetGo(tl: Timeline, el: Element, prop: string, rest: number, at: numb
 }
 
 /* ── a disc pops: fades in 0.18 s while it grows from .6 in 0.45 s. The growth is
-   --lp-sk-pop, which every .lp-sk-disc reads (story-kit.css) ── */
+   --lp-sk-pop, which every .lp-sk-disc reads (story-kit.css). No ease in the kit overshoots
+   (founder 2026-10-30: "j aime pas trop les effets de bounce"): a piece grows into its place
+   and stops there ── */
 export function skHidePop(els: Element | Element[]): void {
   gsap.set(els, { autoAlpha: 0, "--lp-sk-pop": 0.6 });
 }
 export function skPop(tl: Timeline, el: Element, at: number): void {
   tl.to(el, { autoAlpha: 1, duration: 0.18, ease: "power1.out" }, at);
-  tl.to(el, { "--lp-sk-pop": 1, duration: 0.45, ease: "back.out(1.6)" }, at);
+  tl.to(el, { "--lp-sk-pop": 1, duration: 0.45, ease: "power3.out" }, at);
   skLetGo(tl, el, "--lp-sk-pop", 1, at + 0.45 + SK_LANDED);
 }
 
@@ -78,11 +80,11 @@ export function skHideR(els: SVGCircleElement | SVGCircleElement[]): void {
 }
 /** the near-black dot a wire lands on */
 export function skDot(tl: Timeline, dot: SVGCircleElement, at: number): void {
-  tl.to(dot, { attr: { r: SK_CAP_R }, duration: 0.25, ease: "back.out(2.5)" }, at);
+  tl.to(dot, { attr: { r: SK_CAP_R }, duration: 0.25, ease: "power2.out" }, at);
 }
 /** a coloured stop of radius r (the loved confetti's timing) */
 export function skStop(tl: Timeline, dot: SVGCircleElement, r: number, at: number): void {
-  tl.to(dot, { attr: { r }, duration: 0.35, ease: "back.out(2)" }, at);
+  tl.to(dot, { attr: { r }, duration: 0.35, ease: "power2.out" }, at);
 }
 
 /* ── a wire draws from its path's start (strokeDashoffset). Hidden (opacity 0) until 0.02 s
@@ -108,11 +110,7 @@ export function skRise(tl: Timeline, el: Element, at: number, duration = 0.4): v
   skLetGo(tl, el, "--lp-sk-rise", 0, at + duration + SK_LANDED);
 }
 
-/* ── a dot takes a hit: its radius swells by `k` and settles back (a wire's tip landing on it,
-   a pick). By its `r` attribute, like every kit dot; it ends on the radius it started from.
-   Nothing travels along a drawn wire: the founder found the dashes that rode them "un peu
-   sloppy" (2026-10-30); a wire drawing itself is the only travel ── */
-export function skBump(tl: Timeline, dot: SVGCircleElement, r: number, at: number, k = 1.35): void {
-  tl.to(dot, { attr: { r: r * k }, duration: 0.12, ease: "power2.out" }, at);
-  tl.to(dot, { attr: { r }, duration: 0.34, ease: "back.out(3)" }, at + 0.12);
-}
+/* ── nothing travels along a drawn wire and nothing bounces (founder 2026-10-30, on dashes
+   riding the wires: "un peu sloppy", then on the hits that swelled each node as a wire
+   landed: "j aime pas trop les effets de bounce"): a wire drawing itself is the only travel,
+   and a node that has landed holds still ── */

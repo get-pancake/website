@@ -96,11 +96,9 @@ export function buildInfraFlow(root: HTMLElement): Built {
 
   const tl = gsap.timeline({ paused: true });
 
-  // the agents send
-  tl.to(chips, { scale: 1.04, duration: 0.14, ease: "power2.out", stagger: 0.06, yoyo: true, repeat: 1 }, 0.25);
-
-  // Pancake lights
-  tl.to(brand, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(2)" }, 0.45);
+  // Pancake lights. No swell and no overshoot anywhere in this section (founder 2026-10-30:
+  // "j aime pas trop les effets de bounce"): a piece grows into its place and stops there
+  tl.to(brand, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 0.45);
 
   // every cable at once (founder 2026-10-28: "Je dessinerai aussi les cables en meme temps"): the
   // wire from your agent into Pancake (scaleY on a 1 px box) and its fork down to the three
@@ -113,7 +111,7 @@ export function buildInfraFlow(root: HTMLElement): Built {
   // the brain, the data and the tools
   tl.to(parts, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out", stagger: 0.18 }, 1.3);
   tl.to(rows, { autoAlpha: 1, x: 0, duration: 0.3, ease: "power2.out", stagger: 0.1 }, 1.4);
-  tl.to(discs, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "back.out(2)", stagger: 0.06 }, 1.6);
+  tl.to(discs, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "power3.out", stagger: 0.06 }, 1.6);
 
   // the Play switches on, then the lead it found comes up for approval
   tl.to(knob, { x: 12, duration: 0.25, ease: "power2.inOut" }, 1.9);
@@ -275,7 +273,7 @@ export function buildInfraScroll(stage: HTMLElement): { tl: gsap.core.Timeline; 
 
   /* ── 3. Pancake comes up over the bricks, then every cable draws at once: the stem down and the
      wire up together, the arms out to the side bricks and down ── */
-  tl.to(brand, { autoAlpha: 1, y: 0, scale: 1, duration: 0.06, ease: "back.out(1.6)" }, BRAND);
+  tl.to(brand, { autoAlpha: 1, y: 0, scale: 1, duration: 0.06, ease: "power3.out" }, BRAND);
   tl.to(stem, { scaleY: 1, duration: 0.06, ease: "power2.inOut" }, CABLES);
   tl.to(line, { scaleY: 1, duration: 0.06, ease: "power2.inOut" }, CABLES);
   tl.to(arms, { clipPath: ARMS_BAR, duration: 0.05, ease: "power2.out" }, CABLES + 0.02);
@@ -333,7 +331,7 @@ export function buildInfraLoop(root: HTMLElement): { tl: gsap.core.Timeline; cle
       {
         keyframes: [
           { scale: 0.92, duration: 0.08, ease: "power2.out" },
-          { scale: 1, duration: 0.3, ease: "back.out(2.4)" },
+          { scale: 1, duration: 0.2, ease: "power2.out" },
         ],
       },
       t + 1.2,
