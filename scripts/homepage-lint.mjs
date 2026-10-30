@@ -51,6 +51,7 @@ const FILES = [
   "components/sections/landing-v3/LpInfra.tsx",
   // the infra-first page (2026-10-21)
   "components/sections/landing-v3/LpSetupLine.tsx",
+  "components/sections/landing-v3/LpHeroInstall.tsx",
   "components/sections/landing-v3/LpCta.tsx",
   "components/sections/landing-v3/LpPricing.tsx",
   "components/sections/guide-claude/guide-copy.ts",
