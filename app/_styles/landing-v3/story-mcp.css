@@ -1,34 +1,31 @@
-/* Story MCP — owner: story-mcp package (2026-10-28). Deep-dive story 4,
-   "Built for Claude and Codex" (LpStoryMcp), the founder's fourth block:
-   "4/ mcp first". Founder, on the four: "ban UI things from motions and try
-   to abstract things … graphic simple and on brand (you can reuse
-   components)", then, on pictures led by a big kicker over a 60–72 px value:
-   "no UI should not mean text it should mean abstraction of what our
-   infrastructure does". So the picture is a flow, left to right, in the
-   loved hub's parts and with no claim: the agents' marks on white discs, a
-   wire from each into Pancake, then a fan of short wires out of Pancake to
-   six stops in the infra section's three tones.
+/* Story MCP — owner: story-mcp package (2026-10-28). Deep-dive story 4, "One
+   ask, the right tools, your approval" (LpStoryMcp; 2026-10-30, founder: "Yes,
+   prototype it"), the founder's fourth block: "4/ mcp first". Founder, on the
+   four: "ban UI things from motions and try to abstract things … graphic
+   simple and on brand (you can reuse components)", and "no UI should not mean
+   text it should mean abstraction of what our infrastructure does". So the
+   picture is a flow, left to right, in the loved hub's parts and with no
+   claim: the agents' marks on white discs, a wire from each into Pancake,
+   then six spokes out of Pancake to six named tool groups; the ones the job
+   uses in the infra section's tones with their spokes near-black, the one it
+   does not in grey; a ring on the Plays spoke for your approval.
 
    Built from the story kit (story-kit.css: the white disc, the wires, the
-   names, the rise), plus the brand's lockup
-   copied from the infra section at a size up (infra.css .lp-infra__brand,
-   ×1.25) and the agent chips' glyph cells (.lp-infra__mark, ×2). Every box
-   is placed inline from lp-story-mcp-data.ts (stage px on the 752x489 design
-   box); this file holds the look only. Phones show the same box scaled (the
-   stack, ×0.455 at 390): agent discs 43.7 px, lockup 112x41 with a 28 px
-   wordmark, stops 9.1 px across, and no type (the kit hides the names). Paints
-   nothing behind the scene (the shell paints the stage).
+   hub's near-black, the names, the rise), plus the brand's lockup copied
+   from the infra section at a size up (infra.css .lp-infra__brand, ×1.25)
+   and the agent chips' glyph cells (.lp-infra__mark, ×2). Every box is placed
+   inline from lp-story-mcp-data.ts (stage px on the 752x489 design box); this
+   file holds the look only. Phones show the same box scaled (the stack,
+   ×0.455 at 390): agent discs 43.7 px, lockup 112x41 with a 28 px wordmark,
+   stops 11.6 px across, and no type (the kit hides every name): the picture
+   reads without them. Paints nothing behind the scene (the shell paints the
+   stage).
 
    Layers, back to front (LpStoryMcp): the wires, the lockup, the discs, then
-   the stops, then the names, the label and "Thinking…". No dot on an edge: the wires
-   meet the discs and the lockup themselves. The
-   rest markup is the END picture; the timeline (lp-story-mcp-timeline.ts)
-   sets frame 0.
-
-   The motion (2026-10-30, founder: "the claude and codex part can be very
-   much 10xed") adds one thing of this file's: "Thinking…", hidden at rest.
-   The lockup never moves (founder, the same evening: "j aime pas trop les
-   effets de bounce que tu mets a chaque fois"; its pop is gone).
+   the stops and the ring, then the names, the caption, "You approve" and
+   "Thinking…". No dot on an edge: the wires meet the discs and the lockup
+   themselves; the ring stands in the open, on its spoke. The rest markup is
+   the END picture; the timeline (lp-story-mcp-timeline.ts) sets frame 0.
 
    Traps (with the kit's T1-T5):
    T1 Compound selectors only: `.lp p { margin: 0 }` and the shell's
@@ -37,17 +34,21 @@
       (Tailwind's preflight caps imgs at 100%), no shrink in the flex row.
    T3 The lockup's box is written out (data: brand.w x brand.h, its content's
       own size) so the ports sit exactly on its edges.
-   T4 The stops are children of their svg, not of a <g>: the kit's
-      `> g > *` multiply never reaches them, so each paints flat over the end
-      of its wire.
+   T4 The stops and the ring are children of their svg, not of a <g>: the
+      kit's `> g > *` multiply never reaches them, so each paints flat over
+      its wire.
    T5 "Thinking…" must stay hidden at rest (opacity and visibility below):
       the timeline shows it and hides it again, the END never has it.
+   T6 Every colour the motion changes rests here, as the END: the near-black
+      of the route (.lp-smcp-ink), a stop's tone, a name's ink, the ring's
+      fill. The timeline writes the start colours at frame 0, tweens to these
+      and lets go (clearProps), so this file holds them at rest.
    No will-change, no keyframes: the stage is GSAP-only, plays once. */
 
 /* Pancake: the infra section's lockup (plum, the avatar's colour mascot, the
    footer's cream wordmark), ×1.25: radius 22 → 27.5, padding 11/24/11/12 →
    13.75/30/13.75/15, gap 10 → 12.5, mascot 48 → 60, wordmark 50 → 62.5 tall
-   (128.3 wide): 245.799x90, placed inline */
+   (128.3 wide): 245.799x90, placed inline. It never moves */
 .lp-smcp .lp-smcp-brand {
   align-items: center;
   background: var(--lp-brand-plum);
@@ -91,9 +92,18 @@
   width: 41.667%;
 }
 
-/* the six stops: flat dots in the infra cards' tones (Context yellow, Data
-   purple, Tools pink: the logo's three pancakes, top to bottom), the loved
-   confetti's flat fills */
+/* the route (T6): the asking agent's wire and the five spokes the job uses,
+   in the hub's near-black at rest. Beats the kit's `.lp-sk-wires path` grey
+   (0,2,0 over 0,1,1); the timeline draws them grey and turns each near-black,
+   the whole wire at once */
+.lp-smcp .lp-smcp-ink {
+  stroke: var(--sk-hub);
+}
+
+/* the six group stops: flat dots in the infra cards' tones (Data purple,
+   Context yellow, Tools pink: the logo's three pancakes), the loved
+   confetti's flat fills; the group this job does not use in the wires' grey
+   (the kit's --sk-wire, as the lineage story's leads) */
 .lp-smcp .lp-smcp-stop[data-tone="yellow-30"] {
   fill: var(--lp-yellow-30);
 }
@@ -103,11 +113,35 @@
 .lp-smcp .lp-smcp-stop[data-tone="pink-30"] {
   fill: var(--lp-pink-30);
 }
+.lp-smcp .lp-smcp-stop[data-tone="grey"] {
+  fill: var(--sk-wire);
+}
+
+/* the approval: a ring on the Plays spoke (r 6, a 2 px stroke centred on
+   it), filled near-black at rest: approved */
+.lp-smcp .lp-smcp-gate {
+  fill: var(--sk-hub);
+  stroke: var(--sk-hub);
+  stroke-width: 2;
+}
+
+/* a group's name, right of its stop, and "You approve", right of the ring:
+   the kit's name (12/16, hidden on phones), left-aligned at --nx, its line
+   centred on --ny. The group this job does not use sits back (ink-80) */
+.lp-smcp .lp-sk-name.lp-smcp-side {
+  left: calc(var(--nx) * 1px);
+  text-align: left;
+  top: calc(var(--ny) * 1px - 8px);
+  width: auto;
+}
+.lp-smcp .lp-sk-name.lp-smcp-side[data-used="false"] {
+  color: var(--lp-ink-80);
+}
 
 /* Pancake at work: "Thinking…" centred under the lockup, the kit's name in
    ink-80 (phones hide it with every kit name). The motion's only: hidden at
-   rest (T5), the timeline raises it once both agents are wired in and fades it as
-   the tools light */
+   rest (T5), the timeline raises it as Claude asks and fades it as the ring
+   fills */
 .lp-smcp .lp-sk-name.lp-smcp-thinking {
   color: var(--lp-ink-80);
   opacity: 0;
