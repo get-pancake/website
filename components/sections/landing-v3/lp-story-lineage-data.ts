@@ -5,19 +5,27 @@
  *
  * The founder on this block (2026-10-28): "lineage c est pas que l origine c est aussi la
  * detection croisee de signaux interne externe": where a lead came from is also where the
- * customer's own signals and outside signals cross. On the section: "ban UI things from motions
- * and try to abstract things we re talking about being graphic simple and on brand (you can reuse
- * components)"; on a big claim over a value: "Still a huge text - no UI should not mean text it
- * should mean abstraction of what our infrastructure does". So the picture carries no claim and
- * no UI. It is drawn in the parts of the one picture he loves, the old sources story's end hub
- * (white discs with each provider's own mark, grey wires, the near-black dot,
- * flat brand dots, small names under the discs: story-kit.css), laid out as two sides joined
- * through the middle (Mobbin: Customer.io's data pipeline section,
+ * customer's own signals and outside signals cross; on 2026-10-30, "goal of this part is to show
+ * we mix internal with external signals", so the two columns say so ("Pancake data je sais pas si
+ * j aime ou si c est le bon mot": "Your data" and "Pancake data" became "Internal signals" and
+ * "External signals"). On the section: "ban UI things from motions and try to abstract things we
+ * re talking about being graphic simple and on brand (you can reuse components)"; on a big claim
+ * over a value: "Still a huge text - no UI should not mean text it should mean abstraction of what
+ * our infrastructure does". So the picture carries no claim and no UI. It is drawn in the parts
+ * of the one picture he loves, the old sources story's end hub (white discs with each provider's
+ * own mark, grey wires, the near-black dot, small names under the discs: story-kit.css), laid out
+ * as two sides joined through the middle (Mobbin: Customer.io's data pipeline section,
  * 6e31f38b-b744-4dbf-9369-7e7e3205c19a, curved wires from sources on both sides meeting in the
  * centre). The END picture (the rest markup), stage px on the 752×489 box:
- *   - left, "Your data": the CRM (HubSpot's own mark on a white disc), site visits (a blue-30
- *     stop) and events (a yellow-30 stop), both stops at the loved blue and yellow dots' Ø28.18;
- *   - right, "Pancake data": TheirStack, Apify and Dealroom, each on a white disc with its own
+ *   - left, "Internal signals": the customer's own tools, three white discs (r 28) with their
+ *     vendors' marks: the CRM (HubSpot), site visits (Google Analytics) and events (Luma), one
+ *     family with the right side's (founder 2026-10-30: "Mettre un bon logo sur site visits et sur
+ *     event maybe (Luma par ex)", "site visits is like GA4 no maybe"; until then site visits and
+ *     events were the loved blue and yellow dots, Ø28.18). The kit draws a mark at half its disc;
+ *     Google Analytics' file pads its icon in its 192 box and draws at 54%, Luma's black sparkle
+ *     fills its box and outweighs the orange sprocket at the same extent, so it draws at 46%
+ *     (story-lineage.css, weighed against HubSpot's at 50%);
+ *   - right, "External signals": TheirStack, Apify and Dealroom, each on a white disc with its own
  *     mark, three of the data providers the product uses
  *     (docs/public-assets/lp/story-sources/README.md);
  *   - the middle: five leads, grey dots (r 8, the wires' grey) in a column on the stage's centre
@@ -36,21 +44,22 @@
  *   - the wires: the loved formula, one cubic with horizontal handles, c = 0.426667 × the
  *     straight distance between its ends (lp-story-sources-data.ts:89-93 at 630bb8e), written out
  *     here, never computed at render. Each starts on the source's edge that faces the leads (a
- *     left source's right edge, a right source's left edge), with no cap dot on it (founder
- *     2026-10-28, on the dots over the discs: "ca fait un peu vibe coded"), and ends at its
- *     lead's centre, under the lead's dot. No two wires cross. The CRM's and Dealroom's are one
- *     cubic turned half a turn about her lead (equal lengths, 275.6).
- * Clearances, measured in the page's fonts (Chromium and Firefox, 2026-10-28): every disc, dot
- * and line of type is at least 47 px from the stage's edges (ink from x 96 to 667, y 47.5 to
- * 430.7); a wire passes no closer than 12.3 px to a label's ink (Dealroom's wire, to her name)
- * and 50 px to a lead it does not end on.
+ *     left disc's right edge, x 152; a right disc's left edge, x 600), with no cap dot on it
+ *     (founder 2026-10-28, on the dots over the discs: "ca fait un peu vibe coded"), and ends at
+ *     its lead's centre, under the lead's dot. No two wires cross. The CRM's and Dealroom's are
+ *     one cubic turned half a turn about her lead (equal lengths, 275.6).
+ * Clearances (2026-10-28, re-measured 2026-10-30 with the discs and the new labels, Chromium):
+ * every disc, dot and line of type is at least 47 px from the stage's edges (ink from x 81 to
+ * 673, the two group labels, and y 47.5 to 430.7); a wire passes no closer than 12.3 px to a
+ * label's ink (Dealroom's wire, to her name) and 58 px to a lead it does not end on.
  *
  * Words: the two group labels, the six sources' names and her name, all in the kit's 12 px name
  * style and hidden on phones (story-kit.css .lp-sk-name): the picture reads without them. In
  * scripts/homepage-lint.mjs FILES, so every string here is linted: words live in fields named
- * `text` or `name` only, codes sit under keys the lint skips (id, tone, logo, d). No platform is
- * named. The marks are the vendors' own files, unmodified (public/lp/vendor-logos/hubspot.svg and
- * public/lp/story-sources/: their READMEs are under docs/public-assets/lp/).
+ * `text` or `name` only, codes sit under keys the lint skips (id, logo, d). No platform is
+ * named. The marks are the vendors' own files, unmodified (public/lp/vendor-logos/: hubspot.svg,
+ * google-analytics.svg, luma.svg; public/lp/story-sources/: their READMEs are under
+ * docs/public-assets/lp/).
  *
  * STORY_LINEAGE_ALT is fixed (lp-dive-stages.ts imports it): what the animation shows, the only
  * copy a screen reader gets (the shell's host aria-label). Keep it in step with the picture.
@@ -63,8 +72,8 @@ export type StoryLineageWire = {
   /** the lead it draws into: an index in `leads` (data-to). A wire into `found.lead` is part of
       her lineage (.lp-slin-lineage): near-black at rest, turned near-black at the match */
   to: number;
-  /** its draw slot, T.draw[order] in lp-story-lineage-timeline.ts: your data's three first, then
-      Pancake data's, the two into the found lead last of each */
+  /** its draw slot, T.draw[order] in lp-story-lineage-timeline.ts: the internal three first,
+      then the external three, the two into the found lead last of each */
   order: number;
   /** one cubic from the source's edge (where it draws from) to the lead's centre */
   d: string;
@@ -74,10 +83,9 @@ export type StoryLineageSource = {
   id: "crm" | "visits" | "events" | "theirstack" | "dealroom" | "apify";
   /** written under it on desktop */
   name: string;
-  /** a white disc carrying the vendor's own mark (an unmodified file, drawn at half the disc) … */
-  logo?: string;
-  /** … or a flat brand stop: the token after `--lp-` (foundation.css) */
-  tone?: "blue-30" | "yellow-30";
+  /** a white disc carrying the vendor's own mark (an unmodified file, drawn at half the disc, or
+      at its own share where the file needs it: story-lineage.css) */
+  logo: string;
   /** centre and radius, stage px */
   x: number;
   y: number;
@@ -86,7 +94,7 @@ export type StoryLineageSource = {
 };
 
 export type StoryLineageGroup = {
-  id: "own" | "pancake";
+  id: "internal" | "external";
   /** the group's label, over its column: the line box's centre x and top, stage px */
   text: string;
   x: number;
@@ -96,7 +104,7 @@ export type StoryLineageGroup = {
 };
 
 export type StoryLineageStory = {
-  /** your data (left), then Pancake data (right) */
+  /** internal signals (left), then external signals (right) */
   groups: readonly [StoryLineageGroup, StoryLineageGroup];
   /** the leads, top to bottom: grey dots, centre and radius */
   leads: readonly { x: number; y: number; r: number }[];
@@ -108,8 +116,8 @@ export type StoryLineageStory = {
 export const STORY_LINEAGE: StoryLineageStory = {
   groups: [
     {
-      id: "own",
-      text: "Your data",
+      id: "internal",
+      text: "Internal signals",
       x: 124,
       y: 44,
       sources: [
@@ -121,24 +129,24 @@ export const STORY_LINEAGE: StoryLineageStory = {
           ],
         },
         {
-          id: "visits", name: "Site visits", tone: "blue-30",
-          x: 124, y: 245, r: 14.09,
+          id: "visits", name: "Site visits", logo: "/lp/vendor-logos/google-analytics.svg",
+          x: 124, y: 245, r: 28,
           wires: [
-            { id: "visits", to: 3, order: 1, d: "M138.09 245C242.571 245 271.519 303 376 303" },
+            { id: "visits", to: 3, order: 1, d: "M152 245C250.725 245 277.275 303 376 303" },
           ],
         },
         {
-          id: "events", name: "Events", tone: "yellow-30",
-          x: 124, y: 385, r: 14.09,
+          id: "events", name: "Events", logo: "/lp/vendor-logos/luma.svg",
+          x: 124, y: 385, r: 28,
           wires: [
-            { id: "events", to: 4, order: 0, d: "M138.09 385C240.114 385 273.976 361 376 361" },
+            { id: "events", to: 4, order: 0, d: "M152 385C248.12 385 279.88 361 376 361" },
           ],
         },
       ],
     },
     {
-      id: "pancake",
-      text: "Pancake data",
+      id: "external",
+      text: "External signals",
       x: 628,
       y: 44,
       sources: [
@@ -177,4 +185,4 @@ export const STORY_LINEAGE: StoryLineageStory = {
 };
 
 export const STORY_LINEAGE_ALT: string =
-  "Animation: on one side, your data: your CRM, site visits and events. On the other, Pancake data: the providers TheirStack, Apify and Dealroom. Lines run to a column of leads, first from your data, then from Pancake data. One lead is reached from both sides, by your CRM and by Dealroom, and lights up with the two lines that found it: the founder of Mastra.";
+  "Animation: on one side, internal signals: your CRM, your site visits and your events. On the other, external signals from the providers TheirStack, Apify and Dealroom. Lines run to a column of leads, first from the internal signals, then from the external ones. One lead is reached from both sides, by your CRM and by Dealroom, and lights up with the two lines that found it: the founder of Mastra.";

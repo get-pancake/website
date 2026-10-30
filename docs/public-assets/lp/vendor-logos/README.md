@@ -19,9 +19,15 @@ not Pancake artwork, and imply no endorsement. Never redraw or recolour one.
 - `close.svg`: `close-logo-2024/mark.svg` from the logo pack linked on https://www.close.com/brand.
 - `pipedrive.svg`: Pipedrive's app icon (the white "p" on its green square), a 128 × 128 PNG
   wrapped unchanged in an SVG `<image>` (Pipedrive offers its marks as PNG and ICO only).
+- `google-analytics.svg` (2026-10-30): the Google Analytics product icon as Google serves it,
+  https://www.gstatic.com/analytics-suite/header/suite/v2/ic_analytics.svg, unchanged.
+- `luma.svg` (2026-10-30): Luma's sparkle, the mark in the header of https://luma.com/ (the
+  events platform, not Luma AI) and the shape of its app icon; its one path, `fill="currentColor"`
+  set to black, as Luma paints it on light.
 
 The data providers on the page (Dealroom, Apify, TheirStack, Coresignal, Wappalyzer, Firecrawl)
 live in `public/lp/story-sources/`; the infra section and the deep dive's signals and lineage
 stories draw those. The marks in `public/lp/vendor-logos/` are drawn by the infra section
 (HubSpot, Attio and Pipedrive) and by the deep dive's context and lineage stories (HubSpot, as the
-CRM); Close, Ocean.io and Linkup are on disk, unused.
+CRM; the lineage story also draws Google Analytics for site visits and Luma for events, founder
+2026-10-30); Close, Ocean.io and Linkup are on disk, unused.

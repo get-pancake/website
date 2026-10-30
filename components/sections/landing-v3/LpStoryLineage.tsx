@@ -7,14 +7,14 @@ import { STORY_LINEAGE } from "./lp-story-lineage-data";
 /**
  * Deep-dive story 3, "Where every lead came from" ("Lead lineage") — the stage markup, which IS
  * the END picture. Owner: story-lineage package (2026-10-28). The founder's "3/ Lead lineage",
- * which is also "la detection croisee de signaux interne externe": the customer's own data on the
- * left, Pancake's data on the right, wires from both into a column of leads; the one lead reached
- * from both sides is near-black and named, and its two wires are near-black with it: her lineage
- * (2026-10-30, "the match": the one change its motion made to this picture; the founder, that
- * evening: "j aime bien le noir plus intense entre ledealroom et crm"). No claim and no UI:
- * the parts of the one picture he loves (the old sources story's end hub), from the story kit.
- * Words and geometry: lp-story-lineage-data.ts; look: story-kit.css and story-lineage.css; motion:
- * lp-story-lineage-timeline.ts.
+ * which is also "la detection croisee de signaux interne externe": internal signals on the left
+ * (the customer's own tools), external signals on the right (data providers), wires from both
+ * into a column of leads; the one lead reached from both sides is near-black and named, and its
+ * two wires are near-black with it: her lineage (2026-10-30, "the match": the one change its
+ * motion made to this picture; the founder, that evening: "j aime bien le noir plus intense entre
+ * ledealroom et crm"). No claim and no UI: the parts of the one picture he loves (the old sources
+ * story's end hub), from the story kit. Words and geometry: lp-story-lineage-data.ts; look:
+ * story-kit.css and story-lineage.css; motion: lp-story-lineage-timeline.ts.
  *
  * Contract (lp-dive-stages.ts): server-safe (no hooks, no "use client", no lib/placeholders: every
  * part is final, so `placeholders` changes nothing), ONE root with data-lp-story="lineage" and
@@ -23,14 +23,14 @@ import { STORY_LINEAGE } from "./lp-story-lineage-data";
  * lp-story-kit.ts, which pulls GSAP into the server graph.
  *
  * Layers, back to front, inside .lp-sk-scene (the 752×489 box; nothing transforms it):
- *   .lp-sk-disc        the four marks on white discs (SkDisc): CRM, TheirStack, Apify, Dealroom
- *   svg.lp-sk-wires    the two stops (site visits, events), flat, under the wires; per source a
- *                      <g data-node>: its wire (data-wire, data-order its draw slot, data-to its
- *                      lead), from its edge (it multiplies: the kit's `> g > *`). The two wires
- *                      into her lead carry .lp-slin-lineage (near-black at rest). Then the five
- *                      grey leads (data-lead) and her near-black dot (.lp-sk-hub) over the middle
- *                      one. The stops, the leads and her dot are the svg's own children: no
- *                      blend, so a lead covers the end of the wire it sits on
+ *   .lp-sk-disc        the six marks on white discs (SkDisc, data-node): the CRM, site visits and
+ *                      events on the left, TheirStack, Apify and Dealroom on the right
+ *   svg.lp-sk-wires    per source a <g data-node>: its wire (data-wire, data-order its draw slot,
+ *                      data-to its lead), from its disc's edge (it multiplies: the kit's
+ *                      `> g > *`). The two wires into her lead carry .lp-slin-lineage (near-black
+ *                      at rest). Then the five grey leads (data-lead) and her near-black dot
+ *                      (.lp-sk-hub) over the middle one. The leads and her dot are the svg's own
+ *                      children: no blend, so a lead covers the end of the wire it sits on
  *   .lp-sk-name        each source's name under it (SkName), the two group labels over their
  *                      columns, her name under her dot (.lp-sk-rise: the one line that rises in)
  * Every box is placed inline from the data (stage px, three decimals at most: skF3); the
@@ -49,32 +49,17 @@ export function LpStoryLineageStage(_props: DiveStageProps) {
   return (
     <div className="lp-sk lp-slin" data-lp-story="lineage" aria-hidden="true">
       <div className="lp-sk-scene">
-        {sources.map((source) =>
-          source.logo ? (
-            <SkDisc
-              key={source.id}
-              node={source.id}
-              x={source.x - source.r}
-              y={source.y - source.r}
-              size={2 * source.r}
-              logo={source.logo}
-            />
-          ) : null,
-        )}
+        {sources.map((source) => (
+          <SkDisc
+            key={source.id}
+            node={source.id}
+            x={source.x - source.r}
+            y={source.y - source.r}
+            size={2 * source.r}
+            logo={source.logo}
+          />
+        ))}
         <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
-          {sources.map((source) =>
-            source.tone ? (
-              <circle
-                key={source.id}
-                className="lp-slin-stop"
-                data-node={source.id}
-                cx={skF3(source.x)}
-                cy={skF3(source.y)}
-                r={skF3(source.r)}
-                style={{ fill: `var(--lp-${source.tone})` }}
-              />
-            ) : null,
-          )}
           {sources.map((source) => (
             <g key={source.id} data-node={source.id}>
               {source.wires.map((wire) => (

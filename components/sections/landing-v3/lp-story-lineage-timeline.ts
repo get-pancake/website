@@ -51,12 +51,12 @@ import { SK_LANDED, skBump, skHideR, skHideRise, skHideWire, skQuery, skRise, sk
  *
  *   0.00       f1: frame 0 = the cue: both sides' sources with their names and group labels,
  *              the five grey leads; no wire yet
- *   0.30–1.20  your data reaches out, bottom to top: events, site visits, then the CRM, 0.15 s
- *              apart; each lead takes its hit as the tip lands (0.85, 1.00, then her lead at
- *              1.15, still grey: one side so far)
- *   1.20       f2: your data's three wires are in
- *   1.20–2.10  then Pancake data's, top to bottom: TheirStack, Apify (hits at 1.75 and 1.90),
- *              then Dealroom's into her lead
+ *   0.30–1.20  the internal signals reach out, bottom to top: events, site visits, then the CRM,
+ *              0.15 s apart; each lead takes its hit as the tip lands (0.85, 1.00, then her lead
+ *              at 1.15, still grey: one side so far)
+ *   1.20       f2: the internal signals' three wires are in
+ *   1.20–2.10  then the external signals', top to bottom: TheirStack, Apify (hits at 1.75 and
+ *              1.90), then Dealroom's into her lead
  *   2.05–2.35  the match, as Dealroom's tip lands: the four others step back to 0.5 and her
  *              lead gathers (r 8 → 6, to 2.30)
  *   2.35       f3: the held breath: all six wires in, the others back, her lead gathered
@@ -68,17 +68,17 @@ import { SK_LANDED, skBump, skHideR, skHideRise, skHideWire, skQuery, skRise, sk
  *   3.25–3.70  the four others come back to full
  *   4.00       f5: the END = the server markup
  *
- * Never moves: the discs, the stops, the names, the group labels. Nothing travels: each wire
+ * Never moves: the discs, the names, the group labels. Nothing travels: each wire
  * draws once, from its source; nothing loops.
  */
 
 /** the take, in seconds (see the table above) */
 const T = {
   f1: 0,
-  /** each wire's start, by its data-order (lp-story-lineage-data.ts `order`): your data's three
-      0.15 s apart, then Pancake data's three, the two into her lead last of each */
+  /** each wire's start, by its data-order (lp-story-lineage-data.ts `order`): the internal three
+      0.15 s apart, then the external three, the two into her lead last of each */
   draw: [0.3, 0.45, 0.6, 1.2, 1.35, 1.5],
-  /** your data's wires are in (0.6 + DRAW) */
+  /** the internal signals' wires are in (0.6 + DRAW) */
   f2: 1.2,
   /** Dealroom's tip lands on her lead (1.5 + HIT_AT): the others step back, her lead gathers */
   match: 2.05,
@@ -170,9 +170,9 @@ export function* buildStoryLineageSteps(root: HTMLElement): Generator<void, Buil
 
   const tl = gsap.timeline({ paused: true });
 
-  /* ── the wires, your data's then Pancake data's, each from its source's edge; each lead takes
-     its hit as the drawing tip lands on it, but for the last wire into her lead: its landing is
-     the match ── */
+  /* ── the wires, the internal signals' then the external's, each from its disc's edge; each
+     lead takes its hit as the drawing tip lands on it, but for the last wire into her lead: its
+     landing is the match ── */
   wires.forEach((w) => {
     const at = startOf(w.wire);
     skWire(tl, w.wire, at, DRAW);
