@@ -168,8 +168,7 @@ export const S1_REST_LEAVES = 1;
 /** the three leads that come back: a role at a real startup and why it came, never an invented
     person (founder 2026-10-28, on the page's named leads: "get rid of those fake people looks
     cheap af", then "a la place des noms on peut mettre des roles comme GTM @ xyz en mettant des
-    vraies companies un peu comme fait monaco.com": its product shots name real startups; the
-    signals are illustrative, as theirs are). The avatar carries the company's initial. Mastra is
+    vraies companies"; the signals are illustrative). The avatar carries the company's initial. Mastra is
     the page's one lead: the account block 1 picks, the lead both sides find in the dive's
     lineage picture and the /pricing example (lib/copy.ts pricingLead). Each one teaches a row of
     the panel: the funded founder "Ideal clients", the agency "Skip", the reply "Best signal"

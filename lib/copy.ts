@@ -341,9 +341,8 @@ export const pricingV2 = {
  * The example is one lead of the homepage's invented seller Acme, which
  * designs websites for startups: a role at a real startup, never an invented
  * person's name (founder 2026-10-28: "get rid of those fake people looks
- * cheap af", then roles at real companies "un peu comme fait monaco.com",
- * whose product shots name real startups; the signals are illustrative, as
- * theirs are). It is the page's one lead, Mastra (lp-step-data.ts S1_LEADS). Its open role's badge is TheirStack's and its
+ * cheap af", then roles at real companies; the signals are illustrative).
+ * It is the page's one lead, Mastra (lp-step-data.ts S1_LEADS). Its open role's badge is TheirStack's and its
  * seed round's Dealroom's, as the dive's signals story draws them. Labelled
  * as one lead. Keep them in step.
  */

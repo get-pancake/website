@@ -26,8 +26,8 @@
  *     (the provider behind funding rounds): its near-black dot (the loved hub dot, at r 12)
  *     covers the grey one and its role at a real startup sits under it, "Founder @ Mastra",
  *     never an invented person's name (founder 2026-10-28, on "Tamsin Okafor" there: "get rid
- *     of those fake people looks cheap af", then roles at real companies "un peu comme fait
- *     monaco.com"; Mastra is the page's one lead: lp-step-data.ts S1_LEADS). Its two wires make
+ *     of those fake people looks cheap af", then roles at real companies; Mastra is the page's
+ *     one lead: lp-step-data.ts S1_LEADS). Its two wires make
  *     one S through the column's centre, the line that crosses, and since 2026-10-30 that S is
  *     the hub's near-black (.lp-slin-lineage, story-lineage.css): her lineage, the one change
  *     "the match" made to this picture (the motion: lp-story-lineage-timeline.ts; the founder,

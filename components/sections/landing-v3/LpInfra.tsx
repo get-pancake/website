@@ -41,8 +41,7 @@ import { PANCAKE_AVATAR } from "@/components/sections/landing-v3/lp-pancake-avat
  * Data / Tools" ("No 'The'"); no glowing borders ("Glowing borders look vibe coded").
  *
  * The page's model (2026-10-21, the infra outline the founder approved: "one sentence, one
- * diagram, three layers", as Apollo's "One system. Three layers." and Cargo's "your agent writes
- * it, Cargo runs it"). The first version (eight layers, Deploy / Host / Run, four figures on a
+ * diagram, three layers"). The first version (eight layers, Deploy / Host / Run, four figures on a
  * dark card) read as engineering notes: "I dont understand anything about the new block". Claims
  * in docs/infra/infra-landing-brief.md, the 30+ data providers being the founder's figure (the
  * dive's signals story, lp-story-signals-data.ts).
@@ -135,8 +134,8 @@ const SHAPE: Record<string, number> = {
 
 /** The leads the Play brings up for approval, in turn: who and why, never an invented person:
     a role at a real startup over the signal that found them, the company's initial on the
-    avatar (founder 2026-10-28: roles at real companies "un peu comme fait monaco.com", whose
-    product shots name real startups; the signals are illustrative, as theirs are) */
+    avatar (founder 2026-10-28: roles at real companies instead of invented people; the signals
+    are illustrative) */
 const LEADS = [
   { initials: "V", name: "Sales @ Vapi", signal: "Hiring SDRs" },
   { initials: "M", name: "Growth @ Mintlify", signal: "Just raised" },
