@@ -14,7 +14,7 @@ import { PANCAKE_AVATAR } from "@/components/sections/landing-v3/lp-pancake-avat
  * juicy and spread accross the page and show they're a bit everywhere maybe show the tools a bit
  * everywhere that go in 3 bucjets and unified in pancake", then "Comment BCP plus insister sur les
  * 3 briques CONTEXT / DATA / TOOLS ? … quitte a les faire arriver en premier puis faire arriver
- * les petits details". So: the three bricks (Context, Data, Tools) come up first, large; then
+ * les petits details". So: the three bricks (Context, Signals, Tools) come up first, large; then
  * their contents appear in place (2026-10-28: "je ferais pas arriver tout de tous les cotes mais
  * je ferai apparaitre tout a l interieur de maniere simple et best practice"; until then they flew
  * in from all over the page); then Pancake comes up over them and every cable draws at once, down
@@ -63,8 +63,9 @@ import { PANCAKE_AVATAR } from "@/components/sections/landing-v3/lp-pancake-avat
  */
 
 type Tone = "yellow" | "purple" | "pink";
-/* The cards' labels: "Context", "Data", "Tools" (founder 2026-10-26: "No 'The'"; they were
-   "The brain", "The data", "The tools"). */
+/* The cards' labels: "Context", "Signals", "Tools" (founder 2026-10-26: "No 'The'"; they were
+   "The brain", "The data", "The tools"; the second was "Data" until his preview comment on it,
+   2026-10-29: "Signals"). */
 type Layer = { tone: Tone; name: string; title: string; pic: ComponentType };
 
 const LAYERS: readonly Layer[] = [
@@ -76,7 +77,7 @@ const LAYERS: readonly Layer[] = [
   },
   {
     tone: "purple",
-    name: "Data",
+    name: "Signals",
     title: "Finds who to sell to",
     pic: DataPic,
   },

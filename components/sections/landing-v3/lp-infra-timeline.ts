@@ -138,7 +138,7 @@ export function buildInfraFlow(root: HTMLElement): Built {
 
    So the scroll tells it in three moves, the bricks first:
    1. the three bricks come up one after another, large and a little apart, under the heading and
-      your agent, each holding only its word, large: Context, Data, Tools (founder 2026-10-27:
+      your agent, each holding only its word, large: Context, Signals, Tools (founder 2026-10-27:
       "Peut etre que CONTEXT DATA TOOLS doit prendre toute la place au debut dans les encadres
       puis ouvrir la fenetre ?"; set as the steps' big numerals and Mobbin's Tines values cards,
       after "Not beautiful, get inspired by top designs" on a scaled-up badge); then each window

@@ -25,8 +25,12 @@ import type { DiveItemId } from "./lp-dive-stages";
  *
  * Heading: the designer's "How Pancake finds customers" (V2 4939:3390); on 2026-10-21 "What your
  * agent runs on" (founder: "not clear"); from 2026-10-22 "How Pancake gets you customers", which he
- * kept; since 2026-10-28 "How your agent gets customers", a proposal with the visitor's agent as
- * the actor, waiting on his yes. The 2026-10-22 heading is its fallback. On 2026-10-21 he also
+ * kept; on 2026-10-28 "How your agent gets customers", a proposal with the visitor's agent as
+ * the actor, which he turned down on the preview (2026-10-29: "Not fan of this title and the
+ * 'gets customers'. We could find something beter"); since then "What your agent can do with
+ * Pancake": the visitor's agent as the subject, as his benchmark heading "Your agent needs 3
+ * things to sell.", and what the four blocks show, without "gets customers". One line from 1024
+ * px (823 of 928 px at 57.3 px), two on phones as before. On 2026-10-21 he also
  * asked for no "already live" labels ("dont say 'already live' just push a simple and strong
  * narrative with the key features in this cloud section").
  * The f5 "See example Plays" link is not carried over: the nav (Product) and the footer
@@ -52,7 +56,7 @@ export type DiveItem = {
 };
 
 /** the section heading (V2 4939:3390 "How Pancake finds customers", the agent as its actor) */
-export const DIVE_TITLE = "How your agent gets customers";
+export const DIVE_TITLE = "What your agent can do with Pancake";
 
 /**
  * THE PHONE SWITCH (≤767; decision 2026-10-11 §9 F3, mobile artboard 5024:8914).

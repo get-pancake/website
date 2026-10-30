@@ -10,7 +10,7 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
  *   scroll — desktop layouts (from 1025 wide), motion allowed (founder 2026-10-26:
  *            "show that pancake brings all 3 of them when scrolling", then "the flow supersmooth
  *            every movement well calibrated getting inspired by best in class website"). The
- *            stage pins and the scroll drives buildInfraScroll: the three bricks (Context, Data,
+ *            stage pins and the scroll drives buildInfraScroll: the three bricks (Context, Signals,
  *            Tools) come up first, then their contents appear in place, then Pancake comes up
  *            over them and every cable draws at once, down to the three and up to your agent
  *            (founder 2026-10-27: "insister sur les 3 briques … les faire arriver en premier puis

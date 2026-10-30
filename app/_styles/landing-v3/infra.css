@@ -273,18 +273,21 @@
 }
 /* the kit badge (components.css .badge, brand variants), ported: the kit's stylesheet is not
    loaded on the homepage */
+/* the brick's badge: the kit's badge one step down the type scale (founder 2026-10-29, on the
+   preview: "these badges are too big"; it was the kit's eyebrow size, --lp-text-sm, 18 px line,
+   2px 8px) */
 .lp-infra__part-name {
   background: var(--lp-infra-tone-30);
   border: 1px solid var(--lp-infra-tone-30);
   border-radius: var(--lp-r-sm);
   color: var(--lp-text);
   corner-shape: squircle;
-  font-size: var(--lp-text-sm);
+  font-size: var(--lp-text-xsm);
   font-weight: 500;
   justify-self: start;
   letter-spacing: 0.453px;
-  line-height: 18px;
-  padding: 2px 8px;
+  line-height: 15px;
+  padding: 1px 6px;
   text-transform: uppercase;
 }
 .lp-infra__part-title {

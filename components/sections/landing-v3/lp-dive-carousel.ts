@@ -51,8 +51,12 @@ import {
  *   visible, and the visitor has not pressed Pause; otherwise everything pauses where it is and
  *   resumes from there (never restarted, never rewound on screen).
  * - A click / arrow key selects an item at once: the outgoing panel keeps its frame and fades
- *   out (0.32 s), the incoming one is set to its cue while still hidden, fades in and plays; the
- *   bodies fold (CSS grid rows, 0.4 s) and the titles change weight (CSS). Autoplay continues.
+ *   out (0.14 s), then the incoming one, set to its cue while still hidden, fades in (0.22 s) and
+ *   plays: a fade-through (Material motion's pattern for unrelated content in one container),
+ *   never both pictures at once. Until 2026-10-29 the two cross-faded over 0.32 s, and two
+ *   diagrams on one stage drew one over the other (founder on the preview: "I think we can do
+ *   better animations"). The bodies fold (CSS grid rows, 0.4 s) and the titles change weight
+ *   (CSS). Autoplay continues.
  * - Keyboard focus (focus-visible) on a tab, on the selected item's link or on the stage holds
  *   the ADVANCE, not the story: the selected item plays to its end picture and waits there
  *   until focus leaves the row or goes to Pause. Until 2026-10-13 only the tab list held it:
@@ -108,8 +112,10 @@ type Layout = keyof typeof BOX_WIDTH;
 const PHONE_MQ = "(max-width: 599px)";
 /** the bar's drawn length in Figma (4939:3439 …: 138.61 of 272), its rest pose */
 export const DIVE_REST_P = 0.509596;
-/** the cross-fade between two stages and the outgoing bar's fade (s) */
-const FADE_S = 0.32;
+/** the fade-through between two stages (s): the outgoing one fades out, then the incoming one
+    fades in; and the outgoing bar's fade */
+const FADE_OUT_S = 0.14;
+const FADE_IN_S = 0.22;
 const BAR_OUT_S = 0.15;
 /** the stack's widths (dive.css's stack block) */
 const STACK_MQ = "(max-width: 767px)";
@@ -556,11 +562,15 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
       inc.panel.dataset.state = "active";
       prev.tab.dataset.barOut = "";
       fades = [
-        G.fromTo(inc.panel, { opacity: 0 }, { opacity: 1, duration: FADE_S, ease: "power1.out", clearProps: "opacity" }),
+        G.fromTo(
+          inc.panel,
+          { opacity: 0 },
+          { opacity: 1, duration: FADE_IN_S, delay: FADE_OUT_S, ease: "power1.out", clearProps: "opacity" },
+        ),
         G.to(prev.panel, {
           opacity: 0,
-          duration: FADE_S,
-          ease: "power1.out",
+          duration: FADE_OUT_S,
+          ease: "power1.in",
           onComplete: () => {
             prev.panel.dataset.state = "idle";
             prev.panel.style.removeProperty("opacity");
