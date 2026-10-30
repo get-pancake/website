@@ -324,8 +324,10 @@
 }
 /* (paragraph margins are already zero via foundation's `.lp p`) */
 
-/* ── step 01 · the URL input, the knowledge graph, the market profile ── */
-.lp-s1-ui,
+/* ── step 03 (since 2026-10-27, "Watch it get better") · the Brain grown by the leads ──
+   The brain-research-loop composition's graph and its panel (step 01 until then, built from
+   the website). It rests young and glided left (the pose it took under the market profile),
+   beside three leads; the verdicts grow it (lp-step-timelines.ts buildS1). */
 .lp-s1-graph,
 .lp-s1-panel {
   height: 426px;
@@ -334,86 +336,77 @@
   top: 0;
   width: 464px;
 }
-.lp-s1-input {
+/* the three leads, where the panel comes in (left 240) */
+.lp-s1-leads {
+  left: 236px;
+  position: absolute;
+  top: 128px;
+  width: 214px;
+}
+.lp-s1-lead {
   background: var(--lp-ink-0);
-  border: 0.5px solid var(--lp-ink-70);
-  border-radius: 16px;
-  height: 57px;
-  left: 88px;
-  overflow: hidden;
-  position: absolute;
-  top: 151px;
-  width: 581.5px;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  height: 56px;
+  margin-bottom: 10px;
+  position: relative;
+  width: 214px;
 }
-.lp-s1-input span {
-  display: block;
-  font-size: 18px;
-  font-weight: 400;
-  left: 20px;
-  line-height: 32px;
-  position: absolute;
+.lp-s1-lead .lp-sx-av {
+  left: 12px;
   top: 12px;
+}
+.lp-s1-lead-name,
+.lp-s1-lead-pos,
+.lp-s1-verdict {
+  left: 54px;
+  position: absolute;
   white-space: nowrap;
 }
-.lp-s1-ph {
-  color: var(--lp-ink-80);
-}
-/* the typed URL: hidden at rest by a full right inset; the timeline measures
-   its glyph edges (lp-step-timelines.ts) and walks the inset back — no fixed
-   width, so the box is the text in whatever face the mock renders */
-.lp-s1-typed {
-  clip-path: inset(0 100% 0 0);
+.lp-s1-lead-name {
   color: var(--lp-ink-100);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  top: 9px;
 }
-.lp-s1-caret {
-  background: var(--lp-ink-100);
-  height: 33.5px;
-  left: 19.25px;
-  position: absolute;
-  top: 11.25px;
-  width: 1.5px;
+.lp-s1-lead-pos,
+.lp-s1-verdict {
+  font-size: 12px;
+  line-height: 18px;
+  top: 29px;
 }
-.lp-s1-btn {
-  align-items: center;
-  background: #30002c; /* the composition's button plum (brand/design.md), not ink-100 */
-  border-radius: 16px;
-  display: flex;
-  height: 57px;
-  left: 88px;
-  padding: 12px 20px;
-  position: absolute;
-  top: 245.75px;
-  white-space: nowrap;
+.lp-s1-lead-pos {
+  color: var(--lp-ink-70);
+  font-weight: 400;
 }
-.lp-s1-btntxt {
-  color: var(--lp-ink-0);
-  display: block;
-  font-size: 18px;
+/* the verdict takes the position's line (hidden at rest) */
+.lp-s1-verdict {
   font-weight: 600;
-  line-height: 32px;
-}
-.lp-s1-ring {
-  border: 1.5px solid var(--lp-pink-30);
-  border-radius: 50%;
-  height: 28px;
-  left: 186px;
   opacity: 0;
-  position: absolute;
-  top: 262px;
-  width: 28px;
 }
-/* the pointer waits lower right (x 130 / y 120) and eases onto the button */
-.lp-s1-cursor {
-  height: 52.45px;
-  left: 195px;
-  opacity: 0;
-  position: absolute;
-  top: 274px;
-  transform: translate(130px, 120px);
-  transform-origin: 26% 12%;
-  width: 50px;
+.lp-s1-verdict--approved {
+  color: var(--lp-green-30);
+}
+.lp-s1-verdict--skip {
+  color: var(--lp-ink-70);
+}
+.lp-s1-verdict--replied {
+  color: var(--lp-purple-40);
+}
+.lp-s1-verdict::before {
+  content: "✓ ";
+}
+.lp-s1-verdict--skip::before {
+  content: "✕ ";
+}
+.lp-s1-verdict--replied::before {
+  content: "↩ ";
 }
 .lp-s1-graph {
+  transform: translate(-130.5px, 42.08px) scale(0.55); /* frame 0: the young Brain, left */
   transform-origin: 246.5px 202.92px;
 }
 .lp-s1-edges {
@@ -434,6 +427,9 @@
   position: absolute;
   transform: scale(0);
 }
+.lp-s1-dot[data-rest] {
+  transform: none;
+}
 .lp-s1-center {
   background: var(--lp-ink-100);
   border-radius: 50%;
@@ -441,7 +437,6 @@
   left: 231px;
   position: absolute;
   top: 187.42px;
-  transform: scale(0);
   width: 31px;
 }
 .lp-s1-clabel {
@@ -475,14 +470,15 @@
   white-space: nowrap;
   width: 0;
 }
-.lp-s1-bping {
-  background: radial-gradient(circle, rgba(110, 187, 255, 0.55) 0%, rgba(110, 187, 255, 0) 70%);
+/* the ping a verdict sends through the Brain, from Acme */
+.lp-s1-cping {
+  background: radial-gradient(circle, rgba(186, 139, 255, 0.55) 0%, rgba(186, 139, 255, 0) 70%);
   border-radius: 50%;
   height: 44px;
-  left: 269px;
+  left: 224.5px;
   opacity: 0;
   position: absolute;
-  top: 293px;
+  top: 180.92px;
   width: 44px;
 }
 .lp-s1-ptitle {
@@ -567,6 +563,469 @@
   position: absolute;
   top: 24px;
   white-space: nowrap;
+}
+
+/* ── step 01 (since 2026-10-27, "Connect your agent") · Pancake connected in Claude ──
+   Step 02's Claude window (its header, composer, chip, answer spark and card skin are the
+   .lp-s2-* rules below), plus the pieces only this step has: the composer's "+", the
+   Connectors menu, Pancake's sign-in card and what Claude can now do. Hidden at rest
+   (frame 0 = the empty composer and its "+"); lp-step-timelines.ts buildS0 plays them. */
+.lp-step-stage--s0 .lp-sx-bg {
+  background-color: var(--lp-card-cream);
+}
+.lp-s0-plus {
+  border-radius: 6px;
+  box-shadow: 0 0 0 0.5px var(--lp-claude-ink-16);
+  color: var(--lp-claude-ink);
+  height: 20px;
+  position: absolute;
+  right: 48px;
+  top: 14px;
+  width: 20px;
+}
+.lp-s0-plus svg,
+.lp-s0-menu-plus svg {
+  height: 16px;
+  left: 2px;
+  position: absolute;
+  top: 2px;
+  width: 16px;
+}
+.lp-s0-plus path,
+.lp-s0-menu-plus path {
+  stroke: currentColor;
+}
+.lp-s0-pk {
+  opacity: 0;
+  visibility: hidden;
+}
+.lp-s0-ring {
+  border: 1.5px solid var(--lp-green-20);
+  border-radius: 50%;
+  height: 28px;
+  opacity: 0;
+  position: absolute;
+  right: 44px;
+  top: 10px;
+  width: 28px;
+}
+/* Connectors, above the composer and right-aligned to its "+" (the question card's skin) */
+.lp-s0-menu {
+  background: var(--lp-ink-0);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  height: 112px;
+  left: 165px;
+  opacity: 0;
+  position: absolute;
+  top: 69px;
+  transform-origin: 100% 100%;
+  visibility: hidden;
+  width: 236px;
+}
+.lp-s0-menu-head {
+  color: var(--lp-ink-70);
+  font-size: 12px;
+  font-weight: 400;
+  left: 16px;
+  line-height: 18px;
+  position: absolute;
+  top: 12px;
+}
+.lp-s0-menu-row {
+  height: 28px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+.lp-s0-menu-row--pk {
+  top: 38px;
+}
+.lp-s0-menu-row--custom {
+  top: 78px;
+}
+.lp-s0-menu-mark {
+  height: 20px;
+  left: 16px;
+  position: absolute;
+  top: 4px;
+  width: 20px;
+}
+.lp-s0-menu-plus {
+  color: var(--lp-ink-70);
+  height: 20px;
+  left: 16px;
+  position: absolute;
+  top: 4px;
+  width: 20px;
+}
+.lp-s0-menu-l {
+  color: var(--lp-ink-100);
+  font-size: 13px;
+  font-weight: 500;
+  left: 44px;
+  line-height: 20px;
+  position: absolute;
+  top: 4px;
+  white-space: nowrap;
+}
+.lp-s0-menu-row--custom .lp-s0-menu-l {
+  color: var(--lp-ink-70);
+  font-weight: 400;
+}
+.lp-s0-connect {
+  background: var(--lp-ink-100);
+  border-radius: 8px;
+  color: var(--lp-ink-0);
+  font-size: 12px;
+  font-weight: 600;
+  height: 26px;
+  line-height: 26px;
+  padding: 0 11px;
+  position: absolute;
+  right: 12px;
+  top: 1px;
+  white-space: nowrap;
+}
+.lp-s0-menu-rule {
+  border-top: 0.5px solid var(--lp-sx-line);
+  height: 0;
+  left: 16px;
+  position: absolute;
+  right: 16px;
+  top: 72px;
+}
+/* Pancake's sign-in card, centred on the stage */
+.lp-s0-signin {
+  background: var(--lp-ink-0);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  height: 170px;
+  left: 102px;
+  opacity: 0;
+  position: absolute;
+  text-align: center;
+  top: 118px;
+  visibility: hidden;
+  width: 260px;
+}
+.lp-s0-signin-mark {
+  height: 32px;
+  left: 114px;
+  position: absolute;
+  top: 20px;
+  width: 32px;
+}
+.lp-s0-signin-title,
+.lp-s0-signin-sub {
+  left: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 100%;
+}
+.lp-s0-signin-title {
+  color: var(--lp-ink-100);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  top: 62px;
+}
+.lp-s0-signin-sub {
+  color: var(--lp-ink-70);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
+  top: 84px;
+}
+.lp-s0-allow {
+  background: var(--lp-ink-100);
+  border-radius: 10px;
+  color: var(--lp-ink-0);
+  font-size: 13px;
+  font-weight: 600;
+  height: 36px;
+  left: 70px;
+  line-height: 36px;
+  position: absolute;
+  top: 118px;
+  width: 120px;
+}
+/* Claude's line once connected (the answer's spark, beside it), then the three rows */
+.lp-s0-said {
+  color: var(--lp-claude-ink);
+  font-size: 13px;
+  font-weight: 400;
+  left: 63px;
+  line-height: 20px;
+  opacity: 0;
+  position: absolute;
+  top: 116px;
+  visibility: hidden;
+  white-space: nowrap;
+}
+.lp-s0-said .lp-s2-answer-spark {
+  left: -22px;
+  top: 2px;
+}
+.lp-s0-can {
+  background: var(--lp-ink-0);
+  border-radius: 12px;
+  box-shadow: 0 0 0 0.5px var(--lp-sx-line);
+  color: var(--lp-ink-100);
+  height: 32px;
+  left: 51px;
+  opacity: 0;
+  position: absolute;
+  visibility: hidden;
+  width: 362px;
+}
+.lp-s0-can-dot {
+  border-radius: 3px;
+  height: 10px;
+  left: 14px;
+  position: absolute;
+  top: 11px;
+  width: 10px;
+}
+.lp-s0-can--yellow .lp-s0-can-dot {
+  background: var(--lp-yellow-30);
+}
+.lp-s0-can--purple .lp-s0-can-dot {
+  background: var(--lp-purple-30);
+}
+.lp-s0-can--pink .lp-s0-can-dot {
+  background: var(--lp-pink-30);
+}
+.lp-s0-can span {
+  font-size: 13px;
+  font-weight: 400;
+  left: 34px;
+  line-height: 16px;
+  position: absolute;
+  top: 8.6px;
+  white-space: nowrap;
+}
+
+/* ── step 02 (since 2026-10-28, "Ask anything.") · the ask typed in Claude, the Play it becomes,
+   the envelopes Claude sends ──
+   LpStepMocks S4Stage, lp-step-data S4_ASK / S4_FROM / S4_MAIL, lp-step-timelines buildS4. No
+   app window: one column on the stage's axis (x 232), centred on the stage (103 → 323): the ask
+   pill (103–147), a hairline, Claude's pancake face (162.874–263.126), a hairline, the Play pill
+   (279–323); the envelopes all around it. The markup is the END picture (LpStepAnim
+   REST_IS_END): the request typed, both hairlines drawn, the Play on, every envelope on its
+   place, its tilt the only transform.
+   Every motion is a CSS variable the timeline tweens and then lets go of (the story kit's way,
+   story-kit.css): --lp-s4-cut (px clipped off the request's right: its typing), --lp-s4-on and
+   --lp-s4-caret (the caret: shown, and its x on the glyph edges), --lp-s4-wire (a hairline's
+   draw, 0 → 1), --lp-s4-o and --lp-s4-rise (the Play coming up), --lp-s4-knob (its switch's
+   knob, px from "on"), and an envelope's flight: --lp-s4-x / --lp-s4-y (px, from its place back
+   to Claude's centre), --lp-s4-s (its scale) and --lp-s4-spin (degrees added to its tilt). Unset,
+   clip-path, translate and scale are invalid at computed-value time and compute to none, opacity
+   to 1 (the caret's falls back to 0, hidden), and the spin to 0: at rest every piece computes
+   exactly what the server markup does. GSAP's own x / y / scale would write translate3d
+   mid-tween, which re-rasterises the stage in Chromium for the tween's length (story-kit.css).
+   Paints nothing behind the scene: the card's cream is the ground. No will-change, no
+   keyframes, no soft shadow behind the white pieces (founder 2026-10-28 on Claude's disc: "pas
+   sur de l effet d ombre derriere"): GSAP-only, plays once. */
+.lp-step-stage--s4 .lp-s4-sprite {
+  height: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+}
+/* the hairlines: the infra wire's (infra.css .lp-infra__line, 1px of ink-tr-40) on the axis,
+   each tucked 1px under the pieces it joins (they paint over it); drawn top down */
+.lp-step-stage--s4 .lp-s4-wire {
+  background: var(--lp-ink-tr-40);
+  left: 231.5px;
+  position: absolute;
+  scale: 1 var(--lp-s4-wire);
+  transform-origin: 50% 0;
+  width: 1px;
+}
+/* the ask's foot (147) down to Claude's face (its top at the axis: 162.9) */
+.lp-step-stage--s4 .lp-s4-wire--ask {
+  height: 18px;
+  top: 146px;
+}
+/* Claude's face (its bottom at the axis: 263.1) down to the Play's head (279) */
+.lp-step-stage--s4 .lp-s4-wire--play {
+  height: 18px;
+  top: 262px;
+}
+/* an envelope: the mail icon in the brand's ink on a kit pancake; the pancake's shadow is the
+   infra section's (infra.css .lp-infra__cake: a hairline and a soft drop) */
+.lp-step-stage--s4 .lp-s4-mail {
+  color: var(--lp-ink-100);
+  filter: drop-shadow(0 0 0.5px rgba(48, 0, 44, 0.2)) drop-shadow(0 3px 8px rgba(48, 0, 44, 0.1));
+  position: absolute;
+  rotate: calc((var(--r) + var(--lp-s4-spin, 0)) * 1deg);
+  scale: var(--lp-s4-s);
+  translate: calc(var(--lp-s4-x) * 1px) calc(var(--lp-s4-y) * 1px);
+}
+.lp-step-stage--s4 .lp-s4-mail svg {
+  height: 100%;
+  overflow: visible;
+  width: 100%;
+}
+/* the design kit's coloured pancakes (_design-kit/pancake.html: a strong branded face over a
+   lighter rim, pink-30 on pink-20, purple-30 on purple-20, yellow-30 on yellow-20), in the
+   five accent tones of the page (green-20 on green-10, blue-30 on blue-20) */
+.lp-s4-mail[data-tone="yellow"] {
+  --lp-s4-face: var(--lp-yellow-30);
+  --lp-s4-rim: var(--lp-yellow-20);
+}
+.lp-s4-mail[data-tone="purple"] {
+  --lp-s4-face: var(--lp-purple-30);
+  --lp-s4-rim: var(--lp-purple-20);
+}
+.lp-s4-mail[data-tone="pink"] {
+  --lp-s4-face: var(--lp-pink-30);
+  --lp-s4-rim: var(--lp-pink-20);
+}
+.lp-s4-mail[data-tone="green"] {
+  --lp-s4-face: var(--lp-green-20);
+  --lp-s4-rim: var(--lp-green-10);
+}
+.lp-s4-mail[data-tone="blue"] {
+  --lp-s4-face: var(--lp-blue-30);
+  --lp-s4-rim: var(--lp-blue-20);
+}
+/* the two pills: white on the cream, 44 tall with round ends, the story kit disc's 0.5px
+   hairline as a spread shadow (story-kit.css .lp-sk-disc) and no soft shadow. Their text starts
+   on one line of sight, x 86 (the Play's after its icon) */
+.lp-step-stage--s4 .lp-s4-pill {
+  background: var(--lp-surface);
+  border-radius: 22px;
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.16);
+  height: 44px;
+  position: absolute;
+}
+/* the ask: the request, 15px regular on one line, typed from its left (hugged: 22 before it,
+   about 20 after it, centred on the axis) */
+.lp-step-stage--s4 .lp-s4-ask {
+  left: 64px;
+  top: 103px;
+  width: 336px;
+}
+.lp-step-stage--s4 .lp-s4-text {
+  clip-path: inset(0 calc(var(--lp-s4-cut) * 1px) 0 0);
+  color: var(--lp-text);
+  font-size: 15px;
+  font-weight: 400;
+  left: 22px;
+  line-height: 24px;
+  position: absolute;
+  top: 10px;
+  white-space: nowrap;
+}
+/* the caret (s2's .lp-s2-caret: 1.5 × 18 in the ink), on the text's left edge; hidden at rest */
+.lp-step-stage--s4 .lp-s4-caret {
+  background: var(--lp-ink-100);
+  height: 18px;
+  left: 21.25px;
+  opacity: var(--lp-s4-on, 0);
+  position: absolute;
+  top: 13px;
+  translate: calc(var(--lp-s4-caret) * 1px) 0;
+  width: 1.5px;
+}
+/* the Play: the infra Tools card's Play row (infra.css .lp-infra__play, -play-icon, -toggle,
+   -toggle-knob: the pink tile and its play icon, the name, the switch on) set in a pill, the
+   tile and the switch's knob concentric with its round ends (centres 22 in from each end) */
+.lp-step-stage--s4 .lp-s4-play {
+  left: 42px;
+  opacity: var(--lp-s4-o);
+  top: 279px;
+  translate: 0 calc(var(--lp-s4-rise) * 1px);
+  width: 380px;
+}
+.lp-step-stage--s4 .lp-s4-play-icon {
+  background: var(--lp-pink-10);
+  border-radius: var(--lp-r-xsm);
+  height: 28px;
+  left: 8px;
+  position: absolute;
+  top: 8px;
+  width: 28px;
+}
+.lp-step-stage--s4 .lp-s4-play-icon svg {
+  fill: var(--lp-pink-40);
+  height: 16px;
+  left: 6px;
+  position: absolute;
+  top: 6px;
+  width: 16px;
+}
+.lp-step-stage--s4 .lp-s4-play-name {
+  color: var(--lp-text);
+  font-size: 15px;
+  font-weight: 500;
+  left: 44px;
+  line-height: 24px;
+  position: absolute;
+  top: 10px;
+  white-space: nowrap;
+}
+.lp-step-stage--s4 .lp-s4-toggle {
+  background: var(--lp-pink-30);
+  border-radius: 999px;
+  height: 18px;
+  left: 337px;
+  position: absolute;
+  top: 13px;
+  width: 30px;
+}
+.lp-step-stage--s4 .lp-s4-knob {
+  background: var(--lp-surface);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(44, 0, 42, 0.25);
+  height: 14px;
+  left: 14px;
+  position: absolute;
+  top: 2px;
+  translate: calc(var(--lp-s4-knob) * 1px) 0;
+  width: 14px;
+}
+/* Claude: the kit's pancake face alone, white and flat (founder 2026-10-28: "la forme du pancake
+   mais juste en 2d genre le rond blanc imparfait un peu comme on le trouve dans le figma"), no
+   soft shadow ("pas sur de l effet d ombre derriere"), and the mark big on it ("je ferai occuper
+   une plus grande place au logo dedans"): 62 of the face's 104 (59.6 %), centred on the face's
+   centroid (52.42, 49.69 in its box). The face's box: 104 × 100.252 (its view box, 45.644 × 44,
+   so 1 unit = 2.2785 px), centred on 232, 213. Its edge is the pills' hairline, 0.5px outside the
+   white: a 1px stroke (0.439 units) painted under the fill. A 0.5px drop-shadow was the first
+   take: WebKit draws it a third as strong as Chromium, and the face went soft on the cream */
+.lp-step-stage--s4 .lp-s4-disc {
+  height: 100.252px;
+  left: 180px;
+  position: absolute;
+  top: 162.874px;
+  width: 104px;
+}
+.lp-step-stage--s4 .lp-s4-disc > svg {
+  fill: var(--lp-surface);
+  height: 100%;
+  overflow: visible;
+  paint-order: stroke;
+  stroke: rgba(48, 0, 44, 0.16);
+  stroke-width: 0.439px;
+  width: 100%;
+}
+.lp-step-stage--s4 .lp-s4-claude {
+  color: var(--lp-claude-spark);
+  height: 62px;
+  left: 21.42px;
+  position: absolute;
+  top: 18.69px;
+  width: 62px;
+}
+.lp-step-stage--s4 .lp-s4-claude svg {
+  height: 100%;
+  width: 100%;
 }
 
 /* ══ Steps 02 and 03 — the designer's "How it works" storyboards (Figma page
@@ -821,10 +1280,36 @@
   top: 0;
   width: 464px;
 }
+/* Claude's thread (2026-10-21, step 02 starts in Claude): its header, top left, scrolls with it */
+.lp-s2-claude {
+  align-items: center;
+  color: var(--lp-claude-ink-48);
+  display: flex;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 6px;
+  left: 51px;
+  line-height: 16px;
+  position: absolute;
+  top: 28px;
+}
+.lp-s2-claude-spark,
+.lp-s2-answer-spark {
+  color: var(--lp-claude-spark);
+  display: block;
+  height: 16px;
+  width: 16px;
+}
+.lp-s2-claude-spark svg,
+.lp-s2-answer-spark svg {
+  display: block;
+  height: 16px;
+  width: 16px;
+}
 .lp-s2-bubble {
-  background: #30002c; /* the mocks' button plum (as .lp-s1-btn), not ink-100 */
+  background: var(--lp-claude-bubble); /* Claude's user bubble (was the mocks' button plum) */
   border-radius: 12px; /* frames 2–3 (frame 1 still draws 8) */
-  color: var(--lp-ink-0);
+  color: var(--lp-claude-ink);
   font-size: 13px;
   font-weight: 400;
   height: 32px;
@@ -845,11 +1330,11 @@
 /* the composer: the thread's column (51 → 413), a 48 bar centred on the 426 stage at rest;
    the timeline glides it down to 350 once the request is sent. The storyboard's card skin. */
 .lp-s2-composer {
-  background: var(--lp-ink-0);
+  background: var(--lp-claude-card); /* Claude's composer (2026-10-21) */
   border-radius: 16px;
   box-shadow:
-    0 0 0 0.5px var(--lp-sx-line),
-    var(--lp-sx-shadow);
+    inset 0 0 0 0.5px var(--lp-claude-ink-16),
+    0 4px 24px rgba(0, 0, 0, 0.06);
   height: 48px;
   left: 51px;
   position: absolute;
@@ -866,12 +1351,37 @@
   white-space: nowrap;
 }
 .lp-s2-ph {
-  color: var(--lp-ink-70);
+  color: var(--lp-claude-ink-48);
+}
+/* the Pancake connector, on: its mark and a green dot, left of the send button */
+.lp-s2-pk {
+  display: block;
+  height: 20px;
+  position: absolute;
+  right: 48px;
+  top: 14px;
+  width: 20px;
+}
+.lp-s2-pk-mark {
+  display: block;
+  height: 20px;
+  width: 20px;
+}
+.lp-s2-pk-dot {
+  background: var(--lp-green-30);
+  border-radius: 50%;
+  bottom: 0;
+  box-shadow: 0 0 0 1.5px var(--lp-claude-card);
+  display: block;
+  height: 6px;
+  position: absolute;
+  right: -1px;
+  width: 6px;
 }
 /* the typed request: hidden at rest by a full right inset (the .lp-s1-typed idiom) */
 .lp-s2-typed {
   clip-path: inset(0 100% 0 0);
-  color: var(--lp-ink-100);
+  color: var(--lp-claude-ink);
 }
 .lp-s2-caret {
   background: var(--lp-ink-100);
@@ -882,8 +1392,8 @@
   width: 1.5px;
 }
 .lp-s2-send {
-  background: #30002c; /* the bubble's plum */
-  border-radius: 50%;
+  background: var(--lp-claude-send); /* Claude's send button */
+  border-radius: var(--lp-r-xsm);
   height: 28px;
   position: absolute;
   right: 10px;
@@ -916,8 +1426,19 @@
   height: 32px;
   top: 171px;
 }
-.lp-s2-worked span {
+/* (0,2,0): above `.lp-s2-worked svg` / `path`, which place and stroke the chevron */
+.lp-s2-worked .lp-s2-worked-pk {
+  height: 16px;
   left: 12px;
+  position: absolute;
+  top: 8px;
+  width: 16px;
+}
+.lp-s2-worked .lp-s2-worked-pk path {
+  stroke: none;
+}
+.lp-s2-worked span {
+  left: 34px;
   line-height: 16px;
   position: absolute;
   top: 8.6px; /* Figma 8 + 0.6 */
@@ -938,6 +1459,17 @@
   line-height: 20px;
   padding: 8.6px 12px 7.4px; /* Figma 8 / 12; text y: Figma 8 + 0.6 */
   top: 213px;
+}
+/* Claude answers on the page itself, its spark beside the text (same box, so the same three lines) */
+.lp-step-stage--s2 .lp-s2-answer {
+  background: transparent;
+  box-shadow: none;
+  color: var(--lp-claude-ink);
+}
+.lp-s2-answer-spark {
+  left: -10px;
+  position: absolute;
+  top: 10.6px;
 }
 /* the answer's text: written in by the timeline (fully clipped at rest, the .lp-s3-msg-text idiom) */
 .lp-s2-answer-t {

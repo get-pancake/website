@@ -9,18 +9,30 @@ import type { DiveItemId } from "./lp-dive-stages";
  * their order are fixed by lp-dive-stages.ts (DiveItemId, DIVE_ORDER); each stage's alt text
  * comes from its story data module (STORY_<NAME>_ALT), not from here.
  *
- * Copy (decision 2026-10-09 §5):
- * - sources: until 2026-10-13 V2's body with "experts" for "influencers" ("Choose the keywords,
- *   competitors, experts, hiring activity, and tech stacks that matter. Pancake finds matching
- *   buyers and keeps the source attached."). Since then it names what its story now shows
- *   (founder: "use our most known data providers"): three of the six providers the product
- *   itself names to its users (pancake-cmo apps/frontend vendor-logo.tsx), in their spelling.
- * - message: not in Figma → production f2 body (founder-approved 2026-10-07), with one example
- *   changed on 2026-10-13: its third signal read "a new tool", which no conversation of the
- *   reworked story shows (a post, an open role, a seed round, a rebrand). Now "a funding round".
- * - learns: not in Figma → production f4 body.
- * - claude: not in Figma → the story-claude line, plus "See how →" to the Claude guide (the
- *   crawlable route the demo tour's "Works in Claude and Codex" link used to carry).
+ * The four blocks since 2026-10-28 (founder, on the section then titled "How Pancake gets you
+ * customers": "encore tres verticalized agents", then his four primitives): "1/ Next best action
+ * + Unified GTM context 2/ Buying signal + enrichment 3/ Lead lineage 4/ mcp first".
+ * Each item says what the visitor's agent gets, aligned with the founder's four blocks (and, on
+ * 2026-10-28, "not necessarily say what it say but keep things aligned"): the ICP, the voice and
+ * the CRM read in one call, then the next account and the Play (context); signals on hiring,
+ * funding and site visits, work emails on demand, his "30+ data providers" and one bill (signals);
+ * a lead found where the customer's own data and outside signals cross, keeping the signal and the
+ * source that found it (lineage, his "la detection croisee de signaux interne externe"); one
+ * install in Claude, Claude Code, ChatGPT or Codex and about 100 tools (mcp). No platform is
+ * named. The
+ * visitor's agent stays the actor (founder, 2026-10-28): Pancake is the layer under it, so no body
+ * says "Pancake suggests".
+ *
+ * Heading: the designer's "How Pancake finds customers" (V2 4939:3390); on 2026-10-21 "What your
+ * agent runs on" (founder: "not clear"); from 2026-10-22 "How Pancake gets you customers", which he
+ * kept; on 2026-10-28 "How your agent gets customers", a proposal with the visitor's agent as
+ * the actor, which he turned down on the preview (2026-10-29: "Not fan of this title and the
+ * 'gets customers'. We could find something beter"); since then "What your agent can do with
+ * Pancake": the visitor's agent as the subject, as his benchmark heading "Your agent needs 3
+ * things to sell.", and what the four blocks show, without "gets customers". One line from 1024
+ * px (823 of 928 px at 57.3 px), two on phones as before. On 2026-10-21 he also
+ * asked for no "already live" labels ("dont say 'already live' just push a simple and strong
+ * narrative with the key features in this cloud section").
  * The f5 "See example Plays" link is not carried over: the nav (Product) and the footer
  * ("Example Plays") both link /plays.
  *
@@ -43,16 +55,17 @@ export type DiveItem = {
   status: ContentStatus;
 };
 
-/** the section heading (production copy, = V2 4939:3390) */
-export const DIVE_TITLE = "How Pancake finds customers";
+/** the section heading (V2 4939:3390 "How Pancake finds customers", the agent as its actor) */
+export const DIVE_TITLE = "What your agent can do with Pancake";
 
 /**
  * THE PHONE SWITCH (≤767; decision 2026-10-11 §9 F3, mobile artboard 5024:8914).
  * - "stack" (the designer's artboard): the four items stacked, all open, no carousel UI; each
  *   item's stage is the DESKTOP 752×489 scene scaled to the column, played once on its own
  *   (lp-play-once) when the visitor reaches it.
- * - "carousel" (the 2026-10-09 phone build): one stage over the tab list, the 400×520 phone
- *   recompositions of the four stories from 599 down. Still in the code, this constant away.
+ * - "carousel" (the 2026-10-09 phone shell): one stage over the tab list, in the 400×520 box from
+ *   599 down. The four stories of 2026-10-28 have no 400×520 composition: flipped, they clip
+ *   (README, Scene boxes). Flip it only once they are drawn for that box.
  * LpDive writes it on the section (data-lp-phone); dive.css and lp-dive-carousel.ts key off it.
  */
 export const DIVE_PHONE_LAYOUT: "stack" | "carousel" = "stack";
@@ -65,27 +78,27 @@ export const DIVE_FALLBACK_S = 6;
 
 export const DIVE_ITEMS: readonly DiveItem[] = [
   {
-    id: "sources",
-    title: "Sources you can trust",
-    body: "Pancake reads funding rounds, open roles and tech stacks from Dealroom, TheirStack, Wappalyzer and more. Every lead shows why it fits and where that came from.",
+    id: "context",
+    title: "Your agent knows\nwhat to do next",
+    body: "It reads your ICP, your voice and your CRM in one call, then picks the next account to work and the Play to run.",
     status: "final",
   },
   {
-    id: "message",
-    title: "A personal message for\nevery lead",
-    body: "Pancake opens with their signal: a post, an open role, a funding round. Each sequence has its own language and tone. Edit any draft before it sends.",
+    id: "signals",
+    title: "Buying signals, enriched",
+    body: "Find companies hiring, newly funded or visiting your site. Work emails on demand. 30+ data providers, one bill.",
     status: "final",
   },
   {
-    id: "learns",
-    title: "Pancake learns from what wins",
-    body: "Approve or reject a lead and your brain learns who fits. Each Play tracks contacts, replies and wins, so you see what works.",
+    id: "lineage",
+    title: "Where every lead came from",
+    body: "Your own data crosses with outside signals, and a lead shows up where both meet. Each lead keeps the signal and the source that found it.",
     status: "final",
   },
   {
-    id: "claude",
-    title: "Run it from Claude or Codex",
-    body: "Connect Pancake to Claude or Codex with a browser sign-in. Build Plays, review leads and edit messages from the chat you already use.",
+    id: "mcp",
+    title: "Built for Claude and Codex",
+    body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent creates Plays and reviews leads with about 100 tools.",
     more: { href: GUIDE_PATH, label: "See how", name: "See how to run Pancake from Claude or Codex" },
     status: "final",
   },

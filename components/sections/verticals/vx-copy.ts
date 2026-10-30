@@ -275,7 +275,6 @@ export const VX_PRICING_CHECKLIST: readonly string[] = [
   `${formatCredits(BASE_LEVEL.credits)} credits a month to keep warm leads\u00a0coming.`,
   "Every lead comes with its reason.",
   "Outreach from your own account.",
-  "You approve every lead first.",
   "Slow month? Unused credits roll\u00a0over.",
   "Your whole team, with no seats to\u00a0pay.",
 ];

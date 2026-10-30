@@ -28,7 +28,10 @@ import {
  * seconds" (LpAudienceHeadline.tsx). His second pass that day: the first was
  * H1 "Agentic infrastructure to run your go-to-market" over a longer lede.
  * 2026-10-27: the lede stays under the founder's new H1, "Infrastructure to
- * run your GTM factory".
+ * run your GTM factory"; "Infrastructure powering your GTM factory" on
+ * 2026-10-28, then "Infrastructure to power your GTM factory" the same evening,
+ * and "Infrastructure powering" again since 2026-10-30 (neither echoes this
+ * line's "to run your").
  */
 export const SITE_DESCRIPTION =
   "Pancake gives your agent the brain, the data and the tools to run your go-to-market.";
@@ -299,7 +302,6 @@ export const pricingV2 = {
     { rest: "30+ data providers included." },
     { rest: "Leads matched to your ICP." },
     { rest: "A personal message for each lead." },
-    { rest: "You approve every lead first." },
     { rest: "Your whole team. No seats to pay." },
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot): the trial is
@@ -326,18 +328,22 @@ export const pricingV2 = {
  *   personas, competitors, messaging and voice, every Play starts from it,
  *   and it learns from the leads they approve or pass (not from replies:
  *   lp-steps-content.ts).
- * - "30+ data providers" is the homepage's own label (lp-story-sources-data.ts
- *   hub; the founder's figure, 2026-10-13: "Mets 30+ data provider sur
+ * - "30+ data providers" is the homepage's own label (lp-story-signals-data.ts,
+ *   the dive's signals story; the founder's figure, 2026-10-13: "Mets 30+ data provider sur
  *   pancake.ai"); the three named here are the ones behind funding, open
- *   roles and people data. No contract or API key on the customer's side.
+ *   roles and people data, as the dive's signals story draws them (Dealroom
+ *   on the seed round's disc). No contract or API key on the customer's side.
  * - Signals: the ways a Play finds people (/plays). Job changes and news are
  *   NOT among them.
  * - Outreach: a personal message per lead in the customer's voice, sent from
  *   their own account once they approve the lead; a reply stops the sequence.
- * The example is the homepage's cast (Tamsin Okafor of Quillfern, a lead of
- * the invented seller Acme, which designs websites for startups;
- * lp-story-sources-data.ts gives Dealroom for the seed round and TheirStack
- * for the open role), labelled as one lead. Keep them in step.
+ * The example is one lead of the homepage's invented seller Acme, which
+ * designs websites for startups: a role at a real startup, never an invented
+ * person's name (founder 2026-10-28: "get rid of those fake people looks
+ * cheap af", then roles at real companies; the signals are illustrative).
+ * It is the page's one lead, Mastra (lp-step-data.ts S1_LEADS). Its open role's badge is TheirStack's and its
+ * seed round's Dealroom's, as the dive's signals story draws them. Labelled
+ * as one lead. Keep them in step.
  */
 export const pricingLead = {
   title: "Leads matched to your business, not to a filter.",
@@ -362,9 +368,9 @@ export const pricingLead = {
   ],
   example: {
     kicker: "One lead, as you get it",
-    initials: "TO",
-    name: "Tamsin Okafor",
-    role: "Founder & CEO, Quillfern",
+    initials: "M",
+    name: "Founder @ Mastra",
+    role: "AI agent framework",
     signalsLabel: "Signals found",
     signals: [
       { text: "Raised a seed round this month", source: "Dealroom" },
@@ -373,7 +379,7 @@ export const pricingLead = {
     brainLabel: "Matched by your GTM Brain",
     brain: "You design websites for startups that just raised.",
     messageLabel: "Message, in your voice",
-    message: "Hi Tamsin, congrats on Quillfern’s seed round. Want a new website live before your marketing lead starts?",
+    message: "Congrats on Mastra’s seed round. Want a new website live before your marketing lead starts?",
   },
 } as const;
 

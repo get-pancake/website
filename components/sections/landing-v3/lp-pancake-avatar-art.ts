@@ -1,32 +1,18 @@
 /**
- * Deep-dive story "Pancake learns from what wins" — the stage's SVG art (Figma storyboard of
- * 2026-10-12: 5061:1443 / 5335 / 5399 / 5459 / 5509). Owner: story-learns package. Path data
- * only, no copy (not linted). Read from the Figma nodes; never hand-edit a path.
+ * The Pancake avatar (Figma: an instance of `avatar-pancake-round`, 5061:5589), as path data
+ * only, no copy (not linted). Read from the Figma node; never hand-edit a path. LpInfra.tsx and
+ * LpStoryMcp.tsx crop it to the mascot (viewBox "3.9 4.9 24 24"); LpClaudeScene.tsx and
+ * LpStepMocks.tsx draw the full box. It must stay free of "use client": the server-safe mcp
+ * Stage (LpStoryMcp.tsx) imports it.
  *
- * Every icon is drawn in a viewBox the size of its own stage box (1 unit = 1 stage px), so the
- * stylesheet can sit the box on a whole pixel and carry the fraction as a translate in px (see
- * story-learns.css, "Icons").
+ * Until 2026-10-28 it was the art of the deep-dive story "Pancake learns from what wins"
+ * (lp-story-learns-art.ts at 630bb8e, SL_AVATAR beside that story's arrow and check); only the
+ * avatar stayed when the story went.
  */
 
-/** The chart's up-right arrow (5061:5394, the union of two 2.667 strokes), 18.765 box.
-    Fill: --lp-green-30. Production's old card drew the same arrow at x0.9 (lp-f4-arrow.svg). */
-export const SL_ARROW = {
-  size: 18.765,
-  d: "M18.765 1.821C15.33 7.771 16.532 13.797 17.493 15.942L16.276 16.487L15.06 17.033C14.192 15.097 13.274 11.062 14.201 6.446L1.885 18.764L0.942 17.821L0 16.878L12.317 4.56C7.702 5.487 3.668 4.572 1.731 3.704L2.821 1.271C4.967 2.232 10.994 3.435 16.943 0L18.765 1.821Z",
-} as const;
-
-/** A list check (instances of the kit's `check`, 5061:5539 …): the kit's 24-unit path (the same
-    as public/lp/lp-p-check.svg) in a 33.7838 box, hence the scale. Fill: --lp-green-30. */
-export const SL_CHECK = {
-  size: 33.7838,
-  scale: 1.407658, // 33.7838 / 24
-  d: "M19.6719 6.74023C15.8888 10.172 13.5285 14.1231 12.4111 19.2148L10.502 19.3604C9.39587 16.5018 7.48463 14.777 5.58496 13.9102L6.41504 12.0898C8.15295 12.8828 9.84968 14.2371 11.1436 16.2334C12.5306 11.9122 14.8998 8.36986 18.3281 5.25977L19.6719 6.74023Z",
-} as const;
-
-/** The Pancake avatar (instance of `avatar-pancake-round`, 5061:5589), 33.7838 box: three
-    pancakes (pink, purple, yellow: a side and a top each), two soft shadows between them, two
-    eyes. Painted bottom to top in this order. */
-export const SL_AVATAR = {
+/** 33.7838 box: three pancakes (pink, purple, yellow: a side and a top each), two soft shadows
+    between them, two eyes. Ten shapes, painted bottom to top in this order. */
+export const PANCAKE_AVATAR = {
   size: 33.7838,
   shapes: [
     { fill: "#ffbbc7", d: "M17.8066 28.7302C15.6693 28.7302 12.336 28.7777 10.266 27.5012C7.73743 25.9419 6.45433 23.3885 6.43055 21.1071C6.38375 16.6188 10.5949 12.4312 16.1999 12.4312C18.7592 12.4312 21.6814 12.9687 23.5726 14.1576C25.8235 15.5725 27.5382 17.4496 27.5382 20.4467C27.5382 25.2932 24.2742 28.7302 17.8066 28.7302Z" },

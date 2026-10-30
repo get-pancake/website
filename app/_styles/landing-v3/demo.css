@@ -617,10 +617,8 @@
    every later element hidden, and lp-demo-claude-timeline.ts plays one take:
    type, send (the composer becomes the dock), three tool calls, the Play,
    the permission prompt, Live. */
-/* the agent views of the window, and the deep dive's Claude story (LpStoryClaude keeps its own
-   wrapper class; story-claude.css restates the rows it moves) */
-.lp-demowin__view--agent,
-.lp-demowin__view--claude {
+/* the agent views of the window */
+.lp-demowin__view--agent {
   --ck-col: 600px;
   --ck-x: calc(50% - 300px);
   --ck-greet-top: 124.1px;
@@ -914,21 +912,6 @@
 .lp-demowin__cwin[data-harness="codex"] .lp-demowin__perm-btn { background: #f4f4f4; border-radius: 999px; box-shadow: none; font-size: 13px; line-height: 32px; padding: 0 14px; }
 .lp-demowin__cwin[data-harness="codex"] .lp-demowin__perm-btn--go { background: #0d0d0d; }
 
-/* rest = END (the deep dive's stage, LpStoryClaude): the scene's last picture
-   in plain CSS, for the markup before and after its timeline. The same picture
-   as the timeline's last frame: change the two together. */
-.lp-demowin__cwin[data-rest="end"] .lp-demowin__greet,
-.lp-demowin__cwin[data-rest="end"] .lp-demowin__cbar-ph,
-.lp-demowin__cwin[data-rest="end"] .lp-demowin__cbar .lp-demowin__caret,
-.lp-demowin__cwin[data-rest="end"] .lp-demowin__ctool-doing,
-.lp-demowin__cwin[data-rest="end"] .lp-demowin__cplay-st > [data-s="draft"] { visibility: hidden; }
-.lp-demowin__cwin[data-rest="end"] .lp-demowin__cbar { height: var(--ck-dock-h); top: var(--ck-dock-top); }
-.lp-demowin__cwin[data-rest="end"] .lp-demowin__cthread > *,
-.lp .lp-demowin__cwin[data-rest="end"] .lp-demowin__cbar-ask,
-.lp-demowin__cwin[data-rest="end"] .lp-demowin__cplay-st > [data-s="live"] { opacity: 1; visibility: visible; }
-.lp .lp-demowin__cwin[data-rest="end"] .lp-demowin__ctools:not(.lp-demowin__ctools--deploy),
-.lp-demowin__cwin[data-rest="end"] .lp-demowin__perm { display: none; }
-
 @keyframes lp-demowin-spin {
   to { transform: rotate(1turn); }
 }
@@ -1191,9 +1174,8 @@
      title's line, the composer under it at the desktop's distance (82.5), the thread starts
      150 down (centred between the top edge and the dock), and the dock keeps the Pancake chat bar's 66.93 du from the bottom edge
      (860 − 66.93 − 90). Plain px: the timeline reads the bar's and the dock's tops with
-     parseFloat, a calc() is NaN. Scoped to the card: the deep dive's story embeds this scene
-     with a geometry of its own (story-claude.css), which a bare class here would override
-     between 600 and 767. */
+     parseFloat, a calc() is NaN. Scoped to the card (until 2026-10-28 the deep dive's Claude
+     story embedded this scene with a geometry of its own; it was removed with its story). */
   .lp-demowin__card .lp-demowin__view--agent {
     --ck-col: 487.97px;
     --ck-x: 29.18px;

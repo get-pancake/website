@@ -1,0 +1,733 @@
+/* Section — "Your agent needs 3 things to sell." (LpInfra.tsx, the infra-first landing,
+   2026-10-21). No Figma frame yet, so it is built from the homepage's own parts and the kit: the
+   steps' wrapper, org and centred title (steps.css), the step card's cream and r30, the mock
+   cards' white fill and 0.4px hairline (.lp-mockcard), the kit's brand cards and badges
+   (_design-kit/card.html, badge.html: weak surface + branded stroke, strong surface under plum
+   text) in the logo's three pancake colours. 2026-10-22 ("make this more beautiful - use design
+   system"): grouped nodes after Mobbin's infra diagrams (Cloudflare Workers), Pancake as the hub
+   (Coda). 2026-10-28: no dotted canvas and no platform ("je ne veux pas du background point"),
+   the cards spread a size up, Pancake the brand's lockup on plum that branches down to them
+   (Mobbin: Cartesia's "Your code" node and its fork). The diagram reads top to bottom: your
+   agent, the wire into Pancake, its fork and its three layers. */
+.lp-infra {
+  /* the three cards' gap, in % of their row: the fork's arms are measured from it */
+  --lp-infra-gap: 3.54;
+  padding: 16px;
+}
+.lp-infra__org {
+  padding: 128px 32px 0;
+}
+.lp-infra__pin {
+  width: 100%;
+}
+.lp-infra__stage {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 66px;
+}
+
+/* heading block: the steps' title, alone */
+.lp-infra__head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 100%;
+  text-align: center;
+  width: 1136px; /* "Your agent needs 3 things to sell." holds on one line */
+}
+.lp-infra__title {
+  color: var(--lp-text);
+  line-height: 69px;
+  margin: 0;
+  text-wrap: balance;
+}
+
+/* the diagram, on the page itself (the cream dotted canvas went on 2026-10-28: "je ne veux pas du
+   background point"): as wide as the three cards spread a size up, 42 apart at 1440 */
+.lp-infra__card {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  max-width: 100%;
+  padding-top: 24px;
+  position: relative;
+  width: 1188px;
+}
+
+/* your agent: one node holding the two agents (no label beside them since 2026-10-27) */
+.lp-infra__agentbar {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: 20px;
+  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
+  display: flex;
+  padding: 8px;
+}
+.lp-infra__agents {
+  display: flex;
+  gap: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-infra__agent {
+  align-items: center;
+  background: var(--lp-ink-10);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
+  color: var(--lp-text);
+  display: flex;
+  font-size: var(--lp-text-md);
+  font-weight: 500;
+  gap: 8px;
+  line-height: 24px;
+  padding: 8px 16px 8px 12px;
+}
+/* LpAgentMarks' cells: the Claude glyph is 20 in a 24 cell (in its own spark colour), the OpenAI
+   glyph fills its 24 box */
+.lp-infra__mark {
+  color: var(--lp-ink-100);
+  display: grid;
+  height: 24px;
+  place-items: center;
+  width: 24px;
+}
+.lp-infra__mark svg {
+  display: block;
+  height: 24px;
+  width: 24px;
+}
+.lp-infra__mark svg[data-mark="claude"] {
+  color: var(--lp-claude-spark);
+  height: 20px;
+  width: 20px;
+}
+
+/* the wire from your agent straight into Pancake: a hairline the build-up draws (LpInfraAnim);
+   no pill on it since 2026-10-27 ("One sign-in. No API keys. => Remove") */
+.lp-infra__link {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+.lp-infra__wire {
+  display: block;
+  height: 28px;
+  position: relative;
+  width: 1px;
+}
+.lp-infra__line {
+  background: var(--lp-ink-tr-40);
+  display: block;
+  inset: 0;
+  position: absolute;
+}
+
+/* Pancake: the brand's lockup on plum, the logo kit's avatar (the colour mascot on plum) beside
+   the footer's cream wordmark; a size up from your agent's node, the hub its three cards hang
+   from (Mobbin: Cartesia's "Your code" node). The plum is the nav's primary button's. Founder
+   2026-10-28 on the white bar and chip it was: "J integrerai le pancake das un truc plus beau et
+   moins vibe coded". */
+.lp-infra__brand {
+  align-items: center;
+  background: var(--lp-brand-plum);
+  border-radius: 22px;
+  display: flex;
+  gap: 10px;
+  padding: 11px 24px 11px 12px;
+  position: relative;
+  z-index: 1;
+}
+.lp-infra__pk {
+  display: block;
+  height: 48px;
+  width: 48px;
+}
+.lp-infra__wordmark {
+  display: block;
+  height: 50px;
+  width: auto;
+}
+
+/* Pancake's fork down to its three cards (Cartesia's branches): a stem from the node to the middle
+   card, and arms out and down to the side cards' centres, in the wire's hairline. The side cards'
+   centres are (1 + gap) / 3 of the row from its middle, whatever the row's size up (the row is the
+   diagram's width once scaled): the arms span twice that, plus their 1px border. */
+.lp-infra__fork {
+  height: 48px;
+  position: relative;
+  width: 100%;
+}
+.lp-infra__fork-stem {
+  background: var(--lp-ink-tr-40);
+  height: 100%;
+  left: calc(50% - 0.5px);
+  position: absolute;
+  top: 0;
+  width: 1px;
+}
+.lp-infra__fork-arms {
+  border: 1px solid var(--lp-ink-tr-40);
+  border-bottom: 0;
+  border-radius: 14px 14px 0 0;
+  bottom: 0;
+  height: 28px;
+  inset-inline: 0;
+  margin-inline: auto; /* centred by layout, so its hairlines snap to the pixel */
+  position: absolute;
+  width: calc((100 + var(--lp-infra-gap)) * 2% / 3 + 1px);
+}
+
+/* the three layers: kit brand cards in the logo's pancake colours (yellow on top, purple, pink
+   under); subgrid rows keep every badge, title and body on one line of sight. From 1025 the row
+   is a size up (--lp-infra-zoom, the size the scroll fills the cards at) and spread (founder
+   2026-10-28: "je prefere sans le resserrement … je trouve ca bien que ca occupe plus d
+   espace"): laid out at the diagram's width / zoom, so it is the diagram's width once scaled */
+.lp-infra__parts {
+  --lp-infra-zoom: 1;
+  column-gap: calc(var(--lp-infra-gap) * 1%);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  row-gap: 12px;
+  width: calc(100% / var(--lp-infra-zoom));
+}
+@media (min-width: 1025px) {
+  .lp-infra__parts {
+    --lp-infra-zoom: 1.12;
+    /* the room the size up takes under the row (a transform takes none): its 275px cards' 12% */
+    margin-bottom: 33px;
+    transform: scale(var(--lp-infra-zoom));
+    transform-origin: 50% 0;
+  }
+}
+.lp-infra__part[data-tone="yellow"] {
+  --lp-infra-tone-10: var(--lp-yellow-10);
+  --lp-infra-tone-20: var(--lp-yellow-20);
+  --lp-infra-tone-30: var(--lp-yellow-30);
+  --lp-infra-tone-40: var(--lp-yellow-40);
+}
+.lp-infra__part[data-tone="purple"] {
+  --lp-infra-tone-10: var(--lp-purple-10);
+  --lp-infra-tone-20: var(--lp-purple-20);
+  --lp-infra-tone-30: var(--lp-purple-30);
+  --lp-infra-tone-40: var(--lp-purple-40);
+}
+.lp-infra__part[data-tone="pink"] {
+  --lp-infra-tone-10: var(--lp-pink-10);
+  --lp-infra-tone-20: var(--lp-pink-20);
+  --lp-infra-tone-30: var(--lp-pink-30);
+  --lp-infra-tone-40: var(--lp-pink-40);
+}
+.lp-infra__part {
+  background: var(--lp-infra-tone-10);
+  border-radius: var(--lp-r-lg);
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  padding: 8px 8px 22px;
+  position: relative;
+  row-gap: 8px;
+}
+/* The scroll version opens each brick on its word alone, large, low on the left, in the brick's
+   deep tone: the steps' big numerals (.lp-steps__num: the display face in purple-, pink- and
+   yellow-40) set as Mobbin's Tines values cards set their words (founder 2026-10-27 on a scaled-up
+   badge: "Not beautiful, get inspired by top designs"). Then the word goes into the badge and the
+   window opens (buildInfraScroll). Hidden everywhere else, and at rest. */
+.lp-infra__part-word {
+  display: none;
+}
+.lp-infra[data-scroll] .lp-infra__part-word {
+  bottom: 18px;
+  color: var(--lp-infra-tone-40);
+  display: block;
+  font-family: var(--lp-font-cond);
+  font-size: 80px; /* the brick's width, near enough: "Context" fills three quarters of it */
+  font-weight: 600;
+  left: 22px;
+  letter-spacing: -2.4px; /* −3%, as the display titles */
+  line-height: 1;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+}
+/* (0,2,0): beats `.lp p { margin: 0 }` */
+.lp-infra__part > :not(.lp-infra__pic) {
+  margin-inline: 14px;
+}
+.lp-infra__pic {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-m);
+  box-shadow: inset 0 0 0 0.4px var(--lp-subtle-stroke);
+  display: flex;
+  height: 168px;
+  justify-content: center;
+  margin-bottom: 8px;
+  overflow: hidden;
+  padding: 14px 16px;
+}
+/* the kit badge (components.css .badge, brand variants), ported: the kit's stylesheet is not
+   loaded on the homepage */
+/* the brick's badge: the kit's badge one step down the type scale (founder 2026-10-29, on the
+   preview: "these badges are too big"; it was the kit's eyebrow size, --lp-text-sm, 18 px line,
+   2px 8px) */
+.lp-infra__part-name {
+  background: var(--lp-infra-tone-30);
+  border: 1px solid var(--lp-infra-tone-30);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  corner-shape: squircle;
+  font-size: var(--lp-text-xsm);
+  font-weight: 500;
+  justify-self: start;
+  letter-spacing: 0.453px;
+  line-height: 15px;
+  padding: 1px 6px;
+  text-transform: uppercase;
+}
+.lp-infra__part-title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  font-weight: 600;
+  line-height: 29px;
+  margin: 0;
+  text-wrap: balance;
+}
+
+/* the brain: what it knows about Acme, and its other sections as chips */
+.lp-infra__brain {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+.lp-infra__chips {
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0 2px;
+}
+/* the kit badge, small, in the Context card's yellow */
+.lp-infra__chip {
+  background: var(--lp-yellow-30);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  corner-shape: squircle;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  line-height: 16px;
+  padding: 2px 7px;
+  text-transform: uppercase;
+}
+.lp-infra__memory {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+}
+.lp-infra__mem-row {
+  align-items: baseline;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 52px minmax(0, 1fr);
+  padding: 8px 2px;
+}
+.lp-infra__mem-row + .lp-infra__mem-row {
+  box-shadow: inset 0 1px 0 var(--lp-ink-tr-10);
+}
+.lp-infra__mem-row dt {
+  color: var(--lp-subtle-text);
+  font-size: 12px;
+  line-height: 18px;
+}
+.lp-infra__mem-row dd {
+  color: var(--lp-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 20px;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* the data: the providers' own marks, half the disc's width on white discs, and the signals */
+.lp-infra__data {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+/* the Play's signals, as white pills with a hairline */
+.lp-infra__signals {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-infra__signal {
+  background: var(--lp-surface);
+  border-radius: 999px;
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.16);
+  color: var(--lp-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  padding: 4px 10px;
+  white-space: nowrap;
+}
+.lp-infra__discs {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* each provider's mark on one of the kit's pancakes (LpInfra Pk; founder 2026-10-27: "des ronds
+   imparfaits un peu comme les pancake du design system"): a white face over an edge in the Data
+   card's purple, under it a soft shadow like the one on the dive kit's discs (story-kit.css
+   --sk-disc-shadow; first the sources story's) */
+.lp-infra__disc {
+  --lp-pk-front: var(--lp-surface);
+  --lp-pk-back: var(--lp-purple-20);
+  display: grid;
+  flex: none;
+  height: 44px;
+  place-items: center;
+  position: relative;
+  width: 44px;
+}
+.lp-infra__disc + .lp-infra__disc {
+  margin-left: -8px;
+}
+.lp-infra__disc img,
+.lp-infra__disc > span {
+  margin-bottom: 3px; /* the face's centre: the edge shows under it */
+  position: relative;
+}
+.lp-infra__disc img {
+  display: block;
+  height: 22px;
+  object-fit: contain;
+  width: 22px;
+}
+.lp-infra__disc--more {
+  --lp-pk-front: var(--lp-purple-20);
+  --lp-pk-back: var(--lp-purple-30);
+  color: var(--lp-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  line-height: 1;
+}
+
+/* the kit's pancake shapes (_design-kit/pancake.html): the sprite, once, and one shape under
+   whatever it holds; colours from --lp-pk-front (the face) and --lp-pk-back (the edge) */
+.lp-infra__sprite {
+  height: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 0;
+}
+.lp-infra__cake {
+  display: block;
+  height: 100%;
+  inset: 0;
+  overflow: visible;
+  position: absolute;
+  width: 100%;
+}
+.lp-infra__disc .lp-infra__cake,
+.lp-infra__crm .lp-infra__cake {
+  filter: drop-shadow(0 0 0.5px rgba(48, 0, 44, 0.2)) drop-shadow(0 3px 8px rgba(48, 0, 44, 0.1));
+}
+
+/* the tools: a live Play and the lead it waits on */
+.lp-infra__tools {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+.lp-infra__play {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+.lp-infra__play-icon {
+  background: var(--lp-pink-10);
+  border-radius: var(--lp-r-xsm);
+  display: grid;
+  flex: none;
+  height: 28px;
+  place-items: center;
+  width: 28px;
+}
+.lp-infra__play-icon svg {
+  display: block;
+  fill: var(--lp-pink-40);
+}
+.lp-infra__play-name {
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  color: var(--lp-text);
+  display: -webkit-box;
+  flex: 1;
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 18px;
+  min-width: 0;
+  overflow: hidden;
+}
+.lp-infra__toggle {
+  background: var(--lp-pink-30);
+  border-radius: 999px;
+  display: block;
+  flex: none;
+  height: 18px;
+  position: relative;
+  width: 30px;
+}
+.lp-infra__toggle-knob {
+  background: var(--lp-surface);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(44, 0, 42, 0.25);
+  display: block;
+  height: 14px;
+  left: 2px;
+  position: absolute;
+  top: 2px;
+  transform: translateX(12px);
+  width: 14px;
+}
+.lp-infra__leads {
+  box-shadow: inset 0 1px 0 var(--lp-ink-tr-10);
+  display: grid;
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 10px 0 0;
+}
+/* the three leads share one row; the first is the rest picture, the loop brings up the others */
+.lp-infra__lead {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+.lp-infra__lead:not(:first-child) { opacity: 0; }
+/* a lead's face: the initials on a pink pancake */
+.lp-infra__lead-avatar {
+  --lp-pk-front: var(--lp-pink-20);
+  --lp-pk-back: var(--lp-pink-30);
+  color: var(--lp-text);
+  display: grid;
+  flex: none;
+  font-size: 11px;
+  font-weight: 600;
+  height: 28px;
+  place-items: center;
+  position: relative;
+  width: 28px;
+}
+.lp-infra__lead-avatar > span {
+  margin-bottom: 2px;
+  position: relative;
+}
+.lp-infra__lead-who {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.lp-infra__lead-name,
+.lp-infra__lead-co {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-infra__lead-name {
+  color: var(--lp-text);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 17px;
+}
+.lp-infra__lead-co {
+  color: var(--lp-subtle-text);
+  font-size: 12px;
+  line-height: 15px;
+}
+.lp-infra__approve {
+  background: var(--lp-pink-30);
+  border-radius: var(--lp-r-xsm);
+  color: var(--lp-text);
+  display: grid;
+  flex: none;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  padding: 5px 10px;
+}
+.lp-infra__approve > span { grid-area: 1 / 1; text-align: center; }
+/* the CRMs the leads go to: their marks on small pancakes, under the lead */
+.lp-infra__crms {
+  box-shadow: inset 0 1px 0 var(--lp-ink-tr-10);
+  display: flex;
+  gap: 6px;
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 10px 0 0;
+}
+.lp-infra__crm {
+  --lp-pk-front: var(--lp-surface);
+  --lp-pk-back: var(--lp-pink-20);
+  display: grid;
+  height: 28px;
+  place-items: center;
+  position: relative;
+  width: 28px;
+}
+.lp-infra__crm img {
+  display: block;
+  height: 14px;
+  margin-bottom: 2px;
+  object-fit: contain;
+  position: relative;
+  width: 14px;
+}
+.lp-infra__approve-ok { opacity: 0; }
+
+
+
+
+/* ── the scroll version (LpInfraAnim: data-scroll on the section, on desktop layouts, motion
+   allowed): the pin is the stage's height plus the scroll it takes; the stage sticks, centred in
+   the window, while the three things come together (buildInfraScroll). On a short window the
+   card scales down from its top edge so the whole stage fits (--lp-infra-fit, 0.8 at the least),
+   and the pin gives back the room the scale frees (--lp-infra-trim). ── */
+.lp-infra[data-scroll] .lp-infra__pin {
+  height: calc(var(--lp-infra-stage-h, 724px) + var(--lp-infra-pin-len, 1200px));
+  margin-bottom: calc(var(--lp-infra-trim, 0px) * -1);
+}
+.lp-infra[data-scroll] .lp-infra__stage {
+  gap: 40px;
+  position: sticky;
+  top: var(--lp-infra-top, 24px);
+}
+.lp-infra[data-scroll] .lp-infra__card {
+  transform: scale(var(--lp-infra-fit, 1));
+  transform-origin: 50% 0;
+}
+
+/* ── responsive: the steps' breakpoints, and one for the cards' pictures ── */
+@media (max-width: 1024px) {
+  .lp-infra__org {
+    padding: 96px 24px 0;
+  }
+  .lp-infra__stage {
+    gap: 56px;
+  }
+  /* six discs in a 208 px picture at 960 */
+  .lp-infra__disc {
+    height: 40px;
+    width: 40px;
+  }
+  .lp-infra__disc img {
+    height: 20px;
+    width: 20px;
+  }
+}
+/* where the cards stack, Pancake's stem alone runs into the first */
+@media (max-width: 959px) {
+  .lp-infra__fork {
+    height: 32px;
+  }
+  .lp-infra__fork-arms {
+    display: none;
+  }
+}
+/* under 960 the three pictures no longer fit side by side: one layer per row, the picture left */
+@media (min-width: 768px) and (max-width: 959px) {
+  .lp-infra__parts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-infra__part {
+    align-content: center;
+    column-gap: 20px;
+    grid-row: auto;
+    grid-template-areas: "pic ." "pic name" "pic title" "pic .";
+    grid-template-columns: 280px minmax(0, 1fr);
+    grid-template-rows: 1fr auto auto 1fr;
+    padding: 8px 24px 8px 8px;
+  }
+  .lp-infra__part > :not(.lp-infra__pic) {
+    margin-inline: 0;
+  }
+  .lp-infra__pic {
+    grid-area: pic;
+    margin-bottom: 0;
+  }
+  .lp-infra__part-name {
+    grid-area: name;
+  }
+  .lp-infra__part-title {
+    grid-area: title;
+  }
+}
+@media (max-width: 767px) {
+  .lp-infra {
+    padding: 96px 0 0;
+  }
+  .lp-infra__org {
+    padding: 16px;
+  }
+  .lp-infra__stage {
+    gap: 48px;
+  }
+  .lp-infra__title {
+    /* the steps title on phones: 35.559 / 41 / -3% */
+    font-size: 35.559px;
+    letter-spacing: -1.0668px;
+    line-height: 41px;
+  }
+  .lp-infra__card {
+    padding-top: 0;
+  }
+  .lp-infra__agentbar {
+    padding: 6px;
+  }
+  .lp-infra__agent {
+    padding: 8px 14px 8px 10px;
+  }
+  .lp-infra__brand {
+    border-radius: 20px;
+    gap: 8px;
+    padding: 8px 18px 8px 10px;
+  }
+  .lp-infra__pk {
+    height: 40px;
+    width: 40px;
+  }
+  .lp-infra__wordmark {
+    height: 42px;
+  }
+  .lp-infra__parts {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 8px;
+  }
+  .lp-infra__part {
+    padding: 8px 8px 20px;
+  }
+  .lp-infra__part > :not(.lp-infra__pic) {
+    margin-inline: 12px;
+  }
+}

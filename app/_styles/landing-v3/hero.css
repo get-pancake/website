@@ -217,24 +217,45 @@
   bottom: 63px; /* V2 99 − 36 */
   left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
   transform: none;
+  width: auto; /* the H1 sizes it (V1's 656 box held the 69 px lines) */
 }
-/* The humans H1 since 2026-10-27: "Infrastructure to run / your GTM factory"
-   (founder), two lines at V2's place and size, as the H1s before it (2026-10-13:
-   "in 2 lines, same placement as in the figma, same as when it was the previous
-   h1"). Its first line is the longer one, 7.73 × the font size wide (533 px at
-   69.014; "that bring you customers" was 9.6 ×): 235 px before the right column
-   from 1201 wide up. Where the layout gets tight it is the only thing that
-   gives, so the line never runs into the column nor into the phone's 32 px
-   gutter; with this line the designer's clamps decide down to 320 wide. On the
-   H1 itself: the agents headline shares .lp-hero-title's box and size. */
+/* The humans H1: "Infrastructure powering / your GTM factory" (2026-10-28, after "should be
+   'Infrastructure powering your GTM factory'?" and "go with this h1"; "Infrastructure to power"
+   that evening, "might be better en fait"; "powering" again since 2026-10-30, when a co-founder
+   asked "to power or powering?" on the preview and the founder answered "Switch to
+   'powering'"; "to run" from 2026-10-27), two lines at V2's place, the left-right layout kept
+   and the H1 as big as it can be ("Gardons cette disposition gauche droite et on met le h1 en
+   plus gros tant que c'est possible", 2026-10-27). Its first line is the longer one, 9.13 × the
+   font size wide at -0.03em ("Infrastructure to power" was 8.85, "Infrastructure to run"
+   7.73), so the left column sets the size: from 1201 wide up it is 768 px from the H1's edge to
+   the right column, and 79.5 px keeps the 40 px "to power" had at 82 between "powering" and the
+   column (founder 2026-10-28: "Can we make h1 on hero bigger you know to make it more
+   juicyyy": 82 was the most this layout allowed that line). 1025–1200 the column narrows with
+   the window (the right column is anchored 48 px from the right edge): width − 48 − 368 − 48
+   − 40, over 9.2.
+   Tablets and phones take their text width, 82 px at most. Line height 0.92: the two lines are
+   151 tall (the 69 px H1 was 160 at normal), so the short-window scale below keeps more room
+   than it needs; the rotating rainbow stays 48 px or more off it (rings tool, WebKit, 1201 to
+   1728 wide, 2026-10-28). The agents headline shares the box (146 tall, bottom-aligned in it,
+   audience-agents.css), under the same toggle. */
+.lp-hero--home #lp-hero-title {
+  font-size: 79.5px;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+}
 @media (min-width: 1025px) and (max-width: 1200px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(clamp(52px, 5.4vw, 69.014px), calc((100vw - 512px) / 7.8));
+    font-size: min(79.5px, calc((100vw - 504px) / 9.2));
+  }
+}
+@media (max-width: 1024px) {
+  .lp-hero--home #lp-hero-title {
+    font-size: min(79.5px, calc((100vw - 96px) / 9.2));
   }
 }
 @media (max-width: 767px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(clamp(30px, 8.846vw, 35.559px), calc((100vw - 64px) / 7.8));
+    font-size: calc((100vw - 64px) / 9.2);
   }
 }
 /* "go-to-market" in the lede never breaks at a hyphen (LpHero.tsx) */
@@ -301,14 +322,14 @@
                                     (down to the 380 floor, a 500px window)
      LIFT = clamp(0, (873 − svh) × 0.3, 34), and 60 at ≤ 639 tall (the /agents
             tier's own −180): the art rises a little on short windows
-     s    = clamp(0.66, (H − 358 + LIFT) / 299, 1): the copy block's scale
+     s    = clamp(0.66, (H − 223 + LIFT) / 434, 1): the copy block's scale
             about its bottom centre (1 from an 873-tall window up, where
             the hero reaches the designer's 657)
 
-   Together the constants keep the rotating rainbow at least 42px off the
-   headline at every height, over the whole 20s loop (measured:
-   impl/first-screen-peek.md; the decision's first divisor, 286, let it
-   dip to 31.6px around 855 tall). Continuous, so
+   Together the constants keep the rotating rainbow at least 32px off the
+   92 px H1 at every height, over the whole 20s loop (rings.mjs in WebKit,
+   2026-10-27: 33 at 1440×900, 37 at 1512×852, 50 at 1440×780; the 69 px
+   H1 had (H − 358 + LIFT) / 299 and 42 px). Continuous, so
    nothing snaps at a tier edge (the 639 lift aside); every term eases with
    the hero's own 450ms glide when the frozen height lands.
    Specificity: one class more than the /agents tiers above, so the homepage
@@ -370,7 +391,7 @@
     .lp-hero.lp-hero--home {
       --lp-hero-s: clamp(
         0.66,
-        tan(atan2(var(--lp-hero-h) - 358px + var(--lp-hero-lift), 299px)),
+        tan(atan2(var(--lp-hero-h) - 223px + var(--lp-hero-lift), 434px)),
         1
       );
     }

@@ -1,5 +1,7 @@
-// No "use client" on purpose: the deep-dive story builders import this, and they must stay
-// plain modules reached only through the client loaders (see lp-dive-loaders.ts).
+// No "use client" on purpose: the demo window's timelines (lp-demo-pancake-timeline.ts,
+// lp-demo-claude-timeline.ts) import this and stay plain modules, reached only through
+// LpDemoPlayer's import(); lp-step-timelines.ts ("use client") imports it too, and
+// lp-dive-stages.ts still allows the deep-dive story builders to import it.
 import { gsap } from "@/lib/gsap";
 
 /**

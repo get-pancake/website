@@ -48,6 +48,10 @@ const FILES = [
   "components/sections/landing-v3/LpSteps.tsx",
   "components/sections/landing-v3/lp-step-data.ts",
   "components/sections/landing-v3/LpBanner.tsx",
+  "components/sections/landing-v3/LpInfra.tsx",
+  // the infra-first page (2026-10-21)
+  "components/sections/landing-v3/LpSetupLine.tsx",
+  "components/sections/landing-v3/LpHeroInstall.tsx",
   "components/sections/landing-v3/LpCta.tsx",
   "components/sections/landing-v3/LpPricing.tsx",
   "components/sections/guide-claude/guide-copy.ts",
@@ -69,17 +73,18 @@ const FILES = [
   "components/sections/landing-v3/LpMarquee.tsx",
   "components/sections/landing-v3/lp-steps-content.ts",
   "components/sections/landing-v3/LpStepMocks.tsx", // the step mocks' markup: stops a string written straight into it
-  // deep-dive carousel shell (blue-band) and its four stories
+  // deep-dive carousel shell (blue-band) and its four stories (2026-10-28), with their kit
   "components/sections/landing-v3/LpDive.tsx",
   "components/sections/landing-v3/lp-dive-data.ts",
-  "components/sections/landing-v3/LpStorySources.tsx",
-  "components/sections/landing-v3/lp-story-sources-data.ts",
-  "components/sections/landing-v3/LpStoryMessage.tsx",
-  "components/sections/landing-v3/lp-story-message-data.ts",
-  "components/sections/landing-v3/LpStoryLearns.tsx",
-  "components/sections/landing-v3/lp-story-learns-data.ts",
-  "components/sections/landing-v3/LpStoryClaude.tsx",
-  "components/sections/landing-v3/lp-story-claude-data.ts",
+  "components/sections/landing-v3/LpStoryKit.tsx",
+  "components/sections/landing-v3/LpStoryContext.tsx",
+  "components/sections/landing-v3/lp-story-context-data.ts",
+  "components/sections/landing-v3/LpStorySignals.tsx",
+  "components/sections/landing-v3/lp-story-signals-data.ts",
+  "components/sections/landing-v3/LpStoryLineage.tsx",
+  "components/sections/landing-v3/lp-story-lineage-data.ts",
+  "components/sections/landing-v3/LpStoryMcp.tsx",
+  "components/sections/landing-v3/lp-story-mcp-data.ts",
   // testimonials / KPI bento (bento); its placeholder module stays out on purpose
   "components/sections/landing-v3/LpBento.tsx",
   "components/sections/landing-v3/lp-bento-data.ts",
@@ -105,10 +110,13 @@ const OFF_FOR = {
 /** Text a rule may not read (names of other products). */
 const ALLOW = [
   [/\bco-?pilots?\b/i, /\bGitHub Copilot\b/g],
-  // (the f4 "+56% reply rate" alt allowance went with the feature cards, 2026-10-11: the V2
-  // "Pancake learns" story shows approved shares, no rate figure)
-  // the sources story's hub label, the founder's own figure (2026-10-13: "Mets 30+ data provider
-  // sur pancake.ai"); any other "N+" still fails
+  // (the f4 "+56% reply rate" alt allowance went with the feature cards, 2026-10-11; the
+  // "Pancake learns" story that followed needed none and was removed 2026-10-28)
+  // the founder's own figure (2026-10-13: "Mets 30+ data provider sur pancake.ai"; first the old
+  // sources story's hub label), now used by the signals story's label and ALT
+  // (lp-story-signals-data.ts), the dive's signals line (lp-dive-data.ts), the steps
+  // (lp-step-data.ts, lp-steps-content.ts) and the /plays signal pages (plays-signals.ts); any
+  // other "N+" still fails
   [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b30\+ data providers\b/g],
   // the Codex plugin's install id in /codex's commands (2026-10-17): "pancake@pancake" is a
   // marketplace qualifier, not an "@Pancake" mention in Slack

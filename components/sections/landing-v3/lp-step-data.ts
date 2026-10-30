@@ -4,9 +4,9 @@
    (shorts/brain-research-loop, meetings-calendar-loop). Step 02 and step 03's
    intro: the designer's "How it works" storyboards (Figma, 2026-10-11), which
    replaced the pipeline-checklist-loop composition. Shared by the markup
-   (LpStepMocks.tsx, which lays the rest state = each animation's frame 0) and
-   the timelines (lp-step-timelines.ts), so both walk the same lists in the
-   same order. */
+   (LpStepMocks.tsx, which lays the rest state = each animation's frame 0, or
+   for s4 its END picture) and the timelines (lp-step-timelines.ts), so both
+   walk the same lists in the same order. */
 
 import type { ContentStatus } from "@/lib/placeholders";
 
@@ -127,45 +127,177 @@ export const S1_HUBS: S1Hub[] = [
     (dash array / offset) and re-derived on the client, and Math.hypot is not
     correctly rounded across engines (Node vs Firefox/WebKit differed in the
     last digit → hydration mismatch); sqrt of the sum of squares is. */
-export type S1Edge = { x1: number; y1: number; x2: number; y2: number; len: string; hub: number };
-export type S1Dot = { x: number; y: number; r: number; fill: string; hub: number };
+export type S1Edge = { x1: number; y1: number; x2: number; y2: number; len: string; hub: number; rest: boolean };
+export type S1Dot = { x: number; y: number; r: number; fill: string; hub: number; rest: boolean };
 
 /** The graph flattened in the composition's build order: for each hub its edge
     and dot, then every leaf's edge / dot, then the sub-branches. The markup
-    renders these lists and the timeline consumes them with the same cursors. */
+    renders these lists and the timeline consumes them with the same cursors.
+    `rest`: part of the young Brain the step rests on (each hub and its first
+    S1_REST_LEAVES leaves); the rest grows as the verdicts come in. */
 export function s1Graph(): { edges: S1Edge[]; dots: S1Dot[] } {
   const edges: S1Edge[] = [];
   const dots: S1Dot[] = [];
-  const edge = (hub: number, x1: number, y1: number, x2: number, y2: number) =>
-    edges.push({ x1, y1, x2, y2, len: Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)).toFixed(3), hub });
-  const dot = (hub: number, x: number, y: number, r: number, fill: string) => dots.push({ x, y, r, fill, hub });
+  const edge = (hub: number, rest: boolean, x1: number, y1: number, x2: number, y2: number) =>
+    edges.push({ x1, y1, x2, y2, len: Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)).toFixed(3), hub, rest });
+  const dot = (hub: number, rest: boolean, x: number, y: number, r: number, fill: string) =>
+    dots.push({ x, y, r, fill, hub, rest });
   S1_HUBS.forEach((h, i) => {
-    edge(i, S1_CENTER.x, S1_CENTER.y, h.e[0], h.e[1]);
-    dot(i, h.dot[0], h.dot[1], 6, h.fill);
-    h.leaves.forEach((L) => {
-      if (L[0] !== null) edge(i, h.e[0], h.e[1], L[0], L[1]);
-      if (L.length === 4) dot(i, L[2], L[3], 3, h.fill);
+    edge(i, true, S1_CENTER.x, S1_CENTER.y, h.e[0], h.e[1]);
+    dot(i, true, h.dot[0], h.dot[1], 6, h.fill);
+    h.leaves.forEach((L, k) => {
+      const rest = k < S1_REST_LEAVES;
+      if (L[0] !== null) edge(i, rest, h.e[0], h.e[1], L[0], L[1]);
+      if (L.length === 4) dot(i, rest, L[2], L[3], 3, h.fill);
     });
     h.sub?.forEach((S) => {
-      edge(i, S[0], S[1], S[2], S[3]);
-      dot(i, S[4], S[5], 3, h.fill);
+      edge(i, false, S[0], S[1], S[2], S[3]);
+      dot(i, false, S[4], S[5], 3, h.fill);
     });
   });
   return { edges, dots };
 }
 
-/** per-key jitter of the typing of "acme.com" — its glyph edges are
-    measured from the live text in lp-step-timelines.ts (the Fono advance table
-    that used to live here broke the moment the mocks moved to Geist Sans) */
-export const S1_JIT = [0, 0.02, -0.01, 0.03, 0, -0.02, 0.04, 0, 0.01, -0.01, 0.05, 0, 0.02, -0.02, 0.03, 0, 0.01, 0];
+/* Step 03 since 2026-10-27 ("Watch it get better. / Every lead teaches your Brain."): the same
+   Brain, grown by the leads. It rests young (each hub and its first leaf, glided left as the
+   market profile used to show it) beside three leads; each verdict grows the hubs it teaches;
+   then "Who fits" resolves where the market profile did, and the whole labelled Brain holds. */
 
-/** the market-profile rows that resolve out of the skeletons */
+/** how many of each hub's leaves the young Brain already has */
+export const S1_REST_LEAVES = 1;
+/** the three leads that come back: a role at a real startup and why it came, never an invented
+    person (founder 2026-10-28, on the page's named leads: "get rid of those fake people looks
+    cheap af", then "a la place des noms on peut mettre des roles comme GTM @ xyz en mettant des
+    vraies companies"; the signals are illustrative). The avatar carries the company's initial. Mastra is
+    the page's one lead: the account block 1 picks, the lead both sides find in the dive's
+    lineage picture and the /pricing example (lib/copy.ts pricingLead). Each one teaches a row of
+    the panel: the funded founder "Ideal clients", the agency "Skip", the reply "Best signal"
+    (S1_ROWS) */
+export const S1_LEADS: readonly SxLead[] = [
+  { name: "Founder @ Mastra", position: "Just raised a seed", initials: "M" },
+  { name: "Marketing @ Huge", position: "Design agency", initials: "H" },
+  { name: "Growth @ Resend", position: "Hiring a marketing lead", initials: "R" },
+];
+/** the three leads that come back (S1_LEADS indexes), the verdict each gets, and the hubs it
+    grows (S1_HUBS indexes: 0 Competitors, 1 ICPs, 2 Outreach, 3 Influencers, 4 Market Research) */
+export const S1_VERDICTS = [
+  { lead: 0, kind: "approved", label: "Approved", hubs: [1, 4] },
+  { lead: 1, kind: "skip", label: "Not a fit", hubs: [0, 3] },
+  { lead: 2, kind: "replied", label: "Replied", hubs: [2] },
+] as const;
+/** the panel the verdicts fill (where the market profile was) */
+export const S1_LEARN = { title: "Who fits", learning: "Learning…", done: "Updated" };
+/** its rows, resolving out of the skeletons */
 export const S1_ROWS = [
-  { top: 230, name: "Company", sub: "Acme" },
-  { top: 298, name: "Offering", sub: "Websites for startups" },
-  { top: 366, name: "Ideal clients", sub: "Funded B2B startups" },
+  { top: 230, name: "Ideal clients", sub: "Seed-stage founders" },
+  { top: 298, name: "Best signal", sub: "Hiring a marketing lead" },
+  { top: 366, name: "Skip", sub: "Agencies" },
 ];
 export const S1_SKELETON_TOPS = [230, 286, 342];
+
+/* ── step 01 since 2026-10-27 · "Connect your agent. / Now it can sell." — Pancake added to
+   Claude, in step 02's Claude window: the composer's "+", Connectors, Pancake's sign-in, the
+   connector chip (where step 02's composer has it), and what Claude can now do, in the infra
+   section's three tones (Context, Data, Tools). The alt text in lp-steps-content.ts retells
+   these strings: keep in sync. ── */
+export const S0_CONNECT = {
+  app: "Claude",
+  placeholder: "How can I help you today?",
+  menu: "Connectors",
+  pancake: "Pancake",
+  connect: "Connect",
+  custom: "Add custom connector",
+  /** Pancake's sign-in card, opened by the connector */
+  signin: { title: "Connect Pancake to Claude", sub: "Acme workspace", allow: "Allow" },
+  connected: "Pancake is connected. I can now:",
+  /** what Claude can now do (infra.css tones: yellow Context, purple Data, pink Tools) */
+  can: [
+    { tone: "yellow", text: "Read your Brain" },
+    { tone: "purple", text: "Search 30+ data providers" },
+    { tone: "pink", text: "Run Plays and reach out" },
+  ],
+} as const;
+
+/* ── step 02 since 2026-10-28 · "Ask anything. / Pancake turns it into a Play." — the ask typed
+   in Claude, the Play it becomes, and the envelopes Claude sends as the ending. Founder, on the
+   storyboard's Play card: "not sure we should show here the UI but maybe a juicy things showing
+   claude + like plein de petites enveloppes qui partent de claude dans tous les sens dans le
+   carré"; on the first take (Claude's disc and the burst alone): "il fallait remettre la phrase
+   dans claude qui cree le play ici", "genre les enveloppes c est que la fin tu vois"; and on its
+   white disc: "Je donnerai au truc blanc la forme du pancake mais juste en 2d", "je ferai occuper
+   une plus grande place au logo dedans quand meme", "et pas sur de l effet d ombre derriere".
+   So three beats on the card's cream, no app window: the request types into a white pill; it
+   runs down a hairline into Claude (the Claude mark, big, on the kit's white pancake face, flat);
+   a second hairline brings up the Play under it and its switch turns on; then the envelopes (the
+   site's mail icon on the design kit's coloured pancakes) burst out of Claude and land all around.
+   One column on the stage's axis: the ask pill, Claude, the Play pill (their boxes: steps.css).
+
+   The envelopes are written out once, never computed at run time (the timeline is seek-safe: no
+   randomness). Laid by hand around the column: six over the ask, six under the Play, three on
+   each side of Claude. Every one keeps 16 px off the stage's edges, 18 px off the pills and
+   Claude's face and 32 px off its neighbours, and their spread is centred on Claude (area
+   centroid 231.8, 213.2). Sizes grow with the distance from Claude (depth: the far ones came
+   closest), tilts fan out (left side anticlockwise, right side clockwise), the four corners are
+   four tones and two envelopes of a tone keep 176 px apart.
+   Rows are in PAINT order, nearest first (the markup lays them in this order and the timeline
+   walks the same list), so a far, bigger envelope flies over the near ones it passes. They leave
+   in three waves, near ring to far ring, 0.2 s apart, 0.03 s apart inside a wave, each wave in
+   every direction (its six taken three apart around Claude). ── */
+
+/** the request (the hero demo's and the storyboard's, S2_CHAT.prompt) and the Play Pancake turns
+    it into (the storyboard's Play card, S2_PLAYS[0].name). The alt text in lp-steps-content.ts
+    retells both: keep in sync. */
+export const S4_ASK = {
+  request: "Find founders who just raised a seed round",
+  play: "Funded startups hiring a marketing lead",
+} as const;
+/** where the envelopes leave from, stage px: the centroid of Claude's pancake face (its box,
+    steps.css .lp-s4-disc, is 104 × 100.252 centred on 232, 213; the centroid sits 0.42 right of
+    and 0.44 above that centre) */
+export const S4_FROM = { x: 232.4, y: 212.6 } as const;
+/** the design kit's coloured pancakes (face -30, rim -20; green 20 / 10): steps.css */
+export type S4Tone = "yellow" | "purple" | "pink" | "green" | "blue";
+export type S4Mail = {
+  /** the envelope's centre, stage px */
+  x: number;
+  y: number;
+  /** its pancake's box, px (the mail icon is 0.6 of it) */
+  size: number;
+  /** its tilt at rest, degrees (the markup's; the only transform left at rest) */
+  tilt: number;
+  tone: S4Tone;
+  /** the kit's pancake shape (pancake-top-bordered-1…3) */
+  shape: 1 | 2 | 3;
+  /** when it leaves Claude, s after the burst starts (lp-step-timelines S4_T), and how long it
+      flies to its place (s) */
+  at: number;
+  dur: number;
+  /** how far it is turned as it leaves, degrees: it unwinds into its tilt on the way */
+  spin: number;
+};
+export const S4_MAIL: readonly S4Mail[] = [
+  // the near ring (wave 1)
+  { x: 324, y: 240, size: 30, tilt: 10, tone: "purple", shape: 2, at: 0.03, dur: 0.5, spin: -24 },
+  { x: 140, y: 186, size: 30, tilt: -10, tone: "yellow", shape: 2, at: 0, dur: 0.5, spin: 24 },
+  { x: 364, y: 186, size: 34, tilt: 11, tone: "green", shape: 3, at: 0.12, dur: 0.5, spin: -24 },
+  { x: 100, y: 240, size: 34, tilt: -11, tone: "blue", shape: 1, at: 0.15, dur: 0.5, spin: 24 },
+  { x: 272, y: 64, size: 36, tilt: 6, tone: "yellow", shape: 3, at: 0.06, dur: 0.5, spin: -24 },
+  { x: 192, y: 362, size: 36, tilt: -8, tone: "green", shape: 1, at: 0.09, dur: 0.5, spin: 24 },
+  // the middle ring (wave 2)
+  { x: 196, y: 38, size: 38, tilt: -4, tone: "green", shape: 2, at: 0.32, dur: 0.55, spin: 24 },
+  { x: 268, y: 388, size: 38, tilt: 8, tone: "pink", shape: 2, at: 0.35, dur: 0.55, spin: -24 },
+  { x: 120, y: 62, size: 39, tilt: -13, tone: "purple", shape: 1, at: 0.26, dur: 0.55, spin: 24 },
+  { x: 344, y: 364, size: 39, tilt: 11, tone: "blue", shape: 1, at: 0.29, dur: 0.55, spin: -24 },
+  { x: 420, y: 226, size: 39, tilt: 19, tone: "pink", shape: 1, at: 0.23, dur: 0.55, spin: -24 },
+  { x: 44, y: 200, size: 39, tilt: -19, tone: "pink", shape: 3, at: 0.2, dur: 0.55, spin: 24 },
+  // the far ring, the biggest (wave 3)
+  { x: 348, y: 40, size: 41, tilt: 10, tone: "purple", shape: 1, at: 0.46, dur: 0.6, spin: -24 },
+  { x: 116, y: 386, size: 41, tilt: -11, tone: "yellow", shape: 3, at: 0.49, dur: 0.6, spin: 24 },
+  { x: 424, y: 50, size: 46, tilt: 19, tone: "pink", shape: 3, at: 0.52, dur: 0.6, spin: -24 },
+  { x: 40, y: 376, size: 46, tilt: -18, tone: "purple", shape: 2, at: 0.55, dur: 0.6, spin: 24 },
+  { x: 424, y: 384, size: 46, tilt: 18, tone: "yellow", shape: 3, at: 0.43, dur: 0.6, spin: -24 },
+  { x: 40, y: 42, size: 46, tilt: -17, tone: "blue", shape: 2, at: 0.4, dur: 0.6, spin: 24 },
+];
 
 /* ── steps 02 and 03 · the "How it works" storyboards (Figma page 4197:9774, delivered
    2026-10-11; red notes 4964:1637 "Deltas: New" and 4964:1640 "Deltas: New intro before
@@ -212,8 +344,10 @@ export const SX_LEADS_ROW_IN = [0, 0.1, 0.2, 0.3, 0.34, 0.42];
 /* ── step 02 · say who you want → one question → a Play takes shape → leads → the Play ── */
 
 export const S2_CHAT = {
-  /** the composer's placeholder, the hero demo's (lp-demo-data.ts) */
-  placeholder: "Find people who…",
+  /** the app the request is typed in (2026-10-21: step 02 starts in Claude, Pancake connected) */
+  app: "Claude",
+  /** Claude's own new-chat placeholder (was the hero demo's "Find people who…") */
+  placeholder: "How can I help you today?",
   prompt: "Find founders who just raised a seed round",
   /** what the worked row reads while Pancake works, one line per step (founder 2026-10-13:
       "those interactions should be animated"); it settles on `worked`, the storyboard's line */
@@ -307,8 +441,8 @@ export const S3_THREAD = {
   /** Acme designs websites for funded startups, and the Play is the hero demo's (founders who
       just raised a seed round and are hiring a marketing lead; founder 2026-10-13, "on topic"):
       the message names both signals, then the offer. Three lines at 327px, at weight 500 (the
-      draft) and 400 (once it is history). The deep dive's message story shows the same message
-      (lp-story-message-data.ts, the "answered" conversation): keep in sync. */
+      draft) and 400 (once it is history). The deep dive's message story showed the same message
+      until it was removed with its story on 2026-10-28. */
   message:
     "Hi Tamsin, congrats on Quillfern’s seed round. Want a new website live before your marketing lead starts?",
   replyFrom: "Tamsin Okafor",

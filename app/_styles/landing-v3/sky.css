@@ -3,8 +3,9 @@
    The blue band's sky (Figma V2 4911:534 → 4939:3388 → 4911:739): the light
    blue (--lp-sky = blue-10) starts under a cream blob in the banner's gutters
    (red note "Blue background for next section starts here"), carries the deep
-   dive, and ends on the CTA's cream hill (red note "Transition from previous
-   section"). The clouds drift on scroll at their own speeds (founder addendum
+   dive and, since 2026-10-28, the testimonials (founder, on the CTA: "Should
+   be below testimonials"), and ends on the CTA's cream hill (red note
+   "Transition from previous section"). The clouds drift on scroll at their own speeds (founder addendum
    2026-10-09, lp-sky-parallax.ts). Imported after cta.css so its modifiers win
    ties with the base banner/CTA rules.
 
@@ -25,6 +26,11 @@
 }
 .lp-cta--sky {
   background: url("/lp/lp-sky-cta-hill.svg") 0 0 / 100% 100% no-repeat, var(--lp-sky);
+}
+/* the testimonials between the dive and the CTA: plain sky, their #fffbf6
+   cards on it as the dive's stage card is */
+.lp-bento--sky {
+  background: var(--lp-sky);
 }
 /* the card and its clouds share one 1296 frame (clouds are card-relative) */
 .lp-cta--sky .lp-cta__frame {

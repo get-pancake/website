@@ -86,6 +86,11 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
   outline-offset: 2px;
 }
 [data-audience="agents"] .lp-nav-menu { --lp-text: var(--lp-ink-100); }
+/* no desktop floating bar in this view (nav.css skips it): pinned sections and in-page jumps
+   leave no room for it */
+@media (min-width: 1025px) {
+  .lp-audience-page[data-audience="agents"] { --lp-nav-reserve: 0px; }
+}
 @media (max-width: 767px) {
   .lp[data-audience="agents"] .lp-nav-menu-btn:focus-visible { outline-color: var(--lp-ink-0); }
   [data-audience="agents"] .lp-nav.is-scrolled {
@@ -176,6 +181,12 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 }
 @media (max-width: 767px) {
   .lp-agent-headline { font-size: min(28.85px, calc((100vw - 64px) / 11.2)); }
+}
+/* Homepage phones since the "powering" H1 (2026-10-28, hero.css: (100vw − 64px) / 9.2 at line
+   height 0.92): the two rows stay no taller than its box (1.84 × its size, so at most 0.7 ×
+   it), or the stacked block would grow in this view and lift the toggle above it */
+@media (max-width: 767px) {
+  .lp-hero--home .lp-agent-headline { font-size: min(28.85px, calc((100vw - 64px) / 11.2), calc((100vw - 64px) / 9.2 * 0.7)); }
 }
 /* Production typing, two rows: the crossfade (240 ms) first, then 27 glyphs over 1600 ms (letter
    .04, space and line break .12). Cursor 1 rides row 1 and goes out with its last glyph; cursor 2

@@ -59,7 +59,7 @@ import type { StepVariant } from "./lp-step-timelines";
 
 /** One candidate for a step's 464×426 art card. */
 export type StepArt =
-  /** the in-page DOM + CSS + GSAP mock (LpStepAnim; today s1, s2, s3) */
+  /** the in-page DOM + CSS + GSAP mock (LpStepAnim; today s0, s4, s1) */
   | { kind: "anim"; variant: StepVariant; status: ContentStatus }
   /** a designer still at the card's design size (464×426, contain-fit) — for art that
       lands before its animation (the 2026-09-02 /public/how/step-*.svg precedent) */
@@ -85,29 +85,46 @@ export type StepContent = {
 };
 
 export const STEPS: readonly StepContent[] = [
+  /* Founder 2026-10-27: "the 3 parts should be 1/ Connect your agent (claude codex) 2/ Ask
+     anything (= play you want to create) 3/ Un truc genre get better everyday", then "Refine a
+     bit the motion for 1 / 2 / 3 reusing when possible components that should be reused,
+     creating the ones that should be recreated so that it makes sense" and "Not sure 'Pancake
+     learns your business' is the right thing after 'Connect your agent'". So: 01 is a new
+     motion built from step 02's Claude window (Pancake connected, what Claude can now do);
+     02 is the designer's storyboard as before; 03 is the brain-research-loop Brain, grown by
+     the leads' verdicts. "Every day" is out: the homepage lint keeps fixed frequencies off the
+     page (#332). */
   {
     num: "01",
-    title: "Add your website.\nPancake builds your GTM brain.",
-    body: "From your website, Pancake learns who buys from you, what to say, and where to find them. Always up to date.",
-    art: [{ kind: "anim", variant: "s1", status: "final" }],
-    // names S1_HUBS[].label (lp-step-data.ts) in hub order: keep in sync
-    alt: "Animation: a website address is typed and researched; from the Acme node a knowledge graph blooms, its five branches labeled Competitors, ICPs, Outreach, Influencers and Market Research, then a market profile fills in: Company, Offering, Ideal clients.",
+    // founder 2026-10-28: "Connect your agent. => Connect Pancake to your agent"
+    title: "Connect Pancake to your agent.\nNow it can sell.",
+    body: "One sign-in adds Pancake to Claude or Codex. Your agent gets your Brain, 30+ data providers and the tools to reach out.",
+    art: [{ kind: "anim", variant: "s0", status: "final" }],
+    // retells S0_CONNECT (lp-step-data.ts): keep in sync
+    alt: "Animation: in Claude, the pointer opens Connectors in the composer and connects Pancake, then allows it on Pancake's sign-in card for the Acme workspace. The Pancake connector appears in the composer, and Claude answers: Pancake is connected. I can now: read your Brain, search 30+ data providers, run Plays and reach out.",
   },
+  /* Founder 2026-10-28, on step 02's end picture (the Play card "Funded startups hiring a
+     marketing lead · 13 leads found · Review 13 leads"): "not sure we should show here the UI but
+     maybe a juicy things showing claude + like plein de petites enveloppes qui partent de claude
+     dans tous les sens dans le carré". So step 02 plays s4: the Claude mark in the middle, the
+     envelopes bursting out of it. The designer's storyboard (s2) stays in the code, unused; its
+     alt was: "Animation: in Claude, with Pancake connected, the request “Find founders who just
+     raised a seed round” is typed and sent… and the Play card “Funded startups hiring a
+     marketing lead” shows 13 leads found." */
   {
     num: "02",
-    // V2 4911:480 (2026-10-11); "\n" = its desktop break, phones wrap it to three lines
-    title: "Say who you want.\nPancake builds the Play.",
-    body: "A Play is one GTM idea put to work: it keeps searching for people who fit. Start one in Pancake, Claude or Codex. You approve each lead, then Pancake writes to them under your name.",
-    art: [{ kind: "anim", variant: "s2", status: "final" }],
-    // retells S2_CHAT, S2_QUESTION, S2_DRAFT, S2_BAR and S2_PLAYS[0] (lp-step-data.ts): keep in sync
-    alt: "Animation: in the Pancake chat, the request “Find founders who just raised a seed round” is typed and sent. Pancake works through five steps, answers, and asks one question, “What size of companies?”, answered 1-50 employees. A new Play takes shape: who it targets, how Pancake finds them, at most 25 per search. A Leads table fills, all 13 are selected and added to the sequence, and the Play card “Funded startups hiring a marketing lead” shows 13 leads found.",
+    title: "Ask anything.\nPancake turns it into a Play.",
+    body: "Describe the customers you want, in your own words. Pancake finds them, checks they fit and keeps the search running.",
+    art: [{ kind: "anim", variant: "s4", status: "final" }],
+    // retells S4_ASK and S4_MAIL (lp-step-data.ts): keep in sync
+    alt: "Animation: in Claude, the request “Find founders who just raised a seed round” is typed. Pancake turns it into a Play, “Funded startups hiring a marketing lead”, which switches on, and a burst of small envelopes flies out of Claude in every direction.",
   },
   {
     num: "03",
-    title: "Pancake gets you the meeting.\nYou close it.",
-    body: "Pancake follows up until they answer, then reads the reply. A yes gets your calendar link, sent from your account. Every other answer comes back to you.",
-    art: [{ kind: "anim", variant: "s3", status: "final" }],
-    // retells S3_THREAD, then lists S3_CHIPS (lp-step-data.ts): keep in sync
-    alt: "Animation: from the selected leads, Pancake drafts a message to Tamsin Okafor, founder of Quillfern, about her seed round and a new website, and it is sent. She answers that she is free Thursday at 3pm, and the meeting appears: Tamsin and Acme, Thursday 3pm. The meeting lands on Thursday in a calendar week of October 2026, which then fills up day by day with more meetings — Samantha M., Julien Aubert, Martin Torres and Acme, Lumen Collective, a Martin C. follow-up — each past meeting marked booked or follow-up as the days go by.",
+    title: "Watch it get better.\nEvery lead teaches your Brain.",
+    body: "It writes from your own accounts and follows up. Approve a lead or get a reply, and the next search lands closer to who buys.",
+    art: [{ kind: "anim", variant: "s1", status: "final" }],
+    // retells S1_LEADS, S1_VERDICTS, S1_LEARN, S1_ROWS and S1_HUBS[].label (lp-step-data.ts): keep in sync
+    alt: "Animation: a young brain for Acme sits beside three leads. The founder of Mastra, who just raised a seed round, is approved; marketing at Huge, a design agency, is marked not a fit; and growth at Resend, hiring a marketing lead, replies; each verdict pings the brain and grows new branches. A panel, Who fits, fills in: Ideal clients, seed-stage founders; Best signal, hiring a marketing lead; Skip, agencies. The whole brain stays, its branches labeled Competitors, ICPs, Outreach, Influencers and Market Research.",
   },
 ];

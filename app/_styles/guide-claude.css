@@ -65,6 +65,15 @@
     top: var(--gd-promo-h);
   }
 }
+/* desktop: the floating pill (nav.css) parks 16px under the bar */
+@media (min-width: 1025px) {
+  .lp-guide .lp-nav {
+    top: var(--gd-promo-h);
+  }
+  .lp-guide .lp-nav.is-scrolled {
+    top: calc(var(--gd-promo-h) + 16px);
+  }
+}
 
 /* ── copy buttons ── */
 .lp-guide .gd-copy {
@@ -368,6 +377,12 @@
 .lp-guide #setup,
 .lp-guide [role="tab"] {
   scroll-margin-top: calc(var(--gd-promo-h) + 24px);
+}
+@media (min-width: 1025px) {
+  .lp-guide #setup,
+  .lp-guide [role="tab"] {
+    scroll-margin-top: calc(var(--gd-promo-h) + 112px); /* + the floating pill (16 + 64 + 32) */
+  }
 }
 @media (max-width: 767px) {
   .lp-guide #setup,

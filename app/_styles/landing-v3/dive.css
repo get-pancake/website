@@ -3,8 +3,9 @@
    Deep-dive carousel shell (LpDive, Figma V2 4939:3388 "How Pancake finds
    customers"): section, tab list, progress bar, the 752x489 stage card
    (painted --lp-dive-stage-bg), the phone 400x520 stage box, the pause
-   control. The four stories' scenes are story-<name>.css; the clouds and
-   their parallax depths are sky.css.
+   control. The four stories' scenes (context, signals, lineage, mcp, since
+   2026-10-28) are story-<name>.css on the shared story-kit.css; the clouds
+   and their parallax depths are sky.css.
 
    Artboard (≥1341), section 1654×894, all px from Figma:
      section  fill blue-10, padding 80/16, gap 32, centred column
@@ -26,7 +27,8 @@
    same markup as four STACKED items, all open — see "the phone stack" at the
    end of this file. Keyed on the section's data-lp-phone="stack"
    (lp-dive-data.ts DIVE_PHONE_LAYOUT); "carousel" keeps the 2026-10-09 phone
-   carousel (one stage, the 400×520 recompositions ≤599). */
+   carousel (one stage, the 400×520 box ≤599, which the current stories do
+   not fill). */
 
 .lp-dive {
   align-items: center;
@@ -45,6 +47,7 @@
 }
 .lp-dive-title {
   color: var(--lp-text);
+  text-wrap: balance; /* "What your agent runs on" (2026-10-21) wraps as two even lines on phones */
   left: 128px;
   margin: 0;
   position: absolute;
@@ -119,7 +122,7 @@
   font-weight: 500;
   line-height: 29px;
   transition: font-weight 0.2s ease;
-  white-space: pre-line; /* "A personal message for" / "every lead" (Figma U+2028) */
+  white-space: pre-line; /* the data's break: "Your agent knows" / "what to do next" */
 }
 .lp-dive-tab[aria-selected="true"] .lp-dive-tab__title {
   font-weight: 600;
@@ -276,8 +279,8 @@
 }
 /* The scene box: the stories' design box at design size, scaled as pixels
    (--lp-fit = card width / box width, measured by the driver; never zoom).
-   A size container the stories query (lp-dive-stages.ts contract):
-   desktop 752×489, phones 400×520. */
+   A size container (lp-dive-stages.ts contract; no current story queries
+   it): desktop 752×489, phones 400×520. */
 .lp-dive-scene {
   color: var(--lp-text);
   container: lp-dive-scene / size;
@@ -537,11 +540,13 @@
 @media (max-width: 767px) {
   .lp-dive[data-lp-phone="stack"] {
     /* content box = title 82 + 20 + list; the list = 48 + three 64 gaps +
-       four (text block + 16 + stage (W − 48) × 489/752). Measured: 1839.4
-       (320) · 1854.5 (360) · 1940.3 (393) · 1963.7 (402) · 2016.5 (430) ·
-       2398.7 (600) · 2833.1 (767) → within ±1.8% from 320 to 767. Replaces
-       foundation.css's carousel estimates while the stack is on (0,2,0). */
-    contain-intrinsic-size: auto max(1839px, calc(1040px + 230vw));
+       four (text block + 16 + stage (W − 48) × 489/752). Measured on a 1 px
+       sweep, 2026-10-28: 1770.4 (320) · 1854.5 (360) · 1864.5 (375) ·
+       1871.3 (393) · 1894.7 (402) · 1947.6 (430) · 2369.7 (600) · 2764.1
+       (767), in 20 px steps as a body gains or loses a line → within ±0.8%
+       from 320 to 767. Replaces foundation.css's carousel estimates while
+       the stack is on (0,2,0). */
+    contain-intrinsic-size: auto max(min(calc(1185px + 185vw), 1884px), calc(896px + 245vw));
     gap: 20px;
     /* 59.6 above the title, + the cloud room sky.css opens over the banner
        (--lp-sky-room, taken back by its negative margin) */
@@ -587,10 +592,12 @@
     right: 0;
     top: -32px;
   }
-  /* One line wherever it fits: "A personal message for every lead" needs 317 px and has 327 at
-     375. The artboard keeps the desktop column's break, which made it the only title of the four
-     on two lines (a tester, 2026-10-13: "ce serait cool que le sous-titre tienne en 1 ligne").
-     Narrower phones keep the drawn break. */
+  /* One line from 375: "Your agent knows what to do next" needs 311 px and has 327 there
+     (measured 2026-10-28). The data keeps the desktop column's break, which would make it the
+     only title of the four on two lines (a tester, 2026-10-13, on the title that held this
+     place: "ce serait cool que le sous-titre tienne en 1 ligne"). Below 375 the break stays on
+     purpose: at 360 only 1.4 px would be left, and a phone that sets the face a hair wider would
+     wrap "next" alone. */
   .lp-dive[data-lp-phone="stack"] .lp-dive-tab__title {
     font-weight: 600;
     text-wrap: balance;
@@ -598,7 +605,7 @@
   }
   @media (max-width: 374px) {
     .lp-dive[data-lp-phone="stack"] .lp-dive-tab__title {
-      white-space: pre-line; /* "A personal message for" / "every lead", as drawn */
+      white-space: pre-line; /* "Your agent knows" / "what to do next", the data's break */
     }
   }
   .lp-dive[data-lp-phone="stack"] .lp-dive-tab__fold {

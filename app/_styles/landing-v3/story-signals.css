@@ -1,0 +1,59 @@
+/* Story Signals (2026-10-28) — deep-dive block 2, "Buying signal + enrichment"
+   (LpStorySignals). Founder: "ban UI things from motions and try to abstract
+   things … graphic simple and on brand (you can reuse components)", then "no
+   UI should not mean text it should mean abstraction of what our
+   infrastructure does". One left-to-right flow: the six providers of the hub
+   he loves (the old sources story's, story-sources.css at 630bb8e) draw into
+   one near-black point, and four wires fan out of it to four brand-coloured
+   stops. No big text: small labels only.
+
+   The parts are the story kit's (story-kit.css: the white disc, the wires,
+   the hub dot, the names, the rise). This file holds only this story's own
+   pieces: the confetti and the small labels. The outputs' stops are flat
+   brand dots filled inline from the data,
+   the size of the loved purple confetti dot; children of the svg, never of a
+   <g>, so the kit's multiply never reaches them and each covers the end of
+   its wire. Every box is placed inline from lp-story-signals-data.ts, stage
+   px on the 752x489 design box (phones show the same box scaled: the stack).
+   The markup rests on the END picture; the timeline
+   (lp-story-signals-timeline.ts) sets frame 0, including the stops' unlit
+   grey while they wait for their signals (an inline fill it tweens back to
+   the lit colour it read from the markup, so the END paints the same).
+
+   Traps: the kit's T1–T5 hold here too (T1: `.lp p { margin: 0 }` and the
+   shell's `.lp-dive-scene * { font-family }` tie with single-class rules, so
+   every selector below is compound). This story's own:
+   T6 Nothing rests transformed: the labels rise by the kit's variable
+      (.lp-sk-rise), so their own rules set no transform; they are placed by
+      left / top only.
+   No will-change, no keyframes: the stage is GSAP-only and plays once. */
+
+/* the loved confetti (Figma Ellipse 121–125): flat brand dots, placed and
+   coloured inline from the data */
+.lp-ssig .lp-ssig-dot {
+  border-radius: 50%;
+  position: absolute;
+}
+
+/* the small labels: the four outputs right of their stops and "30+ data
+   providers" over the providers, in the kit's name style (.lp-sk-name: 12/16,
+   500, ink-100), left-aligned on their line box's top-left */
+.lp-ssig .lp-ssig-out,
+.lp-ssig .lp-ssig-count {
+  color: var(--lp-ink-100);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 16px;
+  margin: 0;
+  position: absolute;
+  white-space: nowrap;
+}
+/* the phone stack keeps the 752 scene at ×0.45: a 12px label would draw at
+   5.5px, as the names (story-kit.css). The picture reads without them */
+@media (max-width: 767px) {
+  .lp-ssig .lp-ssig-out,
+  .lp-ssig .lp-ssig-count {
+    display: none;
+  }
+}

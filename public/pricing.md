@@ -39,7 +39,6 @@ What you get, at every level:
 - 30+ data providers included.
 - Leads matched to your ICP.
 - A personal message for each lead.
-- You approve every lead first.
 - Your whole team. No seats to pay.
 
 Free trial: 7 days and 15,000 credits (about 30 to 150 leads), the same at every level. Signup starts without a card. A credit card is required to start the trial.
