@@ -111,7 +111,7 @@ export function AudienceHeadline() {
 
   return <>
     <h1 id="lp-hero-title" className="lp-hero-title__copy" aria-hidden={agents}>
-      Infrastructure to power <br />your GTM factory
+      Infrastructure powering <br />your GTM factory
     </h1>
     <span
       className="lp-hero-title__copy lp-hero-title__copy--agent"

@@ -133,9 +133,10 @@
     justify-content: flex-start;
   }
 }
-/* + .lp-display = Condensed 600. The homepage H1 since 2026-10-28: its first
-   line, "Infrastructure to power", is 8.85 times the font size wide at this
-   tracking ("Infrastructure powering", the line these rules were set for: 9.13), so the size is the breakpoint's token or the column's width / 9.2,
+/* + .lp-display = Condensed 600. The homepage H1 (2026-10-28, again since
+   2026-10-30): its first line, "Infrastructure powering", is 9.13 times the
+   font size wide at this tracking, so the size is the breakpoint's token or
+   the column's width / 9.2,
    whichever is smaller: two lines at every width, never three. */
 .demo-title {
   font-size: min(var(--demo-title-size), calc(100cqi / 9.2));
