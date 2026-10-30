@@ -8,14 +8,17 @@
    stops. No big text: small labels only.
 
    The parts are the story kit's (story-kit.css: the white disc, the wires,
-   the hub dot, the names, the rise). This file holds only this story's
-   own pieces: the confetti and the small labels. The outputs' stops are flat
-   brand dots filled inline from the data, the size of the loved purple
-   confetti dot; children of the svg, never of a <g>, so the kit's multiply
-   never reaches them and each covers the end of its wire. Every box is placed
-   inline from lp-story-signals-data.ts, stage px on the 752x489 design box
-   (phones show the same box scaled: the stack). The markup rests on the END
-   picture; the timeline (lp-story-signals-timeline.ts) sets frame 0.
+   the pulses, the hub dot, the names, the rise). This file holds only this
+   story's own pieces: the confetti, the small labels and how its pulses
+   paint. The outputs' stops are flat brand dots filled inline from the data,
+   the size of the loved purple confetti dot; children of the svg, never of a
+   <g>, so the kit's multiply never reaches them and each covers the end of
+   its wire. Every box is placed inline from lp-story-signals-data.ts, stage
+   px on the 752x489 design box (phones show the same box scaled: the stack).
+   The markup rests on the END picture; the timeline
+   (lp-story-signals-timeline.ts) sets frame 0, including the stops' unlit
+   grey while they wait for their signals (an inline fill it tweens back to
+   the lit colour it read from the markup, so the END paints the same).
 
    Traps: the kit's T1–T5 hold here too (T1: `.lp p { margin: 0 }` and the
    shell's `.lp-dive-scene * { font-family }` tie with single-class rules, so
@@ -23,6 +26,11 @@
    T6 Nothing rests transformed: the labels rise by the kit's variable
       (.lp-sk-rise), so their own rules set no transform; they are placed by
       left / top only.
+   T7 A pulse paints flat, never multiplied: the kit's `> g > *` multiply
+      would darken a coloured signal's core where it rides its grey wire
+      (green-20 over #969696 reads #3d7962), and the signal must show its
+      stop's own brand colour. The near-black data pulses look the same
+      either way.
    No will-change, no keyframes: the stage is GSAP-only and plays once. */
 
 /* the loved confetti (Figma Ellipse 121–125): flat brand dots, placed and
@@ -30,6 +38,11 @@
 .lp-ssig .lp-ssig-dot {
   border-radius: 50%;
   position: absolute;
+}
+
+/* T7: the pulses (story-kit.css .lp-sk-pulse) in their own tone, flat */
+.lp-ssig .lp-sk-wires .lp-sk-pulse {
+  mix-blend-mode: normal;
 }
 
 /* the small labels: the four outputs right of their stops and "30+ data

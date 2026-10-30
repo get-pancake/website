@@ -10,7 +10,7 @@
    six stops in the infra section's three tones.
 
    Built from the story kit (story-kit.css: the white disc, the wires, the
-   names, the rise), plus the brand's lockup
+   pulses, the names, the rise), plus the brand's lockup
    copied from the infra section at a size up (infra.css .lp-infra__brand,
    ×1.25) and the agent chips' glyph cells (.lp-infra__mark, ×2). Every box
    is placed inline from lp-story-mcp-data.ts (stage px on the 752x489 design
@@ -19,11 +19,21 @@
    wordmark, stops 9.1 px across, and no type (the kit hides the names). Paints
    nothing behind the scene (the shell paints the stage).
 
-   Layers, back to front (LpStoryMcp): the wires, the lockup, the discs, then
-   the stops, then the names and the label. No dot on an edge: the wires
+   Layers, back to front (LpStoryMcp): the wires (each with its pulse, the
+   kit's .lp-sk-pulse, hidden at rest), the lockup, the discs, then the stops,
+   then the names, the label and "Thinking…". No dot on an edge: the wires
    meet the discs and the lockup themselves. The
    rest markup is the END picture; the timeline (lp-story-mcp-timeline.ts)
    sets frame 0.
+
+   The motion (2026-10-30, founder: "the claude and codex part can be very
+   much 10xed") moves two things of this file's: the lockup takes a pop by
+   --lp-smcp-pop, read below into a 2D scale as the kit's discs read
+   --lp-sk-pop (unset at rest: the declaration is invalid at computed-value
+   time and transform computes to none, so the END is the markup; never
+   GSAP's own scale, whose translate3d makes Chromium re-rasterise the
+   stage). It only ever grows (≥ 1): a smaller lockup would open a gap where
+   the wires meet its edges. And "Thinking…", hidden at rest.
 
    Traps (with the kit's T1-T5):
    T1 Compound selectors only: `.lp p { margin: 0 }` and the shell's
@@ -35,12 +45,15 @@
    T4 The stops are children of their svg, not of a <g>: the kit's
       `> g > *` multiply never reaches them, so each paints flat over the end
       of its wire.
+   T5 "Thinking…" must stay hidden at rest (opacity and visibility below):
+      the timeline shows it and hides it again, the END never has it.
    No will-change, no keyframes: the stage is GSAP-only, plays once. */
 
 /* Pancake: the infra section's lockup (plum, the avatar's colour mascot, the
    footer's cream wordmark), ×1.25: radius 22 → 27.5, padding 11/24/11/12 →
    13.75/30/13.75/15, gap 10 → 12.5, mascot 48 → 60, wordmark 50 → 62.5 tall
-   (128.3 wide): 245.799x90, placed inline */
+   (128.3 wide): 245.799x90, placed inline. Its pop: --lp-smcp-pop (above),
+   none at rest */
 .lp-smcp .lp-smcp-brand {
   align-items: center;
   background: var(--lp-brand-plum);
@@ -49,6 +62,7 @@
   gap: 12.5px;
   padding: 13.75px 30px 13.75px 15px;
   position: absolute;
+  transform: scale(var(--lp-smcp-pop));
 }
 .lp-smcp .lp-smcp-pk {
   flex: none;
@@ -95,4 +109,14 @@
 }
 .lp-smcp .lp-smcp-stop[data-tone="pink-30"] {
   fill: var(--lp-pink-30);
+}
+
+/* Pancake at work: "Thinking…" centred under the lockup, the kit's name in
+   ink-80 (phones hide it with every kit name). The motion's only: hidden at
+   rest (T5), the timeline raises it while the requests are in and fades it as
+   the tools light */
+.lp-smcp .lp-sk-name.lp-smcp-thinking {
+  color: var(--lp-ink-80);
+  opacity: 0;
+  visibility: hidden;
 }

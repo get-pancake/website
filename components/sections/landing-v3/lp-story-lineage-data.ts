@@ -28,13 +28,19 @@
  *     never an invented person's name (founder 2026-10-28, on "Tamsin Okafor" there: "get rid
  *     of those fake people looks cheap af", then roles at real companies "un peu comme fait
  *     monaco.com"; Mastra is the page's one lead: lp-step-data.ts S1_LEADS). Its two wires make
- *     one S through the column's centre, the line that crosses;
+ *     one S through the column's centre, the line that crosses, and since 2026-10-30 that S is
+ *     the hub's near-black (.lp-slin-lineage, story-lineage.css): her lineage, the one change
+ *     "the match" made to this picture (the motion: lp-story-lineage-timeline.ts). The four
+ *     other wires stay grey;
  *   - the wires: the loved formula, one cubic with horizontal handles, c = 0.426667 × the
  *     straight distance between its ends (lp-story-sources-data.ts:89-93 at 630bb8e), written out
  *     here, never computed at render. Each starts on the source's edge that faces the leads (a
  *     left source's right edge, a right source's left edge), with no cap dot on it (founder
  *     2026-10-28, on the dots over the discs: "ca fait un peu vibe coded"), and ends at its
- *     lead's centre, under the lead's dot. No two wires cross.
+ *     lead's centre, under the lead's dot. No two wires cross. The CRM's and Dealroom's are one
+ *     cubic turned half a turn about her lead (equal lengths, 275.6): the motion's two pulses
+ *     ride them point-symmetric and land on her at once. Each wire has a pulse, a copy of its `d`
+ *     (.lp-sk-pulse, hidden at rest).
  * Clearances, measured in the page's fonts (Chromium and Firefox, 2026-10-28): every disc, dot
  * and line of type is at least 47 px from the stage's edges (ink from x 96 to 667, y 47.5 to
  * 430.7); a wire passes no closer than 12.3 px to a label's ink (Dealroom's wire, to her name)
@@ -53,9 +59,10 @@
 
 /** one wire, from its source's edge into one lead */
 export type StoryLineageWire = {
-  /** its key in the markup (data-wire) */
+  /** its key in the markup (data-wire; its pulse's data-pulse) */
   id: string;
-  /** the lead it draws into: an index in `leads` */
+  /** the lead it draws into: an index in `leads` (data-to). A wire into `found.lead` is part of
+      her lineage (.lp-slin-lineage): near-black at rest, its pulse kept for the match */
   to: number;
   /** its draw slot, T.draw[order] in lp-story-lineage-timeline.ts: your data's three first, then
       Pancake data's, the two into the found lead last of each */
@@ -171,4 +178,4 @@ export const STORY_LINEAGE: StoryLineageStory = {
 };
 
 export const STORY_LINEAGE_ALT: string =
-  "Animation: on one side, your data: your CRM, site visits and events. On the other, Pancake data: the providers TheirStack, Apify and Dealroom. Lines run to a column of leads, first from your data, then from Pancake data. One lead is reached from both sides, by your CRM and by Dealroom, and lights up: the founder of Mastra.";
+  "Animation: on one side, your data: your CRM, site visits and events. On the other, Pancake data: the providers TheirStack, Apify and Dealroom. Lines run to a column of leads, first from your data, then from Pancake data, and data travels down each line to its lead. One lead is reached from both sides: data from your CRM and from Dealroom lands on it at the same moment, and it lights up: the founder of Mastra. The two lines that found it turn dark.";

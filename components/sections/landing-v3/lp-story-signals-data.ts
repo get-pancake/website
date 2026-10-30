@@ -118,7 +118,8 @@ export type StorySignalsOutput = {
   id: StorySignalsOutputId;
   /** the signal, in its label right of the stop (the kit's name style); phones hide it */
   text: string;
-  /** the stop's brand token after `--lp-` (foundation.css) */
+  /** the stop's brand token after `--lp-` (foundation.css), and the tone of the signal that rides
+      out to it (its pulse's --lp-sk-pulse): the colour leaves the hub with the signal */
   color: "green-20" | "yellow-30" | "blue-30" | "purple-30";
   /** the stop's centre, stage px (radius: STORY_SIGNALS.stopR) */
   x: number;
@@ -227,6 +228,7 @@ export const STORY_SIGNALS: StorySignalsStory = {
 };
 
 /** What the animation shows. It names the six providers and the four outputs: the stage is
-    aria-hidden, so their names are read from here only. */
+    aria-hidden, so their names are read from here only. Since 2026-10-30 the data rides the lines
+    in and four signals ride out and light their stops (lp-story-signals-timeline.ts). */
 export const STORY_SIGNALS_ALT: string =
-  "Animation: six data providers, Dealroom, TheirStack, Wappalyzer, Apify, Firecrawl and Coresignal, each draw a line into one point. From it, four lines run out to Hiring, Funding, Site visits and Work email. A label reads 30+ data providers.";
+  "Animation: six data providers, Dealroom, TheirStack, Wappalyzer, Apify, Firecrawl and Coresignal, each draw a line into one point and send their data along it. From that point, four signals run out one after another and light up Hiring, Funding, Site visits and Work email. A label reads 30+ data providers.";

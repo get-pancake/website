@@ -95,9 +95,24 @@
   stroke: var(--sk-wire);
   stroke-width: 2;
 }
+/* a pulse riding its wire (lp-story-kit.ts skPulse): a copy of the wire's path, a little
+   heavier and round-capped, in the hub's near-black unless a story gives it a tone
+   (--lp-sk-pulse). Hidden at rest: the END picture never shows one */
+.lp-sk-wires .lp-sk-pulse {
+  fill: none;
+  opacity: 0;
+  stroke: var(--lp-sk-pulse, var(--sk-hub));
+  stroke-linecap: round;
+  stroke-width: 4;
+}
 /* the loved picture's connectors: lines multiply over what they cross */
 .lp-sk-wires > g > * {
   mix-blend-mode: multiply;
+}
+/* except a pulse, which paints flat: multiplied over its own grey wire, a toned pulse darkens
+   (green-20 read #3d7962) */
+.lp-sk-wires > g > .lp-sk-pulse {
+  mix-blend-mode: normal;
 }
 /* where the wires meet in the open: one near-black dot (the loved picture's
    six overlapping multiplied end caps) */

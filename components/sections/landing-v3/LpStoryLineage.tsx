@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import { Fragment, type CSSProperties } from "react";
 
 import { SkDisc, SkName, skF3 } from "./LpStoryKit";
 import type { DiveStageProps } from "./lp-dive-stages";
@@ -9,9 +9,10 @@ import { STORY_LINEAGE } from "./lp-story-lineage-data";
  * the END picture. Owner: story-lineage package (2026-10-28). The founder's "3/ Lead lineage",
  * which is also "la detection croisee de signaux interne externe": the customer's own data on the
  * left, Pancake's data on the right, wires from both into a column of leads; the one lead reached
- * from both sides is near-black and named. No claim and no UI: the parts of the one picture he
- * loves (the old sources story's end hub), from the story kit. Words and geometry:
- * lp-story-lineage-data.ts; look: story-kit.css and story-lineage.css; motion:
+ * from both sides is near-black and named, and its two wires are near-black with it: her lineage
+ * (2026-10-30, "the match": the one change its motion made to this picture). No claim and no UI:
+ * the parts of the one picture he loves (the old sources story's end hub), from the story kit.
+ * Words and geometry: lp-story-lineage-data.ts; look: story-kit.css and story-lineage.css; motion:
  * lp-story-lineage-timeline.ts.
  *
  * Contract (lp-dive-stages.ts): server-safe (no hooks, no "use client", no lib/placeholders: every
@@ -23,10 +24,14 @@ import { STORY_LINEAGE } from "./lp-story-lineage-data";
  * Layers, back to front, inside .lp-sk-scene (the 752×489 box; nothing transforms it):
  *   .lp-sk-disc        the four marks on white discs (SkDisc): CRM, TheirStack, Apify, Dealroom
  *   svg.lp-sk-wires    the two stops (site visits, events), flat, under the wires; per source a
- *                      <g data-node>: its wires, from its edge (they multiply: the kit's
- *                      `> g > *`); the five grey leads; her near-black dot (.lp-sk-hub) over
- *                      the middle one. The stops, the leads and her dot are the svg's own
- *                      children: no blend, so a lead covers the end of the wire it sits on
+ *                      <g data-node>: its wire (data-wire, data-order its draw slot, data-to its
+ *                      lead), from its edge, then its pulse (.lp-sk-pulse, data-pulse: a copy of
+ *                      the wire's d the timeline rides, hidden at rest; both multiply: the kit's
+ *                      `> g > *`). The two wires into her lead carry .lp-slin-lineage (near-black
+ *                      at rest). Then the five grey leads (data-lead) and her near-black dot
+ *                      (.lp-sk-hub) over the middle one. The stops, the leads and her dot are the
+ *                      svg's own children: no blend, so a lead covers the end of the wire it sits
+ *                      on and swallows the pulse that rides it in
  *   .lp-sk-name        each source's name under it (SkName), the two group labels over their
  *                      columns, her name under her dot (.lp-sk-rise: the one line that rises in)
  * Every box is placed inline from the data (stage px, three decimals at most: skF3); the
@@ -74,12 +79,21 @@ export function LpStoryLineageStage(_props: DiveStageProps) {
           {sources.map((source) => (
             <g key={source.id} data-node={source.id}>
               {source.wires.map((wire) => (
-                <path key={wire.id} data-wire={wire.id} data-order={wire.order} d={wire.d} />
+                <Fragment key={wire.id}>
+                  <path
+                    className={wire.to === found.lead ? "lp-slin-lineage" : undefined}
+                    data-wire={wire.id}
+                    data-order={wire.order}
+                    data-to={wire.to}
+                    d={wire.d}
+                  />
+                  <path className="lp-sk-pulse" data-pulse={wire.id} d={wire.d} />
+                </Fragment>
               ))}
             </g>
           ))}
           {leads.map((dot, i) => (
-            <circle key={i} className="lp-slin-lead" cx={skF3(dot.x)} cy={skF3(dot.y)} r={skF3(dot.r)} />
+            <circle key={i} className="lp-slin-lead" data-lead={i} cx={skF3(dot.x)} cy={skF3(dot.y)} r={skF3(dot.r)} />
           ))}
           <circle className="lp-sk-hub lp-slin-found" cx={skF3(lead.x)} cy={skF3(lead.y)} r={skF3(found.r)} />
         </svg>

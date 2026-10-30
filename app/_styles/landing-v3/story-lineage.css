@@ -2,28 +2,39 @@
    "Where every lead came from" (LpStoryLineage), the founder's "3/ Lead
    lineage", which is also "la detection croisee de signaux interne externe":
    your data (left) and Pancake data (right) draw wires into a column of
-   leads, and the one reached from both sides is near-black and named. No
-   claim and no UI: the parts of the one picture he loves, the old sources
-   story's end hub, from the story kit.
+   leads, and the one reached from both sides is near-black and named, its two
+   wires near-black with it: its lineage. No claim and no UI: the parts of the
+   one picture he loves, the old sources story's end hub, from the story kit.
 
    Everything shared is the kit's (story-kit.css: the white disc, the wires,
-   the hub dot, the names and the rise). This file holds what
-   is this story's only: the leads' grey and the group labels' ink. The stops'
-   colours are inline from lp-story-lineage-data.ts (each its brand token), as
-   every box is (stage px, 752x489).
+   the pulses that ride them, the hub dot, the names and the rise). This file
+   holds what is this story's only: the leads' grey, the lineage's ink and
+   the group labels' ink. The stops' colours are inline from
+   lp-story-lineage-data.ts (each its brand token), as every box is (stage
+   px, 752x489).
 
    Traps (the kit's T1–T5 hold): every selector is compound (T1: `.lp p
    { margin: 0 }` and the shell's `.lp-dive-scene * { font-family }` tie with
    single-class rules). The stops, the leads and her dot are children of the
    svg, not of a <g>: the kit's `> g > *` multiply never reaches them, so each
-   paints flat and a lead covers the end of its wire. Phones (≤767 px) show
-   this 752 scene scaled (×0.455 at 390): the kit hides every name there and
-   the picture reads without them. No will-change, no keyframes. */
+   paints flat and a lead covers the end of its wire (and the pulse that
+   rides it in). Phones (≤767 px) show this 752 scene scaled (×0.455 at 390):
+   the kit hides every name there and the picture reads without them. No
+   will-change, no keyframes. */
 
 /* the leads: dots in the wires' own grey (the kit's --sk-wire), r 8, where
    the wires end */
 .lp-slin .lp-slin-lead {
   fill: var(--sk-wire);
+}
+
+/* the lead's lineage (2026-10-30, "the match"): the two wires that reached
+   the found lead, the CRM's and Dealroom's, in the hub's near-black at rest
+   (the END picture). The timeline draws them grey and turns them after the
+   match, then lets go of its stroke so this rule holds it. Beats the kit's
+   `.lp-sk-wires path` grey (0,2,0 over 0,1,1); the pulses are not wires */
+.lp-slin .lp-slin-lineage {
+  stroke: var(--sk-hub);
 }
 
 /* the two group labels: the kit's name, in the kicker's ink (ink-80, the
