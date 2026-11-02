@@ -123,7 +123,7 @@
   --lp-font-fono: var(--font-aeonik-fono), ui-monospace, "SF Mono", monospace;
   /* Reading face since 2026-09-09 (founder: everything that isn't Aeonik reads
      in Geist Sans — Fono was hard to read at body sizes). Fono stays on code
-     and the agent terminal only (audience.css, blog code). */
+     and the agent terminal only (audience.css, agent-lab.css, blog code). */
   --lp-font-sans: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
   --lp-font-aeonik: var(--font-aeonik), system-ui, -apple-system, sans-serif;
   --lp-font-cond: var(--font-aeonik-condensed), var(--font-aeonik), system-ui, -apple-system, sans-serif;

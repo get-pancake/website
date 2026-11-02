@@ -13,6 +13,7 @@ import { LpInfra } from "@/components/sections/landing-v3/LpInfra";
 import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
+import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
@@ -130,7 +131,7 @@ export default function Home() {
       <LpAnimFreeze />
       {/* V2 Figma replication (fr8NgOCTUxsEbrMEJA3YKu 4911:346, 2026-10-09) page order. Every
           section is a DIRECT <section> child of main.lp: the agents view hides all of them but
-          the hero (audience.css, integrator rule). */}
+          the hero and the lab (audience.css, integrator rule). */}
       <LpNav />
       <LpHero />
       {/* the demo window, right under the hero (V2 red note: swapped with the logos) */}
@@ -144,9 +145,10 @@ export default function Home() {
           the band ends on the CTA's hill; founder 2026-10-28 on the CTA: "Should be below
           testimonials"), then pricing. "Find any buyer you can describe." (the
           agent-written search shown as code) went the same day: "les gens s en foutent du code".
-          The hero's For agents view is the one-line install alone (LpAgentStart; its code wall
-          and puzzle left on 2026-11-01). */}
+          The hero's For agents view keeps the one-line install (LpAgentStart). */}
       <LpInfra />
+      {/* the agents view's code wall (agents view only) */}
+      <LpAgentLab />
       <LpSteps />
       <LpBanner />
       {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
