@@ -253,7 +253,7 @@ function AccountsVisual() {
 type LogLine = { time: string; role: string; text: string };
 
 const AUDIT_LOG: LogLine[] = [
-  { time: "04:12:08", role: "growth/copy", text: "drafted post → x.com/pancake" },
+  { time: "04:12:08", role: "growth/copy", text: "drafted post → x.com/pancakegtm" },
   { time: "04:12:14", role: "eng/full-stack", text: "opened PR #1284" },
   { time: "04:12:31", role: "ops/invoice", text: "queued for approval" },
   { time: "04:12:45", role: "ops/support", text: "resolved ticket-9117" },

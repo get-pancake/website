@@ -124,6 +124,18 @@ const nextConfig = {
       { source: "/booked", destination: "/demo", permanent: false },
     ];
   },
+  // "Will it stand?", the vote page for the pancake tower world-record attempt
+  // (Corgi Café, 2026-10-29), is a static page on its own Vercel project; it is
+  // served here so the room's QR code reads pancake.ai/record. The screen
+  // (/record/screen) builds its QR from its own address. When the event page
+  // retires, swap these for a 301 (redirects above): the address was printed
+  // on the screen.
+  async rewrites() {
+    return [
+      { source: "/record", destination: "https://pancake-tower-two.vercel.app/" },
+      { source: "/record/:path*", destination: "https://pancake-tower-two.vercel.app/:path*" },
+    ];
+  },
   // Baseline security headers (2026-10-07; only HSTS was set, by Vercel).
   // Permissions-Policy blocks camera and geolocation and leaves the
   // microphone alone: /demo's voice agent (AiSalesCall) asks for it. No CSP

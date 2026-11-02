@@ -8,7 +8,7 @@ import { PancakeLogo } from "./PancakeLogo";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 const socials = [
-  { href: "https://x.com/getpancake_ai", label: "Pancake on X", Icon: SiX },
+  { href: "https://x.com/pancakegtm", label: "Pancake on X", Icon: SiX },
   { href: "https://www.linkedin.com/company/get-pancake", label: "Pancake on LinkedIn", Icon: FaLinkedin },
   { href: "https://www.youtube.com/@trypancake", label: "Pancake on YouTube", Icon: SiYoutube },
   { href: "https://www.tiktok.com/@getpancake", label: "Pancake on TikTok", Icon: FaTiktok },

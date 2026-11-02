@@ -105,7 +105,7 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
     id: "social",
     title: "Social",
     links: [
-      { label: "X", href: "https://x.com/getpancake_ai", external: true },
+      { label: "X", href: "https://x.com/pancakegtm", external: true },
       { label: "LinkedIn", href: "https://www.linkedin.com/company/get-pancake", external: true },
       { label: "Discord", href: "https://discord.gg/brJ99Up6ym", external: true },
       { label: "YouTube", href: "https://www.youtube.com/@trypancake", external: true },

@@ -17,7 +17,7 @@ const CADENCE: Record<Platform, { perMonth: string; between: string }> = {
 };
 
 const REQUIREMENTS = [
-  "Tag @getpancake_ai in the post",
+  "Tag @pancakegtm in the post",
   "Include a screenshot or screen recording of Pancake's actual output",
   "Organic reach only — no boosts, no promoted posts",
   "Real Pancake output from your real workspace",

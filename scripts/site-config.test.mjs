@@ -163,7 +163,7 @@ test("the environment reaches the module and next.config.mjs redirects", () => {
 
 test("no active source hard-codes a getpancake.ai URL outside lib/site-config.mjs", () => {
   // A quoted absolute URL on getpancake.ai or one of its subdomains. Comments, email
-  // addresses and social handles (x.com/getpancake_ai) do not match.
+  // addresses and social handles (x.com/pancakegtm) do not match.
   const hardCoded = /["'`]https?:\/\/([a-z0-9-]+\.)*getpancake\.ai(?![a-z0-9-])/i;
   const skip = new Set(["lib/site-config.mjs"]);
   const skipDirs = new Set(["app/_influencers"]); // archived page, not routed (next.config.mjs redirects it)

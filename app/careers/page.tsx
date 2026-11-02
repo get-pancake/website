@@ -71,7 +71,7 @@ const FACTS: Fact[] = [
   // audit: two founding years on one site. Keep the two in step.
   { label: "Founded 2024", tone: "pink" },
   { label: "LinkedIn", tone: "blue", href: "https://www.linkedin.com/company/get-pancake" },
-  { label: "X", tone: "orange", href: "https://x.com/getpancake_ai" },
+  { label: "X", tone: "orange", href: "https://x.com/pancakegtm" },
 ];
 
 /* Titles as each person states them publicly (LinkedIn headlines / funding
