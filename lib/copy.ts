@@ -363,7 +363,7 @@ export const pricingLead = {
     },
     {
       title: "Outreach from your account",
-      body: "A personal message for each lead, in your voice, sent from your own account once you approve the lead. A reply stops the sequence.",
+      body: "A personal message for each lead, in your voice, sent from your own account. A reply stops the sequence.",
     },
   ],
   example: {

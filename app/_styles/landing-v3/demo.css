@@ -881,7 +881,7 @@
   --lp-claude-send: #0d0d0d;
 }
 /* the kit's layered `* { font-family }` beats inheritance: every element states its face (as
-   agent-lab.css does): the system sans, and the tool calls' log lines in mono */
+   audience-agents.css does): the system sans, and the tool calls' log lines in mono */
 .lp-demowin__cwin[data-harness="codex"],
 .lp-demowin__cwin[data-harness="codex"] * { font-family: ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif; }
 .lp-demowin__cwin[data-harness="codex"] .lp-demowin__ctool,

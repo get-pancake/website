@@ -559,11 +559,16 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   };
   // A content-visibility:auto ancestor that skips its contents gives them no
   // geometry: build only once it renders them (f2 measures glyph rects).
+  // Nor does a display:none one: the homepage's agents view hides every human
+  // section, and a visitor whose first input is the toggle had the step cards
+  // built there, measured at zero (2026-11-01: s4 threw, its card stayed a
+  // still for the visit). Not laid out = not built now; the observers below
+  // prepare the card again once its section shows and nears the screen.
   const laidOut = () => {
-    if (!o.layoutRoot) return true;
     const check = (stage as HTMLElement & {
-      checkVisibility?: (opts: { contentVisibilityAuto: boolean }) => boolean;
+      checkVisibility?: (opts?: { contentVisibilityAuto: boolean }) => boolean;
     }).checkVisibility;
+    if (!o.layoutRoot) return typeof check === "function" ? check.call(stage) : stage.getClientRects().length > 0;
     if (typeof check === "function") return check.call(stage, { contentVisibilityAuto: true });
     return near || visible; // older engines: the card itself is intersecting
   };

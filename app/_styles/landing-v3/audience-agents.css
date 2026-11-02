@@ -1,18 +1,21 @@
 /* Agents view — owner: agents-view package. Figma V2 frame 4911:1461 (2026-10-09): one blue page
    (#4660e7 = --lp-blue-40), white ink, square corners, 1 px white outlines, every UI label in Geist
    Mono. Imported right after audience.css (app/_styles/landing-v3.css), so it wins ties with it.
-   Here: the font, the page chrome, the nav look, the hero (ASCII art, agent headline, agent
-   column). The code wall under the hero is agent-lab.css. The section-hiding rule stays in
+   Here: the font, the page chrome, the nav look, the hero (no art; the agents view's block:
+   heading, install box, marks). Since 2026-11-01 the view is that block alone (founder: "Keep the
+   toggle. The blue view shows only the one-line install, large, with its copy button and the
+   agents' marks. No code wall, no tile game."): the ASCII rainbow, the typed "> @agents, get gtm
+   superpowers" headline, the code wall and its puzzle left. The section-hiding rule stays in
    audience.css (integrator-owned); the toggle's placement and human look are nav-hero's
    (audience.css), its agents look is below. Every rule is scoped to the agents view or to
    agents-only components, so /agents (its own page) and the humans view never change. */
 
-/* ── Geist Mono — the agents view's UI face (Figma: nav, toggle, headline, prompt, card) ──
+/* ── Geist Mono — the agents view's UI face (Figma: nav, toggle, heading, install box) ──
    Same family and provenance as the site's Geist Sans (app/fonts/geist/, SIL OFL 1.1). Declared
    here, not in app/layout.tsx (decision 2026-10-09: no new site-wide font): an @font-face is
    fetched only when text set in it renders, so humans visitors never download it. The name is the
-   one --lp-font-mono (foundation.css) falls back to. LpAudienceHeadline warms it up when the
-   toggle is hovered, focused or touched. */
+   one --lp-font-mono (foundation.css) falls back to. LpAgentStart warms it up when the toggle is
+   hovered, focused or touched. */
 @font-face {
   font-display: swap;
   font-family: "Geist Mono";
@@ -26,7 +29,7 @@
 /* iOS paints the Dynamic-Island band with the body's background */
 html:has(.lp-audience-page[data-audience="agents"]),
 body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp-agents-bg); }
-.lp-audience-page[data-audience="agents"] > :is(.lp-nav, .lp-hero, .lp-agent-lab) { --lp-text: var(--lp-ink-0); color: var(--lp-ink-0); }
+.lp-audience-page[data-audience="agents"] > :is(.lp-nav, .lp-hero) { --lp-text: var(--lp-ink-0); color: var(--lp-ink-0); }
 
 /* ── nav — Figma 4911:1462 ─────────────────────────────────────────────────
    Pixel logo 140.706×42.578 (vertical centre 60, left 179); production menus in Geist Mono 500,
@@ -101,134 +104,21 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
   }
 }
 
-/* ── hero art — the ASCII rainbow (LpHeroAgentArt.tsx, Figma 4911:2624) ───────
+/* ── hero art: none since 2026-11-01 (the ASCII rainbow, V2 4911:2624, left with the code wall) ──
    The rings stay laid out and keep their own loop (unseen) instead of display:none: LpRainbowGL /
    LpArcCanvas then repaint in the switch-back commit (their data-audience watch), so the humans
-   snapshot never shows an empty or stale sky. The canvas sits in the rings' box (.lp-hero-art:
-   page top-left at ≥1025, lifted 60 px with it on <640-tall windows) at Figma's page y172.354.
-   (0,4,0)+: beats anim.css's [data-lp-gl] > .lp-gl-canvas / [data-lp-gl-off] .lp-anim-box. */
-.lp-audience-page[data-audience="agents"] .lp-hero-art > :not(.lp-agents-ascii),
+   view never shows an empty or stale sky. (0,4,0)+: beats anim.css's [data-lp-gl] > .lp-gl-canvas
+   and [data-lp-gl-off] .lp-anim-box, which set them visible. */
+.lp-audience-page[data-audience="agents"] .lp-hero--home .lp-hero-art > *,
 .lp-audience-page[data-audience="agents"] .lp-hero-art .lp-anim-box { visibility: hidden; }
-.lp-agents-ascii {
-  color: var(--lp-ink-0); /* the canvas's fill (read once at draw time) */
-  display: block;
-  left: 0;
-  pointer-events: none;
-  position: absolute;
-  top: 172.354px;
-  z-index: 1;
-}
-/* tablet / phone grids (138 / 107 columns at the same glyph size), centred on the page; tops are
-   the spec's hero-relative tops plus the art's own offset (hero.css: −11.7vw, then 0.3vw and a
-   −4.82vw margin on phones) */
-@media (max-width: 1024px) {
-  .lp-agents-ascii {
-    left: 50%;
-    top: calc(clamp(16px, 34vw - 244px, 104px) + 11.7vw);
-    translate: -50% 0;
-  }
-}
-@media (max-width: 767px) {
-  .lp-agents-ascii {
-    left: calc(50% + 4.82vw);
-    top: calc(max(8px, 61.44vw - 200px) - 0.3vw);
-  }
-}
-
-/* ── agent headline (LpAudienceHeadline.tsx) — Figma 4939:3740 ─────────────
-   Geist Mono 400 56/73, −3 %, two rows: "> @agents," / "get gtm superpowers" + a "|" cursor glyph
-   (V2's own cursor). 146 tall, bottom-aligned in the title grid the human H1 (160) sizes, so its
-   bottom is the H1's (hero bottom 63 with the founder's 36 px drop). Each row is a flex line of
-   glyph spans revealed by max-width (mono: no kerning to break). */
-.lp-hero-title__copy--agent {
-  align-self: end;
-  display: block;
-  min-width: 0;
-}
-/* Not rendered in the humans view: no text set in Geist Mono there, so humans never download it
-   (a visibility:hidden line would still fetch the face), and it can never size the title cell. */
-.lp-audience-page:not([data-audience="agents"]) .lp-hero-title__copy--agent { display: none; }
-.lp-agent-headline {
-  --lp-type-duration: 1600ms;
-  align-items: flex-start;
-  color: var(--lp-text);
-  display: flex;
-  flex-direction: column;
-  font-family: var(--lp-font-mono);
-  font-kerning: none;
-  font-size: 56px;
-  font-variant-ligatures: none;
-  font-weight: 400;
-  letter-spacing: -0.03em;
-  line-height: 1.30357; /* 73 / 56 (Figma AUTO, rounded) */
-  visibility: hidden;
-  white-space: pre;
-}
-.lp-agent-headline * { font: inherit; letter-spacing: inherit; }
-.lp-agent-headline__line { display: flex; }
-.lp-agent-headline__prompt { display: block; flex: none; }
-.lp-agent-headline__glyph { display: block; flex: none; max-width: 2em; overflow: hidden; }
-.lp-agent-headline__cursor { display: block; flex: none; }
-/* Row 2 + cursor ink = 11.16 em: each size keeps it clear of the right column (1025–1200), inside
-   the 48 px tablet gutters, and inside 326 px of a 390 phone (22.9 px at 320). The vw caps keep
-   the two rows (2.607 em) no taller than the human H1 they overlay (2.32 × its 5.4vw / 6.4vw), so
-   nothing below the title moves on a switch. */
-@media (max-width: 1200px) {
-  .lp-agent-headline { font-size: clamp(40px, min(calc((100vw - 488px) / 11.2), 4.8vw), 56px); }
-}
-@media (max-width: 1024px) {
-  .lp-agent-headline { font-size: clamp(32px, min(calc((100vw - 96px) / 11.2), 5.69vw), 50px); }
-}
-@media (max-width: 767px) {
-  .lp-agent-headline { font-size: min(28.85px, calc((100vw - 64px) / 11.2)); }
-}
-/* Homepage phones since the "powering" H1 (2026-10-28, hero.css: (100vw − 64px) / 9.2 at line
-   height 0.92): the two rows stay no taller than its box (1.84 × its size, so at most 0.7 ×
-   it), or the stacked block would grow in this view and lift the toggle above it */
-@media (max-width: 767px) {
-  .lp-hero--home .lp-agent-headline { font-size: min(28.85px, calc((100vw - 64px) / 11.2), calc((100vw - 64px) / 9.2 * 0.7)); }
-}
-/* Production typing, two rows: the crossfade (240 ms) first, then 27 glyphs over 1600 ms (letter
-   .04, space and line break .12). Cursor 1 rides row 1 and goes out with its last glyph; cursor 2
-   takes over at the start of row 2, follows the typing, then blinks — paused off screen
-   (data-inview: the line's own gate; the hero is not an LpAnimFreeze stage). */
-[data-audience="agents"] .lp-agent-headline[data-font-ready="true"] { visibility: visible; }
-[data-audience="agents"] .lp-agent-headline[data-font-ready="true"] .lp-agent-headline__glyph {
-  animation: lp-agent-glyph 1ms steps(1, start) calc(var(--lp-audience-fade-duration) + var(--lp-type-duration) * var(--lp-glyph-progress)) both;
-}
-[data-audience="agents"] .lp-agent-headline[data-font-ready="true"] .lp-agent-headline__cursor[data-line="1"] {
-  animation: lp-agent-cursor-off 1ms steps(1, start) calc(var(--lp-audience-fade-duration) + var(--lp-type-duration) * var(--lp-row1-end)) both;
-}
-[data-audience="agents"] .lp-agent-headline[data-font-ready="true"] .lp-agent-headline__cursor[data-line="2"] {
-  animation:
-    lp-agent-cursor-on 1ms steps(1, start) calc(var(--lp-audience-fade-duration) + var(--lp-type-duration) * var(--lp-row1-end)) both,
-    lp-agent-cursor 0.7s steps(1, end) calc(var(--lp-audience-fade-duration) + var(--lp-type-duration)) infinite;
-}
-[data-audience="agents"] .lp-agent-headline[data-font-ready="true"]:not([data-inview="true"]) .lp-agent-headline__cursor[data-line="2"] {
-  animation-play-state: paused;
-}
-@keyframes lp-agent-glyph { from { max-width: 0; } to { max-width: 2em; } }
-@keyframes lp-agent-cursor-off { from { opacity: 1; } to { opacity: 0; } }
-@keyframes lp-agent-cursor-on { from { opacity: 0; } to { opacity: 1; } }
-@keyframes lp-agent-cursor { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-/* reduced motion: the typed line at rest, one solid cursor */
-@media (prefers-reduced-motion: reduce) {
-  [data-audience="agents"] .lp-agent-headline[data-font-ready="true"] .lp-agent-headline__glyph,
-  [data-audience="agents"] .lp-agent-headline[data-font-ready="true"] .lp-agent-headline__cursor[data-line="2"] { animation: none; }
-  [data-audience="agents"] .lp-agent-headline[data-font-ready="true"] .lp-agent-headline__cursor[data-line="1"] { animation: none; opacity: 0; }
-}
-
-/* ── hero scroll (lp-agents-scroll.ts) — the hero copy drifts 25.54 px·p and fades out between
-   p .5481 and .85 as the wall assembles, exactly as the humans copy does over the demo window
-   (demo.css, humans view only). Unset (no driver: tablets, phones, reduced motion) = at rest. ── */
-@media (min-width: 1025px) and (min-height: 640px) and (prefers-reduced-motion: no-preference) {
-  .lp-audience-page[data-audience="agents"] .lp-hs-hero {
-    opacity: calc(1 - clamp(0, (var(--lp-as-hero, 0) - 0.5481) / 0.3019, 1));
-    translate: 0 calc(25.54px * var(--lp-as-hero, 0));
-  }
-  /* faded out (p ≥ .85, lp-agents-scroll.ts data-as-out): out of hit-testing and the tab order
-     too. Scrolling back up brings it back. */
-  .lp-audience-page[data-audience="agents"] .lp-hs-hero[data-as-out] { visibility: hidden; }
+/* With no section under the hero any more, the rings left empty blue to scroll: their arcs run
+   past the art's box (clipped there, at every width), and the box itself runs past the hero from
+   768 wide (1417 tall at 1654) and on landscape phones (clipped by the hero). Clips only: layout
+   is untouched, so the switch back is as instant as before. A portrait phone's hero is not
+   clipped: the agents block hangs in its bottom room, with its copy-error line under it. */
+.lp-audience-page[data-audience="agents"] .lp-hero--home .lp-hero-art { overflow: clip; }
+@media (min-width: 768px), (orientation: landscape) {
+  .lp-audience-page[data-audience="agents"] > .lp-hero { overflow: clip; }
 }
 
 /* ── toggle, agents look — Figma 4939:3726 (nav-hero §4.2 handoff) ──────────
@@ -253,57 +143,193 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 }
 [data-audience="agents"] .lp-audience-switch__thumb { background: var(--lp-ink-0); }
 
-/* ── agent column (LpAgentStart.tsx) — Figma 4939:3725 under the toggle ─────
-   Install box 368×94 (1 px white border, pad 16, gap 8: text 294×60 = 3 mono lines of 36 columns,
-   copy button 32×32), gap 24, then the friends row (24 tall). 142 tall: bottom-aligned in the swap
-   cell the 144-tall human column sizes → box top 564 / friends 682 at 1654 (V2 528 / 646 + the
-   founder's 36 px drop). Its placement in the hero is hero.css / audience.css (nav-hero). */
-.lp-agent-start {
+/* ── the agents view's block (LpAgentStart.tsx) — founder 2026-11-01 ──────────────────────────
+   "Keep the toggle. The blue view shows only the one-line install, large, with its copy button and
+   the agents' marks. No code wall, no tile game." The block fills the hero's top, where the
+   humans view has its rainbow: the heading at the H1's scale, the install box (the focus), the
+   "friends with" row. It takes no room of its own, so the toggle never moves (the hidden human
+   copy keeps sizing the hero), and it follows the toggle in the DOM (tab order switch, then copy):
+   - desktop (≥1025): absolutely positioned in the right column (.lp-hero-aside), from the H1's
+     left edge to the column's right edge, its bottom on the toggle's row: the marks sit on that
+     row, beside the toggle, the box above them, the heading on top (2 × 86 + 40 + 76 + 24 + 28 =
+     340: the block starts 102 px under the nav at 1440 × 900, and scales with the hero's copy on
+     shorter windows);
+   - phones from 360 wide and 800 tall: the same stack above the toggle, a zero-height row placed
+     before it (its gap given back) that the stack overflows upwards from;
+   - tablets and shorter phones (the room above the toggle is 146 to 348 px there, the stack
+     needs about 300): the heading above the toggle, the box and marks under it, over the hidden
+     human copy (two zero-height rows).
+   Not rendered in the humans view. */
+.lp-agent-start { display: none; }
+.lp-audience-page[data-audience="agents"] .lp-agent-start {
   color: var(--lp-text);
   display: flex;
   flex-direction: column;
-  gap: 24px; /* Figma itemSpacing */
+  font-size: var(--lp-text-md);
+  font-weight: 400;
+  gap: 40px;
+  letter-spacing: 0;
+  line-height: 1.5;
+  pointer-events: none; /* its box covers the toggle's row on desktop: only its parts take the pointer */
   position: relative;
-  width: 100%;
 }
+.lp-agent-start__heading,
+.lp-agent-start .lp-agent-prompt,
+.lp-agent-start .lp-agent-friends { pointer-events: auto; }
+.lp-agent-start__body { display: flex; flex-direction: column; gap: 24px; position: relative; }
 /* the kit's layered `* { font-family }` beats inheritance */
 .lp-agent-start * { font-family: var(--lp-font-mono); }
+/* The heading takes the H1's place and scale, in the view's mono face and terminal prompt ("> ",
+   aria-hidden), on two lines ("> Paste this" / "into your agent"): the H1's size where the line
+   fits (9.69 em wide with its indent), else the room's tenth. The prompt hangs, so the second
+   line starts under "Paste" (two glyphs of 0.57 em). */
+.lp-agent-start__heading {
+  align-self: flex-start; /* as wide as its words */
+  font-kerning: none;
+  font-size: 79.5px; /* = #lp-hero-title (hero.css) */
+  font-variant-ligatures: none;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+  margin: 0;
+  padding-left: 1.14em;
+  text-indent: -1.14em;
+  white-space: nowrap;
+}
 .lp-agent-start .lp-agent-prompt__error { left: 0; margin: 0; padding-top: 12px; position: absolute; top: 100%; }
 .lp-agent-friends {
   align-items: center;
+  align-self: flex-start;
   display: flex;
-  font-size: var(--lp-text-sm);
+  font-size: var(--lp-text-md);
   font-weight: 500;
-  gap: 8px;
-  height: 24px;
+  gap: 12px;
+  height: 28px;
   letter-spacing: 0;
-  line-height: 20px;
+  line-height: 24px;
 }
-.lp-agent-friends ul { align-items: center; display: flex; gap: 8px; list-style: none; margin: 0; padding: 0; }
-/* Claude, Hermes, OpenClaw: a 20 px glyph centred in a 24 cell; the OpenAI glyph fills its own 24
-   box; Cursor sits bare (17.48×20), as Figma draws them */
-.lp-agent-friends li { display: grid; flex: none; height: 24px; place-items: center; width: 24px; }
-.lp-agent-friends li svg { display: block; height: 20px; width: 20px; }
-.lp-agent-friends li svg[data-mark="codex"] { height: 24px; width: 24px; }
-.lp-agent-friends li[data-bare] { height: 20px; width: 17.48px; }
-.lp-agent-friends li[data-bare] svg { height: 20px; width: 17.48px; }
+.lp-agent-friends ul { align-items: center; display: flex; gap: 12px; list-style: none; margin: 0; padding: 0; }
+/* Claude, Hermes, OpenClaw: a 24 px glyph centred in a 28 cell; the OpenAI glyph fills its own box
+   (its viewBox carries the inset), as Figma draws them */
+.lp-agent-friends li { display: grid; flex: none; height: 28px; place-items: center; width: 28px; }
+.lp-agent-friends li svg { display: block; height: 24px; width: 24px; }
+.lp-agent-friends li svg[data-mark="codex"] { height: 28px; width: 28px; }
 
-/* ── the install prompt (LpAgentPrompt.tsx): the hero box and the wall card's head ── */
-.lp-agent-prompt { align-items: flex-start; display: flex; gap: 8px; }
-.lp-agent-prompt--hero { border: var(--lp-line) solid var(--lp-ink-0); padding: 16px; }
-.lp-agent-prompt__text { flex: 1; min-width: 0; }
+@media (min-width: 1025px) {
+  .lp-audience-page[data-audience="agents"] .lp-agent-start {
+    bottom: calc(100% - var(--lp-switch-height)); /* the toggle's row (the column's first 28 px) */
+    left: -768px; /* the H1's left edge: (50% − 568) − (50% + 200), hero.css */
+    position: absolute;
+    right: 0; /* the column's right edge */
+  }
+}
+/* 1025–1200 the H1 sits 48 px from the left edge and the column 48 px from the right (hero.css):
+   the hero's text frame, as a query container, places the block's left edge; the heading follows
+   the H1's own size there */
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .lp-audience-page[data-audience="agents"] .lp-hero--home .lp-hero-inner { container-type: inline-size; }
+  .lp-audience-page[data-audience="agents"] .lp-agent-start { left: calc(464px - 100cqw); }
+  .lp-agent-start__heading { font-size: min(79.5px, calc((100vw - 504px) / 9.2)); }
+}
+/* tablets and phones: the split (heading above the toggle, box and marks under it) */
+@media (max-width: 1024px) {
+  .lp-audience-page[data-audience="agents"] .lp-agent-start { display: contents; }
+  .lp-audience-page[data-audience="agents"] .lp-agent-start__head,
+  .lp-audience-page[data-audience="agents"] .lp-agent-start__body {
+    align-self: stretch;
+    height: 0;
+    margin-bottom: -24px; /* the stacked block's gap (hero.css ≤1024), given back */
+  }
+  /* before the toggle (order −1, earlier in the DOM); its heading overflows upwards from the
+     toggle's top, 24 px clear of it */
+  .lp-audience-page[data-audience="agents"] .lp-agent-start__head {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    order: -2;
+    pointer-events: none;
+    position: relative;
+    top: -24px;
+  }
+  /* right after the toggle, hanging over the hidden human copy */
+  .lp-audience-page[data-audience="agents"] .lp-agent-start__body { order: -1; pointer-events: none; }
+  .lp-agent-start__heading { font-size: min(79.5px, calc((100vw - 96px) / 10)); }
+}
+@media (max-width: 767px) {
+  .lp-audience-page[data-audience="agents"] .lp-agent-start__head,
+  .lp-audience-page[data-audience="agents"] .lp-agent-start__body {
+    margin-bottom: calc(var(--lp-hero-tuck, 0px) * 7 / 45 - 23px); /* the phone gap (hero.css) */
+    /* the 32 px gutters even where the human buttons row (278 px) widens the hero's text column
+       past the screen (under about 342 wide) */
+    max-width: calc(100vw - 64px);
+  }
+  .lp-agent-start__body { gap: 16px; }
+  .lp-agent-start__heading { font-size: calc((100vw - 64px) / 10); }
+  .lp-agent-friends { flex-wrap: wrap; height: auto; min-height: 28px; row-gap: 8px; }
+}
+/* phones from 360 wide and 800 tall have the room (418 px at 390 × 844; the stack needs about
+   300): the whole block above the toggle, as on desktop */
+@media (max-width: 767px) and (min-width: 360px) and (min-height: 800px) {
+  .lp-audience-page[data-audience="agents"] .lp-agent-start {
+    align-self: stretch;
+    display: flex;
+    gap: 24px;
+    height: 0;
+    justify-content: flex-end; /* the stack overflows upwards from the toggle's top */
+    margin-bottom: calc(var(--lp-hero-tuck, 0px) * 7 / 45 - 23px);
+    max-width: calc(100vw - 64px);
+    order: -2;
+    top: -32px;
+  }
+  .lp-audience-page[data-audience="agents"] .lp-agent-start__head,
+  .lp-audience-page[data-audience="agents"] .lp-agent-start__body {
+    height: auto;
+    margin-bottom: 0;
+    order: 0;
+    top: auto;
+  }
+}
+/* under 360 wide the row's first sizes (275 px) no longer fit: the marks at 20 in 24 cells, gaps
+   of 8 (243 px, one line down to 307 wide) */
+@media (max-width: 359px) {
+  .lp-agent-friends, .lp-agent-friends ul { gap: 8px; }
+  .lp-agent-friends li { height: 24px; width: 24px; }
+  .lp-agent-friends li svg { height: 20px; width: 20px; }
+  .lp-agent-friends li svg[data-mark="codex"] { height: 24px; width: 24px; }
+}
+
+/* ── the install box (LpAgentPrompt.tsx): 1 px white outline, square, the copy button inside ──
+   Desktop and tablets: the instruction (87 mono glyphs = 52.2 em) on one line wherever that fits
+   at 15 px or more, up to 19.2 (its text cell is a query container: 1037 px wide from 1201, so
+   19.2 there; 15.8 at 1025), else it wraps at 15. Box 76 tall on one line: 17 + the 40 px copy
+   button + 17. Phones: 16 px over four lines, the button in the top right corner. */
+.lp-agent-prompt {
+  align-items: flex-start;
+  border: var(--lp-line) solid var(--lp-ink-0);
+  display: flex;
+  gap: 8px;
+  padding: 16px;
+}
+.lp-agent-prompt__text { container-type: inline-size; flex: 1; min-width: 0; }
 .lp-agent-prompt__code {
   color: var(--lp-text);
   display: block;
   font-family: var(--lp-font-mono);
   font-kerning: none;
-  font-size: var(--lp-text-sm);
+  font-size: var(--lp-text-md);
   font-variant-ligatures: none;
   font-weight: 400;
   letter-spacing: 0;
-  line-height: 20px;
+  line-height: 24px;
   overflow-wrap: anywhere;
   user-select: text;
+}
+@media (min-width: 768px) {
+  .lp-agent-prompt { gap: 16px; padding: 17px 17px 17px 24px; }
+  .lp-agent-prompt__code { font-size: clamp(15px, 100cqi / 52.6, var(--lp-text-lg)); line-height: 28px; }
+}
+@media (min-width: 1025px) {
+  .lp-agent-prompt { align-items: center; }
 }
 .lp-agent-prompt__error {
   color: var(--lp-text);
@@ -321,22 +347,22 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
   cursor: pointer;
   display: grid;
   flex: none;
-  height: 32px;
+  height: 40px;
   padding: 0;
   place-items: center;
   position: relative;
   touch-action: manipulation;
   transition: background-color 0.16s ease-out, transform 0.16s ease-out;
-  width: 32px;
+  width: 40px;
 }
-/* 44 px hit area, the visual stays 32 */
-.lp-agent-prompt__copy::after { content: ""; inset: -6px; position: absolute; }
+/* 44 px hit area, the visual stays 40 */
+.lp-agent-prompt__copy::after { content: ""; inset: -2px; position: absolute; }
 @media (hover: hover) {
   .lp-agent-prompt__copy:hover { background: color-mix(in srgb, var(--lp-ink-0) 12%, transparent); }
 }
 .lp-agent-prompt__copy:active { transform: scale(0.94); }
 .lp-agent-prompt__copy:focus-visible { outline: calc(2 * var(--lp-line)) solid var(--lp-ink-0); outline-offset: 2px; }
-.lp-agent-prompt__copy svg { display: block; height: 16px; width: 16px; }
+.lp-agent-prompt__copy svg { display: block; height: 20px; width: 20px; }
 .lp-agent-prompt[data-copy-state="copied"] .lp-agent-prompt__copy svg { animation: lp-agent-copy-check 0.18s var(--lp-audience-ease); }
 @keyframes lp-agent-copy-check { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 @media (prefers-reduced-motion: reduce) {

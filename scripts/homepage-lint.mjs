@@ -88,13 +88,11 @@ const FILES = [
   // testimonials / KPI bento (bento); its placeholder module stays out on purpose
   "components/sections/landing-v3/LpBento.tsx",
   "components/sections/landing-v3/lp-bento-data.ts",
-  // agents view (agents-view)
+  // agents view (agents-view): since 2026-11-01 the one-line install alone (its code wall, puzzle
+  // and their copy files left)
   "components/sections/landing-v3/LpAudienceHeadline.tsx",
   "components/sections/landing-v3/LpAgentStart.tsx",
   "components/sections/landing-v3/LpAgentPrompt.tsx",
-  "components/sections/landing-v3/lp-agents-wall-data.ts",
-  "components/sections/landing-v3/LpAgentLab.tsx", // section aria-label, transcript list label
-  "components/sections/landing-v3/LpAgentCaptcha.tsx", // the puzzle's strings (moved out of LpAgentLab)
 ];
 
 /* ── rules ─────────────────────────────────────────────────────────────────── */

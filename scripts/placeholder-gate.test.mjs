@@ -77,7 +77,6 @@ function renderAll() {
   const html = (Component, props = {}) => renderToStaticMarkup(React.createElement(Component, props));
 
   const { SHOW_PLACEHOLDERS } = jiti("./lib/placeholders.ts");
-  const { AGENT_CARD_BODY, AGENT_CARD_BODY_PLACEHOLDER } = v3("lp-agents-wall-data.ts");
   const { resolveBento, BENTO_SLOT_IDS, BENTO_LIVE } = v3("lp-bento-data.ts");
   const { DIVE_ITEMS } = v3("lp-dive-data.ts");
   const { STEPS } = v3("lp-steps-content.ts");
@@ -129,8 +128,6 @@ function renderAll() {
 
   return {
     showPlaceholders: SHOW_PLACEHOLDERS,
-    // what app/page.tsx hands LpAgentLab
-    agentCardBody: SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY,
     bentoResolved: bentoNow !== null,
     bentoLive: BENTO_LIVE,
     // the set production shows once BENTO_LIVE is on, whatever the switch says today
@@ -202,7 +199,6 @@ function runTests() {
       for (const [name, html] of Object.entries(out.sections)) {
         assert.equal(count(html, "data-placeholder"), 0, `${name} renders a placeholder`);
       }
-      assert.equal(out.agentCardBody.status, "final", "the agents card body must be final content");
     });
 
     test(`${label} renders no empty shell`, () => {

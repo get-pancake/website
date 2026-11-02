@@ -1,14 +1,13 @@
 /* Audience foundation: the original landing and its inverse hero.
    Ownership (V2 Figma replication, 2026-10-09 phase 0 split, code-map §12.3-1):
-   - this file: spacing tokens, the title grid, the agent
-     column's PLACEMENT in the hero, and the audience selector/switch — owner
-     nav-hero;
+   - this file: spacing tokens, the title grid, the human column's hiding in
+     the agents view, and the audience selector/switch — owner nav-hero;
    - the section-hiding rule of the agents view (marked below) — owner
      integrator: every homepage section must stay a direct <section> child of
      main.lp so it hides with it;
-   - audience-agents.css (imported right after this file): the agents theme,
-     the agent headline (LpAudienceHeadline.tsx) and the agent column's
-     contents (LpAgentStart.tsx) — owner agents-view. */
+   - audience-agents.css (imported right after this file): the agents theme
+     and the agents view's block (LpAgentStart.tsx: heading, install box,
+     marks), its placement included — owner agents-view. */
 :root {
   /* the hero's fade-up after a switch (LpAudience.tsx AUDIENCE_CUT_MS); the
      agent headline waits this long before it types (audience-agents.css) */
@@ -26,24 +25,19 @@
   --lp-line: 1px;
 }
 .lp-sr-only { position: absolute; width: var(--lp-line); height: var(--lp-line); overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-/* The human headline remains the layout reference. The agent's single
-   terminal line sits inside it without moving the selector or CTA. Since
+/* The human headline remains the layout reference: it stays laid out in the
+   agents view (hidden below), so nothing there moves the selector. Since
    2026-10-07 the human copy is the page's <h1> (the wrapper is a div), so the
-   copy resets a heading's margin. (The agent copy's own rules —
-   .lp-hero-title__copy--agent, .lp-agent-headline* — live in
-   audience-agents.css.) */
+   copy resets a heading's margin. */
 .lp-audience-page .lp-hero-title { display: grid; }
 .lp-hero-title__copy { grid-area: 1 / 1; margin: 0; font: inherit; letter-spacing: inherit; }
 .lp-hero-title__copy[aria-hidden="true"] { visibility: hidden; }
 
-/* The human and agent columns overlay in the hero's swap cell (hero.css
-   .lp-hero-swap, V2 2026-10-09): the human column stays laid out (hidden) in
-   the agents view and sizes the cell, so the toggle above never moves. (The
-   agent column's contents — LpAgentStart — are styled in
-   audience-agents.css.) */
-.lp-hero-col--agent { display: none; }
+/* The human column (lede + buttons, hero.css .lp-hero-swap) stays laid out
+   (hidden) in the agents view and sizes the cell, so the toggle above never
+   moves. (The agents view's own block — LpAgentStart — is styled and placed
+   in audience-agents.css.) */
 [data-audience="agents"] .lp-hero-col--human { visibility: hidden; }
-[data-audience="agents"] .lp-hero-col--agent { display: flex; }
 
 /* ── Audience toggle — Figma V2 4939:3521 (row: H, gap 8, align centre) and
    4939:3523 (Toggle – Switch, State=Off): 64×28 blue-30 stadium track, 39×24
@@ -152,8 +146,9 @@
    and fit observers survive a return to humans; hidden sections take no
    space and expose no controls. Any new homepage section (LpDemo, LpDive,
    LpBento, …) must be a DIRECT <section> child of main.lp — a wrapper div
-   or a non-section element would leak into the agents view. ── */
-.lp-audience-page[data-audience="agents"] > section:not(.lp-hero):not(.lp-agent-lab),
+   or a non-section element would leak into the agents view. The hero is the
+   only section the agents view shows (its code wall left on 2026-11-01). ── */
+.lp-audience-page[data-audience="agents"] > section:not(.lp-hero),
 .lp-audience-page[data-audience="agents"] > .lp-foot { display: none; }
 
 @media (prefers-reduced-motion: reduce) {
