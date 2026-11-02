@@ -13,53 +13,57 @@
  * over a value: "Still a huge text - no UI should not mean text it should mean abstraction of what
  * our infrastructure does". So the picture carries no claim and no UI. It is drawn in the parts
  * of the one picture he loves, the old sources story's end hub (white discs with each provider's
- * own mark, grey wires, the near-black dot, small names under the discs: story-kit.css), laid out
- * as two sides joined through the middle (Mobbin: Customer.io's data pipeline section,
- * 6e31f38b-b744-4dbf-9369-7e7e3205c19a, curved wires from sources on both sides meeting in the
- * centre). The END picture (the rest markup), stage px on the 752×489 box:
+ * own mark, grey wires, the near-black dot, flat brand dots, small names under them:
+ * story-kit.css), laid out as two sides joined through the middle (Mobbin: Customer.io's data
+ * pipeline section, 6e31f38b-b744-4dbf-9369-7e7e3205c19a, curved wires from sources on both sides
+ * meeting in the centre). The END picture (the rest markup), stage px on the 752×489 box:
  *   - left, "Internal signals": the customer's own tools, three white discs (r 28) with their
- *     vendors' marks: the CRM (HubSpot), site visits (Google Analytics) and events (Luma), one
- *     family with the right side's (founder 2026-10-30: "Mettre un bon logo sur site visits et sur
- *     event maybe (Luma par ex)", "site visits is like GA4 no maybe"; until then site visits and
- *     events were the loved blue and yellow dots, Ø28.18). The kit draws a mark at half its disc;
- *     Google Analytics' file pads its icon in its 192 box and draws at 54%, Luma's black sparkle
- *     fills its box and outweighs the orange sprocket at the same extent, so it draws at 46%
+ *     vendors' marks: the CRM (HubSpot), site visits (Google Analytics) and events (Luma)
+ *     (founder 2026-10-30: "Mettre un bon logo sur site visits et sur event maybe (Luma par ex)",
+ *     "site visits is like GA4 no maybe"). The kit draws a mark at half its disc; Google
+ *     Analytics' file pads its icon in its 192 box and draws at 54%, Luma's black sparkle fills
+ *     its box and outweighs the orange sprocket at the same extent, so it draws at 46%
  *     (story-lineage.css, weighed against HubSpot's at 50%);
- *   - right, "External signals": TheirStack, Apify and Dealroom, each on a white disc with its own
- *     mark, three of the data providers the product uses
- *     (docs/public-assets/lp/story-sources/README.md);
+ *   - right, "External signals": three kinds of signal, flat brand stops (r 19) with their names,
+ *     top to bottom Hiring (green-20), Tech stack (purple-30) and Funding (yellow-30): the signals
+ *     story's word and tone for hiring and for funding, and its purple for the third. Until
+ *     2026-11-01 they were three data providers' discs (TheirStack, Apify, Dealroom); the
+ *     founder: "90% of people don't know what dealroom or Apify is … so I would replace with
+ *     "hiring signal", "fundraising signal" or whatever other signal we choose". A stop sits
+ *     centred in the left discs' slot (`slot`), its name under the slot, so each row's names
+ *     share a line; r 19 weighs a flat colour against a Ø56 white disc carrying a mark (r 14.09,
+ *     the loved dots', read small beside them; r 21 and up outweighed them);
  *   - the middle: five leads, grey dots (r 8, the wires' grey) in a column on the stage's centre
  *     line. Each source draws one wire into one lead. Four leads are reached from one side only
- *     and stay grey. The middle one is reached from both, by the CRM's wire and by Dealroom's
- *     (the provider behind funding rounds): its near-black dot (the loved hub dot, at r 12)
- *     covers the grey one and its role at a real startup sits under it, "Founder @ Mastra",
- *     never an invented person's name (founder 2026-10-28, on "Tamsin Okafor" there: "get rid
- *     of those fake people looks cheap af", then roles at real companies; Mastra is the page's
- *     one lead: lp-step-data.ts S1_LEADS). Its two wires make
- *     one S through the column's centre, the line that crosses, and since 2026-10-30 that S is
- *     the hub's near-black (.lp-slin-lineage, story-lineage.css): her lineage, the one change
- *     "the match" made to this picture (the motion: lp-story-lineage-timeline.ts; the founder,
- *     that evening: "j aime bien le noir plus intense entre ledealroom et crm"). The four other
- *     wires stay grey;
+ *     and stay grey. The middle one is reached from both, by the CRM's wire and by Funding's
+ *     (Mastra's seed round is public): its near-black dot (the loved hub dot, at r 12) covers the
+ *     grey one and its role at a real startup sits under it, "Founder @ Mastra", never an
+ *     invented person's name (founder 2026-10-28, on "Tamsin Okafor" there: "get rid of those
+ *     fake people looks cheap af", then roles at real companies; Mastra is the page's one lead:
+ *     lp-step-data.ts S1_LEADS). Its two wires make one S through the column's centre, the line
+ *     that crosses, and since 2026-10-30 that S is the hub's near-black (.lp-slin-lineage,
+ *     story-lineage.css): her lineage, the one change "the match" made to this picture (the
+ *     motion: lp-story-lineage-timeline.ts; the founder, that evening, of the S then drawn from
+ *     Dealroom, Funding's place since: "j aime bien le noir plus intense entre ledealroom et
+ *     crm"). The four other wires stay grey;
  *   - the wires: the loved formula, one cubic with horizontal handles, c = 0.426667 × the
  *     straight distance between its ends (lp-story-sources-data.ts:89-93 at 630bb8e), written out
  *     here, never computed at render. Each starts on the source's edge that faces the leads (a
- *     left disc's right edge, x 152; a right disc's left edge, x 600), with no cap dot on it
+ *     left disc's right edge, x 152; a right stop's left edge, x 609), with no cap dot on it
  *     (founder 2026-10-28, on the dots over the discs: "ca fait un peu vibe coded"), and ends at
- *     its lead's centre, under the lead's dot. No two wires cross. The CRM's and Dealroom's are
- *     one cubic turned half a turn about her lead (equal lengths, 275.6).
- * Clearances (2026-10-28, re-measured 2026-10-30 with the discs and the new labels, Chromium):
- * every disc, dot and line of type is at least 47 px from the stage's edges (ink from x 81 to
- * 673, the two group labels, and y 47.5 to 430.7); a wire passes no closer than 12.3 px to a
- * label's ink (Dealroom's wire, to her name) and 58 px to a lead it does not end on.
+ *     its lead's centre, under the lead's dot. No two wires cross.
+ * Clearances (2026-10-28, re-measured 2026-11-01 with the stops, Chromium): every disc, stop,
+ * dot and line of type is at least 47 px from the stage's edges (ink from x 81 to 673, y 47.5 to
+ * 430.7); a wire passes no closer than 8.3 px to a label's ink box (Funding's wire, to her name,
+ * by canvas text metrics: Dealroom's passed at 7.4 by the same measure) and 58 px to a lead it
+ * does not end on.
  *
  * Words: the two group labels, the six sources' names and her name, all in the kit's 12 px name
  * style and hidden on phones (story-kit.css .lp-sk-name): the picture reads without them. In
  * scripts/homepage-lint.mjs FILES, so every string here is linted: words live in fields named
- * `text` or `name` only, codes sit under keys the lint skips (id, logo, d). No platform is
+ * `text` or `name` only, codes sit under keys the lint skips (id, logo, tone, d). No platform is
  * named. The marks are the vendors' own files, unmodified (public/lp/vendor-logos/: hubspot.svg,
- * google-analytics.svg, luma.svg; public/lp/story-sources/: their READMEs are under
- * docs/public-assets/lp/).
+ * google-analytics.svg, luma.svg; their README is under docs/public-assets/lp/vendor-logos/).
  *
  * STORY_LINEAGE_ALT is fixed (lp-dive-stages.ts imports it): what the animation shows, the only
  * copy a screen reader gets (the shell's host aria-label). Keep it in step with the picture.
@@ -80,12 +84,14 @@ export type StoryLineageWire = {
 };
 
 export type StoryLineageSource = {
-  id: "crm" | "visits" | "events" | "theirstack" | "dealroom" | "apify";
+  id: "crm" | "visits" | "events" | "hiring" | "stack" | "funding";
   /** written under it on desktop */
   name: string;
-  /** a white disc carrying the vendor's own mark (an unmodified file, drawn at half the disc, or
-      at its own share where the file needs it: story-lineage.css) */
-  logo: string;
+  /** an internal signal: a white disc carrying its vendor's own mark (an unmodified file, drawn
+      at half the disc, or at its own share where the file needs it: story-lineage.css) … */
+  logo?: string;
+  /** … or an external signal: a flat brand stop, the token after `--lp-` (foundation.css) */
+  tone?: "green-20" | "purple-30" | "yellow-30";
   /** centre and radius, stage px */
   x: number;
   y: number;
@@ -106,6 +112,9 @@ export type StoryLineageGroup = {
 export type StoryLineageStory = {
   /** internal signals (left), then external signals (right) */
   groups: readonly [StoryLineageGroup, StoryLineageGroup];
+  /** every source's slot, a radius, stage px: a disc fills it, a stop sits centred in it, and
+      each name is written under it (the kit's SkName), so a row's names share a line */
+  slot: number;
   /** the leads, top to bottom: grey dots, centre and radius */
   leads: readonly { x: number; y: number; r: number }[];
   /** the lead reached from both sides: its index in `leads`, the radius of the near-black dot
@@ -151,29 +160,30 @@ export const STORY_LINEAGE: StoryLineageStory = {
       y: 44,
       sources: [
         {
-          id: "theirstack", name: "TheirStack", logo: "/lp/story-sources/theirstack.svg",
-          x: 628, y: 105, r: 28,
+          id: "hiring", name: "Hiring", tone: "green-20",
+          x: 628, y: 105, r: 19,
           wires: [
-            { id: "theirstack", to: 0, order: 3, d: "M600 105C503.88 105 472.12 129 376 129" },
+            { id: "hiring", to: 0, order: 3, d: "M609 105C509.061 105 475.939 129 376 129" },
           ],
         },
         {
-          id: "apify", name: "Apify", logo: "/lp/story-sources/apify.svg",
-          x: 628, y: 245, r: 28,
+          id: "stack", name: "Tech stack", tone: "purple-30",
+          x: 628, y: 245, r: 19,
           wires: [
-            { id: "apify", to: 1, order: 4, d: "M600 245C501.275 245 474.725 187 376 187" },
+            { id: "stack", to: 1, order: 4, d: "M609 245C506.553 245 478.447 187 376 187" },
           ],
         },
         {
-          id: "dealroom", name: "Dealroom", logo: "/lp/story-sources/dealroom.svg",
-          x: 628, y: 385, r: 28,
+          id: "funding", name: "Funding", tone: "yellow-30",
+          x: 628, y: 385, r: 19,
           wires: [
-            { id: "dealroom", to: 2, order: 5, d: "M600 385C487.295 385 488.705 245 376 245" },
+            { id: "funding", to: 2, order: 5, d: "M609 385C493.021 385 491.979 245 376 245" },
           ],
         },
       ],
     },
   ],
+  slot: 28,
   leads: [
     { x: 376, y: 129, r: 8 },
     { x: 376, y: 187, r: 8 },
@@ -185,4 +195,4 @@ export const STORY_LINEAGE: StoryLineageStory = {
 };
 
 export const STORY_LINEAGE_ALT: string =
-  "Animation: on one side, internal signals: your CRM, your site visits and your events. On the other, external signals from the providers TheirStack, Apify and Dealroom. Lines run to a column of leads, first from the internal signals, then from the external ones. One lead is reached from both sides, by your CRM and by Dealroom, and lights up with the two lines that found it: the founder of Mastra.";
+  "Animation: on one side, internal signals: your CRM, your site visits and your events. On the other, external signals: hiring, tech stack and funding. Lines run to a column of leads, first from the internal signals, then from the external ones. One lead is reached from both sides, by your CRM and by a funding signal, and lights up with the two lines that found it: the founder of Mastra.";

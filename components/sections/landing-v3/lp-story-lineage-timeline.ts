@@ -13,11 +13,12 @@ import { SK_LANDED, skHideRise, skHideWire, skQuery, skRise, skStop, skWire } fr
  * reader one moment that moves them; then "the 4 blocks of the deep dive are the right ones but i
  * am looking for ideas to improve motions": the picture stays, the motion gets better). The same
  * evening, on the take whose pulses rode the wires: "pas sur des signaux qui voyagent ca fait un
- * peu sloppy en revanche j aime bien le noir plus intense entre ledealroom et crm"; then, on the
- * leads' hits and the dot's pop: "j aime pas trop les effets de bounce que tu mets a chaque fois".
+ * peu sloppy en revanche j aime bien le noir plus intense entre ledealroom et crm" (Funding's
+ * stop took Dealroom's disc on 2026-11-01: lp-story-lineage-data.ts); then, on the leads' hits
+ * and the dot's pop: "j aime pas trop les effets de bounce que tu mets a chaque fois".
  * So nothing travels but a wire drawing itself once, nothing swells past its size and comes
  * back, and the near-black of her two wires is the climax: the wires land on the leads, which
- * hold still; when Dealroom's lands on the lead the CRM's already reached, the others step back;
+ * hold still; when Funding's lands on the lead the CRM's already reached, the others step back;
  * then that lead and its two wires turn near-black at once, the whole wire in 0.2 s, while the
  * dot grows to its found size; it is named, a held beat, and the others come back. Markup
  * LpStoryLineage.tsx, words and geometry lp-story-lineage-data.ts, look story-kit.css +
@@ -33,7 +34,7 @@ import { SK_LANDED, skHideRise, skHideWire, skQuery, skRise, skStop, skWire } fr
  * Every verb is the kit's (lp-story-kit.ts), copied from the loved picture's timeline
  * (lp-story-sources-timeline.ts at 630bb8e) or its sibling's, or a plain tween on an SVG
  * attribute or opacity. None overshoots:
- *   wire draw      skWire, strokeDashoffset to 0 in 0.6 s (:284-285), from its disc's edge
+ *   wire draw      skWire, strokeDashoffset to 0 in 0.6 s (:284-285), from its source's edge
  *   staging        the four other wires to opacity 0.5 from the match until the release, back to
  *                  1 (a skWire leaves opacity 1 inline: the markup's)
  *   ink            her two wires' stroke and her dot's fill, the kit's grey → the hub's
@@ -55,9 +56,9 @@ import { SK_LANDED, skHideRise, skHideWire, skQuery, skRise, skStop, skWire } fr
  *   0.30–1.20  the internal signals reach out, bottom to top: events, site visits, then the CRM
  *              into her lead, 0.15 s apart
  *   1.20       f2: the internal signals' three wires are in
- *   1.20–2.10  then the external signals', top to bottom: TheirStack, Apify, then Dealroom's
+ *   1.20–2.10  then the external signals', top to bottom: Hiring, Tech stack, then Funding's
  *              into her lead
- *   2.05–2.35  the match, as Dealroom's tip lands on her lead (0.55 s into its draw): the four
+ *   2.05–2.35  the match, as Funding's tip lands on her lead (0.55 s into its draw): the four
  *              others step back to 0.5
  *   2.35       f3: the held breath: all six wires in, the others back, her lead still grey
  *   2.35–2.70  the climax: her lead and its two wires turn near-black at once (2.35–2.55, let go
@@ -68,7 +69,7 @@ import { SK_LANDED, skHideRise, skHideWire, skQuery, skRise, skStop, skWire } fr
  *   3.90       f5: the END = the server markup
  *
  * Never moves: the discs, the names, the group labels, the grey leads. Nothing travels: each
- * wire draws once, from its disc; nothing loops.
+ * wire draws once, from its source; nothing loops.
  */
 
 /** the take, in seconds (see the table above) */
@@ -79,7 +80,7 @@ const T = {
   draw: [0.3, 0.45, 0.6, 1.2, 1.35, 1.5],
   /** the internal signals' wires are in (0.6 + DRAW) */
   f2: 1.2,
-  /** Dealroom's tip lands on her lead (1.5 + 0.55: it meets an r 8 dot's edge 0.53 s into the
+  /** Funding's tip lands on her lead (1.5 + 0.55: it meets an r 8 dot's edge 0.53 s into the
       draw): the others step back */
   match: 2.05,
   /** the held breath: all six in, the others back (2.05 + DIM) */
@@ -127,7 +128,7 @@ export function* buildStoryLineageSteps(root: HTMLElement): Generator<void, Buil
     return T.draw[k] ?? T.draw[T.draw.length - 1] + DRAW_GAP * (k - T.draw.length + 1);
   };
   const wires = $$<SVGPathElement>(".lp-sk-wires path[data-order]");
-  // her lineage (.lp-slin-lineage): the CRM's wire and Dealroom's; the four others step back
+  // her lineage (.lp-slin-lineage): the CRM's wire and Funding's; the four others step back
   const lines = wires.filter((wire) => wire.classList.contains("lp-slin-lineage"));
   const others = wires.filter((wire) => !lines.includes(wire));
   const dot = $<SVGCircleElement>(".lp-sk-wires .lp-slin-found");
@@ -156,11 +157,11 @@ export function* buildStoryLineageSteps(root: HTMLElement): Generator<void, Buil
 
   const tl = gsap.timeline({ paused: true });
 
-  /* ── the wires, the internal signals' then the external's, each from its disc's edge; a lead
-     holds still as its wire lands on it ── */
+  /* ── the wires, the internal signals' then the external's, each from its source's edge; a
+     lead holds still as its wire lands on it ── */
   wires.forEach((wire) => skWire(tl, wire, startOf(wire), DRAW));
 
-  /* ── the match, as Dealroom's tip lands on her lead: the four others step back ── */
+  /* ── the match, as Funding's tip lands on her lead: the four others step back ── */
   if (others.length) tl.to(others, { opacity: DIM.opacity, duration: DIM.duration, ease: "power1.inOut" }, T.match);
 
   /* ── the climax: her lead and its two wires turn near-black at once, the whole of each
