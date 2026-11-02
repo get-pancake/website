@@ -11,10 +11,10 @@ const AudienceContext = createContext<{ audience: Audience; setAudience: (value:
 });
 export const useAudience = () => useContext(AudienceContext);
 
-// AudienceHeadline (the human H1) moved to LpAudienceHeadline.tsx on
-// 2026-10-09 (V2 replication phase 0: owner agents-view); the agents view's
-// block is LpAgentStart.tsx. This file keeps the provider and
-// AudienceSelector (owner nav-hero).
+// AudienceHeadline (the human H1 + the agent typing line) moved to
+// LpAudienceHeadline.tsx on 2026-10-09 (V2 replication phase 0: owner
+// agents-view). This file keeps the provider and AudienceSelector (owner
+// nav-hero).
 
 /** The cut between the views: the hero fades up from this opacity over this
     long once the other view is committed (see setAudience). */

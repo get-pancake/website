@@ -18,8 +18,9 @@
      resizes only) so live drags don't reflow the page every frame;
      pre-hydration falls back to live 100svh. */
   /* --lp-hero-h is the ONE hero height (this clamp + the short-window
-     ladder below): the agents view keeps the same hero, so both modes share
-     every pixel of the hero geometry. */
+     ladder below): the agent mode reads it too (audience.css) to reserve the
+     rest of the first screen under the same hero, so both modes share every
+     pixel of the hero geometry. */
   --lp-hero-h: clamp(640px, calc(var(--lp-svh, 100svh) - 120px), 758px);
   height: var(--lp-hero-h);
   isolation: isolate;
@@ -207,11 +208,11 @@
    un peu le bloc h1/h2/cta": the green band ran too close to the "You"),
    so 63 / 71 — the V2 composition 36px lower (decision 2026-10-09; V2's
    bands clear the "Y" by ~17px at 99, ~53px here). Both blocks are
-   transform-free (left offsets instead of translateX(-50%)), from the days
-   a scroll assembly drifted them; nothing moves them since 2026-11-01 (the
-   agents view's went with its code wall; the humans view's on 2026-10-12).
-   The agents view's block (audience-agents.css) spans both: from the H1's
-   left edge to the column's right edge, top on the toggle's row. */
+   transform-free (left offsets instead of translateX(-50%)): the agents
+   view's scroll assembly drifts them through .lp-hs-hero (translate/opacity,
+   audience-agents.css), and a scroll driver that writes `transform` would
+   otherwise erase the centring. The humans view no longer moves them
+   (2026-10-12: the hero copy stays put while the window grows). */
 .lp-hero--home .lp-hero-title {
   bottom: 63px; /* V2 99 − 36 */
   left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
@@ -235,8 +236,8 @@
    Tablets and phones take their text width, 82 px at most. Line height 0.92: the two lines are
    151 tall (the 69 px H1 was 160 at normal), so the short-window scale below keeps more room
    than it needs; the rotating rainbow stays 48 px or more off it (rings tool, WebKit, 1201 to
-   1728 wide, 2026-10-28). In the agents view it stays laid out, hidden, so the hero keeps its
-   height there. */
+   1728 wide, 2026-10-28). The agents headline shares the box (146 tall, bottom-aligned in it,
+   audience-agents.css), under the same toggle. */
 .lp-hero--home #lp-hero-title {
   font-size: 79.5px;
   letter-spacing: -0.03em;
@@ -269,14 +270,12 @@
   position: absolute;
   width: 368px;
 }
-/* The swap cell: the human column (lede + buttons) in one grid area; it
-   sizes the cell in both views (audience.css hides it with visibility,
-   never display, in the agents view). Bottom-aligned, like the
-   bottom-anchored V1 columns were. 368 = the lede column (Figma 4911:367).
-   ONE geometry for the two views (founder 2026-10-13: "structure has to be
-   symetrical on the agent page, toggle should be in the exact same place"):
-   the agents view's block, which overlaid this cell until 2026-11-01, now
-   follows the toggle and takes no room of its own (audience-agents.css). */
+/* The swap cell: the human column (lede + buttons) and the agent column
+   overlay in one grid area; the human one sizes it in both views
+   (audience.css hides it with visibility, never display). Bottom-aligned,
+   like the bottom-anchored V1 columns were. 368 = the lede column (Figma
+   4911:367), the width both columns had in production at every width (the
+   agent column used to copy the human column's measured width). */
 .lp-hero--home .lp-hero-swap {
   display: grid;
   max-width: 368px;
@@ -287,6 +286,16 @@
   grid-area: 1 / 1;
   position: static;
   transform: none;
+}
+/* ONE geometry for the two views (founder 2026-10-13: "structure has to be
+   symetrical on the agent page, toggle should be in the exact same place").
+   The human column sizes the cell in both views. The agent column is taller
+   than it since the lede went down to two lines (142 against 120): instead of
+   pushing the toggle up 22 px, it starts on the lede's own line and hangs
+   lower. */
+.lp-hero--home .lp-hero-swap > .lp-hero-col--agent {
+  align-self: start;
+  height: 0;
 }
 @media (max-width: 1200px) {
   .lp-hero--home .lp-hero-title {

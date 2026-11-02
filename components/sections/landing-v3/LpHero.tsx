@@ -2,6 +2,7 @@ import { AudienceSelector } from "./LpAudience";
 import { AudienceHeadline } from "./LpAudienceHeadline";
 import { LpAgentStart } from "./LpAgentStart";
 import { LpHeroInstall } from "./LpHeroInstall";
+import { LpHeroAgentArt } from "./LpHeroAgentArt";
 import { LpArcCanvas } from "@/components/sections/landing-v3/LpArcCanvas";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
@@ -24,17 +25,17 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
 // V2 (designer red note, 2026-10-09: "Humans/Agents toggle position and
 // look"): the toggle heads the right column (4911:366 "Frame 181": toggle
 // row, lede, buttons; gap 24), in flow — no JS measuring, no overlay. The
-// human copy (H1, then lede + buttons in the swap cell) stays laid out,
-// visibility:hidden, in the agents view, so the toggle sits on the same
-// pixel in both views. DOM order = H1, switch, the agents view's block
-// (LpAgentStart: heading, install box, marks; display:none for humans),
-// lede, buttons (tab order switch → copy for agents, switch → Start free →
-// Talk to sales for humans); ≤1024 the aside dissolves (display:contents)
-// and the toggle leads the stacked block. `lp-hero--home` scopes every
-// homepage geometry change: /agents (AgHero) reuses the unscoped hero
-// classes with V1 geometry. The agents view has no art of its own since
-// 2026-11-01 (the ASCII rainbow left): the rings stay laid out there,
-// unseen (audience-agents.css).
+// human and agent columns overlay in ONE grid cell (.lp-hero-swap) that the
+// human column sizes (it stays laid out, visibility:hidden, in the agents
+// view), so the toggle sits on the same pixel in both views. DOM order =
+// H1, switch, lede, buttons (tab order switch → Start free → Talk to sales);
+// ≤1024 the aside dissolves (display:contents) and the toggle leads the
+// stacked block. `lp-hero--home` scopes every homepage geometry change:
+// /agents (AgHero) reuses the unscoped hero classes with V1 geometry.
+// `lp-hs-hero` marks the two copy blocks the AGENTS view's scroll assembly
+// drifts and fades (lp-agents-scroll.ts, audience-agents.css;
+// translate/opacity only — hero.css keeps both blocks transform-free on the
+// homepage for it). The humans view no longer moves them (2026-10-12).
 //
 // First screen (founder 2026-10-12, _decisions §10): on desktop the hero's
 // height follows the window's so the demo window's top bar peeks 70px above
@@ -46,6 +47,9 @@ export function LpHero() {
     <section id="main-content" tabIndex={-1} className="lp-hero lp-hero--home" aria-labelledby="lp-hero-title">
       <LpViewportVar />
       <div className="lp-hero-art" aria-hidden="true">
+        {/* agents view art slot (V2 4911:1461, owner agents-view): renders
+            nothing in the humans view — see LpHeroAgentArt.tsx */}
+        <LpHeroAgentArt />
         <div className="lp-anim-canvas lp-anim-canvas--hero">
           <LpPancakes variant="hero" />
         </div>
@@ -57,18 +61,16 @@ export function LpHero() {
         <LpRainbowGL variant="hero" />
       </div>
       <div className="lp-hero-inner">
-        {/* A div since 2026-10-07. The H1 (id lp-hero-title, which
-            aria-labelledby above names) is the human copy inside it —
-            AudienceHeadline in LpAudienceHeadline.tsx. */}
-        <div className="lp-hero-title lp-display">
+        {/* A div since 2026-10-07: the grid the human and agent copies overlay
+            in. The H1 (id lp-hero-title, which aria-labelledby above names) is
+            the human copy inside it — AudienceHeadline in LpAudienceHeadline.tsx. */}
+        <div className="lp-hero-title lp-display lp-hs-hero">
           <AudienceHeadline />
         </div>
         {/* V2 4911:366 "Frame 181": toggle row, then the swap cell (lede +
-            buttons). The agents view's block follows the toggle and takes
-            no room of its own (LpAgentStart.tsx). */}
-        <div className="lp-hero-aside">
+            buttons for humans, the install command for agents). */}
+        <div className="lp-hero-aside lp-hs-hero">
           <AudienceSelector />
-          <LpAgentStart />
           <div className="lp-hero-swap">
             <div className="lp-hero-col lp-hero-col--human">
               {/* The hero lede = the Google description line (SITE_DESCRIPTION,
@@ -107,6 +109,7 @@ export function LpHero() {
                 <LpHeroInstall />
               </div>
             </div>
+            <div className="lp-hero-col lp-hero-col--agent"><LpAgentStart /></div>
           </div>
         </div>
       </div>
