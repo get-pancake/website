@@ -93,7 +93,6 @@ const FILES = [
   "components/sections/landing-v3/LpAgentStart.tsx",
   "components/sections/landing-v3/LpAgentPrompt.tsx",
   "components/sections/landing-v3/lp-agents-wall-data.ts",
-  "components/sections/landing-v3/LpAgentLab.tsx", // the section aria-label
 ];
 
 /* ── rules ─────────────────────────────────────────────────────────────────── */

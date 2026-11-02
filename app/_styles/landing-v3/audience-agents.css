@@ -7,7 +7,7 @@
    (audience.css), its agents look is below. Every rule is scoped to the agents view or to
    agents-only components, so /agents (its own page) and the humans view never change. */
 
-/* ── Geist Mono — the agents view's UI face (Figma: nav, toggle, headline, prompt, card) ──
+/* ── Geist Mono — the agents view's UI face (Figma: nav, toggle, headline, prompt) ──
    Same family and provenance as the site's Geist Sans (app/fonts/geist/, SIL OFL 1.1). Declared
    here, not in app/layout.tsx (decision 2026-10-09: no new site-wide font): an @font-face is
    fetched only when text set in it renders, so humans visitors never download it. The name is the
@@ -288,7 +288,7 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 .lp-agent-friends li[data-bare] { height: 20px; width: 17.48px; }
 .lp-agent-friends li[data-bare] svg { height: 20px; width: 17.48px; }
 
-/* ── the install prompt (LpAgentPrompt.tsx): the hero box and the wall card's head ── */
+/* ── the install prompt (LpAgentPrompt.tsx): the hero box ── */
 .lp-agent-prompt { align-items: flex-start; display: flex; gap: 8px; }
 .lp-agent-prompt--hero { border: var(--lp-line) solid var(--lp-ink-0); padding: 16px; }
 .lp-agent-prompt__text { flex: 1; min-width: 0; }

@@ -11,8 +11,8 @@
  *
  * The driver writes p as custom properties and CSS draws every pose from them (agent-lab.css
  * "scroll assembly", audience-agents.css for the hero copy) — one or two style writes a frame.
- * (Until 2026-11-02 it also extended the card's frame from its prompt row to its puzzle body:
- * the card is its prompt row alone since that body left, so nothing on it moves.)
+ * (Until 2026-11-02 it also extended the wall's card, from its prompt row to its puzzle body: the
+ * puzzle and then the card left that day.)
  *   --lp-as-rows  on the section: wall rows printed, 4 → 79 (one 18 px row per step, 75 steps);
  *   --lp-as-hero  on each `.lp-hs-hero` (nav-hero's hook): the hero copy drifts 25.54 px·p and
  *                 fades out between p .5481 and .85.

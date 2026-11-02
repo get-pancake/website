@@ -1,7 +1,6 @@
 /**
- * Agents view code wall + card (V2 Figma 4911:1461: wall 4939:3760, card 4964:4098).
- * Owner: agents-view package. In scripts/homepage-lint.mjs FILES. The card holds the install
- * prompt alone since 2026-11-02 (its puzzle body left; LpAgentLab.tsx).
+ * Agents view code wall (V2 Figma 4911:1461: wall 4939:3760; its card 4964:4098 left on
+ * 2026-11-02, LpAgentLab.tsx). Owner: agents-view package. In scripts/homepage-lint.mjs FILES.
  */
 
 /**

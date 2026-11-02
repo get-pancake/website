@@ -1,11 +1,11 @@
 /* Agents view code wall (LpAgentLab.tsx) — owner: agents-view package. Figma V2 4939:3457: the
    section right under the hero (page 777 → the frame's end 2064 at 1654), a still wall of white
    pseudocode (4939:3760: Andale Mono 16/18, 1136 column, wall-local top 12) cut by the section's
-   bottom, under a centred 690-wide blue card with a 1 px white outline (4964:4098, wall-local top
-   135) that repeats the install prompt. Replaces production's black terminal stream (2026-10-09).
-   The card is its prompt row alone since 2026-11-02 (its puzzle body left: founder, "ce qu on
-   aimait pas ici c etait que l espece de capcha"). The section keeps .lp-agent-lab: the
-   integrator's agents-view hide rule (audience.css) shows it. */
+   bottom. Replaces production's black terminal stream (2026-10-09). No card on it since
+   2026-11-02: V2's centred outlined card (4964:4098) repeated the hero's install box (founder:
+   "enleve ca - pas de raisons de le duppliquer non"), its puzzle body having left the same day.
+   The section keeps .lp-agent-lab: the integrator's agents-view hide rule (audience.css) shows
+   it. */
 .lp-agent-lab { display: none; }
 .lp-audience-page[data-audience="agents"] > .lp-agent-lab { display: block; }
 
@@ -51,30 +51,11 @@
   top: calc(12px + 4 * 18px); /* under row 3: state 01 shows rows 0–3 */
   z-index: 1;
 }
-.lp-agents-wall__slot {
-  left: 0;
-  margin-inline: auto;
-  position: absolute;
-  right: 0;
-  top: 135px;
-  width: min(690px, calc(100% - 96px));
-  z-index: 2;
-}
-/* The card: fill (masks the wall) + its 1 px white outline, the prompt row alone (LpAgentPrompt
-   card: 17 px = hairline + 16 pad; text 616×40, copy 32 at x641) = 74 tall on desktop, the
-   assembly's first picture of the card; it grows with the prompt's lines where they wrap. */
-.lp-agents-wall__card {
-  background: var(--lp-blue-40);
-  box-shadow: inset 0 0 0 var(--lp-line) var(--lp-ink-0);
-}
-.lp-agent-prompt--card { padding: 17px; }
-
 /* ── scroll assembly (lp-agents-scroll.ts: desktop ≥1025 × ≥640, motion allowed) ──────────────
-   01 → 03 over the driver's range: the wall prints one 18 px row per step from 4 to 79 rows (the
-   card frame no longer extends: it is its prompt row from the first picture). data-as="js" = the
-   driver is attached; data-as-done = locked assembled for the visit (also once the page cannot
-   scroll any further: a window too tall for the range used to keep the card clipped,
-   2026-10-13). Anywhere else: no rule applies → state 03, the V2 artboard. */
+   01 → 03 over the driver's range: the wall prints one 18 px row per step from 4 to 79 rows.
+   data-as="js" = the driver is attached; data-as-done = locked printed for the visit (also once
+   the page cannot scroll any further: a window too tall for the range used to keep the wall's
+   card clipped, 2026-10-13). Anywhere else: no rule applies → state 03, the V2 artboard. */
 @media (min-width: 1025px) and (min-height: 640px) and (prefers-reduced-motion: no-preference) {
   .lp-agents-wall[data-as="js"]:not([data-as-done]) .lp-agents-wall__cover {
     display: block;
@@ -82,13 +63,9 @@
   }
 }
 
-/* ── tablets 768–1024 / phones ≤767 (Figma has desktop only; recomposed, no assembly) ──
-   No card there since 2026-11-02: with its puzzle body gone it is the hero's install box again,
-   and with no assembly the hero's box does not fade out above it, so the two showed on one
-   screen, one under the other. The wall goes on alone under the hero. */
+/* ── tablets 768–1024 / phones ≤767 (Figma has desktop only; recomposed, no assembly) ── */
 @media (max-width: 1024px) {
   .lp-agents-wall { height: 960px; }
-  .lp-agents-wall__slot { display: none; }
 }
 /* Phones: the wall is in flow, and starts and ends on a whole line (14 rows of 15 px; until
    2026-11-02 it sat under the card, a tester having read the lines that peeked around the card
