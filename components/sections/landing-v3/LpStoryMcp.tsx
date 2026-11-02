@@ -1,252 +1,163 @@
-import type { CSSProperties, ReactNode } from "react";
-
 import type { DiveStageProps } from "./lp-dive-stages";
-import { SkDisc, skF3 } from "./LpStoryKit";
+import { skF3 } from "./LpStoryKit";
 import { PANCAKE_AVATAR } from "./lp-pancake-avatar-art";
-import { SMCP_MARKS } from "./lp-story-mcp-art";
+import { SMCP_ICONS, type StoryMcpIconId } from "./lp-story-mcp-art";
 import { STORY_MCP } from "./lp-story-mcp-data";
 
 /**
- * Deep-dive story 4, "One ask, the right tools, your approval" (the founder's "mcp first",
- * 2026-10-28; this story 2026-10-30, founder: "Yes, prototype it") — the stage markup. Owner:
- * story-mcp package. Contract: lp-dive-stages.ts (server-safe: no hooks, no "use client", no
- * lib/placeholders import; one root with data-lp-story="mcp" + aria-hidden, the shell's host
- * carries the ALT; the markup IS the END picture; it paints nothing behind the scene). Copy and
- * geometry: lp-story-mcp-data.ts; the two glyphs: lp-story-mcp-art.ts; styles: story-kit.css (the
- * shared kit) + story-mcp.css; motion: lp-story-mcp-timeline.ts.
+ * Deep-dive story 4, "Codex at work" (the item "Built for Claude and Codex"; 2026-11-01, founder:
+ * "Maybe we could just do a screenshot of codex doing stuff like in the h1") — the stage markup.
+ * Owner: story-mcp package. Contract: lp-dive-stages.ts (server-safe: no hooks, no "use client",
+ * no lib/placeholders import; one root with data-lp-story="mcp" + aria-hidden, the shell's host
+ * carries the ALT; the markup IS the END picture; it paints nothing behind its window). Copy:
+ * lp-story-mcp-data.ts; icons: lp-story-mcp-art.ts; styles: story-mcp.css; motion:
+ * lp-story-mcp-timeline.ts.
  *
- * The picture is a flow, left to right, in the loved hub's parts: the agents' marks on white
- * discs, a wire from each into Pancake's left edge (the asking agent's near-black), and six spokes
- * out of its right edge to six named tool groups: the five the job uses in their tones with
- * near-black spokes, the one it does not in grey; a ring on the Plays spoke, filled: your
- * approval. No claim, no UI.
+ * Codex's window at the end of one job, in the homepage demo's own look: the markup of
+ * LpClaudeScene.tsx (the demo's Claude & Codex view), COPIED and cut to this picture, never
+ * imported. That scene's markup rests on the app's empty home and its styles live under the demo
+ * window's `.lp-demowin` scope; a story's markup rests on its END. So the pieces are the demo's
+ * (the title and mark, the user's bubble, the tool calls as Codex's log lines under the Pancake
+ * mark, the answer line, the Play's result card, the composer with its connector chip), placed
+ * in the dive's 752×489 box (story-mcp.css copies demo.css's rules for them).
  *
  * Layers, back to front:
- *   .lp-sk-scene          the scene wrapper (the 752×489 box); nothing transforms it
- *     svg.lp-sk-wires     the wires: each agent's, from its disc's edge into the lockup's left
- *                         edge, then the six spokes, from its right edge to their stops. Each
- *                         <g> names the node its wire comes from (data-node: an agent, or
- *                         "pancake" with the stop's data-order for a spoke); the route's wires
- *                         carry .lp-smcp-ink (near-black at rest)
- *     .lp-smcp-brand      Pancake: the infra section's lockup at ×1.25 (LpInfra.tsx PancakeMark,
- *                         the footer's wordmark file; infra.css .lp-infra__brand). The mascot's
- *                         two eyes carry data-eye: the timeline blinks them
- *     .lp-sk-disc ×2      the agents: Claude's and Codex's glyphs (LpAgentMarks.tsx, copied) on
- *                         the kit's white discs
- *     svg.lp-sk-wires     over the discs and the lockup: the six stops (flat, over their
- *                         spokes' ends) and the ring on the Plays spoke (flat, over it). No dot on
- *                         any edge: the wires meet the discs and the lockup themselves (founder
- *                         2026-10-28, on the dots over the discs: "ca fait un peu vibe coded");
- *                         the ring stands in the open
- *     .lp-sk-name ×11     the agents' names under their discs, "About 100 tools" over the group,
- *                         the six groups' names right of their stops, "You approve" right of the
- *                         ring (risen into place, .lp-sk-rise) and "Thinking…" under the lockup,
- *                         the motion's only label, hidden at rest (story-mcp.css T5). Phones hide
- *                         them all (story-kit.css), the picture reads without them
+ *   .lp-smcp-win          the window (712×449, 20 px inside the box): white, the demo window's
+ *                         shadow
+ *     .lp-smcp-title      Codex's mark and name, top left
+ *     .lp-smcp-greet      Codex's home line, centred: frame 0 only, hidden at rest
+ *     .lp-smcp-thread     the job, one column: the ask's bubble, Pancake's three steps (each a
+ *                         log line: the Pancake mark, the step, what it is doing then "Done"),
+ *                         Codex's answer line and the Play's card (its name, two rows). Each
+ *                         piece carries .lp-sk-rise: the timeline raises it into place
+ *     .lp-smcp-bar        the composer, docked at the bottom: the plus, what is typed in it (the
+ *                         placeholder before the ask, the ask while it types, then the follow-up
+ *                         placeholder, which rests), the Pancake connector, the mic, the send.
+ *                         Phones leave it out, and the answer line (story-mcp.css): the ask types
+ *                         in its bubble's words there (.lp-smcp-bubble-t)
  *
  * Every element is in the markup: the timeline hides what comes later (frame 0) and never adds
- * one; "Thinking…" rests hidden, so the END picture never shows it. Nothing here is focusable,
- * and nothing carries its own accessible name: the root is aria-hidden and the ALT names Pancake,
- * both agents and the six groups.
+ * one; the home line, the first placeholder, the typed ask, the caret and the steps' running
+ * words rest hidden, so the END never shows them. Nothing here is focusable, and nothing carries
+ * its own accessible name: the root is aria-hidden and the ALT says what the window shows.
  */
 
-/** a name starts this far right of its stop's edge, stage px */
-const SIDE_GAP = 7;
-
-/** The Pancake mark, full colour: copied from LpInfra.tsx PancakeMark (step 02's, its three
-    pancakes are the three layers). The view box is the avatar's, cropped to the mascot (the
-    avatar keeps room around it). The art paints its two eyes last (lp-pancake-avatar-art.ts:
-    ten shapes, the eyes the last two): they carry data-eye, which the timeline's blink reads
-    (it tweens their own `d`, the art itself is never edited) */
-function PancakeMark() {
-  const eyes = PANCAKE_AVATAR.shapes.length - 2;
+/** The Pancake mark, full colour (LpClaudeScene.tsx PancakeMark, copied): the connector chip's,
+    each step's and the Play card's */
+function PancakeMark({ className }: { className: string }) {
   return (
-    <svg className="lp-smcp-pk" viewBox="3.9 4.9 24 24">
+    <svg className={className} viewBox={`0 0 ${PANCAKE_AVATAR.size} ${PANCAKE_AVATAR.size}`}>
       {PANCAKE_AVATAR.shapes.map((shape, i) => (
-        <path
-          key={i}
-          d={shape.d}
-          fill={shape.fill}
-          opacity={"opacity" in shape ? shape.opacity : undefined}
-          data-eye={i >= eyes ? "" : undefined}
-        />
+        <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
       ))}
     </svg>
   );
 }
 
-/** A small label in the kit's name style, centred on x: under the box that ends at `bottom`, or
-    over the one that starts at `top` (`above`). Copied from LpStoryKit.tsx SkName with the kit's
-    rise class added (.lp-sk-rise: the timeline raises it into place); hidden on phones as every
-    .lp-sk-name. */
-function McpName({
-  x,
-  top,
-  bottom,
-  above,
-  node,
-  className,
-  children,
-}: {
-  x: number;
-  top: number;
-  bottom: number;
-  above?: boolean;
-  node: string;
-  className?: string;
-  children: ReactNode;
-}) {
-  const place = { "--nx": skF3(x), "--nt": skF3(top), "--nb": skF3(bottom) } as CSSProperties;
+/** One of the demo's icons (lp-story-mcp-art.ts), a stroke in currentColor */
+function McpIcon({ id, className }: { id: StoryMcpIconId; className: string }) {
+  const icon = SMCP_ICONS[id];
   return (
-    <span
-      className={className ? `lp-sk-name lp-sk-rise ${className}` : "lp-sk-name lp-sk-rise"}
-      data-node={node}
-      data-above={above ? "" : undefined}
-      style={place}
+    <svg
+      className={className}
+      viewBox={icon.viewBox}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={icon.stroke}
+      strokeLinecap="round"
+      strokeLinejoin={icon.join}
     >
-      {children}
-    </span>
-  );
-}
-
-/** A small label in the kit's name style, left-aligned at x, its line centred on y: a group's
-    name right of its stop, "You approve" right of the ring (story-mcp.css .lp-smcp-side); hidden
-    on phones as every .lp-sk-name. `rise` adds the kit's rise class (the timeline raises it) */
-function McpSide({
-  x,
-  y,
-  node,
-  order,
-  used,
-  rise,
-  children,
-}: {
-  x: number;
-  y: number;
-  node: string;
-  order?: number;
-  used?: boolean;
-  rise?: boolean;
-  children: ReactNode;
-}) {
-  const place = { "--nx": skF3(x), "--ny": skF3(y) } as CSSProperties;
-  return (
-    <span
-      className={rise ? "lp-sk-name lp-sk-rise lp-smcp-side" : "lp-sk-name lp-smcp-side"}
-      data-node={node}
-      data-order={order}
-      data-used={used === undefined ? undefined : String(used)}
-      style={place}
-    >
-      {children}
-    </span>
+      {icon.circle && <circle cx={icon.circle.cx} cy={icon.circle.cy} r={icon.circle.r} />}
+      {icon.rect && (
+        <rect x={icon.rect.x} y={icon.rect.y} width={icon.rect.width} height={icon.rect.height} rx={icon.rect.rx} />
+      )}
+      <path d={icon.d} />
+    </svg>
   );
 }
 
 export function LpStoryMcpStage(_props: DiveStageProps) {
-  const { brand, agents, tools, label, thinking, gate } = STORY_MCP;
-  const box = (x: number, y: number, w: number, h: number) => ({
-    left: `${skF3(x)}px`,
-    top: `${skF3(y)}px`,
-    width: `${skF3(w)}px`,
-    height: `${skF3(h)}px`,
-  });
+  const s = STORY_MCP;
+  const win = {
+    left: `${skF3(s.window.x)}px`,
+    top: `${skF3(s.window.y)}px`,
+    width: `${skF3(s.window.w)}px`,
+    height: `${skF3(s.window.h)}px`,
+  };
 
   return (
     <div className="lp-sk lp-smcp" data-lp-story="mcp" aria-hidden="true">
       <div className="lp-sk-scene">
-        {/* the wires, under everything: the agents' into Pancake, then the spokes out of it; the
-            route's (the asking agent's, the used groups') near-black at rest */}
-        <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
-          {agents.map((agent) => (
-            <g key={agent.id} data-node={agent.id}>
-              <path d={agent.d} className={agent.asks ? "lp-smcp-ink" : undefined} />
-            </g>
-          ))}
-          {tools.map((tool, k) => (
-            <g key={k} data-node="pancake" data-order={k}>
-              <path d={tool.d} className={tool.tone !== "grey" ? "lp-smcp-ink" : undefined} />
-            </g>
-          ))}
-        </svg>
+        <div className="lp-smcp-win" style={win}>
+          <p className="lp-smcp-title">
+            <McpIcon id="codex" className="lp-smcp-title-mark" />
+            {s.title}
+          </p>
+          <p className="lp-smcp-greet">{s.greeting}</p>
 
-        {/* Pancake, the brand's lockup on plum: the avatar's colour mascot and the footer's
-            cream wordmark (the looped k is drawn, never typed). The img is the infra lockup's,
-            eager as there: the infra section above has already fetched the file, so it costs no
-            request and never paints late. Its alt is empty: the ALT names Pancake */}
-        <div className="lp-smcp-brand" data-node="pancake" style={box(brand.x, brand.y, brand.w, brand.h)}>
-          <PancakeMark />
-          {/* eslint-disable-next-line @next/next/no-img-element -- the footer's wordmark file, as the nav's */}
-          <img className="lp-smcp-wordmark" src="/lp/lp-footer-logo.svg" alt="" width={239.672} height={116.755} />
+          {/* the job: the ask, Pancake's steps, the answer and the Play */}
+          <div className="lp-smcp-thread">
+            <p className="lp-smcp-bubble lp-sk-rise">
+              <span className="lp-smcp-bubble-t">{s.ask.text}</span>
+            </p>
+            <ul className="lp-smcp-steps">
+              {s.steps.map((step, k) => (
+                <li key={step.text} className="lp-smcp-step lp-sk-rise" data-order={k}>
+                  <PancakeMark className="lp-smcp-mark" />
+                  <span className="lp-smcp-step-t">{step.text}</span>
+                  <span className="lp-smcp-step-r">
+                    <span className="lp-smcp-doing">{step.doing}</span>
+                    <span className="lp-smcp-done">{step.done}</span>
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <p className="lp-smcp-say lp-sk-rise">{s.result.text}</p>
+            <div className="lp-smcp-play lp-sk-rise">
+              <p className="lp-smcp-play-h">
+                <PancakeMark className="lp-smcp-mark" />
+                <span className="lp-smcp-play-k">{s.play.kicker}</span>
+                <span className="lp-smcp-play-n">{s.play.name}</span>
+              </p>
+              <ul className="lp-smcp-play-rows">
+                {s.play.rows.map((row) => (
+                  <li key={row.name} className="lp-smcp-play-row">
+                    <span className="lp-smcp-play-key">{row.name}</span>
+                    <span className="lp-smcp-play-v">
+                      {typeof row.value === "string"
+                        ? row.value
+                        : row.value.map((word) => (
+                            <span key={word} className="lp-smcp-chip">
+                              {word}
+                            </span>
+                          ))}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+
+          {/* the composer, docked: what is typed in it, then the connector and the controls */}
+          <div className="lp-smcp-bar">
+            <McpIcon id="plus" className="lp-smcp-plus" />
+            <span className="lp-smcp-field">
+              <span className="lp-smcp-ph">{s.placeholder}</span>
+              <span className="lp-smcp-typed">{s.ask.text}</span>
+              <span className="lp-smcp-reply">{s.reply}</span>
+              <span className="lp-smcp-caret" />
+            </span>
+            <span className="lp-smcp-conn">
+              <PancakeMark className="lp-smcp-conn-mark" />
+              {s.connector}
+              <i />
+            </span>
+            <McpIcon id="mic" className="lp-smcp-mic" />
+            <span className="lp-smcp-send">
+              <McpIcon id="up" className="lp-smcp-send-arrow" />
+            </span>
+          </div>
         </div>
-
-        {/* the agents, each mark on a white disc */}
-        {agents.map((agent) => (
-          <SkDisc key={agent.id} x={agent.disc.x} y={agent.disc.y} size={agent.disc.size} node={agent.id}>
-            <svg className="lp-smcp-glyph" viewBox={SMCP_MARKS[agent.id].viewBox} fill="currentColor" data-mark={agent.id}>
-              <path d={SMCP_MARKS[agent.id].d} />
-            </svg>
-          </SkDisc>
-        ))}
-
-        {/* over the discs and the lockup: the stops, over their spokes' ends, and the ring on the
-            Plays spoke */}
-        <svg className="lp-sk-wires" viewBox="0 0 752 489" width="752" height="489">
-          {tools.map((tool, k) => (
-            <circle
-              key={k}
-              className="lp-smcp-stop"
-              data-tone={tool.tone}
-              data-order={k}
-              cx={skF3(tool.stop.x)}
-              cy={skF3(tool.stop.y)}
-              r={tool.stop.r}
-            />
-          ))}
-          <circle className="lp-smcp-gate" cx={skF3(gate.ring.x)} cy={skF3(gate.ring.y)} r={gate.ring.r} />
-        </svg>
-
-        {/* the names: the agents' under their discs, the caption over the group, each group's
-            right of its stop, "You approve" right of the ring, and "Thinking…" under the lockup
-            (hidden at rest: the motion's only) */}
-        {agents.map((agent) => (
-          <McpName
-            key={agent.id}
-            node={agent.id}
-            x={agent.disc.x + agent.disc.size / 2}
-            top={agent.disc.y}
-            bottom={agent.disc.y + agent.disc.size}
-          >
-            {agent.name}
-          </McpName>
-        ))}
-        <McpName node="tools" x={label.x} top={label.top} bottom={label.top} above>
-          {label.text}
-        </McpName>
-        {tools.map((tool, k) => (
-          <McpSide
-            key={k}
-            node="tool"
-            order={k}
-            used={tool.tone !== "grey"}
-            x={tool.stop.x + tool.stop.r + SIDE_GAP}
-            y={tool.stop.y}
-          >
-            {tool.name}
-          </McpSide>
-        ))}
-        <McpSide node="approve" rise x={gate.label.x} y={gate.label.y}>
-          {gate.text}
-        </McpSide>
-        <McpName
-          node="thinking"
-          className="lp-smcp-thinking"
-          x={brand.x + brand.w / 2}
-          top={brand.y}
-          bottom={brand.y + brand.h}
-        >
-          {thinking.text}
-        </McpName>
       </div>
     </div>
   );
