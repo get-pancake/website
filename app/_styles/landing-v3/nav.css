@@ -55,6 +55,81 @@
     transform-origin: left center;
   }
 }
+/* Floating bar — DESKTOP (founder 2026-10-27: "transform the top bar into a
+   sticky bar when scrolling down a bit like they do here https://kicker.run/
+   (great design)"; for desktop this replaces 2026-09-01's "que sur mobile").
+   At the top the artboard bar is untouched. Past 8px (.is-scrolled) it
+   narrows into a pill 16px under the window's top, as kicker's: 64 tall,
+   frosted cream (a blur of whatever passes under it), hairline edge, soft
+   shadow, the logo at 0.79 as on phones. The Product Hunt badge stays in the
+   top bar: the pill would be too wide with it. The header keeps its 120px
+   slot (height + margin-bottom), so nothing under it moves, and the morph
+   runs on the bar's own box (width, height, top, radius). 904 wide holds the
+   logo, the centred links and the two pills with 30px to spare on each side.
+   Tablets keep the bar that scrolls away; phones their compact bar (above).
+   The agents view keeps the bar that scrolls away (founder, same day: "pas
+   besoin de la sticky bar dans la partie agents"): every rule here skips a
+   nav whose page is in that view. --lp-nav-reserve is the window top the pill
+   takes, for pinned sections (LpInfraAnim) and in-page jumps (foundation.css);
+   0 in the agents view (audience-agents.css). */
+@media (min-width: 1025px) {
+  :root {
+    --lp-nav-reserve: 80px;
+  }
+  :not([data-audience="agents"]) > .lp-nav {
+    margin-inline: auto;
+    position: sticky;
+    top: 0;
+    transition:
+      width 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      margin-bottom 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      top 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      border-radius 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 0.3s ease,
+      box-shadow 0.3s ease;
+    width: 100%;
+    z-index: 30;
+  }
+  :not([data-audience="agents"]) > .lp-nav.is-scrolled {
+    -webkit-backdrop-filter: blur(16px) saturate(1.5);
+    backdrop-filter: blur(16px) saturate(1.5);
+    background-color: color-mix(in srgb, var(--lp-page-bg) 78%, transparent);
+    border-radius: 32px;
+    box-shadow:
+      0 0 0 1px rgba(44, 0, 42, 0.06),
+      0 8px 28px rgba(44, 0, 42, 0.08);
+    height: 64px;
+    margin-bottom: 56px; /* 120 − 64: the slot stays */
+    top: 16px;
+    width: 904px;
+  }
+  .lp-nav-logo,
+  .lp-nav-ctas {
+    transition:
+      left 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      right 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  :not([data-audience="agents"]) > .lp-nav.is-scrolled .lp-nav-logo {
+    left: 22px;
+    transform: translateY(-50%) scale(0.79);
+    transform-origin: left center;
+  }
+  :not([data-audience="agents"]) > .lp-nav.is-scrolled .lp-nav-ctas {
+    right: 13px;
+  }
+  :not([data-audience="agents"]) > .lp-nav.is-scrolled .lp-nav-ph {
+    display: none;
+  }
+}
+@media (min-width: 1025px) and (prefers-reduced-motion: reduce) {
+  .lp-nav,
+  .lp-nav-logo,
+  .lp-nav-ctas {
+    transition: none;
+  }
+}
 
 /* Logo: 114.956×56, left edge 179px at 1654, vertically centered */
 .lp-nav-logo {

@@ -95,7 +95,8 @@ type Timeline = gsap.core.Timeline;
     registered by the carousel shell lp-dive-carousel.ts, by this driver for the phone stack,
     and by the /lp-dev/stages harness; V2 replication 2026-10-09). "__lpFeat" left with the
     feature cards. */
-export type PlayOnceRegistry = "__lpStep" | "__lpStory";
+// __lpInfra: LpInfraAnim's diagram flow (2026-10-21)
+export type PlayOnceRegistry = "__lpStep" | "__lpStory" | "__lpInfra";
 /** cue: the timeline time of the card's first scene (0 = its first frame) */
 type Built = { tl: Timeline; cleanup: () => void; cue?: number };
 /** A builder that can pause: it yields between two slices of its work and returns what the
@@ -370,9 +371,9 @@ export function enqueueBuild(run: () => boolean | void, at: Element | null = nul
 
 /* ── a build in slices ──
    One build is a builder (it measures, sets the frame-0 states, creates the tweens), then, for a
-   surface that rests on its END picture, the timeline taken to its end. Both are long (the
-   message story: 154 + 152 ms on a mid-range phone) and both can be cut without changing what
-   is built:
+   surface that rests on its END picture, the timeline taken to its end. Both are long (the old
+   deep-dive message story's took 154 + 152 ms on a mid-range phone) and both can be cut without
+   changing what is built:
    - the builder, where it says so itself (`runtime.steps`: it yields between slices);
    - the end pass, child by child. `tl.progress(1, true)` renders the timeline's children in
      order, each to its own end, and a tween records its start values the first time it
@@ -558,11 +559,16 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   };
   // A content-visibility:auto ancestor that skips its contents gives them no
   // geometry: build only once it renders them (f2 measures glyph rects).
+  // Nor does a display:none one: the homepage's agents view hides every human
+  // section, and a visitor whose first input is the toggle had the step cards
+  // built there, measured at zero (2026-11-01: s4 threw, its card stayed a
+  // still for the visit). Not laid out = not built now; the observers below
+  // prepare the card again once its section shows and nears the screen.
   const laidOut = () => {
-    if (!o.layoutRoot) return true;
     const check = (stage as HTMLElement & {
-      checkVisibility?: (opts: { contentVisibilityAuto: boolean }) => boolean;
+      checkVisibility?: (opts?: { contentVisibilityAuto: boolean }) => boolean;
     }).checkVisibility;
+    if (!o.layoutRoot) return typeof check === "function" ? check.call(stage) : stage.getClientRects().length > 0;
     if (typeof check === "function") return check.call(stage, { contentVisibilityAuto: true });
     return near || visible; // older engines: the card itself is intersecting
   };

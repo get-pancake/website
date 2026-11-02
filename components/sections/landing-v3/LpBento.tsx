@@ -20,8 +20,11 @@ import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 
 /**
  * Testimonials / KPI bento (V2 Figma 4911:762 "Frame 168", 1654 × 1448; mobile artboard
- * 5024:10543). Owner: bento package. Between the CTA and pricing, a DIRECT <section
- * class="lp-bento"> child of main.lp, so the agents view hides it with every other section.
+ * 5024:10543). Owner: bento package. Between the deep dive and the CTA since 2026-10-28 (founder,
+ * on the CTA: "Should be below testimonials"; it was between the CTA and pricing), a DIRECT
+ * <section class="lp-bento"> child of main.lp, so the agents view hides it with every other
+ * section. `sky` paints it the blue band's sky (lp-bento--sky, sky.css): the homepage sets it, so
+ * the band runs from the banner through the dive and the testimonials to the CTA's hill.
  *
  * Content: the designer's seven cards, shared by four customers (Kinro, Praxis, Vector Legal,
  * AgentMail: lp-bento-data.ts), all final. Gating (lib/placeholders.ts): production renders only "final" cards, so it may hold
@@ -42,7 +45,11 @@ import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
  * sound in a dialog on demand). The portrait blobs are static (decision §7).
  * Analytics: no new ids (no link surface here; founder approval + a GTM trigger first).
  */
-export function LpBento({ placeholders = SHOW_PLACEHOLDERS, live }: { placeholders?: boolean; live?: boolean } = {}) {
+export function LpBento({
+  placeholders = SHOW_PLACEHOLDERS,
+  live,
+  sky = false,
+}: { placeholders?: boolean; live?: boolean; sky?: boolean } = {}) {
   const bento = resolveBento(placeholders, undefined, live);
   if (!bento) return null;
   // the grid's height in each layout, for the content-visibility estimate (bento.css)
@@ -54,7 +61,7 @@ export function LpBento({ placeholders = SHOW_PLACEHOLDERS, live }: { placeholde
     "--lp-bento-flow-gaps": bento.size.flowGaps,
   } as CSSProperties;
   return (
-    <section className="lp-bento" aria-labelledby="lp-bento-title" style={size}>
+    <section className={sky ? "lp-bento lp-bento--sky" : "lp-bento"} aria-labelledby="lp-bento-title" style={size}>
       {/* the paddings live on this wrapper, not the section: the section is content-visibility:auto
           (foundation.css), whose contain-intrinsic-size estimate is the CONTENT box */}
       <div className="lp-bento__inner">

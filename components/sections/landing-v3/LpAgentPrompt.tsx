@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
- * The agent install instruction + its copy button — Figma V2 4939:3751 (hero box) and 4964:4099 /
- * 4964:4100 (the code-wall card's head row). Owner: agents-view package. In
- * scripts/homepage-lint.mjs FILES.
+ * The agent install instruction + its copy button: the agents view's one-line install (LpAgentStart;
+ * was Figma V2 4939:3751, and the code-wall card's head row until that wall left on 2026-11-01).
+ * Owner: agents-view package. In scripts/homepage-lint.mjs FILES.
  *
  * The instruction names the outcome and the URL, not a tool: an agent with a shell will curl it,
  * one with a fetch tool will fetch it, and a chat assistant will open it. A `curl` one-liner made
@@ -18,15 +18,13 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
  */
 const instruction = `Set up Pancake by reading ${SITE_ORIGIN}/install.md and following its instructions.`;
 // The visible text offers three break opportunities — after the scheme, after the host's slash and
-// before the file name — so the 36-column hero box wraps exactly as V2 draws it ("…reading
-// https://" / "pancake.ai/install.md and following" / "its instructions.") and a narrow phone never
-// splits "install.m" + "d" (2026-10-07). Visible text and the copied string are identical.
+// before the file name — so wherever the box is too narrow for the one line (tablets, phones) it
+// wraps at a URL boundary and a narrow phone never splits "install.m" + "d" (2026-10-07). Visible
+// text and the copied string are identical.
 const scheme = /^[a-z][a-z0-9+.-]*:\/\//i.exec(SITE_ORIGIN)?.[0] ?? "";
 const host = SITE_ORIGIN.slice(scheme.length);
 
-export type AgentPromptVariant = "hero" | "card";
-
-export function LpAgentPrompt({ variant }: { variant: AgentPromptVariant }) {
+export function LpAgentPrompt() {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");
   const reset = useRef<ReturnType<typeof setTimeout>>();
   const code = useRef<HTMLElement>(null);
@@ -52,7 +50,7 @@ export function LpAgentPrompt({ variant }: { variant: AgentPromptVariant }) {
     }
   };
 
-  return <div className={`lp-agent-prompt lp-agent-prompt--${variant}`} data-copy-state={status}>
+  return <div className="lp-agent-prompt" data-copy-state={status}>
     <div className="lp-agent-prompt__text">
       <code ref={code} className="lp-agent-prompt__code">
         Set up Pancake by reading {scheme}<wbr />{host}/<wbr />install.md and following its instructions.

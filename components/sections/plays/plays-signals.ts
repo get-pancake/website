@@ -58,8 +58,8 @@ export const SIGNAL_PATHS: Record<SignalPageId, string> = {
 
 /* ─── shared ────────────────────────────────────────────────────────────────── */
 
-const APPROVE_STEP = {
-  title: "You approve every lead.",
+const MESSAGE_STEP = {
+  title: "Pancake writes the first message.",
   body: "Each lead comes with one line on why it fits. Pancake writes the first message from that line, in your voice.",
 };
 
@@ -92,7 +92,7 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
     meta: {
       title: "Find recently funded startups and their buyers · Pancake",
       description:
-        "Pancake finds startups with a fresh funding round, checks each one against your ICP, then finds the people you sell to. You approve every lead.",
+        "Pancake finds startups with a fresh funding round, checks each one against your ICP, then finds the people you sell to.",
       ogTitle: "Recently funded startups · Pancake",
       crumb: "Recently funded startups",
     },
@@ -104,7 +104,7 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
         title: "Pancake checks every round.",
         body: "It reads the date each round was announced and sets aside companies without one. Then it finds the people you sell to.",
       },
-      APPROVE_STEP,
+      MESSAGE_STEP,
     ],
     examples: {
       from: "written",
@@ -132,7 +132,7 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
     meta: {
       title: "Find companies hiring for a role, and their buyers · Pancake",
       description:
-        "Name a role. Pancake finds companies with recent job posts for it, checks each one against your ICP, then finds the people you sell to. You approve every lead.",
+        "Name a role. Pancake finds companies with recent job posts for it, checks each one against your ICP, then finds the people you sell to.",
       ogTitle: "Companies hiring · Pancake",
       crumb: "Companies hiring",
     },
@@ -144,7 +144,7 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
         title: "Pancake reads the job posts.",
         body: "It keeps recent posts from companies hiring for themselves. Then it finds the people you sell to.",
       },
-      APPROVE_STEP,
+      MESSAGE_STEP,
     ],
     examples: {
       from: "for",
@@ -167,7 +167,7 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
     meta: {
       title: "Find companies by tech stack, and their buyers · Pancake",
       description:
-        "Name a tool. Pancake finds companies whose recent job posts ask for it, checks each one against your ICP, then finds the people you sell to. You approve every lead.",
+        "Name a tool. Pancake finds companies whose recent job posts ask for it, checks each one against your ICP, then finds the people you sell to.",
       ogTitle: "Companies by tech stack · Pancake",
       crumb: "Companies by tech stack",
     },
@@ -182,7 +182,7 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
         title: "Pancake checks the job posts.",
         body: "It keeps companies whose recent posts ask for the tool. If a name could mean two tools, Pancake shows you both.",
       },
-      APPROVE_STEP,
+      MESSAGE_STEP,
     ],
     examples: {
       from: "for",

@@ -1,8 +1,8 @@
 // lib/verticals/data/solopreneurs.ts — solopreneurs (merged: indie hackers, micro-SaaS and bootstrapped founders).
 // Every person, company, rival tool, creator and workspace below is invented.
 // Caveat (brief): B2B only, consumer-facing solo products won't work. Own brand needs the
-// founder's own posts. No "while you sleep" results promises. This page owns the
-// approval-gate angle (brief review 3b).
+// founder's own posts. No "while you sleep" results promises. This page owned the
+// approval-gate angle (brief review 3b) until the approval line left the site.
 import type { VerticalConfig } from "../types";
 
 export const solopreneurs: VerticalConfig = {
@@ -25,7 +25,7 @@ export const solopreneurs: VerticalConfig = {
 
   hero: {
     title: "Find B2B buyers who react to your build-in-public posts.",
-    lede: "Pancake reads comments under your niche’s creators and a bigger rival’s page. Approve a lead in one click, then keep building.",
+    lede: "Pancake reads comments under your niche’s creators and a bigger rival’s page, so you can keep building.",
   },
 
   workspace: { name: "Rutherford Labs", sender: "Esme Rutherford" },
@@ -144,10 +144,6 @@ export const solopreneurs: VerticalConfig = {
   },
 
   faq: [
-    {
-      q: "What if I don’t get to my leads for a few days?",
-      a: "New leads wait until you get to them. Pancake never contacts a lead you haven’t approved. Approving one from Slack takes a click.",
-    },
     {
       q: "Is $99 worth it before I have revenue?",
       a: "You see the first leads Pancake found before your trial starts. After the 7-day trial and its 15,000 credits, it starts at $99 a month per workspace.",

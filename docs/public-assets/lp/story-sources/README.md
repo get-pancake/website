@@ -1,4 +1,4 @@
-# Data provider marks (homepage story "Sources you can trust")
+# Data provider marks (homepage infra section and dive stories)
 
 > About the files in `public/lp/story-sources/`. This note lived in that folder until
 > 2026-10-13, where it was served on the site; it moved here so it stays in the repository only.
@@ -23,8 +23,18 @@ Wappalyzer) and the best known of that list. Never a provider the product does n
 
 Rules: a mark is shown unmodified and in its own colours. Never recolour, redraw, crop or add
 to one. To update a mark, take the vendor's own file through the product repo and replace the
-file in that folder as it is. The stage draws each mark on a white disc with the vendor's name under it
-(`components/sections/landing-v3/lp-story-sources-data.ts`, `LpStorySources.tsx`).
+file in that folder as it is.
+
+Where they are drawn (2026-10-28; the "Sources you can trust" story that first drew all six was
+removed that day, the folder keeps its name):
+
+- The infra section's Data card (`components/sections/landing-v3/LpInfra.tsx`, `PROVIDERS` and
+  the scroll pieces): Apify, TheirStack, Coresignal, Wappalyzer, Firecrawl.
+- The dive's signals story, "Buying signals, enriched" (`LpStorySignals.tsx`,
+  `lp-story-signals-data.ts`): all six, each on a white disc with its name on desktop, on the
+  discs the "Sources you can trust" story gave them.
+- The dive's lineage story, "Where every lead came from" (`LpStoryLineage.tsx`): TheirStack,
+  Apify and Dealroom, each on a white disc with its name on desktop (the "Pancake data" side).
 
 | File | Vendor |
 |---|---|

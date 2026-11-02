@@ -152,7 +152,7 @@ export const revopsConsultants: VerticalConfig = {
     },
     {
       q: "Does Pancake sync leads into HubSpot or Salesforce?",
-      a: "No. There’s no CRM sync and no export. Leads live in Pancake and Slack, where you approve them.",
+      a: "No. There’s no CRM sync and no export. Leads live in Pancake and Slack.",
     },
     {
       q: "Won’t a company hiring a Salesforce admin fix its CRM in-house?",

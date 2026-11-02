@@ -55,8 +55,16 @@ export function LpSteps() {
     <section className="lp-steps" id="how-it-works">
       <div className="lp-steps__org">
         <header className="lp-steps__head">
-          <p className="lp-steps__kicker">While you run your business,</p>
-          <h2 className="lp-steps__title lp-title-section">Pancake fills your pipeline.</h2>
+          {/* one line, no kicker (founder 2026-10-28: "This stuff should be a one liner", on
+              "With Pancake underneath, / Your agent runs your GTM."; before that "Find a better
+              one liner here" and, on "Pancake fills your pipeline.", "this still sounds a bit like
+              verticalized sdr agent"): the visitor's agent is the actor. The same day, on "Your
+              agent runs on Pancake.": "on pourrait faire mieux je pense sachant que le 'Your agent
+              needs 3 things to sell.' est parfait", so the heading says the value as the infra
+              heading does, plainly: what your agent does once it runs on Pancake. At 57px the
+              title holds one line up to ≈ 28 characters (the box is 624 wide at 1440); this one
+              holds one line on phones too */}
+          <h2 className="lp-steps__title lp-title-section">Your agent runs your GTM.</h2>
         </header>
         <div className="lp-steps__list">
           {STEPS.map((step) => (

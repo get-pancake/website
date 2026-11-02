@@ -1,0 +1,149 @@
+/* Story kit — the parts the four deep-dive stories share (2026-10-28).
+   Founder, on the section "How Pancake gets you customers": "ban UI things from
+   motions and try to abstract things … graphic simple and on brand (you can
+   reuse components)", pointing at the one picture he loves: the sources
+   story's end hub (white discs with each provider's own mark, grey wires into
+   one near-black dot, the confetti dots, "WHY THEY FIT" over "Just raised").
+   Every part below is that picture's, copied (story-sources.css at 630bb8e, removed
+   with its story the same day), plus the brand's display face for the big value
+   (the infra bricks' word, infra.css .lp-infra__part-word).
+
+   Each story's root: <div data-lp-story="<id>" class="lp-sk lp-<prefix>">, one
+   .lp-sk-scene inside holding the whole scene. Geometry is stage px on the
+   752x489 design box (phones show the same box scaled: the stack). Every
+   story opens on this END layout with its build-up hidden and moves at once:
+   no camera since 2026-10-28 (founder, on the claim zoomed to fill the stage
+   and held: "this is not motion like it's plain text").
+
+   A disc's pop (--lp-sk-pop) and a .lp-sk-rise piece's rise (--lp-sk-rise)
+   tween a CSS variable read by the transforms below. Unset (the server
+   markup, the rest = END picture), the declaration is invalid at
+   computed-value time and transform computes to none: no text rests in a
+   transformed layer, and GSAP's transform cache (whose clearProps resets
+   force3D to "auto") is never used. GSAP's own scale / y write translate3d
+   mid-tween, and Chromium then re-rasterises the whole scene for the tween's
+   length.
+
+   Traps:
+   T1 `.lp p { margin: 0 }` and the shell's `.lp-dive-scene * { font-family }`
+      / `.lp-dive-scene svg { display: block }` tie with single-class rules:
+      every p, font and inline-svg rule below uses a compound selector.
+   T2 Dots animate their `r` attribute, never a transform.
+   T6 No dot on a node's edge (founder 2026-10-28, on the caps the loved
+      picture put where each wire starts: "ca fait un peu vibe coded"): a
+      wire starts on its node's edge and meets it itself.
+   T3 A vendor's mark is the vendor's file in an <img>, sized only (50% of
+      its disc, object-fit: contain): no filter, no blend, no mask, no tint.
+   T4 The disc's 0.5px hairline is a spread shadow (no layout space).
+   No will-change, no infinite keyframes: the stage is GSAP-only, plays once. */
+
+.lp-sk {
+  --sk-disc: #fff;
+  --sk-disc-ring: rgba(48, 0, 44, 0.12);
+  --sk-disc-shadow: 0 3px 14px rgba(48, 0, 44, 0.1);
+  --sk-wire: #969696;
+  --sk-hub: #0b0a0a;
+  color: var(--lp-ink-100);
+  font: 400 16px/1.5 var(--lp-font-sans);
+  inset: 0;
+  position: absolute;
+}
+.lp-sk * {
+  font-family: var(--lp-font-sans);
+}
+.lp-sk svg {
+  display: block;
+  max-width: none;
+}
+.lp-sk .lp-sk-scene {
+  inset: 0;
+  position: absolute;
+}
+
+/* a mark on a white disc with a hairline and a soft shadow (the app's vendor
+   chip). It pops by --lp-sk-pop (lp-story-kit.ts skPop): none at rest */
+.lp-sk .lp-sk-disc {
+  background: var(--sk-disc);
+  border-radius: 50%;
+  box-shadow: 0 0 0 0.5px var(--sk-disc-ring), var(--sk-disc-shadow);
+  position: absolute;
+  transform: scale(var(--lp-sk-pop));
+}
+/* the vendor's own file at half the disc's width, centred, whole (contain) */
+.lp-sk .lp-sk-disc img {
+  display: block;
+  height: 50%;
+  left: 25%;
+  max-width: none;
+  object-fit: contain;
+  position: absolute;
+  top: 25%;
+  width: 50%;
+}
+
+/* the wires: one 752x489 svg, its paths drawn by the timeline (strokeDashoffset) */
+.lp-sk .lp-sk-wires {
+  height: 489px;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  position: absolute;
+  width: 752px;
+}
+.lp-sk-wires path {
+  fill: none;
+  stroke: var(--sk-wire);
+  stroke-width: 2;
+}
+/* the loved picture's connectors: lines multiply over what they cross */
+.lp-sk-wires > g > * {
+  mix-blend-mode: multiply;
+}
+/* where the wires meet in the open: one near-black dot (the loved picture's
+   six overlapping multiplied end caps) */
+.lp-sk-wires .lp-sk-hub {
+  fill: var(--sk-hub);
+  mix-blend-mode: normal;
+}
+/* phones showing the desktop box scaled: no blend pass (the grey is the same
+   on the stage's near-white) */
+@media (max-width: 767px) {
+  .lp-sk-wires > g > * {
+    mix-blend-mode: normal;
+  }
+}
+
+/* a piece that rises into place (lp-story-kit.ts skRise): --lp-sk-rise px
+   below its place while it comes up, none at rest. Its own rules must not set
+   a transform */
+.lp-sk .lp-sk-rise {
+  transform: translateY(calc(var(--lp-sk-rise) * 1px));
+}
+
+/* a disc's name, centred under it (above it with data-above). --nx / --nt /
+   --nb = the disc's centre x, top and bottom, stage px, unitless */
+.lp-sk .lp-sk-name {
+  --sk-name-w: 120px; /* a box wider than any name, centred on the disc */
+  color: var(--lp-ink-100);
+  font-size: 12px;
+  font-weight: 500;
+  left: calc(var(--nx) * 1px - var(--sk-name-w) / 2);
+  letter-spacing: 0;
+  line-height: 16px;
+  margin: 0;
+  position: absolute;
+  text-align: center;
+  top: calc(var(--nb) * 1px + 5px);
+  white-space: nowrap;
+  width: var(--sk-name-w);
+}
+.lp-sk .lp-sk-name[data-above] {
+  top: calc(var(--nt) * 1px - 21px);
+}
+/* the phone stack keeps the 752 scene at ×0.45: a 12px name would draw at
+   5.5px. The scene box never narrows, so this is the viewport's switch */
+@media (max-width: 767px) {
+  .lp-sk .lp-sk-name {
+    display: none;
+  }
+}

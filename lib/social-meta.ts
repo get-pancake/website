@@ -27,20 +27,27 @@ export const X_HANDLE = "@pancakegtm";
  * "You run your company. We bring you customers." until then, then "Deploy GTM ideas that
  * bring you customers" (og-image-2026-10.png). 2026-10-27: the new H1, "Infrastructure to
  * run your GTM factory", set as the card was drawn (Aeonik Condensed 600, 82 px, line pitch
- * 96, left 109, tracking -0.0206em, #2c002a on #fbf6f1; the rainbow untouched). The file has
+ * 96, left 109, tracking -0.0206em, #2c002a on #fbf6f1; the rainbow untouched), then on
+ * 2026-10-28 "Infrastructure powering your GTM factory" the same way (og-image-2026-10-28.png;
+ * its longer first line still stops 72 px before the rainbow at 82 px), then the same evening
+ * "Infrastructure to power your GTM factory" (founder: "might be better en fait";
+ * og-image-2026-10-28b.png, redrawn over the same card: first line 92 px before the rainbow),
+ * and on 2026-10-30 "Infrastructure powering" again (a co-founder asked "to power or
+ * powering?" on the preview; the founder: "Switch to 'powering'"): the 2026-10-28 card is
+ * back, its rainbow byte for byte the other cards'. The file has
  * a NEW name because chat apps and social networks keep a picture by its address: the same
  * address would keep showing the old headline. /og-image.png holds the same new picture,
  * for any page or post that still points at it. When this card changes again: new file
  * name here, and the app's own copy too (pancake-cmo apps/frontend/index.html).
  */
-export const OG_IMAGE = "/og-image-2026-10-27.png";
+export const OG_IMAGE = "/og-image-2026-10-28.png";
 
 /** Alt text = the text printed in the card (audit 8.4), never the page's own name. */
-export const OG_IMAGE_ALT = "Infrastructure to run your GTM factory";
+export const OG_IMAGE_ALT = "Infrastructure powering your GTM factory";
 
 /** og:title / twitter:title of the homepage and of the root-layout fallback (one
  *  punctuation for both, audit 6.13). The homepage <title> stays exactly "Pancake". */
-export const HOME_SOCIAL_TITLE = "Pancake — Infrastructure to run your GTM factory";
+export const HOME_SOCIAL_TITLE = "Pancake — Infrastructure powering your GTM factory";
 
 export type SocialImage = {
   url: string;

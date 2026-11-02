@@ -58,7 +58,7 @@ After the trial, the plan renews monthly on the card the customer added. Canceli
 - A sequence is a light warm-up, then up to 3 messages, sent on weekdays between 09:00 and 18:00 in the customer's time zone.
 - After a lead is added to a sequence, nothing goes out for 10 minutes, so the customer can undo.
 - Delivery: Slack, an 08:30 email digest, and daily, weekday, weekly or custom schedules.
-- MCP server: https://app.pancake.ai/api/mcp (Streamable HTTP, browser OAuth, no API key). About 90 tools, plugins for Claude Code and Codex, and 4 skills.
+- MCP server: https://app.pancake.ai/api/mcp (Streamable HTTP, browser OAuth, no API key). About 100 tools, plugins for Claude Code and Codex, and 5 skills.
 
 ## Product boundaries
 

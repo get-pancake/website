@@ -44,7 +44,7 @@ const config: GtmComparisonConfig = {
   verdictTitle: "Origami builds the list. Pancake keeps the search running.",
   verdictLede: "Origami is strong at live-web research, contact data, and content. Pancake is built for founders who want new leads found for them and conversations started from their own account.",
   competitorBestFit: "Origami is the better fit when your team wants natural-language live-web research, prospect lists with verified contact data, email and social sequences, and drafted posts.",
-  differencesLede: "Both products read the market, run what you approve and bill in credits. They differ in what a search leaves you with.",
+  differencesLede: "Both products read the market and bill in credits. They differ in what a search leaves you with.",
   differences: [
     {
       n: "01",
@@ -90,7 +90,7 @@ const config: GtmComparisonConfig = {
   closingTitle: "Let Pancake find your next leads.",
   closingLede: "Tell Pancake who you want to reach. It builds a Play to find them, and every lead arrives with why they fit.",
   faqs: [
-    { q: "What is the main difference between Origami and Pancake?", a: "Origami is strong at live-web research, prospect lists, and enrichment, and it runs the plays you approve. Pancake runs Plays that keep searching on their own. You tell it who you want to reach, it builds a Play to find them, and you approve every lead before anyone is contacted." },
+    { q: "What is the main difference between Origami and Pancake?", a: "Origami is strong at live-web research, prospect lists, and enrichment, and it runs the plays you approve. Pancake runs Plays that keep searching on their own. You tell it who you want to reach, and it builds a Play to find them." },
     { q: "Does Origami create content?", a: "Yes, on Pro and up. Its Content mode drafts a post and a branded visual for your review. Pancake doesn't create content: it finds your buyers and starts the conversation." },
     { q: "Does Origami run outbound?", a: "Origami includes a multichannel sequencer, so it can support outbound execution after a list is created. Pancake ties outreach to the lead: each one arrives with one line on why they fit, and its personal message is written from that reason. A reply stops the sequence." },
     { q: "Which is better for prospect research?", a: "Origami may be the better fit for teams that primarily want natural-language searches across many live sources, data waterfalls, and flexible list building. Pancake is the better fit when you want a Play that keeps searching and starts each conversation for you." },

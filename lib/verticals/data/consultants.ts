@@ -146,12 +146,8 @@ export const consultants: VerticalConfig = {
 
   faq: [
     {
-      q: "I run a one-person practice. Is this too much?",
-      a: "No. New leads keep arriving, and you pick which ones join a sequence. Approve three a week or thirty.",
-    },
-    {
       q: "Won’t outreach hurt a reputation built on referrals?",
-      a: "Not when it reads like a peer. Each message is short, in your Brain voice, and never a pitch. You approve every lead before anyone is contacted.",
+      a: "Not when it reads like a peer. Each message is short, in your Brain voice, and never a pitch.",
     },
     {
       q: "Can it stick to my niche?",

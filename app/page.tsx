@@ -9,20 +9,16 @@ import { LpDive } from "@/components/sections/landing-v3/LpDive";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
+import { LpInfra } from "@/components/sections/landing-v3/LpInfra";
+import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
-import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
-import {
-  AGENT_CARD_BODY,
-  AGENT_CARD_BODY_PLACEHOLDER,
-} from "@/components/sections/landing-v3/lp-agents-wall-data";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
-import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
@@ -91,7 +87,6 @@ const softwareApplicationJsonLd = {
     "Plays built from one sentence",
     "Searches that run on your schedule, up to 50 leads per search",
     "A reason on every lead",
-    "You approve every lead before anyone is contacted",
     "Personal messages you can edit",
     "New leads in Slack and a morning email",
     "MCP server for Claude, Claude Code, ChatGPT and Codex",
@@ -135,26 +130,33 @@ export default function Home() {
       <LpAnimFreeze />
       {/* V2 Figma replication (fr8NgOCTUxsEbrMEJA3YKu 4911:346, 2026-10-09) page order. Every
           section is a DIRECT <section> child of main.lp: the agents view hides all of them but
-          the hero and the lab (audience.css, integrator rule). */}
+          the hero (audience.css, integrator rule). */}
       <LpNav />
       <LpHero />
       {/* the demo window, right under the hero (V2 red note: swapped with the logos) */}
       <LpDemo />
       {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
       <LpMarquee labelled />
-      <LpAgentLab
-        cardBody={SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY}
-      />
+      {/* The infra-first page (2026-10-21/22): what Pancake gives your agent (the diagram), then
+          the infra vision as the three steps (the Vercel for GTM: deploy, host, run), which meet
+          the designer's banner as they do on main (founder 2026-10-22: "after the 1/2/3 we should
+          see the" banner); then the deep dive, the testimonials and the CTA on one sky (sky.css:
+          the band ends on the CTA's hill; founder 2026-10-28 on the CTA: "Should be below
+          testimonials"), then pricing. "Find any buyer you can describe." (the
+          agent-written search shown as code) went the same day: "les gens s en foutent du code".
+          The hero's For agents view is the one-line install alone (LpAgentStart; its code wall
+          and puzzle left on 2026-11-01). */}
+      <LpInfra />
       <LpSteps />
       <LpBanner />
       {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
       <LpDive />
-      <LpCta sky />
-      {/* testimonials / KPI bento (V2 4911:762): dev and previews show it, gaps filled with
-          marked stand-ins. Production renders nothing while BENTO_LIVE (lp-bento-data.ts) is
-          off, as it is today (the founder's go on the date and the customers' OK); once on,
-          its final cards only (a partial set) */}
-      <LpBento />
+      {/* testimonials / KPI bento (V2 4911:762), on the sky since 2026-10-28: its final cards
+          only in production (lib/placeholders.ts), nothing while BENTO_LIVE (lp-bento-data.ts)
+          is off */}
+      <LpBento sky />
+      {/* the close: the CTA pair, then the one-line setup to copy; its cream hill ends the sky */}
+      <LpCta sky setup={<LpSetupPill />} />
       <LpPricing />
       <LpFooter />
       {/* LpModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}

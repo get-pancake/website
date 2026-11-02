@@ -1,6 +1,6 @@
 import type { Viewport } from "next";
 import Link from "next/link";
-import { LuBadgeCheck, LuCheck, LuCreditCard, LuLock, LuSparkles, LuUserCheck, LuX } from "react-icons/lu";
+import { LuBadgeCheck, LuCheck, LuCreditCard, LuLock, LuSparkles, LuX } from "react-icons/lu";
 
 import { COMPARE_LINKS, COMPARE_META } from "@/components/sections/compare/compare-copy";
 import {
@@ -212,7 +212,6 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
               <ul className="vvp-hero__badges">
                 <li className="vvp-hero__badge"><LuSparkles aria-hidden /> From $99 a month per workspace</li>
                 <li className="vvp-hero__badge"><LuCreditCard aria-hidden /> No extra seats to hire</li>
-                <li className="vvp-hero__badge"><LuUserCheck aria-hidden /> You approve every lead</li>
                 <li className="vvp-hero__badge"><LuLock aria-hidden /> Private by default</li>
               </ul>
             </div>
@@ -314,10 +313,9 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
             <p className="home-landing-section__lede home-landing-section__lede--closing text-center">{config.closingLede}</p>
             <div className="home-landing-closing-cta">
               <CtaPair placement="final" />
-              {/* each phrase stays whole on phones (393px left "lead" alone on line 2) */}
+              {/* the phrase stays whole on phones */}
               <p className="home-landing-closing-cta__note">
-                <span className="vvp-nowrap">From $99 a month per workspace&nbsp;•</span>{" "}
-                <span className="vvp-nowrap">You approve every lead</span>
+                <span className="vvp-nowrap">From $99 a month per workspace</span>
               </p>
               {/* 2026-10-07 (founder: make the comparison pages reachable, as Unify, Origami,
                   Octave and Alta do): back to the /compare hub. The hero's text-link recipe

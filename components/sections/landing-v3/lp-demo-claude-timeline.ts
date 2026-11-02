@@ -28,9 +28,8 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
  * In slices (2026-10-13), as the Pancake view's builder and by the same two rules: the
  * generator `buildDemoClaudeSteps` yields only after the geometry block, so everything it
  * measures is read on the untouched home layout, and never inside the frame-0 block, which
- * lands in one frame; `buildDemoClaude` runs it to its end in one go. In the claude story the
- * scene is not its resting picture while it builds (the story rests on its END picture and
- * this builder sets the home): that is the story's driver's business (lp-play-once `away`).
+ * lands in one frame; `buildDemoClaude` runs it to its end in one go. (The deep dive's claude
+ * story also built this view until it was removed, 2026-10-28.)
  */
 
 /* The opening: Claude's home holds 0.8 s, then the request is typed as a person types (38 ms a

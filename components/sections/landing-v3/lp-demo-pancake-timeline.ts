@@ -38,7 +38,7 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
  * so the same code plays the desktop window and the phone card. The player rebuilds it when the
  * stage's size changes.
  *
- * GSAP traps avoided as in lp-story-claude-timeline.ts: every instant change is a 1 ms tween
+ * GSAP traps avoided as in the dive's story timelines: every instant change is a 1 ms tween
  * (`step`), never a zero-duration set (gsap.context's revert replays those last, in an order
  * that differs per engine), and every property the timeline touches has a frame-0 gsap.set.
  *
@@ -55,7 +55,8 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
 
 export type BuiltDemo = { tl: gsap.core.Timeline; cleanup: () => void };
 
-/* Typing helpers: the clip-path staircase of the stories (lp-story-claude-timeline.ts). */
+/* Typing helpers: the clip-path staircase of the stories (first written for the deep dive's
+   Claude story, removed with its story on 2026-10-28). */
 export type Glyph = { right: number; top: number; bottom: number };
 /** each glyph's right edge and line box, in the element's own unscaled px (Range rects) */
 export function measureGlyphs(el: HTMLElement): Glyph[] {

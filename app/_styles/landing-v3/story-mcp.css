@@ -1,0 +1,427 @@
+/* Story MCP — owner: story-mcp package (2026-10-28; this picture 2026-11-01).
+   Deep-dive story 4, "Codex at work" (LpStoryMcp; the item "Built for Claude
+   and Codex"). Founder, 2026-11-01, on the diagram it replaces: "Maybe we
+   could just do a screenshot of codex doing stuff like in the h1... there's
+   already too many of those schemas with arrows". So the block is Codex's
+   window at the end of one job, in the homepage demo's own look, and the
+   dive's "no UI" rule is lifted for it, on his word.
+
+   COPIED from app/_styles/landing-v3/demo.css ("Claude & Codex view" and its
+   "Codex" skin, read off Mobbin's web screens), never shared: there every rule
+   sits under the demo window's `.lp-demowin` scope and its markup rests on the
+   app's empty home. Here the rules are the same values under `.lp-smcp`, cut
+   to this picture (no greeting spark, no serif, no permission prompt, no Live
+   status), and the window is placed in the dive's 752×489 box at the demo's
+   own metrics (15 px bubble, 12.5 px log lines, 13 px card rows). Keep the
+   values in step with demo.css when its Codex skin changes.
+
+   Layout, against the window (712×449, 20 px inside the box, placed inline
+   from lp-story-mcp-data.ts): the title at 18,14; the thread's column 600 wide
+   centred (x 56), from y 54: the bubble (42), 14, the three steps (3 × 26),
+   12, the answer line (25), 12, the Play's card (44 + 2 × 36); the composer
+   docked 16 above the bottom, one row (52; the demo's two-row dock does not
+   fit the dive's height). Phones (≤767) show the 752 box scaled (the stack,
+   ×0.47 at 402), where the demo's metrics would draw the text at 5.9–7.5 px:
+   the phone block at the end sets the window's type ×1.45 (the log lines
+   ×1.55) and leaves out the composer and the answer line, which the window's
+   height cannot hold at that size; the ask types in its bubble there
+   (lp-story-mcp-timeline.ts reads which, on the layout it builds on).
+
+   Traps:
+   T1 Compound selectors only: `.lp p { margin: 0 }` (0,1,1) and the shell's
+      `.lp-dive-scene * { font-family }` tie with single-class rules; the kit's
+      `.lp-sk *` sets Geist. Every piece states its face (the demo's rule:
+      the system sans, the log lines in mono).
+   T2 A piece the motion shows only before the END rests hidden here (opacity
+      and visibility): the home line, the first placeholder, the typed ask,
+      the caret, the steps' running words. The timeline shows them at frame 0
+      and hides them again; the END never has them.
+   T3 Rising pieces carry the kit's .lp-sk-rise (story-kit.css): their own
+      rules here never set a transform.
+   No will-change, no keyframes, no loop (the demo's caret blink is not
+   copied): the stage is GSAP-only, plays once. */
+
+/* the Codex palette (demo.css .lp-demowin__cwin[data-harness="codex"] and the
+   --lp-claude-* tokens it reads, foundation.css) */
+.lp-smcp {
+  --smcp-bg: #ffffff;
+  --smcp-ink: #0d0d0d;
+  --smcp-ink-48: var(--lp-claude-ink-48);
+  --smcp-ink-08: var(--lp-claude-ink-08);
+  --smcp-ink-04: var(--lp-claude-ink-04);
+  --smcp-bubble: #f4f4f4;
+  --smcp-log: #5d5d5d;
+  --smcp-hint: #8f8f8f;
+  --smcp-sans: ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.lp-smcp .lp-smcp-win,
+.lp-smcp .lp-smcp-win * {
+  font-family: var(--smcp-sans);
+}
+.lp-smcp .lp-smcp-step,
+.lp-smcp .lp-smcp-step * {
+  font-family: var(--lp-font-mono);
+}
+.lp-smcp .lp-smcp-win :where(p, ul) {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* the window (demo.css .lp-demowin__cwin: white, the demo window's shadow) */
+.lp-smcp .lp-smcp-win {
+  background: var(--smcp-bg);
+  border-radius: 16px;
+  box-shadow: 0 4px 62.4px rgba(0, 0, 0, 0.08);
+  color: var(--smcp-ink);
+  overflow: hidden;
+  position: absolute;
+}
+
+/* Codex's mark and name, top left (.lp-demowin__ctitle, Codex: 15 px
+   semibold; its mark 18 px, 8 px before the name) */
+.lp-smcp .lp-smcp-title {
+  align-items: center;
+  display: flex;
+  font-size: 15px;
+  font-weight: 600;
+  gap: 8px;
+  left: 18px;
+  line-height: 24px;
+  position: absolute;
+  top: 14px;
+}
+.lp-smcp .lp-smcp-title-mark {
+  flex: none;
+  height: 18px;
+  width: 18px;
+}
+
+/* Codex's home line (.lp-demowin__greet, Codex: 28 px regular), centred on
+   the thread's middle: frame 0 only, hidden at rest (T2) */
+.lp-smcp .lp-smcp-greet {
+  font-size: 28px;
+  font-weight: 400;
+  left: 0;
+  letter-spacing: -0.2px;
+  line-height: 47px;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 160px;
+  visibility: hidden;
+  white-space: nowrap;
+}
+
+/* the thread: one column in flow (.lp-demowin__cthread) */
+.lp-smcp .lp-smcp-thread {
+  display: flex;
+  flex-direction: column;
+  left: 56px;
+  position: absolute;
+  top: 54px;
+  width: 600px;
+}
+/* the ask (.lp-demowin__cbubble, Codex: r 18, 10/16) */
+.lp-smcp .lp-smcp-bubble {
+  align-self: flex-end;
+  background: var(--smcp-bubble);
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 22px;
+  max-width: 440px;
+  padding: 10px 16px;
+}
+/* the bubble's words: the line phones type in (the clip-path needs a box) */
+.lp-smcp .lp-smcp-bubble-t {
+  display: inline-block;
+}
+/* Pancake's steps: Codex's log lines (.lp-demowin__ctool, Codex: no card,
+   mono 12.5 grey, 26 tall), the Pancake mark, the step, and on the right what
+   it is doing, then "Done" */
+.lp-smcp .lp-smcp-steps {
+  display: flex;
+  flex-direction: column;
+  margin-top: 14px;
+}
+.lp-smcp .lp-smcp-step {
+  align-items: center;
+  color: var(--smcp-log);
+  display: flex;
+  font-size: 12.5px;
+  font-weight: 400;
+  gap: 8px;
+  height: 26px;
+  line-height: 18px;
+  padding: 0 2px;
+}
+.lp-smcp .lp-smcp-mark {
+  display: block;
+  flex: none;
+  height: 16px;
+  width: 16px;
+}
+.lp-smcp .lp-smcp-step-r {
+  color: var(--smcp-ink-48);
+  display: grid;
+  font-size: 12px;
+  margin-left: auto;
+  text-align: right;
+}
+.lp-smcp .lp-smcp-step-r > span {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+}
+.lp-smcp .lp-smcp-doing {
+  opacity: 0;
+  visibility: hidden;
+}
+/* Codex's answer line (.lp-demowin__csay, Codex: the sans, 15.5/25) */
+.lp-smcp .lp-smcp-say {
+  font-size: 15.5px;
+  line-height: 25px;
+  margin-top: 12px;
+}
+/* the Play, Codex's result card (.lp-demowin__cplay, Codex: r 14, a 1 px
+   ring): the Pancake mark, "Play", its name; two rows in the neutral type */
+.lp-smcp .lp-smcp-play {
+  background: var(--smcp-bg);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  margin-top: 12px;
+  padding: 0 14px;
+}
+.lp-smcp .lp-smcp-play-h {
+  align-items: center;
+  display: flex;
+  font-size: 13.5px;
+  gap: 8px;
+  height: 44px;
+  line-height: 18px;
+}
+.lp-smcp .lp-smcp-play-k {
+  color: var(--smcp-ink-48);
+}
+.lp-smcp .lp-smcp-play-n {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.lp-smcp .lp-smcp-play-row {
+  align-items: center;
+  border-top: 1px solid var(--smcp-ink-08);
+  column-gap: 12px;
+  display: grid;
+  font-size: 13px;
+  grid-template-columns: 56px minmax(0, 1fr);
+  height: 36px;
+  line-height: 18px;
+}
+.lp-smcp .lp-smcp-play-key {
+  color: var(--smcp-ink-48);
+}
+.lp-smcp .lp-smcp-play-v {
+  align-items: center;
+  display: flex;
+  gap: 6px;
+  white-space: nowrap;
+}
+.lp-smcp .lp-smcp-chip {
+  background: var(--smcp-ink-04);
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 22px;
+  padding: 0 8px;
+}
+
+/* the composer, docked (.lp-demowin__cbar, Codex: r 20 and its ring), one
+   row: the plus, the field, the connector chip, the mic, the round send */
+.lp-smcp .lp-smcp-bar {
+  align-items: center;
+  background: var(--smcp-bg);
+  border-radius: 20px;
+  bottom: 16px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  gap: 6px;
+  height: 52px;
+  left: 56px;
+  padding: 0 10px 0 8px;
+  position: absolute;
+  width: 600px;
+}
+.lp-smcp .lp-smcp-plus {
+  flex: none;
+  height: 19px;
+  margin: 0 4.5px;
+  width: 19px;
+}
+/* what is typed in the composer: one line, its three states stacked */
+.lp-smcp .lp-smcp-field {
+  flex: 1;
+  font-size: 16px;
+  height: 24px;
+  line-height: 24px;
+  min-width: 0;
+  position: relative;
+}
+.lp-smcp .lp-smcp-field > span:not(.lp-smcp-caret) {
+  left: 0;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+.lp-smcp .lp-smcp-ph,
+.lp-smcp .lp-smcp-reply {
+  color: var(--smcp-hint);
+}
+.lp-smcp .lp-smcp-ph,
+.lp-smcp .lp-smcp-typed,
+.lp-smcp .lp-smcp-caret {
+  opacity: 0;
+  visibility: hidden;
+}
+/* the caret (V2 draws "|"): steps along with the typing, never blinks */
+.lp-smcp .lp-smcp-caret {
+  background: var(--smcp-ink);
+  height: 19px;
+  left: 0;
+  position: absolute;
+  top: 2.5px;
+  width: 1.5px;
+}
+/* the connector chip (.lp-demowin__conn, Codex: no pill): the Pancake mark,
+   its name, a green dot = connected */
+.lp-smcp .lp-smcp-conn {
+  align-items: center;
+  display: flex;
+  flex: none;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 6px;
+  height: 28px;
+  padding: 0 6px 0 2px;
+}
+.lp-smcp .lp-smcp-conn-mark {
+  display: block;
+  flex: none;
+  height: 18px;
+  width: 18px;
+}
+.lp-smcp .lp-smcp-conn i {
+  background: #1fae6b;
+  border-radius: 50%;
+  display: block;
+  height: 6px;
+  width: 6px;
+}
+.lp-smcp .lp-smcp-mic {
+  flex: none;
+  height: 18px;
+  margin: 0 5px;
+  opacity: 0.7;
+  width: 18px;
+}
+/* the send: round, ink, at rest as nothing is typed (opacity .45) */
+.lp-smcp .lp-smcp-send {
+  align-items: center;
+  background: var(--smcp-ink);
+  border-radius: 50%;
+  color: var(--lp-surface);
+  display: flex;
+  flex: none;
+  height: 32px;
+  justify-content: center;
+  opacity: 0.45;
+  width: 32px;
+}
+.lp-smcp .lp-smcp-send-arrow {
+  height: 16px;
+  width: 16px;
+}
+
+/* ── phones (≤767): the stack shows the 752 box at ×0.47 (402) to ×0.42
+   (360). The window's type ×1.45 (the log lines ×1.55, the smallest), so it
+   reads at 8–10 px on screen instead of 5.9–7.5; at that size the window's
+   449 px hold the title, the ask, the three steps and the Play (64 + 61 +
+   16 + 120 + 16 + 158), not the answer line and not the composer, which are
+   left out here: the ask types in its bubble (the timeline reads the
+   composer's display). The same viewport switch as the kit's names ── */
+@media (max-width: 767px) {
+  .lp-smcp .lp-smcp-title {
+    font-size: 21.75px;
+    gap: 11.6px;
+    left: 26px;
+    line-height: 34.8px;
+    top: 16px;
+  }
+  .lp-smcp .lp-smcp-title-mark {
+    height: 26px;
+    width: 26px;
+  }
+  .lp-smcp .lp-smcp-greet {
+    font-size: 40.6px;
+    line-height: 68px;
+    top: 180px;
+  }
+  .lp-smcp .lp-smcp-thread {
+    left: 36px;
+    top: 64px;
+    width: 640px;
+  }
+  .lp-smcp .lp-smcp-bubble {
+    border-radius: 26px;
+    font-size: 21.75px;
+    line-height: 32px;
+    max-width: 640px;
+    padding: 14.5px 23px;
+  }
+  .lp-smcp .lp-smcp-steps {
+    margin-top: 16px;
+  }
+  .lp-smcp .lp-smcp-step {
+    font-size: 19.4px;
+    gap: 12px;
+    height: 40px;
+    line-height: 26px;
+    padding: 0 3px;
+  }
+  .lp-smcp .lp-smcp-mark {
+    height: 24px;
+    width: 24px;
+  }
+  .lp-smcp .lp-smcp-step-r {
+    font-size: 18.6px;
+  }
+  .lp-smcp .lp-smcp-say,
+  .lp-smcp .lp-smcp-bar {
+    display: none;
+  }
+  .lp-smcp .lp-smcp-play {
+    border-radius: 20px;
+    margin-top: 16px;
+    padding: 0 20px;
+  }
+  .lp-smcp .lp-smcp-play-h {
+    font-size: 19.6px;
+    gap: 11.6px;
+    height: 62px;
+    line-height: 26px;
+  }
+  .lp-smcp .lp-smcp-play-row {
+    column-gap: 17px;
+    font-size: 18.85px;
+    grid-template-columns: 81px minmax(0, 1fr);
+    height: 48px;
+    line-height: 26px;
+  }
+  .lp-smcp .lp-smcp-play-v {
+    gap: 8.7px;
+  }
+  .lp-smcp .lp-smcp-chip {
+    border-radius: 8.7px;
+    font-size: 17.4px;
+    line-height: 32px;
+    padding: 0 11.6px;
+  }
+}

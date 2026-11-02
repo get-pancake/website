@@ -133,12 +133,13 @@
     justify-content: flex-start;
   }
 }
-/* + .lp-display = Condensed 600. The homepage H1 since 2026-10-27: its first
-   line, "Infrastructure to run", is 7.73 times the font size wide at this
-   tracking, so the size is the breakpoint's token or the column's width / 7.8,
+/* + .lp-display = Condensed 600. The homepage H1 (2026-10-28, again since
+   2026-10-30): its first line, "Infrastructure powering", is 9.13 times the
+   font size wide at this tracking, so the size is the breakpoint's token or
+   the column's width / 9.2,
    whichever is smaller: two lines at every width, never three. */
 .demo-title {
-  font-size: min(var(--demo-title-size), calc(100cqi / 7.8));
+  font-size: min(var(--demo-title-size), calc(100cqi / 9.2));
   line-height: 1.05;
   letter-spacing: -0.03em;
   margin-block: var(--lp-space-4);

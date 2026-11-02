@@ -53,12 +53,12 @@ const config: GtmComparisonConfig = {
       n: "03",
       title: "A reason on every lead",
       body: "Gojiberry finds and scores high-intent prospects. Every Pancake lead arrives with one line on why they fit, such as “Commented on Gong’s post · Revenue leader at a B2B SaaS.”",
-      angle: "You see the reason before you approve the lead.",
+      angle: "Pancake writes each message from that reason.",
     },
     {
       n: "04",
       title: "Focused workflow versus compounding context",
-      body: "Gojiberry's unified inbox and approval modes make outbound execution easy to supervise. With Pancake, you approve every lead before anyone is contacted. Reject one with a reason, and Pancake suggests Brain changes you accept or ignore.",
+      body: "Gojiberry's unified inbox and approval modes make outbound execution easy to supervise. Reject a lead in Pancake with a reason, and it suggests Brain changes you accept or ignore.",
       angle: "Every reason you give shapes the next Play.",
     },
     {
@@ -75,7 +75,6 @@ const config: GtmComparisonConfig = {
     { feature: "Outbound", competitor: { text: "Email and social outreach with approval controls", mark: "yes" }, pancake: { text: "From your own account, each message written from why the lead fits", mark: "yes" } },
     { feature: "Unified inbox", competitor: { text: "Built in", mark: "yes" }, pancake: { text: "—" } },
     { feature: "Lead context", competitor: { text: "An intent score on each prospect", mark: "yes" }, pancake: { text: "One line on why each lead fits", mark: "yes" } },
-    { feature: "Approvals", competitor: { text: "Approval modes on outreach", mark: "yes" }, pancake: { text: "You approve every lead", mark: "yes" } },
     { feature: "Public starting price", competitor: { text: "$99/month", mark: "yes" }, pancake: { text: "From $99/month per workspace, whole team included", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Teams that want a focused outbound agent" }, pancake: { text: "Founders who want every Play working from one Brain" } },
   ],

@@ -224,15 +224,11 @@ export const VX_FAQ = {
   eyebrow: "FAQ",
   h2: (v: VerticalConfig) => `Questions ${v.name.short} ask.`,
   /** Appended after the 3–4 vertical items, in this order (visible list only: the FAQPage
-   *  JSON-LD carries the vertical items alone, so these 5 don't repeat on 40 URLs). */
+   *  JSON-LD carries the vertical items alone, so these 4 don't repeat on 40 URLs). */
   shared: [
     {
       q: "What does Pancake send?",
       a: "Up to three short messages under your name, after a light warm-up. No emails, no calls.",
-    },
-    {
-      q: "What do I approve?",
-      a: "Every lead. Pancake contacts only leads you approve and add to a sequence, and you get 10 minutes to undo.",
     },
     {
       q: "Can I read the messages before they send?",
@@ -275,7 +271,6 @@ export const VX_PRICING_CHECKLIST: readonly string[] = [
   `${formatCredits(BASE_LEVEL.credits)} credits a month to keep warm leads\u00a0coming.`,
   "Every lead comes with its reason.",
   "Outreach from your own account.",
-  "You approve every lead first.",
   "Slow month? Unused credits roll\u00a0over.",
   "Your whole team, with no seats to\u00a0pay.",
 ];

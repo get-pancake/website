@@ -6,7 +6,8 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
 
 import {
   S1_HUBS,
-  S1_JIT,
+  S1_REST_LEAVES,
+  S1_VERDICTS,
   S2_CHAT,
   S2_DRAFT,
   S3_CHIPS,
@@ -14,6 +15,8 @@ import {
   S3_LANDED,
   S3_NUM_DX,
   S3_THREAD,
+  S4_FROM,
+  S4_MAIL,
   SX_LEADS_F5,
   SX_LEADS_ROW_IN,
 } from "./lp-step-data";
@@ -103,12 +106,15 @@ const clipTo = (g: Glyph, w: number) =>
  * root a viewport ahead of the card; lp-play-once.ts owns playback (as the
  * card arrives → play once → hold the last frame). Every builder is
  * seek-safe: sets and tweens only, no callbacks, no randomness. Frame 0 of
- * every timeline equals the markup's rest state. s2 and s3 carry labels at
- * the storyboard's pictures (f1 … f8, f1 … f5 and `cal`): QA seeks them
- * through window.__lpStep.s2 / .s3.
+ * every timeline equals the markup's rest state, except s4's, whose markup is
+ * its END picture (LpStepAnim REST_IS_END; buildS4 sets its frame 0). s2 and
+ * s3 carry labels at the storyboard's pictures (f1 … f8, f1 … f5 and `cal`):
+ * QA seeks them through window.__lpStep.s2 / .s3. Since 2026-10-28 step 02
+ * plays s4 (the ask typed in Claude, the Play it becomes, the envelopes Claude
+ * sends) and s2 is unused, as s3.
  */
 
-export type StepVariant = "s1" | "s2" | "s3";
+export type StepVariant = "s0" | "s1" | "s2" | "s3" | "s4";
 /** cue: the first scene where the card waits for the visitor (0: the poster) */
 export type BuiltStep = { tl: gsap.core.Timeline; cleanup: () => void; cue: number };
 
@@ -123,27 +129,166 @@ function query(root: HTMLElement) {
   };
 }
 
-/* ── step 01 · Add your website (brain-research-loop, 9.2 s) ──
-   opens on the EMPTY INPUT: one caret blink → "acme.com" types →
-   the pointer eases in and clicks Start research → input + button dissolve,
-   the brain node pops (~2.4 s), the graph blooms hub by hub → the graph glides
-   left and shrinks, the market-profile panel fades in with shimmering
-   skeletons → "5 insights": the rows resolve one by one → back to the
-   company brain, held as the last image. */
+/* ── step 01 (since 2026-10-27) · Connect your agent (≈ 5 s) ──
+   In Claude, as step 02: the hand opens the composer's "+", Connectors comes up with Pancake
+   in it, the hand connects it and allows it on Pancake's sign-in card; the "+" gives its
+   place to the connector chip (step 02's composer, exactly), the composer docks, and Claude
+   says what it can now do, one line at a time, in the infra section's three tones. */
+const S0_T = {
+  hand: 0.35,
+  plus: 0.73,
+  menu: 0.85,
+  toConnect: 1.25,
+  connect: 1.72,
+  signin: 1.95,
+  toAllow: 2.35,
+  allow: 2.85,
+  connected: 3.1,
+  dock: 3.45,
+  said: 3.75,
+  /** a word of Claude's line */
+  word: 0.07,
+  /** the three things it can now do, after the line */
+  can: 0.28,
+  canGap: 0.15,
+} as const;
+/** the hand's top-left on what it clicks (its fingertip is 9.3, 3 in: steps.css .lp-sx-hand) */
+const S0_HAND = {
+  plus: { x: 345.7, y: 210 }, // the composer's "+" (centre 355, 213)
+  connect: { x: 347.5, y: 118 }, // "Connect" on the Pancake row
+  allow: { x: 222.7, y: 251 }, // "Allow" (centre 232, 254)
+} as const;
+/** how far the composer docks, as in step 02 (189 → 350) */
+const S0_DOCK = 161;
+
+function buildS0(root: HTMLElement): BuiltStep {
+  const { $, $$ } = query(root);
+  const hand = $(".lp-sx-hand");
+  const composer = $(".lp-s0-composer");
+  const plus = $(".lp-s0-plus");
+  const chip = $(".lp-s0-pk");
+  const ring = $(".lp-s0-ring");
+  const menu = $(".lp-s0-menu");
+  const connect = $(".lp-s0-connect");
+  const signin = $(".lp-s0-signin");
+  const allow = $(".lp-s0-allow");
+  const said = $(".lp-s0-said");
+  const can = $$(".lp-s0-can");
+  const glyphs = measureGlyphs(said);
+  const words = glyphs.filter((g, i) => g.ch !== " " && (glyphs[i + 1]?.ch ?? " ") === " ");
+  const saidW = said.offsetWidth;
+  if (!words.length || can.length !== 3) throw new Error("lp-step: s0 markup out of sync");
+  const T = S0_T;
+
+  const tl = gsap.timeline({ paused: true });
+  /* — frame 0 = the empty composer and its "+"; everything else waits hidden — */
+  tl.set(hand, { x: S0_HAND.plus.x + HAND_FROM.x, y: S0_HAND.plus.y + HAND_FROM.y, autoAlpha: 0, scale: 1 }, 0);
+  tl.set(composer, { y: 0 }, 0);
+  tl.set(plus, { scale: 1, autoAlpha: 1 }, 0);
+  tl.set(chip, { scale: 0.4, autoAlpha: 0 }, 0);
+  tl.set(ring, { scale: 0.3, opacity: 0 }, 0);
+  tl.set([menu, signin], { autoAlpha: 0, y: 0, scale: 1 }, 0);
+  tl.set(said, { autoAlpha: 0, y: 0, clipPath: clipTo(words[0], saidW) }, 0);
+  tl.set(can, { autoAlpha: 0, y: 0 }, 0);
+
+  /** the hand's click, as step 02's */
+  const click = (t: number, what: HTMLElement, to = 0.94) => {
+    tl.to(hand, { scale: 0.88, duration: 0.08, ease: "power2.in" }, t);
+    tl.to(hand, { scale: 1, duration: 0.26, ease: "back.out(1.6)" }, t + 0.08);
+    tl.to(what, { scale: to, duration: 0.08, ease: "power2.in" }, t);
+    tl.to(what, { scale: 1, duration: 0.28, ease: "back.out(1.8)" }, t + 0.08);
+  };
+
+  /* — the hand comes in from the lower right and opens the "+" — */
+  tl.to(hand, { x: S0_HAND.plus.x, y: S0_HAND.plus.y, autoAlpha: 1, duration: 0.38, ease: "power3.out" }, T.hand);
+  click(T.plus, plus, 0.86);
+  /* — Connectors comes up above the composer, Pancake first — */
+  tl.fromTo(
+    menu,
+    { autoAlpha: 0, y: 8, scale: 0.98 },
+    { autoAlpha: 1, y: 0, scale: 1, duration: 0.3, ease: "power3.out", immediateRender: false },
+    T.menu,
+  );
+  tl.to(hand, { x: S0_HAND.connect.x, y: S0_HAND.connect.y, duration: 0.45, ease: "power3.inOut" }, T.toConnect);
+  click(T.connect, connect);
+  /* — Pancake's sign-in card takes over; the hand allows it — */
+  tl.to(menu, { autoAlpha: 0, y: 6, duration: 0.2, ease: "power2.in" }, T.signin - 0.08);
+  tl.fromTo(
+    signin,
+    { autoAlpha: 0, y: 10, scale: 0.97 },
+    { autoAlpha: 1, y: 0, scale: 1, duration: 0.36, ease: "power3.out", immediateRender: false },
+    T.signin,
+  );
+  tl.to(hand, { x: S0_HAND.allow.x, y: S0_HAND.allow.y, duration: 0.48, ease: "power3.inOut" }, T.toAllow);
+  click(T.allow, allow);
+  tl.to(allow, { backgroundColor: "#ff7aa0", color: "#2c002a", duration: 0.18, ease: "power1.out" }, T.allow);
+  /* — connected: the card and the hand leave, the chip takes the "+"'s place with a ping — */
+  tl.to(signin, { autoAlpha: 0, y: -6, scale: 0.98, duration: 0.24, ease: "power2.in" }, T.connected - 0.12);
+  tl.to(hand, { autoAlpha: 0, y: S0_HAND.allow.y + 14, duration: 0.26, ease: "power2.in" }, T.connected - 0.06);
+  tl.to(plus, { scale: 0, autoAlpha: 0, duration: 0.16, ease: "power2.in" }, T.connected);
+  tl.fromTo(
+    chip,
+    { scale: 0.4, autoAlpha: 0 },
+    { scale: 1, autoAlpha: 1, duration: 0.5, ease: "back.out(2)", immediateRender: false },
+    T.connected + 0.08,
+  );
+  tl.fromTo(
+    ring,
+    { scale: 0.3, opacity: 0.85 },
+    { scale: 2.2, opacity: 0, duration: 0.6, ease: "power2.out", immediateRender: false },
+    T.connected + 0.12,
+  );
+  /* — the composer docks; Claude says what it can now do — */
+  tl.to(composer, { y: S0_DOCK, duration: 0.55, ease: "power3.inOut" }, T.dock);
+  tl.fromTo(
+    said,
+    { autoAlpha: 0, y: 8 },
+    { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out", immediateRender: false },
+    T.said,
+  );
+  let t = T.said + 0.1;
+  words.forEach((g) => {
+    tl.set(said, { clipPath: clipTo(g, saidW) }, t);
+    t += T.word;
+  });
+  tl.set(said, { clipPath: "none" }, t);
+  can.forEach((row, k) => {
+    tl.fromTo(
+      row,
+      { autoAlpha: 0, y: 10 },
+      { autoAlpha: 1, y: 0, duration: 0.36, ease: "power3.out", immediateRender: false },
+      t + T.can + k * T.canGap,
+    );
+  });
+  tl.set({}, {}, t + T.can + 2 * T.canGap + 0.9); // the end picture holds
+
+  return { tl, cleanup: () => {}, cue: 0 };
+}
+
+/* ── step 03 (since 2026-10-27) · Watch it get better (≈ 5.6 s) ──
+   The brain-research-loop composition's Brain (step 01 until then), grown by the leads: it
+   rests young (each hub and its first leaf), glided left and shrunk as it was under the
+   market profile, beside three leads → each lead gets its verdict (approved, not a fit,
+   replied), a ping runs from Acme and the hubs that verdict teaches grow their leaves → the
+   leads give way to "Who fits", whose rows resolve out of the skeletons → back to the whole
+   labelled Brain, held as the last image (the composition's own end picture). */
+const S1_GLIDE = { x: -130.5, y: 42.08, scale: 0.55 } as const;
+const S1_T = {
+  verdict: 0.4,
+  verdictGap: 0.8,
+  /** after the last verdict: the leads leave, "Who fits" comes in */
+  panel: 0.7,
+} as const;
+
 function buildS1(root: HTMLElement): BuiltStep {
   const { $, $$ } = query(root);
-  const ui = $(".lp-s1-ui");
-  const ph = $(".lp-s1-ph");
-  const typed = $(".lp-s1-typed");
-  const caret = $(".lp-s1-caret");
-  const btn = $(".lp-s1-btn");
-  const btnTxt = $(".lp-s1-btntxt");
-  const ring = $(".lp-s1-ring");
-  const cursor = $(".lp-s1-cursor");
   const graph = $(".lp-s1-graph");
   const center = $(".lp-s1-center");
   const clabel = $(".lp-s1-clabel");
-  const bping = $(".lp-s1-bping");
+  const cping = $(".lp-s1-cping");
+  const leads = $$(".lp-s1-lead");
+  const poss = $$(".lp-s1-lead-pos");
+  const verdicts = $$(".lp-s1-verdict");
   const panel = $(".lp-s1-panel");
   const ptitle = $(".lp-s1-ptitle");
   const subA = $(".lp-s1-sub-a");
@@ -154,208 +299,140 @@ function buildS1(root: HTMLElement): BuiltStep {
   // the five hub names (V2 "Labels in 2nd level dots"), in S1_HUBS order
   const hlabels = $$(".lp-s1-hlabel");
   if (hlabels.length !== S1_HUBS.length) throw new Error("lp-step: s1 hub labels out of sync");
+  if (leads.length !== S1_VERDICTS.length || verdicts.length !== S1_VERDICTS.length)
+    throw new Error("lp-step: s1 leads out of sync");
 
-  // the graph in the composition's build order (lp-step-data.ts s1Graph):
-  // hub edge, hub dot, leaf edges/dots, sub-branches — regroup per hub
+  // the graph in the composition's build order (lp-step-data.ts s1Graph): hub edge, hub dot,
+  // leaf edges/dots, sub-branches — regrouped per hub, split into the young Brain's and the rest
   const lines = $$<SVGLineElement>(".lp-s1-edges line");
   const dotEls = $$(".lp-s1-dot");
   let ei = 0;
   let di = 0;
   const hubEdges: SVGLineElement[] = [];
   const hubDots: HTMLElement[] = [];
-  const leafEdges: (SVGLineElement | null)[][] = [];
-  const leafDots: (HTMLElement | null)[][] = [];
-  const blueEdges: SVGLineElement[] = [];
-  const blueDots: HTMLElement[] = [];
-  const softEdges: SVGLineElement[] = [];
-  const softDots: HTMLElement[] = [];
+  const restEdges: SVGLineElement[] = [];
+  const restDots: HTMLElement[] = [];
+  const growEdges: SVGLineElement[][] = [];
+  const growDots: (HTMLElement | null)[][] = [];
   S1_HUBS.forEach((h) => {
-    const he = lines[ei++];
-    const hd = dotEls[di++];
-    hubEdges.push(he);
-    hubDots.push(hd);
-    (h.blue ? blueEdges : softEdges).push(he);
-    (h.blue ? blueDots : softDots).push(hd);
-    const le: (SVGLineElement | null)[] = [];
-    const ld: (HTMLElement | null)[] = [];
-    h.leaves.forEach((L) => {
+    hubEdges.push(lines[ei++]);
+    hubDots.push(dotEls[di++]);
+    const ge: SVGLineElement[] = [];
+    const gd: (HTMLElement | null)[] = [];
+    h.leaves.forEach((L, k) => {
       const e = L[0] !== null ? lines[ei++] : null;
       const d = L.length === 4 ? dotEls[di++] : null;
-      le.push(e);
-      ld.push(d);
-      if (e) (h.blue ? blueEdges : softEdges).push(e);
-      if (d) (h.blue ? blueDots : softDots).push(d);
+      if (k < S1_REST_LEAVES) {
+        if (e) restEdges.push(e);
+        if (d) restDots.push(d);
+      } else {
+        if (e) ge.push(e);
+        gd.push(d);
+      }
     });
     h.sub?.forEach(() => {
-      const e = lines[ei++];
-      const d = dotEls[di++];
-      le.push(e);
-      ld.push(d);
-      softEdges.push(e);
-      softDots.push(d);
+      ge.push(lines[ei++]);
+      gd.push(dotEls[di++]);
     });
-    leafEdges.push(le);
-    leafDots.push(ld);
+    growEdges.push(ge);
+    growDots.push(gd);
   });
   if (ei !== lines.length || di !== dotEls.length) throw new Error("lp-step: s1 graph markup out of sync");
   const undraw = (_i: number, el: SVGLineElement) => Number(el.dataset.len);
 
-  gsap.set(center, { scale: 0 });
   gsap.set(graph, { transformOrigin: "246.5px 202.92px" });
-  gsap.set(cursor, { x: 130, y: 120, opacity: 0, transformOrigin: "26% 12%" });
-  gsap.set(btn, { transformOrigin: "50% 50%" });
-
-  /* the typed URL's glyph edges, measured from the live text (Range rects in
-     the element's own unscaled px, like lp-feat-timelines' measureGlyphs): a
-     Fono advance table used to drive this and desynced the clip and the caret
-     the moment the mocks moved to Geist Sans (review 2026-09-09) */
-  const typedEdges = measureRightEdges(typed);
-  const typedWidth = typedEdges[typedEdges.length - 1] ?? 0;
-  const CLIP0 = "inset(0 100% 0 0)";
 
   const tl = gsap.timeline({ paused: true });
 
-  /* — 0 · frame 0 = the empty input; the graph waits un-bloomed behind it — */
-  const allDots = [center, ...hubDots, ...leafDots.flat().filter((d): d is HTMLElement => !!d)];
-  const allEdges = [...hubEdges, ...leafEdges.flat().filter((e): e is SVGLineElement => !!e)];
-  tl.set(allDots, { scale: 0, opacity: 1 }, 0);
-  tl.set(allEdges, { strokeDashoffset: undraw, opacity: 1 }, 0);
-  tl.set(graph, { x: 0, y: 0, scale: 1, opacity: 1 }, 0);
-  tl.set(clabel, { opacity: 0, y: 0 }, 0);
-  tl.set(hlabels, { opacity: 0, y: 0 }, 0);
-  tl.set(ui, { opacity: 1 }, 0);
+  /* — 0 · frame 0 = the young Brain, glided left, beside the three unjudged leads — */
+  const grownEdges = growEdges.flat();
+  const grownDots = growDots.flat().filter((d): d is HTMLElement => !!d);
+  tl.set(graph, { ...S1_GLIDE, opacity: 1 }, 0);
+  tl.set([center, ...hubDots, ...restDots], { scale: 1, opacity: 1 }, 0);
+  tl.set([...hubEdges, ...restEdges], { strokeDashoffset: 0, opacity: 1 }, 0);
+  tl.set(grownDots, { scale: 0, opacity: 1 }, 0);
+  tl.set(grownEdges, { strokeDashoffset: undraw, opacity: 1 }, 0);
+  tl.set([clabel, ...hlabels], { opacity: 0, y: 0 }, 0);
+  tl.set(leads, { opacity: 1, x: 0, scale: 1 }, 0);
+  tl.set(poss, { opacity: 1, y: 0 }, 0);
+  tl.set(verdicts, { opacity: 0, y: 6 }, 0);
+  tl.set(cping, { opacity: 0 }, 0);
+  tl.set(panel, { x: 0, opacity: 1 }, 0);
+  tl.set([ptitle, subA, subB, ...srows, ...rows], { opacity: 0 }, 0);
 
-  /* Pace (2026-09-30, founder: "tout plus dynamique"): the same beats, no
-     idle caret blinks, 30 ms a key (was 45), each later beat closer — the
-     brain pops at ~1.6 s (was 2.43), the held brain returns at ~6.2 s (was
-     ~8.5). */
-
-  /* — 1 · typing "acme.com" from 0.2 s (30 ms a key, a third of the old jitter) — */
-  let t = 0.2;
-  typedEdges.forEach((acc, i) => {
-    t += 0.03 + (S1_JIT[i] ?? 0) / 3;
-    const right = Math.max(0, typedWidth - acc);
-    tl.set(typed, { clipPath: `inset(0px ${px(right)} 0px 0px)` }, t); // one unit: see `px`
-    tl.set(caret, { x: +acc.toFixed(3) }, t);
-    if (i === 0) tl.set(ph, { opacity: 0 }, t);
-  });
-  const tTyped = t;
-
-  /* — 3 · pointer eases in from lower right and clicks (~0.85 – 1.3 s) — */
-  const tPtr = tTyped + 0.05;
-  const tC = tPtr + 0.35;
-  tl.to(cursor, { x: 0, y: 0, opacity: 1, duration: 0.35, ease: "power3.out" }, tPtr);
-  tl.to(cursor, { scale: 0.88, duration: 0.08, ease: "power2.in" }, tC);
-  tl.to(cursor, { scale: 1, duration: 0.26, ease: "back.out(1.6)" }, tC + 0.08);
-  tl.to(btn, { scale: 0.94, duration: 0.09, ease: "power2.in" }, tC);
-  tl.to(btn, { scale: 1, duration: 0.32, ease: "back.out(1.6)" }, tC + 0.09);
-  tl.to(btn, { backgroundColor: "#ff7aa0", duration: 0.18, ease: "power1.out" }, tC);
-  tl.to(btnTxt, { color: "#2c002a", duration: 0.18, ease: "power1.out" }, tC);
-  tl.fromTo(
-    ring,
-    { scale: 0.3, opacity: 0.85 },
-    { scale: 2.4, opacity: 0, duration: 0.6, ease: "power2.out", immediateRender: false },
-    tC + 0.02,
-  );
-
-  /* — 4 · input + button dissolve, the brain node pops (~1.6 s), the graph blooms (to ~3 s) — */
-  const tB = tC + 0.3;
-  tl.to(ui, { opacity: 0, duration: 0.28, ease: "power2.in" }, tC + 0.25);
-  tl.fromTo(center, { scale: 0 }, { scale: 1, duration: 0.7, ease: "elastic.out(1, 0.5)" }, tB);
-  tl.fromTo(clabel, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, tB + 0.2);
-
-  S1_HUBS.forEach((h, i) => {
-    const t0 = tB + 0.2 + i * 0.1;
-    tl.to(hubEdges[i], { strokeDashoffset: 0, duration: 0.42, ease: "power2.inOut" }, t0);
-    tl.fromTo(hubDots[i], { scale: 0 }, { scale: 1, duration: 0.6, ease: "elastic.out(1, 0.5)" }, t0 + 0.29);
-    // its name rises in as the pop settles (≈2.1 – 2.8 s, all in before the glide)
+  /* — 1 · the verdicts, lead by lead: each one pings Acme and grows the hubs it teaches — */
+  S1_VERDICTS.forEach((v, j) => {
+    const tv = S1_T.verdict + j * S1_T.verdictGap;
+    const card = leads[j];
+    tl.to(card, { scale: 0.97, duration: 0.08, ease: "power2.in" }, tv);
+    tl.to(card, { scale: 1, duration: 0.3, ease: "back.out(1.6)" }, tv + 0.08);
+    tl.to(poss[j], { opacity: 0, y: -6, duration: 0.15, ease: "power2.in" }, tv + 0.02);
     tl.fromTo(
-      hlabels[i],
-      { opacity: 0, y: 4 },
-      { opacity: 1, y: 0, duration: 0.3, ease: "power2.out", immediateRender: false },
-      t0 + 0.45,
+      verdicts[j],
+      { opacity: 0, y: 6 },
+      { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", immediateRender: false },
+      tv + 0.1,
     );
-    const nMain = h.leaves.length;
-    const base = tB + 0.55 + i * 0.11;
-    leafEdges[i].forEach((e, k) => {
-      const tk = k < nMain ? base + k * 0.06 : base + nMain * 0.06 + (k - nMain) * 0.055;
-      if (e) tl.to(e, { strokeDashoffset: 0, duration: 0.29, ease: "power1.inOut" }, tk);
-      const d = leafDots[i][k];
-      if (d) tl.fromTo(d, { scale: 0 }, { scale: 1, duration: 0.45, ease: "elastic.out(1, 0.5)" }, tk + 0.12);
+    tl.fromTo(
+      cping,
+      { scale: 0.4, opacity: 0.9 },
+      { scale: 2.6, opacity: 0, duration: 0.6, ease: "power2.out", immediateRender: false },
+      tv + 0.22,
+    );
+    v.hubs.forEach((hi, n) => {
+      const base = tv + 0.3 + n * 0.12;
+      growEdges[hi].forEach((e, k) => {
+        tl.to(e, { strokeDashoffset: 0, duration: 0.29, ease: "power1.inOut" }, base + k * 0.05);
+      });
+      growDots[hi].forEach((d, k) => {
+        if (d) tl.fromTo(d, { scale: 0 }, { scale: 1, duration: 0.45, ease: "elastic.out(1, 0.5)" }, base + k * 0.05 + 0.12);
+      });
     });
   });
 
-  /* — 5 · the graph glides left + shrinks; all but the blue cluster soften; panel fades in (~3.2 – 4.4 s) — */
-  const tG = tB + 1.6;
-  tl.to(graph, { x: -130.5, y: 42.08, scale: 0.55, duration: 0.75, ease: "power3.inOut" }, tG);
-  tl.to(clabel, { opacity: 0, duration: 0.26, ease: "power2.in" }, tG);
-  // the hub names leave with the centre label (at 0.55 they would be 5.5px, under the panel)
-  tl.to(hlabels, { opacity: 0, duration: 0.26, ease: "power2.in" }, tG);
-  tl.to([center, ...softDots], { opacity: 0.45, duration: 0.6, ease: "power2.inOut" }, tG + 0.08);
-  tl.to(softEdges, { opacity: 0.45, duration: 0.6, ease: "power2.inOut" }, tG + 0.08);
-
-  tl.fromTo(ptitle, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.38, ease: "power3.out" }, tG + 0.3);
-  tl.fromTo(subA, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.38, ease: "power3.out" }, tG + 0.36);
+  /* — 2 · the leads give way to "Who fits"; its rows resolve out of the skeletons — */
+  const tP = S1_T.verdict + (S1_VERDICTS.length - 1) * S1_T.verdictGap + S1_T.panel;
+  tl.to(leads, { x: 24, opacity: 0, duration: 0.28, ease: "power2.in", stagger: 0.05 }, tP);
+  tl.fromTo(ptitle, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.38, ease: "power3.out" }, tP + 0.3);
+  tl.fromTo(subA, { opacity: 0, x: 14 }, { opacity: 1, x: 0, duration: 0.38, ease: "power3.out" }, tP + 0.36);
   tl.fromTo(
     srows,
     { opacity: 0, x: 14 },
     { opacity: 1, x: 0, duration: 0.34, ease: "power3.out", stagger: 0.075 },
-    tG + 0.41,
+    tP + 0.41,
   );
   tl.fromTo(
     skels,
     { backgroundPositionX: "120%" },
     { backgroundPositionX: "-120%", duration: 0.75, ease: "none", repeat: 1, stagger: 0.06 },
-    tG + 0.68,
+    tP + 0.68,
   );
-
-  /* — 6 · "5 insights": the rows resolve one by one (~4.4 – 5.6 s) — */
-  const tR = tG + 1.2;
+  const tR = tP + 1.2;
   tl.to(subA, { opacity: 0, y: -6, duration: 0.15, ease: "power2.in" }, tR);
   tl.fromTo(subB, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out" }, tR + 0.09);
   rows.forEach((r, i) => {
     const tr = tR + 0.08 + i * 0.14;
     tl.to(srows[i], { opacity: 0, duration: 0.17, ease: "power2.in" }, tr);
     tl.fromTo(r, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" }, tr + 0.06);
-    tl.fromTo(
-      bping,
-      { scale: 0.4, opacity: 0.9 },
-      { scale: 2.4, opacity: 0, duration: 0.52, ease: "power2.out", immediateRender: false },
-      tr,
-    );
   });
 
-  /* — 7 · back to the company brain, held as the last image (~5.7 – 6.7 s) — */
+  /* — 3 · back to the whole Brain, labelled, held as the last image — */
   const tX = tR + 1.3;
   tl.to(panel, { x: 300, opacity: 0, duration: 0.3, ease: "power2.in" }, tX);
   tl.to(graph, { x: 0, y: 0, scale: 1, duration: 0.68, ease: "power3.inOut" }, tX + 0.04);
-  tl.to([center, ...softDots], { opacity: 1, duration: 0.45, ease: "power2.inOut" }, tX + 0.15);
-  tl.to(softEdges, { opacity: 1, duration: 0.45, ease: "power2.inOut" }, tX + 0.15);
   tl.fromTo(clabel, { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.26, ease: "power2.out" }, tX + 0.49);
-  // and the hub names, in hub order (the last lands before the timeline ends: the held
-  // picture is V2's labelled graph)
   tl.fromTo(
     hlabels,
     { opacity: 0, y: 4 },
     { opacity: 1, y: 0, duration: 0.26, ease: "power2.out", stagger: 0.04, immediateRender: false },
     tX + 0.49,
   );
-  /* hold from ~6.2: the static illustration */
-
-  // the invisible UI and panel go back to their frame-0 poses during the hold
-  // (the site never rewinds, but a seek to 0 must still show the pristine input)
+  // the invisible leads and panel go back to their frame-0 poses during the hold
   const tZ = tX + 0.9;
-  tl.set(btn, { backgroundColor: "#30002c", scale: 1 }, tZ);
-  tl.set(btnTxt, { color: "#ffffff" }, tZ);
-  tl.set(cursor, { x: 130, y: 120, opacity: 0, scale: 1 }, tZ);
-  tl.set(caret, { x: 0, opacity: 1 }, tZ);
-  tl.set(typed, { clipPath: CLIP0 }, tZ);
-  tl.set(ph, { opacity: 1 }, tZ);
-  tl.set(ring, { opacity: 0 }, tZ);
   tl.set(panel, { x: 0, opacity: 1 }, tZ);
   tl.set([ptitle, subA, subB, ...srows, ...rows], { opacity: 0 }, tZ);
   tl.set(subA, { y: 0 }, tZ);
-  tl.set({}, {}, tZ + 0.05); // the held brain (the composition padded to 9.2 s)
+  tl.set({}, {}, tZ + 0.05);
 
   return { tl, cleanup: () => {}, cue: 0 };
 }
@@ -726,7 +803,7 @@ const S3_T = {
   /** after threadOut: the calendar's own timeline starts once the meeting has landed */
   cal: 0.8,
 } as const;
-/** Pancake's typing pace (the deep dive's message story): 12 ms a glyph, a breath after a
+/** Pancake's typing pace (the old deep-dive message story's): 12 ms a glyph, a breath after a
     sentence end and after a comma */
 const S3_TYPE = { glyph: 0.012, sentence: 0.06, comma: 0.035 } as const;
 /** how fast the calendar plays inside the master (its own seconds are unchanged) */
@@ -1014,10 +1091,163 @@ function buildCalendar(root: HTMLElement, already?: string): gsap.core.Timeline 
   return tl;
 }
 
+/* ── step 02 (since 2026-10-28) · Ask anything: the ask typed in Claude, the Play it becomes,
+   and the envelopes Claude sends (≈ 4.5 s) ──
+   Founder, on the first take (Claude's disc and the burst alone): "il fallait remettre la phrase
+   dans claude qui cree le play ici", "genre les enveloppes c est que la fin tu vois". Frame 0 =
+   the empty pill with its caret at the start, and Claude under it: never an empty stage. From
+   0.3 s the request types in (S4_T.key a glyph: a clip staircase over the real text, s2's way,
+   and the caret on the glyph edges) → a beat, the caret goes and a hairline runs down from the
+   ask into Claude → Claude's own runs down, the Play comes up under it and its switch turns on
+   (the infra Tools card's: the knob 12 px over, grey to pink, lp-infra-timeline.ts TOGGLE_OFF /
+   TOGGLE_ON) → the ending, the burst: S4_MAIL's envelopes leave from under Claude's face in three
+   waves (`at` counts from S4_T.burst), each straight out from the face's centroid to its place,
+   growing out of nothing as it goes, unwinding into its tilt, easing out. The last lands 1.15 s
+   after the first leaves and the whole picture holds.
+   The markup is that END picture (LpStepAnim REST_IS_END), so the timeline writes frame 0 itself
+   (inside the build's gsap.context, which reverts it) and tweens from it. Nothing moves by GSAP's
+   own transform: every motion is a CSS variable that steps.css reads into translate, scale,
+   rotate, opacity or the text's clip (the story kit's way, lp-story-kit.ts header: GSAP's x / y /
+   scale write translate3d mid-tween, and Chromium re-rasterises the stage for the tween's
+   length), and every piece lets go of its variables once it is done (`s4LetGo`), so at rest it
+   computes exactly what the server markup does. Every change inside the timeline is a tween
+   with a length, never a zero-length set (lp-story-kit.ts skLetGo, on the context's revert
+   order); a key is a 1 ms steps(1) tween, a whole glyph at a time. Never a loop, a glow, a
+   pulse, a ring or a trail. */
+const S4_T = {
+  /** the first key comes this long after frame 0 */
+  type: 0.3,
+  /** a key: a person typing (the hero demo's 38 ms, s2's 36) */
+  key: 0.034,
+  /** after the last key: the caret goes and the ask runs down into Claude */
+  sent: 0.25,
+  /** a hairline draws down in this long */
+  wire: 0.2,
+  /** after the ask's hairline starts: Claude's starts down to the Play */
+  toPlay: 0.25,
+  /** after Claude's hairline starts: the Play comes up, from `riseY` px below its place */
+  play: 0.08,
+  rise: 0.4,
+  riseY: 10,
+  /** after the Play starts up: its switch turns on, in `flip` (the infra card's 0.25 s) */
+  switch: 0.34,
+  flip: 0.25,
+  /** after the switch starts: the burst (S4_MAIL `at` counts from here) */
+  burst: 0.28,
+  /** the whole picture holds this long after the last envelope lands */
+  hold: 0.45,
+} as const;
+/** a piece lets go of its variables this long after it is done (the story kit's SK_LANDED) */
+const S4_LANDED = 0.01;
+/** the Play's switch, off and on (lp-infra-timeline.ts TOGGLE_OFF / TOGGLE_ON: ink-50, pink-30) */
+const S4_SWITCH = { off: "#ddcfcd", on: "#ff7aa0" } as const;
+/** the switch's knob travel, px (infra.css .lp-infra__toggle-knob's translateX(12px)) */
+const S4_KNOB = 12;
+/** the envelopes' variables, all let go at once when it has landed */
+const S4_VARS = ["--lp-s4-x", "--lp-s4-y", "--lp-s4-s", "--lp-s4-spin"] as const;
+
+type S4Vars = Record<string, number | string>;
+/** a 1 ms tween to the resting values that then clears them (lp-story-kit.ts skLetGo) */
+function s4LetGo(tl: gsap.core.Timeline, el: Element, rest: S4Vars, at: number) {
+  tl.to(el, { ...rest, clearProps: Object.keys(rest).join(","), duration: 0.001, ease: "none" }, at);
+}
+
+function buildS4(root: HTMLElement): BuiltStep {
+  const { $, $$ } = query(root);
+  const text = $(".lp-s4-text");
+  const caret = $(".lp-s4-caret");
+  const wireAsk = $(".lp-s4-wire--ask");
+  const wirePlay = $(".lp-s4-wire--play");
+  const play = $(".lp-s4-play");
+  const toggle = $(".lp-s4-toggle");
+  const knob = $(".lp-s4-knob");
+  const mails = $$(".lp-s4-mail");
+  if (mails.length !== S4_MAIL.length) throw new Error("lp-step: s4 envelopes out of sync");
+  // the request's glyph edges (one line), measured from the live text
+  const keys = measureRightEdges(text);
+  const typedW = keys[keys.length - 1] ?? 0;
+  if (!keys.length || !(typedW > 0)) throw new Error("lp-step: s4 has no text to type");
+  const T = S4_T;
+
+  /* lazy: false — every piece's let-go starts from where its motion ended, and reads that value
+     when it first renders. The build takes the timeline to its end in one render; a tween that
+     first renders before GSAP's ticker has ticked defers its writes to the end of that render
+     ("lazy"), so the let-go would read the frame-0 value instead and, played, jump back to it for
+     the frame its 1 ms falls in. Not lazy, every tween writes as it starts. */
+  const tl = gsap.timeline({ paused: true, defaults: { lazy: false } });
+
+  /* — frame 0: the empty pill and its caret at the start, Claude; everything else waits — */
+  gsap.set(text, { "--lp-s4-cut": +typedW.toFixed(3) });
+  gsap.set(caret, { "--lp-s4-on": 1, "--lp-s4-caret": 0 });
+  gsap.set([wireAsk, wirePlay], { "--lp-s4-wire": 0 });
+  gsap.set(play, { "--lp-s4-o": 0, "--lp-s4-rise": T.riseY });
+  gsap.set(toggle, { backgroundColor: S4_SWITCH.off });
+  gsap.set(knob, { "--lp-s4-knob": -S4_KNOB });
+
+  /* — the ask types in: the clip opens to each glyph's right edge, the caret follows — */
+  let t: number = T.type;
+  keys.forEach((edge) => {
+    t += T.key;
+    const step = { duration: 0.001, ease: "steps(1)" };
+    tl.to(text, { "--lp-s4-cut": +Math.max(0, typedW - edge).toFixed(3), ...step }, t);
+    tl.to(caret, { "--lp-s4-caret": +edge.toFixed(3), ...step }, t);
+  });
+  s4LetGo(tl, text, { "--lp-s4-cut": 0 }, t + S4_LANDED); // the text paints like any text again
+
+  /* — sent: the caret goes, a hairline runs down from the ask into Claude — */
+  const tSent = t + T.sent;
+  s4LetGo(tl, caret, { "--lp-s4-on": 0, "--lp-s4-caret": 0 }, tSent);
+  const draw = (wire: HTMLElement, at: number) => {
+    tl.to(wire, { "--lp-s4-wire": 1, duration: T.wire, ease: "power2.out" }, at);
+    s4LetGo(tl, wire, { "--lp-s4-wire": 1 }, at + T.wire + S4_LANDED);
+  };
+  draw(wireAsk, tSent);
+
+  /* — Pancake turns it into a Play: Claude's hairline runs down, the Play comes up, switches on — */
+  const tToPlay = tSent + T.toPlay;
+  draw(wirePlay, tToPlay);
+  const tPlay = tToPlay + T.play;
+  tl.to(play, { "--lp-s4-o": 1, duration: 0.25, ease: "power1.out" }, tPlay);
+  tl.to(play, { "--lp-s4-rise": 0, duration: T.rise, ease: "power3.out" }, tPlay);
+  s4LetGo(tl, play, { "--lp-s4-o": 1, "--lp-s4-rise": 0 }, tPlay + T.rise + S4_LANDED);
+  const tSwitch = tPlay + T.switch;
+  tl.to(knob, { "--lp-s4-knob": 0, duration: T.flip, ease: "power2.inOut" }, tSwitch);
+  tl.to(toggle, { backgroundColor: S4_SWITCH.on, duration: T.flip, ease: "power1.inOut" }, tSwitch);
+  s4LetGo(tl, knob, { "--lp-s4-knob": 0 }, tSwitch + T.flip + S4_LANDED);
+  s4LetGo(tl, toggle, { backgroundColor: S4_SWITCH.on }, tSwitch + T.flip + S4_LANDED);
+
+  /* — the ending: the envelopes burst out of Claude, in three waves — */
+  const tBurst = tSwitch + T.burst;
+  let end = tBurst;
+  mails.forEach((el, i) => {
+    const m = S4_MAIL[i];
+    // frame 0: at the face's centroid, nothing yet, turned (under Claude's face)
+    gsap.set(el, {
+      "--lp-s4-x": S4_FROM.x - m.x,
+      "--lp-s4-y": S4_FROM.y - m.y,
+      "--lp-s4-s": 0,
+      "--lp-s4-spin": m.spin,
+    });
+    // the flight: straight out to its place, easing out; it grows with a little give
+    const at = tBurst + m.at;
+    tl.to(el, { "--lp-s4-x": 0, "--lp-s4-y": 0, "--lp-s4-spin": 0, duration: m.dur, ease: "power3.out" }, at);
+    tl.to(el, { "--lp-s4-s": 1, duration: m.dur, ease: "back.out(1.4)" }, at);
+    // landed: it lets go of its variables
+    const landed = at + m.dur + S4_LANDED;
+    s4LetGo(tl, el, { [S4_VARS[0]]: 0, [S4_VARS[1]]: 0, [S4_VARS[2]]: 1, [S4_VARS[3]]: 0 }, landed);
+    end = Math.max(end, landed + 0.001);
+  });
+  tl.set({}, {}, end + T.hold); // the whole picture holds
+
+  return { tl, cleanup: () => {}, cue: 0 };
+}
+
 const BUILDERS: Record<StepVariant, (root: HTMLElement) => BuiltStep> = {
+  s0: buildS0,
   s1: buildS1,
   s2: buildS2,
   s3: buildS3,
+  s4: buildS4,
 };
 
 export function buildStepTimeline(variant: StepVariant, root: HTMLElement): BuiltStep {
