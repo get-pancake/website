@@ -43,7 +43,7 @@ const config: GtmComparisonConfig = {
   rows: [
     { feature: "Product layer", competitor: { text: "Open-source agent runtime", mark: "yes" }, pancake: { text: "Ready-to-run GTM platform", mark: "yes" } },
     { feature: "Setup", competitor: { text: "Install, configure, connect, and maintain" }, pancake: { text: "Your website URL, nothing to install", mark: "yes" } },
-    { feature: "Customization", competitor: { text: "Models, runtimes, channels, skills, and code", mark: "yes" }, pancake: { text: "Describe who to reach, approve every lead" } },
+    { feature: "Customization", competitor: { text: "Models, runtimes, channels, skills, and code", mark: "yes" }, pancake: { text: "Describe who to reach" } },
     { feature: "GTM Brain", competitor: { text: "General workspace instructions and memory" }, pancake: { text: "Ideal customer, personas, competitors, messaging, and voice", mark: "yes" } },
     { feature: "Outbound", competitor: { text: "You build or install the outreach workflow" }, pancake: { text: "Eight ways to find leads, outreach from your own account", mark: "yes" } },
     { feature: "Infrastructure ownership", competitor: { text: "Self-hosted and developer-controlled", mark: "yes" }, pancake: { text: "Managed by Pancake" } },
@@ -54,9 +54,9 @@ const config: GtmComparisonConfig = {
   closingLede: "Start with the Brain and the Plays already built to bring you customers.",
   faqs: [
     { q: "What is the main difference between OpenClaw and Pancake?", a: "OpenClaw is open-source agent infrastructure that a technical user configures and maintains. Pancake is a GTM platform you use, not a system you build: it already knows how to build a Play, find the leads, and open conversations from your own account." },
-    { q: "Is Pancake managed OpenClaw hosting?", a: "No. Pancake is a GTM platform, not an OpenClaw hosting service. The infrastructure is Pancake's job. You approve every lead." },
+    { q: "Is Pancake managed OpenClaw hosting?", a: "No. Pancake is a GTM platform, not an OpenClaw hosting service. The infrastructure is Pancake's job." },
     { q: "Is OpenClaw free?", a: "The software is open source. Running it still creates hosting, model, data-provider, maintenance, and engineering costs. Pancake folds all of that into one plan, from $99 a month per workspace." },
-    { q: "Which gives me more control?", a: "OpenClaw. It is the better choice when you need to select runtimes, modify agent code, self-host, or build use cases outside GTM. Pancake leaves the GTM decisions with you: you choose who to reach and approve every lead." },
+    { q: "Which gives me more control?", a: "OpenClaw. It is the better choice when you need to select runtimes, modify agent code, self-host, or build use cases outside GTM. Pancake leaves the GTM decisions with you: you choose who to reach." },
     { q: "Can I use both?", a: "Yes. A developer can run custom internal agents on OpenClaw while using Pancake for managed GTM. The systems solve different layers of the problem." },
   ],
   related: [{ href: "/viktor-vs-pancake", label: "Viktor vs Pancake" }, { href: "/pancake-vs-paperclips", label: "Paperclip vs Pancake" }, { href: "/", label: "how Pancake works" }],

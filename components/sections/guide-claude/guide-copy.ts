@@ -99,7 +99,7 @@ export const WHAT = {
   paragraphs: [
     "Pancake reads your website and builds your GTM Brain: who buys from you, what to say to them, where to find them.",
     "Plays use that Brain. You tell Pancake who you want to reach, it builds the search with you, and you run it. The Play keeps searching on its own, and each new lead comes with one line on why it fits.",
-    "You approve every lead before anyone hears from you. Pancake writes a personal message from that reason, in your voice, and sends it from your own account. A reply stops the sequence.",
+    "Pancake writes a personal message from that reason, in your voice, and sends it from your own account. A reply stops the sequence.",
   ],
   /** The public/llms.txt list, in the same count (the site said "six" in places, llms.txt eight). */
   cardTitle: "Eight ways a Play finds leads",
@@ -317,7 +317,6 @@ export const CONTROL = {
   eyebrow: "Control",
   h2: "You stay in charge",
   cards: [
-    { title: "Every lead.", body: "Nobody hears from you until you approve them." },
     { title: "Every draft.", body: "Read and edit any message before it goes out. It leaves from your own account, under your name." },
     // Fact-checked against pancake-cmo main (2026-10-06): per-AI credit ceilings exist but run in
     // shadow mode, and the per-client Pause switch hides behind the creditsUiEnabled flag (off),
@@ -336,7 +335,7 @@ export const FAQ = {
     { q: "Do I need an API key?", a: "No. You sign in to Pancake in your browser and pick a workspace." },
     {
       q: "Is it the same data as the app?",
-      a: "Yes. Same Brain, same Plays, same leads. A lead you approve in Claude shows as approved in the app, and the other way around.",
+      a: "Yes. Same Brain, same Plays, same leads.",
     },
     {
       q: "Can Claude send messages without me?",

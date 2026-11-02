@@ -50,7 +50,7 @@ Leads matched to your business, not to a filter. Your GTM Brain, 30+ data provid
 - Your GTM Brain: Pancake reads your website and learns your ICP, your personas, your competitors and your voice. Every search and message starts from that context, and it learns from each lead you approve or pass.
 - 30+ data providers, included: Dealroom, TheirStack, Coresignal and more, in one plan. No contract to sign, no API key, no data bill on the side.
 - Live buying signals: funding rounds, open roles, tech stacks, posts and who reacts to them. A Play keeps searching on your schedule, so new leads keep coming.
-- Outreach from your account: a personal message for each lead, in your voice, sent from your own account once you approve the lead. A reply stops the sequence.
+- Outreach from your account: a personal message for each lead, in your voice, sent from your own account. A reply stops the sequence.
 
 ## What customers say
 

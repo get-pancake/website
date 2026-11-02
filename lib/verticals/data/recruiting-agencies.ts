@@ -151,7 +151,7 @@ export const recruitingAgencies: VerticalConfig = {
     },
     {
       q: "Does it plug into my ATS?",
-      a: "No. There’s no ATS connection and no export. You review and approve leads in Pancake or Slack.",
+      a: "No. There’s no ATS connection and no export. You review leads in Pancake or Slack.",
     },
     {
       q: "Can I run two desks, like tech and finance?",

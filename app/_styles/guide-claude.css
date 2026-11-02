@@ -714,7 +714,8 @@
 .lp-guide .gd-control__grid {
   display: grid;
   gap: 16px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* three cards since 2026-11-01 ("Every lead." left with the approval line), so one row of three */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
   margin: var(--vx-head-gap) 0 0;
   padding: 0;

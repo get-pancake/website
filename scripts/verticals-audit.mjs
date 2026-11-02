@@ -13,7 +13,7 @@
 //                 5-word-shingle containment |A∩B|/|A| ≤ 0.50, both ways.
 //   2. JSON-LD    every block parses; exactly one WebPage; FAQPage = the page's own vertical
 //                 Q/As (v.faq, in order), every one verbatim in a visible <details>, none of
-//                 the 5 shared Q/As (VX_FAQ.shared stay visible-only: the same five answers on
+//                 the 4 shared Q/As (VX_FAQ.shared stay visible-only: the same four answers on
 //                 40 pages are not this page's FAQ, SEO-JSONLD-05); BreadcrumbList = Home →
 //                 Industries → page, URLs resolve. Hub: ItemList = the approved pages.
 //   3. Lints      BANNED (validate.ts) over the rendered <main> text minus LpNav and LpFooter

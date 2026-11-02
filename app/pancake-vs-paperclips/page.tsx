@@ -37,7 +37,7 @@ const config: GtmComparisonConfig = {
     { n: "01", title: "Control plane versus managed function", body: "Paperclip models companies, goals, agents, managers, tasks, and budgets. Pancake models your market: your ideal customer, personas, competitors, messaging, and the leads its Plays find.", angle: "Organize any agents, or run Plays built for GTM." },
     { n: "02", title: "You design the organization", body: "Paperclip asks you to create the CEO, reporting tree, adapter configuration, prompts, goals, and budgets. Pancake asks for your website and who you want to reach. It turns them into a Brain and a Play.", angle: "Maximum organizational control versus fast time to outcome." },
     { n: "03", title: "General goals versus market learning", body: "Paperclip traces work through company goals and an org hierarchy. Pancake gives every lead one line on why they fit. Reject a lead with a reason, and Pancake suggests Brain changes you accept or ignore.", angle: "A company graph versus a market knowledge graph." },
-    { n: "04", title: "Paperclip wins on breadth and governance", body: "Paperclip supports multiple companies, arbitrary agent roles, adapter choices, per-agent budgets, approvals, and board-level control. Pancake puts its controls where GTM needs them: you approve every lead and can pause any Play.", angle: "Choose Paperclip when the structure itself is the product." },
+    { n: "04", title: "Paperclip wins on breadth and governance", body: "Paperclip supports multiple companies, arbitrary agent roles, adapter choices, per-agent budgets, approvals, and board-level control. Pancake puts its controls where GTM needs them: you can pause any Play.", angle: "Choose Paperclip when the structure itself is the product." },
     { n: "05", title: "Open source versus subscription", body: "Paperclip is open source and self-hosted, with separate runtime, model, infrastructure, and maintenance costs. Pancake starts at $99 a month per workspace, and that already covers the runtime, models, and hosting.", angle: "Build cost and control versus a predictable managed outcome." },
   ],
   rows: [
@@ -47,7 +47,7 @@ const config: GtmComparisonConfig = {
     { feature: "Customization", competitor: { text: "Arbitrary roles, runtimes, hierarchy, and plugins", mark: "yes" }, pancake: { text: "Eight ways a Play finds leads" } },
     { feature: "Outbound", competitor: { text: "You create the outreach agents and workflow" }, pancake: { text: "A warm-up, then up to three messages", mark: "yes" } },
     { feature: "Visibility", competitor: { text: "Monitor agent work across the org", mark: "yes" }, pancake: { text: "Every step of each search, and why people were set aside", mark: "yes" } },
-    { feature: "Governance", competitor: { text: "Budgets, approvals, board control, and hierarchy", mark: "yes" }, pancake: { text: "You approve every lead and can pause any Play", mark: "yes" } },
+    { feature: "Governance", competitor: { text: "Budgets, approvals, board control, and hierarchy", mark: "yes" }, pancake: { text: "You can pause any Play", mark: "yes" } },
     { feature: "Pricing", competitor: { text: "Open source plus runtime, hosting, models, and labor" }, pancake: { text: "From $99/month per workspace, no seats", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Developers building AI organizations" }, pancake: { text: "Small companies that need customers" } },
   ],
@@ -55,7 +55,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who you want to reach. It builds a Play to find them, and every lead arrives with why they fit.",
   faqs: [
     { q: "What is the main difference between Paperclip and Pancake?", a: "Paperclip is an open-source control plane for creating and governing AI-agent organizations. Pancake is a managed GTM platform: instead of an org chart, you get Plays that already know how to find your buyers and start the conversations." },
-    { q: "Which product is more customizable?", a: "Paperclip. Developers can define companies, roles, hierarchies, adapters, prompts, budgets, and plugins. Pancake's GTM jobs come ready-made, and you configure what matters for selling: who to reach, how to find them, and which leads you approve." },
+    { q: "Which product is more customizable?", a: "Paperclip. Developers can define companies, roles, hierarchies, adapters, prompts, budgets, and plugins. Pancake's GTM jobs come ready-made, and you configure what matters for selling: who to reach and how to find them." },
     { q: "Is Paperclip free?", a: "Paperclip is open source, but users still pay for hosting, agent runtimes, models, data, and maintenance. Pancake has none of those line items: one plan, from $99 a month per workspace." },
     { q: "Which is faster to deploy for sales and marketing?", a: "Pancake. Its Plays come built around finding customers, so setup is your website and a plain-English description of who you want to reach. Paperclip requires you to design and configure the agents and workflows yourself." },
     { q: "Can I use both?", a: "Yes. A technical team can use Paperclip as a broader company control plane and Pancake as the managed GTM function, though it should evaluate overlapping costs and responsibilities." },
