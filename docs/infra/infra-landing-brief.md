@@ -82,8 +82,8 @@ Read from `public/llms.txt` on main, 2026-10-21.
 | Current claim | What the product does | Fix |
 |---|---|---|
 | "When a prospect says yes, Pancake replies once with the customer's calendar link or app link" | The auto-reply was removed on 2026-10-08. A reply stops the sequence and is labeled positive, in your hands or not interested | "A reply stops the sequence and comes back to you, labeled." |
-| "The free trial lasts 7 days and comes with 15,000 credits" | New trials get 30,000 credits since 2026-10-21 | Update to 30,000 when billing confirms |
-| "It does not … look up phone numbers" | Find phone exists on a lead: 500 credits, charged only when a number is found | Decide with product, then drop the line or add the lookup |
+| "The free trial lasts 7 days and comes with 15,000 credits" | New trials get 30,000 credits since 2026-10-21 | Done 2026-11-03: the site, llms.txt and pricing.md say 30,000 (`lib/trial.ts`) |
+| "It does not … look up phone numbers" | Find phone exists on a lead: 500 credits, charged only when a number is found | Done 2026-11-03 (#363): the line is gone; llms.txt and /pricing name the lookup |
 | "Pancake suggests Brain changes they can accept or ignore" | The Brain updates itself from that reason by default, and every change is versioned and shown in Activity | "Pancake updates the Brain from that reason. Every change is versioned and shown in Activity." |
 | "Daily, weekday, weekly or custom schedules" | Main supports all four; other Plays run daily or weekly | "Each Play runs on the schedule you pick" |
 | "About 90 tools", "4 skills" | 95 tools served on 2026-10-21; 5 skills ship (the tool skill plus 4 playbooks) | Fixed 2026-10-28: "About 100 tools" (96 to 112 served that day, by workspace setup; the homepage's mcp story, `lp-story-mcp-data.ts`, gives the same range), "5 skills" |

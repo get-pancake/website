@@ -146,7 +146,7 @@ export const solopreneurs: VerticalConfig = {
   faq: [
     {
       q: "Is $99 worth it before I have revenue?",
-      a: "You see the first leads Pancake found before your trial starts. After the 7-day trial and its 15,000 credits, it starts at $99 a month per workspace.",
+      a: "You see the first leads Pancake found before your trial starts. After the 7-day trial and its 30,000 credits, it starts at $99 a month per workspace.",
     },
     {
       q: "My buyers are consumers. Will it work?",
