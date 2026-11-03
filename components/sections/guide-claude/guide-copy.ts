@@ -17,8 +17,8 @@ import { TRIAL_CREDITS_LABEL, TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
  * closing note, one line of the Markdown) shows on /guides/claude only.
  * The brief's copy is final and used word for word, with three house-rule
  * edits:
- *   - the trial is TRIAL_DAYS long (lib/trial.ts: 7 days with 15,000 credits since the credit
- *     plan of 2026-10-13, card required; it was 3 days when the brief, which said 7, came in);
+ *   - the trial is TRIAL_DAYS long (lib/trial.ts: 7 days, card required, with 30,000 credits
+ *     since 2026-10-21; it was 3 days when the brief, which said 7, came in);
  *   - "20%" without the French space before the sign;
  *   - the competitor prompt says "profile URL", never the platform's name
  *     (compliance rule, website PR #315);

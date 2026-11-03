@@ -31,6 +31,7 @@ import "./comparison.css";
 //   footer (LpNav/LpFooter) replace HomeNav and the shared Footer.
 //   2026-10-13: the credit plan. Every page says "from $99 a month", the 7-day trial and its
 //   15,000 credits (#333).
+//   2026-11-03: the trial comes with 30,000 credits (pancake-cmo PAN-2391, since 2026-10-21).
 // - FACTS_REVIEWED: when the competitor facts (features, prices) were last checked.
 //   Shown under Sources. Move it only after re-checking every competitor's public pages.
 //   2026-10-07: all seven re-checked on the vendors' own pages (Origami's plans moved to

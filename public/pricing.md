@@ -1,6 +1,6 @@
 # Pancake pricing: from $99 a month
 
-> Start at $99. Scale when it works. Run it yourself, let us build it, or connect your whole GTM stack. Self-serve trial: 15,000 free credits, valid for 7 days. Credit card required to start the trial.
+> Start at $99. Scale when it works. Run it yourself, let us build it, or connect your whole GTM stack. Self-serve trial: 30,000 free credits, valid for 7 days. Credit card required to start the trial.
 
 This file carries the facts of https://pancake.ai/pricing for AI agents. The page is the source of truth.
 
@@ -41,7 +41,7 @@ What you get, at every level:
 - A personal message for each lead.
 - Your whole team. No seats to pay.
 
-Free trial: 7 days and 15,000 credits (about 30 to 150 leads), the same at every level. Signup starts without a card. A credit card is required to start the trial.
+Free trial: 7 days and 30,000 credits (about 60 to 300 leads), the same at every level. Signup starts without a card. A credit card is required to start the trial.
 
 ## What goes into one lead
 
@@ -67,7 +67,7 @@ About 120 to 600 qualified leads a month on 60,000 credits, and twice that at ea
 
 ### How does the free trial work?
 
-Sign up free. Pancake reads your website, builds your Brain and shows the first leads it found. Add a card to start the trial: 7 days and 15,000 credits, about 30 to 150 leads.
+Sign up free. Pancake reads your website, builds your Brain and shows the first leads it found. Add a card to start the trial: 7 days and 30,000 credits, about 60 to 300 leads.
 
 ### What happens when the trial ends?
 

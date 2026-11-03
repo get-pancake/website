@@ -46,9 +46,9 @@ Source: pancake-cmo PR #1220 (ADR 0078, `packages/backend/billing/src/domain/pac
 - **A pricing page says what the buyer gets** (leads, messages, replies, customers' own results), then what a level gets them. It does not explain how credits work beyond one line (founder, 2026-10-13: "you're being soooo conceptual and answering things no one asks").
 - Unused credits roll over, up to one month of credits. Out of credits, searches pause: no overage and no automatic top-up. Still no "spend cap" wording (founder, 2026-09-19).
 - One sending account is in the plan; each extra one is $39 a month. Teammates are free and unlimited.
-- The free trial lasts **7 days** and comes with **15,000 credits**, the same at every level.
+- The free trial lasts **7 days** and comes with **30,000 credits**, the same at every level (since 2026-10-21, pancake-cmo PAN-2391 #1867; it was 15,000 before).
 - Visitors can **begin signup without a credit card**. A **credit card is required to start** the trial (confirmed September 18, 2026, unchanged).
-- The homepage pricing card names the trial as "15,000 free credits, valid for 7 days" (`TRIAL_OFFER`), without a card caption. Explain the card requirement on Support and Pricing.
+- The homepage pricing card names the trial as "30,000 free credits, valid for 7 days" (`TRIAL_OFFER`), without a card caption. Explain the card requirement on Support and Pricing.
 - Pricing bullets say what the buyer gets, not how the plan is built (founder, 2026-10-13).
 - Multi-website limits and Gmail signup eligibility are not yet confirmed. Do not infer them from the paid plan.
 

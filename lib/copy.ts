@@ -229,7 +229,7 @@ export const talkToHuman = {
  * Pricing V3 — one plan, five levels of monthly credits (2026-10-13, launch
  * of pancake-cmo PR #1220, ADR 0078). It replaces the flat plan of 2026-08-06
  * ("$99, everything included, as many leads as you want"): leads are no
- * longer unmetered, the trial is 7 days with 15,000 credits, and an extra
+ * longer unmetered, the trial is 7 days with credits (30,000 since 2026-10-21), and an extra
  * sending account is a paid licence. The numbers live in lib/pricing.ts and
  * lib/trial.ts; this block is the words.
  *
