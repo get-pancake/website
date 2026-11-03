@@ -11,7 +11,7 @@
    phones), and the window's distance from its bottom edge to the logos (24 + 36 of pills + 60
    on desktop, 56 + 60 on tablets, 74.885 on phones). The film is 16:9 like the card, so on
    desktop and tablets nothing is cropped; the phones' 3:2 trims the poster's sides (7.8 % each),
-   which is only the backdrop around Claude's window there (window at 9–91 %). */
+   which is only Claude's empty cream there (the greeting and composer sit at 20–80 %). */
 
 .lp-video {
   /* the film's own cream (its Claude window, sampled): what the card shows in the instant

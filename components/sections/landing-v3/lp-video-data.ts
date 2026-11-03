@@ -14,7 +14,8 @@ export const LP_VIDEO = {
   src: "/lp/video/pancake-demo-v1.mp4",
   /** 1280 × 720, 6.1 MB: what phones (under 768 px) load, then play full screen */
   srcPhone: "/lp/video/pancake-demo-v1-phone.mp4",
-  /** the film's own frame at 0.63 s: Claude's home screen, settled, before the cursor comes in
-   *  (founder 2026-11-03: "the thumbnail should be claude to reflect what we do today") */
-  poster: "/lp/video/pancake-demo-v1-poster.jpg",
+  /** the film's own frame at 3.70 s, untouched: the request typed in Claude's composer, the
+   *  cursor on send, between two captions (founder 2026-11-03: "the thumbnail should be claude
+   *  to reflect what we do today", then this frame, "exact frame or adjacent one") */
+  poster: "/lp/video/pancake-demo-v1-poster-prompt.jpg",
 } as const;

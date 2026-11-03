@@ -4,8 +4,8 @@
 // (founder 2026-11-03: the launch's 1:31 demo film there, click to play, drawn "pixel for pixel"
 // after his reference: a rounded 16:9 card, the poster, a frosted round play mark).
 //
-// At rest: ONE button over the whole card, the poster (the film's own frame of Claude's home
-// screen; founder: "the thumbnail should be claude to reflect what we do today") with the play
+// At rest: ONE button over the whole card, the poster (the film's own frame of the request typed
+// in Claude; founder: "the thumbnail should be claude to reflect what we do today") with the play
 // mark in its centre. A click (or Enter / Space) removes the button and plays the film in the
 // card, with sound and the browser's own controls (no download, no speed menu, no picture in
 // picture), and the focus moves onto the film. Phones (under 768 px wide) load the 720p file and
