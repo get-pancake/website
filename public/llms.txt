@@ -37,9 +37,11 @@ A reply stops the sequence. Pancake reads the reply and labels it "positive", "i
 
 New leads also arrive in Slack, where the customer can approve or pass, and a morning email sums up what is waiting. When the customer rejects a lead with a reason, Pancake suggests Brain changes they can accept or ignore.
 
+Pancake can also find a lead's work email or phone number, for the leads the customer picks or for every new lead of a Play, shown as Email and Phone columns. The customer can send the leads they choose to their CRM (HubSpot, Attio, Pipedrive and others) from Settings › Integrations. It is a one-way export: Pancake adds new records and never changes a record already in the CRM.
+
 ## From your AI agent
 
-Claude (web, desktop and mobile), Claude Code, ChatGPT and Codex connect with a browser sign-in. There is no API key. Other MCP clients work when they support browser OAuth with a client ID metadata document: https://pancake.ai/install.md lists them. Cursor can't connect yet. From the agent, customers create and run Plays, review leads, add them to sequences and edit their messages, on the same Brain and the same leads as the app. Adding a lead to a sequence starts real outreach from the customer's own account. In the web app, the same work happens in a chat with the Pancake Agent.
+Claude (web, desktop and mobile), Claude Code, ChatGPT and Codex connect with a browser sign-in. There is no API key. Other MCP clients work when they support browser OAuth with a client ID metadata document: https://pancake.ai/install.md lists them. Cursor can't connect yet. From the agent, customers create and run Plays, review leads, find their work emails or phone numbers, add them to sequences, edit their messages and send leads to a connected CRM, on the same Brain and the same leads as the app. Adding a lead to a sequence starts real outreach from the customer's own account. Connecting a CRM happens in the app, in Settings › Integrations. In the web app, the same work happens in a chat with the Pancake Agent.
 
 ## Who it is for
 
@@ -47,7 +49,7 @@ Pancake is for founders who do their own sales, small B2B teams, agencies and GT
 
 ## Pricing
 
-One plan, from $99 a month per workspace. The customer picks the monthly credits: 60,000 for $99, 120,000 for $189, 240,000 for $359, 480,000 for $679 or 960,000 for $1,299. Every level is the same product. Credits pay for two things: the research a search does to find and check leads, and each work email found (50 credits). Building and testing Plays, messages, replies and teammates use no credits. As an estimate, a lead takes about 100 to 500 credits of research, so 60,000 credits find about 120 to 600 leads a month; a narrow audience costs more, and Pancake shows the real estimate before a search runs. Unused credits roll over, up to one month of credits. When credits run out, searches pause: there is no overage and no automatic top-up.
+One plan, from $99 a month per workspace. The customer picks the monthly credits: 60,000 for $99, 120,000 for $189, 240,000 for $359, 480,000 for $679 or 960,000 for $1,299. Every level is the same product. Credits pay for the research a search does to find and check leads, for each work email found (50 credits) and for each phone number found (500 credits). An email or phone number that isn't found costs nothing. Building and testing Plays, messages, replies and teammates use no credits. As an estimate, a lead takes about 100 to 500 credits of research, so 60,000 credits find about 120 to 600 leads a month; a narrow audience costs more, and Pancake shows the real estimate before a search runs. Unused credits roll over, up to one month of credits. When credits run out, searches pause: there is no overage and no automatic top-up.
 
 A workspace is one company. Its plan covers the Brain, every Play, the whole team and one sending account; each extra sending account is $39 a month. A second company or brand is a second workspace with its own plan. The free trial lasts 7 days and comes with 15,000 credits, and a credit card is required to start it.
 
@@ -62,7 +64,7 @@ After the trial, the plan renews monthly on the card the customer added. Canceli
 
 ## Product boundaries
 
-Pancake finds a company's buyers and starts the conversation, from the customer's own accounts. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. It does not send outreach by email, sync leads to a CRM, identify website visitors, look up phone numbers or make calls. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on October 13, 2026 to match the current product.
+Pancake finds a company's buyers and starts the conversation, from the customer's own accounts. Its CRM link is a one-way export of the leads the customer picks, not a sync. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. It does not send outreach by email, identify website visitors or make calls. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on October 13, 2026 to match the current product.
 
 ## Key pages
 
@@ -248,4 +250,4 @@ The rest of the blog archive, mostly on topics outside the product (see Product 
 
 ---
 
-Last updated: October 13, 2026
+Last updated: November 3, 2026
