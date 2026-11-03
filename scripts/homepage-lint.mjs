@@ -20,17 +20,18 @@
  *     the network is never named; no visit / like / invite / "nice to connect" steps.
  *   - BANNED from validate.ts, minus five /for-only rules that this copy legitimately crosses,
  *     each replaced by a narrower one (OFF_FOR below): "agents" (the homepage and the guide speak
- *     to AI agents by design), "email" and "phone" (the morning email digest and Claude on your
- *     phone are real; email outreach and phone lookups are not), "rates" (each Play shows its
- *     reply rate; a rate CLAIM is still banned), "guarantee / instant" (a setup time is fine;
- *     guarantees, "instant" and leads "in minutes" are not). "GitHub Copilot" names a client.
+ *     to AI agents by design), "email" and "phone" (the morning email digest, Claude on your
+ *     phone and a lead's phone number are real; email outreach and calls are not), "rates"
+ *     (each Play shows its reply rate; a rate CLAIM is still banned), "guarantee / instant" (a
+ *     setup time is fine; guarantees, "instant" and leads "in minutes" are not). "GitHub
+ *     Copilot" names a client.
  *   - ORIGAMI_TAGLINE from validate.ts (never echo "not a stale database").
  *   - EXTRA: the old domain, "AI GTM team" as what Pancake is, and the retired TAGLINE
  *     "Your agent decides, Pancake runs it" (also read in the agent-facing files).
  *   - BENTO KPI: every KPI card of lp-bento-data.ts, as "value label", must be on BENTO_KPI_ALLOW,
  *     a sourced allow-list of customer-stated figures (default run only).
- * A sentence that opens on a negation ("It doesn't …", "No …") may name a boundary (email,
- * phone, CRM, website visitors), as in a "What doesn't Pancake do?" answer.
+ * A sentence that opens on a negation ("It doesn't …", "No …") may name a boundary (email
+ * outreach, calls, a CRM sync, website visitors), as in a "What doesn't Pancake do?" answer.
  */
 import { createRequire } from "node:module";
 import { readdirSync, readFileSync } from "node:fs";
@@ -102,7 +103,8 @@ const FILES = [
 const OFF_FOR = {
   "agents wording": null,
   email: [/\bcold e-?mails?\b|\be-?mail (outreach|sequences?|campaigns?|cadences?)\b|\b(send|sends|sending|write|writes) (an? |cold )?e-?mails?\b|\boutreach (by|over|via) e-?mail\b/i, "email outreach"],
-  phone: [/\bphone (numbers?|lookups?)\b|\bmobile numbers?\b|\bdial(er|ing)\b|\bcold call(s|ing)?\b|\b(make|makes|making) calls\b/i, "phone lookup / calls"],
+  // phone numbers left this rule on 2026-11-03 (Find phone, pancake-cmo PAN-2280); calls stay out
+  phone: [/\bdial(er|ing)\b|\bcold call(s|ing)?\b|\b(make|makes|making) calls\b/i, "calls"],
   rates: [/\d+(\.\d+)? ?(%|x|×)[^.]{0,30}\b(response|reply|open) rates?\b|\b(response|reply|open) rates?\b[^.]{0,30}\d+(\.\d+)? ?(%|x|×)|\b(higher|better|boosts?|boosted|doubles?|triples?|increases?|lifts?) (your )?(response|reply|open) rates?\b|(^|\s)\+\d+(\.\d+)? ?%/i, "rate claim"],
   "guarantee / instant": [/\bguarantee(d|s)?\b|\binstant(ly)?\b|\b(leads?|results?|customers?|meetings?|replies)\b[^.]{0,40}\bin (a few |2 |two )?minutes\b/i, "guarantee / instant"],
 };
@@ -122,7 +124,7 @@ const ALLOW = [
   [BANNED.find(([, label]) => label === "Slack chat")[0], /\bpancake@pancake\b/g],
 ];
 /** Rules a negated sentence may cross (the product's boundaries, said as boundaries). */
-const NEGATABLE = new Set(["email outreach", "phone lookup / calls", "CRM sync/export", "website visitors", "local/consumer leads"]);
+const NEGATABLE = new Set(["email outreach", "calls", "CRM sync", "website visitors", "local/consumer leads"]);
 const NEGATION = /^(No\b|Not\b|Never\b|There[’']?s no\b|There is no\b|Pancake doesn[’']?t\b|It doesn[’']?t\b|Pancake never\b|No emails\b)/;
 
 /* Founder 2026-11-02: the "Your agent decides, Pancake runs it" tagline says nothing. Say what

@@ -5,8 +5,8 @@
 // Copy rules this file follows (audit plan 3.7, 2026-10-07): the outreach platform is never
 // named and its steps are never listed (validate.ts PLATFORM / SEQUENCE); "Play" and
 // "sequence", never "campaign"; no "You approve every lead" (founder 2026-10-30: "kill this"); the price is "from $99 a month per
-// workspace" (the credit plan, lib/pricing.ts); nothing promises results; no email outreach, CRM sync, website visitors, phone
-// lookup or calls; landing-voice budgets (headline ≤ 8 words, body ≤ 35 words).
+// workspace" (the credit plan, lib/pricing.ts); nothing promises results; no email outreach, CRM sync, website visitors or
+// calls (a lead's phone number and a one-way CRM export are real since October 2026); landing-voice budgets (headline ≤ 8 words, body ≤ 35 words).
 // "More ways" (2026-10-07, founder: anything that exists in the app's code can be pitched, even
 // if it is not switched on — D27): funding rounds, lookalikes, role match, web evidence and one
 // post's reactions are in pancake-cmo's lead finders (Dealroom/Coresignal, Ocean.io, Coresignal
@@ -160,7 +160,7 @@ export const PLAYS_FAQ = {
     },
     {
       q: "What doesn’t Pancake do?",
-      a: "It doesn’t send outreach by email, sync to your CRM, identify website visitors, find phone numbers or make calls.",
+      a: "It doesn’t send outreach by email, identify website visitors, make calls or sync with your CRM. It can find a lead’s work email or phone number and export the leads you pick to your CRM.",
     },
   ],
 };

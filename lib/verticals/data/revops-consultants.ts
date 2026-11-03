@@ -2,7 +2,7 @@
 // Every person, company, rival firm, practitioner and workspace below is invented.
 // Merged in: HubSpot partner agencies and Salesforce consultants (same buyers, same Stack hook).
 // Caveat (brief): Stack only sees CRMs named in job posts. Always "job posts name HubSpot",
-// never "companies using HubSpot". No CRM sync.
+// never "companies using HubSpot". No CRM sync: chosen leads go to a CRM as a one-way export.
 import type { VerticalConfig } from "../types";
 
 export const revopsConsultants: VerticalConfig = {
@@ -152,7 +152,7 @@ export const revopsConsultants: VerticalConfig = {
     },
     {
       q: "Does Pancake sync leads into HubSpot or Salesforce?",
-      a: "No. There’s no CRM sync and no export. Leads live in Pancake and Slack.",
+      a: "Not as a sync. The leads you pick go to HubSpot, Attio or Pipedrive as a one-way export, and any Play’s leads download as a CSV file.",
     },
     {
       q: "Won’t a company hiring a Salesforce admin fix its CRM in-house?",

@@ -65,7 +65,7 @@ const config: GtmComparisonConfig = {
     {
       n: "05",
       title: "Unify wins on CRM sync and data",
-      body: "Unify's Pro plan reads HubSpot and Salesforce, and Business writes back. Every paid plan adds phone and email enrichment. Pancake doesn't sync to a CRM or look up phone numbers.",
+      body: "Unify's Pro plan reads HubSpot and Salesforce, and Business writes back. Every paid plan adds phone and email enrichment. Pancake finds emails and phone numbers too, but exports leads to your CRM one way, with no sync.",
       angle: "Pick Unify when the CRM is your system of record.",
     },
   ],
@@ -77,7 +77,7 @@ const config: GtmComparisonConfig = {
     { feature: "Lead context", competitor: { text: "Signals, account research and AI copy", mark: "yes" }, pancake: { text: "One line on why each lead fits", mark: "yes" } },
     { feature: "Outreach", competitor: { text: "Email, call and social steps in one sequence", mark: "yes" }, pancake: { text: "Direct messages under your name, from the accounts you send from", mark: "yes" } },
     { feature: "Email and calling", competitor: { text: "Managed mailboxes and a dialer", mark: "yes" }, pancake: { text: "No email, no calls", mark: "no" } },
-    { feature: "CRM sync", competitor: { text: "HubSpot and Salesforce: read-only on Pro, read-write on Business", mark: "yes" }, pancake: { text: "No CRM sync", mark: "no" } },
+    { feature: "CRM sync", competitor: { text: "HubSpot and Salesforce: read-only on Pro, read-write on Business", mark: "yes" }, pancake: { text: "No sync: a one-way export to HubSpot, Attio, Pipedrive and others", mark: "no" } },
     { feature: "AI agents", competitor: { text: "Bulk APIs to analyze data in Claude or Codex", mark: "yes" }, pancake: { text: "Run Plays from Claude, Claude Code or Codex", mark: "yes" } },
     { feature: "Free trial", competitor: { text: "Free plan; 14-day Pro trial, no card", mark: "yes" }, pancake: { text: "7-day free trial, card required", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Sales teams with reps, mailboxes and a CRM" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
@@ -87,7 +87,7 @@ const config: GtmComparisonConfig = {
   faqs: [
     { q: "What is the main difference between Unify and Pancake?", a: "Unify is an outbound platform that sales reps operate, priced per seat. Pancake runs Plays: it finds the people who fit and writes to them. It starts at $99 a month per workspace." },
     { q: "How does pricing compare?", a: "As of October 2026, Unify has a Free plan, Base at $20 and Pro at $60 per seat a month, and custom Business plans. Each comes with credits. Pancake starts at $99 a month per workspace, with 60,000 credits your whole team shares." },
-    { q: "What does Unify do that Pancake doesn't?", a: "Email sequences with managed mailboxes, a dialer, phone enrichment, and HubSpot or Salesforce sync. Its Business plan adds website intent and product signals. Pancake doesn't do these." },
+    { q: "What does Unify do that Pancake doesn't?", a: "Email sequences with managed mailboxes, a dialer, and HubSpot or Salesforce sync. Its Business plan adds website intent and product signals. Pancake doesn't do these." },
     { q: "Does Pancake charge per seat?", a: "No. Pancake starts at $99 a month per workspace, and your whole team is included. A second company is a second workspace with its own plan." },
     { q: "Can I run Pancake from Claude or Codex?", a: "Yes. Claude, Claude Code, ChatGPT and Codex connect with a browser sign-in, no API key. You create Plays, review leads and edit messages from the agent. Unify offers bulk export APIs for analysis in Claude or Codex." },
     { q: "Who should choose Pancake over Unify?", a: "Founders who do their own sales, and small B2B teams without reps or a mailbox stack. Tell Pancake who to reach, and it writes to them under your name." },

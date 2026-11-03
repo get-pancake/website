@@ -60,7 +60,7 @@ const config: GtmComparisonConfig = {
     {
       n: "04",
       title: "Alta wins on channels and CRM",
-      body: "Alta sequences email, calls, SMS and WhatsApp, with branching on what each prospect does. It integrates with your CRM and 50+ tools. Pancake sends no email and doesn't sync to a CRM.",
+      body: "Alta sequences email, calls, SMS and WhatsApp, with branching on what each prospect does. It integrates with your CRM and 50+ tools. Pancake sends no email, and only exports leads to your CRM, one way.",
       angle: "Pick Alta when every channel matters.",
     },
     {
@@ -78,7 +78,7 @@ const config: GtmComparisonConfig = {
     { feature: "Outreach", competitor: { text: "Email, calls, SMS, WhatsApp and more", mark: "yes" }, pancake: { text: "Direct messages under your name, from the accounts you send from", mark: "yes" } },
     { feature: "Inbound qualification", competitor: { text: "AI calls and chat, routed to your calendar", mark: "yes" }, pancake: { text: "Not covered", mark: "no" } },
     { feature: "AI calling", competitor: { text: "An AI calling agent", mark: "yes" }, pancake: { text: "No calls", mark: "no" } },
-    { feature: "CRM", competitor: { text: "Free CRM integrations", mark: "yes" }, pancake: { text: "No CRM sync", mark: "no" } },
+    { feature: "CRM", competitor: { text: "Free CRM integrations", mark: "yes" }, pancake: { text: "A one-way lead export to HubSpot, Attio, Pipedrive and others" } },
     { feature: "Best for", competitor: { text: "Revenue teams with reps, inbound volume and a CRM" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
   ],
   closingTitle: "Start your first Play today.",
@@ -86,7 +86,7 @@ const config: GtmComparisonConfig = {
   faqs: [
     { q: "What is the main difference between Alta and Pancake?", a: "Alta sells three AI agents for outbound, inbound and growth, by custom quote. Pancake runs Plays that find your buyers and write to them, from $99 a month per workspace." },
     { q: "How much does Alta cost?", a: "As of October 2026, Alta publishes no prices. Its plans page asks for your team size and goals, then sends a custom quote. It says you pay for what you use." },
-    { q: "What does Alta do that Pancake doesn't?", a: "Inbound qualification, AI calls, email, SMS and WhatsApp outreach, CRM integrations and white-glove onboarding. Pancake doesn't do these. It finds people who fit and messages them from your own accounts." },
+    { q: "What does Alta do that Pancake doesn't?", a: "Inbound qualification, AI calls, email, SMS and WhatsApp outreach, CRM integrations and white-glove onboarding. Pancake doesn't do these, apart from a one-way export of the leads you pick to your CRM. It finds people who fit and messages them from your own accounts." },
     { q: "Is there a free trial?", a: "Alta's site offers a demo and a custom quote. Pancake has a 7-day free trial with 15,000 credits, and a card is required to start it." },
     { q: "Who should choose Pancake over Alta?", a: "Founders who do their own sales, and small B2B teams without inbound volume to qualify. Tell Pancake who to reach, and it writes to them under your name." },
     { q: "Can I run Pancake from Claude?", a: "Yes. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in. You create Plays, review leads and edit messages from the agent, on the same Brain as the app." },
