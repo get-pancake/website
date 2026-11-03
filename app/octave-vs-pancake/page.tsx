@@ -59,7 +59,7 @@ const config: GtmComparisonConfig = {
     {
       n: "04",
       title: "Octave wins on integrations and governance",
-      body: "Octave connects to Salesforce, HubSpot, Gong and Clay, and adds SSO, role-based access and a dedicated CSM. Warehouse sync is an add-on. Pancake doesn't sync to a CRM or read your call recordings.",
+      body: "Octave connects to Salesforce, HubSpot, Gong and Clay, and adds SSO, role-based access and a dedicated CSM. Warehouse sync is an add-on. Pancake only exports leads to your CRM, one way, and doesn't read your call recordings.",
       angle: "Pick Octave when many tools need the same context.",
     },
     {
@@ -76,7 +76,7 @@ const config: GtmComparisonConfig = {
     { feature: "Qualification", competitor: { text: "Scores accounts on pains from calls and research", mark: "yes" }, pancake: { text: "Checks every lead against your ICP, with why it fits", mark: "yes" } },
     { feature: "Outreach", competitor: { text: "Through the execution tools you choose" }, pancake: { text: "A personal message for each lead, from the accounts you send from", mark: "yes" } },
     { feature: "AI agents", competitor: { text: "MCP, API, CLI and a Claude Code plugin", mark: "yes" }, pancake: { text: "MCP for Claude, Claude Code, ChatGPT and Codex", mark: "yes" } },
-    { feature: "Integrations", competitor: { text: "Salesforce, HubSpot, Gong, Clay and more", mark: "yes" }, pancake: { text: "No CRM sync", mark: "no" } },
+    { feature: "Integrations", competitor: { text: "Salesforce, HubSpot, Gong, Clay and more", mark: "yes" }, pancake: { text: "A one-way lead export to HubSpot, Attio, Pipedrive and others" } },
     { feature: "Team", competitor: { text: "Unlimited users", mark: "yes" }, pancake: { text: "Whole team included", mark: "yes" } },
     { feature: "Admin and support", competitor: { text: "SSO, role-based access, dedicated CSM", mark: "yes" }, pancake: { text: "No SSO or dedicated CSM", mark: "no" } },
     { feature: "Pricing", competitor: { text: "From $1,500/month billed annually, plus credits" }, pancake: { text: "From $99 a month per workspace, credits included", mark: "yes" } },
@@ -88,7 +88,7 @@ const config: GtmComparisonConfig = {
   faqs: [
     { q: "What is the main difference between Octave and Pancake?", a: "Octave is a context layer: it models your positioning and buyers and feeds that to your tools and agents. Pancake runs Plays that find your buyers and write to them." },
     { q: "How does pricing compare?", a: "As of October 2026, Octave charges a platform fee plus usage credits. Octave Ultra starts at $1,500 a month, billed annually. Pancake starts at $99 a month per workspace, with 60,000 credits included." },
-    { q: "What does Octave do that Pancake doesn't?", a: "Octave learns from buyer conversations and connects to Salesforce, HubSpot, Gong and Clay. It also offers SSO, role-based access and a data warehouse connector. Pancake doesn't do these." },
+    { q: "What does Octave do that Pancake doesn't?", a: "Octave learns from buyer conversations and connects to Salesforce, HubSpot, Gong and Clay. It also offers SSO, role-based access and a data warehouse connector. Pancake offers none of these, apart from a one-way export of the leads you pick to HubSpot or another CRM." },
     { q: "Do both work in Claude?", a: "Yes. Octave offers MCP, an API, a CLI and a Claude Code plugin. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in. You create Plays and review leads from the agent." },
     { q: "What is a Play?", a: "A Play is how Pancake finds one audience. Tell it who to reach in one sentence. It asks what it needs, then searches again on your schedule, keeping up to 50 new leads per search." },
     { q: "Who should choose Pancake over Octave?", a: "Founders who do their own sales, and small B2B teams without a GTM engineer. Pancake builds the Brain from your website, finds the people who fit and writes to them." },

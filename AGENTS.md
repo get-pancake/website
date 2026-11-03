@@ -41,7 +41,7 @@ Refinements (copy, perf, polish) come later. Don't pre-optimize.
 Source: pancake-cmo PR #1220 (ADR 0078, `packages/backend/billing/src/domain/package-catalog.ts`). The numbers live in `lib/pricing.ts` and `lib/trial.ts`; never retype them in copy.
 
 - **One plan, five levels of monthly credits**: 60,000 for $99, 120,000 for $189, 240,000 for $359, 480,000 for $679, 960,000 for $1,299, per workspace, billed monthly. Every level is the same product. Say "from $99 a month", never "flat", "no tiers" or "everything included".
-- **Credits pay for two things**: the research a search does, and each work email found (50 credits). Building and testing Plays, messages, replies and teammates use no credits. Never write "as many leads as you want" or "unlimited leads": a search uses credits.
+- **What credits pay for**: the research a search does, each work email found (50 credits) and each phone number found (500 credits, since 2026-10-28, pancake-cmo PAN-2280), as the app's own Credits copy says. Nothing is charged when no email or phone number is found. Building and testing Plays, messages, replies and teammates use no credits. Never write "as many leads as you want" or "unlimited leads": a search uses credits.
 - **Never a dollar value for a credit.** Leads per credit is an ESTIMATE only: always "about", always the range built from `CREDITS_PER_LEAD` in `lib/pricing.ts` ("about 120 to 600 leads a month" on 60,000 credits), never a figure retyped by hand and never a promise. Those two numbers are planning figures from pancake-cmo ADR 0078, to be replaced by the measured range when engineering has it. Add that a narrow audience costs more and that the app shows the real estimate before a search runs.
 - **A pricing page says what the buyer gets** (leads, messages, replies, customers' own results), then what a level gets them. It does not explain how credits work beyond one line (founder, 2026-10-13: "you're being soooo conceptual and answering things no one asks").
 - Unused credits roll over, up to one month of credits. Out of credits, searches pause: no overage and no automatic top-up. Still no "spend cap" wording (founder, 2026-09-19).
@@ -51,6 +51,14 @@ Source: pancake-cmo PR #1220 (ADR 0078, `packages/backend/billing/src/domain/pac
 - The homepage pricing card names the trial as "15,000 free credits, valid for 7 days" (`TRIAL_OFFER`), without a card caption. Explain the card requirement on Support and Pricing.
 - Pricing bullets say what the buyer gets, not how the plan is built (founder, 2026-10-13).
 - Multi-website limits and Gmail signup eligibility are not yet confirmed. Do not infer them from the paid plan.
+
+### CRM export and contact lookups — November 3, 2026
+
+Source: pancake-cmo `main`, checked 2026-11-03 (PAN-2405 #1871, PAN-2280, #1990, PAN-1174).
+
+- A member sends the leads they pick to a CRM (HubSpot, Attio, Pipedrive and others) from Settings › Integrations. It is a one-way export: Pancake adds new records and never changes one already there. Say "export", never "sync".
+- Pancake finds a lead's work email or phone number: Find email and Find phone on chosen leads, or a Play's Email and Phone columns. A Play's leads also download as CSV.
+- Still out: outreach by email, identifying website visitors, calls.
 
 ### AI SEO retired — September 30, 2026
 

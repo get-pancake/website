@@ -28,7 +28,10 @@ export const BANNED: [RegExp, string][] = [
   [/\b(fundrais\w*|series [a-e] round|job[- ]changes?|changed jobs|press releases?)\b/i, "fundraising/job-change/news signal"],
   [/\b(website|site) visitors?\b|\bde-?anonymi[sz]\w*/i, "website visitors"],
   [/\bgoogle maps\b|\blocal (business )?lists?\b|\bhomeowners?\b/i, "local/consumer leads"],
-  [/\bCRM (sync|integration)s?\b|\bsyncs? (to|with) (your )?(CRM|HubSpot|Salesforce)\b|\bCSV\b|\bexports?\b/i, "CRM sync/export"],
+  // "CSV" and "export" left this rule on 2026-11-03: a Play's leads download as CSV (pancake-cmo
+  // PAN-1174) and a member sends the leads they pick to a CRM as a one-way export (PAN-2405).
+  // A sync is still not something Pancake does.
+  [/\bCRM (sync|integration)s?\b|\bsyncs? (to|with) (your )?(CRM|HubSpot|Salesforce)\b/i, "CRM sync"],
   [/\bdraft mode\b|\b(approve|review) (each|every) message\b|\bmessage approvals?\b/i, "draft mode"],
   [/\bguarantee(d|s)?\b|\bin (a few |2 |two )?minutes\b|\binstant(ly)?\b/i, "guarantee / instant"],
   [/\b(response|reply|open) rates?\b|\b\d+ ?% (response|reply|open)/i, "rates"],
