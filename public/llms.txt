@@ -1,6 +1,6 @@
 # Pancake
 
-> Pancake is the Vercel for GTM: one place to deploy, host and run go-to-market agents. AI agents like Claude and Codex can plan a company's GTM but can't run it. They have no data to find people, no way to reach them and no memory of the business. Pancake is that missing piece. Your agent decides. Pancake runs it.
+> Pancake is the Vercel for GTM: one place to deploy, host and run go-to-market agents. AI agents like Claude and Codex can plan a company's GTM but can't run it. They have no data to find people, no way to reach them and no memory of the business. Pancake is that missing piece. The customer tells their agent who to reach. Pancake finds those people and starts the conversation.
 
 Pancake works from Claude, Claude Code, ChatGPT, Codex and other MCP clients with browser sign-in, and from its own web app. It starts at $99 a month per workspace, with 60,000 credits for lead searches.
 

@@ -25,7 +25,8 @@
  *     reply rate; a rate CLAIM is still banned), "guarantee / instant" (a setup time is fine;
  *     guarantees, "instant" and leads "in minutes" are not). "GitHub Copilot" names a client.
  *   - ORIGAMI_TAGLINE from validate.ts (never echo "not a stale database").
- *   - EXTRA: the old domain, and "AI GTM team" as what Pancake is.
+ *   - EXTRA: the old domain, "AI GTM team" as what Pancake is, and the retired TAGLINE
+ *     "Your agent decides, Pancake runs it" (also read in the agent-facing files).
  *   - BENTO KPI: every KPI card of lp-bento-data.ts, as "value label", must be on BENTO_KPI_ALLOW,
  *     a sourced allow-list of customer-stated figures (default run only).
  * A sentence that opens on a negation ("It doesn't …", "No …") may name a boundary (email,
@@ -124,6 +125,10 @@ const ALLOW = [
 const NEGATABLE = new Set(["email outreach", "phone lookup / calls", "CRM sync/export", "website visitors", "local/consumer leads"]);
 const NEGATION = /^(No\b|Not\b|Never\b|There[’']?s no\b|There is no\b|Pancake doesn[’']?t\b|It doesn[’']?t\b|Pancake never\b|No emails\b)/;
 
+/* Founder 2026-11-02: the "Your agent decides, Pancake runs it" tagline says nothing. Say what
+ * the customer asks and what Pancake does instead. Read in the copy here and, line by line, in
+ * the agent-facing files below (public/llms.txt carried it). */
+const TAGLINE = /\byour agent decides[.,;:]?\s*pancake runs it\b/i;
 const RULES = [
   [CAMPAIGN, "campaign: say Play or sequence"],
   [PLATFORM, "names the platform"],
@@ -132,6 +137,7 @@ const RULES = [
   [ORIGAMI_TAGLINE, "echoes Origami’s “not a stale database” tagline"],
   [/getpancake\.ai/i, "old domain (pancake.ai only)"],
   [/\bAI GTM (team|co-?pilot)s?\b|\bGTM team (that|you hire|of agents)\b/i, "GTM team as what Pancake is"],
+  [TAGLINE, "retired tagline: say what the customer asks and what Pancake does"],
 ];
 
 /* ── strings from the syntax tree ──────────────────────────────────────────── */
@@ -237,6 +243,7 @@ const FREQUENCY_FILES = named.length ? [] : [
 for (const f of FREQUENCY_FILES) {
   readFileSync(join(ROOT, f), "utf8").split("\n").forEach((text, i) => {
     if (FREQUENCY.test(text)) hits.push(`${f}:${i + 1}  fixed frequency ("${text.match(FREQUENCY)[0]}"): "${text.trim().slice(0, 160)}"`);
+    if (TAGLINE.test(text)) hits.push(`${f}:${i + 1}  retired tagline ("${text.match(TAGLINE)[0]}"): "${text.trim().slice(0, 160)}"`);
   });
 }
 /* Bento KPI cards (V2 4911:762, decisions §9): customer-stated figures. A figure such as "10%+" is

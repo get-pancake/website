@@ -8,7 +8,7 @@ Since 2026-10-22 the homepage tells the infra story in plain words, each idea on
 
 - Claude and Codex are the best agent harnesses there are. Pancake builds on them instead of competing with them.
 - An agent can plan a go-to-market but cannot run it alone: it has no data to find people, no accounts to reach them, no memory of the business, and nothing that keeps working after the conversation ends.
-- Pancake is the infrastructure agents run a go-to-market on. Your agent decides. Pancake runs it.
+- Pancake is the infrastructure agents run a go-to-market on. The customer tells their agent who to reach. Pancake finds those people and starts the conversation. (Retired on 2026-11-02: the tagline "Your agent decides. Pancake runs it.", which the founder said doesn't mean anything. `scripts/homepage-lint.mjs` now fails on it.)
 - The vision line: "Every company will run its go-to-market through agents. Pancake is where they run it."
 
 ## The Vercel analogy
