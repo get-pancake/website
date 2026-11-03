@@ -234,9 +234,8 @@
    the pill is dark — so the ring stays visible in both. Every tinted pill
    (nav Sign in, hero, CTA, /for hero, /agents) loads this sheet via
    landing-v3.css. The
-   cream "Start free" pill in the phone sheet gets the same plum ring
-   (purple-30 on cream is about 2.4:1); the sheet's outline pill sits on plum
-   and keeps purple-30. /demo's outline pills have their own ring (demo.css). */
+   phone sheet's two pills (cream sheet since 2026-11-03) get the same plum
+   ring. /demo's outline pills have their own ring (demo.css). */
 .lp .lp-btn--tinted:focus-visible,
 .lp .lp-nav-menu .lp-btn:not(.lp-btn--outline):focus-visible {
   outline-color: var(--lp-text);
@@ -287,8 +286,12 @@
   /* compact .is-scrolled rules live in the mobile-only sticky block up top */
 }
 
-/* ── Mobile menu — burger + inverted-plum sheet (open state is not on the
-   artboard; kit-consistent, same contract as v2's LandingNavMenu) ── */
+/* ── Mobile menu — burger + the sheet (open state is not on the artboard).
+   Redrawn 2026-11-03 after the phone menus of the top SaaS sites (founder:
+   "bad drawer - check mobbin or get something beautiful and best practice
+   from top company"; Claude, Stripe and Vercel read at 402 wide share one
+   shape): the page's own cream, the bar kept as the sheet's head, rows at
+   reading size between hairlines, the CTA pair side by side at the foot. ── */
 
 .lp-nav-menu-btn {
   display: none;
@@ -312,9 +315,12 @@
   }
 }
 
+/* The sheet: the bar's own paddings, so its head lands on the bar. Plum ink
+   on the page cream in both audiences (the agents view resets --lp-text in
+   audience-agents.css). */
 .lp-nav-menu {
-  background: var(--lp-inverted-surface);
-  color: var(--lp-text-on-inverted);
+  background: var(--lp-page-bg);
+  color: var(--lp-ink-100);
   display: none;
   flex-direction: column;
   inset: 0;
@@ -329,7 +335,18 @@
   z-index: 40; /* under the call dialog's scrim (50) — the menu closes first anyway */
 }
 .lp-nav-menu.is-open {
+  animation: lp-nav-menu-in 0.16s cubic-bezier(0.22, 1, 0.36, 1);
   display: flex;
+}
+@keyframes lp-nav-menu-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-nav-menu.is-open {
+    animation: none;
+  }
 }
 /* The sheet lives inside the phone's sticky bar, a stacking context at z 30;
    /guides/claude's promo bar (31) sits above that. While the sheet is open,
@@ -339,126 +356,144 @@
     z-index: 41;
   }
 }
-/* Head mirrors the bar: 88px row, close button where the burger sat. */
+/* Head = the bar: 88px under the 16px pad at the top of the page, the 64px
+   compact row once the bar is scrolled (.is-scrolled, logo at 0.79), the
+   logo where the bar's is and the close mark on the burger's 44px spot. */
 .lp-nav-menu-head {
   align-items: center;
   display: flex;
   flex: none;
-  height: 88px;
-  justify-content: flex-end;
+  height: calc(var(--lp-nav-expanded-height, 104px) - 16px);
+  justify-content: space-between;
+}
+.lp-nav.is-scrolled .lp-nav-menu {
+  padding-top: 0;
+}
+.lp-nav.is-scrolled .lp-nav-menu-head {
+  height: var(--lp-nav-compact-height, 64px);
+}
+.lp .lp-nav-menu-logo {
+  border-radius: 4px;
+  display: block;
+}
+.lp .lp-nav-menu-logo img {
+  display: block;
+  height: 56px;
+  width: 114.956px;
+}
+.lp-nav.is-scrolled .lp-nav-menu-logo img {
+  transform: scale(0.79);
+  transform-origin: left center;
+}
+.lp .lp-nav-menu-logo:focus-visible {
+  outline: 2px solid var(--lp-purple-30);
+  outline-offset: 2px;
 }
 .lp .lp-nav-menu-close {
-  background: color-mix(in srgb, var(--lp-text-on-inverted) 10%, transparent);
+  background: transparent;
   border: 0;
-  border-radius: 50%;
-  color: var(--lp-text-on-inverted);
+  border-radius: 9px;
+  color: var(--lp-ink-100);
   cursor: pointer;
   display: grid;
-  font: inherit;
-  font-size: 18px;
   height: 44px;
-  line-height: 1;
+  padding: 0;
   place-items: center;
   width: 44px;
 }
 .lp .lp-nav-menu-close:focus-visible {
-  outline: 2px solid var(--lp-text-on-inverted);
-  outline-offset: 2px;
+  outline: 2px solid var(--lp-purple-30);
+  outline-offset: -2px;
 }
-/* Links: display face like the section titles, cream, left-justified,
-   ≥44px tap rows. Same entries/labels/hrefs as the desktop bar (2026-10-07):
-   Resources as a labelled list, the single links (Product · Industries ·
-   Pricing, Sign in) as label-less groups, a cream hairline between groups.
-   Rows sit at 27.6px (--lp-text-2xlg, still the condensed display face,
-   49px tall rows): the list outgrew the 39.8px face. */
-.lp-nav-menu nav {
-  display: flex;
+/* Rows: the reading face at --lp-text-lg, 56px tall, a hairline under each;
+   the list ends 32px from the right edge like it starts 32px from the left
+   (the sheet's 18.38px right pad is the burger's tap area). */
+.lp-nav-menu-list {
   flex: none;
-  flex-direction: column;
-  margin-top: 16px;
+  margin: 8px 13.62px 0 0;
 }
-.lp-nav-menu-group {
-  list-style: none;
-  margin: 0;
-  padding: 12px 0;
-}
-.lp-nav-menu-group + .lp-nav-menu-group {
-  border-top: 1px solid color-mix(in srgb, var(--lp-text-on-inverted) 16%, transparent);
-}
-.lp-nav-menu-group ul {
+.lp-nav-menu-list ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-/* the group label: the Industries panel's category heading, on plum */
-.lp .lp-nav-menu-label {
-  color: color-mix(in srgb, var(--lp-text-on-inverted) 70%, transparent);
-  font-family: var(--lp-font-sans);
-  font-size: var(--lp-text-xsm);
-  font-weight: 600;
-  letter-spacing: 0.453px;
-  line-height: 16px;
-  padding: 8px 0 4px;
-  text-transform: uppercase;
+.lp-nav-menu-list > ul > li {
+  border-bottom: 1px solid var(--lp-stroke);
 }
-.lp .lp-nav-menu nav a {
-  color: var(--lp-text-on-inverted);
-  display: block;
-  font-family: var(--lp-font-cond);
-  font-size: var(--lp-text-2xlg);
-  font-weight: 600;
-  letter-spacing: -0.83px;
-  line-height: 1.2;
-  padding: 8px 0;
-}
-.lp .lp-nav-menu nav a:focus-visible {
-  border-radius: 2px;
-  outline: 2px solid var(--lp-text-on-inverted);
-  outline-offset: 3px;
-}
-/* The CTA pair sticks to the sheet's foot when the list outgrows the screen
-   (most phones now), so Start free · Book a demo stay one tap away; on a
-   tall screen it simply follows the list. Full-bleed plum ground + a cream
-   hairline; the negative margins undo the sheet's side padding, and its own
-   bottom padding is the sheet's former 32px. */
-.lp-nav-menu-ctas {
-  background: var(--lp-inverted-surface);
-  bottom: 0;
-  box-shadow: 0 -1px 0 color-mix(in srgb, var(--lp-text-on-inverted) 16%, transparent);
+.lp .lp-nav-menu-row {
+  align-items: center;
+  color: var(--lp-ink-100);
+  cursor: pointer;
   display: flex;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  font-weight: 500;
+  justify-content: space-between;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  list-style: none;
+  min-height: 56px;
+}
+.lp-nav-menu-row::-webkit-details-marker {
+  display: none;
+}
+.lp .lp-nav-menu-row:focus-visible,
+.lp .lp-nav-menu-sub a:focus-visible {
+  border-radius: 4px;
+  outline: 2px solid var(--lp-purple-30);
+  outline-offset: -2px;
+}
+/* the bar's caret (.lp-nav-dd__caret), turned up while Resources is open */
+.lp-nav-menu-caret {
+  fill: none;
   flex: none;
-  flex-wrap: wrap;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.25;
+  transition: rotate 0.16s ease;
+}
+.lp-nav-menu-acc[open] .lp-nav-menu-caret {
+  rotate: 180deg;
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-nav-menu-caret {
+    transition: none;
+  }
+}
+.lp-nav-menu-sub {
+  padding: 0 0 12px;
+}
+.lp .lp-nav-menu-sub a {
+  align-items: center;
+  color: var(--lp-ink-80);
+  display: flex;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 500;
+  min-height: 44px;
+}
+/* The CTA pair: the hero's two buttons in their own skins, side by side and
+   equal (Claude's and Stripe's foot), stuck to the sheet's foot (margin-top
+   auto) and to the screen's when the list outgrows it. The negative margins
+   undo the sheet's side padding; the foot's own 32px sides match the rows. */
+.lp-nav-menu-ctas {
+  background: var(--lp-page-bg);
+  bottom: 0;
+  display: grid;
+  flex: none;
   gap: 12px;
-  margin: 12px -18.38px 0 -32px;
-  padding: 16px 18.38px max(32px, env(safe-area-inset-bottom, 0px)) 32px;
+  grid-template-columns: 1fr 1fr;
+  margin: auto -18.38px 0 -32px;
+  padding: 24px 32px max(32px, env(safe-area-inset-bottom, 0px));
   position: sticky;
 }
-/* Pill skins inverted for the plum sheet: filled = cream ground/plum label,
-   outline = cream hairline/cream label. The FX flood (pastel + plum .l2)
-   reads on both, though touch never triggers it. */
-.lp .lp-nav-menu .lp-btn {
-  background: var(--lp-text-on-inverted);
-  color: var(--lp-text);
+.lp .lp-nav-menu-ctas .lp-btn {
+  justify-content: center;
+  min-width: 0;
+  padding-inline: 12px;
+  width: 100%;
 }
-.lp .lp-nav-menu .lp-btn--outline {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px var(--lp-text-on-inverted);
-  color: var(--lp-text-on-inverted);
-}
-/* Under 350 the two pills (135 + 12 + 135) are wider than the sheet's 270px
-   row and stacked, the bar then covering a quarter of a 568-tall screen:
-   there they share the row instead. */
-@media (max-width: 349px) {
-  .lp-nav-menu-ctas {
-    flex-wrap: nowrap;
-  }
-  .lp .lp-nav-menu-ctas .lp-btn {
-    flex: 1 1 0;
-    min-width: 0;
-    padding-inline: 12px;
-  }
-}
-
 /* Scoped scroll lock — same belt-and-braces shape as body.modal-open. */
 body.menu-open:has(main.lp) {
   overflow: hidden;

@@ -4,7 +4,6 @@ import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
 import { LpBanner } from "@/components/sections/landing-v3/LpBanner";
 import { LpBento } from "@/components/sections/landing-v3/LpBento";
 import { LpCta } from "@/components/sections/landing-v3/LpCta";
-import { LpDemo } from "@/components/sections/landing-v3/LpDemo";
 import { LpDive } from "@/components/sections/landing-v3/LpDive";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
@@ -17,6 +16,7 @@ import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
+import { LpVideo } from "@/components/sections/landing-v3/LpVideo";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
@@ -134,9 +134,11 @@ export default function Home() {
           the hero and the lab (audience.css, integrator rule). */}
       <LpNav />
       <LpHero />
-      {/* the demo window, right under the hero (V2 red note: swapped with the logos) */}
-      <LpDemo />
-      {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
+      {/* the demo film, right under the hero, in the demo window's slot (founder 2026-11-03:
+          the launch's demo film, click to play). The animated window (LpDemo) is off the page;
+          its files stay (the dive's Codex story draws with its scene). */}
+      <LpVideo />
+      {/* customers band after the film, before the steps (V2 4911:371 "Trusted by many") */}
       <LpMarquee labelled />
       {/* The infra-first page (2026-10-21/22): what Pancake gives your agent (the diagram), then
           the infra vision as the three steps (the Vercel for GTM: deploy, host, run), which meet

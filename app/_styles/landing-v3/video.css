@@ -1,0 +1,151 @@
+/* Homepage demo film — LpVideo.tsx (founder 2026-11-03). CLASS BLOCK = .lp-video.
+   The launch's 1:31 demo film in the demo window's slot, click to play, drawn after his
+   reference to the pixel: a 16:9 card (3:2 on phones) with radius 16 (12 on phones), the film's
+   own frame as the poster, and in its centre a frosted round mark, clamp(72px, 7.1875vw, 138px)
+   of #3a3a3a at 40 % over a 24 px backdrop blur (55 % and ×1.05 under the pointer, 300 ms
+   ease-out), its white triangle 31 % of the mark's height, nudged 5 % right. Playing: the film
+   in the card with the browser's own controls.
+   The card takes the demo window's place, so neither the first screen nor the logos move:
+   26 px under the hero (hero.css "Homepage first screen": the hero stops 96 px above the fold =
+   these 26 + 70 px of card), at most 1136 wide with 24 px gutters (48 on tablets, 16 on
+   phones), and the window's distance from its bottom edge to the logos (24 + 36 of pills + 60
+   on desktop, 56 + 60 on tablets, 74.885 on phones). The film is 16:9 like the card, so on
+   desktop and tablets nothing is cropped; the phones' 3:2 trims the poster's sides (7.8 % each),
+   which is only Claude's empty cream there (the greeting and composer sit at 20–80 %). */
+
+.lp-video {
+  /* the film's own cream (its Claude window, sampled): what the card shows in the instant
+     between the click and the first frame */
+  --lp-video-ground: #fbf8f5;
+  padding-bottom: 120px;
+  padding-top: 26px;
+  /* positioned: paints over the hero art's (clipped) overflow, like a later sibling should */
+  position: relative;
+}
+.lp-video__card {
+  aspect-ratio: 16 / 9;
+  background: var(--lp-video-ground);
+  border-radius: var(--lp-r-m); /* 16 */
+  /* the demo window's drop shadow (0 4 62.4, 8 % black): the cream film on the cream page */
+  box-shadow: 0 4px 62.4px rgba(0, 0, 0, 0.08);
+  margin-inline: auto;
+  overflow: hidden;
+  position: relative;
+  width: min(1136px, calc(100% - 48px));
+}
+/* the focus ring is the card's: the card clips its children's */
+.lp-video__card:has(.lp-video__poster:focus-visible) {
+  outline: 2px solid var(--lp-text);
+  outline-offset: 4px;
+}
+
+/* at rest: one button over the whole card, the poster and the mark */
+.lp .lp-video__poster {
+  appearance: none;
+  background: none;
+  border: 0;
+  border-radius: inherit;
+  cursor: pointer;
+  display: block;
+  height: 100%;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+}
+.lp-video__poster:focus-visible { outline: none; }
+.lp .lp-video__img { object-fit: cover; }
+.lp-video__mark {
+  align-items: center;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: absolute;
+}
+.lp-video__play {
+  align-items: center;
+  aspect-ratio: 1;
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  background-color: rgb(58 58 58 / 0.4);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  transition: background-color 0.3s cubic-bezier(0, 0, 0.2, 1), scale 0.3s cubic-bezier(0, 0, 0.2, 1);
+  width: clamp(72px, 7.1875vw, 138px);
+}
+@media (hover: hover) {
+  .lp-video__play:hover {
+    background-color: rgb(58 58 58 / 0.55);
+    scale: 1.05;
+  }
+}
+.lp-video__play svg {
+  display: block;
+  height: 31%;
+  translate: 5% 0;
+  width: auto;
+}
+
+/* playing: the film over the card, with its controls */
+.lp-video__film {
+  border-radius: inherit; /* WebKit: a composited <video> is not always clipped by the card */
+  display: block;
+  height: 100%;
+  inset: 0;
+  object-fit: cover;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  visibility: hidden;
+  width: 100%;
+}
+.lp-video__film[data-on] {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  z-index: 2;
+}
+.lp-video__film:focus-visible {
+  outline: 2px solid var(--lp-text);
+  outline-offset: -2px;
+}
+
+/* ══ the one scroll effect, the demo window's (founder 2026-10-12, _decisions §10) ══
+   The card grows from .94 to 1 about its top centre while its top travels from where it sits
+   at the top of the page (the fold at most) to 35 % of the viewport height, and back when the
+   visitor scrolls back up. lp-demo-scroll.ts writes the progress as --lp-demowin-grow on the
+   card (registered non-inheriting in demo.css); the query is lp-demo-timeline.ts GROW_QUERY and
+   the 300 ms its GROW_SETTLE_MS: change them together. Scale 1 everywhere else: phones,
+   tablets, reduced motion, windows from 1450 px tall, no JS (<noscript>, LpVideo.tsx). */
+@media (min-width: 1025px) and (max-height: 1449px) and (prefers-reduced-motion: no-preference) {
+  .lp-video:not([data-grow-done]) .lp-video__card {
+    scale: calc(0.94 + 0.06 * var(--lp-demowin-grow, 0));
+    transform-origin: 50% 0;
+  }
+  /* a page that opens already scrolled: the first value eases in from the first paint's .94 */
+  .lp-video[data-grow-settle] .lp-video__card { transition: scale 0.3s cubic-bezier(0.22, 1, 0.36, 1); }
+}
+
+/* ══ tablets 768–1024: 48 px gutters ══ */
+@media (max-width: 1024px) {
+  .lp-video { padding-bottom: 116px; }
+  .lp-video__card { width: calc(100% - 96px); }
+}
+
+/* ══ phones ≤767: 3:2, radius 12, 16 px gutters ══
+   The card's top edge shows 17 px above the fold, as the demo card's did (hero.css: the buttons
+   80 px above the fold since 2026-11-03, the Product Hunt badge in the 63 px between). */
+@media (max-width: 767px) {
+  .lp-video {
+    margin-top: -17px;
+    padding: 0 0 74.885px;
+  }
+  .lp-video__card {
+    aspect-ratio: 3 / 2;
+    border-radius: var(--lp-r-sm); /* 12 */
+    width: calc(100% - 32px);
+  }
+}

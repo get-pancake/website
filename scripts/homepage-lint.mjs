@@ -68,9 +68,12 @@ const FILES = [
   // V2 Figma replication (2026-10-09): every new homepage copy file (the list must never point
   // at a missing file: readFileSync would throw). The feature cards' LpFeatures.tsx left with
   // the cards (2026-10-11).
-  // demo window (demo-scroll)
+  // demo window (demo-scroll), off the homepage since 2026-11-03 (the demo film took its slot)
   "components/sections/landing-v3/LpDemo.tsx",
   "components/sections/landing-v3/lp-demo-data.ts",
+  // the demo film under the hero (2026-11-03)
+  "components/sections/landing-v3/LpVideo.tsx",
+  "components/sections/landing-v3/lp-video-data.ts",
   // customers band + steps (logos-steps)
   "components/sections/landing-v3/LpMarquee.tsx",
   "components/sections/landing-v3/lp-steps-content.ts",
