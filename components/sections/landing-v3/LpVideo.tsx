@@ -22,6 +22,7 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import { mountWindowGrow } from "./lp-demo-scroll";
 import { LP_VIDEO } from "./lp-video-data";
 
@@ -87,7 +88,8 @@ export function LpVideo() {
     const phone = window.matchMedia(PHONE_QUERY).matches;
     // a src attribute wins over the <source> (the full file); set once, kept for a replay
     if (phone && !film.getAttribute("src")) film.src = LP_VIDEO.srcPhone;
-    setPlaying(true);
+    // shown before play() is asked (iOS Safari is strict about a hidden film), not after it
+    flushSync(() => setPlaying(true));
     film.play().then(
       () => {
         if (!phone) {
