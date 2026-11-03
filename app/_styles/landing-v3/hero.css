@@ -489,8 +489,9 @@
      (frozen svh − the 104px mobile nav) and bottom-anchor the text block —
      the arc keeps its artboard position at the top, the extra height opens
      between arc and headline, and the CTAs land a constant 64px above the
-     fold on every device. On short phones the min-height is inert and the
-     artboard flow is unchanged. */
+     fold on every device (80 on the homepage since 2026-11-03: the Product
+     Hunt badge's room, below). On short phones the min-height is inert and
+     the artboard flow is unchanged. */
   .lp-hero {
     display: flex;
     flex-direction: column;
@@ -530,6 +531,11 @@
      the full 61.44vw. */
   .lp-hero--home .lp-hero-inner {
     padding-top: calc(61.44vw - var(--lp-switch-height) - 23px);
+    /* founder 2026-11-03, on the Product Hunt badge squeezed between the buttons and the demo
+       card ("badly positionned"): the CTAs land 80px above the fold (was 64), so the badge
+       gets 12px above it and 19px below it (block "Product Hunt badge" below). Both audiences:
+       the switch keeps one pixel in the two views. */
+    padding-bottom: 80px;
   }
   .lp-hero-col {
     gap: 23px;
@@ -583,11 +589,12 @@
    its geometry with or without it: it hangs in the room the hero already
    leaves under the buttons. Product Hunt's badge is
    250×54, drawn 44 tall with 71px of room on desktop (96 on tablets). On
-   phones the buttons sit 64px above the fold and the demo card's top edge
-   shows 17px above it (demo.css --lp-demowin-phone-peek): 47px of room, so
-   the badge is 32 tall, 8 under the buttons and 7 above the card, and
-   ::before gives the finger 44. The agents view hides the human column
-   (visibility), and the badge with it. */
+   phones the buttons sit 80px above the fold and the demo film's card top
+   edge shows 17px above it (video.css): 63px of room, so the badge is 32
+   tall, 12 under the buttons and 19 above the card (founder 2026-11-03: at
+   8 and 7 it read as squeezed, "badly positionned"), and ::before gives the
+   finger 44. The agents view hides the human column (visibility), and the
+   badge with it. */
 .lp-hero--home .lp-hero-btns {
   position: relative;
 }
@@ -617,7 +624,7 @@
 @media (max-width: 767px) {
   .lp-hero-ph {
     border-radius: 7px;
-    top: calc(100% + 8px);
+    top: calc(100% + 12px);
   }
   .lp-hero-ph::before {
     content: "";

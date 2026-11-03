@@ -25,20 +25,31 @@ export type LpNavItem = {
  * allow-listed app_nav id; "Talk to sales" is a same-tab link to /demo, like
  * the bar's pill (François, 2026-09-16), and keeps its call_nav id.
  * 2026-10-07: the sheet carries the desktop bar's entries — Product,
- * Industries, Pricing, Resources as a labelled list (LpNav's RESOURCES_MENU,
- * the same prop, so both stay in step), Sign in. Product is one link since
- * 2026-10-13, like the bar's. The CTA pair sticks to the sheet's foot when
- * the list is taller than the screen.
+ * Industries, Pricing, Resources (LpNav's RESOURCES_MENU, the same prop, so
+ * both stay in step), Sign in. Product is one link since 2026-10-13, like the
+ * bar's.
+ * 2026-11-03 (founder, on the plum sheet: "bad drawer - check mobbin or get
+ * something beautiful and best practice from top company"): redrawn after the
+ * phone menus of the top SaaS sites (read at 402 wide the same day: Claude,
+ * Stripe and Vercel share one shape). The sheet is the page's own
+ * cream; its head is the bar (the logo where the bar has it, the close mark
+ * on the burger's spot, compact or not); the entries are reading-size rows
+ * between hairlines; Resources is one row that folds open on Blog, Compare
+ * and Support (a <details>, click only like the bar's menus); the hero's
+ * pair, Start free and Talk to sales, sits side by side at the sheet's foot.
  */
 export function LpNavMenu({ resources }: { resources: LpNavItem[] }) {
   const [open, setOpen] = useState(false);
   const openBtnRef = useRef<HTMLButtonElement>(null);
   const closeBtnRef = useRef<HTMLButtonElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const resourcesRef = useRef<HTMLDetailsElement>(null);
 
   const close = useCallback(() => {
     setOpen(false);
     document.body.classList.remove("menu-open");
+    // the sheet opens folded next time
+    if (resourcesRef.current) resourcesRef.current.open = false;
     openBtnRef.current?.focus();
   }, []);
 
@@ -61,7 +72,7 @@ export function LpNavMenu({ resources }: { resources: LpNavItem[] }) {
       const sheet = sheetRef.current;
       if (!sheet) return;
       const items = Array.from(
-        sheet.querySelectorAll<HTMLElement>("button, a[href]"),
+        sheet.querySelectorAll<HTMLElement>("button, a[href], summary"),
       ).filter((el) => el.offsetParent !== null);
       if (!items.length) return;
       const first = items[0]!,
@@ -146,7 +157,11 @@ export function LpNavMenu({ resources }: { resources: LpNavItem[] }) {
         aria-modal="true"
         aria-label="Menu"
       >
+        {/* the bar, mirrored: the logo where the bar has it, the close mark on the burger's spot */}
         <div className="lp-nav-menu-head">
+          <a className="lp-nav-menu-logo" href="/" aria-label="Pancake home" onClick={close}>
+            <img alt="" src="/lp/lp-nav-logo.svg" width={114.956} height={56} />
+          </a>
           <button
             ref={closeBtnRef}
             type="button"
@@ -154,44 +169,65 @@ export function LpNavMenu({ resources }: { resources: LpNavItem[] }) {
             aria-label="Close menu"
             onClick={close}
           >
-            &#10005;
+            {/* the burger's own 2px plum strokes, crossed */}
+            <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true" focusable="false">
+              <path d="M3 3l12 12M15 3 3 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
           </button>
         </div>
-        {/* Same groups, labels and hrefs as the desktop bar (LpNav) — one
-            source of nav truth. Labelled lists, hairlines between groups. */}
-        <nav aria-label="Menu">
-          <ul className="lp-nav-menu-group">
+        {/* Same entries, labels and hrefs as the desktop bar (LpNav): one source of nav truth. */}
+        <nav aria-label="Menu" className="lp-nav-menu-list">
+          <ul>
             {/* same-page hash (/#how-it-works on the homepage): close()
                 shuts the sheet first, then LpNavScroll scrolls */}
             <li>
-              <a href="/#how-it-works" onClick={close}>
+              <a className="lp-nav-menu-row" href="/#how-it-works" onClick={close}>
                 Product
               </a>
             </li>
             {/* the /for hub (the desktop bar's Industries panel lists every
                 vertical; on phones the hub page is the list) */}
             <li>
-              <a href="/for" onClick={close}>
+              <a className="lp-nav-menu-row" href="/for" onClick={close}>
                 Industries
               </a>
             </li>
             <li>
-              <a href="/pricing" onClick={close}>
+              <a className="lp-nav-menu-row" href="/pricing" onClick={close}>
                 Pricing
               </a>
             </li>
-          </ul>
-          <SheetGroup id="lp-nav-menu-resources" label="Resources" items={resources} onPick={close} />
-          <ul className="lp-nav-menu-group">
+            {/* the bar's Resources ▾, folded: a tap opens Blog, Compare, Support under it */}
+            <li>
+              <details ref={resourcesRef} className="lp-nav-menu-acc">
+                <summary className="lp-nav-menu-row">
+                  Resources
+                  {/* the bar's caret (LpNav .lp-nav-dd__caret), drawn at the row's size */}
+                  <svg className="lp-nav-menu-caret" viewBox="0 0 10 10" width="14" height="14" aria-hidden="true" focusable="false">
+                    <path d="M2 3.75 5 6.75l3-3" />
+                  </svg>
+                </summary>
+                <ul className="lp-nav-menu-sub">
+                  {resources.map((item) => (
+                    <li key={item.href}>
+                      <a href={item.href} onClick={close}>
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            </li>
             {/* 2026-10-07: the bar's "Sign in" (returning customers), same
                 signin_nav id, kept out of the acquisition allow-list. */}
             <li>
-              <a href={APP_ORIGIN} data-analytics-id="signin_nav" onClick={close}>
+              <a className="lp-nav-menu-row" href={APP_ORIGIN} data-analytics-id="signin_nav" onClick={close}>
                 Sign in
               </a>
             </li>
           </ul>
         </nav>
+        {/* the hero's pair, in the hero's skins, side by side at the foot */}
         <div className="lp-nav-menu-ctas">
           <LpFxLink
             href={APP_ORIGIN}
@@ -205,7 +241,7 @@ export function LpNavMenu({ resources }: { resources: LpNavItem[] }) {
               scroll before the navigation, as for the links above. */}
           <LpFxLink
             href={DEMO_PAGE_PATH}
-            className="lp-btn--outline lp-btn--demo lp-nav-menu-call"
+            className="lp-btn--tinted lp-btn--demo lp-nav-menu-call"
             data-analytics-id="call_nav"
             onClick={close}
           >
@@ -214,36 +250,6 @@ export function LpNavMenu({ resources }: { resources: LpNavItem[] }) {
         </div>
       </div>
     </>
-  );
-}
-
-/** A labelled list in the phone sheet: small caps label over its links. */
-function SheetGroup({
-  id,
-  label,
-  items,
-  onPick,
-}: {
-  id: string;
-  label: string;
-  items: LpNavItem[];
-  onPick: () => void;
-}) {
-  return (
-    <div className="lp-nav-menu-group">
-      <p className="lp-nav-menu-label" id={id}>
-        {label}
-      </p>
-      <ul aria-labelledby={id}>
-        {items.map((item) => (
-          <li key={item.href}>
-            <a href={item.href} onClick={onPick}>
-              {item.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </div>
   );
 }
 
