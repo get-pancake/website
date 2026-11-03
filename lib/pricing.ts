@@ -36,8 +36,7 @@ export const TOP_LEVEL = CREDIT_LEVELS[CREDIT_LEVELS.length - 1];
  *  is charged when none is found. */
 export const WORK_EMAIL_CREDITS = 50;
 /** One phone number found (`phone` in the app's task catalogue, pancake-cmo PAN-2280, since
- *  2026-10-28): ten times a work email. Nothing is charged when none is found. Not on the
- *  pricing page yet (lib/copy.ts is locked copy); llms.txt and AGENTS.md name it. */
+ *  2026-10-28): ten times a work email. Nothing is charged when none is found. */
 export const PHONE_CREDITS = 500;
 /** One sending account is in every level; each extra one is a monthly licence. */
 export const EXTRA_SENDER_DOLLARS = 39;

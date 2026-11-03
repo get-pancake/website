@@ -29,7 +29,7 @@ One plan, per workspace, billed monthly. Every level is the same product. Only t
 | About 960 to 4,800 | 480,000 | $679 | 14.3% |
 | About 1,920 to 9,600 | 960,000 | $1,299 | 18% |
 
-The leads figures are estimates. A lead as described below takes about 100 to 500 credits of research. A narrow audience costs more, and Pancake shows the real estimate before a search runs. A work email is 50 credits more, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.
+The leads figures are estimates. A lead as described below takes about 100 to 500 credits of research. A narrow audience costs more, and Pancake shows the real estimate before a search runs. A work email is 50 credits more and a phone number 500, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.
 
 Need more credits or a custom setup? Talk to sales: https://pancake.ai/demo
 

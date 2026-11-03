@@ -4,6 +4,7 @@ import {
   BASE_LEVEL,
   CREDITS_PER_LEAD,
   EXTRA_SENDER_DOLLARS,
+  PHONE_CREDITS,
   WORK_EMAIL_CREDITS,
   formatCredits,
   leadsEstimateLabel,
@@ -237,8 +238,8 @@ export const talkToHuman = {
  *   change, so the page never says tier, package or pack.
  * - Say what the buyer gets (leads, messages, replies, proof from customers),
  *   then what a level gets them. The mechanics come last and short: credits
- *   pay for a search's research and each work email found, everything else
- *   is included (the app's Usage page says the same,
+ *   pay for a search's research, each work email found and each phone number
+ *   found, everything else is included (the app's Usage page says the same,
  *   `apps/frontend/src/features/credits/copy.ts`).
  * - Never a dollar value for a credit. Leads per credit: an ESTIMATE only,
  *   always "about" and as a range (lib/pricing.ts CREDITS_PER_LEAD, founder
@@ -437,7 +438,8 @@ export const pricingProof = {
  * (CREDITS_PER_LEAD: planning figures from pancake-cmo ADR 0078, not a
  * measurement), so the lede says what it rests on and that a narrow audience
  * costs more. The note under the table is the whole of the credit mechanics a
- * buyer needs before the questions.
+ * buyer needs before the questions. The phone price joined it on 2026-11-03
+ * (founder OK; Find phone, pancake-cmo PAN-2280).
  */
 export const pricingLevels = {
   title: "More credits, more leads.",
@@ -445,7 +447,7 @@ export const pricingLevels = {
   columns: { credits: "Monthly credits", leads: "Qualified leads a month", price: "Price", saving: "Saving" },
   leads: (range: string) => `About ${range}`,
   perMonth: "/ month",
-  note: `A work email is ${WORK_EMAIL_CREDITS} credits more, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.`,
+  note: `A work email is ${WORK_EMAIL_CREDITS} credits more and a phone number ${PHONE_CREDITS}, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.`,
 } as const;
 
 /**
