@@ -17,7 +17,7 @@ Sources of truth:
 
 ## The homepage since V2 (2026-10-09; second and final passes 2026-10-12)
 
-Page order (`app/page.tsx`): `LpNav` · `LpHero` · `LpDemo` · `LpMarquee labelled` · `LpAgentLab` (agents view only) · `LpSteps` · `LpBanner` (sky) · `LpDive` · `LpCta sky` · `LpBento` · `LpPricing` · `LpFooter`. At 1654 with motion the page is 8586 tall on a preview (nav 120, hero 657, demo 793, logos 130, steps 1773, banner 753, dive 894, CTA 624, bento 1448, pricing 890, footer 504: every section starts on V2's y) and 7138 in production, where the bento is held back by `BENTO_LIVE` (8195 once its five final cards are live, 1057 tall). At 402 a preview is 11148 tall.
+Page order (`app/page.tsx`): `LpNav` · `LpHero` · `LpVideo` (was `LpDemo` until 2026-11-03) · `LpMarquee labelled` · `LpAgentLab` (agents view only) · `LpSteps` · `LpBanner` (sky) · `LpDive` · `LpCta sky` · `LpBento` · `LpPricing` · `LpFooter`. At 1654 with motion the page is 8586 tall on a preview (nav 120, hero 657, demo 793, logos 130, steps 1773, banner 753, dive 894, CTA 624, bento 1448, pricing 890, footer 504: every section starts on V2's y) and 7138 in production, where the bento is held back by `BENTO_LIVE` (8195 once its five final cards are live, 1057 tall). At 402 a preview is 11148 tall.
 
 Every section is a **direct `<section>` child of `main.lp`**: the agents view (`?audience=agents`) hides all of them except `.lp-hero` and `.lp-agent-lab` (one rule in `audience.css`, integrator-owned). A new section that is not a direct child stays visible there.
 
@@ -40,6 +40,13 @@ Two CSS block names are taken: `lp-demo` is `/demo`'s main (the homepage demo is
 - `.lp-hs-hero` marks the H1 and the aside for the **agents view's** scroll assembly (drift and fade, `data-as-out`); the humans view no longer moves them. Both are transform-free (left offsets). Keep them free of their own `translate`, `opacity`, `visibility` and transitions at ≥1025. `<LpHeroAgentArt />` is the first child of `.lp-hero-art`.
 - Phones: the demo card overlaps the hero's last 17 px (`--lp-demowin-phone-peek` in `demo.css`). Keep that strip free of hero content.
 - Phones (≤767): the homepage hero's top padding is `61.44vw − 51px` (the toggle row and its gap come out of the art zone), so the block's minimum height equals production's and the hero ends on the fold from 390×664 up. Do not add in-flow height above the H1 without taking it off this padding. `/agents` keeps the full `61.44vw`.
+
+### Demo film (2026-11-03): the demo window's slot
+
+- `LpVideo.tsx` (client) + `lp-video-data.ts` + `video.css`: the launch's 1:31 demo film, click to play, in place of the demo window below (founder 2026-11-03: the film there, "pixel for pixel" after his reference, and "the thumbnail should be claude to reflect what we do today"). At rest one button covers the card: the poster (the film's own frame at 0.63 s, Claude's home screen) and a frosted round play mark, `clamp(72px, 7.1875vw, 138px)` of #3a3a3a at 40 % over a 24 px backdrop blur (55 % and ×1.05 under the pointer). A click plays the film in the card with sound and the browser's controls (no download, no speed menu, no picture in picture) and moves the focus onto it; phones (< 768) load the 720p file and open it full screen. The end, or closing iOS's full-screen player, brings the poster back. `preload="none"`: no film byte before the click. The poster is `priority` (on a laptop its top third is the first screen's largest paint).
+- The card is the window's place, so the first screen and the logos do not move: 26 px under the hero (the hero's peek, below), 16:9 at `min(1136px, 100% − 48px)` with radius 16, 48 px gutters on tablets, 3:2 with radius 12 and 16 px gutters on phones (its top edge 17 px above the fold), and the window's distance to the logos. The window's one scroll effect stays (`lp-demo-scroll.ts`, `--lp-demowin-grow` registered in `demo.css`).
+- Files: `public/lp/video/pancake-demo-v1.mp4` (the launch file as delivered, 1920 × 1080, moov first), `-phone.mp4` (1280 × 720, x264 CRF 25, 6.1 MB), `-poster.jpg`. A new cut gets a new name (v2…). The captions are burned into the film: no text track.
+- The window (`LpDemo`, `LpDemoPlayer`, its timelines) is off the page but stays in the code: `LpClaudeScene` and `demo.css` still draw the dive's Codex story.
 
 ### Demo window (V2 `4939:2645`; conversation as storyboard frame "4" `5024:8353`; phones `5024:9506`)
 

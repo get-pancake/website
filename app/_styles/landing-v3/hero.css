@@ -310,8 +310,9 @@
    "The designer page is built so that the top of this product footage
    appears in the hero 100vh": the demo window's top bar peeks at the bottom
    of the first screen on every desktop window height. The window sits 26px
-   under the hero (demo.css), so the hero stops 96px above the fold: 26 of
-   inset + 70 of window. With svh = the frozen viewport height (--lp-svh):
+   under the hero (demo.css; since 2026-11-03 the demo film's card in its
+   place, video.css, with the same 26), so the hero stops 96px above the
+   fold: 26 of inset + 70 of window. With svh = the frozen viewport height (--lp-svh):
 
      H    = clamp(380, max(svh − 216, min(544, svh − 120)), 657)
             ≥ 873 tall   657        the designer's hero; more of the window
