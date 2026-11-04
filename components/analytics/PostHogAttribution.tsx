@@ -4,6 +4,7 @@ import { Suspense, useEffect } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import type { PostHog } from "posthog-js";
 
+import { cleanBankOutcome } from "@/lib/analytics/acquisition-bank.mjs";
 import {
   isAcquisitionEventName,
   PANCAKE_ACQUISITION_EVENT,
@@ -143,6 +144,21 @@ function PostHogAttributionEffects() {
 
     window.addEventListener(PANCAKE_ACQUISITION_EVENT, captureAcquisitionEvent);
     return () => window.removeEventListener(PANCAKE_ACQUISITION_EVENT, captureAcquisitionEvent);
+  }, []);
+
+  useEffect(() => {
+    if (!isApprovedProductionHost()) return;
+    const drain = () => {
+      const state = (window as Window & { __pancakeAcquisitionBank?: { outcomes: unknown[] } }).__pancakeAcquisitionBank;
+      if (!Array.isArray(state?.outcomes)) return;
+      for (const raw of state.outcomes.splice(0, 20)) {
+        const outcome = cleanBankOutcome(raw);
+        if (outcome) withPostHog((posthog) => posthog.capture("acquisition_bank_completed", outcome));
+      }
+    };
+    window.addEventListener("pancake:acquisition-bank", drain);
+    drain(); // The pre-hydration bank may already have finished.
+    return () => window.removeEventListener("pancake:acquisition-bank", drain);
   }, []);
 
   return null;

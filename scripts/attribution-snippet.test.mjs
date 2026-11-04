@@ -45,10 +45,10 @@ function visit(href, referrer = "") {
   return { attributes: write.split("; ").slice(1), state };
 }
 
-test("the served snippet is pancake-cmo's PAN-1321 build", () => {
+test("the served snippet is pancake-cmo's PAN-2339 build", () => {
   assert.equal(
     createHash("sha256").update(snippet).digest("hex"),
-    "daa595c8a5d59f3ba32801b466c0030fd836e91d2adf3b6cc39c0e56487f68ee",
+    "b37a828e7a649851462219eb885e9723feb82f2dbacb8c41e8c4f115ffaac8ad",
   );
 });
 
