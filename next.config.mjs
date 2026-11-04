@@ -3,6 +3,22 @@ import { learnRewrites } from "./lib/learn-proxy.mjs";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  /**
+   * The blog's routes read content/blog/*.mdx at runtime: they revalidate hourly so scheduled
+   * posts go live on their own (lib/posts.ts publishedAt), and the publish cron revalidates them.
+   * The tracer found those files for /blog, /blog/[slug] and the feed but not for /sitemap.xml,
+   * whose runtime renders would have listed no posts. Ship the posts with every route that reads
+   * them (2026-11-04).
+   */
+  experimental: {
+    outputFileTracingIncludes: {
+      "/blog": ["./content/blog/**/*"],
+      "/blog/[slug]": ["./content/blog/**/*"],
+      "/blog/rss.xml": ["./content/blog/**/*"],
+      "/sitemap.xml": ["./content/blog/**/*"],
+      "/api/cron/publish-posts": ["./content/blog/**/*"],
+    },
+  },
   /** In dev, disable webpack filesystem cache — reduces stale chunk manifest mismatches. */
   webpack: (config, { dev }) => {
     if (dev) {
