@@ -1,4 +1,5 @@
 import { APP_ORIGIN } from "./lib/site-config.mjs";
+import { learnRewrites } from "./lib/learn-proxy.mjs";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -130,11 +131,20 @@ const nextConfig = {
   // (/record/screen) builds its QR from its own address. When the event page
   // retires, swap these for a 301 (redirects above): the address was printed
   // on the screen.
+  //
+  // /learn serves the answer pages our AI-search content partner hosts on its
+  // own server (lib/learn-proxy.mjs). Its rewrites run before pages and files
+  // (beforeFiles), as the partner's setup asks; /record's run after them. A
+  // page or public file under a proxied path would fight its rewrite for the
+  // address, so url-guard fails the build if one appears.
   async rewrites() {
-    return [
-      { source: "/record", destination: "https://pancake-tower-two.vercel.app/" },
-      { source: "/record/:path*", destination: "https://pancake-tower-two.vercel.app/:path*" },
-    ];
+    return {
+      beforeFiles: learnRewrites(),
+      afterFiles: [
+        { source: "/record", destination: "https://pancake-tower-two.vercel.app/" },
+        { source: "/record/:path*", destination: "https://pancake-tower-two.vercel.app/:path*" },
+      ],
+    };
   },
   // Baseline security headers (2026-10-07; only HSTS was set, by Vercel).
   // Permissions-Policy blocks camera and geolocation and leaves the
