@@ -20,9 +20,13 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
  *            glide, as a scrubbed timeline does on the best scroll-driven pages. The whole stage
  *            stays in the window: on a short one (a laptop with its dock and bookmarks bar) the
  *            card scales down to fit and the heading keeps its size.
- *   once   — everywhere else (phones, tablets, very short windows, reduced motion): the card's
- *            build-up, played once by lp-play-once.ts like the step cards (prepared ahead, cued
- *            below the fold, played at the focus line, the picture on a fly-by).
+ *   once   — tablets, very short windows, reduced motion: the card's build-up, played once by
+ *            lp-play-once.ts like the step cards (prepared ahead, cued below the fold, played at
+ *            the focus line, the picture on a fly-by).
+ *   stack  — phones (under 768): the same build-up in four pieces, each played once as it reaches
+ *            the focus line: Pancake and its wires, then each of the three layers (founder
+ *            2026-11-03, on a phone: the card is taller than the screen, and played as one block
+ *            its layers lit up below the fold or sat faded while he scrolled to them).
  *
  * Either way the markup is the END picture: no JS, reduced motion and a fly-by show it finished.
  * Timelines in lp-infra-timeline.ts, fetched with GSAP only when needed. Every move is opacity or
@@ -32,6 +36,8 @@ import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
 
 /** the scroll version: the desktop layout (infra.css), motion allowed */
 const SCROLL_MQ = "(min-width: 1025px) and (prefers-reduced-motion: no-preference)";
+/** the stack version: phones, where the three layers stack under Pancake (infra.css) */
+const STACK_MQ = "(max-width: 767px)";
 /** the stage's gap between the heading and the card in the scroll version (infra.css) */
 const SCROLL_GAP = 40;
 /** the least room above and below the pinned stage */
@@ -63,6 +69,16 @@ const loadFlow = (): Promise<PlayOnceRuntime> =>
   Promise.all([import("@/lib/gsap"), import("./lp-infra-timeline")]).then(([{ gsap }, { buildInfraFlow }]) => ({
     gsap,
     build: buildInfraFlow,
+  }));
+const loadHead = (): Promise<PlayOnceRuntime> =>
+  Promise.all([import("@/lib/gsap"), import("./lp-infra-timeline")]).then(([{ gsap }, { buildInfraHead }]) => ({
+    gsap,
+    build: buildInfraHead,
+  }));
+const loadPart = (): Promise<PlayOnceRuntime> =>
+  Promise.all([import("@/lib/gsap"), import("./lp-infra-timeline")]).then(([{ gsap }, { buildInfraPart }]) => ({
+    gsap,
+    build: buildInfraPart,
   }));
 
 type Parts = { section: HTMLElement; pin: HTMLElement; stage: HTMLElement; head: HTMLElement; card: HTMLElement };
@@ -217,6 +233,55 @@ function mountScroll(el: Parts): { dispose: () => void; measure: () => void } {
   };
 }
 
+/** The stack version (phones): Pancake and its wires play as the agents' bar reaches the focus
+    line, each layer as it reaches it (lp-infra-timeline.ts buildInfraHead, buildInfraPart). The
+    card carries data-lp-anim="done" once the layer holding the leads queue has played, so the
+    queue (buildInfraLoop, below) starts as it does after the whole card's build-up. */
+function mountStack({ card }: Parts) {
+  const bar = card.querySelector<HTMLElement>(".lp-infra__agentbar");
+  const parts = Array.from(card.querySelectorAll<HTMLElement>(".lp-infra__part"));
+  const stops: (() => void)[] = [];
+  if (bar) {
+    stops.push(
+      mountPlayOnce({
+        host: bar,
+        stage: card,
+        designWidth: 1040,
+        load: loadHead,
+        restIsEnd: true,
+        qa: { registry: "__lpInfra", key: "head" },
+      }),
+    );
+  }
+  parts.forEach((part, i) => {
+    stops.push(
+      mountPlayOnce({
+        host: part,
+        stage: part,
+        designWidth: 1040,
+        load: loadPart,
+        restIsEnd: true,
+        qa: { registry: "__lpInfra", key: `part${i}` },
+      }),
+    );
+  });
+  const queue = parts.find((part) => part.querySelector(".lp-infra__lead"));
+  const mirror = () => {
+    if (queue?.dataset.lpAnim === "done") card.dataset.lpAnim = "done";
+    else delete card.dataset.lpAnim;
+  };
+  const watch = queue ? new MutationObserver(mirror) : null;
+  if (queue && watch) watch.observe(queue, { attributes: true, attributeFilter: ["data-lp-anim"] });
+  mirror();
+  return {
+    dispose: () => {
+      watch?.disconnect();
+      stops.forEach((stop) => stop());
+      delete card.dataset.lpAnim;
+    },
+  };
+}
+
 export function LpInfraFlow({ children }: { children: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   // the version: scroll where the desktop stage fits the window, the build-up played once
@@ -230,11 +295,12 @@ export function LpInfraFlow({ children }: { children: ReactNode }) {
     if (!card || !section || !pin || !stage || !head) return;
     const el: Parts = { section, pin, stage, head, card };
     const mq = window.matchMedia(SCROLL_MQ);
+    const phone = window.matchMedia(STACK_MQ);
     const canPin = typeof CSS !== "undefined" && CSS.supports("overflow", "clip"); // sticky under .lp's overflow-x
-    let mode: "scroll" | "once" | null = null;
+    let mode: "scroll" | "stack" | "once" | null = null;
     let current: { dispose: () => void; measure?: () => void } | null = null;
     const evaluate = () => {
-      const next = canPin && mq.matches && fitOf(el).fit >= MIN_FIT ? "scroll" : "once";
+      const next = canPin && mq.matches && fitOf(el).fit >= MIN_FIT ? "scroll" : phone.matches ? "stack" : "once";
       if (next === mode) {
         current?.measure?.();
         return;
@@ -244,16 +310,18 @@ export function LpInfraFlow({ children }: { children: ReactNode }) {
       current =
         next === "scroll"
           ? mountScroll(el)
-          : {
-              dispose: mountPlayOnce({
-                host: card,
-                stage: card,
-                designWidth: 1040,
-                load: loadFlow,
-                restIsEnd: true,
-                qa: { registry: "__lpInfra", key: "diagram" },
-              }),
-            };
+          : next === "stack"
+            ? mountStack(el)
+            : {
+                dispose: mountPlayOnce({
+                  host: card,
+                  stage: card,
+                  designWidth: 1040,
+                  load: loadFlow,
+                  restIsEnd: true,
+                  qa: { registry: "__lpInfra", key: "diagram" },
+                }),
+              };
     };
     let pending = 0;
     const onResize = () => {
@@ -266,10 +334,12 @@ export function LpInfraFlow({ children }: { children: ReactNode }) {
     evaluate();
     window.addEventListener("resize", onResize);
     mq.addEventListener("change", evaluate);
+    phone.addEventListener("change", evaluate);
     return () => {
       cancelAnimationFrame(pending);
       window.removeEventListener("resize", onResize);
       mq.removeEventListener("change", evaluate);
+      phone.removeEventListener("change", evaluate);
       current?.dispose();
     };
   }, []);

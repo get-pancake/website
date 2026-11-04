@@ -71,14 +71,16 @@ import type { gsap } from "@/lib/gsap";
  *   resting picture (reload mid-page, an anchor, the code arriving late,
  *   scrolling back up into it) keeps it. Reduced motion keeps it too,
  *   without downloading any animation code.
- * - TOUCH SCREENS, STOPPING ON A CARD (2026-10-13): a thumb flick is the normal way to scroll
- *   there and it flies past whole sections (two flicks cross the three steps: measured in the
- *   iOS simulator), so most cards only ever showed their picture and a first-time reader
- *   took the page for a set of stills (founder: "they are not animated which is a bug").
- *   When the scroll comes to rest on a card whose build-up was skipped or cut short, three
- *   quarters of it in view, the card clears for an instant and plays from its first scene.
- *   Once it has played through at its own pace it is done for good, as everywhere else.
- *   Mouse and trackpad keep the rules above unchanged.
+ * - TOUCH SCREENS, A FLICK (2026-11-03): a thumb flick is the normal way to scroll there and it
+ *   flies past whole sections (two flicks cross the three steps). A card a flick carries in
+ *   does NOT jump to its picture: it stays on its first scene, and once the scroll comes to rest
+ *   it plays by the rules above (at once past the focus line, after the dwell short of it), so a
+ *   card the visitor stops on always builds up in front of them (founder 2026-10-13: "they are
+ *   not animated which is a bug"). A card is never played twice: the 2026-10-13 rule that
+ *   cleared a card already showing its picture and played it again where the scroll stopped is
+ *   gone (founder 2026-11-03, on a phone: "des restarts bizarre sur les animations"; measured
+ *   in the iOS simulator: a story replayed after a flick back up). A card already on screen in
+ *   its resting picture keeps it, as above. Mouse and trackpad keep the rules above unchanged.
  * - prefers-reduced-motion = the picture; lifting it mid-visit lets a card
  *   that has not finished play its build-up (the steps rest on their first
  *   frame, so they still need the timeline to show their picture).
@@ -134,6 +136,11 @@ export type PlayOnceOptions = {
    implementation of "prepare, cue, play at the focus line, picture on fly-by". */
 /** px per ms: faster than this when a card arrives = flying past it */
 export const FAST_SCROLL = 2.5;
+/** the same on a touch screen, where a flick's momentum carries cards across the screen faster
+    than a reader reads well under 2.5 px/ms: a card waits until the momentum has all but died
+    (measured in the iOS simulator, 2026-11-03: at 2.5 a step card began its build-up while the
+    tail of a flick carried it off the top) */
+const FAST_TOUCH = 1;
 /** prepare this far ahead of the viewport, above and below */
 export const PREPARE_MARGIN = "100% 0px 100% 0px";
 /** switch to the first scene this far below the fold (unseen) */
@@ -149,12 +156,10 @@ export const RUSH_S = 0.35;
 /* ── scroll speed: recent scroll positions (one passive listener) ── */
 const samples: { t: number; y: number }[] = [];
 let speedUsers = 0;
-/** touch screens: the scroll has come to rest when no scroll event came for this long (ms) */
+/** the scroll has come to rest when no scroll event came for this long (ms) */
 const SETTLE_MS = 160;
-/** where the "stopping on a card" rule applies: touch is the main pointer */
+/** where the flick rule applies (a flick leaves a card on its first scene): touch is the main pointer */
 const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
-/** share of a card (of the viewport, for a taller card) that must show when the scroll rests */
-const SETTLE_MIN_SHARE = 0.75;
 const settleSubs = new Set<(landed: boolean) => void>();
 let settleTimer = 0;
 /* A scroll to an anchor is under way (LpNavScroll announces it before it scrolls): the scroll
@@ -533,12 +538,6 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   let phase: "rest" | "cued" | "playing" | "done" = "rest";
   let cue = 0;
   let dwell = 0;
-  /** the build-up ran to its end at its own pace, in front of the visitor: done for good */
-  let seen = false;
-  /** this run was skipped to the picture (finish) or fast-forwarded (rush) */
-  let cut = false;
-  /** the stage is clearing before a replay (touch screens) */
-  let replaying = false;
   const touchMq = matchMedia(TOUCH_QUERY);
   let loading = false;
   let queued = false;
@@ -588,14 +587,12 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   };
   const play = () => {
     if (!tl) return;
-    cut = false;
     tl.play();
     phase = "playing";
     host.dataset.lpAnim = "playing";
   };
   const finish = () => {
     if (!tl) return;
-    cut = true;
     tl.progress(1);
     phase = "done";
     host.dataset.lpAnim = "done";
@@ -604,45 +601,14 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   const rush = () => {
     if (!tl || phase !== "playing" || motionMq.matches || !tl.isActive()) return;
     const left = tl.duration() - tl.time();
-    if (left > 0) {
-      cut = true;
-      tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
-    }
+    if (left > 0) tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
   };
-  /* Touch screens: the scroll has come to rest on a card that only ever showed its picture
-     (flown past, built late, or fast-forwarded on the way out). The stage clears for an
-     instant, so the picture is never swapped for the first scene in plain sight, and the
-     build-up plays from its first scene. */
-  const replay = () => {
-    if (!tl) return;
-    replaying = true;
-    const start = () => {
-      replaying = false;
-      if (disposed || !tl || motionMq.matches) return;
-      tl.timeScale(o.speed && o.speed !== 1 ? o.speed : 1);
-      tl.pause(cue);
-      play();
-    };
-    if (typeof stage.animate !== "function") return start();
-    const out = stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, easing: "linear", fill: "forwards" });
-    const next = () => {
-      start();
-      out.cancel();
-      if (!disposed) stage.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: "linear" });
-    };
-    out.finished.then(next, next);
-  };
+  /* The scroll has come to rest. A scroll to an anchor has landed: the cards it brought on
+     screen play by the usual rules. On a touch screen, a card a flick left on its first scene
+     (decide) plays now that the visitor has stopped on it: at once past the focus line, after
+     the dwell short of it. A card that is done stays done (no replay, founder 2026-11-03). */
   const onSettle = (landed: boolean) => {
-    // a scroll to an anchor has landed: the cards it brought on screen play by the usual rules
-    if (landed) decide();
-    if (disposed || !tl || seen || replaying || phase !== "done" || motionMq.matches || !touchMq.matches) return;
-    const r = host.getBoundingClientRect();
-    const vh = window.innerHeight;
-    if (!(r.height > 0 && r.width > 0)) return;
-    const share = (Math.min(r.bottom, vh) - Math.max(r.top, 0)) / Math.min(r.height, vh);
-    // well in view: most of it, and its top not cut (the part a build-up starts in)
-    if (share < SETTLE_MIN_SHARE || r.top < -0.1 * r.height) return;
-    replay();
+    if (landed || (touchMq.matches && phase === "cued")) decide();
   };
   settleSubs.add(onSettle);
 
@@ -666,22 +632,33 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     }
     if (phase === "done") return;
     const landing = arriving();
-    const fast = !landing && scrollSpeed() > FAST_SCROLL;
+    // a touch screen flies past on a flick: the card waits on its first scene (onSettle plays it)
+    const touch = touchMq.matches;
+    const fast = !landing && scrollSpeed() > (touch ? FAST_TOUCH : FAST_SCROLL);
     if (phase === "rest") {
       if (!near) return; // far away: keep resting
-      // flying past, or already showing its picture on screen (built late,
-      // entering from above): the picture, never a frame that empties
-      if (fast || (o.restIsEnd && visible)) return finish();
+      // already showing its picture on screen (built late, entering from above, an observer
+      // that reports late in a flick): the picture, never a frame that empties
+      if (o.restIsEnd && (visible || onScreen())) return finish();
+      if (fast && !touch) return finish(); // a mouse flying past: the picture
       toCue(); // still below the fold: the first scene, unseen
     }
     if (phase === "cued") {
       if (!near) return toRest(); // went away before reaching it: unseen
       if (landing) return; // on its way: it plays once the scroll has landed (onSettle)
-      if (focused) return fast ? finish() : play();
+      if (focused) {
+        if (!fast) return play();
+        // flying past: the picture on a mouse; a touch screen keeps the first scene until the
+        // scroll stops on it (onSettle) or carries it away (toRest, unseen)
+        if (!touch) finish();
+        return;
+      }
       if (visible && ratio >= DWELL_MIN_RATIO) {
         // half on screen but short of the focus line: a visitor who stopped
         dwell = window.setTimeout(() => {
           dwell = 0;
+          // still carried by a flick on a touch screen: the scroll's rest plays it (onSettle)
+          if (touchMq.matches && scrollSpeed() > FAST_TOUCH) return;
           if (phase === "cued" && visible && ratio >= DWELL_MIN_RATIO && !motionMq.matches) play();
         }, DWELL_MS);
       }
@@ -731,7 +708,6 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       tl.eventCallback("onComplete", () => {
         phase = "done";
         host.dataset.lpAnim = "done";
-        if (!cut) seen = true;
       });
       if (motionMq.matches) {
         tl.progress(1, true);
