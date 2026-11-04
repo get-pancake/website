@@ -131,6 +131,10 @@ function pancakeUnits(body, fm) {
   return [...clauses, ...units.filter(Boolean)];
 }
 
+/** When a post goes live: keep in sync with publishedAt() in lib/posts.ts (13:00 UTC on a date). */
+const goesLive = (date) => new Date(/T\d/.test(String(date)) ? String(date) : `${date}T13:00:00Z`).getTime() || 0;
+const scheduled = [];
+
 let errors = 0;
 let warnings = 0;
 const err = (f, m) => { errors++; console.log(`ERROR  ${f}: ${m}`); };
@@ -174,6 +178,17 @@ for (const file of files) {
     if (!fs.existsSync(path.join(PUBLIC, decodeURI(m[1])))) err(rel, `image ${m[1]} is not in public/`);
   }
 
+  // A body link to another post must name a post that exists (2026-11-03). One that points at a
+  // scheduled post is fine: the page renders it as plain text until that post goes live.
+  for (const m of body.matchAll(/\]\(\/blog\/([a-z0-9-]+)\/?(?:[?#][^)]*)?\)/g)) {
+    if (m[1] === slug) err(rel, `links to itself`);
+    else if (!slugs.has(m[1])) err(rel, `links /blog/${m[1]}, which has no post`);
+  }
+  if (fm.date && !/^\d{4}-\d{2}-\d{2}(T[\d:.]+(Z|[+-]\d{2}:\d{2}))?$/.test(String(fm.date))) {
+    err(rel, `date "${fm.date}" is not YYYY-MM-DD (or an ISO time with a zone)`);
+  }
+  if (goesLive(fm.date) > Date.now()) scheduled.push([goesLive(fm.date), slug]);
+
   const paragraphs = body.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
   for (const p of paragraphs) {
     if (/^[a-z]/.test(p) && !/^(iOS|iPhone|mettaCofounder|eBay|npm|http)/.test(p)) {
@@ -206,5 +221,10 @@ for (const file of files) {
   }
 }
 
+if (scheduled.length) {
+  scheduled.sort((a, b) => a[0] - b[0]);
+  const next = new Date(scheduled[0][0]).toISOString().slice(0, 16).replace("T", " ");
+  console.log(`\n${scheduled.length} scheduled post(s); next: ${scheduled[0][1]} at ${next} UTC`);
+}
 console.log(`\nblog-lint: ${files.length} post(s), ${errors} error(s), ${warnings} warning(s)`);
 process.exit(errors ? 1 : 0);

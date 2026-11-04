@@ -11,7 +11,7 @@ import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { articleAuthor, BLOG_FEED_ALTERNATE, isTeamByline } from "@/lib/blog-meta";
 import { serializeJsonLd } from "@/lib/json-ld";
-import { formatPostDate, getAllPosts, getPostBySlug, type PostMeta } from "@/lib/posts";
+import { formatPostDate, getAllPosts, getPostBySlug, isPublished, type PostMeta } from "@/lib/posts";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { OG_IMAGE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
@@ -32,13 +32,47 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
+// Scheduled posts are listed too (lib/posts.ts publishedAt): until its time, a scheduled post's
+// URL shows ScheduledPost (noindex, linked from nowhere), and the first revalidation after that
+// time turns it into the post. Not a 404 on purpose: Next 14 keeps the 404 status and a noindex
+// on a page that was first built as one, even after it regenerates with the post (tested
+// 2026-11-03 with `next start`).
 export async function generateStaticParams() {
-  return getAllPosts().map((p) => ({ slug: p.slug }));
+  return getAllPosts({ includeScheduled: true }).map((p) => ({ slug: p.slug }));
+}
+
+const SCHEDULED_METADATA: Metadata = {
+  title: { absolute: "Coming soon · Pancake" },
+  robots: { index: false, follow: false },
+};
+
+/** What a scheduled post's URL shows before its time: no title, no excerpt, a way back. */
+function ScheduledPost() {
+  return (
+    <main className="lp">
+      <LpNav />
+      <section id="main-content" tabIndex={-1} className="lp-blog-hero" aria-labelledby="blog-scheduled-heading">
+        <div className="lp-content lp-blog-hero__inner">
+          <a className="lp-blog-back" href="/blog">
+            &larr; All posts
+          </a>
+          <h1 id="blog-scheduled-heading" className="lp-blog-post__title lp-display">
+            This post isn&rsquo;t out yet.
+          </h1>
+          <p className="lp-blog-lede lp-blog-post__lede">Come back soon, or read the latest posts on the blog.</p>
+        </div>
+      </section>
+      <LpFooter />
+    </main>
+  );
 }
 
 // Only the posts above exist. An unknown slug gets the static 404 page straight away, as on
 // /for/[vertical]; rendered on demand, it answered 404 with an empty document until scripts ran.
 export const dynamicParams = false;
+
+/** Hourly, so a scheduled post goes live, and links to it appear, without a redeploy. */
+export const revalidate = 3600;
 
 const SITE = SITE_ORIGIN;
 const ORG_ID = `${SITE}/#organization`;
@@ -69,8 +103,10 @@ function readingMinutes(markdown: string): number {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(slug, { includeScheduled: true });
   if (!post) return {};
+  // A scheduled post's URL shows the "not out yet" page, kept out of search until it's live.
+  if (!isPublished(post.meta)) return SCHEDULED_METADATA;
   const url = `${SITE}/blog/${slug}`;
   const title = serpTitle(post.meta);
   // Slack and Discord show twitter:label/data pairs under the unfurl
@@ -109,6 +145,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
    `node` (the hast node react-markdown passes) must not reach the DOM. */
 type TableProps = ComponentPropsWithoutRef<"table"> & { node?: unknown };
 type ImageProps = ComponentPropsWithoutRef<"img"> & { node?: unknown };
+type AnchorProps = ComponentPropsWithoutRef<"a"> & { node?: unknown };
+
+/** The post a body link points at ("/blog/<slug>", with or without a #fragment), or null. */
+const BLOG_LINK = /^\/blog\/([a-z0-9-]+)\/?(?:[?#].*)?$/;
 
 /* The intrinsic size of each image the posts embed (`![alt](/file)`), so the browser keeps
    its box before the file arrives: with no dimensions, the photo that opens "The next
@@ -129,12 +169,24 @@ const markdownComponents: Components = {
     // eslint-disable-next-line @next/next/no-img-element -- markdown image, sized from the map above
     <img {...props} {...MARKDOWN_IMAGE_SIZES.get(src ?? "")} src={src} alt={alt ?? ""} decoding="async" />
   ),
+  // A link to a post that is still scheduled reads as plain text until that post goes live
+  // (the page revalidates hourly), so a live post never sends a reader or a crawler to a 404.
+  a: ({ node: _node, href, children, ...props }: AnchorProps) => {
+    const target = href?.match(BLOG_LINK)?.[1];
+    if (target && !getPostBySlug(target)) return <>{children}</>;
+    return (
+      <a {...props} href={href}>
+        {children}
+      </a>
+    );
+  },
 };
 
 export default async function BlogPost({ params }: Props) {
   const { slug } = await params;
-  const post = getPostBySlug(slug);
+  const post = getPostBySlug(slug, { includeScheduled: true });
   if (!post) notFound();
+  if (!isPublished(post.meta)) return <ScheduledPost />;
 
   const { meta, content } = post;
   const url = `${SITE}/blog/${slug}`;
