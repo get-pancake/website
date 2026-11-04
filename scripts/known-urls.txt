@@ -291,3 +291,7 @@
 /blog/signal-based-selling
 /blog/ai-cold-outreach
 /blog/how-to-get-clients-as-a-fractional-cmo
+
+# Loaded by partner pages served on pancake.ai (/learn, 2026-11-03): never rename or remove.
+/pancake-attribution.min.js
+/pancake-tags.js

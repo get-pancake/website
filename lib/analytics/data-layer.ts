@@ -69,7 +69,8 @@ export type AcquisitionCtaId = WaitlistCtaId | CallCtaId | AppCtaId;
 const WAITLIST_CTA_ID_SET = new Set<string>(WAITLIST_CTA_IDS);
 const CALL_CTA_ID_SET = new Set<string>(CALL_CTA_IDS);
 const APP_CTA_ID_SET = new Set<string>(APP_CTA_IDS);
-const ATTRIBUTION_QUERY_KEYS = new Set([
+/** Query keys a page_location keeps (campaign and click ids); every other query value is dropped. */
+export const ATTRIBUTION_QUERY_KEYS = new Set([
   "utm_source",
   "utm_medium",
   "utm_campaign",
