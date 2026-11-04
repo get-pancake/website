@@ -121,6 +121,64 @@ export function buildInfraFlow(root: HTMLElement): Built {
   return { tl, cleanup, cue: 0 };
 }
 
+/* ── phones: the same build-up, in four pieces ───────────────────────────────────────────────────
+   Under 768 the card is Pancake over three layers stacked one under the other, taller than the
+   screen (990 px on a 402 × 754 iPhone): played as one block, the layers lit up below the fold or
+   sat faded across the bottom of the screen while the visitor scrolled to them (founder
+   2026-11-03, on a phone: "plein de bugs et de comportements pas smooth"). There LpInfraAnim plays
+   it in four pieces, each by lp-play-once as it reaches the focus line: Pancake and its two wires
+   (buildInfraHead), then each layer's picture (buildInfraPart). The moves are buildInfraFlow's, on
+   the same elements, with the same eases; a layer is never dimmed as a whole on a phone, only its
+   picture's pieces come in. progress(1) = the server markup, cue 0, cleanup() as above. */
+
+/** Pancake lights, then the wire from your agent into it and its stem down to the layers */
+export function buildInfraHead(root: HTMLElement): Built {
+  const line = one(root, ".lp-infra__line");
+  const brand = one(root, ".lp-infra__brand");
+  const stem = one(root, ".lp-infra__fork-stem");
+  const cleanup = restStyles([line, brand, stem]);
+
+  gsap.set(line, { scaleY: 0, transformOrigin: "50% 0%" });
+  gsap.set(brand, { autoAlpha: 0.35, scale: 0.94, transformOrigin: "50% 50%" });
+  gsap.set(stem, { scaleY: 0, transformOrigin: "50% 0%" });
+
+  const tl = gsap.timeline({ paused: true });
+  tl.to(brand, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "power3.out" }, 0.05);
+  tl.to(line, { scaleY: 1, duration: 0.4, ease: "power2.inOut" }, 0.45);
+  tl.to(stem, { scaleY: 1, duration: 0.3, ease: "power2.inOut" }, 0.45);
+  return { tl, cleanup, cue: 0 };
+}
+
+/** One layer's picture: the brain's rows settle, the providers' discs pop in, or the Play
+    switches on and its lead comes up (whichever the layer holds) */
+export function buildInfraPart(part: HTMLElement): Built {
+  const rows = all(part, ".lp-infra__mem-row");
+  const discs = all(part, ".lp-infra__disc");
+  const toggle = part.querySelector<HTMLElement>(".lp-infra__toggle");
+  const knob = part.querySelector<HTMLElement>(".lp-infra__toggle-knob");
+  const lead = part.querySelector<HTMLElement>(".lp-infra__lead");
+  const play = toggle && knob ? [toggle, knob] : [];
+  const cleanup = restStyles([...rows, ...discs, ...play, ...(lead ? [lead] : [])]);
+
+  if (rows.length) gsap.set(rows, { autoAlpha: 0.3, x: -6 });
+  if (discs.length) gsap.set(discs, { autoAlpha: 0, scale: 0.6, transformOrigin: "50% 50%" });
+  if (toggle && knob) {
+    gsap.set(toggle, { backgroundColor: TOGGLE_OFF });
+    gsap.set(knob, { x: 0 });
+  }
+  if (lead) gsap.set(lead, { autoAlpha: 0.3, y: 4 });
+
+  const tl = gsap.timeline({ paused: true });
+  if (rows.length) tl.to(rows, { autoAlpha: 1, x: 0, duration: 0.3, ease: "power2.out", stagger: 0.1 }, 0.05);
+  if (discs.length) tl.to(discs, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "power3.out", stagger: 0.06 }, 0.05);
+  if (toggle && knob) {
+    tl.to(knob, { x: 12, duration: 0.25, ease: "power2.inOut" }, 0.05);
+    tl.to(toggle, { backgroundColor: TOGGLE_ON, duration: 0.25, ease: "power1.inOut" }, 0.05);
+  }
+  if (lead) tl.to(lead, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.35);
+  return { tl, cleanup, cue: 0 };
+}
+
 /* ── the scroll version: the three bricks, their pieces, Pancake ─────────────────────────────────
    Founder 2026-10-26: "Your agent needs 3 things to sell", "show that pancake brings all 3 of them
    when scrolling … some components that are spread in the hero and end up as components from an
