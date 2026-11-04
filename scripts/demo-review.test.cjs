@@ -101,6 +101,20 @@ for (const [budget, selfServe] of [
     assert.ok(r.ok);
     assert.equal(isSelfServe(r.value), selfServe);
   });
+test("accepts bare domains and normalizes website addresses", () => {
+  const { parseQualification } = runtime()("lib/demo-qualification.ts");
+  for (const [website, expected] of [
+    ["example.com", "https://example.com"],
+    ["www.example.com/about", "https://www.example.com"],
+    ["  example.com  ", "https://example.com"],
+    ["http://example.com", "http://example.com"],
+    ["https://example.com/about", "https://example.com"],
+  ]) {
+    const result = parseQualification({ ...valid, website });
+    assert.ok(result.ok);
+    assert.equal(result.value.website, expected);
+  }
+});
 test("rejects old flow, unknown budget, invalid service budget and unsafe website", () => {
   const { parseQualification } = runtime()("lib/demo-qualification.ts");
   for (const x of [
