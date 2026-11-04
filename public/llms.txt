@@ -83,6 +83,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Pancake skills](https://raw.githubusercontent.com/get-pancake/agent-plugins/main/skills.md) — how an agent installs the Pancake skills
 - [Full text](https://pancake.ai/llms-full.txt) — this file, the setup steps, the Claude guide and the pricing answers in one document
 - [Blog](https://pancake.ai/blog) — the complete article archive
+- [Blog feed](https://pancake.ai/blog/rss.xml) — every published post, newest first (RSS); new guides go live on their scheduled date
 - [Support](https://pancake.ai/support) — product, account, billing and connection help
 - [Careers](https://pancake.ai/careers) — the team and open roles
 - [Privacy Policy](https://pancake.ai/privacy) — what Pancake (Basalt AI Inc.) collects and how it is used

@@ -1,0 +1,143 @@
+---
+title: "How to Sell to Manufacturers: Plant Buyers, Pilots and Signals"
+seo_title: "How to Sell to Manufacturers: An Industrial Tech Playbook"
+description: "How to sell to manufacturers: who sits in a plant deal, a pilot that turns into a rollout, the OT security review, and job-post signals that show timing."
+date: "2026-11-30"
+last_updated: "2026-11-30"
+related:
+  - "how-to-get-first-customers-b2b-saas"
+  - "buying-signals-b2b"
+  - "tech-stack-signals"
+faq:
+  - question: "How do you sell software to manufacturers?"
+    answer: "Start at one plant, not at headquarters. Find a plant manager or maintenance lead with a problem your product fixes, run a paid pilot on one line against a baseline from the plant's own records, and agree in advance which plants come next if it works. Clear the OT security review early, and let corporate operations sign the rollout once the pilot pays."
+  - question: "How do you sell to plant managers?"
+    answer: "Talk about their line, not about digital transformation. Plant managers answer for output, cost, safety and on-time delivery, so open with one question tied to something specific, like a reliability opening or a system named in their job posts. Show what an install does to production, keep the pilot small enough for a planned stop, and put the success number in writing."
+  - question: "What is industrial tech sales like?"
+    answer: "It moves at the plant's pace. A deal passes through a plant champion, a controls engineer, IT and OT security, and procurement, and any install waits for a planned shutdown. Plan on a paid pilot first and a rollout plan second, with more people in the room at each step, and keep the plant manager involved from the first meeting to the last."
+  - question: "Are trade shows worth it for industrial tech startups?"
+    answer: "Yes, if you book meetings before the show. Plant and operations people still walk shows such as Automate, IMTS and FABTECH to see equipment and software side by side. A booth with no booked meetings collects badges at a high cost per conversation, while walking the floor with a target list and set meetings costs a ticket and your time."
+  - question: "What do OT security teams ask software vendors?"
+    answer: "Whether your product needs any inbound connection to the plant network, how data leaves the plant and through what, how your team gets remote access for support, what happens to production if your product fails, and how your devices or agents get patched. NIST SP 800-82 and the IEC 62443 series are good references to map your answers to."
+---
+
+**TL;DR:** Win one plant before you try to win the company. The plant manager and the maintenance or reliability lead decide whether a pilot happens, controls engineers and OT security decide whether your product touches the network, and operations leadership signs the rollout once the pilot pays. Find plants at the right moment through job posts: reliability, controls and maintenance openings, and the MES, ERP or historian named in the post.
+
+Most of how to sell to manufacturers is choosing which manufacturer. [The National Association of Manufacturers counts](https://nam.org/member-services/smm-membership/) 74% of US manufacturers with fewer than 20 employees, from Census data. In those shops the owner signs, and distributors and state MEP advisors are worth knowing. The plant, pilot and rollout motion below fits mid-size and large manufacturers with several sites. For the earlier steps, see [getting your first B2B SaaS customers](/blog/how-to-get-first-customers-b2b-saas), and [our industrial tech startups page](/for/industrial-tech-startups) has example Plays.
+
+---
+
+## Who sits in a plant deal
+
+A plant deal has a champion on the floor, a technical gate, a security gate and a signature upstairs. Here is who plays each part, and the first question each one asks:
+
+| Role | Measured on | First question they ask you | When they show up |
+|---|---|---|---|
+| Plant manager | Output, cost per unit, safety, on-time delivery | "What happens to my line while you install?" | First meeting |
+| Maintenance or reliability manager | Unplanned downtime, maintenance cost | "Does this add work for my techs, or take it away?" | First meeting, often as the champion |
+| Controls or automation engineer | Uptime of PLCs, SCADA and the historian | "What does it connect to, and how?" | Technical review |
+| IT and OT security | Network segmentation, remote access, patching | "Does it need a way into the plant network?" | Before anything connects |
+| Operations VP or COO | Performance across plants | "What did the pilot plant gain, in dollars?" | After the pilot |
+| Procurement | Supplier onboarding, terms, insurance | "Are you set up as a supplier?" | At contract |
+
+The plant manager can say yes to a pilot and no to anything. Corporate signs the rollout, but a rollout no plant asked for has no champion.
+
+---
+
+## How to sell to manufacturers through a pilot
+
+In manufacturing, the pilot is the sale: one line or one asset class, a baseline, a success threshold written down before install, and a plan for what happens when it works.
+
+1. **Scope one line or one asset class.** Twelve motors on a packaging line, not "the plant." Small enough to install in a planned stop, big enough to show a result.
+2. **Measure the baseline first.** Downtime minutes, scrap rate, changeover time or energy per unit, taken from the plant's own records for the months before you arrive.
+3. **Write the threshold down.** Agree on the number that means "it worked," and who checks it, before anything goes in.
+4. **Name an owner on site.** A maintenance lead or engineer with time set aside for the pilot, not "the team."
+5. **Charge for it.** A paid pilot, credited against the rollout, gets the attention a free one doesn't.
+6. **Agree the next step in advance.** Which plants come next, who signs, and whether the money is capital or operating budget, written into the pilot agreement.
+7. **Time the install.** Hardware goes in during planned shutdowns, while software that reads existing data can start sooner. Ask for the shutdown calendar in the first meeting.
+
+Say your software predicts motor failures. A pilot on 12 motors that cuts unplanned stops on one line from five a quarter to two, proven with the plant's own maintenance logs, is the slide the operations VP shows the other plants.
+
+---
+
+## The OT security review, and how to pass it
+
+If your product reads data from the plant floor or sits on the plant network, IT and OT security will review it before anything connects. Read [NIST SP 800-82](https://csrc.nist.gov/pubs/sp/800/82/r3/final), NIST's guide to operational technology security, before that meeting: Revision 3 dates from September 2023, and a Revision 4 draft took public comments through November 30, 2026. Teams may also hold you to the IEC 62443 series of standards for industrial control security.
+
+Answer these before anyone asks:
+
+- Does the product need any inbound connection to the plant network, or does data only leave it?
+- How does data leave: through a gateway, the historian or a cloud connector, and who controls it?
+- How does your team get remote access for support, and who approves each session?
+- What happens to the line if your product fails? It should fail without stopping production.
+- How are your devices or agents patched?
+
+A one-page architecture diagram showing data flowing out, never in, settles several of these before the meeting starts.
+
+---
+
+## When plants buy: shutdowns, budgets and hiring
+
+Plants schedule installs around production and spending around the fiscal year, so ask about both in the first meeting.
+
+- **Planned shutdowns** are when hardware and network changes can go in. Miss one and the pilot waits for the next.
+- **Capital or operating budget.** Ask which one your product would come from. The two have different approvers and different calendars.
+- **Month-end and quarter-end pushes.** A plant chasing its shipping numbers won't give you the line that week.
+- **Hiring.** US manufacturers employ about 12.65 million people and had 594,000 open jobs in September 2026, by the [Bureau of Labor Statistics' preliminary count](https://www.bls.gov/iag/tgs/iag31-33.htm). Plants hire all year, so a hiring signal needs a role filter to mean anything.
+
+---
+
+## Signals that a plant is ready for your product
+
+Plant staff post little, so job posts carry most of the signal. What a plant hires for shows its gaps, and what the posts ask for shows its systems.
+
+- **Reliability, maintenance and controls openings.** A reliability engineer or maintenance planner role points to downtime work. A controls engineer role points to automation or integration work.
+- **System names in job posts.** Posts often ask for AVEVA PI (once OSIsoft PI), Ignition, Maximo or SAP PM, or for an ERP such as SAP or Epicor. If you plug into or replace one, those posts are your list. [Tech stack signals](/blog/tech-stack-signals) explains what a job post can and can't prove about a company's systems.
+- **A new site.** A batch of openings for a plant manager, maintenance techs and operators in a town where the company had no plant. Watch these by hand, along with local economic development news.
+- **Continuous improvement and digital manufacturing roles.** Someone with a mandate to change how the plant runs, and a budget to do it.
+- **Funding.** Battery, robotics and defense hardware startups that raised to build factories are choosing systems for plants that don't exist yet.
+- **Posts about the problem.** Rare, but a plant leader writing about unplanned downtime or OT security is worth a message that week.
+- **Reactions to trade show posts.** Everyone who reacted to a show's post about a topic you sell into is a list of people who care about it.
+- **Lookalikes of your best plant.** Same industry, process type and size.
+
+[The full guide to B2B buying signals](/blog/buying-signals-b2b) covers how to weigh these against each other.
+
+---
+
+## Where plant leaders meet vendors
+
+Plant people still meet vendors at trade shows, and through the integrators, distributors and advisors they already trust.
+
+- **Trade shows.** [Automate 2027](https://www.automateshow.com/) runs May 10 to 13 at the Las Vegas Convention Center, with free registration. IMTS, FABTECH, ProMat and Pack Expo cover machining, metal fabrication, material handling and packaging. Book meetings before you go; a booth without them is an expensive way to collect badges.
+- **System integrators and distributors.** Integrators install and maintain plant systems. One who knows your product brings it into projects you would never hear about.
+- **MEP centers.** [NIST's Manufacturing Extension Partnership](https://www.nist.gov/mep) supports small and medium-sized manufacturers through state centers, with nearly 1,400 advisors at more than 450 service locations. An advisor who trusts your product can take it to clients.
+- **User groups.** Plant engineers meet at the user conferences of their historian, SCADA and ERP vendors.
+
+---
+
+## What to write to a plant manager
+
+Plant leaders answer specific questions about their own line. Name the signal, ask about the work, and skip the transformation talk.
+
+- **Reliability opening:** "Saw the reliability engineer opening at your Ohio plant. Is the role about cutting unplanned stops, or starting a PM program?"
+- **Historian in a job post:** "Your controls engineer posting asks for AVEVA PI. Who outside the controls team looks at that data today?"
+- **New site:** "Congrats on the new plant. Will it run the same MES as your other sites, or start fresh?"
+- **Downtime post:** "Your post on unplanned downtime hit home. Which asset stops your line most often?"
+
+Write to the plant manager or the maintenance lead first. Corporate operations comes in once a plant wants the pilot.
+
+---
+
+## Running a plant-hiring Play in Pancake
+
+Pancake is our product. It finds buyers through the signals they leave in public and starts the conversation under your name. Plant staff post little, so job posts carry the weight:
+
+- plants hiring reliability engineers, controls engineers or maintenance planners ([companies hiring](/plays/companies-hiring));
+- companies whose job posts name the historian, CMMS or MES you plug into;
+- people who reacted to one post you choose, such as a trade show's exhibitor announcement.
+
+A Play is one sentence: "Find plant managers and maintenance leads at US food and beverage manufacturers with 200 to 2,000 people whose job posts name Maximo." You read each lead's one-line reason and approve the ones worth a message. The first one asks about the signal: "Saw Maximo in your maintenance planner posting. Do most work orders start from inspections, or from breakdowns?" It goes out as a direct message from your account, on weekdays during working hours in your time zone, and stops when they reply.
+
+Pancake never sees sensor, SCADA or production data, and it doesn't send email. Each lead needs a public profile, and a 15-person machine shop with no job posts won't show up at all; reach those through distributors and MEP advisors.
+
+Pricing starts from $99 a month per workspace for 60,000 credits ([pricing](/pricing)), and the 7-day free trial gives you 30,000 credits once you add a credit card. For more plant Plays, see [our industrial tech startups page](/for/industrial-tech-startups).

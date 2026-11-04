@@ -1,0 +1,128 @@
+---
+title: "How to Find Companies That Are Hiring, for Recruiters and Sellers"
+seo_title: "How to Find Companies That Are Hiring: 6 Sources (2026)"
+description: "How to find companies that are hiring: job boards, career pages, ATS job boards and funding news, and how to tell a fresh job post from a stale one."
+date: "2026-11-30"
+last_updated: "2026-11-30"
+related:
+  - "how-to-get-clients-for-recruitment-agency"
+  - "job-postings-as-buying-signals"
+  - "recruitment-business-development-messages"
+faq:
+  - question: "How do I find companies that are actively hiring?"
+    answer: "Search job boards with a date filter for the role you care about, then check each company's own career page or applicant tracking system board to confirm the role is live and see when it first went up. Look for several openings at once or reposts of the same role. Add recent funding rounds, which point to hiring before the posts appear."
+  - question: "How can I find startup companies that are hiring?"
+    answer: "Use startup job boards such as Wellfound and Y Combinator's Work at a Startup, and the 'Who is hiring?' thread Hacker News runs at the start of each month. Then search the job boards that startups' applicant tracking systems host, such as jobs.lever.co or jobs.ashbyhq.com, with a site: search. Recent funding announcements show which startups are about to hire."
+  - question: "How do I know when a job was first posted?"
+    answer: "Look past the 'posted 3 days ago' label, which can reflect a repost. Many career pages carry a datePosted field in their structured data, which Google defines as the original date the employer posted the job. Greenhouse job boards expose a first_published date. If neither exists, note the date you first saw the post and check again a week later."
+  - question: "Which companies are hiring right now?"
+    answer: "No published list stays current for long, because roles open and close every week. Build your own: filter job boards to this week's posts for the roles you track, keep the companies hiring for themselves, drop agency listings, and confirm each one on the company's career page. Recheck the list weekly and note which roles stay open."
+  - question: "Is a company that is hiring a good sales lead?"
+    answer: "Often, if the role connects to what you sell. A company hiring a role you place needs a recruiter. A company hiring a sales team may need sales tools, training or data. A company hiring its first security engineer is starting a security program. The job post tells you the budget exists and names the team that owns it."
+---
+
+**TL;DR:** This guide is for recruiters and B2B sellers looking for companies that are hiring, not for job seekers. Search job boards with a date filter, then go to the source: the company's career page and the job board its applicant tracking system (ATS) hosts, where you can see when a post first went up. Funding news predicts hiring a few months ahead. As a rule of thumb, a post is fresh in its first two weeks and a sign of a stalled search after six.
+
+Recruiters read a job post as a client lead. Sellers read it as a budget: a company hiring a sales team will buy what that team needs. Both need the same skills to find companies that are hiring: where to look, how to filter out noise, and how to date a post.
+
+---
+
+## Six places to find companies that are hiring
+
+Each source shows a different slice, with different noise. Combine two or three.
+
+| Source | What you see | How fresh | Watch out for | Best for |
+|---|---|---|---|---|
+| Large job boards | Most posted roles, searchable by title and date | Filter by date posted | Agency listings and reposts that look new | Any role, at volume |
+| Startup job boards and threads | Startups, often with pay shown | Posted by the company | Founders who prefer to hire directly | Startup roles |
+| Company career pages | Every open role at one company | Sometimes a datePosted field | Evergreen "talent community" posts | Researching one account |
+| ATS-hosted job boards | Clean lists from Greenhouse, Lever, Ashby, Workable | First-published dates on some | Boards left up after a hiring freeze | Tech and B2B companies |
+| Funding news | Hiring before the posts exist | Months ahead | Rounds that are announced late | Startups and scale-ups |
+| People posting that they're hiring | The hiring manager, in their own words | The same week | Recruiters posting for their clients | Founders and team leads |
+
+---
+
+## Search job boards like a researcher
+
+Job boards hold the most roles, and their search tools do more than most people use. [Indeed's search help](https://www.indeed.com/help/job-seekers/articles/204488950-improving-your-job-searches-tips-and-help?hl=en&co=US) documents filters such as date posted and job type, plus operators: `title:` to match the job title, quotation marks for an exact phrase, OR and AND, a dash to exclude a word, and `company:` for one employer.
+
+A search a recruiter could run for a controller desk:
+
+`title:"financial controller" -recruiter -staffing`
+
+The two exclusions drop some agency listings, along with the odd employer post that uses those words. Filter by date posted, sort by date, and you have this week's new searches in your niche.
+
+Agency listings still get through, so learn their tells: "our client", "on behalf of a leading company", or no employer name at all. A recruiter can't pitch another agency's listing, and a seller gains nothing from it.
+
+For startups, use the boards built for them. Wellfound and Y Combinator's Work at a Startup list startup roles, and [Hacker News runs a "Who is hiring?" thread](https://news.ycombinator.com/submitted?id=whoishiring) at the start of each month. Its rules allow posts only from people at the hiring company, no recruiting firms, so every entry is a company hiring for itself. The same rules ask readers to email posters only about the job, so use the thread to spot companies and reach the hiring manager another way.
+
+---
+
+## Go to the source: career pages and ATS job boards
+
+A job board shows a copy of the post. The company's career page shows the original, and usually every other role the company has open, which tells you whether you are looking at one seat or a team build.
+
+Many companies publish their roles through an ATS that hosts a public job board at a predictable address:
+
+- Greenhouse: `job-boards.greenhouse.io/<company>`
+- Lever: `jobs.lever.co/<company>`
+- Ashby: `jobs.ashbyhq.com/<company>`
+- Workable: `apply.workable.com/<company>`
+
+Those addresses make a cross-company search possible. In Google, `site:jobs.lever.co "account executive" "New York"` returns account executive roles at companies that hire through Lever. Repeat it for each ATS and each role you track.
+
+If someone on your team writes code, the boards also have public feeds. [Greenhouse's Job Board API](https://docs.greenhouse.io/job-board.html) needs no authentication for reading, and a single job returns both a `first_published` date and an `updated_at` date. That difference matters for the next section. Lever and Ashby document similar public endpoints for published postings.
+
+---
+
+## Funding news: hiring before the posts
+
+A funding round is a hiring forecast. The job posts often follow within weeks or months, and the founder who raised the money usually still makes the hiring calls.
+
+In the US, a company that sells securities in an offering under Rule 504 or 506 of Regulation D must [file a Form D notice within 15 days after the first sale](https://www.sec.gov/resources-small-businesses/exempt-offerings/filing-form-d-notice), and the filing goes through EDGAR, where anyone can search it. A Form D sometimes surfaces a raise before any press release. Not every round shows up there, so pair it with funding announcements.
+
+[How to find recently funded startups](/blog/how-to-find-recently-funded-startups) covers funding sources in depth, and how soon after a round to reach out.
+
+---
+
+## What counts as a fresh job post
+
+A fresh post is one that went up recently and is still live. The tricky part is the date: the "posted 3 days ago" label on a board can reflect a repost, not the day the search began. Look for the original date instead:
+
+- **On career pages,** view the page source and search for `datePosted`. [Google's job posting documentation](https://developers.google.com/search/docs/appearance/structured-data/job-posting) defines it as the original date the employer posted the job.
+- **On Greenhouse boards,** the API returns `first_published` as well as `updated_at`. Date the post by the first one.
+- **Everywhere else,** note the date you first saw the post. A role you logged in September and still see in November is a two-month search, whatever the label says.
+
+Then sort what you find. Our rule of thumb, not survey data:
+
+| Age of the post | What it usually means | What to do |
+|---|---|---|
+| Under 2 weeks | A search is starting | Move first, ask about the role |
+| 2 to 6 weeks | The team is still trying alone | Offer help with the hard part |
+| Over 6 weeks | The search is stalling | Ask what is making it hard to fill |
+
+Some posts are never fresh. A "talent community", a "general application" or a role marked "always hiring" collects CVs for later, usually with no live search behind it. A post whose expiry date has passed, or that vanished from the career page, is closed even if a board still shows it. [How to get clients for a recruitment agency](/blog/how-to-get-clients-for-recruitment-agency) explains why the six-week mark matters to a recruiter.
+
+---
+
+## Read the post the way a recruiter would
+
+The post tells you whether the search is worth a message, and how to open it. Read it for five things:
+
+1. **Who posted it.** An employer's post names the company. An agency listing hides it behind "our client", and only the first one is a lead.
+2. **The agency line.** "No agencies" or "no third-party recruiters" closes the door. A post that says nothing leaves it open.
+3. **The pay range.** When the post lists one, you can size your fee before writing a word, and a range well below market can explain why the role is still open.
+4. **Urgency words.** "Immediate start", "backfill" or a fixed start date tells you how fast they need someone. "Relocation offered" suggests the local talent pool is thin.
+5. **The hiring manager.** A "reports to" line gives you the title of the person to write to.
+
+Sellers read the same post for a different question: what the company will buy next. [Job postings as buying signals](/blog/job-postings-as-buying-signals) maps roles to purchases, and a seller of software can read the requirements for the tools the team runs, the idea behind [finding companies by the tools in their job posts](/plays/tech-stack). Once you have a lead, [recruitment business development messages](/blog/recruitment-business-development-messages) shows how to turn what you read into a first line.
+
+---
+
+## Running the hiring search in Pancake
+
+Pancake is our product. Name a role, and it finds companies with recent job posts for it, keeps only those hiring for themselves, checks each one against your ideal customer profile, then finds the person you sell to there ([companies hiring](/plays/companies-hiring)). Staffing agencies' posts are left out, and you choose how recent the posts must be. Two related signals help here: the tools named in job posts, and recently funded companies.
+
+A Play is one sentence, such as "Find CTOs at US software companies with 50 to 300 people hiring site reliability engineers." Each lead comes with one line on why it fits, so you can see which post put the company on the list. The first message asks one question tied to the post: "Saw two SRE roles open at your company. Is that a new platform, or more on-call cover?" It goes out as a direct message from your own account, and a reply stops the sequence.
+
+Pancake only sees roles that are posted, so a search filled through referrals never shows up. It sends no email and makes no calls, and it is built for finding clients, not for job seekers. Pancake starts from $99 a month per workspace, which covers 60,000 credits ([pricing](/pricing)). Try it free for 7 days with 30,000 credits; the trial needs a card. [Pancake for recruiting agencies](/for/recruiting-agencies) shows the recruiter Plays.

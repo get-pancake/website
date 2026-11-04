@@ -1,0 +1,136 @@
+---
+title: "How to Sell Developer Tools: Win the Developer, Then the Budget"
+seo_title: "How to Sell Developer Tools: Bottom-Up and Top-Down"
+description: "How to sell developer tools: let developers adopt it on their own, spot the accounts ready to pay, then reach engineering leaders through job-post signals."
+date: "2026-11-22"
+last_updated: "2026-11-22"
+related:
+  - "how-to-get-first-customers-b2b-saas"
+  - "founder-led-sales"
+  - "tech-stack-signals"
+faq:
+  - question: "How do you sell to developers who hate being sold to?"
+    answer: "Let the product make the first sale. Publish pricing, keep a working quickstart one click from the homepage, and let people try the tool without a call. Write only when you have a reason, like usage spreading inside their company or a post about the problem you fix. Then ask one technical question and pitch nothing."
+  - question: "What does a developer tools go-to-market look like?"
+    answer: "It runs two motions. Bottom-up, developers find the tool through docs, open source or a community and adopt the free plan. Top-down, someone sells to the engineering leader once a team depends on it, through price, the security review and procurement. Usage data picks the accounts. Job posts and public posts find teams that haven't signed up."
+  - question: "What is a product-qualified account?"
+    answer: "A company whose use of your product shows it's ready for a sales conversation: several active users from one company domain, usage in production, a team hitting a free-plan limit, or questions about SSO, invoices or a security review. Write to the most active user first, and offer help with their setup before you ask to meet their manager."
+  - question: "When should a devtools startup start doing sales?"
+    answer: "When accounts ask for what a self-serve checkout can't handle: contracts, invoices, security questionnaires, SSO or custom limits. Those requests mean a team, not one developer, depends on the tool. Founders can run these deals at first and learn what buyers ask. Hire for sales once the requests arrive faster than the founders can answer them well."
+  - question: "How do I find companies that use the stack my tool integrates with?"
+    answer: "Read their job posts. Engineering posts name the tools a new hire must know, such as Kubernetes, Terraform or Snowflake, and none of those appear in a scan of the company's website. A mention shows the team works with the tool, not that everything runs on it. Website scanners help only for front-end tools like analytics scripts."
+---
+
+**TL;DR:** A developer tool gets bought twice. First a developer adopts the free version because it fixed something in an afternoon. Then an engineering leader pays, once a team depends on it and security has signed off. Build the self-serve path first, watch for accounts where usage spreads, and reach the leaders through three outside signals: job posts that name the stack your tool plugs into, companies hiring platform or DevOps engineers, and engineers posting about the problem you fix.
+
+Most advice on how to sell developer tools picks one side: pure product-led growth, or a sales team chasing VPs. You need both, and the work is making them meet. If you have no paying customers yet, start with [how to get the first customers for a B2B SaaS product](/blog/how-to-get-first-customers-b2b-saas).
+
+---
+
+## Who adopts, who pays, and who can say no
+
+Four groups touch most devtools deals, and each wants something different.
+
+| Who | What they want | What they ask you | When they show up |
+|---|---|---|---|
+| The developer | A fix for today's problem, with no sales call | "Does it work with our stack? Can I try it now?" | Day one |
+| Engineering manager or head of platform | Fewer pages at night, a team that ships | "What does it replace, and who maintains it?" | When a second team wants it |
+| VP of Engineering or CTO | Budget, risk, headcount | "What does it cost at our scale, and what does it save?" | At the paid plan or the contract |
+| Security and procurement | Proof the risk is handled | "Where does our data go? Do you have SOC 2? SSO?" | Before signature |
+
+The developer rarely signs. In the [2025 Stack Overflow Developer Survey](https://survey.stackoverflow.co/2025/work), 19.8% of respondents said they had influenced the purchase of a substantial addition to their company's tech stack in the past year, and 52.6% had neither influenced nor endorsed any purchase. Developers decide what gets tried. Someone else decides what gets paid for.
+
+The same survey shows what each side screens for. Respondents ranked an easy-to-use API, a complete API and a reputation for quality as the top reasons to endorse a tool. Security or privacy concerns came first among the reasons to reject one, ahead of prohibitive pricing.
+
+---
+
+## The free path has to make the first sale
+
+Your free plan is your first salesperson, so it has to finish the job alone. A developer who lands on your site wants three answers within minutes: what the tool does, whether it fits their stack, and what it costs.
+
+- **Treat the docs as the sales page.** Put the quickstart one click from the homepage, and test it on a clean machine every release.
+- **Get to a first success in one sitting.** Pick the smallest result that proves the tool works, like a first trace, a first passing check or a first deploy. Measure how long new users take to reach it, then cut steps.
+- **Publish the price.** Show what the paid plan costs and where the free plan stops. A hidden price tells a developer the deal will involve a call.
+- **Keep the free tier ungated.** No "talk to us" form to try it. Save the form for the contract.
+
+Put the features an engineering leader needs, such as SSO, audit logs, invoices and a security review, where the paid plans start. The developer brings you in. Those features give the person with the budget a reason to pay.
+
+---
+
+## What open source and community tell you, and what they don't
+
+Open source and a community put the tool in front of developers before any sales conversation, and they show you who is paying attention. The trap is treating every star as a lead.
+
+- **Stars and forks** show interest, not use.
+- **Issues and pull requests** from someone at a company show a team running your code. Log it against that company in your CRM.
+- **Questions in your Discord, Slack or forum** are raised hands. Answer in public, then follow up with the person who asked.
+- **Package download counts** show volume. They don't say who downloaded.
+
+One rule: don't mine GitHub for contact details to cold-email people. [GitHub's Acceptable Use Policies](https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies) bar using information from the service, whether scraped or collected through the API, for spamming, including unsolicited emails to users. Use repo activity to rank accounts, and talk to the people who came to you.
+
+---
+
+## Usage that says an account is ready to talk
+
+Bottom-up adoption turns into a deal when usage spreads past one person. Watch your product data for accounts that show it, often called product-qualified accounts:
+
+1. Several active users from the same company domain.
+2. Usage in production, not only in a test project.
+3. A team hitting a free-plan limit.
+4. Someone asking about SSO, audit logs, invoicing or a security questionnaire.
+5. A second team at the same company signing up on its own.
+
+When an account shows more than one of these, write to its most active user and offer help, not a demo: "Saw your team moved two services onto the tool this month. Did anything in the setup fight you?" That user is your champion. Ask what their manager will want to see before anyone pays.
+
+**This week:** pull every account with more than one active user from your product data, sort by usage, and send that note to the top ten.
+
+---
+
+## How to sell developer tools to the leader who pays
+
+An engineering leader buys outcomes and weighs risk. Expect four questions, and send the answers before the call.
+
+1. **What does it cost at our scale?** Quote their usage, not a per-seat sticker. With usage-based pricing, price last month's usage at the paid rate.
+2. **What does it replace?** Name the script, the tool or the on-call hours it retires. The leader will weigh you against building it in-house, say two engineers for a quarter, so do that math first.
+3. **What happens if it breaks, or if we leave?** Show the failure mode, the support terms and how their data gets out.
+4. **Will security approve it?** Security tops developers' reasons to reject a tool, so assume the security team asks first. Have a SOC 2 report ready, or the date your audit ends. The [AICPA's SOC suite](https://www.aicpa-cima.com/resources/landing/system-and-organization-controls-soc-suite-of-services) lists SOC 2 as a report on a service organization's controls relevant to security, availability, processing integrity, confidentiality or privacy. Add a filled-in security questionnaire, a data processing agreement and SSO.
+
+Give your champion a one-page brief to forward: the problem in their words, current usage, the price and the security answers. The decision may happen in a meeting you never attend. [Founder-led sales](/blog/founder-led-sales) covers running these conversations yourself before you hire.
+
+---
+
+## Three signals that start devtools sales conversations
+
+Product data only covers accounts that already found you. For the rest, watch public signals that a team has the problem now. Say you sell a tool that catches drift in Terraform-managed infrastructure (a hypothetical example):
+
+| Signal | What it suggests | Where to see it | Who to write to | A first question |
+|---|---|---|---|---|
+| Job posts naming the stack you plug into | The team runs Terraform and hires for it | Job boards and careers pages | Head of platform or infrastructure | "Saw Terraform in your platform posting. When someone changes infrastructure by hand, how does the team find out?" |
+| Companies hiring platform or DevOps engineers | Infrastructure is a priority and the team is short | Job posts for platform, DevOps and SRE roles | The manager the role reports to | "Is the new platform role there to build something new, or to keep the current setup running?" |
+| Engineers posting about the problem | Live pain, in their own words | Public posts, Hacker News, Reddit, comments on rival vendors' posts | The author | "You wrote about drift breaking a deploy. Was that a one-off, or a pattern?" |
+
+Each signal has a catch. A job post lists the tools a team wants candidates to know, not proof of what's installed, so [confirm which technology a company uses](/blog/tech-stack-signals) before you write. A hiring post can mean they'll build in-house: offer to cover the gap while they hire. A post about the problem can be a vent rather than a plan. The same three signals drive [how Pancake works for devtools startups](/for/developer-tools).
+
+---
+
+## Selling to developers in one message
+
+Engineers delete anything that reads like a template. Name the signal, ask one technical question about their setup, and pitch nothing: two sentences, no link, no request for a call. When they answer, reply with substance before you mention a demo.
+
+A message that fails: "Hi Sam, I noticed your company is growing fast. We help teams like yours ship faster. Open to a 15-minute call?" It names no signal and asks for their time. One worth answering: "Saw your post on Terraform drift. Do you catch it in CI, or after something breaks?"
+
+---
+
+## Running devtools Plays in Pancake
+
+Pancake is our product. It finds the people behind signals like these and opens the conversation under your name. You describe an audience in one sentence, it builds the search (a Play), and the Play runs on the schedule you pick. For the Terraform example, run three:
+
+- companies whose recent job posts ask for Terraform ([tech stack Plays](/plays/tech-stack));
+- companies hiring platform or SRE roles, staffing agencies' own posts left out ([companies hiring](/plays/companies-hiring));
+- engineers posting about "Terraform drift", or engaging with a rival vendor's posts.
+
+One Play could read: "Find heads of platform at US software companies with 200 to 2,000 employees whose job posts ask for Terraform." Each lead arrives with one line on why it fits. The first message makes no pitch: "Saw Terraform in your SRE posting. How do you spot changes someone made in the console?" It goes out as a direct message from your own account, and a reply stops the sequence.
+
+The limits: Pancake doesn't read GitHub, npm or your product's usage data, a job post naming a tool doesn't prove it's installed, and Pancake sends no email.
+
+Pricing starts from $99 a month per workspace, with 60,000 credits ([pricing](/pricing)). The 7-day free trial includes 30,000 credits and needs a credit card. More Plays for this market: [Pancake for devtools startups](/for/developer-tools).
