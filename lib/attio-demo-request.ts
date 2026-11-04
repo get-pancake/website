@@ -39,6 +39,14 @@ const ATTIO_API = "https://api.attio.com/v2";
 const TOTAL_TIMEOUT_MS = 5000;
 
 export type AttioDemoLead = {
+  qualification?: {
+    role: string;
+    service: string;
+    budget: string;
+    salesTeam: string;
+    sequencer: string;
+    volume: string;
+  };
   firstName: string;
   lastName: string;
   email: string;
@@ -88,15 +96,32 @@ export function companyDomain(website: string): string | null {
   if (host.startsWith("www.")) host = host.slice(4);
   if (!host.includes(".") || NOT_A_COMPANY.has(host)) return null;
   // A subdomain of a platform (acme.notion.site, acme.substack.com) is not a company domain either.
-  if (Array.from(NOT_A_COMPANY).some((platform) => host.endsWith(`.${platform}`))) return null;
+  if (
+    Array.from(NOT_A_COMPANY).some((platform) => host.endsWith(`.${platform}`))
+  )
+    return null;
   return host;
 }
 
 /** The note on the person, in plain text so no answer can format it. Pure. */
-export function attioNote(lead: AttioDemoLead): { title: string; content: string } {
+export function attioNote(lead: AttioDemoLead): {
+  title: string;
+  content: string;
+} {
   const lines = [
     `White Glove interest: ${lead.whiteGlove === "yes" ? "Yes" : "No"}. Team size: ${lead.teamSize}`,
-    `Has a Pancake account: ${lead.hasAccount === "yes" ? "Yes" : "No"}`,
+    ...(lead.qualification
+      ? [
+          "Status: pending manual review; no booking link sent",
+          `Role: ${lead.qualification.role}`,
+          `Service: ${lead.qualification.service}`,
+          `Budget: ${lead.qualification.budget}`,
+          `Outbound team: ${lead.qualification.salesTeam}`,
+          `Outbound tool: ${lead.qualification.sequencer}`,
+          `Prospects/month: ${lead.qualification.volume}`,
+          "Review: https://pancake.ai/demo/review",
+        ]
+      : [`Has a Pancake account: ${lead.hasAccount === "yes" ? "Yes" : "No"}`]),
     `Main goal: ${lead.goal ?? "Not answered"}`,
     `Company website: ${lead.website}`,
     `Source: ${lead.source} (${lead.pageUrl})`,
@@ -105,7 +130,9 @@ export function attioNote(lead: AttioDemoLead): { title: string; content: string
   return { title: `Demo request from ${SITE_HOST}`, content: lines.join("\n") };
 }
 
-type AttioCall = { ok: true; body: unknown } | { ok: false; status: number | "timeout" | "network" };
+type AttioCall =
+  | { ok: true; body: unknown }
+  | { ok: false; status: number | "timeout" | "network" };
 
 async function attio(
   token: string,
@@ -117,7 +144,10 @@ async function attio(
   try {
     const response = await fetch(`${ATTIO_API}${path}`, {
       method,
-      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
       body: body === undefined ? undefined : JSON.stringify(body),
       signal,
       cache: "no-store",
@@ -130,11 +160,15 @@ async function attio(
 }
 
 function recordIdOf(body: unknown): string | null {
-  const id = (body as { data?: { id?: { record_id?: unknown } } } | null)?.data?.id?.record_id;
+  const id = (body as { data?: { id?: { record_id?: unknown } } } | null)?.data
+    ?.id?.record_id;
   return typeof id === "string" && id ? id : null;
 }
 
-type PersonRecord = { id?: { record_id?: unknown }; values?: Record<string, unknown[] | undefined> };
+type PersonRecord = {
+  id?: { record_id?: unknown };
+  values?: Record<string, unknown[] | undefined>;
+};
 
 function isEmpty(values: PersonRecord["values"], slug: string): boolean {
   const value = values?.[slug];
@@ -142,7 +176,10 @@ function isEmpty(values: PersonRecord["values"], slug: string): boolean {
 }
 
 /** Write one demo request to Attio. Never throws; logs the failing step without PII. */
-export async function writeAttioDemoRequest(token: string, lead: AttioDemoLead): Promise<AttioResult> {
+export async function writeAttioDemoRequest(
+  token: string,
+  lead: AttioDemoLead,
+): Promise<AttioResult> {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TOTAL_TIMEOUT_MS);
   try {
@@ -152,56 +189,102 @@ export async function writeAttioDemoRequest(token: string, lead: AttioDemoLead):
   }
 }
 
-async function write(token: string, lead: AttioDemoLead, signal: AbortSignal): Promise<AttioResult> {
+async function write(
+  token: string,
+  lead: AttioDemoLead,
+  signal: AbortSignal,
+): Promise<AttioResult> {
   // 1. Company, by domain only.
   let companyId: string | null = null;
   const domain = companyDomain(lead.website);
   if (domain) {
-    const company = await attio(token, signal, "PUT", "/objects/companies/records?matching_attribute=domains", {
-      data: { values: { domains: [{ domain }] } },
-    });
+    const company = await attio(
+      token,
+      signal,
+      "PUT",
+      "/objects/companies/records?matching_attribute=domains",
+      {
+        data: { values: { domains: [{ domain }] } },
+      },
+    );
     if (company.ok) companyId = recordIdOf(company.body);
-    else console.error("Demo request Attio company failed", { status: company.status });
+    else
+      console.error("Demo request Attio company failed", {
+        status: company.status,
+      });
   }
 
   // Attio's personal-name write format: an object with all three parts.
-  const name = { first_name: lead.firstName, last_name: lead.lastName, full_name: `${lead.firstName} ${lead.lastName}` };
-  const companyRef = companyId ? [{ target_object: "companies", target_record_id: companyId }] : undefined;
+  const name = {
+    first_name: lead.firstName,
+    last_name: lead.lastName,
+    full_name: `${lead.firstName} ${lead.lastName}`,
+  };
+  const companyRef = companyId
+    ? [{ target_object: "companies", target_record_id: companyId }]
+    : undefined;
 
   // 2. Person, by email: create, or fill only what is empty.
-  const found = await attio(token, signal, "POST", "/objects/people/records/query", {
-    filter: { email_addresses: { email_address: { $eq: lead.email } } },
-    limit: 1,
-  });
+  const found = await attio(
+    token,
+    signal,
+    "POST",
+    "/objects/people/records/query",
+    {
+      filter: { email_addresses: { email_address: { $eq: lead.email } } },
+      limit: 1,
+    },
+  );
   if (!found.ok) {
-    console.error("Demo request Attio person lookup failed", { status: found.status });
+    console.error("Demo request Attio person lookup failed", {
+      status: found.status,
+    });
     return "failed";
   }
-  const existing = ((found.body as { data?: PersonRecord[] } | null)?.data ?? [])[0];
+  const existing = ((found.body as { data?: PersonRecord[] } | null)?.data ??
+    [])[0];
   let personId: string | null = null;
   if (existing && typeof existing.id?.record_id === "string") {
     personId = existing.id.record_id;
     const values: Record<string, unknown> = {};
     if (isEmpty(existing.values, "name")) values.name = name;
-    if (companyRef && isEmpty(existing.values, "company")) values.company = companyRef;
+    if (companyRef && isEmpty(existing.values, "company"))
+      values.company = companyRef;
     if (Object.keys(values).length > 0) {
-      const patched = await attio(token, signal, "PATCH", `/objects/people/records/${encodeURIComponent(personId)}`, {
-        data: { values },
-      });
-      if (!patched.ok) console.error("Demo request Attio person update failed", { status: patched.status });
+      const patched = await attio(
+        token,
+        signal,
+        "PATCH",
+        `/objects/people/records/${encodeURIComponent(personId)}`,
+        {
+          data: { values },
+        },
+      );
+      if (!patched.ok)
+        console.error("Demo request Attio person update failed", {
+          status: patched.status,
+        });
     }
   } else {
-    const created = await attio(token, signal, "PUT", "/objects/people/records?matching_attribute=email_addresses", {
-      data: {
-        values: {
-          email_addresses: [{ email_address: lead.email }],
-          name,
-          ...(companyRef ? { company: companyRef } : {}),
+    const created = await attio(
+      token,
+      signal,
+      "PUT",
+      "/objects/people/records?matching_attribute=email_addresses",
+      {
+        data: {
+          values: {
+            email_addresses: [{ email_address: lead.email }],
+            name,
+            ...(companyRef ? { company: companyRef } : {}),
+          },
         },
       },
-    });
+    );
     if (!created.ok) {
-      console.error("Demo request Attio person create failed", { status: created.status });
+      console.error("Demo request Attio person create failed", {
+        status: created.status,
+      });
       return "failed";
     }
     personId = recordIdOf(created.body);
@@ -214,7 +297,13 @@ async function write(token: string, lead: AttioDemoLead, signal: AbortSignal): P
   // 3. The answers, as a note on the person.
   const note = attioNote(lead);
   const noted = await attio(token, signal, "POST", "/notes", {
-    data: { parent_object: "people", parent_record_id: personId, title: note.title, format: "plaintext", content: note.content },
+    data: {
+      parent_object: "people",
+      parent_record_id: personId,
+      title: note.title,
+      format: "plaintext",
+      content: note.content,
+    },
   });
   if (!noted.ok) {
     console.error("Demo request Attio note failed", { status: noted.status });

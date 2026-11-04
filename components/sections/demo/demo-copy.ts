@@ -17,7 +17,7 @@ export const META = {
   // Tab title is EXACTLY "Pancake" on the landings (founder rule, app/page.tsx).
   title: "Pancake",
   ogTitle: "Talk to Pancake sales",
-  description: "See Pancake run your go-to-market. Consultations for companies with more than 50 employees or interest in White Glove.",
+  description: "See Pancake run your go-to-market. Tell us about your team and request a demo.",
 } as const;
 
 /**
@@ -114,7 +114,7 @@ export const ERRORS = {
   submissionId: "Check the form and try again.",
   invalid: "Check the form and try again.",
   unavailable: "We could not open the calendar. Please try again.",
-  ineligible: "Consultations are for companies with more than 50 employees or interest in White Glove. You can start using Pancake now.",
+  ineligible: "Demo requests are reviewed by our team. You can also start using Pancake yourself.",
   // The route's window is 10 minutes (landing-voice: real numbers).
 } as const;
 
@@ -200,8 +200,8 @@ export const AI_CALL = {
 /** The same recording is available to self-service and booked visitors. */
 export const DEMO_VIDEO = {
   title: "Pancake demo",
-  src: "https://www.youtube-nocookie.com/embed/Fk8sqw61NqE?rel=0",
-  href: "https://www.youtube.com/watch?v=Fk8sqw61NqE",
+  src: "https://www.youtube-nocookie.com/embed/cJP1Id9P-aI?rel=0",
+  href: "https://www.youtube.com/watch?v=cJP1Id9P-aI",
 } as const;
 
 /** The booked state, once Calendly reports the booking (DemoBooked). */

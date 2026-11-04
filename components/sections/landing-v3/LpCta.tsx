@@ -130,7 +130,7 @@ export function LpCta({
           </div>
         )}
         {setup}
-        {note ? <p className="lp-cta__note">{note}</p> : <p className="lp-cta__note">Sales consultations for companies with more than 50 employees or interest in White Glove.</p>}
+        {note ? <p className="lp-cta__note">{note}</p> : <p className="lp-cta__note">Tell us about your team. We review demo requests before sharing a booking link.</p>}
       </div>
     </div>
   );
