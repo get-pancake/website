@@ -50,7 +50,7 @@ export function LpNavMenu({ resources }: { resources: LpNavItem[] }) {
     document.body.classList.remove("menu-open");
     // the sheet opens folded next time
     if (resourcesRef.current) resourcesRef.current.open = false;
-    openBtnRef.current?.focus();
+    openBtnRef.current?.focus({ preventScroll: true });
   }, []);
 
   const show = useCallback(() => {
@@ -98,6 +98,38 @@ export function LpNavMenu({ resources }: { resources: LpNavItem[] }) {
       mq.removeEventListener("change", onMq);
     };
   }, [open, close]);
+
+  // iOS Safari scrolls the page behind a fixed sheet when the sheet has nothing to scroll (or is
+  // already at that end): body.menu-open's overflow: hidden does not stop touch scrolling there
+  // (measured in the iOS simulator 2026-11-03: two swipes on the open menu moved the page 240 px,
+  // and closing it showed another part of the page). While the sheet is open, a swipe it cannot
+  // take itself is stopped; when its list is taller than the screen (Resources open on a short
+  // phone) it still scrolls its own content. Two fingers (pinch-zoom) are left alone.
+  useEffect(() => {
+    if (!open) return;
+    const sheet = sheetRef.current;
+    if (!sheet) return;
+    let lastY = 0;
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) lastY = e.touches[0]!.clientY;
+    };
+    const onMove = (e: TouchEvent) => {
+      if (e.touches.length !== 1 || !e.cancelable) return;
+      const y = e.touches[0]!.clientY;
+      const dy = y - lastY; // > 0: the finger moves down, the content would move up past the top
+      lastY = y;
+      const room = sheet.scrollHeight - sheet.clientHeight;
+      const atTop = sheet.scrollTop <= 0;
+      const atEnd = sheet.scrollTop >= room - 1;
+      if (room <= 1 || (dy > 0 && atTop) || (dy < 0 && atEnd)) e.preventDefault();
+    };
+    sheet.addEventListener("touchstart", onStart, { passive: true });
+    sheet.addEventListener("touchmove", onMove, { passive: false });
+    return () => {
+      sheet.removeEventListener("touchstart", onStart);
+      sheet.removeEventListener("touchmove", onMove);
+    };
+  }, [open]);
 
   // Unmount with the menu open (client-side navigation) must not strand the
   // next route scroll-locked — same belt-and-braces as LpModals.
