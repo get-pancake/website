@@ -116,13 +116,16 @@ export function LpVideo() {
             aria-label={LP_VIDEO.play}
             onClick={play}
           >
-            {/* priority: on a laptop its top third is in the first screen, the largest paint
-                there; quality 100 keeps the UI text crisp (a flat frame: 50 KB of WebP at 1920) */}
+            {/* eager, not priority (2026-11-03 mobile pass): on a phone only 17 px of the card show
+                in the first screen and the headline is the largest paint, so a high-priority
+                preload took bandwidth from the page's CSS and fonts on a slow connection; eager
+                still fetches it with the page (on a laptop its top third shows). quality 100 keeps
+                the UI text crisp (a flat frame: 50 KB of WebP at 1920) */}
             <Image
               src={LP_VIDEO.poster}
               alt=""
               fill
-              priority
+              loading="eager"
               sizes={POSTER_SIZES}
               quality={100}
               className="lp-video__img"
