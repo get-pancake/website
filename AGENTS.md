@@ -66,6 +66,12 @@ Source: pancake-cmo `main`, checked 2026-11-03 (PAN-2405 #1871, PAN-2280, #1990,
 - **Plays are the core product.** The site description lives once, in `lib/copy.ts` `SITE_DESCRIPTION` (hero lede + every meta/JSON-LD copy). Change it only with Tristan's sign-off.
 - SEO as a topic (a blog post, SEO agencies as an industry, a competitor's SEO product) is fine.
 
+### /learn is served by a partner — November 3, 2026
+
+- `pancake.ai/learn` shows answer pages that our AI-search content partner, The Prompting Company, writes and serves from its own server. A rewrite in `next.config.mjs` proxies it (`lib/learn-proxy.mjs`); it stays off, a 404, while `LEARN_UPSTREAM` is null.
+- Never add an `app/learn` page or a `public/learn` file: it would replace the partner's page at that address (`scripts/url-guard.mjs` fails the build). Fixes to those pages go to the partner, through Tristan.
+- The AI SEO rule above still holds: these pages are Pancake's own marketing, never a feature Pancake sells.
+
 ### Project constraints
 
 - **Match Figma exactly.** Spacing, type, color, radius — pixel-perfect. Use the design system page as source of truth, never invent values.

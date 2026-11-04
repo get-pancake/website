@@ -1,4 +1,5 @@
 import { APP_ORIGIN } from "./lib/site-config.mjs";
+import { learnRewrites } from "./lib/learn-proxy.mjs";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -130,10 +131,16 @@ const nextConfig = {
   // (/record/screen) builds its QR from its own address. When the event page
   // retires, swap these for a 301 (redirects above): the address was printed
   // on the screen.
+  //
+  // /learn serves the answer pages our AI-search content partner hosts on its
+  // own server (lib/learn-proxy.mjs). No rewrite while LEARN_UPSTREAM is null.
+  // A page or public file under a proxied path would win over its rewrite;
+  // url-guard fails the build if one appears.
   async rewrites() {
     return [
       { source: "/record", destination: "https://pancake-tower-two.vercel.app/" },
       { source: "/record/:path*", destination: "https://pancake-tower-two.vercel.app/:path*" },
+      ...learnRewrites(),
     ];
   },
   // Baseline security headers (2026-10-07; only HSTS was set, by Vercel).

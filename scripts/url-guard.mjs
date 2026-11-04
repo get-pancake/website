@@ -12,7 +12,10 @@
  * file, file in public/) or be the `source` of a redirect in next.config.mjs
  * whose destination resolves too. Every redirect is checked the same way,
  * listed or not: one that points at a page that is gone is a 404 with an extra
- * hop. Runs before every build (package.json "prebuild").
+ * hop. A path that next.config.mjs rewrites to another host (/record, /learn)
+ * must have no page or public file in this repo: Next serves the file first,
+ * so the proxied page would silently disappear. Runs before every build
+ * (package.json "prebuild").
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -75,8 +78,22 @@ const missing = known.filter((u) => !redirects.has(u) && !resolves(u));
 for (const u of missing) {
   console.log(`ERROR  ${u} no longer exists and has no redirect — add a 301 in next.config.mjs (statusCode: 301) to the closest live page`);
 }
-const dead = missing.length + deadRedirects.length;
+// Paths rewritten to another host, by their static prefix: "/learn/:path*" → "/learn".
+const rewriteConfig = typeof nextConfig.rewrites === "function" ? await nextConfig.rewrites() : [];
+const rewriteRules = Array.isArray(rewriteConfig)
+  ? rewriteConfig
+  : [...(rewriteConfig.beforeFiles ?? []), ...(rewriteConfig.afterFiles ?? []), ...(rewriteConfig.fallback ?? [])];
+const proxiedPaths = [
+  ...new Set(
+    rewriteRules.filter((r) => /^https?:\/\//.test(r.destination)).map((r) => r.source.split("/:")[0] || "/"),
+  ),
+];
+const shadowed = proxiedPaths.filter((p) => p !== "/" && (exists("app", p) || exists("public", p)));
+for (const p of shadowed) {
+  console.log(`ERROR  ${p} is proxied to another host in next.config.mjs, but app${p} or public${p} exists and would answer instead — remove the page or file, or the rewrite`);
+}
+const dead = missing.length + deadRedirects.length + shadowed.length;
 console.log(
-  `url-guard: ${known.length} known URL(s), ${redirects.size} redirect(s), ${missing.length} would 404, ${deadRedirects.length} redirect(s) to a missing page`,
+  `url-guard: ${known.length} known URL(s), ${redirects.size} redirect(s), ${missing.length} would 404, ${deadRedirects.length} redirect(s) to a missing page, ${proxiedPaths.length} proxied path(s), ${shadowed.length} shadowed`,
 );
 process.exit(dead ? 1 : 0);
