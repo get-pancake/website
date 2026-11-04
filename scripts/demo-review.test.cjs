@@ -274,3 +274,12 @@ test("concurrent approvals send once and persist email acceptance", async () => 
   assert.ok(updates.some((u) => u.email_state === "sent"));
   assert.ok(!JSON.stringify(updates).includes("/demo/book/"));
 });
+
+test("voice startup rejection is a failure even when remote disconnect looks normal", () => {
+  const { aiSalesDisconnectPhase } = runtime()("lib/ai-sales.ts");
+  assert.equal(aiSalesDisconnectPhase({ reason: "agent" }, { spoke: false, handedOff: false }), "failed");
+  assert.equal(aiSalesDisconnectPhase({ reason: "user" }, { spoke: false, handedOff: false }), "failed");
+  assert.equal(aiSalesDisconnectPhase({ reason: "agent" }, { spoke: true, handedOff: false }), "ended");
+  assert.equal(aiSalesDisconnectPhase({ reason: "error", message: "network" }, { spoke: true, handedOff: false }), "failed");
+  assert.equal(aiSalesDisconnectPhase({ reason: "error", message: "network" }, { spoke: true, handedOff: true }), "ended");
+});
