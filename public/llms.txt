@@ -161,6 +161,24 @@ Articles about finding B2B customers and the tools people compare with Pancake.
 - [Viktor Alternatives: 8 AI Agents and Tools Compared for 2026](https://pancake.ai/blog/viktor-alternatives) — Viktor alternatives compared: Pancake, Lindy, Claude Tag, Dust, Glean, Zapier Agents, Relevance AI and Slackbot, with September 2026 prices and best fits.
 - [Pancake vs Victora: A Leads List vs a Play That Runs](https://pancake.ai/blog/pancake-vs-victora) — Victora reads Reddit and Hacker News and hands you a leads list for $49 a month. Pancake finds B2B buyers eight ways and runs outreach, from $99 a month.
 
+## Guides for web design agencies
+
+How web design studios find clients: the channels that work, first messages, niches, moving up to B2B budgets, referrals, white label, and the partner programs of Webflow, Framer and WordPress.
+
+- [How to Get Web Design Clients in 2026: 11 Channels, Ranked](https://pancake.ai/blog/how-to-get-web-design-clients) — How to get web design clients in 2026: 11 channels ranked by speed, cost and deal size, the Webflow and Framer programs, and which three to start with.
+- [Lead Generation for Web Design Agency Owners: Build a Steady Flow](https://pancake.ai/blog/lead-generation-for-web-design-agencies) — Lead generation for web design agency owners: why bought web design leads disappoint, which sources hold up, and how to spot companies about to buy a site.
+- [How to Find Businesses That Need a Website: 12 Signals to Watch](https://pancake.ai/blog/how-to-find-businesses-that-need-a-website) — How to find businesses that need a website: 12 signals, local and B2B, with where to see each, from Google Maps listings to job posts and Form D filings.
+- [Web Design Cold Email Templates and DMs: 8 Messages Tied to a Reason](https://pancake.ai/blog/web-design-cold-outreach) — Web design cold email templates with DM versions: 8 first messages tied to a real reason, two follow-ups, what never to send, and the CAN-SPAM basics.
+- [Best Niche for Web Design Agency Owners: 8 Niches and a 30-Day Test](https://pancake.ai/blog/best-niches-for-web-design-agencies) — The best niche for web design agency owners: 8 niches scored on deal size, rebuild cycle, buyer access and referrals, plus a 30-day test before you commit.
+- [How to Get High Paying Web Design Clients: Move Up to B2B Budgets](https://pancake.ai/blog/how-to-get-high-paying-web-design-clients) — How to get high paying web design clients: which buyers have real budgets, how B2B marketing teams buy a site, the proof they need, and how to reach them.
+- [How to Get Webflow Clients: 6 Channels, From Job Posts to Templates](https://pancake.ai/blog/how-to-get-webflow-clients) — How to get Webflow clients in 2026: the Webflow Partner Program and its directory, templates, the community, and companies hiring a Webflow developer.
+- [How to Get Framer Clients: Experts, Templates and Funded Startups](https://pancake.ai/blog/how-to-get-framer-clients) — How to get Framer clients in 2026: how the Framer Experts directory ranks you, the agency program's $25K bar, templates that sell you, and funded startups.
+- [How to Get WordPress Clients (and Keep Them on a Care Plan)](https://pancake.ai/blog/how-to-get-wordpress-clients) — How to get WordPress clients without racing to the bottom: partner directories from Automattic and WP Engine, Codeable, care plans, and job posts to watch.
+- [White Label Web Design Partner: How to Win Agencies as Clients](https://pancake.ai/blog/white-label-web-design-partners) — Become a white label web design partner for marketing, SEO and PPC agencies: who buys, where to find them, pricing models, margins, NDAs and non-solicits.
+- [Web Design Referral Program: Fees, Scripts and Partners](https://pancake.ai/blog/web-design-referral-program) — How to run a web design referral program: who refers clients, which referral fee to pay, when to ask, scripts to send, and how to track every intro.
+- [How to Get Web Design Clients Fast: A 30-Day Plan](https://pancake.ai/blog/how-to-get-web-design-clients-fast) — How to get web design clients fast: a 30-day plan with weekly steps, daily targets, one offer to lead with, scripts, and the shortcuts that backfire.
+- [How to Sell Web Design Services: A 6-Step Sales Process](https://pancake.ai/blog/how-to-sell-web-design-services) — How to sell web design services: qualify the lead, run the discovery call, scope it, price a three-option proposal, follow up and close with a deposit.
+
 ## Optional
 
 The rest of the blog archive, mostly on topics outside the product (see Product boundaries). Their descriptions of Pancake are current.

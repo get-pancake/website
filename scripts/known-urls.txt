@@ -192,3 +192,17 @@
 /pricing.md
 /white-glove.md
 /guides/claude.md
+# Web design agency guides, 2026-11-03
+/blog/how-to-get-web-design-clients
+/blog/lead-generation-for-web-design-agencies
+/blog/how-to-find-businesses-that-need-a-website
+/blog/web-design-cold-outreach
+/blog/best-niches-for-web-design-agencies
+/blog/how-to-get-high-paying-web-design-clients
+/blog/how-to-get-webflow-clients
+/blog/how-to-get-framer-clients
+/blog/how-to-get-wordpress-clients
+/blog/white-label-web-design-partners
+/blog/web-design-referral-program
+/blog/how-to-get-web-design-clients-fast
+/blog/how-to-sell-web-design-services
