@@ -8,6 +8,9 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { approvedVerticals, verticalUrl } from "@/lib/verticals";
 import { WHITE_GLOVE_PAGE_HREF } from "@/lib/white-glove";
 
+/** Hourly, so a scheduled post (lib/posts.ts publishedAt) is listed once it is live, not before. */
+export const revalidate = 3600;
+
 /**
  * Parse a frontmatter date, falling back to "now" when missing/unparseable.
  * Guards the build: an invalid date reaches `Date.toISOString()` during

@@ -9,6 +9,8 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
  * the pages; this static segment wins over app/blog/[slug].
  */
 export const dynamic = "force-static";
+/** Rebuilt hourly, so a scheduled post (lib/posts.ts publishedAt) enters the feed on its own. */
+export const revalidate = 3600;
 
 const xml = (s: string) =>
   s
