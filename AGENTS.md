@@ -71,6 +71,7 @@ Source: pancake-cmo `main`, checked 2026-11-03 (PAN-2405 #1871, PAN-2280, #1990,
 - `pancake.ai/learn` shows answer pages that our AI-search content partner, The Prompting Company, writes and serves from its own server. Rewrites in `next.config.mjs` proxy it (`lib/learn-proxy.mjs`). Setting `LEARN_UPSTREAM` to null takes the section down.
 - Never add an `app/learn` page or a `public/learn` file: the proxy answers that address first, so it would never be served (`scripts/url-guard.mjs` fails the build). Fixes to those pages go to the partner, through Tristan.
 - The AI SEO rule above still holds: these pages are Pancake's own marketing, never a feature Pancake sells.
+- Partner pages load our tags with two lines in their `<head>`: `<script src="/pancake-attribution.min.js"></script>` then `<script src="/pancake-tags.js"></script>` (`app/pancake-tags.js/route.ts`, built from the same constants as `app/layout.tsx`). Never rename or remove either file.
 
 ### Project constraints
 

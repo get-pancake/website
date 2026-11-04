@@ -252,3 +252,7 @@
 /blog/how-to-sell-martech
 /blog/how-to-sell-to-cfos
 /blog/how-to-sell-software-to-retailers
+
+# Loaded by partner pages served on pancake.ai (/learn, 2026-11-03): never rename or remove.
+/pancake-attribution.min.js
+/pancake-tags.js

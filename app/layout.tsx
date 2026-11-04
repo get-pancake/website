@@ -12,6 +12,7 @@ import { AnalyticsEvents } from "@/components/analytics/AnalyticsEvents";
 import { MetaPixelEvents } from "@/components/analytics/MetaPixelEvents";
 import { PostHogAttribution } from "@/components/analytics/PostHogAttribution";
 import {
+  GOOGLE_TAG_MANAGER_ID,
   LEADJOURNEY_TRACKING_SCRIPT_URL,
   LINKEDIN_INSIGHT_PARTNER_ID,
   META_BROWSER_PIXEL_ID,
@@ -219,7 +220,7 @@ const webSiteJsonLd = {
   publisher: { "@id": `${SITE_ORIGIN}/#organization` },
 };
 
-const googleTagManagerId = "GTM-P3Z79WKD";
+const googleTagManagerId = GOOGLE_TAG_MANAGER_ID;
 const metaPixelId = META_BROWSER_PIXEL_ID;
 // Vercel exposes VERCEL_ENV at build and runtime. Advertising and product
 // analytics run only in production. GTM alone can be explicitly enabled on a
