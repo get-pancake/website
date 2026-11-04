@@ -178,6 +178,14 @@ const nextConfig = {
           { key: "Permissions-Policy", value: "camera=(), geolocation=()" },
         ],
       },
+      {
+        source: "/demo/review",
+        headers: [
+          { key: "Content-Security-Policy", value: "connect-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'none'; form-action 'self'; base-uri 'self'" },
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
+        ],
+      },
     ];
   },
 };
