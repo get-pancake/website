@@ -100,7 +100,10 @@ export function parseQualification(
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(a.email) || isPersonalEmail(a.email))
     return { ok: false, field: "email" };
   try {
-    const url = new URL(a.website);
+    const website = /^[a-z][a-z0-9+.-]*:/i.test(a.website)
+      ? a.website
+      : `https://${a.website}`;
+    const url = new URL(website);
     if (
       !["https:", "http:"].includes(url.protocol) ||
       url.username ||

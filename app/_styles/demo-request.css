@@ -347,6 +347,8 @@
   margin-block: var(--lp-space-4);
 }
 .request-brand-lede {
+  font-weight: inherit;
+  margin: 0;
   font-size: var(--lp-text-md);
   line-height: 1.5;
   max-width: 64ch;

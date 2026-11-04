@@ -74,7 +74,8 @@ export default function DemoRequestFlow() {
           <input
             {...props}
             type={type}
-            pattern={key === "website" ? "https?://.+" : undefined}
+            inputMode={key === "website" ? "url" : undefined}
+            placeholder={key === "website" ? "company.com" : undefined}
             maxLength={250}
             autoComplete={
               key === "email"
@@ -158,15 +159,11 @@ export default function DemoRequestFlow() {
           <div className="request-brand-pitch">
             <p className="request-brand-eyebrow">Now in early access</p>
             <h1 className="lp-display request-brand-title">
-              Put your GTM on{" "}
-              <br />
-              full autopilot
+              Create your GTM factory
             </h1>
-            <p className="request-brand-lede">
-              Pancake lets your Claude or ChatGPT run your{" "}
-              <span className="demo-nowrap">go-to-market</span>. Find people ready
-              to buy and start outreach campaigns from the same conversation.
-            </p>
+            <h2 className="request-brand-lede">
+              Give your agent the brain, the data and the tools to run your go-to-market
+            </h2>
           </div>
           <DemoTrustBand />
         </div>
@@ -299,12 +296,7 @@ export default function DemoRequestFlow() {
                     <>
                       {field("name", "Full name")}
                       {field("email", "Work email", undefined, "email")}
-                      {field(
-                        "website",
-                        "Company website (https://…)",
-                        undefined,
-                        "url",
-                      )}
+                      {field("website", "Company website")}
                       {field("role", "Your role")}
                       {field("size", "Company size", DEMO_OPTIONS.size)}
                     </>
