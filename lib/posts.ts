@@ -32,7 +32,8 @@ const POSTS_DIR = path.join(process.cwd(), "content/blog");
 
 /**
  * Scheduled posts (2026-11-03). A post whose `date` is still ahead stays off the blog index, the
- * RSS feed, the sitemap, "Keep reading" and every link to it, and its own URL answers 404. A
+ * RSS feed, the sitemap, "Keep reading" and every link to it, and its own URL shows a noindex
+ * "Coming soon" page (app/blog/[slug]/page.tsx, which says why it isn't a 404). A
  * calendar date goes live at 13:00 UTC that day (5 a.m. in San Francisco in winter), so the date a
  * post shows is the US day it appeared; a date with a time ("2026-11-12T16:00:00Z") goes live at
  * that instant. Nothing redeploys to publish: the blog pages, the feed and the sitemap revalidate

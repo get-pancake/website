@@ -1,0 +1,133 @@
+---
+title: "How to Find Companies Using a Technology (Job Posts vs. Scanners)"
+seo_title: "Find Companies Using a Technology: 2 Kinds of Evidence"
+description: "How to find companies using a technology: what website scanners can see, what job posts reveal, how to confirm a match, and how to write the first message."
+date: "2026-11-22"
+last_updated: "2026-11-22"
+related:
+  - "buying-signals-b2b"
+  - "job-postings-as-buying-signals"
+  - "how-to-sell-developer-tools"
+faq:
+  - question: "What is technographic data?"
+    answer: "Technographic data records which technologies a company uses: its CMS, CRM, analytics, data, cloud and developer tools. It comes mainly from two sources. Scans of a company's public website catch the tools that run on the site, and job posts name the internal tools a team works in. Sales teams use it to find companies that run a tool they replace, plug into or service."
+  - question: "How do I look up a company's tech stack?"
+    answer: "For what runs on the website, use a lookup such as BuiltWith or the Wappalyzer browser extension, or read the page source yourself. For internal tools, read the company's recent job posts, which list the software a new hire must know. DNS records show the email provider. Treat any single mention as a lead to confirm, not a fact."
+  - question: "Can I find companies that use a specific software, like NetSuite or Snowflake?"
+    answer: "Yes, through job posts. Back-office and data tools leave no trace on a website, but finance and data job posts name them, often as a requirement. Search postings for the tool and its aliases, keep recent posts from companies that fit your market, and read each post before you reach out, since a nice-to-have mention is weaker than a requirement."
+  - question: "How accurate are website technology lookups?"
+    answer: "Accurate for what a site loads, blind to the rest. Scanners read public code, so they catch a CMS, analytics tags or a chat widget, and they miss tools behind a login or on a server. They can also report a leftover script from a tool the company dropped. Use a scan as a starting point and confirm it in the page source."
+  - question: "How do I find companies that use a competitor's software?"
+    answer: "Search job posts for the competitor's product name, since companies list the tools a new hire will use. If the product runs on websites, a scan finds it too. Then open with a question about the work, not the competitor: ask how the team handles the task the tool does, and let them raise the tool themselves."
+---
+
+**TL;DR:** Choose the evidence that can see the tool. Website scanners such as BuiltWith and Wappalyzer read a site's public code, so they find what runs on the website: the CMS, analytics, tag managers, chat widgets, the store. Tools a team uses behind its login, like an ERP, a data warehouse or a CI server, leave nothing on the site. Those show up in job posts, where companies list the software a new hire must know. Confirm each match by hand, then write about the work the tool implies, not the tool.
+
+Technographic data is the trade name for knowing which tools a company runs. Below: how to find companies using a technology with both kinds of evidence, how to confirm a match, and what to say once you have one. The stack signal is one family in the [full list of B2B buying signals](/blog/buying-signals-b2b), and it pairs well with hiring and funding.
+
+---
+
+## Which evidence can see which tool
+
+Start from the tool's type. Front-end tools leave code in the page. Back-office tools leave a trail in hiring.
+
+| Tool type | Examples | Leaves a trace on the website? | Named in job posts? | Look first in |
+|---|---|---|---|---|
+| CMS and site builders | WordPress, Webflow, Shopify | Yes | Sometimes, in marketing roles | A website scan |
+| Analytics, tags and ad pixels | Google Analytics, Segment, Meta Pixel | Yes | Sometimes | A website scan |
+| Chat and help widgets | Intercom, Zendesk | Yes, when the widget is on the site | Often, in support roles | Either |
+| CRM and marketing automation | Salesforce, HubSpot, Marketo | Sometimes, through forms and tracking scripts | Often, in sales and marketing ops roles | Job posts |
+| ERP and accounting | NetSuite, SAP, Sage Intacct | No | Often, in finance roles | Job posts |
+| Data warehouse and BI | Snowflake, dbt, Looker | No | Often, in data roles | Job posts |
+| Infrastructure and dev tools | Kubernetes, Terraform, GitHub Actions | No, though hosting and CDN do show | Often, in engineering roles | Job posts |
+| Email provider | Google Workspace, Microsoft 365 | Not in the page, but DNS records show it | Rarely | DNS records |
+
+The CRM row is the tricky one. A scan can catch a HubSpot tracking script or a Marketo form, which proves the tool touches the website, not how the sales team uses it. A RevOps or Salesforce admin job post tells you more, which is why [Pancake's page for RevOps consultants](/for/revops-consultants) starts from job posts that name the CRM.
+
+---
+
+## What website technology scanners see, and what they miss
+
+A website scanner loads a company's public pages and matches what it finds against known fingerprints. [BuiltWith's indexing policy](https://builtwith.com/biup) says its system works out a site's technology profile by looking at the publicly visible code, and that it doesn't try to log in or reach restricted areas. [Wappalyzer's FAQ](https://www.wappalyzer.com/faq/extension/) says its browser extension inspects HTML, scripts, cookies, network requests and certificates on the pages you visit, and that it only adds technologies with clear public web signals. Both also sell lists of companies by technology.
+
+That makes a tech stack lookup on a scanner fast and reliable at one job: telling you what a website runs. Four blind spots follow from how they work:
+
+1. **Anything behind a login or on a server.** An ERP, a warehouse or an internal app leaves no code in the marketing site.
+2. **Leftovers.** A script from a tool the company dropped can stay in the page long after the contract ended.
+3. **The wrong site.** An agency may have built the marketing site on a stack the rest of the company never touches.
+4. **Consent banners and tag managers.** Some tools load only after a visitor accepts cookies or a tag fires, so a scan can miss them.
+
+A scan also finds a domain, not a buyer. You still need the person who owns the tool.
+
+---
+
+## What job posts reveal about a company's stack
+
+A job post is a company describing its own tools to strangers, in writing. Read it like evidence:
+
+- **Required or nice to have.** "Three years with NetSuite" describes the system they run. "Snowflake a plus" may be a wish.
+- **Migration wording.** "Help us move from Jenkins to GitHub Actions" names the old tool, the new one and a project with a deadline.
+- **The team the role sits in.** Snowflake in a data engineer post means the data team runs it. Snowflake in a sales ops post may mean a dashboard someone else maintains.
+- **Keyword soup.** A post that lists twenty tools reads like a wish list. Weigh the ones named in the duties.
+- **Who posted it.** Staffing agencies post for clients and often hide the company's name.
+- **How recent it is.** A post from this quarter describes today's stack better than one from last year.
+
+What a job post can't tell you: whether the tool runs company-wide, how happy the team is with it, or when the contract renews. Companies that rarely hire leave few posts to read. If you want raw data, job-post databases such as TheirStack let you search postings by the technologies they mention. [Job postings as buying signals](/blog/job-postings-as-buying-signals) covers the hiring side of the same posts.
+
+---
+
+## Other public traces you can check by hand
+
+A few more clues take a minute each:
+
+- **DNS records.** A domain's MX records show who hosts its email, such as Google Workspace or Microsoft 365. Its SPF record, the public DNS entry defined in [RFC 7208](https://www.rfc-editor.org/rfc/rfc7208), lists the hosts allowed to send mail for the domain, which often names the marketing, help desk or billing tools that email customers. Run `dig TXT example.com` in a terminal to read it.
+- **Subdomains.** A help center, status page or careers page on a subdomain often runs on a named vendor, and its footer or address says which. A careers page that sends you to an applicant tracking system's job board names the ATS.
+- **Customer stories.** Vendors publish case studies and logo walls naming companies that agreed to be listed.
+- **Engineering blogs and talks.** Teams write about the stack they're proud of, and about the migration they finished.
+
+---
+
+## How to find companies using a technology, step by step
+
+To build a list of companies that use a software, work through six steps:
+
+1. **Write down the tool and its aliases.** Include old names and short forms, like "Dynamics 365" and "D365". Watch for names that cover two products: Sage Intacct and Sage 50 are different software, and so are Looker and Looker Studio.
+2. **Pick the evidence for the tool type**, using the table above.
+3. **Filter for fit:** country, company size, industry, and a team that would buy.
+4. **Confirm each company by hand.** Open the job post, or view the page source for front-end tools. Ten confirmed companies beat a hundred guessed ones.
+5. **Find the owner of the budget**, not the recruiter: the head of data for Snowflake, the controller for NetSuite, the head of platform for Kubernetes.
+6. **Write one line on why each company is on the list.** That line becomes the opening of your first message.
+
+**Try it this week:** pick one tool you replace or plug into, list its aliases, and confirm ten companies by hand before you pay for any list.
+
+---
+
+## Turning a stack match into a first message
+
+How you open depends on what you sell around the tool.
+
+| You sell | The evidence | A first question |
+|---|---|---|
+| A replacement | Job posts naming the incumbent | "Your data engineer posting mentions Redshift. Is the team staying on it, or weighing a move?" |
+| An add-on that plugs into the tool | Job posts naming the tool you integrate with | "Saw Looker in your analyst posting. Who builds new dashboards today, the analysts or the data team?" |
+| Services around the tool | Job posts naming it, plus open roles you could cover | "You're hiring a Salesforce admin. Is there a backlog the new hire inherits on day one?" |
+
+Three rules keep the message from reading like surveillance:
+
+- **Cite a public source, never a scan.** "Saw it in your job post" is fine. "Our tool detected HubSpot on your site" is unsettling, and if the scan was wrong, you've lost them.
+- **Ask about the work, not the tool.** Nobody wants to discuss their CRM. They'll discuss their pipeline report.
+- **Leave the tool's flaws out.** They may have chosen it. Let them raise the pain.
+
+Selling to engineering teams works the same way, with more technical questions: [how to sell developer tools](/blog/how-to-sell-developer-tools) covers that buyer.
+
+---
+
+## Finding companies by the tools in their job posts, with Pancake
+
+We make Pancake, and it runs the job-post half of this as a Play. Name a tool, or several, and it finds companies whose recent job posts ask for any of them, then the people you sell to there ([tech stack Plays](/plays/tech-stack)). Each company is checked against the ideal customer profile in your GTM Brain, and every lead comes with one line on why it fits. 
+
+A Play could read: "Find heads of data at US software companies with 100 to 1,000 employees whose job posts ask for Snowflake or dbt." Pancake writes the first message from the why-it-fits line, in your voice: "Saw dbt in your analytics engineer posting. Is the team adding new models, or cleaning up the ones you have?" It goes out as a direct message under your name, and a reply stops the sequence.
+
+Pancake reads job posts only. It can't tell which CMS, analytics or chat tool a website runs, so use a scanner for those. It can't confirm a tool is installed either, companies that rarely hire won't show up, and it doesn't send email.
+
+The plan starts from $99 a month per workspace and includes 60,000 credits, which pay for lead searches and email or phone lookups ([pricing](/pricing)). A 7-day free trial comes with 30,000 credits; a card is required to begin. [Pancake for data consultancies](/for/data-consultancies) runs the same signal on Snowflake and dbt.
