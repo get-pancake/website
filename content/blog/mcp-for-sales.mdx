@@ -1,0 +1,136 @@
+---
+title: "MCP for Sales Teams: CRM, Lead Data and Outreach From Your AI"
+seo_title: "MCP for Sales: CRM, Lead Data and Outreach From AI"
+description: "MCP for sales explained: what the Model Context Protocol lets a sales team do from Claude, ChatGPT or Codex, which servers to connect, and security basics."
+date: "2026-11-28"
+last_updated: "2026-11-28"
+related:
+  - "ai-gtm"
+  - "claude-for-sales-prospecting"
+  - "claude-code-for-gtm"
+faq:
+  - question: "What is an MCP server for sales?"
+    answer: "An MCP server is the piece of a sales tool that exposes its data and actions to AI apps through the Model Context Protocol. A CRM's server lets Claude or ChatGPT look up and update records, a lead tool's server lets it search for people, and an outreach tool's server lets it put someone in a sequence. The AI app is the client; the vendor runs the server."
+  - question: "Does HubSpot have an MCP server?"
+    answer: "Yes. HubSpot runs a remote MCP server that MCP-compatible AI tools connect to with OAuth. As of November 2026, its page lists read and write access to CRM objects such as contacts, companies, deals and tickets, and to engagements like calls, notes and tasks, with read-only access to users, teams and marketing content. A HubSpot admin connects first; other users can connect after."
+  - question: "Is MCP safe to use with CRM data?"
+    answer: "It can be, with the right setup. Use remote servers run by vendors you trust, sign in with OAuth rather than pasting keys into a chat, grant only the scopes the job needs, and keep a person deciding on any tool that writes, deletes or sends. The MCP specification itself says a human should be able to deny tool calls."
+  - question: "Can MCP send emails or messages for my sales team?"
+    answer: "MCP doesn't send anything itself; it carries the request. If an outreach tool's server offers a send or add-to-sequence tool, your AI app can call it, and the tool sends from the account you connected. That is why write tools should ask before they run: one confirmed call can start real outreach to a real person."
+  - question: "What is the difference between MCP and an API?"
+    answer: "An API is built for developers who write code against it. MCP describes a tool in a standard format that an AI app can discover and call by itself: it lists the server's tools, reads their descriptions and picks the one that fits your request. Many MCP servers call the vendor's API underneath, so they usually reach the same data under the same permissions."
+---
+
+**TL;DR:** MCP for sales means one standard way for Claude, ChatGPT or Codex to work inside your sales tools from the chat: look up a deal in the CRM, search for people who fit, put a lead in a sequence. A sales team connects three kinds of server: the CRM, a source of lead data, and the tool that sends. Use remote servers with OAuth sign-in, keep every write on a confirmation, and start with read-only jobs.
+
+---
+
+## What MCP is, in sales terms
+
+MCP, the Model Context Protocol, is an open protocol that AI apps use to connect to outside systems. The [MCP architecture overview](https://modelcontextprotocol.io/docs/learn/architecture) describes three parts:
+
+- **The host:** the AI app you type into, such as Claude Desktop or Claude Code.
+- **The client:** the connection the host opens for each server.
+- **The server:** the program that exposes a product's data and actions.
+
+A server offers three kinds of things. **Tools** are actions the model can call, like "update the deal stage". **Resources** are data it can read, like a record. **Prompts** are reusable templates. A server runs either on your machine over standard input and output, or remotely over HTTP, and the protocol recommends OAuth for signing in to remote ones. The sales tools in this guide ship remote servers, so you paste a URL and sign in.
+
+In practice, MCP turns your assistant from a writer into an operator. The chat can now read and change data in other products, with the permissions you granted it. That shift, from agents describing GTM work to agents doing it, is what [AI GTM](/blog/ai-gtm) is about.
+
+---
+
+## Three kinds of MCP server a sales team connects
+
+Most sales uses of MCP touch one of three systems, and each fills a gap a chat has on its own: no record of who you know, no data on who to contact next, no way to reach them. Connect them in this order, because each one makes the next safer.
+
+### 1. The CRM
+
+The CRM is the record of who you know and where each deal stands. Connect it first so the agent checks history before it suggests anyone. [HubSpot's MCP server](https://developers.hubspot.com/mcp) is remote and signs in with OAuth. As of November 2026, it lists read and write access to contacts, companies, deals and tickets, plus calls, notes and tasks.
+
+Ask things like "Which deals in the proposal stage have had no activity for 14 days?" Watch the write scopes: an agent that can update a deal can also overwrite one.
+
+### 2. Lead data and signals
+
+A lead source answers the question a chat can't: who should we contact next? Its server searches people and companies by role, industry, size or a signal such as a recent round, and may return contact details. If the provider bills per search or per record, look for a server that shows the cost before it runs.
+
+### 3. Outreach
+
+The tool that sends turns a draft into a sequence: it adds a lead, sends from your account, follows up and stops on a reply. Its tools carry the most risk, because a single call reaches a real person under your name.
+
+---
+
+## MCP for sales: five workflows to run from the chat
+
+Each workflow below names the servers it needs. Start with the first two, which only read.
+
+**1. Brief me before a call** (CRM)
+
+```text
+I'm meeting [contact] at [company] in an hour. From the CRM, pull the deal, its stage, the last three activities and any open tasks. Add what changed at the company in the last 90 days from public sources, with links. Give me three questions to ask.
+```
+
+**2. Review my pipeline** (CRM)
+
+```text
+List my open deals worth more than [amount] with no logged activity in 14 days. For each, show the last touch, the next step on record, and a one-line suggestion. Don't change anything.
+```
+
+**3. Find accounts from a signal** (lead data)
+
+```text
+Find VPs of sales at US software companies with 50 to 300 staff that are hiring SDRs. Show the estimated cost before you search. For each lead, give the signal and why they fit.
+```
+
+**4. Check a lead before you write** (lead data and CRM)
+
+```text
+For [name] at [company]: check the CRM for any past contact. If there's none, find their work email through [lead tool] and tell me what it costs first. Then draft a two-sentence first message that refers to [signal].
+```
+
+**5. Start the sequence and log it** (outreach and CRM)
+
+```text
+Add [name] to the [sequence name] sequence with this first message: [paste]. Ask me before you add them. Then create a CRM task to check on the sequence in a week.
+```
+
+The last prompt is where a mistake costs the most, which is why it asks for a confirmation in plain words.
+
+---
+
+## Which AI apps can use a sales MCP server
+
+All four apps below can call a remote MCP server. They differ in how you add one and which plans allow it.
+
+| App | How a server is added | Best fit for sales work |
+|---|---|---|
+| Claude (web, desktop, mobile) | A custom connector with the server's URL | Account research and prospecting in conversation |
+| ChatGPT | Plugins, then Add custom MCP server | Teams already standardized on ChatGPT |
+| Codex | `codex mcp add`, then `codex mcp login` | Scripted runs over files and lists |
+| Claude Code | `claude mcp add --transport http`, then `/mcp` to sign in | [Repeatable GTM jobs built as scripts](/blog/claude-code-for-gtm) |
+
+Check your plan before you count on ChatGPT. OpenAI's article on [connecting custom MCP servers](https://help.openai.com/en/articles/12584461-connecting-custom-mcp-servers-in-chatgpt) lists full MCP support, write actions included, for Business, Enterprise and Edu workspaces on the web, and read-and-fetch-only servers for Pro, as of November 2026. Our guides to [Claude for prospecting](/blog/claude-for-sales-prospecting) and [ChatGPT for lead generation](/blog/chatgpt-for-lead-generation) cover each app in more depth, and the setup pages for [Claude](/claude), [ChatGPT](/chatgpt) and [Codex](/codex) show each step with Pancake's server.
+
+---
+
+## Security basics before you connect a sales tool
+
+A sales MCP server touches customer data and can act under your name, so set it up like any other system with write access. Most of these six rules come from the protocol's own guidance.
+
+1. **Use remote servers from the vendor, with OAuth.** You sign in on the vendor's page and the app stores the credential, so no key sits in a chat log.
+2. **Grant the smallest scopes.** The MCP [security best practices](https://modelcontextprotocol.io/docs/tutorials/security/security_best_practices) warn that broad scopes granted up front widen the damage if access leaks. Give a reporting job read access only.
+3. **Keep a person on every write.** The specification for [tools](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) says there should always be a human in the loop who can deny a tool call. Leave confirmation on for anything that updates, deletes or sends.
+4. **Treat what comes back as untrusted.** The same page tells clients to distrust tool annotations from servers they don't trust and to validate tool results before the model sees them. A web page or an email the agent reads can carry instructions you never gave.
+5. **Be careful with local servers.** A server you install on your laptop runs with your own privileges. Install only what you can trace to its maker.
+6. **Review and revoke.** Disconnect servers nobody uses, and check a server's tool list again after the vendor ships an update.
+
+---
+
+## Pancake's MCP server for prospecting and outreach
+
+Pancake is our product, and its MCP server covers the lead data and the outreach, plus a memory of your business called the GTM Brain. The server, `https://app.pancake.ai/api/mcp`, uses Streamable HTTP, signs you in through the browser with no API key, and exposes about 100 tools. It works from Claude, ChatGPT, Codex and Claude Code, with plugins for the last two; Cursor can't connect yet.
+
+From the chat, you create and run Plays, review leads with a line on why each fits, find a work email (50 credits) or a phone number (500 credits), edit messages, and export leads one way to a CRM connected in the app. A team selling call coaching could watch companies hiring SDRs, sales leaders posting about ramp time, and people engaging with a rival tool's posts. One sentence starts the first Play: "Find VPs of sales at US software companies with 50 to 300 staff that are hiring SDRs." The first message then asks one question: "Noticed you're hiring SDRs. How long does a new rep take to run a first call alone today?"
+
+A lead added to a sequence from the chat gets real direct messages under your name, from your own account, never email. We call this the Vercel for GTM: the Play leaves the chat and keeps running on the schedule you pick, with your laptop closed.
+
+One plan, from $99 a month per workspace with 60,000 credits ([pricing](/pricing)); the 7-day trial includes 30,000 credits and asks for a card up front.

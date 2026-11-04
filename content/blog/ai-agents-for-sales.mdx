@@ -1,0 +1,126 @@
+---
+title: "AI Agents for Sales: What They Can Run Today, and What They Need"
+seo_title: "AI Agents for Sales: What They Can Run in 2026"
+description: "AI agents for sales in 2026: which sales tasks an agent like Claude can run today, the five things it needs to run outbound, and how to set one up safely."
+date: "2026-12-07"
+last_updated: "2026-12-07"
+related:
+  - "ai-gtm"
+  - "ai-for-sales-prospecting"
+  - "mcp-for-sales"
+faq:
+  - question: "What are AI agents for sales?"
+    answer: "AI agents for sales are language models, such as Claude, ChatGPT or Codex, that use tools to do sales work instead of only writing about it. They search for leads, read and update the CRM, draft messages, send them through a connected channel and report back. The tools decide what an agent can do, so the setup matters as much as the model."
+  - question: "Can AI agents do sales prospecting?"
+    answer: "Yes, once they are connected to a source of people and a channel. An agent can turn a one-sentence audience into a search, check each result against your ideal customer profile, find contact details and draft first messages. Without those tools it can only plan the prospecting and write templates for you to run by hand."
+  - question: "What is the difference between an AI sales agent and an AI SDR?"
+    answer: "An AI SDR is a packaged product: a vendor's agent, contact data and sending setup, sold to run outbound for you. An AI sales agent is the general case: any agent that does sales work with tools, including the one you already pay for. With your own agent you choose the data, the channel and the rules. With an AI SDR, the vendor does."
+  - question: "Is it safe to connect an AI agent to my CRM and sales tools?"
+    answer: "It can be, with limits. Connect only servers from companies you trust, sign in through the browser instead of pasting keys, grant the narrowest access that works, and keep a confirmation step before anything that contacts a person or changes records. Start read-only, and widen access after you have read the agent's logs for a week or two."
+  - question: "Will AI agents replace sales teams?"
+    answer: "Not the selling. Agents take over research, list building, first drafts, follow-up timing and record keeping. People still set strategy, run live calls, read nuanced replies and close. Small teams use agents to put a founder or one seller in front of more qualified conversations, and larger teams use them to give each rep back the hours spent on lists."
+---
+
+**TL;DR:** AI agents for sales are models like Claude, ChatGPT and Codex that use tools to do sales work, not only to write about it. Today an agent can research accounts, build and clean lists, draft messages, prep calls and keep the CRM tidy. To run outbound on its own it needs five things: people data with timing, a channel under your name, a memory of your business, a place to run when the chat closes, and guardrails. Connect them with a browser sign-in, start read-only, and confirm anything that contacts a person.
+
+---
+
+## What an AI sales agent is, and what it isn't
+
+An AI sales agent is a model with tools and a loop. It reads a goal, picks a tool, reads the result and decides the next step, until the goal is met or it needs you. The tools set its reach: an agent with a lead search and a channel can prospect, and one without them can only advise.
+
+Three neighbors get confused with it:
+
+- **A chatbot** answers questions. An agent acts: it runs the search, writes the record, queues the message.
+- **An AI SDR** is a product category, a vendor's agent sold to run outbound for you. [What an AI SDR is, and where it fails](/blog/ai-sdr) covers that model.
+- **A CRM's built-in agent** works inside one system. Salesforce, for example, presents [Agentforce agents, including one called Hunter](https://www.salesforce.com/sales/ai-sales-agent/), for prospecting, engagement, pipeline updates and account research.
+
+This page is about the general case: the agent you already use for other work, given the tools to sell.
+
+---
+
+## What AI agents for sales can run today
+
+An agent can run most of the preparation in sales on its own today. It can run outreach only with the right tools attached, and closing stays with people.
+
+| Task | Can an agent run it today? | What it needs | Where a person stays |
+|---|---|---|---|
+| Account research | Yes | Web access and your notes | Deciding which accounts matter |
+| Ideal customer profile and personas | Yes | Your site, customer stories, won and lost deals | The final call on who you serve |
+| Building a prospect list | With a data tool | A source of people and companies, with filters and signals | Checking the first results |
+| Work emails and phone numbers | With a data tool | An enrichment provider, paid per lookup | Choosing who is worth the cost |
+| First messages | Yes | A reason per lead and your voice | Reading the first batch |
+| Sending and follow-ups | With a channel tool | An account under your name, limits, stop on reply | Choosing who enters a sequence |
+| Sorting replies | Yes | Access to the replies | Answering anything nuanced |
+| Call prep | Yes | CRM history and the lead's public posts | The call itself |
+| CRM upkeep | With write access | Clear field rules and a narrow scope | Reviewing what changed |
+| Pricing, negotiation, closing | No | | You |
+
+For the prompts behind each task, [AI for sales prospecting](/blog/ai-for-sales-prospecting) goes task by task.
+
+---
+
+## The five things an agent needs to run outbound
+
+Preparation needs only a good model. Running outbound needs five pieces around it, and a missing one shows up fast. The first three are the gaps [the AI GTM guide](/blog/ai-gtm) describes: data, reach and memory.
+
+### 1. People data with timing
+
+The agent needs a source that returns people, not only companies, and a reason to write to each now: a job post, a funding round, a post about the problem, engagement with a competitor. Fit filters such as role, size and location narrow the list. Signals decide who goes first. [Buying signals in B2B](/blog/buying-signals-b2b) lists the ones worth watching and where to see each.
+
+### 2. A channel under your name, with limits
+
+The agent has to send from an account that belongs to you, inside working hours, with a volume cap and a sequence that ends when someone replies. If the channel is email, the law travels with each message. The [FTC's CAN-SPAM guide](https://www.ftc.gov/business-guidance/resources/can-spam-act-compliance-guide-business) says the law makes no exception for business-to-business email, requires a valid postal address and an opt-out honored within 10 business days, and allows penalties of up to $53,088 per violating email.
+
+### 3. A memory of your business
+
+Chat history is not memory. It belongs to one conversation and fades as the context fills. The agent should read a stored profile at the start of every run: what you sell, who buys, personas, competitors, proof, voice, exclusions and past verdicts. Your corrections should land in that profile, not in one chat.
+
+### 4. A place to run
+
+A search that should find new people on a schedule can't live in a browser tab. It needs a host that keeps running with your laptop closed, stores each audience's leads and messages, and shows what happened while you were away.
+
+### 5. Guardrails
+
+Five controls do most of the work: a cost estimate before each search, a ceiling per run, a confirmation before anyone is contacted, a log of every tool call, and a pause button. The [Model Context Protocol specification](https://modelcontextprotocol.io/specification/2026-07-28/server/tools) puts it plainly: there "SHOULD always be a human in the loop" who can deny a tool call.
+
+---
+
+## How to set up an AI sales agent safely
+
+A safe setup grants access in stages, starting with read-only work. Spread these eight steps over about two weeks.
+
+1. **Use the agent you already have.** Claude, ChatGPT and Codex can all call remote tools over MCP. In Claude, custom connectors are open on Free, Pro, Max, Ultra, Team and Enterprise plans, with Free limited to one, according to [Anthropic's help center](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp).
+2. **Connect only servers you trust.** The same page warns that a malicious server can hide instructions meant to make Claude take actions you never intended. That attack is called prompt injection, and the first defense is choosing who you connect.
+3. **Sign in through the browser.** OAuth lets the agent act for you without ever seeing a password, and you can revoke that access from the agent's settings or the service's.
+4. **Start read-only.** In week one, run research, lists and drafts. No sending, no CRM writes.
+5. **Price every run.** Ask for the cost estimate before each search and set a ceiling per run.
+6. **Keep a confirmation before contact.** Never set a tool that contacts people or edits records to run without asking.
+7. **Pilot on 30 people.** Read every lead's reason and every message. When one is wrong, fix the memory, not the message.
+8. **Read the log weekly.** What ran, what it cost, who was contacted and what came back.
+
+[MCP for sales](/blog/mcp-for-sales) covers how these connections work and the protocol's own security rules.
+
+---
+
+## Where AI sales agents go wrong
+
+Agent failures differ from human ones: they are fast, confident and repeated at scale.
+
+- **Instructions hidden in data.** A web page or a profile can carry text written for the agent, not for you. Keep the confirmation step on every tool that acts.
+- **Facts with no source.** An agent may state a funding amount it never saw. Ask it to cite the source of each fact a message uses.
+- **Two tools, one person.** An agent sending from one tool while a colleague sequences the same lead from another makes you look careless. Check the CRM before anyone enters a sequence.
+- **Records written badly.** Broad write access lets an agent overwrite good CRM data with guesses. Prefer exports of new records over edits to old ones.
+- **Loops that spend.** An agent that retries a search until it finds enough people can burn a month of budget in an afternoon. The ceiling per run stops it.
+
+---
+
+## Connecting Pancake to your sales agent
+
+Pancake, our product, gives your agent four of those pieces as tools: the data, the channel, the memory and a place to run. You connect Claude, Claude Code, ChatGPT or Codex to its MCP server, https://app.pancake.ai/api/mcp, with a browser sign-in and no API key ([setup guide](/claude)). About 100 tools come through, with plugins for Claude Code and Codex.
+
+The GTM Brain, built from your website, is the memory. Plays are the data: companies hiring a role, tools named in job posts, recently funded companies, posts on a topic, people engaging with a competitor's posts. Each Play runs on the schedule you pick, so the search keeps going after the chat closes, and the estimated cost shows before a search runs.
+
+From the agent, you can ask: "Build a Play that finds IT managers at US manufacturers with 200 to 1,000 people who post about ERP upgrades. Show me the estimate first." Each lead returns with one line on why it fits, and the drafted opener asks a question with no pitch: "You wrote that the ERP upgrade slipped to spring. What's holding it up?"
+
+Adding a lead to a sequence starts real outreach: DMs from your own account, stopped by a reply. Pancake doesn't send email or make calls. It starts at $99 a month per workspace with 60,000 credits ([pricing](/pricing)); the 7-day trial includes 30,000 credits and requires a card. [See how Pancake works](/).

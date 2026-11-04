@@ -1,0 +1,145 @@
+---
+title: "Lead Enrichment Explained: Fields, Waterfalls, Costs and Checks"
+seo_title: "Lead Enrichment: Fields, Waterfall Method and Costs (2026)"
+description: "Lead enrichment explained: the fields worth adding, how waterfall enrichment works, what a found email or phone costs in November 2026, and how to verify."
+date: "2026-12-31"
+last_updated: "2026-12-31"
+related:
+  - "how-to-find-someones-work-email"
+  - "clay-alternatives"
+  - "how-to-automate-lead-generation"
+faq:
+  - question: "What is lead enrichment?"
+    answer: "Lead enrichment adds missing facts to a lead record so you can qualify, route and contact it: company details such as industry, headcount and location, the person's role and seniority, a verified work email or phone number, and signals such as hiring or a recent funding round. It runs on new leads as they arrive and on older records before you reuse them."
+  - question: "What is waterfall enrichment?"
+    answer: "Waterfall enrichment asks several data providers in a fixed order and stops at the first verified answer. If the first provider has no valid email for a contact, the lookup moves to the second, then the third. Coverage differs by region, company size and seniority, so a chain finds more contacts than any single provider, and pay-per-found tools charge only for the result you keep."
+  - question: "How much does lead enrichment cost?"
+    answer: "As of November 2026, pay-per-found tools charge roughly 5 to 6 cents per verified work email at their entry tiers, and 20 to 60 cents per mobile number. FullEnrich's Pro plan starts at $29 a month for 500 credits, and lemlist's data add-on adds 2,000 credits for $20 a month. On both, a lookup that finds nothing costs nothing."
+  - question: "What are the best data enrichment tools?"
+    answer: "It depends on the job. Clay suits teams that want to build their own waterfalls across 150+ providers. FullEnrich and similar tools suit teams that only need verified emails and mobile numbers, paid per result. Contact databases such as Apollo bundle enrichment with search and sequencing. Test any of them on 200 of your own contacts first, because coverage varies by market."
+  - question: "How often should you re-enrich lead data?"
+    answer: "Re-verify an email before it enters a new sequence, and refresh title and employer whenever a contact has gone quiet for months. People move often: in January 2026, 20.6% of US wage and salary workers had been with their current employer for a year or less, according to the Bureau of Labor Statistics. Enriching at the moment of use beats enriching in bulk months ahead."
+---
+
+**TL;DR:** Lead enrichment adds the missing facts to a lead: company size and industry, the person's role and seniority, a verified work email or phone number, and the signal that makes them worth contacting now. Waterfall enrichment asks several providers in turn and stops at the first verified answer. As of November 2026, pay-per-found tools charge about 5 to 6 cents per verified work email at entry tiers, and a lookup that finds nothing is free. Verify before you send and re-enrich before you reuse, because about one US worker in five has been with their employer a year or less.
+
+---
+
+## What lead enrichment does to a record
+
+Lead enrichment turns a thin record into one you can qualify, route and contact. The input is usually a name and a company domain, from a form, an event list or a search. The output is everything a rep or a sequence needs.
+
+Take a hypothetical demo request with three fields: a name, a work email, and the company, "Larkspur Freight." After enrichment the record reads: freight software, 120 employees, Denver; VP of Operations, executive level; email verified; two data analyst roles open; matches the ICP. A rep can now decide in ten seconds whether to call.
+
+Enrichment is not list building, which decides who belongs on the list ([how to build a prospect list](/blog/how-to-build-a-prospect-list) covers that), and it is not intent data. It completes the record once someone is on the list.
+
+---
+
+## Lead enrichment fields worth paying for
+
+Buy a field only if a rule, a score or a message uses it. Here is what each group covers and when it goes stale.
+
+| Field group | Example fields | Usual source | Goes stale |
+|---|---|---|---|
+| Company | Industry, headcount, revenue band, HQ, founding year | Company databases, the company's site | Slowly; headcount moves first |
+| Funding | Last round, date, amount, investors | Funding databases, announcements | At the next round |
+| Technology | Tools named in job posts or seen on the site | Job posts, site scanners | When the stack changes |
+| Person | Title, seniority, department, profile URL | Contact databases, public profiles | At each job change |
+| Contact | Work email, mobile or direct dial | Waterfall providers, verified per lookup | At each job change |
+| Signals | Open roles, recent posts, engagement | Job boards, public posts | Within weeks |
+| Derived | ICP fit score, persona, owner | Your own rules | When your ICP changes |
+
+Skip revenue band, for example, unless a routing rule or a score reads it. Start with the fields your routing and your first message need, and add others when a decision calls for them.
+
+---
+
+## How waterfall enrichment works
+
+A waterfall sends each lookup through several providers in a fixed order and stops at the first verified answer. No single provider covers every region, company size and seniority, so a chain of them finds more contacts than any one alone.
+
+1. **Normalize the input.** Full name, company domain, and a profile URL if you have one.
+2. **Ask the first provider.** If it returns an email, verify it.
+3. **Fall through on a miss.** If the result fails verification or nothing comes back, ask the next provider.
+4. **Stop at the first verified result.** Record which provider found it, and the date.
+5. **Reorder over time.** Put the providers with the best find rate on your segment first, then sort by price.
+
+Tools package this differently. [Clay](https://www.clay.com/pricing) lets you build your own waterfalls across 150+ providers and bring your own API keys. FullEnrich runs a fixed waterfall across 25+ sources, and lemlist sells a data add-on that draws on 25+ providers.
+
+Before you buy, run 200 contacts whose emails you already trust through each candidate. Compare the found rate, the verified rate and the cost per verified email. Published find rates come from each vendor's own sample, and yours will differ.
+
+---
+
+## What lead enrichment costs in November 2026
+
+Most tools sell credits, and the price of one found result depends on the tier and on what the lookup returns. At entry tiers, as of November 2026:
+
+| Tool | Entry price | Work email | Mobile number | Lookup that finds nothing |
+|---|---|---|---|---|
+| [FullEnrich](https://fullenrich.com/pricing) | $29 a month for 500 credits | 1 credit, about 6¢ | 10 credits, about 58¢ | Free |
+| [lemlist](https://www.lemlist.com/pricing) data add-on | $20 a month for 2,000 credits, on top of a plan | 5 credits, about 5¢ | 20 credits, about 20¢ | Free |
+| [Apollo](https://www.apollo.io/pricing/about-credits) Basic | $65 a seat a month, or $49 billed annually, with 2,500 credits a seat each month | 1 credit | 8 credits | Free when Apollo can't verify the email |
+| Clay | Free plan with 100 data credits a month; Launch from $185 a month | Set by each provider in your waterfall | Not on the Free plan | Set by the provider |
+| [Pancake](/) (our product) | From $99 a month per workspace, with 60,000 credits | 50 credits | 500 credits | Free |
+
+Contact databases such as Apollo price enrichment inside a seat: the credits come with the plan, pool across the team, and also pay for other features, so the cost of one email is hard to separate out.
+
+Three costs hide behind the per-result price:
+
+- **Expiry.** Apollo's credits expire at the end of each billing cycle. FullEnrich's roll over for 3 months on monthly plans and 12 on yearly ones. lemlist's roll over while you stay subscribed.
+- **Platform fees.** lemlist's data credits sit on top of a lemlist plan, and Clay's data credits sit beside the actions that measure platform use.
+- **Refreshes.** Every re-check of a stale record is a new lookup, so enriching too early means paying twice.
+
+---
+
+## Verification: what "verified" means for emails and phones
+
+An enriched email is only worth something if it delivers. Verification runs in layers:
+
+- **Syntax and domain:** the address is well formed and the domain accepts mail.
+- **Mailbox check:** the mail server is asked whether the mailbox exists, without sending a message.
+- **Catch-all handling:** some domains accept mail for any address, so the mailbox check can't confirm the person. Tools label these "catch-all" or "risky."
+- **Phone type:** a mobile or direct line is useful, a switchboard rarely. FullEnrich, for one, returns landlines without charging for them.
+
+FullEnrich says its verification removes about 30% of what its sources return before a result reaches you, a rough measure of how much raw data fails. Send to "risky" addresses last and in small batches, and see [how to automate lead generation](/blog/how-to-automate-lead-generation) for the sending rules that bounces put at risk.
+
+---
+
+## How often to re-enrich: job changes set the clock
+
+Contact data ages with every job change. In January 2026, [the Bureau of Labor Statistics found](https://www.bls.gov/news.release/tenure.nr0.htm) that 20.6% of US wage and salary workers had been with their current employer for a year or less, and median tenure was 4.1 years.
+
+- **Enrich at the moment of use,** not months ahead in bulk.
+- **Re-verify every email** before it enters a new sequence.
+- **Treat an out-of-office reply that names a successor** as a job change: update the old record and enrich the new person.
+- **Keep the source and date of each field,** so you know which facts are old.
+
+[Finding someone's work email](/blog/how-to-find-someones-work-email) covers the manual checks for a single contact.
+
+---
+
+## Lead enrichment and privacy law
+
+Enrichment processes personal data you did not collect from the person, and privacy law reaches that. What follows is a practical summary, not legal advice.
+
+- **Tell people where their data came from.** The [European Commission's GDPR guidance](https://commission.europa.eu/law/law-topic/data-protection/information-business-and-organisations/principles-gdpr_en) says that when data comes from another source, you must inform the person, including the source, at the latest within one month of obtaining it or when you first communicate with them.
+- **Keep it accurate.** GDPR requires personal data to be accurate and up to date, which makes re-verification a compliance task as well as a deliverability one.
+- **Collect less.** Data minimisation means enriching only the fields you use.
+- **Check your providers.** Ask where their data comes from, how they handle deletion and opt-out requests, and whether they sign a data processing agreement.
+
+[Clay alternatives](/blog/clay-alternatives) compares how the larger enrichment platforms package all of this.
+
+---
+
+## Getting work emails and phone numbers inside a Play with Pancake
+
+Pancake is our product, and enrichment is part of every Play. Each lead arrives with its company and one line on why it fits, checked against the ideal customer profile in your GTM Brain. When you want an email or a phone number too, Pancake finds a work email for 50 credits or a phone number for 500, and charges nothing when it finds none. 30+ data providers come included in the plan. Lookups draw on the same credits that pay for searches.
+
+Signals that pair well with enrichment for B2B sellers:
+
+- recently funded companies ([recently funded startups](/plays/recently-funded-startups));
+- companies hiring for the role you serve ([companies hiring](/plays/companies-hiring));
+- companies whose job posts name a tool you work with.
+
+A Play might read: "Find VPs of Sales at US B2B software companies with 20 to 200 staff that raised a Series A in the last 90 days." The first message asks about the signal: "Saw the Series A news. Is hiring sales the next step, or are the founders still closing deals themselves?" It goes out as a direct message from your own account, and a reply stops the sequence.
+
+The limits: Pancake doesn't send email, so a work email it finds goes to your own sequencer through a CSV download or a one-way export to HubSpot, Attio or Pipedrive. It enriches the leads its Plays find, not the records already in your CRM. The plan costs from $99 a month per workspace and includes 60,000 credits ([pricing](/pricing)); its 7-day trial has 30,000 credits and requires a card.
