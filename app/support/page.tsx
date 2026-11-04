@@ -72,6 +72,14 @@ export default function SupportPage() {
             email us with a billing question.
           </p>
 
+          <h2>CRM connections</h2>
+          <p>
+            Follow the <Link href="/support/attio">Attio setup guide</Link> or the{" "}
+            <Link href="/support/hubspot">HubSpot setup guide</Link> to connect your account,
+            map fields, export selected leads and remove access. CRM connections are currently
+            available to enabled pilot workspaces; contact us if you do not see your integration.
+          </p>
+
           <h2>ChatGPT, Codex, and Claude</h2>
           <ol>
             <li>Confirm the Pancake app opens normally.</li>

@@ -1,0 +1,7 @@
+/* Public CRM setup guides reuse the support page's prose and brand tokens. */
+.lp-crm-guide__media {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--lp-ink-30);
+}
