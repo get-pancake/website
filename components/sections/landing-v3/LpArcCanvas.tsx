@@ -2,6 +2,21 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import {
+  type ArcGeometry,
+  type FromArcWorker,
+  type Ring,
+  type RingSpec,
+  type ToArcWorker,
+  MIN_FRAME_MS,
+  POP_MS,
+  drawRings,
+  exceedsBudget,
+  freshBudget,
+  rasterizeRings,
+  releaseRings,
+} from "./lp-arc-draw";
+
 /**
  * Mobile hero-arc renderer — brings the rainbow's 20s rotation back to
  * phones WITHOUT the composited-layer cost that killed WebContent.
@@ -31,6 +46,19 @@ import { useEffect, useRef, useState } from "react";
  * once the first frame lands — an atomic swap, and the static artboard
  * remains the fallback whenever this bails).
  *
+ * Off the main thread (2026-11-03): this renderer runs only where WebGL
+ * cannot draw, and there Canvas2D is CPU-rasterized too — a frame costs
+ * 80–220 ms, so the budget's three trial frames were three long tasks right
+ * after the first paint (about half of PageSpeed's blocking time: its
+ * runners have no GPU). In Chromium the canvas now goes to a worker
+ * (transferControlToOffscreen, lp-arc-canvas.worker.ts) that rasterizes and
+ * draws with the same code (lp-arc-draw.ts); this component keeps every DOM
+ * decision: geometry, when to run, and the artboard swap when the worker
+ * says its first frame is drawn. Other engines keep the main-thread
+ * renderer: their worker canvases are not known to be accelerated
+ * (WebKit), and a CPU worker could lose the rotation where the GPU canvas
+ * holds it today (WebGL off, accelerated 2D on — iOS Lockdown Mode).
+ *
  * Scope: ≤767px, motion-safe, homepage hero only, when WebGL cannot draw.
  * The DOM rings are static; this canvas is the fallback moving copy.
  */
@@ -38,70 +66,124 @@ import { useEffect, useRef, useState } from "react";
 /** Backing resolution caps — the knobs that keep this OOM-safe. */
 const MAX_DPR = 2; // visible canvas; art bands are soft, 2× reads clean on 3× glass
 const BITMAP_SCALE = 0.75; // ring bitmaps at 3/4 of drawn resolution (~0.56× memory)
-const POP_START = { w: 2440.574, h: 2381.047 }; // lp-anim-pop 0% keyframe (anim.css)
-const POP_MS = 500;
-const MIN_FRAME_MS = 1000 / 30 - 1; // 1ms tolerance for RAF timestamp rounding
-const LONG_DRAW_MS = 50;
-const LONG_DRAW_LIMIT = 3;
-const SEVERE_DRAW_MS = 200; // one draw this costly already visibly blocks interaction
-const BUDGET_WINDOW_MS = 2000;
-const MIN_FPS = 12;
-const SLOW_WINDOW_LIMIT = 2;
 
-interface FrameBudget {
-  lastDraw: number;
-  windowStart: number;
-  frames: number;
-  slowFrames: number;
-  slowWindows: number;
-  expensiveDraws: number;
-}
+/** A matrix as exact DOMMatrix init numbers (a worker cannot parse CSS). */
+const matrixInit = (m: DOMMatrix): number[] =>
+  m.is2D ? [m.a, m.b, m.c, m.d, m.e, m.f] : Array.from(m.toFloat64Array());
 
-const freshBudget = (): FrameBudget => ({
-  lastDraw: 0, windowStart: 0, frames: 0, slowFrames: 0, slowWindows: 0, expensiveDraws: 0,
-});
+/** Read the full static geometry from the live DOM. Null = retry later
+    (pre-LpFitVars there is no reliable fit scale on iOS — the trig
+    fallback is the documented cqw-in-trig garbage). */
+function readGeometry(art: HTMLElement): ArcGeometry | null {
+  const cdiv = art.querySelector<HTMLElement>(".lp-anim-canvas--hero");
+  const box = art.querySelector<HTMLElement>(".lp-anim-box--hero");
+  if (!cdiv || !box || !art.style.getPropertyValue("--lp-fit")) return null;
+  const cdivT = getComputedStyle(cdiv).transform;
+  if (!cdivT || cdivT === "none") return null;
 
-/** Direct draw cost catches CPU rasterization; output cadence also catches
- * deferred raster/compositor work. Ordinary busy frames need repetition;
- * a single severely blocking draw is already sufficient evidence. */
-function exceedsBudget(budget: FrameBudget, now: number, drawMs: number): boolean {
-  if (drawMs >= SEVERE_DRAW_MS) return true;
-  budget.expensiveDraws = drawMs > LONG_DRAW_MS ? budget.expensiveDraws + 1 : 0;
-  if (budget.expensiveDraws >= LONG_DRAW_LIMIT) return true;
-  if (!budget.lastDraw) {
-    budget.windowStart = now;
-  } else {
-    budget.frames++;
-    if (now - budget.lastDraw > 1000 / MIN_FPS) budget.slowFrames++;
-    const elapsed = now - budget.windowStart;
-    if (elapsed >= BUDGET_WINDOW_MS) {
-      const slow = budget.frames * 1000 / elapsed < MIN_FPS && budget.slowFrames / budget.frames > 0.5;
-      budget.slowWindows = slow ? budget.slowWindows + 1 : 0;
-      budget.windowStart = now;
-      budget.frames = 0;
-      budget.slowFrames = 0;
-    }
+  const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
+  const cw = art.clientWidth;
+  const ch = art.clientHeight;
+  if (!(cw > 0 && ch > 0)) return null;
+
+  const mCanvas = new DOMMatrix(cdivT); // origin 0 0 (anim.css)
+  const base = new DOMMatrix().scale(dpr).multiply(mCanvas);
+  const fitScale = Math.sqrt(Math.abs(mCanvas.a * mCanvas.d - mCanvas.b * mCanvas.c));
+
+  const rings: RingSpec[] = [];
+  for (const arc of Array.from(box.querySelectorAll<HTMLElement>(".lp-anim-arc"))) {
+    const pose = arc.querySelector<HTMLElement>(".lp-anim-pose");
+    const spin = arc.querySelector<HTMLElement>(".lp-anim-spin");
+    const svg = arc.querySelector<SVGSVGElement>("svg");
+    const pathEl = svg?.querySelector("path");
+    if (!pose || !spin || !svg || !pathEl) return null;
+    const poseT = getComputedStyle(pose).transform;
+    const vb = svg.viewBox.baseVal;
+    const d = pathEl.getAttribute("d");
+    const fill = getComputedStyle(pathEl).fill;
+    if (!poseT || poseT === "none" || !d || !vb || !(vb.width > 0)) return null;
+
+    const isPop = svg.classList.contains("lp-anim-pop");
+    const scs = getComputedStyle(svg);
+    rings.push({
+      poseX: box.offsetLeft + arc.offsetLeft + pose.offsetLeft,
+      poseY: box.offsetTop + arc.offsetTop + pose.offsetTop,
+      poseW: pose.offsetWidth,
+      poseH: pose.offsetHeight,
+      pose: matrixInit(new DOMMatrix(poseT)),
+      dir: spin.classList.contains("lp-anim-spin--ccw") ? -1 : 1,
+      d,
+      viewW: vb.width,
+      viewH: vb.height,
+      fill,
+      fillW: isPop ? parseFloat(scs.width) : pose.offsetWidth,
+      fillH: isPop ? parseFloat(scs.height) : pose.offsetHeight,
+      isPop,
+    });
   }
-  budget.lastDraw = now;
-  return budget.slowWindows >= SLOW_WINDOW_LIMIT;
+  if (!rings.length) return null;
+  return {
+    width: Math.round(cw * dpr),
+    height: Math.round(ch * dpr),
+    base: matrixInit(base),
+    k: fitScale * dpr * BITMAP_SCALE,
+    rings,
+  };
 }
 
-interface Ring {
-  poseX: number;
-  poseY: number;
-  poseW: number;
-  poseH: number;
-  pose: DOMMatrix;
-  dir: 1 | -1;
-  bitmap: HTMLCanvasElement | null;
-  path: Path2D;
-  viewW: number;
-  viewH: number;
-  fill: string;
-  /** settled fill box (pose space); non-pop = the pose box itself */
-  fillW: number;
-  fillH: number;
-  isPop: boolean;
+/** Set once a worker answered that it cannot draw (no OffscreenCanvas 2D or
+    Path2D there) or failed to load: the main-thread renderer from then on. */
+let workerUnsupported = false;
+/** Geometry tags, page-wide, so an answer about an older build never matches. */
+let arcGen = 0;
+
+/** Chromium: OffscreenCanvas from a placeholder, in a worker. The UA-CH
+    object is Chromium's own (Safari, Firefox and iOS browsers have none). */
+const offThreadCapable = (canvas: HTMLCanvasElement) =>
+  !workerUnsupported &&
+  typeof Worker === "function" &&
+  typeof OffscreenCanvas === "function" &&
+  typeof canvas.transferControlToOffscreen === "function" &&
+  "userAgentData" in navigator;
+
+/** One worker per canvas element: a transferred canvas cannot be handed over
+    twice, so an effect re-run on the same element (Strict Mode, the phone
+    breakpoint) talks to the worker it already has. */
+interface ArcWorker {
+  worker: Worker;
+  /** "boot" until the worker answered, then "on" (canvas handed over) or "off" */
+  state: "boot" | "on" | "off";
+  /** the element is the worker's for good once transferred */
+  handedOver: boolean;
+  listener: ((m: FromArcWorker) => void) | null;
+  /** a boot answer that came while no effect run was listening */
+  pendingReady: boolean | null;
+}
+const workers = new WeakMap<HTMLCanvasElement, ArcWorker>();
+
+/** `window.__lpArcPhase` (the rainbow's test hook) pins the cycle. LpRainbowGL
+    and LpHeroAgentArt read it on their own frames; a worker cannot, so its
+    value is forwarded on every write (the getter keeps the plain reads). */
+const phaseListeners = new Set<(v: number | null) => void>();
+let phaseHooked = false;
+function watchPhase(fn: (v: number | null) => void): () => void {
+  const w = window as unknown as { __lpArcPhase?: unknown };
+  if (!phaseHooked) {
+    phaseHooked = true;
+    let value = w.__lpArcPhase;
+    Object.defineProperty(window, "__lpArcPhase", {
+      configurable: true,
+      enumerable: true,
+      get: () => value,
+      set: (v: unknown) => {
+        value = v;
+        phaseListeners.forEach((l) => l(typeof v === "number" ? v : null));
+      },
+    });
+  }
+  phaseListeners.add(fn);
+  fn(typeof w.__lpArcPhase === "number" ? w.__lpArcPhase : null);
+  return () => phaseListeners.delete(fn);
 }
 
 export function LpArcCanvas() {
@@ -130,104 +212,76 @@ export function LpArcCanvas() {
     // re-runs the effect through the `phoneKey` state below.
     if (!phone.matches || budgetStoppedRef.current) return;
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
+    // The worker path, or the main-thread one. A canvas already handed to a
+    // worker (an earlier run of this effect) stays with it.
+    let aw = workers.get(canvas) ?? null;
+    let threaded = !!aw && aw.state !== "off";
+    let ctx: CanvasRenderingContext2D | null = null;
+    if (!aw && offThreadCapable(canvas)) threaded = true;
+    if (!threaded) {
+      if (aw?.handedOver) return; // handed over, then lost: the artboard stays
+      ctx = canvas.getContext("2d");
+      if (!ctx) return;
+    }
 
     const t0 = performance.now(); // shared clock epoch — phase survives rebuilds
     let rings: Ring[] = [];
     let base = new DOMMatrix();
-    let dpr = 1;
     let raf = 0;
     let onStage = true;
     let disposed = false;
     let budget = freshBudget();
 
+    // ── worker path state ──
+    let gen = 0; // the geometry the worker holds; 0 = none
+    let geoRaf = 0;
+    let running = false; // what the worker was last told
+    let unwatchPhase: (() => void) | null = null;
+    const send = (m: ToArcWorker, transfer?: Transferable[]) => aw?.worker.postMessage(m, transfer ?? []);
+
     const releaseBitmaps = () => {
-      for (const ring of rings) {
-        if (!ring.bitmap) continue;
-        ring.bitmap.width = 0;
-        ring.bitmap.height = 0;
-        ring.bitmap = null;
+      if (threaded) {
+        if (geoRaf) cancelAnimationFrame(geoRaf);
+        geoRaf = 0;
+        if (gen) send({ type: "release", clear: false });
+        gen = 0;
+        return;
       }
+      releaseRings(rings);
       rings = [];
     };
-
-    /** Read the full static geometry from the live DOM. False = retry later
-        (pre-LpFitVars there is no reliable fit scale on iOS — the trig
-        fallback is the documented cqw-in-trig garbage). */
-    const build = (): boolean => {
-      const cdiv = art.querySelector<HTMLElement>(".lp-anim-canvas--hero");
-      const box = art.querySelector<HTMLElement>(".lp-anim-box--hero");
-      if (!cdiv || !box || !art.style.getPropertyValue("--lp-fit")) return false;
-      const cdivT = getComputedStyle(cdiv).transform;
-      if (!cdivT || cdivT === "none") return false;
-
-      dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
-      const cw = art.clientWidth;
-      const ch = art.clientHeight;
-      if (!(cw > 0 && ch > 0)) return false;
-      canvas.width = Math.round(cw * dpr);
-      canvas.height = Math.round(ch * dpr);
-
-      const mCanvas = new DOMMatrix(cdivT); // origin 0 0 (anim.css)
-      base = new DOMMatrix().scale(dpr).multiply(mCanvas);
-      const fitScale = Math.sqrt(Math.abs(mCanvas.a * mCanvas.d - mCanvas.b * mCanvas.c));
-      const k = fitScale * dpr * BITMAP_SCALE;
-
-      const next: Ring[] = [];
-      for (const arc of Array.from(box.querySelectorAll<HTMLElement>(".lp-anim-arc"))) {
-        const pose = arc.querySelector<HTMLElement>(".lp-anim-pose");
-        const spin = arc.querySelector<HTMLElement>(".lp-anim-spin");
-        const svg = arc.querySelector<SVGSVGElement>("svg");
-        const pathEl = svg?.querySelector("path");
-        if (!pose || !spin || !svg || !pathEl) return false;
-        const poseT = getComputedStyle(pose).transform;
-        const vb = svg.viewBox.baseVal;
-        const d = pathEl.getAttribute("d");
-        const fill = getComputedStyle(pathEl).fill;
-        if (!poseT || poseT === "none" || !d || !vb || !(vb.width > 0)) return false;
-
-        const isPop = svg.classList.contains("lp-anim-pop");
-        const scs = getComputedStyle(svg);
-        const fillW = isPop ? parseFloat(scs.width) : pose.offsetWidth;
-        const fillH = isPop ? parseFloat(scs.height) : pose.offsetHeight;
-
-        // one-time vector rasterization at final drawn resolution × BITMAP_SCALE
-        const bw = Math.max(1, Math.ceil(fillW * k));
-        const bh = Math.max(1, Math.ceil(fillH * k));
-        const off = document.createElement("canvas");
-        off.width = bw;
-        off.height = bh;
-        const octx = off.getContext("2d");
-        if (!octx) return false;
-        // path coords (viewBox space) → fill box (preserveAspectRatio="none")
-        octx.setTransform((bw / vb.width) * 1, 0, 0, (bh / vb.height) * 1, 0, 0);
-        octx.fillStyle = fill;
-        octx.fill(new Path2D(d));
-
-        next.push({
-          poseX: box.offsetLeft + arc.offsetLeft + pose.offsetLeft,
-          poseY: box.offsetTop + arc.offsetTop + pose.offsetTop,
-          poseW: pose.offsetWidth,
-          poseH: pose.offsetHeight,
-          pose: new DOMMatrix(poseT),
-          dir: spin.classList.contains("lp-anim-spin--ccw") ? -1 : 1,
-          bitmap: off,
-          path: new Path2D(d),
-          viewW: vb.width,
-          viewH: vb.height,
-          fill,
-          fillW,
-          fillH,
-          isPop,
-        });
+    /** Release AND blank the drawing buffer (build re-sizes it). */
+    const clearCanvas = () => {
+      if (threaded) {
+        if (geoRaf) cancelAnimationFrame(geoRaf);
+        geoRaf = 0;
+        send({ type: "release", clear: true });
+        gen = 0;
+        return;
       }
-      if (!next.length) return false;
-      rings = next;
-      return true;
+      releaseRings(rings);
+      rings = [];
+      canvas.width = 0;
+      canvas.height = 0;
     };
 
-    const easeOut = (x: number) => 1 - (1 - x) * (1 - x);
+    /** Main thread: geometry + bitmaps in one pass. False = retry later. */
+    const build = (): boolean => {
+      const geo = readGeometry(art);
+      if (!geo) return false;
+      canvas.width = geo.width;
+      canvas.height = geo.height;
+      const next = rasterizeRings(geo, (w, h) => {
+        const off = document.createElement("canvas");
+        off.width = w;
+        off.height = h;
+        return off;
+      });
+      if (!next || !next.length) return false;
+      rings = next;
+      base = new DOMMatrix(geo.base);
+      return true;
+    };
 
     const frame = () => {
       raf = 0;
@@ -255,53 +309,143 @@ export function LpArcCanvas() {
       const hook = (window as unknown as { __lpArcPhase?: number }).__lpArcPhase;
       const cycle = typeof hook === "number" ? hook : ((now - t0) / 20000) % 1;
       const popP = typeof hook === "number" ? 1 : Math.min(1, (now - t0) / POP_MS);
-
-      ctx.setTransform(1, 0, 0, 1, 0, 0);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = "high";
-      for (const r of rings) {
-        if (!r.bitmap) continue;
-        const cx = r.poseW / 2;
-        const cy = r.poseH / 2;
-        const m = base
-          .translate(r.poseX + cx, r.poseY + cy)
-          .multiply(r.pose)
-          .rotate(r.dir * cycle * 360)
-          .translate(-cx, -cy);
-        ctx.setTransform(m.a, m.b, m.c, m.d, m.e, m.f);
-        let w = r.fillW;
-        let h = r.fillH;
-        if (r.isPop && popP < 1) {
-          const e = easeOut(popP);
-          w = POP_START.w + (r.fillW - POP_START.w) * e;
-          h = POP_START.h + (r.fillH - POP_START.h) * e;
-        }
-        ctx.drawImage(
-          r.bitmap,
-          0,
-          0,
-          r.bitmap.width,
-          r.bitmap.height,
-          (r.poseW - w) / 2,
-          (r.poseH - h) / 2,
-          w,
-          h,
-        );
-      }
+      drawRings(ctx!, canvas.width, canvas.height, base, rings, cycle, popP);
       if (exceedsBudget(budget, now, performance.now() - now)) {
-        budgetStoppedRef.current = true;
-        stopAndRestore();
-        clearTimeout(glWait);
-        releaseBitmaps();
-        canvas.width = 0;
-        canvas.height = 0;
+        budgetStop();
         return;
       }
       if (!art.hasAttribute("data-lp-arc-canvas")) {
         art.setAttribute("data-lp-arc-canvas", ""); // first frame drew — swap
       }
       raf = requestAnimationFrame(frame);
+    };
+
+    const budgetStop = () => {
+      budgetStoppedRef.current = true;
+      stopAndRestore();
+      clearTimeout(glWait);
+      clearCanvas();
+    };
+
+    /** May the canvas draw now? (the main-thread frame checks the same) */
+    const mayRun = () =>
+      !disposed &&
+      !budgetStoppedRef.current &&
+      onStage &&
+      !document.hidden &&
+      !reduced.matches &&
+      phone.matches &&
+      !art.hasAttribute("data-lp-gl");
+
+    /** Worker path: geometry to the worker (read once LpFitVars has run),
+        then run. The worker draws its first frame as soon as it has both. */
+    const sendGeometry = () => {
+      geoRaf = 0;
+      if (!mayRun() || !aw || aw.state !== "on") return;
+      const geo = readGeometry(art);
+      if (!geo) {
+        geoRaf = requestAnimationFrame(sendGeometry); // LpFitVars not there yet — retry
+        return;
+      }
+      gen = ++arcGen;
+      send({ type: "geometry", gen, geo, t0: performance.timeOrigin + t0 });
+    };
+    const runWorker = (on: boolean) => {
+      if (running === on) return;
+      running = on;
+      send({ type: "run", on });
+    };
+    /** The worker is gone or cannot draw. Before the hand-over the canvas is
+        still free: the main-thread renderer takes it. After it, the static
+        artboard is the render (the element stays the worker's, unusable). */
+    const workerLost = (handedOver: boolean) => {
+      if (!aw) return;
+      aw.state = "off";
+      aw.listener = null;
+      aw.worker.terminate();
+      workerUnsupported = true;
+      if (handedOver) {
+        gen = 0;
+        stopAndRestore();
+        return;
+      }
+      workers.delete(canvas);
+      aw = null;
+      threaded = false;
+      ctx = canvas.getContext("2d");
+      if (ctx) start();
+    };
+    const onWorker = (m: FromArcWorker) => {
+      if (disposed || !aw) return;
+      if (m.type === "ready") {
+        if (!m.ok) {
+          // no OffscreenCanvas 2D / Path2D / DOMMatrix in workers here (at
+          // boot), or no 2D context for the canvas (after the hand-over)
+          workerLost(aw.handedOver);
+          return;
+        }
+        if (aw.state !== "boot") return;
+        let offscreen: OffscreenCanvas;
+        try {
+          offscreen = canvas.transferControlToOffscreen();
+        } catch {
+          workerLost(false); // the element could not be handed over: draw it here
+          return;
+        }
+        aw.state = "on";
+        aw.handedOver = true;
+        send({ type: "canvas", canvas: offscreen }, [offscreen]);
+        start();
+        return;
+      }
+      if (m.type === "stopped") {
+        // the frame budget said no (the worker stopped for good): the
+        // artboard returns, as the main-thread renderer's budget does
+        gen = 0;
+        budgetStop();
+        return;
+      }
+      if (m.gen !== gen) return; // about an older geometry
+      if (m.type === "drawn") {
+        if (mayRun() && !art.hasAttribute("data-lp-arc-canvas")) {
+          art.setAttribute("data-lp-arc-canvas", ""); // first frame drew — swap
+        }
+      } else if (m.type === "failed") {
+        gen = 0;
+        stopAndRestore();
+      }
+    };
+    const bootWorker = () => {
+      if (aw) {
+        aw.listener = onWorker;
+        const pending = aw.pendingReady;
+        if (pending !== null) {
+          aw.pendingReady = null;
+          onWorker({ type: "ready", ok: pending });
+        }
+        return;
+      }
+      const worker = new Worker(new URL("./lp-arc-canvas.worker.ts", import.meta.url));
+      const entry: ArcWorker = { worker, state: "boot", handedOver: false, listener: onWorker, pendingReady: null };
+      aw = entry;
+      worker.onmessage = (e: MessageEvent<FromArcWorker>) => {
+        if (entry.listener) entry.listener(e.data);
+        else if (e.data.type === "ready" && entry.state === "boot") entry.pendingReady = e.data.ok;
+      };
+      // a script that never loaded, or an exception inside the worker: the
+      // current effect run handles it as a worker that cannot draw
+      worker.onerror = () => {
+        if (entry.state === "off") return;
+        if (entry.listener) {
+          entry.listener({ type: "ready", ok: false });
+          return;
+        }
+        entry.state = "off"; // between two runs of the effect
+        entry.worker.terminate();
+        workerUnsupported = true;
+        if (!entry.handedOver) workers.delete(canvas);
+      };
+      workers.set(canvas, entry);
     };
 
     // LpRainbowGL owns the hero when it can: wait for its verdict
@@ -324,29 +468,45 @@ export function LpArcCanvas() {
         }
         return;
       }
-      if (!raf && phone.matches && !reduced.matches && onStage && !document.hidden) {
+      if (!phone.matches || reduced.matches || !onStage || document.hidden) return;
+      if (threaded) {
+        if (!aw || aw.listener !== onWorker) bootWorker(); // the worker answers "ready", then start() again
+        if (!aw || aw.state !== "on") return;
+        unwatchPhase ??= watchPhase((value) => send({ type: "phase", value }));
+        if (!gen && !geoRaf) sendGeometry();
+        runWorker(true); // the worker resets its own budget: hidden time is never a slow frame
+        return;
+      }
+      if (!raf) {
         budget = freshBudget(); // hidden/off-stage time is never a slow frame
         raf = requestAnimationFrame(frame);
       }
+    };
+    /** Stop drawing; the bitmaps stay (they rebuild on the way back). */
+    const pause = () => {
+      if (threaded) {
+        if (geoRaf) cancelAnimationFrame(geoRaf);
+        geoRaf = 0;
+        runWorker(false);
+        return;
+      }
+      if (raf) cancelAnimationFrame(raf);
+      raf = 0;
     };
     // WebGL handoff / bail-out (context loss, reduced motion flip) → this
     // renderer stops / resumes accordingly, phase held by the clock
     const glWatch = new MutationObserver(() => {
       if (art.hasAttribute("data-lp-gl")) {
-        if (raf) cancelAnimationFrame(raf);
-        raf = 0;
+        pause();
         art.removeAttribute("data-lp-arc-canvas");
-        releaseBitmaps();
-        canvas.width = 0; // and the 2D backing store (build() re-sizes it)
-        canvas.height = 0;
+        clearCanvas(); // and the 2D backing store (build re-sizes it)
       } else {
         start();
       }
     });
     glWatch.observe(art, { attributes: true, attributeFilter: ["data-lp-gl", "data-lp-gl-off"] });
     const stopAndRestore = () => {
-      if (raf) cancelAnimationFrame(raf);
-      raf = 0;
+      pause();
       art.removeAttribute("data-lp-arc-canvas"); // DOM artboard pose returns
     };
 
@@ -358,8 +518,7 @@ export function LpArcCanvas() {
         if (onStage) {
           start();
         } else {
-          if (raf) cancelAnimationFrame(raf);
-          raf = 0;
+          pause();
           releaseBitmaps();
         }
       },
@@ -372,18 +531,24 @@ export function LpArcCanvas() {
       else stopAndRestore();
     };
     const onVisibility = () => {
-      if (document.hidden) {
-        if (raf) cancelAnimationFrame(raf);
-        raf = 0;
-      } else start();
+      if (document.hidden) pause();
+      else start();
     };
     // The bitmap fallback uses the same palette as the static SVG and GL.
     // Rebuilding the fills retains t0, so toggling never resets the rotation.
     const paletteWatch = new MutationObserver(() => {
+      const showing = art.hasAttribute("data-lp-arc-canvas") && phone.matches && !reduced.matches;
+      if (threaded) {
+        // the worker draws the new fills as soon as it has them
+        releaseBitmaps();
+        if (showing && running) sendGeometry();
+        else start();
+        return;
+      }
       releaseBitmaps();
       // An active fallback must also paint the new snapshot immediately.
       // Keep the same clock and replace, rather than duplicate, its RAF.
-      if (raf && art.hasAttribute("data-lp-arc-canvas") && phone.matches && !reduced.matches) {
+      if (raf && showing) {
         cancelAnimationFrame(raf);
         raf = 0;
         frame();
@@ -406,10 +571,18 @@ export function LpArcCanvas() {
     return () => {
       disposed = true;
       stopAndRestore();
-      releaseBitmaps();
-      canvas.width = 0;
-      canvas.height = 0;
+      clearCanvas();
       clearTimeout(glWait);
+      unwatchPhase?.();
+      if (aw) {
+        aw.listener = null;
+        // unmounted (the element left the page): the worker goes with it;
+        // a re-run on the same element (Strict Mode) keeps it
+        if (!canvas.isConnected) {
+          aw.worker.terminate();
+          workers.delete(canvas);
+        }
+      }
       glWatch.disconnect();
       paletteWatch.disconnect();
       io.disconnect();
