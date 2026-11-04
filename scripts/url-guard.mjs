@@ -13,9 +13,9 @@
  * whose destination resolves too. Every redirect is checked the same way,
  * listed or not: one that points at a page that is gone is a 404 with an extra
  * hop. A path that next.config.mjs rewrites to another host (/record, /learn)
- * must have no page or public file in this repo: Next serves the file first,
- * so the proxied page would silently disappear. Runs before every build
- * (package.json "prebuild").
+ * must have no page or public file in this repo: the two would fight for the
+ * address, and one of them would silently never be served. Runs before every
+ * build (package.json "prebuild").
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -90,7 +90,7 @@ const proxiedPaths = [
 ];
 const shadowed = proxiedPaths.filter((p) => p !== "/" && (exists("app", p) || exists("public", p)));
 for (const p of shadowed) {
-  console.log(`ERROR  ${p} is proxied to another host in next.config.mjs, but app${p} or public${p} exists and would answer instead — remove the page or file, or the rewrite`);
+  console.log(`ERROR  ${p} is proxied to another host in next.config.mjs, but app${p} or public${p} exists too, and one of them would never be served — remove the page or file, or the rewrite`);
 }
 const dead = missing.length + deadRedirects.length + shadowed.length;
 console.log(
