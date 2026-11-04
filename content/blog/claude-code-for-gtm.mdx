@@ -1,0 +1,177 @@
+---
+title: "Claude Code for Marketing and Sales: 7 Builds for GTM Teams"
+seo_title: "Claude Code for Marketing and Sales: 7 GTM Builds"
+description: "Claude Code for marketing and sales teams: seven GTM builds, from list cleanup and enrichment to pipeline reports, and how to connect CRM and lead tools."
+date: "2026-11-26"
+last_updated: "2026-11-26"
+related:
+  - "ai-gtm"
+  - "claude-for-sales-prospecting"
+  - "mcp-for-sales"
+faq:
+  - question: "Can I use Claude Code for marketing if I don't code?"
+    answer: "Yes, for work that lives in files and data. Claude Code reads files, runs commands and edits files for you, so you can ask in plain words to clean a CSV, compare two exports or reshape a list for an import. It needs a Claude subscription or an Anthropic Console account. If the terminal feels foreign, start in the desktop app, and keep a copy of any file you let it change."
+  - question: "What does a GTM engineer use Claude Code for?"
+    answer: "Mostly the glue between tools: cleaning and enriching lists, scoring accounts against the ideal customer profile, researching accounts in parallel, fixing CRM records and calling other products over MCP. The parts that repeat become skills and scripts run with claude -p, so next month's list goes through the same steps as this month's, and the results come back in a fixed shape."
+  - question: "Can you use Claude Code for sales?"
+    answer: "Yes, for the parts of sales that are research, data and process. Claude Code can brief you on an account, check the CRM for past contact, draft messages and log tasks through MCP servers. Keep it away from unattended outreach: any tool that contacts a person should sit behind a confirmation or a hook that blocks it outside a live run."
+  - question: "How do I connect HubSpot to Claude Code?"
+    answer: "Run claude mcp add --transport http hubspot --scope user https://mcp.hubspot.com/anthropic, then type /mcp inside Claude Code and sign in to HubSpot in your browser. The user scope makes the server available in all your projects on that machine. If you already connected HubSpot in claude.ai and log in to Claude Code with the same account, the connector appears without this step."
+  - question: "Should GTM work run in Claude Code or in a chat app?"
+    answer: "Use a chat app such as Claude or ChatGPT for one-off research and writing. Use Claude Code when the same job will run again: it works on files, keeps instructions as skills and runs from a script with claude -p. A saved command with a schema runs the same steps and returns the same shape each time, which a pasted chat prompt can't promise."
+---
+
+**TL;DR:** Claude Code for marketing and sales turns GTM chores into jobs you can rerun: cleaning a list, enriching it, scoring fit, researching accounts in parallel, tidying the CRM, blocking risky tool calls and reporting on a schedule. It reads files, runs commands and calls your other tools over MCP. Connect the CRM and lead tools as MCP servers, and keep anything that contacts a person behind a confirmation or a hook.
+
+This is the builder's side of [AI GTM](/blog/ai-gtm). If you'd rather prospect in a chat window, [Claude for sales prospecting](/blog/claude-for-sales-prospecting) covers that setup.
+
+---
+
+## Why GTM teams reach for a coding agent
+
+Most GTM work already sits in files and APIs: CRM exports, event attendee lists, enrichment results, a sequencer's webhooks. [Claude Code](https://code.claude.com/docs/en/overview) is Anthropic's agentic coding tool. It reads files, edits them and runs commands, which covers most GTM data work. It runs in the terminal, in IDE extensions, in a desktop app and in the browser, and as of November 2026 most of those need a Claude subscription or an Anthropic Console account.
+
+Three kinds of people get the most from it:
+
+- **GTM engineers** who wire data, CRM and outreach tools together;
+- **marketing ops managers** who spend their weeks in exports and imports;
+- **founders who run outbound themselves** and want the same steps every week.
+
+If your GTM data never leaves one app's interface, a chat assistant with that app's connector is simpler. Claude Code pays off when the work repeats.
+
+---
+
+## Claude Code for marketing and sales: seven builds
+
+Each build below uses one Claude Code feature. Start with the ones that only read, and add writes once the output has earned your trust.
+
+| # | Build | What it replaces | Claude Code feature |
+|---|---|---|---|
+| 1 | Clean and dedupe a list | An afternoon in a spreadsheet after every event | Non-interactive mode with a JSON schema |
+| 2 | Enrich rows from a data tool | Copying between browser tabs | A data provider's MCP server |
+| 3 | Score fit with a reason | Gut-feel prioritizing | A skill that holds your ICP |
+| 4 | Research 20 accounts at once | One tab per company | Subagents |
+| 5 | Tidy the CRM | Duplicates and contacts without a company | HubSpot's MCP server |
+| 6 | Block accidental sends | Hoping the prompt holds | A PreToolUse hook |
+| 7 | Report on the pipeline | A manual spreadsheet update before the weekly meeting | A scheduled task |
+
+### 1. Clean a list with one command
+
+Non-interactive mode runs one prompt and exits, so it fits in a script. Add `--output-format json` with `--json-schema` and the result comes back in the shape your next step expects, as the [docs on running Claude Code programmatically](https://code.claude.com/docs/en/headless) show. `--allowedTools` lets the run read files without stopping to ask.
+
+```bash
+claude -p "Read webinar-attendees.csv. Remove duplicate people, drop rows with personal email domains, and map each job title to founder, marketing, sales, ops or other." \
+  --allowedTools "Read" \
+  --output-format json \
+  --json-schema '{"type":"object","properties":{"rows":{"type":"array","items":{"type":"object","properties":{"name":{"type":"string"},"company":{"type":"string"},"title_group":{"type":"string"}},"required":["name","company","title_group"]}}},"required":["rows"]}'
+```
+
+The structured result lands in the `structured_output` field, ready for the import step.
+
+### 2. Enrich rows through a data tool
+
+Connect your data provider's MCP server once (the connection steps are below), then let Claude Code work down the file. Make it state the size of the job before it spends anything.
+
+```text
+For each company in target-accounts.csv, look up headcount, industry and HQ country with the [provider] tools. Before you start, tell me how many lookups this takes and what they cost. Write results to target-accounts-enriched.csv and leave rows you can't match blank. Don't touch the original file.
+```
+
+### 3. Keep your ideal customer profile as a skill
+
+A skill is a markdown file of instructions that Claude Code loads when it's relevant, or when you type its name as a command, according to Anthropic's guide to [extending Claude Code](https://code.claude.com/docs/en/features-overview). Let Claude Code write the skill for you:
+
+```text
+Create a project skill called icp-fit. When I ask whether a company fits, score it strong, partial or none, and give the one fact that decided the score, with its source.
+Strong: B2B software, 50 to 500 staff, five or more people in marketing, paid acquisition named in their job posts.
+Partial: right size and business model, wrong buyer.
+None: agencies, consumer apps, companies under 20 staff.
+```
+
+From then on, ask "Does acme.com fit?" and Claude loads the skill, or type `/icp-fit` to call it directly. Commit the skill and everyone on the team scores leads by the same rules.
+
+### 4. Research accounts in parallel with subagents
+
+A subagent works in its own context and hands back a summary, so 20 account briefs don't crowd your main session.
+
+```text
+Use one subagent per company in shortlist.csv. Each researches its company from public sources: what changed in the last 90 days, open marketing roles, and the tools those job posts name. Each returns five lines with links. Merge the briefs into briefs.md, ranked by how strong the reason to write is.
+```
+
+### 5. Tidy the CRM through HubSpot's server
+
+Anthropic's [MCP guide for Claude Code](https://code.claude.com/docs/en/mcp) uses HubSpot as its example of a server added at user scope:
+
+```bash
+claude mcp add --transport http hubspot --scope user https://mcp.hubspot.com/anthropic
+```
+
+Type `/mcp` inside Claude Code and sign in. Start read-only: list duplicate contacts and contacts with no company, review that list yourself, then fix records in a second, supervised pass.
+
+### 6. Block accidental sends with a hook
+
+Anthropic's guide draws the line plainly: an instruction in a prompt or a skill is a request, while a PreToolUse hook is enforcement, because it runs before a tool call and can stop it. MCP tools are named `mcp__<server>__<tool>`, so one matcher covers a whole server, per the [hooks reference](https://code.claude.com/docs/en/hooks). In `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "mcp__outreach__.*",
+        "hooks": [{ "type": "command", "command": ".claude/hooks/hold-sends.sh" }]
+      }
+    ]
+  }
+}
+```
+
+The script exits with code 2 to block the call, and its message goes back to Claude. Have it let calls through only when a flag file says the run is live.
+
+### 7. Report on the pipeline on a schedule
+
+Claude Code can also run on a recurring schedule, as a cloud scheduled task or from the desktop app. A report only reads, which makes it the safest job to automate first.
+
+```text
+Pull deals created in the last seven days from the CRM, group them by source, and compare them with the seven days before. Post five lines to #pipeline in Slack. Don't change any record.
+```
+
+---
+
+## Connecting lead data, CRM and outreach tools
+
+Claude Code shares the blind spots of any chat: no lead data of its own, no account to send from, no record of who heard from you. MCP servers fill them, and every outside tool connects the same way: `claude mcp add --transport http <name> <url>`, then a browser sign-in from `/mcp`. The scope decides who gets the server.
+
+- **Local** (the default): you, in this project only.
+- **Project:** stored in `.mcp.json` at the project root; commit it and the whole team gets the server.
+- **User:** you, in every project on the machine.
+
+Three details matter for GTM scripts. A `claude -p` run can't complete a sign-in, so sign in from an interactive session first, or with `claude mcp login <name>`. In `-p` runs, project-scoped servers load without the approval prompt, so read a repository's `.mcp.json` before you script against it. And if you log in with a claude.ai account, connectors you added on claude.ai appear in Claude Code on their own.
+
+Codex follows the same pattern, with `codex mcp add` and then `codex mcp login`; [our Codex setup page](/codex) installs Pancake through its plugin instead. For the protocol itself and its security rules, see [MCP for sales](/blog/mcp-for-sales).
+
+---
+
+## Five rules before a script touches real prospects
+
+A script repeats its mistakes as faithfully as its successes. These habits keep a bad run cheap.
+
+1. **Read first, write second.** Build each job as a read-only pass that writes a file you check, then a separate pass that changes records.
+2. **Pre-approve only what the job needs.** In `claude -p` runs, list the tools with `--allowedTools`, and leave any tool that sends off the list.
+3. **Never overwrite the source.** Write results to a new file, so a bad run costs a rerun, not your export.
+4. **Make spend visible.** Ask for the number of lookups and their cost before any call that uses credits.
+5. **Rehearse on a test list.** Point a new job at ten records you own before the real thousand.
+
+---
+
+## Wiring Pancake into Claude Code
+
+Pancake is our product. It gives Claude Code what a script can't build alone: people who show a buying signal, outreach under your name, and a GTM Brain built from your website. One MCP server carries about 100 tools, with 30+ data providers included. Connect it with the line from [our Claude setup page](/claude), then sign in through `/mcp`, with no API key:
+
+```bash
+claude mcp add --transport http --scope user pancake https://app.pancake.ai/api/mcp
+```
+
+Say you sell a data-quality tool to marketing ops teams. Watch job posts that name Marketo ([tech stack Plays](/plays/tech-stack)), companies hiring a marketing operations manager, and recently funded companies. Ask: "Find marketing operations leads at US software companies with 100 to 1,000 staff whose job posts name Marketo." The first message follows the signal: "Your marketing ops posting mentions Marketo. Will the new hire inherit a clean database, or a cleanup project?"
+
+Unlike a script, the Play lives on Pancake and runs on the schedule you pick. Leads download as CSV or export one way to your CRM. Keep sequence calls out of unattended runs: adding a lead starts real outreach from your own account. Pancake sends direct messages, not email, and reads tools from job posts, not websites.
+
+The plan runs from $99 a month per workspace, 60,000 credits included ([pricing](/pricing)), after a 7-day trial with 30,000 credits that requires a card.
