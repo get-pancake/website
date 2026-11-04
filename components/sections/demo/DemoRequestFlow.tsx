@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { AiSalesCall } from "@/components/sections/demo/AiSalesCall";
+import { DemoTrustBand } from "@/components/sections/demo/DemoTrustBand";
 import { DemoVideo } from "@/components/sections/demo/DemoVideo";
 import { BASE_LEVEL, TOP_LEVEL, formatDollars } from "@/lib/pricing";
 import {
@@ -153,53 +154,21 @@ export default function DemoRequestFlow() {
         <span>Let’s build your GTM factory.</span>
       </header>
       <section className="request-layout">
-        <div className="request-pitch">
-          <span className="request-eyebrow">
-            A conversation built around your business
-          </span>
-          <h1 className="lp-display">
-            Better fit.
-            <br />
-            Better conversation.
-          </h1>
-          <p>
-            Tell us what you want to build. We’ll review your company and goals
-            before inviting you to a demo.
-          </p>
-          <ol className="request-steps">
-            <li>
-              <span>01</span>
-              <div>
-                <strong>Tell us about your team</strong>
-                <p>A few questions about your business and GTM goals.</p>
-              </div>
-            </li>
-            <li>
-              <span>02</span>
-              <div>
-                <strong>We review your request</strong>
-                <p>Our team checks where Pancake can help.</p>
-              </div>
-            </li>
-            <li>
-              <span>03</span>
-              <div>
-                <strong>Book a time if there’s a fit</strong>
-                <p>We’ll email you a personal booking invitation.</p>
-              </div>
-            </li>
-          </ol>
-          <div className="request-offer">
-            <strong>Looking for hands-on help?</strong>
-            <p>
-              White Glove pairs you with a dedicated GTM engineer to build and
-              run your GTM factory.
-            </p>
-            <p>
-              <strong>{price}/month</strong> · {WHITE_GLOVE_INITIAL_MONTHS}
-              -month initial commitment
+        <div className="request-brand-left">
+          <div className="request-brand-pitch">
+            <p className="request-brand-eyebrow">Now in early access</p>
+            <h1 className="lp-display request-brand-title">
+              Put your GTM on{" "}
+              <br />
+              full autopilot
+            </h1>
+            <p className="request-brand-lede">
+              Pancake lets your Claude or ChatGPT run your{" "}
+              <span className="demo-nowrap">go-to-market</span>. Find people ready
+              to buy and start outreach campaigns from the same conversation.
             </p>
           </div>
+          <DemoTrustBand />
         </div>
         <section className="request-card" aria-labelledby="request-title">
           {submitted && routesToSelfServe(answers) ? (
@@ -322,7 +291,7 @@ export default function DemoRequestFlow() {
                 </h2>
                 <p className="request-muted">
                   {step === 1
-                    ? "About 2 minutes. Find the right next step for your team."
+                    ? "About 2 minutes. We’ll review your request and email you a booking invitation if there’s a fit."
                     : "Help us understand the opportunity before we meet."}
                 </p>
                 <div className="demo-form__fields">
