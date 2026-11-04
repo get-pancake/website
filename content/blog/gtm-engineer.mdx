@@ -1,0 +1,144 @@
+---
+title: "GTM Engineer: What They Build, Skills, Salary and How to Hire One"
+seo_title: "GTM Engineer: Role, Skills, Salary and How to Hire (2026)"
+description: "What a GTM engineer builds, the three skill profiles behind the title, base pay from five live job posts, and a six-step way to hire your first one."
+date: "2027-01-08"
+last_updated: "2027-01-08"
+related:
+  - "ai-gtm"
+  - "lead-enrichment"
+  - "gtm-engineering-stack"
+faq:
+  - question: "What does a GTM engineer do?"
+    answer: "A GTM engineer builds the systems a sales and marketing team runs on: enrichment pipelines that complete every new lead, scoring that ranks accounts against the ideal customer profile, routing rules, signal-based outbound lists and AI agents that research accounts for reps. The role sits between RevOps and software engineering, and it is judged on pipeline created and hours saved rather than on tickets closed."
+  - question: "How much does a GTM engineer make?"
+    answer: "In five US job posts titled GTM engineer that we read on November 3, 2026, posted base ranges ran from $97,000, the floor of Toast's lowest remote pay zone, to $295,000, the top of Vercel's San Francisco range. Four of the five also mention equity. All five are well-funded software companies, so read the sample as the upper part of the market, not a survey."
+  - question: "What skills does a GTM engineer need?"
+    answer: "Most job posts ask for hands-on CRM work in Salesforce or HubSpot, fluency with APIs, webhooks and SQL, and daily use of AI tools, from enrichment tables to coding agents such as Claude Code or Codex. Beyond that core, each team leans one way: ops building in Clay and n8n, production code in Python or TypeScript, or data modeling in SQL and dbt."
+  - question: "What is the difference between a GTM engineer and RevOps?"
+    answer: "RevOps owns the rules of the revenue engine: forecasting, territories, compensation plans, CRM governance and reporting. A GTM engineer builds new machinery on top of those rules, such as an enrichment pipeline, a scoring model or an agent that drafts account briefs. The two often share a team, and job posts accept a technical RevOps background, but only the GTM engineer is expected to ship code."
+  - question: "How do you become a GTM engineer?"
+    answer: "Start from an adjacent seat. Current posts ask for about three years in GTM engineering, RevOps, sales engineering, growth engineering or workflow automation. Then build three things you can demo with real numbers: an enrichment table with its cost per row, a fit score that sorts accounts, and one workflow a rep uses each week."
+---
+
+**TL;DR:** A GTM engineer builds the systems that find, enrich, score, route and contact a company's buyers, so reps work from data instead of manual research. Most job posts for the role want CRM depth, comfort with APIs and SQL, and daily use of AI tools from Clay to Claude Code. The five live GTM engineer posts we read on November 3, 2026 listed base pay between $97,000 and $295,000. Hire one when outbound already works by hand and the manual steps are what hold it back.
+
+The tools themselves get their own walk-through in [the GTM engineering stack, layer by layer](/blog/gtm-engineering-stack).
+
+---
+
+## What a GTM engineer is, and where the title came from
+
+A GTM engineer is an operator who writes software for the revenue team. A RevOps admin configures tools; a GTM engineer builds systems across them, such as a pipeline that turns a demo request into an enriched, scored CRM record, or an agent that briefs a rep before every first call.
+
+Clay, the data-enrichment tool, [says it coined the title in 2023](https://www.clay.com/blog/gtm-engineering), and it runs a job board for the role. Posts with the title now come from AI companies, cloud infrastructure startups and restaurant software makers alike.
+
+Definitions still vary by company. Vercel's post asks for a software engineer with four years of full-stack experience. Baseten's asks for someone who has pushed Clay to its limits and owns changes in Salesforce. Same title, two different hires.
+
+---
+
+## Six systems GTM engineers build
+
+Six systems keep coming up in the job posts we read. Each replaces hours of manual work with something that runs on its own.
+
+1. **Enrichment pipelines.** Every new signup, demo request or event list comes back as a complete, scored CRM record. Sierra's post describes owning this end to end across Clay, ZoomInfo, Cognism and LLM-powered sources. [Lead enrichment, explained](/blog/lead-enrichment) covers the waterfall logic underneath.
+2. **Fit scoring.** A model grades every account against the ideal customer profile and writes the score back to the CRM and the warehouse, so reps sort by it.
+3. **Routing.** Rules send each lead to the right owner in minutes, with territory and round-robin logic that survives the next reorganization.
+4. **Signal-based outbound.** Lists start from triggers, such as a company hiring for a role or naming a tool in its job posts, and each lead carries a reason to write.
+5. **Rep assistants.** Account research, call summaries, RFP answers and Slack agents put context in front of reps on demand. Baseten's post sets the pace: a sales leader asks on Monday, and the workflow is live by Wednesday.
+6. **The GTM data layer.** Identity resolution, CRM schemas and warehouse models connect people, companies, product usage and revenue. Modal's post calls its version an org map and a people graph.
+
+---
+
+## GTM engineer vs RevOps, ops, growth engineers and SDRs
+
+The GTM engineer overlaps with four other roles. Here is how the work divides when each seat exists.
+
+| Role | Owns | Typical output | Judged on |
+|---|---|---|---|
+| GTM engineer | The systems that create and work pipeline | Enrichment pipelines, scoring, agents, signal lists | Pipeline created, hours saved, rep adoption |
+| RevOps | The rules of the revenue engine | Forecasts, territories, comp plans, CRM governance | Forecast accuracy, data quality |
+| Sales or marketing ops | Day-to-day tool administration | Fields, workflows, list pulls | Requests closed, uptime |
+| Growth engineer | The product-led funnel inside the app | Signup and activation experiments | Activation and conversion |
+| SDR | Conversations with prospects | Booked meetings | Meetings and pipeline sourced |
+
+In a small company, one person often holds two of these rows. That works as long as the job post says which row comes first.
+
+---
+
+## GTM engineer skills: three profiles behind one title
+
+Most posts we read ask for CRM depth, APIs and webhooks, SQL, and daily use of AI tools. Past that core, the posts split into three profiles. Pick one before you write the job description.
+
+### The ops builder
+
+The ops builder lives in Clay, Salesforce or HubSpot, and an automation platform such as n8n, Zapier, Make or Workato. They call APIs without help, write SQL, and know the point where low-code stops scaling. Baseten's post is a good template, down to the AI coding assistants it names: Claude Code, Cursor and Codex.
+
+### The software engineer
+
+This profile writes production Python or TypeScript with code review, logging and error handling. Sierra wants someone who can design a database schema and debug an incident from logs alone. Vercel wants a Next.js app already shipped to real users. Expect internal apps and agents from this hire, not tables.
+
+### The data builder
+
+The data builder owns the models under everything else: SQL, dbt, Snowflake, identity resolution, and reverse ETL back into the CRM and ad platforms. Modal's data platform post is the clearest example of the profile.
+
+Two habits separate strong hires in all three profiles. They know how a lead moves through the funnel and why CRM data decays over time. And they document what they build, because a system nobody can read gets switched off.
+
+---
+
+## The tools a GTM engineer works with
+
+The work touches six layers: a contact database, enrichment, signal sources, a sequencer, the CRM, and an agent layer that now reaches the other five through MCP servers. Clay, Salesforce, HubSpot, n8n, Zapier and Claude Code all appear in the posts we read.
+
+Some layers now come bundled. [Pancake](/), our product, packs signals, contact data and outreach behind one MCP server. [MCP for sales](/blog/mcp-for-sales) shows how an agent calls tools like these, and the stack guide prices each layer.
+
+---
+
+## GTM engineer salary: what five live job posts pay
+
+Base pay in the five posts below runs from $97,000 to $295,000. We read each one on the company's own job board on November 3, 2026.
+
+| Company | Job post | Location | Posted base range |
+|---|---|---|---|
+| Baseten | [GTM Engineer](https://jobs.ashbyhq.com/baseten/5cd2f489-b9ee-428b-b252-94e83d55f107) | New York | $175,000 to $200,000, plus equity |
+| Sierra | [GTM Engineer](https://jobs.ashbyhq.com/sierra/1c991675-099f-49dd-9b9b-bd3c9111e65c) | San Francisco | $150,000 to $230,000, plus equity |
+| Vercel | [GTM Engineer](https://job-boards.greenhouse.io/vercel/jobs/6225825004) | San Francisco range, hybrid | $180,000 to $295,000, plus equity |
+| Toast | [GTM Engineer, Web](https://careers.toasttab.com/jobs?gh_jid=8261282) | Remote, US | $124,000 to $198,000 in the top pay zone; $97,000 to $155,000 in the lowest |
+| Modal | [GTM Engineer, Data Platform](https://jobs.ashbyhq.com/modal/dd6fe63b-8265-474e-b1f0-fcc1c5a28daf) | New York | $200,000 to $220,000 |
+
+Read the sample with three caveats:
+
+- **It sits at the top of the market.** All five are well-funded software companies, four venture-backed and one public, hiring in expensive cities or across the US.
+- **These are base ranges.** Toast adds bonus or commission where eligible, and four of the five posts mention equity.
+- **Posts close.** By the time you read this, some of these roles may be filled.
+
+---
+
+## How to hire your first GTM engineer
+
+Decide what the first hire should build before you post the role. Every other choice follows from that list.
+
+1. **Write down the first three systems.** Be concrete: "every demo request enriched, scored and routed within five minutes," "a weekly list of companies hiring for the role we sell to, with the right contact," "an account brief in Slack before each first call." The list picks the profile and hands the new hire a backlog on day one.
+2. **Pick one profile.** Tables and CRM workflows call for the ops builder. Internal apps and agents call for the software engineer. A messy warehouse calls for the data builder. Write the post for one of them.
+3. **Look where builders already are.** Start inside: the SDR who built a Clay table to skip research, the RevOps admin who taught themselves Python. Then try Clay's job board, the communities of the tools you run, and engineers who want to work closer to revenue.
+4. **Test with a paid build, not a quiz.** Hand over 100 real accounts, a small data budget and three days. Ask for enrichment, a fit score, a routing rule and the cost per finished row. Then ask what breaks at ten times the volume, when an API goes down, or when one account arrives five times at once. Sierra's post lists those exact failure cases.
+5. **Ask references what reps still use.** The best signal is a system the sales team still runs months after the candidate built it. Baseten's post puts it bluntly: a build isn't done until the field uses it.
+6. **Plan the first 90 days.** The first two weeks are an audit of every tool and workflow. After that, ship one system every two weeks and measure adoption and hours saved, not lines of code.
+
+If a full-time hire is premature, a contractor or GTM agency can build the first systems. Budget for someone in-house to own them afterward, because every pipeline needs a caretaker once the builder leaves.
+
+---
+
+## Running signal Plays from Claude Code with Pancake
+
+Pancake is our product, and it covers one layer a GTM engineer would otherwise wire by hand: finding people who show a buying signal and starting the conversation under your name. Connect its MCP server to Claude Code or Codex with a browser sign-in and no API key, as the [Codex setup page](/codex) shows. The agent gets about 100 tools, and 30+ data providers come included.
+
+For a B2B software company, three signals carry most of the weight:
+
+- companies hiring for the role your product serves ([companies hiring](/plays/companies-hiring));
+- companies whose job posts name a tool you replace or plug into;
+- people engaging with a competitor's posts.
+
+You describe the audience in one sentence, such as "Find heads of RevOps at US software companies with 50 to 500 staff whose job posts name Salesforce CPQ," and the Play runs on the schedule you pick. Each lead comes with one line on why it fits, and the first message asks about it: "Saw Salesforce CPQ in your RevOps posting. Is that a new rollout, or a cleanup of the current setup?" It goes out as a direct message from your own account, a reply stops the sequence, and leads export one way to HubSpot, Attio or Pipedrive.
+
+The limits: Pancake doesn't send email, identify site visitors or read a website's tech, and Cursor can't connect yet. Pricing starts at $99 a month for one workspace and its 60,000 credits ([pricing](/pricing)). The 7-day trial carries 30,000 credits and begins once you add a card.

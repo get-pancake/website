@@ -1,0 +1,143 @@
+---
+title: "How to Sell to Hospitals: Committees, Security, Pilots and Contracts"
+seo_title: "How to Sell to Hospitals: Committees, BAAs and Pilots"
+description: "How to sell to hospitals and health systems: who signs, the committees and security review, the HIPAA BAA, pilots that convert, and the signals to watch."
+date: "2027-01-12"
+last_updated: "2027-01-12"
+related:
+  - "founder-led-sales"
+  - "tech-stack-signals"
+  - "job-postings-as-buying-signals"
+faq:
+  - question: "How long does it take to sell software to a hospital?"
+    answer: "Longer than most B2B sales, because a deal passes a committee, an integration queue, a security review and procurement before a pilot even starts. There is no standard length. Map every step with your champion on the first call, work backward from the hospital's budget calendar, and run the security review and contracting alongside the evaluation instead of after it."
+  - question: "Do I need a BAA to sell to a hospital?"
+    answer: "You need one if your product creates, receives, maintains or transmits protected health information on the hospital's behalf. HHS says a covered entity may share that information with a business associate only after written assurances, the business associate agreement, that it will be safeguarded. If your product never touches patient data, no BAA is required, but expect to prove that in the security review."
+  - question: "Who makes purchasing decisions in a hospital?"
+    answer: "No single person. A department leader champions the product, a VP or C-level executive owns the budget, and a committee such as value analysis, IT governance or clinical informatics weighs it against other requests. IT, information security, privacy, procurement and counsel each sign off. In a health system, several of those steps happen at the system level rather than at the hospital."
+  - question: "How do you get a hospital to agree to a pilot?"
+    answer: "Propose a small pilot with the decision built in: one unit or workflow, two metrics the sponsor already tracks, a measured baseline, a readout date, and the contract terms that apply if the numbers hold. Ask for a fee, even a modest one, so the pilot goes through procurement once. Clear the security review and the BAA before it starts."
+  - question: "How do you market to hospitals?"
+    answer: "Start from what hospitals publish: job posts for the roles your product supports, job posts naming the EHR you integrate with, and leaders posting about the problem you solve. Write to the department leader with one question about that signal and no pitch. References from similar hospitals and your EHR vendor's developer program build credibility over time."
+---
+
+**TL;DR:** A hospital buys through a series of gates, and a deal stalls at whichever one you didn't plan for. Find the department leader who owns the problem and the executive who owns the budget, then clear the committee, the EHR integration queue, the security review and business associate agreement, procurement, and a pilot whose success measure is agreed before it starts. That is how to sell to hospitals without a year stuck in "pilot". When a hospital belongs to a health system, many of those gates sit at the system level, so sell there.
+
+This is for healthtech founders and first sales hires selling software or services to US hospitals and health systems. Most founders run these first deals themselves, and [the founder-led sales playbook](/blog/founder-led-sales) covers the weekly rhythm around them.
+
+---
+
+## Health system or single hospital: where the decision sits
+
+Find out who decides before you pitch. [The AHA's Fast Facts for 2026](https://www.aha.org/statistics/fast-facts-us-hospitals) count 6,100 US hospitals, and 3,567 of the 5,121 community hospitals belong to a system. In a system, the hospital you talk to may not be the one deciding.
+
+Selling to health systems changes the shape of the deal. IT standards, security reviews and contracts often run centrally, so a hospital's enthusiasm can stop at system IT. The upside is scale: one system contract can open several hospitals at once.
+
+Independent hospitals decide locally, with fewer people to convince and fewer people to do the integration work once you win. Ask on the first call: "If this works here, who else in the system has to agree before you can buy it?"
+
+---
+
+## Who signs, who reviews, who can stop it
+
+No one person buys for a hospital. Expect several groups, each with its own question:
+
+- **The champion.** The department leader who owns the problem, such as a director of patient access, a VP of revenue cycle, a nurse manager or a pharmacy director. They run your evaluation from the inside.
+- **The budget holder.** The executive above them: the CFO, the COO, the chief nursing officer, or the CIO or CMIO for clinical IT.
+- **A committee.** Value analysis, IT governance or clinical informatics, weighing your product against standards and every other request in the queue.
+- **IT and the EHR team.** The interface analysts whose backlog sets your go-live date.
+- **Security and privacy.** The questionnaire, the risk review and the BAA.
+- **Procurement and counsel.** Supplier setup, insurance, the master agreement, payment terms.
+- **The people who use it.** Clinicians or staff whose work changes. They don't sign, but they can sink a pilot.
+
+Map the list in your first two calls. Ask the champion: "Who else has to say yes, and in what order?"
+
+---
+
+## How to sell to hospitals, gate by gate
+
+Most hospital deals pass the same gates, in roughly this order. A gate you skip comes back later, usually at the worst moment.
+
+| Gate | Who runs it | The question it answers | Have this ready |
+|---|---|---|---|
+| Problem | Department leader | Is this worth my team's time? | A one-page case built on their own numbers |
+| Budget | VP or C-level sponsor | Is it in this year's budget, and from which line? | Price, an ROI model, their budget calendar |
+| Committee | Value analysis, IT governance or informatics committee | Does it fit our standards and priorities? | Evidence from similar hospitals, references |
+| Integration | EHR and interface team | What does it touch, and when can we build it? | An integration spec, EHR experience |
+| Security and privacy | CISO and privacy officer | Can we trust it with our data? | Questionnaire answers, a SOC 2 or HITRUST report, a BAA |
+| Contract | Procurement and counsel | Can we buy it on our paper? | Insurance certificates, redlines, a W-9 |
+| Pilot | Champion and sponsor | Did it work here? | Two metrics, a baseline, a readout date |
+
+Start the integration, security and contract gates while the evaluation runs. Run in sequence, each one waits on the last.
+
+---
+
+## The security review and the business associate agreement
+
+If your product handles patient data for the hospital, the hospital can't share that data with you until you sign a business associate agreement (BAA).
+
+Under [HHS's guidance on business associates](https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/business-associates/index.html), a vendor that creates, receives, maintains or transmits protected health information on a hospital's behalf is a business associate, and the hospital needs written assurances, the BAA, that the vendor will safeguard it. HHS's examples include a cloud provider storing electronic patient data and an IT vendor whose support work requires access to it.
+
+A business associate is also [directly liable for parts of HIPAA](https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/business-associates/factsheet/index.html), including complying with the Security Rule, notifying the hospital of a breach, and signing BAAs with its own subcontractors that create or receive the data. So your cloud host and any vendor touching patient data need a BAA with you before your first hospital asks.
+
+If your product never touches patient data, say so on the first security call and show the data flow that proves it. HHS's guidance says no BAA is needed with a vendor whose service doesn't involve that information and whose access would be incidental at most.
+
+Either way, have these ready before the questionnaire arrives:
+
+- a SOC 2 Type II or HITRUST report, or the date your audit window closes;
+- a data flow diagram and a list of sub-processors;
+- single sign-on, role-based access and audit logs;
+- an incident response plan with your breach notification steps;
+- a cyber insurance certificate.
+
+---
+
+## Pilots that end in a contract
+
+A pilot converts when the decision is agreed before it starts. Write six things into the pilot agreement:
+
+1. **One scope.** One unit, one clinic or one workflow.
+2. **Two metrics the sponsor already tracks,** such as no-show rate, days to authorization or denial rate, with a baseline measured before you start.
+3. **An owner on their side** who pulls the numbers.
+4. **Three dates:** the start, a mid-point check, and a readout with the budget holder in the room.
+5. **The terms if it works:** price, scope and the contract start date.
+6. **A fee.** A paid pilot goes through procurement and security once, so the contract doesn't start from zero.
+
+A free pilot with no end date tends to stay a pilot.
+
+---
+
+## Procurement and the budget calendar
+
+Ask early when the fiscal year starts and when the operating and capital budgets lock. A product that misses the budget waits for the next one, or needs a discretionary line someone has to defend.
+
+Then meet supply chain before the contract stage. Supplier setup takes registration, insurance certificates, tax forms and banking details, and many systems want their own master agreement and BAA templates, so plan for redlines. Some systems buy through group purchasing organization (GPO) contracts; ask procurement whether one covers your category and what buying off-contract takes.
+
+---
+
+## How to market to hospitals: the signals they publish
+
+Hospitals publish their pain in job posts, and the posts often name their systems. Five signals are worth watching:
+
+- **Hiring for the work your product supports.** A hospital with four open medical scheduler roles, or a clinic group hiring prior authorization specialists, is paying people to do work your product may take on. [Reading job posts as buying signals](/blog/job-postings-as-buying-signals) maps more roles to purchases.
+- **The EHR named in job posts.** Posts that ask for Epic, Cerner or MEDITECH experience tell you which system you would integrate with. [Finding companies by the tools in their job posts](/blog/tech-stack-signals) covers what those posts reveal and what they miss.
+- **Leaders posting about the problem.** A director of patient access writing about no-shows, or a revenue cycle VP writing about denials.
+- **New facilities, watched by hand.** A new tower, an outpatient center or an acquisition in a health system's press releases means new staff, new workflows and new purchases.
+- **References.** Hospitals ask peer hospitals. Ask every customer for two reference calls, and offer one before a prospect asks.
+
+If you integrate with Epic, [Epic's Vendor Services program](https://vendorservices.epic.com/) gives developers who sign up integration guidance, more documentation and an expanded testing sandbox, and its Showroom lists products for use with Epic, as of November 2026. The first message to a hospital leader asks about the signal, with no pitch: "Saw the four medical scheduler openings. Are those new positions, or backfills?" [Pancake's page for healthtech startups](/for/healthtech-startups) shows these signals set up as searches.
+
+---
+
+## Finding hospital buyers from their job posts, with Pancake
+
+Pancake is our product. It turns signals like these into leads and opens the conversation from your own account. Three of them point to hospital buyers:
+
+- hospitals and clinic groups hiring the roles your product supports, such as schedulers or prior authorization specialists ([companies hiring](/plays/companies-hiring)).
+- hospitals whose job posts name the EHR you integrate with, such as Epic ([tech stack](/plays/tech-stack)).
+- operations, revenue cycle and nursing leaders posting about the problem you solve.
+
+One sentence sets up the Play: "Find VPs of patient access at US health systems whose job posts name Epic and that are hiring medical schedulers." When a hospital matches, Pancake brings the one or two people who best fit the buyer roles in your GTM Brain, each with a line on why. It can't map the whole committee. The first message asks about the post: "Saw the prior auth specialist openings. Is the team keeping up with volume, or falling behind?" A reply stops the sequence, and every message goes out from your own account as a direct message.
+
+The limits: Pancake works from job posts and public posts, and never sees patient records. It doesn't send email or watch facility news, and single-doctor practices rarely show up.
+
+A workspace for the whole founding team costs from $99 a month, with 60,000 credits ([pricing](/pricing)). Start with the 7-day trial: 30,000 credits, card required. [Pancake for healthtech startups](/for/healthtech-startups) has more hospital Plays.

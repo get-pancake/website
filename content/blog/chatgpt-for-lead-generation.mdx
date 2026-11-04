@@ -1,0 +1,185 @@
+---
+title: "ChatGPT for Lead Generation: 10 Prompts and Where ChatGPT Stops"
+seo_title: "ChatGPT for Lead Generation: 10 Prompts That Work"
+description: "ChatGPT for lead generation: 10 prompts to define, find, qualify and write to leads, where ChatGPT stops, and how to connect a lead tool to it over MCP."
+date: "2026-11-16"
+last_updated: "2026-11-16"
+related:
+  - "ai-gtm"
+  - "ai-for-sales-prospecting"
+  - "ai-lead-generation-tools"
+faq:
+  - question: "Can ChatGPT generate leads?"
+    answer: "ChatGPT can find companies worth contacting from public sources, such as funding announcements and job posts, and help you qualify and write to them. It doesn't hold a database of people with verified titles and contact details, and it doesn't send outreach from your account. Treat it as the analyst in your lead generation, and connect a data or outreach tool for the rest."
+  - question: "What are the best ChatGPT prompts for lead generation?"
+    answer: "The prompts that work give ChatGPT your own data, ask for a source on every fact, and allow it to answer 'unknown'. Start with an ideal customer profile built from won and lost deals, then a job-post decoder, a qualification pass over a list you already have, and a first message written from one specific signal. Vague prompts such as 'find me leads' return generic lists."
+  - question: "How do I use ChatGPT for sales prospecting?"
+    answer: "Set up a project with your deal export, call notes and instructions. Ask it to define your ideal customer, list the public signals that come before a purchase, and build an account list with deep research. Read the source of each signal yourself, then have ChatGPT draft a short first message tied to it. Keep your list of who you contacted in a CRM, not in chat memory."
+  - question: "Can ChatGPT find email addresses?"
+    answer: "Not reliably. ChatGPT has no directory of work emails, so an address it proposes without a data source behind it is a guess. Use it to work out which titles to contact, then get emails from a provider that verifies them, or from a tool connected to ChatGPT over MCP that returns found addresses rather than patterns."
+  - question: "Can I connect my CRM or a lead tool to ChatGPT?"
+    answer: "Yes, as a plugin, either from ChatGPT's directory or as a custom MCP server. As of November 2026, OpenAI offers full MCP support, write actions included, on Business, Enterprise and Edu workspaces on the web. Pro accounts can add custom servers with read and fetch permissions only. If your plan doesn't offer it, Codex can connect to MCP servers instead."
+---
+
+**TL;DR:** ChatGPT for lead generation works as an analyst, not as a lead source. It defines who to target from your deal data, reads job posts and announcements for a reason to write, qualifies a list you bring, and drafts first messages; the 10 prompts below cover each step. It has no contact database, no way to run outreach from your account, and no reliable record of who you contacted. A tool connected over MCP covers those, if your ChatGPT plan allows custom servers.
+
+The same split applies to every assistant, which our overview of [AI GTM and what agents need to run it](/blog/ai-gtm) lays out. If you work in Claude instead, the [Claude prospecting setup](/blog/claude-for-sales-prospecting) covers this ground with Projects and connectors.
+
+---
+
+## What ChatGPT does well in lead generation, and what it can't do
+
+ChatGPT is strong wherever the work is reading and writing, and weak wherever the work needs data it doesn't have or an account it can't use. Our guide to [AI for sales prospecting](/blog/ai-for-sales-prospecting) runs the same hand-off test on every prospecting task.
+
+| Lead generation step | ChatGPT on its own | With a connected tool |
+|---|---|---|
+| Define the ideal customer | Strong, from deal data you upload | Reads your CRM directly |
+| Find companies | Public web: newsrooms, careers pages, announcements | Searches a lead database or a signal feed |
+| Find the right person | The titles to look for | Named people with current roles |
+| Get contact details | Nothing you can trust without a source | Work emails or phone numbers a provider found |
+| Write the first message | Strong, given a specific reason | The same, with the lead's details filled in |
+| Send and follow up | Drafts only | Messages from your account that stop on a reply |
+| Track who heard what | Memory keeps preferences, not a log | The tool keeps the record |
+
+---
+
+## Give ChatGPT a project before you prompt it
+
+A project keeps chats, files and instructions together, and [project instructions override your general custom instructions](https://help.openai.com/en/articles/10169521-projects-in-chatgpt) inside that project. Lead generation needs that, because every prompt below works better when ChatGPT already knows what you sell and who buys it.
+
+Add three files: a CRM export of won and lost deals from the last 12 months, notes from five sales calls, and a short list of the companies you never sell to. Then set instructions like these:
+
+```text
+Context: we sell [product] to [buyer title] at [industry] companies with [size] staff in [region].
+Our best customers bought because [trigger]. We lose deals when [reason].
+When you list companies, cite where each fact came from. When a field is unknown, write "unknown".
+Do not guess names, titles, email addresses or phone numbers.
+Drafts: two sentences, no product pitch, one question.
+```
+
+---
+
+## Using ChatGPT for lead generation: 10 prompts
+
+The prompts follow the order of the work: define, find, qualify, write, follow up. Replace what's in brackets.
+
+### Define who you're looking for
+
+**1. Build the ideal customer profile from wins and losses.**
+
+```text
+I'm attaching our CRM export of won and lost deals from the last 12 months. Compare the two groups on industry, headcount, region, the buyer's title, sales cycle length and deal size. Which three traits separate wins from losses most clearly? Show the counts behind each one, then turn them into a one-paragraph ideal customer profile.
+```
+
+Comparing wins with losses matters. A trait shared by every deal you closed may be shared by every deal you lost too.
+
+**2. List the buying signals for your product.**
+
+```text
+We sell [product], which solves [problem]. List eight public events that make a company more likely to buy something like it within 90 days: hires, launches, funding, tools they adopt, topics their leaders post about. For each one, say where it shows up publicly and how long it stays relevant.
+```
+
+### Find companies with a reason to talk
+
+**3. Build an account list with deep research.**
+
+[Deep research](https://help.openai.com/en/articles/10500283-deep-research-in-chatgpt) shows you a research plan before it starts and returns a report with citations. Under Sites, you can limit it to the sources you name.
+
+```text
+Find 30 US companies with 20 to 200 employees in [industry] that published a job post for [role] or announced a funding round since [date]. Use company careers pages, press releases and newsrooms. Return a table: company, website, the signal, the source link, the date. Leave out anything you can't link.
+```
+
+**4. Decode a job post.**
+
+```text
+Read this job post. List the tools it names, the problems the new hire will own, and the numbers they'll be judged on. Then write the one question a seller of [product] could ask the hiring manager that this post makes relevant. Quote the line that justifies it.
+```
+
+**5. Keep a watchlist with a scheduled task.**
+
+[Scheduled tasks](https://help.openai.com/en/articles/10291617-scheduled-tasks-in-chatgpt) rerun a prompt at a time you set. As of November 2026, Plus allows five active tasks and Pro allows fifteen.
+
+```text
+Each Monday at 9am, search the news for these 20 companies: [list]. Report only funding, acquisitions, leadership hires and product launches from the past seven days, with links. If nothing happened, reply "no change" and stop.
+```
+
+### Qualify before you write
+
+**6. Sort a list you already have.**
+
+```text
+Here is a CSV of 80 companies. Using our ideal customer profile, mark each one "fit", "maybe" or "no fit", with a one-line reason. Add a column with what you'd need to know to decide the "maybe" rows. Leave unknown fields empty rather than guessing.
+```
+
+**7. Map who to contact by title.**
+
+```text
+At a [industry] company with about [size] employees, which titles usually own [problem], which approve the budget, and which can block the purchase? Rank the titles from most to least likely buyer. Don't name people.
+```
+
+### Write, then follow up
+
+**8. Write the first message from the signal.**
+
+```text
+Write the first message to a [title] at [company]. The trigger: [signal, date, link]. Two sentences, under 280 characters. Name the trigger in the first sentence and ask one question in the second. Don't mention our product. Give me one version for a direct message and one for email.
+```
+
+**9. Write a follow-up that adds something new.**
+
+```text
+They haven't answered this message: [paste]. Write a follow-up that brings one new thing: a short insight, a number from our case study, or a question about another part of the problem. No "checking in" line. Under 250 characters.
+```
+
+**10. Sort replies and draft answers.**
+
+```text
+Here are 15 replies to our outreach. Label each one: interested, wants details, wrong person, not now, or not interested. For "wrong person", draft a short note asking who owns [problem]. For "not now", suggest when to come back, based on what they wrote.
+```
+
+---
+
+## Three gaps ChatGPT can't close by itself
+
+ChatGPT works with what you give it and what it can reach. For lead generation, three things sit outside that reach.
+
+**A contact database.** On their own, search and deep research read the public web and your files. Neither is a database of people with verified titles and work emails. An address ChatGPT proposes without a source behind it is a pattern, not a fact.
+
+**A way to run outreach.** ChatGPT writes the sequence. A fresh chat has no account to send it from, no follow-up timeline, no stop when someone answers, and no inbox for the reply.
+
+**A record of the pipeline.** OpenAI's own help page says [memory doesn't keep every detail of every conversation](https://help.openai.com/en/articles/8590148-memory-in-chatgpt); ChatGPT picks what seems relevant. That suits your preferences and fails at "who did we contact in March, and what did they say?"
+
+---
+
+## How to connect a lead generation tool to ChatGPT
+
+Outside tools reach ChatGPT as plugins. A plugin can carry an MCP server, the standard way for an AI app to call another product's tools, and many come from ChatGPT's directory. To pick the tool itself, our roundup of [AI lead generation tools](/blog/ai-lead-generation-tools) sorts them by job. A tool that isn't listed connects as a custom MCP server, as of November 2026:
+
+1. Open **Plugins**, select the plus button, then **Add custom MCP server**.
+2. Enter a name and the server's HTTPS address.
+3. Set up authentication, read the risk warning and tick the box to continue.
+4. Select **Create as a plugin**, install it, then type **@** in a new chat to pick it.
+
+Plan limits decide what works. OpenAI's article on [connecting custom MCP servers](https://help.openai.com/en/articles/12584461-connecting-custom-mcp-servers-in-chatgpt) lists full MCP support, write actions included, for Business, Enterprise and Edu workspaces on the web. Pro accounts can add custom servers with read and fetch permissions only. In a Business workspace, only admins and owners can add one, and none of this works on mobile.
+
+Write actions deserve care. ChatGPT may ask you to confirm one, depending on the plugin's permissions and the action. Deep research uses read actions only, which keeps a research run from changing data in a connected tool.
+
+If your plan has no custom server option, Codex can connect to MCP servers from its own settings; [the Codex setup page](/codex) shows the commands for Pancake.
+
+---
+
+## Finding Series A buyers from ChatGPT with Pancake
+
+Pancake is our product. In ChatGPT it arrives as a custom MCP server: add it under Plugins, then sign in to Pancake in your browser ([our ChatGPT setup page](/chatgpt) has the steps). Creating Plays and adding leads to a sequence change data, so they need a plan with full MCP support; on other plans, use the web app or Codex.
+
+Say you run a SOC 2 consultancy. Three signals point at buyers:
+
+- software startups that [raised a Series A](/plays/recently-funded-startups) in the last few months;
+- companies hiring their first security engineer;
+- job posts that name a compliance tool such as Vanta or Drata.
+
+Type one sentence after @Pancake: "Find CTOs at US software startups that raised a Series A in the last 90 days." The search runs on the schedule you pick, and each lead arrives with one line on why it fits. The first message builds on that line: "Congrats on the Series A. Has a customer asked for your SOC 2 report yet, or is that still ahead?"
+
+You can read or rewrite any draft in the chat. Putting a lead in a sequence starts real outreach under your name, as direct messages from your own account; a reply stops it. Pancake sends no email, and it reads tools from job posts, not from websites.
+
+The plan costs from $99 a month per workspace, with 60,000 credits each month ([pricing](/pricing)). New workspaces get a 7-day trial with 30,000 credits, and starting it takes a credit card.

@@ -1,0 +1,158 @@
+---
+title: "AI GTM in 2026: What Agents Can Plan, and What They Need to Run It"
+seo_title: "AI GTM: What Agentic Go-to-Market Needs to Run (2026)"
+description: "AI GTM explained: what an agent like Claude can plan for your go-to-market, the three things it needs to run it, four common setups, and where it breaks."
+date: "2026-11-06"
+last_updated: "2026-11-06"
+related:
+  - "ai-agents-for-sales"
+  - "buying-signals-b2b"
+  - "pancake-vs-hiring-a-bdr"
+faq:
+  - question: "What is AI GTM?"
+    answer: "AI GTM is go-to-market work done by AI agents instead of by hand: choosing accounts, finding the right people, writing first messages, following up and recording what happened. In 2026 the planning half runs well in a chat with Claude, ChatGPT or Codex. The running half needs data to find people, a channel to reach them and a memory of the business, connected to the agent as tools."
+  - question: "What is the difference between AI GTM and agentic GTM?"
+    answer: "AI GTM covers any use of AI in go-to-market, from a model drafting one email to a motion that runs with no one touching it. Agentic GTM is the narrower case: an agent takes a goal, calls tools on its own, such as a lead search or a CRM, and carries the work from one step to the next. The difference is who acts between steps: you, or the agent."
+  - question: "What are the best AI GTM tools?"
+    answer: "It depends on who drives. Teams with a technical operator wire an agent to data providers, enrichment tables and a sequencer. Sales teams that want a vendor to run outbound buy an AI SDR such as Artisan or 11x. Teams that live in HubSpot or Salesforce use the agents built into the CRM. Founders who already work in Claude or ChatGPT connect GTM infrastructure to that agent over MCP."
+  - question: "Can AI run go-to-market without a sales team?"
+    answer: "It can run the prospecting half: finding people with a reason to talk, opening the conversation and following up. It can't close a complex deal, read a room on a live call or set your strategy. Most small B2B teams that use AI this way keep a founder or one seller on replies, calls and closing, and let agents handle the search and the first touch."
+  - question: "What is an agentic GTM platform?"
+    answer: "An agentic GTM platform is software that gives an AI agent what it needs to run go-to-market work: people data, a channel to reach them, a memory of the business and a place where searches and sequences keep running after the chat ends. It exposes those pieces as tools, often over MCP, so Claude, ChatGPT or Codex can operate them."
+---
+
+**TL;DR:** AI GTM is go-to-market run by AI agents: an agent picks the accounts, finds the people, writes the first messages and follows up, and you take the conversations that start. In 2026, Claude, ChatGPT and Codex already plan that work well. Running it takes three things a chat window lacks: data to find people, a way to reach them under your name, and a memory of the business. Connect those as tools, start with one audience, and keep a person on the replies.
+
+---
+
+## What AI GTM means, and what makes it agentic
+
+Go-to-market is the loop that turns a product into customers: decide who to sell to, find those people, reach them, answer them and learn from the result. AI GTM hands parts of that loop to AI, and the label covers three different levels of handing over.
+
+- **AI-assisted.** A model helps a person. It drafts an email, summarizes a call or suggests an angle, and the person moves every piece.
+- **AI-run steps.** Software runs one step alone, such as enrichment or sorting replies, inside a workflow someone built.
+- **Agentic GTM.** An agent takes a goal, such as "find 40 heads of data at US software companies that are hiring", decides which tools to call, calls them, checks the results and moves to the next step. You set the goal and the limits.
+
+The third level became practical once agents had a standard way to use tools. Anthropic [open-sourced the Model Context Protocol (MCP) in November 2024](https://www.anthropic.com/news/model-context-protocol) to connect AI assistants to the systems where data lives. In December 2025 the protocol moved to the Linux Foundation's new Agentic AI Foundation, whose launch announcement [counted more than 10,000 published MCP servers](https://www.linuxfoundation.org/press/linux-foundation-announces-the-formation-of-the-agentic-ai-foundation) and adoption by Claude, ChatGPT, Gemini and Microsoft Copilot. A GTM product with an MCP server is one your agent can operate, not only read about.
+
+---
+
+## What an agent can already plan for your go-to-market
+
+Planning is the part agents already do well, and it is where an AI go-to-market strategy starts. Give Claude or ChatGPT your website, three customer stories and your pricing, and in one conversation it can:
+
+- draft an ideal customer profile and the two or three personas inside it;
+- split the market into segments and say which one to test first;
+- list the events that make a company need you now, such as a new hire, a funding round or a tool change;
+- write first messages and follow-ups for each segment, in your tone;
+- design a 30-day test: how many people per segment, what counts as a win, when to stop.
+
+Say you run a 12-person data consultancy. A plan might read: "Start with software companies of 100 to 500 people that are hiring their first analytics engineer. Write to the head of data, not the recruiter. Ask how they plan to model revenue data before the hire starts."
+
+That is a sound plan, and it is where most AI GTM stalls. Nothing in the chat can find those heads of data this month, write to them under your name, or remember next week who said "not now". [AI for sales prospecting](/blog/ai-for-sales-prospecting) goes task by task through what to ask a model. The rest of this page is about running the plan.
+
+---
+
+## The three things an agent needs to run GTM
+
+An agent turns a plan into pipeline only when it can act on it. Three pieces are missing from every chat window, and two more keep the work safe once it runs without you.
+
+### 1. Data to find people, with a reason to write now
+
+A model knows companies in general and almost nothing about who is hiring, raising money or posting about your problem this week. The agent needs a live source: job posts, funding records, public posts and the people engaging with them, filters for role, industry and size, and contact details when you need them.
+
+The best sources carry timing. A company with a fresh reason to talk beats a perfect fit with none. [Buying signals in B2B](/blog/buying-signals-b2b) lists 18 of those reasons and where to see each. [Signal-based selling](/blog/signal-based-selling) covers how to choose signals and when to write, and [intent data](/blog/intent-data) covers the research feeds that data providers sell.
+
+### 2. A way to reach people under your name
+
+A drafted message reaches nobody. The agent needs a channel tool: an account to send from, working hours, a cap on volume, a sequence that stops when someone replies, and a record of what went out.
+
+The name on the message matters as much as the words. Buyers answer people they can look up. A message from a domain registered last month, signed by a persona nobody can find, starts with less trust.
+
+### 3. A memory of the business
+
+Every new chat starts blank. Without a stored memory you re-explain your offer, your customers and last month's lessons each time, and the agent's judgment drifts.
+
+The memory should hold what you sell, who buys, the personas, competitors, proof points, voice and exclusions. It should also keep the verdicts from each run: "too junior", "already a customer", "wrong region". That feedback is what makes the next search better than the last.
+
+### Two more pieces for when it runs unattended
+
+- **A place to run.** A chat ends when you close the laptop. Searches and sequences need a home that keeps them running on a schedule, with each audience's leads and history attached.
+- **Guardrails.** A budget per run, a confirmation before anyone is contacted, a log of every action and a pause button.
+
+[AI agents for sales](/blog/ai-agents-for-sales) turns these pieces into a checklist and a step-by-step safe setup.
+
+---
+
+## AI GTM tools: four ways teams set it up
+
+Most teams land on one of four setups. They differ in who drives, where the memory lives and how the bill grows.
+
+| Setup | Who drives | Where the memory lives | How people are reached | How you pay | Fits |
+|---|---|---|---|---|---|
+| Your agent plus tools you wire together | A technical operator | Prompts, docs and tables you maintain | The sequencer you connect | Each provider and tool separately | Teams with a GTM engineer |
+| An AI SDR product | The vendor's agent | Inside the vendor's product | Mostly email from domains it sets up, plus social and phone steps | Credits, contacts or a sales-led contract | Sales teams buying meetings at volume |
+| Agents inside your CRM | Reps, with the CRM's agent | CRM records | The CRM's email and tasks | Per lead or credits, on top of seats | Teams that already live in the CRM |
+| Your agent plus GTM infrastructure | You, from Claude, ChatGPT or Codex | A stored brain the agent reads | The infrastructure's channel, under your name | One plan with credits | Founders and small B2B teams already using an agent |
+
+**Wire it yourself.** The most flexible setup, and the most upkeep: someone keeps the data providers, enrichment steps and sequencer talking to each other. That someone is often a [GTM engineer](/blog/gtm-engineer).
+
+**Buy an AI SDR.** A vendor runs the whole motion with its own agent and data. [What an AI SDR is, and where it fails](/blog/ai-sdr) covers the category with the vendors' own claims and prices.
+
+**Use the CRM's agent.** Everything stays in one system of record. HubSpot, for example, charges [$1 for each lead its prospecting agent recommends outreach for](https://www.hubspot.com/products/sales/ai-prospecting-agent), as of November 2026.
+
+**Give your agent infrastructure.** Your agent stays the brain, and data, channel and memory arrive as tools. [Pancake](/), our product, sits in this row. [MCP for sales](/blog/mcp-for-sales) explains how those connections work, and [Claude for sales prospecting](/blog/claude-for-sales-prospecting) shows the prompts.
+
+---
+
+## How to set up agentic GTM in five steps
+
+Order matters: teams that connect tools before the agent knows the business get confident, generic output. Follow these five steps in sequence.
+
+1. **Write the memory first.** Put your offer, ideal customers, personas, competitors, proof points and voice where the agent reads them at the start of every run. Add exclusions: current customers, competitors' staff, regions you can't serve.
+2. **Pick one audience and one signal.** "Finance leaders at US manufacturers with 200 to 1,000 people that posted a controller role this quarter" is testable. "Manufacturers" is not.
+3. **Connect data and a channel as tools.** Prefer MCP servers with a browser sign-in, so no API key sits in a prompt or a config file. Read what each tool can do before you allow it.
+4. **Pilot with 30 to 50 people.** Read every lead's reason and every first message before anything goes out. When something is off, fix the memory, not the single message.
+5. **Schedule it and keep score.** Let the search repeat on the cadence you choose, keep a person on replies, and count conversations started per signal, not messages sent.
+
+**Monday task:** write the one-sentence audience from step 2 for your best customer type. Then ask your agent which public event would show that a company like it needs you this month.
+
+---
+
+## Where AI GTM breaks
+
+Agentic GTM fails in predictable places, and most failures trace back to one of the missing pieces above.
+
+- **Fit without timing.** A list of perfect-fit companies with no reason to write now gets polite silence. Give every audience a signal.
+- **Confident wrong facts.** An agent filling gaps can invent a funding round or a job title. Ask for the source of every fact a message uses, and cut the facts that have none.
+- **Memory drift.** Each chat relearns the business and the tone wanders. Keep one stored memory and feed every rejection back into it.
+- **Volume as the goal.** More messages to the same weak list burns sending domains, accounts and your name. Narrow the audience before you raise the volume.
+- **Unread replies.** An agent can sort replies. "Not now, try us in March" still needs someone who remembers March.
+- **Tools nobody vetted.** Each MCP server you connect can read data and take actions. Connect servers from companies you trust, and check what each tool is allowed to do.
+- **Counting the wrong thing.** Leads found and messages sent are costs. Conversations started and meetings held are results.
+
+---
+
+## Who should run AI GTM now, and who should wait
+
+Agentic GTM pays off fastest for B2B sellers whose buyers leave public traces: they hire, raise money, post about their work and engage with competitors' posts. Founders who do their own sales, small B2B teams, agencies and GTM engineers fit, especially those already working in Claude, ChatGPT or Codex.
+
+Wait, or keep it small, in three cases:
+
+- **You can't name your best customer yet.** An agent scales whatever profile you give it, vague ones included. Win five customers by hand first.
+- **Your buyers leave no trace.** A bakery or a dental office rarely posts jobs or announces plans. Local search and referrals beat any agent there.
+- **Your deals need many stakeholders.** Seven people who must agree and a nine-month cycle need a human seller. Use agents for research and first touches, and keep the deal itself human.
+
+---
+
+## Running agentic GTM on Pancake
+
+Pancake, our product, is built for the gap between planning and running: it gives your agent the brain, the data and the tools to run GTM.
+
+It reads your website and builds a GTM Brain: what you sell, ideal customers, personas, competitors, messaging and voice. You connect Claude, ChatGPT or Codex to its MCP server with a browser sign-in and no API key ([setup guide](/claude)). Three signals make a good start for a B2B seller: companies hiring the role you support, people posting about the problem you solve, and people engaging with a rival's posts. One sentence turns any of them into a Play:
+
+"Find heads of data at US software companies with 100 to 500 people that are hiring an analytics engineer."
+
+That is the Vercel for GTM in practice. The idea leaves the chat, the Play lives on Pancake with its targeting, leads, messages and history, and it runs on the schedule you pick, laptop closed. Each lead arrives with one line on why it fits, and the first message asks one question without a pitch: "Saw the analytics engineer opening. Is the hire there to build revenue models, or to keep today's dashboards running?" It goes out as a DM from your own account, and a reply stops the sequence.
+
+It doesn't send email, place calls or identify website visitors. Plans start at $99 a month per workspace and include 60,000 credits ([pricing](/pricing)). A card starts the 7-day free trial, which comes with 30,000 credits.

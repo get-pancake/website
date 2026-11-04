@@ -1,0 +1,141 @@
+---
+title: "GTM Engineering Tools: The Stack, Layer by Layer, With Prices"
+seo_title: "GTM Engineering Tools: The Stack by Layer, With Prices"
+description: "GTM engineering tools in six layers, from data and enrichment to CRM and agents, with what each tool does and its entry price as of November 2026."
+date: "2027-01-14"
+last_updated: "2027-01-14"
+related:
+  - "gtm-engineer"
+  - "lead-enrichment"
+  - "mcp-for-sales"
+faq:
+  - question: "What tools do GTM engineers use?"
+    answer: "Most run one tool per layer: a contact database such as Apollo, an enrichment tool such as Clay or FullEnrich, a signal source such as TheirStack, a sequencer such as Instantly or Smartlead, a CRM such as HubSpot, Attio or Salesforce, and an agent or workflow tool such as Claude Code, n8n or Zapier that connects the rest. The mix depends on whether people or pipelines consume the data."
+  - question: "What is a GTM tech stack?"
+    answer: "A GTM tech stack is the set of tools a company uses to find, reach and win customers: data and enrichment to know who to contact, signals to know when, a sequencer to send, a CRM to keep the record, and automation or agents to connect them. A GTM engineer designs how data moves between those layers and who owns each one."
+  - question: "How much does a GTM engineering stack cost?"
+    answer: "As of November 2026, a lean stack can run under $100 a month: HubSpot's free CRM, Clay's free plan, FullEnrich from $29, Instantly at $47 and Claude Pro at $20. Team stacks cost far more, because per-seat tools grow with headcount and signal platforms such as Common Room start at $2,500 a month billed annually."
+  - question: "Do you need Clay for GTM engineering?"
+    answer: "No. Clay shows up in many GTM engineer job posts, but its job can be split: a pay-per-found tool for emails and phone numbers, a signal source for timing, and a workflow tool or coding agent for the logic. Clay earns its price when you run many custom waterfalls and research steps in tables and want them in one place."
+  - question: "Do GTM tools work with AI agents?"
+    answer: "More of them do each quarter. As of November 2026, FullEnrich, TheirStack, Common Room, Attio and lemlist list MCP servers, Zapier exposes its integrations over MCP, and HubSpot offers connectors for Claude and ChatGPT. An agent such as Claude Code can then search, enrich and update records directly, so decide in advance what it may change."
+---
+
+**TL;DR:** A GTM engineering stack has six layers: data (who exists), enrichment (how to reach them), signals (who is in market now), sequencing (how messages go out), the CRM (where the record lives) and agents with workflow glue (what connects and runs the rest). As of November 2026 a lean version costs $96 a month: HubSpot's free CRM, Clay's free plan, FullEnrich from $29, Instantly at $47 and Claude Pro at $20. Many of these tools now ship an MCP server, which makes the agent layer the one changing fastest.
+
+The role behind the stack is covered in [what a GTM engineer does](/blog/gtm-engineer). Every price below was read on the vendor's own site in November 2026.
+
+---
+
+## GTM engineering tools by layer, with entry prices
+
+Pick one tool per layer before you add a second one anywhere. Two data tools that cover the same contacts can double the bill without finding a single extra buyer.
+
+| Layer | The question it answers | Tools covered here, entry price (Nov 2026) |
+|---|---|---|
+| Data | Who exists and fits? | Apollo: free, Basic $49 a seat billed annually. People Data Labs: free, Pro from $98 a month |
+| Enrichment | How do I reach them? | Clay: free, Launch $167 a month billed annually. FullEnrich: free trial, Pro from $29 a month |
+| Signals | Who is in market now? | TheirStack: API from $49 a month. Common Room: $2,500 a month billed annually |
+| Sequencing | How do messages go out? | Instantly: $47 a month. Smartlead: $39 a month. lemlist: $69 a month |
+| CRM | Where does the record live? | HubSpot: free. Attio: free. Salesforce: $25 a user a month |
+| Agents and glue | What connects and runs it all? | Claude Pro: $20 a month. n8n: free to self-host. Zapier: free. [Pancake](/), ours: from $99 a month per workspace |
+
+---
+
+## Data: who exists and fits
+
+The data layer is a database you search or an API you call. [Apollo's pricing](https://www.apollo.io/pricing) pairs a contact database with sequences: the Free plan gives 75 credits per seat a month, and Basic costs $65 per seat a month, or $49 billed annually, with 2,500 credits per seat. An email costs 1 credit and a phone number 8.
+
+People Data Labs is built for pipelines rather than reps. Its free tier returns 100 records a month with contact fields hidden, and Pro starts at $98 a month for 350 records. Choose Apollo when reps will prospect inside the tool, and an API provider when your own code does the work.
+
+---
+
+## Enrichment: how to reach them
+
+Enrichment fills in emails, phone numbers and company facts. [Clay](https://www.clay.com/pricing) is the workbench: tables, waterfalls across 150+ providers, an AI research agent called Claygent, and your own API keys if you have them. It bills actions for platform use and data credits for vendor data. Free includes 500 actions and 100 data credits a month. Launch costs $185 a month, or $167 billed annually. HTTP API calls, webhooks and CRM auto-sync start on Growth at $495 a month.
+
+[FullEnrich](https://fullenrich.com/pricing) sticks to contact data: verified work emails, personal emails and mobile numbers through a waterfall of 25+ sources, from $29 a month for 500 credits, with an API and an MCP server. [Lead enrichment](/blog/lead-enrichment) shows how to test both on your own contacts.
+
+---
+
+## Signals: who is in market now
+
+Signals answer the timing question that data can't. [TheirStack](https://theirstack.com/en/pricing) collects job posts from career sites, applicant tracking systems and job boards, and sells hiring and technology data from them. Its API starts at $49 a month for 1,500 credits, with webhooks and an MCP server. Tools named in job posts are also how you find [companies by tech stack](/plays/tech-stack).
+
+Common Room joins many signal sources around each buyer, from job changes to community activity, and starts at $2,500 a month billed annually, with five seats. Buy it when you have more signal sources than people to watch them.
+
+---
+
+## Sequencing: how messages go out
+
+Email sequencers sell sending volume and deliverability tooling. Instantly's Growth plan costs $47 a month for 5,000 emails, with unlimited sending accounts and warm-up. Smartlead's Base plan costs $39 a month for 6,000 sends to 2,000 contacts. lemlist's Email plan costs $69 a month, or $55 billed yearly, with unlimited users and 50,000 emails a month.
+
+Authenticate your domains before any of them sends a message. [How to automate lead generation](/blog/how-to-automate-lead-generation) covers the sender rules from Google and Yahoo.
+
+---
+
+## CRM: where the record lives
+
+Every other layer writes to the CRM, so judge it by its data model and API before its interface. [HubSpot's free CRM](https://www.hubspot.com/products/crm) covers two users and 1,000 contacts, and paid seats start at $15 a month with a new-customer discount. HubSpot also offers connectors for Claude and ChatGPT.
+
+Attio is free for up to three seats, and Plus costs $44 per user a month, or $35 billed annually. Its feature list includes an API, webhooks and an MCP server. Salesforce's Starter Suite costs $25 per user a month.
+
+---
+
+## Agents and workflow glue: what connects the rest
+
+This layer changes fastest, because many of the tools above now expose MCP servers. FullEnrich, TheirStack, Common Room, Attio and lemlist list one, and Clay offers MCP for reps. [Zapier's MCP](https://zapier.com/pricing) is open to every account, at two tasks per tool call. Claude Pro, which includes Claude Code, costs $20 a month billed monthly.
+
+For scheduled workflows, n8n bills per workflow run, however many steps it has. Its Community Edition is free to self-host, and the cloud Starter plan costs €20 a month billed annually for 2,500 executions. Zapier's free plan allows 100 tasks a month, and Professional starts at $19.99 a month billed yearly. [MCP for sales](/blog/mcp-for-sales) explains how an agent calls these servers.
+
+---
+
+## A lean GTM engineering stack for under $100 a month
+
+One GTM engineer at a small company can cover five layers for $96 a month, at the November 2026 prices above:
+
+| Layer | Tool | Monthly cost |
+|---|---|---|
+| CRM | HubSpot free CRM | $0 |
+| Data and enrichment | Clay Free, plus FullEnrich Pro with 500 credits | $29 |
+| Sequencing | Instantly Growth | $47 |
+| Agent | Claude Pro, with Claude Code | $20 |
+| Glue | Zapier Free | $0 |
+| Total | | $96 |
+
+Signals are the missing layer, and the limits arrive in a predictable order: Clay's free plan stops at 200 rows per table, HubSpot's at 1,000 contacts, Instantly's Growth plan at 1,000 uploaded contacts, and Zapier's free plan at two-step Zaps. Price the second tier of each before you build on the first.
+
+---
+
+## Credits decide the bill more than seats do
+
+Most tools here bill in credits, and the rules on unused credits differ more than the prices:
+
+| Tool | What happens to unused credits |
+|---|---|
+| Apollo | Expire at the end of each billing cycle |
+| Clay | Paid plans roll over up to one month's credits, or 15% of annual credits on annual billing |
+| FullEnrich | Roll over for 3 months on monthly plans, 12 on yearly |
+| TheirStack | Roll over for 12 months |
+| lemlist | Roll over while you stay subscribed |
+| Pancake | Roll over, up to one month of credits |
+
+Seats are the other lever. Apollo, Attio and Salesforce price per user, so they grow with the team. Clay, FullEnrich and lemlist's Email plan include unlimited users, and Pancake charges nothing per teammate.
+
+Before you add a tool, answer three questions. Will a person or a pipeline consume it? People need an interface; pipelines need an API, webhooks or MCP. Will you outgrow the free tier within a quarter? Then judge it on the second tier. Who maintains it when its builder leaves? A workflow without an owner breaks quietly.
+
+---
+
+## Pancake as the layer from signal to first conversation
+
+Pancake is our product, and it bundles three layers behind one MCP server: signals, contact data and outreach. We call it the Vercel for GTM. An idea leaves the chat and becomes a Play, the Play lives on Pancake with its targeting, leads and messages, and it runs on its schedule with your laptop closed. It works from Claude Code and Codex, with plugins and 5 skills, through a browser sign-in and no API key. 30+ data providers come included, and a work email costs 50 credits or a phone number 500, with no charge when none is found.
+
+For a B2B software seller, three signals carry most of the weight:
+
+- companies hiring for the role you sell to;
+- companies whose job posts name a tool you integrate with;
+- people engaging with a competitor's posts.
+
+A Play might read: "Find VPs of Sales at US B2B software companies with 50 to 300 staff whose job posts name Outreach or Salesloft." The first message asks about the signal: "Saw Outreach in your SDR posting. Is the team adding seats, or rethinking how outbound runs?" It goes out as a direct message under your name, and a reply stops the sequence.
+
+The limits: Pancake doesn't send email, so keep a sequencer for that. It doesn't identify website visitors or read a site's tech, it exports leads one way to HubSpot, Attio or Pipedrive rather than acting as a CRM, and Cursor can't connect yet. It costs from $99 a month per workspace with 60,000 credits ([pricing](/pricing)), and a card opens a 7-day trial holding 30,000 credits.
