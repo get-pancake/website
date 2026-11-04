@@ -323,3 +323,41 @@
   font-size: var(--lp-text-2xlg);
   margin-block: var(--lp-space-2);
 }
+
+/* Brain's left hero: centered pitch with the customer band beneath it. */
+.request-brand-left {
+  min-width: 0;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-12);
+  padding-block: var(--lp-space-8);
+}
+.request-brand-pitch {
+  container-type: inline-size;
+}
+.request-brand-eyebrow {
+  font-size: var(--lp-text-sm);
+  color: var(--lp-subtle-text);
+}
+.request-brand-title {
+  font-size: min(var(--lp-text-6xlg), calc(100cqi / 8));
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+  margin-block: var(--lp-space-4);
+}
+.request-brand-lede {
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  max-width: 64ch;
+  text-wrap: pretty;
+}
+@media (max-width: 900px) {
+  .request-brand-left {
+    gap: var(--lp-space-8);
+    padding-block: var(--lp-space-4);
+  }
+  .request-brand-title {
+    font-size: min(var(--lp-text-5xlg), calc(100cqi / 8));
+  }
+}
