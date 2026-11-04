@@ -309,6 +309,15 @@ export type AiSalesDisconnect =
   | { reason: "agent" }
   | { reason: "user" };
 
+/** Provider rejection can arrive as a normal remote disconnect after WebRTC
+ * joins, before the agent speaks (for example an exhausted credit balance). */
+export function aiSalesDisconnectPhase(
+  details: AiSalesDisconnect,
+  { spoke, handedOff }: { spoke: boolean; handedOff: boolean },
+): "failed" | "ended" {
+  return !handedOff && (details.reason === "error" || !spoke) ? "failed" : "ended";
+}
+
 export type AiSalesSessionOptions = {
   agentId: string;
   /** Voice goes over WebRTC (LiveKit); the SDK's own default for a voice
@@ -318,6 +327,7 @@ export type AiSalesSessionOptions = {
   /** Fires just before startSession resolves. */
   onConnect?: (props: { conversationId: string }) => void;
   onDisconnect?: (details: AiSalesDisconnect) => void;
+  onError?: (message: string, context?: unknown) => void;
   onModeChange?: (props: { mode: AiSalesMode }) => void;
   /** Browser tools the agent can call; the returned string goes back to it. */
   clientTools?: Record<string, (parameters: Record<string, unknown> | undefined) => Promise<string>>;
