@@ -1,7 +1,7 @@
 "use client";
 
 // LpVideo — the homepage demo film, right under the hero, in the slot the demo window had
-// (founder 2026-11-03: the launch's 1:31 demo film there, click to play, drawn "pixel for pixel"
+// (founder 2026-11-03: the launch's demo film there, click to play, drawn "pixel for pixel"
 // after his reference: a rounded 16:9 card, the poster, a frosted round play mark).
 //
 // At rest: ONE button over the whole card, the poster (the film's own frame of the request typed
