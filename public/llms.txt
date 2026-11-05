@@ -33,7 +33,7 @@ Every lead arrives with one line on why it fits. Pancake checks each lead agains
 
 The customer approves every lead before anyone is contacted. Pancake writes a personal message for each lead from why they fit, in the customer's voice or from their own template. The customer can read and edit any message before it goes out. Messages go out as direct messages under the customer's name, from their own accounts. A Play sends from one account or rotates across up to ten, and each lead keeps the same sender.
 
-A reply stops the sequence. Pancake reads the reply and labels it "positive", "in your hands" or "not interested". When a prospect says yes, Pancake replies once with the customer's calendar link or app link. Every other reply goes back to the customer.
+A reply stops the sequence. Pancake reads the reply and labels it "positive", "in your hands" or "not interested". Every reply goes back to the customer to answer: Pancake never replies on its own.
 
 New leads also arrive in Slack, where the customer can approve or pass, and a morning email sums up what is waiting. When the customer rejects a lead with a reason, Pancake suggests Brain changes they can accept or ignore.
 
