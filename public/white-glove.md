@@ -4,7 +4,7 @@
 
 This file carries the facts of https://pancake.ai/white-glove for AI agents. The page is the source of truth. White Glove is also called Pancake Forward Deployed: the same paid service.
 
-- Talk to sales: https://pancake.ai/demo
+- Book a demo: https://pancake.ai/white-glove#book-demo
 - Compare all plans: https://pancake.ai/pricing#white-glove
 
 ## What you get
@@ -50,4 +50,4 @@ Enterprise is a separate offer with custom pricing. Beyond the build, it adds Cu
 
 ### How do I start?
 
-Talk to sales and answer yes to White Glove. You book a consultation with our team.
+Book a demo at the top of this page: your work email and three questions. If White Glove fits, you pick a time with our team.

@@ -12,9 +12,9 @@
    - Section titles = .lp-title-section: Condensed 600, 57.336 / 1.2 /
      -1.7201px; phones 35.559 / 41px / -0.03em (steps.css).
    - The hero lede = the homepage lede: Geist Sans 16 / 1.5, plum.
-   - The ticket total = the homepage price figure (pricing.css
-     .lp-price-amount): the Condensed 900 cut, -0.03em; "/month" in
-     Condensed 400.
+   - The "Book a demo" card = /demo's request card (demo-request.css
+     .request-card, demo.css .demo-form__*): surface, subtle stroke, radius
+     32; 48px controls on the page background, radius 12, purple on focus.
    - Buttons = the homepage hero pair (.lp-btn md + .lp-btn--tinted). */
 
 .lp-wg {
@@ -25,6 +25,8 @@
   --wg-h1-mobile: clamp(30px, 8.846vw, 35.559px); /* = hero.css ≤767 */
   --wg-lede-width: calc(var(--lp-space-4) * 23); /* 368, the homepage lede column */
   --wg-shadow: 0 var(--lp-space-1) var(--lp-space-8) var(--lp-ink-tr-10);
+  --wg-card: calc(var(--lp-space-12) * 9); /* 432, the hero's "Book a demo" column */
+  --wg-control: var(--lp-space-12); /* 48, /demo's control height */
 }
 @media (max-width: 767px) {
   .lp-wg {
@@ -89,21 +91,22 @@
   text-underline-offset: 3px;
 }
 
-/* ── hero (WgHero.tsx): the copy left, the order ticket right ── */
+/* ── hero (WgHero.tsx): the copy and the demo film left, "Book a demo" right ── */
 .lp-wg .wg-hero {
   padding-block: calc(var(--lp-space-12) + var(--lp-space-4)) var(--wg-section-y);
 }
 .lp-wg .wg-hero__grid {
-  align-items: center;
+  align-items: start;
   display: grid;
   gap: var(--lp-space-12);
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, var(--wg-card));
 }
 .lp-wg .wg-hero__copy {
   align-items: flex-start;
   display: flex;
   flex-direction: column;
   gap: var(--lp-space-8);
+  min-width: 0;
 }
 .lp-wg .wg-hero__title {
   color: var(--lp-text);
@@ -122,14 +125,263 @@
   max-width: var(--wg-lede-width);
   text-wrap: pretty;
 }
-.lp-wg .wg-hero__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--lp-space-2);
-}
 @media (max-width: 1200px) {
   .lp-wg .wg-hero__title {
     font-size: clamp(52px, 5.4vw, var(--wg-h1));
+  }
+}
+
+/* the homepage film (LpVideo grow={false}) at the column's width: no gutters,
+   no scroll scale (video.css's grow rule reads an unset progress as .94), 16:9
+   on phones too. Four classes: video.css is unlayered, chunk order is not
+   guaranteed. */
+.lp-wg .lp-video.wg-video {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.lp-wg .lp-video.wg-video .lp-video__card {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--lp-r-m);
+  margin: 0;
+  scale: none;
+  width: 100%;
+}
+.lp-wg .lp-video.wg-video .lp-video__play {
+  width: clamp(56px, 6vw, 88px);
+}
+
+/* ── "Book a demo" (WgBookDemo.tsx): /demo's request card, one column ── */
+.lp-wg .wg-book {
+  background: var(--lp-surface);
+  border: var(--lp-line) solid var(--lp-subtle-stroke);
+  border-radius: var(--lp-r-xlg);
+  box-shadow: var(--wg-shadow);
+  color: var(--lp-text);
+  min-width: 0;
+  padding: var(--lp-space-8);
+  /* the page's other "Book a demo" buttons land here, clear of the nav */
+  scroll-margin-top: calc(var(--lp-space-12) * 2);
+}
+.lp-wg .wg-book__title {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin: 0;
+}
+.lp-wg .wg-book__title:focus {
+  outline: none;
+}
+.lp-wg .wg-book__lede {
+  color: var(--lp-ink-tr-70);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  margin-top: var(--lp-space-2);
+  text-wrap: pretty;
+}
+.lp-wg .wg-book__fields {
+  border: 0;
+  display: grid;
+  gap: var(--lp-space-4);
+  margin: var(--lp-space-8) 0 0;
+  min-width: 0;
+  padding: 0;
+}
+.lp-wg .wg-field {
+  border: 0;
+  display: grid;
+  gap: var(--lp-space-1);
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+.lp-wg .wg-field__pair {
+  display: grid;
+  gap: var(--lp-space-4);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.lp-wg .wg-field__label {
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  padding: 0;
+}
+.lp-wg .wg-field__input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--lp-page-bg);
+  border: var(--lp-line) solid var(--lp-stroke);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  display: block;
+  font-family: inherit;
+  font-size: var(--lp-text-md); /* 16px: iOS does not zoom */
+  height: var(--wg-control);
+  min-width: 0;
+  padding-inline: var(--lp-space-4);
+  transition: border-color 200ms ease, background-color 200ms ease;
+  width: 100%;
+}
+.lp-wg .wg-field__input:focus {
+  background-color: var(--lp-surface);
+  border-color: var(--lp-purple-40);
+}
+.lp-wg .wg-field__input:focus-visible {
+  outline-offset: 0;
+}
+.lp-wg .wg-field__input::placeholder {
+  color: var(--lp-subtle-text);
+}
+.lp-wg .wg-field__input[aria-invalid="true"] {
+  border-color: var(--lp-red-40);
+}
+/* the select's chevron: two gradient half-squares, so it takes the text token */
+.lp-wg .wg-field__select {
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--lp-text) 50%),
+    linear-gradient(135deg, var(--lp-text) 50%, transparent 50%);
+  background-position:
+    calc(100% - var(--lp-space-4) - 5px) 50%,
+    calc(100% - var(--lp-space-4)) 50%;
+  background-repeat: no-repeat;
+  background-size: 5px 5px;
+  cursor: pointer;
+  overflow: hidden;
+  padding-right: calc(var(--lp-space-8) + var(--lp-space-2));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-wg .wg-field__select:invalid {
+  color: var(--lp-subtle-text);
+}
+.lp-wg .wg-field__select option,
+.lp-wg .wg-field__select optgroup {
+  color: var(--lp-text);
+}
+/* Yes / Not yet: two pills over the native radios (kept focusable and required) */
+.lp-wg .wg-choice__options {
+  display: grid;
+  gap: var(--lp-space-2);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.lp-wg .wg-choice__option {
+  cursor: pointer;
+  display: block;
+  position: relative;
+}
+.lp-wg .wg-choice__option input {
+  cursor: pointer;
+  height: 100%;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+}
+.lp-wg .wg-choice__option span {
+  align-items: center;
+  background-color: var(--lp-page-bg);
+  border: var(--lp-line) solid var(--lp-stroke);
+  border-radius: var(--lp-r-sm);
+  display: flex;
+  font-size: var(--lp-text-md);
+  height: var(--wg-control);
+  justify-content: center;
+  transition: border-color 200ms ease, background-color 200ms ease;
+}
+.lp-wg .wg-choice__option input:checked + span {
+  background-color: var(--lp-purple-10);
+  border-color: var(--lp-purple-40);
+  font-weight: 600;
+}
+.lp-wg .wg-choice__option input:focus-visible + span {
+  outline: calc(var(--lp-line) * 2) solid var(--lp-purple-40);
+  outline-offset: var(--lp-space-1);
+}
+.lp-wg .wg-field__hint {
+  color: var(--lp-ink-tr-70);
+  font-size: var(--lp-text-sm);
+}
+.lp-wg .wg-field__error,
+.lp-wg .wg-book__error {
+  color: var(--lp-red-40);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+}
+.lp-wg .wg-book__error {
+  margin-top: var(--lp-space-4);
+}
+.lp-wg .wg-book__actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-4);
+  margin-top: var(--lp-space-8);
+}
+/* the kit's fixed 136px squircle would clip a full-width submit (= /demo's card) */
+.lp-wg .wg-book .lp-btn.wg-book__submit {
+  border-radius: var(--lp-r-sm);
+  clip-path: none;
+  height: var(--wg-control);
+  width: 100%;
+}
+.lp-wg .wg-book .lp-btn.wg-book__submit:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+.lp-wg .wg-book__fine {
+  color: var(--lp-ink-tr-70);
+  font-size: var(--lp-text-sm);
+  margin-top: var(--lp-space-4);
+}
+
+/* the White Glove calendar: Calendly reports its page height (--wg-cal-h,
+   WgBookDemo) under /demo's initial height and cap; its primary is the plum */
+.lp-wg .wg-cal {
+  margin-top: var(--lp-space-4);
+  min-width: 0;
+}
+.lp-wg .wg-cal__frame {
+  --wg-cal-primary: var(--lp-inverted-surface);
+  height: min(var(--wg-cal-h, 680px), 1200px);
+  overflow: clip;
+  transition: height 200ms ease;
+  width: 100%;
+}
+.lp-wg .wg-cal__frame iframe {
+  border: 0;
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.lp-wg .wg-cal__fallback {
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+}
+.lp-wg .wg-cal__fallback:not(:empty) {
+  margin-top: var(--lp-space-2);
+}
+.lp-wg .wg-cal__fallback a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* the calendar wants every pixel of the card */
+.lp-wg .wg-book[data-view="calendar"] {
+  padding-inline: var(--lp-space-4);
+}
+.lp-wg .wg-book[data-view="calendar"] .wg-book__state > :not(.wg-cal) {
+  padding-inline: var(--lp-space-4);
+}
+
+/* one column: the copy, the film, then the card */
+@media (max-width: 959px) {
+  .lp-wg .wg-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-wg .wg-book {
+    max-width: calc(var(--lp-space-12) * 12); /* 576 */
+    width: 100%;
   }
 }
 @media (max-width: 767px) {
@@ -139,200 +391,23 @@
   .lp-wg .wg-hero__title {
     font-size: var(--wg-h1-mobile);
   }
-}
-
-/* the ticket: a printed slip, slightly turned */
-.lp-wg .wg-ticket {
-  filter: drop-shadow(var(--wg-shadow));
-  rotate: -1.5deg;
-}
-/* white paper with zig-zag top and bottom edges cut by a mask (the mask
-   reads alpha only; black = keep) */
-.lp-wg .wg-ticket__paper {
-  --wg-tooth: var(--lp-space-4);
-  background: var(--lp-surface);
-  display: flex;
-  flex-direction: column;
-  -webkit-mask:
-    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--wg-tooth) 51% repeat-x,
-    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--wg-tooth) 51% repeat-x;
-  mask:
-    conic-gradient(from -45deg at bottom, transparent, black 1deg 89deg, transparent 90deg) bottom / var(--wg-tooth) 51% repeat-x,
-    conic-gradient(from 135deg at top, transparent, black 1deg 89deg, transparent 90deg) top / var(--wg-tooth) 51% repeat-x;
-  padding: calc(var(--lp-space-8) + var(--lp-space-2)) var(--lp-space-8);
-}
-.lp-wg .wg-ticket__head {
-  border-bottom: var(--lp-line) dashed var(--lp-ink-50);
-  color: var(--lp-subtle-text);
-  display: flex;
-  font-family: var(--lp-font-fono);
-  font-size: var(--lp-text-sm);
-  justify-content: space-between;
-  letter-spacing: 0.08em;
-  padding-bottom: var(--lp-space-3);
-  text-transform: uppercase;
-}
-.lp-wg .wg-ticket__head span:first-child {
-  color: var(--lp-text);
-  font-weight: 600;
-}
-.lp-wg .wg-ticket__items {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  margin: 0;
-  padding: var(--lp-space-2) 0 var(--lp-space-4);
-}
-.lp-wg .wg-ticket__item {
-  --wg-tone: var(--lp-pink-30);
-  align-items: baseline;
-  display: grid;
-  gap: var(--lp-space-1) var(--lp-space-3);
-  grid-template-columns: auto minmax(var(--lp-space-4), 1fr) auto;
-  padding-block: var(--lp-space-3);
-}
-.lp-wg .wg-ticket__item + .wg-ticket__item {
-  border-top: var(--lp-line) solid var(--lp-ink-tr-5);
-}
-.lp-wg .wg-ticket__item[data-tone="plays"] { --wg-tone: var(--lp-purple-30); }
-.lp-wg .wg-ticket__item[data-tone="credits"] { --wg-tone: var(--lp-yellow-30); }
-.lp-wg .wg-ticket__item[data-tone="office"] { --wg-tone: var(--lp-green-20); }
-/* the pricing cards' plan-name size (pricing.css h2) */
-.lp-wg .wg-ticket__name {
-  align-items: center;
-  display: inline-flex;
-  font-family: var(--lp-font-cond);
-  font-size: var(--lp-text-2xlg);
-  font-weight: 600;
-  gap: var(--lp-space-2);
-  line-height: 1.15;
-}
-.lp-wg .wg-ticket__name::before {
-  background: var(--wg-tone);
-  border-radius: 50%;
-  content: "";
-  flex: none;
-  height: var(--lp-space-3);
-  width: var(--lp-space-3);
-}
-.lp-wg .wg-ticket__lead {
-  border-bottom: calc(var(--lp-line) * 2) dotted var(--lp-ink-50);
-  translate: 0 calc(var(--lp-space-1) * -1);
-}
-.lp-wg .wg-ticket__value {
-  font-family: var(--lp-font-fono);
-  font-size: var(--lp-text-sm);
-  font-weight: 500;
-  text-align: right;
-  white-space: nowrap;
-}
-.lp-wg .wg-ticket__detail {
-  color: var(--lp-ink-90);
-  font-size: var(--lp-text-sm);
-  grid-column: 1 / -1;
-  line-height: 1.5;
-  padding-left: calc(var(--lp-space-3) + var(--lp-space-2));
-}
-.lp-wg .wg-ticket__total {
-  align-items: baseline;
-  border-top: calc(var(--lp-line) * 2) solid var(--lp-ink-100);
-  display: flex;
-  justify-content: space-between;
-  padding-top: var(--lp-space-4);
-}
-.lp-wg .wg-ticket__total-label {
-  font-family: var(--lp-font-fono);
-  font-size: var(--lp-text-sm);
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.lp-wg .wg-ticket__amount {
-  font-family: var(--lp-font-cond-x);
-  font-size: var(--lp-text-6xlg);
-  font-variant-numeric: tabular-nums;
-  font-weight: 900;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-.lp-wg .wg-ticket__per {
-  font-family: var(--lp-font-cond);
-  font-size: var(--lp-text-xlg);
-  font-weight: 400;
-  letter-spacing: 0;
-}
-.lp-wg .wg-ticket__foot {
-  color: var(--lp-subtle-text);
-  font-family: var(--lp-font-fono);
-  font-size: var(--lp-text-xsm);
-  letter-spacing: 0.06em;
-  margin-top: var(--lp-space-3);
-  text-align: right;
-  text-transform: uppercase;
-}
-/* the ticket settles in once on load; still under reduced motion */
-@media (prefers-reduced-motion: no-preference) {
-  .lp-wg .wg-ticket {
-    animation: wg-ticket-in 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.1s both;
-  }
-}
-@keyframes wg-ticket-in {
-  from {
-    opacity: 0;
-    rotate: -5deg;
-    translate: 0 var(--lp-space-8);
-  }
-}
-@media (max-width: 959px) {
   .lp-wg .wg-hero__grid {
-    gap: var(--lp-space-12);
-    grid-template-columns: minmax(0, 1fr);
+    gap: var(--lp-space-8);
   }
-  .lp-wg .wg-ticket {
-    margin-inline: auto;
-    max-width: calc(var(--lp-space-12) * 11);
-    width: 100%;
+  .lp-wg .wg-book {
+    border-radius: var(--lp-r-lg);
+    padding: calc(var(--lp-space-4) + var(--lp-space-1));
   }
-}
-@media (max-width: 767px) {
-  .lp-wg .wg-ticket {
-    rotate: -1deg;
+  .lp-wg .wg-book[data-view="calendar"] {
+    padding-inline: var(--lp-space-2);
   }
-  .lp-wg .wg-ticket__paper {
-    padding: var(--lp-space-8) calc(var(--lp-space-4) + var(--lp-space-1));
-  }
-  .lp-wg .wg-ticket__name {
-    font-size: var(--lp-text-xlg);
-  }
-  .lp-wg .wg-ticket__amount {
-    font-size: var(--lp-text-5xlg);
+  .lp-wg .wg-book__title {
+    font-size: var(--lp-text-2xlg);
   }
 }
-/* narrow phones: no leader, the value may wrap under its right edge */
 @media (max-width: 419px) {
-  .lp-wg .wg-ticket__item {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-  .lp-wg .wg-ticket__lead {
-    display: none;
-  }
-  .lp-wg .wg-ticket__name {
-    font-size: var(--lp-text-lg);
-  }
-  .lp-wg .wg-ticket__value {
-    max-width: 7em;
-    white-space: normal;
-  }
-}
-@media (max-width: 359px) {
-  .lp-wg .wg-ticket__head span:last-child {
-    display: none;
-  }
-  .lp-wg .wg-ticket__amount {
-    font-size: var(--lp-text-4xlg);
-  }
-  .lp-wg .wg-ticket__per {
-    font-size: var(--lp-text-lg);
+  .lp-wg .wg-field__pair {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

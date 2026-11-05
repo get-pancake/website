@@ -42,8 +42,10 @@ export async function approveDemo(id: string, reviewer: string, notes: string) {
       error: "This request has already been handled. Refresh the queue.",
     };
   const a = row.answers as DemoAnswers;
+  // /white-glove's short form does not ask a name (app/api/white-glove/demo/route.ts)
+  const greeting = a.name?.trim() ? `Hi ${a.name}` : "Hi there";
   const link = `https://pancake.ai/demo/book/${token}`;
-  const text = `Hi ${a.name},\n\nThanks for telling us about your team. We’d like to walk through your GTM goals and how Pancake can help.\n\nChoose a time here: ${link}\n\nThis invitation is valid for 14 days.\n\nThanks,\nThe Pancake team`;
+  const text = `${greeting},\n\nThanks for telling us about your team. We’d like to walk through your GTM goals and how Pancake can help.\n\nChoose a time here: ${link}\n\nThis invitation is valid for 14 days.\n\nThanks,\nThe Pancake team`;
   let state = "unknown";
   let messageId: string | null = null;
   try {
@@ -55,7 +57,7 @@ export async function approveDemo(id: string, reviewer: string, notes: string) {
       },
       signal: AbortSignal.timeout(15000),
       body: JSON.stringify({
-        personalizations: [{ to: [{ email: a.email, name: a.name }] }],
+        personalizations: [{ to: [{ email: a.email, ...(a.name?.trim() ? { name: a.name } : {}) }] }],
         from: {
           email: process.env.DEMO_INVITATION_FROM || "hi@pancake.ai",
           name: "Pancake",
@@ -66,7 +68,7 @@ export async function approveDemo(id: string, reviewer: string, notes: string) {
           { type: "text/plain", value: text },
           {
             type: "text/html",
-            value: `<p>Hi ${html(a.name)},</p><p>Thanks for telling us about your team. We’d like to walk through your GTM goals and how Pancake can help.</p><p><a href="${link}">Choose a time for your demo</a></p><p>This invitation is valid for 14 days.</p><p>Thanks,<br>The Pancake team</p>`,
+            value: `<p>${html(greeting)},</p><p>Thanks for telling us about your team. We’d like to walk through your GTM goals and how Pancake can help.</p><p><a href="${link}">Choose a time for your demo</a></p><p>This invitation is valid for 14 days.</p><p>Thanks,<br>The Pancake team</p>`,
           },
         ],
         tracking_settings: {
