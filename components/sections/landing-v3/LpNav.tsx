@@ -102,6 +102,7 @@ export function LpNav() {
  */
 const RESOURCES_MENU: LpNavItem[] = [
   { label: "Blog", href: "/blog" },
+  { label: "Research", href: "/research" },
   { label: "Compare", href: "/compare" },
   { label: "Support", href: "/support" },
 ];

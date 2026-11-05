@@ -95,6 +95,7 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       { label: "About", href: "/careers#team" },
       { label: "Careers", href: "/careers" },
       { label: "Blog", href: "/blog" },
+      { label: "Research", href: "/research" },
       { label: "Affiliate program", href: "https://partners.dub.co/pancake-ai", external: true },
       // Same tab: /demo (François, 2026-09-16), no longer the Calendly form.
       { label: "Talk to sales", href: DEMO_PAGE_PATH },
