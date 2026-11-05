@@ -23,7 +23,8 @@ import {
  *     the Company (by the email's domain; Attio's enrichment adds the name),
  *     with a note holding the answers: writeAttioWhiteGloveRequest;
  *   - every booking made on the page opens a Deal linked to both, in the
- *     "Meeting booked" stage when the workspace has it, with a note:
+ *     "Demo booked" stage, owned by François (both required by the
+ *     workspace's Deals object), with a note:
  *     createAttioWhiteGloveDeal. Bookings made from a /demo review
  *     invitation happen on calendly.com, never on the page, so they do not
  *     open a deal here.
@@ -42,8 +43,20 @@ import {
 const REQUEST_TIMEOUT_MS = 5000;
 const DEAL_TIMEOUT_MS = 8000;
 
-/** The stage a new deal opens in when Attio has it (the pipeline's booked-meeting stage). */
-export const WG_DEAL_STAGE = "Meeting booked";
+/** The stage a new deal opens in: the Sales Pipeline's "Demo booked" (checked in
+ *  the workspace 2026-11-05; its other stages include "Discovery booked" and
+ *  "Escalation required"). */
+export const WG_DEAL_STAGE = "Demo booked";
+
+/** The deal's owner when ATTIO_WHITE_GLOVE_DEAL_OWNER is unset. Deal owner is
+ *  required in the workspace (checked 2026-11-05); François hosts the White
+ *  Glove calls and owns the pipeline's other deals. Members sign in with their
+ *  getbasalt.ai addresses (the workspace predates the rename). */
+export const WG_DEAL_OWNER: string | null = "francois@getbasalt.ai";
+
+/** How a deal opens: its stage (WG_DEAL_STAGE by default), its owner (a workspace
+ *  member's email; Attio's Deals object requires one by default), and the clock. */
+export type WgDealOptions = { stage?: string; owner?: string | null; now?: Date };
 
 /** A booking within this window adds a note to the open deal instead of a second deal. */
 const DEAL_DEDUP_MS = 30 * 24 * 60 * 60 * 1000;
@@ -211,15 +224,18 @@ type DealRecord = { id?: { record_id?: unknown }; created_at?: unknown };
 /**
  * A booking on the page: one Deal linked to the Company and the Person, plus
  * a note. A second booking from the same domain within 30 days adds a note to
- * that deal instead. `preferredStage` defaults to WG_DEAL_STAGE.
+ * that deal instead. An owner Attio refuses (not a workspace member) is
+ * dropped and the deal is created without it, rather than lost.
  */
 export function createAttioWhiteGloveDeal(
   token: string,
   a: WgAnswers,
   booking: WgBooking,
-  preferredStage: string = WG_DEAL_STAGE,
-  now: Date = new Date(),
+  options: WgDealOptions = {},
 ): Promise<WgDealResult> {
+  const now = options.now ?? new Date();
+  const preferredStage = options.stage?.trim() || WG_DEAL_STAGE;
+  const owner = options.owner?.trim() || null;
   if (isTeamEmail(a.email)) return Promise.resolve("skipped");
   return withTimeout(DEAL_TIMEOUT_MS, async (signal) => {
     const ids = await companyAndPerson(token, signal, a.email);
@@ -245,22 +261,26 @@ export function createAttioWhiteGloveDeal(
       return "exists";
     }
 
+    // The stage's exact title, when the token may read the pipeline; else the configured title as is.
     const statuses = await attio(token, signal, "GET", "/objects/deals/attributes/stage/statuses");
     if (!statuses.ok) console.error("White Glove Attio deal stages failed", { status: statuses.status });
-    const stage = statuses.ok ? pickDealStage((statuses.body as { data?: unknown } | null)?.data, preferredStage) : null;
+    const stage =
+      (statuses.ok ? pickDealStage((statuses.body as { data?: unknown } | null)?.data, preferredStage) : null) ??
+      preferredStage;
 
-    const created = await attio(token, signal, "POST", "/objects/deals/records", {
-      data: {
-        values: {
-          name,
-          ...(stage ? { stage } : {}),
-          ...(ids.companyId
-            ? { associated_company: [{ target_object: "companies", target_record_id: ids.companyId }] }
-            : {}),
-          associated_people: [{ target_object: "people", target_record_id: ids.personId }],
-        },
-      },
+    const values = {
+      name,
+      ...(stage ? { stage } : {}),
+      ...(ids.companyId ? { associated_company: [{ target_object: "companies", target_record_id: ids.companyId }] } : {}),
+      associated_people: [{ target_object: "people", target_record_id: ids.personId }],
+    };
+    let created = await attio(token, signal, "POST", "/objects/deals/records", {
+      data: { values: owner ? { ...values, owner } : values },
     });
+    if (!created.ok && owner && created.status === 400) {
+      console.error("White Glove Attio deal owner refused, retrying without it", { status: created.status });
+      created = await attio(token, signal, "POST", "/objects/deals/records", { data: { values } });
+    }
     if (!created.ok) {
       console.error("White Glove Attio deal create failed", { status: created.status });
       return "failed";

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { WG_DEAL_STAGE, createAttioWhiteGloveDeal } from "@/lib/attio-white-glove";
+import { WG_DEAL_OWNER, WG_DEAL_STAGE, createAttioWhiteGloveDeal } from "@/lib/attio-white-glove";
 import { CALENDLY_EVENT_URI_RE, CALENDLY_INVITEE_URI_RE } from "@/lib/booking";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { hasApprovedOrigin } from "@/lib/request-origin";
@@ -11,9 +11,10 @@ import { verifyWgBooking } from "@/lib/white-glove-booking-token";
  * calendly.event_scheduled. Body: { booking, event?, invitee? }: the pass
  * POST /api/white-glove/demo signed, and Calendly's event and invitee URIs.
  * A valid pass opens the Attio deal (lib/attio-white-glove.ts); the page
- * shows "You're booked" whatever this answers. Optional
- * ATTIO_WHITE_GLOVE_DEAL_STAGE names the stage a deal opens in when the
- * workspace's isn't "Meeting booked".
+ * shows "You're booked" whatever this answers. Optional env:
+ * ATTIO_WHITE_GLOVE_DEAL_STAGE (overrides WG_DEAL_STAGE, "Demo booked") and
+ * ATTIO_WHITE_GLOVE_DEAL_OWNER (a workspace member's email; overrides
+ * WG_DEAL_OWNER, François).
  */
 
 export const runtime = "nodejs";
@@ -46,7 +47,10 @@ export async function POST(request: Request) {
     secret,
     answers,
     { bookedAt: new Date().toISOString(), eventUri: event, inviteeUri: invitee },
-    process.env.ATTIO_WHITE_GLOVE_DEAL_STAGE?.trim() || WG_DEAL_STAGE,
+    {
+      stage: process.env.ATTIO_WHITE_GLOVE_DEAL_STAGE?.trim() || WG_DEAL_STAGE,
+      owner: process.env.ATTIO_WHITE_GLOVE_DEAL_OWNER?.trim() || WG_DEAL_OWNER,
+    },
   );
   return NextResponse.json({ ok: deal !== "failed", deal }, { status: deal === "failed" ? 502 : 200 });
 }

@@ -158,7 +158,7 @@ test("booking pass: round trip, tampering, wrong secret, expiry", () => {
 
 // ── Attio ──
 
-function fakeAttio({ person = null, deals = [], statuses, failDeal = false } = {}) {
+function fakeAttio({ person = null, deals = [], statuses, failDeal = false, refuseOwner = false, hideStages = false } = {}) {
   const calls = [];
   const fetchImpl = async (url, init = {}) => {
     const u = new URL(url);
@@ -173,10 +173,15 @@ function fakeAttio({ person = null, deals = [], statuses, failDeal = false } = {
     if (method === "PUT" && p === "/v2/objects/people/records") return json({ data: { id: { record_id: "person-new" } } });
     if (method === "PATCH" && p.startsWith("/v2/objects/people/records/")) return json({ data: {} });
     if (p === "/v2/objects/deals/records/query") return json({ data: deals });
-    if (p === "/v2/objects/deals/attributes/stage/statuses")
-      return json({ data: statuses ?? [{ title: "Lead" }, { title: "Meeting booked" }, { title: "Won" }] });
-    if (method === "POST" && p === "/v2/objects/deals/records")
-      return failDeal ? json({ error: "bad" }, 400) : json({ data: { id: { record_id: "deal-1" } } });
+    if (p === "/v2/objects/deals/attributes/stage/statuses") {
+      if (hideStages) return json({ error: "forbidden" }, 403);
+      // the workspace's Sales Pipeline, as seen 2026-11-05
+      return json({ data: statuses ?? [{ title: "Discovery booked" }, { title: "Demo booked" }, { title: "Escalation required" }] });
+    }
+    if (method === "POST" && p === "/v2/objects/deals/records") {
+      if (failDeal || (refuseOwner && body.data.values.owner)) return json({ error: "bad" }, 400);
+      return json({ data: { id: { record_id: "deal-1" } } });
+    }
     if (method === "POST" && p === "/v2/notes") return json({ data: { id: { note_id: "note-1" } } });
     return json({ error: "unexpected" }, 404);
   };
@@ -189,18 +194,21 @@ const BOOKING = {
   inviteeUri: "https://api.calendly.com/scheduled_events/EVT1/invitees/INV1",
 };
 
-test("a booking opens one deal linked to the company and the person, in Meeting booked", async () => {
+test("a booking opens one deal linked to the company and the person, in Demo booked, owned by François", async () => {
   const attio = fakeAttio();
   const load = runtime({ fetchImpl: attio.fetchImpl });
-  const { createAttioWhiteGloveDeal } = load("lib/attio-white-glove.ts");
+  const { createAttioWhiteGloveDeal, WG_DEAL_STAGE, WG_DEAL_OWNER } = load("lib/attio-white-glove.ts");
+  assert.equal(WG_DEAL_STAGE, "Demo booked");
+  assert.equal(WG_DEAL_OWNER, "francois@getbasalt.ai");
   const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, "Meeting booked", NOW), "created");
+  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { owner: WG_DEAL_OWNER, now: NOW }), "created");
   const company = attio.calls.find((c) => c.path.startsWith("/v2/objects/companies/records"));
   assert.equal(company.body.data.values.domains[0].domain, "acme.io");
   const deal = attio.calls.find((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
   const values = deal.body.data.values;
   assert.equal(values.name, "acme.io · White Glove demo");
-  assert.equal(values.stage, "Meeting booked");
+  assert.equal(values.stage, "Demo booked");
+  assert.equal(values.owner, "francois@getbasalt.ai");
   assert.equal(values.associated_company[0].target_record_id, "company-1");
   assert.equal(values.associated_people[0].target_record_id, "person-new");
   const note = attio.calls.find((c) => c.path === "/v2/notes");
@@ -217,9 +225,19 @@ test("a second booking from the same domain within 30 days adds a note, not a de
   const load = runtime({ fetchImpl: attio.fetchImpl });
   const { createAttioWhiteGloveDeal } = load("lib/attio-white-glove.ts");
   const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, "Meeting booked", NOW), "exists");
+  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { now: NOW }), "exists");
   assert.equal(attio.calls.some((c) => c.method === "POST" && c.path === "/v2/objects/deals/records"), false);
   assert.equal(attio.calls.find((c) => c.path === "/v2/notes").body.data.parent_record_id, "deal-old");
+});
+
+test("without permission to read the stages, the configured title is written as is", async () => {
+  const attio = fakeAttio({ hideStages: true });
+  const load = runtime({ fetchImpl: attio.fetchImpl });
+  const { createAttioWhiteGloveDeal } = load("lib/attio-white-glove.ts");
+  const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
+  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { now: NOW }), "created");
+  const deal = attio.calls.find((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
+  assert.equal(deal.body.data.values.stage, "Demo booked");
 });
 
 test("an old deal for the domain does not block a new one; an unknown stage falls back to the first", async () => {
@@ -230,11 +248,29 @@ test("an old deal for the domain does not block a new one; an unknown stage fall
   const load = runtime({ fetchImpl: attio.fetchImpl });
   const { createAttioWhiteGloveDeal, pickDealStage } = load("lib/attio-white-glove.ts");
   const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, "Meeting booked", NOW), "created");
+  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { now: NOW }), "created");
   const deal = attio.calls.find((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
   assert.equal(deal.body.data.values.stage, "Discovery");
   assert.equal(pickDealStage([{ title: "meeting BOOKED " }], "Meeting booked"), "meeting BOOKED ");
   assert.equal(pickDealStage("nope", "Meeting booked"), null);
+});
+
+test("the owner rides along; an owner Attio refuses is dropped, not the deal", async () => {
+  const load = runtime({ fetchImpl: fakeAttio().fetchImpl });
+  const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
+  const ok = fakeAttio();
+  const withOwner = runtime({ fetchImpl: ok.fetchImpl })("lib/attio-white-glove.ts");
+  assert.equal(await withOwner.createAttioWhiteGloveDeal("token", a, BOOKING, { owner: "owner@pancake.ai", now: NOW }), "created");
+  const sent = ok.calls.filter((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].body.data.values.owner, "owner@pancake.ai");
+  const refused = fakeAttio({ refuseOwner: true });
+  const strict = runtime({ fetchImpl: refused.fetchImpl })("lib/attio-white-glove.ts");
+  assert.equal(await strict.createAttioWhiteGloveDeal("token", a, BOOKING, { owner: "nobody@pancake.ai", now: NOW }), "created");
+  const tries = refused.calls.filter((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
+  assert.equal(tries.length, 2);
+  assert.equal(tries[1].body.data.values.owner, undefined);
+  assert.equal(tries[1].body.data.values.name, "acme.io · White Glove demo");
 });
 
 test("an existing person keeps their record; only an empty company is filled", async () => {
@@ -259,11 +295,11 @@ test("team addresses never reach Attio; a failed deal create reports failed", as
   const { createAttioWhiteGloveDeal, writeAttioWhiteGloveRequest } = load("lib/attio-white-glove.ts");
   const { parseWgRequest } = load("lib/white-glove-demo.ts");
   const team = parseWgRequest({ ...fit, email: "tristan@pancake.ai" }).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", team, BOOKING, "Meeting booked", NOW), "skipped");
+  assert.equal(await createAttioWhiteGloveDeal("token", team, BOOKING, { now: NOW }), "skipped");
   assert.equal(await writeAttioWhiteGloveRequest("token", team, "book", NOW.toISOString()), "skipped");
   assert.equal(attio.calls.length, 0);
   const a = parseWgRequest(fit).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, "Meeting booked", NOW), "failed");
+  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { now: NOW }), "failed");
 });
 
 // ── the routes ──
@@ -276,13 +312,14 @@ function routeRuntime({ env = { ATTIO_API_KEY: "test-only" }, db = null } = {}) 
     db,
     stubs: {
       "@/lib/attio-white-glove": {
-        WG_DEAL_STAGE: "Meeting booked",
+        WG_DEAL_STAGE: "Demo booked",
+        WG_DEAL_OWNER: "francois@getbasalt.ai",
         writeAttioWhiteGloveRequest: async (_token, a, route) => {
           writes.push({ email: a.email, route });
           return "sent";
         },
-        createAttioWhiteGloveDeal: async (_token, a, booking, stage) => {
-          deals.push({ email: a.email, booking, stage });
+        createAttioWhiteGloveDeal: async (_token, a, booking, options) => {
+          deals.push({ email: a.email, booking, stage: options.stage, owner: options.owner });
           return "created";
         },
       },
@@ -349,7 +386,8 @@ test("demo route: a clear fit gets a booking pass the booked route accepts", asy
   assert.equal((await booked.json()).deal, "created");
   assert.equal(deals.length, 1);
   assert.equal(deals[0].email, "jane@acme.io");
-  assert.equal(deals[0].stage, "Meeting booked");
+  assert.equal(deals[0].stage, "Demo booked");
+  assert.equal(deals[0].owner, "francois@getbasalt.ai");
   assert.equal(deals[0].booking.eventUri, BOOKING.eventUri);
   assert.equal(deals[0].booking.inviteeUri, undefined);
   // a middle character of the signature: the last one also carries base64 padding bits
