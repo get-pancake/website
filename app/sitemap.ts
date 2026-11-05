@@ -72,6 +72,8 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   // the White Glove offer page (PAN-2368), new on 2026-10-18
   { path: WHITE_GLOVE_PAGE_HREF, updated: "2026-10-18", priority: 0.7 },
   { path: "/careers", updated: "2026-10-13", priority: 0.5 },
+  { path: "/research", updated: "2026-11-05", priority: 0.7 },
+  { path: "/research/marketing-memory", updated: "2026-11-05", priority: 0.7 },
   { path: "/privacy", updated: "2026-10-13", priority: 0.3 },
   { path: "/terms", updated: "2026-09-18", priority: 0.3 },
   { path: "/support", updated: "2026-10-13", priority: 0.3 },
