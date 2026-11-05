@@ -19,6 +19,10 @@
 //
 // A direct <section> child of main.lp: the agents view hides it with every human section
 // (audience.css). Class block `lp-video` (video.css).
+//
+// /white-glove reuses the film as its hero video (WgHero, 2026-11-05): `grow={false}` skips the
+// scroll effect and `className` adds the page's own sizing (white-glove.css .wg-video). The
+// homepage call takes neither, so nothing changes there.
 
 import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
@@ -40,7 +44,7 @@ const NOSCRIPT_CSS =
 /** iOS Safari's own full-screen player for a <video>. */
 type Film = HTMLVideoElement & { webkitEnterFullscreen?: () => void };
 
-export function LpVideo() {
+export function LpVideo({ grow = true, className }: { grow?: boolean; className?: string } = {}) {
   const sectionRef = useRef<HTMLElement>(null);
   const cardRef = useRef<HTMLDivElement>(null);
   const filmRef = useRef<Film>(null);
@@ -52,11 +56,11 @@ export function LpVideo() {
   useEffect(() => {
     const section = sectionRef.current;
     const card = cardRef.current;
-    if (!section || !card) return;
-    const grow = mountWindowGrow(section, card);
-    if (/[?&]still\b/.test(window.location.search)) grow.lock();
-    return () => grow.destroy();
-  }, []);
+    if (!grow || !section || !card) return;
+    const effect = mountWindowGrow(section, card);
+    if (/[?&]still\b/.test(window.location.search)) effect.lock();
+    return () => effect.destroy();
+  }, [grow]);
 
   /** Back to the poster, the film at 0. */
   const reset = useCallback(() => {
@@ -106,7 +110,7 @@ export function LpVideo() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="lp-video" aria-label={LP_VIDEO.label}>
+    <section ref={sectionRef} className={className ? `lp-video ${className}` : "lp-video"} aria-label={LP_VIDEO.label}>
       <div ref={cardRef} className="lp-video__card">
         {!playing && (
           <button

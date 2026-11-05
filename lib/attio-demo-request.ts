@@ -130,11 +130,13 @@ export function attioNote(lead: AttioDemoLead): {
   return { title: `Demo request from ${SITE_HOST}`, content: lines.join("\n") };
 }
 
-type AttioCall =
+/** One Attio call's outcome. Shared with lib/attio-white-glove.ts. */
+export type AttioCall =
   | { ok: true; body: unknown }
   | { ok: false; status: number | "timeout" | "network" };
 
-async function attio(
+/** One Attio API call; never throws. Shared with lib/attio-white-glove.ts. */
+export async function attio(
   token: string,
   signal: AbortSignal,
   method: string,
@@ -159,7 +161,7 @@ async function attio(
   }
 }
 
-function recordIdOf(body: unknown): string | null {
+export function recordIdOf(body: unknown): string | null {
   const id = (body as { data?: { id?: { record_id?: unknown } } } | null)?.data
     ?.id?.record_id;
   return typeof id === "string" && id ? id : null;

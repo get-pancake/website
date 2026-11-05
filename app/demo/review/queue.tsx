@@ -86,7 +86,7 @@ export default function ReviewQueue({
                   setMessage("");
                 }}
               >
-                <strong>{r.answers.name}</strong>
+                <strong>{r.answers.name || r.answers.email}</strong>
                 <span>{r.answers.website}</span>
                 <small>
                   {r.status} · {r.research_state}
@@ -97,7 +97,7 @@ export default function ReviewQueue({
           {row && a && (
             <article className="request-card review-detail">
               <span className="request-badge">{row.status}</span>
-              <h2 className="lp-display">{a.name}</h2>
+              <h2 className="lp-display">{a.name || a.email}</h2>
               <p>
                 {a.email} · {a.role}
               </p>
@@ -116,6 +116,9 @@ export default function ReviewQueue({
                           salesTeam: "Outbound team",
                           sequencer: "Current outbound tool",
                           volume: "Monthly prospect volume",
+                          country: "Country",
+                          source: "Source",
+                          reviewReason: "Why it is in review",
                         }[k] || k}
                       </dt>
                       <dd>{v}</dd>

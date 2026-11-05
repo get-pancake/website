@@ -267,6 +267,44 @@ export function demoBookingEventUrl(answers: DemoBookingAnswers, options: EmbedO
 }
 
 /**
+ * The White Glove calendar as an Inline embed, for /white-glove's "Book a
+ * demo" card (WgBookDemo, after /api/white-glove/demo answers `book`): the
+ * embed and color params, the work email, and the answers line in the
+ * event's prep question (the destination's answerParam), so the host reads
+ * them before the call. No name: the form does not ask it, Calendly does.
+ * Call only from the browser.
+ */
+export function whiteGloveBookingEmbedUrl(email: string, context: string, options: EmbedOptions = {}) {
+  const { url, answerParam } = DEMO_BOOKING_DESTINATIONS.whiteGlove;
+  const params = calendlyEmbedParams(options);
+  const address = email.trim();
+  if (address) params.set("email", address);
+  params.set(answerParam, context.slice(0, DEMO_BOOKING_CONTEXT_MAX));
+  return `${url}?${params.toString().replace(/\+/g, "%20")}`;
+}
+
+/**
+ * The booked event's and invitee's API URIs from Calendly's
+ * `calendly.event_scheduled` message (`payload.event.uri`,
+ * `payload.invitee.uri`), each only when it is a Calendly API URI. Callers
+ * must have checked the event's origin and source already. Pure.
+ */
+export function calendlyScheduledUris(data: unknown): { event?: string; invitee?: string } {
+  const payload = (data as { payload?: { event?: { uri?: unknown }; invitee?: { uri?: unknown } } } | null)?.payload;
+  const event = payload?.event?.uri;
+  const invitee = payload?.invitee?.uri;
+  return {
+    ...(typeof event === "string" && CALENDLY_EVENT_URI_RE.test(event) ? { event } : {}),
+    ...(typeof invitee === "string" && CALENDLY_INVITEE_URI_RE.test(invitee) ? { invitee } : {}),
+  };
+}
+
+/** A scheduled event's / invitee's Calendly API URI, nothing else. */
+export const CALENDLY_EVENT_URI_RE = /^https:\/\/api\.calendly\.com\/scheduled_events\/[A-Za-z0-9-]{1,64}$/;
+export const CALENDLY_INVITEE_URI_RE =
+  /^https:\/\/api\.calendly\.com\/scheduled_events\/[A-Za-z0-9-]{1,64}\/invitees\/[A-Za-z0-9-]{1,64}$/;
+
+/**
  * `#rgb` / `#rrggbb` / `rgb(r, g, b)` (what getComputedStyle hands back for
  * the tokens) → Calendly's `rrggbb`. Anything else — transparent, translucent,
  * color-mix(), empty — returns null so the param is left to Calendly.
