@@ -66,8 +66,8 @@ const config: GtmComparisonConfig = {
     {
       n: "05",
       title: "Built for founders who do their own sales",
-      body: "Every Pancake lead arrives with one line on why it fits. Pancake follows up until they answer. A yes gets your calendar link, sent from your account.",
-      angle: "Every other answer comes back to you.",
+      body: "Every Pancake lead arrives with one line on why it fits. Pancake follows up from your account until they answer.",
+      angle: "Every answer comes back to you.",
     },
   ],
   rows: [
