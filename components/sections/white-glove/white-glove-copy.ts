@@ -43,7 +43,7 @@ export const WG_BOOK = {
   lede: `45 minutes with our team. White Glove is ${WG_PRICE} a month, ${WHITE_GLOVE_INITIAL_MONTHS} months minimum.`,
   email: { label: "Work email", placeholder: "you@company.com" },
   size: { label: "Company size" },
-  country: { label: "Country", common: "Most common", all: "All countries" },
+  country: { label: "Country", list: "Countries", empty: "No country matches. Try another spelling." },
   gtm: { legend: "Do you have a GTM team?", hint: "Sales, growth or GTM engineers.", yes: "Yes", no: "Not yet" },
   /** /demo's White Glove budget question (2026-11-08): it gates the calendar */
   budget: {

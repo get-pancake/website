@@ -12,7 +12,6 @@ import {
   isCalendlyEventScheduled,
   whiteGloveBookingEmbedUrl,
 } from "@/lib/booking";
-import { COMMON_COUNTRIES, COUNTRIES } from "@/lib/countries";
 import { isPersonalEmail } from "@/lib/personal-email";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { WHITE_GLOVE_PRICING_HREF } from "@/lib/white-glove";
@@ -28,6 +27,7 @@ import {
   type WgField,
   type WgResponse,
 } from "@/lib/white-glove-demo";
+import { WgCountryField } from "./WgCountryField";
 import { WG_BOOK as c } from "./white-glove-copy";
 
 /**
@@ -73,15 +73,26 @@ export function WgBookDemo() {
   const submissionId = useRef("");
   const emailRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const cardRef = useRef<HTMLElement>(null);
   const firstView = useRef(true);
 
-  // Each new state's heading takes the focus (not on the first paint).
+  // Each new state's heading takes the focus (not on the first paint). The
+  // calendar is taller than a laptop's first screen: its card scrolls to the
+  // top (clear of the nav), so the time slots show without a hunt; a shorter
+  // state that starts above the screen comes back into view.
   useEffect(() => {
     if (firstView.current) {
       firstView.current = false;
       return;
     }
-    titleRef.current?.focus();
+    titleRef.current?.focus({ preventScroll: true });
+    const card = cardRef.current;
+    if (!card) return;
+    const box = card.getBoundingClientRect();
+    if (box.top < 0 || (view.kind === "calendar" && box.bottom > window.innerHeight)) {
+      const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      card.scrollIntoView({ block: "start", behavior: still ? "auto" : "smooth" });
+    }
   }, [view.kind]);
 
   // #book-demo (the page's other "Book a demo" links): the email field takes the focus.
@@ -158,7 +169,7 @@ export function WgBookDemo() {
   const onBooked = useCallback(() => setView({ kind: "booked" }), []);
 
   return (
-    <section id={WG_BOOK_ANCHOR} className="wg-book" aria-labelledby="wg-book-title" data-view={view.kind}>
+    <section ref={cardRef} id={WG_BOOK_ANCHOR} className="wg-book" aria-labelledby="wg-book-title" data-view={view.kind}>
       {view.kind === "form" ? (
         <form className="wg-book__form" onSubmit={submit}>
           {/* never a real field: bots fill it, humans never see it */}
@@ -225,35 +236,16 @@ export function WgBookDemo() {
                 <label className="wg-field__label" htmlFor="wg-country">
                   {c.country.label}
                 </label>
-                <select
+                <WgCountryField
                   id="wg-country"
-                  name="country"
-                  required
-                  autoComplete="country-name"
-                  className="wg-field__input wg-field__select"
                   value={draft.country}
-                  onChange={(e) => set("country")(e.target.value)}
-                  aria-invalid={error?.field === "country" || undefined}
-                  aria-describedby={describedBy("country")}
-                >
-                  <option value="" disabled>
-                    {c.select}
-                  </option>
-                  <optgroup label={c.country.common}>
-                    {COMMON_COUNTRIES.map((country) => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label={c.country.all}>
-                    {COUNTRIES.map((country) => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </optgroup>
-                </select>
+                  onChange={(country) => set("country")(country)}
+                  invalid={error?.field === "country"}
+                  describedBy={describedBy("country")}
+                  placeholder={c.select}
+                  emptyText={c.country.empty}
+                  listLabel={c.country.list}
+                />
                 {fieldError("country")}
               </div>
             </div>

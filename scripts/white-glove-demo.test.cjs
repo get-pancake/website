@@ -158,6 +158,28 @@ test("the review reason lists every reason that applies", () => {
   );
 });
 
+test("the country field's search: common countries first, short names, accents", () => {
+  const { DEFAULT_COUNTRY_LIST, searchCountries, resolveCountry } = runtime()("lib/country-search.ts");
+  const { COUNTRIES } = runtime()("lib/countries.ts");
+  assert.deepEqual(plain(DEFAULT_COUNTRY_LIST.slice(0, 5)), ["United States", "Canada", "United Kingdom", "France", "Germany"]);
+  assert.equal(DEFAULT_COUNTRY_LIST.length, COUNTRIES.length);
+  assert.equal(new Set(DEFAULT_COUNTRY_LIST).size, COUNTRIES.length);
+  assert.equal(searchCountries("fra")[0], "France");
+  assert.equal(searchCountries("uk")[0], "United Kingdom");
+  assert.equal(searchCountries("usa")[0], "United States");
+  assert.equal(searchCountries("kingdom")[0], "United Kingdom");
+  assert.equal(searchCountries("cote")[0], "Côte d’Ivoire");
+  assert.deepEqual(plain(searchCountries("germ")), ["Germany"]);
+  assert.equal(searchCountries("zzz").length, 0);
+  assert.equal(resolveCountry("united states"), "United States");
+  assert.equal(resolveCountry("turkey"), "Türkiye");
+  assert.equal(resolveCountry("fra"), null);
+  // every alias names a real country of the form's list
+  for (const q of ["us", "uk", "uae", "holland", "korea", "czech republic", "ivory coast"]) {
+    assert.ok(COUNTRIES.includes(resolveCountry(q)), q);
+  }
+});
+
 // ── the booking pass ──
 
 test("booking pass: round trip, tampering, wrong secret, expiry", () => {
