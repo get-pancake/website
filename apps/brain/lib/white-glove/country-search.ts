@@ -63,7 +63,7 @@ export const DEFAULT_COUNTRY_LIST: readonly Country[] = [
 export function resolveCountry(text: string): Country | null {
   const q = normalizeCountryQuery(text);
   if (!q) return null;
-  for (const [country, name] of NORMALIZED) if (name === q) return country;
+  for (const country of COUNTRIES) if (NORMALIZED.get(country) === q) return country;
   return ALIASES[q] ?? null;
 }
 

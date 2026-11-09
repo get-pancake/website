@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
 
 import { DEFAULT_COUNTRY_LIST, resolveCountry, searchCountries } from "../../lib/white-glove/country-search";
 import { COMMON_COUNTRIES, type Country } from "../../lib/white-glove/countries";
@@ -73,17 +73,38 @@ export function WgCountryField({
 
   const optionId = (index: number) => `${listId}-opt-${index}`;
 
+  /** Fit the list in what the screen shows: above a phone keyboard, under or over the field. */
+  const place = useCallback(() => {
+    const box = inputRef.current?.getBoundingClientRect();
+    if (!box) return;
+    const screen = window.visualViewport;
+    const top = screen?.offsetTop ?? 0;
+    const bottom = top + (screen?.height ?? window.innerHeight);
+    const below = bottom - box.bottom - 12;
+    const above = box.top - top - 12;
+    const up = below < 200 && above > below;
+    const maxHeight = Math.round(Math.max(140, Math.min(264, up ? above : below)));
+    setPlacement((p) => (p.up === up && p.maxHeight === maxHeight ? p : { up, maxHeight }));
+  }, []);
+
+  // A phone keyboard opens after the focus and shrinks the visible screen: fit again.
+  useEffect(() => {
+    if (!open) return;
+    const screen = window.visualViewport;
+    screen?.addEventListener("resize", place);
+    screen?.addEventListener("scroll", place);
+    window.addEventListener("scroll", place, { passive: true });
+    return () => {
+      screen?.removeEventListener("resize", place);
+      screen?.removeEventListener("scroll", place);
+      window.removeEventListener("scroll", place);
+    };
+  }, [open, place]);
+
   function openList() {
     if (open) return;
     const current = value ? DEFAULT_COUNTRY_LIST.indexOf(value as Country) : -1;
-    const box = inputRef.current?.getBoundingClientRect();
-    if (box) {
-      const screen = window.visualViewport?.height ?? window.innerHeight;
-      const below = screen - box.bottom - 12;
-      const above = box.top - 12;
-      const up = below < 200 && above > below;
-      setPlacement({ up, maxHeight: Math.round(Math.max(140, Math.min(264, up ? above : below))) });
-    }
+    place();
     setSearching(false);
     setActive(Math.max(current, 0));
     setOpen(true);
@@ -164,6 +185,7 @@ export function WgCountryField({
         // the browser's own address suggestions would open over this list
         autoComplete="off"
         autoCapitalize="words"
+        autoCorrect="off"
         spellCheck={false}
         required
         placeholder={placeholder}

@@ -197,7 +197,8 @@
   color: var(--lp-text);
   min-width: 0;
   padding: var(--brain-space-lg) calc(var(--brain-space-lg) + var(--brain-space-xs));
-  scroll-margin-top: var(--brain-space-md);
+  /* the page runs under an iPhone's status bar (viewport-fit=cover) */
+  scroll-margin-top: calc(env(safe-area-inset-top, 0px) + var(--brain-space-md));
 }
 .wgb .wg-book__title {
   font-family: var(--lp-font-cond);
