@@ -259,6 +259,81 @@
 .lp-wg .wg-field__select optgroup {
   color: var(--lp-text);
 }
+
+/* the country field (WgCountryField.tsx): a text field with the selects'
+   chevron, and a list the page draws (it scrolls inside itself only) in
+   place of the native menu, which could not be scrolled back up on macOS */
+.lp-wg .wg-combo {
+  position: relative;
+}
+.lp-wg .wg-combo__input {
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--lp-text) 50%),
+    linear-gradient(135deg, var(--lp-text) 50%, transparent 50%);
+  background-position:
+    calc(100% - var(--lp-space-4) - 5px) 50%,
+    calc(100% - var(--lp-space-4)) 50%;
+  background-repeat: no-repeat;
+  background-size: 5px 5px;
+  padding-right: calc(var(--lp-space-8) + var(--lp-space-2));
+  text-overflow: ellipsis;
+}
+.lp-wg .wg-combo__list {
+  background: var(--lp-surface);
+  border: var(--lp-line) solid var(--lp-stroke);
+  border-radius: var(--lp-r-sm);
+  box-shadow: 0 var(--lp-space-2) calc(var(--lp-space-4) + var(--lp-space-2)) rgba(44, 0, 42, 0.16);
+  list-style: none;
+  margin: 0;
+  max-height: 264px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: var(--lp-space-1);
+  position: absolute;
+  right: 0;
+  top: calc(100% + var(--lp-space-1));
+  width: max(100%, 280px);
+  z-index: 30;
+}
+.lp-wg .wg-combo__list[hidden] {
+  display: none;
+}
+.lp-wg .wg-combo__list[data-up] {
+  bottom: calc(100% + var(--lp-space-1));
+  top: auto;
+}
+.lp-wg .wg-combo__option {
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.3;
+  padding: 10px 12px;
+}
+.lp-wg .wg-combo__option[data-active] {
+  background: var(--lp-purple-10);
+}
+.lp-wg .wg-combo__option[aria-selected="true"] {
+  font-weight: 600;
+}
+/* a rule under the most common countries */
+.lp-wg .wg-combo__option[data-last-common] {
+  margin-bottom: 9px;
+  position: relative;
+}
+.lp-wg .wg-combo__option[data-last-common]::after {
+  background: var(--lp-subtle-stroke);
+  bottom: -5px;
+  content: "";
+  height: var(--lp-line);
+  left: 12px;
+  position: absolute;
+  right: 12px;
+}
+.lp-wg .wg-combo__empty {
+  color: var(--lp-ink-tr-70);
+  font-size: var(--lp-text-sm);
+  padding: 10px 12px;
+}
 /* Yes / Not yet: two pills over the native radios (kept focusable and required) */
 .lp-wg .wg-choice__options {
   display: grid;
