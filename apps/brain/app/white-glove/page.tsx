@@ -58,10 +58,12 @@ export default function WhiteGloveLanding() {
             </h1>
             <p className="wgb-lede">{p.lede}</p>
           </div>
-          {/* the film and the form share the first row; phones: film, form, points, logos */}
+          {/* the film and the form share the first row, the logos under the film;
+              phones: film, form, logos, points */}
           <div className="wgb-grid">
             <WgVsl />
             <WgBookDemo />
+            <BrainTrustBand />
             <ul className="wgb-points">
               {p.points.map((point) => (
                 <li key={point.title}>
@@ -73,7 +75,6 @@ export default function WhiteGloveLanding() {
                 </li>
               ))}
             </ul>
-            <BrainTrustBand />
           </div>
         </div>
       </section>

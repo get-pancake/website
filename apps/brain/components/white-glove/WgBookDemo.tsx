@@ -26,8 +26,8 @@ import {
   type WgResponse,
 } from "../../lib/white-glove/contract";
 import { WG_BOOK as c } from "../../lib/white-glove/copy";
-import { COMMON_COUNTRIES, COUNTRIES } from "../../lib/white-glove/countries";
 import { isPersonalEmail } from "../../lib/white-glove/personal-email";
+import { WgCountryField } from "./WgCountryField";
 
 /**
  * The "Book a demo" card of brain.pancake.ai/white-glove: the main website's
@@ -70,15 +70,26 @@ export function WgBookDemo() {
   const submissionId = useRef("");
   const emailRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
+  const cardRef = useRef<HTMLElement>(null);
   const firstView = useRef(true);
 
-  // Each new state's heading takes the focus (not on the first paint).
+  // Each new state's heading takes the focus (not on the first paint). The
+  // calendar is taller than a laptop's first screen: its card scrolls to the
+  // top, so the time slots show without a hunt; a shorter state that starts
+  // above the screen comes back into view.
   useEffect(() => {
     if (firstView.current) {
       firstView.current = false;
       return;
     }
-    titleRef.current?.focus();
+    titleRef.current?.focus({ preventScroll: true });
+    const card = cardRef.current;
+    if (!card) return;
+    const box = card.getBoundingClientRect();
+    if (box.top < 0 || (view.kind === "calendar" && box.bottom > window.innerHeight)) {
+      const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      card.scrollIntoView({ block: "start", behavior: still ? "auto" : "smooth" });
+    }
   }, [view.kind]);
 
   // #book-demo (the nav's "Book a demo"): the email field takes the focus.
@@ -159,7 +170,7 @@ export function WgBookDemo() {
   const onBooked = useCallback(() => setView({ kind: "booked" }), []);
 
   return (
-    <section id={WG_BOOK_ANCHOR} className="wg-book" aria-labelledby="wg-book-title" data-view={view.kind}>
+    <section ref={cardRef} id={WG_BOOK_ANCHOR} className="wg-book" aria-labelledby="wg-book-title" data-view={view.kind}>
       {view.kind === "form" ? (
         <form className="wg-book__form" onSubmit={submit}>
           {/* never a real field: bots fill it, humans never see it */}
@@ -226,40 +237,23 @@ export function WgBookDemo() {
                 <label className="wg-field__label" htmlFor="wg-country">
                   {c.country.label}
                 </label>
-                <select
+                <WgCountryField
                   id="wg-country"
-                  name="country"
-                  required
-                  autoComplete="country-name"
-                  className="wg-field__input wg-field__select"
                   value={draft.country}
-                  onChange={(e) => set("country")(e.target.value)}
-                  aria-invalid={error?.field === "country" || undefined}
-                  aria-describedby={describedBy("country")}
-                >
-                  <option value="" disabled>
-                    {c.select}
-                  </option>
-                  <optgroup label={c.country.common}>
-                    {COMMON_COUNTRIES.map((country) => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label={c.country.all}>
-                    {COUNTRIES.map((country) => (
-                      <option key={country} value={country}>
-                        {country}
-                      </option>
-                    ))}
-                  </optgroup>
-                </select>
+                  onChange={(country) => set("country")(country)}
+                  invalid={error?.field === "country"}
+                  describedBy={describedBy("country")}
+                  placeholder={c.select}
+                  emptyText={c.country.empty}
+                  listLabel={c.country.list}
+                />
                 {fieldError("country")}
               </div>
             </div>
-            <fieldset className="wg-field wg-choice" aria-describedby={describedBy("gtmTeam") ?? "wg-gtm-hint"}>
-              <legend className="wg-field__label">{c.gtm.legend}</legend>
+            <fieldset className="wg-field wg-choice" aria-describedby={describedBy("gtmTeam")}>
+              <legend className="wg-field__label">
+                {c.gtm.legend} <span className="wg-field__hint">{c.gtm.hint}</span>
+              </legend>
               <div className="wg-choice__options">
                 {WG_GTM_TEAM.map((value) => (
                   <label key={value} className="wg-choice__option">
@@ -275,9 +269,6 @@ export function WgBookDemo() {
                   </label>
                 ))}
               </div>
-              <p id="wg-gtm-hint" className="wg-field__hint">
-                {c.gtm.hint}
-              </p>
               {fieldError("gtmTeam")}
             </fieldset>
             <div className="wg-field">
