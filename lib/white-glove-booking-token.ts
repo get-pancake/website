@@ -31,7 +31,7 @@ function mac(secret: string, payload: string): Buffer {
 /** A pass for these answers, issued now. */
 export function signWgBooking(secret: string, a: WgAnswers, issuedAt: number = Date.now()): string {
   const payload = Buffer.from(
-    JSON.stringify({ e: a.email, s: a.size, c: a.country, g: a.gtmTeam, t: issuedAt }),
+    JSON.stringify({ e: a.email, s: a.size, c: a.country, g: a.gtmTeam, b: a.budget, t: issuedAt }),
   ).toString("base64url");
   return `${payload}.${mac(secret, payload).toString("base64url")}`;
 }
@@ -45,7 +45,7 @@ export function verifyWgBooking(secret: string, token: unknown, now: number = Da
   const given = Buffer.from(signature, "base64url");
   const expected = mac(secret, payload);
   if (given.length !== expected.length || !timingSafeEqual(given, expected)) return null;
-  let claims: { e?: unknown; s?: unknown; c?: unknown; g?: unknown; t?: unknown };
+  let claims: { e?: unknown; s?: unknown; c?: unknown; g?: unknown; b?: unknown; t?: unknown };
   try {
     claims = JSON.parse(Buffer.from(payload, "base64url").toString("utf8"));
   } catch {
@@ -59,6 +59,9 @@ export function verifyWgBooking(secret: string, token: unknown, now: number = Da
     size: claims.s,
     country: claims.c,
     gtmTeam: claims.g,
+    // Passes signed before the budget question (2026-11-08) carry no answer;
+    // they passed the rules of their day. Removable once a day has gone by.
+    budget: claims.b === undefined ? "yes" : claims.b,
     submissionId: NO_SUBMISSION,
   });
   return parsed.ok ? parsed.value : null;

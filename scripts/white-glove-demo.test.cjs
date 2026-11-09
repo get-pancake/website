@@ -60,7 +60,7 @@ function runtime({ env = {}, db = null, stubs = {}, fetchImpl } = {}) {
 }
 
 const ID = "ca87f89e-e51f-4248-9900-fcf6d7e084fd";
-const fit = { email: "Jane@Acme.io", size: "11–50", country: "United States", gtmTeam: "yes", submissionId: ID };
+const fit = { email: "Jane@Acme.io", size: "11–50", country: "United States", gtmTeam: "yes", budget: "yes", submissionId: ID };
 const plain = (value) => JSON.parse(JSON.stringify(value));
 
 function request(pathname, body, origin = "http://localhost:3027") {
@@ -73,9 +73,14 @@ function request(pathname, body, origin = "http://localhost:3027") {
 
 // ── the contract ──
 
-test("routes: solo/duo to self-serve, borderline to François's review, clear fits to the calendar", () => {
+test("routes: solo/duo and no budget to self-serve, borderline to François's review, clear fits to the calendar", () => {
   const { parseWgRequest, wgRoute } = runtime()("lib/white-glove-demo.ts");
   const cases = [
+    // the budget gates the calendar, as /demo gates White Glove (2026-11-08)
+    [{ size: "201+", country: "United States", gtmTeam: "yes", budget: "no" }, "self_serve"],
+    [{ size: "11–50", country: "India", gtmTeam: "yes", budget: "no" }, "self_serve"],
+    [{ size: "51–200", country: "France", gtmTeam: "yes", budget: "approval" }, "review"],
+    [{ size: "3–10", country: "United States", gtmTeam: "yes", budget: "approval" }, "review"],
     [{ size: "1–2", country: "United States", gtmTeam: "yes" }, "self_serve"],
     [{ size: "1–2", country: "India", gtmTeam: "no" }, "self_serve"],
     [{ size: "11–50", country: "India", gtmTeam: "yes" }, "review"],
@@ -108,6 +113,8 @@ test("validation: work email only, known options, a v4 submission id", () => {
     [{ size: "1-2" }, "size"],
     [{ country: "Atlantis" }, "country"],
     [{ gtmTeam: "maybe" }, "gtmTeam"],
+    [{ budget: "maybe" }, "budget"],
+    [{ budget: undefined }, "budget"],
     [{ submissionId: "nope" }, "submissionId"],
   ]) {
     const parsed = parseWgRequest({ ...fit, ...patch });
@@ -130,11 +137,25 @@ test("the answers line and team addresses", () => {
   const a = parseWgRequest(fit).value;
   assert.equal(
     wgContextLine(a),
-    "Booked from pancake.ai/white-glove. Company size: 11–50. Country: United States. GTM team in place: Yes.",
+    "Booked from pancake.ai/white-glove. Company size: 11–50. Country: United States. GTM team in place: Yes. $3,000 a month works: Yes.",
+  );
+  assert.equal(
+    wgContextLine({ ...a, budget: "approval" }, "https://brain.pancake.ai/white-glove"),
+    "Booked from brain.pancake.ai/white-glove. Company size: 11–50. Country: United States. GTM team in place: Yes. $3,000 a month works: Needs internal approval.",
   );
   assert.equal(isTeamEmail("tristan@pancake.ai"), true);
   assert.equal(isTeamEmail("x@eng.getpancake.ai"), true);
   assert.equal(isTeamEmail("jane@notpancake.ai"), false);
+});
+
+test("the review reason lists every reason that applies", () => {
+  const { wgReviewReason, parseWgRequest } = runtime()("lib/white-glove-demo.ts");
+  const a = parseWgRequest(fit).value;
+  assert.equal(wgReviewReason({ ...a, size: "3–10", gtmTeam: "no" }), "Company of 3–10 with no GTM team yet");
+  assert.equal(
+    wgReviewReason({ ...a, budget: "approval", country: "India" }),
+    "Needs internal approval for $3,000 a month; Country outside the instant-booking markets (India)",
+  );
 });
 
 // ── the booking pass ──
@@ -154,6 +175,13 @@ test("booking pass: round trip, tampering, wrong secret, expiry", () => {
   assert.equal(verifyWgBooking("secret", pass, now + WG_BOOKING_MAX_AGE_MS + 1), null);
   assert.equal(verifyWgBooking("secret", signWgBooking("secret", a, now + 5 * 60_000), now), null);
   for (const junk of [undefined, 42, "", "a.b.c", "x".repeat(2000)]) assert.equal(verifyWgBooking("secret", junk, now), null);
+  // a pass signed before the budget question carries none: it still opens the deal
+  const legacy = Buffer.from(JSON.stringify({ e: a.email, s: a.size, c: a.country, g: a.gtmTeam, t: now })).toString("base64url");
+  const legacyMac = require("node:crypto")
+    .createHmac("sha256", "pancake-white-glove-booking:secret")
+    .update(legacy)
+    .digest("base64url");
+  assert.deepEqual(plain(verifyWgBooking("secret", `${legacy}.${legacyMac}`, now)), plain({ ...a, budget: "yes" }));
 });
 
 // ── Attio ──
@@ -314,8 +342,8 @@ function routeRuntime({ env = { ATTIO_API_KEY: "test-only" }, db = null } = {}) 
       "@/lib/attio-white-glove": {
         WG_DEAL_STAGE: "Demo booked",
         WG_DEAL_OWNER: "francois@getbasalt.ai",
-        writeAttioWhiteGloveRequest: async (_token, a, route) => {
-          writes.push({ email: a.email, route });
+        writeAttioWhiteGloveRequest: async (_token, a, route, _at, pageUrl) => {
+          writes.push({ email: a.email, route, pageUrl });
           return "sent";
         },
         createAttioWhiteGloveDeal: async (_token, a, booking, options) => {
@@ -359,6 +387,11 @@ test("demo route: self-serve writes nothing; personal email is refused with its 
   const solo = await POST(request("/api/white-glove/demo", { ...fit, size: "1–2" }));
   assert.equal(solo.status, 200);
   assert.deepEqual(plain(await solo.json()), { ok: true, route: "self_serve" });
+  const noBudget = await POST(request("/api/white-glove/demo", { ...fit, size: "201+", budget: "no" }));
+  assert.deepEqual(plain(await noBudget.json()), { ok: true, route: "self_serve" });
+  const missing = await POST(request("/api/white-glove/demo", { ...fit, budget: undefined }));
+  assert.equal(missing.status, 400);
+  assert.equal((await missing.json()).field, "budget");
   const gmail = await POST(request("/api/white-glove/demo", { ...fit, email: "jane@gmail.com" }));
   assert.equal(gmail.status, 400);
   const body = await gmail.json();
@@ -374,7 +407,7 @@ test("demo route: a clear fit gets a booking pass the booked route accepts", asy
   const body = await demo.json();
   assert.equal(body.route, "book");
   assert.equal(typeof body.booking, "string");
-  assert.deepEqual(plain(writes), [{ email: "jane@acme.io", route: "book" }]);
+  assert.deepEqual(plain(writes), [{ email: "jane@acme.io", route: "book", pageUrl: "https://pancake.ai/white-glove" }]);
   const booked = await load("app/api/white-glove/booked/route.ts").POST(
     request("/api/white-glove/booked", {
       booking: body.booking,
@@ -415,9 +448,22 @@ test("demo route: borderline answers go to François's queue, with the reason, t
   assert.equal(row.answers.website, "https://acme.io");
   assert.equal(row.answers.country, "United States");
   assert.equal(row.answers.reviewReason, "Company of 3–10 with no GTM team yet");
+  assert.equal(row.answers.budget, "Yes — this investment works for us");
   assert.equal(row.answers.name, "");
-  assert.deepEqual(plain(writes), [{ email: "jane@acme.io", route: "review" }]);
+  assert.deepEqual(plain(writes), [{ email: "jane@acme.io", route: "review", pageUrl: "https://pancake.ai/white-glove" }]);
   assert.deepEqual(plain(db.updates), [{ crm_state: "sent" }]);
+});
+
+test("demo route: a budget that needs approval waits for François, in /demo's words", async () => {
+  const db = fakeDb();
+  const { load, writes } = routeRuntime({ db });
+  const r = await load("app/api/white-glove/demo/route.ts").POST(
+    request("/api/white-glove/demo", { ...fit, size: "201+", budget: "approval" }),
+  );
+  assert.deepEqual(plain(await r.json()), { ok: true, route: "review" });
+  assert.equal(db.inserts[0].answers.budget, "I need internal approval");
+  assert.equal(db.inserts[0].answers.reviewReason, "Needs internal approval for $3,000 a month");
+  assert.equal(writes[0].route, "review");
 });
 
 test("demo route: fails closed without the queue; team tests and the honeypot write nothing", async () => {
@@ -458,4 +504,56 @@ test("the calendar URL carries the email and the answers line, never a name", ()
     ),
     { event: BOOKING.eventUri },
   );
+});
+
+// ── brain.pancake.ai, cross-origin ──
+
+function crossRequest(pathname, body, origin, method = "POST") {
+  return new Request("https://pancake.ai" + pathname, {
+    method,
+    headers: { host: "pancake.ai", origin, "content-type": "text/plain;charset=UTF-8" },
+    body: method === "POST" ? JSON.stringify(body) : undefined,
+  });
+}
+
+test("brain.pancake.ai and its previews can post the form; anyone else can't", async () => {
+  const { load, writes } = routeRuntime();
+  const { POST } = load("app/api/white-glove/demo/route.ts");
+  const brain = await POST(crossRequest("/api/white-glove/demo", fit, "https://brain.pancake.ai"));
+  assert.equal(brain.status, 200);
+  assert.equal(brain.headers.get("access-control-allow-origin"), "https://brain.pancake.ai");
+  assert.equal((await brain.json()).route, "book");
+  assert.equal(writes[0].pageUrl, "https://brain.pancake.ai/white-glove");
+  const preview = await POST(crossRequest("/api/white-glove/demo", { ...fit, size: "1–2" }, "https://pancake-brain-k3x9a1-getpancake.vercel.app"));
+  assert.equal(preview.status, 200);
+  for (const origin of ["https://evil.example", "https://pancake-brain-x-getpancake.vercel.app.evil.com", "https://brain.pancake.ai.evil.com", "http://brain.pancake.ai"]) {
+    const refused = await POST(crossRequest("/api/white-glove/demo", fit, origin));
+    assert.equal(refused.status, 403, origin);
+    assert.equal(refused.headers.get("access-control-allow-origin"), null, origin);
+  }
+});
+
+test("preflight: allowed for the Brain page only", async () => {
+  const { load } = routeRuntime();
+  for (const route of ["app/api/white-glove/demo/route.ts", "app/api/white-glove/booked/route.ts"]) {
+    const { OPTIONS } = load(route);
+    const ok = await OPTIONS(crossRequest("/x", null, "https://brain.pancake.ai", "OPTIONS"));
+    assert.equal(ok.status, 204, route);
+    assert.equal(ok.headers.get("access-control-allow-origin"), "https://brain.pancake.ai");
+    assert.match(ok.headers.get("access-control-allow-methods"), /POST/);
+    const no = await OPTIONS(crossRequest("/x", null, "https://evil.example", "OPTIONS"));
+    assert.equal(no.status, 403, route);
+  }
+});
+
+test("a booking reported from brain.pancake.ai opens the deal with the Brain page as its source", async () => {
+  const { load, deals } = routeRuntime();
+  const demo = await load("app/api/white-glove/demo/route.ts").POST(crossRequest("/api/white-glove/demo", fit, "https://brain.pancake.ai"));
+  const { booking } = await demo.json();
+  const booked = await load("app/api/white-glove/booked/route.ts").POST(
+    crossRequest("/api/white-glove/booked", { booking, event: BOOKING.eventUri }, "https://brain.pancake.ai"),
+  );
+  assert.equal(booked.status, 200);
+  assert.equal(booked.headers.get("access-control-allow-origin"), "https://brain.pancake.ai");
+  assert.equal(deals[0].booking.pageUrl, "https://brain.pancake.ai/white-glove");
 });

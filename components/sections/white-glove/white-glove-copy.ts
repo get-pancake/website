@@ -33,7 +33,8 @@ export const WG_HERO = {
 
 /**
  * The hero's "Book a demo" card (WgBookDemo.tsx): a work email and three
- * questions (the campaign's ask, 2026-11-05), then the White Glove calendar, François's
+ * questions (the campaign's ask, 2026-11-05) plus /demo's budget question
+ * (2026-11-08), then the White Glove calendar, François's
  * review queue or self-serve (lib/white-glove-demo.ts says who goes where).
  * The price and term sit in the lede: the card books a paid service.
  */
@@ -44,6 +45,13 @@ export const WG_BOOK = {
   size: { label: "Company size" },
   country: { label: "Country", common: "Most common", all: "All countries" },
   gtm: { legend: "Do you have a GTM team?", hint: "Sales, growth or GTM engineers.", yes: "Yes", no: "Not yet" },
+  /** /demo's White Glove budget question (2026-11-08): it gates the calendar */
+  budget: {
+    label: `Does ${WG_PRICE} a month work for you?`,
+    yes: "Yes, it works for us",
+    approval: "I need internal approval",
+    no: "Not in our budget",
+  },
   select: "Select",
   submit: "Book a demo",
   sending: "Sending…",
@@ -69,6 +77,9 @@ export const WG_BOOK = {
   selfServe: {
     title: "White Glove is built for teams.",
     body: `Start on self-serve: the same Pancake, from ${SELF_SERVE_FROM} a month.`,
+    /** the budget does not stretch to White Glove */
+    budgetTitle: "Start on self-serve.",
+    budgetBody: `The same Pancake, from ${SELF_SERVE_FROM} a month. You build and run your Plays.`,
     cta: "Start free",
     alt: "Compare plans",
   },
@@ -158,7 +169,7 @@ export const WG_FAQ = {
     },
     {
       q: "How do I start?",
-      a: "Book a demo at the top of this page: your work email and three questions. If White Glove fits, you pick a time with our team.",
+      a: "Book a demo at the top of this page: your work email and four questions. If White Glove fits, you pick a time with our team.",
     },
   ],
 } as const;
