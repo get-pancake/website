@@ -1,0 +1,448 @@
+/* brain.pancake.ai/white-glove only (app/white-glove/page.tsx), after the
+   app's styles.css. The film and the "Book a demo" card share the first row
+   (campaign ask, 2026-11-06: the video level with the form); the title sits
+   above them, smaller than the sign-up page's. Values are the brain tokens
+   (tokens.css) and the shared v3 foundation tokens. The card's rules are the
+   main website's app/white-glove/white-glove.css (/demo's request card:
+   surface, subtle stroke, radius 32, 48px controls on the page background,
+   purple on focus), on the brain spacing scale. Two-class selectors: the v3
+   CSS is unlayered. */
+
+.wgb {
+  --wgb-card: 432px; /* the website's card column */
+  --wgb-title: var(--lp-text-4xlg);
+  --wgb-shadow: 0 var(--brain-space-xs) var(--brain-space-xl) var(--lp-ink-tr-10);
+}
+
+/* The nav pill: "Book a demo" is 140px in Geist, wider than the kit's fixed
+   136px squircle, so it takes its own width and the plain 12px corners the
+   kit gives its outline pill. */
+.wgb .lp-nav-ctas .lp-btn.wgb-nav-cta {
+  border-radius: var(--lp-r-sm);
+  clip-path: none;
+  width: auto;
+}
+
+/* ── the first screen ── */
+.wgb .wgb-hero {
+  padding: var(--brain-space-sm) var(--brain-hero-margin) var(--brain-space-3xl);
+}
+.wgb .wgb-hero__inner {
+  margin-inline: auto;
+  max-width: var(--brain-grid);
+}
+.wgb .wgb-head {
+  display: grid;
+  gap: var(--brain-space-sm);
+  margin-bottom: var(--brain-space-lg);
+}
+.wgb .wgb-title {
+  font-size: var(--wgb-title);
+  letter-spacing: var(--brain-title-tracking);
+  line-height: 1.05;
+}
+.wgb .wgb-lede {
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  max-width: 64ch;
+  text-wrap: pretty;
+}
+.wgb .wgb-grid {
+  align-items: start;
+  column-gap: var(--brain-space-2xl);
+  display: grid;
+  grid-template-areas:
+    "vsl card"
+    "points card"
+    "proof card";
+  grid-template-columns: minmax(0, 1fr) var(--wgb-card);
+  grid-template-rows: auto auto 1fr;
+  row-gap: var(--brain-space-xl);
+}
+.wgb .wg-vsl { grid-area: vsl; }
+.wgb .wg-book { grid-area: card; }
+.wgb .wgb-points { grid-area: points; }
+.wgb .brain-trust { grid-area: proof; }
+
+/* ── the film (WgVsl.tsx): 16:9, the card's radius family ── */
+.wgb .wg-vsl {
+  aspect-ratio: 16 / 9;
+  background: var(--lp-inverted-surface);
+  border-radius: var(--lp-r-lg);
+  box-shadow: var(--wgb-shadow);
+  min-width: 0;
+  overflow: clip;
+  position: relative;
+}
+.wgb .wg-vsl__film {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  width: 100%;
+}
+/* the button covers the film: a click anywhere starts it with sound */
+.wgb .wg-vsl__sound {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+  cursor: pointer;
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: var(--brain-space-lg);
+  position: absolute;
+}
+.wgb .wg-vsl__pill {
+  align-items: center;
+  background: var(--lp-inverted-surface);
+  border-radius: 999px;
+  box-shadow: 0 var(--brain-space-xs) var(--brain-space-lg) rgba(44, 0, 42, 0.3);
+  color: var(--lp-text-on-inverted);
+  display: inline-flex;
+  font-size: var(--lp-text-md);
+  font-weight: var(--brain-weight-semibold);
+  gap: var(--brain-space-sm);
+  height: var(--brain-control-height);
+  padding-inline: var(--brain-space-lg) calc(var(--brain-space-lg) + var(--brain-space-xs));
+  transition: transform var(--brain-ease);
+}
+.wgb .wg-vsl__sound:hover .wg-vsl__pill {
+  transform: scale(1.04);
+}
+.wgb .wg-vsl__sound:focus-visible {
+  outline-offset: calc(-1 * var(--brain-space-sm));
+}
+@media (prefers-reduced-motion: reduce) {
+  .wgb .wg-vsl__pill { transition: none; }
+  .wgb .wg-vsl__sound:hover .wg-vsl__pill { transform: none; }
+}
+
+/* ── what you get, under the film ── */
+.wgb .wgb-points {
+  display: grid;
+  gap: var(--brain-space-lg) var(--brain-space-xl);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.wgb .wgb-points li {
+  align-items: start;
+  display: grid;
+  gap: var(--brain-space-sm);
+  grid-template-columns: 20px minmax(0, 1fr);
+}
+.wgb .wgb-points img {
+  height: 20px;
+  margin-top: 2px;
+  width: 20px;
+}
+.wgb .wgb-points strong {
+  display: block;
+  font-size: var(--lp-text-md);
+  font-weight: var(--brain-weight-semibold);
+  line-height: 1.4;
+}
+.wgb .wgb-points span {
+  color: var(--lp-ink-tr-70);
+  display: block;
+  font-size: var(--lp-text-sm);
+  line-height: 1.5;
+  margin-top: var(--brain-space-xs);
+  text-wrap: pretty;
+}
+
+/* ── "Book a demo" (WgBookDemo.tsx) ── */
+.wgb .wg-sr {
+  clip: rect(0 0 0 0);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+.wgb .wg-book {
+  background: var(--lp-surface);
+  border: var(--brain-rule) solid var(--lp-subtle-stroke);
+  border-radius: var(--lp-r-xlg);
+  box-shadow: var(--wgb-shadow);
+  color: var(--lp-text);
+  min-width: 0;
+  padding: var(--brain-space-xl);
+  scroll-margin-top: var(--brain-space-md);
+}
+.wgb .wg-book__title {
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: var(--brain-weight-semibold);
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+.wgb .wg-book__title:focus {
+  outline: none;
+}
+.wgb .wg-book__lede {
+  color: var(--lp-ink-tr-70);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  margin-top: var(--brain-space-sm);
+  text-wrap: pretty;
+}
+.wgb .wg-book__fields {
+  border: 0;
+  display: grid;
+  gap: var(--brain-space-md);
+  margin: var(--brain-space-lg) 0 0;
+  min-width: 0;
+  padding: 0;
+}
+.wgb .wg-field {
+  border: 0;
+  display: grid;
+  gap: var(--brain-space-xs);
+  margin: 0;
+  min-width: 0;
+  padding: 0;
+}
+.wgb .wg-field__pair {
+  display: grid;
+  gap: var(--brain-space-md);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.wgb .wg-field__label {
+  font-size: var(--lp-text-sm);
+  font-weight: var(--brain-weight-medium);
+  padding: 0;
+}
+.wgb .wg-field__input {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--lp-page-bg);
+  border: var(--brain-rule) solid var(--lp-stroke);
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  display: block;
+  font-family: inherit;
+  font-size: var(--lp-text-md); /* 16px: iOS does not zoom */
+  height: var(--brain-control-height);
+  min-width: 0;
+  padding-inline: var(--brain-space-md);
+  transition: border-color var(--brain-ease), background-color var(--brain-ease);
+  width: 100%;
+}
+.wgb .wg-field__input:focus {
+  background-color: var(--lp-surface);
+  border-color: var(--lp-purple-40);
+}
+.wgb .wg-field__input:focus-visible {
+  outline-offset: 0;
+}
+.wgb .wg-field__input::placeholder {
+  color: var(--lp-subtle-text);
+}
+.wgb .wg-field__input[aria-invalid="true"] {
+  border-color: var(--lp-red-40);
+}
+/* the select's chevron: two gradient half-squares, so it takes the text token */
+.wgb .wg-field__select {
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--lp-text) 50%),
+    linear-gradient(135deg, var(--lp-text) 50%, transparent 50%);
+  background-position:
+    calc(100% - var(--brain-space-md) - 5px) 50%,
+    calc(100% - var(--brain-space-md)) 50%;
+  background-repeat: no-repeat;
+  background-size: 5px 5px;
+  cursor: pointer;
+  overflow: hidden;
+  padding-right: calc(var(--brain-space-xl) + var(--brain-space-sm));
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wgb .wg-field__select:invalid {
+  color: var(--lp-subtle-text);
+}
+.wgb .wg-field__select option,
+.wgb .wg-field__select optgroup {
+  color: var(--lp-text);
+}
+/* Yes / Not yet: two pills over the native radios (kept focusable and required) */
+.wgb .wg-choice__options {
+  display: grid;
+  gap: var(--brain-space-sm);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.wgb .wg-choice__option {
+  cursor: pointer;
+  display: block;
+  position: relative;
+}
+.wgb .wg-choice__option input {
+  cursor: pointer;
+  height: 100%;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+}
+.wgb .wg-choice__option span {
+  align-items: center;
+  background-color: var(--lp-page-bg);
+  border: var(--brain-rule) solid var(--lp-stroke);
+  border-radius: var(--lp-r-sm);
+  display: flex;
+  font-size: var(--lp-text-md);
+  height: var(--brain-control-height);
+  justify-content: center;
+  transition: border-color var(--brain-ease), background-color var(--brain-ease);
+}
+.wgb .wg-choice__option input:checked + span {
+  background-color: var(--lp-purple-10);
+  border-color: var(--lp-purple-40);
+  font-weight: var(--brain-weight-semibold);
+}
+.wgb .wg-choice__option input:focus-visible + span {
+  outline: var(--brain-focus-width) solid var(--lp-purple-40);
+  outline-offset: var(--brain-space-xs);
+}
+.wgb .wg-field__hint {
+  color: var(--lp-ink-tr-70);
+  font-size: var(--lp-text-sm);
+}
+.wgb .wg-field__error,
+.wgb .wg-book__error {
+  color: var(--lp-red-40);
+  font-size: var(--lp-text-sm);
+  font-weight: var(--brain-weight-medium);
+}
+.wgb .wg-book__error {
+  margin-top: var(--brain-space-md);
+}
+.wgb .wg-book__actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--brain-space-md);
+  margin-top: var(--brain-space-lg);
+}
+/* the kit's fixed 136px squircle would clip a full-width submit (= the website's card) */
+.wgb .wg-book .lp-btn.wg-book__submit {
+  border-radius: var(--lp-r-sm);
+  clip-path: none;
+  height: var(--brain-control-height);
+  width: 100%;
+}
+.wgb .wg-book .lp-btn.wg-book__submit:disabled {
+  cursor: progress;
+  opacity: 0.7;
+}
+.wgb .wg-book__fine {
+  color: var(--lp-ink-tr-70);
+  font-size: var(--lp-text-sm);
+  margin-top: var(--brain-space-md);
+}
+
+/* the White Glove calendar: Calendly reports its page height (--wg-cal-h,
+   WgBookDemo) under an initial height and a cap; its primary is the plum */
+.wgb .wg-cal {
+  margin-top: var(--brain-space-md);
+  min-width: 0;
+}
+.wgb .wg-cal__frame {
+  --wg-cal-primary: var(--lp-inverted-surface);
+  height: min(var(--wg-cal-h, 680px), 1200px);
+  overflow: clip;
+  transition: height var(--brain-ease);
+  width: 100%;
+}
+.wgb .wg-cal__frame iframe {
+  border: 0;
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.wgb .wg-cal__fallback {
+  font-size: var(--lp-text-sm);
+  font-weight: var(--brain-weight-medium);
+}
+.wgb .wg-cal__fallback:not(:empty) {
+  margin-top: var(--brain-space-sm);
+}
+.wgb .wg-cal__fallback a {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+/* the calendar wants every pixel of the card */
+.wgb .wg-book[data-view="calendar"] {
+  padding-inline: var(--brain-space-md);
+}
+.wgb .wg-book[data-view="calendar"] .wg-book__state > :not(.wg-cal) {
+  padding-inline: var(--brain-space-md);
+}
+
+/* ── one column under 960px: the title, the film, the form, the points, the logos ── */
+@media (max-width: 959px) {
+  .wgb .wgb-hero__inner {
+    max-width: 672px;
+  }
+  .wgb .wgb-grid {
+    grid-template-areas:
+      "vsl"
+      "card"
+      "points"
+      "proof";
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    row-gap: var(--brain-space-lg);
+  }
+}
+@media (max-width: 767px) {
+  .wgb {
+    --wgb-title: var(--lp-text-3xlg);
+  }
+  .wgb .wgb-hero {
+    padding-bottom: var(--brain-space-2xl);
+  }
+  .wgb .wgb-head {
+    margin-bottom: var(--brain-space-md);
+  }
+  .wgb .wg-vsl {
+    border-radius: var(--lp-r-m);
+  }
+  .wgb .wg-vsl__pill {
+    font-size: var(--lp-text-sm);
+    height: 40px;
+    padding-inline: var(--brain-space-md) var(--brain-space-lg);
+  }
+  .wgb .wg-book {
+    border-radius: var(--lp-r-lg);
+    padding: calc(var(--brain-space-md) + var(--brain-space-xs));
+  }
+  .wgb .wg-book[data-view="calendar"] {
+    padding-inline: var(--brain-space-sm);
+  }
+  .wgb .wg-book__title {
+    font-size: var(--lp-text-2xlg);
+  }
+  .wgb .wgb-points {
+    grid-template-columns: minmax(0, 1fr);
+    padding-inline: var(--brain-space-xs);
+  }
+  /* The sign-up page hides the nav pill on phones (its card is on screen);
+     here the form sits under the film, so the pill stays. */
+  .brain.wgb .lp-nav-ctas {
+    display: inline-flex;
+  }
+}
+@media (max-height: 480px) and (pointer: coarse) {
+  .brain.wgb .lp-nav-ctas {
+    display: inline-flex;
+  }
+}
+@media (max-width: 419px) {
+  .wgb .wg-field__pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
