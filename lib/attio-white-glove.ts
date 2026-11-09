@@ -67,6 +67,8 @@ export type WgBooking = {
   /** Calendly's API URIs from that message, when it sent them */
   eventUri?: string;
   inviteeUri?: string;
+  /** the page the visitor booked on (pancake.ai or brain.pancake.ai); WG_PAGE_URL when unset */
+  pageUrl?: string;
 };
 
 export type WgDealResult = "created" | "exists" | "skipped" | "failed";
@@ -86,13 +88,14 @@ export function wgRequestNote(
   a: WgAnswers,
   route: Exclude<WgRoute, "self_serve">,
   submittedAt: string,
+  pageUrl: string = WG_PAGE_URL,
 ): { title: string; content: string } {
   const lines = [
     `Status: ${ROUTE_TEXT[route]}`,
     ...(route === "review" ? [`Why: ${wgReviewReason(a)}`] : []),
-    wgContextLine(a),
+    wgContextLine(a, pageUrl),
     `Work email: ${a.email}`,
-    `Page: ${WG_PAGE_URL}`,
+    `Page: ${pageUrl}`,
     `Submitted: ${submittedAt}`,
   ];
   return { title: "White Glove demo request", content: lines.join("\n") };
@@ -102,12 +105,12 @@ export function wgRequestNote(
 export function wgDealNote(a: WgAnswers, booking: WgBooking): { title: string; content: string } {
   const lines = [
     "Demo booked on the White Glove page (calendar: Pancake Whiteglove, 45 min).",
-    wgContextLine(a),
+    wgContextLine(a, booking.pageUrl ?? WG_PAGE_URL),
     `Work email: ${a.email}`,
     ...(booking.eventUri ? [`Calendly event: ${booking.eventUri}`] : []),
     ...(booking.inviteeUri ? [`Calendly invitee: ${booking.inviteeUri}`] : []),
     `Booked: ${booking.bookedAt}`,
-    `Page: ${WG_PAGE_URL}`,
+    `Page: ${booking.pageUrl ?? WG_PAGE_URL}`,
   ];
   return { title: "White Glove demo booked", content: lines.join("\n") };
 }
@@ -198,12 +201,14 @@ export function writeAttioWhiteGloveRequest(
   a: WgAnswers,
   route: Exclude<WgRoute, "self_serve">,
   submittedAt: string,
+  pageUrl: string = WG_PAGE_URL,
 ): Promise<AttioResult | "skipped"> {
   if (isTeamEmail(a.email)) return Promise.resolve("skipped");
   return withTimeout(REQUEST_TIMEOUT_MS, async (signal) => {
     const ids = await companyAndPerson(token, signal, a.email);
     if (!ids) return "failed";
-    return (await addNote(token, signal, "people", ids.personId, wgRequestNote(a, route, submittedAt))) ? "sent" : "failed";
+    const note = wgRequestNote(a, route, submittedAt, pageUrl);
+    return (await addNote(token, signal, "people", ids.personId, note)) ? "sent" : "failed";
   });
 }
 

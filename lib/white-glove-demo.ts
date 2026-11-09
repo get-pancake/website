@@ -8,18 +8,23 @@
  * calendar. François's rule still holds (Tristan, 2026-11-05: a meeting only
  * when there is a fit): only a clear White Glove fit books
  * straight onto his calendar. Everyone else either goes to his /demo review
- * queue, where he decides, or to self-serve, with no meeting at all.
+ * queue, where he decides, or to self-serve, with no meeting at all. Since
+ * 2026-11-08 a fourth question gates the calendar the way /demo gates White
+ * Glove: does the $3,000 a month work (/demo's three budget answers)?
  *
  *   personal email          → refused in the form (lib/personal-email.ts)
- *   company of 1–2          → self_serve: no meeting, no CRM write
- *   outside WG_INSTANT_MARKETS, or 3–10 with no GTM team
- *                           → review: François's queue (/demo/review)
- *   everyone else           → book: the White Glove calendar, at once
+ *   company of 1–2, or "not in our budget"
+ *                           → self_serve: no meeting, no CRM write
+ *   "I need internal approval", outside WG_INSTANT_MARKETS, or 3–10 with
+ *   no GTM team             → review: François's queue (/demo/review)
+ *   everyone else (the budget works, and a fit)
+ *                           → book: the White Glove calendar, at once
  */
 
 import { COUNTRIES, type Country } from "@/lib/countries";
 import { isPersonalEmail } from "@/lib/personal-email";
 import { PANCAKE_DOMAINS } from "@/lib/site-config.mjs";
+import { WHITE_GLOVE_MONTHLY_DOLLARS } from "@/lib/white-glove";
 
 /** Company headcount. Wider than /demo's first bucket on purpose: solo and duo teams are the cut. */
 export const WG_SIZES = ["1–2", "3–10", "11–50", "51–200", "201+"] as const;
@@ -27,6 +32,24 @@ export type WgSize = (typeof WG_SIZES)[number];
 
 export const WG_GTM_TEAM = ["yes", "no"] as const;
 export type WgGtmTeam = (typeof WG_GTM_TEAM)[number];
+
+/** Does the monthly price work? /demo's White Glove budget answers, as keys. */
+export const WG_BUDGET = ["yes", "approval", "no"] as const;
+export type WgBudget = (typeof WG_BUDGET)[number];
+
+/** Each budget answer in /demo's words (lib/demo-qualification.ts): the queue reads them the same way. */
+export const WG_BUDGET_DEMO_TEXT: Readonly<Record<WgBudget, string>> = {
+  yes: "Yes — this investment works for us",
+  approval: "I need internal approval",
+  no: "Not in our budget",
+};
+
+const MONTHLY_PRICE = `$${WHITE_GLOVE_MONTHLY_DOLLARS.toLocaleString("en-US")}`;
+const BUDGET_LINE: Readonly<Record<WgBudget, string>> = {
+  yes: "Yes",
+  approval: "Needs internal approval",
+  no: "No",
+};
 
 /**
  * Where a qualified request books at once: the markets White Glove sells to
@@ -66,11 +89,12 @@ export type WgAnswers = {
   size: WgSize;
   country: Country;
   gtmTeam: WgGtmTeam;
+  budget: WgBudget;
 };
 
 export type WgRoute = "book" | "review" | "self_serve";
 
-export const WG_FIELDS = ["email", "size", "country", "gtmTeam", "submissionId"] as const;
+export const WG_FIELDS = ["email", "size", "country", "gtmTeam", "budget", "submissionId"] as const;
 export type WgField = (typeof WG_FIELDS)[number];
 
 export type WgParse =
@@ -110,28 +134,33 @@ export function parseWgRequest(input: unknown): WgParse {
   if (!isOneOf(WG_SIZES, body.size)) return { ok: false, field: "size" };
   if (!isOneOf(COUNTRIES, body.country)) return { ok: false, field: "country" };
   if (!isOneOf(WG_GTM_TEAM, body.gtmTeam)) return { ok: false, field: "gtmTeam" };
+  if (!isOneOf(WG_BUDGET, body.budget)) return { ok: false, field: "budget" };
   if (typeof body.submissionId !== "string" || !UUID_RE.test(body.submissionId)) {
     return { ok: false, field: "submissionId" };
   }
   return {
     ok: true,
-    value: { email, size: body.size, country: body.country, gtmTeam: body.gtmTeam },
+    value: { email, size: body.size, country: body.country, gtmTeam: body.gtmTeam, budget: body.budget },
     submissionId: body.submissionId.toLowerCase(),
   };
 }
 
 /** Where a valid request goes (the table at the top of this file). Pure. */
 export function wgRoute(a: WgAnswers): WgRoute {
-  if (a.size === "1–2") return "self_serve";
+  if (a.size === "1–2" || a.budget === "no") return "self_serve";
+  if (a.budget === "approval") return "review";
   if (!isOneOf(WG_INSTANT_MARKETS, a.country)) return "review";
   if (a.size === "3–10" && a.gtmTeam === "no") return "review";
   return "book";
 }
 
-/** Why a request waits for François, for his queue and the CRM note. Pure. */
+/** Why a request waits for François, for his queue and the CRM note: every reason that applies. Pure. */
 export function wgReviewReason(a: WgAnswers): string {
-  if (!isOneOf(WG_INSTANT_MARKETS, a.country)) return `Country outside the instant-booking markets (${a.country})`;
-  return "Company of 3–10 with no GTM team yet";
+  const reasons: string[] = [];
+  if (a.budget === "approval") reasons.push(`Needs internal approval for ${MONTHLY_PRICE} a month`);
+  if (!isOneOf(WG_INSTANT_MARKETS, a.country)) reasons.push(`Country outside the instant-booking markets (${a.country})`);
+  if (a.size === "3–10" && a.gtmTeam === "no") reasons.push("Company of 3–10 with no GTM team yet");
+  return reasons.join("; ") || "Not a clear fit";
 }
 
 /** "acme.com" from "jane@acme.com". Pure. */
@@ -150,13 +179,15 @@ export function isTeamEmail(email: string): boolean {
 
 /**
  * The answers on one plain line, for the calendar's prep question (the host
- * reads it before the call) and the CRM notes. Pure.
+ * reads it before the call) and the CRM notes, naming the page the visitor
+ * used (pancake.ai/white-glove, or the campaign page on brain). Pure.
  */
-export function wgContextLine(a: WgAnswers): string {
+export function wgContextLine(a: WgAnswers, pageUrl: string = WG_PAGE_URL): string {
   return [
-    "Booked from pancake.ai/white-glove.",
+    `Booked from ${pageUrl.replace(/^https?:\/\//, "")}.`,
     `Company size: ${a.size}.`,
     `Country: ${a.country}.`,
     `GTM team in place: ${a.gtmTeam === "yes" ? "Yes" : "No"}.`,
+    `${MONTHLY_PRICE} a month works: ${BUDGET_LINE[a.budget]}.`,
   ].join(" ");
 }

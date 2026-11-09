@@ -18,6 +18,7 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { WHITE_GLOVE_PRICING_HREF } from "@/lib/white-glove";
 import {
   WG_BOOK_ANCHOR,
+  WG_BUDGET,
   WG_EMAIL_MAX,
   WG_GTM_TEAM,
   WG_HONEYPOT,
@@ -31,12 +32,13 @@ import { WG_BOOK as c } from "./white-glove-copy";
 
 /**
  * The /white-glove "Book a demo" card, the hero's right column (the White
- * Glove campaign's ask, 2026-11-05): a work email and three questions, then one of four states in
+ * Glove campaign's ask, 2026-11-05): a work email and three questions, plus
+ * /demo's budget question since 2026-11-08, then one of four states in
  * the same card. POST /api/white-glove/demo decides which
  * (lib/white-glove-demo.ts wgRoute; docs/white-glove-demo.md):
  *   form ──book──▶ calendar ──calendly.event_scheduled──▶ booked
  *        ──review──▶ review (François's queue emails a booking link)
- *        ──self_serve──▶ self-serve (Start free, no meeting)
+ *        ──self_serve──▶ self-serve (Start free, no meeting): a team of 1–2, or no budget
  * The calendar is the White Glove event as an Inline embed, prefilled with
  * the email and the answers line (lib/booking.ts whiteGloveBookingEmbedUrl);
  * nothing from Calendly loads before a `book` answer. Its booking message
@@ -49,16 +51,16 @@ import { WG_BOOK as c } from "./white-glove-copy";
  * links point at #book-demo, which focuses the email field.
  */
 
-type Draft = { email: string; size: string; country: string; gtmTeam: string };
+type Draft = { email: string; size: string; country: string; gtmTeam: string; budget: string };
 type View =
   | { kind: "form" }
   | { kind: "calendar"; answers: WgAnswers; booking: string | null }
   | { kind: "booked" }
   | { kind: "review" }
-  | { kind: "self_serve" };
+  | { kind: "self_serve"; noBudget: boolean };
 type FormError = { field?: WgField; message: string };
 
-const EMPTY: Draft = { email: "", size: "", country: "", gtmTeam: "" };
+const EMPTY: Draft = { email: "", size: "", country: "", gtmTeam: "", budget: "" };
 /** Calendly's first page_height report comes once its app has started: long enough for a slow phone. */
 const FRAME_STUCK_MS = 6000;
 
@@ -133,8 +135,10 @@ export function WgBookDemo() {
       }
       if (result.route === "book") {
         setView({ kind: "calendar", answers: { ...(draft as WgAnswers), email: draft.email.trim().toLowerCase() }, booking: result.booking });
+      } else if (result.route === "self_serve") {
+        setView({ kind: "self_serve", noBudget: draft.size !== "1–2" && draft.budget === "no" });
       } else {
-        setView({ kind: result.route });
+        setView({ kind: "review" });
       }
     } catch (err) {
       setError({ message: err instanceof Error && err.name === "TimeoutError" ? c.errors.timeout : c.errors.failed });
@@ -275,6 +279,31 @@ export function WgBookDemo() {
               </p>
               {fieldError("gtmTeam")}
             </fieldset>
+            <div className="wg-field">
+              <label className="wg-field__label" htmlFor="wg-budget">
+                {c.budget.label}
+              </label>
+              <select
+                id="wg-budget"
+                name="budget"
+                required
+                className="wg-field__input wg-field__select"
+                value={draft.budget}
+                onChange={(e) => set("budget")(e.target.value)}
+                aria-invalid={error?.field === "budget" || undefined}
+                aria-describedby={describedBy("budget")}
+              >
+                <option value="" disabled>
+                  {c.select}
+                </option>
+                {WG_BUDGET.map((value) => (
+                  <option key={value} value={value}>
+                    {c.budget[value]}
+                  </option>
+                ))}
+              </select>
+              {fieldError("budget")}
+            </div>
           </fieldset>
           {error && !error.field ? (
             <p className="wg-book__error" role="alert">
@@ -299,10 +328,22 @@ export function WgBookDemo() {
       ) : (
         <div className="wg-book__state">
           <h2 id="wg-book-title" ref={titleRef} tabIndex={-1} className="wg-book__title">
-            {view.kind === "booked" ? c.booked.title : view.kind === "review" ? c.review.title : c.selfServe.title}
+            {view.kind === "booked"
+              ? c.booked.title
+              : view.kind === "review"
+                ? c.review.title
+                : view.noBudget
+                  ? c.selfServe.budgetTitle
+                  : c.selfServe.title}
           </h2>
           <p className="wg-book__lede">
-            {view.kind === "booked" ? c.booked.body : view.kind === "review" ? c.review.body : c.selfServe.body}
+            {view.kind === "booked"
+              ? c.booked.body
+              : view.kind === "review"
+                ? c.review.body
+                : view.noBudget
+                  ? c.selfServe.budgetBody
+                  : c.selfServe.body}
           </p>
           {view.kind === "self_serve" ? (
             <div className="wg-book__actions">
