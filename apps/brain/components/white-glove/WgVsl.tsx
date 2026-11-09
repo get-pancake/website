@@ -36,19 +36,16 @@ export function WgVsl() {
   useEffect(() => {
     const film = filmRef.current;
     if (!film) return;
+    // The film's own "playing" event, not play()'s promise: a tab opened in
+    // the background may start the film later than the promise settles.
+    const onPlaying = () => setMode((m) => (m === "poster" && film.muted ? "preview" : m));
+    film.addEventListener("playing", onPlaying);
     film.src = window.matchMedia(PHONE_QUERY).matches ? FILM.srcPhone : FILM.src;
-    if (window.matchMedia(REDUCED_MOTION_QUERY).matches) return;
-    film.muted = true;
-    let live = true;
-    film.play().then(
-      () => {
-        if (live) setMode((m) => (m === "poster" ? "preview" : m));
-      },
-      () => {}, // refused: the poster and the button stay
-    );
-    return () => {
-      live = false;
-    };
+    if (!window.matchMedia(REDUCED_MOTION_QUERY).matches) {
+      film.muted = true;
+      film.play().catch(() => {}); // refused: the poster and the button stay
+    }
+    return () => film.removeEventListener("playing", onPlaying);
   }, []);
 
   const watch = useCallback(() => {
