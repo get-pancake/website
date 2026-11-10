@@ -1,6 +1,6 @@
 // Run with node --test scripts/white-glove-demo.test.cjs. Compiles the real
-// /white-glove demo contract, booking pass, Attio writer and API routes;
-// Attio and Supabase are fakes, so no test ever contacts a provider.
+// /white-glove demo contract, Attio writer and API route; Attio and Supabase
+// are fakes, so no test ever contacts a provider.
 const { test } = require("node:test");
 const assert = require("node:assert/strict");
 const ts = require("typescript");
@@ -180,35 +180,9 @@ test("the country field's search: common countries first, short names, accents",
   }
 });
 
-// ── the booking pass ──
-
-test("booking pass: round trip, tampering, wrong secret, expiry", () => {
-  const load = runtime();
-  const { signWgBooking, verifyWgBooking, WG_BOOKING_MAX_AGE_MS } = load("lib/white-glove-booking-token.ts");
-  const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
-  const now = Date.UTC(2026, 10, 5, 18);
-  const pass = signWgBooking("secret", a, now);
-  assert.deepEqual(plain(verifyWgBooking("secret", pass, now + 60_000)), plain(a));
-  assert.equal(verifyWgBooking("other", pass, now), null);
-  const [payload, mac] = pass.split(".");
-  const forged = Buffer.from(JSON.stringify({ e: a.email, s: "201+", c: a.country, g: "yes", t: now })).toString("base64url");
-  assert.equal(verifyWgBooking("secret", `${forged}.${mac}`, now), null);
-  assert.equal(verifyWgBooking("secret", `${payload}.${mac}x`, now), null);
-  assert.equal(verifyWgBooking("secret", pass, now + WG_BOOKING_MAX_AGE_MS + 1), null);
-  assert.equal(verifyWgBooking("secret", signWgBooking("secret", a, now + 5 * 60_000), now), null);
-  for (const junk of [undefined, 42, "", "a.b.c", "x".repeat(2000)]) assert.equal(verifyWgBooking("secret", junk, now), null);
-  // a pass signed before the budget question carries none: it still opens the deal
-  const legacy = Buffer.from(JSON.stringify({ e: a.email, s: a.size, c: a.country, g: a.gtmTeam, t: now })).toString("base64url");
-  const legacyMac = require("node:crypto")
-    .createHmac("sha256", "pancake-white-glove-booking:secret")
-    .update(legacy)
-    .digest("base64url");
-  assert.deepEqual(plain(verifyWgBooking("secret", `${legacy}.${legacyMac}`, now)), plain({ ...a, budget: "yes" }));
-});
-
 // ── Attio ──
 
-function fakeAttio({ person = null, deals = [], statuses, failDeal = false, refuseOwner = false, hideStages = false } = {}) {
+function fakeAttio({ person = null } = {}) {
   const calls = [];
   const fetchImpl = async (url, init = {}) => {
     const u = new URL(url);
@@ -222,105 +196,34 @@ function fakeAttio({ person = null, deals = [], statuses, failDeal = false, refu
     if (p === "/v2/objects/people/records/query") return json({ data: person ? [person] : [] });
     if (method === "PUT" && p === "/v2/objects/people/records") return json({ data: { id: { record_id: "person-new" } } });
     if (method === "PATCH" && p.startsWith("/v2/objects/people/records/")) return json({ data: {} });
-    if (p === "/v2/objects/deals/records/query") return json({ data: deals });
-    if (p === "/v2/objects/deals/attributes/stage/statuses") {
-      if (hideStages) return json({ error: "forbidden" }, 403);
-      // the workspace's Sales Pipeline, as seen 2026-11-05
-      return json({ data: statuses ?? [{ title: "Discovery booked" }, { title: "Demo booked" }, { title: "Escalation required" }] });
-    }
-    if (method === "POST" && p === "/v2/objects/deals/records") {
-      if (failDeal || (refuseOwner && body.data.values.owner)) return json({ error: "bad" }, 400);
-      return json({ data: { id: { record_id: "deal-1" } } });
-    }
     if (method === "POST" && p === "/v2/notes") return json({ data: { id: { note_id: "note-1" } } });
     return json({ error: "unexpected" }, 404);
   };
   return { calls, fetchImpl };
 }
 const NOW = new Date(Date.UTC(2026, 10, 5, 18));
-const BOOKING = {
-  bookedAt: NOW.toISOString(),
-  eventUri: "https://api.calendly.com/scheduled_events/EVT1",
-  inviteeUri: "https://api.calendly.com/scheduled_events/EVT1/invitees/INV1",
-};
 
-test("a booking opens one deal linked to the company and the person, in Demo booked, owned by François", async () => {
+test("a qualified request lands on the company and the person, with a note naming the page; never a deal", async () => {
   const attio = fakeAttio();
   const load = runtime({ fetchImpl: attio.fetchImpl });
-  const { createAttioWhiteGloveDeal, WG_DEAL_STAGE, WG_DEAL_OWNER } = load("lib/attio-white-glove.ts");
-  assert.equal(WG_DEAL_STAGE, "Demo booked");
-  assert.equal(WG_DEAL_OWNER, "francois@getbasalt.ai");
+  const { writeAttioWhiteGloveRequest } = load("lib/attio-white-glove.ts");
   const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { owner: WG_DEAL_OWNER, now: NOW }), "created");
+  const page = "https://brain.pancake.ai/white-glove";
+  assert.equal(await writeAttioWhiteGloveRequest("token", a, "book", NOW.toISOString(), page), "sent");
   const company = attio.calls.find((c) => c.path.startsWith("/v2/objects/companies/records"));
   assert.equal(company.body.data.values.domains[0].domain, "acme.io");
-  const deal = attio.calls.find((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
-  const values = deal.body.data.values;
-  assert.equal(values.name, "acme.io · White Glove demo");
-  assert.equal(values.stage, "Demo booked");
-  assert.equal(values.owner, "francois@getbasalt.ai");
-  assert.equal(values.associated_company[0].target_record_id, "company-1");
-  assert.equal(values.associated_people[0].target_record_id, "person-new");
-  const note = attio.calls.find((c) => c.path === "/v2/notes");
-  assert.equal(note.body.data.parent_object, "deals");
-  assert.equal(note.body.data.parent_record_id, "deal-1");
-  assert.match(note.body.data.content, /Calendly event: https:\/\/api\.calendly\.com\/scheduled_events\/EVT1/);
-  assert.match(note.body.data.content, /Country: United States/);
-});
-
-test("a second booking from the same domain within 30 days adds a note, not a deal", async () => {
-  const attio = fakeAttio({
-    deals: [{ id: { record_id: "deal-old" }, created_at: new Date(NOW.getTime() - 3 * 86400000).toISOString() }],
-  });
-  const load = runtime({ fetchImpl: attio.fetchImpl });
-  const { createAttioWhiteGloveDeal } = load("lib/attio-white-glove.ts");
-  const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { now: NOW }), "exists");
-  assert.equal(attio.calls.some((c) => c.method === "POST" && c.path === "/v2/objects/deals/records"), false);
-  assert.equal(attio.calls.find((c) => c.path === "/v2/notes").body.data.parent_record_id, "deal-old");
-});
-
-test("without permission to read the stages, the configured title is written as is", async () => {
-  const attio = fakeAttio({ hideStages: true });
-  const load = runtime({ fetchImpl: attio.fetchImpl });
-  const { createAttioWhiteGloveDeal } = load("lib/attio-white-glove.ts");
-  const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { now: NOW }), "created");
-  const deal = attio.calls.find((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
-  assert.equal(deal.body.data.values.stage, "Demo booked");
-});
-
-test("an old deal for the domain does not block a new one; an unknown stage falls back to the first", async () => {
-  const attio = fakeAttio({
-    deals: [{ id: { record_id: "deal-old" }, created_at: new Date(NOW.getTime() - 90 * 86400000).toISOString() }],
-    statuses: [{ title: "Archived", is_archived: true }, { title: "Discovery" }, { title: "Won" }],
-  });
-  const load = runtime({ fetchImpl: attio.fetchImpl });
-  const { createAttioWhiteGloveDeal, pickDealStage } = load("lib/attio-white-glove.ts");
-  const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { now: NOW }), "created");
-  const deal = attio.calls.find((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
-  assert.equal(deal.body.data.values.stage, "Discovery");
-  assert.equal(pickDealStage([{ title: "meeting BOOKED " }], "Meeting booked"), "meeting BOOKED ");
-  assert.equal(pickDealStage("nope", "Meeting booked"), null);
-});
-
-test("the owner rides along; an owner Attio refuses is dropped, not the deal", async () => {
-  const load = runtime({ fetchImpl: fakeAttio().fetchImpl });
-  const a = load("lib/white-glove-demo.ts").parseWgRequest(fit).value;
-  const ok = fakeAttio();
-  const withOwner = runtime({ fetchImpl: ok.fetchImpl })("lib/attio-white-glove.ts");
-  assert.equal(await withOwner.createAttioWhiteGloveDeal("token", a, BOOKING, { owner: "owner@pancake.ai", now: NOW }), "created");
-  const sent = ok.calls.filter((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
-  assert.equal(sent.length, 1);
-  assert.equal(sent[0].body.data.values.owner, "owner@pancake.ai");
-  const refused = fakeAttio({ refuseOwner: true });
-  const strict = runtime({ fetchImpl: refused.fetchImpl })("lib/attio-white-glove.ts");
-  assert.equal(await strict.createAttioWhiteGloveDeal("token", a, BOOKING, { owner: "nobody@pancake.ai", now: NOW }), "created");
-  const tries = refused.calls.filter((c) => c.method === "POST" && c.path === "/v2/objects/deals/records");
-  assert.equal(tries.length, 2);
-  assert.equal(tries[1].body.data.values.owner, undefined);
-  assert.equal(tries[1].body.data.values.name, "acme.io · White Glove demo");
+  const person = attio.calls.find((c) => c.method === "PUT" && c.path.startsWith("/v2/objects/people/records"));
+  assert.equal(person.body.data.values.email_addresses[0].email_address, "jane@acme.io");
+  assert.equal(person.body.data.values.company[0].target_record_id, "company-1");
+  const note = attio.calls.find((c) => c.path === "/v2/notes").body.data;
+  assert.equal(note.parent_object, "people");
+  assert.equal(note.parent_record_id, "person-new");
+  assert.equal(note.title, "White Glove demo request");
+  assert.match(note.content, /Qualified: the White Glove calendar opened on the page/);
+  assert.match(note.content, /Country: United States/);
+  assert.match(note.content, /Page: https:\/\/brain\.pancake\.ai\/white-glove/);
+  // Deals come from the CRM's own Calendly integration, on every booking.
+  assert.equal(attio.calls.some((c) => c.path.includes("/deals")), false);
 });
 
 test("an existing person keeps their record; only an empty company is filled", async () => {
@@ -339,43 +242,35 @@ test("an existing person keeps their record; only an empty company is filled", a
   assert.match(note.content, /Country outside the instant-booking markets \(India\)/);
 });
 
-test("team addresses never reach Attio; a failed deal create reports failed", async () => {
-  const attio = fakeAttio({ failDeal: true });
+test("team addresses never reach Attio; an Attio outage reports failed", async () => {
+  const attio = fakeAttio();
   const load = runtime({ fetchImpl: attio.fetchImpl });
-  const { createAttioWhiteGloveDeal, writeAttioWhiteGloveRequest } = load("lib/attio-white-glove.ts");
+  const { writeAttioWhiteGloveRequest } = load("lib/attio-white-glove.ts");
   const { parseWgRequest } = load("lib/white-glove-demo.ts");
   const team = parseWgRequest({ ...fit, email: "tristan@pancake.ai" }).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", team, BOOKING, { now: NOW }), "skipped");
   assert.equal(await writeAttioWhiteGloveRequest("token", team, "book", NOW.toISOString()), "skipped");
   assert.equal(attio.calls.length, 0);
-  const a = parseWgRequest(fit).value;
-  assert.equal(await createAttioWhiteGloveDeal("token", a, BOOKING, { now: NOW }), "failed");
+  const down = runtime({ fetchImpl: async () => new Response("{}", { status: 500 }) })("lib/attio-white-glove.ts");
+  assert.equal(await down.writeAttioWhiteGloveRequest("token", parseWgRequest(fit).value, "book", NOW.toISOString()), "failed");
 });
 
 // ── the routes ──
 
 function routeRuntime({ env = { ATTIO_API_KEY: "test-only" }, db = null } = {}) {
   const writes = [];
-  const deals = [];
   const load = runtime({
     env,
     db,
     stubs: {
       "@/lib/attio-white-glove": {
-        WG_DEAL_STAGE: "Demo booked",
-        WG_DEAL_OWNER: "francois@getbasalt.ai",
         writeAttioWhiteGloveRequest: async (_token, a, route, _at, pageUrl) => {
           writes.push({ email: a.email, route, pageUrl });
           return "sent";
         },
-        createAttioWhiteGloveDeal: async (_token, a, booking, options) => {
-          deals.push({ email: a.email, booking, stage: options.stage, owner: options.owner });
-          return "created";
-        },
       },
     },
   });
-  return { load, writes, deals };
+  return { load, writes };
 }
 
 function fakeDb() {
@@ -422,37 +317,13 @@ test("demo route: self-serve writes nothing; personal email is refused with its 
   assert.equal(writes.length, 0);
 });
 
-test("demo route: a clear fit gets a booking pass the booked route accepts", async () => {
-  const { load, writes, deals } = routeRuntime();
+test("demo route: a clear fit writes the request and opens the calendar, with no deal step", async () => {
+  const { load, writes } = routeRuntime();
   const demo = await load("app/api/white-glove/demo/route.ts").POST(request("/api/white-glove/demo", fit));
   assert.equal(demo.status, 200);
-  const body = await demo.json();
-  assert.equal(body.route, "book");
-  assert.equal(typeof body.booking, "string");
+  assert.deepEqual(plain(await demo.json()), { ok: true, route: "book" });
   assert.deepEqual(plain(writes), [{ email: "jane@acme.io", route: "book", pageUrl: "https://pancake.ai/white-glove" }]);
-  const booked = await load("app/api/white-glove/booked/route.ts").POST(
-    request("/api/white-glove/booked", {
-      booking: body.booking,
-      event: BOOKING.eventUri,
-      invitee: "https://evil.example/invitees/1",
-    }),
-  );
-  assert.equal(booked.status, 200);
-  assert.equal((await booked.json()).deal, "created");
-  assert.equal(deals.length, 1);
-  assert.equal(deals[0].email, "jane@acme.io");
-  assert.equal(deals[0].stage, "Demo booked");
-  assert.equal(deals[0].owner, "francois@getbasalt.ai");
-  assert.equal(deals[0].booking.eventUri, BOOKING.eventUri);
-  assert.equal(deals[0].booking.inviteeUri, undefined);
-  // a middle character of the signature: the last one also carries base64 padding bits
-  const [payload, mac] = body.booking.split(".");
-  const tampered = `${payload}.${mac.slice(0, 10)}${mac[10] === "A" ? "B" : "A"}${mac.slice(11)}`;
-  const forged = await load("app/api/white-glove/booked/route.ts").POST(
-    request("/api/white-glove/booked", { booking: tampered }),
-  );
-  assert.equal(forged.status, 400);
-  assert.equal(deals.length, 1);
+  assert.equal(fs.existsSync(path.join(root, "app/api/white-glove/booked")), false);
 });
 
 test("demo route: borderline answers go to François's queue, with the reason, then Attio", async () => {
@@ -501,31 +372,21 @@ test("demo route: fails closed without the queue; team tests and the honeypot wr
   assert.equal(foreign.status, 403);
 });
 
-test("booked route: without an Attio token nothing is opened", async () => {
-  const { load, deals } = routeRuntime({ env: {} });
-  const r = await load("app/api/white-glove/booked/route.ts").POST(request("/api/white-glove/booked", { booking: "x.y" }));
-  assert.equal(r.status, 200);
-  assert.equal((await r.json()).deal, "skipped");
-  assert.equal(deals.length, 0);
+test("demo route: without an Attio token a clear fit still gets the calendar", async () => {
+  const { load, writes } = routeRuntime({ env: {} });
+  const r = await load("app/api/white-glove/demo/route.ts").POST(request("/api/white-glove/demo", fit));
+  assert.deepEqual(plain(await r.json()), { ok: true, route: "book" });
+  assert.equal(writes.length, 0);
 });
 
 test("the calendar URL carries the email and the answers line, never a name", () => {
-  const { whiteGloveBookingEmbedUrl, calendlyScheduledUris } = runtime()("lib/booking.ts");
+  const { whiteGloveBookingEmbedUrl } = runtime()("lib/booking.ts");
   const url = new URL(whiteGloveBookingEmbedUrl("jane@acme.io", "Company size: 11–50.", { compact: true }));
   assert.equal(url.origin + url.pathname, "https://calendly.com/getpancake/pancake-whiteglove");
   assert.equal(url.searchParams.get("email"), "jane@acme.io");
   assert.equal(url.searchParams.get("a1"), "Company size: 11–50.");
   assert.equal(url.searchParams.get("hide_event_type_details"), "1");
   assert.equal(url.searchParams.has("name"), false);
-  assert.deepEqual(
-    plain(
-      calendlyScheduledUris({
-        event: "calendly.event_scheduled",
-        payload: { event: { uri: BOOKING.eventUri }, invitee: { uri: "javascript:alert(1)" } },
-      }),
-    ),
-    { event: BOOKING.eventUri },
-  );
 });
 
 // ── brain.pancake.ai, cross-origin ──
@@ -557,25 +418,11 @@ test("brain.pancake.ai and its previews can post the form; anyone else can't", a
 
 test("preflight: allowed for the Brain page only", async () => {
   const { load } = routeRuntime();
-  for (const route of ["app/api/white-glove/demo/route.ts", "app/api/white-glove/booked/route.ts"]) {
-    const { OPTIONS } = load(route);
-    const ok = await OPTIONS(crossRequest("/x", null, "https://brain.pancake.ai", "OPTIONS"));
-    assert.equal(ok.status, 204, route);
-    assert.equal(ok.headers.get("access-control-allow-origin"), "https://brain.pancake.ai");
-    assert.match(ok.headers.get("access-control-allow-methods"), /POST/);
-    const no = await OPTIONS(crossRequest("/x", null, "https://evil.example", "OPTIONS"));
-    assert.equal(no.status, 403, route);
-  }
-});
-
-test("a booking reported from brain.pancake.ai opens the deal with the Brain page as its source", async () => {
-  const { load, deals } = routeRuntime();
-  const demo = await load("app/api/white-glove/demo/route.ts").POST(crossRequest("/api/white-glove/demo", fit, "https://brain.pancake.ai"));
-  const { booking } = await demo.json();
-  const booked = await load("app/api/white-glove/booked/route.ts").POST(
-    crossRequest("/api/white-glove/booked", { booking, event: BOOKING.eventUri }, "https://brain.pancake.ai"),
-  );
-  assert.equal(booked.status, 200);
-  assert.equal(booked.headers.get("access-control-allow-origin"), "https://brain.pancake.ai");
-  assert.equal(deals[0].booking.pageUrl, "https://brain.pancake.ai/white-glove");
+  const { OPTIONS } = load("app/api/white-glove/demo/route.ts");
+  const ok = await OPTIONS(crossRequest("/x", null, "https://brain.pancake.ai", "OPTIONS"));
+  assert.equal(ok.status, 204);
+  assert.equal(ok.headers.get("access-control-allow-origin"), "https://brain.pancake.ai");
+  assert.match(ok.headers.get("access-control-allow-methods"), /POST/);
+  const no = await OPTIONS(crossRequest("/x", null, "https://evil.example", "OPTIONS"));
+  assert.equal(no.status, 403);
 });
