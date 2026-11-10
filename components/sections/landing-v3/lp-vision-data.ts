@@ -5,7 +5,7 @@
  *
  * The story, in the founder's words: revenue is now an engineering job run by non-engineers; the
  * best revenue teams build their own data warehouse; someone has to do the engineering, and
- * Pancake does. The page says "revenue" where it first said "GTM" (founder, the same day): the
+ * Pancake does. Pancake is the "unified context and data layer for the best revenue teams". The page says "revenue" where it first said "GTM" (founder, the same day): the
  * headline, the lede and every section line.
  * The page names the hard parts of that engineering (sources, deduplication, matching, history,
  * lineage, crossing) and shows the two layers Pancake builds: the data layer (the tables of
@@ -25,17 +25,18 @@ export const VISION_H1: readonly [string, string] = ["Infrastructure powering", 
 export const VISION_HERO_ALT =
   "Pancake’s companies table: one row per company, with your CRM deal, your last call or event, an outside signal and the next best Play. Beside it, Claude answers which accounts to work now.";
 
-/** why now, in two lines: the statement that opens the dark band */
-export const VISION_STATEMENT: readonly [string, string] = [
-  "Revenue is now an engineering job run by non-engineers.",
-  "Pancake does the engineering.",
-];
+/** what Pancake is, in the founder's line: the statement that opens the dark band. It was the
+ *  why-now pair "Revenue is now an engineering job run by non-engineers. / Pancake does the
+ *  engineering." until the founder replaced it (2026-11-10). One string per line. */
+export const VISION_STATEMENT: readonly string[] = ["Unified context and data layer for the best revenue teams."];
 
 export type VisionTone = "yellow" | "purple" | "pink";
-export type VisionRowId = "sources" | "tables" | "crossing" | "play";
+export type VisionRowId = "sources" | "external" | "crossing" | "play";
 
 /** what Pancake does, as four numbered rows, from the sources up to the Play: a verb first, then
- *  two or three lines */
+ *  two or three lines. Row 02 was "Builds your tables" (the schema) until the founder asked for
+ *  "add / fetch external data sources" in its place (2026-11-10): your own sources in 01, the
+ *  outside ones in 02, the two crossed in 03. */
 export const VISION_ROWS: readonly { id: VisionRowId; num: string; label: string; tone: VisionTone; title: string; body: string }[] = [
   {
     id: "sources",
@@ -43,15 +44,15 @@ export const VISION_ROWS: readonly { id: VisionRowId; num: string; label: string
     label: "Sources",
     tone: "yellow",
     title: "Takes in every source",
-    body: "Your CRM, your calls, your events and your database come in through connectors Pancake builds. 30+ data providers add the outside signals.",
+    body: "Your CRM, your calls, your events and your database come in through connectors Pancake builds.",
   },
   {
-    id: "tables",
+    id: "external",
     num: "02",
-    label: "Data layer",
+    label: "External data",
     tone: "purple",
-    title: "Builds your tables",
-    body: "One record per person, tied to their company. Each signal adds a datapoint the day it lands, and nothing is overwritten.",
+    title: "Adds external data sources",
+    body: "Job posts, funding rounds, headcount, tech stack. Pancake fetches them from 30+ data providers and keeps them up to date.",
   },
   {
     id: "crossing",

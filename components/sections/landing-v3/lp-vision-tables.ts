@@ -7,6 +7,7 @@
  * The table's look follows real ones (Mobbin): Glide's data grid (typed column heads, every line
  * of the grid drawn), Retool's table (flat tags, a count under the rows), Airtable's "sources
  * into one table" (two tables joined into a third).
+ * A data provider is named only if the product uses it, with its own mark, unmodified.
  *
  * Rules kept: no person and no real company is named. A row is an id, and what its columns say.
  * "30+ data providers" is written exactly so. Read by scripts/homepage-lint.mjs (FILES); drawn by
@@ -129,74 +130,50 @@ export const DB_CHAT = {
 
 /* ── the four rows ─────────────────────────────────────────────────────────── */
 
-/** 01: every source is a row, with how much came in and when */
+/** 01: your own sources, one row each, with how much came in and when */
 export const DB_SOURCES: DbTableData = {
   name: "sources",
-  meta: "7 connected",
+  meta: "4 connected",
   numbered: true,
   cols: [
     { name: "source", type: "text" },
-    { name: "kind", type: "enum", w: 96, hide: "phone" },
+    { name: "records", type: "int", w: 104, end: true, hide: "phone" },
+    { name: "updated", w: 110, wp: 96 },
+    { name: "status", w: 76, wp: 58 },
+  ],
+  rows: [
+    { c: [{ v: "CRM", logo: "/lp/vendor-logos/hubspot.svg" }, "18,240", "2 min ago", LIVE] },
+    { c: ["Calls", "1,312", "14 min ago", LIVE] },
+    { c: [{ v: "Events", logo: "/lp/vendor-logos/luma.svg" }, "2,406", "1 h ago", LIVE] },
+    { c: ["Your database", "96,115", "3 min ago", LIVE] },
+  ],
+  foot: "4 of your sources",
+  footEnd: "connectors built by Pancake",
+};
+
+/** 02: the outside sources Pancake fetches, one row per kind of signal, with the provider it
+ *  comes from. Every provider named is one the product uses; each mark is the vendor's own. */
+export const DB_EXTERNAL: DbTableData = {
+  name: "external_sources",
+  meta: "fetched by Pancake",
+  numbered: true,
+  cols: [
+    { name: "signal", type: "text" },
+    { name: "provider", type: "text", w: 142, wp: 112 },
     { name: "records", type: "int", w: 96, end: true, hide: "phone" },
-    { name: "updated", w: 100, wp: 92 },
+    { name: "updated", w: 100, hide: "phone" },
     { name: "status", w: 72, wp: 58 },
   ],
   rows: [
-    { c: [{ v: "CRM", logo: "/lp/vendor-logos/hubspot.svg" }, tag("yours"), "18,240", "2 min ago", LIVE] },
-    { c: ["Calls", tag("yours"), "1,312", "14 min ago", LIVE] },
-    { c: [{ v: "Events", logo: "/lp/vendor-logos/luma.svg" }, tag("yours"), "2,406", "1 h ago", LIVE] },
-    { c: ["Your database", tag("yours"), "96,115", "3 min ago", LIVE] },
-    { c: ["Job posts", tag("provider"), "7,930", "6 min ago", LIVE] },
-    { c: ["Funding rounds", tag("provider"), "412", "1 h ago", LIVE] },
-    { c: ["Tech stack", tag("provider"), "4,812", "22 min ago", LIVE] },
+    { c: ["Job posts", { v: "TheirStack", logo: "/lp/story-sources/theirstack.svg" }, "7,930", "6 min ago", LIVE] },
+    { c: ["Funding rounds", { v: "Dealroom", logo: "/lp/story-sources/dealroom.svg" }, "412", "1 h ago", LIVE] },
+    { c: ["Headcount", { v: "Coresignal", logo: "/lp/story-sources/coresignal.svg" }, "4,812", "22 min ago", LIVE] },
+    { c: ["Tech stack", { v: "Wappalyzer", logo: "/lp/story-sources/wappalyzer.svg" }, "4,812", "2 h ago", LIVE] },
+    { c: ["Posts", { v: "Apify", logo: "/lp/story-sources/apify.svg" }, "12,406", "9 min ago", LIVE] },
+    { c: ["Websites", { v: "Firecrawl", logo: "/lp/story-sources/firecrawl.png" }, "4,812", "3 h ago", LIVE] },
   ],
-  foot: "4 of your sources",
-  footEnd: "30+ data providers",
+  foot: "6 of 30+ data providers",
 };
-
-export type DbSchemaBox = {
-  name: string;
-  rows: string;
-  cols: readonly { name: string; type: string; key?: "pk" | "fk" }[];
-};
-
-/** 02: the tables Pancake builds, as a schema. People and signals both point at a company. */
-export const DB_SCHEMA: readonly [DbSchemaBox, DbSchemaBox, DbSchemaBox] = [
-  {
-    name: "people",
-    rows: "12,960",
-    cols: [
-      { name: "id", type: "id", key: "pk" },
-      { name: "company_id", type: "ref", key: "fk" },
-      { name: "title", type: "text" },
-      { name: "reports_to", type: "ref", key: "fk" },
-      { name: "updated_on", type: "date" },
-    ],
-  },
-  {
-    name: "companies",
-    rows: "4,812",
-    cols: [
-      { name: "id", type: "id", key: "pk" },
-      { name: "industry", type: "text" },
-      { name: "headcount", type: "int" },
-      { name: "crm_deal", type: "enum" },
-      { name: "next_best_play", type: "text" },
-    ],
-  },
-  {
-    name: "signals",
-    rows: "38,204",
-    cols: [
-      { name: "id", type: "id", key: "pk" },
-      { name: "company_id", type: "ref", key: "fk" },
-      { name: "kind", type: "enum" },
-      { name: "observed_on", type: "date" },
-      { name: "source", type: "text" },
-    ],
-  },
-];
-export const DB_SCHEMA_BAR = { name: "schema", meta: "3 tables" } as const;
 
 /** 03: a row of yours and a row from outside, joined on the company */
 export const DB_CROSS = {

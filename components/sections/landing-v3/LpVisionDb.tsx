@@ -1,7 +1,7 @@
-import { Fragment, type CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
 import { ClaudeMark } from "./LpAgentMarks";
-import type { DbCell, DbCol, DbSchemaBox, DbTableData } from "./lp-vision-tables";
+import type { DbCell, DbCol, DbTableData } from "./lp-vision-tables";
 
 /**
  * The vision homepage's pictures (2026-11-09): real tables, drawn as a database tool draws them.
@@ -138,74 +138,6 @@ export function DbTable({
           <span>{table.footEnd}</span>
         </p>
       ) : null}
-    </div>
-  );
-}
-
-/* the schema: three tables side by side, the outer two pointing at the middle one's id.
-   A box is a head (30 px) and one line per column (24 px): the links below are drawn on those. */
-const SCHEMA_HEAD = 30;
-const SCHEMA_LINE = 24;
-const lineY = (i: number) => 1 + SCHEMA_HEAD + SCHEMA_LINE * i + SCHEMA_LINE / 2;
-
-export function DbSchema({
-  boxes,
-  bar,
-  tone,
-}: {
-  boxes: readonly [DbSchemaBox, DbSchemaBox, DbSchemaBox];
-  bar: { name: string; meta: string };
-  tone?: DbTone;
-}) {
-  const height = 2 + SCHEMA_HEAD + SCHEMA_LINE * Math.max(...boxes.map((box) => box.cols.length));
-  const from = lineY(1); // the outer tables' company_id
-  const to = lineY(0); // the middle table's id
-  return (
-    <div className="lp-db lp-dbs" data-tone={tone}>
-      <p className="lp-db__bar">
-        <DbTableIcon />
-        <b>{bar.name}</b>
-        <span className="lp-db__meta">{bar.meta}</span>
-      </p>
-      <div className="lp-dbs__canvas">
-        {boxes.map((box, i) => (
-          <Fragment key={box.name}>
-            {i > 0 ? (
-              <svg
-                className="lp-dbs__link"
-                data-side={i === 1 ? "left" : "right"}
-                viewBox={`0 0 36 ${height}`}
-                preserveAspectRatio="none"
-                style={{ height }}
-                aria-hidden="true"
-                focusable="false"
-              >
-                {i === 1 ? (
-                  <path d={`M0 ${from}H14Q18 ${from} 18 ${from - 4}V${to + 4}Q18 ${to} 22 ${to}H35M30.5 ${to - 4}L35 ${to}L30.5 ${to + 4}`} />
-                ) : (
-                  <path d={`M36 ${from}H22Q18 ${from} 18 ${from - 4}V${to + 4}Q18 ${to} 14 ${to}H1M5.5 ${to - 4}L1 ${to}L5.5 ${to + 4}`} />
-                )}
-              </svg>
-            ) : null}
-            <div className="lp-dbs__box" data-main={i === 1 ? "" : undefined}>
-              <p className="lp-dbs__head">
-                <DbTableIcon />
-                <b>{box.name}</b>
-                <span>{box.rows}</span>
-              </p>
-              <ul>
-                {box.cols.map((col) => (
-                  <li key={col.name} data-key={col.key}>
-                    <i>{col.key}</i>
-                    <span>{col.name}</span>
-                    <em>{col.type}</em>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </Fragment>
-        ))}
-      </div>
     </div>
   );
 }

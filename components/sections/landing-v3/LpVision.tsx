@@ -1,10 +1,12 @@
+import { Fragment } from "react";
+
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { SITE_DESCRIPTION } from "@/lib/copy";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 import { LpVisionProblemTabs } from "./LpVisionProblemTabs";
-import { DbChat, DbSchema, DbTable, DbTableIcon, type DbTone } from "./LpVisionDb";
+import { DbChat, DbTable, DbTableIcon, type DbTone } from "./LpVisionDb";
 import {
   VISION_AGENT,
   VISION_CLOSE,
@@ -22,12 +24,11 @@ import {
   DB_ASK,
   DB_CHAT,
   DB_CROSS,
+  DB_EXTERNAL,
   DB_HERO,
   DB_HERO_TABS,
   DB_LAYERS,
   DB_PLUG,
-  DB_SCHEMA,
-  DB_SCHEMA_BAR,
   DB_SOURCES,
   DB_WAREHOUSE,
 } from "./lp-vision-tables";
@@ -39,7 +40,7 @@ import {
  * (its latest version), rebuilt with Pancake's tokens, type and marks:
  *   hero        a centred claim, one line under it, the buttons, the product window with its
  *               chat panel hanging over its right edge
- *   statement   two lines, left-aligned, opening the dark band
+ *   statement   one or two lines, left-aligned, opening the dark band
  *   rows        four numbered rows that swap sides, the text on one and a framed picture on the
  *               other, then one centred line and a button
  *   problems    a warm band: a title, a few lines beside it, a list and the card of the open item
@@ -104,8 +105,12 @@ export function LpVisionRows() {
     <section className="lp-vd lp-vrows" aria-labelledby="lp-vrows-title">
       <div className="lp-v__inner">
         <h2 id="lp-vrows-title" className="lp-v__statement lp-vrows__statement">
-          {VISION_STATEMENT[0]} <br />
-          {VISION_STATEMENT[1]}
+          {VISION_STATEMENT.map((line, i) => (
+            <Fragment key={line}>
+              {i > 0 ? <br /> : null}
+              {line}{" "}
+            </Fragment>
+          ))}
         </h2>
         <ol className="lp-vrows__list">
           {VISION_ROWS.map((row) => (
@@ -140,8 +145,8 @@ function RowPic({ id, tone }: { id: VisionRowId; tone: DbTone }) {
   switch (id) {
     case "sources":
       return <DbTable table={DB_SOURCES} tone={tone} />;
-    case "tables":
-      return <DbSchema boxes={DB_SCHEMA} bar={DB_SCHEMA_BAR} tone={tone} />;
+    case "external":
+      return <DbTable table={DB_EXTERNAL} tone={tone} />;
     case "crossing":
       return <CrossingPic tone={tone} />;
     case "play":
