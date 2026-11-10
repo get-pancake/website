@@ -27,7 +27,7 @@ export const VISION_HERO_ALT =
 
 /** what Pancake is, in the founder's line: the statement that opens the dark band. It was the
  *  why-now pair "Revenue is now an engineering job run by non-engineers. / Pancake does the
- *  engineering." until the founder replaced it (2026-11-10). One string per line. */
+ *  engineering." until the founder replaced it (2026-11-09, later the same night). One string per line. */
 export const VISION_STATEMENT: readonly string[] = ["Unified context and data layer for the best revenue teams."];
 
 export type VisionTone = "yellow" | "purple" | "pink";
@@ -35,7 +35,7 @@ export type VisionRowId = "sources" | "external" | "crossing" | "play";
 
 /** what Pancake does, as four numbered rows, from the sources up to the Play: a verb first, then
  *  two or three lines. Row 02 was "Builds your tables" (the schema) until the founder asked for
- *  "add / fetch external data sources" in its place (2026-11-10): your own sources in 01, the
+ *  "add / fetch external data sources" in its place (2026-11-09): your own sources in 01, the
  *  outside ones in 02, the two crossed in 03. */
 export const VISION_ROWS: readonly { id: VisionRowId; num: string; label: string; tone: VisionTone; title: string; body: string }[] = [
   {
