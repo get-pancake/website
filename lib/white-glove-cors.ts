@@ -13,7 +13,7 @@ import { WG_PAGE_URL } from "@/lib/white-glove-demo";
  * request is still refused by the routes' same-origin check.
  *
  * The page sends its JSON as text/plain, a CORS "simple" request: no
- * preflight, so the keepalive booking report works in every browser. The
+ * preflight, so the form posts in one round trip in every browser. The
  * OPTIONS answer is there for any client that does preflight.
  */
 

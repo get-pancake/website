@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 import { writeAttioWhiteGloveRequest } from "@/lib/attio-white-glove";
 import { getClientIp, rateLimit } from "@/lib/rate-limit";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
-import { signWgBooking } from "@/lib/white-glove-booking-token";
 import { wgCaller, wgCorsHeaders, wgPageUrlFor, wgPreflight } from "@/lib/white-glove-cors";
 import {
   WG_BODY_MAX,
@@ -30,9 +29,9 @@ import {
  *   - review: saved to François's private queue (demo_requests, the table
  *     /demo/review reads), then the person and company go to Attio. A success
  *     means the queue has it, even when Attio is down;
- *   - book: the person and company go to Attio, then the answer carries the
- *     signed booking pass the page sends back once Calendly reports a booking
- *     (POST /api/white-glove/booked opens the Attio deal).
+ *   - book: the person and company go to Attio, then the page shows the White
+ *     Glove calendar. The deal comes from the CRM's own Calendly integration
+ *     once the visitor books (lib/attio-white-glove.ts), not from this site.
  * Team addresses (pancake.ai) get the same answers and write nothing.
  * Guards as /api/demo-request: origin, size, honeypot, rate limits. The CRM
  * notes and the queue row say which page the visitor used.
@@ -161,5 +160,5 @@ export async function POST(request: Request) {
   }
 
   if (token && !test) await writeAttioWhiteGloveRequest(token, a, "book", submittedAt, pageUrl);
-  return reply({ ok: true, route, booking: token ? signWgBooking(token, a) : null });
+  return reply({ ok: true, route });
 }

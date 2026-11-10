@@ -103,8 +103,7 @@ export type WgParse =
 
 /** The browser's answer to POST /api/white-glove/demo. */
 export type WgResponse =
-  | { ok: true; route: "book"; booking: string | null }
-  | { ok: true; route: "review" | "self_serve" }
+  | { ok: true; route: "book" | "review" | "self_serve" }
   | { ok: false; error: string; field?: WgField; reason?: "personal_email" };
 
 /** The page every answer and CRM note points back to. */
