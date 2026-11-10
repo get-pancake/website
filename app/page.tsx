@@ -1,22 +1,16 @@
 import type { Metadata, Viewport } from "next";
 
-import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
-import { LpBanner } from "@/components/sections/landing-v3/LpBanner";
-import { LpBento } from "@/components/sections/landing-v3/LpBento";
-import { LpCta } from "@/components/sections/landing-v3/LpCta";
-import { LpDive } from "@/components/sections/landing-v3/LpDive";
-import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
-import { LpHero } from "@/components/sections/landing-v3/LpHero";
-import { LpInfra } from "@/components/sections/landing-v3/LpInfra";
-import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
-import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
-import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
-import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
-import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
-import { LpVideo } from "@/components/sections/landing-v3/LpVideo";
+import {
+  LpVisionAgent,
+  LpVisionClose,
+  LpVisionHero,
+  LpVisionProblems,
+  LpVisionRows,
+  LpVisionWarehouse,
+} from "@/components/sections/landing-v3/LpVision";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
@@ -112,58 +106,32 @@ const softwareApplicationJsonLd = {
   },
 };
 
-// Static since 2026-10-07: no searchParams prop (reading ?audience here made
-// every request a server render, never cached on the CDN). LpAudience reads
-// ?audience=agents on the client once the page has loaded.
+// The vision homepage (2026-11-09): Pancake as the revenue data warehouse. Static:
+// the hero (the claim, the product window), the customers on the first dark band, why now and
+// the four things Pancake does, the six hard problems, what Pancake is, how an agent uses it, the
+// close. Only the problems' list needs JavaScript. Sections: LpVision.tsx.
+// The page before it (the hero with its For agents view, the film, the infra bricks, the steps,
+// the deep dive, the testimonials, the pricing card) is off this page; its files stay.
 export default function Home() {
   return (
-    <LpAudience>
+    <main className="lp lp-vision-page">
       {/* SoftwareApplication JSON-LD — homepage only */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(softwareApplicationJsonLd) }}
       />
-      {/* Serves every section's art canvas — the --lp-fit scale var
-          (iOS WebKit cqw-in-trig workaround, see LpFitVars.tsx) */}
-      <LpFitVars />
-      {/* Frees off-screen sections' animation GPU surfaces — the iPhone
-          WebContent OOM guard (see LpAnimFreeze.tsx) */}
-      <LpAnimFreeze />
-      {/* V2 Figma replication (fr8NgOCTUxsEbrMEJA3YKu 4911:346, 2026-10-09) page order. Every
-          section is a DIRECT <section> child of main.lp: the agents view hides all of them but
-          the hero and the lab (audience.css, integrator rule). */}
       <LpNav />
-      <LpHero />
-      {/* the demo film, right under the hero, in the demo window's slot (founder 2026-11-03:
-          the launch's demo film, click to play). The animated window (LpDemo) is off the page;
-          its files stay (the dive's Codex story draws with its scene). */}
-      <LpVideo />
-      {/* customers band after the film, before the steps (V2 4911:371 "Trusted by many") */}
-      <LpMarquee labelled />
-      {/* The infra-first page (2026-10-21/22): what Pancake gives your agent (the diagram), then
-          the infra vision as the three steps (the Vercel for GTM: deploy, host, run), which meet
-          the designer's banner as they do on main (founder 2026-10-22: "after the 1/2/3 we should
-          see the" banner); then the deep dive, the testimonials and the CTA on one sky (sky.css:
-          the band ends on the CTA's hill; founder 2026-10-28 on the CTA: "Should be below
-          testimonials"), then pricing. "Find any buyer you can describe." (the
-          agent-written search shown as code) went the same day: "les gens s en foutent du code".
-          The hero's For agents view keeps the one-line install (LpAgentStart). */}
-      <LpInfra />
-      {/* the agents view's code wall (agents view only) */}
-      <LpAgentLab />
-      <LpSteps />
-      <LpBanner />
-      {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
-      <LpDive />
-      {/* testimonials / KPI bento (V2 4911:762), on the sky since 2026-10-28: its final cards
-          only in production (lib/placeholders.ts), nothing while BENTO_LIVE (lp-bento-data.ts)
-          is off */}
-      <LpBento sky />
-      {/* the close: the CTA pair, then the one-line setup to copy; its cream hill ends the sky */}
-      <LpCta sky setup={<LpSetupPill />} />
-      <LpPricing />
+      <LpVisionHero />
+      {/* the customers, on the dark band the hero's window opens */}
+      <div className="lp-vd lp-vlogos">
+        <LpMarquee labelled />
+      </div>
+      <LpVisionRows />
+      <LpVisionProblems />
+      <LpVisionWarehouse />
+      <LpVisionAgent />
+      <LpVisionClose />
       <LpFooter />
-      {/* LpModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}
-    </LpAudience>
+    </main>
   );
 }

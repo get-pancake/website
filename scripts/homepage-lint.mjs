@@ -93,6 +93,10 @@ const FILES = [
   // testimonials / KPI bento (bento); its placeholder module stays out on purpose
   "components/sections/landing-v3/LpBento.tsx",
   "components/sections/landing-v3/lp-bento-data.ts",
+  // the vision homepage (2026-11-09)
+  "components/sections/landing-v3/LpVision.tsx",
+  "components/sections/landing-v3/lp-vision-data.ts",
+  "components/sections/landing-v3/LpVisionProblemTabs.tsx",
   // agents view (agents-view)
   "components/sections/landing-v3/LpAudienceHeadline.tsx",
   "components/sections/landing-v3/LpAgentStart.tsx",

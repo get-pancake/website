@@ -33,9 +33,15 @@ import {
  * 2026-10-28, then "Infrastructure to power your GTM factory" the same evening,
  * and "Infrastructure powering" again since 2026-10-30 (neither echoes this
  * line's "to run your").
+ * 2026-11-09, the vision homepage: the lede says what Pancake is, the revenue
+ * data warehouse, and what it takes off the team, the engineering (the
+ * founder's "GTM is now an engineering job run by non engineers - someone has
+ * to do the engineering", then "revenue" in place of "GTM" the same day, on
+ * the whole page). It was "Pancake gives your agent the brain, the data and
+ * the tools to run your go-to-market." The wording is a proposal on this branch.
  */
 export const SITE_DESCRIPTION =
-  "Pancake gives your agent the brain, the data and the tools to run your go-to-market.";
+  "Pancake is the revenue data warehouse. It does the engineering, so your agent can sell.";
 
 export const hero = {
   /** H1 line 1 (break before autonomous) */
