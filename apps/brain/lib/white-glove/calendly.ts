@@ -53,25 +53,6 @@ export function whiteGloveEmbedUrl(
   return `${WG_CALENDLY_URL}?${params.toString().replace(/\+/g, "%20")}`;
 }
 
-/** A scheduled event's / invitee's Calendly API URI, nothing else. */
-const CALENDLY_EVENT_URI_RE = /^https:\/\/api\.calendly\.com\/scheduled_events\/[A-Za-z0-9-]{1,64}$/;
-const CALENDLY_INVITEE_URI_RE =
-  /^https:\/\/api\.calendly\.com\/scheduled_events\/[A-Za-z0-9-]{1,64}\/invitees\/[A-Za-z0-9-]{1,64}$/;
-
-/**
- * The booked event's and invitee's URIs from `calendly.event_scheduled`,
- * each only when it is a Calendly API URI. Callers check origin and source.
- */
-export function calendlyScheduledUris(data: unknown): { event?: string; invitee?: string } {
-  const payload = (data as { payload?: { event?: { uri?: unknown }; invitee?: { uri?: unknown } } } | null)?.payload;
-  const event = payload?.event?.uri;
-  const invitee = payload?.invitee?.uri;
-  return {
-    ...(typeof event === "string" && CALENDLY_EVENT_URI_RE.test(event) ? { event } : {}),
-    ...(typeof invitee === "string" && CALENDLY_INVITEE_URI_RE.test(invitee) ? { invitee } : {}),
-  };
-}
-
 /** `#rgb` / `#rrggbb` / `rgb()` → Calendly's `rrggbb`; anything translucent or unknown → null. */
 export function toCalendlyHex(color: string | null | undefined): string | null {
   if (!color) return null;

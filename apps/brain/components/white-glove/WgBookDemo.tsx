@@ -8,7 +8,6 @@ import {
   CALENDLY_ORIGIN,
   CALENDLY_TWO_COLUMN_MIN,
   calendlyPageHeight,
-  calendlyScheduledUris,
   isCalendlyEventScheduled,
   whiteGloveEmbedUrl,
 } from "../../lib/white-glove/calendly";
@@ -40,17 +39,17 @@ import { WgCountryField } from "./WgCountryField";
  *        ──review──▶ review (François's queue emails a booking link)
  *        ──self_serve──▶ self-serve (Start free, this app's sign-up): a team of 1–2, or no budget
  * The JSON goes as text/plain: a CORS simple request, no preflight, so the
- * keepalive booking report works in every browser. The booking report sends
- * the signed pass back, which opens the Attio deal; the card says "booked"
- * whatever that call answers. Calendly's messages are trusted only from its
- * origin AND this frame. No analytics fire here. Focus moves to each new
+ * form posts in one round trip in every browser. Calendly's booking message
+ * only turns the card to "booked": the CRM's own Calendly integration opens
+ * the Attio deal. Calendly's messages are trusted only from its origin AND
+ * this frame. No analytics fire here. Focus moves to each new
  * state's heading; #book-demo focuses the email field.
  */
 
 type Draft = { email: string; size: string; country: string; gtmTeam: string; budget: string };
 type View =
   | { kind: "form" }
-  | { kind: "calendar"; answers: WgAnswers; booking: string | null }
+  | { kind: "calendar"; answers: WgAnswers }
   | { kind: "booked" }
   | { kind: "review" }
   | { kind: "self_serve"; noBudget: boolean };
@@ -142,11 +141,7 @@ export function WgBookDemo() {
         return;
       }
       if (result.route === "book") {
-        setView({
-          kind: "calendar",
-          answers: { ...(draft as WgAnswers), email: draft.email.trim().toLowerCase() },
-          booking: result.booking,
-        });
+        setView({ kind: "calendar", answers: { ...(draft as WgAnswers), email: draft.email.trim().toLowerCase() } });
       } else if (result.route === "self_serve") {
         setView({ kind: "self_serve", noBudget: draft.size !== "1–2" && draft.budget === "no" });
       } else {
@@ -315,7 +310,7 @@ export function WgBookDemo() {
             {c.booking.title}
           </h2>
           <p className="wg-book__lede">{c.booking.lede}</p>
-          <WgCalendar answers={view.answers} booking={view.booking} onBooked={onBooked} />
+          <WgCalendar answers={view.answers} onBooked={onBooked} />
         </div>
       ) : (
         <div className="wg-book__state">
@@ -350,15 +345,7 @@ export function WgBookDemo() {
 }
 
 /** The White Glove calendar, prefilled; reports the booking once. */
-function WgCalendar({
-  answers,
-  booking,
-  onBooked,
-}: {
-  answers: WgAnswers;
-  booking: string | null;
-  onBooked: () => void;
-}) {
+function WgCalendar({ answers, onBooked }: { answers: WgAnswers; onBooked: () => void }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLIFrameElement>(null);
   const [src, setSrc] = useState<string | null>(null);
@@ -366,11 +353,9 @@ function WgCalendar({
   const loaded = useRef(false);
   const booked = useRef(false);
   const onBookedRef = useRef(onBooked);
-  const bookingRef = useRef(booking);
   useEffect(() => {
     onBookedRef.current = onBooked;
-    bookingRef.current = booking;
-  }, [onBooked, booking]);
+  }, [onBooked]);
 
   // Built after mount: the card's own colors (Calendly cannot take a
   // transparent page) and the compact layout, calendar first, because the
@@ -402,17 +387,6 @@ function WgCalendar({
       if (isCalendlyEventScheduled(event.data)) {
         if (booked.current) return;
         booked.current = true;
-        const pass = bookingRef.current;
-        if (pass) {
-          const uris = calendlyScheduledUris(event.data);
-          // keepalive: the deal is opened even if the visitor leaves at once
-          fetch(`${WG_API_ORIGIN}/api/white-glove/booked`, {
-            method: "POST",
-            headers: PLAIN_JSON,
-            body: JSON.stringify({ booking: pass, event: uris.event, invitee: uris.invitee }),
-            keepalive: true,
-          }).catch(() => {});
-        }
         onBookedRef.current();
         return;
       }

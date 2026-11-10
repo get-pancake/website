@@ -1,9 +1,9 @@
 /**
  * The White Glove "Book a demo" form on brain.pancake.ai/white-glove: the
  * browser half of a contract the main website enforces. The form posts to
- * the website's routes (get-pancake/website: app/api/white-glove/demo and
- * /booked, rules in lib/white-glove-demo.ts), cross-origin: that repo's
- * lib/white-glove-cors.ts lets this app's origins in. The routes validate
+ * the website's route (get-pancake/website: app/api/white-glove/demo, rules
+ * in lib/white-glove-demo.ts), cross-origin: that repo's
+ * lib/white-glove-cors.ts lets this app's origins in. The route validates
  * every answer again and decide who books François's calendar, who waits
  * for his review and who is sent to self-serve, so this file only has to
  * offer the same choices. Keep the lists below identical to the website's.
@@ -39,8 +39,7 @@ export type WgField = "email" | "size" | "country" | "gtmTeam" | "budget" | "sub
 
 /** The website's answer to POST /api/white-glove/demo. */
 export type WgResponse =
-  | { ok: true; route: "book"; booking: string | null }
-  | { ok: true; route: "review" | "self_serve" }
+  | { ok: true; route: "book" | "review" | "self_serve" }
   | { ok: false; error: string; field?: WgField; reason?: "personal_email" };
 
 /** The form's anchor: the nav's "Book a demo" lands here. */
