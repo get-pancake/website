@@ -97,6 +97,8 @@ const FILES = [
   "components/sections/landing-v3/LpVision.tsx",
   "components/sections/landing-v3/lp-vision-data.ts",
   "components/sections/landing-v3/LpVisionProblemTabs.tsx",
+  "components/sections/landing-v3/LpVisionDb.tsx",
+  "components/sections/landing-v3/lp-vision-tables.ts",
   // agents view (agents-view)
   "components/sections/landing-v3/LpAudienceHeadline.tsx",
   "components/sections/landing-v3/LpAgentStart.tsx",

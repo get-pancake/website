@@ -65,12 +65,12 @@
   background: var(--lp-ink-20);
   color: var(--lp-ink-100);
 }
-/* a border, not an inset shadow: the button's fill layer would paint over a shadow */
+/* the site's outline pill (.lp-btn--outline: plain round corners, no corner clip, so its hairline
+   survives), in cream on plum */
 .lp a.lp-btn.lp-v__pill-line {
   background: transparent;
-  border: 1px solid rgba(255, 247, 236, 0.4);
+  box-shadow: inset 0 0 0 1px rgba(255, 247, 236, 0.4);
   color: var(--lp-v-on-dark);
-  padding: 11px 19px;
 }
 
 /* ── hero ── */
@@ -128,195 +128,74 @@
   position: relative;
   width: 100%;
 }
-/* plum, open at the bottom: the page turns dark through it */
+/* plum, open at the bottom: the page turns dark through it. The table runs under the chat panel,
+   as a table wider than its window does */
 .lp-vh__window {
   background: var(--lp-v-dark);
-  border-radius: 16px 16px 0 0;
+  border-radius: 12px 12px 0 0;
   color: var(--lp-v-on-dark);
-  font-size: var(--lp-text-sm);
-  line-height: 20px;
-  padding: 20px calc(var(--lp-vh-chat) - var(--lp-vh-out) + 24px) 36px 24px;
+  overflow: hidden;
+  padding-right: calc(var(--lp-vh-chat) - var(--lp-vh-out) - 12px);
 }
+/* the window's tabs: one per table, with its row count */
 .lp-vh__bar {
+  align-items: center;
   border-bottom: 1px solid var(--lp-v-line-dark);
-  padding-bottom: 12px;
-}
-.lp-vh__tabs {
   display: flex;
+  font-family: var(--lp-font-fono);
+  font-size: 12px;
   gap: 4px;
+  height: 46px;
+  line-height: 16px;
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 0 12px;
 }
 .lp-vh__tab {
-  border-radius: 8px;
-  color: var(--lp-v-on-dark-3);
-  font-weight: 500;
-  padding: 6px 12px;
+  align-items: center;
+  border-radius: 6px;
+  color: var(--lp-ink-70);
+  display: flex;
+  gap: 7px;
+  padding: 6px 10px;
 }
 .lp-vh__tab[data-on] {
   background: var(--lp-v-fill-dark);
   box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
   color: var(--lp-v-on-dark);
 }
-.lp-vh__row {
-  align-items: center;
-  border-bottom: 1px solid var(--lp-v-line-dark);
-  display: grid;
-  gap: 16px;
-  grid-template-columns: 1.15fr 1.4fr 1fr 1.35fr;
-  min-height: 60px;
-  padding: 8px 4px;
+.lp-vh__tab small {
+  color: var(--lp-ink-70);
+  font-size: 10.5px;
 }
-.lp-vh__row--head {
-  color: var(--lp-v-on-dark-3);
-  font-size: var(--lp-text-xsm);
-  font-weight: 500;
-  letter-spacing: 0.6px;
-  min-height: 40px;
-  text-transform: uppercase;
+/* the table fills the window edge to edge: no panel of its own */
+.lp-vh__window .lp-db {
+  --db-row: 32px;
+  border: 0;
+  border-radius: 0;
 }
-.lp-vh__row:last-child {
-  border-bottom: 0;
-}
-.lp-vh__co {
-  align-items: center;
-  display: flex;
-  gap: 10px;
-  min-width: 0;
-}
-.lp-vh__co b {
-  display: block;
-  font-weight: 600;
-}
-.lp-vh__co small {
-  color: var(--lp-v-on-dark-3);
-  display: block;
-  font-size: var(--lp-text-xsm);
-  line-height: 16px;
-}
-.lp-vh__avatar {
-  background: var(--lp-pink-20);
-  border-radius: 50%;
-  color: var(--lp-ink-100);
-  display: grid;
-  flex: none;
-  font-size: var(--lp-text-xsm);
-  font-style: normal;
-  font-weight: 600;
-  height: 28px;
-  place-items: center;
-  width: 28px;
-}
-.lp-vh__cell {
-  color: var(--lp-v-on-dark-2);
-  padding-left: 14px;
-  position: relative;
-}
-.lp-vh__cell::before {
-  border-radius: 50%;
-  content: "";
-  height: 6px;
-  left: 0;
-  position: absolute;
-  top: 7px;
-  width: 6px;
-}
-.lp-vh__cell[data-kind="own"]::before {
-  background: var(--lp-purple-30);
-}
-.lp-vh__cell[data-kind="outside"]::before {
-  background: var(--lp-green-20);
-}
-.lp-vh__play {
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
-  color: var(--lp-v-on-dark-2);
-  justify-self: start;
-  padding: 5px 10px;
-}
-.lp-vh__row[data-hot] .lp-vh__play {
-  background: var(--lp-yellow-30);
-  box-shadow: none;
-  color: var(--lp-ink-100);
-  font-weight: 600;
+.lp-vh__window .lp-db th:last-child,
+.lp-vh__window .lp-db td:last-child {
+  border-right: 1px solid var(--db-line);
 }
 /* the agent, reading the tables: a panel a shade lighter, set lower and further right */
 .lp-vh__chat {
   background:
-    linear-gradient(rgba(255, 247, 236, 0.07), rgba(255, 247, 236, 0.07)),
+    linear-gradient(rgba(255, 247, 236, 0.06), rgba(255, 247, 236, 0.06)),
     var(--lp-v-dark);
-  border-radius: 14px 14px 0 0;
+  border: 1px solid rgba(255, 247, 236, 0.16);
+  border-bottom: 0;
+  border-radius: 10px 10px 0 0;
   bottom: 0;
-  box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
   color: var(--lp-v-on-dark);
   display: flex;
-  flex-direction: column;
-  font-size: var(--lp-text-sm);
-  gap: 12px;
-  line-height: 20px;
-  padding: 16px 18px 0;
+  overflow: hidden;
   position: absolute;
   right: 0;
-  top: 44px;
+  top: 46px;
   width: var(--lp-vh-chat);
 }
-.lp .lp-vh__chat-head {
-  align-items: center;
-  border-bottom: 1px solid var(--lp-v-line-dark);
-  display: flex;
-  font-weight: 600;
-  gap: 8px;
-  margin: 0 -18px;
-  padding: 0 18px 14px;
-}
-.lp-vh__mark {
-  color: var(--lp-claude-spark);
-  display: grid;
-  height: 18px;
-  width: 18px;
-}
-.lp-vh__mark svg {
-  display: block;
-  height: 100%;
-  width: 100%;
-}
-.lp .lp-vh__ask {
-  align-self: flex-end;
-  border-radius: 12px;
-  box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
-  max-width: 100%;
-  padding: 8px 12px;
-}
-.lp .lp-vh__status {
-  color: var(--lp-v-on-dark-3);
-  font-size: var(--lp-text-xsm);
-  line-height: 16px;
-}
-.lp .lp-vh__answer {
-  font-weight: 600;
-}
-.lp-vh__picks {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.lp-vh__picks li {
-  border-top: 1px solid var(--lp-v-line-dark);
-  display: flex;
-  flex-direction: column;
-  padding: 10px 0;
-}
-.lp-vh__picks b {
-  font-weight: 500;
-}
-.lp-vh__picks span {
-  color: var(--lp-yellow-30);
-  font-size: var(--lp-text-xsm);
-  line-height: 16px;
-}
+
 
 /* ── dark bands ── */
 .lp-vd {
@@ -386,273 +265,112 @@
 }
 /* the frame: one flat pancake colour, a band of it all round a dark card that fills it */
 .lp-vrows__frame {
+  align-items: center;
   background: var(--lp-v-tone-20);
   border-radius: 12px;
   display: flex;
   min-height: 380px;
   padding: 36px;
 }
-.lp-vcard {
-  background: var(--lp-v-dark);
-  border-radius: 8px;
-  color: var(--lp-v-on-dark);
+/* the frame's picture: a table that fills it */
+.lp-vrows__frame > .lp-db {
+  flex: 1;
+}
+/* 03: two tables joined into a third */
+.lp-vjoin {
   display: flex;
   flex: 1;
   flex-direction: column;
-  font-size: var(--lp-text-sm);
-  gap: 14px;
-  justify-content: center;
-  line-height: 20px;
-  padding: 28px;
-}
-.lp .lp-vcard__kicker {
-  color: var(--lp-v-on-dark-3);
-  font-size: var(--lp-text-xsm);
-  font-weight: 500;
-  letter-spacing: 0.6px;
-  line-height: 16px;
-  text-transform: uppercase;
-}
-/* sources */
-.lp-vsrc {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.lp-vsrc__row {
-  align-items: center;
-  box-shadow: inset 0 -1px 0 var(--lp-v-line-dark);
-  display: grid;
-  gap: 10px;
-  grid-template-columns: 28px auto minmax(0, 1fr) auto;
-  padding: 9px 0;
-}
-.lp-vsrc__disc {
-  background: var(--lp-ink-0);
-  border-radius: 50%;
-  color: var(--lp-ink-90);
-  display: grid;
-  flex: none;
-  font-size: var(--lp-text-xsm);
-  font-style: normal;
-  font-weight: 600;
-  height: 28px;
-  place-items: center;
-  width: 28px;
-}
-.lp-vsrc__disc img {
-  height: 16px;
-  object-fit: contain;
-  width: 16px;
-}
-.lp-vsrc__name {
-  font-weight: 600;
-}
-.lp-vsrc__note {
-  color: var(--lp-v-on-dark-3);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.lp-vsrc__state {
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgba(104, 206, 167, 0.5);
-  color: var(--lp-green-20);
-  font-size: var(--lp-text-xsm);
-  font-weight: 500;
-  line-height: 16px;
-  padding: 2px 8px;
-}
-.lp-vsrc__out {
-  align-items: center;
-  display: flex;
-  gap: 10px;
-}
-.lp-vsrc__logos {
-  display: flex;
-}
-.lp-vsrc__logos .lp-vsrc__disc + .lp-vsrc__disc {
-  box-shadow: 0 0 0 2px var(--lp-v-dark);
-  margin-left: -6px;
-}
-/* one record, and the datapoints that landed on it */
-.lp-vrec__head {
-  align-items: center;
-  display: flex;
-  gap: 10px;
-}
-.lp-vrec__avatar {
-  background: var(--lp-pink-20);
-  border-radius: 50%;
-  color: var(--lp-ink-100);
-  display: grid;
-  flex: none;
-  font-style: normal;
-  font-weight: 600;
-  height: 36px;
-  place-items: center;
-  width: 36px;
-}
-.lp-vrec__who {
-  flex: 1;
   min-width: 0;
 }
-.lp-vrec__who b {
-  display: block;
-  font-weight: 600;
-}
-.lp-vrec__who small {
-  color: var(--lp-v-on-dark-3);
-  display: block;
-  font-size: var(--lp-text-xsm);
-  line-height: 16px;
-}
-.lp-vrec__badge {
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px rgba(222, 195, 245, 0.5);
-  color: var(--lp-purple-20);
-  font-size: var(--lp-text-xsm);
-  font-weight: 500;
-  line-height: 16px;
-  padding: 2px 8px;
-  white-space: nowrap;
-}
-.lp-vrec__points {
-  display: flex;
-  flex-direction: column;
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-.lp-vrec__points li {
-  align-items: baseline;
-  box-shadow: inset 0 1px 0 var(--lp-v-line-dark);
+.lp-vjoin__in {
   display: grid;
-  gap: 12px;
-  grid-template-columns: 84px minmax(0, 1fr) auto;
-  padding: 10px 0;
-}
-.lp-vrec__when,
-.lp-vrec__from {
-  color: var(--lp-v-on-dark-3);
-  font-size: var(--lp-text-xsm);
-}
-.lp-vrec__what {
-  font-weight: 500;
-}
-.lp-vrec__points li:last-child .lp-vrec__what {
-  color: var(--lp-purple-20);
-  font-weight: 600;
-}
-/* the crossing: your data and an outside signal, on the same row */
-.lp-vcross {
-  display: grid;
-  gap: 8px;
+  gap: 20px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
-.lp-vcross__side {
-  background: var(--lp-v-fill-dark);
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  padding: 12px;
+.lp-vjoin .lp-db {
+  --db-row: 26px;
+  font-size: 11px;
 }
-.lp-vcross__label {
-  color: var(--lp-v-on-dark-3);
-  font-size: var(--lp-text-xsm);
-  font-weight: 500;
-  letter-spacing: 0.6px;
-  line-height: 16px;
-  padding-left: 12px;
-  position: relative;
-  text-transform: uppercase;
+.lp-vjoin .lp-db th,
+.lp-vjoin .lp-db td {
+  padding: 0 8px;
 }
-.lp-vcross__label::before {
-  border-radius: 50%;
-  content: "";
-  height: 6px;
-  left: 0;
-  position: absolute;
-  top: 5px;
-  width: 6px;
-}
-.lp-vcross__side[data-kind="own"] .lp-vcross__label::before {
-  background: var(--lp-purple-30);
-}
-.lp-vcross__side[data-kind="outside"] .lp-vcross__label::before {
-  background: var(--lp-green-20);
-}
-.lp-vcross__side b {
-  font-size: var(--lp-text-md);
-  font-weight: 600;
-  line-height: 24px;
-}
-.lp-vcross__side small {
-  color: var(--lp-v-on-dark-3);
-  font-size: var(--lp-text-xsm);
-  line-height: 16px;
-}
-.lp .lp-vcross__result {
-  background: var(--lp-pink-30);
-  border-radius: 8px;
-  color: var(--lp-ink-100);
-  font-weight: 600;
-  padding: 8px 12px;
-  text-align: center;
-}
-/* the next best Play */
-.lp .lp-vplay__play {
-  font-size: var(--lp-text-lg);
-  font-weight: 600;
-  line-height: 26px;
-  text-wrap: balance;
-}
-.lp-vplay__foot {
-  align-items: center;
-  box-shadow: inset 0 1px 0 var(--lp-v-line-dark);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 12px;
-  justify-content: space-between;
-  padding-top: 12px;
-}
-.lp-vplay__agents {
-  align-items: center;
-  color: var(--lp-v-on-dark-3);
-  display: flex;
-  gap: 6px;
-}
-.lp-vplay__agents i {
-  color: var(--lp-v-on-dark);
+/* the join: a bracket under the two tables, a stem down to the third, the key written on it */
+.lp .lp-vjoin__on {
   display: grid;
+  height: 36px;
+  place-items: center;
+  position: relative;
+}
+.lp-vjoin__on::before {
+  border: 1px solid var(--lp-ink-tr-50);
+  border-radius: 0 0 6px 6px;
+  border-top: 0;
+  content: "";
   height: 18px;
-  width: 18px;
+  left: 25%;
+  position: absolute;
+  right: 25%;
+  top: 0;
 }
-.lp-vplay__agents i:first-child {
-  color: var(--lp-claude-spark);
+.lp-vjoin__on::after {
+  border-left: 1px solid var(--lp-ink-tr-50);
+  bottom: 0;
+  content: "";
+  left: 50%;
+  position: absolute;
+  top: 18px;
 }
-.lp-vplay__agents svg {
-  display: block;
-  height: 100%;
-  width: 100%;
+.lp-vjoin__on span {
+  background: var(--lp-v-tone-20);
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-fono);
+  font-size: 10.5px;
+  line-height: 14px;
+  padding: 0 8px;
+  position: relative;
+  z-index: 1;
 }
-.lp-vplay__plugs {
+/* 04: the layers. The data layer at the bottom, the Brain on it, the Play out of the top */
+.lp-vlayers {
   display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+.lp-vlayers .lp-db {
+  --db-row: 26px;
+}
+/* between two layers: one line up, an open arrowhead */
+.lp-vlayers__up {
+  display: block;
+  fill: none;
+  height: 20px;
+  margin: 0 auto;
+  stroke: var(--lp-ink-tr-60);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.25;
+  width: 12px;
+}
+/* a layer with no rows to show: its bar alone, naming the tables it holds */
+.lp-db.lp-vlayers__base .lp-db__bar {
+  border-bottom: 0;
+}
+.lp-vlayers__table {
+  align-items: center;
+  display: inline-flex;
   gap: 6px;
+  margin-right: 8px;
 }
-.lp-vplay__plugs span {
-  border-radius: 999px;
-  box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
-  font-size: var(--lp-text-xsm);
-  font-weight: 500;
-  line-height: 16px;
-  padding: 3px 9px;
-  white-space: nowrap;
+.lp-vlayers__table i {
+  color: var(--db-text-3);
+  font-size: 10.5px;
+  font-style: normal;
 }
+
+
 /* one line and a button, between the rows and the next band */
 .lp-vrows__mid {
   align-items: center;
@@ -731,13 +449,18 @@
   outline: 2px solid var(--lp-purple-30);
   outline-offset: 2px;
 }
-/* each problem's round mark, in its colour */
-.lp-vtabs__dot {
-  background: var(--lp-v-tone-30);
-  border-radius: 50%;
+/* each problem's number, as a line number is set */
+.lp-vtabs__num {
+  color: var(--lp-muted-text);
   flex: none;
-  height: 28px;
-  width: 28px;
+  font-family: var(--lp-font-fono);
+  font-size: 11px;
+  width: 20px;
+}
+.lp-vtabs__tab[aria-selected="true"] .lp-vtabs__num,
+.lp-vtabs__head .lp-vtabs__num {
+  color: var(--lp-v-tone-40);
+  font-size: 11px;
 }
 .lp-vtabs__name {
   font-weight: 600;
@@ -760,10 +483,6 @@
   display: flex;
   gap: 10px;
 }
-.lp-vtabs__head .lp-vtabs__dot {
-  height: 20px;
-  width: 20px;
-}
 .lp-vtabs__head b {
   font-weight: 600;
 }
@@ -771,31 +490,18 @@
   color: var(--lp-subtle-text);
   font-size: var(--lp-text-sm);
 }
+/* the open problem's table, on its colour */
 .lp-vtabs__pic {
-  --lp-vg-line: var(--lp-ink-tr-50);
-  --lp-vg-tone: var(--lp-v-tone-40);
+  align-items: center;
   background: var(--lp-v-tone-10);
   border-radius: 8px;
-  display: grid;
+  display: flex;
   flex: 1;
-  min-height: 220px;
-  place-items: center;
+  min-height: 244px;
+  padding: 20px;
 }
-.lp-vtabs__pic svg {
-  display: block;
-  fill: none;
-  height: 132px;
-  stroke: var(--lp-vg-line);
-  stroke-linecap: round;
-  stroke-width: 1.4;
-  width: 220px;
-}
-.lp-vtabs__pic svg .on {
-  fill: var(--lp-vg-tone);
-  stroke: none;
-}
-.lp-vtabs__pic svg .dot {
-  fill: var(--lp-v-tone-10);
+.lp-vtabs__pic > .lp-db {
+  flex: 1;
 }
 .lp-vtabs__answer {
   background: var(--lp-surface);
@@ -840,42 +546,14 @@
   background: var(--lp-v-tone-20);
   border-radius: 12px;
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  height: 240px;
-  justify-content: center;
+  height: 248px;
   margin-bottom: 20px;
-  padding: 24px;
+  padding: 20px;
 }
-.lp-vware__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-}
-.lp-vware__chips span {
-  background: var(--lp-surface);
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 1px rgba(44, 0, 42, 0.08);
-  font-size: var(--lp-text-sm);
-  font-weight: 600;
-  line-height: 20px;
-  padding: 8px 12px;
-}
-/* the bill: three lines struck out, one left */
-.lp-vware__pic[data-pic="bill"] .lp-vware__chips span {
-  color: var(--lp-subtle-text);
-  font-weight: 500;
-  text-decoration: line-through;
-}
-.lp-vware__note {
-  background: var(--lp-ink-100);
-  border-radius: 10px;
-  color: var(--lp-ink-20);
-  font-size: var(--lp-text-sm);
-  font-weight: 600;
-  line-height: 20px;
-  padding: 8px 14px;
+.lp-vware__pic > .lp-db {
+  --db-row: 26px;
+  flex: 1;
+  font-size: 11.5px;
 }
 .lp .lp-vware__title {
   font-family: var(--lp-font-sans);
@@ -892,105 +570,523 @@
   max-width: 380px;
 }
 .lp-vagent__pic {
+  align-items: center;
   border-radius: 12px;
   display: flex;
-  flex-direction: column;
-  font-size: var(--lp-text-sm);
-  gap: 10px;
   height: 340px;
-  justify-content: flex-end;
-  line-height: 20px;
   margin-bottom: 20px;
   padding: 24px;
 }
 .lp-vagent__pic[data-pic="ask"] {
+  align-items: stretch;
   background: var(--lp-ink-40);
 }
 .lp-vagent__pic[data-pic="plug"] {
   background: var(--lp-purple-20);
-  justify-content: center;
 }
-.lp .lp-vagent__q {
-  align-self: flex-end;
+.lp-vagent__pic > .lp-db,
+.lp-vagent__pic > .lp-chat {
+  flex: 1;
+}
+.lp-vagent__pic > .lp-chat {
   background: var(--lp-surface);
-  border-radius: 12px;
-  box-shadow: inset 0 0 0 1px rgba(44, 0, 42, 0.08);
-  max-width: 80%;
-  padding: 10px 14px;
+  border: 1px solid var(--chat-line);
+  border-radius: 8px;
 }
-.lp .lp-vagent__a {
-  align-items: flex-start;
-  align-self: flex-start;
-  background: var(--lp-ink-20);
-  border-radius: 12px;
+
+/* ── the agent's panel: a question, the read, the rows that come back ── */
+.lp-chat {
+  --chat-text: var(--lp-v-on-dark);
+  --chat-text-3: var(--lp-ink-70);
+  --chat-line: rgba(255, 247, 236, 0.12);
+  --chat-fill: rgba(255, 247, 236, 0.05);
+  color: var(--chat-text);
   display: flex;
-  gap: 8px;
-  max-width: 80%;
-  padding: 10px 14px;
+  flex: 1;
+  flex-direction: column;
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+  min-width: 0;
 }
-.lp-vagent__a i {
+.lp-chat[data-theme="light"] {
+  --chat-text: var(--lp-ink-100);
+  --chat-text-3: var(--lp-ink-80);
+  --chat-line: rgba(44, 0, 42, 0.1);
+  --chat-fill: rgba(44, 0, 42, 0.03);
+}
+.lp .lp-chat__head {
+  align-items: center;
+  border-bottom: 1px solid var(--chat-line);
+  display: flex;
+  flex: none;
+  font-weight: 600;
+  gap: 8px;
+  height: 44px;
+  padding: 0 14px;
+}
+.lp-chat__mark {
   color: var(--lp-claude-spark);
   display: grid;
   flex: none;
-  height: 18px;
-  margin-top: 1px;
-  width: 18px;
+  height: 16px;
+  width: 16px;
 }
-.lp-vagent__a svg {
+.lp-chat__mark svg {
   display: block;
   height: 100%;
   width: 100%;
 }
-.lp .lp-vagent__box {
-  background: var(--lp-surface);
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 1px rgba(44, 0, 42, 0.12);
-  color: var(--lp-muted-text);
-  margin-top: 14px;
-  padding: 12px 14px;
-}
-.lp-vagent__plug {
-  background: var(--lp-surface);
-  border-radius: 10px;
-  box-shadow: inset 0 0 0 1px rgba(44, 0, 42, 0.08);
+/* the tool the agent is connected to, with its live dot */
+.lp-chat__tool {
+  align-items: center;
+  color: var(--chat-text-3);
   display: flex;
+  font-family: var(--lp-font-fono);
+  font-size: 11px;
+  font-weight: 400;
+  gap: 6px;
+  margin-left: auto;
+}
+.lp-chat__tool::before {
+  background: var(--lp-green-20);
+  border-radius: 50%;
+  content: "";
+  height: 6px;
+  width: 6px;
+}
+.lp-chat__body {
+  display: flex;
+  flex: 1;
   flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding: 14px;
+}
+.lp .lp-chat__ask {
+  align-self: flex-end;
+  background: var(--chat-fill);
+  border: 1px solid var(--chat-line);
+  border-radius: 8px 8px 2px 8px;
+  max-width: 100%;
+  padding: 6px 10px;
+}
+.lp .lp-chat__status {
+  align-items: center;
+  color: var(--chat-text-3);
+  display: flex;
+  font-family: var(--lp-font-fono);
+  font-size: 11px;
+  gap: 6px;
+  line-height: 16px;
+}
+.lp .lp-chat__answer {
+  align-items: flex-start;
+  display: flex;
+  font-weight: 500;
   gap: 8px;
-  margin-inline: auto;
-  max-width: 380px;
-  padding: 18px 20px;
+}
+.lp-chat__answer .lp-chat__mark {
+  margin-top: 2px;
+}
+.lp-db.lp-chat__result {
+  --db-row: 26px;
+  flex: none;
+  font-size: 11px;
+}
+.lp .lp-chat__box {
+  border: 1px solid var(--chat-line);
+  border-radius: 8px;
+  color: var(--chat-text-3);
+  margin-top: auto;
+  padding: 8px 12px;
+}
+
+/* ── the pictures: real tables (LpVisionDb.tsx) ──
+   A table as a database tool draws it: the bar with its name, a head with each column's name and
+   type, numbered rows, every line of the grid, NULL where nothing is known. One typeface for the
+   values (the code face), no corner rounder than 4 px inside, one colour to point with. */
+.lp-db {
+  --db-bg: var(--lp-v-dark);
+  --db-text: var(--lp-v-on-dark);
+  --db-cell: var(--lp-ink-40);
+  --db-text-2: var(--lp-ink-60);
+  --db-text-3: var(--lp-ink-70);
+  --db-line: rgba(255, 247, 236, 0.11);
+  --db-line-2: rgba(255, 247, 236, 0.24);
+  --db-fill: rgba(255, 247, 236, 0.04);
+  --db-hit: var(--lp-v-tone-30, var(--lp-yellow-30));
+  --db-hit-text: var(--lp-v-tone-20, var(--lp-yellow-20));
+  --db-hit-fill: color-mix(in srgb, var(--db-hit) 15%, transparent);
+  --db-ref: var(--lp-purple-20);
+  --db-live: var(--lp-green-20);
+  --db-row: 28px;
+  background: var(--db-bg);
+  border: 1px solid var(--db-line);
+  border-radius: 8px;
+  color: var(--db-text-2);
+  font-family: var(--lp-font-fono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  line-height: 16px;
+  min-width: 0;
+  overflow: hidden;
+}
+.lp-db[data-theme="light"] {
+  --db-bg: var(--lp-surface);
+  --db-text: var(--lp-ink-100);
+  --db-cell: var(--lp-ink-100);
+  --db-text-2: var(--lp-ink-90);
+  --db-text-3: var(--lp-ink-70);
+  --db-line: rgba(44, 0, 42, 0.1);
+  --db-line-2: rgba(44, 0, 42, 0.22);
+  --db-fill: rgba(44, 0, 42, 0.03);
+  --db-hit: var(--lp-v-tone-40, var(--lp-yellow-40));
+  --db-hit-text: var(--lp-ink-100);
+  --db-hit-fill: color-mix(in srgb, var(--lp-v-tone-20, var(--lp-yellow-20)) 62%, transparent);
+  --db-ref: var(--lp-purple-40);
+  --db-live: var(--lp-green-30);
+}
+.lp-db table {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
   width: 100%;
 }
-.lp-vagent__plug .lp-vcard__kicker {
-  color: var(--lp-subtle-text);
+.lp-db caption {
+  caption-side: top;
+  padding: 0;
+  text-align: left;
 }
-.lp-vagent__plug ul {
+/* the bar: the table's mark, what it sits under, its name, a count at the far end */
+.lp .lp-db__bar {
+  align-items: center;
+  border-bottom: 1px solid var(--db-line);
+  color: var(--db-text-3);
+  display: flex;
+  gap: 7px;
+  height: 34px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+.lp-db__bar b {
+  color: var(--db-text);
+  font-weight: 500;
+}
+.lp-db__path::after {
+  content: "/";
+  margin-left: 7px;
+  opacity: 0.6;
+}
+.lp-db__meta {
+  font-size: 11px;
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lp-db__icon {
+  display: block;
+  fill: none;
+  flex: none;
+  height: 12px;
+  stroke: currentColor;
+  stroke-width: 1.1;
+  width: 12px;
+}
+.lp-db th,
+.lp-db td {
+  border-bottom: 1px solid var(--db-line);
+  border-right: 1px solid var(--db-line);
+  box-sizing: border-box;
+  font-weight: 400;
+  height: var(--db-row);
+  overflow: hidden;
+  padding: 0 10px;
+  text-align: left;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.lp-db th:last-child,
+.lp-db td:last-child {
+  border-right: 0;
+}
+.lp-db tbody tr:last-child td {
+  border-bottom: 0;
+}
+.lp-db th[data-end],
+.lp-db td[data-end] {
+  text-align: right;
+}
+/* the head: the column's name, then its type a step quieter */
+.lp-db th {
+  background: var(--db-fill);
+  color: var(--db-text);
+  font-size: 0.96em;
+  width: var(--w, auto);
+}
+.lp-db__type {
+  color: var(--db-text-3);
+  font-size: 0.875em;
+  margin-left: 6px;
+}
+/* a head that also says where each column comes from: one more line, over the name */
+.lp-db tr[data-sourced] th {
+  height: calc(var(--db-row) + 14px);
+  padding-top: 1px;
+}
+.lp-db__src {
+  color: var(--db-text-3);
+  display: block;
+  font-family: var(--lp-font-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  line-height: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+.lp-db td {
+  color: var(--db-cell);
+}
+/* the row numbers: a narrow column of their own, as a grid has */
+.lp-db th.lp-db__n,
+.lp-db td.lp-db__n {
+  background: var(--db-fill);
+  color: var(--db-text-3);
+  font-size: 0.875em;
+  padding: 0 8px 0 0;
+  text-align: right;
+  width: 30px;
+}
+.lp-db__null {
+  color: var(--db-text-3);
+  font-size: 0.875em;
+  letter-spacing: 0.3px;
+  opacity: 0.72;
+}
+/* one value of a few: a flat tag */
+.lp-db__tag {
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--db-line-2);
+  display: inline-block;
+  font-size: 0.92em;
+  line-height: 18px;
+  padding: 0 6px;
+  vertical-align: middle;
+}
+/* a reference to another row */
+.lp-db__ref {
+  color: var(--db-ref);
+}
+.lp-db__ref::before {
+  content: "\2192\00a0";
+  opacity: 0.6;
+}
+.lp-db__live::before {
+  background: var(--db-live);
+  border-radius: 50%;
+  content: "";
+  display: inline-block;
+  height: 6px;
+  margin-right: 6px;
+  vertical-align: 1px;
+  width: 6px;
+}
+.lp-db__logo {
+  align-items: center;
+  display: inline-flex;
+  gap: 7px;
+  vertical-align: middle;
+}
+/* the mark on a light tile, so a dark one shows on plum */
+.lp-db__logo img {
+  background: var(--lp-ink-20);
+  border-radius: 3px;
+  box-sizing: border-box;
+  flex: none;
+  height: 16px;
+  padding: 2px;
+  width: 16px;
+}
+/* a tick box, empty or ticked */
+.lp-db__box {
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--db-line-2);
+  display: block;
+  height: 12px;
+  margin: 0 auto;
+  position: relative;
+  width: 12px;
+}
+.lp-db__box[data-on] {
+  background: var(--db-hit);
+  box-shadow: none;
+}
+.lp-db__box[data-on]::after {
+  border: solid var(--lp-ink-100);
+  border-width: 0 1.5px 1.5px 0;
+  content: "";
+  height: 6px;
+  left: 4px;
+  position: absolute;
+  top: 1.5px;
+  transform: rotate(45deg);
+  width: 3px;
+}
+/* what the picture points at: the row a shade lit, its cells in the one colour, its number cell
+   marked */
+.lp-db tr[data-mark="hit"] td,
+.lp-db tr[data-mark="new"] td {
+  background: color-mix(in srgb, var(--db-hit-fill) 42%, transparent);
+}
+.lp-db td[data-hit] {
+  background: var(--db-hit-fill);
+  color: var(--db-hit-text);
+}
+/* a value that no longer holds */
+.lp-db td[data-cut] {
+  color: var(--db-text-3);
+  text-decoration: line-through;
+}
+.lp-db td[data-hit] .lp-db__tag {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--db-hit) 60%, transparent);
+}
+.lp-db td[data-hit] .lp-db__ref {
+  color: inherit;
+}
+.lp-db tr[data-mark="hit"] td.lp-db__n,
+.lp-db tr[data-mark="new"] td.lp-db__n {
+  box-shadow: inset 2px 0 0 var(--db-hit);
+  color: var(--db-hit-text);
+}
+.lp-db[data-theme="light"] tr[data-mark="hit"] td.lp-db__n,
+.lp-db[data-theme="light"] tr[data-mark="new"] td.lp-db__n {
+  color: var(--db-hit);
+}
+/* a row merged away, or ended */
+.lp-db tr[data-mark="cut"] td:not(.lp-db__n) {
+  color: var(--db-text-3);
+  text-decoration: line-through;
+}
+.lp-db tr[data-mark="cut"] .lp-db__ref {
+  color: inherit;
+}
+/* the line under the others */
+.lp-db tr[data-mark="sum"] td {
+  border-top: 1px solid var(--db-line-2);
+  color: var(--db-text);
+  font-weight: 500;
+}
+/* under the rows: a count, and what is left to say */
+.lp .lp-db__foot {
+  align-items: center;
+  border-top: 1px solid var(--db-line);
+  color: var(--db-text-3);
+  display: flex;
+  font-size: 0.92em;
+  gap: 12px;
+  height: var(--db-row);
+  justify-content: space-between;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+/* the schema: three tables on a dotted canvas, the outer two pointing at the middle one's id */
+.lp-db.lp-dbs {
   display: flex;
   flex-direction: column;
+}
+.lp-dbs__canvas {
+  align-items: flex-start;
+  background-image: radial-gradient(circle, rgba(255, 247, 236, 0.1) 1px, transparent 1px);
+  background-position: 8px 8px;
+  background-size: 16px 16px;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  padding: 36px 20px;
+}
+.lp-dbs__box {
+  background: var(--db-bg);
+  border: 1px solid var(--db-line-2);
+  border-radius: 6px;
+  box-sizing: border-box;
+  flex: 1 1 0;
+  max-width: 180px;
+  min-width: 0;
+  overflow: hidden;
+}
+.lp-dbs__box[data-main] {
+  border-color: color-mix(in srgb, var(--db-hit) 70%, transparent);
+}
+.lp .lp-dbs__head {
+  align-items: center;
+  background: var(--db-fill);
+  border-bottom: 1px solid var(--db-line);
+  box-sizing: border-box;
+  color: var(--db-text-3);
+  display: flex;
+  gap: 7px;
+  height: 30px;
+  padding: 0 10px;
+}
+.lp-dbs__head b {
+  color: var(--db-text);
+  font-weight: 500;
+}
+.lp-dbs__head span {
+  font-size: 10.5px;
+  margin-left: auto;
+}
+.lp-dbs__box ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-.lp-vagent__plug li {
+.lp-dbs__box li {
   align-items: center;
-  box-shadow: inset 0 -1px 0 var(--lp-ink-tr-10);
+  box-sizing: border-box;
+  color: var(--db-cell);
   display: flex;
-  font-weight: 600;
-  justify-content: space-between;
-  padding: 10px 0;
+  font-size: 11.5px;
+  gap: 6px;
+  height: 24px;
+  padding: 0 10px;
+  white-space: nowrap;
 }
-.lp-vagent__plug li b {
-  background: var(--lp-green-10);
-  border-radius: 999px;
-  color: var(--lp-green-40);
-  font-size: var(--lp-text-xsm);
-  font-weight: 500;
-  line-height: 16px;
-  padding: 2px 8px;
+.lp-dbs__box li + li {
+  border-top: 1px solid var(--db-line);
 }
-.lp .lp-vagent__back {
-  color: var(--lp-subtle-text);
+/* pk / fk, in the one colour */
+.lp-dbs__box li i {
+  color: var(--db-hit-text);
+  flex: none;
+  font-size: 9px;
+  font-style: normal;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  width: 13px;
 }
+.lp-dbs__box li em {
+  color: var(--db-text-3);
+  font-size: 10.5px;
+  font-style: normal;
+  margin-left: auto;
+}
+.lp-dbs__link {
+  fill: none;
+  flex: none;
+  stroke: var(--db-hit);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.25;
+  width: 36px;
+}
+.lp-dbs__link path {
+  vector-effect: non-scaling-stroke;
+}
+
 
 /* ── the close ── */
 .lp-vd.lp-vclose {
@@ -1027,10 +1123,26 @@
 }
 
 /* ── narrower windows ── */
+/* beside the chat, a window this wide has room for one column less */
+@media (min-width: 1181px) and (max-width: 1311px) {
+  .lp-vh__window [data-hide~="mid"] {
+    display: none;
+  }
+}
 @media (max-width: 1180px) {
+  /* the window alone: the chat panel needs the width */
   .lp-vh__stage {
-    --lp-vh-chat: 340px;
-    --lp-vh-out: 24px;
+    padding-right: 0;
+  }
+  .lp-vh__window {
+    padding-right: 0;
+  }
+  .lp-vh__chat {
+    display: none;
+  }
+  .lp-vh__window .lp-db th:last-child,
+  .lp-vh__window .lp-db td:last-child {
+    border-right: 0;
   }
   .lp-vrows__row,
   .lp-vrows__row:nth-child(even) {
@@ -1061,16 +1173,6 @@
   .lp .lp-v__statement {
     font-size: var(--lp-text-3xlg);
     letter-spacing: -0.9954px;
-  }
-  /* the window alone: the chat panel needs the width */
-  .lp-vh__stage {
-    padding-right: 0;
-  }
-  .lp-vh__window {
-    padding: 20px 20px 28px;
-  }
-  .lp-vh__chat {
-    display: none;
   }
   .lp-vrows__list {
     gap: 72px;
@@ -1108,7 +1210,8 @@
     margin-top: 40px;
   }
   .lp-vware__pic {
-    height: 200px;
+    height: auto;
+    padding: 24px;
   }
   .lp-vagent__grid {
     grid-template-columns: minmax(0, 1fr);
@@ -1125,16 +1228,11 @@
   .lp-vh__stage {
     margin-top: 48px;
   }
-  .lp-vh__window {
-    border-radius: 14px 14px 0 0;
-    padding: 12px 12px 20px;
+  /* the phone names the open table's count only */
+  .lp-vh__bar {
+    padding: 0 8px;
   }
-  /* the phone keeps the two ends of each row: the company and its next best Play */
-  .lp-vh__row {
-    grid-template-columns: minmax(0, 1fr) auto;
-  }
-  .lp-vh__row > :nth-child(2),
-  .lp-vh__row > :nth-child(3) {
+  .lp-vh__tab:not([data-on]) small {
     display: none;
   }
   .lp-vd,
@@ -1168,21 +1266,59 @@
   .lp-vrows__frame {
     padding: 14px;
   }
-  .lp-vcard {
-    padding: 16px;
-  }
-  .lp-vsrc__note,
-  .lp-vrec__from {
+  /* a phone shows the columns that carry the point; the others are marked in the tables' data */
+  .lp-db [data-hide~="phone"] {
     display: none;
   }
-  .lp-vsrc__row {
-    grid-template-columns: 28px minmax(0, 1fr) auto;
+  .lp-db th {
+    width: var(--wp, var(--w, auto));
   }
-  .lp-vrec__points li {
-    grid-template-columns: 76px minmax(0, 1fr);
+  .lp-db th,
+  .lp-db td {
+    padding: 0 8px;
   }
-  .lp-vcross {
+  .lp-db th.lp-db__n,
+  .lp-db td.lp-db__n {
+    padding: 0 6px 0 0;
+    width: 24px;
+  }
+  .lp .lp-db__bar,
+  .lp .lp-db__foot {
+    padding: 0 10px;
+  }
+  /* the data layer's bar names its tables; their counts are in the hero */
+  .lp-vlayers__table i {
+    display: none;
+  }
+  /* the two tables one over the other, one stem down to the third */
+  .lp-vjoin__in {
+    gap: 12px;
     grid-template-columns: minmax(0, 1fr);
+  }
+  .lp-vjoin__on::before {
+    border: 0;
+    border-left: 1px solid var(--lp-ink-tr-50);
+    border-radius: 0;
+    left: 50%;
+    right: auto;
+  }
+  /* two tables of the schema fit: people, and the companies they point at */
+  .lp-dbs__canvas {
+    padding: 24px 12px;
+  }
+  .lp-dbs__box:nth-of-type(3),
+  .lp-dbs__link[data-side="right"] {
+    display: none;
+  }
+  .lp-dbs__link {
+    width: 22px;
+  }
+  .lp-dbs__box li {
+    font-size: 10.5px;
+    padding: 0 8px;
+  }
+  .lp-dbs__box li em {
+    display: none;
   }
   .lp-vtabs__short {
     display: none;
@@ -1191,10 +1327,17 @@
     display: inline;
   }
   .lp-vtabs__pic {
-    min-height: 168px;
+    min-height: 0;
+    padding: 12px;
+  }
+  .lp-vware__pic {
+    padding: 14px;
   }
   .lp-vagent__pic {
-    height: 300px;
-    padding: 16px;
+    height: auto;
+    padding: 14px;
+  }
+  .lp-vagent__pic[data-pic="ask"] {
+    min-height: 320px;
   }
 }
