@@ -2,7 +2,7 @@
 
 Since November 5, 2026 the White Glove page books its own demos. The hero holds the demo film (left) and a short form (right): a work email, company size, country, whether a GTM team is in place and, since November 8, whether the $3,000 a month works. It replaces the "Talk to sales" buttons that sent visitors to the long `/demo` request. `/demo` and its review flow are unchanged.
 
-The White Glove campaign's own landing page, brain.pancake.ai/white-glove (the separate `pancake-brain` app), shows the same form and posts to the same routes from its origin (`lib/white-glove-cors.ts`), so both pages follow one set of rules. Its CRM notes and queue rows name that page.
+The White Glove campaign's own landing page, brain.pancake.ai/white-glove (the separate `pancake-brain` app), shows the same form and posts to the same route from its origin (`lib/white-glove-cors.ts`), so both pages follow one set of rules. Its CRM notes and queue rows name that page.
 
 ## Why
 
@@ -32,16 +32,9 @@ The card states the price up front ($3,000 a month, 3 months minimum), which is 
 
 `lib/attio-white-glove.ts`, with the same `ATTIO_API_KEY` as `/demo`:
 
-- **On submit (`review` and `book`):** Company is asserted by the email's domain (Attio's enrichment adds the name), Person by email (an existing person only gets an empty company filled), and a note holds the answers and the route.
-- **On booking (`book` only):** the page sees Calendly's `calendly.event_scheduled` and posts the signed booking pass to `/api/white-glove/booked`. That opens one Deal named `<domain> · White Glove demo`, linked to the Company and the Person, in the Sales Pipeline's "Demo booked" stage, owned by François (`francois@getbasalt.ai`). The workspace requires both a stage and an owner on every deal (checked 2026-11-05). `ATTIO_WHITE_GLOVE_DEAL_STAGE` and `ATTIO_WHITE_GLOVE_DEAL_OWNER` override them. An owner Attio refuses is dropped rather than losing the deal. A note on the deal holds the answers and the Calendly event URI. A second booking from the same domain within 30 days adds a note to that deal instead of opening a new one.
-- **Not covered:**
-  - Bookings made from a `/demo` review invitation, or from the "open in a new tab" fallback, happen on calendly.com, so they open no deal. A Calendly webhook (`invitee.created`, needs a Calendly admin token) would cover every booking.
-  - The workspace's own workflows don't open deals on bookings (checked 2026-11-05: "Create deal" fires on a list status change, and the webhook-driven "New Demo Request" last ran on Mar 1, 2026), so there are no duplicates today.
+- **On submit (`review` and `book`):** Company is asserted by the email's domain (Attio's enrichment adds the name), Person by email (an existing person only gets an empty company filled), and a note holds the answers, the route and the page used.
+- **On booking, the site writes nothing.** The CRM's own Calendly integration (outside this repo) opens the deal for every booking on the "Pancake Whiteglove" event, linked to the Company and the Person, in the Sales pipeline's "Meeting booked" stage, owned by François. That covers bookings made on either page, from a `/demo` review invitation, and on calendly.com through the "open in a new tab" fallback. Until November 9, 2026 the site also opened a deal of its own on each booking it saw (`/api/white-glove/booked`, with a signed booking pass). That duplicated the integration's deal, so the route and the pass were removed.
 - **Team tests:** addresses on pancake.ai / getpancake.ai get the same screens, but nothing reaches the queue or Attio. The calendar is real, so cancel any test booking.
-
-## The booking pass
-
-`lib/white-glove-booking-token.ts`: HMAC-SHA256 over the qualified answers, keyed on the Attio token (domain-separated), valid for 24 hours. A deal therefore needs a request that passed the server's rules, with answers no one edited in the browser. The pass does not prove that a booking happened: Calendly's message isn't signed. A replay only adds a note to the deal it already opened.
 
 ## Checks
 

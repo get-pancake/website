@@ -32,8 +32,9 @@ export const COMPARE_META = {
   /** <= 60 characters, brand in front (the comparison pages carry none, the hub names every product). */
   title: "Pancake Compared: Origami, Unify, Octave, Alta and More",
   ogTitle: "Pancake compared",
+  // 2026-11-10: thirteen pages, too many to name in one line: six of them, then "and more".
   description:
-    "Pancake compared with Origami, Unify, Octave, Alta, Lemlist and Gojiberry, read from each product’s public pages.",
+    "Pancake compared with Clay, Apollo, ZoomInfo, Lemlist, Unify, Origami and more GTM tools, read from each product’s public pages.",
   /** = the comparison pages' BreadcrumbList (Pancake > Comparisons > X vs Pancake). */
   crumbs: { home: "Pancake", page: "Comparisons" },
 };

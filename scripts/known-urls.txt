@@ -292,6 +292,15 @@
 /blog/ai-cold-outreach
 /blog/how-to-get-clients-as-a-fractional-cmo
 
+# Comparison pages for data, cold email and outreach tools (2026-11-10)
+/clay-vs-pancake
+/apollo-vs-pancake
+/zoominfo-vs-pancake
+/instantly-vs-pancake
+/heyreach-vs-pancake
+/11x-vs-pancake
+/smartlead-vs-pancake
+
 # Loaded by partner pages served on pancake.ai (/learn, 2026-11-03): never rename or remove.
 /pancake-attribution.min.js
 /pancake-tags.js

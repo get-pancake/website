@@ -88,7 +88,7 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Careers](https://pancake.ai/careers) — the team and open roles
 - [Privacy Policy](https://pancake.ai/privacy) — what Pancake (Basalt AI Inc.) collects and how it is used
 - [Terms of Service](https://pancake.ai/terms) — the terms for the website and the app
-- [Comparisons](https://pancake.ai/compare) — Pancake beside the GTM tools buyers weigh it against (Origami, Unify, Octave, Alta, Lemlist, Gojiberry), plus the blog's guides to alternatives for GTM tools
+- [Comparisons](https://pancake.ai/compare) — Pancake beside the GTM tools buyers weigh it against (Origami, Unify, Octave, Alta, Lemlist, Gojiberry, Clay, Apollo, ZoomInfo, Instantly, HeyReach, 11x, Smartlead), plus the blog's guides to alternatives for GTM tools
 - [Viktor vs Pancake](https://pancake.ai/viktor-vs-pancake) — broad AI employee vs Plays that find buyers and start the conversation
 - [Claude Tag vs Pancake](https://pancake.ai/claude-tag-vs-pancake) — ambient general teammate vs focused autonomous GTM execution
 - [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain behind every Play
@@ -97,6 +97,13 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Unify vs Pancake](https://pancake.ai/unify-vs-pancake) — an outbound platform for sales reps, priced per seat plus credits, vs Plays that find buyers from $99 a month per workspace
 - [Octave vs Pancake](https://pancake.ai/octave-vs-pancake) — a context layer that feeds your GTM tools and agents vs Plays that find buyers and start the conversation
 - [Alta vs Pancake](https://pancake.ai/alta-vs-pancake) — named AI agents for outbound, inbound and calls, sold by custom quote, vs self-serve Plays from $99 a month per workspace
+- [Clay vs Pancake](https://pancake.ai/clay-vs-pancake) — data tables and workflows a GTM engineer builds vs Plays you ask for in Claude, from $99 a month per workspace
+- [Apollo vs Pancake](https://pancake.ai/apollo-vs-pancake) — a contact database with sequences and a dialer, priced per seat, vs Plays you ask for in Claude, on one plan per workspace
+- [ZoomInfo vs Pancake](https://pancake.ai/zoominfo-vs-pancake) — an enterprise GTM data platform sold in custom packages vs self-serve Plays from $99 a month per workspace
+- [Instantly vs Pancake](https://pancake.ai/instantly-vs-pancake) — cold email at volume, with unlimited email accounts and warmup, vs Plays that write each lead a personal message from your own account
+- [HeyReach vs Pancake](https://pancake.ai/heyreach-vs-pancake) — outreach automation for lists you import, priced per sender, vs Plays that find the people and write to each one
+- [11x vs Pancake](https://pancake.ai/11x-vs-pancake) — AI agents for voice, chat, email and social, sold by demo, vs self-serve Plays from $99 a month per workspace
+- [Smartlead vs Pancake](https://pancake.ai/smartlead-vs-pancake) — cold email infrastructure with unlimited mailboxes and warmup vs Plays you ask for in Claude, with no mailboxes to run
 - [OpenClaw vs Pancake](https://pancake.ai/openclaw-vs-pancake) — an open-source agent runtime you configure vs a managed GTM platform
 - [Paperclip vs Pancake](https://pancake.ai/pancake-vs-paperclips) — a self-hosted control plane for AI companies vs a managed GTM platform
 
