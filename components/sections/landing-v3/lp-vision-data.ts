@@ -18,12 +18,34 @@
  * so; no vendor is named for comparison.
  */
 
-/** the hero's lede lives in lib/copy.ts (SITE_DESCRIPTION: it is also the page's description) */
-export const VISION_H1: readonly [string, string] = ["Infrastructure powering", "your revenue factory"];
+/* The hero is the designer's (LpHero): its H1, "Infrastructure powering your revenue factory", is
+   in LpAudienceHeadline.tsx, and its lede is SITE_DESCRIPTION (lib/copy.ts: it is also the page's
+   description). */
 
-/** what the hero's picture is, for someone who cannot see it */
-export const VISION_HERO_ALT =
-  "Pancake’s companies table: one row per company, with your CRM deal, your last call or event, an outside signal and the next best Play. Beside it, Claude answers which accounts to work now.";
+/**
+ * The window under the hero: Claude's answer, and Pancake's table under it, with a curtain to slide
+ * between the two (founder 2026-11-11: "un espece de petit rideau qu'on peut deglisser a droite a
+ * gauche qui montre Claude d'un cote et l'infra de l'autre", to show Claude runs on Pancake). Each
+ * account Claude names sits on the line of its own row in the table.
+ */
+export const VISION_CURTAIN = {
+  label:
+    "Claude answers which accounts to work now. Beside it, Pancake’s companies table: each line of the answer is one of its rows.",
+  handle: "Slide between Claude and Pancake",
+  claude: "Claude",
+  connector: "Pancake",
+  ask: "Which accounts should I work now?",
+  tool: { title: "Read companies, people and signals", done: "3 tables, one call" },
+  say: "Three accounts crossed a signal.",
+  picks: [
+    { who: "Fintech", size: "200 people", why: "Lost deal, now hiring SDRs.", play: "Reach back out" },
+    { who: "Dev tools", size: "40 people", why: "Asked pricing, just funded.", play: "Send the pricing follow-up" },
+    { who: "Logistics", size: "1,200 people", why: "Your event, new VP Sales.", play: "Follow up on the event" },
+  ],
+  next: "Want me to run the first Play?",
+  box: "Reply to Claude",
+  artifact: "Accounts to work now",
+} as const;
 
 /** what Pancake is, in the founder's line: the statement that opens the dark band. It was the
  *  why-now pair "Revenue is now an engineering job run by non-engineers. / Pancake does the
@@ -72,7 +94,7 @@ export const VISION_ROWS: readonly { id: VisionRowId; num: string; label: string
   },
 ];
 
-/** the line between the rows and the next band */
+/** the heading of the three steps that follow the rows: today's product, at work */
 export const VISION_MID = { title: "See Pancake at work." } as const;
 
 export type VisionProblemId = "sources" | "dedup" | "matching" | "history" | "lineage" | "crossing";

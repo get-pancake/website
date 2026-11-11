@@ -1,32 +1,24 @@
 import { Fragment } from "react";
 
-import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
-import { DEMO_PAGE_PATH } from "@/lib/booking";
-import { SITE_DESCRIPTION } from "@/lib/copy";
-import { APP_ORIGIN } from "@/lib/site-config.mjs";
-
-import { LpVisionProblemTabs } from "./LpVisionProblemTabs";
+import { LpDive } from "./LpDive";
 import { DbChat, DbTable, DbTableIcon, type DbTone } from "./LpVisionDb";
 import {
   VISION_AGENT,
-  VISION_CLOSE,
-  VISION_H1,
-  VISION_HERO_ALT,
-  VISION_MID,
+  VISION_PROBLEMS,
   VISION_PROBLEMS_BODY,
   VISION_PROBLEMS_TITLE,
   VISION_ROWS,
   VISION_STATEMENT,
   VISION_WAREHOUSE,
+  type VisionProblemId,
   type VisionRowId,
 } from "./lp-vision-data";
+import type { DiveItem } from "./lp-dive-data";
+import type { DiveItemId } from "./lp-dive-stages";
 import {
   DB_ASK,
-  DB_CHAT,
   DB_CROSS,
   DB_EXTERNAL,
-  DB_HERO,
-  DB_HERO_TABS,
   DB_LAYERS,
   DB_PLUG,
   DB_SOURCES,
@@ -34,77 +26,29 @@ import {
 } from "./lp-vision-tables";
 
 /**
- * The vision homepage (2026-11-09): Pancake as the revenue data warehouse.
- *
- * Its components and their order follow the reference page the founder picked for this look
- * (its latest version), rebuilt with Pancake's tokens, type and marks:
- *   hero        a centred claim, one line under it, the buttons, the product window with its
- *               chat panel hanging over its right edge
- *   statement   one or two lines, left-aligned, opening the dark band
- *   rows        four numbered rows that swap sides, the text on one and a framed picture on the
- *               other, then one centred line and a button
- *   problems    a warm band: a title, a few lines beside it, a list and the card of the open item
- *   warehouse   a title over three cards, each a picture, a line in bold and two lines of text
- *   agent       a title over two wide cards, the same way
- *   close       a dark band, one line, a few words, the buttons
- * Left out because Pancake has nothing true to put in them yet: the two quote cards with a
- * figure, the film with a quote, the research log.
- *
- * Every picture is a real table (LpVisionDb.tsx, data in lp-vision-tables.ts): the founder asked
- * for "de la vraie db" after a first set of drawn mock-ups. Nothing moves. Only the problems'
- * list needs JavaScript (LpVisionProblemTabs).
+ * The vision homepage's own sections (2026-11-09; in the designer's forms since 2026-11-11, when
+ * the founder asked for the current page's graphic pieces back: "les petits nuages", "l'arc-en-ciel
+ * qui vibre dans le hero", "composants design … qu'il faut evidemment remettre", "ca ne change pas
+ * le contenu mais la forme"). The page (app/page.tsx) is:
+ *   LpHero            the designer's hero, with the vision's headline and lede
+ *   LpVisionCurtain   the window under it: Claude's answer over Pancake's table (its own file)
+ *   LpMarquee         the customers, on cream
+ *   LpVisionRows      the statement and the four rows: a title, two lines, a framed real table
+ *   LpSteps           today's product at work, the designer's three animated steps
+ *   the sky           the six hard problems (LpDive with the vision's six stories), then
+ *   LpVisionWarehouse / LpVisionAgent, the cards, and LpCta, the close on its hill
+ * Every table is a real one (LpVisionDb.tsx, data in lp-vision-tables.ts): the founder asked for
+ * "de la vraie db" after a first set of drawn mock-ups.
  * Copy: lp-vision-data.ts. Styles: vision.css.
  */
 
-/* ── hero ─────────────────────────────────────────────────────────────────── */
-
-export function LpVisionHero() {
-  return (
-    <section id="main-content" tabIndex={-1} className="lp-vh" aria-labelledby="lp-vh-title">
-      <div className="lp-vh__copy">
-        <h1 id="lp-vh-title" className="lp-display lp-vh__title">
-          {VISION_H1[0]} <br />
-          {VISION_H1[1]}
-        </h1>
-        <p className="lp-vh__lede">{SITE_DESCRIPTION}</p>
-        <div className="lp-vh__btns">
-          <LpFxLink href={APP_ORIGIN} data-analytics-id="app_hero">
-            Start free
-          </LpFxLink>
-          <LpFxLink href={DEMO_PAGE_PATH} className="lp-btn--tinted lp-btn--demo" data-analytics-id="call_hero">
-            Talk to sales
-          </LpFxLink>
-        </div>
-      </div>
-      {/* the product: the companies table, and the agent reading it. One picture, read out by its label */}
-      <div className="lp-vh__stage" role="img" aria-label={VISION_HERO_ALT}>
-        <div className="lp-vh__window" aria-hidden="true">
-          <ul className="lp-vh__bar">
-            {DB_HERO_TABS.map((tab, i) => (
-              <li key={tab.name} className="lp-vh__tab" data-on={i === 0 ? "" : undefined}>
-                <DbTableIcon />
-                {tab.name}
-                <small>{tab.rows}</small>
-              </li>
-            ))}
-          </ul>
-          <DbTable table={DB_HERO} bar={false} tone="yellow" />
-        </div>
-        <div className="lp-vh__chat" aria-hidden="true">
-          <DbChat {...DB_CHAT} />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ── the statement, then the four numbered rows ───────────────────────────── */
+/* ── the statement, then the four rows ────────────────────────────────────── */
 
 export function LpVisionRows() {
   return (
-    <section className="lp-vd lp-vrows" aria-labelledby="lp-vrows-title">
+    <section className="lp-vc lp-vrows" aria-labelledby="lp-vrows-title">
       <div className="lp-v__inner">
-        <h2 id="lp-vrows-title" className="lp-v__statement lp-vrows__statement">
+        <h2 id="lp-vrows-title" className="lp-title-section lp-v__title lp-vrows__statement">
           {VISION_STATEMENT.map((line, i) => (
             <Fragment key={line}>
               {i > 0 ? <br /> : null}
@@ -120,9 +64,7 @@ export function LpVisionRows() {
                 <p className="lp-vrows__body">{row.body}</p>
               </div>
               <div className="lp-vrows__side">
-                <p className="lp-v__label">
-                  <span>{row.num}</span> {row.label}
-                </p>
+                <p className="lp-v__label">{row.label}</p>
                 <div className="lp-vrows__frame" aria-hidden="true">
                   <RowPic id={row.id} tone={row.tone} />
                 </div>
@@ -130,12 +72,6 @@ export function LpVisionRows() {
             </li>
           ))}
         </ol>
-        <div className="lp-vrows__mid">
-          <p className="lp-vrows__mid-title">{VISION_MID.title}</p>
-          <LpFxLink href={APP_ORIGIN} className="lp-v__pill-light" data-analytics-id="app_lead_finding">
-            Start free
-          </LpFxLink>
-        </div>
       </div>
     </section>
   );
@@ -204,32 +140,39 @@ function LayersPic({ tone }: { tone: DbTone }) {
   );
 }
 
-/* ── the six hard problems ────────────────────────────────────────────────── */
+/* ── the six hard problems: the designer's deep dive, on the sky ──────────── */
+
+/** each problem's story in the dive's registry (lp-dive-stages.ts): five drawn for this page, and
+    the lineage story for crossing (your own data and outside signals meeting on one lead) */
+const PROBLEM_STORY: Record<VisionProblemId, DiveItemId> = {
+  sources: "p-sources",
+  dedup: "p-dedup",
+  matching: "p-matching",
+  history: "p-history",
+  lineage: "p-moves",
+  crossing: "lineage",
+};
+
+/** In the list: the problem in plain words as the title; under it, once open, what Pancake does
+    about it (the problem's first line, then its two lines). */
+const PROBLEM_ITEMS: readonly DiveItem[] = VISION_PROBLEMS.map((problem) => ({
+  id: PROBLEM_STORY[problem.id],
+  title: problem.short,
+  body: `${problem.line} ${problem.body}`,
+  status: "final",
+}));
 
 export function LpVisionProblems() {
-  return (
-    <section className="lp-vw lp-vprob" aria-labelledby="lp-vprob-title">
-      <div className="lp-v__inner">
-        <div className="lp-vprob__head">
-          <h2 id="lp-vprob-title" className="lp-v__statement">
-            {VISION_PROBLEMS_TITLE[0]} <br />
-            {VISION_PROBLEMS_TITLE[1]}
-          </h2>
-          <p className="lp-vprob__body">{VISION_PROBLEMS_BODY}</p>
-        </div>
-        <LpVisionProblemTabs />
-      </div>
-    </section>
-  );
+  return <LpDive items={PROBLEM_ITEMS} title={VISION_PROBLEMS_TITLE.join(" ")} lede={VISION_PROBLEMS_BODY} skyTop />;
 }
 
 /* ── what Pancake is: three cards ─────────────────────────────────────────── */
 
 export function LpVisionWarehouse() {
   return (
-    <section className="lp-vc lp-vware" aria-labelledby="lp-vware-title">
+    <section className="lp-vc lp-vsky lp-vware" aria-labelledby="lp-vware-title">
       <div className="lp-v__inner">
-        <h2 id="lp-vware-title" className="lp-v__statement">
+        <h2 id="lp-vware-title" className="lp-title-section lp-v__title">
           {VISION_WAREHOUSE.title}
         </h2>
         <ul className="lp-vware__grid">
@@ -253,9 +196,9 @@ export function LpVisionWarehouse() {
 export function LpVisionAgent() {
   const [ask, plug] = VISION_AGENT.cards;
   return (
-    <section className="lp-vc lp-vagent" aria-labelledby="lp-vagent-title">
+    <section className="lp-vc lp-vsky lp-vagent" aria-labelledby="lp-vagent-title">
       <div className="lp-v__inner">
-        <h2 id="lp-vagent-title" className="lp-v__statement">
+        <h2 id="lp-vagent-title" className="lp-title-section lp-v__title">
           {VISION_AGENT.title}
         </h2>
         <ul className="lp-vagent__grid">
@@ -286,25 +229,3 @@ export function LpVisionAgent() {
   );
 }
 
-/* ── the close ────────────────────────────────────────────────────────────── */
-
-export function LpVisionClose() {
-  return (
-    <section className="lp-vd lp-vclose" aria-labelledby="lp-vclose-title">
-      <div className="lp-v__inner lp-vclose__inner">
-        <h2 id="lp-vclose-title" className="lp-display lp-vclose__title">
-          {VISION_CLOSE.title}
-        </h2>
-        <p className="lp-vclose__body">{VISION_CLOSE.body}</p>
-        <div className="lp-vclose__btns">
-          <LpFxLink href={APP_ORIGIN} className="lp-v__pill-light" data-analytics-id="app_final">
-            Start free
-          </LpFxLink>
-          <LpFxLink href={DEMO_PAGE_PATH} className="lp-btn--outline lp-v__pill-line" data-analytics-id="call_final">
-            Talk to sales
-          </LpFxLink>
-        </div>
-      </div>
-    </section>
-  );
-}

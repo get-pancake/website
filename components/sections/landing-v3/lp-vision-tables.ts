@@ -23,6 +23,8 @@ export type DbCellObj = {
   hit?: true;
   /** a value that no longer holds, struck out */
   cut?: true;
+  /** a value that lands while the picture plays: NULL until then (the hero's table) */
+  live?: true;
   /** a vendor's own mark before the value */
   logo?: string;
 };
@@ -40,7 +42,7 @@ export type DbCol = {
   end?: true;
   /** where the column comes from, printed over its name (the hero's table) */
   src?: string;
-  /** not shown on a phone, or on a desktop too narrow for the table beside the chat ("mid") */
+  /** not shown on a phone, or on a tablet ("mid": the hero's table, which has no room there) */
   hide?: "phone" | "mid" | "phone mid";
 };
 
@@ -72,7 +74,7 @@ const hit = (v: string): DbCellObj => ({ v, hit: true });
 const cut = (v: string): DbCellObj => ({ v, cut: true });
 const LIVE: DbCellObj = { v: "live", as: "live" };
 
-/* ── hero: the companies table, and the agent reading it ───────────────────── */
+/* ── hero: the companies table under Claude's answer (the curtain, LpVisionCurtain.tsx) ────── */
 
 export const DB_HERO_TABS = [
   { name: "companies", rows: "4,812" },
@@ -80,53 +82,63 @@ export const DB_HERO_TABS = [
   { name: "signals", rows: "38,204" },
 ] as const;
 
-/** one row per company: what you know, what the outside says, what to do next */
+const live = (v: string): DbCellObj => ({ v, live: true });
+
+/** One row per company: what you know, what the outside says, what to do next. The widths place
+ *  each column on the 1136 px card: Claude covers the left of it, so the two columns that carry
+ *  the answer (signal, next_best_play) are the ones on show. Rows 3 to 5 are the three accounts
+ *  Claude names: its lines sit on theirs. Row 2 takes a datapoint while the picture plays. */
 export const DB_HERO: DbTableData = {
   name: "companies",
   numbered: true,
   cols: [
-    { name: "id", type: "pk", w: 76, wp: 62, src: "Key" },
-    { name: "industry", type: "text", w: 112, src: "Profile", hide: "phone" },
-    { name: "crm_deal", type: "enum", w: 112, src: "Your CRM", hide: "phone" },
-    { name: "last_touch", type: "text", w: 140, src: "Calls, events", hide: "phone mid" },
-    { name: "signal", type: "text", w: 158, wp: 118, src: "Data providers" },
+    { name: "id", type: "pk", w: 90, wp: 60, src: "Key" },
+    { name: "industry", type: "text", w: 130, src: "Profile", hide: "phone mid" },
+    { name: "crm_deal", type: "enum", w: 150, src: "Your CRM", hide: "phone" },
+    { name: "last_touch", type: "text", w: 180, src: "Calls, events", hide: "phone mid" },
+    { name: "signal", type: "text", w: 190, wp: 112, src: "Data providers" },
     { name: "next_best_play", type: "text", src: "The Brain" },
   ],
   rows: [
+    { c: ["c_08fa", "Edtech", tag("closed_lost"), null, null, null] },
+    { c: ["c_d5a1", "Legal tech", null, null, live("new funding"), live("Reach out on the round")], mark: "new" },
     { c: ["c_4f2a", "Fintech", tag("closed_lost", true), null, hit("hiring SDRs"), hit("Reach back out")], mark: "hit" },
-    { c: ["c_91be", "Dev tools", tag("open"), "asked pricing", "funding Series B", "Send the pricing follow-up"], mark: "hit" },
-    { c: ["c_27d0", "Logistics", null, "attended event", "new VP Sales", "Follow up on the event"], mark: "hit" },
+    { c: ["c_91be", "Dev tools", tag("open"), "asked pricing", "funding Series B", hit("Send the pricing follow-up")], mark: "hit" },
+    { c: ["c_27d0", "Logistics", null, "attended event", "new VP Sales", hit("Follow up on the event")], mark: "hit" },
     { c: ["c_a6c3", "Health tech", tag("closed_won"), null, "headcount up", "Offer the team plan"] },
     { c: ["c_5e18", "Retail", null, null, "uses a rival tool", "Start with the comparison"] },
-    { c: ["c_c0d9", "Insurance", null, "asked for a demo", null, null] },
+    { c: ["c_c0d9", "Insurance", null, "asked for a demo", "new CMO", "Send the demo recap"] },
     { c: ["c_3b7e", "HR software", tag("open"), null, null, null] },
-    { c: ["c_e214", "Security", null, "attended event", null, null] },
-    { c: ["c_08fa", "Edtech", tag("closed_lost"), null, null, null] },
-    { c: ["c_d5a1", "Legal tech", null, null, "new funding", null] },
+    { c: ["c_e214", "Security", null, "attended event", "headcount up", "Send the event recap"] },
+    { c: ["c_77b2", "Travel", tag("closed_lost"), null, null, null] },
+    { c: ["c_1f6d", "Proptech", null, null, "new CRO", "Introduce yourself"] },
+    { c: ["c_9a40", "Gaming", tag("open"), "asked pricing", null, null] },
+    { c: ["c_62ce", "Biotech", null, null, "uses a rival tool", null] },
+    { c: ["c_b81e", "Media", tag("closed_won"), null, "new funding", "Offer the team plan"] },
   ],
 };
 
-export const DB_CHAT = {
-  agent: "Claude",
-  tool: "Pancake",
-  ask: "Which accounts should I work now?",
-  status: "Read 3 tables in one call",
-  answer: "Three accounts crossed a signal.",
-  box: "Ask about your market",
-  result: {
-    name: "result",
-    cols: [
-      { name: "id", w: 68 },
-      { name: "industry", w: 86 },
-      { name: "why" },
-    ],
-    rows: [
-      { c: ["c_4f2a", "Fintech", "lost deal, now hiring"], mark: "hit" },
-      { c: ["c_91be", "Dev tools", "asked pricing, new funding"] },
-      { c: ["c_27d0", "Logistics", "your event, new VP Sales"] },
-    ],
-  } satisfies DbTableData,
-} as const;
+/** the rows an agent gets back: in the agent card's chat, and as the view Claude draws */
+export const DB_RESULT: DbTableData = {
+  name: "result",
+  cols: [{ name: "id", w: 68 }, { name: "industry", w: 86 }, { name: "why" }],
+  rows: [
+    { c: ["c_4f2a", "Fintech", "lost deal, now hiring"], mark: "hit" },
+    { c: ["c_91be", "Dev tools", "asked pricing, new funding"] },
+    { c: ["c_27d0", "Logistics", "your event, new VP Sales"] },
+  ],
+};
+
+/** the view Claude draws from them, beside its answer (seen once the curtain is slid right) */
+export const DB_ARTIFACT: DbTableData = {
+  name: "accounts",
+  cols: [{ name: "id", w: 70 }, { name: "industry", w: 92 }, { name: "next_best_play" }],
+  rows: [
+    { c: ["c_4f2a", "Fintech", hit("Reach back out")], mark: "hit" },
+    { c: ["c_91be", "Dev tools", "Send the pricing follow-up"] },
+    { c: ["c_27d0", "Logistics", "Follow up on the event"] },
+  ],
+};
 
 /* ── the four rows ─────────────────────────────────────────────────────────── */
 
@@ -253,118 +265,6 @@ export const DB_LAYERS = {
   data: { name: "data layer", tables: DB_HERO_TABS },
 } as const;
 
-/* ── the six hard problems: one table each ─────────────────────────────────── */
-
-export const DB_PROBLEMS = {
-  sources: {
-    name: "records",
-    meta: "5 sources, 1 table",
-    numbered: true,
-    cols: [
-      { name: "loaded", w: 70, hide: "phone" },
-      { name: "source", type: "enum", w: 128, wp: 112 },
-      { name: "record", type: "text" },
-      { name: "company_id", w: 96, hide: "phone" },
-    ],
-    rows: [
-      { c: ["09:41", tag("crm"), "deal moved to closed_lost", ref("c_4f2a")] },
-      { c: ["09:38", tag("calls"), "asked about pricing", ref("c_91be")] },
-      { c: ["09:12", tag("events"), "attended the launch", ref("c_27d0")] },
-      { c: ["08:57", tag("your database"), "plan changed to team", ref("c_a6c3")] },
-      { c: ["08:30", tag("job posts"), "SDR roles opened", ref("c_4f2a")] },
-    ],
-  },
-  dedup: {
-    name: "people",
-    meta: "3 rows in, 1 record kept",
-    numbered: true,
-    cols: [
-      { name: "person_id", type: "id", w: 104, hide: "phone" },
-      { name: "title", type: "text" },
-      { name: "company_id", w: 96, wp: 84 },
-      { name: "found_in", type: "text", w: 156, wp: 96 },
-    ],
-    rows: [
-      { c: ["p_81c2", "Head of Sales", ref("c_4f2a"), "crm"], mark: "cut" },
-      { c: ["p_3d07", "Head of Sales", ref("c_4f2a"), "events"], mark: "cut" },
-      { c: ["p_e9b4", "Sales lead", ref("c_4f2a"), "calls"], mark: "cut" },
-      { c: [hit("p_81c2"), hit("Head of Sales"), ref("c_4f2a", true), hit("crm, events, calls")], mark: "hit", n: "=" },
-    ],
-  },
-  matching: {
-    name: "people",
-    meta: "every person has a company",
-    numbered: true,
-    cols: [
-      { name: "person_id", type: "id", w: 104, hide: "phone" },
-      { name: "title", type: "text" },
-      { name: "company_id", w: 100, wp: 84 },
-      { name: "reports_to", w: 100, wp: 84 },
-    ],
-    rows: [
-      { c: ["p_1a77", "CEO", ref("c_4f2a"), null] },
-      { c: ["p_81c2", "Head of Sales", ref("c_4f2a", true), ref("p_1a77", true)], mark: "hit" },
-      { c: ["p_5c20", "SDR manager", ref("c_4f2a"), ref("p_81c2")] },
-      { c: ["p_9d14", "SDR", ref("c_4f2a"), ref("p_5c20")] },
-    ],
-  },
-  history: {
-    name: "datapoints",
-    meta: "rows are added, never overwritten",
-    numbered: true,
-    cols: [
-      { name: "observed_on", w: 100, wp: 92 },
-      { name: "entity", w: 84, hide: "phone" },
-      { name: "field", w: 104, wp: 86 },
-      { name: "value", type: "text" },
-      { name: "source", w: 96, hide: "phone" },
-    ],
-    rows: [
-      { c: ["2025-11-04", ref("c_4f2a"), "crm_deal", "closed_lost", "crm"] },
-      { c: ["2026-03-18", ref("c_4f2a"), "headcount", "180", "headcount"] },
-      { c: ["2026-09-02", ref("c_4f2a"), "headcount", "200", "headcount"] },
-      { c: ["2026-10-22", ref("p_81c2"), "event", "attended", "events"] },
-      { c: [hit("2026-11-06"), ref("c_4f2a", true), hit("hiring"), hit("SDR roles"), hit("job posts")], mark: "new", n: "+" },
-    ],
-  },
-  lineage: {
-    name: "employments",
-    meta: "same person, new company",
-    numbered: true,
-    cols: [
-      { name: "person_id", w: 88, hide: "phone" },
-      { name: "company_id", w: 96, wp: 84 },
-      { name: "title", type: "text" },
-      { name: "started", w: 80, hide: "phone" },
-      { name: "ended", w: 84, wp: 76 },
-    ],
-    rows: [
-      { c: ["p_81c2", ref("c_4f2a"), "Head of Sales", "2023-02", "2026-10"], mark: "cut" },
-      { c: [hit("p_81c2"), ref("c_b3e1", true), hit("VP Sales"), hit("2026-11"), tag("current", true)], mark: "new", n: "+" },
-      { c: ["p_3f55", ref("c_91be"), "Head of Growth", "2024-06", tag("current")] },
-      { c: ["p_9d14", ref("c_27d0"), "Account Executive", "2025-01", tag("current")] },
-    ],
-  },
-  crossing: {
-    name: "companies",
-    meta: "1 row has both",
-    numbered: true,
-    cols: [
-      { name: "company_id", w: 96, wp: 84, src: "Key" },
-      { name: "crm_deal", type: "enum", w: 116, wp: 98, src: "Your data" },
-      { name: "closed_on", w: 98, src: "Your data", hide: "phone" },
-      { name: "hiring", type: "text", src: "Outside" },
-      { name: "seen_on", w: 98, src: "Outside", hide: "phone" },
-    ],
-    rows: [
-      { c: [hit("c_4f2a"), tag("closed_lost", true), hit("2025-11-04"), hit("SDR roles"), hit("2026-11-06")], mark: "hit" },
-      { c: ["c_91be", tag("open"), null, null, null] },
-      { c: ["c_27d0", null, null, "AE role", "2026-11-02"] },
-      { c: ["c_a6c3", tag("closed_won"), "2025-09-30", null, null] },
-    ],
-  },
-} as const satisfies Record<string, DbTableData>;
-
 /* ── what Pancake is: three cards ──────────────────────────────────────────── */
 
 export const DB_WAREHOUSE = {
@@ -425,7 +325,7 @@ export const DB_ASK = {
   status: "Read 3 tables in one call",
   answer: "Three accounts. The fintech you lost is hiring SDRs.",
   box: "Ask about your market",
-  result: DB_CHAT.result,
+  result: DB_RESULT,
 } as const;
 
 export const DB_PLUG: DbTableData = {

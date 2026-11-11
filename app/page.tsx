@@ -1,16 +1,24 @@
 import type { Metadata, Viewport } from "next";
 
+import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
+import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
+import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
+import { LpCta } from "@/components/sections/landing-v3/LpCta";
+import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
+import { LpHero } from "@/components/sections/landing-v3/LpHero";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
+import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
+import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
 import {
   LpVisionAgent,
-  LpVisionClose,
-  LpVisionHero,
   LpVisionProblems,
   LpVisionRows,
   LpVisionWarehouse,
 } from "@/components/sections/landing-v3/LpVision";
+import { LpVisionCurtain } from "@/components/sections/landing-v3/LpVisionCurtain";
+import { VISION_CLOSE, VISION_MID } from "@/components/sections/landing-v3/lp-vision-data";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
@@ -106,32 +114,46 @@ const softwareApplicationJsonLd = {
   },
 };
 
-// The vision homepage (2026-11-09): Pancake as the revenue data warehouse. Static:
-// the hero (the claim, the product window), the customers on the first dark band, why now and
-// the four things Pancake does, the six hard problems, what Pancake is, how an agent uses it, the
-// close. Only the problems' list needs JavaScript. Sections: LpVision.tsx.
-// The page before it (the hero with its For agents view, the film, the infra bricks, the steps,
-// the deep dive, the testimonials, the pricing card) is off this page; its files stay.
+// The vision homepage (2026-11-09): Pancake as the revenue data warehouse, in the designer's
+// forms since 2026-11-11 (founder: the current page's graphic pieces back, "ca ne change pas le
+// contenu mais la forme"). Static since 2026-10-07: no searchParams prop; LpAudience reads
+// ?audience=agents on the client once the page has loaded.
+// Off this page, their files kept: the demo film, the infra bricks, the bottle banner, the
+// testimonials, the pricing card.
 export default function Home() {
   return (
-    <main className="lp lp-vision-page">
+    <LpAudience>
       {/* SoftwareApplication JSON-LD — homepage only */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(softwareApplicationJsonLd) }}
       />
+      {/* Serves every section's art canvas — the --lp-fit scale var (LpFitVars.tsx) */}
+      <LpFitVars />
+      {/* Frees off-screen sections' animation GPU surfaces (LpAnimFreeze.tsx) */}
+      <LpAnimFreeze />
+      {/* Every section is a DIRECT <section> child of main.lp: the agents view hides all of them
+          but the hero and the lab (audience.css). */}
       <LpNav />
-      <LpVisionHero />
-      {/* the customers, on the dark band the hero's window opens */}
-      <div className="lp-vd lp-vlogos">
-        <LpMarquee labelled />
-      </div>
+      {/* the designer's hero: the rainbow, the headline left, the lede and the buttons right */}
+      <LpHero />
+      {/* in the demo film's slot: Claude's answer over Pancake's table, a curtain between them */}
+      <LpVisionCurtain />
+      {/* the customers, on cream, as on the page before */}
+      <LpMarquee labelled />
+      {/* the statement, then what Pancake does in four rows */}
       <LpVisionRows />
+      {/* the agents view's code wall (agents view only) */}
+      <LpAgentLab />
+      {/* today's product at work: the designer's three animated steps, under the vision's line */}
+      <LpSteps title={VISION_MID.title} />
+      {/* the sky: the six hard problems, what Pancake is, how an agent uses it, then the close on
+          its cream hill (sky.css) */}
       <LpVisionProblems />
       <LpVisionWarehouse />
       <LpVisionAgent />
-      <LpVisionClose />
+      <LpCta sky title={VISION_CLOSE.title} body={VISION_CLOSE.body} setup={<LpSetupPill />} />
       <LpFooter />
-    </main>
+    </LpAudience>
   );
 }

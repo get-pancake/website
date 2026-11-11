@@ -20,7 +20,22 @@ import type { PlayOnceRuntime } from "./lp-play-once";
  */
 export type DiveStageLoader = () => Promise<PlayOnceRuntime>;
 
+/** the vision homepage's five problem stories: one builder, which reads the scene from its root */
+const problem: DiveStageLoader = () =>
+  Promise.all([import("@/lib/gsap"), import("./lp-story-problems-timeline")]).then(
+    ([{ gsap }, { buildStoryProblem, buildStoryProblemSteps }]) => ({
+      gsap,
+      build: buildStoryProblem,
+      steps: buildStoryProblemSteps,
+    }),
+  );
+
 export const DIVE_LOADERS: Record<DiveItemId, DiveStageLoader> = {
+  "p-sources": problem,
+  "p-dedup": problem,
+  "p-matching": problem,
+  "p-history": problem,
+  "p-moves": problem,
   context: () =>
     Promise.all([import("@/lib/gsap"), import("./lp-story-context-timeline")]).then(
       ([{ gsap }, { buildStoryContext, buildStoryContextSteps }]) => ({

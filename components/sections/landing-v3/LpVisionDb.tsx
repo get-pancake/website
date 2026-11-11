@@ -45,6 +45,16 @@ function isCut(cell: DbCell) {
 function Cell({ cell }: { cell: DbCell }) {
   if (cell === null) return <span className="lp-db__null">NULL</span>;
   if (typeof cell === "string") return <>{cell}</>;
+  // NULL until the value lands (the table's host flips data-live): both are in the markup, on
+  // one spot, and the rest picture is the value
+  if (cell.live) {
+    return (
+      <span className="lp-db__lands">
+        <span className="lp-db__was lp-db__null">NULL</span>
+        <span className="lp-db__now">{cell.v}</span>
+      </span>
+    );
+  }
   switch (cell.as) {
     case "tag":
       return <span className="lp-db__tag">{cell.v}</span>;

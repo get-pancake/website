@@ -1,12 +1,14 @@
-/* The vision homepage (LpVision.tsx, 2026-11-09): Pancake as the revenue data warehouse.
-   Components after the reference page's, in its order (the list is in LpVision.tsx), drawn with
-   Pancake's tokens only: cream page, plum for the dark bands, the three pancake colours for the
-   frames, Aeonik Condensed for the claims, Geist for the rest. No glow, no blurred shadow, and
-   no gradient but three flat page washes (the hero's foot, the warm band, the close). Nothing
-   moves.
-   Bands: .lp-vh hero (cream) · .lp-vd dark (plum) · .lp-vw warm · .lp-vc cream. */
+/* The vision homepage's own styles (LpVision.tsx, LpVisionCurtain.tsx, LpVisionDb.tsx;
+   2026-11-09, in the designer's forms since 2026-11-11). The hero, the customers' strip, the
+   three steps, the sky and its clouds, the closing card and the footer are the designer's
+   (hero.css, marquee.css, steps.css, dive.css, sky.css, cta.css): nothing of theirs is restated
+   here. This file holds the window under the hero (the curtain), the four rows, the cards, and
+   the real tables every picture is made of.
+   Pancake's tokens only: cream page, plum for a table's ground, the three pancake colours for
+   the frames, Aeonik Condensed for the claims, Geist for the rest, the code face in tables.
+   No glow, no blurred shadow but the designer's own. */
 
-.lp-vision-page {
+.lp {
   --lp-v-dark: var(--lp-inverted-surface);
   --lp-v-on-dark: var(--lp-text-on-inverted);
   --lp-v-on-dark-2: var(--lp-ink-50);
@@ -21,26 +23,14 @@
   max-width: 1080px;
   width: 100%;
 }
-.lp .lp-v__statement {
-  font-family: var(--lp-font-cond);
-  font-size: var(--lp-text-4xlg);
-  font-weight: 600;
-  letter-spacing: -1.1945px; /* -3%, as the display titles */
-  line-height: 1.12;
-  margin: 0;
-}
 /* a small label over a picture: its number, then its name */
 .lp .lp-v__label {
-  color: var(--lp-v-tone-30, var(--lp-subtle-text));
+  color: var(--lp-v-tone-40, var(--lp-subtle-text));
   font-size: var(--lp-text-xsm);
   font-weight: 500;
   letter-spacing: 0.6px;
   line-height: 16px;
   text-transform: uppercase;
-}
-.lp-v__label span {
-  color: var(--lp-v-on-dark-3);
-  margin-right: 6px;
 }
 [data-tone="yellow"] {
   --lp-v-tone-10: var(--lp-yellow-10);
@@ -60,163 +50,315 @@
   --lp-v-tone-30: var(--lp-pink-30);
   --lp-v-tone-40: var(--lp-pink-40);
 }
-/* the pills on plum: cream first, an outline second */
-.lp a.lp-btn.lp-v__pill-light {
-  background: var(--lp-ink-20);
-  color: var(--lp-ink-100);
-}
-/* the site's outline pill (.lp-btn--outline: plain round corners, no corner clip, so its hairline
-   survives), in cream on plum */
-.lp a.lp-btn.lp-v__pill-line {
-  background: transparent;
-  box-shadow: inset 0 0 0 1px rgba(255, 247, 236, 0.4);
-  color: var(--lp-v-on-dark);
-}
-
-/* ── hero ── */
-.lp-vh {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  padding: 40px 24px 0;
-  position: relative;
-}
-/* the page warms up behind the window, in the pancake's yellow */
-.lp-vh::before {
-  background: linear-gradient(180deg, rgba(255, 219, 181, 0) 0%, var(--lp-yellow-20) 100%);
-  bottom: 0;
-  content: "";
-  height: 420px;
-  left: 0;
-  pointer-events: none;
-  position: absolute;
-  right: 0;
-}
-.lp-vh__copy {
-  max-width: 920px;
-  position: relative;
-  text-align: center;
-}
-.lp .lp-vh__title {
-  font-size: clamp(30px, 9.6vw, 84px);
-  letter-spacing: -0.03em;
-  line-height: 0.95;
-  margin: 0;
-}
-.lp .lp-vh__lede {
-  color: var(--lp-subtle-text);
-  font-size: var(--lp-text-lg);
-  line-height: 1.45;
-  margin: 24px auto 0;
-  max-width: 470px;
-  text-wrap: balance;
-}
-.lp-vh__btns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 32px;
-}
-/* the stage holds the window and the chat panel that hangs over its right edge */
-.lp-vh__stage {
-  --lp-vh-chat: 400px;
-  --lp-vh-out: 44px;
-  margin-top: 72px;
-  max-width: 1264px;
-  padding-right: var(--lp-vh-out);
-  position: relative;
-  width: 100%;
-}
-/* plum, open at the bottom: the page turns dark through it. The table runs under the chat panel,
-   as a table wider than its window does */
-.lp-vh__window {
+/* ── the window under the hero: the curtain (LpVisionCurtain.tsx) ──
+   In the demo film's slot: the section and the card are .lp-video's (video.css: 26 px under the
+   hero, 1136 wide at most, the card's shadow, its place on the first screen; hero.css "Homepage
+   first screen"). Here: the card's own shape and its two layers.
+   --cut     where the curtain stands, % of the card from its left (Claude's share); the handle
+             writes it
+   --step    how far Claude's reply has got; a line shows once --step reaches its own --at
+   --vc-head, --vc-row   the grid of lines both layers share: Claude's line n sits on the
+             table's row n, so the curtain passing over a line shows the row it came from */
+.lp-vcut .lp-vcut__card {
+  --vc-bar: 46px;
+  --vc-head: 92px;
+  --vc-row: 34px;
+  aspect-ratio: 1136 / 602;
   background: var(--lp-v-dark);
-  border-radius: 12px 12px 0 0;
-  color: var(--lp-v-on-dark);
-  overflow: hidden;
-  padding-right: calc(var(--lp-vh-chat) - var(--lp-vh-out) - 12px);
+  -webkit-user-select: none;
+  user-select: none;
 }
-/* the window's tabs: one per table, with its row count */
-.lp-vh__bar {
+/* under: Pancake's table, the card wide, no panel of its own */
+.lp-vcut__db {
+  inset: 0;
+  position: absolute;
+}
+.lp-vcut__tabs {
   align-items: center;
   border-bottom: 1px solid var(--lp-v-line-dark);
+  box-sizing: border-box;
+  color: var(--lp-ink-70);
   display: flex;
   font-family: var(--lp-font-fono);
   font-size: 12px;
   gap: 4px;
-  height: 46px;
+  height: var(--vc-bar);
+  justify-content: flex-end;
   line-height: 16px;
   list-style: none;
   margin: 0;
   padding: 0 12px;
 }
-.lp-vh__tab {
+.lp-vcut__tabs li {
   align-items: center;
   border-radius: 6px;
-  color: var(--lp-ink-70);
   display: flex;
   gap: 7px;
   padding: 6px 10px;
 }
-.lp-vh__tab[data-on] {
+.lp-vcut__tabs li[data-on] {
   background: var(--lp-v-fill-dark);
   box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
   color: var(--lp-v-on-dark);
 }
-.lp-vh__tab small {
+.lp-vcut__tabs small {
   color: var(--lp-ink-70);
   font-size: 10.5px;
 }
-/* the table fills the window edge to edge: no panel of its own */
-.lp-vh__window .lp-db {
-  --db-row: 32px;
+.lp-vcut__db .lp-db {
+  --db-row: var(--vc-row);
   border: 0;
   border-radius: 0;
 }
-.lp-vh__window .lp-db th:last-child,
-.lp-vh__window .lp-db td:last-child {
-  border-right: 1px solid var(--db-line);
+.lp-vcut__db .lp-db tr[data-sourced] th {
+  height: calc(var(--vc-head) - var(--vc-bar));
 }
-/* the agent, reading the tables: a panel a shade lighter, set lower and further right */
-.lp-vh__chat {
-  background:
-    linear-gradient(rgba(255, 247, 236, 0.06), rgba(255, 247, 236, 0.06)),
-    var(--lp-v-dark);
-  border: 1px solid rgba(255, 247, 236, 0.16);
-  border-bottom: 0;
-  border-radius: 10px 10px 0 0;
-  bottom: 0;
-  color: var(--lp-v-on-dark);
+.lp-vcut__db .lp-db th.lp-db__n,
+.lp-vcut__db .lp-db td.lp-db__n {
+  width: 36px;
+}
+/* over: Claude's window, as the page's Claude scene draws it (its ground, its bubble, its
+   serif, a white card per tool call), cut at the curtain */
+.lp-vcut__claude {
+  background: var(--lp-claude-bg);
+  clip-path: inset(0 calc(100% - var(--cut)) 0 0);
+  color: var(--lp-claude-ink);
+  font-family: var(--lp-font-sans);
+  font-size: 14px;
+  inset: 0;
+  line-height: 20px;
+  position: absolute;
+}
+.lp .lp-vcut__cbar {
+  align-items: center;
+  border-bottom: 1px solid rgba(11, 11, 11, 0.07);
+  box-sizing: border-box;
   display: flex;
-  overflow: hidden;
+  gap: 8px;
+  height: var(--vc-bar);
+  padding: 0 24px;
+}
+.lp-vcut__cbar b {
+  font-weight: 600;
+}
+.lp-vcut__spark {
+  display: block;
+  fill: var(--lp-claude-spark);
+  flex: none;
+  height: 18px;
+  width: 18px;
+}
+.lp-vcut__pk {
+  display: block;
+  flex: none;
+  height: 16px;
+  width: 16px;
+}
+/* the connector Claude answers through, with its live dot */
+.lp-vcut__plug {
+  align-items: center;
+  color: rgba(11, 11, 11, 0.56);
+  display: flex;
+  font-size: 12px;
+  gap: 6px;
+  margin-left: 10px;
+}
+.lp-vcut__plug::after {
+  background: var(--lp-green-30);
+  border-radius: 50%;
+  content: "";
+  height: 6px;
+  width: 6px;
+}
+/* the conversation's column: every line in it is placed on the shared grid */
+.lp-vcut__col {
+  bottom: 0;
+  left: 24px;
+  position: absolute;
+  top: 0;
+  width: min(551px, calc(100% - 48px));
+}
+.lp .lp-vcut__ask {
+  background: var(--lp-claude-bubble);
+  border-radius: 12px;
+  height: 34px;
+  line-height: 34px;
+  padding: 0 14px;
   position: absolute;
   right: 0;
-  top: 46px;
-  width: var(--lp-vh-chat);
+  top: calc(var(--vc-bar) + 6px);
+  white-space: nowrap;
+}
+.lp .lp-vcut__line {
+  height: var(--vc-row);
+  left: 0;
+  line-height: var(--vc-row);
+  opacity: clamp(0, calc(var(--step) - var(--at) + 1), 1);
+  position: absolute;
+  right: 0;
+  top: calc(var(--vc-head) + var(--vc-row) * (var(--r) - 1));
+  transform: translateY(calc(clamp(0, var(--at) - var(--step), 1) * 6px));
+  transition:
+    opacity 0.28s ease,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: nowrap;
+}
+/* the read: one white card, the Pancake mark, what was read, what came back */
+.lp .lp-vcut__tool {
+  align-items: center;
+  background: var(--lp-claude-card);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px rgba(11, 11, 11, 0.08);
+  box-sizing: border-box;
+  display: flex;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 8px;
+  height: 30px;
+  line-height: 18px;
+  margin-top: 2px;
+  padding: 0 10px;
+}
+.lp-vcut__tool em {
+  color: rgba(11, 11, 11, 0.48);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  margin-left: auto;
+}
+/* Claude's own lines, in its serif */
+.lp .lp-vcut__say,
+.lp .lp-vcut__pick,
+.lp .lp-vcut__pick b,
+.lp .lp-vcut__why {
+  color: var(--lp-claude-serif-ink);
+  font-family: var(--lp-font-claude-serif, Georgia), Georgia, serif;
+  font-size: 15px;
+}
+.lp-vcut__pick b {
+  font-weight: 600;
+}
+/* the Play, in the interface's face: what the table's last column holds */
+.lp-vcut__play {
+  color: var(--lp-ink-100);
+  font-family: var(--lp-font-sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-left: 6px;
+}
+.lp-vcut__play::before {
+  content: "\2192\00a0";
+  font-weight: 400;
+}
+.lp .lp-vcut__box {
+  background: var(--lp-claude-card);
+  border-radius: 12px;
+  bottom: 20px;
+  box-shadow: inset 0 0 0 1px rgba(11, 11, 11, 0.1);
+  box-sizing: border-box;
+  color: rgba(11, 11, 11, 0.48);
+  height: 46px;
+  left: 0;
+  line-height: 46px;
+  padding: 0 16px;
+  position: absolute;
+  right: 0;
+}
+.lp-vcut__box::after {
+  background: var(--lp-claude-send);
+  border-radius: 50%;
+  content: "";
+  height: 28px;
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  width: 28px;
+}
+/* the view Claude draws from the rows, beside its answer */
+.lp-vcut__art {
+  opacity: clamp(0, calc(var(--step) - var(--at) + 1), 1);
+  transition: opacity 0.28s ease;
+  background: var(--lp-claude-card);
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(11, 11, 11, 0.08);
+  left: 620px;
+  padding: 14px;
+  position: absolute;
+  right: 24px;
+  top: calc(var(--vc-bar) + 12px);
+}
+.lp .lp-vcut__art-t {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+/* the curtain's edge: a line the height of the card and a round grip (the kit's white disc) */
+.lp-vcut__handle {
+  bottom: 0;
+  cursor: ew-resize;
+  left: var(--cut);
+  margin-left: -22px;
+  position: absolute;
+  top: 0;
+  touch-action: none;
+  width: 44px;
+  z-index: 3;
+}
+.lp-vcut__handle::before {
+  background: var(--lp-ink-0);
+  bottom: 0;
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.28);
+  content: "";
+  left: 21px;
+  position: absolute;
+  top: 0;
+  width: 2px;
+}
+.lp-vcut__grip {
+  align-items: center;
+  background: var(--lp-ink-0);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 0.5px rgba(48, 0, 44, 0.16),
+    0 3px 14px rgba(48, 0, 44, 0.16);
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  left: 2px;
+  position: absolute;
+  top: calc(50% - 20px);
+  width: 40px;
+}
+.lp-vcut__grip svg {
+  display: block;
+  fill: none;
+  height: 20px;
+  stroke: var(--lp-ink-100);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  width: 20px;
+}
+.lp-vcut__handle:focus-visible {
+  outline: none;
+}
+.lp-vcut__handle:focus-visible .lp-vcut__grip {
+  outline: 2px solid var(--lp-purple-30);
+  outline-offset: 2px;
+}
+/* reduced motion: the END, the curtain at its rest (the component's REST) */
+@media (prefers-reduced-motion: reduce) {
+  .lp-vcut .lp-vcut__card {
+    --cut: 52% !important;
+  }
+  .lp .lp-vcut__line {
+    transition: none;
+  }
 }
 
-
-/* ── dark bands ── */
-.lp-vd {
-  background: var(--lp-v-dark);
-  color: var(--lp-v-on-dark);
-  padding: 112px 24px;
-}
-/* the customers' logos, on plum: the strip's marks are painted in currentColor */
-.lp-vd.lp-vlogos {
-  padding: 40px 0 0;
-}
-.lp-vlogos .lp-marquee {
-  color: var(--lp-ink-40);
-}
-.lp-vlogos .lp-marquee__label {
-  color: var(--lp-v-on-dark-3);
-}
-
-/* the statement and the four rows */
-.lp-vd.lp-vrows {
-  padding-top: 96px;
+/* ── the statement and the four rows, on cream ── */
+.lp-vc.lp-vrows {
+  padding-bottom: 112px;
 }
 .lp-vrows__list {
   display: flex;
@@ -243,7 +385,7 @@
   padding-left: 40px;
 }
 .lp .lp-vrows__title {
-  color: var(--lp-v-on-dark);
+  color: var(--lp-text);
   font-family: var(--lp-font-sans);
   font-size: var(--lp-text-xlg);
   font-weight: 500;
@@ -252,7 +394,7 @@
   margin: 0;
 }
 .lp .lp-vrows__body {
-  color: var(--lp-v-on-dark-3);
+  color: var(--lp-subtle-text);
   font-size: var(--lp-text-md);
   line-height: 1.6;
   margin-top: 10px;
@@ -371,156 +513,17 @@
 }
 
 
-/* one line and a button, between the rows and the next band */
-.lp-vrows__mid {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  margin-top: 128px;
+/* ── the bands: cream for the rows, the designer's sky for the cards that follow the dive ── */
+/* a section's title: the designer's (.lp-title-section), centred, two even lines at most */
+.lp .lp-v__title {
+  margin: 0 auto;
+  max-width: 1040px;
   text-align: center;
+  text-wrap: balance;
 }
-.lp .lp-vrows__mid-title {
-  font-family: var(--lp-font-cond);
-  font-size: var(--lp-text-2xlg);
-  font-weight: 600;
-  letter-spacing: -0.8294px;
-  line-height: 1.1;
+.lp-vsky {
+  background: var(--lp-sky);
 }
-
-/* ── the warm band: the six hard problems ── */
-.lp-vw {
-  background: linear-gradient(
-    180deg,
-    var(--lp-page-bg) 0%,
-    var(--lp-yellow-20) 34%,
-    var(--lp-yellow-10) 72%,
-    var(--lp-page-bg) 100%
-  );
-  padding: 112px 24px;
-}
-.lp-vprob__head {
-  align-items: end;
-  display: grid;
-  gap: 24px 80px;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
-}
-.lp .lp-vprob__body {
-  color: var(--lp-ink-90);
-  font-size: var(--lp-text-md);
-  line-height: 1.6;
-  padding-bottom: 4px;
-  text-wrap: pretty;
-}
-.lp-vtabs {
-  align-items: stretch;
-  display: grid;
-  gap: 12px;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  margin-top: 56px;
-}
-.lp-vtabs__list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.lp .lp-vtabs__tab {
-  align-items: center;
-  appearance: none;
-  background: rgba(255, 251, 246, 0.5);
-  border: 0;
-  border-radius: 12px;
-  box-shadow: inset 0 0 0 1px rgba(44, 0, 42, 0.06);
-  color: var(--lp-text);
-  cursor: pointer;
-  display: flex;
-  flex: 1;
-  font: inherit;
-  gap: 12px;
-  min-height: 56px;
-  padding: 12px 16px;
-  text-align: left;
-}
-.lp .lp-vtabs__tab[aria-selected="true"] {
-  background: var(--lp-surface);
-  box-shadow: inset 0 0 0 1px rgba(44, 0, 42, 0.1);
-}
-.lp-vtabs__tab:focus-visible {
-  outline: 2px solid var(--lp-purple-30);
-  outline-offset: 2px;
-}
-/* each problem's number, as a line number is set */
-.lp-vtabs__num {
-  color: var(--lp-muted-text);
-  flex: none;
-  font-family: var(--lp-font-fono);
-  font-size: 11px;
-  width: 20px;
-}
-.lp-vtabs__tab[aria-selected="true"] .lp-vtabs__num,
-.lp-vtabs__head .lp-vtabs__num {
-  color: var(--lp-v-tone-40);
-  font-size: 11px;
-}
-.lp-vtabs__name {
-  font-weight: 600;
-}
-.lp-vtabs__short {
-  color: var(--lp-subtle-text);
-  font-size: var(--lp-text-sm);
-}
-.lp-vtabs__panel {
-  background: var(--lp-surface-2);
-  border-radius: 12px;
-  box-shadow: inset 0 0 0 1px rgba(44, 0, 42, 0.08);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-}
-.lp .lp-vtabs__head {
-  align-items: center;
-  display: flex;
-  gap: 10px;
-}
-.lp-vtabs__head b {
-  font-weight: 600;
-}
-.lp-vtabs__head span {
-  color: var(--lp-subtle-text);
-  font-size: var(--lp-text-sm);
-}
-/* the open problem's table, on its colour */
-.lp-vtabs__pic {
-  align-items: center;
-  background: var(--lp-v-tone-10);
-  border-radius: 8px;
-  display: flex;
-  flex: 1;
-  min-height: 244px;
-  padding: 20px;
-}
-.lp-vtabs__pic > .lp-db {
-  flex: 1;
-}
-.lp-vtabs__answer {
-  background: var(--lp-surface);
-  border-radius: 8px;
-  box-shadow: inset 0 0 0 1px rgba(44, 0, 42, 0.08);
-  padding: 16px;
-}
-.lp .lp-vtabs__line {
-  font-size: var(--lp-text-lg);
-  font-weight: 600;
-  line-height: 26px;
-}
-.lp .lp-vtabs__body {
-  color: var(--lp-subtle-text);
-  margin-top: 4px;
-  max-width: 460px;
-}
-
-/* ── cream bands: what Pancake is, how it gets used ── */
 .lp-vc {
   padding: 96px 24px 0;
 }
@@ -893,6 +896,37 @@
   vertical-align: 1px;
   width: 6px;
 }
+/* a value that lands while the picture plays (the hero's table): NULL and the value on one spot,
+   the value at rest; the host's data-live="0" is the moment before */
+.lp-db__lands {
+  display: inline-grid;
+  vertical-align: middle;
+}
+.lp-db__lands > * {
+  grid-area: 1 / 1;
+  transition: opacity 0.3s ease;
+}
+.lp-db__lands .lp-db__was {
+  opacity: 0;
+}
+[data-live="0"] .lp-db__lands .lp-db__was {
+  opacity: 0.72;
+}
+[data-live="0"] .lp-db__lands .lp-db__now {
+  opacity: 0;
+}
+.lp-db tr[data-mark="new"] td {
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+[data-live="0"] .lp-db tr[data-mark="new"] td {
+  background-color: transparent;
+}
+[data-live="0"] .lp-db tr[data-mark="new"] td.lp-db__n {
+  box-shadow: none;
+  color: var(--db-text-3);
+}
 .lp-db__logo {
   align-items: center;
   display: inline-flex;
@@ -993,27 +1027,7 @@
 }
 
 /* ── narrower windows ── */
-/* beside the chat, a window this wide has room for one column less */
-@media (min-width: 1181px) and (max-width: 1311px) {
-  .lp-vh__window [data-hide~="mid"] {
-    display: none;
-  }
-}
 @media (max-width: 1180px) {
-  /* the window alone: the chat panel needs the width */
-  .lp-vh__stage {
-    padding-right: 0;
-  }
-  .lp-vh__window {
-    padding-right: 0;
-  }
-  .lp-vh__chat {
-    display: none;
-  }
-  .lp-vh__window .lp-db th:last-child,
-  .lp-vh__window .lp-db td:last-child {
-    border-right: 0;
-  }
   .lp-vrows__row,
   .lp-vrows__row:nth-child(even) {
     gap: 48px;
@@ -1027,22 +1041,19 @@
   }
 }
 @media (max-width: 1024px) {
-  .lp-vd,
-  .lp-vw {
-    padding: 88px 24px;
-  }
-  .lp-vd.lp-vrows {
-    padding-top: 72px;
+  /* a tablet's card has no room for every column, nor for the view beside Claude's answer */
+  .lp-vcut [data-hide~="mid"],
+  .lp-vcut__art {
+    display: none;
   }
   .lp-vc {
     padding: 80px 24px 0;
   }
+  .lp-vc.lp-vrows {
+    padding-bottom: 88px;
+  }
   .lp-vagent {
     padding-bottom: 96px;
-  }
-  .lp .lp-v__statement {
-    font-size: var(--lp-text-3xlg);
-    letter-spacing: -0.9954px;
   }
   .lp-vrows__list {
     gap: 72px;
@@ -1065,16 +1076,6 @@
   .lp-vrows__frame {
     min-height: 0;
   }
-  .lp-vrows__mid {
-    margin-top: 88px;
-  }
-  .lp-vprob__head {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .lp-vtabs {
-    grid-template-columns: minmax(0, 1fr);
-    margin-top: 40px;
-  }
   .lp-vware__grid {
     grid-template-columns: minmax(0, 1fr);
     margin-top: 40px;
@@ -1089,48 +1090,66 @@
   }
 }
 @media (max-width: 767px) {
-  .lp-vh {
-    padding: 24px 16px 0;
+  /* the curtain on a phone: a taller card, Claude's lines a size down, the short forms */
+  .lp-vcut .lp-vcut__card {
+    --vc-bar: 42px;
+    --vc-head: 84px;
+    aspect-ratio: 358 / 470;
   }
-  .lp .lp-vh__lede {
-    font-size: var(--lp-text-md);
-  }
-  .lp-vh__stage {
-    margin-top: 48px;
-  }
-  /* the phone names the open table's count only */
-  .lp-vh__bar {
+  .lp-vcut__tabs {
     padding: 0 8px;
   }
-  .lp-vh__tab:not([data-on]) small {
+  .lp-vcut__tabs li:not([data-on]) small,
+  .lp-vcut__size,
+  .lp-vcut__tool em {
     display: none;
   }
-  .lp-vd,
-  .lp-vw {
-    padding: 64px 16px;
+  .lp .lp-vcut__cbar {
+    padding: 0 12px;
   }
-  .lp-vd.lp-vrows {
-    padding-top: 56px;
+  .lp-vcut__col {
+    left: 12px;
+    width: calc(100% - 24px);
+  }
+  .lp .lp-vcut__ask {
+    font-size: 13px;
+    left: 0;
+    right: auto;
+  }
+  .lp .lp-vcut__say,
+  .lp .lp-vcut__pick,
+  .lp .lp-vcut__pick b,
+  .lp .lp-vcut__why {
+    font-size: 13.5px;
+  }
+  .lp .lp-vcut__tool {
+    font-size: 12px;
+  }
+  .lp .lp-vcut__box {
+    bottom: 12px;
+  }
+  .lp-vcut__grip {
+    height: 36px;
+    left: 4px;
+    top: calc(50% - 18px);
+    width: 36px;
   }
   .lp-vc {
     padding: 64px 16px 0;
   }
+  .lp-vc.lp-vrows {
+    padding-bottom: 64px;
+  }
   .lp-vagent {
     padding-bottom: 72px;
   }
-  .lp-vd.lp-vclose {
-    padding: 96px 16px;
+  /* the designer's phone size for a section title (the dive's) */
+  .lp .lp-v__title {
+    font-size: 35.559px;
+    letter-spacing: -1.067px;
+    line-height: 41px;
   }
-  .lp .lp-v__statement {
-    font-size: var(--lp-text-2xlg);
-    letter-spacing: -0.8294px;
-  }
-  .lp .lp-vclose__title {
-    font-size: var(--lp-text-3xlg);
-    letter-spacing: -0.9954px;
-  }
-  .lp-vrows__statement br,
-  .lp-vprob__head br {
+  .lp-vrows__statement br {
     display: none;
   }
   .lp-vrows__frame {
@@ -1148,7 +1167,9 @@
     padding: 0 8px;
   }
   .lp-db th.lp-db__n,
-  .lp-db td.lp-db__n {
+  .lp-db td.lp-db__n,
+  .lp-vcut__db .lp-db th.lp-db__n,
+  .lp-vcut__db .lp-db td.lp-db__n {
     padding: 0 6px 0 0;
     width: 24px;
   }
@@ -1171,16 +1192,6 @@
     border-radius: 0;
     left: 50%;
     right: auto;
-  }
-  .lp-vtabs__short {
-    display: none;
-  }
-  .lp-vtabs__head span {
-    display: inline;
-  }
-  .lp-vtabs__pic {
-    min-height: 0;
-    padding: 12px;
   }
   .lp-vware__pic {
     padding: 14px;
