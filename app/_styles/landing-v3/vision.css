@@ -170,13 +170,15 @@
   height: 6px;
   width: 6px;
 }
-/* the conversation's column: every line in it is placed on the shared grid */
+/* the conversation's column: every line in it is placed on the shared grid. As wide as Claude's
+   share of the card at rest (the component's REST, 52 %), so its bubble and its reply box end
+   before the curtain; a line longer than that runs under it */
 .lp-vcut__col {
   bottom: 0;
   left: 24px;
   position: absolute;
   top: 0;
-  width: min(551px, calc(100% - 48px));
+  width: min(551px, calc(52% - 40px));
 }
 .lp .lp-vcut__ask {
   background: var(--lp-claude-bubble);
@@ -292,7 +294,8 @@
   font-weight: 600;
   margin-bottom: 10px;
 }
-/* the curtain's edge: a line the height of the card and a round grip (the kit's white disc) */
+/* the curtain's edge: a line the height of the card and a round grip, the kit's white disc with
+   a slider's two chevrons (Mobbin: Klarna's and Stripe's sliders, a round knob with "< >") */
 .lp-vcut__handle {
   bottom: 0;
   cursor: ew-resize;
@@ -1041,10 +1044,15 @@
   }
 }
 @media (max-width: 1024px) {
-  /* a tablet's card has no room for every column, nor for the view beside Claude's answer */
+  /* a tablet's card has no room for every column, nor for the view beside Claude's answer; it
+     keeps the height the seven lines and the reply box need */
   .lp-vcut [data-hide~="mid"],
-  .lp-vcut__art {
+  .lp-vcut__art,
+  .lp-vcut__tool em {
     display: none;
+  }
+  .lp-vcut .lp-vcut__card {
+    min-height: 470px;
   }
   .lp-vc {
     padding: 80px 24px 0;
@@ -1109,7 +1117,7 @@
   }
   .lp-vcut__col {
     left: 12px;
-    width: calc(100% - 24px);
+    width: calc(52% - 22px);
   }
   .lp .lp-vcut__ask {
     font-size: 13px;
