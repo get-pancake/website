@@ -89,8 +89,9 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: SIGNAL_PATHS.funding, updated: "2026-10-17", priority: 0.7 },
   { path: SIGNAL_PATHS.hiring, updated: newest("2026-10-17", maxUpdated()), priority: 0.7 },
   { path: SIGNAL_PATHS.stack, updated: newest("2026-10-17", maxUpdated()), priority: 0.7 },
-  // the comparisons hub (2026-10-07): every comparison page below links back to it
-  { path: COMPARE_PATH, updated: "2026-10-13", priority: 0.7 },
+  // the comparisons hub (2026-10-07): every comparison page below links back to it;
+  // seven new cards on 2026-11-10
+  { path: COMPARE_PATH, updated: "2026-11-10", priority: 0.7 },
   { path: "/viktor-vs-pancake", updated: "2026-10-13", priority: 0.8 },
   { path: "/claude-tag-vs-pancake", updated: "2026-10-13", priority: 0.8 },
   { path: "/gojiberry-vs-pancake", updated: "2026-10-13", priority: 0.8 },
@@ -100,6 +101,14 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "/unify-vs-pancake", updated: "2026-10-13", priority: 0.8 },
   { path: "/octave-vs-pancake", updated: "2026-10-13", priority: 0.8 },
   { path: "/alta-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  // data, cold email and outreach tools, new on 2026-11-10 (each page's own `modified`)
+  { path: "/clay-vs-pancake", updated: "2026-11-10", priority: 0.8 },
+  { path: "/apollo-vs-pancake", updated: "2026-11-10", priority: 0.8 },
+  { path: "/zoominfo-vs-pancake", updated: "2026-11-10", priority: 0.8 },
+  { path: "/instantly-vs-pancake", updated: "2026-11-10", priority: 0.8 },
+  { path: "/heyreach-vs-pancake", updated: "2026-11-10", priority: 0.8 },
+  { path: "/11x-vs-pancake", updated: "2026-11-10", priority: 0.8 },
+  { path: "/smartlead-vs-pancake", updated: "2026-11-10", priority: 0.8 },
   { path: "/openclaw-vs-pancake", updated: "2026-10-13", priority: 0.8 },
   { path: "/pancake-vs-paperclips", updated: "2026-10-13", priority: 0.8 },
 ];

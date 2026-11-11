@@ -118,9 +118,10 @@
 }
 
 /* ≤1199: stack — brand block, then the columns on a grid that holds five
-   across from ~1000 up (each ≥156px: "Gojiberry vs Pancake" is 153), four
-   then one below that, three then two at 768. (Was ≤1024 with four columns;
-   five beside the brand need the 1136 band.) */
+   across from ~1045 up (each ≥164px: "Smartlead vs Pancake" is 163.4, the
+   widest label since 2026-11-10; it was 156 for "Gojiberry vs Pancake", 153),
+   four then one below that, three then two at 768. (Was ≤1024 with four
+   columns; five beside the brand need the 1136 band.) */
 @media (max-width: 1199px) {
   .lp-foot-frame {
     align-items: stretch;
@@ -148,7 +149,7 @@
   .lp-foot-cols {
     display: grid;
     gap: 48px 32px;
-    grid-template-columns: repeat(auto-fit, minmax(156px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(164px, 1fr));
     margin-top: 0;
   }
   .lp-foot-col {
@@ -220,6 +221,16 @@
       font-size: var(--lp-text-sm);
       line-height: 24px;
     }
+  }
+  /* Compare lists every "GTM tools" comparison page: thirteen since 2026-11-10.
+     On a phone the column keeps its first six and "All comparisons": the
+     footer stays as short as it was ("très long à scroller", above) and the
+     column stays level with Company's seven rows. The other pages are one tap
+     away on /compare, and their links stay in the HTML. Three of the newer
+     labels would also wrap in a 375px cell (155.5px): "Smartlead vs Pancake"
+     is 163.4 at 16px, "HeyReach vs Pancake" 162, "ZoomInfo vs Pancake" 155.6. */
+  .lp-foot-col[data-col="compare"] .lp-foot-links a:nth-child(n + 7):not(:last-child) {
+    display: none;
   }
   .lp-foot-col[data-col="social"] {
     grid-column: 1 / -1;

@@ -49,6 +49,14 @@ export const COMPARISONS: readonly CompareEntry[] = [
   { slug: "alta-vs-pancake", competitor: "Alta", group: "GTM tools", line: "Named AI agents for revenue teams versus Plays a founder runs." },
   { slug: "lemlist-vs-pancake", competitor: "Lemlist", group: "GTM tools", line: "A sales platform your team operates versus Plays that run for you." },
   { slug: "gojiberry-vs-pancake", competitor: "Gojiberry", group: "GTM tools", line: "A focused outreach agent versus a full GTM platform." },
+  // data, cold email and outreach tools, new on 2026-11-10
+  { slug: "clay-vs-pancake", competitor: "Clay", group: "GTM tools", line: "Tables you build versus Plays you deploy from Claude." },
+  { slug: "apollo-vs-pancake", competitor: "Apollo", group: "GTM tools", line: "A contact database priced per seat versus Plays you ask Claude for." },
+  { slug: "zoominfo-vs-pancake", competitor: "ZoomInfo", group: "GTM tools", line: "GTM data sold by custom quote versus Plays from $99 a month." },
+  { slug: "instantly-vs-pancake", competitor: "Instantly", group: "GTM tools", line: "Cold email at volume versus a personal message per lead." },
+  { slug: "heyreach-vs-pancake", competitor: "HeyReach", group: "GTM tools", line: "Outreach for lists you import versus Plays that find the people." },
+  { slug: "11x-vs-pancake", competitor: "11x", group: "GTM tools", line: "Revenue agents sold by demo versus Plays you start from Claude." },
+  { slug: "smartlead-vs-pancake", competitor: "Smartlead", group: "GTM tools", line: "Mailboxes and warmup to manage versus Plays you ask Claude for." },
   // general agents and agent runtimes: live pages, off the hub (COMPARE_HUB_GROUPS)
   { slug: "claude-tag-vs-pancake", competitor: "Claude Tag", group: "AI agents", line: "A shared AI teammate versus a GTM platform that finds your buyers." },
   { slug: "viktor-vs-pancake", competitor: "Viktor", group: "AI agents", line: "A general AI employee versus a GTM platform built to bring you customers." },
