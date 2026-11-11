@@ -37,6 +37,12 @@
  * "Pancake in Claude" left Product for the same reason: it is "Connect Claude".
  * Labels stay ≤ 153px at 16px ("Gojiberry vs Pancake", the widest), so none
  * wraps in the phone sheet's 155px columns at 375.
+ * 2026-11-10: seven more comparison pages (Clay, Apollo, ZoomInfo, Instantly,
+ * HeyReach, 11x, Smartlead), so Compare holds thirteen links and "All
+ * comparisons". Desktop and tablet show them all. A phone shows the first six
+ * and "All comparisons" (footer.css, ≤767): the footer stays as short as it
+ * was, and the three new labels wider than a 375px cell never wrap there. The
+ * tablet grid's minimum column grew from 156 to 164px for the same labels.
  */
 
 import { COMPARE_PATH, COMPARISONS, compareName, comparePath } from "@/components/sections/compare/compare-data";
@@ -78,7 +84,8 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
     id: "compare",
     title: "Compare",
     links: [
-      // Origami, Unify, Octave, Alta, Lemlist, Gojiberry today, in hub order.
+      // Every "GTM tools" page, in hub order: thirteen since 2026-11-10 (Clay, Apollo, ZoomInfo,
+      // Instantly, HeyReach, 11x and Smartlead joined the first six).
       // Each label is the page's H1 ("Origami vs Pancake").
       ...COMPARISONS.filter((c) => c.group === "GTM tools").map((c) => ({
         label: compareName(c),

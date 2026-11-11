@@ -37,6 +37,10 @@ import "./comparison.css";
 //   2026-10-07: all seven re-checked on the vendors' own pages (Origami's plans moved to
 //   $49 / $129 / $399, and it now runs the plays you approve).
 //   REMINDER: re-check by 2027-01-05 (90 days), then move this date again.
+// A page written after that review carries its own two dates in its config (`modified`,
+// `factsReviewed`), so it never claims a review it did not get. 2026-11-10: Clay, Apollo,
+// ZoomInfo, Instantly, HeyReach, 11x and Smartlead, each read on the vendor's own pages that
+// day. Drop a page's own dates once a full review moves the two constants past them.
 const PAGE_MODIFIED = "2026-10-13";
 const FACTS_REVIEWED = "October 7, 2026";
 
@@ -71,6 +75,10 @@ export type GtmComparisonConfig = {
   faqs: { q: string; a: string }[];
   related: { href: string; label: string }[];
   sources: { href: string; label: string }[];
+  /** JSON-LD dateModified ("2026-11-10"), for a page newer than PAGE_MODIFIED. */
+  modified?: string;
+  /** The date under Sources ("November 10, 2026"), for a page checked after FACTS_REVIEWED. */
+  factsReviewed?: string;
 };
 
 function ComparisonCell({ cell }: { cell: ComparisonCellData }) {
@@ -152,7 +160,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
         url: canonicalUrl,
         description: config.heroSummary,
         inLanguage: "en-US",
-        dateModified: PAGE_MODIFIED,
+        dateModified: config.modified ?? PAGE_MODIFIED,
         isPartOf: { "@type": "WebSite", "@id": `${SITE_ORIGIN}/#website`, name: "Pancake", url: SITE_ORIGIN },
         breadcrumb: { "@id": `${canonicalUrl}#breadcrumb` },
         author: { "@type": "Person", name: "François de Fitte" },
@@ -361,7 +369,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
             <p className="vvp-related">
               Sources: {config.sources.map((source, index) => (
                 <span key={source.href}>{index > 0 ? ", " : ""}<a href={source.href} target="_blank" rel="noopener noreferrer" className="underline">{source.label}</a></span>
-              ))}. Reviewed {FACTS_REVIEWED}.
+              ))}. Reviewed {config.factsReviewed ?? FACTS_REVIEWED}.
             </p>
           </div>
         </section>
