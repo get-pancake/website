@@ -38,11 +38,14 @@
  * Labels stay ≤ 153px at 16px ("Gojiberry vs Pancake", the widest), so none
  * wraps in the phone sheet's 155px columns at 375.
  * 2026-11-10: seven more comparison pages (Clay, Apollo, ZoomInfo, Instantly,
- * HeyReach, 11x, Smartlead), so Compare holds thirteen links and "All
- * comparisons". Desktop and tablet show them all. A phone shows the first six
- * and "All comparisons" (footer.css, ≤767): the footer stays as short as it
- * was, and the three new labels wider than a 375px cell never wrap there. The
- * tablet grid's minimum column grew from 156 to 164px for the same labels.
+ * HeyReach, 11x, Smartlead) make thirteen in the "GTM tools" group. For a few
+ * hours the column listed them all (#389): the desktop footer was about 260px
+ * taller, a phone had to hide seven of the links, and the tablet grid needed
+ * wider columns ("Smartlead vs Pancake" is 163px at 16px). Since the same day
+ * Compare shows the first FOOTER_COMPARE_MAX of them, in hub order, and "All
+ * comparisons" leads to the rest; footer.css is back to what it was. To show
+ * other pages here, reorder COMPARISONS in compare-data.ts: the hub's cards
+ * follow the same order.
  */
 
 import { COMPARE_PATH, COMPARISONS, compareName, comparePath } from "@/components/sections/compare/compare-data";
@@ -55,6 +58,10 @@ import { SUPPORT_PATH } from "@/lib/contact";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 type FootLink = { label: string; href: string; external?: boolean; analyticsId?: string };
+
+/** How many comparison pages the Compare column lists before "All comparisons" (header note,
+ *  2026-11-10). footer.css sizes its columns for these labels: check widths before raising it. */
+const FOOTER_COMPARE_MAX = 6;
 
 const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
   {
@@ -84,13 +91,14 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
     id: "compare",
     title: "Compare",
     links: [
-      // Every "GTM tools" page, in hub order: thirteen since 2026-11-10 (Clay, Apollo, ZoomInfo,
-      // Instantly, HeyReach, 11x and Smartlead joined the first six).
-      // Each label is the page's H1 ("Origami vs Pancake").
-      ...COMPARISONS.filter((c) => c.group === "GTM tools").map((c) => ({
-        label: compareName(c),
-        href: comparePath(c),
-      })),
+      // The first six "GTM tools" pages, in hub order: Origami, Unify, Octave, Alta, Lemlist,
+      // Gojiberry today. Each label is the page's H1 ("Origami vs Pancake").
+      ...COMPARISONS.filter((c) => c.group === "GTM tools")
+        .slice(0, FOOTER_COMPARE_MAX)
+        .map((c) => ({
+          label: compareName(c),
+          href: comparePath(c),
+        })),
       { label: "All comparisons", href: COMPARE_PATH },
     ],
   },
