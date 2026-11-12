@@ -27,21 +27,34 @@ import { whenInput } from "./lp-play-once";
  *   desktop, and its boot landed in the page's first seconds).
  * - The scene pauses off screen and on tab hide (kitchen.js does it).
  * - Reduced motion never boots the scene: the poster is the render.
- * - Phones never boot it either (LIVE, below). It was never measured on one, and the page has
- *   an iPhone memory history (LpAnimFreeze). The poster is the render there too, and the switch
- *   swaps it.
+ * - Phones never boot it either (LIVE, below): no 3D there, and the page has an iPhone memory
+ *   history (LpAnimFreeze). Since 2026-11-12 (founder: "Activons l'animation sur mobile … la
+ *   bonne taille", then "en code simple genre déterministe et supprimer le truc où je peux
+ *   toucher et ça change l'angle") they play a LOOP of the scene instead: a 36 s video drawn
+ *   frame by frame from it (scripts/kitchen-phone-loops.mjs), the camera fixed, no badges, as
+ *   wide as the screen and zoomed so the kitchen fills it (kitchen.css). Same rule as the scene:
+ *   it loads once the visitor has touched the page and the section is within half a screen,
+ *   plays while on screen, and never with reduced motion or Data Saver. Its first frame is the
+ *   phone poster, so the poster hands over to it without a jump; the switch swaps the loop.
  * - Where WebGL is missing, or once the browser takes the GPU context back, the poster shows.
  */
 
-/** Where the live scene runs. Below it, the poster is the render. */
+/** Where the live scene runs. Below it, phones: the poster, then the loop. */
 const LIVE = "(min-width: 768px)";
 const MODES = ["with", "without"] as const;
 
 /** the still pictures: one per mode and cast, and one without the vendor marks on the tank */
 function poster(mode: KitchenMode, cast: KitchenCast, vendorLogos: boolean) {
   const name = `/lp/kitchen/${mode}-${cast}${mode === "without" && !vendorLogos ? "-plain" : ""}`;
-  /* wide: 1944 x 1094, with the badges. phone: 1170 x 657, without (too small to read there) */
+  /* wide: 1944 x 1094, with the badges. phone: 960 x 600, the phone loop's framing and its
+     first frame, without the badges (they cover each other at that size) */
   return { wide: `${name}.webp`, phone: `${name}-phone.webp` };
+}
+
+/** the phone loop of a mode: drawn for the homepage's kitchen only (the pancake chefs, the vendor
+    marks on the tank); any other kitchen keeps its still on a phone */
+function loopOf(mode: KitchenMode, cast: KitchenCast, vendorLogos: boolean) {
+  return cast === "pancakes" && vendorLogos ? `/lp/kitchen/${mode}-pancakes-phone.mp4` : null;
 }
 
 export function LpKitchen({
@@ -125,9 +138,71 @@ export function LpKitchen({
     kitchen.current?.setMode(mode);
   }, [mode]);
 
+  /* ── phones: the loop (no 3D). `phoneLoop` is set once it may load: the visitor touched the
+     page, and the section came within half a screen. */
+  const [phoneLoop, setPhoneLoop] = useState(false);
+  const video = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    const el = stage.current;
+    if (!el || typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia(LIVE).matches || !loopOf("with", cast, vendorLogos)) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Data Saver: the still is the picture (1.5 MB a loop)
+    if ((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
+    let gone = false;
+    let io: IntersectionObserver | undefined;
+    const watch = () => {
+      if (gone) return;
+      io = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) return;
+          io?.disconnect();
+          setPhoneLoop(true);
+        },
+        { rootMargin: "50% 0px" },
+      );
+      io.observe(el);
+    };
+    const cancelInput = whenInput(watch);
+    return () => {
+      gone = true;
+      cancelInput();
+      io?.disconnect();
+    };
+  }, [cast, vendorLogos]);
+  /* it plays while on screen and waits off it. Muted and inline, set on the element itself before
+     each play: iOS lets a video play by itself only then (React does not write `muted` as an
+     attribute). A play the browser refuses (iOS Low Power Mode) leaves the poster. */
+  useEffect(() => {
+    const v = video.current;
+    if (!phoneLoop || !v || typeof IntersectionObserver === "undefined") return;
+    v.muted = true;
+    v.defaultMuted = true;
+    v.playsInline = true;
+    let onScreen = false;
+    const play = () => {
+      if (onScreen && !document.hidden) v.play().catch(() => undefined);
+      else v.pause();
+    };
+    const io = new IntersectionObserver(([entry]) => {
+      onScreen = Boolean(entry?.isIntersecting);
+      play();
+    });
+    io.observe(v);
+    document.addEventListener("visibilitychange", play);
+    // a new mode is a new source: it plays from its start once it can
+    v.addEventListener("loadeddata", play);
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", play);
+      v.removeEventListener("loadeddata", play);
+    };
+  }, [phoneLoop]);
+
   /* live, the poster stays the one already loaded: it is hidden, and a new one would download */
   const shown = booted ?? mode;
   const still = poster(shown, cast, vendorLogos);
+  const loop = phoneLoop ? loopOf(mode, cast, vendorLogos) : null;
   return (
     <section className={sky ? "lp-kitchen lp-kitchen--sky" : "lp-kitchen"} id={id} data-mode={mode}>
       <div className="lp-kitchen__org">
@@ -167,6 +242,23 @@ export function LpKitchen({
               decoding="async"
             />
           </picture>
+          {/* phones: the loop over its own first frame (the poster above), decorative: the
+              poster's alt says what it shows */}
+          {loop ? (
+            <video
+              ref={video}
+              className="lp-kitchen__loop"
+              src={loop}
+              poster={poster(mode, cast, vendorLogos).phone}
+              muted
+              loop
+              playsInline
+              preload="auto"
+              disablePictureInPicture
+              aria-hidden="true"
+              tabIndex={-1}
+            />
+          ) : null}
         </div>
       </div>
     </section>

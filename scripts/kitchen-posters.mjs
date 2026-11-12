@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Kitchen posters: redraws the still pictures of the kitchen section (public/lp/kitchen) from
- * the scene itself.
+ * Kitchen posters: redraws the wide still pictures of the kitchen section (public/lp/kitchen)
+ * from the scene itself.
  *
  *   node scripts/kitchen-posters.mjs            # every still
  *   node scripts/kitchen-posters.mjs without    # only the stills whose name holds "without"
@@ -16,6 +16,9 @@
  * a capture on a transparent background, and encodes it as WebP in that browser. Chromium draws
  * in software (SwiftShader), so the stills are the same on every machine. The badges are set in
  * the reading face of the landing page (app/fonts/geist), as on the page.
+ *
+ * It draws the wide stills only. The phone ones (*-phone.webp) are the first frames of the phone
+ * loops, in their own framing: scripts/kitchen-phone-loops.mjs draws them (2026-11-12).
  *
  * It needs three (a dependency of the section) and Playwright, which this repository does not
  * depend on: npm install --no-save playwright && npx playwright install chromium
@@ -35,12 +38,10 @@ const THREE = join(ROOT, "node_modules/three/build/three.module.min.js");
 const SERVED = ["components/sections/landing-v3/kitchen", "public/lp/kitchen", "app/fonts/geist"].map((p) => join(ROOT, p) + sep);
 const FONT = '600 14px "Landing Sans"';
 const QUALITY = 0.82;
-/** [name suffix, viewport, device pixels per CSS pixel]: 1944 x 1094 with the badges, and
- *  1170 x 657 for phones (at that width the scene shows no badge: they could not be read) */
-const SIZES = [
-  ["", { width: 1296, height: 729 }, 1.5],
-  ["-phone", { width: 390, height: 219 }, 3],
-];
+/** [name suffix, viewport, device pixels per CSS pixel]: 1944 x 1094 with the badges. (Until
+ *  2026-11-12 also 1170 x 657 for phones: those are now the phone loops' first frames,
+ *  scripts/kitchen-phone-loops.mjs.) */
+const SIZES = [["", { width: 1296, height: 729 }, 1.5]];
 
 const fail = (message) => {
   console.error(`kitchen-posters: ${message}`);
@@ -54,7 +55,7 @@ try {
   fail("Playwright is not installed. Run: npm install --no-save playwright && npx playwright install chromium");
 }
 
-/** one still per mode and cast, one more without the vendor marks on the tank, each at two sizes */
+/** one still per mode and cast, one more without the vendor marks on the tank */
 const stills = [];
 for (const mode of ["with", "without"]) {
   for (const cast of ["pancakes", "people"]) {

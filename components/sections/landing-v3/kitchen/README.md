@@ -37,7 +37,7 @@ After a change to the words, draw the still pictures again. The next section tel
 
 ## Draw the still pictures again
 
-The section shows a still picture before the scene starts. On a phone, the still picture is all it shows. `LpKitchen.tsx` starts the scene at the exact moment of the still (`POSTER_TIMES` in `kitchen.js`), so the scene takes over without a jump.
+The section shows a still picture before the scene starts. On a phone, it shows the still, then the phone loop (next section). `LpKitchen.tsx` starts the scene at the exact moment of the still (`POSTER_TIMES` in `kitchen.js`), so the scene takes over without a jump.
 
 If you change the scene, its words or its logos, the stills are out of date. Run this command from the root of the repository:
 
@@ -57,7 +57,17 @@ npx playwright install chromium
 
 The command sets the badges in the reading font of the landing page, from `app/fonts/geist`. If that font changes, change its path in `preview/index.html` and in the command.
 
-The command writes twelve files in `public/lp/kitchen`. It draws one still per mode and cast, and one more of the kitchen without Pancake with no vendor mark on the tank. Each still has a wide size and a phone size.
+The command writes six files in `public/lp/kitchen`. It draws one still per mode and cast, and one more of the kitchen without Pancake with no vendor mark on the tank, at the wide size.
+
+## Draw the phone loops again
+
+Phones do not run the 3D scene. They play a loop of it: a 36 second video drawn frame by frame from the scene, with the camera fixed and no badges, zoomed on a picture as wide as the screen. The phone stills (`*-phone.webp`) are the first frames of these loops. After a change to the scene, draw them again too. Run this command from the root of the repository:
+
+```bash
+node scripts/kitchen-phone-loops.mjs
+```
+
+It needs Playwright, as above, and `ffmpeg` with H.264 (`libx264`). With `KITCHEN_GPU=1` it draws on the graphics card, in a minute or two instead of some twenty. It writes two loops (`with-pancakes-phone.mp4`, `without-pancakes-phone.mp4`, about 1.5 MB each) and six phone stills. The top of the script says how the loop closes on itself.
 
 ## Look at the scene alone
 
