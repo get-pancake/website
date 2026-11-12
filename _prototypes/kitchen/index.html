@@ -212,6 +212,12 @@
           grid-template-columns: minmax(0, 1fr);
         }
       }
+      /* where the scene cannot start, the controls and the pointer hint have nothing to act on */
+      .no-live .controls,
+      .no-live .hint,
+      .no-live #kitchen-next {
+        display: none;
+      }
       /* ?bare=1: the stage alone, filling the window (used for screenshots) */
       .bare {
         padding: 0;

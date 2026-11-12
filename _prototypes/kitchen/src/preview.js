@@ -42,6 +42,7 @@ try {
 } catch (error) {
   // no WebGL here: the still frame stays, with a line that says so
   if (note) note.hidden = false;
+  document.documentElement.classList.add("no-live");
 }
 
 if (kitchen) {
