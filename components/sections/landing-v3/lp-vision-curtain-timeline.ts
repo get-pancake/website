@@ -5,99 +5,123 @@ import { gsap } from "@/lib/gsap";
 import { clipTo, HIDDEN_CLIP, measureGlyphs, STEP, type Glyph } from "./lp-demo-pancake-timeline";
 import { registerTxtPlugin } from "./lp-gsap-txt";
 import { VISION_CURTAIN } from "./lp-vision-data";
+import { DB_HERO_STORY } from "./lp-vision-tables";
 
 /**
  * The window under the vision homepage's hero (LpVisionCurtain.tsx, 2026-11-11): Claude on the
- * left, Pancake's table on the right, both at work (founder: "J'animerai Claude et la database
- * pour montrer que c'est dynamique"). A take, then a loop.
+ * left, Pancake's companies table on the right. The table LIVES, asked or not; Claude steps in
+ * twice. The founder, on the takes before this one: "on fait un peu du ligne a ligne alors que ce
+ * qu'on veut c'est plus de dynamisme", "un data model underneath mon Claude"; then, on a take
+ * where five typed commands each moved the table once: "tu fais des commandes one shot qui
+ * touchent à la base, il faut qu'on retrouve un côté plus autonome et dynamique où la base vit
+ * seule".
  *
- * THE TAKE, once (lp-play-once drives it):
- *   0     Claude's window is there from the first frame, a new chat in it (founder: "le rideau
- *         Claude s'ouvre un peu tard, les gens auront deja scroll down": nothing slides in)
- *   0.6   a signal lands in the table (NULL becomes a value, the signals' count ticks), and the
- *         Brain writes its next best Play: the database works before anyone asks
- *   1.5   the question is typed in Claude's composer (38 ms a glyph), held, sent: the bubble
- *   3.7   one tool call: Claude reads the three tables (their tabs take Claude's ring in turn);
- *         done, THE FILTER comes on (founder: "des prompts qui sont envoyés et que ça va filtrer
- *         la database"): the view bar shows `next_best_play is not NULL`, the rows that match
- *         stand together under the head and the others go; Claude's ring is around the three,
- *         its mark on the first one
- *   5.0   the answer streams a word at a time; each account's row lights as Claude names it
- *   8.0   "Yes, run it." is typed and sent; the Play's tool call starts and Claude's ring closes
- *         on the one cell; done, the cell is live
- *   11.5  the filter goes: the whole table again, the Play live in its row
+ * THE TAKE (lp-play-once drives it; the copy is VISION_CURTAIN.thread, the rows DB_HERO, where
+ * each row stands at each moment DB_HERO_STORY.orders). The table is ranked by the Brain's fit
+ * all along. What it does by itself comes in threes: a SIGNAL lands in a row (NULL gives way to
+ * the value, the cell flashes); the Brain RESCORES the account (its fit counts up); the row GOES
+ * TO ITS NEW RANK, lit while it travels, and the rows it passes move down. The status line under
+ * the rows says each thing as it happens.
+ *   0     a new chat in Claude's window. Within half a second the table works: a signal on an
+ *         account, its new fit, its row up two places
+ *   1.3   typed, sent: "Which accounts should we work on now?" One tool call; the view bar's
+ *         filter becomes `signal is not NULL`, the rows that have no signal go, the others come
+ *         together. Claude's answer
+ *         ... and the table goes on: two rows that are one company MERGE, a new signal lands on
+ *         an account of the view and it climbs to the top
+ *         THEN THE ONE THAT STOPS YOU: a signal lands on an account that had none, a deal that
+ *         was lost. It has one now, so its row ENTERS the view; its fit jumps, it lights and
+ *         goes to the top. Pancake tells Claude, and Claude says it, unasked: the account hired
+ *         the buyer of an account you won. (The table does not wait for the answer: another
+ *         account enters meanwhile)
+ *         typed, sent: "Yes. Work every account that passes 90." A standing order. The Brain's
+ *         column of Plays OPENS (the ones to its right move over), the Plays of the two rows
+ *         above 90 are written, Claude's ring and its mark take each cell and it goes live
+ *         FROM HERE NOTHING IS TYPED. A signal lands on a third account: fit, rank, its Play
+ *         written, Claude runs it. The first account answers: its deal, lost, is OPEN again. A
+ *         fourth account passes 90.
+ * and a beat on the finished picture.
  *
- * THE LOOP, for as long as the card is on screen (founder: "Je prolongerai les animations en mode
- * endless loop: What's the next best Play to run?"; this card's one exception to "plays once,
- * nothing loops"). It starts when the take is over (data-lp-anim="done": played, or shown at once
- * to a visitor who arrived on it) and every round is the same exchange about the next account:
- *   the table   whole: the Play that ran a round ago is cleared with its signal (that account is
- *               being worked) and Claude leaves its cell; further down a signal lands and the
- *               Brain writes that account's Play, the one whose turn comes in two rounds. So
- *               three accounts have a Play at any time
- *   the ask     "What's the next best Play to run?" is typed and sent
- *   the answer  the tabs take Claude's ring (it reads) and the filter comes on: the three rows
- *               that have a Play stand together under the head, in the table's order, the others
- *               go. Then the Play's name and why: Claude's ring and its mark go to that cell,
- *               and the row lights
- *   the run     "Run it." is typed and sent; the Play's card starts, then it is live in its cell;
- *               the filter goes and the whole table is back
- * It never restarts: the conversation goes on (what has left through the top of the view is
- * dropped) and the table keeps changing. It waits while the card is off screen (less than a fifth
- * of it on show), and does not run under reduced motion.
+ * THEN IT PLAYS AGAIN, for as long as the card is on screen (this card's one exception to "plays
+ * once, nothing loops"; founder: "Je prolongerai les animations en mode endless loop"). The
+ * finished picture rests, a new chat opens (the conversation and the table go and come back on
+ * the take's first frame, as a cleared chat and a cleared view) and the same take plays. It is
+ * the take's own timeline, sent back to its start: nothing is rebuilt. It waits while the card
+ * is off screen (less than a fifth of it on show), while the visitor has scrolled up the
+ * conversation or holds the handle, and it does not run under reduced motion.
  *
  * The contract of the page's timelines (lp-step-timelines.ts, the dive's stories): the server
  * markup is the END picture; every piece is looked up and measured BEFORE anything is written (a
  * missing piece throws there and the server's picture stands); frame 0 is a block of gsap.set;
  * the take holds tweens only, an instant change being a 1 ms tween (`step`), so it can be seeked
- * both ways (QA: window.__lpVision.curtain). States that are colours (a lit row, Claude's ring, a
- * flash, the view bar's filter) are attributes the timelines flip (flagOn / flagOff below) and
- * vision.css eases; the rows a filter moves are tweened here (a row's own transform and
- * opacity: the grid's lines are its cells' borders, they go with it). No ease
- * overshoots (power1 to power3 only). A round of the loop is one more timeline of the same
- * tweens, built when it starts: its four lines are added to the thread and measured, then played
- * (QA: window.__lpVision.loop).
+ * both ways (QA: window.__lpVision.curtain). States that are colours or presence (a lit row,
+ * Claude's ring, a flash, the view bar's filter, a line of the conversation that has arrived,
+ * the column that is still shut) are attributes the take flips (flagOn / flagOff below) and
+ * vision.css reads. What moves is tweened here: a row's own transform and opacity (the grid's
+ * lines are its cells' borders, they go with it), the column's opening (--open-play, a number
+ * from 0 to 1 the stylesheet multiplies its width by). No ease overshoots (power1 to power3).
  *
- * The thread is anchored to the bottom of its view once it is taller than it (vision.css), so the
- * END needs no script; while lines are still to come it is shifted down by what has not arrived
- * yet, and moves up as each line needs room.
+ * Nothing here depends on how wide Claude's column is or where its conversation is scrolled: the
+ * visitor resizes the two with the handle and scrolls the conversation while the take plays. So
+ * a line arrives by being let into the flow (data-in) and the component scrolls to it; and the
+ * only lengths measured are the typed glyphs (against their own line) and a row's height.
  */
 
 type Timeline = gsap.core.Timeline;
 export type BuiltCurtain = { tl: Timeline; cleanup: () => void; cue: number };
 
-/* the take, seconds. Something moves within a second (the table's first datapoint), and the
-   question waits until both sides have been seen (the page's rule for a typed prompt) */
-const LAND_A = 0.6;
-const BRAIN_A = 1.15;
-const TYPE_1 = 1.5;
-/** one glyph every 38 ms (the page's pace for a typed request), a held beat before it is sent */
-const DT = 0.038;
-const TYPED_HOLD = 0.4;
+/* the take, seconds */
+/** the table's first move, before anything is asked */
+const ALIVE = 0.35;
+/** the first line is typed while the table is still at it */
+const START = 1.3;
+/** one glyph every 30 ms, a held beat before it is sent */
+const DT = 0.03;
+const TYPED_HOLD = 0.32;
+/** from a line sent to its tool call, and from the call to the table's move */
+const CALL = 0.3;
+const MOVE = 0.15;
 /** one word of Claude's answer every 45 ms */
 const WORD = 0.045;
-/** how long a cell stays flashed once its datapoint has landed */
-const FLASH = 0.55;
+/** how long a cell stays flashed once its value is in */
+const FLASH = 0.5;
+/** from a signal landed to the Brain's new fit, and how long the fit counts */
+const THINK = 0.4;
+const COUNT = 0.3;
+/** how long a row takes to its new rank (the one that stops you travels further) */
+const CLIMB = 0.55;
+const CLIMB_FAR = 0.8;
+/** the finished picture, before the take is over */
+const END_HOLD = 1.4;
 /* the loop, seconds */
-/** from a signal landing to the question: its Play has been written and read */
-const LOOP_LANDED = 1.2;
-/** a short word ("Run it.") waits less before it is sent */
-const GO_HOLD = 0.3;
-/** the finished round, before the next question */
-const LOOP_REST = 0.9;
+/** the finished picture's rest before a new chat */
+const LOOP_REST = 3.5;
 /** the share of the card that has to be on screen for the loop to run */
 const ON_SCREEN = 0.2;
 
 /** the attributes the take flips (vision.css reads them); cleared when the take is torn down */
-const FLAGS = ["data-unlit", "data-sel", "data-flash", "data-lit", "data-read", "data-noflag", "data-noring", "data-nostate", "data-filter"] as const;
+const FLAGS = [
+  "data-in",
+  "data-unlit",
+  "data-flash",
+  "data-lit",
+  "data-read",
+  "data-top",
+  "data-noflag",
+  "data-noring",
+  "data-nostate",
+  "data-filter",
+  "data-rt",
+  "data-rb",
+  "data-rl",
+  "data-keep-narrow",
+  "data-shut-play",
+  "data-wr-play",
+] as const;
 type Flag = (typeof FLAGS)[number];
-/* The server's picture holds back what only the loop shows (vision.css): a cell Claude is not
-   on yet (data-idle), a row not lit yet (data-dim). The take swaps each for its own flags, which
-   it can lift; they are put back when it is torn down. */
+/** the server's picture has Claude's ring on the last cell it ran only (data-idle on the
+    others, vision.css). The take swaps it for its own flags, which it can lift */
 const IDLE = "data-idle";
-const DIM = "data-dim";
-/** a line the loop added to the thread */
-const LOOP = "data-loop";
 
 /* Seek-safe attribute flips, as lp-gsap-txt's text swap: `flagOn` has the attribute at/after its
    position and not before, `flagOff` the reverse. Explicit both ways, so a seek in either
@@ -124,23 +148,11 @@ function registerFlagPlugins() {
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
-type Land = { td: HTMLTableCellElement; was: HTMLElement; now: HTMLElement; th: HTMLElement | undefined };
+type Row = HTMLTableRowElement;
 type Line = { el: HTMLElement; words: HTMLElement[] };
-type Tool = { el: HTMLElement; doing: HTMLElement; done: HTMLElement; num: HTMLElement | null; to: number };
-/** a row the loop comes to: its two cells, what Claude says of it, and where it stands now */
-type Turn = {
-  tr: HTMLTableRowElement;
-  signal: Land;
-  play: Land;
-  name: string;
-  to: string;
-  why: string;
-  /** its signal is on show · its Play is · its Play is live · the row is lit */
-  signalOn: boolean;
-  playOn: boolean;
-  live: boolean;
-  lit: boolean;
-};
+type Tool = { el: HTMLElement; doing: HTMLElement | null; done: HTMLElement; num: HTMLElement | null; to: number };
+type Land = { td: HTMLTableCellElement; was: HTMLElement; now: HTMLElement; th: HTMLElement | undefined };
+type Scored = keyof typeof DB_HERO_STORY.fits;
 
 export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const $ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = card): T => {
@@ -149,509 +161,452 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     return el;
   };
   const $$ = <T extends Element = HTMLElement>(sel: string, root: ParentNode = card) => Array.from(root.querySelectorAll<T>(sel));
+  const S = DB_HERO_STORY;
+  const SAYS = S.status;
+  const counts = VISION_CURTAIN.filter.some;
 
   /* ── the pieces ── */
   // Pancake's side
-  const tabs = (["companies", "people", "signals"] as const).map((name) => $(`.lp-vcut__tabs [data-tab="${name}"]`));
-  const signalsCount = $("small", tabs[2]);
-  const headRow = $<HTMLTableRowElement>(".lp-vcut__db thead tr");
-  const rowOf = (key: string) => $<HTMLTableRowElement>(`.lp-vcut__db tr[data-row="${key}"]`);
-  /** the view bar (its filter), and every row of the table, in the table's order */
+  const db = $(".lp-vcut__db .lp-db");
+  const companiesTab = $('.lp-vcut__tabs [data-tab="companies"]');
+  const signalsTab = $('.lp-vcut__tabs [data-tab="signals"]');
+  const headRow = $<Row>(".lp-vcut__db thead tr");
+  /** the view bar (its filter), the count of what the view holds, the status line */
   const filterBar = $(".lp-vcut__filter");
-  const body = $$<HTMLTableRowElement>(".lp-vcut__db tbody tr");
-  if (body.length < 4) throw new Error("vision-curtain: a table to filter");
+  const countSome = $('.lp-vcut__count [data-when="some"]');
+  const statusLine = $(".lp-vcut__status");
+  const statusText = $(".lp-vcut__status-t");
+  /** every row of the table, in the markup's order: a row's slot is where it stands untouched */
+  const body = $$<Row>(".lp-vcut__db tbody tr");
   const slotOf = new Map(body.map((tr, k) => [tr, k]));
-  const slot = (tr: HTMLTableRowElement) => slotOf.get(tr) ?? 0;
-  /** how far apart two rows stand (0: a table that is not laid out now) */
-  const rowStep = () => body[1].offsetTop - body[0].offsetTop;
-  const rows = (["a", "b", "c"] as const).map(rowOf);
+  const slot = (tr: Row) => slotOf.get(tr) ?? 0;
+  const rowOf = (key: string) => {
+    const tr = body.find((row) => row.dataset.row === key);
+    if (!tr) throw new Error(`vision-curtain: row ${key} missing`);
+    return tr;
+  };
+  const cellOf = (key: string, col: string) => $<HTMLTableCellElement>(`td[data-col="${col}"]`, rowOf(key));
+  const numOf = (tr: Row) => $<HTMLTableCellElement>("td.lp-db__n", tr);
+  /** the orders the rows stand in, moment after moment (DB_HERO_STORY.orders) */
+  const O = Object.fromEntries(Object.entries(S.orders).map(([name, keys]) => [name, keys.map(rowOf)])) as Record<keyof typeof S.orders, Row[]>;
+  if (O.base.length !== body.length || new Set(O.base).size !== body.length) throw new Error("vision-curtain: every row has one place before anything is asked");
+  if (O.legal.some((tr, k) => slot(tr) !== k)) throw new Error("vision-curtain: the rows the take ends on come first, in their final order");
+  const [keep, dup] = S.pair.map(rowOf);
+  const hero = rowOf(S.hero);
+  /** a value that lands while the take plays: its cell, NULL and the value, its column's head */
   const landing = (key: string): Land => {
     const td = $<HTMLTableCellElement>(`.lp-vcut__db td[data-land="${key}"]`);
     return { td, was: $(".lp-db__was", td), now: $(".lp-db__now", td), th: headRow.cells[td.cellIndex] as HTMLElement | undefined };
   };
-  /** the values the take lands: row a's signal and its Play, then two datapoints further down */
-  const lands = {
-    aSignal: landing("a-signal"),
-    aPlay: landing("a-play"),
-    m1: landing("m1-signal"),
-    m2: landing("m2-signal"),
-  };
-  /** every value that can come and go, with where it stands in the take: not there yet (late:
-      the take lands it; void: only the loop does), or there all along */
-  const cells = $$<HTMLTableCellElement>(".lp-vcut__db td[data-land]").map((td) => ({
-    was: $(".lp-db__was", td),
-    now: $(".lp-db__now", td),
-    there: !td.hasAttribute("data-late") && !td.hasAttribute("data-void"),
-  }));
-  /** the cell Claude works in during the take (row a's Play), and those it only comes to later */
-  const byCell = $(`.lp-vcut__db td[data-by]:not([${IDLE}])`);
-  const idleCells = $$(`.lp-vcut__db td[data-by][${IDLE}]`);
-  const dimRows = $$<HTMLTableRowElement>(`.lp-vcut__db tr[${DIM}]`);
-  /** the loop's rows, in the order Claude goes through them, as the take's END leaves them: a's
-      Play live under Claude's ring, the three named rows lit, the others as the markup has them */
-  const loopCopy = VISION_CURTAIN.loop;
-  if (loopCopy.turns.length < 4) throw new Error("vision-curtain: four accounts or more for the loop");
-  const turns: Turn[] = loopCopy.turns.map((turn) => {
-    const tr = rowOf(turn.row);
-    const signal = landing(`${turn.row}-signal`);
-    const play = landing(`${turn.row}-play`);
-    return {
-      tr,
-      signal,
-      play,
-      name: play.now.textContent ?? "",
-      to: turn.to,
-      why: turn.why,
-      signalOn: !signal.td.hasAttribute("data-void"),
-      playOn: !play.td.hasAttribute("data-void"),
-      live: play.td === byCell,
-      lit: rows.includes(tr),
-    };
-  });
+  const scored = Object.keys(S.fits) as Scored[];
+  const fits = Object.fromEntries(scored.map((key) => [key, cellOf(key, "fit")])) as Record<Scored, HTMLTableCellElement>;
+  /** the signals that land in a cell that had none, and those that take the place of an older
+      one (the cell's own words are the new signal: the END's) */
+  const lands = { ro: landing("ro-signal"), fi: landing("fi-signal"), tr: landing("tr-signal") };
+  const swaps = Object.fromEntries(
+    (Object.keys(S.was) as (keyof typeof S.was)[]).map((key) => {
+      const td = cellOf(key, "signal");
+      return [key, { td, to: td.textContent ?? "", th: headRow.cells[td.cellIndex] as HTMLElement | undefined }];
+    }),
+  ) as Record<keyof typeof S.was, { td: HTMLTableCellElement; to: string; th: HTMLElement | undefined }>;
+  type Signalled = keyof typeof lands | keyof typeof swaps;
+  /** the Plays the Brain writes and Claude runs, in the order it runs them */
+  const ran = ["fi", "lo", "dv", "lg"] as const;
+  const plays = Object.fromEntries(ran.map((key) => [key, landing(`${key}-play`)])) as Record<(typeof ran)[number], Land>;
+  const idleCells = ran.map((key) => plays[key].td).filter((td) => td.hasAttribute(IDLE));
+  /** the deal that reopens: its cell, its tag */
+  const heroDeal = cellOf(S.hero, "crm_deal");
+  const heroTag = $(".lp-db__tag", heroDeal);
   // Claude's side
-  const col = $(".lp-vcut__col");
   const view = $(".lp-vcut__view");
   const greet = $(".lp-vcut__greet");
-  const thread = $(".lp-vcut__thread");
-  const bubbles = [1, 2].map((n) => $(`.lp-vcut__bubble[data-n="${n}"]`));
-  const toolOf = (el: HTMLElement): Tool => {
-    const num = el.querySelector<HTMLElement>(".lp-vcut__tool-done b");
-    return {
-      el,
-      doing: $(".lp-vcut__tool-doing", el),
-      done: $(".lp-vcut__tool-done", el),
-      num,
-      to: num ? Number(num.dataset.to) || 0 : 0,
-    };
+  const lineEl = (id: string) => $(`.lp-vcut__thread > [data-line="${id}"]`);
+  const say = (id: string): Line => {
+    const el = lineEl(id);
+    return { el, words: $$(".lp-vcut__w", el) };
   };
-  const tools = [1, 2].map((n) => toolOf($(`.lp-vcut__tool[data-n="${n}"]`)));
-  const lineOf = (el: HTMLElement): Line => ({ el, words: $$(".lp-vcut__w", el) });
-  const says = [1, 2, 3].map((n) => lineOf($(`.lp-vcut__say[data-n="${n}"]`)));
-  const picks = $$(".lp-vcut__picks li").map(lineOf);
-  if (picks.length !== rows.length) throw new Error("vision-curtain: one row for each account Claude names");
+  const tool = (id: string): Tool => {
+    const el = lineEl(id);
+    const num = el.querySelector<HTMLElement>(".lp-vcut__tool-done b");
+    return { el, doing: el.querySelector<HTMLElement>(".lp-vcut__tool-doing"), done: $(".lp-vcut__tool-done", el), num, to: num ? Number(num.dataset.to) || 0 : 0 };
+  };
+  const bubbles = { ask1: lineEl("ask1"), ask2: lineEl("ask2") };
+  const tools = { filter: tool("filter"), ping: tool("ping"), rule: tool("rule"), run1: tool("run1"), run2: tool("run2") };
+  const says = { say1: say("say1"), say2: say("say2"), say3: say("say3"), say4: say("say4") };
+  const typed = { ask1: $('.lp-vcut__typed[data-line="ask1"]'), ask2: $('.lp-vcut__typed[data-line="ask2"]') };
   const phs = [1, 2].map((n) => $(`.lp-vcut__ph[data-n="${n}"]`));
-  /** what is typed: the take's question and its go-ahead, then the loop's two */
-  const typed = [1, 2, 3, 4].map((n) => $(`.lp-vcut__typed[data-n="${n}"]`));
   const caret = $(".lp-vcut__caret");
   const send = $(".lp-vcut__send");
-  const art = $(".lp-vcut__art");
 
   /* ── the geometry, read on the untouched END layout ── */
-  const glyphs: Glyph[][] = [typed[0], typed[1]].map(measureGlyphs);
-  /** a row's step, for the take's filter (the stylesheet's 34 px if the table has no layout yet) */
-  const rowH = rowStep() || 34;
-  const viewH = view.clientHeight;
-  // the thread's END place is its bottom on the view's: `over` of it is above the view's top
-  const over = Math.max(0, thread.offsetHeight - viewH);
-  const padBottom = parseFloat(getComputedStyle(thread).paddingBottom) || 0;
-  /** how far the thread has to be scrolled for this piece's bottom to show */
-  const need = (el: HTMLElement) => Math.min(over, Math.max(0, el.offsetTop + el.offsetHeight + padBottom - viewH));
-  const scrolls = {
-    bubble1: need(bubbles[0]),
-    tool1: need(tools[0].el),
-    say1: need(says[0].el),
-    picks: picks.map((p) => need(p.el)),
-    say2: need(says[1].el),
-    bubble2: need(bubbles[1]),
-    tool2: need(tools[1].el),
-    say3: need(says[2].el),
-  };
-  /** Where a bubble's text starts, against where it was typed: the bubble leaves from there.
-      `standing` is how far below its resting place the thread stands when the bubble leaves. */
-  const liftOf = (bubble: HTMLElement, from: HTMLElement, standing: number) => {
-    const a = from.getBoundingClientRect();
-    const b = bubble.getBoundingClientRect();
-    const cs = getComputedStyle(bubble);
-    return {
-      x: a.left - (b.left + (parseFloat(cs.paddingLeft) || 0)),
-      y: a.top - (b.top + (parseFloat(cs.paddingTop) || 0) + standing),
-    };
-  };
-  const lifts = [liftOf(bubbles[0], typed[0], over), liftOf(bubbles[1], typed[1], over - scrolls.say2)];
-  void col.offsetWidth; // (the column is laid out: the reads above stand)
+  const glyphs = { ask1: measureGlyphs(typed.ask1), ask2: measureGlyphs(typed.ask2) };
+  /** how far apart two rows stand: a row's own height, its line included (the stylesheet's 34 px
+      if the table has no layout yet) */
+  const H = body[1].offsetHeight || 34;
+  /** where a row stands, as the `k`th of an order */
+  const yAt = (tr: Row, k: number) => (k - slot(tr)) * H;
 
   registerTxtPlugin();
   registerFlagPlugins();
 
-  /* ── frame 0: a new chat in Claude's window, the table before its signal ── */
+  /* ── frame 0: a new chat in Claude's window, the table before anything ── */
   const set = gsap.set;
   const flag = (el: Element, name: Flag) => set(el, { flagOn: name });
-  for (const cell of cells) {
-    set(cell.was, { opacity: cell.there ? 0 : 0.72 });
-    set(cell.now, { opacity: cell.there ? 1 : 0 });
+  O.base.forEach((tr, k) => {
+    set(tr, { autoAlpha: 1, y: yAt(tr, k) });
+    set(numOf(tr), { txt: String(k + 1) });
+  });
+  set(countSome, { txt: counts[0] });
+  set(statusText, { txt: SAYS.idle });
+  // (the server's picture has the filter on: off, until it is asked for)
+  set(filterBar, { flagOff: "data-filter" });
+  // the Brain's column of Plays is shut; the columns a narrow window folds away when it opens
+  // are there (vision.css reads --keep-narrow only on a narrow window)
+  flag(db, "data-shut-play");
+  flag(db, "data-keep-narrow");
+  set(db, { "--open-play": 0, "--keep-narrow": 1 });
+  for (const key of scored) set(fits[key], { txt: String(S.fits[key][0]) });
+  for (const land of Object.values(lands)) {
+    set(land.was, { opacity: 0.72 });
+    set(land.now, { opacity: 0 });
   }
-  [...rows, ...dimRows].forEach((row) => flag(row, "data-unlit"));
-  // (every row in its place, on show: the filter moves them)
-  set(body, { autoAlpha: 1, y: 0 });
-  for (const cell of [byCell, ...idleCells]) {
-    flag(cell, "data-noflag");
-    flag(cell, "data-noring");
-    flag(cell, "data-nostate");
+  for (const key of Object.keys(swaps) as (keyof typeof swaps)[]) set(swaps[key].td, { txt: S.was[key] });
+  // (the deal that reopens is still lost)
+  set(heroTag, { txt: "closed_lost" });
+  for (const key of ran) {
+    const { td, was, now } = plays[key];
+    set(was, { opacity: 0.72 });
+    set(now, { opacity: 0 });
+    flag(td, "data-noflag");
+    flag(td, "data-noring");
+    flag(td, "data-nostate");
   }
-  // (the take's own flags are on: the server's stand-ins for them go)
-  idleCells.forEach((cell) => cell.removeAttribute(IDLE));
-  dimRows.forEach((row) => row.removeAttribute(DIM));
+  flag(hero, "data-unlit");
   set(greet, { autoAlpha: 1, y: 0 });
-  set(thread, { y: over });
-  set(bubbles[0], { autoAlpha: 0, x: lifts[0].x, y: lifts[0].y });
-  set(bubbles[1], { autoAlpha: 0, x: lifts[1].x, y: lifts[1].y });
-  for (const tool of tools) {
-    set(tool.el, { autoAlpha: 0, y: 6 });
-    set(tool.doing, { autoAlpha: 1 });
-    set(tool.done, { autoAlpha: 0 });
-    if (tool.num) set(tool.num, { txt: "0" });
+  for (const el of [...Object.values(bubbles), ...Object.values(tools).map((it) => it.el)]) set(el, { autoAlpha: 0, y: 8 });
+  for (const it of Object.values(tools)) {
+    if (!it.doing) continue;
+    set(it.doing, { autoAlpha: 1 });
+    set(it.done, { autoAlpha: 0 });
+    if (it.num) set(it.num, { txt: "0" });
   }
-  for (const line of [...says, ...picks]) {
+  for (const line of Object.values(says)) {
     set(line.el, { autoAlpha: 0 });
     set(line.words, { opacity: 0 });
   }
   set(phs[0], { autoAlpha: 1 });
   set(phs[1], { autoAlpha: 0 });
-  set(typed, { clipPath: HIDDEN_CLIP });
+  set(Object.values(typed), { clipPath: HIDDEN_CLIP });
   set(caret, { opacity: 1, x: 0, y: 0 });
   set(send, { opacity: 0.45, scale: 1 });
-  set(art, { autoAlpha: 0 });
-  // the take's own frame is in place: the stylesheet's stand-in for it goes (data-pre, vision.css)
+  // (the take's own flags are on: the server's stand-in for them goes)
+  idleCells.forEach((td) => td.removeAttribute(IDLE));
+  // the take is in charge: a line of the conversation is in the flow once it has arrived
+  // (data-in), and the stylesheet's stand-in for this frame goes (data-pre, vision.css)
+  card.setAttribute("data-take", "");
   card.setAttribute("data-open", "");
 
-  /* ── the moves, for the take and for each round of the loop ── */
-  let signals = Number((signalsCount.textContent ?? "").replace(/\D/g, "")) || 0;
-  const movesOn = (tl: Timeline) => {
-    const step = (targets: gsap.TweenTarget, vars: gsap.TweenVars, t: number) => tl.to(targets, { ...vars, duration: STEP, ease: "none" }, t);
-    const on = (el: Element, name: Flag, t: number) => step(el, { flagOn: name }, t);
-    const off = (el: Element, name: Flag, t: number) => step(el, { flagOff: name }, t);
-    /** an attribute held for a while */
-    const pulse = (el: Element, name: Flag, t: number, hold: number) => {
-      on(el, name, t);
-      off(el, name, t + hold);
-    };
-    /** a datapoint lands: NULL gives way to the value, the cell flashes, the column's source
-        lights; a signal adds one to the signals' count */
-    const landAt = (land: Land, t: number, signal: boolean) => {
-      tl.to(land.was, { opacity: 0, duration: 0.16, ease: "power1.in" }, t);
-      tl.to(land.now, { opacity: 1, duration: 0.3, ease: "power1.out" }, t + 0.1);
-      pulse(land.td, "data-flash", t + 0.1, FLASH);
-      if (land.th) pulse(land.th, "data-lit", t, 0.9);
-      if (signal) step(signalsCount, { txt: fmt(++signals) }, t + 0.1);
-    };
-    /** what is typed in the composer: the text shows glyph by glyph, the caret follows */
-    const type = (el: HTMLElement, marks: Glyph[], placeholder: HTMLElement, t0: number) => {
-      step(placeholder, { autoAlpha: 0 }, t0 - STEP);
-      step(caret, { opacity: 1, x: 0, y: 0 }, t0 - 0.3);
-      tl.to(send, { opacity: 1, duration: 0.2, ease: "power2.out" }, t0);
-      marks.forEach((g, k) => {
-        const t = t0 + k * DT;
-        step(el, { clipPath: clipTo(g) }, t);
-        step(caret, { x: g.right + 1, y: g.top }, t);
-      });
-      const done = t0 + Math.max(marks.length - 1, 0) * DT;
-      step(el, { clipPath: "none" }, done + 0.08);
-      return done;
-    };
-    /** sent: the button is pressed, the text leaves the composer as the bubble (the caller moves
-        the thread to make room for it) */
-    const sendAt = (el: HTMLElement, bubble: HTMLElement, press: number) => {
-      tl.to(send, { keyframes: [{ scale: 0.86, duration: 0.08, ease: "power2.out" }, { scale: 1, duration: 0.22, ease: "power2.out" }] }, press);
-      const t = press + 0.1;
-      step(caret, { opacity: 0 }, t);
-      step(el, { clipPath: HIDDEN_CLIP }, t);
-      tl.to(send, { opacity: 0.45, duration: 0.2, ease: "power1.out" }, t);
-      tl.to(bubble, { autoAlpha: 1, duration: 0.14, ease: "power1.out" }, t);
-      tl.to(bubble, { x: 0, y: 0, duration: 0.6, ease: "power3.out" }, t);
-      tl.to(phs[1], { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, t + 0.45);
-      return t;
-    };
-    /** a line of Claude's answer, a word at a time */
-    const stream = (line: Line, t: number) => {
-      step(line.el, { autoAlpha: 1 }, t);
-      line.words.forEach((w, k) => tl.to(w, { opacity: 1, duration: 0.16, ease: "power1.out" }, t + k * WORD));
-      return t + Math.max(line.words.length - 1, 0) * WORD + 0.16;
-    };
-    /** a tool call: its card, what it is doing, then what came back (a count ticks up) */
-    const call = (tool: Tool, start: number, work: number) => {
-      tl.to(tool.el, { autoAlpha: 1, y: 0, duration: 0.28, ease: "power3.out" }, start);
-      const done = start + work;
-      tl.to(tool.doing, { autoAlpha: 0, duration: 0.1, ease: "power1.in" }, done);
-      tl.to(tool.done, { autoAlpha: 1, duration: 0.25, ease: "power1.out" }, done + 0.06);
-      const num = tool.num;
-      if (num) for (let k = 1; k <= 6; k++) step(num, { txt: fmt(Math.round((tool.to * k) / 6)) }, done + 0.06 + (k - 1) * 0.05);
-      return done;
-    };
-    /** The filter comes on: the view bar shows it, the rows that match stand together under
-        the head (in the table's order, `h` apart), the others go. */
-    const filterOn = (view: HTMLTableRowElement[], t: number, h: number) => {
-      const keep = [...view].sort((a, b) => slot(a) - slot(b));
-      on(filterBar, "data-filter", t);
-      tl.to(body.filter((tr) => !keep.includes(tr)), { autoAlpha: 0, duration: 0.2, ease: "power1.in" }, t);
-      keep.forEach((tr, k) => tl.to(tr, { y: (k - slot(tr)) * h, duration: 0.45, ease: "power3.out", force3D: false }, t + 0.12));
-      return t + 0.57;
-    };
-    /** The filter goes: every row back in its place. */
-    const filterOff = (view: HTMLTableRowElement[], t: number) => {
-      off(filterBar, "data-filter", t);
-      tl.to(view, { y: 0, duration: 0.45, ease: "power2.inOut", force3D: false }, t);
-      tl.to(body.filter((tr) => !view.includes(tr)), { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, t + 0.25);
-      return t + 0.55;
-    };
-    return { step, on, off, pulse, landAt, type, sendAt, stream, call, filterOn, filterOff };
+  /* ── the moves ── */
+  const tl = gsap.timeline({ paused: true });
+  const step = (targets: gsap.TweenTarget, vars: gsap.TweenVars, t: number) => tl.to(targets, { ...vars, duration: STEP, ease: "none" }, t);
+  const on = (el: Element, name: Flag, t: number) => step(el, { flagOn: name }, t);
+  const off = (el: Element, name: Flag, t: number) => step(el, { flagOff: name }, t);
+  /** an attribute held for a while */
+  const pulse = (el: Element, name: Flag, t: number, hold: number) => {
+    on(el, name, t);
+    off(el, name, t + hold);
+  };
+  /* Claude's side */
+  /** a line of the conversation arrives: it is let into the flow, then comes up */
+  const arrive = (el: HTMLElement, t: number) => {
+    on(el, "data-in", t);
+    tl.to(el, { autoAlpha: 1, y: 0, duration: 0.28, ease: "power3.out" }, t + STEP);
+  };
+  /** what is typed in the composer: the text shows glyph by glyph, the caret follows */
+  const type = (el: HTMLElement, marks: Glyph[], placeholder: HTMLElement, t0: number) => {
+    step(placeholder, { autoAlpha: 0 }, t0 - STEP);
+    step(caret, { opacity: 1, x: 0, y: 0 }, t0 - 0.25);
+    tl.to(send, { opacity: 1, duration: 0.2, ease: "power2.out" }, t0);
+    marks.forEach((g, k) => {
+      const t = t0 + k * DT;
+      step(el, { clipPath: clipTo(g) }, t);
+      step(caret, { x: g.right + 1, y: g.top }, t);
+    });
+    const done = t0 + Math.max(marks.length - 1, 0) * DT;
+    step(el, { clipPath: "none" }, done + 0.08);
+    return done;
+  };
+  /** sent: the button is pressed, the composer empties, the bubble arrives */
+  const sendAt = (el: HTMLElement, bubble: HTMLElement, press: number) => {
+    tl.to(send, { keyframes: [{ scale: 0.86, duration: 0.08, ease: "power2.out" }, { scale: 1, duration: 0.22, ease: "power2.out" }] }, press);
+    const t = press + 0.1;
+    step(caret, { opacity: 0 }, t);
+    step(el, { clipPath: HIDDEN_CLIP }, t);
+    tl.to(send, { opacity: 0.45, duration: 0.2, ease: "power1.out" }, t);
+    arrive(bubble, t);
+    tl.to(phs[1], { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, t + 0.45);
+    return t;
+  };
+  /** a line of Claude's answer, a word at a time */
+  const stream = (line: Line, t: number) => {
+    on(line.el, "data-in", t);
+    step(line.el, { autoAlpha: 1 }, t + STEP);
+    line.words.forEach((w, k) => tl.to(w, { opacity: 1, duration: 0.16, ease: "power1.out" }, t + STEP + k * WORD));
+    return t + Math.max(line.words.length - 1, 0) * WORD + 0.16;
+  };
+  /** a tool call is back: what it was doing gives way to what came back (a count ticks up) */
+  const back = (it: Tool, t: number) => {
+    if (!it.doing) return;
+    tl.to(it.doing, { autoAlpha: 0, duration: 0.1, ease: "power1.in" }, t);
+    tl.to(it.done, { autoAlpha: 1, duration: 0.25, ease: "power1.out" }, t + 0.06);
+    const num = it.num;
+    if (num) for (let k = 1; k <= 6; k++) step(num, { txt: fmt(Math.round((it.to * k) / 6)) }, t + 0.06 + (k - 1) * 0.05);
+  };
+  /* Pancake's side */
+  /** the status line says what the table does */
+  const status = (text: string, t: number) => {
+    step(statusText, { txt: text }, t);
+    pulse(statusLine, "data-lit", t, 0.7);
+  };
+  /** a value lands: NULL gives way to it, the cell flashes, the column's source lights */
+  const landAt = (land: Land, t: number) => {
+    tl.to(land.was, { opacity: 0, duration: 0.16, ease: "power1.in" }, t);
+    tl.to(land.now, { opacity: 1, duration: 0.3, ease: "power1.out" }, t + 0.1);
+    pulse(land.td, "data-flash", t + 0.1, FLASH);
+    if (land.th) pulse(land.th, "data-lit", t, 0.9);
+  };
+  /** the rows of `order` go to their places in it, and take its numbers */
+  const settle = (order: Row[], t: number, duration: number, ease: string) => {
+    order.forEach((tr, k) => {
+      tl.to(tr, { y: yAt(tr, k), duration, ease, force3D: false }, t);
+      step(numOf(tr), { txt: String(k + 1) }, t + duration * 0.4);
+    });
+  };
+  /** a signal comes in: it lands in a cell that had none, or takes the place of an older one */
+  const signalIn = (key: Signalled, t: number, said: string) => {
+    if (key in lands) {
+      landAt(lands[key as keyof typeof lands], t);
+    } else {
+      const swap = swaps[key as keyof typeof swaps];
+      step(swap.td, { txt: swap.to }, t + 0.1);
+      pulse(swap.td, "data-flash", t + 0.1, FLASH);
+      if (swap.th) pulse(swap.th, "data-lit", t, 0.9);
+    }
+    pulse(signalsTab, "data-read", t, 0.5);
+    status(said, t);
+  };
+  /** the Brain rescores the account: its fit counts to the new number. Returns when it has. */
+  const rescore = (key: Scored, t: number, said: string) => {
+    const [from, to] = S.fits[key];
+    for (let k = 1; k <= 6; k++) step(fits[key], { txt: String(Math.round(from + ((to - from) * k) / 6)) }, t + ((k - 1) * COUNT) / 5);
+    pulse(fits[key], "data-flash", t, COUNT + FLASH);
+    status(said, t);
+    return t + COUNT;
+  };
+  /** its row goes to its new rank, lit and over the others while it travels */
+  const climbs = (key: string, order: Row[], t: number, far = false) => {
+    const tr = rowOf(key);
+    const duration = far ? CLIMB_FAR : CLIMB;
+    on(tr, "data-top", t);
+    if (tr !== hero) pulse(tr, "data-flash", t, duration);
+    settle(order, t, duration, "power2.inOut");
+    off(tr, "data-top", t + duration + 0.05);
+    return t + duration;
+  };
+  /** What the table does by itself, in three: a signal on the account, its new fit, its new
+      rank. Returns when the row is there. */
+  const rises = (key: Scored & Signalled, order: Row[], t: number, said: { signal: string; fit: string }) => {
+    signalIn(key, t, said.signal);
+    return climbs(key, order, rescore(key, t + THINK, said.fit) + 0.05);
+  };
+  /** A signal lands on an account that had none: it is one of the accounts to work now, so its
+      row comes into the view at its rank (the rows under it make room) and the count goes up. */
+  const enters = (key: keyof typeof lands, order: Row[], t: number, said: string, count: string) => {
+    const tr = rowOf(key);
+    settle(order, t, 0.4, "power3.out");
+    signalIn(key, t + 0.1, said);
+    tl.to(tr, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, t + 0.2);
+    if (tr !== hero) pulse(tr, "data-flash", t + 0.2, FLASH + 0.2);
+    step(countSome, { txt: count }, t + 0.25);
+    return t + 0.6;
+  };
+  /** the Brain writes the account's next best Play */
+  const writes = (key: (typeof ran)[number], t: number) => landAt(plays[key], t);
+  /** Claude runs it: its ring and its mark come to the cell (from the one it ran before), and
+      the Play goes live. Returns when it is. */
+  const runs = (key: (typeof ran)[number], t: number) => {
+    const before = ran[ran.indexOf(key) - 1];
+    if (before) {
+      on(plays[before].td, "data-noring", t);
+      on(plays[before].td, "data-noflag", t);
+    }
+    off(plays[key].td, "data-noring", t);
+    off(plays[key].td, "data-noflag", t);
+    const live = t + 0.35;
+    off(plays[key].td, "data-nostate", live);
+    pulse(plays[key].td, "data-flash", live, FLASH);
+    return live;
   };
 
   /* ── the take ── */
-  const tl = gsap.timeline({ paused: true });
-  const T = movesOn(tl);
-  /** the thread moves up to `scrolled` (a no-op while everything fits) */
-  let scrolled = 0;
-  const scrollTo = (to: number, t: number, duration = 0.45, ease = "power2.out") => {
-    if (to <= scrolled) return;
-    scrolled = to;
-    tl.to(thread, { y: over - to, duration, ease }, t);
-  };
+  // the table, by itself, before anything is asked
+  rises("ro", O.rescored, ALIVE, { signal: SAYS.roSignal, fit: SAYS.roFit });
 
-  // the database at work, alone: a signal, then the Play the Brain makes of it
-  T.landAt(lands.aSignal, LAND_A, true);
-  T.landAt(lands.aPlay, BRAIN_A, false);
-
-  // the question
-  const typed1 = T.type(typed[0], glyphs[0], phs[0], TYPE_1);
-  T.landAt(lands.m1, TYPE_1 + 0.75, true);
-  const sent1 = T.sendAt(typed[0], bubbles[0], typed1 + TYPED_HOLD);
-  scrollTo(scrolls.bubble1, sent1, 0.6, "power3.out");
+  // asked: which accounts to work. The view narrows to the ones that have a signal
+  const typed1 = type(typed.ask1, glyphs.ask1, phs[0], START);
+  const sent1 = sendAt(typed.ask1, bubbles.ask1, typed1 + TYPED_HOLD);
   tl.to(greet, { autoAlpha: 0, y: -8, duration: 0.2, ease: "power2.in" }, sent1);
+  arrive(tools.filter.el, sent1 + CALL);
+  const f = sent1 + CALL + MOVE;
+  pulse(companiesTab, "data-read", f, 0.4);
+  on(filterBar, "data-filter", f + 0.2);
+  tl.to(O.rescored.filter((tr) => !O.view.includes(tr)), { autoAlpha: 0, duration: 0.2, ease: "power1.in" }, f + 0.2);
+  settle(O.view, f + 0.32, 0.45, "power3.out");
+  const filtered = f + 0.82;
+  back(tools.filter, filtered);
+  const said1 = stream(says.say1, filtered + 0.2);
 
-  // Claude reads the three tables: each tab takes its ring in turn; back with the rows, the
-  // filter is on (the three stand together under the head, the others go), its ring is around
-  // them and its mark on the first one's Play
-  const READ = sent1 + 0.45;
-  scrollTo(scrolls.tool1, READ - 0.1);
-  const read = T.call(tools[0], READ, 0.9);
-  tabs.forEach((tab, k) => T.pulse(tab, "data-read", READ + 0.1 + k * 0.26, 0.3));
-  T.filterOn(rows, read, rowH);
-  rows.forEach((row) => T.on(row, "data-sel", read));
-  T.off(byCell, "data-noflag", read);
+  // the table goes on. Two rows are one company: the ring takes the pair, the duplicate goes
+  // into the row over it, what stood under comes up
+  const pair = said1 + 0.3;
+  on(keep, "data-rt", pair);
+  on(keep, "data-rl", pair);
+  on(dup, "data-rb", pair);
+  on(dup, "data-rl", pair);
+  status(SAYS.merge, pair);
+  const m = pair + 0.42;
+  tl.to(dup, { y: yAt(dup, O.merged.indexOf(keep)), duration: 0.4, ease: "power2.inOut", force3D: false }, m);
+  tl.to(dup, { autoAlpha: 0, duration: 0.2, ease: "power1.in" }, m + 0.16);
+  off(dup, "data-rb", m + 0.4);
+  off(dup, "data-rl", m + 0.4);
+  on(keep, "data-rb", m + 0.3);
+  pulse(keep, "data-flash", m + 0.3, FLASH);
+  for (const name of ["data-rt", "data-rb", "data-rl"] as const) off(keep, name, m + 0.8);
+  settle(O.merged, m, 0.45, "power3.out");
+  step(countSome, { txt: counts[1] }, m + 0.25);
+  // a new signal on an account of the view: it goes to the top
+  const up1 = rises("lo", O.logistics, m + 0.85, { signal: SAYS.loSignal, fit: SAYS.loFit });
 
-  // the answer, and each account's row as it is named
-  scrollTo(scrolls.say1, read + 0.3);
-  let t = T.stream(says[0], read + 0.4) + 0.1;
-  picks.forEach((pick, k) => {
-    T.off(rows[k], "data-unlit", t + 0.05);
-    scrollTo(scrolls.picks[k], t - 0.1);
-    t = T.stream(pick, t) + 0.06;
-  });
-  tl.to(art, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, t);
-  scrollTo(scrolls.say2, t);
-  const asked = T.stream(says[1], t + 0.1);
+  // the one that stops you. A signal lands on a deal that was lost: it comes into the view, its
+  // fit jumps, its row lights and goes to the top. Pancake tells Claude (the call's card), and
+  // Claude says it, unasked
+  const stop = up1 + 0.4;
+  const inView = enters("fi", O.entered, stop, SAYS.fiSignal, counts[2]);
+  off(hero, "data-unlit", inView + 0.1);
+  const up2 = climbs("fi", O.fintech, rescore("fi", inView + 0.1, SAYS.fiFit) + 0.05, true);
+  arrive(tools.ping.el, inView + 0.1 + COUNT);
+  const said2 = stream(says.say2, up2 - 0.15);
+  // (and while the answer is read and the next line typed, the table is still at it: another
+  // account comes into the view)
+  enters("tr", O.travel, said2 + 0.5, SAYS.trSignal, counts[3]);
 
-  // "Yes, run it."
-  const typed2 = T.type(typed[1], glyphs[1], phs[1], asked + 0.8);
-  const sent2 = T.sendAt(typed[1], bubbles[1], typed2 + TYPED_HOLD);
-  scrollTo(scrolls.bubble2, sent2, 0.6, "power3.out");
+  // the standing order. The Brain's column of Plays opens, the Plays of the rows above 90 are
+  // written, and Claude runs them one after the other
+  const typed2 = type(typed.ask2, glyphs.ask2, phs[1], said2 + 0.75);
+  const sent2 = sendAt(typed.ask2, bubbles.ask2, typed2 + TYPED_HOLD);
+  arrive(tools.rule.el, sent2 + CALL);
+  const o = sent2 + CALL + MOVE;
+  off(db, "data-shut-play", o);
+  on(db, "data-wr-play", o);
+  tl.to(db, { "--open-play": 1, duration: 0.45, ease: "power3.out" }, o + STEP);
+  // (a narrow window: the deal's and the signal's columns fold away as this one opens)
+  tl.to(db, { "--keep-narrow": 0, duration: 0.45, ease: "power3.out" }, o + STEP);
+  off(db, "data-keep-narrow", o + 0.46);
+  pulse($('th[data-col="next_best_play"]', headRow), "data-lit", o, 1.3);
+  writes("fi", o + 0.5);
+  writes("lo", o + 0.7);
+  status(SAYS.plays, o + 0.5);
+  off(db, "data-wr-play", o + 1.05);
+  const live1 = runs("fi", o + 1.05);
+  const live2 = runs("lo", live1 + 0.3);
+  back(tools.rule, live2 + 0.1);
+  const said3 = stream(says.say3, live2 + 0.3);
 
-  // the Play runs: Claude's ring closes on the cell; done, the cell is live
-  const RUN = sent2 + 0.5;
-  scrollTo(scrolls.tool2, RUN - 0.1);
-  const ran = T.call(tools[1], RUN, 0.7);
-  rows.forEach((row) => T.off(row, "data-sel", RUN));
-  T.off(byCell, "data-noring", RUN);
-  T.off(byCell, "data-nostate", ran + 0.06);
-  T.pulse(byCell, "data-flash", ran + 0.06, FLASH);
-  scrollTo(scrolls.say3, ran + 0.3);
-  const done = T.stream(says[2], ran + 0.4);
-  // the filter goes: the whole table again, the Play live in its row. And the table goes on:
-  // another signal, lower down
-  const back = T.filterOff(rows, done + 0.7);
-  T.landAt(lands.m2, back + 0.25, true);
+  // from here nothing is typed. A third account passes 90: its Play is written, Claude runs it
+  const auto = (key: "dv" | "lg", order: Row[], card: Tool, t0: number, said: { signal: string; fit: string; live: string }) => {
+    const up = rises(key, order, t0, said);
+    writes(key, up + 0.1);
+    arrive(card.el, up + 0.2);
+    const live = runs(key, up + 0.4);
+    status(said.live, live);
+    back(card, live + 0.05);
+    return live;
+  };
+  const live3 = auto("dv", O.devtools, tools.run1, said3 + 0.6, { signal: SAYS.dvSignal, fit: SAYS.dvFit, live: SAYS.dvLive });
+
+  // the first account answers: its deal, lost, is open again
+  const reopen = live3 + 0.8;
+  step(heroTag, { txt: "open" }, reopen);
+  pulse(heroDeal, "data-flash", reopen, FLASH + 0.3);
+  status(SAYS.reopen, reopen);
+  const said4 = stream(says.say4, reopen + 0.3);
+
+  // and a fourth account passes 90
+  const live4 = auto("lg", O.legal, tools.run2, said4 + 0.7, { signal: SAYS.lgSignal, fit: SAYS.lgFit, live: SAYS.lgLive });
   // (a beat on the finished picture before the take is over)
-  T.step(card, {}, back + 1.1);
+  step(card, {}, live4 + END_HOLD);
 
   /* ── the loop ── */
-  /** started · torn down · waiting off screen · reduced motion (no new round) */
-  let looping = false;
+  /** torn down · waiting off screen · reduced motion (the take does not play again) */
   let gone = false;
   let held = true;
   let still = false;
-  /** the round under way, how many are done, the turn that comes next, the row Claude is on */
-  let round: Timeline | undefined;
-  let rounds = 0;
-  let at = 0;
-  let cur: Turn | undefined = turns.find((turn) => turn.live);
+  /** how many times the take has been sent back to its start */
+  let cycles = 0;
+  /** the finished picture's rest, and the new chat's fade */
+  let wait: gsap.core.Tween | undefined;
+  let turn: Timeline | undefined;
+  /** what goes and comes back when a new chat opens: Claude's view, Pancake's table (the take
+      itself never tweens these two) */
+  const cleared = [view, $("table", db)];
 
-  const el = (tag: string, cls: string, text?: string) => {
-    const node = document.createElement(tag);
-    node.className = cls;
-    if (text !== undefined) node.textContent = text;
-    return node;
-  };
-  const lineEl = (tag: string, cls: string, text?: string) => {
-    const node = el(tag, cls, text);
-    node.setAttribute(LOOP, "");
-    return node;
-  };
-  /** What has left through the top of the view for good goes. The thread stands on its bottom
-      edge, so nothing on show moves. */
-  const tidy = () => {
-    const top = view.getBoundingClientRect().top;
-    for (const line of $$(`:scope > [${LOOP}]`, thread)) {
-      if (line.getBoundingClientRect().bottom > top - 80) break;
-      line.remove();
-    }
-  };
-
-  const buildRound = () => {
-    const h = rowStep();
-    // (a table that is not laid out now. Asked again once the card is on screen)
-    if (h <= 0) return void (looping = false);
-    const i = at % turns.length;
-    const turn = turns[i];
-    /** it and the two accounts that come after it: the three that have a Play, the filter's rows
-        (a phone's table shows three rows: the filter brings them under its head) */
-    const queue = [turn, turns[(i + 1) % turns.length], turns[(i + 2) % turns.length]];
-    at = i + 1;
-
-    // the round's four lines, added to the thread: the ask, the answer, the go-ahead, the run
-    const ask = lineEl("p", "lp-vcut__bubble", loopCopy.ask);
-    const say = lineEl("p", "lp-vcut__say");
-    const words = [el("b", "lp-vcut__w", turn.name), ...`${turn.to} ${turn.why}`.split(" ").map((word) => el("span", "lp-vcut__w", word))];
-    words.forEach((word, k) => say.append(k ? " " : "", word));
-    const go = lineEl("p", "lp-vcut__bubble", loopCopy.go);
-    const runEl = tools[1].el.cloneNode(true) as HTMLElement;
-    runEl.removeAttribute("data-n");
-    [runEl, ...$$("[style]", runEl)].forEach((node) => node.removeAttribute("style"));
-    runEl.setAttribute(LOOP, "");
-    const run = toolOf(runEl);
-    const runName = runEl.querySelector(".lp-vcut__tool-t i");
-    if (runName) runName.textContent = turn.name;
-
-    // measured before anything is written: the thread rests on its bottom edge (y 0), the new
-    // lines at their END places under what was there
-    const before = thread.offsetHeight;
-    thread.append(ask, say, go, runEl);
-    const height = thread.offsetHeight;
-    const added = height - before;
-    const pad = parseFloat(getComputedStyle(thread).paddingBottom) || 0;
-    /** how far below its resting place the thread stands while this line is the last on show */
-    const under = (line: HTMLElement) => Math.min(added, Math.max(0, height - pad - (line.offsetTop + line.offsetHeight)));
-    const y = { ask: under(ask), say: under(say), go: under(go), run: under(runEl) };
-    const marks = [measureGlyphs(typed[2]), measureGlyphs(typed[3])];
-    const liftAsk = liftOf(ask, typed[2], added);
-    const liftGo = liftOf(go, typed[3], y.say);
-
-    set(thread, { y: added });
-    set(ask, { autoAlpha: 0, x: liftAsk.x, y: liftAsk.y });
-    set(go, { autoAlpha: 0, x: liftGo.x, y: liftGo.y });
-    set(say, { autoAlpha: 0 });
-    set(words, { opacity: 0 });
-    set(runEl, { autoAlpha: 0, y: 6 });
-    set(run.doing, { autoAlpha: 1 });
-    set(run.done, { autoAlpha: 0 });
-
-    const c = gsap.timeline({
-      paused: true,
-      onComplete: () => {
-        rounds++;
-        nextRound();
-      },
-    });
-    const R = movesOn(c);
-    // (the first round leaves the take's last picture a moment)
-    let t0 = rounds ? 0.1 : 0.6;
-
-    // the table, whole. The Play that ran a round ago is cleared with its signal (that account is
-    // being worked: it comes back when a signal crosses on it again), and Claude leaves its cell
-    const ran = cur;
-    if (ran && ran !== turn && ran.live) {
-      for (const name of ["data-nostate", "data-noring", "data-noflag"] as const) R.on(ran.play.td, name, t0);
-      for (const cell of [ran.signal, ran.play]) {
-        c.to(cell.now, { opacity: 0, duration: 0.25, ease: "power1.in" }, t0);
-        c.to(cell.was, { opacity: 0.72, duration: 0.3, ease: "power1.out" }, t0 + 0.2);
-      }
-      if (ran.lit) R.on(ran.tr, "data-unlit", t0 + 0.2);
-      ran.live = ran.lit = ran.signalOn = ran.playOn = false;
-    }
-    // further down a signal lands and the Brain writes that account's Play (the one whose turn
-    // comes in two rounds: there are always three to choose from)
-    let landed = false;
-    for (const row of queue) {
-      if (row.playOn) continue;
-      if (!row.signalOn) R.landAt(row.signal, t0 + 0.3, true);
-      R.landAt(row.play, t0 + (row.signalOn ? 0.3 : 0.85), false);
-      row.signalOn = row.playOn = true;
-      landed = true;
-    }
-    t0 += landed ? LOOP_LANDED + 0.3 : 0.5;
-
-    // the ask
-    const typedAsk = R.type(typed[2], marks[0], phs[1], t0);
-    const sentAsk = R.sendAt(typed[2], ask, typedAsk + TYPED_HOLD);
-    c.to(thread, { y: y.ask, duration: 0.6, ease: "power3.out" }, sentAsk);
-
-    // the answer. Claude reads first (the tabs take its ring in turn) and the filter comes on: the
-    // table narrows to the three accounts that have a Play. Then the Play's name: Claude's ring
-    // and its mark go to that cell, and the row lights (it alone)
-    tabs.forEach((tab, k) => R.pulse(tab, "data-read", sentAsk + 0.2 + k * 0.16, 0.22));
-    const view = queue.map((row) => row.tr);
-    R.filterOn(view, sentAsk + 0.5, h);
-    const answer = sentAsk + 1;
-    c.to(thread, { y: y.say, duration: 0.45, ease: "power2.out" }, answer - 0.1);
-    const named = answer + 0.05;
-    for (const row of turns) {
-      if (row === turn || !row.lit) continue;
-      R.on(row.tr, "data-unlit", named);
-      row.lit = false;
-    }
-    if (!turn.lit) R.off(turn.tr, "data-unlit", named);
-    turn.lit = true;
-    R.off(turn.play.td, "data-noring", named);
-    R.off(turn.play.td, "data-noflag", named);
-    cur = turn;
-    const said = R.stream({ el: say, words }, answer);
-
-    // the go-ahead
-    const typedGo = R.type(typed[3], marks[1], phs[1], said + 0.6);
-    const sentGo = R.sendAt(typed[3], go, typedGo + GO_HOLD);
-    c.to(thread, { y: y.go, duration: 0.6, ease: "power3.out" }, sentGo);
-
-    // the Play runs; done, it is live in its cell
-    const start = sentGo + 0.4;
-    c.to(thread, { y: y.run, duration: 0.45, ease: "power2.out" }, start - 0.1);
-    const live = R.call(run, start, 0.7) + 0.06;
-    R.off(turn.play.td, "data-nostate", live);
-    R.pulse(turn.play.td, "data-flash", live, FLASH);
-    turn.live = true;
-    // the filter goes: the whole table again, the Play live in its row
-    const back = R.filterOff(view, live + 0.9);
-    R.step(card, {}, back + LOOP_REST - 0.3);
-
-    round = c;
-    if (!held) c.play();
-  };
-
-  /** A round that cannot be built (a piece gone, a layout it cannot read) ends the loop where it
-      stands: the picture on show is a finished one. */
-  function nextRound() {
-    round = undefined;
+  /** A new chat: the take is sent back to its first frame behind a short fade, and plays. */
+  const again = () => {
+    wait = undefined;
     if (gone || still) return;
-    try {
-      tidy();
-      buildRound();
-    } catch (err) {
-      gone = true;
-      if (process.env.NODE_ENV !== "production") console.error(err);
+    // the visitor is reading back up the conversation, or has the handle in hand: it waits
+    if (view.hasAttribute("data-up") || card.querySelector(".lp-vcut__handle:active")) {
+      wait = gsap.delayedCall(1, again);
+      wait.paused(held);
+      return;
     }
-  }
-  const startLoop = () => {
-    if (looping || gone || still || card.dataset.lpAnim !== "done") return;
-    looping = true;
-    nextRound();
+    turn = gsap
+      .timeline({
+        onComplete: () => {
+          turn = undefined;
+          cycles++;
+          tl.play();
+          tl.paused(held);
+        },
+      })
+      .to(cleared, { opacity: 0, duration: 0.28, ease: "power1.in" })
+      .add(() => {
+        tl.timeScale(1);
+        tl.pause(0);
+      })
+      .to(cleared, { opacity: 1, duration: 0.32, ease: "power1.out" });
+    turn.paused(held);
   };
-  const onState = new MutationObserver(startLoop);
+  /** The take is over (lp-play-once marks the card: played, or shown at once to a visitor who
+      arrived on it; and each time it has played again): the finished picture rests, then a new
+      chat. */
+  const rest = () => {
+    if (gone || still || wait || turn || card.dataset.lpAnim !== "done" || tl.progress() < 1) return;
+    wait = gsap.delayedCall(LOOP_REST, again);
+    wait.paused(held);
+  };
+  const onState = new MutationObserver(rest);
   onState.observe(card, { attributes: true, attributeFilter: ["data-lp-anim"] });
   // (it waits while less than a fifth of the card is on screen: off screen, or the strip of it
-  // that shows on the first screen)
+  // that shows on the first screen. The first take is lp-play-once's: only the ones after it
+  // are held here)
   const onScreen = new IntersectionObserver(
     (entries) => {
       held = entries[entries.length - 1].intersectionRatio < ON_SCREEN;
-      if (round) round.paused(held);
-      else if (!held) startLoop();
+      wait?.paused(held);
+      turn?.paused(held);
+      if (cycles > 0 && !turn && tl.progress() < 1) tl.paused(held);
+      else if (!held) rest();
     },
     { threshold: [0, ON_SCREEN] },
   );
@@ -659,33 +614,43 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const onMotion = () => {
     still = motion.matches;
-    if (still) {
-      // the round under way ends at once: a finished picture, and no other round
-      looping = false;
-      round?.progress(1);
-    } else {
-      startLoop();
-    }
+    if (!still) return rest();
+    // (lp-play-once puts the take on its END picture: no rest, no new chat)
+    wait?.kill();
+    turn?.kill();
+    wait = turn = undefined;
+    gsap.set(cleared, { opacity: 1 });
   };
   motion.addEventListener("change", onMotion);
   still = motion.matches;
-  // QA: the loop's state, and a way to end the round under way at once
+  // QA: the loop's state, and a way to end what is under way at once (the rest, or the take)
   type Probe = { loop?: { skip: () => void; state: () => Record<string, unknown> } };
   const probe = window as unknown as { __lpVision?: Probe };
   probe.__lpVision = {
     ...probe.__lpVision,
     loop: {
-      skip: () => void round?.progress(1),
+      skip: () => {
+        if (wait) {
+          wait.kill();
+          again();
+        } else if (turn) {
+          turn.progress(1);
+        } else {
+          tl.progress(1);
+        }
+      },
       state: () => ({
-        looping,
+        cycles,
         held,
         still,
-        rounds,
-        at,
-        lines: thread.children.length,
-        playing: !!round && !round.paused(),
+        resting: !!wait,
+        turning: !!turn,
+        playing: tl.isActive(),
+        at: Math.round(tl.time() * 100) / 100,
+        lines: $$(".lp-vcut__thread > [data-in]").length,
+        up: view.hasAttribute("data-up"),
         filter: filterBar.hasAttribute("data-filter"),
-        plays: turns.filter((turn) => turn.playOn).length,
+        status: statusText.textContent,
       }),
     },
   };
@@ -698,14 +663,17 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
       onState.disconnect();
       onScreen.disconnect();
       motion.removeEventListener("change", onMotion);
-      round?.kill();
-      round = undefined;
-      $$(`[${LOOP}]`, thread).forEach((line) => line.remove());
+      wait?.kill();
+      turn?.kill();
+      wait = turn = undefined;
+      gsap.set(cleared, { clearProps: "opacity" });
       delete probe.__lpVision?.loop;
-      // the server's picture: none of the take's attributes, its own stand-ins back
+      // the server's picture: none of the take's attributes, and its own back (the view bar's
+      // filter is on in it, Claude's ring is on the last cell it ran only)
       for (const name of FLAGS) card.querySelectorAll(`[${name}]`).forEach((node) => node.removeAttribute(name));
-      idleCells.forEach((cell) => cell.setAttribute(IDLE, ""));
-      dimRows.forEach((row) => row.setAttribute(DIM, ""));
+      card.removeAttribute("data-take");
+      filterBar.setAttribute("data-filter", "");
+      idleCells.forEach((td) => td.setAttribute(IDLE, ""));
     },
   };
 }

@@ -24,19 +24,17 @@ export type DbCellObj = {
   /** a value that no longer holds, struck out */
   cut?: true;
   /** a value that comes while the picture plays: NULL and the value share the cell (the hero's
-   *  table). The key is the one the take and the loop after it know the cell by
-   *  (lp-vision-curtain-timeline.ts: `<row>-signal`, `<row>-play`) */
+   *  table). The key is the one the take knows the cell by (lp-vision-curtain-timeline.ts) */
   land?: string;
-  /** when such a value is not there. "take": NULL until the take lands it, the value at rest.
-   *  "rest": NULL at rest too, it comes once the loop runs. Unset: there all along (the loop can
-   *  still take it away and land it again) */
-  nil?: "take" | "rest";
-  /** the agent that works in this cell: its ring around the cell and its mark on the ring's
-   *  corner, as a shared canvas shows a collaborator (the hero's table) */
+  /** such a value is NULL until the take lands it, and the value at rest */
+  nil?: "take";
+  /** the agent that works from this cell: its ring and its mark on the ring's corner, as a shared
+   *  canvas shows a collaborator's selection (the hero's table: the cells Claude ran) */
   by?: string;
   /** a state the value takes once the agent has acted on it, printed after it (the hero's table) */
   state?: string;
-  /** the agent is not on this cell at rest: it comes to it once the loop runs */
+  /** the agent has moved on from this cell: its ring and its mark are not on it at rest (the
+   *  hero's table: they are on the last cell it ran) */
   idle?: true;
   /** a vendor's own mark before the value */
   logo?: string;
@@ -61,6 +59,9 @@ export type DbCol = {
   src?: string;
   /** not shown on a phone, or on a tablet ("mid": the hero's table, which has no room there) */
   hide?: "phone" | "mid" | "phone mid";
+  /** the hero's table. "play": the column a command adds while the picture plays (shut until
+   *  then). "deal", "signal": columns a narrow window folds away when that one opens */
+  join?: "deal" | "signal" | "play";
 };
 
 export type DbRow = {
@@ -70,8 +71,9 @@ export type DbRow = {
   mark?: "hit" | "new" | "cut" | "sum";
   /** the name the take knows the row by (the hero's table) */
   key?: string;
-  /** a marked row that is not lit at rest: it lights when the loop comes to it (the hero's table) */
-  dim?: true;
+  /** a row that is in the table before the commands and not in the view they end on (the hero's
+   *  table): not shown at rest */
+  out?: true;
   /** what the row-number cell prints instead of the number */
   n?: string;
 };
@@ -92,151 +94,170 @@ export type DbTableData = {
 const tag = (v: string, hit?: true): DbCellObj => ({ v, as: "tag", ...(hit ? { hit } : {}) });
 const hit = (v: string): DbCellObj => ({ v, hit: true });
 
-/* ── hero: Pancake's companies table, and Claude at work on it (the curtain, LpVisionCurtain.tsx) ── */
+/* ── hero: Pancake's companies table, alive, and Claude at work on it (the curtain, LpVisionCurtain.tsx) ── */
 
-/** the tables of the data layer; the signals' count is the one the take ticks up (it is the
- *  count the take starts from: a datapoint that lands adds one) */
+/** the tables of the data layer (the companies' count is the table's own, the view bar's) */
 export const DB_HERO_TABS = [
   { name: "companies", rows: "4,812" },
   { name: "people", rows: "12,960" },
   { name: "signals", rows: "38,204" },
 ] as const;
 
-type Landing = Pick<DbCellObj, "nil" | "hit" | "idle">;
-/** a value that comes and goes (`land`) */
-const land = (key: string, v: string, more: Landing = {}): DbCellObj => ({ v, land: key, ...more });
-/** a row's signal, and its Play: the cell Claude works in */
-const signal = (row: string, v: string, more: Landing = {}) => land(`${row}-signal`, v, more);
-const play = (row: string, v: string, more: Landing = {}): DbCellObj => ({ ...land(`${row}-play`, v, more), by: "Claude", state: "live" });
+const lost = tag("closed_lost");
+/** a value that lands while the take plays: NULL until then, the value at rest */
+const lands = (key: string, v: string, more: Partial<DbCellObj> = {}): DbCellObj => ({ v, land: key, nil: "take", ...more });
+/** a Play the Brain writes and Claude runs while the take plays: its name, then its state.
+ *  Claude's ring is on the last one it ran (`idle` on the others) */
+const play = (row: string, v: string, more: Partial<DbCellObj> = {}): DbCellObj => ({ ...lands(`${row}-play`, v), by: "Claude", state: "live", idle: true, ...more });
+type Cells = readonly [
+  id: string,
+  industry: string,
+  deal: DbCell,
+  signal: DbCell,
+  fit: DbCell,
+  play: DbCell,
+  headcount: string,
+  touch: DbCell,
+  reason: DbCell,
+  source: string,
+  region: string,
+  created: string,
+];
+const row = (key: string, c: Cells, more: Pick<DbRow, "mark" | "out"> = {}): DbRow => ({
+  key,
+  ...more,
+  c: [...c.slice(0, 9), tag(c[9]), c[10], c[11]] as DbCell[],
+});
+const out = { out: true } as const;
 
-/** One row per company: what the outside says, what to do next, what you know. The four columns
- *  on the left are the ones on show beside Claude (the curtain rests at 44 % of the card: their
- *  widths add up to what is left); the three others are past the card's edge until the curtain is
- *  slid.
- *  Rows a, b and c are the three accounts Claude names. Row a takes its signal and its Play while
- *  the take opens, then goes live when Claude runs the Play: Claude's mark is on that cell.
- *  m1 and m2 are datapoints that land while Claude answers (the database keeps working).
- *  Then the loop: asked for the next best Play again and again, Claude goes b, c, p1, p2, p3, a
- *  and round again. A row's signal and its Play land two rounds before its turn (p1, p2 and p3's
- *  Play are NULL at rest), and a Play that has run is cleared when the next round opens.
- *  THE FILTER (2026-11-11, the founder on this window: "des prompts qui sont envoyés et que ça
- *  va filtrer la database"): each time Claude reads, the table narrows to `next_best_play is not
- *  NULL`, and the whole table comes back once the Play is live. So a row has a Play only where
- *  the take or the loop gives it one (three at any time: the filter's rows); every other row's
- *  next_best_play is NULL. Fourteen rows: with the view bar over the head they fill the card. */
+/** The hero's table (2026-11-11). The founder, on the takes before this one: "plus de dynamisme:
+ *  filtrage, ajout de colonne, merge de rows", "un data model underneath mon Claude"; on a take
+ *  where five commands each moved the table once: "tu fais des commandes one shot qui touchent à
+ *  la base, il faut qu'on retrouve un côté plus autonome et dynamique où la base vit seule"; and
+ *  on what is asked: "je veux plus être sur quels accounts on veut work on, et tous les dérivés"
+ *  (a first take asked for the lost deals: "super passive, no go").
+ *  So the table LIVES, asked or not: it is ranked by the Brain's `fit`, and while the take plays
+ *  signals land in it, the Brain rescores the account and its row goes to its new rank, two rows
+ *  that are one company are merged, a lost deal reopens. Claude, beside it, is asked which
+ *  accounts to work: the view narrows to the ones that have a signal, and from then on an account
+ *  ENTERS the view by itself the moment a signal lands on it. Then a standing order (work every
+ *  account that passes 90) opens the Brain's `next_best_play` column, and a Play is written and
+ *  goes live each time a row passes 90, unasked.
+ *  THE ROWS, in the markup's order: first the sixteen accounts the take ends on, in their final
+ *  order (their fit, falling); then the rows that are in the table while the take plays and not
+ *  in the view it ends on (`out`, not shown at rest): a duplicate, and the accounts that have no
+ *  signal. DB_HERO_STORY says where each row stands at each moment.
+ *  THE COLUMNS: a name and a type, as a database tool prints them, nothing over them (founder,
+ *  2026-11-11: "évite les mots type fioriture genre 'The Brain', il faut simplifier les mots
+ *  inutiles"). `next_best_play` is shut until the standing order (`join: "play"`). Its width is
+ *  that of what it pushes out of sight (headcount and last_touch: 224 px), so the card's edge falls
+ *  on a column's line before and after. The table is half as wide again as the card: what is
+ *  pushed right stays in it, past the edge. A narrow window (a tablet on its side, a phone: widths
+ *  `wm`, shares of the card, and `wp`) has no room for all of them: there the deal's and the
+ *  signal's columns fold away as the Plays' opens (vision.css).
+ *  No company is named: a row is an id and what its columns say. */
 export const DB_HERO: DbTableData = {
   name: "companies",
   numbered: true,
   cols: [
-    { name: "id", type: "pk", w: "7.4%", wm: "9.5%", wp: 60, src: "Key" },
-    { name: "industry", type: "text", w: "10.4%", src: "Profile", hide: "phone mid" },
-    { name: "signal", type: "text", w: "14.6%", wm: "17%", wp: 112, src: "Data providers" },
-    { name: "next_best_play", type: "text", w: "20.4%", wm: "21.5%", src: "The Brain" },
-    { name: "crm_deal", type: "enum", w: "13.2%", wm: "17%", src: "Your CRM", hide: "phone" },
-    { name: "last_touch", type: "text", w: "15%", wm: "auto", src: "Calls, events", hide: "phone" },
-    { name: "headcount", type: "int", end: true, src: "Data providers", hide: "phone mid" },
+    { name: "id", type: "pk", w: 70, hide: "phone mid" },
+    { name: "industry", type: "text", w: 100, wm: "12.5%", wp: 90 },
+    { name: "crm_deal", type: "enum", w: 104, wm: "13.5%", wp: 98, join: "deal" },
+    { name: "signal", type: "text", w: 112, wm: "15%", wp: 104, join: "signal" },
+    { name: "fit", type: "int", w: 80, wm: "9%", wp: 42, end: true },
+    { name: "next_best_play", type: "text", w: 224, wm: "28.5%", wp: 202, join: "play" },
+    { name: "headcount", type: "int", w: 100, wm: "9.4%", wp: 76, end: true },
+    { name: "last_touch", type: "text", w: 124, wm: "13.8%", wp: 104 },
+    { name: "lost_reason", type: "enum", w: 140, wm: "14.3%", wp: 100 },
+    { name: "source", type: "enum", w: 104, wm: "11%", wp: 84 },
+    { name: "region", type: "text", w: 96, wm: "10%", wp: 72 },
+    { name: "created", type: "date" },
   ],
   rows: [
-    { c: ["c_08fa", "Edtech", null, null, tag("closed_lost"), null, "85"] },
-    {
-      key: "a",
-      mark: "hit",
-      c: [
-        "c_4f2a",
-        "Fintech",
-        signal("a", "hiring SDRs", { nil: "take", hit: true }),
-        play("a", "Reach back out", { nil: "take", hit: true }),
-        tag("closed_lost", true),
-        null,
-        "200",
-      ],
-    },
-    {
-      key: "b",
-      mark: "hit",
-      c: [
-        "c_91be",
-        "Dev tools",
-        signal("b", "funding Series B", { hit: true }),
-        play("b", "Send the pricing follow-up", { hit: true, idle: true }),
-        tag("open"),
-        hit("asked pricing"),
-        "40",
-      ],
-    },
-    {
-      key: "c",
-      mark: "hit",
-      c: [
-        "c_27d0",
-        "Logistics",
-        signal("c", "new VP Sales", { hit: true }),
-        play("c", "Follow up on the event", { hit: true, idle: true }),
-        null,
-        hit("attended event"),
-        "1,200",
-      ],
-    },
-    {
-      key: "p1",
-      mark: "hit",
-      dim: true,
-      c: [
-        "c_d5a1",
-        "Legal tech",
-        signal("p1", "new funding", { nil: "rest", hit: true }),
-        play("p1", "Reach out on the round", { nil: "rest", hit: true, idle: true }),
-        null,
-        null,
-        "60",
-      ],
-    },
-    { c: ["c_a6c3", "Health tech", "headcount up", null, tag("closed_won"), null, "310"] },
-    {
-      key: "p3",
-      mark: "hit",
-      dim: true,
-      c: [
-        "c_5e18",
-        "Retail",
-        signal("p3", "uses a rival tool", { hit: true }),
-        play("p3", "Start with the comparison", { nil: "rest", hit: true, idle: true }),
-        null,
-        null,
-        "2,400",
-      ],
-    },
-    { c: ["c_c0d9", "Insurance", "new CMO", null, null, "asked for a demo", "720"] },
-    { c: ["c_3b7e", "HR software", signal("m1", "headcount up", { nil: "take" }), null, tag("open"), null, "95"] },
-    { c: ["c_e214", "Security", signal("m2", "headcount up", { nil: "take" }), null, null, "attended event", "540"] },
-    { c: ["c_77b2", "Travel", null, null, tag("closed_lost"), null, "140"] },
-    {
-      key: "p2",
-      mark: "hit",
-      dim: true,
-      c: [
-        "c_1f6d",
-        "Proptech",
-        signal("p2", "new CRO", { nil: "rest", hit: true }),
-        play("p2", "Introduce yourself", { nil: "rest", hit: true, idle: true }),
-        null,
-        null,
-        "55",
-      ],
-    },
-    { c: ["c_9a40", "Gaming", "new funding", null, tag("open"), "asked pricing", "180"] },
-    { c: ["c_62ce", "Biotech", "uses a rival tool", null, null, null, "30"] },
+    // the accounts to work the take ends on, ranked. The first four passed 90 while it played.
+    // The first is the one the take turns on: a lost deal at 64, out of the view until its signal
+    // lands; its deal is open again when the take ends
+    row(
+      "fi",
+      ["c_4f2a", "Fintech", tag("open"), lands("fi-signal", "new VP Sales", { hit: true }), hit("96"), play("fi", "Reach back out", { hit: true }), "200", "demo call", tag("timing"), "crm", "US", "2025-03-11"],
+      { mark: "hit" },
+    ),
+    row("dv", ["c_91be", "Dev tools", null, "Series B", "93", play("dv", "Reach out on the round"), "40", "asked pricing", null, "website", "US", "2025-06-02"]),
+    row("lg", ["c_d5a1", "Legal tech", lost, "new funding", "92", play("lg", "Reach out on the round", { idle: undefined }), "60", null, tag("timing"), "crm", "UK", "2025-01-27"]),
+    row("lo", ["c_27d0", "Logistics", tag("open"), "hiring SDRs", "91", play("lo", "Follow up on the event"), "1,200", "attended event", null, "event", "EU", "2024-11-19"]),
+    row("ro", ["c_0be5", "Robotics", null, lands("ro-signal", "new funding"), "89", null, "420", null, null, "event", "US", "2025-10-03"]),
+    row("ba", ["c_84ad", "Banking", tag("open"), "hiring SDRs", "88", null, "900", "demo call", null, "product", "US", "2025-10-20"]),
+    row("pp", ["c_1f6d", "Proptech", lost, "new CRO", "86", null, "55", "visited pricing", tag("no budget"), "website", "US", "2025-08-14"]),
+    row("rt", ["c_5e18", "Retail", null, "new CMO", "84", null, "2,400", null, null, "crm", "EU", "2024-09-03"]),
+    row("in", ["c_c0d9", "Insurance", tag("open"), "visits up", "81", null, "720", "demo request", null, "website", "US", "2025-04-22"]),
+    row("hr", ["c_3b7e", "HR software", null, "headcount up", "77", null, "95", null, null, "crm", "US", "2025-02-08"]),
+    row("se", ["c_e214", "Security", null, "headcount up", "74", null, "540", "attended event", null, "event", "EU", "2025-05-30"]),
+    row("tr", ["c_77b2", "Travel", lost, lands("tr-signal", "new CFO"), "71", null, "140", null, tag("no budget"), "crm", "APAC", "2024-12-12"]),
+    row("ga", ["c_9a40", "Gaming", tag("open"), "new funding", "68", null, "180", "asked pricing", null, "product", "US", "2025-07-01"]),
+    row("bi", ["c_62ce", "Biotech", null, "visits up", "61", null, "30", null, null, "crm", "EU", "2025-03-25"]),
+    row("ed", ["c_08fa", "Edtech", lost, "new CMO", "58", null, "85", null, tag("timing"), "crm", "UK", "2024-10-16"]),
+    row("te", ["c_f602", "Telecom", null, "visits up", "49", null, "3,100", "attended event", null, "event", "APAC", "2025-07-23"]),
+    // the same account, entered twice: merged into its row
+    row("in2", ["c_e9c4", "Insurance", tag("open"), "visits up", "81", null, "720", null, null, "crm", "US", "2025-04-29"], out),
+    // no signal: not in the accounts to work
+    row("ht", ["c_a6c3", "Health tech", tag("closed_won"), null, "97", null, "310", "renewed", null, "crm", "US", "2024-08-21"], out),
+    row("ec", ["c_7d21", "Ecommerce", tag("open"), null, "95", null, "75", "asked pricing", null, "website", "EU", "2025-09-12"], out),
+    row("ad", ["c_c41a", "Adtech", tag("open"), null, "92", null, "65", "demo call", null, "crm", "UK", "2025-09-28"], out),
+    row("cl", ["c_18f3", "Climate", tag("closed_won"), null, "90", null, "150", null, null, "crm", "EU", "2025-02-17"], out),
+    row("me", ["c_b3d7", "Media", lost, null, "55", null, "230", "webinar", tag("rival"), "event", "US", "2025-06-18"], out),
   ],
 };
 
-/** the view Claude draws of the three accounts it names, beside its answer (seen once the curtain
- *  is slid off it) */
-export const DB_ARTIFACT: DbTableData = {
-  name: "accounts",
-  cols: [{ name: "id", w: 74 }, { name: "industry", w: 96 }, { name: "headcount", w: 92, end: true }, { name: "next_best_play" }],
-  rows: [
-    { c: ["c_4f2a", "Fintech", "200", { v: "Reach back out", hit: true }], mark: "hit" },
-    { c: ["c_91be", "Dev tools", "40", "Send the pricing follow-up"] },
-    { c: ["c_27d0", "Logistics", "1,200", "Follow up on the event"] },
-  ],
-};
+/** What the take needs to know of DB_HERO's rows (their keys).
+ *  `orders`: the rows on show, top to bottom, at each moment (the window shows the first
+ *  thirteen; the table is ranked by fit all along):
+ *    base       before anything: every row
+ *    rescored   a signal landed on Robotics, the Brain rescored it: it went up two places
+ *    view       asked which accounts to work: the ones that have a signal
+ *    merged     the duplicate has gone into its row
+ *    logistics  a new signal on Logistics, its new fit: it went to the top
+ *    entered    a signal landed on Fintech: it has one now, so it is in the view (at its old fit)
+ *    fintech    ... and the Brain rescored it: the top
+ *    travel     a signal landed on Travel: it is in the view
+ *    devtools, legal   that account passed 90
+ *  `legal` is the last: the markup's own order.
+ *  `fits`: [before, after] for the accounts the Brain rescores while the take plays.
+ *  `was`: the signal an account had before its new one landed.
+ *  `status`: what the table's status line says as each thing happens. */
+export const DB_HERO_STORY = {
+  orders: {
+    base: ["ht", "ec", "ad", "cl", "ba", "pp", "ro", "rt", "dv", "in", "in2", "lg", "lo", "hr", "se", "tr", "ga", "fi", "bi", "ed", "me", "te"],
+    rescored: ["ht", "ec", "ad", "cl", "ro", "ba", "pp", "rt", "dv", "in", "in2", "lg", "lo", "hr", "se", "tr", "ga", "fi", "bi", "ed", "me", "te"],
+    view: ["ro", "ba", "pp", "rt", "dv", "in", "in2", "lg", "lo", "hr", "se", "ga", "bi", "ed", "te"],
+    merged: ["ro", "ba", "pp", "rt", "dv", "in", "lg", "lo", "hr", "se", "ga", "bi", "ed", "te"],
+    logistics: ["lo", "ro", "ba", "pp", "rt", "dv", "in", "lg", "hr", "se", "ga", "bi", "ed", "te"],
+    entered: ["lo", "ro", "ba", "pp", "rt", "dv", "in", "lg", "hr", "se", "ga", "fi", "bi", "ed", "te"],
+    fintech: ["fi", "lo", "ro", "ba", "pp", "rt", "dv", "in", "lg", "hr", "se", "ga", "bi", "ed", "te"],
+    travel: ["fi", "lo", "ro", "ba", "pp", "rt", "dv", "in", "lg", "hr", "se", "tr", "ga", "bi", "ed", "te"],
+    devtools: ["fi", "dv", "lo", "ro", "ba", "pp", "rt", "in", "lg", "hr", "se", "tr", "ga", "bi", "ed", "te"],
+    legal: ["fi", "dv", "lg", "lo", "ro", "ba", "pp", "rt", "in", "hr", "se", "tr", "ga", "bi", "ed", "te"],
+  },
+  pair: ["in", "in2"],
+  hero: "fi",
+  fits: { ro: [85, 89], lo: [78, 91], fi: [64, 96], dv: [82, 93], lg: [79, 92] },
+  was: { lo: "visits up", dv: "visits up", lg: "headcount up" },
+  status: {
+    idle: "Synced",
+    roSignal: "Robotics: new funding",
+    roFit: "Robotics: fit 89",
+    merge: "Insurance: 2 rows merged",
+    loSignal: "Logistics: hiring SDRs",
+    loFit: "Logistics: fit 91",
+    fiSignal: "Fintech: new VP Sales",
+    fiFit: "Fintech: fit 96",
+    trSignal: "Travel: new CFO",
+    plays: "2 Plays written",
+    dvSignal: "Dev tools: Series B",
+    dvFit: "Dev tools: fit 93",
+    dvLive: "Dev tools: Play live",
+    reopen: "Fintech: deal reopened",
+    lgSignal: "Legal tech: new funding",
+    lgFit: "Legal tech: fit 92",
+    lgLive: "Legal tech: Play live",
+  },
+} as const;

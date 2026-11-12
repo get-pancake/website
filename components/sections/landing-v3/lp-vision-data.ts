@@ -30,21 +30,50 @@ import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
    description). */
 
 /**
- * The window under the hero: Claude on the left, Pancake's companies table on the right, a curtain
- * to slide between the two (founder 2026-11-11: "un espece de petit rideau qu'on peut deglisser a
- * droite a gauche qui montre Claude d'un cote et l'infra de l'autre", to show Claude runs on
- * Pancake; "J'animerai Claude et la database pour montrer que c'est dynamique"; and his last word
- * on the sides, "Claude sur la gauche finalement et Pancake sur la droite").
- * One take moves both: a signal lands in the table and the Brain writes its Play; Claude is asked
- * which accounts to work, reads the tables, names three; asked to, it runs the first Play and the
- * row goes live. Then the loop (`loop` below). Claude's window is drawn as the page's Claude scene
- * draws it (the greeting, the composer and its Pancake connector, the bubble, a white card per
- * tool call, the serif answer).
+ * The window under the hero: Claude on the left, Pancake's companies table on the right, a handle
+ * between the two (founder 2026-11-11: "un espece de petit rideau qu'on peut deglisser a droite a
+ * gauche qui montre Claude d'un cote et l'infra de l'autre", to show Claude runs on Pancake; his
+ * last word on the sides, "Claude sur la gauche finalement et Pancake sur la droite").
+ * What plays in it, in his words the same day: "plus de dynamisme: filtrage, ajout de colonne,
+ * merge de rows", "on doit vraiment se dire waouh, un data model underneath mon Claude", "prends
+ * un pattern humain … et mets du oh shit moment dedans"; then, on a take where five commands each
+ * moved the table once: "tu fais des commandes one shot qui touchent à la base, il faut qu'on
+ * retrouve un côté plus autonome et dynamique où la base vit seule".
+ * And on what is asked (a take asked for the lost deals: "super passive, no go"): "je veux plus
+ * être sur quels accounts on veut work on, et tous les dérivés".
+ * So the table lives by itself (lp-vision-tables.ts DB_HERO: signals land, the Brain rescores,
+ * rows change rank, duplicates merge, a deal reopens) and Claude steps in twice. First the
+ * question every team asks, which accounts to work: the view narrows to the ones that have a
+ * signal. Then the table itself brings the line that stops you: an account you lost hired the
+ * buyer of an account you won. Claude says so unasked, and the second thing typed is a standing
+ * order: work every account that passes 90. From there Plays go live on their own.
+ * `thread` is the conversation, in order. A line is what you type (`ask`), a call Claude makes
+ * (`tool`, drawn as the page's Claude scene draws a call: what it is doing, then what came back;
+ * `name` is what it is about, `count` ticks up, `run` is a call that acts) or what Claude says
+ * (`say`, one or two short sentences). `id` is the name the take knows the line by.
  */
-export const VISION_CURTAIN = {
+export type CurtainLine =
+  | { id: string; ask: string }
+  | { id: string; tool: string; name?: string; doing?: string; done: string; count?: number; run?: true }
+  | { id: string; say: string };
+export const VISION_CURTAIN: {
+  label: string;
+  handle: string;
+  pancake: string;
+  claude: string;
+  greeting: string;
+  placeholder: string;
+  connector: string;
+  model: string;
+  reply: string;
+  thread: readonly CurtainLine[];
+  filter: { idle: string; column: string; test: string; value: string; all: string; some: readonly [string, string, string, string] };
+  sort: { column: string; dir: string };
+  live: string;
+} = {
   label:
-    "Claude, connected to Pancake, answers which accounts to work now, then runs the first Play. Beside it, Pancake’s companies table takes each new signal, writes the next best Play, narrows to the accounts that have one each time Claude reads it, and shows the Play go live. Asked again, Claude runs the next best Play, and the next.",
-  handle: "Slide between Claude and Pancake",
+    "Pancake’s companies table works by itself: signals land in it, each account is rescored and its row changes rank, duplicates are merged. Beside it, Claude, connected to Pancake, is asked which accounts to work, and the table narrows to the ones that have a signal. When a signal lands on a deal that was lost, Claude says so unasked: that account hired the buyer of an account you won. Told to work every account that passes 90, it runs each next best Play as a row passes 90, and the lost deal reopens.",
+  handle: "Resize Claude and Pancake",
   pancake: "Pancake",
   claude: "Claude",
   /* Claude's own chrome, the Claude scene's words (lp-demo-data.ts) */
@@ -53,65 +82,39 @@ export const VISION_CURTAIN = {
   connector: "Pancake",
   model: "Opus 5.5",
   reply: "Reply to Claude…",
-  /* the first exchange */
-  ask: "Which accounts should I work now?",
-  /** the read: one card, what it is doing, then how many rows came back (the count ticks up; it is
-   *  the companies table's own count, DB_HERO_TABS) */
-  tool: {
-    title: "Read companies, people and signals",
-    /** where the card is narrow (tablets, phones) */
-    short: "Read 3 tables",
-    doing: "Reading…",
-    count: 4812,
-    done: "companies",
-  },
-  say: "Three accounts crossed a signal.",
-  picks: [
-    { who: "Fintech", size: "200 people", why: "Lost deal, now hiring SDRs." },
-    { who: "Dev tools", size: "40 people", why: "Asked pricing, just funded." },
-    { who: "Logistics", size: "1,200 people", why: "Your event, new VP Sales." },
+  thread: [
+    { id: "ask1", ask: "Which accounts should we work on now?" },
+    { id: "filter", tool: "Filter companies", doing: "Filtering…", count: 86, done: "accounts" },
+    { id: "say1", say: "86 have a fresh signal." },
+    // Pancake brings it, Claude says it: nobody asked. "Fintech" and "Health tech" are rows of
+    // the table (DB_HERO)
+    { id: "ping", tool: "New signal", name: "Fintech", done: "new VP Sales" },
+    { id: "say2", say: "Fintech hired the VP who bought from you at Health tech. Want me to reach back out?" },
+    { id: "ask2", ask: "Yes. Work every account that passes 90." },
+    { id: "rule", tool: "Run Plays above 90", doing: "Starting…", done: "On", run: true },
+    { id: "say3", say: "Done. Fintech and Logistics are live." },
+    // from here on nothing is typed
+    { id: "run1", tool: "Run Play", name: "Dev tools", doing: "Starting…", done: "Live", run: true },
+    { id: "say4", say: "Fintech replied. The deal is open again." },
+    { id: "run2", tool: "Run Play", name: "Legal tech", doing: "Starting…", done: "Live", run: true },
   ],
-  /** it was "Want me to run the first Play?" until the founder found it hard to get (2026-11-11):
-   *  the line now says what will be done, and to whom */
-  next: "Want me to reach back out to Fintech?",
-  /* the second exchange: Claude acts, and the table shows it */
-  go: "Yes, run it.",
-  /** `name` is the Play of the first account (the table's next_best_play, DB_HERO row a) */
-  run: { title: "Run Play", name: "Reach back out", doing: "Starting…", done: "Live" },
-  done: "Done. The Play is live.",
-  /* After the take, for as long as the card is on screen (founder 2026-11-11: "Je prolongerai les
-     animations en mode endless loop: What's the next best Play to run?"): the same question, and
-     each time the next account. One answer a row of the hero's table (DB_HERO's keys), in the
-     order Claude goes through them. The sentence opens on the Play's own name, read from the
-     row's cell; `to` ends it, `why` is the reason. */
-  loop: {
-    ask: "What’s the next best Play to run?",
-    go: "Run it.",
-    turns: [
-      { row: "b", to: "to Dev tools.", why: "They asked pricing, then raised a Series B." },
-      { row: "c", to: "with Logistics.", why: "They came to your event and hired a VP Sales." },
-      { row: "p1", to: "to Legal tech.", why: "They raised new funding." },
-      { row: "p2", to: "to Proptech.", why: "They have a new CRO." },
-      { row: "p3", to: "for Retail.", why: "They use a rival tool." },
-      { row: "a", to: "to Fintech.", why: "You lost the deal. Now they are hiring SDRs." },
-    ],
-  },
-  /* The table's view bar (2026-11-11, the founder: "des prompts qui sont envoyés et que ça va
-     filtrer la database"). At rest: the filter's button and the table's count. While Claude
-     reads: the filter it set, as a chip of three parts (the column, the test, the value), and how
-     many rows match. `rows` is the companies table's own count (DB_HERO_TABS). */
+  /* The table's view bar. The table is ranked by fit all along (the sort). The filter
+     is a button until Claude sets it; then it is what was set (the column, the test, the value)
+     and the count says how many rows the view holds: the accounts that have a signal, then one
+     fewer (a merge), then one more each time a signal lands on an account that had none.
+     `all` is the companies table's own count (DB_HERO_TABS). */
   filter: {
     idle: "Filter",
-    column: "next_best_play",
+    column: "signal",
     test: "is not",
     value: "NULL",
     all: "4,812 rows",
-    some: "3 of 4,812 rows",
+    some: ["86 rows", "85 rows", "86 rows", "87 rows"],
   },
-  /* Claude's own view of the three accounts, beside the conversation once the curtain is slid left */
-  artifact: "Accounts to work now",
-  artifactFrom: "From Pancake",
-} as const;
+  sort: { column: "fit", dir: "desc" },
+  /* the table's status line: this word, then what the table last did (DB_HERO_STORY.status) */
+  live: "Live",
+};
 
 /** what Pancake is, in the founder's line: the statement that opens the dark band. It was the
  *  why-now pair "Revenue is now an engineering job run by non-engineers. / Pancake does the

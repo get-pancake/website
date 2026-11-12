@@ -48,33 +48,10 @@ function isCut(cell: DbCell) {
   return typeof cell === "object" && cell !== null && cell.cut === true;
 }
 
-function Cell({ cell }: { cell: DbCell }) {
+/** the value itself, as its kind is drawn */
+function Value({ cell }: { cell: DbCell }) {
   if (cell === null) return <span className="lp-db__null">NULL</span>;
   if (typeof cell === "string") return <>{cell}</>;
-  // A value that comes while the picture plays (the hero's table): NULL and the value are both in
-  // the markup, on one spot (which one shows at rest: the cell's `nil`, vision.css). After it,
-  // the state the agent gave it; on the cell's corner, the agent's mark.
-  if (cell.land) {
-    return (
-      <>
-        <span className="lp-db__lands">
-          <span className="lp-db__was lp-db__null">NULL</span>
-          <span className="lp-db__now">{cell.v}</span>
-        </span>
-        {cell.state ? (
-          <span className="lp-db__state">
-            <i />
-            <span>{cell.state}</span>
-          </span>
-        ) : null}
-        {cell.by ? (
-          <span className="lp-db__by">
-            <ClaudeMark />
-          </span>
-        ) : null}
-      </>
-    );
-  }
   switch (cell.as) {
     case "tag":
       return <span className="lp-db__tag">{cell.v}</span>;
@@ -97,6 +74,42 @@ function Cell({ cell }: { cell: DbCell }) {
         <>{cell.v}</>
       );
   }
+}
+
+/** `wrap`: the value stands in a span of its own (the hero's table: the column a command adds) */
+function Cell({ cell, wrap }: { cell: DbCell; wrap: boolean }) {
+  const own = fields(cell);
+  // A value that comes while the picture plays (the hero's table): NULL and the value are both in
+  // the markup, on one spot.
+  const value = own?.land ? (
+    <span className="lp-db__lands">
+      <span className="lp-db__was lp-db__null">NULL</span>
+      <span className="lp-db__now">{own.v}</span>
+    </span>
+  ) : wrap || own?.state ? (
+    <span className="lp-db__in">
+      <Value cell={cell} />
+    </span>
+  ) : (
+    <Value cell={cell} />
+  );
+  return (
+    <>
+      {value}
+      {/* the state the agent gave the value, after it; on the cell's corner, the agent's mark */}
+      {own?.state ? (
+        <span className="lp-db__state">
+          <i />
+          <span>{own.state}</span>
+        </span>
+      ) : null}
+      {own?.by ? (
+        <span className="lp-db__by">
+          <ClaudeMark />
+        </span>
+      ) : null}
+    </>
+  );
 }
 
 export function DbTable({
@@ -133,7 +146,7 @@ export function DbTable({
           <tr data-sourced={sourced ? "" : undefined}>
             {numbered ? <th className="lp-db__n" /> : null}
             {cols.map((col, i) => (
-              <th key={i} data-col={col.name} data-hide={col.hide} data-end={col.end ? "" : undefined} style={colStyle(col)}>
+              <th key={i} data-col={col.name} data-join={col.join} data-hide={col.hide} data-end={col.end ? "" : undefined} style={colStyle(col)}>
                 {sourced ? <span className="lp-db__src">{col.src}</span> : null}
                 <span className="lp-db__col">{col.name}</span>
                 {col.type ? <span className="lp-db__type">{col.type}</span> : null}
@@ -143,22 +156,24 @@ export function DbTable({
         </thead>
         <tbody>
           {rows.map((row, r) => (
-            <tr key={r} data-mark={row.mark} data-row={row.key} data-dim={row.dim ? "" : undefined}>
+            <tr key={r} data-mark={row.mark} data-row={row.key} data-out={row.out ? "" : undefined}>
               {numbered ? <td className="lp-db__n">{row.n ?? r + 1}</td> : null}
               {row.c.map((cell, i) => (
                 <td
                   key={i}
+                  data-col={cols[i]?.name}
+                  data-join={cols[i]?.join}
                   data-hide={cols[i]?.hide}
                   data-end={cols[i]?.end ? "" : undefined}
                   data-hit={isHit(cell) ? "" : undefined}
                   data-cut={isCut(cell) ? "" : undefined}
                   data-land={fields(cell)?.land}
                   data-late={fields(cell)?.nil === "take" ? "" : undefined}
-                  data-void={fields(cell)?.nil === "rest" ? "" : undefined}
                   data-by={fields(cell)?.by ? "" : undefined}
+                  data-state={fields(cell)?.state ? "" : undefined}
                   data-idle={fields(cell)?.idle ? "" : undefined}
                 >
-                  <Cell cell={cell} />
+                  <Cell cell={cell} wrap={cols[i]?.join === "play"} />
                 </td>
               ))}
             </tr>

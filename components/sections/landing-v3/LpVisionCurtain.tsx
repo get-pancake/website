@@ -7,68 +7,75 @@ import { DbTable, DbTableIcon } from "./LpVisionDb";
 import { lpClaudeSerif } from "./lp-claude-font";
 import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
 import { VISION_CURTAIN } from "./lp-vision-data";
-import { DB_ARTIFACT, DB_HERO, DB_HERO_TABS } from "./lp-vision-tables";
+import { DB_HERO, DB_HERO_STORY, DB_HERO_TABS } from "./lp-vision-tables";
 
 /**
  * The window under the hero (2026-11-11), in the demo film's slot (the .lp-video section and
  * card: the same place, width and first-screen peek, video.css + hero.css). The founder: "un
  * espece de petit rideau qu'on peut deglisser a droite a gauche qui montre Claude d'un cote et
- * l'infra de l'autre", to show that Claude runs on Pancake; "J'animerai Claude et la database
- * pour montrer que c'est dynamique"; and, his last word on the sides: "Claude sur la gauche
- * finalement et Pancake sur la droite".
+ * l'infra de l'autre", to show that Claude runs on Pancake; and, his last word on the sides:
+ * "Claude sur la gauche finalement et Pancake sur la droite".
  *
- * The picture is a known one (Mobbin: Canva's sheet, its AI panel docked on the left of the
- * grid it works on).
+ * The picture is a known one (Mobbin: Canva's sheet, its AI panel docked on the left of the grid
+ * it works on; Remote's report builder, an assistant's steps beside the table it fills).
  *
  * Two layers on one card:
  *   under   Claude's window, drawn as the page's Claude scene draws it (LpClaudeScene: the
  *           greeting, the composer with its Pancake connector, the bubble, one white card per
- *           tool call, the serif answer). The card wide: its conversation on the left, the view
- *           Claude drew beside it.
+ *           tool call, the serif answer). Its conversation is a real one to the hand: it scrolls
+ *           (founder: "je dois pouvoir scroll up Claude, comme une réelle app"), it follows its
+ *           last line while you have not scrolled up, and a round arrow brings you back to it
+ *           (Mobbin: Searchable's assistant panel, the arrow over its composer).
  *   over    Pancake's companies table (LpVisionDb's real table), a whole window as wide as the
- *           card, and it SLIDES: --cut is where its left edge stands. At rest its four leading
- *           columns are on show beside the conversation; pulled left it covers Claude and shows
- *           every column; pushed right, Claude's window is bare, its view on show.
+ *           card, and it SLIDES: --cut is where its left edge stands.
+ * THE HANDLE between them resizes the two, as a split view's does (founder: "le bouton rideau
+ * doit élargir Claude, pas révéler [une autre vue]"): pulled right, Claude's column is as wide as
+ * what the table leaves (its conversation stays a centred column, as the app's does on a wide
+ * window); pulled left, the table takes the card and shows every column.
  * On a phone the two stack in the same order: Claude on top, the table a sheet under it (no
- * curtain there: 358 px is too narrow to share).
+ * handle there: 358 px is too narrow to share).
  *
- * One take plays once (lp-play-once: prepared ahead, played when the card's top crosses 60 % of
- * the window, the picture on fly-by, never twice): lp-vision-curtain-timeline.ts. Both windows
- * are there from the first frame (founder: "le rideau Claude s'ouvre un peu tard, les gens auront
- * deja scroll down"). A signal lands in the table and the Brain writes its Play; the question is
- * typed and sent; Claude reads the tables and the table narrows to the accounts that have a Play
- * (founder: "des prompts qui sont envoyés et que ça va filtrer la database": the view bar shows
- * the filter, the other rows go); Claude names the three while their rows light; told to, it runs
- * the first Play, the row goes live under its mark, and the whole table comes back. Then the
- * loop, for as long as the card is on screen (founder: "Je prolongerai les animations en mode
- * endless loop"): asked for the next best Play, Claude filters again, names the next account and
- * runs it, again and again, while the table keeps taking signals. It is this card's one
- * exception to "plays once, nothing loops".
- * The view bar is a known piece (Mobbin: Browserbase's sessions table, a filter as a chip of
- * three parts over the rows and a count of what matches; Mercury's transactions, a filter an
- * assistant writes from a sentence).
+ * What plays (lp-vision-curtain-timeline.ts). The table LIVES, asked or not (founder: "il faut
+ * qu'on retrouve un côté plus autonome et dynamique où la base vit seule"): signals land in it,
+ * the Brain rescores the account and its row goes to its new rank, two rows that are one company
+ * merge, a deal reopens and leaves the view; its status line says each thing as it happens.
+ * Claude steps in twice: asked which accounts to work, it narrows the view to the ones that have
+ * a signal (from then on an account enters the view by itself when a signal lands on it); then,
+ * when the table brings the account that stops you and Claude says so unasked, a standing order.
+ * That order opens the Brain's column of Plays, and a Play goes live each time a row passes 90.
+ * lp-play-once plays it once (prepared ahead, played when the card's top crosses 60 % of the
+ * window, the picture on fly-by); then, for as long as the card is on screen, a new chat opens
+ * and it plays again (this card's one exception to "nothing loops").
+ * The table's pieces are known ones (Mobbin: Twenty's companies grid, Filter and Sort over the
+ * rows, a count, a bar under them; folk's "you're about to merge 2 people", two rows that become
+ * one; n8n's data table, a column added; Snowflake's lists, the sort in the view's bar).
  * The server markup is the END picture; from the first paint the stylesheet shows the take's
  * first frame instead where a take can play (data-pre, vision.css: the card's top peeks over the
  * first screen's fold, so nothing changes there when the code arrives). Without script and under
  * reduced motion the END stands.
  *
  * --cut is var(--cut-user, var(--vc-rest)): the handle writes --cut-user and from then on the
- * curtain is the visitor's (the take and the loop play on).
+ * split is the visitor's (the take plays on).
  * Copy: lp-vision-data.ts VISION_CURTAIN; rows: lp-vision-tables.ts DB_HERO.
  */
 
-/** how far a drag or a key may take the curtain, % of the card: the handle stays on it */
+/** how far a drag or a key may take the handle, % of the card: it stays on the card */
 const MIN = 3;
 const MAX = 97;
-/** where it rests, for the slider's first value (vision.css --vc-rest) */
-const REST = 44;
+/** where it rests on a desktop, for the slider's first value (vision.css --vc-rest) */
+const REST = 39;
 /** a page opened with the card's top above this share of the window has it in front of the
     visitor already: it rests on its END (lp-play-once `seenAbove`) */
 const SEEN_ABOVE = 0.45;
+/** the conversation follows its last line in this long (ms) */
+const FOLLOW_MS = 380;
+/** this close to its end (px), the conversation is on its last line */
+const AT_END = 16;
+/** a scroll this soon after a wheel, a touch, a press or a key is the visitor's (ms) */
+const HAND_MS = 2500;
 
-/** The take measures what it types and how tall Claude's lines are: it is built once the faces
-    they are set in have arrived (the serif is fetched when its first line renders), or after
-    2 s without them. */
+/** The take measures what it types: it is built once the faces are in (the serif is fetched
+    when its first line renders), or after 2 s without them. */
 const fontsIn = () =>
   Promise.race([document.fonts?.ready ?? Promise.resolve(), new Promise((resolve) => window.setTimeout(resolve, 2000))]);
 
@@ -111,6 +118,15 @@ function FilterIcon() {
   );
 }
 
+/** the sort's mark: one arrow down, one up */
+function SortIcon() {
+  return (
+    <svg className="lp-vcut__ficon" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+      <path d="M3.75 2.25v7.5M1.75 7.75l2 2 2-2M8.25 9.75v-7.5M6.25 4.25l2-2 2 2" />
+    </svg>
+  );
+}
+
 function Plus() {
   return (
     <svg viewBox="0 0 17.4681 17.4681" aria-hidden="true" focusable="false">
@@ -123,6 +139,11 @@ export function LpVisionCurtain() {
   const C = VISION_CURTAIN;
   const card = useRef<HTMLDivElement>(null);
   const handle = useRef<HTMLDivElement>(null);
+  const view = useRef<HTMLDivElement>(null);
+  const scroller = useRef<HTMLDivElement>(null);
+  const thread = useRef<HTMLDivElement>(null);
+  /** back to the conversation's last line (the round arrow) */
+  const toLatest = useRef<() => void>(() => {});
   /** a drag under way: how far from the handle's centre it was grabbed (px) */
   const grab = useRef<number | null>(null);
 
@@ -150,7 +171,83 @@ export function LpVisionCurtain() {
     };
   }, []);
 
-  /** where the curtain stands now, % of the card */
+  /* The conversation scrolls, as the app's does. While the visitor is on its last line it follows
+     what arrives (each new line, the take's or a resize's); once they have scrolled up it stays
+     where they left it (data-up on the view: the round arrow shows, and the take waits before it
+     opens a new chat). Only the visitor's hand puts it up: a scroll that comes within HAND_MS of
+     a wheel, a touch, a press or a key is theirs; any other is the layout's (a line in or out)
+     or this code's own. */
+  useEffect(() => {
+    const box = view.current;
+    const sc = scroller.current;
+    const lines = thread.current;
+    if (!box || !sc || !lines) return;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)");
+    let onLast = true;
+    let frame = 0;
+    let handAt = -Infinity;
+    const end = () => Math.max(0, sc.scrollHeight - sc.clientHeight);
+    const halt = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+    };
+    const follow = (eased: boolean) => {
+      halt();
+      const from = sc.scrollTop;
+      if (!eased || still.matches || Math.abs(end() - from) < 2) {
+        sc.scrollTop = end();
+        return;
+      }
+      const t0 = performance.now();
+      const tick = (now: number) => {
+        const p = Math.min(1, (now - t0) / FOLLOW_MS);
+        // (the end is read each frame: more may have arrived)
+        sc.scrollTop = from + (end() - from) * (1 - (1 - p) ** 3);
+        frame = p < 1 ? requestAnimationFrame(tick) : 0;
+      };
+      frame = requestAnimationFrame(tick);
+    };
+    const mark = (last: boolean) => {
+      onLast = last;
+      box.toggleAttribute("data-up", !last);
+    };
+    const sized = new ResizeObserver(() => {
+      if (onLast) follow(true);
+    });
+    sized.observe(lines);
+    sized.observe(sc);
+    const onScroll = () => {
+      const last = end() - sc.scrollTop < AT_END;
+      if (performance.now() - handAt < HAND_MS) {
+        if (!last) halt();
+        return mark(last);
+      }
+      if (last) mark(true);
+      else if (onLast && !frame) follow(false);
+    };
+    /** the visitor takes the scroll: nothing of ours moves it under their hand */
+    const onHand = () => {
+      handAt = performance.now();
+    };
+    const hands = ["wheel", "touchstart", "touchmove", "pointerdown", "keydown"] as const;
+    sc.addEventListener("scroll", onScroll, { passive: true });
+    for (const type of hands) sc.addEventListener(type, onHand, { passive: true });
+    toLatest.current = () => {
+      mark(true);
+      follow(true);
+    };
+    follow(false);
+    return () => {
+      halt();
+      sized.disconnect();
+      sc.removeEventListener("scroll", onScroll);
+      for (const type of hands) sc.removeEventListener(type, onHand);
+      box.removeAttribute("data-up");
+      toLatest.current = () => {};
+    };
+  }, []);
+
+  /** where the handle stands now, % of the card */
   const where = () => {
     const el = card.current;
     const h = handle.current;
@@ -209,62 +306,53 @@ export function LpVisionCurtain() {
               <ClaudeMark id="spark" className="lp-vcut__spark" />
               {C.claude}
             </p>
-            <div className="lp-vcut__view">
+            <div ref={view} className="lp-vcut__view">
               {/* a new chat's greeting: the take's first picture of Claude, gone once it is asked */}
               <p className="lp-vcut__greet">
                 <ClaudeMark id="spark" className="lp-vcut__greet-spark" />
                 {C.greeting}
               </p>
-              <div className="lp-vcut__thread">
-                <p className="lp-vcut__bubble" data-n="1">
-                  {C.ask}
-                </p>
-                <p className="lp-vcut__tool" data-n="1">
-                  <PancakeMark className="lp-vcut__tool-mark" />
-                  <span className="lp-vcut__tool-t">
-                    <span data-full="">{C.tool.title}</span>
-                    <span data-short="">{C.tool.short}</span>
-                  </span>
-                  <span className="lp-vcut__tool-r">
-                    <span className="lp-vcut__tool-doing">{C.tool.doing}</span>
-                    <span className="lp-vcut__tool-done">
-                      <b data-to={C.tool.count}>{C.tool.count.toLocaleString("en-US")}</b> {C.tool.done}
-                    </span>
-                  </span>
-                </p>
-                <p className="lp-vcut__say" data-n="1">
-                  <Words text={C.say} />
-                </p>
-                <ol className="lp-vcut__picks">
-                  {C.picks.map((pick) => (
-                    <li key={pick.who}>
-                      <b className="lp-vcut__w">{pick.who}</b>
-                      <span className="lp-vcut__w lp-vcut__size">, {pick.size}</span>
-                      <span className="lp-vcut__w">.</span> <Words text={pick.why} />
-                    </li>
-                  ))}
-                </ol>
-                <p className="lp-vcut__say" data-n="2">
-                  <Words text={C.next} />
-                </p>
-                <p className="lp-vcut__bubble" data-n="2">
-                  {C.go}
-                </p>
-                <p className="lp-vcut__tool" data-n="2" data-run="">
-                  <PancakeMark className="lp-vcut__tool-mark" />
-                  <span className="lp-vcut__tool-t">
-                    {C.run.title}
-                    <i>{C.run.name}</i>
-                  </span>
-                  <span className="lp-vcut__tool-r">
-                    <span className="lp-vcut__tool-doing">{C.run.doing}</span>
-                    <span className="lp-vcut__tool-done">{C.run.done}</span>
-                  </span>
-                </p>
-                <p className="lp-vcut__say" data-n="3">
-                  <Words text={C.done} />
-                </p>
+              <div ref={scroller} className="lp-vcut__scroll">
+                <div ref={thread} className="lp-vcut__thread">
+                  {C.thread.map((line) =>
+                    "ask" in line ? (
+                      <p key={line.id} className="lp-vcut__bubble" data-line={line.id}>
+                        {line.ask}
+                      </p>
+                    ) : "say" in line ? (
+                      <p key={line.id} className="lp-vcut__say" data-line={line.id}>
+                        <Words text={line.say} />
+                      </p>
+                    ) : (
+                      <p key={line.id} className="lp-vcut__tool" data-line={line.id} data-run={line.run ? "" : undefined}>
+                        <PancakeMark className="lp-vcut__tool-mark" />
+                        <span className="lp-vcut__tool-t">
+                          {line.tool}
+                          {line.name ? <i>{line.name}</i> : null}
+                        </span>
+                        <span className="lp-vcut__tool-r">
+                          {line.doing ? <span className="lp-vcut__tool-doing">{line.doing}</span> : null}
+                          <span className="lp-vcut__tool-done">
+                            {line.count !== undefined ? (
+                              <>
+                                <b data-to={line.count}>{line.count.toLocaleString("en-US")}</b>{" "}
+                              </>
+                            ) : null}
+                            {line.done}
+                          </span>
+                        </span>
+                      </p>
+                    ),
+                  )}
+                </div>
               </div>
+              {/* back to the last line, once the visitor has scrolled up. Not a tab stop: the
+                  window is a picture to assistive tech (the section's label tells it) */}
+              <button type="button" className="lp-vcut__latest" tabIndex={-1} onClick={() => toLatest.current()}>
+                <svg viewBox="0 0 13.9744 13.9744" focusable="false">
+                  <path d="M6.9878 1.74672V12.2276M2.18408 7.42389L6.9878 12.2276L11.7915 7.42389" />
+                </svg>
+              </button>
             </div>
             {/* the composer, docked: its placeholder, what is typed in it, its controls */}
             <div className="lp-vcut__bar">
@@ -274,19 +362,13 @@ export function LpVisionCurtain() {
               <p className="lp-vcut__ph" data-n="2">
                 {C.reply}
               </p>
-              <p className="lp-vcut__typed" data-n="1">
-                {C.ask}
-              </p>
-              <p className="lp-vcut__typed" data-n="2">
-                {C.go}
-              </p>
-              {/* what the loop types, round after round */}
-              <p className="lp-vcut__typed" data-n="3">
-                {C.loop.ask}
-              </p>
-              <p className="lp-vcut__typed" data-n="4">
-                {C.loop.go}
-              </p>
+              {C.thread.map((line) =>
+                "ask" in line ? (
+                  <p key={line.id} className="lp-vcut__typed" data-line={line.id}>
+                    {line.ask}
+                  </p>
+                ) : null,
+              )}
               <span className="lp-vcut__caret" />
               <p className="lp-vcut__ctrls">
                 <span className="lp-vcut__plus">
@@ -304,20 +386,9 @@ export function LpVisionCurtain() {
               </p>
             </div>
           </div>
-          {/* the view Claude drew from the rows: on show once the table is pushed off it */}
-          <div className="lp-vcut__art">
-            <p className="lp-vcut__art-h">
-              <b>{C.artifact}</b>
-              <span>
-                <PancakeMark className="lp-vcut__pk" />
-                {C.artifactFrom}
-              </span>
-            </p>
-            <DbTable table={DB_ARTIFACT} theme="light" tone="yellow" bar={false} />
-          </div>
         </div>
 
-        {/* over: Pancake's table; it slides with the curtain */}
+        {/* over: Pancake's table; it slides with the handle */}
         <div className="lp-vcut__db" aria-hidden="true">
           <div className="lp-vcut__dbar">
             <p className="lp-vcut__brand">
@@ -325,8 +396,8 @@ export function LpVisionCurtain() {
               {C.pancake}
             </p>
             <ul className="lp-vcut__tabs">
-              {DB_HERO_TABS.map((tab, i) => (
-                <li key={tab.name} data-tab={tab.name} data-on={i === 0 ? "" : undefined}>
+              {DB_HERO_TABS.map((tab) => (
+                <li key={tab.name} data-tab={tab.name} data-on={tab.name === DB_HERO.name ? "" : undefined}>
                   <DbTableIcon />
                   {tab.name}
                   <small>{tab.rows}</small>
@@ -334,10 +405,11 @@ export function LpVisionCurtain() {
               ))}
             </ul>
           </div>
-          {/* the view bar. At rest the filter's button and the table's count; while Claude reads,
-              the filter it set (data-filter, flipped by the take and the loop) and how many rows
-              match. Both states are in the markup, one over the other */}
-          <p className="lp-vcut__filter">
+          {/* the view bar. The filter is a button until Claude sets it (data-filter: the END has
+              it, the take flips it), then what was set; the table is sorted by fit all along; the
+              count says how many rows the view holds. Both states of a piece are in the markup,
+              one over the other */}
+          <p className="lp-vcut__filter" data-filter="">
             <span className="lp-vcut__fset">
               <span className="lp-vcut__fidle">
                 <FilterIcon />
@@ -350,12 +422,23 @@ export function LpVisionCurtain() {
                 <em>{C.filter.value}</em>
               </span>
             </span>
+            <span className="lp-vcut__chip" data-sort="">
+              <SortIcon />
+              <b>{C.sort.column}</b>
+              <i>{C.sort.dir}</i>
+            </span>
             <span className="lp-vcut__count">
               <span data-when="all">{C.filter.all}</span>
-              <span data-when="some">{C.filter.some}</span>
+              <span data-when="some">{C.filter.some[3]}</span>
             </span>
           </p>
           <DbTable table={DB_HERO} bar={false} tone="yellow" />
+          {/* the status line, under the rows: the table is live, and what it last did */}
+          <p className="lp-vcut__status">
+            <i />
+            <b>{C.live}</b>
+            <span className="lp-vcut__status-t">{DB_HERO_STORY.status.lgLive}</span>
+          </p>
         </div>
 
         <div
