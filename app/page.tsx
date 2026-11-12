@@ -3,22 +3,20 @@ import type { Metadata, Viewport } from "next";
 import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
 import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
+import { LpBanner } from "@/components/sections/landing-v3/LpBanner";
+import { LpBento } from "@/components/sections/landing-v3/LpBento";
 import { LpCta } from "@/components/sections/landing-v3/LpCta";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
+import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
-import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
-import {
-  LpVisionAgent,
-  LpVisionProblems,
-  LpVisionRows,
-  LpVisionWarehouse,
-} from "@/components/sections/landing-v3/LpVision";
+import { LpVisionFeatures, LpVisionWarehouse } from "@/components/sections/landing-v3/LpVision";
 import { LpVisionCurtain } from "@/components/sections/landing-v3/LpVisionCurtain";
-import { VISION_CLOSE, VISION_MID } from "@/components/sections/landing-v3/lp-vision-data";
+import { LpVisionSteps } from "@/components/sections/landing-v3/LpVisionSteps";
+import { VISION_BOTTLE, VISION_CLOSE, VISION_PLANS } from "@/components/sections/landing-v3/lp-vision-data";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
@@ -118,8 +116,10 @@ const softwareApplicationJsonLd = {
 // forms since 2026-11-11 (founder: the current page's graphic pieces back, "ca ne change pas le
 // contenu mais la forme"). Static since 2026-10-07: no searchParams prop; LpAudience reads
 // ?audience=agents on the client once the page has loaded.
-// Off this page, their files kept: the demo film, the infra bricks, the bottle banner, the
-// testimonials, the pricing card.
+// Recomposed the same day after the landing page meeting: one 1-2-3 in place of the four table
+// rows and the three steps, and the bottle, the testimonials and the pricing back on the page.
+// Off this page, their files kept: the demo film, the infra bricks, the three step pictures of
+// the page before (LpSteps).
 export default function Home() {
   return (
     <LpAudience>
@@ -141,18 +141,20 @@ export default function Home() {
       <LpVisionCurtain />
       {/* the customers, on cream, as on the page before */}
       <LpMarquee labelled />
-      {/* the statement, then what Pancake does in four rows */}
-      <LpVisionRows />
+      {/* the statement, then the 1-2-3: connect your sources, connect the dots with market
+          signals, find who to contact and when (the designer's step cards, three new pictures) */}
+      <LpVisionSteps />
       {/* the agents view's code wall (agents view only) */}
       <LpAgentLab />
-      {/* today's product at work: the designer's three animated steps, under the vision's line */}
-      <LpSteps title={VISION_MID.title} />
-      {/* the sky: the six hard problems, what Pancake is, how an agent uses it, then the close on
-          its cream hill (sky.css) */}
-      <LpVisionProblems />
+      {/* the bottle, with the page's own two lines; it opens the sky */}
+      <LpBanner left={VISION_BOTTLE.left} right={VISION_BOTTLE.right} />
+      {/* the sky: what your agent can do with Pancake (the deep dive, four features), what Pancake
+          is, what customers got, then the close on its cream hill (sky.css) */}
+      <LpVisionFeatures />
       <LpVisionWarehouse />
-      <LpVisionAgent />
+      <LpBento sky />
       <LpCta sky title={VISION_CLOSE.title} body={VISION_CLOSE.body} setup={<LpSetupPill />} />
+      <LpPricing checklist={VISION_PLANS.starter} full={VISION_PLANS.full} />
       <LpFooter />
     </LpAudience>
   );

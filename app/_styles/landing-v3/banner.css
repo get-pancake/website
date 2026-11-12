@@ -84,6 +84,13 @@
 .lp-banner__br {
   display: none;
 }
+/* a right title set on two lines (LpBanner `right`): it starts where the left one does, so the
+   pair stays centred on the neck. Its break is for these widths only (one line on a phone). */
+@media (min-width: 768px) {
+  .lp-banner__title--right[data-lines="2"] {
+    top: 17.35019cqw; /* 281.42px */
+  }
+}
 
 /* ≤767 — the vertical Lottie (720×1620) in a tall yellow card. Titles:
    Condensed SemiBold 35.559/auto(≈1.15)/-3%, centered in the 32px-inset
@@ -112,6 +119,9 @@
   }
   .lp-banner__br {
     display: inline; /* Figma line break: "Building got" / "10x easier." */
+  }
+  .lp-banner__br-wide {
+    display: none;
   }
   .lp-banner__title {
     font-size: 9.6105cqw; /* 35.559 */

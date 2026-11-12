@@ -90,7 +90,8 @@ export const STORY_MCP: StoryMcpStory = {
   connector: "Pancake",
   ask: { text: "Find startups posting about a rebrand." },
   steps: [
-    { text: "Read GTM Brain", doing: "Reading…", done: "Done" },
+    // ("Read GTM Brain" until the vision homepage, which says "revenue", never "GTM", 2026-11-11)
+    { text: "Read your Brain", doing: "Reading…", done: "Done" },
     { text: "Search posts about a rebrand", doing: "Searching…", done: "Done" },
     { text: "Build the Play", doing: "Building…", done: "Done" },
   ],
@@ -108,4 +109,4 @@ export const STORY_MCP: StoryMcpStory = {
 /** The whole story. It names Codex, Pancake, the ask and the Play: the stage is aria-hidden, so
     they are read from here only. */
 export const STORY_MCP_ALT: string =
-  "Animation: in Codex, with the Pancake connector, someone types: Find startups posting about a rebrand. Pancake reads the GTM Brain, searches posts about a rebrand and builds the Play. Codex answers with the Play, Startups planning a rebrand: founders and heads of brand, on rebrand and new website signals.";
+  "Animation: in Codex, with the Pancake connector, someone types: Find startups posting about a rebrand. Pancake reads your Brain, searches posts about a rebrand and builds the Play. Codex answers with the Play, Startups planning a rebrand: founders and heads of brand, on rebrand and new website signals.";

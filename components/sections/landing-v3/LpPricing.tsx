@@ -1,6 +1,7 @@
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
+import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
 import { TRIAL_OFFER } from "@/lib/trial";
@@ -51,11 +52,18 @@ const CHECKLIST = [
  *  One class more specific than that rule. 2026-10-13. */
 const NOSCRIPT_CSS = "<style>.lp-price .lp-price-art .lp-anim-box{visibility:visible}</style>";
 
+/** a second plan, described under the first one's list and sold in a conversation: no price */
+export type PricingFullPlan = { title: string; body: string; cta: string };
 /**
  * Optional `checklist` (the /for pages, spec §2.10): omitted, the homepage
  * CHECKLIST above renders unchanged.
+ * Optional `full` (the vision homepage, 2026-11-11): the plan above the card's own, in three
+ * lines and a link to the demo page. Start free stays the card's one button.
  */
-export function LpPricing({ checklist = CHECKLIST }: { checklist?: readonly string[] } = {}) {
+export function LpPricing({
+  checklist = CHECKLIST,
+  full,
+}: { checklist?: readonly string[]; full?: PricingFullPlan } = {}) {
   return (
     <section id="pricing" className="lp-price">
       <div className="lp-price-frame">
@@ -102,6 +110,18 @@ export function LpPricing({ checklist = CHECKLIST }: { checklist?: readonly stri
             See how credits work<span aria-hidden="true"> →</span>
           </a>
         </p>
+        {full ? (
+          <div className="lp-price-full">
+            <h3 className="lp-price-full__title">{full.title}</h3>
+            <p className="lp-price-full__body">{full.body}</p>
+            <p className="lp-price-full__cta">
+              <a className="lp-textlink" href={DEMO_PAGE_PATH}>
+                {full.cta}
+                <span aria-hidden="true"> →</span>
+              </a>
+            </p>
+          </div>
+        ) : null}
       </div>
       {/* Animated pancakes group: 1654×1039 canvas where the old composite img
           sat (top -0.66px, centered); the 2622×1039 container's left offset

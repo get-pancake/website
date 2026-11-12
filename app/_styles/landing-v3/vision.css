@@ -1,9 +1,10 @@
-/* The vision homepage's own styles (LpVision.tsx, LpVisionCurtain.tsx, LpVisionDb.tsx;
-   2026-11-09, in the designer's forms since 2026-11-11). The hero, the customers' strip, the
-   three steps, the sky and its clouds, the closing card and the footer are the designer's
-   (hero.css, marquee.css, steps.css, dive.css, sky.css, cta.css): nothing of theirs is restated
-   here. This file holds the window under the hero (the curtain), the four rows, the cards, and
-   the real tables every picture is made of.
+/* The vision homepage's own styles (LpVision.tsx, LpVisionCurtain.tsx, LpVisionSteps.tsx,
+   LpVisionDb.tsx; 2026-11-09, in the designer's forms since 2026-11-11). The hero, the customers'
+   strip, the steps section, the bottle, the sky and its clouds, the testimonials, the closing
+   card, the pricing and the footer are the designer's (hero.css, marquee.css, steps.css,
+   banner.css, dive.css, sky.css, bento.css, cta.css, pricing.css): nothing of theirs is restated
+   here. This file holds the window under the hero (the curtain), the 1-2-3's three pictures,
+   the three cards, and the real tables.
    Pancake's tokens only: cream page, plum for a table's ground, the three pancake colours for
    the frames, Aeonik Condensed for the claims, Geist for the rest, the code face in tables.
    No glow, no blurred shadow but the designer's own. */
@@ -23,15 +24,7 @@
   max-width: 1080px;
   width: 100%;
 }
-/* a small label over a picture: its number, then its name */
-.lp .lp-v__label {
-  color: var(--lp-v-tone-40, var(--lp-subtle-text));
-  font-size: var(--lp-text-xsm);
-  font-weight: 500;
-  letter-spacing: 0.6px;
-  line-height: 16px;
-  text-transform: uppercase;
-}
+
 [data-tone="yellow"] {
   --lp-v-tone-10: var(--lp-yellow-10);
   --lp-v-tone-20: var(--lp-yellow-20);
@@ -736,164 +729,503 @@
   }
 }
 
-/* ── the statement and the four rows, on cream ── */
-.lp-vc.lp-vrows {
-  padding-bottom: 112px;
+/* ── the 1-2-3: the designer's steps section under the statement, three new pictures ──
+   LpVisionSteps.tsx on steps.css's .lp-steps (text card + 464 × 426 media card a row). Here: the
+   statement as the section's title (wider than a step title's box: two balanced lines), and the
+   three stages (LpVisionStepMocks.tsx, lp-vision-step-timelines.ts). Each stage is the step
+   cards' own vocabulary: white pieces with the 0.5px hairline (steps.css .lp-s4-pill), the infra
+   wire (1px of ink-tr-40), the kit's pancake face as a hub (.lp-s4-disc), the Play's pink tile
+   (.lp-s4-play-icon), and the designer's Brain itself (steps.css .lp-s1-graph and its pieces).
+   The markup is each picture's END; the take sets its first frame. */
+.lp-vsteps .lp-vsteps__head {
+  max-width: none;
+  width: 1040px;
 }
-.lp-vrows__list {
-  display: flex;
-  flex-direction: column;
-  gap: 104px;
-  list-style: none;
-  margin: 88px 0 0;
-  padding: 0;
+.lp-vsteps .lp-steps__title {
+  text-wrap: balance;
 }
-.lp-vrows__row {
-  align-items: center;
-  display: grid;
-  gap: 72px;
-  grid-template-columns: minmax(0, 1fr) 640px;
+@media (max-width: 1360px) {
+  .lp-vsteps .lp-vsteps__head {
+    max-width: 100%;
+  }
 }
-/* every second row swaps sides */
-.lp-vrows__row:nth-child(even) {
-  grid-template-columns: 640px minmax(0, 1fr);
+.lp-step-stage--v1 .lp-sx-bg,
+.lp-step-stage--v2 .lp-sx-bg,
+.lp-step-stage--v3 .lp-sx-bg {
+  background-color: var(--lp-card-cream);
 }
-.lp-vrows__row:nth-child(even) .lp-vrows__side {
-  order: -1;
+.lp-vs-piece {
+  background: var(--lp-surface);
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.16);
+  position: absolute;
 }
-.lp-vrows__row:nth-child(odd) .lp-vrows__text {
-  padding-left: 40px;
+.lp-vs-wire {
+  background: var(--lp-ink-tr-40);
+  position: absolute;
 }
-.lp .lp-vrows__title {
+
+/* 01 · four sources (x 40 → 424, y 59 → 143), their wires down to one line (y 164), one wire
+   into Pancake (its face: 183 → 283 on the axis, x 232), one out, split to the two tables
+   (y 322 → 366). The whole stands centred on the stage (59 → 366). */
+.lp-vs1-tile {
+  border-radius: 16px;
+  height: 84px;
+  top: 59px;
+  width: 84px;
+}
+.lp-vs1-tile img {
+  height: 30px;
+  left: 27px;
+  object-fit: contain;
+  position: absolute;
+  top: 14px;
+  width: 30px;
+}
+.lp-vs1-tile span {
   color: var(--lp-text);
-  font-family: var(--lp-font-sans);
-  font-size: var(--lp-text-xlg);
+  font-size: 12px;
   font-weight: 500;
-  letter-spacing: -0.12px;
-  line-height: 32px;
-  margin: 0;
-}
-.lp .lp-vrows__body {
-  color: var(--lp-subtle-text);
-  font-size: var(--lp-text-md);
-  line-height: 1.6;
-  margin-top: 10px;
-  max-width: 340px;
-}
-.lp-vrows__side {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-/* the frame: one flat pancake colour, a band of it all round a dark card that fills it */
-.lp-vrows__frame {
-  align-items: center;
-  background: var(--lp-v-tone-20);
-  border-radius: 12px;
-  display: flex;
-  min-height: 380px;
-  padding: 36px;
-}
-/* the frame's picture: a table that fills it */
-.lp-vrows__frame > .lp-db {
-  flex: 1;
-}
-/* 03: two tables joined into a third */
-.lp-vjoin {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
-}
-.lp-vjoin__in {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.lp-vjoin .lp-db {
-  --db-row: 26px;
-  font-size: 11px;
-}
-.lp-vjoin .lp-db th,
-.lp-vjoin .lp-db td {
-  padding: 0 8px;
-}
-/* the join: a bracket under the two tables, a stem down to the third, the key written on it */
-.lp .lp-vjoin__on {
-  display: grid;
-  height: 36px;
-  place-items: center;
-  position: relative;
-}
-.lp-vjoin__on::before {
-  border: 1px solid var(--lp-ink-tr-50);
-  border-radius: 0 0 6px 6px;
-  border-top: 0;
-  content: "";
-  height: 18px;
-  left: 25%;
+  left: 0;
+  line-height: 16px;
   position: absolute;
-  right: 25%;
-  top: 0;
+  text-align: center;
+  top: 54px;
+  width: 100%;
 }
-.lp-vjoin__on::after {
-  border-left: 1px solid var(--lp-ink-tr-50);
-  bottom: 0;
-  content: "";
-  left: 50%;
+/* connected: the connector chip's green dot (.lp-s2-pk-dot), on the tile's corner */
+.lp-vs1-on {
+  background: var(--lp-green-30);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--lp-surface);
+  height: 8px;
   position: absolute;
-  top: 18px;
+  right: 9px;
+  top: 9px;
+  width: 8px;
 }
-.lp-vjoin__on span {
-  background: var(--lp-v-tone-20);
-  color: var(--lp-ink-100);
-  font-family: var(--lp-font-fono);
-  font-size: 10.5px;
-  line-height: 14px;
-  padding: 0 8px;
-  position: relative;
-  z-index: 1;
+.lp-vs1-drop {
+  height: 22px;
+  top: 142px;
+  transform-origin: 50% 0;
+  width: 1px;
 }
-/* 04: the layers. The data layer at the bottom, the Brain on it, the Play out of the top */
-.lp-vlayers {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
+.lp-vs1-bus {
+  height: 1px;
+  top: 163.5px;
 }
-.lp-vlayers .lp-db {
-  --db-row: 26px;
+.lp-vs1-bus[data-seg="a"] {
+  left: 82px;
+  transform-origin: 0 50%;
+  width: 150px;
 }
-/* between two layers: one line up, an open arrowhead */
-.lp-vlayers__up {
-  display: block;
-  fill: none;
+.lp-vs1-bus[data-seg="b"] {
+  left: 232px;
+  transform-origin: 100% 50%;
+  width: 50px;
+}
+.lp-vs1-bus[data-seg="c"] {
+  left: 282px;
+  transform-origin: 100% 50%;
+  width: 100px;
+}
+.lp-vs1-trunk {
+  left: 231.5px;
+  transform-origin: 50% 0;
+  width: 1px;
+}
+.lp-vs1-trunk[data-at="in"] {
+  height: 21px;
+  top: 164px;
+}
+.lp-vs1-trunk[data-at="out"] {
+  height: 21px;
+  top: 282px;
+}
+.lp-vs1-split {
+  height: 1px;
+  top: 302.5px;
+  width: 100px;
+}
+.lp-vs1-split[data-side="l"] {
+  left: 132px;
+  transform-origin: 100% 50%;
+}
+.lp-vs1-split[data-side="r"] {
+  left: 232px;
+  transform-origin: 0 50%;
+}
+.lp-vs1-leg {
   height: 20px;
-  margin: 0 auto;
-  stroke: var(--lp-ink-tr-60);
+  top: 303px;
+  transform-origin: 50% 0;
+  width: 1px;
+}
+.lp-vs1-leg[data-side="l"] {
+  left: 131.5px;
+}
+.lp-vs1-leg[data-side="r"] {
+  left: 331.5px;
+}
+.lp-vs1-table {
+  border-radius: 22px;
+  height: 44px;
+  top: 322px;
+  width: 188px;
+}
+.lp-vs1-table[data-side="l"] {
+  left: 38px;
+}
+.lp-vs1-table[data-side="r"] {
+  left: 238px;
+}
+.lp-vs1-table .lp-db__icon {
+  color: var(--lp-ink-70);
+  height: 14px;
+  left: 16px;
+  position: absolute;
+  top: 15px;
+  width: 14px;
+}
+.lp-vs1-table b {
+  color: var(--lp-text);
+  font-size: 14px;
+  font-weight: 500;
+  left: 38px;
+  line-height: 20px;
+  position: absolute;
+  top: 12px;
+}
+.lp-vs1-table em {
+  color: var(--lp-ink-70);
+  font-size: 13px;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
+  position: absolute;
+  right: 16px;
+  top: 12px;
+}
+/* Pancake: the kit's pancake face, white and flat, its edge the pieces' hairline (steps.css
+   .lp-s4-disc, value for value), the mark on its centroid */
+.lp-vs-hub {
+  height: 100.252px;
+  left: 180px;
+  position: absolute;
+  top: 183px;
+  width: 104px;
+}
+.lp-vs-hub__face {
+  fill: var(--lp-surface);
+  height: 100%;
+  overflow: visible;
+  paint-order: stroke;
+  stroke: rgba(48, 0, 44, 0.16);
+  stroke-width: 0.439px;
+  width: 100%;
+}
+.lp-vs-hub__mark {
+  height: 58px;
+  left: 23.42px;
+  position: absolute;
+  top: 20.69px;
+  width: 58px;
+}
+
+/* 02 · six kinds of signal (two rows of three chips, y 40 → 120), then the account's card
+   (y 140 → 390): its name, what your own data says of it, and the dots the market adds.
+   A kind's colour: its light on the chip, its dot on the account, its tint when it fires. */
+.lp-step-stage--v2 [data-tone="green"] {
+  --vs-tone: var(--lp-green-20);
+  --vs-tint: var(--lp-green-10);
+}
+.lp-step-stage--v2 [data-tone="purple"] {
+  --vs-tone: var(--lp-purple-30);
+  --vs-tint: var(--lp-purple-10, #efe3ff);
+}
+.lp-step-stage--v2 [data-tone="blue"] {
+  --vs-tone: var(--lp-blue-30);
+  --vs-tint: var(--lp-blue-10);
+}
+.lp-step-stage--v2 [data-tone="yellow"] {
+  --vs-tone: var(--lp-yellow-30);
+  --vs-tint: var(--lp-yellow-10, #ffe9d2);
+}
+.lp-step-stage--v2 [data-tone="pink"] {
+  --vs-tone: var(--lp-pink-30);
+  --vs-tint: var(--lp-pink-10);
+}
+.lp-step-stage--v2 [data-tone="orange"] {
+  --vs-tone: var(--lp-orange-20);
+  --vs-tint: var(--lp-orange-10);
+}
+.lp-vs2-chip {
+  border-radius: 18px;
+  height: 36px;
+  width: 132px;
+}
+.lp-vs2-chip img {
+  height: 16px;
+  left: 12px;
+  object-fit: contain;
+  position: absolute;
+  top: 10px;
+  width: 16px;
+}
+.lp-vs2-chip span {
+  color: var(--lp-text);
+  font-size: 13px;
+  font-weight: 500;
+  left: 36px;
+  line-height: 18px;
+  position: absolute;
+  top: 9px;
+  white-space: nowrap;
+}
+/* the kind's light: off (a quiet grey), on in its colour once it has fired (--vs-on) */
+.lp-vs2-led {
+  background: var(--lp-ink-50, #ddcfcd);
+  border-radius: 50%;
+  height: 8px;
+  position: absolute;
+  right: 12px;
+  top: 14px;
+  width: 8px;
+}
+.lp-vs2-led::after {
+  background: var(--vs-tone);
+  border-radius: 50%;
+  content: "";
+  inset: 0;
+  opacity: var(--vs-on, 1);
+  position: absolute;
+}
+.lp-vs2-chip[data-quiet] .lp-vs2-led::after {
+  opacity: 0;
+}
+.lp-vs2-card {
+  border-radius: 16px;
+  height: 250px;
+  left: 26px;
+  top: 140px;
+  width: 412px;
+}
+.lp-vs2-name {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+  left: 20px;
+  position: absolute;
+  top: 14px;
+}
+.lp-vs2-name b {
+  color: var(--lp-text);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+.lp-vs2-name span {
+  color: var(--lp-ink-70);
+  font-size: 13px;
+  line-height: 22px;
+}
+/* what your own data says: a flat tag (the tables' .lp-db__tag) */
+.lp-vs2-own {
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(48, 0, 44, 0.16);
+  color: var(--lp-ink-90, var(--lp-text));
+  font-size: 12px;
+  line-height: 22px;
+  padding: 0 8px;
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  white-space: nowrap;
+}
+.lp-vs2-rule {
+  border-top: 0.5px solid rgba(48, 0, 44, 0.16);
+  height: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 50px;
+}
+/* the line that connects the dots: the wire that matters, near-black, round (the brand's arrow:
+   a round stroke and an open head) */
+.lp-vs2-line {
+  height: 426px;
+  left: 0;
+  overflow: visible;
+  position: absolute;
+  top: 0;
+  width: 464px;
+}
+.lp-vs2-line path {
+  fill: none;
+  stroke: var(--lp-ink-100);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-width: 1.25;
+  stroke-width: 1.5px;
+}
+.lp-vs2-path {
+  stroke-dasharray: 1;
+}
+/* a dot: on its place (left / top = its centre), what it says over it */
+.lp-vs2-dot {
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+.lp-vs2-dot i {
+  background: var(--vs-tone);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2.5px var(--lp-surface);
+  height: 12px;
+  left: -6px;
+  position: absolute;
+  top: -6px;
   width: 12px;
 }
-/* a layer with no rows to show: its bar alone, naming the tables it holds */
-.lp-db.lp-vlayers__base .lp-db__bar {
-  border-bottom: 0;
-}
-.lp-vlayers__table {
-  align-items: center;
-  display: inline-flex;
-  gap: 6px;
-  margin-right: 8px;
-}
-.lp-vlayers__table i {
-  color: var(--db-text-3);
-  font-size: 10.5px;
-  font-style: normal;
+.lp-vs2-dot span {
+  color: var(--lp-text);
+  font-size: 12px;
+  font-weight: 500;
+  left: 0;
+  line-height: 16px;
+  position: absolute;
+  top: -34px;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 
+/* 03 · the designer's Brain (steps.css .lp-s1-graph: at rest it is glided left at 0.55, the pose
+   it took beside its leads; here 50 px higher, its centre at 116, 195, so that the picture and
+   the name under it stand centred on the stage) and, where those leads stood, two cards in
+   their skin (.lp-s1-lead: white, r12, the 0.5px line and the soft shadow): the account
+   (y 92 → 148) and the next best Play under it (y 162 → 326). */
+.lp-step-stage--v3 .lp-s1-graph {
+  transform: translate(-130.5px, -7.92px) scale(0.55);
+}
+.lp .lp-vs3-brain {
+  color: var(--lp-text);
+  font-size: 13px;
+  font-weight: 600;
+  left: 16px;
+  line-height: 20px;
+  position: absolute;
+  text-align: center;
+  top: 318px;
+  width: 200px;
+}
+.lp-vs3-card {
+  background: var(--lp-ink-0);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  left: 248px;
+  position: absolute;
+  width: 202px;
+}
+.lp-vs3-account {
+  height: 56px;
+  top: 92px;
+}
+.lp-vs3-account b,
+.lp-vs3-account span {
+  left: 14px;
+  position: absolute;
+  white-space: nowrap;
+}
+.lp-vs3-account b {
+  color: var(--lp-ink-100);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  top: 9px;
+}
+.lp-vs3-account span {
+  color: var(--lp-ink-70);
+  font-size: 12px;
+  line-height: 18px;
+  top: 29px;
+}
+/* the Play (the infra Tools card's Play row, as the "Ask anything" card sets it: the pink tile
+   and its play icon, the name), its three lines under a hairline */
+.lp-vs3-play {
+  height: 164px;
+  top: 162px;
+}
+.lp-vs3-play-icon {
+  background: var(--lp-pink-10);
+  border-radius: var(--lp-r-xsm);
+  height: 28px;
+  left: 12px;
+  position: absolute;
+  top: 13px;
+  width: 28px;
+}
+.lp-vs3-play-icon svg {
+  fill: var(--lp-pink-40);
+  height: 16px;
+  left: 6px;
+  position: absolute;
+  top: 6px;
+  width: 16px;
+}
+.lp .lp-vs3-play-k {
+  color: var(--lp-ink-70);
+  font-size: 11px;
+  font-weight: 500;
+  left: 50px;
+  line-height: 16px;
+  position: absolute;
+  top: 9px;
+  white-space: nowrap;
+}
+.lp .lp-vs3-play-n {
+  color: var(--lp-text);
+  font-size: 14px;
+  font-weight: 600;
+  left: 50px;
+  line-height: 20px;
+  position: absolute;
+  top: 24px;
+  white-space: nowrap;
+}
+.lp-vs3-play-rule {
+  border-top: 0.5px solid var(--lp-sx-line);
+  height: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 54px;
+}
+.lp .lp-vs3-play-row {
+  height: 32px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+.lp-vs3-play-row span {
+  color: var(--lp-ink-70);
+  font-size: 11.5px;
+  left: 14px;
+  line-height: 18px;
+  position: absolute;
+  top: 7px;
+}
+.lp-vs3-play-row b {
+  color: var(--lp-text);
+  font-size: 12.5px;
+  font-weight: 500;
+  left: 58px;
+  line-height: 18px;
+  position: absolute;
+  top: 7px;
+  white-space: nowrap;
+}
 
-/* ── the bands: cream for the rows, the designer's sky for the cards that follow the dive ── */
+/* ── the three cards that follow the dive, on the designer's sky ── */
 /* a section's title: the designer's (.lp-title-section), centred, two even lines at most */
 .lp .lp-v__title {
   margin: 0 auto;
@@ -907,22 +1239,13 @@
 .lp-vc {
   padding: 96px 24px 0;
 }
-.lp-vagent {
-  padding-bottom: 128px;
-}
-.lp-vware__grid,
-.lp-vagent__grid {
+.lp-vware__grid {
   display: grid;
   gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   list-style: none;
   margin: 56px 0 0;
   padding: 0;
-}
-.lp-vware__grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.lp-vagent__grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 .lp-vware__pic {
   align-items: center;
@@ -951,137 +1274,6 @@
   line-height: 22px;
   margin-top: 6px;
   max-width: 380px;
-}
-.lp-vagent__pic {
-  align-items: center;
-  border-radius: 12px;
-  display: flex;
-  height: 340px;
-  margin-bottom: 20px;
-  padding: 24px;
-}
-.lp-vagent__pic[data-pic="ask"] {
-  align-items: stretch;
-  background: var(--lp-ink-40);
-}
-.lp-vagent__pic[data-pic="plug"] {
-  background: var(--lp-purple-20);
-}
-.lp-vagent__pic > .lp-db,
-.lp-vagent__pic > .lp-chat {
-  flex: 1;
-}
-.lp-vagent__pic > .lp-chat {
-  background: var(--lp-surface);
-  border: 1px solid var(--chat-line);
-  border-radius: 8px;
-}
-
-/* ── the agent's panel: a question, the read, the rows that come back ── */
-.lp-chat {
-  --chat-text: var(--lp-v-on-dark);
-  --chat-text-3: var(--lp-ink-70);
-  --chat-line: rgba(255, 247, 236, 0.12);
-  --chat-fill: rgba(255, 247, 236, 0.05);
-  color: var(--chat-text);
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  font-size: var(--lp-text-sm);
-  line-height: 20px;
-  min-width: 0;
-}
-.lp-chat[data-theme="light"] {
-  --chat-text: var(--lp-ink-100);
-  --chat-text-3: var(--lp-ink-80);
-  --chat-line: rgba(44, 0, 42, 0.1);
-  --chat-fill: rgba(44, 0, 42, 0.03);
-}
-.lp .lp-chat__head {
-  align-items: center;
-  border-bottom: 1px solid var(--chat-line);
-  display: flex;
-  flex: none;
-  font-weight: 600;
-  gap: 8px;
-  height: 44px;
-  padding: 0 14px;
-}
-.lp-chat__mark {
-  color: var(--lp-claude-spark);
-  display: grid;
-  flex: none;
-  height: 16px;
-  width: 16px;
-}
-.lp-chat__mark svg {
-  display: block;
-  height: 100%;
-  width: 100%;
-}
-/* the tool the agent is connected to, with its live dot */
-.lp-chat__tool {
-  align-items: center;
-  color: var(--chat-text-3);
-  display: flex;
-  font-family: var(--lp-font-fono);
-  font-size: 11px;
-  font-weight: 400;
-  gap: 6px;
-  margin-left: auto;
-}
-.lp-chat__tool::before {
-  background: var(--lp-green-20);
-  border-radius: 50%;
-  content: "";
-  height: 6px;
-  width: 6px;
-}
-.lp-chat__body {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  gap: 10px;
-  min-height: 0;
-  padding: 14px;
-}
-.lp .lp-chat__ask {
-  align-self: flex-end;
-  background: var(--chat-fill);
-  border: 1px solid var(--chat-line);
-  border-radius: 8px 8px 2px 8px;
-  max-width: 100%;
-  padding: 6px 10px;
-}
-.lp .lp-chat__status {
-  align-items: center;
-  color: var(--chat-text-3);
-  display: flex;
-  font-family: var(--lp-font-fono);
-  font-size: 11px;
-  gap: 6px;
-  line-height: 16px;
-}
-.lp .lp-chat__answer {
-  align-items: flex-start;
-  display: flex;
-  font-weight: 500;
-  gap: 8px;
-}
-.lp-chat__answer .lp-chat__mark {
-  margin-top: 2px;
-}
-.lp-db.lp-chat__result {
-  --db-row: 26px;
-  flex: none;
-  font-size: 11px;
-}
-.lp .lp-chat__box {
-  border: 1px solid var(--chat-line);
-  border-radius: 8px;
-  color: var(--chat-text-3);
-  margin-top: auto;
-  padding: 8px 12px;
 }
 
 /* ── the pictures: real tables (LpVisionDb.tsx) ──
@@ -1479,19 +1671,6 @@
 }
 
 /* ── narrower windows ── */
-@media (max-width: 1180px) {
-  .lp-vrows__row,
-  .lp-vrows__row:nth-child(even) {
-    gap: 48px;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
-  }
-  .lp-vrows__row:nth-child(even) {
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  }
-  .lp-vrows__frame {
-    padding: 28px;
-  }
-}
 @media (max-width: 1024px) {
   /* a tablet's card: fewer columns (their tablet widths), a narrower conversation, its short
      forms */
@@ -1549,33 +1728,6 @@
   .lp-vc {
     padding: 80px 24px 0;
   }
-  .lp-vc.lp-vrows {
-    padding-bottom: 88px;
-  }
-  .lp-vagent {
-    padding-bottom: 96px;
-  }
-  .lp-vrows__list {
-    gap: 72px;
-    margin-top: 56px;
-  }
-  .lp-vrows__row,
-  .lp-vrows__row:nth-child(even) {
-    gap: 24px;
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .lp-vrows__row:nth-child(even) .lp-vrows__side {
-    order: 0;
-  }
-  .lp-vrows__row:nth-child(odd) .lp-vrows__text {
-    padding-left: 0;
-  }
-  .lp .lp-vrows__body {
-    max-width: 560px;
-  }
-  .lp-vrows__frame {
-    min-height: 0;
-  }
   .lp-vware__grid {
     grid-template-columns: minmax(0, 1fr);
     margin-top: 40px;
@@ -1583,10 +1735,6 @@
   .lp-vware__pic {
     height: auto;
     padding: 24px;
-  }
-  .lp-vagent__grid {
-    grid-template-columns: minmax(0, 1fr);
-    margin-top: 40px;
   }
 }
 @media (max-width: 767px) {
@@ -1707,23 +1855,11 @@
   .lp-vc {
     padding: 64px 16px 0;
   }
-  .lp-vc.lp-vrows {
-    padding-bottom: 64px;
-  }
-  .lp-vagent {
-    padding-bottom: 72px;
-  }
   /* the designer's phone size for a section title (the dive's) */
   .lp .lp-v__title {
     font-size: 35.559px;
     letter-spacing: -1.067px;
     line-height: 41px;
-  }
-  .lp-vrows__statement br {
-    display: none;
-  }
-  .lp-vrows__frame {
-    padding: 14px;
   }
   /* a phone shows the columns that carry the point; the others are marked in the tables' data */
   .lp-db [data-hide~="phone"] {
@@ -1747,30 +1883,9 @@
   .lp .lp-db__foot {
     padding: 0 10px;
   }
-  /* the data layer's bar names its tables; their counts are in the hero */
-  .lp-vlayers__table i {
-    display: none;
-  }
-  /* the two tables one over the other, one stem down to the third */
-  .lp-vjoin__in {
-    gap: 12px;
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .lp-vjoin__on::before {
-    border: 0;
-    border-left: 1px solid var(--lp-ink-tr-50);
-    border-radius: 0;
-    left: 50%;
-    right: auto;
-  }
+  
+  
   .lp-vware__pic {
     padding: 14px;
-  }
-  .lp-vagent__pic {
-    height: auto;
-    padding: 14px;
-  }
-  .lp-vagent__pic[data-pic="ask"] {
-    min-height: 320px;
   }
 }

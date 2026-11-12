@@ -95,6 +95,7 @@ const over = (y: number, r: number) => y - r - 21;
 const LOGO = {
   crm: "/lp/vendor-logos/hubspot.svg",
   events: "/lp/vendor-logos/luma.svg",
+  product: "/lp/vendor-logos/posthog.svg",
   theirstack: "/lp/story-sources/theirstack.svg",
   dealroom: "/lp/story-sources/dealroom.svg",
   coresignal: "/lp/story-sources/coresignal.svg",
@@ -149,15 +150,17 @@ const SOURCES: SpScene = {
   end: 3.3,
 };
 
-/* ── 2. deduplication: one person, one record ── */
+/* ── 2. deduplication: one person, one record. Since the landing page meeting (2026-11-11) it is
+   the "entity resolution" feature, on the meeting's own example: the same person at an event, in
+   a product signup and on a social profile, under different emails ── */
 const D = { src: 150, rec: 560, rows: [125, 245, 365] as const };
 const DEDUP: SpScene = {
   id: "p-dedup",
-  alt: "The same Head of Sales is in the CRM, at an event and on a call: three dots, which become one record.",
+  alt: "The same Head of Sales is at an event, in a product signup and on a social profile, under a work email and a personal one: three dots, which become one record.",
   nodes: [
-    { kind: "disc", id: "crm", x: D.src, y: D.rows[0], r: DISC, logo: LOGO.crm, name: "CRM" },
-    { kind: "disc", id: "events", x: D.src, y: D.rows[1], r: DISC, logo: LOGO.events, name: "Events" },
-    { kind: "stop", id: "calls", x: D.src, y: D.rows[2], r: STOP, tone: "purple-30", name: "Calls" },
+    { kind: "disc", id: "crm", x: D.src, y: D.rows[0], r: DISC, logo: LOGO.events, name: "Event" },
+    { kind: "disc", id: "events", x: D.src, y: D.rows[1], r: DISC, logo: LOGO.product, name: "Product signup" },
+    { kind: "stop", id: "calls", x: D.src, y: D.rows[2], r: STOP, tone: "purple-30", name: "Social profile" },
     // the two other sightings: there at frame 0, each on its own line, gone once they are one
     { kind: "dot", id: "seen-a", x: D.rec, y: D.rows[1], r: LEAD, gone: true },
     { kind: "dot", id: "seen-c", x: D.rec, y: D.rows[1], r: LEAD, gone: true },
@@ -169,8 +172,8 @@ const DEDUP: SpScene = {
     { id: "w-c", line: [D.src + STOP, D.rows[2], D.rec, D.rows[1]], ink: true },
   ],
   labels: [
-    { id: "n-a", x: D.rec, y: under(D.rows[0], LEAD), text: "Head of Sales", gone: true },
-    { id: "n-c", x: D.rec, y: under(D.rows[2], LEAD), text: "Sales lead", gone: true },
+    { id: "n-a", x: D.rec, y: under(D.rows[0], LEAD), text: "Work email", gone: true },
+    { id: "n-c", x: D.rec, y: under(D.rows[2], LEAD), text: "Personal email", gone: true },
     { id: "one", x: D.rec, y: over(D.rows[1], FOUND), text: "One record", group: true },
   ],
   steps: [
@@ -231,17 +234,18 @@ const MATCHING: SpScene = {
   end: 3.2,
 };
 
-/* ── 4. history: every signal, dated ── */
+/* ── 4. history: every signal, dated. Since the landing page meeting (2026-11-11) it is the
+   "lead journey" feature: one lead, its touches in the order they happened ── */
 const H = { y: 245, acct: 112, xs: [236, 360, 484, 608] as const, r: 10, slot: 3 };
 const HISTORY: SpScene = {
   id: "p-history",
-  alt: "One account and its empty line: four datapoints land on it in the order they happened. A deal lost, 180 people, 200 people, hiring.",
+  alt: "One lead and its empty line: four touches land on it in the order they happened. Your event, a signup, a question on pricing, a reply.",
   nodes: [
-    { kind: "stop", id: "acct", x: H.acct, y: H.y, r: STOP, tone: "purple-30", name: "One account" },
-    { kind: "stop", id: "d1", x: H.xs[0], y: H.y, r: H.r, tone: "pink-30", name: "Deal lost" },
-    { kind: "stop", id: "d2", x: H.xs[1], y: H.y, r: H.r, tone: "yellow-30", name: "180 people" },
-    { kind: "stop", id: "d3", x: H.xs[2], y: H.y, r: H.r, tone: "yellow-30", name: "200 people" },
-    { kind: "stop", id: "d4", x: H.xs[3], y: H.y, r: H.r, tone: "green-20", name: "Hiring" },
+    { kind: "stop", id: "acct", x: H.acct, y: H.y, r: STOP, tone: "purple-30", name: "One lead" },
+    { kind: "stop", id: "d1", x: H.xs[0], y: H.y, r: H.r, tone: "pink-30", name: "Your event" },
+    { kind: "stop", id: "d2", x: H.xs[1], y: H.y, r: H.r, tone: "purple-30", name: "Signed up" },
+    { kind: "stop", id: "d3", x: H.xs[2], y: H.y, r: H.r, tone: "yellow-30", name: "Asked pricing" },
+    { kind: "stop", id: "d4", x: H.xs[3], y: H.y, r: H.r, tone: "green-20", name: "Replied" },
     // the line's empty places, there at frame 0 (nothing is recorded yet), each gone once its
     // datapoint has landed on it
     { kind: "dot", id: "s1", x: H.xs[0], y: H.y, r: H.slot, gone: true },
@@ -251,10 +255,10 @@ const HISTORY: SpScene = {
   ],
   wires: [{ id: "line", line: [H.acct + STOP, H.y, H.xs[3], H.y] }],
   labels: [
-    { id: "t1", x: H.xs[0], y: over(H.y, H.r), text: "Nov 2025", group: true },
-    { id: "t2", x: H.xs[1], y: over(H.y, H.r), text: "Mar 2026", group: true },
-    { id: "t3", x: H.xs[2], y: over(H.y, H.r), text: "Sep 2026", group: true },
-    { id: "t4", x: H.xs[3], y: over(H.y, H.r), text: "Nov 2026", group: true },
+    { id: "t1", x: H.xs[0], y: over(H.y, H.r), text: "Sep 12", group: true },
+    { id: "t2", x: H.xs[1], y: over(H.y, H.r), text: "Sep 30", group: true },
+    { id: "t3", x: H.xs[2], y: over(H.y, H.r), text: "Oct 21", group: true },
+    { id: "t4", x: H.xs[3], y: over(H.y, H.r), text: "Nov 4", group: true },
   ],
   // frame 0: the account and its line, with nothing on it. Then one datapoint every half second,
   // in the order they happened: it grows on its place, its date and its name come up
