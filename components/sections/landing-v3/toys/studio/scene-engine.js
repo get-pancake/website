@@ -1,9 +1,10 @@
 // "Run your revenue engine from Claude."
 // The engine: one stand, and on it the three things the 1-2-3 builds, small. Your tables (a pile
-// of rows), the market's signals (a radar), your Brain (beads round a dark centre). A cable
+// of rows), the market's signals (a radar), your Brain (the toy brain of brain.js). A cable
 // leaves it for Claude's window, which is the page's own type, over the picture.
 
-import { C, TONE, bead, block, cable, ceramic, cylinder, mesh, puck, slab, soft, sphere } from "./parts.js";
+import { brainPiece } from "./brain.js";
+import { C, TONE, bead, block, cable, ceramic, mesh, puck, slab, soft } from "./parts.js";
 
 const STAND = { w: 5.9, h: 0.56, d: 4.5, x: 3.72, z: 0.25 };
 const TOP = STAND.h;
@@ -60,28 +61,13 @@ const scene = {
     s.anchor("radar-face", at(PARTS.radar, face + 0.05));
     s.anchor("radar-edge", [STAND.x + PARTS.radar[0] + 0.7, face + 0.05, STAND.z + PARTS.radar[1]]);
 
-    // your Brain: a dark centre on a post, five beads round it
-    const heart = at(PARTS.brain, deck + 1.02);
-    const rodMat = soft(C.ink50, 0.7);
-    const rod = (a, b) => {
-      const from = new THREE.Vector3(...a);
-      const to = new THREE.Vector3(...b);
-      const m = new THREE.Mesh(cylinder(0.03, 0.03, 1, 10), rodMat);
-      m.scale.set(1, from.distanceTo(to), 1);
-      m.position.copy(from);
-      m.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), to.clone().sub(from).normalize());
-      return m;
-    };
-    const brain = [
-      mesh(puck(0.5, 0.1, 0.04, 48), soft(C.ink0, 0.6), at(PARTS.brain, deck)),
-      rod(at(PARTS.brain, deck + 0.08), heart),
-      mesh(sphere(0.4, 40, 28), ceramic(C.plum, 0.3, 0.6), heart),
-    ];
-    ["pink", "purple", "green", "yellow", "blue"].forEach((tone, k) => {
-      const a = (k / 5) * Math.PI * 2 + 0.5;
-      const p = [heart[0] + Math.cos(a) * 0.92, heart[1] + (k % 2 ? 0.2 : -0.16), heart[2] + Math.sin(a) * 0.6];
-      brain.push(rod(heart, p), mesh(sphere(0.17, 28, 20), ceramic(TONE[tone], 0.36, 0.5), p));
-    });
+    // your Brain: the toy brain of the 1-2-3's third picture, small, on its own puck
+    const { piece, height } = brainPiece(THREE, 0.74, 220);
+    const seat = deck + 0.1;
+    const [bx, , bz] = at(PARTS.brain, 0);
+    piece.position.set(bx, piece.position.y + seat, bz);
+    const heart = at(PARTS.brain, seat + height * 0.5);
+    const brain = [mesh(puck(0.92, 0.1, 0.04, 48), soft(C.ink0, 0.6), at(PARTS.brain, deck)), piece];
     s.layer("brain", brain.map((m) => s.add(m)), { floor: deck });
     s.anchor("brain", at(PARTS.brain, deck));
     s.anchor("brain-heart", heart);

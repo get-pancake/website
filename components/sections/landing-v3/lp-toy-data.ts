@@ -47,26 +47,35 @@ export const TOY_RADAR = {
   alt: "Animation: a radar over one account, Ramp, a lost deal. Its beam turns once and four signals land round the account, each with the source that found it: a new VP Sales, new funding, visits up, hiring SDRs. A line then connects the dots, into the account. Then the radar scans another account, Deel, an open deal: headcount up, switched CRM, new reviews, a new CRO.",
 } as const;
 
-/* ── 03 · the Brain as the app draws it, what it holds, and the ideas it comes up with. The
-   founder's example for an idea (2026-11-12): "contact the 24 people who created an account
-   after coming to your event last week". The two smaller ideas are the page's own (Ramp and its
-   lost deal, the accounts hiring SDRs). ── */
+/* ── 03 · the Brain: a toy brain on its stand, what it holds as tags round it, and what it comes
+   up with. Until 2026-11-12 the picture was the app's own drawing of the Brain (hubs and dots);
+   as soft 3D beads on rods it read as an atom (founder, on the preview: "ça fait trop atome et
+   trop d'ombre, on comprend pas"). The founder's example for an idea (2026-11-12): "contact the
+   24 people who created an account after coming to your event last week". The two smaller ideas
+   are the page's own (Ramp and its lost deal, the accounts hiring SDRs). ── */
 export const TOY_BRAIN = {
-  /** what the Brain holds, a hub each, in the hubs' order (toys/studio/scene-brain.js HUBS) */
+  /** what the Brain holds, a tag each: three on its left, then three on its right, top to
+      bottom (LpToySteps.tsx HOLD_AT has the places) */
   holds: [{ label: "ICP" }, { label: "Personas" }, { label: "Voice" }, { label: "Signals" }, { label: "Competitors" }, { label: "Objections" }],
   /** the ideas it comes up with, then the one it recommends (its kicker is VSTEP_BRAIN's) */
   ideas: [{ text: "Reach back out to Ramp" }, { text: "Work accounts hiring SDRs" }],
   play: { text: "Contact the 24 people who signed up after your event." },
   /** The picture goes round (founder, 2026-11-12: "voir le brain qui a des nouveaux trucs qui pop
-      ou qui dépop et d'autres notifications"): on its next round the Brain has changed (a few of
-      its points have gone, others have come) and it comes up with other ideas and another Play.
-      The accounts are the hero's own (lp-vision-tables.ts: Linear, Mercury, a lost deal that
-      raised). */
+      ou qui dépop et d'autres notifications"): on its next round three tags go and three others
+      take their places (`at`: the place, in `holds`), and it comes up with other ideas and
+      another Play. The tags are things the Brain holds too (its message pillars, the keywords it
+      watches, the deals you won). The accounts are the hero's own (lp-vision-tables.ts: Linear,
+      Mercury, a lost deal that raised). */
   next: {
+    holds: [
+      { at: 2, label: "Pillars" },
+      { at: 3, label: "Keywords" },
+      { at: 5, label: "Won deals" },
+    ],
     ideas: [{ text: "Book a demo with Linear" }, { text: "Send Mercury a gift" }],
     play: { text: "Reach back out to the 8 lost deals that just raised funding." },
   },
-  alt: "Animation: your Brain, a graph of coloured hubs round a dark centre: ICP, personas, voice, signals, competitors, objections. Signals run along its branches into the centre, and ideas come out: reach back out to Ramp, work accounts hiring SDRs. Then the next best Play: contact the 24 people who signed up after your event. The Brain then changes, a few points go and others come, and it recommends another Play: reach back out to the 8 lost deals that just raised funding.",
+  alt: "Animation: your Brain, a pink toy brain on a stand, with what it holds on tags round it: ICP, personas, voice, signals, competitors, objections. Signals run from the tags into the brain, it lights up, and ideas come out: reach back out to Ramp, work accounts hiring SDRs. Then the next best Play: contact the 24 people who signed up after your event. The Brain then changes, three tags go and others take their places (pillars, keywords, won deals), and it recommends another Play: reach back out to the 8 lost deals that just raised funding.",
 } as const;
 
 /** what each toy picture of the 1-2-3 shows: its stage's aria-label (LpVisionSteps.tsx) */
