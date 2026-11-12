@@ -70,7 +70,7 @@ export const VISION_CURTAIN: {
   live: string;
 } = {
   label:
-    "Pancake’s companies table works by itself: signals land in it, each account is rescored and its row changes rank, duplicates are merged. Beside it, Claude, connected to Pancake, is asked which accounts to work, and the table narrows to the ones that have a signal. When a signal lands on a deal that was lost, Claude says so unasked: that account hired the buyer of an account you won. Told to work every account that passes 90, it runs each next best Play as a row passes 90, and the lost deal reopens.",
+    "Pancake’s companies table works by itself: signals land in it, each account is rescored and its row changes rank, duplicates are merged. Beside it, Claude, connected to Pancake, is asked which accounts to work, and the table narrows to the ones that have a signal. When a signal lands on Ramp, a deal that was lost, Claude says so unasked: Ramp hired the VP who bought from you at Notion. Told to work every account that passes 90, it runs each next best Play as a row passes 90, and the Ramp deal reopens.",
   handle: "Resize Claude and Pancake",
   /* Claude's own chrome, the Claude scene's words (lp-demo-data.ts) */
   greeting: "Let’s flip some pancakes",
@@ -82,17 +82,17 @@ export const VISION_CURTAIN: {
     { id: "ask1", ask: "Which accounts should we work on now?" },
     { id: "filter", tool: "Filter companies", doing: "Filtering…", count: 86, done: "accounts" },
     { id: "say1", say: "86 have a fresh signal." },
-    // Pancake brings it, Claude says it: nobody asked. "Fintech" and "Health tech" are rows of
-    // the table (DB_HERO)
-    { id: "ping", tool: "New signal", name: "Fintech", done: "new VP Sales" },
-    { id: "say2", say: "Fintech hired the VP who bought from you at Health tech. Want me to reach back out?" },
+    // Pancake brings it, Claude says it: nobody asked. Ramp and Notion are rows of the table
+    // (DB_HERO): the companies are named, never their industry (founder, 2026-11-12)
+    { id: "ping", tool: "New signal", name: "Ramp", done: "new VP Sales" },
+    { id: "say2", say: "Ramp hired the VP who bought from you at Notion. Want me to reach back out?" },
     { id: "ask2", ask: "Yes. Work every account that passes 90." },
     { id: "rule", tool: "Run Plays above 90", doing: "Starting…", done: "On", run: true },
-    { id: "say3", say: "Done. Fintech and Logistics are live." },
+    { id: "say3", say: "Done. Ramp and Mercury are live." },
     // from here on nothing is typed
-    { id: "run1", tool: "Run Play", name: "Dev tools", doing: "Starting…", done: "Live", run: true },
-    { id: "say4", say: "Fintech replied. The deal is open again." },
-    { id: "run2", tool: "Run Play", name: "Legal tech", doing: "Starting…", done: "Live", run: true },
+    { id: "run1", tool: "Run Play", name: "Linear", doing: "Starting…", done: "Live", run: true },
+    { id: "say4", say: "Ramp replied. The deal is open again." },
+    { id: "run2", tool: "Run Play", name: "Supabase", doing: "Starting…", done: "Live", run: true },
   ],
   /* The table's view bar. The table is ranked by fit all along (the sort). The filter
      is a button until Claude sets it; then it is what was set (the column, the test, the value)
@@ -150,7 +150,7 @@ export const VISION_STEPS: readonly { num: "01" | "02" | "03"; variant: VisionSt
     title: "Connect the dots\nwith market signals.",
     body: "Funding, hiring, tech stack, reviews, web traffic. Signals from 30+ data providers land on the accounts you already have, each one dated.",
     // retells VSTEP_SIGNALS and VSTEP_ACCOUNT: keep in sync
-    alt: "Animation: six kinds of market signal, each beside a well-known source: funding, hiring, tech stack, team, reviews and web traffic. Four of them land as dots on one account, a fintech of 200 people with a lost deal: hiring SDRs, a new VP Sales, a Series B raised, visits up. A line connects the dots.",
+    alt: "Animation: six kinds of market signal, each beside a well-known source: funding, hiring, tech stack, team, reviews and web traffic. Four of them land as dots on one account, Ramp, a fintech with a lost deal: hiring SDRs, a new VP Sales, new funding, visits up. A line connects the dots.",
   },
   {
     num: "03",
@@ -158,7 +158,7 @@ export const VISION_STEPS: readonly { num: "01" | "02" | "03"; variant: VisionSt
     title: "Your Brain recommends\nthe next best Play.",
     body: "It knows who you sell to and what worked. When signals cross on an account, it tells your agent who to contact, when, and with which Play.",
     // retells VSTEP_BRAIN: keep in sync
-    alt: "Animation: beside your Brain, a graph of coloured branches around a dark centre, an account comes up: a fintech with a lost deal, now hiring SDRs. A ping runs through the Brain and it grows new branches. Then the next best Play appears, Reach back out. Who: the Head of Sales. When: today at 10:00. Why: a lost deal, now hiring.",
+    alt: "Animation: beside your Brain, a graph of coloured branches around a dark centre, an account comes up: Ramp, a fintech with a lost deal, now hiring SDRs. A ping runs through the Brain and it grows new branches. Then the next best Play appears, Reach back out. Who: the Head of Sales. When: today at 10:00. Why: a lost deal, now hiring.",
   },
 ];
 
@@ -182,7 +182,7 @@ export const VSTEP_TABLES = [
  *  over it, clear of the line that leaves it. */
 export type VisionSignalTone = "green" | "purple" | "blue" | "yellow" | "pink" | "orange";
 export const VSTEP_SIGNALS: readonly { id: string; label: string; logo: string; tone: VisionSignalTone; dot?: { text: string; x: number; y: number; order: number } }[] = [
-  { id: "funding", label: "Funding", logo: "/lp/signal-logos/crunchbase.svg", tone: "green", dot: { text: "raised a Series B", x: 280, y: 296, order: 3 } },
+  { id: "funding", label: "Funding", logo: "/lp/signal-logos/crunchbase.svg", tone: "green", dot: { text: "new funding", x: 280, y: 296, order: 3 } },
   { id: "hiring", label: "Hiring", logo: "/lp/signal-logos/indeed.svg", tone: "purple", dot: { text: "hiring SDRs", x: 84, y: 346, order: 1 } },
   { id: "tech", label: "Tech stack", logo: "/lp/story-sources/wappalyzer.svg", tone: "blue" },
   { id: "team", label: "Team", logo: "/lp/signal-logos/apollo.svg", tone: "yellow", dot: { text: "new VP Sales", x: 182, y: 322, order: 2 } },
@@ -190,15 +190,17 @@ export const VSTEP_SIGNALS: readonly { id: string; label: string; logo: string; 
   { id: "traffic", label: "Web traffic", logo: "/lp/signal-logos/similarweb.svg", tone: "orange", dot: { text: "visits up", x: 378, y: 266, order: 4 } },
 ];
 /** the account the dots land on: what you already know of it comes from your own data */
-export const VSTEP_ACCOUNT = { name: "Fintech", size: "200 people", own: "lost deal" } as const;
+/** the company by its name, its industry beside it (founder, 2026-11-12: "what does it mean to put
+ *  categories in the name of companies? put hot companies instead"): the hero window's own account */
+export const VSTEP_ACCOUNT = { name: "Ramp", size: "Fintech", own: "lost deal" } as const;
 
 /** 03: the Brain, the context layer, as the designer drew it (lp-step-data.ts s1Graph): the
  *  account and what crossed on it come up beside it, it pings and grows, and the next best Play
  *  comes up under the account. The account and its Play are the hero's own first row
- *  (lp-vision-tables.ts DB_HERO row a). */
+ *  (lp-vision-tables.ts DB_HERO row "fi", Ramp). */
 export const VSTEP_BRAIN = {
   brain: "Your Brain",
-  account: { name: "Fintech", facts: "Lost deal · hiring SDRs" },
+  account: { name: "Ramp", facts: "Lost deal · hiring SDRs" },
   play: {
     kicker: "Next best Play",
     name: "Reach back out",
