@@ -29,7 +29,7 @@ No image, model or font file is loaded. Every shape is built in code.
 
 ## Change the words
 
-All the copy is in `words.js`: the two titles, the two options of the switch, each badge, and the description of the picture for a screen reader. `scripts/homepage-lint.mjs` reads this file, so a banned claim fails the build.
+All the copy is in `words.js`: the title, the two options of the switch, each badge, and the description of the picture for a screen reader. `scripts/homepage-lint.mjs` reads this file, so a banned claim fails the build.
 
 A badge is an `icon` and a `text` of three words at most. The `icon` is a logo of `logos.js` (`posthog`, `hubspot`, `luma`, `crunchbase`, `ga`) or a plain glyph of `overlay.js` (`user`, `event`, `chart`, `up`, `jobs`). To drop a logo, replace its name with a glyph.
 

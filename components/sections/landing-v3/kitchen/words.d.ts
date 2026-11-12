@@ -5,13 +5,13 @@ import type { KitchenBadge } from "./kitchen";
 interface KitchenSide {
   /** its option on the switch */
   readonly option: string;
-  /** the section's title while this kitchen shows */
-  readonly title: string;
   /** what the picture shows, for someone who cannot see it */
   readonly alt: string;
 }
 
 export interface KitchenWords {
+  /** the section's title, whichever kitchen shows */
+  readonly title: string;
   readonly switchLabel: string;
   readonly with: KitchenSide;
   readonly without: KitchenSide;

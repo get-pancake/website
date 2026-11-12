@@ -101,6 +101,7 @@ if (kitchen) {
 
 // the heading and the switch say what the section says (words.js)
 const title = $("kitchen-title");
+if (title) title.textContent = WORDS.title;
 document.querySelectorAll("[data-mode]").forEach((b) => (b.textContent = WORDS[b.dataset.mode].option));
 
 // the two switches: with or without Pancake, and who cooks
@@ -109,13 +110,6 @@ function reflect() {
   document.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === kitchen.mode)));
   document.querySelectorAll("[data-cast]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cast === kitchen.cast)));
   document.querySelectorAll("[data-key]").forEach((k) => (k.hidden = k.dataset.key !== kitchen.mode));
-  if (title && title.textContent !== WORDS[kitchen.mode].title) {
-    title.textContent = WORDS[kitchen.mode].title;
-    // the new title comes up from under the line
-    title.classList.remove("swap");
-    void title.offsetWidth;
-    title.classList.add("swap");
-  }
 }
 if (kitchen) {
   document.querySelectorAll("[data-mode]").forEach((b) =>

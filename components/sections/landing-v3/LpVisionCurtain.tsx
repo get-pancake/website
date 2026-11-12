@@ -173,6 +173,8 @@ export function LpVisionCurtain() {
       restIsEnd: true,
       qa: { registry: "__lpVision", key: "curtain" },
       seenAbove: SEEN_ABOVE,
+      // its build is the page's heaviest: after the visitor's first input, in an idle moment
+      afterInput: true,
     });
     // Scrolled onto: the split eases from half to two thirds for the table, once (founder: "c'est
     // pas au hover la bascule, plutôt quand je scroll sur cette partie"). Not under reduced motion:

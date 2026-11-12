@@ -4,11 +4,13 @@ import { useEffect, useRef, useState } from "react";
 
 import type { KitchenCast, KitchenMode, PancakeKitchen } from "./kitchen/kitchen";
 import { WORDS } from "./kitchen/words";
+import { whenInput } from "./lp-play-once";
 
 /**
- * Kitchen — "Anyone can cook." / "Always overcooked." (2026-11-12). Pancake as a kitchen that
- * runs by itself: signals ride in as ingredients, three chefs cook, stacks of pancakes leave as
- * leads. A switch shows the same kitchen without Pancake, and the title changes with it.
+ * Kitchen — "We keep the kitchen clean." (2026-11-12). Pancake as a kitchen that runs by
+ * itself: signals ride in as ingredients, three chefs cook, stacks of pancakes leave as leads. A
+ * switch shows the same kitchen without Pancake. The title is the same for both (until
+ * 2026-11-12 it changed with the switch: "Anyone can cook." / "Always overcooked.").
  *
  * Every word is in kitchen/words.js. The third-party marks are in kitchen/logos.js: read the
  * note at its top before this ships.
@@ -19,8 +21,11 @@ import { WORDS } from "./kitchen/words";
  *   scene itself by scripts/kitchen-posters.mjs). The scene starts at the poster's own moment
  *   (POSTER_TIMES, no opening), so the first frame it paints is the poster. The poster then
  *   fades out from under it ([data-live] on the stage, kitchen.css).
- * - three.js and the scene are imported the first time the section comes within a viewport of
- *   the screen: about 200 kB gzipped that the first load never pays for.
+ * - three.js and the scene are imported once the visitor has touched the page (a scroll, a move,
+ *   a key) and the section comes within half a viewport of the screen: about 200 kB gzipped and
+ *   the scene's set-up that the first load never pays for. A page nobody touches, and Lighthouse,
+ *   keep the poster (2026-11-12: under the logos, the section was within a viewport at load on a
+ *   desktop, and its boot landed in the page's first seconds).
  * - The scene pauses off screen and on tab hide (kitchen.js does it).
  * - Reduced motion never boots the scene: the poster is the render.
  * - Phones never boot it either (LIVE, below). It was never measured on one, and the page has
@@ -64,8 +69,6 @@ export function LpKitchen({
   const [mode, setMode] = useState<KitchenMode>(first);
   /** the mode the scene booted in, once it is live: null while the poster is the render */
   const [booted, setBooted] = useState<KitchenMode | null>(null);
-  /** the switch was used: from then on the title comes up when it changes */
-  const [touched, setTouched] = useState(false);
   const stage = useRef<HTMLDivElement>(null);
   const kitchen = useRef<PancakeKitchen | null>(null);
   /** the mode at the moment the scene boots: the visitor may flip the switch before it does */
@@ -82,29 +85,36 @@ export function LpKitchen({
       kitchen.current = null;
       setBooted(null);
     };
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        io.disconnect();
-        import("./kitchen/kitchen")
-          .then(({ createPancakeKitchen, POSTER_TIMES }) => {
-            if (gone) return;
-            const at = latest.current;
-            const live = createPancakeKitchen(el, { cast, mode: at, vendorLogos, time: POSTER_TIMES[at], intro: false });
-            kitchen.current = live;
-            // the browser took the GPU context back (memory pressure, a driver reset)
-            live.canvas.addEventListener("webglcontextlost", stop, { once: true });
-            setBooted(at);
-          })
-          // no WebGL, or the chunk did not load: the poster stays
-          .catch(() => undefined);
-      },
-      { rootMargin: "100% 0px" },
-    );
-    io.observe(el);
+    let io: IntersectionObserver | undefined;
+    const watch = () => {
+      if (gone) return;
+      io = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry?.isIntersecting) return;
+          io?.disconnect();
+          import("./kitchen/kitchen")
+            .then(({ createPancakeKitchen, POSTER_TIMES }) => {
+              if (gone) return;
+              const at = latest.current;
+              const live = createPancakeKitchen(el, { cast, mode: at, vendorLogos, time: POSTER_TIMES[at], intro: false });
+              kitchen.current = live;
+              // the browser took the GPU context back (memory pressure, a driver reset)
+              live.canvas.addEventListener("webglcontextlost", stop, { once: true });
+              setBooted(at);
+            })
+            // no WebGL, or the chunk did not load: the poster stays
+            .catch(() => undefined);
+        },
+        { rootMargin: "50% 0px" },
+      );
+      io.observe(el);
+    };
+    // (after the visitor's first input: at once on a page opened scrolled down)
+    const cancelInput = whenInput(watch);
     return () => {
       gone = true;
-      io.disconnect();
+      cancelInput();
+      io?.disconnect();
       stop();
     };
   }, [cast, vendorLogos]);
@@ -121,11 +131,7 @@ export function LpKitchen({
     <section className={sky ? "lp-kitchen lp-kitchen--sky" : "lp-kitchen"} id={id} data-mode={mode}>
       <div className="lp-kitchen__org">
         <header className="lp-kitchen__head">
-          <Title className="lp-kitchen__title lp-title-section" aria-live="polite">
-            <span key={mode} className="lp-kitchen__title-text" data-swap={touched ? "" : undefined}>
-              {WORDS[mode].title}
-            </span>
-          </Title>
+          <Title className="lp-kitchen__title lp-title-section">{WORDS.title}</Title>
           <div className="lp-kitchen__switch" role="group" aria-label={WORDS.switchLabel}>
             {MODES.map((m) => (
               <button
@@ -133,10 +139,7 @@ export function LpKitchen({
                 type="button"
                 className="lp-kitchen__option"
                 aria-pressed={mode === m}
-                onClick={() => {
-                  setTouched(true);
-                  setMode(m);
-                }}
+                onClick={() => setMode(m)}
               >
                 {WORDS[m].option}
               </button>
