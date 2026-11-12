@@ -60,6 +60,14 @@ export const DIVE_LOADERS: Record<DiveItemId, DiveStageLoader> = {
         steps: buildStoryLineageSteps,
       }),
     ),
+  ping: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-ping-timeline")]).then(
+      ([{ gsap }, { buildStoryPing, buildStoryPingSteps }]) => ({
+        gsap,
+        build: buildStoryPing,
+        steps: buildStoryPingSteps,
+      }),
+    ),
   mcp: () =>
     Promise.all([import("@/lib/gsap"), import("./lp-story-mcp-timeline")]).then(
       ([{ gsap }, { buildStoryMcp, buildStoryMcpSteps }]) => ({

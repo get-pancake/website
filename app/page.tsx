@@ -13,7 +13,7 @@ import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
 import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
-import { LpVisionFeatures, LpVisionWarehouse } from "@/components/sections/landing-v3/LpVision";
+import { LpVisionFeatures } from "@/components/sections/landing-v3/LpVision";
 import { LpVisionCurtain } from "@/components/sections/landing-v3/LpVisionCurtain";
 import { LpVisionSteps } from "@/components/sections/landing-v3/LpVisionSteps";
 import { VISION_BOTTLE, VISION_CLOSE, VISION_PLANS } from "@/components/sections/landing-v3/lp-vision-data";
@@ -148,10 +148,9 @@ export default function Home() {
       <LpAgentLab />
       {/* the bottle, with the page's own two lines; it opens the sky */}
       <LpBanner left={VISION_BOTTLE.left} right={VISION_BOTTLE.right} />
-      {/* the sky: what your agent can do with Pancake (the deep dive, four features), what Pancake
-          is, what customers got, then the close on its cream hill (sky.css) */}
+      {/* the sky: what your agent can do with Pancake (the deep dive, four features), what
+          customers got, then the close on its cream hill (sky.css) */}
       <LpVisionFeatures />
-      <LpVisionWarehouse />
       <LpBento sky />
       <LpCta sky title={VISION_CLOSE.title} body={VISION_CLOSE.body} setup={<LpSetupPill />} />
       <LpPricing checklist={VISION_PLANS.starter} full={VISION_PLANS.full} />

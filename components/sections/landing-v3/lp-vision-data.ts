@@ -10,8 +10,9 @@
  * Since the landing page meeting of 2026-11-11 the page is: the window (Claude beside Pancake's
  * table), the statement and the 1-2-3 (connect your sources, connect the dots with market
  * signals, find who to contact and when), the bottle ("tons of data, a fraction used"), the
- * clouds ("What your agent can do with Pancake", four features), what Pancake is (three cards:
- * the last one names the stack it replaces), what customers got, the close, the pricing.
+ * clouds ("What your agent can do with Pancake", four features), what customers got, the close,
+ * the pricing. (The three cards "Pancake is the revenue data warehouse." came off the page the
+ * same day, on the founder's word.)
  * The two layers stay the story: the data layer (the tables of companies and people, a datapoint
  * each time a signal lands) and, on top of it, the Brain, the context layer that makes the next
  * best Play possible (founder: "the brain is a context layer on top of a datalayer (enabling
@@ -19,8 +20,7 @@
  *
  * Rules kept: "your agent" is the visitor's own (Claude, Codex); no person is named and no real
  * company carries an invented fact; the founder's figure "30+ data providers" is written exactly
- * so. Vendors: the three tools of the stack Pancake replaces are named, without a figure
- * (founder 2026-11-11); a source or a kind of signal is shown with a tool's own mark.
+ * so. Vendors: a source or a kind of signal is shown with a tool's own mark.
  */
 
 import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
@@ -213,13 +213,14 @@ export const VISION_BOTTLE = {
  *  four of its stories; `story` is the story's id in the dive's registry (lp-dive-stages.ts). */
 export const VISION_FEATURES: {
   title: string;
-  items: readonly { story: "mcp" | "p-history" | "p-dedup" | "context"; title: string; body: string }[];
+  items: readonly { story: "mcp" | "p-history" | "p-dedup" | "ping"; title: string; body: string }[];
 } = {
   title: "What your agent can do with Pancake",
   items: [
     {
       story: "mcp",
-      title: "Run everything\nfrom your agent",
+      // the founder, 2026-11-11: "Run everything from Claude (not your agent)"
+      title: "Run everything\nfrom Claude",
       body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent reads every table and runs every Play, with about 100 tools.",
     },
     {
@@ -232,42 +233,12 @@ export const VISION_FEATURES: {
       title: "See one person as one record",
       body: "The same buyer is at your event, in your product and on a social profile, under three emails. Pancake keeps one record.",
     },
+    // its picture is your agent texting you first (lp-story-ping-data.ts), the founder's ask in
+    // place of the context story's schema
     {
-      story: "context",
+      story: "ping",
       title: "Get the next move\nbefore you ask",
       body: "The Brain learns from every reply and every deal. Your agent comes to you with the next account to work and the Play to run.",
-    },
-  ],
-};
-
-export type VisionWarehouseId = "builds" | "fresh" | "bill";
-
-/** what Pancake is, as three cards */
-export const VISION_WAREHOUSE: {
-  title: string;
-  cards: readonly { id: VisionWarehouseId; tone: VisionTone; title: string; body: string }[];
-} = {
-  title: "Pancake is the revenue data warehouse.",
-  cards: [
-    {
-      id: "builds",
-      tone: "yellow",
-      title: "Builds the tables.",
-      body: "Companies and people, from every source you connect. No pipeline for you to write.",
-    },
-    {
-      id: "fresh",
-      tone: "purple",
-      title: "Keeps them fresh.",
-      body: "A signal lands and a datapoint is added the same day. Past buyers are checked again as they move.",
-    },
-    // the meeting, 2026-11-11: "go all-in", Pancake replaces the stack with one simple interface
-    // ("one MCP"). The founder's call the same day: name the three tools, no figures.
-    {
-      id: "bill",
-      tone: "pink",
-      title: "Replaces the stack.",
-      body: "One MCP in place of Snowflake, Fivetran and Hightouch, and the time it takes to run them.",
     },
   ],
 };

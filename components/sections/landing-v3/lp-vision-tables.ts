@@ -90,9 +90,7 @@ export type DbTableData = {
 };
 
 const tag = (v: string, hit?: true): DbCellObj => ({ v, as: "tag", ...(hit ? { hit } : {}) });
-const ref = (v: string, hit?: true): DbCellObj => ({ v, as: "ref", ...(hit ? { hit } : {}) });
 const hit = (v: string): DbCellObj => ({ v, hit: true });
-const cut = (v: string): DbCellObj => ({ v, cut: true });
 
 /* ── hero: Pancake's companies table, and Claude at work on it (the curtain, LpVisionCurtain.tsx) ── */
 
@@ -239,57 +237,3 @@ export const DB_ARTIFACT: DbTableData = {
     { c: ["c_27d0", "Logistics", "1,200", "Follow up on the event"] },
   ],
 };
-
-/* ── what Pancake is: three cards ──────────────────────────────────────────── */
-
-export const DB_WAREHOUSE = {
-  builds: {
-    name: "tables",
-    meta: "built by Pancake",
-    cols: [
-      { name: "table", type: "text" },
-      { name: "rows", w: 78, end: true },
-      { name: "columns", w: 78, end: true },
-    ],
-    rows: [
-      { c: ["companies", "4,812", "24"] },
-      { c: ["people", "12,960", "18"] },
-      { c: ["employments", "14,377", "6"] },
-      { c: ["signals", "38,204", "9"] },
-      { c: ["datapoints", "212,640", "5"] },
-    ],
-  },
-  fresh: {
-    name: "signals",
-    meta: "added the same day",
-    cols: [
-      { name: "observed", w: 98 },
-      { name: "kind", type: "text" },
-      { name: "company_id", w: 90 },
-    ],
-    rows: [
-      { c: [hit("today 09:41"), hit("hiring SDRs"), ref("c_4f2a", true)], mark: "new" },
-      { c: ["today 08:15", "funding Series B", ref("c_91be")] },
-      { c: ["yesterday", "new VP Sales", ref("c_27d0")] },
-      { c: ["Mon", "headcount 200", ref("c_4f2a")] },
-      { c: ["Mon", "uses a rival tool", ref("c_5e18")] },
-    ],
-  },
-  /* the stack Pancake replaces, tool by tool (founder 2026-11-11: name the three, no figures) */
-  bill: {
-    name: "stack",
-    meta: "one MCP",
-    cols: [
-      { name: "job", type: "text" },
-      { name: "before", w: 84 },
-      { name: "now", w: 74 },
-    ],
-    rows: [
-      { c: ["Warehouse", cut("Snowflake"), "Pancake"] },
-      { c: ["Data in", cut("Fivetran"), "Pancake"] },
-      { c: ["Data out", cut("Hightouch"), "Pancake"] },
-      { c: ["Upkeep", cut("yours"), "Pancake"] },
-      { c: ["Interfaces", cut("3"), hit("1 MCP")], mark: "sum" },
-    ],
-  },
-} as const satisfies Record<string, DbTableData>;

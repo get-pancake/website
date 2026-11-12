@@ -90,6 +90,7 @@ const FILES = [
   "components/sections/landing-v3/lp-story-lineage-data.ts",
   "components/sections/landing-v3/LpStoryMcp.tsx",
   "components/sections/landing-v3/lp-story-mcp-data.ts",
+  "components/sections/landing-v3/lp-story-ping-data.ts",
   // testimonials / KPI bento (bento); its placeholder module stays out on purpose
   "components/sections/landing-v3/LpBento.tsx",
   "components/sections/landing-v3/lp-bento-data.ts",

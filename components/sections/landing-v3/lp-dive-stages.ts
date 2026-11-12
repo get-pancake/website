@@ -5,6 +5,7 @@ import type { gsap } from "@/lib/gsap";
 import { LpStoryContextStage } from "./LpStoryContext";
 import { LpStoryLineageStage } from "./LpStoryLineage";
 import { LpStoryMcpStage } from "./LpStoryMcp";
+import { LpStoryPingStage } from "./LpStoryPing";
 import {
   LpStoryDedupStage,
   LpStoryHistoryStage,
@@ -16,6 +17,7 @@ import { LpStorySignalsStage } from "./LpStorySignals";
 import { STORY_CONTEXT_ALT } from "./lp-story-context-data";
 import { STORY_LINEAGE_ALT } from "./lp-story-lineage-data";
 import { STORY_MCP_ALT } from "./lp-story-mcp-data";
+import { STORY_PING_ALT } from "./lp-story-ping-data";
 import { PROBLEM_SCENE, type ProblemStoryId } from "./lp-story-problems-data";
 import { STORY_SIGNALS_ALT } from "./lp-story-signals-data";
 
@@ -69,8 +71,9 @@ import { STORY_SIGNALS_ALT } from "./lp-story-signals-data";
 
 /** The four stories of the deep dive, and the five the vision homepage adds for its six hard
  *  problems (2026-11-11: one renderer and one builder for the five, LpStoryProblems.tsx and
- *  lp-story-problems-timeline.ts; the sixth problem, crossing, is "lineage"). */
-export type DiveItemId = "context" | "signals" | "lineage" | "mcp" | ProblemStoryId;
+ *  lp-story-problems-timeline.ts; the sixth problem, crossing, is "lineage"), and "ping", your
+ *  agent texting you first (the same page's feature "Get the next move before you ask"). */
+export type DiveItemId = "context" | "signals" | "lineage" | "mcp" | "ping" | ProblemStoryId;
 
 /** carousel order (the founder's four blocks, 2026-10-28) */
 export const DIVE_ORDER: readonly DiveItemId[] = ["context", "signals", "lineage", "mcp"];
@@ -120,6 +123,11 @@ export const DIVE_STAGES: Record<DiveItemId, DiveStageEntry> = {
     id: "mcp",
     Stage: LpStoryMcpStage,
     alt: STORY_MCP_ALT,
+  },
+  ping: {
+    id: "ping",
+    Stage: LpStoryPingStage,
+    alt: STORY_PING_ALT,
   },
   "p-sources": { id: "p-sources", Stage: LpStorySourcesAllStage, alt: PROBLEM_SCENE["p-sources"].alt },
   "p-dedup": { id: "p-dedup", Stage: LpStoryDedupStage, alt: PROBLEM_SCENE["p-dedup"].alt },

@@ -4,7 +4,7 @@
    card, the pricing and the footer are the designer's (hero.css, marquee.css, steps.css,
    banner.css, dive.css, sky.css, bento.css, cta.css, pricing.css): nothing of theirs is restated
    here. This file holds the window under the hero (the curtain), the 1-2-3's three pictures,
-   the three cards, and the real tables.
+   and the real tables.
    Pancake's tokens only: cream page, plum for a table's ground, the three pancake colours for
    the frames, Aeonik Condensed for the claims, Geist for the rest, the code face in tables.
    No glow, no blurred shadow but the designer's own. */
@@ -19,12 +19,6 @@
 }
 
 /* ── shared ── */
-.lp-v__inner {
-  margin-inline: auto;
-  max-width: 1080px;
-  width: 100%;
-}
-
 [data-tone="yellow"] {
   --lp-v-tone-10: var(--lp-yellow-10);
   --lp-v-tone-20: var(--lp-yellow-20);
@@ -1225,57 +1219,6 @@
   white-space: nowrap;
 }
 
-/* ── the three cards that follow the dive, on the designer's sky ── */
-/* a section's title: the designer's (.lp-title-section), centred, two even lines at most */
-.lp .lp-v__title {
-  margin: 0 auto;
-  max-width: 1040px;
-  text-align: center;
-  text-wrap: balance;
-}
-.lp-vsky {
-  background: var(--lp-sky);
-}
-.lp-vc {
-  padding: 96px 24px 0;
-}
-.lp-vware__grid {
-  display: grid;
-  gap: 24px;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  list-style: none;
-  margin: 56px 0 0;
-  padding: 0;
-}
-.lp-vware__pic {
-  align-items: center;
-  background: var(--lp-v-tone-20);
-  border-radius: 12px;
-  display: flex;
-  height: 248px;
-  margin-bottom: 20px;
-  padding: 20px;
-}
-.lp-vware__pic > .lp-db {
-  --db-row: 26px;
-  flex: 1;
-  font-size: 11.5px;
-}
-.lp .lp-vware__title {
-  font-family: var(--lp-font-sans);
-  font-size: var(--lp-text-md);
-  font-weight: 600;
-  line-height: 24px;
-  margin: 0;
-}
-.lp .lp-vware__body {
-  color: var(--lp-subtle-text);
-  font-size: 15px;
-  line-height: 22px;
-  margin-top: 6px;
-  max-width: 380px;
-}
-
 /* ── the pictures: real tables (LpVisionDb.tsx) ──
    A table as a database tool draws it: the bar with its name, a head with each column's name and
    type, numbered rows, every line of the grid, NULL where nothing is known. One typeface for the
@@ -1725,17 +1668,6 @@
     font-size: 14.5px;
     line-height: 22px;
   }
-  .lp-vc {
-    padding: 80px 24px 0;
-  }
-  .lp-vware__grid {
-    grid-template-columns: minmax(0, 1fr);
-    margin-top: 40px;
-  }
-  .lp-vware__pic {
-    height: auto;
-    padding: 24px;
-  }
 }
 @media (max-width: 767px) {
   /* a phone has no room to share: the two stack, in the same order. Claude on top (378 of the
@@ -1852,15 +1784,6 @@
   .lp-vcut .lp-db__state {
     margin-left: 6px;
   }
-  .lp-vc {
-    padding: 64px 16px 0;
-  }
-  /* the designer's phone size for a section title (the dive's) */
-  .lp .lp-v__title {
-    font-size: 35.559px;
-    letter-spacing: -1.067px;
-    line-height: 41px;
-  }
   /* a phone shows the columns that carry the point; the others are marked in the tables' data */
   .lp-db [data-hide~="phone"] {
     display: none;
@@ -1882,10 +1805,5 @@
   .lp .lp-db__bar,
   .lp .lp-db__foot {
     padding: 0 10px;
-  }
-  
-  
-  .lp-vware__pic {
-    padding: 14px;
   }
 }
