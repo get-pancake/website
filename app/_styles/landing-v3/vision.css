@@ -1301,9 +1301,10 @@
   font-size: 11px;
   font-weight: 600;
   gap: 4px;
-  height: 20px;
+  /* tall enough to cover what the cell above prints (its NULL), not to cut through it */
+  height: 24px;
   left: -1px;
-  line-height: 20px;
+  line-height: 24px;
   padding: 0 7px 0 6px;
   position: absolute;
   transition: opacity 0.25s ease;
