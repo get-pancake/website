@@ -23,14 +23,21 @@ export type DbCellObj = {
   hit?: true;
   /** a value that no longer holds, struck out */
   cut?: true;
-  /** a value that lands while the picture plays: NULL until then (the hero's table). The key is
-   *  the one the take lands it by (lp-vision-curtain-timeline.ts, `landing(key)`) */
+  /** a value that comes while the picture plays: NULL and the value share the cell (the hero's
+   *  table). The key is the one the take and the loop after it know the cell by
+   *  (lp-vision-curtain-timeline.ts: `<row>-signal`, `<row>-play`) */
   land?: string;
-  /** the agent working in this cell: its flag over the cell and its ring around it, as a grid
+  /** when such a value is not there. "take": NULL until the take lands it, the value at rest.
+   *  "rest": NULL at rest too, it comes once the loop runs. Unset: there all along (the loop can
+   *  still take it away and land it again) */
+  nil?: "take" | "rest";
+  /** the agent that works in this cell: its flag over the cell and its ring around it, as a grid
    *  shows a collaborator (the hero's table) */
   by?: string;
   /** a state the value takes once the agent has acted on it, printed after it (the hero's table) */
   state?: string;
+  /** the agent is not on this cell at rest: it comes to it once the loop runs */
+  idle?: true;
   /** a vendor's own mark before the value */
   logo?: string;
 };
@@ -63,6 +70,8 @@ export type DbRow = {
   mark?: "hit" | "new" | "cut" | "sum";
   /** the name the take knows the row by (the hero's table) */
   key?: string;
+  /** a marked row that is not lit at rest: it lights when the loop comes to it (the hero's table) */
+  dim?: true;
   /** what the row-number cell prints instead of the number */
   n?: string;
 };
@@ -96,21 +105,31 @@ export const DB_HERO_TABS = [
   { name: "signals", rows: "38,204" },
 ] as const;
 
-const land = (key: string, v: string): DbCellObj => ({ v, land: key });
+type Landing = Pick<DbCellObj, "nil" | "hit" | "idle">;
+/** a value that comes and goes (`land`) */
+const land = (key: string, v: string, more: Landing = {}): DbCellObj => ({ v, land: key, ...more });
+/** a row's signal, and its Play: the cell Claude works in */
+const signal = (row: string, v: string, more: Landing = {}) => land(`${row}-signal`, v, more);
+const play = (row: string, v: string, more: Landing = {}): DbCellObj => ({ ...land(`${row}-play`, v, more), by: "Claude", state: "live" });
 
 /** One row per company: what the outside says, what to do next, what you know. The four columns
- *  on the left are the ones on show beside Claude (the curtain rests at 56 % of the card: their
- *  widths add up to it); the three others sit under Claude until the curtain is slid.
+ *  on the left are the ones on show beside Claude (the curtain rests at 44 % of the card: their
+ *  widths add up to what is left); the three others are past the card's edge until the curtain is
+ *  slid.
  *  Rows a, b and c are the three accounts Claude names. Row a takes its signal and its Play while
- *  the take opens, then goes live when Claude runs the Play: Claude's flag is on that cell. The
- *  other keyed cells are datapoints that land later in the take (the database keeps working). */
+ *  the take opens, then goes live when Claude runs the Play: Claude's flag is on that cell.
+ *  m1 and m2 are datapoints that land while Claude answers (the database keeps working).
+ *  Then the loop: asked for the next best Play again and again, Claude goes b, c, p1, p2, p3, a
+ *  and round again. A row's signal and its Play land before its turn (p1, p2 and p3's Play are
+ *  NULL at rest), and a Play that has run is cleared before its row comes up again. On a phone
+ *  the table shows its first four rows: the loop keeps to a, b and c there. */
 export const DB_HERO: DbTableData = {
   name: "companies",
   numbered: true,
   cols: [
-    { name: "id", type: "pk", w: "7.4%", wm: "10.5%", wp: 60, src: "Key" },
+    { name: "id", type: "pk", w: "7.4%", wm: "9.5%", wp: 60, src: "Key" },
     { name: "industry", type: "text", w: "10.4%", src: "Profile", hide: "phone mid" },
-    { name: "signal", type: "text", w: "14.6%", wm: "17.5%", wp: 112, src: "Data providers" },
+    { name: "signal", type: "text", w: "14.6%", wm: "17%", wp: 112, src: "Data providers" },
     { name: "next_best_play", type: "text", w: "20.4%", wm: "21.5%", src: "The Brain" },
     { name: "crm_deal", type: "enum", w: "13.2%", wm: "17%", src: "Your CRM", hide: "phone" },
     { name: "last_touch", type: "text", w: "15%", wm: "auto", src: "Calls, events", hide: "phone" },
@@ -124,8 +143,8 @@ export const DB_HERO: DbTableData = {
       c: [
         "c_4f2a",
         "Fintech",
-        { v: "hiring SDRs", land: "a-signal", hit: true },
-        { v: "Reach back out", land: "a-play", hit: true, by: "Claude", state: "live" },
+        signal("a", "hiring SDRs", { nil: "take", hit: true }),
+        play("a", "Reach back out", { nil: "take", hit: true }),
         tag("closed_lost", true),
         null,
         "200",
@@ -134,22 +153,77 @@ export const DB_HERO: DbTableData = {
     {
       key: "b",
       mark: "hit",
-      c: ["c_91be", "Dev tools", hit("funding Series B"), hit("Send the pricing follow-up"), tag("open"), hit("asked pricing"), "40"],
+      c: [
+        "c_91be",
+        "Dev tools",
+        signal("b", "funding Series B", { hit: true }),
+        play("b", "Send the pricing follow-up", { hit: true, idle: true }),
+        tag("open"),
+        hit("asked pricing"),
+        "40",
+      ],
     },
     {
       key: "c",
       mark: "hit",
-      c: ["c_27d0", "Logistics", hit("new VP Sales"), hit("Follow up on the event"), null, hit("attended event"), "1,200"],
+      c: [
+        "c_27d0",
+        "Logistics",
+        signal("c", "new VP Sales", { hit: true }),
+        play("c", "Follow up on the event", { hit: true, idle: true }),
+        null,
+        hit("attended event"),
+        "1,200",
+      ],
     },
-    { c: ["c_d5a1", "Legal tech", land("e-signal", "new funding"), land("e-play", "Reach out on the round"), null, null, "60"] },
+    {
+      key: "p1",
+      mark: "hit",
+      dim: true,
+      c: [
+        "c_d5a1",
+        "Legal tech",
+        signal("p1", "new funding", { nil: "rest", hit: true }),
+        play("p1", "Reach out on the round", { nil: "rest", hit: true, idle: true }),
+        null,
+        null,
+        "60",
+      ],
+    },
     { c: ["c_a6c3", "Health tech", "headcount up", "Offer the team plan", tag("closed_won"), null, "310"] },
-    { c: ["c_5e18", "Retail", "uses a rival tool", land("t1-play", "Start with the comparison"), null, null, "2,400"] },
+    {
+      key: "p3",
+      mark: "hit",
+      dim: true,
+      c: [
+        "c_5e18",
+        "Retail",
+        signal("p3", "uses a rival tool", { hit: true }),
+        play("p3", "Start with the comparison", { nil: "rest", hit: true, idle: true }),
+        null,
+        null,
+        "2,400",
+      ],
+    },
     { c: ["c_c0d9", "Insurance", "new CMO", "Send the demo recap", null, "asked for a demo", "720"] },
-    { c: ["c_3b7e", "HR software", land("m1-signal", "headcount up"), null, tag("open"), null, "95"] },
-    { c: ["c_e214", "Security", land("t2-signal", "headcount up"), "Send the event recap", null, "attended event", "540"] },
+    { c: ["c_3b7e", "HR software", signal("m1", "headcount up", { nil: "take" }), null, tag("open"), null, "95"] },
+    { c: ["c_e214", "Security", signal("m2", "headcount up", { nil: "take" }), "Send the event recap", null, "attended event", "540"] },
     { c: ["c_77b2", "Travel", null, null, tag("closed_lost"), null, "140"] },
-    { c: ["c_1f6d", "Proptech", land("m2-signal", "new CRO"), land("m2-play", "Introduce yourself"), null, null, "55"] },
-    { c: ["c_9a40", "Gaming", land("t3-signal", "new funding"), land("t3-play", "Send the pricing follow-up"), tag("open"), "asked pricing", "180"] },
+    {
+      key: "p2",
+      mark: "hit",
+      dim: true,
+      c: [
+        "c_1f6d",
+        "Proptech",
+        signal("p2", "new CRO", { nil: "rest", hit: true }),
+        play("p2", "Introduce yourself", { nil: "rest", hit: true, idle: true }),
+        null,
+        null,
+        "55",
+      ],
+    },
+    { c: ["c_9a40", "Gaming", "new funding", "Send the pricing follow-up", tag("open"), "asked pricing", "180"] },
     { c: ["c_62ce", "Biotech", "uses a rival tool", null, null, null, "30"] },
     { c: ["c_b81e", "Media", "new funding", "Offer the team plan", tag("closed_won"), null, "420"] },
   ],

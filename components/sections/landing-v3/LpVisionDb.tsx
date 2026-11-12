@@ -51,8 +51,9 @@ function isCut(cell: DbCell) {
 function Cell({ cell }: { cell: DbCell }) {
   if (cell === null) return <span className="lp-db__null">NULL</span>;
   if (typeof cell === "string") return <>{cell}</>;
-  // NULL until the value lands (the hero's take): both are in the markup, on one spot, and the
-  // rest picture is the value. After it, the state the agent gave it; over it, the agent's flag.
+  // A value that comes while the picture plays (the hero's table): NULL and the value are both in
+  // the markup, on one spot (which one shows at rest: the cell's `nil`, vision.css). After it,
+  // the state the agent gave it; over it, the agent's flag.
   if (cell.land) {
     return (
       <>
@@ -143,7 +144,7 @@ export function DbTable({
         </thead>
         <tbody>
           {rows.map((row, r) => (
-            <tr key={r} data-mark={row.mark} data-row={row.key}>
+            <tr key={r} data-mark={row.mark} data-row={row.key} data-dim={row.dim ? "" : undefined}>
               {numbered ? <td className="lp-db__n">{row.n ?? r + 1}</td> : null}
               {row.c.map((cell, i) => (
                 <td
@@ -153,7 +154,10 @@ export function DbTable({
                   data-hit={isHit(cell) ? "" : undefined}
                   data-cut={isCut(cell) ? "" : undefined}
                   data-land={fields(cell)?.land}
+                  data-late={fields(cell)?.nil === "take" ? "" : undefined}
+                  data-void={fields(cell)?.nil === "rest" ? "" : undefined}
                   data-by={fields(cell)?.by ? "" : undefined}
+                  data-idle={fields(cell)?.idle ? "" : undefined}
                 >
                   <Cell cell={cell} />
                 </td>

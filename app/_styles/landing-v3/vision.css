@@ -50,48 +50,46 @@
   --lp-v-tone-30: var(--lp-pink-30);
   --lp-v-tone-40: var(--lp-pink-40);
 }
-/* ── the window under the hero: Pancake's table, Claude's window, a curtain (LpVisionCurtain.tsx) ──
+/* ── the window under the hero: Claude's window, Pancake's table, a curtain (LpVisionCurtain.tsx) ──
    In the demo film's slot: the section and the card are .lp-video's (video.css: 26 px under the
    hero, 1136 wide at most, the card's shadow, its place on the first screen; hero.css "Homepage
-   first screen"). Here: the card's own shape and its two layers.
-   --cut       where the curtain stands, % of the card from its left: Pancake's share. It is the
-               handle's (--cut-user) once the visitor has moved it, else the take's (--cut-auto),
-               else its rest (--vc-rest)
-   --vc-rest   where it rests. The table's four leading columns add up to it (lp-vision-tables.ts)
+   first screen"). Here: the card's own shape and its two layers. Claude is on the left, Pancake
+   on the right (founder 2026-11-11, his second word on it).
+   --cut       where the curtain stands, % of the card from its left: Claude's share. It is the
+               handle's (--cut-user) once the visitor has moved it, else its rest (--vc-rest)
+   --vc-rest   where it rests: what the table's row numbers (--vc-n) and its four leading columns
+               (52.8 % of the card, lp-vision-tables.ts) leave, less a pixel so that the fourth
+               column's own line shows at the card's edge
    --vc-bar, --vc-head, --vc-row   the table's lines; Claude's own bar is as tall as the table's
-   The take (lp-vision-curtain-timeline.ts) flips attributes on the table's pieces; the colours
-   they stand for are eased here. */
+   The take and the loop after it (lp-vision-curtain-timeline.ts) flip attributes on the table's
+   pieces; the colours they stand for are eased here. */
 .lp-vcut .lp-vcut__card {
   --vc-bar: 46px;
   --vc-head: 92px;
   --vc-row: 34px;
-  --vc-rest: 56%;
+  --vc-n: 42px;
+  --vc-rest: calc(47.2% - var(--vc-n) - 1px);
   --vc-pad: 24px;
   --vc-dock: 90px;
   --vc-chead: var(--vc-bar);
   --vc-claude: var(--lp-claude-spark);
-  --cut: var(--cut-user, var(--cut-auto, var(--vc-rest)));
+  --cut: var(--cut-user, var(--vc-rest));
   aspect-ratio: auto;
-  background: var(--lp-v-dark);
+  background: var(--lp-claude-bg);
   height: 602px;
   -webkit-user-select: none;
   user-select: none;
 }
-/* shut: the server's markup, and the take's first frame (what the first screen's peek shows).
-   The take lifts it (data-open); a take that could not be built (static) rests open */
-.lp-vcut .lp-vcut__card[data-shut]:not([data-open]):not([data-lp-anim="static"]) {
-  --cut-auto: 100%;
-}
-/* the take has slid the window in: its place is the rest again, whatever the take wrote (a
-   window resized afterwards keeps Claude's share right) */
-.lp-vcut .lp-vcut__card[data-rested] {
-  --cut-auto: initial !important;
-}
 
-/* under: Pancake's table, the card wide, no panel of its own */
+/* over: Pancake's table, a whole window as wide as the card, its leading columns on show to the
+   right of the curtain. It slides with it: pulled left it covers Claude and shows every column,
+   pushed right it leaves Claude's window bare */
 .lp-vcut__db {
+  background: var(--lp-v-dark);
   inset: 0;
   position: absolute;
+  transform: translateX(var(--cut));
+  z-index: 1;
 }
 .lp-vcut__dbar {
   align-items: center;
@@ -166,14 +164,16 @@
 .lp-vcut__db .lp-db tr[data-sourced] th {
   height: calc(var(--vc-head) - var(--vc-bar));
 }
+/* the row numbers: wide enough for the curtain's grip to sit clear of them */
 .lp-vcut__db .lp-db th.lp-db__n,
 .lp-vcut__db .lp-db td.lp-db__n {
-  width: 36px;
+  width: var(--vc-n);
 }
-/* the last column keeps clear of the card's edge: shut, half of the curtain's grip sits there */
+/* the last column keeps clear of the card's edge: pulled all the way over Claude, the table still
+   stands 3 % of the card to the right (the curtain's own width) */
 .lp-vcut__db .lp-db th:last-child,
 .lp-vcut__db .lp-db td:last-child {
-  padding-right: 32px;
+  padding-right: 48px;
 }
 /* the take's states on the table. A datapoint that lands: the take drives the two values' opacity
    itself; the column's source lights, the cell flashes (fast in, slow out) */
@@ -192,28 +192,27 @@
     color 0.3s ease,
     box-shadow 0.25s ease;
 }
-/* a row Claude has not named yet: as any other row (the moment before the take, too) */
-.lp-vcut .lp-db tr[data-unlit] td,
-.lp-vcut__card[data-live="0"]:not([data-lp-anim="static"]) .lp-db tr[data-mark="hit"] td {
+/* a row Claude has not named yet: as any other row (data-dim: a row the loop only comes to
+   later, in the server's picture; the take swaps it for its own data-unlit) */
+.lp-vcut .lp-db tr:is([data-unlit], [data-dim]) td {
   background-color: transparent;
   color: var(--db-cell);
 }
-.lp-vcut .lp-db tr[data-unlit] td.lp-db__n,
-.lp-vcut__card[data-live="0"]:not([data-lp-anim="static"]) .lp-db tr[data-mark="hit"] td.lp-db__n {
+.lp-vcut .lp-db tr:is([data-unlit], [data-dim]) td.lp-db__n {
   box-shadow: none;
   color: var(--db-text-3);
 }
-.lp-vcut .lp-db tr[data-unlit] td[data-hit] .lp-db__tag,
-.lp-vcut__card[data-live="0"]:not([data-lp-anim="static"]) .lp-db td[data-hit] .lp-db__tag {
+.lp-vcut .lp-db tr:is([data-unlit], [data-dim]) td[data-hit] .lp-db__tag {
   box-shadow: inset 0 0 0 1px var(--db-line-2);
 }
 .lp-vcut .lp-db td[data-flash] {
   background-color: color-mix(in srgb, var(--db-hit) 26%, transparent);
   transition-duration: 0.12s, 0.3s, 0.25s;
 }
-/* the rows Claude's read came back with: its ring around the three (a on top, c at the bottom) */
+/* the rows Claude's read came back with: its ring around the three (a on top, c at the bottom).
+   Its left side is a pixel thicker: the curtain's own line stands on the table's first pixel */
 .lp-vcut .lp-db tr[data-sel] td.lp-db__n {
-  box-shadow: inset 1.5px 0 0 var(--vc-claude);
+  box-shadow: inset 2.5px 0 0 var(--vc-claude);
 }
 .lp-vcut .lp-db tr[data-sel] td:last-child {
   box-shadow: inset -1.5px 0 0 var(--vc-claude);
@@ -224,7 +223,7 @@
 .lp-vcut .lp-db tr[data-sel][data-row="a"] td.lp-db__n {
   box-shadow:
     inset 0 1.5px 0 var(--vc-claude),
-    inset 1.5px 0 0 var(--vc-claude);
+    inset 2.5px 0 0 var(--vc-claude);
 }
 .lp-vcut .lp-db tr[data-sel][data-row="a"] td:last-child {
   box-shadow:
@@ -237,7 +236,7 @@
 .lp-vcut .lp-db tr[data-sel][data-row="c"] td.lp-db__n {
   box-shadow:
     inset 0 -1.5px 0 var(--vc-claude),
-    inset 1.5px 0 0 var(--vc-claude);
+    inset 2.5px 0 0 var(--vc-claude);
 }
 .lp-vcut .lp-db tr[data-sel][data-row="c"] td:last-child {
   box-shadow:
@@ -245,9 +244,9 @@
     inset -1.5px 0 0 var(--vc-claude);
 }
 
-/* over: Claude's window, as the page's Claude scene draws it (demo.css "Claude & Codex view": its
+/* under: Claude's window, as the page's Claude scene draws it (demo.css "Claude & Codex view": its
    ground, its composer, its bubble, its serif, a white card per tool call). As wide as the card,
-   the conversation in its left part; it slides with the curtain */
+   the conversation in its left part, the view Claude drew beside it; it does not move */
 .lp-vcut__claude {
   background: var(--lp-claude-bg);
   color: var(--lp-claude-ink);
@@ -256,8 +255,6 @@
   inset: 0;
   line-height: 20px;
   position: absolute;
-  transform: translateX(var(--cut));
-  z-index: 1;
 }
 /* the conversation: as wide as Claude's share of the card at rest */
 .lp-vcut__col {
@@ -265,7 +262,7 @@
   left: 0;
   position: absolute;
   top: 0;
-  width: calc(100% - var(--vc-rest));
+  width: var(--vc-rest);
 }
 /* the window's bar: its rule runs the whole window (the view beside the conversation is under it) */
 .lp-vcut__claude::before {
@@ -600,18 +597,18 @@
   stroke-width: 0.873403;
   width: 16px;
 }
-/* the view Claude drew from the rows, beside the conversation: on show once the window is pulled
-   over the table (as far left as the handle goes, 3 %) */
+/* the view Claude drew from the rows, beside the conversation: on show once the table is pushed
+   off it (as far right as the handle goes, 97 %) */
 .lp-vcut__art {
   background: var(--lp-claude-card);
   border-radius: 12px;
   box-shadow: inset 0 0 0 1px var(--lp-claude-ink-08);
   box-sizing: border-box;
-  left: calc(100% - var(--vc-rest) + 4px);
+  left: calc(var(--vc-rest) + 4px);
   padding: 0 16px 16px;
   position: absolute;
   top: calc(var(--vc-chead) + 16px);
-  width: calc(var(--vc-rest) - 3% - 28px);
+  width: calc(97% - var(--vc-rest) - 28px);
 }
 .lp .lp-vcut__art-h {
   align-items: center;
@@ -694,11 +691,42 @@
   outline: 2px solid var(--lp-purple-30);
   outline-offset: 2px;
 }
-/* reduced motion: the END, the window at its rest, nothing eased */
-@media (prefers-reduced-motion: reduce) {
-  .lp-vcut .lp-vcut__card[data-shut]:not([data-open]):not([data-lp-anim="static"]) {
-    --cut-auto: initial;
+/* The moment before the take, from the first paint: a new chat in Claude's window, the table before
+   its signal (the take's own first frame, so nothing changes when the code arrives; the card's top
+   shows on the first screen). The server's markup carries data-pre; the take lifts it once its
+   first frame is set (data-open), and a take that could not be built rests on the END (static).
+   Only where a take can play: with script, and with motion allowed. Elsewhere, and in a browser
+   that does not know the `scripting` query, the END stands from the first paint. */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) :is(.lp-vcut__thread, .lp-vcut__art, .lp-vcut__ph[data-n="2"]) {
+    visibility: hidden;
   }
+  .lp .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) :is(.lp-vcut__greet, .lp-vcut__ph[data-n="1"]) {
+    opacity: 1;
+    visibility: visible;
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db tr[data-mark="hit"] td {
+    background-color: transparent;
+    color: var(--db-cell);
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db tr[data-mark="hit"] td.lp-db__n {
+    box-shadow: none;
+    color: var(--db-text-3);
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db td[data-hit] .lp-db__tag {
+    box-shadow: inset 0 0 0 1px var(--db-line-2);
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) td[data-late] .lp-db__was {
+    opacity: 0.72;
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) td[data-late] .lp-db__now,
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db td[data-by]::after,
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) :is(.lp-db__by, .lp-db__state) {
+    opacity: 0;
+  }
+}
+/* reduced motion: the END, nothing eased */
+@media (prefers-reduced-motion: reduce) {
   .lp-vcut .lp-db td,
   .lp-vcut .lp-db__src,
   .lp-vcut__tabs li {
@@ -1246,9 +1274,9 @@
   vertical-align: 1px;
   width: 6px;
 }
-/* a value that lands while the picture plays (the hero's table): NULL and the value on one spot,
-   the value at rest. The host's data-live="0" is the moment before, until the take sets its own
-   first frame (never kept by a take that could not be built: static) */
+/* a value that comes while the picture plays (the hero's table): NULL and the value on one spot.
+   At rest it is the value, or NULL where the cell says so (data-void: a value that only comes
+   once the loop runs) */
 .lp-db__lands {
   display: inline-grid;
   max-width: 100%;
@@ -1266,10 +1294,10 @@
 .lp-db__lands .lp-db__was {
   opacity: 0;
 }
-[data-live="0"]:not([data-lp-anim="static"]) .lp-db__lands .lp-db__was {
+.lp-db td[data-void] .lp-db__was {
   opacity: 0.72;
 }
-[data-live="0"]:not([data-lp-anim="static"]) .lp-db__lands .lp-db__now {
+.lp-db td[data-void] .lp-db__now {
   opacity: 0;
 }
 /* the agent working in a cell, as a shared canvas shows who works where (Mobbin: MagicPath's
@@ -1279,8 +1307,13 @@
    (data-noflag lifted), then the ring (data-noring), then the state it gave the value
    (data-nostate) */
 .lp-db td[data-by] {
+  --db-state: 48px;
   overflow: visible;
   position: relative;
+}
+/* (while its state is on show the value leaves room for it, so a long one is cut before it) */
+.lp-db td[data-by]:not([data-nostate], [data-idle]) .lp-db__lands {
+  max-width: calc(100% - var(--db-state));
 }
 .lp-db td[data-by]::after {
   border: 1.5px solid var(--lp-claude-spark);
@@ -1338,12 +1371,13 @@
   height: 6px;
   width: 6px;
 }
+/* (data-idle: a cell the agent only comes to once the loop runs: nothing of it at rest) */
 .lp-db td[data-noring]::after,
 .lp-db td[data-noflag] .lp-db__by,
 .lp-db td[data-nostate] .lp-db__state,
-[data-live="0"]:not([data-lp-anim="static"]) .lp-db td[data-by]::after,
-[data-live="0"]:not([data-lp-anim="static"]) .lp-db__by,
-[data-live="0"]:not([data-lp-anim="static"]) .lp-db__state {
+.lp-db td[data-idle]::after,
+.lp-db td[data-idle] .lp-db__by,
+.lp-db td[data-idle] .lp-db__state {
   opacity: 0;
 }
 .lp-db__logo {
@@ -1462,16 +1496,29 @@
 @media (max-width: 1024px) {
   /* a tablet's card: fewer columns (their tablet widths), a narrower conversation, its short
      forms */
+  /* (the three leading columns a tablet shows: 48 % of the card; its grip is smaller, so the
+     row numbers keep their own width) */
   .lp-vcut .lp-vcut__card {
-    --vc-rest: 54%;
+    --vc-n: 36px;
+    --vc-rest: calc(52% - var(--vc-n) - 1px);
     --vc-pad: 20px;
   }
   .lp-vcut [data-hide~="mid"],
   .lp-vcut__size,
   .lp-vcut__model,
   .lp-vcut__tool-t i,
-  .lp-vcut__tool-t [data-full] {
+  .lp-vcut__tool-t [data-full],
+  .lp-vcut .lp-db__state span {
     display: none;
+  }
+  /* the state a value takes: its dot alone (the cell has no room for the word) */
+  .lp-vcut .lp-db td[data-by] {
+    --db-state: 14px;
+  }
+  .lp-vcut .lp-db__state {
+    box-shadow: none;
+    margin-left: 7px;
+    padding: 0;
   }
   .lp-vcut__tool-t [data-short] {
     display: inline;
@@ -1544,18 +1591,18 @@
   }
 }
 @media (max-width: 767px) {
-  /* a phone has no room to share: the two stack. The table on top (its bar, its head, four
-     rows: 220 of the card's 600 px), Claude a sheet under it that rises where the window slides
-     in on a desktop; the sheet's view is tall enough for the whole of Claude's list in the END.
-     No curtain: --cut is the take's alone, and it is the sheet's top */
+  /* a phone has no room to share: the two stack, in the same order. Claude on top (380 of the
+     card's 600 px: its view is tall enough for the whole of its list in the END), the table a
+     sheet under it (its bar, its head, four rows: 220 px). No curtain: --cut is the sheet's top */
   .lp-vcut .lp-vcut__card {
     --vc-bar: 42px;
     --vc-head: 84px;
-    --vc-rest: 36.7%;
+    --vc-n: 24px;
+    --vc-rest: 63.3%;
     --vc-pad: 14px;
     --vc-dock: 82px;
     --vc-chead: 38px;
-    --cut: var(--cut-auto, var(--vc-rest));
+    --cut: var(--vc-rest);
     height: 600px;
   }
   .lp-vcut__dbar {
@@ -1579,13 +1626,13 @@
   .lp-vcut .lp-db th {
     width: var(--wp, auto);
   }
-  .lp-vcut__claude {
+  .lp-vcut__db {
     border-radius: 16px 16px 0 0;
     transform: translateY(var(--cut));
   }
   .lp-vcut__col {
     bottom: auto;
-    height: calc(100% - var(--vc-rest));
+    height: var(--vc-rest);
     width: 100%;
   }
   .lp-vcut__handle,
@@ -1654,14 +1701,8 @@
     height: 30px;
     width: 30px;
   }
-  /* the state a value takes: its dot alone (the cell has no room for the word) */
   .lp-vcut .lp-db__state {
-    box-shadow: none;
     margin-left: 6px;
-    padding: 0;
-  }
-  .lp-vcut .lp-db__state span {
-    display: none;
   }
   .lp-vc {
     padding: 64px 16px 0;

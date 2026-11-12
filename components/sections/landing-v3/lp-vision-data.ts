@@ -35,8 +35,8 @@
  */
 export const VISION_CURTAIN = {
   label:
-    "Pancake’s companies table takes a new signal and writes the next best Play. Beside it Claude, connected to Pancake, answers which accounts to work now, then runs the first Play: its row goes live.",
-  handle: "Slide between Pancake and Claude",
+    "Claude, connected to Pancake, answers which accounts to work now, then runs the first Play. Beside it, Pancake’s companies table takes each new signal, writes the next best Play and shows it go live. Asked again, Claude runs the next best Play, and the next.",
+  handle: "Slide between Claude and Pancake",
   pancake: "Pancake",
   claude: "Claude",
   /* Claude's own chrome, the Claude scene's words (lp-demo-data.ts) */
@@ -63,12 +63,31 @@ export const VISION_CURTAIN = {
     { who: "Dev tools", size: "40 people", why: "Asked pricing, just funded." },
     { who: "Logistics", size: "1,200 people", why: "Your event, new VP Sales." },
   ],
-  next: "Want me to run the first Play?",
+  /** it was "Want me to run the first Play?" until the founder found it hard to get (2026-11-11):
+   *  the line now says what will be done, and to whom */
+  next: "Want me to reach back out to Fintech?",
   /* the second exchange: Claude acts, and the table shows it */
   go: "Yes, run it.",
   /** `name` is the Play of the first account (the table's next_best_play, DB_HERO row a) */
   run: { title: "Run Play", name: "Reach back out", doing: "Starting…", done: "Live" },
   done: "Done. The Play is live.",
+  /* After the take, for as long as the card is on screen (founder 2026-11-11: "Je prolongerai les
+     animations en mode endless loop: What's the next best Play to run?"): the same question, and
+     each time the next account. One answer a row of the hero's table (DB_HERO's keys), in the
+     order Claude goes through them. The sentence opens on the Play's own name, read from the
+     row's cell; `to` ends it, `why` is the reason. */
+  loop: {
+    ask: "What’s the next best Play to run?",
+    go: "Run it.",
+    turns: [
+      { row: "b", to: "to Dev tools.", why: "They asked pricing and just raised." },
+      { row: "c", to: "with Logistics.", why: "They came to your event and have a new VP Sales." },
+      { row: "p1", to: "to Legal tech.", why: "They just raised a round." },
+      { row: "p2", to: "to Proptech.", why: "Their new CRO just started." },
+      { row: "p3", to: "for Retail.", why: "They use a rival tool." },
+      { row: "a", to: "to Fintech.", why: "You lost the deal, and they are hiring SDRs." },
+    ],
+  },
   /* Claude's own view of the three accounts, beside the conversation once the curtain is slid left */
   artifact: "Accounts to work now",
   artifactFrom: "From Pancake",

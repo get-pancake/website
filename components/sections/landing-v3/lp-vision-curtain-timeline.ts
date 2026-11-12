@@ -7,20 +7,19 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
 
 /**
  * The take of the window under the vision homepage's hero (LpVisionCurtain.tsx, 2026-11-11):
- * Pancake's table on the left, Claude on the right, both at work (founder: "J'animerai Claude et
+ * Claude on the left, Pancake's table on the right, both at work (founder: "J'animerai Claude et
  * la database pour montrer que c'est dynamique").
  *
- *   1.4   a signal lands in the table (NULL becomes a value, the signals' count ticks), and the
+ *   0     Claude's window is there from the first frame, a new chat in it (founder: "le rideau
+ *         Claude s'ouvre un peu tard, les gens auront deja scroll down": nothing slides in)
+ *   0.6   a signal lands in the table (NULL becomes a value, the signals' count ticks), and the
  *         Brain writes its next best Play: the database works before anyone asks
- *   2.55  Claude's window slides in over the table's right columns
- *   3.45  the question is typed in Claude's composer (38 ms a glyph), held, sent: the bubble
- *   5.6   one tool call: Claude reads the three tables (their tabs take Claude's ring in turn);
+ *   1.5   the question is typed in Claude's composer (38 ms a glyph), held, sent: the bubble
+ *   3.7   one tool call: Claude reads the three tables (their tabs take Claude's ring in turn);
  *         done, its flag and its ring are on the three rows that came back
- *   6.9   the answer streams a word at a time; each account's row lights as Claude names it
- *   10.1  "Yes, run it." is typed and sent; the Play's tool call starts and Claude's ring closes
+ *   5.0   the answer streams a word at a time; each account's row lights as Claude names it
+ *   8.0   "Yes, run it." is typed and sent; the Play's tool call starts and Claude's ring closes
  *         on the one cell; done, the cell is live
- *   13.5  another signal lands, the Brain writes its Play; three more datapoints land over the
- *         next seconds (the table keeps working once Claude is done)
  *
  * The contract of the page's timelines (lp-step-timelines.ts, the dive's stories): the server
  * markup is the END picture; every piece is looked up and measured BEFORE anything is written (a
@@ -38,13 +37,11 @@ import { registerTxtPlugin } from "./lp-gsap-txt";
 type Timeline = gsap.core.Timeline;
 export type BuiltCurtain = { tl: Timeline; cleanup: () => void; cue: number };
 
-/* the take, seconds. The table is held 1.4 s before its first datapoint (the page's rule for an
-   opening picture: read first, then it moves) */
-const LAND_A = 1.4;
-const BRAIN_A = 1.95;
-const OPEN = 2.55;
-const OPEN_DUR = 0.7;
-const TYPE_1 = 3.45;
+/* the take, seconds. Something moves within a second (the table's first datapoint), and the
+   question waits until both sides have been seen (the page's rule for a typed prompt) */
+const LAND_A = 0.6;
+const BRAIN_A = 1.15;
+const TYPE_1 = 1.5;
 /** one glyph every 38 ms (the page's pace for a typed request), a held beat before it is sent */
 const DT = 0.038;
 const TYPED_HOLD = 0.4;
@@ -56,8 +53,11 @@ const FLASH = 0.55;
 /** the attributes the take flips (vision.css reads them); cleared when the take is torn down */
 const FLAGS = ["data-unlit", "data-sel", "data-flash", "data-lit", "data-read", "data-noflag", "data-noring", "data-nostate"] as const;
 type Flag = (typeof FLAGS)[number];
-/** on the card itself: the window is in, its place is the stylesheet's rest */
-const RESTED = "data-rested";
+/* The server's picture holds back what only the loop shows (vision.css): a cell Claude is not
+   on yet (data-idle), a row not lit yet (data-dim). The take swaps each for its own flags, which
+   it can lift; they are put back when it is torn down. */
+const IDLE = "data-idle";
+const DIM = "data-dim";
 
 /* Seek-safe attribute flips, as lp-gsap-txt's text swap: `flagOn` has the attribute at/after its
    position and not before, `flagOff` the reverse. Explicit both ways, so a seek in either
@@ -102,20 +102,24 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     const td = $<HTMLTableCellElement>(`.lp-vcut__db td[data-land="${key}"]`);
     return { td, was: $(".lp-db__was", td), now: $(".lp-db__now", td), th: headRow.cells[td.cellIndex] as HTMLElement | undefined };
   };
+  /** the values the take lands: row a's signal and its Play, then two datapoints further down */
   const lands = {
     aSignal: landing("a-signal"),
     aPlay: landing("a-play"),
     m1: landing("m1-signal"),
-    m2Signal: landing("m2-signal"),
-    m2Play: landing("m2-play"),
-    eSignal: landing("e-signal"),
-    ePlay: landing("e-play"),
-    t1: landing("t1-play"),
-    t2: landing("t2-signal"),
-    t3Signal: landing("t3-signal"),
-    t3Play: landing("t3-play"),
+    m2: landing("m2-signal"),
   };
-  const byCell = $(".lp-vcut__db td[data-by]");
+  /** every value that can come and go, with where it stands in the take: not there yet (late:
+      the take lands it; void: only the loop does), or there all along */
+  const cells = $$<HTMLTableCellElement>(".lp-vcut__db td[data-land]").map((td) => ({
+    was: $(".lp-db__was", td),
+    now: $(".lp-db__now", td),
+    there: !td.hasAttribute("data-late") && !td.hasAttribute("data-void"),
+  }));
+  /** the cell Claude works in during the take (row a's Play), and those it only comes to later */
+  const byCell = $(`.lp-vcut__db td[data-by]:not([${IDLE}])`);
+  const idleCells = $$(`.lp-vcut__db td[data-by][${IDLE}]`);
+  const dimRows = $$(`.lp-vcut__db tr[${DIM}]`);
   // Claude's side
   const col = $(".lp-vcut__col");
   const view = $(".lp-vcut__view");
@@ -145,7 +149,6 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const art = $(".lp-vcut__art");
 
   /* ── the geometry, read on the untouched END layout ── */
-  const rest = getComputedStyle(card).getPropertyValue("--vc-rest").trim() || "56%";
   const glyphs: Glyph[][] = typed.map(measureGlyphs);
   const viewH = view.clientHeight;
   // the thread's END place is its bottom on the view's: `over` of it is above the view's top
@@ -180,18 +183,22 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   registerTxtPlugin();
   registerFlagPlugins();
 
-  /* ── frame 0: the table alone, before the signal; Claude's window shut, a new chat in it ── */
+  /* ── frame 0: a new chat in Claude's window, the table before its signal ── */
   const set = gsap.set;
   const flag = (el: Element, name: Flag) => set(el, { flagOn: name });
-  set(card, { "--cut-auto": "100%" });
-  for (const land of Object.values(lands)) {
-    set(land.was, { opacity: 0.72 });
-    set(land.now, { opacity: 0 });
+  for (const cell of cells) {
+    set(cell.was, { opacity: cell.there ? 0 : 0.72 });
+    set(cell.now, { opacity: cell.there ? 1 : 0 });
   }
-  rows.forEach((row) => flag(row, "data-unlit"));
-  flag(byCell, "data-noflag");
-  flag(byCell, "data-noring");
-  flag(byCell, "data-nostate");
+  [...rows, ...dimRows].forEach((row) => flag(row, "data-unlit"));
+  for (const cell of [byCell, ...idleCells]) {
+    flag(cell, "data-noflag");
+    flag(cell, "data-noring");
+    flag(cell, "data-nostate");
+  }
+  // (the take's own flags are on: the server's stand-ins for them go)
+  idleCells.forEach((cell) => cell.removeAttribute(IDLE));
+  dimRows.forEach((row) => row.removeAttribute(DIM));
   set(greet, { autoAlpha: 1, y: 0 });
   set(thread, { y: over });
   set(bubbles[0], { autoAlpha: 0, x: lifts[0].x, y: lifts[0].y });
@@ -212,9 +219,8 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   set(caret, { opacity: 1, x: 0, y: 0 });
   set(send, { opacity: 0.45, scale: 1 });
   set(art, { autoAlpha: 0 });
-  // the take's own frame is in place: the component's stand-ins for it go
+  // the take's own frame is in place: the stylesheet's stand-in for it goes (data-pre, vision.css)
   card.setAttribute("data-open", "");
-  card.removeAttribute("data-live");
 
   /* ── the take ── */
   const tl = gsap.timeline({ paused: true });
@@ -294,11 +300,6 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   landAt(lands.aSignal, LAND_A, true);
   landAt(lands.aPlay, BRAIN_A, false);
 
-  // Claude's window slides in. Once it is in, its place is the stylesheet's rest again (the flag
-  // lifts the take's own value: vision.css), so a window resized later keeps the right share
-  tl.to(card, { "--cut-auto": rest, duration: OPEN_DUR, ease: "power3.out" }, OPEN);
-  step(card, { flagOn: RESTED }, OPEN + OPEN_DUR + 0.01);
-
   // the question
   const typed1 = type(0, TYPE_1);
   landAt(lands.m1, TYPE_1 + 0.75, true);
@@ -322,9 +323,8 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   tl.to(art, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, t);
   const asked = stream(says[1], t + 0.1, scrolls.say2);
 
-  // (the table goes on: a signal and its Play, lower down)
-  landAt(lands.m2Signal, asked + 0.15, true);
-  landAt(lands.m2Play, asked + 0.7, false);
+  // (the table goes on: another signal, lower down)
+  landAt(lands.m2, asked + 0.15, true);
 
   // "Yes, run it."
   const TYPE_2 = asked + 0.8;
@@ -339,14 +339,8 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   off(byCell, "data-nostate", ran + 0.06);
   pulse(byCell, "data-flash", ran + 0.06, FLASH);
   const done = stream(says[2], ran + 0.4, scrolls.say3);
-
-  // the table keeps working: another signal and its Play, then three datapoints further down
-  landAt(lands.eSignal, done + 0.55, true);
-  landAt(lands.ePlay, done + 1.1, false);
-  landAt(lands.t1, done + 3.2, false);
-  landAt(lands.t2, done + 5.4, true);
-  landAt(lands.t3Signal, done + 7.6, true);
-  landAt(lands.t3Play, done + 8.15, false);
+  // (a beat on the finished picture before the take is over)
+  step(card, {}, done + 0.6);
 
   return {
     tl,
@@ -354,7 +348,8 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     cleanup() {
       // the server's picture: none of the take's attributes
       for (const name of FLAGS) card.querySelectorAll(`[${name}]`).forEach((el) => el.removeAttribute(name));
-      card.removeAttribute(RESTED);
+      idleCells.forEach((cell) => cell.setAttribute(IDLE, ""));
+      dimRows.forEach((row) => row.setAttribute(DIM, ""));
     },
   };
 }

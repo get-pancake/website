@@ -13,35 +13,41 @@ import { DB_ARTIFACT, DB_HERO, DB_HERO_TABS } from "./lp-vision-tables";
  * The window under the hero (2026-11-11), in the demo film's slot (the .lp-video section and
  * card: the same place, width and first-screen peek, video.css + hero.css). The founder: "un
  * espece de petit rideau qu'on peut deglisser a droite a gauche qui montre Claude d'un cote et
- * l'infra de l'autre", to show that Claude runs on Pancake; then: "Je mettrai Pancake a gauche et
- * Claude a droite. J'animerai Claude et la database pour montrer que c'est dynamique."
+ * l'infra de l'autre", to show that Claude runs on Pancake; "J'animerai Claude et la database
+ * pour montrer que c'est dynamique"; and, his last word on the sides: "Claude sur la gauche
+ * finalement et Pancake sur la droite".
  *
- * The picture is a known one (Mobbin: Rows' AI Analyst and Twenty's assistant, a chat docked on
- * the right of a table).
+ * The picture is a known one (Mobbin: Canva's sheet, its AI panel docked on the left of the
+ * grid it works on).
  *
  * Two layers on one card:
- *   under   Pancake's companies table, the whole card wide (LpVisionDb's real table)
- *   over    Claude's window, drawn as the page's Claude scene draws it (LpClaudeScene: the
+ *   under   Claude's window, drawn as the page's Claude scene draws it (LpClaudeScene: the
  *           greeting, the composer with its Pancake connector, the bubble, one white card per
- *           tool call, the serif answer). It is a whole window as wide as the card, its
- *           conversation on its left, and it SLIDES: --cut is where its left edge stands. At rest
- *           the conversation is on show beside the table's first columns; pulled left, the window
- *           covers the table and shows the view Claude drew; pushed right, the table is bare.
- * On a phone the two stack: the table on top, Claude a sheet under it (no curtain there: 358 px is
- * too narrow to share).
+ *           tool call, the serif answer). The card wide: its conversation on the left, the view
+ *           Claude drew beside it.
+ *   over    Pancake's companies table (LpVisionDb's real table), a whole window as wide as the
+ *           card, and it SLIDES: --cut is where its left edge stands. At rest its four leading
+ *           columns are on show beside the conversation; pulled left it covers Claude and shows
+ *           every column; pushed right, Claude's window is bare, its view on show.
+ * On a phone the two stack in the same order: Claude on top, the table a sheet under it (no
+ * curtain there: 358 px is too narrow to share).
  *
  * One take plays once (lp-play-once: prepared ahead, played when the card's top crosses 60 % of
- * the window, the picture on fly-by, never twice): lp-vision-curtain-timeline.ts. A signal lands
- * in the table and the Brain writes its Play; Claude's window slides in; the question is typed
- * and sent; Claude reads the tables and names three accounts while their rows light; told to, it
- * runs the first Play and the row goes live under its flag; the table keeps taking datapoints.
- * The server markup is the END picture, with the window shut (data-shut): the card's top peeks
- * over the first screen's fold, and a shut window is what the take's first frame shows there, so
- * nothing moves on the first screen when the code arrives. Without script (the <noscript> below)
- * and under reduced motion (vision.css) the END rests with the window at its rest.
+ * the window, the picture on fly-by, never twice): lp-vision-curtain-timeline.ts. Both windows
+ * are there from the first frame (founder: "le rideau Claude s'ouvre un peu tard, les gens auront
+ * deja scroll down"). A signal lands in the table and the Brain writes its Play; the question is
+ * typed and sent; Claude reads the tables and names three accounts while their rows light; told
+ * to, it runs the first Play and the row goes live under its flag. Then the loop, for as long as
+ * the card is on screen (founder: "Je prolongerai les animations en mode endless loop"): asked
+ * for the next best Play, Claude names the next account and runs it, again and again, while the
+ * table keeps taking signals. It is this card's one exception to "plays once, nothing loops".
+ * The server markup is the END picture; from the first paint the stylesheet shows the take's
+ * first frame instead where a take can play (data-pre, vision.css: the card's top peeks over the
+ * first screen's fold, so nothing changes there when the code arrives). Without script and under
+ * reduced motion the END stands.
  *
- * --cut is var(--cut-user, var(--cut-auto, var(--vc-rest))): the take writes --cut-auto, the
- * handle writes --cut-user and from then on the curtain is the visitor's (the take plays on).
+ * --cut is var(--cut-user, var(--vc-rest)): the handle writes --cut-user and from then on the
+ * curtain is the visitor's (the take and the loop play on).
  * Copy: lp-vision-data.ts VISION_CURTAIN; rows: lp-vision-tables.ts DB_HERO.
  */
 
@@ -49,12 +55,10 @@ import { DB_ARTIFACT, DB_HERO, DB_HERO_TABS } from "./lp-vision-tables";
 const MIN = 3;
 const MAX = 97;
 /** where it rests, for the slider's first value (vision.css --vc-rest) */
-const REST = 56;
+const REST = 44;
 /** a page opened with the card's top above this share of the window has it in front of the
     visitor already: it rests on its END (lp-play-once `seenAbove`) */
 const SEEN_ABOVE = 0.45;
-
-const NOSCRIPT_CSS = "<style>.lp-vcut__card[data-shut]{--cut-auto:initial!important}</style>";
 
 /** The take measures what it types and how tall Claude's lines are: it is built once the faces
     they are set in have arrived (the serif is fetched when its first line renders), or after
@@ -112,10 +116,9 @@ export function LpVisionCurtain() {
     if (!el) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const seen = el.getBoundingClientRect().top < window.innerHeight * SEEN_ABOVE;
-    // the END at its rest, or the moment before the take until its own first frame is set (the
-    // builder lifts data-live and sets data-open)
+    // already in front of the visitor: the END, at once. Else the stylesheet's stand-in for the
+    // take's first frame holds (data-pre) until the builder has set that frame and lifts it
     if (reduced || seen) el.setAttribute("data-open", "");
-    else el.setAttribute("data-live", "0");
     const unmount = mountPlayOnce({
       host: el,
       stage: el,
@@ -128,7 +131,6 @@ export function LpVisionCurtain() {
     return () => {
       unmount();
       el.removeAttribute("data-open");
-      el.removeAttribute("data-live");
       el.style.removeProperty("--cut-user");
     };
   }, []);
@@ -184,28 +186,8 @@ export function LpVisionCurtain() {
 
   return (
     <section className="lp-video lp-vcut" data-grow-done="" aria-label={C.label}>
-      <div ref={card} className={`lp-video__card lp-vcut__card ${lpClaudeSerif.variable}`} data-shut="">
-        {/* under: Pancake's table */}
-        <div className="lp-vcut__db" aria-hidden="true">
-          <div className="lp-vcut__dbar">
-            <p className="lp-vcut__brand">
-              <PancakeMark className="lp-vcut__pk" />
-              {C.pancake}
-            </p>
-            <ul className="lp-vcut__tabs">
-              {DB_HERO_TABS.map((tab, i) => (
-                <li key={tab.name} data-tab={tab.name} data-on={i === 0 ? "" : undefined}>
-                  <DbTableIcon />
-                  {tab.name}
-                  <small>{tab.rows}</small>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <DbTable table={DB_HERO} bar={false} tone="yellow" />
-        </div>
-
-        {/* over: Claude's window; it slides with the curtain */}
+      <div ref={card} className={`lp-video__card lp-vcut__card ${lpClaudeSerif.variable}`} data-pre="">
+        {/* under: Claude's window */}
         <div className="lp-vcut__claude" aria-hidden="true">
           <div className="lp-vcut__col">
             <p className="lp-vcut__chead">
@@ -300,7 +282,7 @@ export function LpVisionCurtain() {
               </p>
             </div>
           </div>
-          {/* the view Claude drew from the rows: on show once the window is pulled over the table */}
+          {/* the view Claude drew from the rows: on show once the table is pushed off it */}
           <div className="lp-vcut__art">
             <p className="lp-vcut__art-h">
               <b>{C.artifact}</b>
@@ -311,6 +293,26 @@ export function LpVisionCurtain() {
             </p>
             <DbTable table={DB_ARTIFACT} theme="light" tone="yellow" bar={false} />
           </div>
+        </div>
+
+        {/* over: Pancake's table; it slides with the curtain */}
+        <div className="lp-vcut__db" aria-hidden="true">
+          <div className="lp-vcut__dbar">
+            <p className="lp-vcut__brand">
+              <PancakeMark className="lp-vcut__pk" />
+              {C.pancake}
+            </p>
+            <ul className="lp-vcut__tabs">
+              {DB_HERO_TABS.map((tab, i) => (
+                <li key={tab.name} data-tab={tab.name} data-on={i === 0 ? "" : undefined}>
+                  <DbTableIcon />
+                  {tab.name}
+                  <small>{tab.rows}</small>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <DbTable table={DB_HERO} bar={false} tone="yellow" />
         </div>
 
         <div
@@ -336,7 +338,6 @@ export function LpVisionCurtain() {
           </span>
         </div>
       </div>
-      <noscript dangerouslySetInnerHTML={{ __html: NOSCRIPT_CSS }} />
     </section>
   );
 }
