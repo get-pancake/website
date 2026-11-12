@@ -72,9 +72,11 @@ const REST = 52;
 /** a page opened with the card's top above this share of the window has it in front of the
     visitor already: it rests on its END (lp-play-once `seenAbove`) */
 const SEEN_ABOVE = 0.45;
-/** the visitor has scrolled onto the window once its top passes this share of the window: the
-    table takes two thirds of the card (vision.css data-wide) */
-const WIDE_AT = 0.55;
+/** the visitor is scrolling onto the window once its top passes this share of the window: the
+    table takes two thirds of the card (vision.css data-wide). Before the take plays (its top past
+    60 %): the split moves while Claude's window is still a new chat, so no line of the
+    conversation re-wraps while it moves */
+const WIDE_AT = 0.75;
 /** the conversation follows its last line in this long (ms) */
 const FOLLOW_MS = 380;
 /** this close to its end (px), the conversation is on its last line */
@@ -176,10 +178,18 @@ export function LpVisionCurtain() {
     // pas au hover la bascule, plutôt quand je scroll sur cette partie"). Not under reduced motion:
     // there the window keeps its half, the end picture whole
     let settle = 0;
+    let instant = 0;
     const wide = new IntersectionObserver(
       (entries) => {
         if (!entries[entries.length - 1].isIntersecting) return;
         wide.disconnect();
+        // already on show with its finished picture (a page opened on it): at once, no slide
+        if (seen) {
+          el.setAttribute("data-instant", "");
+          instant = requestAnimationFrame(() => {
+            instant = requestAnimationFrame(() => el.removeAttribute("data-instant"));
+          });
+        }
         el.setAttribute("data-wide", "");
         // (the slider says where it went once it is there)
         settle = window.setTimeout(() => {
@@ -197,8 +207,11 @@ export function LpVisionCurtain() {
       unmount();
       wide.disconnect();
       window.clearTimeout(settle);
+      cancelAnimationFrame(instant);
       el.removeAttribute("data-open");
       el.removeAttribute("data-wide");
+      el.removeAttribute("data-instant");
+      el.removeAttribute("data-user");
       el.style.removeProperty("--cut-user");
     };
   }, []);
@@ -289,6 +302,8 @@ export function LpVisionCurtain() {
     return box.width ? ((at.left + at.width / 2 - box.left) / box.width) * 100 : REST;
   };
   const place = (value: number) => {
+    // (from now on the split is the visitor's: it eases quickly when moved with the keys)
+    card.current?.setAttribute("data-user", "");
     card.current?.style.setProperty("--cut-user", `${value}%`);
     handle.current?.setAttribute("aria-valuenow", String(Math.round(value)));
   };
