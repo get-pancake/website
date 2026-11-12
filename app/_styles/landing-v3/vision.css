@@ -50,8 +50,10 @@
    --vc-rest   where the handle rests: what those columns and the row numbers (--vc-n) leave,
                less a pixel so that the last one's own line shows at the card's edge
    --vc-min    Claude's column is never narrower than this: slid further left, the table covers it
-   On a desktop a pointer over the table opens it to three quarters of the card (--vc-rest, below)
-   and the split eases there and back (--cut is a registered property, so it can be eased)
+   On a desktop, once the visitor has scrolled onto the window, the table takes two thirds of the
+   card (data-wide, below) and the split eases there (--cut is a registered property, so it can
+   be eased)
+   --vc-cols-wide   the columns the table shows then: the story's four, the industry and the deal
    --vc-max    nor is its conversation wider: past it, it stays a centred column, as the app's
                does on a wide window (--vc-gut is the margin that makes it so)
    --vc-bar, --vc-row   the table's lines; Claude's own bar is as tall as the table's
@@ -64,6 +66,7 @@
   --vc-tool: 34px;
   --vc-n: 42px;
   --vc-cols: 504px;
+  --vc-cols-wide: 728px;
   --vc-rest: calc(100% - var(--vc-n) - var(--vc-cols) - 1px);
   --vc-min: 280px;
   --vc-max: 620px;
@@ -77,7 +80,7 @@
   aspect-ratio: auto;
   background: var(--lp-claude-bg);
   height: 602px;
-  transition: --cut 0.55s cubic-bezier(0.33, 1, 0.68, 1);
+  transition: --cut 0.9s cubic-bezier(0.45, 0, 0.55, 1);
   -webkit-user-select: none;
   user-select: none;
 }
@@ -91,13 +94,14 @@
 .lp-vcut .lp-vcut__card[data-drag] {
   transition: none;
 }
-/* a pointer over the table (a desktop): it opens to three quarters of the card, and closes back
-   when the pointer leaves it (founder: "de la moitié au trois quarts, pour montrer l'animation au
-   moment du hover de cette table"). The handle is not part of it: reached from Claude's side, it
-   stays where it is to be grabbed */
-@media (min-width: 1025px) and (hover: hover) {
-  .lp-vcut .lp-vcut__card:has(.lp-vcut__db:hover) {
-    --vc-rest: max(25%, 280px);
+/* scrolled onto (data-wide, set once by LpVisionCurtain when the card's top passes 55 % of the
+   window, motion allowed): the table takes two thirds of the card, its edge on a column line,
+   Claude never under 30 % (founder: "c'est pas au hover la bascule, plutôt quand je scroll sur
+   cette partie", "3/4 c'est trop, Claude est trop réduit, maybe 2/3"). A desktop's: a tablet
+   keeps its half, a phone stacks the two */
+@media (min-width: 1025px) {
+  .lp-vcut .lp-vcut__card[data-wide] {
+    --vc-rest: max(30%, calc(100% - var(--vc-n) - var(--vc-cols-wide) - 1px));
   }
 }
 /* over: Pancake's table, a whole window as wide as the card, its leading columns on show to the

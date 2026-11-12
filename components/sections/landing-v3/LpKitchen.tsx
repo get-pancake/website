@@ -57,8 +57,8 @@ export function LpKitchen({
   /** the title's tag: "h1" only where this section is the page's hero (one h1 per page) */
   as?: "h1" | "h2";
   id?: string;
-  /** on the sky band (the homepage: under the clouds, between the deep dive and the testimonials,
-      which paint the sky too): the section paints it, so the band does not break */
+  /** on the sky band (the homepage: under the testimonials, before the close, which paint the sky
+      too): the section paints it, so the band does not break */
   sky?: boolean;
 } = {}) {
   const [mode, setMode] = useState<KitchenMode>(first);

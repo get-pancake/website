@@ -229,29 +229,32 @@ export const VISION_FEATURES: {
   items: readonly { story: "mcp" | "p-history" | "p-dedup" | "ping"; title: string; body: string }[];
 } = {
   title: "What your agent can do with Pancake",
+  /* Each title answers the section's question (founder, 2026-11-12: "make sure each line answers
+     more to the question 'What your agent can do with Pancake'", so that a reader thinks "Pancake
+     is what I need for my revenue engineering"): your agent can … */
   items: [
     {
       story: "mcp",
       // the founder, 2026-11-11: "Run everything from Claude (not your agent)"
-      title: "Run everything\nfrom Claude",
-      body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent reads every table and runs every Play, with about 100 tools.",
+      title: "Run your revenue engine\nfrom Claude",
+      body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent queries every table and runs every Play, with about 100 tools.",
     },
     {
       story: "p-history",
-      title: "Follow every lead’s journey",
-      body: "Each touch is dated and kept on the lead: the event, the signup, the question on pricing, the reply. Your agent reads them in the order they happened.",
+      title: "Remember every touch\nwith every buyer",
+      body: "The event, the signup, the pricing question, the reply: each one dated and kept. Your agent writes as if it sat in every call.",
     },
     {
       story: "p-dedup",
-      title: "See one person as one record",
-      body: "The same buyer is at your event, in your product and on a social profile, under three emails. Pancake keeps one record.",
+      title: "See one buyer\nbehind three emails",
+      body: "The same person is at your event, in your product and on a social profile. Pancake keeps one record, so nobody is pitched twice.",
     },
     // its picture is your agent texting you first (lp-story-ping-data.ts), the founder's ask in
     // place of the context story's schema
     {
       story: "ping",
-      title: "Get the next move\nbefore you ask",
-      body: "The Brain learns from every reply and every deal. Your agent comes to you with the next account to work and the Play to run.",
+      title: "Bring you the next deal\nbefore you ask",
+      body: "Pancake learns from every reply and every deal. Your agent texts you the account to work and the Play to run.",
     },
   ],
 };
