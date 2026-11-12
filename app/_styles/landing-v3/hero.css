@@ -629,6 +629,14 @@
   outline: 2px solid var(--lp-purple-30);
   outline-offset: 2px;
 }
+/* a window narrower than any phone (a split window, a side pane, under 320): the two buttons are
+   280 px in a row and made the column wider than the screen, so the lede and the second button
+   were cut at its edge. There the second button goes under the first. */
+@media (max-width: 319px) {
+  .lp-hero--home .lp-hero-btns {
+    flex-wrap: wrap;
+  }
+}
 /* phones: no badge in the hero (founder 2026-11-11: "Sur mobile je trouve que le badge Product
    Hunt n'a rien a faire la") */
 @media (max-width: 767px) {
