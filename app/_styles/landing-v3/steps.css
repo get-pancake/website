@@ -200,22 +200,33 @@
     gap: 0;
     overflow: hidden;
   }
+  /* 2026-11-12 (phone pass after the reference site, founder: "very small side margins … good
+     density"): the card's text 20px in from its edge (was 32: the text stood 48px from the
+     screen's edge, a quarter of the width gone to margins), the numeral one step down the
+     scale and the title at the size of a card's title, under the section's 35.559 heading:
+     each title holds its two designed lines (it took three or four at 35.559 in 294px), and
+     a card is ~120px shorter with the same words and the same picture. */
   .lp-steps__text {
     background: none;
     border-radius: 0;
     flex: none;
-    padding: 32px;
+    gap: 12px;
+    padding: 24px 20px 28px;
     width: 100%;
+  }
+  .lp-steps__num {
+    font-size: var(--lp-text-5xlg);
   }
   .lp-steps__spacer {
     flex: none;
     height: 1px;
   }
+  /* the longest designed line ("Pancake builds the tables.") is 9.95 em: under 348px wide the
+     size follows the card's text column (W − 72) so the two lines hold down to 320 */
   .lp-steps__step-title {
-    /* 35.559 / auto(41px per line: 123px over 3 lines) / -3% */
-    font-size: 35.559px;
-    letter-spacing: -1.0668px;
-    line-height: 41px;
+    font-size: min(var(--lp-text-2xlg), calc((100vw - 72px) / 10));
+    letter-spacing: -0.03em;
+    line-height: 1.15;
   }
   /* Bodies flow continuously on the phone artboard (4 lines at 306px) — any
      "\n" in a body string is a desktop-only break, so let pre-line collapse
@@ -224,13 +235,15 @@
   /* Step 03's founder line break ("…the meeting. / You close it.") leaves a
      one-word middle line ("meeting.") on phones — wrap it naturally there.
      Step 01 keeps its break: the phone artboard shows exactly that shape. */
-  .lp-steps__row:nth-child(3) .lp-steps__step-title {
+  /* (not the homepage's 1-2-3, .lp-vsteps: at the card title size of 2026-11-12 its three titles
+     hold their designed two lines, and wrapping freely put "the" at the end of the first) */
+  .lp-steps:not(.lp-vsteps) .lp-steps__row:nth-child(3) .lp-steps__step-title {
     white-space: normal;
   }
   .lp-steps__body {
-    /* the phone artboard (4389:8215) keeps the body at 120% — measured 19px
-       line pitch — while the desktop revision moved to 150% */
-    line-height: 1.2;
+    /* the phone artboard (4389:8215) kept the body at 120%, the desktop revision moved to 150%;
+       phones read the desktop's since 2026-11-12 (at 120% a 16px body set its lines 3px apart) */
+    line-height: 1.5;
     white-space: normal;
   }
   .lp-steps__media {

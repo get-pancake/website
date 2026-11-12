@@ -529,32 +529,37 @@
    One DOM: the wrappers dissolve (display: contents) and the row becomes one
    column ordered by --lp-dive-i (LpDive): tab 3i · link 3i+1 · panel 3i+2.
    The stage card moves from .lp-dive-stage to each .lp-dive-panel: the
-   DESKTOP 752×489 scene scaled by (W − 48) / 752 (0.4707 at 402), radius and
-   shadow scaled with it (7.479 · 0 1.246 19.445 at 402; the offset is
-   rounded to a whole pixel, see the panel rule). The driver
-   (lp-dive-carousel.ts, stack mode) measures each card (--lp-fit on the
-   panel) and plays each story once (lp-play-once). */
+   DESKTOP 752×489 scene scaled by (W − 32) / 752 (0.4920 at 402; W − 48 until
+   the 2026-11-12 phone pass put the list on the page's 16px margin), radius
+   and shadow scaled with it (the offset is rounded to a whole pixel, see the
+   panel rule). The driver (lp-dive-carousel.ts, stack mode) measures each
+   card (--lp-fit on the panel) and plays each story once (lp-play-once).
+   Bodies at 16/24 since the same day (the artboard's 13.333/20 before). */
 @media (max-width: 767px) {
   .lp-dive[data-lp-phone="stack"] {
     /* content box = title 82 + 20 + list; the list = 48 + three 64 gaps +
-       four (text block + 16 + stage (W − 48) × 489/752). Measured on a 1 px
-       sweep, 2026-10-28: 1770.4 (320) · 1854.5 (360) · 1864.5 (375) ·
-       1871.3 (393) · 1894.7 (402) · 1947.6 (430) · 2369.7 (600) · 2764.1
-       (767), in 20 px steps as a body gains or loses a line → within ±0.8%
-       from 320 to 767. Replaces foundation.css's carousel estimates while
-       the stack is on (0,2,0). */
-    contain-intrinsic-size: auto max(min(calc(1185px + 185vw), 1884px), calc(896px + 245vw));
+       four (text block + 16 + stage (W − 32) × 489/752). Measured 2026-11-12
+       (16px margins, 16/24 bodies): 1971.1 (320) · 2027.1 (360) · 2013.1
+       (375) · 1994.1 (390) · 1996.4 (402) · 2069.2 (430) · 2203.2 (500) ·
+       2415.4 (600) · 2849.7 (767): flat while the bodies lose lines as the
+       stages grow, then the stages' 2.601 px per px → within ±2% from 320
+       to 767 (+2.0% at 320, ±0.8% elsewhere). Replaces foundation.css's
+       carousel estimates while the stack is on (0,2,0). */
+    contain-intrinsic-size: auto max(2010px, calc(1194px + 203.5vw), calc(855px + 260.1vw));
     gap: 20px;
     /* 59.6 above the title, + the cloud room sky.css opens over the banner
        (--lp-sky-room, taken back by its negative margin) */
     padding: calc(59.6px + var(--lp-sky-room, 0px)) 0 11.8px;
   }
+  /* 2026-11-12 (phone pass): the page's one phone margin, 16px, so the titles, the bodies and
+     the four stage cards stand on the same edge as every other card (was 24; the stages are
+     W − 32 wide now, measured by the driver like before) */
   .lp-dive[data-lp-phone="stack"] .lp-dive-row {
     align-items: stretch;
     display: flex;
     flex-direction: column;
     gap: 0;
-    padding: 24px;
+    padding: 24px 16px;
     width: 100%;
   }
   .lp-dive[data-lp-phone="stack"] .lp-dive-list,
@@ -608,9 +613,11 @@
   .lp-dive[data-lp-phone="stack"] .lp-dive-tab__fold {
     grid-template-rows: 1fr;
   }
+  /* the page's body size (16/24, as the lede, the steps, the quotes and the pricing list) since
+     2026-11-12; the artboard's 13.333/20 was the one body on the phone page set smaller */
   .lp-dive[data-lp-phone="stack"] .lp-dive-tab__body {
-    font-size: var(--lp-text-sm);
-    line-height: 20px;
+    font-size: var(--lp-text-md);
+    line-height: 24px;
   }
   /* item 4's "See how →": its own row under the body (8), inside the text
      block — the tab gives up its bottom 24 to it */
@@ -642,12 +649,12 @@
   .lp-dive[data-lp-phone="stack"] .lp-dive-panel {
     aspect-ratio: 752 / 489;
     background: var(--lp-dive-stage-bg);
-    border-radius: calc((100vw - 48px) * 15.887 / 752);
-    box-shadow: 0 calc((100vw - 48px) * 2.648 / 752) calc((100vw - 48px) * 41.307 / 752) rgba(0, 0, 0, 0.08);
+    border-radius: calc((100vw - 32px) * 15.887 / 752);
+    box-shadow: 0 calc((100vw - 32px) * 2.648 / 752) calc((100vw - 32px) * 41.307 / 752) rgba(0, 0, 0, 0.08);
     /* the same shadow on a whole-pixel offset (1 at 402; .lp-dive-stage has
        the reason): WebKit left a 6 px seam at each side at DPR 3. Engines
        without round() keep the line above. */
-    box-shadow: 0 round(calc((100vw - 48px) * 2.648 / 752), 1px) calc((100vw - 48px) * 41.307 / 752)
+    box-shadow: 0 round(calc((100vw - 32px) * 2.648 / 752), 1px) calc((100vw - 32px) * 41.307 / 752)
       rgba(0, 0, 0, 0.08);
     flex: none;
     inset: auto;
@@ -658,11 +665,11 @@
     position: relative;
     visibility: visible;
   }
-  /* The card is exactly W − 48 wide, so the scale before the driver measures
+  /* The card is exactly W − 32 wide (W − 48 until 2026-11-12), so the scale before the driver measures
      it (--lp-fit on the panel) needs no container unit — the iOS trig bug
      (LpFitVars) is about cqw — and the four pictures show without JS. */
   .lp-dive[data-lp-phone="stack"] .lp-dive-scene {
-    transform: scale(var(--lp-fit, tan(atan2(100vw - 48px, 752px))));
+    transform: scale(var(--lp-fit, tan(atan2(100vw - 32px, 752px))));
     visibility: inherit;
   }
 }
