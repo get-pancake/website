@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Toy studio</title>
+    <!-- Not a page of the site: scripts/toy-art.mjs opens it to draw the layers of the seven
+         pictures (studio.js). It gives the browser its own copy of three for the address below. -->
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #fffbf6;
+      }
+    </style>
+    <script type="importmap">
+      { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+    </script>
+    <script type="module" src="./studio.js"></script>
+  </head>
+  <body></body>
+</html>

@@ -1,0 +1,1089 @@
+/* Toy pictures — the vision homepage's 1-2-3 (LpToySteps.tsx) and its four features
+   (LpToyStories.tsx), 2026-11-12. Each picture is a small set of soft 3D objects in the kitchen's
+   look, drawn once as flat layers (scripts/toy-art.mjs → public/lp/toys and lp-toy-art.ts) and
+   laid out as plain images, with the page's own type over them. This file holds what the seven
+   share (the layers, the badge, the caption), then each picture's own pieces.
+
+   The markup is each picture's END. A piece that only shows on the way carries .lp-toy-gone and
+   rests hidden; the take (lp-toy-step-timelines.ts, lp-toy-story-timelines.ts) shows it and
+   hides it again before it ends. No infinite keyframes, no will-change: GSAP only. A picture
+   goes round (lp-play-once `loop`); what only its next round shows rests hidden too.
+
+   Traps:
+   T1 the stage's own rules (`.lp-step-stage img { display: block }`, `.lp-dive-scene * {
+      font-family }`) tie with single-class rules: every rule below is a compound selector.
+   T2 a vendor's mark is the vendor's file in an <img>, sized only (object-fit: contain): no
+      filter, no blend, no mask, no tint. One picture lays its marks flat on the set, as the
+      set's own camera would (.lp-t1-mark): that is the only transform a mark takes. */
+
+.lp-toy {
+  --toy-shadow: 0 1px 2px rgba(44, 0, 42, 0.1), 0 6px 16px rgba(44, 0, 42, 0.14);
+  --toy-shadow-soft: 0 1px 2px rgba(44, 0, 42, 0.08), 0 4px 12px rgba(44, 0, 42, 0.1);
+}
+/* the set: every layer is placed in stage px from the stage's own corner */
+.lp-toy .lp-toy-set {
+  inset: 0;
+  position: absolute;
+}
+.lp-toy .lp-toy-pic {
+  display: block;
+  height: auto;
+  max-width: none;
+  pointer-events: none;
+  position: absolute;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* what only shows on the way */
+.lp-toy .lp-toy-gone {
+  visibility: hidden;
+}
+
+/* a vendor's own mark on a white disc: the outer box is a point of the set, the disc hangs from
+   it (LpToyKit.tsx ToyMark) */
+.lp-toy .lp-toy-mark {
+  display: block;
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+.lp-toy .lp-toy-mark__disc {
+  background: var(--lp-surface);
+  border-radius: 50%;
+  box-shadow: var(--toy-shadow-soft);
+  display: block;
+  position: absolute;
+}
+.lp-toy .lp-toy-mark__disc img {
+  display: block;
+  height: 58%;
+  left: 21%;
+  max-width: none;
+  object-fit: contain;
+  position: absolute;
+  top: 21%;
+  width: 58%;
+}
+
+/* a badge: the kitchen's (kitchen/overlay.js .pk-badge), in stage px. The outer box is a point
+   (the place it stands at); the pill is hung from it by its anchor, so GSAP's own transform
+   (the pop, the rise) never fights the centring. */
+.lp-toy .lp-toy-badge {
+  display: block;
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+.lp-toy .lp-toy-badge__in {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: 999px;
+  box-shadow: var(--toy-shadow);
+  color: var(--lp-text);
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 6px;
+  letter-spacing: -0.005em;
+  line-height: 16px;
+  padding: 4px 10px 4px 4px;
+  position: absolute;
+  white-space: nowrap;
+}
+.lp-toy .lp-toy-badge__in:not(:has(> .lp-toy-badge__ico)) {
+  padding-left: 10px;
+}
+.lp-toy .lp-toy-badge[data-anchor="bottom"] > .lp-toy-badge__in {
+  bottom: 0;
+  left: 0;
+  transform: translateX(-50%);
+}
+.lp-toy .lp-toy-badge[data-anchor="top"] > .lp-toy-badge__in {
+  left: 0;
+  top: 0;
+  transform: translateX(-50%);
+}
+.lp-toy .lp-toy-badge[data-anchor="top-start"] > .lp-toy-badge__in {
+  left: 0;
+  top: 0;
+}
+.lp-toy .lp-toy-badge[data-anchor="centre"] > .lp-toy-badge__in {
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+}
+.lp-toy .lp-toy-badge[data-anchor="left"] > .lp-toy-badge__in {
+  left: 0;
+  top: 0;
+  transform: translateY(-50%);
+}
+.lp-toy .lp-toy-badge[data-anchor="right"] > .lp-toy-badge__in {
+  right: 0;
+  top: 0;
+  transform: translateY(-50%);
+}
+.lp-toy .lp-toy-badge__ico {
+  background: var(--lp-page-bg);
+  border-radius: 50%;
+  display: grid;
+  flex: none;
+  height: 20px;
+  place-items: center;
+  width: 20px;
+}
+.lp-toy .lp-toy-badge__ico img,
+.lp-toy .lp-toy-badge__ico svg {
+  display: block;
+  height: 13px;
+  object-fit: contain;
+  width: 13px;
+}
+
+/* a caption: a name over or under a piece, centred on its point */
+.lp-toy .lp-toy-cap {
+  color: var(--lp-text);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* ── 01 · your sources plug in, the machine turns, the tables come up ── */
+.lp-step-stage--t1 .lp-sx-bg,
+.lp-step-stage--t2 .lp-sx-bg,
+.lp-step-stage--t3 .lp-sx-bg {
+  background-color: var(--lp-card-cream);
+}
+/* a cable draws in from its dock down: the take opens this clip */
+.lp-toy .lp-t1-cable {
+  clip-path: inset(0% 0% 0% 0%);
+}
+/* a bead on the turntable: --toy-a is where it is on the ring, in turns from the ring's right.
+   The ring is a circle of the set, so an ellipse of the picture (--toy-rx, --toy-ry). */
+.lp-toy .lp-t1-rider {
+  translate: calc(cos(var(--toy-a) * 1turn) * var(--toy-rx)) calc(sin(var(--toy-a) * 1turn) * var(--toy-ry));
+}
+/* (an engine without CSS trigonometry would leave the four beads on the hub: none there) */
+@supports not (translate: calc(cos(0.25turn) * 1px) 0px) {
+  .lp-toy .lp-t1-rider {
+    display: none;
+  }
+}
+/* A source's mark lies flat on its dock, and Pancake's on the hub: what lies flat on the set is
+   an ellipse of the picture (--toy-flat, the set's own camera). Founder, 2026-11-12: "une
+   inclinaison sur le logo pour que ça s'imprime bien dans l'animation". The disc is given a
+   rim, so that it reads as a piece set on the dock. */
+.lp-toy .lp-t1-mark .lp-toy-mark__disc {
+  box-shadow: 0 2.5px 0 rgba(44, 0, 42, 0.16), 0 5px 9px rgba(44, 0, 42, 0.16);
+  transform: scaleY(var(--toy-flat));
+}
+/* Pancake, on the turntable's hub: the mark, and the light it gives once the machine runs */
+.lp-toy .lp-t1-hub {
+  --toy-glow: 1;
+  display: block;
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+.lp-toy .lp-t1-hub::before {
+  background: radial-gradient(closest-side, rgba(255, 189, 122, 0.55), rgba(255, 189, 122, 0));
+  border-radius: 50%;
+  content: "";
+  height: 44px;
+  left: -34px;
+  opacity: var(--toy-glow);
+  position: absolute;
+  top: -22px;
+  width: 68px;
+}
+.lp-toy .lp-t1-hub__mark {
+  display: block;
+  height: 22px;
+  left: -11px;
+  position: absolute;
+  top: -13px;
+  transform: scaleY(var(--toy-flat));
+  width: 22px;
+}
+/* a pile at one height: only the full one rests */
+.lp-toy .lp-t1-pile:not([data-on]) {
+  visibility: hidden;
+}
+/* a table's name and its count, under its pile */
+.lp-toy .lp-t1-table {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: 999px;
+  box-shadow: var(--toy-shadow-soft);
+  display: inline-flex;
+  gap: 6px;
+  padding: 5px 12px 5px 10px;
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.lp-toy .lp-t1-table .lp-db__icon {
+  color: var(--lp-ink-70);
+  fill: none;
+  flex: none;
+  height: 13px;
+  stroke: currentColor;
+  width: 13px;
+}
+.lp-toy .lp-t1-table b {
+  color: var(--lp-text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18px;
+}
+.lp-toy .lp-t1-table em {
+  color: var(--lp-ink-70);
+  font-size: 12px;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  line-height: 18px;
+  min-width: 38px;
+  text-align: right;
+}
+
+/* ── 02 · a radar over one account ──
+   The radar's face is a circle of the set, so an ellipse of the picture. What is drawn on it
+   (its rings, the beam, a ring where a signal lands, the warmth under the account) is drawn
+   round, in .lp-t2-face, which is a point at the face's centre, flattened once (--toy-squash). */
+.lp-toy .lp-t2-face {
+  height: 0;
+  position: absolute;
+  transform: scaleY(var(--toy-squash));
+  width: 0;
+}
+.lp-toy .lp-t2-rings {
+  fill: none;
+  height: calc(2 * var(--toy-r));
+  left: calc(-1 * var(--toy-r));
+  overflow: visible;
+  position: absolute;
+  stroke: rgba(255, 247, 236, 0.2);
+  stroke-width: 0.7;
+  top: calc(-1 * var(--toy-r));
+  width: calc(2 * var(--toy-r));
+}
+/* the beam: its leading edge points to the face's right at no turn, its light trails behind it.
+   It only shows while it turns */
+.lp-toy .lp-t2-beam {
+  background: conic-gradient(from 90deg, rgba(255, 122, 160, 0) 0deg, rgba(255, 122, 160, 0) 285deg, rgba(255, 122, 160, 0.16) 330deg, rgba(255, 150, 180, 0.62) 360deg);
+  border-radius: 50%;
+  height: calc(1.94 * var(--toy-r));
+  left: calc(-0.97 * var(--toy-r));
+  position: absolute;
+  top: calc(-0.97 * var(--toy-r));
+  visibility: hidden;
+  width: calc(1.94 * var(--toy-r));
+}
+/* (the next round's beam turns the other way: its light trails on the other side) */
+.lp-toy .lp-t2-beam[data-way="-1"] {
+  background: conic-gradient(from 90deg, rgba(255, 150, 180, 0.62) 0deg, rgba(255, 122, 160, 0.16) 30deg, rgba(255, 122, 160, 0) 75deg, rgba(255, 122, 160, 0) 360deg);
+}
+/* a ring opens where a signal lands, in its tone, and goes */
+.lp-toy .lp-t2-ping {
+  border: 2px solid var(--toy-tone, var(--lp-pink-30));
+  border-radius: 50%;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  position: absolute;
+  visibility: hidden;
+  width: 34px;
+}
+.lp-toy [data-tone="green"] {
+  --toy-tone: var(--lp-green-20);
+}
+.lp-toy [data-tone="purple"] {
+  --toy-tone: var(--lp-purple-30);
+}
+.lp-toy [data-tone="blue"] {
+  --toy-tone: var(--lp-blue-30);
+}
+.lp-toy [data-tone="yellow"] {
+  --toy-tone: var(--lp-yellow-30);
+}
+.lp-toy [data-tone="pink"] {
+  --toy-tone: var(--lp-pink-30);
+}
+.lp-toy [data-tone="orange"] {
+  --toy-tone: var(--lp-orange-20);
+}
+/* the account, once the dots are connected: warm */
+.lp-toy .lp-t2-heat {
+  background: radial-gradient(closest-side, rgba(255, 122, 160, 0.6), rgba(255, 122, 160, 0.22) 55%, rgba(255, 122, 160, 0));
+  border-radius: 50%;
+  height: 150px;
+  left: -75px;
+  position: absolute;
+  top: -75px;
+  width: 150px;
+}
+/* the line through the dots, a path from each dot to the next: it rests drawn (a path's dash is
+   its own length, pathLength 1), and the take draws the paths one after the other */
+.lp-toy .lp-t2-line {
+  fill: none;
+  height: 100%;
+  inset: 0;
+  overflow: visible;
+  position: absolute;
+  width: 100%;
+}
+.lp-toy .lp-t2-line path {
+  stroke: var(--lp-ink-20);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.25;
+}
+/* a bead pops from where it stands on the face */
+.lp-toy .lp-t2-blip {
+  transform-origin: 50% 82%;
+}
+/* the account's badge: its name, and what your own data says of it */
+.lp-toy .lp-t2-who .lp-toy-badge__in {
+  gap: 7px;
+  padding: 4px 5px 4px 11px;
+}
+.lp-toy .lp-t2-who b {
+  font-size: 13px;
+  font-weight: 600;
+}
+.lp-toy .lp-t2-who em {
+  background: var(--lp-page-bg);
+  border-radius: 999px;
+  color: var(--lp-ink-80);
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 16px;
+  padding: 1px 7px;
+}
+
+/* ── 03 · the Brain ── */
+/* the light round its centre: low at rest before the take, full once the signals have crossed */
+.lp-toy .lp-t3-halo {
+  background: radial-gradient(closest-side, rgba(186, 139, 255, 0.5), rgba(255, 122, 160, 0.2) 55%, rgba(255, 122, 160, 0));
+  border-radius: 50%;
+  height: 150px;
+  margin: -75px 0 0 -75px;
+  position: absolute;
+  width: 150px;
+}
+.lp-toy .lp-t3-centre {
+  transform-origin: 50% 45%;
+}
+/* a ring opens where a point of the Brain comes or goes, in its hub's tone */
+.lp-toy .lp-t3-ring {
+  border: 2px solid var(--toy-tone, var(--lp-pink-30));
+  border-radius: 50%;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  position: absolute;
+  width: 22px;
+}
+/* a signal on its way in: a point of light in its hub's tone */
+.lp-toy .lp-t3-run {
+  background: var(--toy-tone, var(--lp-pink-30));
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.85), 0 0 12px 3px var(--toy-tone, var(--lp-pink-30));
+  height: 8px;
+  margin: -4px 0 0 -4px;
+  position: absolute;
+  width: 8px;
+}
+/* what a hub holds: its name, small, by its bead */
+.lp-toy .lp-t3-name {
+  color: var(--lp-ink-80);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+}
+/* an idea: a badge with the Play's glyph */
+.lp-toy .lp-t3-idea .lp-toy-badge__ico {
+  background: var(--lp-pink-10);
+}
+.lp-toy .lp-t3-idea .lp-toy-badge__ico svg,
+.lp-toy .lp-t3-play__icon svg {
+  fill: var(--lp-pink-40);
+}
+/* the Play it recommends: the step cards' Play tile (vision.css .lp-vs3-play-icon), its kicker,
+   and the idea in a sentence. A point at the middle of its top edge; the card hangs from it. */
+.lp-toy .lp-t3-play {
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+.lp-toy .lp-t3-play__in {
+  background: var(--lp-surface);
+  border-radius: 18px;
+  box-shadow: var(--toy-shadow);
+  left: -170px;
+  min-height: 72px;
+  padding: 12px 16px 13px 56px;
+  position: absolute;
+  top: 0;
+  width: 340px;
+}
+.lp-toy .lp-t3-play__icon {
+  background: var(--lp-pink-10);
+  border-radius: var(--lp-r-xsm);
+  display: grid;
+  height: 30px;
+  left: 14px;
+  place-items: center;
+  position: absolute;
+  top: 14px;
+  width: 30px;
+}
+.lp-toy .lp-t3-play__icon svg {
+  display: block;
+  height: 17px;
+  width: 17px;
+}
+.lp .lp-toy .lp-t3-play__k {
+  color: var(--lp-ink-70);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 16px;
+  margin: 0;
+}
+.lp .lp-toy .lp-t3-play__t {
+  color: var(--lp-text);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  line-height: 19px;
+  margin: 1px 0 0;
+  text-wrap: balance;
+}
+
+/* ══ the four features' pictures (LpToyStories.tsx), on the dive's 752 × 489 box ══
+   On phones the stack shows that box at about ×0.47: the type over the sets is set larger there
+   (--toy-k), as the Claude window's is (story-mcp.css), so that it still reads. */
+.lp-toy.lp-toy-story {
+  --toy-k: 1;
+  color: var(--lp-text);
+  font: 400 16px/1.5 var(--lp-font-sans);
+  inset: 0;
+  position: absolute;
+}
+@media (max-width: 767px) {
+  .lp-toy.lp-toy-story {
+    --toy-k: 1.55;
+  }
+}
+.lp-toy-story .lp-toy-badge__in {
+  border-radius: calc(999px * var(--toy-k));
+  font-size: calc(13px * var(--toy-k));
+  gap: calc(7px * var(--toy-k));
+  line-height: calc(18px * var(--toy-k));
+  padding: calc(5px * var(--toy-k)) calc(12px * var(--toy-k)) calc(5px * var(--toy-k)) calc(5px * var(--toy-k));
+}
+.lp-toy-story .lp-toy-badge__in:not(:has(> .lp-toy-badge__ico)) {
+  padding-left: calc(12px * var(--toy-k));
+}
+.lp-toy-story .lp-toy-badge__ico {
+  height: calc(24px * var(--toy-k));
+  width: calc(24px * var(--toy-k));
+}
+.lp-toy-story .lp-toy-badge__ico img,
+.lp-toy-story .lp-toy-badge__ico svg {
+  height: calc(15px * var(--toy-k));
+  width: calc(15px * var(--toy-k));
+}
+
+/* ── "Remember every touch with every buyer" ── */
+/* a stop that was reached: its tone, laid over the white one */
+.lp-toy .lp-tj-on {
+  transform-origin: 50% 46%;
+}
+/* a ring opens round a stop, on the ground (an ellipse of the picture) */
+.lp-toy .lp-tj-ring {
+  border: 2.5px solid var(--toy-tone, var(--lp-pink-30));
+  border-radius: 50%;
+  height: 70px;
+  margin: -35px 0 0 -49px;
+  position: absolute;
+  width: 98px;
+}
+/* a touch: its date over what happened, beside the mark of where it was seen */
+.lp-toy .lp-tj-touch .lp-toy-badge__in {
+  border-radius: calc(16px * var(--toy-k));
+  padding-right: calc(14px * var(--toy-k));
+}
+.lp-toy .lp-tj-touch .lp-toy-badge__in > span {
+  display: grid;
+}
+.lp-toy .lp-tj-touch small {
+  color: var(--lp-ink-70);
+  font-size: calc(11px * var(--toy-k));
+  font-weight: 500;
+  line-height: calc(14px * var(--toy-k));
+}
+.lp-toy .lp-tj-touch b {
+  font-size: calc(13px * var(--toy-k));
+  font-weight: 600;
+  line-height: calc(17px * var(--toy-k));
+}
+.lp-toy .lp-tj-touch .lp-toy-badge__ico {
+  color: var(--lp-ink-90);
+}
+/* what was kept: a point at the middle of its top edge; the pill hangs from it */
+.lp-toy .lp-tj-kept {
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+.lp .lp-toy .lp-tj-kept__in {
+  align-items: center;
+  background: var(--lp-inverted-surface);
+  border-radius: 999px;
+  box-shadow: var(--toy-shadow);
+  color: var(--lp-text-on-inverted);
+  display: inline-flex;
+  font-size: calc(13px * var(--toy-k));
+  font-weight: 600;
+  gap: calc(10px * var(--toy-k));
+  left: 0;
+  line-height: calc(18px * var(--toy-k));
+  margin: 0;
+  padding: calc(7px * var(--toy-k)) calc(16px * var(--toy-k)) calc(7px * var(--toy-k)) calc(12px * var(--toy-k));
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.lp-toy .lp-tj-kept__dots {
+  display: inline-flex;
+  gap: calc(5px * var(--toy-k));
+}
+/* a place in the record: empty until its touch is filed (--toy-fill) */
+.lp-toy .lp-tj-slot {
+  --toy-fill: 1;
+  background: color-mix(in srgb, var(--toy-tone) calc(var(--toy-fill) * 100%), rgba(255, 247, 236, 0.22));
+  border-radius: 50%;
+  display: block;
+  height: calc(10px * var(--toy-k));
+  width: calc(10px * var(--toy-k));
+}
+.lp-toy .lp-tj-kept__n {
+  font-variant-numeric: tabular-nums;
+}
+/* a touch on its way to the record */
+.lp-toy .lp-tj-dot {
+  background: var(--toy-tone, var(--lp-pink-30));
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.9), var(--toy-shadow-soft);
+  height: 12px;
+  margin: -6px 0 0 -6px;
+  position: absolute;
+  width: 12px;
+}
+
+/* ── "See one buyer behind three emails" ── */
+/* the way each sighting came, drawn on its lane in its source's tone (it rests drawn) */
+.lp-toy .lp-tm-trails {
+  fill: none;
+  height: 100%;
+  inset: 0;
+  overflow: visible;
+  position: absolute;
+  width: 100%;
+}
+.lp-toy .lp-tm-trails path {
+  stroke: var(--toy-tone);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 3.5;
+}
+/* the moment they are one: a ring opens on the stand (the ground: an ellipse of the picture) */
+.lp-toy .lp-tm-flash {
+  border: 3px solid var(--lp-pink-30);
+  border-radius: 50%;
+  height: 100px;
+  margin: -50px 0 0 -70px;
+  position: absolute;
+  width: 140px;
+}
+.lp-toy .lp-tm-ghost {
+  transform-origin: 50% 80%;
+}
+.lp-toy .lp-tm-buyer {
+  transform-origin: 46% 78%;
+}
+/* what a source holds: where it saw them, over the address it knows them by */
+.lp-toy .lp-tm-seen .lp-toy-badge__in {
+  border-radius: calc(16px * var(--toy-k));
+  padding-right: calc(14px * var(--toy-k));
+}
+.lp-toy .lp-tm-seen .lp-toy-badge__in > span {
+  display: grid;
+}
+.lp-toy .lp-tm-seen small {
+  color: var(--lp-ink-70);
+  font-size: calc(11px * var(--toy-k));
+  font-weight: 500;
+  line-height: calc(14px * var(--toy-k));
+}
+.lp-toy .lp-tm-seen b {
+  font-size: calc(13px * var(--toy-k));
+  font-weight: 600;
+  line-height: calc(17px * var(--toy-k));
+}
+.lp-toy .lp-tm-seen .lp-toy-badge__ico {
+  color: var(--lp-ink-90);
+}
+/* a dark badge (the kitchen's "out" badge): what a picture ends on */
+.lp-toy .lp-toy-badge[data-kind="dark"] > .lp-toy-badge__in {
+  background: var(--lp-inverted-surface);
+  color: var(--lp-text-on-inverted);
+  padding-left: calc(12px * var(--toy-k));
+}
+.lp-toy .lp-tm-one .lp-toy-badge__in > span {
+  align-items: center;
+  display: inline-flex;
+  gap: calc(9px * var(--toy-k));
+}
+/* the three sources it came from, as three dots that overlap */
+.lp-toy .lp-tm-one__from {
+  display: inline-flex;
+}
+.lp-toy .lp-tm-one__from i {
+  background: var(--toy-tone);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px var(--lp-inverted-surface);
+  display: block;
+  height: calc(11px * var(--toy-k));
+  margin-left: calc(-3px * var(--toy-k));
+  width: calc(11px * var(--toy-k));
+}
+.lp-toy .lp-tm-one__from i:first-child {
+  margin-left: 0;
+}
+@media (max-width: 767px) {
+  /* three badges stand one over the other in the left margin: a little smaller there */
+  .lp-toy.lp-tm {
+    --toy-k: 1.3;
+  }
+}
+
+/* ── "Bring you the next deal before you ask" ── */
+/* the phone: two drawings (asleep, and the same glass lit) that shake as one piece */
+.lp-toy .lp-tp-phone {
+  inset: 0;
+  position: absolute;
+}
+/* it hums on the table: a ring opens round it, on the ground (an ellipse of the picture) */
+.lp-toy .lp-tp-hum {
+  border: 2.5px solid var(--lp-pink-30);
+  border-radius: 50%;
+  height: 250px;
+  margin: -125px 0 0 -150px;
+  position: absolute;
+  width: 300px;
+}
+/* the conversation, beside the phone: a column, centred on the stage's height */
+.lp-toy .lp-tp-chat {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: calc(9px * var(--toy-k));
+  justify-content: center;
+  left: 318px;
+  position: absolute;
+  top: 0;
+  width: 404px;
+}
+.lp .lp-toy .lp-tp-who {
+  align-items: center;
+  color: var(--lp-text);
+  display: flex;
+  font-size: calc(13px * var(--toy-k));
+  gap: calc(8px * var(--toy-k));
+  line-height: calc(18px * var(--toy-k));
+  margin: 0 0 calc(4px * var(--toy-k));
+}
+.lp-toy .lp-tp-who b {
+  font-weight: 600;
+}
+.lp-toy .lp-tp-who small {
+  color: var(--lp-ink-70);
+  font-size: calc(12px * var(--toy-k));
+}
+/* Claude's own mark, in its own colour, on a white disc */
+.lp-toy .lp-tp-avatar {
+  background: var(--lp-surface);
+  border-radius: 50%;
+  box-shadow: var(--toy-shadow-soft);
+  color: var(--lp-claude-spark);
+  display: grid;
+  flex: none;
+  height: calc(28px * var(--toy-k));
+  place-items: center;
+  width: calc(28px * var(--toy-k));
+}
+.lp-toy .lp-tp-avatar svg {
+  display: block;
+  height: 58%;
+  width: 58%;
+}
+.lp-toy .lp-tp-row {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.lp-toy .lp-tp-row[data-from="me"] {
+  align-items: flex-end;
+}
+.lp .lp-toy .lp-tp-bubble {
+  background: var(--lp-surface);
+  border-radius: calc(20px * var(--toy-k));
+  box-shadow: var(--toy-shadow-soft);
+  color: var(--lp-text);
+  font-size: calc(15px * var(--toy-k));
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  line-height: calc(21px * var(--toy-k));
+  margin: 0;
+  max-width: 344px;
+  padding: calc(10px * var(--toy-k)) calc(15px * var(--toy-k));
+}
+.lp .lp-toy .lp-tp-row[data-from="me"] .lp-tp-bubble {
+  background: var(--lp-inverted-surface);
+  color: var(--lp-text-on-inverted);
+}
+.lp-toy .lp-tp-delivered {
+  color: var(--lp-ink-70);
+  font-size: calc(11px * var(--toy-k));
+  line-height: calc(14px * var(--toy-k));
+  margin-top: calc(4px * var(--toy-k));
+}
+/* the three dots, on the message's own spot */
+.lp-toy .lp-tp-typing {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: calc(20px * var(--toy-k));
+  box-shadow: var(--toy-shadow-soft);
+  display: flex;
+  gap: calc(5px * var(--toy-k));
+  left: 0;
+  padding: calc(14px * var(--toy-k)) calc(15px * var(--toy-k));
+  position: absolute;
+  top: 0;
+}
+.lp-toy .lp-tp-typing i {
+  background: var(--lp-ink-70);
+  border-radius: 50%;
+  display: block;
+  height: calc(7px * var(--toy-k));
+  opacity: 0.35;
+  width: calc(7px * var(--toy-k));
+}
+@media (max-width: 767px) {
+  /* four messages at the phones' type: a little smaller, in a wider column */
+  .lp-toy.lp-tp {
+    --toy-k: 1.36;
+  }
+  .lp-toy .lp-tp-chat {
+    left: 300px;
+    width: 436px;
+  }
+  .lp .lp-toy .lp-tp-bubble {
+    max-width: 400px;
+  }
+}
+
+/* ── "Run your revenue engine from Claude" ──
+   Claude's window is the page's own type, in the mcp story's look (story-mcp.css: its palette,
+   its serif for the answer, its composer), smaller, beside the engine. */
+.lp-toy.lp-te {
+  --te-ink: var(--lp-claude-ink);
+  --te-serif: var(--lp-font-claude-serif, Georgia), Georgia, serif;
+}
+/* The story goes round with other questions: every round's ask, answer and Play are in the
+   markup (each a data-r), and the root's data-round shows one. */
+.lp-toy.lp-te[data-round="0"] [data-r]:not([data-r="0"]),
+.lp-toy.lp-te[data-round="1"] [data-r]:not([data-r="1"]),
+.lp-toy.lp-te[data-round="2"] [data-r]:not([data-r="2"]) {
+  display: none;
+}
+/* what runs along the cable */
+.lp-toy .lp-te-pulse {
+  background: var(--lp-pink-30);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9), 0 0 14px 4px var(--lp-pink-30);
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  position: absolute;
+  width: 10px;
+}
+/* a part's light on the stand (the ground: an ellipse of the picture), in its tone */
+.lp-toy .lp-te-glow {
+  background: radial-gradient(closest-side, var(--toy-tone), color-mix(in srgb, var(--toy-tone) 35%, transparent) 60%, transparent);
+  border-radius: 50%;
+  height: 94px;
+  margin: -47px 0 0 -65px;
+  opacity: 0.6;
+  position: absolute;
+  width: 130px;
+}
+/* the radar's beam, on its face */
+.lp-toy .lp-te-beam {
+  background: conic-gradient(from 90deg, rgba(255, 122, 160, 0) 0deg, rgba(255, 122, 160, 0) 250deg, rgba(255, 150, 180, 0.75) 360deg);
+  border-radius: 50%;
+  position: absolute;
+  scale: 1 0.72;
+}
+/* Pancake, on the stand's front */
+.lp-toy .lp-te-badge {
+  background: var(--lp-surface);
+  border-radius: 50%;
+  box-shadow: var(--toy-shadow-soft);
+  display: block;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  position: absolute;
+  width: 30px;
+}
+.lp-toy .lp-te-badge__mark {
+  display: block;
+  height: 20px;
+  margin: 5px;
+  width: 20px;
+}
+/* the window */
+.lp-toy .lp-te-win {
+  background: var(--lp-surface);
+  border-radius: 20px;
+  box-shadow: 0 0 0 0.5px var(--lp-claude-ink-08), 0 10px 34px rgba(44, 0, 42, 0.12);
+  color: var(--te-ink);
+  height: 421px;
+  left: 28px;
+  position: absolute;
+  top: 34px;
+  width: 372px;
+}
+.lp .lp-toy .lp-te-title {
+  align-items: center;
+  display: flex;
+  font-size: calc(15px * var(--toy-k));
+  font-weight: 600;
+  gap: calc(8px * var(--toy-k));
+  left: 20px;
+  line-height: calc(24px * var(--toy-k));
+  margin: 0;
+  position: absolute;
+  top: 16px;
+}
+.lp-toy .lp-te-title__mark {
+  color: var(--lp-claude-spark);
+  display: block;
+  height: calc(18px * var(--toy-k));
+  width: calc(18px * var(--toy-k));
+}
+.lp-toy .lp-te-title__mark svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.lp-toy .lp-te-thread {
+  display: flex;
+  flex-direction: column;
+  gap: calc(11px * var(--toy-k));
+  left: 20px;
+  position: absolute;
+  right: 20px;
+  top: calc(40px + 18px * var(--toy-k));
+}
+/* the ask, in the user's bubble */
+.lp .lp-toy .lp-te-ask {
+  align-self: flex-end;
+  background: var(--lp-claude-bubble);
+  border-radius: calc(16px * var(--toy-k));
+  font-size: calc(14px * var(--toy-k));
+  line-height: calc(20px * var(--toy-k));
+  margin: 0;
+  padding: calc(8px * var(--toy-k)) calc(14px * var(--toy-k));
+}
+.lp-toy .lp-te-ask span {
+  display: block;
+}
+/* Pancake's steps, as Claude logs them */
+.lp-toy .lp-te-steps {
+  display: grid;
+  gap: calc(7px * var(--toy-k));
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.lp-toy .lp-te-step {
+  align-items: center;
+  color: var(--lp-claude-ink-64);
+  display: flex;
+  font-size: calc(13px * var(--toy-k));
+  gap: calc(8px * var(--toy-k));
+  line-height: calc(18px * var(--toy-k));
+}
+.lp-toy .lp-te-step em {
+  color: var(--lp-claude-ink-48);
+  font-size: calc(12px * var(--toy-k));
+  font-style: normal;
+  margin-left: auto;
+}
+.lp-toy .lp-te-pk {
+  display: block;
+  flex: none;
+  height: calc(16px * var(--toy-k));
+  width: calc(16px * var(--toy-k));
+}
+/* Claude's answer, in its serif */
+.lp .lp-toy .lp-te-say {
+  color: var(--lp-claude-serif-ink);
+  font-family: var(--te-serif);
+  font-size: calc(16px * var(--toy-k));
+  line-height: calc(22px * var(--toy-k));
+  margin: calc(2px * var(--toy-k)) 0 0;
+}
+/* the Play: its kicker and name, two lines under them */
+.lp-toy .lp-te-play {
+  border-radius: calc(14px * var(--toy-k));
+  box-shadow: 0 0 0 1px var(--lp-claude-ink-08);
+  padding: calc(4px * var(--toy-k)) calc(14px * var(--toy-k));
+}
+.lp .lp-toy .lp-te-play__h,
+.lp .lp-toy .lp-te-play__row {
+  align-items: center;
+  display: flex;
+  font-size: calc(13px * var(--toy-k));
+  gap: calc(8px * var(--toy-k));
+  line-height: calc(18px * var(--toy-k));
+  margin: 0;
+  padding: calc(8px * var(--toy-k)) 0;
+}
+.lp .lp-toy .lp-te-play__row {
+  box-shadow: 0 -1px 0 var(--lp-claude-ink-08);
+}
+.lp-toy .lp-te-play__h span,
+.lp-toy .lp-te-play__row span {
+  color: var(--lp-claude-ink-48);
+}
+.lp-toy .lp-te-play__row span {
+  flex: none;
+  width: calc(36px * var(--toy-k));
+}
+.lp-toy .lp-te-play b {
+  font-weight: 600;
+}
+.lp-toy .lp-te-play__row b {
+  font-weight: 500;
+}
+/* the composer, docked: what is typed in it, the Pancake connector, the send */
+.lp-toy .lp-te-bar {
+  align-items: center;
+  border-radius: 16px;
+  bottom: 14px;
+  box-shadow: 0 0 0 1px var(--lp-claude-ink-16);
+  display: flex;
+  gap: 8px;
+  height: 46px;
+  left: 14px;
+  padding: 0 8px 0 14px;
+  position: absolute;
+  right: 14px;
+}
+.lp-toy .lp-te-field {
+  flex: 1 1 0;
+  font-size: 14px;
+  height: 20px;
+  line-height: 20px;
+  min-width: 0;
+  position: relative;
+}
+.lp-toy .lp-te-ph,
+.lp-toy .lp-te-typed,
+.lp-toy .lp-te-reply {
+  left: 0;
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+/* (the first placeholder and the ask, typed: only on the way; the follow-up placeholder rests) */
+.lp-toy .lp-te-ph,
+.lp-toy .lp-te-typed {
+  visibility: hidden;
+}
+.lp-toy .lp-te-ph,
+.lp-toy .lp-te-reply {
+  color: var(--lp-claude-ink-48);
+}
+/* Claude's home line, in its serif, over the empty thread: frame 0 only */
+.lp .lp-toy .lp-te-greet {
+  color: var(--lp-claude-serif-ink);
+  font-family: var(--te-serif);
+  font-size: calc(24px * var(--toy-k));
+  font-weight: 300;
+  left: 0;
+  line-height: calc(32px * var(--toy-k));
+  margin: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 150px;
+  visibility: hidden;
+}
+.lp-toy .lp-te-conn {
+  align-items: center;
+  display: flex;
+  flex: none;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 6px;
+}
+.lp-toy .lp-te-conn i {
+  background: #1fae6b;
+  border-radius: 50%;
+  display: block;
+  height: 6px;
+  width: 6px;
+}
+.lp-toy .lp-te-send {
+  align-items: center;
+  background: var(--lp-claude-send);
+  border-radius: 10px;
+  display: flex;
+  flex: none;
+  height: 30px;
+  justify-content: center;
+  opacity: 0.45;
+  width: 30px;
+}
+.lp-toy .lp-te-send svg {
+  display: block;
+  fill: none;
+  height: 14px;
+  stroke: var(--lp-surface);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  width: 14px;
+}
+@media (max-width: 767px) {
+  /* the window keeps its box and its type grows: no room left for the answer line nor for the
+     composer, which are left out there, as in the mcp story (the ask types in its bubble) */
+  .lp-toy.lp-te {
+    --toy-k: 1.3;
+  }
+  .lp-toy .lp-te-bar,
+  .lp .lp-toy .lp-te-say {
+    display: none;
+  }
+}

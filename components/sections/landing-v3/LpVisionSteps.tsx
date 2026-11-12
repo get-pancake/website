@@ -1,6 +1,8 @@
 import { Fragment } from "react";
 
 import { LpVisionStepAnim } from "./LpVisionStepAnim";
+import { LpVisionStepStage } from "./LpVisionStepMocks";
+import { TOY_STEP_ALT } from "./lp-toy-data";
 import { VISION_STATEMENT, VISION_STEPS } from "./lp-vision-data";
 
 /**
@@ -10,6 +12,9 @@ import { VISION_STATEMENT, VISION_STEPS } from "./lp-vision-data";
  * card and a 464 × 426 media card a row, checkerboard), under the page's statement as its title,
  * with three new pictures (LpVisionStepAnim): connect your sources, connect the dots with market
  * signals, find who to contact and when. Copy: lp-vision-data.ts VISION_STEPS.
+ * A step's picture is the stage its `variant` names (LpVisionStepStage): a toy picture in the
+ * kitchen's look since 2026-11-12 (LpToySteps.tsx, toys/README.md), or the flat one it replaced.
+ * It is rendered here, on the server, and handed to the card's island as its child.
  */
 export function LpVisionSteps() {
   return (
@@ -34,7 +39,9 @@ export function LpVisionSteps() {
                 <h3 className="lp-steps__step-title lp-display">{step.title}</h3>
                 <p className="lp-steps__body">{step.body}</p>
               </div>
-              <LpVisionStepAnim className="lp-steps__media" variant={step.variant} alt={step.alt} />
+              <LpVisionStepAnim className="lp-steps__media" variant={step.variant} alt={TOY_STEP_ALT[step.variant] ?? step.alt}>
+                <LpVisionStepStage variant={step.variant} />
+              </LpVisionStepAnim>
             </div>
           ))}
         </div>

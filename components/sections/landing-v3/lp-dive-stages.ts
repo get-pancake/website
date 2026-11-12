@@ -14,12 +14,14 @@ import {
   LpStorySourcesAllStage,
 } from "./LpStoryProblems";
 import { LpStorySignalsStage } from "./LpStorySignals";
+import { LpToyEngineStage, LpToyJourneyStage, LpToyMergeStage, LpToyPingStage } from "./LpToyStories";
 import { STORY_CONTEXT_ALT } from "./lp-story-context-data";
 import { STORY_LINEAGE_ALT } from "./lp-story-lineage-data";
 import { STORY_MCP_ALT } from "./lp-story-mcp-data";
 import { STORY_PING_ALT } from "./lp-story-ping-data";
 import { PROBLEM_SCENE, type ProblemStoryId } from "./lp-story-problems-data";
 import { STORY_SIGNALS_ALT } from "./lp-story-signals-data";
+import { TOY_ENGINE, TOY_JOURNEY, TOY_MERGE, TOY_PING } from "./lp-toy-data";
 
 /**
  * Deep-dive stage registry — the four carousel items' scenes (V2 Figma 4939:3388, decision
@@ -73,7 +75,11 @@ import { STORY_SIGNALS_ALT } from "./lp-story-signals-data";
  *  problems (2026-11-11: one renderer and one builder for the five, LpStoryProblems.tsx and
  *  lp-story-problems-timeline.ts; the sixth problem, crossing, is "lineage"), and "ping", your
  *  agent texting you first (the same page's feature "Get the next move before you ask"). */
-export type DiveItemId = "context" | "signals" | "lineage" | "mcp" | "ping" | ProblemStoryId;
+export type DiveItemId = "context" | "signals" | "lineage" | "mcp" | "ping" | ProblemStoryId | ToyStoryId;
+/** The toy pictures of the vision homepage's four features (2026-11-12, LpToyStories.tsx): soft
+ *  3D sets in the kitchen's look, in place of "mcp", "p-history", "p-dedup" and "ping". One
+ *  builder for the four (lp-toy-story-timelines.ts). */
+export type ToyStoryId = "t-engine" | "t-journey" | "t-merge" | "t-ping";
 
 /** carousel order (the founder's four blocks, 2026-10-28) */
 export const DIVE_ORDER: readonly DiveItemId[] = ["context", "signals", "lineage", "mcp"];
@@ -92,8 +98,10 @@ export type DiveStageProps = {
   placeholders: boolean;
 };
 
-/** What a story builder returns (lp-play-once Built, with a required cue). */
-export type BuiltStory = { tl: gsap.core.Timeline; cleanup: () => void; cue: number };
+/** What a story builder returns (lp-play-once Built, with a required cue). `next`: for a story
+    that changes between two turns of the carousel (or two rounds of the phone stack): called
+    before it plays again, never before its first turn. */
+export type BuiltStory = { tl: gsap.core.Timeline; cleanup: () => void; cue: number; next?: () => void };
 
 export type DiveStageEntry = {
   id: DiveItemId;
@@ -134,4 +142,8 @@ export const DIVE_STAGES: Record<DiveItemId, DiveStageEntry> = {
   "p-matching": { id: "p-matching", Stage: LpStoryMatchingStage, alt: PROBLEM_SCENE["p-matching"].alt },
   "p-history": { id: "p-history", Stage: LpStoryHistoryStage, alt: PROBLEM_SCENE["p-history"].alt },
   "p-moves": { id: "p-moves", Stage: LpStoryMovesStage, alt: PROBLEM_SCENE["p-moves"].alt },
+  "t-engine": { id: "t-engine", Stage: LpToyEngineStage, alt: TOY_ENGINE.alt },
+  "t-journey": { id: "t-journey", Stage: LpToyJourneyStage, alt: TOY_JOURNEY.alt },
+  "t-merge": { id: "t-merge", Stage: LpToyMergeStage, alt: TOY_MERGE.alt },
+  "t-ping": { id: "t-ping", Stage: LpToyPingStage, alt: TOY_PING.alt },
 };

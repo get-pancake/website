@@ -146,9 +146,9 @@ export function LpDive({
         </div>
         <div className="lp-dive-stagewrap">
           {/* WCAG 2.2.2: the carousel moves on its own — Pause, under the card's bottom-right
-              corner: shown on keyboard focus, while it holds the carousel, while a pointer is
-              over the stage, always on touch screens (dive.css). The driver sets aria-pressed
-              and the icon. */}
+              corner. A keyboard control only since 2026-11-12: shown on keyboard focus and while
+              it holds the carousel, never to a mouse or a finger (dive.css has why). The driver
+              sets aria-pressed and the icon. */}
           <div className="lp-dive-ctrl">
             <button
               type="button"

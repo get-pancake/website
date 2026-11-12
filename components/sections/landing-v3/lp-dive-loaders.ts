@@ -30,7 +30,19 @@ const problem: DiveStageLoader = () =>
     }),
   );
 
+/** the vision homepage's four toy pictures: one builder, which reads the story from its root */
+const toy: DiveStageLoader = () =>
+  Promise.all([import("@/lib/gsap"), import("./lp-toy-story-timelines")]).then(([{ gsap }, { buildToyStory, buildToyStorySteps }]) => ({
+    gsap,
+    build: buildToyStory,
+    steps: buildToyStorySteps,
+  }));
+
 export const DIVE_LOADERS: Record<DiveItemId, DiveStageLoader> = {
+  "t-engine": toy,
+  "t-journey": toy,
+  "t-merge": toy,
+  "t-ping": toy,
   "p-sources": problem,
   "p-dedup": problem,
   "p-matching": problem,

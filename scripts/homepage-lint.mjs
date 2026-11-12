@@ -102,6 +102,10 @@ const FILES = [
   "components/sections/landing-v3/lp-story-problems-data.ts",
   "components/sections/landing-v3/LpVisionDb.tsx",
   "components/sections/landing-v3/lp-vision-tables.ts",
+  // the toy pictures of the 1-2-3 and of the four features (2026-11-12)
+  "components/sections/landing-v3/lp-toy-data.ts",
+  "components/sections/landing-v3/LpToySteps.tsx",
+  "components/sections/landing-v3/LpToyStories.tsx",
   // the kitchen under the clouds (2026-11-12)
   "components/sections/landing-v3/LpKitchen.tsx",
   "components/sections/landing-v3/kitchen/words.js",
