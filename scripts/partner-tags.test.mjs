@@ -60,8 +60,14 @@ test("on pancake.ai it banks the newest touch, loads the container and sends one
   assert.equal(fetches[0].init.keepalive, true);
 
   assert.equal(inserted.length, 1);
-  assert.equal(inserted[0].src, "https://www.googletagmanager.com/gtm.js?id=GTM-TEST123");
+  // The Google tag gateway path on our own domain (lib/analytics/google-tag-gateway.mjs)…
+  assert.equal(inserted[0].src, "/pk7x?id=GTM-TEST123");
   assert.equal(inserted[0].async, true);
+  // …and Google's own address only if that request fails.
+  inserted[0].onerror();
+  assert.equal(inserted.length, 2);
+  assert.equal(inserted[1].src, "https://www.googletagmanager.com/gtm.js?id=GTM-TEST123");
+  inserted.pop();
 
   assert.equal(dataLayer.length, 2);
   assert.equal(dataLayer[0].event, "gtm.js");

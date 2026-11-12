@@ -9,6 +9,7 @@ import "./globals.css";
 // and components that use them (components/ui/*, FxPill, GtmComparisonPage,
 // the roadmap and pricing pages, HomeUGCWall).
 import { acquisitionBankScript } from "@/lib/analytics/acquisition-bank.mjs";
+import { tagManagerSourceJs } from "@/lib/analytics/google-tag-gateway.mjs";
 import { TRACKER_GATE, gatedScriptLoader, trackerGateScript } from "@/lib/analytics/tracker-gate.mjs";
 import { AnalyticsEvents } from "@/components/analytics/AnalyticsEvents";
 import { MetaPixelEvents } from "@/components/analytics/MetaPixelEvents";
@@ -239,6 +240,11 @@ const tagManagerEnabled = productionVendorTrackingEnabled || tagManagerDebugEnab
 // Both domains, apex and www (lib/site-config.mjs): the site answers on
 // getpancake.ai and pancake.ai through the move, and tags run on either.
 const productionHostnameGuard = `var h=window.location.hostname.toLowerCase();if(${JSON.stringify(PRODUCTION_SITE_HOSTS)}.indexOf(h)<0){return;}`;
+// /demo/review (the staff queue of demo requests) has its own Content-Security-Policy
+// (next.config.mjs), which never allowed www.googletagmanager.com. The container now loads
+// from our own domain (Google tag gateway, lib/analytics/google-tag-gateway.mjs), which that
+// policy's 'self' would let through, so it stays off that page here instead.
+const tagManagerPageGuard = `var p=window.location.pathname;if(p==="/demo/review"||p.indexOf("/demo/review/")===0){return;}`;
 
 export default function RootLayout({
   children,
@@ -282,10 +288,9 @@ export default function RootLayout({
         {tagManagerEnabled ? (
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){${tagManagerDebugEnabled ? "" : productionHostnameGuard}(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              __html: `(function(){${tagManagerDebugEnabled ? "" : productionHostnameGuard}${tagManagerPageGuard}(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;${trackerGate}(function(){f.parentNode.insertBefore(j,f);});
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;${tagManagerSourceJs()}${trackerGate}(function(){f.parentNode.insertBefore(j,f);});
 })(window,document,'script','dataLayer','${googleTagManagerId}');})();`,
             }}
           />

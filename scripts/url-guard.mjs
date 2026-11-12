@@ -12,14 +12,17 @@
  * file, file in public/) or be the `source` of a redirect in next.config.mjs
  * whose destination resolves too. Every redirect is checked the same way,
  * listed or not: one that points at a page that is gone is a 404 with an extra
- * hop. A path that next.config.mjs rewrites to another host (/record, /learn)
- * must have no page or public file in this repo: the two would fight for the
- * address, and one of them would silently never be served. Runs before every
- * build (package.json "prebuild").
+ * hop. A path that next.config.mjs rewrites to another host (/record, /learn),
+ * or that middleware.ts forwards to Google (the Google tag gateway path,
+ * lib/analytics/google-tag-gateway.mjs), must have no page or public file in
+ * this repo: the two would fight for the address, and one of them would
+ * silently never be served. Runs before every build (package.json "prebuild").
  */
 import fs from "node:fs";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
+
+import { GOOGLE_TAG_GATEWAY_PATH } from "../lib/analytics/google-tag-gateway.mjs";
 
 const ROOT = process.cwd();
 const known = fs
@@ -84,13 +87,15 @@ const rewriteRules = Array.isArray(rewriteConfig)
   ? rewriteConfig
   : [...(rewriteConfig.beforeFiles ?? []), ...(rewriteConfig.afterFiles ?? []), ...(rewriteConfig.fallback ?? [])];
 const proxiedPaths = [
-  ...new Set(
-    rewriteRules.filter((r) => /^https?:\/\//.test(r.destination)).map((r) => r.source.split("/:")[0] || "/"),
-  ),
+  ...new Set([
+    ...rewriteRules.filter((r) => /^https?:\/\//.test(r.destination)).map((r) => r.source.split("/:")[0] || "/"),
+    // middleware.ts forwards it to Google's gateway endpoint.
+    GOOGLE_TAG_GATEWAY_PATH,
+  ]),
 ];
 const shadowed = proxiedPaths.filter((p) => p !== "/" && (exists("app", p) || exists("public", p)));
 for (const p of shadowed) {
-  console.log(`ERROR  ${p} is proxied to another host in next.config.mjs, but app${p} or public${p} exists too, and one of them would never be served — remove the page or file, or the rewrite`);
+  console.log(`ERROR  ${p} is proxied to another host (next.config.mjs rewrites or middleware.ts), but app${p} or public${p} exists too, and one of them would never be served — remove the page or file, or the proxy`);
 }
 const dead = missing.length + deadRedirects.length + shadowed.length;
 console.log(
