@@ -1,4 +1,10 @@
 /**
+ * SINCE 2026-11-11 THE WINDOW IS CLAUDE'S. On the vision homepage the item reads "Run everything
+ * from Claude" (the founder: "from Claude (not your agent)"), so the picture beside it is Claude's
+ * window: its spark and name, its serif for the home line and the answer, its composer. The job,
+ * the steps, the Play and the motion are unchanged. Below, "Codex" is this story's history: read
+ * it as "the agent's window".
+ *
  * Deep-dive story 4, "Codex at work" (the item "Built for Claude and Codex", lp-dive-data.ts) —
  * its copy and data. Owner: story-mcp package (2026-10-28; this picture 2026-11-01). Block 4 of
  * the founder's four: "Pour les 4 blocs je ferai donc 1/ Next best action + Unified GTM context 2/
@@ -83,10 +89,11 @@ export type StoryMcpStory = {
 
 export const STORY_MCP: StoryMcpStory = {
   window: { x: 20, y: 20, w: 712, h: 449 },
-  title: "Codex",
-  greeting: "What should we code next?",
-  placeholder: "Ask a question with /plan",
-  reply: "Ask for follow-up changes",
+  // Claude's own words (lp-demo-data.ts CLAUDE_CHROME)
+  title: "Claude",
+  greeting: "Let’s flip some pancakes",
+  placeholder: "How can I help you today?",
+  reply: "Reply to Claude…",
   connector: "Pancake",
   ask: { text: "Find startups posting about a rebrand." },
   steps: [
@@ -106,7 +113,7 @@ export const STORY_MCP: StoryMcpStory = {
   },
 };
 
-/** The whole story. It names Codex, Pancake, the ask and the Play: the stage is aria-hidden, so
+/** The whole story. It names Claude, Pancake, the ask and the Play: the stage is aria-hidden, so
     they are read from here only. */
 export const STORY_MCP_ALT: string =
-  "Animation: in Codex, with the Pancake connector, someone types: Find startups posting about a rebrand. Pancake reads your Brain, searches posts about a rebrand and builds the Play. Codex answers with the Play, Startups planning a rebrand: founders and heads of brand, on rebrand and new website signals.";
+  "Animation: in Claude, with the Pancake connector, someone types: Find startups posting about a rebrand. Pancake reads your Brain, searches posts about a rebrand and builds the Play. Claude answers with the Play, Startups planning a rebrand: founders and heads of brand, on rebrand and new website signals.";

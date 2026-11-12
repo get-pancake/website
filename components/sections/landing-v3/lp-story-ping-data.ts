@@ -1,8 +1,8 @@
 /**
  * Deep-dive story "ping" (the vision homepage's feature "Get the next move before you ask",
  * 2026-11-11). The founder, on the diagram this replaces (the context story's schema): "Moins fan
- * du schema 4 … i'd see more something like instinct or grok bot pinging in a iMessage ui about
- * proactively reaching out to someone who signed up // on which we're working a lot". So the
+ * du schema 4", and what he would see in its place: a bot pinging you in a text-message UI,
+ * "proactively reaching out to someone who signed up // on which we're working a lot". So the
  * picture is a text conversation: your agent writes first, about someone who just signed up at an
  * account you are already working, and offers to reach out; you say yes.
  * Rules kept: no person is named (a role and a kind of company), no real company. In
