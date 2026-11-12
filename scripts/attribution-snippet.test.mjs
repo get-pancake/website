@@ -29,6 +29,7 @@ function visit(href, referrer = "") {
     location: new URL(href),
     crypto: webcrypto,
     URL,
+    URLSearchParams,
     Uint8Array,
     Date,
     fetch: () => {
@@ -45,10 +46,10 @@ function visit(href, referrer = "") {
   return { attributes: write.split("; ").slice(1), state };
 }
 
-test("the served snippet is pancake-cmo's PAN-2339 build", () => {
+test("the served snippet is pancake-cmo's build that keeps the Google Ads click detail", () => {
   assert.equal(
     createHash("sha256").update(snippet).digest("hex"),
-    "b37a828e7a649851462219eb885e9723feb82f2dbacb8c41e8c4f115ffaac8ad",
+    "c0d4b1997b80a398edf7cd5f1cee9447ce0d1955b3c860b3de6ba34a46898626",
   );
 });
 
@@ -82,4 +83,28 @@ test("a visit from the other Pancake domain is not an external referral", () => 
   assert.equal(visit("https://pancake.ai/", "https://getpancake.ai/blog/some-post").state.t[0].r, undefined);
   assert.equal(visit("https://getpancake.ai/", "https://www.pancake.ai/").state.t[0].r, undefined);
   assert.equal(visit("https://pancake.ai/", "https://www.google.com/").state.t[0].r, "www.google.com");
+});
+
+test("a Google Ads click keeps its ad group, keyword, match type, device and location", () => {
+  const gclid = `Cj0KCQiA${"x".repeat(84)}`;
+  const { state } = visit(
+    "https://pancake.ai/claude?pk_ag=123456789012&pk_kw=claude%20for%20sales&pk_mt=p&pk_dev=m" +
+      `&pk_geo=2840&gad_source=1&gclid=${gclid}`,
+    "https://www.google.com/",
+  );
+  const [touch] = state.t;
+  assert.equal(
+    touch.u,
+    `https://pancake.ai/claude?gclid=${gclid}` +
+      "&pk_ag=123456789012&pk_kw=claude+for+sales&pk_mt=p&pk_dev=m&pk_geo=2840",
+  );
+  assert.deepEqual(touch.k, { gclid });
+  for (const field of ["s", "m", "c", "n", "w"]) assert.equal(touch[field], undefined, field);
+});
+
+test("other query parameters still never reach the cookie", () => {
+  const { state } = visit(
+    "https://pancake.ai/?utm_source=meta&fbclid=f&token=SECRET&pk_other=1&pk_kw=a&pk_kw=b",
+  );
+  assert.equal(state.t[0].u, "https://pancake.ai/?utm_source=meta&fbclid=f");
 });
