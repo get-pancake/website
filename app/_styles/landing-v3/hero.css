@@ -531,11 +531,12 @@
      the full 61.44vw. */
   .lp-hero--home .lp-hero-inner {
     padding-top: calc(61.44vw - var(--lp-switch-height) - 23px);
-    /* founder 2026-11-03, on the Product Hunt badge squeezed between the buttons and the demo
-       card ("badly positionned"): the CTAs land 80px above the fold (was 64), so the badge
-       gets 12px above it and 19px below it (block "Product Hunt badge" below). Both audiences:
-       the switch keeps one pixel in the two views. */
-    padding-bottom: 80px;
+    /* (2026-11-03 to 2026-11-11 this was 80: the room of Product Hunt's badge under the
+       buttons. The founder, 2026-11-11: "Sur mobile je trouve que le badge Product Hunt n'a
+       rien a faire la": phones no longer show it in the hero (block "Product Hunt badge"
+       below), and the column's last line, the install row, lands 64px above the fold, as the
+       CTAs did before the badge. Both audiences: one geometry for the two views.) */
+    padding-bottom: 64px;
   }
   .lp-hero-col {
     gap: 23px;
@@ -628,7 +629,12 @@
   outline: 2px solid var(--lp-purple-30);
   outline-offset: 2px;
 }
+/* phones: no badge in the hero (founder 2026-11-11: "Sur mobile je trouve que le badge Product
+   Hunt n'a rien a faire la") */
 @media (max-width: 767px) {
+  .lp-hero--home .lp-hero-ph {
+    display: none;
+  }
   .lp-hero-ph {
     border-radius: 7px;
     top: calc(100% + 12px);
