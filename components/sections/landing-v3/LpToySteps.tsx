@@ -66,17 +66,17 @@ const SOURCE_SETS = [
   VSTEP_SOURCES.map((source, i) => ({ id: source.id, label: source.label, logo: source.logo, text: TOY_SOURCES.sends[i].text })),
   TOY_SOURCES.more,
 ] as const;
-/** where the riders rest on the turntable, in turns from its right, one a tone */
+/** Where the riders rest on the turntable, in turns from its right, one a tone. The ring is a
+    circle of the set, so an ellipse of the picture (RING_RX, RING_RY, in stage px). The markup
+    lays each rider on its place; the take turns them (lp-toy-step-timelines.ts `toyOrbit`). */
 const RIDER_REST = [0.07, 0.32, 0.57, 0.82] as const;
+const RING_RX = S.anchors["ring-x"][0] - S.anchors["ring-o"][0];
+const RING_RY = S.anchors["ring-z"][1] - S.anchors["ring-o"][1];
 
 function T1Stage() {
-  const ring = {
-    "--toy-rx": toyPx(S.anchors["ring-x"][0] - S.anchors["ring-o"][0]),
-    "--toy-ry": toyPx(S.anchors["ring-z"][1] - S.anchors["ring-o"][1]),
-    "--toy-flat": Math.round(S_FLAT * 1000) / 1000,
-  } as CSSProperties;
+  const flat = { "--toy-flat": Math.round(S_FLAT * 1000) / 1000 } as CSSProperties;
   return (
-    <div className="lp-step-stage lp-step-stage--t1 lp-toy" aria-hidden="true" style={ring}>
+    <div className="lp-step-stage lp-step-stage--t1 lp-toy" aria-hidden="true" style={flat}>
       <i className="lp-sx-bg" />
       <div className="lp-toy-set">
         <ToyPic set="sources" name="plate" />
@@ -102,17 +102,11 @@ function T1Stage() {
         <ToyPic set="sources" name="docks" />
         <ToyPic set="sources" name="machine" />
         {/* the beads that ride the turntable */}
-        {DOCK_TONES.map((tone, i) => (
-          <ToyPic
-            key={tone}
-            set="sources"
-            name={`bead-${tone}`}
-            from={S.anchors.bead}
-            to={S.anchors["ring-o"]}
-            className="lp-t1-rider"
-            style={{ "--toy-a": RIDER_REST[i] } as CSSProperties}
-          />
-        ))}
+        {DOCK_TONES.map((tone, i) => {
+          const a = RIDER_REST[i] * 2 * Math.PI;
+          const at = [S.anchors["ring-o"][0] + Math.cos(a) * RING_RX, S.anchors["ring-o"][1] + Math.sin(a) * RING_RY] as const;
+          return <ToyPic key={tone} set="sources" name={`bead-${tone}`} from={S.anchors.bead} to={at} className="lp-t1-rider" data-rest={RIDER_REST[i]} />;
+        })}
         <span className="lp-t1-hub" style={{ left: toyPx(S.anchors.hub[0]), top: toyPx(S.anchors.hub[1]) }}>
           <PancakeMark className="lp-t1-hub__mark" />
         </span>

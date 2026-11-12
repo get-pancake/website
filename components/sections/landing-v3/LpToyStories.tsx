@@ -268,8 +268,12 @@ export function LpToyEngineStage(_props: DiveStageProps) {
         {e.steps.map((step) => (
           <ToyPic key={step.id} set="engine" name={step.id} className="lp-te-part" data-part={step.id} />
         ))}
-        {/* the radar's beam, on its face: it turns once as Claude checks the signals */}
-        <i className="lp-toy-gone lp-te-beam" style={{ left: toyPx(face[0]), top: toyPx(face[1]), width: toyPx(2 * reach), height: toyPx(2 * reach), margin: `${toyPx(-reach)} 0 0 ${toyPx(-reach)}` }} />
+        {/* the radar's beam, on its face: it turns once as Claude checks the signals. The face is
+            a circle of the set, so an ellipse of the picture: .lp-te-face is flattened once, and
+            the beam turns inside it */}
+        <span className="lp-te-face" style={{ left: toyPx(face[0]), top: toyPx(face[1]) }}>
+          <i className="lp-toy-gone lp-te-beam" style={{ width: toyPx(2 * reach), height: toyPx(2 * reach), margin: `${toyPx(-reach)} 0 0 ${toyPx(-reach)}` }} />
+        </span>
         <span className="lp-te-badge" style={{ left: toyPx(E.anchors.front[0]), top: toyPx(E.anchors.front[1]) }}>
           <PancakeMark className="lp-te-badge__mark" />
         </span>

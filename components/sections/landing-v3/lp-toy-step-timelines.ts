@@ -97,6 +97,37 @@ function registerCountPlugin() {
   });
 }
 
+/**
+ * GSAP `toyOrbit` plugin: a bead rides the turntable. The ring is a circle of the set, so an
+ * ellipse of the picture (`rx`, `ry`); the bead rests at `rest` on it (in turns from the ring's
+ * right, where the markup lays it) and this tween takes it from `from` to `to` turns past its
+ * rest. A pure function of the tween's progress, so the take can be seeked both ways.
+ * (Until 2026-11-12 CSS placed the bead, from a custom property the take tweened. The beads
+ * never moved: the first time GSAP transforms an element it folds the element's own `translate`
+ * into its transform and sets `translate: none`.)
+ */
+type Orbit = { rest: number; from: number; to: number; rx: number; ry: number };
+type OrbitData = Orbit & { setX: (v: number) => void; setY: (v: number) => void };
+let orbitRegistered = false;
+function registerOrbitPlugin() {
+  if (orbitRegistered) return;
+  orbitRegistered = true;
+  gsap.registerPlugin({
+    name: "toyOrbit",
+    init(this: OrbitData, target: HTMLElement, value: Orbit) {
+      Object.assign(this, value);
+      this.setX = gsap.quickSetter(target, "x", "px") as (v: number) => void;
+      this.setY = gsap.quickSetter(target, "y", "px") as (v: number) => void;
+    },
+    render(ratio: number, data: OrbitData) {
+      const rest = data.rest * 2 * Math.PI;
+      const a = rest + (data.from + (data.to - data.from) * ratio) * 2 * Math.PI;
+      data.setX((Math.cos(a) - Math.cos(rest)) * data.rx);
+      data.setY((Math.sin(a) - Math.sin(rest)) * data.ry);
+    },
+  });
+}
+
 /* ── 01 · your sources plug in, the machine turns, the tables come up ── */
 
 /** what a row adds to its table once the piles are full, row after row (companies, people) */
@@ -137,6 +168,7 @@ function buildT1(stage: HTMLElement): Built {
   const roll = piles.l.length - full;
   if (full < 1 || roll < 1 || piles.r.length !== piles.l.length) throw new Error("lp-toy t1: the two piles, at every height");
   registerCountPlugin();
+  registerOrbitPlugin();
   toyDecode(stage);
 
   const path = (dock: number) => (art.paths as unknown as Record<string, readonly Point[]>)[`cable${dock}`];
@@ -209,16 +241,18 @@ function buildT1(stage: HTMLElement): Built {
       }
     });
   };
-  /** the riders' rest on the turntable, and how far each has turned */
-  const rests = riders.map((rider) => Number(rider.style.getPropertyValue("--toy-a")) || 0);
-  let turned = -3;
-  riders.forEach((rider, i) => set(rider, { "--toy-a": rests[i] + turned }));
-  /** the machine turns from the first bead in to the last row out */
+  /** the riders' rest on the turntable (the markup's), the ring, and how far it has turned */
+  const rests = riders.map((rider) => num(rider, "rest") || 0);
+  const ring = { rx: anchor("ring-x")[0] - anchor("ring-o")[0], ry: anchor("ring-z")[1] - anchor("ring-o")[1] };
+  let turned = 0;
+  /** the machine turns from the first bead in to the last row out: whole turns, so that the
+      riders are back on their rest when it stops */
   const turn = (leaves: readonly number[], turns: number) => {
     const from = leaves[0] + RUN;
     const to = leaves[leaves.length - 1] + RUN + INSIDE + HOP + 0.25;
+    const was = turned;
     turned += turns;
-    riders.forEach((rider, i) => tl.to(rider, { "--toy-a": rests[i] + turned, duration: to - from, ease: "power1.inOut" }, from));
+    riders.forEach((rider, i) => tl.to(rider, { toyOrbit: { rest: rests[i], from: was, to: turned, ...ring }, duration: to - from, ease: "power1.inOut" }, from));
     return to;
   };
 

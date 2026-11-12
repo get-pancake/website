@@ -38,7 +38,6 @@
 .lp-toy .lp-toy-gone {
   visibility: hidden;
 }
-
 /* a vendor's own mark on a white disc: the outer box is a point of the set, the disc hangs from
    it (LpToyKit.tsx ToyMark) */
 .lp-toy .lp-toy-mark {
@@ -159,17 +158,6 @@
 /* a cable draws in from its dock down: the take opens this clip */
 .lp-toy .lp-t1-cable {
   clip-path: inset(0% 0% 0% 0%);
-}
-/* a bead on the turntable: --toy-a is where it is on the ring, in turns from the ring's right.
-   The ring is a circle of the set, so an ellipse of the picture (--toy-rx, --toy-ry). */
-.lp-toy .lp-t1-rider {
-  translate: calc(cos(var(--toy-a) * 1turn) * var(--toy-rx)) calc(sin(var(--toy-a) * 1turn) * var(--toy-ry));
-}
-/* (an engine without CSS trigonometry would leave the four beads on the hub: none there) */
-@supports not (translate: calc(cos(0.25turn) * 1px) 0px) {
-  .lp-toy .lp-t1-rider {
-    display: none;
-  }
 }
 /* A source's mark lies flat on its dock, and Pancake's on the hub: what lies flat on the set is
    an ellipse of the picture (--toy-flat, the set's own camera). Founder, 2026-11-12: "une
@@ -880,12 +868,23 @@
   position: absolute;
   width: 130px;
 }
-/* the radar's beam, on its face */
+/* The radar's beam, on its face. The face is a point at the radar's centre, flattened once (as
+   .lp-t2-face); the beam turns inside it. Until 2026-11-12 the beam flattened itself (`scale: 1
+   0.72`) and GSAP turned it: GSAP folds an element's own `scale` into its transform, after the
+   rotation, so the flat disc turned as one piece and stood on its edge half-way round. */
+.lp-toy .lp-te-face {
+  display: block;
+  height: 0;
+  position: absolute;
+  transform: scaleY(0.72);
+  width: 0;
+}
 .lp-toy .lp-te-beam {
   background: conic-gradient(from 90deg, rgba(255, 122, 160, 0) 0deg, rgba(255, 122, 160, 0) 250deg, rgba(255, 150, 180, 0.75) 360deg);
   border-radius: 50%;
+  left: 0;
   position: absolute;
-  scale: 1 0.72;
+  top: 0;
 }
 /* Pancake, on the stand's front */
 .lp-toy .lp-te-badge {
