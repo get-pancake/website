@@ -35,9 +35,12 @@
   margin: 0;
 }
 
-/* a new title comes up from under the line, once the switch was used (never on load) */
+/* a new title comes up from under the line, once the switch was used (never on load). The span
+   takes the title's own face (the page's titles: Aeonik Condensed): without it the kit's layered
+   `* { font-family }` sets it in the reading face */
 .lp-kitchen__title-text {
   display: inline-block;
+  font-family: inherit;
 }
 .lp-kitchen__title-text[data-swap] {
   animation: lp-kitchen-title 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;

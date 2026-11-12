@@ -306,6 +306,34 @@
     right: 48px;
   }
 }
+/* The humans view, side by side (≥1025): the right column's first line sits on the H1's cap line
+   (founder 2026-11-12, "alignement pas ouf là"). Since the install row went under the buttons
+   (2026-11-11) and the toggle left this view, the column (lede, buttons, install row: 176 tall)
+   is taller than the H1, and bottom-aligned it started 40 px above the H1's caps (66 at 1100
+   wide, where the H1 shrinks). So its bottom follows the H1's size: the H1's cap line stands
+   63 + 1.75 × its size above the hero's bottom (two lines at 0.92, the caps 0.09 × the size
+   into the first), the lede's first line 171 above the column's bottom. The install row hangs
+   under the H1's last line. --lp-h1 is the H1's own size rule, above. */
+@media (min-width: 1025px) {
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home .lp-hero-aside {
+    --lp-h1: 79.5px;
+    bottom: calc(1.75 * var(--lp-h1) - 108px);
+  }
+}
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home .lp-hero-aside {
+    --lp-h1: min(79.5px, calc((100vw - 504px) / 9.2));
+  }
+}
+/* 1025–1279 the Product Hunt badge hangs under the column (the nav carries it from 1280): the
+   column stays high enough for the badge (14 + 44 under it) to clear the window card, 26 under
+   the hero. There the first line sits at most 13 px over the caps from 1201 up, more as the H1
+   shrinks */
+@media (min-width: 1025px) and (max-width: 1279px) {
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home .lp-hero-aside {
+    bottom: max(44px, calc(1.75 * var(--lp-h1) - 108px));
+  }
+}
 /* ── Homepage first screen (≥1025) — founder 2026-10-12, _decisions §10 ──
    "The designer page is built so that the top of this product footage
    appears in the hero 100vh": the demo window's top bar peeks at the bottom
