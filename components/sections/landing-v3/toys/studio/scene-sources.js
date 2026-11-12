@@ -18,12 +18,18 @@ const PILES = [-2.35, 2.35];
 const PILE_Z = 3.3;
 const SLAB = { r: 0.98, h: 0.3 };
 const FOOT = 0.14;
-/** the tone of each row, bottom to top: the sources take turns (lp-toy-step-timelines.ts sends
-    the beads in this order) */
-const ROWS = [
+/** The tone of each row, in the order it lands: the sources take turns (lp-toy-step-timelines.ts
+    sends the beads in this order). The first five fill a pile. The five after them land on a
+    later round, when other sources connect: a full pile then shows its last five rows (a row
+    lands on top, the bottom one goes into the table). They repeat the first five, so that a
+    pile after a round is the pile before it, and the rounds can go on. */
+const ROUND = [
   ["yellow", "purple", "pink", "blue", "yellow"],
   ["pink", "blue", "yellow", "purple", "pink"],
 ];
+const ROWS = ROUND.map((round) => [...round, ...round]);
+/** how many rows a pile shows */
+const HIGH = 5;
 const TONES = ["yellow", "pink", "purple", "blue"];
 
 const scene = {
@@ -83,9 +89,14 @@ const scene = {
     PILES.forEach((x, side) => {
       const name = side === 0 ? "pile-l" : "pile-r";
       const foot = s.add(mesh(puck(1.22, FOOT, 0.06, 64), soft(C.ink20, 0.66), [x, 0, PILE_Z]));
-      const rows = ROWS[side].map((tone, k) => s.add(slab(TONE[tone], SLAB.r, SLAB.h, [x, FOOT + k * SLAB.h, PILE_Z])));
-      for (let n = 0; n <= rows.length; n++) s.layer(`${name}-${n}`, [foot, ...rows.slice(0, n)]);
-      ROWS[side].forEach((tone, k) => s.anchor(`${name}-row${k}`, [x, FOOT + k * SLAB.h + SLAB.h / 2, PILE_Z]));
+      // one drawing per count of rows landed: the pile's last five, from the foot up. (Ten rows
+      // landed is five rows landed again: the take shows that drawing, none is made for it.)
+      for (let n = 0; n < ROWS[side].length; n++) {
+        const shown = ROWS[side].slice(Math.max(0, n - HIGH), n);
+        const rows = shown.map((tone, k) => s.add(slab(TONE[tone], SLAB.r, SLAB.h, [x, FOOT + k * SLAB.h, PILE_Z])));
+        s.layer(`${name}-${n}`, [foot, ...rows]);
+      }
+      for (let k = 0; k < HIGH; k++) s.anchor(`${name}-row${k}`, [x, FOOT + k * SLAB.h + SLAB.h / 2, PILE_Z]);
       s.anchor(`${name}-mouth`, [x * 0.6, 0.5, MACHINE.d / 2]);
       s.anchor(`${name}-label`, [x, 0, PILE_Z + 1.22]);
     });

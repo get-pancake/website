@@ -45,8 +45,9 @@ import {
  *   queue, 2026-10-13; item 1 at once when the stage is on screen or within the cue margin),
  *   switch item 1 unseen to its cue as the stage comes within 15 % below the fold,
  *   play once the stage's top crosses 60 % of the viewport (or after a 1 s dwell with half of it
- *   on screen); flying past keeps the picture. Already on screen in its picture when the code
- *   arrives (reload mid-page, an anchor): never rewound — its bar runs over the hold, then item 2.
+ *   on screen); flying past keeps the picture until the scroll settles on it. Since 2026-11-12
+ *   item 1 then plays from its cue (`engage`): until then a stage that was on screen in its
+ *   picture when it engaged was never rewound, its bar ran over the hold, then item 2.
  * - Runs only while ≥ 50 % of the stage is on screen (decision 2026-10-09 §5), the tab is
  *   visible, and the visitor has not pressed Pause; otherwise everything pauses where it is and
  *   resumes from there (never restarted, never rewound on screen).
@@ -119,6 +120,8 @@ const FADE_IN_S = 0.22;
 const BAR_OUT_S = 0.15;
 /** the stack's widths (dive.css's stack block) */
 const STACK_MQ = "(max-width: 767px)";
+/** s a story of the stack holds its end picture before it plays again */
+const STACK_HOLD_S = 2.6;
 /** where the tab list is in the page's flow (dive.css: two fluid columns, then stacked) */
 const FLOW_MQ = "(max-width: 1340px)";
 
@@ -156,6 +159,9 @@ type Item = {
   tl?: Timeline;
   cue: number;
   cleanup?: () => void;
+  /** a story that changes between two turns (its builder's `next`), and how many turns it had */
+  next?: () => void;
+  turns: number;
   failed: boolean;
   queued: boolean;
 };
@@ -194,6 +200,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
         more: row.querySelector<HTMLElement>(`.lp-dive-more[data-for="${id}"]`),
         hold: Number(tab.dataset.hold) || 2,
         cue: 0,
+        turns: 0,
         failed: false,
         queued: false,
       },
@@ -347,6 +354,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
       if (!built) return "more";
       it.tl = built.tl;
       it.cleanup = built.cleanup;
+      it.next = built.next;
       it.cue = Math.min(Math.max(built.cue ?? 0, 0), built.tl.duration());
     } catch (err) {
       it.failed = true;
@@ -379,6 +387,8 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     it.cleanup?.();
     it.ctx = undefined;
     it.cleanup = undefined;
+    it.next = undefined;
+    it.turns = 0;
     it.tl = undefined;
     it.cue = 0;
   };
@@ -492,6 +502,9 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     let p0: number;
     let barS: number;
     if (tl && playable && mode !== "end") {
+      // a story that changes between two turns: its next form, before it plays from its cue again
+      if (mode === "cue" && it.turns > 0) it.next?.();
+      it.turns += 1;
       from = mode === "cue" ? it.cue : Math.min(Math.max(tl.time(), it.cue), tl.duration());
       buildS = tl.duration() - from;
       // the bar is linear over (duration − cue) + hold: start it where the timeline already is
@@ -615,10 +628,21 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     setBar(it, null);
     phase = "rest";
   };
+  /* Engaging on a stage that shows its picture (the visitor flew in, or one step of the scroll
+     brought it on screen: the cue margin is 15 % of a viewport) plays item 1 from its cue. Until
+     2026-11-12 it ran the bar over the hold and moved on to item 2, so that a visitor who
+     arrived fast never saw the first story play (asked on the preview: "vérifie bien que les
+     animations démarrent on viewport", of the first one). */
   const engage = () => {
     if (engaged || posed) return;
     engaged = true;
-    startTurn(phase === "cued" ? "from" : "end");
+    const shown = phase !== "cued";
+    startTurn(shown ? "cue" : "from");
+    // (the picture was on screen: its first scene fades in over it, as on a change of tab)
+    const it = items[active];
+    if (shown && g && it.tl && !isReduced()) {
+      fades.push(g.fromTo(it.panel, { opacity: 0 }, { opacity: 1, duration: FADE_IN_S, ease: "power1.out", clearProps: "opacity" }));
+    }
   };
   const armDwell = () => {
     clearTimeout(dwell);
@@ -989,6 +1013,10 @@ function mountDiveStack(row: HTMLElement): () => void {
         designWidth: BOX_WIDTH.desktop,
         load: LOADERS[id],
         restIsEnd: true,
+        // a story a flick brought in plays once the visitor stops on it, and it goes round as
+        // the carousel's do on wider screens (lp-play-once.ts: playWhenStopped, loop)
+        playWhenStopped: true,
+        loop: { hold: STACK_HOLD_S },
         qa: { registry: "__lpStory", key: id },
         layoutRoot: section, // content-visibility: auto (foundation.css)
       }),

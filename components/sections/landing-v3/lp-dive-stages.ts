@@ -98,8 +98,10 @@ export type DiveStageProps = {
   placeholders: boolean;
 };
 
-/** What a story builder returns (lp-play-once Built, with a required cue). */
-export type BuiltStory = { tl: gsap.core.Timeline; cleanup: () => void; cue: number };
+/** What a story builder returns (lp-play-once Built, with a required cue). `next`: for a story
+    that changes between two turns of the carousel (or two rounds of the phone stack): called
+    before it plays again, never before its first turn. */
+export type BuiltStory = { tl: gsap.core.Timeline; cleanup: () => void; cue: number; next?: () => void };
 
 export type DiveStageEntry = {
   id: DiveItemId;

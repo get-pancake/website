@@ -6,13 +6,15 @@
 
    The markup is each picture's END. A piece that only shows on the way carries .lp-toy-gone and
    rests hidden; the take (lp-toy-step-timelines.ts, lp-toy-story-timelines.ts) shows it and
-   hides it again before it ends. No infinite keyframes, no will-change: GSAP only, plays once.
+   hides it again before it ends. No infinite keyframes, no will-change: GSAP only. A picture
+   goes round (lp-play-once `loop`); what only its next round shows rests hidden too.
 
    Traps:
    T1 the stage's own rules (`.lp-step-stage img { display: block }`, `.lp-dive-scene * {
       font-family }`) tie with single-class rules: every rule below is a compound selector.
    T2 a vendor's mark is the vendor's file in an <img>, sized only (object-fit: contain): no
-      filter, no blend, no mask, no tint. */
+      filter, no blend, no mask, no tint. One picture lays its marks flat on the set, as the
+      set's own camera would (.lp-t1-mark): that is the only transform a mark takes. */
 
 .lp-toy {
   --toy-shadow: 0 1px 2px rgba(44, 0, 42, 0.1), 0 6px 16px rgba(44, 0, 42, 0.14);
@@ -37,15 +39,22 @@
   visibility: hidden;
 }
 
-/* a vendor's own mark on a white disc */
+/* a vendor's own mark on a white disc: the outer box is a point of the set, the disc hangs from
+   it (LpToyKit.tsx ToyMark) */
 .lp-toy .lp-toy-mark {
+  display: block;
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+.lp-toy .lp-toy-mark__disc {
   background: var(--lp-surface);
   border-radius: 50%;
   box-shadow: var(--toy-shadow-soft);
   display: block;
   position: absolute;
 }
-.lp-toy .lp-toy-mark img {
+.lp-toy .lp-toy-mark__disc img {
   display: block;
   height: 58%;
   left: 21%;
@@ -162,6 +171,14 @@
     display: none;
   }
 }
+/* A source's mark lies flat on its dock, and Pancake's on the hub: what lies flat on the set is
+   an ellipse of the picture (--toy-flat, the set's own camera). Founder, 2026-11-12: "une
+   inclinaison sur le logo pour que ça s'imprime bien dans l'animation". The disc is given a
+   rim, so that it reads as a piece set on the dock. */
+.lp-toy .lp-t1-mark .lp-toy-mark__disc {
+  box-shadow: 0 2.5px 0 rgba(44, 0, 42, 0.16), 0 5px 9px rgba(44, 0, 42, 0.16);
+  transform: scaleY(var(--toy-flat));
+}
 /* Pancake, on the turntable's hub: the mark, and the light it gives once the machine runs */
 .lp-toy .lp-t1-hub {
   --toy-glow: 1;
@@ -187,6 +204,7 @@
   left: -11px;
   position: absolute;
   top: -13px;
+  transform: scaleY(var(--toy-flat));
   width: 22px;
 }
 /* a pile at one height: only the full one rests */
@@ -263,6 +281,10 @@
   visibility: hidden;
   width: calc(1.94 * var(--toy-r));
 }
+/* (the next round's beam turns the other way: its light trails on the other side) */
+.lp-toy .lp-t2-beam[data-way="-1"] {
+  background: conic-gradient(from 90deg, rgba(255, 150, 180, 0.62) 0deg, rgba(255, 122, 160, 0.16) 30deg, rgba(255, 122, 160, 0) 75deg, rgba(255, 122, 160, 0) 360deg);
+}
 /* a ring opens where a signal lands, in its tone, and goes */
 .lp-toy .lp-t2-ping {
   border: 2px solid var(--toy-tone, var(--lp-pink-30));
@@ -301,7 +323,8 @@
   top: -75px;
   width: 150px;
 }
-/* the line through the dots: it rests drawn (its dash is its own length, pathLength 1) */
+/* the line through the dots, a path from each dot to the next: it rests drawn (a path's dash is
+   its own length, pathLength 1), and the take draws the paths one after the other */
 .lp-toy .lp-t2-line {
   fill: none;
   height: 100%;
@@ -354,6 +377,15 @@
 }
 .lp-toy .lp-t3-centre {
   transform-origin: 50% 45%;
+}
+/* a ring opens where a point of the Brain comes or goes, in its hub's tone */
+.lp-toy .lp-t3-ring {
+  border: 2px solid var(--toy-tone, var(--lp-pink-30));
+  border-radius: 50%;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  position: absolute;
+  width: 22px;
 }
 /* a signal on its way in: a point of light in its hub's tone */
 .lp-toy .lp-t3-run {
@@ -776,6 +808,13 @@
 .lp-toy.lp-te {
   --te-ink: var(--lp-claude-ink);
   --te-serif: var(--lp-font-claude-serif, Georgia), Georgia, serif;
+}
+/* The story goes round with other questions: every round's ask, answer and Play are in the
+   markup (each a data-r), and the root's data-round shows one. */
+.lp-toy.lp-te[data-round="0"] [data-r]:not([data-r="0"]),
+.lp-toy.lp-te[data-round="1"] [data-r]:not([data-r="1"]),
+.lp-toy.lp-te[data-round="2"] [data-r]:not([data-r="2"]) {
+  display: none;
 }
 /* what runs along the cable */
 .lp-toy .lp-te-pulse {

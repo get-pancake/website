@@ -23,7 +23,7 @@ const loadAnimation = (variant: VisionStepVariant): Promise<PlayOnceRuntime> =>
 
 /**
  * A media card of the vision homepage's 1-2-3: its picture animates in place, as the designer's
- * step cards do (LpStepAnim: DOM + CSS + one GSAP timeline, played once by lp-play-once; the
+ * step cards do (LpStepAnim: DOM + CSS + one GSAP timeline, played by lp-play-once; the
  * stage is the 464 × 426 design frame and scales as pixels with the card, --lp-fit). Each
  * picture's markup is its END (restIsEnd): reduced motion and a page without script rest on it,
  * and so does a card whose take could not be built.
@@ -47,6 +47,9 @@ export function LpVisionStepAnim({ variant, alt, className, children }: { varian
       restIsEnd: true,
       // a card a fast scroll brought in plays once the visitor stops on it (lp-play-once.ts)
       playWhenStopped: true,
+      // a toy picture goes round for as long as it is looked at; its take holds its own
+      // pictures (lp-toy-step-timelines.ts). A flat one plays once, as it always did.
+      ...(isToyVariant(variant) ? { loop: { hold: 0 } } : null),
       qa: { registry: "__lpStep", key: variant },
     });
   }, [variant]);
