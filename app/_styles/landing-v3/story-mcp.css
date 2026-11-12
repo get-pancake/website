@@ -41,17 +41,22 @@
    No will-change, no keyframes, no loop (the demo's caret blink is not
    copied): the stage is GSAP-only, plays once. */
 
-/* the Codex palette (demo.css .lp-demowin__cwin[data-harness="codex"] and the
-   --lp-claude-* tokens it reads, foundation.css) */
+/* The palette. Since 2026-11-11 the window is Claude's (lp-story-mcp-data.ts):
+   the --lp-claude-* tokens (foundation.css), a white window on the dive's
+   stage. Until then it was Codex's (demo.css
+   .lp-demowin__cwin[data-harness="codex"]); the notes below that say "Codex"
+   describe the metrics, which are kept. What Claude changes is in the block
+   "Claude's own" at the end of the desktop rules. */
 .lp-smcp {
   --smcp-bg: #ffffff;
-  --smcp-ink: #0d0d0d;
+  --smcp-ink: var(--lp-claude-ink);
   --smcp-ink-48: var(--lp-claude-ink-48);
   --smcp-ink-08: var(--lp-claude-ink-08);
   --smcp-ink-04: var(--lp-claude-ink-04);
-  --smcp-bubble: #f4f4f4;
-  --smcp-log: #5d5d5d;
-  --smcp-hint: #8f8f8f;
+  --smcp-bubble: var(--lp-claude-bubble);
+  --smcp-log: var(--lp-claude-ink-64);
+  --smcp-hint: var(--lp-claude-ink-48);
+  --smcp-serif: var(--lp-font-claude-serif, Georgia), Georgia, serif;
   --smcp-sans: ui-sans-serif, -apple-system, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 .lp-smcp .lp-smcp-win,
@@ -338,6 +343,44 @@
 .lp-smcp .lp-smcp-send-arrow {
   height: 16px;
   width: 16px;
+}
+
+/* ── Claude's own (2026-11-11): its spark, its serif for the home line and
+   the answer, its steps in the sans, its composer (r 16) and its send (the
+   orange square). After the rules above on purpose: same weight, later wins ── */
+.lp-smcp .lp-smcp-title-mark {
+  color: var(--lp-claude-spark);
+  display: block;
+}
+.lp-smcp .lp-smcp-title-mark svg {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+.lp-smcp .lp-smcp-greet,
+.lp-smcp .lp-smcp-say {
+  color: var(--lp-claude-serif-ink);
+  font-family: var(--smcp-serif);
+}
+.lp-smcp .lp-smcp-greet {
+  font-weight: 300;
+}
+.lp-smcp .lp-smcp-step,
+.lp-smcp .lp-smcp-step * {
+  font-family: var(--smcp-sans);
+}
+.lp-smcp .lp-smcp-step {
+  font-size: 13.5px;
+}
+.lp-smcp .lp-smcp-step-r {
+  font-size: 12.5px;
+}
+.lp-smcp .lp-smcp-bar {
+  border-radius: 16px;
+}
+.lp-smcp .lp-smcp-send {
+  background: var(--lp-claude-send);
+  border-radius: 8px;
 }
 
 /* ── phones (≤767): the stack shows the 752 box at ×0.47 (402) to ×0.42

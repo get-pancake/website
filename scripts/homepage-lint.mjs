@@ -90,9 +90,21 @@ const FILES = [
   "components/sections/landing-v3/lp-story-lineage-data.ts",
   "components/sections/landing-v3/LpStoryMcp.tsx",
   "components/sections/landing-v3/lp-story-mcp-data.ts",
+  "components/sections/landing-v3/lp-story-ping-data.ts",
   // testimonials / KPI bento (bento); its placeholder module stays out on purpose
   "components/sections/landing-v3/LpBento.tsx",
   "components/sections/landing-v3/lp-bento-data.ts",
+  // the vision homepage (2026-11-09)
+  "components/sections/landing-v3/LpVision.tsx",
+  "components/sections/landing-v3/lp-vision-data.ts",
+  "components/sections/landing-v3/LpVisionCurtain.tsx",
+  "components/sections/landing-v3/LpStoryProblems.tsx",
+  "components/sections/landing-v3/lp-story-problems-data.ts",
+  "components/sections/landing-v3/LpVisionDb.tsx",
+  "components/sections/landing-v3/lp-vision-tables.ts",
+  // the kitchen under the clouds (2026-11-12)
+  "components/sections/landing-v3/LpKitchen.tsx",
+  "components/sections/landing-v3/kitchen/words.js",
   // agents view (agents-view)
   "components/sections/landing-v3/LpAudienceHeadline.tsx",
   "components/sections/landing-v3/LpAgentStart.tsx",

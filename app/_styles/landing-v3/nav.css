@@ -141,8 +141,14 @@
   transform: translateY(-50%);
   width: 114.956px;
 }
+/* The wordmark is never squeezed (founder 2026-11-11, on a bar narrower than its contents, where
+   the box had lost width and kept its height: "Je ne veux jamais voir cette torsion de notre
+   wordmark"). The drawing keeps its own ratio whatever its box does (contain); on phones the
+   box itself keeps that ratio (the block "Mobile" below). */
 .lp-nav-logo img {
   height: 100%;
+  object-fit: contain;
+  object-position: left center;
   width: 100%;
 }
 
@@ -262,9 +268,17 @@
     justify-content: flex-start;
     padding: 16px 18.38px 0 32px;
   }
+  /* The box keeps the wordmark's ratio: where the bar is too narrow for the wordmark, the pill
+     and the burger (under 350 px), the wordmark gets smaller, whole, never narrower alone; it
+     stops at 84 px wide. */
   .lp-nav-logo {
+    aspect-ratio: 114.956 / 56;
+    flex: 0 1 114.956px;
+    height: auto;
+    min-width: 84px;
     position: static;
     transform: none;
+    width: auto;
   }
   .lp-nav-links {
     display: none;
@@ -284,6 +298,13 @@
     display: none;
   }
   /* compact .is-scrolled rules live in the mobile-only sticky block up top */
+}
+/* a bar narrower than any phone (a split window, a side pane): the wordmark and the burger; the
+   pill is in the sheet */
+@media (max-width: 319px) {
+  .lp-nav .lp-nav-ctas {
+    display: none;
+  }
 }
 
 /* ── Mobile menu — burger + the sheet (open state is not on the artboard).

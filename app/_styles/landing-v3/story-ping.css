@@ -1,0 +1,277 @@
+/* Story ping (2026-11-11): the deep dive's "Get the next move before you ask" on the vision
+   homepage (LpStoryPing.tsx; the founder's words in lp-story-ping-data.ts). A phone's Messages
+   conversation in the dive's 752 × 489 box: a white screen 340 × 449, centred (x 206, y 20),
+   with the story kit's hairline and soft shadow. Top to bottom: the header (the contact's
+   picture and name), the thread (it stands on its floor, as a short conversation does: the
+   time, what comes in on the left in grey, what you send on the right in blue, "Delivered"
+   under it), the field.
+   The colours and the type are the phone's own (Apple's system blue, greys and system face), as
+   the Codex window keeps Codex's (story-mcp.css): they are what makes it a text message.
+
+   Traps (story-mcp.css T1 to T3 hold here): compound selectors only; the typing dots show only
+   on the way, so they rest hidden; a message rises with the kit's .lp-sk-rise and its own rule
+   sets no transform. No will-change, no keyframes, no loop: GSAP-only, plays once. */
+.lp-sping {
+  --sping-blue: #007aff;
+  --sping-grey: #e9e9eb;
+  --sping-ink: #000;
+  --sping-hint: #8e8e93;
+  --sping-line: rgba(60, 60, 67, 0.16);
+  --sping-sans: -apple-system, "SF Pro Text", ui-sans-serif, system-ui, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+.lp-sping .lp-sping-phone,
+.lp-sping .lp-sping-phone * {
+  font-family: var(--sping-sans);
+}
+.lp-sping .lp-sping-phone {
+  background: #fff;
+  border-radius: 28px;
+  box-shadow:
+    0 0 0 0.5px var(--sk-disc-ring),
+    var(--sk-disc-shadow);
+  display: flex;
+  flex-direction: column;
+  height: 449px;
+  left: 206px;
+  overflow: hidden;
+  position: absolute;
+  top: 20px;
+  width: 340px;
+}
+/* the header: back, the contact's picture, its name and a chevron */
+.lp-sping .lp-sping-head {
+  align-items: center;
+  background: #f9f9f9;
+  border-bottom: 0.5px solid var(--sping-line);
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 0 8px;
+  position: relative;
+}
+.lp-sping .lp-sping-back {
+  fill: none;
+  height: 20px;
+  left: 14px;
+  position: absolute;
+  stroke: var(--sping-blue);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.4px;
+  top: 24px;
+  width: 12px;
+}
+.lp-sping .lp-sping-avatar {
+  align-items: center;
+  background: var(--lp-claude-bg);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 0.5px var(--sping-line);
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+}
+.lp-sping .lp-sping-avatar svg {
+  fill: var(--lp-claude-spark);
+  height: 24px;
+  width: 24px;
+}
+.lp-sping .lp-sping-name {
+  align-items: center;
+  color: var(--sping-ink);
+  display: flex;
+  font-size: 11px;
+  gap: 3px;
+  line-height: 14px;
+}
+.lp-sping .lp-sping-name svg {
+  fill: none;
+  height: 8px;
+  stroke: var(--sping-hint);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.4px;
+  width: 5px;
+}
+.lp-sping .lp-sping-thread {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  min-height: 0;
+  padding: 8px 12px 6px;
+}
+.lp-sping .lp-sping-time {
+  color: var(--sping-hint);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 14px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+/* a message: two in a row from one side sit close, a change of side leaves room */
+.lp-sping .lp-sping-row {
+  display: flex;
+  margin-top: 10px;
+  position: relative;
+}
+.lp-sping .lp-sping-row[data-from="them"] + .lp-sping-row[data-from="them"] {
+  margin-top: 3px;
+}
+.lp-sping .lp-sping-row[data-from="me"] {
+  justify-content: flex-end;
+}
+.lp-sping .lp-sping-bubble {
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 20px;
+  max-width: 236px;
+  padding: 7px 12px;
+}
+.lp-sping .lp-sping-row[data-from="them"] .lp-sping-bubble {
+  background: var(--sping-grey);
+  color: var(--sping-ink);
+}
+.lp-sping .lp-sping-row[data-from="me"] .lp-sping-bubble {
+  background: var(--sping-blue);
+  color: #fff;
+}
+/* the other side is typing: three dots in a grey bubble, on the message's own spot (hidden at
+   rest: the END has the message) */
+.lp-sping .lp-sping-typing {
+  align-items: center;
+  background: var(--sping-grey);
+  border-radius: 18px;
+  display: flex;
+  gap: 4px;
+  height: 34px;
+  left: 0;
+  opacity: 0;
+  padding: 0 13px;
+  position: absolute;
+  top: 0;
+  visibility: hidden;
+}
+.lp-sping .lp-sping-typing i {
+  background: var(--sping-hint);
+  border-radius: 50%;
+  display: block;
+  height: 7px;
+  opacity: 0.35;
+  width: 7px;
+}
+.lp-sping .lp-sping-delivered {
+  color: var(--sping-hint);
+  font-size: 10.5px;
+  font-weight: 500;
+  line-height: 13px;
+  margin: 3px 2px 0 0;
+  text-align: right;
+}
+/* the field, under the thread: the round "+" and the pill that says what it sends */
+.lp-sping .lp-sping-bar {
+  align-items: center;
+  display: flex;
+  flex: none;
+  gap: 8px;
+  padding: 6px 12px 12px;
+}
+.lp-sping .lp-sping-plus {
+  align-items: center;
+  background: var(--sping-grey);
+  border-radius: 50%;
+  display: flex;
+  flex: none;
+  height: 32px;
+  justify-content: center;
+  width: 32px;
+}
+.lp-sping .lp-sping-plus svg {
+  fill: none;
+  height: 14px;
+  stroke: #6c6c70;
+  stroke-linecap: round;
+  stroke-width: 1.8px;
+  width: 14px;
+}
+.lp-sping .lp-sping-field {
+  border-radius: 17px;
+  box-shadow: inset 0 0 0 1px #d1d1d6;
+  color: #c4c4c7;
+  flex: 1;
+  font-size: 15px;
+  height: 34px;
+  line-height: 34px;
+  padding: 0 13px;
+}
+
+/* Phones (≤767) show the 752 box scaled (the stack, ×0.47 at 402), where the type above would
+   draw at 7 px. So there the screen takes the box's width, its header is one short row, its type
+   is ×1.6, and the time and the field are left out (the screen's height cannot hold them at
+   that size). */
+@media (max-width: 767px) {
+  .lp-sping .lp-sping-phone {
+    border-radius: 36px;
+    left: 20px;
+    width: 712px;
+  }
+  .lp-sping .lp-sping-head {
+    flex-direction: row;
+    gap: 12px;
+    justify-content: center;
+    padding: 12px 0;
+  }
+  .lp-sping .lp-sping-back {
+    height: 28px;
+    left: 24px;
+    top: 18px;
+    width: 17px;
+  }
+  .lp-sping .lp-sping-name {
+    font-size: 20px;
+    gap: 6px;
+    line-height: 26px;
+  }
+  .lp-sping .lp-sping-name svg {
+    height: 13px;
+    width: 8px;
+  }
+  .lp-sping .lp-sping-thread {
+    padding: 8px 22px 16px;
+  }
+  .lp-sping .lp-sping-time {
+    display: none;
+  }
+  .lp-sping .lp-sping-row {
+    margin-top: 14px;
+  }
+  .lp-sping .lp-sping-row[data-from="them"] + .lp-sping-row[data-from="them"] {
+    margin-top: 5px;
+  }
+  .lp-sping .lp-sping-bubble {
+    border-radius: 28px;
+    font-size: 24px;
+    line-height: 31px;
+    max-width: 500px;
+    padding: 11px 20px;
+  }
+  .lp-sping .lp-sping-typing {
+    border-radius: 28px;
+    gap: 7px;
+    height: 53px;
+    padding: 0 21px;
+  }
+  .lp-sping .lp-sping-typing i {
+    height: 11px;
+    width: 11px;
+  }
+  .lp-sping .lp-sping-delivered {
+    font-size: 16px;
+    line-height: 20px;
+    margin: 4px 4px 0 0;
+  }
+  .lp-sping .lp-sping-bar {
+    display: none;
+  }
+}

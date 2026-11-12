@@ -21,6 +21,12 @@ import { SETUP_LINE } from "./LpSetupLine";
  * badge leaves for the nav there, out of flow, so the first screen's measured layout does not
  * move; under 1280 the badge keeps that slot.
  *
+ * SINCE 2026-11-11 (the founder, sending the same reference's hero again: the toggle goes, the
+ * install row takes its part of the column, "bien visible sans exacerber et en restant dans la
+ * logique de notre design"): the row is in flow under the buttons at every width, its words in
+ * the text ink, and each agent's mark stands on a square tile in the tint of the second button
+ * (Talk to sales), the marks in the ink. The card still lays itself over the buttons.
+ *
  * A disclosure: the card opens on hover (CSS), and on a press of the row (data-open, for touch
  * and keyboard), and closes on Escape (focus back on the row), on a press outside or when focus
  * leaves it. Closed, the card is visibility: hidden, so its copy button is out of the tab order.
@@ -70,7 +76,7 @@ export function LpHeroInstall() {
       >
         <span>or install in</span>
         <span className="lp-hero-install__marks" aria-hidden="true">
-          <span className="lp-hero-install__mark lp-hero-install__mark--claude">
+          <span className="lp-hero-install__mark">
             <ClaudeMark />
           </span>
           <span className="lp-hero-install__mark">

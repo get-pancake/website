@@ -1,10 +1,17 @@
+import { ClaudeMark } from "./LpAgentMarks";
 import type { DiveStageProps } from "./lp-dive-stages";
 import { skF3 } from "./LpStoryKit";
+import { lpClaudeSerif } from "./lp-claude-font";
 import { PANCAKE_AVATAR } from "./lp-pancake-avatar-art";
 import { SMCP_ICONS, type StoryMcpIconId } from "./lp-story-mcp-art";
 import { STORY_MCP } from "./lp-story-mcp-data";
 
 /**
+ * SINCE 2026-11-11 THE WINDOW IS CLAUDE'S (lp-story-mcp-data.ts has why): Claude's spark and name
+ * top left, its serif (lp-claude-font.ts, the variable on the root) for the home line and the
+ * answer, its composer. The layers and the contract below are unchanged; read "Codex" as "the
+ * agent's window".
+ *
  * Deep-dive story 4, "Codex at work" (the item "Built for Claude and Codex"; 2026-11-01, founder:
  * "Maybe we could just do a screenshot of codex doing stuff like in the h1") — the stage markup.
  * Owner: story-mcp package. Contract: lp-dive-stages.ts (server-safe: no hooks, no "use client",
@@ -86,11 +93,13 @@ export function LpStoryMcpStage(_props: DiveStageProps) {
   };
 
   return (
-    <div className="lp-sk lp-smcp" data-lp-story="mcp" aria-hidden="true">
+    <div className={`lp-sk lp-smcp ${lpClaudeSerif.variable}`} data-lp-story="mcp" aria-hidden="true">
       <div className="lp-sk-scene">
         <div className="lp-smcp-win" style={win}>
           <p className="lp-smcp-title">
-            <McpIcon id="codex" className="lp-smcp-title-mark" />
+            <span className="lp-smcp-title-mark">
+              <ClaudeMark />
+            </span>
             {s.title}
           </p>
           <p className="lp-smcp-greet">{s.greeting}</p>

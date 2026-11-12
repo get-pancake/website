@@ -64,6 +64,12 @@
   line-height: 1.5;
   white-space: nowrap;
 }
+/* 2026-11-11 (founder: "On enleve le toggle For humans / For agents"): the humans view has no
+   toggle; the hero's column is the lede, the buttons and the install row. The agents view keeps
+   it (that view opens from its own link, ?audience=agents: the toggle is the way back). */
+.lp-audience-page:not([data-audience="agents"]) .lp-audience-selector {
+  display: none;
+}
 .lp-audience-selector__label {
   -webkit-tap-highlight-color: transparent;
   cursor: pointer;

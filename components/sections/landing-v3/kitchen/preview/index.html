@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Pancake Kitchen</title>
+    <meta name="claude:viewport-fit-sides" content="cover" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&family=Instrument+Sans:wdth,wght@75..100,400..700&display=swap"
+    />
+    <style>
+      /* Layout: the scene first, as wide as the page allows, on the page's own cream. One line
+         under it, then the reading key as a strip of four. Colors are the landing's own tokens. */
+      :root {
+        --page: #fbf6f1;
+        --ink: #2c002a;
+        --muted: #85687c;
+        --rule: #efe4dc;
+        --chip: #f6e7da;
+        --focus: #8d43fd;
+        --yellow: #ffbd7a;
+        --purple: #ba8bff;
+        --pink: #ff7aa0;
+        --blue: #b0cbff;
+        --cream: #fff7ec;
+        --display: "Instrument Sans", "Geist", ui-sans-serif, system-ui, sans-serif;
+        --text: "Geist", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font-family: var(--text);
+        font-size: 15px;
+        line-height: 1.5;
+        padding-block: 28px 64px;
+        padding-left: max(16px, env(safe-area-inset-left, 0px));
+        padding-right: max(16px, env(safe-area-inset-right, 0px));
+      }
+      .wrap {
+        max-width: 1240px;
+        margin: 0 auto;
+        display: grid;
+        gap: 20px;
+      }
+      .top {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: end;
+        justify-content: space-between;
+        gap: 16px 24px;
+      }
+      .eyebrow {
+        margin: 0 0 6px;
+        font-family: var(--mono);
+        font-size: 12px;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      h1 {
+        margin: 0;
+        font-family: var(--display);
+        font-stretch: 80%;
+        font-weight: 650;
+        font-size: clamp(34px, 5.2vw, 57px);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        text-wrap: balance;
+      }
+      h1.swap {
+        animation: title-swap 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+      }
+      @keyframes title-swap {
+        from {
+          opacity: 0;
+          translate: 0 0.25em;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        h1.swap {
+          animation: none;
+        }
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px;
+      }
+      button {
+        font: inherit;
+        font-weight: 500;
+        font-size: 14px;
+        color: var(--ink);
+        background: var(--chip);
+        border: 0;
+        border-radius: 10px;
+        padding: 9px 14px;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #f0dccb;
+      }
+      button:focus-visible {
+        outline: 2px solid var(--focus);
+        outline-offset: 2px;
+      }
+      #kitchen-play {
+        min-width: 76px;
+        background: var(--ink);
+        color: var(--cream);
+      }
+      #kitchen-play:hover {
+        background: #4a1247;
+      }
+      .seg {
+        display: flex;
+        gap: 2px;
+        padding: 3px;
+        background: var(--chip);
+        border-radius: 12px;
+      }
+      .seg button {
+        padding: 6px 11px;
+        border-radius: 9px;
+        background: transparent;
+        font-family: var(--mono);
+        font-size: 13px;
+      }
+      .seg button[aria-pressed="true"] {
+        background: var(--page);
+        box-shadow: 0 1px 2px rgba(44, 0, 42, 0.14);
+      }
+      .switches {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px 20px;
+      }
+      .switch {
+        display: flex;
+        gap: 2px;
+        padding: 4px;
+        background: var(--chip);
+        border-radius: 14px;
+      }
+      .switch button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        border-radius: 10px;
+        background: transparent;
+        font-weight: 600;
+      }
+      .switch button::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.3;
+      }
+      .switch button[aria-pressed="true"] {
+        background: var(--ink);
+        color: var(--cream);
+      }
+      .switch button[aria-pressed="true"]::before {
+        opacity: 1;
+        background: var(--on, #68cea7);
+      }
+      .switch.quiet button {
+        padding: 7px 13px;
+        font-weight: 500;
+      }
+      .switch.quiet button::before {
+        display: none;
+      }
+      .switch.quiet button[aria-pressed="true"] {
+        background: var(--page);
+        color: var(--ink);
+        box-shadow: 0 1px 2px rgba(44, 0, 42, 0.14);
+      }
+      /* The badges take the reading face of the landing page, from the repository's own file, so
+         that a still picture and the live section show the same letters. Outside the repository
+         the file is not there, and the badges fall back to the face of this page. */
+      @font-face {
+        font-family: "Landing Sans";
+        src: url("../../../../../app/fonts/geist/Geist-Variable-latin.woff2") format("woff2");
+        font-weight: 100 900;
+      }
+      #kitchen .pk-layer {
+        font-family: "Landing Sans", var(--text);
+      }
+      #kitchen {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        aspect-ratio: 16 / 9;
+      }
+      #kitchen .poster,
+      #kitchen canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+      }
+      #kitchen .poster {
+        object-fit: contain;
+      }
+      #kitchen[data-live] .poster {
+        display: none;
+      }
+      #kitchen-note {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        text-align: center;
+      }
+      .key {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 20px 28px;
+        margin-top: 8px;
+        padding-top: 24px;
+        border-top: 1px solid var(--rule);
+      }
+      .key article {
+        display: grid;
+        grid-template-columns: 44px minmax(0, 1fr);
+        column-gap: 12px;
+        align-items: start;
+      }
+      .key svg {
+        width: 44px;
+        height: 44px;
+        grid-row: span 2;
+      }
+      .key h2 {
+        margin: 2px 0 2px;
+        font-size: 15px;
+        font-weight: 600;
+        line-height: 1.3;
+      }
+      .key p {
+        margin: 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .hint {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+      }
+      @media (max-width: 900px) {
+        .key {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+      @media (max-width: 520px) {
+        .key {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+      /* where the scene cannot start, the controls and the pointer hint have nothing to act on */
+      .no-live .controls,
+      .no-live .switches,
+      .no-live .hint {
+        display: none;
+      }
+      /* ?bare=1: the stage alone, filling the window (used for screenshots) */
+      .bare {
+        padding: 0;
+        background: transparent;
+      }
+      .bare .wrap {
+        max-width: none;
+        display: block;
+      }
+      .bare .wrap > :not(.stage) {
+        display: none;
+      }
+      .bare #kitchen {
+        width: 100vw;
+        height: 100vh;
+        aspect-ratio: auto;
+      }
+      .bare #kitchen .poster {
+        display: none;
+      }
+    </style>
+    <script type="importmap">
+      { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js" } }
+    </script>
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="top">
+        <div>
+          <p class="eyebrow">Pancake Kitchen · review page</p>
+          <h1 id="kitchen-title" aria-live="polite">Anyone can cook.</h1>
+        </div>
+        <div class="controls">
+          <button id="kitchen-play" type="button" aria-pressed="false">Pause</button>
+          <div class="seg" role="group" aria-label="Speed">
+            <button type="button" data-speed="0.5" aria-pressed="false">0.5×</button>
+            <button type="button" data-speed="1" aria-pressed="true">1×</button>
+            <button type="button" data-speed="2" aria-pressed="false">2×</button>
+          </div>
+          <button id="kitchen-replay" type="button">Replay opening</button>
+        </div>
+      </header>
+
+      <div class="switches">
+        <div class="switch" role="group" aria-label="The kitchen">
+          <button type="button" data-mode="with" aria-pressed="true">With Pancake</button>
+          <button type="button" data-mode="without" aria-pressed="false" style="--on: #ff8080">Without Pancake</button>
+        </div>
+        <div class="switch quiet" role="group" aria-label="Who cooks">
+          <button type="button" data-cast="pancakes" aria-pressed="true">Pancake chefs</button>
+          <button type="button" data-cast="people" aria-pressed="false">Little chefs</button>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div id="kitchen">
+          <img class="poster" src="../../../../../public/lp/kitchen/with-pancakes.webp" width="1944" height="1094" alt="" />
+        </div>
+        <p id="kitchen-note" hidden>The live scene could not start in this browser. This is a still frame of it.</p>
+      </div>
+
+      <section class="key" data-key="with" aria-label="How to read the scene">
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <rect x="2" y="14" width="40" height="16" rx="6" fill="#2c002a" />
+            <path d="M10 18l4 4-4 4M20 18l4 4-4 4M30 18l4 4-4 4" fill="none" stroke="#b0cbff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <h2>Three belts</h2>
+          <p>Your sources. Ingredients come in all day, from every side.</p>
+        </article>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <rect x="9" y="4" width="26" height="36" rx="5" fill="#ffffff" />
+            <path d="M9 9a5 5 0 0 1 5-5h16a5 5 0 0 1 5 5v5H9z" fill="#dec3f5" />
+            <rect x="13" y="19" width="14" height="2.6" rx="1.3" fill="#efe4dc" />
+            <rect x="13" y="24" width="9" height="2.6" rx="1.3" fill="#efe4dc" />
+            <rect x="13" y="32" width="18" height="3.2" rx="1.6" fill="#efe4dc" />
+            <rect x="13" y="32" width="11" height="3.2" rx="1.6" fill="#8d43fd" />
+          </svg>
+          <h2>Tickets on the rail</h2>
+          <p>Your Plays. A ticket fills as its order cooks, and is stamped when the plate leaves.</p>
+        </article>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <ellipse cx="20" cy="31" rx="17" ry="9" fill="#ff7aa0" />
+            <ellipse cx="25" cy="24" rx="16" ry="8.5" fill="#ba8bff" />
+            <ellipse cx="20" cy="16" rx="16" ry="9" fill="#ffbd7a" />
+            <ellipse cx="15" cy="15" rx="1.9" ry="3.1" fill="#2c002a" />
+            <ellipse cx="23" cy="14.6" rx="2.4" ry="3.8" fill="#2c002a" />
+          </svg>
+          <h2>Three chefs</h2>
+          <p>Pancake at work. One mixes, one flips, one plates.</p>
+        </article>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <ellipse cx="22" cy="33" rx="19" ry="6" fill="#ffffff" />
+            <rect x="8" y="23" width="28" height="8" rx="4" fill="#f6a45c" />
+            <rect x="9" y="16" width="26" height="8" rx="4" fill="#ffbd7a" />
+            <rect x="15" y="10" width="14" height="7" rx="2.5" fill="#ffe9d1" />
+          </svg>
+          <h2>Plates on the way out</h2>
+          <p>Leads, served. The counter adds one for each plate that leaves.</p>
+        </article>
+      </section>
+      <section class="key" data-key="without" aria-label="How to read the scene without Pancake" hidden>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <path d="M22 6 40 37H4z" fill="#ffbd7a" stroke="#ffbd7a" stroke-width="5" stroke-linejoin="round" />
+            <rect x="20" y="16" width="4" height="11" rx="2" fill="#2c002a" />
+            <circle cx="22" cy="32" r="2.4" fill="#2c002a" />
+          </svg>
+          <h2>Pipelines break</h2>
+          <p>A belt gives way and what it carried ends up on the floor. One belt has been down for days.</p>
+        </article>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <path d="M9 39V15c0-6 6-10 13-10s13 4 13 10v24z" fill="#f7ede5" />
+            <rect x="9" y="19" width="26" height="4" fill="#b0cbff" />
+            <rect x="13" y="29" width="18" height="5" rx="2.5" fill="#2c002a" />
+            <rect x="13" y="29" width="5" height="5" rx="2.5" fill="#ffa45f" />
+          </svg>
+          <h2>The warehouse is slow</h2>
+          <p>Every ingredient waits in one big tank. Change one thing and it loads again from nothing.</p>
+        </article>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <path d="M22 4c2 8 11 11 11 21a11 11 0 0 1-22 0c0-5 3-8 5-11 1 3 2 4 4 5 1-5 0-10 2-15z" fill="#ffa45f" />
+            <path d="M22 20c1 4 5 5 5 10a5 5 0 0 1-10 0c0-4 4-5 5-10z" fill="#ffe9d1" />
+          </svg>
+          <h2>Everyone firefights</h2>
+          <p>Nobody cooks. One mends, one puts fires out, one runs.</p>
+        </article>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <circle cx="22" cy="22" r="17" fill="#ffd1c9" />
+            <circle cx="22" cy="22" r="12.5" fill="none" stroke="#ad001a" stroke-width="3.4" />
+            <path d="M22 14v8.5l5.5 3.5" fill="none" stroke="#ad001a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <h2>The lead is late</h2>
+          <p>One burnt plate leaves now and then, two weeks after the signal that asked for it.</p>
+        </article>
+      </section>
+      <p class="hint">Move the pointer over the scene: the view tilts and the chefs watch it. Click a chef and it jumps.</p>
+    </main>
+    <script type="module" src="./preview.js"></script>
+  </body>
+</html>
