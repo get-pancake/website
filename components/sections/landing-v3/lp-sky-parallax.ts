@@ -5,15 +5,18 @@
  * parallax, faire bouger avec des vitesses différentes"; Figma red note 4964:1644). Owner:
  * blue-band package.
  *
- * Every `.lp-sky-cloud` drifts vertically against its section as the page scrolls, each at its
- * own speed (depth layers: far clouds slower than the page, near clouds faster). One shared,
+ * Every `.lp-sky-cloud` drifts against its section as the page scrolls, up or down and, since
+ * 2026-11-12, sideways (founder, on the preview: "quand je scroll, peut-être qu'il se déplace
+ * horizontalement"), each at its own speed (depth layers: far clouds slower than the page, near
+ * clouds faster). One shared,
  * passive, rAF-throttled scroll listener for the whole page; it runs only while at least one
  * cloud section is on screen (IntersectionObserver), and writes ONE custom property per cloud:
  *
  *   --lp-sky-d = (anchor − viewport centre) in px, rounded to 0.5
  *
- * sky.css turns that into `translate3d(0, d × k, 0)` with the cloud's depth factor `--lp-sky-k`
- * (k > 0: faster than the page, nearer; k < 0: slower, farther), clamped. The tuning lives in
+ * sky.css turns that into `translate3d(d × kx, d × k, 0)` with the cloud's depth factor
+ * `--lp-sky-k` (k > 0: faster than the page, nearer; k < 0: slower, farther) and its sideways
+ * factor `--lp-sky-kx`, each clamped. The tuning lives in
  * CSS, and a write never restyles more than the cloud itself (a property on the section would
  * restyle its whole subtree).
  *

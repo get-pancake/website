@@ -6,7 +6,11 @@
    dive and, since 2026-10-28, the testimonials (founder, on the CTA: "Should
    be below testimonials"), and ends on the CTA's cream hill (red note
    "Transition from previous section"). The clouds drift on scroll at their own speeds (founder addendum
-   2026-10-09, lp-sky-parallax.ts). Imported after cta.css so its modifiers win
+   2026-10-09, lp-sky-parallax.ts), up and down and, since 2026-11-12, sideways too
+   (founder, on the preview: "quand je scroll, peut-être qu'il se déplace
+   horizontalement, genre un peu comme s'il bougeait"). The testimonials have
+   three clouds of their own since that day ("on peut rajouter 2 ou 3 nuages
+   aussi à ce niveau-là"). Imported after cta.css so its modifiers win
    ties with the base banner/CTA rules.
 
    Both cream shapes are the same Figma blob (a copied rainbow-ring vector,
@@ -18,7 +22,7 @@
    Phones (≤767, mobile artboard 5024:8631, decision 2026-10-11 §9): the two
    edges are the artboard's own curves (5024:10542), anchored to the cards;
    the CTA card is r32 again (F5); the clouds are the three the designer added
-   to the artboard on 2026-10-12, with a light parallax, behind ONE switch
+   to the artboard on 2026-10-12 and the testimonials' two, with a light parallax, behind ONE switch
    (F4) — see "phones" at the end of this file. */
 
 .lp-banner--sky {
@@ -51,6 +55,10 @@
    px) on each cloud; the cloud moves by d × k. k > 0 = faster than the page
    (nearer), k < 0 = slower (farther). d = 0 is the Figma pose, and with no
    driver (reduced motion, no JS) the var is unset: the artboard.
+   Sideways: the cloud also moves by d × kx. kx > 0 = it goes left as the page
+   scrolls down, kx < 0 = right. A cloud beside a title is given the sign that
+   keeps it away from the title while it can be seen (it comes in from the
+   page's edge), and --lp-sky-left / --lp-sky-right bound its travel.
    --lp-sky-anchor picks the anchor the driver measures from: `section` = the
    section's centre (the artboard is one picture: all its clouds rest
    together), `own` = the cloud's own resting centre (it rests in the middle
@@ -59,16 +67,19 @@
 .lp-sky-cloud {
   --lp-sky-anchor: section;
   --lp-sky-k: 0;
+  --lp-sky-kx: 0;
   /* travel bounds (a cloud that must stay clear of a title or of its box edge
      narrows them; the clamp only bites while the section is far from centre) */
   --lp-sky-up: -140px;
   --lp-sky-down: 140px;
+  --lp-sky-left: -110px;
+  --lp-sky-right: 110px;
   background: no-repeat 0 0 / 100% 100%;
   display: block;
   pointer-events: none;
   position: absolute;
   transform: translate3d(
-    0,
+    clamp(var(--lp-sky-left), calc(var(--lp-sky-d, 0) * var(--lp-sky-kx) * 1px), var(--lp-sky-right)),
     clamp(var(--lp-sky-up), calc(var(--lp-sky-d, 0) * var(--lp-sky-k) * 1px), var(--lp-sky-down)),
     0
   );
@@ -97,15 +108,24 @@
    Paint containment (.lp-dive is content-visibility:auto): A rides lower than
    rest while the section enters and rises past rest only once it is above
    the viewport; B (|k| < .09) and C (mid-section) never reach the box edge
-   while they can be seen. */
+   while they can be seen.
+   Sideways: the heading pair comes in from the page's edges and closes in on
+   its rest as the title reaches the middle of the screen (A from the right,
+   B from the left: neither is ever nearer the title than its rest while the
+   title can be read, at any width); C slides out from behind the stage card;
+   the CTA's two cross each other. About 30 to 80 px over a screen. */
 .lp-dive > .lp-sky-cloud--a {
   --lp-sky-k: 0.12;
+  --lp-sky-kx: 0.09;
+  --lp-sky-left: -18px;
   --lp-sky-up: -96px; /* never past the section's top edge (paint containment) */
   right: -81.922px; /* section x 1534.152 at 1654 */
   top: 98.534px;
 }
 .lp-dive > .lp-sky-cloud--b {
   --lp-sky-k: -0.06;
+  --lp-sky-kx: -0.06;
+  --lp-sky-right: 12px;
   --lp-sky-up: -88px;
   left: -56.078px;
   top: 90.977px;
@@ -113,6 +133,7 @@
 /* stage-relative (616.914, 101.393) of 752×489, 320.934 wide: rides the card */
 .lp-dive-stagewrap > .lp-sky-cloud--c {
   --lp-sky-k: -0.1;
+  --lp-sky-kx: -0.07;
   left: 82.0364%;
   top: 20.7348%;
   width: 42.6774%;
@@ -120,13 +141,53 @@
 /* card-relative (Figma: A x −138.996 y 30.494 over the card, B x 1262.457 y 77.484 behind it) */
 .lp-cta__frame > .lp-sky-cloud--a {
   --lp-sky-k: 0.1;
+  --lp-sky-kx: -0.08;
   left: -138.996px;
   top: 30.494px;
 }
 .lp-cta__frame > .lp-sky-cloud--b {
   --lp-sky-k: -0.08;
+  --lp-sky-kx: 0.05;
   right: -121.504px;
   top: 77.484px;
+}
+
+/* ── the testimonials' clouds (2026-11-12): three in the blue round the cards ──
+   B beside the title, on its right; A in the left margin, half behind the
+   first rows of cards; C, the large one, low in the right margin, behind the
+   cards' edge. The cards are the section's content and paint over them.
+   Each drifts round its own place (the section is a screen and a half tall:
+   measured from its centre a cloud would sit on its clamp), a little up or
+   down and more sideways. Every one stays inside the section's box (it is
+   content-visibility: auto: paint containment). */
+.lp-bento--sky {
+  position: relative;
+}
+.lp-bento--sky > .lp-bento__inner {
+  position: relative; /* over the clouds, which come before it */
+}
+.lp-bento > .lp-sky-cloud {
+  --lp-sky-anchor: own;
+}
+.lp-bento > .lp-sky-cloud--b {
+  --lp-sky-k: 0.04;
+  --lp-sky-kx: 0.1;
+  --lp-sky-up: -40px;
+  right: 104px;
+  top: 72px;
+}
+.lp-bento > .lp-sky-cloud--a {
+  --lp-sky-k: 0.06;
+  --lp-sky-kx: -0.09;
+  left: -46px;
+  top: 548px;
+}
+.lp-bento > .lp-sky-cloud--c {
+  --lp-sky-k: -0.05;
+  --lp-sky-kx: 0.08;
+  right: -92px;
+  top: 1006px;
+  width: 252px;
 }
 
 /* ≤1024 the title fills most of the width (57px down to 768, two lines on
@@ -136,6 +197,22 @@
    which starts at 72. Tablets retune the pair in the next block; phones
    place it as the mobile artboard draws it (the ≤767 block at the end). */
 @media (max-width: 1024px) {
+  /* the testimonials' cards take the whole width: the two margin clouds have nowhere to show;
+     the title's cloud moves into the band above it, at 0.6 */
+  .lp-bento > .lp-sky-cloud--a,
+  .lp-bento > .lp-sky-cloud--c {
+    display: none;
+  }
+  .lp-bento > .lp-sky-cloud--b {
+    --lp-sky-down: 8px;
+    --lp-sky-k: 0.02;
+    --lp-sky-kx: 0.05;
+    --lp-sky-up: -6px;
+    height: 31.819px;
+    right: 48px;
+    top: 14px;
+    width: 93.028px;
+  }
   .lp-dive > .lp-sky-cloud--a,
   .lp-dive > .lp-sky-cloud--b {
     --lp-sky-down: 10px;
@@ -143,6 +220,7 @@
   }
   .lp-dive > .lp-sky-cloud--a {
     --lp-sky-k: 0.06;
+    --lp-sky-kx: 0.04;
     height: 41.408px;
     right: -49.153px;
     top: 10px;
@@ -150,6 +228,7 @@
   }
   .lp-dive > .lp-sky-cloud--b {
     --lp-sky-k: 0.03;
+    --lp-sky-kx: -0.03;
     height: 31.819px;
     left: -33.647px;
     top: 14px;
@@ -268,6 +347,8 @@
   .lp-dive > .lp-sky-cloud--a {
     --lp-sky-down: 10px;
     --lp-sky-k: 0.022;
+    --lp-sky-kx: 0.045; /* ±20 sideways over a screen */
+    --lp-sky-left: -22px;
     --lp-sky-up: -8px; /* stays inside --lp-sky-room */
     height: 69.013px;
     right: -101.77px; /* artboard x 302 of 402 */
@@ -277,6 +358,8 @@
   .lp-dive > .lp-sky-cloud--b {
     --lp-sky-down: 10px;
     --lp-sky-k: 0.012;
+    --lp-sky-kx: -0.04;
+    --lp-sky-right: 0px; /* the title's second line starts where it ends: never nearer than its rest */
     --lp-sky-up: -8px;
     height: 41.123px;
     left: -61px;
@@ -286,11 +369,38 @@
   /* card-relative (269, 26.411) of the 370-wide card, at the desktop size */
   .lp-cta__frame > .lp-sky-cloud--a {
     --lp-sky-k: 0.05;
+    --lp-sky-kx: -0.04;
     --lp-sky-down: 24px;
     --lp-sky-up: -24px;
     left: auto;
     right: -100.77px;
     top: 26.411px;
+  }
+  /* The testimonials' clouds on phones (2026-11-12): the cards take the whole width, so two
+     clouds only, in the two bands of blue the section has: B at the right edge in the band
+     above the title (it ends 16 px above it), A at the left edge in the band under the last
+     card. C stays hidden (the ≤ 1024 block). */
+  .lp-bento > .lp-sky-cloud--b {
+    --lp-sky-down: 8px;
+    --lp-sky-k: 0.015;
+    --lp-sky-kx: 0.05;
+    --lp-sky-up: -6px;
+    height: 41.123px;
+    right: -34px;
+    top: 16px;
+    width: 120.23px;
+  }
+  .lp-bento > .lp-sky-cloud--a {
+    --lp-sky-down: 5px;
+    --lp-sky-k: 0.012;
+    --lp-sky-kx: -0.05;
+    --lp-sky-up: -6px;
+    bottom: 6px;
+    display: block;
+    height: 47.884px;
+    left: -44px;
+    top: auto;
+    width: 140px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
