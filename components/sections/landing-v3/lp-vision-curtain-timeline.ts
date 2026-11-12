@@ -30,8 +30,9 @@ import { DB_HERO_STORY, DB_PEOPLE_STORY, DB_SIGNALS_STORY } from "./lp-vision-ta
  *   7.9   CUT to the people table: three people change jobs in one batch and go to the top; the
  *         first is the VP Sales who bought from you at Notion, now at Ramp
  *   9.6   CUT back to companies: Ramp and Brex come into the view, the table re-sorts. Claude says
- *         it unasked; told "Yes. And send our end-of-year gifts to the top five.", it opens the
- *         Plays' column, writes the five Plays at once and they go live together
+ *         it unasked; told "Yes. And launch a HeyReach sequence for everyone I owe a follow-up.",
+ *         it opens the Plays' column, writes the five Plays at once (Ramp's, then a follow-up
+ *         for each of the four, fitted to its last touch) and they go live together
  *   16.8  CUT to signals: three more signals, one a new signup at Linear; Claude flags it
  *   18.0  CUT back to companies: two accounts rescored, the table re-sorts, Linear's Play written
  *   20.1  the camera PANS RIGHT to the CRM's columns: five accounts updated at once, Ramp's deal
@@ -265,9 +266,9 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   };
   if (O.end.some((tr, k) => C.slot(tr) !== k)) throw new Error("vision-curtain: the rows the take ends on come first, in their final order");
   const hero = C.row(S.hero);
-  const gifts = S.gifts.map((key) => C.row(key));
-  if (gifts.some((tr, k) => O.moves[k] !== tr)) throw new Error("vision-curtain: the five Plays go to the top five");
-  const plays = gifts.map((tr) => landOf(cellOf(tr, "next_best_play")));
+  const runs = S.runs.map((key) => C.row(key));
+  if (runs.some((tr, k) => O.moves[k] !== tr)) throw new Error("vision-curtain: the five Plays go to the top five");
+  const plays = runs.map((tr) => landOf(cellOf(tr, "next_best_play")));
   const drafted = landOf(cellOf(C.row(S.drafted), "next_best_play"));
   /** the cells a batch changes: a signal (NULL that lands, or one replaced) and a fit */
   const batchAt = (m: 1 | 2 | 3) =>
@@ -625,7 +626,7 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const ping = pSorted - 0.2;
   arrive(tools.ping.el, ping);
 
-  // CUT back to companies: Ramp and Brex have a signal now, Glean a new one; rescored at once,
+  // CUT back to companies: Ramp and Brex have a signal now, Dust a new one; rescored at once,
   // the two come into the view and the table re-sorts in one move
   const back2 = cutTo("companies", pSorted + 0.55);
   const landed2 = companiesBatch(2, back2);
@@ -641,15 +642,15 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   off(hero, "data-unlit", sorted2);
   const said2 = stream(says.say2, sorted2 - 0.3);
 
-  // "Yes. And send our end-of-year gifts to the top five." The Plays' column opens, Claude's ring
-  // takes the five rows, their five Plays are written at once and go live together
+  // "Yes. And launch a HeyReach sequence for everyone I owe a follow-up." The Plays' column opens,
+  // Claude's ring takes the five rows, their five Plays are written at once and go live together
   const typed2 = type(typed.ask2, glyphs.ask2, phs[1], said2 + 0.6);
   const sent2 = sendAt(typed.ask2, bubbles.ask2, typed2 + TYPED_HOLD);
   arrive(tools.run.el, sent2 + CALL);
   const o = sent2 + CALL + MOVE;
-  on(gifts[0], "data-rt", o);
-  on(gifts[gifts.length - 1], "data-rb", o);
-  gifts.forEach((tr) => on(tr, "data-rl", o));
+  on(runs[0], "data-rt", o);
+  on(runs[runs.length - 1], "data-rb", o);
+  runs.forEach((tr) => on(tr, "data-rl", o));
   // The column opens under a short dip of the table: its width (and, on a narrow window, the deal's
   // and the signal's folding away) changes in one frame, so the table is laid out once. Tweened,
   // the widths had the whole table laid out again every frame for half a second (a slow phone
@@ -671,9 +672,9 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   status(SAYS.plays, live);
   back(tools.run, live);
   off(db, "data-wr-play", live + 0.35);
-  off(gifts[0], "data-rt", live + 0.45);
-  off(gifts[gifts.length - 1], "data-rb", live + 0.45);
-  gifts.forEach((tr) => off(tr, "data-rl", live + 0.45));
+  off(runs[0], "data-rt", live + 0.45);
+  off(runs[runs.length - 1], "data-rb", live + 0.45);
+  runs.forEach((tr) => off(tr, "data-rl", live + 0.45));
   const said3 = stream(says.say3, live + 0.3);
 
   // CUT to signals: three more come in, one a new signup at Linear; Claude flags it
@@ -691,7 +692,7 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const said4 = stream(says.say4, sorted3 - 0.2);
 
   // the CRM syncs: the camera pans right to its columns, five accounts are updated at once (the
-  // gifts sent, Ramp's reply, its deal open again), and back
+  // follow-ups sent, Ramp's reply, its deal open again), and back
   const pan = said4 + 0.5;
   camera(
     {

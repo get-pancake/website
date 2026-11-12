@@ -321,6 +321,9 @@ export function LpVisionCurtain() {
     const at = event.currentTarget.getBoundingClientRect();
     grab.current = event.clientX - (at.left + at.width / 2);
     event.currentTarget.setPointerCapture(event.pointerId);
+    // focused by the hand: no focus ring round the grip (founder 2026-11-12, of the ring a drag
+    // left: "Enleve ce truc qui entoure"). The keys bring it back, for the visitor who tabs to it
+    event.currentTarget.setAttribute("data-hand", "");
     event.currentTarget.focus({ preventScroll: true });
     // (the split follows the hand at once: no easing while it is dragged, vision.css)
     card.current?.setAttribute("data-drag", "");
@@ -332,6 +335,7 @@ export function LpVisionCurtain() {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   };
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    event.currentTarget.removeAttribute("data-hand");
     const by = event.shiftKey ? 10 : 4;
     const to =
       event.key === "ArrowLeft"
@@ -551,6 +555,7 @@ export function LpVisionCurtain() {
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
           onKeyDown={onKeyDown}
+          onBlur={(event) => event.currentTarget.removeAttribute("data-hand")}
         >
           <span className="lp-vcut__grip" aria-hidden="true">
             <svg viewBox="0 0 20 20" focusable="false">

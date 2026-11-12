@@ -183,10 +183,10 @@ export const DB_HERO: DbTableData = {
     ),
     row("dv", "Linear", "Dev tools", [null, "new signup", "93", lands("dv-play", "Book a demo"), "growth", "asked pricing", null, "website", "US", "2025-06-02"]),
     row("lg", "Supabase", "Database", [lost, "new funding", "92", null, "growth", null, tag("timing"), "crm", "US", "2025-01-27"]),
-    row("lo", "Mercury", "Fintech", [open, "hiring SDRs", "91", play("lo", "End-of-year gift"), "growth", "gift sent", null, "event", "US", "2024-11-19"]),
-    row("ro", "Lovable", "AI", [null, lands("ro-signal", "new funding"), "89", play("ro", "End-of-year gift"), "growth", "gift sent", null, "event", "EU", "2025-10-03"]),
-    row("ba", "Deel", "HR software", [open, lands("ba-signal", "hiring SDRs"), "88", play("ba", "End-of-year gift"), "enterprise", "gift sent", null, "product", "US", "2025-10-20"]),
-    row("pp", "Glean", "AI search", [lost, "new CRO", "86", play("pp", "End-of-year gift"), "enterprise", "gift sent", tag("no budget"), "website", "US", "2025-08-14"]),
+    row("lo", "Mercury", "Fintech", [open, "hiring SDRs", "91", play("lo", "Event follow-up"), "growth", "follow-up sent", null, "event", "US", "2024-11-19"]),
+    row("ro", "Lovable", "AI", [null, lands("ro-signal", "new funding"), "89", play("ro", "Event follow-up"), "growth", "follow-up sent", null, "event", "EU", "2025-10-03"]),
+    row("ba", "Deel", "HR software", [open, lands("ba-signal", "hiring SDRs"), "88", play("ba", "Demo follow-up"), "enterprise", "follow-up sent", null, "product", "US", "2025-10-20"]),
+    row("pp", "Dust", "AI agents", [lost, "new CRO", "86", play("pp", "Pricing follow-up"), "enterprise", "follow-up sent", tag("no budget"), "website", "US", "2025-08-14"]),
     row("rt", "Framer", "Design", [null, lands("rt-signal", "new CMO"), "84", null, "growth", null, null, "crm", "EU", "2024-09-03"]),
     row("in", "Retool", "Internal tools", [open, "visits up", "81", null, "growth", "demo request", null, "website", "US", "2025-04-22"]),
     row("hr", "Rippling", "HR software", [null, "headcount up", "77", null, "enterprise", null, null, "crm", "US", "2025-02-08"]),
@@ -226,9 +226,11 @@ export const DB_HERO: DbTableData = {
  *  `rows`: the fit and the signal of every row that changes, at the four moments (NULL: none); the
  *  last are the cells' own. A row whose signal is NULL at first lands it (its cell is a `lands`
  *  one); another has it replaced.
- *  `pairs`: [the row that stays, its duplicate]. `gifts`: the five accounts Claude runs the Plays
- *  on (the first gets its own Play, the others the end-of-year gift). `drafted`: the Play written
- *  and not run. `crm`: what the visitor's CRM says of five accounts when it syncs, before → after.
+ *  `pairs`: [the row that stays, its duplicate]. `runs`: the five accounts Claude runs the Plays
+ *  on: the first gets its own Play; the four others are the follow-ups the visitor owes, each
+ *  fitted to its last touch (an event, a demo, a pricing visit), sent in one HeyReach sequence.
+ *  Their names fit the column's first 120 px with the live dot (the split once scrolled onto,
+ *  vision.css data-wide). `drafted`: the Play written and not run. `crm`: what the visitor's CRM says of five accounts when it syncs, before → after.
  *  `count`: what the view bar's count says: filtered, deduplicated, after the people's moves.
  *  `status`: what the table's status line says as each thing happens. */
 export const DB_HERO_STORY = {
@@ -251,14 +253,14 @@ export const DB_HERO_STORY = {
     ["te", "te2"],
   ],
   hero: "fi",
-  gifts: ["fi", "lo", "ro", "ba", "pp"],
+  runs: ["fi", "lo", "ro", "ba", "pp"],
   drafted: "dv",
   crm: {
     fi: { touch: ["demo call", "replied"], deal: ["closed_lost", "open"] },
-    lo: { touch: ["attended event", "gift sent"] },
-    ro: { touch: ["attended event", "gift sent"] },
-    ba: { touch: ["demo call", "gift sent"] },
-    pp: { touch: ["visited pricing", "gift sent"] },
+    lo: { touch: ["attended event", "follow-up sent"] },
+    ro: { touch: ["attended event", "follow-up sent"] },
+    ba: { touch: ["demo call", "follow-up sent"] },
+    pp: { touch: ["visited pricing", "follow-up sent"] },
   },
   count: ["86 rows", "83 rows", "85 rows"],
   status: {
@@ -293,7 +295,7 @@ export const DB_PEOPLE: DbTableData = {
   rows: [
     { key: "p1", mark: "hit", c: ["p_7c21", hit("VP Sales"), hit("Ramp"), lands("p1-was", "Notion", { hit: true }), { v: "", as: "check", hit: true }, "today"] },
     { key: "p2", c: ["p_9e04", "CFO", "Brex", lands("p2-was", "Mercury"), { v: "", as: "uncheck" }, "today"] },
-    { key: "p3", c: ["p_2b7a", "CRO", "Glean", lands("p3-was", "Retool"), { v: "", as: "uncheck" }, "today"] },
+    { key: "p3", c: ["p_2b7a", "CRO", "Dust", lands("p3-was", "Retool"), { v: "", as: "uncheck" }, "today"] },
     { key: "p4", c: ["p_0d3e", "Head of Growth", "Linear", null, { v: "", as: "uncheck" }, "2025-10-30"] },
     { key: "p5", c: ["p_e5c9", "Head of Sales", "Deel", null, { v: "", as: "check" }, "2025-10-12"] },
     { key: "p6", c: ["p_71aa", "VP Engineering", "Linear", null, { v: "", as: "uncheck" }, "2025-09-02"] },
@@ -338,7 +340,7 @@ export const DB_SIGNALS: DbTableData = {
     { key: "s5c", c: ["10:43", "Runway", "visits up", tag("your website")] },
     { key: "s3a", c: ["10:42", "Ramp", "new VP Sales", tag("team pages")] },
     { key: "s3b", c: ["10:42", "Brex", "new CFO", tag("team pages")] },
-    { key: "s3c", c: ["10:42", "Glean", "new CRO", tag("team pages")] },
+    { key: "s3c", c: ["10:42", "Dust", "new CRO", tag("team pages")] },
     { key: "s1a", c: ["10:41", "Mercury", "hiring SDRs", tag("job posts")] },
     { key: "s1b", c: ["10:41", "Lovable", "new funding", tag("funding news")] },
     { key: "s1c", c: ["10:40", "Deel", "hiring SDRs", tag("job posts")] },
@@ -352,7 +354,7 @@ export const DB_SIGNALS: DbTableData = {
     { key: "s0e", c: ["10:19", "Supabase", "headcount up", tag("team pages")] },
     { key: "s0f", c: ["10:15", "Linear", "visits up", tag("your website")] },
     { key: "s0g", c: ["10:12", "Mercury", "visits up", tag("your website")] },
-    { key: "s0h", c: ["10:09", "Glean", "visits up", tag("your website")] },
+    { key: "s0h", c: ["10:09", "Dust", "visits up", tag("your website")] },
     { key: "s0i", c: ["10:05", "Runway", "visits up", tag("your website")] },
     { key: "s0j", c: ["10:02", "Replit", "visits up", tag("your website")] },
   ],

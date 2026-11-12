@@ -998,7 +998,9 @@
 .lp-vcut__handle:focus-visible {
   outline: none;
 }
-.lp-vcut__handle:focus-visible .lp-vcut__grip {
+/* the focus ring, for the visitor who tabs to the handle only: grabbed by the hand (data-hand,
+   LpVisionCurtain), the grip has none (founder 2026-11-12: "Enleve ce truc qui entoure") */
+.lp-vcut__handle:focus-visible:not([data-hand]) .lp-vcut__grip {
   outline: 2px solid var(--lp-purple-30);
   outline-offset: 2px;
 }
