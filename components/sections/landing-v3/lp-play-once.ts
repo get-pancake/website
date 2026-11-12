@@ -81,6 +81,12 @@ import type { gsap } from "@/lib/gsap";
  *   gone (founder 2026-11-03, on a phone: "des restarts bizarre sur les animations"; measured
  *   in the iOS simulator: a story replayed after a flick back up). A card already on screen in
  *   its resting picture keeps it, as above. Mouse and trackpad keep the rules above unchanged.
+ * - OWED ITS TAKE (2026-11-12, `playWhenStopped`, the vision homepage's 1-2-3): on a card that
+ *   asks for it, the pictures above ("flying past", "never empty what is on screen") are not the
+ *   end of it. A card that got its picture without playing plays the first time the scroll comes
+ *   to rest with half of it on screen. Reported on the 1-2-3 on a laptop: "ils ne sont pas
+ *   animés": one step of a trackpad flick or a page key crosses the cue margin, and the card
+ *   was on screen before it could be cued. A card that has played is still never played again.
  * - prefers-reduced-motion = the picture; lifting it mid-visit lets a card
  *   that has not finished play its build-up (the steps rest on their first
  *   frame, so they still need the timeline to show their picture).
@@ -130,6 +136,16 @@ export type PlayOnceOptions = {
   layoutRoot?: HTMLElement | null;
   /** playback rate (timeline time stays the composition's for QA seeks) */
   speed?: number;
+  /** A card that got its picture without playing is OWED its take: a fast scroll flew it in,
+      one step of the scroll brought it on screen (a page key, a trackpad flick: the cue margin
+      is 15 % of a viewport), or its take was built while it was already there. Unset, such a
+      card keeps its picture for the visit, and on a mouse or a trackpad most visitors never see
+      it move (2026-11-12, on the preview of the 1-2-3: "ils ne sont pas animés"). Set, it plays the
+      first time the scroll comes to rest with half of it on screen, on every pointer; several
+      such cards start one after the other, in page order. Out of sight before that, it goes
+      back to rest and the rules above play it when the visitor returns. A card that has played
+      is never played again. */
+  playWhenStopped?: boolean;
   /** A card whose top shows on the first screen by design (the window under the hero: 70 px of
       it peek over the fold). For it, "already on screen in its resting picture" is its top above
       this share of the viewport's height, not its first pixel on screen: on a fresh page it is
@@ -168,6 +184,11 @@ const SETTLE_MS = 160;
 const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
 const settleSubs = new Set<(landed: boolean) => void>();
 let settleTimer = 0;
+/* Cards that are owed their take (playWhenStopped) and start as a scroll comes to rest start
+   one after the other, in page order (the order they were mounted in): how many have started
+   at this rest, and the time between two. */
+let startsThisRest = 0;
+const OWED_STAGGER_MS = 320;
 /* A scroll to an anchor is under way (LpNavScroll announces it before it scrolls): the scroll
    position it will land on. Cards that will be on screen there are arriving, not flown past. */
 const ARRIVE_EVENT = "lp:arrive"; // = LpNavScroll.tsx
@@ -178,6 +199,7 @@ const onSettled = () => {
   settleTimer = 0;
   const landed = arrival !== null;
   arrival = null;
+  startsThisRest = 0;
   for (const run of Array.from(settleSubs)) run(landed);
 };
 const onArrive = (e: Event) => {
@@ -544,6 +566,10 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   let phase: "rest" | "cued" | "playing" | "done" = "rest";
   let cue = 0;
   let dwell = 0;
+  /** the card shows its picture without having played: with `playWhenStopped` it is owed its
+      take (and `owedTimer`: its turn to start, when several are owed at one rest) */
+  let owed = false;
+  let owedTimer = 0;
   const touchMq = matchMedia(TOUCH_QUERY);
   let loading = false;
   let queued = false;
@@ -609,6 +635,21 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     phase = "done";
     host.dataset.lpAnim = "done";
   };
+  /** the picture, for a card that did not play: it may be owed its take */
+  const skip = () => {
+    finish();
+    owed = o.playWhenStopped === true;
+  };
+  /** half the card on screen: where a visitor who stopped is looking at it */
+  const inView = () => visible && ratio >= DWELL_MIN_RATIO;
+  /** an owed card's take, from its first scene, if the visitor is still stopped on it */
+  const startOwed = () => {
+    owedTimer = 0;
+    if (disposed || !tl || !owed || phase !== "done" || motionMq.matches || !inView()) return;
+    owed = false;
+    tl.pause(cue);
+    play();
+  };
   // the visitor is moving on while the card is still building: fast-forward
   const rush = () => {
     if (!tl || phase !== "playing" || motionMq.matches || !tl.isActive()) return;
@@ -620,6 +661,13 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
      (decide) plays now that the visitor has stopped on it: at once past the focus line, after
      the dwell short of it. A card that is done stays done (no replay, founder 2026-11-03). */
   const onSettle = (landed: boolean) => {
+    // owed its take, and the visitor has stopped on it: it plays, in its turn
+    if (owed && phase === "done" && !owedTimer && !motionMq.matches && inView()) {
+      const wait = startsThisRest++ * OWED_STAGGER_MS;
+      if (wait) owedTimer = window.setTimeout(startOwed, wait);
+      else startOwed();
+      return;
+    }
     if (landed || (touchMq.matches && phase === "cued")) decide();
   };
   settleSubs.add(onSettle);
@@ -642,7 +690,15 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       tl.progress(1, true);
       return;
     }
-    if (phase === "done") return;
+    if (phase === "done") {
+      // owed its take and out of sight again: back to rest, for the rules below to play it
+      // when the visitor returns
+      if (owed && !near && !visible && !owedTimer) {
+        owed = false;
+        toRest();
+      }
+      return;
+    }
     const landing = arriving();
     // a touch screen flies past on a flick: the card waits on its first scene (onSettle plays it)
     const touch = touchMq.matches;
@@ -651,8 +707,8 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       if (!near) return; // far away: keep resting
       // already showing its picture on screen (built late, entering from above, an observer
       // that reports late in a flick): the picture, never a frame that empties
-      if (o.restIsEnd && seen(visible)) return finish();
-      if (fast && !touch) return finish(); // a mouse flying past: the picture
+      if (o.restIsEnd && seen(visible)) return skip();
+      if (fast && !touch) return skip(); // a mouse flying past: the picture
       toCue(); // still below the fold: the first scene, unseen
     }
     if (phase === "cued") {
@@ -662,7 +718,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
         if (!fast) return play();
         // flying past: the picture on a mouse; a touch screen keeps the first scene until the
         // scroll stops on it (onSettle) or carries it away (toRest, unseen)
-        if (!touch) finish();
+        if (!touch) skip();
         return;
       }
       if (visible && ratio >= DWELL_MIN_RATIO) {
@@ -729,6 +785,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
         tl.progress(1, true);
         phase = "done";
         host.dataset.lpAnim = "done";
+        owed = o.playWhenStopped === true;
       } else {
         toRest();
       }
@@ -871,6 +928,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   return () => {
     disposed = true;
     clearTimeout(dwell);
+    clearTimeout(owedTimer);
     settleSubs.delete(onSettle);
     cancelAhead();
     cancelEager();

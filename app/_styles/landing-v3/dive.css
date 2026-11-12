@@ -310,19 +310,20 @@
   max-width: none;
 }
 
-/* ── pause (WCAG 2.2.2: the carousel moves on its own) — a control every
-   input can reach. Not drawn by the designer, so it stays OFF the pictures:
-   under the card's bottom-right corner, on the sky (inside the section's 80
-   bottom padding: paint containment). It shows
+/* ── pause (WCAG 2.2.2: the carousel moves on its own). Not drawn by the
+   designer, so it stays OFF the pictures: under the card's bottom-right
+   corner, on the sky (inside the section's 80 bottom padding: paint
+   containment).
+   Since 2026-11-12 it is a keyboard control only (asked on the preview:
+   "retire le play"). It shows
    - on keyboard focus,
-   - while it holds the carousel (pressed),
-   - while a pointer is over the stage or over the control itself — a mouse
-     at rest on the stage still holds nothing (founder 2026-09-22 on the
-     demo), it only brings up the button that does,
-   - always where nothing can hover (touch).
-   Hidden = transparent, never unclickable: a pointer that reaches its place
-   brings it up first. The box above the button is the pointer's bridge from
-   the card to it. ── */
+   - while it holds the carousel (pressed).
+   Until then it also came up while a pointer was over the stage, and always
+   on touch screens. A mouse or a finger no longer sees it and cannot press
+   it (pointer-events), so nothing invisible sits under the card's corner;
+   they have no way left to stop the carousel, which is what was asked. To
+   bring it back for every input, restore the two rules this note replaced
+   (.lp-dive-stagewrap:hover, and the (hover: none) block). ── */
 .lp-dive-ctrl {
   padding-top: 12px;
   position: absolute;
@@ -343,18 +344,14 @@
   justify-content: center;
   opacity: 0;
   padding: 0;
+  pointer-events: none;
   transition: opacity 0.16s ease-out;
   width: 44px;
 }
-.lp-dive-ctrl__btn:focus-visible,
-.lp-dive-ctrl__btn[aria-pressed="true"],
-.lp-dive-stagewrap:hover .lp-dive-ctrl__btn {
+.lp .lp-dive-ctrl__btn:focus-visible,
+.lp .lp-dive-ctrl__btn[aria-pressed="true"] {
   opacity: 1;
-}
-@media (hover: none), (pointer: coarse) {
-  .lp .lp-dive-ctrl__btn {
-    opacity: 1;
-  }
+  pointer-events: auto;
 }
 .lp-dive-ctrl__btn:focus-visible {
   outline: 2px solid var(--lp-text);
