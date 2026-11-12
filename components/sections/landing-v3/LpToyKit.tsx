@@ -65,16 +65,19 @@ export function ToyPic<S extends ToySet>({
   );
 }
 
-/** A vendor's own mark, unmodified, on a white disc (the app's vendor chip). */
+/**
+ * A vendor's own mark on a white disc (the app's vendor chip), centred on a point of the set. The
+ * outer box is that point (what a take pops or fades); the disc hangs from it, so a picture can
+ * lay the disc flat on the set (toys.css: the 1-2-3's first picture does, on its docks) without
+ * the take's own transform undoing it.
+ */
 export function ToyMark({ src, at, size = 30, className, ...data }: { src: string; at: Point; size?: number; className?: string } & Record<`data-${string}`, string | number | undefined>) {
   return (
-    <span
-      className={className ? `lp-toy-mark ${className}` : "lp-toy-mark"}
-      style={{ left: toyPx(at[0] - size / 2), top: toyPx(at[1] - size / 2), width: toyPx(size), height: toyPx(size) }}
-      {...data}
-    >
-      {/* eslint-disable-next-line @next/next/no-img-element -- a vendor's own file, unmodified */}
-      <img src={src} alt="" width={size} height={size} loading="lazy" decoding="async" draggable={false} />
+    <span className={className ? `lp-toy-mark ${className}` : "lp-toy-mark"} style={{ left: toyPx(at[0]), top: toyPx(at[1]) }} {...data}>
+      <span className="lp-toy-mark__disc" style={{ left: toyPx(-size / 2), top: toyPx(-size / 2), width: toyPx(size), height: toyPx(size) }}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- a vendor's own file */}
+        <img src={src} alt="" width={size} height={size} loading="lazy" decoding="async" draggable={false} />
+      </span>
     </span>
   );
 }

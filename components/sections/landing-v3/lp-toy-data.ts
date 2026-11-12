@@ -16,13 +16,35 @@ import type { VisionStepVariant } from "./lp-vision-data";
 export const TOY_SOURCES = {
   /** what each source sends as it connects, in VSTEP_SOURCES' order (CRM, events, product, website) */
   sends: [{ text: "Deal updated" }, { text: "Attended your event" }, { text: "New signup" }, { text: "Pricing page viewed" }],
-  alt: "Animation: your CRM, your events, your product and your website plug into Pancake one after the other. Each one sends what happened: a deal updated, someone attended your event, a new signup, a pricing page viewed. Beads run down the cables into the machine, which turns, and two piles of rows come up in front of it: companies and people.",
+  /** The picture goes round (founder, 2026-11-12: "ça redémarre pas de zéro, mais tu as d'autres
+      signaux qui se connectent en plus, genre le meeting recorder"): on its next round four more
+      sources take the docks, left to right, each a kind, the mark of a tool that holds it, and
+      what it sends. The round after, the first four are back, and so on: the tables only grow. */
+  more: [
+    { id: "meetings", label: "Meetings", logo: "/integrations/zoom.svg", text: "Meeting recorded" },
+    { id: "support", label: "Support", logo: "/integrations/zendesk.svg", text: "Ticket opened" },
+    { id: "billing", label: "Billing", logo: "/integrations/stripe.svg", text: "Plan upgraded" },
+    { id: "calendar", label: "Calendar", logo: "/integrations/googlecalendar.svg", text: "Demo booked" },
+  ],
+  alt: "Animation: your CRM, your events, your product and your website plug into Pancake one after the other. Each one sends what happened: a deal updated, someone attended your event, a new signup, a pricing page viewed. Beads run down the cables into the machine, which turns, and two piles of rows come up in front of it: companies and people. Then other sources take their place, your meetings, your support, your billing and your calendar, and the tables keep growing.",
 } as const;
 
-/* ── 02 · a radar over one account: the page's own signals and account (VSTEP_SIGNALS,
-   VSTEP_ACCOUNT); only the picture's alt is new ── */
+/* ── 02 · a radar over one account. Its first scan is the page's own (VSTEP_SIGNALS,
+   VSTEP_ACCOUNT). The picture goes round (founder, 2026-11-12: "d'autres formats de points qui
+   apparaissent, d'autres petites badges et un autre nom de boîte"): its next scan is another
+   account of the hero's tables, and four other signals, as blocks. `id`: the kind of signal
+   (VSTEP_SIGNALS: its mark and its tone); the two kinds the first scan leaves quiet are here. ── */
 export const TOY_RADAR = {
-  alt: "Animation: a radar over one account, Ramp, a lost deal. Its beam turns once and four signals land round the account, each with the source that found it: a new VP Sales, new funding, visits up, hiring SDRs. A line then connects the dots, into the account.",
+  next: {
+    account: { name: "Deel", own: "open deal" },
+    signals: [
+      { id: "hiring", text: "headcount up" },
+      { id: "tech", text: "switched CRM" },
+      { id: "reviews", text: "new reviews" },
+      { id: "team", text: "new CRO" },
+    ],
+  },
+  alt: "Animation: a radar over one account, Ramp, a lost deal. Its beam turns once and four signals land round the account, each with the source that found it: a new VP Sales, new funding, visits up, hiring SDRs. A line then connects the dots, into the account. Then the radar scans another account, Deel, an open deal: headcount up, switched CRM, new reviews, a new CRO.",
 } as const;
 
 /* ── 03 · the Brain as the app draws it, what it holds, and the ideas it comes up with. The
@@ -35,7 +57,16 @@ export const TOY_BRAIN = {
   /** the ideas it comes up with, then the one it recommends (its kicker is VSTEP_BRAIN's) */
   ideas: [{ text: "Reach back out to Ramp" }, { text: "Work accounts hiring SDRs" }],
   play: { text: "Contact the 24 people who signed up after your event." },
-  alt: "Animation: your Brain, a graph of coloured hubs round a dark centre: ICP, personas, voice, signals, competitors, objections. Signals run along its branches into the centre, and ideas come out: reach back out to Ramp, work accounts hiring SDRs. Then the next best Play: contact the 24 people who signed up after your event.",
+  /** The picture goes round (founder, 2026-11-12: "voir le brain qui a des nouveaux trucs qui pop
+      ou qui dépop et d'autres notifications"): on its next round the Brain has changed (a few of
+      its points have gone, others have come) and it comes up with other ideas and another Play.
+      The accounts are the hero's own (lp-vision-tables.ts: Linear, Mercury, a lost deal that
+      raised). */
+  next: {
+    ideas: [{ text: "Book a demo with Linear" }, { text: "Send Mercury a gift" }],
+    play: { text: "Reach back out to the 8 lost deals that just raised funding." },
+  },
+  alt: "Animation: your Brain, a graph of coloured hubs round a dark centre: ICP, personas, voice, signals, competitors, objections. Signals run along its branches into the centre, and ideas come out: reach back out to Ramp, work accounts hiring SDRs. Then the next best Play: contact the 24 people who signed up after your event. The Brain then changes, a few points go and others come, and it recommends another Play: reach back out to the 8 lost deals that just raised funding.",
 } as const;
 
 /** what each toy picture of the 1-2-3 shows: its stage's aria-label (LpVisionSteps.tsx) */
@@ -67,7 +98,8 @@ export const TOY_MERGE = {
   sightings: [
     { from: "Your event", text: "Work email", logo: "/lp/vendor-logos/luma.svg" },
     { from: "Your product", text: "Personal email", logo: "/lp/vendor-logos/posthog.svg" },
-    { from: "Social profile", text: "No email", icon: "person" },
+    // founder, 2026-11-12: "on met le logo X et on laisse marqué Social Profile"
+    { from: "Social profile", text: "No email", logo: "/integrations/x.svg" },
   ],
   one: { text: "One buyer" },
   alt: "Animation: the same person is seen three times. At your event, under a work email. In your product, under a personal email. On a social profile, with no email. Three pawns leave the three sources, meet on one stand and become one buyer, who keeps the colour of each source.",
@@ -100,5 +132,29 @@ export const TOY_ENGINE = {
     { name: "Who", value: "Head of Sales at Ramp" },
     { name: "Why", value: "Lost deal, now hiring SDRs" },
   ],
-  alt: "Animation: in Claude, with the Pancake connector, someone types: Who should I contact today? A signal runs down a cable to the engine, where three parts light up in turn as Claude reads your Brain, queries your tables and checks market signals. Claude answers: Start with Ramp. The next best Play: reach back out to the Head of Sales at Ramp, a lost deal, now hiring SDRs.",
+  /** The story goes round with other questions (founder, 2026-11-12: "qu'il y ait d'autres
+      questions qui soient posées"): each time it plays again, the next one of these is asked,
+      then the first again. Same three steps; another answer, another Play. The accounts and what
+      is known of them are the hero's own (lp-vision-tables.ts: Linear, Supabase). */
+  more: [
+    {
+      ask: { text: "Who is ready for a demo?" },
+      say: { text: "Linear is ready." },
+      play: { name: "Book a demo" },
+      rows: [
+        { name: "Who", value: "Head of Growth at Linear" },
+        { name: "Why", value: "New signup, asked pricing" },
+      ],
+    },
+    {
+      ask: { text: "Which lost deals can I reopen?" },
+      say: { text: "Supabase just raised." },
+      play: { name: "Reach back out" },
+      rows: [
+        { name: "Who", value: "VP Sales at Supabase" },
+        { name: "Why", value: "Lost deal, new funding" },
+      ],
+    },
+  ],
+  alt: "Animation: in Claude, with the Pancake connector, someone types: Who should I contact today? A signal runs down a cable to the engine, where three parts light up in turn as Claude reads your Brain, queries your tables and checks market signals. Claude answers: Start with Ramp. The next best Play: reach back out to the Head of Sales at Ramp, a lost deal, now hiring SDRs. When it plays again, other questions are asked: who is ready for a demo, which lost deals can I reopen.",
 } as const;
