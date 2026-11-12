@@ -19,6 +19,14 @@ const BLIPS = [
   { tone: "orange", angle: 495, r: 3.0 },
   { tone: "purple", angle: 552, r: 3.0 },
 ];
+/** The next round's signals (another account): small blocks, not beads, met the other way round
+    (anticlockwise from the upper left), each nearer than the last. */
+const BLOCKS = [
+  { tone: "purple", angle: 225, r: 3.4 },
+  { tone: "blue", angle: 150, r: 3.2 },
+  { tone: "pink", angle: 40, r: 3.0 },
+  { tone: "yellow", angle: -12, r: 2.9 },
+];
 const ACCOUNT = { w: 1.5, h: 0.78, cap: 0.14 };
 
 const scene = {
@@ -49,6 +57,14 @@ const scene = {
       s.layer(`blip${k}`, s.add(bead(BLIP_TONE[blip.tone], 0.26, [x, TOP, z])), { floor: TOP });
       s.anchor(`blip${k}`, [x, TOP, z]);
       s.anchor(`over${k}`, [x, TOP + 0.74, z]);
+    });
+    BLOCKS.forEach((item, k) => {
+      const a = (item.angle * Math.PI) / 180;
+      const x = Math.cos(a) * item.r;
+      const z = Math.sin(a) * item.r;
+      s.layer(`block${k}`, s.add(mesh(block(0.5, 0.42, 0.5, 0.15, 0.07), ceramic(BLIP_TONE[item.tone], 0.4, 0.45), [x, TOP, z])), { floor: TOP });
+      s.anchor(`block${k}`, [x, TOP, z]);
+      s.anchor(`above${k}`, [x, TOP + 0.74, z]);
     });
   },
 };

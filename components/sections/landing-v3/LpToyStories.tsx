@@ -48,12 +48,6 @@ const GLYPH: Record<string, ReactNode> = {
       <path d="M10 8.5V5l-7 6.5 7 6.5v-3.6c4.6 0 7.8 1.3 10 4.6-.6-6-3.9-10-10-10.5z" fill="currentColor" />
     </svg>
   ),
-  person: (
-    <svg viewBox="0 0 24 24" focusable="false">
-      <circle cx="12" cy="8" r="4" fill="currentColor" />
-      <path d="M4.5 20.2c0-4.1 3.3-7 7.5-7s7.5 2.9 7.5 7z" fill="currentColor" />
-    </svg>
-  ),
 };
 
 /* ── "Remember every touch with every buyer": one buyer, stop after stop ── */
@@ -170,8 +164,7 @@ export function LpToyMergeStage(_props: DiveStageProps) {
             key={sighting.text}
             at={[pad[0] - 54, pad[1] - 4]}
             anchor="right"
-            logo={"logo" in sighting ? sighting.logo : undefined}
-            icon={"icon" in sighting ? GLYPH[sighting.icon] : undefined}
+            logo={sighting.logo}
             className="lp-tm-seen"
             data-tone={LANE_TONES[k]}
           >
@@ -253,11 +246,15 @@ export function LpToyEngineStage(_props: DiveStageProps) {
   const e = TOY_ENGINE;
   const chrome = STORY_MCP;
   const play = VSTEP_BRAIN.play;
+  /** what is asked, said and recommended, round after round: the picture's own, then the others.
+      Every round is in the markup; the root's data-round shows one (toys.css), and the take
+      moves on to the next each time it plays again (lp-toy-story-timelines.ts). */
+  const rounds = [{ ask: e.ask, say: e.say, name: play.name, rows: e.rows }, ...e.more.map((round) => ({ ask: round.ask, say: round.say, name: round.play.name, rows: round.rows }))];
   const start = E.paths.cable[0];
   const face = E.anchors["radar-face"];
   const reach = E.anchors["radar-edge"][0] - face[0];
   return (
-    <div className={`lp-toy lp-toy-story lp-te ${lpClaudeSerif.variable}`} data-lp-story="t-engine" aria-hidden="true">
+    <div className={`lp-toy lp-toy-story lp-te ${lpClaudeSerif.variable}`} data-lp-story="t-engine" data-round={0} aria-hidden="true">
       <div className="lp-toy-set">
         <ToyPic set="engine" name="plate" />
         {/* what runs along the cable: the ask on its way to the engine, then the answer back */}
@@ -289,7 +286,11 @@ export function LpToyEngineStage(_props: DiveStageProps) {
         <p className="lp-te-greet">{chrome.greeting}</p>
         <div className="lp-te-thread">
           <p className="lp-te-ask">
-            <span>{e.ask.text}</span>
+            {rounds.map((round, r) => (
+              <span key={r} data-r={r}>
+                {round.ask.text}
+              </span>
+            ))}
           </p>
           <ul className="lp-te-steps">
             {e.steps.map((step) => (
@@ -300,25 +301,35 @@ export function LpToyEngineStage(_props: DiveStageProps) {
               </li>
             ))}
           </ul>
-          <p className="lp-te-say">{e.say.text}</p>
-          <div className="lp-te-play">
-            <p className="lp-te-play__h">
-              <PancakeMark className="lp-te-pk" />
-              <span>{play.kicker}</span>
-              <b>{play.name}</b>
+          {rounds.map((round, r) => (
+            <p key={r} className="lp-te-say" data-r={r}>
+              {round.say.text}
             </p>
-            {e.rows.map((row) => (
-              <p key={row.name} className="lp-te-play__row">
-                <span>{row.name}</span>
-                <b>{row.value}</b>
+          ))}
+          {rounds.map((round, r) => (
+            <div key={r} className="lp-te-play" data-r={r}>
+              <p className="lp-te-play__h">
+                <PancakeMark className="lp-te-pk" />
+                <span>{play.kicker}</span>
+                <b>{round.name}</b>
               </p>
-            ))}
-          </div>
+              {round.rows.map((row) => (
+                <p key={row.name} className="lp-te-play__row">
+                  <span>{row.name}</span>
+                  <b>{row.value}</b>
+                </p>
+              ))}
+            </div>
+          ))}
         </div>
         <div className="lp-te-bar">
           <span className="lp-te-field">
             <span className="lp-te-ph">{chrome.placeholder}</span>
-            <span className="lp-te-typed">{e.ask.text}</span>
+            {rounds.map((round, r) => (
+              <span key={r} className="lp-te-typed" data-r={r}>
+                {round.ask.text}
+              </span>
+            ))}
             <span className="lp-te-reply">{chrome.reply}</span>
           </span>
           <span className="lp-te-conn">

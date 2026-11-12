@@ -25,8 +25,11 @@ import { TOY_EASE, TOY_STEP, toyDecode, toyGone, toyHidePop, toyHideRise, toyPop
  *   t-ping      the phone lights up by itself and hums; your agent types, and its message
  *               comes out of the phone; a second one; you answer; it is done
  *
- * Nothing loops. The feel is lp-toy-kit.ts's (TOY_EASE). A builder may yield after any block
- * (lp-play-once's `steps`): what it measures it measures before its first write.
+ * No take loops by itself: the carousel plays a story at each of its turns, and the phone stack
+ * plays it again after a hold (lp-play-once `loop`). A story may change between two plays: its
+ * `next` (the engine asks another question). The feel is lp-toy-kit.ts's (TOY_EASE). A builder
+ * may yield after any block (lp-play-once's `steps`): what it measures it measures before its
+ * first write.
  */
 
 type Timeline = gsap.core.Timeline;
@@ -163,7 +166,7 @@ function* merge(root: HTMLElement): Steps {
   // frame 0: three pawns on three sources, nobody on the stand
   const set = gsap.set;
   set(ghosts, { autoAlpha: 1 });
-  set(trails, { strokeDashoffset: 1 });
+  set(trails, { strokeDashoffset: 1, autoRound: false });
   set(flash, { autoAlpha: 0, scale: 0.3 });
   toyHidePop(buyer, 0.5);
   toyHideRise(one, 10);
@@ -180,7 +183,8 @@ function* merge(root: HTMLElement): Steps {
     const t = LEAVE + k * APART;
     hopAlong(tl, ghost, line, line[0], t, RUN, 0);
     // (its way is drawn behind it as it goes, in its source's tone)
-    tl.to(trails[k], { strokeDashoffset: 0, duration: RUN, ease: "power1.inOut" }, t);
+    // (autoRound off: GSAP rounds a length in px, and an offset from 1 to 0 would jump at its middle)
+    tl.to(trails[k], { strokeDashoffset: 0, duration: RUN, ease: "power1.inOut", autoRound: false }, t);
     arrived = t + RUN;
   });
   // they stand side by side for a beat: the same person, three times
@@ -303,25 +307,30 @@ function* engine(root: HTMLElement): Steps {
   const art = ART_ENGINE;
   const greet = q.one(".lp-te-greet");
   const placeholder = q.one(".lp-te-ph");
-  const typed = q.one(".lp-te-typed");
   const reply = q.one(".lp-te-reply");
   const send = q.one(".lp-te-send");
   const bar = q.one(".lp-te-bar");
   const ask = q.one(".lp-te-ask");
-  const askText = q.one(".lp-te-ask span");
+  // every round's ask (typed in the composer, then in its bubble), answer and Play: one of each
+  // shows (the root's data-round, toys.css); they all take the same tweens
+  const typed = q.all(".lp-te-typed");
+  const askTexts = q.all(".lp-te-ask span");
   const steps = q.all(".lp-te-step").map((li) => ({ li, done: q.one("em", li), part: li.dataset.part ?? "" }));
-  const say = q.one(".lp-te-say");
-  const play = q.one(".lp-te-play");
+  const says = q.all(".lp-te-say");
+  const plays = q.all(".lp-te-play");
   const pulse = q.one(".lp-te-pulse");
   const beam = q.one(".lp-te-beam");
   const partOf = (id: string) => q.one(`.lp-te-part[data-part="${id}"]`);
   const glowOf = (id: string) => q.one(`.lp-te-glow[data-part="${id}"]`);
   const parts = steps.map((step) => ({ img: partOf(step.part), glow: glowOf(step.part) }));
-  if (!steps.length) throw new Error("lp-toy engine: the steps");
+  const rounds = typed.length;
+  if (!steps.length || !rounds || [askTexts, says, plays].some((list) => list.length !== rounds)) throw new Error("lp-toy engine: the steps, and an ask, an answer and a Play for each round");
   toyDecode(root);
   // phones: the window docks no composer, the ask types in its bubble (the mcp story's own rule)
   const inBar = getComputedStyle(bar).display !== "none";
-  const letters = (typed.textContent ?? "").length;
+  const lettersOf = (el: HTMLElement) => Math.max((el.textContent ?? "").length, 1);
+  /** the longest ask: the others are sent when it would be */
+  const letters = Math.max(...typed.map(lettersOf));
   const line = (art.paths as unknown as Record<string, readonly Point[]>).cable;
   yield;
 
@@ -336,11 +345,11 @@ function* engine(root: HTMLElement): Steps {
     set(reply, { autoAlpha: 0 });
     toyHideRise(ask, 8);
   } else {
-    set(askText, { clipPath: HIDDEN });
+    set(askTexts, { clipPath: HIDDEN });
   }
   set(send, { opacity: 0.45 });
-  toyHideRise([...steps.map((step) => step.li), say], 6);
-  toyHideRise(play, 10);
+  toyHideRise([...steps.map((step) => step.li), ...says], 6);
+  toyHideRise(plays, 10);
   steps.forEach((step) => set(step.done, { autoAlpha: 0 }));
   parts.forEach((part) => set(part.glow, { opacity: 0, scale: 0.6 }));
   set(pulse, { autoAlpha: 0 });
@@ -352,8 +361,10 @@ function* engine(root: HTMLElement): Steps {
   const TYPE = 0.35;
   const typedAt = TYPE + letters * 0.03;
   const SEND = typedAt + 0.3;
-  const writes = inBar ? typed : askText;
-  tl.to(writes, { clipPath: SHOWN, duration: typedAt - TYPE, ease: `steps(${Math.max(letters, 1)})` }, TYPE);
+  for (const writes of inBar ? typed : askTexts) {
+    const n = lettersOf(writes);
+    tl.to(writes, { clipPath: SHOWN, duration: n * 0.03, ease: `steps(${n})` }, TYPE);
+  }
   tl.to(greet, { autoAlpha: 0, duration: 0.2, ease: "power1.in" }, inBar ? SEND : TYPE - 0.2);
   if (inBar) {
     tl.to(placeholder, { autoAlpha: 0, duration: TOY_STEP, ease: "none" }, TYPE - TOY_STEP);
@@ -396,11 +407,21 @@ function* engine(root: HTMLElement): Steps {
 
   // the answer comes back up the cable, and Claude says it
   const back = run(reaches + 0.05 + steps.length * EVERY + 0.05, true);
-  toyRise(tl, say, back + 0.05, 0.35);
-  toyRise(tl, play, back + 0.22, 0.42);
+  toyRise(tl, says, back + 0.05, 0.35);
+  toyRise(tl, plays, back + 0.22, 0.42);
   tl.to(root, { duration: TOY_STEP }, back + 1.1);
   yield;
-  return { tl, cleanup: () => {}, cue: 0 };
+  return {
+    tl,
+    cue: 0,
+    // the next time it plays, the next question is asked (then the first again)
+    next() {
+      root.dataset.round = String(((Number(root.dataset.round) || 0) + 1) % rounds);
+    },
+    cleanup() {
+      root.dataset.round = "0";
+    },
+  };
 }
 
 const TAKES: Record<string, (root: HTMLElement) => Steps> = {
