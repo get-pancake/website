@@ -155,3 +155,20 @@ export const FRAME = [
   { min: [8.3, 3.5, 0.3], max: [9.3, 4.6, 0.8] }, // the "+1" that rises
 ];
 export const CENTRE = [-0.05, 0.9, -0.6];
+
+/**
+ * What a phone shows of the kitchen (the `view` option of kitchen.js, given by LpKitchen.tsx under
+ * 768 px). It is [left, right, bottom, top] in the camera's units, from the resting angle, looking
+ * at CENTRE.
+ * On a phone the whole kitchen is as wide as the page's text, and neither side is cut (founder,
+ * 2026-11-12: "Faut pas qu'il dépasse des deux côtés"). The window is the kitchen's outline as it
+ * is drawn, with its shadow, in both modes and with both casts. It adds 16/358 of the kitchen's
+ * width on each side, and 5 % of the picture's height above and below. On phones kitchen.css
+ * makes the picture 16/358 wider than the text on each side, so the outline lands on the page's
+ * 16 px margins at any width. The window's shape, 390 x 182, is the stage's aspect ratio in
+ * kitchen.css.
+ *
+ * scripts/kitchen-phone-view.mjs measures it on the drawn picture. Measure again after you change
+ * what the kitchen spans (the slab, its shadow, a station), then draw the stills again.
+ */
+export const PHONE_VIEW = [-11.354, 12.789, -6.092, 5.175];

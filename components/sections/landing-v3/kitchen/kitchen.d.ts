@@ -36,6 +36,9 @@ export interface KitchenOptions {
   target?: [number, number, number];
   /** the margin around the kitchen (1.04) */
   pad?: number;
+  /** the window the picture shows, margins included, in place of the kitchen's outline and `pad`:
+   *  [left, right, bottom, top] in the camera's units, from the resting angle (PHONE_VIEW) */
+  view?: readonly [number, number, number, number];
   shadows?: "vsm" | "pcf" | "none";
   /** the most device pixels per CSS pixel it draws (2) */
   maxPixelRatio?: number;
@@ -79,5 +82,8 @@ export function createPancakeKitchen(container: HTMLElement, options?: KitchenOp
 
 /** the moment each still picture is drawn at; start the live scene there to take over without a jump */
 export const POSTER_TIMES: Readonly<Record<KitchenMode, number>>;
+
+/** what a phone shows: the whole kitchen, as wide as the page's text (layout.js) */
+export const PHONE_VIEW: readonly [number, number, number, number];
 
 export const PAGE_COLOR: string;

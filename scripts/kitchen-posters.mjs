@@ -17,8 +17,12 @@
  * in software (SwiftShader), so the stills are the same on every machine. The badges are set in
  * the reading face of the landing page (app/fonts/geist), as on the page.
  *
+ * A phone's stills show what a phone shows: its own window on the kitchen (PHONE_VIEW, in
+ * kitchen/layout.js, measured by scripts/kitchen-phone-view.mjs), from a still angle.
+ *
  * It needs three (a dependency of the section) and Playwright, which this repository does not
  * depend on: npm install --no-save playwright && npx playwright install chromium
+ * PLAYWRIGHT_MODULE and CHROMIUM_PATH point at another copy of Playwright and of Chromium.
  */
 import { createRequire } from "node:module";
 import { createServer } from "node:http";
@@ -35,11 +39,17 @@ const THREE = join(ROOT, "node_modules/three/build/three.module.min.js");
 const SERVED = ["components/sections/landing-v3/kitchen", "public/lp/kitchen", "app/fonts/geist"].map((p) => join(ROOT, p) + sep);
 const FONT = '600 14px "Landing Sans"';
 const QUALITY = 0.82;
-/** [name suffix, viewport, device pixels per CSS pixel]: 1944 x 1094 with the badges, and
- *  1170 x 657 for phones (at that width the scene shows no badge: they could not be read) */
+/** what a phone shows of the kitchen (layout.js): its stills have the shape of that window */
+const PHONE_VIEW = readFileSync(join(ROOT, "components/sections/landing-v3/kitchen/layout.js"), "utf8")
+  .match(/export const PHONE_VIEW = \[([^\]]*)\]/)?.[1]
+  .split(",")
+  .map(Number);
+/** [name suffix, viewport, device pixels per CSS pixel, what the review page is asked]: 1944 x 1094
+ *  with the badges, and 1170 x 546 for phones, in the phone's window and from its still angle (at
+ *  that width the scene shows no badge: they could not be read) */
 const SIZES = [
-  ["", { width: 1296, height: 729 }, 1.5],
-  ["-phone", { width: 390, height: 219 }, 3],
+  ["", { width: 1296, height: 729 }, 1.5, ""],
+  ["-phone", { width: 390, height: Math.round((390 * (PHONE_VIEW?.[3] - PHONE_VIEW?.[2])) / (PHONE_VIEW?.[1] - PHONE_VIEW?.[0])) }, 3, "&phone=1"],
 ];
 
 const fail = (message) => {
@@ -47,9 +57,10 @@ const fail = (message) => {
   process.exit(1);
 };
 if (!existsSync(THREE)) fail("three is not installed. Run: npm install");
+if (PHONE_VIEW?.length !== 4 || PHONE_VIEW.some(Number.isNaN)) fail("PHONE_VIEW was not found in kitchen/layout.js");
 let chromium;
 try {
-  ({ chromium } = createRequire(import.meta.url)("playwright"));
+  ({ chromium } = createRequire(import.meta.url)(process.env.PLAYWRIGHT_MODULE || "playwright"));
 } catch {
   fail("Playwright is not installed. Run: npm install --no-save playwright && npx playwright install chromium");
 }
@@ -59,8 +70,8 @@ const stills = [];
 for (const mode of ["with", "without"]) {
   for (const cast of ["pancakes", "people"]) {
     for (const plain of mode === "without" ? [false, true] : [false]) {
-      for (const [suffix, viewport, scale] of SIZES) {
-        stills.push({ name: `${mode}-${cast}${plain ? "-plain" : ""}${suffix}`, mode, cast, plain, viewport, scale });
+      for (const [suffix, viewport, scale, ask] of SIZES) {
+        stills.push({ name: `${mode}-${cast}${plain ? "-plain" : ""}${suffix}`, mode, cast, plain, viewport, scale, ask });
       }
     }
   }
@@ -82,7 +93,10 @@ await new Promise((done) => server.listen(0, "127.0.0.1", done));
 const origin = `http://127.0.0.1:${server.address().port}`;
 
 mkdirSync(OUT, { recursive: true });
-const browser = await chromium.launch({ args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"] });
+const browser = await chromium.launch({
+  ...(process.env.CHROMIUM_PATH ? { executablePath: process.env.CHROMIUM_PATH } : {}),
+  args: ["--use-angle=swiftshader", "--enable-unsafe-swiftshader", "--ignore-gpu-blocklist"],
+});
 let errors = 0;
 try {
   for (const still of wanted) {
@@ -91,10 +105,12 @@ try {
     await context.route(/\/three@[^/]+\/build\/three\.module\.min\.js$/, (route) =>
       route.fulfill({ body: readFileSync(THREE), contentType: "text/javascript" }),
     );
+    // and Google for the faces of its controls, which a still hides: the page loads offline too
+    await context.route(/^https:\/\/fonts\.(googleapis|gstatic)\.com\//, (route) => route.fulfill({ body: "", contentType: "text/css" }));
     const page = await context.newPage();
     const problems = [];
     page.on("pageerror", (error) => problems.push(error.message));
-    const query = `bare=1&poster=1&mode=${still.mode}&cast=${still.cast}${still.plain ? "&logos=0" : ""}&dpr=${still.scale}`;
+    const query = `bare=1&poster=1&mode=${still.mode}&cast=${still.cast}${still.plain ? "&logos=0" : ""}&dpr=${still.scale}${still.ask}`;
     await page.goto(`${origin}/${PAGE}?${query}`);
     try {
       await page.waitForFunction(() => document.documentElement.dataset.ready === "1", null, { timeout: 120_000 });

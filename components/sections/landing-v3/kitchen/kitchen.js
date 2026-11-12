@@ -30,6 +30,9 @@ const DEG = Math.PI / 180;
  */
 export const POSTER_TIMES = { with: 31.52, without: 41.6 };
 
+/** a phone's window on the kitchen, for the `view` option: see layout.js */
+export { PHONE_VIEW } from "./layout.js";
+
 /**
  * A loop that cannot keep up gives the picture back (`onSlow`): under SLOW_FPS frames a second
  * for SLOW_WINDOWS windows of SLOW_WINDOW_MS in a row. A still picture is better than a slide
@@ -175,7 +178,10 @@ export function createPancakeKitchen(container, options = {}) {
     let x1 = -Infinity;
     let y0 = Infinity;
     let y1 = -Infinity;
-    for (const box of FRAME) {
+    // a window given in the camera's own units (a phone's, PHONE_VIEW) is the picture, margins
+    // included: it takes the place of the outline of FRAME and of `pad`
+    if (opts.view) [x0, x1, y0, y1] = opts.view;
+    for (const box of opts.view ? [] : FRAME) {
       for (let i = 0; i < 8; i++) {
         corner
           .set(i & 1 ? box.max[0] : box.min[0], i & 2 ? box.max[1] : box.min[1], i & 4 ? box.max[2] : box.min[2])
@@ -187,7 +193,8 @@ export function createPancakeKitchen(container, options = {}) {
       }
     }
     const aspect = width / height;
-    const half = (Math.max((y1 - y0) / 2, (x1 - x0) / 2 / aspect) * opts.pad) / opts.zoom;
+    const pad = opts.view ? 1 : opts.pad;
+    const half = (Math.max((y1 - y0) / 2, (x1 - x0) / 2 / aspect) * pad) / opts.zoom;
     const cx = opts.target ? 0 : (x0 + x1) / 2;
     const cy = opts.target ? 0 : (y0 + y1) / 2;
     camera.left = cx - half * aspect;

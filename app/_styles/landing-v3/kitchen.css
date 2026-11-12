@@ -131,6 +131,18 @@
     gap: 24px;
     padding: 16px;
   }
+  /* The whole kitchen is as wide as the text, and neither side is cut (founder, 2026-11-12). The
+     scene shows a phone's own window (PHONE_VIEW in kitchen/layout.js): the kitchen's outline,
+     with 16/358 of its width on each side. The stage reaches that same 16/358 past the text on
+     each side. So the outline lands on the page's 16 px margins at any width, and on a 390
+     phone the stage spans the screen. Its shape is the window's. On a wider screen, main.lp clips
+     what reaches past the edge. */
+  .lp-kitchen__stage {
+    aspect-ratio: 390 / 182;
+    margin-inline: calc(100% * -16 / 358);
+    max-width: none;
+    width: calc(100% * 390 / 358);
+  }
   .lp-kitchen__title {
     /* the steps title on phones: 35.559 / 41 / -3% */
     font-size: 35.559px;

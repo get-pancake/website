@@ -11,9 +11,10 @@
 //   ?cast=people            little chefs in place of the pancake chefs
 //   ?logos=0                without Pancake: no vendor mark on the tank
 //   ?poster=1               the still of the mode, as the landing page's pictures are drawn
+//   ?phone=1                what a phone shows: the whole kitchen as wide as the text, no tilt
 //   ?shadows=pcf|vsm|none   ?dpr=1   ?bare=1 (the stage alone, full window)
 
-import { createPancakeKitchen, POSTER_TIMES } from "../kitchen.js";
+import { createPancakeKitchen, POSTER_TIMES, PHONE_VIEW } from "../kitchen.js";
 import { WORDS } from "../words.js";
 
 const q = new URLSearchParams(location.search);
@@ -45,6 +46,11 @@ if (q.has("poster")) {
   options.autoplay = false;
   options.interactive = true;
   options.intro = false;
+}
+if (q.has("phone")) {
+  // what a phone shows (LpKitchen.tsx under 768 px): its own window, from a still angle
+  options.view = PHONE_VIEW;
+  options.interactive = false;
 }
 if (q.has("bare")) document.body.classList.add("bare");
 

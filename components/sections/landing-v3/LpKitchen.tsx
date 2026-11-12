@@ -35,6 +35,12 @@ import { whenInput } from "./lp-play-once";
  *   away the scene is disposed and the poster is the render again, and it boots again when the
  *   visitor comes back (FAR, below). At that width the scene draws no badge (kitchen/overlay.js),
  *   as its poster.
+ * - On a phone the whole kitchen is as wide as the page's text, and neither side is cut (founder,
+ *   2026-11-12: "Faut pas qu'il dépasse des deux côtés"). The scene shows a phone's own window
+ *   (PHONE_VIEW, kitchen/layout.js) on a stage that kitchen.css makes 390 x 182. A touch no longer
+ *   turns the view ("supprimer le truc où je peux toucher et ça change l'angle"). So the phone
+ *   scene is not `interactive`: it has no tilt, no drift, and no jump of a tapped chef. Its
+ *   outline then stays on the margins, and its poster is the same picture.
  * - A device that cannot hold the loop gets the poster back for the rest of the visit (onSlow,
  *   kitchen.js: under 12 frames a second for 4 s). `?lp-gl=force` skips that test, and
  *   `?lp-nogl` keeps the poster, as for the page's other WebGL (LpRainbowGL).
@@ -52,7 +58,8 @@ let tooSlow = false;
 /** the still pictures: one per mode and cast, and one without the vendor marks on the tank */
 function poster(mode: KitchenMode, cast: KitchenCast, vendorLogos: boolean) {
   const name = `/lp/kitchen/${mode}-${cast}${mode === "without" && !vendorLogos ? "-plain" : ""}`;
-  /* wide: 1944 x 1094, with the badges. phone: 1170 x 657, without (too small to read there) */
+  /* wide: 1944 x 1094, with the badges. phone: 1170 x 546, in PHONE_VIEW, without the badges
+     (too small to read there) */
   return { wide: `${name}.webp`, phone: `${name}-phone.webp` };
 }
 
@@ -109,7 +116,7 @@ export function LpKitchen({
           if (!entry?.isIntersecting) return;
           near?.disconnect();
           import("./kitchen/kitchen")
-            .then(({ createPancakeKitchen, POSTER_TIMES }) => {
+            .then(({ createPancakeKitchen, POSTER_TIMES, PHONE_VIEW }) => {
               if (gone) return;
               const at = latest.current;
               const live = createPancakeKitchen(el, {
@@ -120,6 +127,8 @@ export function LpKitchen({
                 intro: false,
                 // a phone's picture is small: it is drawn as sharp as its poster (1170 px wide)
                 maxPixelRatio: phone.matches ? 3 : 2,
+                // a phone: the whole kitchen as wide as the text, from a still angle (PHONE)
+                ...(phone.matches ? { view: PHONE_VIEW, interactive: false } : null),
                 ...(judged
                   ? {
                       onSlow: () => {
