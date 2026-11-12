@@ -6,28 +6,6 @@
  * WRITTEN BY scripts/toy-art.mjs FROM THE 3D SETS (toys/studio/scene-*.js). Never edit it by
  * hand: change the set and run the script, which redraws the pictures with it.
  */
-export const ART_BRAIN = {
- "size": [464,426],
- "px": 38.03,
- "ground": [38.03,0,0,27.36,232,160.64],
- "up": [0,-26.42],
- "layers": {
-  "plate": {"src":"/lp/toys/brain/plate.webp","x":135,"y":85,"w":198,"h":145},
-  "brain": {"src":"/lp/toys/brain/brain.webp","x":149,"y":59,"w":166,"h":140}
- },
- "anchors": {
-  "centre": [232,119.2],
-  "top": [232,89.48],
-  "seat": [232,158.19],
-  "foot": [232,229.04],
-  "left": [136.92,156.68],
-  "right": [327.08,156.68]
- },
- "paths": {
-
- }
-} as const;
-
 export const ART_ENGINE = {
  "size": [752,489],
  "px": 51.51,
@@ -37,7 +15,7 @@ export const ART_ENGINE = {
   "plate": {"src":"/lp/toys/engine/plate.webp","x":349,"y":159,"w":388,"h":238},
   "tables": {"src":"/lp/toys/engine/tables.webp","x":439,"y":220,"w":108,"h":85},
   "radar": {"src":"/lp/toys/engine/radar.webp","x":603,"y":229,"w":102,"h":77},
-  "brain": {"src":"/lp/toys/engine/brain.webp","x":519,"y":143,"w":114,"h":89},
+  "brain": {"src":"/lp/toys/engine/brain.webp","x":510,"y":123,"w":141,"h":93},
   "stand": {"src":"/lp/toys/engine/stand.webp","x":414,"y":159,"w":307,"h":184}
  },
  "anchors": {
@@ -47,7 +25,7 @@ export const ART_ENGINE = {
   "radar-face": [650.02,260.04],
   "radar-edge": [686.07,260.04],
   "brain": [567.61,196.98],
-  "brain-heart": [567.61,176.73]
+  "brain-heart": [567.61,160.49]
  },
  "paths": {
   "cable": [[350.25,378.5],[357.71,378.82],[365.12,379.56],[372.51,380.43],[379.91,381.19],[387.38,381.57],[394.83,381.17],[401.92,379.52],[407.98,376.39],[413.03,372.43],[417.38,368.05],[421.2,363.42],[424.61,358.63],[427.66,353.72],[430.38,348.7],[432.77,343.6],[434.77,338.41],[436.1,333.12],[436.4,327.75],[435.97,322.38],[435.04,317.04],[433.78,311.73],[432.36,306.44],[430.96,301.16],[430.05,295.82],[429.96,290.44],[431.11,285.13]]
@@ -265,4 +243,4 @@ export const ART_SOURCES = {
 } as const;
 
 /** every set, by the name of its folder in public/lp/toys (the stages' own lookups: LpToyKit.tsx) */
-export const TOY_ART = { brain: ART_BRAIN, engine: ART_ENGINE, journey: ART_JOURNEY, merge: ART_MERGE, ping: ART_PING, radar: ART_RADAR, sources: ART_SOURCES } as const;
+export const TOY_ART = { engine: ART_ENGINE, journey: ART_JOURNEY, merge: ART_MERGE, ping: ART_PING, radar: ART_RADAR, sources: ART_SOURCES } as const;
