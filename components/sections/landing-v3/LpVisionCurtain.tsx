@@ -31,7 +31,11 @@ import { DB_HERO, DB_HERO_STORY, DB_HERO_TABS } from "./lp-vision-tables";
  * THE HANDLE between them resizes the two, as a split view's does (founder: "le bouton rideau
  * doit élargir Claude, pas révéler [une autre vue]"): pulled right, Claude's column is as wide as
  * what the table leaves (its conversation stays a centred column, as the app's does on a wide
- * window); pulled left, the table takes the card and shows every column.
+ * window); pulled left, the table takes the card and shows every column. At rest the two share
+ * the card about half and half; on a desktop, a pointer over the table opens it to three quarters
+ * and takes it back when it leaves (founder: "la barre slider un poil, de la moitié au trois
+ * quarts, pour montrer l'animation au moment du hover de cette table"). Once the visitor has moved
+ * the handle, the split is theirs.
  * On a phone the two stack in the same order: Claude on top, the table a sheet under it (no
  * handle there: 358 px is too narrow to share).
  *
@@ -62,8 +66,8 @@ import { DB_HERO, DB_HERO_STORY, DB_HERO_TABS } from "./lp-vision-tables";
 /** how far a drag or a key may take the handle, % of the card: it stays on the card */
 const MIN = 3;
 const MAX = 97;
-/** where it rests on a desktop, for the slider's first value (vision.css --vc-rest) */
-const REST = 39;
+/** where it rests on a desktop, for the slider's first value (vision.css --vc-rest: about half) */
+const REST = 52;
 /** a page opened with the card's top above this share of the window has it in front of the
     visitor already: it rests on its END (lp-play-once `seenAbove`) */
 const SEEN_ABOVE = 0.45;
@@ -273,10 +277,13 @@ export function LpVisionCurtain() {
     grab.current = event.clientX - (at.left + at.width / 2);
     event.currentTarget.setPointerCapture(event.pointerId);
     event.currentTarget.focus({ preventScroll: true });
+    // (the split follows the hand at once: no easing while it is dragged, vision.css)
+    card.current?.setAttribute("data-drag", "");
   };
   const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => moveTo(event.clientX);
   const onPointerUp = (event: ReactPointerEvent<HTMLDivElement>) => {
     grab.current = null;
+    card.current?.removeAttribute("data-drag");
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   };
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
@@ -434,6 +441,10 @@ export function LpVisionCurtain() {
             </span>
           </p>
           <DbTable table={DB_HERO} bar={false} tone="yellow" />
+          {/* Claude's frame around the rows it keeps when it filters (founder: "je lierais un peu
+              les 86 en montrant que ça les entoure et les filtre dans la database"): the take
+              shows it (data-ring on the table) */}
+          <span className="lp-vcut__ring" />
           {/* the status line, under the rows: the table is live, and what it last did */}
           <p className="lp-vcut__status">
             <i />

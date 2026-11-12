@@ -123,11 +123,11 @@ type Cells = readonly [
   region: string,
   created: string,
 ];
-const row = (key: string, c: Cells, more: Pick<DbRow, "mark" | "out"> = {}): DbRow => ({
-  key,
-  ...more,
-  c: [...c.slice(0, 9), tag(c[9]), c[10], c[11]] as DbCell[],
-});
+/** a row's cells, in the columns' order (the id is kept here for the record, not shown) */
+const row = (key: string, c: Cells, more: Pick<DbRow, "mark" | "out"> = {}): DbRow => {
+  const [, industry, deal, signal, fit, play, headcount, touch, reason, source, region, created] = c;
+  return { key, ...more, c: [industry, signal, fit, play, deal, headcount, touch, reason, tag(source), region, created] };
+};
 const out = { out: true } as const;
 
 /** The hero's table (2026-11-11). The founder, on the takes before this one: "plus de dynamisme:
@@ -150,8 +150,9 @@ const out = { out: true } as const;
  *  THE COLUMNS: a name and a type, as a database tool prints them, nothing over them (founder,
  *  2026-11-11: "évite les mots type fioriture genre 'The Brain', il faut simplifier les mots
  *  inutiles"). `next_best_play` is shut until the standing order (`join: "play"`). Its width is
- *  that of what it pushes out of sight (headcount and last_touch: 224 px), so the card's edge falls
- *  on a column's line before and after. The table is half as wide again as the card: what is
+ *  that of what it pushes out of sight (crm_deal and headcount: 224 px), so the card's edge falls
+ *  on a column's line before and after: at rest the window shows the four columns of the story
+ *  (industry, signal, fit and the Play: 504 px, vision.css --vc-cols), the rest on hover. The table is half as wide again as the card: what is
  *  pushed right stays in it, past the edge. A narrow window (a tablet on its side, a phone: widths
  *  `wm`, shares of the card, and `wp`) has no room for all of them: there the deal's and the
  *  signal's columns fold away as the Plays' opens (vision.css).
@@ -160,13 +161,12 @@ export const DB_HERO: DbTableData = {
   name: "companies",
   numbered: true,
   cols: [
-    { name: "id", type: "pk", w: 70, hide: "phone mid" },
     { name: "industry", type: "text", w: 100, wm: "12.5%", wp: 90 },
-    { name: "crm_deal", type: "enum", w: 104, wm: "13.5%", wp: 98, join: "deal" },
     { name: "signal", type: "text", w: 112, wm: "15%", wp: 104, join: "signal" },
-    { name: "fit", type: "int", w: 80, wm: "9%", wp: 42, end: true },
+    { name: "fit", type: "int", w: 68, wm: "9%", wp: 42, end: true },
     { name: "next_best_play", type: "text", w: 224, wm: "28.5%", wp: 202, join: "play" },
-    { name: "headcount", type: "int", w: 100, wm: "9.4%", wp: 76, end: true },
+    { name: "crm_deal", type: "enum", w: 104, wm: "13.5%", wp: 98, join: "deal" },
+    { name: "headcount", type: "int", w: 120, wm: "9.4%", wp: 76, end: true },
     { name: "last_touch", type: "text", w: 124, wm: "13.8%", wp: 104 },
     { name: "lost_reason", type: "enum", w: 140, wm: "14.3%", wp: 100 },
     { name: "source", type: "enum", w: 104, wm: "11%", wp: 84 },

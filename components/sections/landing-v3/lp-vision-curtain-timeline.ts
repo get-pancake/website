@@ -117,6 +117,8 @@ const FLAGS = [
   "data-keep-narrow",
   "data-shut-play",
   "data-wr-play",
+  "data-pick",
+  "data-ring",
 ] as const;
 type Flag = (typeof FLAGS)[number];
 /** the server's picture has Claude's ring on the last cell it ran only (data-idle on the
@@ -174,6 +176,7 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   /** the view bar (its filter), the count of what the view holds, the status line */
   const filterBar = $(".lp-vcut__filter");
   const countSome = $('.lp-vcut__count [data-when="some"]');
+  const countEl = $(".lp-vcut__count");
   const statusLine = $(".lp-vcut__status");
   const statusText = $(".lp-vcut__status-t");
   /** every row of the table, in the markup's order: a row's slot is where it stands untouched */
@@ -458,17 +461,31 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   tl.to(greet, { autoAlpha: 0, y: -8, duration: 0.2, ease: "power2.in" }, sent1);
   arrive(tools.filter.el, sent1 + CALL);
   const f = sent1 + CALL + MOVE;
+  // Claude's call is at work in the table: it picks the rows that have a signal, top to bottom
+  // (founder: "je lierais un peu les 86 en montrant que ça les entoure et les filtre dans la
+  // database"). Its ring is the table's only: nothing is framed on Claude's side (founder: "pas
+  // sûr qu'il faille encadrer côté Claude")
   pulse(companiesTab, "data-read", f, 0.4);
-  on(filterBar, "data-filter", f + 0.2);
-  tl.to(O.rescored.filter((tr) => !O.view.includes(tr)), { autoAlpha: 0, duration: 0.2, ease: "power1.in" }, f + 0.2);
-  settle(O.view, f + 0.32, 0.45, "power3.out");
-  const filtered = f + 0.82;
+  const kept = O.rescored.filter((tr) => O.view.includes(tr));
+  kept.forEach((tr) => on(tr, "data-pick", f + 0.05 + O.rescored.indexOf(tr) * 0.025));
+  // the filter: the others go, the picked ones come together under the head, and Claude's frame
+  // closes around them while the count says how many there are
+  const fF = f + 0.6;
+  on(filterBar, "data-filter", fF);
+  tl.to(O.rescored.filter((tr) => !O.view.includes(tr)), { autoAlpha: 0, duration: 0.2, ease: "power1.in" }, fF);
+  settle(O.view, fF + 0.12, 0.45, "power3.out");
+  on(db, "data-ring", fF + 0.35);
+  kept.forEach((tr) => off(tr, "data-pick", fF + 0.6));
+  const filtered = fF + 0.62;
   back(tools.filter, filtered);
+  on(countEl, "data-lit", filtered);
   const said1 = stream(says.say1, filtered + 0.2);
+  off(db, "data-ring", said1 + 0.35);
+  off(countEl, "data-lit", said1 + 0.35);
 
   // the table goes on. Two rows are one company: the ring takes the pair, the duplicate goes
   // into the row over it, what stood under comes up
-  const pair = said1 + 0.3;
+  const pair = said1 + 0.55;
   on(keep, "data-rt", pair);
   on(keep, "data-rl", pair);
   on(dup, "data-rb", pair);
@@ -494,8 +511,12 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const inView = enters("fi", O.entered, stop, SAYS.fiSignal, counts[2]);
   off(hero, "data-unlit", inView + 0.1);
   const up2 = climbs("fi", O.fintech, rescore("fi", inView + 0.1, SAYS.fiFit) + 0.05, true);
-  arrive(tools.ping.el, inView + 0.1 + COUNT);
+  const ping = inView + 0.1 + COUNT;
+  arrive(tools.ping.el, ping);
+  // as its card comes in, the account's row takes Claude's ring
+  for (const name of ["data-rt", "data-rb", "data-rl"] as const) on(hero, name, ping);
   const said2 = stream(says.say2, up2 - 0.15);
+  for (const name of ["data-rt", "data-rb", "data-rl"] as const) off(hero, name, said2 + 0.2);
   // (and while the answer is read and the next line typed, the table is still at it: another
   // account comes into the view)
   enters("tr", O.travel, said2 + 0.5, SAYS.trSignal, counts[3]);
@@ -506,6 +527,11 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const sent2 = sendAt(typed.ask2, bubbles.ask2, typed2 + TYPED_HOLD);
   arrive(tools.rule.el, sent2 + CALL);
   const o = sent2 + CALL + MOVE;
+  // as its card comes in, the rows above 90 (the two at the top) take Claude's ring
+  const [top1, top2] = O.travel;
+  on(top1, "data-rt", o - 0.05);
+  on(top2, "data-rb", o - 0.05);
+  for (const tr of [top1, top2]) on(tr, "data-rl", o - 0.05);
   off(db, "data-shut-play", o);
   on(db, "data-wr-play", o);
   tl.to(db, { "--open-play": 1, duration: 0.45, ease: "power3.out" }, o + STEP);
@@ -520,6 +546,9 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const live1 = runs("fi", o + 1.05);
   const live2 = runs("lo", live1 + 0.3);
   back(tools.rule, live2 + 0.1);
+  off(top1, "data-rt", live2 + 0.4);
+  off(top2, "data-rb", live2 + 0.4);
+  for (const tr of [top1, top2]) off(tr, "data-rl", live2 + 0.4);
   const said3 = stream(says.say3, live2 + 0.3);
 
   // from here nothing is typed. A third account passes 90: its Play is written, Claude runs it

@@ -44,12 +44,14 @@
    on the right (founder 2026-11-11, his second word on it).
    --cut       where the handle stands, from the card's left: Claude's share. It is the visitor's
                (--cut-user) once they have moved it, else its rest (--vc-rest)
-   --vc-cols   the table's leading columns once the Plays' has opened (lp-vision-tables.ts: the
-               key, the industry, the deal, the signal, the fit, the Play: 70 + 100 + 104 + 112 +
-               80 + 224)
+   --vc-cols   the table's four leading columns, the story's (lp-vision-tables.ts: the industry, the
+               signal, the fit and the Play: 100 + 112 + 68 + 224; before the Play's column opens,
+               the deal and the headcount take its 224)
    --vc-rest   where the handle rests: what those columns and the row numbers (--vc-n) leave,
                less a pixel so that the last one's own line shows at the card's edge
    --vc-min    Claude's column is never narrower than this: slid further left, the table covers it
+   On a desktop a pointer over the table opens it to three quarters of the card (--vc-rest, below)
+   and the split eases there and back (--cut is a registered property, so it can be eased)
    --vc-max    nor is its conversation wider: past it, it stays a centred column, as the app's
                does on a wide window (--vc-gut is the margin that makes it so)
    --vc-bar, --vc-row   the table's lines; Claude's own bar is as tall as the table's
@@ -61,9 +63,9 @@
   --vc-row: 34px;
   --vc-tool: 34px;
   --vc-n: 42px;
-  --vc-cols: 690px;
+  --vc-cols: 504px;
   --vc-rest: calc(100% - var(--vc-n) - var(--vc-cols) - 1px);
-  --vc-min: 300px;
+  --vc-min: 280px;
   --vc-max: 620px;
   --vc-pad: 24px;
   --vc-gut: max(var(--vc-pad), calc((100% - var(--vc-max)) / 2));
@@ -75,10 +77,29 @@
   aspect-ratio: auto;
   background: var(--lp-claude-bg);
   height: 602px;
+  transition: --cut 0.55s cubic-bezier(0.33, 1, 0.68, 1);
   -webkit-user-select: none;
   user-select: none;
 }
 
+@property --cut {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+/* the handle in the visitor's hand: the split follows it at once */
+.lp-vcut .lp-vcut__card[data-drag] {
+  transition: none;
+}
+/* a pointer over the table (a desktop): it opens to three quarters of the card, and closes back
+   when the pointer leaves it (founder: "de la moitié au trois quarts, pour montrer l'animation au
+   moment du hover de cette table"). The handle is not part of it: reached from Claude's side, it
+   stays where it is to be grabbed */
+@media (min-width: 1025px) and (hover: hover) {
+  .lp-vcut .lp-vcut__card:has(.lp-vcut__db:hover) {
+    --vc-rest: max(25%, 280px);
+  }
+}
 /* over: Pancake's table, a whole window as wide as the card, its leading columns on show to the
    right of the handle. It slides with it: pulled left it covers Claude and shows more columns,
    pushed right it leaves the card to Claude */
@@ -238,6 +259,7 @@
   font-size: 11px;
   font-variant-numeric: tabular-nums;
   margin-left: 4px;
+  transition: color 0.3s ease;
 }
 /* the sort: the view's own, not Claude's doing */
 .lp-vcut__chip[data-sort] {
@@ -390,6 +412,44 @@
     inset 0 1.5px 0 var(--vc-claude),
     inset 0 -1.5px 0 var(--vc-claude),
     inset 2.5px 0 0 var(--vc-claude);
+}
+/* Claude picks the rows it keeps when it filters (data-pick: its tint and its bar, fast in, slow
+   out), then draws its frame around the rows it kept (data-ring on the table: the frame is
+   `.lp-vcut__ring`, over the body of the table from its head to the status line, its right side
+   on the card's edge). Founder: "je lierais un peu les 86 en montrant que ça les entoure et les
+   filtre dans la database" */
+.lp-vcut .lp-db tbody tr[data-pick] td {
+  background-color: color-mix(in srgb, var(--vc-claude) 13%, var(--db-bg));
+  transition-duration: 0.15s, 0.3s, 0.25s;
+}
+.lp-vcut .lp-db tbody tr[data-pick] td.lp-db__n {
+  box-shadow: inset 2.5px 0 0 var(--vc-claude);
+}
+.lp-vcut__ring {
+  bottom: 30px;
+  box-shadow:
+    inset 2.5px 0 0 var(--vc-claude),
+    inset -1.5px 0 0 var(--vc-claude),
+    inset 0 1.5px 0 var(--vc-claude),
+    inset 0 -1.5px 0 var(--vc-claude);
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: var(--cut);
+  top: calc(var(--vc-bar) + var(--vc-tool) + var(--vc-row));
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+.lp-vcut .lp-db[data-ring] ~ .lp-vcut__ring {
+  opacity: 1;
+}
+/* the count of what the view holds, lit with the frame */
+.lp-vcut__count[data-lit] {
+  color: var(--vc-claude);
+}
+.lp-vcut__filter[data-filter] .lp-vcut__count[data-lit] {
+  color: var(--vc-claude);
 }
 /* Claude's ring around the column it opens (data-wr-play, on the table), from its head down */
 .lp-vcut .lp-db[data-wr-play] td[data-join="play"] {
@@ -937,6 +997,9 @@
 }
 /* reduced motion: the END, nothing eased */
 @media (prefers-reduced-motion: reduce) {
+  .lp-vcut .lp-vcut__card {
+    transition: none;
+  }
   .lp-vcut .lp-db td,
   .lp-vcut .lp-db th,
   .lp-vcut .lp-db__col,
@@ -1835,15 +1898,6 @@
 }
 
 /* ── narrower windows ── */
-@media (max-width: 1183px) {
-  /* a card narrower than its full width: the key column goes, and its 62 px are Claude's */
-  .lp-vcut .lp-vcut__card {
-    --vc-cols: 620px;
-  }
-  .lp-vcut [data-hide~="mid"] {
-    display: none;
-  }
-}
 @media (min-width: 901px) and (max-width: 1024px) {
   /* a tablet on its side: the two still share the card. The table's four leading columns once
      every command has run are half the card (their widths are shares of it, --wm); Claude has
@@ -1918,6 +1972,11 @@
   .lp-vcut__db {
     border-radius: 16px 16px 0 0;
     transform: translateY(var(--cut));
+  }
+  /* (the sheet runs past the card's bottom by --cut: the frame stops at the card's) */
+  .lp-vcut__ring {
+    bottom: var(--cut);
+    right: 0;
   }
   .lp-vcut__col {
     bottom: auto;
