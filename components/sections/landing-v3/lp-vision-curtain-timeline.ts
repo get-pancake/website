@@ -307,9 +307,8 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
 
   /* ── the geometry, read on the untouched END layout ── */
   const glyphs = { ask1: measureGlyphs(typed.ask1), ask2: measureGlyphs(typed.ask2) };
-  /** where the CRM's last column ends in the companies table (the camera pans to it) */
+  /** the CRM's last column in the companies table (the camera pans to where it ends) */
   const touchTh = C.col("last_touch");
-  const touchRight = touchTh ? touchTh.offsetLeft + touchTh.offsetWidth : 0;
   /** where a row stands, as the `k`th of an order */
   const yAt = (T: ReturnType<typeof tableOf>, tr: Row, k: number) => (k - T.slot(tr)) * T.H;
 
@@ -700,11 +699,15 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
         const r = card.getBoundingClientRect();
         const d = dbLayer.getBoundingClientRect();
         const visible = r.right - Math.max(r.left, d.left);
+        // (read as the table stands when the pan sets off: the Plays' column is open then, it
+        // was not in the first frame the build measured)
+        const touchRight = touchTh ? touchTh.offsetLeft + touchTh.offsetWidth : 0;
         return -Math.max(0, touchRight - visible + 12);
       },
     },
     pan,
   );
+  const panOut = tl.recent() as gsap.core.Tween;
   const sync = pan + CAMERA + 0.1;
   for (const { tr, change } of crm) {
     swap(cellOf(tr, "last_touch"), change.touch[1], sync);
@@ -715,6 +718,17 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   status(SAYS.crm, sync);
   const said5 = stream(says.say5, sync + 0.3);
   camera({ x: 0 }, Math.max(said5 + 0.6, sync + 1.6));
+  const panBack = tl.recent() as gsap.core.Tween;
+  // How far the camera pans depends on how much of the table shows, and the split moves after
+  // the take is built (the window's switch once it is scrolled onto, which eases for 0.9 s; the
+  // visitor's hand): the build's end pass would keep the split of that moment. So each time the
+  // take sets off from its start, the pan forgets its reach and measures it again when it first
+  // plays (the lens is back at x 0 then; the way back starts from where the pan went). A seek
+  // runs no callback and keeps the last measure, which is how a seek is meant to behave
+  tl.eventCallback("onStart", () => {
+    panOut.invalidate();
+    panBack.invalidate();
+  });
   // (a beat on the finished picture before the take is over)
   step(card, {}, Math.max(said5 + 0.6, sync + 1.6) + CAMERA + END_HOLD);
 

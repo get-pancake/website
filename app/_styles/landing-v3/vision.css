@@ -50,10 +50,12 @@
    --vc-rest   where the handle rests: what those columns and the row numbers (--vc-n) leave,
                less a pixel so that the last one's own line shows at the card's edge
    --vc-min    Claude's column is never narrower than this: slid further left, the table covers it
-   On a desktop, once the visitor has scrolled onto the window, the table takes two thirds of the
+   On a desktop, once the visitor has scrolled onto the window, Claude takes about 60 % of the
    card (data-wide, below) and the split eases there (--cut is a registered property, so it can
    be eased)
-   --vc-cols-wide   the columns the table shows then: the story's four, the industry and the deal
+   --vc-cols-wide   the columns the table keeps then: the company, the signal, the fit and the
+               industry; once the Plays' column opens, the Play's name and its live dot in place
+               of the industry
    --vc-max    nor is its conversation wider: past it, it stays a centred column, as the app's
                does on a wide window (--vc-gut is the margin that makes it so)
    --vc-bar, --vc-row   the table's lines; Claude's own bar is as tall as the table's
@@ -66,7 +68,7 @@
   --vc-tool: 34px;
   --vc-n: 42px;
   --vc-cols: 504px;
-  --vc-cols-wide: 728px;
+  --vc-cols-wide: 400px;
   --vc-rest: calc(100% - var(--vc-n) - var(--vc-cols) - 1px);
   --vc-min: 280px;
   --vc-max: 620px;
@@ -98,14 +100,31 @@
 .lp-vcut .lp-vcut__card:is([data-drag], [data-instant]) {
   transition: none;
 }
-/* scrolled onto (data-wide, set once by LpVisionCurtain when the card's top passes 55 % of the
-   window, motion allowed): the table takes two thirds of the card, its edge on a column line,
-   Claude never under 30 % (founder: "c'est pas au hover la bascule, plutôt quand je scroll sur
-   cette partie", "3/4 c'est trop, Claude est trop réduit, maybe 2/3"). A desktop's: a tablet
-   keeps its half, a phone stacks the two */
+/* scrolled onto (data-wide, set once by LpVisionCurtain when the card's top passes 75 % of the
+   window, motion allowed): Claude takes about 60 % of the card, the table the rest, its edge on
+   the industry's line (61 % on a 1136 px card). Founder: "c'est pas au hover la bascule, plutôt
+   quand je scroll sur cette partie", then "on va faire 60-40 plutôt que 33-66, on augmente la
+   partie Claude" (Claude 60, the table 40). A desktop's: a tablet keeps its half, a phone
+   stacks the two. With that little room the table does as a narrow window does: a value's state
+   is its live dot alone, and the people table leaves out its ids, so that the role, the
+   company, where they were and whether they bought from you all show */
 @media (min-width: 1025px) {
   .lp-vcut .lp-vcut__card[data-wide] {
-    --vc-rest: max(30%, calc(100% - var(--vc-n) - var(--vc-cols-wide) - 1px));
+    --vc-rest: calc(100% - var(--vc-n) - var(--vc-cols-wide) - 1px);
+  }
+  .lp-vcut .lp-vcut__card[data-wide] .lp-db td[data-state] {
+    --db-state: 14px;
+  }
+  .lp-vcut .lp-vcut__card[data-wide] .lp-db__state {
+    box-shadow: none;
+    margin-left: 7px;
+    padding: 0;
+  }
+  .lp-vcut .lp-vcut__card[data-wide] .lp-db__state span {
+    display: none;
+  }
+  .lp-vcut .lp-vcut__card[data-wide] [data-pane="people"] .lp-db [data-col="id"] {
+    display: none;
   }
 }
 /* over: Pancake's table, a whole window as wide as the card, its leading columns on show to the
