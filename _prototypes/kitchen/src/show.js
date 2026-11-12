@@ -5,24 +5,32 @@
 // one column of the griddle, then a plate at the pass.
 //
 //   t = k*T        the mixer chef throws three ladles of batter on a free column
-//   + FLIP.at      the cook flips the column, front pancake first
+//   + FLIP.at      the cook flips the column, the nearest pancake first
 //   + SERVE.at     the cook sends the three pancakes to the plate
 //   + TOP.at       the plater tops the stack with what the ticket asks for
-//   + SHIP         the bell rings, the plate is pushed onto the way out, the ticket is stamped
+//   + SHIP         the bell rings, the plate goes onto the way out, the ticket is stamped
 //
 // The offsets are chosen so that, within one period, the beats follow each other instead of
 // landing together: pour, topping, flip, bell, new plate, serve.
+//
+// Two things can be switched while it runs, and only these two hold any state (how far each
+// switch has gone):
+//   the cast   pancake chefs or little chefs: they stand on opposite sides of the counters
+//   the mode   with Pancake, or without (mess.js): the same kitchen, going to pieces
 
 import * as THREE from "three";
 import { C, FOOD, TONES } from "./palette.js";
 import * as G from "./geo.js";
 import * as M from "./mats.js";
 import * as T_ from "./textures.js";
-import { BOWL, INTAKE, GRIDDLE, PASS, OUT, RAIL, CHEFS } from "./layout.js";
-import { mesh, group } from "./world.js";
-import { makeChef, CHEF_SHOULDER } from "./chef.js";
+import { BOWL, INTAKE, GRIDDLE, PASS, OUT, RAIL, STAGES, CAST, RESULTS } from "./layout.js";
+import { mesh, group, CHEVRON } from "./world.js";
+import { makeChef } from "./chef.js";
+import { makePerson } from "./people.js";
 import { makeIngredient, makeGriddlePancake, makePlate, makeTicket, stackY, STACK_TOP, stackJitter, disposeTicketKit } from "./props.js";
-import { clamp, lerp, prog, mod, ease, bump, hop, wobble, hash, TAU } from "./util.js";
+import { createMess, beltDroop, beltDown, DROOP_ANGLE } from "./mess.js";
+import { pool, sprites, put } from "./fx.js";
+import { clamp, lerp, prog, mod, ease, bump, hop, wobble, hash, TAU, dist2, mix3, toss } from "./util.js";
 
 export const T = 3; // seconds between two orders
 const CYCLE = 3 * T; // a column of the griddle cooks one order per cycle
@@ -33,48 +41,32 @@ const PLATE_IN = { at: 7.7, air: 0.5 };
 const TOP = { at: 9.55, gap: 0.1, air: 0.42 };
 const SHIP = 10.45;
 const DONE = SHIP + 0.5; // the ticket leaves the rail
-const PUSH = 1.25; // how far the plater shoves the plate
+const PUSH = 1.25; // how far the plate is shoved
 const EXIT_X = 8.66; // the plate is inside the arch
 const EXIT_TAU = SHIP + (EXIT_X - PASS.plate[0] - PUSH) / OUT.speed;
 const BEAT = T / 2; // the cook acts every half period, a flip then a serve
 const COUNT_FROM = 128;
+const COUNT_WITHOUT = 3; // what the counter shows when the kitchen starts to run without Pancake
 
 const ORDER_TONES = ["yellow", "purple", "pink", "yellow", "pink", "purple", "purple", "yellow", "pink", "purple", "yellow", "pink"];
 const toneOf = (k) => ORDER_TONES[mod(k, ORDER_TONES.length)];
 
 const N_PLATES = 6;
 const N_TICKETS = 9;
-const N_ITEMS = 6;
+const N_ITEMS = 10;
+const NAMES = ["mixer", "cook", "plater"];
 
 const PLATE_Y = PASS.top + 0.03;
 const SLOT_Y = GRIDDLE.y + GRIDDLE.thick / 2;
 const slot = (c, j) => [GRIDDLE.x + GRIDDLE.cols[c], SLOT_Y, GRIDDLE.z + GRIDDLE.rows[j]];
-const dist2 = (a, b) => Math.hypot(a[0] - b[0], a[2] - b[2]);
-const mix3 = (a, b, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u), lerp(a[2], b[2], u)];
-/** a throw from a to b whose apex is `h` above the straight line */
-const toss = (a, b, h, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u) + h * hop(u), lerp(a[2], b[2], u)];
+const smooth = (x) => x * x * (3 - 2 * x);
 
-function pool(parent, n, geometry, material, shadow = false) {
-  const list = [];
-  for (let i = 0; i < n; i++) {
-    const m = new THREE.Mesh(geometry, material);
-    m.visible = false;
-    m.castShadow = shadow;
-    parent.add(m);
-    list.push(m);
-  }
-  return list;
-}
-
-function put(m, p, s) {
-  if (!(s > 0.002)) {
-    m.visible = false;
-    return;
-  }
-  m.visible = true;
-  m.position.set(p[0], p[1], p[2]);
-  m.scale.setScalar(s);
-}
+// where what falls off a broken belt ends up: [x, z, spread, how high it bounces]
+const SPILL = [
+  [-6.05, 1.0, 0.55, 0.5],
+  [-5.5, 1.62, 0.5, 1.9],
+  null,
+];
 
 export function createShow(world, scene, opts = {}) {
   const root = group(scene);
@@ -86,13 +78,23 @@ export function createShow(world, scene, opts = {}) {
   const v3 = new THREE.Vector3();
   const pointer = { x: 0, y: 0, on: 0 };
 
-  // ── the cast ───────────────────────────────────────────────────────────────
-  const chefs = {
-    mixer: makeChef(CHEFS.mixer, tex),
-    cook: makeChef(CHEFS.cook, tex),
-    plater: makeChef(CHEFS.plater, tex),
-  };
-  Object.values(chefs).forEach((c) => root.add(c.root));
+  // ── the two switches ───────────────────────────────────────────────────────
+  let cast = opts.cast === "people" ? "people" : "pancakes";
+  let castMix = cast === "people" ? 1 : 0; // 0 pancake chefs, 1 little chefs
+  let mode = opts.mode === "without" ? "without" : "with";
+  let mess = mode === "without" ? 1 : 0; // 0 with Pancake, 1 without
+  let messSince = mode === "without" ? opts.time || 0 : -1e6; // when the kitchen last started to run without Pancake
+
+  // ── the casts ──────────────────────────────────────────────────────────────
+  const casts = { pancakes: {}, people: {} };
+  for (const name of NAMES) {
+    casts.pancakes[name] = makeChef(CAST.pancakes[name], tex);
+    casts.people[name] = makePerson(CAST.people[name], tex);
+    root.add(casts.pancakes[name].root, casts.people[name].root);
+  }
+  // how high above the floor the top of each chef is, and its brow, for what floats around its head
+  const TOPS = { pancakes: 1.42, people: 2.05 };
+  const BROWS = { pancakes: 0.92, people: 1.32 };
 
   // the mixer's ladle: its origin is the hand, it points along +y to the cup
   const LADLE = 1.3;
@@ -101,6 +103,7 @@ export function createShow(world, scene, opts = {}) {
   const cup = mesh(G.sphere(1, 18, 12), M.ceramic(C.ink10, 0.35, 0.5), ladleTool, 0, LADLE, 0);
   cup.scale.set(0.2, 0.13, 0.2);
   const cupBatter = mesh(G.sphere(1, 14, 10), M.ceramic(FOOD.batter, 0.32, 0.5), ladleTool, 0, LADLE + 0.02, 0.06, false);
+  cupBatter.scale.setScalar(0.15);
 
   // the cook's spatula: handle then blade, along +y, flat on its z
   const SPATULA = 1.0;
@@ -158,35 +161,21 @@ export function createShow(world, scene, opts = {}) {
   const batterDots = pool(root, 3 * 2 * 5 + 9 * 4, dot, M.ceramic(FOOD.batter, 0.35, 0.4));
   // steam: soft round sprites, two per pancake
   const steamMat = new THREE.SpriteMaterial({ map: tex.blob, color: "#ffffff", transparent: true, opacity: 0.55, depthWrite: false, toneMapped: false });
-  const steam = [];
-  for (let i = 0; i < 9 * 2; i++) {
-    const sp = new THREE.Sprite(steamMat);
-    sp.visible = false;
-    root.add(sp);
-    steam.push(sp);
-  }
-  const puffMat = M.soft(C.ink0, 0.9);
-  const puffs = pool(root, 9 * 3 + 12, dot, puffMat);
+  const steam = sprites(root, 9 * 2, steamMat);
+  const puffs = pool(root, 9 * 3 + 12, dot, M.soft(C.ink0, 0.9));
   const sparkGeo = new THREE.OctahedronGeometry(1, 0);
   const sparks = pool(root, 8, sparkGeo, M.glow(C.yellow30));
-  const ripples = [0, 1, 2].map(() => {
+  const ring = (color) => {
     const m = new THREE.Mesh(
-      G.ringArc(0.82, 1, 1),
-      new THREE.MeshBasicMaterial({ color: "#ffffff", transparent: true, opacity: 0, depthWrite: false, toneMapped: false }),
+      G.ringArc(0.84, 1, 1),
+      new THREE.MeshBasicMaterial({ color, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }),
     );
     m.visible = false;
     root.add(m);
     return m;
-  });
-  const bellRings = [0, 1].map(() => {
-    const m = new THREE.Mesh(
-      G.ringArc(0.86, 1, 1),
-      new THREE.MeshBasicMaterial({ color: C.yellow40, transparent: true, opacity: 0, depthWrite: false, toneMapped: false }),
-    );
-    m.visible = false;
-    root.add(m);
-    return m;
-  });
+  };
+  const ripples = [0, 1, 2].map(() => ring("#ffffff"));
+  const bellRings = [0, 1].map(() => ring(C.yellow40));
   const plusTex = T_.plusOne();
   const plus = new THREE.Mesh(
     G.plane(0.8, 0.48),
@@ -196,51 +185,58 @@ export function createShow(world, scene, opts = {}) {
   plus.renderOrder = 4;
   root.add(plus);
 
+  // what the kitchen turns into without Pancake
+  const messy = createMess(world, root, tex);
+
   // ── the mixer's ladle, as a function of time ───────────────────────────────
   const STIR = [BOWL.x + 0.12, BOWL.batterY + 0.1, BOWL.z + 0.1];
   const SCOOP = [BOWL.x + 0.5, BOWL.batterY - 0.03, BOWL.z + 0.22];
-  const BACK = [BOWL.x + 0.6, 2.55, BOWL.z + 0.5];
-  const FWD = [BOWL.x + 2.6, 2.0, BOWL.z + 0.6];
   const stirAt = (t) => {
     const a = t * 4.4;
     return [STIR[0] + Math.cos(a) * 0.46, STIR[1], STIR[2] + Math.sin(a) * 0.4];
   };
-  /** where the cup of the ladle is at time t */
-  function ladleTip(t) {
+  /** where the cup of the ladle is at time t, for a mixer who stands as `S` says */
+  function ladleTip(t, S) {
+    const [back, fwd] = S.mixer.swing;
     const k = Math.floor((t + 0.9) / T);
     const s = t - k * T; // -0.9 .. 2.1 around the pour
     if (s < -0.5) return mix3(stirAt(t), SCOOP, ease.inOutSine(prog(s, -0.9, -0.5)));
-    if (s < -0.12) return toss(SCOOP, BACK, 0.1, ease.outCubic(prog(s, -0.5, -0.12)));
-    if (s < 0.34) return toss(BACK, FWD, 0.3, ease.inOutQuad(prog(s, -0.12, 0.34)));
-    if (s < 1.0) return toss(FWD, stirAt(t), 0.2, ease.inOutSine(prog(s, 0.34, 1.0)));
+    if (s < -0.12) return toss(SCOOP, back, 0.1, ease.outCubic(prog(s, -0.5, -0.12)));
+    if (s < 0.34) return toss(back, fwd, 0.3, ease.inOutQuad(prog(s, -0.12, 0.34)));
+    if (s < 1.0) return toss(fwd, stirAt(t), 0.2, ease.inOutSine(prog(s, 0.34, 1.0)));
     return stirAt(t);
   }
 
-  // ── chefs ──────────────────────────────────────────────────────────────────
-  // Each returns where the chef is and what the hands do at time t; `pose` then adds what
-  // depends on speed (the trailing pancakes, the wobbling toque).
+  // ── the chefs, with Pancake ────────────────────────────────────────────────
+  // Each returns where the chef is and what the hands do at time t, on the stage `S`; the
+  // draw adds what depends on speed (the trailing pancakes, the wobbling toque).
 
-  function mixerAt(t) {
-    const home = CHEFS.mixer.home;
+  function mixerAt(t, S) {
+    const home = S.mixer.home;
     const k = Math.floor((t + 0.9) / T);
     const s = t - k * T;
     const a = t * 4.4;
     const throwing = bump(prog(s, -0.2, 0.5));
-    const tip = ladleTip(t);
+    const tip = ladleTip(t, S);
+    const x = home[0] + Math.cos(a) * 0.035 * (1 - throwing) + 0.16 * throwing;
+    const z = home[1] + Math.sin(a) * 0.035 * (1 - throwing) + S.work * 0.1 * throwing;
+    const fwd = S.mixer.swing[1];
+    const look = s > -0.25 && s < 0.9 ? [fwd[0] + 1.5, fwd[2]] : [tip[0], tip[2]];
     return {
-      x: home[0] + Math.cos(a) * 0.035 * (1 - throwing) + 0.16 * throwing,
-      z: home[1] + Math.sin(a) * 0.035 * (1 - throwing) - 0.1 * throwing,
+      x,
+      z,
       y: 0.2 * hop(prog(s, -0.02, 0.36)),
       squash: -0.1 * bump(prog(s, -0.3, -0.02)) + 0.1 * bump(prog(s, -0.02, 0.3)) + wobble(s - 0.36, -0.12, 22, 9),
       tip,
       loaded: s > -0.5 && s < 0.26,
-      look: s > -0.25 && s < 0.9 ? [GRIDDLE.x, GRIDDLE.z] : [tip[0], tip[2]],
+      look,
+      face: Math.atan2(look[0] - x, look[1] - z) * 0.5,
       lift: throwing,
     };
   }
 
   const cookCol = (i) => (mod(i, 2) === 0 ? mod(i / 2, 3) : mod((i - 3) / 2, 3));
-  function cookAt(t) {
+  function cookAt(t, S) {
     const i = Math.floor((t - FLIP.at + 0.95) / BEAT);
     const s = t - (FLIP.at + BEAT * i); // -0.95 .. 0.55 around the action
     const x0 = GRIDDLE.x + GRIDDLE.cols[cookCol(i - 1)];
@@ -248,42 +244,88 @@ export function createShow(world, scene, opts = {}) {
     const u = prog(s, -0.95, -0.34);
     const hops = Math.abs(x1 - x0) > 1.9 ? 2 : 1;
     const x = lerp(x0, x1, ease.inOutSine(u));
-    const z = CHEFS.cook.z;
+    const z = S.cook.z;
+    const w = S.work;
     const serve = mod(i, 2) === 1;
-    const landed = (s + 0.34) * 1; // time since the last hop ended
-    // the spatula: rest, slide under the front pancake, flick
-    const rest = [x + 0.12, 1.3, z - 0.82];
-    const under = [x1 + 0.02, GRIDDLE.y + 0.06, GRIDDLE.z + GRIDDLE.rows[2] + 0.2];
-    const flick = serve ? [x1 + 0.75, 2.15, GRIDDLE.z + 0.6] : [x1, 2.1, GRIDDLE.z + 0.35];
+    const near = GRIDDLE.z + GRIDDLE.rows[S.nearRow];
+    // the spatula: rest, slide under the nearest pancake, flick
+    const rest = [x + 0.12, 1.3, z + w * 0.82];
+    const under = [x1 + 0.02, GRIDDLE.y + 0.06, near - w * 0.2];
+    const flick = serve ? [x1 + 0.75, 2.15, near + w * 0.35] : [x1, 2.1, near + w * 0.6];
     let tip;
     if (s < -0.3) tip = rest;
     else if (s < 0) tip = mix3(rest, under, ease.inOutQuad(prog(s, -0.3, 0)));
     else if (s < 0.15) tip = toss(under, flick, 0.15, ease.outCubic(prog(s, 0, 0.15)));
-    else tip = mix3(flick, [x1 + 0.12, 1.3, z - 0.82], ease.inOutSine(prog(s, 0.2, 0.55)));
+    else tip = mix3(flick, [x1 + 0.12, 1.3, z + w * 0.82], ease.inOutSine(prog(s, 0.2, 0.55)));
+    const turn = u < 1 ? 0.55 * Math.sign(x1 - x0) * bump(u) : 0;
     return {
       x,
       z,
       y: u < 1 ? 0.34 * Math.abs(Math.sin(hops * Math.PI * u)) : 0.16 * hop(prog(s, 0, 0.3)),
-      squash: wobble(landed, -0.16, 22, 9) * (s < 0 ? 1 : 0) - 0.1 * bump(prog(s, -0.3, 0)) + 0.14 * bump(prog(s, 0, 0.3)) + wobble(s - 0.3, -0.1, 22, 9),
+      squash: wobble(s + 0.34, -0.16, 22, 9) * (s < 0 ? 1 : 0) - 0.1 * bump(prog(s, -0.3, 0)) + 0.14 * bump(prog(s, 0, 0.3)) + wobble(s - 0.3, -0.1, 22, 9),
       tip,
-      serve,
       look: serve && s > 0.05 ? [PASS.plate[0], PASS.plate[1]] : [x1, GRIDDLE.z],
+      face: w > 0 ? turn : Math.PI - turn,
+      stride: u < 1 ? u * hops * Math.PI * 2 : undefined,
       lift: bump(prog(s, -0.05, 0.4)),
     };
   }
 
-  function platerAt(t) {
-    const home = CHEFS.plater.home;
+  function platerAt(t, S) {
+    const home = S.plater.home;
     const k = Math.floor((t - TOP.at + 0.5) / T);
     const s = t - k * T - TOP.at; // -0.5 .. 2.5 around the topping
-    const tone = toneOf(k);
-    const ci = PASS.caddy.tones.indexOf(tone);
+    const ci = PASS.caddy.tones.indexOf(toneOf(k));
+    const bellTop = [S.bell[0], PASS.top + 0.36, S.bell[1]];
+    const above = [bellTop[0], bellTop[1] + 0.5, bellTop[2] - S.work * 0.1];
+    // this order's pancakes land on the plate just before the topping
+    const landed = s - (SERVE.at + SERVE.air - TOP.at);
+    const base = {
+      y: 0.26 * hop(prog(s, 0.92, 1.3)),
+      squash:
+        -0.08 * bump(prog(s, 0.74, 0.92)) +
+        0.12 * bump(prog(s, 0.92, 1.2)) +
+        wobble(s - 1.3, -0.14, 22, 9) +
+        wobble(landed, -0.05, 20, 8) +
+        wobble(landed - SERVE.gap, -0.05, 20, 8) +
+        wobble(landed - SERVE.gap * 2, -0.05, 20, 8),
+      look: s > 1.2 && s < 1.9 ? [PASS.stack[0], PASS.stack[1]] : s > -0.5 && s < 0.1 ? [PASS.caddy.xs[ci], PASS.caddy.z] : [PASS.plate[0] + 0.6 * prog(s, 0.9, 1.3), PASS.plate[1]],
+      lift: 0,
+    };
+    const ring = (rest) => {
+      if (s < 0.6) return rest;
+      if (s < 0.82) return mix3(rest, above, ease.outCubic(prog(s, 0.6, 0.82)));
+      if (s < 0.9) return mix3(above, bellTop, ease.inQuad(prog(s, 0.82, 0.9)));
+      if (s < 1.1) return mix3(bellTop, above, ease.outCubic(prog(s, 0.9, 1.1)));
+      return mix3(above, rest, ease.inOutSine(prog(s, 1.1, 1.6)));
+    };
+
+    if (S.work > 0) {
+      // behind the pass: one hand takes the topping from its bowl and throws it on the plate,
+      // the other rings the bell; the plate then leaves by itself
+      const x = home[0];
+      const z = home[1] + 0.14 * bump(prog(s, -0.4, 0.4));
+      const restA = [x - 0.45, 0.56, z + 0.14];
+      const restB = [x + 0.45, 0.56, z + 0.14];
+      const grab = [PASS.caddy.xs[ci], PASS.top + 0.42, PASS.caddy.z - 0.04];
+      const thrown = [lerp(PASS.caddy.xs[ci], PASS.plate[0], 0.4), 1.95, PASS.caddy.z + 0.8];
+      const off = [x - 0.5, 1.55, z + 1.05]; // "off you go", to the plate
+      let hand;
+      if (s < 0) hand = mix3(restA, grab, ease.outCubic(prog(s, -0.45, -0.08)));
+      else if (s < 0.3) hand = toss(grab, thrown, 0.1, ease.outCubic(prog(s, 0, 0.26)));
+      else if (s < 0.95) hand = mix3(thrown, restA, ease.inOutSine(prog(s, 0.32, 0.7)));
+      else if (s < 1.5) hand = mix3(restA, off, ease.outCubic(prog(s, 0.95, 1.15)));
+      else hand = mix3(off, restA, ease.inOutSine(prog(s, 1.5, 2.0)));
+      return { ...base, x, z, handL: hand, handR: ring(restB), face: -0.25 * bump(prog(s, -0.45, 0.4)) + 0.3 * bump(prog(s, 0.6, 1.4)) };
+    }
+
+    // in front of the pass: a hand points at the topping and sweeps it to the plate, then
+    // pushes the plate onto the belt while the other hand rings the bell
     const step = ease.inOutSine(prog(s, 0.7, 0.9)) * (1 - ease.inOutSine(prog(s, 1.3, 1.75)));
     const x = home[0] - 0.24 * step;
     const z = home[1] - 0.36 * step;
     const restR = [x + 0.62, 0.42, z + 0.16];
     const restL = [x - 0.62, 0.42, z + 0.16];
-    // right hand: point at the topping, sweep to the plate, then push the plate
     const point = [PASS.caddy.xs[ci] * 0.35 + x * 0.65 + 0.25, 1.75, z - 0.75];
     const sweep = [PASS.plate[0] + 0.1, 1.45, z - 0.95];
     const plateL = [PASS.plate[0] - 0.56, PLATE_Y + 0.16, PASS.plate[1] + 0.12];
@@ -295,36 +337,23 @@ export function createShow(world, scene, opts = {}) {
     else if (s < 1.2) handR = mix3(plateL, pushed, ease.outCubic(prog(s, 0.9, 1.12)));
     else if (s < 1.8) handR = toss(pushed, [x + 0.7, 1.5, z - 0.5], 0.1, ease.inOutSine(prog(s, 1.2, 1.5)));
     else handR = mix3([x + 0.7, 1.5, z - 0.5], restR, ease.inOutSine(prog(s, 1.8, 2.2)));
-    // left hand: ring the bell
-    const bellTop = [PASS.bell[0], PASS.top + 0.36, PASS.bell[1]];
-    const above = [bellTop[0], bellTop[1] + 0.5, bellTop[2] + 0.1];
-    let handL;
-    if (s < 0.6) handL = restL;
-    else if (s < 0.82) handL = mix3(restL, above, ease.outCubic(prog(s, 0.6, 0.82)));
-    else if (s < 0.9) handL = mix3(above, bellTop, ease.inQuad(prog(s, 0.82, 0.9)));
-    else if (s < 1.1) handL = mix3(bellTop, above, ease.outCubic(prog(s, 0.9, 1.1)));
-    else handL = mix3(above, restL, ease.inOutSine(prog(s, 1.1, 1.6)));
-    // this order's pancakes land on the plate just before the topping
-    const landed = s - (SERVE.at + SERVE.air - TOP.at);
-    return {
-      x,
-      z,
-      y: 0.26 * hop(prog(s, 0.92, 1.3)),
-      squash:
-        -0.08 * bump(prog(s, 0.74, 0.92)) +
-        0.12 * bump(prog(s, 0.92, 1.2)) +
-        wobble(s - 1.3, -0.14, 22, 9) +
-        wobble(landed, -0.05, 20, 8) +
-        wobble(landed - SERVE.gap, -0.05, 20, 8) +
-        wobble(landed - SERVE.gap * 2, -0.05, 20, 8),
-      handL,
-      handR,
-      look: s > 1.2 && s < 1.9 ? [PASS.stack[0], PASS.stack[1]] : s > -0.5 && s < 0.1 ? [PASS.caddy.xs[ci], PASS.caddy.z] : [PASS.plate[0] + 0.6 * prog(s, 0.9, 1.3), PASS.plate[1]],
-      lift: 0,
-    };
+    return { ...base, x, z, handL: ring(restL), handR, face: Math.PI };
   }
 
-  const STATE = { mixer: mixerAt, cook: cookAt, plater: platerAt };
+  const CALM = { mixer: mixerAt, cook: cookAt, plater: platerAt };
+
+  /** where a chef is at time t: with Pancake, without, or on the way from one to the other */
+  function stateOf(name, t, S) {
+    const calm = CALM[name](t, S);
+    if (mess < 0.002) return calm;
+    const wild = messy.STATE[name](t, S);
+    if (mess > 0.998) return wild;
+    // the scramble: a hop from one place to the other
+    const k = smooth(prog(mess, 0.1, 0.9));
+    const src = k < 0.5 ? calm : wild;
+    return { ...src, x: lerp(calm.x, wild.x, k), z: lerp(calm.z, wild.z, k), y: (src.y || 0) + 0.45 * bump(k) };
+  }
+
   // a chef that is tapped jumps: when it was last tapped, and where it stands
   const poked = { mixer: -99, cook: -99, plater: -99 };
   const standing = { mixer: [0, 0], cook: [0, 0], plater: [0, 0] };
@@ -333,15 +362,21 @@ export function createShow(world, scene, opts = {}) {
   const camRight = new THREE.Vector3(1, 0, 0);
   const camBack = new THREE.Vector3(0, 0, 1);
 
-  function drawChef(name, t, appear) {
-    const chef = chefs[name];
-    const now = STATE[name](t);
-    const was = STATE[name](t - 0.07);
+  /** draws one chef of one cast; `lead` says this cast is the one on stage, and holds the tools */
+  function drawChef(name, which, t, appear, lead) {
+    const actor = casts[which][name];
+    if (appear < 0.004) {
+      actor.root.visible = false;
+      return null;
+    }
+    const S = STAGES[which];
+    const now = stateOf(name, t, S);
+    const was = stateOf(name, t - 0.07, S);
     const vx = (now.x - was.x) / 0.07;
     const vz = (now.z - was.z) / 0.07;
     const vy = ((now.y || 0) - (was.y || 0)) / 0.07;
     const lag = [clamp(-vx * 0.035, -0.13, 0.13), clamp(-vz * 0.035, -0.13, 0.13)];
-    // the eyes: towards what the chef works on, in the plane of the face
+    // the eyes of a pancake chef: towards what it works on, in the plane of its face
     const dx = now.look[0] - now.x;
     const dz = now.look[1] - now.z;
     const len = Math.hypot(dx, dz) || 1;
@@ -349,9 +384,12 @@ export function createShow(world, scene, opts = {}) {
     const lz = (dx * camBack.x + dz * camBack.z) / len;
     const [period, phase] = BLINK[name];
     const b = mod(t + phase, period);
-    const s = chef.scale;
-    standing[name][0] = now.x;
-    standing[name][1] = now.z;
+    const s = actor.scale;
+    const wild = mess > 0.5;
+    if (lead) {
+      standing[name][0] = now.x;
+      standing[name][1] = now.z;
+    }
     const pk = t - poked[name];
     const jump = pk >= 0 && pk < 1.4;
     if (jump) {
@@ -362,22 +400,33 @@ export function createShow(world, scene, opts = {}) {
     let handL = now.handL || null;
     let handR = now.handR || null;
     if (now.tip) {
-      // the tool is held between the tip and the shoulder
+      // a ladle or a spatula: held between its tip and the shoulder nearest to it
       const tool = name === "mixer" ? LADLE : SPATULA;
-      // the mixer holds the ladle high, to pass over the rim of the bowl
-      const reach = name === "mixer" ? 1.75 : CHEF_SHOULDER * s;
-      const sh = [now.x + 0.2 * s, reach + (now.y || 0), now.z - 0.05];
+      const tx = now.tip[0] - now.x;
+      const tz = now.tip[2] - now.z;
+      const tl = Math.hypot(tx, tz) || 1;
+      const reach = name === "mixer" ? (wild ? 1.75 : S.mixer.reach) : actor.shoulder * s;
+      const sh = [now.x + (tx / tl) * 0.2 * s, reach + (now.y || 0), now.z + (tz / tl) * 0.2 * s];
       const d = [sh[0] - now.tip[0], sh[1] - now.tip[1], sh[2] - now.tip[2]];
       const dl = Math.hypot(d[0], d[1], d[2]) || 1;
       handR = [now.tip[0] + (d[0] / dl) * tool, now.tip[1] + (d[1] / dl) * tool, now.tip[2] + (d[2] / dl) * tool];
-      const obj = name === "mixer" ? ladleTool : spatula;
-      obj.position.set(handR[0], handR[1], handR[2]);
-      v3.set(-d[0] / dl, -d[1] / dl, -d[2] / dl);
-      obj.quaternion.setFromUnitVectors(up, v3);
-      obj.scale.setScalar(appear);
-      handL = [now.x - 0.6 * s, (0.42 + 0.5 * now.lift + (now.y || 0)) * s, now.z + 0.16 - 0.25 * now.lift];
+      if (lead) {
+        const obj = name === "mixer" ? ladleTool : spatula;
+        obj.position.set(handR[0], handR[1], handR[2]);
+        obj.quaternion.setFromUnitVectors(up, v3.set(-d[0] / dl, -d[1] / dl, -d[2] / dl));
+      }
+      handL = [now.x - (tx / tl) * 0.1 - (tz / tl) * 0.55 * s, (0.42 + 0.5 * now.lift) * s + (now.y || 0), now.z - (tz / tl) * 0.1 + (tx / tl) * 0.55 * s];
+    } else if (now.aim) {
+      // the extinguisher: held in front, pointed at what burns
+      const sh = [now.x, actor.shoulder * s + (now.y || 0) + 0.12, now.z];
+      const d = [now.aim[0] - sh[0], now.aim[1] - sh[1], now.aim[2] - sh[2]];
+      const dl = Math.hypot(d[0], d[1], d[2]) || 1;
+      handR = [sh[0] + (d[0] / dl) * 0.42 * s, sh[1] + (d[1] / dl) * 0.42 * s, sh[2] + (d[2] / dl) * 0.42 * s];
+      handL = [handR[0] + (d[0] / dl) * 0.26, handR[1] + (d[1] / dl) * 0.26 + 0.05, handR[2] + (d[2] / dl) * 0.26];
+      if (lead) messy.drawHose(handR, now.aim, now.spraying, t, appear * prog(mess, 0.5, 0.9));
     }
-    chef.pose({
+    if (lead && name === "cook" && !now.aim) messy.drawHose([0, 0, 0], [0, 1, 0], 0, t, 0);
+    actor.pose({
       x: now.x,
       z: now.z,
       y: now.y,
@@ -386,32 +435,51 @@ export function createShow(world, scene, opts = {}) {
       az: camAz,
       nod: clamp(-vy * 0.03, -0.12, 0.12),
       look: [lx * 0.9 + pointer.x * 0.45 * pointer.on, lz * 0.8 + pointer.y * 0.4 * pointer.on],
+      lookAt: now.look,
+      pointer: [pointer.x * pointer.on, pointer.y * pointer.on],
+      face: jump ? (now.face || 0) * (1 - bump(prog(pk, 0, 0.9))) : now.face,
+      stride: now.stride,
       blink: jump && pk < 0.7 ? bump(prog(pk, 0.05, 0.7)) : b < 0.13 ? bump(b / 0.13) : 0,
+      wide: prog(mess, 0.6, 1),
       roll: jump ? 0.3 * Math.sin(prog(pk, 0.06, 0.6) * TAU) : 0,
       hat: [lag[0] * 2.2 + 0.03 * Math.sin(t * 2.9 + phase), lag[1] * 2.2 - clamp(vy * 0.05, -0.2, 0.2)],
       handL,
       handR,
     });
-    chef.root.scale.setScalar(s * appear);
-    chef.root.visible = appear > 0.01;
+    actor.root.scale.setScalar(s * appear);
+    actor.root.visible = true;
     return now;
   }
 
   // ── belts and the bowl ─────────────────────────────────────────────────────
   const PERIOD = INTAKE.gap / INTAKE.speed;
   const DROP = 0.4;
+  // which ingredients of belt `b` come in as a signal: the even ones, the odd ones on belt 1
+  const signalParity = (b) => (b === 1 ? 1 : 0);
   let dotCursor = 0;
   const nextDot = () => batterDots[dotCursor++];
 
   function drawIntake(t, appear) {
     let jiggle = 0;
+    const calm = 1 - prog(mess, 0.2, 0.5);
+    const broken = prog(mess, 0.45, 0.9);
     world.belts.forEach((belt, b) => {
       const spec = INTAKE.belts[b];
-      belt.map.offset.x = -mod((t * INTAKE.speed) / 0.52, 1);
+      const droop = broken > 0 ? beltDroop(b, t) * broken * DROOP_ANGLE : 0;
+      belt.tip.rotation.z = -droop;
+      belt.map.offset.x = -mod((t * INTAKE.speed) / CHEVRON, 1);
+      belt.tipMap.offset.x = belt.map.offset.x + belt.main / CHEVRON;
       const phase = (b * PERIOD) / 3;
       const n0 = Math.floor((t - phase) / PERIOD);
-      const end = [spec.to[0], INTAKE.y + 0.01, spec.to[1]];
+      // a point of the belt, `s` from its start: flat on the run, then down the tip if it hangs
+      const on = (s) => {
+        const r = Math.max(0, s - belt.main);
+        const h = Math.min(s, belt.main) + r * Math.cos(droop);
+        return [spec.from[0] + spec.dir[0] * h, INTAKE.y + 0.006 - r * Math.sin(droop), spec.from[1] + spec.dir[1] * h];
+      };
+      const end = on(spec.len);
       const land = [spec.to[0] + spec.dir[0] * 0.5, BOWL.batterY - 0.05, spec.to[1] + spec.dir[1] * 0.5];
+      const atHinge = belt.main / INTAKE.speed;
       for (let i = 0; i < N_ITEMS; i++) {
         const n = n0 - i;
         const item = items[b][mod(n, N_ITEMS)];
@@ -420,11 +488,40 @@ export function createShow(world, scene, opts = {}) {
         const kind = spec.kinds[mod(n, spec.kinds.length)];
         for (const key in item.kinds) item.kinds[key].visible = key === kind;
         const turn = hash(n, b) * TAU;
-        if (s <= spec.len) {
+        const spilt = broken > 0.5 && SPILL[b] && beltDown(b, phase + n * PERIOD + atHinge);
+        if (s <= belt.main || (!spilt && s <= spec.len)) {
+          const p = on(s);
+          // every other one was a signal a moment ago (drawBadges): it pops as it comes out
+          const pop = mod(n, 2) === signalParity(b) ? wobble(age - belt.mouth / INTAKE.speed, 0.34, 17, 5.5) : 0;
           item.g.visible = s > 0.3;
-          item.g.position.set(spec.from[0] + spec.dir[0] * s, INTAKE.y + 0.006, spec.from[1] + spec.dir[1] * s);
+          item.g.position.set(p[0], p[1], p[2]);
           item.g.rotation.set(0, turn, Math.sin(t * 9 + n) * 0.02);
-          item.g.scale.setScalar(appear);
+          item.g.scale.set(appear * (1 - pop * 0.4), appear * (1 + pop), appear * (1 - pop * 0.4));
+        } else if (spilt) {
+          // it slides down the broken tip, bounces off, and lies on the floor for a while
+          const x = age - atHinge;
+          const [sx, sz, spread, high] = SPILL[b];
+          const edge = on(belt.main + 0.6);
+          const rest = [sx + (hash(n, 11) - 0.5) * 2 * spread, 0.02, sz + (hash(n, 12) - 0.5) * spread];
+          const fly = high > 1 ? 0.75 : 0.5;
+          item.g.visible = x < 7.2;
+          if (x < 0.5) {
+            const p = on(belt.main + 0.6 * ease.inQuad(x / 0.5));
+            item.g.position.set(p[0], p[1], p[2]);
+            item.g.rotation.set(0, turn, -droop * 0.6);
+            item.g.scale.setScalar(appear);
+          } else if (x < 0.5 + fly) {
+            const u = (x - 0.5) / fly;
+            const p = toss(edge, rest, high, u);
+            item.g.position.set(p[0], p[1], p[2]);
+            item.g.rotation.set(u * 5, turn, u * 3);
+            item.g.scale.setScalar(appear);
+          } else {
+            const since = x - 0.5 - fly;
+            item.g.position.set(rest[0], rest[1] + 0.12 * Math.abs(wobble(since, 1, 14, 5)), rest[2]);
+            item.g.rotation.set(1.2 + hash(n, 13), turn, hash(n, 14) * 0.8);
+            item.g.scale.setScalar(appear * (1 - prog(x, 6.6, 7.2)));
+          }
         } else {
           const u = (age - spec.len / INTAKE.speed) / DROP;
           if (u < 1) {
@@ -441,7 +538,7 @@ export function createShow(world, scene, opts = {}) {
           } else item.g.visible = false;
         }
       }
-      // the splashes of the last two ingredients that fell in
+      // the splashes of the last two ingredients that fell in the bowl
       const landPhase = phase + spec.len / INTAKE.speed + DROP;
       const nl = Math.floor((t - landPhase) / PERIOD);
       for (let e = 0; e < 2; e++) {
@@ -449,12 +546,12 @@ export function createShow(world, scene, opts = {}) {
         const x = t - landPhase - n * PERIOD;
         if (e === 0) {
           jiggle += wobble(x, 0.03, 21, 7);
-          const ring = ripples[b];
+          const rp = ripples[b];
           const rv = prog(x, 0, 0.7);
-          ring.visible = rv < 1 && appear > 0.9;
-          ring.position.set(land[0], BOWL.batterY + 0.012, land[2]);
-          ring.scale.setScalar(0.12 + 0.42 * ease.outCubic(rv));
-          ring.material.opacity = 0.75 * (1 - rv);
+          rp.visible = rv < 1 && appear * calm > 0.9;
+          rp.position.set(land[0], BOWL.batterY + 0.012, land[2]);
+          rp.scale.setScalar(0.12 + 0.42 * ease.outCubic(rv));
+          rp.material.opacity = 0.75 * (1 - rv);
         }
         for (let d = 0; d < 5; d++) {
           const m = nextDot();
@@ -462,28 +559,31 @@ export function createShow(world, scene, opts = {}) {
           const vr = 0.5 + hash(n, d * 3 + 1) * 0.9;
           const vy = 1.7 + hash(n, d * 3 + 2) * 1.1;
           const life = 0.5;
-          put(m, [land[0] + Math.cos(a) * vr * x, land[1] + 0.06 + vy * x - 4.6 * x * x, land[2] + Math.sin(a) * vr * x], x < life ? 0.062 * (1 - x / life) * appear : 0);
+          put(m, [land[0] + Math.cos(a) * vr * x, land[1] + 0.06 + vy * x - 4.6 * x * x, land[2] + Math.sin(a) * vr * x], x < life ? 0.062 * (1 - x / life) * appear * calm : 0);
         }
       }
     });
     // the bowl jiggles, the swirl follows the spoon
-    const j = jiggle;
-    world.bowl.body.scale.set(1 - j * 0.5, 1 + j, 1 - j * 0.5);
+    world.bowl.body.scale.set(1 - jiggle * 0.5, 1 + jiggle, 1 - jiggle * 0.5);
     world.bowl.swirl.rotation.y = -t * 1.5;
     world.out.map.offset.x = -mod((t * OUT.speed) / 0.6, 1);
   }
 
   // ── the griddle ────────────────────────────────────────────────────────────
-  function drawCake(cake, k, c, j, tau, appear) {
+  // the order the three pancakes of a column go in: front first, whoever cooks, so that
+  // nothing jumps when the cast changes
+  const ord = (j) => 2 - j;
+
+  function drawCake(cake, k, c, j, tau, appear, S) {
     const g = cake.group;
     const at = slot(c, j);
     const launch = j * POUR.gap;
     const land = launch + POUR.air;
-    const fl = FLIP.at + (2 - j) * FLIP.gap;
+    const fl = FLIP.at + ord(j) * FLIP.gap;
     const flEnd = fl + FLIP.air;
-    const sv = SERVE.at + (2 - j) * SERVE.gap;
+    const sv = SERVE.at + ord(j) * SERVE.gap;
     const svEnd = sv + SERVE.air;
-    if (tau < launch || tau >= svEnd) {
+    if (tau < launch || tau >= svEnd || appear < 0.004) {
       g.visible = false;
       return;
     }
@@ -495,7 +595,7 @@ export function createShow(world, scene, opts = {}) {
     let rz = 0;
     if (tau < land) {
       // the ladle of batter, in the air
-      const from = ladleTip(k * T + launch);
+      const from = ladleTip(k * T + launch, S);
       const u = (tau - launch) / POUR.air;
       pos = toss(from, at, 1.0 + 0.2 * dist2(from, at), u);
       sx = 0.42;
@@ -517,7 +617,7 @@ export function createShow(world, scene, opts = {}) {
       sy = (1 + wobble(tau - flEnd, -0.3, 25, 9)) * (1 - 0.3 * bump(prog(tau, sv - 0.12, sv)));
       pos = [at[0], GRIDDLE.y + (GRIDDLE.thick / 2) * sy, at[2]];
     } else {
-      const n = 2 - j; // its place in the stack
+      const n = ord(j); // its place in the stack
       const jit = stackJitter(k, n);
       const to = [PASS.plate[0] + jit[0], PLATE_Y + stackY(n) + GRIDDLE.thick / 2, PASS.plate[1] + jit[1]];
       const u = (tau - sv) / SERVE.air;
@@ -536,7 +636,7 @@ export function createShow(world, scene, opts = {}) {
     cake.body.color.lerpColors(cBatter, cCrumb, (a + b) / 2);
   }
 
-  function drawGriddle(t, appear) {
+  function drawGriddle(t, appear, S) {
     let s = 0;
     let p = 0;
     for (let c = 0; c < 3; c++) {
@@ -546,15 +646,14 @@ export function createShow(world, scene, opts = {}) {
       const tone = TONES[toneOf(k)];
       for (let j = 0; j < 3; j++) {
         // this batch, and the one before it while it flies to the plate
-        drawCake(cakes[c][mod(m, 2)][j], k, c, j, tau, appear);
-        drawCake(cakes[c][mod(m - 1, 2)][j], k - 3, c, j, tau + CYCLE, appear);
+        drawCake(cakes[c][mod(m, 2)][j], k, c, j, tau, appear, S);
+        drawCake(cakes[c][mod(m - 1, 2)][j], k - 3, c, j, tau + CYCLE, appear, S);
 
-        const ring = world.griddle.rings[c][j];
         const at = slot(c, j);
         const land = j * POUR.gap + POUR.air;
-        const fl = FLIP.at + (2 - j) * FLIP.gap;
+        const fl = FLIP.at + ord(j) * FLIP.gap;
         const flEnd = fl + FLIP.air;
-        const sv = SERVE.at + (2 - j) * SERVE.gap;
+        const sv = SERVE.at + ord(j) * SERVE.gap;
 
         // steam, the splat of the batter, the puff of a flip: all at this slot
         const cooking = tau >= land + 0.3 && tau < sv && !(tau >= fl && tau < flEnd);
@@ -578,11 +677,15 @@ export function createShow(world, scene, opts = {}) {
           put(pm, [at[0] + Math.cos(a) * (0.36 + xf * 0.8), GRIDDLE.y + 0.08 + xf * 0.5, at[2] + Math.sin(a) * (0.36 + xf * 0.8)], xf > 0 && xf < 0.4 ? 0.085 * bump(0.25 + (0.75 * xf) / 0.4) * appear : 0);
         }
 
-        const on = tau >= land && tau < sv;
-        ring.arc.visible = on && appear > 0.9;
-        if (on) {
-          ring.arc.geometry = G.ringArc(0.44, 0.505, Math.max(1 / 48, prog(tau, land, SERVE.at)));
-          ring.mat.color.set(tone.c30);
+        // the cooking ring: without Pancake, mess.js draws it
+        if (mess < 0.5) {
+          const r = world.griddle.rings[c][j];
+          const on = tau >= land && tau < sv;
+          r.arc.visible = on && appear > 0.9;
+          if (on) {
+            r.arc.geometry = G.ringArc(0.44, 0.505, Math.max(1 / 48, prog(tau, land, SERVE.at)));
+            r.mat.color.set(tone.c30);
+          }
         }
       }
     }
@@ -591,14 +694,15 @@ export function createShow(world, scene, opts = {}) {
   // ── the pass and the way out ───────────────────────────────────────────────
   const STACK_SRC = [PASS.stack[0], PASS.top + 0.26, PASS.stack[1]];
   let puffCursor = 0;
+  const bellAt = [STAGES.pancakes.bell[0], STAGES.pancakes.bell[1]];
 
-  function drawPass(t, appear) {
+  function drawPass(t, appear, intro) {
     plates.forEach((p) => (p.group.visible = false));
     for (let i = 27; i < puffs.length; i++) puffs[i].visible = false;
     puffCursor = 27;
     const kMax = Math.floor((t - PLATE_IN.at) / T);
     const kMin = Math.ceil((t - EXIT_TAU) / T);
-    for (let k = kMin; k <= kMax; k++) {
+    for (let k = kMin; k <= kMax && appear > 0.004; k++) {
       const tau = t - k * T;
       if (tau < PLATE_IN.at || tau >= EXIT_TAU) continue;
       const plate = plates[mod(k, N_PLATES)];
@@ -681,16 +785,23 @@ export function createShow(world, scene, opts = {}) {
       }
     }
 
+    // the bell stands where the cast on stage can reach it
+    const ce = smooth(castMix);
+    bellAt[0] = lerp(STAGES.pancakes.bell[0], STAGES.people.bell[0], ce);
+    bellAt[1] = lerp(STAGES.pancakes.bell[1], STAGES.people.bell[1], ce);
+    world.pass.bell.position.set(bellAt[0] - PASS.x, PASS.top, bellAt[1] - PASS.z);
+    world.pass.bell.scale.setScalar(1 - bump(ce) * 0.9);
+
     // the bell, the sparks and the two rings when a plate ships
     const ks = Math.floor((t - SHIP) / T);
-    const xs = t - SHIP - ks * T;
+    const xs = appear > 0.5 ? t - SHIP - ks * T : 9;
     world.pass.bellDome.scale.set(1 + wobble(xs, 0.22, 34, 7), 1 - wobble(xs, 0.2, 34, 7), 1 + wobble(xs, 0.22, 34, 7));
     world.pass.bellDome.rotation.z = wobble(xs, 0.22, 30, 6);
     bellRings.forEach((r, e) => {
       const x = xs - e * 0.14;
       const v = prog(x, 0, 0.6);
       r.visible = x > 0 && v < 1 && appear > 0.9;
-      r.position.set(PASS.bell[0], PASS.top + 0.2, PASS.bell[1]);
+      r.position.set(bellAt[0], PASS.top + 0.2, bellAt[1]);
       r.scale.setScalar(0.2 + 0.75 * ease.outCubic(v));
       r.material.opacity = 0.9 * (1 - v);
     });
@@ -703,14 +814,15 @@ export function createShow(world, scene, opts = {}) {
       m.rotation.set(x * 7, x * 5 + e, 0);
     });
 
-    // the counter ticks when a plate has left
+    // the counter: with Pancake it ticks at every plate; without, it has almost nothing to count
     const served = Math.floor((t - EXIT_TAU) / T);
-    world.out.counter.set(COUNT_FROM + served);
+    const wild = mess > 0.5;
+    world.out.counter.set(wild ? COUNT_WITHOUT + Math.max(0, messy.served(t) - messy.served(messSince)) : COUNT_FROM + served);
     const xe = t - EXIT_TAU - served * T;
-    world.out.board.scale.setScalar(1 + wobble(xe, 0.16, 20, 7));
+    world.out.board.scale.setScalar(1 + (wild ? 0 : wobble(xe, 0.16, 20, 7)));
     const pv = prog(xe, 0, 1.0);
-    plus.visible = pv < 1 && appear > 0.9;
-    plus.position.set(OUT.portalX - 0.75, 3.2 + 0.7 * ease.outCubic(pv), OUT.z + 0.55);
+    plus.visible = pv < 1 && appear > 0.9 && intro > 0.9;
+    plus.position.set(OUT.portalX + 0.15, 3.78 + 0.6 * ease.outCubic(pv), OUT.z + 0.35);
     plus.material.opacity = pv < 0.7 ? 1 : 1 - (pv - 0.7) / 0.3;
     plus.scale.setScalar(ease.outBack(clamp(pv / 0.25), 2.6));
   }
@@ -724,7 +836,7 @@ export function createShow(world, scene, opts = {}) {
     const kMin = Math.floor((t - DONE - 0.5) / T);
     const kMax = Math.ceil((t - DONE + 6 * T + PRINT) / T);
     let printing = 0;
-    for (let k = kMin; k <= kMax; k++) {
+    for (let k = kMin; k <= kMax && appear > 0.004; k++) {
       const a = k * T + DONE - t; // seconds before this ticket leaves the rail
       if (a > 6 * T + PRINT || a < -0.5) continue;
       const tk = tickets[mod(k, N_TICKETS)];
@@ -768,9 +880,75 @@ export function createShow(world, scene, opts = {}) {
       tk.stamp.scale.setScalar(ease.outBack(clamp(stamped / 0.22), 2.6));
       tk.stamp.rotation.z = -0.2;
     }
-    const body = world.rail.printerBody;
-    body.position.x = Math.sin(t * 64) * 0.014 * printing;
-    body.scale.set(1 + 0.03 * printing, 1 - 0.04 * printing, 1);
+    if (mess < 0.5) {
+      const body = world.rail.printerBody;
+      body.position.x = Math.sin(t * 64) * 0.014 * printing;
+      body.scale.set(1 + 0.03 * printing, 1 - 0.04 * printing, 1);
+    }
+  }
+
+  // ── the badges ─────────────────────────────────────────────────────────────
+  // A signal pops over a tunnel, hangs there long enough to be read, then drops into the
+  // tunnel as an ingredient rides out of it: every other ingredient of each belt has one.
+  const badges = [];
+  const FEED = [OUT.portalX - 1.3, 3.85, OUT.z - 0.4]; // where the badges of the way out stand
+  const poofs = pool(root, 9, dot, M.soft(C.ink0, 0.9));
+
+  function drawBadges(t, intro) {
+    badges.length = 0;
+    world.belts.forEach((belt, b) => {
+      const spec = INTAKE.belts[b];
+      const out = belt.mouth / INTAKE.speed; // when its ingredient comes out of the tunnel
+      const first = (b * PERIOD) / 3 + signalParity(b) * PERIOD + out;
+      const i = Math.floor((t - first + 2.4) / (2 * PERIOD));
+      const x = t - (first + i * 2 * PERIOD); // -2.4 at the pop, 0 as the ingredient is out
+      const over = [spec.from[0] + spec.dir[0] * 0.8, belt.top + 0.6, spec.from[1] + spec.dir[1] * 0.8];
+      const mouth = [spec.from[0] + spec.dir[0] * 1.1, INTAKE.y + 0.5, spec.from[1] + spec.dir[1] * 1.1];
+      // a poof at the mouth, as the signal goes in and the ingredient comes out
+      const u = prog(x, -0.36, 0.2);
+      for (let e = 0; e < 3; e++) {
+        const a = 0.45 + e * 1.12;
+        const r = 0.22 + 0.5 * ease.outCubic(u);
+        put(
+          poofs[b * 3 + e],
+          [mouth[0] + spec.dir[0] * 0.12 - spec.dir[1] * Math.cos(a) * r, mouth[1] + 0.1 + Math.sin(a) * r, mouth[2] + spec.dir[1] * 0.12 + spec.dir[0] * Math.cos(a) * r],
+          u > 0 && u < 1 ? 0.13 * bump(u) * intro : 0,
+        );
+      }
+      if (x > -0.25 || intro < 0.5) return;
+      const [icon, text] = spec.signals[mod(i, spec.signals.length)];
+      const fall = ease.inCubic(prog(x, -0.95, -0.3));
+      badges.push({
+        id: `in-${b}`,
+        kind: "in",
+        icon,
+        text,
+        at: mix3(over, mouth, fall),
+        scale: ease.outBack(prog(x, -2.4, -2.12), 2) * (1 - 0.62 * fall),
+        alpha: 1 - prog(x, -0.5, -0.27),
+      });
+    });
+    if (intro < 0.5) return;
+    // what the last two plates have become: the newer one under the older
+    const calm = 1 - prog(mess, 0, 0.4);
+    const served = Math.floor((t - EXIT_TAU) / T);
+    for (let e = 0; e < 2 && calm > 0.01; e++) {
+      const k = served - e;
+      const x = t - (k * T + EXIT_TAU);
+      const [icon, text] = RESULTS[mod(k, RESULTS.length)];
+      badges.push({
+        id: `out-${mod(k, 2)}`,
+        kind: "out",
+        icon,
+        text,
+        tone: TONES[toneOf(k)].c30,
+        at: FEED,
+        row: ease.inOutCubic(prog(x, T, T + 0.35)),
+        scale: ease.outBack(prog(x, 0, 0.26), 2.2),
+        alpha: (1 - prog(x, 2 * T - 0.5, 2 * T - 0.1)) * calm,
+      });
+    }
+    messy.badges(t, mess, badges, FEED);
   }
 
   // ── the first second: the kitchen pops out of the floor ────────────────────
@@ -785,9 +963,12 @@ export function createShow(world, scene, opts = {}) {
     [world.out.group, 0.56],
     [world.rail.group, 0.66],
   ];
+  const towards = (v, goal, step) => (v < goal ? Math.min(goal, v + step) : Math.max(goal, v - step));
 
   function update(t, dt, camera) {
     introT += dt;
+    castMix = towards(castMix, cast === "people" ? 1 : 0, dt / 0.55);
+    mess = towards(mess, mode === "without" ? 1 : 0, dt / 1.0);
     if (camera) {
       camera.matrixWorld.extractBasis(camRight, v3, camBack);
       camAz = Math.atan2(camBack.x, camBack.z);
@@ -802,38 +983,87 @@ export function createShow(world, scene, opts = {}) {
       const v = ease.outBack(prog(introT, delay, delay + 0.6), 1.5);
       g.scale.setScalar(Math.max(0.0001, v));
     }
-    const appear = ease.outBack(prog(introT, 1.0, 1.5), 1.6);
+    const intro = ease.outBack(prog(introT, 1.0, 1.5), 1.6);
+    // the bowl gives its place to the tank, and back
+    world.bowl.group.scale.multiplyScalar(Math.max(0.0001, 1 - ease.inBack(prog(mess, 0.05, 0.45))));
+    const calm = intro * (1 - prog(mess, 0, 0.4));
+    const wild = intro * ease.outBack(prog(mess, 0.55, 1), 1.4);
+    const S = STAGES[cast];
+
     dotCursor = 0;
-    drawIntake(t, appear);
-    drawGriddle(t, appear);
-    drawPass(t, appear);
-    drawTickets(t, appear);
-    const mixer = drawChef("mixer", t, ease.outBack(prog(introT, 0.8, 1.3), 1.8));
-    drawChef("cook", t, ease.outBack(prog(introT, 0.9, 1.4), 1.8));
-    drawChef("plater", t, ease.outBack(prog(introT, 1.0, 1.5), 1.8));
-    cupBatter.visible = mixer.loaded;
-    cupBatter.scale.setScalar(0.15);
+    drawIntake(t, intro);
+    drawGriddle(t, calm, S);
+    drawPass(t, calm, intro);
+    drawTickets(t, calm);
+    messy.draw(t, ease.outBack(prog(mess, 0.45, 0.95), 1.3) * prog(introT, 0.3, 0.9), wild, camAz);
+
+    // the two casts: one pops out, then the other pops in
+    const sizes = { pancakes: 1 - ease.inBack(prog(castMix, 0, 0.5)), people: ease.outBack(prog(castMix, 0.5, 1), 1.8) };
+    const states = {};
+    NAMES.forEach((name, i) => {
+      const pop = ease.outBack(prog(introT, 0.8 + i * 0.1, 1.3 + i * 0.1), 1.8);
+      for (const which of ["pancakes", "people"]) {
+        const now = drawChef(name, which, t, pop * sizes[which], which === cast);
+        if (which === cast) states[name] = now;
+      }
+    });
+    const tools = intro * sizes[cast];
+    ladleTool.scale.setScalar(tools);
+    ladleTool.visible = tools > 0.01;
+    const blade = tools * (1 - prog(mess, 0.2, 0.5));
+    spatula.scale.setScalar(blade);
+    spatula.visible = blade > 0.01;
+    cupBatter.visible = !!(states.mixer && states.mixer.loaded);
+    if (states.mixer && states.cook && states.plater) {
+      const heights = (h) => ({ mixer: h * CAST[cast].mixer.scale, cook: h * CAST[cast].cook.scale, plater: h * CAST[cast].plater.scale });
+      messy.drawPanic(states, heights(TOPS[cast]), heights(BROWS[cast]), t, prog(mess, 0.6, 1) * intro);
+    }
+    drawBadges(t, intro);
+    api.jolt = mess > 0.6 ? messy.jolt(t) * intro : 0;
   }
 
-  return {
+  const api = {
     update,
+    /** the badges of the last frame drawn, for the overlay */
+    badges,
+    /** -1..1: how far the picture is jolted this frame (a belt just gave way) */
+    jolt: 0,
     pointer(x, y) {
       pointer.x = x;
       pointer.y = y;
     },
+    /** nothing is in progress any more: the opening is over and both switches are where they point */
     reset() {
       introT = 99;
+      castMix = cast === "people" ? 1 : 0;
+      mess = mode === "without" ? 1 : 0;
     },
     /** play the opening again: the kitchen pops out of the floor */
     replay() {
       introT = 0;
+    },
+    /** "pancakes" or "people" */
+    setCast(name) {
+      cast = name === "people" ? "people" : "pancakes";
+    },
+    /** "with" or "without" Pancake; `t` is the time now, the counter restarts from there */
+    setMode(name, t) {
+      const next = name === "without" ? "without" : "with";
+      if (next === "without" && mode !== "without") messSince = t;
+      mode = next;
+    },
+    get cast() {
+      return cast;
+    },
+    get mode() {
+      return mode;
     },
     /** the chef under a point of the canvas (x, y in -1..1, y up), or null */
     pick(x, y, camera, aspect) {
       let best = null;
       let near = 0.11;
       for (const name in standing) {
-        v3.set(standing[name][0], 0.7, standing[name][1]).project(camera);
+        v3.set(standing[name][0], cast === "people" ? 1.1 : 0.7, standing[name][1]).project(camera);
         const d = Math.hypot((v3.x - x) * aspect, v3.y - y);
         if (d < near) {
           near = d;
@@ -846,6 +1076,7 @@ export function createShow(world, scene, opts = {}) {
       if (name in poked && t - poked[name] > 1.2) poked[name] = t;
     },
     dispose() {
+      messy.dispose();
       disposeTicketKit();
       steamMat.dispose();
       sparkGeo.dispose();
@@ -853,4 +1084,5 @@ export function createShow(world, scene, opts = {}) {
       world.out.counter.tex.dispose();
     },
   };
+  return api;
 }

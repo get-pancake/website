@@ -2,6 +2,8 @@
 //
 //   const kitchen = createPancakeKitchen(element);   // fills the element, starts playing
 //   kitchen.stop(); kitchen.start(); kitchen.seek(12); kitchen.dispose();
+//   kitchen.setMode("without");   // the same kitchen without Pancake, and "with" to come back
+//   kitchen.setCast("people");    // little chefs in place of the pancake chefs, or "pancakes"
 //
 // The whole animation is a pure function of time (show.js), so `seek` can jump anywhere and a
 // still frame is always a valid poster.
@@ -11,11 +13,18 @@ import { C } from "./palette.js";
 import { FRAME, CENTRE } from "./layout.js";
 import { buildWorld } from "./world.js";
 import { createShow } from "./show.js";
+import { createOverlay } from "./overlay.js";
 import { disposeGeometries } from "./geo.js";
 import { disposeMaterials } from "./mats.js";
 import { clamp } from "./util.js";
 
 const DEG = Math.PI / 180;
+
+const LABELS = {
+  with: "A small kitchen that runs by itself: signals from your tools ride in as ingredients on three belts, three chefs mix, flip and plate, order tickets are ticked off, and stacks of pancakes leave on the last belt as new leads.",
+  without:
+    "The same kitchen without Pancake: a belt has given way, every ingredient waits in one slow tank, pancakes burn, the chefs run from one fire to the next, and the one plate that leaves is two weeks late.",
+};
 
 /** a moment of the loop that shows every station at work: used as the still frame */
 export const POSTER_TIME = 31.52;
@@ -77,6 +86,9 @@ export function createPancakeKitchen(container, options = {}) {
     zoom: 1,
     pad: 1.06,
     shadows: "vsm",
+    cast: "pancakes",
+    mode: "with",
+    badges: true,
     reducedMotion: typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches,
     ...options,
   };
@@ -96,11 +108,6 @@ export function createPancakeKitchen(container, options = {}) {
   const canvas = renderer.domElement;
   canvas.style.cssText = "display:block;width:100%;height:100%;touch-action:pan-y;";
   canvas.setAttribute("role", "img");
-  canvas.setAttribute(
-    "aria-label",
-    options.label ||
-      "A small kitchen that runs by itself: ingredients ride in on three belts, three pancake chefs mix, flip and plate, order tickets are ticked off, and stacks of pancakes leave on the last belt.",
-  );
   container.appendChild(canvas);
 
   const scene = new THREE.Scene();
@@ -124,6 +131,11 @@ export function createPancakeKitchen(container, options = {}) {
 
   const world = buildWorld(scene);
   const show = createShow(world, scene, opts);
+  // the badges are text of the page, laid over the canvas
+  const overlay = opts.badges ? createOverlay(container, THREE) : null;
+  // what the picture shows, for someone who cannot see it
+  const describe = () => canvas.setAttribute("aria-label", options.label || LABELS[show.mode]);
+  describe();
 
   // ── camera: an orthographic three-quarter view, fitted to the outline of the kitchen ──
   const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 1, 220);
@@ -196,9 +208,11 @@ export function createPancakeKitchen(container, options = {}) {
       look.el += (look.tEl - look.el) * k;
     }
     const drift = opts.interactive ? Math.sin(time * 0.21) * 0.5 : 0;
-    place((opts.azimuth + look.az + drift) * DEG, (opts.elevation + look.el) * DEG);
+    // a jolt of the picture when something gives way: last frame's, a frame late
+    place((opts.azimuth + look.az + drift + show.jolt * 0.35) * DEG, (opts.elevation + look.el - show.jolt * 0.25) * DEG);
     show.update(time, dt, camera);
     renderer.render(scene, camera);
+    if (overlay) overlay.draw(show.badges, camera, width, height);
   }
 
   function frame(now) {
@@ -308,6 +322,30 @@ export function createPancakeKitchen(container, options = {}) {
       show.replay();
       if (!running) draw(0);
     },
+    /** "with" or "without" Pancake; `instant` skips the change-over (the default when paused) */
+    setMode(name, instant = !running) {
+      show.setMode(name, time);
+      describe();
+      if (instant) show.reset();
+      if (!running) draw(0);
+    },
+    get mode() {
+      return show.mode;
+    },
+    /** "pancakes" or "people": who works in the kitchen; `instant` as for setMode */
+    setCast(name, instant = !running) {
+      show.setCast(name);
+      if (instant) show.reset();
+      if (!running) draw(0);
+    },
+    /** while paused: move the time on by `dt` seconds and draw, for a frame-by-frame capture */
+    step(dt) {
+      time += dt * speed;
+      draw(dt);
+    },
+    get cast() {
+      return show.cast;
+    },
     draw() {
       draw(0);
     },
@@ -329,6 +367,7 @@ export function createPancakeKitchen(container, options = {}) {
       container.removeEventListener("pointerleave", onLeave);
       container.removeEventListener("pointerdown", onDown);
       show.dispose();
+      if (overlay) overlay.dispose();
       scene.traverse((o) => {
         if (o.isMesh && o.material && o.material.map) o.material.map.dispose();
       });

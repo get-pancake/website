@@ -87,6 +87,7 @@ export function makeChef({ order, scale = 1 }, tex) {
    *   az        the camera's azimuth           nod/roll extra tilt of the face
    *   look      [x, z] where the eyes point    blink    0..1
    *   hat       [x, z] wobble of the toque     handL/R  [x, y, z] in world space, or null for rest
+   *   wide      0..1 how wide the eyes are open
    */
   function pose(p) {
     root.position.set(p.x, 0, p.z);
@@ -106,11 +107,13 @@ export function makeChef({ order, scale = 1 }, tex) {
     head.inner.rotation.z = (p.roll || 0) - lag[0] * 0.9;
     const look = p.look || [0, 0];
     const lid = 1 - 0.92 * clamp(p.blink || 0);
+    const big = 1 + 0.3 * clamp(p.wide || 0); // wide eyes, when things go wrong
     eyes.forEach((m, i) => {
       const e = EYES[i];
       m.position.x = e.x + clamp(look[0], -1, 1) * 0.105;
       m.position.z = e.z + clamp(look[1], -1, 1) * 0.085;
-      m.scale.z = e.rz * lid;
+      m.scale.x = e.rx * big;
+      m.scale.z = e.rz * lid * big;
     });
     const hw = p.hat || [0, 0];
     hatTilt.rotation.x = -0.32 + hw[1];
@@ -125,5 +128,5 @@ export function makeChef({ order, scale = 1 }, tex) {
     shadow.material.opacity = 0.36 * (1 - 0.55 * lift);
   }
 
-  return { root, body, layers, head, eyes, hat, hands, shadow, pose, scale, height };
+  return { root, body, layers, head, eyes, hat, hands, shadow, pose, scale, height, shoulder: CHEF_SHOULDER, headY: 0.92 };
 }

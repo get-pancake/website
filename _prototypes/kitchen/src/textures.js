@@ -2,7 +2,8 @@
 // chevrons, the order tickets, the counter digits. No image file is loaded.
 
 import * as THREE from "three";
-import { C, FOOD, TONES } from "./palette.js";
+import { C, FOOD, TONES, LATE } from "./palette.js";
+import { drawLogo } from "./logos.js";
 
 function canvas(w, h) {
   const c = document.createElement("canvas");
@@ -88,7 +89,8 @@ export function chevrons() {
 
 /** the face of an order ticket: a paper slip with the stack it asks for, in one tone */
 export function ticketFace(toneName) {
-  const tone = TONES[toneName];
+  const late = toneName === "late";
+  const tone = late ? LATE : TONES[toneName];
   const W = 240;
   const H = 336;
   const cv = canvas(W, H);
@@ -126,12 +128,23 @@ export function ticketFace(toneName) {
     rrect(g, cx - w / 2, y - 15, w, 30, 15);
     g.fill();
   };
-  layer(base, 136, FOOD.golden);
-  layer(base - 27, 128, C.yellow30);
-  layer(base - 54, 120, FOOD.golden);
+  layer(base, 136, late ? FOOD.burnt : FOOD.golden);
+  layer(base - 27, 128, late ? FOOD.burntCrumb : C.yellow30);
+  layer(base - 54, 120, late ? FOOD.burnt : FOOD.golden);
   // topping
   g.fillStyle = tone.c40;
-  if (toneName === "yellow") {
+  if (late) {
+    // nothing on top but two wisps of smoke
+    g.strokeStyle = C.ink60;
+    g.lineWidth = 9;
+    g.lineCap = "round";
+    for (const dx of [-22, 20]) {
+      g.beginPath();
+      g.moveTo(cx + dx, base - 78);
+      g.bezierCurveTo(cx + dx - 16, base - 96, cx + dx + 16, base - 108, cx + dx, base - 126);
+      g.stroke();
+    }
+  } else if (toneName === "yellow") {
     g.fillStyle = FOOD.syrup;
     rrect(g, cx - 54, base - 78, 108, 20, 10);
     g.fill();
@@ -166,6 +179,42 @@ export function ticketFace(toneName) {
   g.fillStyle = C.ink30;
   rrect(g, 26, H - 44, W - 52, 18, 9);
   g.fill();
+  return texture(cv);
+}
+
+/** the red stamp of an order that left too late: a clock */
+export function lateStamp() {
+  const s = 128;
+  const cv = canvas(s, s);
+  const g = cv.getContext("2d");
+  g.fillStyle = C.red30;
+  g.beginPath();
+  g.arc(s / 2, s / 2, s / 2 - 4, 0, Math.PI * 2);
+  g.fill();
+  g.strokeStyle = C.ink0;
+  g.lineWidth = 11;
+  g.lineCap = "round";
+  g.lineJoin = "round";
+  g.beginPath();
+  g.arc(s / 2, s / 2, 34, 0, Math.PI * 2);
+  g.stroke();
+  g.beginPath();
+  g.moveTo(s / 2, s / 2 - 20);
+  g.lineTo(s / 2, s / 2);
+  g.lineTo(s / 2 + 15, s / 2 + 9);
+  g.stroke();
+  return texture(cv);
+}
+
+/** a third-party logo on a white tile, for the warehouse machine */
+export function logoPlate(key) {
+  const s = 192;
+  const cv = canvas(s, s);
+  const g = cv.getContext("2d");
+  g.fillStyle = C.ink0;
+  rrect(g, 0, 0, s, s, 44);
+  g.fill();
+  drawLogo(g, key, 34, 34, s - 68);
   return texture(cv);
 }
 

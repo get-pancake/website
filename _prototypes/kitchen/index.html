@@ -31,6 +31,9 @@
       * {
         box-sizing: border-box;
       }
+      [hidden] {
+        display: none !important;
+      }
       body {
         margin: 0;
         background: var(--page);
@@ -121,6 +124,57 @@
       }
       .seg button[aria-pressed="true"] {
         background: var(--page);
+        box-shadow: 0 1px 2px rgba(44, 0, 42, 0.14);
+      }
+      .switches {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px 20px;
+      }
+      .switch {
+        display: flex;
+        gap: 2px;
+        padding: 4px;
+        background: var(--chip);
+        border-radius: 14px;
+      }
+      .switch button {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 16px;
+        border-radius: 10px;
+        background: transparent;
+        font-weight: 600;
+      }
+      .switch button::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: currentColor;
+        opacity: 0.3;
+      }
+      .switch button[aria-pressed="true"] {
+        background: var(--ink);
+        color: var(--cream);
+      }
+      .switch button[aria-pressed="true"]::before {
+        opacity: 1;
+        background: var(--on, #68cea7);
+      }
+      .switch.quiet button {
+        padding: 7px 13px;
+        font-weight: 500;
+      }
+      .switch.quiet button::before {
+        display: none;
+      }
+      .switch.quiet button[aria-pressed="true"] {
+        background: var(--page);
+        color: var(--ink);
         box-shadow: 0 1px 2px rgba(44, 0, 42, 0.14);
       }
       #kitchen {
@@ -214,6 +268,7 @@
       }
       /* where the scene cannot start, the controls and the pointer hint have nothing to act on */
       .no-live .controls,
+      .no-live .switches,
       .no-live .hint,
       .no-live #kitchen-next {
         display: none;
@@ -247,7 +302,7 @@
     <main class="wrap">
       <header class="top">
         <div>
-          <p class="eyebrow">Prototype, first pass</p>
+          <p class="eyebrow">Prototype, second pass</p>
           <h1>Pancake Kitchen</h1>
         </div>
         <div class="controls">
@@ -261,6 +316,17 @@
         </div>
       </header>
 
+      <div class="switches">
+        <div class="switch" role="group" aria-label="The kitchen">
+          <button type="button" data-mode="with" aria-pressed="true">With Pancake</button>
+          <button type="button" data-mode="without" aria-pressed="false" style="--on: #ff8080">Without Pancake</button>
+        </div>
+        <div class="switch quiet" role="group" aria-label="Who cooks">
+          <button type="button" data-cast="pancakes" aria-pressed="true">Pancake chefs</button>
+          <button type="button" data-cast="people" aria-pressed="false">Little chefs</button>
+        </div>
+      </div>
+
       <div class="stage">
         <div id="kitchen">
           <img class="poster" src="./poster.webp" width="1600" height="900" alt="" />
@@ -273,14 +339,15 @@
           id="kitchen-line"
           class="line"
           aria-live="polite"
-          data-lines='["Orders in. Pancakes out.", "The kitchen runs itself.", "Never overcooked.", "Anyone can cook."]'
+          data-lines-with='["Orders in. Pancakes out.", "The kitchen runs itself.", "Never overcooked.", "Anyone can cook."]'
+          data-lines-without='["Without Pancake, you run the kitchen.", "Two weeks later, the lead is cold.", "Everyone firefights. Nobody cooks."]'
         >
           Orders in. Pancakes out.
         </p>
         <button id="kitchen-next" type="button">Try another line</button>
       </div>
 
-      <section class="key" aria-label="How to read the scene">
+      <section class="key" data-key="with" aria-label="How to read the scene">
         <article>
           <svg viewBox="0 0 44 44" aria-hidden="true">
             <rect x="2" y="14" width="40" height="16" rx="6" fill="#2c002a" />
@@ -321,6 +388,44 @@
           </svg>
           <h2>Plates on the way out</h2>
           <p>Leads, served. The counter adds one for each plate that leaves.</p>
+        </article>
+      </section>
+      <section class="key" data-key="without" aria-label="How to read the scene without Pancake" hidden>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <path d="M22 6 40 37H4z" fill="#ffbd7a" stroke="#ffbd7a" stroke-width="5" stroke-linejoin="round" />
+            <rect x="20" y="16" width="4" height="11" rx="2" fill="#2c002a" />
+            <circle cx="22" cy="32" r="2.4" fill="#2c002a" />
+          </svg>
+          <h2>Pipelines break</h2>
+          <p>A belt gives way and what it carried ends up on the floor. One belt has been down for days.</p>
+        </article>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <path d="M9 39V15c0-6 6-10 13-10s13 4 13 10v24z" fill="#f7ede5" />
+            <rect x="9" y="19" width="26" height="4" fill="#b0cbff" />
+            <rect x="13" y="29" width="18" height="5" rx="2.5" fill="#2c002a" />
+            <rect x="13" y="29" width="5" height="5" rx="2.5" fill="#ffa45f" />
+          </svg>
+          <h2>The warehouse is slow</h2>
+          <p>Every ingredient waits in one big tank. Change one thing and it loads again from nothing.</p>
+        </article>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <path d="M22 4c2 8 11 11 11 21a11 11 0 0 1-22 0c0-5 3-8 5-11 1 3 2 4 4 5 1-5 0-10 2-15z" fill="#ffa45f" />
+            <path d="M22 20c1 4 5 5 5 10a5 5 0 0 1-10 0c0-4 4-5 5-10z" fill="#ffe9d1" />
+          </svg>
+          <h2>Everyone firefights</h2>
+          <p>Nobody cooks. One mends, one puts fires out, one runs.</p>
+        </article>
+        <article>
+          <svg viewBox="0 0 44 44" aria-hidden="true">
+            <circle cx="22" cy="22" r="17" fill="#ffd1c9" />
+            <circle cx="22" cy="22" r="12.5" fill="none" stroke="#ad001a" stroke-width="3.4" />
+            <path d="M22 14v8.5l5.5 3.5" fill="none" stroke="#ad001a" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <h2>The lead is late</h2>
+          <p>One burnt plate leaves now and then, two weeks after the signal that asked for it.</p>
         </article>
       </section>
       <p class="hint">Move the pointer over the scene: the view tilts and the chefs watch it. Click a chef and it jumps.</p>

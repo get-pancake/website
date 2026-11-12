@@ -1,7 +1,7 @@
 // The things that move: ingredients, pancakes, plated stacks and order tickets.
 
 import * as THREE from "three";
-import { C, FOOD, TONES, TONE_NAMES } from "./palette.js";
+import { C, FOOD, TONES, TONE_NAMES, LATE } from "./palette.js";
 import * as G from "./geo.js";
 import * as M from "./mats.js";
 import * as T from "./textures.js";
@@ -183,12 +183,14 @@ export function stackJitter(orderIndex, n) {
 // ── order tickets ────────────────────────────────────────────────────────────
 
 let ticketKit = null;
+// a ticket comes in the three tones of an order, or "late" (red, with a burnt stack)
+const TICKET_KINDS = [...TONE_NAMES, "late"];
 
 function kit() {
   if (ticketKit) return ticketKit;
   const faces = {};
   const bars = {};
-  for (const name of TONE_NAMES) {
+  for (const name of TICKET_KINDS) {
     const map = T.ticketFace(name);
     faces[name] = new THREE.MeshStandardMaterial({
       map,
@@ -199,24 +201,27 @@ function kit() {
       emissiveMap: map,
       emissiveIntensity: 0.34,
     });
-    bars[name] = new THREE.MeshBasicMaterial({ color: TONES[name].c40, toneMapped: false });
+    bars[name] = new THREE.MeshBasicMaterial({ color: (TONES[name] || LATE).c40, toneMapped: false });
   }
   const stamp = new THREE.MeshBasicMaterial({ map: T.checkStamp(), transparent: true, toneMapped: false, depthWrite: false });
+  const stampLate = new THREE.MeshBasicMaterial({ map: T.lateStamp(), transparent: true, toneMapped: false, depthWrite: false });
   const bar = new THREE.PlaneGeometry(1, 1);
   bar.translate(0.5, 0, 0);
-  ticketKit = { faces, bars, stamp, bar };
+  ticketKit = { faces, bars, stamp, stampLate, bar };
   return ticketKit;
 }
 
 export function disposeTicketKit() {
   if (!ticketKit) return;
-  for (const name of TONE_NAMES) {
+  for (const name of TICKET_KINDS) {
     ticketKit.faces[name].map.dispose();
     ticketKit.faces[name].dispose();
     ticketKit.bars[name].dispose();
   }
-  ticketKit.stamp.map.dispose();
-  ticketKit.stamp.dispose();
+  for (const m of [ticketKit.stamp, ticketKit.stampLate]) {
+    m.map.dispose();
+    m.dispose();
+  }
   ticketKit.bar.dispose();
   ticketKit = null;
 }
@@ -251,9 +256,43 @@ export function makeTicket() {
     barW,
     barH,
     stamp,
+    /** one of the three tones, or "late" */
     setTone(name) {
       paper.material = k.faces[name];
       bar.material = k.bars[name];
+      stamp.material = name === "late" ? k.stampLate : k.stamp;
     },
   };
+}
+
+// ── what a kitchen without Pancake leaves behind ─────────────────────────────
+
+/** a pancake nobody flipped: the same disc, burnt. Its origin is its centre. */
+export function makeBurntPancake() {
+  const g = new THREE.Group();
+  const h = GRIDDLE.thick;
+  const body = new THREE.MeshStandardMaterial({ color: FOOD.batter, roughness: 0.92 });
+  const face = new THREE.MeshStandardMaterial({ color: FOOD.batter, roughness: 0.92 });
+  mesh(G.puck(GRIDDLE.r, h, PANCAKE_BEVEL, 36), body, g, 0, -h / 2, 0);
+  mesh(G.disc(GRIDDLE.r - 0.085, 32), face, g, 0, h / 2 + 0.0015, 0, false).receiveShadow = true;
+  return { group: g, body, face };
+}
+
+/** a flame: three tongues that the show stretches and sways. Its base sits on y = 0. */
+export function makeFlame() {
+  const g = new THREE.Group();
+  // The inner tongues stand towards the camera (up and +z), clear of the outer one, which
+  // would hide them: [color, size, x, y, z]. The show scales these offsets with the flame.
+  const tongues = [
+    [C.orange20, 1, 0, 0, 0],
+    [C.yellow20, 0.6, 0.02, 0.16, 0.26],
+    [C.ink0, 0.3, -0.01, 0.25, 0.41],
+  ].map(([color, size, x, y, z]) => {
+    const m = mesh(G.flame(), M.glow(color), g, x, y, z, false);
+    m.scale.setScalar(size);
+    m.userData.size = size;
+    m.userData.at = [x, y, z];
+    return m;
+  });
+  return { group: g, tongues };
 }

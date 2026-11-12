@@ -41,9 +41,14 @@ export const C = {
   green20: "#68cea7",
   green30: "#037d48",
 
+  orange10: "#ffddbe",
   orange20: "#ffa45f",
   orange30: "#d43900",
+  orange40: "#b20000",
+  red10: "#ffd1c9",
   red20: "#ff8080",
+  red30: "#e5002e",
+  red40: "#ad001a",
 };
 
 // Food colors: batter is yellow-10, a cooked face sits between yellow-30 and yellow-40.
@@ -53,6 +58,9 @@ export const FOOD = {
   crumb: "#ffcf9a",
   golden: "#f6a45c",
   syrup: "#e2752b",
+  // a pancake nobody flipped
+  burntCrumb: "#6a4350",
+  burnt: "#3a1f33",
 };
 
 /** The three tones of the landing page (VisionTone in lp-vision-data.ts). */
@@ -63,3 +71,6 @@ export const TONES = {
 };
 
 export const TONE_NAMES = ["yellow", "purple", "pink"];
+
+/** an order that is late: the tickets of a kitchen that runs without Pancake */
+export const LATE = { c10: C.red10, c20: C.red20, c30: C.red30, c40: C.red40 };

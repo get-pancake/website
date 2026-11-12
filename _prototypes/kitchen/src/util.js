@@ -49,3 +49,35 @@ export function hash(n, salt = 0) {
   h ^= h >>> 16;
   return (h >>> 0) / 4294967296;
 }
+
+export const dist2 = (a, b) => Math.hypot(a[0] - b[0], a[2] - b[2]);
+/** between two points [x, y, z] */
+export const mix3 = (a, b, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u), lerp(a[2], b[2], u)];
+/** a throw from a to b whose apex is `h` above the straight line */
+export const toss = (a, b, h, u) => [lerp(a[0], b[0], u), lerp(a[1], b[1], u) + h * hop(u), lerp(a[2], b[2], u)];
+
+/**
+ * A walk along a list of points [x, z] at constant speed: where it is at `u` (0..1), which way
+ * it heads, and how far it has gone.
+ */
+export function along(points, u) {
+  let total = 0;
+  const lens = [];
+  for (let i = 1; i < points.length; i++) {
+    const l = Math.hypot(points[i][0] - points[i - 1][0], points[i][1] - points[i - 1][1]);
+    lens.push(l);
+    total += l;
+  }
+  let d = clamp(u) * total;
+  const gone = d;
+  for (let i = 0; i < lens.length; i++) {
+    if (d <= lens[i] || i === lens.length - 1) {
+      const k = lens[i] ? clamp(d / lens[i]) : 0;
+      const a = points[i];
+      const b = points[i + 1];
+      return { x: lerp(a[0], b[0], k), z: lerp(a[1], b[1], k), face: Math.atan2(b[0] - a[0], b[1] - a[1]), gone, total };
+    }
+    d -= lens[i];
+  }
+  return { x: points[0][0], z: points[0][1], face: 0, gone: 0, total };
+}

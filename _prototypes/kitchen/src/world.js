@@ -84,29 +84,41 @@ function counter(root, x, z, w, d, top, color) {
   return g;
 }
 
-function buildBelt(root, tex, { from, dir, len, y, width, supportColor, portalColor, arches }) {
+/** the length of one arrow on a belt */
+export const CHEVRON = 0.52;
+
+function buildBelt(root, tex, { from, dir, len, y, width, supportColor, portalColor, arches, tip }) {
   const g = group(root, from[0], 0, from[1]);
   g.rotation.y = -Math.atan2(dir[1], dir[0]);
   const deckH = 0.18;
-  mesh(G.block(len, deckH, width, 0.085, 0.06, 6), M.soft(C.plum, 0.8), g, len / 2, y - deckH, 0);
-  for (const s of [-1, 1]) {
-    mesh(G.block(len - 0.08, 0.1, 0.1, 0.045, 0.035, 4), M.soft(C.ink10, 0.55), g, len / 2, y - 0.035, s * (width / 2 - 0.03));
-  }
-  // the arrows that run along the belt
-  const map = tex.chevrons.clone();
-  map.needsUpdate = true;
-  map.repeat.set(len / 0.52, 1);
-  const chev = new THREE.Mesh(
-    G.floorPlane(len - 0.2, width - 0.34),
-    new THREE.MeshBasicMaterial({ map, color: C.ink70, transparent: true, opacity: 0.5, depthWrite: false, toneMapped: false }),
-  );
-  chev.position.set(len / 2, y + 0.003, 0);
-  chev.renderOrder = 1;
-  g.add(chev);
+  // a stretch of belt: the deck, its two rails and the arrows that run along it
+  const stretch = (parent, x0, L, top) => {
+    mesh(G.block(L, deckH, width, 0.085, 0.06, 6), M.soft(C.plum, 0.8), parent, x0 + L / 2, top - deckH, 0);
+    for (const s of [-1, 1]) {
+      mesh(G.block(L - 0.08, 0.1, 0.1, 0.045, 0.035, 4), M.soft(C.ink10, 0.55), parent, x0 + L / 2, top - 0.035, s * (width / 2 - 0.03));
+    }
+    const map = tex.chevrons.clone();
+    map.needsUpdate = true;
+    map.repeat.set((L - 0.2) / CHEVRON, 1);
+    const chev = new THREE.Mesh(
+      G.floorPlane(L - 0.2, width - 0.34),
+      new THREE.MeshBasicMaterial({ map, color: C.ink70, transparent: true, opacity: 0.5, depthWrite: false, toneMapped: false }),
+    );
+    chev.position.set(x0 + L / 2, top + 0.003, 0);
+    chev.renderOrder = 1;
+    parent.add(chev);
+    return map;
+  };
+  // the run that sits on the support, then the tip that overhangs the bowl: it hinges at the
+  // end of the support, and droops when the belt breaks
+  const main = len - tip;
+  const map = stretch(g, 0, main, y);
+  const tipGroup = group(g, main, y, 0);
+  const tipMap = stretch(tipGroup, 0, tip, 0);
 
   // the support, with arches
   const sx0 = 0.35;
-  const sLen = len - sx0 - 0.5;
+  const sLen = main - sx0;
   const sH = y - deckH + 0.03;
   const sup = mesh(G.viaduct(sLen, sH, width - 0.28, arches, 0.07), M.soft(supportColor), g, sx0, 0, 0);
   softShadow(g, tex.rect, len / 2 + 0.1, 0, len + 0.7, width + 0.9, 0.16);
@@ -117,7 +129,7 @@ function buildBelt(root, tex, { from, dir, len, y, width, supportColor, portalCo
   portal.rotation.y = Math.PI / 2;
   mesh(G.block(P.D - 0.42, P.holeH - 0.05, P.holeW - 0.03, 0.03, 0.02, 3), M.soft(C.plum, 0.9), g, 0.03 + (P.D - 0.42) / 2, 0, 0, false);
   softShadow(g, tex.rect, P.D / 2, 0, P.D + 1.0, P.W + 1.0, 0.2);
-  return { group: g, map, sup, from, dir, len, y, width, mouth: P.D };
+  return { group: g, map, tip: tipGroup, tipMap, main, sup, from, dir, len, y, width, mouth: P.D, top: P.H };
 }
 
 function buildBowl(root, tex) {
@@ -207,7 +219,7 @@ function buildPass(root, tex) {
   }
 
   // the bell
-  const bell = group(g, lx(PASS.bell[0]), PASS.top, lz(PASS.bell[1]));
+  const bell = group(g, 0, PASS.top, 0);
   mesh(G.puck(0.2, 0.045, 0.02, 28), M.soft(C.plum, 0.5), bell);
   const bellDome = group(bell, 0, 0.04, 0);
   mesh(G.dome(0.17), M.ceramic(C.yellow40, 0.26, 0.9), bellDome);
@@ -333,7 +345,8 @@ export function buildWorld(scene) {
       width: INTAKE.width,
       supportColor: C.blue10,
       portalColor: C.blue20,
-      arches: b.len > 4 ? 3 : 2,
+      arches: b.len - INTAKE.tip > 3 ? 3 : 2,
+      tip: INTAKE.tip,
     }),
   );
   const bowl = buildBowl(root, tex);

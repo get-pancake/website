@@ -5,6 +5,8 @@
 //   ?intro=0.6    with ?t, draw the opening pop at 0.6 s
 //   ?speed=0.5    play slower or faster
 //   ?az=14&el=43&zoom=2&target=0.3,1,-0.4    move the camera (here, a close-up of the griddle)
+//   ?mode=without           the kitchen without Pancake
+//   ?cast=people            little chefs in place of the pancake chefs
 //   ?shadows=pcf|vsm|none   ?dpr=1   ?bare=1 (the stage alone, full window)
 
 import { createPancakeKitchen } from "./kitchen.js";
@@ -29,6 +31,8 @@ if (q.has("t")) {
   options.interactive = false;
 }
 if (q.has("intro")) options.introAt = Number(q.get("intro"));
+if (q.has("mode")) options.mode = q.get("mode");
+if (q.has("cast")) options.cast = q.get("cast");
 if (q.has("bare")) document.body.classList.add("bare");
 
 const stage = document.getElementById("kitchen");
@@ -81,16 +85,44 @@ if (kitchen) {
   }
 }
 
-// the lines to try under the scene: a click shows the next one
+// the lines to try under the scene: a click shows the next one, and each mode has its own
 const line = $("kitchen-line");
 const next = $("kitchen-next");
+let lines = line ? JSON.parse(line.dataset.linesWith) : [];
+let shown = 0;
 if (line && next) {
-  const lines = JSON.parse(line.dataset.lines);
-  let i = 0;
   next.addEventListener("click", () => {
-    i = (i + 1) % lines.length;
-    line.textContent = lines[i];
+    shown = (shown + 1) % lines.length;
+    line.textContent = lines[shown];
   });
+}
+
+// the two switches: with or without Pancake, and who cooks
+function reflect() {
+  if (!kitchen) return;
+  document.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === kitchen.mode)));
+  document.querySelectorAll("[data-cast]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cast === kitchen.cast)));
+  document.querySelectorAll("[data-key]").forEach((k) => (k.hidden = k.dataset.key !== kitchen.mode));
+  if (line) {
+    lines = JSON.parse(kitchen.mode === "without" ? line.dataset.linesWithout : line.dataset.linesWith);
+    shown = 0;
+    line.textContent = lines[0];
+  }
+}
+if (kitchen) {
+  document.querySelectorAll("[data-mode]").forEach((b) =>
+    b.addEventListener("click", () => {
+      kitchen.setMode(b.dataset.mode);
+      reflect();
+    }),
+  );
+  document.querySelectorAll("[data-cast]").forEach((b) =>
+    b.addEventListener("click", () => {
+      kitchen.setCast(b.dataset.cast);
+      reflect();
+    }),
+  );
+  reflect();
 }
 
 window.__kitchen = kitchen;

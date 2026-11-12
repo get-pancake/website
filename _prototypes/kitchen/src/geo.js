@@ -281,6 +281,36 @@ export function plate(r, seg = 48) {
   });
 }
 
+/** A turned shape from a list of [radius, height] points; `arc` turns it part of the way round. */
+export function lathe(key, points, seg = 32, start = 0, arc = Math.PI * 2) {
+  return cached(`lathe:${key}:${seg}:${start}:${arc}`, () =>
+    new THREE.LatheGeometry(
+      points.map(([x, y]) => new THREE.Vector2(x, y)),
+      seg,
+      start,
+      arc,
+    ),
+  );
+}
+
+/** A flame, one unit high: a teardrop that leans to a point. Base on y = 0. */
+export function flame() {
+  return lathe(
+    "flame",
+    [
+      [0, 0],
+      [0.2, 0.02],
+      [0.31, 0.14],
+      [0.34, 0.3],
+      [0.29, 0.5],
+      [0.19, 0.7],
+      [0.09, 0.88],
+      [0, 1],
+    ],
+    16,
+  );
+}
+
 /** The top half of a sphere, base on y = 0 (a bell, a cup, a dome). */
 export function dome(r, seg = 24) {
   const key = `dome:${r}:${seg}`;
