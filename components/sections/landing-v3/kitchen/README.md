@@ -37,7 +37,7 @@ After a change to the words, draw the still pictures again. The next section tel
 
 ## Draw the still pictures again
 
-The section shows a still picture before the scene starts. `LpKitchen.tsx` starts the scene at the exact moment of the still (`POSTER_TIMES` in `kitchen.js`), so the scene takes over without a jump. Since 2026-11-12 a phone starts the scene too (until then the still was all it showed). A phone's still has no badge, as the scene at that width, and both use the small shadow map (see "What it costs").
+The section shows a still picture before the scene starts. `LpKitchen.tsx` starts the scene at the exact moment of the still (`POSTER_TIMES` in `kitchen.js`), so the scene takes over without a jump. Since 2026-11-12 a phone starts the scene too (until then the still was all it showed). A phone's still has no badge, as the scene at that width, and both use the small shadow map (see "What it costs"). A phone also shows its own window on the kitchen, from a still angle (see "What a phone shows"), and its still is drawn the same way.
 
 If you change the scene, its words or its logos, the stills are out of date. Run this command from the root of the repository:
 
@@ -59,6 +59,19 @@ The command sets the badges in the reading font of the landing page, from `app/f
 
 The command writes twelve files in `public/lp/kitchen`. It draws one still per mode and cast, and one more of the kitchen without Pancake with no vendor mark on the tank. Each still has a wide size and a phone size.
 
+## What a phone shows
+
+On a phone (under 768 px) the whole kitchen is as wide as the page's text, and neither side is cut. The founder asked for it on 2026-11-12. `LpKitchen.tsx` gives the scene two more options there:
+
+- `view: PHONE_VIEW`: the window the picture shows, in place of the outline of `FRAME`. It is the kitchen's outline as it is drawn, with its shadow, plus 16/358 of its width on each side. On phones `kitchen.css` makes the stage 16/358 wider than the text on each side, with the window's shape (390 x 182). So the outline lands on the page's 16 px margins at any width.
+- `interactive: false`: a touch does not turn the view. The phone has no tilt, no drift and no jump of a tapped chef, so the outline stays on the margins.
+
+`PHONE_VIEW` is in `layout.js`. It is measured on the drawn picture, in both modes and with both casts. If you change what the kitchen spans (the slab, its shadow, a station), measure it again, copy the numbers it prints into `layout.js` and `kitchen.css`, then draw the stills again:
+
+```bash
+node scripts/kitchen-phone-view.mjs
+```
+
 ## Look at the scene alone
 
 `preview/index.html` shows the scene with controls to pause it, slow it down and swap who cooks. The page loads three.js from a CDN, so it needs a network connection. Run this command from the root of the repository:
@@ -77,6 +90,7 @@ The page reads these parameters from its address:
 - `?zoom=2&target=0.3,1,-0.4` makes a close-up, here of the griddle.
 - `?speed=0.5` plays at half speed.
 - `?bare=1` shows the stage alone, and `?poster=1` the exact frame of a still.
+- `?phone=1` shows what a phone shows: its own window, with no tilt.
 
 ## What it costs
 
@@ -86,5 +100,5 @@ Because nobody did, the page protects itself (`LpKitchen.tsx`):
 
 - A device that cannot hold the loop gets the still back for the rest of the visit: under 12 frames a second for two windows of 2 s in a row (`onSlow` in `kitchen.js`).
 - A phone gives the scene's memory back once the section is two screens away. The still is the picture again, and the scene starts again when the visitor comes back.
-- A phone draws the picture at up to 3 device pixels per CSS pixel, as its still. The picture is small there: about 1074 x 603 px, a sixth of what a laptop draws.
+- A phone draws the picture at up to 3 device pixels per CSS pixel, as its still. The picture is small there: 1170 x 546 px on a 390 px phone, a sixth of what a laptop draws.
 - `?lp-nogl` keeps the still, and `?lp-gl=force` skips the test of the loop (a headless browser draws about 4 frames a second and would fail it).
