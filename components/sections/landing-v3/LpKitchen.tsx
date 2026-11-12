@@ -28,15 +28,26 @@ import { whenInput } from "./lp-play-once";
  *   desktop, and its boot landed in the page's first seconds).
  * - The scene pauses off screen and on tab hide (kitchen.js does it).
  * - Reduced motion never boots the scene: the poster is the render.
- * - Phones never boot it either (LIVE, below). It was never measured on one, and the page has
- *   an iPhone memory history (LpAnimFreeze). The poster is the render there too, and the switch
- *   swaps it.
+ * - Phones boot it too since 2026-11-12 (founder, on the preview: "La kitchen ne marche pas sur
+ *   mobile, c'est paused on dirait. Fix ça"). Until then the poster was the render under 768 px:
+ *   the scene had never been measured on a phone, and the page has an iPhone memory history
+ *   (LpAnimFreeze). So a phone gives the scene's memory back: once the section is two screens
+ *   away the scene is disposed and the poster is the render again, and it boots again when the
+ *   visitor comes back (FAR, below). At that width the scene draws no badge (kitchen/overlay.js),
+ *   as its poster.
+ * - A device that cannot hold the loop gets the poster back for the rest of the visit (onSlow,
+ *   kitchen.js: under 12 frames a second for 4 s). `?lp-gl=force` skips that test, and
+ *   `?lp-nogl` keeps the poster, as for the page's other WebGL (LpRainbowGL).
  * - Where WebGL is missing, or once the browser takes the GPU context back, the poster shows.
  */
 
-/** Where the live scene runs. Below it, the poster is the render. */
-const LIVE = "(min-width: 768px)";
+const PHONE = "(max-width: 767px)";
+/** how near the section comes before the scene boots, and (phones) how far before it is freed */
+const NEAR = "50% 0px";
+const FAR = "200% 0px";
 const MODES = ["with", "without"] as const;
+/** this visit's verdict: the device could not hold the loop, the poster is the render */
+let tooSlow = false;
 
 /** the still pictures: one per mode and cast, and one without the vendor marks on the tank */
 function poster(mode: KitchenMode, cast: KitchenCast, vendorLogos: boolean) {
@@ -77,44 +88,76 @@ export function LpKitchen({
   useEffect(() => {
     const el = stage.current;
     if (!el || typeof IntersectionObserver === "undefined") return;
-    if (!window.matchMedia(LIVE).matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const query = new URLSearchParams(window.location.search);
+    if (tooSlow || query.has("lp-nogl")) return;
+    const judged = query.get("lp-gl") !== "force";
+    const phone = window.matchMedia(PHONE);
     let gone = false;
+    let near: IntersectionObserver | undefined;
+    let far: IntersectionObserver | undefined;
     const stop = () => {
+      far?.disconnect();
       kitchen.current?.dispose();
       kitchen.current = null;
       setBooted(null);
     };
-    let io: IntersectionObserver | undefined;
     const watch = () => {
-      if (gone) return;
-      io = new IntersectionObserver(
+      if (gone || tooSlow) return;
+      near = new IntersectionObserver(
         ([entry]) => {
           if (!entry?.isIntersecting) return;
-          io?.disconnect();
+          near?.disconnect();
           import("./kitchen/kitchen")
             .then(({ createPancakeKitchen, POSTER_TIMES }) => {
               if (gone) return;
               const at = latest.current;
-              const live = createPancakeKitchen(el, { cast, mode: at, vendorLogos, time: POSTER_TIMES[at], intro: false });
+              const live = createPancakeKitchen(el, {
+                cast,
+                mode: at,
+                vendorLogos,
+                time: POSTER_TIMES[at],
+                intro: false,
+                // a phone's picture is small: it is drawn as sharp as its poster (1170 px wide)
+                maxPixelRatio: phone.matches ? 3 : 2,
+                ...(judged
+                  ? {
+                      onSlow: () => {
+                        tooSlow = true;
+                        stop();
+                      },
+                    }
+                  : null),
+              });
               kitchen.current = live;
               // the browser took the GPU context back (memory pressure, a driver reset)
               live.canvas.addEventListener("webglcontextlost", stop, { once: true });
               setBooted(at);
+              // a phone gives the memory back once the section is far, and boots again on the way back
+              if (!phone.matches) return;
+              far = new IntersectionObserver(
+                ([away]) => {
+                  if (!away || away.isIntersecting) return;
+                  stop();
+                  watch();
+                },
+                { rootMargin: FAR },
+              );
+              far.observe(el);
             })
             // no WebGL, or the chunk did not load: the poster stays
             .catch(() => undefined);
         },
-        { rootMargin: "50% 0px" },
+        { rootMargin: NEAR },
       );
-      io.observe(el);
+      near.observe(el);
     };
     // (after the visitor's first input: at once on a page opened scrolled down)
     const cancelInput = whenInput(watch);
     return () => {
       gone = true;
       cancelInput();
-      io?.disconnect();
+      near?.disconnect();
       stop();
     };
   }, [cast, vendorLogos]);
