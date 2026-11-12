@@ -20,20 +20,24 @@
    content through the status-bar / Dynamic-Island zone, and the slab makes
    bar + island band one continuous chrome (own-element shadows are not cut
    by the bar's overflow: clip).
-   z-index 30: above sections, under the menu sheet (40) / call dialog (50). */
+   z-index 30: above sections, under the menu sheet (40) / call dialog (50).
+   2026-11-12 (phone pass, founder: "very small side margins, very smooth"):
+   ONE height, the 64px row, from the first screen on. The bar no longer
+   starts 104 tall and shrinks on the first scroll: that move animated the
+   bar's height, padding and margin (a page layout every frame for 250 ms,
+   the first thing a thumb felt), and its 40px came off the first screen.
+   Only the colours change at 8px now. Both names stay (the sheet's head and
+   the anchors' scroll margin read them); they are equal. */
 @media (max-width: 767px) {
   .lp-nav {
-    --lp-nav-expanded-height: 104px;
+    --lp-nav-expanded-height: 64px;
     --lp-nav-compact-height: 64px;
     position: sticky;
     top: 0;
     margin-bottom: 0;
     transition:
       background-color 0.25s ease,
-      box-shadow 0.25s ease,
-      height 0.25s ease,
-      margin-bottom 0.25s ease,
-      padding 0.25s ease;
+      box-shadow 0.25s ease;
     z-index: 30;
   }
   .lp-nav.is-scrolled {
@@ -41,18 +45,6 @@
     box-shadow:
       0 1px 0 rgba(44, 0, 42, 0.08),
       0 -120px 0 var(--lp-page-bg);
-    height: var(--lp-nav-compact-height);
-    /* Keep the original flow space throughout the height transition, so
-       compacting the sticky bar never pulls the content underneath up. */
-    margin-bottom: calc(var(--lp-nav-expanded-height) - var(--lp-nav-compact-height));
-    padding-top: 0;
-  }
-  .lp-nav-logo {
-    transition: transform 0.25s ease;
-  }
-  .lp-nav.is-scrolled .lp-nav-logo {
-    transform: scale(0.79);
-    transform-origin: left center;
   }
 }
 /* Floating bar — DESKTOP (founder 2026-10-27: "transform the top bar into a
@@ -259,6 +251,9 @@
    from the frame (44px tap target → nav right pad 28.44 − 10.06 = 18.38).
    No text links, no pill in the bar — both live in the LpNavMenu sheet. */
 @media (max-width: 767px) {
+  /* 2026-11-12 (phone pass): the page's one phone margin, 16px, on both sides (the cards' edge
+     since the artboard). Left: the wordmark. Right: the burger's three lines end 16px from the
+     edge, its 44px box overhanging them by 10.06 (5.94 + 10.06 = 16). Was 32 / 28.44. */
   .lp-nav {
     align-items: center;
     box-sizing: border-box;
@@ -266,16 +261,16 @@
     gap: 12px;
     height: var(--lp-nav-expanded-height);
     justify-content: flex-start;
-    padding: 16px 18.38px 0 32px;
+    padding: 0 5.94px 0 16px;
   }
-  /* The box keeps the wordmark's ratio: where the bar is too narrow for the wordmark, the pill
-     and the burger (under 350 px), the wordmark gets smaller, whole, never narrower alone; it
-     stops at 84 px wide. */
+  /* The box keeps the wordmark's ratio: it may get smaller, whole, never narrower alone. Its
+     size is the scrolled bar's of before (0.79 of the artboard's 114.956 × 56), now the bar's
+     only one; the bar holds it whole down to 268 px, the pill leaving under 320. */
   .lp-nav-logo {
     aspect-ratio: 114.956 / 56;
-    flex: 0 1 114.956px;
+    flex: 0 1 90.815px;
     height: auto;
-    min-width: 84px;
+    min-width: 72px;
     position: static;
     transform: none;
     width: auto;
@@ -304,6 +299,11 @@
 @media (max-width: 319px) {
   .lp-nav .lp-nav-ctas {
     display: none;
+  }
+  /* the pill's auto margin held the burger at the right edge; without it, the burger keeps it
+     (2026-11-12: it stood right after the wordmark, mid-bar) */
+  .lp .lp-nav-menu-btn {
+    margin-left: auto;
   }
 }
 
@@ -338,7 +338,8 @@
 
 /* The sheet: the bar's own paddings, so its head lands on the bar. Plum ink
    on the page cream in both audiences (the agents view resets --lp-text in
-   audience-agents.css). */
+   audience-agents.css). 2026-11-12 (phone pass): the bar's 16px margins and
+   its one 64px height, so the head still lands exactly on the bar. */
 .lp-nav-menu {
   background: var(--lp-page-bg);
   color: var(--lp-ink-100);
@@ -349,7 +350,7 @@
   overscroll-behavior: contain;
   /* no bottom padding: the sticky CTA foot carries it (sticky offsets count
      from the content box, so a padded sheet let links show under the foot) */
-  padding: 16px 18.38px 0 32px;
+  padding: 0 5.94px 0 16px;
   position: fixed;
   /* a link focused by Tab scrolls clear of the sticky CTA foot (~96px) */
   scroll-padding-bottom: 112px;
@@ -377,21 +378,15 @@
     z-index: 41;
   }
 }
-/* Head = the bar: 88px under the 16px pad at the top of the page, the 64px
-   compact row once the bar is scrolled (.is-scrolled, logo at 0.79), the
-   logo where the bar's is and the close mark on the burger's 44px spot. */
+/* Head = the bar: its 64px row (scrolled or not, since 2026-11-12), the
+   logo where the bar's is, at the bar's size, and the close mark on the
+   burger's 44px spot. */
 .lp-nav-menu-head {
   align-items: center;
   display: flex;
   flex: none;
-  height: calc(var(--lp-nav-expanded-height, 104px) - 16px);
-  justify-content: space-between;
-}
-.lp-nav.is-scrolled .lp-nav-menu {
-  padding-top: 0;
-}
-.lp-nav.is-scrolled .lp-nav-menu-head {
   height: var(--lp-nav-compact-height, 64px);
+  justify-content: space-between;
 }
 .lp .lp-nav-menu-logo {
   border-radius: 4px;
@@ -399,12 +394,8 @@
 }
 .lp .lp-nav-menu-logo img {
   display: block;
-  height: 56px;
-  width: 114.956px;
-}
-.lp-nav.is-scrolled .lp-nav-menu-logo img {
-  transform: scale(0.79);
-  transform-origin: left center;
+  height: 44.237px;
+  width: 90.815px;
 }
 .lp .lp-nav-menu-logo:focus-visible {
   outline: 2px solid var(--lp-purple-30);
@@ -426,12 +417,14 @@
   outline: 2px solid var(--lp-purple-30);
   outline-offset: -2px;
 }
-/* Rows: the reading face at --lp-text-lg, 56px tall, a hairline under each;
-   the list ends 32px from the right edge like it starts 32px from the left
-   (the sheet's 18.38px right pad is the burger's tap area). */
+/* Rows: the reading face, a hairline under each; the list ends 16px from the
+   right edge like it starts 16px from the left (the sheet's 5.94px right pad
+   is the burger's tap area). 2026-11-12 (phone pass, founder on the
+   reference site's drawer: excellent): calmer rows, the body size (16) in 48,
+   was --lp-text-lg (19.2) in 56. */
 .lp-nav-menu-list {
   flex: none;
-  margin: 8px 13.62px 0 0;
+  margin: 8px 10.06px 0 0;
 }
 .lp-nav-menu-list ul {
   list-style: none;
@@ -447,13 +440,12 @@
   cursor: pointer;
   display: flex;
   font-family: var(--lp-font-sans);
-  font-size: var(--lp-text-lg);
+  font-size: var(--lp-text-md);
   font-weight: 500;
   justify-content: space-between;
-  letter-spacing: -0.01em;
   line-height: 1.3;
   list-style: none;
-  min-height: 56px;
+  min-height: 48px;
 }
 .lp-nav-menu-row::-webkit-details-marker {
   display: none;
@@ -482,8 +474,11 @@
     transition: none;
   }
 }
-.lp-nav-menu-sub {
-  padding: 0 0 12px;
+/* the folded pages sit one step in from their row (12px), as the reference
+   drawer's do, so the fold reads as a group without a heading ((0,2,0):
+   beats the list's `ul { padding: 0 }` above) */
+.lp-nav-menu-list .lp-nav-menu-sub {
+  padding: 0 0 8px 12px;
 }
 .lp .lp-nav-menu-sub a {
   align-items: center;
@@ -497,7 +492,7 @@
 /* The CTA pair: the hero's two buttons in their own skins, side by side and
    equal (Claude's and Stripe's foot), stuck to the sheet's foot (margin-top
    auto) and to the screen's when the list outgrows it. The negative margins
-   undo the sheet's side padding; the foot's own 32px sides match the rows. */
+   undo the sheet's side padding; the foot's own 16px sides match the rows. */
 .lp-nav-menu-ctas {
   background: var(--lp-page-bg);
   bottom: 0;
@@ -505,8 +500,8 @@
   flex: none;
   gap: 12px;
   grid-template-columns: 1fr 1fr;
-  margin: auto -18.38px 0 -32px;
-  padding: 24px 32px max(32px, env(safe-area-inset-bottom, 0px));
+  margin: auto -5.94px 0 -16px;
+  padding: 24px 16px max(32px, env(safe-area-inset-bottom, 0px));
   position: sticky;
 }
 .lp .lp-nav-menu-ctas .lp-btn {

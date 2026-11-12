@@ -523,12 +523,25 @@
   .lp-hero {
     display: flex;
     flex-direction: column;
-    min-height: calc(var(--lp-svh, 100svh) - 104px);
+    /* the phone bar is 64 tall since 2026-11-12 (nav.css) */
+    min-height: calc(var(--lp-svh, 100svh) - 64px);
     transition: min-height 450ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .lp-hero-inner {
     flex: 1;
     justify-content: flex-end;
+  }
+  /* Homepage, 2026-11-12 (phone pass after the reference site, founder: "how the hero is
+     handled"): the hero no longer stretches to the screen. On a tall phone the stretch opened
+     a band of empty cream between the arc and the headline (~240px at 390 × 844); the hero now
+     ends under its install row and the window under it (LpVisionCurtain, the product) rises
+     into the first screen, as the reference shows its product under the buttons. The screen
+     is still used to its foot, by the product instead of by cream (the 2026-08-31 ask). Short
+     phones are unchanged: the block was already taller than their screen. /agents keeps the
+     stretch above. */
+  .lp-hero--home {
+    min-height: 0;
+    transition: none;
   }
   .lp-hero-art {
     margin-left: -4.82vw;
@@ -565,6 +578,13 @@
        below), and the column's last line, the install row, lands 64px above the fold, as the
        CTAs did before the badge. Both audiences: one geometry for the two views.) */
     padding-bottom: 64px;
+    /* the page's one phone margin since 2026-11-12, the window card's edge under it (was 32).
+       The block spans the screen: the base rule's auto margins centred it once the screen was
+       wider than its content (400 with these paddings), which moved the text off that edge on
+       the larger phones (31px at 430). */
+    margin-inline: 0;
+    padding-left: 16px;
+    padding-right: 16px;
   }
   .lp-hero-col {
     gap: 23px;
@@ -578,9 +598,11 @@
      360×640), which do not change. The arc rises by 24/45 of it with the copy
      (same distance between the two; its apex keeps 24px under the bar) and
      the three gaps give the rest (23 → 16 at the cap). Frozen svh: nothing
-     moves when Safari's toolbar collapses. Both audiences. */
+     moves when Safari's toolbar collapses. Both audiences. 2026-11-12: the
+     bar is 64 tall, not 104, so the buttons sit 40px higher: 61.44vw + 312
+     is their bottom now, + 16 of clearance. */
   .lp-hero--home {
-    --lp-hero-tuck: clamp(0px, calc(61.44vw + 368px - var(--lp-svh, 100svh)), 45px);
+    --lp-hero-tuck: clamp(0px, calc(61.44vw + 328px - var(--lp-svh, 100svh)), 45px);
   }
   .lp-hero--home .lp-hero-art {
     top: calc(0.3vw - var(--lp-hero-tuck) * 24 / 45);

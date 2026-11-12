@@ -1122,11 +1122,11 @@
   .lp-vx .vx-hero + .vx-demo .vx-tab { height: 48px; }
   .lp-vx .vx-hero + .vx-demo .vx-stage { margin-top: 12px; }
 }
-/* no JS on a phone: the sticky nav stays 104 tall and transparent (LpNavScroll never compacts
-   it), so a prompt row's #vx-demo jump must clear 104, and the bar needs a ground or the hero
-   shows through it */
+/* no JS on a phone: the sticky nav stays transparent (LpNavScroll never stamps it), so the bar
+   needs a ground or the hero shows through it. (Its height no longer changes: one 64px row
+   since 2026-11-12, so #vx-demo's jump clears it through the site-wide anchor margin,
+   foundation.css; this block held a 104px one for the old tall bar.) */
 @media (max-width: 767px) and (scripting: none) {
-  .lp-vx .vx-demo { scroll-margin-top: 104px; }
   .lp-vx .lp-nav { background: var(--lp-page-bg); box-shadow: 0 1px 0 var(--vx-hair); }
 }
 @media (max-width: 420px) {

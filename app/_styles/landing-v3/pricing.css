@@ -315,7 +315,8 @@
    keeps its fluid metrics) and the art tucks 16px under the note. */
 @media (max-width: 767px) {
   .lp-price-frame {
-    padding: 64px 24px 0;
+    /* the page's one phone margin since 2026-11-12 (was 24) */
+    padding: 64px 16px 0;
   }
   .lp-price-title {
     font-size: 40px;

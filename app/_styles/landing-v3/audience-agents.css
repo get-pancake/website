@@ -49,6 +49,11 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 @media (max-width: 1024px) {
   [data-audience="agents"] .lp-nav-logo { height: 35.947px; width: 116.013px; }
 }
+/* phones: the bar's flex basis is the wordmark's 90.815 since 2026-11-12 (nav.css); this box keeps
+   its own width and never shrinks, so the mask is never squeezed (the bar holds it down to 268) */
+@media (max-width: 767px) {
+  [data-audience="agents"] .lp-nav-logo { flex: 0 0 116.013px; }
+}
 [data-audience="agents"] :is(.lp-nav-links > a, .lp-nav-dd__trigger) {
   font-family: var(--lp-font-mono);
   letter-spacing: 0;
