@@ -16,11 +16,13 @@ import { gsap } from "@/lib/gsap";
  * THE ONE PLACE FOR THE FEEL. These pictures are toys, like the kitchen: a piece that pops lands
  * a little past its size and settles (TOY_EASE.pop). The page's older pictures never overshoot
  * (founder, 2026-10-30, on the deep dive's nodes: "j aime pas trop les effets de bounce"). To
- * hold these to that rule too, set `pop` to "power3.out": nothing else changes.
+ * hold these to that rule too, set `pop` and `soft` to "power3.out": nothing else changes.
  */
 export const TOY_EASE = {
   /** a piece pops into place */
   pop: "back.out(1.6)",
+  /** a large piece (a message) comes to its place: the same, much less */
+  soft: "back.out(1.15)",
   /** a piece lands */
   land: "power2.out",
   /** a piece travels */
