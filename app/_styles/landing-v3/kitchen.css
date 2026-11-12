@@ -1,0 +1,153 @@
+/* ── Kitchen — "Anyone can cook." / "Always overcooked." (2026-11-12) ──────────────────────────
+   No Figma frame: the section is built from the steps section's own measures (wrapper p-16,
+   org py-128, a 752 heading block, the same title box and the same breakpoints) and from the
+   tokens. The picture is a 16:9 stage on the 1296 content grid; the scene's canvas and its
+   badges fill it (LpKitchen.tsx, components/sections/landing-v3/kitchen). */
+
+.lp-kitchen {
+  padding: 16px;
+}
+/* on the sky band (LpKitchen `sky`): the scene and its posters have a clear ground */
+.lp-kitchen--sky {
+  background: var(--lp-sky);
+}
+.lp-kitchen__org {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding: 128px 32px;
+}
+
+/* heading block: the title, then the switch */
+.lp-kitchen__head {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  max-width: 100%;
+  text-align: center;
+  width: 752px;
+}
+.lp-kitchen__title {
+  color: var(--lp-text);
+  line-height: 69px; /* the steps title's box */
+  margin: 0;
+}
+
+/* a new title comes up from under the line, once the switch was used (never on load) */
+.lp-kitchen__title-text {
+  display: inline-block;
+}
+.lp-kitchen__title-text[data-swap] {
+  animation: lp-kitchen-title 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes lp-kitchen-title {
+  from {
+    opacity: 0;
+    translate: 0 0.25em;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lp-kitchen__title-text[data-swap] {
+    animation: none;
+  }
+}
+
+/* the switch: two options on a pill, the one that shows is inverted */
+.lp-kitchen__switch {
+  background: var(--lp-ink-30);
+  border-radius: var(--lp-r-m);
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+}
+.lp-kitchen__option {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  border-radius: var(--lp-r-sm);
+  color: var(--lp-text);
+  cursor: pointer;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 500;
+  line-height: 24px;
+  padding: 8px 16px;
+  white-space: nowrap;
+}
+.lp-kitchen__option[aria-pressed="true"] {
+  background: var(--lp-inverted-surface);
+  color: var(--lp-text-on-inverted);
+}
+.lp-kitchen__option:focus-visible {
+  outline: 2px solid var(--lp-interactive-text);
+  outline-offset: 2px;
+}
+@media (hover: hover) {
+  .lp-kitchen__option[aria-pressed="false"]:hover {
+    background: var(--lp-ink-40);
+  }
+}
+
+/* the picture: the poster first, the live scene over it once it has painted.
+   Its width follows the window's height too: the title, the switch and the whole kitchen hold
+   in one screen (280 = the floating bar, the heading block and the gaps), so a click on the
+   switch shows all of what it changes. */
+.lp-kitchen__stage {
+  aspect-ratio: 16 / 9;
+  max-width: clamp(640px, calc((100vh - 280px) * 16 / 9), 1296px);
+  position: relative;
+  width: 100%;
+}
+.lp-kitchen__poster,
+.lp-kitchen__stage canvas {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+.lp-kitchen__poster {
+  object-fit: contain;
+  transition: opacity 0.2s linear;
+}
+/* the scene starts on the poster's own frame, over it: the poster fades out from under it, so
+   no frame of the handoff is empty. Once hidden, it leaves the accessibility tree too. */
+.lp-kitchen__stage[data-live] .lp-kitchen__poster {
+  opacity: 0;
+  transition:
+    opacity 0.2s linear,
+    visibility 0s linear 0.2s;
+  visibility: hidden;
+}
+/* the badges are text of the page (kitchen/overlay.js): they take the reading face */
+.lp-kitchen__stage .pk-layer {
+  font-family: var(--lp-font-sans);
+}
+
+/* ── responsive: the steps section's own steps ── */
+@media (max-width: 1024px) {
+  .lp-kitchen__org {
+    gap: 32px;
+    padding: 96px 24px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-kitchen {
+    padding: 96px 0 0;
+  }
+  .lp-kitchen__org {
+    gap: 24px;
+    padding: 16px;
+  }
+  .lp-kitchen__title {
+    /* the steps title on phones: 35.559 / 41 / -3% */
+    font-size: 35.559px;
+    letter-spacing: -1.0668px;
+    line-height: 41px;
+  }
+  .lp-kitchen__option {
+    font-size: var(--lp-text-sm);
+    padding: 8px 12px;
+  }
+}

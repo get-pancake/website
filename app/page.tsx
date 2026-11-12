@@ -9,6 +9,7 @@ import { LpCta } from "@/components/sections/landing-v3/LpCta";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
+import { LpKitchen } from "@/components/sections/landing-v3/LpKitchen";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
@@ -151,6 +152,9 @@ export default function Home() {
       {/* the sky: what your agent can do with Pancake (the deep dive, four features), what
           customers got, then the close on its cream hill (sky.css) */}
       <LpVisionFeatures />
+      {/* under the clouds, on the sky: Pancake as a kitchen that runs by itself, and the same
+          kitchen without it (the 2026-11-11 meeting's "machinery" picture, built by Guillaume) */}
+      <LpKitchen sky />
       <LpBento sky />
       <LpCta sky title={VISION_CLOSE.title} body={VISION_CLOSE.body} setup={<LpSetupPill />} />
       <LpPricing checklist={VISION_PLANS.starter} full={VISION_PLANS.full} />
