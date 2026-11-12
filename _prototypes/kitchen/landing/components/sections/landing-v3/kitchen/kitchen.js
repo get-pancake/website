@@ -5,12 +5,15 @@
 //   kitchen.setMode("without");   // the same kitchen without Pancake, and "with" to come back
 //   kitchen.setCast("people");    // little chefs in place of the pancake chefs, or "pancakes"
 //
+// The options are listed in kitchen.d.ts.
+//
 // The whole animation is a pure function of time (show.js), so `seek` can jump anywhere and a
 // still frame is always a valid poster.
 
 import * as THREE from "three";
 import { C } from "./palette.js";
 import { FRAME, CENTRE } from "./layout.js";
+import { WORDS } from "./words.js";
 import { buildWorld } from "./world.js";
 import { createShow } from "./show.js";
 import { createOverlay } from "./overlay.js";
@@ -20,14 +23,12 @@ import { clamp } from "./util.js";
 
 const DEG = Math.PI / 180;
 
-const LABELS = {
-  with: "A small kitchen that runs by itself: signals from your tools ride in as ingredients on three belts, three chefs mix, flip and plate, order tickets are ticked off, and stacks of pancakes leave on the last belt as new leads.",
-  without:
-    "The same kitchen without Pancake: a belt has given way, every ingredient waits in one slow tank, pancakes burn, the chefs run from one fire to the next, and the one plate that leaves is two weeks late.",
-};
-
-/** a moment of the loop that shows every station at work: used as the still frame */
-export const POSTER_TIME = 31.52;
+/**
+ * A moment of each loop that shows every station at work. The still pictures of the landing
+ * page are drawn at these times, and the live scene starts there (`time`, with `intro: false`),
+ * so that it takes over from the picture without a jump.
+ */
+export const POSTER_TIMES = { with: 31.52, without: 41.6 };
 
 /** The light of the scene: a soft warm studio, built as a tiny scene and blurred. */
 function makeEnvironment(renderer) {
@@ -84,18 +85,19 @@ export function createPancakeKitchen(container, options = {}) {
     azimuth: 14,
     elevation: 43,
     zoom: 1,
-    pad: 1.06,
+    pad: 1.04,
     shadows: "vsm",
     cast: "pancakes",
     mode: "with",
     badges: true,
+    vendorLogos: true,
     reducedMotion: typeof matchMedia === "function" && matchMedia("(prefers-reduced-motion: reduce)").matches,
     ...options,
   };
   // someone who asked for less motion gets a still of the kitchen at work, and can press play
   if (opts.reducedMotion && options.autoplay === undefined) {
     opts.autoplay = false;
-    if (options.time === undefined) opts.time = POSTER_TIME;
+    if (options.time === undefined) opts.time = POSTER_TIMES[opts.mode === "without" ? "without" : "with"];
   }
 
   const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
@@ -134,7 +136,7 @@ export function createPancakeKitchen(container, options = {}) {
   // the badges are text of the page, laid over the canvas
   const overlay = opts.badges ? createOverlay(container, THREE) : null;
   // what the picture shows, for someone who cannot see it
-  const describe = () => canvas.setAttribute("aria-label", options.label || LABELS[show.mode]);
+  const describe = () => canvas.setAttribute("aria-label", WORDS[show.mode].alt);
   describe();
 
   // ── camera: an orthographic three-quarter view, fitted to the outline of the kitchen ──

@@ -1,4 +1,6 @@
-// The preview page (index.html): mounts the kitchen and wires the few review controls.
+// The review page (index.html): the scene outside the landing page, with controls to pause it,
+// slow it down and swap who cooks. scripts/kitchen-posters.mjs draws the still pictures from
+// it. The landing page's own component is ../../LpKitchen.tsx.
 //
 // URL parameters, for review and for screenshots:
 //   ?t=12.5       draw the loop at 12.5 s and stay paused
@@ -7,9 +9,12 @@
 //   ?az=14&el=43&zoom=2&target=0.3,1,-0.4    move the camera (here, a close-up of the griddle)
 //   ?mode=without           the kitchen without Pancake
 //   ?cast=people            little chefs in place of the pancake chefs
+//   ?logos=0                without Pancake: no vendor mark on the tank
+//   ?poster=1               the still of the mode, as the landing page's pictures are drawn
 //   ?shadows=pcf|vsm|none   ?dpr=1   ?bare=1 (the stage alone, full window)
 
-import { createPancakeKitchen } from "./kitchen.js";
+import { createPancakeKitchen, POSTER_TIMES } from "../kitchen.js";
+import { WORDS } from "../words.js";
 
 const q = new URLSearchParams(location.search);
 const options = {};
@@ -33,6 +38,14 @@ if (q.has("t")) {
 if (q.has("intro")) options.introAt = Number(q.get("intro"));
 if (q.has("mode")) options.mode = q.get("mode");
 if (q.has("cast")) options.cast = q.get("cast");
+if (q.get("logos") === "0") options.vendorLogos = false;
+if (q.has("poster")) {
+  // exactly what the landing page's component starts from: see LpKitchen.tsx
+  options.time = POSTER_TIMES[options.mode === "without" ? "without" : "with"];
+  options.autoplay = false;
+  options.interactive = true;
+  options.intro = false;
+}
 if (q.has("bare")) document.body.classList.add("bare");
 
 const stage = document.getElementById("kitchen");
@@ -52,6 +65,7 @@ try {
 if (kitchen) {
   if (q.has("speed")) kitchen.setSpeed(Number(q.get("speed")));
   if (q.has("t") && !q.has("intro")) kitchen.seek(Number(q.get("t")));
+  if (q.has("poster")) kitchen.seek(options.time);
 
   const play = $("kitchen-play");
   const paint = () => {
@@ -85,17 +99,9 @@ if (kitchen) {
   }
 }
 
-// the lines to try under the scene: a click shows the next one, and each mode has its own
-const line = $("kitchen-line");
-const next = $("kitchen-next");
-let lines = line ? JSON.parse(line.dataset.linesWith) : [];
-let shown = 0;
-if (line && next) {
-  next.addEventListener("click", () => {
-    shown = (shown + 1) % lines.length;
-    line.textContent = lines[shown];
-  });
-}
+// the heading and the switch say what the section says (words.js)
+const title = $("kitchen-title");
+document.querySelectorAll("[data-mode]").forEach((b) => (b.textContent = WORDS[b.dataset.mode].option));
 
 // the two switches: with or without Pancake, and who cooks
 function reflect() {
@@ -103,10 +109,12 @@ function reflect() {
   document.querySelectorAll("[data-mode]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.mode === kitchen.mode)));
   document.querySelectorAll("[data-cast]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cast === kitchen.cast)));
   document.querySelectorAll("[data-key]").forEach((k) => (k.hidden = k.dataset.key !== kitchen.mode));
-  if (line) {
-    lines = JSON.parse(kitchen.mode === "without" ? line.dataset.linesWithout : line.dataset.linesWith);
-    shown = 0;
-    line.textContent = lines[0];
+  if (title && title.textContent !== WORDS[kitchen.mode].title) {
+    title.textContent = WORDS[kitchen.mode].title;
+    // the new title comes up from under the line
+    title.classList.remove("swap");
+    void title.offsetWidth;
+    title.classList.add("swap");
   }
 }
 if (kitchen) {

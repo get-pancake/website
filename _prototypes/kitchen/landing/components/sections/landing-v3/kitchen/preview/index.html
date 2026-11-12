@@ -71,10 +71,24 @@
         font-family: var(--display);
         font-stretch: 80%;
         font-weight: 650;
-        font-size: clamp(30px, 4.4vw, 46px);
-        line-height: 1;
+        font-size: clamp(34px, 5.2vw, 57px);
+        line-height: 1.05;
         letter-spacing: -0.02em;
         text-wrap: balance;
+      }
+      h1.swap {
+        animation: title-swap 0.32s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
+      }
+      @keyframes title-swap {
+        from {
+          opacity: 0;
+          translate: 0 0.25em;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        h1.swap {
+          animation: none;
+        }
       }
       .controls {
         display: flex;
@@ -177,6 +191,17 @@
         color: var(--ink);
         box-shadow: 0 1px 2px rgba(44, 0, 42, 0.14);
       }
+      /* The badges take the reading face of the landing page, from the repository's own file, so
+         that a still picture and the live section show the same letters. Outside the repository
+         the file is not there, and the badges fall back to the face of this page. */
+      @font-face {
+        font-family: "Landing Sans";
+        src: url("../../../../../app/fonts/geist/Geist-Variable-latin.woff2") format("woff2");
+        font-weight: 100 900;
+      }
+      #kitchen .pk-layer {
+        font-family: "Landing Sans", var(--text);
+      }
       #kitchen {
         position: relative;
         width: 100%;
@@ -202,30 +227,11 @@
         font-size: 14px;
         text-align: center;
       }
-      .line-row {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        justify-content: center;
-        gap: 10px 18px;
-        padding-bottom: 8px;
-      }
-      .line {
-        margin: 0;
-        min-width: 0;
-        font-family: var(--display);
-        font-stretch: 80%;
-        font-weight: 650;
-        font-size: clamp(24px, 3.4vw, 38px);
-        line-height: 1.05;
-        letter-spacing: -0.02em;
-        text-align: center;
-        text-wrap: balance;
-      }
       .key {
         display: grid;
         grid-template-columns: repeat(4, minmax(0, 1fr));
         gap: 20px 28px;
+        margin-top: 8px;
         padding-top: 24px;
         border-top: 1px solid var(--rule);
       }
@@ -269,8 +275,7 @@
       /* where the scene cannot start, the controls and the pointer hint have nothing to act on */
       .no-live .controls,
       .no-live .switches,
-      .no-live .hint,
-      .no-live #kitchen-next {
+      .no-live .hint {
         display: none;
       }
       /* ?bare=1: the stage alone, filling the window (used for screenshots) */
@@ -302,8 +307,8 @@
     <main class="wrap">
       <header class="top">
         <div>
-          <p class="eyebrow">Prototype, second pass</p>
-          <h1>Pancake Kitchen</h1>
+          <p class="eyebrow">Pancake Kitchen · review page</p>
+          <h1 id="kitchen-title" aria-live="polite">Anyone can cook.</h1>
         </div>
         <div class="controls">
           <button id="kitchen-play" type="button" aria-pressed="false">Pause</button>
@@ -329,22 +334,9 @@
 
       <div class="stage">
         <div id="kitchen">
-          <img class="poster" src="./poster.webp" width="1600" height="900" alt="" />
+          <img class="poster" src="../../../../../public/lp/kitchen/with-pancakes.webp" width="1944" height="1094" alt="" />
         </div>
         <p id="kitchen-note" hidden>The live scene could not start in this browser. This is a still frame of it.</p>
-      </div>
-
-      <div class="line-row">
-        <p
-          id="kitchen-line"
-          class="line"
-          aria-live="polite"
-          data-lines-with='["Orders in. Pancakes out.", "The kitchen runs itself.", "Never overcooked.", "Anyone can cook."]'
-          data-lines-without='["Without Pancake, you run the kitchen.", "Two weeks later, the lead is cold.", "Everyone firefights. Nobody cooks."]'
-        >
-          Orders in. Pancakes out.
-        </p>
-        <button id="kitchen-next" type="button">Try another line</button>
       </div>
 
       <section class="key" data-key="with" aria-label="How to read the scene">
@@ -430,6 +422,6 @@
       </section>
       <p class="hint">Move the pointer over the scene: the view tilts and the chefs watch it. Click a chef and it jumps.</p>
     </main>
-    <script type="module" src="./src/preview.js"></script>
+    <script type="module" src="./preview.js"></script>
   </body>
 </html>

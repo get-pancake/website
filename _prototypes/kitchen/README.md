@@ -1,111 +1,150 @@
-# Pancake Kitchen (prototype)
+# Pancake Kitchen
 
-A small 3D kitchen that runs by itself, made for the landing page. Signals from your tools ride in as ingredients on three belts, three chefs mix, flip and plate, the order tickets are ticked off one by one, and stacks of pancakes leave on the last belt as new leads.
+Pancake Kitchen is an animated section for the landing page. It shows Pancake as a small kitchen that runs by itself. A switch shows the same kitchen without Pancake, and the title changes with it.
 
-Two switches change it while it runs: with or without Pancake, and who cooks.
+Look at it before you read more:
 
-This is a second pass. Nothing in `app/` or `components/` imports it, and it adds no dependency to `package.json`.
+- The preview: https://claude.ai/artifact/97EJemRqx4rXaMThVFRUyh
+- `demo.html`, in the zip: open it with a double-click. It needs no installation and no network.
 
-## Run it
+This README is for the person who puts the section on the landing page.
 
-Serve this folder with any static server, then open `index.html`:
+## What the visitor sees
 
-```bash
-npx serve _prototypes/kitchen
+With Pancake, the title is "Anyone can cook." Badges pop over three tunnels: "New sign-up", "Just funded", "Pricing views up". Each badge drops into its tunnel and comes out as an ingredient. Three chefs mix, flip and plate. Each plate that leaves becomes a badge: "Lead to contact", "Next best Play", "Message drafted".
+
+Without Pancake, the title is "Always overcooked." A belt breaks and spills. Every ingredient waits in one slow tank. Pancakes burn. The chefs stop cooking: one mends, one puts fires out, one runs. A burnt plate leaves from time to time, with the badge "2 weeks late".
+
+On a computer, the picture is a live 3D scene. On a phone, it is a still picture, and the switch changes the picture.
+
+## What is in this folder
+
+The zip holds three things:
+
+- `README.md` is this file.
+- `demo.html` is the scene in one file.
+- `landing/` holds the files for the website repository. Its folders have the same names as the folders of the repository.
+
+These are the files inside `landing/`:
+
+- `components/sections/landing-v3/LpKitchen.tsx` is the section.
+- `components/sections/landing-v3/kitchen/` is the 3D scene. It holds every word of the section (`words.js`), a review page and its own README.
+- `app/_styles/landing-v3/kitchen.css` holds the styles of the section.
+- `public/lp/kitchen/` holds twelve still pictures.
+- `scripts/kitchen-posters.mjs` draws the still pictures again.
+
+The branch `claude/vibrant-cerf-sgajnd` of the website repository holds the same folder, as `_prototypes/kitchen`. It has no `demo.html`.
+
+## Add it to the landing page
+
+A coding agent can do the work in a few minutes:
+
+1. Read "Decisions for you" below.
+2. Put the folder `pancake-kitchen` at the root of the website repository.
+3. Open your coding agent in the repository, and paste this prompt:
+
+```text
+Add the kitchen section to the landing page. Its files are ready in `pancake-kitchen/landing/`, and `pancake-kitchen/README.md` explains them. Work in one new branch and open one pull request. Change nothing else.
+
+1. Copy the content of `pancake-kitchen/landing/` into the root of this repository: run `cp -R pancake-kitchen/landing/. .` The folders match the folders of the repository. Then delete the folder `pancake-kitchen`.
+2. Run `npm install three@0.170.0 --save-exact`. It is the one new package, and I approve it.
+3. In `app/_styles/landing-v3.css`, add the line `@import "./landing-v3/kitchen.css";` just before the import of `modal.css`.
+4. In `scripts/homepage-lint.mjs`, add two paths to the `FILES` list: `components/sections/landing-v3/LpKitchen.tsx` and `components/sections/landing-v3/kitchen/words.js`.
+5. In `app/page.tsx`, import `LpKitchen` from `@/components/sections/landing-v3/LpKitchen`. Render `<LpKitchen />` on the line after `<LpMarquee labelled />`. It must stay a direct child of `<LpAudience>`.
+6. Run `node scripts/homepage-lint.mjs`, then `npx tsc --noEmit`, then `npm run build`. If one of them fails, stop and tell me which one and why. Do not change a file outside the kitchen to make it pass.
+7. Start the site. In a window wider than 768 px, scroll to the section. Make sure that the picture moves, and that a click on "Without Pancake" changes the title to "Always overcooked." Then give me the preview link.
 ```
 
-three.js (0.170.0) loads from a CDN through the import map in `index.html`, so the page needs a network connection.
+The prompt makes two choices for you. Step 2 says that you approve one new package. Step 5 puts the section under the band of customers. Change these lines if you decide differently.
 
-## How to read the scene
+A developer can do the same seven steps by hand. The steps change three files that exist (`landing-v3.css`, `homepage-lint.mjs`, `page.tsx`) by one or two lines each, and they add one package.
 
-With Pancake:
+## Decisions for you
 
-- **Badges over the tunnels**: the signals that come in. Each one names a tool and what happened ("New sign-up", "Series B raised", "Pricing page visit"), drops into its tunnel, and comes out as an ingredient.
-- **Three belts, on the left**: your sources. The ingredients fall into one bowl.
-- **Tickets on the rail**: your Plays. A ticket is printed, waits its turn, fills as its order cooks, and is stamped when the plate leaves.
-- **Three chefs**: Pancake at work. One mixes, one flips, one plates.
-- **Plates on the way out**: leads, served. The counter adds one for each plate, and a badge says what the plate became ("New lead to contact", "Next best Play", "Message drafted").
-- A ticket, the ring around its three pancakes, its topping and its badge share one tone (yellow, purple or pink, the three tones of the landing page), so an order can be followed from the rail to the way out.
+### Where the section goes
 
-Without Pancake, the same kitchen goes to pieces:
+The prompt puts the section under the band of customers. That is where it was tested. Its title is an `h2` there, because the hero holds the `h1` of the page.
 
-- One belt has been down for days, another gives way every few seconds, and what they carried ends up on the floor.
-- The bowl is replaced by one big slow tank that carries the Snowflake and BigQuery marks. Its bar crawls, then starts again from nothing ("Rebuilding the tables…"). The pipe out of it leaks.
-- Batter comes out a drop at a time. One pancake forms, nobody flips it, it burns and catches fire.
-- The chefs stop cooking: one mends, one puts fires out, one runs.
-- Every ticket on the rail is late, the printer keeps printing and the new ones fall on the floor.
-- One burnt plate leaves every twelve seconds. The badge on the way out says "Lead arrives 2 weeks late" or "Signals: 2 weeks old".
+If the section replaces the hero, write `<LpKitchen as="h1" />`. A page has one `h1`, so use this only when the hero's own `h1` is gone.
 
-The two casts:
+The page has a view for AI agents. That view hides the section, as it hides every other section.
 
-- **Pancake chefs**: the Pancake mark in 3D (three pancakes, two plum eyes), with a toque and gloves. They carry their face on top, so they stand in front of the counters.
-- **Little chefs**: toy figures in the same finish, with an apron in one of the three tones. They carry their face in front, so they stand behind the counters and face us.
+### Who cooks
 
-## Files
+Two casts exist. The pancake chefs are the Pancake mark in 3D. The little chefs are toy cooks who stand behind the counters. The preview has a switch to compare them.
 
-- `index.html`: the preview page (the scene, the two switches, play and speed controls, the reading key).
-- `poster.webp`: one still frame with a transparent background, shown until the scene starts, and where WebGL is missing.
-- `src/kitchen.js`: `createPancakeKitchen(element, options)`. The renderer, the light, the camera, the clock.
-- `src/show.js`: the animation with Pancake. Every position is a pure function of the time, so the loop can be drawn at any moment. Only the two switches hold state (how far each change-over has gone).
-- `src/mess.js`: the animation without Pancake, and the tank.
-- `src/world.js`: the set that does not move (slab, belts, bowl, griddle, pass, rail).
-- `src/props.js`: ingredients, pancakes, plates, tickets, flames. `src/chef.js`: a pancake chef. `src/people.js`: a little chef.
-- `src/overlay.js`: the badges. They are text of the page laid over the canvas, so they stay sharp and take the page's font.
-- `src/logos.js`: the third-party marks, as SVG paths.
-- `src/layout.js`: where everything stands, where each cast works, and the words of the badges. `src/palette.js`: the brand colors, copied from `app/_styles/landing-v3/foundation.css`.
-- `src/geo.js`, `src/mats.js`, `src/textures.js`, `src/fx.js`, `src/util.js`: shapes, finishes, the few canvas textures, effect pools, easings.
-- `src/preview.js`: the logic of the preview page only.
+`<LpKitchen />` shows the pancake chefs. `<LpKitchen cast="people" />` shows the little chefs. Nobody chose between them yet.
 
-No image, model or font file is loaded: every shape is built in code and every texture is drawn on a canvas.
+### The Snowflake and BigQuery logos
 
-## The logos
+Without Pancake, the slow tank carries the Snowflake and BigQuery logos. The request asked for them. Two things speak against them. The copy of the vision page names no vendor for a comparison (its rule is in `lp-vision-data.ts`). The logos are also trademarks of their owners.
 
-`src/logos.js` holds seven marks: PostHog, Google Analytics, HubSpot, Crunchbase and Luma on the badges, Snowflake and Google BigQuery on the tank. PostHog, Google Analytics and HubSpot are the files of `public/integrations`. Crunchbase, Snowflake and Google BigQuery come from Simple Icons (CC0). Luma is the mark on luma.com.
+`<LpKitchen vendorLogos={false} />` removes both logos from the scene and from the still pictures. The tank still reads as a slow warehouse without them.
 
-Two things to settle before this ships:
+### The logos on the badges
 
-- They are trademarks of their owners. Check each brand's guidelines.
-- The tank shows two vendors as the slow way. The vision page's own rule is that no vendor is named for comparison (`lp-vision-data.ts` on `feat/revenue-data-warehouse`). To follow it, remove the two `logoPlate` calls in `src/mess.js`: the tank reads as a warehouse without them.
+Nine badges carry the logo of a tool. Five tools appear: PostHog, Google Analytics, HubSpot, Crunchbase and Luma. A badge shows its tool as a source of signals. The first three logos are files of `public/integrations`. The other two are new to the site.
 
-## Use it
+These logos are trademarks too. Make sure that each brand allows this use. To drop one, open `kitchen/words.js` and replace its name with a plain glyph: `user`, `event`, `chart`, `up` or `jobs`. Then draw the still pictures again.
 
-```js
-import { createPancakeKitchen } from "./src/kitchen.js";
+### The words
 
-const kitchen = createPancakeKitchen(document.getElementById("kitchen"));
-kitchen.setMode("without"); // the kitchen without Pancake; "with" to come back
-kitchen.setCast("people"); // little chefs; "pancakes" to come back
-kitchen.stop();
-kitchen.start();
-kitchen.setSpeed(0.5);
-kitchen.seek(31.5); // draw the loop at 31.5 s
-kitchen.replay(); // play the opening again
-kitchen.dispose();
-```
+Every word is in `components/sections/landing-v3/kitchen/words.js`. The words follow the rules of the `landing-voice` skill, and they pass `scripts/homepage-lint.mjs`. Four of them need your eye:
 
-The element sets the size: the canvas fills it, and the camera frames the whole kitchen at any aspect ratio (it was composed for 16:9). The element gets `position: relative` if it has none, for the badges.
+- "Anyone can cook." is the motto of the film Ratatouille. Make sure that you want the reference.
+- "Email opened" is a signal from the CRM of the visitor. Pancake does not send email, and the badge does not say that it does.
+- "Pricing views up" and "Traffic spike" are counts from the analytics of the visitor. Pancake does not identify the visitors of a website, and the badges do not say that it does.
+- "Sync failed" is about the pipeline a team builds for itself. It is not about the CRM export of Pancake.
 
-Options: `mode` (`"with"`), `cast` (`"pancakes"`), `badges` (true), `autoplay` (true), `interactive` (true: the pointer tilts the view, the chefs watch it, a click on a chef makes it jump), `azimuth` (14), `elevation` (43), `zoom` (1), `target` (`[x, y, z]`, for a close-up), `shadows` (`"vsm"`, `"pcf"` or `"none"`), `maxPixelRatio` (2), `time` (0).
+### The phone
 
-What it already does by itself:
+A phone never starts the 3D scene. It shows a still picture, and the switch changes the picture. Nobody measured the scene on a phone, and this page already had a memory problem on iPhone. A visitor who asked for less motion gets the still pictures too.
 
-- It pauses when it is off screen or in a hidden tab.
-- With `prefers-reduced-motion`, it draws one still frame and waits for `start()`.
-- Its canvas is transparent, so it sits on any background of the page.
-- The badges hide when the scene is narrower than 460 px, where they could not be read.
-- The canvas's description for screen readers follows the mode.
+The live scene starts at a width of 768 px. To change this, edit `LIVE` at the top of `LpKitchen.tsx`. Test on a real phone before you lower it.
 
-The preview page reads a few URL parameters, useful for screenshots: `?t=31.5` (draw that moment and stay paused), `?mode=without`, `?cast=people`, `?speed=0.5`, `?az=14&el=43&zoom=2&target=0.3,1,-0.4`, `?bare=1` (the stage alone).
+### The new package
 
-## To put it on the landing page
+The scene needs `three`, a 3D library. `AGENTS.md` says to flag a new package, so this is the flag. The scene was built and tested with version 0.170.0 only.
 
-- Add `three` to `package.json`. It is about 170 kB gzipped, so load it only for this section: a client component that imports `kitchen.js` dynamically when the section comes near the screen. The kitchen's own code is about 37 kB gzipped.
-- Show `poster.webp` first, and keep it where the scene cannot start.
-- Call `dispose()` when the component unmounts.
-- On a phone the whole kitchen is small and the badges are hidden. Either zoom on the griddle (`zoom` and `target`), or show the poster.
-- The words of the badges are in `src/layout.js` (`signals`, `RESULTS`) and `src/mess.js` (`badges`). Run them through the landing's copy rules before they ship.
-- Port the files to TypeScript at that point. They are plain ES modules with no build step so the prototype stays easy to change.
+The library does not slow the first load. The page loads it when the section comes near the screen, and only on a screen wider than 768 px. The numbers are in the next section.
 
-## Cost
+### The design
 
-About 350 draw calls and 175,000 triangles per frame in each mode and with each cast, with one 2048 px shadow map. Measured in a headless browser, not on a phone: test it on a mid-range phone before it ships.
+No Figma frame exists for this section. `AGENTS.md` names Figma as the source of every design. The section uses the tokens of the landing page and the measures of the steps section. If the designer draws a frame, change `kitchen.css` to match it.
+
+The colors of the 3D scene are a copy of the tokens, in `kitchen/palette.js`. If a token changes, change the copy and draw the still pictures again.
+
+## What was checked
+
+The seven steps of the prompt were done on a copy of the branch `feat/revenue-data-warehouse`. These checks passed there:
+
+- `node scripts/homepage-lint.mjs` reads the words of the section and reports 0 errors.
+- `npx tsc --noEmit` reports no error.
+- `npm run build` passes, with its lint and its URL guard.
+- In the report of the build, the home page grows from 39.3 kB to 40.6 kB. Its first load grows from 152 kB to 154 kB.
+- The scene loads later, as two files of 167 kB (`three`) and 34 kB (the scene), gzipped.
+- A wide still picture is about 125 kB, and a phone one about 65 kB. The page loads one of them.
+
+A headless Chromium opened the built site. These behaviors were seen there:
+
+- On a desktop window, the scene starts over its still picture, and the switch changes the kitchen and the title.
+- If the browser takes the graphics context back, the still picture returns.
+- On a phone, and for a visitor who asked for less motion, the page loads no 3D code.
+- The agents view hides the section.
+
+The code of the section sends no analytics event.
+
+## What was not checked
+
+Four things remain. Do them on the preview before the section goes to production.
+
+- The smoothness of the scene. The test browser draws without a graphics card, too slowly to judge it. Look at the scene on a real computer.
+- A phone and a tablet. A tablet wider than 768 px gets the live scene.
+- Safari and Firefox. Every test ran in Chromium.
+- The preview deploy on Vercel.
+
+## Change it later
+
+To change a word, edit `kitchen/words.js`. To change who cooks, where the section opens or the logos, change the options of `<LpKitchen />`. After a change to the words or to the scene, run `node scripts/kitchen-posters.mjs` to draw the still pictures again.
+
+`components/sections/landing-v3/kitchen/README.md` explains the scene itself: its files, its review page and the tool for the still pictures.

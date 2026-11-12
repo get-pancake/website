@@ -24,8 +24,6 @@ const BELT_END = 1.02; // how far inside the rim a belt ends
  * The three intake belts: each ends over the bowl. `len` runs from the tunnel mouth to the end.
  * The last `tip` of each belt overhangs the bowl past its support: it is the part that gives
  * way when the kitchen runs without Pancake.
- * `signals` are the badges that pop over the tunnel: [logo, words]. A logo is a key of
- * logos.js, or a plain glyph of overlay.js.
  */
 export const INTAKE = {
   y: 1.5,
@@ -39,35 +37,18 @@ export const INTAKE = {
       dir: [1, 0],
       len: 4.3,
       kinds: ["flour", "butter", "milk", "flour", "egg"],
-      signals: [
-        ["posthog", "New sign-up"],
-        ["hubspot", "Email opened"],
-        ["luma", "Event attended"],
-        ["hubspot", "Deal lost"],
-      ],
     },
     {
       id: "corner",
       dir: [SQ, SQ],
       len: 3.6,
       kinds: ["egg", "sugar", "strawberry", "egg", "berry"],
-      signals: [
-        ["crunchbase", "Series B raised"],
-        ["jobs", "Hiring SDRs"],
-        ["crunchbase", "New VP Sales"],
-        ["jobs", "Headcount up"],
-      ],
     },
     {
       id: "back",
       dir: [0, 1],
       len: 2.75,
       kinds: ["milk", "berry", "butter", "sugar"],
-      signals: [
-        ["ga", "Pricing page visit"],
-        ["posthog", "Feature used"],
-        ["ga", "Demo page visit"],
-      ],
     },
   ],
 };
@@ -157,19 +138,15 @@ export const CAST = {
   },
 };
 
-/** what a plate that leaves becomes, on the badges of the way out */
-export const RESULTS = [
-  ["lead", "New lead to contact"],
-  ["play", "Next best Play"],
-  ["message", "Message drafted"],
-];
-
 /**
- * What the camera has to frame: the slab with its shadow, then each tall thing as its own box
+ * What the camera has to frame: the slab with its shadows, then each tall thing as its own box
  * (a single box around everything would leave the corners of the picture empty).
+ * The first box holds everything that lies on the page under the slab: its halo, and the
+ * shadow it casts to the right and to the back. A shadow that leaves it is cut by the edge of
+ * the picture.
  */
 export const FRAME = [
-  { min: [-10.25, -1.1, -4.55], max: [10.15, 0.1, 3.35] }, // the slab
+  { min: [-10.7, -1.1, -5.45], max: [10.8, 0.1, 3.9] }, // the slab, its halo and its shadow
   { min: [-9.75, 0, -1.15], max: [-8.55, 2.7, 0.55] }, // the left tunnel
   { min: [-8.2, 0, -4.2], max: [-6.3, 2.7, -2.3] }, // the corner tunnel
   { min: [-5.05, 0, -4.1], max: [-3.35, 2.7, -2.9] }, // the back tunnel

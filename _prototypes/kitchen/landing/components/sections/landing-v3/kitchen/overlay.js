@@ -8,7 +8,8 @@
 //          "late"  what comes out without Pancake
 //          "warn"  something broke
 //          "wait"  the warehouse, still loading
-//   icon   a key of logos.js, or one of the glyphs below
+//   icon   a key of logos.js, or one of the glyphs below (user, event, chart, up and jobs stand
+//          in for a tool's logo)
 //   row    how many lines the badge is pushed up (the older badges of a small feed)
 
 import { LOGOS, logoSvg } from "./logos.js";
@@ -17,6 +18,11 @@ const glyph = (inner) => `<svg viewBox="0 0 24 24" aria-hidden="true" focusable=
 const stroke = 'fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"';
 
 const GLYPHS = {
+  // plain glyphs, to use in place of a tool's logo
+  user: glyph(`<circle cx="12" cy="8" r="4" fill="currentColor"/><path d="M4.5 20.2c0-4.1 3.3-7 7.5-7s7.5 2.9 7.5 7z" fill="currentColor"/>`),
+  event: glyph(`<rect x="3.5" y="5.5" width="17" height="15" rx="3" fill="currentColor"/><path d="M8 3.2v4M16 3.2v4" ${stroke}/>`),
+  chart: glyph(`<rect x="4" y="12" width="4" height="8" rx="1.2" fill="currentColor"/><rect x="10" y="7.5" width="4" height="12.5" rx="1.2" fill="currentColor"/><rect x="16" y="3.5" width="4" height="16.5" rx="1.2" fill="currentColor"/>`),
+  up: glyph(`<path d="M4 16.5l5.5-5.5 3.5 3.5L20 7.5M14.5 7.5H20V13" ${stroke}/>`),
   jobs: glyph(`<rect x="3.5" y="8" width="17" height="11.5" rx="2.6" fill="currentColor"/><path d="M9 8V6.6A1.6 1.6 0 0 1 10.6 5h2.8A1.6 1.6 0 0 1 15 6.6V8" ${stroke}/>`),
   lead: glyph(`<circle cx="9.5" cy="7.6" r="3.7" fill="currentColor"/><path d="M2.8 19.6c0-3.8 3-6.4 6.7-6.4s6.7 2.6 6.7 6.4z" fill="currentColor"/><path d="M19 5.5v6M16 8.5h6" ${stroke}/>`),
   play: glyph(`<path d="M8.2 5.6v12.8a.9.9 0 0 0 1.4.8l9.6-6.4a.9.9 0 0 0 0-1.5L9.6 4.8a.9.9 0 0 0-1.4.8z" fill="currentColor"/>`),
@@ -26,19 +32,21 @@ const GLYPHS = {
   wait: glyph(`<path d="M7 4h10M7 20h10M8 4c0 4.4 8 3.6 8 8s-8 3.6-8 8M16 4c0 4.4-8 3.6-8 8s8 3.6 8 8" ${stroke}/>`),
 };
 
+// The colors are the landing's tokens where the page defines them (inside .lp); the fallbacks
+// are the same values, for a page that does not.
 const CSS = `
 .pk-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none;font-weight:600;line-height:1;letter-spacing:-.005em;-webkit-font-smoothing:antialiased}
-.pk-badge{position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:.42em;padding:.3em .72em .3em .32em;border-radius:99em;white-space:nowrap;background:#fff;color:#2c002a;box-shadow:0 .06em .14em rgba(44,0,42,.12),0 .45em 1.1em rgba(44,0,42,.16);will-change:transform,opacity;visibility:hidden}
-.pk-ico{flex:none;display:grid;place-items:center;width:1.56em;height:1.56em;border-radius:.48em;background:#fbf6f1}
+.pk-badge{position:absolute;left:0;top:0;display:inline-flex;align-items:center;gap:.42em;padding:.3em .72em .3em .32em;border-radius:99em;white-space:nowrap;background:var(--lp-ink-0,#fff);color:var(--lp-ink-100,#2c002a);box-shadow:0 .06em .14em var(--lp-ink-tr-10,rgba(44,0,42,.1)),0 .45em 1.1em var(--lp-ink-tr-20,rgba(44,0,42,.2));will-change:transform,opacity;visibility:hidden}
+.pk-ico{flex:none;display:grid;place-items:center;width:1.56em;height:1.56em;border-radius:.48em;background:var(--lp-page-bg,#fbf6f1)}
 .pk-ico svg{display:block;width:1.06em;height:1.06em}
-.pk-badge[data-kind=out]{background:#2c002a;color:#fff7ec}
-.pk-badge[data-kind=out] .pk-ico{border-radius:50%;background:var(--pk-tone,#ffbd7a);color:#2c002a}
-.pk-badge[data-kind=late]{background:#ffd1c9;color:#ad001a}
-.pk-badge[data-kind=late] .pk-ico{border-radius:50%;background:#ad001a;color:#fff}
-.pk-badge[data-kind=warn]{background:#ffe9d1;color:#b20000}
-.pk-badge[data-kind=warn] .pk-ico{border-radius:50%;background:#ffa45f;color:#2c002a}
-.pk-badge[data-kind=wait]{background:#fff;color:#6c4b65}
-.pk-badge[data-kind=wait] .pk-ico{border-radius:50%;background:#d9e9ff;color:#4660e7}
+.pk-badge[data-kind=out]{background:var(--lp-ink-100,#2c002a);color:var(--lp-ink-20,#fff7ec)}
+.pk-badge[data-kind=out] .pk-ico{border-radius:50%;background:var(--pk-tone,var(--lp-yellow-30,#ffbd7a));color:var(--lp-ink-100,#2c002a)}
+.pk-badge[data-kind=late]{background:var(--lp-red-10,#ffd1c9);color:var(--lp-red-40,#ad001a)}
+.pk-badge[data-kind=late] .pk-ico{border-radius:50%;background:var(--lp-red-40,#ad001a);color:var(--lp-ink-0,#fff)}
+.pk-badge[data-kind=warn]{background:var(--lp-yellow-10,#ffe9d1);color:var(--lp-orange-40,#b20000)}
+.pk-badge[data-kind=warn] .pk-ico{border-radius:50%;background:var(--lp-orange-20,#ffa45f);color:var(--lp-ink-100,#2c002a)}
+.pk-badge[data-kind=wait]{color:var(--lp-ink-90,#6c4b65)}
+.pk-badge[data-kind=wait] .pk-ico{border-radius:50%;background:var(--lp-blue-10,#d9e9ff);color:var(--lp-blue-40,#4660e7)}
 .pk-num{font-variant-numeric:tabular-nums}
 `;
 
@@ -85,7 +93,7 @@ export function createOverlay(container, THREE) {
   /** places the badges of this frame; the ones not in the list are hidden */
   function draw(list, camera, width, height) {
     // the pills scale with the scene, and give way when it gets too small to read them
-    const size = Math.max(9.5, Math.min(13.5, width / 98));
+    const size = Math.max(10, Math.min(14, width / 90));
     const on = width >= 460;
     if (size !== font) {
       font = size;

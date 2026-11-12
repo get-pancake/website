@@ -52,7 +52,9 @@ function buildFloor(root, tex) {
   catcher.position.set(FLOOR.cx, page, FLOOR.cz);
   catcher.receiveShadow = true;
   root.add(catcher);
-  softShadow(root, tex.slab, FLOOR.cx + 0.25, FLOOR.cz - 0.2, FLOOR.slabW + 4.4, FLOOR.slabD + 4.4, 0.1, page + 0.002);
+  // a tight halo around the slab: it has faded to nothing 0.75 from the slab's edge, inside what
+  // the camera frames (FRAME), so that no shadow is cut by the edge of the picture
+  softShadow(root, tex.slab, FLOOR.cx + 0.2, FLOOR.cz - 0.2, FLOOR.slabW + 1.5, FLOOR.slabD + 1.5, 0.22, page + 0.002);
 
   mesh(G.block(FLOOR.slabW, FLOOR.slabH, FLOOR.slabD, 1.25, 0.2, 18), M.soft(C.ink30, 0.72), root, FLOOR.cx, top - FLOOR.slabH, FLOOR.cz);
 
@@ -331,7 +333,7 @@ export function buildWorld(scene) {
   const tex = {
     blob: T.blobShadow(),
     rect: T.rectShadow(1, 1, 0.2, 0.2),
-    slab: T.rectShadow(FLOOR.slabW + 4.4, FLOOR.slabD + 4.4, 0.16, 0.12),
+    slab: T.rectShadow(FLOOR.slabW + 1.5, FLOOR.slabD + 1.5, 0.09, 0.035),
     chevrons: T.chevrons(),
   };
 

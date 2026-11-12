@@ -23,7 +23,8 @@ import { C, FOOD, TONES } from "./palette.js";
 import * as G from "./geo.js";
 import * as M from "./mats.js";
 import * as T_ from "./textures.js";
-import { BOWL, INTAKE, GRIDDLE, PASS, OUT, RAIL, STAGES, CAST, RESULTS } from "./layout.js";
+import { BOWL, INTAKE, GRIDDLE, PASS, OUT, RAIL, STAGES, CAST } from "./layout.js";
+import { WORDS } from "./words.js";
 import { mesh, group, CHEVRON } from "./world.js";
 import { makeChef } from "./chef.js";
 import { makePerson } from "./people.js";
@@ -186,7 +187,7 @@ export function createShow(world, scene, opts = {}) {
   root.add(plus);
 
   // what the kitchen turns into without Pancake
-  const messy = createMess(world, root, tex);
+  const messy = createMess(world, root, tex, opts);
 
   // ── the mixer's ladle, as a function of time ───────────────────────────────
   const STIR = [BOWL.x + 0.12, BOWL.batterY + 0.1, BOWL.z + 0.1];
@@ -916,7 +917,7 @@ export function createShow(world, scene, opts = {}) {
         );
       }
       if (x > -0.25 || intro < 0.5) return;
-      const [icon, text] = spec.signals[mod(i, spec.signals.length)];
+      const { icon, text } = WORDS.signals[b][mod(i, WORDS.signals[b].length)];
       const fall = ease.inCubic(prog(x, -0.95, -0.3));
       badges.push({
         id: `in-${b}`,
@@ -935,7 +936,7 @@ export function createShow(world, scene, opts = {}) {
     for (let e = 0; e < 2 && calm > 0.01; e++) {
       const k = served - e;
       const x = t - (k * T + EXIT_TAU);
-      const [icon, text] = RESULTS[mod(k, RESULTS.length)];
+      const { icon, text } = WORDS.results[mod(k, WORDS.results.length)];
       badges.push({
         id: `out-${mod(k, 2)}`,
         kind: "out",

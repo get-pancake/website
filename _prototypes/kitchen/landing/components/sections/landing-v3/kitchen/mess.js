@@ -14,6 +14,7 @@ import * as G from "./geo.js";
 import * as M from "./mats.js";
 import * as T_ from "./textures.js";
 import { BOWL, INTAKE, GRIDDLE, PASS, OUT, RAIL } from "./layout.js";
+import { WORDS } from "./words.js";
 import { mesh, group, softShadow } from "./world.js";
 import { makeTicket, makeBurntPancake, makeFlame } from "./props.js";
 import { pool, sprites, put } from "./fx.js";
@@ -102,7 +103,7 @@ function burning(fire, tau) {
   return clamp((tau - fire.from) / 0.35) * clamp((fire.to - tau) / 0.25);
 }
 
-export function createMess(world, root, tex) {
+export function createMess(world, root, tex, opts = {}) {
   const set = group(root);
   const v3 = new THREE.Vector3();
   const up = new THREE.Vector3(0, 1, 0);
@@ -143,8 +144,8 @@ export function createMess(world, root, tex) {
     const h = mesh(G.block(1.02, 0.78, 0.16, 0.12, 0.03, 6), M.soft(C.plum, 0.85), tankBody, Math.sin(a) * (TANK.r - 0.05), INTAKE.y - 0.5, Math.cos(a) * (TANK.r - 0.05), false);
     h.rotation.y = a;
   }
-  // the two logos, on the front
-  const plates = ["snowflake", "bigquery"].map((key, i) => {
+  // the two vendor marks, on the front: `vendorLogos: false` leaves the tank bare
+  const plates = (opts.vendorLogos === false ? [] : ["snowflake", "bigquery"]).map((key, i) => {
     const a = (i ? 1 : -1) * 0.37;
     const map = T_.logoPlate(key);
     const p = new THREE.Mesh(G.plane(0.72, 0.72), new THREE.MeshBasicMaterial({ map, toneMapped: false, alphaTest: 0.5 }));
@@ -730,15 +731,15 @@ export function createMess(world, root, tex) {
       const k = prog(m, 0.6, 1);
       const x = mod(t, BELTS);
       const hinge = INTAKE.belts[0].hinge;
-      list.push({ id: "m-belt", kind: "warn", icon: "warn", text: "Pipeline down", at: [hinge[0] - 0.4, INTAKE.y + 2.05, hinge[1]], scale: ease.outBack(clamp(x / 0.3), 2) * k, alpha: (1 - prog(x, 2.6, 3.0)) * k });
+      list.push({ id: "m-belt", kind: "warn", icon: "warn", text: WORDS.beltDown, at: [hinge[0] - 0.4, INTAKE.y + 2.05, hinge[1]], scale: ease.outBack(clamp(x / 0.3), 2) * k, alpha: (1 - prog(x, 2.6, 3.0)) * k });
       const xl = mod(t - LEAK_AT, BELTS);
-      list.push({ id: "m-leak", kind: "warn", icon: "warn", text: "Pipe leaking", at: [LEAK[0] + 1.3, LEAK[1] + 1.25, LEAK[2] - 0.4], scale: ease.outBack(clamp(xl / 0.3), 2) * k, alpha: (1 - prog(xl, 2.6, 3.0)) * k });
+      list.push({ id: "m-leak", kind: "warn", icon: "warn", text: WORDS.pipeLeak, at: [LEAK[0] + 1.3, LEAK[1] + 1.25, LEAK[2] - 0.4], scale: ease.outBack(clamp(xl / 0.3), 2) * k, alpha: (1 - prog(xl, 2.6, 3.0)) * k });
       const xr = mod(t, RELOAD);
       const pct = Math.floor(4 + 90 * (xr / RELOAD));
-      list.push({ id: "m-tank", kind: "wait", icon: "wait", text: xr < 1.4 ? "Rebuilding the tables…" : `Loading… ${pct}%`, at: [TANK.x - 0.1, TANK.h + 1.4, TANK.z], scale: k * (1 + 0.1 * bump(prog(xr, 0, 0.5))), alpha: k });
+      list.push({ id: "m-tank", kind: "wait", icon: "wait", text: xr < 1.4 ? WORDS.tankRebuilding : `${WORDS.tankLoading} ${pct}%`, at: [TANK.x - 0.1, TANK.h + 1.4, TANK.z], scale: k * (1 + 0.1 * bump(prog(xr, 0, 0.5))), alpha: k });
       const xe = mod(t - EXIT, ORDER);
-      const words = Math.floor((t - EXIT) / ORDER) % 2 ? "Signals: 2 weeks old" : "Lead arrives 2 weeks late";
-      list.push({ id: "m-out", kind: "late", icon: "late", text: words, at: feed, scale: k * (1 + 0.16 * wobble(xe, 1, 16, 6)), alpha: k });
+      const late = WORDS.late[mod(Math.floor((t - EXIT) / ORDER), WORDS.late.length)];
+      list.push({ id: "m-out", kind: "late", icon: late.icon, text: late.text, at: feed, scale: k * (1 + 0.16 * wobble(xe, 1, 16, 6)), alpha: k });
     },
     dispose() {
       plates.forEach((p) => p.dispose());
