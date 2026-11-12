@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 
-import { ClaudeMark } from "./LpAgentMarks";
+import { GrokBotMark } from "./LpAgentMarks";
 import type { DiveStageProps } from "./lp-dive-stages";
 import { STORY_PING } from "./lp-story-ping-data";
 
@@ -27,7 +27,7 @@ export function LpStoryPingStage(_props: DiveStageProps) {
               <path d="M10 2 2 10l8 8" />
             </svg>
             <span className="lp-sping-avatar">
-              <ClaudeMark />
+              <GrokBotMark />
             </span>
             <p className="lp-sping-name">
               {s.contact}

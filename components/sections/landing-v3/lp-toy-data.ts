@@ -47,26 +47,33 @@ export const TOY_RADAR = {
   alt: "Animation: a radar over one account, Ramp, a lost deal. Its beam turns once and four signals land round the account, each with the source that found it: a new VP Sales, new funding, visits up, hiring SDRs. A line then connects the dots, into the account. Then the radar scans another account, Deel, an open deal: headcount up, switched CRM, new reviews, a new CRO.",
 } as const;
 
-/* ── 03 · the Brain as the app draws it, what it holds, and the ideas it comes up with. The
-   founder's example for an idea (2026-11-12): "contact the 24 people who created an account
-   after coming to your event last week". The two smaller ideas are the page's own (Ramp and its
-   lost deal, the accounts hiring SDRs). ── */
+/* ── 03 · the Brain, as the app draws it and as the designer drew it on the page: a fine, flat
+   graph of coloured hubs and dots round a dark centre. It is the one picture of the seven that is
+   not a 3D set. Two 3D versions were tried and turned down on the preview (2026-11-12): the
+   graph as soft beads on rods ("ça fait trop atome et trop d'ombre, on comprend pas"), then a
+   brain as a toy ("je trouve ça cringe de ouf ! Trouve autre chose").
+   The founder's example for an idea (2026-11-12): "contact the 24 people who created an account
+   after coming to your event last week". The two smaller ideas are the page's own (Ramp and
+   its lost deal, the accounts hiring SDRs). ── */
 export const TOY_BRAIN = {
-  /** what the Brain holds, a hub each, in the hubs' order (toys/studio/scene-brain.js HUBS) */
-  holds: [{ label: "ICP" }, { label: "Personas" }, { label: "Voice" }, { label: "Signals" }, { label: "Competitors" }, { label: "Objections" }],
+  /** what the Brain draws on for the Play it recommends: a tag each, on three of its hubs
+      (LpToySteps.tsx BRAIN_HUBS: the hubs of the round "a", in their order) */
+  uses: [{ label: "ICP" }, { label: "Signals" }, { label: "Voice" }],
   /** the ideas it comes up with, then the one it recommends (its kicker is VSTEP_BRAIN's) */
   ideas: [{ text: "Reach back out to Ramp" }, { text: "Work accounts hiring SDRs" }],
   play: { text: "Contact the 24 people who signed up after your event." },
   /** The picture goes round (founder, 2026-11-12: "voir le brain qui a des nouveaux trucs qui pop
-      ou qui dépop et d'autres notifications"): on its next round the Brain has changed (a few of
-      its points have gone, others have come) and it comes up with other ideas and another Play.
-      The accounts are the hero's own (lp-vision-tables.ts: Linear, Mercury, a lost deal that
-      raised). */
+      ou qui dépop et d'autres notifications"): on its next round the Brain has changed (a few
+      points have gone, others have come), three other hubs carry a tag, and it comes up with
+      other ideas and another Play. The three tags are the founder's (2026-11-12: "Competitors,
+      Won Deals, Personas"; written as the page writes a label of two words). The accounts are
+      the hero's own (lp-vision-tables.ts: Linear, Mercury, a lost deal that raised). */
   next: {
+    uses: [{ label: "Competitors" }, { label: "Won deals" }, { label: "Personas" }],
     ideas: [{ text: "Book a demo with Linear" }, { text: "Send Mercury a gift" }],
     play: { text: "Reach back out to the 8 lost deals that just raised funding." },
   },
-  alt: "Animation: your Brain, a graph of coloured hubs round a dark centre: ICP, personas, voice, signals, competitors, objections. Signals run along its branches into the centre, and ideas come out: reach back out to Ramp, work accounts hiring SDRs. Then the next best Play: contact the 24 people who signed up after your event. The Brain then changes, a few points go and others come, and it recommends another Play: reach back out to the 8 lost deals that just raised funding.",
+  alt: "Animation: your Brain, a fine graph of coloured hubs and dots round a dark centre. Signals run along its branches into the centre. Three hubs carry a tag, ICP, signals and voice, and ideas come out: reach back out to Ramp, work accounts hiring SDRs. Then the next best Play: contact the 24 people who signed up after your event. The Brain then changes, a few points go and others come, three other hubs carry a tag, competitors, won deals and personas, and it recommends another Play: reach back out to the 8 lost deals that just raised funding.",
 } as const;
 
 /** what each toy picture of the 1-2-3 shows: its stage's aria-label (LpVisionSteps.tsx) */

@@ -3,25 +3,34 @@
  * 2026-11-11). The founder, on the diagram this replaces (the context story's schema): "Moins fan
  * du schema 4", and what he would see in its place: a bot pinging you in a text-message UI,
  * "proactively reaching out to someone who signed up // on which we're working a lot". So the
- * picture is a text conversation: your agent writes first, about someone who just signed up at an
- * account you are already working, and offers to reach out; you say yes.
- * Rules kept: no person is named (a role and a kind of company), no real company. In
- * scripts/homepage-lint.mjs FILES. Drawn by LpStoryPing.tsx; motion: lp-story-ping-timeline.ts.
+ * picture is a text conversation: your agent writes first, and you say yes.
+ * What it says changed on 2026-11-12 (founder, on the preview): "moins AI SDR en mode je
+ * contacte, plus en mode: 24 personnes ICP ont signup suite à ton event d'hier, je te fais une
+ * liste pour que tu les contactes ?". So the agent no longer offers to reach out by itself: it
+ * tells you who showed up and builds the list, and you do the contacting. The same 24 people
+ * as the Brain's Play in the 1-2-3 (lp-toy-data.ts TOY_BRAIN). Until that day: "The Head of
+ * Sales at the fintech you're working just signed up. […] Want me to reach out?".
+ * Who writes changed with it: a personal agent that lives in your messages, not Claude. It is
+ * Grok Bot (founder, 2026-11-12: "met le logo de […] Grok Bot plutôt que Claude", then, asked
+ * which one: "Grok Bot"); its mark is the /agents page's (LpAgentMarks.tsx GrokBotMark).
+ * Rules kept: no person is named, no real company in what is said. In scripts/homepage-lint.mjs
+ * FILES. Drawn by LpStoryPing.tsx and LpToyStories.tsx; motion: lp-story-ping-timeline.ts and
+ * lp-toy-story-timelines.ts.
  */
 export const STORY_PING = {
   /** who writes: your agent */
-  contact: "Claude",
+  contact: "Grok Bot",
   time: "Today 9:41 AM",
   /** in order; "them" = the agent, "me" = you */
   messages: [
-    { from: "them", text: "The Head of Sales at the fintech you’re working just signed up." },
-    { from: "them", text: "You had 3 calls with them this month. Want me to reach out?" },
-    { from: "me", text: "Yes, go ahead" },
-    { from: "them", text: "Done. Sent from your account." },
+    { from: "them", text: "24 people in your ICP signed up after yesterday’s event." },
+    { from: "them", text: "Want a list so you can contact them?" },
+    { from: "me", text: "Yes, send it" },
+    { from: "them", text: "Done. The list is in Pancake." },
   ],
   delivered: "Delivered",
   field: "iMessage",
 } as const;
 
 export const STORY_PING_ALT =
-  "Animation: a text conversation with Claude, which writes first: The Head of Sales at the fintech you’re working just signed up. You had 3 calls with them this month. Want me to reach out? You answer: Yes, go ahead. Claude replies: Done. Sent from your account.";
+  "Animation: a text conversation with Grok Bot, your agent, which writes first: 24 people in your ICP signed up after yesterday’s event. Want a list so you can contact them? You answer: Yes, send it. Grok Bot replies: Done. The list is in Pancake.";

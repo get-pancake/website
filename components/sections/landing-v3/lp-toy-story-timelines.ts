@@ -5,6 +5,7 @@ import { gsap } from "@/lib/gsap";
 import type { BuiltStory } from "./lp-dive-stages";
 import { registerTxtPlugin } from "./lp-gsap-txt";
 import { ART_ENGINE, ART_JOURNEY, ART_MERGE } from "./lp-toy-art";
+import { toyCanvas } from "./lp-toy-canvas";
 import { TOY_EASE, TOY_STEP, toyDecode, toyGone, toyHidePop, toyHideRise, toyPop, toyQuery, toyRise } from "./lp-toy-kit";
 
 /**
@@ -435,11 +436,28 @@ const TAKES: Record<string, (root: HTMLElement) => Steps> = {
 export function* buildToyStorySteps(root: HTMLElement): Steps {
   const take = TAKES[root.dataset.lpStory ?? ""];
   if (!take) throw new Error(`lp-toy: no take for the story "${root.dataset.lpStory}"`);
-  const steps = take(root);
-  for (;;) {
-    const step = steps.next();
-    if (step.done) return step.value;
-    yield;
+  // the picture's drawings go on a canvas (lp-toy-canvas.ts): read at rest, before the take writes
+  const canvas = toyCanvas(root);
+  try {
+    const steps = take(root);
+    for (;;) {
+      const step = steps.next();
+      if (step.done) {
+        const built = step.value;
+        canvas.follow(built.tl);
+        return {
+          ...built,
+          cleanup() {
+            canvas.dispose();
+            built.cleanup();
+          },
+        };
+      }
+      yield;
+    }
+  } catch (err) {
+    canvas.dispose();
+    throw err;
   }
 }
 

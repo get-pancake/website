@@ -15,9 +15,11 @@ import { VSTEP_ACCOUNT, VSTEP_BRAIN, VSTEP_SIGNALS, VSTEP_SOURCES, VSTEP_TABLES 
  *   t1  four sources plug into a machine, beads run down their cables, the machine turns and two
  *       piles of rows come up: the tables
  *   t2  a radar over one account: four signals land round it, a line connects the dots
- *   t3  the Brain as beads round a dark centre: signals run in, ideas come out, the next best Play
- * Each is a set of soft 3D objects in the kitchen's look, drawn as flat layers (LpToyKit.tsx has
- * how), with the page's own type over them. The markup is each picture's END (lp-play-once
+ *   t3  the Brain, a fine flat graph round a dark centre: signals run in, ideas come out, the
+ *       next best Play
+ * t1 and t2 are sets of soft 3D objects in the kitchen's look, drawn as flat layers (LpToyKit.tsx
+ * has how), with the page's own type over them. t3 is drawn by the page itself (an SVG): the
+ * Brain did not read as a 3D set. The markup is each picture's END (lp-play-once
  * restIsEnd: reduced motion and a page without script rest on it); what only shows on the way
  * rests hidden (.lp-toy-gone). lp-toy-step-timelines.ts sets the first frame and plays it.
  * Since 2026-11-12 a picture goes round for as long as it is looked at, and its next round shows
@@ -64,17 +66,17 @@ const SOURCE_SETS = [
   VSTEP_SOURCES.map((source, i) => ({ id: source.id, label: source.label, logo: source.logo, text: TOY_SOURCES.sends[i].text })),
   TOY_SOURCES.more,
 ] as const;
-/** where the riders rest on the turntable, in turns from its right, one a tone */
+/** Where the riders rest on the turntable, in turns from its right, one a tone. The ring is a
+    circle of the set, so an ellipse of the picture (RING_RX, RING_RY, in stage px). The markup
+    lays each rider on its place; the take turns them (lp-toy-step-timelines.ts `toyOrbit`). */
 const RIDER_REST = [0.07, 0.32, 0.57, 0.82] as const;
+const RING_RX = S.anchors["ring-x"][0] - S.anchors["ring-o"][0];
+const RING_RY = S.anchors["ring-z"][1] - S.anchors["ring-o"][1];
 
 function T1Stage() {
-  const ring = {
-    "--toy-rx": toyPx(S.anchors["ring-x"][0] - S.anchors["ring-o"][0]),
-    "--toy-ry": toyPx(S.anchors["ring-z"][1] - S.anchors["ring-o"][1]),
-    "--toy-flat": Math.round(S_FLAT * 1000) / 1000,
-  } as CSSProperties;
+  const flat = { "--toy-flat": Math.round(S_FLAT * 1000) / 1000 } as CSSProperties;
   return (
-    <div className="lp-step-stage lp-step-stage--t1 lp-toy" aria-hidden="true" style={ring}>
+    <div className="lp-step-stage lp-step-stage--t1 lp-toy" aria-hidden="true" style={flat}>
       <i className="lp-sx-bg" />
       <div className="lp-toy-set">
         <ToyPic set="sources" name="plate" />
@@ -100,17 +102,11 @@ function T1Stage() {
         <ToyPic set="sources" name="docks" />
         <ToyPic set="sources" name="machine" />
         {/* the beads that ride the turntable */}
-        {DOCK_TONES.map((tone, i) => (
-          <ToyPic
-            key={tone}
-            set="sources"
-            name={`bead-${tone}`}
-            from={S.anchors.bead}
-            to={S.anchors["ring-o"]}
-            className="lp-t1-rider"
-            style={{ "--toy-a": RIDER_REST[i] } as CSSProperties}
-          />
-        ))}
+        {DOCK_TONES.map((tone, i) => {
+          const a = RIDER_REST[i] * 2 * Math.PI;
+          const at = [S.anchors["ring-o"][0] + Math.cos(a) * RING_RX, S.anchors["ring-o"][1] + Math.sin(a) * RING_RY] as const;
+          return <ToyPic key={tone} set="sources" name={`bead-${tone}`} from={S.anchors.bead} to={at} className="lp-t1-rider" data-rest={RIDER_REST[i]} />;
+        })}
         <span className="lp-t1-hub" style={{ left: toyPx(S.anchors.hub[0]), top: toyPx(S.anchors.hub[1]) }}>
           <PancakeMark className="lp-t1-hub__mark" />
         </span>
@@ -318,134 +314,188 @@ function T2Stage() {
   );
 }
 
-/* ── 03 · the Brain: signals run in, ideas come out, the next best Play ── */
+/* ── 03 · the Brain: signals run in, ideas come out, the next best Play ──
+   The one picture of the seven that is not a 3D set: the Brain as the app draws it and as the
+   designer drew it on the page (lp-step-data.ts s1Graph), a fine flat graph. lp-toy-data.ts
+   TOY_BRAIN has why. Everything is placed here, in stage px. */
 
-const B = TOY_ART.brain;
-const B_AT = B.anchors as unknown as Record<string, XY>;
-/** the hubs' tones, in the set's order (toys/studio/scene-brain.js HUBS) */
-const HUB_TONES = ["pink", "purple", "green", "yellow", "blue", "orange"] as const;
-type HubIndex = 0 | 1 | 2 | 3 | 4 | 5;
-/** where each hub's name sits from its bead, in px: clear of the rods and of the dots */
-const HUB_NAME: readonly XY[] = [
-  [-2, 15],
-  [-33, 5],
-  [15, 15],
-  [4, 16],
-  [3, 46],
-  [-30, -27],
-];
+/** the Brain's centre on the stage */
+const BRAIN_AT: XY = [232, 142];
+/** a point `far` px from another, `angle` degrees clockwise from its right */
+const polar = (from: XY, angle: number, far: number): XY => {
+  const a = (angle * Math.PI) / 180;
+  return [Math.round((from[0] + Math.cos(a) * far) * 10) / 10, Math.round((from[1] + Math.sin(a) * far) * 10) / 10];
+};
+type Spoke = readonly [angle: number, far: number];
 /**
- * The Brain changes from one round to the next: a few of its points go, others come (each a
- * drawing of its own, a dot on its rod: scene-brain.js "goes" and "more"). `hub`: the hub it
- * hangs from. The picture has the ones that go and not the ones that come.
+ * The Brain's six hubs, round its centre. `at`, `far`: where the hub is from the centre.
+ * `round`: the round it carries a tag on ("a" is the picture, "b" the next round: the tags are
+ * TOY_BRAIN's, in the hubs' order). `side`: the side its tag hangs on; no point of the hub lies
+ * that way. Its points, each an angle and a distance from the hub: `leaves` (always there),
+ * `goes` (there in the picture, gone on the next round), `comes` (there on the next round only).
+ * `twigs`: a point farther out, from one of its leaves (the leaf, then an angle and a distance).
  */
-const TWIGS = [
-  { name: "goes0", hub: 1, kind: "goes" },
-  { name: "goes1", hub: 2, kind: "goes" },
-  { name: "goes2", hub: 5, kind: "goes" },
-  { name: "comes0", hub: 0, kind: "comes" },
-  { name: "comes1", hub: 2, kind: "comes" },
-  { name: "comes2", hub: 3, kind: "comes" },
-  { name: "comes3", hub: 3, kind: "comes" },
-  { name: "comes4", hub: 4, kind: "comes" },
-] as const;
+const BRAIN_HUBS: readonly {
+  tone: string;
+  at: number;
+  far: number;
+  round: "a" | "b";
+  side: "left" | "right";
+  leaves: readonly Spoke[];
+  goes: readonly Spoke[];
+  comes: readonly Spoke[];
+  twigs: readonly (readonly [leaf: number, angle: number, far: number])[];
+}[] = [
+  { tone: "pink", at: 196, far: 90, round: "a", side: "left", leaves: [[146, 36], [224, 42], [250, 32], [118, 50]], goes: [[264, 48]], comes: [], twigs: [[1, 205, 20]] },
+  { tone: "purple", at: 250, far: 90, round: "b", side: "left", leaves: [[218, 38], [262, 46], [294, 34], [240, 30]], goes: [], comes: [[232, 56], [278, 46]], twigs: [] },
+  { tone: "green", at: 304, far: 90, round: "a", side: "right", leaves: [[256, 36], [322, 32], [236, 46], [288, 52]], goes: [[272, 40]], comes: [], twigs: [[1, 350, 20]] },
+  { tone: "yellow", at: 354, far: 90, round: "b", side: "right", leaves: [[318, 36], [44, 40], [68, 32], [288, 40]], goes: [], comes: [[304, 58], [84, 52]], twigs: [] },
+  { tone: "blue", at: 44, far: 90, round: "a", side: "right", leaves: [[80, 38], [58, 50], [124, 32], [102, 52]], goes: [[140, 44]], comes: [], twigs: [[1, 20, 20]] },
+  { tone: "orange", at: 144, far: 90, round: "b", side: "left", leaves: [[100, 36], [126, 48], [82, 42]], goes: [], comes: [[56, 50], [112, 58]], twigs: [[1, 160, 20]] },
+];
+type BrainPoint = { hub: number; kind: "rest" | "goes" | "comes" | "twig"; n: number; from: XY; at: XY; tone: string };
+/** every hub's place, and every point with what it hangs from */
+const BRAIN = BRAIN_HUBS.map((hub, k) => ({ ...hub, k, xy: polar(BRAIN_AT, hub.at, hub.far) }));
+const BRAIN_POINTS: BrainPoint[] = BRAIN.flatMap((hub) => {
+  const spokes = (list: readonly Spoke[], kind: "rest" | "goes" | "comes") =>
+    list.map(([angle, far], n): BrainPoint => ({ hub: hub.k, kind, n, from: hub.xy, at: polar(hub.xy, angle, far), tone: hub.tone }));
+  const leaves = spokes(hub.leaves, "rest");
+  const twigs = hub.twigs.flatMap(([leaf, angle, far], n): BrainPoint[] => {
+    const from = leaves[leaf]?.at;
+    return from ? [{ hub: hub.k, kind: "twig", n, from, at: polar(from, angle, far), tone: hub.tone }] : [];
+  });
+  return [...leaves, ...twigs, ...spokes(hub.goes, "goes"), ...spokes(hub.comes, "comes")];
+});
+const branch = (from: XY, to: XY) => `M${from[0]} ${from[1]}L${to[0]} ${to[1]}`;
 /**
- * The Brain's rounds: the signals that run in (the point each one leaves, by its name in the
- * set, and its hub), the ideas that come out, the Play. "a" is the picture. "b" is the next
+ * The Brain's rounds: the hubs that carry a tag, the points its signals leave (a hub, a kind of
+ * point, which one), the ideas that come out, the Play. "a" is the picture. "b" is the next
  * round: its signals leave the points that have just come.
  */
 const THOUGHTS = [
   {
     id: "a",
+    uses: TOY_BRAIN.uses,
     runs: [
-      { hub: 0, from: "dot0-1" },
-      { hub: 2, from: "dot2-1" },
-      { hub: 4, from: "dot4-0" },
-      { hub: 1, from: "dot1-0" },
-      { hub: 5, from: "dot5-2" },
+      [0, "rest", 1],
+      [2, "rest", 0],
+      [4, "rest", 1],
+      [0, "rest", 2],
+      [2, "rest", 2],
     ],
     ideas: TOY_BRAIN.ideas,
     play: TOY_BRAIN.play,
   },
   {
     id: "b",
-    runs: TWIGS.filter((twig) => twig.kind === "comes").map((twig) => ({ hub: twig.hub, from: twig.name })),
+    uses: TOY_BRAIN.next.uses,
+    runs: [
+      [1, "comes", 0],
+      [3, "comes", 1],
+      [5, "comes", 0],
+      [1, "comes", 1],
+      [3, "comes", 0],
+    ],
     ideas: TOY_BRAIN.next.ideas,
     play: TOY_BRAIN.next.play,
   },
 ] as const;
 /** where the ideas land, under the Brain, and the Play under them */
 const IDEA_AT: readonly XY[] = [
-  [128, 281],
-  [338, 281],
+  [128, 288],
+  [338, 288],
 ];
-const PLAY_AT: XY = [232, 303];
+const PLAY_AT: XY = [232, 310];
 
 function T3Stage() {
-  const centre = B.anchors.centre;
-  /** a drawing that swells or grows from its hub's bead */
-  const fromHub = (name: keyof typeof B.layers, hub: number): CSSProperties => {
-    const box = B.layers[name];
-    const at = B_AT[`hub${hub}`];
-    return { transformOrigin: `${toyPx(at[0] - box.x)} ${toyPx(at[1] - box.y)}` };
-  };
+  const point = (hub: number, kind: string, n: number) => BRAIN_POINTS.find((p) => p.hub === hub && p.kind === kind && p.n === n);
   return (
     <div className="lp-step-stage lp-step-stage--t3 lp-toy" aria-hidden="true">
       <i className="lp-sx-bg" />
       <div className="lp-toy-set">
-        <i className="lp-t3-halo" style={{ left: toyPx(centre[0]), top: toyPx(centre[1]) }} />
-        {/* each hub, over the points that come and go on it */}
-        {HUB_TONES.map((tone, k) => {
-          const name = `hub${k as HubIndex}` as const;
-          return (
-            <Fragment key={tone}>
-              {TWIGS.filter((twig) => twig.hub === k).map((twig) => (
-                <ToyPic
-                  key={twig.name}
-                  set="brain"
-                  name={twig.name}
-                  className={twig.kind === "comes" ? "lp-toy-gone lp-t3-twig" : "lp-t3-twig"}
-                  data-kind={twig.kind}
-                  data-hub={k}
-                  style={fromHub(twig.name, k)}
-                />
-              ))}
-              <ToyPic set="brain" name={name} className="lp-t3-hub" data-hub={k} style={fromHub(name, k)} />
-            </Fragment>
-          );
-        })}
-        <ToyPic set="brain" name="centre" className="lp-t3-centre" />
+        <i className="lp-t3-halo" style={{ left: toyPx(BRAIN_AT[0]), top: toyPx(BRAIN_AT[1]) }} />
+        {/* the graph: its branches, then its points over them. A point that only the next round
+            has rests hidden, with its branch. */}
+        <svg className="lp-t3-graph" viewBox="0 0 464 426" focusable="false">
+          {BRAIN.map((hub) => (
+            <path key={hub.k} className="lp-t3-edge" data-kind="hub" data-hub={hub.k} d={branch(BRAIN_AT, hub.xy)} pathLength={1} />
+          ))}
+          {BRAIN_POINTS.map((p) => (
+            <path
+              key={`${p.hub}${p.kind}${p.n}`}
+              className={p.kind === "comes" ? "lp-toy-gone lp-t3-edge" : "lp-t3-edge"}
+              data-kind={p.kind}
+              data-hub={p.hub}
+              data-n={p.n}
+              d={branch(p.from, p.at)}
+              pathLength={1}
+            />
+          ))}
+          {BRAIN_POINTS.map((p) => (
+            <circle
+              key={`${p.hub}${p.kind}${p.n}`}
+              className={p.kind === "comes" ? "lp-toy-gone lp-t3-dot" : "lp-t3-dot"}
+              data-kind={p.kind}
+              data-hub={p.hub}
+              data-n={p.n}
+              data-tone={p.tone}
+              cx={p.at[0]}
+              cy={p.at[1]}
+              r={p.kind === "twig" ? 2.2 : 2.8}
+            />
+          ))}
+          {BRAIN.map((hub) => (
+            <circle key={hub.k} className="lp-t3-hub" data-hub={hub.k} data-tone={hub.tone} cx={hub.xy[0]} cy={hub.xy[1]} r={6} />
+          ))}
+          <circle className="lp-t3-centre" cx={BRAIN_AT[0]} cy={BRAIN_AT[1]} r={12} />
+        </svg>
         {/* a ring opens where a point comes or goes */}
-        {TWIGS.map((twig) => {
-          const at = B_AT[twig.name];
-          return <i key={twig.name} className="lp-toy-gone lp-t3-ring" data-kind={twig.kind} data-tone={HUB_TONES[twig.hub]} style={{ left: toyPx(at[0]), top: toyPx(at[1]) }} />;
-        })}
+        {BRAIN_POINTS.filter((p) => p.kind !== "rest").map((p) => (
+          <i key={`${p.hub}${p.kind}${p.n}`} className="lp-toy-gone lp-t3-ring" data-kind={p.kind} data-hub={p.hub} data-n={p.n} data-tone={p.tone} style={{ left: toyPx(p.at[0]), top: toyPx(p.at[1]) }} />
+        ))}
         {/* a signal on its way in: from a point to its hub, then to the centre */}
         {THOUGHTS.map((thought) =>
-          thought.runs.map((run, k) => {
-            const from = B_AT[run.from];
+          thought.runs.map(([hub, kind, n], k) => {
+            const from = point(hub, kind, n);
+            if (!from) return null;
             return (
               <i
                 key={`${thought.id}${k}`}
                 className="lp-toy-gone lp-t3-run"
                 data-round={thought.id}
-                data-tone={HUB_TONES[run.hub]}
-                data-hub={run.hub}
-                data-from={run.from}
-                style={{ left: toyPx(from[0]), top: toyPx(from[1]) }}
+                data-hub={hub}
+                data-tone={from.tone}
+                data-x={from.at[0]}
+                data-y={from.at[1]}
+                data-hx={from.from[0]}
+                data-hy={from.from[1]}
+                style={{ left: toyPx(from.at[0]), top: toyPx(from.at[1]) }}
               />
             );
           }),
         )}
       </div>
-      {/* what the Brain holds, a name a hub */}
-      {TOY_BRAIN.holds.map((item, k) => {
-        const hub = B.anchors[`hub${k as HubIndex}`];
-        return (
-          <span key={item.label} className="lp-toy-cap lp-t3-name" data-tone={HUB_TONES[k]} style={{ left: toyPx(hub[0] + HUB_NAME[k][0]), top: toyPx(hub[1] + HUB_NAME[k][1]) }}>
-            {item.label}
-          </span>
-        );
+      {/* what the Brain draws on, a tag on a hub each: the picture's three, and the three of the
+          next round, which rest hidden */}
+      {THOUGHTS.map((thought) => {
+        const hubs = BRAIN.filter((hub) => hub.round === thought.id);
+        return thought.uses.map((use, k) => {
+          const hub = hubs[k];
+          if (!hub) return null;
+          return (
+            <ToyBadge
+              key={`${thought.id}${k}`}
+              at={[hub.xy[0] + (hub.side === "left" ? -13 : 13), hub.xy[1]]}
+              anchor={hub.side === "left" ? "right" : "left"}
+              tone={hub.tone}
+              className={thought.id === "a" ? "lp-t3-tag" : "lp-toy-gone lp-t3-tag"}
+              data-round={thought.id}
+              data-hub={hub.k}
+            >
+              {use.label}
+            </ToyBadge>
+          );
+        });
       })}
       {/* the ideas it comes up with, then the one it recommends: the picture's, and the next
           round's, which rest hidden */}

@@ -72,8 +72,9 @@
   justify-content: center;
   width: 40px;
 }
+/* the agent's mark (Grok Bot) in the page's ink, as the /agents page shows it */
 .lp-sping .lp-sping-avatar svg {
-  fill: var(--lp-claude-spark);
+  color: var(--lp-text);
   height: 24px;
   width: 24px;
 }

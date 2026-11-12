@@ -29,7 +29,7 @@ No image, model or font file is loaded. Every shape is built in code.
 
 ## Change the words
 
-All the copy is in `words.js`: the two titles, the two options of the switch, each badge, and the description of the picture for a screen reader. `scripts/homepage-lint.mjs` reads this file, so a banned claim fails the build.
+All the copy is in `words.js`: the title, the two options of the switch, each badge, and the description of the picture for a screen reader. `scripts/homepage-lint.mjs` reads this file, so a banned claim fails the build.
 
 A badge is an `icon` and a `text` of three words at most. The `icon` is a logo of `logos.js` (`posthog`, `hubspot`, `luma`, `crunchbase`, `ga`) or a plain glyph of `overlay.js` (`user`, `event`, `chart`, `up`, `jobs`). To drop a logo, replace its name with a glyph.
 
@@ -37,7 +37,7 @@ After a change to the words, draw the still pictures again. The next section tel
 
 ## Draw the still pictures again
 
-The section shows a still picture before the scene starts. On a phone, the still picture is all it shows. `LpKitchen.tsx` starts the scene at the exact moment of the still (`POSTER_TIMES` in `kitchen.js`), so the scene takes over without a jump.
+The section shows a still picture before the scene starts. `LpKitchen.tsx` starts the scene at the exact moment of the still (`POSTER_TIMES` in `kitchen.js`), so the scene takes over without a jump. Since 2026-11-12 a phone starts the scene too (until then the still was all it showed). A phone's still has no badge, as the scene at that width, and both use the small shadow map (see "What it costs").
 
 If you change the scene, its words or its logos, the stills are out of date. Run this command from the root of the repository:
 
@@ -80,4 +80,11 @@ The page reads these parameters from its address:
 
 ## What it costs
 
-One frame is about 350 draw calls and 175,000 triangles, with one shadow map of 2048 px. The numbers are the same in each mode and with each cast. They come from a headless browser that draws in software. Nobody measured the scene on a real graphics card or on a phone.
+One frame is about 350 draw calls and 175,000 triangles, with one shadow map of 2048 px (1024 px where the picture is under 600 px wide on the page: a phone). The numbers are the same in each mode and with each cast. They come from a headless browser that draws in software. Nobody measured the scene on a real graphics card or on a phone.
+
+Because nobody did, the page protects itself (`LpKitchen.tsx`):
+
+- A device that cannot hold the loop gets the still back for the rest of the visit: under 12 frames a second for two windows of 2 s in a row (`onSlow` in `kitchen.js`).
+- A phone gives the scene's memory back once the section is two screens away. The still is the picture again, and the scene starts again when the visitor comes back.
+- A phone draws the picture at up to 3 device pixels per CSS pixel, as its still. The picture is small there: about 1074 x 603 px, a sixth of what a laptop draws.
+- `?lp-nogl` keeps the still, and `?lp-gl=force` skips the test of the loop (a headless browser draws about 4 frames a second and would fail it).

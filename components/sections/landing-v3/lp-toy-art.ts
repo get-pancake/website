@@ -6,78 +6,6 @@
  * WRITTEN BY scripts/toy-art.mjs FROM THE 3D SETS (toys/studio/scene-*.js). Never edit it by
  * hand: change the set and run the script, which redraws the pictures with it.
  */
-export const ART_BRAIN = {
- "size": [464,426],
- "px": 38.03,
- "ground": [38.03,0,0,27.36,232,167.48],
- "up": [0,-26.42],
- "layers": {
-  "comes0": {"src":"/lp/toys/brain/comes0.webp","x":106,"y":78,"w":41,"h":40},
-  "hub0": {"src":"/lp/toys/brain/hub0.webp","x":86,"y":73,"w":148,"h":88},
-  "goes0": {"src":"/lp/toys/brain/goes0.webp","x":170,"y":33,"w":54,"h":43},
-  "hub1": {"src":"/lp/toys/brain/hub1.webp","x":156,"y":43,"w":96,"h":96},
-  "goes1": {"src":"/lp/toys/brain/goes1.webp","x":282,"y":77,"w":80,"h":38},
-  "comes1": {"src":"/lp/toys/brain/comes1.webp","x":281,"y":50,"w":88,"h":33},
-  "hub2": {"src":"/lp/toys/brain/hub2.webp","x":230,"y":39,"w":132,"h":100},
-  "comes2": {"src":"/lp/toys/brain/comes2.webp","x":325,"y":113,"w":99,"h":34},
-  "comes3": {"src":"/lp/toys/brain/comes3.webp","x":325,"y":138,"w":92,"h":42},
-  "hub3": {"src":"/lp/toys/brain/hub3.webp","x":230,"y":118,"w":187,"h":66},
-  "comes4": {"src":"/lp/toys/brain/comes4.webp","x":270,"y":179,"w":91,"h":27},
-  "hub4": {"src":"/lp/toys/brain/hub4.webp","x":230,"y":135,"w":109,"h":112},
-  "goes2": {"src":"/lp/toys/brain/goes2.webp","x":134,"y":183,"w":45,"h":50},
-  "hub5": {"src":"/lp/toys/brain/hub5.webp","x":129,"y":135,"w":105,"h":103},
-  "centre": {"src":"/lp/toys/brain/centre.webp","x":208,"y":113,"w":81,"h":62}
- },
- "anchors": {
-  "centre": [232,137.1],
-  "under": [232,159.56],
-  "over": [232,113.32],
-  "hub0": [142.43,115.98],
-  "dot0-0": [114.17,137.46],
-  "dot0-1": [93.02,113],
-  "dot0-2": [110.96,101.47],
-  "dot0-3": [132.94,79.64],
-  "comes0": [112.2,84.35],
-  "comes0-hub": [142.43,115.98],
-  "hub1": [200.66,73.37],
-  "dot1-0": [162.68,67.66],
-  "dot1-1": [176.89,39.52],
-  "goes0": [176.89,39.52],
-  "dot1-2": [209.86,49.99],
-  "hub2": [283.42,79.59],
-  "dot2-0": [278.12,55.67],
-  "dot2-1": [309.62,45.2],
-  "dot2-2": [323.63,74.46],
-  "dot2-3": [316.92,85.1],
-  "goes1": [316.92,85.1],
-  "comes1": [329.87,56.65],
-  "comes1-hub": [283.42,79.59],
-  "hub3": [326.85,140.55],
-  "dot3-0": [356.53,124.5],
-  "dot3-1": [376.26,135.08],
-  "dot3-2": [358.32,161.41],
-  "comes2": [383.27,119.93],
-  "comes2-hub": [326.85,140.55],
-  "comes3": [382.92,156.82],
-  "comes3-hub": [326.85,140.55],
-  "hub4": [272.17,194.09],
-  "dot4-0": [309.08,203.88],
-  "dot4-1": [301.44,216.81],
-  "dot4-2": [270.78,225.97],
-  "dot4-3": [244.18,212.23],
-  "comes4": [330.67,185.2],
-  "comes4-hub": [272.17,194.09],
-  "hub5": [173.47,185.18],
-  "dot5-0": [172.07,217.06],
-  "dot5-1": [140.38,207.39],
-  "goes2": [140.38,207.39],
-  "dot5-2": [135.64,191.21]
- },
- "paths": {
-
- }
-} as const;
-
 export const ART_ENGINE = {
  "size": [752,489],
  "px": 51.51,
@@ -315,4 +243,4 @@ export const ART_SOURCES = {
 } as const;
 
 /** every set, by the name of its folder in public/lp/toys (the stages' own lookups: LpToyKit.tsx) */
-export const TOY_ART = { brain: ART_BRAIN, engine: ART_ENGINE, journey: ART_JOURNEY, merge: ART_MERGE, ping: ART_PING, radar: ART_RADAR, sources: ART_SOURCES } as const;
+export const TOY_ART = { engine: ART_ENGINE, journey: ART_JOURNEY, merge: ART_MERGE, ping: ART_PING, radar: ART_RADAR, sources: ART_SOURCES } as const;

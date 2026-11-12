@@ -39,6 +39,10 @@ export interface KitchenOptions {
   shadows?: "vsm" | "pcf" | "none";
   /** the most device pixels per CSS pixel it draws (2) */
   maxPixelRatio?: number;
+  /** called once, from the loop, when it cannot keep up (under 12 frames a second for two
+   *  windows of 2 s in a row): show a still picture and `dispose()` the scene. Not judged
+   *  without it. */
+  onSlow?: () => void;
 }
 
 export interface PancakeKitchen {
