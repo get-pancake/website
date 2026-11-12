@@ -1,6 +1,7 @@
 import type { CSSProperties } from "react";
 
 import { PancakeMark } from "./LpClaudeScene";
+import { TOY_STEP_STAGES } from "./LpToySteps";
 import { DbTableIcon } from "./LpVisionDb";
 import { s1Graph } from "./lp-step-data";
 import {
@@ -26,7 +27,10 @@ import {
  *       comes up under the account, with who, when and why
  * The markup is each picture's END (lp-play-once restIsEnd: reduced motion and a page without
  * script rest on it); lp-vision-step-timelines.ts sets the first frame and plays it once.
- * Styles: vision.css (.lp-vs*). No "use client": rendered inside LpVisionStepAnim.
+ * Styles: vision.css (.lp-vs*). No "use client": the server section renders a stage and hands it
+ * to its card's island (LpVisionStepAnim) as a child.
+ * Since 2026-11-12 the page shows the toy pictures t1, t2 and t3 in their place (LpToySteps.tsx);
+ * these three stay selectable (lp-vision-data.ts VISION_STEPS `variant`).
  */
 
 /** the kit's pancake face (pancake-top-bordered-1's front, as LpStepMocks' S4_FACE: the white,
@@ -227,7 +231,9 @@ function V3Stage() {
   );
 }
 
-const STAGES: Record<VisionStepVariant, () => JSX.Element> = { v1: V1Stage, v2: V2Stage, v3: V3Stage };
+/* t1, t2, t3: the toy pictures of 2026-11-12, in the kitchen's look (LpToySteps.tsx). A step
+   shows the one its `variant` names (lp-vision-data.ts VISION_STEPS). */
+const STAGES: Record<VisionStepVariant, () => JSX.Element> = { v1: V1Stage, v2: V2Stage, v3: V3Stage, ...TOY_STEP_STAGES };
 
 export function LpVisionStepStage({ variant }: { variant: VisionStepVariant }) {
   const Stage = STAGES[variant];

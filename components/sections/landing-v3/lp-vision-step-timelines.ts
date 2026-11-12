@@ -4,7 +4,7 @@ import { gsap } from "@/lib/gsap";
 
 import { STEP } from "./lp-demo-pancake-timeline";
 import { registerTxtPlugin } from "./lp-gsap-txt";
-import type { VisionStepVariant } from "./lp-vision-data";
+import type { VisionFlatVariant } from "./lp-vision-data";
 
 /**
  * The takes of the vision homepage's 1-2-3 (LpVisionStepMocks.tsx, 2026-11-11), one per card,
@@ -207,8 +207,8 @@ function buildV3(stage: HTMLElement): Built {
   return { tl, cue: 0, cleanup() {} };
 }
 
-const BUILDERS: Record<VisionStepVariant, (stage: HTMLElement) => Built> = { v1: buildV1, v2: buildV2, v3: buildV3 };
+const BUILDERS: Record<VisionFlatVariant, (stage: HTMLElement) => Built> = { v1: buildV1, v2: buildV2, v3: buildV3 };
 
-export function buildVisionStep(variant: VisionStepVariant, stage: HTMLElement): Built {
+export function buildVisionStep(variant: VisionFlatVariant, stage: HTMLElement): Built {
   return BUILDERS[variant](stage);
 }
