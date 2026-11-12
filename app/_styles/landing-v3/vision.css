@@ -107,11 +107,12 @@
   gap: 8px;
   line-height: 20px;
 }
+/* the bars carry each product's mark alone, a size up from a mark beside a name */
 .lp-vcut__pk {
   display: block;
   flex: none;
-  height: 18px;
-  width: 18px;
+  height: 22px;
+  width: 22px;
 }
 .lp-vcut__tabs {
   align-items: center;
@@ -487,8 +488,8 @@
   display: block;
   fill: var(--lp-claude-spark);
   flex: none;
-  height: 18px;
-  width: 18px;
+  height: 22px;
+  width: 22px;
 }
 /* the conversation's view: what has scrolled up leaves through its top, under a short fade */
 .lp-vcut__view {
@@ -1982,9 +1983,10 @@
   .lp .lp-vcut__chead {
     font-size: 13px;
   }
-  .lp-vcut__spark {
-    height: 16px;
-    width: 16px;
+  .lp-vcut__spark,
+  .lp-vcut__pk {
+    height: 20px;
+    width: 20px;
   }
   .lp-vcut__view {
     bottom: calc(var(--vc-dock) + 20px);

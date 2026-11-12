@@ -302,9 +302,10 @@ export function LpVisionCurtain() {
         {/* under: Claude's window */}
         <div className="lp-vcut__claude" aria-hidden="true">
           <div className="lp-vcut__col">
+            {/* the window's bar: Claude's mark alone (founder 2026-11-11: "put right wordmarks or
+                just logos here"; the name typed beside it was neither) */}
             <p className="lp-vcut__chead">
               <ClaudeMark id="spark" className="lp-vcut__spark" />
-              {C.claude}
             </p>
             <div ref={view} className="lp-vcut__view">
               {/* a new chat's greeting: the take's first picture of Claude, gone once it is asked */}
@@ -391,9 +392,9 @@ export function LpVisionCurtain() {
         {/* over: Pancake's table; it slides with the handle */}
         <div className="lp-vcut__db" aria-hidden="true">
           <div className="lp-vcut__dbar">
+            {/* Pancake's mark alone, as Claude's is */}
             <p className="lp-vcut__brand">
               <PancakeMark className="lp-vcut__pk" />
-              {C.pancake}
             </p>
             <ul className="lp-vcut__tabs">
               {DB_HERO_TABS.map((tab) => (

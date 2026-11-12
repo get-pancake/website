@@ -59,8 +59,6 @@ export type CurtainLine =
 export const VISION_CURTAIN: {
   label: string;
   handle: string;
-  pancake: string;
-  claude: string;
   greeting: string;
   placeholder: string;
   connector: string;
@@ -74,8 +72,6 @@ export const VISION_CURTAIN: {
   label:
     "Pancake’s companies table works by itself: signals land in it, each account is rescored and its row changes rank, duplicates are merged. Beside it, Claude, connected to Pancake, is asked which accounts to work, and the table narrows to the ones that have a signal. When a signal lands on a deal that was lost, Claude says so unasked: that account hired the buyer of an account you won. Told to work every account that passes 90, it runs each next best Play as a row passes 90, and the lost deal reopens.",
   handle: "Resize Claude and Pancake",
-  pancake: "Pancake",
-  claude: "Claude",
   /* Claude's own chrome, the Claude scene's words (lp-demo-data.ts) */
   greeting: "Let’s flip some pancakes",
   placeholder: "How can I help you today?",
