@@ -718,12 +718,13 @@
   color: var(--lp-ink-70);
   font-size: calc(12px * var(--toy-k));
 }
-/* Claude's own mark, in its own colour, on a white disc */
+/* who writes: a personal agent's mark (OpenClaw), light on a dark disc, as it was drawn for
+   the page's inverted surfaces (LpAgentMarks.tsx: its eyes are the page's blue) */
 .lp-toy .lp-tp-avatar {
-  background: var(--lp-surface);
+  background: var(--lp-inverted-surface);
   border-radius: 50%;
   box-shadow: var(--toy-shadow-soft);
-  color: var(--lp-claude-spark);
+  color: var(--lp-text-on-inverted);
   display: grid;
   flex: none;
   height: calc(28px * var(--toy-k));
@@ -756,6 +757,7 @@
   margin: 0;
   max-width: 344px;
   padding: calc(10px * var(--toy-k)) calc(15px * var(--toy-k));
+  text-wrap: pretty; /* a message's last line is never one word alone */
 }
 .lp .lp-toy .lp-tp-row[data-from="me"] .lp-tp-bubble {
   background: var(--lp-inverted-surface);
