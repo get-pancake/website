@@ -47,6 +47,12 @@ A piece that pops lands a little past its size and settles, as things do in the 
 
 Nothing loops: a picture plays once and rests on its END, as the rest of the page does.
 
+## When a step plays
+
+The three steps are played by the page's play-once driver (`lp-play-once.ts`). By its older rules a card that came on screen during a fast scroll, or in one step of the scroll (a trackpad flick, a page key), showed its END picture and never moved: on a laptop most visitors saw three still pictures. The steps now ask the driver for one more rule (`playWhenStopped`): a card that got its picture without playing plays the first time the scroll comes to rest with half of it on screen. Several such cards start one after the other. A card that has played is still never played again.
+
+The carousel of the four features plays by itself. Its Pause button is a keyboard control only since 2026-11-12: a mouse or a finger no longer sees it (`dive.css` has how to bring it back).
+
 ## Copy that is new
 
 The words the pictures add, to review as copy:

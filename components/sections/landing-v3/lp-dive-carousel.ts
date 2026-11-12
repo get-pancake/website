@@ -63,10 +63,10 @@ import {
  *   Tab from the fourth item to its "See how" link advanced the carousel, which hid the link
  *   under the focus and dropped it to <body> (the bug check's M14). A hovering mouse holds
  *   nothing — founder 2026-09-22 on the demo ("read as blocked while people looked at it").
- * - Pause (WCAG 2.2.2): a toggle every input can reach, under the card's bottom-right corner —
- *   shown on keyboard focus, while it holds the carousel, while a pointer is over the stage,
- *   and always on touch screens (dive.css; it is the only thing a mouse or a finger can stop
- *   the carousel with).
+ * - Pause (WCAG 2.2.2): a toggle under the card's bottom-right corner. Since 2026-11-12 it is a
+ *   keyboard control only: shown on keyboard focus and while it holds the carousel (dive.css has
+ *   why). Until then it also came up under a pointer and on touch screens, and was the only
+ *   thing a mouse or a finger could stop the carousel with: they have none now.
  * - Reduced motion: no GSAP fetched, no autoplay; tabs swap the panels' end pictures instantly
  *   and the bar rests at the Figma pose. Lifting it mid-visit starts the hold-then-advance run.
  * - Layout: the scene box is the desktop 752×489 design box, or the phone 400×520 box ≤599
