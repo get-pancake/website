@@ -251,6 +251,8 @@ const ACQUISITION_PROPERTY_KEYS = new Set([
   "presentation",
   "block_id",
   "tab_id",
+  "video_id",
+  "percent",
 ]);
 
 function cleanAcquisitionProperties(detail: Record<string, unknown>) {

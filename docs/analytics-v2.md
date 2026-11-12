@@ -112,6 +112,24 @@ Start free links use `app_cta_clicked` above.
 PostHog captures both via `PANCAKE_ACQUISITION_EVENT`. GTM has no trigger for
 them; add one only if GA4 should see them.
 
+### Demo film watch events (added 2026-11-11)
+
+The demo film (`components/sections/landing-v3/LpVideo.tsx`: the homepage, and
+the `/white-glove` hero) reports plays and watch-through, so the visitors who
+watch it can be compared with the ones who sign up. Each event fires at most
+once per page load; `page_path` tells the two pages apart. All three are
+diagnostic, never conversions.
+
+| Event | Tier | Exact firing rule | Event-specific fields |
+| --- | --- | --- | --- |
+| `demo_video_started` | Diagnostic | The film's first `play` in the page load | `video_id` (the film's file name without `.mp4`, e.g. `pancake-demo-v3`) |
+| `demo_video_progress` | Diagnostic | The playhead first reaches 25, 50 or 75 % of the film's length (a seek past a mark counts) | `video_id`, `percent` (`25`, `50`, `75`) |
+| `demo_video_completed` | Diagnostic | The film's `ended` | `video_id` |
+
+PostHog captures all three via `PANCAKE_ACQUISITION_EVENT`, with the
+visitor's `attribution_id`. GTM has no trigger for them; add one only if GA4
+should see them.
+
 ### Waitlist events (retired from the landing 2026-08-24)
 
 The events below remain implemented in `lib/analytics/data-layer.ts`, but no landing CTA
