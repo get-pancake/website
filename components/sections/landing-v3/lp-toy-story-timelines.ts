@@ -287,7 +287,7 @@ function* ping(root: HTMLElement): Steps {
     if (!first) hum(comes - 0.08, 1.5, hums[1]);
     tl.to(row.bubble, { autoAlpha: 1, duration: 0.12, ease: "none" }, comes);
     tl.to(row.bubble, { x: 0, y: 0, duration: 0.42, ease: "power2.out", force3D: false }, comes);
-    tl.to(row.bubble, { scale: 1, duration: 0.46, ease: "back.out(1.15)", force3D: false }, comes);
+    tl.to(row.bubble, { scale: 1, duration: 0.46, ease: TOY_EASE.soft, force3D: false }, comes);
     first = false;
     t = comes + READ;
   }

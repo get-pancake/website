@@ -43,7 +43,7 @@ The pictures these replace are still in the code. To show one again, change one 
 
 ## The feel
 
-A piece that pops lands a little past its size and settles, as things do in the kitchen. The page's older pictures never overshoot. To hold the toy pictures to that rule too, set `TOY_EASE.pop` to `"power3.out"` in `lp-toy-kit.ts`: nothing else changes.
+A piece that pops lands a little past its size and settles, as things do in the kitchen. The page's older pictures never overshoot. To hold the toy pictures to that rule too, set `TOY_EASE.pop` and `TOY_EASE.soft` to `"power3.out"` in `lp-toy-kit.ts`: nothing else changes.
 
 Nothing loops: a picture plays once and rests on its END, as the rest of the page does.
 
