@@ -50,7 +50,7 @@ function StepArtSlot({ step }: { step: StepContent }) {
   return <div className="lp-steps__media" aria-hidden="true" data-placeholder="" />;
 }
 
-export function LpSteps() {
+export function LpSteps({ title = "Your agent runs your GTM." }: { title?: string } = {}) {
   return (
     <section className="lp-steps" id="how-it-works">
       <div className="lp-steps__org">
@@ -64,7 +64,7 @@ export function LpSteps() {
               heading does, plainly: what your agent does once it runs on Pancake. At 57px the
               title holds one line up to ≈ 28 characters (the box is 624 wide at 1440); this one
               holds one line on phones too */}
-          <h2 className="lp-steps__title lp-title-section">Your agent runs your GTM.</h2>
+          <h2 className="lp-steps__title lp-title-section">{title}</h2>
         </header>
         <div className="lp-steps__list">
           {STEPS.map((step) => (

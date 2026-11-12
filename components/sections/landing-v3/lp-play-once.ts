@@ -98,7 +98,8 @@ type Timeline = gsap.core.Timeline;
     and by the /lp-dev/stages harness; V2 replication 2026-10-09). "__lpFeat" left with the
     feature cards. */
 // __lpInfra: LpInfraAnim's diagram flow (2026-10-21)
-export type PlayOnceRegistry = "__lpStep" | "__lpStory" | "__lpInfra";
+// __lpVision: the window under the vision homepage's hero (LpVisionCurtain, 2026-11-11)
+export type PlayOnceRegistry = "__lpStep" | "__lpStory" | "__lpInfra" | "__lpVision";
 /** cue: the timeline time of the card's first scene (0 = its first frame) */
 type Built = { tl: Timeline; cleanup: () => void; cue?: number };
 /** A builder that can pause: it yields between two slices of its work and returns what the
@@ -129,6 +130,11 @@ export type PlayOnceOptions = {
   layoutRoot?: HTMLElement | null;
   /** playback rate (timeline time stays the composition's for QA seeks) */
   speed?: number;
+  /** A card whose top shows on the first screen by design (the window under the hero: 70 px of
+      it peek over the fold). For it, "already on screen in its resting picture" is its top above
+      this share of the viewport's height, not its first pixel on screen: on a fresh page it is
+      cued like a card below the fold and plays at the focus line. Unset: the rule as written. */
+  seenAbove?: number;
 };
 
 /* The timing constants and the scroll/build helpers below are exported for the deep-dive
@@ -556,6 +562,12 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     const r = host.getBoundingClientRect();
     return r.bottom > 0 && r.top < window.innerHeight && r.width > 0;
   };
+  /** the visitor already has the card's picture in front of them (NEVER EMPTY WHAT IS ON SCREEN) */
+  const seen = (observed: boolean) => {
+    if (o.seenAbove === undefined) return observed || onScreen();
+    const r = host.getBoundingClientRect();
+    return r.width > 0 && r.bottom > 0 && r.top < window.innerHeight * o.seenAbove;
+  };
   // A content-visibility:auto ancestor that skips its contents gives them no
   // geometry: build only once it renders them (f2 measures glyph rects).
   // Nor does a display:none one: the homepage's agents view hides every human
@@ -639,7 +651,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       if (!near) return; // far away: keep resting
       // already showing its picture on screen (built late, entering from above, an observer
       // that reports late in a flick): the picture, never a frame that empties
-      if (o.restIsEnd && (visible || onScreen())) return finish();
+      if (o.restIsEnd && seen(visible)) return finish();
       if (fast && !touch) return finish(); // a mouse flying past: the picture
       toCue(); // still below the fold: the first scene, unseen
     }
@@ -712,7 +724,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       if (motionMq.matches) {
         tl.progress(1, true);
         host.dataset.lpAnim = "still";
-      } else if (o.restIsEnd && onScreen()) {
+      } else if (o.restIsEnd && seen(false)) {
         // never empty what is already on screen: keep the picture
         tl.progress(1, true);
         phase = "done";

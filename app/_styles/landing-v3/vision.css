@@ -1,0 +1,2170 @@
+/* The vision homepage's own styles (LpVision.tsx, LpVisionCurtain.tsx, LpVisionSteps.tsx,
+   LpVisionDb.tsx; 2026-11-09, in the designer's forms since 2026-11-11). The hero, the customers'
+   strip, the steps section, the bottle, the sky and its clouds, the testimonials, the closing
+   card, the pricing and the footer are the designer's (hero.css, marquee.css, steps.css,
+   banner.css, dive.css, sky.css, bento.css, cta.css, pricing.css): nothing of theirs is restated
+   here. This file holds the window under the hero (the curtain), the 1-2-3's three pictures,
+   and the real tables.
+   Pancake's tokens only: cream page, plum for a table's ground, the three pancake colours for
+   the frames, Aeonik Condensed for the claims, Geist for the rest, the code face in tables.
+   No glow, no blurred shadow but the designer's own. */
+
+.lp {
+  --lp-v-dark: var(--lp-inverted-surface);
+  --lp-v-on-dark: var(--lp-text-on-inverted);
+  --lp-v-on-dark-2: var(--lp-ink-50);
+  --lp-v-on-dark-3: var(--lp-ink-60);
+  --lp-v-line-dark: rgba(255, 247, 236, 0.12);
+  --lp-v-fill-dark: rgba(255, 247, 236, 0.05);
+}
+
+/* ── shared ── */
+[data-tone="yellow"] {
+  --lp-v-tone-10: var(--lp-yellow-10);
+  --lp-v-tone-20: var(--lp-yellow-20);
+  --lp-v-tone-30: var(--lp-yellow-30);
+  --lp-v-tone-40: var(--lp-yellow-40);
+}
+[data-tone="purple"] {
+  --lp-v-tone-10: var(--lp-purple-10);
+  --lp-v-tone-20: var(--lp-purple-20);
+  --lp-v-tone-30: var(--lp-purple-30);
+  --lp-v-tone-40: var(--lp-purple-40);
+}
+[data-tone="pink"] {
+  --lp-v-tone-10: var(--lp-pink-10);
+  --lp-v-tone-20: var(--lp-pink-20);
+  --lp-v-tone-30: var(--lp-pink-30);
+  --lp-v-tone-40: var(--lp-pink-40);
+}
+/* ── the window under the hero: Claude's window, Pancake's table, a handle between them (LpVisionCurtain.tsx) ──
+   In the demo film's slot: the section and the card are .lp-video's (video.css: 26 px under the
+   hero, 1136 wide at most, the card's shadow, its place on the first screen; hero.css "Homepage
+   first screen"). Here: the card's own shape and its two layers. Claude is on the left, Pancake
+   on the right (founder 2026-11-11, his second word on it).
+   --cut       where the handle stands, from the card's left: Claude's share. It is the visitor's
+               (--cut-user) once they have moved it, else its rest (--vc-rest)
+   --vc-cols   the table's four leading columns, the story's (lp-vision-tables.ts: the industry, the
+               signal, the fit and the Play: 100 + 112 + 68 + 224; before the Play's column opens,
+               the deal and the headcount take its 224)
+   --vc-rest   where the handle rests: what those columns and the row numbers (--vc-n) leave,
+               less a pixel so that the last one's own line shows at the card's edge
+   --vc-min    Claude's column is never narrower than this: slid further left, the table covers it
+   On a desktop, once the visitor has scrolled onto the window, the table takes two thirds of the
+   card (data-wide, below) and the split eases there (--cut is a registered property, so it can
+   be eased)
+   --vc-cols-wide   the columns the table shows then: the story's four, the industry and the deal
+   --vc-max    nor is its conversation wider: past it, it stays a centred column, as the app's
+               does on a wide window (--vc-gut is the margin that makes it so)
+   --vc-bar, --vc-row   the table's lines; Claude's own bar is as tall as the table's
+   --vc-tool   the table's view bar (its filter, its sort), between its bar and its head
+   The take (lp-vision-curtain-timeline.ts) flips attributes on the pieces and tweens the rows
+   and the columns' opening; the colours and the presence those attributes stand for are here. */
+.lp-vcut .lp-vcut__card {
+  --vc-bar: 46px;
+  --vc-row: 34px;
+  --vc-tool: 34px;
+  --vc-n: 42px;
+  --vc-cols: 504px;
+  --vc-cols-wide: 728px;
+  --vc-rest: calc(100% - var(--vc-n) - var(--vc-cols) - 1px);
+  --vc-min: 280px;
+  --vc-max: 620px;
+  --vc-pad: 24px;
+  --vc-gut: max(var(--vc-pad), calc((100% - var(--vc-max)) / 2));
+  --vc-dock: 90px;
+  --vc-chead: var(--vc-bar);
+  --vc-mark: 22px;
+  --vc-claude: var(--lp-claude-spark);
+  --cut: var(--cut-user, var(--vc-rest));
+  aspect-ratio: auto;
+  background: var(--lp-claude-bg);
+  height: 602px;
+  transition: --cut 0.9s cubic-bezier(0.45, 0, 0.55, 1);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+@property --cut {
+  syntax: "<length-percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+/* the handle in the visitor's hand: the split follows it at once */
+.lp-vcut .lp-vcut__card[data-drag] {
+  transition: none;
+}
+/* scrolled onto (data-wide, set once by LpVisionCurtain when the card's top passes 55 % of the
+   window, motion allowed): the table takes two thirds of the card, its edge on a column line,
+   Claude never under 30 % (founder: "c'est pas au hover la bascule, plutôt quand je scroll sur
+   cette partie", "3/4 c'est trop, Claude est trop réduit, maybe 2/3"). A desktop's: a tablet
+   keeps its half, a phone stacks the two */
+@media (min-width: 1025px) {
+  .lp-vcut .lp-vcut__card[data-wide] {
+    --vc-rest: max(30%, calc(100% - var(--vc-n) - var(--vc-cols-wide) - 1px));
+  }
+}
+/* over: Pancake's table, a whole window as wide as the card, its leading columns on show to the
+   right of the handle. It slides with it: pulled left it covers Claude and shows more columns,
+   pushed right it leaves the card to Claude */
+.lp-vcut__db {
+  background: var(--lp-v-dark);
+  inset: 0;
+  position: absolute;
+  transform: translateX(var(--cut));
+  z-index: 1;
+}
+.lp-vcut__dbar {
+  align-items: center;
+  border-bottom: 1px solid var(--lp-v-line-dark);
+  box-sizing: border-box;
+  display: flex;
+  gap: 14px;
+  height: var(--vc-bar);
+  padding: 0 12px 0 14px;
+}
+.lp .lp-vcut__brand {
+  align-items: center;
+  color: var(--lp-v-on-dark);
+  display: flex;
+  flex: none;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 8px;
+  line-height: 20px;
+}
+/* The bars carry each product's mark alone, both drawn --vc-mark tall (founder: "same size?").
+   Claude's spark fills its box; the Pancake mark's drawing is 23.57 of its 33.78 units (it keeps
+   its own padding: 4.19 on the left, 6.24 on the right), so its box is larger by that ratio and
+   its padding is taken back by the margins: the drawing starts on the bar's padding */
+.lp-vcut__pk {
+  display: block;
+  flex: none;
+  height: calc(var(--vc-mark) * 33.78 / 23.57);
+  margin: 0 calc(var(--vc-mark) * -6.24 / 23.57) 0 calc(var(--vc-mark) * -4.19 / 23.57);
+  /* (wider than its own row once the margins are taken back: the kit's max-width would shrink it) */
+  max-width: none;
+  width: calc(var(--vc-mark) * 33.78 / 23.57);
+}
+.lp-vcut__tabs {
+  align-items: center;
+  border-left: 1px solid var(--lp-v-line-dark);
+  color: var(--lp-ink-70);
+  display: flex;
+  font-family: var(--lp-font-fono);
+  font-size: 12px;
+  gap: 4px;
+  line-height: 16px;
+  list-style: none;
+  margin: 0;
+  min-width: 0;
+  padding: 0 0 0 10px;
+}
+.lp-vcut__tabs li {
+  align-items: center;
+  border-radius: 6px;
+  display: flex;
+  gap: 7px;
+  padding: 6px 10px;
+  transition:
+    box-shadow 0.2s ease,
+    color 0.2s ease;
+  white-space: nowrap;
+}
+.lp-vcut__tabs li[data-on] {
+  background: var(--lp-v-fill-dark);
+  box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
+  color: var(--lp-v-on-dark);
+}
+/* Claude is reading this table: its ring */
+.lp-vcut__tabs li[data-read] {
+  box-shadow: inset 0 0 0 1px var(--vc-claude);
+  color: var(--lp-v-on-dark);
+}
+.lp-vcut__tabs small {
+  color: var(--lp-ink-70);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+/* The view bar, between the table's bar and its head (Mobbin: Twenty's companies grid, Filter
+   and Sort over the rows and the count of what the view holds). The table is sorted by the
+   Brain's fit all along: the sort is there from the first frame. The filter is a button until
+   Claude sets it (data-filter, flipped by the take), then what was set (the column, the test,
+   the value) in Claude's ring; and the count says how many rows the view holds. The two states
+   of a piece stand on one spot, so nothing in the bar moves. The rows are moved by the take. */
+.lp .lp-vcut__filter {
+  align-items: center;
+  border-bottom: 1px solid var(--lp-v-line-dark);
+  box-sizing: border-box;
+  color: var(--lp-ink-70);
+  display: flex;
+  font-size: 11.5px;
+  gap: 8px;
+  height: var(--vc-tool);
+  line-height: 16px;
+  margin: 0;
+  padding: 0 12px 0 14px;
+  white-space: nowrap;
+}
+.lp .lp-vcut__filter,
+.lp .lp-vcut__filter * {
+  font-family: var(--lp-font-fono);
+}
+.lp-vcut__fset,
+.lp-vcut__count {
+  display: grid;
+  flex: none;
+}
+.lp-vcut__fset > *,
+.lp-vcut__count > * {
+  grid-area: 1 / 1;
+  justify-self: start;
+  transition: opacity 0.2s ease;
+}
+.lp-vcut__fidle,
+.lp-vcut__chip {
+  align-items: center;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: inline-flex;
+  gap: 7px;
+  height: 22px;
+  padding: 0 8px;
+}
+.lp-vcut__fidle {
+  box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
+}
+.lp-vcut__chip {
+  box-shadow: inset 0 0 0 1px var(--vc-claude);
+  color: var(--lp-v-on-dark);
+}
+.lp-vcut__chip b {
+  font-weight: 500;
+}
+.lp-vcut__chip i {
+  color: var(--lp-ink-70);
+  font-style: normal;
+}
+.lp-vcut__chip em {
+  font-style: normal;
+}
+.lp-vcut__ficon {
+  display: block;
+  fill: none;
+  flex: none;
+  height: 12px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.2;
+  width: 12px;
+}
+.lp-vcut__count {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  margin-left: 4px;
+  transition: color 0.3s ease;
+}
+/* the sort: the view's own, not Claude's doing */
+.lp-vcut__chip[data-sort] {
+  box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
+  flex: none;
+}
+.lp-vcut__fset .lp-vcut__chip,
+.lp-vcut__count [data-when="some"],
+.lp-vcut__filter[data-filter] .lp-vcut__fidle,
+.lp-vcut__filter[data-filter] .lp-vcut__count [data-when="all"] {
+  opacity: 0;
+}
+.lp-vcut__filter[data-filter] .lp-vcut__fset .lp-vcut__chip,
+.lp-vcut__filter[data-filter] .lp-vcut__count [data-when="some"] {
+  opacity: 1;
+}
+.lp-vcut__filter[data-filter] .lp-vcut__count {
+  color: var(--lp-v-on-dark);
+}
+/* The tables, one pane each (companies, people, signals), under the tab bar and over the status
+   line. The companies' is on show at rest; the take switches the panes as a camera cuts between
+   shots (it fades and slides them: data-on on the tabs says which is in front). Each pane's
+   table sits in a lens, which the take moves to pull back (scale) and to pan (x): origin top left,
+   so a pulled-back table shows more rows and more columns from where it starts */
+.lp-vcut__pane {
+  bottom: 30px;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: var(--vc-bar);
+}
+.lp-vcut__pane:not([data-pane="companies"]) {
+  opacity: 0;
+  visibility: hidden;
+}
+.lp-vcut__lens {
+  transform-origin: 0 0;
+}
+/* (the pane clips, not the table: pulled back or panned, the table shows past its own box) */
+.lp-vcut__pane .lp-db {
+  overflow: visible;
+}
+.lp-vcut__db .lp-db {
+  --db-row: var(--vc-row);
+  border: 0;
+  border-radius: 0;
+}
+/* the companies table is half as wide again as the card: the column a command opens pushes the
+   ones to its right further out, past the card's edge, and its last column takes what is left */
+.lp-vcut__pane[data-pane="companies"] .lp-db table {
+  width: 150%;
+}
+/* the row numbers: wide enough for the handle's grip to sit clear of them */
+.lp-vcut__db .lp-db th.lp-db__n,
+.lp-vcut__db .lp-db td.lp-db__n {
+  width: var(--vc-n);
+}
+/* The column the standing order adds (data-join="play"): the Brain's Plays. Shut until then
+   (data-shut-play, on the table: none of its cells is there), then it opens: --open-play goes
+   from 0 to 1 (the take tweens it on the table) and its width and its padding with it, so the
+   columns to its right move over as it grows. The deal's and the signal's columns are always
+   open here; a narrow window folds them away when the Plays' opens (its rules, below). */
+.lp-vcut .lp-db [data-join="play"] {
+  --open: var(--open-play, 1);
+}
+.lp-vcut .lp-db :is([data-join="deal"], [data-join="signal"]) {
+  --open: 1;
+}
+.lp-vcut .lp-db th[data-join] {
+  width: calc(var(--w) * var(--open));
+}
+.lp-vcut .lp-db :is(th, td)[data-join] {
+  padding-left: calc(10px * var(--open));
+  padding-right: calc(10px * var(--open));
+}
+.lp-vcut .lp-db[data-shut-play] [data-join="play"] {
+  display: none;
+}
+/* a row that is in the table while the take plays and not in the view it ends on (a duplicate,
+   an account that was never lost, the one whose deal reopened): not there at rest. The take
+   shows it and moves it itself */
+.lp-vcut .lp-db tbody tr[data-out] {
+  visibility: hidden;
+}
+/* The rows cross one another when one goes to its new rank, and a duplicate goes into the row
+   over it: every cell has the table's own ground under its tint, so a row covers what it passes.
+   The row that travels (data-top) and the one the picture points at go over the others */
+.lp-vcut .lp-db td {
+  background-color: var(--db-bg);
+  transition:
+    background-color 0.6s ease,
+    color 0.3s ease,
+    box-shadow 0.25s ease;
+}
+.lp-vcut .lp-db td.lp-db__n {
+  background-color: color-mix(in srgb, rgb(255 247 236) 4%, var(--db-bg));
+}
+.lp-vcut .lp-db tr:is([data-mark="hit"], [data-top]) {
+  position: relative;
+  z-index: 1;
+}
+.lp-vcut .lp-db tr[data-top] {
+  z-index: 2;
+}
+.lp-vcut .lp-db tr[data-mark="hit"] td {
+  background-color: color-mix(in srgb, var(--db-hit) 6.3%, var(--db-bg));
+}
+.lp-vcut .lp-db tr[data-mark="hit"] td[data-hit] {
+  background-color: color-mix(in srgb, var(--db-hit) 15%, var(--db-bg));
+}
+/* the take's states on the table. A value that lands: the take drives the two values' opacity
+   itself; the column's name lights, the cell flashes (fast in, slow out) */
+.lp-vcut .lp-db__lands > * {
+  transition: none;
+}
+.lp-vcut .lp-db__col {
+  transition: color 0.3s ease;
+}
+.lp-vcut .lp-db th {
+  transition: box-shadow 0.25s ease;
+}
+.lp-vcut .lp-db th[data-lit] .lp-db__col {
+  color: var(--db-hit-text);
+}
+/* the row the picture points at, before Claude has named it: as any other row */
+.lp-vcut .lp-db tr[data-unlit][data-mark] td {
+  background-color: var(--db-bg);
+  color: var(--db-cell);
+}
+.lp-vcut .lp-db tr[data-unlit][data-mark] td.lp-db__n {
+  background-color: color-mix(in srgb, rgb(255 247 236) 4%, var(--db-bg));
+  box-shadow: none;
+  color: var(--db-text-3);
+}
+.lp-vcut .lp-db tr[data-unlit][data-mark] td[data-hit] .lp-db__tag {
+  box-shadow: inset 0 0 0 1px var(--db-line-2);
+}
+.lp-vcut .lp-db tbody tr td[data-flash],
+.lp-vcut .lp-db tbody tr[data-flash] td {
+  background-color: color-mix(in srgb, var(--db-hit) 24%, var(--db-bg));
+  transition-duration: 0.12s, 0.3s, 0.25s;
+}
+/* Claude's ring around rows it works on (the pairs it merges: Mobbin, folk's merge, the two
+   records selected before they become one). data-rt, data-rb, data-rl: the ring's top, its
+   bottom, its left side; a pair has the top on its first row and the bottom on its second. The
+   left side is a pixel thicker: the handle's own line stands on the table's first pixel */
+.lp-vcut .lp-db tr[data-rt] td {
+  box-shadow: inset 0 1.5px 0 var(--vc-claude);
+}
+.lp-vcut .lp-db tr[data-rb] td {
+  box-shadow: inset 0 -1.5px 0 var(--vc-claude);
+}
+.lp-vcut .lp-db tr[data-rt][data-rb] td {
+  box-shadow:
+    inset 0 1.5px 0 var(--vc-claude),
+    inset 0 -1.5px 0 var(--vc-claude);
+}
+.lp-vcut .lp-db tr[data-rl] td.lp-db__n {
+  box-shadow: inset 2.5px 0 0 var(--vc-claude);
+}
+.lp-vcut .lp-db tr[data-rt][data-rl] td.lp-db__n {
+  box-shadow:
+    inset 0 1.5px 0 var(--vc-claude),
+    inset 2.5px 0 0 var(--vc-claude);
+}
+.lp-vcut .lp-db tr[data-rb][data-rl] td.lp-db__n {
+  box-shadow:
+    inset 0 -1.5px 0 var(--vc-claude),
+    inset 2.5px 0 0 var(--vc-claude);
+}
+.lp-vcut .lp-db tr[data-rt][data-rb][data-rl] td.lp-db__n {
+  box-shadow:
+    inset 0 1.5px 0 var(--vc-claude),
+    inset 0 -1.5px 0 var(--vc-claude),
+    inset 2.5px 0 0 var(--vc-claude);
+}
+/* Claude picks the rows it keeps when it filters (data-pick: its tint and its bar, fast in, slow
+   out), then draws its frame around the rows it kept (data-ring on the table: the frame is
+   `.lp-vcut__ring`, over the body of the table from its head to the status line, its right side
+   on the card's edge). Founder: "je lierais un peu les 86 en montrant que ça les entoure et les
+   filtre dans la database" */
+.lp-vcut .lp-db tbody tr[data-pick] td {
+  background-color: color-mix(in srgb, var(--vc-claude) 13%, var(--db-bg));
+  transition-duration: 0.15s, 0.3s, 0.25s;
+}
+.lp-vcut .lp-db tbody tr[data-pick] td.lp-db__n {
+  box-shadow: inset 2.5px 0 0 var(--vc-claude);
+}
+.lp-vcut__ring {
+  bottom: 0;
+  box-shadow:
+    inset 2.5px 0 0 var(--vc-claude),
+    inset -1.5px 0 0 var(--vc-claude),
+    inset 0 1.5px 0 var(--vc-claude),
+    inset 0 -1.5px 0 var(--vc-claude);
+  left: 0;
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  right: var(--cut);
+  top: calc(var(--vc-tool) + var(--vc-row));
+  transition: opacity 0.3s ease;
+  z-index: 3;
+}
+.lp-vcut__pane[data-ring] .lp-vcut__ring {
+  opacity: 1;
+}
+/* the count of what the view holds, lit with the frame */
+.lp-vcut__count[data-lit] {
+  color: var(--vc-claude);
+}
+.lp-vcut__filter[data-filter] .lp-vcut__count[data-lit] {
+  color: var(--vc-claude);
+}
+/* Claude's ring around the column it opens (data-wr-play, on the table), from its head down */
+.lp-vcut .lp-db[data-wr-play] td[data-join="play"] {
+  box-shadow:
+    inset 1.5px 0 0 var(--vc-claude),
+    inset -1.5px 0 0 var(--vc-claude);
+}
+.lp-vcut .lp-db[data-wr-play] th[data-join="play"] {
+  box-shadow:
+    inset 0 1.5px 0 var(--vc-claude),
+    inset 1.5px 0 0 var(--vc-claude),
+    inset -1.5px 0 0 var(--vc-claude);
+}
+/* The status line, under the rows (Mobbin: Twenty's grid, the bar under its rows): the table is
+   live, and what it last did, said as it happens (the take swaps the words; data-lit while they
+   are new). It covers the foot of the last row on show */
+.lp .lp-vcut__status {
+  align-items: center;
+  background: var(--lp-v-dark);
+  border-top: 1px solid var(--lp-v-line-dark);
+  bottom: 0;
+  box-sizing: border-box;
+  color: var(--lp-ink-70);
+  display: flex;
+  font-size: 11px;
+  gap: 8px;
+  height: 30px;
+  left: 0;
+  line-height: 16px;
+  margin: 0;
+  padding: 0 14px;
+  position: absolute;
+  right: 0;
+  white-space: nowrap;
+  z-index: 3;
+}
+.lp .lp-vcut__status,
+.lp .lp-vcut__status * {
+  font-family: var(--lp-font-fono);
+}
+.lp-vcut__status i {
+  background: var(--lp-green-20);
+  border-radius: 50%;
+  flex: none;
+  height: 6px;
+  width: 6px;
+}
+.lp-vcut__status b {
+  color: var(--lp-v-on-dark);
+  font-weight: 500;
+}
+.lp-vcut__status-t {
+  transition: color 0.5s ease;
+}
+.lp-vcut__status[data-lit] .lp-vcut__status-t {
+  color: var(--lp-v-on-dark);
+  transition-duration: 0.12s;
+}
+
+/* under: Claude's window, as the page's Claude scene draws it (demo.css "Claude & Codex view": its
+   ground, its composer, its bubble, its serif, a white card per tool call). As wide as the card;
+   it does not move */
+.lp-vcut__claude {
+  background: var(--lp-claude-bg);
+  color: var(--lp-claude-ink);
+  font-family: var(--lp-font-sans);
+  font-size: 14px;
+  inset: 0;
+  line-height: 20px;
+  position: absolute;
+}
+/* the conversation: as wide as what the table leaves (the handle resizes it), never narrower
+   than --vc-min */
+.lp-vcut__col {
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: max(var(--cut), var(--vc-min));
+}
+/* the window's bar: its rule runs the whole window */
+.lp-vcut__claude::before {
+  background: var(--lp-claude-ink-08);
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: calc(var(--vc-chead) - 1px);
+}
+.lp .lp-vcut__chead {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 8px;
+  height: var(--vc-chead);
+  line-height: 20px;
+  padding: 0 var(--vc-pad);
+}
+.lp-vcut__spark {
+  display: block;
+  fill: var(--lp-claude-spark);
+  flex: none;
+  height: var(--vc-mark);
+  width: var(--vc-mark);
+}
+/* the conversation's view: what has scrolled up leaves through its top, under a short fade */
+.lp-vcut__view {
+  bottom: calc(var(--vc-dock) + 26px);
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: var(--vc-chead);
+}
+.lp-vcut__view::after {
+  background: linear-gradient(var(--lp-claude-bg), rgba(250, 250, 248, 0));
+  content: "";
+  height: 14px;
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+/* it scrolls, as the app's does (the founder: "je dois pouvoir scroll up Claude, comme une
+   réelle app"); LpVisionCurtain keeps it on its last line while the visitor has not scrolled up */
+.lp-vcut__scroll {
+  inset: 0;
+  overflow-anchor: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+  position: absolute;
+  scrollbar-color: var(--lp-claude-ink-16) transparent;
+  scrollbar-width: thin;
+}
+/* a new chat's greeting: the take's first picture of Claude (hidden in the END, the markup) */
+.lp .lp-vcut__greet {
+  align-items: center;
+  color: var(--lp-claude-ink);
+  display: flex;
+  font-family: var(--lp-font-claude-serif, Georgia), Georgia, serif;
+  font-size: 27px;
+  font-weight: 300;
+  gap: 8px;
+  justify-content: center;
+  left: 0;
+  letter-spacing: -0.2px;
+  line-height: 36px;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  top: calc(42% - 18px);
+  visibility: hidden;
+  white-space: nowrap;
+}
+.lp-vcut__greet-spark {
+  display: block;
+  fill: var(--lp-claude-spark);
+  flex: none;
+  height: 28px;
+  width: 28px;
+}
+/* the thread: one column in the flow, a centred one once the window is wider than --vc-max.
+   While the take is in charge (data-take) a line is in the flow once it has arrived (data-in) */
+.lp-vcut__thread {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 18px var(--vc-gut) 12px;
+}
+.lp-vcut__card[data-take] .lp-vcut__thread > :not([data-in]) {
+  display: none;
+}
+.lp .lp-vcut__bubble {
+  align-self: flex-end;
+  background: var(--lp-claude-bubble);
+  border-radius: 12px;
+  color: var(--lp-claude-ink);
+  font-size: 15px;
+  line-height: 22px;
+  max-width: 88%;
+  padding: 9px 14px;
+}
+.lp .lp-vcut__bubble:not([data-n="1"]) {
+  margin-top: 24px;
+}
+/* one white card per tool call: the Pancake mark (the only coloured mark), the tool, and on the
+   right what it is doing, then what came back */
+.lp .lp-vcut__tool {
+  align-items: center;
+  background: var(--lp-claude-card);
+  border-radius: 10px;
+  box-shadow: inset 0 0 0 1px var(--lp-claude-ink-08);
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  font-size: 13px;
+  font-weight: 500;
+  gap: 8px;
+  height: 38px;
+  line-height: 18px;
+  margin-top: 12px;
+  padding: 0 12px;
+}
+.lp-vcut__tool-mark {
+  display: block;
+  flex: none;
+  height: 16px;
+  width: 16px;
+}
+.lp-vcut__tool-t {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.lp-vcut__tool-t i {
+  color: var(--lp-claude-ink-48);
+  font-style: normal;
+  font-weight: 400;
+  margin-left: 8px;
+}
+.lp-vcut__tool-r {
+  color: var(--lp-claude-ink-48);
+  display: grid;
+  flex: none;
+  font-size: 12px;
+  font-weight: 400;
+  margin-left: auto;
+  text-align: right;
+}
+.lp-vcut__tool-r > * {
+  grid-area: 1 / 1;
+  white-space: nowrap;
+}
+.lp-vcut__tool-doing {
+  opacity: 0;
+  visibility: hidden;
+}
+.lp-vcut__tool-done b {
+  color: var(--lp-claude-ink);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+/* the call that acts: back, it is live (the scene's green, #387a61) */
+.lp-vcut__tool[data-run] .lp-vcut__tool-done {
+  align-items: center;
+  color: #387a61;
+  display: flex;
+  font-weight: 500;
+  gap: 5px;
+  justify-content: flex-end;
+}
+.lp-vcut__tool[data-run] .lp-vcut__tool-done::before {
+  background: currentColor;
+  border-radius: 50%;
+  content: "";
+  height: 5px;
+  width: 5px;
+}
+/* Claude's answer, in its serif, streamed a word at a time. The words are spans: the kit's layered
+   `* { font-family }` beats inheritance, so they state the serif too */
+.lp .lp-vcut__say,
+.lp .lp-vcut__say * {
+  font-family: var(--lp-font-claude-serif, Georgia), Georgia, serif;
+}
+.lp .lp-vcut__say {
+  color: var(--lp-claude-serif-ink);
+  font-size: 15.5px;
+  line-height: 24px;
+  margin-top: 12px;
+}
+/* back to the last line (Mobbin: Searchable's assistant panel, a round arrow over its composer):
+   there once the visitor has scrolled up (data-up, LpVisionCurtain) */
+.lp .lp-vcut__latest {
+  align-items: center;
+  appearance: none;
+  background: var(--lp-claude-card);
+  border: 0;
+  border-radius: 50%;
+  bottom: 8px;
+  box-shadow: inset 0 0 0 0.5px var(--lp-claude-ink-16);
+  cursor: pointer;
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  left: calc(50% - 15px);
+  opacity: 0;
+  padding: 0;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 0.2s ease;
+  width: 30px;
+}
+.lp-vcut__view[data-up] .lp-vcut__latest {
+  opacity: 1;
+  pointer-events: auto;
+}
+.lp-vcut__latest svg {
+  display: block;
+  fill: none;
+  height: 14px;
+  stroke: var(--lp-claude-ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.1;
+  width: 14px;
+}
+/* the composer, docked: the scene's card, its placeholder, what is typed, its controls */
+.lp-vcut__bar {
+  background: var(--lp-claude-card);
+  border-radius: 16px;
+  bottom: 14px;
+  box-shadow:
+    inset 0 0 0 0.5px var(--lp-claude-ink-16),
+    0 4px 48px rgba(0, 0, 0, 0.08);
+  height: var(--vc-dock);
+  left: var(--vc-gut);
+  position: absolute;
+  right: var(--vc-gut);
+}
+.lp .lp-vcut__bar > p:not(.lp-vcut__ctrls) {
+  font-size: 15px;
+  left: 16px;
+  line-height: 22px;
+  overflow: hidden;
+  position: absolute;
+  right: 12px;
+  top: 13px;
+  white-space: nowrap;
+}
+.lp .lp-vcut__ph {
+  color: var(--lp-claude-ink-48);
+}
+.lp .lp-vcut__ph[data-n="1"] {
+  opacity: 0;
+  visibility: hidden;
+}
+.lp .lp-vcut__typed {
+  clip-path: polygon(0 0, 0 0, 0 0, 0 0, 0 0, 0 0);
+  color: var(--lp-claude-ink);
+}
+.lp-vcut__caret {
+  background: var(--lp-claude-ink);
+  height: 18px;
+  left: 16px;
+  opacity: 0;
+  position: absolute;
+  top: 15px;
+  width: 1.5px;
+}
+.lp .lp-vcut__ctrls {
+  align-items: center;
+  bottom: 10px;
+  display: flex;
+  font-size: 13px;
+  gap: 8px;
+  height: 32px;
+  left: 10px;
+  line-height: 18px;
+  position: absolute;
+  right: 10px;
+}
+.lp-vcut__plus {
+  align-items: center;
+  display: flex;
+  flex: none;
+  height: 32px;
+  justify-content: center;
+  width: 28px;
+}
+.lp-vcut__plus svg {
+  display: block;
+  fill: none;
+  height: 19px;
+  stroke: var(--lp-claude-ink);
+  stroke-linecap: round;
+  stroke-width: 1.09175;
+  width: 19px;
+}
+/* the connector chip: the Pancake mark, its name, a green dot = connected */
+.lp-vcut__conn {
+  align-items: center;
+  background: var(--lp-claude-ink-04);
+  border-radius: var(--lp-r-xsm);
+  box-shadow: inset 0 0 0 1px var(--lp-claude-ink-08);
+  display: flex;
+  flex: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  gap: 6px;
+  height: 28px;
+  margin-right: auto;
+  padding: 0 10px 0 6px;
+}
+.lp-vcut__conn-mark {
+  display: block;
+  flex: none;
+  height: 18px;
+  width: 18px;
+}
+.lp-vcut__conn i {
+  background: #1fae6b;
+  border-radius: 50%;
+  display: block;
+  height: 6px;
+  width: 6px;
+}
+.lp-vcut__model {
+  color: var(--lp-claude-ink);
+  padding-right: 6px;
+  white-space: nowrap;
+}
+.lp-vcut__send {
+  align-items: center;
+  background: var(--lp-claude-send);
+  border-radius: var(--lp-r-xsm);
+  display: flex;
+  flex: none;
+  height: 32px;
+  justify-content: center;
+  opacity: 0.45; /* nothing typed */
+  width: 32px;
+}
+.lp-vcut__send svg {
+  display: block;
+  fill: none;
+  height: 16px;
+  stroke: var(--lp-surface);
+  stroke-linecap: round;
+  stroke-linejoin: bevel;
+  stroke-width: 0.873403;
+  width: 16px;
+}
+/* the handle: a line the height of the card and a round grip, the kit's white disc with a
+   slider's two chevrons (Mobbin: Klarna's and Stripe's sliders, a round knob with "< >").
+   pan-y: a thumb that lands on it still scrolls the page */
+.lp-vcut__handle {
+  bottom: 0;
+  cursor: ew-resize;
+  left: var(--cut);
+  margin-left: -22px;
+  position: absolute;
+  top: 0;
+  touch-action: pan-y;
+  width: 44px;
+  z-index: 3;
+}
+.lp-vcut__handle::before {
+  background: var(--lp-ink-0);
+  bottom: 0;
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.28);
+  content: "";
+  left: 21px;
+  position: absolute;
+  top: 0;
+  width: 2px;
+}
+.lp-vcut__grip {
+  align-items: center;
+  background: var(--lp-ink-0);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 0.5px rgba(48, 0, 44, 0.16),
+    0 3px 14px rgba(48, 0, 44, 0.16);
+  display: flex;
+  height: 40px;
+  justify-content: center;
+  left: 2px;
+  position: absolute;
+  top: calc(50% - 20px);
+  width: 40px;
+}
+.lp-vcut__grip svg {
+  display: block;
+  fill: none;
+  height: 20px;
+  stroke: var(--lp-ink-100);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  width: 20px;
+}
+.lp-vcut__handle:focus-visible {
+  outline: none;
+}
+.lp-vcut__handle:focus-visible .lp-vcut__grip {
+  outline: 2px solid var(--lp-purple-30);
+  outline-offset: 2px;
+}
+/* The moment before the take, from the first paint: a new chat in Claude's window, the table before
+   any command (the take's own first frame, so nothing changes when the code arrives; the card's
+   top shows on the first screen). The server's markup carries data-pre; the take lifts it once
+   its first frame is set (data-open), and a take that could not be built rests on the END
+   (static). Only where a take can play: with script, and with motion allowed. Elsewhere, and in
+   a browser that does not know the `scripting` query, the END stands from the first paint.
+   (The rows stand in the END's order until the code arrives: they are under the fold.) */
+@media (scripting: enabled) and (prefers-reduced-motion: no-preference) {
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) :is(.lp-vcut__scroll, .lp-vcut__ph[data-n="2"]) {
+    visibility: hidden;
+  }
+  .lp .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) :is(.lp-vcut__greet, .lp-vcut__ph[data-n="1"]) {
+    opacity: 1;
+    visibility: visible;
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-vcut__filter :is(.lp-vcut__fset .lp-vcut__chip, [data-when="some"]) {
+    opacity: 0;
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-vcut__filter :is(.lp-vcut__fidle, [data-when="all"]) {
+    opacity: 1;
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-vcut__filter .lp-vcut__count {
+    color: inherit;
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db [data-join="play"] {
+    display: none;
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db :is([data-join="deal"], [data-join="signal"]) {
+    --open: 1;
+    display: table-cell;
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db tr[data-mark="hit"] td {
+    background-color: var(--db-bg);
+    color: var(--db-cell);
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db tr[data-mark="hit"] td.lp-db__n {
+    background-color: color-mix(in srgb, rgb(255 247 236) 4%, var(--db-bg));
+    box-shadow: none;
+    color: var(--db-text-3);
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db td[data-hit] .lp-db__tag {
+    box-shadow: inset 0 0 0 1px var(--db-line-2);
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) td[data-late] .lp-db__was {
+    opacity: 0.72;
+  }
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) td[data-late] .lp-db__now,
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) .lp-db td[data-by]::after,
+  .lp-vcut__card[data-pre]:not([data-open], [data-lp-anim="static"]) :is(.lp-db__by, .lp-db__state) {
+    opacity: 0;
+  }
+}
+/* reduced motion: the END, nothing eased */
+@media (prefers-reduced-motion: reduce) {
+  .lp-vcut .lp-vcut__card {
+    transition: none;
+  }
+  .lp-vcut .lp-db td,
+  .lp-vcut .lp-db th,
+  .lp-vcut .lp-db__col,
+  .lp-vcut__tabs li {
+    transition: none;
+  }
+}
+
+/* ── the 1-2-3: the designer's steps section under the statement, three new pictures ──
+   LpVisionSteps.tsx on steps.css's .lp-steps (text card + 464 × 426 media card a row). Here: the
+   statement as the section's title (wider than a step title's box: two balanced lines), and the
+   three stages (LpVisionStepMocks.tsx, lp-vision-step-timelines.ts). Each stage is the step
+   cards' own vocabulary: white pieces with the 0.5px hairline (steps.css .lp-s4-pill), the infra
+   wire (1px of ink-tr-40), the kit's pancake face as a hub (.lp-s4-disc), the Play's pink tile
+   (.lp-s4-play-icon), and the designer's Brain itself (steps.css .lp-s1-graph and its pieces).
+   The markup is each picture's END; the take sets its first frame. */
+.lp-vsteps .lp-vsteps__head {
+  max-width: none;
+  width: 1040px;
+}
+.lp-vsteps .lp-steps__title {
+  text-wrap: balance;
+}
+@media (max-width: 1360px) {
+  .lp-vsteps .lp-vsteps__head {
+    max-width: 100%;
+  }
+}
+.lp-step-stage--v1 .lp-sx-bg,
+.lp-step-stage--v2 .lp-sx-bg,
+.lp-step-stage--v3 .lp-sx-bg {
+  background-color: var(--lp-card-cream);
+}
+.lp-vs-piece {
+  background: var(--lp-surface);
+  box-shadow: 0 0 0 0.5px rgba(48, 0, 44, 0.16);
+  position: absolute;
+}
+.lp-vs-wire {
+  background: var(--lp-ink-tr-40);
+  position: absolute;
+}
+
+/* 01 · four sources (x 40 → 424, y 59 → 143), their wires down to one line (y 164), one wire
+   into Pancake (its face: 183 → 283 on the axis, x 232), one out, split to the two tables
+   (y 322 → 366). The whole stands centred on the stage (59 → 366). */
+.lp-vs1-tile {
+  border-radius: 16px;
+  height: 84px;
+  top: 59px;
+  width: 84px;
+}
+.lp-vs1-tile img {
+  height: 30px;
+  left: 27px;
+  object-fit: contain;
+  position: absolute;
+  top: 14px;
+  width: 30px;
+}
+.lp-vs1-tile span {
+  color: var(--lp-text);
+  font-size: 12px;
+  font-weight: 500;
+  left: 0;
+  line-height: 16px;
+  position: absolute;
+  text-align: center;
+  top: 54px;
+  width: 100%;
+}
+/* connected: the connector chip's green dot (.lp-s2-pk-dot), on the tile's corner */
+.lp-vs1-on {
+  background: var(--lp-green-30);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--lp-surface);
+  height: 8px;
+  position: absolute;
+  right: 9px;
+  top: 9px;
+  width: 8px;
+}
+.lp-vs1-drop {
+  height: 22px;
+  top: 142px;
+  transform-origin: 50% 0;
+  width: 1px;
+}
+.lp-vs1-bus {
+  height: 1px;
+  top: 163.5px;
+}
+.lp-vs1-bus[data-seg="a"] {
+  left: 82px;
+  transform-origin: 0 50%;
+  width: 150px;
+}
+.lp-vs1-bus[data-seg="b"] {
+  left: 232px;
+  transform-origin: 100% 50%;
+  width: 50px;
+}
+.lp-vs1-bus[data-seg="c"] {
+  left: 282px;
+  transform-origin: 100% 50%;
+  width: 100px;
+}
+.lp-vs1-trunk {
+  left: 231.5px;
+  transform-origin: 50% 0;
+  width: 1px;
+}
+.lp-vs1-trunk[data-at="in"] {
+  height: 21px;
+  top: 164px;
+}
+.lp-vs1-trunk[data-at="out"] {
+  height: 21px;
+  top: 282px;
+}
+.lp-vs1-split {
+  height: 1px;
+  top: 302.5px;
+  width: 100px;
+}
+.lp-vs1-split[data-side="l"] {
+  left: 132px;
+  transform-origin: 100% 50%;
+}
+.lp-vs1-split[data-side="r"] {
+  left: 232px;
+  transform-origin: 0 50%;
+}
+.lp-vs1-leg {
+  height: 20px;
+  top: 303px;
+  transform-origin: 50% 0;
+  width: 1px;
+}
+.lp-vs1-leg[data-side="l"] {
+  left: 131.5px;
+}
+.lp-vs1-leg[data-side="r"] {
+  left: 331.5px;
+}
+.lp-vs1-table {
+  border-radius: 22px;
+  height: 44px;
+  top: 322px;
+  width: 188px;
+}
+.lp-vs1-table[data-side="l"] {
+  left: 38px;
+}
+.lp-vs1-table[data-side="r"] {
+  left: 238px;
+}
+.lp-vs1-table .lp-db__icon {
+  color: var(--lp-ink-70);
+  height: 14px;
+  left: 16px;
+  position: absolute;
+  top: 15px;
+  width: 14px;
+}
+.lp-vs1-table b {
+  color: var(--lp-text);
+  font-size: 14px;
+  font-weight: 500;
+  left: 38px;
+  line-height: 20px;
+  position: absolute;
+  top: 12px;
+}
+.lp-vs1-table em {
+  color: var(--lp-ink-70);
+  font-size: 13px;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
+  position: absolute;
+  right: 16px;
+  top: 12px;
+}
+/* Pancake: the kit's pancake face, white and flat, its edge the pieces' hairline (steps.css
+   .lp-s4-disc, value for value), the mark on its centroid */
+.lp-vs-hub {
+  height: 100.252px;
+  left: 180px;
+  position: absolute;
+  top: 183px;
+  width: 104px;
+}
+.lp-vs-hub__face {
+  fill: var(--lp-surface);
+  height: 100%;
+  overflow: visible;
+  paint-order: stroke;
+  stroke: rgba(48, 0, 44, 0.16);
+  stroke-width: 0.439px;
+  width: 100%;
+}
+.lp-vs-hub__mark {
+  height: 58px;
+  left: 23.42px;
+  position: absolute;
+  top: 20.69px;
+  width: 58px;
+}
+
+/* 02 · six kinds of signal (two rows of three chips, y 40 → 120), then the account's card
+   (y 140 → 390): its name, what your own data says of it, and the dots the market adds.
+   A kind's colour: its light on the chip, its dot on the account, its tint when it fires. */
+.lp-step-stage--v2 [data-tone="green"] {
+  --vs-tone: var(--lp-green-20);
+  --vs-tint: var(--lp-green-10);
+}
+.lp-step-stage--v2 [data-tone="purple"] {
+  --vs-tone: var(--lp-purple-30);
+  --vs-tint: var(--lp-purple-10, #efe3ff);
+}
+.lp-step-stage--v2 [data-tone="blue"] {
+  --vs-tone: var(--lp-blue-30);
+  --vs-tint: var(--lp-blue-10);
+}
+.lp-step-stage--v2 [data-tone="yellow"] {
+  --vs-tone: var(--lp-yellow-30);
+  --vs-tint: var(--lp-yellow-10, #ffe9d2);
+}
+.lp-step-stage--v2 [data-tone="pink"] {
+  --vs-tone: var(--lp-pink-30);
+  --vs-tint: var(--lp-pink-10);
+}
+.lp-step-stage--v2 [data-tone="orange"] {
+  --vs-tone: var(--lp-orange-20);
+  --vs-tint: var(--lp-orange-10);
+}
+.lp-vs2-chip {
+  border-radius: 18px;
+  height: 36px;
+  width: 132px;
+}
+.lp-vs2-chip img {
+  height: 16px;
+  left: 12px;
+  object-fit: contain;
+  position: absolute;
+  top: 10px;
+  width: 16px;
+}
+.lp-vs2-chip span {
+  color: var(--lp-text);
+  font-size: 13px;
+  font-weight: 500;
+  left: 36px;
+  line-height: 18px;
+  position: absolute;
+  top: 9px;
+  white-space: nowrap;
+}
+/* the kind's light: off (a quiet grey), on in its colour once it has fired (--vs-on) */
+.lp-vs2-led {
+  background: var(--lp-ink-50, #ddcfcd);
+  border-radius: 50%;
+  height: 8px;
+  position: absolute;
+  right: 12px;
+  top: 14px;
+  width: 8px;
+}
+.lp-vs2-led::after {
+  background: var(--vs-tone);
+  border-radius: 50%;
+  content: "";
+  inset: 0;
+  opacity: var(--vs-on, 1);
+  position: absolute;
+}
+.lp-vs2-chip[data-quiet] .lp-vs2-led::after {
+  opacity: 0;
+}
+.lp-vs2-card {
+  border-radius: 16px;
+  height: 250px;
+  left: 26px;
+  top: 140px;
+  width: 412px;
+}
+.lp-vs2-name {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+  left: 20px;
+  position: absolute;
+  top: 14px;
+}
+.lp-vs2-name b {
+  color: var(--lp-text);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+.lp-vs2-name span {
+  color: var(--lp-ink-70);
+  font-size: 13px;
+  line-height: 22px;
+}
+/* what your own data says: a flat tag (the tables' .lp-db__tag) */
+.lp-vs2-own {
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(48, 0, 44, 0.16);
+  color: var(--lp-ink-90, var(--lp-text));
+  font-size: 12px;
+  line-height: 22px;
+  padding: 0 8px;
+  position: absolute;
+  right: 16px;
+  top: 14px;
+  white-space: nowrap;
+}
+.lp-vs2-rule {
+  border-top: 0.5px solid rgba(48, 0, 44, 0.16);
+  height: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 50px;
+}
+/* the line that connects the dots: the wire that matters, near-black, round (the brand's arrow:
+   a round stroke and an open head) */
+.lp-vs2-line {
+  height: 426px;
+  left: 0;
+  overflow: visible;
+  position: absolute;
+  top: 0;
+  width: 464px;
+}
+.lp-vs2-line path {
+  fill: none;
+  stroke: var(--lp-ink-100);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.5px;
+}
+.lp-vs2-path {
+  stroke-dasharray: 1;
+}
+/* a dot: on its place (left / top = its centre), what it says over it */
+.lp-vs2-dot {
+  height: 0;
+  position: absolute;
+  width: 0;
+}
+.lp-vs2-dot i {
+  background: var(--vs-tone);
+  border-radius: 50%;
+  box-shadow: 0 0 0 2.5px var(--lp-surface);
+  height: 12px;
+  left: -6px;
+  position: absolute;
+  top: -6px;
+  width: 12px;
+}
+.lp-vs2-dot span {
+  color: var(--lp-text);
+  font-size: 12px;
+  font-weight: 500;
+  left: 0;
+  line-height: 16px;
+  position: absolute;
+  top: -34px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+/* 03 · the designer's Brain (steps.css .lp-s1-graph: at rest it is glided left at 0.55, the pose
+   it took beside its leads; here 50 px higher, its centre at 116, 195, so that the picture and
+   the name under it stand centred on the stage) and, where those leads stood, two cards in
+   their skin (.lp-s1-lead: white, r12, the 0.5px line and the soft shadow): the account
+   (y 92 → 148) and the next best Play under it (y 162 → 326). */
+.lp-step-stage--v3 .lp-s1-graph {
+  transform: translate(-130.5px, -7.92px) scale(0.55);
+}
+.lp .lp-vs3-brain {
+  color: var(--lp-text);
+  font-size: 13px;
+  font-weight: 600;
+  left: 16px;
+  line-height: 20px;
+  position: absolute;
+  text-align: center;
+  top: 318px;
+  width: 200px;
+}
+.lp-vs3-card {
+  background: var(--lp-ink-0);
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 0.5px var(--lp-sx-line),
+    var(--lp-sx-shadow);
+  left: 248px;
+  position: absolute;
+  width: 202px;
+}
+.lp-vs3-account {
+  height: 56px;
+  top: 92px;
+}
+.lp-vs3-account b,
+.lp-vs3-account span {
+  left: 14px;
+  position: absolute;
+  white-space: nowrap;
+}
+.lp-vs3-account b {
+  color: var(--lp-ink-100);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 20px;
+  top: 9px;
+}
+.lp-vs3-account span {
+  color: var(--lp-ink-70);
+  font-size: 12px;
+  line-height: 18px;
+  top: 29px;
+}
+/* the Play (the infra Tools card's Play row, as the "Ask anything" card sets it: the pink tile
+   and its play icon, the name), its three lines under a hairline */
+.lp-vs3-play {
+  height: 164px;
+  top: 162px;
+}
+.lp-vs3-play-icon {
+  background: var(--lp-pink-10);
+  border-radius: var(--lp-r-xsm);
+  height: 28px;
+  left: 12px;
+  position: absolute;
+  top: 13px;
+  width: 28px;
+}
+.lp-vs3-play-icon svg {
+  fill: var(--lp-pink-40);
+  height: 16px;
+  left: 6px;
+  position: absolute;
+  top: 6px;
+  width: 16px;
+}
+.lp .lp-vs3-play-k {
+  color: var(--lp-ink-70);
+  font-size: 11px;
+  font-weight: 500;
+  left: 50px;
+  line-height: 16px;
+  position: absolute;
+  top: 9px;
+  white-space: nowrap;
+}
+.lp .lp-vs3-play-n {
+  color: var(--lp-text);
+  font-size: 14px;
+  font-weight: 600;
+  left: 50px;
+  line-height: 20px;
+  position: absolute;
+  top: 24px;
+  white-space: nowrap;
+}
+.lp-vs3-play-rule {
+  border-top: 0.5px solid var(--lp-sx-line);
+  height: 0;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 54px;
+}
+.lp .lp-vs3-play-row {
+  height: 32px;
+  left: 0;
+  position: absolute;
+  right: 0;
+}
+.lp-vs3-play-row span {
+  color: var(--lp-ink-70);
+  font-size: 11.5px;
+  left: 14px;
+  line-height: 18px;
+  position: absolute;
+  top: 7px;
+}
+.lp-vs3-play-row b {
+  color: var(--lp-text);
+  font-size: 12.5px;
+  font-weight: 500;
+  left: 58px;
+  line-height: 18px;
+  position: absolute;
+  top: 7px;
+  white-space: nowrap;
+}
+
+/* ── the pictures: real tables (LpVisionDb.tsx) ──
+   A table as a database tool draws it: the bar with its name, a head with each column's name and
+   type, numbered rows, every line of the grid, NULL where nothing is known. One typeface for the
+   values (the code face), no corner rounder than 4 px inside, one colour to point with. */
+.lp-db {
+  --db-bg: var(--lp-v-dark);
+  --db-text: var(--lp-v-on-dark);
+  --db-cell: var(--lp-ink-40);
+  --db-text-2: var(--lp-ink-60);
+  --db-text-3: var(--lp-ink-70);
+  --db-line: rgba(255, 247, 236, 0.11);
+  --db-line-2: rgba(255, 247, 236, 0.24);
+  --db-fill: rgba(255, 247, 236, 0.04);
+  --db-hit: var(--lp-v-tone-30, var(--lp-yellow-30));
+  --db-hit-text: var(--lp-v-tone-20, var(--lp-yellow-20));
+  --db-hit-fill: color-mix(in srgb, var(--db-hit) 15%, transparent);
+  --db-ref: var(--lp-purple-20);
+  --db-live: var(--lp-green-20);
+  --db-row: 28px;
+  background: var(--db-bg);
+  border: 1px solid var(--db-line);
+  border-radius: 8px;
+  color: var(--db-text-2);
+  font-family: var(--lp-font-fono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  line-height: 16px;
+  min-width: 0;
+  overflow: hidden;
+}
+.lp-db[data-theme="light"] {
+  --db-bg: var(--lp-surface);
+  --db-text: var(--lp-ink-100);
+  --db-cell: var(--lp-ink-100);
+  --db-text-2: var(--lp-ink-90);
+  --db-text-3: var(--lp-ink-70);
+  --db-line: rgba(44, 0, 42, 0.1);
+  --db-line-2: rgba(44, 0, 42, 0.22);
+  --db-fill: rgba(44, 0, 42, 0.03);
+  --db-hit: var(--lp-v-tone-40, var(--lp-yellow-40));
+  --db-hit-text: var(--lp-ink-100);
+  --db-hit-fill: color-mix(in srgb, var(--lp-v-tone-20, var(--lp-yellow-20)) 62%, transparent);
+  --db-ref: var(--lp-purple-40);
+  --db-live: var(--lp-green-30);
+}
+.lp-db table {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+.lp-db caption {
+  caption-side: top;
+  padding: 0;
+  text-align: left;
+}
+/* the bar: the table's mark, what it sits under, its name, a count at the far end */
+.lp .lp-db__bar {
+  align-items: center;
+  border-bottom: 1px solid var(--db-line);
+  color: var(--db-text-3);
+  display: flex;
+  gap: 7px;
+  height: 34px;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+.lp-db__bar b {
+  color: var(--db-text);
+  font-weight: 500;
+}
+.lp-db__path::after {
+  content: "/";
+  margin-left: 7px;
+  opacity: 0.6;
+}
+.lp-db__meta {
+  font-size: 11px;
+  margin-left: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lp-db__icon {
+  display: block;
+  fill: none;
+  flex: none;
+  height: 12px;
+  stroke: currentColor;
+  stroke-width: 1.1;
+  width: 12px;
+}
+.lp-db th,
+.lp-db td {
+  border-bottom: 1px solid var(--db-line);
+  border-right: 1px solid var(--db-line);
+  box-sizing: border-box;
+  font-weight: 400;
+  height: var(--db-row);
+  overflow: hidden;
+  padding: 0 10px;
+  text-align: left;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.lp-db th:last-child,
+.lp-db td:last-child {
+  border-right: 0;
+}
+.lp-db tbody tr:last-child td {
+  border-bottom: 0;
+}
+.lp-db th[data-end],
+.lp-db td[data-end] {
+  text-align: right;
+}
+/* the head: the column's name, then its type a step quieter */
+.lp-db th {
+  background: var(--db-fill);
+  color: var(--db-text);
+  font-size: 0.96em;
+  width: var(--w, auto);
+}
+.lp-db__type {
+  color: var(--db-text-3);
+  font-size: 0.875em;
+  margin-left: 6px;
+}
+/* a head that also says where each column comes from: one more line, over the name */
+.lp-db tr[data-sourced] th {
+  height: calc(var(--db-row) + 14px);
+  padding-top: 1px;
+}
+.lp-db__src {
+  color: var(--db-text-3);
+  display: block;
+  font-family: var(--lp-font-sans);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  line-height: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+}
+.lp-db td {
+  color: var(--db-cell);
+}
+/* the row numbers: a narrow column of their own, as a grid has */
+.lp-db th.lp-db__n,
+.lp-db td.lp-db__n {
+  background: var(--db-fill);
+  color: var(--db-text-3);
+  font-size: 0.875em;
+  padding: 0 8px 0 0;
+  text-align: right;
+  width: 30px;
+}
+.lp-db__null {
+  color: var(--db-text-3);
+  font-size: 0.875em;
+  letter-spacing: 0.3px;
+  opacity: 0.72;
+}
+/* one value of a few: a flat tag */
+.lp-db__tag {
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--db-line-2);
+  display: inline-block;
+  font-size: 0.92em;
+  line-height: 18px;
+  padding: 0 6px;
+  vertical-align: middle;
+}
+/* a reference to another row */
+.lp-db__ref {
+  color: var(--db-ref);
+}
+.lp-db__ref::before {
+  content: "\2192\00a0";
+  opacity: 0.6;
+}
+.lp-db__live::before {
+  background: var(--db-live);
+  border-radius: 50%;
+  content: "";
+  display: inline-block;
+  height: 6px;
+  margin-right: 6px;
+  vertical-align: 1px;
+  width: 6px;
+}
+/* a value that comes while the picture plays (the hero's table): NULL and the value on one spot;
+   at rest it is the value */
+.lp-db__lands {
+  display: inline-grid;
+  max-width: 100%;
+  vertical-align: middle;
+}
+/* a value too long for its cell is cut here, not by the cell: the cell's own ellipsis would show
+   while the value is still to land */
+.lp-db__lands > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: opacity 0.3s ease;
+}
+.lp-db__lands .lp-db__was {
+  opacity: 0;
+}
+/* a value in a span of its own (the hero's table: one a command brings in, after its column) */
+.lp-db__in {
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+/* the state the agent gave a value: a flat tag after it, with its live dot. The value leaves it
+   room, so a long one is cut before it (data-state: a cell that has one) */
+.lp-db td[data-state] {
+  --db-state: 56px;
+}
+.lp-db td[data-state] :is(.lp-db__in, .lp-db__lands) {
+  max-width: calc(100% - var(--db-state));
+}
+.lp-db__state {
+  align-items: center;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--db-live) 55%, transparent);
+  color: var(--db-live);
+  display: inline-flex;
+  font-size: 0.92em;
+  gap: 5px;
+  line-height: 18px;
+  margin-left: 8px;
+  padding: 0 6px;
+  transition: opacity 0.3s ease;
+  vertical-align: middle;
+}
+.lp-db__state i {
+  background: var(--db-live);
+  border-radius: 50%;
+  display: block;
+  height: 6px;
+  width: 6px;
+}
+/* the agent working from a cell, as a shared canvas shows who works where (Mobbin: Miro's
+   Sidekick, the agent's own tag on the corner of what it works on; Canva's sheet, the outline
+   around a selection): Claude's ring around it, its mark pinned on the ring's top left corner.
+   The mark sits on the corner itself, over the four cells' padding: it covers no value.
+   The take shows them when Claude acts (data-noring, data-noflag lifted), then the state it
+   gives each value (data-nostate) */
+.lp-db td[data-by] {
+  overflow: visible;
+  position: relative;
+}
+.lp-db td[data-by]::after {
+  border: 1.5px solid var(--lp-claude-spark);
+  content: "";
+  inset: -1px;
+  pointer-events: none;
+  position: absolute;
+  transition: opacity 0.25s ease;
+}
+.lp-db__by {
+  align-items: center;
+  background: var(--lp-claude-spark);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px var(--db-bg);
+  display: flex;
+  height: 18px;
+  justify-content: center;
+  left: -10px;
+  position: absolute;
+  top: -10px;
+  transition: opacity 0.25s ease;
+  width: 18px;
+  z-index: 1;
+}
+.lp-db__by svg {
+  display: block;
+  fill: var(--lp-ink-100);
+  flex: none;
+  height: 11px;
+  width: 11px;
+}
+/* (data-idle: a cell the agent has moved on from. Its state stays) */
+.lp-db td:is([data-noring], [data-idle])::after,
+.lp-db td:is([data-noflag], [data-idle]) .lp-db__by,
+.lp-db td[data-nostate] .lp-db__state {
+  opacity: 0;
+}
+.lp-db__logo {
+  align-items: center;
+  display: inline-flex;
+  gap: 7px;
+  vertical-align: middle;
+}
+/* the mark on a light tile, so a dark one shows on plum */
+.lp-db__logo img {
+  background: var(--lp-ink-20);
+  border-radius: 3px;
+  box-sizing: border-box;
+  flex: none;
+  height: 16px;
+  padding: 2px;
+  width: 16px;
+}
+/* a tick box, empty or ticked */
+.lp-db__box {
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px var(--db-line-2);
+  display: block;
+  height: 12px;
+  margin: 0 auto;
+  position: relative;
+  width: 12px;
+}
+.lp-db__box[data-on] {
+  background: var(--db-hit);
+  box-shadow: none;
+}
+.lp-db__box[data-on]::after {
+  border: solid var(--lp-ink-100);
+  border-width: 0 1.5px 1.5px 0;
+  content: "";
+  height: 6px;
+  left: 4px;
+  position: absolute;
+  top: 1.5px;
+  transform: rotate(45deg);
+  width: 3px;
+}
+/* what the picture points at: the row a shade lit, its cells in the one colour, its number cell
+   marked */
+.lp-db tr[data-mark="hit"] td,
+.lp-db tr[data-mark="new"] td {
+  background: color-mix(in srgb, var(--db-hit-fill) 42%, transparent);
+}
+.lp-db td[data-hit] {
+  background: var(--db-hit-fill);
+  color: var(--db-hit-text);
+}
+/* a value that no longer holds */
+.lp-db td[data-cut] {
+  color: var(--db-text-3);
+  text-decoration: line-through;
+}
+.lp-db td[data-hit] .lp-db__tag {
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--db-hit) 60%, transparent);
+}
+.lp-db td[data-hit] .lp-db__ref {
+  color: inherit;
+}
+.lp-db tr[data-mark="hit"] td.lp-db__n,
+.lp-db tr[data-mark="new"] td.lp-db__n {
+  box-shadow: inset 2px 0 0 var(--db-hit);
+  color: var(--db-hit-text);
+}
+.lp-db[data-theme="light"] tr[data-mark="hit"] td.lp-db__n,
+.lp-db[data-theme="light"] tr[data-mark="new"] td.lp-db__n {
+  color: var(--db-hit);
+}
+/* a row merged away, or ended */
+.lp-db tr[data-mark="cut"] td:not(.lp-db__n) {
+  color: var(--db-text-3);
+  text-decoration: line-through;
+}
+.lp-db tr[data-mark="cut"] .lp-db__ref {
+  color: inherit;
+}
+/* the line under the others */
+.lp-db tr[data-mark="sum"] td {
+  border-top: 1px solid var(--db-line-2);
+  color: var(--db-text);
+  font-weight: 500;
+}
+/* under the rows: a count, and what is left to say */
+.lp .lp-db__foot {
+  align-items: center;
+  border-top: 1px solid var(--db-line);
+  color: var(--db-text-3);
+  display: flex;
+  font-size: 0.92em;
+  gap: 12px;
+  height: var(--db-row);
+  justify-content: space-between;
+  padding: 0 12px;
+  white-space: nowrap;
+}
+
+/* ── narrower windows ── */
+@media (min-width: 901px) and (max-width: 1024px) {
+  /* a tablet on its side: the two still share the card. The table's four leading columns once
+     every command has run are half the card (their widths are shares of it, --wm); Claude has
+     the other half, less the row numbers */
+  .lp-vcut .lp-vcut__card {
+    --vc-n: 36px;
+    --vc-rest: calc(50% - var(--vc-n) - 1px);
+    --vc-min: 280px;
+    --vc-pad: 20px;
+  }
+  /* (the table is half as wide again as the card: a share of the card is two thirds of it there.
+     A column without a share, the last one, takes what is left) */
+  .lp-vcut .lp-db th:not(.lp-db__n) {
+    width: calc(var(--wm) / 1.5);
+  }
+  .lp-vcut .lp-db th[data-join] {
+    width: calc(var(--wm) / 1.5 * var(--open));
+  }
+  .lp-vcut__model {
+    display: none;
+  }
+  .lp-vcut__grip {
+    height: 36px;
+    left: 4px;
+    top: calc(50% - 18px);
+    width: 36px;
+  }
+  .lp .lp-vcut__greet {
+    font-size: 22px;
+  }
+  .lp-vcut__greet-spark {
+    height: 23px;
+    width: 23px;
+  }
+  .lp .lp-vcut__say {
+    font-size: 14.5px;
+    line-height: 22px;
+  }
+}
+@media (max-width: 767px), (min-width: 901px) and (max-width: 1024px) {
+  /* no room for the Brain's column of Plays beside the ones that were there: the deal's and the
+     signal's fold away as it opens (--keep-narrow, the take's: 1, then 0), and come back with a
+     new chat. Both are folded at rest */
+  .lp-vcut .lp-db :is([data-join="deal"], [data-join="signal"]) {
+    --open: var(--keep-narrow, 0);
+  }
+  .lp-vcut .lp-db:not([data-keep-narrow]) :is([data-join="deal"], [data-join="signal"]) {
+    display: none;
+  }
+  /* the state a value takes: its dot alone (the cell has no room for the word) */
+  .lp-vcut .lp-db td[data-state] {
+    --db-state: 14px;
+  }
+  .lp-vcut .lp-db__state {
+    box-shadow: none;
+    margin-left: 7px;
+    padding: 0;
+  }
+  .lp-vcut .lp-db__state span {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  /* no room to share: the two stack, in the same order. Claude on top, the table a sheet under
+     it, each as wide as the card. No handle: --cut is the sheet's top */
+  .lp-vcut .lp-vcut__card {
+    --vc-rest: 50%;
+    --vc-min: 0px;
+    --cut: var(--vc-rest);
+    height: 700px;
+  }
+  .lp-vcut__db {
+    border-radius: 16px 16px 0 0;
+    transform: translateY(var(--cut));
+  }
+  /* (the sheet runs past the card's bottom by --cut: the panes stop at the card's) */
+  .lp-vcut__pane {
+    bottom: var(--cut);
+  }
+  .lp-vcut__ring {
+    right: 0;
+  }
+  .lp-vcut__col {
+    bottom: auto;
+    height: var(--vc-rest);
+    width: 100%;
+  }
+  .lp-vcut__handle {
+    display: none;
+  }
+  .lp-vcut__claude::before {
+    content: none;
+  }
+}
+@media (max-width: 767px) {
+  /* a phone: Claude's 343 px hold its bar, a view tall enough for a command and its answer, and
+     the composer; the sheet under it its bar, its view bar, its head and six rows */
+  .lp-vcut .lp-vcut__card {
+    --vc-bar: 42px;
+    --vc-tool: 28px;
+    --vc-n: 24px;
+    --vc-rest: 52%;
+    --vc-pad: 14px;
+    --vc-dock: 82px;
+    --vc-chead: 38px;
+    --vc-mark: 20px;
+    height: 660px;
+  }
+  .lp-vcut__dbar {
+    gap: 10px;
+    padding: 0 8px 0 12px;
+  }
+  .lp .lp-vcut__filter {
+    font-size: 11px;
+    gap: 6px;
+    padding: 0 8px 0 12px;
+  }
+  .lp-vcut__fidle,
+  .lp-vcut__chip {
+    gap: 6px;
+    height: 20px;
+    padding: 0 6px;
+  }
+  .lp-vcut__tabs {
+    padding-left: 6px;
+  }
+  .lp-vcut__tabs li {
+    gap: 6px;
+    padding: 6px 8px;
+  }
+  /* the bar on a phone: Pancake and the three tables' names */
+  .lp-vcut__tabs .lp-db__icon,
+  .lp-vcut__tabs small {
+    display: none;
+  }
+  /* the columns' phone widths (--wp), their names without their types; the last one takes what
+     is left */
+  .lp-vcut .lp-db__type {
+    display: none;
+  }
+  .lp-vcut .lp-db th:not(.lp-db__n) {
+    width: var(--wp, auto);
+  }
+  .lp-vcut .lp-db th[data-join] {
+    width: calc(var(--wp) * var(--open));
+  }
+  .lp-vcut .lp-db :is(th, td)[data-join] {
+    padding-left: calc(8px * var(--open));
+    padding-right: calc(8px * var(--open));
+  }
+  .lp .lp-vcut__chead {
+    font-size: 13px;
+  }
+  .lp-vcut__view {
+    bottom: calc(var(--vc-dock) + 20px);
+  }
+  .lp-vcut__thread {
+    padding-bottom: 8px;
+    padding-top: 10px;
+  }
+  .lp .lp-vcut__greet {
+    font-size: 21px;
+    top: calc(50% - 26px);
+  }
+  .lp-vcut__greet-spark {
+    height: 23px;
+    width: 23px;
+  }
+  .lp .lp-vcut__bubble {
+    font-size: 14px;
+    line-height: 20px;
+    max-width: 100%;
+    padding: 8px 12px;
+  }
+  .lp .lp-vcut__bubble:not([data-n="1"]) {
+    margin-top: 18px;
+  }
+  .lp .lp-vcut__tool {
+    font-size: 12.5px;
+    height: 36px;
+    margin-top: 10px;
+    padding: 0 10px;
+  }
+  .lp .lp-vcut__say {
+    font-size: 14px;
+    line-height: 21px;
+    margin-top: 10px;
+  }
+  .lp-vcut__model {
+    display: none;
+  }
+  .lp .lp-vcut__status {
+    font-size: 10.5px;
+    height: 26px;
+    padding: 0 12px;
+  }
+  .lp-vcut__bar {
+    bottom: 10px;
+  }
+  .lp .lp-vcut__bar > p:not(.lp-vcut__ctrls) {
+    font-size: 14px;
+    left: 14px;
+    top: 11px;
+  }
+  .lp-vcut__caret {
+    left: 14px;
+    top: 13px;
+  }
+  .lp .lp-vcut__ctrls {
+    bottom: 8px;
+    height: 30px;
+  }
+  .lp-vcut__send {
+    height: 30px;
+    width: 30px;
+  }
+  .lp-vcut .lp-db__state {
+    margin-left: 6px;
+  }
+  /* a phone shows the columns that carry the point; the others are marked in the tables' data */
+  .lp-db [data-hide~="phone"] {
+    display: none;
+  }
+  .lp-db th {
+    width: var(--wp, var(--w, auto));
+  }
+  .lp-db th,
+  .lp-db td {
+    padding: 0 8px;
+  }
+  .lp-db th.lp-db__n,
+  .lp-db td.lp-db__n,
+  .lp-vcut__db .lp-db th.lp-db__n,
+  .lp-vcut__db .lp-db td.lp-db__n {
+    padding: 0 6px 0 0;
+    width: 24px;
+  }
+  .lp .lp-db__bar,
+  .lp .lp-db__foot {
+    padding: 0 10px;
+  }
+}

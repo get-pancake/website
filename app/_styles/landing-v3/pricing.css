@@ -170,6 +170,32 @@
   top: 586.99px;
   white-space: nowrap;
 }
+/* A second plan (LpPricing `full`): under the checklist, on the CTA's line, and narrow enough to
+   stay on the cream (the art's first band comes closer on this side: at 360 wide its far corner
+   is as far from the rings' centre as the checklist's). */
+.lp-price-full {
+  left: calc(50% + 8px);
+  position: absolute;
+  top: 462.99px;
+  width: min(360px, calc(50% - 40px));
+}
+.lp .lp-price-full__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 28px;
+  margin: 0;
+}
+.lp .lp-price-full__body {
+  color: var(--lp-text);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+.lp .lp-price-full__cta {
+  margin-top: 8px;
+}
 
 /* ── Quiet text links (2026-10-07): a line of body copy, underlined, never a
    pill. Under the pricing card's Start free (above: Start free stays the
@@ -234,11 +260,16 @@
   .lp-price-list,
   .lp-price-ctas,
   .lp-price-note,
-  .lp-price-more {
+  .lp-price-more,
+  .lp-price-full {
     left: auto;
     position: static;
     top: auto;
     width: auto;
+  }
+  .lp-price-full {
+    margin-top: 40px;
+    max-width: 560px;
   }
   .lp-price-title {
     max-width: 640px;

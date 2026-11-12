@@ -19,12 +19,16 @@
 @import "./landing-v3/story-context.css";
 @import "./landing-v3/story-signals.css";
 @import "./landing-v3/story-lineage.css";
+@import "./landing-v3/story-problems.css";
 @import "./landing-v3/story-mcp.css";
+@import "./landing-v3/story-ping.css";
 @import "./landing-v3/cta.css";
 @import "./landing-v3/sky.css";
 @import "./landing-v3/bento.css";
 @import "./landing-v3/pricing.css";
 @import "./landing-v3/footer.css";
+@import "./landing-v3/vision.css";
+@import "./landing-v3/kitchen.css";
 @import "./landing-v3/modal.css";
 @import "./landing-v3/anim.css";
 @import "./landing-v3/audience.css";

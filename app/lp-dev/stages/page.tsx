@@ -53,9 +53,8 @@ export default function StageHarnessPage({ searchParams }: { searchParams: Searc
   if (!DEV_OR_PREVIEW) notFound();
 
   const story = one(searchParams.story);
-  const ids: readonly DiveItemId[] = story && (DIVE_ORDER as readonly string[]).includes(story)
-    ? [story as DiveItemId]
-    : DIVE_ORDER;
+  // any story of the registry by its id (the vision homepage's five are in it, not in the order)
+  const ids: readonly DiveItemId[] = story && story in DIVE_STAGES ? [story as DiveItemId] : DIVE_ORDER;
   const layoutParam = one(searchParams.layout);
   const layouts: DiveStageLayout[] = layoutParam === "desktop" || layoutParam === "phone" ? [layoutParam] : ["desktop", "phone"];
   const placeholdersParam = one(searchParams.placeholders);

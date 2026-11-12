@@ -1,8 +1,8 @@
 import { AudienceSelector } from "./LpAudience";
 import { AudienceHeadline } from "./LpAudienceHeadline";
 import { LpAgentStart } from "./LpAgentStart";
-import { LpHeroInstall } from "./LpHeroInstall";
 import { LpHeroAgentArt } from "./LpHeroAgentArt";
+import { LpHeroInstall } from "./LpHeroInstall";
 import { LpArcCanvas } from "@/components/sections/landing-v3/LpArcCanvas";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
@@ -36,6 +36,12 @@ import { APP_ORIGIN } from "@/lib/site-config.mjs";
 // drifts and fades (lp-agents-scroll.ts, audience-agents.css;
 // translate/opacity only — hero.css keeps both blocks transform-free on the
 // homepage for it). The humans view no longer moves them (2026-10-12).
+//
+// 2026-11-11 (founder: "On enleve le toggle For humans / For agents"): the humans view no longer
+// shows the toggle (audience.css hides it there; it stays in the agents view, which opens from
+// its own link, so a visitor there can come back). The column is now the lede, the buttons and
+// the install row under them (LpHeroInstall, in flow); it stays bottom-anchored, so it grows
+// upward into the room the toggle left.
 //
 // First screen (founder 2026-10-12, _decisions §10): on desktop the hero's
 // height follows the window's so the demo window's top bar peeks 70px above
@@ -102,12 +108,12 @@ export function LpHero() {
                 >
                   Talk to sales
                 </LpFxLink>
-                {/* out of flow, under the row: #1 Product of the Day on Product Hunt */}
-                <LpProductHunt />
-                {/* out of flow, in the same slot from 1280 (where the badge is in the nav): "or
-                    install in" and the agents' marks, the setup line's card on hover */}
-                <LpHeroInstall />
               </div>
+              {/* under the buttons, in flow, at every width: "or install in" and the agents'
+                  marks as tiles; the setup line's card on a press (founder 2026-11-11) */}
+              <LpHeroInstall />
+              {/* out of flow, under the column: #1 Product of the Day on Product Hunt */}
+              <LpProductHunt />
             </div>
             <div className="lp-hero-col lp-hero-col--agent"><LpAgentStart /></div>
           </div>

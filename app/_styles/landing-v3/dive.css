@@ -681,3 +681,75 @@
     transition: none;
   }
 }
+
+/* ══ the vision homepage's dive (2026-11-11): the six hard problems ══
+   Same shell, three additions, each behind its own attribute so the four-block dive is untouched:
+   - data-lede: one line of text under the title. The head then lays the two out in flow.
+   - data-lp-count="6": six titles in the 489 row need a tighter tab (14 px for 24), or the open
+     item's body runs past the stage's bottom edge.
+   - data-lp-sky-top: no banner opens the sky above this dive, so the section draws the sky's
+     top edge itself, with the banner's own cream shape (sky.css), and starts its content under it;
+     the two heading clouds move down by the same amount. */
+.lp-dive-head[data-lede] {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: auto;
+  padding: 72px 0 40px;
+}
+.lp-dive-head[data-lede] .lp-dive-title {
+  max-width: 1040px;
+  position: static;
+  width: auto;
+}
+.lp .lp-dive-lede {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  max-width: 780px;
+  text-align: center;
+  text-wrap: balance;
+}
+.lp-dive[data-lp-count="6"] .lp-dive-list {
+  --lp-dive-pad: 14px;
+}
+.lp-dive[data-lp-sky-top] {
+  --lp-dive-sky-top: 150px;
+  background:
+    url("/lp/lp-sky-banner-top.svg") 0 0 / 100% 290px no-repeat,
+    var(--lp-sky);
+  padding-top: calc(80px + var(--lp-dive-sky-top));
+}
+/* (phones place their two clouds themselves, sky.css: the first one is raised below) */
+@media (min-width: 768px) {
+  .lp-dive[data-lp-sky-top] > .lp-sky-cloud--a {
+    top: calc(98.534px + var(--lp-dive-sky-top));
+  }
+  .lp-dive[data-lp-sky-top] > .lp-sky-cloud--b {
+    top: calc(90.977px + var(--lp-dive-sky-top));
+  }
+}
+@media (max-width: 1024px) {
+  .lp-dive-head[data-lede] {
+    padding: 56px 32px 32px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-dive-head[data-lede] {
+    padding: 8px 0 24px;
+  }
+  .lp-dive[data-lp-sky-top] {
+    --lp-dive-sky-top: 72px;
+    background-size: 100% 150px, auto;
+  }
+  /* the phone's first cloud sat over the banner card's corner: with no banner it rests on the
+     sky's edge, clear of the title under it */
+  .lp-dive[data-lp-sky-top] > .lp-sky-cloud--a {
+    top: var(--lp-sky-room, 72px);
+  }
+  /* the second, beside the title's first line (its second line starts further left) */
+  .lp-dive[data-lp-sky-top] > .lp-sky-cloud--b {
+    top: calc(var(--lp-sky-room, 72px) + 76px);
+  }
+}

@@ -11,6 +11,7 @@ import {
   DIVE_PAUSE_LABEL,
   DIVE_PHONE_LAYOUT,
   DIVE_TITLE,
+  type DiveItem,
 } from "./lp-dive-data";
 import { DIVE_STAGES } from "./lp-dive-stages";
 
@@ -46,15 +47,38 @@ import { DIVE_STAGES } from "./lp-dive-stages";
  */
 const at = (i: number) => ({ "--lp-dive-i": i }) as CSSProperties;
 
-export function LpDive() {
-  const items = visibleEntries(DIVE_ITEMS);
+/**
+ * Without props: the homepage's four blocks, byte for byte. The vision homepage (2026-11-11)
+ * passes its own: the six hard problems as `items` (their stories are in the same registry), its
+ * `title`, a `lede` under it, and `skyTop`, since no banner opens the sky above it there (dive.css,
+ * "the vision homepage's dive").
+ */
+export function LpDive({
+  items: all = DIVE_ITEMS,
+  title = DIVE_TITLE,
+  lede,
+  skyTop = false,
+}: {
+  items?: readonly DiveItem[];
+  title?: string;
+  lede?: string;
+  skyTop?: boolean;
+} = {}) {
+  const items = visibleEntries(all);
   if (!items.length) return null;
   return (
-    <section className="lp-dive" aria-labelledby="lp-dive-title" data-lp-phone={DIVE_PHONE_LAYOUT}>
-      <div className="lp-dive-head">
+    <section
+      className="lp-dive"
+      aria-labelledby="lp-dive-title"
+      data-lp-phone={DIVE_PHONE_LAYOUT}
+      data-lp-count={items.length}
+      data-lp-sky-top={skyTop ? "" : undefined}
+    >
+      <div className="lp-dive-head" data-lede={lede ? "" : undefined}>
         <h2 id="lp-dive-title" className="lp-title-section lp-dive-title">
-          {DIVE_TITLE}
+          {title}
         </h2>
+        {lede ? <p className="lp-dive-lede">{lede}</p> : null}
       </div>
       <LpDiveCarousel className="lp-dive-row" fallback={DIVE_FALLBACK_S}>
         <div className="lp-dive-list">
