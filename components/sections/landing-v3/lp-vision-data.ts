@@ -135,23 +135,32 @@ export type VisionTone = "yellow" | "purple" | "pink";
    beside its leads): an account reaches it, it pings and grows, and the next best Play comes up
    beside it, with who, when and why.
    The statement above them is the section's title. Drawn by LpVisionSteps.tsx; the three
-   pictures: LpVisionStepMocks.tsx, lp-vision-step-timelines.ts. ── */
+   pictures: LpVisionStepMocks.tsx, lp-vision-step-timelines.ts.
+   Since 2026-11-12 the page shows these three as toy pictures, in the kitchen's look (t1, t2, t3:
+   LpToySteps.tsx, lp-toy-step-timelines.ts, their own words in lp-toy-data.ts): the same sources
+   and tables, the same signals and account, the Brain as the app draws it. ── */
 
-export type VisionStepVariant = "v1" | "v2" | "v3";
+/** v1, v2, v3: the flat pictures of 2026-11-11 (LpVisionStepMocks.tsx). t1, t2, t3: the toy
+    pictures of 2026-11-12 (LpToySteps.tsx), in the kitchen's look. A step shows the one it names:
+    to go back to a flat picture, change its `variant` here, nothing else. */
+export type VisionFlatVariant = "v1" | "v2" | "v3";
+export type VisionToyVariant = "t1" | "t2" | "t3";
+export type VisionStepVariant = VisionFlatVariant | VisionToyVariant;
 
 export const VISION_STEPS: readonly { num: "01" | "02" | "03"; variant: VisionStepVariant; title: string; body: string; alt: string }[] = [
   {
     num: "01",
-    variant: "v1",
+    variant: "t1",
     // "\n" = the desktop line break (white-space: pre-line), as the steps before these
     title: "Connect your sources.\nPancake builds the tables.",
     body: "Your CRM, your events, your product and your website. Pancake builds each connector and turns what comes in into tables of companies and people.",
-    // retells VSTEP_SOURCES and VSTEP_TABLES: keep in sync
+    // the flat picture's (v1), retells VSTEP_SOURCES and VSTEP_TABLES: keep in sync. A toy
+    // picture has its own (lp-toy-data.ts TOY_STEP_ALT)
     alt: "Animation: four sources connect one after the other: HubSpot for the CRM, Luma for events, PostHog for the product, Google Analytics for the website. Their lines join into Pancake, which fills two tables: companies, 4,812 rows, and people, 12,960 rows.",
   },
   {
     num: "02",
-    variant: "v2",
+    variant: "t2",
     title: "Connect the dots\nwith market signals.",
     body: "Funding, hiring, tech stack, reviews, web traffic. Signals from 30+ data providers land on the accounts you already have, each one dated.",
     // retells VSTEP_SIGNALS and VSTEP_ACCOUNT: keep in sync
@@ -159,7 +168,7 @@ export const VISION_STEPS: readonly { num: "01" | "02" | "03"; variant: VisionSt
   },
   {
     num: "03",
-    variant: "v3",
+    variant: "t3",
     title: "Your Brain recommends\nthe next best Play.",
     body: "It knows who you sell to and what worked. When signals cross on an account, it tells your agent who to contact, when, and with which Play.",
     // retells VSTEP_BRAIN: keep in sync
@@ -231,7 +240,10 @@ export const VISION_BOTTLE = {
  *  four of its stories; `story` is the story's id in the dive's registry (lp-dive-stages.ts). */
 export const VISION_FEATURES: {
   title: string;
-  items: readonly { story: "mcp" | "p-history" | "p-dedup" | "ping"; title: string; body: string }[];
+  /* t-engine, t-journey, t-merge, t-ping: the toy pictures of 2026-11-12, in the kitchen's look
+     (LpToyStories.tsx). The pictures they replace stay in the registry: to go back to one,
+     name it here ("mcp", "p-history", "p-dedup", "ping"), nothing else. */
+  items: readonly { story: "mcp" | "p-history" | "p-dedup" | "ping" | "t-engine" | "t-journey" | "t-merge" | "t-ping"; title: string; body: string }[];
 } = {
   title: "What your agent can do with Pancake",
   /* Each title answers the section's question (founder, 2026-11-12: "make sure each line answers
@@ -239,25 +251,25 @@ export const VISION_FEATURES: {
      is what I need for my revenue engineering"): your agent can … */
   items: [
     {
-      story: "mcp",
+      story: "t-engine",
       // the founder, 2026-11-11: "Run everything from Claude (not your agent)"
       title: "Run your revenue engine\nfrom Claude",
       body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent queries every table and runs every Play, with about 100 tools.",
     },
     {
-      story: "p-history",
+      story: "t-journey",
       title: "Remember every touch\nwith every buyer",
       body: "The event, the signup, the pricing question, the reply: each one dated and kept. Your agent writes as if it sat in every call.",
     },
     {
-      story: "p-dedup",
+      story: "t-merge",
       title: "See one buyer\nbehind three emails",
       body: "The same person is at your event, in your product and on a social profile. Pancake keeps one record, so nobody is pitched twice.",
     },
     // its picture is your agent texting you first (lp-story-ping-data.ts), the founder's ask in
     // place of the context story's schema
     {
-      story: "ping",
+      story: "t-ping",
       title: "Bring you the next deal\nbefore you ask",
       body: "Pancake learns from every reply and every deal. Your agent texts you the account to work and the Play to run.",
     },
