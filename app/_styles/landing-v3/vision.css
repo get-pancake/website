@@ -69,6 +69,7 @@
   --vc-gut: max(var(--vc-pad), calc((100% - var(--vc-max)) / 2));
   --vc-dock: 90px;
   --vc-chead: var(--vc-bar);
+  --vc-mark: 22px;
   --vc-claude: var(--lp-claude-spark);
   --cut: var(--cut-user, var(--vc-rest));
   aspect-ratio: auto;
@@ -107,12 +108,18 @@
   gap: 8px;
   line-height: 20px;
 }
-/* the bars carry each product's mark alone, a size up from a mark beside a name */
+/* The bars carry each product's mark alone, both drawn --vc-mark tall (founder: "same size?").
+   Claude's spark fills its box; the Pancake mark's drawing is 23.57 of its 33.78 units (it keeps
+   its own padding: 4.19 on the left, 6.24 on the right), so its box is larger by that ratio and
+   its padding is taken back by the margins: the drawing starts on the bar's padding */
 .lp-vcut__pk {
   display: block;
   flex: none;
-  height: 22px;
-  width: 22px;
+  height: calc(var(--vc-mark) * 33.78 / 23.57);
+  margin: 0 calc(var(--vc-mark) * -6.24 / 23.57) 0 calc(var(--vc-mark) * -4.19 / 23.57);
+  /* (wider than its own row once the margins are taken back: the kit's max-width would shrink it) */
+  max-width: none;
+  width: calc(var(--vc-mark) * 33.78 / 23.57);
 }
 .lp-vcut__tabs {
   align-items: center;
@@ -488,8 +495,8 @@
   display: block;
   fill: var(--lp-claude-spark);
   flex: none;
-  height: 22px;
-  width: 22px;
+  height: var(--vc-mark);
+  width: var(--vc-mark);
 }
 /* the conversation's view: what has scrolled up leaves through its top, under a short fade */
 .lp-vcut__view {
@@ -1935,6 +1942,7 @@
     --vc-pad: 14px;
     --vc-dock: 82px;
     --vc-chead: 38px;
+    --vc-mark: 20px;
     height: 660px;
   }
   .lp-vcut__dbar {
@@ -1982,11 +1990,6 @@
   }
   .lp .lp-vcut__chead {
     font-size: 13px;
-  }
-  .lp-vcut__spark,
-  .lp-vcut__pk {
-    height: 20px;
-    width: 20px;
   }
   .lp-vcut__view {
     bottom: calc(var(--vc-dock) + 20px);
