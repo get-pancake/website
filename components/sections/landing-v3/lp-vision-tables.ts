@@ -23,8 +23,14 @@ export type DbCellObj = {
   hit?: true;
   /** a value that no longer holds, struck out */
   cut?: true;
-  /** a value that lands while the picture plays: NULL until then (the hero's table) */
-  live?: true;
+  /** a value that lands while the picture plays: NULL until then (the hero's table). The key is
+   *  the one the take lands it by (lp-vision-curtain-timeline.ts, `landing(key)`) */
+  land?: string;
+  /** the agent working in this cell: its flag over the cell and its ring around it, as a grid
+   *  shows a collaborator (the hero's table) */
+  by?: string;
+  /** a state the value takes once the agent has acted on it, printed after it (the hero's table) */
+  state?: string;
   /** a vendor's own mark before the value */
   logo?: string;
 };
@@ -34,8 +40,12 @@ export type DbCell = string | null | DbCellObj;
 export type DbCol = {
   name: string;
   type?: string;
-  /** width in px on a desktop; a column without one takes what is left */
-  w?: number;
+  /** width on a desktop, in px or as a share of the table ("7.4%"); a column without one takes
+   *  what is left */
+  w?: number | string;
+  /** width on a tablet, when it differs: a share, or "auto" for the column that takes what is
+   *  left there (the hero's table) */
+  wm?: string;
   /** width in px on a phone, when it differs */
   wp?: number;
   /** numbers sit on the right */
@@ -51,6 +61,8 @@ export type DbRow = {
   /** hit: the row the picture points at · new: a row just added · cut: a row merged away ·
    *  sum: the line under the others */
   mark?: "hit" | "new" | "cut" | "sum";
+  /** the name the take knows the row by (the hero's table) */
+  key?: string;
   /** what the row-number cell prints instead of the number */
   n?: string;
 };
@@ -74,47 +86,72 @@ const hit = (v: string): DbCellObj => ({ v, hit: true });
 const cut = (v: string): DbCellObj => ({ v, cut: true });
 const LIVE: DbCellObj = { v: "live", as: "live" };
 
-/* ── hero: the companies table under Claude's answer (the curtain, LpVisionCurtain.tsx) ────── */
+/* ── hero: Pancake's companies table, and Claude at work on it (the curtain, LpVisionCurtain.tsx) ── */
 
+/** the tables of the data layer; the signals' count is the one the take ticks up (it is the
+ *  count the take starts from: a datapoint that lands adds one) */
 export const DB_HERO_TABS = [
   { name: "companies", rows: "4,812" },
   { name: "people", rows: "12,960" },
   { name: "signals", rows: "38,204" },
 ] as const;
 
-const live = (v: string): DbCellObj => ({ v, live: true });
+const land = (key: string, v: string): DbCellObj => ({ v, land: key });
 
-/** One row per company: what you know, what the outside says, what to do next. The widths place
- *  each column on the 1136 px card: Claude covers the left of it, so the two columns that carry
- *  the answer (signal, next_best_play) are the ones on show. Rows 3 to 5 are the three accounts
- *  Claude names: its lines sit on theirs. Row 2 takes a datapoint while the picture plays. */
+/** One row per company: what the outside says, what to do next, what you know. The four columns
+ *  on the left are the ones on show beside Claude (the curtain rests at 56 % of the card: their
+ *  widths add up to it); the three others sit under Claude until the curtain is slid.
+ *  Rows a, b and c are the three accounts Claude names. Row a takes its signal and its Play while
+ *  the take opens, then goes live when Claude runs the Play: Claude's flag is on that cell. The
+ *  other keyed cells are datapoints that land later in the take (the database keeps working). */
 export const DB_HERO: DbTableData = {
   name: "companies",
   numbered: true,
   cols: [
-    { name: "id", type: "pk", w: 90, wp: 60, src: "Key" },
-    { name: "industry", type: "text", w: 130, src: "Profile", hide: "phone mid" },
-    { name: "crm_deal", type: "enum", w: 150, src: "Your CRM", hide: "phone" },
-    { name: "last_touch", type: "text", w: 180, src: "Calls, events", hide: "phone mid" },
-    { name: "signal", type: "text", w: 190, wp: 112, src: "Data providers" },
-    { name: "next_best_play", type: "text", src: "The Brain" },
+    { name: "id", type: "pk", w: "7.4%", wm: "10.5%", wp: 60, src: "Key" },
+    { name: "industry", type: "text", w: "10.4%", src: "Profile", hide: "phone mid" },
+    { name: "signal", type: "text", w: "14.6%", wm: "17.5%", wp: 112, src: "Data providers" },
+    { name: "next_best_play", type: "text", w: "20.4%", wm: "21.5%", src: "The Brain" },
+    { name: "crm_deal", type: "enum", w: "13.2%", wm: "17%", src: "Your CRM", hide: "phone" },
+    { name: "last_touch", type: "text", w: "15%", wm: "auto", src: "Calls, events", hide: "phone" },
+    { name: "headcount", type: "int", end: true, src: "Data providers", hide: "phone mid" },
   ],
   rows: [
-    { c: ["c_08fa", "Edtech", tag("closed_lost"), null, null, null] },
-    { c: ["c_d5a1", "Legal tech", null, null, live("new funding"), live("Reach out on the round")], mark: "new" },
-    { c: ["c_4f2a", "Fintech", tag("closed_lost", true), null, hit("hiring SDRs"), hit("Reach back out")], mark: "hit" },
-    { c: ["c_91be", "Dev tools", tag("open"), "asked pricing", "funding Series B", hit("Send the pricing follow-up")], mark: "hit" },
-    { c: ["c_27d0", "Logistics", null, "attended event", "new VP Sales", hit("Follow up on the event")], mark: "hit" },
-    { c: ["c_a6c3", "Health tech", tag("closed_won"), null, "headcount up", "Offer the team plan"] },
-    { c: ["c_5e18", "Retail", null, null, "uses a rival tool", "Start with the comparison"] },
-    { c: ["c_c0d9", "Insurance", null, "asked for a demo", "new CMO", "Send the demo recap"] },
-    { c: ["c_3b7e", "HR software", tag("open"), null, null, null] },
-    { c: ["c_e214", "Security", null, "attended event", "headcount up", "Send the event recap"] },
-    { c: ["c_77b2", "Travel", tag("closed_lost"), null, null, null] },
-    { c: ["c_1f6d", "Proptech", null, null, "new CRO", "Introduce yourself"] },
-    { c: ["c_9a40", "Gaming", tag("open"), "asked pricing", null, null] },
-    { c: ["c_62ce", "Biotech", null, null, "uses a rival tool", null] },
-    { c: ["c_b81e", "Media", tag("closed_won"), null, "new funding", "Offer the team plan"] },
+    { c: ["c_08fa", "Edtech", null, null, tag("closed_lost"), null, "85"] },
+    {
+      key: "a",
+      mark: "hit",
+      c: [
+        "c_4f2a",
+        "Fintech",
+        { v: "hiring SDRs", land: "a-signal", hit: true },
+        { v: "Reach back out", land: "a-play", hit: true, by: "Claude", state: "live" },
+        tag("closed_lost", true),
+        null,
+        "200",
+      ],
+    },
+    {
+      key: "b",
+      mark: "hit",
+      c: ["c_91be", "Dev tools", hit("funding Series B"), hit("Send the pricing follow-up"), tag("open"), hit("asked pricing"), "40"],
+    },
+    {
+      key: "c",
+      mark: "hit",
+      c: ["c_27d0", "Logistics", hit("new VP Sales"), hit("Follow up on the event"), null, hit("attended event"), "1,200"],
+    },
+    { c: ["c_d5a1", "Legal tech", land("e-signal", "new funding"), land("e-play", "Reach out on the round"), null, null, "60"] },
+    { c: ["c_a6c3", "Health tech", "headcount up", "Offer the team plan", tag("closed_won"), null, "310"] },
+    { c: ["c_5e18", "Retail", "uses a rival tool", land("t1-play", "Start with the comparison"), null, null, "2,400"] },
+    { c: ["c_c0d9", "Insurance", "new CMO", "Send the demo recap", null, "asked for a demo", "720"] },
+    { c: ["c_3b7e", "HR software", land("m1-signal", "headcount up"), null, tag("open"), null, "95"] },
+    { c: ["c_e214", "Security", land("t2-signal", "headcount up"), "Send the event recap", null, "attended event", "540"] },
+    { c: ["c_77b2", "Travel", null, null, tag("closed_lost"), null, "140"] },
+    { c: ["c_1f6d", "Proptech", land("m2-signal", "new CRO"), land("m2-play", "Introduce yourself"), null, null, "55"] },
+    { c: ["c_9a40", "Gaming", land("t3-signal", "new funding"), land("t3-play", "Send the pricing follow-up"), tag("open"), "asked pricing", "180"] },
+    { c: ["c_62ce", "Biotech", "uses a rival tool", null, null, null, "30"] },
+    { c: ["c_b81e", "Media", "new funding", "Offer the team plan", tag("closed_won"), null, "420"] },
   ],
 };
 
@@ -129,14 +166,14 @@ export const DB_RESULT: DbTableData = {
   ],
 };
 
-/** the view Claude draws from them, beside its answer (seen once the curtain is slid right) */
+/** the view Claude draws from them, beside its answer (seen once the curtain is slid left) */
 export const DB_ARTIFACT: DbTableData = {
   name: "accounts",
-  cols: [{ name: "id", w: 70 }, { name: "industry", w: 92 }, { name: "next_best_play" }],
+  cols: [{ name: "id", w: 74 }, { name: "industry", w: 96 }, { name: "headcount", w: 92, end: true }, { name: "next_best_play" }],
   rows: [
-    { c: ["c_4f2a", "Fintech", hit("Reach back out")], mark: "hit" },
-    { c: ["c_91be", "Dev tools", "Send the pricing follow-up"] },
-    { c: ["c_27d0", "Logistics", "Follow up on the event"] },
+    { c: ["c_4f2a", "Fintech", "200", { v: "Reach back out", hit: true }], mark: "hit" },
+    { c: ["c_91be", "Dev tools", "40", "Send the pricing follow-up"] },
+    { c: ["c_27d0", "Logistics", "1,200", "Follow up on the event"] },
   ],
 };
 

@@ -31,7 +31,7 @@ import {
  * qui vibre dans le hero", "composants design … qu'il faut evidemment remettre", "ca ne change pas
  * le contenu mais la forme"). The page (app/page.tsx) is:
  *   LpHero            the designer's hero, with the vision's headline and lede
- *   LpVisionCurtain   the window under it: Claude's answer over Pancake's table (its own file)
+ *   LpVisionCurtain   the window under it: Pancake's table, Claude's window, a curtain between (its own file)
  *   LpMarquee         the customers, on cream
  *   LpVisionRows      the statement and the four rows: a title, two lines, a framed real table
  *   LpSteps           today's product at work, the designer's three animated steps

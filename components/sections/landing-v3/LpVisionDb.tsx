@@ -27,11 +27,17 @@ export function DbTableIcon() {
 }
 
 function colStyle(col: DbCol): CSSProperties | undefined {
-  if (col.w === undefined && col.wp === undefined) return undefined;
+  if (col.w === undefined && col.wm === undefined && col.wp === undefined) return undefined;
   return {
-    ...(col.w !== undefined ? { "--w": `${col.w}px` } : {}),
+    ...(col.w !== undefined ? { "--w": typeof col.w === "number" ? `${col.w}px` : col.w } : {}),
+    ...(col.wm !== undefined ? { "--wm": col.wm } : {}),
     ...(col.wp !== undefined ? { "--wp": `${col.wp}px` } : {}),
   } as CSSProperties;
+}
+
+/** the cell's own fields, when it has any */
+function fields(cell: DbCell) {
+  return typeof cell === "object" && cell !== null ? cell : undefined;
 }
 
 function isHit(cell: DbCell) {
@@ -45,14 +51,28 @@ function isCut(cell: DbCell) {
 function Cell({ cell }: { cell: DbCell }) {
   if (cell === null) return <span className="lp-db__null">NULL</span>;
   if (typeof cell === "string") return <>{cell}</>;
-  // NULL until the value lands (the table's host flips data-live): both are in the markup, on
-  // one spot, and the rest picture is the value
-  if (cell.live) {
+  // NULL until the value lands (the hero's take): both are in the markup, on one spot, and the
+  // rest picture is the value. After it, the state the agent gave it; over it, the agent's flag.
+  if (cell.land) {
     return (
-      <span className="lp-db__lands">
-        <span className="lp-db__was lp-db__null">NULL</span>
-        <span className="lp-db__now">{cell.v}</span>
-      </span>
+      <>
+        <span className="lp-db__lands">
+          <span className="lp-db__was lp-db__null">NULL</span>
+          <span className="lp-db__now">{cell.v}</span>
+        </span>
+        {cell.state ? (
+          <span className="lp-db__state">
+            <i />
+            <span>{cell.state}</span>
+          </span>
+        ) : null}
+        {cell.by ? (
+          <span className="lp-db__by">
+            <ClaudeMark />
+            {cell.by}
+          </span>
+        ) : null}
+      </>
     );
   }
   switch (cell.as) {
@@ -113,7 +133,7 @@ export function DbTable({
           <tr data-sourced={sourced ? "" : undefined}>
             {numbered ? <th className="lp-db__n" /> : null}
             {cols.map((col, i) => (
-              <th key={i} data-hide={col.hide} data-end={col.end ? "" : undefined} style={colStyle(col)}>
+              <th key={i} data-col={col.name} data-hide={col.hide} data-end={col.end ? "" : undefined} style={colStyle(col)}>
                 {sourced ? <span className="lp-db__src">{col.src}</span> : null}
                 <span className="lp-db__col">{col.name}</span>
                 {col.type ? <span className="lp-db__type">{col.type}</span> : null}
@@ -123,7 +143,7 @@ export function DbTable({
         </thead>
         <tbody>
           {rows.map((row, r) => (
-            <tr key={r} data-mark={row.mark}>
+            <tr key={r} data-mark={row.mark} data-row={row.key}>
               {numbered ? <td className="lp-db__n">{row.n ?? r + 1}</td> : null}
               {row.c.map((cell, i) => (
                 <td
@@ -132,6 +152,8 @@ export function DbTable({
                   data-end={cols[i]?.end ? "" : undefined}
                   data-hit={isHit(cell) ? "" : undefined}
                   data-cut={isCut(cell) ? "" : undefined}
+                  data-land={fields(cell)?.land}
+                  data-by={fields(cell)?.by ? "" : undefined}
                 >
                   <Cell cell={cell} />
                 </td>

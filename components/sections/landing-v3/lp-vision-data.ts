@@ -23,28 +23,55 @@
    description). */
 
 /**
- * The window under the hero: Claude's answer, and Pancake's table under it, with a curtain to slide
- * between the two (founder 2026-11-11: "un espece de petit rideau qu'on peut deglisser a droite a
- * gauche qui montre Claude d'un cote et l'infra de l'autre", to show Claude runs on Pancake). Each
- * account Claude names sits on the line of its own row in the table.
+ * The window under the hero: Pancake's companies table on the left, Claude on the right, a curtain
+ * to slide between the two (founder 2026-11-11: "un espece de petit rideau qu'on peut deglisser a
+ * droite a gauche qui montre Claude d'un cote et l'infra de l'autre", to show Claude runs on
+ * Pancake; then, the same day: "Je mettrai Pancake a gauche et Claude a droite. J'animerai Claude
+ * et la database pour montrer que c'est dynamique").
+ * One take moves both: a signal lands in the table and the Brain writes its Play; Claude is asked
+ * which accounts to work, reads the tables, names three; asked to, it runs the first Play and the
+ * row goes live. Claude's window is drawn as the page's Claude scene draws it (the greeting, the
+ * composer and its Pancake connector, the bubble, a white card per tool call, the serif answer).
  */
 export const VISION_CURTAIN = {
   label:
-    "Claude answers which accounts to work now. Beside it, Pancake’s companies table: each line of the answer is one of its rows.",
-  handle: "Slide between Claude and Pancake",
+    "Pancake’s companies table takes a new signal and writes the next best Play. Beside it Claude, connected to Pancake, answers which accounts to work now, then runs the first Play: its row goes live.",
+  handle: "Slide between Pancake and Claude",
+  pancake: "Pancake",
   claude: "Claude",
+  /* Claude's own chrome, the Claude scene's words (lp-demo-data.ts) */
+  greeting: "Let’s flip some pancakes",
+  placeholder: "How can I help you today?",
   connector: "Pancake",
+  model: "Opus 5.5",
+  reply: "Reply to Claude…",
+  /* the first exchange */
   ask: "Which accounts should I work now?",
-  tool: { title: "Read companies, people and signals", done: "3 tables, one call" },
+  /** the read: one card, what it is doing, then how many rows came back (the count ticks up; it is
+   *  the companies table's own count, DB_HERO_TABS) */
+  tool: {
+    title: "Read companies, people and signals",
+    /** where the card is narrow (tablets, phones) */
+    short: "Read 3 tables",
+    doing: "Reading…",
+    count: 4812,
+    done: "companies",
+  },
   say: "Three accounts crossed a signal.",
   picks: [
-    { who: "Fintech", size: "200 people", why: "Lost deal, now hiring SDRs.", play: "Reach back out" },
-    { who: "Dev tools", size: "40 people", why: "Asked pricing, just funded.", play: "Send the pricing follow-up" },
-    { who: "Logistics", size: "1,200 people", why: "Your event, new VP Sales.", play: "Follow up on the event" },
+    { who: "Fintech", size: "200 people", why: "Lost deal, now hiring SDRs." },
+    { who: "Dev tools", size: "40 people", why: "Asked pricing, just funded." },
+    { who: "Logistics", size: "1,200 people", why: "Your event, new VP Sales." },
   ],
   next: "Want me to run the first Play?",
-  box: "Reply to Claude",
+  /* the second exchange: Claude acts, and the table shows it */
+  go: "Yes, run it.",
+  /** `name` is the Play of the first account (the table's next_best_play, DB_HERO row a) */
+  run: { title: "Run Play", name: "Reach back out", doing: "Starting…", done: "Live" },
+  done: "Done. The Play is live.",
+  /* Claude's own view of the three accounts, beside the conversation once the curtain is slid left */
   artifact: "Accounts to work now",
+  artifactFrom: "From Pancake",
 } as const;
 
 /** what Pancake is, in the founder's line: the statement that opens the dark band. It was the
