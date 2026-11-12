@@ -2,7 +2,8 @@
 // (lp-play-once loads it with GSAP, out of the page's first bundle).
 import { gsap } from "@/lib/gsap";
 
-import { ART_BRAIN, ART_SOURCES } from "./lp-toy-art";
+import { ART_SOURCES } from "./lp-toy-art";
+import { toyCanvas } from "./lp-toy-canvas";
 import {
   TOY_EASE,
   TOY_STEP,
@@ -31,9 +32,9 @@ import {
  *   t2  the radar's beam comes on and turns once; each time it passes a signal a ring opens on
  *       the face, a bead lands in it and what it says comes up; the beam fades, a line connects
  *       the dots into the account, which lifts a little and warms
- *   t3  the brain is set down on its stand and what it holds comes up round it, a tag each; a
- *       signal runs from each tag along its lead into the brain, which swells; two ideas fly
- *       out and land under it, then the next best Play comes up
+ *   t3  the Brain wakes (a ripple through its hubs); signals run in from its points, hub by hub,
+ *       to the centre, which swells; a tag comes up on three hubs; two ideas drop out and land
+ *       under it, then the next best Play comes up
  * The contract of the page's timelines (lp-vision-step-timelines.ts): the markup is the picture;
  * every piece is looked up before anything is written (a missing piece throws there and the
  * server's picture stands); frame 0 is a block of gsap.set; the timeline holds tweens only (an
@@ -97,6 +98,37 @@ function registerCountPlugin() {
   });
 }
 
+/**
+ * GSAP `toyOrbit` plugin: a bead rides the turntable. The ring is a circle of the set, so an
+ * ellipse of the picture (`rx`, `ry`); the bead rests at `rest` on it (in turns from the ring's
+ * right, where the markup lays it) and this tween takes it from `from` to `to` turns past its
+ * rest. A pure function of the tween's progress, so the take can be seeked both ways.
+ * (Until 2026-11-12 CSS placed the bead, from a custom property the take tweened. The beads
+ * never moved: the first time GSAP transforms an element it folds the element's own `translate`
+ * into its transform and sets `translate: none`.)
+ */
+type Orbit = { rest: number; from: number; to: number; rx: number; ry: number };
+type OrbitData = Orbit & { setX: (v: number) => void; setY: (v: number) => void };
+let orbitRegistered = false;
+function registerOrbitPlugin() {
+  if (orbitRegistered) return;
+  orbitRegistered = true;
+  gsap.registerPlugin({
+    name: "toyOrbit",
+    init(this: OrbitData, target: HTMLElement, value: Orbit) {
+      Object.assign(this, value);
+      this.setX = gsap.quickSetter(target, "x", "px") as (v: number) => void;
+      this.setY = gsap.quickSetter(target, "y", "px") as (v: number) => void;
+    },
+    render(ratio: number, data: OrbitData) {
+      const rest = data.rest * 2 * Math.PI;
+      const a = rest + (data.from + (data.to - data.from) * ratio) * 2 * Math.PI;
+      data.setX((Math.cos(a) - Math.cos(rest)) * data.rx);
+      data.setY((Math.sin(a) - Math.sin(rest)) * data.ry);
+    },
+  });
+}
+
 /* ── 01 · your sources plug in, the machine turns, the tables come up ── */
 
 /** what a row adds to its table once the piles are full, row after row (companies, people) */
@@ -137,6 +169,7 @@ function buildT1(stage: HTMLElement): Built {
   const roll = piles.l.length - full;
   if (full < 1 || roll < 1 || piles.r.length !== piles.l.length) throw new Error("lp-toy t1: the two piles, at every height");
   registerCountPlugin();
+  registerOrbitPlugin();
   toyDecode(stage);
 
   const path = (dock: number) => (art.paths as unknown as Record<string, readonly Point[]>)[`cable${dock}`];
@@ -209,16 +242,18 @@ function buildT1(stage: HTMLElement): Built {
       }
     });
   };
-  /** the riders' rest on the turntable, and how far each has turned */
-  const rests = riders.map((rider) => Number(rider.style.getPropertyValue("--toy-a")) || 0);
-  let turned = -3;
-  riders.forEach((rider, i) => set(rider, { "--toy-a": rests[i] + turned }));
-  /** the machine turns from the first bead in to the last row out */
+  /** the riders' rest on the turntable (the markup's), the ring, and how far it has turned */
+  const rests = riders.map((rider) => num(rider, "rest") || 0);
+  const ring = { rx: anchor("ring-x")[0] - anchor("ring-o")[0], ry: anchor("ring-z")[1] - anchor("ring-o")[1] };
+  let turned = 0;
+  /** the machine turns from the first bead in to the last row out: whole turns, so that the
+      riders are back on their rest when it stops */
   const turn = (leaves: readonly number[], turns: number) => {
     const from = leaves[0] + RUN;
     const to = leaves[leaves.length - 1] + RUN + INSIDE + HOP + 0.25;
+    const was = turned;
     turned += turns;
-    riders.forEach((rider, i) => tl.to(rider, { "--toy-a": rests[i] + turned, duration: to - from, ease: "power1.inOut" }, from));
+    riders.forEach((rider, i) => tl.to(rider, { toyOrbit: { rest: rests[i], from: was, to: turned, ...ring }, duration: to - from, ease: "power1.inOut" }, from));
     return to;
   };
 
@@ -409,17 +444,24 @@ function buildT2(stage: HTMLElement): Built {
 
 function buildT3(stage: HTMLElement): Built {
   const q = toyQuery(stage, "t3");
-  const art = ART_BRAIN;
-  const brain = q.one(".lp-t3-brain");
+  const data = (el: Element, key: string) => (el as HTMLElement).dataset[key] ?? "";
   const halo = q.one(".lp-t3-halo");
-  const byPlace = (a: Element, b: Element) => num(a as HTMLElement, "at") - num(b as HTMLElement, "at");
-  /** each place a tag hangs at: its lead to the brain, and the ring that marks a change there */
-  const leads = q.all<SVGPathElement>(".lp-t3-leads path").sort(byPlace);
-  const rings = q.all(".lp-t3-ring").sort(byPlace);
+  const centre = q.one<SVGCircleElement>(".lp-t3-centre");
+  const hubs = q.all<SVGCircleElement>(".lp-t3-hub");
+  const hubOf = (id: string) => hubs.find((hub) => data(hub, "hub") === id);
+  /** the points that come and go from one round to the next: each with its branch and the ring
+      that marks it */
+  const pointsOf = (kind: string) =>
+    q.all<SVGCircleElement>(`.lp-t3-dot[data-kind="${kind}"]`).map((dot) => {
+      const same = `[data-kind="${kind}"][data-hub="${data(dot, "hub")}"][data-n="${data(dot, "n")}"]`;
+      return { dot, edge: q.one<SVGPathElement>(`.lp-t3-edge${same}`), ring: q.one(`.lp-t3-ring${same}`) };
+    });
+  const goes = pointsOf("goes");
+  const comes = pointsOf("comes");
   /** a round's pieces (LpToySteps.tsx THOUGHTS): "a" is the picture, "b" the next round's */
   const thoughtOf = (id: string) => {
     const thought = {
-      tags: q.all(`.lp-t3-tag[data-round="${id}"]`).sort(byPlace),
+      tags: q.all(`.lp-t3-tag[data-round="${id}"]`),
       runs: q.all(`.lp-t3-run[data-round="${id}"]`),
       ideas: q.all(`.lp-t3-idea[data-round="${id}"]`),
       play: q.one(`.lp-t3-play[data-round="${id}"]`),
@@ -429,25 +471,11 @@ function buildT3(stage: HTMLElement): Built {
   };
   const first = thoughtOf("a");
   const other = thoughtOf("b");
-  if (!leads.length || leads.length !== first.tags.length || rings.length !== leads.length) throw new Error("lp-toy t3: a lead and a ring for each tag of the picture");
-  toyDecode(stage);
-  const heart = (art.anchors as unknown as Record<string, Point>).centre;
-  /** the way a signal takes along each lead, tag to brain (stage px) */
-  const STEPS = 8;
-  const ways = leads.map((path) => {
-    const length = path.getTotalLength();
-    return Array.from({ length: STEPS + 1 }, (_, i): Point => {
-      const at = path.getPointAtLength((length * i) / STEPS);
-      return [at.x, at.y];
-    });
-  });
-  /** the tags that show on the next round: three of the picture's give their place */
-  const swaps = other.tags.map((tag) => ({ place: num(tag, "at"), out: first.tags[num(tag, "at")], into: tag }));
-  if (swaps.some((swap) => !swap.out)) throw new Error("lp-toy t3: a tag of the next round has no place");
-  const tagsOf = (thought: typeof first) => (thought === first ? first.tags : first.tags.map((tag, place) => swaps.find((swap) => swap.place === place)?.into ?? tag));
-  /** where an idea rests: it flies there from the brain */
+  if (!hubs.length || !goes.length || !comes.length) throw new Error("lp-toy t3: the Brain's hubs, and the points that come and go");
+  const heart: Point = [Number(centre.getAttribute("cx")), Number(centre.getAttribute("cy"))];
+  /** where an idea rests: it flies there from the centre */
   const restOf = (el: HTMLElement): Point => [parseFloat(el.style.left), parseFloat(el.style.top)];
-  /** an idea before it comes out: on the brain, small */
+  /** an idea before it comes out: on the centre, small */
   const inHeart = (idea: HTMLElement) => {
     const rest = restOf(idea);
     return { x: heart[0] - rest[0], y: heart[1] - rest[1], scale: 0.3 };
@@ -455,63 +483,73 @@ function buildT3(stage: HTMLElement): Built {
   const PLAY_AWAY = { autoAlpha: 0, y: 16, scale: 0.92 };
   const HALO_LOW = { opacity: 0.3, scale: 0.78 };
 
-  // frame 0: the brain on its stand, nothing round it yet
+  // frame 0: the Brain, whole and still; no tag on it, no idea yet
   const set = gsap.set;
+  // (a point of the graph swells from its own middle)
+  set([centre, ...hubs, ...q.all(".lp-t3-dot")], { transformOrigin: "50% 50%" });
   set(halo, HALO_LOW);
-  toyHidePop([...first.tags, ...other.tags], 0.6);
-  // (autoRound off: buildT2 has why)
-  set(leads, { autoAlpha: 0, strokeDashoffset: 1, autoRound: false });
-  set(rings, { autoAlpha: 0, scale: 0.4 });
+  for (const point of comes) {
+    set(point.dot, { autoAlpha: 0, scale: 0 });
+    // (autoRound off: buildT2 has why)
+    set(point.edge, { autoAlpha: 0, strokeDashoffset: 1, autoRound: false });
+  }
+  set(
+    [...goes, ...comes].map((point) => point.ring),
+    { autoAlpha: 0, scale: 0.4 },
+  );
   for (const thought of [first, other]) {
+    toyHidePop(thought.tags, 0.6);
     set(thought.runs, { autoAlpha: 0, scale: 0.5 });
     thought.ideas.forEach((idea) => set(idea, { autoAlpha: 0, ...inHeart(idea) }));
     set(thought.play, PLAY_AWAY);
   }
 
   const tl = gsap.timeline({ paused: true });
-  /** a piece swells and settles: a tag as its signal leaves, the brain as it thinks */
-  const swell = (el: gsap.TweenTarget, at: number, by = 1.07) =>
-    tl.to(el, { keyframes: [{ scale: by, duration: 0.16, ease: "power2.out" }, { scale: 1, duration: 0.34, ease: "power2.inOut" }], force3D: false }, at);
-  /** a tag comes up at its place, and its lead is drawn to the brain */
-  const tagUp = (tag: HTMLElement, place: number, at: number) => {
-    toyPop(tl, tag, at, 0.42);
-    tl.to(leads[place], { autoAlpha: 1, duration: TOY_STEP, ease: "none" }, at + 0.05);
-    tl.to(leads[place], { strokeDashoffset: 0, duration: 0.3, ease: "power2.out", autoRound: false }, at + 0.05);
-  };
+  /** a hub, or the centre, swells and settles: what a signal does to it as it passes */
+  const swell = (el: gsap.TweenTarget, at: number, by: number) =>
+    tl.to(el, { keyframes: [{ scale: by, duration: 0.16, ease: "power2.out" }, { scale: 1, duration: 0.34, ease: "power2.inOut" }] }, at);
 
-  /** The Brain thinks: a signal leaves each tag in turn and runs along its lead into the brain,
-      which swells; the ideas come out, one after the other, then the Play it recommends.
-      Returns when the reader has had the time to read it. */
+  /** The Brain thinks: signals run in, each from a point to its hub, then on to the centre. The
+      first one through a hub brings up the hub's tag. The centre swells, the ideas come out one
+      after the other, then the Play it recommends. Returns when the reader has had the time to
+      read it. */
   const thinkAt = (thought: typeof first, at: number) => {
-    const tags = tagsOf(thought);
     const EVERY = 0.2;
-    const ALONG = 0.4;
-    const INTO = 0.28;
+    const TO_HUB = 0.26;
+    const TO_HEART = 0.34;
+    const tagged = new Set<string>();
     let lastIn = at;
     thought.runs.forEach((run, k) => {
-      const place = num(run, "at");
-      const way = ways[place];
-      if (!way || !tags[place]) throw new Error("lp-toy t3: a signal without its tag");
-      const from = way[0];
+      const id = data(run, "hub");
+      const hub = hubOf(id);
+      if (!hub) throw new Error("lp-toy t3: a signal without its hub");
+      const from: Point = [num(run, "x"), num(run, "y")];
+      const via: Point = [num(run, "hx"), num(run, "hy")];
       const t = at + k * EVERY;
-      swell(tags[place], t, 1.09);
       tl.to(run, { autoAlpha: 1, scale: 1, duration: 0.12, ease: "power1.out", force3D: false }, t);
-      for (let i = 1; i <= STEPS; i++) {
-        tl.to(run, { x: way[i][0] - from[0], y: way[i][1] - from[1], duration: ALONG / STEPS, ease: "none", force3D: false }, t + 0.06 + ((i - 1) * ALONG) / STEPS);
+      tl.to(run, { x: via[0] - from[0], y: via[1] - from[1], duration: TO_HUB, ease: "power1.in", force3D: false }, t + 0.06);
+      const reaches = t + 0.06 + TO_HUB;
+      swell(hub, reaches - 0.04, 1.6);
+      const tag = thought.tags.find((el) => data(el, "hub") === id);
+      if (tag && !tagged.has(id)) {
+        tagged.add(id);
+        toyPop(tl, tag, reaches, 0.4);
       }
-      tl.to(run, { x: heart[0] - from[0], y: heart[1] - from[1], duration: INTO, ease: "power1.in", force3D: false }, t + 0.06 + ALONG);
-      lastIn = t + 0.06 + ALONG + INTO;
-      tl.to(run, { autoAlpha: 0, scale: 0.4, duration: 0.1, ease: "power1.in", force3D: false }, lastIn - 0.08);
-      // (the brain takes each one in: its light grows)
+      tl.to(run, { x: heart[0] - from[0], y: heart[1] - from[1], duration: TO_HEART, ease: "power1.inOut", force3D: false }, reaches);
+      lastIn = reaches + TO_HEART;
+      tl.to(run, { autoAlpha: 0, scale: 0.4, duration: 0.1, ease: "power1.in", force3D: false }, lastIn - 0.06);
+      // (the centre takes each one in: its light grows)
       tl.to(halo, { opacity: 0.5 + 0.1 * k, scale: 0.84 + 0.035 * k, duration: 0.2, ease: "power1.out", force3D: false }, lastIn - 0.05);
     });
-    // they cross: the brain swells, and the ideas come out, one after the other
+    // (a tag whose hub no signal went through comes up with the last of them)
+    thought.tags.filter((tag) => !tagged.has(data(tag, "hub"))).forEach((tag) => toyPop(tl, tag, lastIn - 0.2, 0.4));
+    // they cross: the centre swells, and the ideas come out, one after the other
     const thinks = lastIn + 0.05;
-    swell(brain, thinks, 1.08);
+    swell(centre, thinks, 1.4);
     tl.to(halo, { opacity: 1, scale: 1, duration: 0.35, ease: "power2.out", force3D: false }, thinks);
     let t = thinks + 0.22;
     thought.ideas.forEach((idea) => {
-      // (it drops out under the brain, then goes to its side: clear of the tags)
+      // (it drops out under the Brain, then goes to its side: clear of the tags)
       tl.to(idea, { autoAlpha: 1, duration: 0.1, ease: "none" }, t);
       tl.to(idea, { y: 0, duration: 0.5, ease: "power2.out", force3D: false }, t);
       tl.to(idea, { x: 0, duration: 0.5, ease: "power2.inOut", force3D: false }, t);
@@ -520,54 +558,59 @@ function buildT3(stage: HTMLElement): Built {
     });
     // and the one it recommends
     const says = t + 0.2;
-    swell(brain, says - 0.1, 1.05);
+    swell(centre, says - 0.1, 1.25);
     tl.to(thought.play, { autoAlpha: 1, duration: 0.16, ease: "power1.out" }, says);
     tl.to(thought.play, { y: 0, scale: 1, duration: 0.5, ease: TOY_EASE.pop, force3D: false }, says);
     return says + 0.9;
   };
-  /** What it came up with goes: the ideas, the Play; its light dims. Every piece ends where
-      the Brain's next thought finds it. Returns when it is clear. */
+  /** What it came up with goes: the ideas, the Play, the tags; its light dims. Every piece ends
+      where the Brain's next thought finds it. Returns when it is clear. */
   const forgetAt = (thought: typeof first, at: number) => {
     thought.ideas.forEach((idea, k) => tl.to(idea, { autoAlpha: 0, y: 8, duration: 0.22, ease: "power1.in", force3D: false }, at + k * 0.05));
     tl.to(thought.play, { ...PLAY_AWAY, duration: 0.26, ease: "power1.in", force3D: false }, at);
+    thought.tags.forEach((tag, k) => tl.to(tag, { autoAlpha: 0, scale: 0.6, duration: 0.2, ease: "power1.in", force3D: false }, at + 0.05 + k * 0.04));
     tl.to(halo, { ...HALO_LOW, duration: 0.4, ease: "power1.inOut", force3D: false }, at);
-    const reset = at + 0.34;
+    const reset = at + 0.36;
     thought.ideas.forEach((idea) => tl.to(idea, { ...inHeart(idea), duration: TOY_STEP, ease: "none" }, reset));
     tl.to(thought.runs, { x: 0, y: 0, scale: 0.5, duration: TOY_STEP, ease: "none" }, reset);
-    return at + 0.4;
+    return at + 0.42;
   };
-  /** The Brain changes: at each of these places, under a ring that opens there, the tag goes
-      (its lead draws back to it) and another comes up. Returns when it has. */
-  const changeAt = (list: { place: number; out: HTMLElement; into: HTMLElement }[], at: number) => {
-    const EVERY = 0.3;
-    list.forEach(({ place, out, into }, k) => {
-      const t = at + k * EVERY;
-      const ring = rings[place];
+  /** The Brain changes: some of its points draw back into their hubs, others grow out of
+      theirs, each under a ring that opens where it was or will be. Returns when it has. */
+  const changeAt = (out: typeof goes, into: typeof goes, at: number) => {
+    const ringAt = (ring: HTMLElement, t: number) => {
       tl.fromTo(ring, { autoAlpha: 0.9, scale: 0.4 }, { scale: 1.7, duration: 0.6, ease: "power2.out", force3D: false, immediateRender: false }, t);
       tl.to(ring, { autoAlpha: 0, duration: 0.4, ease: "power1.in" }, t + 0.2);
-      tl.to(out, { autoAlpha: 0, scale: 0.6, duration: 0.2, ease: "power1.in", force3D: false }, t + 0.04);
-      tl.to(leads[place], { strokeDashoffset: 1, duration: 0.22, ease: "power1.in", autoRound: false }, t + 0.04);
-      tagUp(into, place, t + 0.34);
+    };
+    out.forEach((point, k) => {
+      const t = at + k * 0.14;
+      ringAt(point.ring, t);
+      tl.to(point.dot, { scale: 0, duration: 0.2, ease: "power2.in" }, t + 0.04);
+      tl.to(point.dot, { autoAlpha: 0, duration: TOY_STEP, ease: "none" }, t + 0.24);
+      tl.to(point.edge, { strokeDashoffset: 1, duration: 0.24, ease: "power1.in", autoRound: false }, t + 0.1);
+      tl.to(point.edge, { autoAlpha: 0, duration: TOY_STEP, ease: "none" }, t + 0.34);
     });
-    return at + (list.length - 1) * EVERY + 0.34 + 0.6;
+    const grows = at + out.length * 0.14 + 0.25;
+    into.forEach((point, k) => {
+      const t = grows + k * 0.14;
+      tl.to(point.edge, { autoAlpha: 1, duration: TOY_STEP, ease: "none" }, t);
+      tl.to(point.edge, { strokeDashoffset: 0, duration: 0.26, ease: "power2.out", autoRound: false }, t);
+      tl.to(point.dot, { autoAlpha: 1, duration: TOY_STEP, ease: "none" }, t + 0.16);
+      tl.to(point.dot, { scale: 1, duration: 0.36, ease: TOY_EASE.pop }, t + 0.16);
+      ringAt(point.ring, t + 0.2);
+    });
+    return grows + into.length * 0.14 + 0.55;
   };
 
-  /* the opening: the brain is set down, what it holds comes up round it, and it thinks */
-  tl.to(brain, { keyframes: [{ scaleY: 0.94, scaleX: 1.03, duration: 0.14, ease: "power2.out" }, { scaleY: 1, scaleX: 1, duration: 0.4, ease: TOY_EASE.pop }], force3D: false }, 0.15);
-  // (a tag on its left, then one on its right, top to bottom)
-  const half = Math.ceil(first.tags.length / 2);
-  const order = Array.from({ length: first.tags.length }, (_, k) => (k % 2 ? half + (k - 1) / 2 : k / 2)).filter((place) => place < first.tags.length);
-  order.forEach((place, k) => tagUp(first.tags[place], place, 0.5 + k * 0.15));
-  const picture = thinkAt(first, 0.5 + order.length * 0.15 + 0.45);
+  /* the opening: the Brain wakes (a ripple through its hubs, from the first one round) and thinks */
+  hubs.forEach((hub, k) => swell(hub, 0.2 + k * 0.06, 1.45));
+  const picture = thinkAt(first, 0.2 + hubs.length * 0.06 + 0.5);
   /* the round: the picture holds; the Brain changes and thinks again, holds, and comes back */
   let t = forgetAt(first, picture + HOLD);
-  t = changeAt(swaps, t);
+  t = changeAt(goes, comes, t);
   t = thinkAt(other, t);
   t = forgetAt(other, t + HOLD);
-  t = changeAt(
-    swaps.map((swap) => ({ place: swap.place, out: swap.into, into: swap.out })),
-    t,
-  );
+  t = changeAt(comes, goes, t);
   t = thinkAt(first, t);
   tl.to(stage, { duration: TOY_STEP }, t);
   return { tl, cue: 0, loop: picture, cleanup() {} };
@@ -577,5 +620,20 @@ const BUILDERS = { t1: buildT1, t2: buildT2, t3: buildT3 } as const;
 export type ToyStepVariant = keyof typeof BUILDERS;
 
 export function buildToyStep(variant: ToyStepVariant, stage: HTMLElement): Built {
-  return BUILDERS[variant](stage);
+  // the picture's drawings go on a canvas (lp-toy-canvas.ts): read at rest, before the take writes
+  const canvas = toyCanvas(stage);
+  try {
+    const built = BUILDERS[variant](stage);
+    canvas.follow(built.tl);
+    return {
+      ...built,
+      cleanup() {
+        canvas.dispose();
+        built.cleanup();
+      },
+    };
+  } catch (err) {
+    canvas.dispose();
+    throw err;
+  }
 }

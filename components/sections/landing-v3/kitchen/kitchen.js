@@ -30,6 +30,17 @@ const DEG = Math.PI / 180;
  */
 export const POSTER_TIMES = { with: 31.52, without: 41.6 };
 
+/**
+ * A loop that cannot keep up gives the picture back (`onSlow`): under SLOW_FPS frames a second
+ * for SLOW_WINDOWS windows of SLOW_WINDOW_MS in a row. A still picture is better than a slide
+ * show that heats the device (a slow phone, a browser that draws WebGL in software). The same
+ * line as the page's other WebGL (LpRainbowGL's governor): 12 a second, two windows of 2 s.
+ * A phone in low-power mode draws 30 a second and passes.
+ */
+const SLOW_FPS = 12;
+const SLOW_WINDOW_MS = 2000;
+const SLOW_WINDOWS = 2;
+
 /** The light of the scene: a soft warm studio, built as a tiny scene and blurred. */
 function makeEnvironment(renderer) {
   const env = new THREE.Scene();
@@ -122,7 +133,10 @@ export function createPancakeKitchen(container, options = {}) {
   key.position.set(centre.x - 8.5, 17, centre.z + 9.5);
   key.target.position.set(centre.x, 0, centre.z);
   key.castShadow = true;
-  const small = Math.min(container.clientWidth || 1280, 1280) * Math.min(window.devicePixelRatio || 1, opts.maxPixelRatio) < 900;
+  // a small picture (a phone) takes a quarter of the shadow map: the blur of a soft shadow is
+  // most of a frame's work there. By the picture's width on the page, not by its pixels, so that
+  // a phone's still (scripts/kitchen-posters.mjs, 390 wide) and its live scene cast one shadow.
+  const small = (container.clientWidth || 1280) < 600;
   key.shadow.mapSize.set(small ? 1024 : 2048, small ? 1024 : 2048);
   Object.assign(key.shadow.camera, { left: -15, right: 15, top: 11, bottom: -11, near: 2, far: 50 });
   key.shadow.bias = -0.0005;
@@ -202,6 +216,11 @@ export function createPancakeKitchen(container, options = {}) {
   let raf = 0;
   let last = 0;
   let visible = true;
+  // the loop's own pace, a window at a time (SLOW_FPS above)
+  let windowStart = 0;
+  let windowFrames = 0;
+  let slowWindows = 0;
+  let toldSlow = false;
 
   function draw(dt) {
     if (opts.interactive) {
@@ -223,6 +242,20 @@ export function createPancakeKitchen(container, options = {}) {
     last = now;
     time += dt * speed;
     draw(dt);
+    if (opts.onSlow && !toldSlow) {
+      windowFrames++;
+      const span = now - windowStart;
+      if (span >= SLOW_WINDOW_MS) {
+        slowWindows = (windowFrames * 1000) / span < SLOW_FPS ? slowWindows + 1 : 0;
+        windowStart = now;
+        windowFrames = 0;
+        if (slowWindows >= SLOW_WINDOWS) {
+          toldSlow = true;
+          opts.onSlow();
+          return;
+        }
+      }
+    }
     raf = requestAnimationFrame(frame);
   }
 
@@ -230,6 +263,9 @@ export function createPancakeKitchen(container, options = {}) {
     if (running || !visible) return;
     running = true;
     last = performance.now();
+    // (a window is time spent drawing: one cut by a pause is dropped)
+    windowStart = last;
+    windowFrames = 0;
     raf = requestAnimationFrame(frame);
   }
 

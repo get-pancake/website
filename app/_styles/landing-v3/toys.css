@@ -7,7 +7,9 @@
    The markup is each picture's END. A piece that only shows on the way carries .lp-toy-gone and
    rests hidden; the take (lp-toy-step-timelines.ts, lp-toy-story-timelines.ts) shows it and
    hides it again before it ends. No infinite keyframes, no will-change: GSAP only. A picture
-   goes round (lp-play-once `loop`); what only its next round shows rests hidden too.
+   goes round (lp-play-once `loop`); what only its next round shows rests hidden too. While a
+   take plays, the drawings are painted on a canvas (lp-toy-canvas.ts): a drawing is moved by
+   GSAP alone, never by a rule of this file.
 
    Traps:
    T1 the stage's own rules (`.lp-step-stage img { display: block }`, `.lp-dive-scene * {
@@ -37,6 +39,23 @@
 /* what only shows on the way */
 .lp-toy .lp-toy-gone {
   visibility: hidden;
+}
+/* The drawings on a canvas (lp-toy-canvas.ts): a canvas a run of drawings, where the run's first
+   one was. Once its first frame is drawn the picture carries [data-toy-canvas], and the page's
+   own drawings (and a wrapper that holds nothing else) are no longer displayed: GSAP still
+   writes to them, which then costs the page nothing. Without the attribute (no script, reduced
+   motion, far from the screen, `?lp-toy=dom`) the drawings are the render, as before. */
+.lp-toy .lp-toy-canvas {
+  display: block;
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+}
+.lp-toy[data-toy-canvas] .lp-toy-pic,
+.lp-toy[data-toy-canvas] [data-toy-group] {
+  display: none;
 }
 
 /* a vendor's own mark on a white disc: the outer box is a point of the set, the disc hangs from
@@ -159,17 +178,6 @@
 /* a cable draws in from its dock down: the take opens this clip */
 .lp-toy .lp-t1-cable {
   clip-path: inset(0% 0% 0% 0%);
-}
-/* a bead on the turntable: --toy-a is where it is on the ring, in turns from the ring's right.
-   The ring is a circle of the set, so an ellipse of the picture (--toy-rx, --toy-ry). */
-.lp-toy .lp-t1-rider {
-  translate: calc(cos(var(--toy-a) * 1turn) * var(--toy-rx)) calc(sin(var(--toy-a) * 1turn) * var(--toy-ry));
-}
-/* (an engine without CSS trigonometry would leave the four beads on the hub: none there) */
-@supports not (translate: calc(cos(0.25turn) * 1px) 0px) {
-  .lp-toy .lp-t1-rider {
-    display: none;
-  }
 }
 /* A source's mark lies flat on its dock, and Pancake's on the hub: what lies flat on the set is
    an ellipse of the picture (--toy-flat, the set's own camera). Founder, 2026-11-12: "une
@@ -365,61 +373,73 @@
   padding: 1px 7px;
 }
 
-/* ── 03 · the Brain ── */
-/* the light round the brain: low at rest before the take, full once the signals have crossed */
+/* ── 03 · the Brain ──
+   The one picture that is not a 3D set: the page draws it itself (an SVG over the stage), flat,
+   as the app draws the Brain. Fine branches, small points, a hub of each colour, a dark centre.
+   lp-toy-data.ts TOY_BRAIN has why. */
+/* the light round its centre: low at rest before the take, full once the signals have crossed */
 .lp-toy .lp-t3-halo {
-  background: radial-gradient(closest-side, rgba(186, 139, 255, 0.5), rgba(255, 122, 160, 0.2) 55%, rgba(255, 122, 160, 0));
+  background: radial-gradient(closest-side, rgba(186, 139, 255, 0.42), rgba(255, 122, 160, 0.18) 55%, rgba(255, 122, 160, 0));
   border-radius: 50%;
-  height: 250px;
-  margin: -125px 0 0 -125px;
+  height: 190px;
+  margin: -95px 0 0 -95px;
   position: absolute;
-  width: 250px;
+  width: 190px;
 }
-/* the brain's shadow on its stand: the set draws the brain alone, so that it can swell */
-.lp-toy .lp-t3-shade {
-  background: radial-gradient(closest-side, rgba(44, 0, 42, 0.3), rgba(44, 0, 42, 0.14) 55%, rgba(44, 0, 42, 0));
-  border-radius: 50%;
-  height: 70px;
-  margin: -33px 0 0 -84px;
-  position: absolute;
-  width: 168px;
-}
-/* a lead from a tag's place to the brain: it rests drawn (its dash is its own length) */
-.lp-toy .lp-t3-leads {
-  fill: none;
+.lp-toy .lp-t3-graph {
   height: 100%;
   inset: 0;
   overflow: visible;
   position: absolute;
   width: 100%;
 }
-.lp-toy .lp-t3-leads path {
-  stroke: var(--lp-ink-60);
+/* a branch: it rests drawn (its dash is its own length, pathLength 1) */
+.lp-toy .lp-t3-edge {
+  fill: none;
+  stroke: var(--lp-ink-50);
   stroke-dasharray: 1;
   stroke-dashoffset: 0;
   stroke-linecap: round;
-  stroke-width: 1.25;
+  stroke-width: 0.9;
 }
-/* a ring opens where a tag comes or goes, in its tone */
+.lp-toy .lp-t3-edge[data-kind="hub"] {
+  stroke-width: 1.2;
+}
+/* a point, a hub and the centre: a hub and the centre carry a rim of the card's own colour, so
+   that they sit over the branches that meet on them */
+.lp-toy .lp-t3-dot,
+.lp-toy .lp-t3-hub {
+  fill: var(--toy-tone);
+}
+.lp-toy .lp-t3-hub {
+  stroke: var(--lp-card-cream);
+  stroke-width: 2.5;
+}
+.lp-toy .lp-t3-centre {
+  fill: var(--lp-inverted-surface);
+  stroke: var(--lp-card-cream);
+  stroke-width: 3;
+}
+/* a ring opens where a point comes or goes, in its hub's tone */
 .lp-toy .lp-t3-ring {
-  border: 2px solid var(--toy-tone, var(--lp-pink-30));
+  border: 1.5px solid var(--toy-tone, var(--lp-pink-30));
   border-radius: 50%;
-  height: 22px;
-  margin: -11px 0 0 -11px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
   position: absolute;
-  width: 22px;
+  width: 18px;
 }
-/* a signal on its way in: a point of light in its tag's tone */
+/* a signal on its way in: a point of light in its hub's tone */
 .lp-toy .lp-t3-run {
   background: var(--toy-tone, var(--lp-pink-30));
   border-radius: 50%;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.85), 0 0 12px 3px var(--toy-tone, var(--lp-pink-30));
-  height: 8px;
-  margin: -4px 0 0 -4px;
+  box-shadow: 0 0 0 2.5px rgba(255, 255, 255, 0.9), 0 0 10px 3px var(--toy-tone, var(--lp-pink-30));
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
   position: absolute;
-  width: 8px;
+  width: 7px;
 }
-/* what the Brain holds: a small tag, a dot of its tone before its name */
+/* what the Brain draws on: a small tag by a hub, a dot of the hub's tone before its name */
 .lp-toy .lp-t3-tag .lp-toy-badge__in {
   box-shadow: var(--toy-shadow-soft);
   font-size: 11.5px;
@@ -749,8 +769,7 @@
   color: var(--lp-ink-70);
   font-size: calc(12px * var(--toy-k));
 }
-/* who writes: a personal agent's mark (OpenClaw), light on a dark disc, as it was drawn for
-   the page's inverted surfaces (LpAgentMarks.tsx: its eyes are the page's blue) */
+/* who writes: a personal agent's mark (Grok Bot, LpAgentMarks.tsx), light on a dark disc */
 .lp-toy .lp-tp-avatar {
   background: var(--lp-inverted-surface);
   border-radius: 50%;
@@ -764,8 +783,8 @@
 }
 .lp-toy .lp-tp-avatar svg {
   display: block;
-  height: 58%;
-  width: 58%;
+  height: 64%;
+  width: 64%;
 }
 .lp-toy .lp-tp-row {
   align-items: flex-start;
@@ -869,12 +888,23 @@
   position: absolute;
   width: 130px;
 }
-/* the radar's beam, on its face */
+/* The radar's beam, on its face. The face is a point at the radar's centre, flattened once (as
+   .lp-t2-face); the beam turns inside it. Until 2026-11-12 the beam flattened itself (`scale: 1
+   0.72`) and GSAP turned it: GSAP folds an element's own `scale` into its transform, after the
+   rotation, so the flat disc turned as one piece and stood on its edge half-way round. */
+.lp-toy .lp-te-face {
+  display: block;
+  height: 0;
+  position: absolute;
+  transform: scaleY(0.72);
+  width: 0;
+}
 .lp-toy .lp-te-beam {
   background: conic-gradient(from 90deg, rgba(255, 122, 160, 0) 0deg, rgba(255, 122, 160, 0) 250deg, rgba(255, 150, 180, 0.75) 360deg);
   border-radius: 50%;
+  left: 0;
   position: absolute;
-  scale: 1 0.72;
+  top: 0;
 }
 /* Pancake, on the stand's front */
 .lp-toy .lp-te-badge {
