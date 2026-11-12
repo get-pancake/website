@@ -62,6 +62,15 @@ export function LpBento({
   } as CSSProperties;
   return (
     <section className={sky ? "lp-bento lp-bento--sky" : "lp-bento"} aria-labelledby="lp-bento-title" style={size}>
+      {/* the sky's clouds round the cards (sky.css places them; LpSkyParallax, mounted by the deep
+          dive above, drifts every cloud of the page on scroll). Before the content: it paints over them. */}
+      {sky ? (
+        <>
+          <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--b" />
+          <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--a" />
+          <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--c" />
+        </>
+      ) : null}
       {/* the paddings live on this wrapper, not the section: the section is content-visibility:auto
           (foundation.css), whose contain-intrinsic-size estimate is the CONTENT box */}
       <div className="lp-bento__inner">
