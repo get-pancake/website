@@ -235,7 +235,16 @@ export function toyCanvas(root: HTMLElement): ToyCanvas {
       if (!plain) return;
     }
   };
-  visit(set, null, null);
+  // A picture may be read while it is hidden as a whole (a panel of the carousel that is not on:
+  // visibility is inherited, so every drawing in it computes "hidden"). What a drawing gets from
+  // above the picture is not its own rest: the picture is read as if it showed.
+  const hiddenFromAbove = root.style.visibility;
+  root.style.visibility = "visible";
+  try {
+    visit(set, null, null);
+  } finally {
+    root.style.visibility = hiddenFromAbove;
+  }
   if (!plain || !pics.length) return NOTHING;
   // GSAP reads an element's transform the first time it moves it. Have it read them now, while
   // the drawings are displayed: it cannot read one that is not (it would move it in the document
