@@ -45,6 +45,8 @@ export function LpVisionStepAnim({ variant, alt, className, children }: { varian
       designWidth: 464,
       load: () => loadAnimation(variant),
       restIsEnd: true,
+      // a card a fast scroll brought in plays once the visitor stops on it (lp-play-once.ts)
+      playWhenStopped: true,
       qa: { registry: "__lpStep", key: variant },
     });
   }, [variant]);
