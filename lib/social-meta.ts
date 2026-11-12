@@ -34,20 +34,24 @@ export const X_HANDLE = "@pancakegtm";
  * og-image-2026-10-28b.png, redrawn over the same card: first line 92 px before the rainbow),
  * and on 2026-10-30 "Infrastructure powering" again (a co-founder asked "to power or
  * powering?" on the preview; the founder: "Switch to 'powering'"): the 2026-10-28 card is
- * back, its rainbow byte for byte the other cards'. The file has
+ * back, its rainbow byte for byte the other cards'. On 2026-11-12, with the homepage's H1
+ * "Infrastructure powering your revenue factory" (the vision homepage, website#388; the founder:
+ * "fix shared links too"), its second line was redrawn as "your revenue factory" at the card's own
+ * 82 px, pen at (109, 432) (og-image-2026-11-12.png: only that line's band changed; redrawing
+ * the old line at the same pen gives back the old card pixel for pixel). The file has
  * a NEW name because chat apps and social networks keep a picture by its address: the same
  * address would keep showing the old headline. /og-image.png holds the same new picture,
  * for any page or post that still points at it. When this card changes again: new file
  * name here, and the app's own copy too (pancake-cmo apps/frontend/index.html).
  */
-export const OG_IMAGE = "/og-image-2026-10-28.png";
+export const OG_IMAGE = "/og-image-2026-11-12.png";
 
 /** Alt text = the text printed in the card (audit 8.4), never the page's own name. */
-export const OG_IMAGE_ALT = "Infrastructure powering your GTM factory";
+export const OG_IMAGE_ALT = "Infrastructure powering your revenue factory";
 
 /** og:title / twitter:title of the homepage and of the root-layout fallback (one
  *  punctuation for both, audit 6.13). The homepage <title> stays exactly "Pancake". */
-export const HOME_SOCIAL_TITLE = "Pancake — Infrastructure powering your GTM factory";
+export const HOME_SOCIAL_TITLE = "Pancake — Infrastructure powering your revenue factory";
 
 export type SocialImage = {
   url: string;
