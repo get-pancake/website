@@ -90,6 +90,8 @@ const SORT = 0.6;
 const CAMERA = 0.65;
 /** how far the camera pulls back (the lens's scale) */
 const PULL = 0.55;
+/** the table's dip while a column opens (it is laid out once, under it) */
+const DIP = 0.14;
 /** from a batch landed to the fits recomputed, and how long the fits count */
 const THINK = 0.35;
 const COUNT = 0.3;
@@ -141,8 +143,31 @@ function registerFlagPlugins() {
       else data.t.removeAttribute(data.a);
     },
   });
-  gsap.registerPlugin(plugin("flagOn"), plugin("flagOff"));
+  gsap.registerPlugin(plugin("flagOn"), plugin("flagOff"), typePlugin);
 }
+
+/* The composer's typing as one seek-safe tween: its ratio is how much of the line is typed. A
+   plugin, not an onUpdate: a seek (the driver's progress(1, true), a pause at a time) suppresses
+   callbacks, a plugin renders on every render. Ratio 0 shows nothing and puts the caret at the
+   composer's start; any later ratio shows the glyphs typed by then, the caret after the last. */
+type TypeData = { el: HTMLElement; marks: Glyph[]; x: (v: number) => void; y: (v: number) => void };
+const typePlugin = {
+  name: "typeLine",
+  init(this: TypeData, target: HTMLElement, value: { marks: Glyph[]; caret: HTMLElement }) {
+    this.el = target;
+    this.marks = value.marks;
+    this.x = gsap.quickSetter(value.caret, "x", "px") as (v: number) => void;
+    this.y = gsap.quickSetter(value.caret, "y", "px") as (v: number) => void;
+  },
+  render(ratio: number, d: TypeData) {
+    const n = d.marks.length;
+    const k = Math.min(n - 1, Math.floor(ratio * n - 1 + 1e-6));
+    const g = k < 0 ? null : d.marks[k];
+    d.el.style.clipPath = g ? clipTo(g) : HIDDEN_CLIP;
+    d.x(g ? g.right + 1 : 0);
+    d.y(g ? g.top : 0);
+  },
+};
 
 const fmt = (n: number) => n.toLocaleString("en-US");
 
@@ -174,6 +199,10 @@ function tableOf(root: HTMLElement, $: <T extends Element = HTMLElement>(sel: st
     /** a row's height, its line included (the stylesheet's 34 px if the table has no layout yet) */
     H: body[1].offsetHeight || 34,
     col: (name: string) => head.querySelector<HTMLElement>(`th[data-col="${name}"]`),
+    /** where each row stands as the builder has left it, in the order it builds the take (a
+        re-sort tweens only the rows whose place changes: a tween that moves nothing still costs
+        its build) */
+    pos: new Map<Row, number>(),
   };
 }
 
@@ -292,7 +321,9 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const flag = (el: Element, name: Flag) => set(el, { flagOn: name });
   // the panes: the companies table in front, its lens at rest
   for (const name of PANES) {
-    set(panes[name], { autoAlpha: name === "companies" ? 1 : 0, x: 0 });
+    // (opacity only, kept visible: a hidden pane is painted from nothing on the frame a cut shows
+    // it, a 300 ms frame on a slow phone; a transparent one on its own layer is ready)
+    set(panes[name], { opacity: name === "companies" ? 1 : 0, visibility: "visible", x: 0 });
     set(lenses[name], { scale: 1, x: 0, force3D: false });
     set(tabEls[name], { [name === "companies" ? "flagOn" : "flagOff"]: "data-on" });
   }
@@ -300,6 +331,7 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   O.start.forEach((tr, k) => {
     set(tr, { autoAlpha: 1, y: yAt(C, tr, k) });
     set(numOf(tr), { txt: String(k + 1) });
+    C.pos.set(tr, k);
   });
   for (const tr of C.body) {
     const key = keyOf(tr);
@@ -337,6 +369,7 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   pBefore.forEach((tr, k) => {
     set(tr, { y: yAt(P, tr, k) });
     set(numOf(tr), { txt: String(k + 1) });
+    P.pos.set(tr, k);
   });
   for (const { tr, was } of movers) {
     set(cellOf(tr, "company"), { txt: was.company });
@@ -351,6 +384,7 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   sOld.forEach((tr, k) => {
     set(tr, { autoAlpha: 1, y: yAt(G, tr, k) });
     set(numOf(tr), { txt: String(k + 1) });
+    G.pos.set(tr, k);
   });
   let signals = DB_SIGNALS_STORY.count;
   set([signalsTabCount, signalsCount], { txt: fmt(signals) });
@@ -398,12 +432,12 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     step(placeholder, { autoAlpha: 0 }, t0 - STEP);
     step(caret, { opacity: 1, x: 0, y: 0 }, t0 - 0.25);
     tl.to(send, { opacity: 1, duration: 0.2, ease: "power2.out" }, t0);
-    marks.forEach((g, k) => {
-      const t = t0 + k * DT;
-      step(el, { clipPath: clipTo(g) }, t);
-      step(caret, { x: g.right + 1, y: g.top }, t);
-    });
-    const done = t0 + Math.max(marks.length - 1, 0) * DT;
+    // One tween for the whole line (it was two steps a glyph: ~180 tweens to build for two lines).
+    // It starts a DT before the first glyph (nothing typed) and ends on the last glyph, so any
+    // time, seeked either way, shows the glyphs typed by then and the caret after the last one.
+    const n = marks.length;
+    if (n) tl.to(el, { typeLine: { marks, caret }, duration: n * DT, ease: "none" }, t0 - DT);
+    const done = t0 + Math.max(n - 1, 0) * DT;
     step(el, { clipPath: "none" }, done + 0.08);
     return done;
   };
@@ -454,8 +488,10 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
       rows in `except` take their numbers, and are moved by the caller) */
   const settle = (T: ReturnType<typeof tableOf>, order: Row[], t: number, duration = SORT, ease = "power2.inOut", except: Row[] = []) => {
     order.forEach((tr, k) => {
+      if (T.pos.get(tr) === k) return; // already there, its number with it
       if (!except.includes(tr)) tl.to(tr, { y: yAt(T, tr, k), duration, ease, force3D: false }, t);
       step(numOf(tr), { txt: String(k + 1) }, t + duration * 0.4);
+      T.pos.set(tr, k);
     });
     return t + duration;
   };
@@ -471,10 +507,10 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     const dir = PANES.indexOf(name) > PANES.indexOf(from) ? 1 : -1;
     off(tabEls[from], "data-on", t);
     on(tabEls[name], "data-on", t);
-    tl.to(panes[from], { autoAlpha: 0, duration: CUT_OUT, ease: "power1.in" }, t);
+    tl.to(panes[from], { opacity: 0, duration: CUT_OUT, ease: "power1.in" }, t);
     step(panes[from], { x: 0 }, t + CUT_OUT);
     step(panes[name], { x: 18 * dir }, t + CUT_OUT - STEP);
-    tl.to(panes[name], { autoAlpha: 1, x: 0, duration: CUT, ease: "power2.out" }, t + CUT_OUT);
+    tl.to(panes[name], { opacity: 1, x: 0, duration: CUT, ease: "power2.out" }, t + CUT_OUT);
     shown = name;
     return t + CUT_OUT + CUT;
   };
@@ -562,6 +598,7 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     on(dup, "data-rb", pair);
     for (const tr of [keep, dup]) on(tr, "data-rl", pair);
     tl.to(dup, { y: yAt(C, dup, O.dedup.indexOf(keep)), duration: 0.42, ease: "power2.inOut", force3D: false }, pair + 0.4);
+    C.pos.set(dup, O.dedup.indexOf(keep));
     tl.to(dup, { autoAlpha: 0, duration: 0.22, ease: "power1.in" }, pair + 0.55);
     // (the ring closes on the one row left)
     on(keep, "data-rb", pair + 0.7);
@@ -614,20 +651,24 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   on(gifts[0], "data-rt", o);
   on(gifts[gifts.length - 1], "data-rb", o);
   gifts.forEach((tr) => on(tr, "data-rl", o));
-  off(db, "data-shut-play", o);
-  on(db, "data-wr-play", o);
-  tl.to(db, { "--open-play": 1, duration: 0.45, ease: "power3.out" }, o + STEP);
-  // (a narrow window: the deal's and the signal's columns fold away as this one opens)
-  tl.to(db, { "--keep-narrow": 0, duration: 0.45, ease: "power3.out" }, o + STEP);
-  off(db, "data-keep-narrow", o + 0.46);
+  // The column opens under a short dip of the table: its width (and, on a narrow window, the deal's
+  // and the signal's folding away) changes in one frame, so the table is laid out once. Tweened,
+  // the widths had the whole table laid out again every frame for half a second (a slow phone
+  // dropped to 20 frames a second there)
+  const OPEN = o + DIP;
+  tl.to(lenses.companies, { opacity: 0.3, duration: DIP, ease: "power1.in" }, o);
+  off(db, "data-shut-play", OPEN);
+  on(db, "data-wr-play", OPEN);
+  step(db, { "--open-play": 1, "--keep-narrow": 0 }, OPEN);
+  off(db, "data-keep-narrow", OPEN + STEP);
+  tl.to(lenses.companies, { opacity: 1, duration: 0.3, ease: "power1.out" }, OPEN + STEP * 2);
   const playTh = C.col("next_best_play");
   if (playTh) pulse(playTh, "data-lit", o, 1.3);
   plays.forEach((land) => landAt(land, o + 0.45));
   const live = o + 1.0;
-  plays.forEach((land) => {
-    off(land.td, "data-nostate", live);
-    pulse(land.td, "data-flash", live, FLASH);
-  });
+  // live: each Play's state shows, inside the flash its writing started (a second flash on the
+  // same cell would overlap that one, and a seek back would land on the wrong side of it)
+  plays.forEach((land) => off(land.td, "data-nostate", live));
   status(SAYS.plays, live);
   back(tools.run, live);
   off(db, "data-wr-play", live + 0.35);

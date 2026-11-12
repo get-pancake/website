@@ -118,6 +118,9 @@
   overflow: hidden;
   position: absolute;
   transform: translateX(var(--cut));
+  /* its own layer: what moves in the tables never repaints Claude's side, and the split moves
+     it as a whole */
+  will-change: transform;
   z-index: 1;
 }
 .lp-vcut__dbar {
@@ -301,6 +304,9 @@
   position: absolute;
   right: 0;
   top: var(--vc-bar);
+  /* each table on its own layer, kept painted: a cut between two tables is the compositor's work
+     (the take keeps the panes it hides transparent, not hidden) */
+  will-change: opacity, transform;
 }
 .lp-vcut__pane:not([data-pane="companies"]) {
   opacity: 0;

@@ -135,6 +135,12 @@ export type PlayOnceOptions = {
       this share of the viewport's height, not its first pixel on screen: on a fresh page it is
       cued like a card below the fold and plays at the focus line. Unset: the rule as written. */
   seenAbove?: number;
+  /** Prepare (fetch, build) only after the visitor's first input, at every width, and then in an
+      idle moment, never inside the input itself. For a card on the first screen whose build is
+      heavy (the window under the hero: ~150 ms on a fast laptop, 600 ms on a slow phone): a page
+      nobody touches (and Lighthouse) never pays for it, and a page opened scrolled down builds at
+      once as before. Its resting picture is the stylesheet's until then. */
+  afterInput?: boolean;
 };
 
 /* The timing constants and the scroll/build helpers below are exported for the deep-dive
@@ -775,7 +781,21 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       }, host);
     }
   };
+  /** afterInput: the first input has come (and an idle moment after it) */
+  let inputReady = !o.afterInput;
+  let cancelInput: (() => void) | null = null;
+  let cancelIdle = () => {};
   const prepare = () => {
+    if (!inputReady) {
+      cancelInput ??= whenInput(() => {
+        cancelInput = () => {};
+        cancelIdle = idleSlot(() => {
+          inputReady = true;
+          if (!disposed) prepare();
+        }, 400);
+      });
+      return;
+    }
     if (runtime) return requestBuild(near || visible);
     if (loading || disposed) return;
     // reduced motion over a picture that is already the end: nothing to fetch
@@ -870,6 +890,8 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
 
   return () => {
     disposed = true;
+    cancelInput?.();
+    cancelIdle();
     clearTimeout(dwell);
     settleSubs.delete(onSettle);
     cancelAhead();
