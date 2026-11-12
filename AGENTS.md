@@ -73,6 +73,12 @@ Source: pancake-cmo `main`, checked 2026-11-03 (PAN-2405 #1871, PAN-2280, #1990,
 - The AI SEO rule above still holds: these pages are Pancake's own marketing, never a feature Pancake sells.
 - Partner pages load our tags with two lines in their `<head>`: `<script src="/pancake-attribution.min.js"></script>` then `<script src="/pancake-tags.js"></script>` (`app/pancake-tags.js/route.ts`, built from the same constants as `app/layout.tsx`). Never rename or remove either file.
 
+### Google tag gateway — November 12, 2026
+
+- The Tag Manager container loads from `pancake.ai/pk7x` (Google tag gateway for advertisers, Tristan's go on 2026-11-12). `middleware.ts` forwards that path to Google's endpoint for the container with the visitor's country and region; GA4 data still goes to the server container at `gtm.pancake.ai`. Details, checks and rollback: `lib/analytics/google-tag-gateway.mjs`.
+- Never add a page or a public file under `/pk7x` (`scripts/url-guard.mjs` fails the build), and never widen the middleware's matcher beyond that path.
+- If `/pk7x` fails, the loader falls back to `www.googletagmanager.com` on its own. Check `https://pancake.ai/pk7x/healthy` reads `ok` after any change to the middleware or the hosting.
+
 ### Project constraints
 
 - **Match Figma exactly.** Spacing, type, color, radius — pixel-perfect. Use the design system page as source of truth, never invent values.
