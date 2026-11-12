@@ -33,10 +33,10 @@ import { DB_HERO, DB_HERO_STORY, DB_HERO_TABS, DB_PEOPLE, DB_SIGNALS } from "./l
  * what the table leaves (its conversation stays a centred column, as the app's does on a wide
  * window); pulled left, the table takes the card and shows every column. At rest the two share
  * the card about half and half; on a desktop, once the visitor has scrolled onto the window, the
- * split eases so that the table takes two thirds (founder: "la barre slider un poil … pour montrer
- * l'animation", then "c'est pas au hover la bascule, plutôt quand je scroll sur cette partie" and
- * "3/4 c'est trop, Claude est trop réduit, maybe 2/3"). Once the visitor has moved the handle,
- * the split is theirs.
+ * split eases so that Claude takes about 60 % (founder: "c'est pas au hover la bascule, plutôt
+ * quand je scroll sur cette partie", then, after two thirds for the table, "on va faire 60-40
+ * plutôt que 33-66, on augmente la partie Claude"). Once the visitor has moved the handle, the
+ * split is theirs.
  * On a phone the two stack in the same order: Claude on top, the table a sheet under it (no
  * handle there: 358 px is too narrow to share).
  *
@@ -72,8 +72,8 @@ const REST = 52;
 /** a page opened with the card's top above this share of the window has it in front of the
     visitor already: it rests on its END (lp-play-once `seenAbove`) */
 const SEEN_ABOVE = 0.45;
-/** the visitor is scrolling onto the window once its top passes this share of the window: the
-    table takes two thirds of the card (vision.css data-wide). Before the take plays (its top past
+/** the visitor is scrolling onto the window once its top passes this share of the window: Claude
+    takes about 60 % of the card (vision.css data-wide). Before the take plays (its top past
     60 %): the split moves while Claude's window is still a new chat, so no line of the
     conversation re-wraps while it moves */
 const WIDE_AT = 0.75;
@@ -176,7 +176,7 @@ export function LpVisionCurtain() {
       // its build is the page's heaviest: after the visitor's first input, in an idle moment
       afterInput: true,
     });
-    // Scrolled onto: the split eases from half to two thirds for the table, once (founder: "c'est
+    // Scrolled onto: the split eases from half to about 60 % for Claude, once (founder: "c'est
     // pas au hover la bascule, plutôt quand je scroll sur cette partie"). Not under reduced motion:
     // there the window keeps its half, the end picture whole
     let settle = 0;
@@ -321,6 +321,9 @@ export function LpVisionCurtain() {
     const at = event.currentTarget.getBoundingClientRect();
     grab.current = event.clientX - (at.left + at.width / 2);
     event.currentTarget.setPointerCapture(event.pointerId);
+    // focused by the hand: no focus ring round the grip (founder 2026-11-12, of the ring a drag
+    // left: "Enleve ce truc qui entoure"). The keys bring it back, for the visitor who tabs to it
+    event.currentTarget.setAttribute("data-hand", "");
     event.currentTarget.focus({ preventScroll: true });
     // (the split follows the hand at once: no easing while it is dragged, vision.css)
     card.current?.setAttribute("data-drag", "");
@@ -332,6 +335,7 @@ export function LpVisionCurtain() {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
   };
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    event.currentTarget.removeAttribute("data-hand");
     const by = event.shiftKey ? 10 : 4;
     const to =
       event.key === "ArrowLeft"
@@ -551,6 +555,7 @@ export function LpVisionCurtain() {
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
           onKeyDown={onKeyDown}
+          onBlur={(event) => event.currentTarget.removeAttribute("data-hand")}
         >
           <span className="lp-vcut__grip" aria-hidden="true">
             <svg viewBox="0 0 20 20" focusable="false">
