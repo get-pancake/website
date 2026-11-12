@@ -67,12 +67,14 @@
                (52.8 % of the card, lp-vision-tables.ts) leave, less a pixel so that the fourth
                column's own line shows at the card's edge
    --vc-bar, --vc-head, --vc-row   the table's lines; Claude's own bar is as tall as the table's
+   --vc-tool   the table's view bar (its filter), between its bar and its head
    The take and the loop after it (lp-vision-curtain-timeline.ts) flip attributes on the table's
    pieces; the colours they stand for are eased here. */
 .lp-vcut .lp-vcut__card {
   --vc-bar: 46px;
   --vc-head: 92px;
   --vc-row: 34px;
+  --vc-tool: 34px;
   --vc-n: 42px;
   --vc-rest: calc(47.2% - var(--vc-n) - 1px);
   --vc-pad: 24px;
@@ -161,6 +163,100 @@
   color: var(--lp-ink-70);
   font-size: 10.5px;
   font-variant-numeric: tabular-nums;
+}
+/* The view bar, between the table's bar and its head (2026-11-11, the founder: "des prompts
+   qui sont envoyés et que ça va filtrer la database"). At rest the filter's button and the
+   table's count. While Claude reads (data-filter, flipped by the take and the loop): the filter
+   it set, a chip of three parts in Claude's ring (the tabs' ring while it reads them), and how
+   many rows match. The two states stand on one spot, so nothing in the bar moves. The rows
+   themselves are moved by the timeline (the ones that match stand together under the head, the
+   others fade): lp-vision-curtain-timeline.ts. */
+.lp .lp-vcut__filter {
+  align-items: center;
+  border-bottom: 1px solid var(--lp-v-line-dark);
+  box-sizing: border-box;
+  color: var(--lp-ink-70);
+  display: flex;
+  font-size: 11.5px;
+  gap: 12px;
+  height: var(--vc-tool);
+  line-height: 16px;
+  margin: 0;
+  padding: 0 12px 0 14px;
+  white-space: nowrap;
+}
+.lp .lp-vcut__filter,
+.lp .lp-vcut__filter * {
+  font-family: var(--lp-font-fono);
+}
+.lp-vcut__fset,
+.lp-vcut__count {
+  display: grid;
+  flex: none;
+}
+.lp-vcut__fset > *,
+.lp-vcut__count > * {
+  grid-area: 1 / 1;
+  justify-self: start;
+  transition: opacity 0.2s ease;
+}
+.lp-vcut__fidle,
+.lp-vcut__chip {
+  align-items: center;
+  border-radius: 4px;
+  box-sizing: border-box;
+  display: inline-flex;
+  gap: 7px;
+  height: 22px;
+  padding: 0 8px;
+}
+.lp-vcut__fidle {
+  box-shadow: inset 0 0 0 1px var(--lp-v-line-dark);
+}
+.lp-vcut__chip {
+  box-shadow: inset 0 0 0 1px var(--vc-claude);
+  color: var(--lp-v-on-dark);
+}
+.lp-vcut__chip b {
+  font-weight: 500;
+}
+.lp-vcut__chip i {
+  color: var(--lp-ink-70);
+  font-style: normal;
+}
+/* NULL, as the table's cells write it */
+.lp-vcut__chip em {
+  color: var(--lp-ink-60);
+  font-size: 0.875em;
+  font-style: normal;
+  letter-spacing: 0.3px;
+}
+.lp-vcut__ficon {
+  display: block;
+  fill: none;
+  flex: none;
+  height: 12px;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-width: 1.2;
+  width: 12px;
+}
+.lp-vcut__count {
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.lp-vcut__chip,
+.lp-vcut__count [data-when="some"],
+.lp-vcut__filter[data-filter] .lp-vcut__fidle,
+.lp-vcut__filter[data-filter] .lp-vcut__count [data-when="all"] {
+  opacity: 0;
+}
+.lp-vcut__filter[data-filter] .lp-vcut__chip,
+.lp-vcut__filter[data-filter] .lp-vcut__count [data-when="some"] {
+  opacity: 1;
+}
+.lp-vcut__filter[data-filter] .lp-vcut__count {
+  color: var(--lp-v-on-dark);
 }
 .lp-vcut__db .lp-db {
   --db-row: var(--vc-row);
@@ -1706,13 +1802,15 @@
   }
   /* a phone has no room to share: the two stack, in the same order. Claude on top (378 of the
      card's 600 px: its view is tall enough for the whole of its list in the END), the table a
-     sheet under it (its bar, its head, four rows: 220 px, and 2 px so that Claude's ring around
-     a cell of the fourth row is whole). No curtain: --cut is the sheet's top */
+     sheet under it (its bar, its view bar, its head, three rows, the filter's own count: 214 px,
+     and 2 px so that Claude's ring around a cell of the third row is whole). No curtain: --cut
+     is the sheet's top */
   .lp-vcut .lp-vcut__card {
     --vc-bar: 42px;
     --vc-head: 84px;
+    --vc-tool: 28px;
     --vc-n: 24px;
-    --vc-rest: 63%;
+    --vc-rest: 64%;
     --vc-pad: 14px;
     --vc-dock: 82px;
     --vc-chead: 38px;
@@ -1722,6 +1820,17 @@
   .lp-vcut__dbar {
     gap: 10px;
     padding: 0 8px 0 12px;
+  }
+  .lp .lp-vcut__filter {
+    font-size: 11px;
+    gap: 8px;
+    padding: 0 8px 0 12px;
+  }
+  .lp-vcut__fidle,
+  .lp-vcut__chip {
+    gap: 6px;
+    height: 20px;
+    padding: 0 6px;
   }
   .lp-vcut__tabs {
     padding-left: 6px;

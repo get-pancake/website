@@ -37,11 +37,17 @@ import { DB_ARTIFACT, DB_HERO, DB_HERO_TABS } from "./lp-vision-tables";
  * the window, the picture on fly-by, never twice): lp-vision-curtain-timeline.ts. Both windows
  * are there from the first frame (founder: "le rideau Claude s'ouvre un peu tard, les gens auront
  * deja scroll down"). A signal lands in the table and the Brain writes its Play; the question is
- * typed and sent; Claude reads the tables and names three accounts while their rows light; told
- * to, it runs the first Play and the row goes live under its mark. Then the loop, for as long as
- * the card is on screen (founder: "Je prolongerai les animations en mode endless loop"): asked
- * for the next best Play, Claude names the next account and runs it, again and again, while the
- * table keeps taking signals. It is this card's one exception to "plays once, nothing loops".
+ * typed and sent; Claude reads the tables and the table narrows to the accounts that have a Play
+ * (founder: "des prompts qui sont envoyés et que ça va filtrer la database": the view bar shows
+ * the filter, the other rows go); Claude names the three while their rows light; told to, it runs
+ * the first Play, the row goes live under its mark, and the whole table comes back. Then the
+ * loop, for as long as the card is on screen (founder: "Je prolongerai les animations en mode
+ * endless loop"): asked for the next best Play, Claude filters again, names the next account and
+ * runs it, again and again, while the table keeps taking signals. It is this card's one
+ * exception to "plays once, nothing loops".
+ * The view bar is a known piece (Mobbin: Browserbase's sessions table, a filter as a chip of
+ * three parts over the rows and a count of what matches; Mercury's transactions, a filter an
+ * assistant writes from a sentence).
  * The server markup is the END picture; from the first paint the stylesheet shows the take's
  * first frame instead where a take can play (data-pre, vision.css: the card's top peeks over the
  * first screen's fold, so nothing changes there when the code arrives). Without script and under
@@ -93,6 +99,15 @@ function ArrowUp() {
   return (
     <svg viewBox="0 0 13.9744 13.9744" aria-hidden="true" focusable="false">
       <path d="M6.9878 12.2276V1.74672M11.7915 6.55043L6.9878 1.74672L2.18408 6.55043" />
+    </svg>
+  );
+}
+
+/** the filter's mark: three lines, each shorter than the one above */
+function FilterIcon() {
+  return (
+    <svg className="lp-vcut__ficon" viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+      <path d="M1.5 3h9M3.25 6h5.5M5 9h2" />
     </svg>
   );
 }
@@ -325,6 +340,27 @@ export function LpVisionCurtain() {
               ))}
             </ul>
           </div>
+          {/* the view bar. At rest the filter's button and the table's count; while Claude reads,
+              the filter it set (data-filter, flipped by the take and the loop) and how many rows
+              match. Both states are in the markup, one over the other */}
+          <p className="lp-vcut__filter">
+            <span className="lp-vcut__fset">
+              <span className="lp-vcut__fidle">
+                <FilterIcon />
+                {C.filter.idle}
+              </span>
+              <span className="lp-vcut__chip">
+                <FilterIcon />
+                <b>{C.filter.column}</b>
+                <i>{C.filter.test}</i>
+                <em>{C.filter.value}</em>
+              </span>
+            </span>
+            <span className="lp-vcut__count">
+              <span data-when="all">{C.filter.all}</span>
+              <span data-when="some">{C.filter.some}</span>
+            </span>
+          </p>
           <DbTable table={DB_HERO} bar={false} tone="yellow" />
         </div>
 

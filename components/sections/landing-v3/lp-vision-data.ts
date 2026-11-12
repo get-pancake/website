@@ -43,7 +43,7 @@ import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
  */
 export const VISION_CURTAIN = {
   label:
-    "Claude, connected to Pancake, answers which accounts to work now, then runs the first Play. Beside it, Pancake’s companies table takes each new signal, writes the next best Play and shows it go live. Asked again, Claude runs the next best Play, and the next.",
+    "Claude, connected to Pancake, answers which accounts to work now, then runs the first Play. Beside it, Pancake’s companies table takes each new signal, writes the next best Play, narrows to the accounts that have one each time Claude reads it, and shows the Play go live. Asked again, Claude runs the next best Play, and the next.",
   handle: "Slide between Claude and Pancake",
   pancake: "Pancake",
   claude: "Claude",
@@ -95,6 +95,18 @@ export const VISION_CURTAIN = {
       { row: "p3", to: "for Retail.", why: "They use a rival tool." },
       { row: "a", to: "to Fintech.", why: "You lost the deal. Now they are hiring SDRs." },
     ],
+  },
+  /* The table's view bar (2026-11-11, the founder: "des prompts qui sont envoyés et que ça va
+     filtrer la database"). At rest: the filter's button and the table's count. While Claude
+     reads: the filter it set, as a chip of three parts (the column, the test, the value), and how
+     many rows match. `rows` is the companies table's own count (DB_HERO_TABS). */
+  filter: {
+    idle: "Filter",
+    column: "next_best_play",
+    test: "is not",
+    value: "NULL",
+    all: "4,812 rows",
+    some: "3 of 4,812 rows",
   },
   /* Claude's own view of the three accounts, beside the conversation once the curtain is slid left */
   artifact: "Accounts to work now",

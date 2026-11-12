@@ -18,21 +18,30 @@ import { VISION_CURTAIN } from "./lp-vision-data";
  *         Brain writes its next best Play: the database works before anyone asks
  *   1.5   the question is typed in Claude's composer (38 ms a glyph), held, sent: the bubble
  *   3.7   one tool call: Claude reads the three tables (their tabs take Claude's ring in turn);
- *         done, its ring is around the three rows that came back, its mark on the first one
+ *         done, THE FILTER comes on (founder: "des prompts qui sont envoyés et que ça va filtrer
+ *         la database"): the view bar shows `next_best_play is not NULL`, the rows that match
+ *         stand together under the head and the others go; Claude's ring is around the three,
+ *         its mark on the first one
  *   5.0   the answer streams a word at a time; each account's row lights as Claude names it
  *   8.0   "Yes, run it." is typed and sent; the Play's tool call starts and Claude's ring closes
  *         on the one cell; done, the cell is live
+ *   11.5  the filter goes: the whole table again, the Play live in its row
  *
  * THE LOOP, for as long as the card is on screen (founder: "Je prolongerai les animations en mode
  * endless loop: What's the next best Play to run?"; this card's one exception to "plays once,
  * nothing loops"). It starts when the take is over (data-lp-anim="done": played, or shown at once
  * to a visitor who arrived on it) and every round is the same exchange about the next account:
- *   the table   the row's signal lands and the Brain writes its Play (when they are not there
- *               already); the Play of the row that comes after it, run a round ago, is cleared
+ *   the table   whole: the Play that ran a round ago is cleared with its signal (that account is
+ *               being worked) and Claude leaves its cell; further down a signal lands and the
+ *               Brain writes that account's Play, the one whose turn comes in two rounds. So
+ *               three accounts have a Play at any time
  *   the ask     "What's the next best Play to run?" is typed and sent
- *   the answer  the tabs take Claude's ring (it reads), then the Play's name and why: Claude's
- *               ring and its mark go to that cell, and the row lights
- *   the run     "Run it." is typed and sent; the Play's card starts, then it is live in its cell
+ *   the answer  the tabs take Claude's ring (it reads) and the filter comes on: the three rows
+ *               that have a Play stand together under the head, in the table's order, the others
+ *               go. Then the Play's name and why: Claude's ring and its mark go to that cell,
+ *               and the row lights
+ *   the run     "Run it." is typed and sent; the Play's card starts, then it is live in its cell;
+ *               the filter goes and the whole table is back
  * It never restarts: the conversation goes on (what has left through the top of the view is
  * dropped) and the table keeps changing. It waits while the card is off screen (less than a fifth
  * of it on show), and does not run under reduced motion.
@@ -42,7 +51,9 @@ import { VISION_CURTAIN } from "./lp-vision-data";
  * missing piece throws there and the server's picture stands); frame 0 is a block of gsap.set;
  * the take holds tweens only, an instant change being a 1 ms tween (`step`), so it can be seeked
  * both ways (QA: window.__lpVision.curtain). States that are colours (a lit row, Claude's ring, a
- * flash) are attributes the timelines flip (flagOn / flagOff below) and vision.css eases. No ease
+ * flash, the view bar's filter) are attributes the timelines flip (flagOn / flagOff below) and
+ * vision.css eases; the rows a filter moves are tweened here (a row's own transform and
+ * opacity: the grid's lines are its cells' borders, they go with it). No ease
  * overshoots (power1 to power3 only). A round of the loop is one more timeline of the same
  * tweens, built when it starts: its four lines are added to the thread and measured, then played
  * (QA: window.__lpVision.loop).
@@ -78,7 +89,7 @@ const LOOP_REST = 0.9;
 const ON_SCREEN = 0.2;
 
 /** the attributes the take flips (vision.css reads them); cleared when the take is torn down */
-const FLAGS = ["data-unlit", "data-sel", "data-flash", "data-lit", "data-read", "data-noflag", "data-noring", "data-nostate"] as const;
+const FLAGS = ["data-unlit", "data-sel", "data-flash", "data-lit", "data-read", "data-noflag", "data-noring", "data-nostate", "data-filter"] as const;
 type Flag = (typeof FLAGS)[number];
 /* The server's picture holds back what only the loop shows (vision.css): a cell Claude is not
    on yet (data-idle), a row not lit yet (data-dim). The take swaps each for its own flags, which
@@ -124,8 +135,9 @@ type Turn = {
   name: string;
   to: string;
   why: string;
-  /** its signal and its Play are on show · its Play is live · the row is lit */
-  filled: boolean;
+  /** its signal is on show · its Play is · its Play is live · the row is lit */
+  signalOn: boolean;
+  playOn: boolean;
   live: boolean;
   lit: boolean;
 };
@@ -144,6 +156,14 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   const signalsCount = $("small", tabs[2]);
   const headRow = $<HTMLTableRowElement>(".lp-vcut__db thead tr");
   const rowOf = (key: string) => $<HTMLTableRowElement>(`.lp-vcut__db tr[data-row="${key}"]`);
+  /** the view bar (its filter), and every row of the table, in the table's order */
+  const filterBar = $(".lp-vcut__filter");
+  const body = $$<HTMLTableRowElement>(".lp-vcut__db tbody tr");
+  if (body.length < 4) throw new Error("vision-curtain: a table to filter");
+  const slotOf = new Map(body.map((tr, k) => [tr, k]));
+  const slot = (tr: HTMLTableRowElement) => slotOf.get(tr) ?? 0;
+  /** how far apart two rows stand (0: a table that is not laid out now) */
+  const rowStep = () => body[1].offsetTop - body[0].offsetTop;
   const rows = (["a", "b", "c"] as const).map(rowOf);
   const landing = (key: string): Land => {
     const td = $<HTMLTableCellElement>(`.lp-vcut__db td[data-land="${key}"]`);
@@ -170,6 +190,7 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   /** the loop's rows, in the order Claude goes through them, as the take's END leaves them: a's
       Play live under Claude's ring, the three named rows lit, the others as the markup has them */
   const loopCopy = VISION_CURTAIN.loop;
+  if (loopCopy.turns.length < 4) throw new Error("vision-curtain: four accounts or more for the loop");
   const turns: Turn[] = loopCopy.turns.map((turn) => {
     const tr = rowOf(turn.row);
     const signal = landing(`${turn.row}-signal`);
@@ -181,7 +202,8 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
       name: play.now.textContent ?? "",
       to: turn.to,
       why: turn.why,
-      filled: !signal.td.hasAttribute("data-void") && !play.td.hasAttribute("data-void"),
+      signalOn: !signal.td.hasAttribute("data-void"),
+      playOn: !play.td.hasAttribute("data-void"),
       live: play.td === byCell,
       lit: rows.includes(tr),
     };
@@ -216,6 +238,8 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
 
   /* ── the geometry, read on the untouched END layout ── */
   const glyphs: Glyph[][] = [typed[0], typed[1]].map(measureGlyphs);
+  /** a row's step, for the take's filter (the stylesheet's 34 px if the table has no layout yet) */
+  const rowH = rowStep() || 34;
   const viewH = view.clientHeight;
   // the thread's END place is its bottom on the view's: `over` of it is above the view's top
   const over = Math.max(0, thread.offsetHeight - viewH);
@@ -257,6 +281,8 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     set(cell.now, { opacity: cell.there ? 1 : 0 });
   }
   [...rows, ...dimRows].forEach((row) => flag(row, "data-unlit"));
+  // (every row in its place, on show: the filter moves them)
+  set(body, { autoAlpha: 1, y: 0 });
   for (const cell of [byCell, ...idleCells]) {
     flag(cell, "data-noflag");
     flag(cell, "data-noring");
@@ -351,7 +377,23 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
       if (num) for (let k = 1; k <= 6; k++) step(num, { txt: fmt(Math.round((tool.to * k) / 6)) }, done + 0.06 + (k - 1) * 0.05);
       return done;
     };
-    return { step, on, off, pulse, landAt, type, sendAt, stream, call };
+    /** The filter comes on: the view bar shows it, the rows that match stand together under
+        the head (in the table's order, `h` apart), the others go. */
+    const filterOn = (view: HTMLTableRowElement[], t: number, h: number) => {
+      const keep = [...view].sort((a, b) => slot(a) - slot(b));
+      on(filterBar, "data-filter", t);
+      tl.to(body.filter((tr) => !keep.includes(tr)), { autoAlpha: 0, duration: 0.2, ease: "power1.in" }, t);
+      keep.forEach((tr, k) => tl.to(tr, { y: (k - slot(tr)) * h, duration: 0.45, ease: "power3.out", force3D: false }, t + 0.12));
+      return t + 0.57;
+    };
+    /** The filter goes: every row back in its place. */
+    const filterOff = (view: HTMLTableRowElement[], t: number) => {
+      off(filterBar, "data-filter", t);
+      tl.to(view, { y: 0, duration: 0.45, ease: "power2.inOut", force3D: false }, t);
+      tl.to(body.filter((tr) => !view.includes(tr)), { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, t + 0.25);
+      return t + 0.55;
+    };
+    return { step, on, off, pulse, landAt, type, sendAt, stream, call, filterOn, filterOff };
   };
 
   /* ── the take ── */
@@ -376,12 +418,14 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   scrollTo(scrolls.bubble1, sent1, 0.6, "power3.out");
   tl.to(greet, { autoAlpha: 0, y: -8, duration: 0.2, ease: "power2.in" }, sent1);
 
-  // Claude reads the three tables: each tab takes its ring in turn; back with the rows, its ring
-  // is around them and its mark on the first one's Play
+  // Claude reads the three tables: each tab takes its ring in turn; back with the rows, the
+  // filter is on (the three stand together under the head, the others go), its ring is around
+  // them and its mark on the first one's Play
   const READ = sent1 + 0.45;
   scrollTo(scrolls.tool1, READ - 0.1);
   const read = T.call(tools[0], READ, 0.9);
   tabs.forEach((tab, k) => T.pulse(tab, "data-read", READ + 0.1 + k * 0.26, 0.3));
+  T.filterOn(rows, read, rowH);
   rows.forEach((row) => T.on(row, "data-sel", read));
   T.off(byCell, "data-noflag", read);
 
@@ -396,9 +440,6 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   tl.to(art, { autoAlpha: 1, duration: 0.3, ease: "power1.out" }, t);
   scrollTo(scrolls.say2, t);
   const asked = T.stream(says[1], t + 0.1);
-
-  // (the table goes on: another signal, lower down)
-  T.landAt(lands.m2, asked + 0.15, true);
 
   // "Yes, run it."
   const typed2 = T.type(typed[1], glyphs[1], phs[1], asked + 0.8);
@@ -415,8 +456,12 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   T.pulse(byCell, "data-flash", ran + 0.06, FLASH);
   scrollTo(scrolls.say3, ran + 0.3);
   const done = T.stream(says[2], ran + 0.4);
+  // the filter goes: the whole table again, the Play live in its row. And the table goes on:
+  // another signal, lower down
+  const back = T.filterOff(rows, done + 0.7);
+  T.landAt(lands.m2, back + 0.25, true);
   // (a beat on the finished picture before the take is over)
-  T.step(card, {}, done + 0.6);
+  T.step(card, {}, back + 1.1);
 
   /* ── the loop ── */
   /** started · torn down · waiting off screen · reduced motion (no new round) */
@@ -441,13 +486,6 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     node.setAttribute(LOOP, "");
     return node;
   };
-  /** A phone's table shows its first rows only: a row counts while its Play's cell is above the
-      card's bottom edge (wherever the visitor has slid the curtain). */
-  const onShow = (turn: Turn) => {
-    const r = turn.play.td.getBoundingClientRect();
-    return r.height > 0 && r.bottom <= card.getBoundingClientRect().bottom + 1;
-  };
-
   /** What has left through the top of the view for good goes. The thread stands on its bottom
       edge, so nothing on show moves. */
   const tidy = () => {
@@ -459,18 +497,14 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
   };
 
   const buildRound = () => {
-    const pool = turns.filter(onShow);
-    // (nothing to go through: a card that is not laid out now. Asked again once it is on screen)
-    if (pool.length < 2) return void (looping = false);
-    // the next row on show, and the one that comes after it
-    const from = (i: number) => {
-      let k = i % turns.length;
-      while (!pool.includes(turns[k])) k = (k + 1) % turns.length;
-      return k;
-    };
-    const i = from(at);
+    const h = rowStep();
+    // (a table that is not laid out now. Asked again once the card is on screen)
+    if (h <= 0) return void (looping = false);
+    const i = at % turns.length;
     const turn = turns[i];
-    const next = turns[from(i + 1)];
+    /** it and the two accounts that come after it: the three that have a Play, the filter's rows
+        (a phone's table shows three rows: the filter brings them under its head) */
+    const queue = [turn, turns[(i + 1) % turns.length], turns[(i + 2) % turns.length]];
     at = i + 1;
 
     // the round's four lines, added to the thread: the ask, the answer, the go-ahead, the run
@@ -521,35 +555,42 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     // (the first round leaves the take's last picture a moment)
     let t0 = rounds ? 0.1 : 0.6;
 
-    // the table: the Play that ran a round ago, on the row that comes after this one, is cleared;
-    // this row's signal lands and the Brain writes its Play
-    if (next.live) {
-      R.on(next.play.td, "data-nostate", t0);
-      for (const cell of [next.signal, next.play]) {
+    // the table, whole. The Play that ran a round ago is cleared with its signal (that account is
+    // being worked: it comes back when a signal crosses on it again), and Claude leaves its cell
+    const ran = cur;
+    if (ran && ran !== turn && ran.live) {
+      for (const name of ["data-nostate", "data-noring", "data-noflag"] as const) R.on(ran.play.td, name, t0);
+      for (const cell of [ran.signal, ran.play]) {
         c.to(cell.now, { opacity: 0, duration: 0.25, ease: "power1.in" }, t0);
         c.to(cell.was, { opacity: 0.72, duration: 0.3, ease: "power1.out" }, t0 + 0.2);
       }
-      next.live = false;
-      next.filled = false;
+      if (ran.lit) R.on(ran.tr, "data-unlit", t0 + 0.2);
+      ran.live = ran.lit = ran.signalOn = ran.playOn = false;
     }
-    if (!turn.filled) {
-      R.landAt(turn.signal, t0, true);
-      R.landAt(turn.play, t0 + 0.55, false);
-      turn.filled = true;
-      t0 += LOOP_LANDED;
-    } else {
-      t0 += 0.4;
+    // further down a signal lands and the Brain writes that account's Play (the one whose turn
+    // comes in two rounds: there are always three to choose from)
+    let landed = false;
+    for (const row of queue) {
+      if (row.playOn) continue;
+      if (!row.signalOn) R.landAt(row.signal, t0 + 0.3, true);
+      R.landAt(row.play, t0 + (row.signalOn ? 0.3 : 0.85), false);
+      row.signalOn = row.playOn = true;
+      landed = true;
     }
+    t0 += landed ? LOOP_LANDED + 0.3 : 0.5;
 
     // the ask
     const typedAsk = R.type(typed[2], marks[0], phs[1], t0);
     const sentAsk = R.sendAt(typed[2], ask, typedAsk + TYPED_HOLD);
     c.to(thread, { y: y.ask, duration: 0.6, ease: "power3.out" }, sentAsk);
 
-    // the answer. Claude reads first (the tabs take its ring in turn); then the Play's name: its
-    // ring and its mark go to that cell, and the row lights (it alone)
+    // the answer. Claude reads first (the tabs take its ring in turn) and the filter comes on: the
+    // table narrows to the three accounts that have a Play. Then the Play's name: Claude's ring
+    // and its mark go to that cell, and the row lights (it alone)
     tabs.forEach((tab, k) => R.pulse(tab, "data-read", sentAsk + 0.2 + k * 0.16, 0.22));
-    const answer = sentAsk + 0.85;
+    const view = queue.map((row) => row.tr);
+    R.filterOn(view, sentAsk + 0.5, h);
+    const answer = sentAsk + 1;
     c.to(thread, { y: y.say, duration: 0.45, ease: "power2.out" }, answer - 0.1);
     const named = answer + 0.05;
     for (const row of turns) {
@@ -559,10 +600,6 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     }
     if (!turn.lit) R.off(turn.tr, "data-unlit", named);
     turn.lit = true;
-    if (cur && cur !== turn) {
-      R.on(cur.play.td, "data-noring", named);
-      R.on(cur.play.td, "data-noflag", named);
-    }
     R.off(turn.play.td, "data-noring", named);
     R.off(turn.play.td, "data-noflag", named);
     cur = turn;
@@ -580,7 +617,9 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     R.off(turn.play.td, "data-nostate", live);
     R.pulse(turn.play.td, "data-flash", live, FLASH);
     turn.live = true;
-    R.step(card, {}, live + LOOP_REST);
+    // the filter goes: the whole table again, the Play live in its row
+    const back = R.filterOff(view, live + 0.9);
+    R.step(card, {}, back + LOOP_REST - 0.3);
 
     round = c;
     if (!held) c.play();
@@ -637,7 +676,17 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     ...probe.__lpVision,
     loop: {
       skip: () => void round?.progress(1),
-      state: () => ({ looping, held, still, rounds, at, lines: thread.children.length, playing: !!round && !round.paused() }),
+      state: () => ({
+        looping,
+        held,
+        still,
+        rounds,
+        at,
+        lines: thread.children.length,
+        playing: !!round && !round.paused(),
+        filter: filterBar.hasAttribute("data-filter"),
+        plays: turns.filter((turn) => turn.playOn).length,
+      }),
     },
   };
 

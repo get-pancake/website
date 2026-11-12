@@ -117,9 +117,13 @@ const play = (row: string, v: string, more: Landing = {}): DbCellObj => ({ ...la
  *  the take opens, then goes live when Claude runs the Play: Claude's mark is on that cell.
  *  m1 and m2 are datapoints that land while Claude answers (the database keeps working).
  *  Then the loop: asked for the next best Play again and again, Claude goes b, c, p1, p2, p3, a
- *  and round again. A row's signal and its Play land before its turn (p1, p2 and p3's Play are
- *  NULL at rest), and a Play that has run is cleared before its row comes up again. On a phone
- *  the table shows its first four rows: the loop keeps to a, b and c there. */
+ *  and round again. A row's signal and its Play land two rounds before its turn (p1, p2 and p3's
+ *  Play are NULL at rest), and a Play that has run is cleared when the next round opens.
+ *  THE FILTER (2026-11-11, the founder on this window: "des prompts qui sont envoyés et que ça
+ *  va filtrer la database"): each time Claude reads, the table narrows to `next_best_play is not
+ *  NULL`, and the whole table comes back once the Play is live. So a row has a Play only where
+ *  the take or the loop gives it one (three at any time: the filter's rows); every other row's
+ *  next_best_play is NULL. Fourteen rows: with the view bar over the head they fill the card. */
 export const DB_HERO: DbTableData = {
   name: "companies",
   numbered: true,
@@ -187,7 +191,7 @@ export const DB_HERO: DbTableData = {
         "60",
       ],
     },
-    { c: ["c_a6c3", "Health tech", "headcount up", "Offer the team plan", tag("closed_won"), null, "310"] },
+    { c: ["c_a6c3", "Health tech", "headcount up", null, tag("closed_won"), null, "310"] },
     {
       key: "p3",
       mark: "hit",
@@ -202,9 +206,9 @@ export const DB_HERO: DbTableData = {
         "2,400",
       ],
     },
-    { c: ["c_c0d9", "Insurance", "new CMO", "Send the demo recap", null, "asked for a demo", "720"] },
+    { c: ["c_c0d9", "Insurance", "new CMO", null, null, "asked for a demo", "720"] },
     { c: ["c_3b7e", "HR software", signal("m1", "headcount up", { nil: "take" }), null, tag("open"), null, "95"] },
-    { c: ["c_e214", "Security", signal("m2", "headcount up", { nil: "take" }), "Send the event recap", null, "attended event", "540"] },
+    { c: ["c_e214", "Security", signal("m2", "headcount up", { nil: "take" }), null, null, "attended event", "540"] },
     { c: ["c_77b2", "Travel", null, null, tag("closed_lost"), null, "140"] },
     {
       key: "p2",
@@ -220,9 +224,8 @@ export const DB_HERO: DbTableData = {
         "55",
       ],
     },
-    { c: ["c_9a40", "Gaming", "new funding", "Send the pricing follow-up", tag("open"), "asked pricing", "180"] },
+    { c: ["c_9a40", "Gaming", "new funding", null, tag("open"), "asked pricing", "180"] },
     { c: ["c_62ce", "Biotech", "uses a rival tool", null, null, null, "30"] },
-    { c: ["c_b81e", "Media", "new funding", "Offer the team plan", tag("closed_won"), null, "420"] },
   ],
 };
 
