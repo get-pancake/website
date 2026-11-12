@@ -65,12 +65,13 @@ export const VISION_CURTAIN: {
   model: string;
   reply: string;
   thread: readonly CurtainLine[];
-  filter: { idle: string; column: string; test: string; value: string; all: string; some: readonly [string, string, string, string] };
+  filter: { idle: string; column: string; test: string; value: string; all: string; some: readonly [string, string, string] };
   sort: { column: string; dir: string };
+  sorts: { people: { column: string; dir: string }; signals: { column: string; dir: string } };
   live: string;
 } = {
   label:
-    "Pancake’s companies table works by itself: signals land in it, each account is rescored and its row changes rank, duplicates are merged. Beside it, Claude, connected to Pancake, is asked which accounts to work, and the table narrows to the ones that have a signal. When a signal lands on Ramp, a deal that was lost, Claude says so unasked: Ramp hired the VP who bought from you at Notion. Told to work every account that passes 90, it runs each next best Play as a row passes 90, and the Ramp deal reopens.",
+    "Pancake’s tables work by themselves: batches of signals land, accounts are rescored and the table re-sorts, duplicates merge, people change jobs. Beside them, Claude, connected to Pancake, is asked which accounts to work, and the companies table narrows to the 86 that have a signal. When Ramp’s new VP Sales turns out to be the buyer you had at Notion, Claude says so unasked, then runs a Play for Ramp and end-of-year gifts for the next four, and flags a new signup at Linear. Ramp replies and its deal opens again.",
   handle: "Resize Claude and Pancake",
   /* Claude's own chrome, the Claude scene's words (lp-demo-data.ts) */
   greeting: "Let’s flip some pancakes",
@@ -82,17 +83,19 @@ export const VISION_CURTAIN: {
     { id: "ask1", ask: "Which accounts should we work on now?" },
     { id: "filter", tool: "Filter companies", doing: "Filtering…", count: 86, done: "accounts" },
     { id: "say1", say: "86 have a fresh signal." },
-    // Pancake brings it, Claude says it: nobody asked. Ramp and Notion are rows of the table
-    // (DB_HERO): the companies are named, never their industry (founder, 2026-11-12)
+    // Pancake brings it, Claude says it: nobody asked. Ramp and Notion are rows of the tables
+    // (DB_HERO, DB_PEOPLE): the companies are named, never their industry (founder, 2026-11-12)
     { id: "ping", tool: "New signal", name: "Ramp", done: "new VP Sales" },
     { id: "say2", say: "Ramp hired the VP who bought from you at Notion. Want me to reach back out?" },
-    { id: "ask2", ask: "Yes. Work every account that passes 90." },
-    { id: "rule", tool: "Run Plays above 90", doing: "Starting…", done: "On", run: true },
-    { id: "say3", say: "Done. Ramp and Mercury are live." },
-    // from here on nothing is typed
-    { id: "run1", tool: "Run Play", name: "Linear", doing: "Starting…", done: "Live", run: true },
-    { id: "say4", say: "Ramp replied. The deal is open again." },
-    { id: "run2", tool: "Run Play", name: "Supabase", doing: "Starting…", done: "Live", run: true },
+    // what a revenue team asks for in December (founder, 2026-11-12, on a standing rule that was
+    // here: "too deterministic / niche … New signup worth checking? End of year presents")
+    { id: "ask2", ask: "Yes. And send our end-of-year gifts to the top five." },
+    { id: "run", tool: "Run Plays", name: "5 accounts", doing: "Starting…", done: "Live", run: true },
+    { id: "say3", say: "Done. Ramp hears from you today, and the gifts are on their way." },
+    // nothing is typed from here: the table brings the next one, Claude says it
+    { id: "signup", tool: "New signup", name: "Linear", done: "VP Engineering" },
+    { id: "say4", say: "New signup worth checking: a VP at Linear." },
+    { id: "say5", say: "Ramp replied. The deal is open again." },
   ],
   /* The table's view bar. The table is ranked by fit all along (the sort). The filter
      is a button until Claude sets it; then it is what was set (the column, the test, the value)
@@ -105,9 +108,11 @@ export const VISION_CURTAIN: {
     test: "is not",
     value: "NULL",
     all: "4,812 rows",
-    some: ["86 rows", "85 rows", "86 rows", "87 rows"],
+    some: ["86 rows", "83 rows", "85 rows"],
   },
   sort: { column: "fit", dir: "desc" },
+  /** the people's and the signals' own sort, in their view bars */
+  sorts: { people: { column: "moved", dir: "desc" }, signals: { column: "at", dir: "desc" } },
   /* the table's status line: this word, then what the table last did (DB_HERO_STORY.status) */
   live: "Live",
 };

@@ -283,14 +283,38 @@
 .lp-vcut__filter[data-filter] .lp-vcut__count {
   color: var(--lp-v-on-dark);
 }
-/* The table. Half as wide again as the card: the columns a command adds push the ones to their
-   right further out, past the card's edge, and its last column takes what is left. */
+/* The tables, one pane each (companies, people, signals), under the tab bar and over the status
+   line. The companies' is on show at rest; the take switches the panes as a camera cuts between
+   shots (it fades and slides them: data-on on the tabs says which is in front). Each pane's
+   table sits in a lens, which the take moves to pull back (scale) and to pan (x): origin top left,
+   so a pulled-back table shows more rows and more columns from where it starts */
+.lp-vcut__pane {
+  bottom: 30px;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  right: 0;
+  top: var(--vc-bar);
+}
+.lp-vcut__pane:not([data-pane="companies"]) {
+  opacity: 0;
+  visibility: hidden;
+}
+.lp-vcut__lens {
+  transform-origin: 0 0;
+}
+/* (the pane clips, not the table: pulled back or panned, the table shows past its own box) */
+.lp-vcut__pane .lp-db {
+  overflow: visible;
+}
 .lp-vcut__db .lp-db {
   --db-row: var(--vc-row);
   border: 0;
   border-radius: 0;
 }
-.lp-vcut__db .lp-db table {
+/* the companies table is half as wide again as the card: the column a command opens pushes the
+   ones to its right further out, past the card's edge, and its last column takes what is left */
+.lp-vcut__pane[data-pane="companies"] .lp-db table {
   width: 150%;
 }
 /* the row numbers: wide enough for the handle's grip to sit clear of them */
@@ -430,7 +454,7 @@
   box-shadow: inset 2.5px 0 0 var(--vc-claude);
 }
 .lp-vcut__ring {
-  bottom: 30px;
+  bottom: 0;
   box-shadow:
     inset 2.5px 0 0 var(--vc-claude),
     inset -1.5px 0 0 var(--vc-claude),
@@ -441,11 +465,11 @@
   pointer-events: none;
   position: absolute;
   right: var(--cut);
-  top: calc(var(--vc-bar) + var(--vc-tool) + var(--vc-row));
+  top: calc(var(--vc-tool) + var(--vc-row));
   transition: opacity 0.3s ease;
   z-index: 3;
 }
-.lp-vcut .lp-db[data-ring] ~ .lp-vcut__ring {
+.lp-vcut__pane[data-ring] .lp-vcut__ring {
   opacity: 1;
 }
 /* the count of what the view holds, lit with the frame */
@@ -1977,9 +2001,11 @@
     border-radius: 16px 16px 0 0;
     transform: translateY(var(--cut));
   }
-  /* (the sheet runs past the card's bottom by --cut: the frame stops at the card's) */
-  .lp-vcut__ring {
+  /* (the sheet runs past the card's bottom by --cut: the panes stop at the card's) */
+  .lp-vcut__pane {
     bottom: var(--cut);
+  }
+  .lp-vcut__ring {
     right: 0;
   }
   .lp-vcut__col {
@@ -2030,10 +2056,9 @@
     gap: 6px;
     padding: 6px 8px;
   }
-  /* the bar on a phone: Pancake, the table on show, and the signals' */
-  .lp-vcut__tabs li[data-tab="people"],
+  /* the bar on a phone: Pancake and the three tables' names */
   .lp-vcut__tabs .lp-db__icon,
-  .lp-vcut__tabs li[data-on] small {
+  .lp-vcut__tabs small {
     display: none;
   }
   /* the columns' phone widths (--wp), their names without their types; the last one takes what

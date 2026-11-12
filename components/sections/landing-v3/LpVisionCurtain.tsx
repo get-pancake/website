@@ -7,7 +7,7 @@ import { DbTable, DbTableIcon } from "./LpVisionDb";
 import { lpClaudeSerif } from "./lp-claude-font";
 import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
 import { VISION_CURTAIN } from "./lp-vision-data";
-import { DB_HERO, DB_HERO_STORY, DB_HERO_TABS } from "./lp-vision-tables";
+import { DB_HERO, DB_HERO_STORY, DB_HERO_TABS, DB_PEOPLE, DB_SIGNALS } from "./lp-vision-tables";
 
 /**
  * The window under the hero (2026-11-11), in the demo film's slot (the .lp-video section and
@@ -424,7 +424,10 @@ export function LpVisionCurtain() {
           </div>
         </div>
 
-        {/* over: Pancake's table; it slides with the handle */}
+        {/* over: Pancake's tables; they slide with the handle. One tab a table (companies,
+            people, signals): the take switches between them as a camera would, pulls back to
+            show many more cells and pans to the columns past the edge. The END is the companies
+            table, as the take leaves it */}
         <div className="lp-vcut__db" aria-hidden="true">
           <div className="lp-vcut__dbar">
             {/* Pancake's mark alone, as Claude's is */}
@@ -441,43 +444,78 @@ export function LpVisionCurtain() {
               ))}
             </ul>
           </div>
-          {/* the view bar. The filter is a button until Claude sets it (data-filter: the END has
-              it, the take flips it), then what was set; the table is sorted by fit all along; the
-              count says how many rows the view holds. Both states of a piece are in the markup,
-              one over the other */}
-          <p className="lp-vcut__filter" data-filter="">
-            <span className="lp-vcut__fset">
-              <span className="lp-vcut__fidle">
-                <FilterIcon />
-                {C.filter.idle}
+          <div className="lp-vcut__pane" data-pane="companies">
+            {/* the view bar. The filter is a button until Claude sets it (data-filter: the END has
+                it, the take flips it), then what was set; the table is sorted by fit all along;
+                the count says how many rows the view holds. Both states of a piece are in the
+                markup, one over the other */}
+            <p className="lp-vcut__filter" data-filter="">
+              <span className="lp-vcut__fset">
+                <span className="lp-vcut__fidle">
+                  <FilterIcon />
+                  {C.filter.idle}
+                </span>
+                <span className="lp-vcut__chip">
+                  <FilterIcon />
+                  <b>{C.filter.column}</b>
+                  <i>{C.filter.test}</i>
+                  <em>{C.filter.value}</em>
+                </span>
               </span>
-              <span className="lp-vcut__chip">
-                <FilterIcon />
-                <b>{C.filter.column}</b>
-                <i>{C.filter.test}</i>
-                <em>{C.filter.value}</em>
+              <span className="lp-vcut__chip" data-sort="">
+                <SortIcon />
+                <b>{C.sort.column}</b>
+                <i>{C.sort.dir}</i>
               </span>
-            </span>
-            <span className="lp-vcut__chip" data-sort="">
-              <SortIcon />
-              <b>{C.sort.column}</b>
-              <i>{C.sort.dir}</i>
-            </span>
-            <span className="lp-vcut__count">
-              <span data-when="all">{C.filter.all}</span>
-              <span data-when="some">{C.filter.some[3]}</span>
-            </span>
-          </p>
-          <DbTable table={DB_HERO} bar={false} tone="yellow" />
-          {/* Claude's frame around the rows it keeps when it filters (founder: "je lierais un peu
-              les 86 en montrant que ça les entoure et les filtre dans la database"): the take
-              shows it (data-ring on the table) */}
-          <span className="lp-vcut__ring" />
-          {/* the status line, under the rows: the table is live, and what it last did */}
+              <span className="lp-vcut__count">
+                <span data-when="all">{C.filter.all}</span>
+                <span data-when="some">{C.filter.some[2]}</span>
+              </span>
+            </p>
+            {/* the lens: what the camera moves (it pulls back, it pans) */}
+            <div className="lp-vcut__lens">
+              <DbTable table={DB_HERO} bar={false} tone="yellow" />
+            </div>
+            {/* the frame around the rows Claude keeps when it filters (founder: "je lierais un peu
+                les 86 en montrant que ça les entoure et les filtre dans la database"): the take
+                shows it (data-ring on the pane) */}
+            <span className="lp-vcut__ring" />
+          </div>
+          <div className="lp-vcut__pane" data-pane="people">
+            <p className="lp-vcut__filter">
+              <span className="lp-vcut__chip" data-sort="">
+                <SortIcon />
+                <b>{C.sorts.people.column}</b>
+                <i>{C.sorts.people.dir}</i>
+              </span>
+              <span className="lp-vcut__count">{DB_HERO_TABS[1].rows} rows</span>
+            </p>
+            <div className="lp-vcut__lens">
+              <DbTable table={DB_PEOPLE} bar={false} tone="yellow" />
+            </div>
+          </div>
+          <div className="lp-vcut__pane" data-pane="signals">
+            <p className="lp-vcut__filter">
+              <span className="lp-vcut__chip" data-sort="">
+                <SortIcon />
+                <b>{C.sorts.signals.column}</b>
+                <i>{C.sorts.signals.dir}</i>
+              </span>
+              <span className="lp-vcut__count">
+                <span>
+                  <span className="lp-vcut__scount">{DB_HERO_TABS[2].rows}</span> rows
+                </span>
+              </span>
+            </p>
+            <div className="lp-vcut__lens">
+              <DbTable table={DB_SIGNALS} bar={false} tone="yellow" />
+            </div>
+          </div>
+          {/* the status line, under the tables: the data is live, and what it last did */}
           <p className="lp-vcut__status">
             <i />
             <b>{C.live}</b>
-            <span className="lp-vcut__status-t">{DB_HERO_STORY.status.lgLive}</span>
+            <span className="lp-vcut__status-t">{DB_HERO_STORY.status.crm}</span>
           </p>
         </div>
 
