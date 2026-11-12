@@ -4,7 +4,6 @@ import { Fragment, useEffect, useRef, type KeyboardEvent, type PointerEvent as R
 
 import { ClaudeMark, PancakeMark } from "./LpClaudeScene";
 import { DbTable, DbTableIcon } from "./LpVisionDb";
-import { LpHeroInstall } from "./LpHeroInstall";
 import { lpClaudeSerif } from "./lp-claude-font";
 import { mountPlayOnce, type PlayOnceRuntime } from "./lp-play-once";
 import { VISION_CURTAIN } from "./lp-vision-data";
@@ -202,11 +201,6 @@ export function LpVisionCurtain() {
 
   return (
     <section className="lp-video lp-vcut" data-grow-done="" aria-label={C.label}>
-      {/* between the headline and the window: "Works in" Claude and Codex, the install's shortcut
-          (the meeting, 2026-11-11: the install row "plus en avant", above the window) */}
-      <div className="lp-vcut__works">
-        <LpHeroInstall />
-      </div>
       <div ref={card} className={`lp-video__card lp-vcut__card ${lpClaudeSerif.variable}`} data-pre="">
         {/* under: Claude's window */}
         <div className="lp-vcut__claude" aria-hidden="true">

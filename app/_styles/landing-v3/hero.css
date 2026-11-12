@@ -595,8 +595,15 @@
    8 and 7 it read as squeezed, "badly positionned"), and ::before gives the
    finger 44. The agents view hides the human column (visibility), and the
    badge with it. */
-.lp-hero--home .lp-hero-btns {
+/* (2026-11-11: the badge hangs under the COLUMN, whose last line is now the install row under
+   the buttons, LpHeroInstall: the column's bottom stands where the buttons' did, so the badge
+   has not moved.) */
+.lp-hero--home .lp-hero-swap > .lp-hero-col--human {
+  /* (the offsets are the unscoped column's, for /agents: inert while it was static) */
+  bottom: auto;
+  left: auto;
   position: relative;
+  right: auto;
 }
 .lp-hero-ph {
   border-radius: 9px;

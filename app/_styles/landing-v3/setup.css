@@ -47,32 +47,32 @@
   line-height: 20px;
 }
 
-/* The hero's install row and its card (LpHeroInstall.tsx, founder 2026-10-30: "On peut tenter un
-   truc comme ca dans le h1"): from 1280 wide only, in the slot under the buttons that Product
-   Hunt's badge leaves for the nav there (hero.css), out of flow, so the first screen's measured
-   layout does not move. The row: "or install in" in the subtle ink and the Claude and Codex marks
-   on the kit's small white discs. The card lays itself over the buttons: the kit's white surface
-   and hairline (the setup pill's), the title, the copy button in Start free's plum, the line on
-   the cream inset. It rises 6 px and fades in, 0.16 s; reduced motion: it fades only.
-   Since 2026-11-11 (the landing page meeting: the row "plus en avant", above the window under
-   the hero) it is placed by the window's section (vision.css .lp-vcut__works) at every width,
-   it reads "Works in" in the text ink, each agent is a white pill with its mark and its name,
-   and the card opens downward, over the window's top (it comes down 6 px). */
+/* The hero's install row and its card (LpHeroInstall.tsx; founder 2026-10-30: "On peut tenter un
+   truc comme ca dans le h1", then 2026-11-11, with the toggle gone: the row "bien visible sans
+   exacerber et en restant dans la logique de notre design"). Under the buttons, in flow, at
+   every width: "or install in" in the text ink, then each agent's mark on a square tile in the
+   second button's tint (--lp-tinted-surface, Talk to sales), the marks in the ink: the row reads
+   as the buttons' own family, one step quieter. The column's gap is 24; the row sits 16 under
+   the buttons.
+   The card lays itself over the buttons: the kit's white surface and hairline (the setup
+   pill's), the title, the copy button in Start free's plum, the line on the cream inset. It
+   rises 6 px and fades in, 0.16 s; reduced motion: it fades only. */
 .lp-hero-install {
-  display: block;
+  margin-top: -8px;
+  position: relative;
 }
 .lp-hero-install .lp-hero-install__row {
   align-items: center;
   background: none;
   border: 0;
-  border-radius: var(--lp-r-m);
+  border-radius: var(--lp-r-sm);
   color: var(--lp-text);
   cursor: pointer;
   display: inline-flex;
   font-family: var(--lp-font-sans);
   font-size: 15px;
-  font-weight: 500;
-  gap: 10px;
+  font-weight: 400;
+  gap: 12px;
   line-height: 20px;
   padding: 0;
   white-space: nowrap;
@@ -82,54 +82,55 @@
 }
 .lp-hero-install .lp-hero-install__row:focus-visible {
   outline: 2px solid var(--lp-ink-100);
-  outline-offset: 2px;
+  outline-offset: 3px;
 }
 .lp-hero-install .lp-hero-install__marks {
   display: inline-flex;
-  gap: 6px;
+  gap: 8px;
 }
 .lp-hero-install .lp-hero-install__mark {
-  align-items: center;
-  background: var(--lp-surface);
-  border-radius: var(--lp-r-m);
-  box-shadow: inset 0 0 0 0.5px var(--lp-stroke);
+  background: var(--lp-tinted-surface);
+  border-radius: var(--lp-r-sm);
   color: var(--lp-text);
-  display: inline-flex;
-  gap: 7px;
-  height: 32px;
-  padding: 0 13px 0 10px;
-}
-.lp-hero-install .lp-hero-install__mark--claude svg {
-  color: var(--lp-claude-spark);
+  display: grid;
+  height: 40px;
+  place-items: center;
+  width: 40px;
 }
 .lp-hero-install .lp-hero-install__mark svg {
   display: block;
-  flex: none;
-  height: 16px;
-  width: 16px;
+  height: 20px;
+  width: 20px;
+}
+/* (the second mark is a thin knot beside the first one's full star: a size up, the same weight
+   to the eye) */
+.lp-hero-install .lp-hero-install__mark svg[data-mark="codex"] {
+  height: 23px;
+  width: 23px;
 }
 .lp-hero-install .lp-hero-install__card {
   background: var(--lp-surface);
   border-radius: var(--lp-r-sm);
+  bottom: calc(100% + 8px);
   box-shadow: inset 0 0 0 0.5px var(--lp-stroke), 0 8px 24px var(--lp-ink-tr-10);
   left: 0;
   opacity: 0;
   padding: 12px;
   position: absolute;
-  top: calc(100% + 8px);
-  transform: translateY(-6px);
+  transform: translateY(6px);
   transition: opacity 0.16s ease-out, transform 0.16s ease-out, visibility 0s linear 0.16s;
   visibility: hidden;
-  width: min(368px, calc(100vw - 32px));
+  width: min(368px, calc(100vw - 64px));
+  z-index: 2;
 }
-/* the pointer's way from the row down into the card: the gap between them stays the row's */
+/* the pointer's way from the row up into the card: the gap between them stays the row's */
 .lp-hero-install .lp-hero-install__card::after {
-  bottom: 100%;
   content: "";
   height: 10px;
   left: 0;
   position: absolute;
   right: 0;
+  top: 100%;
 }
 .lp-hero-install:hover .lp-hero-install__card,
 .lp-hero-install[data-open] .lp-hero-install__card {
