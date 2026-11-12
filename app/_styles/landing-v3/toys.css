@@ -761,8 +761,7 @@
   color: var(--lp-ink-70);
   font-size: calc(12px * var(--toy-k));
 }
-/* who writes: a personal agent's mark (OpenClaw), light on a dark disc, as it was drawn for
-   the page's inverted surfaces (LpAgentMarks.tsx: its eyes are the page's blue) */
+/* who writes: a personal agent's mark (Grok Bot, LpAgentMarks.tsx), light on a dark disc */
 .lp-toy .lp-tp-avatar {
   background: var(--lp-inverted-surface);
   border-radius: 50%;
@@ -776,8 +775,8 @@
 }
 .lp-toy .lp-tp-avatar svg {
   display: block;
-  height: 58%;
-  width: 58%;
+  height: 64%;
+  width: 64%;
 }
 .lp-toy .lp-tp-row {
   align-items: flex-start;

@@ -10,15 +10,16 @@
  * tells you who showed up and builds the list, and you do the contacting. The same 24 people
  * as the Brain's Play in the 1-2-3 (lp-toy-data.ts TOY_BRAIN). Until that day: "The Head of
  * Sales at the fintech you're working just signed up. […] Want me to reach out?".
- * Who writes changed with it: a personal agent that lives in your messages, not Claude (he
- * named two, Hermes or OpenClaw; the page has both marks, LpAgentMarks.tsx).
+ * Who writes changed with it: a personal agent that lives in your messages, not Claude. It is
+ * Grok Bot (founder, 2026-11-12: "met le logo de […] Grok Bot plutôt que Claude", then, asked
+ * which one: "Grok Bot"); its mark is the /agents page's (LpAgentMarks.tsx GrokBotMark).
  * Rules kept: no person is named, no real company in what is said. In scripts/homepage-lint.mjs
  * FILES. Drawn by LpStoryPing.tsx and LpToyStories.tsx; motion: lp-story-ping-timeline.ts and
  * lp-toy-story-timelines.ts.
  */
 export const STORY_PING = {
   /** who writes: your agent */
-  contact: "OpenClaw",
+  contact: "Grok Bot",
   time: "Today 9:41 AM",
   /** in order; "them" = the agent, "me" = you */
   messages: [
@@ -32,4 +33,4 @@ export const STORY_PING = {
 } as const;
 
 export const STORY_PING_ALT =
-  "Animation: a text conversation with OpenClaw, your agent, which writes first: 24 people in your ICP signed up after yesterday’s event. Want a list so you can contact them? You answer: Yes, send it. OpenClaw replies: Done. The list is in Pancake.";
+  "Animation: a text conversation with Grok Bot, your agent, which writes first: 24 people in your ICP signed up after yesterday’s event. Want a list so you can contact them? You answer: Yes, send it. Grok Bot replies: Done. The list is in Pancake.";

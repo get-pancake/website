@@ -87,7 +87,7 @@ The words the pictures add, to review as copy:
 - `t-engine`: a new job in Claude's window ("Who should I contact today?", "Query your tables", "Check market signals", "Start with Ramp."). The two other questions: "Who is ready for a demo?" ("Linear is ready.", Book a demo, Head of Growth at Linear, "New signup, asked pricing") and "Which lost deals can I reopen?" ("Supabase just raised.", Reach back out, VP Sales at Supabase, "Lost deal, new funding").
 - `t-journey`: "Came to your event", "Asked about pricing", "Replied to you", and the count ("4 touches kept").
 - `t-merge`: "Your event", "Your product", "Social profile" (with the mark of X), "Work email", "Personal email", "No email", "One buyer".
-- `t-ping` adds no word: the conversation is the ping story's own (`lp-story-ping-data.ts`). Since 2026-11-12 the agent that writes is OpenClaw, and it offers a list instead of reaching out by itself: "24 people in your ICP signed up after yesterday's event.", "Want a list so you can contact them?", "Yes, send it", "Done. The list is in Pancake.".
+- `t-ping` adds no word: the conversation is the ping story's own (`lp-story-ping-data.ts`). Since 2026-11-12 the agent that writes is Grok Bot, and it offers a list instead of reaching out by itself: "24 people in your ICP signed up after yesterday's event.", "Want a list so you can contact them?", "Yes, send it", "Done. The list is in Pancake.".
 
 The marks of the four new sources are the files of `public/integrations/`, unmodified. They say that Pancake can take these tools as sources: check that it is true before the page ships.
 

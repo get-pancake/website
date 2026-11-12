@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { ClaudeMark, OpenClawMark } from "./LpAgentMarks";
+import { ClaudeMark, GrokBotMark } from "./LpAgentMarks";
 import { PancakeMark } from "./LpClaudeScene";
 import { ToyBadge, ToyPic, toyPx } from "./LpToyKit";
 import type { DiveStageProps } from "./lp-dive-stages";
@@ -211,7 +211,7 @@ export function LpToyPingStage(_props: DiveStageProps) {
       <div className="lp-tp-chat">
         <p className="lp-tp-who">
           <span className="lp-tp-avatar">
-            <OpenClawMark />
+            <GrokBotMark />
           </span>
           <b>{s.contact}</b>
           <small>{s.time}</small>
