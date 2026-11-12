@@ -82,8 +82,10 @@ const MOVE = 0.15;
 const WORD = 0.045;
 /** how long a cell stays flashed once its value is in */
 const FLASH = 0.55;
-/** a cut between two tables, a re-sort, the camera's moves */
-const CUT = 0.32;
+/** a cut between two tables (the one in front goes, then the next comes in), a re-sort, the
+    camera's moves */
+const CUT_OUT = 0.14;
+const CUT = 0.3;
 const SORT = 0.6;
 const CAMERA = 0.65;
 /** how far the camera pulls back (the lens's scale) */
@@ -457,8 +459,11 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     });
     return t + duration;
   };
-  /** the camera cuts to another table: its tab comes to the front, the pane in front slides out
-      and the new one in, from the side of its tab */
+  /** The camera cuts to another table: its tab comes to the front; the pane in front goes, THEN
+      the new one comes in, from the side of its tab. Never both at once: two tables crossing
+      each other half faded read as a smear (founder: "sur les mouvements latéraux, c'est pas
+      net"). The layer clips at the handle's line (vision.css), so nothing slides onto Claude's
+      side */
   let shown: Pane = "companies";
   const cutTo = (name: Pane, t: number) => {
     const from = shown;
@@ -466,11 +471,12 @@ export function buildVisionCurtain(card: HTMLElement): BuiltCurtain {
     const dir = PANES.indexOf(name) > PANES.indexOf(from) ? 1 : -1;
     off(tabEls[from], "data-on", t);
     on(tabEls[name], "data-on", t);
-    tl.to(panes[from], { autoAlpha: 0, x: -24 * dir, duration: CUT * 0.7, ease: "power2.in" }, t);
-    step(panes[name], { x: 24 * dir }, t);
-    tl.to(panes[name], { autoAlpha: 1, x: 0, duration: CUT, ease: "power2.out" }, t + CUT * 0.45);
+    tl.to(panes[from], { autoAlpha: 0, duration: CUT_OUT, ease: "power1.in" }, t);
+    step(panes[from], { x: 0 }, t + CUT_OUT);
+    step(panes[name], { x: 18 * dir }, t + CUT_OUT - STEP);
+    tl.to(panes[name], { autoAlpha: 1, x: 0, duration: CUT, ease: "power2.out" }, t + CUT_OUT);
     shown = name;
-    return t + CUT * 1.45;
+    return t + CUT_OUT + CUT;
   };
   /** the camera on the companies table: pulled back (scale) or panned (x) */
   const camera = (vars: gsap.TweenVars, t: number) => tl.to(lenses.companies, { ...vars, duration: CAMERA, ease: "power2.inOut", force3D: false }, t);

@@ -123,6 +123,11 @@
   .lp-banner__br-wide {
     display: none;
   }
+  /* (a right title set on two lines that would wrap anyway on a phone keeps its own break there:
+     the vision homepage's "A fraction / drives revenue.") */
+  .lp-banner__title--right[data-lines="2"] .lp-banner__br-wide {
+    display: inline;
+  }
   .lp-banner__title {
     font-size: 9.6105cqw; /* 35.559 */
     left: 8.649%; /* 32 */

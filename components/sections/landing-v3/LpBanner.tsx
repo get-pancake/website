@@ -20,8 +20,8 @@ import { LpBottleneck } from "@/components/sections/landing-v3/LpBottleneck";
 /**
  * `left` and `right` (the vision homepage, 2026-11-11: the bottle kept, its message "you have tons
  * of data but use a fraction"): each title as its two lines. The left one breaks at every width;
- * the right one breaks on desktop and tablets and is one line on a phone, where the card has room
- * for one line under the neck (banner.css). Without them, the homepage's own lines as before.
+ * the right one breaks at every width too (banner.css: two lines fit under the neck on a phone).
+ * Without them, the homepage's own lines as before.
  */
 export function LpBanner({
   sky = true,

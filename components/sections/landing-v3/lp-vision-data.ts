@@ -231,7 +231,8 @@ export const VSTEP_BRAIN = {
  *  two halves (the break). */
 export const VISION_BOTTLE = {
   left: ["You have", "tons of data."],
-  right: ["You use", "a fraction."],
+  // founder, 2026-11-12: "comment rendre 'You use a fraction.' un poil plus revenue oriented"
+  right: ["A fraction", "drives revenue."],
 } as const;
 
 /** The clouds: "What your agent can do with Pancake" (the meeting: keep the clouds section,

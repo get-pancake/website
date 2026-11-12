@@ -90,8 +90,12 @@
   inherits: true;
   initial-value: 0%;
 }
-/* the handle in the visitor's hand: the split follows it at once */
-.lp-vcut .lp-vcut__card[data-drag] {
+/* the handle in the visitor's hand: the split follows it at once; moved with the keys, it eases
+   quickly. And a switch made while the window is already on show (a page opened on it) is at once */
+.lp-vcut .lp-vcut__card[data-user] {
+  transition-duration: 0.2s;
+}
+.lp-vcut .lp-vcut__card:is([data-drag], [data-instant]) {
   transition: none;
 }
 /* scrolled onto (data-wide, set once by LpVisionCurtain when the card's top passes 55 % of the
@@ -110,6 +114,8 @@
 .lp-vcut__db {
   background: var(--lp-v-dark);
   inset: 0;
+  /* (it clips at the handle's line: a pane sliding on a cut never shows on Claude's side) */
+  overflow: hidden;
   position: absolute;
   transform: translateX(var(--cut));
   z-index: 1;
