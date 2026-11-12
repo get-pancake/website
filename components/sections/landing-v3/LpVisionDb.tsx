@@ -53,7 +53,7 @@ function Cell({ cell }: { cell: DbCell }) {
   if (typeof cell === "string") return <>{cell}</>;
   // A value that comes while the picture plays (the hero's table): NULL and the value are both in
   // the markup, on one spot (which one shows at rest: the cell's `nil`, vision.css). After it,
-  // the state the agent gave it; over it, the agent's flag.
+  // the state the agent gave it; on the cell's corner, the agent's mark.
   if (cell.land) {
     return (
       <>
@@ -70,7 +70,6 @@ function Cell({ cell }: { cell: DbCell }) {
         {cell.by ? (
           <span className="lp-db__by">
             <ClaudeMark />
-            {cell.by}
           </span>
         ) : null}
       </>

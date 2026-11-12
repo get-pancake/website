@@ -80,12 +80,12 @@ export const VISION_CURTAIN = {
     ask: "What’s the next best Play to run?",
     go: "Run it.",
     turns: [
-      { row: "b", to: "to Dev tools.", why: "They asked pricing and just raised." },
-      { row: "c", to: "with Logistics.", why: "They came to your event and have a new VP Sales." },
-      { row: "p1", to: "to Legal tech.", why: "They just raised a round." },
-      { row: "p2", to: "to Proptech.", why: "Their new CRO just started." },
+      { row: "b", to: "to Dev tools.", why: "They asked pricing, then raised a Series B." },
+      { row: "c", to: "with Logistics.", why: "They came to your event and hired a VP Sales." },
+      { row: "p1", to: "to Legal tech.", why: "They raised new funding." },
+      { row: "p2", to: "to Proptech.", why: "They have a new CRO." },
       { row: "p3", to: "for Retail.", why: "They use a rival tool." },
-      { row: "a", to: "to Fintech.", why: "You lost the deal, and they are hiring SDRs." },
+      { row: "a", to: "to Fintech.", why: "You lost the deal. Now they are hiring SDRs." },
     ],
   },
   /* Claude's own view of the three accounts, beside the conversation once the curtain is slid left */

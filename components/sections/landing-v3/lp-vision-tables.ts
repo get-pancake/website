@@ -31,8 +31,8 @@ export type DbCellObj = {
    *  "rest": NULL at rest too, it comes once the loop runs. Unset: there all along (the loop can
    *  still take it away and land it again) */
   nil?: "take" | "rest";
-  /** the agent that works in this cell: its flag over the cell and its ring around it, as a grid
-   *  shows a collaborator (the hero's table) */
+  /** the agent that works in this cell: its ring around the cell and its mark on the ring's
+   *  corner, as a shared canvas shows a collaborator (the hero's table) */
   by?: string;
   /** a state the value takes once the agent has acted on it, printed after it (the hero's table) */
   state?: string;
@@ -117,7 +117,7 @@ const play = (row: string, v: string, more: Landing = {}): DbCellObj => ({ ...la
  *  widths add up to what is left); the three others are past the card's edge until the curtain is
  *  slid.
  *  Rows a, b and c are the three accounts Claude names. Row a takes its signal and its Play while
- *  the take opens, then goes live when Claude runs the Play: Claude's flag is on that cell.
+ *  the take opens, then goes live when Claude runs the Play: Claude's mark is on that cell.
  *  m1 and m2 are datapoints that land while Claude answers (the database keeps working).
  *  Then the loop: asked for the next best Play again and again, Claude goes b, c, p1, p2, p3, a
  *  and round again. A row's signal and its Play land before its turn (p1, p2 and p3's Play are

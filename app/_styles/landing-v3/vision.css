@@ -361,7 +361,8 @@
   max-width: 88%;
   padding: 9px 14px;
 }
-.lp .lp-vcut__bubble[data-n="2"] {
+/* (data-loop: a line the loop added, round after round) */
+.lp .lp-vcut__bubble:is([data-n="2"], [data-loop]) {
   margin-top: 18px;
 }
 /* one white card per tool call: the Pancake mark (the only coloured mark), the tool, and on the
@@ -470,7 +471,8 @@
   display: list-item;
   padding-left: 2px;
 }
-.lp-vcut__picks b {
+.lp-vcut__picks b,
+.lp-vcut__say b {
   font-weight: 600;
 }
 /* the composer, docked: the scene's card, its placeholder, what is typed, its controls */
@@ -1300,12 +1302,13 @@
 .lp-db td[data-void] .lp-db__now {
   opacity: 0;
 }
-/* the agent working in a cell, as a shared canvas shows who works where (Mobbin: MagicPath's
-   agents, each one's colour around the frame it works on and its name on a flag; Canva's sheet,
-   the outline around a selected range): Claude's ring around the cell, its flag on the cell's top
-   edge. The take shows the flag first
-   (data-noflag lifted), then the ring (data-noring), then the state it gave the value
-   (data-nostate) */
+/* the agent working in a cell, as a shared canvas shows who works where (Mobbin: Miro's Sidekick,
+   the agent's own tag on the corner of what it works on; Canva's sheet, the outline around a
+   selected cell): Claude's ring around the cell, its mark pinned on the ring's top left corner.
+   The mark sits on the corner itself, over the four cells' padding: it covers no value, whatever
+   row the loop takes it to (a name flag over the cell hid the Play of the row above).
+   The take shows the mark first (data-noflag lifted), then the ring (data-noring), then the
+   state it gave the value (data-nostate) */
 .lp-db td[data-by] {
   --db-state: 48px;
   overflow: visible;
@@ -1323,28 +1326,24 @@
   position: absolute;
   transition: opacity 0.25s ease;
 }
-.lp .lp-db__by {
+.lp-db__by {
   align-items: center;
   background: var(--lp-claude-spark);
-  border-radius: 4px 4px 4px 0;
-  bottom: calc(100% + 1px);
-  color: var(--lp-ink-100);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px var(--db-bg);
   display: flex;
-  font-family: var(--lp-font-sans);
-  font-size: 11px;
-  font-weight: 600;
-  gap: 4px;
-  /* tall enough to cover what the cell above prints (its NULL), not to cut through it */
-  height: 24px;
-  left: -1px;
-  line-height: 24px;
-  padding: 0 7px 0 6px;
+  height: 18px;
+  justify-content: center;
+  left: -10px;
   position: absolute;
+  top: -10px;
   transition: opacity 0.25s ease;
-  white-space: nowrap;
+  width: 18px;
+  z-index: 1;
 }
 .lp-db__by svg {
   display: block;
+  fill: var(--lp-ink-100);
   flex: none;
   height: 11px;
   width: 11px;
@@ -1591,14 +1590,15 @@
   }
 }
 @media (max-width: 767px) {
-  /* a phone has no room to share: the two stack, in the same order. Claude on top (380 of the
+  /* a phone has no room to share: the two stack, in the same order. Claude on top (378 of the
      card's 600 px: its view is tall enough for the whole of its list in the END), the table a
-     sheet under it (its bar, its head, four rows: 220 px). No curtain: --cut is the sheet's top */
+     sheet under it (its bar, its head, four rows: 220 px, and 2 px so that Claude's ring around
+     a cell of the fourth row is whole). No curtain: --cut is the sheet's top */
   .lp-vcut .lp-vcut__card {
     --vc-bar: 42px;
     --vc-head: 84px;
     --vc-n: 24px;
-    --vc-rest: 63.3%;
+    --vc-rest: 63%;
     --vc-pad: 14px;
     --vc-dock: 82px;
     --vc-chead: 38px;
@@ -1664,7 +1664,7 @@
     line-height: 20px;
     padding: 8px 12px;
   }
-  .lp .lp-vcut__bubble[data-n="2"] {
+  .lp .lp-vcut__bubble:is([data-n="2"], [data-loop]) {
     margin-top: 14px;
   }
   .lp .lp-vcut__tool {

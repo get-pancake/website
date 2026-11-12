@@ -137,7 +137,7 @@ export default function Home() {
       <LpNav />
       {/* the designer's hero: the rainbow, the headline left, the lede and the buttons right */}
       <LpHero />
-      {/* in the demo film's slot: Claude's answer over Pancake's table, a curtain between them */}
+      {/* in the demo film's slot: Claude's window beside Pancake's table, a curtain between them */}
       <LpVisionCurtain />
       {/* the customers, on cream, as on the page before */}
       <LpMarquee labelled />

@@ -37,7 +37,7 @@ import { DB_ARTIFACT, DB_HERO, DB_HERO_TABS } from "./lp-vision-tables";
  * are there from the first frame (founder: "le rideau Claude s'ouvre un peu tard, les gens auront
  * deja scroll down"). A signal lands in the table and the Brain writes its Play; the question is
  * typed and sent; Claude reads the tables and names three accounts while their rows light; told
- * to, it runs the first Play and the row goes live under its flag. Then the loop, for as long as
+ * to, it runs the first Play and the row goes live under its mark. Then the loop, for as long as
  * the card is on screen (founder: "Je prolongerai les animations en mode endless loop"): asked
  * for the next best Play, Claude names the next account and runs it, again and again, while the
  * table keeps taking signals. It is this card's one exception to "plays once, nothing loops".
@@ -264,6 +264,13 @@ export function LpVisionCurtain() {
               </p>
               <p className="lp-vcut__typed" data-n="2">
                 {C.go}
+              </p>
+              {/* what the loop types, round after round */}
+              <p className="lp-vcut__typed" data-n="3">
+                {C.loop.ask}
+              </p>
+              <p className="lp-vcut__typed" data-n="4">
+                {C.loop.go}
               </p>
               <span className="lp-vcut__caret" />
               <p className="lp-vcut__ctrls">
