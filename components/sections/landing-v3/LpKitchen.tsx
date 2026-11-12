@@ -32,7 +32,7 @@ import { whenInput } from "./lp-play-once";
  *   bonne taille", then "en code simple genre déterministe et supprimer le truc où je peux
  *   toucher et ça change l'angle") they play a LOOP of the scene instead: a 36 s video drawn
  *   frame by frame from it (scripts/kitchen-phone-loops.mjs), the camera fixed, no badges, as
- *   wide as the screen and zoomed so the kitchen fills it (kitchen.css). Same rule as the scene:
+ *   wide as the screen, the whole kitchen on the page's margins (kitchen.css). Same rule as the scene:
  *   it loads once the visitor has touched the page and the section is within half a screen,
  *   plays while on screen, and never with reduced motion or Data Saver. Its first frame is the
  *   phone poster, so the poster hands over to it without a jump; the switch swaps the loop.
@@ -46,8 +46,8 @@ const MODES = ["with", "without"] as const;
 /** the still pictures: one per mode and cast, and one without the vendor marks on the tank */
 function poster(mode: KitchenMode, cast: KitchenCast, vendorLogos: boolean) {
   const name = `/lp/kitchen/${mode}-${cast}${mode === "without" && !vendorLogos ? "-plain" : ""}`;
-  /* wide: 1944 x 1094, with the badges. phone: 960 x 600, the phone loop's framing and its
-     first frame, without the badges (they cover each other at that size) */
+  /* wide: 1944 x 1094, with the badges. phone: 960 x 448, the phone loop's framing (the whole
+     kitchen) and its first frame, without the badges (they cover each other at that size) */
   return { wide: `${name}.webp`, phone: `${name}-phone.webp` };
 }
 
@@ -147,7 +147,7 @@ export function LpKitchen({
     if (!el || typeof IntersectionObserver === "undefined") return;
     if (window.matchMedia(LIVE).matches || !loopOf("with", cast, vendorLogos)) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    // Data Saver: the still is the picture (1.5 MB a loop)
+    // Data Saver: the still is the picture (about 1 MB a loop)
     if ((navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData) return;
     let gone = false;
     let io: IntersectionObserver | undefined;

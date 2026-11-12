@@ -61,13 +61,13 @@ The command writes six files in `public/lp/kitchen`. It draws one still per mode
 
 ## Draw the phone loops again
 
-Phones do not run the 3D scene. They play a loop of it: a 36 second video drawn frame by frame from the scene, with the camera fixed and no badges, zoomed on a picture as wide as the screen. The phone stills (`*-phone.webp`) are the first frames of these loops. After a change to the scene, draw them again too. Run this command from the root of the repository:
+Phones do not run the 3D scene. They play a loop of it: a 36 second video drawn frame by frame from the scene, with the camera fixed and no badges, the whole kitchen on a picture as wide as the screen. The phone stills (`*-phone.webp`) are the first frames of these loops. After a change to the scene, draw them again too. Run this command from the root of the repository:
 
 ```bash
 node scripts/kitchen-phone-loops.mjs
 ```
 
-It needs Playwright, as above, and `ffmpeg` with H.264 (`libx264`). With `KITCHEN_GPU=1` it draws on the graphics card, in a minute or two instead of some twenty. It writes two loops (`with-pancakes-phone.mp4`, `without-pancakes-phone.mp4`, about 1.5 MB each) and six phone stills. The top of the script says how the loop closes on itself.
+It needs Playwright, as above, and `ffmpeg` with H.264 (`libx264`). With `KITCHEN_GPU=1` it draws on the graphics card, in a minute or two instead of some twenty. It writes two loops (`with-pancakes-phone.mp4`, `without-pancakes-phone.mp4`, about 1 MB each) and six phone stills, and prints the picture's size: `kitchen.css` sets the phone stage to that ratio. The top of the script says how the loop closes on itself.
 
 ## Look at the scene alone
 
