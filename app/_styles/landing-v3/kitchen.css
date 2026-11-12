@@ -1,4 +1,4 @@
-/* ── Kitchen — "Anyone can cook." / "Always overcooked." (2026-11-12) ──────────────────────────
+/* ── Kitchen — "We keep the kitchen clean." (2026-11-12) ──────────────────────────────────────
    No Figma frame: the section is built from the steps section's own measures (wrapper p-16,
    org py-128, a 752 heading block, the same title box and the same breakpoints) and from the
    tokens. The picture is a 16:9 stage on the 1296 content grid; the scene's canvas and its
@@ -11,12 +11,17 @@
 .lp-kitchen--sky {
   background: var(--lp-sky);
 }
+/* Under the picture: 48, not a section's 128. The statement of the 1-2-3 follows, the picture
+   has air of its own under the board, and the two together read as a hole in the page (founder,
+   2026-11-12: "réduis l'espace un peu entre la kitchen et le texte Unified context"). From the
+   picture's box to the statement: 208 on a desktop (it was 288), 152 on a tablet (224), 88 on a
+   phone (128). */
 .lp-kitchen__org {
   align-items: center;
   display: flex;
   flex-direction: column;
   gap: 40px;
-  padding: 128px 32px;
+  padding: 128px 32px 48px;
 }
 
 /* heading block: the title, then the switch */
@@ -33,28 +38,7 @@
   color: var(--lp-text);
   line-height: 69px; /* the steps title's box */
   margin: 0;
-}
-
-/* a new title comes up from under the line, once the switch was used (never on load). The span
-   takes the title's own face (the page's titles: Aeonik Condensed): without it the kit's layered
-   `* { font-family }` sets it in the reading face */
-.lp-kitchen__title-text {
-  display: inline-block;
-  font-family: inherit;
-}
-.lp-kitchen__title-text[data-swap] {
-  animation: lp-kitchen-title 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-@keyframes lp-kitchen-title {
-  from {
-    opacity: 0;
-    translate: 0 0.25em;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .lp-kitchen__title-text[data-swap] {
-    animation: none;
-  }
+  text-wrap: balance; /* on phones it takes two lines: never one word alone on the second */
 }
 
 /* the switch: two options on a pill, the one that shows is inverted */
@@ -132,12 +116,16 @@
 @media (max-width: 1024px) {
   .lp-kitchen__org {
     gap: 32px;
-    padding: 96px 24px;
+    padding: 96px 24px 24px;
   }
 }
 @media (max-width: 767px) {
   .lp-kitchen {
     padding: 96px 0 0;
+  }
+  /* (on phones the space under the picture is the next section's own top padding, 96) */
+  .lp-kitchen + .lp-steps {
+    padding-top: 56px;
   }
   .lp-kitchen__org {
     gap: 24px;

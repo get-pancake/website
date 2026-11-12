@@ -7,9 +7,10 @@ import { WORDS } from "./kitchen/words";
 import { whenInput } from "./lp-play-once";
 
 /**
- * Kitchen — "Anyone can cook." / "Always overcooked." (2026-11-12). Pancake as a kitchen that
- * runs by itself: signals ride in as ingredients, three chefs cook, stacks of pancakes leave as
- * leads. A switch shows the same kitchen without Pancake, and the title changes with it.
+ * Kitchen — "We keep the kitchen clean." (2026-11-12). Pancake as a kitchen that runs by
+ * itself: signals ride in as ingredients, three chefs cook, stacks of pancakes leave as leads. A
+ * switch shows the same kitchen without Pancake. The title is the same for both (until
+ * 2026-11-12 it changed with the switch: "Anyone can cook." / "Always overcooked.").
  *
  * Every word is in kitchen/words.js. The third-party marks are in kitchen/logos.js: read the
  * note at its top before this ships.
@@ -68,8 +69,6 @@ export function LpKitchen({
   const [mode, setMode] = useState<KitchenMode>(first);
   /** the mode the scene booted in, once it is live: null while the poster is the render */
   const [booted, setBooted] = useState<KitchenMode | null>(null);
-  /** the switch was used: from then on the title comes up when it changes */
-  const [touched, setTouched] = useState(false);
   const stage = useRef<HTMLDivElement>(null);
   const kitchen = useRef<PancakeKitchen | null>(null);
   /** the mode at the moment the scene boots: the visitor may flip the switch before it does */
@@ -132,11 +131,7 @@ export function LpKitchen({
     <section className={sky ? "lp-kitchen lp-kitchen--sky" : "lp-kitchen"} id={id} data-mode={mode}>
       <div className="lp-kitchen__org">
         <header className="lp-kitchen__head">
-          <Title className="lp-kitchen__title lp-title-section" aria-live="polite">
-            <span key={mode} className="lp-kitchen__title-text" data-swap={touched ? "" : undefined}>
-              {WORDS[mode].title}
-            </span>
-          </Title>
+          <Title className="lp-kitchen__title lp-title-section">{WORDS.title}</Title>
           <div className="lp-kitchen__switch" role="group" aria-label={WORDS.switchLabel}>
             {MODES.map((m) => (
               <button
@@ -144,10 +139,7 @@ export function LpKitchen({
                 type="button"
                 className="lp-kitchen__option"
                 aria-pressed={mode === m}
-                onClick={() => {
-                  setTouched(true);
-                  setMode(m);
-                }}
+                onClick={() => setMode(m)}
               >
                 {WORDS[m].option}
               </button>
