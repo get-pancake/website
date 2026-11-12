@@ -3,6 +3,7 @@
 import { gsap } from "@/lib/gsap";
 
 import { ART_SOURCES } from "./lp-toy-art";
+import { toyCanvas } from "./lp-toy-canvas";
 import {
   TOY_EASE,
   TOY_STEP,
@@ -619,5 +620,20 @@ const BUILDERS = { t1: buildT1, t2: buildT2, t3: buildT3 } as const;
 export type ToyStepVariant = keyof typeof BUILDERS;
 
 export function buildToyStep(variant: ToyStepVariant, stage: HTMLElement): Built {
-  return BUILDERS[variant](stage);
+  // the picture's drawings go on a canvas (lp-toy-canvas.ts): read at rest, before the take writes
+  const canvas = toyCanvas(stage);
+  try {
+    const built = BUILDERS[variant](stage);
+    canvas.follow(built.tl);
+    return {
+      ...built,
+      cleanup() {
+        canvas.dispose();
+        built.cleanup();
+      },
+    };
+  } catch (err) {
+    canvas.dispose();
+    throw err;
+  }
 }

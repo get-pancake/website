@@ -28,6 +28,9 @@ function toyLayer<S extends ToySet>(set: S, name: keyof ToyArt[S]["layers"] & st
 /**
  * One drawing of a set, where the studio drew it. `from` and `to` move it: the drawing was made
  * with its object on the point `from`, and it is laid with that object on the point `to`.
+ * While a take plays, the drawing is painted on a canvas from this element's place, size and
+ * GSAP state (lp-toy-canvas.ts): its `left`, `top`, `width` and `height` are what the canvas
+ * reads, and only GSAP may move it.
  */
 export function ToyPic<S extends ToySet>({
   set,

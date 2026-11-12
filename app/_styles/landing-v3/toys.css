@@ -7,7 +7,9 @@
    The markup is each picture's END. A piece that only shows on the way carries .lp-toy-gone and
    rests hidden; the take (lp-toy-step-timelines.ts, lp-toy-story-timelines.ts) shows it and
    hides it again before it ends. No infinite keyframes, no will-change: GSAP only. A picture
-   goes round (lp-play-once `loop`); what only its next round shows rests hidden too.
+   goes round (lp-play-once `loop`); what only its next round shows rests hidden too. While a
+   take plays, the drawings are painted on a canvas (lp-toy-canvas.ts): a drawing is moved by
+   GSAP alone, never by a rule of this file.
 
    Traps:
    T1 the stage's own rules (`.lp-step-stage img { display: block }`, `.lp-dive-scene * {
@@ -38,6 +40,24 @@
 .lp-toy .lp-toy-gone {
   visibility: hidden;
 }
+/* The drawings on a canvas (lp-toy-canvas.ts): a canvas a run of drawings, where the run's first
+   one was. Once its first frame is drawn the picture carries [data-toy-canvas], and the page's
+   own drawings (and a wrapper that holds nothing else) are no longer displayed: GSAP still
+   writes to them, which then costs the page nothing. Without the attribute (no script, reduced
+   motion, far from the screen, `?lp-toy=dom`) the drawings are the render, as before. */
+.lp-toy .lp-toy-canvas {
+  display: block;
+  height: 100%;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  width: 100%;
+}
+.lp-toy[data-toy-canvas] .lp-toy-pic,
+.lp-toy[data-toy-canvas] [data-toy-group] {
+  display: none;
+}
+
 /* a vendor's own mark on a white disc: the outer box is a point of the set, the disc hangs from
    it (LpToyKit.tsx ToyMark) */
 .lp-toy .lp-toy-mark {

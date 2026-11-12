@@ -7,13 +7,14 @@ The seven small pictures of the vision homepage, in the look of the kitchen (`Lp
 
 ## How a picture is made
 
-A picture is not live 3D. Each object is drawn once, on a transparent ground, by the studio in this folder, and saved as a WebP layer. The page lays the layers out as plain images and moves them with GSAP. The camera has no perspective, so sliding an object in space is exactly sliding its drawing on the screen.
+A picture is not live 3D. Each object is drawn once, on a transparent ground, by the studio in this folder, and saved as a WebP layer. The page lays the layers out as plain images and moves them with GSAP. While a take plays, the layers are painted on a canvas (see "The drawings are on a canvas"). The camera has no perspective, so sliding an object in space is exactly sliding its drawing on the screen.
 
 That choice keeps the cost of a picture at a few images (the six sets weigh about 390 kB together, loaded lazily), it plays on phones, and it fits the page's own motion system: a stage whose markup is its END picture, and one seek-safe timeline.
 
 - `toys/studio/scene-*.js`: the 3D sets, one a picture. Plain JavaScript on three.js, with the kitchen's shapes and finishes (`../kitchen/geo.js`, `mats.js`, `palette.js`). The third step has no set: its Brain is drawn flat by the page (see "The Brain's look").
 - `scripts/toy-art.mjs`: draws every layer and writes two things together: the pictures (`public/lp/toys/<set>/`) and where each one goes on its stage (`lp-toy-art.ts`: layers, anchors, paths, in stage px).
 - `LpToyKit.tsx`, `lp-toy-kit.ts`, `app/_styles/landing-v3/toys.css`: what the seven share (a layer, a badge, the motion verbs).
+- `lp-toy-canvas.ts`: paints a picture's layers on a canvas while its take plays.
 - `LpToySteps.tsx` and `lp-toy-step-timelines.ts`: the three pictures of the 1-2-3.
 - `LpToyStories.tsx` and `lp-toy-story-timelines.ts`: the four pictures of the deep dive.
 - `lp-toy-data.ts`: every word the pictures add. It is in `scripts/homepage-lint.mjs`.
@@ -55,6 +56,32 @@ The engine of `t-engine` keeps its own small Brain of beads (`toys/studio/scene-
 
 To add, move or remove a point, edit `BRAIN_HUBS`: a point is an angle and a distance from its hub. Keep the side of a hub's tag free of points, so that a tag never covers a branch.
 
+## The drawings are on a canvas
+
+Since 2026-11-12 a picture's drawings are painted on a canvas while its take plays, as the kitchen is (`lp-toy-canvas.ts`). The founder asked for it on the preview: "Les animations sont un peu glitchy parfois, est-ce qu'on les passerait pas en canvas pour que ce soit plus opti ? Comme la kitchen quoi".
+
+A visitor sees the same frames. What changes is the work behind them. As images, every drawing under a piece that moved was painted again at each frame. On the canvas, a frame is a few blits of drawings that are already decoded.
+
+What it gives, measured on a production build in Chromium that draws through a GPU process, with the processor slowed four times (frames a second, images then canvas):
+
+- the first step at 1440 px: 21, then 58;
+- the first step on a phone's screen: 36 to 54 from one run to the next, then 52 to 58;
+- the second step on a phone's screen: 57, then 59 (it was light already);
+- the carousel of the four features at 1440 px: 53, then 51 to 53 (no change).
+
+The test machine has no graphics card, so these are orders of size, not what a real screen shows.
+
+What is on the canvas: the drawings (`ToyPic`). What is not: the page's type (badges, names, counts, Claude's window), the vendors' marks, and the small shapes the page draws itself (a ring, a beam, a line, and the whole Brain of the third step). That is why the carousel did not change: its cost is its type and its progress bar. Each frame in which one of those moves, Chromium lays the page's layers out again (about 4.5 ms on the slowed processor, with or without `will-change`: measured). If more is wanted, the next step is to draw those shapes on the canvas too.
+
+How it works:
+
+- A canvas holds a run of drawings that follow each other with nothing else between them. A picture has one to three canvases. What the page draws between two runs keeps its place in the stack.
+- The images stay in the markup. They are the picture without script and under reduced motion, and they come back whenever the canvas stops.
+- A picture takes its canvases when its take plays near the screen, and gives them back two and a half screens away. A picture that waits holds none.
+- `?lp-toy=dom` keeps the images as the render. `?lp-toy=canvas` takes the canvases at once (the review page `/lp-dev/stages` seeks a take by hand, so it needs it).
+
+One rule for a new drawing: move it with GSAP only (`x`, `y`, `scale`, `rotation`, `autoAlpha`, a `clipPath` that is an `inset()`). The canvas reads GSAP's own record of each drawing, so it does not see what a stylesheet moves. And GSAP folds an element's own `translate`, `rotate` and `scale` properties into its transform the first time it moves it. Two faults of the first version came from that, and were found when the two renders were compared: the beads never rode the turntable of the first step (they do now, `toyOrbit` in `lp-toy-step-timelines.ts`), and the radar's beam of `t-engine` stood on its edge half-way round (it now turns inside a face that is flattened once, `.lp-te-face`).
+
 ## When a picture plays
 
 The three steps are played by the page's driver (`lp-play-once.ts`). By its older rules a card that came on screen during a fast scroll, or in one step of the scroll (a trackpad flick, a page key), showed its END picture and never moved: on a laptop most visitors saw three still pictures. The steps ask the driver for one more rule (`playWhenStopped`): a card that got its picture without playing plays the first time the scroll comes to rest with half of it on screen. Several such cards start one after the other.
@@ -93,6 +120,6 @@ The marks of the four new sources are the files of `public/integrations/`, unmod
 
 ## What was checked, and what was not
 
-Checked on a production build, in headless Chromium, at 1440 px and at 390 px (touch): the copy lint, the types, ESLint, the build. Each step plays its opening, holds, goes round and comes back to its picture with no jump, and its counts go on. A step out of sight waits, and carries on when it is back. A step left during its opening shows its picture, and plays a round when the visitor returns. The carousel's first story plays from its start after a jump to it, and asks the second question on its next turn. On phones each story of the stack plays again after its hold, and the first asks its three questions in turn. Reduced motion: each picture rests on its END and no take is fetched. No error in the console, no picture that fails to load. The homepage's first load is 154 kB, as before.
+Checked on a production build, in headless Chromium, at 1440 px and at 390 px (touch): the copy lint, the types, ESLint, the build. The canvas draws the same frames as the images (compared at ten moments of each take, at both sizes: only the edge of a moving piece differs, by less than a pixel). A picture takes its canvases when it plays and gives them back far from the screen; under reduced motion it takes none. Each step plays its opening, holds, goes round and comes back to its picture with no jump, and its counts go on. A step out of sight waits, and carries on when it is back. A step left during its opening shows its picture, and plays a round when the visitor returns. The carousel's first story plays from its start after a jump to it, and asks the second question on its next turn. On phones each story of the stack plays again after its hold, and the first asks its three questions in turn. Reduced motion: each picture rests on its END and no take is fetched. No error in the console, no picture that fails to load. The homepage's first load is 154 kB, as before.
 
 Not checked: Safari and Firefox, a real phone, how smooth the motion is on a real screen (the test machine draws in software).
