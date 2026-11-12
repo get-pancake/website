@@ -32,7 +32,7 @@ function browser({ idle = false, readyState = "loading" } = {}) {
   const page = {
     window, appended, timers,
     run: (code) => vm.runInContext(code, context),
-    fire: (type) => [...(listeners.get(type) ?? [])].forEach((fn) => fn({ type })),
+    fire: (type, target) => [...(listeners.get(type) ?? [])].forEach((fn) => fn(target === undefined ? { type } : { type, target })),
     listening: (type) => listeners.get(type)?.size ?? 0,
     /** run every timer whose delay is ≤ ms, in order */
     tick: (ms = 0) => {
@@ -140,4 +140,19 @@ test("gatedScriptLoader appends one async script with the exact src once the gat
   assert.equal(page.appended.length, 1);
   assert.equal(page.appended[0].async, true);
   assert.equal(page.appended[0].src, "https://t.pancake.ai/package/latest/x/?a=1&b='2'");
+});
+
+test("an element that scrolls by itself is not the visitor: only the page's own scroll starts the tags", () => {
+  const page = browser();
+  const ran = [];
+  page.window[TRACKER_GATE](() => ran.push("gtm"));
+  // a box inside the page scrolled by the page's code (the homepage window's conversation)
+  page.fire("scroll", { nodeName: "DIV" });
+  page.tick(0);
+  assert.deepEqual(ran, [], "an element's scroll does not start the tags");
+  for (const type of TRACKER_START_EVENTS) assert.equal(page.listening(type), 1, `${type}: still listening`);
+  // the page itself scrolls (the event's target is the document)
+  page.fire("scroll", page.run("document"));
+  page.tick(0);
+  assert.deepEqual(ran, ["gtm"], "the page's scroll starts them");
 });
