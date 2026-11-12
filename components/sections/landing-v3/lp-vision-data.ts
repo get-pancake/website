@@ -71,7 +71,7 @@ export const VISION_CURTAIN: {
   live: string;
 } = {
   label:
-    "Pancake’s tables work by themselves: batches of signals land, accounts are rescored and the table re-sorts, duplicates merge, people change jobs. Beside them, Claude, connected to Pancake, is asked which accounts to work, and the companies table narrows to the 86 that have a signal. When Ramp’s new VP Sales turns out to be the buyer you had at Notion, Claude says so unasked, then runs a Play for Ramp and end-of-year gifts for the next four, and flags a new signup at Linear. Ramp replies and its deal opens again.",
+    "Pancake’s tables work by themselves: batches of signals land, accounts are rescored and the table re-sorts, duplicates merge, people change jobs. Beside them, Claude, connected to Pancake, is asked which accounts to work, and the companies table narrows to the 86 that have a signal. When Ramp’s new VP Sales turns out to be the buyer you had at Notion, Claude says so unasked, then runs a Play for Ramp and a HeyReach sequence for the four accounts you owe a follow-up, each one fitted to its last touch, and flags a new signup at Linear. Ramp replies and its deal opens again.",
   handle: "Resize Claude and Pancake",
   /* Claude's own chrome, the Claude scene's words (lp-demo-data.ts) */
   greeting: "Let’s flip some pancakes",
@@ -87,11 +87,13 @@ export const VISION_CURTAIN: {
     // (DB_HERO, DB_PEOPLE): the companies are named, never their industry (founder, 2026-11-12)
     { id: "ping", tool: "New signal", name: "Ramp", done: "new VP Sales" },
     { id: "say2", say: "Ramp hired the VP who bought from you at Notion. Want me to reach back out?" },
-    // what a revenue team asks for in December (founder, 2026-11-12, on a standing rule that was
-    // here: "too deterministic / niche … New signup worth checking? End of year presents")
-    { id: "ask2", ask: "Yes. And send our end-of-year gifts to the top five." },
+    // the follow-ups nobody tracks, sent from the tool the team already runs (founder, 2026-11-12:
+    // "launch a Heyreach sequence with anyone i should follow with today", "tu peux le twist").
+    // Pancake knows who is owed one; the Plays' column shows each one fitted to its last touch.
+    // (‑: a hyphen no line breaks at, so "follow-up" never ends a line on "follow-")
+    { id: "ask2", ask: "Yes. And launch a HeyReach sequence for everyone I owe a follow‑up." },
     { id: "run", tool: "Run Plays", name: "5 accounts", doing: "Starting…", done: "Live", run: true },
-    { id: "say3", say: "Done. Ramp hears from you today, and the gifts are on their way." },
+    { id: "say3", say: "Done. Ramp hears from you today. Four follow‑ups are live in HeyReach." },
     // nothing is typed from here: the table brings the next one, Claude says it
     { id: "signup", tool: "New signup", name: "Linear", done: "VP Engineering" },
     { id: "say4", say: "New signup worth checking: a VP at Linear." },
