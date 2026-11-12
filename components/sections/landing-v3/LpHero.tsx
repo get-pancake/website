@@ -1,7 +1,6 @@
 import { AudienceSelector } from "./LpAudience";
 import { AudienceHeadline } from "./LpAudienceHeadline";
 import { LpAgentStart } from "./LpAgentStart";
-import { LpHeroInstall } from "./LpHeroInstall";
 import { LpHeroAgentArt } from "./LpHeroAgentArt";
 import { LpArcCanvas } from "@/components/sections/landing-v3/LpArcCanvas";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
@@ -104,9 +103,8 @@ export function LpHero() {
                 </LpFxLink>
                 {/* out of flow, under the row: #1 Product of the Day on Product Hunt */}
                 <LpProductHunt />
-                {/* out of flow, in the same slot from 1280 (where the badge is in the nav): "or
-                    install in" and the agents' marks, the setup line's card on hover */}
-                <LpHeroInstall />
+                {/* (the install row that stood in the same slot from 1280 is now the "Works in"
+                    line above the window under the hero: LpVisionCurtain, 2026-11-11) */}
               </div>
             </div>
             <div className="lp-hero-col lp-hero-col--agent"><LpAgentStart /></div>

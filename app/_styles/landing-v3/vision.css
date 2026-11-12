@@ -37,6 +37,25 @@
   --lp-v-tone-30: var(--lp-pink-30);
   --lp-v-tone-40: var(--lp-pink-40);
 }
+/* "Works in" Claude and Codex (LpHeroInstall, setup.css), between the headline and the window
+   (the meeting, 2026-11-11). A line as wide as the card and of no height, so the window keeps
+   its place: the row stands on it, 14 px above the card's top edge, at the card's left edge, in
+   the room the hero leaves under its headline. Over the card (z-index): its install card opens
+   downward. Phones have no such room (the hero ends at the fold): there the line is in flow
+   above the card, under the fold, and the card's top no longer shows over it. */
+.lp-vcut__works {
+  height: 0;
+  margin-inline: auto;
+  position: relative;
+  width: min(1136px, calc(100% - 48px));
+  z-index: 3;
+}
+.lp-vcut__works > .lp-hero-install {
+  bottom: 14px;
+  left: 0;
+  position: absolute;
+}
+
 /* ── the window under the hero: Claude's window, Pancake's table, a curtain (LpVisionCurtain.tsx) ──
    In the demo film's slot: the section and the card are .lp-video's (video.css: 26 px under the
    hero, 1136 wide at most, the card's shadow, its place on the first screen; hero.css "Homepage
@@ -1615,6 +1634,9 @@
 
 /* ── narrower windows ── */
 @media (max-width: 1024px) {
+  .lp-vcut__works {
+    width: calc(100% - 96px);
+  }
   /* a tablet's card: fewer columns (their tablet widths), a narrower conversation, its short
      forms */
   /* (the three leading columns a tablet shows: 48 % of the card; its grip is smaller, so the
@@ -1670,6 +1692,18 @@
   }
 }
 @media (max-width: 767px) {
+  .lp-vcut {
+    margin-top: 0;
+  }
+  .lp-vcut__works {
+    height: auto;
+    padding: 12px 0;
+    width: calc(100% - 32px);
+  }
+  .lp-vcut__works > .lp-hero-install {
+    bottom: auto;
+    position: relative;
+  }
   /* a phone has no room to share: the two stack, in the same order. Claude on top (378 of the
      card's 600 px: its view is tall enough for the whole of its list in the END), the table a
      sheet under it (its bar, its head, four rows: 220 px, and 2 px so that Claude's ring around

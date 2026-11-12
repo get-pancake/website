@@ -21,6 +21,13 @@ import { SETUP_LINE } from "./LpSetupLine";
  * badge leaves for the nav there, out of flow, so the first screen's measured layout does not
  * move; under 1280 the badge keeps that slot.
  *
+ * SINCE 2026-11-11 (the landing page meeting: the small "or install in" row can be put "plus en
+ * avant", as "work in Claude, Codex", "au-dessus du floating element du héros … entre le H1 et
+ * le truc en dessous") the row stands above the window under the hero, at every width, and
+ * reads "Works in" with each agent as a white pill, its mark and its name. It is rendered by
+ * LpVisionCurtain (its .lp-vcut__works line, vision.css), no longer by LpHero; its card now
+ * opens downward, over the window's top. The rest holds.
+ *
  * A disclosure: the card opens on hover (CSS), and on a press of the row (data-open, for touch
  * and keyboard), and closes on Escape (focus back on the row), on a press outside or when focus
  * leaves it. Closed, the card is visibility: hidden, so its copy button is out of the tab order.
@@ -68,13 +75,15 @@ export function LpHeroInstall() {
         aria-label="Install Pancake in Claude Code or Codex"
         onClick={() => setOpen((o) => !o)}
       >
-        <span>or install in</span>
+        <span>Works in</span>
         <span className="lp-hero-install__marks" aria-hidden="true">
           <span className="lp-hero-install__mark lp-hero-install__mark--claude">
             <ClaudeMark />
+            Claude
           </span>
           <span className="lp-hero-install__mark">
             <CodexMark />
+            Codex
           </span>
         </span>
       </button>
