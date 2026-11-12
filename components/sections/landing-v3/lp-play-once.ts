@@ -689,12 +689,14 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     tl.play(loopFrom);
   };
   /** a looping take: it runs while the card can be seen, and waits where it is otherwise. A
-      round that is owed starts once half of the card is on screen. */
+      round that is owed starts once half of the card is on screen. (`near` too: the observers
+      report one after the other, and on a jump away the one that says "half on screen" can
+      still hold its old answer when the other has already said "gone".) */
   const syncLoop = () => {
     if (!tl || motionMq.matches) return;
     if (!near && !visible) return void tl.pause();
     if (roundOwed) {
-      if (inView()) startRound();
+      if (near && inView()) startRound();
       return;
     }
     if (!loopTimer && tl.progress() < 1) tl.play();
@@ -862,7 +864,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
           const again = () => {
             loopTimer = 0;
             if (disposed || motionMq.matches) return;
-            if (inView()) startRound();
+            if (near && inView()) startRound();
             else roundOwed = true;
           };
           if (o.loop.hold > 0) loopTimer = window.setTimeout(again, o.loop.hold * 1000);
