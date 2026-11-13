@@ -103,7 +103,11 @@ export function LpKitchen({
     let gone = false;
     let near: IntersectionObserver | undefined;
     let far: IntersectionObserver | undefined;
+    /** the boot under way: stopped if the scene is let go before it is live */
+    let booting: AbortController | undefined;
     const stop = () => {
+      booting?.abort();
+      booting = undefined;
       far?.disconnect();
       kitchen.current?.dispose();
       kitchen.current = null;
@@ -115,47 +119,69 @@ export function LpKitchen({
         ([entry]) => {
           if (!entry?.isIntersecting) return;
           near?.disconnect();
+          const boot = new AbortController();
+          booting = boot;
+          // a phone gives the memory back once the section is far (a boot under way stops), and
+          // boots again on the way back
+          if (phone.matches) {
+            far = new IntersectionObserver(
+              ([away]) => {
+                if (!away || away.isIntersecting) return;
+                stop();
+                watch();
+              },
+              { rootMargin: FAR },
+            );
+            far.observe(el);
+          }
+          const at = latest.current;
           import("./kitchen/kitchen")
-            .then(({ createPancakeKitchen, POSTER_TIMES, PHONE_VIEW }) => {
-              if (gone) return;
-              const at = latest.current;
-              const live = createPancakeKitchen(el, {
-                cast,
-                mode: at,
-                vendorLogos,
-                time: POSTER_TIMES[at],
-                intro: false,
-                // a phone's picture is small: it is drawn as sharp as its poster (1170 px wide)
-                maxPixelRatio: phone.matches ? 3 : 2,
-                // a phone: the whole kitchen as wide as the text, from a still angle (PHONE)
-                ...(phone.matches ? { view: PHONE_VIEW, interactive: false } : null),
-                ...(judged
-                  ? {
-                      onSlow: () => {
-                        tooSlow = true;
-                        stop();
-                      },
-                    }
-                  : null),
-              });
+            .then(({ bootPancakeKitchen, POSTER_TIMES, PHONE_VIEW }) =>
+              // set up a part per frame, its shaders compiled in the background, the still kept
+              // until its first frame (kitchen.js): the page's animations run on as it boots
+              bootPancakeKitchen(
+                el,
+                {
+                  cast,
+                  mode: at,
+                  vendorLogos,
+                  time: POSTER_TIMES[at],
+                  intro: false,
+                  // a phone's picture is small: it is drawn as sharp as its poster (1170 px wide)
+                  maxPixelRatio: phone.matches ? 3 : 2,
+                  // a phone: the whole kitchen as wide as the text, from a still angle (PHONE)
+                  ...(phone.matches ? { view: PHONE_VIEW, interactive: false } : null),
+                  ...(judged
+                    ? {
+                        onSlow: () => {
+                          tooSlow = true;
+                          stop();
+                        },
+                      }
+                    : null),
+                },
+                boot.signal,
+              ),
+            )
+            .then((live) => {
+              if (boot.signal.aborted) {
+                live.dispose();
+                return;
+              }
+              booting = undefined;
+              // the visitor may have flipped the switch while it booted
+              if (latest.current !== at) live.setMode(latest.current, true);
               kitchen.current = live;
               // the browser took the GPU context back (memory pressure, a driver reset)
               live.canvas.addEventListener("webglcontextlost", stop, { once: true });
-              setBooted(at);
-              // a phone gives the memory back once the section is far, and boots again on the way back
-              if (!phone.matches) return;
-              far = new IntersectionObserver(
-                ([away]) => {
-                  if (!away || away.isIntersecting) return;
-                  stop();
-                  watch();
-                },
-                { rootMargin: FAR },
-              );
-              far.observe(el);
+              // the scene has drawn its first frame: the still gives way
+              setBooted(live.mode);
             })
-            // no WebGL, or the chunk did not load: the poster stays
-            .catch(() => undefined);
+            .catch(() => {
+              // no WebGL, or the chunk did not load: the poster stays, and a phone does not try
+              // again on the way back (a boot that was stopped does, through `watch`)
+              if (!boot.signal.aborted) far?.disconnect();
+            });
         },
         { rootMargin: NEAR },
       );
