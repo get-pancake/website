@@ -103,7 +103,8 @@ function burning(fire, tau) {
   return clamp((tau - fire.from) / 0.35) * clamp((fire.to - tau) / 0.25);
 }
 
-export function createMess(world, root, tex, opts = {}) {
+/** The kitchen without Pancake. A generator, as createShow (show.js), whose set-up it is part of. */
+export function* createMess(world, root, tex, opts = {}) {
   const set = group(root);
   const v3 = new THREE.Vector3();
   const up = new THREE.Vector3(0, 1, 0);
@@ -191,6 +192,7 @@ export function createMess(world, root, tex, opts = {}) {
   // the puddle under the leak
   const puddle = mesh(G.puck(0.55, 0.035, 0.016, 32), M.ceramic(FOOD.batter, 0.25, 0.7), set, LEAK[0], 0.004, LEAK[2] + 0.1, false);
   puddle.receiveShadow = true;
+  yield "mess: tank";
 
   // ── what is on the griddle ─────────────────────────────────────────────────
   const charred = CHARRED.map(([c, j]) => {
@@ -251,6 +253,7 @@ export function createMess(world, root, tex, opts = {}) {
   mesh(G.cylinder(0.07, 0.09, 0.16, 12), M.soft(C.plum, 0.5), hose, 0, 0.26, 0);
   mesh(G.cylinder(0.05, 0.075, 0.18, 12), M.soft(C.plum, 0.5), hose, 0, 0.4, 0);
   hose.visible = false;
+  yield "mess: griddle, signs";
 
   // ── the orders: late tickets on the rail, the ones that fall, the plate ────
   const late = [];

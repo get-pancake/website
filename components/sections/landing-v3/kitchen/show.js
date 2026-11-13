@@ -69,7 +69,11 @@ const SPILL = [
   null,
 ];
 
-export function createShow(world, scene, opts = {}) {
+/**
+ * Everything that moves, and the clock that moves it. A generator, as buildWorld (world.js): each
+ * `yield` is a pause between two parts of the set-up.
+ */
+export function* createShow(world, scene, opts = {}) {
   const root = group(scene);
   const tex = world.tex;
   const cBatter = new THREE.Color(FOOD.batter);
@@ -93,6 +97,7 @@ export function createShow(world, scene, opts = {}) {
     casts.people[name] = makePerson(CAST.people[name], tex);
     root.add(casts.pancakes[name].root, casts.people[name].root);
   }
+  yield "show: chefs";
   // how high above the floor the top of each chef is, and its brow, for what floats around its head
   const TOPS = { pancakes: 1.42, people: 2.05 };
   const BROWS = { pancakes: 0.92, people: 1.32 };
@@ -127,6 +132,7 @@ export function createShow(world, scene, opts = {}) {
     }
     return list;
   });
+  yield "show: tools, ingredients";
 
   // the pancakes on the griddle: two sets of three per column, used in turn, because a batch
   // is still in the air on its way to the plate when the next one is poured
@@ -156,6 +162,7 @@ export function createShow(world, scene, opts = {}) {
     root.add(tk.group);
     tickets.push(tk);
   }
+  yield "show: pancakes, plates, tickets";
 
   // ── small effects ──────────────────────────────────────────────────────────
   const dot = G.sphere(1, 10, 8);
@@ -186,8 +193,10 @@ export function createShow(world, scene, opts = {}) {
   plus.renderOrder = 4;
   root.add(plus);
 
+  yield "show: effects";
+
   // what the kitchen turns into without Pancake
-  const messy = createMess(world, root, tex, opts);
+  const messy = yield* createMess(world, root, tex, opts);
 
   // ── the mixer's ladle, as a function of time ───────────────────────────────
   const STIR = [BOWL.x + 0.12, BOWL.batterY + 0.1, BOWL.z + 0.1];
@@ -1024,6 +1033,8 @@ export function createShow(world, scene, opts = {}) {
   }
 
   const api = {
+    /** the group that holds all of it (kitchen.js compiles its shaders a part at a time) */
+    root,
     update,
     /** the badges of the last frame drawn, for the overlay */
     badges,

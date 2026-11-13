@@ -12,7 +12,7 @@ The scene pauses when it is off screen or in a hidden tab. If the visitor asked 
 
 ## The files
 
-- `kitchen.js`: the entry. `createPancakeKitchen(element, options)` makes the renderer, the light, the camera and the clock. `kitchen.d.ts` lists its options and its methods.
+- `kitchen.js`: the entry. `createPancakeKitchen(element, options)` makes the renderer, the light, the camera and the clock. `bootPancakeKitchen(element, options, signal)` makes the same kitchen a part at a time, for the homepage (see "How it starts"). `kitchen.d.ts` lists its options and its methods.
 - `words.js`: every word the section shows. Change copy here and nowhere else.
 - `show.js`: the animation with Pancake, and the two switches.
 - `mess.js`: the animation without Pancake, and the slow tank.
@@ -91,6 +91,20 @@ The page reads these parameters from its address:
 - `?speed=0.5` plays at half speed.
 - `?bare=1` shows the stage alone, and `?poster=1` the exact frame of a still.
 - `?phone=1` shows what a phone shows: its own window, with no tilt.
+
+## How it starts
+
+Made at once, the scene held the page's main thread for 0.7 s (profiled on 2026-11-13 on a fast laptop). The page then froze: on the homepage, the 1-2-3 above the kitchen stopped as the visitor scrolled into it.
+
+So the homepage starts it with `bootPancakeKitchen`. The set-up in `kitchen.js` is a generator, and `world.js`, `show.js` and `mess.js` build their parts the same way. Each `yield` is a pause where the browser draws a frame of the page. There are about twenty parts. On that laptop most take under 35 ms, and the longest about 55 ms. `createPancakeKitchen` runs the same parts at once, for the stills and the review page.
+
+Three things keep the parts short:
+
+- The shaders compile in the background (`KHR_parallel_shader_compile`), each part's as soon as it is built, and the scene waits until they are linked. The shadow pass gets its programs this way too, through stand-ins (`warmShadows`).
+- The first frame is drawn in two parts on the hidden canvas, the stations and then what moves. The still shows meanwhile. The frame then shown only has to draw.
+- The drawing buffer and the blurred studio light each have a part of their own.
+
+If you add a large piece to the scene, give it a `yield` of its own.
 
 ## What it costs
 

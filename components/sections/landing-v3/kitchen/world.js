@@ -328,7 +328,11 @@ function buildProps(root, tex) {
   return { leaves };
 }
 
-export function buildWorld(scene) {
+/**
+ * The kitchen's stations, built into `scene`. A generator: each `yield` is a pause between two
+ * parts, where the homepage lets the browser draw a frame (bootPancakeKitchen, kitchen.js).
+ */
+export function* buildWorld(scene) {
   const root = group(scene);
   const tex = {
     blob: T.blobShadow(),
@@ -336,25 +340,33 @@ export function buildWorld(scene) {
     slab: T.rectShadow(FLOOR.slabW + 1.5, FLOOR.slabD + 1.5, 0.09, 0.035),
     chevrons: T.chevrons(),
   };
+  yield "world: textures";
 
   buildFloor(root, tex);
-  const belts = INTAKE.belts.map((b) =>
-    buildBelt(root, tex, {
-      from: b.from,
-      dir: b.dir,
-      len: b.len,
-      y: INTAKE.y,
-      width: INTAKE.width,
-      supportColor: C.blue10,
-      portalColor: C.blue20,
-      arches: b.len - INTAKE.tip > 3 ? 3 : 2,
-      tip: INTAKE.tip,
-    }),
-  );
+  yield "world: floor";
+  const belts = [];
+  for (const b of INTAKE.belts) {
+    belts.push(
+      buildBelt(root, tex, {
+        from: b.from,
+        dir: b.dir,
+        len: b.len,
+        y: INTAKE.y,
+        width: INTAKE.width,
+        supportColor: C.blue10,
+        portalColor: C.blue20,
+        arches: b.len - INTAKE.tip > 3 ? 3 : 2,
+        tip: INTAKE.tip,
+      }),
+    );
+    yield "world: belt";
+  }
   const bowl = buildBowl(root, tex);
   const griddle = buildGriddle(root, tex);
+  yield "world: bowl, griddle";
   const pass = buildPass(root, tex);
   const out = buildOut(root, tex);
+  yield "world: pass, out";
   const rail = buildRail(root, tex);
   const props = buildProps(root, tex);
 

@@ -80,6 +80,18 @@ export interface PancakeKitchen {
  */
 export function createPancakeKitchen(container: HTMLElement, options?: KitchenOptions): PancakeKitchen;
 
+/**
+ * The same kitchen, set up a part at a time with a frame of the page between two parts, its
+ * shaders compiled in the background: the page's own animations keep running while it boots.
+ * Resolves once its first frame is drawn. If `signal` aborts first, the set-up stops, frees what
+ * it made, and the promise rejects. Rejects too where WebGL is not available.
+ */
+export function bootPancakeKitchen(
+  container: HTMLElement,
+  options?: KitchenOptions,
+  signal?: AbortSignal,
+): Promise<PancakeKitchen>;
+
 /** the moment each still picture is drawn at; start the live scene there to take over without a jump */
 export const POSTER_TIMES: Readonly<Record<KitchenMode, number>>;
 
