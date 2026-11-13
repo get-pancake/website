@@ -28,8 +28,24 @@ const FEATURE_ITEMS: readonly DiveItem[] = VISION_FEATURES.items.map((feature) =
   title: feature.title,
   body: feature.body,
   status: "final",
+  more: feature.more,
 }));
 
 export function LpVisionFeatures() {
-  return <LpDive items={FEATURE_ITEMS} title={VISION_FEATURES.title} />;
+  const { lede } = VISION_FEATURES;
+  return (
+    <LpDive
+      items={FEATURE_ITEMS}
+      title={VISION_FEATURES.title}
+      lede={
+        <>
+          {lede.text}{" "}
+          <a className="lp-textlink lp-dive-lede__link" href={lede.link.href} target="_blank" rel="noopener noreferrer">
+            {lede.link.label}
+            <span aria-hidden="true"> →</span>
+          </a>
+        </>
+      }
+    />
+  );
 }

@@ -138,7 +138,8 @@ const ALLOW = [
   // (lp-dive-data.ts), the steps (lp-step-data.ts, lp-steps-content.ts) and the /plays signal
   // pages (plays-signals.ts). "130+ tools" (2026-11-12; it was "about 100"): the first feature and
   // the dive's agent line. Any other "N+" still fails, the old "30+" included.
-  [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b50\+ data providers\b|\b130\+ tools\b/g],
+  // and the customer count over the logos (2026-11-12, "Trusted by 390+ companies")
+  [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b50\+ data providers\b|\b130\+ tools\b|\b390\+ companies\b/g],
   // the Codex plugin's install id in /codex's commands (2026-10-17): "pancake@pancake" is a
   // marketplace qualifier, not an "@Pancake" mention in Slack
   [BANNED.find(([, label]) => label === "Slack chat")[0], /\bpancake@pancake\b/g],

@@ -178,7 +178,8 @@ export const VISION_STEPS: readonly { num: "01" | "02" | "03"; variant: VisionSt
     num: "03",
     variant: "t3",
     title: "Your Brain recommends\nthe next best Play.",
-    body: "It knows who you sell to and what worked. When signals cross on an account, it tells your agent who to contact, when, and with which Play.",
+    // founder 2026-11-12: the Brain learns from every run (the deck's "learns from every run")
+    body: "It knows your ICP and learns from every run. When signals cross on an account, it tells your agent who to contact, when, and which Play to run.",
     // retells VSTEP_BRAIN: keep in sync
     alt: "Animation: beside your Brain, a graph of coloured branches around a dark centre, an account comes up: Ramp, a fintech with a lost deal, now hiring SDRs. A ping runs through the Brain and it grows new branches. Then the next best Play appears, Reach back out. Who: the Head of Sales. When: today at 10:00. Why: a lost deal, now hiring.",
   },
@@ -249,12 +250,28 @@ export const VISION_BOTTLE = {
  *  four of its stories; `story` is the story's id in the dive's registry (lp-dive-stages.ts). */
 export const VISION_FEATURES: {
   title: string;
+  /** the line under the title: the Brain's benchmark, said as its public paper says it (a
+      synthetic decision score, same model, general vs specialised company context; github
+      get-pancake/marketing-memory-benchmark), and the link to it */
+  lede: { text: string; link: { label: string; href: string } };
   /* t-engine, t-journey, t-merge, t-ping: the toy pictures of 2026-11-12, in the kitchen's look
      (LpToyStories.tsx). The pictures they replace stay in the registry: to go back to one,
      name it here ("mcp", "p-history", "p-dedup", "ping"), nothing else. */
-  items: readonly { story: "mcp" | "p-history" | "p-dedup" | "ping" | "t-engine" | "t-journey" | "t-merge" | "t-ping"; title: string; body: string }[];
+  items: readonly {
+    story: "mcp" | "p-history" | "p-dedup" | "ping" | "t-engine" | "t-journey" | "t-merge" | "t-ping";
+    title: string;
+    body: string;
+    /** a link under the body while the item is open (founder 2026-11-12) */
+    more?: { href: string; label: string; name: string };
+  }[];
 } = {
   title: "What your agent can do with Pancake",
+  // founder 2026-11-12, after the deck's slide 6, his own wording ("pour simplifier"): the paper's
+  // decision score, never "right answers" or "a wiki"
+  lede: {
+    text: "Our context scored 88%, versus 48% for general context.",
+    link: { label: "Read the paper", href: "https://github.com/get-pancake/marketing-memory-benchmark" },
+  },
   /* The third title says "records", not "emails": its picture shows a work email, a personal
      email and a profile with no email (founder, 2026-11-12).
      Each title answers the section's question (founder, 2026-11-12: "make sure each line answers
@@ -265,7 +282,10 @@ export const VISION_FEATURES: {
       story: "t-engine",
       // the founder, 2026-11-11: "Run everything from Claude (not your agent)"
       title: "Run your revenue engine\nfrom Claude",
-      body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent queries every table and runs every Play, with 130+ tools.",
+      // the vision's next step (the data room: agents write, test and deploy Plays), founder
+      // 2026-11-12
+      body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent queries every table, then writes, tests and deploys Plays with 130+ tools.",
+      more: { href: "/claude", label: "Connect Claude", name: "Connect Pancake to Claude" },
     },
     {
       story: "t-journey",
@@ -283,13 +303,16 @@ export const VISION_FEATURES: {
       story: "t-ping",
       title: "Bring you the next deal\nbefore you ask",
       body: "Pancake learns from every reply and every deal. Your agent spots new signups matching your ICP, texts you first, and builds the list.",
+      more: { href: "/plays", label: "Explore Plays", name: "Explore example Plays" },
     },
   ],
 };
 
 /** the close */
 export const VISION_CLOSE = {
-  title: "The data layer every revenue agent runs on.",
+  // founder 2026-11-12: context AND data, as the page's own line says ("Unified context and data
+  // layer for the best revenue teams.")
+  title: "The context and data layer every revenue agent runs on.",
   body: "Start free. Your agent is one sign-in away.",
 } as const;
 
@@ -308,7 +331,8 @@ export const VISION_PLANS = {
   ],
   full: {
     title: "Need your own data warehouse?",
-    body: "The full plan: a flexible warehouse you can query yourself, custom signals, and room for your own stack.",
+    // founder 2026-11-12: "The full plan" read as jargon; say what it adds
+    body: "Custom connectors for your CRM, product and events, custom signals, and one warehouse you can query yourself.",
     cta: "Talk to sales",
   },
 } as const;
