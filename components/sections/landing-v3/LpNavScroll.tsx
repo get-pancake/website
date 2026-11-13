@@ -18,7 +18,8 @@ function undecoratedSearch(params: URLSearchParams): string {
  * en haut qui reste en permanence"). The bar itself is position:sticky in
  * nav.css — this only stamps .is-scrolled once the page leaves the very top,
  * flipping the bar from the artboard's transparent band to the opaque cream
- * chrome. rAF-throttled, passive, and idempotent.
+ * chrome. An IntersectionObserver on the page's top 8 px says when (since
+ * 2026-11-13; a scroll listener read window.scrollY each frame before).
  *
  * Same-page hash links (2026-10-07, code fallback for the LeadJourney link
  * setting): the tracker rewrites every same-site href to
@@ -58,19 +59,22 @@ export function LpNavScroll() {
   useEffect(() => {
     const nav = document.querySelector<HTMLElement>(".lp-nav");
     if (!nav) return;
-    let ticking = false;
-    const apply = () => {
-      ticking = false;
-      nav.classList.toggle("is-scrolled", window.scrollY > 8);
+    // The page's top 8 px, watched: once they have scrolled out of view the page has left its top
+    // (scrollY > 8). Until 2026-11-13 each scroll read window.scrollY in a frame callback, a read
+    // that can make the browser lay the whole page out in the middle of the frame; an observer
+    // gets the answer from the frame's own layout.
+    const top = document.createElement("div");
+    top.setAttribute("aria-hidden", "true");
+    top.style.cssText = "position:absolute;top:0;left:0;width:1px;height:8px;pointer-events:none;visibility:hidden";
+    document.body.appendChild(top);
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry) nav.classList.toggle("is-scrolled", !entry.isIntersecting);
+    });
+    io.observe(top);
+    return () => {
+      io.disconnect();
+      top.remove();
     };
-    const onScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(apply);
-    };
-    apply();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   useEffect(() => {

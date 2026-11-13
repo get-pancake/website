@@ -714,3 +714,14 @@ body:has(main.lp) {
     scroll-margin-top: calc(var(--lp-nav-reserve, 80px) + 16px);
   }
 }
+
+/* A card whose take jumps (to its picture, or through the rest of it as the visitor moves on:
+   lp-play-once.ts, jumpToEnd) draws that jump without its CSS fades (2026-11-13): each flip of
+   the take would start its own, hundreds in one frame in the window under the hero (~250 cell
+   tints, each restyled and repainted every frame of its 0.6 s). The take's own tweens are
+   untouched; the fades are back a frame later. */
+[data-lp-jump] *,
+[data-lp-jump] *::before,
+[data-lp-jump] *::after {
+  transition: none !important;
+}

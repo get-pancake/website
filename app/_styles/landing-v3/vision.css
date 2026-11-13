@@ -87,10 +87,24 @@
   user-select: none;
 }
 
+/* --cut does not inherit (2026-11-13): the pieces that read it (Claude's column, the table's
+   layer, its panes and its ring, the handle) take it from the card through `inherit` (below), and
+   nothing else in the card follows it. Inherited, every one of the card's ~1,370 elements was
+   restyled each frame of the split's ease (0.9 s, as the visitor scrolls onto the window) and on
+   each move of the handle: 2 to 6 ms a frame. --cut-user, the handle's value, is the card's alone
+   for the same reason (no initial value: unset, --cut takes its rest). Engines without @property
+   inherit both, as before; the picture is the same. */
 @property --cut {
   syntax: "<length-percentage>";
-  inherits: true;
+  inherits: false;
   initial-value: 0%;
+}
+@property --cut-user {
+  syntax: "*";
+  inherits: false;
+}
+.lp-vcut__card :is(.lp-vcut__claude, .lp-vcut__col, .lp-vcut__db, .lp-vcut__pane, .lp-vcut__ring, .lp-vcut__handle) {
+  --cut: inherit;
 }
 /* the handle in the visitor's hand: the split follows it at once; moved with the keys, it eases
    quickly. And a switch made while the window is already on show (a page opened on it) is at once */

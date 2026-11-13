@@ -77,6 +77,11 @@ function PostHogAttributionEffects() {
       autocapture: false,
       capture_pageview: false,
       capture_pageleave: false,
+      // no scroll depth (2026-11-13): it only adds $prev_pageview_* scroll figures to a page
+      // view that follows another in the same page (most links here are full loads) and to the
+      // page-leave event, which is off. It read the page's height on every scroll event, which
+      // made the browser redo its style and layout in the middle of each frame of a scroll
+      disable_scroll_properties: true,
       capture_heatmaps: false,
       capture_performance: false,
       disable_session_recording: true,

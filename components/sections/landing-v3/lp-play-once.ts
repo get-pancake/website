@@ -646,9 +646,39 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     return near || visible; // older engines: the card itself is intersecting
   };
 
+  /* A jump of the take (to its picture, or through the rest of it in RUSH_S as the visitor moves
+     on) flips in a frame what the take spreads over seconds, and each flip starts its CSS fade:
+     in the window under the hero, ~250 cell tints at once (2026-11-13), each restyled and
+     repainted every frame of its 0.6 s. [data-lp-jump] on the host turns its fades off
+     (foundation.css) until a frame has been drawn without them; the take's own tweens are
+     untouched. */
+  let jumpFrame = 0;
+  const holdJump = () => {
+    cancelAnimationFrame(jumpFrame);
+    jumpFrame = 0;
+    host.dataset.lpJump = "";
+  };
+  const releaseJump = () => {
+    if (!("lpJump" in host.dataset) || jumpFrame) return;
+    // the next frame is drawn with the fades off, the one after gets them back
+    jumpFrame = requestAnimationFrame(() => {
+      jumpFrame = requestAnimationFrame(() => {
+        jumpFrame = 0;
+        delete host.dataset.lpJump;
+      });
+    });
+  };
+  /** the timeline at its end at once, its fades off */
+  const jumpToEnd = (suppressEvents?: boolean) => {
+    if (!tl) return;
+    holdJump();
+    tl.progress(1, suppressEvents);
+    releaseJump();
+  };
+
   const toRest = () => {
     if (!tl) return;
-    if (o.restIsEnd) tl.progress(1, true);
+    if (o.restIsEnd) jumpToEnd(true);
     else tl.pause(0);
     phase = "rest";
     host.dataset.lpAnim = "armed";
@@ -668,7 +698,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   const finish = () => {
     if (!tl) return;
     ending = true;
-    tl.progress(1);
+    jumpToEnd();
     ending = false;
     phase = "done";
     host.dataset.lpAnim = "done";
@@ -680,6 +710,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     looping = true;
     host.dataset.lpAnim = "looping";
     tl?.timeScale(o.speed ?? 1); // (a visitor moving on may have rushed the first round)
+    releaseJump();
   };
   /** a new round of a looping take: what changes between two rounds, then from its loop point */
   const startRound = () => {
@@ -705,7 +736,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   const park = () => {
     if (!tl) return;
     tl.pause();
-    tl.progress(1, true);
+    jumpToEnd(true);
     enterLoop();
     roundOwed = true;
   };
@@ -726,7 +757,10 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   const rush = () => {
     if (!tl || phase !== "playing" || looping || motionMq.matches || !tl.isActive()) return;
     const left = firstEnd - tl.time();
-    if (left > 0) tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
+    if (left <= 0) return;
+    tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
+    // (its fades off while it rushes: see jumpToEnd; back once it has played through)
+    holdJump();
   };
   /* The scroll has come to rest. A scroll to an anchor has landed: the cards it brought on
      screen play by the usual rules. On a touch screen, a card a flick left on its first scene
@@ -759,7 +793,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     dwell = 0;
     if (motionMq.matches) {
       tl.pause();
-      tl.progress(1, true);
+      jumpToEnd(true);
       return;
     }
     if (looping) return syncLoop();
@@ -873,13 +907,14 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
         }
         phase = "done";
         host.dataset.lpAnim = "done";
+        releaseJump(); // (a rushed take has played through)
       });
       if (motionMq.matches) {
-        tl.progress(1, true);
+        jumpToEnd(true);
         host.dataset.lpAnim = "still";
       } else if (o.restIsEnd && seen(false)) {
         // never empty what is already on screen: keep the picture
-        tl.progress(1, true);
+        jumpToEnd(true);
         phase = "done";
         host.dataset.lpAnim = "done";
         owed = o.playWhenStopped === true;
@@ -1027,7 +1062,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       loopTimer = 0;
       if (tl) {
         tl.pause();
-        tl.progress(1, true);
+        jumpToEnd(true);
       }
       return;
     }
@@ -1047,6 +1082,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     clearTimeout(dwell);
     clearTimeout(owedTimer);
     clearTimeout(loopTimer);
+    cancelAnimationFrame(jumpFrame);
     settleSubs.delete(onSettle);
     cancelAhead();
     cancelEager();
@@ -1075,6 +1111,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     const w = window as unknown as Record<string, Record<string, Timeline> | undefined>;
     delete w[o.qa.registry]?.[o.qa.key];
     delete host.dataset.lpAnim;
+    delete host.dataset.lpJump;
     delete host.dataset.lpFit;
     host.style.removeProperty("--lp-fit");
   };
