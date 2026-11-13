@@ -80,7 +80,7 @@ const config: GtmComparisonConfig = {
     { feature: "Channels", competitor: { text: "Voice, chat, email, social, SMS and WhatsApp", mark: "yes" }, pancake: { text: "Direct messages under your name, from the accounts you send from", mark: "yes" } },
     { feature: "Inbound qualification", competitor: { text: "Voice and chat agents, with routing to reps", mark: "yes" }, pancake: { text: "Not covered", mark: "no" } },
     { feature: "AI calling", competitor: { text: "Voice agents, plus a human dialer", mark: "yes" }, pancake: { text: "No calls", mark: "no" } },
-    { feature: "Data", competitor: { text: "A company and lead database, with funding, hiring and tech stack signals", mark: "yes" }, pancake: { text: "30+ data providers; every lead checked against your ICP", mark: "yes" } },
+    { feature: "Data", competitor: { text: "A company and lead database, with funding, hiring and tech stack signals", mark: "yes" }, pancake: { text: "50+ data providers; every lead checked against your ICP", mark: "yes" } },
     { feature: "CRM", competitor: { text: "Salesforce, HubSpot and Pipedrive integrations", mark: "yes" }, pancake: { text: "A one-way lead export to HubSpot, Attio, Pipedrive and others" } },
     { feature: "Getting started", competitor: { text: "Book a demo" }, pancake: { text: "7-day free trial with 30,000 credits, card required", mark: "yes" } },
     { feature: "Best for", competitor: { text: "Revenue teams with inbound volume, reps and a CRM" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },

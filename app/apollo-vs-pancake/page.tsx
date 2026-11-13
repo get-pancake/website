@@ -71,7 +71,7 @@ const config: GtmComparisonConfig = {
     {
       n: "05",
       title: "Apollo wins on database size and CRM",
-      body: "Apollo's own database covers 240M+ contacts, with waterfall enrichment and CRM integrations such as Salesforce and HubSpot. Pancake searches 30+ data providers for people who fit your ICP. It exports the leads you pick to your CRM, one way.",
+      body: "Apollo's own database covers 240M+ contacts, with waterfall enrichment and CRM integrations such as Salesforce and HubSpot. Pancake searches 50+ data providers for people who fit your ICP. It exports the leads you pick to your CRM, one way.",
       angle: "Pick Apollo when your reps browse the market themselves.",
     },
   ],
@@ -81,7 +81,7 @@ const config: GtmComparisonConfig = {
     { feature: "Pricing", competitor: { text: "Free plan, then $49 to $119 per seat a month, billed annually" }, pancake: { text: "From $99 a month per workspace", mark: "yes" } },
     { feature: "Seats", competitor: { text: "Paid per seat" }, pancake: { text: "Whole team included", mark: "yes" } },
     { feature: "Credits", competitor: { text: "Granted per seat; unused credits expire each cycle" }, pancake: { text: "Shared by the team; unused credits roll over", mark: "yes" } },
-    { feature: "Contact data", competitor: { text: "240M+ contacts, 30M+ accounts", mark: "yes" }, pancake: { text: "30+ data providers; every lead checked against your ICP", mark: "yes" } },
+    { feature: "Contact data", competitor: { text: "240M+ contacts, 30M+ accounts", mark: "yes" }, pancake: { text: "50+ data providers; every lead checked against your ICP", mark: "yes" } },
     { feature: "Outreach", competitor: { text: "Email sequences and a dialer", mark: "yes" }, pancake: { text: "A personal message for each lead, from your own account", mark: "yes" } },
     { feature: "Email and calling", competitor: { text: "Deliverability suite, email warmup and a dialer", mark: "yes" }, pancake: { text: "No email, no calls", mark: "no" } },
     { feature: "CRM", competitor: { text: "CRM integrations, including Salesforce and HubSpot", mark: "yes" }, pancake: { text: "No sync: a one-way export to HubSpot, Attio, Pipedrive and others", mark: "no" } },

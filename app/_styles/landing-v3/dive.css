@@ -198,6 +198,28 @@
 .lp-dive-tab[data-more][aria-selected="true"] .lp-dive-tab__bar {
   translate: 0 var(--lp-dive-more, 52px);
 }
+/* Since 2026-11-12 the driver places each link under its own item, whichever it is (the first
+   item has one too): the open tab keeps the room (its padding grows by the link's line + 8, so
+   the next items move down and its hairline stays at its own foot) and the row is laid over it
+   (lp-dive-carousel.ts, placeMore). Until the driver runs (and without JavaScript) only the
+   last item's link shows, where the rule above draws it. Phones stack items and links in order
+   (the stack block below), untouched. */
+.lp-dive-row[data-place-more] .lp-dive-tab[data-more][aria-selected="true"] {
+  padding-bottom: var(--lp-dive-more, 52px);
+}
+.lp-dive-row[data-place-more] .lp-dive-tab[data-more][aria-selected="true"]::after,
+.lp-dive-row[data-place-more] .lp-dive-tab[data-more][aria-selected="true"] .lp-dive-tab__bar {
+  translate: none;
+}
+.lp-dive-more[data-placed] {
+  position: absolute;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .lp-dive-row:not([data-place-more]) .lp-dive-more:not([data-last]) {
+    display: none;
+  }
+}
 .lp-dive-more {
   display: grid;
   grid-template-rows: 0fr;

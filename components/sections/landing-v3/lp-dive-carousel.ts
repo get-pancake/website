@@ -291,6 +291,34 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     reserveListHeight();
   });
   if (list) listRo.observe(list);
+
+  /* ── an item's link under its own body, whichever item it is (2026-11-12: links under the
+     first and the last item). The link rows come after the tab list in the DOM (a link cannot
+     live in a tab) and sat under the whole list, right only for the last item. Now the open
+     tab keeps the link's room under its body (dive.css, [data-place-more]) and each row is
+     placed over that room, following its tab as the folds open and close. ── */
+  const linked = items.filter((it): it is Item & { more: HTMLElement } => !!it.more);
+  const placeMore = () => {
+    for (const it of linked) {
+      const cb = (it.more.offsetParent as HTMLElement | null) ?? row;
+      const inner = it.more.querySelector<HTMLElement>(".lp-dive-more__inner");
+      const t = it.tab.getBoundingClientRect();
+      const c = cb.getBoundingClientRect();
+      const h = inner?.getBoundingClientRect().height ?? 0;
+      it.more.style.top = `${t.bottom - c.top - cb.clientTop - h}px`;
+      it.more.style.left = `${t.left - c.left - cb.clientLeft}px`;
+      it.more.style.width = `${t.width}px`;
+    }
+  };
+  const moreRo = new ResizeObserver(placeMore);
+  if (linked.length) {
+    row.setAttribute("data-place-more", "");
+    for (const it of linked) it.more.setAttribute("data-placed", "");
+    // border-box: the open tab's padding grows with its fold, and padding is not the content box
+    for (const it of items) moreRo.observe(it.tab, { box: "border-box" });
+    moreRo.observe(row);
+    placeMore();
+  }
   /* 1340 ↔ 1341 the list keeps its 272 px and only changes mode (absolute in the fixed row ↔
      in flow, dive.css): the width guard above sees nothing, so a live resize across it left the
      in-flow list unreserved (the page under the carousel jumped at item 4) or a stale
@@ -924,6 +952,12 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     viewIo.disconnect();
     ro.disconnect();
     listRo.disconnect();
+    moreRo.disconnect();
+    row.removeAttribute("data-place-more");
+    for (const it of linked) {
+      it.more.removeAttribute("data-placed");
+      for (const p of ["top", "left", "width"]) it.more.style.removeProperty(p);
+    }
     flowMq.removeEventListener("change", reserveListHeight);
     list?.style.removeProperty("min-height");
     untrack();

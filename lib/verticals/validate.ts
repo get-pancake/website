@@ -36,7 +36,8 @@ export const BANNED: [RegExp, string][] = [
   [/\bguarantee(d|s)?\b|\bin (a few |2 |two )?minutes\b|\binstant(ly)?\b/i, "guarantee / instant"],
   [/\b(response|reply|open) rates?\b|\b\d+ ?% (response|reply|open)/i, "rates"],
   [/\bspend cap\b|\bcan[’']?t overspend\b|\btoken costs?\b|\bunlimited leads\b/i, "pricing claim"],
-  [/\b50\+ (data )?providers\b/i, "50+ providers"],
+  // (the "50+ providers" rule left on 2026-11-12: it is the founder's figure now. A /for page
+  // still cannot print it: the job-count rule below refuses any "N+".)
   [/\bmulti-?lingual\b|\bmulti-?language\b|\bany language\b/i, "languages"],
   // "plays" left this rule on 2026-09-30: Plays shipped (the core of Pancake v2).
   [/\bmultiple campaigns\b|\bcustom sequences?\b/i, "unshipped campaign features"],

@@ -111,7 +111,10 @@ export function AudienceHeadline() {
 
   return <>
     <h1 id="lp-hero-title" className="lp-hero-title__copy" aria-hidden={agents}>
-      Infrastructure powering <br />your revenue factory
+      {/* two lines from 768 up (after "powering"), three on phones (founder 2026-11-12, after
+          devin.ai: "sur mobile on peut donc faire 2 fois 3 lignes mais du coup faut grossir le
+          h1"): hero.css hides the breaks a width does not use */}
+      Infrastructure<br className="lp-hero-br-phone" /> powering <br className="lp-hero-br-desk" />your<br className="lp-hero-br-phone" /> revenue factory
     </h1>
     <span
       className="lp-hero-title__copy lp-hero-title__copy--agent"

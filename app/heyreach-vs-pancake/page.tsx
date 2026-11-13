@@ -48,7 +48,7 @@ const config: GtmComparisonConfig = {
     {
       n: "01",
       title: "Lists you import versus leads Pancake finds",
-      body: "HeyReach starts from a list: you import contacts from Clay, HubSpot, RB2B or another tool. Pancake starts from a sentence. Say who to reach, and the Play searches 30+ data providers and checks every lead against your ICP.",
+      body: "HeyReach starts from a list: you import contacts from Clay, HubSpot, RB2B or another tool. Pancake starts from a sentence. Say who to reach, and the Play searches 50+ data providers and checks every lead against your ICP.",
       angle: "One needs a list. The other builds it.",
     },
     {
@@ -78,7 +78,7 @@ const config: GtmComparisonConfig = {
   ],
   rows: [
     { feature: "Core job", competitor: { text: "Outreach automation across many senders", mark: "yes" }, pancake: { text: "Plays that find buyers and start the conversation", mark: "yes" } },
-    { feature: "Where leads come from", competitor: { text: "Lists you import from Clay, HubSpot, RB2B and other tools" }, pancake: { text: "A search across 30+ data providers", mark: "yes" } },
+    { feature: "Where leads come from", competitor: { text: "Lists you import from Clay, HubSpot, RB2B and other tools" }, pancake: { text: "A search across 50+ data providers", mark: "yes" } },
     { feature: "Qualification", competitor: { text: "You import leads already qualified" }, pancake: { text: "Every lead checked against your ICP", mark: "yes" } },
     { feature: "Messages", competitor: { text: "Sequences of steps, with conditions", mark: "yes" }, pancake: { text: "A personal message for each lead, in your voice", mark: "yes" } },
     { feature: "Senders", competitor: { text: "Auto-rotation; unlimited senders on the top plan", mark: "yes" }, pancake: { text: "One sending account included; a Play rotates across up to ten", mark: "yes" } },
@@ -96,7 +96,7 @@ const config: GtmComparisonConfig = {
     { q: "What is the main difference between HeyReach and Pancake?", a: "HeyReach automates outreach for lead lists you import, across many sender accounts, priced per sender. Pancake builds Plays: say who to reach, and it finds the people, checks each one against your ICP and writes to them from your own account." },
     { q: "Is Pancake an alternative to HeyReach?", a: "Yes, if you want the leads found as well as messaged. Not if you run outreach for many clients from dozens of accounts: HeyReach is built for that." },
     { q: "How does pricing compare?", a: "As of November 2026, HeyReach's Growth plan is $79 a month per sender, Agency is $999 a month for 25 senders and Unlimited is $2,999 a month. Pancake starts at $99 a month per workspace with one sending account. Each extra account is $39 a month." },
-    { q: "Where do the leads come from?", a: "In HeyReach, from lists you import from tools such as Clay, HubSpot or RB2B. In Pancake, from the Play: it searches 30+ data providers for the people you described and checks each one against your ICP." },
+    { q: "Where do the leads come from?", a: "In HeyReach, from lists you import from tools such as Clay, HubSpot or RB2B. In Pancake, from the Play: it searches 50+ data providers for the people you described and checks each one against your ICP." },
     { q: "Do both work from Claude?", a: "Yes. HeyReach has an MCP server, a CLI and an API. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in and no API key." },
     { q: "Can I send from several accounts with Pancake?", a: "Yes. One sending account is included, and each extra one is $39 a month. A Play sends from one account or rotates across up to ten." },
   ],

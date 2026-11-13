@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { SHOW_PLACEHOLDERS, visibleEntries } from "@/lib/placeholders";
 
@@ -61,7 +61,7 @@ export function LpDive({
 }: {
   items?: readonly DiveItem[];
   title?: string;
-  lede?: string;
+  lede?: ReactNode;
   skyTop?: boolean;
 } = {}) {
   const items = visibleEntries(all);
@@ -129,6 +129,7 @@ export function LpDive({
                 id={`lp-dive-more-${item.id}`}
                 className="lp-dive-more"
                 data-for={item.id}
+                data-last={i === items.length - 1 ? "" : undefined}
                 data-on={i === 0 ? "" : undefined}
                 style={at(i)}
               >

@@ -33,7 +33,7 @@ import { STORY_SIGNALS } from "./lp-story-signals-data";
  *   .lp-sk-disc       TheirStack, over the wires (Figma: Ellipse 118 sits above them)
  *   .lp-sk-name       each provider's name, under its disc (Dealroom's above); phones hide them
  *   .lp-ssig-out      each output's label, right of its stop; phones hide them
- *   .lp-ssig-count    "30+ data providers", over the providers; phones hide it
+ *   .lp-ssig-count    "50+ data providers", over the providers; phones hide it
  * Nothing travels on the wires (2026-10-30, founder, on pulses riding them: "pas sur des
  * signaux qui voyagent ca fait un peu sloppy"). Every box is placed inline from the data (stage
  * px, three decimals at most: skF3). Nothing here is focusable.

@@ -12,12 +12,12 @@
  *   LEFT    the sources: the hub he loves from the old sources story (removed 2026-10-28 with
  *           lp-story-sources-data.ts, 630bb8e), its six providers on white discs with their own
  *           marks, their names and the flat brand confetti, as one group scaled ×0.9 and moved
- *           (below) so the flow fits the box with its outputs, "30+ data providers" over it;
+ *           (below) so the flow fits the box with its outputs, "50+ data providers" over it;
  *   MIDDLE  Pancake's hub: the near-black point where the six wires land;
  *   RIGHT   what comes out: four short wires fan out of the hub to four brand-coloured stops in
  *           a column, each with its label to its right: Hiring, Funding, Site visits, Work email
  *           (the dive's line: "Find companies hiring, newly funded or visiting your site. Work
- *           emails on demand. 30+ data providers, one bill.", lp-dive-data.ts).
+ *           emails on demand. 50+ data providers, one bill.", lp-dive-data.ts).
  * The only words are small labels in the kit's name style (12/16, story-kit.css .lp-sk-name):
  * the six names, the four outputs and the count. Phones hide all of them (the stack draws the
  * box at ×0.45): the picture reads without them, six marks into one point, four colours out.
@@ -39,7 +39,7 @@
  * 10.0). The confetti move with the group, so the pink and blue dots no longer cross the left
  * edge.
  *
- * The count, "30+ data providers": centred on the loved label's axis (x 175.094 in the loved
+ * The count, "50+ data providers": centred on the loved label's axis (x 175.094 in the loved
  * hub, x 247.585 here), its ink 15 px over Wappalyzer's disc and 25 px over Dealroom's name.
  *
  * The outputs: a column 145 px right of the hub, 72 px apart, centred on the hub's y; each
@@ -55,9 +55,10 @@
  * The loved wires keep their shapes (the formula scales with the group; Wappalyzer's and
  * Coresignal's follow their discs' few px).
  *
- * Words. "30+ data providers" is the founder's own figure (2026-10-13: "Mets 30+ data provider
- * sur pancake.ai") and the only N+ the lint allows: keep it exactly, in sentence case (the lint's
- * allowance is case-sensitive). The four outputs are the dive line's own words. The names are the
+ * Words. "50+ data providers" is the founder's own figure (50+ since 2026-11-12, on every page;
+ * it was 30+ from 2026-10-13, his "Mets 30+ data provider sur pancake.ai") and, with "130+ tools",
+ * the only N+ the lint allows: keep it exactly, in sentence case (the lint's allowance is
+ * case-sensitive). The four outputs are the dive line's own words. The names are the
  * vendors' own spelling: the marks are their trademarks, the unmodified files under
  * public/lp/story-sources/ (see docs/public-assets/lp/story-sources/README.md), never recoloured,
  * redrawn or cropped. No social platform is ever named or drawn here. Why these six: the loved
@@ -153,7 +154,7 @@ export type StorySignalsStory = {
 };
 
 export const STORY_SIGNALS: StorySignalsStory = {
-  label: { text: "30+ data providers", x: 194.685, y: 40.698 },
+  label: { text: "50+ data providers", x: 194.685, y: 40.698 },
   point: { x: 441.9, y: 240.093 },
   /** The loved discs at ×0.9, Coresignal and Wappalyzer a few px off (header). Which provider
       sits on which disc is set by room for its name: the shortest names go where the next disc
@@ -231,4 +232,4 @@ export const STORY_SIGNALS: StorySignalsStory = {
     aria-hidden, so their names are read from here only. Since 2026-10-30 the four stops wait
     unlit, then light up one after another (lp-story-signals-timeline.ts). */
 export const STORY_SIGNALS_ALT: string =
-  "Animation: six data providers, Dealroom, TheirStack, Wappalyzer, Apify, Firecrawl and Coresignal, each draw a line into one point. From it, four lines run out to Hiring, Funding, Site visits and Work email, which light up one after another. A label reads 30+ data providers.";
+  "Animation: six data providers, Dealroom, TheirStack, Wappalyzer, Apify, Firecrawl and Coresignal, each draw a line into one point. From it, four lines run out to Hiring, Funding, Site visits and Work email, which light up one after another. A label reads 50+ data providers.";

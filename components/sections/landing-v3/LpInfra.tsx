@@ -43,7 +43,7 @@ import { PANCAKE_AVATAR } from "@/components/sections/landing-v3/lp-pancake-avat
  * The page's model (2026-10-21, the infra outline the founder approved: "one sentence, one
  * diagram, three layers"). The first version (eight layers, Deploy / Host / Run, four figures on a
  * dark card) read as engineering notes: "I dont understand anything about the new block". Claims
- * in docs/infra/infra-landing-brief.md, the 30+ data providers being the founder's figure (the
+ * in docs/infra/infra-landing-brief.md, the 50+ data providers being the founder's figure (the
  * dive's signals story, lp-story-signals-data.ts).
  *
  * The look (founder 2026-10-22: "make this more beautiful - use design system - toolkits like
@@ -331,7 +331,7 @@ function DataPic() {
         ))}
         <li className="lp-infra__disc lp-infra__disc--more" data-fill="more">
           <Pk shape={SHAPE.more} />
-          <span>30+</span>
+          <span>50+</span>
         </li>
       </ul>
       <ul className="lp-infra__signals">

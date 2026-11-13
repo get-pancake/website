@@ -97,7 +97,7 @@ export const TOY_JOURNEY = {
   alt: "Animation: one buyer goes from stop to stop along a track, and each touch keeps its date. Sep 12, came to your event. Sep 30, signed up. Oct 21, asked about pricing. Nov 4, replied to you. Under the track, a dot is kept for each one: 4 touches kept.",
 } as const;
 
-/* ── "See one buyer behind three emails": the same person as three sources know them (the
+/* ── "See one buyer behind three records": the same person as three sources know them (the
    meeting's own example, lp-story-problems-data.ts DEDUP: an event, a product signup, a social
    profile, under a work email and a personal one), back lane to front lane
    (toys/studio/scene-merge.js LANES), then the one record ── */

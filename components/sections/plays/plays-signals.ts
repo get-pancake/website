@@ -22,7 +22,7 @@
 //     member before anyone is contacted; Pancake writes the message from that line.
 // Copy rules: /plays's (plays-copy.ts header) + landing-voice budgets; "series X round",
 // "fundraising" and "hiring their first" stay out (validate.ts BANNED); the only "N+" is
-// "30+ data providers" (homepage-lint ALLOW). scripts/homepage-lint.mjs reads this file.
+// "50+ data providers" (homepage-lint ALLOW). scripts/homepage-lint.mjs reads this file.
 
 import { PLAYS_PATH, PLAYS_WAYS } from "@/components/sections/plays/plays-copy";
 import { pricingV2 } from "@/lib/copy";
@@ -120,7 +120,7 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
     know: [
       "Any stage you name: seed, Series A or later.",
       "Add the tools a company uses to narrow the list.",
-      "Rounds come from Coresignal, one of 30+ data providers.",
+      "Rounds come from Coresignal, one of 50+ data providers.",
       COST_KNOW,
     ],
     related: { title: "Companies with fresh funding", line: "Startups with a recent round, and the people you sell to there." },
@@ -155,7 +155,7 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
     know: [
       "You choose how recent the job posts must be.",
       "Staffing agencies' posts are left out.",
-      "Job posts come from TheirStack, one of 30+ data providers.",
+      "Job posts come from TheirStack, one of 50+ data providers.",
       COST_KNOW,
     ],
     related: { title: "Companies hiring a role", line: "Companies with open job posts for a role you name." },
@@ -193,7 +193,7 @@ export const SIGNAL_PAGES: Record<SignalPageId, SignalPage> = {
     know: [
       "Name several tools: a company fits if its posts ask for any of them.",
       "Staffing agencies' posts are left out.",
-      "Job posts come from TheirStack, one of 30+ data providers.",
+      "Job posts come from TheirStack, one of 50+ data providers.",
       COST_KNOW,
     ],
     related: { title: "Companies using a tool", line: "Companies whose job posts ask for a tool you name." },

@@ -58,7 +58,7 @@ const config: GtmComparisonConfig = {
     {
       n: "03",
       title: "A database you filter versus a Play that searches",
-      body: "Instantly sells its 450M+ lead database as a separate credits plan, with 13 filters and work email enrichment. In Pancake you say who to reach. The Play searches 30+ data providers and checks every lead against your ICP.",
+      body: "Instantly sells its 450M+ lead database as a separate credits plan, with 13 filters and work email enrichment. In Pancake you say who to reach. The Play searches 50+ data providers and checks every lead against your ICP.",
       angle: "Say who you want. Skip the filters.",
     },
     {
@@ -79,7 +79,7 @@ const config: GtmComparisonConfig = {
     { feature: "How you start", competitor: { text: "Connect email accounts, add leads, launch" }, pancake: { text: "Say who to reach; Pancake builds the Play", mark: "yes" } },
     { feature: "Channel", competitor: { text: "Email", mark: "yes" }, pancake: { text: "Direct messages under your name, from the accounts you send from", mark: "yes" } },
     { feature: "Email infrastructure", competitor: { text: "Unlimited email accounts and warmup", mark: "yes" }, pancake: { text: "No email", mark: "no" } },
-    { feature: "Lead data", competitor: { text: "450M+ lead database, sold as separate credits", mark: "yes" }, pancake: { text: "30+ data providers included", mark: "yes" } },
+    { feature: "Lead data", competitor: { text: "450M+ lead database, sold as separate credits", mark: "yes" }, pancake: { text: "50+ data providers included", mark: "yes" } },
     { feature: "Qualification", competitor: { text: "13 filters, including keywords and lookalikes" }, pancake: { text: "Every lead checked against your ICP", mark: "yes" } },
     { feature: "Replies", competitor: { text: "Unibox and an AI Reply Agent", mark: "yes" }, pancake: { text: "A reply stops the sequence", mark: "yes" } },
     { feature: "AI agents", competitor: { text: "Connects to ChatGPT; Claude listed as coming soon" }, pancake: { text: "Claude, Claude Code, ChatGPT and Codex, with a browser sign-in", mark: "yes" } },

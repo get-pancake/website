@@ -213,7 +213,7 @@ export const S0_CONNECT = {
   /** what Claude can now do (infra.css tones: yellow Context, purple Data, pink Tools) */
   can: [
     { tone: "yellow", text: "Read your Brain" },
-    { tone: "purple", text: "Search 30+ data providers" },
+    { tone: "purple", text: "Search 50+ data providers" },
     { tone: "pink", text: "Run Plays and reach out" },
   ],
 } as const;

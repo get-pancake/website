@@ -10,7 +10,7 @@
  * A data provider is named only if the product uses it, with its own mark, unmodified.
  *
  * Rules kept: no person and no real company is named. A row is an id, and what its columns say.
- * "30+ data providers" is written exactly so. Read by scripts/homepage-lint.mjs (FILES); drawn by
+ * The providers' count is written exactly as the founder gave it (lp-vision-data.ts). Read by scripts/homepage-lint.mjs (FILES); drawn by
  * LpVisionDb.tsx.
  */
 

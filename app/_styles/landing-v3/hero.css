@@ -254,12 +254,59 @@
   }
 }
 @media (max-width: 767px) {
+  /* Phones: three lines, "Infrastructure / powering your / revenue factory" (founder 2026-11-12,
+     after devin.ai's phone hero: "2 fois 3 lignes", "faut grossir le h1 … il est trop small",
+     "respecte les proportions de Devin"). Devin: a 32 px H1 on three lines over three lines of a
+     16 px line, the H1 about 1.5 × as tall. Our face is bold and condensed, so its lines are
+     shorter: at 0.123 × the text width (44 px at 390) the longest, "revenue factory" (6.035 em),
+     fills three quarters of it and the H1 is 1.8 × the H2 (48 px got heavy, 40 px left the lines
+     short; compared side by side with Devin's). 56 px at most, from 487 wide. It was
+     (100vw − 64px) / 9.2 on two lines: 35 px at 390, shorter than the H2 under it. */
   .lp-hero--home #lp-hero-title {
-    font-size: calc((100vw - 64px) / 9.2);
+    font-size: calc((100vw - 64px) / 9.2); /* the For agents view, as before */
   }
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home #lp-hero-title {
+    font-size: min(56px, calc((100vw - 32px) * 0.123));
+  }
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home #lp-hero-title .lp-hero-br-desk {
+    display: none;
+  }
+}
+/* The phone breaks are the humans view's only: the For agents view (?audience=agents) hides this
+   H1 but it still sizes the title box, so it keeps the two lines its headline was placed on. */
+@media (min-width: 768px) {
+  .lp-hero--home #lp-hero-title .lp-hero-br-phone {
+    display: none;
+  }
+}
+.lp-audience-page[data-audience="agents"] .lp-hero--home #lp-hero-title .lp-hero-br-phone {
+  display: none;
 }
 /* "go-to-market" in the lede never breaks at a hyphen (LpHero.tsx) */
 .lp-hero-nobr { white-space: nowrap; }
+/* The homepage H2 (founder 2026-11-12, after devin.ai's hero: "2 lignes ça serait mieux",
+   "inspire-toi des proportions de texte de Devin sur mobile aussi, ton h2 mobile est trop
+   gros"). Devin's line under its H1 is 16 px on a 1.4 line height: two lines on a desktop, and
+   on a phone about two thirds of the H1's height. Ours, with his sentence: 15 px, 1.4, a hair
+   of tracking holds two lines in the designer's 368 column at every desktop width, still two
+   if the text draws 2 % wider (Safari's margin), so nothing around it moves; 16 px would need
+   about 400 px and hang past the window card's right edge. Phones 14.5 px: two lines from 390
+   wide up, the H2 about 0.6 of the H1's height (it was taller than the H1); three from 375
+   down. Then, the same day: "sur mobile on peut donc faire 2 fois 3 lignes mais du coup faut
+   grossir le h1": phones keep Devin's own 16 px on 1.4, three lines at every phone width, under
+   a three-line H1 (its size rule is above). The column's anchor below moved 6 px with the
+   desktop H2, so its first line stays on the H1's cap line. */
+.lp-hero--home .lp-hero-col--human .lp-hero-lede {
+  font-size: 15px;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+}
+@media (max-width: 767px) {
+  .lp-hero--home .lp-hero-col--human .lp-hero-lede {
+    font-size: var(--lp-text-md);
+    letter-spacing: normal;
+  }
+}
 .lp-hero--home .lp-hero-aside {
   align-items: flex-start;
   bottom: 71px; /* V2 107 − 36 */
@@ -308,7 +355,8 @@
 }
 /* The humans view, side by side (≥1025): the right column's first line sits on the H1's cap line
    (founder 2026-11-12, "alignement pas ouf là"). Since the install row went under the buttons
-   (2026-11-11) and the toggle left this view, the column (lede, buttons, install row: 176 tall)
+   (2026-11-11) and the toggle left this view, the column (lede, buttons, install row: 176 tall,
+   170 since the H2 went to 15 px on a 1.4 line height, 2026-11-12, hence 102 for 108 below)
    is taller than the H1, and bottom-aligned it started 40 px above the H1's caps (66 at 1100
    wide, where the H1 shrinks). So its bottom follows the H1's size: the H1's cap line stands
    63 + 1.75 × its size above the hero's bottom (two lines at 0.92, the caps 0.09 × the size
@@ -317,7 +365,7 @@
 @media (min-width: 1025px) {
   .lp-audience-page:not([data-audience="agents"]) .lp-hero--home .lp-hero-aside {
     --lp-h1: 79.5px;
-    bottom: calc(1.75 * var(--lp-h1) - 108px);
+    bottom: calc(1.75 * var(--lp-h1) - 102px);
   }
 }
 @media (min-width: 1025px) and (max-width: 1200px) {
@@ -331,7 +379,7 @@
    shrinks */
 @media (min-width: 1025px) and (max-width: 1279px) {
   .lp-audience-page:not([data-audience="agents"]) .lp-hero--home .lp-hero-aside {
-    bottom: max(44px, calc(1.75 * var(--lp-h1) - 108px));
+    bottom: max(44px, calc(1.75 * var(--lp-h1) - 102px));
   }
 }
 /* ── Homepage first screen (≥1025) — founder 2026-10-12, _decisions §10 ──

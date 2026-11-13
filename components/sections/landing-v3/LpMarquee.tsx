@@ -53,7 +53,8 @@ const COPY_COUNT = 4;
 
 /** The homepage's line above the strip (Figma V2 4962:847, red note "swapped position /
     'Trusted by many'", 2026-10-09): Geist Medium 13.333/16 in the subtle text colour. */
-const LABEL = "Trusted by many";
+/* founder 2026-11-12: a number for "Trusted by many" (391 paying customers that day) */
+const LABEL = "Trusted by 390+ companies";
 
 /**
  * `labelled` (homepage only, Figma V2 4911:371): the strip moves under the demo window and

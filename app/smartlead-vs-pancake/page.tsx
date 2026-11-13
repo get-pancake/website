@@ -58,7 +58,7 @@ const config: GtmComparisonConfig = {
     {
       n: "03",
       title: "Verified emails versus a Play that searches",
-      body: "Smartlead's SmartProspect supplies verified prospect emails, with filters and intent signals. It is a $59 a month add-on on Base and Pro. In Pancake you say who to reach. The Play searches 30+ data providers and keeps searching on your schedule.",
+      body: "Smartlead's SmartProspect supplies verified prospect emails, with filters and intent signals. It is a $59 a month add-on on Base and Pro. In Pancake you say who to reach. The Play searches 50+ data providers and keeps searching on your schedule.",
       angle: "Say who you want. The Play does the search.",
     },
     {
@@ -79,7 +79,7 @@ const config: GtmComparisonConfig = {
     { feature: "How you start", competitor: { text: "Connect mailboxes, add leads, launch sequences" }, pancake: { text: "Say who to reach; Pancake builds the Play", mark: "yes" } },
     { feature: "Channel", competitor: { text: "Email, plus a dialer", mark: "yes" }, pancake: { text: "Direct messages under your name, from the accounts you send from", mark: "yes" } },
     { feature: "Email infrastructure", competitor: { text: "Unlimited mailboxes, warmup and sender rotation", mark: "yes" }, pancake: { text: "No email", mark: "no" } },
-    { feature: "Lead data", competitor: { text: "Verified prospect emails, a $59 add-on on Base and Pro" }, pancake: { text: "30+ data providers included", mark: "yes" } },
+    { feature: "Lead data", competitor: { text: "Verified prospect emails, a $59 add-on on Base and Pro" }, pancake: { text: "50+ data providers included", mark: "yes" } },
     { feature: "Qualification", competitor: { text: "Filters and intent signals" }, pancake: { text: "Every lead checked against your ICP", mark: "yes" } },
     { feature: "Replies", competitor: { text: "A master inbox with an AI reply manager", mark: "yes" }, pancake: { text: "A reply stops the sequence", mark: "yes" } },
     { feature: "Calling", competitor: { text: "A dialer with parallel dialing", mark: "yes" }, pancake: { text: "No calls", mark: "no" } },

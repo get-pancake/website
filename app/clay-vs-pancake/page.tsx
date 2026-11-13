@@ -65,7 +65,7 @@ const config: GtmComparisonConfig = {
     {
       n: "04",
       title: "Clay wins on data breadth and control",
-      body: "Clay's marketplace lists 200+ data and AI vendors under one contract. You combine providers in waterfalls, or bring your own API keys. Pancake includes 30+ data providers, with no contract to sign and no API key.",
+      body: "Clay's marketplace lists 200+ data and AI vendors under one contract. You combine providers in waterfalls, or bring your own API keys. Pancake includes 50+ data providers, with no contract to sign and no API key.",
       angle: "Pick Clay when the data model is yours to design.",
     },
     {
@@ -78,7 +78,7 @@ const config: GtmComparisonConfig = {
   rows: [
     { feature: "Core job", competitor: { text: "Data, tables and workflows to build GTM plays", mark: "yes" }, pancake: { text: "Plays that find buyers and start the conversation", mark: "yes" } },
     { feature: "How a play starts", competitor: { text: "You build it, with clicks, code or chat" }, pancake: { text: "One sentence in Claude, ChatGPT, Codex or the app", mark: "yes" } },
-    { feature: "Data", competitor: { text: "200+ data and AI vendors, waterfall enrichment", mark: "yes" }, pancake: { text: "30+ data providers included, no API key", mark: "yes" } },
+    { feature: "Data", competitor: { text: "200+ data and AI vendors, waterfall enrichment", mark: "yes" }, pancake: { text: "50+ data providers included, no API key", mark: "yes" } },
     { feature: "Qualification", competitor: { text: "Lead scoring and Claygent research in your workflows", mark: "yes" }, pancake: { text: "Every lead checked against your ICP", mark: "yes" } },
     { feature: "Outreach", competitor: { text: "Email, through Clay's sequencer or an integration", mark: "yes" }, pancake: { text: "A personal message for each lead, from your own account", mark: "yes" } },
     { feature: "CRM", competitor: { text: "Auto-sync and enrichment on Growth", mark: "yes" }, pancake: { text: "No sync: a one-way export to HubSpot, Attio, Pipedrive and others", mark: "no" } },

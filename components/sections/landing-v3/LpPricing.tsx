@@ -2,6 +2,7 @@ import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpPancakes } from "@/components/sections/landing-v3/LpPancakes";
 import { LpRainbowGL } from "@/components/sections/landing-v3/LpRainbowGL";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
+import { pricingV2 } from "@/lib/copy";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
 import { TRIAL_OFFER } from "@/lib/trial";
@@ -67,7 +68,8 @@ export function LpPricing({
   return (
     <section id="pricing" className="lp-price">
       <div className="lp-price-frame">
-        <h2 className="lp-title-section lp-price-title">Simple, transparent pricing</h2>
+        {/* the pricing page's own headline (founder 2026-11-12: "kill Simple, transparent pricing") */}
+        <h2 className="lp-title-section lp-price-title">{pricingV2.title}</h2>
         <div className="lp-price-body">
           <div className="lp-price-price">
             {/* Founder copy (2026-09-03): "$99/month" replaces the artboard's

@@ -130,7 +130,7 @@ const SOURCES: SpScene = {
   ],
   labels: [
     { id: "g-own", x: S.left, y: 52, text: "Your data", group: true },
-    { id: "g-out", x: S.right, y: 52, text: "30+ data providers", group: true },
+    { id: "g-out", x: S.right, y: 52, text: "50+ data providers", group: true },
   ],
   steps: [
     { at: 0.3, wire: "l1" },
