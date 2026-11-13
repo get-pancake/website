@@ -1,0 +1,310 @@
+/* ── Paid search landing pages (SearchLandingPage.tsx, 2026-11-13) ─────────
+   /claude-for-sales, /ai-sales-agents, /lead-generation-software. Imported
+   AFTER landing-v3.css, verticals.css and guide-claude.css: the page is a /for
+   kit page (.lp-vx: text edge, section rhythm, VxHead, the FAQ accordion)
+   with the Claude guide's cards (.lp-guide: .gd-card, .gd-ways, the control
+   grid); these are the few pieces of its own. Every rule is `.lp-search .x`
+   (0,2,0) to beat the kit's `.lp p` resets; type rules set font-family on the
+   element (the kit's universal `* { font-family }` beats inheritance).
+   Tokens only. */
+
+.lp-search {
+  /* a shorter rhythm than /for: an ad page is read top to bottom, fast */
+  --vx-rhythm: 120px;
+  --sl-ask-r: 16px;
+}
+@media (max-width: 1024px) {
+  .lp-search {
+    --vx-rhythm: 80px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-search {
+    --vx-rhythm: 64px;
+  }
+}
+
+/* ── hero ── */
+/* the pair keeps the homepage's pill widths: the squircle clip-path is drawn for them, so a
+   wider pill would be cut on the right ("Watch demo" fits the "Book a demo" pill) */
+.lp-search .sl-hero__btns {
+  flex-wrap: wrap;
+}
+.lp-search .sl-trial {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  line-height: 20px;
+  margin-top: 16px;
+}
+
+/* ── the demo film (LpVideo, grow={false}): on the text column, under the hero ── */
+.lp-search .sl-film {
+  /* the sticky nav: "Watch the demo" lands the card clear of it */
+  scroll-margin-top: 96px;
+}
+.lp-search .lp-video.sl-video {
+  padding: 16px var(--vx-edge) 0;
+}
+.lp-search .lp-video.sl-video .lp-video__card {
+  margin: 0;
+  scale: none;
+  width: 100%;
+}
+.lp-search .lp-video.sl-video .lp-video__play {
+  width: clamp(56px, 6vw, 96px);
+}
+
+/* ── logos: the homepage's labelled band, closer to the film than /for's ── */
+.lp-search .sl-logos {
+  padding-top: 40px;
+}
+
+/* ── how it works: three cards, their rows aligned across the row (subgrid: a two-line title
+   pushes the three bodies down together); without subgrid each card simply stacks ── */
+.lp-search .sl-steps__list {
+  column-gap: 16px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: var(--vx-head-gap) 0 0;
+  padding: 0;
+  row-gap: 16px;
+}
+.lp-search .sl-step {
+  display: flex;
+  flex-direction: column;
+}
+@supports (grid-template-rows: subgrid) {
+  .lp-search .sl-step {
+    display: grid;
+    grid-row: span 4;
+    grid-template-rows: subgrid;
+    row-gap: 0;
+  }
+}
+.lp-search .sl-step__num {
+  color: var(--vx-num);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  line-height: 20px;
+}
+.lp-search .sl-step__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin: 12px 0 0;
+  text-wrap: balance;
+}
+.lp-search .sl-step__body {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  margin-top: 10px;
+  text-wrap: pretty;
+}
+/* the example request sits at the bottom of its card */
+.lp-search .sl-step__ask {
+  align-self: end;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+/* ── a request typed to the agent, drawn as a sent chat message ── */
+.lp-search .sl-ask {
+  background: var(--lp-surface);
+  border-radius: var(--sl-ask-r) var(--sl-ask-r) 4px var(--sl-ask-r);
+  box-shadow: inset 0 0 0 1px var(--vx-hair);
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  padding: 12px 16px;
+  text-wrap: pretty;
+}
+
+/* ── Plays: example requests beside the eight ways ── */
+.lp-search .sl-examples__label {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  line-height: 20px;
+  text-transform: uppercase;
+}
+.lp-search .sl-examples__list {
+  display: grid;
+  gap: 12px;
+  justify-items: start;
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+/* ── customer proof: the homepage's cards, one row of three ── */
+.lp-search .sl-proof__grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  list-style: none;
+  margin: var(--vx-head-gap) 0 0;
+  padding: 0;
+}
+.lp-search .sl-proof__card {
+  display: flex;
+}
+.lp-search .sl-proof__fig {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  width: 100%;
+}
+.lp-search .sl-proof__quote {
+  margin: 0;
+}
+.lp-search .sl-proof__quote p {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+.lp-search .sl-proof__who {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+.lp-search .sl-proof__photo {
+  border-radius: 50%;
+  flex: none;
+  height: 40px;
+  object-fit: cover;
+  width: 40px;
+}
+.lp-search .sl-proof__person {
+  display: flex;
+  flex-direction: column;
+}
+.lp-search .sl-proof__name {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  line-height: 22px;
+}
+.lp-search .sl-proof__role {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+}
+.lp-search .sl-proof__value {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-6xlg);
+  font-weight: 600;
+  letter-spacing: -1.7px;
+  line-height: 1;
+}
+.lp-search .sl-proof__label {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  line-height: 28px;
+  margin-top: 8px;
+}
+.lp-search .sl-proof__logo {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 28px;
+}
+.lp-search .sl-proof__mark {
+  background: var(--lp-ink-100);
+  display: block;
+  flex: none;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+.lp-search .sl-proof__yc {
+  background: url("/logos/customers/yc.svg") center / contain no-repeat;
+  display: block;
+  flex: none;
+  height: 16px;
+  width: 16px;
+}
+
+/* ── the closing card ── */
+.lp-search .sl-final {
+  padding-bottom: var(--vx-rhythm);
+}
+.lp-search .sl-final__card {
+  background: var(--lp-card-cream);
+  border-radius: var(--gd-card-r);
+  box-shadow: inset 0 0 0 1px var(--vx-hair);
+  padding: 56px;
+}
+.lp-search .sl-final__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-5xlg);
+  font-weight: 600;
+  letter-spacing: -1.4px;
+  line-height: 1.1;
+  margin: 0;
+  max-width: 720px;
+  text-wrap: balance;
+}
+.lp-search .sl-final__body {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  line-height: 28.8px;
+  margin-top: 16px;
+  max-width: 640px;
+  text-wrap: pretty;
+}
+.lp-search .sl-final__btns {
+  margin-top: 28px;
+}
+
+/* ── ≤1024: one column for the step and proof rows ── */
+@media (max-width: 1024px) {
+  .lp-search .sl-steps__list,
+  .lp-search .sl-proof__grid {
+    grid-template-columns: 1fr;
+  }
+  .lp-search .sl-final__card {
+    padding: 40px 32px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-search .sl-final__card {
+    padding: 32px 20px;
+  }
+  .lp-search .sl-final__title {
+    font-size: var(--lp-text-4xlg);
+    letter-spacing: -1px;
+  }
+  .lp-search .sl-proof__value {
+    font-size: var(--lp-text-5xlg);
+  }
+  .lp-search .sl-proof__quote p,
+  .lp-search .sl-step__title {
+    font-size: var(--lp-text-2xlg);
+  }
+}

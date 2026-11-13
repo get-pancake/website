@@ -109,6 +109,9 @@ const FILES = [
   // the kitchen under the clouds (2026-11-12)
   "components/sections/landing-v3/LpKitchen.tsx",
   "components/sections/landing-v3/kitchen/words.js",
+  // the paid search landing pages (2026-11-13): their copy and their markup
+  "components/sections/search-landing/search-landing-copy.ts",
+  "components/sections/search-landing/SearchLandingPage.tsx",
   // agents view (agents-view)
   "components/sections/landing-v3/LpAudienceHeadline.tsx",
   "components/sections/landing-v3/LpAgentStart.tsx",
