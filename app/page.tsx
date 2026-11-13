@@ -142,13 +142,15 @@ export default function Home() {
       <LpVisionCurtain />
       {/* the customers, on cream, as on the page before */}
       <LpMarquee labelled />
-      {/* under the logos, on cream: Pancake as a kitchen that runs by itself, and the same kitchen
-          without it (the 2026-11-11 meeting's "machinery" picture, built by Guillaume; the founder
-          moved it up from under the testimonials on 2026-11-12: "je trouve que c'est assez bas") */}
-      <LpKitchen />
       {/* the statement, then the 1-2-3: connect your sources, connect the dots with market
           signals, find who to contact and when (the designer's step cards, three new pictures) */}
       <LpVisionSteps />
+      {/* after the 1-2-3, on cream: Pancake as a kitchen that runs by itself, and the same kitchen
+          without it (the 2026-11-11 meeting's "machinery" picture, built by Guillaume). The
+          founder moved it from under the testimonials to under the logos on 2026-11-12 ("je
+          trouve que c'est assez bas"), then the same day to here: "put the kitchen after the
+          1-2-3 finally" */}
+      <LpKitchen />
       {/* the agents view's code wall (agents view only) */}
       <LpAgentLab />
       {/* the bottle, with the page's own two lines; it opens the sky */}

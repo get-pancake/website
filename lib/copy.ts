@@ -37,12 +37,15 @@ import {
  * It does the engineering, so your agent can sell." On 2026-11-12 the founder
  * kept "Pancake gives your agent the brain, the data and the tools to run your
  * go-to-market.", then, the same night, ended it on revenue: "Changer le H2
- * aussi … -> … to power your revenue engine." It is also the site's
- * description (search results, shared links) and the app's (pancake-cmo
+ * aussi … -> … to power your revenue engine."
+ * 2026-11-12, later, the founder's new H2 after a copy pass with devin.ai as the model (three
+ * verbs, the 1-2-3 in one sentence, the agent runs the Play): "Pancake connects your revenue
+ * data, adds live market signals, and lets your agent run the next best Play." It is also the
+ * site's description (search results, shared links) and the app's (pancake-cmo
  * apps/frontend/index.html mirrors it).
  */
 export const SITE_DESCRIPTION =
-  "Pancake gives your agent the brain, the data and the tools to power your revenue engine.";
+  "Pancake connects your revenue data, adds live market signals, and lets your agent run the next best Play.";
 
 export const hero = {
   /** H1 line 1 (break before autonomous) */

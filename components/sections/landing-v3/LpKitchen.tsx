@@ -25,7 +25,7 @@ import { whenInput } from "./lp-play-once";
  *   a key) and the section comes within half a viewport of the screen: about 200 kB gzipped and
  *   the scene's set-up that the first load never pays for. A page nobody touches, and Lighthouse,
  *   keep the poster (2026-11-12: under the logos, the section was within a viewport at load on a
- *   desktop, and its boot landed in the page's first seconds).
+ *   desktop, and its boot landed in the page's first seconds; it sits after the 1-2-3 since).
  * - The scene pauses off screen and on tab hide (kitchen.js does it).
  * - Reduced motion never boots the scene: the poster is the render.
  * - Phones boot it too since 2026-11-12 (founder, on the preview: "La kitchen ne marche pas sur
