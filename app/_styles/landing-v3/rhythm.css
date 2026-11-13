@@ -1,0 +1,138 @@
+/* Homepage section rhythm, after devin.ai (founder 2026-11-12: "ils mettent autant d'espace
+   entre deux sections devin?", then "Yes, like Devin").
+
+   Measured the same way on both pages, from the last thing you see in one section (a card, a
+   picture, the kitchen drawing's ink) to the first in the next (its title, its card): devin.ai
+   leaves about 120 px on a desktop and 96 on a phone; this page left 150–290 on a desktop
+   (288 between the 1-2-3 and the kitchen), 120–224 on a tablet, 112–128 on a phone. The target
+   here is 120 from 768 up and 96 on phones; gaps already under it are left as they are.
+
+   Homepage only (.lp-audience-page is its <main>): the same sections on the other pages keep
+   their spacing. Imported last, so its 0,2,0+ rules win over each section's own.
+
+   Off-screen size estimates: contain-intrinsic-size measures a section without its own padding
+   (foundation.css), so the features section (padding) needs nothing; the testimonials' spacing
+   is inside the section, so their estimate drops by what their inner padding loses. Clouds on
+   the sky are placed from their section's top: where the content above them moves up, they
+   move up by as much. */
+
+/* No hairline where two sky sections meet. Their edges fall between device pixels (the bottle's
+   card keeps its aspect, so its height is fractional), and at some screen densities (1.25×, 1.5×)
+   the boundary row came out paler than the sky with the spacing below. Each sky section starts
+   1 px over the one above it, whose last pixel is sky too: sky covers sky. Phones keep their own
+   overlaps (sky.css). */
+@media (min-width: 768px) {
+  .lp-audience-page .lp-dive,
+  .lp-audience-page .lp-bento--sky,
+  .lp-audience-page .lp-cta--sky {
+    margin-top: -1px;
+  }
+}
+
+/* ── desktop, from 1025 ── */
+@media (min-width: 1025px) {
+  /* logos → 1-2-3: 152 → 120. 1-2-3 → kitchen: 288 → 120 (44 + 16 + 16 + 44) */
+  .lp-audience-page .lp-vsteps .lp-steps__org {
+    padding-bottom: 44px;
+    padding-top: 96px;
+  }
+  /* kitchen → bottle: 169 → 121 (the drawing keeps air of its own under the board) */
+  .lp-audience-page .lp-kitchen__org {
+    padding-bottom: 0;
+    padding-top: 44px;
+  }
+  /* bottle → features: 168 → 120. Features → testimonials: 173 → 120 with the testimonials'
+     29 below; the bottom keeps 56, room for the keyboard pause under the stage (52) */
+  .lp-audience-page .lp-dive {
+    padding-bottom: 56px;
+    padding-top: 32px;
+  }
+  .lp-audience-page .lp-dive > .lp-sky-cloud--a {
+    top: 50.534px; /* 98.534 − 48 */
+  }
+  .lp-audience-page .lp-dive > .lp-sky-cloud--b {
+    top: 42.977px; /* 90.977 − 48 */
+  }
+  /* testimonials: 29 off the top, 20 off the bottom (testimonials → closing card: 160 → 120 with
+     the closing card's 20 below) */
+  .lp-audience-page .lp-bento--sky > .lp-bento__inner {
+    padding-bottom: 44.42px;
+    padding-top: 64.34px;
+  }
+  .lp-audience-page .lp-bento > .lp-sky-cloud--b {
+    top: 43px; /* 72 − 29 */
+  }
+  .lp-audience-page .lp-bento > .lp-sky-cloud--a {
+    top: 519px; /* 548 − 29 */
+  }
+  .lp-audience-page .lp-bento > .lp-sky-cloud--c {
+    top: 977px; /* 1006 − 29 */
+  }
+  /* closing card: 20 off the top; closing card → pricing: 200 → 120 (its 16 + the pricing
+     title's 104). Its cream hill is drawn to the section's box, so it follows */
+  .lp-audience-page .lp-cta--sky {
+    padding-bottom: 16px;
+    padding-top: 76px;
+  }
+}
+/* the testimonials' estimate: 307 − 49 (bento.css) */
+@media (min-width: 1200px) {
+  main.lp-audience-page > .lp-bento {
+    contain-intrinsic-size: auto calc(258px + var(--lp-bento-grid-u, 1141) * 1px);
+  }
+}
+@media (min-width: 1025px) and (max-width: 1199px) {
+  main.lp-audience-page > .lp-bento {
+    contain-intrinsic-size: auto calc(258px + var(--lp-bento-grid-u, 1141) * (100vw - 64px) / 1136);
+  }
+}
+
+/* ── tablet, 768–1024 ── */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* 1-2-3 → kitchen: 224 → 120 */
+  .lp-audience-page .lp-vsteps .lp-steps__org {
+    padding-bottom: 44px;
+  }
+  .lp-audience-page .lp-kitchen__org {
+    padding-top: 44px;
+  }
+  /* features → testimonials: 144 → 120; testimonials → closing card: 144 → 120; closing card →
+     pricing: 144 → 120 */
+  .lp-audience-page .lp-dive {
+    padding-bottom: 60px;
+  }
+  .lp-audience-page .lp-bento--sky > .lp-bento__inner {
+    padding-bottom: 60px;
+    padding-top: 60px;
+  }
+  .lp-audience-page .lp-cta--sky {
+    padding-bottom: 48px;
+    padding-top: 60px;
+  }
+  /* the testimonials' estimate: 268.8 − 24 (bento.css) */
+  main.lp-audience-page > .lp-bento {
+    contain-intrinsic-size: auto
+      calc(244.8px + var(--lp-bento-tablet-px, 0) * 1px + var(--lp-bento-tablet-u, 1141) * (100vw - 48px) / 1136);
+  }
+}
+
+/* ── phones, up to 767 ── */
+@media (max-width: 767px) {
+  /* logos → 1-2-3: 116 → 96 */
+  .lp-audience-page .lp-vsteps {
+    padding-top: 76px;
+  }
+  /* 1-2-3 → kitchen: 128 → 96 */
+  .lp-audience-page .lp-kitchen {
+    padding-top: 64px;
+  }
+  /* testimonials → closing card: 112 → 96; closing card → pricing: 120 → 96. The phone hill
+     is placed from the section's top padding (sky.css: 56 + 264.411): 40 + the same */
+  .lp-audience-page .lp-cta--sky {
+    background:
+      url("/lp/lp-sky-cta-hill-phone.svg") 0 calc(40px + 264.411px) / 100% 44px no-repeat,
+      linear-gradient(to bottom, var(--lp-sky) calc(40px + 265px), transparent 0);
+    padding-bottom: 32px;
+    padding-top: 40px;
+  }
+}

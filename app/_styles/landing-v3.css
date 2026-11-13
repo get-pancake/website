@@ -35,3 +35,5 @@
 @import "./landing-v3/audience.css";
 @import "./landing-v3/audience-agents.css";
 @import "./landing-v3/agent-lab.css";
+/* the homepage's section rhythm (after the reference site, 2026-11-12): last, so it wins */
+@import "./landing-v3/rhythm.css";
