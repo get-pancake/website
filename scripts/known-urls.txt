@@ -304,3 +304,8 @@
 # Loaded by partner pages served on pancake.ai (/learn, 2026-11-03): never rename or remove.
 /pancake-attribution.min.js
 /pancake-tags.js
+
+# Paid search landing pages, one per Google Search ad group (2026-11-13): the ads point here.
+/claude-for-sales
+/ai-sales-agents
+/lead-generation-software
