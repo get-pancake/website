@@ -132,16 +132,13 @@ const ALLOW = [
   [/\bco-?pilots?\b/i, /\bGitHub Copilot\b/g],
   // (the f4 "+56% reply rate" alt allowance went with the feature cards, 2026-10-11; the
   // "Pancake learns" story that followed needed none and was removed 2026-10-28)
-  // the founder's own figure (2026-10-13: "Mets 30+ data provider sur pancake.ai"; first the old
-  // sources story's hub label), now used by the signals story's label and ALT
-  // (lp-story-signals-data.ts), the dive's signals line (lp-dive-data.ts), the steps
-  // (lp-step-data.ts, lp-steps-content.ts) and the /plays signal pages (plays-signals.ts); any
-  // other "N+" still fails
-  // 2026-11-12, the founder's copy pass on the homepage: "50+ data providers" in step 02 (the
-  // other pages keep "30+" until he says otherwise) and "130+ tools" in the first feature
-  [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b(?:30|50)\+ data providers\b|\b130\+ tools\b/g],
-  // the /for pages' own rule against that figure does not apply to the founder's line here
-  [BANNED.find(([, label]) => label === "50+ providers")[0], /\b50\+ data providers\b/g],
+  // the founder's own figures. "50+ data providers" (2026-11-12, on every page; it was "30+"
+  // from 2026-10-13, his "Mets 30+ data provider sur pancake.ai"): the homepage's step 02, the
+  // signals story's label and ALT (lp-story-signals-data.ts), the dive's signals line
+  // (lp-dive-data.ts), the steps (lp-step-data.ts, lp-steps-content.ts) and the /plays signal
+  // pages (plays-signals.ts). "130+ tools" (2026-11-12; it was "about 100"): the first feature and
+  // the dive's agent line. Any other "N+" still fails, the old "30+" included.
+  [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b50\+ data providers\b|\b130\+ tools\b/g],
   // the Codex plugin's install id in /codex's commands (2026-10-17): "pancake@pancake" is a
   // marketplace qualifier, not an "@Pancake" mention in Slack
   [BANNED.find(([, label]) => label === "Slack chat")[0], /\bpancake@pancake\b/g],

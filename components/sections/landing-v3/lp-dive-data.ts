@@ -15,10 +15,10 @@ import type { DiveItemId } from "./lp-dive-stages";
  * Each item says what the visitor's agent gets, aligned with the founder's four blocks (and, on
  * 2026-10-28, "not necessarily say what it say but keep things aligned"): the ICP, the voice and
  * the CRM read in one call, then the next account and the Play (context); signals on hiring,
- * funding and site visits, work emails on demand, his "30+ data providers" and one bill (signals);
+ * funding and site visits, work emails on demand, his "50+ data providers" and one bill (signals);
  * a lead found where the customer's own data and outside signals cross, keeping the signal and the
  * source that found it (lineage, his "la detection croisee de signaux interne externe"); one
- * install in Claude, Claude Code, ChatGPT or Codex and about 100 tools (mcp). No platform is
+ * install in Claude, Claude Code, ChatGPT or Codex and 130+ tools (mcp). No platform is
  * named. The
  * visitor's agent stays the actor (founder, 2026-10-28): Pancake is the layer under it, so no body
  * says "Pancake suggests".
@@ -86,7 +86,7 @@ export const DIVE_ITEMS: readonly DiveItem[] = [
   {
     id: "signals",
     title: "Buying signals, enriched",
-    body: "Find companies hiring, newly funded or visiting your site. Work emails on demand. 30+ data providers, one bill.",
+    body: "Find companies hiring, newly funded or visiting your site. Work emails on demand. 50+ data providers, one bill.",
     status: "final",
   },
   {
@@ -98,7 +98,7 @@ export const DIVE_ITEMS: readonly DiveItem[] = [
   {
     id: "mcp",
     title: "Built for Claude and Codex",
-    body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent creates Plays and reviews leads with about 100 tools.",
+    body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent creates Plays and reviews leads with 130+ tools.",
     more: { href: GUIDE_PATH, label: "See how", name: "See how to run Pancake from Claude or Codex" },
     status: "final",
   },

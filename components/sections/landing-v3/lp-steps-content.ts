@@ -98,10 +98,10 @@ export const STEPS: readonly StepContent[] = [
     num: "01",
     // founder 2026-10-28: "Connect your agent. => Connect Pancake to your agent"
     title: "Connect Pancake to your agent.\nNow it can sell.",
-    body: "One sign-in adds Pancake to Claude or Codex. Your agent gets your Brain, 30+ data providers and the tools to reach out.",
+    body: "One sign-in adds Pancake to Claude or Codex. Your agent gets your Brain, 50+ data providers and the tools to reach out.",
     art: [{ kind: "anim", variant: "s0", status: "final" }],
     // retells S0_CONNECT (lp-step-data.ts): keep in sync
-    alt: "Animation: in Claude, the pointer opens Connectors in the composer and connects Pancake, then allows it on Pancake's sign-in card for the Acme workspace. The Pancake connector appears in the composer, and Claude answers: Pancake is connected. I can now: read your Brain, search 30+ data providers, run Plays and reach out.",
+    alt: "Animation: in Claude, the pointer opens Connectors in the composer and connects Pancake, then allows it on Pancake's sign-in card for the Acme workspace. The Pancake connector appears in the composer, and Claude answers: Pancake is connected. I can now: read your Brain, search 50+ data providers, run Plays and reach out.",
   },
   /* Founder 2026-10-28, on step 02's end picture (the Play card "Funded startups hiring a
      marketing lead · 13 leads found · Review 13 leads"): "not sure we should show here the UI but

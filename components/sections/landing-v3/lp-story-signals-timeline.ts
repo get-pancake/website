@@ -50,7 +50,7 @@ import { skDot, skHideR, skHideRise, skHideWire, skQuery, skRise, skStop, skWire
  *   3.29–3.79  the status lights, top to bottom, one every 0.14 s (3.29, 3.43, 3.57, 3.71: Hiring,
  *              Funding, Site visits, Work email): grey to its colour in 0.08 s; its label rises
  *              0.05 s later (y 8 → 0, 0.4 s)
- *   3.83–4.23  "30+ data providers" rises (y 8 → 0), the last to start
+ *   3.83–4.23  "50+ data providers" rises (y 8 → 0), the last to start
  *   4.17       f4: every light on, every label risen (the count all but risen)
  *   4.30       f5: the END = the server markup
  *

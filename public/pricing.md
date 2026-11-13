@@ -36,7 +36,7 @@ Need more credits or a custom setup? Talk to sales: https://pancake.ai/demo
 What you get, at every level:
 
 - Your GTM Brain, built from your website.
-- 30+ data providers included.
+- 50+ data providers included.
 - Leads matched to your ICP.
 - A personal message for each lead.
 - Your whole team. No seats to pay.
@@ -45,10 +45,10 @@ Free trial: 7 days and 30,000 credits (about 60 to 300 leads), the same at every
 
 ## What goes into one lead
 
-Leads matched to your business, not to a filter. Your GTM Brain, 30+ data providers and outreach in your voice work on every lead. All in the plan.
+Leads matched to your business, not to a filter. Your GTM Brain, 50+ data providers and outreach in your voice work on every lead. All in the plan.
 
 - Your GTM Brain: Pancake reads your website and learns your ICP, your personas, your competitors and your voice. Every search and message starts from that context, and it learns from each lead you approve or pass.
-- 30+ data providers, included: Dealroom, TheirStack, Coresignal and more, in one plan. No contract to sign, no API key, no data bill on the side.
+- 50+ data providers, included: Dealroom, TheirStack, Coresignal and more, in one plan. No contract to sign, no API key, no data bill on the side.
 - Live buying signals: funding rounds, open roles, tech stacks, posts and who reacts to them. A Play keeps searching on your schedule, so new leads keep coming.
 - Outreach from your account: a personal message for each lead, in your voice, sent from your own account. A reply stops the sequence.
 
@@ -63,7 +63,7 @@ Leads matched to your business, not to a filter. Your GTM Brain, 30+ data provid
 
 ### How many leads will I get?
 
-About 120 to 600 qualified leads a month on 60,000 credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 30+ providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.
+About 120 to 600 qualified leads a month on 60,000 credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 50+ providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.
 
 ### How does the free trial work?
 

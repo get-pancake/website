@@ -20,8 +20,8 @@
  *
  * Rules kept: "your agent" is the visitor's own (Claude, Codex); no person is named and no real
  * company carries an invented fact; the founder's figures are written exactly so: "50+ data
- * providers" on this page since 2026-11-12 (it was "30+", which the other pages still say) and
- * "130+ tools". Vendors: a source or a kind of signal is shown with a tool's own mark.
+ * providers" (on every page since 2026-11-12; it was "30+") and "130+ tools" (it was "about
+ * 100"). Vendors: a source or a kind of signal is shown with a tool's own mark.
  *
  * 2026-11-12, the founder's copy pass (his wording, word for word): the bodies of steps 01 and 02
  * and of three features open on Pancake and a verb, not on a list; a body says what its picture
