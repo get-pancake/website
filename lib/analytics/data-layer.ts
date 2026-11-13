@@ -128,7 +128,19 @@ export type AcquisitionEventPayloads = {
   guide_claude_copy: { block_id: string };
   /** /guides/claude: the visitor picked an AI client tab in step 02. */
   guide_claude_tab: { tab_id: GuideClaudeTabId };
+  /** The demo film (LpVideo: the homepage, and /white-glove's hero): the first play of the page load. */
+  demo_video_started: { video_id: string };
+  /** The film's playhead first passed 25, 50 or 75 % of its length in this page load. */
+  demo_video_progress: { video_id: string; percent: DemoVideoPercent };
+  /** The film reached its end in this page load. */
+  demo_video_completed: { video_id: string };
 };
+
+/** Watch-through milestones the demo film reports (each at most once per page load). */
+export const DEMO_VIDEO_PERCENTS = [25, 50, 75] as const;
+export type DemoVideoPercent = (typeof DEMO_VIDEO_PERCENTS)[number];
+/** Video ids are the film's file name without `.mp4` (`lp-video-data.ts`, e.g. `pancake-demo-v3`), never user text. */
+const DEMO_VIDEO_ID = /^[a-z0-9-]{1,40}$/;
 
 export const GUIDE_CLAUDE_TAB_IDS = ["claude", "claude-code", "chatgpt", "codex", "other"] as const;
 export type GuideClaudeTabId = (typeof GUIDE_CLAUDE_TAB_IDS)[number];
@@ -150,6 +162,9 @@ const ACQUISITION_EVENT_NAMES = new Set<AcquisitionEventName>([
   "app_cta_clicked",
   "guide_claude_copy",
   "guide_claude_tab",
+  "demo_video_started",
+  "demo_video_progress",
+  "demo_video_completed",
 ]);
 
 export function isAcquisitionEventName(value: unknown): value is AcquisitionEventName {
@@ -174,6 +189,10 @@ const EVENT_METADATA: Record<AcquisitionEventName, EventMetadata> = {
   // Guide engagement, never a conversion: no GTM trigger maps these yet.
   guide_claude_copy: { funnelStage: "app", conversionTier: "diagnostic" },
   guide_claude_tab: { funnelStage: "app", conversionTier: "diagnostic" },
+  // Film engagement, never a conversion: PostHog captures these, no GTM trigger maps them yet.
+  demo_video_started: { funnelStage: "app", conversionTier: "diagnostic" },
+  demo_video_progress: { funnelStage: "app", conversionTier: "diagnostic" },
+  demo_video_completed: { funnelStage: "app", conversionTier: "diagnostic" },
 };
 
 type DataLayerWindow = Window & {
@@ -201,6 +220,8 @@ export function emptyMappedEventFields() {
     attribution_id: null,
     block_id: null,
     tab_id: null,
+    video_id: null,
+    percent: null,
   };
 }
 
@@ -280,6 +301,19 @@ function sanitizePayload(
     const tabId = typeof raw.tab_id === "string" ? raw.tab_id : null;
     if (tabId === null || !GUIDE_CLAUDE_TAB_ID_SET.has(tabId)) return null;
     return { tab_id: tabId };
+  }
+
+  if (
+    eventName === "demo_video_started" ||
+    eventName === "demo_video_progress" ||
+    eventName === "demo_video_completed"
+  ) {
+    const videoId = typeof raw.video_id === "string" ? raw.video_id : null;
+    if (videoId === null || !DEMO_VIDEO_ID.test(videoId)) return null;
+    if (eventName !== "demo_video_progress") return { video_id: videoId };
+    const percent = raw.percent;
+    if (percent !== 25 && percent !== 50 && percent !== 75) return null;
+    return { video_id: videoId, percent };
   }
 
   if (eventName.startsWith("lead_")) {
