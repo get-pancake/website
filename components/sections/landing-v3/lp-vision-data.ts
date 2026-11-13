@@ -19,8 +19,14 @@
  * next best play)").
  *
  * Rules kept: "your agent" is the visitor's own (Claude, Codex); no person is named and no real
- * company carries an invented fact; the founder's figure "30+ data providers" is written exactly
- * so. Vendors: a source or a kind of signal is shown with a tool's own mark.
+ * company carries an invented fact; the founder's figures are written exactly so: "50+ data
+ * providers" on this page since 2026-11-12 (it was "30+", which the other pages still say) and
+ * "130+ tools". Vendors: a source or a kind of signal is shown with a tool's own mark.
+ *
+ * 2026-11-12, the founder's copy pass (his wording, word for word): the bodies of steps 01 and 02
+ * and of three features open on Pancake and a verb, not on a list; a body says what its picture
+ * shows (the texting picture is new signups and a list; the merge picture is three records, two
+ * of them with an email).
  */
 
 import { BASE_LEVEL, formatCredits } from "@/lib/pricing";
@@ -155,7 +161,7 @@ export const VISION_STEPS: readonly { num: "01" | "02" | "03"; variant: VisionSt
     variant: "t1",
     // "\n" = the desktop line break (white-space: pre-line), as the steps before these
     title: "Connect your sources.\nPancake builds the tables.",
-    body: "Your CRM, your events, your product and your website. Pancake builds each connector and turns what comes in into tables of companies and people.",
+    body: "Pancake builds connectors for your CRM, events, product and website, then matches records into unified tables of companies and people.",
     // the flat picture's (v1), retells VSTEP_SOURCES and VSTEP_TABLES: keep in sync. A toy
     // picture has its own (lp-toy-data.ts TOY_STEP_ALT)
     alt: "Animation: four sources connect one after the other: HubSpot for the CRM, Luma for events, PostHog for the product, Google Analytics for the website. Their lines join into Pancake, which fills two tables: companies, 4,812 rows, and people, 12,960 rows.",
@@ -164,7 +170,7 @@ export const VISION_STEPS: readonly { num: "01" | "02" | "03"; variant: VisionSt
     num: "02",
     variant: "t2",
     title: "Connect the dots\nwith market signals.",
-    body: "Funding, hiring, tech stack, reviews, web traffic. Signals from 30+ data providers land on the accounts you already have, each one dated.",
+    body: "Pancake watches funding, hiring, tech stack, reviews and web traffic across 50+ data providers. Each signal lands on its account, sourced and dated.",
     // retells VSTEP_SIGNALS and VSTEP_ACCOUNT: keep in sync
     alt: "Animation: six kinds of market signal, each beside a well-known source: funding, hiring, tech stack, team, reviews and web traffic. Four of them land as dots on one account, Ramp, a fintech with a lost deal: hiring SDRs, a new VP Sales, new funding, visits up. A line connects the dots.",
   },
@@ -249,7 +255,9 @@ export const VISION_FEATURES: {
   items: readonly { story: "mcp" | "p-history" | "p-dedup" | "ping" | "t-engine" | "t-journey" | "t-merge" | "t-ping"; title: string; body: string }[];
 } = {
   title: "What your agent can do with Pancake",
-  /* Each title answers the section's question (founder, 2026-11-12: "make sure each line answers
+  /* The third title says "records", not "emails": its picture shows a work email, a personal
+     email and a profile with no email (founder, 2026-11-12).
+     Each title answers the section's question (founder, 2026-11-12: "make sure each line answers
      more to the question 'What your agent can do with Pancake'", so that a reader thinks "Pancake
      is what I need for my revenue engineering"): your agent can … */
   items: [
@@ -257,16 +265,16 @@ export const VISION_FEATURES: {
       story: "t-engine",
       // the founder, 2026-11-11: "Run everything from Claude (not your agent)"
       title: "Run your revenue engine\nfrom Claude",
-      body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent queries every table and runs every Play, with about 100 tools.",
+      body: "One install in Claude, Claude Code, ChatGPT or Codex. Your agent queries every table and runs every Play, with 130+ tools.",
     },
     {
       story: "t-journey",
       title: "Remember every touch\nwith every buyer",
-      body: "The event, the signup, the pricing question, the reply: each one dated and kept. Your agent writes as if it sat in every call.",
+      body: "Pancake keeps every event, signup, pricing question and reply with its date. Your agent picks up where the relationship left off.",
     },
     {
       story: "t-merge",
-      title: "See one buyer\nbehind three emails",
+      title: "See one buyer\nbehind three records",
       body: "The same person is at your event, in your product and on a social profile. Pancake keeps one record, so nobody is pitched twice.",
     },
     // its picture is your agent texting you first (lp-story-ping-data.ts), the founder's ask in
@@ -274,7 +282,7 @@ export const VISION_FEATURES: {
     {
       story: "t-ping",
       title: "Bring you the next deal\nbefore you ask",
-      body: "Pancake learns from every reply and every deal. Your agent texts you the account to work and the Play to run.",
+      body: "Pancake learns from every reply and every deal. Your agent spots new signups matching your ICP, texts you first, and builds the list.",
     },
   ],
 };

@@ -137,7 +137,11 @@ const ALLOW = [
   // (lp-story-signals-data.ts), the dive's signals line (lp-dive-data.ts), the steps
   // (lp-step-data.ts, lp-steps-content.ts) and the /plays signal pages (plays-signals.ts); any
   // other "N+" still fails
-  [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b30\+ data providers\b/g],
+  // 2026-11-12, the founder's copy pass on the homepage: "50+ data providers" in step 02 (the
+  // other pages keep "30+" until he says otherwise) and "130+ tools" in the first feature
+  [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b(?:30|50)\+ data providers\b|\b130\+ tools\b/g],
+  // the /for pages' own rule against that figure does not apply to the founder's line here
+  [BANNED.find(([, label]) => label === "50+ providers")[0], /\b50\+ data providers\b/g],
   // the Codex plugin's install id in /codex's commands (2026-10-17): "pancake@pancake" is a
   // marketplace qualifier, not an "@Pancake" mention in Slack
   [BANNED.find(([, label]) => label === "Slack chat")[0], /\bpancake@pancake\b/g],

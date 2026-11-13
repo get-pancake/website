@@ -65,7 +65,10 @@ export function LpCta({
   title?: string;
   body?: readonly [string, string] | string;
   buttons?: ReactNode;
-  note?: string;
+  /** the line under the buttons. Left out: the demo request line. `null`: no line at all (the
+      homepage, founder 2026-11-12: the card ends on its buttons and the setup line; the demo
+      page says how a request is handled). */
+  note?: string | null;
   /** one row under the buttons (the infra-first homepage, 2026-10-21: the one-line setup's copy
       pill, LpSetupPill) */
   setup?: ReactNode;
@@ -130,7 +133,7 @@ export function LpCta({
           </div>
         )}
         {setup}
-        {note ? <p className="lp-cta__note">{note}</p> : <p className="lp-cta__note">Tell us about your team. We review demo requests before sharing a booking link.</p>}
+        {note === null ? null : note ? <p className="lp-cta__note">{note}</p> : <p className="lp-cta__note">Tell us about your team. We review demo requests before sharing a booking link.</p>}
       </div>
     </div>
   );

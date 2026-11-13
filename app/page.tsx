@@ -157,7 +157,8 @@ export default function Home() {
           customers got, then the close on its cream hill (sky.css) */}
       <LpVisionFeatures />
       <LpBento sky />
-      <LpCta sky title={VISION_CLOSE.title} body={VISION_CLOSE.body} setup={<LpSetupPill />} />
+      {/* note={null}: no demo request line in this card (founder, 2026-11-12) */}
+      <LpCta sky title={VISION_CLOSE.title} body={VISION_CLOSE.body} setup={<LpSetupPill />} note={null} />
       <LpPricing checklist={VISION_PLANS.starter} full={VISION_PLANS.full} />
       <LpFooter />
     </LpAudience>
