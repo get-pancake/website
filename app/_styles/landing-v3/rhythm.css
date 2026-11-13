@@ -136,3 +136,38 @@
     padding-top: 40px;
   }
 }
+
+/* The features section's off-screen estimate (content box, without its padding), re-measured
+   2026-11-12 once it had its research line under the title and the links under the first and
+   the last item: its list (the tallest open item, with its link) now outgrows the stage card
+   on the in-flow layouts, and the old estimates (foundation.css, dive.css) were up to 16 %
+   short there. Measured at 1440, 1340, 1100, 1025, 1024, 834, 768, 600, 390 and 320. */
+@media (min-width: 1341px) {
+  main.lp-audience-page > .lp-dive {
+    contain-intrinsic-size: auto 742px;
+  }
+}
+@media (min-width: 1025px) and (max-width: 1340px) {
+  /* head 220.8 + 32 + the list's 540: the same at every width of the range */
+  main.lp-audience-page > .lp-dive {
+    contain-intrinsic-size: auto 792.8px;
+  }
+}
+@media (min-width: 920px) and (max-width: 1024px) {
+  /* stacked: head 196.8 (title on one line) + 32 + list 384 + 32 + the stage */
+  main.lp-audience-page > .lp-dive {
+    contain-intrinsic-size: auto calc(644.8px + min(100vw - 64px, 752px) * 0.65027);
+  }
+}
+@media (min-width: 768px) and (max-width: 919px) {
+  /* the title takes two lines up to 919: head 265.6 */
+  main.lp-audience-page > .lp-dive {
+    contain-intrinsic-size: auto calc(713.6px + min(100vw - 64px, 752px) * 0.65027);
+  }
+}
+@media (max-width: 767px) {
+  /* the phone stack (dive.css's estimate + its new lines): 2147 from 320 to 430, 2502 at 600 */
+  main.lp-audience-page > .lp-dive[data-lp-phone="stack"] {
+    contain-intrinsic-size: auto max(2147px, calc(1484.4px + 169.67vw), calc(942px + 260.1vw));
+  }
+}
