@@ -30,7 +30,9 @@ export const COMPARE_LINKS = {
 
 export const COMPARE_META = {
   /** <= 60 characters, brand in front (the comparison pages carry none, the hub names every product). */
-  title: "Pancake Compared: Origami, Unify, Octave, Alta and More",
+  // 2026-11-16 (SEO audit): names the most-searched tools (it named Origami, Unify, Octave and
+  // Alta).
+  title: "Pancake Compared: Clay, Apollo, ZoomInfo and More GTM Tools",
   ogTitle: "Pancake compared",
   // 2026-11-10: thirteen pages, too many to name in one line: six of them, then "and more".
   description:
