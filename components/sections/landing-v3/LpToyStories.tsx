@@ -218,7 +218,6 @@ export function LpToyPingStage(_props: DiveStageProps) {
 
 /* ── "Run your revenue engine from Claude": Claude's window, a cable, the engine ── */
 
-const E = TOY_ART.engine;
 /** The parts on the engine's stand: one for each step Claude runs, but the Brain's. Its drawing
     (toys/studio/scene-engine.js: beads on rods round a dark one) read as an atom, as the 3D Brain
     of the 1-2-3 had (lp-toy-data.ts TOY_BRAIN), so it left the stand on 2026-11-16. */
@@ -241,9 +240,8 @@ export function LpToyEngineStage(_props: DiveStageProps) {
         {PARTS.map((part) => (
           <ToyPic key={part} set="engine" name={part} className="lp-te-part" data-part={part} />
         ))}
-        <span className="lp-te-badge" style={{ left: toyPx(E.anchors.front[0]), top: toyPx(E.anchors.front[1]) }}>
-          <PancakeMark className="lp-te-badge__mark" />
-        </span>
+        {/* (no Pancake disc on the stand's front since 2026-11-16: founder, "la petite pill
+            pancake ici apporte pas grand chose") */}
       </div>
       {/* Claude's window: the ask, the steps it runs through Pancake, the answer and the Play */}
       <div className="lp-te-win">

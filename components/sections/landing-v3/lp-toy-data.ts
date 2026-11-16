@@ -44,7 +44,7 @@ export const TOY_RADAR = {
       { id: "team", text: "new CRO" },
     ],
   },
-  alt: "Animation: a radar over one account, Ramp, a lost deal. Four signals land round the account one after the other, each with the source that found it: a new VP Sales, new funding, visits up, hiring SDRs. A line then connects the dots, into the account. Then the radar shows another account, Deel, an open deal: headcount up, switched CRM, new reviews, a new CRO.",
+  alt: "Animation: a radar over one account, Ramp, a lost deal. Its hand turns once and four signals land round the account as it passes, each with the source that found it: a new VP Sales, new funding, visits up, hiring SDRs. A line then connects the dots, into the account. Then the radar scans another account, Deel, an open deal: headcount up, switched CRM, new reviews, a new CRO.",
 } as const;
 
 /* ── 03 · the Brain, as the app draws it and as the designer drew it on the page: a fine, flat
@@ -71,7 +71,7 @@ export const TOY_BRAIN = {
     uses: [{ label: "Competitors" }, { label: "Won deals" }, { label: "Personas" }],
     play: { text: "Reach back out to the 8 lost deals that just raised funding." },
   },
-  alt: "Animation: your Brain, a fine graph of coloured hubs and dots round a dark centre. Three hubs carry a tag, ICP, signals and voice, what it draws on. Then the next best Play: contact the 24 people who signed up after your event. The Brain then changes, a few points go and others come, three other hubs carry a tag, competitors, won deals and personas, and it recommends another Play: reach back out to the 8 lost deals that just raised funding.",
+  alt: "Animation: your Brain, a fine graph of coloured hubs and dots round a dark centre. Three hubs carry a tag, ICP, signals and voice, and each one's branch into the centre goes dark. Then the next best Play: contact the 24 people who signed up after your event. The Brain then changes, a few points go and others come, three other hubs carry a tag, competitors, won deals and personas, and it recommends another Play: reach back out to the 8 lost deals that just raised funding.",
 } as const;
 
 /** what each toy picture of the 1-2-3 shows: its stage's aria-label (LpVisionSteps.tsx) */

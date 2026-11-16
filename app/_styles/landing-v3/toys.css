@@ -247,9 +247,9 @@
 
 /* ── 02 · a radar over one account ──
    The radar's face is a circle of the set, so an ellipse of the picture. What is drawn on it
-   (its circles and its cross) is drawn round, in .lp-t2-face, which is a point at the face's
-   centre, flattened once (--toy-squash). Until 2026-11-16 a beam swept it, a ring opened where
-   a signal landed and the account warmed under a glow: all gone (lp-toy-kit.ts has why). */
+   (its circles, its cross, its hand) is drawn round, in .lp-t2-face, which is a point at the
+   face's centre, flattened once (--toy-squash). Until 2026-11-16 a glowing beam swept it, a ring
+   opened where a signal landed and the account warmed under a glow (lp-toy-kit.ts has why). */
 .lp-toy .lp-t2-face {
   height: 0;
   position: absolute;
@@ -266,6 +266,21 @@
   stroke-width: 0.7;
   top: calc(-1 * var(--toy-r));
   width: calc(2 * var(--toy-r));
+}
+/* the radar's hand: one hairline from the centre to the edge, in the face's own ink. It shows
+   while it turns once, and each signal lands as it passes. No trail, no glow (2026-11-16: what
+   was left of the beam once its decoration went, because the radar looking is the meaning). */
+.lp-toy .lp-t2-hand {
+  background: rgba(255, 247, 236, 0.72);
+  border-radius: 1px;
+  height: 1.5px;
+  left: 0;
+  margin-top: -0.75px;
+  position: absolute;
+  top: 0;
+  transform-origin: 0 50%;
+  visibility: hidden;
+  width: calc(0.97 * var(--toy-r));
 }
 .lp-toy [data-tone="green"] {
   --toy-tone: var(--lp-green-20);
@@ -349,6 +364,16 @@
 }
 .lp-toy .lp-t3-edge[data-kind="hub"] {
   stroke-width: 1.2;
+}
+/* what feeds the Play: a tagged hub's branch into the centre, drawn over it in near-black (the
+   ink the founder liked on the wires that matter, 2026-10-30). It rests drawn. */
+.lp-toy .lp-t3-feed {
+  fill: none;
+  stroke: var(--lp-inverted-surface);
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  stroke-width: 1.7;
 }
 /* a point, a hub and the centre: a hub and the centre carry a rim of the card's own colour, so
    that they sit over the branches that meet on them */
@@ -751,23 +776,6 @@
 .lp-toy.lp-te[data-round="1"] [data-r]:not([data-r="1"]),
 .lp-toy.lp-te[data-round="2"] [data-r]:not([data-r="2"]) {
   display: none;
-}
-/* Pancake, on the stand's front */
-.lp-toy .lp-te-badge {
-  background: var(--lp-surface);
-  border-radius: 50%;
-  box-shadow: var(--toy-shadow-soft);
-  display: block;
-  height: 30px;
-  margin: -15px 0 0 -15px;
-  position: absolute;
-  width: 30px;
-}
-.lp-toy .lp-te-badge__mark {
-  display: block;
-  height: 20px;
-  margin: 5px;
-  width: 20px;
 }
 /* the window */
 .lp-toy .lp-te-win {

@@ -48,6 +48,8 @@ A piece grows or fades into its place and stops there: no overshoot, no settle, 
 
 The founder's review of these pictures (2026-11-16) took out what read as decoration rather than as the product: the bounce, the glows (round the machine's hub, under the radar's account, the Brain's halo, under the engine's parts), the rings that opened (on the radar, at the Brain's points, at each stop of the journey, on the merge's stand, round the phone), the beads that ran down the cables and rode the turntable, the signals that ran along the Brain's branches, the point of light on the engine's cable, the radar's sweeping beam (in `t2` and on the engine), the phone that shook, its messages flying out of it, and the two ideas the Brain showed before its Play. Do not bring them back: a picture moves the piece its story is about (a source connects, a row lands on a pile, a signal lands, a line is drawn, the buyer goes along the track, a message comes up), and nothing else.
 
+What carried a meaning got a plain form the same day, on his "il y a pas des trucs importants que tu as enlevé sans remplacer ? genre le radar avait un sens": the radar's scan is one thin hand in the face's own ink, turning once, each signal landing as it passes (no trail, no ring); the signals that fed the Brain are its tagged hubs' branches drawn near-black into the centre (the ink he liked on the wires that matter). The radar's line now goes through the middle of each piece (`lift` in `LpToySteps.tsx` SCANS), not under it. The Pancake disc on the engine's front left too ("apporte pas grand chose").
+
 ## The Brain's look
 
 The third step is the one picture that is not a 3D set. Its Brain is the graph the app draws and the designer drew on the page: a dark centre, six hubs of a colour each, their points on hairlines, flat, with no shadow. It is an SVG, placed and drawn by `LpToySteps.tsx` (`BRAIN_HUBS`: each hub, its points, and the side its tag hangs on). Three hubs carry a tag at a time.
@@ -95,7 +97,7 @@ The carousel of the four features plays by itself. Its Pause button is a keyboar
 Since 2026-11-12 a picture does not stop on its END. It holds it for about two seconds, shows something else, and comes back, for as long as it is looked at. Out of sight it waits where it is.
 
 - `t1`: four other sources take the docks (meetings, support, billing, calendar), then the first four are back. The piles never go back to empty: a row lands on top, the pile shows its last five, and the two counts go on from one round to the next.
-- `t2`: the radar shows another account (Deel, an open deal). Four other signals land, as blocks, the other way round.
+- `t2`: the radar scans another account (Deel, an open deal). Four other signals land, as blocks, and the hand turns the other way.
 - `t3`: the Brain changes (three points draw back into their hubs, six others grow out), three other hubs carry a tag, and it recommends another Play.
 - `t-engine`: each time it plays again another question is asked (three in all, then the first again).
 - `t-journey`, `t-merge`, `t-ping`: the same story each time.

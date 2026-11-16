@@ -172,28 +172,44 @@ const signalFor = (id: string, text?: string) => {
 /**
  * The radar's scans, by turns (toys/studio/scene-radar.js BLIPS and BLOCKS have the places).
  *   a  the picture: the page's own account and four of its signals (VSTEP_SIGNALS' dots), as
- *      beads. They land round the account from its upper right, each one nearer than the last,
- *      so the line that connects them winds in and never crosses the account's badge.
- *   b  the next round: another account, four other signals, as blocks. They land the other way,
- *      from the upper left round by the bottom, and the line ends on the account's right.
- * `piece`: the drawings' name. `sides`: which side of its piece each badge hangs on, clear of
- * the account's. (Until 2026-11-16 a beam swept the face and met each signal in turn.)
+ *      beads. The hand meets them round the account from its upper right, each one nearer than
+ *      the last, so the line that connects them winds in and never crosses the account's badge.
+ *   b  the next round: another account, four other signals, as blocks. The hand turns the other
+ *      way, from the upper left round by the bottom, and the line ends on the account's right.
+ * `piece`: the drawings' name. `lift`: how high the middle of a piece stands over its anchor, in
+ * the set's units (a bead is 0.26 round, a block 0.42 high: scene-radar.js), so that the line
+ * goes through the pieces and not under them (founder, 2026-11-16: "on veut pas que la corde soit
+ * mieux centree vs les boules ?"). `angles`: where the hand points when it meets each one, in
+ * degrees, clockwise from the face's right. `from`, `way`: where the hand starts, and which way
+ * it turns (1 clockwise). `sides`: which side of its piece each badge hangs on, clear of the
+ * account's.
+ * The hand (2026-11-16) is what is left of the beam that swept the face until then: the radar
+ * looking is the picture's meaning ("le radar avait un sens"), its glowing wedge and the rings it
+ * opened were the decoration.
  */
 const SCANS = [
   {
     id: "a",
     piece: "blip",
+    lift: 0.26,
     over: "over",
     account: VSTEP_ACCOUNT,
     signals: ["team", "funding", "traffic", "hiring"].flatMap((id) => signalFor(id)),
+    angles: [315, 385, 495, 552],
+    from: 290,
+    way: 1,
     sides: ["bottom", "top", "top", "top"],
   },
   {
     id: "b",
     piece: "block",
+    lift: 0.21,
     over: "above",
     account: TOY_RADAR.next.account,
     signals: TOY_RADAR.next.signals.flatMap((signal) => signalFor(signal.id, signal.text)),
+    angles: [225, 150, 40, -12],
+    from: 250,
+    way: -1,
     sides: ["bottom", "top", "top", "bottom"],
   },
 ] as const;
@@ -227,12 +243,14 @@ function T2Stage() {
     gone: scan.id === "a" ? "" : " lp-toy-gone",
     spots: scan.signals.map((_, k) => R.anchors[`${scan.piece}${k as SpotIndex}`]),
   }));
+  /** the middle of a piece on the picture: its anchor (where it stands on the face), lifted */
+  const middle = (spot: XY, lift: number): XY => [spot[0] + R.up[0] * lift, spot[1] + R.up[1] * lift];
   return (
     <div className="lp-step-stage lp-step-stage--t2 lp-toy" aria-hidden="true">
       <i className="lp-sx-bg" />
       <div className="lp-toy-set">
         <ToyPic set="radar" name="plate" />
-        {/* what is drawn on the radar's face: its circles and its cross */}
+        {/* what is drawn on the radar's face: its circles and its cross, and a hand a scan */}
         <div className="lp-t2-face" style={face}>
           <svg className="lp-t2-rings" viewBox="-100 -100 200 200" focusable="false">
             <circle r="33" />
@@ -240,11 +258,15 @@ function T2Stage() {
             <circle r="97" />
             <path d="M-97 0H97M0 -97V97" />
           </svg>
+          {scans.map((scan) => (
+            <i key={scan.id} className="lp-t2-hand" data-round={scan.id} data-from={scan.from} data-way={scan.way} />
+          ))}
         </div>
-        {/* the line that connects a scan's dots, into the account: a path from each dot to the next */}
+        {/* the line that connects a scan's dots, into the account: a path from each dot to the
+            next, through the middle of each piece */}
         {scans.map((scan) => (
           <svg key={scan.id} className="lp-t2-line" data-round={scan.id} viewBox="0 0 464 426" focusable="false">
-            {stretches([...scan.spots, c]).map((d, k) => (
+            {stretches([...scan.spots.map((spot) => middle(spot, scan.lift)), c]).map((d, k) => (
               <path key={k} className={scan.gone.trim() || undefined} d={d} pathLength={1} />
             ))}
           </svg>
@@ -252,7 +274,7 @@ function T2Stage() {
         <ToyPic set="radar" name="account" className="lp-t2-account" />
         {scans.map((scan) =>
           scan.signals.map((signal, k) => (
-            <ToyPic key={`${scan.id}${signal.id}`} set="radar" name={`${scan.piece}${k as SpotIndex}`} className={`lp-t2-blip${scan.gone}`} data-round={scan.id} />
+            <ToyPic key={`${scan.id}${signal.id}`} set="radar" name={`${scan.piece}${k as SpotIndex}`} className={`lp-t2-blip${scan.gone}`} data-round={scan.id} data-at={scan.angles[k]} />
           )),
         )}
       </div>
@@ -364,6 +386,12 @@ function T3Stage() {
               d={branch(p.from, p.at)}
               pathLength={1}
             />
+          ))}
+          {/* what feeds the Play: a tagged hub's branch, drawn dark from the hub into the centre
+              (2026-11-16: the signals that ran in along the branches until then said it). The
+              picture's three rest drawn; the next round's rest hidden. */}
+          {BRAIN.map((hub) => (
+            <path key={hub.k} className={hub.round === "a" ? "lp-t3-feed" : "lp-toy-gone lp-t3-feed"} data-hub={hub.k} d={branch(hub.xy, BRAIN_AT)} pathLength={1} />
           ))}
           {BRAIN_POINTS.map((p) => (
             <circle

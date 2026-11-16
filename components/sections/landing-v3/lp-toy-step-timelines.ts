@@ -26,13 +26,17 @@ import {
  *   t1  the four sources connect one after the other: its mark lights, its cable draws in, what
  *       it sends comes up, and its bead takes its place on the machine. A row comes out of the
  *       machine for what each source sends and the two piles come up, with their counts
- *   t2  four signals land round the account one after the other, each with what it says; a
- *       line then connects the dots into the account
- *   t3  a tag comes up on three hubs of the Brain, what it draws on, then the next best Play
- * Since 2026-11-16 nothing in them glows, opens a ring, rides a cable, sweeps, swells or
- * bounces (lp-toy-kit.ts has the rule). Until then: beads ran down the cables and the machine
- * turned, a radar beam swept the face and rings opened on it, signals ran along the Brain's
- * branches into a centre that swelled under a halo, and two ideas came out before the Play.
+ *   t2  the radar's hand turns once round the account; each signal lands as it passes, with
+ *       what it says; a line then connects the dots into the account
+ *   t3  a tag comes up on three hubs of the Brain, what it draws on, and each one's branch into
+ *       the centre goes dark; then the next best Play
+ * Since 2026-11-16 nothing in them glows, opens a ring, rides a cable, swells or bounces
+ * (lp-toy-kit.ts has the rule). Until then: beads ran down the cables and the machine turned, a
+ * glowing beam swept the radar and rings opened on it, signals ran along the Brain's branches
+ * into a centre that swelled under a halo, and two ideas came out before the Play. What carried
+ * a meaning was given a plain form the same day (founder: "il y a pas des trucs importants que tu
+ * as enlevé sans remplacer"): the radar's scan is one thin hand, the signals that fed the Brain
+ * are its branches going dark.
  * The contract of the page's timelines (lp-vision-step-timelines.ts): the markup is the picture;
  * every piece is looked up before anything is written (a missing piece throws there and the
  * server's picture stands); frame 0 is a block of gsap.set; the timeline holds tweens only (an
@@ -275,6 +279,7 @@ function buildT2(stage: HTMLElement): Built {
   const scanOf = (id: string) => {
     const all = <T extends Element = HTMLElement>(sel: string) => q.all<T>(`${sel}[data-round="${id}"]`);
     const scan = {
+      hand: q.one(`.lp-t2-hand[data-round="${id}"]`),
       pieces: all(".lp-t2-blip"),
       says: all(".lp-t2-says"),
       who: q.one(`.lp-t2-who[data-round="${id}"]`),
@@ -284,7 +289,7 @@ function buildT2(stage: HTMLElement): Built {
       throw new Error("lp-toy t2: a badge and a stretch of the line for each signal");
     }
     // how long each stretch of the line is: it is drawn at a steady pace
-    return { ...scan, lengths: scan.line.map((path) => path.getTotalLength()) };
+    return { ...scan, lengths: scan.line.map((path) => path.getTotalLength()), from: num(scan.hand, "from"), way: num(scan.hand, "way") < 0 ? -1 : 1 };
   };
   const first = scanOf("a");
   const other = scanOf("b");
@@ -293,6 +298,7 @@ function buildT2(stage: HTMLElement): Built {
   // frame 0: the radar and the account as you know it; nothing has landed
   const set = gsap.set;
   for (const scan of [first, other]) {
+    set(scan.hand, { autoAlpha: 0, rotation: scan.from, transformOrigin: "0% 50%" });
     toyHidePop(scan.pieces, 0.3);
     toyHideRise(scan.says, 6);
     // (autoRound off: GSAP would round a length in px to a whole number, and a dash offset
@@ -302,20 +308,25 @@ function buildT2(stage: HTMLElement): Built {
   toyHideRise(other.who, 6);
 
   const tl = gsap.timeline({ paused: true });
-  /** a signal lands every … and the line is drawn in … */
-  const EVERY = 0.62;
+  /** the hand turns once in … and the line is drawn in … */
+  const TURN = 3.1;
   const TRACE = 1.7;
-  /** A scan: the signals land round the account one after the other, each with what it says;
-      then the line goes from dot to dot into the account. Returns when it has. */
+  /** A scan: the radar's hand comes on and turns once; each signal lands as it passes, with
+      what it says; the hand goes, and the line goes from dot to dot into the account. Returns
+      when it has. */
   const scanAt = (scan: typeof first, at: number) => {
+    tl.to(scan.hand, { autoAlpha: 1, duration: 0.2, ease: "power1.out" }, at);
+    tl.to(scan.hand, { rotation: scan.from + scan.way * 360, duration: TURN, ease: "none", force3D: false }, at);
     scan.pieces.forEach((piece, k) => {
-      const t = at + k * EVERY;
+      const t = at + (Math.abs(num(piece, "at") - scan.from) / 360) * TURN;
       toyPop(tl, piece, t, 0.4);
       toyRise(tl, scan.says[k], t + 0.12);
     });
-    // they are all in: the line connects the dots, one after the other
+    // it has gone round: the hand goes, and the line connects the dots, one after the other
+    const done = at + TURN;
+    tl.to(scan.hand, { autoAlpha: 0, duration: 0.3, ease: "power1.in" }, done - 0.1);
     const whole = scan.lengths.reduce((sum, length) => sum + length, 0) || 1;
-    let t = at + (scan.pieces.length - 1) * EVERY + 0.7;
+    let t = done + 0.2;
     scan.line.forEach((path, k) => {
       const takes = Math.max(0.16, (TRACE * scan.lengths[k]) / whole);
       tl.to(path, { autoAlpha: 1, duration: TOY_STEP, ease: "none" }, t);
@@ -333,6 +344,7 @@ function buildT2(stage: HTMLElement): Built {
     const reset = at + 0.45;
     tl.to(scan.line, { strokeDashoffset: 1, duration: TOY_STEP, ease: "none", autoRound: false }, reset);
     tl.to(scan.says, { y: 6, duration: TOY_STEP, ease: "none" }, reset);
+    tl.to(scan.hand, { rotation: scan.from, duration: TOY_STEP, ease: "none" }, reset);
     // the account changes: its name goes, the other name comes up
     const swaps = at + 0.2;
     toyLeave(tl, scan.who, swaps);
@@ -342,7 +354,7 @@ function buildT2(stage: HTMLElement): Built {
   };
 
   /* the opening: the first scan, onto the picture */
-  const picture = scanAt(first, 0.5);
+  const picture = scanAt(first, 0.3);
   /* the round: the picture holds, the radar scans another account, holds, and comes back */
   let t = clearAt(first, other, picture + HOLD);
   t = scanAt(other, t);
@@ -367,12 +379,14 @@ function buildT3(stage: HTMLElement): Built {
   const comes = pointsOf("comes");
   /** a round's pieces (LpToySteps.tsx THOUGHTS): "a" is the picture, "b" the next round's */
   const thoughtOf = (id: string) => {
-    const thought = {
-      tags: q.all(`.lp-t3-tag[data-round="${id}"]`),
+    const tags = q.all(`.lp-t3-tag[data-round="${id}"]`);
+    if (!tags.length) throw new Error("lp-toy t3: the Brain's tags");
+    return {
+      tags,
+      /** each tag's hub's branch into the centre, drawn dark as the tag comes up */
+      feeds: tags.map((tag) => q.one<SVGPathElement>(`.lp-t3-feed[data-hub="${data(tag, "hub")}"]`)),
       play: q.one(`.lp-t3-play[data-round="${id}"]`),
     };
-    if (!thought.tags.length) throw new Error("lp-toy t3: the Brain's tags");
-    return thought;
   };
   const first = thoughtOf("a");
   const other = thoughtOf("b");
@@ -390,25 +404,36 @@ function buildT3(stage: HTMLElement): Built {
   }
   for (const thought of [first, other]) {
     toyHidePop(thought.tags, 0.6);
+    // (autoRound off: buildT2 has why)
+    set(thought.feeds, { autoAlpha: 0, strokeDashoffset: 1, autoRound: false });
     set(thought.play, PLAY_AWAY);
   }
 
   const tl = gsap.timeline({ paused: true });
-  /** The Brain shows what it draws on, a tag on a hub after the other, then the Play it
-      recommends. Returns when the reader has had the time to read it. */
+  /** The Brain shows what it draws on: a tag on a hub after the other, each one's branch drawn
+      dark into the centre. Then the Play it recommends. Returns when the reader has had the
+      time to read it. */
   const thinkAt = (thought: typeof first, at: number) => {
-    const EVERY = 0.32;
-    thought.tags.forEach((tag, k) => toyPop(tl, tag, at + k * EVERY, 0.4));
-    const says = at + (thought.tags.length - 1) * EVERY + 0.6;
+    const EVERY = 0.42;
+    const FEED = 0.4;
+    thought.tags.forEach((tag, k) => {
+      const t = at + k * EVERY;
+      toyPop(tl, tag, t, 0.4);
+      tl.to(thought.feeds[k], { autoAlpha: 1, duration: TOY_STEP, ease: "none" }, t + 0.08);
+      tl.to(thought.feeds[k], { strokeDashoffset: 0, duration: FEED, ease: "power2.out", autoRound: false }, t + 0.08);
+    });
+    const says = at + (thought.tags.length - 1) * EVERY + 0.08 + FEED + 0.3;
     tl.to(thought.play, { autoAlpha: 1, duration: 0.16, ease: "power1.out" }, says);
     tl.to(thought.play, { y: 0, scale: 1, duration: 0.5, ease: TOY_EASE.pop, force3D: false }, says);
     return says + 0.9;
   };
-  /** What it came up with goes: the Play, the tags. Every piece ends where the Brain's next
-      thought finds it. Returns when it is clear. */
+  /** What it came up with goes: the Play, the tags, the dark branches. Every piece ends where
+      the Brain's next thought finds it. Returns when it is clear. */
   const forgetAt = (thought: typeof first, at: number) => {
     tl.to(thought.play, { ...PLAY_AWAY, duration: 0.26, ease: "power1.in", force3D: false }, at);
     thought.tags.forEach((tag, k) => tl.to(tag, { autoAlpha: 0, scale: 0.6, duration: 0.2, ease: "power1.in", force3D: false }, at + 0.05 + k * 0.04));
+    tl.to(thought.feeds, { autoAlpha: 0, duration: 0.25, ease: "power1.in" }, at + 0.05);
+    tl.to(thought.feeds, { strokeDashoffset: 1, duration: TOY_STEP, ease: "none", autoRound: false }, at + 0.36);
     return at + 0.42;
   };
   /** The Brain changes: some of its points draw back into their hubs, others grow out of
