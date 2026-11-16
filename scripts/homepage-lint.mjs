@@ -112,6 +112,9 @@ const FILES = [
   // the paid search landing pages (2026-11-13): their copy and their markup
   "components/sections/search-landing/search-landing-copy.ts",
   "components/sections/search-landing/SearchLandingPage.tsx",
+  "components/sections/search-landing/SlProof.tsx",
+  // the comparison pages' template, on the search pages' layout since 2026-11-16
+  "components/sections/comparison/GtmComparisonPage.tsx",
   // agents view (agents-view)
   "components/sections/landing-v3/LpAudienceHeadline.tsx",
   "components/sections/landing-v3/LpAgentStart.tsx",
