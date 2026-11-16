@@ -6,8 +6,9 @@ import "./globals.css";
 // 2026-10-13: a CSS-coverage pass over every route found the kit used only by
 // /pricing, /open-roadmap and the comparison pages, and the UGC sheet by none,
 // yet both were render-blocking on every visit. They now ride with the pages
-// and components that use them (components/ui/*, FxPill, GtmComparisonPage,
-// the roadmap and pricing pages, HomeUGCWall).
+// and components that use them (components/ui/*, FxPill, the roadmap and pricing
+// pages, HomeUGCWall). The comparison pages dropped the kit on 2026-11-16 (they now
+// wear the paid search pages' layout).
 import { acquisitionBankScript } from "@/lib/analytics/acquisition-bank.mjs";
 import { tagManagerSourceJs } from "@/lib/analytics/google-tag-gateway.mjs";
 import { TRACKER_GATE, gatedScriptLoader, trackerGateScript } from "@/lib/analytics/tracker-gate.mjs";

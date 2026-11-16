@@ -1,82 +1,408 @@
-/* Comparison pages (GtmComparisonPage.tsx: /viktor-, /claude-tag-, /gojiberry-, /lemlist-,
-   /openclaw-, /origami-vs-pancake, /pancake-vs-paperclips).
+/* ── Comparison pages (GtmComparisonPage.tsx): every /<tool>-vs-pancake page and
+   /pancake-vs-paperclips ────────────────────────────────────────────────────
 
-   2026-10-07 (site audit 3.2): the pages wear the landing chrome, LpNav + LpFooter inside
-   main.lp, while the body keeps its @layer component kit sections (home-landing-section,
-   vvp-*). landing-v3.css is unlayered, so its base resets beat every layered kit rule on the
-   same property. These rules hand those properties back to the kit inside .vvp-body only;
-   the nav and footer keep the landing-v3 base. Unlayered on purpose, like landing-v3.css. */
+   2026-11-16: the pages wear the paid search pages' layout. The page is a /for kit page
+   (.lp-vx: text edge, section rhythm, VxHead, the FAQ accordion) with the Claude guide's cards
+   (.lp-guide: .gd-card) and the search pages' hero, film, logos, proof and closing card
+   (.lp-search, search-landing.css). These are the pieces only a comparison has: the two tool
+   cards and the best-fit note, the five differences, the feature table, the small-print links.
 
-/* `.lp p { margin: 0 }`, `.lp a { color: inherit; text-decoration: none }` and
-   `.lp img { display: block }` would drop the hero summary's auto centering, the diff
-   angles' top gap and the Tailwind `underline` on the Keep reading / Sources links.
-   revert-layer rolls each property back to the layered (kit) value. */
-.lp .vvp-body p {
-  margin: revert-layer;
-}
-.lp .vvp-body a:not(.lp-btn) {
-  color: revert-layer;
-  text-decoration: revert-layer;
-}
-.lp .vvp-body img {
-  display: revert-layer;
-}
+   Imported AFTER landing-v3.css, verticals.css, guide-claude.css and search-landing.css. Every
+   rule is `.lp-cmp .x` (0,2,0) to beat the kit's `.lp p` / `.lp a` resets, and type rules set
+   font-family on the element (the kit's universal `* { font-family }` beats inheritance).
+   Tokens only. */
 
-/* One ground with the nav band: the desktop nav is transparent over main.lp's cream, so the
-   sections sit on the same page cream, and the alternate bands on the card cream. */
-.lp .vvp-body .home-landing-section {
-  background-color: var(--lp-page-bg);
+/* ── the verdict: the two tools side by side ── */
+.lp-cmp .cmp-pair {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: var(--vx-head-gap);
 }
-.lp .vvp-body .home-landing-section--alt {
-  background-color: var(--lp-card-cream);
+.lp-cmp .cmp-card {
+  display: flex;
+  flex-direction: column;
 }
-
-/* H1 (audit 1.16): the kit's `h1.heading` (0,1,1) set the header-01 size over the section
-   title's (0,1,0) size, while the title's 52/42/36px line-height stayed, so two-line titles
-   overlapped on phones. Use the size the line-height was made for. */
-.lp .vvp-hero__title {
-  font-size: var(--font-size-home-landing-section-title);
+/* Pancake's card: the brand tint, so the eye lands on it */
+.lp-cmp .cmp-card--pancake {
+  background: var(--lp-pink-10);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lp-pink-30) 45%, transparent);
 }
-/* Above 640px the title has been drawn at 72.4px since that fix: the token read 4523/1000 of
-   the base where its comment says 45.23px. The token is corrected (2026-10-13, tokens.css)
-   and the title keeps its drawn size here, 1.6 being the ratio between the two; dropping it
-   to 45px, the size of the H2s below, is a design call. At 72px on the title's fixed 52px
-   line, a title that wraps (Claude Tag, OpenClaw, Paperclip, Gojiberry and Origami, from 641
-   to about 765px wide) overlapped itself. The line grows by one spacing step above and below
-   (52 + 2 × 16 = 84px, 1.16) and the block margin gives the two steps back: whole pixels, so
-   a one-line title is drawn exactly where it was and nothing under it moves. Phones keep
-   36/42 and 30/36, which fit. */
-@media (min-width: 640.02px) {
-  .lp .vvp-hero__title {
-    font-size: calc(var(--font-size-home-landing-section-title) * 1.6);
-    line-height: calc(var(--line-height-home-landing-section-title) + 2 * var(--spacing-xl));
-    margin-block: calc(-1 * var(--spacing-xl));
-  }
-}
-
-/* Section H2s ("Five differences that matter", "Head to head, feature by feature",
-   "Questions founders ask"): the kit's `h2.heading` (0,1,1) sets 45.2px over the section
-   title's own size, while the title's phone line heights (42px to 640, 36px to 374) were made
-   for 36 and 30px text, so wrapped headings touched or overlapped. Above 640 the 52px line
-   already fits 45.2px (1.15). */
-@media (max-width: 640px) {
-  .lp .vvp-body h2.home-landing-section__title {
-    line-height: 1.15;
-  }
-}
-
-/* "See how they compare": a text link under the CTA pair (it was a third pill; the pair is
-   Start free then Book a demo on every surface, founder 2026-09-03). `a.` matches the
-   specificity of the revert rule above, and this rule comes later. */
-.lp .vvp-body a.vvp-hero__jump {
+.lp-cmp .cmp-card__icon {
+  align-items: center;
+  background: var(--lp-surface);
+  border-radius: var(--lp-r-lg);
+  box-shadow: inset 0 0 0 1px var(--vx-hair);
   color: var(--lp-text);
+  display: flex;
+  flex: none;
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-xlg);
+  font-weight: 600;
+  height: 48px;
+  justify-content: center;
+  width: 48px;
+}
+.lp-cmp .cmp-card__icon--logo {
+  background: none;
+  box-shadow: none;
+  overflow: hidden;
+}
+.lp-cmp .cmp-card__icon img {
+  border-radius: var(--lp-r-lg);
+  display: block;
+  height: 48px;
+  width: 48px;
+}
+.lp-cmp .cmp-card__name {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin: 20px 0 0;
+}
+.lp-cmp .cmp-card__body {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
   font-size: var(--lp-text-md);
-  font-weight: var(--font-semibold);
+  line-height: 24px;
+  margin-top: 10px;
+  text-wrap: pretty;
+}
+/* "Choose it when…": at the foot of its card, so the two lines sit on one row */
+.lp-cmp .cmp-card__choose {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  line-height: 24px;
+  margin-top: auto;
+  padding-top: 20px;
+  text-wrap: pretty;
+}
+
+/* ── when the competitor fits better: one note under the pair ── */
+.lp-cmp .cmp-fit {
+  background: var(--lp-surface);
+  border-radius: var(--gd-card-r);
+  box-shadow: inset 0 0 0 1px var(--vx-hair);
+  column-gap: 40px;
+  display: grid;
+  grid-template-columns: minmax(200px, 280px) minmax(0, 1fr);
+  margin-top: 16px;
+  padding: 28px 32px;
+  row-gap: 8px;
+}
+.lp-cmp .cmp-fit__who {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+  grid-row: span 2;
+  align-self: start;
+}
+.lp-cmp .cmp-fit__avatar {
+  align-items: center;
+  background: var(--lp-purple-10);
+  border-radius: 50%;
+  color: var(--lp-text);
+  display: flex;
+  flex: none;
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-lg);
+  font-weight: 600;
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+}
+.lp-cmp .cmp-fit__id {
+  display: flex;
+  flex-direction: column;
+}
+.lp-cmp .cmp-fit__name {
+  align-items: center;
+  color: var(--lp-text);
+  display: inline-flex;
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  gap: 4px;
+  line-height: 22px;
+}
+.lp-cmp .cmp-fit__verified {
+  color: var(--lp-purple-40);
+  flex: none;
+  height: 16px;
+  width: 16px;
+}
+.lp-cmp .cmp-fit__handle {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+}
+.lp-cmp .cmp-fit__text {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-lg);
+  line-height: 28.8px;
+  text-wrap: pretty;
+}
+.lp-cmp .cmp-fit__foot {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+}
+
+/* ── five differences: one row each, the number and title left, the text right ── */
+.lp-cmp .cmp-diffs {
+  list-style: none;
+  margin: var(--vx-head-gap) 0 0;
+  padding: 0;
+}
+.lp-cmp .cmp-diff {
+  border-top: 1px solid var(--vx-hair);
+  column-gap: 32px;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 5fr) minmax(0, 6fr);
+  padding: 32px 0;
+}
+.lp-cmp .cmp-diff:last-child {
+  border-bottom: 1px solid var(--vx-hair);
+}
+.lp-cmp .cmp-diff__num {
+  color: var(--vx-num);
+  font-family: var(--lp-font-fono);
+  font-size: var(--lp-text-sm);
+  font-weight: 600;
+  /* on the title's first line */
+  line-height: 36px;
+}
+.lp-cmp .cmp-diff__title {
+  color: var(--lp-text);
+  font-family: var(--lp-font-cond);
+  font-size: var(--lp-text-3xlg);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+  margin: 0;
+  text-wrap: balance;
+}
+.lp-cmp .cmp-diff__body {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  line-height: 24px;
+  text-wrap: pretty;
+}
+.lp-cmp .cmp-diff__angle {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  line-height: 24px;
+  margin-top: 12px;
+  text-wrap: pretty;
+}
+
+/* ── the feature table: a card, Pancake's column tinted ── */
+.lp-cmp .cmp-table-wrap {
+  background: var(--lp-card-cream);
+  border-radius: var(--gd-card-r);
+  box-shadow: inset 0 0 0 1px var(--vx-hair);
+  margin-top: var(--vx-head-gap);
+  overflow: hidden;
+}
+.lp-cmp .cmp-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+}
+.lp-cmp .cmp-table th,
+.lp-cmp .cmp-table td {
+  border-top: 1px solid var(--vx-hair);
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 400;
+  line-height: 24px;
+  padding: 16px 24px;
+  text-align: left;
+  vertical-align: top;
+}
+.lp-cmp .cmp-table thead th {
+  border-top: 0;
+  color: var(--lp-subtle-text);
+  font-family: var(--vx-eyebrow-font);
+  font-size: var(--lp-text-sm);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  line-height: 20px;
+  padding-bottom: 14px;
+  padding-top: 20px;
+  text-transform: uppercase;
+}
+.lp-cmp .cmp-table thead th:first-child {
+  width: 26%;
+}
+.lp-cmp .cmp-table tbody th {
+  font-weight: 600;
+}
+.lp-cmp .cmp-table thead th:last-child,
+.lp-cmp .cmp-table td:last-child {
+  background: color-mix(in srgb, var(--lp-pink-10) 75%, transparent);
+}
+.lp-cmp .cmp-mark {
+  align-items: flex-start;
+  display: inline-flex;
+  gap: 8px;
+}
+.lp-cmp .cmp-mark__icon {
+  flex: none;
+  /* centred on the first line (24px line, 18px icon) */
+  margin-top: 3px;
+}
+.lp-cmp .cmp-mark__icon--yes {
+  color: var(--lp-positive-text);
+}
+.lp-cmp .cmp-mark__icon--no {
+  color: var(--lp-subtle-text);
+}
+.lp-cmp .cmp-mark__text {
+  font-family: var(--lp-font-sans);
+}
+
+/* ── under the FAQ: keep reading, more comparisons, sources ── */
+.lp-cmp .cmp-links {
+  display: grid;
+  gap: 10px;
+  margin-top: 40px;
+  max-width: 880px;
+}
+.lp-cmp .cmp-links p {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  line-height: 22px;
+  text-wrap: pretty;
+}
+.lp-cmp .cmp-links a,
+.lp-cmp .cmp-all a {
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
   text-decoration: underline;
+  text-decoration-color: var(--lp-stroke);
   text-underline-offset: 0.2em;
 }
+@media (hover: hover) {
+  .lp-cmp .cmp-links a:hover,
+  .lp-cmp .cmp-all a:hover {
+    text-decoration-color: currentColor;
+  }
+}
 
-/* Closing note: each phrase stays on one line, so a phone breaks between them, never inside. */
-.lp .vvp-body .vvp-nowrap {
-  white-space: nowrap;
+/* ── the closing card: the /compare hub under the trial line ── */
+.lp-cmp .cmp-all {
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  line-height: 24px;
+  margin-top: 20px;
+}
+.lp-cmp .cmp-all a {
+  font-weight: 600;
+}
+
+/* ── ≤1024: the differences on two columns (number, then title over text) ── */
+@media (max-width: 1024px) {
+  .lp-cmp .cmp-diff {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+  .lp-cmp .cmp-diff__text {
+    grid-column: 2;
+    margin-top: 12px;
+  }
+  .lp-cmp .cmp-fit {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+  .lp-cmp .cmp-fit__who {
+    grid-row: auto;
+    margin-bottom: 8px;
+  }
+}
+
+/* ── phones: one column; the table becomes one card per feature ── */
+@media (max-width: 767px) {
+  .lp-cmp .cmp-pair {
+    grid-template-columns: 1fr;
+  }
+  .lp-cmp .cmp-card__name,
+  .lp-cmp .cmp-diff__title {
+    font-size: var(--lp-text-2xlg);
+  }
+  .lp-cmp .cmp-diff {
+    grid-template-columns: 1fr;
+    padding: 24px 0;
+  }
+  .lp-cmp .cmp-diff__num {
+    line-height: 20px;
+    margin-bottom: 8px;
+  }
+  .lp-cmp .cmp-diff__text {
+    grid-column: auto;
+  }
+  .lp-cmp .cmp-fit__text {
+    font-size: var(--lp-text-md);
+    line-height: 26px;
+  }
+  .lp-cmp .cmp-table thead {
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+  .lp-cmp .cmp-table,
+  .lp-cmp .cmp-table tbody,
+  .lp-cmp .cmp-table tr {
+    display: block;
+    width: 100%;
+  }
+  .lp-cmp .cmp-table tr {
+    padding: 18px 20px 20px;
+  }
+  .lp-cmp .cmp-table tr + tr {
+    border-top: 1px solid var(--vx-hair);
+  }
+  .lp-cmp .cmp-table tbody th,
+  .lp-cmp .cmp-table td {
+    border-top: 0;
+    display: block;
+    padding: 0;
+  }
+  .lp-cmp .cmp-table td {
+    padding-top: 12px;
+  }
+  /* Pancake's value: the column's tint, as a rounded block */
+  .lp-cmp .cmp-table td:last-child {
+    border-radius: var(--lp-r-m);
+    margin-top: 12px;
+    padding: 10px 12px 12px;
+  }
+  .lp-cmp .cmp-table td::before {
+    color: var(--lp-subtle-text);
+    content: attr(data-label);
+    display: block;
+    font-family: var(--vx-eyebrow-font);
+    font-size: var(--lp-text-xsm);
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 18px;
+    margin-bottom: 2px;
+    text-transform: uppercase;
+  }
 }

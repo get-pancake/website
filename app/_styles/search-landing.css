@@ -1,5 +1,7 @@
 /* ── Paid search landing pages (SearchLandingPage.tsx, 2026-11-13) ─────────
-   /claude-for-sales, /ai-sales-agents, /lead-generation-software. Imported
+   /claude-for-sales, /ai-sales-agents, /lead-generation-software, and since
+   2026-11-16 every comparison page (GtmComparisonPage.tsx: the hero, the film,
+   the logos, the proof and the closing card are these). Imported
    AFTER landing-v3.css, verticals.css and guide-claude.css: the page is a /for
    kit page (.lp-vx: text edge, section rhythm, VxHead, the FAQ accordion)
    with the Claude guide's cards (.lp-guide: .gd-card, .gd-ways, the control

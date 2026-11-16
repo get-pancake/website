@@ -90,27 +90,28 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: SIGNAL_PATHS.hiring, updated: newest("2026-10-17", maxUpdated()), priority: 0.7 },
   { path: SIGNAL_PATHS.stack, updated: newest("2026-10-17", maxUpdated()), priority: 0.7 },
   // the comparisons hub (2026-10-07): every comparison page below links back to it;
-  // seven new cards on 2026-11-10
+  // seven new cards on 2026-11-10. 2026-11-16: every comparison page took the paid search
+  // pages' layout, with the demo film and the customer cards (GtmComparisonPage.tsx).
   { path: COMPARE_PATH, updated: "2026-11-10", priority: 0.7 },
-  { path: "/viktor-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/claude-tag-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/gojiberry-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/lemlist-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/origami-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/viktor-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/claude-tag-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/gojiberry-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/lemlist-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/origami-vs-pancake", updated: "2026-11-16", priority: 0.8 },
   // the GTM competitors buyers compare (audit plan 3.10), new on 2026-10-07
-  { path: "/unify-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/octave-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/alta-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: "/unify-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/octave-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/alta-vs-pancake", updated: "2026-11-16", priority: 0.8 },
   // data, cold email and outreach tools, new on 2026-11-10 (each page's own `modified`)
-  { path: "/clay-vs-pancake", updated: "2026-11-10", priority: 0.8 },
-  { path: "/apollo-vs-pancake", updated: "2026-11-10", priority: 0.8 },
-  { path: "/zoominfo-vs-pancake", updated: "2026-11-10", priority: 0.8 },
-  { path: "/instantly-vs-pancake", updated: "2026-11-10", priority: 0.8 },
-  { path: "/heyreach-vs-pancake", updated: "2026-11-10", priority: 0.8 },
-  { path: "/11x-vs-pancake", updated: "2026-11-10", priority: 0.8 },
-  { path: "/smartlead-vs-pancake", updated: "2026-11-10", priority: 0.8 },
-  { path: "/openclaw-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/pancake-vs-paperclips", updated: "2026-10-13", priority: 0.8 },
+  { path: "/clay-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/apollo-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/zoominfo-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/instantly-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/heyreach-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/11x-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/smartlead-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/openclaw-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/pancake-vs-paperclips", updated: "2026-11-16", priority: 0.8 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
