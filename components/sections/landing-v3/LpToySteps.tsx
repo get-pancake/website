@@ -12,11 +12,13 @@ import { VSTEP_ACCOUNT, VSTEP_BRAIN, VSTEP_SIGNALS, VSTEP_SOURCES, VSTEP_TABLES 
  * 464 × 426 step stage (steps.css .lp-step-stage: it scales as pixels with its card). They take
  * the place of LpVisionStepMocks' v1, v2 and v3, which stay selectable (lp-vision-data.ts
  * VISION_STEPS `variant`).
- *   t1  four sources plug into a machine, beads run down their cables, the machine turns and two
- *       piles of rows come up: the tables
+ *   t1  four sources plug into a machine, each one's bead takes its place on it, and two piles
+ *       of rows come up: the tables
  *   t2  a radar over one account: four signals land round it, a line connects the dots
- *   t3  the Brain, a fine flat graph round a dark centre: signals run in, ideas come out, the
- *       next best Play
+ *   t3  the Brain, a fine flat graph round a dark centre: a tag on three hubs, what it draws on,
+ *       then the next best Play
+ * Since 2026-11-16 they carry no glow, no ring that opens, no beam, nothing that rides a cable
+ * or a branch (lp-toy-kit.ts has the rule): those pieces are gone from the markup too.
  * t1 and t2 are sets of soft 3D objects in the kitchen's look, drawn as flat layers (LpToyKit.tsx
  * has how), with the page's own type over them. t3 is drawn by the page itself (an SVG): the
  * Brain did not read as a 3D set. The markup is each picture's END (lp-play-once
@@ -30,7 +32,7 @@ import { VSTEP_ACCOUNT, VSTEP_BRAIN, VSTEP_SIGNALS, VSTEP_SOURCES, VSTEP_TABLES 
  * How the sets are drawn and how to change one: toys/README.md.
  */
 
-/* ── 01 · your sources plug in, the machine turns, the tables come up ── */
+/* ── 01 · your sources plug in, the tables come up ── */
 
 const S = TOY_ART.sources;
 /** what lies flat on the set is this much shorter on the picture (the camera looks down on it) */
@@ -38,9 +40,9 @@ const S_FLAT = S.ground[3] / S.ground[0];
 /** the docks' tones, left to right (toys/studio/scene-sources.js DOCKS) */
 const DOCK_TONES = ["yellow", "pink", "purple", "blue"] as const;
 type DockIndex = 0 | 1 | 2 | 3;
-/** The beads of a round, in the order they reach the machine: the dock each one leaves, and the
-    row it becomes (the piles' tones, scene-sources.js ROUND, are these docks' tones in this
-    order). */
+/** The rows of a round, in the order they come out of the machine: the dock whose source sent
+    it, its pile, its height on it (the piles' tones, scene-sources.js ROUND, are these docks'
+    tones in this order). */
 const ARRIVALS = [
   { dock: 0, side: "l", row: 0 },
   { dock: 1, side: "r", row: 0 },
@@ -57,7 +59,7 @@ const ROWS_HIGH = 5;
 /** the drawings of a pile: empty to full (0 to 5), then a full pile after each row more (6 to 9;
     after the tenth row it is the full pile again) */
 const PILE_STATES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] as const;
-/** The rounds of beads. "open" fills the piles. The picture then goes round: on "b" the sources
+/** The rounds of rows. "open" fills the piles. The picture then goes round: on "b" the sources
     of TOY_SOURCES.more take the docks, on "a" the first four are back, and each rolls the piles
     by five rows (a row lands on top, the pile shows its last five). */
 const ROUNDS = ["open", "b", "a"] as const;
@@ -66,9 +68,9 @@ const SOURCE_SETS = [
   VSTEP_SOURCES.map((source, i) => ({ id: source.id, label: source.label, logo: source.logo, text: TOY_SOURCES.sends[i].text })),
   TOY_SOURCES.more,
 ] as const;
-/** Where the riders rest on the turntable, in turns from its right, one a tone. The ring is a
-    circle of the set, so an ellipse of the picture (RING_RX, RING_RY, in stage px). The markup
-    lays each rider on its place; the take turns them (lp-toy-step-timelines.ts `toyOrbit`). */
+/** Where each source's bead sits on the turntable, in turns from its right, one a tone. The
+    ring is a circle of the set, so an ellipse of the picture (RING_RX, RING_RY, in stage px).
+    They stay where they are (until 2026-11-16 the turntable turned them). */
 const RIDER_REST = [0.07, 0.32, 0.57, 0.82] as const;
 const RING_RX = S.anchors["ring-x"][0] - S.anchors["ring-o"][0];
 const RING_RY = S.anchors["ring-z"][1] - S.anchors["ring-o"][1];
@@ -84,24 +86,9 @@ function T1Stage() {
         {DOCK_TONES.map((tone, i) => (
           <ToyPic key={tone} set="sources" name={`cable${i as DockIndex}`} className="lp-t1-cable" data-dock={i} />
         ))}
-        {/* the beads on their way down the cables: under the docks and the machine */}
-        {ROUNDS.map((round) =>
-          ARRIVALS.map((a, k) => (
-            <ToyPic
-              key={`${round}${k}`}
-              set="sources"
-              name={`bead-${DOCK_TONES[a.dock]}`}
-              from={S.anchors.bead}
-              to={S.paths[`cable${a.dock}`][0]}
-              className="lp-toy-gone lp-t1-token"
-              data-round={round}
-              data-dock={a.dock}
-            />
-          )),
-        )}
         <ToyPic set="sources" name="docks" />
         <ToyPic set="sources" name="machine" />
-        {/* the beads that ride the turntable */}
+        {/* a bead of each source's tone on the turntable */}
         {DOCK_TONES.map((tone, i) => {
           const a = RIDER_REST[i] * 2 * Math.PI;
           const at = [S.anchors["ring-o"][0] + Math.cos(a) * RING_RX, S.anchors["ring-o"][1] + Math.sin(a) * RING_RY] as const;
@@ -185,19 +172,26 @@ const signalFor = (id: string, text?: string) => {
 /**
  * The radar's scans, by turns (toys/studio/scene-radar.js BLIPS and BLOCKS have the places).
  *   a  the picture: the page's own account and four of its signals (VSTEP_SIGNALS' dots), as
- *      beads. The beam meets them round the account from its upper right, each one nearer than
+ *      beads. The hand meets them round the account from its upper right, each one nearer than
  *      the last, so the line that connects them winds in and never crosses the account's badge.
- *   b  the next round: another account, four other signals, as blocks. The beam turns the other
+ *   b  the next round: another account, four other signals, as blocks. The hand turns the other
  *      way, from the upper left round by the bottom, and the line ends on the account's right.
- * `piece`: the drawings' name. `angles`: where the beam points when it meets each one, in
- * degrees, clockwise from the face's right. `from`, `way`: where the beam starts, and which way
+ * `piece`: the drawings' name. `lift`: how high the middle of a piece stands over its anchor, in
+ * the set's units (a bead is 0.26 round, a block 0.42 high: scene-radar.js), so that the line
+ * goes through the pieces and not under them (founder, 2026-11-16: "on veut pas que la corde soit
+ * mieux centree vs les boules ?"). `angles`: where the hand points when it meets each one, in
+ * degrees, clockwise from the face's right. `from`, `way`: where the hand starts, and which way
  * it turns (1 clockwise). `sides`: which side of its piece each badge hangs on, clear of the
  * account's.
+ * The hand (2026-11-16) is what is left of the beam that swept the face until then: the radar
+ * looking is the picture's meaning ("le radar avait un sens"), its glowing wedge and the rings it
+ * opened were the decoration.
  */
 const SCANS = [
   {
     id: "a",
     piece: "blip",
+    lift: 0.26,
     over: "over",
     account: VSTEP_ACCOUNT,
     signals: ["team", "funding", "traffic", "hiring"].flatMap((id) => signalFor(id)),
@@ -209,6 +203,7 @@ const SCANS = [
   {
     id: "b",
     piece: "block",
+    lift: 0.21,
     over: "above",
     account: TOY_RADAR.next.account,
     signals: TOY_RADAR.next.signals.flatMap((signal) => signalFor(signal.id, signal.text)),
@@ -248,12 +243,14 @@ function T2Stage() {
     gone: scan.id === "a" ? "" : " lp-toy-gone",
     spots: scan.signals.map((_, k) => R.anchors[`${scan.piece}${k as SpotIndex}`]),
   }));
+  /** the middle of a piece on the picture: its anchor (where it stands on the face), lifted */
+  const middle = (spot: XY, lift: number): XY => [spot[0] + R.up[0] * lift, spot[1] + R.up[1] * lift];
   return (
     <div className="lp-step-stage lp-step-stage--t2 lp-toy" aria-hidden="true">
       <i className="lp-sx-bg" />
       <div className="lp-toy-set">
         <ToyPic set="radar" name="plate" />
-        {/* what is drawn on the radar's face: its rings, a beam a scan, a ring where a signal lands */}
+        {/* what is drawn on the radar's face: its circles and its cross, and a hand a scan */}
         <div className="lp-t2-face" style={face}>
           <svg className="lp-t2-rings" viewBox="-100 -100 200 200" focusable="false">
             <circle r="33" />
@@ -262,25 +259,14 @@ function T2Stage() {
             <path d="M-97 0H97M0 -97V97" />
           </svg>
           {scans.map((scan) => (
-            <i key={scan.id} className="lp-t2-beam" data-round={scan.id} data-from={scan.from} data-way={scan.way} />
+            <i key={scan.id} className="lp-t2-hand" data-round={scan.id} data-from={scan.from} data-way={scan.way} />
           ))}
-          {scans.map((scan) =>
-            scan.spots.map((spot, k) => (
-              <i
-                key={`${scan.id}${k}`}
-                className="lp-t2-ping"
-                data-round={scan.id}
-                data-tone={scan.signals[k].tone}
-                style={{ left: toyPx(spot[0] - c[0]), top: toyPx((spot[1] - c[1]) / squash) }}
-              />
-            )),
-          )}
-          <i className="lp-t2-heat" />
         </div>
-        {/* the line that connects a scan's dots, into the account: a path from each dot to the next */}
+        {/* the line that connects a scan's dots, into the account: a path from each dot to the
+            next, through the middle of each piece */}
         {scans.map((scan) => (
           <svg key={scan.id} className="lp-t2-line" data-round={scan.id} viewBox="0 0 464 426" focusable="false">
-            {stretches([...scan.spots, c]).map((d, k) => (
+            {stretches([...scan.spots.map((spot) => middle(spot, scan.lift)), c]).map((d, k) => (
               <path key={k} className={scan.gone.trim() || undefined} d={d} pathLength={1} />
             ))}
           </svg>
@@ -314,7 +300,7 @@ function T2Stage() {
   );
 }
 
-/* ── 03 · the Brain: signals run in, ideas come out, the next best Play ──
+/* ── 03 · the Brain: what it draws on, then the next best Play ──
    The one picture of the seven that is not a 3D set: the Brain as the app draws it and as the
    designer drew it on the page (lp-step-data.ts s1Graph), a fine flat graph. lp-toy-data.ts
    TOY_BRAIN has why. Everything is placed here, in stage px. */
@@ -368,52 +354,22 @@ const BRAIN_POINTS: BrainPoint[] = BRAIN.flatMap((hub) => {
 });
 const branch = (from: XY, to: XY) => `M${from[0]} ${from[1]}L${to[0]} ${to[1]}`;
 /**
- * The Brain's rounds: the hubs that carry a tag, the points its signals leave (a hub, a kind of
- * point, which one), the ideas that come out, the Play. "a" is the picture. "b" is the next
- * round: its signals leave the points that have just come.
+ * The Brain's rounds: the hubs that carry a tag, and the Play. "a" is the picture, "b" the next
+ * round. (Until 2026-11-16 signals also ran along its branches into the centre, and two ideas
+ * came out before the Play: six labels at once round the graph.)
  */
 const THOUGHTS = [
-  {
-    id: "a",
-    uses: TOY_BRAIN.uses,
-    runs: [
-      [0, "rest", 1],
-      [2, "rest", 0],
-      [4, "rest", 1],
-      [0, "rest", 2],
-      [2, "rest", 2],
-    ],
-    ideas: TOY_BRAIN.ideas,
-    play: TOY_BRAIN.play,
-  },
-  {
-    id: "b",
-    uses: TOY_BRAIN.next.uses,
-    runs: [
-      [1, "comes", 0],
-      [3, "comes", 1],
-      [5, "comes", 0],
-      [1, "comes", 1],
-      [3, "comes", 0],
-    ],
-    ideas: TOY_BRAIN.next.ideas,
-    play: TOY_BRAIN.next.play,
-  },
+  { id: "a", uses: TOY_BRAIN.uses, play: TOY_BRAIN.play },
+  { id: "b", uses: TOY_BRAIN.next.uses, play: TOY_BRAIN.next.play },
 ] as const;
-/** where the ideas land, under the Brain, and the Play under them */
-const IDEA_AT: readonly XY[] = [
-  [128, 288],
-  [338, 288],
-];
-const PLAY_AT: XY = [232, 310];
+/** where the Play hangs, under the Brain */
+const PLAY_AT: XY = [232, 300];
 
 function T3Stage() {
-  const point = (hub: number, kind: string, n: number) => BRAIN_POINTS.find((p) => p.hub === hub && p.kind === kind && p.n === n);
   return (
     <div className="lp-step-stage lp-step-stage--t3 lp-toy" aria-hidden="true">
       <i className="lp-sx-bg" />
       <div className="lp-toy-set">
-        <i className="lp-t3-halo" style={{ left: toyPx(BRAIN_AT[0]), top: toyPx(BRAIN_AT[1]) }} />
         {/* the graph: its branches, then its points over them. A point that only the next round
             has rests hidden, with its branch. */}
         <svg className="lp-t3-graph" viewBox="0 0 464 426" focusable="false">
@@ -430,6 +386,12 @@ function T3Stage() {
               d={branch(p.from, p.at)}
               pathLength={1}
             />
+          ))}
+          {/* what feeds the Play: a tagged hub's branch, drawn dark from the hub into the centre
+              (2026-11-16: the signals that ran in along the branches until then said it). The
+              picture's three rest drawn; the next round's rest hidden. */}
+          {BRAIN.map((hub) => (
+            <path key={hub.k} className={hub.round === "a" ? "lp-t3-feed" : "lp-toy-gone lp-t3-feed"} data-hub={hub.k} d={branch(hub.xy, BRAIN_AT)} pathLength={1} />
           ))}
           {BRAIN_POINTS.map((p) => (
             <circle
@@ -449,31 +411,6 @@ function T3Stage() {
           ))}
           <circle className="lp-t3-centre" cx={BRAIN_AT[0]} cy={BRAIN_AT[1]} r={12} />
         </svg>
-        {/* a ring opens where a point comes or goes */}
-        {BRAIN_POINTS.filter((p) => p.kind !== "rest").map((p) => (
-          <i key={`${p.hub}${p.kind}${p.n}`} className="lp-toy-gone lp-t3-ring" data-kind={p.kind} data-hub={p.hub} data-n={p.n} data-tone={p.tone} style={{ left: toyPx(p.at[0]), top: toyPx(p.at[1]) }} />
-        ))}
-        {/* a signal on its way in: from a point to its hub, then to the centre */}
-        {THOUGHTS.map((thought) =>
-          thought.runs.map(([hub, kind, n], k) => {
-            const from = point(hub, kind, n);
-            if (!from) return null;
-            return (
-              <i
-                key={`${thought.id}${k}`}
-                className="lp-toy-gone lp-t3-run"
-                data-round={thought.id}
-                data-hub={hub}
-                data-tone={from.tone}
-                data-x={from.at[0]}
-                data-y={from.at[1]}
-                data-hx={from.from[0]}
-                data-hy={from.from[1]}
-                style={{ left: toyPx(from.at[0]), top: toyPx(from.at[1]) }}
-              />
-            );
-          }),
-        )}
       </div>
       {/* what the Brain draws on, a tag on a hub each: the picture's three, and the three of the
           next round, which rest hidden */}
@@ -497,29 +434,18 @@ function T3Stage() {
           );
         });
       })}
-      {/* the ideas it comes up with, then the one it recommends: the picture's, and the next
-          round's, which rest hidden */}
-      {THOUGHTS.map((thought) => {
-        const gone = thought.id === "a" ? "" : " lp-toy-gone";
-        return (
-          <Fragment key={thought.id}>
-            {thought.ideas.map((idea, k) => (
-              <ToyBadge key={idea.text} at={IDEA_AT[k]} anchor="centre" icon={<PlayGlyph />} className={`lp-t3-idea${gone}`} data-round={thought.id} data-k={k}>
-                {idea.text}
-              </ToyBadge>
-            ))}
-            <div className={`lp-t3-play${gone}`} data-round={thought.id} style={{ left: toyPx(PLAY_AT[0]), top: toyPx(PLAY_AT[1]) }}>
-              <div className="lp-t3-play__in">
-                <i className="lp-t3-play__icon">
-                  <PlayGlyph />
-                </i>
-                <p className="lp-t3-play__k">{VSTEP_BRAIN.play.kicker}</p>
-                <p className="lp-t3-play__t">{thought.play.text}</p>
-              </div>
-            </div>
-          </Fragment>
-        );
-      })}
+      {/* the Play it recommends: the picture's, and the next round's, which rests hidden */}
+      {THOUGHTS.map((thought) => (
+        <div key={thought.id} className={`lp-t3-play${thought.id === "a" ? "" : " lp-toy-gone"}`} data-round={thought.id} style={{ left: toyPx(PLAY_AT[0]), top: toyPx(PLAY_AT[1]) }}>
+          <div className="lp-t3-play__in">
+            <i className="lp-t3-play__icon">
+              <PlayGlyph />
+            </i>
+            <p className="lp-t3-play__k">{VSTEP_BRAIN.play.kicker}</p>
+            <p className="lp-t3-play__t">{thought.play.text}</p>
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

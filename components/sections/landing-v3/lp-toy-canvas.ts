@@ -24,7 +24,7 @@ import { gsap } from "@/lib/gsap";
  * HOW.
  * - A RUN is a stretch of drawings with nothing else of the page between them, in paint order.
  *   Each run gets one canvas, placed where its first drawing was: what the page draws between
- *   two runs (a ring on the ground, a beam, a mark) keeps its place in the stack.
+ *   two runs (a mark, a line) keeps its place in the stack.
  * - The <img> elements stay the picture's markup, and its fallback. The canvas takes over once
  *   its first frame is drawn ([data-toy-canvas] on the picture, toys.css), and gives the picture
  *   back whenever it stops: far from the screen (its memory is freed), on dispose, or if a
@@ -40,7 +40,7 @@ import { gsap } from "@/lib/gsap";
  *
  * What it reads of a drawing: GSAP's transform (x, y, scale, rotation, about the element's
  * transform-origin), its opacity and visibility, a clip-path that is an inset(), and those of a
- * wrapper that holds nothing but drawings (the phone that shakes as one piece). So a drawing
+ * wrapper that holds nothing but drawings (the phone: its two drawings as one piece). So a drawing
  * must be moved by GSAP alone: one that a stylesheet moves (a `translate`, an animation) would
  * stand still here. A picture built another way (a drawing inside a wrapper that also holds
  * type) is left to the page: `toyCanvas` then does nothing.

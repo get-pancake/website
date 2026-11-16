@@ -4,7 +4,7 @@ import { gsap } from "@/lib/gsap";
 
 /**
  * The toy pictures' shared motion (2026-11-12): the few verbs every picture is made of. A
- * drawing pops into place, slides along a line of the set, hops from one point to another, a
+ * drawing grows into place, slides along a line of the set, comes from one point to its own, a
  * badge comes up. Every helper writes sets and tweens only (no callbacks, no randomness), so a
  * timeline built with them can be seeked both ways and its progress(1) is the server markup.
  * Each verb comes as a pair: `toyHide…` writes frame 0 (inside the caller's gsap.context, which
@@ -13,16 +13,19 @@ import { gsap } from "@/lib/gsap";
  * Transforms stay 2D (force3D off, as in the step timelines): a 3D one re-rasterises the scaled
  * stage for the length of the tween.
  *
- * THE ONE PLACE FOR THE FEEL. These pictures are toys, like the kitchen: a piece that pops lands
- * a little past its size and settles (TOY_EASE.pop). The page's older pictures never overshoot
- * (founder, 2026-10-30, on the deep dive's nodes: "j aime pas trop les effets de bounce"). To
- * hold these to that rule too, set `pop` and `soft` to "power3.out": nothing else changes.
+ * THE ONE PLACE FOR THE FEEL. A piece grows or fades into its place and stops there: no
+ * overshoot, no settle, no hop (founder, 2026-10-30: "j aime pas trop les effets de bounce").
+ * His review of these pictures (2026-11-16) took out the rest of the same family: the glows, the
+ * rings that open, the beads and points of light that ride the cables, the radar's sweep, the
+ * phone that shakes. So: no glow, no ring, nothing that travels along a line but the piece the
+ * story is about, nothing that swells and settles. Until 2026-11-16 `pop` was back.out(1.6) and
+ * `soft` back.out(1.15).
  */
 export const TOY_EASE = {
   /** a piece pops into place */
-  pop: "back.out(1.6)",
-  /** a large piece (a message) comes to its place: the same, much less */
-  soft: "back.out(1.15)",
+  pop: "power3.out",
+  /** a large piece (a message) comes to its place */
+  soft: "power3.out",
   /** a piece lands */
   land: "power2.out",
   /** a piece travels */
@@ -99,18 +102,13 @@ export function toyAlong(tl: Timeline, el: gsap.TweenTarget, points: readonly Po
 }
 
 /**
- * A drawing hops from `from` to its own place in the markup (`home`): it goes across at a
- * steady pace, up then down by `height` px, and grows from `scale` on the way.
+ * A drawing comes from `from` to its own place in the markup (`home`) the straight way, growing
+ * from `scale`, and stops there. (Until 2026-11-16 it hopped there, up then down: a bounce.)
  */
-export function toyHideHop(el: gsap.TweenTarget, from: Point, home: Point, scale = 0.35): void {
+export function toyHideGlide(el: gsap.TweenTarget, from: Point, home: Point, scale = 0.35): void {
   gsap.set(el, { autoAlpha: 0, x: from[0] - home[0], y: from[1] - home[1], scale });
 }
-export function toyHop(tl: Timeline, el: gsap.TweenTarget, from: Point, home: Point, at: number, duration = 0.42, height = 26): void {
-  const dy = from[1] - home[1];
-  tl.to(el, { autoAlpha: 1, duration: 0.08, ease: "none" }, at);
-  tl.to(el, { x: 0, duration, ease: "none", force3D: false }, at);
-  tl.to(el, { scale: 1, duration, ease: "power1.in", force3D: false }, at);
-  // up to the top of the arc, then down onto its place
-  tl.to(el, { y: Math.min(dy, 0) - height, duration: duration * 0.45, ease: "power2.out", force3D: false }, at);
-  tl.to(el, { y: 0, duration: duration * 0.55, ease: "power2.in", force3D: false }, at + duration * 0.45);
+export function toyGlide(tl: Timeline, el: gsap.TweenTarget, at: number, duration = 0.42): void {
+  tl.to(el, { autoAlpha: 1, duration: 0.1, ease: "none" }, at);
+  tl.to(el, { x: 0, y: 0, scale: 1, duration, ease: "power2.out", force3D: false }, at);
 }

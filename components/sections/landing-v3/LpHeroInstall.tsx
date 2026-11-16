@@ -30,9 +30,14 @@ import { SETUP_LINE } from "./LpSetupLine";
  * A disclosure: the card opens on hover (CSS), and on a press of the row (data-open, for touch
  * and keyboard), and closes on Escape (focus back on the row), on a press outside or when focus
  * leaves it. Closed, the card is visibility: hidden, so its copy button is out of the tab order.
- * The copy pushes no analytics event (track={false}), as the CTA's pill.
+ * The copy pushes no analytics event (track={false}).
+ *
+ * SINCE 2026-11-16 the homepage's closing card carries the same row (`place="cta"`), in place of
+ * the outlined "Copy the setup line" pill it had since 2026-10-21: the founder had called an
+ * outlined install pill ugly in the hero (2026-11-11), and the page showed the same action in two
+ * looks. There the row is centred and its card opens centred over the card's buttons (setup.css).
  */
-export function LpHeroInstall() {
+export function LpHeroInstall({ place = "hero" }: { place?: "hero" | "cta" } = {}) {
   const [open, setOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
   const trigger = useRef<HTMLButtonElement>(null);
@@ -59,7 +64,7 @@ export function LpHeroInstall() {
   return (
     <div
       ref={root}
-      className="lp-hero-install"
+      className={place === "cta" ? "lp-hero-install lp-hero-install--cta" : "lp-hero-install"}
       data-open={open ? "" : undefined}
       onBlur={(e) => {
         if (!root.current?.contains(e.relatedTarget as Node | null)) setOpen(false);
@@ -89,7 +94,7 @@ export function LpHeroInstall() {
           <p className="lp-hero-install__title">Paste in Claude Code or Codex</p>
           <GuideCopyButton
             text={SETUP_LINE}
-            blockId="home-hero-install"
+            blockId={`home-${place}-install`}
             label="Copy"
             ariaLabel="Copy the one-line setup for Claude Code or Codex"
             track={false}

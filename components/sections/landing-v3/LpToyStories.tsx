@@ -16,12 +16,13 @@ import { VSTEP_BRAIN } from "./lp-vision-data";
  * dive, 2026-11-12), each on the dive's 752 × 489 box. They take the place of the stories "mcp",
  * "p-history", "p-dedup" and "ping", which stay in the registry (lp-vision-data.ts
  * VISION_FEATURES `story` names the one a feature shows).
- *   t-engine    Claude's window on a cable to an engine: each step it runs lights a part of it
+ *   t-engine    Claude's window on a cable to an engine: a part of it comes on for each step
  *   t-journey   one buyer goes from stop to stop along a track: each touch keeps its date
  *   t-merge     three sightings of one person, from three sources, become one record
  *   t-ping      a phone lights up by itself: your agent writes first
  * Each is a set of soft 3D objects in the kitchen's look, drawn as flat layers (LpToyKit.tsx has
- * how), with the page's own type over them.
+ * how), with the page's own type over them. Since 2026-11-16 no glow, ring, beam or point of
+ * light is drawn over them (lp-toy-kit.ts has the rule).
  *
  * Contract (lp-dive-stages.ts): server-safe (no hooks, no "use client"), ONE root with
  * data-lp-story and aria-hidden (the shell's host carries the ALT), the markup is the story's END
@@ -73,11 +74,6 @@ export function LpToyJourneyStage(_props: DiveStageProps) {
           const name = `on${k as StopIndex}` as const;
           return <ToyPic key={touch.text} set="journey" name={name} className="lp-tj-on" data-k={k} />;
         })}
-        {/* a ring opens round a stop as the buyer lands on it */}
-        {j.touches.map((touch, k) => {
-          const at = J.anchors[`stop${k as StopIndex}`];
-          return <i key={touch.text} className="lp-toy-gone lp-tj-ring" data-tone={STOP_TONES[k]} style={{ left: toyPx(at[0]), top: toyPx(at[1]) }} />;
-        })}
         {/* the buyer, at rest on the last stop */}
         <ToyPic set="journey" name="pawn" from={J.anchors.pawn} to={last} className="lp-tj-pawn" />
       </div>
@@ -97,7 +93,7 @@ export function LpToyJourneyStage(_props: DiveStageProps) {
           <b>{touch.text}</b>
         </ToyBadge>
       ))}
-      {/* what was kept: a dot a touch, and their count */}
+      {/* what was kept: a dot a touch, filled as the buyer reaches it, and their count */}
       <div className="lp-tj-kept" style={{ left: toyPx(KEPT_AT[0]), top: toyPx(KEPT_AT[1]) }}>
         <p className="lp-tj-kept__in">
           <span className="lp-tj-kept__dots">
@@ -110,11 +106,6 @@ export function LpToyJourneyStage(_props: DiveStageProps) {
           </span>
         </p>
       </div>
-      {/* a touch on its way from its stop to the record */}
-      {j.touches.map((touch, k) => {
-        const at = J.anchors[`stop${k as StopIndex}`];
-        return <i key={touch.text} className="lp-toy-gone lp-tj-dot" data-tone={STOP_TONES[k]} style={{ left: toyPx(at[0]), top: toyPx(at[1]) }} />;
-      })}
     </div>
   );
 }
@@ -130,7 +121,6 @@ const polyline = (points: readonly XY[]) => `M${points.map((p) => `${p[0]} ${p[1
 
 export function LpToyMergeStage(_props: DiveStageProps) {
   const m = TOY_MERGE;
-  const stand = M.anchors.stand;
   return (
     <div className="lp-toy lp-toy-story lp-tm" data-lp-story="t-merge" aria-hidden="true">
       <div className="lp-toy-set">
@@ -141,7 +131,6 @@ export function LpToyMergeStage(_props: DiveStageProps) {
             <path key={sighting.text} data-tone={LANE_TONES[k]} d={polyline(M.paths[`lane${k as LaneIndex}`])} pathLength={1} />
           ))}
         </svg>
-        <i className="lp-toy-gone lp-tm-flash" style={{ left: toyPx(stand[0]), top: toyPx(stand[1]) }} />
         {/* the same person, as each source knows them: on the way to the stand */}
         {m.sightings.map((sighting, k) => (
           <ToyPic
@@ -188,21 +177,13 @@ export function LpToyMergeStage(_props: DiveStageProps) {
 
 /* ── "Bring you the next deal before you ask": a phone lights up by itself ── */
 
-const P = TOY_ART.ping;
-
 export function LpToyPingStage(_props: DiveStageProps) {
   const s = STORY_PING;
-  const phone = P.anchors.phone;
-  const foot = P.anchors.foot;
   return (
     <div className="lp-toy lp-toy-story lp-tp" data-lp-story="t-ping" aria-hidden="true">
       <div className="lp-toy-set">
-        {/* the phone hums on the table: rings on the ground, round it */}
-        {[0, 1].map((k) => (
-          <i key={k} className="lp-toy-gone lp-tp-hum" style={{ left: toyPx(foot[0]), top: toyPx(foot[1]) }} />
-        ))}
-        {/* the phone: asleep, and the same glass lit over it. It shakes as one piece */}
-        <div className="lp-tp-phone" style={{ transformOrigin: `${toyPx(phone[0])} ${toyPx(phone[1])}` }} data-x={P.anchors.card[0]} data-y={P.anchors.card[1]}>
+        {/* the phone: asleep, and the same glass lit over it */}
+        <div className="lp-tp-phone">
           <ToyPic set="ping" name="plate" />
           <ToyPic set="ping" name="lit" className="lp-tp-lit" />
         </div>
@@ -237,10 +218,11 @@ export function LpToyPingStage(_props: DiveStageProps) {
 
 /* ── "Run your revenue engine from Claude": Claude's window, a cable, the engine ── */
 
-const E = TOY_ART.engine;
-type PartId = "brain" | "tables" | "radar";
-/** each part's light on the stand, in its tone */
-const PART_TONES: Record<PartId, string> = { brain: "purple", tables: "yellow", radar: "pink" };
+/** The parts on the engine's stand, one for each step Claude runs: your Brain (the 3D Brain of
+    beads on rods, toys/studio/scene-engine.js), your tables, the radar. The Brain left the stand
+    for a few hours on 2026-11-16 (it read as an atom, as the 1-2-3's 3D Brain had) and came back
+    on the founder's word the same day ("remets l'atome"), without the light under it. */
+const PARTS = ["brain", "tables", "radar"] as const;
 
 export function LpToyEngineStage(_props: DiveStageProps) {
   const e = TOY_ENGINE;
@@ -250,33 +232,17 @@ export function LpToyEngineStage(_props: DiveStageProps) {
       Every round is in the markup; the root's data-round shows one (toys.css), and the take
       moves on to the next each time it plays again (lp-toy-story-timelines.ts). */
   const rounds = [{ ask: e.ask, say: e.say, name: play.name, rows: e.rows }, ...e.more.map((round) => ({ ask: round.ask, say: round.say, name: round.play.name, rows: round.rows }))];
-  const start = E.paths.cable[0];
-  const face = E.anchors["radar-face"];
-  const reach = E.anchors["radar-edge"][0] - face[0];
   return (
     <div className={`lp-toy lp-toy-story lp-te ${lpClaudeSerif.variable}`} data-lp-story="t-engine" data-round={0} aria-hidden="true">
       <div className="lp-toy-set">
         <ToyPic set="engine" name="plate" />
-        {/* what runs along the cable: the ask on its way to the engine, then the answer back */}
-        <i className="lp-toy-gone lp-te-pulse" style={{ left: toyPx(start[0]), top: toyPx(start[1]) }} />
         <ToyPic set="engine" name="stand" />
-        {/* each part's light on the stand, then the part itself */}
-        {e.steps.map((step) => {
-          const at = E.anchors[step.id];
-          return <i key={step.id} className="lp-te-glow" data-part={step.id} data-tone={PART_TONES[step.id]} style={{ left: toyPx(at[0]), top: toyPx(at[1]) }} />;
-        })}
-        {e.steps.map((step) => (
-          <ToyPic key={step.id} set="engine" name={step.id} className="lp-te-part" data-part={step.id} />
+        {/* the parts: each one comes on as Claude runs its step */}
+        {PARTS.map((part) => (
+          <ToyPic key={part} set="engine" name={part} className="lp-te-part" data-part={part} />
         ))}
-        {/* the radar's beam, on its face: it turns once as Claude checks the signals. The face is
-            a circle of the set, so an ellipse of the picture: .lp-te-face is flattened once, and
-            the beam turns inside it */}
-        <span className="lp-te-face" style={{ left: toyPx(face[0]), top: toyPx(face[1]) }}>
-          <i className="lp-toy-gone lp-te-beam" style={{ width: toyPx(2 * reach), height: toyPx(2 * reach), margin: `${toyPx(-reach)} 0 0 ${toyPx(-reach)}` }} />
-        </span>
-        <span className="lp-te-badge" style={{ left: toyPx(E.anchors.front[0]), top: toyPx(E.anchors.front[1]) }}>
-          <PancakeMark className="lp-te-badge__mark" />
-        </span>
+        {/* (no Pancake disc on the stand's front since 2026-11-16: founder, "la petite pill
+            pancake ici apporte pas grand chose") */}
       </div>
       {/* Claude's window: the ask, the steps it runs through Pancake, the answer and the Play */}
       <div className="lp-te-win">
