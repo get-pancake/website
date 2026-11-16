@@ -40,20 +40,32 @@ export type CompareEntry = {
   line: string;
 };
 
-/** Page order within each group. */
+/**
+ * Page order within each group. The footer's Compare column lists the first six "GTM tools"
+ * pages (LpFooter.tsx), and the hub's cards, its ItemList and each page's "More comparisons" line
+ * follow the same order.
+ *
+ * 2026-11-16 (SEO audit): the tools people search for most come first, so the six pages the
+ * footer links from every page are the ones with search demand: Clay, Apollo, ZoomInfo,
+ * Instantly, Lemlist, then Gojiberry. Before, the footer listed Origami, Unify, Octave and Alta,
+ * which few people search for, and the seven pages of 2026-11-10 were linked only from the hub
+ * and from each other. HeyReach and Smartlead stay off the footer: their labels are 162 and
+ * 163px at 16px, against 156px for "ZoomInfo vs Pancake", the widest of the six.
+ */
 export const COMPARISONS: readonly CompareEntry[] = [
+  // the footer's six: the most-searched tools first
+  { slug: "clay-vs-pancake", competitor: "Clay", group: "GTM tools", line: "Tables you build versus Plays you deploy from Claude." },
+  { slug: "apollo-vs-pancake", competitor: "Apollo", group: "GTM tools", line: "A contact database priced per seat versus Plays you ask Claude for." },
+  { slug: "zoominfo-vs-pancake", competitor: "ZoomInfo", group: "GTM tools", line: "GTM data sold by custom quote versus Plays from $99 a month." },
+  { slug: "instantly-vs-pancake", competitor: "Instantly", group: "GTM tools", line: "Cold email at volume versus a personal message per lead." },
+  { slug: "lemlist-vs-pancake", competitor: "Lemlist", group: "GTM tools", line: "A sales platform your team operates versus Plays that run for you." },
+  { slug: "gojiberry-vs-pancake", competitor: "Gojiberry", group: "GTM tools", line: "A focused outreach agent versus a full GTM platform." },
   // the GTM products buyers weigh Pancake against (audit plan 3.10)
   { slug: "origami-vs-pancake", competitor: "Origami", group: "GTM tools", line: "Lists on demand versus Plays that keep searching." },
   { slug: "unify-vs-pancake", competitor: "Unify", group: "GTM tools", line: "A sales platform priced per seat versus one plan per workspace." },
   { slug: "octave-vs-pancake", competitor: "Octave", group: "GTM tools", line: "A context layer for your GTM stack versus Plays that reach people." },
   { slug: "alta-vs-pancake", competitor: "Alta", group: "GTM tools", line: "Named AI agents for revenue teams versus Plays a founder runs." },
-  { slug: "lemlist-vs-pancake", competitor: "Lemlist", group: "GTM tools", line: "A sales platform your team operates versus Plays that run for you." },
-  { slug: "gojiberry-vs-pancake", competitor: "Gojiberry", group: "GTM tools", line: "A focused outreach agent versus a full GTM platform." },
-  // data, cold email and outreach tools, new on 2026-11-10
-  { slug: "clay-vs-pancake", competitor: "Clay", group: "GTM tools", line: "Tables you build versus Plays you deploy from Claude." },
-  { slug: "apollo-vs-pancake", competitor: "Apollo", group: "GTM tools", line: "A contact database priced per seat versus Plays you ask Claude for." },
-  { slug: "zoominfo-vs-pancake", competitor: "ZoomInfo", group: "GTM tools", line: "GTM data sold by custom quote versus Plays from $99 a month." },
-  { slug: "instantly-vs-pancake", competitor: "Instantly", group: "GTM tools", line: "Cold email at volume versus a personal message per lead." },
+  // more outreach tools, new on 2026-11-10
   { slug: "heyreach-vs-pancake", competitor: "HeyReach", group: "GTM tools", line: "Outreach for lists you import versus Plays that find the people." },
   { slug: "11x-vs-pancake", competitor: "11x", group: "GTM tools", line: "Revenue agents sold by demo versus Plays you start from Claude." },
   { slug: "smartlead-vs-pancake", competitor: "Smartlead", group: "GTM tools", line: "Mailboxes and warmup to manage versus Plays you ask Claude for." },
@@ -74,13 +86,19 @@ export const GTM_ALTERNATIVES_POSTS = [
   "aisdr-alternatives",
   "alta-alternatives",
   "amplemarket-alternatives",
+  // 2026-11-16: the Apollo, Clay and ZoomInfo guides join the list. ZoomInfo's goes live on
+  // 2026-11-25 (scheduled): getPostBySlug skips it until then, and /compare is built at deploy,
+  // so its row appears with the first deploy after that date, never before.
+  "apollo-alternatives",
   "artisan-alternatives",
+  "clay-alternatives",
   "dripify-alternatives",
   "gojiberry-alternatives",
   "lemlist-alternatives",
   "origami-alternatives",
   "trigify-alternatives",
   "valley-alternatives",
+  "zoominfo-alternatives",
 ] as const;
 
 export const comparePath = (c: CompareEntry) => `/${c.slug}`;

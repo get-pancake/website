@@ -90,7 +90,7 @@ const config: GtmComparisonConfig = {
     { q: "How does pricing compare?", a: "As of October 2026, Octave charges a platform fee plus usage credits. Octave Ultra starts at $1,500 a month, billed annually. Pancake starts at $99 a month per workspace, with 60,000 credits included." },
     { q: "What does Octave do that Pancake doesn't?", a: "Octave learns from buyer conversations and connects to Salesforce, HubSpot, Gong and Clay. It also offers SSO, role-based access and a data warehouse connector. Pancake offers none of these, apart from a one-way export of the leads you pick to HubSpot or another CRM." },
     { q: "Do both work in Claude?", a: "Yes. Octave offers MCP, an API, a CLI and a Claude Code plugin. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in. You create Plays and review leads from the agent." },
-    { q: "What is a Play?", a: "A Play is how Pancake finds one audience. Tell it who to reach in one sentence. It asks what it needs, then searches again on your schedule, keeping up to 50 new leads per search." },
+    { q: "What is a Play?", a: "A Play is how Pancake finds one audience. Tell it who to reach in one sentence. It asks what it needs, then searches again on your schedule, with no cap on leads per search." },
     { q: "Who should choose Pancake over Octave?", a: "Founders who do their own sales, and small B2B teams without a GTM engineer. Pancake builds the Brain from your website, finds the people who fit and writes to them." },
   ],
   related: [

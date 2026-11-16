@@ -21,7 +21,8 @@ const SELF_SERVE_FROM = formatDollars(BASE_LEVEL.dollars);
 export const WG_META = {
   title: "Pancake White Glove: we build your outbound machine",
   ogTitle: "Pancake White Glove: we build your outbound machine.",
-  description: `Our team builds your outbound machine: your custom GTM Brain, unlimited Plays, unlimited Pancake credits and weekly office hours with a dedicated GTM engineer. ${WG_PRICE} a month.`,
+  // <= 155 characters so search results show the price (it was 175, cut before it).
+  description: `Our team builds your outbound machine: a custom GTM Brain, unlimited Plays and credits, weekly office hours with a dedicated GTM engineer. ${WG_PRICE} a month.`,
 };
 
 export const WG_HERO = {

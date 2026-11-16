@@ -482,7 +482,8 @@ export const pricingClose = {
  * ("One plan per workspace.", a customer's email of 2026-10-06) are here too.
  * The same answers ship in the page's FAQPage JSON-LD and in llms-full.txt.
  * Sources (pancake-cmo PR #1220 unless said):
- * - Leads: the estimate of lib/pricing.ts. A search keeps 1-50 leads.
+ * - Leads: the estimate of lib/pricing.ts. No cap on leads per search since
+ *   November 2026 (founder, 2026-11-16: the 50-lead cap is gone).
  * - Signup starts without a card; the card starts the trial (lib/trial.ts).
  *   The trial paywall shows the leads already found.
  * - Conversion: the level picked is charged at the trial's end. Cancel before

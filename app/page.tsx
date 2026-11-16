@@ -87,7 +87,7 @@ const softwareApplicationJsonLd = {
   description: SITE_DESCRIPTION,
   featureList: [
     "Plays built from one sentence",
-    "Searches that run on your schedule, up to 50 leads per search",
+    "Searches that run on your schedule, with no cap on leads per search",
     "A reason on every lead",
     "Personal messages you can edit",
     "New leads in Slack and a morning email",

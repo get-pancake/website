@@ -35,8 +35,9 @@
  * "All comparisons" (/compare), "Support" a second "Contact" (/support), and
  * "Connect your agent" (/claude#setup) is what the connect entries are now.
  * "Pancake in Claude" left Product for the same reason: it is "Connect Claude".
- * Labels stay ≤ 153px at 16px ("Gojiberry vs Pancake", the widest), so none
- * wraps in the phone sheet's 155px columns at 375.
+ * Labels stay ≤ 156px at 16px ("ZoomInfo vs Pancake", the widest since 2026-11-16;
+ * "Gojiberry vs Pancake" is 153px), so none wraps: on 2026-11-16 the six labels were checked
+ * at 320, 375, 768, 1004, 1200 and 1280px with no wrap, no overflow and the same footer height.
  * 2026-11-10: seven more comparison pages (Clay, Apollo, ZoomInfo, Instantly,
  * HeyReach, 11x, Smartlead) make thirteen in the "GTM tools" group. For a few
  * hours the column listed them all (#389): the desktop footer was about 260px
@@ -91,8 +92,9 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
     id: "compare",
     title: "Compare",
     links: [
-      // The first six "GTM tools" pages, in hub order: Origami, Unify, Octave, Alta, Lemlist,
-      // Gojiberry today. Each label is the page's H1 ("Origami vs Pancake").
+      // The first six "GTM tools" pages, in hub order: Clay, Apollo, ZoomInfo, Instantly, Lemlist,
+      // Gojiberry since 2026-11-16 (the searched-for tools first, compare-data.ts). Each label is
+      // the page's H1 ("Clay vs Pancake").
       ...COMPARISONS.filter((c) => c.group === "GTM tools")
         .slice(0, FOOTER_COMPARE_MAX)
         .map((c) => ({

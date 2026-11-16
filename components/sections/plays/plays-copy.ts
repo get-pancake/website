@@ -148,7 +148,7 @@ export const PLAYS_FAQ = {
     },
     {
       q: "How many leads does a Play find?",
-      a: "Each search keeps up to 50 new leads. Create as many Plays as you want: a search uses credits from your plan.",
+      a: "There is no cap: you pick how many leads each search keeps. Create as many Plays as you want: a search uses credits from your plan.",
     },
     {
       q: "How does Pancake reach out to a lead?",
