@@ -199,17 +199,53 @@ function Poster({ poster, sizes }: { poster: BentoPoster; sizes: string }) {
 
 function QuoteCard({ card }: { card: BentoQuoteCard }) {
   const { name, role, company } = card.person;
+  // a card headed by its company (name + size, `facts`) shows the person small, by the byline
+  // (Cursor's enterprise quote cards, Mobbin); the others bleed the designer's portrait blob
+  const headed = Boolean(card.facts?.length);
+  const face = headed && card.photo ? photoSrc(card.photo) : null;
   return (
     <>
-      <Portrait photo={card.photo} />
+      {card.photo && !headed ? <Portrait photo={card.photo} /> : null}
       <figure className="lp-bento__col">
-        <Logo logo={card.logo} />
+        {card.facts?.length ? (
+          // the company's name over its size: its own published figures (lp-bento-data.ts `facts`)
+          <div className="lp-bento__head">
+            <Logo logo={card.logo} />
+            <p className="lp-bento__facts">
+              {card.facts.map((fact, i) => (
+                <span key={fact}>
+                  {i > 0 ? <span className="lp-bento__facts-sep" aria-hidden="true">{" · "}</span> : null}
+                  <span className="lp-bento__fact">{fact}</span>
+                </span>
+              ))}
+            </p>
+          </div>
+        ) : (
+          <Logo logo={card.logo} />
+        )}
         <div className="lp-bento__foot">
           <blockquote className="lp-bento__quote">
             <p>{keepHyphenated(card.quote)}</p>
           </blockquote>
-          <figcaption className="lp-bento__by">
-            <b>{name}</b>, {role} at {company}
+          <figcaption className="lp-bento__by" data-face={face ? "" : undefined}>
+            {headed ? (
+              // the company heads the card: the byline does not say it again
+              <>
+                {face ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- clipped by an SVG path, like the portraits
+                  <img className="lp-bento__face" src={face} alt="" width={160} height={160} loading="lazy" decoding="async" />
+                ) : null}
+                <span className="lp-bento__who">
+                  <b>{name}</b>
+                  <br />
+                  {role}
+                </span>
+              </>
+            ) : (
+              <>
+                <b>{name}</b>, {role} at {company}
+              </>
+            )}
           </figcaption>
         </div>
       </figure>
@@ -245,8 +281,10 @@ function KpiCard({ card }: { card: BentoKpiCard }) {
 /** The bleeding portrait: the Figma blob bbox, the photo cover-fitted into it (= Figma's FILL of
  *  a square photo), clipped by the blob path; the card clips the bleed. Decorative: the caption
  *  names the person. */
+const photoSrc = (photo: BentoPhoto) => ("placeholder" in photo ? placeholderImageSrc(photo.placeholder) : photo.src);
+
 function Portrait({ photo }: { photo: BentoPhoto }) {
-  const src = "placeholder" in photo ? placeholderImageSrc(photo.placeholder) : photo.src;
+  const src = photoSrc(photo);
   if (!src) return <span className="lp-bento__portrait" aria-hidden="true" />;
   return (
     // eslint-disable-next-line @next/next/no-img-element -- clipped by an SVG path; a data-URI stand-in can't go through next/image
@@ -260,6 +298,10 @@ function Portrait({ photo }: { photo: BentoPhoto }) {
  * wordmark, its top on the wordmark's top (inside the card's padding line).
  */
 function Logo({ logo }: { logo: BentoLogo }) {
+  if ("typeset" in logo) {
+    // a company whose logo we may not show: its name in the card's own type, never a lookalike
+    return <span className="lp-bento__logo lp-bento__logo--type">{logo.name}</span>;
+  }
   const height = BENTO_LOGO_BODY / (logo.body[1] - logo.body[0]);
   const box = {
     "--lp-bento-logo-w": round(height * logo.ratio),
