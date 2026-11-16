@@ -130,7 +130,7 @@
   .lp-bento__grid[data-layout="full"] > [data-slot="quoteA"] { grid-area: qa; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiA"] { grid-area: ka; }
   .lp-bento__grid[data-layout="full"] > [data-slot="kpiB"] { grid-area: kb; }
-  .lp-bento__grid[data-layout="full"] > [data-slot="kpiC"] { grid-area: kc; }
+  .lp-bento__grid[data-layout="full"] > [data-slot="quoteC"] { grid-area: kc; }
   .lp-bento__grid[data-layout="full"] > [data-slot="quoteB"] { grid-area: qb; }
   .lp-bento__grid[data-layout="full"] > [data-slot="videoSm"] { grid-area: vs; }
 }
@@ -203,6 +203,47 @@
   color: var(--lp-ink-0);
   pointer-events: none; /* the tile under it is one button */
 }
+/* A company whose logo we may not show (ERA Group, lp-bento-data.ts `typeset`): its name in
+   the page's reading face, semibold, its capitals as tall as the wordmarks' 17 u letter body
+   (Geist's cap height is 0.7 em), the cap top on the 48 padding line like theirs. */
+.lp .lp-bento__logo--type {
+  font-family: var(--lp-font-sans);
+  font-size: calc(24 * var(--u));
+  font-weight: 600;
+  height: auto;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-top: calc(-3.6 * var(--u)); /* the line box's room above the capitals */
+  white-space: nowrap;
+  width: auto;
+}
+/* …and its size under it: the company's own figures (`facts`), in the byline's type */
+.lp-bento__head {
+  display: flex;
+  flex-direction: column;
+  gap: calc(12 * var(--u));
+}
+.lp .lp-bento__facts {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: calc(16 * var(--u));
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin: 0;
+}
+.lp-bento__fact {
+  white-space: nowrap;
+}
+/* in the 272 card (the desktop and tablet grid) one figure a line, no dot */
+@media (min-width: 768px) {
+  .lp-bento__grid[data-layout="full"] .lp-bento__facts > span {
+    display: block;
+  }
+  .lp-bento__grid[data-layout="full"] .lp-bento__facts-sep {
+    display: none;
+  }
+}
 
 /* ── quote cards (Figma 4939:4695 / 4939:4705) ──
    Text column 335 × FILL at the content box; logo pinned top, [quote + 22 +
@@ -260,6 +301,31 @@
 }
 .lp-bento__by b {
   font-weight: 600;
+}
+/* A face by the byline (a card headed by its company: lp-bento-data.ts `facts`), as Cursor's
+   enterprise quote cards do it (Mobbin), cut by the designer's portrait blob. */
+.lp-bento__by[data-face] {
+  align-items: center;
+  display: flex;
+  gap: calc(8 * var(--u)); /* 36 + 8 leaves the 272 card's 176 column 132 u: "Consulting Partner" (129) holds one line */
+}
+.lp-bento__who {
+  white-space: nowrap; /* two lines, never three: a wider fallback font runs into the padding instead */
+}
+.lp-bento__face {
+  -webkit-clip-path: url(#lp-bento-blob);
+  clip-path: url(#lp-bento-blob);
+  background: var(--lp-green-20);
+  display: block;
+  flex: none;
+  height: calc(36 * var(--u)); /* about the two byline lines (2 × 19.2) */
+  object-fit: cover;
+  width: calc(36 * var(--u));
+}
+/* ERA Group's card: no portrait blob to keep clear of, so its column takes the card's width (in
+   the phone stack, where it is a wide card, the quote then holds one line) */
+.lp-bento__card[data-slot="quoteC"] .lp-bento__col {
+  width: auto;
 }
 /* quoteA: a first line longer than about 290 u runs under the blob (whose left edge is at 340
    where the quote starts; founder 2026-10-13, on Vector Legal's quote: "it's covering the

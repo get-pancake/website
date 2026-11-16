@@ -145,7 +145,10 @@ const ALLOW = [
   // pages (plays-signals.ts). "130+ tools" (2026-11-12; it was "about 100"): the first feature and
   // the dive's agent line. Any other "N+" still fails, the old "30+" included.
   // and the customer count over the logos (2026-11-12, "Trusted by 390+ companies")
-  [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b50\+ data providers\b|\b130\+ tools\b|\b390\+ companies\b/g],
+  // and ERA Group's size over its quote in the bento (2026-11-16, founder: "nom de la boite avec
+  // # employes"): the company's own figures, "1,000+ specialists across 60+ countries"
+  // (eragroup.com/about), never ours
+  [BANNED.find(([, label]) => label === "job-count threshold")[0], /\b50\+ data providers\b|\b130\+ tools\b|\b390\+ companies\b|(?<![\d,])1,000\+ specialists\b|\b60\+ countries\b/g],
   // the Codex plugin's install id in /codex's commands (2026-10-17): "pancake@pancake" is a
   // marketplace qualifier, not an "@Pancake" mention in Slack
   [BANNED.find(([, label]) => label === "Slack chat")[0], /\bpancake@pancake\b/g],

@@ -49,7 +49,7 @@ function proofCards(): BentoCard[] {
 
 function ProofCard({ card }: { card: BentoCard }) {
   if (card.kind === "quote") {
-    const photo = "src" in card.photo ? card.photo.src : null;
+    const photo = card.photo && "src" in card.photo ? card.photo.src : null;
     return (
       <figure className="sl-proof__fig">
         <blockquote className="sl-proof__quote lp-display">
@@ -81,6 +81,8 @@ function ProofCard({ card }: { card: BentoCard }) {
 /** The customer's wordmark as the bento draws it: an alpha mask in the ink colour, sized so the
  *  letter body is BENTO_LOGO_BODY tall; the Y Combinator mark beside it when the company is YC. */
 function CompanyLogo({ logo }: { logo: BentoLogo }) {
+  // a company whose logo we may not show (lp-bento-data.ts `typeset`): its name, in the page's type
+  if ("typeset" in logo) return <p className="sl-proof__logo">{logo.name}</p>;
   const height = BENTO_LOGO_BODY / (logo.body[1] - logo.body[0]);
   const style: CSSProperties = {
     WebkitMaskImage: `url(${logo.src})`,

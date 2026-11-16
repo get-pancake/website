@@ -7,18 +7,22 @@
  * able to stick to the 7 placeholders that the designer set"; for a few hours that day the
  * section had eight, then nine cards and a fourth row). His conditions for the mix, same day:
  * "2 videos + this testimonial [Pierre's quote] should be kept … and make sure every company
- * appears at least once". Four customers share the seven cards:
+ * appears at least once". Five companies share the seven cards:
  *   - Praxis (Diana Khramina, CEO): the LARGE film, one figure;
- *   - Kinro (Pierre-Alexandre Kamienny, CEO): the small film, his quote, one figure;
- *   - Vector Legal: one figure; AgentMail: one written quote.
+ *   - Kinro (Pierre-Alexandre Kamienny, CEO): the small film, his quote;
+ *   - Vector Legal: one figure; AgentMail: one written quote;
+ *   - ERA Group (Michael Lautner, Consulting Partner): one written quote in the small card at the
+ *     bottom left, since 2026-11-16 (founder: "on peut faire le petit encart avec era group et la
+ *     quote … dans la partie testimonial"). It took the place of Kinro's figure ("15 meetings
+ *     booked in a week"): Kinro had three of the seven cards and keeps two.
  * The films are the two INDIVIDUAL cuts, never the merged compilation; the numbers are the
  * customers' own; AgentMail's written quote was shortened at the founder's request.
  * Why Praxis's film is the large one: both quote slots touch the large tile, so Pierre's quote
  * can only stay if the large film is not Kinro's (the neighbours rule, BENTO_SLOT_IDS).
  * Left out to stay at seven: Diana's on-camera quote ("I cancelled all my subscriptions and I’m
- * using Pancake for three of them."), her second figure ("10+ meetings booked a week") and
- * Vector Legal's quote CARD with its portrait (its figure is the card now). Git history has the
- * entries and the portraits (commits 9770bda, 584b77d). Evidence, frames and timings:
+ * using Pancake for three of them."), her second figure ("10+ meetings booked a week"), Kinro's
+ * figure and Vector Legal's quote CARD with its portrait (its figure is the card now). Git
+ * history has the entries and the portraits (commits 9770bda, 584b77d). Evidence, frames and timings:
  * artifacts/landing-v2-figma/assets/bento-real/manifest.json (Praxis), manifest-kinro.json
  * (Kinro), impl/bento-real-assets.md and impl/bento-real-assets-kinro.md.
  *
@@ -67,26 +71,29 @@ export const BENTO_VIDEO_LABELS = {
  */
 export const BENTO_LIVE = true;
 
-export type BentoSlotId = "videoLg" | "quoteA" | "kpiA" | "kpiB" | "kpiC" | "quoteB" | "videoSm";
+export type BentoSlotId = "videoLg" | "quoteA" | "kpiA" | "kpiB" | "quoteC" | "quoteB" | "videoSm";
 /**
  * The artboard's reading order (row by row on desktop): the DOM order of a full set.
  *   vl vl qa qa
  *   vl vl ka kb
  *   kc qb qb vs
+ * The designer drew a figure card in kc; since 2026-11-16 it holds a narrow quote card (`quoteC`,
+ * ERA Group), same box.
  *
  * NO TWO CARDS OF ONE COMPANY TOUCH, side by side or one above the other (founder 2026-10-13, on
  * two Praxis figures next to each other: "we have to reshuffle so that the same company does not
- * appear back to back"). What sits where (K = Kinro, P = Praxis, V = Vector Legal, A = AgentMail):
+ * appear back to back"). What sits where (K = Kinro, P = Praxis, V = Vector Legal, A = AgentMail,
+ * E = ERA Group):
  *   vl P  P  | qa K  K
  *   vl P  P  | ka V  | kb P
- *   kc K  | qb A  A  | vs K
+ *   kc E  | qb A  A  | vs K
  * Every pair that shares an edge is two different companies (kb is one column away from vl). The
  * artboard's own filling (Praxis in qa, ka and kb) was not. With Kinro's film in vl, Pierre's
  * quote would touch it from either quote slot: hence Praxis's film there. Before moving a card or changing one's company, check the eleven
  * pairs again: vl-qa, vl-ka, qa-ka, qa-kb, ka-kb, vl-kc, vl-qb, ka-qb, kb-vs, kc-qb, qb-vs. The
  * phone stack has the same rule (FLOW_ORDER).
  */
-export const BENTO_SLOT_IDS: readonly BentoSlotId[] = ["videoLg", "quoteA", "kpiA", "kpiB", "kpiC", "quoteB", "videoSm"];
+export const BENTO_SLOT_IDS: readonly BentoSlotId[] = ["videoLg", "quoteA", "kpiA", "kpiB", "quoteC", "quoteB", "videoSm"];
 
 /**
  * A customer's wordmark from public/logos/customers (the marquee's artwork), painted as an alpha
@@ -94,8 +101,12 @@ export const BENTO_SLOT_IDS: readonly BentoSlotId[] = ["videoLg", "quoteA", "kpi
  * numbers for the same file (artwork width / height; the letter body's top and bottom as shares of
  * the height): the box is sized so every letter body is BENTO_LOGO_BODY tall. `yc`: the small
  * Y Combinator badge of the marquee, above the wordmark's top-right corner.
+ * `typeset`: a company whose logo we may not show (ERA Group's is not cleared): its name is set in
+ * the card's own type at the place and height of a logo, never drawn to look like their mark.
  */
-export type BentoLogo = { name: string; src: string; ratio: number; body: readonly [number, number]; yc?: boolean };
+export type BentoLogo =
+  | { name: string; src: string; ratio: number; body: readonly [number, number]; yc?: boolean }
+  | { name: string; typeset: true };
 /** Letter-body height of a card logo, desktop px (bento spec §4.4: the V2 marks measure 16–18). */
 export const BENTO_LOGO_BODY = 17;
 
@@ -191,7 +202,15 @@ export type BentoQuoteCard = CardBase & {
   /** Verbatim, a whole sentence, no surrounding quotes. */
   quote: string;
   person: { name: string; role: string; company: string };
-  photo: BentoPhoto;
+  /** The portrait. Absent: a card without one (the person has not cleared a photo). */
+  photo?: BentoPhoto;
+  /**
+   * The company's size, one short line each, under its name (founder 2026-11-16, on ERA Group:
+   * "Mets en haut nom de la boite avec # employes et CA", to show an enterprise customer). The
+   * company's OWN published figures in its own words, never an estimate: ERA Group publishes no
+   * revenue, so its card has none. Each figure is on homepage-lint.mjs's allow-list.
+   */
+  facts?: readonly string[];
 };
 
 export type BentoKpiCard = CardBase & {
@@ -210,7 +229,7 @@ type BentoSlotCard = {
   quoteA: BentoQuoteCard;
   kpiA: BentoKpiCard;
   kpiB: BentoKpiCard;
-  kpiC: BentoKpiCard;
+  quoteC: BentoQuoteCard;
   quoteB: BentoQuoteCard;
   videoSm: BentoVideoCard;
 };
@@ -233,6 +252,11 @@ const ADI = { name: "Adi Singh", role: "Co-founder", company: "AgentMail" };
 /* Vector Legal (YC W26): the marquee's composed lockup and numbers. Its figure came from
    "Aurelie, Head of GTM" (the founder's words, first name only); a figure card names no person. */
 const VECTOR_LEGAL: BentoLogo = { name: "Vector Legal", src: "/logos/customers/vector-legal.png", ratio: 1111 / 151, body: [0.079, 0.795], yc: true };
+/* ERA Group: Michael Lautner cleared his words, his name and the title "Consulting Partner, ERA
+   Group" by email on 2026-11-16, not the ERA Group logo: its name is set in type, and the
+   company stays out of the logo marquee. */
+const ERA_GROUP: BentoLogo = { name: "ERA Group", typeset: true };
+const MICHAEL = { name: "Michael Lautner", role: "Consulting Partner", company: "ERA Group" };
 
 const BENTO_ENTRIES: BentoEntries = {
   /* Kinro, Pierre's individual cut ("Pierre Testimonial 12.mov", the cut locked on 2026-09-22;
@@ -325,11 +349,28 @@ const BENTO_ENTRIES: BentoEntries = {
   kpiB: [
     { status: "final", kind: "kpi", logo: PRAXIS, value: "10%+", label: "reply rate", source: "Diana Khramina, message to Tristan 2026-09-18 (reference in the spec, see the comment above), repeated on camera in her cut." },
   ],
-  /* Pierre on camera: "Pancake helped me book 15 meetings last week" (his cut 39.57–41.52 s, the
-     same sentence and the same audio as the merged compilation's 61.68–63.72 s; side-angle
-     camera, lips in sync up to "meetings"). One week, as he says it. */
-  kpiC: [
-    { status: "final", kind: "kpi", logo: KINRO, value: "15", label: "meetings booked in a week", source: "Pierre-Alexandre Kamienny on camera, Kinro individual cut and merged compilation sentence 14 (manifest-kinro.json)." },
+  /* ERA Group, a WRITTEN quote: Michael Lautner's own sentence, shortened by the founder and
+     approved in that wording by Michael by email on 2026-11-16 ("the comment is fine"), with the
+     attribution "Michael Lautner · Consulting Partner, ERA Group". The full sentence is in the
+     founder's mail, not here. Photo: the headshot of his ERA Group profile page, cropped to the
+     head (160 px), shown small by the byline (founder: "on peut mettre la face si besoin en
+     petit"); he cleared his name and title, the photo is the founder's to clear with him. Until
+     2026-11-16 this card was Kinro's figure: "15" / "meetings booked in a week" (Pierre on
+     camera, his cut 39.57–41.52 s; still on the lint's allow-list).
+     `facts`: ERA Group's own About page (eragroup.com/about, read 2026-11-16): "1,000+
+     specialists across 60+ countries". Specialists, not employees: most of the network are
+     licensed consulting firms. */
+  quoteC: [
+    {
+      status: "final",
+      kind: "quote",
+      logo: ERA_GROUP,
+      facts: ["1,000+ specialists", "60+ countries"],
+      quote: "I will not forget how Pancake helped me.",
+      person: MICHAEL,
+      photo: { src: "/lp/bento/era-michael-portrait-160.webp" },
+      source: "Written words of Michael Lautner, shortened by the founder and approved by Michael by email on 2026-11-16 with this attribution. Facts: eragroup.com/about. Photo: his headshot on his ERA Group profile page.",
+    },
   ],
   /* AgentMail, a WRITTEN quote the founder supplied on 2026-10-13 and asked to shorten ("simplify
      quote", then "no longer than" 49 characters). His two sentences, in full: "One Pancake Play
@@ -406,15 +447,15 @@ const BENTO_ENTRIES: BentoEntries = {
 /* The same rule in the stack: no two cards of one company in a row or in two rows that follow
    each other. The mobile artboard's order (vl / ka kb / qa / kc vs / qb) would put Kinro's
    figure beside Kinro's film, under Kinro's quote. This order is the artboard's reading order:
-   the first two figures pair up (Vector Legal | Praxis), Kinro's figure and Kinro's film each
-   take a row of their own (FLOW_SOLO_*).  P · K · (V|P) · K · A · K: */
-const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "quoteA", "kpiA", "kpiB", "kpiC", "quoteB", "videoSm"];
+   the first two figures pair up (Vector Legal | Praxis), ERA Group's quote and Kinro's film each
+   take a row of their own (FLOW_SOLO_*).  P · K · (V|P) · E · A · K: */
+const FLOW_ORDER: readonly BentoSlotId[] = ["videoLg", "quoteA", "kpiA", "kpiB", "quoteC", "quoteB", "videoSm"];
 const FLOW_BOX: Record<BentoSlotId, { wide: boolean; height: number }> = {
   videoLg: { wide: true, height: 750 },
   kpiA: { wide: false, height: 365 },
   kpiB: { wide: false, height: 365 },
   quoteA: { wide: true, height: 369 },
-  kpiC: { wide: false, height: 375 },
+  quoteC: { wide: false, height: 375 },
   videoSm: { wide: false, height: 375 },
   quoteB: { wide: true, height: 375 },
 };
@@ -422,14 +463,19 @@ const FLOW_BOX: Record<BentoSlotId, { wide: boolean; height: number }> = {
  *  alone needs less (its logo and its number: 250 keeps the card a band, not an empty box). */
 const FLOW_SOLO_HEIGHT = 369;
 const FLOW_SOLO_KPI_HEIGHT = 250;
+/** …and a quote headed by its company (ERA Group's: name and size on top, the face small by the
+ *  byline, no portrait blob) holds its quote on one line there: 300 is its content and some air. */
+const FLOW_SOLO_HEADED_HEIGHT = 300;
 /** Desktop gap between cards, and between the tablet rows (px at `--u` = 1). */
 const GAP = 16;
 /** The artboard's grid: rows 369 / 365 / 375. Tablets draw the same grid, scaled (a two-column
  *  tablet layout cannot keep one company's cards apart), so its height there is in `--u` too. */
 const FULL_GRID_U = 369 + 365 + 375 + 2 * GAP;
 
+/** A card's footprint on the desktop grid: V a video tile, Q a wide text card (the 560 quote
+ *  card), K a narrow text card (the 272 card: the figures, and ERA Group's quote in kc). */
 type Kind = "V" | "Q" | "K";
-const KIND: Record<BentoSlotId, Kind> = { videoLg: "V", videoSm: "V", quoteA: "Q", quoteB: "Q", kpiA: "K", kpiB: "K", kpiC: "K" };
+const KIND: Record<BentoSlotId, Kind> = { videoLg: "V", videoSm: "V", quoteA: "Q", quoteB: "Q", kpiA: "K", kpiB: "K", quoteC: "K" };
 
 /**
  * Rows a PARTIAL set may form on the desktop grid (12 columns: 3 = the artboard's 272 card,
@@ -461,7 +507,7 @@ const ROW_SHAPES: Record<string, { order: readonly Kind[]; spans: readonly numbe
 /** Rows worth a nudge: the designer's own. */
 const ROW_FAVOURITES: readonly (readonly BentoSlotId[])[] = [
   ["quoteA", "kpiA", "kpiB"],
-  ["kpiC", "quoteB", "videoSm"],
+  ["quoteC", "quoteB", "videoSm"],
 ];
 
 type Row = { ids: BentoSlotId[]; shape: (typeof ROW_SHAPES)[string]; cost: number };
@@ -553,7 +599,9 @@ export function resolveBento(
       flowRows.push(Math.max(box.height, FLOW_BOX[next].height));
       i++;
     } else {
-      const height = KIND[id] === "K" ? FLOW_SOLO_KPI_HEIGHT : FLOW_SOLO_HEIGHT;
+      const card = picked.get(id);
+      const height =
+        card?.kind === "kpi" ? FLOW_SOLO_KPI_HEIGHT : card?.kind === "quote" && card.facts?.length ? FLOW_SOLO_HEADED_HEIGHT : FLOW_SOLO_HEIGHT;
       flow.set(id, { order: i + 1, span: 2, height, solo: true });
       flowRows.push(height);
     }
