@@ -309,3 +309,4 @@
 /claude-for-sales
 /ai-sales-agents
 /lead-generation-software
+/chatgpt-for-sales

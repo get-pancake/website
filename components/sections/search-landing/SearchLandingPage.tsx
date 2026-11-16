@@ -35,7 +35,8 @@ export function searchLandingMetadata(c: SearchLandingCopy): Metadata {
 
 /**
  * A paid search landing page (2026-11-13): /claude-for-sales, /ai-sales-agents,
- * /lead-generation-software, one per Google Search ad group (search-landing-copy.ts). Built to
+ * /lead-generation-software, one per Google Search ad group, and /chatgpt-for-sales (2026-11-16)
+ * (search-landing-copy.ts). Built to
  * answer the ad, light and fast: the /for kit and the Claude guide's sheet (.lp-vx, .lp-guide)
  * plus search-landing.css, none of the homepage's canvases or scroll scenes.
  *
@@ -87,6 +88,7 @@ export function SearchLandingPage({ c }: { c: SearchLandingCopy }) {
 
       <div id={SL_DEMO_ID} className="sl-film">
         <LpVideo grow={false} className="sl-video" />
+        {c.filmNote ? <p className="sl-film__note">{c.filmNote}</p> : null}
       </div>
 
       <div className="vx-logos sl-logos">

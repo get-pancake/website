@@ -14,11 +14,15 @@ import { TRIAL_CARD_REQUIREMENT, TRIAL_CREDITS_LABEL, TRIAL_LABEL } from "@/lib/
  * The paid search landing pages (2026-11-13): one page per search intent the ads answer, so the
  * searcher lands on the words they typed and the promise the ad made, instead of the homepage or
  * the /claude setup guide. The ads lead with Claude ("Tell Claude who to reach", "Deploy GTM
- * Plays from Claude", "Make Claude your sales machine"), so every page does too.
+ * Plays from Claude", "Make Claude your sales machine"), so every page does too, except the
+ * ChatGPT page, which leads with ChatGPT the same way.
  *
  *   /claude-for-sales          Claude and MCP for sales, prospecting and lead generation
  *   /ai-sales-agents           AI sales agents, outbound sales automation, AI prospecting
  *   /lead-generation-software  lead generation software, B2B and AI lead generation
+ *   /chatgpt-for-sales         ChatGPT for sales, prospecting and lead generation (2026-11-16:
+ *                              the Claude page's twin for people who work in ChatGPT, with
+ *                              ChatGPT's own setup from connect-copy.ts)
  *
  * Competitor searches keep their /<tool>-vs-pancake pages and /compare.
  *
@@ -28,7 +32,7 @@ import { TRIAL_CARD_REQUIREMENT, TRIAL_CREDITS_LABEL, TRIAL_LABEL } from "@/lib/
  * are the Claude guide's (guide-copy.ts). Linted with the homepage copy (scripts/homepage-lint.mjs).
  */
 
-export type SearchLandingId = "claude-for-sales" | "ai-sales-agents" | "lead-generation-software";
+export type SearchLandingId = "claude-for-sales" | "ai-sales-agents" | "lead-generation-software" | "chatgpt-for-sales";
 
 type Card = { title: string; body: string };
 type Step = { title: string; body: string; /** an example request, shown as a chat message */ ask?: string };
@@ -40,6 +44,8 @@ export type SearchLandingCopy = {
   meta: { title: string; description: string; ogTitle: string };
   /** H1 = the badge (the searcher's words) + the title (the ad's promise) */
   hero: { badge: string; title: string; lede: string };
+  /** One line under the demo film, for a page whose AI is not the one the film shows. */
+  filmNote?: string;
   steps: { eyebrow: string; h2: string; items: readonly [Step, Step, Step] };
   plays: { eyebrow: string; h2: string; lede: string };
   cards: { eyebrow: string; h2: string; items: readonly Card[] };
@@ -106,7 +112,7 @@ const WHO: Qa = {
 
 const FIRST_SEARCH = FINAL.title;
 
-/* ── the three pages ──────────────────────────────────────────────────────────────────────── */
+/* ── the pages ──────────────────────────────────────────────────────────────────────── */
 
 export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
   "claude-for-sales": {
@@ -304,6 +310,80 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
     final: {
       title: FIRST_SEARCH,
       body: `Start your ${TRIAL_LABEL}, add your website and say who you want. New leads keep coming.`,
+    },
+  },
+
+  "chatgpt-for-sales": {
+    id: "chatgpt-for-sales",
+    path: "/chatgpt-for-sales",
+    meta: {
+      title: "ChatGPT for Sales: Prospecting and Lead Generation in ChatGPT | Pancake",
+      description:
+        "Use ChatGPT for sales prospecting. Connect Pancake once, then ask ChatGPT for real leads, why each one fits and outreach from your own account.",
+      ogTitle: "ChatGPT for sales",
+    },
+    hero: {
+      badge: "ChatGPT for sales",
+      title: "Make ChatGPT your sales machine",
+      lede: "Connect Pancake once. Then ChatGPT finds real leads, tells you why each one fits and writes to them from your own account.",
+    },
+    // The film is recorded in Claude. (No "@Pancake" here: homepage-lint reads it as a Slack mention.)
+    filmNote: "The film shows Claude. ChatGPT works the same way once Pancake is connected.",
+    steps: {
+      eyebrow: "How it works",
+      h2: "Tell ChatGPT who to reach",
+      items: [
+        {
+          // The setup is connect-copy.ts's ChatGPT steps (custom MCP server, OAuth sign-in).
+          title: "Connect Pancake",
+          body: "Add Pancake to ChatGPT as a custom MCP server and sign in with your browser. No API key. Pancake reads your website and builds your Brain.",
+        },
+        {
+          title: "Ask in plain English",
+          body: "Say who to reach in a ChatGPT chat. Pancake turns it into a Play, a search that keeps running. ChatGPT shows you the cost before it starts.",
+          ask: "Find heads of sales at Series A startups hiring SDRs.",
+        },
+        {
+          title: "Pancake reaches out",
+          body: "Every lead comes with why it fits. Add the ones you want to a sequence: Pancake writes each a personal message in your voice, sent from your own account.",
+        },
+      ],
+    },
+    plays: {
+      eyebrow: "Plays",
+      h2: "Deploy GTM Plays from ChatGPT",
+      lede: "A Play is one GTM idea turned into a search that keeps running. Run one per audience.",
+    },
+    // The guide's control cards, with ChatGPT in the credit line (connect-copy.ts sharedKnow).
+    cards: {
+      eyebrow: CONTROL.eyebrow,
+      h2: CONTROL.h2,
+      items: [
+        CONTROL.cards[0],
+        { title: "Every credit.", body: "ChatGPT shows the cost of a search before it starts." },
+        CONTROL.cards[2],
+      ],
+    },
+    faq: [
+      {
+        // connect-copy.ts: "No custom server option? It depends on your ChatGPT plan and workspace."
+        q: "Which ChatGPT plans can connect Pancake?",
+        a: "Pancake connects to ChatGPT as a custom MCP server, and whether you can add one depends on your ChatGPT plan and workspace settings. If yours can't, connect Claude or Codex, or use the Pancake app.",
+      },
+      {
+        q: "How do I connect it?",
+        a: "On chatgpt.com, open Plugins, click + and pick Add custom MCP server. Paste Pancake's server URL, choose OAuth and sign in to Pancake in your browser. pancake.ai/chatgpt has the four steps.",
+      },
+      guideQa("Do I need an API key?"),
+      COST,
+      {
+        q: WHO.q,
+        a: "Founders who do their own sales, small B2B teams, agencies and GTM engineers. If you already work in ChatGPT, start there.",
+      },
+    ],
+    final: {
+      title: FIRST_SEARCH,
+      body: `Start your ${TRIAL_LABEL}, connect ChatGPT, create one Play. New leads keep coming.`,
     },
   },
 };
