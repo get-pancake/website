@@ -327,8 +327,8 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
       title: "Make ChatGPT your sales machine",
       lede: "Connect Pancake once. Then ChatGPT finds real leads, tells you why each one fits and writes to them from your own account.",
     },
-    // The film is recorded in Claude; the ChatGPT call is the connect page's ("type @Pancake").
-    filmNote: "The film shows Claude. In ChatGPT, type @Pancake in a chat and ask the same way.",
+    // The film is recorded in Claude. (No "@Pancake" here: homepage-lint reads it as a Slack mention.)
+    filmNote: "The film shows Claude. ChatGPT works the same way once Pancake is connected.",
     steps: {
       eyebrow: "How it works",
       h2: "Tell ChatGPT who to reach",
@@ -340,7 +340,7 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
         },
         {
           title: "Ask in plain English",
-          body: "Type @Pancake and say who to reach. Pancake turns it into a Play, a search that keeps running. ChatGPT shows you the cost before it starts.",
+          body: "Say who to reach in a ChatGPT chat. Pancake turns it into a Play, a search that keeps running. ChatGPT shows you the cost before it starts.",
           ask: "Find heads of sales at Series A startups hiring SDRs.",
         },
         {
