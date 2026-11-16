@@ -57,6 +57,16 @@
 .lp-search .lp-video.sl-video .lp-video__play {
   width: clamp(56px, 6vw, 96px);
 }
+/* one line under the film, for a page whose AI is not the one the film shows (/chatgpt-for-sales) */
+.lp-search .sl-film__note {
+  color: var(--lp-subtle-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-sm);
+  line-height: 20px;
+  margin-top: 12px;
+  padding-inline: var(--vx-edge);
+  text-align: center;
+}
 
 /* ── logos: the homepage's labelled band, closer to the film than /for's ── */
 .lp-search .sl-logos {
