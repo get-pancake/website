@@ -44,7 +44,9 @@ The pictures these replace are still in the code. To show one again, change one 
 
 ## The feel
 
-A piece that pops lands a little past its size and settles, as things do in the kitchen. The page's older pictures never overshoot. To hold the toy pictures to that rule too, set `TOY_EASE.pop` and `TOY_EASE.soft` to `"power3.out"` in `lp-toy-kit.ts`: nothing else changes.
+A piece grows or fades into its place and stops there: no overshoot, no settle, no hop, as on the rest of the page (`TOY_EASE` in `lp-toy-kit.ts`). Until 2026-11-16 the pieces landed a little past their size and settled, as things do in the kitchen.
+
+The founder's review of these pictures (2026-11-16) took out what read as decoration rather than as the product: the bounce, the glows (round the machine's hub, under the radar's account, the Brain's halo, under the engine's parts), the rings that opened (on the radar, at the Brain's points, at each stop of the journey, on the merge's stand, round the phone), the beads that ran down the cables and rode the turntable, the signals that ran along the Brain's branches, the point of light on the engine's cable, the radar's sweeping beam (in `t2` and on the engine), the phone that shook, its messages flying out of it, and the two ideas the Brain showed before its Play. Do not bring them back: a picture moves the piece its story is about (a source connects, a row lands on a pile, a signal lands, a line is drawn, the buyer goes along the track, a message comes up), and nothing else.
 
 ## The Brain's look
 
@@ -52,7 +54,7 @@ The third step is the one picture that is not a 3D set. Its Brain is the graph t
 
 Two 3D versions were tried on the preview and turned down (2026-11-12). The same graph as soft beads on rods read as an atom, under too many shadows ("ça fait trop atome et trop d'ombre, on comprend pas"). A brain as a toy, pink on a stand, was worse ("je trouve ça cringe de ouf"). The flat graph is also what a visitor then finds in the app.
 
-The engine of `t-engine` keeps its own small Brain of beads (`toys/studio/scene-engine.js`): at that size it is one part of the machine, and it reads.
+The engine of `t-engine` had its own small Brain of beads (`toys/studio/scene-engine.js`, the drawing `public/lp/toys/engine/brain.webp`). It read as the same atom, and left the stand on 2026-11-16: the page no longer lays that drawing (`PARTS` in `LpToyStories.tsx`), and the step "Read your Brain" has no part to light.
 
 To add, move or remove a point, edit `BRAIN_HUBS`: a point is an angle and a distance from its hub. Keep the side of a hub's tag free of points, so that a tag never covers a branch.
 
@@ -71,7 +73,7 @@ What it gives, measured on a production build in Chromium that draws through a G
 
 The test machine has no graphics card, so these are orders of size, not what a real screen shows.
 
-What is on the canvas: the drawings (`ToyPic`). What is not: the page's type (badges, names, counts, Claude's window), the vendors' marks, and the small shapes the page draws itself (a ring, a beam, a line, and the whole Brain of the third step). That is why the carousel did not change: its cost is its type and its progress bar. Each frame in which one of those moves, Chromium lays the page's layers out again (about 4.5 ms on the slowed processor, with or without `will-change`: measured). If more is wanted, the next step is to draw those shapes on the canvas too.
+What is on the canvas: the drawings (`ToyPic`). What is not: the page's type (badges, names, counts, Claude's window), the vendors' marks, and the small shapes the page draws itself (a line, a trail, and the whole Brain of the third step). That is why the carousel did not change: its cost is its type and its progress bar. Each frame in which one of those moves, Chromium lays the page's layers out again (about 4.5 ms on the slowed processor, with or without `will-change`: measured). If more is wanted, the next step is to draw those shapes on the canvas too.
 
 How it works:
 
@@ -80,7 +82,7 @@ How it works:
 - A picture takes its canvases when its take plays near the screen, and gives them back two and a half screens away. A picture that waits holds none.
 - `?lp-toy=dom` keeps the images as the render. `?lp-toy=canvas` takes the canvases at once (the review page `/lp-dev/stages` seeks a take by hand, so it needs it).
 
-One rule for a new drawing: move it with GSAP only (`x`, `y`, `scale`, `rotation`, `autoAlpha`, a `clipPath` that is an `inset()`). The canvas reads GSAP's own record of each drawing, so it does not see what a stylesheet moves. And GSAP folds an element's own `translate`, `rotate` and `scale` properties into its transform the first time it moves it. Two faults of the first version came from that, and were found when the two renders were compared: the beads never rode the turntable of the first step (they do now, `toyOrbit` in `lp-toy-step-timelines.ts`), and the radar's beam of `t-engine` stood on its edge half-way round (it now turns inside a face that is flattened once, `.lp-te-face`).
+One rule for a new drawing: move it with GSAP only (`x`, `y`, `scale`, `rotation`, `autoAlpha`, a `clipPath` that is an `inset()`). The canvas reads GSAP's own record of each drawing, so it does not see what a stylesheet moves. And GSAP folds an element's own `translate`, `rotate` and `scale` properties into its transform the first time it moves it. Two faults of the first version came from that, and were found when the two renders were compared: the beads never rode the turntable of the first step, and the radar's beam of `t-engine` stood on its edge half-way round (both pieces of motion are gone since 2026-11-16).
 
 ## When a picture plays
 
@@ -93,8 +95,8 @@ The carousel of the four features plays by itself. Its Pause button is a keyboar
 Since 2026-11-12 a picture does not stop on its END. It holds it for about two seconds, shows something else, and comes back, for as long as it is looked at. Out of sight it waits where it is.
 
 - `t1`: four other sources take the docks (meetings, support, billing, calendar), then the first four are back. The piles never go back to empty: a row lands on top, the pile shows its last five, and the two counts go on from one round to the next.
-- `t2`: the radar scans another account (Deel, an open deal). Four other signals land, as blocks, and the beam turns the other way.
-- `t3`: the Brain changes (three points draw back into their hubs, six others grow out), three other hubs carry a tag, and it comes up with other ideas and another Play.
+- `t2`: the radar shows another account (Deel, an open deal). Four other signals land, as blocks, the other way round.
+- `t3`: the Brain changes (three points draw back into their hubs, six others grow out), three other hubs carry a tag, and it recommends another Play.
 - `t-engine`: each time it plays again another question is asked (three in all, then the first again).
 - `t-journey`, `t-merge`, `t-ping`: the same story each time.
 
@@ -110,7 +112,7 @@ The words the pictures add, to review as copy:
 
 - `t1`: what each source sends ("Deal updated", "Attended your event", "New signup", "Pricing page viewed"). On the next round: four more sources, each with the mark of a tool (Meetings with Zoom, Support with Zendesk, Billing with Stripe, Calendar with Google Calendar) and what it sends ("Meeting recorded", "Ticket opened", "Plan upgraded", "Demo booked"). The table counts grow at each round (they start from the hero's 4,812 and 12,960).
 - `t2`, on the next round: the account "Deel", "open deal", and four signals ("headcount up", "switched CRM", "new reviews", "new CRO").
-- `t3`: three tags on the Brain's hubs (ICP, Signals, Voice, and on the next round Competitors, Won deals, Personas), two ideas ("Reach back out to Ramp", "Work accounts hiring SDRs") and the Play ("Contact the 24 people who signed up after your event."). On the next round: "Book a demo with Linear", "Send Mercury a gift", and the Play "Reach back out to the 8 lost deals that just raised funding.".
+- `t3`: three tags on the Brain's hubs (ICP, Signals, Voice, and on the next round Competitors, Won deals, Personas) and the Play ("Contact the 24 people who signed up after your event."). On the next round, the Play "Reach back out to the 8 lost deals that just raised funding.".
 - `t-engine`: a new job in Claude's window ("Who should I contact today?", "Query your tables", "Check market signals", "Start with Ramp."). The two other questions: "Who is ready for a demo?" ("Linear is ready.", Book a demo, Head of Growth at Linear, "New signup, asked pricing") and "Which lost deals can I reopen?" ("Supabase just raised.", Reach back out, VP Sales at Supabase, "Lost deal, new funding").
 - `t-journey`: "Came to your event", "Asked about pricing", "Replied to you", and the count ("4 touches kept").
 - `t-merge`: "Your event", "Your product", "Social profile" (with the mark of X), "Work email", "Personal email", "No email", "One buyer".
