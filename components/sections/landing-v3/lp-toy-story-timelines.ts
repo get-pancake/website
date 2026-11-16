@@ -253,8 +253,7 @@ function* engine(root: HTMLElement): Steps {
   const steps = q.all(".lp-te-step").map((li) => ({ li, done: q.one("em", li), part: li.dataset.part ?? "" }));
   const says = q.all(".lp-te-say");
   const plays = q.all(".lp-te-play");
-  /** the part of the engine each step works on (since 2026-11-16 the Brain's is the page's own
-      flat drawing, LpToyStories.tsx EngineBrain: its 3D beads on rods read as an atom) */
+  /** the part of the engine each step works on (LpToyStories.tsx PARTS) */
   const parts = steps.map((step) => root.querySelector<HTMLElement>(`.lp-te-part[data-part="${step.part}"]`));
   const rounds = typed.length;
   if (!steps.length || !rounds || [askTexts, says, plays].some((list) => list.length !== rounds)) throw new Error("lp-toy engine: the steps, and an ask, an answer and a Play for each round");

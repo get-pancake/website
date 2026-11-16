@@ -320,9 +320,8 @@ type Spoke = readonly [angle: number, far: number];
  * that way. Its points, each an angle and a distance from the hub: `leaves` (always there),
  * `goes` (there in the picture, gone on the next round), `comes` (there on the next round only).
  * `twigs`: a point farther out, from one of its leaves (the leaf, then an angle and a distance).
- * The engine of the features (LpToyStories.tsx EngineBrain) draws the same Brain, small.
  */
-export const BRAIN_HUBS: readonly {
+const BRAIN_HUBS: readonly {
   tone: string;
   at: number;
   far: number;

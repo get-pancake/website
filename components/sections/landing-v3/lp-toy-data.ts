@@ -125,8 +125,7 @@ export const TOY_PING = {
    answer is the Play the Brain's card names (VSTEP_BRAIN). No count, no person's name. ── */
 export const TOY_ENGINE = {
   ask: { text: "Who should I contact today?" },
-  /** the steps, each on a part of the engine (`id`: the part's drawing, toys/studio/scene-engine.js;
-      since 2026-11-16 the Brain's is drawn flat by the page, LpToyStories.tsx EngineBrain) */
+  /** the steps, each on a part of the engine (`id`: the part's drawing, toys/studio/scene-engine.js) */
   steps: [
     { id: "brain", text: "Read your Brain" },
     { id: "tables", text: "Query your tables" },
