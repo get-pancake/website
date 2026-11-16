@@ -126,7 +126,7 @@ export const TOY_PING = {
 export const TOY_ENGINE = {
   ask: { text: "Who should I contact today?" },
   /** the steps, each on a part of the engine (`id`: the part's drawing, toys/studio/scene-engine.js;
-      the Brain's is no longer drawn on the stand, LpToyStories.tsx PARTS) */
+      since 2026-11-16 the Brain's is drawn flat by the page, LpToyStories.tsx EngineBrain) */
   steps: [
     { id: "brain", text: "Read your Brain" },
     { id: "tables", text: "Query your tables" },

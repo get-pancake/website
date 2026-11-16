@@ -9,11 +9,11 @@ import { LpCta } from "@/components/sections/landing-v3/LpCta";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
+import { LpHeroInstall } from "@/components/sections/landing-v3/LpHeroInstall";
 import { LpKitchen } from "@/components/sections/landing-v3/LpKitchen";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
-import { LpSetupPill } from "@/components/sections/landing-v3/LpSetupLine";
 import { LpVisionFeatures } from "@/components/sections/landing-v3/LpVision";
 import { LpVisionCurtain } from "@/components/sections/landing-v3/LpVisionCurtain";
 import { LpVisionSteps } from "@/components/sections/landing-v3/LpVisionSteps";
@@ -160,7 +160,7 @@ export default function Home() {
       <LpVisionFeatures />
       <LpBento sky />
       {/* note={null}: no demo request line in this card (founder, 2026-11-12) */}
-      <LpCta sky title={VISION_CLOSE.title} body={VISION_CLOSE.body} setup={<LpSetupPill />} note={null} />
+      <LpCta sky title={VISION_CLOSE.title} body={VISION_CLOSE.body} setup={<LpHeroInstall place="cta" />} note={null} />
       <LpPricing checklist={VISION_PLANS.starter} full={VISION_PLANS.full} />
       <LpFooter />
     </LpAudience>

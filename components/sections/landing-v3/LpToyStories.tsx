@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import { ClaudeMark, GrokBotMark } from "./LpAgentMarks";
 import { PancakeMark } from "./LpClaudeScene";
 import { ToyBadge, ToyPic, toyPx } from "./LpToyKit";
+import { BRAIN_HUBS } from "./LpToySteps";
 import type { DiveStageProps } from "./lp-dive-stages";
 import { TOY_ART } from "./lp-toy-art";
 import { lpClaudeSerif } from "./lp-claude-font";
@@ -218,10 +219,51 @@ export function LpToyPingStage(_props: DiveStageProps) {
 
 /* ── "Run your revenue engine from Claude": Claude's window, a cable, the engine ── */
 
-/** The parts on the engine's stand: one for each step Claude runs, but the Brain's. Its drawing
+/** The 3D parts on the engine's stand: your tables and the radar. The Brain's 3D drawing
     (toys/studio/scene-engine.js: beads on rods round a dark one) read as an atom, as the 3D Brain
-    of the 1-2-3 had (lp-toy-data.ts TOY_BRAIN), so it left the stand on 2026-11-16. */
+    of the 1-2-3 had (lp-toy-data.ts TOY_BRAIN), so it left the stand on 2026-11-16; the page draws
+    the Brain there itself (EngineBrain). */
 const PARTS = ["tables", "radar"] as const;
+
+const E = TOY_ART.engine;
+/** The engine's Brain (2026-11-16): the 1-2-3's own Brain as the app draws it (LpToySteps.tsx
+    BRAIN_HUBS: its six hubs, their tones, the first points of each), small, lying flat on the
+    stand where the 3D Brain stood (`E.anchors.brain`, a little forward, clear of the back rim).
+    Like the two other parts, it comes on as Claude runs its step ("Read your Brain"). `hub`: a
+    hub's distance from the centre; `leaf`: how much shorter its points' branches are than in
+    the 1-2-3. Its flattening is the stand's own (the engine set's camera, as the radar face's). */
+const ENGINE_BRAIN = { at: [E.anchors.brain[0], E.anchors.brain[1] + 6] as XY, hub: 24, leaf: 0.32, leaves: 3 } as const;
+
+function EngineBrain() {
+  const polar = (from: XY, angle: number, far: number): XY => {
+    const a = (angle * Math.PI) / 180;
+    return [Math.round((from[0] + Math.cos(a) * far) * 10) / 10, Math.round((from[1] + Math.sin(a) * far) * 10) / 10];
+  };
+  const hubs = BRAIN_HUBS.map((hub) => {
+    const xy = polar([0, 0], hub.at, ENGINE_BRAIN.hub);
+    return { tone: hub.tone, xy, points: hub.leaves.slice(0, ENGINE_BRAIN.leaves).map(([angle, far]) => polar(xy, angle, far * ENGINE_BRAIN.leaf)) };
+  });
+  const line = (from: XY, to: XY) => `M${from[0]} ${from[1]}L${to[0]} ${to[1]}`;
+  return (
+    <svg
+      className="lp-te-part lp-te-brain"
+      data-part="brain"
+      viewBox="-60 -60 120 120"
+      focusable="false"
+      style={{ left: toyPx(ENGINE_BRAIN.at[0]), top: toyPx(ENGINE_BRAIN.at[1]) }}
+    >
+      {hubs.map((hub) => (
+        <path key={hub.tone} className="lp-te-brain__edge" data-kind="hub" d={line([0, 0], hub.xy)} />
+      ))}
+      {hubs.flatMap((hub) => hub.points.map((point, k) => <path key={`${hub.tone}${k}`} className="lp-te-brain__edge" d={line(hub.xy, point)} />))}
+      {hubs.flatMap((hub) => hub.points.map((point, k) => <circle key={`${hub.tone}${k}`} className="lp-te-brain__dot" data-tone={hub.tone} cx={point[0]} cy={point[1]} r={1.7} />))}
+      {hubs.map((hub) => (
+        <circle key={hub.tone} className="lp-te-brain__hub" data-tone={hub.tone} cx={hub.xy[0]} cy={hub.xy[1]} r={3.6} />
+      ))}
+      <circle className="lp-te-brain__centre" cx={0} cy={0} r={6} />
+    </svg>
+  );
+}
 
 export function LpToyEngineStage(_props: DiveStageProps) {
   const e = TOY_ENGINE;
@@ -236,7 +278,8 @@ export function LpToyEngineStage(_props: DiveStageProps) {
       <div className="lp-toy-set">
         <ToyPic set="engine" name="plate" />
         <ToyPic set="engine" name="stand" />
-        {/* the parts: each one comes on as Claude runs its step */}
+        {/* the parts: each one comes on as Claude runs its step. The Brain first, drawn flat */}
+        <EngineBrain />
         {PARTS.map((part) => (
           <ToyPic key={part} set="engine" name={part} className="lp-te-part" data-part={part} />
         ))}

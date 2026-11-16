@@ -56,7 +56,7 @@ The third step is the one picture that is not a 3D set. Its Brain is the graph t
 
 Two 3D versions were tried on the preview and turned down (2026-11-12). The same graph as soft beads on rods read as an atom, under too many shadows ("ça fait trop atome et trop d'ombre, on comprend pas"). A brain as a toy, pink on a stand, was worse ("je trouve ça cringe de ouf"). The flat graph is also what a visitor then finds in the app.
 
-The engine of `t-engine` had its own small Brain of beads (`toys/studio/scene-engine.js`, the drawing `public/lp/toys/engine/brain.webp`). It read as the same atom, and left the stand on 2026-11-16: the page no longer lays that drawing (`PARTS` in `LpToyStories.tsx`), and the step "Read your Brain" has no part to light.
+The engine of `t-engine` had its own small Brain of beads (`toys/studio/scene-engine.js`, the drawing `public/lp/toys/engine/brain.webp`). It read as the same atom, and left the stand on 2026-11-16: the page no longer lays that drawing (`PARTS` in `LpToyStories.tsx`). In its place the page draws the 1-2-3's own Brain, small and flat on the stand (`EngineBrain`, from `BRAIN_HUBS`), which comes on as Claude runs "Read your Brain", as the two other parts do with their steps.
 
 To add, move or remove a point, edit `BRAIN_HUBS`: a point is an angle and a distance from its hub. Keep the side of a hub's tag free of points, so that a tag never covers a branch.
 

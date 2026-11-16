@@ -770,6 +770,40 @@
   --te-ink: var(--lp-claude-ink);
   --te-serif: var(--lp-font-claude-serif, Georgia), Georgia, serif;
 }
+/* The Brain on the stand (LpToyStories.tsx EngineBrain, 2026-11-16): the 1-2-3's graph, small,
+   lying flat on the stand (its squash is the stand's own, as the radar face's was). Fine
+   branches, small points, a hub of each colour, a dark centre; the hubs and the centre carry a
+   rim of the stand's own cream so that they sit over the branches. */
+.lp-toy .lp-te-brain {
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  overflow: visible;
+  position: absolute;
+  transform: scaleY(0.72);
+  width: 120px;
+}
+.lp-toy .lp-te-brain__edge {
+  fill: none;
+  stroke: var(--lp-ink-50);
+  stroke-linecap: round;
+  stroke-width: 0.8;
+}
+.lp-toy .lp-te-brain__edge[data-kind="hub"] {
+  stroke-width: 1.1;
+}
+.lp-toy .lp-te-brain__dot,
+.lp-toy .lp-te-brain__hub {
+  fill: var(--toy-tone);
+}
+.lp-toy .lp-te-brain__hub {
+  stroke: #f4e6cf;
+  stroke-width: 1.6;
+}
+.lp-toy .lp-te-brain__centre {
+  fill: var(--lp-inverted-surface);
+  stroke: #f4e6cf;
+  stroke-width: 2;
+}
 /* The story goes round with other questions: every round's ask, answer and Play are in the
    markup (each a data-r), and the root's data-round shows one. */
 .lp-toy.lp-te[data-round="0"] [data-r]:not([data-r="0"]),
