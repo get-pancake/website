@@ -36,6 +36,10 @@ const config: GtmComparisonConfig = {
   factsReviewed: "November 10, 2026",
   heroLede: "Outreach for lists you import versus Plays that find the people.",
   heroSummary: "HeyReach automates social outreach across many sender accounts, for lead lists you import. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
+  pitch: {
+    title: "No list to import. Pancake finds the people.",
+    lede: "HeyReach sends to the lists you bring. Pancake builds the list: say who to reach in Claude, and it finds them and writes from your own account.",
+  },
   competitorBody: "An outreach automation tool for agencies, sales teams and GTM operators. It rotates sending across many accounts, keeps every reply in one unified inbox, and connects to Clay, HubSpot, Instantly and Smartlead.",
   competitorChoose: "Choose it when you bring the lists and need many senders.",
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. It finds the people, checks every lead against your ICP and writes each one a personal message in your voice.",

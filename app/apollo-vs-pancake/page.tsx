@@ -35,6 +35,10 @@ const config: GtmComparisonConfig = {
   factsReviewed: "November 10, 2026",
   heroLede: "A contact database priced per seat versus Plays you ask Claude for.",
   heroSummary: "Apollo gives sales teams 240M+ contacts, email sequences and a dialer, priced per seat. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
+  pitch: {
+    title: "Skip the filters. Say who to reach.",
+    lede: "Apollo gives each rep a database to filter, priced per seat. Pancake searches for your whole team from one sentence in Claude. Plans start at $99 a month.",
+  },
   competitorBody: "A GTM system for sales teams: 240M+ contacts and 30M+ accounts, email sequences, a dialer, deliverability tools and 200+ integrations. Reps work in Apollo, or from Claude, ChatGPT and their CRM.",
   competitorChoose: "Choose it when your reps prospect by email and phone.",
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. Every lead is checked against your ICP and gets a personal message in your voice, sent from your own account.",

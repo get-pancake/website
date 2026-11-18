@@ -6,9 +6,9 @@
 export const COMPARE_HUB = {
   eyebrow: "Comparisons",
   h1: "Pancake compared.",
-  // Every comparison page ends its verdict on a "Best fit" card for the other product, and its
-  // Sources line links the vendor's own pages: the lede says exactly that, no more.
-  lede: "Honest comparisons, read from each product’s public pages. Each one says when the other tool fits better.",
+  // 2026-11-17: the pages argue for Pancake and no longer end on a "Best fit" card for the other
+  // product (GtmComparisonPage.tsx); each Sources line still links the vendor's own pages.
+  lede: "Pancake next to the GTM tools founders weigh it against. Every fact comes from each product’s public pages.",
 };
 
 /** The blog's GTM "<tool> alternatives" guides, as Related-style rows (name + line from the post's own title). */
@@ -32,12 +32,25 @@ export const COMPARE_LINKS = {
 };
 
 /**
- * The eyebrow over a GTM tool page's H1 (2026-11-17): the words people search for when they look
- * for another tool, "Clay alternative", so the page names them before the H1. Two words with the
- * tool's name (landing voice: labels <= 3 words). The H1, title and canonical keep "X vs Pancake".
+ * The words people search for when they look for another tool, "Clay alternative" (2026-11-17).
+ * Since the evening of 2026-11-17 they are the badge that opens a GTM tool page's H1, as
+ * /claude-for-sales opens on "Claude for sales" (they were an eyebrow over the H1 that morning).
+ * Two words with the tool's name (landing voice: labels <= 3 words). The title, the breadcrumb and
+ * the canonical keep "X vs Pancake".
  */
 export const COMPARE_HERO = {
   eyebrow: (competitor: string) => `${competitor} alternative`,
+};
+
+/** The two sections every comparison page adds after the film (2026-11-17): why teams switch
+ *  (the differences Pancake wins) and how it works (/claude-for-sales's three steps). */
+export const COMPARE_SWITCH = {
+  eyebrow: "Why switch",
+  h2: (competitor: string) => `Why teams pick Pancake over ${competitor}`,
+  /** An AI agent's page (Claude Tag, Viktor, OpenClaw, Paperclip): what a founder runs Pancake
+   *  from, not a competitor (compare-data.ts), so its head names no rival. */
+  h2Agent: "Why founders run GTM on Pancake",
+  stepsEyebrow: "How it works",
 };
 
 export const COMPARE_META = {

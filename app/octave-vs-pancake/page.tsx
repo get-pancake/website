@@ -30,6 +30,10 @@ const config: GtmComparisonConfig = {
   modified: "2026-11-17",
   heroLede: "A context layer for your GTM stack versus Plays that reach people.",
   heroSummary: "Octave models your positioning and buyers, then feeds that context to your tools and agents. Pancake runs Plays that find your buyers and writes to them from your own accounts.",
+  pitch: {
+    title: "Reach your buyers, not only your stack.",
+    lede: "Octave sharpens the context your GTM tools use, from $1,500 a month. Pancake reaches the buyers: a Play that finds the people and writes to them, from $99.",
+  },
   competitorBody: "A context layer for B2B go-to-market teams. Its context graph holds segments, personas, buyer problems and differentiation. Its Intelligence Engine learns from buyer conversations, market shifts and competitor signals.",
   competitorChoose: "Choose it when many teams and agents need one source of truth.",
   pancakeBody: "Pancake reads your website and builds a Brain of your buyers, competitors and voice. Each Play uses it to find people and write each one a personal message.",

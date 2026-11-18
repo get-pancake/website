@@ -34,6 +34,10 @@ const config: GtmComparisonConfig = {
   factsReviewed: "November 10, 2026",
   heroLede: "Cold email at volume versus a personal message per lead.",
   heroSummary: "Instantly sends cold email at volume, with unlimited email accounts, warmup and a lead database. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
+  pitch: {
+    title: "One message per lead. No mailboxes to warm.",
+    lede: "Instantly sends cold email at volume from mailboxes you warm up. Pancake finds the people who fit and writes each one a message, sent from your own account.",
+  },
   competitorBody: "A cold email platform: unlimited email accounts and warmup, deliverability tools, a database of 450M+ B2B leads, a built-in CRM and AI agents that write and reply. It connects to ChatGPT.",
   competitorChoose: "Choose it when cold email is your channel and volume matters.",
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. It checks every lead against your ICP and writes each one a personal message in your voice, sent from your own account.",

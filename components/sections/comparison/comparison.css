@@ -406,3 +406,21 @@
     text-transform: uppercase;
   }
 }
+
+/* ── why switch (2026-11-17): the search pages' numbered cards (.sl-steps__list, .sl-step) for the
+   differences Pancake wins; each card ends on its angle, the line a reader keeps ── */
+.lp-cmp .cmp-switch__angle {
+  align-self: start;
+  border-top: 1px solid var(--vx-hair);
+  color: var(--lp-text);
+  font-family: var(--lp-font-sans);
+  font-size: var(--lp-text-md);
+  font-weight: 600;
+  line-height: 24px;
+  padding-top: 16px;
+  text-wrap: pretty;
+}
+/* the angle needs air under the body when subgrid stacks the four rows */
+.lp-cmp .cmp-switch__card .sl-step__body {
+  padding-bottom: 20px;
+}

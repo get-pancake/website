@@ -35,6 +35,10 @@ const config: GtmComparisonConfig = {
   factsReviewed: "November 10, 2026",
   heroLede: "Tables you build versus Plays you deploy from Claude.",
   heroSummary: "Clay gives GTM engineers a data marketplace, tables and workflows to build any play. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
+  pitch: {
+    title: "Skip the tables. Get the Play.",
+    lede: "Clay hands GTM engineers a toolkit. Pancake builds the Play for you: say who to reach in Claude, and get leads that fit, each with a personal message.",
+  },
   competitorBody: "Infrastructure for GTM teams. One contract covers 200+ data and AI vendors, with waterfall enrichment, the Claygent research agent and a visual canvas for workflows. Its homepage says GTM engineers build on Clay.",
   competitorChoose: "Choose it when someone on your team builds data workflows.",
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. It finds the people, checks every lead against your ICP and writes each one a personal message in your voice.",

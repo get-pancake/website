@@ -35,6 +35,10 @@ const config: GtmComparisonConfig = {
   factsReviewed: "November 10, 2026",
   heroLede: "GTM data sold by custom quote versus Plays from $99 a month.",
   heroSummary: "ZoomInfo sells verified B2B data, agents and a GTM platform in custom packages. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
+  pitch: {
+    title: "Skip the quote. Start with a sentence.",
+    lede: "ZoomInfo sells its data in custom packages. Pancake turns one sentence into a Play that finds the people and reaches out, from $99 a month.",
+  },
   competitorBody: "A GTM data platform. Its site says over half the Fortune 500 use it. It covers prospecting, account-based marketing, data enrichment, deal execution and conversation intelligence, in its own platform or through an API, MCP and CLI.",
   competitorChoose: "Choose it when sales, marketing and RevOps share one data layer.",
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. 50+ data providers come included. Every lead is checked against your ICP and gets a personal message from your own account.",
