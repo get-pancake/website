@@ -1,6 +1,6 @@
 # Create your first Pancake Play in your AI app
 
-Version 1.2.0 · `https://pancake.ai/onboarding.md`
+Version 1.2.1 · `https://pancake.ai/onboarding.md`
 
 Help a user continue their Pancake welcome after checkout: connect their AI app,
 understand their business from Pancake, agree one useful first Play, create it
@@ -106,7 +106,9 @@ continue with the information available; do not treat guesses as researched fact
 Ask only what is missing, one question at a time. Usually two to four questions
 are enough, fewer when the Brain or user's request already answers them:
 
-- What outcome matters first, and who should this Play find: people or companies?
+- What outcome matters first, and who should this Play find? Every Play finds
+  people: when they pick companies, ask whom to contact there, offering the
+  Brain's buyer roles.
 - Which targeting criteria and exclusions matter for this first audience?
 - How many new leads should each search keep?
 - Should the first search run now, and should this be a one-off or repeat on a
