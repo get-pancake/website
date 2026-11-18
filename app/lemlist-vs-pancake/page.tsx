@@ -92,7 +92,7 @@ const config: GtmComparisonConfig = {
     { q: "Which product supports more outbound channels?", a: "Lemlist publicly supports a broader set of outbound channels, including email, social, calls, WhatsApp, and SMS. Pancake sends direct messages under your name, each one written from why the lead fits. A reply stops the sequence." },
     { q: "Does Pancake replace a sales team?", a: "Pancake lets a GTM engineer run outbound without hiring an SDR or sales-operations team. It finds the buyers and opens the conversations. You set the direction and handle the conversations that need you." },
     { q: "How does pricing compare?", a: "Lemlist uses tiered plans whose current price and included channels depend on the package and team needs. Pancake has one plan with every feature: from $99 a month per workspace, by monthly credits, after a 7-day free trial (card required). Check Lemlist's pricing page for current limits before deciding." },
-    { q: "Can Lemlist and Pancake work together?", a: "They can run side by side. A sales team can keep Lemlist for email sequencing and deliverability while Pancake runs Plays and opens conversations from the founder's own account." },
+    { q: "Can Lemlist and Pancake work together?", a: "They can run side by side. A sales team can keep Lemlist for email sequencing and deliverability while Pancake runs Plays and opens conversations from your own account." },
   ],
   related: [
     { href: "/gojiberry-vs-pancake", label: "Gojiberry vs Pancake" },
