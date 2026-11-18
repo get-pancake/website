@@ -6,12 +6,9 @@ import { usePathname, useSearchParams } from "next/navigation";
 import {
   currentAnalyticsPageLocation,
   emptyMappedEventFields,
+  pushToDataLayer,
   readAttributionId,
 } from "@/lib/analytics/data-layer";
-
-type AnalyticsWindow = Window & {
-  dataLayer?: Array<Record<string, unknown>>;
-};
 
 let lastPageViewKey: string | null = null;
 
@@ -50,10 +47,9 @@ function AnalyticsEventEffects() {
     if (lastPageViewKey === pageViewKey) return;
     lastPageViewKey = pageViewKey;
 
-    const analyticsWindow = window as AnalyticsWindow;
     const attributionId = readAttributionId();
-    analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
-    analyticsWindow.dataLayer.push({
+    // If Google's tag fails on it, this page view is skipped and the page stays.
+    pushToDataLayer({
       ...emptyMappedEventFields(),
       event: "page_view",
       schema_version: 1,

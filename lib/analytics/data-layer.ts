@@ -181,6 +181,29 @@ type DataLayerWindow = Window & {
 };
 
 /**
+ * Hands one event to Google Tag Manager. Once the container has loaded,
+ * `dataLayer.push` is Google's own function and runs its tags on the spot, so
+ * an error inside Google's code throws back into the caller: from a React
+ * effect it would swap the whole page for app/error.tsx. The app hit exactly
+ * that on its login page on 2026-11-17 (get-pancake/pancake-cmo#2305). The
+ * event is dropped instead and the page stays. Only the push is guarded: an
+ * error in our own code around it still surfaces. Every push goes through here
+ * (scripts/data-layer-push.test.mjs checks no file pushes on its own).
+ *
+ * @returns whether Google's tag took the event
+ */
+export function pushToDataLayer(event: Record<string, unknown>): boolean {
+  const analyticsWindow = window as DataLayerWindow;
+  analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
+  try {
+    analyticsWindow.dataLayer.push(event);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * GTM's data model can retain a Data Layer Variable from an earlier push.
  * Supplying every optional mapped field on every event prevents, for example,
  * a failed submission's `failure_type` from leaking onto the next Lead.
@@ -357,8 +380,6 @@ export function pushAcquisitionEvent<Name extends AcquisitionEventName>(
   const metadata = EVENT_METADATA[eventName];
   const attributionId = readAttributionId();
   const pagePath = currentPagePath();
-  const analyticsWindow = window as DataLayerWindow;
-  analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
   const dataLayerEvent = {
     ...emptyMappedEventFields(),
     event: eventName,
@@ -373,7 +394,8 @@ export function pushAcquisitionEvent<Name extends AcquisitionEventName>(
     attribution_id: attributionId,
     ...cleanPayload,
   };
-  analyticsWindow.dataLayer.push(dataLayerEvent);
+  pushToDataLayer(dataLayerEvent);
+  // Our own listeners (the Meta pixel) still get the event if Google's tag failed.
   window.dispatchEvent(
     new CustomEvent(PANCAKE_ACQUISITION_EVENT, {
       detail: dataLayerEvent,
