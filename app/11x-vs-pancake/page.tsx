@@ -34,6 +34,10 @@ const config: GtmComparisonConfig = {
   factsReviewed: "November 10, 2026",
   heroLede: "Revenue agents sold by demo versus Plays you start from Claude.",
   heroSummary: "11x sells AI agents for inbound, outbound and expansion across voice, chat, email and social, by demo. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
+  pitch: {
+    title: "A public price. A Play from one sentence.",
+    lede: "11x sells its agents after a demo. Pancake starts today: say who to reach in Claude, and it builds the Play, from $99 a month.",
+  },
   competitorBody: "A platform of AI agents for revenue teams. Voice and chat agents qualify inbound leads and book meetings. Email and social agents run outbound. Voice agents call existing customers about upgrades. It integrates with Salesforce, HubSpot and Pipedrive.",
   competitorChoose: "Choose it when a revenue team needs inbound, outbound and calls covered.",
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. Every lead is checked against your ICP and gets a personal message in your voice, sent from your own account.",

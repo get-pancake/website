@@ -31,6 +31,10 @@ const config: GtmComparisonConfig = {
   modified: "2026-11-17",
   heroLede: "Named AI agents for revenue teams versus Plays a founder runs.",
   heroSummary: "Alta sells three AI agents for outbound, inbound and growth, priced by custom quote. Pancake runs Plays that find your buyers and writes to them, from $99 a month per workspace.",
+  pitch: {
+    title: "No sales call. One sentence, one Play.",
+    lede: "Alta sells three agents by custom quote. Pancake gives founders a Play for each audience from one sentence, at a public price from $99 a month.",
+  },
   competitorBody: "An AI platform for go-to-market teams with three named agents. Katie runs outbound, Alex qualifies inbound leads by AI call and chat, and Luna finds signals and lookalikes across 50+ data sources.",
   competitorChoose: "Choose it when a revenue team needs outbound, inbound and calls covered.",
   pancakeBody: "Tell Pancake who to reach, and it builds a Play that keeps searching on its own. Pancake writes to each lead under your name.",

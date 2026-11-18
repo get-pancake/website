@@ -30,6 +30,10 @@ const config: GtmComparisonConfig = {
   modified: "2026-11-17",
   heroLede: "A sales platform priced per seat versus one plan per workspace.",
   heroSummary: "Unify gives sales reps data, signals, sequences and a dialer, billed per seat with credits. Pancake runs Plays that find your buyers and writes to them, from $99 a month per workspace.",
+  pitch: {
+    title: "One price for the whole team.",
+    lede: "Unify speeds up your reps, billed per seat. Pancake does the searching for the whole team and tells you why each lead fits, from $99 a month.",
+  },
   competitorBody: "An outbound platform for SDRs, AEs and sales leaders. Reps build lists from 1.1B+ people and 40+ data sources, then run multi-channel sequences from one chat.",
   competitorChoose: "Choose it when reps need data, email and a dialer in one place.",
   pancakeBody: "Tell Pancake who to reach. It builds a Play that keeps searching on its own. Every lead arrives with why it fits, and Pancake writes to each one under your name.",

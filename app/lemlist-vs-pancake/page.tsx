@@ -29,6 +29,10 @@ const config: GtmComparisonConfig = {
   modified: "2026-11-17",
   heroLede: "A sales platform your team operates versus Plays that run for you.",
   heroSummary: "Lemlist gives sales teams a large lead database, multichannel campaign controls, enrichment, and deliverability tooling. Pancake gives founders Plays that find your buyers, a reason on every lead, and conversations started from your own account.",
+  pitch: {
+    title: "Plays that run, not a platform to operate.",
+    lede: "Lemlist gives a sales team a platform to operate. Pancake runs the Play for you and tells you why each lead fits.",
+  },
   competitorBody: "A mature sales-engagement platform for building and managing outbound campaigns. Teams use its lead database, enrichment, sequencing, multichannel steps, deliverability tools, and integrations to control the sales workflow.",
   competitorChoose: "Choose it when a sales team wants deep campaign control.",
   pancakeBody: "A GTM platform for founders who want the work done for them. Tell it who you want to reach, and it builds a Play to find them. Each lead gets a personal message written from why they fit. There are no sequences to build.",

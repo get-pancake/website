@@ -29,6 +29,10 @@ const config: GtmComparisonConfig = {
   modified: "2026-11-17",
   heroLede: "A focused outreach agent versus a full GTM platform.",
   heroSummary: "Gojiberry finds high-intent prospects and automates email and social outreach. Pancake researches your company from your website, builds a Play for each audience you sell to, and starts conversations from your own account.",
+  pitch: {
+    title: "One Brain behind every Play.",
+    lede: "Gojiberry automates one outbound lane. Pancake learns your business from your website and runs a Play for each audience, with a reason on every lead.",
+  },
   competitorBody: "An AI prospecting product focused on identifying high-intent leads, scoring them, and running multichannel email and social outreach. It offers approval controls, a unified inbox, and agents that adapt campaigns over time.",
   competitorChoose: "Choose it when your main job is outbound prospecting.",
   pancakeBody: "A GTM platform built around one Brain: your ideal customer, personas, competitors, messaging, and voice. Every Play starts from it. Each lead arrives with why they fit and gets a personal message written from that reason.",

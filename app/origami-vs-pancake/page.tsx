@@ -38,6 +38,10 @@ const config: GtmComparisonConfig = {
   modified: "2026-11-17",
   heroLede: "Lists on demand versus Plays that keep searching.",
   heroSummary: "Origami searches the live web, recommends plays from your website, and runs the ones you approve. Pancake runs Plays that keep finding your buyers, tells you why each one fits, and opens the conversations from your own account.",
+  pitch: {
+    title: "A list ends. A Play keeps finding people.",
+    lede: "Origami builds a list from your request. Pancake turns it into a Play that keeps finding new people, tells you why each fits and reaches out.",
+  },
   competitorBody: "A GTM product that searches 50+ live sources, builds and enriches lists, and recommends plays from your website. Approve a play and Origami runs it, with email and social sequences and, on Pro and up, drafted posts.",
   competitorChoose: "Choose it when you want flexible live-web research and lists on demand.",
   pancakeBody: "A GTM platform that goes from who you want to reach to the first conversation. Every lead arrives with one line on why they fit. Pancake writes each one a personal message from that reason, in your voice.",

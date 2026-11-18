@@ -34,6 +34,10 @@ const config: GtmComparisonConfig = {
   factsReviewed: "November 10, 2026",
   heroLede: "Mailboxes and warmup to manage versus Plays you ask Claude for.",
   heroSummary: "Smartlead runs cold email on unlimited mailboxes, with warmup, a deliverability engine and a master inbox. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
+  pitch: {
+    title: "Skip the mailboxes. Reach the right people.",
+    lede: "Smartlead runs cold email on mailboxes you keep healthy. Pancake researches each lead and writes from your own account, with no infrastructure to maintain.",
+  },
   competitorBody: "A cold email platform built around deliverability: unlimited mailboxes, automatic warmup and sender rotation, verified prospect emails, a master inbox, a dialer and a built-in CRM. Agencies can whitelabel it for each client.",
   competitorChoose: "Choose it when deliverability at volume is the job.",
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. It checks every lead against your ICP and writes each one a personal message in your voice, sent from your own account.",
