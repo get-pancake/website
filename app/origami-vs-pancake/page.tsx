@@ -35,6 +35,7 @@ const config: GtmComparisonConfig = {
   slug: "origami-vs-pancake",
   competitor: "Origami",
   competitorInitial: "O",
+  modified: "2026-11-17",
   heroLede: "Lists on demand versus Plays that keep searching.",
   heroSummary: "Origami searches the live web, recommends plays from your website, and runs the ones you approve. Pancake runs Plays that keep finding your buyers, tells you why each one fits, and opens the conversations from your own account.",
   competitorBody: "A GTM product that searches 50+ live sources, builds and enriches lists, and recommends plays from your website. Approve a play and Origami runs it, with email and social sequences and, on Pro and up, drafted posts.",
@@ -91,6 +92,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who you want to reach. It builds a Play to find them, and every lead arrives with why they fit.",
   faqs: [
     { q: "What is the main difference between Origami and Pancake?", a: "Origami is strong at live-web research, prospect lists, and enrichment, and it runs the plays you approve. Pancake runs Plays that keep searching on their own. You tell it who you want to reach, and it builds a Play to find them." },
+    { q: "Is Pancake an Origami alternative?", a: "Yes, if you want new leads found for you and conversations started from your own account. Origami fits better when you want flexible live-web research and lists on demand." },
     { q: "Does Origami create content?", a: "Yes, on Pro and up. Its Content mode drafts a post and a branded visual for your review. Pancake doesn't create content: it finds your buyers and starts the conversation." },
     { q: "Does Origami run outbound?", a: "Origami includes a multichannel sequencer, so it can support outbound execution after a list is created. Pancake ties outreach to the lead: each one arrives with one line on why they fit, and its personal message is written from that reason. A reply stops the sequence." },
     { q: "Which is better for prospect research?", a: "Origami may be the better fit for teams that primarily want natural-language searches across many live sources, data waterfalls, and flexible list building. Pancake is the better fit when you want a Play that keeps searching and starts each conversation for you." },

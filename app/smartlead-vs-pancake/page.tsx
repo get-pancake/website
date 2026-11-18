@@ -30,7 +30,7 @@ const config: GtmComparisonConfig = {
   slug: "smartlead-vs-pancake",
   competitor: "Smartlead",
   competitorInitial: "S",
-  modified: "2026-11-10",
+  modified: "2026-11-17",
   factsReviewed: "November 10, 2026",
   heroLede: "Mailboxes and warmup to manage versus Plays you ask Claude for.",
   heroSummary: "Smartlead runs cold email on unlimited mailboxes, with warmup, a deliverability engine and a master inbox. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
@@ -92,7 +92,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who to reach. It builds the Play and writes each lead a personal message from your own account.",
   faqs: [
     { q: "What is the main difference between Smartlead and Pancake?", a: "Smartlead is cold email infrastructure: unlimited mailboxes, warmup, sender rotation and a master inbox, sized by emails sent. Pancake builds Plays: say who to reach, and it finds the people, checks each one against your ICP and writes to them from your own account." },
-    { q: "Is Pancake an alternative to Smartlead?", a: "Only if you want to move away from cold email. Pancake sends no email. It finds people who fit your ICP and writes each one a personal message, sent from your own account." },
+    { q: "Is Pancake a Smartlead alternative?", a: "Only if you want to move away from cold email. Pancake sends no email. It finds people who fit your ICP and writes each one a personal message, sent from your own account." },
     { q: "How does pricing compare?", a: "As of November 2026, Smartlead's plans are $39, $94, $174 and $379 a month, sized by emails sent, and annual billing is 17% lower. Pancake starts at $99 a month per workspace with 60,000 credits. Its 7-day free trial comes with 30,000 credits, and a card is required to start it." },
     { q: "Does Pancake send cold email?", a: "No. Pancake doesn't send outreach by email. It can find a lead's work email, and you can export the leads you pick to your CRM or download them as CSV." },
     { q: "Can I use Smartlead and Pancake together?", a: "Yes. They cover different channels. Keep Smartlead for cold email, and use Pancake for Plays and personal messages from your own account." },

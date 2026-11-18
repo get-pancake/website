@@ -31,7 +31,7 @@ const config: GtmComparisonConfig = {
   slug: "apollo-vs-pancake",
   competitor: "Apollo",
   competitorInitial: "A",
-  modified: "2026-11-10",
+  modified: "2026-11-17",
   factsReviewed: "November 10, 2026",
   heroLede: "A contact database priced per seat versus Plays you ask Claude for.",
   heroSummary: "Apollo gives sales teams 240M+ contacts, email sequences and a dialer, priced per seat. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
@@ -93,7 +93,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who to reach. It builds the Play, keeps searching and writes to the people who fit.",
   faqs: [
     { q: "What is the main difference between Apollo and Pancake?", a: "Apollo is a contact database with email sequences and a dialer that sales reps operate, priced per seat. Pancake builds Plays: say who to reach, and it finds the people, checks each one against your ICP and writes to them from your own account." },
-    { q: "Is Pancake an alternative to Apollo?", a: "Yes, if you want buyers found and conversations started without running a database and sequences yourself. Not if you need cold email or a dialer: Apollo has them and Pancake doesn't." },
+    { q: "Is Pancake an Apollo alternative?", a: "Yes, if you want buyers found and conversations started without running a database and sequences yourself. Not if you need cold email or a dialer: Apollo has them and Pancake doesn't." },
     { q: "How does pricing compare?", a: "As of November 2026, Apollo has a Free plan, then Basic at $49, Professional at $79 and Organization at $119 per seat a month, billed annually. Basic and Professional cost $65 and $99 billed monthly. Pancake starts at $99 a month per workspace, with 60,000 credits your whole team shares." },
     { q: "Do both work from Claude?", a: "Yes. Apollo says it works where you work, in Claude and ChatGPT, and it has an MCP. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in and no API key. Ask for a Play in the chat, and Pancake builds it." },
     { q: "What does Apollo do that Pancake doesn't?", a: "Email sequences with deliverability tools, a dialer, call recording, a meeting scheduler and automated CRM enrichment. Pancake doesn't do these, apart from a one-way export of the leads you pick to your CRM." },

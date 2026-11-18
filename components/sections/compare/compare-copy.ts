@@ -25,7 +25,19 @@ export const COMPARE_LINKS = {
   seeAll: "See all comparisons",
   /** The line under "Keep reading": the page's group siblings, then the hub. */
   more: "More comparisons:",
+  /** The same line on a GTM tool's page (2026-11-17): its siblings are the other GTM tools buyers
+   *  weigh Pancake against, so the line says what people search for, "<tool> competitors". */
+  moreCompetitors: "More competitors compared:",
   moreAll: "see all comparisons",
+};
+
+/**
+ * The eyebrow over a GTM tool page's H1 (2026-11-17): the words people search for when they look
+ * for another tool, "Clay alternative", so the page names them before the H1. Two words with the
+ * tool's name (landing voice: labels <= 3 words). The H1, title and canonical keep "X vs Pancake".
+ */
+export const COMPARE_HERO = {
+  eyebrow: (competitor: string) => `${competitor} alternative`,
 };
 
 export const COMPARE_META = {

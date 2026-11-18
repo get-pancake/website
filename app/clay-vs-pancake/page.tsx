@@ -31,7 +31,7 @@ const config: GtmComparisonConfig = {
   slug: "clay-vs-pancake",
   competitor: "Clay",
   competitorInitial: "C",
-  modified: "2026-11-10",
+  modified: "2026-11-17",
   factsReviewed: "November 10, 2026",
   heroLede: "Tables you build versus Plays you deploy from Claude.",
   heroSummary: "Clay gives GTM engineers a data marketplace, tables and workflows to build any play. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
@@ -93,7 +93,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who to reach. It builds the Play, checks every lead against your ICP and writes to the people who fit.",
   faqs: [
     { q: "What is the main difference between Clay and Pancake?", a: "Clay is a toolkit: a data marketplace, tables and workflows that a GTM engineer builds on. Pancake builds the Play for you. Say who to reach in Claude, ChatGPT, Codex or the app, and it finds the people and writes to them from your own account." },
-    { q: "Is Pancake an alternative to Clay?", a: "For one job, yes: finding buyers and starting conversations without building a workflow. It doesn't replace Clay for CRM enrichment, ad audiences or custom data workflows." },
+    { q: "Is Pancake a Clay alternative?", a: "For one job, yes: finding buyers and starting conversations without building a workflow. It doesn't replace Clay for CRM enrichment, ad audiences or custom data workflows." },
     { q: "How does pricing compare?", a: "As of November 2026, Clay has a Free plan, Launch from $185 a month and Growth from $495, billed in data credits and actions. Pancake starts at $99 a month per workspace with 60,000 credits. Its 7-day free trial comes with 30,000 credits, and a card is required to start it." },
     { q: "What does Clay do that Pancake doesn't?", a:"A marketplace of 200+ data and AI vendors, multi-provider waterfalls, CRM auto-sync, ad audiences, email sequencing and, on Enterprise, data warehouse connections. Pancake covers none of these, apart from finding a lead's work email or phone number and a one-way export of the leads you pick to your CRM." },
     { q: "Do both work with AI agents?", a: "Yes. Clay offers a plugin for coding agents, a CLI and an API to build in Clay. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in and no API key. Ask for a Play in the chat, and Pancake builds it." },

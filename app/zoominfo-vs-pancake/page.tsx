@@ -31,7 +31,7 @@ const config: GtmComparisonConfig = {
   slug: "zoominfo-vs-pancake",
   competitor: "ZoomInfo",
   competitorInitial: "Z",
-  modified: "2026-11-10",
+  modified: "2026-11-17",
   factsReviewed: "November 10, 2026",
   heroLede: "GTM data sold by custom quote versus Plays from $99 a month.",
   heroSummary: "ZoomInfo sells verified B2B data, agents and a GTM platform in custom packages. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
@@ -92,7 +92,7 @@ const config: GtmComparisonConfig = {
   faqs: [
     { q: "What is the main difference between ZoomInfo and Pancake?", a: "ZoomInfo is a GTM data platform sold in custom packages to sales, marketing and RevOps teams. Pancake builds Plays: say who to reach, and it finds the people, checks each one against your ICP and writes to them from your own account, from $99 a month per workspace." },
     { q: "How much does ZoomInfo cost?", a: "As of November 2026, ZoomInfo publishes no prices. Its pricing page says packages are custom, based on features and functionality, number of licenses and credit usage. You fill in a form to get pricing." },
-    { q: "Is Pancake an alternative to ZoomInfo?", a: "For a founder or a small team that wants buyers found and conversations started, yes. It doesn't replace ZoomInfo's database for a large sales, marketing and RevOps organization." },
+    { q: "Is Pancake a ZoomInfo alternative?", a: "For a founder or a small team that wants buyers found and conversations started, yes. It doesn't replace ZoomInfo's database for a large sales, marketing and RevOps organization." },
     { q: "What does ZoomInfo do that Pancake doesn't?", a: "Account-based marketing, inbound lead routing, deal execution, conversation intelligence, recruiting data and delivery to data warehouses. Pancake covers none of these. It finds people who fit your ICP and messages them from your own account." },
     { q: "Do both work with AI agents?", a: "Yes. ZoomInfo offers an API, MCP and CLI, priced on usage. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in and no API key. Ask for a Play in the chat, and Pancake builds it." },
     { q: "Who should choose Pancake over ZoomInfo?", a: "Founders who do their own sales, and small B2B teams that want a public price. The 7-day free trial comes with 30,000 credits, and a card is required to start it." },

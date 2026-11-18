@@ -27,6 +27,7 @@ const config: GtmComparisonConfig = {
   slug: "octave-vs-pancake",
   competitor: "Octave",
   competitorInitial: "O",
+  modified: "2026-11-17",
   heroLede: "A context layer for your GTM stack versus Plays that reach people.",
   heroSummary: "Octave models your positioning and buyers, then feeds that context to your tools and agents. Pancake runs Plays that find your buyers and writes to them from your own accounts.",
   competitorBody: "A context layer for B2B go-to-market teams. Its context graph holds segments, personas, buyer problems and differentiation. Its Intelligence Engine learns from buyer conversations, market shifts and competitor signals.",
@@ -87,6 +88,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who to reach. It builds the Play from your Brain and writes to the people who fit.",
   faqs: [
     { q: "What is the main difference between Octave and Pancake?", a: "Octave is a context layer: it models your positioning and buyers and feeds that to your tools and agents. Pancake runs Plays that find your buyers and write to them." },
+    { q: "Is Pancake an Octave alternative?", a: "For founders who want buyers found and messaged without wiring tools together, yes. It doesn't replace Octave as the one source of truth that many teams and agents share." },
     { q: "How does pricing compare?", a: "As of October 2026, Octave charges a platform fee plus usage credits. Octave Ultra starts at $1,500 a month, billed annually. Pancake starts at $99 a month per workspace, with 60,000 credits included." },
     { q: "What does Octave do that Pancake doesn't?", a: "Octave learns from buyer conversations and connects to Salesforce, HubSpot, Gong and Clay. It also offers SSO, role-based access and a data warehouse connector. Pancake offers none of these, apart from a one-way export of the leads you pick to HubSpot or another CRM." },
     { q: "Do both work in Claude?", a: "Yes. Octave offers MCP, an API, a CLI and a Claude Code plugin. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in. You create Plays and review leads from the agent." },

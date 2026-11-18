@@ -27,6 +27,7 @@ const config: GtmComparisonConfig = {
   slug: "unify-vs-pancake",
   competitor: "Unify",
   competitorInitial: "U",
+  modified: "2026-11-17",
   heroLede: "A sales platform priced per seat versus one plan per workspace.",
   heroSummary: "Unify gives sales reps data, signals, sequences and a dialer, billed per seat with credits. Pancake runs Plays that find your buyers and writes to them, from $99 a month per workspace.",
   competitorBody: "An outbound platform for SDRs, AEs and sales leaders. Reps build lists from 1.1B+ people and 40+ data sources, then run multi-channel sequences from one chat.",
@@ -86,6 +87,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who to reach. It builds the Play, keeps searching and writes to the people who fit.",
   faqs: [
     { q: "What is the main difference between Unify and Pancake?", a: "Unify is an outbound platform that sales reps operate, priced per seat. Pancake runs Plays: it finds the people who fit and writes to them. It starts at $99 a month per workspace." },
+    { q: "Is Pancake a Unify alternative?", a: "Yes, if you do your own sales and want one plan for the whole team. Not if your reps need email sequences, a dialer and CRM sync: Unify has them and Pancake doesn't." },
     { q: "How does pricing compare?", a: "As of October 2026, Unify has a Free plan, Base at $20 and Pro at $60 per seat a month, and custom Business plans. Each comes with credits. Pancake starts at $99 a month per workspace, with 60,000 credits your whole team shares." },
     { q: "What does Unify do that Pancake doesn't?", a: "Email sequences with managed mailboxes, a dialer, and HubSpot or Salesforce sync. Its Business plan adds website intent and product signals. Pancake doesn't do these." },
     { q: "Does Pancake charge per seat?", a: "No. Pancake starts at $99 a month per workspace, and your whole team is included. A second company is a second workspace with its own plan." },

@@ -26,6 +26,11 @@ import { TRIAL_CARD_REQUIREMENT, TRIAL_CREDITS_LABEL, TRIAL_LABEL } from "@/lib/
  *
  * Competitor searches keep their /<tool>-vs-pancake pages and /compare.
  *
+ * 2026-11-17: the Claude and ChatGPT pages say the words their searches use, each where it
+ * reads naturally: "prospecting" in the lede, "outbound" over the steps, the MCP server in the
+ * Claude page's first step (the ChatGPT page's already named it), "lead generation" over the
+ * Plays, and "Run your GTM from …" on the closing card.
+ *
  * noindex, out of the sitemap and llms.txt, linked from no page (SearchLandingPage.tsx says
  * why). Every figure comes from lib/trial.ts and lib/pricing.ts; the customer proof is the
  * homepage's own cards (lp-bento-data.ts); the eight ways, the control cards and two FAQ answers
@@ -127,15 +132,16 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
     hero: {
       badge: "Claude for sales",
       title: "Make Claude your sales machine",
-      lede: "Connect Pancake once. Then Claude finds real leads, tells you why each one fits and writes to them from your own account.",
+      lede: "Connect Pancake once. Then Claude does your prospecting: it finds real leads, tells you why each one fits and writes to them from your own account.",
     },
     steps: {
-      eyebrow: "How it works",
+      eyebrow: "Outbound from Claude",
       h2: "Tell Claude who to reach",
       items: [
         {
           title: "Connect Pancake",
-          body: "Add Pancake as a connector in Claude and sign in with your browser. No API key. Pancake reads your website and builds your Brain.",
+          // Claude's custom connector is Pancake's MCP server (guide-copy.ts STEP_CONNECT.claude: MCP_URL)
+          body: "Add Pancake's MCP server as a connector in Claude and sign in with your browser. No API key. Pancake reads your website and builds your Brain.",
         },
         {
           title: "Ask in plain English",
@@ -149,7 +155,7 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
       ],
     },
     plays: {
-      eyebrow: "Plays",
+      eyebrow: "Lead generation",
       h2: "Deploy GTM Plays from Claude",
       lede: "A Play is one GTM idea turned into a search that keeps running. Run one per audience.",
     },
@@ -164,7 +170,7 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
       COST,
       WHO,
     ],
-    final: { title: FIRST_SEARCH, body: FINAL.body },
+    final: { title: "Run your GTM from Claude", body: FINAL.body },
   },
 
   "ai-sales-agents": {
@@ -325,12 +331,12 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
     hero: {
       badge: "ChatGPT for sales",
       title: "Make ChatGPT your sales machine",
-      lede: "Connect Pancake once. Then ChatGPT finds real leads, tells you why each one fits and writes to them from your own account.",
+      lede: "Connect Pancake once. Then ChatGPT does your prospecting: it finds real leads, tells you why each one fits and writes to them from your own account.",
     },
     // The film is recorded in Claude. (No "@Pancake" here: homepage-lint reads it as a Slack mention.)
     filmNote: "The film shows Claude. ChatGPT works the same way once Pancake is connected.",
     steps: {
-      eyebrow: "How it works",
+      eyebrow: "Outbound from ChatGPT",
       h2: "Tell ChatGPT who to reach",
       items: [
         {
@@ -350,7 +356,7 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
       ],
     },
     plays: {
-      eyebrow: "Plays",
+      eyebrow: "Lead generation",
       h2: "Deploy GTM Plays from ChatGPT",
       lede: "A Play is one GTM idea turned into a search that keeps running. Run one per audience.",
     },
@@ -382,7 +388,7 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
       },
     ],
     final: {
-      title: FIRST_SEARCH,
+      title: "Run your GTM from ChatGPT",
       body: `Start your ${TRIAL_LABEL}, connect ChatGPT, create one Play. New leads keep coming.`,
     },
   },
