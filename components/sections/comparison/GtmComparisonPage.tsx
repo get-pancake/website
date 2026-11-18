@@ -2,8 +2,9 @@ import type { Viewport } from "next";
 import Link from "next/link";
 import { LuBadgeCheck, LuCheck, LuX } from "react-icons/lu";
 
-import { COMPARE_LINKS, COMPARE_META } from "@/components/sections/compare/compare-copy";
+import { COMPARE_HERO, COMPARE_LINKS, COMPARE_META } from "@/components/sections/compare/compare-copy";
 import {
+  COMPARE_HUB_GROUPS,
   COMPARE_PATH,
   compareEntry,
   compareName,
@@ -49,6 +50,9 @@ import "./comparison.css";
 // `factsReviewed`), so it never claims a review it did not get. 2026-11-10: Clay, Apollo,
 // ZoomInfo, Instantly, HeyReach, 11x and Smartlead, each read on the vendor's own pages that
 // day. Drop a page's own dates once a full review moves the two constants past them.
+// A page's own `modified` also dates a change made to some pages only: 2026-11-17, the thirteen
+// GTM tool pages took the "<Tool> alternative" eyebrow, the "Is Pancake a <Tool> alternative?"
+// question and the competitors line (below); the four AI agent pages did not change.
 // dateModified is the newer of the page's own date and PAGE_MODIFIED.
 const PAGE_MODIFIED = "2026-11-16";
 const FACTS_REVIEWED = "October 7, 2026";
@@ -128,11 +132,19 @@ function hubEntry(config: GtmComparisonConfig) {
  * they show the product, the customers and the trial line where these showed two text cards and
  * three badges. The comparison itself is unchanged, word for word.
  *
- *   nav → hero (H1 = the page's name as the badge + the heroLede, the heroSummary, Start free
- *   and Watch demo, the trial line) → the demo film → customer logos → the verdict (the two
- *   cards, then when the competitor fits better) → five differences → the feature table →
- *   customer proof → FAQ (+ keep reading, more comparisons, sources) → closing card (Start free
- *   and Talk to sales) → footer.
+ *   nav → hero (on a GTM tool's page the "<Tool> alternative" eyebrow, then H1 = the page's
+ *   name as the badge + the heroLede, the heroSummary, Start free and Watch demo, the trial
+ *   line) → the demo film → customer logos → the verdict (the two cards, then when the
+ *   competitor fits better) → five differences → the feature table → customer proof → FAQ
+ *   (+ keep reading, more comparisons, sources) → closing card (Start free and Talk to sales)
+ *   → footer.
+ *
+ * The searches that land on these pages ("clay alternative", "lemlist competitors") read their
+ * own words near the top (2026-11-17): the eyebrow over the H1, an "Is Pancake a <Tool>
+ * alternative?" question in each page's FAQ, and "More competitors compared" on the siblings
+ * line. Only on the GTM tools the site lists (COMPARE_HUB_GROUPS): the AI agents off the hub
+ * (Claude Tag, Viktor, OpenClaw, Paperclip) are what a founder runs Pancake from, not
+ * competitors (founder, 2026-10-13, compare-data.ts), so their pages keep the plain head.
  *
  * The kits: the /for kit and the Claude guide's sheet (.lp-vx, .lp-guide), the search pages'
  * sheet (.lp-search), and comparison.css for the few pieces only these pages have (.lp-cmp).
@@ -146,6 +158,8 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
   const entry = hubEntry(config);
   const canonicalUrl = `${SITE_ORIGIN}/${config.slug}`;
   const pageName = compareName(entry);
+  // a GTM tool the site lists, so a competitor: the "<Tool> alternative" words (comment above)
+  const isCompetitor = COMPARE_HUB_GROUPS.includes(entry.group);
   const dateModified = config.modified && config.modified > PAGE_MODIFIED ? config.modified : PAGE_MODIFIED;
   // "More comparisons": the other pages of this page's /compare group, minus the ones its own
   // "Keep reading" line already links.
@@ -205,6 +219,9 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
 
       <section id="main-content" tabIndex={-1} className="vx-hero sl-hero" aria-labelledby="cmp-hero-title">
         <div className="vx-col">
+          {/* the kit's section eyebrow, where the /for hero has its breadcrumb: same 20px line, so
+              the hero keeps the /for rhythm. Outside the H1, which stays "X vs Pancake: …" */}
+          {isCompetitor ? <p className="vx-eyebrow">{COMPARE_HERO.eyebrow(config.competitor)}</p> : null}
           {/* the H1 reads "Clay vs Pancake: Tables you build versus Plays you deploy from Claude." */}
           <h1 id="cmp-hero-title" className="vx-hero__h1">
             <span className="vx-badge vx-badge--hero" data-tone="brand">
@@ -358,7 +375,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
             </p>
             {moreComparisons.length > 0 ? (
               <p>
-                {COMPARE_LINKS.more}{" "}
+                {isCompetitor ? COMPARE_LINKS.moreCompetitors : COMPARE_LINKS.more}{" "}
                 {moreComparisons.map((c) => (
                   <span key={c.slug}>
                     <Link href={comparePath(c)}>{compareName(c)}</Link>,{" "}

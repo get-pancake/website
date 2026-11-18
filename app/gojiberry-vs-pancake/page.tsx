@@ -26,6 +26,7 @@ const config: GtmComparisonConfig = {
   slug: "gojiberry-vs-pancake",
   competitor: "Gojiberry",
   competitorInitial: "G",
+  modified: "2026-11-17",
   heroLede: "A focused outreach agent versus a full GTM platform.",
   heroSummary: "Gojiberry finds high-intent prospects and automates email and social outreach. Pancake researches your company from your website, builds a Play for each audience you sell to, and starts conversations from your own account.",
   competitorBody: "An AI prospecting product focused on identifying high-intent leads, scoring them, and running multichannel email and social outreach. It offers approval controls, a unified inbox, and agents that adapt campaigns over time.",
@@ -82,6 +83,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Pancake researches your company from your website. Every new Play starts from what it learned.",
   faqs: [
     { q: "What is the main difference between Gojiberry and Pancake?", a: "Gojiberry is focused on AI prospecting and multichannel outreach. Pancake is a GTM platform built around a shared Brain: what it knows about your buyers shapes every Play it builds and every message it writes." },
+    { q: "Is Pancake a Gojiberry alternative?", a: "Yes, if every audience you sell to should run from one Brain, with a Play for each. Gojiberry is the cleaner fit when outbound prospecting is your main job." },
     { q: "Do both products find high-intent leads?", a: "Yes. Gojiberry describes high-intent lead discovery and scoring as a core part of its prospecting agent. Pancake finds leads eight ways: people engaging with posts from your competitors, experts, or your own brand, everyone who reacted to one specific post, people posting about your topics, companies hiring for a role, companies using a technology, recently funded companies, companies that look like your best customers, and a direct match on role, industry, company size, and location. Every lead arrives with one line on why they fit." },
     { q: "Which product is better for a pure outbound motion?", a: "Gojiberry is a strong fit when you mainly need outbound prospecting, an integrated inbox, and explicit approval controls. Pancake is the better fit when you sell to more than one audience and want a Play for each, all drawing on one Brain." },
     { q: "Do Gojiberry and Pancake cost the same?", a: "At the time of review, Gojiberry publicly listed $99 a month as its starting point. Pancake starts at $99 a month with 60,000 credits and no seat fees. Lead searches use the credits, and unused ones roll over. Check Gojiberry's current plans and allowances before buying." },

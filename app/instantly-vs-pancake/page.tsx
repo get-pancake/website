@@ -30,7 +30,7 @@ const config: GtmComparisonConfig = {
   slug: "instantly-vs-pancake",
   competitor: "Instantly",
   competitorInitial: "I",
-  modified: "2026-11-10",
+  modified: "2026-11-17",
   factsReviewed: "November 10, 2026",
   heroLede: "Cold email at volume versus a personal message per lead.",
   heroSummary: "Instantly sends cold email at volume, with unlimited email accounts, warmup and a lead database. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
@@ -91,7 +91,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who to reach. It builds the Play and writes each lead a personal message from your own account.",
   faqs: [
     { q: "What is the main difference between Instantly and Pancake?", a: "Instantly is a cold email platform: you connect email accounts, warm them up and send sequences at volume. Pancake builds Plays: say who to reach, and it finds the people, checks each one against your ICP and writes to them from your own account." },
-    { q: "Is Pancake an alternative to Instantly?", a: "Only if you want to move away from cold email. Pancake sends no email. It finds people who fit your ICP and writes each one a personal message, sent from your own account." },
+    { q: "Is Pancake an Instantly alternative?", a: "Only if you want to move away from cold email. Pancake sends no email. It finds people who fit your ICP and writes each one a personal message, sent from your own account." },
     { q: "How does pricing compare?", a: "As of November 2026, Instantly's outreach plans are $47, $107 and $358 a month, and its lead database credits start at $47 a month, sold separately. Pancake starts at $99 a month per workspace with 60,000 credits. Its 7-day free trial comes with 30,000 credits, and a card is required to start it." },
     { q: "Does Pancake send cold email?", a: "No. Pancake doesn't send outreach by email. It can find a lead's work email, and you can export the leads you pick to your CRM or download them as CSV." },
     { q: "Can I use Instantly and Pancake together?", a: "Yes. They cover different channels. Keep Instantly for cold email, and use Pancake for Plays and personal messages from your own account." },

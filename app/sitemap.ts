@@ -72,6 +72,10 @@ function newestPostDate(): Date {
  * booking page (#382, #385, #386, last on 2026-11-08); /claude took the trial's credits
  * (#365, 2026-11-03). /plays and the octave and gojiberry pages say there is no cap on leads per
  * search any more, and /compare took a new title, order and alternatives list, all today.
+ *
+ * 2026-11-17: the thirteen GTM tool comparison pages name the search people make for another
+ * tool ("Clay alternative" over the H1, "Is Pancake a Clay alternative?" in the FAQ, "More
+ * competitors compared"). The four AI agent pages and /compare did not change.
  */
 const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "", updated: "2026-11-16", priority: 1.0 },
@@ -102,21 +106,21 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: COMPARE_PATH, updated: "2026-11-16", priority: 0.7 },
   { path: "/viktor-vs-pancake", updated: "2026-11-16", priority: 0.8 },
   { path: "/claude-tag-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/gojiberry-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/lemlist-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/origami-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/gojiberry-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/lemlist-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/origami-vs-pancake", updated: "2026-11-17", priority: 0.8 },
   // the GTM competitors buyers compare (audit plan 3.10), new on 2026-10-07
-  { path: "/unify-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/octave-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/alta-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/unify-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/octave-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/alta-vs-pancake", updated: "2026-11-17", priority: 0.8 },
   // data, cold email and outreach tools, new on 2026-11-10 (each page's own `modified`)
-  { path: "/clay-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/apollo-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/zoominfo-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/instantly-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/heyreach-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/11x-vs-pancake", updated: "2026-11-16", priority: 0.8 },
-  { path: "/smartlead-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/clay-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/apollo-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/zoominfo-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/instantly-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/heyreach-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/11x-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/smartlead-vs-pancake", updated: "2026-11-17", priority: 0.8 },
   { path: "/openclaw-vs-pancake", updated: "2026-11-16", priority: 0.8 },
   { path: "/pancake-vs-paperclips", updated: "2026-11-16", priority: 0.8 },
 ];

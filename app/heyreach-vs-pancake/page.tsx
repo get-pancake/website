@@ -32,7 +32,7 @@ const config: GtmComparisonConfig = {
   slug: "heyreach-vs-pancake",
   competitor: "HeyReach",
   competitorInitial: "H",
-  modified: "2026-11-10",
+  modified: "2026-11-17",
   factsReviewed: "November 10, 2026",
   heroLede: "Outreach for lists you import versus Plays that find the people.",
   heroSummary: "HeyReach automates social outreach across many sender accounts, for lead lists you import. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
@@ -94,7 +94,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who to reach. It builds the Play, checks every lead against your ICP and writes to the people who fit.",
   faqs: [
     { q: "What is the main difference between HeyReach and Pancake?", a: "HeyReach automates outreach for lead lists you import, across many sender accounts, priced per sender. Pancake builds Plays: say who to reach, and it finds the people, checks each one against your ICP and writes to them from your own account." },
-    { q: "Is Pancake an alternative to HeyReach?", a: "Yes, if you want the leads found as well as messaged. Not if you run outreach for many clients from dozens of accounts: HeyReach is built for that." },
+    { q: "Is Pancake a HeyReach alternative?", a: "Yes, if you want the leads found as well as messaged. Not if you run outreach for many clients from dozens of accounts: HeyReach is built for that." },
     { q: "How does pricing compare?", a: "As of November 2026, HeyReach's Growth plan is $79 a month per sender, Agency is $999 a month for 25 senders and Unlimited is $2,999 a month. Pancake starts at $99 a month per workspace with one sending account. Each extra account is $39 a month." },
     { q: "Where do the leads come from?", a: "In HeyReach, from lists you import from tools such as Clay, HubSpot or RB2B. In Pancake, from the Play: it searches 50+ data providers for the people you described and checks each one against your ICP." },
     { q: "Do both work from Claude?", a: "Yes. HeyReach has an MCP server, a CLI and an API. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in and no API key." },

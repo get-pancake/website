@@ -28,6 +28,7 @@ const config: GtmComparisonConfig = {
   slug: "alta-vs-pancake",
   competitor: "Alta",
   competitorInitial: "A",
+  modified: "2026-11-17",
   heroLede: "Named AI agents for revenue teams versus Plays a founder runs.",
   heroSummary: "Alta sells three AI agents for outbound, inbound and growth, priced by custom quote. Pancake runs Plays that find your buyers and writes to them, from $99 a month per workspace.",
   competitorBody: "An AI platform for go-to-market teams with three named agents. Katie runs outbound, Alex qualifies inbound leads by AI call and chat, and Luna finds signals and lookalikes across 50+ data sources.",
@@ -85,6 +86,7 @@ const config: GtmComparisonConfig = {
   closingLede: "Tell Pancake who to reach. It builds the Play, finds the people who fit and writes to them.",
   faqs: [
     { q: "What is the main difference between Alta and Pancake?", a: "Alta sells three AI agents for outbound, inbound and growth, by custom quote. Pancake runs Plays that find your buyers and write to them, from $99 a month per workspace." },
+    { q: "Is Pancake an Alta alternative?", a: "For founders who do their own sales and want to start today, yes. It doesn't replace Alta's inbound qualification, AI calls or email, SMS and WhatsApp outreach for a revenue team." },
     { q: "How much does Alta cost?", a: "As of October 2026, Alta publishes no prices. Its plans page asks for your team size and goals, then sends a custom quote. It says you pay for what you use." },
     { q: "What does Alta do that Pancake doesn't?", a: "Inbound qualification, AI calls, email, SMS and WhatsApp outreach, CRM integrations and white-glove onboarding. Pancake doesn't do these, apart from a one-way export of the leads you pick to your CRM. It finds people who fit and messages them from your own accounts." },
     { q: "Is there a free trial?", a: "Alta's site offers a demo and a custom quote. Pancake has a 7-day free trial with 30,000 credits, and a card is required to start it." },

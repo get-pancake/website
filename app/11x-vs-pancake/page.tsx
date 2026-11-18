@@ -30,7 +30,7 @@ const config: GtmComparisonConfig = {
   slug: "11x-vs-pancake",
   competitor: "11x",
   competitorInitial: "11",
-  modified: "2026-11-10",
+  modified: "2026-11-17",
   factsReviewed: "November 10, 2026",
   heroLede: "Revenue agents sold by demo versus Plays you start from Claude.",
   heroSummary: "11x sells AI agents for inbound, outbound and expansion across voice, chat, email and social, by demo. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
@@ -90,7 +90,7 @@ const config: GtmComparisonConfig = {
   faqs: [
     { q: "What is the main difference between 11x and Pancake?", a: "11x sells AI agents for inbound, outbound and account expansion across voice, chat, email and social, by demo. Pancake builds Plays: say who to reach, and it finds the people and writes to them from your own account, from $99 a month per workspace." },
     { q: "How much does 11x cost?", a: "As of November 2026, 11x publishes no prices. Its site asks you to book a demo." },
-    { q: "Is Pancake an alternative to 11x?", a: "For outbound to new buyers, yes: Pancake finds the people and starts the conversation. It doesn't replace 11x's voice and chat agents for inbound leads, or its calls to existing customers." },
+    { q: "Is Pancake an 11x alternative?", a: "For outbound to new buyers, yes: Pancake finds the people and starts the conversation. It doesn't replace 11x's voice and chat agents for inbound leads, or its calls to existing customers." },
     { q: "What does 11x do that Pancake doesn't?", a: "Inbound qualification by voice and chat, AI calls, outreach by email, SMS and WhatsApp, and expansion calls to existing customers. Pancake doesn't do these. It finds people who fit your ICP and messages them from your own account." },
     { q: "Is there a free trial?", a: "11x's site offers a demo. Pancake has a 7-day free trial with 30,000 credits, and a card is required to start it." },
     { q: "Can I run Pancake from Claude?", a: "Yes. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in and no API key. You create Plays, review leads and edit messages from the chat." },
