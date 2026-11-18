@@ -37,14 +37,14 @@ const config: GtmComparisonConfig = {
   heroSummary: "Clay gives GTM engineers a data marketplace, tables and workflows to build any play. Pancake lets you deploy any GTM play from Claude, ChatGPT or Codex: say who to reach, and Pancake builds the Play.",
   pitch: {
     title: "Skip the tables. Get the Play.",
-    lede: "Clay hands GTM engineers a toolkit. Pancake builds the Play for you: say who to reach in Claude, and get leads that fit, each with a personal message.",
+    lede: "Clay hands your GTM engineer a toolkit. Pancake hands them the Play: say who to reach in Claude, and get leads that fit, each with a personal message.",
   },
   competitorBody: "Infrastructure for GTM teams. One contract covers 200+ data and AI vendors, with waterfall enrichment, the Claygent research agent and a visual canvas for workflows. Its homepage says GTM engineers build on Clay.",
   competitorChoose: "Choose it when someone on your team builds data workflows.",
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. It finds the people, checks every lead against your ICP and writes each one a personal message in your voice.",
   pancakeChoose: "Choose it when you want the Play built for you.",
   verdictTitle: "Clay is the builder's toolkit. Pancake builds the Play.",
-  verdictLede: "Clay is the stronger choice when you have a GTM engineer and want to design every step. Pancake fits when you want to say who to reach and get a Play that runs.",
+  verdictLede: "Clay is the stronger choice when your GTM engineer wants to design every step in tables. Pancake fits when they would rather say who to reach and get a Play that runs.",
   competitorBestFit: "Clay is the better fit when a GTM engineer or a RevOps team wants 200+ data and AI vendors, waterfall enrichment, CRM auto-sync, ad audiences and control over every step of the workflow.",
   differencesLede: "Both turn data into outreach. They differ in who builds the workflow and in how you pay.",
   differences: [
