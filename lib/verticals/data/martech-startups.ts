@@ -7,14 +7,14 @@ import type { VerticalConfig } from "../types";
 export const martechStartups: VerticalConfig = {
   slug: "martech-startups",
   status: "approved",
-  category: "Startups & solo founders",
+  category: "Startups",
   evidence: "paying",
   updated: "2026-10-07",
 
   name: {
     plural: "martech startups",
     title: "Martech startups",
-    short: "martech founders",
+    short: "martech teams",
     badge: "For martech startups",
   },
 

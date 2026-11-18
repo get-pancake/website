@@ -91,7 +91,7 @@ const config: GtmComparisonConfig = {
     { feature: "Pricing", competitor: { text: "Free plan, then from $185 a month; data credits plus actions" }, pancake: { text: "From $99 a month per workspace, one kind of credit", mark: "yes" } },
     { feature: "Seats", competitor: { text: "Unlimited seats", mark: "yes" }, pancake: { text: "Whole team included", mark: "yes" } },
     { feature: "Free trial", competitor: { text: "Free plan; 14-day trial of paid plans", mark: "yes" }, pancake: { text: "7-day free trial with 30,000 credits, card required", mark: "yes" } },
-    { feature: "Best for", competitor: { text: "Teams with a GTM engineer or a RevOps owner" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
+    { feature: "Best for", competitor: { text: "Teams that build every data workflow themselves" }, pancake: { text: "B2B teams with a GTM engineer who would rather ship Plays than build tables" } },
   ],
   closingTitle: "Skip the build. Ask for the Play.",
   closingLede: "Tell Pancake who to reach. It builds the Play, checks every lead against your ICP and writes to the people who fit.",
@@ -101,7 +101,7 @@ const config: GtmComparisonConfig = {
     { q: "How does pricing compare?", a: "As of November 2026, Clay has a Free plan, Launch from $185 a month and Growth from $495, billed in data credits and actions. Pancake starts at $99 a month per workspace with 60,000 credits. Its 7-day free trial comes with 30,000 credits, and a card is required to start it." },
     { q: "What does Clay do that Pancake doesn't?", a:"A marketplace of 200+ data and AI vendors, multi-provider waterfalls, CRM auto-sync, ad audiences, email sequencing and, on Enterprise, data warehouse connections. Pancake covers none of these, apart from finding a lead's work email or phone number and a one-way export of the leads you pick to your CRM." },
     { q: "Do both work with AI agents?", a: "Yes. Clay offers a plugin for coding agents, a CLI and an API to build in Clay. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in and no API key. Ask for a Play in the chat, and Pancake builds it." },
-    { q: "Who should choose Pancake over Clay?", a: "Founders who do their own sales, and small B2B teams without a GTM engineer. Say who to reach, and Pancake builds the Play and writes to each lead under your name." },
+    { q: "Who should choose Pancake over Clay?", a: "B2B teams with a GTM engineer who would rather ship Plays from Claude than maintain tables. Say who to reach, and Pancake builds the Play and writes to each lead under your name." },
   ],
   related: [
     ...alternativesLink("clay-alternatives", "Clay alternatives"),

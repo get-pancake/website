@@ -169,7 +169,7 @@ function LpNavMenuList({ items }: { items: LpNavItem[] }) {
 const NAV_COLUMNS = [
   ["Sales, GTM & recruiting", "Marketing & creative agencies"],
   ["Tech & build agencies", "Consultants & advisors"],
-  ["IT, cloud & security", "Startups & solo founders"],
+  ["IT, cloud & security", "Startups"],
   ["Energy & industry", "Vertical software"],
 ] as const satisfies readonly (readonly VerticalCategory[])[];
 

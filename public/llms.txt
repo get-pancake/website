@@ -45,7 +45,7 @@ Claude (web, desktop and mobile), Claude Code, ChatGPT and Codex connect with a 
 
 ## Who it is for
 
-Pancake is for founders who do their own sales, small B2B teams, agencies and GTM engineers, especially those who already work with an AI agent. It gives them a repeatable way to find customers without wiring data providers and sending tools together themselves.
+Pancake is for B2B teams with a GTM engineer, especially those who already work with an AI agent. It gives them a repeatable way to find customers without wiring data providers and sending tools together themselves.
 
 ## Pricing
 

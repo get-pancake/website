@@ -38,7 +38,7 @@ const config: GtmComparisonConfig = {
   pancakeBody: "A GTM platform built around one Brain: your ideal customer, personas, competitors, messaging, and voice. Every Play starts from it. Each lead arrives with why they fit and gets a personal message written from that reason.",
   pancakeChoose: "Choose it when every audience you sell to should run from one Brain.",
   verdictTitle: "Choose Gojiberry for focused outbound. Choose Pancake for one Brain behind every Play.",
-  verdictLede: "Both can help a lean team reach prospects. The deciding question is whether you need an outreach specialist or a Play for each audience, all running from one Brain.",
+  verdictLede: "Both can help a GTM team reach prospects. The deciding question is whether you need an outreach specialist or a Play for each audience, all running from one Brain.",
   competitorBestFit: "Gojiberry is the cleaner fit if your immediate bottleneck is prospecting and personalized email or social outreach, and you want an inbox and approval controls built around that workflow.",
   differencesLede: "The products overlap in outbound. They differ in what learns, what executes, and how far the system carries your GTM.",
   differences: [
@@ -81,7 +81,7 @@ const config: GtmComparisonConfig = {
     { feature: "Unified inbox", competitor: { text: "Built in", mark: "yes" }, pancake: { text: "—" } },
     { feature: "Lead context", competitor: { text: "An intent score on each prospect", mark: "yes" }, pancake: { text: "One line on why each lead fits", mark: "yes" } },
     { feature: "Public starting price", competitor: { text: "$99/month", mark: "yes" }, pancake: { text: "From $99/month per workspace, whole team included", mark: "yes" } },
-    { feature: "Best for", competitor: { text: "Teams that want a focused outbound agent" }, pancake: { text: "Founders who want every Play working from one Brain" } },
+    { feature: "Best for", competitor: { text: "Teams that want a focused outbound agent" }, pancake: { text: "B2B teams with a GTM engineer who want every Play on one Brain" } },
   ],
   closingTitle: "Give every Play the same Brain.",
   closingLede: "Pancake researches your company from your website. Every new Play starts from what it learned.",

@@ -44,7 +44,7 @@ const config: GtmComparisonConfig = {
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. Every lead is checked against your ICP and gets a personal message in your voice, sent from your own account.",
   pancakeChoose: "Choose it when you do your own sales and want one plan for the whole team.",
   verdictTitle: "Apollo equips your reps. Pancake builds the Play.",
-  verdictLede: "Apollo is the stronger toolkit once you have reps, mailboxes and a CRM. Pancake fits founders and small teams who want to say who to reach and get a Play that runs.",
+  verdictLede: "Apollo is the stronger toolkit once you have reps, mailboxes and a CRM. Pancake fits B2B teams with a GTM engineer who want to say who to reach and get a Play that runs.",
   competitorBestFit: "Apollo is the better fit when several reps need contact data, email sequences, a dialer and CRM integrations, and each rep works from their own seat.",
   differencesLede: "Both find people to talk to, and both work from Claude. They differ in who does the work and in how you pay.",
   differences: [
@@ -91,7 +91,7 @@ const config: GtmComparisonConfig = {
     { feature: "CRM", competitor: { text: "CRM integrations, including Salesforce and HubSpot", mark: "yes" }, pancake: { text: "No sync: a one-way export to HubSpot, Attio, Pipedrive and others", mark: "no" } },
     { feature: "AI agents", competitor: { text: "Apollo MCP; works from Claude and ChatGPT", mark: "yes" }, pancake: { text: "Claude, Claude Code, ChatGPT and Codex, with a browser sign-in", mark: "yes" } },
     { feature: "Free trial", competitor: { text: "Free plan; 14-day trial on Basic and Professional", mark: "yes" }, pancake: { text: "7-day free trial with 30,000 credits, card required", mark: "yes" } },
-    { feature: "Best for", competitor: { text: "Sales teams with reps, mailboxes and a CRM" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
+    { feature: "Best for", competitor: { text: "Sales teams with reps, mailboxes and a CRM" }, pancake: { text: "B2B teams with a GTM engineer" } },
   ],
   closingTitle: "Stop filtering. Say who to reach.",
   closingLede: "Tell Pancake who to reach. It builds the Play, keeps searching and writes to the people who fit.",
@@ -101,7 +101,7 @@ const config: GtmComparisonConfig = {
     { q: "How does pricing compare?", a: "As of November 2026, Apollo has a Free plan, then Basic at $49, Professional at $79 and Organization at $119 per seat a month, billed annually. Basic and Professional cost $65 and $99 billed monthly. Pancake starts at $99 a month per workspace, with 60,000 credits your whole team shares." },
     { q: "Do both work from Claude?", a: "Yes. Apollo says it works where you work, in Claude and ChatGPT, and it has an MCP. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in and no API key. Ask for a Play in the chat, and Pancake builds it." },
     { q: "What does Apollo do that Pancake doesn't?", a: "Email sequences with deliverability tools, a dialer, call recording, a meeting scheduler and automated CRM enrichment. Pancake doesn't do these, apart from a one-way export of the leads you pick to your CRM." },
-    { q: "Who should choose Pancake over Apollo?", a: "Founders who do their own sales, and small B2B teams without reps to run sequences. Say who to reach, and Pancake builds the Play and writes to each lead under your name." },
+    { q: "Who should choose Pancake over Apollo?", a: "B2B teams with a GTM engineer who want Plays running instead of reps filtering a database. Say who to reach, and Pancake builds the Play and writes to each lead under your name." },
   ],
   related: [
     ...alternativesLink("apollo-alternatives", "Apollo alternatives"),

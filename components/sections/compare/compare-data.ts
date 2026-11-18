@@ -64,7 +64,7 @@ export const COMPARISONS: readonly CompareEntry[] = [
   { slug: "origami-vs-pancake", competitor: "Origami", group: "GTM tools", line: "Lists on demand versus Plays that keep searching." },
   { slug: "unify-vs-pancake", competitor: "Unify", group: "GTM tools", line: "A sales platform priced per seat versus one plan per workspace." },
   { slug: "octave-vs-pancake", competitor: "Octave", group: "GTM tools", line: "A context layer for your GTM stack versus Plays that reach people." },
-  { slug: "alta-vs-pancake", competitor: "Alta", group: "GTM tools", line: "Named AI agents for revenue teams versus Plays a founder runs." },
+  { slug: "alta-vs-pancake", competitor: "Alta", group: "GTM tools", line: "Named AI agents for revenue teams versus Plays your team runs." },
   // more outreach tools, new on 2026-11-10
   { slug: "heyreach-vs-pancake", competitor: "HeyReach", group: "GTM tools", line: "Outreach for lists you import versus Plays that find the people." },
   { slug: "11x-vs-pancake", competitor: "11x", group: "GTM tools", line: "Revenue agents sold by demo versus Plays you start from Claude." },

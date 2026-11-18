@@ -27,7 +27,7 @@ const config: GtmComparisonConfig = {
   heroSummary: "OpenClaw is open-source infrastructure for configuring agents, models, tools, channels, memory, and schedules. Pancake is a managed GTM platform: it builds a Play for each audience you sell to, finds the leads, and starts the conversations, all from one Brain.",
   competitorBody: "An open-source agent runtime for technical users who want control over providers, models, channels, tools, skills, workspaces, schedules, and deployment. You decide what the agent should do and maintain the system that does it.",
   competitorChoose: "Choose it when you want to build and own the agent stack.",
-  pancakeBody: "A finished GTM platform for founders and small B2B companies. Add your website and Pancake builds the Brain. Tell it who you want to reach, and it builds a Play to find them. There is no runtime, model, or server to manage.",
+  pancakeBody: "A finished GTM platform for B2B teams with a GTM engineer. Add your website and Pancake builds the Brain. Tell it who you want to reach, and it builds a Play to find them. There is no runtime, model, or server to manage.",
   pancakeChoose: "Choose it when you want customer acquisition running, not an agent project.",
   verdictTitle: "Choose OpenClaw to build. Choose Pancake to run GTM.",
   verdictLede: "OpenClaw offers flexibility and infrastructure ownership. Pancake packages the GTM expertise, runs it for you, and aims every Play at finding customers.",

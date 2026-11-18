@@ -28,7 +28,7 @@ export const CATEGORY_ORDER: VerticalCategory[] = [
   "Tech & build agencies",
   "Consultants & advisors",
   "IT, cloud & security",
-  "Startups & solo founders",
+  "Startups",
   "Vertical software",
   "Energy & industry",
 ];

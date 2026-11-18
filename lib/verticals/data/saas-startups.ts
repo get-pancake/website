@@ -10,14 +10,14 @@ import type { VerticalConfig } from "../types";
 export const saasStartups: VerticalConfig = {
   slug: "saas-startups",
   status: "approved",
-  category: "Startups & solo founders",
+  category: "Startups",
   evidence: "paying",
   updated: "2026-10-07",
 
   name: {
     plural: "SaaS startups",
     title: "SaaS startups",
-    short: "SaaS founders",
+    short: "SaaS teams",
     badge: "For SaaS startups",
   },
 
