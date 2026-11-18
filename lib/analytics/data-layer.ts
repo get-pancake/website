@@ -69,7 +69,8 @@ export type AcquisitionCtaId = WaitlistCtaId | CallCtaId | AppCtaId;
 const WAITLIST_CTA_ID_SET = new Set<string>(WAITLIST_CTA_IDS);
 const CALL_CTA_ID_SET = new Set<string>(CALL_CTA_IDS);
 const APP_CTA_ID_SET = new Set<string>(APP_CTA_IDS);
-const ATTRIBUTION_QUERY_KEYS = new Set([
+/** Query keys a page_location keeps (campaign and click ids); every other query value is dropped. */
+export const ATTRIBUTION_QUERY_KEYS = new Set([
   "utm_source",
   "utm_medium",
   "utm_campaign",
@@ -178,6 +179,29 @@ const EVENT_METADATA: Record<AcquisitionEventName, EventMetadata> = {
 type DataLayerWindow = Window & {
   dataLayer?: Array<Record<string, unknown>>;
 };
+
+/**
+ * Hands one event to Google Tag Manager. Once the container has loaded,
+ * `dataLayer.push` is Google's own function and runs its tags on the spot, so
+ * an error inside Google's code throws back into the caller: from a React
+ * effect it would swap the whole page for app/error.tsx. The app hit exactly
+ * that on its login page on 2026-11-17 (get-pancake/pancake-cmo#2305). The
+ * event is dropped instead and the page stays. Only the push is guarded: an
+ * error in our own code around it still surfaces. Every push goes through here
+ * (scripts/data-layer-push.test.mjs checks no file pushes on its own).
+ *
+ * @returns whether Google's tag took the event
+ */
+export function pushToDataLayer(event: Record<string, unknown>): boolean {
+  const analyticsWindow = window as DataLayerWindow;
+  analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
+  try {
+    analyticsWindow.dataLayer.push(event);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * GTM's data model can retain a Data Layer Variable from an earlier push.
@@ -356,8 +380,6 @@ export function pushAcquisitionEvent<Name extends AcquisitionEventName>(
   const metadata = EVENT_METADATA[eventName];
   const attributionId = readAttributionId();
   const pagePath = currentPagePath();
-  const analyticsWindow = window as DataLayerWindow;
-  analyticsWindow.dataLayer = analyticsWindow.dataLayer || [];
   const dataLayerEvent = {
     ...emptyMappedEventFields(),
     event: eventName,
@@ -372,7 +394,8 @@ export function pushAcquisitionEvent<Name extends AcquisitionEventName>(
     attribution_id: attributionId,
     ...cleanPayload,
   };
-  analyticsWindow.dataLayer.push(dataLayerEvent);
+  pushToDataLayer(dataLayerEvent);
+  // Our own listeners (the Meta pixel) still get the event if Google's tag failed.
   window.dispatchEvent(
     new CustomEvent(PANCAKE_ACQUISITION_EVENT, {
       detail: dataLayerEvent,

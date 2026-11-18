@@ -1,6 +1,6 @@
 # Pancake pricing: from $99 a month
 
-> Start at $99. Scale when it works. Run it yourself, let us build it, or connect your whole GTM stack. Self-serve trial: 15,000 free credits, valid for 7 days. Credit card required to start the trial.
+> Start at $99. Scale when it works. Run it yourself, let us build it, or connect your whole GTM stack. Self-serve trial: 30,000 free credits, valid for 7 days. Credit card required to start the trial.
 
 This file carries the facts of https://pancake.ai/pricing for AI agents. The page is the source of truth.
 
@@ -29,29 +29,28 @@ One plan, per workspace, billed monthly. Every level is the same product. Only t
 | About 960 to 4,800 | 480,000 | $679 | 14.3% |
 | About 1,920 to 9,600 | 960,000 | $1,299 | 18% |
 
-The leads figures are estimates. A lead as described below takes about 100 to 500 credits of research. A narrow audience costs more, and Pancake shows the real estimate before a search runs. A work email is 50 credits more, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.
+The leads figures are estimates. A lead as described below takes about 100 to 500 credits of research. A narrow audience costs more, and Pancake shows the real estimate before a search runs. A work email is 50 credits more and a phone number 500, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.
 
 Need more credits or a custom setup? Talk to sales: https://pancake.ai/demo
 
 What you get, at every level:
 
 - Your GTM Brain, built from your website.
-- 30+ data providers included.
+- 50+ data providers included.
 - Leads matched to your ICP.
 - A personal message for each lead.
-- You approve every lead first.
 - Your whole team. No seats to pay.
 
-Free trial: 7 days and 15,000 credits (about 30 to 150 leads), the same at every level. Signup starts without a card. A credit card is required to start the trial.
+Free trial: 7 days and 30,000 credits (about 60 to 300 leads), the same at every level. Signup starts without a card. A credit card is required to start the trial.
 
 ## What goes into one lead
 
-Leads matched to your business, not to a filter. Your GTM Brain, 30+ data providers and outreach in your voice work on every lead. All in the plan.
+Leads matched to your business, not to a filter. Your GTM Brain, 50+ data providers and outreach in your voice work on every lead. All in the plan.
 
 - Your GTM Brain: Pancake reads your website and learns your ICP, your personas, your competitors and your voice. Every search and message starts from that context, and it learns from each lead you approve or pass.
-- 30+ data providers, included: Dealroom, TheirStack, Coresignal and more, in one plan. No contract to sign, no API key, no data bill on the side.
+- 50+ data providers, included: Dealroom, TheirStack, Coresignal and more, in one plan. No contract to sign, no API key, no data bill on the side.
 - Live buying signals: funding rounds, open roles, tech stacks, posts and who reacts to them. A Play keeps searching on your schedule, so new leads keep coming.
-- Outreach from your account: a personal message for each lead, in your voice, sent from your own account once you approve the lead. A reply stops the sequence.
+- Outreach from your account: a personal message for each lead, in your voice, sent from your own account. A reply stops the sequence.
 
 ## What customers say
 
@@ -64,11 +63,11 @@ Leads matched to your business, not to a filter. Your GTM Brain, 30+ data provid
 
 ### How many leads will I get?
 
-About 120 to 600 qualified leads a month on 60,000 credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 30+ providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.
+About 120 to 600 qualified leads a month on 60,000 credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 50+ providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.
 
 ### How does the free trial work?
 
-Sign up free. Pancake reads your website, builds your Brain and shows the first leads it found. Add a card to start the trial: 7 days and 15,000 credits, about 30 to 150 leads.
+Sign up free. Pancake reads your website, builds your Brain and shows the first leads it found. Add a card to start the trial: 7 days and 30,000 credits, about 60 to 300 leads.
 
 ### What happens when the trial ends?
 

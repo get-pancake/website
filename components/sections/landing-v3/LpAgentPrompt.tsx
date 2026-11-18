@@ -5,9 +5,9 @@ import { useEffect, useRef, useState } from "react";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 /**
- * The agent install instruction + its copy button — Figma V2 4939:3751 (hero box) and 4964:4099 /
- * 4964:4100 (the code-wall card's head row). Owner: agents-view package. In
- * scripts/homepage-lint.mjs FILES.
+ * The agent install instruction + its copy button — Figma V2 4939:3751 (hero box; the code-wall
+ * card's head row, 4964:4099 / 4964:4100, left with that card on 2026-11-02). Owner: agents-view
+ * package. In scripts/homepage-lint.mjs FILES.
  *
  * The instruction names the outcome and the URL, not a tool: an agent with a shell will curl it,
  * one with a fetch tool will fetch it, and a chat assistant will open it. A `curl` one-liner made
@@ -24,7 +24,8 @@ const instruction = `Set up Pancake by reading ${SITE_ORIGIN}/install.md and fol
 const scheme = /^[a-z][a-z0-9+.-]*:\/\//i.exec(SITE_ORIGIN)?.[0] ?? "";
 const host = SITE_ORIGIN.slice(scheme.length);
 
-export type AgentPromptVariant = "hero" | "card";
+/** "card" (the code wall's) left on 2026-11-02: the hero box is the one place it shows */
+export type AgentPromptVariant = "hero";
 
 export function LpAgentPrompt({ variant }: { variant: AgentPromptVariant }) {
   const [status, setStatus] = useState<"idle" | "copied" | "error">("idle");

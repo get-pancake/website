@@ -4,6 +4,7 @@ import {
   BASE_LEVEL,
   CREDITS_PER_LEAD,
   EXTRA_SENDER_DOLLARS,
+  PHONE_CREDITS,
   WORK_EMAIL_CREDITS,
   formatCredits,
   leadsEstimateLabel,
@@ -27,9 +28,24 @@ import {
  * 2026-10-12: the founder's own new lede, with the H1 "Deploy GTM ideas in
  * seconds" (LpAudienceHeadline.tsx). His second pass that day: the first was
  * H1 "Agentic infrastructure to run your go-to-market" over a longer lede.
+ * 2026-10-27: the lede stays under the founder's new H1, "Infrastructure to
+ * run your GTM factory"; "Infrastructure powering your GTM factory" on
+ * 2026-10-28, then "Infrastructure to power your GTM factory" the same evening,
+ * and "Infrastructure powering" again since 2026-10-30 (neither echoes this
+ * line's "to run your").
+ * 2026-11-09, the vision homepage tried "Pancake is the revenue data warehouse.
+ * It does the engineering, so your agent can sell." On 2026-11-12 the founder
+ * kept "Pancake gives your agent the brain, the data and the tools to run your
+ * go-to-market.", then, the same night, ended it on revenue: "Changer le H2
+ * aussi … -> … to power your revenue engine."
+ * 2026-11-12, later, the founder's new H2 after a copy pass with devin.ai as the model (three
+ * verbs, the 1-2-3 in one sentence, the agent runs the Play): "Pancake connects your revenue
+ * data, adds live market signals, and lets your agent run the next best Play." It is also the
+ * site's description (search results, shared links) and the app's (pancake-cmo
+ * apps/frontend/index.html mirrors it).
  */
 export const SITE_DESCRIPTION =
-  "Pancake gives your agent the brain, the data and the tools to run your go-to-market.";
+  "Pancake connects your revenue data, adds live market signals, and lets your agent run the next best Play.";
 
 export const hero = {
   /** H1 line 1 (break before autonomous) */
@@ -223,7 +239,7 @@ export const talkToHuman = {
  * Pricing V3 — one plan, five levels of monthly credits (2026-10-13, launch
  * of pancake-cmo PR #1220, ADR 0078). It replaces the flat plan of 2026-08-06
  * ("$99, everything included, as many leads as you want"): leads are no
- * longer unmetered, the trial is 7 days with 15,000 credits, and an extra
+ * longer unmetered, the trial is 7 days with credits (30,000 since 2026-10-21), and an extra
  * sending account is a paid licence. The numbers live in lib/pricing.ts and
  * lib/trial.ts; this block is the words.
  *
@@ -232,8 +248,8 @@ export const talkToHuman = {
  *   change, so the page never says tier, package or pack.
  * - Say what the buyer gets (leads, messages, replies, proof from customers),
  *   then what a level gets them. The mechanics come last and short: credits
- *   pay for a search's research and each work email found, everything else
- *   is included (the app's Usage page says the same,
+ *   pay for a search's research, each work email found and each phone number
+ *   found, everything else is included (the app's Usage page says the same,
  *   `apps/frontend/src/features/credits/copy.ts`).
  * - Never a dollar value for a credit. Leads per credit: an ESTIMATE only,
  *   always "about" and as a range (lib/pricing.ts CREDITS_PER_LEAD, founder
@@ -294,10 +310,9 @@ export const pricingV2 = {
       messages". */
   value: [
     { rest: "Your GTM Brain, built from your website." },
-    { rest: "30+ data providers included." },
+    { rest: "50+ data providers included." },
     { rest: "Leads matched to your ICP." },
     { rest: "A personal message for each lead." },
-    { rest: "You approve every lead first." },
     { rest: "Your whole team. No seats to pay." },
   ],
   /** The line under the CTA (Okara's "Cancel anytime" slot): the trial is
@@ -324,29 +339,33 @@ export const pricingV2 = {
  *   personas, competitors, messaging and voice, every Play starts from it,
  *   and it learns from the leads they approve or pass (not from replies:
  *   lp-steps-content.ts).
- * - "30+ data providers" is the homepage's own label (lp-story-sources-data.ts
- *   hub; the founder's figure, 2026-10-13: "Mets 30+ data provider sur
- *   pancake.ai"); the three named here are the ones behind funding, open
- *   roles and people data. No contract or API key on the customer's side.
+ * - "50+ data providers" is the homepage's own label (lp-story-signals-data.ts,
+ *   the dive's signals story; the founder's figure: 50+ since 2026-11-12, on every page; it was
+ *   30+ from 2026-10-13, his "Mets 30+ data provider sur pancake.ai"); the three named here are the ones behind funding, open
+ *   roles and people data, as the dive's signals story draws them (Dealroom
+ *   on the seed round's disc). No contract or API key on the customer's side.
  * - Signals: the ways a Play finds people (/plays). Job changes and news are
  *   NOT among them.
  * - Outreach: a personal message per lead in the customer's voice, sent from
  *   their own account once they approve the lead; a reply stops the sequence.
- * The example is the homepage's cast (Tamsin Okafor of Quillfern, a lead of
- * the invented seller Acme, which designs websites for startups;
- * lp-story-sources-data.ts gives Dealroom for the seed round and TheirStack
- * for the open role), labelled as one lead. Keep them in step.
+ * The example is one lead of the homepage's invented seller Acme, which
+ * designs websites for startups: a role at a real startup, never an invented
+ * person's name (founder 2026-10-28: "get rid of those fake people looks
+ * cheap af", then roles at real companies; the signals are illustrative).
+ * It is the page's one lead, Mastra (lp-step-data.ts S1_LEADS). Its open role's badge is TheirStack's and its
+ * seed round's Dealroom's, as the dive's signals story draws them. Labelled
+ * as one lead. Keep them in step.
  */
 export const pricingLead = {
   title: "Leads matched to your business, not to a filter.",
-  lede: "Your GTM Brain, 30+ data providers and outreach in your voice work on every lead. All in the plan.",
+  lede: "Your GTM Brain, 50+ data providers and outreach in your voice work on every lead. All in the plan.",
   points: [
     {
       title: "Your GTM Brain",
       body: "Pancake reads your website and learns your ICP, your personas, your competitors and your voice. Every search and message starts from that context, and it learns from each lead you approve or pass.",
     },
     {
-      title: "30+ data providers, included",
+      title: "50+ data providers, included",
       body: "Dealroom, TheirStack, Coresignal and more, in one plan. No contract to sign, no API key, no data bill on the side.",
     },
     {
@@ -355,14 +374,14 @@ export const pricingLead = {
     },
     {
       title: "Outreach from your account",
-      body: "A personal message for each lead, in your voice, sent from your own account once you approve the lead. A reply stops the sequence.",
+      body: "A personal message for each lead, in your voice, sent from your own account. A reply stops the sequence.",
     },
   ],
   example: {
     kicker: "One lead, as you get it",
-    initials: "TO",
-    name: "Tamsin Okafor",
-    role: "Founder & CEO, Quillfern",
+    initials: "M",
+    name: "Founder @ Mastra",
+    role: "AI agent framework",
     signalsLabel: "Signals found",
     signals: [
       { text: "Raised a seed round this month", source: "Dealroom" },
@@ -371,7 +390,7 @@ export const pricingLead = {
     brainLabel: "Matched by your GTM Brain",
     brain: "You design websites for startups that just raised.",
     messageLabel: "Message, in your voice",
-    message: "Hi Tamsin, congrats on Quillfern’s seed round. Want a new website live before your marketing lead starts?",
+    message: "Congrats on Mastra’s seed round. Want a new website live before your marketing lead starts?",
   },
 } as const;
 
@@ -429,7 +448,8 @@ export const pricingProof = {
  * (CREDITS_PER_LEAD: planning figures from pancake-cmo ADR 0078, not a
  * measurement), so the lede says what it rests on and that a narrow audience
  * costs more. The note under the table is the whole of the credit mechanics a
- * buyer needs before the questions.
+ * buyer needs before the questions. The phone price joined it on 2026-11-03
+ * (founder OK; Find phone, pancake-cmo PAN-2280).
  */
 export const pricingLevels = {
   title: "More credits, more leads.",
@@ -437,7 +457,7 @@ export const pricingLevels = {
   columns: { credits: "Monthly credits", leads: "Qualified leads a month", price: "Price", saving: "Saving" },
   leads: (range: string) => `About ${range}`,
   perMonth: "/ month",
-  note: `A work email is ${WORK_EMAIL_CREDITS} credits more, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.`,
+  note: `A work email is ${WORK_EMAIL_CREDITS} credits more and a phone number ${PHONE_CREDITS}, only when Pancake finds one. Building Plays, messages and replies use no credits. Unused credits roll over.`,
 } as const;
 
 /**
@@ -462,7 +482,8 @@ export const pricingClose = {
  * ("One plan per workspace.", a customer's email of 2026-10-06) are here too.
  * The same answers ship in the page's FAQPage JSON-LD and in llms-full.txt.
  * Sources (pancake-cmo PR #1220 unless said):
- * - Leads: the estimate of lib/pricing.ts. A search keeps 1-50 leads.
+ * - Leads: the estimate of lib/pricing.ts. No cap on leads per search since
+ *   November 2026 (founder, 2026-11-16: the 50-lead cap is gone).
  * - Signup starts without a card; the card starts the trial (lib/trial.ts).
  *   The trial paywall shows the leads already found.
  * - Conversion: the level picked is charged at the trial's end. Cancel before
@@ -490,7 +511,7 @@ export const pricingFaq = {
   items: [
     {
       q: "How many leads will I get?",
-      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} qualified leads a month on ${formatCredits(BASE_LEVEL.credits)} credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 30+ providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
+      a: `About ${leadsEstimateLabel(BASE_LEVEL.credits)} qualified leads a month on ${formatCredits(BASE_LEVEL.credits)} credits, and twice that at each level up. Each one is matched to your business by your GTM Brain, on data from 50+ providers, and gets a personal message. It is an estimate: a narrow audience costs more, and Pancake shows the real one before a search runs.`,
     },
     {
       q: "How does the free trial work?",

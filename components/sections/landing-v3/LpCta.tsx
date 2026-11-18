@@ -59,12 +59,19 @@ export function LpCta({
   body = CTA_BODY,
   buttons,
   note,
+  setup,
   sky = false,
 }: {
   title?: string;
   body?: readonly [string, string] | string;
   buttons?: ReactNode;
-  note?: string;
+  /** the line under the buttons. Left out: the demo request line. `null`: no line at all (the
+      homepage, founder 2026-11-12: the card ends on its buttons and the setup line; the demo
+      page says how a request is handled). */
+  note?: string | null;
+  /** one row under the buttons (the homepage: the install row, LpHeroInstall place="cta",
+      since 2026-11-16; the one-line setup's outlined copy pill from 2026-10-21 until then) */
+  setup?: ReactNode;
   /** homepage only (V2 4911:739 "Transition from previous section", owner blue-band): the
       blue sky of the deep dive ending on a cream hill, two clouds around the card, and the
       card's r24. Off (the default), every other surface renders exactly as before. */
@@ -125,7 +132,8 @@ export function LpCta({
             </LpFxLink>
           </div>
         )}
-        {note ? <p className="lp-cta__note">{note}</p> : <p className="lp-cta__note">Sales consultations for companies with more than 50 employees or interest in White Glove.</p>}
+        {setup}
+        {note === null ? null : note ? <p className="lp-cta__note">{note}</p> : <p className="lp-cta__note">Tell us about your team. We review demo requests before sharing a booking link.</p>}
       </div>
     </div>
   );

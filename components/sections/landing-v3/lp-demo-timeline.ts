@@ -1,15 +1,17 @@
 // lp-demo-timeline.ts — the homepage demo window's shared constants. No DOM, no strings, no
 // React: imported by the client island (LpDemoPlayer) and the scroll effect, and safe anywhere.
 //
-// Two views play in turn in ONE app window, each a GSAP timeline of its own that the player
-// seeks with its clock (since 2026-10-13 for both; the class-cue tables that lived here went
-// with the old Claude view):
-//   0 Pancake        — lp-demo-pancake-timeline.ts
-//   1 Claude & Codex — lp-demo-claude-timeline.ts
+// The views play in turn in ONE app window, each a GSAP timeline of its own that the player
+// seeks with its clock (since 2026-10-13; the class-cue tables that lived here went with the old
+// Claude view). A view's KIND names its builder:
+//   pancake — the Pancake app's own view, lp-demo-pancake-timeline.ts
+//   agent   — an agent app with Pancake connected (Claude, ChatGPT…), lp-demo-claude-timeline.ts
 // A run's length is its timeline's duration; the player holds the end picture 2.2 s, then
-// crossfades to the other view.
+// crossfades to the next view.
 
-export type LpDemoView = 0 | 1;
+/** A view's index, in pill order. */
+export type LpDemoView = number;
+export type LpDemoKind = "pancake" | "agent";
 
 /* ── the one scroll effect: the window grows a little (founder 2026-10-12, _decisions §10) ────
    The window is assembled from the first frame. On desktop the card (window + pills) grows from

@@ -65,7 +65,7 @@ export function PricingPlans() {
           <p className="pricing-plan__intro">Your outbound, in your hands.</p>
           <ul>
             <Feature>Your GTM Brain</Feature>
-            <Feature>30+ data providers included</Feature>
+            <Feature>50+ data providers included</Feature>
             <Feature>Plays and outreach sequences</Feature>
             <Feature>Messages in your voice</Feature>
             <Feature>Unlimited teammates</Feature>

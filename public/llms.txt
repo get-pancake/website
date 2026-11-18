@@ -1,6 +1,6 @@
 # Pancake
 
-> Pancake is the Vercel for GTM: one place to deploy, host and run go-to-market agents. AI agents like Claude and Codex can plan a company's GTM but can't run it. They have no data to find people, no way to reach them and no memory of the business. Pancake is that missing piece. Your agent decides. Pancake runs it.
+> Pancake is the Vercel for GTM: one place to deploy, host and run go-to-market agents. AI agents like Claude and Codex can plan a company's GTM but can't run it. They have no data to find people, no way to reach them and no memory of the business. Pancake is that missing piece. The customer tells their agent who to reach. Pancake finds those people and starts the conversation.
 
 Pancake works from Claude, Claude Code, ChatGPT, Codex and other MCP clients with browser sign-in, and from its own web app. It starts at $99 a month per workspace, with 60,000 credits for lead searches.
 
@@ -16,7 +16,7 @@ Vercel takes a website built in any editor, puts it online and keeps it running.
 
 Pancake researches a company from its website and builds a GTM Brain: what it sells, its ideal customers, personas, competitors, messaging and voice. Every Play starts from that Brain, so the customer never re-explains the business.
 
-A Play is one GTM idea turned into a search that runs. The customer tells Pancake who to reach in one sentence, from their agent or in the app. Pancake asks what it needs to know, then builds the Play: who to find, how to find them, and how many leads per search (up to 50). Customers run as many Plays as they want, one per audience. Each Play keeps running on the schedule the customer picks, so new leads keep arriving.
+A Play is one GTM idea turned into a search that runs. The customer tells Pancake who to reach in one sentence, from their agent or in the app. Pancake asks what it needs to know, then builds the Play: who to find, how to find them, and how many leads per search, with no cap. Customers run as many Plays as they want, one per audience. Each Play keeps running on the schedule the customer picks, so new leads keep arriving.
 
 A Play can find:
 
@@ -33,23 +33,25 @@ Every lead arrives with one line on why it fits. Pancake checks each lead agains
 
 The customer approves every lead before anyone is contacted. Pancake writes a personal message for each lead from why they fit, in the customer's voice or from their own template. The customer can read and edit any message before it goes out. Messages go out as direct messages under the customer's name, from their own accounts. A Play sends from one account or rotates across up to ten, and each lead keeps the same sender.
 
-A reply stops the sequence. Pancake reads the reply and labels it "positive", "in your hands" or "not interested". When a prospect says yes, Pancake replies once with the customer's calendar link or app link. Every other reply goes back to the customer.
+A reply stops the sequence. Pancake reads the reply and labels it "positive", "in your hands" or "not interested". Every reply goes back to the customer to answer: Pancake never replies on its own.
 
 New leads also arrive in Slack, where the customer can approve or pass, and a morning email sums up what is waiting. When the customer rejects a lead with a reason, Pancake suggests Brain changes they can accept or ignore.
 
+Pancake can also find a lead's work email or phone number, for the leads the customer picks or for every new lead of a Play, shown as Email and Phone columns. The customer can send the leads they choose to their CRM (HubSpot, Attio, Pipedrive and others) from Settings › Integrations. It is a one-way export: Pancake adds new records and never changes a record already in the CRM.
+
 ## From your AI agent
 
-Claude (web, desktop and mobile), Claude Code, ChatGPT and Codex connect with a browser sign-in. There is no API key. Other MCP clients work when they support browser OAuth with a client ID metadata document: https://pancake.ai/install.md lists them. Cursor can't connect yet. From the agent, customers create and run Plays, review leads, add them to sequences and edit their messages, on the same Brain and the same leads as the app. Adding a lead to a sequence starts real outreach from the customer's own account. In the web app, the same work happens in a chat with the Pancake Agent.
+Claude (web, desktop and mobile), Claude Code, ChatGPT and Codex connect with a browser sign-in. There is no API key. Other MCP clients work when they support browser OAuth with a client ID metadata document: https://pancake.ai/install.md lists them. Cursor can't connect yet. From the agent, customers create and run Plays, review leads, find their work emails or phone numbers, add them to sequences, edit their messages and send leads to a connected CRM, on the same Brain and the same leads as the app. Adding a lead to a sequence starts real outreach from the customer's own account. Connecting a CRM happens in the app, in Settings › Integrations. In the web app, the same work happens in a chat with the Pancake Agent.
 
 ## Who it is for
 
-Pancake is for founders who do their own sales, small B2B teams, agencies and GTM engineers, especially those who already work with an AI agent. It gives them a repeatable way to find customers without wiring data providers and sending tools together themselves.
+Pancake is for B2B teams with a GTM engineer, especially those who already work with an AI agent. It gives them a repeatable way to find customers without wiring data providers and sending tools together themselves.
 
 ## Pricing
 
-One plan, from $99 a month per workspace. The customer picks the monthly credits: 60,000 for $99, 120,000 for $189, 240,000 for $359, 480,000 for $679 or 960,000 for $1,299. Every level is the same product. Credits pay for two things: the research a search does to find and check leads, and each work email found (50 credits). Building and testing Plays, messages, replies and teammates use no credits. As an estimate, a lead takes about 100 to 500 credits of research, so 60,000 credits find about 120 to 600 leads a month; a narrow audience costs more, and Pancake shows the real estimate before a search runs. Unused credits roll over, up to one month of credits. When credits run out, searches pause: there is no overage and no automatic top-up.
+One plan, from $99 a month per workspace. The customer picks the monthly credits: 60,000 for $99, 120,000 for $189, 240,000 for $359, 480,000 for $679 or 960,000 for $1,299. Every level is the same product. Credits pay for the research a search does to find and check leads, for each work email found (50 credits) and for each phone number found (500 credits). An email or phone number that isn't found costs nothing. Building and testing Plays, messages, replies and teammates use no credits. As an estimate, a lead takes about 100 to 500 credits of research, so 60,000 credits find about 120 to 600 leads a month; a narrow audience costs more, and Pancake shows the real estimate before a search runs. Unused credits roll over, up to one month of credits. When credits run out, searches pause: there is no overage and no automatic top-up.
 
-A workspace is one company. Its plan covers the Brain, every Play, the whole team and one sending account; each extra sending account is $39 a month. A second company or brand is a second workspace with its own plan. The free trial lasts 7 days and comes with 15,000 credits, and a credit card is required to start it.
+A workspace is one company. Its plan covers the Brain, every Play, the whole team and one sending account; each extra sending account is $39 a month. A second company or brand is a second workspace with its own plan. The free trial lasts 7 days and comes with 30,000 credits, and a credit card is required to start it.
 
 After the trial, the plan renews monthly on the card the customer added. Canceling before the trial ends costs nothing; after that, access continues until the end of the current billing period. No charge per teammate.
 
@@ -58,11 +60,11 @@ After the trial, the plan renews monthly on the card the customer added. Canceli
 - A sequence is a light warm-up, then up to 3 messages, sent on weekdays between 09:00 and 18:00 in the customer's time zone.
 - After a lead is added to a sequence, nothing goes out for 10 minutes, so the customer can undo.
 - Delivery: Slack, an 08:30 email digest, and daily, weekday, weekly or custom schedules.
-- MCP server: https://app.pancake.ai/api/mcp (Streamable HTTP, browser OAuth, no API key). About 90 tools, plugins for Claude Code and Codex, and 4 skills.
+- MCP server: https://app.pancake.ai/api/mcp (Streamable HTTP, browser OAuth, no API key). 130+ tools, plugins for Claude Code and Codex, and 5 skills.
 
 ## Product boundaries
 
-Pancake finds a company's buyers and starts the conversation, from the customer's own accounts. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. It does not send outreach by email, sync leads to a CRM, identify website visitors, look up phone numbers or make calls. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on October 13, 2026 to match the current product.
+Pancake finds a company's buyers and starts the conversation, from the customer's own accounts. Its CRM link is a one-way export of the leads the customer picks, not a sync. It is not a content or SEO tool, an AI co-founder, a general-purpose AI employee, an OpenClaw hosting service, or a platform that runs engineering, finance, legal, HR or support. It does not send outreach by email, identify website visitors or make calls. Older blog articles about those topics keep their URLs; their descriptions of Pancake were last rewritten on October 13, 2026 to match the current product.
 
 ## Key pages
 
@@ -70,17 +72,23 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Pricing](https://pancake.ai/pricing) — one plan, from $99 a month per workspace with 60,000 credits; what credits pay for and the billing answers
 - [White Glove](https://pancake.ai/white-glove) — we build your outbound machine: your custom GTM Brain, unlimited Plays and credits, weekly office hours with a dedicated GTM engineer, $3,000 a month ([Markdown](https://pancake.ai/white-glove.md))
 - [Example Plays](https://pancake.ai/plays) — 120 example Plays for 40 kinds of B2B business, grouped by how each Play finds people, plus funding, lookalikes, role match, web evidence and reactions to one post
+- [Recently funded startups](https://pancake.ai/plays/recently-funded-startups) — Plays that find startups with a dated funding round, then the people to sell to there
+- [Companies hiring](https://pancake.ai/plays/companies-hiring) — Plays that find companies with recent job posts for a role, staffing agencies left out
+- [Companies by tech stack](https://pancake.ai/plays/tech-stack) — Plays that find companies whose recent job posts ask for a tool
 - [Use Pancake in Claude](https://pancake.ai/claude) — connect Pancake to Claude, ChatGPT, Claude Code or Codex over MCP, with prompts
+- [Use Pancake in ChatGPT](https://pancake.ai/chatgpt) — connect Pancake to ChatGPT as a custom MCP server, with prompts
+- [Use Pancake in Codex](https://pancake.ai/codex) — connect Pancake to Codex CLI with one setup line, with prompts
 - [Use Pancake in Claude, as Markdown](https://pancake.ai/guides/claude.md) — the same guide written for an agent to follow
 - [Connect your agent](https://pancake.ai/install.md) — setup steps an AI agent can follow to connect Pancake over MCP
 - [Pancake skills](https://raw.githubusercontent.com/get-pancake/agent-plugins/main/skills.md) — how an agent installs the Pancake skills
 - [Full text](https://pancake.ai/llms-full.txt) — this file, the setup steps, the Claude guide and the pricing answers in one document
 - [Blog](https://pancake.ai/blog) — the complete article archive
+- [Blog feed](https://pancake.ai/blog/rss.xml) — every published post, newest first (RSS); new guides go live on their scheduled date
 - [Support](https://pancake.ai/support) — product, account, billing and connection help
 - [Careers](https://pancake.ai/careers) — the team and open roles
 - [Privacy Policy](https://pancake.ai/privacy) — what Pancake (Basalt AI Inc.) collects and how it is used
 - [Terms of Service](https://pancake.ai/terms) — the terms for the website and the app
-- [Comparisons](https://pancake.ai/compare) — Pancake beside the GTM tools buyers weigh it against (Origami, Unify, Octave, Alta, Lemlist, Gojiberry), plus the blog's guides to alternatives for GTM tools
+- [Comparisons](https://pancake.ai/compare) — Pancake beside the GTM tools buyers weigh it against (Origami, Unify, Octave, Alta, Lemlist, Gojiberry, Clay, Apollo, ZoomInfo, Instantly, HeyReach, 11x, Smartlead), plus the blog's guides to alternatives for GTM tools
 - [Viktor vs Pancake](https://pancake.ai/viktor-vs-pancake) — broad AI employee vs Plays that find buyers and start the conversation
 - [Claude Tag vs Pancake](https://pancake.ai/claude-tag-vs-pancake) — ambient general teammate vs focused autonomous GTM execution
 - [Gojiberry vs Pancake](https://pancake.ai/gojiberry-vs-pancake) — prospecting and outreach vs one GTM Brain behind every Play
@@ -89,6 +97,13 @@ Pancake finds a company's buyers and starts the conversation, from the customer'
 - [Unify vs Pancake](https://pancake.ai/unify-vs-pancake) — an outbound platform for sales reps, priced per seat plus credits, vs Plays that find buyers from $99 a month per workspace
 - [Octave vs Pancake](https://pancake.ai/octave-vs-pancake) — a context layer that feeds your GTM tools and agents vs Plays that find buyers and start the conversation
 - [Alta vs Pancake](https://pancake.ai/alta-vs-pancake) — named AI agents for outbound, inbound and calls, sold by custom quote, vs self-serve Plays from $99 a month per workspace
+- [Clay vs Pancake](https://pancake.ai/clay-vs-pancake) — data tables and workflows a GTM engineer builds vs Plays you ask for in Claude, from $99 a month per workspace
+- [Apollo vs Pancake](https://pancake.ai/apollo-vs-pancake) — a contact database with sequences and a dialer, priced per seat, vs Plays you ask for in Claude, on one plan per workspace
+- [ZoomInfo vs Pancake](https://pancake.ai/zoominfo-vs-pancake) — an enterprise GTM data platform sold in custom packages vs self-serve Plays from $99 a month per workspace
+- [Instantly vs Pancake](https://pancake.ai/instantly-vs-pancake) — cold email at volume, with unlimited email accounts and warmup, vs Plays that write each lead a personal message from your own account
+- [HeyReach vs Pancake](https://pancake.ai/heyreach-vs-pancake) — outreach automation for lists you import, priced per sender, vs Plays that find the people and write to each one
+- [11x vs Pancake](https://pancake.ai/11x-vs-pancake) — AI agents for voice, chat, email and social, sold by demo, vs self-serve Plays from $99 a month per workspace
+- [Smartlead vs Pancake](https://pancake.ai/smartlead-vs-pancake) — cold email infrastructure with unlimited mailboxes and warmup vs Plays you ask for in Claude, with no mailboxes to run
 - [OpenClaw vs Pancake](https://pancake.ai/openclaw-vs-pancake) — an open-source agent runtime you configure vs a managed GTM platform
 - [Paperclip vs Pancake](https://pancake.ai/pancake-vs-paperclips) — a self-hosted control plane for AI companies vs a managed GTM platform
 
@@ -153,6 +168,24 @@ Articles about finding B2B customers and the tools people compare with Pancake.
 - [Pancake vs Hiring a BDR: The Economics of AI-Run Outbound](https://pancake.ai/blog/pancake-vs-hiring-a-bdr) — A first BDR costs about $108,600 a year, fully loaded. Pancake starts at $99 a month. What each one does, where the human still wins, and when to hire.
 - [Viktor Alternatives: 8 AI Agents and Tools Compared for 2026](https://pancake.ai/blog/viktor-alternatives) — Viktor alternatives compared: Pancake, Lindy, Claude Tag, Dust, Glean, Zapier Agents, Relevance AI and Slackbot, with September 2026 prices and best fits.
 - [Pancake vs Victora: A Leads List vs a Play That Runs](https://pancake.ai/blog/pancake-vs-victora) — Victora reads Reddit and Hacker News and hands you a leads list for $49 a month. Pancake finds B2B buyers eight ways and runs outreach, from $99 a month.
+
+## Guides for web design agencies
+
+How web design studios find clients: the channels that work, first messages, niches, moving up to B2B budgets, referrals, white label, and the partner programs of Webflow, Framer and WordPress.
+
+- [How to Get Web Design Clients in 2026: 11 Channels, Ranked](https://pancake.ai/blog/how-to-get-web-design-clients) — How to get web design clients in 2026: 11 channels ranked by speed, cost and deal size, the Webflow and Framer programs, and which three to start with.
+- [Lead Generation for Web Design Agency Owners: Build a Steady Flow](https://pancake.ai/blog/lead-generation-for-web-design-agencies) — Lead generation for web design agency owners: why bought web design leads disappoint, which sources hold up, and how to spot companies about to buy a site.
+- [How to Find Businesses That Need a Website: 12 Signals to Watch](https://pancake.ai/blog/how-to-find-businesses-that-need-a-website) — How to find businesses that need a website: 12 signals, local and B2B, with where to see each, from Google Maps listings to job posts and Form D filings.
+- [Web Design Cold Email Templates and DMs: 8 Messages Tied to a Reason](https://pancake.ai/blog/web-design-cold-outreach) — Web design cold email templates with DM versions: 8 first messages tied to a real reason, two follow-ups, what never to send, and the CAN-SPAM basics.
+- [Best Niche for Web Design Agency Owners: 8 Niches and a 30-Day Test](https://pancake.ai/blog/best-niches-for-web-design-agencies) — The best niche for web design agency owners: 8 niches scored on deal size, rebuild cycle, buyer access and referrals, plus a 30-day test before you commit.
+- [How to Get High Paying Web Design Clients: Move Up to B2B Budgets](https://pancake.ai/blog/how-to-get-high-paying-web-design-clients) — How to get high paying web design clients: which buyers have real budgets, how B2B marketing teams buy a site, the proof they need, and how to reach them.
+- [How to Get Webflow Clients: 6 Channels, From Job Posts to Templates](https://pancake.ai/blog/how-to-get-webflow-clients) — How to get Webflow clients in 2026: the Webflow Partner Program and its directory, templates, the community, and companies hiring a Webflow developer.
+- [How to Get Framer Clients: Experts, Templates and Funded Startups](https://pancake.ai/blog/how-to-get-framer-clients) — How to get Framer clients in 2026: how the Framer Experts directory ranks you, the agency program's $25K bar, templates that sell you, and funded startups.
+- [How to Get WordPress Clients (and Keep Them on a Care Plan)](https://pancake.ai/blog/how-to-get-wordpress-clients) — How to get WordPress clients without racing to the bottom: partner directories from Automattic and WP Engine, Codeable, care plans, and job posts to watch.
+- [White Label Web Design Partner: How to Win Agencies as Clients](https://pancake.ai/blog/white-label-web-design-partners) — Become a white label web design partner for marketing, SEO and PPC agencies: who buys, where to find them, pricing models, margins, NDAs and non-solicits.
+- [Web Design Referral Program: Fees, Scripts and Partners](https://pancake.ai/blog/web-design-referral-program) — How to run a web design referral program: who refers clients, which referral fee to pay, when to ask, scripts to send, and how to track every intro.
+- [How to Get Web Design Clients Fast: A 30-Day Plan](https://pancake.ai/blog/how-to-get-web-design-clients-fast) — How to get web design clients fast: a 30-day plan with weekly steps, daily targets, one offer to lead with, scripts, and the shortcuts that backfire.
+- [How to Sell Web Design Services: A 6-Step Sales Process](https://pancake.ai/blog/how-to-sell-web-design-services) — How to sell web design services: qualify the lead, run the discovery call, scope it, price a three-option proposal, follow up and close with a deposit.
 
 ## Optional
 
@@ -226,7 +259,7 @@ The rest of the blog archive, mostly on topics outside the product (see Product 
 - [Pancake vs CoFounder.AI: One Finds Your Buyers, One Works Across the Business](https://pancake.ai/blog/pancake-vs-cofounder-ai) — CoFounder.AI is an AI business partner with six specialists from $39/month. Pancake finds B2B buyers from $99/month per workspace. Scope, pricing and fit.
 - [Pancake vs Doola: One Runs Your GTM, One Files Its Paperwork](https://pancake.ai/blog/pancake-vs-doola) — Doola's AI Co-Founder handles U.S. formation, compliance, and banking for e-commerce founders. Pancake finds B2B buyers and runs outreach. Compare them.
 - [Pancake vs Locus Founder: Same Goal, Different Machines](https://pancake.ai/blog/pancake-vs-locus-founder) — Locus Founder builds an internet business from a text message. Pancake finds B2B buyers and runs outreach for a company you run. Which fits your stage?
-- [Pancake vs OneManCompany: One Runs Your GTM, One Builds a Pixel-Art Office Simulation](https://pancake.ai/blog/pancake-vs-onemancompany) — OneManCompany is a free, open-source agent OS where AI employees work in a pixel-art office. Pancake finds buyers for B2B founders. What each does.
+- [Pancake vs OneManCompany: One Runs Your GTM, One Builds a Pixel-Art Office Simulation](https://pancake.ai/blog/pancake-vs-onemancompany) — OneManCompany is a free, open-source agent OS where AI employees work in a pixel-art office. Pancake finds buyers for B2B teams. What each does.
 - [Pancake vs Polsia: One Finds Your Buyers, One Runs the Whole Company](https://pancake.ai/blog/pancake-vs-polsia) — Pancake vs Polsia: what each one runs, the fees Polsia takes on payments and ad spend, Pancake's plan from $99 a month, and which fits your company.
 - [Pancake vs Startup.Studio: One Runs Your GTM, One Builds a New Company From Scratch](https://pancake.ai/blog/pancake-vs-startup-studio) — Startup.studio staffs a new company with AI agents while you act as the board. Pancake finds B2B buyers and runs outreach for the company you already run.
 - [Pancake vs Thomas: One Is an AI Founder, One Makes You a Better One](https://pancake.ai/blog/pancake-vs-thomas) — Thomas (YC P26) is an AI founder that runs its own companies and isn't for sale. Pancake works for you: it finds your buyers and starts conversations.
@@ -243,4 +276,4 @@ The rest of the blog archive, mostly on topics outside the product (see Product 
 
 ---
 
-Last updated: October 13, 2026
+Last updated: November 3, 2026

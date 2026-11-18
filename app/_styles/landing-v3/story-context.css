@@ -1,0 +1,78 @@
+/* Story "context" — block 1 of the deep dive, "Your agent knows what to do
+   next" (the founder's "1/ Next best action + Unified GTM context",
+   2026-10-28), LpStoryContext. No claim and no UI (founder: "no UI should not
+   mean text it should mean abstraction of what our infrastructure does"): the
+   inputs (ICP, Voice, the CRM's mark) each draw a grey wire into one plum
+   centre; one line runs from it to one account under a cluster (which
+   account), then on to a Play (which Play), and a loop runs from the Play
+   back onto the centre (it remembers what worked: the founder's "un poil de
+   densité informationnelle", the same evening). No dot sits on a node's
+   edge: every line meets its node itself.
+
+   Everything shared is the kit's (story-kit.css: the white disc, the wires,
+   the near-black hub colour, the names and their rise). This file holds
+   what is this story's only: the centre's plum,
+   the accounts' tone, the Play's mark, the labels in the kicker's ink, the
+   loop's round ends and "Thinking…", which only the motion shows.
+   Every place is written inline from lp-story-context-data.ts (stage px on
+   the 752x489 design box); the stops' tones are inline from the data too.
+   The markup rests on the END picture; the timeline
+   (lp-story-context-timeline.ts) sets frame 0: the centre and the accounts,
+   the rest hidden.
+
+   Traps (the kit's T1-T5 hold): every selector is compound (T1: `.lp p
+   { margin: 0 }` and the shell's `.lp-dive-scene * { font-family }` tie with
+   single-class rules). Every dot lands by its `r` attribute (T2), never a
+   transform; the accounts' scan tweens their fill and lets go of it, so
+   this file's tone is theirs again at rest. The labels are the kit's names
+   (a centring box, no transform), so the kit's rise is the only transform
+   they ever carry.
+   No will-change, no keyframes: the stage is GSAP-only and plays once. */
+
+/* the unified context: the plum disc of the steps' Brain centre (steps.css
+   .lp-s1-center), r 20. The accounts' scan lights them in this plum (the
+   timeline reads it from here) */
+.lp-sctx .lp-sctx-center {
+  fill: var(--lp-ink-100);
+}
+
+/* an account not picked: the brand's disabled tone (--lp-disabled-text). The
+   picked one (data-picked) turns into the kit's near-black dot, which grows
+   over it */
+.lp-sctx .lp-sctx-account {
+  fill: var(--lp-ink-60);
+}
+
+/* which Play: the stop's tone is inline from the data (--lp-pink-30, the
+   infra card's Tools tone); its play mark is white on the pink. It is a path
+   in the wires' svg, so it also takes off the kit's wire stroke
+   (story-kit.css `.lp-sk-wires path`) */
+.lp-sctx .lp-sctx-play-mark {
+  fill: #fff;
+  stroke: none;
+}
+
+/* the row under the line ("Which account", "Which Play"), the loop's
+   "Remembers what worked" and "Thinking…": the kit's name in the kicker's
+   ink (ink-80, as the lineage story's group labels), so they sit back from
+   the names */
+.lp-sctx .lp-sctx-head {
+  color: var(--lp-ink-80);
+}
+
+/* "Thinking…" under the centre: the motion shows it while the accounts are
+   scanned and fades it as the pick lands. Hidden at rest: the END picture
+   (this markup) never shows it */
+.lp-sctx .lp-sctx-thinking {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* the loop back: the launch film's hand-drawn arrow (founder: "this is on
+   brand"), a round-ended stroke and its open arrowhead, in the kit's wire
+   grey and weight. The network's wires keep their flat ends, which meet
+   their nodes exactly */
+.lp-sctx [data-node="loop"] path {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}

@@ -20,37 +20,72 @@ import type { PlayOnceRuntime } from "./lp-play-once";
  */
 export type DiveStageLoader = () => Promise<PlayOnceRuntime>;
 
+/** the vision homepage's five problem stories: one builder, which reads the scene from its root */
+const problem: DiveStageLoader = () =>
+  Promise.all([import("@/lib/gsap"), import("./lp-story-problems-timeline")]).then(
+    ([{ gsap }, { buildStoryProblem, buildStoryProblemSteps }]) => ({
+      gsap,
+      build: buildStoryProblem,
+      steps: buildStoryProblemSteps,
+    }),
+  );
+
+/** the vision homepage's four toy pictures: one builder, which reads the story from its root */
+const toy: DiveStageLoader = () =>
+  Promise.all([import("@/lib/gsap"), import("./lp-toy-story-timelines")]).then(([{ gsap }, { buildToyStory, buildToyStorySteps }]) => ({
+    gsap,
+    build: buildToyStory,
+    steps: buildToyStorySteps,
+  }));
+
 export const DIVE_LOADERS: Record<DiveItemId, DiveStageLoader> = {
-  sources: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-sources-timeline")]).then(
-      ([{ gsap }, { buildStorySources, buildStorySourcesSteps }]) => ({
+  "t-engine": toy,
+  "t-journey": toy,
+  "t-merge": toy,
+  "t-ping": toy,
+  "p-sources": problem,
+  "p-dedup": problem,
+  "p-matching": problem,
+  "p-history": problem,
+  "p-moves": problem,
+  context: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-context-timeline")]).then(
+      ([{ gsap }, { buildStoryContext, buildStoryContextSteps }]) => ({
         gsap,
-        build: buildStorySources,
-        steps: buildStorySourcesSteps,
+        build: buildStoryContext,
+        steps: buildStoryContextSteps,
       }),
     ),
-  message: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-message-timeline")]).then(
-      ([{ gsap }, { buildStoryMessage, buildStoryMessageSteps }]) => ({
+  signals: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-signals-timeline")]).then(
+      ([{ gsap }, { buildStorySignals, buildStorySignalsSteps }]) => ({
         gsap,
-        build: buildStoryMessage,
-        steps: buildStoryMessageSteps,
+        build: buildStorySignals,
+        steps: buildStorySignalsSteps,
       }),
     ),
-  learns: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-learns-timeline")]).then(
-      ([{ gsap }, { buildStoryLearns, buildStoryLearnsSteps }]) => ({
+  lineage: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-lineage-timeline")]).then(
+      ([{ gsap }, { buildStoryLineage, buildStoryLineageSteps }]) => ({
         gsap,
-        build: buildStoryLearns,
-        steps: buildStoryLearnsSteps,
+        build: buildStoryLineage,
+        steps: buildStoryLineageSteps,
       }),
     ),
-  claude: () =>
-    Promise.all([import("@/lib/gsap"), import("./lp-story-claude-timeline")]).then(
-      ([{ gsap }, { buildStoryClaude, buildStoryClaudeSteps }]) => ({
+  ping: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-ping-timeline")]).then(
+      ([{ gsap }, { buildStoryPing, buildStoryPingSteps }]) => ({
         gsap,
-        build: buildStoryClaude,
-        steps: buildStoryClaudeSteps,
+        build: buildStoryPing,
+        steps: buildStoryPingSteps,
+      }),
+    ),
+  mcp: () =>
+    Promise.all([import("@/lib/gsap"), import("./lp-story-mcp-timeline")]).then(
+      ([{ gsap }, { buildStoryMcp, buildStoryMcpSteps }]) => ({
+        gsap,
+        build: buildStoryMcp,
+        steps: buildStoryMcpSteps,
       }),
     ),
 };

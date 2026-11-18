@@ -1,0 +1,114 @@
+---
+title: "Intent Data: What It Is, How It's Collected, and Where It Falls Short"
+seo_title: "Intent Data: First, Second and Third-Party, Explained"
+description: "Intent data explained: first, second and third-party types, how Bombora, 6sense, ZoomInfo and G2 say they collect it, its limits, and what to pair it with."
+date: "2026-12-02"
+last_updated: "2026-12-02"
+related:
+  - "ai-gtm"
+  - "buying-signals-b2b"
+  - "signal-based-selling"
+faq:
+  - question: "What is intent data?"
+    answer: "Intent data is evidence that a company, or someone at it, is researching a topic linked to what you sell: reading articles, comparing vendors, viewing pricing pages. Sales and marketing teams use it to guess which accounts are in market before those accounts get in touch. Most of it is reported at the company level and scored against that company's usual activity."
+  - question: "What is first-party intent data?"
+    answer: "First-party intent data is research behavior you collect yourself: visits to your website and pricing page, content downloads, webinar sign-ups, product usage and replies to your emails. It is the most trustworthy kind, because you know how it was gathered, but it only covers people who already found you. Anonymous visits usually resolve to a company, not a person."
+  - question: "Who are the main intent data providers?"
+    answer: "As of November 2026, well-known third-party providers include Bombora, which runs a data co-op of B2B publishers and brand sites, 6sense, which collects keyword intent from its own publisher network, and ZoomInfo. Review sites such as G2 sell second-party intent from activity on their own pages, and platforms such as 6sense combine several of these feeds in one view."
+  - question: "How accurate is intent data?"
+    answer: "It is directional, not precise. Third-party intent says research on a topic rose above a company's own baseline, not who did the reading or why. Providers match activity to companies mostly through IP addresses and discard what they can't match, and some sources are noisier than others. Use it to rank accounts, then confirm with a signal you can see."
+  - question: "Does intent data identify individual people?"
+    answer: "Mostly not. Third-party intent usually names a company: 6sense, for example, says it identifies the account behind anonymous research, not the individual. Some providers now add person-level layers, such as ZoomInfo's Person-Level Intent. First-party data can tie activity to a known contact once that person fills in a form or clicks a tracked link."
+---
+
+**TL;DR:** Intent data is evidence that a company is researching a topic tied to what you sell, used to spot accounts in market before they contact you. First-party intent comes from your own site, product and inbox. Second-party intent comes from another company's platform, such as a software review site. Third-party intent is collected across publisher networks and ad exchanges and sold by providers like Bombora, 6sense and ZoomInfo. Most of it names a company rather than a person, and says what was read but not why, so pair it with public signals that show both.
+
+---
+
+## What is intent data?
+
+B2B intent data is research behavior turned into a score: which companies are reading about a topic more than they normally do. The bet behind it is that research comes before buying, so a company reading about your problem this month is more likely to buy than one that isn't.
+
+The scoring is relative. [Bombora, for example](https://bombora.com/intent/), tracks research against more than 25,300 topics and compares each company's last three weeks of activity on a topic with its own 12-week baseline. A jump above that baseline is what vendors call a surge or an in-market account.
+
+Two consequences follow from that design. A surge means "more than usual for this company", not "ready to buy". And a company that researches everything all the time rarely surges at all.
+
+---
+
+## First, second and third-party intent data compared
+
+The three types differ in who collected the data and how close it sits to a purchase.
+
+| Type | Where it comes from | Example | Who it names | Strength | Limit |
+|---|---|---|---|---|---|
+| First-party | Your own website, product, emails and events | A known contact views your pricing page twice in a week | Known contacts; companies for anonymous visits | You own it and know how it was gathered | Only covers people who already found you |
+| Second-party | Another company's platform, sold to you | A software review site reporting which companies viewed your comparison pages | Companies, often with region and buying stage | Research close to a purchase decision | Only that platform's audience |
+| Third-party | Networks of publishers, brand sites and ad exchanges | A topic surge across thousands of B2B sites | Companies; some vendors add personas or people | Reach across the open web | Indirect, modeled and hard to audit |
+
+First-party intent is the cheapest place to start. Pricing page visits, a demo request that stalled, a former user signing up again: all of it sits in your analytics and CRM, and none of it costs extra.
+
+---
+
+## How intent data providers say they collect it
+
+Each provider describes its sources differently, and the source decides what the data can and can't tell you. Here is what four of them say on their own pages, as of November 2026.
+
+**Bombora** runs a data co-op of publishers, brands and thousands of B2B websites, with a proprietary tag on co-op sites that records what people read. It says 86% of the co-op's data is shared with Bombora alone for deriving intent, and that its personas layer adds the roles and seniority of the people driving the research.
+
+**[6sense](https://6sense.com/platform/intent-data)** says most of its keyword intent comes from its own publisher network, where a web tag observes reading as it happens. Secondary sources include ad metadata from its own demand-side platform and licensed networks. It fetches each page, matches it to your keywords and filters bots before delivery. It also combines partner intent from Bombora, G2, TrustRadius, PeerSpot and Informa TechTarget, most of which need a separate subscription with that partner. Its FAQ calls intent built only on ad-auction data "noisy and prone to false positives".
+
+**[ZoomInfo](https://www.zoominfo.com/features/intent-data)** says its intent engine draws on 210 million IP-to-organization pairings and more than 6 trillion keyword-to-device pairings a month. It now sells Person-Level Intent, which it says shows the specific people inside an active account.
+
+**G2** sells second-party intent from its review site. Its [Buyer Intent data reference](https://documentation.g2.com/docs/buyer-intent-data-reference) lists the pages that trigger a signal, including your profile, your pricing page, category pages, comparisons and alternatives pages. Each record carries the company, its domain, the visitor's region and a buying stage: awareness, consideration or decision.
+
+---
+
+## The limits of intent data
+
+Intent data is useful for ranking accounts and weak at almost everything after that. Six limits matter before you buy it.
+
+1. **A company, not a person.** 6sense says outright that it identifies the account behind anonymous research, not the individual. A 400-person company has many possible buyers, and the score doesn't say which one read.
+2. **What, not why.** Research on "SOC 2" can come from a buyer, a new hire learning the job, a consultant or a student. The score can't tell them apart.
+3. **Matched by IP address.** Providers tie activity to companies mainly through IP addresses, and 6sense says it drops activity it can't match with confidence. Research done outside a recognizable company network can vanish from the data.
+4. **Uneven sources.** A tag that sees reading on a publisher's page and an inference from ad-auction metadata are different evidence. Ask each vendor which sources feed the scores you buy.
+5. **The vendor's topics, not your words.** You choose from a taxonomy or a keyword list. A broad topic like "cloud security" surges for reasons that have nothing to do with your offer.
+6. **Nothing to say in a message.** You can't write "I saw your company reading about compliance". The data ranks accounts; it doesn't open conversations.
+
+---
+
+## Public signals as a complement to intent data
+
+Public signals fill the gaps intent data leaves. A job post, a funding round, a post about a problem or a comment under a competitor's launch names a company, often a person, and a reason you can mention.
+
+- **You can see it.** Anyone can open a job post. Nobody outside the provider can open a surge score.
+- **It points to a person.** A post has an author and a job post has a hiring manager.
+- **It works in a message.** "Saw the compliance manager opening" is a fair opener. A reference to someone's browsing never is.
+- **It is free to check.** Job boards, careers pages, funding filings and public posts cost time, not a contract.
+
+The two work best together. Say you sell a SOC 2 readiness service, and an intent feed shows a 300-person software company surging on "SOC 2" and "compliance automation". That ranks the account but gives you nothing to say. Look for a public signal at the same company: a compliance manager role, a trust page that says the audit is underway, the head of security posting about audit prep. Then write to that person about that event.
+
+[Buying signals in B2B](/blog/buying-signals-b2b) lists 18 public signals and where to find each, and [signal-based selling](/blog/signal-based-selling) covers how to time and measure outreach built on them.
+
+---
+
+## How to use intent data without wasting it
+
+Intent data pays off when it narrows a list you already trust. Five rules keep it there.
+
+1. **Pick topics close to the problem, not the category.** "Audit evidence collection" tells you more than "compliance".
+2. **Rank, don't build.** Apply surges to accounts that already fit your ideal customer profile. A surging company you can't serve is noise.
+3. **Never mention the data.** Your message is about the problem or a public event, never about what their network read.
+4. **Find the person separately.** Use a role match or a public signal to choose who to write to.
+5. **Test it against a control.** For one quarter, compare meetings from intent-ranked accounts with a similar set ranked without it. Keep paying only if the ranked set wins.
+
+[AI GTM](/blog/ai-gtm) covers what else an agent needs once it does the prospecting: a channel to reach people and a memory of your business.
+
+---
+
+## Finding the person behind the account with Pancake
+
+Pancake, our product, doesn't sell third-party intent data and doesn't identify website visitors. It finds the public, person-level signals that intent data lacks: people posting about a topic you choose, people engaging with a competitor's or an expert's posts, companies hiring for a role, companies whose job posts name a tool, and recently funded companies. Each one becomes a Play that runs on the schedule you pick. The [example Plays](/plays) show how each signal reads as a search, and [the tools in job posts](/plays/tech-stack) cover the stack signal, read from the posts rather than from a company's website.
+
+For the SOC 2 seller above, the Play is one sentence: "Find heads of security at US software companies with 100 to 500 people who post about SOC 2 audits." Each lead comes with one line on why it fits, and the first message asks a question with no pitch: "You wrote that the audit window opens in March. Which part of the prep worries the team most?" It goes out as a DM from your own account, and a reply stops the sequence.
+
+It sends no email and makes no calls. One plan covers it, from $99 a month per workspace with 60,000 credits a month ([pricing](/pricing)). The 7-day trial includes 30,000 credits, and a card is needed to begin.

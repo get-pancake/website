@@ -17,8 +17,8 @@ import { TRIAL_CREDITS_LABEL, TRIAL_DAYS, TRIAL_LABEL } from "@/lib/trial";
  * closing note, one line of the Markdown) shows on /guides/claude only.
  * The brief's copy is final and used word for word, with three house-rule
  * edits:
- *   - the trial is TRIAL_DAYS long (lib/trial.ts: 7 days with 15,000 credits since the credit
- *     plan of 2026-10-13, card required; it was 3 days when the brief, which said 7, came in);
+ *   - the trial is TRIAL_DAYS long (lib/trial.ts: 7 days, card required, with 30,000 credits
+ *     since 2026-10-21; it was 3 days when the brief, which said 7, came in);
  *   - "20%" without the French space before the sign;
  *   - the competitor prompt says "profile URL", never the platform's name
  *     (compliance rule, website PR #315);
@@ -99,7 +99,7 @@ export const WHAT = {
   paragraphs: [
     "Pancake reads your website and builds your GTM Brain: who buys from you, what to say to them, where to find them.",
     "Plays use that Brain. You tell Pancake who you want to reach, it builds the search with you, and you run it. The Play keeps searching on its own, and each new lead comes with one line on why it fits.",
-    "You approve every lead before anyone hears from you. Pancake writes a personal message from that reason, in your voice, and sends it from your own account. A reply stops the sequence.",
+    "Pancake writes a personal message from that reason, in your voice, and sends it from your own account. A reply stops the sequence.",
   ],
   /** The public/llms.txt list, in the same count (the site said "six" in places, llms.txt eight). */
   cardTitle: "Eight ways a Play finds leads",
@@ -156,7 +156,7 @@ export const STEP_ACCOUNT = {
 } as const;
 
 export const MCP_URL = "https://app.pancake.ai/api/mcp";
-const SETUP_LINE = "Set up Pancake by reading https://pancake.ai/install.md and following its instructions";
+export const SETUP_LINE = "Set up Pancake by reading https://pancake.ai/install.md and following its instructions";
 
 export type ClientTabId = "claude" | "claude-code" | "chatgpt" | "codex" | "other";
 
@@ -317,14 +317,14 @@ export const CONTROL = {
   eyebrow: "Control",
   h2: "You stay in charge",
   cards: [
-    { title: "Every lead.", body: "Nobody hears from you until you approve them." },
     { title: "Every draft.", body: "Read and edit any message before it goes out. It leaves from your own account, under your name." },
     // Fact-checked against pancake-cmo main (2026-10-06): per-AI credit ceilings exist but run in
     // shadow mode, and the per-client Pause switch hides behind the creditsUiEnabled flag (off),
     // so the brief's "own daily and monthly credit ceiling" and "Pause" lines are out; the
-    // settings item is "Claude / Codex", not "MCP → Manage access". Restore them when they ship.
+    // settings item is "Claude & Codex" (workspace-nav.tsx; it read "Claude / Codex" here until
+    // 2026-10-17), not "MCP → Manage access". Restore them when they ship.
     { title: "Every credit.", body: "Claude shows the cost of a search before it starts." },
-    { title: "Every connection.", body: "Remove an AI anytime in Pancake, under Settings\u00a0→ Claude\u00a0/\u00a0Codex." },
+    { title: "Every connection.", body: "Remove an AI anytime in Pancake, under Settings\u00a0→ Claude\u00a0&\u00a0Codex." },
   ],
 } as const;
 
@@ -335,7 +335,7 @@ export const FAQ = {
     { q: "Do I need an API key?", a: "No. You sign in to Pancake in your browser and pick a workspace." },
     {
       q: "Is it the same data as the app?",
-      a: "Yes. Same Brain, same Plays, same leads. A lead you approve in Claude shows as approved in the app, and the other way around.",
+      a: "Yes. Same Brain, same Plays, same leads.",
     },
     {
       q: "Can Claude send messages without me?",

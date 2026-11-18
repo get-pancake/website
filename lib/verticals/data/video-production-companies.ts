@@ -1,7 +1,7 @@
 // lib/verticals/data/video-production-companies.ts — /for/video-production-companies
 // (merges photo and animation studios). Every person, company, rival studio, storyteller and
 // workspace below is invented.
-// Brief caveat: no attachments or reels in outreach; the automatic reply carries a booking link only.
+// Brief caveat: no attachments or reels in outreach; replies come back to the customer (no automatic reply since PAN-1735).
 import type { VerticalConfig } from "../types";
 
 export const videoProductionCompanies: VerticalConfig = {
@@ -144,7 +144,7 @@ export const videoProductionCompanies: VerticalConfig = {
   faq: [
     {
       q: "Can I send my showreel?",
-      a: "Not as an attachment. Messages stay under 500 characters, and a positive reply gets your booking link.",
+      a: "Not as an attachment. Messages stay under 500 characters, and a positive reply comes back to you to send the reel.",
     },
     {
       q: "Can I target brands, not agencies?",

@@ -71,14 +71,30 @@ import type { gsap } from "@/lib/gsap";
  *   resting picture (reload mid-page, an anchor, the code arriving late,
  *   scrolling back up into it) keeps it. Reduced motion keeps it too,
  *   without downloading any animation code.
- * - TOUCH SCREENS, STOPPING ON A CARD (2026-10-13): a thumb flick is the normal way to scroll
- *   there and it flies past whole sections (two flicks cross the three steps: measured in the
- *   iOS simulator), so most cards only ever showed their picture and a first-time reader
- *   took the page for a set of stills (founder: "they are not animated which is a bug").
- *   When the scroll comes to rest on a card whose build-up was skipped or cut short, three
- *   quarters of it in view, the card clears for an instant and plays from its first scene.
- *   Once it has played through at its own pace it is done for good, as everywhere else.
- *   Mouse and trackpad keep the rules above unchanged.
+ * - TOUCH SCREENS, A FLICK (2026-11-03): a thumb flick is the normal way to scroll there and it
+ *   flies past whole sections (two flicks cross the three steps). A card a flick carries in
+ *   does NOT jump to its picture: it stays on its first scene, and once the scroll comes to rest
+ *   it plays by the rules above (at once past the focus line, after the dwell short of it), so a
+ *   card the visitor stops on always builds up in front of them (founder 2026-10-13: "they are
+ *   not animated which is a bug"). A card is never played twice: the 2026-10-13 rule that
+ *   cleared a card already showing its picture and played it again where the scroll stopped is
+ *   gone (founder 2026-11-03, on a phone: "des restarts bizarre sur les animations"; measured
+ *   in the iOS simulator: a story replayed after a flick back up). A card already on screen in
+ *   its resting picture keeps it, as above. Mouse and trackpad keep the rules above unchanged.
+ * - OWED ITS TAKE (2026-11-12, `playWhenStopped`, the vision homepage's 1-2-3): on a card that
+ *   asks for it, the pictures above ("flying past", "never empty what is on screen") are not the
+ *   end of it. A card that got its picture without playing plays the first time the scroll comes
+ *   to rest with half of it on screen. Reported on the 1-2-3 on a laptop: "ils ne sont pas
+ *   animés": one step of a trackpad flick or a page key crosses the cue margin, and the card
+ *   was on screen before it could be cued. A card that has played is still never played again.
+ * - GOING ROUND (2026-11-12, `loop`, the vision homepage's 1-2-3 and the deep dive's phone
+ *   stack): a card that asks for it does not stop on its last frame. Its take starts again
+ *   after a hold, from the builder's `loop` time, for as long as the card can be seen; out of
+ *   sight it pauses where it is. A take whose `loop` time is inside it is an opening, then a
+ *   round: once past that time it is going round (it is never rushed, and it waits out of
+ *   sight). A card left during its first round shows its picture and owes a round, which
+ *   starts when half of it is back on screen. "Played once, never restarts" still holds for
+ *   every card that does not ask.
  * - prefers-reduced-motion = the picture; lifting it mid-visit lets a card
  *   that has not finished play its build-up (the steps rest on their first
  *   frame, so they still need the timeline to show their picture).
@@ -95,9 +111,14 @@ type Timeline = gsap.core.Timeline;
     registered by the carousel shell lp-dive-carousel.ts, by this driver for the phone stack,
     and by the /lp-dev/stages harness; V2 replication 2026-10-09). "__lpFeat" left with the
     feature cards. */
-export type PlayOnceRegistry = "__lpStep" | "__lpStory";
-/** cue: the timeline time of the card's first scene (0 = its first frame) */
-type Built = { tl: Timeline; cleanup: () => void; cue?: number };
+// __lpInfra: LpInfraAnim's diagram flow (2026-10-21)
+// __lpVision: the window under the vision homepage's hero (LpVisionCurtain, 2026-11-11)
+export type PlayOnceRegistry = "__lpStep" | "__lpStory" | "__lpInfra" | "__lpVision";
+/** cue: the timeline time of the card's first scene (0 = its first frame).
+    loop: on a surface that loops (PlayOnceOptions.loop), the time a new round starts from (the
+    cue when unset): a take whose first round is an opening can start its later rounds after it.
+    next: called before each new round, for a picture that changes between two rounds. */
+type Built = { tl: Timeline; cleanup: () => void; cue?: number; loop?: number; next?: () => void };
 /** A builder that can pause: it yields between two slices of its work and returns what the
     plain builder returns. Where it may yield is each builder's own business (its header). */
 export type BuildSteps = Generator<void, Built, void>;
@@ -126,6 +147,34 @@ export type PlayOnceOptions = {
   layoutRoot?: HTMLElement | null;
   /** playback rate (timeline time stays the composition's for QA seeks) */
   speed?: number;
+  /** A card that got its picture without playing is OWED its take: a fast scroll flew it in,
+      one step of the scroll brought it on screen (a page key, a trackpad flick: the cue margin
+      is 15 % of a viewport), or its take was built while it was already there. Unset, such a
+      card keeps its picture for the visit, and on a mouse or a trackpad most visitors never see
+      it move (2026-11-12, on the preview of the 1-2-3: "ils ne sont pas animés"). Set, it plays the
+      first time the scroll comes to rest with half of it on screen, on every pointer; several
+      such cards start one after the other, in page order. Out of sight before that, it goes
+      back to rest and the rules above play it when the visitor returns. A card that has played
+      is never played again. */
+  playWhenStopped?: boolean;
+  /** The take starts again once it has ended, for as long as the card can be seen (asked on the
+      preview of the 1-2-3, 2026-11-12: "pas qu'elles s'arrêtent à la fin, mais qu'elles
+      redémarrent"). `hold`: seconds on the end picture before the next round (0 when the
+      timeline holds its own). A round starts from the builder's `loop` time. Out of sight the
+      take pauses where it is and carries on when the card is back. Reduced motion never loops:
+      the picture. Unset: the card plays once, as every card did. */
+  loop?: { hold: number };
+  /** A card whose top shows on the first screen by design (the window under the hero: 70 px of
+      it peek over the fold). For it, "already on screen in its resting picture" is its top above
+      this share of the viewport's height, not its first pixel on screen: on a fresh page it is
+      cued like a card below the fold and plays at the focus line. Unset: the rule as written. */
+  seenAbove?: number;
+  /** Prepare (fetch, build) only after the visitor's first input, at every width, and then in an
+      idle moment, never inside the input itself. For a card on the first screen whose build is
+      heavy (the window under the hero: ~150 ms on a fast laptop, 600 ms on a slow phone): a page
+      nobody touches (and Lighthouse) never pays for it, and a page opened scrolled down builds at
+      once as before. Its resting picture is the stylesheet's until then. */
+  afterInput?: boolean;
 };
 
 /* The timing constants and the scroll/build helpers below are exported for the deep-dive
@@ -133,6 +182,11 @@ export type PlayOnceOptions = {
    implementation of "prepare, cue, play at the focus line, picture on fly-by". */
 /** px per ms: faster than this when a card arrives = flying past it */
 export const FAST_SCROLL = 2.5;
+/** the same on a touch screen, where a flick's momentum carries cards across the screen faster
+    than a reader reads well under 2.5 px/ms: a card waits until the momentum has all but died
+    (measured in the iOS simulator, 2026-11-03: at 2.5 a step card began its build-up while the
+    tail of a flick carried it off the top) */
+const FAST_TOUCH = 1;
 /** prepare this far ahead of the viewport, above and below */
 export const PREPARE_MARGIN = "100% 0px 100% 0px";
 /** switch to the first scene this far below the fold (unseen) */
@@ -148,14 +202,17 @@ export const RUSH_S = 0.35;
 /* ── scroll speed: recent scroll positions (one passive listener) ── */
 const samples: { t: number; y: number }[] = [];
 let speedUsers = 0;
-/** touch screens: the scroll has come to rest when no scroll event came for this long (ms) */
+/** the scroll has come to rest when no scroll event came for this long (ms) */
 const SETTLE_MS = 160;
-/** where the "stopping on a card" rule applies: touch is the main pointer */
+/** where the flick rule applies (a flick leaves a card on its first scene): touch is the main pointer */
 const TOUCH_QUERY = "(hover: none) and (pointer: coarse)";
-/** share of a card (of the viewport, for a taller card) that must show when the scroll rests */
-const SETTLE_MIN_SHARE = 0.75;
 const settleSubs = new Set<(landed: boolean) => void>();
 let settleTimer = 0;
+/* Cards that are owed their take (playWhenStopped) and start as a scroll comes to rest start
+   one after the other, in page order (the order they were mounted in): how many have started
+   at this rest, and the time between two. */
+let startsThisRest = 0;
+const OWED_STAGGER_MS = 320;
 /* A scroll to an anchor is under way (LpNavScroll announces it before it scrolls): the scroll
    position it will land on. Cards that will be on screen there are arriving, not flown past. */
 const ARRIVE_EVENT = "lp:arrive"; // = LpNavScroll.tsx
@@ -166,6 +223,7 @@ const onSettled = () => {
   settleTimer = 0;
   const landed = arrival !== null;
   arrival = null;
+  startsThisRest = 0;
   for (const run of Array.from(settleSubs)) run(landed);
 };
 const onArrive = (e: Event) => {
@@ -370,9 +428,9 @@ export function enqueueBuild(run: () => boolean | void, at: Element | null = nul
 
 /* ── a build in slices ──
    One build is a builder (it measures, sets the frame-0 states, creates the tweens), then, for a
-   surface that rests on its END picture, the timeline taken to its end. Both are long (the
-   message story: 154 + 152 ms on a mid-range phone) and both can be cut without changing what
-   is built:
+   surface that rests on its END picture, the timeline taken to its end. Both are long (the old
+   deep-dive message story's took 154 + 152 ms on a mid-range phone) and both can be cut without
+   changing what is built:
    - the builder, where it says so itself (`runtime.steps`: it yields between slices);
    - the end pass, child by child. `tl.progress(1, true)` renders the timeline's children in
      order, each to its own end, and a tween records its start values the first time it
@@ -532,12 +590,22 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   let phase: "rest" | "cued" | "playing" | "done" = "rest";
   let cue = 0;
   let dwell = 0;
-  /** the build-up ran to its end at its own pace, in front of the visitor: done for good */
-  let seen = false;
-  /** this run was skipped to the picture (finish) or fast-forwarded (rush) */
-  let cut = false;
-  /** the stage is clearing before a replay (touch screens) */
-  let replaying = false;
+  /** the card shows its picture without having played: with `playWhenStopped` it is owed its
+      take (and `owedTimer`: its turn to start, when several are owed at one rest) */
+  let owed = false;
+  let owedTimer = 0;
+  /** `loop`: the take has played through and goes round from here (`loopTimer`: the hold
+      before the next round; `roundOwed`: that hold ended while the card could not be seen) */
+  let looping = false;
+  let loopTimer = 0;
+  let roundOwed = false;
+  let loopFrom = 0;
+  /** where the first round ends: the builder's `loop` time when the take goes on past it (an
+      opening, then the round), else the timeline's end */
+  let firstEnd = 0;
+  let nextRound: (() => void) | undefined;
+  /** finish() is taking the timeline to its end: its onComplete is not the end of a round */
+  let ending = false;
   const touchMq = matchMedia(TOUCH_QUERY);
   let loading = false;
   let queued = false;
@@ -556,20 +624,61 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     const r = host.getBoundingClientRect();
     return r.bottom > 0 && r.top < window.innerHeight && r.width > 0;
   };
+  /** the visitor already has the card's picture in front of them (NEVER EMPTY WHAT IS ON SCREEN) */
+  const seen = (observed: boolean) => {
+    if (o.seenAbove === undefined) return observed || onScreen();
+    const r = host.getBoundingClientRect();
+    return r.width > 0 && r.bottom > 0 && r.top < window.innerHeight * o.seenAbove;
+  };
   // A content-visibility:auto ancestor that skips its contents gives them no
   // geometry: build only once it renders them (f2 measures glyph rects).
+  // Nor does a display:none one: the homepage's agents view hides every human
+  // section, and a visitor whose first input is the toggle had the step cards
+  // built there, measured at zero (2026-11-01: s4 threw, its card stayed a
+  // still for the visit). Not laid out = not built now; the observers below
+  // prepare the card again once its section shows and nears the screen.
   const laidOut = () => {
-    if (!o.layoutRoot) return true;
     const check = (stage as HTMLElement & {
-      checkVisibility?: (opts: { contentVisibilityAuto: boolean }) => boolean;
+      checkVisibility?: (opts?: { contentVisibilityAuto: boolean }) => boolean;
     }).checkVisibility;
+    if (!o.layoutRoot) return typeof check === "function" ? check.call(stage) : stage.getClientRects().length > 0;
     if (typeof check === "function") return check.call(stage, { contentVisibilityAuto: true });
     return near || visible; // older engines: the card itself is intersecting
   };
 
+  /* A jump of the take (to its picture, or through the rest of it in RUSH_S as the visitor moves
+     on) flips in a frame what the take spreads over seconds, and each flip starts its CSS fade:
+     in the window under the hero, ~250 cell tints at once (2026-11-13), each restyled and
+     repainted every frame of its 0.6 s. [data-lp-jump] on the host turns its fades off
+     (foundation.css) until a frame has been drawn without them; the take's own tweens are
+     untouched. */
+  let jumpFrame = 0;
+  const holdJump = () => {
+    cancelAnimationFrame(jumpFrame);
+    jumpFrame = 0;
+    host.dataset.lpJump = "";
+  };
+  const releaseJump = () => {
+    if (!("lpJump" in host.dataset) || jumpFrame) return;
+    // the next frame is drawn with the fades off, the one after gets them back
+    jumpFrame = requestAnimationFrame(() => {
+      jumpFrame = requestAnimationFrame(() => {
+        jumpFrame = 0;
+        delete host.dataset.lpJump;
+      });
+    });
+  };
+  /** the timeline at its end at once, its fades off */
+  const jumpToEnd = (suppressEvents?: boolean) => {
+    if (!tl) return;
+    holdJump();
+    tl.progress(1, suppressEvents);
+    releaseJump();
+  };
+
   const toRest = () => {
     if (!tl) return;
-    if (o.restIsEnd) tl.progress(1, true);
+    if (o.restIsEnd) jumpToEnd(true);
     else tl.pause(0);
     phase = "rest";
     host.dataset.lpAnim = "armed";
@@ -582,61 +691,90 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
   };
   const play = () => {
     if (!tl) return;
-    cut = false;
     tl.play();
     phase = "playing";
     host.dataset.lpAnim = "playing";
   };
   const finish = () => {
     if (!tl) return;
-    cut = true;
-    tl.progress(1);
+    ending = true;
+    jumpToEnd();
+    ending = false;
     phase = "done";
     host.dataset.lpAnim = "done";
   };
+  /** half the card on screen: where a visitor who stopped is looking at it */
+  const inView = () => visible && ratio >= DWELL_MIN_RATIO;
+  /** the take's first round has played through: from here it goes round */
+  const enterLoop = () => {
+    looping = true;
+    host.dataset.lpAnim = "looping";
+    tl?.timeScale(o.speed ?? 1); // (a visitor moving on may have rushed the first round)
+    releaseJump();
+  };
+  /** a new round of a looping take: what changes between two rounds, then from its loop point */
+  const startRound = () => {
+    if (!tl) return;
+    roundOwed = false;
+    nextRound?.();
+    tl.play(loopFrom);
+  };
+  /** a looping take: it runs while the card can be seen, and waits where it is otherwise. A
+      round that is owed starts once half of the card is on screen. (`near` too: the observers
+      report one after the other, and on a jump away the one that says "half on screen" can
+      still hold its old answer when the other has already said "gone".) */
+  const syncLoop = () => {
+    if (!tl || motionMq.matches) return;
+    if (!near && !visible) return void tl.pause();
+    if (roundOwed) {
+      if (near && inView()) startRound();
+      return;
+    }
+    if (!loopTimer && tl.progress() < 1) tl.play();
+  };
+  /** a looping take the visitor left during its first round: its picture, and a round owed */
+  const park = () => {
+    if (!tl) return;
+    tl.pause();
+    jumpToEnd(true);
+    enterLoop();
+    roundOwed = true;
+  };
+  /** the picture, for a card that did not play: it may be owed its take */
+  const skip = () => {
+    finish();
+    owed = o.playWhenStopped === true;
+  };
+  /** an owed card's take, from its first scene, if the visitor is still stopped on it */
+  const startOwed = () => {
+    owedTimer = 0;
+    if (disposed || !tl || !owed || phase !== "done" || motionMq.matches || !inView()) return;
+    owed = false;
+    tl.pause(cue);
+    play();
+  };
   // the visitor is moving on while the card is still building: fast-forward
   const rush = () => {
-    if (!tl || phase !== "playing" || motionMq.matches || !tl.isActive()) return;
-    const left = tl.duration() - tl.time();
-    if (left > 0) {
-      cut = true;
-      tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
-    }
+    if (!tl || phase !== "playing" || looping || motionMq.matches || !tl.isActive()) return;
+    const left = firstEnd - tl.time();
+    if (left <= 0) return;
+    tl.timeScale(Math.max(tl.timeScale(), left / RUSH_S));
+    // (its fades off while it rushes: see jumpToEnd; back once it has played through)
+    holdJump();
   };
-  /* Touch screens: the scroll has come to rest on a card that only ever showed its picture
-     (flown past, built late, or fast-forwarded on the way out). The stage clears for an
-     instant, so the picture is never swapped for the first scene in plain sight, and the
-     build-up plays from its first scene. */
-  const replay = () => {
-    if (!tl) return;
-    replaying = true;
-    const start = () => {
-      replaying = false;
-      if (disposed || !tl || motionMq.matches) return;
-      tl.timeScale(o.speed && o.speed !== 1 ? o.speed : 1);
-      tl.pause(cue);
-      play();
-    };
-    if (typeof stage.animate !== "function") return start();
-    const out = stage.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 140, easing: "linear", fill: "forwards" });
-    const next = () => {
-      start();
-      out.cancel();
-      if (!disposed) stage.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 200, easing: "linear" });
-    };
-    out.finished.then(next, next);
-  };
+  /* The scroll has come to rest. A scroll to an anchor has landed: the cards it brought on
+     screen play by the usual rules. On a touch screen, a card a flick left on its first scene
+     (decide) plays now that the visitor has stopped on it: at once past the focus line, after
+     the dwell short of it. A card that is done stays done (no replay, founder 2026-11-03). */
   const onSettle = (landed: boolean) => {
-    // a scroll to an anchor has landed: the cards it brought on screen play by the usual rules
-    if (landed) decide();
-    if (disposed || !tl || seen || replaying || phase !== "done" || motionMq.matches || !touchMq.matches) return;
-    const r = host.getBoundingClientRect();
-    const vh = window.innerHeight;
-    if (!(r.height > 0 && r.width > 0)) return;
-    const share = (Math.min(r.bottom, vh) - Math.max(r.top, 0)) / Math.min(r.height, vh);
-    // well in view: most of it, and its top not cut (the part a build-up starts in)
-    if (share < SETTLE_MIN_SHARE || r.top < -0.1 * r.height) return;
-    replay();
+    // owed its take, and the visitor has stopped on it: it plays, in its turn
+    if (owed && phase === "done" && !owedTimer && !motionMq.matches && inView()) {
+      const wait = startsThisRest++ * OWED_STAGGER_MS;
+      if (wait) owedTimer = window.setTimeout(startOwed, wait);
+      else startOwed();
+      return;
+    }
+    if (landed || (touchMq.matches && phase === "cued")) decide();
   };
   settleSubs.add(onSettle);
 
@@ -655,34 +793,56 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     dwell = 0;
     if (motionMq.matches) {
       tl.pause();
-      tl.progress(1, true);
+      jumpToEnd(true);
       return;
     }
-    if (phase === "done") return;
+    if (looping) return syncLoop();
+    if (phase === "done") {
+      // owed its take and out of sight again: back to rest, for the rules below to play it
+      // when the visitor returns
+      if (owed && !near && !visible && !owedTimer) {
+        owed = false;
+        toRest();
+      }
+      return;
+    }
     const landing = arriving();
-    const fast = !landing && scrollSpeed() > FAST_SCROLL;
+    // a touch screen flies past on a flick: the card waits on its first scene (onSettle plays it)
+    const touch = touchMq.matches;
+    const fast = !landing && scrollSpeed() > (touch ? FAST_TOUCH : FAST_SCROLL);
     if (phase === "rest") {
       if (!near) return; // far away: keep resting
-      // flying past, or already showing its picture on screen (built late,
-      // entering from above): the picture, never a frame that empties
-      if (fast || (o.restIsEnd && visible)) return finish();
+      // already showing its picture on screen (built late, entering from above, an observer
+      // that reports late in a flick): the picture, never a frame that empties
+      if (o.restIsEnd && seen(visible)) return skip();
+      if (fast && !touch) return skip(); // a mouse flying past: the picture
       toCue(); // still below the fold: the first scene, unseen
     }
     if (phase === "cued") {
       if (!near) return toRest(); // went away before reaching it: unseen
       if (landing) return; // on its way: it plays once the scroll has landed (onSettle)
-      if (focused) return fast ? finish() : play();
+      if (focused) {
+        if (!fast) return play();
+        // flying past: the picture on a mouse; a touch screen keeps the first scene until the
+        // scroll stops on it (onSettle) or carries it away (toRest, unseen)
+        if (!touch) skip();
+        return;
+      }
       if (visible && ratio >= DWELL_MIN_RATIO) {
         // half on screen but short of the focus line: a visitor who stopped
         dwell = window.setTimeout(() => {
           dwell = 0;
+          // still carried by a flick on a touch screen: the scroll's rest plays it (onSettle)
+          if (touchMq.matches && scrollSpeed() > FAST_TOUCH) return;
           if (phase === "cued" && visible && ratio >= DWELL_MIN_RATIO && !motionMq.matches) play();
         }, DWELL_MS);
       }
       return;
     }
-    // playing: carry on while it can still be seen; gone, it finishes
+    // playing: carry on while it can still be seen; gone, it finishes (a looping take keeps
+    // its picture and owes a round)
     if (near) tl.play();
+    else if (o.loop) park();
     else finish();
   };
 
@@ -721,20 +881,43 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       tl = built.tl;
       cleanupDom = built.cleanup;
       cue = Math.min(Math.max(built.cue ?? 0, 0), tl.duration());
+      loopFrom = Math.min(Math.max(built.loop ?? cue, 0), tl.duration());
+      nextRound = built.next;
+      firstEnd = o.loop && loopFrom > cue ? loopFrom : tl.duration();
       if (o.speed && o.speed !== 1) tl.timeScale(o.speed);
+      if (firstEnd < tl.duration()) {
+        // an opening, then the round: past the opening the take is going round
+        tl.eventCallback("onUpdate", () => {
+          if (!looping && !ending && phase === "playing" && tl && tl.time() >= firstEnd) enterLoop();
+        });
+      }
       tl.eventCallback("onComplete", () => {
+        if (o.loop && !ending && !motionMq.matches && !disposed && tl) {
+          // a round has played through: the next one after the hold, if the card is looked at
+          enterLoop();
+          const again = () => {
+            loopTimer = 0;
+            if (disposed || motionMq.matches) return;
+            if (near && inView()) startRound();
+            else roundOwed = true;
+          };
+          if (o.loop.hold > 0) loopTimer = window.setTimeout(again, o.loop.hold * 1000);
+          else again();
+          return;
+        }
         phase = "done";
         host.dataset.lpAnim = "done";
-        if (!cut) seen = true;
+        releaseJump(); // (a rushed take has played through)
       });
       if (motionMq.matches) {
-        tl.progress(1, true);
+        jumpToEnd(true);
         host.dataset.lpAnim = "still";
-      } else if (o.restIsEnd && onScreen()) {
+      } else if (o.restIsEnd && seen(false)) {
         // never empty what is already on screen: keep the picture
-        tl.progress(1, true);
+        jumpToEnd(true);
         phase = "done";
         host.dataset.lpAnim = "done";
+        owed = o.playWhenStopped === true;
       } else {
         toRest();
       }
@@ -781,7 +964,21 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
       }, host);
     }
   };
+  /** afterInput: the first input has come (and an idle moment after it) */
+  let inputReady = !o.afterInput;
+  let cancelInput: (() => void) | null = null;
+  let cancelIdle = () => {};
   const prepare = () => {
+    if (!inputReady) {
+      cancelInput ??= whenInput(() => {
+        cancelInput = () => {};
+        cancelIdle = idleSlot(() => {
+          inputReady = true;
+          if (!disposed) prepare();
+        }, 400);
+      });
+      return;
+    }
     if (runtime) return requestBuild(near || visible);
     if (loading || disposed) return;
     // reduced motion over a picture that is already the end: nothing to fetch
@@ -861,12 +1058,16 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
 
   const onMotion = () => {
     if (motionMq.matches) {
+      clearTimeout(loopTimer);
+      loopTimer = 0;
       if (tl) {
         tl.pause();
-        tl.progress(1, true);
+        jumpToEnd(true);
       }
       return;
     }
+    // lifted mid-visit: a looping take starts a new round from its picture
+    if (looping) roundOwed = true;
     // lifted mid-visit: a card that has not finished may play its build-up
     if (!tl) return prepare();
     if (phase === "rest" || phase === "cued") toRest();
@@ -876,7 +1077,12 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
 
   return () => {
     disposed = true;
+    cancelInput?.();
+    cancelIdle();
     clearTimeout(dwell);
+    clearTimeout(owedTimer);
+    clearTimeout(loopTimer);
+    cancelAnimationFrame(jumpFrame);
     settleSubs.delete(onSettle);
     cancelAhead();
     cancelEager();
@@ -905,6 +1111,7 @@ export function mountPlayOnce(o: PlayOnceOptions): () => void {
     const w = window as unknown as Record<string, Record<string, Timeline> | undefined>;
     delete w[o.qa.registry]?.[o.qa.key];
     delete host.dataset.lpAnim;
+    delete host.dataset.lpJump;
     delete host.dataset.lpFit;
     host.style.removeProperty("--lp-fit");
   };

@@ -1,0 +1,116 @@
+---
+title: "AI Lead Scoring: How It Works, What It Needs, When to Skip It"
+seo_title: "AI Lead Scoring: How It Works and What Data It Needs"
+description: "AI lead scoring explained: how predictive models and LLM fit checks work, how much data each needs, where they break, and why small teams should score fit."
+date: "2026-12-10"
+last_updated: "2026-12-10"
+related:
+  - "ai-for-sales-prospecting"
+  - "ideal-customer-profile-examples"
+  - "intent-data"
+faq:
+  - question: "What is AI lead scoring?"
+    answer: "AI lead scoring ranks leads by how likely they are to buy. A predictive model learns the pattern from your past won and lost leads and gives each new lead a probability or a tier. A language model can instead read each lead's public facts against a written ideal customer profile and return a verdict with a reason. Both replace hand-assigned points."
+  - question: "How does a predictive lead scoring model work?"
+    answer: "It trains on leads you have already closed, marked as won or lost, and looks for the traits and behaviors that separated them: company size, industry, page views, email activity, meetings booked. It then scores open leads on the same inputs. HubSpot's version, for example, gives each contact a percentage chance of becoming a customer within 90 days."
+  - question: "How much data do you need for AI lead scoring?"
+    answer: "For a predictive model, enough closed outcomes to learn from. Microsoft's predictive lead scoring in Dynamics 365 Sales needs at least 40 qualified and 40 disqualified leads created and closed within the training window, as of November 2026. An LLM fit check needs no history: a written profile, public facts about each lead and about 20 past leads to test it on."
+  - question: "What are the best AI lead scoring tools?"
+    answer: "If you run HubSpot Enterprise or Dynamics 365 Sales, start with the predictive scoring built into your CRM. Data platforms such as Apollo and Common Room score leads inside their own databases. A small team without much history gets more from a fit check that explains itself, built with an LLM or a tool such as Pancake, which says why each lead fits."
+  - question: "Is AI lead scoring worth it for a small team?"
+    answer: "Rarely as a number. A predictive model needs a long record of closed leads to learn from, and a score nobody can explain gets ignored. Until your CRM holds that record, sort leads into fits, doesn't fit and unsure, with one sentence of reason each, and ask a second question about timing: is there a reason to talk this month?"
+---
+
+**TL;DR:** AI lead scoring ranks leads by how likely they are to buy. Predictive models learn from your past wins and losses, so they need history first: Microsoft's version wants at least 40 qualified and 40 disqualified leads closed in the training window, and HubSpot's sits on Enterprise plans. A language model can instead check each lead against a written ideal customer profile and say why it fits. Until you have that history, score fit with a reason, not a number.
+
+---
+
+## How AI lead scoring works: three kinds of score
+
+Three methods hide behind the term, and only two use AI. They differ in what they learn from and whether you can see why a lead scored the way it did.
+
+| | Rules-based points | Predictive model | LLM fit check |
+|---|---|---|---|
+| Learns from | Points you assign by hand | Your closed leads, won and lost | A profile you write in plain words |
+| Needs | A guess at what matters | Dozens to hundreds of closed outcomes | Public facts about each lead |
+| Returns | A total, such as 72 | A probability or a tier | A verdict and a reason |
+| Can you see why? | Yes, it's your arithmetic | Often not | Yes, if you ask for the source |
+| Best for | Teams that know their buyer well | Teams with history and steady volume | Small teams and new markets |
+
+**Rules-based scoring** isn't AI. You give 10 points for the right title and 5 for a pricing-page visit, and the total decides who gets a call. It's transparent and it's only as smart as your guesses.
+
+**Predictive lead scoring** is machine learning on your own history. [HubSpot's predictive lead scoring](https://knowledge.hubspot.com/properties/determine-likelihood-to-close-with-predictive-lead-scoring) gives each contact a "Likelihood to close": the percentage chance it becomes a customer within 90 days. A second property sorts contacts into four tiers of 25% each, from Very High to Low. As of November 2026 it requires Marketing Hub or Sales Hub Enterprise.
+
+**An LLM fit check** is the newest kind. A language model reads what is public about a lead (size, industry, open roles, tools named in job posts, recent changes) against your profile, and answers fits, doesn't fit or unsure, with the fact behind the verdict. It needs no history, which is why it suits small teams.
+
+---
+
+## What data an AI lead scoring model needs
+
+A predictive model needs outcomes, and plenty of them. [Microsoft's predictive lead scoring](https://learn.microsoft.com/en-us/dynamics365/sales/configure-predictive-lead-scoring) in Dynamics 365 Sales needs at least 40 qualified and 40 disqualified leads, created and closed within the training window you pick, which runs from three months to two years. Microsoft adds that more leads give better predictions.
+
+The inputs matter as much as the count. HubSpot's model reads page views, site visits, email opens and clicks, form submissions, meetings, logged notes and lifecycle stages, plus firmographics about each contact's company. Each input has to be recorded the same way across the team. If half the reps never log a lost deal, the model learns from a distorted history.
+
+An LLM fit check needs three things instead:
+
+1. **A written profile** with must-haves, deal-breakers and nice-to-haves, each one a fact you could check in public.
+2. **Public facts per lead**, gathered with sources. The routine in [AI for account research](/blog/ai-account-research) produces them in about 15 minutes per account.
+3. **A test set** of 20 or so past leads whose outcome you know, to check the verdicts before you trust them.
+
+---
+
+## Where predictive lead scoring breaks
+
+Predictive scores fail in predictable ways. Five come up most:
+
+- **Too little history.** Below the minimum, there is no model. Near it, a few odd deals move every score.
+- **It learns your past, bias included.** If you only ever sold to agencies, agencies score high, and the market you want to open scores low because you never sold there.
+- **Attention passes for intent.** Opens, clicks and page views measure attention. A student researching your category can outscore a buyer who never opens email.
+- **Nobody can explain the number.** HubSpot calls its model blackbox machine learning: you can see the inputs and the output, not how one became the other. Reps stop trusting a score they can't question.
+- **Drift.** When your offer or your buyer changes, the model keeps scoring for the old one until enough new outcomes pile up.
+
+None of these is a reason to avoid predictive scoring once you have the volume. Each is a reason to keep a human reading the top and bottom of the list.
+
+---
+
+## Fit before score: an AI lead scoring model for small teams
+
+Until your CRM holds well over the history a predictive model asks for, ask two questions instead of computing one number: does this company fit, and is there a reason to talk now? AI handles both, and you can audit each answer.
+
+Take a hypothetical. Say you run a video production company that makes product demo videos for B2B software companies. Your profile might read:
+
+- **Must-haves:** B2B software, 50 to 500 employees, a marketing team of at least three.
+- **Deal-breakers:** a consumer product, or headquarters outside the US.
+- **Nice-to-haves:** a product launch in the last six months, an open video or product marketing role.
+
+Then give the model one instruction per lead:
+
+> Our ideal customer: [must-haves]. Deal-breakers: [list]. Nice-to-haves: [list]. For the company below, answer fits, doesn't fit or unsure. Give one sentence that names the fact behind the verdict and its source. If a must-have can't be confirmed, answer unsure and say which one.
+
+Test it on 20 past leads, 10 that bought and 10 that didn't. If lost leads keep coming back "fits", a deal-breaker is missing from the profile. If buyers come back "doesn't fit", a must-have is too strict. Fix the profile, not the prompt.
+
+Timing is the second question, and it shouldn't be blended into the fit score. A company that fits and just posted a job for a product marketing manager has a reason to talk this month. One that fits and shows no change can wait. [Buying signals for B2B](/blog/buying-signals-b2b) lists the signals that answer "why now", and [intent data](/blog/intent-data) covers what third-party feeds add.
+
+---
+
+## AI lead scoring tools and what each requires
+
+Where the score lives depends on where your leads live. As of November 2026:
+
+- **HubSpot:** predictive Likelihood to close and Contact priority, on Marketing Hub or Sales Hub Enterprise.
+- **Dynamics 365 Sales:** predictive lead scoring once you meet the 40-and-40 minimum. A Sales Enterprise license can turn it on from quick setup for 1,500 scored records a month.
+- **Apollo:** AI lead scoring inside its database. The Free and Basic plans cap it, and Professional, at $79 per seat a month billed annually, makes it unlimited ([Apollo pricing](https://www.apollo.io/pricing)).
+- **Common Room:** AI scoring on top of its signals. Its plans start at $2,500 a month billed annually.
+- **A general LLM:** Claude or ChatGPT running the fit-check prompt above, on your own list.
+
+[AI for sales prospecting](/blog/ai-for-sales-prospecting) places scoring in the rest of the prospecting week, from list building to the first message.
+
+---
+
+## How Pancake checks fit instead of scoring
+
+Pancake is our product, and it doesn't give leads a number. It checks every lead against the ideal customer profile in your GTM Brain, which it builds by reading your website, then keeps the leads that fit with one line on why and shows the people it set aside with the reason. You can disagree with a verdict because you can read it.
+
+For the video production company above, three signals fit: tech companies hiring a video or product marketing role, marketers posting about an upcoming launch, and software startups that raised a round recently. A Play could read: "Find heads of marketing at US software companies with 50 to 500 people that are hiring a product marketing manager." The first message asks about the signal, with no pitch: "Saw the product marketing opening. Will that person own your launch videos, or brief an outside team?"
+
+It goes out as a DM under your name, and a reply stops the sequence. Pancake sends no email and doesn't track website visitors. Plans start at $99 a month per workspace with 60,000 credits ([pricing](/pricing)); add a card to begin the 7-day trial and its 30,000 credits. See [Pancake for video production companies](/for/video-production-companies), or [how Pancake works](/).

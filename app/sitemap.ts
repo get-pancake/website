@@ -1,10 +1,15 @@
 import type { MetadataRoute } from "next";
 import { COMPARE_PATH } from "@/components/sections/compare/compare-data";
+import { CONNECT_PATHS } from "@/components/sections/guide-claude/connect-copy";
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
+import { SIGNAL_PATHS } from "@/components/sections/plays/plays-signals";
 import { getAllPosts } from "@/lib/posts";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { approvedVerticals, verticalUrl } from "@/lib/verticals";
 import { WHITE_GLOVE_PAGE_HREF } from "@/lib/white-glove";
+
+/** Hourly, so a scheduled post (lib/posts.ts publishedAt) is listed once it is live, not before. */
+export const revalidate = 3600;
 
 /**
  * Parse a frontmatter date, falling back to "now" when missing/unparseable.
@@ -56,35 +61,70 @@ function newestPostDate(): Date {
  * 2026-10-13 (the launch, #333): the homepage and /pricing were rebuilt, /support gained the
  * credit plan's billing answers, the comparisons hub dropped its "AI agents" group and the ten
  * comparison pages took the credit plan's prices and the 7-day trial (PAGE_MODIFIED moved too).
+ *
+ * 2026-10-17 (the footer's Features column): /chatgpt and /codex (the guide narrowed to one AI
+ * client) and three signal pages under /plays are new; /claude's control card names the app's
+ * "Claude & Codex" settings page.
+ *
+ * 2026-11-16 (SEO audit): four entries had fallen behind their page. The homepage was rebuilt
+ * after 2026-10-13 (#355, #388, #403) and took ERA Group's quote today (#410); /pricing took
+ * the three plans (#346, #350) and the copy pass of 2026-11-13 (#403); /white-glove became a
+ * booking page (#382, #385, #386, last on 2026-11-08); /claude took the trial's credits
+ * (#365, 2026-11-03). /plays and the octave and gojiberry pages say there is no cap on leads per
+ * search any more, and /compare took a new title, order and alternatives list, all today.
+ *
+ * 2026-11-17: the thirteen GTM tool comparison pages name the search people make for another
+ * tool ("Clay alternative" over the H1, "Is Pancake a Clay alternative?" in the FAQ, "More
+ * competitors compared"). The four AI agent pages and /compare did not change.
  */
 const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
-  { path: "", updated: "2026-10-13", priority: 1.0 },
-  { path: "/pricing", updated: "2026-10-13", priority: 0.8 },
+  { path: "", updated: "2026-11-16", priority: 1.0 },
+  { path: "/pricing", updated: "2026-11-13", priority: 0.8 },
   // the White Glove offer page (PAN-2368), new on 2026-10-18
-  { path: WHITE_GLOVE_PAGE_HREF, updated: "2026-10-18", priority: 0.7 },
+  { path: WHITE_GLOVE_PAGE_HREF, updated: "2026-11-08", priority: 0.7 },
   { path: "/careers", updated: "2026-10-13", priority: 0.5 },
+  { path: "/research", updated: "2026-11-05", priority: 0.7 },
+  { path: "/research/marketing-memory", updated: "2026-11-05", priority: 0.7 },
   { path: "/privacy", updated: "2026-10-13", priority: 0.3 },
   { path: "/terms", updated: "2026-09-18", priority: 0.3 },
   { path: "/support", updated: "2026-10-21", priority: 0.3 },
   { path: "/support/attio", updated: "2026-10-21", priority: 0.3 },
   { path: "/support/hubspot", updated: "2026-10-21", priority: 0.3 },
   // the guide the site links; its twin with the campaign offer (/guides/claude) is noindex
-  { path: "/claude", updated: "2026-10-13", priority: 0.7 },
+  { path: "/claude", updated: "2026-11-03", priority: 0.7 },
+  // one page per AI client besides Claude (connect-copy.ts), new on 2026-10-17
+  { path: CONNECT_PATHS.chatgpt, updated: "2026-10-17", priority: 0.7 },
+  { path: CONNECT_PATHS.codex, updated: "2026-10-17", priority: 0.7 },
   // example Plays (audit plan 3.7), new on 2026-10-07
-  { path: PLAYS_PATH, updated: newest("2026-10-07", maxUpdated()), priority: 0.7 },
-  // the comparisons hub (2026-10-07): every comparison page below links back to it
-  { path: COMPARE_PATH, updated: "2026-10-13", priority: 0.7 },
-  { path: "/viktor-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/claude-tag-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/gojiberry-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/lemlist-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/origami-vs-pancake", updated: "2026-10-13", priority: 0.8 },
+  { path: PLAYS_PATH, updated: newest("2026-11-16", maxUpdated()), priority: 0.7 },
+  // one page per way a Play finds companies (plays-signals.ts), new on 2026-10-17; the hiring and
+  // tech-stack pages show /for prompts, so they move with that data too
+  { path: SIGNAL_PATHS.funding, updated: "2026-10-17", priority: 0.7 },
+  { path: SIGNAL_PATHS.hiring, updated: newest("2026-10-17", maxUpdated()), priority: 0.7 },
+  { path: SIGNAL_PATHS.stack, updated: newest("2026-10-17", maxUpdated()), priority: 0.7 },
+  // the comparisons hub (2026-10-07): every comparison page below links back to it;
+  // seven new cards on 2026-11-10. 2026-11-16: every comparison page took the paid search
+  // pages' layout, with the demo film and the customer cards (GtmComparisonPage.tsx).
+  { path: COMPARE_PATH, updated: "2026-11-16", priority: 0.7 },
+  { path: "/viktor-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/claude-tag-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/gojiberry-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/lemlist-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/origami-vs-pancake", updated: "2026-11-17", priority: 0.8 },
   // the GTM competitors buyers compare (audit plan 3.10), new on 2026-10-07
-  { path: "/unify-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/octave-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/alta-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/openclaw-vs-pancake", updated: "2026-10-13", priority: 0.8 },
-  { path: "/pancake-vs-paperclips", updated: "2026-10-13", priority: 0.8 },
+  { path: "/unify-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/octave-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/alta-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  // data, cold email and outreach tools, new on 2026-11-10 (each page's own `modified`)
+  { path: "/clay-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/apollo-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/zoominfo-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/instantly-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/heyreach-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/11x-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/smartlead-vs-pancake", updated: "2026-11-17", priority: 0.8 },
+  { path: "/openclaw-vs-pancake", updated: "2026-11-16", priority: 0.8 },
+  { path: "/pancake-vs-paperclips", updated: "2026-11-16", priority: 0.8 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

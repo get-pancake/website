@@ -1,34 +1,27 @@
 "use client";
 
 /**
- * Cloud parallax for the blue band (founder addendum 2026-10-09: "les nuages faut faire du
- * parallax, faire bouger avec des vitesses différentes"; Figma red note 4964:1644). Owner:
- * blue-band package.
+ * The clouds' drift on scroll, for the blue band (founder addendum 2026-10-09: "les nuages faut
+ * faire du parallax, faire bouger avec des vitesses différentes"; Figma red note 4964:1644).
+ * Owner: blue-band package.
  *
- * Every `.lp-sky-cloud` drifts vertically against its section as the page scrolls, each at its
- * own speed (depth layers: far clouds slower than the page, near clouds faster). One shared,
- * passive, rAF-throttled scroll listener for the whole page; it runs only while at least one
- * cloud section is on screen (IntersectionObserver), and writes ONE custom property per cloud:
+ * Every `.lp-sky-cloud` drifts SIDEWAYS as the page scrolls, each at its own speed, and only
+ * sideways (founder, on the preview, 2026-11-12: "ils se déplacent horizontalement, uniquement,
+ * comme des vrais nuages"; until that day each cloud also rose or sank with the scroll). One
+ * shared, passive, rAF-throttled scroll listener for the whole page; it runs only while at least
+ * one cloud section is on screen (IntersectionObserver), and writes ONE custom property per cloud:
  *
- *   --lp-sky-d = (anchor − viewport centre) in px, rounded to 0.5
+ *   --lp-sky-d = (the cloud's resting centre − the viewport's centre) in px, rounded to 0.5
  *
- * sky.css turns that into `translate3d(0, d × k, 0)` with the cloud's depth factor `--lp-sky-k`
- * (k > 0: faster than the page, nearer; k < 0: slower, farther), clamped. The tuning lives in
- * CSS, and a write never restyles more than the cloud itself (a property on the section would
- * restyle its whole subtree).
+ * sky.css turns that into `translate3d(d × kx, 0, 0)` with the cloud's speed `--lp-sky-kx`,
+ * clamped. The tuning lives in CSS, and a write never restyles more than the cloud itself (a
+ * property on the section would restyle its whole subtree).
  *
- * The anchor — sky.css picks it per cloud with `--lp-sky-anchor` (`section`, the default, or
- * `own`), so the tuning stays in one file:
- * - `section`: the SECTION's centre. The rest pose — the Figma artboard position — is exactly
- *   the moment the section's centre crosses the viewport's centre, for all of its clouds at
- *   once (the artboard is one picture). Desktop, and every cloud that has room to travel.
- * - `own`: the CLOUD's own resting centre — where the section is tall and the cloud's room is
- *   small: every cloud on phones (≤767: the stacked deep dive is more than two screens tall, its
- *   centre is a screen away from the heading clouds) and the heading pair on tablets (768–1024:
- *   the section is 1130 tall and the pair has ±17 px in the band over the title). Measured
- *   against the section's centre they sat on their clamp for most of the time they could be
- *   seen. Around its own place a cloud is at rest in the middle of the screen and drifts a few
- *   px either side (small depths in sky.css). A cloud more than a screen away is left alone.
+ * The distance is measured from the cloud's OWN place, so a cloud is at its Figma pose as it
+ * crosses the middle of the screen and a few tens of px either side of it elsewhere. (Until
+ * 2026-11-12 the desktop clouds measured from their section's centre, the artboard's rest; the
+ * phones' and the tablets' heading clouds already measured from their own place.) A cloud more
+ * than a screen away is left alone.
  *
  * Phones without clouds: sky.css has ONE switch (decision 2026-10-11 §9 F4) that can remove
  * them at ≤767. A cloud without a box is skipped, and a section with none attaches no listener.
@@ -38,23 +31,18 @@
  * `transform: none` — the clouds rest at their Figma positions. Not an LpAnimFreeze member:
  * there is no CSS loop to freeze, and the driver gates itself on the viewport.
  *
- * Paint containment: .lp-dive is `content-visibility: auto` (foundation.css), which clips at the
- * section box. The depth signs keep every cloud inside its box while it can be seen: the two
- * heading clouds (top 91–99 of the section) are fast (k > 0), so they sit LOWER than rest while
- * the section enters and only rise past rest once they are above the viewport; the far cloud C
- * sits mid-section with ±~110 px of room both ways. On tablets the heading pair is clamped
- * inside the band above the title. On phones cloud A rests over the banner card, above the
- * section's own top edge (mobile artboard 5061:696): sky.css starts the section's box 72 px
- * higher there (`--lp-sky-room`, a transparent band) and clamps A inside that room.
+ * Paint containment: the sections are `content-visibility: auto` (foundation.css), which clips
+ * at the section box. A cloud no longer leaves its place up or down, so it is inside its box
+ * wherever it rests inside it. On phones the dive's cloud A rests over the banner card, above
+ * the section's own top edge (mobile artboard 5061:696): sky.css starts the section's box 72 px
+ * higher there (`--lp-sky-room`, a transparent band).
  */
 
 const CLOUD = ".lp-sky-cloud";
 /** start a frame or two before a section's clouds can show */
 const MARGIN = "25% 0px 25% 0px";
-/** sky.css: which point a cloud's distance is measured from ("own" | "section") */
-const ANCHOR_VAR = "--lp-sky-anchor";
 
-/** layout position in the page (transforms ignored: the parallax's own translate never feeds back) */
+/** layout position in the page (transforms ignored: the drift's own translate never feeds back) */
 const pageTop = (el: HTMLElement) => {
   let y = 0;
   for (let node: HTMLElement | null = el; node; node = node.offsetParent as HTMLElement | null) y += node.offsetTop;
@@ -76,9 +64,7 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
   const motionMq = matchMedia("(prefers-reduced-motion: reduce)");
   const onScreen = new Set<HTMLElement>();
   const lastD = new Map<HTMLElement, number>();
-  /** per cloud, read once per layout: does it drift around its own place? (sky.css) */
-  const ownAnchor = new Map<HTMLElement, boolean>();
-  /** own anchor: the cloud's resting centre from its section's top; null = no box (hidden) */
+  /** per cloud, read once per layout: its resting centre from its section's top; null = no box (hidden) */
   const own = new Map<HTMLElement, number | null>();
   let raf = 0;
   let listening = false;
@@ -91,14 +77,6 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
       if (!found) found = (groups.get(section) ?? []).some(rendered);
     });
     return found;
-  };
-  const usesOwn = (cloud: HTMLElement) => {
-    let v = ownAnchor.get(cloud);
-    if (v === undefined) {
-      v = getComputedStyle(cloud).getPropertyValue(ANCHOR_VAR).trim() === "own";
-      ownAnchor.set(cloud, v);
-    }
-    return v;
   };
   const ownOffset = (cloud: HTMLElement, section: HTMLElement) => {
     let v = own.get(cloud);
@@ -118,15 +96,11 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
     onScreen.forEach((section) => {
       const r = section.getBoundingClientRect();
       if (!r.height) return; // display:none (the agents view hides the band)
-      const centre = r.top + r.height / 2 - vh / 2;
       for (const cloud of groups.get(section) ?? []) {
-        let d = centre;
-        if (usesOwn(cloud)) {
-          const offset = ownOffset(cloud, section);
-          if (offset === null) continue;
-          d = r.top + offset - vh / 2;
-          if (Math.abs(d) > vh) continue; // a screen away: it keeps its last pose, unseen
-        }
+        const offset = ownOffset(cloud, section);
+        if (offset === null) continue;
+        let d = r.top + offset - vh / 2;
+        if (Math.abs(d) > vh) continue; // a screen away: it keeps its last pose, unseen
         d = Math.round(d * 2) / 2;
         if (lastD.get(cloud) !== d) writes.push([cloud, d]);
       }
@@ -140,10 +114,9 @@ export function mountSkyParallax(scope: ParentNode = document): () => void {
     if (!raf && !disposed) raf = requestAnimationFrame(update);
   };
   const onResize = () => {
-    // the clouds' places, whether they have one, and their anchor all follow the layout
-    // (sky.css's 1024 and 767 blocks): every cloud gets its distance again on the next frame
+    // the clouds' places, and whether they have one, follow the layout (sky.css's 1024 and 767
+    // blocks): every cloud gets its distance again on the next frame
     own.clear();
-    ownAnchor.clear();
     lastD.clear();
     refresh();
   };

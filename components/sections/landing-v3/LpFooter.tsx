@@ -25,16 +25,44 @@
  * footer.css lays the columns out in flow (no fixed height), so a longer list
  * or another column never overflows. Social is unchanged ("LinkedIn" label:
  * open founder decision D23).
+ * 2026-10-17 (founder: a "Features" column "like Gojiberry's", whose column
+ * lists one connect page per assistant and a recently-funded-startups page):
+ * Features = the three connect pages (/claude, /chatgpt, /codex) and the three
+ * signal pages under /plays (funding, hiring, tech stack), every entry a real
+ * page. It takes the Resources column's place: six columns need ~1,050px beside
+ * the brand block and the ≥1200 band leaves 863. Resources' four links all
+ * still have a home: Blog moved to Company, "Comparisons" was a second
+ * "All comparisons" (/compare), "Support" a second "Contact" (/support), and
+ * "Connect your agent" (/claude#setup) is what the connect entries are now.
+ * "Pancake in Claude" left Product for the same reason: it is "Connect Claude".
+ * Labels stay ≤ 156px at 16px ("ZoomInfo vs Pancake", the widest since 2026-11-16;
+ * "Gojiberry vs Pancake" is 153px), so none wraps: on 2026-11-16 the six labels were checked
+ * at 320, 375, 768, 1004, 1200 and 1280px with no wrap, no overflow and the same footer height.
+ * 2026-11-10: seven more comparison pages (Clay, Apollo, ZoomInfo, Instantly,
+ * HeyReach, 11x, Smartlead) make thirteen in the "GTM tools" group. For a few
+ * hours the column listed them all (#389): the desktop footer was about 260px
+ * taller, a phone had to hide seven of the links, and the tablet grid needed
+ * wider columns ("Smartlead vs Pancake" is 163px at 16px). Since the same day
+ * Compare shows the first FOOTER_COMPARE_MAX of them, in hub order, and "All
+ * comparisons" leads to the rest; footer.css is back to what it was. To show
+ * other pages here, reorder COMPARISONS in compare-data.ts: the hub's cards
+ * follow the same order.
  */
 
 import { COMPARE_PATH, COMPARISONS, compareName, comparePath } from "@/components/sections/compare/compare-data";
+import { CONNECT_PATHS } from "@/components/sections/guide-claude/connect-copy";
 import { GUIDE_PATH } from "@/components/sections/guide-claude/guide-copy";
 import { PLAYS_PATH } from "@/components/sections/plays/plays-copy";
+import { SIGNAL_PAGE_ORDER, SIGNAL_PAGES } from "@/components/sections/plays/plays-signals";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { SUPPORT_PATH } from "@/lib/contact";
 import { APP_ORIGIN } from "@/lib/site-config.mjs";
 
 type FootLink = { label: string; href: string; external?: boolean; analyticsId?: string };
+
+/** How many comparison pages the Compare column lists before "All comparisons" (header note,
+ *  2026-11-10). footer.css sizes its columns for these labels: check widths before raising it. */
+const FOOTER_COMPARE_MAX = 6;
 
 const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
   {
@@ -45,30 +73,34 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       { label: "Example Plays", href: PLAYS_PATH },
       { label: "Pricing", href: "/pricing" },
       { label: "Industries", href: "/for" },
-      { label: "Pancake in Claude", href: GUIDE_PATH },
       { label: "Sign in", href: APP_ORIGIN, analyticsId: "signin_footer" },
     ],
   },
   {
-    id: "resources",
-    title: "Resources",
+    id: "features",
+    title: "Features",
     links: [
-      { label: "Blog", href: "/blog" },
-      { label: "Comparisons", href: COMPARE_PATH },
-      { label: "Support", href: SUPPORT_PATH },
-      { label: "Connect your agent", href: `${GUIDE_PATH}#setup` },
+      // one page per AI client (Claude's is the guide, which covers Claude Code too)
+      { label: "Connect Claude", href: GUIDE_PATH },
+      { label: "Connect ChatGPT", href: CONNECT_PATHS.chatgpt },
+      { label: "Connect Codex", href: CONNECT_PATHS.codex },
+      // one page per way a Play finds companies (plays-signals.ts)
+      ...SIGNAL_PAGE_ORDER.map((id) => ({ label: SIGNAL_PAGES[id].footerLabel, href: SIGNAL_PAGES[id].path })),
     ],
   },
   {
     id: "compare",
     title: "Compare",
     links: [
-      // Origami, Unify, Octave, Alta, Lemlist, Gojiberry today, in hub order.
-      // Each label is the page's H1 ("Origami vs Pancake").
-      ...COMPARISONS.filter((c) => c.group === "GTM tools").map((c) => ({
-        label: compareName(c),
-        href: comparePath(c),
-      })),
+      // The first six "GTM tools" pages, in hub order: Clay, Apollo, ZoomInfo, Instantly, Lemlist,
+      // Gojiberry since 2026-11-16 (the searched-for tools first, compare-data.ts). Each label is
+      // the page's H1 ("Clay vs Pancake").
+      ...COMPARISONS.filter((c) => c.group === "GTM tools")
+        .slice(0, FOOTER_COMPARE_MAX)
+        .map((c) => ({
+          label: compareName(c),
+          href: comparePath(c),
+        })),
       { label: "All comparisons", href: COMPARE_PATH },
     ],
   },
@@ -79,6 +111,8 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
       // The team and the company facts live on /careers until /about exists.
       { label: "About", href: "/careers#team" },
       { label: "Careers", href: "/careers" },
+      { label: "Blog", href: "/blog" },
+      { label: "Research", href: "/research" },
       { label: "Affiliate program", href: "https://partners.dub.co/pancake-ai", external: true },
       // Same tab: /demo (François, 2026-09-16), no longer the Calendly form.
       { label: "Talk to sales", href: DEMO_PAGE_PATH },
@@ -89,7 +123,7 @@ const COLUMNS: { id: string; title: string; links: FootLink[] }[] = [
     id: "social",
     title: "Social",
     links: [
-      { label: "X", href: "https://x.com/getpancake_ai", external: true },
+      { label: "X", href: "https://x.com/pancakegtm", external: true },
       { label: "LinkedIn", href: "https://www.linkedin.com/company/get-pancake", external: true },
       { label: "Discord", href: "https://discord.gg/brJ99Up6ym", external: true },
       { label: "YouTube", href: "https://www.youtube.com/@trypancake", external: true },

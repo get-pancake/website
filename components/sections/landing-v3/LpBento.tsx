@@ -20,8 +20,11 @@ import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 
 /**
  * Testimonials / KPI bento (V2 Figma 4911:762 "Frame 168", 1654 × 1448; mobile artboard
- * 5024:10543). Owner: bento package. Between the CTA and pricing, a DIRECT <section
- * class="lp-bento"> child of main.lp, so the agents view hides it with every other section.
+ * 5024:10543). Owner: bento package. Between the deep dive and the CTA since 2026-10-28 (founder,
+ * on the CTA: "Should be below testimonials"; it was between the CTA and pricing), a DIRECT
+ * <section class="lp-bento"> child of main.lp, so the agents view hides it with every other
+ * section. `sky` paints it the blue band's sky (lp-bento--sky, sky.css): the homepage sets it, so
+ * the band runs from the banner through the dive and the testimonials to the CTA's hill.
  *
  * Content: the designer's seven cards, shared by four customers (Kinro, Praxis, Vector Legal,
  * AgentMail: lp-bento-data.ts), all final. Gating (lib/placeholders.ts): production renders only "final" cards, so it may hold
@@ -42,7 +45,11 @@ import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
  * sound in a dialog on demand). The portrait blobs are static (decision §7).
  * Analytics: no new ids (no link surface here; founder approval + a GTM trigger first).
  */
-export function LpBento({ placeholders = SHOW_PLACEHOLDERS, live }: { placeholders?: boolean; live?: boolean } = {}) {
+export function LpBento({
+  placeholders = SHOW_PLACEHOLDERS,
+  live,
+  sky = false,
+}: { placeholders?: boolean; live?: boolean; sky?: boolean } = {}) {
   const bento = resolveBento(placeholders, undefined, live);
   if (!bento) return null;
   // the grid's height in each layout, for the content-visibility estimate (bento.css)
@@ -54,7 +61,16 @@ export function LpBento({ placeholders = SHOW_PLACEHOLDERS, live }: { placeholde
     "--lp-bento-flow-gaps": bento.size.flowGaps,
   } as CSSProperties;
   return (
-    <section className="lp-bento" aria-labelledby="lp-bento-title" style={size}>
+    <section className={sky ? "lp-bento lp-bento--sky" : "lp-bento"} aria-labelledby="lp-bento-title" style={size}>
+      {/* the sky's clouds round the cards (sky.css places them; LpSkyParallax, mounted by the deep
+          dive above, drifts every cloud of the page on scroll). Before the content: it paints over them. */}
+      {sky ? (
+        <>
+          <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--b" />
+          <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--a" />
+          <span aria-hidden="true" className="lp-sky-cloud lp-sky-cloud--c" />
+        </>
+      ) : null}
       {/* the paddings live on this wrapper, not the section: the section is content-visibility:auto
           (foundation.css), whose contain-intrinsic-size estimate is the CONTENT box */}
       <div className="lp-bento__inner">
@@ -183,17 +199,53 @@ function Poster({ poster, sizes }: { poster: BentoPoster; sizes: string }) {
 
 function QuoteCard({ card }: { card: BentoQuoteCard }) {
   const { name, role, company } = card.person;
+  // a card headed by its company (name + size, `facts`) shows the person small, by the byline
+  // (Cursor's enterprise quote cards, Mobbin); the others bleed the designer's portrait blob
+  const headed = Boolean(card.facts?.length);
+  const face = headed && card.photo ? photoSrc(card.photo) : null;
   return (
     <>
-      <Portrait photo={card.photo} />
+      {card.photo && !headed ? <Portrait photo={card.photo} /> : null}
       <figure className="lp-bento__col">
-        <Logo logo={card.logo} />
+        {card.facts?.length ? (
+          // the company's name over its size: its own published figures (lp-bento-data.ts `facts`)
+          <div className="lp-bento__head">
+            <Logo logo={card.logo} />
+            <p className="lp-bento__facts">
+              {card.facts.map((fact, i) => (
+                <span key={fact}>
+                  {i > 0 ? <span className="lp-bento__facts-sep" aria-hidden="true">{" · "}</span> : null}
+                  <span className="lp-bento__fact">{fact}</span>
+                </span>
+              ))}
+            </p>
+          </div>
+        ) : (
+          <Logo logo={card.logo} />
+        )}
         <div className="lp-bento__foot">
           <blockquote className="lp-bento__quote">
             <p>{keepHyphenated(card.quote)}</p>
           </blockquote>
-          <figcaption className="lp-bento__by">
-            <b>{name}</b>, {role} at {company}
+          <figcaption className="lp-bento__by" data-face={face ? "" : undefined}>
+            {headed ? (
+              // the company heads the card: the byline does not say it again
+              <>
+                {face ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- clipped by an SVG path, like the portraits
+                  <img className="lp-bento__face" src={face} alt="" width={160} height={160} loading="lazy" decoding="async" />
+                ) : null}
+                <span className="lp-bento__who">
+                  <b>{name}</b>
+                  <br />
+                  {role}
+                </span>
+              </>
+            ) : (
+              <>
+                <b>{name}</b>, {role} at {company}
+              </>
+            )}
           </figcaption>
         </div>
       </figure>
@@ -229,8 +281,10 @@ function KpiCard({ card }: { card: BentoKpiCard }) {
 /** The bleeding portrait: the Figma blob bbox, the photo cover-fitted into it (= Figma's FILL of
  *  a square photo), clipped by the blob path; the card clips the bleed. Decorative: the caption
  *  names the person. */
+const photoSrc = (photo: BentoPhoto) => ("placeholder" in photo ? placeholderImageSrc(photo.placeholder) : photo.src);
+
 function Portrait({ photo }: { photo: BentoPhoto }) {
-  const src = "placeholder" in photo ? placeholderImageSrc(photo.placeholder) : photo.src;
+  const src = photoSrc(photo);
   if (!src) return <span className="lp-bento__portrait" aria-hidden="true" />;
   return (
     // eslint-disable-next-line @next/next/no-img-element -- clipped by an SVG path; a data-URI stand-in can't go through next/image
@@ -244,6 +298,10 @@ function Portrait({ photo }: { photo: BentoPhoto }) {
  * wordmark, its top on the wordmark's top (inside the card's padding line).
  */
 function Logo({ logo }: { logo: BentoLogo }) {
+  if ("typeset" in logo) {
+    // a company whose logo we may not show: its name in the card's own type, never a lookalike
+    return <span className="lp-bento__logo lp-bento__logo--type">{logo.name}</span>;
+  }
   const height = BENTO_LOGO_BODY / (logo.body[1] - logo.body[0]);
   const box = {
     "--lp-bento-logo-w": round(height * logo.ratio),

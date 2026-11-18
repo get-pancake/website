@@ -3,20 +3,24 @@ import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
-import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { WHITE_GLOVE_PRICING_HREF } from "@/lib/white-glove";
+import { WG_BOOK_ANCHOR } from "@/lib/white-glove-demo";
 import { WgHero } from "./WgHero";
 import { WG_CTA, WG_FAQ, WG_GET, WG_PRICE, WG_PRICE_PANEL } from "./white-glove-copy";
 
 /**
  * /white-glove — the White Glove offer (PAN-2368, offer confirmed October 18,
  * 2026). Sitewide chrome (LpNav, LpCta, LpFooter) around four sections: the
- * hero with the offer as an order ticket (WgHero), what the customer gets as
- * a ruled list, the price next to self-serve, then the questions.
- * Server-rendered; the only client code is the shared pill FX and the CTA's
- * rainbow. Styles: app/white-glove/white-glove.css, scoped to .lp-wg. Copy:
+ * hero with the demo film and the "Book a demo" card (WgHero, since
+ * 2026-11-05), what the customer gets as a ruled list, the price next to
+ * self-serve, then the questions. Every "Book a demo" on the page scrolls to
+ * the card (#book-demo); /demo and its review flow are unchanged. Client
+ * code: the card, the film, the shared pill FX and the CTA's rainbow.
+ * Styles: app/white-glove/white-glove.css, scoped to .lp-wg. Copy:
  * white-glove-copy.ts.
  */
+
+const BOOK_HREF = `#${WG_BOOK_ANCHOR}`;
 
 function Check() {
   return (
@@ -80,7 +84,7 @@ export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
                   </li>
                 ))}
               </ul>
-              <LpFxLink href={DEMO_PAGE_PATH}>{WG_PRICE_PANEL.cta}</LpFxLink>
+              <LpFxLink href={BOOK_HREF}>{WG_PRICE_PANEL.cta}</LpFxLink>
             </article>
             <aside className="wg-price__alt" aria-labelledby="wg-price-alt-title">
               <h3 id="wg-price-alt-title" className="wg-price__name">{WG_PRICE_PANEL.alt.name}</h3>
@@ -120,7 +124,7 @@ export function WhiteGlovePage({ jsonLd }: { jsonLd: string[] }) {
         note={WG_CTA.note}
         buttons={
           <>
-            <LpFxLink href={DEMO_PAGE_PATH}>{WG_CTA.primary}</LpFxLink>
+            <LpFxLink href={BOOK_HREF}>{WG_CTA.primary}</LpFxLink>
             <LpFxLink href={WHITE_GLOVE_PRICING_HREF} className="lp-btn--tinted lp-btn--demo">
               {WG_CTA.secondary}
             </LpFxLink>

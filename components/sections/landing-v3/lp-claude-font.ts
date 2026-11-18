@@ -3,10 +3,10 @@ import { Literata } from "next/font/google";
 /**
  * The Claude-desktop mock's serif (Literata, the stand-in for Figma's proprietary "Anthropic
  * Serif"), loaded for the homepage only — never in app/layout.tsx (decision 2026-10-09). Owner:
- * demo-scroll package; story-claude imports it. Shared with the --lp-claude-* palette
- * (foundation.css). Two consumers: the demo window's "Claude & Codex" view (LpDemo.tsx: greeting
- * 300, replies 400) and the deep-dive "Run it from Claude or Codex" stage (LpStoryClaude.tsx:
- * 300 / 400 / 700).
+ * demo-scroll package. Shared with the --lp-claude-* palette (foundation.css). One consumer: the
+ * demo window's "Claude & Codex" view (LpClaudeScene.tsx via LpDemo.tsx: greeting 300, replies
+ * 400). The deep-dive "Run it from Claude or Codex" stage also used it (300 / 400 / 700) until
+ * it was removed with its story on 2026-10-28.
  *
  * Contract (fixed): `lpClaudeSerif.variable` is a class name that defines the CSS custom
  * property `--lp-font-claude-serif` on the element carrying it — put it on your mock's ROOT and

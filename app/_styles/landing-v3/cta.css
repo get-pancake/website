@@ -115,7 +115,8 @@
   }
   .lp-cta__card {
     border-radius: var(--lp-r-xlg);
-    padding: 224px 30px;
+    /* sides 20 since 2026-11-12 (was the artboard's 30): room for the two pills side by side */
+    padding: 224px 20px;
   }
   /* The body's lines are too long for the card here. Each sentence is one
      block (LpCta's .lp-cta__s), so the break falls between two sentences
@@ -157,10 +158,8 @@
     margin-inline: auto;
     max-width: 280px;
   }
-  .lp-cta__btns {
-    flex-direction: column;
-  }
-  /* Both pills on phones too, stacked (founder 2026-09-03: the secondary
-     CTA on every surface) — the artboard's single centered pill (4389:8372)
-     is overridden. */
+  /* Both pills on phones too (founder 2026-09-03: the secondary CTA on every surface) — the
+     artboard's single centered pill (4389:8372) is overridden. Side by side since 2026-11-12,
+     as in the hero and the menu's foot (135 + 16 + 135 = 286 in the card's 303 at 375); a card
+     narrower than that (under ~362) stacks them, centred, through the base rule's wrap. */
 }

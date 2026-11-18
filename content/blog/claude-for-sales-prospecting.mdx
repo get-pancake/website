@@ -1,0 +1,165 @@
+---
+title: "Claude for Sales Prospecting: Setup, Prompts and Where It Stops"
+seo_title: "Claude for Sales Prospecting: Setup and Prompts (2026)"
+description: "Claude for sales prospecting: set up a Project, research accounts, write first messages from a real reason, and connect lead and outreach tools over MCP."
+date: "2026-11-19"
+last_updated: "2026-11-19"
+related:
+  - "ai-gtm"
+  - "buying-signals-b2b"
+  - "ai-for-sales-prospecting"
+faq:
+  - question: "Can Claude do sales prospecting?"
+    answer: "Claude can do the research and writing half. It turns your best deals into an ideal customer profile, researches a company from public pages, and drafts a first message from a specific reason. It can't hand you a list of people with verified roles, send outreach from your account, or keep a record of who you contacted, unless you connect tools that do those jobs over MCP."
+  - question: "Is Claude good for sales teams?"
+    answer: "Yes, when the team works from shared context. On Team and Enterprise plans, a project can be shared with colleagues at view or edit level, so every rep prospects from the same instructions and files. An owner adds a custom connector once for the organization, and each rep signs in with their own account, so Claude only reaches the data that rep is allowed to see, unless the connector uses one shared API key."
+  - question: "Can Claude AI find leads and email addresses?"
+    answer: "It can find companies, not a verified contact list. With web search on, Claude reads public pages such as a funding announcement or a careers page. It has no database of people, roles and work emails, so any names or addresses it produces without a data source need checking one by one. For contact data, connect a lead tool or your CRM and let Claude read from it."
+  - question: "Can Claude send prospecting messages for me?"
+    answer: "Not by itself. Claude writes the draft; a connected tool does the sending, from the account you connected to it. Treat any connector tool that writes or sends with care: Anthropic's own guidance is to review each tool approval request and to choose Allow always only for servers and tools you trust to run unsupervised."
+  - question: "Which Claude plan do I need for prospecting?"
+    answer: "Pro is the practical starting point. As of November 2026, the Free plan includes memory, up to five projects and one custom connector, but Research, which works through many sources at once, needs a paid plan: Pro, Max, Ultra, Team or Enterprise. Max and Ultra add usage, which helps when you research dozens of accounts in one sitting."
+---
+
+**TL;DR:** Claude is good at the thinking half of prospecting: it turns your won deals into an ideal customer profile, researches an account from public sources, and drafts a first message from a real reason to write. It has no database of people to contact, no account to send from, and no record of who already heard from you. Set it up as one Project, run the six prompts below, then add the missing pieces as connectors over MCP.
+
+Using Claude for sales prospecting works best when you treat it as an analyst with a desk of its own, not a search box. If you want the wider picture of agents running go-to-market, start with [what AI GTM looks like in practice](/blog/ai-gtm). Teams on ChatGPT can follow [our ChatGPT lead generation prompts](/blog/chatgpt-for-lead-generation) instead.
+
+---
+
+## Set up a Claude Project as your prospecting desk
+
+A Project keeps your instructions and reference files in one place, so every prospecting chat starts from the same facts. [Projects are available on every Claude plan](https://support.claude.com/en/articles/9517075-what-are-projects), with up to five on Free, as of November 2026. Each one holds its own knowledge base and its own instructions.
+
+Upload the files a new sales hire would ask for on day one:
+
+- an export of your last 20 closed-won deals: company, headcount, industry, deal size and the buyer's title;
+- three to five call notes or transcripts where a prospect described the problem in their own words;
+- your pricing page and a one-page product sheet;
+- two or three case studies;
+- a short list of who you never sell to, and why.
+
+Then paste project instructions along these lines:
+
+```text
+You help me prospect for [company]. We sell [product] to [buyer title] at [company type, size, region].
+Use only the files in this project and sources you can link. Label anything you infer as "inferred".
+Never make up people, email addresses or phone numbers. If a fact needs a source you don't have, say so.
+Messages: under 300 characters, no pitch, one question tied to the reason for writing.
+Voice: short sentences, plain words, no exclamation marks.
+```
+
+The rule about made-up people matters most. A model asked for "20 heads of sales in fintech" with no data behind it may still return 20 confident lines.
+
+---
+
+## Claude for sales prospecting: six jobs it does well
+
+Claude earns its place on six jobs: defining who to target, researching an account, mapping a segment, reading a signal, drafting the first message and preparing the call.
+
+| Job | Claude feature | What you get | Check before you use it |
+|---|---|---|---|
+| Turn won deals into an ICP | Project files | The patterns behind your best deals, with counts | Each pattern appears in at least three deals |
+| Research one account | Web search | A brief with a link and a date on each fact | Open the links; old news reads as new |
+| Map a segment | Research (paid plans) | A sourced list of companies and why each fits | Check five rows by hand |
+| Read a buying signal | Chat, with the source pasted in | What the signal means and who owns the problem | The person still holds that role |
+| Draft the first message | Project instructions | Short versions built on the reason | Your voice, one question, no pitch |
+| Prepare the call | Project files | Questions and likely objections | Your own notes from past calls |
+
+### 1. Turn won deals into an ideal customer profile
+
+```text
+From the closed-won export in this project, find what our best 20 deals have in common: industry, headcount, region, the buyer's title, what triggered the deal, and deal size. Show each pattern with the number of deals that share it. Then write our ideal customer profile in five lines and name three kinds of companies we should stop chasing.
+```
+
+Asking for counts keeps Claude honest. A pattern found in two deals is an anecdote, not a segment.
+
+### 2. Research one account before you write
+
+```text
+Research [company domain] with web search. Tell me what they sell and to whom, their headcount range, any funding round, product launch or leadership hire in the last six months, and open roles that touch [the problem we solve]. Give a link and a date for every fact. End with one sentence on why they might need [product] now, or say plainly that you found no reason.
+```
+
+The last line gives Claude permission to come back empty, which beats a reason it had to stretch for.
+
+### 3. Map a segment with Research
+
+[Research](https://support.claude.com/en/articles/11088861-use-research-on-claude) runs several searches that build on each other and decides what to look into next. As of November 2026 it needs a paid plan: Pro, Max, Ultra, Team or Enterprise.
+
+```text
+Use Research. List 25 US software companies with 50 to 500 employees that announced funding or opened [role] positions since [month]. For each one: company, website, the signal with its link and date, and how it matches our ideal customer profile. Leave out any company you can't source.
+```
+
+### 4. Read the signal before you lean on it
+
+Job posts carry more detail than most public signals, so paste the whole post. Our list of [B2B buying signals](/blog/buying-signals-b2b) covers the other kinds worth watching.
+
+```text
+Here is a job post from [company]. What problem is this hire meant to solve? Which team owns it, and what title would the budget holder have? Quote the lines that support each answer. Then tell me whether [product] helps before the hire starts, after they start, or not at all.
+```
+
+### 5. Draft the first message from the reason
+
+```text
+Write a first direct message to the [title] at [company]. The reason I'm writing: [the signal, with its date]. Under 300 characters. No pitch, no product name, no compliment. End with one question they can answer in a sentence. Give me three versions that open differently.
+```
+
+The reason does the work. A message that could go to anyone reads like it went to everyone.
+
+### 6. Prepare the call
+
+```text
+[Name] at [company] agreed to a 20-minute call. Using our case studies and call notes, list the five questions that would tell me fastest whether they're a fit, the two objections they're most likely to raise, and how our customers answered those objections in their own words.
+```
+
+---
+
+## Where Claude stops on its own
+
+Claude reasons over what it can see. Three things sit outside that view: a list of people, a way to reach them, and a running record of what happened.
+
+**No lead data.** Web search reads public pages. It can surface a funding announcement, a careers page and sometimes a name on a team page, but not a reliable list of people with current titles and contact details. Names produced without a data source behind them need checking one by one.
+
+**No way to send.** Claude drafts. Outreach needs an account to send from, follow-ups on a timeline, a stop when someone replies, and somewhere for the replies to land. None of that lives in a chat window.
+
+**No record of the pipeline.** [Claude's memory](https://support.claude.com/en/articles/11817273-use-claude-s-chat-search-and-memory-to-build-on-previous-context) carries context such as your role, your projects and your preferences, and each project keeps its own. It is not a dated log of who you contacted and what they answered. "Did I already write to the head of support at that company?" is a question for a system of record.
+
+---
+
+## Connect the missing pieces over MCP
+
+Connectors close those gaps. They run on the Model Context Protocol (MCP), the open standard Anthropic created for AI apps to use other products' tools and data. Our guide to [MCP for sales teams](/blog/mcp-for-sales) goes deeper on how it works.
+
+As of November 2026, [custom connectors work on every Claude plan](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp), and Free accounts are limited to one. On Pro and Max you add one yourself. On Team and Enterprise, an owner adds it for the organization and each person signs in with their own account. You then switch connectors on per conversation from the "+" menu.
+
+For prospecting, connect three kinds of tool, in this order:
+
+1. **Your CRM,** so Claude checks who you already know before it suggests anyone. [HubSpot's connector](https://claude.com/marketplace/connectors/hubspot) in Claude's directory is built by HubSpot and can search and update contacts, companies and deals.
+2. **A lead source,** so the list comes from data instead of guesses.
+3. **The tool that sends,** so a draft turns into outreach with follow-ups and a stop on reply.
+
+Three habits keep this safe:
+
+- **Connect only servers you trust,** and read the permissions during sign-in. Refuse scopes you don't need.
+- **Keep "Allow always" for read tools.** Leave anything that writes or sends on a per-use prompt.
+- **Switch off write tools before Research.** During a Research run, Claude can call connector tools without asking each time.
+
+Anthropic's help center also warns that a malicious server can carry hidden instructions meant to steer Claude, so connect vendors, not strangers.
+
+---
+
+## Running Plays from Claude with Pancake
+
+Pancake is our product, and it fills all three gaps through one connector. Add it to Claude as a custom connector (steps on [our Claude setup page](/claude)) and sign in to Pancake in your browser, with no API key. Claude then reads your GTM Brain, which Pancake builds from your website.
+
+Say you sell a support QA tool to software companies. Three signals fit, one Play each:
+
+- [companies hiring](/plays/companies-hiring) a support operations manager or a QA specialist;
+- support leaders posting about CSAT or ticket quality;
+- people engaging with a rival QA tool's posts.
+
+Ask Claude in one sentence: "Find heads of support at US software companies with 50 to 500 staff that are hiring a support QA specialist." Pancake builds the search, shows the credit estimate before it runs, and keeps the Play running on the schedule you pick. Each lead comes with one line on why it fits, and the first message starts from that line: "Saw the support QA opening. Are tickets scored by hand today, or is that the new hire's first project?"
+
+Edit any message from the chat. Adding a lead to a sequence starts real outreach: direct messages under your name, from your own account, until they reply. Pancake doesn't send email, and it fits B2B buyers who hire or post in public.
+
+Plans start at $99 a month per workspace with 60,000 credits ([pricing](/pricing)). The free trial runs 7 days with 30,000 credits, and a card is needed to start it.

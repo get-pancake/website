@@ -217,28 +217,96 @@
   bottom: 63px; /* V2 99 − 36 */
   left: calc(50% - 568px); /* left edge 259 at 1654 (column centre x587) */
   transform: none;
+  width: auto; /* the H1 sizes it (V1's 656 box held the 69 px lines) */
 }
-/* The humans H1 since 2026-10-13: "Deploy GTM ideas / that bring you customers",
-   two lines at V2's place and size, as the H1 before it (founder: "in 2 lines,
-   same placement as in the figma, same as when it was the previous h1"). Its
-   second line is 9.6 × the font size wide (663 px at 69.014; the previous one
-   was 643): 105 px before the right column from 1201 wide up. Where the
-   layout gets tight it is the only thing that gives, so the line never runs
-   into the column (48 px kept, 1025 to about 1050 wide) nor into the phone's
-   32 px gutter (35.0 instead of 35.56 at 402, less under 360). On the H1
-   itself: the agents headline shares .lp-hero-title's box and size. */
+/* The humans H1: "Infrastructure powering / your GTM factory" (2026-10-28, after "should be
+   'Infrastructure powering your GTM factory'?" and "go with this h1"; "Infrastructure to power"
+   that evening, "might be better en fait"; "powering" again since 2026-10-30, when a co-founder
+   asked "to power or powering?" on the preview and the founder answered "Switch to
+   'powering'"; "to run" from 2026-10-27), two lines at V2's place, the left-right layout kept
+   and the H1 as big as it can be ("Gardons cette disposition gauche droite et on met le h1 en
+   plus gros tant que c'est possible", 2026-10-27). Its first line is the longer one, 9.13 × the
+   font size wide at -0.03em ("Infrastructure to power" was 8.85, "Infrastructure to run"
+   7.73), so the left column sets the size: from 1201 wide up it is 768 px from the H1's edge to
+   the right column, and 79.5 px keeps the 40 px "to power" had at 82 between "powering" and the
+   column (founder 2026-10-28: "Can we make h1 on hero bigger you know to make it more
+   juicyyy": 82 was the most this layout allowed that line). 1025–1200 the column narrows with
+   the window (the right column is anchored 48 px from the right edge): width − 48 − 368 − 48
+   − 40, over 9.2.
+   Tablets and phones take their text width, 82 px at most. Line height 0.92: the two lines are
+   151 tall (the 69 px H1 was 160 at normal), so the short-window scale below keeps more room
+   than it needs; the rotating rainbow stays 48 px or more off it (rings tool, WebKit, 1201 to
+   1728 wide, 2026-10-28). The agents headline shares the box (146 tall, bottom-aligned in it,
+   audience-agents.css), under the same toggle. */
+.lp-hero--home #lp-hero-title {
+  font-size: 79.5px;
+  letter-spacing: -0.03em;
+  line-height: 0.92;
+}
 @media (min-width: 1025px) and (max-width: 1200px) {
   .lp-hero--home #lp-hero-title {
-    font-size: min(clamp(52px, 5.4vw, 69.014px), calc((100vw - 512px) / 9.65));
+    font-size: min(79.5px, calc((100vw - 504px) / 9.2));
+  }
+}
+@media (max-width: 1024px) {
+  .lp-hero--home #lp-hero-title {
+    font-size: min(79.5px, calc((100vw - 96px) / 9.2));
   }
 }
 @media (max-width: 767px) {
+  /* Phones: three lines, "Infrastructure / powering your / revenue factory" (founder 2026-11-12,
+     after devin.ai's phone hero: "2 fois 3 lignes", "faut grossir le h1 … il est trop small",
+     "respecte les proportions de Devin"). Devin: a 32 px H1 on three lines over three lines of a
+     16 px line, the H1 about 1.5 × as tall. Our face is bold and condensed, so its lines are
+     shorter: at 0.123 × the text width (44 px at 390) the longest, "revenue factory" (6.035 em),
+     fills three quarters of it and the H1 is 1.8 × the H2 (48 px got heavy, 40 px left the lines
+     short; compared side by side with Devin's). 56 px at most, from 487 wide. It was
+     (100vw − 64px) / 9.2 on two lines: 35 px at 390, shorter than the H2 under it. */
   .lp-hero--home #lp-hero-title {
-    font-size: min(clamp(30px, 8.846vw, 35.559px), calc((100vw - 64px) / 9.65));
+    font-size: calc((100vw - 64px) / 9.2); /* the For agents view, as before */
   }
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home #lp-hero-title {
+    font-size: min(56px, calc((100vw - 32px) * 0.123));
+  }
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home #lp-hero-title .lp-hero-br-desk {
+    display: none;
+  }
+}
+/* The phone breaks are the humans view's only: the For agents view (?audience=agents) hides this
+   H1 but it still sizes the title box, so it keeps the two lines its headline was placed on. */
+@media (min-width: 768px) {
+  .lp-hero--home #lp-hero-title .lp-hero-br-phone {
+    display: none;
+  }
+}
+.lp-audience-page[data-audience="agents"] .lp-hero--home #lp-hero-title .lp-hero-br-phone {
+  display: none;
 }
 /* "go-to-market" in the lede never breaks at a hyphen (LpHero.tsx) */
 .lp-hero-nobr { white-space: nowrap; }
+/* The homepage H2 (founder 2026-11-12, after devin.ai's hero: "2 lignes ça serait mieux",
+   "inspire-toi des proportions de texte de Devin sur mobile aussi, ton h2 mobile est trop
+   gros"). Devin's line under its H1 is 16 px on a 1.4 line height: two lines on a desktop, and
+   on a phone about two thirds of the H1's height. Ours, with his sentence: 15 px, 1.4, a hair
+   of tracking holds two lines in the designer's 368 column at every desktop width, still two
+   if the text draws 2 % wider (Safari's margin), so nothing around it moves; 16 px would need
+   about 400 px and hang past the window card's right edge. Phones 14.5 px: two lines from 390
+   wide up, the H2 about 0.6 of the H1's height (it was taller than the H1); three from 375
+   down. Then, the same day: "sur mobile on peut donc faire 2 fois 3 lignes mais du coup faut
+   grossir le h1": phones keep Devin's own 16 px on 1.4, three lines at every phone width, under
+   a three-line H1 (its size rule is above). The column's anchor below moved 6 px with the
+   desktop H2, so its first line stays on the H1's cap line. */
+.lp-hero--home .lp-hero-col--human .lp-hero-lede {
+  font-size: 15px;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+}
+@media (max-width: 767px) {
+  .lp-hero--home .lp-hero-col--human .lp-hero-lede {
+    font-size: var(--lp-text-md);
+    letter-spacing: normal;
+  }
+}
 .lp-hero--home .lp-hero-aside {
   align-items: flex-start;
   bottom: 71px; /* V2 107 − 36 */
@@ -285,12 +353,42 @@
     right: 48px;
   }
 }
+/* The humans view, side by side (≥1025): the right column's first line sits on the H1's cap line
+   (founder 2026-11-12, "alignement pas ouf là"). Since the install row went under the buttons
+   (2026-11-11) and the toggle left this view, the column (lede, buttons, install row: 176 tall,
+   170 since the H2 went to 15 px on a 1.4 line height, 2026-11-12, hence 102 for 108 below)
+   is taller than the H1, and bottom-aligned it started 40 px above the H1's caps (66 at 1100
+   wide, where the H1 shrinks). So its bottom follows the H1's size: the H1's cap line stands
+   63 + 1.75 × its size above the hero's bottom (two lines at 0.92, the caps 0.09 × the size
+   into the first), the lede's first line 171 above the column's bottom. The install row hangs
+   under the H1's last line. --lp-h1 is the H1's own size rule, above. */
+@media (min-width: 1025px) {
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home .lp-hero-aside {
+    --lp-h1: 79.5px;
+    bottom: calc(1.75 * var(--lp-h1) - 102px);
+  }
+}
+@media (min-width: 1025px) and (max-width: 1200px) {
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home .lp-hero-aside {
+    --lp-h1: min(79.5px, calc((100vw - 504px) / 9.2));
+  }
+}
+/* 1025–1279 the Product Hunt badge hangs under the column (the nav carries it from 1280): the
+   column stays high enough for the badge (14 + 44 under it) to clear the window card, 26 under
+   the hero. There the first line sits at most 13 px over the caps from 1201 up, more as the H1
+   shrinks */
+@media (min-width: 1025px) and (max-width: 1279px) {
+  .lp-audience-page:not([data-audience="agents"]) .lp-hero--home .lp-hero-aside {
+    bottom: max(44px, calc(1.75 * var(--lp-h1) - 102px));
+  }
+}
 /* ── Homepage first screen (≥1025) — founder 2026-10-12, _decisions §10 ──
    "The designer page is built so that the top of this product footage
    appears in the hero 100vh": the demo window's top bar peeks at the bottom
    of the first screen on every desktop window height. The window sits 26px
-   under the hero (demo.css), so the hero stops 96px above the fold: 26 of
-   inset + 70 of window. With svh = the frozen viewport height (--lp-svh):
+   under the hero (demo.css; since 2026-11-03 the demo film's card in its
+   place, video.css, with the same 26), so the hero stops 96px above the
+   fold: 26 of inset + 70 of window. With svh = the frozen viewport height (--lp-svh):
 
      H    = clamp(380, max(svh − 216, min(544, svh − 120)), 657)
             ≥ 873 tall   657        the designer's hero; more of the window
@@ -301,14 +399,14 @@
                                     (down to the 380 floor, a 500px window)
      LIFT = clamp(0, (873 − svh) × 0.3, 34), and 60 at ≤ 639 tall (the /agents
             tier's own −180): the art rises a little on short windows
-     s    = clamp(0.66, (H − 358 + LIFT) / 299, 1): the copy block's scale
+     s    = clamp(0.66, (H − 223 + LIFT) / 434, 1): the copy block's scale
             about its bottom centre (1 from an 873-tall window up, where
             the hero reaches the designer's 657)
 
-   Together the constants keep the rotating rainbow at least 42px off the
-   headline at every height, over the whole 20s loop (measured:
-   impl/first-screen-peek.md; the decision's first divisor, 286, let it
-   dip to 31.6px around 855 tall). Continuous, so
+   Together the constants keep the rotating rainbow at least 32px off the
+   92 px H1 at every height, over the whole 20s loop (rings.mjs in WebKit,
+   2026-10-27: 33 at 1440×900, 37 at 1512×852, 50 at 1440×780; the 69 px
+   H1 had (H − 358 + LIFT) / 299 and 42 px). Continuous, so
    nothing snaps at a tier edge (the 639 lift aside); every term eases with
    the hero's own 450ms glide when the frozen height lands.
    Specificity: one class more than the /agents tiers above, so the homepage
@@ -370,7 +468,7 @@
     .lp-hero.lp-hero--home {
       --lp-hero-s: clamp(
         0.66,
-        tan(atan2(var(--lp-hero-h) - 358px + var(--lp-hero-lift), 299px)),
+        tan(atan2(var(--lp-hero-h) - 223px + var(--lp-hero-lift), 434px)),
         1
       );
     }
@@ -467,17 +565,31 @@
      (frozen svh − the 104px mobile nav) and bottom-anchor the text block —
      the arc keeps its artboard position at the top, the extra height opens
      between arc and headline, and the CTAs land a constant 64px above the
-     fold on every device. On short phones the min-height is inert and the
-     artboard flow is unchanged. */
+     fold on every device (80 on the homepage since 2026-11-03: the Product
+     Hunt badge's room, below). On short phones the min-height is inert and
+     the artboard flow is unchanged. */
   .lp-hero {
     display: flex;
     flex-direction: column;
-    min-height: calc(var(--lp-svh, 100svh) - 104px);
+    /* the phone bar is 64 tall since 2026-11-12 (nav.css) */
+    min-height: calc(var(--lp-svh, 100svh) - 64px);
     transition: min-height 450ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .lp-hero-inner {
     flex: 1;
     justify-content: flex-end;
+  }
+  /* Homepage, 2026-11-12 (phone pass after the reference site, founder: "how the hero is
+     handled"): the hero no longer stretches to the screen. On a tall phone the stretch opened
+     a band of empty cream between the arc and the headline (~240px at 390 × 844); the hero now
+     ends under its install row and the window under it (LpVisionCurtain, the product) rises
+     into the first screen, as the reference shows its product under the buttons. The screen
+     is still used to its foot, by the product instead of by cream (the 2026-08-31 ask). Short
+     phones are unchanged: the block was already taller than their screen. /agents keeps the
+     stretch above. */
+  .lp-hero--home {
+    min-height: 0;
+    transition: none;
   }
   .lp-hero-art {
     margin-left: -4.82vw;
@@ -508,6 +620,19 @@
      the full 61.44vw. */
   .lp-hero--home .lp-hero-inner {
     padding-top: calc(61.44vw - var(--lp-switch-height) - 23px);
+    /* (2026-11-03 to 2026-11-11 this was 80: the room of Product Hunt's badge under the
+       buttons. The founder, 2026-11-11: "Sur mobile je trouve que le badge Product Hunt n'a
+       rien a faire la": phones no longer show it in the hero (block "Product Hunt badge"
+       below), and the column's last line, the install row, lands 64px above the fold, as the
+       CTAs did before the badge. Both audiences: one geometry for the two views.) */
+    padding-bottom: 64px;
+    /* the page's one phone margin since 2026-11-12, the window card's edge under it (was 32).
+       The block spans the screen: the base rule's auto margins centred it once the screen was
+       wider than its content (400 with these paddings), which moved the text off that edge on
+       the larger phones (31px at 430). */
+    margin-inline: 0;
+    padding-left: 16px;
+    padding-right: 16px;
   }
   .lp-hero-col {
     gap: 23px;
@@ -521,9 +646,11 @@
      360×640), which do not change. The arc rises by 24/45 of it with the copy
      (same distance between the two; its apex keeps 24px under the bar) and
      the three gaps give the rest (23 → 16 at the cap). Frozen svh: nothing
-     moves when Safari's toolbar collapses. Both audiences. */
+     moves when Safari's toolbar collapses. Both audiences. 2026-11-12: the
+     bar is 64 tall, not 104, so the buttons sit 40px higher: 61.44vw + 312
+     is their bottom now, + 16 of clearance. */
   .lp-hero--home {
-    --lp-hero-tuck: clamp(0px, calc(61.44vw + 368px - var(--lp-svh, 100svh)), 45px);
+    --lp-hero-tuck: clamp(0px, calc(61.44vw + 328px - var(--lp-svh, 100svh)), 45px);
   }
   .lp-hero--home .lp-hero-art {
     top: calc(0.3vw - var(--lp-hero-tuck) * 24 / 45);
@@ -561,13 +688,21 @@
    its geometry with or without it: it hangs in the room the hero already
    leaves under the buttons. Product Hunt's badge is
    250×54, drawn 44 tall with 71px of room on desktop (96 on tablets). On
-   phones the buttons sit 64px above the fold and the demo card's top edge
-   shows 17px above it (demo.css --lp-demowin-phone-peek): 47px of room, so
-   the badge is 32 tall, 8 under the buttons and 7 above the card, and
-   ::before gives the finger 44. The agents view hides the human column
-   (visibility), and the badge with it. */
-.lp-hero--home .lp-hero-btns {
+   phones the buttons sit 80px above the fold and the demo film's card top
+   edge shows 17px above it (video.css): 63px of room, so the badge is 32
+   tall, 12 under the buttons and 19 above the card (founder 2026-11-03: at
+   8 and 7 it read as squeezed, "badly positionned"), and ::before gives the
+   finger 44. The agents view hides the human column (visibility), and the
+   badge with it. */
+/* (2026-11-11: the badge hangs under the COLUMN, whose last line is now the install row under
+   the buttons, LpHeroInstall: the column's bottom stands where the buttons' did, so the badge
+   has not moved.) */
+.lp-hero--home .lp-hero-swap > .lp-hero-col--human {
+  /* (the offsets are the unscoped column's, for /agents: inert while it was static) */
+  bottom: auto;
+  left: auto;
   position: relative;
+  right: auto;
 }
 .lp-hero-ph {
   border-radius: 9px;
@@ -582,14 +717,33 @@
   max-width: none;
   width: auto;
 }
+/* ≥1280 the nav bar carries the badge (nav.css, where V1 had it): never both */
+@media (min-width: 1280px) {
+  .lp-hero--home .lp-hero-ph {
+    display: none;
+  }
+}
 .lp-hero-ph:focus-visible {
   outline: 2px solid var(--lp-purple-30);
   outline-offset: 2px;
 }
+/* a window narrower than any phone (a split window, a side pane, under 320): the two buttons are
+   280 px in a row and made the column wider than the screen, so the lede and the second button
+   were cut at its edge. There the second button goes under the first. */
+@media (max-width: 319px) {
+  .lp-hero--home .lp-hero-btns {
+    flex-wrap: wrap;
+  }
+}
+/* phones: no badge in the hero (founder 2026-11-11: "Sur mobile je trouve que le badge Product
+   Hunt n'a rien a faire la") */
 @media (max-width: 767px) {
+  .lp-hero--home .lp-hero-ph {
+    display: none;
+  }
   .lp-hero-ph {
     border-radius: 7px;
-    top: calc(100% + 8px);
+    top: calc(100% + 12px);
   }
   .lp-hero-ph::before {
     content: "";

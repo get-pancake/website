@@ -7,7 +7,7 @@
    (audience.css), its agents look is below. Every rule is scoped to the agents view or to
    agents-only components, so /agents (its own page) and the humans view never change. */
 
-/* ── Geist Mono — the agents view's UI face (Figma: nav, toggle, headline, prompt, card) ──
+/* ── Geist Mono — the agents view's UI face (Figma: nav, toggle, headline, prompt) ──
    Same family and provenance as the site's Geist Sans (app/fonts/geist/, SIL OFL 1.1). Declared
    here, not in app/layout.tsx (decision 2026-10-09: no new site-wide font): an @font-face is
    fetched only when text set in it renders, so humans visitors never download it. The name is the
@@ -49,6 +49,11 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 @media (max-width: 1024px) {
   [data-audience="agents"] .lp-nav-logo { height: 35.947px; width: 116.013px; }
 }
+/* phones: the bar's flex basis is the wordmark's 90.815 since 2026-11-12 (nav.css); this box keeps
+   its own width and never shrinks, so the mask is never squeezed (the bar holds it down to 268) */
+@media (max-width: 767px) {
+  [data-audience="agents"] .lp-nav-logo { flex: 0 0 116.013px; }
+}
 [data-audience="agents"] :is(.lp-nav-links > a, .lp-nav-dd__trigger) {
   font-family: var(--lp-font-mono);
   letter-spacing: 0;
@@ -86,6 +91,11 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
   outline-offset: 2px;
 }
 [data-audience="agents"] .lp-nav-menu { --lp-text: var(--lp-ink-100); }
+/* no desktop floating bar in this view (nav.css skips it): pinned sections and in-page jumps
+   leave no room for it */
+@media (min-width: 1025px) {
+  .lp-audience-page[data-audience="agents"] { --lp-nav-reserve: 0px; }
+}
 @media (max-width: 767px) {
   .lp[data-audience="agents"] .lp-nav-menu-btn:focus-visible { outline-color: var(--lp-ink-0); }
   [data-audience="agents"] .lp-nav.is-scrolled {
@@ -176,6 +186,12 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 }
 @media (max-width: 767px) {
   .lp-agent-headline { font-size: min(28.85px, calc((100vw - 64px) / 11.2)); }
+}
+/* Homepage phones since the "powering" H1 (2026-10-28, hero.css: (100vw − 64px) / 9.2 at line
+   height 0.92): the two rows stay no taller than its box (1.84 × its size, so at most 0.7 ×
+   it), or the stacked block would grow in this view and lift the toggle above it */
+@media (max-width: 767px) {
+  .lp-hero--home .lp-agent-headline { font-size: min(28.85px, calc((100vw - 64px) / 11.2), calc((100vw - 64px) / 9.2 * 0.7)); }
 }
 /* Production typing, two rows: the crossfade (240 ms) first, then 27 glyphs over 1600 ms (letter
    .04, space and line break .12). Cursor 1 rides row 1 and goes out with its last glyph; cursor 2
@@ -277,7 +293,7 @@ body:has(.lp-audience-page[data-audience="agents"]) { background-color: var(--lp
 .lp-agent-friends li[data-bare] { height: 20px; width: 17.48px; }
 .lp-agent-friends li[data-bare] svg { height: 20px; width: 17.48px; }
 
-/* ── the install prompt (LpAgentPrompt.tsx): the hero box and the wall card's head ── */
+/* ── the install prompt (LpAgentPrompt.tsx): the hero box ── */
 .lp-agent-prompt { align-items: flex-start; display: flex; gap: 8px; }
 .lp-agent-prompt--hero { border: var(--lp-line) solid var(--lp-ink-0); padding: 16px; }
 .lp-agent-prompt__text { flex: 1; min-width: 0; }

@@ -7,7 +7,7 @@ import { social } from "@/lib/social-meta";
 // Alta facts read on 2026-10-07 from altahq.com and altahq.com/plans (audit plan 3.10).
 // Re-check both pages before moving FACTS_REVIEWED, and again within 90 days.
 // Alta lists the professional network among its channels; this page never names it.
-const title = "Alta vs Pancake: Named AI Agents vs Founder-Run Plays";
+const title = "Alta vs Pancake: Named AI Agents vs Plays Your Team Runs";
 const description = "Compare Alta and Pancake: named AI agents for outbound, inbound and calls, sold by custom quote, versus Plays you run from $99 a month per workspace.";
 
 // Status-bar zone matches the lp cream, as every comparison page. Same value as the
@@ -28,14 +28,19 @@ const config: GtmComparisonConfig = {
   slug: "alta-vs-pancake",
   competitor: "Alta",
   competitorInitial: "A",
-  heroLede: "Named AI agents for revenue teams versus Plays a founder runs.",
-  heroSummary: "Alta sells three AI agents for outbound, inbound and growth, priced by custom quote. Pancake runs Plays that find your buyers and writes to the ones you approve, from $99 a month per workspace.",
+  modified: "2026-11-17",
+  heroLede: "Named AI agents for revenue teams versus Plays your team runs.",
+  heroSummary: "Alta sells three AI agents for outbound, inbound and growth, priced by custom quote. Pancake runs Plays that find your buyers and writes to them, from $99 a month per workspace.",
+  pitch: {
+    title: "No sales call. One sentence, one Play.",
+    lede: "Alta sells three agents by custom quote. Pancake gives your team a Play for each audience from one sentence, at a public price from $99 a month.",
+  },
   competitorBody: "An AI platform for go-to-market teams with three named agents. Katie runs outbound, Alex qualifies inbound leads by AI call and chat, and Luna finds signals and lookalikes across 50+ data sources.",
   competitorChoose: "Choose it when a revenue team needs outbound, inbound and calls covered.",
-  pancakeBody: "Tell Pancake who to reach, and it builds a Play that keeps searching on its own. You approve every lead, and Pancake writes to each one under your name.",
+  pancakeBody: "Tell Pancake who to reach, and it builds a Play that keeps searching on its own. Pancake writes to each lead under your name.",
   pancakeChoose: "Choose it when you do your own sales and want to start today.",
   verdictTitle: "Alta covers the funnel. Pancake runs the Play.",
-  verdictLede: "Alta is the broader system for teams with reps, inbound volume and a CRM. Pancake fits founders who do their own sales and want a public price.",
+  verdictLede: "Alta is the broader system for teams with reps, inbound volume and a CRM. Pancake fits B2B teams with a GTM engineer who want a public price.",
   competitorBestFit: "Alta is the better fit when a revenue team wants outbound, inbound qualification, AI calls and CRM integrations in one system, with white-glove onboarding.",
   differencesLede: "Both find buyers and reach out. They differ in scope, channels and how you buy.",
   differences: [
@@ -60,14 +65,14 @@ const config: GtmComparisonConfig = {
     {
       n: "04",
       title: "Alta wins on channels and CRM",
-      body: "Alta sequences email, calls, SMS and WhatsApp, with branching on what each prospect does. It integrates with your CRM and 50+ tools. Pancake sends no email and doesn't sync to a CRM.",
+      body: "Alta sequences email, calls, SMS and WhatsApp, with branching on what each prospect does. It integrates with your CRM and 50+ tools. Pancake sends no email, and only exports leads to your CRM, one way.",
       angle: "Pick Alta when every channel matters.",
     },
     {
       n: "05",
-      title: "Built for founders who do their own sales",
-      body: "Every Pancake lead arrives with one line on why it fits, and you approve each one. Pancake follows up until they answer. A yes gets your calendar link, sent from your account.",
-      angle: "Every other answer comes back to you.",
+      title: "Built for teams with a GTM engineer",
+      body: "Every Pancake lead arrives with one line on why it fits. Pancake follows up from your account until they answer.",
+      angle: "Every answer comes back to you.",
     },
   ],
   rows: [
@@ -78,17 +83,18 @@ const config: GtmComparisonConfig = {
     { feature: "Outreach", competitor: { text: "Email, calls, SMS, WhatsApp and more", mark: "yes" }, pancake: { text: "Direct messages under your name, from the accounts you send from", mark: "yes" } },
     { feature: "Inbound qualification", competitor: { text: "AI calls and chat, routed to your calendar", mark: "yes" }, pancake: { text: "Not covered", mark: "no" } },
     { feature: "AI calling", competitor: { text: "An AI calling agent", mark: "yes" }, pancake: { text: "No calls", mark: "no" } },
-    { feature: "CRM", competitor: { text: "Free CRM integrations", mark: "yes" }, pancake: { text: "No CRM sync", mark: "no" } },
-    { feature: "Best for", competitor: { text: "Revenue teams with reps, inbound volume and a CRM" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
+    { feature: "CRM", competitor: { text: "Free CRM integrations", mark: "yes" }, pancake: { text: "A one-way lead export to HubSpot, Attio, Pipedrive and others" } },
+    { feature: "Best for", competitor: { text: "Revenue teams with reps, inbound volume and a CRM" }, pancake: { text: "B2B teams with a GTM engineer" } },
   ],
   closingTitle: "Start your first Play today.",
-  closingLede: "Tell Pancake who to reach. It builds the Play, finds the people who fit and writes to the ones you approve.",
+  closingLede: "Tell Pancake who to reach. It builds the Play, finds the people who fit and writes to them.",
   faqs: [
-    { q: "What is the main difference between Alta and Pancake?", a: "Alta sells three AI agents for outbound, inbound and growth, by custom quote. Pancake runs Plays that find your buyers and write to the leads you approve, from $99 a month per workspace." },
+    { q: "What is the main difference between Alta and Pancake?", a: "Alta sells three AI agents for outbound, inbound and growth, by custom quote. Pancake runs Plays that find your buyers and write to them, from $99 a month per workspace." },
+    { q: "Is Pancake an Alta alternative?", a: "For B2B teams with a GTM engineer who want to start today, yes. It doesn't replace Alta's inbound qualification, AI calls or email, SMS and WhatsApp outreach for a revenue team." },
     { q: "How much does Alta cost?", a: "As of October 2026, Alta publishes no prices. Its plans page asks for your team size and goals, then sends a custom quote. It says you pay for what you use." },
-    { q: "What does Alta do that Pancake doesn't?", a: "Inbound qualification, AI calls, email, SMS and WhatsApp outreach, CRM integrations and white-glove onboarding. Pancake doesn't do these. It finds people who fit and messages them from your own accounts." },
-    { q: "Is there a free trial?", a: "Alta's site offers a demo and a custom quote. Pancake has a 7-day free trial with 15,000 credits, and a card is required to start it." },
-    { q: "Who should choose Pancake over Alta?", a: "Founders who do their own sales, and small B2B teams without inbound volume to qualify. Tell Pancake who to reach and approve the leads that fit. Pancake writes to them under your name." },
+    { q: "What does Alta do that Pancake doesn't?", a: "Inbound qualification, AI calls, email, SMS and WhatsApp outreach, CRM integrations and white-glove onboarding. Pancake doesn't do these, apart from a one-way export of the leads you pick to your CRM. It finds people who fit and messages them from your own accounts." },
+    { q: "Is there a free trial?", a: "Alta's site offers a demo and a custom quote. Pancake has a 7-day free trial with 30,000 credits, and a card is required to start it." },
+    { q: "Who should choose Pancake over Alta?", a: "B2B teams with a GTM engineer who want outbound running today, not an inbound system to staff. Tell Pancake who to reach, and it writes to them under your name." },
     { q: "Can I run Pancake from Claude?", a: "Yes. Pancake connects to Claude, Claude Code, ChatGPT and Codex with a browser sign-in. You create Plays, review leads and edit messages from the agent, on the same Brain as the app." },
   ],
   related: [

@@ -6,14 +6,14 @@ import type { VerticalConfig } from "../types";
 export const developerTools: VerticalConfig = {
   slug: "developer-tools",
   status: "approved",
-  category: "Startups & solo founders",
+  category: "Startups",
   evidence: "paying",
   updated: "2026-10-07",
 
   name: {
     plural: "devtools startups",
     title: "Devtools startups",
-    short: "devtools founders",
+    short: "devtools teams",
     badge: "For devtools startups",
   },
 
@@ -159,8 +159,8 @@ export const developerTools: VerticalConfig = {
       a: "Not always. A job post lists the tools a team wants candidates to know. Pancake can’t see what a team has installed.",
     },
     {
-      q: "Can each founder send from their own account?",
-      a: "Yes. Connect each founder’s account and choose who sends for each Play, or rotate a Play across up to ten accounts. One sending account is in the plan, and each extra one is $39 a month.",
+      q: "Can each teammate send from their own account?",
+      a: "Yes. Connect each teammate’s account and choose who sends for each Play, or rotate a Play across up to ten accounts. One sending account is in the plan, and each extra one is $39 a month.",
     },
   ],
 

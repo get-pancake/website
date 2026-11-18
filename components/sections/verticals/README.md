@@ -145,7 +145,7 @@ Never edit `LpMarquee.tsx`.
    SEO for Pancake (articles, AI search, Google / ChatGPT rankings or
    citations, GEO / AEO: `AI_SEO`, no negation allowance); from $99/month
    with monthly credits (`lib/pricing.ts`; never "flat" or "as many leads
-   as you want"); 7-day trial with 15,000 credits and a card
+   as you want"); 7-day trial with 30,000 credits and a card
    (`lib/trial.ts`). `BANNED` in validate.ts is the gate;
    FAQ answers may negate ("No. …").
 2. **Tokens only** in `app/_styles/verticals/` — lp tokens + `color-mix()`.

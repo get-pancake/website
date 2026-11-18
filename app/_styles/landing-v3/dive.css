@@ -3,8 +3,9 @@
    Deep-dive carousel shell (LpDive, Figma V2 4939:3388 "How Pancake finds
    customers"): section, tab list, progress bar, the 752x489 stage card
    (painted --lp-dive-stage-bg), the phone 400x520 stage box, the pause
-   control. The four stories' scenes are story-<name>.css; the clouds and
-   their parallax depths are sky.css.
+   control. The four stories' scenes (context, signals, lineage, mcp, since
+   2026-10-28) are story-<name>.css on the shared story-kit.css; the clouds
+   and their parallax depths are sky.css.
 
    Artboard (≥1341), section 1654×894, all px from Figma:
      section  fill blue-10, padding 80/16, gap 32, centred column
@@ -26,7 +27,8 @@
    same markup as four STACKED items, all open — see "the phone stack" at the
    end of this file. Keyed on the section's data-lp-phone="stack"
    (lp-dive-data.ts DIVE_PHONE_LAYOUT); "carousel" keeps the 2026-10-09 phone
-   carousel (one stage, the 400×520 recompositions ≤599). */
+   carousel (one stage, the 400×520 box ≤599, which the current stories do
+   not fill). */
 
 .lp-dive {
   align-items: center;
@@ -45,6 +47,7 @@
 }
 .lp-dive-title {
   color: var(--lp-text);
+  text-wrap: balance; /* "What your agent runs on" (2026-10-21) wraps as two even lines on phones */
   left: 128px;
   margin: 0;
   position: absolute;
@@ -119,7 +122,7 @@
   font-weight: 500;
   line-height: 29px;
   transition: font-weight 0.2s ease;
-  white-space: pre-line; /* "A personal message for" / "every lead" (Figma U+2028) */
+  white-space: pre-line; /* the data's break: "Your agent knows" / "what to do next" */
 }
 .lp-dive-tab[aria-selected="true"] .lp-dive-tab__title {
   font-weight: 600;
@@ -194,6 +197,28 @@
 .lp-dive-tab[data-more][aria-selected="true"]::after,
 .lp-dive-tab[data-more][aria-selected="true"] .lp-dive-tab__bar {
   translate: 0 var(--lp-dive-more, 52px);
+}
+/* Since 2026-11-12 the driver places each link under its own item, whichever it is (the first
+   item has one too): the open tab keeps the room (its padding grows by the link's line + 8, so
+   the next items move down and its hairline stays at its own foot) and the row is laid over it
+   (lp-dive-carousel.ts, placeMore). Until the driver runs (and without JavaScript) only the
+   last item's link shows, where the rule above draws it. Phones stack items and links in order
+   (the stack block below), untouched. */
+.lp-dive-row[data-place-more] .lp-dive-tab[data-more][aria-selected="true"] {
+  padding-bottom: var(--lp-dive-more, 52px);
+}
+.lp-dive-row[data-place-more] .lp-dive-tab[data-more][aria-selected="true"]::after,
+.lp-dive-row[data-place-more] .lp-dive-tab[data-more][aria-selected="true"] .lp-dive-tab__bar {
+  translate: none;
+}
+.lp-dive-more[data-placed] {
+  position: absolute;
+  z-index: 1;
+}
+@media (min-width: 768px) {
+  .lp-dive-row:not([data-place-more]) .lp-dive-more:not([data-last]) {
+    display: none;
+  }
 }
 .lp-dive-more {
   display: grid;
@@ -276,8 +301,8 @@
 }
 /* The scene box: the stories' design box at design size, scaled as pixels
    (--lp-fit = card width / box width, measured by the driver; never zoom).
-   A size container the stories query (lp-dive-stages.ts contract):
-   desktop 752×489, phones 400×520. */
+   A size container (lp-dive-stages.ts contract; no current story queries
+   it): desktop 752×489, phones 400×520. */
 .lp-dive-scene {
   color: var(--lp-text);
   container: lp-dive-scene / size;
@@ -307,19 +332,20 @@
   max-width: none;
 }
 
-/* ── pause (WCAG 2.2.2: the carousel moves on its own) — a control every
-   input can reach. Not drawn by the designer, so it stays OFF the pictures:
-   under the card's bottom-right corner, on the sky (inside the section's 80
-   bottom padding: paint containment). It shows
+/* ── pause (WCAG 2.2.2: the carousel moves on its own). Not drawn by the
+   designer, so it stays OFF the pictures: under the card's bottom-right
+   corner, on the sky (inside the section's 80 bottom padding: paint
+   containment).
+   Since 2026-11-12 it is a keyboard control only (asked on the preview:
+   "retire le play"). It shows
    - on keyboard focus,
-   - while it holds the carousel (pressed),
-   - while a pointer is over the stage or over the control itself — a mouse
-     at rest on the stage still holds nothing (founder 2026-09-22 on the
-     demo), it only brings up the button that does,
-   - always where nothing can hover (touch).
-   Hidden = transparent, never unclickable: a pointer that reaches its place
-   brings it up first. The box above the button is the pointer's bridge from
-   the card to it. ── */
+   - while it holds the carousel (pressed).
+   Until then it also came up while a pointer was over the stage, and always
+   on touch screens. A mouse or a finger no longer sees it and cannot press
+   it (pointer-events), so nothing invisible sits under the card's corner;
+   they have no way left to stop the carousel, which is what was asked. To
+   bring it back for every input, restore the two rules this note replaced
+   (.lp-dive-stagewrap:hover, and the (hover: none) block). ── */
 .lp-dive-ctrl {
   padding-top: 12px;
   position: absolute;
@@ -340,18 +366,14 @@
   justify-content: center;
   opacity: 0;
   padding: 0;
+  pointer-events: none;
   transition: opacity 0.16s ease-out;
   width: 44px;
 }
-.lp-dive-ctrl__btn:focus-visible,
-.lp-dive-ctrl__btn[aria-pressed="true"],
-.lp-dive-stagewrap:hover .lp-dive-ctrl__btn {
+.lp .lp-dive-ctrl__btn:focus-visible,
+.lp .lp-dive-ctrl__btn[aria-pressed="true"] {
   opacity: 1;
-}
-@media (hover: none), (pointer: coarse) {
-  .lp .lp-dive-ctrl__btn {
-    opacity: 1;
-  }
+  pointer-events: auto;
 }
 .lp-dive-ctrl__btn:focus-visible {
   outline: 2px solid var(--lp-text);
@@ -529,30 +551,37 @@
    One DOM: the wrappers dissolve (display: contents) and the row becomes one
    column ordered by --lp-dive-i (LpDive): tab 3i · link 3i+1 · panel 3i+2.
    The stage card moves from .lp-dive-stage to each .lp-dive-panel: the
-   DESKTOP 752×489 scene scaled by (W − 48) / 752 (0.4707 at 402), radius and
-   shadow scaled with it (7.479 · 0 1.246 19.445 at 402; the offset is
-   rounded to a whole pixel, see the panel rule). The driver
-   (lp-dive-carousel.ts, stack mode) measures each card (--lp-fit on the
-   panel) and plays each story once (lp-play-once). */
+   DESKTOP 752×489 scene scaled by (W − 32) / 752 (0.4920 at 402; W − 48 until
+   the 2026-11-12 phone pass put the list on the page's 16px margin), radius
+   and shadow scaled with it (the offset is rounded to a whole pixel, see the
+   panel rule). The driver (lp-dive-carousel.ts, stack mode) measures each
+   card (--lp-fit on the panel) and plays each story once (lp-play-once).
+   Bodies at 16/24 since the same day (the artboard's 13.333/20 before). */
 @media (max-width: 767px) {
   .lp-dive[data-lp-phone="stack"] {
     /* content box = title 82 + 20 + list; the list = 48 + three 64 gaps +
-       four (text block + 16 + stage (W − 48) × 489/752). Measured: 1839.4
-       (320) · 1854.5 (360) · 1940.3 (393) · 1963.7 (402) · 2016.5 (430) ·
-       2398.7 (600) · 2833.1 (767) → within ±1.8% from 320 to 767. Replaces
-       foundation.css's carousel estimates while the stack is on (0,2,0). */
-    contain-intrinsic-size: auto max(1839px, calc(1040px + 230vw));
+       four (text block + 16 + stage (W − 32) × 489/752). Measured 2026-11-12
+       (16px margins, 16/24 bodies): 1971.1 (320) · 2027.1 (360) · 2013.1
+       (375) · 1994.1 (390) · 1996.4 (402) · 2069.2 (430) · 2203.2 (500) ·
+       2415.4 (600) · 2849.7 (767): flat while the bodies lose lines as the
+       stages grow, then the stages' 2.601 px per px → within ±2% from 320
+       to 767 (+2.0% at 320, ±0.8% elsewhere). Replaces foundation.css's
+       carousel estimates while the stack is on (0,2,0). */
+    contain-intrinsic-size: auto max(2010px, calc(1194px + 203.5vw), calc(855px + 260.1vw));
     gap: 20px;
     /* 59.6 above the title, + the cloud room sky.css opens over the banner
        (--lp-sky-room, taken back by its negative margin) */
     padding: calc(59.6px + var(--lp-sky-room, 0px)) 0 11.8px;
   }
+  /* 2026-11-12 (phone pass): the page's one phone margin, 16px, so the titles, the bodies and
+     the four stage cards stand on the same edge as every other card (was 24; the stages are
+     W − 32 wide now, measured by the driver like before) */
   .lp-dive[data-lp-phone="stack"] .lp-dive-row {
     align-items: stretch;
     display: flex;
     flex-direction: column;
     gap: 0;
-    padding: 24px;
+    padding: 24px 16px;
     width: 100%;
   }
   .lp-dive[data-lp-phone="stack"] .lp-dive-list,
@@ -587,10 +616,12 @@
     right: 0;
     top: -32px;
   }
-  /* One line wherever it fits: "A personal message for every lead" needs 317 px and has 327 at
-     375. The artboard keeps the desktop column's break, which made it the only title of the four
-     on two lines (a tester, 2026-10-13: "ce serait cool que le sous-titre tienne en 1 ligne").
-     Narrower phones keep the drawn break. */
+  /* One line from 375: "Your agent knows what to do next" needs 311 px and has 327 there
+     (measured 2026-10-28). The data keeps the desktop column's break, which would make it the
+     only title of the four on two lines (a tester, 2026-10-13, on the title that held this
+     place: "ce serait cool que le sous-titre tienne en 1 ligne"). Below 375 the break stays on
+     purpose: at 360 only 1.4 px would be left, and a phone that sets the face a hair wider would
+     wrap "next" alone. */
   .lp-dive[data-lp-phone="stack"] .lp-dive-tab__title {
     font-weight: 600;
     text-wrap: balance;
@@ -598,15 +629,17 @@
   }
   @media (max-width: 374px) {
     .lp-dive[data-lp-phone="stack"] .lp-dive-tab__title {
-      white-space: pre-line; /* "A personal message for" / "every lead", as drawn */
+      white-space: pre-line; /* "Your agent knows" / "what to do next", the data's break */
     }
   }
   .lp-dive[data-lp-phone="stack"] .lp-dive-tab__fold {
     grid-template-rows: 1fr;
   }
+  /* the page's body size (16/24, as the lede, the steps, the quotes and the pricing list) since
+     2026-11-12; the artboard's 13.333/20 was the one body on the phone page set smaller */
   .lp-dive[data-lp-phone="stack"] .lp-dive-tab__body {
-    font-size: var(--lp-text-sm);
-    line-height: 20px;
+    font-size: var(--lp-text-md);
+    line-height: 24px;
   }
   /* item 4's "See how →": its own row under the body (8), inside the text
      block — the tab gives up its bottom 24 to it */
@@ -638,12 +671,12 @@
   .lp-dive[data-lp-phone="stack"] .lp-dive-panel {
     aspect-ratio: 752 / 489;
     background: var(--lp-dive-stage-bg);
-    border-radius: calc((100vw - 48px) * 15.887 / 752);
-    box-shadow: 0 calc((100vw - 48px) * 2.648 / 752) calc((100vw - 48px) * 41.307 / 752) rgba(0, 0, 0, 0.08);
+    border-radius: calc((100vw - 32px) * 15.887 / 752);
+    box-shadow: 0 calc((100vw - 32px) * 2.648 / 752) calc((100vw - 32px) * 41.307 / 752) rgba(0, 0, 0, 0.08);
     /* the same shadow on a whole-pixel offset (1 at 402; .lp-dive-stage has
        the reason): WebKit left a 6 px seam at each side at DPR 3. Engines
        without round() keep the line above. */
-    box-shadow: 0 round(calc((100vw - 48px) * 2.648 / 752), 1px) calc((100vw - 48px) * 41.307 / 752)
+    box-shadow: 0 round(calc((100vw - 32px) * 2.648 / 752), 1px) calc((100vw - 32px) * 41.307 / 752)
       rgba(0, 0, 0, 0.08);
     flex: none;
     inset: auto;
@@ -654,11 +687,11 @@
     position: relative;
     visibility: visible;
   }
-  /* The card is exactly W − 48 wide, so the scale before the driver measures
+  /* The card is exactly W − 32 wide (W − 48 until 2026-11-12), so the scale before the driver measures
      it (--lp-fit on the panel) needs no container unit — the iOS trig bug
      (LpFitVars) is about cqw — and the four pictures show without JS. */
   .lp-dive[data-lp-phone="stack"] .lp-dive-scene {
-    transform: scale(var(--lp-fit, tan(atan2(100vw - 48px, 752px))));
+    transform: scale(var(--lp-fit, tan(atan2(100vw - 32px, 752px))));
     visibility: inherit;
   }
 }
@@ -672,5 +705,77 @@
   .lp-dive-more,
   .lp .lp-dive-ctrl__btn {
     transition: none;
+  }
+}
+
+/* ══ the vision homepage's dive (2026-11-11): the six hard problems ══
+   Same shell, three additions, each behind its own attribute so the four-block dive is untouched:
+   - data-lede: one line of text under the title. The head then lays the two out in flow.
+   - data-lp-count="6": six titles in the 489 row need a tighter tab (14 px for 24), or the open
+     item's body runs past the stage's bottom edge.
+   - data-lp-sky-top: no banner opens the sky above this dive, so the section draws the sky's
+     top edge itself, with the banner's own cream shape (sky.css), and starts its content under it;
+     the two heading clouds move down by the same amount. */
+.lp-dive-head[data-lede] {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  height: auto;
+  padding: 72px 0 40px;
+}
+.lp-dive-head[data-lede] .lp-dive-title {
+  max-width: 1040px;
+  position: static;
+  width: auto;
+}
+.lp .lp-dive-lede {
+  color: var(--lp-subtle-text);
+  font-size: var(--lp-text-md);
+  line-height: 1.5;
+  max-width: 780px;
+  text-align: center;
+  text-wrap: balance;
+}
+.lp-dive[data-lp-count="6"] .lp-dive-list {
+  --lp-dive-pad: 14px;
+}
+.lp-dive[data-lp-sky-top] {
+  --lp-dive-sky-top: 150px;
+  background:
+    url("/lp/lp-sky-banner-top.svg") 0 0 / 100% 290px no-repeat,
+    var(--lp-sky);
+  padding-top: calc(80px + var(--lp-dive-sky-top));
+}
+/* (phones place their two clouds themselves, sky.css: the first one is raised below) */
+@media (min-width: 768px) {
+  .lp-dive[data-lp-sky-top] > .lp-sky-cloud--a {
+    top: calc(98.534px + var(--lp-dive-sky-top));
+  }
+  .lp-dive[data-lp-sky-top] > .lp-sky-cloud--b {
+    top: calc(90.977px + var(--lp-dive-sky-top));
+  }
+}
+@media (max-width: 1024px) {
+  .lp-dive-head[data-lede] {
+    padding: 56px 32px 32px;
+  }
+}
+@media (max-width: 767px) {
+  .lp-dive-head[data-lede] {
+    padding: 8px 0 24px;
+  }
+  .lp-dive[data-lp-sky-top] {
+    --lp-dive-sky-top: 72px;
+    background-size: 100% 150px, auto;
+  }
+  /* the phone's first cloud sat over the banner card's corner: with no banner it rests on the
+     sky's edge, clear of the title under it */
+  .lp-dive[data-lp-sky-top] > .lp-sky-cloud--a {
+    top: var(--lp-sky-room, 72px);
+  }
+  /* the second, beside the title's first line (its second line starts further left) */
+  .lp-dive[data-lp-sky-top] > .lp-sky-cloud--b {
+    top: calc(var(--lp-sky-room, 72px) + 76px);
   }
 }

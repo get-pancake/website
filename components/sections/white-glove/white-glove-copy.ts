@@ -7,9 +7,11 @@ import { WHITE_GLOVE_INITIAL_MONTHS, WHITE_GLOVE_MONTHLY_DOLLARS } from "@/lib/w
  * from lib/white-glove.ts, the self-serve entry price from lib/pricing.ts.
  * Never add guarantees, capacity, sending volume, Slack, SLAs, integration
  * counts, bespoke terms or results here. Enterprise connectors are a separate
- * offer and are only named to tell the two apart. The hero (the order ticket)
- * is the one François chose on October 18, 2026; its H1 is his, verbatim.
- * The offer always leads with the Custom GTM Brain.
+ * offer and are only named to tell the two apart. The hero H1 is François's,
+ * verbatim (October 18, 2026). Since November 5, 2026 the hero holds the demo
+ * film and the "Book a demo" card (WG_BOOK, the White Glove campaign's ask)
+ * where the order ticket was. The offer always leads with the
+ * Custom GTM Brain.
  */
 
 export const WG_PRICE = formatDollars(WHITE_GLOVE_MONTHLY_DOLLARS);
@@ -19,7 +21,8 @@ const SELF_SERVE_FROM = formatDollars(BASE_LEVEL.dollars);
 export const WG_META = {
   title: "Pancake White Glove: we build your outbound machine",
   ogTitle: "Pancake White Glove: we build your outbound machine.",
-  description: `Our team builds your outbound machine: your custom GTM Brain, unlimited Plays, unlimited Pancake credits and weekly office hours with a dedicated GTM engineer. ${WG_PRICE} a month.`,
+  // <= 155 characters so search results show the price (it was 175, cut before it).
+  description: `Our team builds your outbound machine: a custom GTM Brain, unlimited Plays and credits, weekly office hours with a dedicated GTM engineer. ${WG_PRICE} a month.`,
 };
 
 export const WG_HERO = {
@@ -27,24 +30,60 @@ export const WG_HERO = {
   /** the same title in two lines, broken where the homepage H1 breaks */
   lines: ["We build your", "outbound machine."],
   lede: "Our team builds your custom GTM Brain and runs your Plays with you, on unlimited credits.",
-  primary: "Talk to sales",
-  // ≤11 characters: the v3 pills keep the artboard's fixed 136px width (foundation.css)
-  secondary: "See pricing",
-  term: WG_TERM,
 };
 
-/** The hero's order ticket: what is on it, and how much of it. */
-export const WG_TICKET = {
-  head: "White Glove",
-  tag: "Built for you",
-  items: [
-    { key: "brain", name: "Custom GTM Brain", value: "Built for you", detail: "Set up for your market by our team." },
-    { key: "plays", name: "Plays", value: "Unlimited", detail: "Signal-based, as many as you need." },
-    { key: "credits", name: "Pancake credits", value: "Unlimited", detail: "Every search your Plays run is covered." },
-    { key: "office", name: "Office hours", value: "1 hour a week", detail: "With your dedicated GTM engineer." },
-  ],
-  total: "Total",
-  per: "/month",
+/**
+ * The hero's "Book a demo" card (WgBookDemo.tsx): a work email and three
+ * questions (the campaign's ask, 2026-11-05) plus /demo's budget question
+ * (2026-11-08), then the White Glove calendar, François's
+ * review queue or self-serve (lib/white-glove-demo.ts says who goes where).
+ * The price and term sit in the lede: the card books a paid service.
+ */
+export const WG_BOOK = {
+  title: "Book a demo",
+  lede: `45 minutes with our team. White Glove is ${WG_PRICE} a month, ${WHITE_GLOVE_INITIAL_MONTHS} months minimum.`,
+  email: { label: "Work email", placeholder: "you@company.com" },
+  size: { label: "Company size" },
+  country: { label: "Country", list: "Countries", empty: "No country matches. Try another spelling." },
+  gtm: { legend: "Do you have a GTM team?", hint: "Sales, growth or GTM engineers.", yes: "Yes", no: "Not yet" },
+  /** /demo's White Glove budget question (2026-11-08): it gates the calendar */
+  budget: {
+    label: `Does ${WG_PRICE} a month work for you?`,
+    yes: "Yes, it works for us",
+    approval: "I need internal approval",
+    no: "Not in our budget",
+  },
+  select: "Select",
+  submit: "Book a demo",
+  sending: "Sending…",
+  fine: "Work email only. Your answers prepare the call.",
+  errors: {
+    personal: "Use your work email. Personal addresses can't book a demo.",
+    failed: "Something went wrong. Please try again.",
+    timeout: "That took too long. Please try again.",
+  },
+  booking: {
+    title: "Pick a time",
+    lede: "45 minutes on video with our team.",
+    frameTitle: "White Glove demo calendar",
+    stuckBefore: "Calendar not loading? ",
+    stuckLink: "Open it in a new tab",
+    stuckAfter: ".",
+  },
+  booked: { title: "You're booked.", body: "The invite is in your inbox. See you on the call." },
+  review: {
+    title: "Thanks. We'll be in touch.",
+    body: "Our team reads every request and emails you a booking link if White Glove fits.",
+  },
+  selfServe: {
+    title: "White Glove is built for teams.",
+    body: `Start on self-serve: the same Pancake, from ${SELF_SERVE_FROM} a month.`,
+    /** the budget does not stretch to White Glove */
+    budgetTitle: "Start on self-serve.",
+    budgetBody: `The same Pancake, from ${SELF_SERVE_FROM} a month. You build and run your Plays.`,
+    cta: "Start free",
+    alt: "Compare plans",
+  },
 } as const;
 
 export const WG_GET = {
@@ -93,7 +132,7 @@ export const WG_PRICE_PANEL = {
     "Then month to month",
     "For companies of any size",
   ],
-  cta: "Talk to sales",
+  cta: "Book a demo",
   alt: {
     name: "Self-serve",
     price: `From ${SELF_SERVE_FROM}/month`,
@@ -131,7 +170,7 @@ export const WG_FAQ = {
     },
     {
       q: "How do I start?",
-      a: "Talk to sales and answer yes to White Glove. You book a consultation with our team.",
+      a: "Book a demo at the top of this page: your work email and four questions. If White Glove fits, you pick a time with our team.",
     },
   ],
 } as const;
@@ -139,7 +178,7 @@ export const WG_FAQ = {
 export const WG_CTA = {
   title: "Hand us the build",
   body: "Our team builds your custom GTM Brain and your Plays, and meets you every week.",
-  primary: "Talk to sales",
+  primary: "Book a demo",
   secondary: "See pricing",
   note: `${WG_PRICE} a month. ${WG_TERM}`,
 };

@@ -28,7 +28,7 @@ export const CATEGORY_ORDER: VerticalCategory[] = [
   "Tech & build agencies",
   "Consultants & advisors",
   "IT, cloud & security",
-  "Startups & solo founders",
+  "Startups",
   "Vertical software",
   "Energy & industry",
 ];
@@ -145,7 +145,7 @@ export function relatedFor(v: VerticalConfig): VerticalConfig[] {
   return picked;
 }
 
-/** §2.7: the vertical Q/As, then the 5 shared ones. The same array feeds FAQPage JSON-LD. */
+/** §2.7: the vertical Q/As, then the 4 shared ones. The same array feeds FAQPage JSON-LD. */
 export function faqItems(v: VerticalConfig): FaqItem[] {
   return [...v.faq, ...VX_FAQ.shared];
 }

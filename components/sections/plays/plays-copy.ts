@@ -4,9 +4,9 @@
 //
 // Copy rules this file follows (audit plan 3.7, 2026-10-07): the outreach platform is never
 // named and its steps are never listed (validate.ts PLATFORM / SEQUENCE); "Play" and
-// "sequence", never "campaign"; "You approve every lead"; the price is "from $99 a month per
-// workspace" (the credit plan, lib/pricing.ts); nothing promises results; no email outreach, CRM sync, website visitors, phone
-// lookup or calls; landing-voice budgets (headline ≤ 8 words, body ≤ 35 words).
+// "sequence", never "campaign"; no "You approve every lead" (founder 2026-10-30: "kill this"); the price is "from $99 a month per
+// workspace" (the credit plan, lib/pricing.ts); nothing promises results; no email outreach, CRM sync, website visitors or
+// calls (a lead's phone number and a one-way CRM export are real since October 2026); landing-voice budgets (headline ≤ 8 words, body ≤ 35 words).
 // "More ways" (2026-10-07, founder: anything that exists in the app's code can be pitched, even
 // if it is not switched on — D27): funding rounds, lookalikes, role match, web evidence and one
 // post's reactions are in pancake-cmo's lead finders (Dealroom/Coresignal, Ocean.io, Coresignal
@@ -148,14 +148,10 @@ export const PLAYS_FAQ = {
     },
     {
       q: "How many leads does a Play find?",
-      a: "Each search keeps up to 50 new leads. Create as many Plays as you want: a search uses credits from your plan.",
+      a: "There is no cap: you pick how many leads each search keeps. Create as many Plays as you want: a search uses credits from your plan.",
     },
     {
-      q: "Do I approve leads before anyone is contacted?",
-      a: "Yes. You approve every lead. Pancake contacts only the leads you approve, and every lead comes with why it fits.",
-    },
-    {
-      q: "What happens after I approve a lead?",
+      q: "How does Pancake reach out to a lead?",
       a: "Pancake writes a personal message from why the lead fits, then sends it under your name after a light warm-up. Read or edit any draft first. A reply stops the sequence.",
     },
     {
@@ -164,7 +160,7 @@ export const PLAYS_FAQ = {
     },
     {
       q: "What doesn’t Pancake do?",
-      a: "It doesn’t send outreach by email, sync to your CRM, identify website visitors, find phone numbers or make calls.",
+      a: "It doesn’t send outreach by email, identify website visitors, make calls or sync with your CRM. It can find a lead’s work email or phone number and export the leads you pick to your CRM.",
     },
   ],
 };
@@ -191,6 +187,6 @@ export const PLAYS_META = {
   /** Every page on the shared card describes the text in that image (audit plan 8.4). */
   ogImageAlt: OG_IMAGE_ALT,
   /** The X account the footer and the Organization sameAs link to. */
-  xHandle: "@getpancake_ai",
+  xHandle: "@pancakegtm",
   crumbs: { home: "Home", page: "Example Plays" },
 };

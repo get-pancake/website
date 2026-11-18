@@ -1,27 +1,42 @@
 import type { Viewport } from "next";
 import Link from "next/link";
-import { LuBadgeCheck, LuCheck, LuCreditCard, LuLock, LuSparkles, LuUserCheck, LuX } from "react-icons/lu";
+import { LuCheck, LuX } from "react-icons/lu";
 
-import { COMPARE_LINKS, COMPARE_META } from "@/components/sections/compare/compare-copy";
+import { COMPARE_HERO, COMPARE_LINKS, COMPARE_META, COMPARE_SWITCH } from "@/components/sections/compare/compare-copy";
 import {
+  COMPARE_HUB_GROUPS,
   COMPARE_PATH,
   compareEntry,
   compareName,
   comparePath,
   compareSiblings,
 } from "@/components/sections/compare/compare-data";
-import { HOME_PAGE_CONTAINER_CLASS } from "@/components/sections/home/home-layout";
+import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpFxLink } from "@/components/sections/landing-v3/LpFxButton";
+import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
-import { Badge } from "@/components/ui/Badge";
-import { H2, H3 } from "@/components/ui/Headings";
+import { LpVideo } from "@/components/sections/landing-v3/LpVideo";
+import { SlProof } from "@/components/sections/search-landing/SlProof";
+import {
+  SEARCH_LANDINGS,
+  SL_CTA,
+  SL_DEMO_ID,
+  SL_TRIAL_LINE,
+} from "@/components/sections/search-landing/search-landing-copy";
+import { VxHead } from "@/components/sections/verticals/VxHead";
+import { vxNoWidow } from "@/components/sections/verticals/vx-text";
 import { DEMO_PAGE_PATH } from "@/lib/booking";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { APP_ORIGIN, SITE_ORIGIN } from "@/lib/site-config.mjs";
-import "@/app/_styles/components.css";
 import "@/app/_styles/landing-v3.css";
+import "@/app/_styles/verticals.css";
+import "@/app/_styles/guide-claude.css";
+import "@/app/_styles/search-landing.css";
 import "./comparison.css";
+
+/** /claude-for-sales's "how it works" (search-landing-copy.ts), shown on every comparison page. */
+const CLAUDE_STEPS = SEARCH_LANDINGS["claude-for-sales"].steps;
 
 // Two different dates, kept apart on purpose:
 // - PAGE_MODIFIED: when Pancake's side of these pages last changed (JSON-LD dateModified).
@@ -31,12 +46,29 @@ import "./comparison.css";
 //   footer (LpNav/LpFooter) replace HomeNav and the shared Footer.
 //   2026-10-13: the credit plan. Every page says "from $99 a month", the 7-day trial and its
 //   15,000 credits (#333).
+//   2026-11-03: the trial comes with 30,000 credits (pancake-cmo PAN-2391, since 2026-10-21).
+//   2026-11-16: the paid search pages' layout (below): the demo film, the customer logos and
+//   the homepage's customer cards join every page.
 // - FACTS_REVIEWED: when the competitor facts (features, prices) were last checked.
 //   Shown under Sources. Move it only after re-checking every competitor's public pages.
 //   2026-10-07: all seven re-checked on the vendors' own pages (Origami's plans moved to
 //   $49 / $129 / $399, and it now runs the plays you approve).
 //   REMINDER: re-check by 2027-01-05 (90 days), then move this date again.
-const PAGE_MODIFIED = "2026-10-13";
+// A page written after that review carries its own two dates in its config (`modified`,
+// `factsReviewed`), so it never claims a review it did not get. 2026-11-10: Clay, Apollo,
+// ZoomInfo, Instantly, HeyReach, 11x and Smartlead, each read on the vendor's own pages that
+// day. Drop a page's own dates once a full review moves the two constants past them.
+// A page's own `modified` also dates a change made to some pages only: 2026-11-17, the thirteen
+// GTM tool pages took the "<Tool> alternative" eyebrow, the "Is Pancake a <Tool> alternative?"
+// question and the competitors line (below); the four AI agent pages did not change.
+// dateModified is the newer of the page's own date and PAGE_MODIFIED.
+//   2026-11-17: the pages argue for Pancake (founder: "la comparaison doit donner envie de
+//   préférer pancake"), in the /claude-for-sales layout he named as the model. The hero says why
+//   to pick Pancake, the "Why teams pick Pancake" cards keep the differences Pancake wins, the
+//   steps show how it works, and the table marks Pancake's column only. Gone: the two neutral
+//   cards, the "Choose <Tool> · Best fit" card, the "<Tool> wins on …" differences and the
+//   table rows where Pancake has no answer. The competitor facts are unchanged, word for word.
+const PAGE_MODIFIED = "2026-11-17";
 const FACTS_REVIEWED = "October 7, 2026";
 
 /** Status-bar zone matches the landing cream (the Dynamic Island fix every main.lp page carries). */
@@ -70,45 +102,29 @@ export type GtmComparisonConfig = {
   faqs: { q: string; a: string }[];
   related: { href: string; label: string }[];
   sources: { href: string; label: string }[];
+  /** JSON-LD dateModified ("2026-11-10"), for a page newer than PAGE_MODIFIED. */
+  modified?: string;
+  /** The date under Sources ("November 10, 2026"), for a page checked after FACTS_REVIEWED. */
+  factsReviewed?: string;
+  /** The hero of a GTM tool's page (2026-11-17): why to pick Pancake, in the searcher's frame.
+   *  title: one claim, <= 8 words. lede: <= 30 words, Pancake as the actor, ends on the payoff.
+   *  Every fact in it is already on the page (the differences, the table). Without it the hero
+   *  shows heroLede and heroSummary. */
+  pitch?: { title: string; lede: string };
 };
 
 function ComparisonCell({ cell }: { cell: ComparisonCellData }) {
-  if (!cell.mark) return <span className="vvp-mark__text">{cell.text}</span>;
+  if (!cell.mark) return <span className="cmp-mark__text">{cell.text}</span>;
   const Icon = cell.mark === "yes" ? LuCheck : LuX;
   return (
-    <span className="vvp-mark">
+    <span className="cmp-mark">
       <Icon
         size={18}
         aria-hidden
-        className={cell.mark === "yes" ? "vvp-mark__icon vvp-mark__icon--yes" : "vvp-mark__icon vvp-mark__icon--no"}
+        className={cell.mark === "yes" ? "cmp-mark__icon cmp-mark__icon--yes" : "cmp-mark__icon cmp-mark__icon--no"}
       />
-      <span className="vvp-mark__text">{cell.text}</span>
+      <span className="cmp-mark__text">{cell.text}</span>
     </span>
-  );
-}
-
-/**
- * The CTA pair, "Start free" then "Talk to sales", the hero's order on every surface
- * (founder 2026-09-03). Each placement has its own allow-listed ids (lib/analytics/data-layer.ts),
- * so comparison clicks don't merge into the homepage hero and final metrics.
- */
-function CtaPair({ placement }: { placement: "hero" | "final" }) {
-  return (
-    <div className="vvp-hero__cta-row">
-      <LpFxLink
-        href={APP_ORIGIN}
-        data-analytics-id={placement === "hero" ? "app_compare_hero" : "app_compare_final"}
-      >
-        Start free
-      </LpFxLink>
-      <LpFxLink
-        href={DEMO_PAGE_PATH}
-        className="lp-btn--tinted lp-btn--demo"
-        data-analytics-id={placement === "hero" ? "call_compare_hero" : "call_compare_final"}
-      >
-        Talk to sales
-      </LpFxLink>
-    </div>
   );
 }
 
@@ -129,10 +145,53 @@ function hubEntry(config: GtmComparisonConfig) {
   return entry;
 }
 
+/**
+ * Every /<tool>-vs-pancake page (and /pancake-vs-paperclips). Since 2026-11-16 it wears the paid
+ * search pages' layout (SearchLandingPage.tsx), the ad landing pages that start the most trials:
+ * they show the product, the customers and the trial line where these showed two text cards and
+ * three badges. The comparison itself is unchanged, word for word.
+ *
+ *   nav → hero (H1 = the badge + the promise: on a GTM tool's page "<Tool> alternative" + its
+ *   pitch, on an AI agent's page its name + its heroLede; the lede, Start free and Watch demo,
+ *   the trial line) → the demo film → customer logos → why teams pick Pancake (the differences
+ *   Pancake wins, as numbered cards) → how it works (/claude-for-sales's three steps) → the
+ *   feature table (Pancake's column marked, the rows where Pancake has an answer) → customer
+ *   proof → FAQ (+ keep reading, more comparisons, sources) → closing card (Start free and Talk to
+ *   sales) → footer.
+ *
+ * 2026-11-17 evening: the pages argue for Pancake (PAGE_MODIFIED says what changed). The
+ * searches that land here ("clay alternative", "lemlist competitors") read their own words in
+ * the H1's badge, in an "Is Pancake a <Tool> alternative?" question in each page's FAQ, and in
+ * "More competitors compared" on the siblings line. Only on the GTM tools the site lists
+ * (COMPARE_HUB_GROUPS): the AI agents off the hub (Claude Tag, Viktor, OpenClaw, Paperclip) are
+ * what a founder runs Pancake from, not competitors (founder, 2026-10-13, compare-data.ts), so
+ * their pages keep their name as the badge.
+ *
+ * The kits: the /for kit and the Claude guide's sheet (.lp-vx, .lp-guide), the search pages'
+ * sheet (.lp-search), and comparison.css for the few pieces only these pages have (.lp-cmp).
+ * The design kit (components.css) no longer loads here.
+ *
+ * Analytics: Start free keeps the comparison ids (app_compare_hero, app_compare_final), Talk to
+ * sales its own (call_compare_final); page_path tells the pages apart. The film's anchor (#demo)
+ * is a plain in-page link, not tracked, as on the search pages.
+ */
 export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
   const entry = hubEntry(config);
   const canonicalUrl = `${SITE_ORIGIN}/${config.slug}`;
   const pageName = compareName(entry);
+  // a GTM tool the site lists, so a competitor: the "<Tool> alternative" words (comment above)
+  const isCompetitor = COMPARE_HUB_GROUPS.includes(entry.group);
+  const heroBadge = isCompetitor ? COMPARE_HERO.eyebrow(config.competitor) : pageName;
+  // the differences Pancake wins: a "<Tool> wins on …" difference stays out of the page
+  const switchReasons = config.differences.filter((d) => !d.title.startsWith(`${config.competitor} wins`));
+  // the rows where Pancake has an answer; the competitor's column is read as plain text
+  const tableRows = config.rows.filter((row) => row.pancake.mark !== "no");
+  // the questions that list what the other tool does better ("What does Clay do that Pancake
+  // doesn't?", "Is Lemlist better for …") stay off the page and out of the FAQPage data
+  const faqs = config.faqs.filter(
+    (f) => !f.q.includes(" do that Pancake doesn") && !f.q.startsWith(`Is ${config.competitor} better`),
+  );
+  const dateModified = config.modified && config.modified > PAGE_MODIFIED ? config.modified : PAGE_MODIFIED;
   // "More comparisons": the other pages of this page's /compare group, minus the ones its own
   // "Keep reading" line already links.
   const moreComparisons = compareSiblings(config.slug).filter(
@@ -151,7 +210,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
         url: canonicalUrl,
         description: config.heroSummary,
         inLanguage: "en-US",
-        dateModified: PAGE_MODIFIED,
+        dateModified,
         isPartOf: { "@type": "WebSite", "@id": `${SITE_ORIGIN}/#website`, name: "Pancake", url: SITE_ORIGIN },
         breadcrumb: { "@id": `${canonicalUrl}#breadcrumb` },
         author: { "@type": "Person", name: "François de Fitte" },
@@ -173,7 +232,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
         "@type": "FAQPage",
         "@id": `${canonicalUrl}#faq`,
         isPartOf: { "@id": `${canonicalUrl}#webpage` },
-        mainEntity: config.faqs.map(({ q, a }) => ({
+        mainEntity: faqs.map(({ q, a }) => ({
           "@type": "Question",
           name: q,
           acceptedAnswer: { "@type": "Answer", text: a },
@@ -183,190 +242,207 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
   };
 
   return (
-    // The landing chrome (LpNav + LpFooter, landing-v3.css) around the kit-built body.
-    // comparison.css keeps landing-v3's unlayered base out of .vvp-body. No id here: the skip
-    // link's #main-content target is the hero section, past the nav.
-    <main className="lp">
+    <main className="lp lp-vx lp-guide lp-search lp-cmp">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }} />
-
+      {/* frees the logo band's GPU layers off-screen (iPhone OOM guard), as on the search pages */}
+      <LpAnimFreeze />
       <LpNav />
 
-      <div className="vvp-body">
-        <section id="main-content" tabIndex={-1} className="home-landing-section" aria-labelledby="vvp-hero-heading">
-          <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
-            <header className="home-landing-section__header">
-              <h1 id="vvp-hero-heading" className="heading home-landing-section__title vvp-hero__title text-center">
-                {pageName}
-              </h1>
-              <p className="home-landing-section__lede text-center">{config.heroLede}</p>
-              <p className="vvp-hero__summary text-center">{config.heroSummary}</p>
-            </header>
-
-            <div className="vvp-hero__cta">
-              <CtaPair placement="hero" />
-              <a href="#vvp-compare" className="vvp-hero__jump">
-                See how they compare
-              </a>
-              {/* 2026-10-07: "SOC 2 compliant" removed (no report on file, audit D2). Restore it
-                  only with a /security page that backs it. */}
-              <ul className="vvp-hero__badges">
-                <li className="vvp-hero__badge"><LuSparkles aria-hidden /> From $99 a month per workspace</li>
-                <li className="vvp-hero__badge"><LuCreditCard aria-hidden /> No extra seats to hire</li>
-                <li className="vvp-hero__badge"><LuUserCheck aria-hidden /> You approve every lead</li>
-                <li className="vvp-hero__badge"><LuLock aria-hidden /> Private by default</li>
-              </ul>
-            </div>
-
-            <div className="vvp-hero__cards">
-              <article className="vvp-pcard vvp-pcard--viktor">
-                <span className="vvp-pcard__icon" aria-hidden>{config.competitorInitial}</span>
-                {/* H2, not H3: the two cards sit right under the H1, and the outline must not
-                    skip a level. data-level keeps the kit's H3 size and tracking. */}
-                <H2 data-level="3" className="heading vvp-pcard__title">{config.competitor}</H2>
-                <p className="vvp-pcard__body">{config.competitorBody}</p>
-                <p className="vvp-pcard__choose">{config.competitorChoose}</p>
-              </article>
-              <article className="vvp-pcard vvp-pcard--pancake">
-                <span className="vvp-pcard__icon vvp-pcard__icon--logo" aria-hidden>
-                  {/* eslint-disable-next-line @next/next/no-img-element -- raster brand mark */}
-                  <img src="/pancake-mark.png" alt="" width={48} height={48} />
-                </span>
-                <H2 data-level="3" className="heading vvp-pcard__title">Pancake</H2>
-                <p className="vvp-pcard__body">{config.pancakeBody}</p>
-                <p className="vvp-pcard__choose">{config.pancakeChoose}</p>
-              </article>
-            </div>
+      <section id="main-content" tabIndex={-1} className="vx-hero sl-hero" aria-labelledby="cmp-hero-title">
+        <div className="vx-col">
+          {/* as /claude-for-sales: H1 = the badge (the searcher's words, "Clay alternative") + the
+              page's promise; an AI agent's page keeps its name and heroLede. */}
+          <h1 id="cmp-hero-title" className="vx-hero__h1">
+            <span className="vx-badge vx-badge--hero" data-tone="brand">
+              {heroBadge}
+            </span>
+            <span className="vx-sr">: </span>
+            <span className="vx-hero__title">{config.pitch?.title ?? config.heroLede}</span>
+          </h1>
+          <p className="vx-hero__lede">{vxNoWidow(config.pitch?.lede ?? config.heroSummary)}</p>
+          <div className="lp-hero-btns vx-hero__btns sl-hero__btns">
+            <LpFxLink href={APP_ORIGIN} data-analytics-id="app_compare_hero">
+              {SL_CTA.primary}
+            </LpFxLink>
+            <LpFxLink href={`#${SL_DEMO_ID}`} className="lp-btn--tinted lp-btn--demo">
+              {SL_CTA.demo}
+            </LpFxLink>
           </div>
-        </section>
+          <p className="sl-trial">{SL_TRIAL_LINE}</p>
+        </div>
+      </section>
 
-        <section className="home-landing-section home-landing-section--alt" aria-labelledby="vvp-verdict-heading">
-          <div className={`${HOME_PAGE_CONTAINER_CLASS} vvp-verdict-grid`}>
-            <div className="vvp-verdict-aside">
-              <Badge variant="brand-alt-1">The verdict</Badge>
-              <H2 id="vvp-verdict-heading" className="heading vvp-verdict-aside__title">{config.verdictTitle}</H2>
-              <p className="vvp-verdict-aside__lede">{config.verdictLede}</p>
-            </div>
-            <article className="vvp-tweet">
-              <div className="vvp-tweet__head">
-                <span className="vvp-tweet__avatar" aria-hidden>{config.competitorInitial}</span>
-                <span className="vvp-tweet__id">
-                  <span className="vvp-tweet__name">Choose {config.competitor}<LuBadgeCheck className="vvp-tweet__verified" aria-hidden /></span>
-                  <span className="vvp-tweet__handle">Best fit</span>
-                </span>
-              </div>
-              <p className="vvp-tweet__text">{config.competitorBestFit}</p>
-              <p className="vvp-tweet__foot">An honest comparison, based on public product information.</p>
-            </article>
-          </div>
-        </section>
+      <div id={SL_DEMO_ID} className="sl-film">
+        <LpVideo grow={false} className="sl-video" />
+      </div>
 
-        <section className="home-landing-section" aria-labelledby="vvp-diffs-heading">
-          <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
-            <header className="home-landing-section__header">
-              <H2 id="vvp-diffs-heading" className="heading home-landing-section__title text-center">
-                Five differences that matter
-              </H2>
-              <p className="home-landing-section__lede text-center">{config.differencesLede}</p>
-            </header>
-            <ol className="vvp-diffs">
-              {config.differences.map((difference) => (
-                <li key={difference.n} className="vvp-diff">
-                  <span className="vvp-diff__num" aria-hidden>{difference.n}</span>
-                  <div className="vvp-diff__content">
-                    <H3 className="heading vvp-diff__title">{difference.title}</H3>
-                    <p className="vvp-diff__body">{difference.body}</p>
-                    <p className="vvp-diff__angle">{difference.angle}</p>
+      <div className="vx-logos sl-logos">
+        <LpMarquee labelled />
+      </div>
+
+      {/* why to switch: the differences Pancake wins, as the search pages' numbered cards, each
+          ending on its one-line angle */}
+      <section className="vx-sec cmp-switch-sec" aria-labelledby="cmp-switch-title">
+        <div className="vx-col">
+          <VxHead
+            id="cmp-switch-title"
+            eyebrow={COMPARE_SWITCH.eyebrow}
+            title={isCompetitor ? COMPARE_SWITCH.h2(config.competitor) : COMPARE_SWITCH.h2Agent}
+            lede={config.differencesLede}
+          />
+          <ol className="sl-steps__list cmp-switch">
+            {switchReasons.map((reason, i) => (
+              <li key={reason.title} className="gd-card sl-step cmp-switch__card">
+                <p className="sl-step__num" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 className="sl-step__title lp-display">{reason.title}</h3>
+                <p className="sl-step__body">{vxNoWidow(reason.body)}</p>
+                <p className="cmp-switch__angle">{reason.angle}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* how it works: /claude-for-sales's three steps, the example request drawn as a chat message */}
+      <section className="vx-sec sl-steps" aria-labelledby="cmp-steps-title">
+        <div className="vx-col">
+          <VxHead id="cmp-steps-title" eyebrow={COMPARE_SWITCH.stepsEyebrow} title={CLAUDE_STEPS.h2} />
+          <ol className="sl-steps__list">
+            {CLAUDE_STEPS.items.map((s, i) => (
+              <li key={s.title} className="gd-card sl-step">
+                <p className="sl-step__num" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </p>
+                <h3 className="sl-step__title lp-display">{s.title}</h3>
+                <p className="sl-step__body">{vxNoWidow(s.body)}</p>
+                {s.ask ? (
+                  <div className="sl-step__ask">
+                    <p className="sl-ask">{s.ask}</p>
                   </div>
-                </li>
+                ) : null}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* the id keeps the old "See how they compare" anchor (#vvp-compare) working */}
+      <section id="vvp-compare" className="vx-sec cmp-table-sec" aria-labelledby="cmp-table-title">
+        <div className="vx-col">
+          <VxHead id="cmp-table-title" eyebrow="Features" title="Head to head, feature by feature" />
+          <div className="cmp-table-wrap">
+            <table className="cmp-table">
+              <thead>
+                <tr>
+                  <th scope="col">Feature</th>
+                  <th scope="col">{config.competitor}</th>
+                  <th scope="col">Pancake</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tableRows.map((row) => (
+                  <tr key={row.feature}>
+                    <th scope="row">{row.feature}</th>
+                    {/* data-label: phones draw each row as a card, every value under its tool's name */}
+                    <td data-label={config.competitor}>
+                      <span className="cmp-mark__text">{row.competitor.text}</span>
+                    </td>
+                    <td data-label="Pancake">
+                      <ComparisonCell cell={row.pancake} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <SlProof />
+
+      <section className="vx-sec vx-faq-sec" aria-labelledby="cmp-faq-title">
+        <div className="vx-col">
+          <VxHead id="cmp-faq-title" eyebrow="FAQ" title="Questions GTM teams ask" />
+          <div className="vx-faq">
+            {faqs.map((f) => (
+              <details key={f.q} className="vx-qa">
+                <summary>
+                  <span className="vx-qa__q">{vxNoWidow(f.q, 16)}</span>
+                  <svg className="vx-qa__icon" viewBox="0 0 20 20" width="20" height="20" aria-hidden="true" focusable="false">
+                    <path d="M10 3.5v13M3.5 10h13" />
+                  </svg>
+                </summary>
+                <p className="vx-qa__a">{vxNoWidow(f.a)}</p>
+              </details>
+            ))}
+          </div>
+          <div className="cmp-links">
+            <p>
+              Keep reading:{" "}
+              {config.related.map((link, index) => (
+                <span key={link.href}>
+                  {index > 0 ? ", " : ""}
+                  <Link href={link.href}>{link.label}</Link>
+                </span>
               ))}
-            </ol>
-          </div>
-        </section>
-
-        <section id="vvp-compare" className="home-landing-section home-landing-section--alt" aria-labelledby="vvp-table-heading">
-          <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
-            <header className="home-landing-section__header">
-              <H2 id="vvp-table-heading" className="heading home-landing-section__title text-center">Head to head, feature by feature</H2>
-            </header>
-            <div className="home-landing-section__figure">
-              <table className="influencers-tiers__table vvp-table">
-                <thead><tr><th scope="col">Feature</th><th scope="col">{config.competitor}</th><th scope="col">Pancake</th></tr></thead>
-                <tbody>
-                  {config.rows.map((row) => (
-                    <tr key={row.feature}>
-                      <th scope="row">{row.feature}</th>
-                      <td><ComparisonCell cell={row.competitor} /></td>
-                      <td><ComparisonCell cell={row.pancake} /></td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </section>
-
-        {/* "Take it from them" (the V1 X posts) removed 2026-10-07: they described features
-            Pancake doesn't have. The slot stays empty until real customer quotes exist. */}
-
-        <section className="home-landing-section" aria-labelledby="vvp-closing-heading">
-          <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner home-landing-section__inner--closing`}>
-            <h2 id="vvp-closing-heading" className="heading home-landing-section__closing-title text-center">{config.closingTitle}</h2>
-            <p className="home-landing-section__lede home-landing-section__lede--closing text-center">{config.closingLede}</p>
-            <div className="home-landing-closing-cta">
-              <CtaPair placement="final" />
-              {/* each phrase stays whole on phones (393px left "lead" alone on line 2) */}
-              <p className="home-landing-closing-cta__note">
-                <span className="vvp-nowrap">From $99 a month per workspace&nbsp;•</span>{" "}
-                <span className="vvp-nowrap">You approve every lead</span>
+              .
+            </p>
+            {moreComparisons.length > 0 ? (
+              <p>
+                {isCompetitor ? COMPARE_LINKS.moreCompetitors : COMPARE_LINKS.more}{" "}
+                {moreComparisons.map((c) => (
+                  <span key={c.slug}>
+                    <Link href={comparePath(c)}>{compareName(c)}</Link>,{" "}
+                  </span>
+                ))}
+                or <Link href={COMPARE_PATH}>{COMPARE_LINKS.moreAll}</Link>.
               </p>
-              {/* 2026-10-07 (founder: make the comparison pages reachable, as Unify, Origami,
-                  Octave and Alta do): back to the /compare hub. The hero's text-link recipe
-                  (vvp-hero__jump); the arrow is aria-hidden, so the link reads its words only. */}
-              <Link href={COMPARE_PATH} className="vvp-hero__jump">
+            ) : null}
+            <p>
+              Sources:{" "}
+              {config.sources.map((source, index) => (
+                <span key={source.href}>
+                  {index > 0 ? ", " : ""}
+                  <a href={source.href} target="_blank" rel="noopener noreferrer">
+                    {source.label}
+                  </a>
+                </span>
+              ))}
+              . Reviewed {config.factsReviewed ?? FACTS_REVIEWED}.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section className="vx-sec sl-final" aria-labelledby="cmp-final-title">
+        <div className="vx-col">
+          <div className="sl-final__card">
+            <h2 id="cmp-final-title" className="sl-final__title lp-display">
+              {config.closingTitle}
+            </h2>
+            <p className="sl-final__body">{vxNoWidow(config.closingLede)}</p>
+            {/* the pair the comparison pages always closed on: Start free, then Talk to sales */}
+            <div className="lp-hero-btns sl-final__btns">
+              <LpFxLink href={APP_ORIGIN} data-analytics-id="app_compare_final">
+                {SL_CTA.primary}
+              </LpFxLink>
+              <LpFxLink href={DEMO_PAGE_PATH} className="lp-btn--tinted lp-btn--demo" data-analytics-id="call_compare_final">
+                Talk to sales
+              </LpFxLink>
+            </div>
+            <p className="sl-trial">{SL_TRIAL_LINE}</p>
+            {/* back to the /compare hub (2026-10-07); the arrow is aria-hidden, so the link reads its words only */}
+            <p className="cmp-all">
+              <Link href={COMPARE_PATH}>
                 {COMPARE_LINKS.seeAll}
                 <span aria-hidden="true">&nbsp;→</span>
               </Link>
-            </div>
-          </div>
-        </section>
-
-        <section className="home-landing-section home-landing-section--alt" aria-labelledby="vvp-faq-heading">
-          <div className={`${HOME_PAGE_CONTAINER_CLASS} home-landing-section__inner`}>
-            <header className="home-landing-section__header">
-              <H2 id="vvp-faq-heading" className="heading home-landing-section__title text-center">Questions founders ask</H2>
-            </header>
-            <ul className="vvp-faq">
-              {config.faqs.map(({ q, a }) => (
-                <li key={q} className="vvp-faq__item">
-                  <H3 className="heading vvp-faq__q">{q}</H3>
-                  <p className="vvp-faq__a">{a}</p>
-                </li>
-              ))}
-            </ul>
-            <p className="vvp-related">
-              Keep reading: {config.related.map((link, index) => (
-                <span key={link.href}>{index > 0 ? ", " : ""}<Link href={link.href} className="underline">{link.label}</Link></span>
-              ))}.
-            </p>
-            {moreComparisons.length > 0 ? (
-              <p className="vvp-related">
-                {COMPARE_LINKS.more}{" "}
-                {moreComparisons.map((c) => (
-                  <span key={c.slug}>
-                    <Link href={comparePath(c)} className="underline">{compareName(c)}</Link>,{" "}
-                  </span>
-                ))}
-                or <Link href={COMPARE_PATH} className="underline">{COMPARE_LINKS.moreAll}</Link>.
-              </p>
-            ) : null}
-            <p className="vvp-related">
-              Sources: {config.sources.map((source, index) => (
-                <span key={source.href}>{index > 0 ? ", " : ""}<a href={source.href} target="_blank" rel="noopener noreferrer" className="underline">{source.label}</a></span>
-              ))}. Reviewed {FACTS_REVIEWED}.
             </p>
           </div>
-        </section>
-      </div>
+        </div>
+      </section>
 
       <LpFooter />
     </main>

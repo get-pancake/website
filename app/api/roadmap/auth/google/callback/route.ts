@@ -57,7 +57,8 @@ export async function GET(request: Request) {
   }
 
   const { value, maxAge } = mintAdminCookie(claims.email);
-  const res = NextResponse.redirect(new URL("/open-roadmap", request.url));
+  const res = NextResponse.redirect(new URL(cookies().get("admin_return")?.value === "demo-review" ? "/demo/review" : "/open-roadmap", request.url));
+  res.cookies.set("admin_return", "", { httpOnly: true, secure, path: "/", maxAge: 0 });
   res.cookies.set(ADMIN_COOKIE_NAME, value, {
     httpOnly: true,
     secure,

@@ -25,7 +25,7 @@ export const viewport: Viewport = { themeColor: "#fbf6f1" };
 export const metadata: Metadata = {
   title: "Careers — Pancake",
   description:
-    "Pancake is four people in San Francisco building the platform founders and their AI agents use to run go-to-market. See open roles, meet the team, or send a note.",
+    "Pancake is four people in San Francisco building the platform GTM teams and their AI agents use to run go-to-market. See open roles, meet the team, or send a note.",
   alternates: { canonical: `${SITE_ORIGIN}/careers` },
   // Its own share card (2026-10-07, audit 8.2): it shared as the homepage, with
   // the homepage title and no og:url. The image stays the shared homepage card.
@@ -71,7 +71,7 @@ const FACTS: Fact[] = [
   // audit: two founding years on one site. Keep the two in step.
   { label: "Founded 2024", tone: "pink" },
   { label: "LinkedIn", tone: "blue", href: "https://www.linkedin.com/company/get-pancake" },
-  { label: "X", tone: "orange", href: "https://x.com/getpancake_ai" },
+  { label: "X", tone: "orange", href: "https://x.com/pancakegtm" },
 ];
 
 /* Titles as each person states them publicly (LinkedIn headlines / funding
@@ -122,12 +122,13 @@ export default function CareersPage() {
               lede and the launch's "Vercel for GTM"): it said "Help founders find their
               customers." / "Pancake's agents find warm leads for small businesses and
               start the conversation." Pancake is not a set of agents any more: it is
-              what a founder and their own agent run go-to-market with. */}
+              what a founder and their own agent run go-to-market with. 2026-11-18: "founders" →
+              "B2B teams", the ICP being B2B teams with a GTM engineer. */}
           <h1 id="careers-heading" className="lp-crs-hero__title lp-title-section">
-            Help founders turn GTM ideas into customers.
+            Help B2B teams turn GTM ideas into customers.
           </h1>
           <p className="lp-crs-lede lp-crs-hero__lede">
-            Pancake gives founders and their AI agents the brain, the data and the tools
+            Pancake gives GTM teams and their AI agents the brain, the data and the tools
             to run go-to-market. We are four people in San Francisco, and every hire
             shapes the company.
           </p>

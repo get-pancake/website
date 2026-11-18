@@ -17,18 +17,44 @@ import { LpBottleneck } from "@/components/sections/landing-v3/LpBottleneck";
  * paints the wrapper light blue under a cream blob (lp-banner--sky, sky.css), so the blue band
  * of the deep dive starts in the banner's gutters. The card is unchanged.
  */
-export function LpBanner({ sky = true }: { sky?: boolean } = {}) {
+/**
+ * `left` and `right` (the vision homepage, 2026-11-11: the bottle kept, its message "you have tons
+ * of data but use a fraction"): each title as its two lines. The left one breaks at every width;
+ * the right one breaks at every width too (banner.css: two lines fit under the neck on a phone).
+ * Without them, the homepage's own lines as before.
+ */
+export function LpBanner({
+  sky = true,
+  left,
+  right,
+}: { sky?: boolean; left?: readonly [string, string]; right?: readonly [string, string] } = {}) {
   return (
     <section id="why" className={sky ? "lp-banner lp-banner--sky" : "lp-banner"}>
       <div className="lp-banner__card">
         <LpBottleneck />
         <h2 className="lp-title-section lp-banner__title lp-banner__title--left">
-          {"Building got "}
-          <br className="lp-banner__br" />
-          {"10x easier."}
+          {left ? (
+            <>
+              {left[0]} <br />
+              {left[1]}
+            </>
+          ) : (
+            <>
+              {"Building got "}
+              <br className="lp-banner__br" />
+              {"10x easier."}
+            </>
+          )}
         </h2>
-        <p className="lp-title-section lp-banner__title lp-banner__title--right">
-          Selling didn’t.
+        <p className="lp-title-section lp-banner__title lp-banner__title--right" data-lines={right ? "2" : undefined}>
+          {right ? (
+            <>
+              {right[0]} <br className="lp-banner__br-wide" />
+              {right[1]}
+            </>
+          ) : (
+            "Selling didn’t."
+          )}
         </p>
       </div>
     </section>

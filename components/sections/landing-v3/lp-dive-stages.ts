@@ -2,20 +2,35 @@ import type { ComponentType } from "react";
 
 import type { gsap } from "@/lib/gsap";
 
-import { LpStoryClaudeStage } from "./LpStoryClaude";
-import { LpStoryLearnsStage } from "./LpStoryLearns";
-import { LpStoryMessageStage } from "./LpStoryMessage";
-import { LpStorySourcesStage } from "./LpStorySources";
-import { STORY_CLAUDE_ALT } from "./lp-story-claude-data";
-import { STORY_LEARNS_ALT } from "./lp-story-learns-data";
-import { STORY_MESSAGE_ALT } from "./lp-story-message-data";
-import { STORY_SOURCES_ALT } from "./lp-story-sources-data";
+import { LpStoryContextStage } from "./LpStoryContext";
+import { LpStoryLineageStage } from "./LpStoryLineage";
+import { LpStoryMcpStage } from "./LpStoryMcp";
+import { LpStoryPingStage } from "./LpStoryPing";
+import {
+  LpStoryDedupStage,
+  LpStoryHistoryStage,
+  LpStoryMatchingStage,
+  LpStoryMovesStage,
+  LpStorySourcesAllStage,
+} from "./LpStoryProblems";
+import { LpStorySignalsStage } from "./LpStorySignals";
+import { LpToyEngineStage, LpToyJourneyStage, LpToyMergeStage, LpToyPingStage } from "./LpToyStories";
+import { STORY_CONTEXT_ALT } from "./lp-story-context-data";
+import { STORY_LINEAGE_ALT } from "./lp-story-lineage-data";
+import { STORY_MCP_ALT } from "./lp-story-mcp-data";
+import { STORY_PING_ALT } from "./lp-story-ping-data";
+import { PROBLEM_SCENE, type ProblemStoryId } from "./lp-story-problems-data";
+import { STORY_SIGNALS_ALT } from "./lp-story-signals-data";
+import { TOY_ENGINE, TOY_JOURNEY, TOY_MERGE, TOY_PING } from "./lp-toy-data";
 
 /**
  * Deep-dive stage registry — the four carousel items' scenes (V2 Figma 4939:3388, decision
- * 2026-10-09). Integrator-owned: no package edits this file. The shell (blue-band: LpDive,
- * its carousel island and driver) reads it; each story package fills its own modules, under the
- * names imported here and in lp-dive-loaders.ts:
+ * 2026-10-09; the four stories since 2026-10-28, founder: "Pour les 4 blocs je ferai donc 1/ Next
+ * best action + Unified GTM context 2/ Buying signal + enrichment 3/ Lead lineage 4/ mcp first",
+ * drawn in the one picture he loves, the old sources story's end hub, with no UI: the shared kit
+ * is LpStoryKit.tsx, lp-story-kit.ts and story-kit.css). Integrator-owned: no package edits this
+ * file. The shell (blue-band: LpDive, its carousel island and driver) reads it; each story package
+ * fills its own modules, under the names imported here and in lp-dive-loaders.ts:
  *
  *   LpStory<Name>.tsx              export LpStory<Name>Stage(props: DiveStageProps)
  *   lp-story-<name>-timeline.ts    export buildStory<Name>(root: HTMLElement): BuiltStory
@@ -33,10 +48,11 @@ import { STORY_SOURCES_ALT } from "./lp-story-sources-data";
  * SCENE BOX (shell-owned, the stage's parent): the design box at design size, scaled as pixels
  * (`transform: scale(var(--lp-fit))`, origin 0 0; never zoom). Desktop/tablet 752×489, phones
  * 400×520 (decision 2026-10-09). It is a size container named `lp-dive-scene`
- * (`container: lp-dive-scene / size`) and carries `data-lp-layout="desktop" | "phone"`:
- * story CSS switches to the phone composition with
- * `@container lp-dive-scene (max-width: 599px) { … }` (SSR-safe, and the dev harness can show
- * both boxes side by side); builders read `diveStageLayout(root)`.
+ * (`container: lp-dive-scene / size`) and carries `data-lp-layout="desktop" | "phone"`. A hook
+ * no current story uses (none of the four of 2026-10-28 has a 400×520 phone composition; the
+ * phone stack shows the 752×489 box scaled), kept for a future phone composition: its CSS would
+ * switch with `@container lp-dive-scene (max-width: 599px) { … }` (SSR-safe, and the dev harness
+ * can show both boxes side by side), its builder would read the scene box's `data-lp-layout`.
  *
  * BUILDER (code-map §6.2, lp-play-once's PlayOnceRuntime.build): `buildStory<Name>(root)`
  * receives the Stage's root element, sets frame 0 with gsap.set inside the caller's
@@ -47,17 +63,26 @@ import { STORY_SOURCES_ALT } from "./lp-story-sources-data";
  * through the client loaders in lp-dive-loaders.ts (lazy chunks, kept out of the first bundle
  * like PR #283). This registry holds NO loader on purpose (phase N, 2026-10-11): it is imported
  * by the server LpDive, and Next turns every "use client" module the server graph reaches, even
- * through `import()`, into an eager client entry of the page. Shared helper: `registerTxtPlugin`
- * in lp-gsap-txt.ts; anything else is COPIED with a "copied from" note.
+ * through `import()`, into an eager client entry of the page. Shared helpers: the story kit
+ * (lp-story-kit.ts, plain module) and `registerTxtPlugin` in lp-gsap-txt.ts; anything else is
+ * COPIED with a "copied from" note.
  *
  * QA: the shell registers each built timeline as `window.__lpStory.<id>` (lp-play-once
  * registry "__lpStory", owned by blue-band); the dev harness (/lp-dev/stages) does the same.
  */
 
-export type DiveItemId = "sources" | "message" | "learns" | "claude";
+/** The four stories of the deep dive, and the five the vision homepage adds for its six hard
+ *  problems (2026-11-11: one renderer and one builder for the five, LpStoryProblems.tsx and
+ *  lp-story-problems-timeline.ts; the sixth problem, crossing, is "lineage"), and "ping", your
+ *  agent texting you first (the same page's feature "Get the next move before you ask"). */
+export type DiveItemId = "context" | "signals" | "lineage" | "mcp" | "ping" | ProblemStoryId | ToyStoryId;
+/** The toy pictures of the vision homepage's four features (2026-11-12, LpToyStories.tsx): soft
+ *  3D sets in the kitchen's look, in place of "mcp", "p-history", "p-dedup" and "ping". One
+ *  builder for the four (lp-toy-story-timelines.ts). */
+export type ToyStoryId = "t-engine" | "t-journey" | "t-merge" | "t-ping";
 
-/** carousel order (V2 4939:3388) */
-export const DIVE_ORDER: readonly DiveItemId[] = ["sources", "message", "learns", "claude"];
+/** carousel order (the founder's four blocks, 2026-10-28) */
+export const DIVE_ORDER: readonly DiveItemId[] = ["context", "signals", "lineage", "mcp"];
 
 /** The scene design boxes, in px (the stage scales them as pixels with --lp-fit). */
 export const DIVE_STAGE_BOX = {
@@ -66,14 +91,6 @@ export const DIVE_STAGE_BOX = {
 } as const;
 export type DiveStageLayout = keyof typeof DIVE_STAGE_BOX;
 
-/** Which composition a stage root sits in (its scene box's design width; transforms ignored). */
-export function diveStageLayout(root: HTMLElement): DiveStageLayout {
-  const scene = root.closest<HTMLElement>("[data-lp-layout]");
-  const declared = scene?.dataset.lpLayout;
-  if (declared === "phone" || declared === "desktop") return declared;
-  return (scene ?? root).offsetWidth < 600 ? "phone" : "desktop";
-}
-
 /** Props every Stage receives from its server parent. */
 export type DiveStageProps = {
   /** SHOW_PLACEHOLDERS, decided by the server parent (lib/placeholders.ts): placeholder-only
@@ -81,8 +98,10 @@ export type DiveStageProps = {
   placeholders: boolean;
 };
 
-/** What a story builder returns (lp-play-once Built, with a required cue). */
-export type BuiltStory = { tl: gsap.core.Timeline; cleanup: () => void; cue: number };
+/** What a story builder returns (lp-play-once Built, with a required cue). `next`: for a story
+    that changes between two turns of the carousel (or two rounds of the phone stack): called
+    before it plays again, never before its first turn. */
+export type BuiltStory = { tl: gsap.core.Timeline; cleanup: () => void; cue: number; next?: () => void };
 
 export type DiveStageEntry = {
   id: DiveItemId;
@@ -93,24 +112,38 @@ export type DiveStageEntry = {
 };
 
 export const DIVE_STAGES: Record<DiveItemId, DiveStageEntry> = {
-  sources: {
-    id: "sources",
-    Stage: LpStorySourcesStage,
-    alt: STORY_SOURCES_ALT,
+  context: {
+    id: "context",
+    Stage: LpStoryContextStage,
+    alt: STORY_CONTEXT_ALT,
   },
-  message: {
-    id: "message",
-    Stage: LpStoryMessageStage,
-    alt: STORY_MESSAGE_ALT,
+  signals: {
+    id: "signals",
+    Stage: LpStorySignalsStage,
+    alt: STORY_SIGNALS_ALT,
   },
-  learns: {
-    id: "learns",
-    Stage: LpStoryLearnsStage,
-    alt: STORY_LEARNS_ALT,
+  lineage: {
+    id: "lineage",
+    Stage: LpStoryLineageStage,
+    alt: STORY_LINEAGE_ALT,
   },
-  claude: {
-    id: "claude",
-    Stage: LpStoryClaudeStage,
-    alt: STORY_CLAUDE_ALT,
+  mcp: {
+    id: "mcp",
+    Stage: LpStoryMcpStage,
+    alt: STORY_MCP_ALT,
   },
+  ping: {
+    id: "ping",
+    Stage: LpStoryPingStage,
+    alt: STORY_PING_ALT,
+  },
+  "p-sources": { id: "p-sources", Stage: LpStorySourcesAllStage, alt: PROBLEM_SCENE["p-sources"].alt },
+  "p-dedup": { id: "p-dedup", Stage: LpStoryDedupStage, alt: PROBLEM_SCENE["p-dedup"].alt },
+  "p-matching": { id: "p-matching", Stage: LpStoryMatchingStage, alt: PROBLEM_SCENE["p-matching"].alt },
+  "p-history": { id: "p-history", Stage: LpStoryHistoryStage, alt: PROBLEM_SCENE["p-history"].alt },
+  "p-moves": { id: "p-moves", Stage: LpStoryMovesStage, alt: PROBLEM_SCENE["p-moves"].alt },
+  "t-engine": { id: "t-engine", Stage: LpToyEngineStage, alt: TOY_ENGINE.alt },
+  "t-journey": { id: "t-journey", Stage: LpToyJourneyStage, alt: TOY_JOURNEY.alt },
+  "t-merge": { id: "t-merge", Stage: LpToyMergeStage, alt: TOY_MERGE.alt },
+  "t-ping": { id: "t-ping", Stage: LpToyPingStage, alt: TOY_PING.alt },
 };

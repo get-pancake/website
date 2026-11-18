@@ -16,27 +16,42 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
  * own brand suffix (or none, like the homepage's exact "Pancake").
  */
 
-/** The brand X account: the footers' x.com/getpancake_ai link and the Organization sameAs. */
-export const X_HANDLE = "@getpancake_ai";
+/** The brand X account: the footers' x.com/pancakegtm link and the Organization sameAs.
+ *  2026-10-29 (founder): @pancakegtm, the main account since Feb 2025; it replaced
+ *  @getpancake_ai, a separate account opened in Oct 2026. */
+export const X_HANDLE = "@pancakegtm";
 
 /**
  * The shared share card: the homepage's rainbow card, printing the hero H1.
- * 2026-10-13 (founder, launch audit): the card and its title follow the launch H1,
- * "Deploy GTM ideas that bring you customers"; they printed the previous one ("You run
- * your company. We bring you customers.") until then. The file has a NEW name because
- * chat apps and social networks keep a picture by its address: the same address would
- * keep showing the old headline. /og-image.png holds the same new picture, for any
- * page or post that still points at it. When this card changes again: new file name
- * here, and the app's own copy too (pancake-cmo apps/frontend/index.html).
+ * 2026-10-13 (founder, launch audit): the card and its title follow the H1; they printed
+ * "You run your company. We bring you customers." until then, then "Deploy GTM ideas that
+ * bring you customers" (og-image-2026-10.png). 2026-10-27: the new H1, "Infrastructure to
+ * run your GTM factory", set as the card was drawn (Aeonik Condensed 600, 82 px, line pitch
+ * 96, left 109, tracking -0.0206em, #2c002a on #fbf6f1; the rainbow untouched), then on
+ * 2026-10-28 "Infrastructure powering your GTM factory" the same way (og-image-2026-10-28.png;
+ * its longer first line still stops 72 px before the rainbow at 82 px), then the same evening
+ * "Infrastructure to power your GTM factory" (founder: "might be better en fait";
+ * og-image-2026-10-28b.png, redrawn over the same card: first line 92 px before the rainbow),
+ * and on 2026-10-30 "Infrastructure powering" again (a co-founder asked "to power or
+ * powering?" on the preview; the founder: "Switch to 'powering'"): the 2026-10-28 card is
+ * back, its rainbow byte for byte the other cards'. On 2026-11-12, with the homepage's H1
+ * "Infrastructure powering your revenue factory" (the vision homepage, website#388; the founder:
+ * "fix shared links too"), its second line was redrawn as "your revenue factory" at the card's own
+ * 82 px, pen at (109, 432) (og-image-2026-11-12.png: only that line's band changed; redrawing
+ * the old line at the same pen gives back the old card pixel for pixel). The file has
+ * a NEW name because chat apps and social networks keep a picture by its address: the same
+ * address would keep showing the old headline. /og-image.png holds the same new picture,
+ * for any page or post that still points at it. When this card changes again: new file
+ * name here, and the app's own copy too (pancake-cmo apps/frontend/index.html).
  */
-export const OG_IMAGE = "/og-image-2026-10.png";
+export const OG_IMAGE = "/og-image-2026-11-12.png";
 
 /** Alt text = the text printed in the card (audit 8.4), never the page's own name. */
-export const OG_IMAGE_ALT = "Deploy GTM ideas that bring you customers";
+export const OG_IMAGE_ALT = "Infrastructure powering your revenue factory";
 
 /** og:title / twitter:title of the homepage and of the root-layout fallback (one
  *  punctuation for both, audit 6.13). The homepage <title> stays exactly "Pancake". */
-export const HOME_SOCIAL_TITLE = "Pancake — Deploy GTM ideas that bring you customers";
+export const HOME_SOCIAL_TITLE = "Pancake — Infrastructure powering your revenue factory";
 
 export type SocialImage = {
   url: string;

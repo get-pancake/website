@@ -21,6 +21,7 @@ export function GuideCopyButton({
   className,
   ariaLabel,
   selectTargetId,
+  track = true,
 }: {
   text: string;
   blockId: string;
@@ -31,6 +32,9 @@ export function GuideCopyButton({
   ariaLabel?: string;
   /** id of the element holding the visible text, selected when every copy path fails */
   selectTargetId?: string;
+  /** push guide_claude_copy on a copy (the guide pages); the homepage's setup line passes
+      false: a new event there is an analytics change, out of scope until asked */
+  track?: boolean;
 }) {
   const [copied, setCopied] = useState(false);
   const timer = useRef<number | undefined>(undefined);
@@ -41,7 +45,7 @@ export function GuideCopyButton({
     setCopied(true);
     window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => setCopied(false), copiedMs);
-    pushAcquisitionEvent("guide_claude_copy", { block_id: blockId });
+    if (track) pushAcquisitionEvent("guide_claude_copy", { block_id: blockId });
   };
 
   const fallback = () => {

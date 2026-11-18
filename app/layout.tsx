@@ -6,12 +6,17 @@ import "./globals.css";
 // 2026-10-13: a CSS-coverage pass over every route found the kit used only by
 // /pricing, /open-roadmap and the comparison pages, and the UGC sheet by none,
 // yet both were render-blocking on every visit. They now ride with the pages
-// and components that use them (components/ui/*, FxPill, GtmComparisonPage,
-// the roadmap and pricing pages, HomeUGCWall).
+// and components that use them (components/ui/*, FxPill, the roadmap and pricing
+// pages, HomeUGCWall). The comparison pages dropped the kit on 2026-11-16 (they now
+// wear the paid search pages' layout).
+import { acquisitionBankScript } from "@/lib/analytics/acquisition-bank.mjs";
+import { tagManagerSourceJs } from "@/lib/analytics/google-tag-gateway.mjs";
+import { TRACKER_GATE, gatedScriptLoader, trackerGateScript } from "@/lib/analytics/tracker-gate.mjs";
 import { AnalyticsEvents } from "@/components/analytics/AnalyticsEvents";
 import { MetaPixelEvents } from "@/components/analytics/MetaPixelEvents";
 import { PostHogAttribution } from "@/components/analytics/PostHogAttribution";
 import {
+  GOOGLE_TAG_MANAGER_ID,
   LEADJOURNEY_TRACKING_SCRIPT_URL,
   LINKEDIN_INSIGHT_PARTNER_ID,
   META_BROWSER_PIXEL_ID,
@@ -195,7 +200,7 @@ const organizationJsonLd = {
     addressCountry: "US",
   },
   sameAs: [
-    "https://x.com/getpancake_ai",
+    "https://x.com/pancakegtm",
     "https://www.youtube.com/@trypancake",
     "https://www.linkedin.com/company/get-pancake",
     "https://www.tiktok.com/@getpancake",
@@ -219,7 +224,10 @@ const webSiteJsonLd = {
   publisher: { "@id": `${SITE_ORIGIN}/#organization` },
 };
 
-const googleTagManagerId = "GTM-P3Z79WKD";
+const googleTagManagerId = GOOGLE_TAG_MANAGER_ID;
+// Each tag below inserts its script through the gate (lib/analytics/tracker-gate.mjs);
+// without the gate (it is always rendered first) the tag would start at once, as before.
+const trackerGate = `(window.${TRACKER_GATE}||function(run){run()})`;
 const metaPixelId = META_BROWSER_PIXEL_ID;
 // Vercel exposes VERCEL_ENV at build and runtime. Advertising and product
 // analytics run only in production. GTM alone can be explicitly enabled on a
@@ -233,6 +241,11 @@ const tagManagerEnabled = productionVendorTrackingEnabled || tagManagerDebugEnab
 // Both domains, apex and www (lib/site-config.mjs): the site answers on
 // getpancake.ai and pancake.ai through the move, and tags run on either.
 const productionHostnameGuard = `var h=window.location.hostname.toLowerCase();if(${JSON.stringify(PRODUCTION_SITE_HOSTS)}.indexOf(h)<0){return;}`;
+// /demo/review (the staff queue of demo requests) has its own Content-Security-Policy
+// (next.config.mjs), which never allowed www.googletagmanager.com. The container now loads
+// from our own domain (Google tag gateway, lib/analytics/google-tag-gateway.mjs), which that
+// policy's 'self' would let through, so it stays off that page here instead.
+const tagManagerPageGuard = `var p=window.location.pathname;if(p==="/demo/review"||p.indexOf("/demo/review/")===0){return;}`;
 
 export default function RootLayout({
   children,
@@ -251,8 +264,14 @@ export default function RootLayout({
         />
         {/* eslint-disable-next-line @next/next/no-sync-scripts -- Attribution must run before a bounce. */}
         <script src="/pancake-attribution.min.js"></script>
+        {/* The ad and analytics tags (GTM and what it loads, Meta, LinkedIn, LeadJourney)
+            start on the visitor's first interaction or 10 s after load, whichever comes
+            first; their queues exist from now on, so no event is lost. The attribution
+            cookie, the acquisition bank and PostHog do not wait. Why and what it costs:
+            lib/analytics/tracker-gate.mjs. */}
+        {tagManagerEnabled ? <script dangerouslySetInnerHTML={{ __html: trackerGateScript() }} /> : null}
         {productionVendorTrackingEnabled ? (
-          <script src={LEADJOURNEY_TRACKING_SCRIPT_URL} async></script>
+          <script dangerouslySetInnerHTML={{ __html: gatedScriptLoader(LEADJOURNEY_TRACKING_SCRIPT_URL) }} />
         ) : null}
         {productionVendorTrackingEnabled ? (
           <script
@@ -260,17 +279,19 @@ export default function RootLayout({
               // This deliberately runs immediately after the synchronous cookie writer, before
               // React hydration or vendor SDKs. The API independently decodes the same cookie and
               // accepts only its newest UUID, so the body cannot fabricate an event or payload.
-              __html: `(function(){${productionHostnameGuard}try{var n='pancake_attribution=',p=document.cookie.split(';'),r=null;for(var x=0;x<p.length;x++){var q=p[x].trim();if(q.indexOf(n)===0){r=q.slice(n.length);break;}}if(!r){return;}var s=JSON.parse(decodeURIComponent(r)),t=Array.isArray(s.t)&&s.t.length?s.t[s.t.length-1]:null,i=t&&t.i;if(typeof i!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(i)){return;}fetch('${PANCAKE_ANALYTICS_INGEST_ORIGIN}/analytics/acquisition-touch',{method:'POST',mode:'cors',credentials:'include',referrerPolicy:'origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({touchId:i}),keepalive:true}).catch(function(){});}catch(_){}})();`,
+              __html: acquisitionBankScript({
+                hosts: PRODUCTION_SITE_HOSTS,
+                endpoint: `${PANCAKE_ANALYTICS_INGEST_ORIGIN}/analytics/acquisition-touch`,
+              }),
             }}
           />
         ) : null}
         {tagManagerEnabled ? (
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){${tagManagerDebugEnabled ? "" : productionHostnameGuard}(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+              __html: `(function(){${tagManagerDebugEnabled ? "" : productionHostnameGuard}${tagManagerPageGuard}(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;${tagManagerSourceJs()}${trackerGate}(function(){f.parentNode.insertBefore(j,f);});
 })(window,document,'script','dataLayer','${googleTagManagerId}');})();`,
             }}
           />
@@ -284,7 +305,7 @@ n.callMethod.apply(n,arguments):n.queue.push(arguments)};
 if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
 n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
-s.parentNode.insertBefore(t,s)}(window, document,'script',
+${trackerGate}(function(){s.parentNode.insertBefore(t,s)})}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
 fbq('init', '${metaPixelId}');
 fbq('track', 'PageView');})();`,
@@ -321,7 +342,7 @@ fbq('track', 'PageView');})();`,
         {productionVendorTrackingEnabled ? (
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){${productionHostnameGuard}window._linkedin_data_partner_ids=window._linkedin_data_partner_ids||[];window._linkedin_data_partner_ids.push('${LINKEDIN_INSIGHT_PARTNER_ID}');(function(l){if(!l){window.lintrk=function(a,b){window.lintrk.q.push([a,b])};window.lintrk.q=[]}var s=document.getElementsByTagName("script")[0];var b=document.createElement("script");b.type="text/javascript";b.async=true;b.src="https://snap.licdn.com/li.lms-analytics/insight.min.js";s.parentNode.insertBefore(b,s);})(window.lintrk);})();`,
+              __html: `(function(){${productionHostnameGuard}window._linkedin_data_partner_ids=window._linkedin_data_partner_ids||[];window._linkedin_data_partner_ids.push('${LINKEDIN_INSIGHT_PARTNER_ID}');(function(l){if(!l){window.lintrk=function(a,b){window.lintrk.q.push([a,b])};window.lintrk.q=[]}var s=document.getElementsByTagName("script")[0];var b=document.createElement("script");b.type="text/javascript";b.async=true;b.src="https://snap.licdn.com/li.lms-analytics/insight.min.js";${trackerGate}(function(){s.parentNode.insertBefore(b,s);});})(window.lintrk);})();`,
             }}
           />
         ) : null}

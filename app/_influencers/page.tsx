@@ -60,7 +60,7 @@ const steps = [
   {
     n: "02",
     title: "Post it. Tag us.",
-    body: "X or LinkedIn. Tag @getpancake_ai. No paid boosts. No 5-tools-I-use roundups.",
+    body: "X or LinkedIn. Tag @pancakegtm. No paid boosts. No 5-tools-I-use roundups.",
   },
   {
     n: "03",
@@ -256,12 +256,12 @@ export default function InfluencersPage() {
           </p>
           <div className="home-landing-closing-cta">
             <Link
-              href="https://x.com/getpancake_ai"
+              href="https://x.com/pancakegtm"
               className="button inline-flex w-fit shrink-0 items-center justify-center no-underline"
               data-size="lg"
               prefetch={false}
             >
-              Tag @getpancake_ai
+              Tag @pancakegtm
             </Link>
             <p className="home-landing-closing-cta__note">
               Questions? DM us — or read the{" "}

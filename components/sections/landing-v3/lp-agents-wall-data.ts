@@ -1,46 +1,7 @@
-import type { ContentStatus } from "@/lib/placeholders";
-
 /**
- * Agents view code wall + card (V2 Figma 4911:1461: wall 4939:3760, card 4964:4098).
- * Owner: agents-view package. In scripts/homepage-lint.mjs FILES.
- *
- * Fixed for app/page.tsx (integrator): AGENT_CARD_BODY (the production body) and
- * AGENT_CARD_BODY_PLACEHOLDER (a dev/preview-only body, or null), passed as LpAgentLab's
- * `cardBody` through the SHOW_PLACEHOLDERS gate.
+ * Agents view code wall (V2 Figma 4911:1461: wall 4939:3760; its card 4964:4098 left on
+ * 2026-11-02, LpAgentLab.tsx). Owner: agents-view package. In scripts/homepage-lint.mjs FILES.
  */
-
-/** One line of the illustrative install session: the agent's own echo of the prompt, a command
- *  it runs, or what it prints. */
-export type AgentTranscriptLine = { kind: "prompt" | "run" | "out"; text: string };
-
-/** What the card holds under its prompt row (V2 leaves the body empty — never shipped empty,
- *  decision 2026-10-09 §8). */
-export type AgentCardBody =
-  /** production's "Prove you're not human" puzzle (LpAgentCaptcha), unchanged */
-  | { kind: "captcha"; status: ContentStatus }
-  /** the agent's install session, printed line by line once the card has assembled */
-  | { kind: "transcript"; status: ContentStatus; lines: readonly AgentTranscriptLine[] };
-
-export const AGENT_CARD_BODY: AgentCardBody = { kind: "captcha", status: "final" };
-
-/** Draft (founder question Q2, never production while "placeholder"): the card "does" what its
- *  prompt asks. The command is install.md's own Claude Code command; the block is illustrative.
- *  To preview it, set AGENT_CARD_BODY_PLACEHOLDER = AGENT_CARD_TRANSCRIPT_DRAFT. */
-export const AGENT_CARD_TRANSCRIPT_DRAFT: AgentCardBody = {
-  kind: "transcript",
-  status: "placeholder",
-  lines: [
-    { kind: "prompt", text: "> Set up Pancake by reading https://pancake.ai/install.md and following its instructions." },
-    { kind: "out", text: "Fetching https://pancake.ai/install.md" },
-    { kind: "out", text: "Claude Code found. No Pancake server registered yet." },
-    { kind: "run", text: "$ claude mcp add --transport http --scope user pancake https://app.pancake.ai/api/mcp" },
-    { kind: "out", text: "Pancake added to your user config." },
-    { kind: "out", text: "Open /mcp, select Pancake and sign in in your browser." },
-  ],
-};
-
-/** dev/preview only (null = the production body there too, so the preview shows what ships). */
-export const AGENT_CARD_BODY_PLACEHOLDER: AgentCardBody | null = null;
 
 /**
  * The wall's pseudocode: production's terminal source, verbatim (it was LpAgentTerminalStream's

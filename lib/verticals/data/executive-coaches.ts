@@ -152,7 +152,7 @@ export const executiveCoaches: VerticalConfig = {
     },
     {
       q: "Can it book discovery calls?",
-      a: "Not directly. When a lead replies with interest, Pancake answers once with your booking link. After that, the conversation is yours.",
+      a: "Not directly. A reply stops the sequence and comes back to you, so you book the call yourself.",
     },
     {
       q: "Can it reach the People leader who pays for coaching?",

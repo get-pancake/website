@@ -23,8 +23,8 @@ import { StageHarness } from "./StageHarness";
  * the rest picture.
  *
  *   /lp-dev/stages                         all four stories, both boxes, rest pictures
- *   /lp-dev/stages?story=claude            one story
- *   /lp-dev/stages?story=claude&t=2.5      built and paused at 2.5 s (both boxes)
+ *   /lp-dev/stages?story=mcp               one story
+ *   /lp-dev/stages?story=mcp&t=2.5         built and paused at 2.5 s (both boxes)
  *   /lp-dev/stages?t=end                   every story at progress(1) (= its rest picture)
  *   /lp-dev/stages?play=1                  build and play on load
  *   …&layout=desktop|phone                 one box only (default both)
@@ -53,9 +53,8 @@ export default function StageHarnessPage({ searchParams }: { searchParams: Searc
   if (!DEV_OR_PREVIEW) notFound();
 
   const story = one(searchParams.story);
-  const ids: readonly DiveItemId[] = story && (DIVE_ORDER as readonly string[]).includes(story)
-    ? [story as DiveItemId]
-    : DIVE_ORDER;
+  // any story of the registry by its id (the vision homepage's five are in it, not in the order)
+  const ids: readonly DiveItemId[] = story && story in DIVE_STAGES ? [story as DiveItemId] : DIVE_ORDER;
   const layoutParam = one(searchParams.layout);
   const layouts: DiveStageLayout[] = layoutParam === "desktop" || layoutParam === "phone" ? [layoutParam] : ["desktop", "phone"];
   const placeholdersParam = one(searchParams.placeholders);

@@ -19,7 +19,7 @@ export const industrialTechStartups: VerticalConfig = {
   name: {
     plural: "industrial tech startups",
     title: "Industrial tech startups",
-    short: "industrial founders",
+    short: "industrial tech teams",
     badge: "For industrial startups",
   },
 

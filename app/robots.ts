@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { learnSitemaps } from "@/lib/learn-proxy.mjs";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 
 export default function robots(): MetadataRoute.Robots {
@@ -7,6 +8,7 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: `${SITE_ORIGIN}/sitemap.xml`,
+    // Ours, plus the /learn partner's own sitemap while that section is on.
+    sitemap: [`${SITE_ORIGIN}/sitemap.xml`, ...learnSitemaps(SITE_ORIGIN)],
   };
 }

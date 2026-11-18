@@ -17,6 +17,7 @@ import {
   AI_SALES_FORM_TOOL,
   AI_SALES_SLOT_TOOL,
   aiSalesDynamicVariables,
+  aiSalesDisconnectPhase,
   loadAiSalesSdk,
   visitorTimeZone,
   type AiSalesFormToolParams,
@@ -227,6 +228,7 @@ export function AiSalesCall({
   const attemptRef = useRef(0);
   const startingRef = useRef(false); // the double-start guard
   const connectedRef = useRef(false);
+  const spokeRef = useRef(false);
   const modeRef = useRef<AiSalesMode>("listening");
   const mutedRef = useRef(false);
   const settleTimer = useRef<number | undefined>(undefined);
@@ -266,6 +268,7 @@ export function AiSalesCall({
     const current = () => attempt === attemptRef.current;
     startingRef.current = true;
     modeRef.current = "listening";
+    spokeRef.current = false;
     setPhase("connecting");
     const agentId = AI_SALES_AGENT_ID;
     if (!agentId) {
@@ -318,6 +321,7 @@ export function AiSalesCall({
         onModeChange: ({ mode }) => {
           if (!current()) return;
           modeRef.current = mode;
+          if (mode === "speaking") spokeRef.current = true;
           if (!connectedRef.current) return;
           window.clearTimeout(settleTimer.current);
           if (handedOffRef.current) {
@@ -339,13 +343,23 @@ export function AiSalesCall({
             setPhase((shown) => (shown === "speaking" ? "listening" : shown));
           }, LISTEN_SETTLE_MS);
         },
+        onError: () => {
+          if (!current()) return;
+          // Keep provider failures out of the normal "Call ended" state.
+          // Invalidates pending starts and releases an established session.
+          stop();
+          setPhase(handedOffRef.current ? "ended" : "failed");
+        },
         onDisconnect: (details) => {
           if (!current()) return; // ended by us (stop bumped the attempt)
           sessionRef.current = null; // the SDK is already closing it
           stop();
           // After the handoff a dropped connection is a normal end: the time
           // is open on the page, and "Try again" would start over.
-          setPhase(details.reason === "error" && !handedOffRef.current ? "failed" : "ended");
+          setPhase(aiSalesDisconnectPhase(details, {
+            spoke: spokeRef.current,
+            handedOff: handedOffRef.current,
+          }));
         },
       });
       if (!current()) {

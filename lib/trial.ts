@@ -1,14 +1,15 @@
 /**
  * The free trial, as the app sells it with the credit plan (pancake-cmo ADR
- * 0078, `package-catalog.ts`: TRIAL_DURATION_DAYS = 7, TRIAL_CREDITS = 15,000,
- * the same for every level; PR #1220). It was 3 days until 2026-10-13.
+ * 0078, `package-catalog.ts`: TRIAL_DURATION_DAYS = 7, TRIAL_CREDITS = 30,000,
+ * the same for every level). 30,000 credits since 2026-10-21 (pancake-cmo
+ * PAN-2391, #1867); 15,000 from 2026-10-13 (PR #1220); 3 days before that.
  * Unchanged since 2026-09-18: signup can begin without a card; starting the
  * trial requires one.
  */
 export const TRIAL_DAYS = 7;
-export const TRIAL_CREDITS = 15_000;
+export const TRIAL_CREDITS = 30_000;
 export const TRIAL_LABEL = `${TRIAL_DAYS}-day free trial`;
-/** "15,000 credits": the trial's allowance, formatted once. */
+/** "30,000 credits": the trial's allowance, formatted once. */
 export const TRIAL_CREDITS_LABEL = `${TRIAL_CREDITS.toLocaleString("en-US")} credits`;
 /** The trial said as what it is: a credit allowance with a deadline, never
  *  seven days of unlimited searches (pricing spec 2026-09-24, §5). */

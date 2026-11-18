@@ -10,14 +10,14 @@ import type { VerticalConfig } from "../types";
 export const saasStartups: VerticalConfig = {
   slug: "saas-startups",
   status: "approved",
-  category: "Startups & solo founders",
+  category: "Startups",
   evidence: "paying",
   updated: "2026-10-07",
 
   name: {
     plural: "SaaS startups",
     title: "SaaS startups",
-    short: "SaaS founders",
+    short: "SaaS teams",
     badge: "For SaaS startups",
   },
 
@@ -154,7 +154,7 @@ export const saasStartups: VerticalConfig = {
     },
     {
       q: "We’re self-serve, not demo-led. Does that work?",
-      a: "Yes. Set the sequence objective to “Share your app”. Leads who reply with interest get your signup link, not a booking link.",
+      a: "Yes. Write the messages toward your signup page instead of a call, with your app link in them. Every reply comes back to you.",
     },
     {
       q: "Won’t I reach my competitor’s happy customers?",

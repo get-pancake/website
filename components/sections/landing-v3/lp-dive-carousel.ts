@@ -45,29 +45,35 @@ import {
  *   queue, 2026-10-13; item 1 at once when the stage is on screen or within the cue margin),
  *   switch item 1 unseen to its cue as the stage comes within 15 % below the fold,
  *   play once the stage's top crosses 60 % of the viewport (or after a 1 s dwell with half of it
- *   on screen); flying past keeps the picture. Already on screen in its picture when the code
- *   arrives (reload mid-page, an anchor): never rewound — its bar runs over the hold, then item 2.
+ *   on screen); flying past keeps the picture until the scroll settles on it. Since 2026-11-12
+ *   item 1 then plays from its cue (`engage`): until then a stage that was on screen in its
+ *   picture when it engaged was never rewound, its bar ran over the hold, then item 2.
  * - Runs only while ≥ 50 % of the stage is on screen (decision 2026-10-09 §5), the tab is
  *   visible, and the visitor has not pressed Pause; otherwise everything pauses where it is and
  *   resumes from there (never restarted, never rewound on screen).
  * - A click / arrow key selects an item at once: the outgoing panel keeps its frame and fades
- *   out (0.32 s), the incoming one is set to its cue while still hidden, fades in and plays; the
- *   bodies fold (CSS grid rows, 0.4 s) and the titles change weight (CSS). Autoplay continues.
+ *   out (0.14 s), then the incoming one, set to its cue while still hidden, fades in (0.22 s) and
+ *   plays: a fade-through (Material motion's pattern for unrelated content in one container),
+ *   never both pictures at once. Until 2026-10-29 the two cross-faded over 0.32 s, and two
+ *   diagrams on one stage drew one over the other (founder on the preview: "I think we can do
+ *   better animations"). The bodies fold (CSS grid rows, 0.4 s) and the titles change weight
+ *   (CSS). Autoplay continues.
  * - Keyboard focus (focus-visible) on a tab, on the selected item's link or on the stage holds
  *   the ADVANCE, not the story: the selected item plays to its end picture and waits there
  *   until focus leaves the row or goes to Pause. Until 2026-10-13 only the tab list held it:
  *   Tab from the fourth item to its "See how" link advanced the carousel, which hid the link
  *   under the focus and dropped it to <body> (the bug check's M14). A hovering mouse holds
  *   nothing — founder 2026-09-22 on the demo ("read as blocked while people looked at it").
- * - Pause (WCAG 2.2.2): a toggle every input can reach, under the card's bottom-right corner —
- *   shown on keyboard focus, while it holds the carousel, while a pointer is over the stage,
- *   and always on touch screens (dive.css; it is the only thing a mouse or a finger can stop
- *   the carousel with).
+ * - Pause (WCAG 2.2.2): a toggle under the card's bottom-right corner. Since 2026-11-12 it is a
+ *   keyboard control only: shown on keyboard focus and while it holds the carousel (dive.css has
+ *   why). Until then it also came up under a pointer and on touch screens, and was the only
+ *   thing a mouse or a finger could stop the carousel with: they have none now.
  * - Reduced motion: no GSAP fetched, no autoplay; tabs swap the panels' end pictures instantly
  *   and the bar rests at the Figma pose. Lifting it mid-visit starts the hold-then-advance run.
  * - Layout: the scene box is the desktop 752×489 design box, or the phone 400×520 box ≤599
  *   (decision §5), scaled as pixels (--lp-fit = stage width / box width; never zoom). Crossing
- *   599 rebuilds the stories (their builders read the layout at build time).
+ *   599 rebuilds the stories: no current builder reads the layout (2026-10-28), the rebuild is
+ *   kept for a future phone composition.
  *
  * Phones (≤767) with the stack switch on (the section's data-lp-phone="stack", lp-dive-data.ts
  * DIVE_PHONE_LAYOUT; mobile artboard 5024:8914, decision 2026-10-11 §9 F3): no carousel. `mountDive`
@@ -82,8 +88,9 @@ import {
  * Freeze: GSAP only, self-gated (it pauses off screen), so not an LpAnimFreeze member.
  * QA: window.__lpDive = { mode, timelines, select(i), pause(), play(), pose(i, p, at), state() };
  * every built story timeline is also window.__lpStory.<id> (lp-play-once's registry key).
- * `pose(0)` is the V2 artboard: item 1, its bar at p = .509596 and the Sources story on its
- * frame 3 (ARTBOARD_AT); `at` = seconds, a timeline label, or "end".
+ * `pose(0)` is the V2 artboard's pose: item 1 with its bar at p = .509596, its story on its end
+ * picture (no story has an artboard frame since 2026-10-28: ARTBOARD_AT is empty); `at` =
+ * seconds, a timeline label, or "end".
  */
 
 type Timeline = gsap.core.Timeline;
@@ -100,26 +107,29 @@ const LOADERS = DIVE_LOADERS;
 const BOX_WIDTH = { desktop: 752, phone: 400 } as const;
 type Layout = keyof typeof BOX_WIDTH;
 /* The phone box from 599 down (dive.css): wider, the 400 box would be blown up past ×1.4 (×1.84
-   at 767) while the 752 box still reads at ×0.76 — the two cross at ~580. The stories follow
-   the box, never the viewport (data-lp-layout + their `lp-dive-scene` container queries). */
+   at 767) while the 752 box still reads at ×0.76 — the two cross at ~580. No current story
+   reads the box: data-lp-layout is kept for a future phone composition, and the kit's phone
+   rules (names hidden, no multiply) switch on the viewport at 767 (story-kit.css). */
 const PHONE_MQ = "(max-width: 599px)";
 /** the bar's drawn length in Figma (4939:3439 …: 138.61 of 272), its rest pose */
 export const DIVE_REST_P = 0.509596;
-/** the cross-fade between two stages and the outgoing bar's fade (s) */
-const FADE_S = 0.32;
+/** the fade-through between two stages (s): the outgoing one fades out, then the incoming one
+    fades in; and the outgoing bar's fade */
+const FADE_OUT_S = 0.14;
+const FADE_IN_S = 0.22;
 const BAR_OUT_S = 0.15;
 /** the stack's widths (dive.css's stack block) */
 const STACK_MQ = "(max-width: 767px)";
+/** s a story of the stack holds its end picture before it plays again */
+const STACK_HOLD_S = 2.6;
 /** where the tab list is in the page's flow (dive.css: two fluid columns, then stacked) */
 const FLOW_MQ = "(max-width: 1340px)";
 
-/* QA: where the V2 artboard freezes a story when that is not its end picture. Item 1 is drawn
-   mid-play (4939:3388): its bar at DIVE_REST_P and its stage 5024:8462 = a copy of the Sources
-   storyboard's frame 3 "Lead details open" (5024:7601), which the timeline holds from 2.59 s
-   (sources-v2 §8.1, QA seek 2.60). A timeline label of that name wins over the seconds. */
-const ARTBOARD_AT: Partial<Record<DiveItemId, { label: string; s: number }>> = {
-  sources: { label: "f3", s: 4.8 },
-};
+/* QA: where the V2 artboard freezes a story when that is not its end picture. Until 2026-10-28
+   item 1 (the Sources story) was drawn mid-play, on its frame 3 "Lead details open" (5024:8462).
+   The four stories of 2026-10-28 have no designer frame: each poses on its end picture. A
+   timeline label of an entry's name wins over its seconds. */
+const ARTBOARD_AT: Partial<Record<DiveItemId, { label: string; s: number }>> = {};
 /** QA: freeze a story at `at` — seconds, a label, "end"; nothing = its artboard frame (or its end) */
 function seekStory(tl: Timeline, id: DiveItemId, at?: number | string) {
   const end = tl.duration();
@@ -149,6 +159,9 @@ type Item = {
   tl?: Timeline;
   cue: number;
   cleanup?: () => void;
+  /** a story that changes between two turns (its builder's `next`), and how many turns it had */
+  next?: () => void;
+  turns: number;
   failed: boolean;
   queued: boolean;
 };
@@ -187,6 +200,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
         more: row.querySelector<HTMLElement>(`.lp-dive-more[data-for="${id}"]`),
         hold: Number(tab.dataset.hold) || 2,
         cue: 0,
+        turns: 0,
         failed: false,
         queued: false,
       },
@@ -277,6 +291,34 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     reserveListHeight();
   });
   if (list) listRo.observe(list);
+
+  /* ── an item's link under its own body, whichever item it is (2026-11-12: links under the
+     first and the last item). The link rows come after the tab list in the DOM (a link cannot
+     live in a tab) and sat under the whole list, right only for the last item. Now the open
+     tab keeps the link's room under its body (dive.css, [data-place-more]) and each row is
+     placed over that room, following its tab as the folds open and close. ── */
+  const linked = items.filter((it): it is Item & { more: HTMLElement } => !!it.more);
+  const placeMore = () => {
+    for (const it of linked) {
+      const cb = (it.more.offsetParent as HTMLElement | null) ?? row;
+      const inner = it.more.querySelector<HTMLElement>(".lp-dive-more__inner");
+      const t = it.tab.getBoundingClientRect();
+      const c = cb.getBoundingClientRect();
+      const h = inner?.getBoundingClientRect().height ?? 0;
+      it.more.style.top = `${t.bottom - c.top - cb.clientTop - h}px`;
+      it.more.style.left = `${t.left - c.left - cb.clientLeft}px`;
+      it.more.style.width = `${t.width}px`;
+    }
+  };
+  const moreRo = new ResizeObserver(placeMore);
+  if (linked.length) {
+    row.setAttribute("data-place-more", "");
+    for (const it of linked) it.more.setAttribute("data-placed", "");
+    // border-box: the open tab's padding grows with its fold, and padding is not the content box
+    for (const it of items) moreRo.observe(it.tab, { box: "border-box" });
+    moreRo.observe(row);
+    placeMore();
+  }
   /* 1340 ↔ 1341 the list keeps its 272 px and only changes mode (absolute in the fixed row ↔
      in flow, dive.css): the width guard above sees nothing, so a live resize across it left the
      in-flow list unreserved (the page under the carousel jumped at item 4) or a stale
@@ -340,6 +382,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
       if (!built) return "more";
       it.tl = built.tl;
       it.cleanup = built.cleanup;
+      it.next = built.next;
       it.cue = Math.min(Math.max(built.cue ?? 0, 0), built.tl.duration());
     } catch (err) {
       it.failed = true;
@@ -372,6 +415,8 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     it.cleanup?.();
     it.ctx = undefined;
     it.cleanup = undefined;
+    it.next = undefined;
+    it.turns = 0;
     it.tl = undefined;
     it.cue = 0;
   };
@@ -444,7 +489,7 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
           }),
       ),
     )
-      .then(() => fonts) // measure text on the real faces (story-claude §5.3)
+      .then(() => fonts) // measure text on the real faces (the old story-claude spec, §5.3)
       .then(() => {
         if (disposed) return;
         const rt = items.find((it) => it.runtime)?.runtime;
@@ -485,6 +530,9 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     let p0: number;
     let barS: number;
     if (tl && playable && mode !== "end") {
+      // a story that changes between two turns: its next form, before it plays from its cue again
+      if (mode === "cue" && it.turns > 0) it.next?.();
+      it.turns += 1;
       from = mode === "cue" ? it.cue : Math.min(Math.max(tl.time(), it.cue), tl.duration());
       buildS = tl.duration() - from;
       // the bar is linear over (duration − cue) + hold: start it where the timeline already is
@@ -555,11 +603,15 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
       inc.panel.dataset.state = "active";
       prev.tab.dataset.barOut = "";
       fades = [
-        G.fromTo(inc.panel, { opacity: 0 }, { opacity: 1, duration: FADE_S, ease: "power1.out", clearProps: "opacity" }),
+        G.fromTo(
+          inc.panel,
+          { opacity: 0 },
+          { opacity: 1, duration: FADE_IN_S, delay: FADE_OUT_S, ease: "power1.out", clearProps: "opacity" },
+        ),
         G.to(prev.panel, {
           opacity: 0,
-          duration: FADE_S,
-          ease: "power1.out",
+          duration: FADE_OUT_S,
+          ease: "power1.in",
           onComplete: () => {
             prev.panel.dataset.state = "idle";
             prev.panel.style.removeProperty("opacity");
@@ -604,10 +656,21 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     setBar(it, null);
     phase = "rest";
   };
+  /* Engaging on a stage that shows its picture (the visitor flew in, or one step of the scroll
+     brought it on screen: the cue margin is 15 % of a viewport) plays item 1 from its cue. Until
+     2026-11-12 it ran the bar over the hold and moved on to item 2, so that a visitor who
+     arrived fast never saw the first story play (asked on the preview: "vérifie bien que les
+     animations démarrent on viewport", of the first one). */
   const engage = () => {
     if (engaged || posed) return;
     engaged = true;
-    startTurn(phase === "cued" ? "from" : "end");
+    const shown = phase !== "cued";
+    startTurn(shown ? "cue" : "from");
+    // (the picture was on screen: its first scene fades in over it, as on a change of tab)
+    const it = items[active];
+    if (shown && g && it.tl && !isReduced()) {
+      fades.push(g.fromTo(it.panel, { opacity: 0 }, { opacity: 1, duration: FADE_IN_S, ease: "power1.out", clearProps: "opacity" }));
+    }
   };
   const armDwell = () => {
     clearTimeout(dwell);
@@ -805,7 +868,8 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     layout = next;
     stageAt = null;
     applyLayout();
-    // the builders read the layout at build time: rebuild every story on the new box
+    // rebuild every story on the new box: no current builder reads the layout, the rebuild is
+    // kept for a future phone composition
     killMaster();
     settleFades();
     for (const it of items) unbuild(it);
@@ -841,8 +905,8 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
       }
     },
     /** freeze a pose: item i active, its bar at p, its story at `at` (seconds, a label, "end";
-        nothing = its artboard frame, else its end picture). pose(0) = the V2 artboard:
-        item 1, the bar at DIVE_REST_P, the Sources story on its frame 3 (ARTBOARD_AT). */
+        nothing = its artboard frame, else its end picture). pose(0) = the V2 artboard's pose:
+        item 1, the bar at DIVE_REST_P, its story on its end picture (ARTBOARD_AT is empty). */
     pose: (i: number, p: number = DIVE_REST_P, at?: number | string) => {
       posed = true;
       killMaster();
@@ -888,6 +952,12 @@ export function mountDiveCarousel(row: HTMLElement, o: DiveCarouselOptions): () 
     viewIo.disconnect();
     ro.disconnect();
     listRo.disconnect();
+    moreRo.disconnect();
+    row.removeAttribute("data-place-more");
+    for (const it of linked) {
+      it.more.removeAttribute("data-placed");
+      for (const p of ["top", "left", "width"]) it.more.style.removeProperty(p);
+    }
     flowMq.removeEventListener("change", reserveListHeight);
     list?.style.removeProperty("min-height");
     untrack();
@@ -977,6 +1047,10 @@ function mountDiveStack(row: HTMLElement): () => void {
         designWidth: BOX_WIDTH.desktop,
         load: LOADERS[id],
         restIsEnd: true,
+        // a story a flick brought in plays once the visitor stops on it, and it goes round as
+        // the carousel's do on wider screens (lp-play-once.ts: playWhenStopped, loop)
+        playWhenStopped: true,
+        loop: { hold: STACK_HOLD_S },
         qa: { registry: "__lpStory", key: id },
         layoutRoot: section, // content-visibility: auto (foundation.css)
       }),

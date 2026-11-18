@@ -1,6 +1,6 @@
 /* Deep-dive stage harness (/lp-dev/stages, dev/preview only). The frame mimics the carousel
    shell's stage card (blue-band dive.css): --lp-dive-stage-bg, r15.887, the V2 card shadow,
-   overflow hidden; the scene box is the `lp-dive-scene` size container the stories query
+   overflow hidden; the scene box is the `lp-dive-scene` size container
    (lp-dive-stages.ts). Nothing here ships on the homepage. */
 .lp-devstages {
   background: var(--lp-sky);

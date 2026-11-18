@@ -1,28 +1,26 @@
 import type { Metadata, Viewport } from "next";
 
+import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpAnimFreeze } from "@/components/sections/landing-v3/LpAnimFreeze";
+import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
 import { LpBanner } from "@/components/sections/landing-v3/LpBanner";
 import { LpBento } from "@/components/sections/landing-v3/LpBento";
 import { LpCta } from "@/components/sections/landing-v3/LpCta";
-import { LpDemo } from "@/components/sections/landing-v3/LpDemo";
-import { LpDive } from "@/components/sections/landing-v3/LpDive";
 import { LpFitVars } from "@/components/sections/landing-v3/LpFitVars";
 import { LpFooter } from "@/components/sections/landing-v3/LpFooter";
 import { LpHero } from "@/components/sections/landing-v3/LpHero";
+import { LpHeroInstall } from "@/components/sections/landing-v3/LpHeroInstall";
+import { LpKitchen } from "@/components/sections/landing-v3/LpKitchen";
 import { LpMarquee } from "@/components/sections/landing-v3/LpMarquee";
-import { LpAudience } from "@/components/sections/landing-v3/LpAudience";
-import { LpAgentLab } from "@/components/sections/landing-v3/LpAgentLab";
 import { LpNav } from "@/components/sections/landing-v3/LpNav";
 import { LpPricing } from "@/components/sections/landing-v3/LpPricing";
-import { LpSteps } from "@/components/sections/landing-v3/LpSteps";
-import {
-  AGENT_CARD_BODY,
-  AGENT_CARD_BODY_PLACEHOLDER,
-} from "@/components/sections/landing-v3/lp-agents-wall-data";
+import { LpVisionFeatures } from "@/components/sections/landing-v3/LpVision";
+import { LpVisionCurtain } from "@/components/sections/landing-v3/LpVisionCurtain";
+import { LpVisionSteps } from "@/components/sections/landing-v3/LpVisionSteps";
+import { VISION_BOTTLE, VISION_CLOSE, VISION_PLANS } from "@/components/sections/landing-v3/lp-vision-data";
 import { pricingV2, SITE_DESCRIPTION } from "@/lib/copy";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { BASE_LEVEL, CREDIT_LEVELS, TOP_LEVEL, formatCredits } from "@/lib/pricing";
-import { SHOW_PLACEHOLDERS } from "@/lib/placeholders";
 import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 import { HOME_SOCIAL_TITLE, social } from "@/lib/social-meta";
 import "@/app/_styles/landing-v3.css";
@@ -89,9 +87,8 @@ const softwareApplicationJsonLd = {
   description: SITE_DESCRIPTION,
   featureList: [
     "Plays built from one sentence",
-    "Searches that run on your schedule, up to 50 leads per search",
+    "Searches that run on your schedule, with no cap on leads per search",
     "A reason on every lead",
-    "You approve every lead before anyone is contacted",
     "Personal messages you can edit",
     "New leads in Slack and a morning email",
     "MCP server for Claude, Claude Code, ChatGPT and Codex",
@@ -116,9 +113,14 @@ const softwareApplicationJsonLd = {
   },
 };
 
-// Static since 2026-10-07: no searchParams prop (reading ?audience here made
-// every request a server render, never cached on the CDN). LpAudience reads
+// The vision homepage (2026-11-09): Pancake as the revenue data warehouse, in the designer's
+// forms since 2026-11-11 (founder: the current page's graphic pieces back, "ca ne change pas le
+// contenu mais la forme"). Static since 2026-10-07: no searchParams prop; LpAudience reads
 // ?audience=agents on the client once the page has loaded.
+// Recomposed the same day after the landing page meeting: one 1-2-3 in place of the four table
+// rows and the three steps, and the bottle, the testimonials and the pricing back on the page.
+// Off this page, their files kept: the demo film, the infra bricks, the three step pictures of
+// the page before (LpSteps).
 export default function Home() {
   return (
     <LpAudience>
@@ -127,37 +129,40 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(softwareApplicationJsonLd) }}
       />
-      {/* Serves every section's art canvas — the --lp-fit scale var
-          (iOS WebKit cqw-in-trig workaround, see LpFitVars.tsx) */}
+      {/* Serves every section's art canvas — the --lp-fit scale var (LpFitVars.tsx) */}
       <LpFitVars />
-      {/* Frees off-screen sections' animation GPU surfaces — the iPhone
-          WebContent OOM guard (see LpAnimFreeze.tsx) */}
+      {/* Frees off-screen sections' animation GPU surfaces (LpAnimFreeze.tsx) */}
       <LpAnimFreeze />
-      {/* V2 Figma replication (fr8NgOCTUxsEbrMEJA3YKu 4911:346, 2026-10-09) page order. Every
-          section is a DIRECT <section> child of main.lp: the agents view hides all of them but
-          the hero and the lab (audience.css, integrator rule). */}
+      {/* Every section is a DIRECT <section> child of main.lp: the agents view hides all of them
+          but the hero and the lab (audience.css). */}
       <LpNav />
+      {/* the designer's hero: the rainbow, the headline left, the lede and the buttons right */}
       <LpHero />
-      {/* the demo window, right under the hero (V2 red note: swapped with the logos) */}
-      <LpDemo />
-      {/* customers band after the demo, before the steps (V2 4911:371 "Trusted by many") */}
+      {/* in the demo film's slot: Claude's window beside Pancake's table, a curtain between them */}
+      <LpVisionCurtain />
+      {/* the customers, on cream, as on the page before */}
       <LpMarquee labelled />
-      <LpAgentLab
-        cardBody={SHOW_PLACEHOLDERS && AGENT_CARD_BODY_PLACEHOLDER ? AGENT_CARD_BODY_PLACEHOLDER : AGENT_CARD_BODY}
-      />
-      <LpSteps />
-      <LpBanner />
-      {/* the deep-dive carousel (V2 4939:3388) in place of the four feature cards */}
-      <LpDive />
-      <LpCta sky />
-      {/* testimonials / KPI bento (V2 4911:762): dev and previews show it, gaps filled with
-          marked stand-ins. Production renders nothing while BENTO_LIVE (lp-bento-data.ts) is
-          off, as it is today (the founder's go on the date and the customers' OK); once on,
-          its final cards only (a partial set) */}
-      <LpBento />
-      <LpPricing />
+      {/* the statement, then the 1-2-3: connect your sources, connect the dots with market
+          signals, find who to contact and when (the designer's step cards, three new pictures) */}
+      <LpVisionSteps />
+      {/* after the 1-2-3, on cream: Pancake as a kitchen that runs by itself, and the same kitchen
+          without it (the 2026-11-11 meeting's "machinery" picture, built by Guillaume). The
+          founder moved it from under the testimonials to under the logos on 2026-11-12 ("je
+          trouve que c'est assez bas"), then the same day to here: "put the kitchen after the
+          1-2-3 finally" */}
+      <LpKitchen />
+      {/* the agents view's code wall (agents view only) */}
+      <LpAgentLab />
+      {/* the bottle, with the page's own two lines; it opens the sky */}
+      <LpBanner left={VISION_BOTTLE.left} right={VISION_BOTTLE.right} />
+      {/* the sky: what your agent can do with Pancake (the deep dive, four features), what
+          customers got, then the close on its cream hill (sky.css) */}
+      <LpVisionFeatures />
+      <LpBento sky />
+      {/* note={null}: no demo request line in this card (founder, 2026-11-12) */}
+      <LpCta sky title={VISION_CLOSE.title} body={VISION_CLOSE.body} setup={<LpHeroInstall place="cta" />} note={null} />
+      <LpPricing checklist={VISION_PLANS.starter} full={VISION_PLANS.full} />
       <LpFooter />
-      {/* LpModals unmounted 2026-09-16: every Book a demo CTA links to /demo now (François), so no trigger is left here. */}
     </LpAudience>
   );
 }

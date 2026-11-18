@@ -1,7 +1,24 @@
 import { APP_ORIGIN } from "./lib/site-config.mjs";
+import { learnRewrites } from "./lib/learn-proxy.mjs";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  /**
+   * The blog's routes read content/blog/*.mdx at runtime: they revalidate hourly so scheduled
+   * posts go live on their own (lib/posts.ts publishedAt), and the publish cron revalidates them.
+   * The tracer found those files for /blog, /blog/[slug] and the feed but not for /sitemap.xml,
+   * whose runtime renders would have listed no posts. Ship the posts with every route that reads
+   * them (2026-11-04).
+   */
+  experimental: {
+    outputFileTracingIncludes: {
+      "/blog": ["./content/blog/**/*"],
+      "/blog/[slug]": ["./content/blog/**/*"],
+      "/blog/rss.xml": ["./content/blog/**/*"],
+      "/sitemap.xml": ["./content/blog/**/*"],
+      "/api/cron/publish-posts": ["./content/blog/**/*"],
+    },
+  },
   /** In dev, disable webpack filesystem cache — reduces stale chunk manifest mismatches. */
   webpack: (config, { dev }) => {
     if (dev) {
@@ -124,6 +141,27 @@ const nextConfig = {
       { source: "/booked", destination: "/demo", permanent: false },
     ];
   },
+  // "Will it stand?", the vote page for the pancake tower world-record attempt
+  // (Corgi Café, 2026-10-29), is a static page on its own Vercel project; it is
+  // served here so the room's QR code reads pancake.ai/record. The screen
+  // (/record/screen) builds its QR from its own address. When the event page
+  // retires, swap these for a 301 (redirects above): the address was printed
+  // on the screen.
+  //
+  // /learn serves the answer pages our AI-search content partner hosts on its
+  // own server (lib/learn-proxy.mjs). Its rewrites run before pages and files
+  // (beforeFiles), as the partner's setup asks; /record's run after them. A
+  // page or public file under a proxied path would fight its rewrite for the
+  // address, so url-guard fails the build if one appears.
+  async rewrites() {
+    return {
+      beforeFiles: learnRewrites(),
+      afterFiles: [
+        { source: "/record", destination: "https://pancake-tower-two.vercel.app/" },
+        { source: "/record/:path*", destination: "https://pancake-tower-two.vercel.app/:path*" },
+      ],
+    };
+  },
   // Baseline security headers (2026-10-07; only HSTS was set, by Vercel).
   // Permissions-Policy blocks camera and geolocation and leaves the
   // microphone alone: /demo's voice agent (AiSalesCall) asks for it. No CSP
@@ -138,6 +176,14 @@ const nextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), geolocation=()" },
+        ],
+      },
+      {
+        source: "/demo/review",
+        headers: [
+          { key: "Content-Security-Policy", value: "connect-src 'self'; script-src 'self' 'unsafe-inline'; img-src 'self' data:; frame-src 'none'; form-action 'self'; base-uri 'self'" },
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow" },
         ],
       },
     ];

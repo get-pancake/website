@@ -1,0 +1,43 @@
+/* The six hard problems' stories (the vision homepage, 2026-11-11): what is theirs only.
+   Everything shared is the kit's (story-kit.css: the white disc and its mark, the wires, the
+   names and the rise). Founder, on the six tables that stood here: "c'est parfois tres
+   technique, tres database … plutot des motion design simples et efficaces … qui depeignent le
+   probleme qu'on solve". Every box is inline from lp-story-problems-data.ts (stage px, 752x489),
+   and so is each stop's colour (its brand token).
+
+   Traps (the kit's hold): every selector is compound (T1). The stops and the dots are children
+   of the svg, not of the wires' <g>: the kit's multiply never reaches them, so each paints flat
+   and a dot covers the end of its wire. Phones show the 752 scene scaled: the kit hides every
+   name there and the pictures read without them. No will-change, no keyframes. */
+
+/* a straight wire (one whose end can move with its dot): the kit's wire */
+.lp-sp .lp-sk-wires line {
+  fill: none;
+  stroke: var(--sk-wire);
+  stroke-width: 2;
+}
+/* a person, a record: a dot in the wires' own grey */
+.lp-sp .lp-sp-dot {
+  fill: var(--sk-wire);
+}
+/* what the story ends on, in the hub's near-black at rest: the timeline draws it grey and turns
+   it, the whole piece at once, then lets go so these hold it */
+.lp-sp .lp-sk-wires [data-ink] {
+  stroke: var(--sk-hub);
+}
+.lp-sp .lp-sk-wires .lp-sp-dot[data-ink] {
+  fill: var(--sk-hub);
+  stroke: none;
+}
+/* a piece that is not in the END picture (it was there at frame 0), and one that stepped back */
+.lp-sp [data-gone] {
+  opacity: 0;
+}
+.lp-sp [data-dim] {
+  opacity: 0.45;
+}
+/* a column's header, a date: the kit's name in the kicker's ink (the lineage story's group
+   labels), so it sits back from the names under the nodes */
+.lp-sp .lp-sp-group {
+  color: var(--lp-ink-80);
+}

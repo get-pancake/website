@@ -9,7 +9,7 @@ import * as FIXED from "@/components/sections/verticals/vx-copy";
 const KINDS: SignalKind[] = ["keyword", "competitor", "influencer", "own_brand", "hiring", "stack"];
 const CATEGORIES = [
   "Sales, GTM & recruiting", "Marketing & creative agencies", "Tech & build agencies", "Consultants & advisors",
-  "IT, cloud & security", "Startups & solo founders", "Vertical software", "Energy & industry",
+  "IT, cloud & security", "Startups", "Vertical software", "Energy & industry",
 ];
 
 /** Positive claims the product cannot back (critic §3.1, product-truth §4.2, founder bans). */
@@ -28,12 +28,16 @@ export const BANNED: [RegExp, string][] = [
   [/\b(fundrais\w*|series [a-e] round|job[- ]changes?|changed jobs|press releases?)\b/i, "fundraising/job-change/news signal"],
   [/\b(website|site) visitors?\b|\bde-?anonymi[sz]\w*/i, "website visitors"],
   [/\bgoogle maps\b|\blocal (business )?lists?\b|\bhomeowners?\b/i, "local/consumer leads"],
-  [/\bCRM (sync|integration)s?\b|\bsyncs? (to|with) (your )?(CRM|HubSpot|Salesforce)\b|\bCSV\b|\bexports?\b/i, "CRM sync/export"],
+  // "CSV" and "export" left this rule on 2026-11-03: a Play's leads download as CSV (pancake-cmo
+  // PAN-1174) and a member sends the leads they pick to a CRM as a one-way export (PAN-2405).
+  // A sync is still not something Pancake does.
+  [/\bCRM (sync|integration)s?\b|\bsyncs? (to|with) (your )?(CRM|HubSpot|Salesforce)\b/i, "CRM sync"],
   [/\bdraft mode\b|\b(approve|review) (each|every) message\b|\bmessage approvals?\b/i, "draft mode"],
   [/\bguarantee(d|s)?\b|\bin (a few |2 |two )?minutes\b|\binstant(ly)?\b/i, "guarantee / instant"],
   [/\b(response|reply|open) rates?\b|\b\d+ ?% (response|reply|open)/i, "rates"],
   [/\bspend cap\b|\bcan[’']?t overspend\b|\btoken costs?\b|\bunlimited leads\b/i, "pricing claim"],
-  [/\b50\+ (data )?providers\b/i, "50+ providers"],
+  // (the "50+ providers" rule left on 2026-11-12: it is the founder's figure now. A /for page
+  // still cannot print it: the job-count rule below refuses any "N+".)
   [/\bmulti-?lingual\b|\bmulti-?language\b|\bany language\b/i, "languages"],
   // "plays" left this rule on 2026-09-30: Plays shipped (the core of Pancake v2).
   [/\bmultiple campaigns\b|\bcustom sequences?\b/i, "unshipped campaign features"],

@@ -27,6 +27,7 @@ export async function GET(request: Request) {
   const authUrl = buildAuthUrl({ redirectUri: getRedirectUri(request), state });
 
   const res = NextResponse.redirect(authUrl);
+  res.cookies.set("admin_return", new URL(request.url).searchParams.get("returnTo") === "demo-review" ? "demo-review" : "roadmap", { httpOnly: true, secure, sameSite: "lax", path: "/", maxAge: STATE_TTL_SECONDS });
   res.cookies.set(GOOGLE_STATE_COOKIE, state, {
     httpOnly: true,
     secure,

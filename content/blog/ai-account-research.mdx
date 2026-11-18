@@ -1,0 +1,125 @@
+---
+title: "AI for Account Research: A 15-Minute Brief Before You Reach Out"
+seo_title: "AI for Account Research: Prompts, Sources and Checks"
+description: "AI for account research before outreach: the six questions worth answering, where each answer lives, prompts that cite sources, and how to check them."
+date: "2026-11-22"
+last_updated: "2026-11-22"
+related:
+  - "ai-for-sales-prospecting"
+  - "claude-for-sales-prospecting"
+  - "how-to-find-decision-makers"
+faq:
+  - question: "How do I use AI for account research?"
+    answer: "Give the model the company's website and the problem you solve, then ask it to answer a short list of questions: what they sell, how big they are, what changed recently, who owns the problem, what they use today and what leaders said in public. Require a URL and a date for every answer and accept 'unknown'. Open the links your message will rely on before you write."
+  - question: "What should I research about an account before reaching out?"
+    answer: "Only what changes the message or the decision to send it. Six questions cover most cases: what the company sells and to whom, how big it is, what changed in the last six months, who owns the problem you solve, which tools they use for it, and what they have said about it in public. Founding stories and office lists rarely help."
+  - question: "Can ChatGPT or Claude do account research accurately?"
+    answer: "They work fast, and they still make things up. Anthropic's own guidance for Claude is to let the model say it doesn't know, ask for direct quotes and require a citation for each claim, and it notes that these steps reduce errors without removing them. Treat every fact your message depends on as unverified until you have opened its source yourself."
+  - question: "What is AI account planning?"
+    answer: "Account planning is the deeper version for an account you already talk to: who is involved, what each person cares about, the risks to the deal and the next steps. AI drafts the plan from your call notes and public sources and flags what it inferred. A person owns the relationship map and the call on where to spend time."
+  - question: "How long should account research take per prospect?"
+    answer: "For a first message, about 15 minutes is a sensible budget, and less once your prompts are set. The goal is one true, recent reason to write and a question about it. Deeper research pays off after a reply, when you know the account wants a conversation. An hour spent before the first touch is lost on every account that never answers."
+---
+
+**TL;DR:** Use AI for account research to answer six questions before you write: what the company sells and to whom, how big it is, what changed in the last six months, who owns the problem you solve, what they use for it today, and what they have said about it in public. Make the model cite a link and a date for every answer and write "unknown" when it finds nothing. Fifteen minutes per account is enough for a first message. Save deep account planning for the accounts that reply.
+
+---
+
+## What account research for sales should answer, and what to skip
+
+Research earns its time when it changes the message or the decision to send one. Anything else is reading for its own sake.
+
+Six questions pass that test:
+
+1. **What do they sell, and to whom?** One sentence. If you can't write it, you can't say why you're relevant.
+2. **How big are they, and at what stage?** Headcount and funding decide whether they can buy what you sell.
+3. **What changed in the last six months?** A new product, a new market, a raise, a wave of hiring. A change gives you a reason to write now.
+4. **Who owns the problem you solve?** A name and a title, not "the marketing team".
+5. **What do they use for it today?** The tool you'd replace, or the one you'd plug into.
+6. **What have they said about it in public?** A post, a talk, a line in a job post. Their words beat your guess.
+
+Skip the founding story, the office list and the leadership team's hobbies. A buyer can tell when a message was built from an About page, and none of it gives them a reason to answer.
+
+---
+
+## Where each answer lives, and how to check it
+
+Every question has a primary source, and the AI's job is to find it and quote it, not to remember it. The last column is what you verify before a fact goes into a message.
+
+| Question | Where it lives | AI's job | Your check |
+|---|---|---|---|
+| What they sell, to whom | Homepage, pricing page, customer stories | One-sentence summary that names the buyer | Does the pricing page match the summary? |
+| Size and stage | Careers page, job posts, funding filings | Headcount range and last raise, with sources | Is the source from this year? |
+| What changed | Newsroom, blog, job posts, filings | Changes from the last six months, each dated | Open each link and read the date |
+| Who owns the problem | Team page, job posts, public profiles | The likely owner and title | Does the person still hold the role? |
+| What they use | Job posts that name tools, integrations pages, case studies | Tools, with the page that names each | A tool in a job post may be a wish, not a fact |
+| What they said | Leaders' posts, talks, podcasts, interviews | The quote that touches your problem | Is the quote real, and in context? |
+
+Two public records deserve a bookmark. [EDGAR full-text search](https://www.sec.gov/edgar/search/) covers the full text of the SEC's electronic filings since 2001, so you can search a company's own filings for the problem you solve. And companies that sell securities under Regulation D must [file a Form D notice](https://www.sec.gov/resources-small-businesses/exempt-offerings/filing-form-d-notice) within 15 days after the first sale, on EDGAR, which makes many US raises checkable at the source. [Buying signals for B2B](/blog/buying-signals-b2b) covers the other public traces worth watching.
+
+---
+
+## Prompts for AI-powered account research that cite their sources
+
+Prompts that work for account research ask for a source per claim, accept "unknown", and keep the output short enough to check. Four do most of the work.
+
+**The brief.**
+
+> Research [company] ([website]) for a first sales message about [problem you solve]. Answer six questions: what they sell and to whom, size and stage, what changed in the last six months, who likely owns [problem], what they use for it today, and anything a leader said about it in public. Give the URL and date of the source for every answer. Write "unknown" when you find nothing. Do not guess.
+
+**The verification pass.**
+
+> For each claim in your brief, quote the sentence from the source that supports it. If you can't find a supporting quote, delete the claim and tell me which ones you deleted.
+
+**The angle.**
+
+> From the brief, pick the one fact most likely to matter to [role] this quarter and say why in one sentence. Then write one question about it, under 25 words, with no pitch.
+
+**The account plan** (for accounts that replied).
+
+> Here are my notes from two calls with [company], plus the brief. Draft an account plan: the people involved and what each cares about, the problem in their words, the risks to the deal, and the next three steps with an owner for each. Mark everything you inferred instead of read.
+
+The second prompt does the most for accuracy. It follows [Anthropic's guidance on reducing hallucinations](https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations): let the model say it doesn't know, ground answers in direct quotes, and make it retract any claim it can't support. The same page says these steps reduce errors without eliminating them, so the human check stays. If you work in Claude, [the guide to Claude for sales prospecting](/blog/claude-for-sales-prospecting) shows how to keep briefs like these in a Project.
+
+---
+
+## How to check what the AI found
+
+A brief is only as good as its weakest fact, and the message usually rests on one fact. Check that one hardest.
+
+- **Open the link.** Models cite pages that don't say what the brief claims, and sometimes pages that don't exist. Read the sentence yourself.
+- **Read the date.** A three-year-old press release reads like news in a summary. "Recent" means inside your window, usually six months.
+- **Match the company.** Similar names, parent companies and subsidiaries get mixed up. Match the domain on every source.
+- **Check numbers at the source.** Headcounts and funding amounts drift as they get repeated. Go back to the filing, the announcement or the careers page.
+- **Confirm the person.** Titles change and people leave. Check their profile before you write to them about their job.
+- **Keep the unknowns.** "Unknown" is useful: it tells you there is no reason to write yet.
+
+---
+
+## AI for account research in 15 minutes: one worked example
+
+Here is the routine for a hypothetical case. Say you run a sustainability consultancy that helps mid-size manufacturers with their sustainability reporting, and an AI-built list hands you a 600-person US packaging company.
+
+- **Minutes 1 to 5: the brief.** Run the first prompt on the company's website. It returns what they sell (packaging for food brands), their size (a careers page that says 600 people), a change (a sustainability manager job posted last month) and two unknowns: no public report, no quote from a leader.
+- **Minutes 6 to 10: the check.** Open the job post. It's live, dated, and asks for experience with supplier emissions data. The careers page matches the headcount. The rest of the brief doesn't touch your offer, so you drop it.
+- **Minutes 11 to 15: the angle.** One fact matters: a new hire will own a first report. The message asks about it: "Saw the sustainability manager opening. Will that person build your first report, or take over one that's already started?"
+
+The two unknowns didn't stop the message. They tell you what to ask on the call.
+
+---
+
+## AI account planning for the accounts that reply
+
+Account planning is the deep version, and it belongs after a reply, when an account has shown it wants a conversation. AI drafts the plan from your call notes and public sources: the people involved, what each one cares about, the risks and the next steps.
+
+Keep two parts human. The relationship map comes from conversations, not from search results, and the model can only guess at who holds influence. And the decision on where to spend your next ten hours is a bet on the account, which is yours to make. [AI for sales prospecting](/blog/ai-for-sales-prospecting) draws that line across the whole prospecting week, and the [guide to AI lead generation tools](/blog/ai-lead-generation-tools) lists the research and enrichment tools by job.
+
+---
+
+## Checking public facts at scale with Pancake's web evidence
+
+Pancake is our product. One way it finds leads is web evidence: you ask for companies that state something in public, and it checks the web and links the source for each company it keeps. It reads what companies say about themselves; it doesn't watch the news or alert you to changes.
+
+For a sustainability consultancy, three signals fit: manufacturers that publish a sustainability report, companies hiring a sustainability manager, and finance leaders posting about scope 3. A Play could read: "Find US manufacturers with 250 to 2,000 people that publish a sustainability report, and link each report." Each lead arrives with one line on why it fits, checked against the ideal customer profile in your GTM Brain, and the first message asks about the fact you can both see: "Read your latest sustainability report. Who pulls the supplier data together, your team or an outside firm?"
+
+Messages go out as DMs under your name, and a reply stops the sequence. Pancake sends no email and sees nothing a company keeps private. Plans start at $99 a month per workspace with 60,000 credits ([pricing](/pricing)), and the 7-day trial includes 30,000 credits once a card is on file. See [Pancake for sustainability consultants](/for/sustainability-consultants), or [how Pancake works for any B2B seller](/).

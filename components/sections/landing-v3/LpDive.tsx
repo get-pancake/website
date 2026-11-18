@@ -1,4 +1,4 @@
-import type { CSSProperties } from "react";
+import type { CSSProperties, ReactNode } from "react";
 
 import { SHOW_PLACEHOLDERS, visibleEntries } from "@/lib/placeholders";
 
@@ -11,6 +11,7 @@ import {
   DIVE_PAUSE_LABEL,
   DIVE_PHONE_LAYOUT,
   DIVE_TITLE,
+  type DiveItem,
 } from "./lp-dive-data";
 import { DIVE_STAGES } from "./lp-dive-stages";
 
@@ -46,15 +47,38 @@ import { DIVE_STAGES } from "./lp-dive-stages";
  */
 const at = (i: number) => ({ "--lp-dive-i": i }) as CSSProperties;
 
-export function LpDive() {
-  const items = visibleEntries(DIVE_ITEMS);
+/**
+ * Without props: the homepage's four blocks, byte for byte. The vision homepage (2026-11-11)
+ * passes its own: the six hard problems as `items` (their stories are in the same registry), its
+ * `title`, a `lede` under it, and `skyTop`, since no banner opens the sky above it there (dive.css,
+ * "the vision homepage's dive").
+ */
+export function LpDive({
+  items: all = DIVE_ITEMS,
+  title = DIVE_TITLE,
+  lede,
+  skyTop = false,
+}: {
+  items?: readonly DiveItem[];
+  title?: string;
+  lede?: ReactNode;
+  skyTop?: boolean;
+} = {}) {
+  const items = visibleEntries(all);
   if (!items.length) return null;
   return (
-    <section className="lp-dive" aria-labelledby="lp-dive-title" data-lp-phone={DIVE_PHONE_LAYOUT}>
-      <div className="lp-dive-head">
+    <section
+      className="lp-dive"
+      aria-labelledby="lp-dive-title"
+      data-lp-phone={DIVE_PHONE_LAYOUT}
+      data-lp-count={items.length}
+      data-lp-sky-top={skyTop ? "" : undefined}
+    >
+      <div className="lp-dive-head" data-lede={lede ? "" : undefined}>
         <h2 id="lp-dive-title" className="lp-title-section lp-dive-title">
-          {DIVE_TITLE}
+          {title}
         </h2>
+        {lede ? <p className="lp-dive-lede">{lede}</p> : null}
       </div>
       <LpDiveCarousel className="lp-dive-row" fallback={DIVE_FALLBACK_S}>
         <div className="lp-dive-list">
@@ -105,6 +129,7 @@ export function LpDive() {
                 id={`lp-dive-more-${item.id}`}
                 className="lp-dive-more"
                 data-for={item.id}
+                data-last={i === items.length - 1 ? "" : undefined}
                 data-on={i === 0 ? "" : undefined}
                 style={at(i)}
               >
@@ -122,9 +147,9 @@ export function LpDive() {
         </div>
         <div className="lp-dive-stagewrap">
           {/* WCAG 2.2.2: the carousel moves on its own — Pause, under the card's bottom-right
-              corner: shown on keyboard focus, while it holds the carousel, while a pointer is
-              over the stage, always on touch screens (dive.css). The driver sets aria-pressed
-              and the icon. */}
+              corner. A keyboard control only since 2026-11-12: shown on keyboard focus and while
+              it holds the carousel, never to a mouse or a finger (dive.css has why). The driver
+              sets aria-pressed and the icon. */}
           <div className="lp-dive-ctrl">
             <button
               type="button"

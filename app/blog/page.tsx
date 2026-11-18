@@ -21,6 +21,9 @@ import "./blog.css";
 /* Status-bar zone matches the lp cream (Dynamic Island fix, 2026-08-31) */
 export const viewport: Viewport = { themeColor: "#fbf6f1" };
 
+/** Hourly, so a scheduled post (lib/posts.ts publishedAt) joins the list without a redeploy. */
+export const revalidate = 3600;
+
 export const metadata: Metadata = {
   title: "Blog · Pancake",
   description: BLOG_DESCRIPTION,

@@ -16,6 +16,7 @@ import Module, { createRequire } from "node:module";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
 
+import * as acquisitionBank from "../lib/analytics/acquisition-bank.mjs";
 import * as posthogTouch from "../lib/analytics/posthog-touch.mjs";
 import * as siteConfig from "../lib/site-config.mjs";
 
@@ -328,7 +329,7 @@ function makeBrowser() {
     },
   };
 
-  async function load(href, referrer = "") {
+  async function load(href, referrer = "", bankOutcomes = []) {
     const url = new URL(href);
     const effects = [];
     const stubs = {
@@ -338,6 +339,7 @@ function makeBrowser() {
       "posthog-js": { __esModule: true, default: posthog },
       "@/lib/analytics/data-layer": { isAcquisitionEventName: () => false, PANCAKE_ACQUISITION_EVENT: "pancake:acquisition-event" },
       "@/lib/analytics/posthog-touch.mjs": posthogTouch,
+      "@/lib/analytics/acquisition-bank.mjs": acquisitionBank,
       "@/lib/site-config.mjs": siteConfig,
     };
     // A fresh module is a fresh document: `initialized` and the page-view guard start over.
@@ -347,10 +349,12 @@ function makeBrowser() {
       return stubs[id];
     };
     const before = { window: globalThis.window, document: globalThis.document };
+    const listeners = new Map();
     globalThis.window = {
+      __pancakeAcquisitionBank: { outcomes: [...bankOutcomes] },
       location: { href, search: url.search, hostname: url.hostname },
-      addEventListener() {},
-      removeEventListener() {},
+      addEventListener(name, listener) { listeners.set(name, listener); },
+      removeEventListener(name) { listeners.delete(name); },
     };
     globalThis.document = { referrer };
     const first = calls.length;
@@ -359,6 +363,8 @@ function makeBrowser() {
       const tree = page.exports.PostHogAttribution();
       tree.props.children.type();
       for (const effect of effects) effect();
+      // Repeated notifications after the initial drain must not capture the same receipt twice.
+      listeners.get("pancake:acquisition-bank")?.();
       // The library is imported on demand: let the queued calls drain.
       await new Promise((resolve) => setTimeout(resolve, 5));
     } finally {
@@ -450,4 +456,22 @@ test("the component: a direct visit, Pricing, then a retargeting ad a week later
     browser.events.map((event) => event.name),
     ["$pageview", "$pageview", "$pageview", "marketing_landing_viewed"],
   );
+});
+
+
+test("the component drains pre-hydration bank diagnostics once and drops arbitrary fields", async () => {
+  const browser = makeBrowser();
+  await browser.load("https://pancake.ai/", "", [
+    { status: "inserted", reason: "saved", attempts: 2, token: "SECRET", touchId: "PRIVATE" },
+    { status: "failed", reason: "arbitrary", attempts: 1 },
+  ]);
+  const diagnostics = browser.events.filter((event) => event.name === "acquisition_bank_completed");
+  assert.equal(diagnostics.length, 1);
+  assert.equal(diagnostics[0].properties.status, "inserted");
+  assert.equal(diagnostics[0].properties.attempts, 2);
+  assert.equal("token" in diagnostics[0].properties, false);
+  assert.equal("touchId" in diagnostics[0].properties, false);
+  const preview = makeBrowser();
+  await preview.load("https://preview.example/", "", [{ status: "inserted", reason: "saved", attempts: 1 }]);
+  assert.equal(preview.events.length, 0);
 });

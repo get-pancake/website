@@ -161,7 +161,7 @@ export const cybersecurityFirms: VerticalConfig = {
     },
     {
       q: "Security leaders ignore vendor pitches. Will this read like one?",
-      a: "The first touch carries no pitch, so there’s nothing to ignore. When a lead posted or commented, the message starts from that post. Leads you don’t approve never hear from you.",
+      a: "The first touch carries no pitch, so there’s nothing to ignore. When a lead posted or commented, the message starts from that post.",
     },
     {
       q: "Can it find companies that need a pentest?",

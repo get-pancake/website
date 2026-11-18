@@ -19,7 +19,7 @@ export function PlaysPlusIcon({ className }: { className: string }) {
  * the /for hero's rows, whose arrow points down at the demo). The <li> carries the anchor id
  * the ItemList JSON-LD points at.
  */
-function ExampleGrid({ examples }: { examples: PlayExample[] }) {
+export function ExampleGrid({ examples }: { examples: PlayExample[] }) {
   return (
     <ul className="pl-ex-grid">
       {examples.map((e) => (

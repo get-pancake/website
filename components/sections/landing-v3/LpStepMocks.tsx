@@ -1,7 +1,13 @@
+import type { CSSProperties } from "react";
+
 import {
+  S0_CONNECT,
   S1_HUBS,
+  S1_LEADS,
+  S1_LEARN,
   S1_ROWS,
   S1_SKELETON_TOPS,
+  S1_VERDICTS,
   S2_BAR,
   S2_CHAT,
   S2_DRAFT,
@@ -13,47 +19,48 @@ import {
   S3_RULE_TOPS,
   S3_THREAD,
   S3_TICK_TOPS,
+  S4_ASK,
+  S4_MAIL,
   SX_CHECK_D,
   SX_LEADS,
   SX_LEADS_COPY,
   s1Graph,
 } from "./lp-step-data";
 import type { StepVariant } from "./lp-step-timelines";
+import { ClaudeMark } from "./LpAgentMarks";
+import { PANCAKE_AVATAR } from "./lp-pancake-avatar-art";
 
 /**
- * The three step mock UIs as DOM, with their geometry in steps.css. Step 01
- * and step 03's calendar are the pancake-studio compositions' markup
- * (shorts/brain-research-loop, meetings-calendar-loop); step 02 and step 03's
- * intro are the designer's "How it works" storyboards (Figma, 2026-10-11:
- * frames 5016:4214 → 5022:6230 and 5022:6116 → 5022:6080). Rest state = each
- * animation's FRAME 0 (the empty URL input, the chat request, the selected
- * leads): every animation-only layer is invisible at rest and driven by
- * lp-step-timelines.ts from there. Purely decorative — the host carries the
- * alt text (LpStepAnim.tsx). Every string comes from lp-step-data.ts (linted).
+ * The step mock UIs as DOM, with their geometry in steps.css. Since
+ * 2026-10-28 the steps play s0 (connect Pancake in Claude, built from s2's
+ * pieces), s4 (the ask typed in Claude, the Play it becomes and the envelopes
+ * Claude sends, no app window) and s1 (the brain-research-loop composition's
+ * graph, grown by three leads' verdicts).
+ * s2 (the designer's "How it works" storyboard, Figma 2026-10-11: frames
+ * 5016:4214 → 5022:6230, step 02 until 2026-10-28) and s3 (the outreach and
+ * the meetings-calendar-loop week) are not on the page now. Rest state = each
+ * animation's FRAME 0 (the empty composer, the young Brain beside its leads):
+ * every animation-only layer is invisible at rest and driven by
+ * lp-step-timelines.ts from there. One exception, s4: its markup is its END
+ * picture (the ask, the Play on, the burst: LpStepAnim REST_IS_END), and its
+ * timeline sets frame 0.
+ * Purely decorative — the host carries the alt text (LpStepAnim.tsx). Every
+ * string comes from lp-step-data.ts (linted).
  */
 
-/* ── step 01 · URL input → the knowledge graph → the market profile ── */
+/* ── step 03 (since 2026-10-27, "Watch it get better") · the young Brain beside three leads →
+   their verdicts grow it, hub by hub → "Who fits" resolves → the whole labelled Brain ──
+   The Brain is the brain-research-loop composition's graph (it was step 01, built from the
+   website); the leads are the Leads table's first three. Rest = frame 0: the young Brain
+   (each hub and its first leaf, `rest` in s1Graph) glided left, the three leads unjudged. */
 
 function S1Stage() {
   const { edges, dots } = s1Graph();
   return (
     <div className="lp-step-stage lp-step-stage--s1" aria-hidden="true">
-      <div className="lp-s1-ui">
-        <div className="lp-s1-input">
-          <span className="lp-s1-ph">example.com</span>
-          {/* revealed glyph by glyph with a clip inset (advance widths in lp-step-data.ts) */}
-          <span className="lp-s1-typed">acme.com</span>
-          <i className="lp-s1-caret" />
-        </div>
-        <div className="lp-s1-btn">
-          <span className="lp-s1-btntxt">Start research</span>
-        </div>
-        <i className="lp-s1-ring" />
-        <img className="lp-s1-cursor" src="/lp/lp-s1-cursor.svg" alt="" width={51} height={53} loading="lazy" decoding="async" />
-      </div>
-
       <div className="lp-s1-graph">
-        {/* edges draw in from the hub end: dash = the line's own length, fully offset at rest */}
+        {/* edges draw in from the hub end: dash = the line's own length, fully offset at rest
+            unless the young Brain already has them */}
         <svg className="lp-s1-edges" viewBox="0 0 464 426" xmlns="http://www.w3.org/2000/svg">
           {edges.map((e, i) => (
             <line
@@ -63,7 +70,7 @@ function S1Stage() {
               x2={e.x2}
               y2={e.y2}
               data-len={e.len}
-              style={{ strokeDasharray: e.len, strokeDashoffset: e.len }}
+              style={{ strokeDasharray: e.len, strokeDashoffset: e.rest ? 0 : e.len }}
             />
           ))}
         </svg>
@@ -72,11 +79,13 @@ function S1Stage() {
             <i
               key={i}
               className="lp-s1-dot"
+              data-rest={d.rest ? "" : undefined}
               style={{ left: d.x - d.r, top: d.y - d.r, width: 2 * d.r, height: 2 * d.r, background: d.fill }}
             />
           ))}
         </div>
-        <i className="lp-s1-bping" />
+        {/* the ping a verdict sends through the Brain, from its centre */}
+        <i className="lp-s1-cping" />
         <i className="lp-s1-center" />
         <p className="lp-s1-clabel">Acme</p>
         {/* the five hubs' names (Figma V2 4962:839–845, "Labels in 2nd level dots",
@@ -89,10 +98,25 @@ function S1Stage() {
         ))}
       </div>
 
+      {/* the three leads that come back, each with the verdict the timeline stamps on it */}
+      <div className="lp-s1-leads">
+        {S1_VERDICTS.map((v) => {
+          const l = S1_LEADS[v.lead];
+          return (
+            <div key={l.name} className="lp-s1-lead">
+              <SxAvatar initials={l.initials} />
+              <span className="lp-s1-lead-name">{l.name}</span>
+              <span className="lp-s1-lead-pos">{l.position}</span>
+              <span className={`lp-s1-verdict lp-s1-verdict--${v.kind}`}>{v.label}</span>
+            </div>
+          );
+        })}
+      </div>
+
       <div className="lp-s1-panel">
-        <p className="lp-s1-ptitle">Market profile</p>
-        <p className="lp-s1-psub lp-s1-sub-a">Researching...</p>
-        <p className="lp-s1-psub lp-s1-sub-b">5 insights</p>
+        <p className="lp-s1-ptitle">{S1_LEARN.title}</p>
+        <p className="lp-s1-psub lp-s1-sub-a">{S1_LEARN.learning}</p>
+        <p className="lp-s1-psub lp-s1-sub-b">{S1_LEARN.done}</p>
         {S1_SKELETON_TOPS.map((top) => (
           <div key={top} className="lp-s1-srow" style={{ top }}>
             <i className="lp-s1-skel lp-s1-skel--sq" />
@@ -170,8 +194,103 @@ function SxHand() {
   );
 }
 
+/* ── step 01 (since 2026-10-27, "Connect your agent") · in Claude: the composer's "+" →
+   Connectors → Pancake's sign-in → the connector chip → what Claude can now do ──
+   Step 02's Claude window, piece for piece (its header, composer, connector chip, answer
+   spark, card skin and hand), so step 02 opens exactly where this one ends. Rest = frame 0:
+   the empty composer with its "+". */
+
+function S0Stage() {
+  const c = S0_CONNECT;
+  return (
+    <div className="lp-step-stage lp-step-stage--s0" aria-hidden="true">
+      <i className="lp-sx-bg" />
+      <p className="lp-s2-claude">
+        <i className="lp-s2-claude-spark">
+          <ClaudeMark />
+        </i>
+        {c.app}
+      </p>
+
+      {/* Claude, once Pancake is connected: one line, then what it can now do */}
+      <p className="lp-s0-said">
+        <i className="lp-s2-answer-spark">
+          <ClaudeMark />
+        </i>
+        {c.connected}
+      </p>
+      {c.can.map((row, k) => (
+        <div key={row.text} className={`lp-s0-can lp-s0-can--${row.tone}`} style={{ top: 160 + 40 * k }}>
+          <i className="lp-s0-can-dot" />
+          <span>{row.text}</span>
+        </div>
+      ))}
+
+      <div className="lp-s2-composer lp-s0-composer">
+        <span className="lp-s2-ph">{c.placeholder}</span>
+        {/* the "+" the hand opens; the Pancake chip takes its place once connected */}
+        <i className="lp-s0-plus">
+          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 3.333v9.334M3.333 8h9.334" strokeWidth="1.33333" strokeLinecap="round" />
+          </svg>
+        </i>
+        <i className="lp-s2-pk lp-s0-pk">
+          <S2PancakeMark className="lp-s2-pk-mark" />
+          <i className="lp-s2-pk-dot" />
+        </i>
+        <i className="lp-s0-ring" />
+        <i className="lp-s2-send">
+          <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 11.5V2.5M3.25 6.25 7 2.5l3.75 3.75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </i>
+      </div>
+
+      {/* the Connectors menu, above the composer (step 02's question-card skin) */}
+      <div className="lp-s0-menu">
+        <p className="lp-s0-menu-head">{c.menu}</p>
+        <div className="lp-s0-menu-row lp-s0-menu-row--pk">
+          <S2PancakeMark className="lp-s0-menu-mark" />
+          <span className="lp-s0-menu-l">{c.pancake}</span>
+          <span className="lp-s0-connect">{c.connect}</span>
+        </div>
+        <i className="lp-s0-menu-rule" />
+        <div className="lp-s0-menu-row lp-s0-menu-row--custom">
+          <i className="lp-s0-menu-plus">
+            <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 3.333v9.334M3.333 8h9.334" strokeWidth="1.33333" strokeLinecap="round" />
+            </svg>
+          </i>
+          <span className="lp-s0-menu-l">{c.custom}</span>
+        </div>
+      </div>
+
+      {/* Pancake's sign-in, opened by the connector */}
+      <div className="lp-s0-signin">
+        <S2PancakeMark className="lp-s0-signin-mark" />
+        <p className="lp-s0-signin-title">{c.signin.title}</p>
+        <p className="lp-s0-signin-sub">{c.signin.sub}</p>
+        <span className="lp-s0-allow">{c.signin.allow}</span>
+      </div>
+
+      <SxHand />
+    </div>
+  );
+}
+
 /* ── step 02 · the chat request → one question → a Play takes shape → the leads, all
    selected and added to the sequence → the Play card ── */
+
+/** the Pancake mark, full colour (lp-pancake-avatar-art.ts, as LpClaudeScene draws it) */
+function S2PancakeMark({ className }: { className: string }) {
+  return (
+    <svg className={className} viewBox={`0 0 ${PANCAKE_AVATAR.size} ${PANCAKE_AVATAR.size}`} focusable="false">
+      {PANCAKE_AVATAR.shapes.map((shape, i) => (
+        <path key={i} d={shape.d} fill={shape.fill} opacity={"opacity" in shape ? shape.opacity : undefined} />
+      ))}
+    </svg>
+  );
+}
 
 function S2Stage({ placeholders }: { placeholders: boolean }) {
   const q = S2_QUESTION;
@@ -179,8 +298,17 @@ function S2Stage({ placeholders }: { placeholders: boolean }) {
     <div className="lp-step-stage lp-step-stage--s2" aria-hidden="true">
       <i className="lp-sx-bg" />
 
-      {/* frames 1–3: the thread scrolls as one; the question card is its next item */}
+      {/* frames 1–3: the thread scrolls as one; the question card is its next item. Since
+          2026-10-21 (the infra-first page, founder: "step 02 starting in Claude") the thread is
+          Claude's, with Pancake connected: its header scrolls away with it when the Play takes
+          shape on Pancake. Geometry unchanged: only the skin and four small marks. */}
       <div className="lp-s2-chat">
+        <p className="lp-s2-claude">
+          <i className="lp-s2-claude-spark">
+            <ClaudeMark />
+          </i>
+          {S2_CHAT.app}
+        </p>
         <p className="lp-s2-bubble">{S2_CHAT.prompt}</p>
         <div className="lp-s2-worked">
           {/* reads the steps of S2_CHAT.working while Pancake works, then this line */}
@@ -188,9 +316,14 @@ function S2Stage({ placeholders }: { placeholders: boolean }) {
           <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M4 7L8 11L12 7" strokeWidth="1.33333" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
+          {/* after the chevron: the timeline takes the row's FIRST svg as its chevron */}
+          <S2PancakeMark className="lp-s2-worked-pk" />
         </div>
         {/* the text writes itself word by word (a clip over the real text) */}
         <p className="lp-s2-answer">
+          <i className="lp-s2-answer-spark">
+            <ClaudeMark />
+          </i>
           <span className="lp-s2-answer-t">{S2_CHAT.answer}</span>
         </p>
 
@@ -235,6 +368,11 @@ function S2Stage({ placeholders }: { placeholders: boolean }) {
         <span className="lp-s2-ph">{S2_CHAT.placeholder}</span>
         <span className="lp-s2-typed">{S2_CHAT.prompt}</span>
         <i className="lp-s2-caret" />
+        {/* the Pancake connector, on */}
+        <i className="lp-s2-pk">
+          <S2PancakeMark className="lp-s2-pk-mark" />
+          <i className="lp-s2-pk-dot" />
+        </i>
         <i className="lp-s2-send">
           <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M7 11.5V2.5M3.25 6.25 7 2.5l3.75 3.75" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -452,10 +590,140 @@ function S3Stage() {
   );
 }
 
+/* ── step 02 (since 2026-10-28, "Ask anything.") · the ask typed in Claude → the Play it becomes →
+   the envelopes Claude sends ──
+   Founder, on the storyboard's Play card: "not sure we should show here the UI but maybe a juicy
+   things showing claude + like plein de petites enveloppes qui partent de claude dans tous les
+   sens dans le carré"; on the first take (Claude's disc and the burst alone): "il fallait remettre
+   la phrase dans claude qui cree le play ici", "genre les enveloppes c est que la fin tu vois";
+   on its disc: "la forme du pancake mais juste en 2d", a bigger logo, no shadow behind. One
+   column on the stage's axis, no app window: the request in a white pill (S4_ASK), a hairline
+   into Claude (the Claude mark, big, on the kit's white pancake face, flat: S4_FACE), a hairline
+   down to the Play (the infra Tools card's Play row: LpInfra PlayIcon, .lp-infra__toggle), and
+   the 18 envelopes of S4_MAIL (lp-step-data.ts): the site's mail icon (AgSuperpowersMocks
+   MailIcon) in the brand's ink on the design kit's coloured pancakes.
+   This markup is the END picture (LpStepAnim REST_IS_END: reduced motion and a page without
+   script show it): the request typed, both hairlines drawn, the Play on, every envelope on its
+   place. buildS4 sets frame 0 (the empty pill and its caret beside Claude) and plays the beats
+   from there. Layers, back to front: the sprite (draws nothing), the hairlines, the envelopes in
+   S4_MAIL's paint order (they leave from under Claude and pass under the pills), the ask, the
+   Play, Claude. */
+
+/** The design kit's pancakes (_design-kit/pancake.html `pancake-top-bordered-1…3`: an imperfect
+    round seen from above, its back layer showing under it as the rim). COPIED from LpInfra.tsx
+    PK_SHAPES, never imported (that section is its own module): keep the copies in step. */
+const S4_PK = [
+  {
+    back: "M25.9381 48C33.3476 48 39.2723 42.626 43.3305 37.1936C46.1161 33.4647 47.7671 28.7568 47.8098 23.4826C47.9152 10.471 37.572 -4.71682e-06 24.9517 -4.71682e-06C12.3313 -4.71682e-06 1.5995 9.21835 0.284057 23.4826C-0.514219 32.1381 3.48143 36.8362 7.99137 40.6918C12.4705 44.521 19.7118 48 25.9381 48Z",
+    front: "M25.8574 44C32.9581 44 38.6359 39.0738 42.5251 34.0941C45.1946 30.676 46.7768 26.3604 46.8178 21.5257C46.9187 9.59842 37.0065 -6.85743e-06 24.912 -6.85743e-06C12.8175 -6.85743e-06 2.53285 8.45015 1.27222 21.5257C0.507207 29.4599 4.33637 33.7665 8.65839 37.3008C12.9509 40.8109 19.8905 44 25.8574 44Z",
+  },
+  {
+    back: "M23.3576 48C30.7788 48 39.2585 41.6636 43.3231 36.3538C46.1131 32.7091 47.7668 28.1075 47.8095 22.9524C47.9151 10.2346 37.5556 -4.71143e-06 24.9153 -4.71143e-06C19.1438 -4.71143e-06 13.8375 2.50121 9.57236 5.86992C4.4964 9.87906 0.208705 14.46 0.208705 22.9524C0.208746 36.6853 11.325 48 23.3576 48Z",
+    front: "M23.3844 44C30.4964 44 38.6227 38.1916 42.518 33.3243C45.1918 29.9834 46.7765 25.7652 46.8175 21.0397C46.9186 9.38169 36.9908 -9.22488e-06 24.8772 -9.22488e-06C19.3461 -9.22488e-06 14.2609 2.29277 10.1735 5.38075C5.30905 9.0558 1.20001 13.255 1.20001 21.0397C1.20005 33.6282 11.8532 44 23.3844 44Z",
+  },
+  {
+    back: "M22.1484 46.4163C26.967 46.4163 34.482 46.5516 39.1488 42.9163C44.8494 38.4758 47.7422 31.2041 47.7958 24.7072C47.9013 11.9254 38.4073 1.68428e-05 25.7706 1.68428e-05C20.0007 1.68428e-05 13.4127 1.53069 9.1488 4.91634C4.07427 8.94565 0.20837 14.2913 0.20837 22.8264C0.208411 36.6284 7.5672 46.4163 22.1484 46.4163Z",
+    front: "M22.2261 42.5483C26.8439 42.5483 34.0458 42.6723 38.5181 39.34C43.9812 35.2696 46.7534 28.6038 46.8048 22.6483C46.9059 10.9317 37.8075 5.16207e-05 25.6973 5.16207e-05C20.1679 5.16207e-05 13.8544 1.40317 9.76813 4.50668C4.90504 8.20022 1.20022 13.1004 1.20022 20.9243C1.20026 33.5761 8.25243 42.5483 22.2261 42.5483Z",
+  },
+] as const;
+
+/** Claude's white pancake: the kit's face alone (pancake-top-bordered-1's front, S4_PK[0]), flat
+    (no rim), its view box cropped to the face's bounds (getBBox: 1.174, 0, 45.644 × 44), so the
+    face fills its box (steps.css .lp-s4-disc) */
+const S4_FACE = { viewBox: "1.174 0 45.644 44", d: S4_PK[0].front } as const;
+
+function S4Stage() {
+  return (
+    <div className="lp-step-stage lp-step-stage--s4" aria-hidden="true">
+      {/* drawn once, used by every envelope: the three pancakes (rim, then face, in the
+          envelope's tone) and the mail icon, 0.6 of the pancake on its face's centre (24, 22) */}
+      <svg className="lp-s4-sprite" focusable="false">
+        {S4_PK.map((shape, k) => (
+          <symbol key={k} id={`lp-s4-pk-${k + 1}`} viewBox="0 0 48 48">
+            <path d={shape.back} fill="var(--lp-s4-rim)" />
+            <path d={shape.front} fill="var(--lp-s4-face)" />
+          </symbol>
+        ))}
+        <symbol id="lp-s4-env" viewBox="0 0 48 48">
+          <g
+            transform="translate(9.6 7.6) scale(1.2)"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="3" y="5" width="18" height="14" rx="3" />
+            <path d="M3 8l9 6 9-6" />
+          </g>
+        </symbol>
+      </svg>
+
+      {/* the hairlines (the infra wire's): the ask into Claude, Claude down to the Play */}
+      <i className="lp-s4-wire lp-s4-wire--ask" />
+      <i className="lp-s4-wire lp-s4-wire--play" />
+
+      {/* the burst: each envelope on its place at its tilt (--r, degrees; steps.css turns it) */}
+      {S4_MAIL.map((m, i) => (
+        <i
+          key={i}
+          className="lp-s4-mail"
+          data-tone={m.tone}
+          style={
+            {
+              left: m.x - m.size / 2,
+              top: m.y - m.size / 2,
+              width: m.size,
+              height: m.size,
+              "--r": m.tilt,
+            } as CSSProperties
+          }
+        >
+          <svg viewBox="0 0 48 48" focusable="false">
+            <use href={`#lp-s4-pk-${m.shape}`} />
+            <use href="#lp-s4-env" />
+          </svg>
+        </i>
+      ))}
+
+      {/* the ask, typed in Claude: the real text, revealed by a clip (never one span per glyph) */}
+      <div className="lp-s4-pill lp-s4-ask">
+        <span className="lp-s4-text">{S4_ASK.request}</span>
+        <i className="lp-s4-caret" />
+      </div>
+
+      {/* the Play it becomes, switched on */}
+      <div className="lp-s4-pill lp-s4-play">
+        <i className="lp-s4-play-icon">
+          <svg viewBox="0 0 16 16" focusable="false">
+            <path d="M5.5 3.8v8.4L12 8z" />
+          </svg>
+        </i>
+        <span className="lp-s4-play-name">{S4_ASK.play}</span>
+        <i className="lp-s4-toggle">
+          <i className="lp-s4-knob" />
+        </i>
+      </div>
+
+      {/* Claude, over everything: the envelopes leave from under its face */}
+      <span className="lp-s4-disc">
+        <svg viewBox={S4_FACE.viewBox} focusable="false">
+          <path d={S4_FACE.d} />
+        </svg>
+        <i className="lp-s4-claude">
+          <ClaudeMark />
+        </i>
+      </span>
+    </div>
+  );
+}
+
 const STAGES: Record<StepVariant, (props: { placeholders: boolean }) => JSX.Element> = {
+  s0: S0Stage,
   s1: S1Stage,
   s2: S2Stage,
   s3: S3Stage,
+  s4: S4Stage,
 };
 
 /** `placeholders`: lib/placeholders SHOW_PLACEHOLDERS, decided by the server component
