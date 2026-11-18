@@ -43,7 +43,7 @@ const config: GtmComparisonConfig = {
   pancakeBody: "Deploy any GTM play from Claude, ChatGPT or Codex. Say who to reach, and Pancake builds the Play. Every lead is checked against your ICP and gets a personal message in your voice, sent from your own account.",
   pancakeChoose: "Choose it when you want a public price and a first search today.",
   verdictTitle: "11x covers every channel. Pancake builds the Play.",
-  verdictLede: "11x is the broader system for revenue teams with inbound volume, customers to expand and a CRM. Pancake fits founders and small teams who want to say who to reach and start today, at a price on the page.",
+  verdictLede: "11x is the broader system for revenue teams with inbound volume, customers to expand and a CRM. Pancake fits B2B teams with a GTM engineer who want to say who to reach and start today, at a price on the page.",
   competitorBestFit: "11x is the better fit when a revenue team wants agents on voice, chat, email, social, SMS and WhatsApp, for inbound qualification, outbound and account expansion, connected to its CRM.",
   differencesLede: "Both run outbound for you. They differ in scope, in channels and in how you buy.",
   differences: [
@@ -87,7 +87,7 @@ const config: GtmComparisonConfig = {
     { feature: "Data", competitor: { text: "A company and lead database, with funding, hiring and tech stack signals", mark: "yes" }, pancake: { text: "50+ data providers; every lead checked against your ICP", mark: "yes" } },
     { feature: "CRM", competitor: { text: "Salesforce, HubSpot and Pipedrive integrations", mark: "yes" }, pancake: { text: "A one-way lead export to HubSpot, Attio, Pipedrive and others" } },
     { feature: "Getting started", competitor: { text: "Book a demo" }, pancake: { text: "7-day free trial with 30,000 credits, card required", mark: "yes" } },
-    { feature: "Best for", competitor: { text: "Revenue teams with inbound volume, reps and a CRM" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
+    { feature: "Best for", competitor: { text: "Revenue teams with inbound volume, reps and a CRM" }, pancake: { text: "B2B teams with a GTM engineer" } },
   ],
   closingTitle: "Start with one sentence.",
   closingLede: "Tell Pancake who to reach. It builds the Play, finds the people who fit and writes to them.",

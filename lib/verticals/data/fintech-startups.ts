@@ -16,7 +16,7 @@ export const fintechStartups: VerticalConfig = {
   name: {
     plural: "fintech startups",
     title: "Fintech startups",
-    short: "fintech founders",
+    short: "fintech teams",
     badge: "For fintech startups",
   },
 

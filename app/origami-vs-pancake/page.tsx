@@ -47,7 +47,7 @@ const config: GtmComparisonConfig = {
   pancakeBody: "A GTM platform that goes from who you want to reach to the first conversation. Every lead arrives with one line on why they fit. Pancake writes each one a personal message from that reason, in your voice.",
   pancakeChoose: "Choose it when you want Plays that keep searching and start the conversation.",
   verdictTitle: "Origami builds the list. Pancake keeps the search running.",
-  verdictLede: "Origami is strong at live-web research, contact data, and content. Pancake is built for founders who want new leads found for them and conversations started from their own account.",
+  verdictLede: "Origami is strong at live-web research, contact data, and content. Pancake is built for B2B teams with a GTM engineer who want new leads found for them and conversations started from their own account.",
   competitorBestFit: "Origami is the better fit when your team wants natural-language live-web research, prospect lists with verified contact data, email and social sequences, and drafted posts.",
   differencesLede: "Both products read the market and bill in credits. They differ in what a search leaves you with.",
   differences: [
@@ -90,7 +90,7 @@ const config: GtmComparisonConfig = {
     { feature: "Outbound", competitor: { text: "Included multichannel sequencer", mark: "yes" }, pancake: { text: "A personal message for every lead, from your own account", mark: "yes" } },
     { feature: "Shared GTM Brain", competitor: { text: "Research and workflow context" }, pancake: { text: "Built from your website; every Play starts from it", mark: "yes" } },
     { feature: "Public starting price", competitor: { text: "$49/month, 4,000 credits", mark: "yes" }, pancake: { text: "$99/month, 60,000 credits", mark: "yes" } },
-    { feature: "Best for", competitor: { text: "Teams that want live-web lists, contact data, and content" }, pancake: { text: "Founders who want leads and conversations, not lists" } },
+    { feature: "Best for", competitor: { text: "Teams that want live-web lists, contact data, and content" }, pancake: { text: "B2B teams with a GTM engineer who want leads, not lists" } },
   ],
   closingTitle: "Let Pancake find your next leads.",
   closingLede: "Tell Pancake who you want to reach. It builds a Play to find them, and every lead arrives with why they fit.",

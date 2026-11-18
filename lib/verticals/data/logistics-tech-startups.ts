@@ -16,7 +16,7 @@ export const logisticsTechStartups: VerticalConfig = {
   name: {
     plural: "logistics tech startups",
     title: "Logistics tech startups",
-    short: "logistics founders",
+    short: "logistics tech teams",
     badge: "For logistics startups",
   },
 

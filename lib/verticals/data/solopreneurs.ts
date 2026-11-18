@@ -8,7 +8,7 @@ import type { VerticalConfig } from "../types";
 export const solopreneurs: VerticalConfig = {
   slug: "solopreneurs",
   status: "approved",
-  category: "Startups & solo founders",
+  category: "Startups",
   evidence: "paying",
   updated: "2026-10-07",
 

@@ -17,7 +17,7 @@ export const legalTechStartups: VerticalConfig = {
   name: {
     plural: "legal tech startups",
     title: "Legal tech startups",
-    short: "legal tech founders",
+    short: "legal tech teams",
     badge: "For legal tech startups",
   },
 

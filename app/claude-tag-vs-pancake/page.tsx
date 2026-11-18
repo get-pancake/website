@@ -51,7 +51,7 @@ const config: GtmComparisonConfig = {
     { feature: "Breadth", competitor: { text: "Engineering, support, analytics, research, and more", mark: "yes" }, pancake: { text: "Focused on GTM" } },
     { feature: "Outbound system", competitor: { text: "Can complete delegated workflows" }, pancake: { text: "A warm-up, then up to three messages under your name", mark: "yes" } },
     { feature: "Availability", competitor: { text: "Beta for eligible Enterprise and Team customers" }, pancake: { text: "From $99/month per workspace, 7-day free trial", mark: "yes" } },
-    { feature: "Best for", competitor: { text: "Teams that want Claude across many jobs" }, pancake: { text: "Small B2B companies that need pipeline" } },
+    { feature: "Best for", competitor: { text: "Teams that want Claude across many jobs" }, pancake: { text: "B2B teams with a GTM engineer" } },
   ],
   closingTitle: "Give your go-to-market its own Plays.",
   closingLede: "Tell Pancake who you want to reach. It builds a Play to find them, and every lead arrives with why they fit.",

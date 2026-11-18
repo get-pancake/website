@@ -112,7 +112,7 @@ const COST: Qa = {
 
 const WHO: Qa = {
   q: "Who is it for?",
-  a: "Founders who do their own sales, small B2B teams, agencies and GTM engineers. If you already work in Claude, start there.",
+  a: "B2B teams with a GTM engineer. If yours already works in Claude, start there.",
 };
 
 const FIRST_SEARCH = FINAL.title;
@@ -384,7 +384,7 @@ export const SEARCH_LANDINGS: Record<SearchLandingId, SearchLandingCopy> = {
       COST,
       {
         q: WHO.q,
-        a: "Founders who do their own sales, small B2B teams, agencies and GTM engineers. If you already work in ChatGPT, start there.",
+        a: "B2B teams with a GTM engineer. If yours already works in ChatGPT, start there.",
       },
     ],
     final: {

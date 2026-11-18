@@ -8,7 +8,7 @@ export const COMPARE_HUB = {
   h1: "Pancake compared.",
   // 2026-11-17: the pages argue for Pancake and no longer end on a "Best fit" card for the other
   // product (GtmComparisonPage.tsx); each Sources line still links the vendor's own pages.
-  lede: "Pancake next to the GTM tools founders weigh it against. Every fact comes from each product’s public pages.",
+  lede: "Pancake next to the GTM tools teams weigh it against. Every fact comes from each product’s public pages.",
 };
 
 /** The blog's GTM "<tool> alternatives" guides, as Related-style rows (name + line from the post's own title). */
@@ -49,7 +49,7 @@ export const COMPARE_SWITCH = {
   h2: (competitor: string) => `Why teams pick Pancake over ${competitor}`,
   /** An AI agent's page (Claude Tag, Viktor, OpenClaw, Paperclip): what a founder runs Pancake
    *  from, not a competitor (compare-data.ts), so its head names no rival. */
-  h2Agent: "Why founders run GTM on Pancake",
+  h2Agent: "Why GTM teams run on Pancake",
   stepsEyebrow: "How it works",
 };
 

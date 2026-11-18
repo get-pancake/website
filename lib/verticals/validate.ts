@@ -9,7 +9,7 @@ import * as FIXED from "@/components/sections/verticals/vx-copy";
 const KINDS: SignalKind[] = ["keyword", "competitor", "influencer", "own_brand", "hiring", "stack"];
 const CATEGORIES = [
   "Sales, GTM & recruiting", "Marketing & creative agencies", "Tech & build agencies", "Consultants & advisors",
-  "IT, cloud & security", "Startups & solo founders", "Vertical software", "Energy & industry",
+  "IT, cloud & security", "Startups", "Vertical software", "Energy & industry",
 ];
 
 /** Positive claims the product cannot back (critic §3.1, product-truth §4.2, founder bans). */

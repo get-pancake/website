@@ -34,7 +34,7 @@ const WAYS_BACK = [
   { name: "Pricing", href: "/pricing", line: "From $99 a month per workspace." },
   { name: "Industries", href: "/for", line: "Pancake for your industry, with example Plays." },
   { name: "Example Plays", href: PLAYS_PATH, line: "Start from an example, or write your own." },
-  { name: "Blog", href: "/blog", line: "Guides and comparisons for founders who sell." },
+  { name: "Blog", href: "/blog", line: "Guides and comparisons for GTM teams." },
   { name: "Support", href: SUPPORT_PATH, line: "Questions about your account, billing or a connection." },
 ] as const;
 
