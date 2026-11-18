@@ -364,7 +364,7 @@ export function GtmComparisonPage({ config }: { config: GtmComparisonConfig }) {
 
       <section className="vx-sec vx-faq-sec" aria-labelledby="cmp-faq-title">
         <div className="vx-col">
-          <VxHead id="cmp-faq-title" eyebrow="FAQ" title="Questions founders ask" />
+          <VxHead id="cmp-faq-title" eyebrow="FAQ" title="Questions GTM teams ask" />
           <div className="vx-faq">
             {faqs.map((f) => (
               <details key={f.q} className="vx-qa">

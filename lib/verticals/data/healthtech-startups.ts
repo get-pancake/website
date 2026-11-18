@@ -20,7 +20,7 @@ export const healthtechStartups: VerticalConfig = {
   name: {
     plural: "healthtech startups",
     title: "Healthtech startups",
-    short: "healthtech founders",
+    short: "healthtech teams",
     badge: "For healthtech startups",
   },
 

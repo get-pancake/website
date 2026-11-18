@@ -89,7 +89,7 @@ const config: GtmComparisonConfig = {
     { feature: "AI agents", competitor: { text: "Connects to ChatGPT; Claude listed as coming soon" }, pancake: { text: "Claude, Claude Code, ChatGPT and Codex, with a browser sign-in", mark: "yes" } },
     { feature: "Pricing", competitor: { text: "Outreach from $47 a month; lead credits from $47 a month" }, pancake: { text: "From $99 a month per workspace, whole team included", mark: "yes" } },
     { feature: "Free trial", competitor: { text: "Free to start, no card", mark: "yes" }, pancake: { text: "7-day free trial with 30,000 credits, card required", mark: "yes" } },
-    { feature: "Best for", competitor: { text: "Teams and agencies running cold email at volume" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
+    { feature: "Best for", competitor: { text: "Teams and agencies running cold email at volume" }, pancake: { text: "B2B teams with a GTM engineer" } },
   ],
   closingTitle: "Skip the mailboxes. Say who to reach.",
   closingLede: "Tell Pancake who to reach. It builds the Play and writes each lead a personal message from your own account.",

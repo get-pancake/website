@@ -92,7 +92,7 @@ const config: GtmComparisonConfig = {
     { feature: "AI agents", competitor: { text: "MCP server, CLI and API", mark: "yes" }, pancake: { text: "Claude, Claude Code, ChatGPT and Codex, with a browser sign-in", mark: "yes" } },
     { feature: "Pricing", competitor: { text: "$79 a month per sender; $999 for 25 senders; $2,999 unlimited" }, pancake: { text: "From $99 a month per workspace; extra sending accounts $39 a month" } },
     { feature: "Free trial", competitor: { text: "Free to try, no card", mark: "yes" }, pancake: { text: "7-day free trial with 30,000 credits, card required", mark: "yes" } },
-    { feature: "Best for", competitor: { text: "Agencies and sales teams with many senders and their own lists" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
+    { feature: "Best for", competitor: { text: "Agencies and sales teams with many senders and their own lists" }, pancake: { text: "B2B teams with a GTM engineer" } },
   ],
   closingTitle: "Say who to reach. Pancake finds them.",
   closingLede: "Tell Pancake who to reach. It builds the Play, checks every lead against your ICP and writes to the people who fit.",

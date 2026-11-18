@@ -8,7 +8,7 @@ import { SITE_ORIGIN } from "@/lib/site-config.mjs";
 export const BLOG_TITLE = "The Pancake blog";
 
 export const BLOG_DESCRIPTION =
-  "Guides and tool comparisons for founders who sell: buying signals, warm leads, outreach and the AI tools that run go-to-market.";
+  "Guides and tool comparisons for GTM teams: buying signals, warm leads, outreach and the AI tools that run go-to-market.";
 
 /** RSS 2.0 feed of every post, linked from <head> via `alternates.types`. */
 export const BLOG_FEED_URL = `${SITE_ORIGIN}/blog/rss.xml`;

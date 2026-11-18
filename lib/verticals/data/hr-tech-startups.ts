@@ -17,7 +17,7 @@ export const hrTechStartups: VerticalConfig = {
   name: {
     plural: "HR tech startups",
     title: "HR tech startups",
-    short: "HR tech founders",
+    short: "HR tech teams",
     badge: "For HR tech startups",
   },
 

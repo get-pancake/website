@@ -90,7 +90,7 @@ const config: GtmComparisonConfig = {
     { feature: "Agencies", competitor: { text: "Client workspaces, with a whitelabel add-on", mark: "yes" }, pancake: { text: "One workspace per company" } },
     { feature: "Pricing", competitor: { text: "$39, $94, $174 or $379 a month, sized by emails sent" }, pancake: { text: "From $99 a month per workspace, whole team included", mark: "yes" } },
     { feature: "Free trial", competitor: { text: "Free trial, no card", mark: "yes" }, pancake: { text: "7-day free trial with 30,000 credits, card required", mark: "yes" } },
-    { feature: "Best for", competitor: { text: "Teams and agencies sending cold email at volume" }, pancake: { text: "Founders who do their own sales, and small B2B teams" } },
+    { feature: "Best for", competitor: { text: "Teams and agencies sending cold email at volume" }, pancake: { text: "B2B teams with a GTM engineer" } },
   ],
   closingTitle: "No warmup. No DNS. One sentence.",
   closingLede: "Tell Pancake who to reach. It builds the Play and writes each lead a personal message from your own account.",

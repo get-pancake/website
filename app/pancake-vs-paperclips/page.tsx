@@ -30,7 +30,7 @@ const config: GtmComparisonConfig = {
   pancakeBody: "A managed GTM platform. Pancake builds the Brain from your website, finds leads with a reason on each one, and starts the conversations from your own account.",
   pancakeChoose: "Choose it when you want GTM work completed without building the org chart.",
   verdictTitle: "Choose Paperclip to orchestrate agents. Choose Pancake to bring customers.",
-  verdictLede: "Paperclip is broad infrastructure for a developer-operated AI company. Pancake is a GTM platform built for one job: bringing a small company its customers.",
+  verdictLede: "Paperclip is broad infrastructure for a developer-operated AI company. Pancake is a GTM platform built for one job: bringing a B2B team its customers.",
   competitorBestFit: "Paperclip is the stronger fit for developers who want to self-host a multi-agent organization, choose agent adapters, define a hierarchy, control budgets, and apply the system across functions beyond GTM.",
   differencesLede: "Both run recurring work, but the buyer assembles Paperclip while Pancake arrives with the GTM function assembled.",
   differences: [

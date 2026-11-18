@@ -10,14 +10,14 @@ import type { VerticalConfig } from "../types";
 export const aiStartups: VerticalConfig = {
   slug: "ai-startups",
   status: "approved",
-  category: "Startups & solo founders",
+  category: "Startups",
   evidence: "paying",
   updated: "2026-10-07",
 
   name: {
     plural: "AI startups",
     title: "AI startups",
-    short: "AI founders",
+    short: "AI startup teams",
     badge: "For AI startups",
   },
 
