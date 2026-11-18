@@ -29,7 +29,7 @@ export function CrmSetupGuide({ provider }: { provider: "attio" | "hubspot" }) {
 
           <h2>Before you start</h2>
           <ul>
-            <li>A Pancake workspace with the {name} integration enabled. CRM connections are currently in a limited pilot. If you cannot see {name} in Integrations, contact <a href={SUPPORT_EMAIL_URL}>{SUPPORT_EMAIL}</a>.</li>
+            <li>A Pancake workspace. {name} is available to every workspace in Settings → Integrations.</li>
             <li>{isAttio ? "An Attio workspace administrator who can approve the connection." : "A HubSpot account and a user allowed to install apps and access contacts. Ask a HubSpot Super Admin if you need help with permissions."}</li>
             <li>A lead in a Pancake Play, with an email or a LinkedIn profile mapped to a suitable {name} field.</li>
           </ul>
@@ -81,7 +81,7 @@ export function CrmSetupGuide({ provider }: { provider: "attio" | "hubspot" }) {
           <h2>3. Export selected leads</h2>
           <ol>
             <li>Open a Play’s Leads page and select the leads to send.</li>
-            <li>Use Send to… in the selected-leads toolbar, choose {name}, and review the number of leads in the preview before confirming.</li>
+            <li>In the selected-leads toolbar, select Send to {name} (Send to… when several CRMs are connected, then choose {name}), and review the number of leads in the preview before confirming.</li>
             <li>Follow the export results. You can leave the page while Pancake processes the export.</li>
             <li>Open a successful result’s record link to see the person or contact in {name}.</li>
           </ol>
@@ -120,11 +120,15 @@ export function CrmSetupGuide({ provider }: { provider: "attio" | "hubspot" }) {
             This removes the stored connection for this Pancake workspace and stops new exports through it.
             Records already created in {name} remain there; a request already in progress may still complete.
           </p>
-          <p>
-            {isAttio
-              ? "To remove the app’s authorization in Attio, an administrator can uninstall Pancake from the workspace’s connected apps. This can affect other Pancake workspaces using that authorization."
-              : "Disconnecting in Pancake does not uninstall the app from the whole HubSpot account. To revoke it account-wide, a HubSpot administrator can open Settings → Integrations → Connected Apps, choose Pancake and uninstall it. This affects every Pancake workspace connected through that installation. Existing HubSpot records remain."}
-          </p>
+          {isAttio ? (
+            <p>To remove the app’s authorization in Attio, an administrator can uninstall Pancake from the workspace’s connected apps. This can affect other Pancake workspaces using that authorization.</p>
+          ) : (
+            <p>
+              Disconnecting in Pancake does not uninstall the app from the whole HubSpot account. To revoke it account-wide, a HubSpot administrator can open Settings → Integrations → Connected Apps, choose Pancake and uninstall it, as described in{" "}
+              <a href="https://knowledge.hubspot.com/integrations/connect-apps-to-hubspot#uninstall-an-app">HubSpot’s guide to uninstalling an app</a>.
+              This affects every Pancake workspace connected through that installation. Existing HubSpot records remain.
+            </p>
+          )}
           <p>Reconnect from Integrations when you want to resume exporting. Review the account and mapping before the next export.</p>
 
           <h2>Get help</h2>

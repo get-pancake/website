@@ -76,8 +76,7 @@ export default function SupportPage() {
           <p>
             Follow the <Link href="/support/attio">Attio setup guide</Link> or the{" "}
             <Link href="/support/hubspot">HubSpot setup guide</Link> to connect your account,
-            map fields, export selected leads and remove access. CRM connections are currently
-            available to enabled pilot workspaces; contact us if you do not see your integration.
+            map fields, export selected leads and remove access.
           </p>
 
           <h2>ChatGPT, Codex, and Claude</h2>
