@@ -29,9 +29,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { mountWindowGrow } from "./lp-demo-scroll";
 import { LP_VIDEO } from "./lp-video-data";
+import { DEMO_VIDEO_PERCENTS, pushAcquisitionEvent, type DemoVideoPercent } from "@/lib/analytics/data-layer";
 
 /** Phones play the light file, full screen: the width under which video.css draws the card 3:2. */
 const PHONE_QUERY = "(max-width: 767px)";
+
+/** The id the watch events carry: the film's file name without .mp4 (a new cut gets a new name). */
+const VIDEO_ID = (LP_VIDEO.src.split("/").pop() ?? "").replace(/\.mp4$/, "");
 
 /** The poster's widths on screen (video.css): phones, tablets, desktop. */
 const POSTER_SIZES = "(max-width: 767px) calc(100vw - 32px), (max-width: 1024px) calc(100vw - 96px), 1136px";
@@ -52,6 +56,42 @@ export function LpVideo({ grow = true, className }: { grow?: boolean; className?
   const [playing, setPlaying] = useState(false);
   /** the film had the focus when it stopped: the poster button takes it back */
   const refocus = useRef(false);
+  /** Watch milestones already reported in this page load (founder 2026-11-11: measure plays and
+   *  watch-through, to compare the visitors who watch the film with the ones who sign up). */
+  const reported = useRef(new Set<string>());
+
+  const report = useCallback((milestone: "started" | "completed" | DemoVideoPercent) => {
+    const key = String(milestone);
+    if (reported.current.has(key)) return;
+    reported.current.add(key);
+    if (milestone === "started") pushAcquisitionEvent("demo_video_started", { video_id: VIDEO_ID });
+    else if (milestone === "completed") pushAcquisitionEvent("demo_video_completed", { video_id: VIDEO_ID });
+    else pushAcquisitionEvent("demo_video_progress", { video_id: VIDEO_ID, percent: milestone });
+  }, []);
+
+  // Watch tracking on the film itself: its first play, then 25 / 50 / 75 % of its length (a seek
+  // past a mark counts, as in GA4's own video measurement), then its end. Each milestone is
+  // reported at most once per page load, so a replay after the end adds nothing.
+  useEffect(() => {
+    const film = filmRef.current;
+    if (!film) return;
+    const onPlay = () => report("started");
+    const onTime = () => {
+      const length = film.duration;
+      if (!Number.isFinite(length) || length <= 0) return;
+      const share = (film.currentTime / length) * 100;
+      for (const percent of DEMO_VIDEO_PERCENTS) if (share >= percent) report(percent);
+    };
+    const onEnd = () => report("completed");
+    film.addEventListener("play", onPlay);
+    film.addEventListener("timeupdate", onTime);
+    film.addEventListener("ended", onEnd);
+    return () => {
+      film.removeEventListener("play", onPlay);
+      film.removeEventListener("timeupdate", onTime);
+      film.removeEventListener("ended", onEnd);
+    };
+  }, [report]);
 
   useEffect(() => {
     const section = sectionRef.current;
