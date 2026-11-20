@@ -1,0 +1,128 @@
+---
+title: "Claude for RevOps: 8 CRM Jobs, the Connectors and the Guardrails"
+seo_title: "Claude for RevOps: CRM Jobs, Connectors and Guardrails"
+description: "Claude for RevOps: 8 CRM jobs it runs today, from dedupes to pipeline summaries, which HubSpot, Salesforce and Attio connectors write, and the guardrails."
+date: "2027-01-25"
+last_updated: "2027-01-25"
+related:
+  - "gtm-engineering-stack"
+  - "mcp-for-sales"
+  - "gtm-engineer"
+faq:
+  - question: "Can Claude update HubSpot records?"
+    answer: "Yes. As of November 2026, HubSpot's connector for Claude reads, creates and updates contacts, companies, deals, tickets and custom objects, and logs notes and tasks. It can't delete, and bulk changes go 10 records at a time. It needs a paid Claude plan, a Super Admin approves it before other users can connect, and HubSpot recommends setting its write tools to Needs approval."
+  - question: "Does Claude connect to Salesforce?"
+    answer: "Yes, in two ways as of November 2026. Salesforce's hosted MCP servers work with Claude: sobject-reads can only read, while sobject-all reads, writes and deletes. Claude's directory also lists a beta connector made by Salesforce. Either way, Claude acts with the permissions of the person who signed in, and each hosted server stays off until an admin turns it on."
+  - question: "Can I use Claude as a CRM?"
+    answer: "No. Claude keeps no records of its own: its memory carries working context between chats, not a history of accounts, deals and field changes. Run it on top of your CRM through a connector instead. The CRM stays the system of record, and Claude reads and writes there with the permissions of whoever connected it."
+  - question: "Can a RevOps AI agent clean the CRM on a schedule?"
+    answer: "It can report on a schedule; the cleanup is safer supervised. On paid Claude plans, a Cowork scheduled task reruns an audit at the cadence you set, in the cloud, using your connectors. Keep its write tools on ask-first or blocked: a run that reaches an ask-first tool may wait for an answer or finish without it. Apply fixes in a chat someone is watching."
+  - question: "Is it safe to give Claude write access to our CRM?"
+    answer: "It can be, if the limits live outside the chat. Claude acts with the signed-in user's CRM permissions, and on Team and Enterprise plans an owner can set each connector tool to Always allow, Needs approval or Blocked for the whole organization. Start read-only, test fixes on a few records, and avoid connectors that run on one shared API key."
+---
+
+**TL;DR:** Claude for RevOps works today as a read-first analyst on your CRM. It finds duplicates, blank required fields and stalled deals, replays routing rules against last month's leads, checks accounts against a written ICP and drafts the pipeline summary. HubSpot, Salesforce and Attio each publish a connector that can write, so start read-only, try each fix on one record and then ten, and keep write tools on approval. Claude has no fresh data on people outside your CRM, no way to reach them, and no knowledge of your rules beyond what you write down.
+
+AI for RevOps splits into two kinds of work: reading and judging records, which Claude does well, and writing changes back, which needs permissions, a sample and a person who signs off. If data quality sits between RevOps and a [GTM engineer](/blog/gtm-engineer) at your company, this is for whichever of you owns the CRM.
+
+---
+
+## Claude for RevOps: eight jobs and the connector each needs
+
+Claude is strongest where the job is to read records, compare them with a rule and explain the gap.
+
+| RevOps job | What Claude does | Connector needed | Risk to watch |
+|---|---|---|---|
+| Duplicates | Pairs records by domain, email and cleaned-up name, and picks a survivor with a reason | CRM, read; a merge tool to act on it | The wrong survivor, whose values win the merge |
+| Missing fields | Lists open records missing what their stage requires, grouped by owner | CRM, read | Blanks filled with plausible guesses |
+| Stale stages | Flags deals with no logged activity in 21 days or a close date in the past | CRM with engagement history | Calls and emails nobody logged |
+| Enrichment | Fills firmographics from a provider and flags conflicts with CRM values | CRM plus a data provider's connector | A rep's correct value overwritten; credits per lookup |
+| Routing rules | Replays last month's leads against your written rules and lists mismatches | CRM, read | Mistaking the audit for the router |
+| Pipeline and forecast summary | Rolls up open pipeline by stage and owner, and lists deals past their close date | CRM, read | Totals that don't tie to the CRM's own report |
+| ICP-fit check | Labels accounts fit, partial or no fit against your written ICP, with the evidence | CRM, read, plus web search | An ICP that lives in someone's head |
+| Data-quality report | Reruns the audit and reports duplicates, blanks and stale deals by owner | CRM, read, plus a scheduled task | A scheduled run with write tools allowed |
+
+Two rows carry a caveat. Routing: Claude checks your rules after the fact, while the CRM's own assignment rules keep routing leads as they arrive. Enrichment: Claude has no company or contact data of its own, so it fills fields only from a connected provider; our guide to [lead enrichment](/blog/lead-enrichment) covers providers, waterfalls and what each lookup costs.
+
+Aim each job at a segment, such as open deals or companies created this year, rather than the whole database. For a full-table dedupe, work from an export.
+
+---
+
+## Which CRMs connect to Claude, and what each connector can change
+
+HubSpot, Salesforce and Attio all run official MCP servers that Claude can use, and all three can change records. We checked each vendor's own pages in November 2026; tool lists change, so recheck yours before you rely on a write. For how the protocol works, see [MCP for sales teams](/blog/mcp-for-sales).
+
+- **HubSpot.** [HubSpot's connector for Claude](https://knowledge.hubspot.com/integrations/set-up-and-use-the-hubspot-connector-for-claude) reads, creates and updates contacts, companies, deals, tickets and custom objects, and logs calls, notes and tasks. It doesn't delete. Bulk writes go 10 records at a time, and your pipeline stage validation rules still apply to them. It needs a paid Claude plan, and a Super Admin decides which data it can reach.
+- **Salesforce.** Salesforce hosts its own MCP servers, and [its FAQ](https://github.com/forcedotcom/mcp-hosted/wiki/FAQ) lists Claude among the supported clients. `sobject-reads` can only read; `sobject-all` reads, writes and deletes. Each server stays off until an admin turns it on, and the agent gets exactly the permissions of the person who signed in. Claude's directory also lists a [Salesforce connector built on Headless 360](https://claude.com/connectors/salesforce-headless-360), marked beta.
+- **Attio.** [Attio's MCP server](https://docs.attio.com/mcp/overview) searches, creates and updates records, upserts on a matching email or domain, and merges two duplicates into one, with the primary record's values winning. It has no tool that deletes a record. Reads run without asking; writes ask for confirmation. It also runs grouped reports, plus read-only SQL on some plans.
+
+Any other CRM that runs a remote MCP server can be added as a custom connector. Read its tool list first: names like `update`, `upsert` or `merge` mean it writes.
+
+---
+
+## A read-only audit to run on Monday
+
+Start with a pass that changes nothing: it shows how messy the data is, and how far Claude's answers hold up.
+
+1. **Write the rulebook into a Claude Project.** Claude knows your stage definitions, routing order and ICP only if they sit in its instructions:
+
+```text
+You support RevOps at [company]. Our CRM is [HubSpot / Salesforce / Attio].
+Stages: [stage name: exit criterion, one line each].
+Required fields: [stage name: fields that must be filled to enter it].
+Routing: [rules in the order they fire; round-robin pools; owner of last resort].
+ICP: [industry, headcount band, region, buyer title]. Never a fit: [disqualifiers].
+Read whatever you need. Before any create, update or merge, show a table of record link, field, current value, new value and reason, then wait for "go".
+Never fill a field by guessing. Write "unknown" and name the source that would settle it.
+```
+
+2. **Connect the CRM with write tools on Needs approval or Blocked.** HubSpot's own guide recommends Needs approval for its write tools.
+3. **Run the audit:**
+
+```text
+Read only. Change nothing.
+1. Duplicate companies: same domain, or names that match once "Inc", "Ltd" and punctuation are removed. Pair them, pick the record to keep, say why.
+2. Open deals missing a field their stage requires, grouped by owner.
+3. Open deals with no logged activity in 21 days, or a close date in the past.
+4. Leads created last month: the owner our routing rules give versus the owner on the record. List each mismatch and the rule that should have fired.
+Counts first, then records with links, then the three fixes that would clear the most rows.
+```
+
+4. **Check five flagged records by hand.** If two are wrong, tighten the project instructions and rerun before you trust the counts.
+5. **Put it on a schedule.** Once the counts hold steady, save the prompt as a [scheduled task in Claude Cowork](https://support.claude.com/en/articles/13854387-schedule-recurring-tasks-in-claude-cowork). On paid plans it runs in the cloud at the cadence you set, laptop closed or not, and each run lands as its own session for you to review.
+
+---
+
+## Guardrails before Claude changes a record
+
+Every connector above writes with the signed-in person's permissions, so settle who allows a write before the first one runs.
+
+1. **Read-only by setting, not by prompt.** Salesforce advises starting on `sobject-reads`, which has no tool that can modify data. On Claude Team and Enterprise plans, an owner can set each connector tool to Always allow, Needs approval or Blocked for the whole organization, and members can't override it, per [Anthropic's connector guide](https://support.claude.com/en/articles/11176164-use-connectors-to-extend-claude-s-capabilities). That setting only narrows what the CRM already permits.
+2. **One named approver for bulk changes.** The approval prompt goes to whoever is typing. Pick a threshold, say ten records, above which the RevOps lead signs off on Claude's before-and-after table first.
+3. **One record, then ten, then the rest.** HubSpot's guidance is to update a single record before any bulk change. Check each batch in the CRM before you run the next.
+4. **Keep the why next to the who.** HubSpot's audit log credits each connector write to both the user and the Claude connector, Salesforce names the signed-in user as the editor, and Attio logs every MCP operation. Those logs say who changed a field, not why, so save each approved table with its date.
+5. **No shared keys.** A connector set up with one API key reaches everything that key can, for everyone who uses it. Per-person sign-in ties each change to one person and their permissions.
+6. **Scheduled runs stay read-only.** Anthropic notes that a scheduled task reaching a tool set to ask first may wait for an answer or finish without the tool. For a run nobody watches, that is the behavior you want.
+
+---
+
+## What Claude can't do for RevOps on its own
+
+Claude works on the records you already have, with the rules you wrote down, when someone asks or a scheduled task fires. Four gaps remain.
+
+- **Fresh data on people.** A new head of sales at a target account isn't in your CRM until something puts them there. Web search reads public pages, not a database of people with current roles and contact details. That data comes from a provider, its own layer in the [GTM engineering stack](/blog/gtm-engineering-stack).
+- **A way to reach anyone.** Claude drafts the first message, as [our guide to Claude for sales prospecting](/blog/claude-for-sales-prospecting) shows. Sending it takes an account to send from, follow-ups and a stop when the person replies.
+- **Business memory beyond what you give it.** Memory carries working context between chats, but your stage rules, routing order and ICP exist for Claude only in project instructions and connector results. Change a rule in the CRM, and update the instructions the same week.
+- **A schedule of its own.** Outside a scheduled task, nothing runs. A new account or a slipping deal goes unnoticed until a prompt asks about it.
+
+---
+
+## Bringing net-new buyers into a clean CRM with Pancake
+
+Pancake is our product, built for those gaps. Claude plans who to reach; Pancake finds those people, writes each first message from why that person fits, and starts the conversation under your name, from a GTM Brain built on your website. Connect it to Claude with a browser sign-in and no API key ([setup steps](/claude)).
+
+Say you sell to sales operations leaders at US software companies. Three signals fit: companies hiring a Salesforce administrator, job posts naming the CRM you integrate with, and lookalikes of your ten best customers. One sentence starts the first Play: "Find heads of sales operations at US software companies with 50 to 500 staff that are hiring a Salesforce administrator." It runs on the schedule you pick, each lead comes with one line on why it fits, and the first message starts from that line: "Saw the Salesforce admin role. Is the first project cleaning up what's there, or building new workflows?"
+
+Adding a lead to a sequence starts real outreach: direct messages from your own account, never email, and every reply comes back to you. Pancake exports only the leads you pick to your CRM, such as HubSpot, Attio or Pipedrive, connected under Settings › Integrations. It adds new records and never changes an existing one; on HubSpot and Attio it links a matching contact instead of creating a duplicate.
+
+Plans start from $99 a month per workspace, 60,000 credits included ([pricing](/pricing)). The 7-day trial includes 30,000 credits and needs a card to start.

@@ -98,6 +98,11 @@ const nextConfig = {
       // a 301 to the closest live page; scripts/url-guard.mjs enforces it).
       // Near-duplicate of the aicofounders.co comparison:
       { source: "/blog/pancake-vs-aicofounders", destination: "/blog/pancake-vs-ai-cofounders", statusCode: 301 },
+      // Two scheduled posts pulled before they went live (2026-11-20); two Claude GTM posts took
+      // their dates (claude-skills-for-sales, claude-for-revops). Each slug goes to its closest
+      // live post.
+      { source: "/blog/ai-sdr", destination: "/blog/ai-gtm", statusCode: 301 },
+      { source: "/blog/ai-cold-outreach", destination: "/blog/ai-for-sales-prospecting", statusCode: 301 },
       // Slugs that never existed but get Search Console impressions (LLM-invented
       // or mistyped links, 2026-09-24 Performance report) — send them to the post
       // they clearly mean.

@@ -235,13 +235,14 @@ export const STEP_SKILLS = {
   title: "Install the skills (Claude Code, Codex, other agents)",
   intro: "Skills teach your agent how to work with Pancake. Paste this line:",
   line: "Install the Pancake skills by reading https://raw.githubusercontent.com/get-pancake/agent-plugins/main/skills.md and following its instructions.",
-  tableIntro: "You get four skills:",
+  tableIntro: "You get five skills:",
   head: ["Skill", "What it does"] as const,
   rows: [
     ["pancake", "How to work well with the tools"],
     ["pancake-daily-leads", "Find N leads today under a credit ceiling"],
     ["pancake-review-leads", "Judge the leads since your last check"],
     ["pancake-refresh-icp", "Resolve Brain proposals, then show the diff"],
+    ["pancake-onboarding", "Finish setup with one confirmed first Play"],
   ] as const,
   after: "The Claude Code and Codex plugins already include them.",
 } as const;
