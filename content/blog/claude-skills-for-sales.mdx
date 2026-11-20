@@ -1,0 +1,180 @@
+---
+title: "Claude Skills for Sales: The Six a GTM Team Should Write"
+seo_title: "Claude Skills for Sales: 6 Every GTM Team Should Write"
+description: "Claude skills for sales: how Agent Skills load, the six a B2B GTM team should write, a worked SKILL.md, how to share them, and what a skill can't do."
+date: "2026-12-16"
+last_updated: "2026-12-16"
+related:
+  - "ai-gtm"
+  - "claude-for-sales-prospecting"
+  - "claude-code-for-gtm"
+faq:
+  - question: "What are Claude skills for sales?"
+    answer: "They are folders, each built around a SKILL.md file, that teach Claude one sales procedure, such as checking fit or formatting a CRM note. Claude keeps only each skill's name and description in view until a request matches, then reads the instructions. Anthropic calls them Agent Skills; they work in Claude, Claude Code and the API."
+  - question: "What are the best Claude skills for sales teams?"
+    answer: "Start with Anthropic's sales plugin, which has 36 skills as of November 2026, including call-prep, account-research and draft-outreach. Then write the six only your team can: ICP and disqualification rules, an account brief format, message rules and voice, call prep for your stages, a CRM note format and a talk track per competitor."
+  - question: "Can you use Claude skills for marketing?"
+    answer: "Yes. A skill can hold a brand voice, positioning rules, a launch checklist or a content brief template, and Claude's plugin library includes a marketing plugin built by Anthropic. Keep one job per skill so Claude loads only what the task needs. A skill writes and checks; publishing a post or sending an email still takes a connected tool."
+  - question: "Are Claude agent skills for sales different in Claude Code?"
+    answer: "The core format, a folder with a SKILL.md file, is the same, and Anthropic publishes it as an open standard. What differs is where skills live. Claude Code reads them from your machine or a repository, so teams share them through version control or plugins. In Claude, you upload a ZIP, which Team and Enterprise plans can share or publish."
+  - question: "Can a Claude skill find leads or send messages?"
+    answer: "Not on its own. A skill holds instructions, files and optional scripts, not a database of people or an account to send from, and Anthropic advises against hardcoding API keys inside one. Connect a lead source, your CRM and a sending tool over MCP, then let skills such as your ICP rules and message rules govern how Claude uses them."
+---
+
+**TL;DR:** Claude skills for sales are folders with a SKILL.md file that Claude loads when a request matches the skill's description. Anthropic's sales plugin covers generic jobs like call prep, so write the skills that hold your own rules: disqualifiers, the account brief, message rules, call prep for your stages, CRM notes and your answer to each rival. A skill alone has no lead data, no account to send from, no record of who heard from you and no schedule; tools connected over MCP supply those.
+
+In an [AI GTM setup](/blog/ai-gtm), skills hold the method; connected tools hold the data and the actions. For prompts and Project setup, see [Claude for sales prospecting](/blog/claude-for-sales-prospecting).
+
+---
+
+## What Claude Skills are, and how Claude loads them
+
+A skill is a folder of instructions, optional scripts and reference files that Claude loads in stages, as a task needs them. [Anthropic's Agent Skills docs](https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview) liken it to an onboarding guide for a new hire. The one required file, SKILL.md, starts with a `name` and a `description`, then the instructions.
+
+The three stages:
+
+1. **At startup:** each skill's name and description, about 100 tokens per skill.
+2. **When a request matches the description:** the rest of SKILL.md.
+3. **When the instructions point to another file:** that file. A bundled script runs, and only its output enters the conversation.
+
+So thirty installed skills take about 3,000 tokens before any runs, and the description decides when each one runs: it must say what the skill does and when to use it.
+
+As of November 2026, [Claude's help center](https://support.claude.com/en/articles/12512176-what-are-skills) lists skills on every plan, Free included, with code execution turned on. Claude Code reads them from `~/.claude/skills/` or a repository's `.claude/skills/` folder. The API needs its own upload.
+
+---
+
+## Skill, project, connector or plugin: what each one is for
+
+A skill holds a procedure. Projects hold context, connectors hold access, and plugins bundle them for a team.
+
+| Feature | What it holds | When Claude uses it | Use it in sales for |
+|---|---|---|---|
+| Skill | Steps, rules and templates for one task | When a request matches its description, or you call it by name | Work every rep should do one way: call prep, CRM notes |
+| Project instructions | Files and instructions for one body of work | In every chat inside that project | One territory, one launch, one large account |
+| MCP connector | Access to another product's data and actions | When Claude calls one of its tools | Reading the CRM, finding people, sending messages |
+| Plugin | Skills, connectors and sub-agents in one package | Each part works as above once installed | Rolling out a sales setup to a whole team |
+
+The same help center page draws these lines: project knowledge loads in every chat of its project, while a skill loads when needed, anywhere in Claude. MCP gives Claude tools, and skills teach it how to use them. [Plugins](https://support.claude.com/en/articles/13837440-use-plugins-in-claude) need a paid plan as of November 2026, and their skills work in Claude chat, Cowork and Claude Code.
+
+Rule of thumb: account context goes in a project, a playbook page becomes a skill, and anything that touches another product is a connector.
+
+---
+
+## Claude skills for sales: six your GTM team should write
+
+Install Anthropic's sales plugin for the generic jobs, then write the skills that hold your team's own rules. [The plugin](https://github.com/anthropics/knowledge-work-plugins/tree/main/sales), in the Knowledge Work marketplace Claude adds by default, has 36 skills as of November 2026, from `call-prep` to `handle-objection`. They ask once for what they can't find, but they don't hold the rules your team argued out, which is where Claude skills for GTM work pay off.
+
+1. **`icp-rules`: who fits, and who never does.** Your ideal customer profile, then hard disqualifiers such as resellers, current customers and open opportunities. It answers "fit", "not a fit" or "unknown", with the deciding fact.
+2. **`account-brief`: one format for every account.** Same fields, same order: what changed in the last 90 days, who owns the problem, the reason to write now. Each fact carries a link and a date; "no reason found" is allowed.
+3. **`message-rules`: how your messages sound.** Length, banned phrases, and the shape of a first message: name the reason, ask one question, no pitch. Add three messages that got replies as a reference file: examples teach voice better than adjectives.
+4. **`call-prep`: what a rep reads before a call.** The last three touches, the open questions for the deal's stage and the discovery questions your best seller asks. Anthropic's `call-prep` suggests generic questions; yours holds your best seller's.
+5. **`crm-note`: the note your CRM expects.** Field names, stage definitions, and a next step with an owner and a date. The skill writes the note; the CRM connector saves it, with that write tool set to ask first.
+6. **`competitor-talk-track`: how you answer each rival.** One reference file per rival: when they come up, what you say, your proof, what you never say. SKILL.md lists the files, so Claude reads only the one it needs.
+
+---
+
+## A worked SKILL.md for ICP and disqualification rules
+
+Here is the first skill, for a hypothetical company selling a customer onboarding tool to B2B software companies. The folder:
+
+```text
+icp-rules/
+├── SKILL.md
+└── reference/
+    └── closed-won-deals.md
+```
+
+And SKILL.md itself:
+
+```markdown
+---
+name: icp-rules
+description: Checks whether a company fits our ideal customer profile and applies our disqualification rules. Use when asked if an account fits, and before researching or writing to one.
+---
+
+## Who we sell to
+- B2B software companies with 50 to 1,000 employees
+- A customer success or implementation team of five or more
+- Buyer: head of customer success or VP of customer experience
+
+## Disqualify if any rule is true
+- Agency, consultancy or reseller
+- Consumer app or marketplace
+- Current customer, or an open opportunity in the CRM
+- Fewer than 50 employees
+
+## How to decide
+1. Check the disqualifiers first. One match ends the check.
+2. Then check fit, using only facts you can source, each with a link and a date.
+3. If a deciding fact is missing, answer "unknown" and name the missing fact.
+4. For patterns behind past wins, read reference/closed-won-deals.md.
+
+## Output
+One line: fit, not a fit, or unknown. Then the rule or fact that decided it, with its source.
+
+## Examples
+- Acme Billing, 220 staff, eight people in customer success: fit (size and team in range)
+- Acme Creative, a 40-person agency: not a fit (agencies are disqualified)
+```
+
+Four choices make it work:
+
+- **The description names the trigger.** "Before researching or writing to one" tells Claude to check fit before it briefs or writes. Claude can use several skills together on one task, as [Claude's guide to custom skills](https://support.claude.com/en/articles/12512198-how-to-create-custom-skills) notes.
+- **Disqualifiers come first.** One cheap check can end the work early.
+- **"Unknown" is a valid answer.** Without it, Claude is pushed to guess.
+- **It packages cleanly.** The folder name matches `name`, the ZIP holds the folder at its root, and the description stays under 200 characters, the limit that guide gives for uploads.
+
+Before anyone else uses it, test three real requests: a clear fit, a disqualified account, a missing fact. If Claude skips the skill, the guide says to rework the description. To write the disqualifiers, turn the three most common loss reasons in your last 20 closed-lost deals into rules.
+
+---
+
+## Sharing and governing sales skills across a team
+
+A shared skill changes what every rep does, so it needs an owner, a review step and a test.
+
+As of November 2026, Team and Enterprise plans offer three ways to spread a skill, per [Anthropic's article on using skills](https://support.claude.com/en/articles/12512180-use-skills-in-claude):
+
+- **Share it** with colleagues, or with a group on Enterprise. They can use it, not edit it, and get your updates at their next use.
+- **Publish it** to the organization's library. With review on, an owner checks it and makes it available to install, installed by default or required. Updates get the same review, and users stay on the approved version meanwhile.
+- **Provision it:** owners can put a skill in every member's list.
+
+Skills you turn on in Claude also load in Claude Code under the same account, from version 2.1.273. Repository skills can go through pull-request review like code; [Claude Code for GTM](/blog/claude-code-for-gtm) covers that setup.
+
+Three house rules keep the library honest:
+
+1. **One owner per skill.** RevOps owns `crm-note`; the head of sales owns `competitor-talk-track`.
+2. **Review rule changes like price changes.** One new disqualifier in `icp-rules` changes who every rep contacts.
+3. **Read any skill you didn't write before you turn it on,** including one a colleague shares. The same article names prompt injection and data exfiltration as the main risks.
+
+---
+
+## Four things a skill can't do, and the MCP tools that do them
+
+Four sales jobs need what a skill doesn't carry.
+
+1. **Find people.** A skill defines who fits, but it brings no list of people with current roles. Per the Agent Skills docs, skills on the API have no network access, and in Claude network access depends on your settings.
+2. **Reach them.** A skill can draft the message. Sending needs an account, follow-ups, a stop on reply and a place for answers.
+3. **Remember beyond its text.** A skill knows what you wrote into it, not who heard from you last week. That history lives in a CRM.
+4. **Run on its own.** A skill runs only when a request matches it or someone calls it by name. A search that should keep finding accounts needs a scheduler and a place to store each run's results.
+
+The custom skills guide points the same way: keep API keys out of skills, and use MCP connections for outside services. Pair each connector with the skill that governs it:
+
+- **CRM connector:** `call-prep` and `crm-note` decide what Claude reads and how it writes.
+- **Lead source:** `icp-rules` decides who stays on the list.
+- **Sending tool:** `message-rules` shapes every draft before it goes out.
+
+[MCP for sales](/blog/mcp-for-sales) covers how these servers work and how to keep write tools safe.
+
+---
+
+## Giving your skills data and reach with Pancake
+
+Pancake, our product, is the Vercel for GTM: one place to deploy, host and run go-to-market agents. Over one MCP server, it fills all four gaps: people data, outreach under your name, a business memory, and Plays that run on the schedule you pick. Connect it in Claude with a browser sign-in and no API key ([setup steps](/claude)); the Claude Code and Codex plugins add five skills that teach the agent its tools.
+
+The memory is a GTM Brain built from your website: offer, ideal customers, personas, competitors, messaging, voice. Every Play starts from it, so keep the Brain and `icp-rules` in agreement.
+
+For the onboarding tool, watch [companies hiring](/plays/companies-hiring) implementation specialists, customer success leaders posting about time to go-live, and lookalikes of your best customers. Ask Claude: "Find heads of customer success at US software companies with 50 to 1,000 staff that are hiring implementation specialists." Each lead shows why it fits, and the first message builds on that: "Two implementation roles open at once often means go-lives are queuing. Is that where the backlog sits?"
+
+Messages stay editable until they go out. Once a lead joins a sequence, direct messages go out under your name from your own account; a reply stops them and comes back to you. Pancake sends no email, and works best when buyers hire or post in public.
+
+Plans, starting at $99 a month per workspace, include 60,000 credits ([pricing](/pricing)). The 7-day trial gives you 30,000 credits; starting it takes a card.

@@ -91,7 +91,8 @@ const STATIC_PAGES: { path: string; updated: string; priority: number }[] = [
   { path: "/support/attio", updated: "2026-11-18", priority: 0.3 },
   { path: "/support/hubspot", updated: "2026-11-18", priority: 0.3 },
   // the guide the site links; its twin with the campaign offer (/guides/claude) is noindex
-  { path: "/claude", updated: "2026-11-03", priority: 0.7 },
+  // 2026-11-20: the setup steps list the fifth skill (pancake-onboarding), as the plugins ship it
+  { path: "/claude", updated: "2026-11-20", priority: 0.7 },
   // one page per AI client besides Claude (connect-copy.ts), new on 2026-10-17
   { path: CONNECT_PATHS.chatgpt, updated: "2026-10-17", priority: 0.7 },
   { path: CONNECT_PATHS.codex, updated: "2026-10-17", priority: 0.7 },

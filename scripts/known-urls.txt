@@ -289,7 +289,8 @@
 /blog/how-to-get-pr-clients
 /blog/gtm-engineering-stack
 /blog/signal-based-selling
-/blog/ai-cold-outreach
+/blog/claude-skills-for-sales
+/blog/claude-for-revops
 /blog/how-to-get-clients-as-a-fractional-cmo
 
 # Comparison pages for data, cold email and outreach tools (2026-11-10)
