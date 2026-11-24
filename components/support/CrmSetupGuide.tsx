@@ -20,6 +20,12 @@ export function CrmSetupGuide({ provider }: { provider: "attio" | "hubspot" }) {
         <article className="lp-legal__body">
           <p><Link href="/support">Support</Link> / CRM connections</p>
           <h1 id="crm-guide-heading">Connect {name} to Pancake</h1>
+          {!isAttio && (
+            <p role="note">
+              <strong>New HubSpot connections are temporarily unavailable.</strong>{" "}
+              We’ll reopen them once HubSpot approves our Marketplace listing.
+            </p>
+          )}
           <p>
             Send leads you select from a Pancake Play to {name} {contact}, with their
             companies when enabled. Choose the fields to send and follow each lead’s result.
@@ -29,7 +35,7 @@ export function CrmSetupGuide({ provider }: { provider: "attio" | "hubspot" }) {
 
           <h2>Before you start</h2>
           <ul>
-            <li>A Pancake workspace. {name} is available to every workspace in Settings → Integrations.</li>
+            <li>A Pancake workspace. {isAttio ? "Attio is available to every workspace in Settings → Integrations." : "Manage your HubSpot connection in Settings → Integrations."}</li>
             <li>{isAttio ? "An Attio workspace administrator who can approve the connection." : "A HubSpot account and a user allowed to install apps and access contacts. Ask a HubSpot Super Admin if you need help with permissions."}</li>
             <li>A lead in a Pancake Play, with an email or a LinkedIn profile mapped to a suitable {name} field.</li>
           </ul>
